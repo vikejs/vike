@@ -45,26 +45,26 @@ Error: Element type is invalid: expected a string (for built-in components) or a
     expect(
       isKnownError(
         // Also catch `but got: object`
-        {
-          message:
-            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
-          // Fake error obejct
-          code: undefined,
-          stack: ``
-        }
+        getFakeErrorObject(
+          "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports."
+        )
       )
     ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#react-invalid-component"`)
     expect(
       isKnownError(
         // Or any other invalid value
-        {
-          message:
-            "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.",
-          // Fake error obejct
-          code: undefined,
-          stack: ``
-        }
+        getFakeErrorObject(
+          "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports."
+        )
       )
     ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#react-invalid-component"`)
   })
+}
+
+function getFakeErrorObject(message: string) {
+  return {
+    message,
+    code: undefined,
+    stack: ``
+  }
 }
