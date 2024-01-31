@@ -10,7 +10,6 @@ import { getConfigVike } from '../../shared/getConfigVike.js'
 
 function standalonePlugin(): Plugin {
   let root = ''
-  let distDir = ''
   let outDir = ''
   let outDirAbs = ''
   let rollupEntryFilePaths: string[]
@@ -63,7 +62,6 @@ function standalonePlugin(): Plugin {
       native = configVike.native
       root = toPosixPath(config.root)
       outDir = toPosixPath(config.build.outDir)
-      distDir = outDir.split('/')[0]!
       outDirAbs = path.posix.join(root, outDir)
     },
     buildStart() {
@@ -134,7 +132,7 @@ function standalonePlugin(): Plugin {
 
         // The inputs of the bundled files are safe to remove
         const filesToRemove = Object.keys(res.metafile.inputs).filter(
-          (relativeFile) => !entryFilePath.endsWith(relativeFile) && relativeFile.startsWith(distDir)
+          (relativeFile) => !entryFilePath.endsWith(relativeFile) && relativeFile.startsWith(outDir)
         )
         for (const relativeFile of filesToRemove) {
           await fs.rm(path.posix.join(root, relativeFile))
@@ -152,7 +150,7 @@ function standalonePlugin(): Plugin {
 
         const base = toPosixPath(searchForWorkspaceRoot(root))
         const relativeRoot = path.posix.relative(base, root)
-        const relativeDistDir = path.posix.relative(base, distDir)
+        const relativeOutDir = path.posix.join(relativeRoot, outDir)
 
         const { nodeFileTrace } = await import('@vercel/nft')
         const result = await nodeFileTrace([entryFilePath], {
@@ -167,7 +165,7 @@ function standalonePlugin(): Plugin {
           tracedDeps.add(toPosixPath(file))
         }
 
-        const files = [...tracedDeps].filter((path) => !path.startsWith(relativeDistDir) && !path.startsWith('usr/'))
+        const files = [...tracedDeps].filter((path) => !path.startsWith(relativeOutDir) && !path.startsWith('usr/'))
 
         // We are done, no native dependencies need to be copied
         if (!files.length) {
@@ -195,14 +193,7 @@ function standalonePlugin(): Plugin {
 
               if (!isDir && !copiedFiles.has(fileOutputPath)) {
                 copiedFiles.add(fileOutputPath)
-                const realPath = await fs.realpath(tracedFilePath)
-                if (realPath !== fileOutputPath) {
-                  try {
-                    await fs.cp(realPath, fileOutputPath, { recursive: true })
-                  } catch (error) {
-                    assert(false, error)
-                  }
-                }
+                await fs.cp(await fs.realpath(tracedFilePath), fileOutputPath, { recursive: true })
               }
             })
           )

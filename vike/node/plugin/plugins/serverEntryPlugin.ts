@@ -55,8 +55,6 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
           }
         }
 
-        console.log({ resolvedEntries })
-
         config.build.rollupOptions.input = injectRollupInputs(resolvedEntries, config)
       }
     }
