@@ -96,7 +96,7 @@ Last but not least, manual integration is fun and insightful. (Whereas fighting 
 
 React 18 introduced novel techniques that unlock many capabilities.
 
-Vike, and in particular <Link href="/react#vike-react">`vike-react`</Link>, extensively leverages React's 18 new techniques. (<Link href="/streaming">Streaming</Link>, <Link href="/streaming#progressive-hydration">Progressive Hydration</Link>, independent and collocated data fetching, <Link href="/RPC">RPC</Link>, etc.)
+Vike, and in particular <Link href="/react#vike-react">`vike-react`</Link>, extensively leverages React's 18 new techniques. (<Link href="/streaming">Streaming</Link>, <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>, independent and collocated data fetching, <Link href="/RPC">RPC</Link>, etc.)
 
 Vike provides you with extensive control for integrating tools as you see fit, such as control over React's SSR <Link href="/streaming">stream</Link>. At the same time <a href="/extensions">Vike extensions</a> provide built-in integrations for a quick start. We call this dual approach <Link href="/why#optional-control">optional control</Link>.
 
@@ -120,7 +120,7 @@ We foster the proliferation of React frameworks, highly-tailored to specific use
 
 1. Blazing fast development speed powered by Vite (on-demand transpiling, native ESM).
 1. Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With Vike, you just read the documentation of the library you want to integrate and you're good to go.
-1. When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it. (Streaming API, server components, suspense on server, progressive hydration, etc.)
+1. When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it. (Streaming API, server components, suspense on server, progressive rendering, etc.)
 1. Next.js can't read files in `/public` directory after it was built, i.e. user uploaded images.
 1. With `getServerSideProps()`, Next.js blocks client-side rendering.
 1. You cannot bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921)) while with Vike you're flexible and can choose what you want.

@@ -1,5 +1,5 @@
 import { RepoLink, Link } from '@brillout/docpress'
-import progressiveHydrationDemo from './streaming/progressive-hydration-demo.webm'
+import progressiveRenderingDemo from './streaming/progressive-rendering-demo.webm'
 import { UseUiFrameworkVikeExtensionAnyHint } from '../components'
 
 Vike not only has first-class support for HTML streaming (aka SSR streaming), but also provides you with extensive control over the stream.
@@ -307,15 +307,15 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-## Progressive Hydration
+## Progressive Rendering
 
-Some UI frameworks, such as React, support *progressive hydration*: while some parts of the UI are being loaded, other parts are already <Link href="/hydration">hydrated</Link>.
+Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered (as well as <Link href="/hydration">hydrated</Link>).
 
 Demo:
 
-<video src={progressiveHydrationDemo} width="500" controls muted autoPlay loop></video>
+<video src={progressiveRenderingDemo} width="500" controls muted autoPlay loop></video>
 
-Vike has first-class support for progressive hydration. (Make sure your UI framework also supports progressive hydration.)
+Vike has first-class support for progressive rendering. (Make sure your UI framework supports progressive rendering.)
 
 See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.
 
