@@ -3,7 +3,11 @@ import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
 import { root } from './root'
 import { init } from '../database/todoItems'
-
+import { fork } from "child_process";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 // Caught before / after server start
 // foo;
 
@@ -19,6 +23,8 @@ startServer()
 // }, 2000)
 
 async function startServer() {
+  fork(join(__dirname, "./worker.mjs"));
+
   await init()
   const app = express()
 

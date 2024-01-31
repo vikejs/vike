@@ -35,6 +35,17 @@ function serverEntryPlugin(configVike?: ConfigVikeUserProvided): Plugin[] {
         //@ts-expect-error Vite 5 || Vite 4
         return !!(env.isSsrBuild || env.ssrBuild)
       },
+      config() {
+        return {
+          build: {
+            rollupOptions: {
+              // add extra entries for server-only usage
+              // for example child_process.fork
+              input: serverConfig.workers
+            }
+          }
+        }
+      },
       configResolved(config) {
         let serverEntryFilePath = path.join(config.root, serverConfig.entry)
         try {
@@ -64,10 +75,33 @@ function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolve
   if (typeof configVike.server === 'object') {
     assertUsage(typeof configVike.server.entry === 'string', 'server.entry should be a string')
     assertUsage(['full', 'fast'].includes(configVike.server.reload), 'server.reload should be "full" or "fast"')
+    if (configVike.server.workers) {
+      assertUsage(
+        Array.isArray(configVike.server.workers) && configVike.server.workers.every((e) => typeof e === 'string'),
+        'server.workers should be a string array'
+      )
+    }
 
-    return { entry: configVike.server.entry, reload: configVike.server.reload }
+    const workersProvided = configVike.server.workers ?? []
+    const workersResolved: { [name: string]: string } = {}
+    for (const worker of workersProvided) {
+      const name = getEntryName(worker)
+      workersResolved[name] = worker
+    }
+
+    return {
+      entry: configVike.server.entry,
+      reload: configVike.server.reload,
+      workers: workersResolved
+    }
   }
 
   assertUsage(typeof configVike.server === 'string', 'server should be a string')
-  return { entry: configVike.server, reload: 'fast' }
+  return { entry: configVike.server, reload: 'fast', workers: {} }
+}
+
+export const getEntryName = (input: string) => {
+  const m = /([^\\\/]+)$/.exec(input)
+  assertUsage(m?.[1], 'server.workers should be an array of relative paths')
+  return m[1].split('.')[0]!
 }

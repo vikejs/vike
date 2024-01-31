@@ -246,7 +246,9 @@ function findRollupBundleEntries<OutputBundle extends Record<string, { name: str
   for (const key in bundle) {
     if (key.endsWith('.map')) continue // https://github.com/brillout/vite-plugin-ssr/issues/612
     const entry = bundle[key]!
-    entries.push(entry)
+    if ('isEntry' in entry && entry.isEntry) {
+      entries.push(entry)
+    }
   }
   return entries.sort((a, b) => {
     const isIndexA = a.name === 'index'
