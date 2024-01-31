@@ -10,6 +10,10 @@ import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } fr
 
 const knownErrors = [
   {
+    errMsg: 'jsxDEV is not a function',
+    link: 'https://github.com/vikejs/vike/issues/1469#issuecomment-1919518096'
+  },
+  {
     errMsg:
       'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)',
     link: 'https://vike.dev/broken-npm-package#react-invalid-component'
