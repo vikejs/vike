@@ -2,9 +2,11 @@ export { getNodeEnv }
 export { setNodeEnvToProduction }
 export { isNodeEnvDev }
 export { getNodeEnvDesc }
+export { assertNodeEnvIsNotDev }
 
 import pc from '@brillout/picocolors'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { assertUsage } from './assert.js'
 assertIsNotBrowser()
 
 function getNodeEnv(): null | undefined | string {
@@ -34,4 +36,11 @@ function getNodeEnvDesc(): `environment is set to be a ${string} environment by 
     (isDev ? 'development' : 'production') as string
   } environment by ${pc.cyan(`process.env.NODE_ENV === ${JSON.stringify(nodeEnv)}`)}` as const
   return nodeEnvDesc
+}
+
+function assertNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
+  const isDev = isNodeEnvDev()
+  if (!isDev) return
+  const nodeEnvDesc = getNodeEnvDesc()
+  assertUsage(false, `The ${nodeEnvDesc} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`)
 }

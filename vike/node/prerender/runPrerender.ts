@@ -23,7 +23,9 @@ import {
   executeHook,
   isPlainObject,
   setNodeEnvToProduction,
-  isUserHookError
+  isUserHookError,
+  assertNodeEnvIsNotDev,
+  getNodeEnv
 } from './utils.js'
 import { pLimit, PLimit } from '../../utils/pLimit.js'
 import {
@@ -193,7 +195,7 @@ async function runPrerender(
     console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
-  setNodeEnvToProduction()
+  handleNodeEnv()
 
   await disableReactStreaming()
 
@@ -1171,4 +1173,11 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
       abortCaller
     )} isn't supported for pre-rendered pages`
   )
+}
+
+function handleNodeEnv() {
+  const assertNodeEnv = () => assertNodeEnvIsNotDev('pre-rendering')
+  if (getNodeEnv()) assertNodeEnv()
+  setNodeEnvToProduction()
+  assertNodeEnv()
 }

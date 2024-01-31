@@ -13,7 +13,8 @@ import {
   assertPosixPath,
   assertUsage,
   injectRollupInputs,
-  normalizeRollupInput
+  normalizeRollupInput,
+  assertNodeEnvIsNotDev
 } from '../utils.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
@@ -31,8 +32,8 @@ import path from 'path'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
-
 const manifestTempFile = '_temp_manifest.json'
+assertNodeEnv()
 
 function buildConfig(): Plugin {
   let generateManifest: boolean
@@ -48,6 +49,7 @@ function buildConfig(): Plugin {
         assert(Object.keys(entries).length > 0)
         config.build.rollupOptions.input = injectRollupInputs(entries, config)
         addLogHook()
+        assertNodeEnv()
       }
     },
     config(config) {
@@ -60,7 +62,11 @@ function buildConfig(): Plugin {
         }
       } satisfies UserConfig
     },
+    buildStart() {
+      assertNodeEnv()
+    },
     async writeBundle(options, bundle) {
+      assertNodeEnv()
       const manifestEntry = bundle[manifestTempFile]
       /* Fails with @vitejs/plugin-legacy because writeBundle() is called twice during the client build (once for normal client assets and a second time for legacy assets), see reproduction at https://github.com/vikejs/vike/issues/1154
       assert(generateManifest === !!manifestEntry)
@@ -253,4 +259,8 @@ function assertRollupInput(config: ResolvedConfig): void {
     htmlInput === undefined,
     `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using Vike, instead follow https://vike.dev/add`
   )
+}
+
+function assertNodeEnv() {
+  assertNodeEnvIsNotDev('building')
 }
