@@ -12,7 +12,7 @@ const knownErrors = [
   {
     errMsg:
       'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)',
-    hint: 'To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component'
+    link: 'https://vike.dev/broken-npm-package#react-invalid-component'
   }
 ]
 
@@ -25,8 +25,8 @@ function logHintForCjsEsmError(error: unknown): void {
 }
 function getHint(error: unknown): null | string {
   {
-    const hint = isKnownError(error)
-    if (hint) return hint
+    const link = isKnownError(error)
+    if (link) return `To fix this error, see ${link}`
   }
 
   const res = isCjsEsmError(error)
@@ -55,11 +55,11 @@ function logHint(hint: string) {
 
 function isKnownError(error: unknown): false | string {
   const anywhere = getAnywhere(error)
-  const knownErr = knownErrors.find((knownErrorr) => {
-    return includes(anywhere, knownErrorr.errMsg)
+  const knownErr = knownErrors.find((knownErorr) => {
+    return includes(anywhere, knownErorr.errMsg)
   })
   if (!knownErr) return false
-  return knownErr.hint
+  return knownErr.link
 }
 
 // `false` -> noop

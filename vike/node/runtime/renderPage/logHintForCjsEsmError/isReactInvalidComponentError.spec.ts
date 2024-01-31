@@ -8,8 +8,8 @@ describe('isKnownError()', () => {
 // Classic: React's infamous invalid component error.
 function react_invalid_component() {
   it('React: invalid component', () => {
-    expect(true).toBe(
-      !!isKnownError(
+    expect(
+      isKnownError(
         /* Error artificially created:
         ```diff
         // node_modules/vike-react/dist/renderer/onRenderHtml.js:
@@ -41,9 +41,9 @@ Error: Element type is invalid: expected a string (for built-in components) or a
 `
         }
       )
-    )
-    expect(true).toBe(
-      !!isKnownError(
+    ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#react-invalid-component"`)
+    expect(
+      isKnownError(
         // Also catch `but got: object`
         {
           message:
@@ -53,9 +53,9 @@ Error: Element type is invalid: expected a string (for built-in components) or a
           stack: ``
         }
       )
-    )
-    expect(true).toBe(
-      !!isKnownError(
+    ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#react-invalid-component"`)
+    expect(
+      isKnownError(
         // Or any other invalid value
         {
           message:
@@ -65,6 +65,6 @@ Error: Element type is invalid: expected a string (for built-in components) or a
           stack: ``
         }
       )
-    )
+    ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#react-invalid-component"`)
   })
 }
