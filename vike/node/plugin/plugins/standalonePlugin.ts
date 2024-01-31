@@ -195,7 +195,14 @@ function standalonePlugin(): Plugin {
 
               if (!isDir && !copiedFiles.has(fileOutputPath)) {
                 copiedFiles.add(fileOutputPath)
-                await fs.cp(await fs.realpath(tracedFilePath), fileOutputPath, { recursive: true })
+                const realPath = await fs.realpath(tracedFilePath)
+                if (realPath !== fileOutputPath) {
+                  try {
+                    await fs.cp(realPath, fileOutputPath, { recursive: true })
+                  } catch (error) {
+                    assert(false, error)
+                  }
+                }
               }
             })
           )
