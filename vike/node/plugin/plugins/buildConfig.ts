@@ -33,7 +33,6 @@ import path from 'path'
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
-assertNodeEnv()
 
 function buildConfig(): Plugin {
   let generateManifest: boolean
@@ -44,15 +43,16 @@ function buildConfig(): Plugin {
     configResolved: {
       order: 'post',
       async handler(config) {
+        assertNodeEnv()
         assertRollupInput(config)
         const entries = await getEntries(config)
         assert(Object.keys(entries).length > 0)
         config.build.rollupOptions.input = injectRollupInputs(entries, config)
         addLogHook()
-        assertNodeEnv()
       }
     },
     config(config) {
+      assertNodeEnv()
       generateManifest = !viteIsSSR(config)
       return {
         build: {
