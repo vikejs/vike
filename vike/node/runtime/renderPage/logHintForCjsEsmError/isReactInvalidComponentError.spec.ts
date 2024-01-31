@@ -1,7 +1,7 @@
-import { isReactInvalidComponentError } from '../logHintForCjsEsmError'
+import { isKnownError } from '../logHintForCjsEsmError'
 import { expect, describe, it } from 'vitest'
 
-describe('isReactInvalidComponentError()', () => {
+describe('isKnownError()', () => {
   react_invalid_component()
 })
 
@@ -9,7 +9,7 @@ describe('isReactInvalidComponentError()', () => {
 function react_invalid_component() {
   it('React: invalid component', () => {
     expect(true).toBe(
-      isReactInvalidComponentError(
+      !!isKnownError(
         /* Error artificially created:
         ```diff
         // node_modules/vike-react/dist/renderer/onRenderHtml.js:
@@ -43,7 +43,7 @@ Error: Element type is invalid: expected a string (for built-in components) or a
       )
     )
     expect(true).toBe(
-      isReactInvalidComponentError(
+      !!isKnownError(
         // Also catch `but got: object`
         {
           message:
@@ -55,7 +55,7 @@ Error: Element type is invalid: expected a string (for built-in components) or a
       )
     )
     expect(true).toBe(
-      isReactInvalidComponentError(
+      !!isKnownError(
         // Or any other invalid value
         {
           message:
