@@ -83,6 +83,7 @@ assertIsNotProductionRuntime()
 
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
+  locationId: string
   filePath: FilePathResolved
   fileExportsByConfigName: Record<ConfigName, { configValue?: unknown }>
 }
@@ -192,13 +193,13 @@ async function loadInterfaceFiles(
     // Config files
     ...configFiles.map(async (filePath) => {
       const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
-      const interfaceFile = getInterfaceFileFromConfigFile(configFile, false)
-
       const locationId = getLocationId(filePath.filePathAbsoluteVite)
+      const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId)
+
       interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
       interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       extendsConfigs.forEach((extendsConfig) => {
-        const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true)
+        const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId)
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
     }),
@@ -206,7 +207,9 @@ async function loadInterfaceFiles(
     ...valueFiles.map(async (filePath) => {
       const configName = getConfigName(filePath.filePathAbsoluteVite)
       assert(configName)
+      const locationId = getLocationId(filePath.filePathAbsoluteVite)
       const interfaceFile: InterfaceValueFile = {
+        locationId,
         filePath,
         fileExportsByConfigName: {
           [configName]: {}
@@ -236,9 +239,14 @@ async function loadInterfaceFiles(
 
   return interfaceFilesByLocationId
 }
-function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
+function getInterfaceFileFromConfigFile(
+  configFile: ConfigFile,
+  isConfigExtend: boolean,
+  locationId: string
+): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
   const interfaceFile: InterfaceConfigFile = {
+    locationId,
     filePath,
     fileExportsByConfigName: {},
     isConfigFile: true,
@@ -653,6 +661,7 @@ async function getConfigValueSource(
   const conf = interfaceFile.fileExportsByConfigName[configName]
   assert(conf)
   const configEnv = configDef.env
+  const { locationId } = interfaceFile
 
   const definedAtConfigFile: DefinedAtFileFullInfo = {
     ...interfaceFile.filePath,
@@ -679,6 +688,7 @@ async function getConfigValueSource(
       }
     }
     const configValueSource: ConfigValueSource = {
+      locationId,
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv,
@@ -697,6 +707,7 @@ async function getConfigValueSource(
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
       const configValueSource: ConfigValueSource = {
+        locationId,
         configEnv,
         valueIsImportedAtRuntime: true,
         definedAt: import_
@@ -722,6 +733,7 @@ async function getConfigValueSource(
 
     // Defined by config file, i.e. +config.js file
     const configValueSource: ConfigValueSource = {
+      locationId,
       value: configValue,
       configEnv,
       valueIsImportedAtRuntime: false,
@@ -735,6 +747,7 @@ async function getConfigValueSource(
     const valueAlreadyLoaded = 'configValue' in conf
     assert(valueAlreadyLoaded === !!configEnv.config)
     const configValueSource: ConfigValueSource = {
+      locationId,
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       definedAt: {

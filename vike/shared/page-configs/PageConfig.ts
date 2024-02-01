@@ -78,6 +78,8 @@ type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
   definedAt: DefinedAtFileFullInfo
+  /** The locationId of the interfaceFile that defines the config value */
+  locationId: string
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
   /** Whether the config value is a file path, for example config.client */
