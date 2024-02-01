@@ -194,8 +194,11 @@ async function loadInterfaceFiles(
   await Promise.all([
     // Config files
     ...configFiles.map(async (filePath) => {
+      const { filePathRelativeToUserRootDir } = filePath
+      assert(filePathRelativeToUserRootDir)
       const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
-      const locationId = getLocationId(filePath.filePathAbsoluteVite)
+      assert(filePath.filePathRelativeToUserRootDir)
+      const locationId = getLocationId(filePathRelativeToUserRootDir)
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId)
 
       interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
@@ -223,9 +226,14 @@ async function loadInterfaceFiles(
     }),
     // Value files
     ...valueFiles.map(async (filePath) => {
-      const configName = getConfigName(filePath.filePathAbsoluteVite)
+      const { filePathRelativeToUserRootDir } = filePath
+      assert(filePathRelativeToUserRootDir)
+
+      const configName = getConfigName(filePathRelativeToUserRootDir)
       assert(configName)
-      const locationId = getLocationId(filePath.filePathAbsoluteVite)
+
+      const locationId = getLocationId(filePathRelativeToUserRootDir)
+
       const interfaceFile: InterfaceValueFile = {
         locationId,
         filePath,
@@ -246,7 +254,6 @@ async function loadInterfaceFiles(
         }
       }
       {
-        const locationId = getLocationId(filePath.filePathAbsoluteVite)
         interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       }

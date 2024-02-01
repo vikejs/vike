@@ -12,11 +12,26 @@ export { getLogicalPath }
 
 import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils.js'
 
-/** The `locationId` of a config value is used for filesystem inheritance.
+/**
+ * The `locationId` of a config value is used for filesystem inheritance.
  *
- *  `locationId` is different than the config value's `definedAt` for Vike Extensions, for example the `onRenderHtml()` hook of `vike-react`:
- *   - `locationId === '/pages'` (the directory of `/pages/+config.h.js` which extends `vike-react`)
- *   - `definedAt.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
+ * `locationId` is different than the config value's `definedAt` for Vike Extensions, for example the `onRenderHtml()` hook of `vike-react`:
+ *  - `locationId === '/pages'` (the directory of `/pages/+config.h.js` which extends `vike-react`)
+ *  - `definedAt.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
+ *
+ *  This is an important distinction because the Vike extension's config should only apply to where it's being extended from, for example:
+ *  ```js
+ *  // /pages/admin/+config.h.js
+ *  import vikeVue from 'vike-vue/config'
+ *  // Should only apply to /pages/admin/**
+ *  export default { extends: [vikeVue] }
+ *  ```
+ *  ```js
+ *  // /pages/marketing/+config.h.js
+ *  import vikeReact from 'vike-react/config'
+ *  // Should only apply to /pages/marketing/**
+ *  export default { extends: [vikeReact] }
+ *  ```
  */
 type LocationId = string & { __brand: 'LocationId' }
 
@@ -25,8 +40,10 @@ type LocationId = string & { __brand: 'LocationId' }
  * getLocationId('/pages/some-page') => '/pages/some-page'
  * getLocationId('/renderer/+config.js') => '/renderer'
  */
-function getLocationId(filePathAbsoluteVite: string): LocationId {
-  const locationId = removeFilename(filePathAbsoluteVite, true)
+function getLocationId(filePathRelativeToUserRootDir: string): LocationId {
+  assertPosixPath(filePathRelativeToUserRootDir)
+  assert(filePathRelativeToUserRootDir.startsWith('/') && !isNpmPackageImport(filePathRelativeToUserRootDir))
+  const locationId = removeFilename(filePathRelativeToUserRootDir, true)
   assertLocationId(locationId)
   return locationId as LocationId
 }
@@ -134,17 +151,15 @@ function removeDirectories(somePath: string, removeDirs: string[]): string {
   return somePath
 }
 
-function removeFilename(filePathAbsoluteVite: string, optional?: true) {
-  assertPosixPath(filePathAbsoluteVite)
-  assert(filePathAbsoluteVite.startsWith('/') || isNpmPackageImport(filePathAbsoluteVite))
+function removeFilename(filePathRelativeToUserRootDir: string, optional?: true) {
   {
-    const filename = filePathAbsoluteVite.split('/').slice(-1)[0]!
+    const filename = filePathRelativeToUserRootDir.split('/').slice(-1)[0]!
     if (!filename.includes('.')) {
       assert(optional)
-      return filePathAbsoluteVite
+      return filePathRelativeToUserRootDir
     }
   }
-  let locationId = filePathAbsoluteVite.split('/').slice(0, -1).join('/')
+  let locationId = filePathRelativeToUserRootDir.split('/').slice(0, -1).join('/')
   if (locationId === '') locationId = '/'
   assertLocationId(locationId)
   return locationId
