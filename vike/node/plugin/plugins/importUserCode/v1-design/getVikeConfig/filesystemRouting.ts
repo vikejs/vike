@@ -5,24 +5,34 @@ export { getLocationId }
 export { sortAfterInheritanceOrder }
 export { isGlobalLocation }
 export { applyFilesystemRoutingRootEffect }
+export type {LocationId}
 
 // For ./filesystemRouting.spec.ts
 export { getLogicalPath }
 
 import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils.js'
 
+/** The `locationId` of the `interfaceFile` that defines the config value.
+ *
+ *  `locationId` is different than `definedAt` for Vike Extensions, for example the `onRenderHtml()` hook of `vike-react`:
+ *   - `locationId === '/pages'` (the directory of `/pages/+config.h.js` which extends `vike-react`)
+ *   - `definedAt.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
+ */
+type LocationId = string & { __brand: "LocationId" }
+
+
 /**
  * getLocationId('/pages/some-page/+Page.js') => '/pages/some-page'
  * getLocationId('/pages/some-page') => '/pages/some-page'
  * getLocationId('/renderer/+config.js') => '/renderer'
  */
-function getLocationId(filePathAbsoluteVite: string): string {
+function getLocationId(filePathAbsoluteVite: string): LocationId {
   const locationId = removeFilename(filePathAbsoluteVite, true)
   assertLocationId(locationId)
-  return locationId
+  return locationId as LocationId
 }
 /** Get URL determined by filesystem path */
-function getFilesystemRouteString(locationId: string): string {
+function getFilesystemRouteString(locationId: LocationId): string {
   return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
 /** Get apply root for config inheritance */
@@ -41,10 +51,10 @@ function getLogicalPath(someDir: string, removeDirs: string[]): string {
 }
 
 /** Whether configs defined in `locationId` apply in every `locationIds` */
-function isGlobalLocation(locationId: string, locationIds: string[]): boolean {
+function isGlobalLocation(locationId: LocationId, locationIds: LocationId[]): boolean {
   return locationIds.every((locId) => isInherited(locationId, locId) || locationIsRendererDir(locId))
 }
-function sortAfterInheritanceOrder(locationId1: string, locationId2: string, locationIdPage: string): -1 | 1 | 0 {
+function sortAfterInheritanceOrder(locationId1: LocationId, locationId2: LocationId, locationIdPage: LocationId): -1 | 1 | 0 {
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
   const inheritanceRootPage = getInheritanceRoot(locationIdPage)
@@ -85,15 +95,15 @@ function sortAfterInheritanceOrder(locationId1: string, locationId2: string, loc
   }
   return locationId1 > locationId2 ? locationId1First : locationId2First
 }
-function locationIsNpmPackage(locationId: string) {
+function locationIsNpmPackage(locationId: LocationId) {
   return !locationId.startsWith('/')
 }
-function locationIsRendererDir(locationId: string) {
+function locationIsRendererDir(locationId: LocationId) {
   return locationId.split('/').includes('renderer')
 }
 
 /** Whether configs defined at `locationId1` also apply at `locationId2` */
-function isInherited(locationId1: string, locationId2: string): boolean {
+function isInherited(locationId1: LocationId, locationId2: LocationId): boolean {
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
   return startsWith(inheritanceRoot2, inheritanceRoot1)
@@ -137,7 +147,7 @@ function removeFilename(filePathAbsoluteVite: string, optional?: true) {
   return locationId
 }
 
-function getFilesystemRouteDefinedBy(locationId: string): string {
+function getFilesystemRouteDefinedBy(locationId: LocationId): string {
   if (locationId === '/') return locationId
   assert(!locationId.endsWith('/'))
   const routeFilesystemDefinedBy = locationId + '/'

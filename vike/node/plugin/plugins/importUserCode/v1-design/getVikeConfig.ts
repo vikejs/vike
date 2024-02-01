@@ -20,7 +20,9 @@ import {
   lowerFirst,
   mergeCumulativeValues,
   getOutDirs,
-  assertKeys
+  assertKeys,
+  objectKeys,
+  objectFromEntries
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -46,6 +48,7 @@ import {
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVike.js'
 import {
+  type LocationId,
   getLocationId,
   getFilesystemRouteString,
   getFilesystemRouteDefinedBy,
@@ -83,7 +86,7 @@ assertIsNotProductionRuntime()
 
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
-  locationId: string
+  locationId: LocationId
   filePath: FilePathResolved
   fileExportsByConfigName: Record<ConfigName, { configValue?: unknown }>
 }
@@ -101,7 +104,6 @@ type InterfaceValueFile = InterfaceFileCommons & {
   configName: string
 }
 type ConfigName = string
-type LocationId = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
 type VikeConfig = {
@@ -199,6 +201,22 @@ async function loadInterfaceFiles(
       interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
       interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       extendsConfigs.forEach((extendsConfig) => {
+        /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
+        ```js
+        // /pages/admin/+config.h.js
+
+        import vikeVue from 'vike-vue/config'
+        // Should only apply to /pages/admin/**
+        export default { extends: [vikeVue] }
+        ```
+        ```js
+        // /pages/marketing/+config.h.js
+
+        import vikeReact from 'vike-react/config'
+        // Should only apply to /pages/marketing/**
+        export default { extends: [vikeReact] }
+        ```
+        */
         const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId)
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
@@ -242,7 +260,7 @@ async function loadInterfaceFiles(
 function getInterfaceFileFromConfigFile(
   configFile: ConfigFile,
   isConfigExtend: boolean,
-  locationId: string
+  locationId: LocationId
 ): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
   const interfaceFile: InterfaceConfigFile = {
@@ -262,7 +280,7 @@ function getInterfaceFileFromConfigFile(
 }
 /** Show error message upon unknown config */
 function assertAllConfigsAreKnown(interfaceFilesByLocationId: InterfaceFilesByLocationId) {
-  Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
+  objectEntries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
     const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
     const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
     interfaceFiles.forEach((interfaceFile) => {
@@ -334,7 +352,7 @@ async function loadVikeConfig(
   )
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
-    Object.entries(interfaceFilesByLocationId)
+    objectEntries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
@@ -430,10 +448,10 @@ function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
 
 function getInterfaceFilesRelevant(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
-  locationIdPage: string
+  locationIdPage: LocationId
 ): InterfaceFilesByLocationId {
   const interfaceFilesRelevant = Object.fromEntries(
-    Object.entries(interfaceFilesByLocationId)
+    objectEntries(interfaceFilesByLocationId)
       .filter(([locationId]) => {
         return isInherited(locationId, locationIdPage)
       })
@@ -455,9 +473,9 @@ async function getGlobalConfigs(
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ) {
-  const locationIds = Object.keys(interfaceFilesByLocationId)
-  const interfaceFilesGlobal = Object.fromEntries(
-    Object.entries(interfaceFilesByLocationId).filter(([locationId]) => {
+  const locationIds = objectKeys(interfaceFilesByLocationId)
+  const interfaceFilesGlobal = objectFromEntries(
+    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
       return isGlobalLocation(locationId, locationIds)
     })
   )
@@ -465,7 +483,7 @@ async function getGlobalConfigs(
   // Validate that global configs live in global interface files
   {
     const interfaceFilesGlobalPaths: string[] = []
-    Object.entries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
+    objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
       assert(isGlobalLocation(locationId, locationIds))
       interfaceFiles.forEach(({ filePath: { filePathRelativeToUserRootDir } }) => {
         if (filePathRelativeToUserRootDir) {
@@ -474,7 +492,7 @@ async function getGlobalConfigs(
       })
     })
     const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
-    Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
+    objectEntries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
         Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
           if (!isGlobalLocation(locationId, locationIds) && isGlobalConfig(configName)) {
@@ -1044,7 +1062,7 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
   assertUsage(false, errMsg)
 }
 
-function determineRouteFilesystem(locationId: string, configValueSources: ConfigValueSources) {
+function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources) {
   const configName = 'filesystemRoutingRoot'
   const configFilesystemRoutingRoot = configValueSources[configName]?.[0]
   let filesystemRouteString = getFilesystemRouteString(locationId)
