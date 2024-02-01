@@ -1,4 +1,9 @@
-import { getLocationId, isInherited as isInherited_, getLogicalPath, type LocationId } from './filesystemRouting.js'
+import {
+  getLocationId,
+  isInherited as isInherited_,
+  getLogicalPath as getLogicalPath_,
+  type LocationId
+} from './filesystemRouting.js'
 import { expect, describe, it } from 'vitest'
 
 describe('getLocationId()', () => {
@@ -30,4 +35,7 @@ describe('getLogicalPath()', () => {
 
 function isInherited(l1: string, l2: string) {
   return isInherited_(l1 as LocationId, l2 as LocationId)
+}
+function getLogicalPath(l: string, a: string[]) {
+  return getLogicalPath_(l as LocationId, a)
 }

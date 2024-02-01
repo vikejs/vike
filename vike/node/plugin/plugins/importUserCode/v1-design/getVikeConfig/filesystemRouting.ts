@@ -10,7 +10,7 @@ export type { LocationId }
 // For ./filesystemRouting.spec.ts
 export { getLogicalPath }
 
-import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils.js'
+import { assert, assertPosixPath, higherFirst } from '../../../../utils.js'
 
 /**
  * The `locationId` value is used for filesystem inheritance.
@@ -48,7 +48,7 @@ function getLocationId(
   filePathRelativeToUserRootDir: string
 ): LocationId {
   assertPosixPath(filePathRelativeToUserRootDir)
-  assert(filePathRelativeToUserRootDir.startsWith('/') && !isNpmPackageImport(filePathRelativeToUserRootDir))
+  assert(filePathRelativeToUserRootDir.startsWith('/'))
   const locationId = removeFilename(filePathRelativeToUserRootDir)
   assertLocationId(locationId)
   return locationId as LocationId
@@ -58,18 +58,16 @@ function getFilesystemRouteString(locationId: LocationId): string {
   return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
 /** Get apply root for config inheritance */
-function getInheritanceRoot(someDir: string): string {
-  return getLogicalPath(someDir, ['renderer'])
+function getInheritanceRoot(locationId: LocationId): string {
+  return getLogicalPath(locationId, ['renderer'])
 }
 /**
  * getLogicalPath('/pages/some-page', ['pages']) => '/some-page'
- * getLogicalPath('some-npm-pkg/renderer', ['renderer']) => '/'
  */
-function getLogicalPath(someDir: string, removeDirs: string[]): string {
-  someDir = removeNpmPackageName(someDir)
-  someDir = removeDirectories(someDir, removeDirs)
-  assertIsPath(someDir)
-  return someDir
+function getLogicalPath(locationId: LocationId, removeDirs: string[]): string {
+  let logicalPath = removeDirectories(locationId, removeDirs)
+  assertIsPath(logicalPath)
+  return logicalPath
 }
 
 /** Whether configs defined in `locationId` apply in every `locationIds` */
@@ -81,6 +79,9 @@ function sortAfterInheritanceOrder(
   locationId2: LocationId,
   locationIdPage: LocationId
 ): -1 | 1 | 0 {
+  assertLocationId(locationId1)
+  assertLocationId(locationId2)
+
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
   const inheritanceRootPage = getInheritanceRoot(locationIdPage)
@@ -107,9 +108,6 @@ function sortAfterInheritanceOrder(
   // locationId2 first, i.e. `indexOf(locationId2) < indexOf(locationId1)`
   const locationId2First = 1
 
-  if (locationIsNpmPackage(locationId1) !== locationIsNpmPackage(locationId2)) {
-    return locationIsNpmPackage(locationId1) ? locationId2First : locationId1First
-  }
   if (locationIsRendererDir(locationId1) !== locationIsRendererDir(locationId2)) {
     return locationIsRendererDir(locationId1) ? locationId2First : locationId1First
   }
@@ -120,9 +118,6 @@ function sortAfterInheritanceOrder(
     return higherFirst<string>((locationId) => locationId.length)(locationId1, locationId2)
   }
   return locationId1 > locationId2 ? locationId1First : locationId2First
-}
-function locationIsNpmPackage(locationId: LocationId) {
-  return !locationId.startsWith('/')
 }
 function locationIsRendererDir(locationId: LocationId) {
   return locationId.split('/').includes('renderer')
@@ -135,18 +130,6 @@ function isInherited(locationId1: LocationId, locationId2: LocationId): boolean 
   return startsWith(inheritanceRoot2, inheritanceRoot1)
 }
 
-function removeNpmPackageName(somePath: string): string {
-  if (!isNpmPackageImport(somePath)) {
-    assert(somePath.startsWith('/'))
-    return somePath
-  }
-  const importPath = getNpmPackageImportPath(somePath)
-  if (!importPath) return '/'
-  assertPosixPath(importPath)
-  assert(!importPath.startsWith('/'))
-  somePath = '/' + importPath
-  return somePath
-}
 function removeDirectories(somePath: string, removeDirs: string[]): string {
   assertPosixPath(somePath)
   somePath = somePath
