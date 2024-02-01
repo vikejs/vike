@@ -82,6 +82,8 @@ function sortAfterInheritanceOrder(
   assertLocationId(locationId1)
   assertLocationId(locationId2)
 
+  if (locationId1 === locationId2) return 0
+
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
   const inheritanceRootPage = getInheritanceRoot(locationIdPage)
@@ -99,9 +101,6 @@ function sortAfterInheritanceOrder(
     assert(inheritanceRoot1.length !== inheritanceRoot2.length)
     return higherFirst<string>((inheritanceRoot) => inheritanceRoot.length)(inheritanceRoot1, inheritanceRoot2)
   }
-
-  // Should be true since we aggregate interface files by locationId
-  assert(locationId1 !== locationId2)
 
   // locationId1 first, i.e. `indexOf(locationId1) < indexOf(locationId2)`
   const locationId1First = -1
