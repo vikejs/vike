@@ -41,7 +41,7 @@ type LocationId = string & { __brand: 'LocationId' }
  * `getLocationId('/pages/some-page/+Page.js')` => `'/pages/some-page'`
  * `getLocationId('/renderer/+config.js')` => `'/renderer'`
  *
- * The value `locationId` is always a user-land path, because Filesystem Routing/Inheritence only applies to the user-land (Vike never uses Filesystem Routing/Inheritence for `node_modules/**`).
+ * The value `locationId` is always a user-land path, because Filesystem Routing/Inheritance only applies to the user-land (Vike never uses Filesystem Routing/Inheritance for `node_modules/**`).
  */
 function getLocationId(
   // We always determine `locationId` from a real user-land file: the `locationId` for Vike extensions is the `locationId` of the the user's `+config.h.js` that extends the Vike extension.
@@ -53,11 +53,11 @@ function getLocationId(
   assertLocationId(locationId)
   return locationId as LocationId
 }
-/** Get URL determined by filesystem path */
+/** Filesystem Routing: get the URL */
 function getFilesystemRouteString(locationId: LocationId): string {
   return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
-/** Get apply root for config inheritance */
+/** Filesystem Inheritance: get the apply root */
 function getInheritanceRoot(locationId: LocationId): string {
   return getLogicalPath(locationId, ['renderer'])
 }
