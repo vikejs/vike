@@ -1307,15 +1307,18 @@ function sortConfigValueSources(
 ): ConfigValueSources {
   return Object.fromEntries(
     Object.entries(configValueSources)
+      // Make order deterministic (no other purpose)
+      .sort(([, [source1]], [, [source2]]) =>
+        source1!.definedAt.filePathAbsoluteVite < source2!.definedAt.filePathAbsoluteVite ? -1 : 1
+      )
       // Sort after whether the config value was defined by an npm package
       .sort(
         makeFirst(([, [source]]) => {
-          assert(source)
-          const { importPathAbsolute } = source.definedAt
+          const { importPathAbsolute } = source!.definedAt
           return !!importPathAbsolute && isNpmPackageImport(importPathAbsolute)
         })
       )
-      // Sort after the filesystem inheritence of the config value
+      // Sort after the filesystem inheritance of the config value
       .sort(([, [source1]], [, [source2]]) =>
         sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage)
       )
