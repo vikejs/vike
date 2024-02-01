@@ -18,7 +18,7 @@ export type { FilePathResolved }
 export type { FilePath }
 
 import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
-import type {LocationId} from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
+import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 
 type PageConfigBase = {
   pageId: string

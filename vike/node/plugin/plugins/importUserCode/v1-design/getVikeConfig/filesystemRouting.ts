@@ -5,21 +5,20 @@ export { getLocationId }
 export { sortAfterInheritanceOrder }
 export { isGlobalLocation }
 export { applyFilesystemRoutingRootEffect }
-export type {LocationId}
+export type { LocationId }
 
 // For ./filesystemRouting.spec.ts
 export { getLogicalPath }
 
 import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils.js'
 
-/** The `locationId` of the `interfaceFile` that defines the config value.
+/** The `locationId` of a config value is used for filesystem inheritance.
  *
- *  `locationId` is different than `definedAt` for Vike Extensions, for example the `onRenderHtml()` hook of `vike-react`:
+ *  `locationId` is different than the config value's `definedAt` for Vike Extensions, for example the `onRenderHtml()` hook of `vike-react`:
  *   - `locationId === '/pages'` (the directory of `/pages/+config.h.js` which extends `vike-react`)
  *   - `definedAt.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
  */
-type LocationId = string & { __brand: "LocationId" }
-
+type LocationId = string & { __brand: 'LocationId' }
 
 /**
  * getLocationId('/pages/some-page/+Page.js') => '/pages/some-page'
@@ -54,7 +53,11 @@ function getLogicalPath(someDir: string, removeDirs: string[]): string {
 function isGlobalLocation(locationId: LocationId, locationIds: LocationId[]): boolean {
   return locationIds.every((locId) => isInherited(locationId, locId) || locationIsRendererDir(locId))
 }
-function sortAfterInheritanceOrder(locationId1: LocationId, locationId2: LocationId, locationIdPage: LocationId): -1 | 1 | 0 {
+function sortAfterInheritanceOrder(
+  locationId1: LocationId,
+  locationId2: LocationId,
+  locationIdPage: LocationId
+): -1 | 1 | 0 {
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
   const inheritanceRootPage = getInheritanceRoot(locationIdPage)
