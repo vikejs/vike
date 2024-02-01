@@ -406,7 +406,6 @@ async function loadVikeConfig(
             })
         )
         configValueSources = sortConfigValueSources(configValueSources, locationId)
-        console.log(JSON.stringify(configValueSources, null, 2))
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
