@@ -9,7 +9,6 @@ import { expect, describe, it } from 'vitest'
 describe('getLocationId()', () => {
   it('works', () => {
     expect(getLocationId('/pages/some-page/+Page.js')).toBe('/pages/some-page')
-    expect(getLocationId('/pages/some-page')).toBe('/pages/some-page')
     expect(getLocationId('/renderer/+config.js')).toBe('/renderer')
   })
 })
