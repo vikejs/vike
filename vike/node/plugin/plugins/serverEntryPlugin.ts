@@ -73,13 +73,21 @@ function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolve
     if (configVike.server.entry) {
       assertUsage(
         typeof configVike.server.entry === 'string' ||
-          Object.entries(configVike.server.entry).every(([name, value]) => typeof value === 'string'),
+          (typeof configVike.server.entry === 'object' &&
+            Object.entries(configVike.server.entry).every(([, value]) => typeof value === 'string')),
         'server.entry should be a string or an entry mapping { name: path }'
+      )
+      assertUsage(
+        typeof configVike.server.entry !== 'object' ||
+          Object.entries(configVike.server.entry).some(([name]) => name === 'index'),
+        'missing index entry in server.entry'
       )
     }
 
     const entriesProvided =
       typeof configVike.server.entry === 'string' ? { index: configVike.server.entry } : configVike.server.entry
+
+    assert('index' in entriesProvided)
 
     return {
       entry: entriesProvided,
@@ -89,10 +97,4 @@ function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolve
 
   assertUsage(typeof configVike.server === 'string', 'server should be a string')
   return { entry: { index: configVike.server }, reload: 'fast' }
-}
-
-export const getEntryName = (input: string) => {
-  const m = /([^\\\/]+)$/.exec(input)
-  assertUsage(m?.[1], 'server.workers should be an array of relative paths')
-  return m[1].split('.')[0]!
 }

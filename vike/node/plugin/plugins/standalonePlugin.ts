@@ -12,7 +12,7 @@ function standalonePlugin(): Plugin {
   let root = ''
   let outDir = ''
   let outDirAbs = ''
-  let rollupEntryFilePaths: string[]
+  let rollupEntryFilePaths: Set<string>
 
   // Native dependencies always need to be esbuild external
   let native: string[] = []
@@ -71,7 +71,7 @@ function standalonePlugin(): Plugin {
       const entries = findRollupBundleEntries(bundle)
       const serverIndex = entries.find((e) => e.name === 'index')
       assert(serverIndex)
-      rollupEntryFilePaths = entries.map((e) => path.posix.join(outDirAbs, e.fileName))
+      rollupEntryFilePaths = new Set(entries.map((e) => path.posix.join(outDirAbs, e.fileName)))
     },
     // closeBundle() + `enforce: 'post'` in order to start the final build step as late as possible
     enforce: 'post',
@@ -82,14 +82,6 @@ function standalonePlugin(): Plugin {
       const relativeOutDir = path.posix.join(relativeRoot, outDir)
 
       for (const entryFilePath of rollupEntryFilePaths) {
-        try {
-          await fs.stat(entryFilePath)
-        } catch {
-          // the entry was and input of the previous entry,
-          // it was bundled and then deleted in the previous iteration
-          continue
-        }
-
         const res = await esbuild.build({
           platform: 'node',
           format: 'esm',
@@ -141,7 +133,10 @@ function standalonePlugin(): Plugin {
           (relativeFile) => !entryFilePath.endsWith(relativeFile) && relativeFile.startsWith(outDir)
         )
         for (const relativeFile of filesToRemove) {
-          await fs.rm(path.posix.join(root, relativeFile))
+          const filePathAbsolute = path.posix.join(root, relativeFile)
+          // if filePathAbsolute is an entry, it is alredy included in the current bundle
+          rollupEntryFilePaths.delete(filePathAbsolute)
+          await fs.rm(filePathAbsolute)
         }
 
         // Remove leftover empty dirs

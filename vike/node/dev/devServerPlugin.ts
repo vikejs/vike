@@ -19,11 +19,12 @@ function devServerPlugin(): Plugin {
   let configureServerWasCalled = false
 
   async function loadEntry() {
-    const { entry } = getServerConfig()!
-    const defaultEntry = entry['index']
-    assert(defaultEntry)
+    const serverConfig = getServerConfig()
+    assert(serverConfig)
+    const entry = serverConfig.entry.index
+    assert(entry)
     logViteAny('Loading server entry', 'info', null, true)
-    const resolved = await viteServer.pluginContainer.resolveId(defaultEntry, undefined, {
+    const resolved = await viteServer.pluginContainer.resolveId(entry, undefined, {
       ssr: true
     })
     if (!resolved) {
@@ -118,7 +119,9 @@ function devServerPlugin(): Plugin {
   }
 
   const onRestart = async () => {
-    const { reload } = getServerConfig()!
+    const serverConfig = getServerConfig()
+    assert(serverConfig)
+    const { reload } = serverConfig
     if (reload === 'fast') {
       await onFastRestart()
     } else {
