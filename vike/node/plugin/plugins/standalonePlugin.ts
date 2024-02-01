@@ -7,8 +7,10 @@ import { Plugin, searchForWorkspaceRoot } from 'vite'
 import { pLimit } from '../../../utils/pLimit.js'
 import { assert, assertUsage, toPosixPath, unique } from '../utils.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
+import { ServerResolved } from '../../../shared/ConfigVike.js'
 
-function standalonePlugin(): Plugin {
+function standalonePlugin(serverConfig: ServerResolved): Plugin {
+  assert(serverConfig?.entry)
   let root = ''
   let outDir = ''
   let outDirAbs = ''
@@ -68,7 +70,7 @@ function standalonePlugin(): Plugin {
       rollupResolve = this.resolve.bind(this)
     },
     writeBundle(_, bundle) {
-      const entries = findRollupBundleEntries(bundle)
+      const entries = findRollupBundleEntries(bundle, serverConfig, root)
       const serverIndex = entries.find((e) => e.name === 'index')
       assert(serverIndex)
       rollupEntryFilePaths = new Set(entries.map((e) => path.posix.join(outDirAbs, e.fileName)))
@@ -77,6 +79,7 @@ function standalonePlugin(): Plugin {
     enforce: 'post',
     async closeBundle() {
       const bundledEntryPaths: string[] = []
+      const filesToRemoveAfterBundle = new Set<string>()
       const base = toPosixPath(searchForWorkspaceRoot(root))
       const relativeRoot = path.posix.relative(base, root)
       const relativeOutDir = path.posix.join(relativeRoot, outDir)
@@ -128,30 +131,32 @@ function standalonePlugin(): Plugin {
           ]
         })
 
-        // The inputs of the bundled files are safe to remove
-        const filesToRemove = Object.keys(res.metafile.inputs).filter(
+        // The inputs of the bundled files are safe to remove from the outDir folder
+        const bundledFilesFromOutDir = Object.keys(res.metafile.inputs).filter(
           (relativeFile) => !entryFilePath.endsWith(relativeFile) && relativeFile.startsWith(outDir)
         )
-        for (const relativeFile of filesToRemove) {
-          const filePathAbsolute = path.posix.join(root, relativeFile)
-          // if filePathAbsolute is an entry, it is alredy included in the current bundle
-          rollupEntryFilePaths.delete(filePathAbsolute)
-          await fs.rm(filePathAbsolute)
-        }
 
-        // Remove leftover empty dirs
-        const relativeDirs = unique(filesToRemove.map((file) => path.dirname(file)))
-        for (const relativeDir of relativeDirs) {
-          const absDir = path.posix.join(root, relativeDir)
-          const files = await fs.readdir(absDir)
-          if (!files.length) {
-            await fs.rm(absDir, { recursive: true })
-          }
+        for (const relativeFile of bundledFilesFromOutDir) {
+          filesToRemoveAfterBundle.add(relativeFile)
         }
 
         bundledEntryPaths.push(entryFilePath)
       }
+      const filesToRemoveAfterBundleArr = Array.from(filesToRemoveAfterBundle)
 
+      for (const relativeFile of filesToRemoveAfterBundleArr) {
+        await fs.rm(path.posix.join(root, relativeFile))
+      }
+
+      // Remove leftover empty dirs
+      const relativeDirs = unique(filesToRemoveAfterBundleArr.map((file) => path.dirname(file)))
+      for (const relativeDir of relativeDirs) {
+        const absDir = path.posix.join(root, relativeDir)
+        const files = await fs.readdir(absDir)
+        if (!files.length) {
+          await fs.rm(absDir, { recursive: true })
+        }
+      }
       for (const entryFilePath of bundledEntryPaths) {
         const { nodeFileTrace } = await import('@vercel/nft')
         const result = await nodeFileTrace([entryFilePath], {
@@ -244,14 +249,22 @@ function isYarnPnP(): boolean {
 }
 
 function findRollupBundleEntries<OutputBundle extends Record<string, { name: string | undefined }>>(
-  bundle: OutputBundle
+  bundle: OutputBundle,
+  serverConfig: ServerResolved,
+  root: string
 ): OutputBundle[string][] {
+  assert(serverConfig?.entry)
+
+  const entryPathsFromConfig = Object.values(serverConfig.entry).map((entryPath) => path.join(root, entryPath))
   const entries: OutputBundle[string][] = []
+
   for (const key in bundle) {
+    const entry = bundle[key]!
     // https://github.com/brillout/vite-plugin-ssr/issues/612
     if (key.endsWith('.map') || key.endsWith('.json')) continue
-    const entry = bundle[key]!
-    if ('isEntry' in entry && entry.isEntry) {
+    assert('facadeModuleId' in entry)
+    assert(entry.facadeModuleId === null || typeof entry.facadeModuleId === 'string')
+    if (entry.facadeModuleId && entryPathsFromConfig.includes(entry.facadeModuleId)) {
       entries.push(entry)
     }
   }
