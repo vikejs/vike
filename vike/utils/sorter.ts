@@ -4,6 +4,7 @@ export { higherFirst }
 export { lowerFirst }
 export { makeFirst }
 export { makeLast }
+export { reverse }
 
 // -1 => element1 first (i.e. `indexOf(element1) < indexOf(element2)`)
 // +1 => element2 first (i.e. `indexOf(element2) < indexOf(element1)`)
@@ -115,4 +116,9 @@ function makeLast<T>(getValue: (element: T) => boolean | null) {
       return !val
     }
   })
+}
+
+/** Reverse order result. */
+function reverse(sortKey: 0 | 1 | -1): 0 | 1 | -1 {
+  return (-1 * sortKey) as any
 }

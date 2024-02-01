@@ -24,7 +24,8 @@ import {
   objectKeys,
   objectFromEntries,
   makeFirst,
-  isNpmPackageImport
+  isNpmPackageImport,
+  reverse
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -405,6 +406,7 @@ async function loadVikeConfig(
             })
         )
         configValueSources = sortConfigValueSources(configValueSources, locationId)
+        console.log(JSON.stringify(configValueSources, null, 2))
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
@@ -1320,7 +1322,7 @@ function sortConfigValueSources(
       )
       // Sort after the filesystem inheritance of the config value
       .sort(([, [source1]], [, [source2]]) =>
-        sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage)
+        reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
       )
   )
 }
