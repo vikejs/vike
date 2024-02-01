@@ -43,7 +43,7 @@ type LocationId = string & { __brand: 'LocationId' }
 function getLocationId(filePathRelativeToUserRootDir: string): LocationId {
   assertPosixPath(filePathRelativeToUserRootDir)
   assert(filePathRelativeToUserRootDir.startsWith('/') && !isNpmPackageImport(filePathRelativeToUserRootDir))
-  const locationId = removeFilename(filePathRelativeToUserRootDir, true)
+  const locationId = removeFilename(filePathRelativeToUserRootDir)
   assertLocationId(locationId)
   return locationId as LocationId
 }
@@ -151,15 +151,13 @@ function removeDirectories(somePath: string, removeDirs: string[]): string {
   return somePath
 }
 
-function removeFilename(filePathRelativeToUserRootDir: string, optional?: true) {
+function removeFilename(filePathRelativeToUserRootDir: string) {
+  const filePathParts = filePathRelativeToUserRootDir.split('/')
   {
-    const filename = filePathRelativeToUserRootDir.split('/').slice(-1)[0]!
-    if (!filename.includes('.')) {
-      assert(optional)
-      return filePathRelativeToUserRootDir
-    }
+    const filename = filePathParts.slice(-1)[0]!
+    assert(filename.includes('.'))
   }
-  let locationId = filePathRelativeToUserRootDir.split('/').slice(0, -1).join('/')
+  let locationId = filePathParts.slice(0, -1).join('/')
   if (locationId === '') locationId = '/'
   assertLocationId(locationId)
   return locationId
