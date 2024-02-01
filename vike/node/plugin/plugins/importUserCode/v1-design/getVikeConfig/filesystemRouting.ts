@@ -13,9 +13,11 @@ export { getLogicalPath }
 import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils.js'
 
 /**
- * The `locationId` of a config value is used for filesystem inheritance.
+ * The `locationId` value is used for filesystem inheritance.
  *
- * `locationId` is different than the config value's `definedAt` for Vike Extensions, for example the `onRenderHtml()` hook of `vike-react`:
+ * Each config value is assigned with a `locationId` value. That's the source-of-truth for determining inheritance between config values.
+ *
+ * For Vike extensions, `locationId` is different than the config value's `definedAt`, for example the `onRenderHtml()` hook of `vike-react`:
  *  - `locationId === '/pages'` (the directory of `/pages/+config.h.js` which extends `vike-react`)
  *  - `definedAt.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
  *
@@ -36,11 +38,15 @@ import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, h
 type LocationId = string & { __brand: 'LocationId' }
 
 /**
- * getLocationId('/pages/some-page/+Page.js') => '/pages/some-page'
- * getLocationId('/pages/some-page') => '/pages/some-page'
- * getLocationId('/renderer/+config.js') => '/renderer'
+ * `getLocationId('/pages/some-page/+Page.js')` => `'/pages/some-page'`
+ * `getLocationId('/renderer/+config.js')` => `'/renderer'`
+ *
+ * The value `locationId` is always a user-land path, because Filesystem Routing/Inheritence only applies to the user-land (Vike never uses Filesystem Routing/Inheritence for `node_modules/**`).
  */
-function getLocationId(filePathRelativeToUserRootDir: string): LocationId {
+function getLocationId(
+  // We always determine `locationId` from a real user-land file: the `locationId` for Vike extensions is the `locationId` of the the user's `+config.h.js` that extends the Vike extension.
+  filePathRelativeToUserRootDir: string
+): LocationId {
   assertPosixPath(filePathRelativeToUserRootDir)
   assert(filePathRelativeToUserRootDir.startsWith('/') && !isNpmPackageImport(filePathRelativeToUserRootDir))
   const locationId = removeFilename(filePathRelativeToUserRootDir)
@@ -183,7 +189,7 @@ function applyFilesystemRoutingRootEffect(
 }
 
 function assertLocationId(locationId: string) {
-  assert(locationId.startsWith('/') || isNpmPackageImport(locationId))
+  assert(locationId.startsWith('/'))
   assert(!locationId.endsWith('/') || locationId === '/')
 }
 function assertIsPath(logicalPath: string) {
