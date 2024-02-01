@@ -76,11 +76,17 @@ function standalonePlugin(): Plugin {
     // closeBundle() + `enforce: 'post'` in order to start the final build step as late as possible
     enforce: 'post',
     async closeBundle() {
+      const bundledEntryPaths: string[] = []
+      const base = toPosixPath(searchForWorkspaceRoot(root))
+      const relativeRoot = path.posix.relative(base, root)
+      const relativeOutDir = path.posix.join(relativeRoot, outDir)
+
       for (const entryFilePath of rollupEntryFilePaths) {
         try {
           await fs.stat(entryFilePath)
         } catch {
-          // the entry was bundled in the previous iteration
+          // the entry was and input of the previous entry,
+          // it was bundled and then deleted in the previous iteration
           continue
         }
 
@@ -148,10 +154,10 @@ function standalonePlugin(): Plugin {
           }
         }
 
-        const base = toPosixPath(searchForWorkspaceRoot(root))
-        const relativeRoot = path.posix.relative(base, root)
-        const relativeOutDir = path.posix.join(relativeRoot, outDir)
+        bundledEntryPaths.push(entryFilePath)
+      }
 
+      for (const entryFilePath of bundledEntryPaths) {
         const { nodeFileTrace } = await import('@vercel/nft')
         const result = await nodeFileTrace([entryFilePath], {
           base
@@ -202,6 +208,7 @@ function standalonePlugin(): Plugin {
     }
   }
 }
+
 function findCommonAncestor(paths: string[]) {
   // There is no common anchestor of 0 or 1 path
   if (paths.length <= 1) {
