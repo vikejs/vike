@@ -23,8 +23,8 @@ import {
   assertKeys,
   objectKeys,
   objectFromEntries,
-  higherFirst,
-  makeFirst
+  makeFirst,
+  isNpmPackageImport
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -404,7 +404,7 @@ async function loadVikeConfig(
               configValueSources[configName] = sources
             })
         )
-        configValueSources = sortConfigValueSources(configValueSources)
+        configValueSources = sortConfigValueSources(configValueSources, locationId)
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
@@ -1301,11 +1301,23 @@ function assertConfigExists(configName: string, configNamesRelevant: string[], f
   assert(false)
 }
 
-function sortConfigValueSources(configValueSources: ConfigValueSources): ConfigValueSources {
-  const isNpmPackage = (f: string) => !f.startsWith('/')
+function sortConfigValueSources(
+  configValueSources: ConfigValueSources,
+  locationIdPage: LocationId
+): ConfigValueSources {
   return Object.fromEntries(
     Object.entries(configValueSources)
-      .sort(higherFirst(([, [source]]) => source!.definedAt.filePathAbsoluteVite.split('/').length))
-      .sort(makeFirst(([, [source]]) => isNpmPackage(source!.definedAt.filePathAbsoluteVite)))
+      // Sort after whether the config value was defined by an npm package
+      .sort(
+        makeFirst(([, [source]]) => {
+          assert(source)
+          const { importPathAbsolute } = source.definedAt
+          return !!importPathAbsolute && isNpmPackageImport(importPathAbsolute)
+        })
+      )
+      // Sort after the filesystem inheritence of the config value
+      .sort(([, [source1]], [, [source2]]) =>
+        sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage)
+      )
   )
 }
