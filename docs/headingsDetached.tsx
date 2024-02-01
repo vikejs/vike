@@ -433,5 +433,9 @@ const headingsDetached = [
   {
     title: 'React Tour',
     url: '/react-tour'
+  },
+  {
+    title: '`onCreateApp()`',
+    url: '/onCreateApp'
   }
 ] satisfies HeadingDetachedDefinition[]
