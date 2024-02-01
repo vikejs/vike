@@ -39,8 +39,9 @@ import type {
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
-  type ConfigDefinitionInternal,
   configDefinitionsBuiltInGlobal,
+  type ConfigDefinitions,
+  type ConfigDefinitionInternal,
   type ConfigNameGlobal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVike.js'
@@ -107,8 +108,6 @@ type VikeConfig = {
   pageConfigGlobal: PageConfigGlobalBuildTime
   globalVikeConfig: Record<string, unknown>
 }
-
-type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinitionInternal>
 
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
@@ -237,35 +236,6 @@ async function loadInterfaceFiles(
 
   return interfaceFilesByLocationId
 }
-function getConfigDefinition(
-  configDefinitionsRelevant: Record<string, ConfigDefinitionInternal>,
-  configName: string,
-  filePathToShowToUser: string
-): ConfigDefinitionInternal {
-  const configDef = configDefinitionsRelevant[configName]
-  assertConfigExists(configName, Object.keys(configDefinitionsRelevant), filePathToShowToUser)
-  assert(configDef)
-  return configDef
-}
-function getConfigDefinitionOptional(
-  configDefinitions: Record<string, ConfigDefinitionInternal>,
-  configName: string
-): null | ConfigDefinitionInternal {
-  return configDefinitions[configName] ?? null
-}
-function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string): boolean {
-  const configEnv = configDef.env
-  if (configDef.cumulative) {
-    // In principle we could lift that requirement (but it requires non-trivial modifications)
-    assertUsage(
-      configEnv.config,
-      `Config ${pc.cyan(configName)} needs its ${pc.cyan('env')} to have ${pc.cyan(
-        '{ config: true }'
-      )} (because ${pc.cyan(configName)} is a ${pc.cyan('cumulative')} config)`
-    )
-  }
-  return !!configEnv.config
-}
 function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
   const interfaceFile: InterfaceConfigFile = {
@@ -286,14 +256,10 @@ function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: 
 function assertAllConfigsAreKnown(interfaceFilesByLocationId: InterfaceFilesByLocationId) {
   Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
     const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
-    const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
+    const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
     interfaceFiles.forEach((interfaceFile) => {
       Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
-        assertConfigExists(
-          configName,
-          Object.keys(configDefinitionsRelevant),
-          interfaceFile.filePath.filePathToShowToUser
-        )
+        assertConfigExists(configName, Object.keys(configDefinitions), interfaceFile.filePath.filePathToShowToUser)
       })
     })
   })
@@ -365,7 +331,7 @@ async function loadVikeConfig(
       .map(async ([locationId]) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
 
-        const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
+        const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
         // Load value files of custom config-only configs
         await Promise.all(
@@ -374,7 +340,7 @@ async function loadVikeConfig(
             const { configName } = interfaceFile
             if (isGlobalConfig(configName)) return
             const configDef = getConfigDefinition(
-              configDefinitionsRelevant,
+              configDefinitions,
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
@@ -389,7 +355,7 @@ async function loadVikeConfig(
 
         const configValueSources: ConfigValueSources = {}
         await Promise.all(
-          objectEntries(configDefinitionsRelevant)
+          objectEntries(configDefinitions)
             .filter(([configName]) => !isGlobalConfig(configName))
             .map(async ([configName, configDef]) => {
               const sources = await resolveConfigValueSources(
@@ -406,9 +372,9 @@ async function loadVikeConfig(
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
-        applyEffectsAll(configValueSources, configDefinitionsRelevant)
-        const configValuesComputed = getComputed(configValueSources, configDefinitionsRelevant)
-        const configValues = getConfigValues(configValueSources, configValuesComputed, configDefinitionsRelevant)
+        applyEffectsAll(configValueSources, configDefinitions)
+        const configValuesComputed = getComputed(configValueSources, configDefinitions)
+        const configValues = getConfigValues(configValueSources, configValuesComputed, configDefinitions)
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
@@ -802,8 +768,8 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
-function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
-  const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
+function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitions {
+  const configDefinitionsMerged: ConfigDefinitions = { ...configDefinitionsBuiltIn }
   Object.entries(interfaceFilesRelevant)
     .reverse()
     .forEach(([_locationId, interfaceFiles]) => {
@@ -825,20 +791,22 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
 
         objectEntries(meta).forEach(([configName, configDefinition]) => {
           // User can override an existing config definition
-          configDefinitions[configName] = {
-            ...configDefinitions[configName],
+          configDefinitionsMerged[configName] = {
+            ...configDefinitionsMerged[configName],
             ...configDefinition
           }
         })
       })
     })
+
+  const configDefinitions = configDefinitionsMerged
   return configDefinitions
 }
 
 function assertMetaValue(
   metaVal: unknown,
   configMetaDefinedAt: `Config meta${string}` | null
-): asserts metaVal is Record<string, ConfigDefinitionInternal> {
+): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
     assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
     assertUsage(
@@ -896,11 +864,8 @@ function assertMetaValue(
   })
 }
 
-function applyEffectsAll(
-  configValueSources: ConfigValueSources,
-  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
-) {
-  objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
+function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+  objectEntries(configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
     // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
@@ -964,12 +929,9 @@ function applyEffect(
   })
 }
 
-function getComputed(
-  configValueSources: ConfigValueSources,
-  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
-) {
+function getComputed(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
   const configValuesComputed: ConfigValuesComputed = {}
-  objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
+  objectEntries(configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
     const value = configDef._computed(configValueSources)
     if (value === undefined) return
@@ -1044,21 +1006,6 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
-  if (configName === 'prerender') return false
-  const configNamesGlobal = getConfigNamesGlobal()
-  return arrayIncludes(configNamesGlobal, configName)
-}
-function getConfigNamesGlobal() {
-  return Object.keys(configDefinitionsBuiltInGlobal)
-}
-
-function assertConfigExists(configName: string, configNamesRelevant: string[], filePathToShowToUser: string) {
-  const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]
-  if (configNames.includes(configName)) return
-  handleUnknownConfig(configName, configNames, filePathToShowToUser)
-  assert(false)
-}
 function handleUnknownConfig(configName: string, configNames: string[], filePathToShowToUser: string) {
   let errMsg = `${filePathToShowToUser} defines an unknown config ${pc.cyan(configName)}`
   let configNameSimilar: string | null = null
@@ -1142,7 +1089,7 @@ function isVikeConfigFile(filePath: string): boolean {
 function getConfigValues(
   configValueSources: ConfigValueSources,
   configValuesComputed: ConfigValuesComputed,
-  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
+  configDefinitions: ConfigDefinitions
 ): ConfigValues {
   const configValues: ConfigValues = {}
   Object.entries(configValuesComputed).forEach(([configName, configValueComputed]) => {
@@ -1152,7 +1099,7 @@ function getConfigValues(
     }
   })
   Object.entries(configValueSources).forEach(([configName, sources]) => {
-    const configDef = configDefinitionsRelevant[configName]
+    const configDef = configDefinitions[configName]
     assert(configDef)
     if (!configDef.cumulative) {
       const configValueSource = sources[0]!
@@ -1274,4 +1221,41 @@ function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnv
   */
 
   return val
+}
+
+function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: string, filePathToShowToUser: string) {
+  const configDef = configDefinitions[configName]
+  assertConfigExists(configName, Object.keys(configDefinitions), filePathToShowToUser)
+  assert(configDef)
+  return configDef
+}
+function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
+  return configDefinitions[configName] ?? null
+}
+function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string): boolean {
+  const configEnv = configDef.env
+  if (configDef.cumulative) {
+    // In principle we could lift that requirement (but it requires non-trivial modifications)
+    assertUsage(
+      configEnv.config,
+      `Config ${pc.cyan(configName)} needs its ${pc.cyan('env')} to have ${pc.cyan(
+        '{ config: true }'
+      )} (because ${pc.cyan(configName)} is a ${pc.cyan('cumulative')} config)`
+    )
+  }
+  return !!configEnv.config
+}
+function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
+  if (configName === 'prerender') return false
+  const configNamesGlobal = getConfigNamesGlobal()
+  return arrayIncludes(configNamesGlobal, configName)
+}
+function getConfigNamesGlobal() {
+  return Object.keys(configDefinitionsBuiltInGlobal)
+}
+function assertConfigExists(configName: string, configNamesRelevant: string[], filePathToShowToUser: string) {
+  const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]
+  if (configNames.includes(configName)) return
+  handleUnknownConfig(configName, configNames, filePathToShowToUser)
+  assert(false)
 }

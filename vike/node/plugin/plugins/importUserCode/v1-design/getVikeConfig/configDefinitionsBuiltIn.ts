@@ -1,6 +1,7 @@
 export { configDefinitionsBuiltIn }
 export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
+export type { ConfigDefinitions }
 export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
 export type { ConfigEffect }
@@ -67,6 +68,7 @@ type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   env: ConfigEnvInternal
 }
 
+type ConfigDefinitions = Record<string, ConfigDefinitionInternal>
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
