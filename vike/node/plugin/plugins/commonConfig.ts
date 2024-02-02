@@ -43,8 +43,10 @@ function commonConfig(): Plugin[] {
       enforce: 'post',
       async configResolved(config) {
         const configVike = await getConfigVike(config)
-        config.ssr.external ??= []
-        config.ssr.external.push(...configVike.native)
+        if (typeof config.ssr.external !== 'boolean') {
+          config.ssr.external ??= []
+          config.ssr.external.push(...configVike.native)
+        }
         config.optimizeDeps.exclude ??= []
         config.optimizeDeps.exclude.push(...configVike.native)
       }
