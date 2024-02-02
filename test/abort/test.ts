@@ -121,11 +121,11 @@ function testRun(cmd: string, pageContextInitIsPassedToClient = false) {
     await page.goto(getServerUrl() + '/')
     await hydrationDone()
     await page.click('a[href="/redirect-external"]')
-    await page.waitForURL('https://vite-plugin-ssr.com')
+    await page.waitForURL('https://brillout.github.io/star-wars/')
   })
   test('external redirect - server-side', async () => {
     await page.goto(getServerUrl() + '/redirect-external')
-    await page.waitForURL('https://vite-plugin-ssr.com')
+    await page.waitForURL('https://brillout.github.io/star-wars/')
   })
 
   test('permanent external redirect', async () => {
@@ -136,7 +136,7 @@ function testRun(cmd: string, pageContextInitIsPassedToClient = false) {
     // client-side
     await page.goto(getServerUrl() + '/')
     await hydrationDone()
-    await page.click('a[href="/external/redirect"]')
-    await page.waitForURL('https://vite-plugin-ssr.com/redirect')
+    await page.click('a[href="/external/api/films/1.json"]')
+    await page.waitForURL('https://brillout.github.io/star-wars/api/films/1.json')
   })
 }

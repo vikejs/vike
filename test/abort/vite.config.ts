@@ -8,7 +8,7 @@ export default {
     vike({
       redirects: {
         '/permanent-redirect': '/',
-        '/external/*': 'https://vite-plugin-ssr.com/*'
+        '/external/*': 'https://brillout.github.io/star-wars/*'
       }
     })
   ]
