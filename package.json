@@ -38,7 +38,7 @@
     "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
-    "@brillout/test-e2e": "^0.5.25",
+    "@brillout/test-e2e": "^0.5.26",
     "@brillout/test-types": "^0.1.10",
     "prettier": "^3.1.0",
     "vitest": "^1.1.3"
