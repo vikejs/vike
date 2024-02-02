@@ -8,7 +8,7 @@ export default {
     vike({
       redirects: {
         '/permanent-redirect': '/',
-        '/external/*': 'https://brillout.github.io/star-wars/*'
+        '/star-wars-api/*': 'https://brillout.github.io/star-wars/api/*'
       }
     })
   ]

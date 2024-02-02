@@ -18,7 +18,7 @@ function PageLayout({ children, pageContext }: { children: React.ReactNode; page
             <Nav href="/show-error-page" />
             <Nav href="/permanent-redirect" />
             <Nav href="/redirect-external" />
-            <Nav href="/external/redirect" />
+            <Nav href="/star-wars-api/films/1.json" />
           </Sidebar>
           <Content>{children}</Content>
         </Layout>
