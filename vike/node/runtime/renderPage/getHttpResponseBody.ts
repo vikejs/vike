@@ -34,6 +34,7 @@ type HttpResponseBody = {
   body: string
   getBody: () => Promise<string>
   getReadableWebStream: () => StreamReadableWeb
+  getReadableNodeStream: () => Promise<StreamReadableNode>
   pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
   /** @deprecated */
   getNodeStream: () => Promise<StreamReadableNode>
