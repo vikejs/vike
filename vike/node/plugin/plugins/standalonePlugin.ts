@@ -261,8 +261,7 @@ function findRollupBundleEntries<OutputBundle extends Record<string, { name: str
   for (const key in bundle) {
     const entry = bundle[key]!
     // https://github.com/brillout/vite-plugin-ssr/issues/612
-    if (key.endsWith('.map') || key.endsWith('.json')) continue
-    assert('facadeModuleId' in entry)
+    if (!('facadeModuleId' in entry) || key.endsWith('.map') || key.endsWith('.json')) continue
     assert(entry.facadeModuleId === null || typeof entry.facadeModuleId === 'string')
     if (entry.facadeModuleId && entryPathsFromConfig.includes(entry.facadeModuleId)) {
       entries.push(entry)
