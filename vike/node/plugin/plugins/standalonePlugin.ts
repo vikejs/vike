@@ -30,10 +30,6 @@ function standalonePlugin(serverConfig: ServerResolved): Plugin {
     'class-transformer'
   ]
 
-  // react-streaming -> @brillout/import -> import("react-dom")
-  // would load react-dom from outside of the bundle
-  const esbuildExternals = ['react', 'react-dom']
-
   return {
     name: 'vike:standalone',
     apply(_, env) {
@@ -89,7 +85,7 @@ function standalonePlugin(serverConfig: ServerResolved): Plugin {
           platform: 'node',
           format: 'esm',
           bundle: true,
-          external: [...native, ...esbuildExternals],
+          external: native,
           entryPoints: { index: entryFilePath },
           outfile: entryFilePath,
           allowOverwrite: true,
