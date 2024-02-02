@@ -32,10 +32,10 @@ const streamDocs = 'See https://vike.dev/streaming for more information.'
 
 type HttpResponseBody = {
   body: string
-  getBody: () => Promise<string>
+  pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
   getReadableWebStream: () => StreamReadableWeb
   getReadableNodeStream: () => Promise<StreamReadableNode>
-  pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
+  getBody: () => Promise<string>
   /** @deprecated */
   getNodeStream: () => Promise<StreamReadableNode>
   /** @deprecated */
@@ -59,6 +59,50 @@ function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHo
 
 function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: null | RenderHook) {
   return {
+    pipe(writable: StreamWritableNode | StreamWritableWeb) {
+      const getErrMsgMixingStreamTypes = (writableType: 'Web Writable' | 'Node.js Writable') =>
+        `The ${getErrMsgBody(htmlRender, renderHook)} while a ${
+          writableType as string
+        } was passed to pageContext.httpResponse.pipe() which is contradictory. You cannot mix a Web Stream with a Node.js Stream.` as const
+      if (isStreamWritableWeb(writable)) {
+        const success = pipeToStreamWritableWeb(htmlRender, writable)
+        if (success) {
+          return
+        } else {
+          assert(isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender))
+          assertUsage(false, getErrMsgMixingStreamTypes('Web Writable'))
+        }
+      }
+      if (isStreamWritableNode(writable)) {
+        const success = pipeToStreamWritableNode(htmlRender, writable)
+        if (success) {
+          return
+        } else {
+          assert(isStreamReadableWeb(htmlRender) || isStreamPipeWeb(htmlRender))
+          assertUsage(false, getErrMsgMixingStreamTypes('Node.js Writable'))
+        }
+      }
+      assertUsage(
+        false,
+        `The argument ${pc.cyan('writable')} passed to ${pc.cyan(
+          'pageContext.httpResponse.pipe(writable)'
+        )} doesn't seem to be ${getStreamName('writable', 'web')} nor ${getStreamName('writable', 'node')}.`
+      )
+    },
+    getReadableWebStream() {
+      const webStream = getStreamReadableWeb(htmlRender)
+      if (webStream === null) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableWebStream()', getFixMsg('readable', 'web')))
+      }
+      return webStream
+    },
+    async getReadableNodeStream() {
+      const nodeStream = await getStreamReadableNode(htmlRender)
+      if (nodeStream === null) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableNodeStream()', getFixMsg('readable', 'node')))
+      }
+      return nodeStream
+    },
     async getBody(): Promise<string> {
       const body = await getHtmlString(htmlRender)
       return body
@@ -91,20 +135,6 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       }
       return webStream
     },
-    async getReadableNodeStream() {
-      const nodeStream = await getStreamReadableNode(htmlRender)
-      if (nodeStream === null) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableNodeStream()', getFixMsg('readable', 'node')))
-      }
-      return nodeStream
-    },
-    getReadableWebStream() {
-      const webStream = getStreamReadableWeb(htmlRender)
-      if (webStream === null) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableWebStream()', getFixMsg('readable', 'web')))
-      }
-      return webStream
-    },
     // TODO/v1-release: remove
     pipeToWebWritable(writable: StreamWritableWeb) {
       assertWarning(
@@ -130,36 +160,6 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
       if (!success) {
         assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToNodeWritable()'))
       }
-    },
-    pipe(writable: StreamWritableNode | StreamWritableWeb) {
-      const getErrMsgMixingStreamTypes = (writableType: 'Web Writable' | 'Node.js Writable') =>
-        `The ${getErrMsgBody(htmlRender, renderHook)} while a ${
-          writableType as string
-        } was passed to pageContext.httpResponse.pipe() which is contradictory. You cannot mix a Web Stream with a Node.js Stream.` as const
-      if (isStreamWritableWeb(writable)) {
-        const success = pipeToStreamWritableWeb(htmlRender, writable)
-        if (success) {
-          return
-        } else {
-          assert(isStreamReadableNode(htmlRender) || isStreamPipeNode(htmlRender))
-          assertUsage(false, getErrMsgMixingStreamTypes('Web Writable'))
-        }
-      }
-      if (isStreamWritableNode(writable)) {
-        const success = pipeToStreamWritableNode(htmlRender, writable)
-        if (success) {
-          return
-        } else {
-          assert(isStreamReadableWeb(htmlRender) || isStreamPipeWeb(htmlRender))
-          assertUsage(false, getErrMsgMixingStreamTypes('Node.js Writable'))
-        }
-      }
-      assertUsage(
-        false,
-        `The argument ${pc.cyan('writable')} passed to ${pc.cyan(
-          'pageContext.httpResponse.pipe(writable)'
-        )} doesn't seem to be ${getStreamName('writable', 'web')} nor ${getStreamName('writable', 'node')}.`
-      )
     }
   }
 
