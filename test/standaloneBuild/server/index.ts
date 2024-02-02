@@ -9,8 +9,19 @@ import { fileURLToPath } from 'url'
 import { two } from './shared-chunk.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+// Caught before / after server start
+// foo;
 
 startServer()
+
+// setTimeout(() => {
+//   throw new Error("I'm caught")
+// }, 2000)
+// setTimeout(() => {
+//   ;(async () => {
+//     throw new Error("I'm caught as well")
+//   })()
+// }, 2000)
 
 async function startServer() {
   console.log('index.ts>shared-chunk', two())

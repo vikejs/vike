@@ -1860,7 +1860,7 @@ importers:
         version: 18.2.17
       '@vitejs/plugin-react':
         specifier: ^4.1.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@4.5.1)
       express:
         specifier: ^4.18.2
         version: 4.18.2
@@ -1886,8 +1886,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^4.5.0
+        version: 4.5.1(@types/node@15.14.9)
 
   test/stream:
     dependencies:
@@ -4838,6 +4838,22 @@ packages:
       magic-string: 0.27.0
       react-refresh: 0.14.0
       vite: 4.0.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@vitejs/plugin-react@4.2.1(vite@4.5.1):
+    resolution: {integrity: sha512-oojO9IDc4nCUUi8qIR11KoQm0XFFLIwsRBwHRR4d/88IWghn1y6ckz/bJ8GHDCsYEJee8mDzqtJxh15/cisJNQ==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      vite: ^4.2.0 || ^5.0.0
+    dependencies:
+      '@babel/core': 7.23.5
+      '@babel/plugin-transform-react-jsx-self': 7.23.3(@babel/core@7.23.5)
+      '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.14.0
+      vite: 4.5.1(@types/node@15.14.9)
     transitivePeerDependencies:
       - supports-color
     dev: false
