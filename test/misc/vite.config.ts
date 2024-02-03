@@ -6,15 +6,5 @@ export default {
     outDir: `${__dirname}/../../test/misc/dist/nested`,
     assetsDir: '/nested-dir/assets'
   },
-  plugins: [
-    react(),
-    vike({
-      prerender: {
-        noExtraDir: true
-      },
-      redirects: {
-        '/mail': 'mailto:some@example.com'
-      }
-    })
-  ]
+  plugins: [react(), vike()]
 }

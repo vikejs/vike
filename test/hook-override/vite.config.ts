@@ -3,12 +3,5 @@ import vike from 'vike/plugin'
 import type { UserConfig } from 'vite'
 
 export default {
-  plugins: [
-    react(),
-    vike({
-      redirects: {
-        '/permanent-redirect': '/'
-      }
-    })
-  ]
+  plugins: [react(), vike()]
 } satisfies UserConfig

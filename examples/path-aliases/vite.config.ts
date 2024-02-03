@@ -10,9 +10,8 @@ const config: UserConfig = {
   },
   plugins: [
     react(),
-    vike({
-      prerender: true
-    })
+    vike(
+    )
   ],
   optimizeDeps: {
     include: ['react-dom/client']

@@ -423,7 +423,7 @@ type ConfigBuiltIn = {
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
 
-type ConfigGlobal = Omit<Config, 'onPrerenderStart' | 'onBeforeRoute'> & {
+type ConfigGlobal = Omit<Config, 'onPrerenderStart' | 'onBeforeRoute' | 'prerender'> & {
   /**
    * Enable pre-rendering.
    *
