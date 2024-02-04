@@ -14,7 +14,6 @@ start()
 async function start() {
   let httpServers: http.Server[] = []
   let sockets: net.Socket[] = []
-  let entryDeps = new Set()
 
   const vite = await createServer({
     server: {
@@ -24,7 +23,10 @@ async function start() {
       {
         name: 'vike:devserver',
         async handleHotUpdate(ctx) {
-          if (ctx.modules.some((m) => entryDeps.has(m.id))) {
+          const mods = ctx.modules.map((m) => m.id).filter(Boolean) as string[]
+
+          if (mods.length) {
+            runtime.moduleCache.invalidateDepTree(mods)
             await onRestart()
           }
         },
@@ -42,7 +44,6 @@ async function start() {
     entry: { index }
   } = serverConfig
 
-  patchHttp()
   process.on('unhandledRejection', onError)
   process.on('uncaughtException', onError)
   bindCLIShortcuts({
@@ -52,17 +53,12 @@ async function start() {
   const runtime = new ViteRuntime(
     {
       root: vite.config.root,
-      fetchModule: async (id, importer) => {
-        const result = await vite.ssrFetchModule(id, importer)
-        if ('file' in result && result.file) {
-          entryDeps.add(result.file)
-        }
-        return result
-      }
+      fetchModule: vite.ssrFetchModule
     },
     new ESModulesRunner()
   )
 
+  patchHttp()
   loadEntry()
 
   async function onRestart() {
@@ -83,8 +79,6 @@ async function start() {
   }
 
   async function loadEntry() {
-    entryDeps = new Set()
-    runtime.clearCache()
     await runtime.executeUrl(index)
   }
 
