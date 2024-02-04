@@ -35,6 +35,13 @@ async function start() {
     ]
   })
 
+  const serverConfig = getServerConfig()
+  assert(serverConfig)
+  const {
+    reload,
+    entry: { index }
+  } = serverConfig
+
   patchHttp()
   process.on('unhandledRejection', onError)
   process.on('uncaughtException', onError)
@@ -59,9 +66,6 @@ async function start() {
   loadEntry()
 
   async function onRestart() {
-    const serverConfig = getServerConfig()
-    assert(serverConfig)
-    const { reload } = serverConfig
     if (reload === 'fast') {
       await onFastRestart()
     } else {
@@ -80,11 +84,8 @@ async function start() {
 
   async function loadEntry() {
     entryDeps = new Set()
-    const serverConfig = getServerConfig()
-    assert(serverConfig)
-    const entry = serverConfig.entry.index
     runtime.clearCache()
-    await runtime.executeUrl(entry)
+    await runtime.executeUrl(index)
   }
 
   async function closeAllServers() {
