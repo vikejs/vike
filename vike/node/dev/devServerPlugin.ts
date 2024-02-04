@@ -1,66 +1,23 @@
 export { devServerPlugin }
 
-import net from 'net'
+import pc from '@brillout/picocolors'
 import http from 'http'
+import net from 'net'
 import util from 'util'
-
 import type { Plugin, ViteDevServer } from 'vite'
+import { HMRPayload, ServerHMRConnector } from 'vite'
+import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
-import pc from '@brillout/picocolors'
 import { assert } from '../runtime/utils.js'
 import { bindCLIShortcuts } from './shortcuts.js'
 
 function devServerPlugin(): Plugin {
   let viteServer: ViteDevServer
-  let entryDeps: Set<string>
+  let originalSend: (payload: HMRPayload) => void
   let httpServers: http.Server[] = []
   let sockets: net.Socket[] = []
   let configureServerWasCalled = false
-
-  async function loadEntry() {
-    const serverConfig = getServerConfig()
-    assert(serverConfig)
-    const entry = serverConfig.entry.index
-    assert(entry)
-    logViteAny('Loading server entry', 'info', null, true)
-    const resolved = await viteServer.pluginContainer.resolveId(entry, undefined, {
-      ssr: true
-    })
-    if (!resolved) {
-      logViteAny(`Server entry "${entry}" not found`, 'error', null, true)
-      return
-    }
-    await viteServer.ssrLoadModule(resolved.id)
-    entryDeps = new Set<string>([resolved.id])
-    for (const id of entryDeps) {
-      const module = viteServer.moduleGraph.getModuleById(id)
-      if (!module) {
-        continue
-      }
-      if (!module.ssrTransformResult) {
-        module.ssrTransformResult = await viteServer.transformRequest(id, { ssr: true })
-      }
-      for (const newDep of module.ssrTransformResult?.deps || []) {
-        if (!newDep.startsWith('/')) {
-          continue
-        }
-        let newId: string
-        if (newDep.startsWith('/@id/')) {
-          newId = newDep.slice(5)
-        } else {
-          const resolved = await viteServer.pluginContainer.resolveId(newDep, id, {
-            ssr: true
-          })
-          if (!resolved) {
-            continue
-          }
-          newId = resolved.id
-        }
-        entryDeps.add(newId)
-      }
-    }
-  }
 
   const patchHttp = () => {
     const originalCreateServer = http.createServer.bind(http.createServer)
@@ -131,11 +88,28 @@ function devServerPlugin(): Plugin {
 
   const onFastRestart = async () => {
     await closeAllServers()
-    await loadEntry()
   }
 
   const onFullRestart = async () => {
     process.exit(33)
+  }
+
+  class VikeServerHMRConnector extends ServerHMRConnector {
+    override onUpdate(handler: (payload: HMRPayload) => void) {
+      const patchedHandler = async (payload: HMRPayload) => {
+        if (payload.type === 'full-reload') {
+          // close the servers / process.exit(33)
+          await onRestart()
+        }
+
+        // reload the server entry
+        handler(payload)
+
+        // send the websocket message to the client
+        originalSend(payload)
+      }
+      super.onUpdate(patchedHandler)
+    }
   }
 
   return {
@@ -155,6 +129,12 @@ function devServerPlugin(): Plugin {
         onFullRestart()
       }
       viteServer = server
+      const hmrChannel = server.hot.channels.find((c) => c.name === 'ws')
+      assert(hmrChannel)
+      // need to delay the websocket message if the server entry is reloaded
+      // by default Vite would send the websocket message before the server entry is reloaded
+      originalSend = hmrChannel.send.bind(hmrChannel)
+      hmrChannel.send = () => {}
 
       assert(!configureServerWasCalled)
       configureServerWasCalled = true
@@ -164,12 +144,18 @@ function devServerPlugin(): Plugin {
         onRestart: onFullRestart
       })
       patchHttp()
-      loadEntry()
-    },
-    async handleHotUpdate(ctx) {
-      if (!entryDeps || ctx.modules.some((module) => module.id && entryDeps.has(module.id))) {
-        await onRestart()
-      }
+      const runtime = new ViteRuntime(
+        {
+          root: server.config.root,
+          fetchModule: server.ssrFetchModule,
+          hmr: { connection: new VikeServerHMRConnector(server) }
+        },
+        new ESModulesRunner()
+      )
+      const serverConfig = getServerConfig()
+      assert(serverConfig)
+      const entry = serverConfig.entry.index
+      runtime.executeEntrypoint(entry)
     }
   }
 }
