@@ -5,9 +5,6 @@ import { projectInfo, assertUsage, assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
 import { startDevServer } from '../dev/serverEntry.js'
 
-// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
-const importMetaUrl: string = import.meta.url
-const __dirname_ = path.dirname(fileURLToPath(importMetaUrl))
 const cli = cac(projectInfo.projectName)
 
 cli
@@ -22,38 +19,16 @@ cli
   })
 
 cli
-  .command('[root]', 'Start the development server', { allowUnknownOptions: true })
-  .alias('serve') // the command is called 'serve' in Vite's API
-  .alias('dev') // alias to align with the script name
-  .option('--host [host]', `[string] specify hostname`)
-  .option('--port <port>', `[number] specify port`)
-  .option('--open [path]', `[boolean | string] open browser on startup`)
-  .option('--cors', `[boolean] enable CORS`)
-  .option('--strictPort', `[boolean] exit if specified port is already in use`)
-  .option('--force', `[boolean] force the optimizer to ignore the cache and re-bundle`)
-  .action(async (root, options) => {
+  .command('[root]', 'Start the development server')
+  .alias('serve')
+  .alias('dev')
+  .action(() => {
     logViteAny('Starting development server', 'info', null, true)
-
-    await resolveConfig({}, 'serve')
-    const serverConfig = getServerConfig()
-    if (!serverConfig?.entry) {
-      const command = ['dev']
-      if (root) {
-        command.push(root)
-      }
-      for (const [key, value] of Object.entries(options).slice(1)) {
-        command.push(`--${key}=${value}`)
-      }
-
-      fork('node_modules/vite/bin/vite', command, { stdio: 'inherit' })
-      return
-    }
-
-    const scriptPath = path.join(__dirname_, '..', 'dev/startDevServer.js')
-
+    // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+    const scriptPath = new URL('../dev/startDevServer.js', import.meta.url)
     function onRestart() {
-      const cp = fork(scriptPath, { stdio: 'inherit' })
-      cp.once('exit', (code) => {
+      const worker = new Worker(scriptPath, { env: SHARE_ENV })
+      worker.once('exit', (code) => {
         if (code === 33) {
           onRestart()
         }
