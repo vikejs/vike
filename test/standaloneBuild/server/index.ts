@@ -1,9 +1,9 @@
 import express from 'express'
-import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
-import { root } from './root'
-import { init } from '../database/todoItems'
+import { renderPage } from 'vike/server'
 import { Worker } from 'worker_threads'
+import { init } from '../database/todoItems'
+import { root } from './root'
 import { two } from './shared-chunk.js'
 
 if (two() !== 2) {

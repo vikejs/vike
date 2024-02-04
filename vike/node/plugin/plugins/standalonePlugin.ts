@@ -36,25 +36,6 @@ function standalonePlugin(serverConfig: ServerResolved): Plugin {
       //@ts-expect-error Vite 5 || Vite 4
       return !!(env.isSsrBuild || env.ssrBuild)
     },
-    config() {
-      return {
-        ssr: {
-          // esbuild warning:
-          // noExternal: [noExternalRegex]
-          //   ▲ [WARNING] Ignoring this import because "../../node_modules/.pnpm/@brillout+picocolors@1.0.10/node_modules/@brillout/picocolors/picocolors.js" was marked as having no side effects [ignored-bare-import]
-
-          //   dist/server/entries/pages_about.mjs:6:7:
-          //     6 │ import "@brillout/picocolors";
-          //       ╵        ~~~~~~~~~~~~~~~~~~~~~~
-
-          // "sideEffects" is false in the enclosing "package.json" file:
-
-          //   ../../node_modules/@brillout/picocolors/package.json:10:2:
-          //     10 │   "sideEffects": false,
-          noExternal: ['@brillout/picocolors']
-        }
-      }
-    },
     async configResolved(config) {
       const configVike = await getConfigVike(config)
       native = configVike.native
@@ -90,6 +71,9 @@ function standalonePlugin(serverConfig: ServerResolved): Plugin {
           outfile: entryFilePath,
           allowOverwrite: true,
           metafile: true,
+          logOverride: {
+            'ignored-bare-import': 'silent'
+          },
           banner: {
             js: [
               "import { dirname as dirname987 } from 'path';",
