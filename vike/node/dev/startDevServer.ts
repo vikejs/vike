@@ -2,7 +2,7 @@ import pc from '@brillout/picocolors'
 import http from 'http'
 import net from 'net'
 import util from 'util'
-import { ServerHMRConnector, createServer } from 'vite'
+import { createServer } from 'vite'
 import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
@@ -51,8 +51,7 @@ async function start() {
           entryDeps.add(result.file)
         }
         return result
-      },
-      hmr: { connection: new ServerHMRConnector(vite), logger: false }
+      }
     },
     new ESModulesRunner()
   )
