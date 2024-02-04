@@ -24,9 +24,10 @@ async function start() {
         name: 'vike:devserver',
         async handleHotUpdate(ctx) {
           const mods = ctx.modules.map((m) => m.id).filter(Boolean) as string[]
+          const shouldRestart = mods.some((m) => m && runtime.moduleCache.get(m).evaluated)
+          runtime.moduleCache.invalidateDepTree(mods)
 
-          if (mods.length) {
-            runtime.moduleCache.invalidateDepTree(mods)
+          if (shouldRestart) {
             await onRestart()
           }
         },
