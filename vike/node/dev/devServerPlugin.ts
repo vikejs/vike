@@ -4,8 +4,7 @@ import pc from '@brillout/picocolors'
 import http from 'http'
 import net from 'net'
 import util from 'util'
-import type { Plugin, ViteDevServer } from 'vite'
-import { HMRPayload, ServerHMRConnector } from 'vite'
+import { ServerHMRConnector, type Plugin, type ViteDevServer } from 'vite'
 import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
@@ -14,10 +13,11 @@ import { bindCLIShortcuts } from './shortcuts.js'
 
 function devServerPlugin(): Plugin {
   let viteServer: ViteDevServer
-  let originalSend: (payload: HMRPayload) => void
   let httpServers: http.Server[] = []
   let sockets: net.Socket[] = []
   let configureServerWasCalled = false
+  let entryDeps = new Set()
+  let runtime: ViteRuntime
 
   const patchHttp = () => {
     const originalCreateServer = http.createServer.bind(http.createServer)
@@ -88,28 +88,20 @@ function devServerPlugin(): Plugin {
 
   const onFastRestart = async () => {
     await closeAllServers()
+    await loadEntry()
   }
 
   const onFullRestart = async () => {
     process.exit(33)
   }
 
-  class VikeServerHMRConnector extends ServerHMRConnector {
-    override onUpdate(handler: (payload: HMRPayload) => void) {
-      const patchedHandler = async (payload: HMRPayload) => {
-        if (payload.type === 'full-reload') {
-          // close the servers / process.exit(33)
-          await onRestart()
-        }
-
-        // reload the server entry
-        handler(payload)
-
-        // send the websocket message to the client
-        originalSend(payload)
-      }
-      super.onUpdate(patchedHandler)
-    }
+  async function loadEntry() {
+    entryDeps = new Set()
+    const serverConfig = getServerConfig()
+    assert(serverConfig)
+    const entry = serverConfig.entry.index
+    runtime.clearCache()
+    await runtime.executeUrl(entry)
   }
 
   return {
@@ -122,6 +114,11 @@ function devServerPlugin(): Plugin {
         }
       }
     },
+    async handleHotUpdate(ctx) {
+      if (ctx.modules.some((m) => entryDeps.has(m.id))) {
+        await onRestart()
+      }
+    },
     configureServer(server) {
       // This is only true if the vite config was changed
       // We need a full reload
@@ -129,12 +126,6 @@ function devServerPlugin(): Plugin {
         onFullRestart()
       }
       viteServer = server
-      const hmrChannel = server.hot.channels.find((c) => c.name === 'ws')
-      assert(hmrChannel)
-      // need to delay the websocket message if the server entry is reloaded
-      // by default Vite would send the websocket message before the server entry is reloaded
-      originalSend = hmrChannel.send.bind(hmrChannel)
-      hmrChannel.send = () => {}
 
       assert(!configureServerWasCalled)
       configureServerWasCalled = true
@@ -144,18 +135,23 @@ function devServerPlugin(): Plugin {
         onRestart: onFullRestart
       })
       patchHttp()
-      const runtime = new ViteRuntime(
+
+      runtime = new ViteRuntime(
         {
-          root: server.config.root,
-          fetchModule: server.ssrFetchModule,
-          hmr: { connection: new VikeServerHMRConnector(server) }
+          root: viteServer.config.root,
+          fetchModule: async (id, importer) => {
+            const result = await viteServer.ssrFetchModule(id, importer)
+            if ('file' in result && result.file) {
+              entryDeps.add(result.file)
+            }
+            return result
+          },
+          hmr: { connection: new ServerHMRConnector(server), logger: false }
         },
         new ESModulesRunner()
       )
-      const serverConfig = getServerConfig()
-      assert(serverConfig)
-      const entry = serverConfig.entry.index
-      runtime.executeEntrypoint(entry)
+
+      loadEntry()
     }
   }
 }
