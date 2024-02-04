@@ -520,6 +520,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Nginx',
+    url: '/nginx'
+  },
+  {
+    level: 2,
     title: 'Ruby on Rails',
     url: '/ruby-on-rails'
   },
