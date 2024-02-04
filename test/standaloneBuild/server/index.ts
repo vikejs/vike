@@ -3,19 +3,17 @@ import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
 import { root } from './root'
 import { init } from '../database/todoItems'
-import { fork } from 'child_process'
-import { dirname, join } from 'path'
-import { fileURLToPath } from 'url'
+import { Worker } from 'worker_threads'
 import { two } from './shared-chunk.js'
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+
+if (two() !== 2) {
+  throw new Error()
+}
 
 startServer()
+new Worker(new URL('./worker.mjs', import.meta.url))
 
 async function startServer() {
-  console.log('index.ts>shared-chunk', two())
-  fork(join(__dirname, './worker.mjs'))
-
   await init()
   const app = express()
 
