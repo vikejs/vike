@@ -1,12 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-Many sucessfully use Vike with [Nginx](https://nginx.org/).
+Many users successfully use Vike with [Nginx](https://nginx.org/).
 
 > Contribution welcome to create an example.
 
 
 ## Early Hints
 
-Ngnix [doesn't seem to support 103 Early Hints yet](https://github.com/vikejs/vike/issues/1452#issuecomment-1925315908).
+Nginx [doesn't seem to support 103 Early Hints yet](https://github.com/vikejs/vike/issues/1452#issuecomment-1925315908).
 
-For example, if you use Vike's <Link href="/preloading">`pageContext.httpResponse.earlyHints`</Link> with Node.js's [`res.writeEarlyHints()`](https://nodejs.org/api/http.html#responsewriteearlyhintshints-callback), then you'll get an `ERR_HTTP2_PROTOCOL_ERROR` error in the browser.
+For example, if you use Vike's <Link href="/preloading#early-hints">`pageContext.httpResponse.earlyHints`</Link> with Node.js's [`res.writeEarlyHints()`](https://nodejs.org/api/http.html#responsewriteearlyhintshints-callback), then you'll get a `ERR_HTTP2_PROTOCOL_ERROR` error in the browser.
