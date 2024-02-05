@@ -39,7 +39,7 @@ import {
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
-import { getGlobalContext, initGlobalContext } from '../runtime/globalContext.js'
+import { getGlobalContext, initGlobalContext, setGlobalContext_prerender } from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import type { InlineConfig } from 'vite'
@@ -200,6 +200,7 @@ async function runPrerender(
   await disableReactStreaming()
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'vike pre-rendering' as any, 'production')
+  setGlobalContext_prerender(viteConfig)
   assertLoadedConfig(viteConfig, options)
   const configVike = await getConfigVike(viteConfig)
 

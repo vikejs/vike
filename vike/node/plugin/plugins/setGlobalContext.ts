@@ -1,7 +1,7 @@
 export { setGlobalContext }
 
 import type { Plugin } from 'vite'
-import { setGlobalContext_viteDevServer, setGlobalContext_viteConfig } from '../../runtime/globalContext.js'
+import { setGlobalContext_viteDevServer } from '../../runtime/globalContext.js'
 
 function setGlobalContext(): Plugin {
   return {
@@ -11,12 +11,6 @@ function setGlobalContext(): Plugin {
       order: 'pre',
       handler(viteDevServer) {
         setGlobalContext_viteDevServer(viteDevServer)
-      }
-    },
-    configResolved: {
-      order: 'pre',
-      handler(config) {
-        setGlobalContext_viteConfig(config)
       }
     }
   }

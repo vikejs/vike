@@ -3,7 +3,7 @@ export { getGlobalContext }
 export { getViteDevServer }
 export { getViteConfig }
 export { setGlobalContext_viteDevServer }
-export { setGlobalContext_viteConfig }
+export { setGlobalContext_prerender }
 export { getRuntimeManifest }
 
 import {
@@ -75,12 +75,14 @@ function getGlobalContext(): GlobalContext {
 function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
   assert(!globalObject.globalContext)
+  assert(!globalObject.globalContext)
+  globalObject.viteConfig = viteDevServer.config
   globalObject.viteDevServer = viteDevServer
 }
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
 }
-function setGlobalContext_viteConfig(viteConfig: ResolvedConfig): void {
+function setGlobalContext_prerender(viteConfig: ResolvedConfig): void {
   if (globalObject.viteConfig) return
   assert(!globalObject.globalContext)
   globalObject.viteConfig = viteConfig
