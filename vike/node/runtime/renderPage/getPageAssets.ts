@@ -11,7 +11,6 @@ import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
-import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { getGlobalContext } from '../globalContext.js'
 import { assertClientEntryId } from './getPageAssets/assertClientEntryId.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
@@ -42,9 +41,9 @@ async function getPageAssets(
   let assetUrls: string[]
   let clientEntriesSrc: string[]
   if (isDev) {
-    const { viteDevServer, configVike } = globalContext
+    const { viteDevServer } = globalContext
     clientEntriesSrc = await Promise.all(
-      clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer, configVike))
+      clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
@@ -102,11 +101,7 @@ async function getPageAssets(
   return pageAssets
 }
 
-async function resolveClientEntriesDev(
-  clientEntry: string,
-  viteDevServer: ViteDevServer,
-  configVike: ConfigVikeResolved
-): Promise<string> {
+async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): Promise<string> {
   assertClientEntryId(clientEntry)
 
   let root = viteDevServer.config.root

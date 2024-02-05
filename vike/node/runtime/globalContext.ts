@@ -43,7 +43,6 @@ type GlobalContext = {
       isProduction: false
       isPrerendering: false
       viteConfig: ResolvedConfig
-      configVike: ConfigVikeResolved
       viteDevServer: ViteDevServer
       clientManifest: null
       pluginManifest: null
@@ -57,12 +56,10 @@ type GlobalContext = {
       | {
           isPrerendering: false
           viteConfig: null
-          configVike: null
         }
       | {
           isPrerendering: true
           viteConfig: ResolvedConfig
-          configVike: ConfigVikeResolved
         }
     ))
 )
@@ -110,7 +107,6 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       pluginManifest: null,
       viteDevServer,
       viteConfig,
-      configVike,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
@@ -143,15 +139,13 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       assert(configVike)
       objectAssign(globalContext, {
         isPrerendering: true as const,
-        viteConfig,
-        configVike
+        viteConfig
       })
       globalObject.globalContext = globalContext
     } else {
       objectAssign(globalContext, {
         isPrerendering: false as const,
-        viteConfig: null,
-        configVike: null
+        viteConfig: null
       })
       globalObject.globalContext = globalContext
     }
