@@ -10,7 +10,6 @@ import {
   capitalizeFirstLetter,
   getFilePathRelativeToUserRootDir
 } from '../utils.js'
-import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
 
@@ -37,7 +36,7 @@ function assertFileEnv(): Plugin {
       */
       async handler(source, importer, options) {
         // TODO/v1-release: remove
-        if (extractAssetsRE.test(source) || extractExportNamesRE.test(source)) return
+        if (extractExportNamesRE.test(source)) return
 
         // Seems like Vite is doing some funky stuff here.
         if (importer?.endsWith('.html')) return
