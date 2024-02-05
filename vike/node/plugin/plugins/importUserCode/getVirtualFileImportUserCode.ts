@@ -11,17 +11,15 @@ import {
   assert,
   assertPosixPath,
   viteIsSSR_options,
-  isNotNullish,
   scriptFileExtensions,
   debugGlob,
   getOutDirs
 } from '../../utils.js'
 import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes.js'
+import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
-import { generateEagerImport } from './generateEagerImport.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -59,7 +57,7 @@ async function getCode(
   assert(isDev === !isBuild)
   let content = ''
   {
-    const globRoots = getGlobRoots(config, configVike)
+    const globRoots = getGlobRoots(config)
     debugGlob('Glob roots: ', globRoots)
     content += await generateGlobImports(
       globRoots,
@@ -73,62 +71,8 @@ async function getCode(
       id
     )
   }
-  {
-    const extensionsImportPaths = configVike.extensions
-      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
-      .flat()
-      .filter(isNotNullish)
-      .map(({ importPath }) => importPath)
-    content += generateExtensionImports(
-      extensionsImportPaths,
-      isForClientSide,
-      isBuild,
-      isClientRouting,
-      isPrerendering
-    )
-  }
   debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
   return content
-}
-
-function generateExtensionImports(
-  extensionsImportPaths: string[],
-  isForClientSide: boolean,
-  isBuild: boolean,
-  isClientRouting: boolean,
-  isPrerendering: boolean
-) {
-  let fileContent = '\n\n'
-  extensionsImportPaths
-    .filter((importPath) => {
-      assert(
-        // V1 design
-        importPath.includes('+') ||
-          // V0.4 design
-          importPath.includes('.page.')
-      )
-      return !importPath.includes('+')
-    })
-    .forEach((importPath) => {
-      const fileType = determineFileType(importPath)
-      const { includeImport, includeExportNames } = determineInjection({
-        fileType,
-        isForClientSide,
-        isClientRouting,
-        isPrerendering,
-        isBuild
-      })
-      if (includeImport) {
-        fileContent += addImport(importPath, fileType, false, isBuild)
-      }
-      if (includeExportNames) {
-        fileContent += addImport(importPath, fileType, true, isBuild)
-      }
-      if (!includeImport && !includeExportNames && !isForClientSide) {
-        fileContent += `pageFilesList.push("${importPath}");` + '\n'
-      }
-    })
-  return fileContent
 }
 
 function determineInjection({
@@ -166,41 +110,6 @@ function determineInjection({
       }
     }
   }
-}
-
-function addImport(importPath: string, fileType: FileType, exportNames: boolean, isBuild: boolean): string {
-  const pageFilesVar: PageFileVar = (() => {
-    if (exportNames) {
-      if (isBuild) {
-        return 'pageFilesExportNamesEager'
-      } else {
-        return 'pageFilesExportNamesLazy'
-      }
-    } else {
-      if (fileType === '.page.route') {
-        return 'pageFilesEager'
-      } else {
-        return 'pageFilesLazy'
-      }
-    }
-  })()
-  const query = !exportNames ? '' : '?extractExportNames'
-
-  let fileContent = ''
-  const mapVar = `${pageFilesVar}['${fileType}']`
-  fileContent += `${mapVar} = ${mapVar} ?? {};\n`
-  const value = (() => {
-    if (!pageFilesVar.endsWith('Eager')) {
-      return `() => import('${importPath}${query}')`
-    } else {
-      const { importName, importStatement } = generateEagerImport(`${importPath}${query}`)
-      fileContent += importStatement + '\n'
-      return importName
-    }
-  })()
-  fileContent += `${mapVar}['${importPath}'] = ${value};\n`
-
-  return fileContent
 }
 
 async function generateGlobImports(
@@ -316,22 +225,13 @@ function getGlobs(
   ].join('\n')
 }
 
-function getGlobRoots(config: ResolvedConfig, configVike: ConfigVikeResolved): GlobRoot[] {
+function getGlobRoots(config: ResolvedConfig): GlobRoot[] {
   const globRoots: GlobRoot[] = [
     {
       includeDir: '/',
       excludeDir: path.posix.relative(config.root, getOutDirs(config).outDirRoot)
     }
   ]
-  configVike.extensions
-    .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
-    .filter(isNotNullish)
-    .forEach((pageConfigsSrcDir) => {
-      const globRoot: GlobRoot = {
-        includeDir: path.posix.relative(config.root, pageConfigsSrcDir)
-      }
-      globRoots.push(globRoot)
-    })
   return globRoots
 }
 
