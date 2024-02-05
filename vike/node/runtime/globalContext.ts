@@ -3,7 +3,6 @@ export { getGlobalContext }
 export { getViteDevServer }
 export { getViteConfig }
 export { setGlobalContext_viteDevServer }
-export { setGlobalContext_vitePreviewServer }
 export { setGlobalContext_viteConfig }
 export { getRuntimeManifest }
 
@@ -18,7 +17,7 @@ import {
   objectAssign
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
-import type { ResolvedConfig, ViteDevServer, PreviewServer as VitePreviewServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild.js'
 import { setPageFiles } from '../../shared/getPageFiles.js'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
@@ -29,7 +28,6 @@ import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
-  vitePreviewServer?: VitePreviewServer
   viteConfig?: ResolvedConfig
 }>('globalContext.ts', {})
 
@@ -47,7 +45,6 @@ type GlobalContext = {
       viteConfig: ResolvedConfig
       configVike: ConfigVikeResolved
       viteDevServer: ViteDevServer
-      vitePreviewServer: null
       clientManifest: null
       pluginManifest: null
     }
@@ -56,7 +53,6 @@ type GlobalContext = {
       clientManifest: ViteManifest
       pluginManifest: PluginManifest
       viteDevServer: null
-      vitePreviewServer: null | VitePreviewServer
     } & (
       | {
           isPrerendering: false
@@ -81,11 +77,6 @@ function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   assert(!globalObject.globalContext)
   globalObject.viteDevServer = viteDevServer
 }
-function setGlobalContext_vitePreviewServer(vitePreviewServer: VitePreviewServer) {
-  if (globalObject.vitePreviewServer) return
-  assert(!globalObject.globalContext)
-  globalObject.vitePreviewServer = vitePreviewServer
-}
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
 }
@@ -101,14 +92,13 @@ function getViteConfig(): ResolvedConfig | null {
 async function initGlobalContext(isPrerendering = false, outDir?: string): Promise<void> {
   if (globalObject.globalContext) return
 
-  const { viteDevServer, vitePreviewServer, viteConfig } = globalObject
+  const { viteDevServer, viteConfig } = globalObject
   assertNodeEnv(!!viteDevServer)
   const isProduction = !viteDevServer
 
   if (!isProduction) {
     assert(viteConfig)
     assert(!isPrerendering)
-    assert(!vitePreviewServer)
     const configVike = await getConfigVike(viteConfig)
     const pluginManifest = getRuntimeManifest(configVike)
     globalObject.globalContext = {
@@ -117,7 +107,6 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       clientManifest: null,
       pluginManifest: null,
       viteDevServer,
-      vitePreviewServer: null,
       viteConfig,
       configVike,
       baseServer: pluginManifest.baseServer,
@@ -139,7 +128,6 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       clientManifest,
       pluginManifest,
       viteDevServer: null,
-      vitePreviewServer: vitePreviewServer ?? null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
