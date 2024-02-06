@@ -75,9 +75,9 @@ function getLoadConfigValuesAll(
   lines.push('};')
 
   if (!fixServerAssets_isEnabled()) {
-  if (includeAssetsImportedByServer && isForClientSide && !isDev) {
-    importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
-  }
+    if (includeAssetsImportedByServer && isForClientSide && !isDev) {
+      importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
+    }
   }
 
   const code = [...importStatements, ...lines].join('\n')
