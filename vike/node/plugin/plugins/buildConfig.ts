@@ -335,21 +335,23 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
     }
   >()
 
-  for (const [key, entry] of Object.entries(clientManifest).filter(([, { isEntry }]) => isEntry)) {
+  for (const [key, entry] of Object.entries(clientManifest)) {
     const pageId = determinePageIdV1(key)
     if (!pageId) {
       continue
     }
     const assets = collectAssetsForEntry(clientManifest, entry)
+    assert(!entriesToAssetsClient.has(key))
     entriesToAssetsClient.set(key, { ...assets, pageId })
   }
 
-  for (const [key, entry] of Object.entries(serverManifest).filter(([, { isEntry }]) => isEntry)) {
+  for (const [key, entry] of Object.entries(serverManifest)) {
     const pageId = determinePageIdV1(key)
     if (!pageId) {
       continue
     }
     const assets = collectAssetsForEntry(serverManifest, entry)
+    assert(!entriesToAssetsServer.has(key))
     entriesToAssetsServer.set(key, { ...assets, pageId })
   }
 
@@ -412,12 +414,14 @@ function collectAssetsForEntry(manifest: ViteManifest, entry: ViteManifestEntry)
     for (const import_ of entry.imports ?? []) {
       entries.add(manifest[import_]!)
     }
-    for (let id of entry.css ?? []) {
+
+    const cssFiles = entry.css ?? []
+    if (entry.file.endsWith('.css')) cssFiles.push(entry.file)
+    for (let id of cssFiles) {
       const hash = hashCss(id)
       assert(hash)
       css.push({ src: id, hash })
     }
-
     for (let id of entry.assets ?? []) {
       const hash = hashOtherAsset(id)
       assert(hash)
