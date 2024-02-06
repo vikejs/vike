@@ -1,20 +1,21 @@
+export { startDevServer }
+
+import pc from '@brillout/picocolors'
 import { BirpcReturn, createBirpc } from 'birpc'
 import http from 'http'
 import { ModuleNode, createServer } from 'vite'
 import { SHARE_ENV, Worker } from 'worker_threads'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
+import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { assert } from '../runtime/utils.js'
+import { bindCLIShortcuts } from './shortcuts.js'
 import { ClientFunctions, ServerFunctions } from './types.js'
-import { stringify } from '@brillout/json-serializer/stringify'
-import { parse } from '@brillout/json-serializer/parse'
 
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const workerPath = new URL('./worker.js', import.meta.url)
 const viteMiddlewareProxyPort = 3333
 
-start()
-
-async function start() {
+async function startDevServer() {
   const vite = await createServer({
     server: {
       middlewareMode: true
@@ -23,6 +24,10 @@ async function start() {
       {
         name: 'vike:devserver',
         async handleHotUpdate(ctx) {
+          if (exited) {
+            await restartWorker()
+            return
+          }
           const mods = ctx.modules.map((m) => m.id).filter(Boolean) as string[]
           const shouldRestart = await rpc.invalidateDepTree(mods)
           if (shouldRestart) {
@@ -42,13 +47,27 @@ async function start() {
 
   let rpc: BirpcReturn<ClientFunctions, ServerFunctions>
   let worker: Worker
-
+  let exited = false
   async function restartWorker() {
-    if (worker) {
+    if (worker && !exited) {
       await worker.terminate()
     }
-
-    worker = new Worker(workerPath, { env: SHARE_ENV })
+    worker = new Worker(workerPath, { env: SHARE_ENV, stdin: true })
+    exited = false
+    const listener = (data: Buffer) => worker.stdin?.emit('data', data)
+    process.stdin.on('data', listener)
+    worker.once('exit', (code) => {
+      process.stdin.off('data', listener)
+      if (code === 33) {
+        exited = true
+        logViteAny(
+          `Server shutdown. Update a server file, or press ${pc.cyan('r + Enter')}, to restart.`,
+          'info',
+          null,
+          true
+        )
+      }
+    })
 
     rpc = createBirpc<ClientFunctions, ServerFunctions>(
       {
@@ -70,15 +89,15 @@ async function start() {
       {
         post: (data) => worker.postMessage(data),
         on: (data) => worker.on('message', data),
-        serialize: (v) => stringify(v),
-        deserialize: (v) => parse(v)
+        timeout: 1000
       }
     )
 
     const originalInvalidateModule = vite.moduleGraph.invalidateModule.bind(vite.moduleGraph)
     vite.moduleGraph.invalidateModule = (mod, ...rest) => {
       if (mod.id) {
-        rpc.deleteByModuleId(mod.id)
+        // timeout error
+        rpc.deleteByModuleId(mod.id).catch(() => {})
       }
       return originalInvalidateModule(mod, ...rest)
     }
@@ -96,6 +115,16 @@ async function start() {
       viteConfig: { root: viteConfig.root, configVikePromise: viteConfig.configVikePromise }
     })
   }
+
+  const ws = vite.hot.channels.find((ch) => ch.name === 'ws')
+  bindCLIShortcuts({
+    onRestart: async () => {
+      await restartWorker()
+      ws?.send({
+        type: 'full-reload'
+      })
+    }
+  })
 
   restartWorker()
 }

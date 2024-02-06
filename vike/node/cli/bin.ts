@@ -24,21 +24,7 @@ cli
   .alias('dev')
   .action(() => {
     logViteAny('Starting development server', 'info', null, true)
-    // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
-    const scriptPath = new URL('../dev/startDevServer.js', import.meta.url)
-    function onRestart() {
-      const worker = new Worker(scriptPath, { env: SHARE_ENV, stdin: true })
-      process.stdin.pipe(worker.stdin!)
-
-      worker.once('exit', (code) => {
-        if (code !== 33) {
-          process.exit(code)
-        }
-        onRestart()
-      })
-    }
-
-    onRestart()
+    startDevServer()
   })
 
 function assertOptions() {

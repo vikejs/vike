@@ -5,8 +5,6 @@ import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
 import { parentPort } from 'worker_threads'
 import { assert } from '../runtime/utils.js'
 import { ClientFunctions, ServerFunctions } from './types.js'
-import { stringify } from '@brillout/json-serializer/stringify'
-import { parse } from '@brillout/json-serializer/parse'
 
 let runtime: ViteRuntime
 
@@ -26,7 +24,7 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
           }
         }
       }
-      const shouldRestart = evaluated && Array.from(importers).every((i) => !i.startsWith('/'))
+      const shouldRestart = evaluated && Array.from(importers).every((i) => i.startsWith('/'))
       runtime.moduleCache.invalidateDepTree(mods)
 
       return shouldRestart
@@ -81,8 +79,7 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
       assert(parentPort)
       parentPort.on('message', data)
     },
-    serialize: (v) => stringify(v),
-    deserialize: (v) => parse(v)
+    timeout: 1000
   }
 )
 
@@ -93,19 +90,10 @@ function patchHttp(httpPort: number) {
         ok: false
       } as const
     }
-    try {
-      const result = await fetch(`http://127.0.0.1:${httpPort}${req.url}`, {
-        headers: parseHeaders(req.headers),
-        method: req.method
-      })
-      return result
-    } catch (error) {
-      console.log(error)
-      console.log(req)
-    }
-    return {
-      ok: false
-    } as const
+    return fetch(`http://127.0.0.1:${httpPort}${req.url}`, {
+      headers: parseHeaders(req.headers),
+      method: req.method
+    })
   }
 
   const originalCreateServer = http.createServer.bind(http.createServer)
@@ -165,4 +153,10 @@ export const parseHeaders = (
   }
 
   return result
+}
+process.on('unhandledRejection', onError)
+process.on('uncaughtException', onError)
+function onError(err: unknown) {
+  console.error(err)
+  process.exit(33)
 }

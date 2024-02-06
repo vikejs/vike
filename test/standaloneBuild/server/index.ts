@@ -16,7 +16,6 @@ new Worker(new URL('./worker.mjs', import.meta.url))
 async function startServer() {
   await init()
   const app = express()
-
   if (import.meta.env.PROD) {
     app.use(express.static(`${root}/client`))
   }
