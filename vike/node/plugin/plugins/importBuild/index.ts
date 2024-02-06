@@ -31,9 +31,9 @@ function importBuild(): Plugin[] {
       writeBundle: {
         sequential: true,
         async handler(options, bundle) {
-          if (!viteIsSSR(config)) return
+        if (!viteIsSSR(config)) return
 
-          await replace_ASSETS_MAP(options, bundle)
+        await replace_ASSETS_MAP(options, bundle)
         }
       }
     },

@@ -71,27 +71,27 @@ function buildConfig(): Plugin {
     writeBundle: {
       sequential: false,
       async handler(options, bundle) {
-        const manifestEntry = bundle[manifestTempFile]
-        /* Fails with @vitejs/plugin-legacy because writeBundle() is called twice during the client build (once for normal client assets and a second time for legacy assets), see reproduction at https://github.com/vikejs/vike/issues/1154
-        assert(generateManifest === !!manifestEntry)
-        */
-        if (manifestEntry) {
-          const { dir } = options
-          assert(dir)
-          const manifestFilePathOld = path.join(dir, manifestEntry.fileName)
-          // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
-          //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
-          //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
-          const manifestFilePathNew = path.join(dir, '..', 'assets.json')
-          if (isSsrBuild) {
-            const clientManifest = JSON.parse(await fs.readFile(manifestFilePathNew, 'utf-8').catch(() => '{}'))
-            const serverManifest = JSON.parse(await fs.readFile(manifestFilePathOld, 'utf-8'))
-            const result = mergeManifests(clientManifest, serverManifest)
-            await fs.writeFile(manifestFilePathOld, JSON.stringify(result.clientManifest), 'utf-8')
-            filesToCopy = result.filesToCopy
-          }
-          await fs.rename(manifestFilePathOld, manifestFilePathNew)
+      const manifestEntry = bundle[manifestTempFile]
+      /* Fails with @vitejs/plugin-legacy because writeBundle() is called twice during the client build (once for normal client assets and a second time for legacy assets), see reproduction at https://github.com/vikejs/vike/issues/1154
+      assert(generateManifest === !!manifestEntry)
+      */
+      if (manifestEntry) {
+        const { dir } = options
+        assert(dir)
+        const manifestFilePathOld = path.join(dir, manifestEntry.fileName)
+        // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
+        //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
+        //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
+        const manifestFilePathNew = path.join(dir, '..', 'assets.json')
+        if (isSsrBuild) {
+          const clientManifest = JSON.parse(await fs.readFile(manifestFilePathNew, 'utf-8').catch(() => '{}'))
+          const serverManifest = JSON.parse(await fs.readFile(manifestFilePathOld, 'utf-8'))
+          const result = mergeManifests(clientManifest, serverManifest)
+          await fs.writeFile(manifestFilePathOld, JSON.stringify(result.clientManifest), 'utf-8')
+          filesToCopy = result.filesToCopy
         }
+        await fs.rename(manifestFilePathOld, manifestFilePathNew)
+      }
       }
     },
     async closeBundle() {
