@@ -1,5 +1,6 @@
 export { getOutDirs }
 export { resolveOutDir }
+export type { OutDirs }
 
 import type { UserConfig, ResolvedConfig } from 'vite'
 import { viteIsSSR } from './viteIsSSR.js'

@@ -15,7 +15,8 @@ import {
   injectRollupInputs,
   normalizeRollupInput,
   assertNodeEnvIsNotDev,
-  getOutDirs
+  getOutDirs,
+  type OutDirs
 } from '../utils.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
@@ -34,16 +35,16 @@ import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../shared/ViteManifest.js'
 import { pLimit } from '../../../utils/pLimit.js'
 import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
+import { replace_ASSETS_MAP } from './importBuild/index.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin {
-  let isSsrBuild = false
   let isServerAssetsFixEnabled: boolean
-  let outDirs: ReturnType<typeof getOutDirs>
-  let filesToCopy: string[] = []
+  let isSsrBuild: boolean
+  let outDirs: OutDirs
   return {
     name: 'vike:buildConfig',
     apply: 'build',
@@ -84,52 +85,62 @@ function buildConfig(): Plugin {
     buildStart() {
       assertNodeEnv()
     },
-    writeBundle: {
-      sequential: false,
-      async handler(options, bundle) {
-      const manifestEntry = bundle[manifestTempFile]
-      /* Fails with @vitejs/plugin-legacy because writeBundle() is called twice during the client build (once for normal client assets and a second time for legacy assets), see reproduction at https://github.com/vikejs/vike/issues/1154
-      assert(generateManifest === !!manifestEntry)
-      */
-      if (manifestEntry && (!isSsrBuild || isServerAssetsFixEnabled)) {
-        const { dir } = options
-        assert(dir)
-        const manifestFilePathOld = path.join(dir, manifestEntry.fileName)
+    async writeBundle(options, bundle) {
+      if (isSsrBuild) {
         // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
         //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
         //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
-        const manifestFilePathNew = path.join(dir, '..', 'assets.json')
-        if (isSsrBuild) {
-          const clientManifest = JSON.parse(await fs.readFile(manifestFilePathNew, 'utf-8').catch(() => '{}'))
-          const serverManifest = JSON.parse(await fs.readFile(manifestFilePathOld, 'utf-8'))
-          const result = mergeManifests(clientManifest, serverManifest)
-          await fs.writeFile(manifestFilePathOld, JSON.stringify(result.clientManifest), 'utf-8')
-          filesToCopy = result.filesToCopy
+        const assetsJsonFilePath = path.join(outDirs.outDirRoot, 'assets.json')
+        const clientManifestFilePath = path.join(outDirs.outDirClient, manifestTempFile)
+        const serverManifestFilePath = path.join(outDirs.outDirServer, manifestTempFile)
+        if (!isServerAssetsFixEnabled) {
+          await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
+        } else {
+          await fixServerAssets(outDirs, assetsJsonFilePath)
         }
-        await fs.rename(manifestFilePathOld, manifestFilePathNew)
+        await fs.rm(clientManifestFilePath)
+        await fs.rm(serverManifestFilePath)
+        await replace_ASSETS_MAP(options, bundle)
       }
-      }
-    },
-    async closeBundle() {
-      if (!isSsrBuild) return
-      const assetsDirServerAbs = path.posix.join(outDirs.outDirServer, 'assets')
-      if (!existsSync(assetsDirServerAbs)) {
-        return
-      }
-      const concurrencyLimit = pLimit(10)
-      await Promise.all(
-        filesToCopy.map((file) =>
-          concurrencyLimit(() =>
-            fs.cp(path.posix.join(outDirs.outDirServer, file), path.posix.join(outDirs.outDirClient, file), {
-              recursive: true
-            })
-          )
-        )
-      )
-
-      await fs.rm(assetsDirServerAbs, { recursive: true })
     }
   }
+}
+
+// https://github.com/vikejs/vike/issues/1339
+async function fixServerAssets(outDirs: OutDirs, assetsJsonFilePath: string) {
+  const clientManifest = await loadManifest(outDirs.outDirClient)
+  const serverManifest = await loadManifest(outDirs.outDirServer)
+
+  const { filesToCopy, clientManifest: mergedManifest } = mergeManifests(clientManifest, serverManifest)
+  await fs.writeFile(assetsJsonFilePath, JSON.stringify(mergedManifest, null, 2), 'utf-8')
+
+  await copyAssets(filesToCopy, outDirs)
+}
+async function loadManifest(outDir: string) {
+  const manifestFilePath = path.join(outDir, manifestTempFile)
+  const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
+  assert(manifestFileContent)
+  const manifest = JSON.parse(manifestFileContent)
+  assert(manifest)
+  return manifest
+}
+async function copyAssets(filesToCopy: string[], { outDirClient, outDirServer }: OutDirs) {
+  const assetsDirServerAbs = path.posix.join(outDirServer, 'assets')
+  if (!existsSync(assetsDirServerAbs)) {
+    return
+  }
+  const concurrencyLimit = pLimit(10)
+  await Promise.all(
+    filesToCopy.map((file) =>
+      concurrencyLimit(() =>
+        fs.cp(path.posix.join(outDirServer, file), path.posix.join(outDirClient, file), {
+          recursive: true
+        })
+      )
+    )
+  )
+
+  await fs.rm(assetsDirServerAbs, { recursive: true })
 }
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {

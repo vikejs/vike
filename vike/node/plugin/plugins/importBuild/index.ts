@@ -1,4 +1,5 @@
 export { importBuild }
+export { replace_ASSETS_MAP }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { serverEntryPlugin, findServerEntry } from '@brillout/vite-plugin-server-entry/plugin.js'
@@ -27,13 +28,6 @@ function importBuild(): Plugin[] {
       async configResolved(config_) {
         config = config_
         configVike = await getConfigVike(config)
-      },
-      writeBundle: {
-        sequential: true,
-        async handler(options, bundle) {
-        if (!viteIsSSR(config)) return
-        await replace_ASSETS_MAP(options, bundle)
-        }
       }
     },
     ...serverEntryPlugin({
