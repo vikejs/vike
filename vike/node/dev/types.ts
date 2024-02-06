@@ -11,13 +11,15 @@ export type ClientFunctions = {
       root: string
       configVikePromise: ConfigVikeResolved
     }
-  }): void
+  }): Promise<void>
   invalidateDepTree(ids: string[]): boolean
 }
 
+type MinimalModuleNode = Pick<ModuleNode, 'id' | 'url' | 'type'>
+type MinimalModuleNodeWithImportedModules = MinimalModuleNode & { importedModules: Set<MinimalModuleNode> }
 export type ServerFunctions = {
   fetchModule(id: string, importer?: string): Promise<FetchResult>
   moduleGraphResolveUrl(url: string): Promise<ResolvedUrl>
-  moduleGraphGetModuleById(id: string): Promise<ModuleNode>
+  moduleGraphGetModuleById(id: string): MinimalModuleNodeWithImportedModules | undefined
   transformIndexHtml(url: string, html: string, originalUrl?: string): Promise<string>
 }

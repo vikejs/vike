@@ -80,7 +80,7 @@ async function startDevServer() {
           if (!module) {
             return module
           }
-          return removeFunctions(flattenImportedModules(module))
+          return flattenImportedModules(module)
         },
         transformIndexHtml(url: string, html: string, originalUrl?: string) {
           return vite.transformIndexHtml(url, html, originalUrl)
@@ -129,52 +129,6 @@ async function startDevServer() {
   restartWorker()
 }
 
-function removeFunctions(obj: any) {
-  const seenObjects = new WeakSet()
-
-  function helper(currentObj: any) {
-    if (currentObj === null || typeof currentObj !== 'object') {
-      return currentObj
-    }
-
-    if (seenObjects.has(currentObj)) {
-      return
-    }
-    seenObjects.add(currentObj)
-
-    let newObj: any
-    if (currentObj instanceof Set) {
-      newObj = new Set()
-      for (let value of currentObj) {
-        if (typeof value !== 'function') {
-          newObj.add(helper(value))
-        }
-      }
-    } else if (currentObj instanceof Map) {
-      newObj = new Map()
-      for (let [key, value] of currentObj) {
-        if (typeof value !== 'function') {
-          newObj.set(key, helper(value))
-        }
-      }
-    } else {
-      newObj = Array.isArray(currentObj) ? [] : {}
-      for (let key in currentObj) {
-        let value = currentObj[key]
-        if (typeof value === 'function') {
-          continue
-        } else if (typeof value === 'object') {
-          value = helper(value)
-        }
-        newObj[key] = value
-      }
-    }
-    return newObj
-  }
-
-  return helper(obj)
-}
-
 function flattenImportedModules(moduleNode: ModuleNode) {
   const modules = new Set<ModuleNode>()
 
@@ -190,7 +144,7 @@ function flattenImportedModules(moduleNode: ModuleNode) {
 
   helper(moduleNode)
 
-  // this is the minimal representation that Vike runtime uses
+  // this is the minimal representation the Vike runtime uses
   return {
     id: moduleNode.id,
     url: moduleNode.url,
