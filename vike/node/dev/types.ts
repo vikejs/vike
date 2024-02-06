@@ -1,6 +1,6 @@
-import type { HMRPayload, ModuleNode, ResolvedUrl } from 'vite'
+import type { ModuleNode, ResolvedUrl } from 'vite'
 import type { FetchResult } from 'vite/runtime'
-import { ConfigVikeResolved } from '../../shared/ConfigVike.js'
+import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
 
 export type ClientFunctions = {
   deleteByModuleId(modulePath: string): boolean
