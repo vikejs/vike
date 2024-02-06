@@ -1,11 +1,11 @@
-import { HookTypeScriptHints, IntegrationPackage, IntegrationPackageNames } from '../components'
+import { HookTypeScriptHints, UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 import { Link } from '@brillout/docpress'
 
 Environment: server.
 
 The `onRenderHtml()` hook defines how pages are rendered to HTML.
 
-> If you use a <IntegrationPackage/>, then you don't need to define `onRenderHtml()` as it's already defined by <IntegrationPackageNames />.
+> If you use a <UiFrameworkVikeExtension/>, then you don't need to define `onRenderHtml()` as it's already defined by <UiFrameworkVikeExtensionNames />.
 
 ```js
 // +onRenderHtml.js
@@ -17,8 +17,8 @@ import { renderToHtml, createElement } from 'some-ui-framework'
 export { onRenderHtml }
 
 async function onRenderHtml(pageContext){
-  const { Page, pageProps } = pageContext
-  const pageHtml = await renderToHtml(createElement(Page, pageProps))
+  const { Page, data } = pageContext
+  const pageHtml = await renderToHtml(createElement(Page, data))
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>

@@ -1,54 +1,52 @@
 <template>
-  <div class="layout">
-    <div class="navigation">
-      <a href="/" class="logo">
+  <div id="page-container">
+    <div id="sidebar">
+      <a href="/" id="logo-container">
         <img src="./logo.svg" height="64" width="64" alt="logo" />
       </a>
-      <Link href="/">Home</Link>
+      <Link href="/">Welcome</Link>
       <Link href="/about">About</Link>
+      <Link href="/star-wars">Data Fetching</Link>
     </div>
-    <div class="content"><slot /></div>
+    <div id="page-content"><slot /></div>
   </div>
 </template>
 
 <script setup>
 import Link from './Link.vue'
+import './css/index.css'
 </script>
 
 <style>
-body {
-  margin: 0;
-  font-family: sans-serif;
+#sidebar a {
+  padding: 2px 10px;
+  margin-left: -10px;
 }
-* {
-  box-sizing: border-box;
-}
-a {
-  text-decoration: none;
+#sidebar a.is-active {
+  background-color: #eee;
 }
 </style>
 
 <style scoped>
-.layout {
+#page-container {
   display: flex;
   max-width: 900px;
   margin: auto;
 }
-.content {
+#page-content {
   padding: 20px;
-  border-left: 2px solid #eee;
   padding-bottom: 50px;
   min-height: 100vh;
 }
-.navigation {
+#sidebar {
   padding: 20px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   line-height: 1.8em;
+  border-right: 2px solid #eee;
 }
-.logo {
+#logo-container {
   margin-top: 20px;
   margin-bottom: 10px;
 }

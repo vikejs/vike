@@ -28,13 +28,14 @@ import { getHtmlString, type HtmlRender } from '../html/renderHtml.js'
 import type { RenderHook } from './executeOnRenderHtmlHook.js'
 import pc from '@brillout/picocolors'
 
-const streamDocs = 'See https://vike.dev/stream for more information.'
+const streamDocs = 'See https://vike.dev/streaming for more information.'
 
 type HttpResponseBody = {
   body: string
-  getBody: () => Promise<string>
-  getReadableWebStream: () => StreamReadableWeb
   pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
+  getReadableWebStream: () => StreamReadableWeb
+  getReadableNodeStream: () => Promise<StreamReadableNode>
+  getBody: () => Promise<string>
   /** @deprecated */
   getNodeStream: () => Promise<StreamReadableNode>
   /** @deprecated */
@@ -58,71 +59,6 @@ function getHttpResponseBody(htmlRender: HtmlRender, renderHook: null | RenderHo
 
 function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: null | RenderHook) {
   return {
-    async getBody(): Promise<string> {
-      const body = await getHtmlString(htmlRender)
-      return body
-    },
-    // TODO/v1-release: remove
-    async getNodeStream() {
-      assertWarning(
-        false,
-        '`pageContext.httpResponse.getNodeStream()` is outdated, use `pageContext.httpResponse.pipe()` instead. ' +
-          streamDocs,
-        { onlyOnce: true, showStackTrace: true }
-      )
-      const nodeStream = await getStreamReadableNode(htmlRender)
-      if (nodeStream === null) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getNodeStream()', getFixMsg('readable', 'node')))
-      }
-      return nodeStream
-    },
-    // TODO/v1-release: remove
-    getWebStream() {
-      assertWarning(
-        false,
-        '`pageContext.httpResponse.getWebStream(res)` is outdated, use `pageContext.httpResponse.getReadableWebStream(res)` instead. ' +
-          streamDocs,
-        { onlyOnce: true, showStackTrace: true }
-      )
-      const webStream = getStreamReadableWeb(htmlRender)
-      if (webStream === null) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getWebStream()', getFixMsg('readable', 'web')))
-      }
-      return webStream
-    },
-    getReadableWebStream() {
-      const webStream = getStreamReadableWeb(htmlRender)
-      if (webStream === null) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableWebStream()', getFixMsg('readable', 'web')))
-      }
-      return webStream
-    },
-    // TODO/v1-release: remove
-    pipeToWebWritable(writable: StreamWritableWeb) {
-      assertWarning(
-        false,
-        '`pageContext.httpResponse.pipeToWebWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. ' +
-          streamDocs,
-        { onlyOnce: true, showStackTrace: true }
-      )
-      const success = pipeToStreamWritableWeb(htmlRender, writable)
-      if (!success) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToWebWritable()'))
-      }
-    },
-    // TODO/v1-release: remove
-    pipeToNodeWritable(writable: StreamWritableNode) {
-      assertWarning(
-        false,
-        '`pageContext.httpResponse.pipeToNodeWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. ' +
-          streamDocs,
-        { onlyOnce: true, showStackTrace: true }
-      )
-      const success = pipeToStreamWritableNode(htmlRender, writable)
-      if (!success) {
-        assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToNodeWritable()'))
-      }
-    },
     pipe(writable: StreamWritableNode | StreamWritableWeb) {
       const getErrMsgMixingStreamTypes = (writableType: 'Web Writable' | 'Node.js Writable') =>
         `The ${getErrMsgBody(htmlRender, renderHook)} while a ${
@@ -152,6 +88,78 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
           'pageContext.httpResponse.pipe(writable)'
         )} doesn't seem to be ${getStreamName('writable', 'web')} nor ${getStreamName('writable', 'node')}.`
       )
+    },
+    getReadableWebStream() {
+      const webStream = getStreamReadableWeb(htmlRender)
+      if (webStream === null) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableWebStream()', getFixMsg('readable', 'web')))
+      }
+      return webStream
+    },
+    async getReadableNodeStream() {
+      const nodeStream = await getStreamReadableNode(htmlRender)
+      if (nodeStream === null) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getReadableNodeStream()', getFixMsg('readable', 'node')))
+      }
+      return nodeStream
+    },
+    async getBody(): Promise<string> {
+      const body = await getHtmlString(htmlRender)
+      return body
+    },
+    // TODO/v1-release: remove
+    async getNodeStream() {
+      assertWarning(
+        false,
+        '`pageContext.httpResponse.getNodeStream()` is outdated, use `pageContext.httpResponse.getReadableNodeStream()` instead. ' +
+          streamDocs,
+        { onlyOnce: true, showStackTrace: true }
+      )
+      const nodeStream = await getStreamReadableNode(htmlRender)
+      if (nodeStream === null) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getNodeStream()', getFixMsg('readable', 'node')))
+      }
+      return nodeStream
+    },
+    // TODO/v1-release: remove
+    getWebStream() {
+      assertWarning(
+        false,
+        '`pageContext.httpResponse.getWebStream(res)` is outdated, use `pageContext.httpResponse.getReadableWebStream(res)` instead. ' +
+          streamDocs,
+        { onlyOnce: true, showStackTrace: true }
+      )
+      const webStream = getStreamReadableWeb(htmlRender)
+      if (webStream === null) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'getWebStream()', getFixMsg('readable', 'web')))
+      }
+      return webStream
+    },
+    // TODO/v1-release: remove
+    pipeToWebWritable(writable: StreamWritableWeb) {
+      assertWarning(
+        false,
+        '`pageContext.httpResponse.pipeToWebWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. ' +
+          streamDocs,
+        { onlyOnce: true, showStackTrace: true }
+      )
+      const success = pipeToStreamWritableWeb(htmlRender, writable)
+      if (!success) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToWebWritable()'))
+      }
+    },
+    // TODO/v1-release: remove
+    pipeToNodeWritable(writable: StreamWritableNode) {
+      assertWarning(
+        false,
+        '`pageContext.httpResponse.pipeToNodeWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. ' +
+          streamDocs,
+        { onlyOnce: true, showStackTrace: true }
+      )
+      const success = pipeToStreamWritableNode(htmlRender, writable)
+      if (!success) {
+        assertUsage(false, getErrMsg(htmlRender, renderHook, 'pipeToNodeWritable()'))
+      }
     }
   }
 

@@ -4,7 +4,7 @@ Despite being a simple change, the V1 design introduces new foundational capabil
 
 The overall architecture stays the same: the V1 design is mostly about replacing `.page.js` files with so-called *plus files*: `+Page.js`, `+route.js`, `+onBeforeRender.js`, ...
 
-The migration is straightforward and typically quick to implement. We encourage you to migrate sooner rather than later.
+The migration is straightforward and usually quick to implement. We encourage you to migrate sooner rather than later.
 
 > Don't hesitate to reach out if you run into any issue.
 
@@ -28,7 +28,7 @@ Move your `renderer/` hooks to `+` files:
 + // /renderer/+onRenderClient.js
 
 - export { render }
-+ export default render
++ export { render as onRenderClient }
 ```
 
 ```diff
@@ -36,7 +36,7 @@ Move your `renderer/` hooks to `+` files:
 + // /renderer/+onRenderHtml.js
 
 - export { render }
-+ export default render
++ export { render as onRenderHtml }
 ```
 
 If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
@@ -45,9 +45,8 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 - // /renderer/_default.page.server.js
 + // /renderer/+onBeforeRender.js
 
-- export { onBeforeRender }
+  export { onBeforeRender }
 - export const passToClient = ['pageProps']
-+ export default onBeforeRender
 ```
 
 ```diff
@@ -89,8 +88,7 @@ Move your error page (if you defined one):
 - // /renderer/_error.page.js
 + // /pages/_error/+Page.js
 
-- export { Page }
-+ export default Page
+  export { Page }
 ```
 
 
@@ -100,22 +98,20 @@ Move your error page (if you defined one):
 - // /pages/some-page/index.page.ts
 + // /pages/some-page/+Page.ts
 
-- export { Page }
-+ export default Page
+  export { Page }
 ```
 ```diff
 - // /pages/some-page/index.page.server.ts
 + // /pages/some-page/+onBeforeRender.ts
 
-- export { onBeforeRender }
-+ export default onBeforeRender
+  export { onBeforeRender }
 ```
 
 ```diff
 - // /pages/some-page/index.page.route.ts
 + // /pages/some-page/+route.ts
 
-export default route
+  export default route
 ```
 
 > Each page now lives in its own directory.
@@ -302,13 +298,10 @@ console.log("I'm run when the client-side JavaScript is loaded.")
 
 ## See also
 
- - [#578 [RFC] V1 Design](https://github.com/vikejs/vike/issues/578)
- - <Link href="/why-the-v1-design" />
  - <Link href="/header-file" />
  - <Link href="/config" />
- - <Link href="/vike-packages" />
- - <Link href="/client" />
  - <Link href="/meta" />
- - <Link href="/extends" />
- - <Link href="/onPrerenderStart" />
- - <Link href="/onBeforePrerenderStart" />
+ - <Link href="/client" />
+ - <Link href="/why-the-v1-design" />
+ - <Link href="/extensions" />
+ - [#578 [RFC] V1 Design](https://github.com/vikejs/vike/issues/578)

@@ -4,7 +4,7 @@ export { getViteConfigFromCli }
 import { assert, isObject, toPosixPath } from '../utils.js'
 import { cac } from 'cac'
 
-function isViteCliCall() {
+function isViteCliCall(): boolean {
   let execPath = process.argv[1]
   assert(execPath)
   execPath = toPosixPath(execPath)

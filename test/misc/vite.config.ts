@@ -10,6 +10,9 @@ export default {
     vike({
       prerender: {
         noExtraDir: true
+      },
+      redirects: {
+        '/mail': 'mailto:some@example.com'
       }
     })
   ]

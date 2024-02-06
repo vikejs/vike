@@ -1,29 +1,29 @@
 {
   "name": "vike",
-  "version": "0.4.151",
+  "version": "0.4.160",
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
     "build:esm": "tsc",
     "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
-    "build:cjs:ts": "tsc --outDir ./dist/cjs/ --module CommonJS --target ES2020 --moduleResolution Node10 --declaration false",
+    "build:cjs:ts": "tsc --project ./tsconfig.cjs.json",
     "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
     "release": "release-me patch",
     "release:commit": "release-me commit"
   },
   "dependencies": {
-    "@brillout/import": "0.2.3",
+    "@brillout/import": "^0.2.3",
     "@brillout/json-serializer": "^0.5.8",
     "@brillout/picocolors": "^1.0.10",
     "@brillout/require-shim": "^0.1.2",
-    "@brillout/vite-plugin-import-build": "^0.3.1",
-    "acorn": "^8.8.2",
-    "cac": "^6.7.14",
-    "es-module-lexer": "^1.3.0",
-    "esbuild": "^0.17.18",
-    "fast-glob": "^3.2.12",
-    "sirv": "^2.0.2",
-    "source-map-support": "^0.5.21"
+    "@brillout/vite-plugin-server-entry": "^0.4.3",
+    "acorn": "^8.0.0",
+    "cac": "^6.0.0",
+    "es-module-lexer": "^1.0.0",
+    "esbuild": "^0.19.0",
+    "fast-glob": "^3.0.0",
+    "sirv": "^2.0.0",
+    "source-map-support": "^0.5.0"
   },
   "type": "module",
   "exports": {
@@ -169,15 +169,27 @@
     "vike": "./node/cli/bin-entry.js"
   },
   "devDependencies": {
-    "@brillout/release-me": "^0.1.11",
-    "@types/estree": "^1.0.0",
-    "@types/jest": "^27.4.1",
-    "@types/node": "^20.1.0",
-    "@types/resolve": "^1.20.2",
-    "@types/source-map-support": "^0.5.6",
-    "rimraf": "^3.0.2",
-    "typescript": "^5.2.2",
-    "vite": "^4.2.1"
+    "@brillout/import": "^0.2.3",
+    "@brillout/json-serializer": "^0.5.8",
+    "@brillout/picocolors": "^1.0.10",
+    "@brillout/require-shim": "^0.1.2",
+    "@brillout/vite-plugin-server-entry": "^0.4.0",
+    "acorn": "^8.11.2",
+    "cac": "^6.7.14",
+    "es-module-lexer": "^1.4.1",
+    "esbuild": "^0.19.10",
+    "fast-glob": "^3.3.2",
+    "sirv": "^2.0.4",
+    "source-map-support": "^0.5.21",
+    "@brillout/release-me": "^0.1.13",
+    "@types/estree": "^1.0.5",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
+    "@types/resolve": "^1.20.6",
+    "@types/source-map-support": "^0.5.10",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10"
   },
   "engines": {
     "node": ">=16.0.0"

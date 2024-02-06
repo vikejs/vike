@@ -7,12 +7,14 @@ import {
   assertWarning,
   scriptFileExtensionList,
   scriptFileExtensions,
-  getGlobalObject
+  getGlobalObject,
+  humanizeTime
 } from '../../../../utils.js'
 import path from 'path'
 import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
+import pc from '@brillout/picocolors'
 const execA = promisify(exec)
 
 const globalObject = getGlobalObject('crawlPlusFiles.ts', {
@@ -23,7 +25,7 @@ async function crawlPlusFiles(
   userRootDir: string,
   outDirAbsoluteFilesystem: string,
   isDev: boolean
-): Promise<{ filePathRelativeToUserRootDir: string; filePathAbsoluteFilesystem: string }[]> {
+): Promise<{ filePathRelativeToUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
   assertPosixPath(outDirAbsoluteFilesystem)
   let outDirRelativeFromUserRootDir: string | null = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
@@ -52,9 +54,12 @@ async function crawlPlusFiles(
     const timeSpent = timeAfter - timeBefore
     if (isDev) {
       // We only warn in dev, because while building it's expected to take a long time as crawling is competing for resources with other tasks.
+      // Although, in dev, it's also competing for resources e.g. with Vite's `optimizeDeps`.
       assertWarning(
-        timeSpent < 2 * 1000,
-        `Crawling your user files took an unexpected long time (${timeSpent}ms). Create a new issue on Vike's GitHub.`,
+        timeSpent < 3 * 1000,
+        `Crawling your ${pc.cyan('+')} files took an unexpected long time (${humanizeTime(
+          timeSpent
+        )}). If you repeatedly get this warning, then consider creating a new issue on Vike's GitHub.`,
         {
           onlyOnce: 'slow-page-files-search'
         }
@@ -66,11 +71,7 @@ async function crawlPlusFiles(
     p = toPosixPath(p)
     assert(!p.startsWith(userRootDir))
     const filePathRelativeToUserRootDir = path.posix.join('/', p)
-    const filePathAbsoluteFilesystem = path.posix.join(userRootDir, p)
-    return {
-      filePathRelativeToUserRootDir,
-      filePathAbsoluteFilesystem
-    }
+    return { filePathRelativeToUserRootDir }
   })
 
   return plusFiles
@@ -168,6 +169,8 @@ async function isGitMissing(userRootDir: string) {
 
 async function runCmd(cmd: string, cwd: string): Promise<string[]> {
   const res = await execA(cmd, { cwd })
+  /* Not always true: https://github.com/vikejs/vike/issues/1440#issuecomment-1892831303
   assert(res.stderr === '')
+  */
   return res.stdout.toString().split('\n').filter(Boolean)
 }

@@ -19,13 +19,13 @@ function distFileNames(): Plugin {
       const rollupOutputs = getRollupOutputs(config)
       // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
-        if (!rollupOutput.entryFileNames) {
+        if (!('entryFileNames' in rollupOutput)) {
           rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
         }
-        if (!rollupOutput.chunkFileNames) {
+        if (!('chunkFileNames' in rollupOutput)) {
           rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
         }
-        if (!rollupOutput.assetFileNames) {
+        if (!('assertUsage' in rollupOutput)) {
           rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
         }
       })

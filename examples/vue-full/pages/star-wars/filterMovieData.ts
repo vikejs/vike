@@ -1,6 +1,6 @@
-import type { MovieDetails } from './types'
-
 export { filterMovieData }
+
+import type { MovieDetails } from './types'
 
 function filterMovieData(movie: MovieDetails & Record<string, unknown>): MovieDetails {
   const { id, title, release_date, director, producer } = movie

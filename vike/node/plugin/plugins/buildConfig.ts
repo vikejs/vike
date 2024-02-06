@@ -14,9 +14,9 @@ import {
   assertUsage,
   injectRollupInputs,
   normalizeRollupInput,
+  assertNodeEnvIsNotDev,
   getOutDirs
 } from '../utils.js'
-import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
@@ -37,7 +37,6 @@ import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
-
 const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin {
@@ -52,6 +51,7 @@ function buildConfig(): Plugin {
     configResolved: {
       order: 'post',
       async handler(config) {
+        assertNodeEnv()
         assertRollupInput(config)
         const entries = await getEntries(config)
         assert(Object.keys(entries).length > 0)
@@ -71,6 +71,7 @@ function buildConfig(): Plugin {
       }
     },
     config(config) {
+      assertNodeEnv()
       isSsrBuild = viteIsSSR(config)
       return {
         build: {
@@ -81,6 +82,9 @@ function buildConfig(): Plugin {
           cssMinify: 'esbuild'
         }
       } satisfies UserConfig
+    },
+    buildStart() {
+      assertNodeEnv()
     },
     writeBundle: {
       sequential: false,
@@ -304,6 +308,10 @@ function assertRollupInput(config: ResolvedConfig): void {
     htmlInput === undefined,
     `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using Vike, instead follow https://vike.dev/add`
   )
+}
+
+function assertNodeEnv() {
+  assertNodeEnvIsNotDev('building')
 }
 
 // The missing assets in the clientManifest are added from the serverManifest, based on V1 pageId.

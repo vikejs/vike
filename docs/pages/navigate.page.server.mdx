@@ -1,13 +1,11 @@
 import { RepoLink, Link, Warning } from '@brillout/docpress'
+import { UiFrameworkVikeExtension } from '../components'
 
-Environment: Browser, <Link text="Client Routing" href="/clientRouting" />.
+Environment: client.
 
-The `navigate('/some/url')` function enables you to programmatically switch pages.
+The `navigate('/some/url')` function enables you to programmatically switch pages. In other words, you can implement navigations that aren't triggered by the user clicking on an anchor link `<a>`.
 
-> `navigate()` requires <Link text="Client Routing" href="/clientRouting" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.
-
-With `navigate()`, you can implement navigations that aren't triggered by the user clicking on a `<a>` link:
-for example, when redirecting a user after a successful form submission.
+For example, you can use `navigate()` to redirect the user after a successful form submission:
 
 ```jsx
 import { navigate } from 'vike/client/router'
@@ -28,12 +26,14 @@ async function onSubmit() {
 }
 ```
 
-> If you want to redirect users *before* the page finished rendering (e.g. to redirect non-authenticated users to a login page), then use <Link href='/redirect' noBreadcrumb /> instead.
+> If you want to redirect while rendering a page (e.g. redirect non-authenticated users to a login page), then use <Link href='/redirect' noBreadcrumb /> instead.
+
+> If you want to navigate back, then use [`window.history.back()`](https://developer.mozilla.org/en-US/docs/Web/API/History/back) instead.
 
 
 ## Options
 
- - `navigate('/some-url', { keepScrollPosition: true })`: Don't scroll to the top of the page; keep scroll position where it is instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.) (You can also use `<a href="/some-url" keep-scroll-position />`.)
+ - `navigate('/some-url', { keepScrollPosition: true })`: Don't scroll to the top of the page, preserve the scroll position instead. See also <Link href="/clientRouting#settings">`<a href="/some-url" keep-scroll-position />`</Link>.
  - `navigate('/some-url', { overwriteLastHistoryEntry: true })`: Don't create a new entry in the browser's history, instead let the new URL replace the current URL. (This effectively removes the current URL from the browser history).
 
 
@@ -43,7 +43,7 @@ If you want to change the URL completely independently of Vike then use [`histor
 
 Make sure you implement your navigation handling by listening to the [`popstate` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event).
 
-<Warning>It's paramount you handle the `popstate` event, otherwise you'll break the browser's back- and forward history button.</Warning>
+<Warning>You need to handle the `popstate` event yourself, otherwise you'll break the browser's back- and forward history button.</Warning>
 
 ```js
 window.addEventListener('popstate', (event) => {
@@ -53,30 +53,27 @@ window.addEventListener('popstate', (event) => {
   const { triggeredBy } = event.state
   */
 
-  // Navigation event triggered by Vike or the browser
+  // Navigation triggered by Vike or the browser
   if (triggeredBy === 'vike' || triggeredBy === 'browser') {
-    // Abort: let Vike handle that navigation event
+    // Abort: let Vike handle the navigation
     return
   }
 
-  // Navigation event triggered by your history.pushState() call
+  // Navigation triggered by your history.pushState() call
   if (triggeredBy === 'user') {
-    // TODO: implement your navigation handling here
+    // Implement your navigation handling here
   }
 })
 ```
 
 
-## Examples
+## Without Vike extension
 
-Vue example:
- - <RepoLink path='/examples/vue-full/pages/index/+Page.vue' />
+If you don't use a <UiFrameworkVikeExtension /> and if you use <Link text="Server Routing" href="/server-routing" /> then use `window.location.href = '/some/url'` instead of `navigate()` (because `navigate()` requires <Link text="Client Routing" href="/client-routing" />).
 
-React example:
- - <RepoLink path='/examples/react-full/pages/index/+Page.tsx' />
+> The <UiFrameworkVikeExtension plural noLink /> use Client Routing.
 
 
 ## See also
 
  - <Link href="/redirect" />
- - <Link href="/client-routing" />

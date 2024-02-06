@@ -1,13 +1,20 @@
 import { Link } from '@brillout/docpress'
 import { ClientOnlyCommon } from './ClientOnly/ClientOnlyCommon.tsx'
+import { UiFrameworkVikeExtension } from '../components'
 
-Environment: browser.
+Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
 
-The `<ClientOnly>` wrapper enables you to load and render a component only on the client-side.
+The `<ClientOnly>` wrapper enables you to render and load a component only on the client-side.
 
-> It is currently available through [`vike-react`](https://github.com/vikejs/vike-react) and [`vike-solid`](https://github.com/vikejs/vike-solid), and [contribution welcome](https://github.com/vikejs/vike-vue/issues/27) for [`vike-vue`](https://github.com/vikejs/vike-vue).
+> Alternatively, you can set <Link href="/ssr">`ssr: false`</Link> to render and load the entire page only on the client-side.
 
-It is particularly useful for optimizing performance with heavy components, and for components that are meant for client-side only, such as those using browser-specific features. See <Link href="/client-only-components" />.
+Common use cases:
+
+ - **Library components that don't support SSR**. A solution is to render and load the component only on the client-side.
+   > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example if the library has a hard reference to browser-only APIs/objects such as `window`).
+ - **Performance**. `<ClientOnly>` allows you to defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
+   > Vite code-splits dynamic imports such as `const { SomeComponent } = await import('./SomeComponent')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client bundle: it's loaded only when/if `import()` is called.
+
 
 ## React
 
@@ -19,5 +26,13 @@ It is particularly useful for optimizing performance with heavy components, and 
 
 ## Vue
 
-[Contribution welcome](https://github.com/vikejs/vike-vue/issues/27) to implement a built-in <Link href="/ClientOnly">`<ClientOnly>`</Link> implementation for [`vike-vue`](https://github.com/vikejs/vike-vue).
+<ClientOnlyCommon packageName="vike-vue" />
 
+## Without Vike extension
+
+In case you don't use a <UiFrameworkVikeExtension />, you can implement `<ClientOnly>` yourself.
+
+Examples:
+ - [`vike-react` > /components/ClientOnly.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/components/ClientOnly.tsx)
+ - [`vike-vue` > /components/ClientOnly.vue](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/src/components/ClientOnly.vue)
+ - [`vike-solid` > /components/ClientOnly.tsx](https://github.com/vikejs/vike-solid/blob/main/vike-solid/components/ClientOnly.tsx)

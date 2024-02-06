@@ -4,7 +4,10 @@ import { ViteLazyTranspilingContradiction } from '../components'
 
 ## Vue
 
-If you use Vue, you can use [`unplugin-vue-markdown`](https://github.com/antfu/unplugin-vue-markdown), or [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md) (make sure to use at least `vite-plugin-md@0.22.x`, see [this bug report](https://github.com/antfu/vite-plugin-md/issues/112#issuecomment-1353626379)).
+Markdown plugins compatible with Vue:
+ - [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/)
+ - [`unplugin-vue-markdown`](https://github.com/unplugin/unplugin-vue-markdown)
+ - [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md)
 
 Example:
  - <RepoLink path='/examples/vue-full/vite.config.ts' />
@@ -13,7 +16,9 @@ Example:
 
 ## React
 
-If you use React, you can use [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/).
+Markdown plugins compatible with React:
+ - [`@cyco130/vite-plugin-mdx`](https://github.com/cyco130/vite-plugin-mdx/)
+ - [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/)
 
 Example:
  - <RepoLink path='/examples/react-full/vite.config.ts' />
@@ -22,13 +27,40 @@ Example:
 
 ## Metadata
 
-A somewhat unconventional, but simple yet powerful, way to define the metadata of your pages (title, publishing date, ...) is to define a `metadata.js` file that contains the metadata of all your markdown pages.
+There are several ways you can define the metadata of your pages (title, publishing date, author, ...).
 
-> If you want to show the list of pages to your users, then we recommend this approach over <Link href="#metadata-with-frontmatter" /> and <Link href="#metadata-with-new-settings" doNotInferSectionTitle={true} />. See explanation at <Link href="#page-list" />.
+The best way to define metadata depends on whether the metadata is global or local.
+ - Global metadata.
+   > For example, if you want to show the list of all your blog posts, and you want to always show that list on the left side of your website.
+   > ```
+   > ALL MY BLOG POSTS
+   > 2024-01-01 New Year 2024 Resolution
+   > 2023-12-20 Wrapping up 2023
+   > 2023-06-15 My summer 2023
+   > ...
+   > ```
+   > Because that list is shown on every page, the publishing date and the title of all blog posts are always needed when rendering any page. Thus, this metadata is needed for every page.
+ - Local metadata.
+   > For example, if you want to show some detailed information below the blog post, such as the author's name and country. This metadata is only shown, and thus only needed, for that page.
+
+For global metadata, we recommend:
+- [With a `metadata.js` file](#with-a-metadata-js-file)
+
+For local metadata, we recommend:
+- [With custom settings](#with-custom-settings)
+- [With frontmatter](#with-frontmatter)
+
+> You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all your pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
+
+
+### With a `metadata.js` file
+
+A simple way to define metadata is to define a `metadata.js` file that contains <Link href="#metadata:~:text=global%20or%20local.-,Global%20metadata,-.">global metadata</Link>.
 
 ```js
 // /pages/metadata.js
 
+// This metadata is always available for every page
 export const metadata = [
   {
     url: '/blog/introducing-vike',
@@ -38,39 +70,51 @@ export const metadata = [
   {
     url: '/blog/v1',
     title: 'v1.0.0 release',
-    date: new Date('2024-02-01')
+    date: new Date('2024-06-01')
   }
 ]
 ```
 
 ```jsx
-// /pages/index/+Page.jsx
+// /pages/+Layout.jsx
 
 import { metadata } from './metadata'
 
-// Show the list of blog posts
-export function Page() {
+export function Layout({ children }) {
+  // Current URL
+  const { urlPathname } = usePageContext()
+  // The page's metadata
+  const { title } = metadata.find(({ url }) => url === pageContext.urlPathname)
+
   return <>
-    <p>Blog posts:</p>
-    <ul>{
-      metadata.map(({ title, url, date }) =>
-        <li>
-          <a href={url}>{title}</a> published in {date.toDateString()}
-        </li>
-      )
-    }</ul>
+    {/* Show the list of blog posts */}
+    <LeftSidebar>
+      <p>Blog posts:</p>
+      <ul>{
+        metadata.map(({ title, url, date }) =>
+          <li>
+            <a href={url}>{data + title}</a>
+          </li>
+        )
+      }</ul>
+    </LeftSidebar>
+
+    {/* The page's content */}
+    <Content>
+      <h1>{ title }</h1>
+      /* children is usually pageContext.Page which is the component defined by +Page.md */
+      { children }
+    </Content>
   </>
 }
 ```
 
-We don't have to redefine/duplicate the page titles in the markdown:
-
 ```md
 // /pages/blog/introducing-vike/+Page.md
 
-We're thrilled to officially introduce Vike, the new name of vite-plugin-ssr,
-marking a new era for the project.
+We're thrilled to officially introduce Vike.
 ```
+> The `<h1>` of each pages is already defined by `/pages/+Layout.jsx`: you don't have to define it again in `+Page.md`.
 
 ```md
 // /pages/blog/v1/+Page.md
@@ -79,140 +123,69 @@ The `v1.0.0` release signals that Vike is ready for prime time: it now includes
 all essentials you'd expect from a frontend framework with a robust design.
 ```
 
-Instead, we integrate the page title defined by `metadata.js`:
 
-```js
-// /renderer/PageShell.jsx
+### With custom settings
 
-import { metadata } from '../pages/metadata'
+You can use <Link href="/meta">`meta`</Link> to create custom settings for defining <Link href="#metadata:~:text=for%20every%20page.-,Local%20metadata,-.">local metadata</Link>.
 
-export function PageShell({ pageContext }) {
-  // The component defined by our .md files
-  const { Page } = pageContext
-  // Current URL
-  const url = pageContext.urlParsed.pathname
-  // The page's metadata
-  const { title } = metadata.find(m => m.url === url)
-  return <>
-    <h1>{title}</h1>
-    <Page />
-  </>
+```mdx
+// /pages/2024-new-year/+Page.mdx
+
+export const metadata = {
+  author: {
+    firstName: 'John',
+    lastName: 'Doe',
+    country: 'England'
+  }
 }
+
+## Some Markdown
+
+This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
 ```
 
-```js
-// /renderer/+onRenderHtml.jsx
+> [MDX](https://mdxjs.com/) allows you to export JavaScript values in `.mdx` files.
 
-export { onRenderHtml }
-
-import { PageShell } from './PageShell'
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToString } from 'some-ui-framework' // React/Vue/Solid/...
-
-async function onRenderHtml(pageContext) {
-  const url = pageContext.urlParsed.pathname
-  const { title } = metadata.find(m => m.url === url)
-  const page = <PageShell pageContext={pageContext} />
-  const pageHtml = renderToString(page)
-  return escapeInject`<html>
-    <head>
-      <title>${title}</title>
-    </head>
-    <body>
-      <div id="page-view">
-        ${dangerouslySkipEscape(pageHtml)}
-      </div>
-    <body>
-  </html>`
-}
-```
-
-## Metadata with new settings
-
-You can create new settings for setting the value of `<head>` tags, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
+> Usually, Vike forbids `+Page.js` files to have "side exports": the `+Page.js` should only export the value of the `Page` setting.
+> But, for improved DX, Vike allows markdown files such as `+Page.mdx` to export the value of other settings.
 
 ```ts
 // /pages/+config.h.js
 
+// Define the custom settings `metadata`
 export default {
   meta: {
-    title: {
-      // Make value of `title` available on both the server- and client-side
+    metadata: {
       env: { server: true, client: true }
-    },
-    description: {
-      // Make value of `description` available only on the server-side
-      env: { server: true, client: false }
     }
   }
 }
 ```
 
-~~~md
-// /pages/some/+Page.md
+See <Link href="/meta"/>.
 
-export const title = 'A Markdown Page'
-export const description = 'Example of setting `<title>` and `<meta name="description">`'
-
-# Markdown
-
-This page is written in _Markdown_.
-~~~
-
-See full implementation at <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
-
-Examples:
- - <RepoLink path='/examples/react-full/pages/markdown/+Page.mdx' />
- - <RepoLink path='/examples/vue-full/pages/markdown/+Page.md' />
+> It's a common practice to use a [`metadata.js` file](#with-a-metadata-js-file) for defining global metadata, as well as creating custom settings for defining local metadata.
 
 
-## Metadata with frontmatter
+### With frontmatter
 
-Some markdown processors also have support for a so-called *frontmatter* to define the page's metadata.
+Some markdown processors have support for a so-called *frontmatter* to define the page's metadata.
 
 ```
 ---
 title: A Markdown Page
-description: Example of setting `<title>` and `<meta name="description">`
+description: Example of using markdown with some frontmatter data
 ---
 
-# Markdown
+## Some Markdown
 
-This page is written in _Markdown_.
+This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
 ```
 
-> Make sure the Vite markdown plugin you are using has frontmatter support.
+The frontmatter data is usually exposed as an export,
+which you can access by making the export `nameOfTheFrontmatterExport` a custom setting, see <Link href="/meta" />.
 
-Markdown processors usually expose the frontmatter data as an export,
-which you can access by creating a custom config `nameOfTheFrontmatterExport`, see <Link href="/meta" />.
 
-```js
-// /renderer/+onRenderHtml.js
+## See also
 
-export { onRenderHtml }
-
-import { escapeInject } from 'vike/server'
-
-async function onRenderHtml(pageContext) {
-  // Read the documentation of your Vite markdown plugin or of its underlying markdown
-  // processor to find the name of the export that holds the frontmatter data.
-  const frontmatterExportName = 'nameOfTheFrontmatterExport'
-  const frontmatter = pageContext.config[frontmatterExportName]
-  const { title, description } = frontmatter
-  return escapeInject`<html>
-    <head>
-      <title>${title}</title>
-      <meta name="description" content="${description}">
-    </head>
-    <!-- ... -->
-  </html>`
-}
-```
-
-## Page list
-
-A frequent need when using markdown is to show the list of markdown pages to your users, for example the list of your blog posts.
-
-To be able to do so, we recommend defining a file `metadata.js` that contains the metadata of all your markdown pages, see <Link href="#metadata" />.
-
-Another approach is to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the list of markdown files, but we usually recommend against this approach. The problem is that, in order to retrieve the metadata of all your markdown files, you'd need to load the *entire* code of *all* your markdown files, <ViteLazyTranspilingContradiction />.
+- <Link href="/head" />

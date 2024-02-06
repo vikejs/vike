@@ -1,4 +1,4 @@
-The hooks [`onBeforeRender()`](/onBeforeRender), [`onRenderHtml()`](/onRenderHtml), and
+The hooks [`data()`](/data), [`onBeforeRender()`](/onBeforeRender), [`onRenderHtml()`](/onRenderHtml), and
 [`onBeforeRoute()`](/onBeforeRoute) enable us to extend `pageContext`.
 
 ```js
@@ -17,8 +17,9 @@ async function onBeforeRender(pageContext) {
 }
 
 async function getStarWarsMovies() {
-  const starWarsMovies = await fetch('https://star-wars.brillout.com/api/films.json')
-  return starWarsMovies
+  const response = await fetch('https://star-wars.brillout.com/api/films.json')
+  const { movies } = await response.json()
+  return movies
 }
 ```
 

@@ -1,6 +1,6 @@
 Example of implementing a custom preloading strategy.
 
-See [vike.dev > Preload](https://vike.dev/preload).
+See [vike.dev > Preloading](https://vike.dev/preloading).
 
 ```bash
 git clone git@github.com:vikejs/vike

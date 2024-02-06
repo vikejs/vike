@@ -1,11 +1,11 @@
-import { HookTypeScriptHints, IntegrationPackage, IntegrationPackageNames } from '../components'
+import { HookTypeScriptHints, UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 import { Link, RepoLink } from '@brillout/docpress'
 
 Environment: server.
 
 The `escapeInject` string template tag sanitizes HTML to prevent security risks commmonly called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
 
-> If you use a <IntegrationPackage/>, then you don't need to use `escapeInject` yourself as <IntegrationPackageNames /> already sanitizes its HTML.
+> If you use a <UiFrameworkVikeExtension/>, then you don't need to use `escapeInject` yourself as <UiFrameworkVikeExtensionNames /> already sanitizes its HTML.
 
 It's usually used by the `onRenderHtml()` hook.
 
@@ -78,7 +78,7 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> `pageContext.config.description` is a custom config, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
+> `pageContext.config.description` is a custom setting, see <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
 
 Example:
 - <RepoLink path='/examples/html-fragments/' />

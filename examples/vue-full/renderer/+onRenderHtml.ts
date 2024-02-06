@@ -26,7 +26,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   return {
     documentHtml,
     pageContext: {
-      // https://vike.dev/stream
+      // https://vike.dev/streaming
       enableEagerStreaming: true
     }
   }

@@ -1,22 +1,23 @@
 export { UseBatiHint }
-export { UseIntegrationPackageHint }
-export { UseIntegrationPackageAnyHint }
+export { UseBatiHint_insteadOfManuelIntegration }
+export { UseUiFrameworkVikeExtensionHint }
+export { UseUiFrameworkVikeExtensionAnyHint }
 
 import React from 'react'
-import { IntegrationPackage, IntegrationPackageNames } from '../components'
+import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
-function UseIntegrationPackageAnyHint({ featureName }: { featureName: string }) {
+function UseUiFrameworkVikeExtensionAnyHint({ featureName }: { featureName: string }) {
   return (
     <blockquote>
       <p>
-        Instead of manually integrating {featureName} yourself, you can use a <IntegrationPackage /> which already
-        integrates {featureName}. You can use <Bati /> to scaffold an app that uses <IntegrationPackageNames />.
+        Instead of manually integrating {featureName} yourself, you can use a <UiFrameworkVikeExtension /> which already
+        integrates {featureName}. You can use <Bati /> to scaffold an app that uses <UiFrameworkVikeExtensionNames />.
       </p>
     </blockquote>
   )
 }
 
-function UseIntegrationPackageHint({
+function UseUiFrameworkVikeExtensionHint({
   uiFrameworkName,
   noQuote
 }: {
@@ -24,11 +25,11 @@ function UseIntegrationPackageHint({
   noQuote?: true
 }) {
   const pkg = <code>vike-{uiFrameworkName.toLowerCase()}</code>
-  const pkgWithLink = <a href="/vike-packages#ui-framework">{pkg}</a>
+  const pkgWithLink = <a href="/extensions#ui-framework">{pkg}</a>
   const hint = (
     <p>
       Instead of manually integrating {uiFrameworkName} yourself, you can use {pkgWithLink} which integrates{' '}
-      {uiFrameworkName} in a full-fledged manner. You can use <Bati /> to scaffold an app that uses {pkg}.
+      {uiFrameworkName} in a full-featured manner. You can use <Bati /> to scaffold an app that uses {pkg}.
     </p>
   )
   if (noQuote) {
@@ -38,7 +39,14 @@ function UseIntegrationPackageHint({
   }
 }
 
-function UseBatiHint({ toolName }: { toolName: string }) {
+function UseBatiHint({ feature }: { feature: string | React.ReactElement }) {
+  return (
+    <>
+      You can use <a href="https://batijs.github.io/">Bati</a> to scaffold a Vike app using {feature}.
+    </>
+  )
+}
+function UseBatiHint_insteadOfManuelIntegration({ toolName }: { toolName: string }) {
   return (
     <>
       <blockquote>

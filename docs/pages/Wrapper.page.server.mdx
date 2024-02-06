@@ -1,0 +1,49 @@
+import { Link } from '@brillout/docpress'
+import { UiFrameworkVikeExtension } from '../components'
+
+Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
+
+The `Wrapper` setting wraps your <Link href="/Page">Page component</Link> with another component.
+
+```jsx
+<Wrapper>     <- component defined by the setting "Wrapper"
+  <Layout>    <- component defined by the setting "Layout"
+    <Page />  <- component defined by the setting "Page"
+  </Layout>
+</Wrapper>
+```
+
+A page can be wrapped by multiple `<Wrapper>` components:
+
+```jsx
+<Wrapper1>
+  <Wrapper2>
+    <Wrapper3>
+      <Layout>
+        <Page />
+      </Layout>
+    </Wrapper3>
+  </Wrapper2>
+</Wrapper1>
+```
+
+> Unlike `<Wrapper>`, a page can have only one <Link href="/Layout">`<Layout>`</Link> component. (In other words `<Wrapper>` is cumulative whereas `<Layout>` isn't.)
+
+The `<Wrapper>` component is usually used for integrating tools, such as data fetching and state management tools.
+
+
+## Without Vike extension
+
+In case you don't use a <UiFrameworkVikeExtension />, you can implement the `Wrapper` setting yourself by using <Link href="/meta">meta</Link>.
+
+Examples:
+
+ - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
+ - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
+ - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
+
+
+## See also
+
+- <Link href="/Layout" />
+- <Link href="/Page" />

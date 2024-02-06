@@ -1,50 +1,62 @@
 // Mechanism to ensure code isn't loaded by production runtime
 
 export { assertIsNotProductionRuntime }
-export { markEnvAsDev }
-export { markEnvAsPreview }
-export { markEnvAsVite }
+export { markEnvAsViteDev }
+export { markEnvAsVitePreview }
+export { markEnvAsVikePluginLoaded }
 export { assertEnv }
+export { vikeVitePluginLoadedInProductionError }
 
-import { assert } from './assert.js'
+import { assert, assertUsage } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { createDebugger } from './debug.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { isVitest } from './isVitest.js'
-
 assertIsNotBrowser()
+const debug = createDebugger('vike:setup')
+const vikeVitePluginLoadedInProductionError = `Loading Vike's Vite plugin (the vike/plugin module) is prohibited in production.`
 
 const env = getGlobalObject<{
-  shouldBeVite?: true
-  isDev?: true
-  isPreview?: true
-  isVite?: true
+  shouldNotBeProduction?: true
+  isViteDev?: true
+  isVitePreview?: true
+  isVikePluginLoaded?: true
 }>('utils/assertIsNotProductionRuntime.ts', {})
 
-// Called by *.ts that want to ensure that they aren't loaded by the server runtime in production
+// Called by Vike modules that want to ensure that they aren't loaded by the server runtime in production
 function assertIsNotProductionRuntime(): void | undefined {
-  env.shouldBeVite = true
+  if (debug.isEnabled) debug('assertIsNotProductionRuntime()', new Error().stack)
+  env.shouldNotBeProduction = true
 }
 
 // Called by Vite hook configureServer()
-function markEnvAsDev(): void | undefined {
-  env.isDev = true
+function markEnvAsViteDev(): void | undefined {
+  if (debug.isEnabled) debug('markEnvAsViteDev()', new Error().stack)
+  env.isViteDev = true
 }
 // Called by Vite hook configurePreviewServer()
-function markEnvAsPreview(): void | undefined {
-  env.isPreview = true
+function markEnvAsVitePreview(): void | undefined {
+  if (debug.isEnabled) debug('markEnvAsVitePreview()', new Error().stack)
+  env.isVitePreview = true
 }
 // Called by ../node/plugin/index.ts
-function markEnvAsVite() {
-  env.isVite = true
+function markEnvAsVikePluginLoaded() {
+  if (debug.isEnabled) debug('markEnvAsVikePluginLoaded()', new Error().stack)
+  env.isVikePluginLoaded = true
 }
 // Called by ../node/runtime/index.ts
 function assertEnv(): void | undefined {
+  if (debug.isEnabled) debug('assertEnv()', new Error().stack)
   if (isVitest()) return
-  if (env.isDev || env.isPreview) {
-    assert(env.isVite)
-    assert(env.shouldBeVite)
+  const isProduction = !env.isViteDev && !env.isVitePreview
+  if (isProduction) {
+    // Seems to be the only reliable way to assert that the user doesn't load Vike's Vite plugin in production. (The other assert() that uses process.env.NODE_ENV doesn't work if the user sets the process.env.NODE_ENV value later.)
+    assertUsage(!env.isVikePluginLoaded, vikeVitePluginLoadedInProductionError)
+    // This assert() is the main goal of this file: it ensures assertIsNotProductionRuntime()
+    assert(!env.shouldNotBeProduction)
   } else {
-    assert(!env.isVite)
-    assert(!env.shouldBeVite)
+    // This assert() is obious and boring
+    assert(env.shouldNotBeProduction)
+    assert(env.isVikePluginLoaded)
   }
 }

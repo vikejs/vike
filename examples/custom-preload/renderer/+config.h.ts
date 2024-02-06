@@ -5,7 +5,7 @@ export default {
   passToClient: ['pageProps'],
   // https://vike.dev/meta
   meta: {
-    // Create new config 'preloadStrategy'
+    // Define new setting 'preloadStrategy'
     preloadStrategy: {
       env: { server: true }
     }

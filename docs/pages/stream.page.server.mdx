@@ -1,302 +1,54 @@
-import { RepoLink, Link } from '@brillout/docpress'
-import partialHydrationDemo from './stream/partial-hydration-demo.webm'
-import { UseIntegrationPackageAnyHint } from '../components'
+import { Link } from '@brillout/docpress'
 
-Vike has first-class support for HTML Streaming.
+import { UiFrameworkVikeExtension } from '../components'
 
-With Vike (unlike other frontend frameworks) you have full control over the HTML Stream.
+Default value: `false`. (Or `true` if using a <Link href="/extensions">Vike extension</Link> that requires streaming.)  
+Requires: <Link href="/ssr">`ssr: true`</Link>.  
+Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
 
-<UseIntegrationPackageAnyHint featureName="HTML Streaming" />
+Setting to disable/enable <Link href="/streaming">HTML Streaming</Link>.
 
-## Examples & docs
-
-React Examples:
- - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
- - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-react-full/' />
- - React 18 + Relay: [Vilay](https://github.com/XiNiHa/vilay)
- - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + [Telefunc](https://telefunc.com/) + [TigrisDB](https://www.tigrisdata.com/) + [Blueprint](https://blueprintjs.com/): [GitHub > `pyrossh/react-streaming-tigris`](https://github.com/pyrossh/react-streaming-tigris)
-
-Vue Examples:
- - Vue's `renderToNodeStream()` + Node.js: <RepoLink path='/examples/vue-full/' />
- - Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue/' />
-
-Stream Docs & API:
- - [Node.js Streams](https://nodejs.org/api/stream.html)
- - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
-
-
-## Basics
+Disable for all your pages:
 
 ```js
-// /renderer/+onRenderHtml.js
+// /pages/+config.h.js
 
-export { onRenderHtml }
-
-import { escapeInject } from 'vike/server'
-import { renderToStream } from 'some-ui-framework' // React, Vue, ...
-
-async function onRenderHtml(pageContext) {
-  const { Page } = pageContext
-
-  const stream = renderToStream(Page)
-
-  return escapeInject`<!DOCTYPE html>
-    <html>
-      <body>
-        <div id="page-view">${stream}</div>
-      </body>
-    </html>`
+// This config applies to all pages (/pages/**).
+export default {
+  stream: false
 }
 ```
 
-Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
+Disable only for some pages:
 
 ```js
-// server.js
+// /pages/admin/+config.h.js
 
-import { renderPage } from 'vike/server'
-
-app.get("*", async (req, res, next) => {
-  const pageContextInit = { urlOriginal: req.url }
-  const pageContext = await renderPage(pageContextInit)
-  const { httpResponse } = pageContext
-  if (!httpResponse) return next()
-  // `httpResponse.pipe()` works with Node.js Streams as well as Web Streams.
-  httpResponse.pipe(res)
-})
-```
-
-Edge platforms (e.g. Cloudflare Workers):
-
-```js
-// worker.js
-
-import { renderPage } from 'vike/server'
-
-addEventListener('fetch', (event) => {
-  event.respondWith(handleFetchEvent(event))
-})
-
-async function handleFetchEvent(event) {
-  const pageContextInit = { urlOriginal: event.request.url }
-  const pageContext = await renderPage(pageContextInit)
-  const { httpResponse } = pageContext
-  if (!httpResponse) {
-    return null
-  } else {
-    // `httpResponse.getReadableWebStream()` only works for Web Streams
-    const readable = httpResponse.getReadableWebStream()
-    const { statusCode: status, headers } = httpResponse
-    return new Response(readable, { headers, status })
-  }
-}
-```
-
-
-## `enableEagerStreaming`
-
-By default, the HTML template (we provide in our `onRenderHtml()` hook) isn't immediately written to the stream:
-instead, Vike awaits for our UI framework to start writing to the stream.
-
-```js
-// /renderer/+onRenderHtml.js
-
-export { onRenderHtml }
-
-import { renderToStream } from 'some-ui-framework' // React, Vue, ...
-
-async function onRenderHtml(pageContext) {
-  const { Page } = pageContext
-
-  const stream = renderToStream(Page)
-
-  // The HTML template (e.g. `<title>`) isn't immediately written to the stream.
-  // Instead, Vike awaits for `stream` to start.
-  return escapeInject`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>Hello</title>
-      </head>
-      <body>
-        <div id="page-view">${stream}</div>
-      </body>
-    </html>`
-}
-```
-
-If we set `pageContext.enableEagerStreaming` to `true` then Vike starts writing the HTML template right away.
-
-```js
-async function onRenderHtml(pageContext) {
-  // The HTML template (e.g. `<title>`) is immediately written to the stream
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>Hello</title>
-      </head>
-      <body>
-        <div id="page-view">${renderToStream(pageContext.Page)}</div>
-      </body>
-    </html>`
-
-  return {
-    documentHtml,
-    pageContext: {
-      enableEagerStreaming: true
-    }
-  }
-}
-```
-
-## Stream to string
-
-We can convert the stream to a string:
-
-```js
-/* This won't work: (a stream cannot be consumed synchronously)
-const { body } = httpResponse
-res.send(body)
+/* This config applies only to admin pages (/pages/admin/**) such as:
+   FILESYSTEM                            URL
+   /pages/admin/+Page.js                 /admin
+   /pages/admin/user/@id/+Page.js        /admin/user/@id
+   /pages/admin/product/@id/+Page.js     /admin/product/@id
 */
-
-// But we can do:
-const body = await httpResponse.getBody()
-assert(typeof body === 'string')
-res.send(body)
-```
-
-## Stream pipes
-
-To be able to use stream pipes, we need to use `stampPipe()`:
-
-```js
-// /renderer/+onRenderHtml.js
-
-export { onRenderHtml }
-
-import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
-import { escapeInject, stampPipe } from 'vike/server'
-
-async function onRenderHtml(pageContext) {
-  const { Page } = pageContext
-
-  const pipe = renderToStreamPipe(Page)
-
-  // If `pipe(writable)` expects `writable` to be a Writable Node.js Stream
-  stampPipe(pipe, 'node-stream')
-  // If `pipe(writable)` expects `writable` to be a Writable Web Stream
-  stampPipe(pipe, 'web-stream')
-
-  return escapeInject`<!DOCTYPE html>
-    <html>
-      <body>
-        <div id="page-view">${pipe}</div>
-      </body>
-    </html>`
+export default {
+  stream: false
 }
 ```
 
-For Node.js:
-
-```js
-// server.js
-
-const pageContext = await renderPage(pageContextInit)
-const { httpResponse } = pageContext
-// We can use `httpResponse.pipe()` as usual
-httpResponse.pipe(res)
-```
-
-For Edge platforms that need a readable stream, such as Cloudflare Workers, we can use `new TransformStream()`:
-
-```js
-// worker.js
-
-const { readable, writable } = new TransformStream()
-httpResponse.pipe(writable)
-const resp = new Response(readable)
-```
-
-For some UI frameworks, such as Vue, we need a pipe wrapper:
-
-```js
-// /renderer/+onRenderHtml.js
-
-export { onRenderHtml }
-
-import { pipePageToWritable } from 'some-ui-framework'
-import { stampPipe, escapeInject } from 'vike/server'
-
-async function onRenderHtml(pageContext) {
-  const { Page } = pageContext
-
-  // We use a pipe wrapper so that `pipePageToWritable()` can access `Page`
-  const pipeWrapper = (writable) => {
-    pipePageToWritable(Page, writable)
-  }
-  stampPipe(pipeWrapper, 'node-stream')
-
-  return escapeInject`<!DOCTYPE html>
-    <html>
-      <body>
-        <div id="page-view">${pipeWrapper}</div>
-      </body>
-    </html>`
-}
-```
-
-See <RepoLink path='/examples/cloudflare-workers-vue' /> for an example of using a pipe wrapper with Vue's `pipeToWebWritable()`/`pipeToNodeWritable()`, and using `new TransformStream()` for Cloudflare Workers.
 
 
-## Initial data after stream end
+## Without Vike extension
 
-Some data fetching tools, such as <Link href="/relay">Relay</Link> and [Vue's `onServerPrefetch()`](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch), collect data during the stream.
+In case you don't use a <UiFrameworkVikeExtension />, you can implement the `stream` setting yourself by using <Link href="/meta">meta</Link>.
 
-Consequently, we can determine the initial data (passed to the browser) only after the stream has ended.
+Examples:
 
-In such situations, we can return a `pageContext` async function in our `onRenderHtml()` hook:
+ - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
+ - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
+ - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
 
-```js
-// /renderer/+onRenderHtml.js
 
-export { onRenderHtml }
+## See also
 
-import { escapeInject } from 'vike/server'
-import { renderToStream } from 'some-ui-framework' // React, Vue, ...
-
-async function onRenderHtml(pageContext) {
-  const { Page } = pageContext
-
-  const stream = renderToStream(Page)
-
-  const documentHtml = escapeInject`<!DOCTYPE html>
-    <html>
-      <body>
-        <div id="page-view">${stream}</div>
-      </body>
-    </html>`
-
-  const pageContextPromise = async () => {
-     // I'm called after the stream has ended
-     return {
-       initialData,
-     }
-  }
-
-  return {
-    documentHtml,
-    pageContext: pageContextPromise
-  }
-}
-```
-
-## Partial hydration
-
-Some UI frameworks, such as React, support *partial hydration*: while some data-fetching parts of the UI are being loaded and rendered, other parts of the UI are already loaded, rendered, and <Link href="/hydration">hydrated</Link>.
-
-For example:
-
-<video src={partialHydrationDemo} controls="controls" muted="muted" width="500"></video>
-
-Vike has first-class support for partial hydration and there is usually nothing for you to do: it just works.
-
-See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.
+- <Link href="/streaming" />
+- <Link href="/ssr" />

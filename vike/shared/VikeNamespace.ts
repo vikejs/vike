@@ -33,6 +33,7 @@ declare global {
    *  - `vike-vue`
    *  - `vike-solid`
    *  - `vike-svelte`
+   *  - `vike-angular`
    *
    *  As a Vike user, you can ignore this.
    */
@@ -45,5 +46,6 @@ declare global {
     interface ConfigVikeVue {} // For vike-vue
     interface ConfigVikeSolid {} // For vike-solid
     interface ConfigVikeSvelte {} // For vike-svelte (the vike-svelte package doesn't exist yet)
+    interface ConfigVikeAngular {} // For vike-angular
   }
 }

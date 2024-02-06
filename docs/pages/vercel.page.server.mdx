@@ -1,27 +1,29 @@
 import { Link, Warning } from '@brillout/docpress'
-import { Github, UseBatiHint } from '../components'
+import { Github, UseBatiHint_insteadOfManuelIntegration } from '../components'
 
-We can deploy Vike to [Vercel](https://vercel.com) simply by using a Vercel API Route, or we can use `vite-plugin-vercel` if we want advanced Vercel features such as ISR and Edge Middleware.
+You can deploy Vike to [Vercel](https://vercel.com) simply by using a Vercel API Route. Alternatively, you can use `vite-plugin-vercel` for a full-fleged Vercel integration with ISR and Edge Middlewares.
 
-<UseBatiHint toolName="Vercel" />
+We recommend using the Vercel API Route technique because it's a simple and sturdy integration. Later, if the need arises, you can switch to `vite-plugin-vercel`.
+
+<UseBatiHint_insteadOfManuelIntegration toolName="Vercel" />
 
 
 ## API Route
 
-We can deploy our Vike app to Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders our app.
+You can integrate Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders your app.
 
 Example: <Github>brillout/vike-with-vercel</Github>.
 
 <Warning>Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md` instructions.</Warning>
 
-> Using a Vercel API Route is a sturdy way to deploy to Vercel, as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once we set up our server-side rendering API Route, we can expect it to work for the foreseeable future.
+> Using a Vercel API Route is a sturdy way to deploy to Vercel, as API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a moving target with occasional breaking changes.) Once you've set the server-side rendering API Route, you can expect it to work for the foreseeable future.
 
 
 ## vite-plugin-vercel
 
-[`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel) enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) and Edge Middleware.
+[`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel) enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) and Edge Middlewares.
 
-If we <Link text="pre-render our pages only partially" href="/prerender-config#partial" />, we can also use `vite-plugin-vercel` to statically deploy our pre-rendered pages while dynamically serving our non-prerendered pages.
+If you <Link text="pre-render your pages only partially" href="/prerender-config#partial" />, you can also use `vite-plugin-vercel` to statically deploy your pre-rendered pages while dynamically serving your non-prerendered pages.
 
 > See Vike + `vite-plugin-vercel` installation instructions at [`vite-plugin-vercel` > Usage with Vike](https://github.com/magne4000/vite-plugin-vercel#usage-with-vike).
 
@@ -30,7 +32,7 @@ If we <Link text="pre-render our pages only partially" href="/prerender-config#p
 
 ## Build Output API
 
-For maximum flexibility and configuration options, we can also directly use the [Build Output API](https://vercel.com/docs/build-output-api/v3).
+For maximum flexibility and configuration options, you can directly use the [Build Output API](https://vercel.com/docs/build-output-api/v3).
 
 Example:
  - [github.com/brillout/vite-plugin-ssr_vercel_build-output-api](https://github.com/brillout/vite-plugin-ssr_vercel_build-output-api).
@@ -39,18 +41,19 @@ Example:
 
 ## Data APIs (GraphQL, RESTful, RPC)
 
-Vercel API Routes only work on Vercel's platform; we cannot run them locally.
+Vercel API Routes only work on Vercel's platform; you cannot run them locally.
 
-This means that we need to integrate our data layer twice:
+This means that you need to integrate your data layer twice:
  1. Using Vercel's API Routes, for Vercel deployment.
  1. Using a local server (e.g. Express.js), for development.
 
 This is usually easy to achieve as most data layer tools integrate using a single HTTP endpoint. For example:
  - [GraphQL](https://graphql.org/) integrates over a single HTTP endpoint `/graphql`.
  - [Telefunc](https://telefunc.com/) integrates over a single HTTP endpoint `/_telefunc`.
+ - [tRPC](https://trpc.io/) integrates over a single HTTP endpoint as well.
 
-In other words, we add a data layer by:
+In other words, you can add a data layer by:
  - Creating a new Vercel API Route, integrating that single endpoint.
- - Creating a new route to our local development server (e.g. Express.js), integrating that single endpoint.
+ - Creating a new route to your local development server (e.g. Express.js), integrating that single endpoint.
 
-> When using SSR, we recommend using [RPC instead of GraphQL](https://telefunc.com/RPC-vs-GraphQL-REST), which most of the time leads to a drastic simplification and increased development speed.
+> When using SSR, we recommend using [RPC instead of GraphQL](https://telefunc.com/RPC-vs-GraphQL-REST), leading to a substantial simplification and increased development speed.

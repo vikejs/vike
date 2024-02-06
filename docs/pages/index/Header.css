@@ -1,19 +1,10 @@
-#npm-init-code-snippet:before {
-  z-index: 11;
-}
-#npm-init-code-snippet:after {
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: -4px 0px 15px 5px red;
-  box-shadow: -7px 0px 30px 5px white;
-  box-shadow: -2px 0px 15px 2px white;
-}
-
-#mobile-call-to-action {
-  display: none;
-}
 #header-logo {
   display: flex;
   align-items: center;
+  justify-content: center;
+  margin: auto;
+  max-width: var(--header-max-width);
+  padding: var(--header-padding) 0px;
 }
 #header-logo h1 {
   margin: 0;
@@ -28,13 +19,6 @@
 
 :root {
   --header-max-width: 920px;
-}
-#header {
-  display: flex;
-  align-items: center;
-  margin: auto;
-  max-width: var(--header-max-width);
-  padding: var(--header-padding) 0px;
 }
 #header-logo img {
   height: 160px;
@@ -53,7 +37,7 @@
   :root {
     --header-padding: 20px;
   }
-  #header {
+  #header-logo {
     padding-top: 30px;
   }
   .header-separator-line {
@@ -72,19 +56,12 @@
   }
 }
 @media screen and (max-width: 1159px) {
-  #header-right-side {
-    display: none;
-  }
-  #mobile-call-to-action {
-    display: block;
-  }
   :root {
     --header-padding: 10px;
   }
-  #header {
+  #header-logo {
     padding-top: 10px;
     padding-bottom: 20px;
-    justify-content: center;
   }
   .header-separator-line {
     padding-top: 15px;

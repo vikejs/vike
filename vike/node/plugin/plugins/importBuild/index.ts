@@ -1,8 +1,8 @@
 export { importBuild }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import { importBuild as importBuild_, findImportBuildBundleEntry } from '@brillout/vite-plugin-import-build/plugin.js'
-import { assert, getOutDirs, projectInfo, toPosixPath, viteIsSSR } from '../../utils.js'
+import { serverEntryPlugin, findServerEntry } from '@brillout/vite-plugin-server-entry/plugin.js'
+import { assert, getOutDirs, toPosixPath, viteIsSSR } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
@@ -36,11 +36,11 @@ function importBuild(): Plugin[] {
         }
       }
     },
-    importBuild_({
+    ...serverEntryPlugin({
       getImporterCode: () => {
         return getEntryCode(config, configVike)
       },
-      libraryName: projectInfo.projectName
+      libraryName: 'Vike'
     })
   ]
 }
@@ -51,13 +51,18 @@ function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): s
   const importerCode = [
     `  import { setImportBuildGetters } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
-    '  setImportBuildGetters({',
-    `    pageFiles: () => pageFiles,`,
+    `  {`,
+    // We first set the values to a variable because of a Rollup bug, and this workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
+    `    const clientManifest = ${ASSETS_MAP};`,
+    `    const pluginManifest = ${JSON.stringify(vikeManifest, null, 2)};`,
+    '    setImportBuildGetters({',
+    `      pageFiles: () => pageFiles,`,
     // TODO: rename clientManifest -> assetManifest
-    `    clientManifest: () => { return ${ASSETS_MAP} },`,
+    `      clientManifest: () => clientManifest,`,
     // TODO: rename pluginManifest -> vikeManifest
-    `    pluginManifest: () => (${JSON.stringify(vikeManifest, null, 2)}),`,
-    '  });',
+    `      pluginManifest: () => pluginManifest,`,
+    '    });',
+    `  }`,
     ''
   ].join('\n')
   return importerCode
@@ -65,17 +70,18 @@ function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): s
 async function replace_ASSETS_MAP(options: Options, bundle: Bundle) {
   const { dir } = options
   assert(dir)
-  // I guess importBuild won't be found in the bundle when using @vitejs/plugin-legacy
-  const importBuildEntry = findImportBuildBundleEntry(bundle)
-  const importBuildFilePath = path.join(dir, importBuildEntry.fileName)
+  // This will probably fail with @vitejs/plugin-legacy
+  //  - See `git log -p` for how we used to workaround the @vitejs/plugin-legacy issue.
+  const serverEntry = findServerEntry(bundle)
+  const serverEntryFilePath = path.join(dir, serverEntry.fileName)
   const assetsJsonFilePath = path.join(dir, '..', 'assets.json')
-  const [assetsJsonString, importBuildFileContent] = await Promise.all([
+  const [assetsJsonString, serverEntryFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
-    await fs.readFile(importBuildFilePath, 'utf8')
+    await fs.readFile(serverEntryFilePath, 'utf8')
   ])
-  const importBuildFileContentFixed = importBuildFileContent.replace(ASSETS_MAP, assetsJsonString)
-  assert(importBuildFileContentFixed !== importBuildFileContent)
-  await fs.writeFile(importBuildFilePath, importBuildFileContentFixed)
+  const serverEntryFileContentPatched = serverEntryFileContent.replace(ASSETS_MAP, assetsJsonString)
+  assert(serverEntryFileContentPatched !== serverEntryFileContent)
+  await fs.writeFile(serverEntryFilePath, serverEntryFileContentPatched)
 }
 function getImportPath(config: ResolvedConfig) {
   // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct

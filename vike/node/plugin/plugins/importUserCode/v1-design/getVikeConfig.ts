@@ -3,6 +3,8 @@ export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
 
+export type { InterfaceValueFile }
+
 import {
   assertPosixPath,
   assert,
@@ -14,14 +16,16 @@ import {
   arrayIncludes,
   assertIsNotProductionRuntime,
   getMostSimilar,
-  isNpmPackageImport,
   joinEnglish,
   lowerFirst,
   mergeCumulativeValues,
-  requireResolve,
   getOutDirs,
-  deepEqual,
-  assertKeys
+  assertKeys,
+  objectKeys,
+  objectFromEntries,
+  makeFirst,
+  isNpmPackageImport,
+  reverse
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -35,18 +39,19 @@ import type {
   DefinedAtFileFullInfo,
   DefinedAtFile,
   ConfigValuesComputed,
-  FilePathResolved,
-  FilePath
+  FilePathResolved
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
-  type ConfigDefinitionInternal,
   configDefinitionsBuiltInGlobal,
+  type ConfigDefinitions,
+  type ConfigDefinitionInternal,
   type ConfigNameGlobal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import type { ExtensionResolved } from '../../../../../shared/ConfigVike.js'
 import {
+  type LocationId,
   getLocationId,
   getFilesystemRouteString,
   getFilesystemRouteDefinedBy,
@@ -55,8 +60,7 @@ import {
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting.js'
-import { isTmpFile, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { ImportData, parseImportData } from './replaceImportStatements.js'
+import { isTmpFile } from './getVikeConfig/transpileAndExecuteFile.js'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
@@ -66,21 +70,28 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
-import {
-  assertExportsOfConfigFile,
-  assertExportsOfValueFile
-} from '../../../../../shared/page-configs/assertExports.js'
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
+import { getConfigFileExport } from './getConfigFileExport.js'
+import {
+  type ConfigFile,
+  ImportedFilesLoaded,
+  loadConfigFile,
+  loadImportedFile,
+  loadValueFile
+} from './getVikeConfig/loadFileAtConfigTime.js'
+import { clearFilesEnvMap, resolveImport } from './getVikeConfig/resolveImportPath.js'
+import { resolveFilePathRelativeToUserRootDir } from './getVikeConfig/resolveFilePath.js'
 
 assertIsNotProductionRuntime()
 
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
+  locationId: LocationId
   filePath: FilePathResolved
-  configMap: Record<ConfigName, { configValue?: unknown }>
+  fileExportsByConfigName: Record<ConfigName, { configValue?: unknown }>
 }
 // +config.h.js
 type InterfaceConfigFile = InterfaceFileCommons & {
@@ -96,7 +107,6 @@ type InterfaceValueFile = InterfaceFileCommons & {
   configName: string
 }
 type ConfigName = string
-type LocationId = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
 type VikeConfig = {
@@ -105,18 +115,13 @@ type VikeConfig = {
   globalVikeConfig: Record<string, unknown>
 }
 
-type ConfigDefinitionsIncludingCustom = Record<string, ConfigDefinitionInternal>
-
-type ImportedFilesLoaded = Record<string, Promise<Record<string, unknown>>>
-
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
-const filesEnv: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 function reloadVikeConfig(userRootDir: string, outDirRoot: string, extensions: ExtensionResolved[]) {
   vikeConfigDependencies.clear()
-  filesEnv.clear()
+  clearFilesEnvMap()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, outDirRoot, true, extensions, true)
   handleReloadSideEffects()
 }
@@ -189,30 +194,53 @@ async function loadInterfaceFiles(
 
   let interfaceFilesByLocationId: InterfaceFilesByLocationId = {}
 
-  // Config files
-  await Promise.all(
-    configFiles.map(async (filePath) => {
-      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [])
-      const interfaceFile = getInterfaceFileFromConfigFile(configFile, false)
+  await Promise.all([
+    // Config files
+    ...configFiles.map(async (filePath) => {
+      const { filePathRelativeToUserRootDir } = filePath
+      assert(filePathRelativeToUserRootDir)
+      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
+      assert(filePath.filePathRelativeToUserRootDir)
+      const locationId = getLocationId(filePathRelativeToUserRootDir)
+      const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId)
 
-      const locationId = getLocationId(filePath.filePathAbsoluteVite)
       interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
       interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       extendsConfigs.forEach((extendsConfig) => {
-        const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true)
+        /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
+        ```js
+        // /pages/admin/+config.h.js
+
+        import vikeVue from 'vike-vue/config'
+        // Should only apply to /pages/admin/**
+        export default { extends: [vikeVue] }
+        ```
+        ```js
+        // /pages/marketing/+config.h.js
+
+        import vikeReact from 'vike-react/config'
+        // Should only apply to /pages/marketing/**
+        export default { extends: [vikeReact] }
+        ```
+        */
+        const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId)
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
-    })
-  )
+    }),
+    // Value files
+    ...valueFiles.map(async (filePath) => {
+      const { filePathRelativeToUserRootDir } = filePath
+      assert(filePathRelativeToUserRootDir)
 
-  // Value files
-  await Promise.all(
-    valueFiles.map(async (filePath) => {
-      const configName = getConfigName(filePath.filePathAbsoluteVite)
+      const configName = getConfigName(filePathRelativeToUserRootDir)
       assert(configName)
+
+      const locationId = getLocationId(filePathRelativeToUserRootDir)
+
       const interfaceFile: InterfaceValueFile = {
+        locationId,
         filePath,
-        configMap: {
+        fileExportsByConfigName: {
           [configName]: {}
         },
         isConfigFile: false,
@@ -229,96 +257,45 @@ async function loadInterfaceFiles(
         }
       }
       {
-        const locationId = getLocationId(filePath.filePathAbsoluteVite)
         interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       }
     })
-  )
+  ])
 
   assertAllConfigsAreKnown(interfaceFilesByLocationId)
 
   return interfaceFilesByLocationId
 }
-function getConfigDefinition(
-  configDefinitionsRelevant: Record<string, ConfigDefinitionInternal>,
-  configName: string,
-  filePathToShowToUser: string
-): ConfigDefinitionInternal {
-  const configDef = configDefinitionsRelevant[configName]
-  assertConfigExists(configName, Object.keys(configDefinitionsRelevant), filePathToShowToUser)
-  assert(configDef)
-  return configDef
-}
-function getConfigDefinitionOptional(
-  configDefinitions: Record<string, ConfigDefinitionInternal>,
-  configName: string
-): null | ConfigDefinitionInternal {
-  return configDefinitions[configName] ?? null
-}
-async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
-  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, true, userRootDir)
-  const { filePathToShowToUser } = interfaceValueFile.filePath
-  assertExportsOfValueFile(fileExports, filePathToShowToUser, configName)
-  Object.entries(fileExports).forEach(([exportName, configValue]) => {
-    const configName_ = exportName === 'default' ? configName : exportName
-    interfaceValueFile.configMap[configName_] = { configValue }
-  })
-}
-async function loadImportedFile(
-  filePath: FilePathResolved,
-  userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
-): Promise<Record<string, unknown>> {
-  const f = filePath.filePathAbsoluteFilesystem
-  if (!importedFilesLoaded[f]) {
-    importedFilesLoaded[f] = transpileAndExecuteFile(filePath, true, userRootDir).then((r) => r.fileExports)
-  }
-  const fileExports = await importedFilesLoaded[f]!
-  return fileExports
-}
-function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string): boolean {
-  const configEnv = configDef.env
-  if (configDef.cumulative) {
-    // In principle we could lift that requirement (but it requires non-trivial modifications)
-    assertUsage(
-      configEnv.config,
-      `Config ${pc.cyan(configName)} needs its ${pc.cyan('env')} to have ${pc.cyan(
-        '{ config: true }'
-      )} (because ${pc.cyan(configName)} is a ${pc.cyan('cumulative')} config)`
-    )
-  }
-  return !!configEnv.config
-}
-function getInterfaceFileFromConfigFile(configFile: ConfigFile, isConfigExtend: boolean): InterfaceFile {
+function getInterfaceFileFromConfigFile(
+  configFile: ConfigFile,
+  isConfigExtend: boolean,
+  locationId: LocationId
+): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
   const interfaceFile: InterfaceConfigFile = {
+    locationId,
     filePath,
-    configMap: {},
+    fileExportsByConfigName: {},
     isConfigFile: true,
     isValueFile: false,
     isConfigExtend,
     extendsFilePaths
   }
-  const { filePathToShowToUser } = filePath
-  assertExportsOfConfigFile(fileExports, filePathToShowToUser)
-  Object.entries(fileExports.default).forEach(([configName, configValue]) => {
-    interfaceFile.configMap[configName] = { configValue }
+  const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
+  Object.entries(fileExport).forEach(([configName, configValue]) => {
+    interfaceFile.fileExportsByConfigName[configName] = { configValue }
   })
   return interfaceFile
 }
 /** Show error message upon unknown config */
 function assertAllConfigsAreKnown(interfaceFilesByLocationId: InterfaceFilesByLocationId) {
-  Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
+  objectEntries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
     const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
-    const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
+    const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
     interfaceFiles.forEach((interfaceFile) => {
-      Object.keys(interfaceFile.configMap).forEach((configName) => {
-        assertConfigExists(
-          configName,
-          Object.keys(configDefinitionsRelevant),
-          interfaceFile.filePath.filePathToShowToUser
-        )
+      Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
+        assertConfigExists(configName, Object.keys(configDefinitions), interfaceFile.filePath.filePathToShowToUser)
       })
     })
   })
@@ -385,12 +362,12 @@ async function loadVikeConfig(
   )
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
-    Object.entries(interfaceFilesByLocationId)
+    objectEntries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
 
-        const configDefinitionsRelevant = getConfigDefinitions(interfaceFilesRelevant)
+        const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
         // Load value files of custom config-only configs
         await Promise.all(
@@ -399,7 +376,7 @@ async function loadVikeConfig(
             const { configName } = interfaceFile
             if (isGlobalConfig(configName)) return
             const configDef = getConfigDefinition(
-              configDefinitionsRelevant,
+              configDefinitions,
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
@@ -412,9 +389,9 @@ async function loadVikeConfig(
           })
         )
 
-        const configValueSources: ConfigValueSources = {}
+        let configValueSources: ConfigValueSources = {}
         await Promise.all(
-          objectEntries(configDefinitionsRelevant)
+          objectEntries(configDefinitions)
             .filter(([configName]) => !isGlobalConfig(configName))
             .map(async ([configName, configDef]) => {
               const sources = await resolveConfigValueSources(
@@ -428,12 +405,13 @@ async function loadVikeConfig(
               configValueSources[configName] = sources
             })
         )
+        configValueSources = sortConfigValueSources(configValueSources, locationId)
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
-        applyEffectsAll(configValueSources, configDefinitionsRelevant)
-        const configValuesComputed = getComputed(configValueSources, configDefinitionsRelevant)
-        const configValues = getConfigValues(configValueSources, configValuesComputed, configDefinitionsRelevant)
+        applyEffectsAll(configValueSources, configDefinitions)
+        const configValuesComputed = getComputed(configValueSources, configDefinitions)
+        const configValues = getConfigValues(configValueSources, configValuesComputed, configDefinitions)
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
@@ -471,7 +449,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
 }
 
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
-  const configMapValues = Object.values(interfaceFile.configMap)
+  const configMapValues = Object.values(interfaceFile.fileExportsByConfigName)
   const isAlreadyLoaded = configMapValues.some((conf) => 'configValue' in conf)
   if (isAlreadyLoaded) {
     assert(configMapValues.every((conf) => 'configValue' in conf))
@@ -481,10 +459,10 @@ function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
 
 function getInterfaceFilesRelevant(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
-  locationIdPage: string
+  locationIdPage: LocationId
 ): InterfaceFilesByLocationId {
   const interfaceFilesRelevant = Object.fromEntries(
-    Object.entries(interfaceFilesByLocationId)
+    objectEntries(interfaceFilesByLocationId)
       .filter(([locationId]) => {
         return isInherited(locationId, locationIdPage)
       })
@@ -506,9 +484,9 @@ async function getGlobalConfigs(
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ) {
-  const locationIds = Object.keys(interfaceFilesByLocationId)
-  const interfaceFilesGlobal = Object.fromEntries(
-    Object.entries(interfaceFilesByLocationId).filter(([locationId]) => {
+  const locationIds = objectKeys(interfaceFilesByLocationId)
+  const interfaceFilesGlobal = objectFromEntries(
+    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
       return isGlobalLocation(locationId, locationIds)
     })
   )
@@ -516,7 +494,7 @@ async function getGlobalConfigs(
   // Validate that global configs live in global interface files
   {
     const interfaceFilesGlobalPaths: string[] = []
-    Object.entries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
+    objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
       assert(isGlobalLocation(locationId, locationIds))
       interfaceFiles.forEach(({ filePath: { filePathRelativeToUserRootDir } }) => {
         if (filePathRelativeToUserRootDir) {
@@ -525,9 +503,9 @@ async function getGlobalConfigs(
       })
     })
     const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
-    Object.entries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
+    objectEntries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
-        Object.keys(interfaceFile.configMap).forEach((configName) => {
+        Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
           if (!isGlobalLocation(locationId, locationIds) && isGlobalConfig(configName)) {
             assertUsage(
               false,
@@ -596,7 +574,9 @@ async function resolveConfigValueSources(
 
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
-    const interfaceFilesDefiningConfig = interfaceFiles.filter((interfaceFile) => interfaceFile.configMap[configName])
+    const interfaceFilesDefiningConfig = interfaceFiles.filter(
+      (interfaceFile) => interfaceFile.fileExportsByConfigName[configName]
+    )
     if (interfaceFilesDefiningConfig.length === 0) continue
     const visited = new WeakSet<InterfaceFile>()
     const add = (interfaceFile: InterfaceFile) => {
@@ -707,15 +687,17 @@ async function getConfigValueSource(
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ): Promise<ConfigValueSource> {
-  const conf = interfaceFile.configMap[configName]
+  const conf = interfaceFile.fileExportsByConfigName[configName]
   assert(conf)
   const configEnv = configDef.env
+  const { locationId } = interfaceFile
 
   const definedAtConfigFile: DefinedAtFileFullInfo = {
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
 
+  // +client.js
   if (configDef._valueIsFilePath) {
     let definedAt: DefinedAtFileFullInfo
     let valueFilePath: string
@@ -735,6 +717,7 @@ async function getConfigValueSource(
       }
     }
     const configValueSource: ConfigValueSource = {
+      locationId,
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv,
@@ -744,23 +727,30 @@ async function getConfigValueSource(
     return configValueSource
   }
 
+  // +config.js
   if (interfaceFile.isConfigFile) {
     assert('configValue' in conf)
     const { configValue } = conf
+
+    // fake import
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
       const configValueSource: ConfigValueSource = {
+        locationId,
         configEnv,
         valueIsImportedAtRuntime: true,
         definedAt: import_
       }
-
-      // Load config value
-      if (isConfigEnv(configDef, configName)) {
+      // Load fake import
+      if (
+        isConfigEnv(configDef, configName) &&
+        // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
+        configName !== 'extends'
+      ) {
         if (import_.filePathAbsoluteFilesystem) {
           assert(hasProp(import_, 'filePathAbsoluteFilesystem', 'string')) // Help TS
-          const fileExports = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
-          configValueSource.value = fileExports[import_.fileExportName]
+          const fileExport = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
+          configValueSource.value = fileExport
         } else {
           const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
           assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
@@ -768,19 +758,25 @@ async function getConfigValueSource(
       }
 
       return configValueSource
-    } else {
-      const configValueSource: ConfigValueSource = {
-        value: configValue,
-        configEnv,
-        valueIsImportedAtRuntime: false,
-        definedAt: definedAtConfigFile
-      }
-      return configValueSource
     }
-  } else if (interfaceFile.isValueFile) {
+
+    // Defined by config file, i.e. +config.js file
+    const configValueSource: ConfigValueSource = {
+      locationId,
+      value: configValue,
+      configEnv,
+      valueIsImportedAtRuntime: false,
+      definedAt: definedAtConfigFile
+    }
+    return configValueSource
+  }
+
+  // Defined by value file, i.e. +{configName}.js
+  if (interfaceFile.isValueFile) {
     const valueAlreadyLoaded = 'configValue' in conf
     assert(valueAlreadyLoaded === !!configEnv.config)
     const configValueSource: ConfigValueSource = {
+      locationId,
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       definedAt: {
@@ -797,37 +793,13 @@ async function getConfigValueSource(
     }
     return configValueSource
   }
-  assert(false)
-}
 
-function assertFileEnv(filePathForEnvCheck: string, configEnv: ConfigEnvInternal, configName: string) {
-  assertPosixPath(filePathForEnvCheck)
-  if (!filesEnv.has(filePathForEnvCheck)) {
-    filesEnv.set(filePathForEnvCheck, [])
-  }
-  const fileEnv = filesEnv.get(filePathForEnvCheck)!
-  fileEnv.push({ configEnv, configName })
-  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
-  if (configDifferentEnv) {
-    assertUsage(
-      false,
-      [
-        `${filePathForEnvCheck} defines the value of configs living in different environments:`,
-        ...[configDifferentEnv, { configName, configEnv }].map(
-          (c) =>
-            `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(
-              JSON.stringify(c.configEnv)
-            )}`
-        ),
-        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/header-file'
-      ].join('\n')
-    )
-  }
+  assert(false)
 }
 
 function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
   for (const interfaceFile of interfaceFiles) {
-    const configNames = Object.keys(interfaceFile.configMap)
+    const configNames = Object.keys(interfaceFile.fileExportsByConfigName)
     if (configNames.some((configName) => isDefiningPageConfig(configName))) {
       return true
     }
@@ -838,145 +810,45 @@ function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
 
-function resolveImport(
-  configValue: unknown,
-  importerFilePath: FilePathResolved,
-  userRootDir: string,
-  configEnv: ConfigEnvInternal,
-  configName: string
-): null | (DefinedAtFileFullInfo & { fileExportName: string }) {
-  if (typeof configValue !== 'string') return null
-  const importData = parseImportData(configValue)
-  if (!importData) return null
+function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitions {
+  const configDefinitionsMerged: ConfigDefinitions = { ...configDefinitionsBuiltIn }
+  Object.entries(interfaceFilesRelevant)
+    .reverse()
+    .forEach(([_locationId, interfaceFiles]) => {
+      interfaceFiles.forEach((interfaceFile) => {
+        const configMeta = interfaceFile.fileExportsByConfigName['meta']
+        if (!configMeta) return
+        const meta = configMeta.configValue
+        assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
-  const { importPath, exportName } = importData
-  const filePathAbsoluteFilesystem = resolveImportPath(importData, importerFilePath)
+        // Set configDef._userEffectDefinedAt
+        Object.entries(meta).forEach(([configName, configDef]) => {
+          if (!configDef.effect) return
+          assert(interfaceFile.isConfigFile)
+          configDef._userEffectDefinedAt = {
+            ...interfaceFile.filePath,
+            fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
+          }
+        })
 
-  assertFileEnv(filePathAbsoluteFilesystem ?? importPath, configEnv, configName)
-
-  const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
-
-  if (importPath.startsWith('.')) {
-    // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
-    // ```
-    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
-    // ```
-    assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
-    const filePathRelativeToUserRootDir = resolveImportPath_relativeToUserRootDir(
-      filePathAbsoluteFilesystem,
-      importData,
-      importerFilePath,
-      userRootDir
-    )
-    const filePath: FilePath = {
-      filePathAbsoluteFilesystem,
-      filePathRelativeToUserRootDir,
-      filePathAbsoluteVite: filePathRelativeToUserRootDir,
-      filePathToShowToUser: filePathRelativeToUserRootDir,
-      importPathAbsolute: null
-    }
-    return {
-      ...filePath,
-      fileExportName: exportName,
-      fileExportPathToShowToUser
-    }
-  } else {
-    // importPath can be:
-    //  - an npm package import
-    //  - a path alias
-    const filePath: FilePath = {
-      filePathAbsoluteFilesystem,
-      filePathRelativeToUserRootDir: null,
-      filePathAbsoluteVite: importPath,
-      filePathToShowToUser: importPath,
-      importPathAbsolute: importPath
-    }
-    return {
-      ...filePath,
-      fileExportName: exportName,
-      fileExportPathToShowToUser
-    }
-  }
-}
-
-function resolveImportPath_relativeToUserRootDir(
-  filePathAbsoluteFilesystem: string,
-  importData: ImportData,
-  configFilePath: FilePathResolved,
-  userRootDir: string
-) {
-  assertPosixPath(userRootDir)
-  let filePathRelativeToUserRootDir: string
-  if (filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    filePathRelativeToUserRootDir = getVitePathFromAbsolutePath(filePathAbsoluteFilesystem, userRootDir)
-  } else {
-    assertUsage(
-      false,
-      `${configFilePath.filePathToShowToUser} imports from a relative path ${pc.cyan(
-        importData.importPath
-      )} outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
-    )
-    // None of the following works. Seems to be a Vite bug?
-    // /*
-    // assert(filePathAbsoluteFilesystem.startsWith('/'))
-    // filePath = `/@fs${filePathAbsoluteFilesystem}`
-    // /*/
-    // filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
-    // assert(filePathRelativeToUserRootDir.startsWith('../'))
-    // filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
-    // //*/
-  }
-
-  assertPosixPath(filePathRelativeToUserRootDir)
-  assert(filePathRelativeToUserRootDir.startsWith('/'))
-  return filePathRelativeToUserRootDir
-}
-
-function getVitePathFromAbsolutePath(filePathAbsoluteFilesystem: string, root: string): string {
-  assertPosixPath(filePathAbsoluteFilesystem)
-  assertPosixPath(root)
-  assert(filePathAbsoluteFilesystem.startsWith(root))
-  let vitePath = path.posix.relative(root, filePathAbsoluteFilesystem)
-  assert(!vitePath.startsWith('/') && !vitePath.startsWith('.'))
-  vitePath = '/' + vitePath
-  return vitePath
-}
-
-function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitionsIncludingCustom {
-  const configDefinitions: ConfigDefinitionsIncludingCustom = { ...configDefinitionsBuiltIn }
-  Object.entries(interfaceFilesRelevant).forEach(([_locationId, interfaceFiles]) => {
-    interfaceFiles.forEach((interfaceFile) => {
-      const configMeta = interfaceFile.configMap['meta']
-      if (!configMeta) return
-      const meta = configMeta.configValue
-      assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
-
-      // Set configDef._userEffectDefinedAt
-      Object.entries(meta).forEach(([configName, configDef]) => {
-        if (!configDef.effect) return
-        assert(interfaceFile.isConfigFile)
-        configDef._userEffectDefinedAt = {
-          ...interfaceFile.filePath,
-          fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
-        }
-      })
-
-      objectEntries(meta).forEach(([configName, configDefinition]) => {
-        // User can override an existing config definition
-        configDefinitions[configName] = {
-          ...configDefinitions[configName],
-          ...configDefinition
-        }
+        objectEntries(meta).forEach(([configName, configDefinition]) => {
+          // User can override an existing config definition
+          configDefinitionsMerged[configName] = {
+            ...configDefinitionsMerged[configName],
+            ...configDefinition
+          }
+        })
       })
     })
-  })
+
+  const configDefinitions = configDefinitionsMerged
   return configDefinitions
 }
 
 function assertMetaValue(
   metaVal: unknown,
   configMetaDefinedAt: `Config meta${string}` | null
-): asserts metaVal is Record<string, ConfigDefinitionInternal> {
+): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
     assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
     assertUsage(
@@ -1034,11 +906,8 @@ function assertMetaValue(
   })
 }
 
-function applyEffectsAll(
-  configValueSources: ConfigValueSources,
-  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
-) {
-  objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
+function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+  objectEntries(configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef.effect) return
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
     // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
@@ -1102,12 +971,9 @@ function applyEffect(
   })
 }
 
-function getComputed(
-  configValueSources: ConfigValueSources,
-  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
-) {
+function getComputed(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
   const configValuesComputed: ConfigValuesComputed = {}
-  objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
+  objectEntries(configDefinitions).forEach(([configName, configDef]) => {
     if (!configDef._computed) return
     const value = configDef._computed(configValueSources)
     if (value === undefined) return
@@ -1127,15 +993,9 @@ async function findPlusFiles(
 ): Promise<FilePathResolved[]> {
   const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev)
 
-  const plusFiles: FilePathResolved[] = files.map(({ filePathRelativeToUserRootDir, filePathAbsoluteFilesystem }) => {
-    return {
-      filePathRelativeToUserRootDir,
-      filePathAbsoluteVite: filePathRelativeToUserRootDir,
-      filePathAbsoluteFilesystem,
-      filePathToShowToUser: filePathRelativeToUserRootDir,
-      importPathAbsolute: null
-    }
-  })
+  const plusFiles: FilePathResolved[] = files.map(({ filePathRelativeToUserRootDir }) =>
+    resolveFilePathRelativeToUserRootDir(filePathRelativeToUserRootDir, userRootDir)
+  )
 
   // TODO/v1-release: remove
   extensions.forEach((extension) => {
@@ -1161,15 +1021,17 @@ function getConfigName(filePath: string): string | null {
   assertPosixPath(filePath)
   if (isTmpFile(filePath)) return null
   const fileName = path.posix.basename(filePath)
-  assertNoUnexpectedPlusSign(filePath, fileName)
+  // assertNoUnexpectedPlusSign(filePath, fileName)
   const basename = fileName.split('.')[0]!
   if (!basename.startsWith('+')) {
     return null
   } else {
     const configName = basename.slice(1)
+    assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
     return configName
   }
 }
+/* https://github.com/vikejs/vike/issues/1407
 function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
   const dirs = path.posix.dirname(filePath).split('/')
   dirs.forEach((dir, i) => {
@@ -1184,157 +1046,8 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
     `Character '+' is only allowed at the beginning of filenames: make sure ${filePath} doesn't contain any '+' in its filename other than its first letter`
   )
 }
+*/
 
-type ConfigFile = {
-  fileExports: Record<string, unknown>
-  filePath: FilePathResolved
-  extendsFilePaths: string[]
-}
-
-async function loadConfigFile(
-  configFilePath: FilePathResolved,
-  userRootDir: string,
-  visited: string[]
-): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
-  const { filePathAbsoluteFilesystem } = configFilePath
-  assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
-  const { fileExports } = await transpileAndExecuteFile(configFilePath, false, userRootDir)
-  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
-    ...visited,
-    filePathAbsoluteFilesystem
-  ])
-
-  const configFile: ConfigFile = {
-    fileExports,
-    filePath: configFilePath,
-    extendsFilePaths
-  }
-  return { configFile, extendsConfigs }
-}
-function assertNoInfiniteLoop(visited: string[], filePathAbsoluteFilesystem: string) {
-  const idx = visited.indexOf(filePathAbsoluteFilesystem)
-  if (idx === -1) return
-  const loop = visited.slice(idx)
-  assert(loop[0] === filePathAbsoluteFilesystem)
-  assertUsage(idx === -1, `Infinite extends loop ${[...loop, filePathAbsoluteFilesystem].join('>')}`)
-}
-
-async function loadExtendsConfigs(
-  configFileExports: Record<string, unknown>,
-  configFilePath: FilePathResolved,
-  userRootDir: string,
-  visited: string[]
-) {
-  const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
-  const extendsConfigFiles: FilePathResolved[] = []
-  extendsImportData.map((importData) => {
-    const { importPath: importPath } = importData
-    const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
-    assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
-    assertExtendsImportPath(importPath, filePathAbsoluteFilesystem, configFilePath)
-    // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
-    // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsoluteFilesystem for added clarity
-    const filePathRelativeToUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
-    const filePathAbsoluteVite = filePathRelativeToUserRootDir ?? importPath
-    extendsConfigFiles.push({
-      filePathAbsoluteFilesystem,
-      filePathAbsoluteVite,
-      filePathRelativeToUserRootDir,
-      filePathToShowToUser: filePathAbsoluteVite,
-      importPathAbsolute: importPath
-    })
-  })
-
-  const extendsConfigs: ConfigFile[] = []
-  await Promise.all(
-    extendsConfigFiles.map(async (configFilePath) => {
-      const result = await loadConfigFile(configFilePath, userRootDir, visited)
-      extendsConfigs.push(result.configFile)
-      extendsConfigs.push(...result.extendsConfigs)
-    })
-  )
-
-  const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsoluteFilesystem)
-
-  return { extendsConfigs, extendsFilePaths }
-}
-
-function determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem: string, userRootDir: string): null | string {
-  assertPosixPath(filePathAbsoluteFilesystem)
-  assertPosixPath(userRootDir)
-  if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    return null
-  }
-  let filePathRelativeToUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
-  if (!filePathRelativeToUserRootDir.startsWith('/'))
-    filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
-  return filePathRelativeToUserRootDir
-}
-
-function assertExtendsImportPath(importPath: string, filePath: string, configFilePath: FilePathResolved) {
-  if (isNpmPackageImport(importPath)) {
-    const fileDir = path.posix.dirname(filePath) + '/'
-    const fileName = path.posix.basename(filePath)
-    const fileNameBaseCorrect = '+config'
-    const [fileNameBase, ...fileNameRest] = fileName.split('.')
-    const fileNameCorrect = [fileNameBaseCorrect, ...fileNameRest].join('.')
-    assertWarning(fileNameBase === fileNameBaseCorrect, `Rename ${fileName} to ${fileNameCorrect} in ${fileDir}`, {
-      onlyOnce: true
-    })
-  } else {
-    assertWarning(
-      false,
-      `${configFilePath.filePathToShowToUser} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
-        importPath
-      )} which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this feature.`,
-      { onlyOnce: true }
-    )
-  }
-}
-
-function getExtendsImportData(
-  configFileExports: Record<string, unknown>,
-  configFilePath: FilePathResolved
-): ImportData[] {
-  const { filePathToShowToUser } = configFilePath
-  assertExportsOfConfigFile(configFileExports, filePathToShowToUser)
-  const defaultExports = configFileExports.default
-  const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
-    'extends'
-  )} to an invalid value, see https://vike.dev/extends`
-  let extendList: string[]
-  if (!('extends' in defaultExports)) {
-    return []
-  } else if (hasProp(defaultExports, 'extends', 'string')) {
-    extendList = [defaultExports.extends]
-  } else if (hasProp(defaultExports, 'extends', 'string[]')) {
-    extendList = defaultExports.extends
-  } else {
-    assertUsage(false, wrongUsage)
-  }
-  const extendsImportData = extendList.map((importDataSerialized) => {
-    const importData = parseImportData(importDataSerialized)
-    assertUsage(importData, wrongUsage)
-    return importData
-  })
-  return extendsImportData
-}
-
-function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
-  if (configName === 'prerender') return false
-  const configNamesGlobal = getConfigNamesGlobal()
-  return arrayIncludes(configNamesGlobal, configName)
-}
-function getConfigNamesGlobal() {
-  return Object.keys(configDefinitionsBuiltInGlobal)
-}
-
-function assertConfigExists(configName: string, configNamesRelevant: string[], filePathToShowToUser: string) {
-  const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]
-  if (configNames.includes(configName)) return
-  handleUnknownConfig(configName, configNames, filePathToShowToUser)
-  assert(false)
-}
 function handleUnknownConfig(configName: string, configNames: string[], filePathToShowToUser: string) {
   let errMsg = `${filePathToShowToUser} defines an unknown config ${pc.cyan(configName)}`
   let configNameSimilar: string | null = null
@@ -1360,7 +1073,7 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
   assertUsage(false, errMsg)
 }
 
-function determineRouteFilesystem(locationId: string, configValueSources: ConfigValueSources) {
+function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources) {
   const configName = 'filesystemRoutingRoot'
   const configFilesystemRoutingRoot = configValueSources[configName]?.[0]
   let filesystemRouteString = getFilesystemRouteString(locationId)
@@ -1411,36 +1124,6 @@ function determineIsErrorPage(routeFilesystem: string) {
   return routeFilesystem.split('/').includes('_error')
 }
 
-function resolveImportPath(importData: ImportData, importerFilePath: FilePathResolved): string | null {
-  const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
-  assertPosixPath(importerFilePathAbsolute)
-  const cwd = path.posix.dirname(importerFilePathAbsolute)
-  // filePathAbsoluteFilesystem is expected to be null when importData.importPath is a Vite path alias
-  const filePathAbsoluteFilesystem = requireResolve(importData.importPath, cwd)
-  return filePathAbsoluteFilesystem
-}
-function assertImportPath(
-  filePathAbsoluteFilesystem: string | null,
-  importData: ImportData,
-  importerFilePath: FilePathResolved
-): asserts filePathAbsoluteFilesystem is string {
-  const { importPath: importPath, importStringWasGenerated, importString } = importData
-  const { filePathToShowToUser } = importerFilePath
-
-  if (!filePathAbsoluteFilesystem) {
-    const importPathString = pc.cyan(`'${importPath}'`)
-    const errIntro = importStringWasGenerated
-      ? (`The import path ${importPathString} in ${filePathToShowToUser}` as const)
-      : (`The import ${pc.cyan(importString)} defined in ${filePathToShowToUser}` as const)
-    const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
-    if (importPath.startsWith('.')) {
-      assertUsage(false, `${errIntro2} point to an existing file?`)
-    } else {
-      assertUsage(false, `${errIntro2} exist?`)
-    }
-  }
-}
-
 function isVikeConfigFile(filePath: string): boolean {
   return !!getConfigName(filePath)
 }
@@ -1448,7 +1131,7 @@ function isVikeConfigFile(filePath: string): boolean {
 function getConfigValues(
   configValueSources: ConfigValueSources,
   configValuesComputed: ConfigValuesComputed,
-  configDefinitionsRelevant: ConfigDefinitionsIncludingCustom
+  configDefinitions: ConfigDefinitions
 ): ConfigValues {
   const configValues: ConfigValues = {}
   Object.entries(configValuesComputed).forEach(([configName, configValueComputed]) => {
@@ -1458,7 +1141,7 @@ function getConfigValues(
     }
   })
   Object.entries(configValueSources).forEach(([configName, sources]) => {
-    const configDef = configDefinitionsRelevant[configName]
+    const configDef = configDefinitions[configName]
     assert(configDef)
     if (!configDef.cumulative) {
       const configValueSource = sources[0]!
@@ -1580,4 +1263,65 @@ function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnv
   */
 
   return val
+}
+
+function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: string, filePathToShowToUser: string) {
+  const configDef = configDefinitions[configName]
+  assertConfigExists(configName, Object.keys(configDefinitions), filePathToShowToUser)
+  assert(configDef)
+  return configDef
+}
+function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
+  return configDefinitions[configName] ?? null
+}
+function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string): boolean {
+  const configEnv = configDef.env
+  if (configDef.cumulative) {
+    // In principle we could lift that requirement (but it requires non-trivial modifications)
+    assertUsage(
+      configEnv.config,
+      `Config ${pc.cyan(configName)} needs its ${pc.cyan('env')} to have ${pc.cyan(
+        '{ config: true }'
+      )} (because ${pc.cyan(configName)} is a ${pc.cyan('cumulative')} config)`
+    )
+  }
+  return !!configEnv.config
+}
+function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
+  if (configName === 'prerender') return false
+  const configNamesGlobal = getConfigNamesGlobal()
+  return arrayIncludes(configNamesGlobal, configName)
+}
+function getConfigNamesGlobal() {
+  return Object.keys(configDefinitionsBuiltInGlobal)
+}
+function assertConfigExists(configName: string, configNamesRelevant: string[], filePathToShowToUser: string) {
+  const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]
+  if (configNames.includes(configName)) return
+  handleUnknownConfig(configName, configNames, filePathToShowToUser)
+  assert(false)
+}
+
+function sortConfigValueSources(
+  configValueSources: ConfigValueSources,
+  locationIdPage: LocationId
+): ConfigValueSources {
+  return Object.fromEntries(
+    Object.entries(configValueSources)
+      // Make order deterministic (no other purpose)
+      .sort(([, [source1]], [, [source2]]) =>
+        source1!.definedAt.filePathAbsoluteVite < source2!.definedAt.filePathAbsoluteVite ? -1 : 1
+      )
+      // Sort after whether the config value was defined by an npm package
+      .sort(
+        makeFirst(([, [source]]) => {
+          const { importPathAbsolute } = source!.definedAt
+          return !!importPathAbsolute && isNpmPackageImport(importPathAbsolute)
+        })
+      )
+      // Sort after the filesystem inheritance of the config value
+      .sort(([, [source1]], [, [source2]]) =>
+        reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
+      )
+  )
 }

@@ -1,0 +1,26 @@
+import { Link } from '@brillout/docpress'
+import { UiFrameworkVikeExtension } from '../components'
+
+Environment: server.  
+Default value: `'en'`.  
+Provided by: <UiFrameworkVikeExtension />.
+
+To set the [`<html lang>` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax):
+
+```js
+// /pages/+config.h.js
+
+export default {
+  lang: 'fr'
+}
+```
+
+> The `lang` setting is provided by the <UiFrameworkVikeExtension />. If you don't use such extension, then you have direct control over the `<html lang>` value in your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
+
+
+## See also
+
+- [MDN > `lang`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax)
+- <Link href="/head" />
+- <Link href="/markdown#metadata" />
+

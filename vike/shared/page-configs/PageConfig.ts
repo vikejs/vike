@@ -18,6 +18,7 @@ export type { FilePathResolved }
 export type { FilePath }
 
 import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
+import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 
 type PageConfigBase = {
   pageId: string
@@ -59,6 +60,10 @@ type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
 }
 
+/** In what environment(s) the config value is loaded.
+ *
+ * https://vike.dev/meta
+ */
 type ConfigEnv = {
   client?: boolean
   server?: boolean
@@ -74,6 +79,7 @@ type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
   definedAt: DefinedAtFileFullInfo
+  locationId: LocationId
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
   /** Whether the config value is a file path, for example config.client */

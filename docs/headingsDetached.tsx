@@ -5,6 +5,18 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
+    title: 'Why Vike',
+    url: '/why'
+  },
+  {
+    title: 'Consulting',
+    url: '/consulting'
+  },
+  {
+    title: 'Next.js Comparison',
+    url: '/nextjs-comparison'
+  },
+  {
     title: <code>useClientRouter()</code>,
     url: '/useClientRouter'
   },
@@ -19,6 +31,18 @@ const headingsDetached = [
   {
     title: 'HTML Streaming',
     url: '/html-streaming'
+  },
+  {
+    title: '`stream`',
+    url: '/stream'
+  },
+  {
+    title: 'Preloading',
+    url: '/preload'
+  },
+  {
+    title: 'Layouts',
+    url: '/layouts'
   },
   {
     title: 'SPA vs SSR vs HTML',
@@ -133,7 +157,7 @@ const headingsDetached = [
     ),
     url: '/pageContext-manipulation'
   },
-  { title: 'Server-Side Rendering (SSR)', url: '/ssr' },
+  { title: 'Server-Side Rendering (SSR)', url: '/SSR' },
   { title: 'TypeScript', url: '/typescript' },
   {
     title: (
@@ -304,7 +328,7 @@ const headingsDetached = [
     url: '/migration/0.5'
   },
   {
-    title: "Lazy Transpiling",
+    title: 'Lazy Transpiling',
     url: '/lazy-transpiling'
   },
   {
@@ -326,6 +350,10 @@ const headingsDetached = [
   {
     title: 'Vike Packages',
     url: '/vike-packages'
+  },
+  {
+    title: 'Extensions',
+    url: '/extensions'
   },
   {
     title: 'Abort',
@@ -368,5 +396,46 @@ const headingsDetached = [
   {
     title: 'Image Optimizing',
     url: '/img'
+  },
+  {
+    title: 'Access `pageContext` anywhere',
+    url: '/pageContext-anywhere'
+  },
+  {
+    title: 'Client-only Components',
+    url: '/client-only-components'
+  },
+  {
+    title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
+    url: '/render-modes',
+    sectionTitles: ['HTML-only', 'SPA', 'SSR']
+  },
+  {
+    title: '`lang`',
+    url: '/lang'
+  },
+  {
+    title: '`<Wrapper>`',
+    url: '/Wrapper'
+  },
+  {
+    title: 'Server Routing VS Client Routing',
+    url: '/server-routing-vs-client-routing'
+  },
+  {
+    title: 'Add to existing Vite app',
+    url: '/add'
+  },
+  {
+    title: 'Vue Tour',
+    url: '/vue-tour'
+  },
+  {
+    title: 'React Tour',
+    url: '/react-tour'
+  },
+  {
+    title: '`onCreateApp()`',
+    url: '/onCreateApp'
   }
 ] satisfies HeadingDetachedDefinition[]

@@ -1,9 +1,11 @@
 import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
-import { UseIntegrationPackageAnyHint } from '../components'
+import { UseUiFrameworkVikeExtensionAnyHint, UiFrameworkVikeExtension } from '../components'
 
-Environment: browser.
+Environment: client.
 
-By default, Vike does <Link text="Server Routing" href="/server-routing" /> but you can opt into <Link text="Client Routing" href="/client-routing" /> by:
+If you don't use a <UiFrameworkVikeExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
+
+You can opt into <Link text="Client Routing" href="/client-routing" /> by:
  1. Setting `clientRouting: true`.
     ```js
     // +config.h.js
@@ -15,22 +17,17 @@ By default, Vike does <Link text="Server Routing" href="/server-routing" /> but 
  2. Adapting your <Link text={<><code>onRenderClient()</code> hook</>} href="/onRenderClient" /> to
     hydrate the DOM only when rendering the first page.
 
-<UseIntegrationPackageAnyHint featureName="Client Routing" />
+<UseUiFrameworkVikeExtensionAnyHint featureName="Client Routing" />
 
 
 ## Examples
 
-Generic example:
- - See <Link href="#usage" />.
-
 React example:
- - <RepoLink path='/examples/react-full/renderer/+onRenderClient.tsx' />
- - <RepoLink path='/examples/react-full/pages/index/+Page.tsx' /> (example of using <Link href="#programmatic-navigation">`navigate()`</Link>)
+ - <RepoLink path='/boilerplates/boilerplate-react-ts/renderer/+onRenderClient.tsx' />
 
 Vue example:
- - <RepoLink path='/examples/vue-full/renderer/+onRenderClient.ts' />
- - <RepoLink path='/examples/vue-full/renderer/app.ts' />
- - <RepoLink path='/examples/vue-full/pages/index/+Page.vue' /> (example of using <Link href="#programmatic-navigation">`navigate()`</Link>)
+ - <RepoLink path='/boilerplates/boilerplate-vue-ts/renderer/+onRenderClient.ts' />
+ - <RepoLink path='/boilerplates/boilerplate-vue-ts/renderer/app.ts' />
 
 
 ## Usage
@@ -72,6 +69,7 @@ Vue example:
 
    > See [Render Modes](/render-modes) for another illustration of conditional DOM hydration.
 
+
 ## Links intercepting
 
 You can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
@@ -93,10 +91,13 @@ And following hooks ot implement page transition animations:
 
 ## Settings
 
+Page settings:
 - `prefetchStaticAssets`: Link prefetching settings, see <Link href="/prefetchStaticAssets" />.
-- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-framework" /> allows <Link href="/hydration">hydrations</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
-- `<a keep-scroll-position>`: By default, the Client Router scrolls to the top of the page upon page change; you can use `<a href="/some/url" keep-scroll-position />` if you want to preserve the scroll position instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.)
-- `<a rel="external">`: Skip Client Routing, see <Link href="#links-intercepting" />.
+- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-framework" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
+
+Anchor link options:
+- `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also <Link href="/navigate#options">`navigate('/some-url', { keepScrollPosition: true })`</Link>.
+- `<a href="/some/url" rel="external">`: Skip Client Routing, see <Link href="#links-intercepting" />.
 
 
 ## Programmatic navigation

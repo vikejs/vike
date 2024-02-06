@@ -1,6 +1,7 @@
 export { configDefinitionsBuiltIn }
 export { configDefinitionsBuiltInGlobal }
 export type { ConfigDefinition }
+export type { ConfigDefinitions }
 export type { ConfigDefinitionInternal }
 export type { ConfigNameGlobal }
 export type { ConfigEffect }
@@ -34,13 +35,18 @@ type ConfigDefinition = {
    */
   cumulative?: boolean
   /**
-   * Define a so-called "Shortcut Config".
+   * Function called when the config value is defined.
    *
    * https://vike.dev/meta
    */
   effect?: ConfigEffect
 }
 
+/**
+ * Function called when the config value is defined.
+ *
+ * https://vike.dev/meta
+ */
 type ConfigEffect = (config: {
   /** The config value.
    *
@@ -62,6 +68,7 @@ type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   env: ConfigEnvInternal
 }
 
+type ConfigDefinitions = Record<string, ConfigDefinitionInternal>
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
@@ -150,6 +157,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   hooksTimeout: {
     env: { server: true, client: true }
+  },
+  cacheControl: {
+    env: { server: true }
   }
 }
 

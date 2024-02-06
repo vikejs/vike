@@ -1,7 +1,7 @@
-export { prerenderFromAPI }
-export { prerenderFromCLI }
-export { prerenderFromAutoFullBuild }
-export { prerenderForceExit }
+export { runPrerenderFromAPI }
+export { runPrerenderFromCLI }
+export { runPrerenderFromAutoFullBuild }
+export { runPrerender_forceExit }
 export type { PrerenderOptions }
 
 import '../runtime/page-files/setup.js'
@@ -22,7 +22,10 @@ import {
   urlToFile,
   executeHook,
   isPlainObject,
-  setNodeEnvToProduction
+  setNodeEnvToProduction,
+  isUserHookError,
+  assertNodeEnvIsNotDev,
+  getNodeEnv
 } from './utils.js'
 import { pLimit, PLimit } from '../../utils/pLimit.js'
 import {
@@ -49,16 +52,18 @@ import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
-import { loadPageFilesServerSide } from '../runtime/renderPage/loadPageFilesServerSide.js'
+import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
-  getHookTimeoutDefault
+  getHookTimeoutDefault,
+  setIsPrerenderering
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
+import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -154,14 +159,28 @@ type PrerenderOptions = {
   base?: string
 }
 
-async function prerenderFromAPI(options: PrerenderOptions = {}): Promise<void> {
+async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<void> {
   await runPrerender(options, 'prerender()')
+  // - We purposely propagate the error to the user land, so that the error interrupts the user land. It's also, I guess, a nice-to-have that the user has control over the error.
+  // - We don't use logErrorHint() because we don't have control over what happens with the error. For example, if the user land purposely swallows the error then the hint shouldn't be logged. Also, it's best if the hint is shown to the user *after* the error, but we cannot do/guarentee that.
 }
-async function prerenderFromCLI(options: PrerenderOptions): Promise<void> {
-  await runPrerender(options, '$ vike prerender')
+async function runPrerenderFromCLI(options: PrerenderOptions): Promise<void> {
+  try {
+    await runPrerender(options, '$ vike prerender')
+  } catch (err) {
+    console.error(err)
+    logErrorHint(err)
+    process.exit(1)
+  }
 }
-async function prerenderFromAutoFullBuild(options: PrerenderOptions): Promise<void> {
-  await runPrerender(options, null)
+async function runPrerenderFromAutoFullBuild(options: PrerenderOptions): Promise<void> {
+  try {
+    await runPrerender(options, null)
+  } catch (err) {
+    console.error(err)
+    logErrorHint(err)
+    process.exit(1)
+  }
 }
 async function runPrerender(
   options: PrerenderOptions,
@@ -169,12 +188,14 @@ async function runPrerender(
 ): Promise<void> {
   checkOutdatedOptions(options)
 
+  setIsPrerenderering()
+
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
     console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
-  setNodeEnvToProduction()
+  handleNodeEnv()
 
   await disableReactStreaming()
 
@@ -201,7 +222,7 @@ async function runPrerender(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
   )
 
-  assertPathIsFilesystemAbsolute(outDirRoot) // Needed for loadServerBuild(outDir) of @brillout/vite-plugin-import-build
+  assertPathIsFilesystemAbsolute(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
   await initGlobalContext(true, outDirRoot)
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
@@ -490,7 +511,7 @@ async function handlePagesWithStaticRoutes(
             }
           ]
         })
-        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
         prerenderContext.pageContexts.push(pageContext)
       })
@@ -755,7 +776,7 @@ async function routeAndPrerender(
         objectAssign(pageContext, pageContextFromRoute)
         const { _pageId: pageId } = pageContext
 
-        objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
         let usesClientRouter: boolean
         {
@@ -1120,7 +1141,7 @@ function normalizeUrl(url: string) {
   return '/' + url.split('/').filter(Boolean).join('/')
 }
 
-function prerenderForceExit() {
+function runPrerender_forceExit() {
   // Force exit; known situations where pre-rendering is hanging:
   //  - https://github.com/vikejs/vike/discussions/774#discussioncomment-5584551
   //  - https://github.com/vikejs/vike/issues/807#issuecomment-1519010902
@@ -1135,10 +1156,28 @@ function prerenderForceExit() {
 function assertIsNotAbort(err: unknown, urlOr404: string) {
   if (!isAbortError(err)) return
   const pageContextAbort = err._pageContextAbort
+
+  const hookLoc = isUserHookError(err)
+  assert(hookLoc)
+  const thrownBy = ` by ${pc.cyan(`${hookLoc.hookName}()`)} hook defined at ${hookLoc.hookFilePath}`
+
+  const abortCaller = pageContextAbort._abortCaller
+  assert(abortCaller)
+
+  const abortCall = pageContextAbort._abortCall
+  assert(abortCall)
+
   assertUsage(
     false,
-    `${pc.cyan(pageContextAbort._abortCall)} intercepted while pre-rendering ${urlOr404} but ${pc.cyan(
-      pageContextAbort._abortCaller
+    `${pc.cyan(abortCall)} thrown${thrownBy} while pre-rendering ${urlOr404} but ${pc.cyan(
+      abortCaller
     )} isn't supported for pre-rendered pages`
   )
+}
+
+function handleNodeEnv() {
+  const assertNodeEnv = () => assertNodeEnvIsNotDev('pre-rendering')
+  if (getNodeEnv()) assertNodeEnv()
+  setNodeEnvToProduction()
+  assertNodeEnv()
 }

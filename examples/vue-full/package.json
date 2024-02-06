@@ -7,15 +7,15 @@
   "dependencies": {
     "@types/node": "^17.0.31",
     "@types/node-fetch": "^2.5.12",
-    "@vitejs/plugin-vue": "^4.2.3",
+    "@vitejs/plugin-vue": "^5.0.0",
     "@vue/compiler-sfc": "^3.3.4",
     "@vue/server-renderer": "^3.3.4",
     "cross-fetch": "^3.1.5",
     "node-fetch": "^2.6.1",
     "typescript": "^5.2.2",
-    "vite": "^4.4.8",
+    "vite": "^5.0.10",
     "unplugin-vue-markdown": "^0.24.3",
-    "vike": "0.4.151",
+    "vike": "0.4.160",
     "vue": "^3.3.4"
   },
   "type": "module"

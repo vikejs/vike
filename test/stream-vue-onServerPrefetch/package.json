@@ -4,12 +4,12 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue": "^5.0.0",
     "@vue/compiler-sfc": "^3.2.31",
     "@vue/server-renderer": "^3.2.37",
     "pinia": "^2.0.14",
-    "vite": "^4.0.3",
-    "vike": "0.4.151",
+    "vite": "^5.0.10",
+    "vike": "0.4.160",
     "vue": "^3.2.37"
   },
   "type": "module"

@@ -5,7 +5,6 @@ export { removeBaseServer }
 export { modifyUrlPathname }
 export { removeUrlOrigin }
 export { addUrlOrigin }
-export { isUriWithProtocol }
 
 import { assertUrlComponents, createUrlFromComponents, isBaseServer, parseUrl } from './parseUrl.js'
 import { assert } from './assert.js'
@@ -109,9 +108,4 @@ function addUrlOrigin(url: string, origin: string | null): string {
   assert(origin === null || origin.startsWith('http'))
   const urlModified = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
   return urlModified
-}
-
-function isUriWithProtocol(uri: string): boolean {
-  // https://en.wikipedia.org/wiki/List_of_URI_schemes
-  return /^[a-z0-9][a-z0-9\.\+\-]*:/i.test(uri)
 }

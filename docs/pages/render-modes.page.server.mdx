@@ -1,4 +1,4 @@
-import { UseIntegrationPackageAnyHint } from '../components'
+import { UseUiFrameworkVikeExtensionAnyHint } from '../components'
 
 import { Link, RepoLink, Warning } from '@brillout/docpress'
 
@@ -6,7 +6,7 @@ For each page, we can choose a different render mode:
  - SPA
  - SSR
  - HTML-only
- - Pre-rendering (aka SSG)
+ - Pre-rendering (SSG)
 
 For example, we can render an admin panel as SPA while rendering marketing pages with SSR.
 
@@ -14,7 +14,7 @@ For example, we can render an admin panel as SPA while rendering marketing pages
 
 > The Vike boilerplates do SSR by default, which is a sensible default that works for most apps.
 
-<UseIntegrationPackageAnyHint featureName="Render Modes" />
+<UseUiFrameworkVikeExtensionAnyHint featureName="Render Modes" />
 
 ## SPA
 
@@ -42,12 +42,16 @@ export default {
 }
 ```
 
-SPA + SSR React example:
+React example (SPA + SSR):
  - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.h.ts" />
  - SPA page: <RepoLink path="/examples/render-modes/pages/spa/+Page.jsx" />
  - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/spa/+renderMode.js" />
  - SSR page: <RepoLink path="/examples/render-modes/pages/ssr/+Page.jsx" />
  - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/ssr/+renderMode.js" />
+
+Vue example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/spa.page.client.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
+
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.
 
 
 **2. Render hooks (SPA only)**
@@ -228,6 +232,15 @@ React example: <Link href="/examples/render-modes/" />.
  - SSR page: <RepoLink path="/examples/render-modes/pages/ssr/+Page.jsx" />
  - SSR page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/ssr/+renderMode.js" />
 
+Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example).
+ - Server-side hook: [/pages/_default/_default.page.server.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.server.ts)
+ - Client-side hook: [/pages/_default/_default.page.client.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.client.ts)
+ - SPA page: [/pages/spa.page.client.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
+ - SSR page: [/pages/ssr.page.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/ssr.page.vue)
+
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.
+
+
 ## SSR
 
 The Vike boilerplates and documentation use SSR by default.
@@ -237,7 +250,7 @@ So, if we only have SSR pages, then there is nothing for us to do: we simply fol
 If we want to have both SSR and SPA pages, then see [the SPA section](#spa).
 
 
-## Pre-rendering
+## Pre-rendering (SSG)
 
 See <Link href="/pre-rendering" />.
 
@@ -295,4 +308,6 @@ React example:
  - Zero JavaScript: <RepoLink path="/examples/render-modes/pages/html-only/" />
  - Minimal JavaScript: <RepoLink path="/examples/render-modes/pages/html-js/" />
 
-See also <Link href="/client" />.
+Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/html.page.server.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/html.page.server.vue)
+
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.

@@ -4,8 +4,7 @@ export { resolveRedirects }
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
-import { isUriWithProtocol } from '../../utils/parseUrl-extras.js'
-import { assert, assertUsage } from '../utils.js'
+import { assert, assertUsage, isUriWithProtocol } from '../utils.js'
 import { resolveUrlPathname } from './resolveUrlPathname.js'
 import { assertRouteString, resolveRouteString } from './resolveRouteString.js'
 import pc from '@brillout/picocolors'
@@ -31,9 +30,9 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
       urlTarget === '*',
     `${configSrc} Invalid redirection target URL ${pc.cyan(urlTarget)}: the target URL should start with ${pc.cyan(
       '/'
-    )}, a valid protocol (${pc.cyan('https:')}, ${pc.cyan('http:')}, ${pc.cyan('ipfs:')}, ${pc.cyan(
-      'magnet:'
-    )}, ...), or be ${pc.cyan('*')}`
+    )}, a valid protocol (${pc.cyan('https:')}, ${pc.cyan('http:')}, ${pc.cyan('mailto:')}, ${pc.cyan(
+      'ipfs:'
+    )}, ${pc.cyan('magnet:')}, ...), or be ${pc.cyan('*')}`
   )
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)

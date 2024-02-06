@@ -68,7 +68,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
 
   if ('urlPathname' in pageContext) {
     assert(typeof pageContext.urlPathname === 'string')
-    /* If this assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
+    /* If the following assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
        ```js
        // Add property getters such as pageContext.urlPathname to pageContext
        addUrlComputedProps(pageContext)
@@ -117,8 +117,28 @@ function getUrlParsed(pageContext: PageContextUrlSources) {
     urlHandler = (url: string) => url
   }
 
-  let urlResolved = pageContext._urlRewrite ?? pageContext.urlLogical ?? pageContext.urlOriginal
+  // Example of i18n app using `throw render()`:
+  //  1. User goes to '/fr-FR/admin'.
+  //  2. The first onBeforeRoute() call accesses pageContext.urlPathname (its value is '/fr-FR/admin': the pathname of pageContext.urlOriginal, since both pageContext.urlLogical and pageContext._urlRewrite are undefined) and sets pageContext.urlLogical to '/admin'.
+  //  3. A guard() hooks accesses pageContext.urlPathname (its value is '/admin': the pathname of pageContext.urlLogical) and calls `throw render('/fr-FR/login')`
+  //  4. Vike create a new pageContext object (pageContext.urlLogical is erased) and sets pageContext._urlRewrite to '/fr-FR/login'. (While pageContext.urlOriginal is still '/fr-FR/admin'.)
+  //  5. The second onBeforeRoute() call accesses pageContext.urlPathname (its value is '/fr-FR/login': the pathname of pageContext._urlRewrite, since pageContext.urlLogical is undefined) and sets pageContext.urlLogical to '/login'.
+  //  6. The value of pageContext.urlPathname is now '/login': the pathname of `pageContext.urlLogical`. (While pageContext.urlOriginal is still '/fr-FR/admin'.)
+  // Reproduction: https://github.com/vikejs/vike/discussions/1436#discussioncomment-8142023
+  let urlResolved =
+    // Set by onBeforeRoute()
+    pageContext.urlLogical ??
+    // Set by `throw render()`
+    pageContext._urlRewrite ??
+    // Set by renderPage()
+    pageContext.urlOriginal
   urlResolved = urlHandler(urlResolved)
+  /*
+  console.log('pageContext.urlLogical', pageContext.urlLogical)
+  console.log('pageContext._urlRewrite', pageContext._urlRewrite)
+  console.log('pageContext.urlOriginal', pageContext.urlOriginal)
+  console.log()
+  //*/
 
   const baseServer = pageContext._baseServer
 

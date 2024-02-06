@@ -1,7 +1,7 @@
 import { assertUsage, assertWarning, getCurrentUrl, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import { getPageFilesAll } from '../../shared/getPageFiles.js'
-import { loadPageFilesClientSide } from '../shared/loadPageFilesClientSide.js'
+import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 
 export { getPageContext }
 
@@ -12,9 +12,10 @@ async function getPageContext() {
   objectAssign(pageContext, {
     isHydration: true as const,
     isBackwardNavigation: null,
-    _hasPageContextFromClient: false
+    _hasPageContextFromServer: true as const,
+    _hasPageContextFromClient: false as const
   })
-  objectAssign(pageContext, await loadPageFiles(pageContext._pageId))
+  objectAssign(pageContext, await loadPageUserFiles(pageContext._pageId))
   assertPristineUrl()
   return pageContext
 }
@@ -27,7 +28,7 @@ function assertPristineUrl() {
   )
 }
 
-async function loadPageFiles(pageId: string) {
+async function loadPageUserFiles(pageId: string) {
   const pageContextAddendum = {}
   const { pageFilesAll, pageConfigs } = await getPageFilesAll(true)
   objectAssign(pageContextAddendum, {
@@ -35,7 +36,10 @@ async function loadPageFiles(pageId: string) {
     _pageConfigs: pageConfigs
   })
 
-  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageId, pageContextAddendum))
+  objectAssign(
+    pageContextAddendum,
+    await loadUserFilesClientSide(pageId, pageContextAddendum._pageFilesAll, pageContextAddendum._pageConfigs)
+  )
 
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')

@@ -7,6 +7,7 @@ import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isErrorDebug } from './isErrorDebug.js'
+import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
@@ -34,7 +35,7 @@ function intercept(logType: LogType, config: ResolvedConfig) {
     if (options.error && store?.shouldErrorBeSwallowed(options.error)) {
       return
     }
-    // Remove this once https://github.com/vitejs/vite/pull/13495 is released
+    // Remove this once https://github.com/vitejs/vite/pull/13495 is released and widely used
     if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
       store.markErrorMessageAsLogged(msg)
       return
@@ -51,6 +52,7 @@ function intercept(logType: LogType, config: ResolvedConfig) {
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
     logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag)
+    if (options.error) onRuntimeError(options.error)
   }
 }
 

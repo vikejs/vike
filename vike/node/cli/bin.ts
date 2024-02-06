@@ -1,7 +1,8 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
-import { prerenderFromCLI, prerenderForceExit } from '../prerender/runPrerender.js'
-import { projectInfo, assertUsage } from './utils.js'
+import { runPrerenderFromCLI, runPrerender_forceExit } from '../prerender/runPrerender.js'
+import { projectInfo, assertUsage, assertWarning } from './utils.js'
+import pc from '@brillout/picocolors'
 
 const cli = cac(projectInfo.projectName)
 
@@ -12,8 +13,8 @@ cli
     assertOptions()
     const { partial, noExtraDir, base, parallel, outDir, configFile } = options
     const root = options.root && resolve(options.root)
-    await prerenderFromCLI({ partial, noExtraDir, base, root, parallel, outDir, configFile })
-    prerenderForceExit()
+    await runPrerenderFromCLI({ partial, noExtraDir, base, root, parallel, outDir, configFile })
+    runPrerender_forceExit()
   })
 
 function assertOptions() {
@@ -33,6 +34,13 @@ function assertOptions() {
           '--configFile'
         ].includes(option),
       'Unknown option: ' + option
+    )
+    assertWarning(
+      false,
+      `You set ${pc.cyan(option)}, but passing options to ${pc.cyan(
+        '$ vike prerender'
+      )} is deprecated: use the config file instead. See https://vike.dev/command-prerender.`,
+      { onlyOnce: true }
     )
   })
 }

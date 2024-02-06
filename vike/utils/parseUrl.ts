@@ -10,6 +10,7 @@ export { assertUsageUrl }
 export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
+export { isUriWithProtocol }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
@@ -278,4 +279,9 @@ function createUrlFromComponents(
 ) {
   const urlRecreated = `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`
   return urlRecreated
+}
+
+function isUriWithProtocol(uri: string): boolean {
+  // https://en.wikipedia.org/wiki/List_of_URI_schemes
+  return /^[a-z0-9][a-z0-9\.\+\-]*:/i.test(uri)
 }

@@ -7,8 +7,8 @@
 <script lang="ts" setup>
 import { usePageContext } from '../../renderer/usePageContext'
 
-const ctx = usePageContext()
-let { is404, abortReason } = ctx
+const pageContext = usePageContext()
+let { is404, abortReason } = pageContext
 if (!abortReason) {
   abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
 }

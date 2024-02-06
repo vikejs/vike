@@ -33,6 +33,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     expect(html).toContain('This page has zero browser-side JavaScript.')
     if (isPreview) {
       expect(html).not.toContain('<script')
+      expect(html).not.toContain('as="rel="modulepreload""')
+      expect(html).not.toContain('as="script"')
       if (isV1Design) {
         const cssImport = isV1Design
           ? partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`

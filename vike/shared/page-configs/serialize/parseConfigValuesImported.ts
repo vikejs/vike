@@ -1,48 +1,82 @@
 export { parseConfigValuesImported }
 
-import { assert, assertUsage } from '../../utils.js'
-import { assertExportsOfValueFile } from '../assertExports.js'
+import { assert } from '../../utils.js'
+import { assertPlusFileExport } from '../assertPlusFileExport.js'
 import type { ConfigValues } from '../PageConfig.js'
 import type { ConfigValueImported } from './PageConfigSerialized.js'
-import pc from '@brillout/picocolors'
 
 function parseConfigValuesImported(configValuesImported: ConfigValueImported[]): ConfigValues {
+  const configValuesUnmerged: Record<
+    // configName
+    string,
+    {
+      value: unknown
+      importPath: string
+      exportName: string
+      isSideExport?: boolean
+    }[]
+  > = {}
+  configValuesImported
+    .filter((c) => c.configName !== 'client')
+    .forEach((configValueLoaded) => {
+      if (configValueLoaded.isValueFile) {
+        const { exportValues, importPath, configName } = configValueLoaded
+        assertPlusFileExport(exportValues, importPath, configName)
+        Object.entries(exportValues).forEach(([exportName, exportValue]) => {
+          const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
+          const configName = isSideExport ? exportName : configValueLoaded.configName
+          configValuesUnmerged[configName] ??= []
+          configValuesUnmerged[configName]!.push({
+            value: exportValue,
+            importPath,
+            exportName,
+            isSideExport
+          })
+        })
+      } else {
+        const { configName, importPath, exportValue, exportName } = configValueLoaded
+        configValuesUnmerged[configName] ??= []
+        configValuesUnmerged[configName]!.push({
+          value: exportValue,
+          importPath,
+          exportName,
+          isSideExport: false
+        })
+      }
+    })
+
   const configValues: ConfigValues = {}
-
-  const addConfigValue = (configName: string, value: unknown, importPath: string, exportName: string) => {
-    configValues[configName] = {
-      value,
-      definedAt: {
-        // importPath cannot be relative to the current file, since the current file is a virtual file
-        filePathToShowToUser: importPath,
-        fileExportPathToShowToUser: [configName, 'default'].includes(exportName)
-          ? []
-          : // Side-effect config
-            [exportName]
-      }
-    }
-    assertIsNotNull(value, configName, importPath)
-  }
-
-  configValuesImported.forEach((configValueLoaded) => {
-    if (configValueLoaded.isValueFile) {
-      const { exportValues, importPath, configName } = configValueLoaded
-      if (configName !== 'client') {
-        assertExportsOfValueFile(exportValues, importPath, configName)
-      }
-      Object.entries(exportValues).forEach(([exportName, exportValue]) => {
-        const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
-        const configName = isSideExport ? exportName : configValueLoaded.configName
-        if (isSideExport && configName in configValues) {
-          // We can't avoid side-export conflicts upstream. (Because we cannot know about side-exports upstream at build-time.)
-          // Side-exports have the lowest priority.
-          return
-        }
-        addConfigValue(configName, exportValue, importPath, exportName)
-      })
+  Object.entries(configValuesUnmerged).forEach(([configName, values]) => {
+    const valuesWithoutSideExports = values.filter((v) => !v.isSideExport)
+    const isCumulative = valuesWithoutSideExports.length > 1
+    const noSideExports = valuesWithoutSideExports.length === values.length
+    if (isCumulative) {
+      // Vike currently doesn't support side exports for cumulative configs
+      assert(noSideExports)
+      // TODO: implement
+      assert(false)
     } else {
-      const { configName, importPath, exportValue, exportName } = configValueLoaded
-      addConfigValue(configName, exportValue, importPath, exportName)
+      const val =
+        valuesWithoutSideExports[0] ??
+        // We can't avoid side-export conflicts upstream. (We cannot know about side-exports at build-time.)
+        // Side-exports have lower precedence.
+        values[0]
+      assert(val)
+      const { value, importPath, exportName } = val
+      configValues[configName] = {
+        value,
+        definedAt: {
+          // importPath cannot be relative to the current file, since the current file is a virtual file
+          filePathToShowToUser: importPath,
+          fileExportPathToShowToUser: [configName, 'default'].includes(exportName)
+            ? []
+            : [
+                // Side-export
+                exportName
+              ]
+        }
+      }
+      assertIsNotNull(value, configName, importPath)
     }
   })
 

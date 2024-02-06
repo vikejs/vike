@@ -11,10 +11,10 @@ import {
   isExternalLink
 } from './utils.js'
 import {
-  type PageContextPageFiles,
+  type PageContextUserFiles,
   isErrorFetchingStaticAssets,
-  loadPageFilesClientSide
-} from '../shared/loadPageFilesClientSide.js'
+  loadUserFilesClientSide
+} from '../shared/loadUserFilesClientSide.js'
 import { skipLink } from './skipLink.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
@@ -26,12 +26,12 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
-  linkPrefetchHandlerAdded: Map<HTMLElement, true>
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new Map() })
+  linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap() })
 
-async function prefetchAssets(pageId: string, pageContext: PageContextPageFiles): Promise<void> {
+async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {
-    await loadPageFilesClientSide(pageId, pageContext)
+    await loadUserFilesClientSide(pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
   } catch (err) {
     if (isErrorFetchingStaticAssets(err)) {
       disableClientRouting(err, true)
@@ -79,11 +79,7 @@ async function prefetch(url: string): Promise<void> {
   await prefetchAssets(pageId, pageContext)
 }
 
-function addLinkPrefetchHandlers(pageContext: {
-  exports: Record<string, unknown>
-  _isProduction: boolean
-  urlPathname: string
-}) {
+function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>; urlPathname: string }) {
   // Current URL is already prefetched
   markAsAlreadyPrefetched(pageContext.urlPathname)
 

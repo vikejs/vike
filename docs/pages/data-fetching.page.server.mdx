@@ -1,199 +1,97 @@
 import { RepoLink, Link } from '@brillout/docpress'
+import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
-> We recommend taking the <Link text="React Tour" href="/react-tour" /> or <Link text="Vue Tour" href="/vue-tour" /> before reading this guide.
-> The tour explains what the files `/renderer/+onRenderHtml.js` and `/renderer/+onRenderClient.js` are about.
 
-## `onBeforeRender()`
+## `data()`
 
-The usual way to fetch data is to use an `onBeforeRender()` hook.
+The usual way to fetch data is to use the <Link href="/data">`data()`</Link> Vike hook and the <Link href="/useData">`useData()`</Link> component hook.
 
 ```js
-// /pages/movies/+onBeforeRender.js
+// /pages/movies/@id/+data.js
 // Environment: server
 
-export { onBeforeRender }
+export { data }
 
 import fetch from 'node-fetch'
 
-async function onBeforeRender(pageContext) {
-  // onBeforeRender() runs only in Node.js by default; we could use SQL/ORM queries here.
-  const response = await fetch('https://movies.example.org/api')
-  let movies = await response.json()
+async function data(pageContext) {
+  const { id } = pageContext.routeParams
+  const response = await fetch(`https://star-wars.brillout.com/api/films/${id}.json`)
 
-  // `movies` will be serialized and passed to the browser; we select only the data we
-  // need in order to minimize what is sent to the browser.
-  movies = movies.map(({ title, release_date }) => ({ title, release_date }))
+  let movie = await response.json()
+  // `movie` is serialized and passed to the client. Therefore, we pick only the
+  // data the client needs in order to minimize what is sent over the network.
+  movie = { title: movie.title, release_date: movie.release_date }
 
-  // We make `movies` available as pageContext.pageProps.movies
-  const pageProps = { movies }
+  // data() runs only on the server-side by default, we can therefore use ORM/SQL queries.
+  /* With an ORM:
+  const movies = await Movie.findAll({ select: ['title', 'release_date'] }) */
+  /* With SQL:
+  const movies = await sql.run('SELECT { title, release_date } FROM movies;') */
+
   return {
-    pageContext: {
-      pageProps
-    }
+    movies
   }
 }
 ```
 
-```js
-// /renderer/+config.h.js
-// Environment: config
+> The `@id` in the path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at `pageContext.routeParams.id`, see <Link href="/routing" />.
 
-export default {
-  // Make pageContext.pageProps available in the browser
-  passToClient: ['pageProps']
-}
-```
+> `pageContext` holds contextual information, see <Link href="/data#pagecontext" doNotInferSectionTitle/>.
 
 ```js
-// /renderer/+onRenderHtml.js
-// Environment: server
+// SomeComponent.js
+// Environment: server, client
 
-export { onRenderHtml }
+import { useData } from 'vike-react'
+/* Or:
+import { useData } from 'vike-vue'
+import { useData } from 'vike-solid'
+*/
 
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml, createElement } from 'some-ui-framework'
-
-async function onRenderHtml(pageContext) {
-  const { Page, pageProps } = pageContext
-  const pageHtml = await renderToHtml(
-    // We pass pageContext.pageProps to the <Page> component
-    createElement(Page, pageProps)
-  )
-  /* JSX:
-  const pageHtml = await renderToHtml(<Page {...pageProps} />)
-  */
-
-  return escapeInject`<html>
-    <div id='view-root'>
-      ${dangerouslySkipEscape(pageHtml)}
-    </div>
-  </html>`
-}
+  // Inside a UI component
+  const data = useData()
+  const { name, price } = data
 ```
 
-```js
-// /renderer/+onRenderClient.js
-// Environment: browser
-
-export { onRenderClient }
-
-import { hydrateDom, createElement } from 'some-ui-framework'
-
-async function onRenderClient(pageContext) {
-  // Thanks to `passToClient = ['pageProps']` our pageContext.pageProps is
-  // available here in the browser.
-  const { Page, pageProps } = pageContext
-  await hydrateDom(
-    // We pass pageContext.pageProps to the <Page> component
-    createElement(Page, pageProps),
-    document.getElementById('view-root')
-  )
-  /* JSX:
-  await hydrateDom(<Page {...pageProps} />, document.getElementById('view-root'))
-  */
-}
-```
-
-```js
-// /pages/movies/+Page.js
-// Environment: browser and server
-
-export { Page }
-
-// In the onRenderHtml() and onRenderClient() hooks above, we pass
-// pageContext.pageProps to the <Page> component
-function Page(pageProps) {
-  const { movies } = pageProps
-  // ...
-}
-```
-
-> Note that Vike doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all the page's props at once.
+> `useData()` is provided by the <UiFrameworkVikeExtension />. If you don't use <UiFrameworkVikeExtensionNames /> then see <Link href="/useData#without-vike-extension" doNotInferSectionTitle />.
 
 
-## Error handling
+## RPC
 
-To gracefully handle errors, use <Link href="/render" text={<code>throw render()</code>}></Link> or <Link href="/redirect" text={<code>throw redirect()</code>}></Link>.
+RPC (aka "Server Actions"), enable you to call backend functions remotely and seamlessly from your frontend, see <Link href="/RPC" />.
 
-```js
-// /pages/movie/@id/+onBeforeRender.js
-// Environment: server
+In general, we recommend using RPC to perform data mutations, while using `data()` for fetching data.
 
-export { onBeforeRender }
+> Instead of using a `data()` hook, you'll soon also be able to use [Telefunc](https://telefunc.com) to fetch data.
 
-import { render, redirect } from 'vike/abort'
-import fetch from 'node-fetch'
-
-async function onBeforeRender(pageContext) {
-  const movieId = pageContext.routeParams.id
-  const url = `https://movies.example.org/api/movie/${movieId}`
-  const response = await fetch(url)
-  if (response.status === 404) {
-    // Render the error page and show an error message to the user
-    throw render(404, `Movie with ID ${movieId} doesn't exist.`)
-    /* Or redirect the user:
-    throw redirect('/movie/add')
-    // Or render the movie submission form while preserving the URL:
-    throw render('/movie/add')
-    */
-  }
-  // ...
-}
-```
-
-> The `@id` in the path `/pages/movie/@id/+onBeforeRender.js` denotes a route parameter which value is available at `pageContext.routeParams.id`, see <Link href="/routing" />.
-
-Upon `throw render(404)`, the <Link text="error page" href="/error-page" /> is rendered.
-
-Using `throw render('/movie/add')` instead of `throw redirect('/movie/add')` is a novel technique which we explain at <Link href="/auth#login-flow" />.
-
-
-## Custom settings
-
-For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()` only once in `/renderer/+onBeforeRender.js` while <Link text="creating new settings" href="/meta" />.
-
-For example:
-
-```js
-// /pages/user/+sql.js
-export default { modelName: 'User', select: ['firstName', 'lastName'] }
-```
-
-```js
-// /pages/product/+sql.js
-export default { modelName: 'Product', select: ['name', 'price'] }
-```
-
-See full implementation at <Link href="/meta#example-sql" doNotInferSectionTitle />.
-
-
-## Client Routing
-
-BY default, the `onBeforeRender()` hooks are loaded only in Node.js;
-our data fetching code is always executed in Node.js.
-This is convenient as it makes writing data fetching code easier.
-
-If we use [Client Routing](/clientRouting),
-then we have the option to [also run `onBeforeRender()` in the client](/onBeforeRender#client-side), i.e. it is not only
-called in Node.js but also in the browser (upon page navigation).
 
 ## GraphQL
 
-When using GraphQL, we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in a single global `onBeforeRender()` hook.
-
-In general, with Vike, we have full control over rendering which means that integrating GraphQL is mostly only a matter of following the official SSR guide of the tool we want to use.
+With Vike, you can manually integrate GraphQL tools yourself, giving you complete control over the integration. See:
 
 - <Link href="/apollo-graphql" />
 - <Link href="/relay" />
 - <Link href="/urql" />
 
+> In addtion to manual integration, you will soon also have the option to use Vike Extensions for automatic integration. See [#1373 - Vike Extensions: GraphQL](https://github.com/vikejs/vike/issues/1373).
+
+
 ## Store (Vuex/Redux...)
 
-When using a global store ([Vuex](https://vuex.vuejs.org/), [Redux](https://redux.js.org/), [PullState](https://lostpebble.github.io/pullstate/), ...), our components don't access the fetched data directly. Instead, our components only access the store, while the fetched data merely determines the initial state of the store.
-
-In general, with Vike, we have full control over rendering which means that integrating a global store is mostly only a matter of following the official SSR guide of the tool we want to use.
+With Vike, you can manually integrate state management stores yourself, giving you complete control over the integration. See:
 
 - <Link href="/redux" />
 - <Link href="/vuex" />
 - <Link href="/pinia" />
 - <Link href="/pullstate" />
+
+> In addtion to manual integration, you will soon also have the option to use Vike Extensions for automatic integration. See [#1374 - Vike Extensions: Data Management Stores (Redux, Vuex, ...)](https://github.com/vikejs/vike/issues/1374).
+
+
+## See also
+
+- <Link href="/data" />
+- <Link href="/useData" />
+- <Link href="/api-routes" />
+- <Link href="/RPC" />

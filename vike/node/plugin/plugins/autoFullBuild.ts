@@ -3,11 +3,12 @@ export { autoFullBuild }
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
-import { prerenderFromAutoFullBuild, prerenderForceExit } from '../../prerender/runPrerender.js'
+import { runPrerenderFromAutoFullBuild, runPrerender_forceExit } from '../../prerender/runPrerender.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
+import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
 
 let forceExit = false
 
@@ -49,7 +50,7 @@ function autoFullBuild(): Plugin[] {
         order: 'post',
         handler() {
           if (forceExit) {
-            prerenderForceExit()
+            runPrerender_forceExit()
           }
         }
       }
@@ -79,16 +80,22 @@ async function triggerFullBuild(
     }
   } satisfies InlineConfig
 
-  await build({
-    ...configInline,
-    build: {
-      ...configInline.build,
-      ssr: true
-    }
-  })
+  try {
+    await build({
+      ...configInline,
+      build: {
+        ...configInline.build,
+        ssr: true
+      }
+    })
+  } catch (err) {
+    console.error(err)
+    logErrorHint(err)
+    process.exit(1)
+  }
 
   if (configVike.prerender && !configVike.prerender.disableAutoRun) {
-    await prerenderFromAutoFullBuild({ viteConfig: configInline })
+    await runPrerenderFromAutoFullBuild({ viteConfig: configInline })
     forceExit = true
   }
 }

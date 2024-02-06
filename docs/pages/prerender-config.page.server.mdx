@@ -165,9 +165,27 @@ Set to `false` (or `1`) to disable concurrency.
 
 `boolean` (default: `false`)
 
-Disable the automatic initiation of the pre-rendering process when running `$ vite build`.
+When running `$ vite build`, Vike automatically triggers <Link href="/pre-rendering">pre-rendering</Link>. (If you <Link text="enabled it" href="/pre-rendering#how-to-pre-render" />.)
 
-Use this if you want to programmatically initiate the pre-rendering process instead.
+You can disable the automatic triggering:
 
-See <Link href="/prerender-programmatic" />.
+```js
+// vite.config.js
 
+import vike from 'vike/plugin'
+
+export default {
+  plugins: [
+    vike({
+      prerender: {
+        // Stop `$ vite build` from initiating pre-rendering
+        disableAutoRun: true
+      }
+    })
+  ]
+}
+```
+
+You can then manually trigger pre-rendering using:
+ - <Link href="/command-prerender" />
+ - <Link href="/prerender-programmatic" />

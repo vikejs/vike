@@ -1,5 +1,20 @@
-- update migration examples
-- add vike-react-query to /vike-packages
+- userAgent for vike-{vue,solid}
+- improve vike.dev/head
+- Remove `pageContext.data.title` from boilerplates
+- cumulative
+  - Make `<Head>` cumulative
+  - passToClient.dev/cumulative => point to it from vike.dev/passToClient
+- +client https://github.com/vikejs/vike/commit/732568999c11bd2904d0e2aec19a370c40594315
+- Review & merge Dani's PRs
+
+Docs:
+ - Improve /nextjs
+ - Add /{react,vue,solid} links under "Overview"
+   - Add "Server Actions" section to /react
+   - UPDATE: actually, it's maybe a bad idea because there won't be much content at /vue and /solid if we apply the change described in the next bullet piont
+     - Maybe we can move sections like "Server Actions" to /nextjs instead?
+   - What should happen to the "Integration > React,Vue,Solid" links? How about making them a different page? E.g. moving `## Without Vike extension` there (while using <UseUiFrameworkVikeExtensionHint uiFrameworkName="React" noQuote={true} />).
+   - Improve /{react,vue,solid}
 
 - Add assertWarning() deprecations:
   - `pageContext.exports`
@@ -24,7 +39,7 @@ After V1 design release:
  - Implement vike.config.js
    - Move all globals there and add migration warnings
  - Implement data() hook
-   - Update `vike-{react,vue,solid}` +tilte.js config
+   - Update `vike-{react,vue,solid}` +title.js config
    - New config requestPageContextOnNavigation
      ```ts
      type requestPageContextOnNavigation =
@@ -63,7 +78,19 @@ Features:
  - multiple error pages
  - nested layouts
 
+- refactor logging
+  - New hook onLog(): https://github.com/vikejs/vike/issues/1438
+  - Exact same logs between prod and dev, only difference is that some log objects have:
+    - `isDevLog: true`
+    - `willBeLogged: false` in production
+    - `showTimestamp: true`
+  - Never clear screen (it's complex with little benefit)
+    - Add shortcut to clear screen
+    - Maybe rotate colors upon no requests wihtin 30s?
+  - Only show a one-liner init log (instead of Vite's multi-line log)
+
 Sometime:
+ - Make `.server.js` and `.client.js` change env?
  - Replace "isomorphic"/"isomorph" to "universal"
  - remove documentProps from examples and boilerplates
 

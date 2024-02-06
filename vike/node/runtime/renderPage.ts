@@ -26,7 +26,8 @@ import {
   prependBase,
   removeUrlOrigin,
   addUrlOrigin,
-  createUrlFromComponents
+  createUrlFromComponents,
+  isUriWithProtocol
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -54,7 +55,7 @@ import type { PageContextBuiltInServer, Url } from '../../types/index.js'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
-import { loadPageFilesServerSide } from './renderPage/loadPageFilesServerSide.js'
+import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
 import { resolveRedirects } from '../../shared/route/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
 
@@ -234,6 +235,7 @@ async function renderPageAlreadyPrepared(
       httpRequestId
     )
 
+    // Handle `throw redirect()` and `throw render()` while rendering nominal page
     if (isAbortError(errNominalPage)) {
       const handled = await handleAbortError(
         errNominalPage,
@@ -269,6 +271,7 @@ async function renderPageAlreadyPrepared(
     try {
       pageContextErrorPage = await renderPageAlreadyRouted(pageContextErrorPageInit)
     } catch (errErrorPage) {
+      // Handle `throw redirect()` and `throw render()` while rendering error page
       if (isAbortError(errErrorPage)) {
         const handled = await handleAbortError(
           errErrorPage,
@@ -423,7 +426,7 @@ function getPageContextInitEnhancedSSR(
   urlRewrite: null | string,
   httpRequestId: number
 ) {
-  const { isClientSideNavigation, _urlHandler } = handleUrl(pageContextInit.urlOriginal, urlRewrite)
+  const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
   const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, {
     ssr: {
       urlRewrite,
@@ -435,25 +438,15 @@ function getPageContextInitEnhancedSSR(
   return pageContextInitEnhanced
 }
 
-function handleUrl(
-  urlOriginal: string,
-  urlRewrite: string | null
-): {
+function handlePageContextUrl(urlOriginal: string): {
   isClientSideNavigation: boolean
   _urlHandler: (urlOriginal: string) => string
 } {
-  assert(isUrlValid(urlOriginal))
-  assert(urlRewrite === null || isUrlValid(urlRewrite))
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
-  const pageContextAddendum = {
+  return {
     isClientSideNavigation: isPageContextRequest,
     _urlHandler: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix
   }
-  return pageContextAddendum
-}
-
-function isUrlValid(url: string) {
-  return url.startsWith('/') || url.startsWith('http')
 }
 
 function getRequestId(): number {
@@ -499,22 +492,33 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   const { redirects, baseServer } = getGlobalContext()
   const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
   let origin: null | string = null
+  let urlTargetExternal: null | string = null
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
-    const urlTargetWithOrigin = resolveRedirects(redirects, urlPathname)
-    if (urlTargetWithOrigin === null) return null
-    const { urlModified, origin: origin_ } = removeUrlOrigin(urlTargetWithOrigin)
+    const urlTarget = resolveRedirects(redirects, urlPathname)
+    if (urlTarget === null) return null
+    if (!isParsable(urlTarget)) {
+      // E.g. `urlTarget === 'mailto:some@example.com'`
+      assert(isUriWithProtocol(urlTarget) && !urlTarget.startsWith('http'))
+      urlTargetExternal = urlTarget
+      return null
+    }
+    const { urlModified, origin: origin_ } = removeUrlOrigin(urlTarget)
     origin = origin_
     return urlModified
   })
-  if (origin) urlTarget = addUrlOrigin(urlTarget, origin)
-  if (urlTarget === urlWithoutBase) return null
+  if (urlTargetExternal) {
+    urlTarget = urlTargetExternal
+  } else {
+    if (origin) urlTarget = addUrlOrigin(urlTarget, origin)
+    if (urlTarget === urlWithoutBase) return null
+    urlTarget = prependBase(urlTarget, baseServer)
+    assert(urlTarget !== pageContextInit.urlOriginal)
+  }
   logRuntimeInfo?.(
     `Permanent redirect defined by your config.redirects (https://vike.dev/redirects)`,
     httpRequestId,
     'info'
   )
-  urlTarget = prependBase(urlTarget, baseServer)
-  assert(urlTarget !== pageContextInit.urlOriginal)
   const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
   const pageContextHttpResponse = { ...pageContextInit, httpResponse }
   return pageContextHttpResponse
@@ -524,6 +528,7 @@ async function handleAbortError(
   errAbort: ErrorAbort,
   pageContextsFromRewrite: PageContextFromRewrite[],
   pageContextInit: { urlOriginal: string },
+  // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageInit to it: we only use some pageContextNominalPageInit information.
   pageContextNominalPageInit: {
     urlOriginal: string
     urlParsed: Url
@@ -558,7 +563,7 @@ async function handleAbortError(
         ...pageContextErrorPageInit,
         ...renderContext
       }
-      objectAssign(pageContext, await loadPageFilesServerSide(pageContext))
+      objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = serializePageContextClientSide(pageContext)
     } else {

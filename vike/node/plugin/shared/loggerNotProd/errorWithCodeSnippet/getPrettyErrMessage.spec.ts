@@ -57,8 +57,7 @@ describe('getPrettyErrMessage()', () => {
   })
 
   it('real use case - @vitejs/plugin-react (2)', () => {
-    const message =
-      '/home/rom/code/vike/examples/react-full/components/Counter.tsx:1:8: Expected ";" but found "React"'
+    const message = '/home/rom/code/vike/examples/react-full/components/Counter.tsx:1:8: Expected ";" but found "React"'
     const err = { message, id, frame }
     expect(getPrettyErrMessage(err)).toBe('')
   })

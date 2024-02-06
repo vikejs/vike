@@ -1,0 +1,16 @@
+import { Link, Construction } from '@brillout/docpress'
+import { UiFrameworkVikeExtension } from '../components'
+
+<Construction>This page is under construction.</Construction>
+
+## Optional Control
+
+A core belief of Vike is what we call *optional control*: you begin with a full-fledged zero-config setup enabling you to quickly ship prototypes and apps while later, as the need arises at scale, you can eject and take control over integration code that was initially hidden from you.
+
+For example, you can use a <UiFrameworkVikeExtension /> to get a quick start similar to frameworks such as Next.js or Nuxt, and later replace `vike-react` with a custom React integration. If you use Vike without any Vike extension, then you have complete control over the integration code.
+
+With Vike you can start quick while optionally take control as the need arises.
+
+> Vike extensions use the same interface as Vike users. This means that everything a Vike extension can do, you can also do without using a Vike extension. Consequently, Vike extensions are fully ejectable.
+
+This is particularly relevant for large enterprises with complex apps that end up needing a lot more control than what frameworks typically offer. For example, `facebook.com` uses React but doesn't use a framework like Next.js. Vike is unique in that regard because, when used without any Vike extension, it prescribes very few things. This is also relevant for small companies with expert developers who prefer control over integration code instead of being hindered by the framework.

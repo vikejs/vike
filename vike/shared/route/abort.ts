@@ -20,6 +20,8 @@ import {
   assertWarning,
   checkType,
   hasProp,
+  isUriWithProtocol,
+  isUserHookError,
   joinEnglish,
   objectAssign,
   projectInfo,
@@ -50,8 +52,9 @@ type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abor
  * @param url The URL to redirect to.
  * @param statusCode By default a temporary redirection (`302`) is performed. For permanent redirections (`301`), use `config.redirects` https://vike.dev/redirects instead or, alternatively, set the `statusCode` argument to `301`.
  */
-function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, statusCode?: 301 | 302): AbortRedirect {
+function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
+  assertUrl(url, abortCaller, true)
   const args = [JSON.stringify(url)]
   if (!statusCode) {
     statusCode = 302
@@ -62,7 +65,7 @@ function redirect(url: `/${string}` | `https://${string}` | `http://${string}`, 
   const pageContextAbort = {}
   objectAssign(pageContextAbort, {
     _abortCaller: abortCaller,
-    _abortCall: `throw redirect(${args.join(', ')})` as const,
+    _abortCall: `redirect(${args.join(', ')})` as const,
     _urlRedirect: {
       url,
       statusCode
@@ -97,18 +100,18 @@ function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortR
  * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(url: `/${string}`, abortReason?: AbortReason): Error
-function render(value: string | number, abortReason?: unknown): Error {
-  const args = [typeof value === 'number' ? String(value) : JSON.stringify(value)]
+function render(urlOrStatusCode: string | number, abortReason?: unknown): Error {
+  const args = [typeof urlOrStatusCode === 'number' ? String(urlOrStatusCode) : JSON.stringify(urlOrStatusCode)]
   if (abortReason !== undefined) args.push(truncateString(JSON.stringify(abortReason), 30))
   const abortCaller = 'throw render()'
-  const abortCall = `throw render(${args.join(', ')})` as const
-  return render_(value, abortReason, abortCall, abortCaller)
+  const abortCall = `render(${args.join(', ')})` as const
+  return render_(urlOrStatusCode, abortReason, abortCall, abortCaller)
 }
 
 function render_(
-  value: string | number,
+  urlOrStatusCode: string | number,
   abortReason: unknown | undefined,
-  abortCall: AbortCall,
+  abortCall: `render(${string})` | `RenderErrorPage()`,
   abortCaller: 'throw render()' | 'throw RenderErrorPage()',
   pageContextAddendum?: { _isLegacyRenderErrorPage: true } & Record<string, unknown>
 ): Error {
@@ -121,15 +124,16 @@ function render_(
     assert(pageContextAddendum._isLegacyRenderErrorPage === true)
     objectAssign(pageContextAbort, pageContextAddendum)
   }
-  if (typeof value === 'string') {
-    const url = value
+  if (typeof urlOrStatusCode === 'string') {
+    const url = urlOrStatusCode
+    assertUrl(url, abortCaller)
     objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
     return AbortRender(pageContextAbort)
   } else {
-    const abortStatusCode = value
-    assertStatusCode(value, [401, 403, 404, 410, 429, 500, 503], 'render')
+    const abortStatusCode = urlOrStatusCode
+    assertStatusCode(urlOrStatusCode, [401, 403, 404, 410, 429, 500, 503], 'render')
     objectAssign(pageContextAbort, {
       abortStatusCode,
       is404: abortStatusCode === 404
@@ -138,20 +142,25 @@ function render_(
   }
 }
 
-type AbortCall = `throw redirect(${string})` | `throw render(${string})` | `throw RenderErrorPage()`
+type AbortCall = `redirect(${string})` | `render(${string})` | `RenderErrorPage()`
+type AbortCaller = `throw redirect()` | `throw render()` | `throw RenderErrorPage()`
 type PageContextAbort = {
   _abortCall: AbortCall
+  _abortCaller: AbortCaller
 } & (
   | ({
+      _abortCall: `redirect(${string})`
       _abortCaller: 'throw redirect()'
       _urlRedirect: UrlRedirect
     } & Omit<AbortUndefined, '_urlRedirect'>)
   | ({
+      _abortCall: `render(${string})` | `RenderErrorPage()`
       _abortCaller: 'throw render()' | 'throw RenderErrorPage()'
       abortReason: undefined | unknown
       _urlRewrite: string
     } & Omit<AbortUndefined, '_urlRewrite'>)
   | ({
+      _abortCall: `render(${string})` | `RenderErrorPage()`
       _abortCaller: 'throw render()' | 'throw RenderErrorPage()'
       abortReason: undefined | unknown
       abortStatusCode: number
@@ -189,7 +198,7 @@ function RenderErrorPage({ pageContext = {} }: { pageContext?: Record<string, un
     abortReason = 'Something went wrong'
   }
   objectAssign(pageContext, { _isLegacyRenderErrorPage: true as const })
-  return render_(abortStatusCode, abortReason, 'throw RenderErrorPage()', 'throw RenderErrorPage()', pageContext)
+  return render_(abortStatusCode, abortReason, 'RenderErrorPage()', 'throw RenderErrorPage()', pageContext)
 }
 
 const stamp = '_isAbortError'
@@ -218,7 +227,19 @@ function logAbortErrorHandled(
   const urlCurrent = pageContext._urlRewrite ?? pageContext.urlOriginal
   assert(urlCurrent)
   const abortCall = err._pageContextAbort._abortCall
-  assertInfo(false, `${pc.cyan(abortCall)} intercepted while rendering ${pc.cyan(urlCurrent)}`, { onlyOnce: false })
+  assert(abortCall)
+
+  const hookLoc = isUserHookError(err)
+  let thrownBy = ''
+  if (hookLoc) {
+    thrownBy = ` by ${pc.cyan(`${hookLoc.hookName}()`)} hook defined at ${hookLoc.hookFilePath}`
+  } else {
+    // hookLoc is missing when serializing abort errors from server to client
+  }
+
+  assertInfo(false, `${pc.cyan(abortCall)} thrown${thrownBy} while rendering ${pc.cyan(urlCurrent)}`, {
+    onlyOnce: false
+  })
 }
 
 function assertStatusCode(statusCode: number, expected: number[], caller: 'render' | 'redirect') {
@@ -228,7 +249,7 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   )
   assertWarning(
     expected.includes(statusCode),
-    `Unepexected status code ${statusCode} passed to ${caller}(), we recommend ${expectedEnglish} instead. (Or reach out at ${projectInfo.githubRepository}/issues/1008 if you believe ${statusCode} should be added.)`,
+    `Unepexected status code ${statusCode} passed to ${caller}(), we recommend ${expectedEnglish} instead. (Or reach out at https://github.com/vikejs/vike/issues/1008 if you believe ${statusCode} should be added.)`,
     { onlyOnce: true }
   )
 }
@@ -269,5 +290,18 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
   assertUsage(
     rewriteCount + redirectCount <= 7,
     `Maximum chain length of 7 ${abortCalls} exceeded. Did you define an infinite loop of ${abortCalls}?`
+  )
+}
+
+function assertUrl(url: string, abortCaller: AbortCaller, allowAbsoluteUrl?: true) {
+  assertUsage(
+    url.startsWith('/') || (allowAbsoluteUrl && isUriWithProtocol(url)),
+    [
+      `Invalid URL ${pc.cyan(url)} passed to ${pc.cyan(abortCaller)}:`,
+      `the URL should start with ${pc.cyan('/')}`,
+      allowAbsoluteUrl && `or a valid protocol (${pc.cyan('https:')}, ${pc.cyan('ipfs:')}, ...)`
+    ]
+      .filter(Boolean)
+      .join(' ')
   )
 }

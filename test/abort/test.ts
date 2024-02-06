@@ -9,7 +9,7 @@ import {
   expectPageContextJsonRequest
 } from '../utils'
 
-function testRun(cmd: string, pageContextInitHasClientData = false) {
+function testRun(cmd: string, pageContextInitIsPassedToClient = false) {
   run(cmd)
 
   test('HTML', async () => {
@@ -37,7 +37,7 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     await page.goto(getServerUrl() + '/about')
     expect(await page.textContent('h1')).toBe('About')
     await hydrationDone()
-    const done = expectPageContextJsonRequest(pageContextInitHasClientData)
+    const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
     await page.click('a[href="/render-homepage"]')
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('Welcome')
@@ -56,7 +56,7 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     await page.goto(getServerUrl() + '/about')
     expectUrl('/about')
     await hydrationDone()
-    const done = expectPageContextJsonRequest(pageContextInitHasClientData)
+    const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
     await page.click('a[href="/redirect"]')
     await autoRetry(async () => {
       expectUrl('/')
@@ -97,7 +97,7 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
       await page.goto(getServerUrl() + '/about')
       expectUrl('/about')
       await hydrationDone()
-      const done = expectPageContextJsonRequest(pageContextInitHasClientData)
+      const done = expectPageContextJsonRequest(pageContextInitIsPassedToClient)
       await page.click('a[href="/show-error-page"]')
       await testCounter()
       done()
@@ -121,11 +121,11 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     await page.goto(getServerUrl() + '/')
     await hydrationDone()
     await page.click('a[href="/redirect-external"]')
-    await page.waitForURL('https://vite-plugin-ssr.com')
+    await page.waitForURL('https://brillout.github.io/star-wars/')
   })
   test('external redirect - server-side', async () => {
     await page.goto(getServerUrl() + '/redirect-external')
-    await page.waitForURL('https://vite-plugin-ssr.com')
+    await page.waitForURL('https://brillout.github.io/star-wars/')
   })
 
   test('permanent external redirect', async () => {
@@ -136,7 +136,7 @@ function testRun(cmd: string, pageContextInitHasClientData = false) {
     // client-side
     await page.goto(getServerUrl() + '/')
     await hydrationDone()
-    await page.click('a[href="/external/redirect"]')
-    await page.waitForURL('https://vite-plugin-ssr.com/redirect')
+    await page.click('a[href="/star-wars-api/films/1.json"]')
+    await page.waitForURL('https://brillout.github.io/star-wars/api/films/1.json')
   })
 }

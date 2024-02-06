@@ -5,12 +5,12 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^3.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-streaming": "^0.3.9",
-    "vite": "^4.0.3",
-    "vike": "0.4.151"
+    "react-streaming": "^0.3.20",
+    "vite": "^5.0.10",
+    "vike": "0.4.160"
   },
   "type": "module"
 }

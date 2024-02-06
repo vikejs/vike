@@ -17,24 +17,8 @@ const headings = [
   {
     level: 2,
     title: 'Next.js Comparison',
-    url: '/nextjs-comparison'
-  },
-  /*
-  {
-    level: 2,
-    title: 'What is Server-side Rendering (SSR)?',
-    url: '/ssr',
-  },
-  */
-  {
-    level: 2,
-    title: 'Vue Tour',
-    url: '/vue-tour'
-  },
-  {
-    level: 2,
-    title: 'React Tour',
-    url: '/react-tour'
+    url: '/nextjs',
+    sectionTitles: ['React Server Components']
   },
   {
     level: 2,
@@ -51,11 +35,6 @@ const headings = [
     level: 2,
     title: 'Scaffold new app',
     url: '/scaffold'
-  },
-  {
-    level: 2,
-    title: 'Add to existing app',
-    url: '/add'
   },
   {
     level: 1,
@@ -75,7 +54,7 @@ const headings = [
     level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
-    sectionTitles: ['`onBeforeRender()`', 'Error handling']
+    sectionTitles: ['`data()`']
   },
   {
     level: 2,
@@ -85,12 +64,8 @@ const headings = [
   {
     level: 2,
     title: 'FAQ',
-    url: '/faq'
-  },
-  {
-    level: 2,
-    title: 'Access `pageContext` anywhere',
-    url: '/pageContext-anywhere'
+    url: '/faq',
+    sectionTitles: ['Can I reach out for help?']
   },
   {
     level: 2,
@@ -109,13 +84,7 @@ const headings = [
   {
     level: 2,
     title: 'Authentication',
-    url: '/auth',
-    sectionTitles: ['Login flow']
-  },
-  {
-    level: 2,
-    title: 'Layouts',
-    url: '/layouts'
+    url: '/auth'
   },
   {
     level: 2,
@@ -126,13 +95,6 @@ const headings = [
     level: 2,
     title: '`.server.js` / `.client.js`',
     url: '/file-env'
-  },
-  {
-    level: 2,
-    title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
-    titleInNav: 'SPA, SSR, SSG, HTML-only',
-    url: '/render-modes',
-    sectionTitles: ['HTML-only', 'SPA', 'SSR']
   },
   {
     level: 2,
@@ -156,23 +118,18 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Preload',
-    url: '/preload'
+    title: 'Preloading',
+    url: '/preloading'
   },
   {
     level: 2,
     title: 'HTML Streaming',
-    url: '/stream'
+    url: '/streaming'
   },
   {
     level: 2,
     title: 'API Routes',
     url: '/api-routes'
-  },
-  {
-    level: 2,
-    title: 'Client-only Components',
-    url: '/client-only-components'
   },
   {
     level: 2,
@@ -193,11 +150,6 @@ const headings = [
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork'
-  },
-  {
-    level: 2,
-    title: 'Server Routing VS Client Routing',
-    url: '/server-routing-vs-client-routing'
   },
   {
     level: 2,
@@ -543,6 +495,16 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Hono',
+    url: '/hono'
+  },
+  {
+    level: 2,
+    title: 'Nitro',
+    url: '/nitro'
+  },
+  {
+    level: 2,
     title: 'Deno',
     url: '/deno'
   },
@@ -555,6 +517,11 @@ const headings = [
     level: 2,
     title: 'Firebase',
     url: '/firebase'
+  },
+  {
+    level: 2,
+    title: 'Nginx',
+    url: '/nginx'
   },
   {
     level: 2,
@@ -633,13 +600,20 @@ const headings = [
   },
   {
     level: 2,
-    title: '`Page`',
+    titleInNav: '`Page`',
+    title: '`<Page>`',
     url: '/Page'
   },
   {
     level: 2,
     title: '`route`',
     url: '/route'
+  },
+  {
+    level: 2,
+    titleInNav: '`Layout`',
+    title: '`<Layout>`',
+    url: '/Layout'
   },
   {
     level: 2,
@@ -667,6 +641,13 @@ const headings = [
   },
   {
     level: 2,
+    title: '`data()` hook',
+    titleInNav: '`data()`',
+    url: '/data',
+    sectionTitles: ['Without `useData()`', '`pageContext.data`', '`pageContext`']
+  },
+  {
+    level: 2,
     title: '`guard()` hook',
     titleInNav: '`guard()`',
     url: '/guard'
@@ -675,7 +656,8 @@ const headings = [
     level: 2,
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
-    url: '/onBeforeRender'
+    url: '/onBeforeRender',
+    sectionTitles: ['`onBeforeRender()` + `meta`']
   },
   {
     level: 2,
@@ -716,6 +698,12 @@ const headings = [
   {
     level: 4,
     title: 'Utils (server- & client-side)'
+  },
+  {
+    level: 2,
+    title: '`useData()`',
+    url: '/useData',
+    sectionTitles: ['TypeScript', 'Without Vike extension']
   },
   {
     level: 2,
@@ -786,8 +774,14 @@ const headings = [
   },
   {
     level: 2,
+    title: '`ssr`',
+    url: '/ssr'
+  },
+  {
+    level: 2,
     title: '`prerender`',
-    url: '/prerender-config'
+    url: '/prerender-config',
+    sectionTitles: ['`disableAutoRun`']
   },
   {
     level: 2,
@@ -828,7 +822,7 @@ const headings = [
       'Example: `sql`',
       'Example: `title` and `description`',
       'Example: `Layout`',
-      'Example: modify `onBeforeRender()` env'
+      'Example: modify `data()` env'
     ]
   },
   {

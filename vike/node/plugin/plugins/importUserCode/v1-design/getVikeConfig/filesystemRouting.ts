@@ -5,46 +5,85 @@ export { getLocationId }
 export { sortAfterInheritanceOrder }
 export { isGlobalLocation }
 export { applyFilesystemRoutingRootEffect }
+export type { LocationId }
 
 // For ./filesystemRouting.spec.ts
 export { getLogicalPath }
 
-import { assert, assertPosixPath, getNpmPackageImportPath, isNpmPackageImport, higherFirst } from '../../../../utils.js'
+import { assert, assertPosixPath, higherFirst } from '../../../../utils.js'
 
 /**
- * getLocationId('/pages/some-page/+Page.js') => '/pages/some-page'
- * getLocationId('/pages/some-page') => '/pages/some-page'
- * getLocationId('/renderer/+config.js') => '/renderer'
+ * The `locationId` value is used for filesystem inheritance.
+ *
+ * Each config value is assigned with a `locationId` value. That's the source-of-truth for determining inheritance between config values.
+ *
+ * For Vike extensions, `locationId` is different than the config value's `definedAt`, for example the `onRenderHtml()` hook of `vike-react`:
+ *  - `locationId === '/pages'` (the directory of `/pages/+config.h.js` which extends `vike-react`)
+ *  - `definedAt.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
+ *
+ *  This is an important distinction because the Vike extension's config should only apply to where it's being extended from, for example:
+ *  ```js
+ *  // /pages/admin/+config.h.js
+ *  import vikeVue from 'vike-vue/config'
+ *  // Should only apply to /pages/admin/**
+ *  export default { extends: [vikeVue] }
+ *  ```
+ *  ```js
+ *  // /pages/marketing/+config.h.js
+ *  import vikeReact from 'vike-react/config'
+ *  // Should only apply to /pages/marketing/**
+ *  export default { extends: [vikeReact] }
+ *  ```
  */
-function getLocationId(filePathAbsoluteVite: string): string {
-  const locationId = removeFilename(filePathAbsoluteVite, true)
+type LocationId = string & { __brand: 'LocationId' }
+
+/**
+ * `getLocationId('/pages/some-page/+Page.js')` => `'/pages/some-page'`
+ * `getLocationId('/renderer/+config.js')` => `'/renderer'`
+ *
+ * The value `locationId` is always a user-land path, because Filesystem Routing/Inheritance only applies to the user-land (Vike never uses Filesystem Routing/Inheritance for `node_modules/**`).
+ */
+function getLocationId(
+  // We always determine `locationId` from a real user-land file: the `locationId` for Vike extensions is the `locationId` of the the user's `+config.h.js` that extends the Vike extension.
+  filePathRelativeToUserRootDir: string
+): LocationId {
+  assertPosixPath(filePathRelativeToUserRootDir)
+  assert(filePathRelativeToUserRootDir.startsWith('/'))
+  const locationId = removeFilename(filePathRelativeToUserRootDir)
   assertLocationId(locationId)
-  return locationId
+  return locationId as LocationId
 }
-/** Get URL determined by filesystem path */
-function getFilesystemRouteString(locationId: string): string {
+/** Filesystem Routing: get the URL */
+function getFilesystemRouteString(locationId: LocationId): string {
   return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
 }
-/** Get apply root for config inheritance */
-function getInheritanceRoot(someDir: string): string {
-  return getLogicalPath(someDir, ['renderer'])
+/** Filesystem Inheritance: get the apply root */
+function getInheritanceRoot(locationId: LocationId): string {
+  return getLogicalPath(locationId, ['renderer'])
 }
 /**
  * getLogicalPath('/pages/some-page', ['pages']) => '/some-page'
- * getLogicalPath('some-npm-pkg/renderer', ['renderer']) => '/'
  */
-function getLogicalPath(someDir: string, removeDirs: string[]): string {
-  someDir = removeNpmPackageName(someDir)
-  someDir = removeDirectories(someDir, removeDirs)
-  assertIsPath(someDir)
-  return someDir
+function getLogicalPath(locationId: LocationId, removeDirs: string[]): string {
+  let logicalPath = removeDirectories(locationId, removeDirs)
+  assertIsPath(logicalPath)
+  return logicalPath
 }
 
 /** Whether configs defined in `locationId` apply in every `locationIds` */
-function isGlobalLocation(locationId: string, locationIds: string[]): boolean {
+function isGlobalLocation(locationId: LocationId, locationIds: LocationId[]): boolean {
   return locationIds.every((locId) => isInherited(locationId, locId) || locationIsRendererDir(locId))
 }
-function sortAfterInheritanceOrder(locationId1: string, locationId2: string, locationIdPage: string): -1 | 1 | 0 {
+function sortAfterInheritanceOrder(
+  locationId1: LocationId,
+  locationId2: LocationId,
+  locationIdPage: LocationId
+): -1 | 1 | 0 {
+  assertLocationId(locationId1)
+  assertLocationId(locationId2)
+
+  if (locationId1 === locationId2) return 0
+
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
   const inheritanceRootPage = getInheritanceRoot(locationIdPage)
@@ -63,17 +102,11 @@ function sortAfterInheritanceOrder(locationId1: string, locationId2: string, loc
     return higherFirst<string>((inheritanceRoot) => inheritanceRoot.length)(inheritanceRoot1, inheritanceRoot2)
   }
 
-  // Should be true since we aggregate interface files by locationId
-  assert(locationId1 !== locationId2)
-
   // locationId1 first, i.e. `indexOf(locationId1) < indexOf(locationId2)`
   const locationId1First = -1
   // locationId2 first, i.e. `indexOf(locationId2) < indexOf(locationId1)`
   const locationId2First = 1
 
-  if (locationIsNpmPackage(locationId1) !== locationIsNpmPackage(locationId2)) {
-    return locationIsNpmPackage(locationId1) ? locationId2First : locationId1First
-  }
   if (locationIsRendererDir(locationId1) !== locationIsRendererDir(locationId2)) {
     return locationIsRendererDir(locationId1) ? locationId2First : locationId1First
   }
@@ -85,32 +118,17 @@ function sortAfterInheritanceOrder(locationId1: string, locationId2: string, loc
   }
   return locationId1 > locationId2 ? locationId1First : locationId2First
 }
-function locationIsNpmPackage(locationId: string) {
-  return !locationId.startsWith('/')
-}
-function locationIsRendererDir(locationId: string) {
+function locationIsRendererDir(locationId: LocationId) {
   return locationId.split('/').includes('renderer')
 }
 
 /** Whether configs defined at `locationId1` also apply at `locationId2` */
-function isInherited(locationId1: string, locationId2: string): boolean {
+function isInherited(locationId1: LocationId, locationId2: LocationId): boolean {
   const inheritanceRoot1 = getInheritanceRoot(locationId1)
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
   return startsWith(inheritanceRoot2, inheritanceRoot1)
 }
 
-function removeNpmPackageName(somePath: string): string {
-  if (!isNpmPackageImport(somePath)) {
-    assert(somePath.startsWith('/'))
-    return somePath
-  }
-  const importPath = getNpmPackageImportPath(somePath)
-  if (!importPath) return '/'
-  assertPosixPath(importPath)
-  assert(!importPath.startsWith('/'))
-  somePath = '/' + importPath
-  return somePath
-}
 function removeDirectories(somePath: string, removeDirs: string[]): string {
   assertPosixPath(somePath)
   somePath = somePath
@@ -121,23 +139,19 @@ function removeDirectories(somePath: string, removeDirs: string[]): string {
   return somePath
 }
 
-function removeFilename(filePathAbsoluteVite: string, optional?: true) {
-  assertPosixPath(filePathAbsoluteVite)
-  assert(filePathAbsoluteVite.startsWith('/') || isNpmPackageImport(filePathAbsoluteVite))
+function removeFilename(filePathRelativeToUserRootDir: string) {
+  const filePathParts = filePathRelativeToUserRootDir.split('/')
   {
-    const filename = filePathAbsoluteVite.split('/').slice(-1)[0]!
-    if (!filename.includes('.')) {
-      assert(optional)
-      return filePathAbsoluteVite
-    }
+    const filename = filePathParts.slice(-1)[0]!
+    assert(filename.includes('.'))
   }
-  let locationId = filePathAbsoluteVite.split('/').slice(0, -1).join('/')
+  let locationId = filePathParts.slice(0, -1).join('/')
   if (locationId === '') locationId = '/'
   assertLocationId(locationId)
   return locationId
 }
 
-function getFilesystemRouteDefinedBy(locationId: string): string {
+function getFilesystemRouteDefinedBy(locationId: LocationId): string {
   if (locationId === '/') return locationId
   assert(!locationId.endsWith('/'))
   const routeFilesystemDefinedBy = locationId + '/'
@@ -157,7 +171,7 @@ function applyFilesystemRoutingRootEffect(
 }
 
 function assertLocationId(locationId: string) {
-  assert(locationId.startsWith('/') || isNpmPackageImport(locationId))
+  assert(locationId.startsWith('/'))
   assert(!locationId.endsWith('/') || locationId === '/')
 }
 function assertIsPath(logicalPath: string) {

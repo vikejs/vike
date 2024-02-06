@@ -1,11 +1,11 @@
-export default Page
+export { Page }
 
 import React from 'react'
 import { usePageContext } from '../../renderer/usePageContext'
 
 function Page() {
-  const ctx = usePageContext()
-  let { is404, abortReason } = ctx
+  const pageContext = usePageContext()
+  let { is404, abortReason } = pageContext
   if (!abortReason) {
     abortReason = is404 ? 'Page not found.' : 'Something went wrong.'
   }

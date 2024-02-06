@@ -1,7 +1,7 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, findUserPackageJsonPath } from '../utils.js'
+import { assert, assertWarning, findFile } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
@@ -26,7 +26,10 @@ function commonConfig(): Plugin[] {
       configResolved: {
         order: 'post',
         handler(config) {
-          setDefaultPort(config)
+          overrideViteDefaultPort(config)
+          /* TODO: do this after implementing vike.config.js and new setting transformLinkedDependencies (or probably a better name like transpileLinkedDependencies/bundleLinkedDependencies or something else)
+          overrideViteDefaultSsrExternal(config)
+          */
           workaroundCI(config)
           assertRollupInput(config)
           assertResolveAlias(config)
@@ -37,7 +40,7 @@ function commonConfig(): Plugin[] {
   ]
 }
 
-function setDefaultPort(config: ResolvedConfig) {
+function overrideViteDefaultPort(config: ResolvedConfig) {
   // @ts-ignore
   config.server ??= {}
   config.server.port ??= 3000
@@ -45,6 +48,22 @@ function setDefaultPort(config: ResolvedConfig) {
   config.preview ??= {}
   config.preview.port ??= 3000
 }
+/*
+function overrideViteDefaultSsrExternal(config: ResolvedConfig) {
+  if (!isViteVersionWithSsrExternalTrue()) return
+  // @ts-ignore Not released yet: https://github.com/vitejs/vite/pull/10939/files#diff-5a3d42620df2c6b17e25f440ffdb67683dee7ef57317674d19f41d5f30502310L5
+  config.ssr.external ??= true
+}
+import { version } from 'vite'
+function isViteVersionWithSsrExternalTrue(): boolean {
+  const versionParts = version.split('.').map((s) => parseInt(s, 10)) as [number, number, number]
+  assert(versionParts.length === 3)
+  if (versionParts[0] > 5) return true
+  if (versionParts[1] > 0) return true
+  if (versionParts[2] >= 12) return true
+  return false
+}
+*/
 
 // Workaround GitHub Action failing to access the server
 function workaroundCI(config: ResolvedConfig) {
@@ -55,7 +74,7 @@ function workaroundCI(config: ResolvedConfig) {
 }
 
 function assertEsm(userViteRoot: string) {
-  const packageJsonPath = findUserPackageJsonPath(userViteRoot)
+  const packageJsonPath = findFile('package.json', userViteRoot)
   if (!packageJsonPath) return
   const packageJson = require_(packageJsonPath)
   let dir = path.dirname(packageJsonPath)

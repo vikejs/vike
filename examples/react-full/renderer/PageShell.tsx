@@ -1,10 +1,12 @@
+export { PageShell }
+
 import React from 'react'
 import logoUrl from './logo.svg'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
 import type { PageContext } from 'vike/types'
-
-export { PageShell }
+import './css/index.css'
+import './PageShell.css'
 
 function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
   return (
@@ -83,7 +85,7 @@ function Logo() {
       }}
     >
       <a href="/">
-        <img src={logoUrl} height={64} width={64} />
+        <img src={logoUrl} height={64} width={64} alt="logo" />
       </a>
     </div>
   )

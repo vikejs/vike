@@ -4,8 +4,9 @@ export { logDirectly }
 export { isFirstLog }
 export { clearScreen }
 export { screenHasErrors }
+export { applyViteSourceMapToStackTrace }
 
-import { assert, projectInfo, type ProjectTag, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils.js'
+import { assert, projectInfo, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils.js'
 import pc from '@brillout/picocolors'
 import { isErrorDebug } from '../isErrorDebug.js'
 import { getViteDevServer } from '../../../runtime/globalContext.js'
@@ -13,6 +14,8 @@ import type { LogCategory, LogType } from '../loggerNotProd.js'
 import type { ResolvedConfig } from 'vite'
 
 assertIsNotProductionRuntime()
+
+type ProjectTag = `[vike]` | `[vike@${typeof projectInfo.projectVersion}]`
 
 let isFirstLog = true
 let screenHasErrors = false
@@ -25,9 +28,9 @@ function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | n
 function getProjectTag(showVikeVersion: boolean) {
   let projectTag: ProjectTag
   if (showVikeVersion) {
-    projectTag = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]`
+    projectTag = `[vike@${projectInfo.projectVersion}]`
   } else {
-    projectTag = `[${projectInfo.npmPackageName}]`
+    projectTag = `[vike]`
   }
   return projectTag
 }
@@ -87,7 +90,7 @@ function prependTags(msg: string, projectTag: '[vite]' | ProjectTag, category: L
     if (logType === 'error-recover' && !hasGreen(msg)) return pc.bold(pc.green(s))
     if (logType === 'warn' && !hasYellow(msg)) return pc.yellow(s)
     if (projectTag === '[vite]') return pc.bold(pc.cyan(s))
-    if (projectTag.startsWith(`[${projectInfo.npmPackageName}`)) return pc.bold(pc.cyan(s))
+    if (projectTag.startsWith(`[vike`)) return pc.bold(pc.cyan(s))
     assert(false)
   }
   let tag = color(`${projectTag}`)

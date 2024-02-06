@@ -1,6 +1,6 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-We can internationalize (i18n) a Vike app by using an <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
+You can internationalize (i18n) your app by using the <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
 
 ```js
 // /renderer/+onBeforeRoute.js
@@ -8,29 +8,25 @@ We can internationalize (i18n) a Vike app by using an <Link text={<><code>onBefo
 export { onBeforeRoute }
 
 function onBeforeRoute(pageContext) {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
-      // We make `locale` available as `pageContext.locale`
+      // Make `locale` available as `pageContext.locale`
       locale,
-      // When pageContext.urlLogical is set, then Vike's router uses the value of
-      // pageContext.urlLogical instead of pageContext.urlOriginal
-      // In other words:
-      //  - pageContext.urlOriginal => with locale, e.g. /en-US/movies
-      //  - pageContext.urlLogical => without locale, e.g. /movies
+      // Vike's router will use pageContext.urlLogical instead of pageContext.urlOriginal
       urlLogical: urlWithoutLocale
     }
   }
 }
 
-// We can also use a library instead of implementing our own locale retrieval mechanism
+// You can also use a library instead of implementing your own locale retrieval mechanism
 function extractLocale(url) {
-  // We determine the locale, for example:
+  // Determine the locale, for example:
   //  extractLocale('/en-US/film/42').locale === 'en-US'
   //  extractLocale('/de-DE/film/42').locale === 'de-DE'
   const locale = /* ... */
 
-  // We remove the locale, for example:
+  // Remove the locale, for example:
   //  extractLocale('/en-US/film/42').urlWithoutLocale === '/film/42'
   //  extractLocale('/de-DE/film/42').urlWithoutLocale === '/film/42'
   //  ...
@@ -40,16 +36,16 @@ function extractLocale(url) {
 }
 ```
 
-Upon rendering a page, `onBeforeRoute()` is the first hook that Vike calls, which means that the rest of our app doesn't have to deal with localized URLs anymore and we can simply use `pageContext.locale` instead.
+Upon rendering a page, `onBeforeRoute()` is the first hook that Vike calls, which means that the rest of your app doesn't have to deal with localized URLs anymore and you can simply use `pageContext.locale` instead.
 
-> See <Link href="/pageContext-anywhere" /> for being able to access `pageContext.locale` in any React/Vue component.
+> See <Link href="/usePageContext" /> for being able to access `pageContext.locale` in any React/Vue component.
 
 This technique also works with:
 
 - `?lang=fr` query parameters
 - `domain.fr` domain TLDs
 - `Accept-Language: fr-FR` headers
-   > The `Accept-Language` header can be used for redirecting the user to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, we can use the technique described above. We can perform the redirection by using our server (e.g. Express.js) independently of Vike.
+   > The `Accept-Language` header can be used for redirecting the user to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, you can use the technique described above. You can perform the redirection by using your server (e.g. Express.js) independently of Vike.
 
    > Using the `Accept-Language` header to show different languages for the same URL is considered bad practice for both SEO and UX reasons. It's recommended to use `Accept-Language` only to redirect the user.
 
@@ -60,9 +56,10 @@ This technique also works with:
  - [github.com/crummy/vite-ssr-i18n](https://github.com/crummy/vite-ssr-i18n)
    > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
+
 ## Pre-rendering
 
-If we use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining `onBeforeRoute()`, we also
+If you use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition to defining `onBeforeRoute()`, you also need to
 define the `onPrerenderStart()` hook:
 
 ```js
@@ -101,7 +98,7 @@ function onPrerenderStart(prerenderContext) {
 
 See <RepoLink path='/examples/i18n/' /> for an example using `onPrerenderStart()`.
 
-Our <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> (if we use any) return URLs without any locale (e.g. `onBeforePrerenderStart()` returning `/product/42`). Instead, it's our `onPrerenderStart()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
+Your <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> (if you use any) return URLs without any locale (e.g. `onBeforePrerenderStart()` returning `/product/42`). Instead, it's your `onPrerenderStart()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
 
 ```js
 // /pages/product/+onBeforePrerenderStart.js
@@ -111,24 +108,24 @@ export { onBeforePrerenderStart }
 async function onBeforePrerenderStart() {
   const products = await Product.findAll()
   const URLs = products.map(({ id }) => '/product/' + id)
-  // We don't add the locale here, instead we let onPrerenderStart() add the locales
+  // You don't add the locale here (it's your onPrerenderStart() hook that adds the locales)
   return URLs
 }
 ```
 
-Essentially, we use `onBeforePrerenderStart()` to determine URLs and/or load data, and use `onPrerenderStart()` to
+Essentially, you use `onBeforePrerenderStart()` to determine URLs and/or load data, and use `onPrerenderStart()` to
 manipulate localized URLs and set `pageContext.locale`.
 
-> `onPrerenderStart()` is a global hook we can define only once, while `onBeforePrerenderStart()` is a per-page hook we can define multiple times.
+> `onPrerenderStart()` is a global hook you can define only once, while `onBeforePrerenderStart()` is a per-page hook you can define multiple times.
 
-Alternatively, if we need to load data that depends on localization, instead of `onPrerenderStart()` we can use
-`onBeforePrerenderStart()` to localize `pageContext`:
+Alternatively, if you need to load data that depends on localization, instead of `onPrerenderStart()` you can use
+`onBeforePrerenderStart()` to localize <Link href="/data#pagecontext-data" doNotInferSectionTitle>`pageContext.data`</Link>:
 
 ```js
 // /pages/product/+onBeforePrerenderStart.js
 
-// In this example, we don't use onPrerenderStart() but, instead,
-// we use onBeforePrerenderStart() to duplicate and localize URLs and their pageContext
+// This example doesn't use onPrerenderStart() but, instead,
+// uses onBeforePrerenderStart() to duplicate and localize URLs and their pageContext
 export { onBeforePrerenderStart }
 
 async function onBeforePrerenderStart() {
@@ -144,7 +141,7 @@ async function onBeforePrerenderStart() {
         pageContext: {
           locale,
           product,
-          pageProps: {
+          data: {
             product: {
               name: product.name,
               description: product.description,
@@ -161,7 +158,7 @@ async function onBeforePrerenderStart() {
 }
 ```
 
-We may still need to use `onPrerenderStart()` for localizing static pages that don't load data:
+You may still need to use `onPrerenderStart()` for localizing static pages that don't load data:
 
 ```js
 // /renderer/+onPrerenderStart.js
@@ -176,7 +173,7 @@ function onPrerenderStart(prerenderContext) {
   const pageContexts = []
   prerenderContext.pageContexts.forEach((pageContext) => {
     if(pageContext.locale) {
-      // Already localized by one of our onBeforePrerenderStart() hooks
+      // Already localized by one of your onBeforePrerenderStart() hooks
       assert(pageContext.urlOriginal.startsWith(`/${pagecontext.locale}/`))
       pageContexts.push(pageContext)
     } else {
@@ -198,3 +195,15 @@ function onPrerenderStart(prerenderContext) {
   }
 }
 ```
+
+
+## `lang`
+
+You can use the `lang` setting to define the value of the `<html lang>` attribute, see <Link href="/lang" />.
+
+
+## See also
+
+- <Link href="/head#internationalization" />
+- <Link href="/lang" />
+- <Link href="/onBeforeRoute" />

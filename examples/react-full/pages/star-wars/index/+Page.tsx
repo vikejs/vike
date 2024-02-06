@@ -1,9 +1,11 @@
 export default Page
 
 import React from 'react'
-import type { Movie } from '../types'
+import { useData } from '../../../renderer/useData'
+import type { Data } from './+data'
 
-function Page({ movies }: { movies: Movie[] }) {
+function Page() {
+  const { movies } = useData<Data>()
   return (
     <>
       <h1>Star Wars Movies</h1>
@@ -18,7 +20,7 @@ function Page({ movies }: { movies: Movie[] }) {
         Source: <a href="https://star-wars.brillout.com">star-wars.brillout.com</a>.
       </p>
       <p>
-        Data can be fetched by using the <code>onBeforeRender()</code> hook.
+        Data can be fetched by using the <code>data()</code> hook.
       </p>
     </>
   )

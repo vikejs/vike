@@ -8,14 +8,15 @@ const query = 'extractAssets'
 
 function extractAssetsAddQuery(id: string): string {
   const fileExtension = getFileExtension(id)
-  assert(fileExtension || id.includes('virtual:vike:'))
-  if (!fileExtension) return `${id}?${query}`
-  if (id.includes('?')) {
-    id = id.replace('?', `?${query}&`)
+  if (!fileExtension || id.includes('virtual:vike:')) {
+    return `${id}?${query}`
   } else {
-    id = `${id}?${query}&lang.${fileExtension}`
+    if (!id.includes('?')) {
+      return `${id}?${query}&lang.${fileExtension}`
+    } else {
+      return id.replace('?', `?${query}&`)
+    }
   }
-  return id
 }
 
 function extractAssetsRemoveQuery(id: string): string {

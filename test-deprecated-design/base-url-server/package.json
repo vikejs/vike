@@ -4,20 +4,20 @@
     "// Build": "",
     "build": "vite build",
     "// Server + CDN": "",
-    "serve": "concurrently \"npm run serve:cdn \" \"npm run serve:ssr\"",
+    "serve": "cross-env NODE_ENV=production concurrently \"npm run serve:cdn \" \"npm run serve:ssr\"",
     "serve:ssr": "node ./server/ssr",
     "serve:cdn": "node ./server/cdn"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^3.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "concurrently": "^7.1.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "express": "^4.18.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vite": "^4.0.3",
-    "vike": "0.4.151"
+    "vite": "^5.0.10",
+    "vike": "0.4.160"
   },
   "type": "module"
 }

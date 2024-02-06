@@ -1,11 +1,12 @@
-import React from 'react'
-import logo from './logo.svg'
-import { PageContextProvider } from './usePageContext'
-import type { PageContext } from 'vike/types'
-import './PageShell.css'
-import { Link } from './Link'
-
 export { PageShell }
+
+import React from 'react'
+import logoUrl from './logo.svg'
+import { PageContextProvider } from './usePageContext'
+import { Link } from './Link'
+import type { PageContext } from 'vike/types'
+import './css/index.css'
+import './PageShell.css'
 
 function PageShell({ children, pageContext }: { children: React.ReactNode; pageContext: PageContext }) {
   return (
@@ -14,12 +15,9 @@ function PageShell({ children, pageContext }: { children: React.ReactNode; pageC
         <Layout>
           <Sidebar>
             <Logo />
-            <Link className="navitem" href="/">
-              Home
-            </Link>
-            <Link className="navitem" href="/about">
-              About
-            </Link>
+            <Link href="/">Welcome</Link>
+            <Link href="/about">About</Link>
+            <Link href="/star-wars">Data Fetching</Link>
           </Sidebar>
           <Content>{children}</Content>
         </Layout>
@@ -45,13 +43,14 @@ function Layout({ children }: { children: React.ReactNode }) {
 function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
+      id="sidebar"
       style={{
         padding: 20,
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        lineHeight: '1.8em'
+        lineHeight: '1.8em',
+        borderRight: '2px solid #eee'
       }}
     >
       {children}
@@ -61,15 +60,17 @@ function Sidebar({ children }: { children: React.ReactNode }) {
 
 function Content({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      style={{
-        padding: 20,
-        paddingBottom: 50,
-        borderLeft: '2px solid #eee',
-        minHeight: '100vh'
-      }}
-    >
-      {children}
+    <div id="page-container">
+      <div
+        id="page-content"
+        style={{
+          padding: 20,
+          paddingBottom: 50,
+          minHeight: '100vh'
+        }}
+      >
+        {children}
+      </div>
     </div>
   )
 }
@@ -83,7 +84,7 @@ function Logo() {
       }}
     >
       <a href="/">
-        <img src={logo} height={64} width={64} alt="logo" />
+        <img src={logoUrl} height={64} width={64} alt="logo" />
       </a>
     </div>
   )

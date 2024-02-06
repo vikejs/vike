@@ -35,7 +35,7 @@ const render: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAs
 
   return {
     documentHtml,
-    // See https://vike.dev/stream#initial-data-after-stream-end
+    // See https://vike.dev/streaming#initial-data-after-stream-end
     pageContext: async () => {
       return {
         someAsyncProps: 42

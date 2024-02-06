@@ -43,4 +43,16 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isStem?: true) {
     const pageContent = 'The Phantom MenaceRelease Date: 1999-05-19Director: George LucasProducer: Rick McCallum'
     expect(await page.textContent('body')).toContain(pageContent)
   })
+
+  test('ssr: false', async () => {
+    const html = await fetchHtml('/star-wars/4')
+    expect(html).toContain('<html')
+    // <head> is render to HTML
+    expect(html).toContain('<title>The Phantom Menace</title>')
+    expect(html).toContain('<meta name="description" content="Demo showcasing Vike + React"/>')
+    expect(html).toContain('<link rel="icon"')
+    // <body> isn't rendered to HTML
+    expect(html).not.toContain('<h1>')
+    expect(html).toContain('<div id="page-view"></div>')
+  })
 }

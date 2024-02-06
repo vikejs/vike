@@ -1,9 +1,35 @@
-import { UseIntegrationPackageHint } from '../components'
+import { Link } from '@brillout/docpress'
+import { Example, UseBatiHint } from '../components'
 
-<UseIntegrationPackageHint uiFrameworkName="Vue" />
+## `vike-vue`
 
-Official examples of using Vike with [Vue](https://vuejs.org/):
- - [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples)
+We recommend using <Link href="/extensions">`vike-vue`</Link> which integrates Vue in a full-fledged manner.
 
-Community example:
- - [Vike + Vue 3 + TSX](https://github.com/justwiner/vue3-tsx)
+> <p><UseBatiHint feature={<code>vike-vue</code>} /></p>
+
+You can also <Link href="#without-vike-extension">integrate Vue yourself</Link> if you want full control over the Vue integration.
+
+
+## Without Vike extension
+
+Instead of using a Vike extension, you can manually integrate Vue yourself, giving you full control over the integration of not only Vue itself but also Vue libraries.
+
+Official examples:
+ - <Link href="/boilerplates/boilerplate-vue-ts" /> - Classic integration, using <Link href="/client-routing">Client Routing</Link>.
+ - <Link href="/examples/vue-minimal" /> - Minimalistic integration, using <Link href="/server-routing">Server Routing</Link>.
+ - [`vike-vue` source code](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue) - Full-featured integeration.
+ - <Link href="/examples/graphql-apollo-vue" /> - Integration with GraphQL Apollo.
+
+> For more official examples, see [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples).
+
+Community examples:
+ - <Example timestamp="2023.12" repo="luisfloat/vike-island-example" /> - [Islands Architecture](https://jasonformat.com/islands-architecture/) implementation, mixing React and Vue.
+ - <Example timestamp="2022.08" repo="AaronBeaudoin/vite-plugin-ssr-example" /> - Vue integration supporting all <Link href="/render-modes">render modes</Link> (SSR, SPA, and HTML-only).
+
+> For more community examples, see integration guides such as <Link href="/vue-query" />.
+
+
+## See also
+
+ - <Link href="/react" />
+ - <Link href="/solid" />

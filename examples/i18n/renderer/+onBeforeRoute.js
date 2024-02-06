@@ -3,12 +3,12 @@ export default onBeforeRoute
 import { extractLocale } from '../locales'
 
 function onBeforeRoute(pageContext) {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
   return {
     pageContext: {
-      // We make `locale` available as `pageContext.locale`. We can then use https://vike.dev/pageContext-anywhere to access pageContext.locale in any React/Vue component.
+      // Make `locale` available as pageContext.locale
       locale,
-      // Tell Vike's router to use the value urlWithoutLocale instead of pageContext.urlOriginal
+      // Vike's router will use pageContext.urlLogical instead of pageContext.urlOriginal
       urlLogical: urlWithoutLocale
     }
   }

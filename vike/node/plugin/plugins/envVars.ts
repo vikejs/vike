@@ -19,7 +19,7 @@ function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
   return {
-    name: 'vike:env',
+    name: 'vike:envVars',
     enforce: 'post',
     configResolved(config_) {
       config = config_

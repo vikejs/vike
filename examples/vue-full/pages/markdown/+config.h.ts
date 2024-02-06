@@ -1,4 +1,8 @@
+export { config }
+
+import type { Config } from 'vike/types'
+
 // https://vike.dev/config
-export default {
+const config = {
   title: 'Some Markdown Page'
-}
+} satisfies Config

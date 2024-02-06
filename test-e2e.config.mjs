@@ -82,7 +82,11 @@ function tolerateError({ logSource, logText }) {
     isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader() ||
     isNodeExperimentalLoader() ||
-    isNotV1Design()
+    isNotV1Design() ||
+    [
+      // TODO: use new API
+      'The glob option "as" has been deprecated in favour of "query"'
+    ].some((t) => logText.includes(t))
   )
 
   function isViteCjsWarning() {
@@ -131,7 +135,7 @@ function tolerateError({ logSource, logText }) {
     )
   }
 
-  // [vike@0.4.51][Warning] pageContext._getPageAssets() deprecated, see https://vike.dev/preload
+  // [vike@0.4.51][Warning] pageContext._getPageAssets() deprecated, see https://vike.dev/preloading
   function isGetPageAssetsDeprecationWarning() {
     return (
       logSource === 'stderr' &&
@@ -190,7 +194,7 @@ function tolerateError({ logSource, logText }) {
     )
   }
   function isSlowCrawlWarning() {
-    return logSource === 'stderr' && logText.includes('Crawling your user files took an unexpected long time')
+    return logSource === 'stderr' && logText.includes('Crawling your + files took an unexpected long time')
   }
 
   function isNodeExperimentalEsmLoader() {
@@ -205,7 +209,7 @@ function tolerateError({ logSource, logText }) {
     return (
       logSource === 'stderr' &&
       logText.includes(
-        'You are using the old deprecated design, update to the new V1 design, see https://vike.dev/migration/v1-design'
+        "You are using Vike's deprecated design. Update to the new V1 design, see https://vike.dev/migration/v1-design for how to migrate."
       )
     )
   }

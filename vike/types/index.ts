@@ -1,14 +1,10 @@
 export type { PageContext } from '../shared/types.js'
 export type { PageContextServer } from '../shared/types.js'
 export type { PageContextClient } from '../shared/types.js'
-
-// For users who don't use Client Routing
 export type { PageContextWithServerRouting } from '../shared/types.js'
 export type { PageContextClientWithServerRouting } from '../shared/types.js'
 
-// TODO/eventually: add @deprecated to these types (ideally before v1 release)
-// TODO/v1-release: remove these
-// Legacy way of enabling users to construct their own `PageContext` type.
+// TODO/v1-release: remove these three exports
 export type { PageContextBuiltInServer } from '../shared/types.js'
 export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
 export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
@@ -64,8 +60,8 @@ import type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 type Env = ConfigEnv
 export type { Env }
 
-// TODO/v1-release: remove
 import type { ConfigEffect } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+// TODO/v1-release: remove
 /** @deprecated Replace:
  *   `import type { Effect } from 'vike/types'`
  * With:
