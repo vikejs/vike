@@ -33,6 +33,7 @@ import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../shared/ViteManifest.js'
 import { pLimit } from '../../../utils/pLimit.js'
+import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -41,6 +42,7 @@ const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin {
   let isSsrBuild = false
+  let isServerAssetsFixEnabled: boolean
   let outDirs: ReturnType<typeof getOutDirs>
   let filesToCopy: string[] = []
   return {
@@ -56,6 +58,16 @@ function buildConfig(): Plugin {
         config.build.rollupOptions.input = injectRollupInputs(entries, config)
         addLogHook()
         outDirs = getOutDirs(config)
+        {
+          const isV1Design = (await getVikeConfig(config, false)).pageConfigs.length > 0
+          isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design
+          if (isServerAssetsFixEnabled) {
+            // https://github.com/vikejs/vike/issues/1339
+            config.build.ssrEmitAssets = true
+            // required if `ssrEmitAssets: true`: https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
+            config.build.cssMinify = 'esbuild'
+          }
+        }
       }
     },
     config(config) {
@@ -77,7 +89,7 @@ function buildConfig(): Plugin {
       /* Fails with @vitejs/plugin-legacy because writeBundle() is called twice during the client build (once for normal client assets and a second time for legacy assets), see reproduction at https://github.com/vikejs/vike/issues/1154
       assert(generateManifest === !!manifestEntry)
       */
-      if (manifestEntry) {
+      if (manifestEntry && (!isSsrBuild || isServerAssetsFixEnabled)) {
         const { dir } = options
         assert(dir)
         const manifestFilePathOld = path.join(dir, manifestEntry.fileName)

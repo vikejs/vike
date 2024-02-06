@@ -9,6 +9,7 @@ import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
 import { getGlobalContext } from '../globalContext.js'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
+import { fixServerAssets_isEnabled } from '../../plugin/plugins/buildConfig/fixServerAssets.js'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
   if (pageConfig) {
@@ -21,6 +22,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       onlyAssets: false,
       eagerlyImported: false
     })
+    if (!fixServerAssets_isEnabled()) {
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!getGlobalContext().isProduction) {
       clientDependencies.push({
@@ -28,6 +30,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
         onlyAssets: true,
         eagerlyImported: false
       })
+    }
     }
     /* Remove?
     Object.values(pageConfig.configElements).forEach((configElement) => {
