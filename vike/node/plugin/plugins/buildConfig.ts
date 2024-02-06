@@ -77,9 +77,7 @@ function buildConfig(): Plugin {
         build: {
           outDir: resolveOutDir(config),
           manifest: manifestTempFile,
-          copyPublicDir: !isSsrBuild,
-          ssrEmitAssets: true,
-          cssMinify: 'esbuild'
+          copyPublicDir: !isSsrBuild
         }
       } satisfies UserConfig
     },
