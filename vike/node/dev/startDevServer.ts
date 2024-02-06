@@ -1,20 +1,20 @@
-import pc from '@brillout/picocolors'
+import { BirpcReturn, createBirpc } from 'birpc'
 import http from 'http'
-import net from 'net'
-import util from 'util'
-import { createServer } from 'vite'
-import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
+import { ModuleNode, createServer } from 'vite'
+import { SHARE_ENV, Worker } from 'worker_threads'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
-import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { assert } from '../runtime/utils.js'
-import { bindCLIShortcuts } from './shortcuts.js'
+import { ClientFunctions, ServerFunctions } from './types.js'
+import { stringify } from '@brillout/json-serializer/stringify'
+import { parse } from '@brillout/json-serializer/parse'
+
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+const workerPath = new URL('./worker.js', import.meta.url)
+const viteMiddlewareProxyPort = 3333
 
 start()
 
 async function start() {
-  let httpServers: http.Server[] = []
-  let sockets: net.Socket[] = []
-
   const vite = await createServer({
     server: {
       middlewareMode: true
@@ -24,118 +24,158 @@ async function start() {
         name: 'vike:devserver',
         async handleHotUpdate(ctx) {
           const mods = ctx.modules.map((m) => m.id).filter(Boolean) as string[]
-          const shouldRestart = mods.some((m) => m && runtime.moduleCache.get(m).evaluated)
-          runtime.moduleCache.invalidateDepTree(mods)
-
+          const shouldRestart = await rpc.invalidateDepTree(mods)
           if (shouldRestart) {
-            await onRestart()
+            await restartWorker()
           }
-        },
-        buildEnd() {
-          onFullRestart()
         }
       }
     ]
   })
-
+  const httpServer = http.createServer(vite.middlewares)
+  httpServer.listen(viteMiddlewareProxyPort)
   const serverConfig = getServerConfig()
   assert(serverConfig)
   const {
-    reload,
     entry: { index }
   } = serverConfig
 
-  process.on('unhandledRejection', onError)
-  process.on('uncaughtException', onError)
-  bindCLIShortcuts({
-    onRestart: onFullRestart
-  })
+  let rpc: BirpcReturn<ClientFunctions, ServerFunctions>
+  let worker: Worker
 
-  const runtime = new ViteRuntime(
-    {
-      root: vite.config.root,
-      fetchModule: vite.ssrFetchModule
-    },
-    new ESModulesRunner()
-  )
-
-  patchHttp()
-  loadEntry()
-
-  async function onRestart() {
-    if (reload === 'fast') {
-      await onFastRestart()
-    } else {
-      onFullRestart()
+  async function restartWorker() {
+    if (worker) {
+      await worker.terminate()
     }
-  }
 
-  async function onFastRestart() {
-    await closeAllServers()
-    await loadEntry()
-  }
+    worker = new Worker(workerPath, { env: SHARE_ENV })
 
-  function onFullRestart() {
-    process.exit(33)
-  }
-
-  async function loadEntry() {
-    await runtime.executeUrl(index)
-  }
-
-  async function closeAllServers() {
-    const anHttpServerWasClosed = httpServers.length > 0
-    const promise = Promise.all([
-      ...sockets.map((socket) => socket.destroy()),
-      ...httpServers.map((httpServer) => util.promisify(httpServer.close.bind(httpServer))())
-    ])
-    sockets = []
-    httpServers = []
-    await promise
-    return anHttpServerWasClosed
-  }
-
-  function patchHttp() {
-    const originalCreateServer = http.createServer.bind(http.createServer)
-    http.createServer = (...args) => {
-      // @ts-ignore
-      const httpServer = originalCreateServer(...args)
-
-      httpServer.on('connection', (socket) => {
-        sockets.push(socket)
-        socket.on('close', () => {
-          sockets = sockets.filter((socket) => !socket.closed)
-        })
-      })
-
-      httpServer.on('listening', () => {
-        const listeners = httpServer.listeners('request')
-        httpServer.removeAllListeners('request')
-        httpServer.on('request', (req, res) => {
-          vite.middlewares(req, res, () => {
-            for (const listener of listeners) {
-              listener(req, res)
-            }
-          })
-        })
-      })
-      httpServers.push(httpServer)
-      return httpServer
-    }
-  }
-
-  function onError(err: unknown) {
-    console.error(err)
-    closeAllServers().then((anHttpServerWasClosed) => {
-      if (anHttpServerWasClosed) {
-        // Note(brillout): we can do such polishing at the end of the PR, once we have nailed the overall structure. (I'm happy to help with the polishing.)
-        logViteAny(
-          `Server shutdown. Update a server file, or press ${pc.cyan('r + Enter')}, to restart.`,
-          'info',
-          null,
-          true
-        )
+    rpc = createBirpc<ClientFunctions, ServerFunctions>(
+      {
+        fetchModule: vite.ssrFetchModule,
+        moduleGraphResolveUrl(url: string) {
+          return vite.moduleGraph.resolveUrl(url)
+        },
+        moduleGraphGetModuleById(id: string) {
+          const module = vite.moduleGraph.getModuleById(id)
+          if (!module) {
+            return module
+          }
+          return removeFunctions(flattenImportedModules(module))
+        },
+        transformIndexHtml(url: string, html: string, originalUrl?: string) {
+          return vite.transformIndexHtml(url, html, originalUrl)
+        }
+      },
+      {
+        post: (data) => worker.postMessage(data),
+        on: (data) => worker.on('message', data),
+        serialize: (v) => stringify(v),
+        deserialize: (v) => parse(v)
       }
+    )
+
+    const originalInvalidateModule = vite.moduleGraph.invalidateModule.bind(vite.moduleGraph)
+    vite.moduleGraph.invalidateModule = (mod, ...rest) => {
+      if (mod.id) {
+        rpc.deleteByModuleId(mod.id)
+      }
+      return originalInvalidateModule(mod, ...rest)
+    }
+
+    // await configVikePromise because we can't stringify a promise
+    // @ts-ignore
+    const globalObjectOriginal = global._vike['globalContext.ts']
+    globalObjectOriginal.viteDevServer.config.configVikePromise =
+      await globalObjectOriginal.viteDevServer.config.configVikePromise
+    const { viteConfig } = globalObjectOriginal
+
+    await rpc.start({
+      entry: index,
+      viteMiddlewareProxyPort,
+      viteConfig: { root: viteConfig.root, configVikePromise: viteConfig.configVikePromise }
     })
+  }
+
+  restartWorker()
+}
+
+function removeFunctions(obj: any) {
+  const seenObjects = new WeakSet()
+
+  function helper(currentObj: any) {
+    if (currentObj === null || typeof currentObj !== 'object') {
+      return currentObj
+    }
+
+    if (seenObjects.has(currentObj)) {
+      return
+    }
+    seenObjects.add(currentObj)
+
+    let newObj: any
+    if (currentObj instanceof Set) {
+      newObj = new Set()
+      for (let value of currentObj) {
+        if (typeof value !== 'function') {
+          newObj.add(helper(value))
+        }
+      }
+    } else if (currentObj instanceof Map) {
+      newObj = new Map()
+      for (let [key, value] of currentObj) {
+        if (typeof value !== 'function') {
+          newObj.set(key, helper(value))
+        }
+      }
+    } else {
+      newObj = Array.isArray(currentObj) ? [] : {}
+      for (let key in currentObj) {
+        let value = currentObj[key]
+        if (typeof value === 'function') {
+          continue
+        } else if (typeof value === 'object') {
+          value = helper(value)
+        }
+        newObj[key] = value
+      }
+    }
+    return newObj
+  }
+
+  return helper(obj)
+}
+
+function flattenImportedModules(moduleNode: ModuleNode) {
+  const modules = new Set<ModuleNode>()
+
+  function helper(node: ModuleNode) {
+    if (!modules.has(node)) {
+      modules.add(node)
+      const importedModules = node.importedModules
+      for (const importedModule of importedModules) {
+        helper(importedModule)
+      }
+    }
+  }
+
+  helper(moduleNode)
+
+  // this is the minimal representation that Vike runtime uses
+  return {
+    id: moduleNode.id,
+    url: moduleNode.url,
+    type: moduleNode.type,
+    importedModules: new Set(
+      Array.from(modules)
+        .slice(1)
+        .map((module) => ({
+          id: module.id,
+          url: module.url,
+          type: module.type,
+          // they are already flattened on the main module
+          importedModules: new Set<ModuleNode>()
+        }))
+    )
   }
 }

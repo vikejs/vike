@@ -14,7 +14,8 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
       const { moduleGraph } = viteDevServer
       const [_, graphId] = await moduleGraph.resolveUrl(id)
       assert(graphId, { id })
-      const mod = moduleGraph.getModuleById(graphId)
+      const mod = await moduleGraph.getModuleById(graphId)
+      
       if (!mod) {
         /* Not sure when the assertion fails. So let's just remove it for now.
          *  - https://github.com/vikejs/vike/issues/391
