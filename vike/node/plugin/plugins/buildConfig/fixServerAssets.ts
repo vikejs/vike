@@ -6,6 +6,7 @@ import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
 import { OutDirs, assert, pLimit, unique } from '../../utils.js'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 const manifestTempFile = '_temp_manifest.json'
 
 /**
@@ -81,7 +82,7 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
   >()
 
   for (const [key, entry] of Object.entries(clientManifest)) {
-    const pageId = determinePageIdV1(key)
+    const pageId = getPageId(key)
     if (!pageId) {
       continue
     }
@@ -91,7 +92,7 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
   }
 
   for (const [key, entry] of Object.entries(serverManifest)) {
-    const pageId = determinePageIdV1(key)
+    const pageId = getPageId(key)
     if (!pageId) {
       continue
     }
@@ -141,13 +142,9 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
   return { clientManifest, filesToCopy: unique(filesToCopy) }
 }
 
-function determinePageIdV1(entry: string) {
-  const splitEntry = entry.split(':/pages')
-  const isV1 = splitEntry.length === 2
-  if (!isV1) {
-    return ''
-  }
-  return splitEntry.pop()
+function getPageId(key: string) {
+  const result = isVirtualFileIdPageConfigValuesAll(key)
+  return result && result.pageId
 }
 
 function collectAssetsForEntry(manifest: ViteManifest, entry: ViteManifestEntry) {
