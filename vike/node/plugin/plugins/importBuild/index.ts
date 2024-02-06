@@ -3,7 +3,7 @@ export { replace_ASSETS_MAP }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { serverEntryPlugin, findServerEntry } from '@brillout/vite-plugin-server-entry/plugin.js'
-import { assert, getOutDirs, toPosixPath, viteIsSSR } from '../../utils.js'
+import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
