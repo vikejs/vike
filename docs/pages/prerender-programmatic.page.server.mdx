@@ -1,30 +1,9 @@
 import { Warning, Link } from '@brillout/docpress'
 
-> See <Link href="/pre-rendering" /> for an overview of what pre-rendering is and how to enable it.
-
-Pre-rendering is automatically initiated when running `$ vite build`. (If <Link text="pre-rendering is enabled" href="/pre-rendering#how-to-pre-render" />.)
-
-Instead, we can programmatically initiate pre-rendering:
+You can programmatically trigger <Link href="/pre-rendering">pre-rendering</Link>:
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
-
-export default {
-  plugins: [
-    vike({
-      prerender: {
-        // Stop `$ vite build` from initiating pre-rendering
-        disableAutoRun: true
-      }
-    })
-  ]
-}
-```
-
-```js
-// my-custom-build-script.js
+// my-build-script.js
 
 import { prerender } from 'vike/prerender'
 
@@ -38,6 +17,8 @@ prerender({
   onPagePrerender
 })
 ```
+
+> Use <Link href="/prerender-config#disableautorun" /> if you don't want pre-rendering to be run twice.
 
 
 ## `pageContextInit`
@@ -57,7 +38,7 @@ prerender({
 
 The Vite config.
 
-It's optional: if omitted, Vite automatically loads our `vite.config.js`.
+It's optional: if omitted, Vite automatically loads `vite.config.js`.
 
 We recommend to either omit this option or set it to `prerender({ viteConfig: { root }})`: the `vite.config.js` file living at `root` will be loaded.
 
@@ -79,23 +60,28 @@ See [Vite > JavaScript API > `InlineConfig`](https://vitejs.dev/guide/api-javasc
 
 ## `onPagePrerender()`
 
-<Warning>DON'T use this option without having contacted a Vike maintainer: this functionality may be completely changed/removed at any time if you don't.</Warning>
+<Warning>Don't use this option without having contacted a Vike maintainer: this functionality may be changed/removed at any time if you don't.</Warning>
 
-<Warning>This feature is experimental and may be changed in any minor version update.</Warning>
-
-The `onPagePrerender` option allows us to override where the HTML is written.
+The `onPagePrerender` option allows you to control where/how HTML files are written.
 
 ```js
 prerender({
-  // If we provide `onPagePrerender` then Vike won't write the HTML to the filesystem
+  // If onPagePrerender() is set, then Vike won't write the HTML files to the filesystem
   onPagePrerender(pageContext) {
-    // TODO: write the HTML to the filesystem.
+    // Write the HTML to the filesystem
     // ...
   }
 })
 ```
 
 
-## More configs
+## More settings
 
-For more configurations, see the global config at <Link href="/prerender-config" />.
+For more settings, see <Link href="/prerender-config" />.
+
+
+## See also
+
+- <Link href="/command-prerender" />
+- <Link href="/prerender-config#disableautorun" />
+- <Link href="/pre-rendering" />
