@@ -32,7 +32,6 @@ function importBuild(): Plugin[] {
         sequential: true,
         async handler(options, bundle) {
         if (!viteIsSSR(config)) return
-
         await replace_ASSETS_MAP(options, bundle)
         }
       }
@@ -56,7 +55,6 @@ function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): s
     `    pageFiles: () => pageFiles,`,
     // TODO: rename clientManifest -> assetManifest
     `    clientManifest: () => { return ${ASSETS_MAP} },`,
-
     // TODO: rename pluginManifest -> vikeManifest
     `    pluginManifest: () => (${JSON.stringify(vikeManifest, null, 2)}),`,
     '  });',

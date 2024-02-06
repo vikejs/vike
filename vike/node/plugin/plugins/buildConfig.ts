@@ -25,6 +25,7 @@ import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 import fs from 'fs/promises'
@@ -198,29 +199,36 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 
 // Ensure Rollup creates entries for each page file, see https://github.com/vikejs/vike/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
-// TODO: remove ?extractAssets code
 async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
   const isForClientSide = !viteIsSSR(config)
   const fileTypes: FileType[] = isForClientSide ? ['.page', '.page.client'] : ['.page', '.page.server']
-
+  if (isForClientSide && includeAssetsImportedByServer) {
+    fileTypes.push('.page.server')
+  }
   let pageFiles = await findPageFiles(config, fileTypes, false)
   const pageFileEntries: Record<string, string> = {}
   pageFiles = unique(pageFiles)
   pageFiles.forEach((pageFile) => {
-    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config)
+    let addExtractAssetsQuery = false
+    if (isForClientSide && pageFile.includes('.page.server.')) {
+      assert(includeAssetsImportedByServer)
+      addExtractAssetsQuery = true
+    }
+    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config, addExtractAssetsQuery)
     pageFileEntries[entryName] = entryTarget
   })
   return pageFileEntries
 }
 
-// TODO: remove ?extractAssets code
-function getEntryFromFilePath(filePath: string, config: ResolvedConfig) {
+function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
 
   let entryTarget = getFilePathAbsolute(filePath, config)
+  if (addExtractAssetsQuery) entryTarget = extractAssetsAddQuery(entryTarget)
 
   let entryName = filePath
+  if (addExtractAssetsQuery) entryName = extractAssetsAddQuery(entryName)
   entryName = removeFileExtention(entryName)
   entryName = prependEntriesDir(entryName)
 

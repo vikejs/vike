@@ -32,7 +32,7 @@ function distFileNames(): Plugin {
     }
   }
 }
-// TODO: remove ?extractAssets code
+
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
   const assetsDir = getAssetsDir(config)
   const dir = assetsDir + '/static'
@@ -45,6 +45,19 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
   // https://github.com/vikejs/vike/issues/794
   assertPosixPath(name)
   name = path.posix.basename(name)
+
+  // dist/client/assets/index.page.server.jsx_extractAssets_lang.e4e33422.css
+  // => dist/client/assets/index.page.server.e4e33422.css
+  if (
+    // Vite 2
+    name?.endsWith('_extractAssets_lang.css') ||
+    // Vite 3
+    name?.endsWith('?extractAssets&lang.css')
+  ) {
+    name = name.split('.').slice(0, -2).join('.')
+    name = clean(name)
+    return `${dir}/${name}.[hash][extname]`
+  }
 
   name = name.split('.').slice(0, -1).join('.')
   name = clean(name)
@@ -97,8 +110,8 @@ function removePathSeperators(name: string) {
   return name
 }
 
-// TODO: remove ?extractAssets code
 function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string {
+  name = fixExtractAssetsQuery(name)
   if (fixGlob) {
     name = workaroundGlob(name)
   }
@@ -108,6 +121,10 @@ function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string
   }
   name = removeLeadingUnderscoreInFilename(name)
   name = removeUnderscoreDoublets(name)
+  return name
+}
+function fixExtractAssetsQuery(name: string): string {
+  name = name.replace(/\.[^\.]*_extractAssets_lang$/, '.extractAssets')
   return name
 }
 function removeUnderscoreDoublets(name: string): string {

@@ -1,6 +1,7 @@
 export { isVirtualFileIdPageConfigValuesAll }
 export { getVirtualFileIdPageConfigValuesAll }
 
+import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
 import { assert, getVirtualFileId } from '../utils.js'
 
 const idBase = 'virtual:vike:pageConfigValuesAll:'
@@ -11,22 +12,28 @@ function getVirtualFileIdPageConfigValuesAll(pageId: string, isForClientSide: bo
   const id = `${isForClientSide ? idBaseClient : idBaseServer}${pageId}` as const
   return id
 }
-
-// TODO: remove ?extractAssets code
-function isVirtualFileIdPageConfigValuesAll(id: string): false | { isForClientSide: boolean; pageId: string } {
+function isVirtualFileIdPageConfigValuesAll(
+  id: string
+): false | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
   id = getVirtualFileId(id)
   if (!id.includes(idBase)) return false
   assert(id.startsWith(idBase))
+  const idOriginal = id
+  id = extractAssetsRemoveQuery(id)
+  const isExtractAssets = idOriginal !== id
   if (id.startsWith(idBaseClient)) {
+    assert(isExtractAssets === false)
     return {
       pageId: id.slice(idBaseClient.length),
-      isForClientSide: true
+      isForClientSide: true,
+      isExtractAssets
     }
   }
   if (id.startsWith(idBaseServer)) {
     return {
       pageId: id.slice(idBaseServer.length),
-      isForClientSide: false
+      isForClientSide: false,
+      isExtractAssets
     }
   }
   assert(false)

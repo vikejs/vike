@@ -17,6 +17,7 @@ import { importUserCode } from './plugins/importUserCode/index.js'
 import { resolveVikeConfig } from './plugins/config/index.js'
 import type { ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
 import { distFileNames } from './plugins/distFileNames.js'
+import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
@@ -43,6 +44,7 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),
+    ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     setGlobalContext(),

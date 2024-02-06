@@ -21,8 +21,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       onlyAssets: false,
       eagerlyImported: false
     })
-    // TODO: remove ?extractAssets code
-    // In production we add the assets of server-only pages to the client manifest
+    // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
     if (!getGlobalContext().isProduction) {
       clientDependencies.push({
         id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
