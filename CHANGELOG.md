@@ -1,3 +1,23 @@
+## [0.4.161](https://github.com/vikejs/vike/compare/v0.4.160...v0.4.161) (2024-02-07)
+
+
+### Bug Fixes
+
+* add error hint ([#1469](https://github.com/vikejs/vike/issues/1469)) ([5bab863](https://github.com/vikejs/vike/commit/5bab86306d08120ab0be2aba8fd568ba3a91cfb7))
+* add missing getReadableNodeStream() type (fix [#1473](https://github.com/vikejs/vike/issues/1473)) ([f473528](https://github.com/vikejs/vike/commit/f47352858b05ab118bda2dee1c74962294039596))
+* deprecate `$ vike prerender` options ([fd0065e](https://github.com/vikejs/vike/commit/fd0065e601b625d30b2af733e61486bfddbf7062))
+* export fake prefetch() on server-side (fix [#1471](https://github.com/vikejs/vike/issues/1471)) ([937d8d5](https://github.com/vikejs/vike/commit/937d8d5c728896b9abad98533e84ab01b6cf8b15))
+* fix internal assertion (fix [#1457](https://github.com/vikejs/vike/issues/1457)) ([2c9e631](https://github.com/vikejs/vike/commit/2c9e6312c7cb14984a874c9e4cf482b45af1f45a))
+* fix order of meta merging (fix [#1458](https://github.com/vikejs/vike/issues/1458)) ([a1101c1](https://github.com/vikejs/vike/commit/a1101c17fd966feffc20c92e3d985f216553487d))
+* improve guard() error message ([#1457](https://github.com/vikejs/vike/issues/1457)) ([df435bb](https://github.com/vikejs/vike/commit/df435bbdcc2530398e3568cf242d1fc232d92be4))
+* prohibit wrong NODE_ENV value upon building ([#1469](https://github.com/vikejs/vike/issues/1469)) ([a49930c](https://github.com/vikejs/vike/commit/a49930c37924a71aac9c14613ecfad5f8fd14e2f))
+* rename `export { PROJECT_VERSION }` to `export { version }` ([224ae95](https://github.com/vikejs/vike/commit/224ae953d23fb84619b7ae9141f76d1d23b45ecf))
+* sort config value sources ([8297658](https://github.com/vikejs/vike/commit/8297658e148f4ff5ff496f910712fba141e9cefc))
+* track config dependencies ([c98e555](https://github.com/vikejs/vike/commit/c98e5556be7a7519d7e719de3094f3416748db07))
+* use config.build.ssrEmitAssets workaround ([#1364](https://github.com/vikejs/vike/issues/1364)) ([b198cdb](https://github.com/vikejs/vike/commit/b198cdb7a07a21c75b1573136ef0f41a3e429f0d))
+
+
+
 ## [0.4.160](https://github.com/vikejs/vike/compare/v0.4.159...v0.4.160) (2024-01-23)
 
 
