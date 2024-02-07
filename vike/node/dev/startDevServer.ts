@@ -51,7 +51,8 @@ async function startDevServer() {
   let exited = false
 
   async function restartWorker() {
-    vite.moduleGraph.invalidateAll()
+    // This might be needed, but slows down the restart
+    // vite.moduleGraph.invalidateAll()
     if (worker && !exited) {
       await worker.terminate()
     }
