@@ -3,7 +3,7 @@
     "dev": "vike dev",
     "build": "vite build",
     "prepare": "pnpm prisma generate && pnpm prisma db push",
-    "prod": "pnpm run build && cp ./prisma/test.db ./dist/server/node_modules/.prisma/client && node dist/server/index.mjs"
+    "prod": "pnpm run build && cp ./prisma/test.db ./dist/server/node_modules/.prisma/client && cross-env NODE_ENV=production node dist/server/index.mjs"
   },
   "dependencies": {
     "@node-rs/argon2": "^1.5.2",
@@ -19,7 +19,8 @@
     "typescript": "^5.2.2",
     "vike": "0.4.150",
     "vite": "^5.0.10",
-    "prisma": "^5.8.1"
+    "prisma": "^5.8.1",
+    "cross-env": "^7.0.3"
   },
   "type": "module"
 }
