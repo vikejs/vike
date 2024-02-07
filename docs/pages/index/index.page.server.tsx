@@ -1,7 +1,7 @@
 import React from 'react'
 import { Header } from './Header'
 import { Features } from './features/Features'
-import { Consulting, Contributors, HorizontalLine, Link, Sponsors } from '@brillout/docpress'
+import { Contributors, HorizontalLine, Link, Sponsors } from '@brillout/docpress'
 
 export { Page }
 
@@ -22,8 +22,6 @@ function Page() {
       <HorizontalLine />
       <a id="team"></a>
       <Contributors />
-      <HorizontalLine />
-      <Consulting />
       <div style={{ height: 50 }} />
     </>
   )
