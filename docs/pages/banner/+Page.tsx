@@ -9,7 +9,7 @@ export { Page }
 
 import React from 'react'
 import '../index/Header.css'
-import iconPlugin from '../images/icons/vike-vertical.svg'
+import iconPlugin from '../../images/icons/vike-vertical.svg'
 
 function Page() {
   return (
