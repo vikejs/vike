@@ -17,7 +17,7 @@ const manifestTempFile = '_temp_manifest.json'
  */
 function fixServerAssets_isEnabled(): boolean {
   // We currently apply the workaround iff V1 design.
-  // Shall we allow the user to toggle the workaround? E.g. using https://vike.dev/includeAssetsImportedByServer.
+  // Shall we allow the user to toggle between the two workarounds? E.g. based on https://vike.dev/includeAssetsImportedByServer.
   return true
 }
 
@@ -32,7 +32,7 @@ async function fixServerAssets(outDirs: OutDirs, assetsJsonFilePath: string) {
   await copyAssets(filesToCopy, outDirs)
 }
 async function loadManifest(outDir: string) {
-  const manifestFilePath = path.join(outDir, manifestTempFile)
+  const manifestFilePath = path.posix.join(outDir, manifestTempFile)
   const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
   assert(manifestFileContent)
   const manifest = JSON.parse(manifestFileContent)
@@ -41,9 +41,8 @@ async function loadManifest(outDir: string) {
 }
 async function copyAssets(filesToCopy: string[], { outDirClient, outDirServer }: OutDirs) {
   const assetsDirServerAbs = path.posix.join(outDirServer, 'assets')
-  if (!existsSync(assetsDirServerAbs)) {
-    return
-  }
+  if (!filesToCopy.length) return
+  assert(existsSync(assetsDirServerAbs))
   const concurrencyLimit = pLimit(10)
   await Promise.all(
     filesToCopy.map((file) =>
@@ -54,88 +53,73 @@ async function copyAssets(filesToCopy: string[], { outDirClient, outDirServer }:
       )
     )
   )
-
   await fs.rm(assetsDirServerAbs, { recursive: true })
 }
 
-// The missing assets in the clientManifest are added from the serverManifest, based on V1 pageId.
-// Page entries that don't exist in the client manifest are NOT added
-// This assumes that there is a page entry in the client manifest for every page(not compatible with v0.4)
-// because v0.4 doesn't include html-only pages in the client manifest
+type Resource = { src: string; hash: string }
+// Add serverManifest resources to clientManifest
 function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManifest) {
-  const entriesToAssetsClient = new Map<
-    string,
+  const entriesClient = new Map<
+    string, // pageId
     {
-      pageId: string
-      css: { src: string; hash: string }[]
-      assets: { src: string; hash: string }[]
+      key: string
+      css: Resource[]
+      assets: Resource[]
     }
   >()
-
-  const entriesToAssetsServer = new Map<
-    string,
+  const entriesServer = new Map<
+    string, // pageId
     {
-      pageId: string
-      css: { src: string; hash: string }[]
-      assets: { src: string; hash: string }[]
+      css: Resource[]
+      assets: Resource[]
     }
   >()
 
   for (const [key, entry] of Object.entries(clientManifest)) {
     const pageId = getPageId(key)
-    if (!pageId) {
-      continue
-    }
-    const assets = collectAssetsForEntry(clientManifest, entry)
-    assert(!entriesToAssetsClient.has(key))
-    entriesToAssetsClient.set(key, { ...assets, pageId })
+    if (!pageId) continue
+    const resources = collectResources(entry, clientManifest)
+    assert(!entriesClient.has(pageId))
+    entriesClient.set(pageId, { key, ...resources })
   }
-
   for (const [key, entry] of Object.entries(serverManifest)) {
     const pageId = getPageId(key)
-    if (!pageId) {
-      continue
-    }
-    const assets = collectAssetsForEntry(serverManifest, entry)
-    assert(!entriesToAssetsServer.has(key))
-    entriesToAssetsServer.set(key, { ...assets, pageId })
+    if (!pageId) continue
+    const resources = collectResources(entry, serverManifest)
+    assert(!entriesServer.has(pageId))
+    entriesServer.set(pageId, resources)
   }
 
-  const filesToCopy = []
-
-  for (const [clientEntryKey, clientEntryValue] of entriesToAssetsClient.entries()) {
+  const filesToCopy: string[] = []
+  for (const [pageId, entryClient] of entriesClient.entries()) {
     const cssToAdd: string[] = []
     const assetsToAdd: string[] = []
 
-    for (const [, serverEntryValue] of entriesToAssetsServer.entries()) {
-      if (clientEntryValue.pageId !== serverEntryValue.pageId) {
-        continue
-      }
-
+    const entryServer = entriesServer.get(pageId)
+    if (entryServer) {
       cssToAdd.push(
-        ...serverEntryValue.css
-          .filter((serverCss) => clientEntryValue.css.every((clientCss) => serverCss.hash !== clientCss.hash))
+        ...entryServer.css
+          .filter((cssServer) => !entryClient.css.some((cssClient) => cssServer.hash === cssClient.hash))
           .map((css) => css.src)
       )
       assetsToAdd.push(
-        ...serverEntryValue.assets
-          .filter((serverAsset) =>
-            clientEntryValue.assets.every((clientAsset) => serverAsset.hash !== clientAsset.hash)
-          )
+        ...entryServer.assets
+          .filter((assertServer) => !entryClient.assets.some((assetClient) => assertServer.hash === assetClient.hash))
           .map((asset) => asset.src)
       )
     }
 
+    const { key } = entryClient
     if (cssToAdd.length) {
       filesToCopy.push(...cssToAdd)
-      clientManifest[clientEntryKey]!.css ??= []
-      clientManifest[clientEntryKey]!.css?.push(...cssToAdd)
+      clientManifest[key]!.css ??= []
+      clientManifest[key]!.css?.push(...cssToAdd)
     }
 
     if (assetsToAdd.length) {
       filesToCopy.push(...assetsToAdd)
-      clientManifest[clientEntryKey]!.assets ??= []
-      clientManifest[clientEntryKey]!.assets?.push(...assetsToAdd)
+      clientManifest[key]!.assets ??= []
+      clientManifest[key]!.assets?.push(...assetsToAdd)
     }
   }
 
@@ -153,34 +137,33 @@ function getPageId(key: string) {
   return result && result.pageId
 }
 
-function collectAssetsForEntry(manifest: ViteManifest, entry: ViteManifestEntry) {
-  const css = []
-  const assets = []
+function collectResources(entryRoot: ViteManifestEntry, manifest: ViteManifest) {
+  const css: Resource[] = []
+  const assets: Resource[] = []
 
-  const entries = new Set([entry])
+  const entries = new Set([entryRoot])
   for (const entry of entries) {
-    for (const import_ of entry.imports ?? []) {
-      entries.add(manifest[import_]!)
+    for (const entryImport of entry.imports ?? []) {
+      entries.add(manifest[entryImport]!)
     }
 
-    const cssFiles = entry.css ?? []
-    if (entry.file.endsWith('.css')) cssFiles.push(entry.file)
-    for (let id of cssFiles) {
-      const hash = hashCss(id)
-      assert(hash)
-      css.push({ src: id, hash })
+    const entryCss = entry.css ?? []
+    if (entry.file.endsWith('.css')) entryCss.push(entry.file)
+    for (const src of entryCss) {
+      const hash = getHash(src)
+      css.push({ src, hash })
     }
-    for (let id of entry.assets ?? []) {
-      const hash = hashOtherAsset(id)
-      assert(hash)
-      assets.push({ src: id, hash })
+    const entryAssets = entry.assets ?? []
+    for (const src of entryAssets) {
+      const hash = getHash(src)
+      assets.push({ src, hash })
     }
   }
+
   return { css, assets }
 }
-function hashCss(id: string) {
-  return id.split('.').at(-2)
-}
-function hashOtherAsset(id: string) {
-  return id.split('.').at(-2)
+function getHash(src: string) {
+  const hash = src.split('.').at(-2)
+  assert(hash)
+  return hash
 }

@@ -59,7 +59,7 @@ function buildConfig(): Plugin {
         outDirs = getOutDirs(config)
         {
           const isV1Design = (await getVikeConfig(config, false)).pageConfigs.length > 0
-          isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design
+          isServerAssetsFixEnabled = isV1Design && fixServerAssets_isEnabled()
           if (isServerAssetsFixEnabled) {
             // https://github.com/vikejs/vike/issues/1339
             config.build.ssrEmitAssets = true
@@ -88,9 +88,9 @@ function buildConfig(): Plugin {
         // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
         //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
         //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
-        const assetsJsonFilePath = path.join(outDirs.outDirRoot, 'assets.json')
-        const clientManifestFilePath = path.join(outDirs.outDirClient, manifestTempFile)
-        const serverManifestFilePath = path.join(outDirs.outDirServer, manifestTempFile)
+        const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
+        const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
+        const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
         if (!isServerAssetsFixEnabled) {
           await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
         } else {
