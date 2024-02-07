@@ -248,8 +248,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: 0.5.40-commit-7a89b31
-        version: 0.5.40-commit-7a89b31(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(vike@vike)(vite@5.0.12)
+        specifier: 0.5.40-commit-307d08d
+        version: 0.5.40-commit-307d08d(@types/node@15.14.9)(@types/react-dom@17.0.23)(@types/react@17.0.70)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.2.2)(vike@vike)(vite@5.0.12)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -2279,17 +2279,24 @@ packages:
       to-fast-properties: 2.0.0
     dev: false
 
-  /@brillout/docpress@0.5.40-commit-7a89b31(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(vike@vike)(vite@5.0.12):
-    resolution: {integrity: sha512-5JcIFdNCU+SH6GrGfRU8bZcBPLfMRJBLRmxVN6sj+C3MS1E3KGGfgoGLvlreL7Fz7HRHgEDE7OMGkMeYRoJPEQ==}
+  /@brillout/docpress@0.5.40-commit-307d08d(@types/node@15.14.9)(@types/react-dom@17.0.23)(@types/react@17.0.70)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.2.2)(vike@vike)(vite@5.0.12):
+    resolution: {integrity: sha512-Nc5lUuL5on15SiY9LVumpw5ZCR8GUdhWy98l2pQUxfHYsS+AJ/2LYWK0KnNI2onnp7sI3YYO6TORrN3ihLWyXQ==}
     peerDependencies:
-      react: '18'
-      react-dom: '18'
+      '@types/node': '*'
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^18.0.0
+      react-dom: ^18.0.0
+      typescript: '*'
       vike: link:./vike/
       vite: ^4.3.9
     dependencies:
       '@mdx-js/mdx': 2.3.0
       '@mdx-js/react': 2.3.0(react@18.2.0)
       '@mdx-js/rollup': 2.3.0(rollup@4.9.6)
+      '@types/node': 15.14.9
+      '@types/react': 17.0.70
+      '@types/react-dom': 17.0.23
       '@vitejs/plugin-react-swc': 3.6.0(vite@5.0.12)
       balloon-css: 1.2.0
       react: 18.2.0
@@ -2298,6 +2305,7 @@ packages:
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
+      typescript: 5.2.2
       vike: link:vike
       vike-contributors: 0.0.9
       vite: 5.0.12(@types/node@15.14.9)

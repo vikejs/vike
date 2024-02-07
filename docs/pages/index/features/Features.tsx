@@ -1,6 +1,6 @@
 import React from 'react'
 import { Emoji } from '@brillout/docpress'
-import { FeatureList } from '@brillout/docpress/features/FeatureList'
+import { FeatureList } from '@brillout/docpress/FeatureList/FeatureList'
 import Control from './Control.mdx'
 import FullFleged from './FullFledged.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
