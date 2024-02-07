@@ -6,9 +6,9 @@ export default {
 }
 
 function getCiJobs() {
-  const ubuntu16 = {
+  const ubuntu18 = {
     os: 'ubuntu-latest',
-    node_version: '16'
+    node_version: '18'
   }
   const ubuntu20 = {
     os: 'ubuntu-latest',
@@ -17,25 +17,25 @@ function getCiJobs() {
     //   - https://github.com/vitejs/vite/issues/14299
     node_version: '20'
   }
-  const win16 = {
+  const win20 = {
     os: 'windows-latest',
-    node_version: '16'
+    node_version: '20'
   }
   const win18 = {
     os: 'windows-latest',
     node_version: '18'
   }
-  const mac17 = {
+  const mac18 = {
     os: 'macos-latest',
-    node_version: '16'
+    node_version: '18'
   }
 
-  const setupsExamples = [ubuntu20, win16]
+  const setupsExamples = [ubuntu20, win20]
 
   return [
     {
       name: 'Boilerplates',
-      setups: [ubuntu16]
+      setups: [ubuntu18]
     },
     {
       name: 'Examples React',
@@ -47,7 +47,7 @@ function getCiJobs() {
     },
     {
       name: 'Examples Misc',
-      setups: [ubuntu16, mac17, win16]
+      setups: [ubuntu18, mac18, win20]
     },
     {
       name: 'Unit Tests E2E',
@@ -55,7 +55,7 @@ function getCiJobs() {
     },
     {
       name: 'Cloudflare',
-      setups: [ubuntu16]
+      setups: [ubuntu18]
     },
     {
       name: 'https://vike.dev',
