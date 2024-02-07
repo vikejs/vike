@@ -58,7 +58,7 @@ function buildConfig(): Plugin {
         addLogHook()
         outDirs = getOutDirs(config)
         {
-          isServerAssetsFixEnabled = (await isV1Design(config, false)) && fixServerAssets_isEnabled()
+          isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
           if (isServerAssetsFixEnabled) {
             // https://github.com/vikejs/vike/issues/1339
             config.build.ssrEmitAssets = true

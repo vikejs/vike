@@ -26,13 +26,13 @@ import {
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
-import { isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import { removeSourceMap } from '../shared/removeSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
+import { isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -170,7 +170,7 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         configVike = await getConfigVike(config_)
         config = config_
-        isServerAssetsFixEnabled = (await isV1Design(config, false)) && fixServerAssets_isEnabled()
+        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
       },
       load(id) {
         if (!isVirtualFileId(id)) return undefined
