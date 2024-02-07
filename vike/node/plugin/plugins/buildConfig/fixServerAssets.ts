@@ -7,7 +7,7 @@ import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
 import { OutDirs, assert, pLimit, unique } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-const manifestTempFile = '_temp_manifest.json'
+import { manifestTempFile } from '../buildConfig.js'
 
 /**
  * true  => use workaround config.build.ssrEmitAssets
@@ -22,14 +22,14 @@ function fixServerAssets_isEnabled(): boolean {
 }
 
 /** https://github.com/vikejs/vike/issues/1339 */
-async function fixServerAssets(outDirs: OutDirs, assetsJsonFilePath: string) {
+async function fixServerAssets(outDirs: OutDirs): Promise<ViteManifest> {
   const clientManifest = await loadManifest(outDirs.outDirClient)
   const serverManifest = await loadManifest(outDirs.outDirServer)
 
-  const { filesToCopy, clientManifest: mergedManifest } = mergeManifests(clientManifest, serverManifest)
-  await fs.writeFile(assetsJsonFilePath, JSON.stringify(mergedManifest, null, 2), 'utf-8')
-
+  const { clientManifestMod, filesToCopy } = addServerAssets(clientManifest, serverManifest)
   await copyAssets(filesToCopy, outDirs)
+
+  return clientManifestMod
 }
 async function loadManifest(outDir: string) {
   const manifestFilePath = path.posix.join(outDir, manifestTempFile)
@@ -40,9 +40,9 @@ async function loadManifest(outDir: string) {
   return manifest
 }
 async function copyAssets(filesToCopy: string[], { outDirClient, outDirServer }: OutDirs) {
-  const assetsDirServerAbs = path.posix.join(outDirServer, 'assets')
+  const assetsDirServer = path.posix.join(outDirServer, 'assets')
   if (!filesToCopy.length) return
-  assert(existsSync(assetsDirServerAbs))
+  assert(existsSync(assetsDirServer))
   const concurrencyLimit = pLimit(10)
   await Promise.all(
     filesToCopy.map((file) =>
@@ -53,12 +53,12 @@ async function copyAssets(filesToCopy: string[], { outDirClient, outDirServer }:
       )
     )
   )
-  await fs.rm(assetsDirServerAbs, { recursive: true })
+  await fs.rm(assetsDirServer, { recursive: true })
 }
 
 type Resource = { src: string; hash: string }
 // Add serverManifest resources to clientManifest
-function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManifest) {
+function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManifest) {
   const entriesClient = new Map<
     string, // pageId
     {
@@ -90,7 +90,7 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
     entriesServer.set(pageId, resources)
   }
 
-  const filesToCopy: string[] = []
+  let filesToCopy: string[] = []
   for (const [pageId, entryClient] of entriesClient.entries()) {
     const cssToAdd: string[] = []
     const assetsToAdd: string[] = []
@@ -123,7 +123,9 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
     }
   }
 
-  return { clientManifest, filesToCopy: unique(filesToCopy) }
+  const clientManifestMod = clientManifest
+  filesToCopy = unique(filesToCopy)
+  return { clientManifestMod, filesToCopy }
 }
 
 function getPageId(key: string) {

@@ -33,7 +33,7 @@ import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { replace_ASSETS_MAP } from './importBuild/index.js'
+import { set_constant_ASSETS_MAP } from './importBuild/index.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -63,7 +63,7 @@ function buildConfig(): Plugin {
           if (isServerAssetsFixEnabled) {
             // https://github.com/vikejs/vike/issues/1339
             config.build.ssrEmitAssets = true
-            // required if `ssrEmitAssets: true`: https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
+            // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
             config.build.cssMinify = 'esbuild'
           }
         }
@@ -94,11 +94,12 @@ function buildConfig(): Plugin {
         if (!isServerAssetsFixEnabled) {
           await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
         } else {
-          await fixServerAssets(outDirs, assetsJsonFilePath)
+          const clientManifestMod = await fixServerAssets(outDirs)
+          await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
         }
         await fs.rm(clientManifestFilePath)
         await fs.rm(serverManifestFilePath)
-        await replace_ASSETS_MAP(options, bundle)
+        await set_constant_ASSETS_MAP(options, bundle)
       }
     }
   }
