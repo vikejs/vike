@@ -26,11 +26,13 @@ import {
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
+import { isV1Design as isV1Design_ } from './importUserCode/v1-design/getVikeConfig.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import { removeSourceMap } from '../shared/removeSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
+import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -45,6 +47,7 @@ const debugEnabled = isDebugEnabled(debugNamespace)
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
+  let isV1Design: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
@@ -56,6 +59,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(id)) {
           return
         }
+        assert(!isV1Design || !fixServerAssets_isEnabled())
         assert(configVike.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
@@ -166,6 +170,7 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         configVike = await getConfigVike(config_)
         config = config_
+        isV1Design = await isV1Design_(config, false)
       },
       load(id) {
         if (!isVirtualFileId(id)) return undefined

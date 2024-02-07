@@ -2,6 +2,7 @@ export { getVikeConfig }
 export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
+export { isV1Design }
 
 export type { InterfaceValueFile }
 
@@ -173,6 +174,11 @@ async function getVikeConfig(
     )
   }
   return await vikeConfigPromise
+}
+
+async function isV1Design(config: ResolvedConfig, isDev: boolean): Promise<boolean> {
+  const isV1Design = (await getVikeConfig(config, isDev)).pageConfigs.length > 0
+  return isV1Design
 }
 
 async function loadInterfaceFiles(

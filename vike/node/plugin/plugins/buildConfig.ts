@@ -19,7 +19,7 @@ import {
   getOutDirs,
   type OutDirs
 } from '../utils.js'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
@@ -58,8 +58,7 @@ function buildConfig(): Plugin {
         addLogHook()
         outDirs = getOutDirs(config)
         {
-          const isV1Design = (await getVikeConfig(config, false)).pageConfigs.length > 0
-          isServerAssetsFixEnabled = isV1Design && fixServerAssets_isEnabled()
+          isServerAssetsFixEnabled = (await isV1Design(config, false)) && fixServerAssets_isEnabled()
           if (isServerAssetsFixEnabled) {
             // https://github.com/vikejs/vike/issues/1339
             config.build.ssrEmitAssets = true
