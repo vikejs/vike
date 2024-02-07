@@ -149,7 +149,7 @@ function convertToMinimalModuleNode(
   }
 
   // Create a new MinimalModuleNode object
-  let minimalNode: MinimalModuleNode = {
+  const minimalNode: MinimalModuleNode = {
     id: node.id,
     url: node.url,
     type: node.type,
@@ -160,7 +160,7 @@ function convertToMinimalModuleNode(
   cache.set(node, minimalNode)
 
   // Convert each imported module to a MinimalModuleNode
-  for (let importedModule of node.importedModules) {
+  for (const importedModule of node.importedModules) {
     minimalNode.importedModules.add(convertToMinimalModuleNode(importedModule, cache))
   }
 
