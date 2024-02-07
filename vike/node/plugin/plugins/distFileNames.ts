@@ -25,7 +25,7 @@ function distFileNames(): Plugin {
         if (!('chunkFileNames' in rollupOutput)) {
           rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
         }
-        if (!('assertUsage' in rollupOutput)) {
+        if (!('assetFileNames' in rollupOutput)) {
           rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
         }
       })
