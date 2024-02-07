@@ -26,7 +26,7 @@ import {
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
-import { isV1Design as isV1Design_ } from './importUserCode/v1-design/getVikeConfig.js'
+import { isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import { removeSourceMap } from '../shared/removeSourceMap.js'
@@ -47,7 +47,7 @@ const debugEnabled = isDebugEnabled(debugNamespace)
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
-  let isV1Design: boolean
+  let isServerAssetsFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
@@ -59,7 +59,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(id)) {
           return
         }
-        assert(!isV1Design || !fixServerAssets_isEnabled())
+        assert(!isServerAssetsFixEnabled)
         assert(configVike.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
@@ -170,7 +170,7 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         configVike = await getConfigVike(config_)
         config = config_
-        isV1Design = await isV1Design_(config, false)
+        isServerAssetsFixEnabled = (await isV1Design(config, false)) && fixServerAssets_isEnabled()
       },
       load(id) {
         if (!isVirtualFileId(id)) return undefined
