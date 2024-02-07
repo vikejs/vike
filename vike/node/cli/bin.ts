@@ -1,9 +1,10 @@
+import pc from '@brillout/picocolors'
 import { cac } from 'cac'
 import { resolve } from 'path'
+import { startDevServer } from '../dev/startDevServer.js'
+import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { runPrerenderFromCLI, runPrerender_forceExit } from '../prerender/runPrerender.js'
-import { projectInfo, assertUsage, assertWarning } from './utils.js'
-import pc from '@brillout/picocolors'
-import { startDevServer } from '../dev/serverEntry.js'
+import { assertUsage, assertWarning, projectInfo } from './utils.js'
 
 const cli = cac(projectInfo.projectName)
 
