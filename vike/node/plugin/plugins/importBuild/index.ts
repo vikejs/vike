@@ -7,18 +7,18 @@ import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
-import type { ConfigVikeResolved, ConfigVikeUserProvided } from '../../../../shared/ConfigVike.js'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getVikeManifest } from './getVikeManifest.js'
 import fs from 'fs/promises'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-// @ts-ignore Shimed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MAP = '__VITE_ASSETS_MAP__'
 
-function importBuild(configVike2?: ConfigVikeUserProvided): Plugin[] {
+function importBuild(): Plugin[] {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
   return [
