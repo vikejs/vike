@@ -95,7 +95,6 @@ async function startDevServer() {
     })
 
     const configVikePromise = await getConfigVike(vite.config)
-    console.log(configVikePromise.native)
 
     rpc = createBirpc<ClientFunctions, ServerFunctions>(
       {

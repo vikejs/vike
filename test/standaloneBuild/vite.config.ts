@@ -6,7 +6,7 @@ export default {
   plugins: [
     react(),
     vike({
-      server: { entry: { index: './server/index.ts', worker: './server/worker.mjs' }, reload: 'fast' },
+      server: { entry: { index: './server/index.ts', worker: './server/worker.mjs' } },
       standalone: true
     }),
     telefunc()

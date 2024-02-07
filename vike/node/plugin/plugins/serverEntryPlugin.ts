@@ -69,7 +69,6 @@ function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolve
   }
 
   if (typeof configVike.server === 'object') {
-    assertUsage(['full', 'fast'].includes(configVike.server.reload), 'server.reload should be "full" or "fast"')
     if (configVike.server.entry) {
       assertUsage(
         typeof configVike.server.entry === 'string' ||
@@ -90,11 +89,10 @@ function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolve
     assert('index' in entriesProvided)
 
     return {
-      entry: entriesProvided,
-      reload: configVike.server.reload
+      entry: entriesProvided
     }
   }
 
   assertUsage(typeof configVike.server === 'string', 'server should be a string')
-  return { entry: { index: configVike.server }, reload: 'fast' }
+  return { entry: { index: configVike.server } }
 }
