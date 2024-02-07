@@ -47,11 +47,11 @@ function getCiJobs() {
     },
     {
       name: 'Examples Misc',
-      setups: [ubuntu18, mac18, win20]
+      setups: [ubuntu18, mac18, win18]
     },
     {
       name: 'Unit Tests E2E',
-      setups: [ubuntu20, win18]
+      setups: [ubuntu20, win20]
     },
     {
       name: 'Cloudflare',
