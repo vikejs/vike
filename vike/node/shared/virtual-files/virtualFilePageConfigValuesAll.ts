@@ -17,7 +17,7 @@ function isVirtualFileIdPageConfigValuesAll(
 ): false | { isForClientSide: boolean; pageId: string; isExtractAssets: boolean } {
   id = getVirtualFileId(id)
   if (!id.includes(idBase)) return false
-  assert(id.startsWith(idBase))
+  assert(id.startsWith(idBase), id)
   const idOriginal = id
   id = extractAssetsRemoveQuery(id)
   const isExtractAssets = idOriginal !== id
