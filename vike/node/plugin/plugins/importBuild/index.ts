@@ -1,8 +1,9 @@
 export { importBuild }
+export { set_constant_ASSETS_MAP }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { serverEntryPlugin, findServerEntry } from '@brillout/vite-plugin-server-entry/plugin.js'
-import { assert, getOutDirs, toPosixPath, viteIsSSR } from '../../utils.js'
+import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
@@ -27,10 +28,6 @@ function importBuild(): Plugin[] {
       async configResolved(config_) {
         config = config_
         configVike = await getConfigVike(config)
-      },
-      async writeBundle(options, bundle) {
-        if (!viteIsSSR(config)) return
-        await replace_ASSETS_MAP(options, bundle)
       }
     },
     ...serverEntryPlugin({
@@ -64,7 +61,8 @@ function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): s
   ].join('\n')
   return importerCode
 }
-async function replace_ASSETS_MAP(options: Options, bundle: Bundle) {
+/** Set the value of the ASSETS_MAP constant inside dist/server/entry.js (or dist/server/index.js) */
+async function set_constant_ASSETS_MAP(options: Options, bundle: Bundle) {
   const { dir } = options
   assert(dir)
   // This will probably fail with @vitejs/plugin-legacy

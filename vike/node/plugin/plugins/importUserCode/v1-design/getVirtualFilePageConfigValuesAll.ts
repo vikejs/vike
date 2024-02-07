@@ -20,6 +20,7 @@ import { serializeConfigValueImported } from '../../../../../shared/page-configs
 import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { getConfigValuesSerialized } from './getConfigValuesSerialized.js'
+import { fixServerAssets_isEnabled } from '../../buildConfig/fixServerAssets.js'
 
 async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = isVirtualFileIdPageConfigValuesAll(id)
@@ -73,7 +74,7 @@ function getLoadConfigValuesAll(
   )
   lines.push('};')
 
-  if (includeAssetsImportedByServer && isForClientSide && !isDev) {
+  if (!fixServerAssets_isEnabled() && includeAssetsImportedByServer && isForClientSide && !isDev) {
     importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
   }
 

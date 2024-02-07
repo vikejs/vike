@@ -1,7 +1,7 @@
-// Alternative: use `ssrEmitAssets: true`
-//  - See https://github.com/vitejs/vite/pull/11430
+// Remove this workaround if the other workaround config.build.ssrEmitAssets turns out to be reliable.
+//  - Remove this file then revert this commit: https://github.com/vikejs/vike/commit/805a18974f13420a78fcc30fdd676696e405c3ca
 
-// This plugin makes client-side bundles include the CSS imports living in server-side-only code.
+// Workaround to make client-side bundles include the CSS imports living in server-side-only code.
 //  - This is needed for HTML-only pages, and React Server Components.
 //  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vike:extractAssets pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
 //  - This appraoch supports import path aliases `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
@@ -31,6 +31,8 @@ import { getImportStatements, type ImportStatement } from '../shared/parseEsModu
 import { removeSourceMap } from '../shared/removeSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
+import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
+import { isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -45,6 +47,7 @@ const debugEnabled = isDebugEnabled(debugNamespace)
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
+  let isServerAssetsFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
@@ -56,6 +59,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(id)) {
           return
         }
+        assert(!isServerAssetsFixEnabled)
         assert(configVike.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
@@ -166,6 +170,7 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         configVike = await getConfigVike(config_)
         config = config_
+        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
       },
       load(id) {
         if (!isVirtualFileId(id)) return undefined

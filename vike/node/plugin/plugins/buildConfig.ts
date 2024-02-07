@@ -1,6 +1,7 @@
 export { buildConfig }
 export { assertRollupInput }
 export { analyzeClientEntries }
+export { manifestTempFile }
 
 import {
   assert,
@@ -14,9 +15,11 @@ import {
   assertUsage,
   injectRollupInputs,
   normalizeRollupInput,
-  assertNodeEnvIsNotDev
+  assertNodeEnvIsNotDev,
+  getOutDirs,
+  type OutDirs
 } from '../utils.js'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
@@ -29,13 +32,17 @@ import { createRequire } from 'module'
 import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
 import fs from 'fs/promises'
 import path from 'path'
+import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
+import { set_constant_ASSETS_MAP } from './importBuild/index.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin {
-  let generateManifest: boolean
+  let isServerAssetsFixEnabled: boolean
+  let isSsrBuild: boolean
+  let outDirs: OutDirs
   return {
     name: 'vike:buildConfig',
     apply: 'build',
@@ -49,16 +56,26 @@ function buildConfig(): Plugin {
         assert(Object.keys(entries).length > 0)
         config.build.rollupOptions.input = injectRollupInputs(entries, config)
         addLogHook()
+        outDirs = getOutDirs(config)
+        {
+          isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
+          if (isServerAssetsFixEnabled) {
+            // https://github.com/vikejs/vike/issues/1339
+            config.build.ssrEmitAssets = true
+            // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
+            config.build.cssMinify = 'esbuild'
+          }
+        }
       }
     },
     config(config) {
       assertNodeEnv()
-      generateManifest = !viteIsSSR(config)
+      isSsrBuild = viteIsSSR(config)
       return {
         build: {
           outDir: resolveOutDir(config),
-          manifest: generateManifest ? manifestTempFile : false,
-          copyPublicDir: !viteIsSSR(config)
+          manifest: manifestTempFile,
+          copyPublicDir: !isSsrBuild
         }
       } satisfies UserConfig
     },
@@ -66,20 +83,22 @@ function buildConfig(): Plugin {
       assertNodeEnv()
     },
     async writeBundle(options, bundle) {
-      assertNodeEnv()
-      const manifestEntry = bundle[manifestTempFile]
-      /* Fails with @vitejs/plugin-legacy because writeBundle() is called twice during the client build (once for normal client assets and a second time for legacy assets), see reproduction at https://github.com/vikejs/vike/issues/1154
-      assert(generateManifest === !!manifestEntry)
-      */
-      if (manifestEntry) {
-        const { dir } = options
-        assert(dir)
-        const manifestFilePathOld = path.join(dir, manifestEntry.fileName)
+      if (isSsrBuild) {
         // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
         //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
         //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
-        const manifestFilePathNew = path.join(dir, '..', 'assets.json')
-        await fs.rename(manifestFilePathOld, manifestFilePathNew)
+        const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
+        const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
+        const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
+        if (!isServerAssetsFixEnabled) {
+          await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
+        } else {
+          const clientManifestMod = await fixServerAssets(outDirs)
+          await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
+        }
+        await fs.rm(clientManifestFilePath)
+        await fs.rm(serverManifestFilePath)
+        await set_constant_ASSETS_MAP(options, bundle)
       }
     }
   }
