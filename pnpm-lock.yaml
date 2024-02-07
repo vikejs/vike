@@ -249,16 +249,16 @@ importers:
     dependencies:
       '@brillout/docpress':
         specifier: 0.5.40-commit-307d08d
-        version: 0.5.40-commit-307d08d(@types/node@15.14.9)(@types/react-dom@17.0.23)(@types/react@17.0.70)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.2.2)(vike@vike)(vite@5.0.12)
+        version: 0.5.40-commit-307d08d(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)(vite@5.0.12)
       '@types/node':
-        specifier: ^15.12.1
-        version: 15.14.9
+        specifier: ^20.11.16
+        version: 20.11.16
       '@types/react':
-        specifier: ^17.0.45
-        version: 17.0.70
+        specifier: ^18.2.55
+        version: 18.2.55
       '@types/react-dom':
-        specifier: ^17.0.6
-        version: 17.0.23
+        specifier: ^18.2.19
+        version: 18.2.19
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -266,14 +266,14 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       typescript:
-        specifier: ^5.0.3
-        version: 5.2.2
+        specifier: ^5.3.3
+        version: 5.3.3
       vike:
         specifier: link:../vike
         version: link:../vike
       vite:
-        specifier: ^5.0.10
-        version: 5.0.12(@types/node@15.14.9)
+        specifier: ^5.0.12
+        version: 5.0.12(@types/node@20.11.16)
 
   examples/auth:
     dependencies:
@@ -771,7 +771,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.12
+        version: 5.0.12(@types/node@20.11.16)
 
   examples/react-streaming:
     dependencies:
@@ -906,7 +906,7 @@ importers:
         version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.12)
       vite:
         specifier: ^5.0.12
-        version: 5.0.12
+        version: 5.0.12(@types/node@20.11.16)
 
   examples/vike-react-simple:
     dependencies:
@@ -984,7 +984,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.12
+        version: 5.0.12(@types/node@20.11.16)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -2279,7 +2279,7 @@ packages:
       to-fast-properties: 2.0.0
     dev: false
 
-  /@brillout/docpress@0.5.40-commit-307d08d(@types/node@15.14.9)(@types/react-dom@17.0.23)(@types/react@17.0.70)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.2.2)(vike@vike)(vite@5.0.12):
+  /@brillout/docpress@0.5.40-commit-307d08d(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)(vite@5.0.12):
     resolution: {integrity: sha512-Nc5lUuL5on15SiY9LVumpw5ZCR8GUdhWy98l2pQUxfHYsS+AJ/2LYWK0KnNI2onnp7sI3YYO6TORrN3ihLWyXQ==}
     peerDependencies:
       '@types/node': '*'
@@ -2294,9 +2294,9 @@ packages:
       '@mdx-js/mdx': 2.3.0
       '@mdx-js/react': 2.3.0(react@18.2.0)
       '@mdx-js/rollup': 2.3.0(rollup@4.9.6)
-      '@types/node': 15.14.9
-      '@types/react': 17.0.70
-      '@types/react-dom': 17.0.23
+      '@types/node': 20.11.16
+      '@types/react': 18.2.55
+      '@types/react-dom': 18.2.19
       '@vitejs/plugin-react-swc': 3.6.0(vite@5.0.12)
       balloon-css: 1.2.0
       react: 18.2.0
@@ -2305,10 +2305,10 @@ packages:
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
-      typescript: 5.2.2
+      typescript: 5.3.3
       vike: link:vike
       vike-contributors: 0.0.9
-      vite: 5.0.12(@types/node@15.14.9)
+      vite: 5.0.12(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@swc/helpers'
       - rollup
@@ -3101,7 +3101,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
       '@types/yargs': 17.0.32
       chalk: 4.1.2
     dev: true
@@ -3229,7 +3229,7 @@ packages:
       react: '>=16'
     dependencies:
       '@types/mdx': 2.0.10
-      '@types/react': 18.2.48
+      '@types/react': 18.2.55
       react: 18.2.0
     dev: false
 
@@ -3498,7 +3498,6 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-android-arm64@4.5.1:
@@ -3513,7 +3512,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-darwin-arm64@4.5.1:
@@ -3528,7 +3526,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-darwin-x64@4.5.1:
@@ -3543,7 +3540,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm-gnueabihf@4.5.1:
@@ -3558,7 +3554,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm64-gnu@4.5.1:
@@ -3573,7 +3568,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm64-musl@4.5.1:
@@ -3588,7 +3582,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-riscv64-gnu@4.9.6:
@@ -3596,7 +3589,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-x64-gnu@4.5.1:
@@ -3611,7 +3603,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-x64-musl@4.5.1:
@@ -3626,7 +3617,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-win32-arm64-msvc@4.5.1:
@@ -3641,7 +3631,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-win32-ia32-msvc@4.5.1:
@@ -3656,7 +3645,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-win32-x64-msvc@4.5.1:
@@ -3671,7 +3659,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@sinclair/typebox@0.27.8:
@@ -3983,14 +3970,14 @@ packages:
   /@types/better-sqlite3@7.6.7:
     resolution: {integrity: sha512-+c2YGPWY5831v3uj2/X0HRTK94u1GXU3sCnLqu7AKlxlSfawswnAiJR//TFzSL5azWsLQkG/uS+YnnqHtuZxPw==}
     dependencies:
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
     dev: false
 
   /@types/body-parser@1.19.5:
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
     dev: false
 
   /@types/compression@1.7.5:
@@ -4002,7 +3989,7 @@ packages:
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
     dev: false
 
   /@types/debug@4.1.12:
@@ -4037,7 +4024,7 @@ packages:
   /@types/express-serve-static-core@4.17.41:
     resolution: {integrity: sha512-OaJ7XLaelTgrvlZD8/aa0vvvxZdUmlCn6MtWeB7TkiKW70BQLc9XEPpDLPdbo52ZhXUCrznlWdCHWxJWtdyajA==}
     dependencies:
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
       '@types/qs': 6.9.10
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -4141,18 +4128,14 @@ packages:
   /@types/node-fetch@2.6.9:
     resolution: {integrity: sha512-bQVlnMLFJ2d35DkPNjEPmd9ueO/rh5EiaZt2bhqiSarPjZIuIV6bPQVqcrEyvNo+AfTrRGVazle1tl597w3gfA==}
     dependencies:
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
       form-data: 4.0.0
     dev: false
 
   /@types/node-forge@1.3.9:
     resolution: {integrity: sha512-meK88cx/sTalPSLSoCzkiUB4VPIFHmxtXm5FaaqRDqBX2i/Sy8bJ4odsan0b20RBjPh06dAQ+OTTdnyQyhJZyQ==}
     dependencies:
-      '@types/node': 20.10.5
-    dev: false
-
-  /@types/node@15.14.9:
-    resolution: {integrity: sha512-qjd88DrCxupx/kJD5yQgZdcYKZKSIGBVDIBE1/LTGcNm3d2Np/jxojkdePDdfnBHJc5W7vSMpbJ1aB7p/Py69A==}
+      '@types/node': 20.11.16
     dev: false
 
   /@types/node@17.0.45:
@@ -4167,6 +4150,11 @@ packages:
 
   /@types/node@20.10.5:
     resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
+    dependencies:
+      undici-types: 5.26.5
+
+  /@types/node@20.11.16:
+    resolution: {integrity: sha512-gKb0enTmRCzXSSUJDq6/sPcqrfCv2mkkG6Jt/clpn5eiCbKTY+SgZUxo+p8ZKMof5dCp9vHQUAB7wOUTod22wQ==}
     dependencies:
       undici-types: 5.26.5
 
@@ -4186,16 +4174,10 @@ packages:
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
     dev: false
 
-  /@types/react-dom@17.0.23:
-    resolution: {integrity: sha512-lnJAZfMEDxfvELeeT24w4rnUYwpzUzQAOTfJQbWYnLcx8AEfz+fXJDCbowIBqNK/Bi4D6j8ovT8Qsda2OtDApA==}
-    dependencies:
-      '@types/react': 17.0.70
-    dev: false
-
   /@types/react-dom@18.2.15:
     resolution: {integrity: sha512-HWMdW+7r7MR5+PZqJF6YFNSCtjz1T0dsvo/f1BV6HkV+6erD/nA7wd9NM00KVG83zf2nJ7uATPO9ttdIPvi3gg==}
     dependencies:
-      '@types/react': 18.2.42
+      '@types/react': 18.2.55
     dev: false
 
   /@types/react-dom@18.2.17:
@@ -4207,15 +4189,13 @@ packages:
   /@types/react-dom@18.2.18:
     resolution: {integrity: sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw==}
     dependencies:
-      '@types/react': 18.2.45
+      '@types/react': 18.2.55
     dev: false
 
-  /@types/react@17.0.70:
-    resolution: {integrity: sha512-yqYMK49/cnqw+T8R9/C+RNjRddYmPDGI5lKHi3bOYceQCBAh8X2ngSbZP0gnVeyvHr0T7wEgIIGKT1usNol08w==}
+  /@types/react-dom@18.2.19:
+    resolution: {integrity: sha512-aZvQL6uUbIJpjZk4U8JZGbau9KDeAwMfmhyWorxgBkqDIEf6ROjRozcmPIicqsUwPUjbkDfHKgGee1Lq65APcA==}
     dependencies:
-      '@types/prop-types': 15.7.10
-      '@types/scheduler': 0.16.6
-      csstype: 3.1.2
+      '@types/react': 18.2.55
     dev: false
 
   /@types/react@18.2.37:
@@ -4250,6 +4230,14 @@ packages:
       csstype: 3.1.2
     dev: false
 
+  /@types/react@18.2.55:
+    resolution: {integrity: sha512-Y2Tz5P4yz23brwm2d7jNon39qoAtMMmalOQv6+fEFt1mT+FcM3D841wDpoUvFXhaYenuROCy3FZYqdTjM7qVyA==}
+    dependencies:
+      '@types/prop-types': 15.7.10
+      '@types/scheduler': 0.16.6
+      csstype: 3.1.2
+    dev: false
+
   /@types/resolve@1.20.6:
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
     dev: true
@@ -4266,7 +4254,7 @@ packages:
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
     dev: false
 
   /@types/serve-static@1.15.5:
@@ -4274,7 +4262,7 @@ packages:
     dependencies:
       '@types/http-errors': 2.0.4
       '@types/mime': 3.0.4
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
     dev: false
 
   /@types/source-map-support@0.5.10:
@@ -4461,7 +4449,7 @@ packages:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.4.0
-      vite: 5.0.12(@types/node@15.14.9)
+      vite: 5.0.12(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: false
@@ -4509,7 +4497,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 5.0.12
+      vite: 5.0.12(@types/node@20.11.16)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4554,7 +4542,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.12
+      vite: 5.0.12(@types/node@20.11.16)
       vue: 3.3.10(typescript@4.8.4)
     dev: false
 
@@ -7717,7 +7705,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -7728,7 +7716,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.10.5
+      '@types/node': 20.11.16
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: false
@@ -9566,7 +9554,6 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.0.2
-    dev: false
 
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -10003,7 +9990,6 @@ packages:
       '@rollup/rollup-win32-ia32-msvc': 4.9.6
       '@rollup/rollup-win32-x64-msvc': 4.9.6
       fsevents: 2.3.3
-    dev: false
 
   /run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -11224,7 +11210,7 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-streaming: 0.3.20(react-dom@18.2.0)(react@18.2.0)
       vike: link:vike
-      vite: 5.0.12
+      vite: 5.0.12(@types/node@20.11.16)
     dev: false
 
   /vite-node@1.1.3:
@@ -11236,7 +11222,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.12
+      vite: 5.0.12(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -11388,7 +11374,7 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
 
-  /vite@5.0.12:
+  /vite@5.0.12(@types/node@20.11.16):
     resolution: {integrity: sha512-4hsnEkG3q0N4Tzf1+t6NdN9dg/L3BM+q8SWgbSPnJvrgH2kgdyzfVJwbR1ic69/4uMJJ/3dqDZZE5/WwqW8U1w==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -11416,47 +11402,12 @@ packages:
       terser:
         optional: true
     dependencies:
-      esbuild: 0.19.10
-      postcss: 8.4.32
-      rollup: 4.5.1
-    optionalDependencies:
-      fsevents: 2.3.3
-
-  /vite@5.0.12(@types/node@15.14.9):
-    resolution: {integrity: sha512-4hsnEkG3q0N4Tzf1+t6NdN9dg/L3BM+q8SWgbSPnJvrgH2kgdyzfVJwbR1ic69/4uMJJ/3dqDZZE5/WwqW8U1w==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || >=20.0.0
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 15.14.9
+      '@types/node': 20.11.16
       esbuild: 0.19.10
       postcss: 8.4.34
       rollup: 4.9.6
     optionalDependencies:
       fsevents: 2.3.3
-    dev: false
 
   /vitest@1.1.3:
     resolution: {integrity: sha512-2l8om1NOkiA90/Y207PsEvJLYygddsOyr81wLQ20Ra8IlLKbyQncWsGZjnbkyG2KwwuTXLQjEPOJuxGMG8qJBQ==}
@@ -11501,7 +11452,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.1
-      vite: 5.0.12
+      vite: 5.0.12(@types/node@20.11.16)
       vite-node: 1.1.3
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
