@@ -7,38 +7,44 @@ import { assert } from '../runtime/utils.js'
 import { ClientFunctions, ServerFunctions } from './types.js'
 
 let runtime: ViteRuntime
+let entry_: string
 
 const rpc = createBirpc<ServerFunctions, ClientFunctions>(
   {
     invalidateDepTree(mods) {
-      const importers = new Set(mods)
-      let evaluated = false
-      for (let importer of importers) {
+      const importersStr = new Set(mods)
+      let shouldRestart = false
+      for (let importer of importersStr) {
         const moduleCache = runtime.moduleCache.get(importer)
-        if (moduleCache.evaluated) {
-          evaluated = true
+        if (moduleCache.meta && 'file' in moduleCache.meta && moduleCache.meta.file === entry_) {
+          shouldRestart = true
         }
         if (moduleCache.importers) {
           for (const importerInner of moduleCache.importers) {
-            importers.add(importerInner)
+            importersStr.add(importerInner)
           }
         }
       }
-      const shouldRestart = evaluated && Array.from(importers).every((i) => i.startsWith('/'))
-      runtime.moduleCache.invalidateDepTree(mods)
 
+      runtime.moduleCache.invalidateDepTree(mods)
       return shouldRestart
     },
     deleteByModuleId: (mod) => runtime.moduleCache.deleteByModuleId(mod),
     async start({ entry, viteMiddlewareProxyPort, viteConfig }) {
-      console.log(`Loading server entry ${entry}`)
-
+      entry_ = entry
       // This is the minimal required object for vike + telefunc to function
       const globalObject = {
         viteConfig,
         viteDevServer: {
-          config: viteConfig,
+          config: {
+            ...viteConfig,
+            logger: {
+              // called by telefunc
+              hasErrorLogged: () => false
+            }
+          },
           ssrLoadModule: (id: string) => runtime.executeUrl(id),
+          // called by telefunc
           ssrFixStacktrace: (_err: unknown) => {},
           transformIndexHtml: rpc.transformIndexHtml,
           moduleGraph: {

@@ -1,7 +1,6 @@
 export { init, getTodoItems, createTodoItem }
 
 import { PrismaClient } from '@prisma/client'
-console.log("Shouldn't be logged when server/index.ts is changed");
 
 const prisma = new PrismaClient()
 

@@ -8,6 +8,7 @@ import { SHARE_ENV, Worker } from 'worker_threads'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { assert } from '../runtime/utils.js'
+import { getConfigVike } from '../shared/getConfigVike.js'
 import { bindCLIShortcuts } from './shortcuts.js'
 import { ClientFunctions, ServerFunctions } from './types.js'
 
@@ -48,7 +49,9 @@ async function startDevServer() {
   let rpc: BirpcReturn<ClientFunctions, ServerFunctions>
   let worker: Worker
   let exited = false
+
   async function restartWorker() {
+    vite.moduleGraph.invalidateAll()
     if (worker && !exited) {
       await worker.terminate()
     }
@@ -69,9 +72,18 @@ async function startDevServer() {
       }
     })
 
+    const configVikePromise = await getConfigVike(vite.config)
+
     rpc = createBirpc<ClientFunctions, ServerFunctions>(
       {
-        fetchModule: vite.ssrFetchModule,
+        async fetchModule(id, importer) {
+          const result = await vite.ssrFetchModule(id, importer)
+          if (configVikePromise.native.includes(id)) {
+            // sharp needs to load the .node file on this thread for some reason
+            await import(id)
+          }
+          return result
+        },
         moduleGraphResolveUrl(url: string) {
           return vite.moduleGraph.resolveUrl(url)
         },
@@ -102,17 +114,13 @@ async function startDevServer() {
       return originalInvalidateModule(mod, ...rest)
     }
 
-    // await configVikePromise because we can't stringify a promise
-    // @ts-ignore
-    const globalObjectOriginal = global._vike['globalContext.ts']
-    globalObjectOriginal.viteDevServer.config.configVikePromise =
-      await globalObjectOriginal.viteDevServer.config.configVikePromise
-    const { viteConfig } = globalObjectOriginal
-
+    logViteAny('Loading server entry', 'info', null, true)
+    const entryAbs = await vite.pluginContainer.resolveId(index)
+    assert(entryAbs?.id)
     await rpc.start({
-      entry: index,
+      entry: entryAbs.id,
       viteMiddlewareProxyPort,
-      viteConfig: { root: viteConfig.root, configVikePromise: viteConfig.configVikePromise }
+      viteConfig: { root: vite.config.root, configVikePromise }
     })
   }
 
