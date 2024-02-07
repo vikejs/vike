@@ -1,7 +1,7 @@
-// Alternative: use `ssrEmitAssets: true`
-//  - See https://github.com/vitejs/vite/pull/11430
+// Remove this workaround if the other workaround config.build.ssrEmitAssets turns out to be reliable.
+//  - Remove this file then revert this commit: https://github.com/vikejs/vike/commit/805a18974f13420a78fcc30fdd676696e405c3ca
 
-// This plugin makes client-side bundles include the CSS imports living in server-side-only code.
+// Workaround to make client-side bundles include the CSS imports living in server-side-only code.
 //  - This is needed for HTML-only pages, and React Server Components.
 //  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vike:extractAssets pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
 //  - This appraoch supports import path aliases `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
