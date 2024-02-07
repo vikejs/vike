@@ -3,7 +3,7 @@ export { startDevServer }
 import pc from '@brillout/picocolors'
 import { BirpcReturn, createBirpc } from 'birpc'
 import http from 'http'
-import { ModuleNode, createServer } from 'vite'
+import { ModuleNode, ViteDevServer, createServer } from 'vite'
 import { SHARE_ENV, Worker } from 'worker_threads'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
@@ -15,9 +15,19 @@ import { ClientFunctions, MinimalModuleNode, ServerFunctions } from './types.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const workerPath = new URL('./worker.js', import.meta.url)
 const viteMiddlewareProxyPort = 3333
+let vite: ViteDevServer
+let rpc: BirpcReturn<ClientFunctions, ServerFunctions>
+let worker: Worker
+let exited = false
+let httpServer: http.Server
 
 async function startDevServer() {
-  const vite = await createServer({
+  if (!httpServer) {
+    httpServer = http.createServer()
+    httpServer.listen(viteMiddlewareProxyPort)
+  }
+
+  await createServer({
     server: {
       middlewareMode: true
     },
@@ -34,23 +44,34 @@ async function startDevServer() {
           if (shouldRestart) {
             await restartWorker()
           }
+        },
+        configureServer(vite_) {
+          vite = vite_
+          httpServer.removeAllListeners('request')
+          httpServer.addListener('request', vite.middlewares)
+
+          const ws = vite.hot.channels.find((ch) => ch.name === 'ws')
+          bindCLIShortcuts({
+            onRestart: async () => {
+              await restartWorker()
+              ws?.send({
+                type: 'full-reload'
+              })
+            }
+          })
+
+          restartWorker()
         }
       }
     ]
   })
-  const httpServer = http.createServer(vite.middlewares)
-  httpServer.listen(viteMiddlewareProxyPort)
-  const serverConfig = getServerConfig()
-  assert(serverConfig)
-  const {
-    entry: { index }
-  } = serverConfig
-
-  let rpc: BirpcReturn<ClientFunctions, ServerFunctions>
-  let worker: Worker
-  let exited = false
 
   async function restartWorker() {
+    const serverConfig = getServerConfig()
+    assert(serverConfig)
+    const {
+      entry: { index }
+    } = serverConfig
     // This might be needed, but slows down the restart
     // vite.moduleGraph.invalidateAll()
     if (worker && !exited) {
@@ -74,6 +95,7 @@ async function startDevServer() {
     })
 
     const configVikePromise = await getConfigVike(vite.config)
+    console.log(configVikePromise.native)
 
     rpc = createBirpc<ClientFunctions, ServerFunctions>(
       {
@@ -124,18 +146,6 @@ async function startDevServer() {
       viteConfig: { root: vite.config.root, configVikePromise }
     })
   }
-
-  const ws = vite.hot.channels.find((ch) => ch.name === 'ws')
-  bindCLIShortcuts({
-    onRestart: async () => {
-      await restartWorker()
-      ws?.send({
-        type: 'full-reload'
-      })
-    }
-  })
-
-  restartWorker()
 }
 
 // This is the minimal representation the Vike runtime needs
