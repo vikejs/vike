@@ -5,26 +5,11 @@
 //  - Select "Capture Screenshot" in dropdown of the responsive design preview toolbar
 //  - Chrome will generate a 2600x1300 PNG
 
-export { render }
 export { Page }
 
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import React from 'react'
-import ReactDOMServer from 'react-dom/server'
-import './index/Header.css'
+import '../index/Header.css'
 import iconPlugin from '../images/icons/vike-vertical.svg'
-import '@brillout/docpress/renderer/_default.page.client.css'
-import '@brillout/docpress/renderer/_default.page.server.css'
-
-type PageContext = {
-  Page: () => React.ReactElement
-}
-
-function render(pageContext: PageContext) {
-  const { Page } = pageContext
-  const pageHtml = ReactDOMServer.renderToString(<Page />)
-  return escapeInject`<html><body><div>${dangerouslySkipEscape(pageHtml)}</div></body></html>`
-}
 
 function Page() {
   return (
