@@ -165,7 +165,13 @@ function collectResources(entryRoot: ViteManifestEntry, manifest: ViteManifest) 
   return { css, assets }
 }
 function getHash(src: string) {
+  /* - This fails if the user removes the hash by changing the config.build.rollupOptions.output.assetFileNames value.
+   *   - A proper implementation is to read the file's content and compute the hash. (Let's do it when/if the need arises.)
+   * - Also, `src.split('.').at(-2)` is brittle (e.g. it's wrong when `src === 'assets/style.client.css'`).
   const hash = src.split('.').at(-2)
   assert(hash)
+  return hash
+  */
+  const hash = src
   return hash
 }
