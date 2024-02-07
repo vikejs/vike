@@ -27,6 +27,16 @@ function distFileNames(): Plugin {
         }
         if (!('assetFileNames' in rollupOutput)) {
           rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
+        } else {
+          // If a user needs this:
+          //  - assertUsage() that the naming provided by the user ends with `.[hash][extname]`
+          //    - It's needed for getHash() of fixServerAssets()
+          //    - Asset URLs should always contain a hash: it's paramount for caching assets.
+          //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
+          assertUsage(
+            false,
+            "Setting config.build.rollupOptions.output.assetFileNames is currently forbidden. (Contact a maintainer if you need this as it's possible to support this.)"
+          )
         }
       })
     }
