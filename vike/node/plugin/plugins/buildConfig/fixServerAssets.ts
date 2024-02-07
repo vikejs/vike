@@ -143,6 +143,12 @@ function mergeManifests(clientManifest: ViteManifest, serverManifest: ViteManife
 }
 
 function getPageId(key: string) {
+  // Normalize from:
+  //   ../../virtual:vike:pageConfigValuesAll:client:/pages/index
+  // to:
+  //   virtual:vike:pageConfigValuesAll:client:/pages/index
+  // (This seems to be needed only for vitest tests that use Vite's build() API with an inline config.)
+  key = key.substring(key.indexOf('virtual:vike'))
   const result = isVirtualFileIdPageConfigValuesAll(key)
   return result && result.pageId
 }
