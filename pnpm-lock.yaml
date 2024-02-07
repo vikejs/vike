@@ -248,8 +248,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: 0.5.40-commit-51be4fa
-        version: 0.5.40-commit-51be4fa(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(vike@vike)(vite@5.0.12)
+        specifier: 0.5.40-commit-7a89b31
+        version: 0.5.40-commit-7a89b31(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(vike@vike)(vite@5.0.12)
       '@types/node':
         specifier: ^15.12.1
         version: 15.14.9
@@ -2279,8 +2279,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: false
 
-  /@brillout/docpress@0.5.40-commit-51be4fa(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(vike@vike)(vite@5.0.12):
-    resolution: {integrity: sha512-pP7IgQvvXMgVZvhcZGBqhq0NMZ2SLhGpDOT+G1YM4WmVzkTP2ZBldL+txDKSEMxup+YVv9DXVZFBTTgvyU/41Q==}
+  /@brillout/docpress@0.5.40-commit-7a89b31(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(vike@vike)(vite@5.0.12):
+    resolution: {integrity: sha512-5JcIFdNCU+SH6GrGfRU8bZcBPLfMRJBLRmxVN6sj+C3MS1E3KGGfgoGLvlreL7Fz7HRHgEDE7OMGkMeYRoJPEQ==}
     peerDependencies:
       react: '18'
       react-dom: '18'

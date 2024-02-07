@@ -5,7 +5,7 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@brillout/docpress": "0.5.40-commit-51be4fa",
+    "@brillout/docpress": "0.5.40-commit-7a89b31",
     "@types/node": "^15.12.1",
     "@types/react": "^17.0.45",
     "@types/react-dom": "^17.0.6",

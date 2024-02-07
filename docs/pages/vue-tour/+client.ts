@@ -1,2 +1,2 @@
-import '@brillout/docpress/renderer/client.ts'
+import '@brillout/docpress/renderer/client'
 import '../index/ScaffoldCallToAction.client'

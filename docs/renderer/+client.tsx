@@ -1,1 +1,1 @@
-import '@brillout/docpress/renderer/client.ts'
+import '@brillout/docpress/renderer/client'
