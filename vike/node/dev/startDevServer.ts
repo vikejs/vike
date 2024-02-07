@@ -10,7 +10,7 @@ import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { assert } from '../runtime/utils.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { bindCLIShortcuts } from './shortcuts.js'
-import { ClientFunctions, ServerFunctions } from './types.js'
+import { ClientFunctions, MinimalModuleNode, ServerFunctions } from './types.js'
 
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const workerPath = new URL('./worker.js', import.meta.url)
@@ -93,7 +93,7 @@ async function startDevServer() {
           if (!module) {
             return module
           }
-          return flattenImportedModules(module)
+          return convertToMinimalModuleNode(module)
         },
         transformIndexHtml(url: string, html: string, originalUrl?: string) {
           return vite.transformIndexHtml(url, html, originalUrl)
@@ -138,36 +138,31 @@ async function startDevServer() {
   restartWorker()
 }
 
-function flattenImportedModules(moduleNode: ModuleNode) {
-  const modules = new Set<ModuleNode>()
-
-  function helper(node: ModuleNode) {
-    if (!modules.has(node)) {
-      modules.add(node)
-      const importedModules = node.importedModules
-      for (const importedModule of importedModules) {
-        helper(importedModule)
-      }
-    }
+// This is the minimal representation the Vike runtime needs
+function convertToMinimalModuleNode(
+  node: ModuleNode,
+  cache: Map<ModuleNode, MinimalModuleNode> = new Map()
+): MinimalModuleNode {
+  // If the node is in the cache, return the cached version
+  if (cache.has(node)) {
+    return cache.get(node)!
   }
 
-  helper(moduleNode)
-
-  // this is the minimal representation the Vike runtime uses
-  return {
-    id: moduleNode.id,
-    url: moduleNode.url,
-    type: moduleNode.type,
-    importedModules: new Set(
-      Array.from(modules)
-        .slice(1)
-        .map((module) => ({
-          id: module.id,
-          url: module.url,
-          type: module.type,
-          // they are already flattened on the main module
-          importedModules: new Set<ModuleNode>()
-        }))
-    )
+  // Create a new MinimalModuleNode object
+  let minimalNode: MinimalModuleNode = {
+    id: node.id,
+    url: node.url,
+    type: node.type,
+    importedModules: new Set<MinimalModuleNode>()
   }
+
+  // Add the new node to the cache
+  cache.set(node, minimalNode)
+
+  // Convert each imported module to a MinimalModuleNode
+  for (let importedModule of node.importedModules) {
+    minimalNode.importedModules.add(convertToMinimalModuleNode(importedModule, cache))
+  }
+
+  return minimalNode
 }
