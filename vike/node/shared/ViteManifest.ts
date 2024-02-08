@@ -7,6 +7,7 @@ type ViteManifestEntry = {
   css?: string[]
   assets?: string[]
   isEntry?: boolean
+  name?: string
   isDynamicEntry?: boolean
   imports?: string[]
   dynamicImports?: string[]

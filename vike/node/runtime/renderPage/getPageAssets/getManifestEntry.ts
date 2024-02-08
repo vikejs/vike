@@ -4,10 +4,12 @@ import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManife
 import { assert, slice, isNpmPackageImport } from '../../utils.js'
 import { assertClientEntryId } from './assertClientEntryId.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(
   id: string,
   clientManifest: ViteManifest,
+  // TODO: remove
   manifestKeyMap: Record<string, string>
 ): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertClientEntryId(id)
@@ -51,13 +53,11 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
-  // extensions[number].pageConfigsDistFiles
+  // npm package import
   if (isNpmPackageImport(id)) {
-    const manifestKey = manifestKeyMap[id]
-    const debugInfo2 = { ...debugInfo, manifestKey }
-    assert(manifestKey, debugInfo2)
-    const manifestEntry = clientManifest[manifestKey]
-    assert(manifestEntry, debugInfo2)
+    const found = Object.entries(clientManifest).find(([, e]) => e.name === prependEntriesDir(id))
+    assert(found)
+    const [manifestKey, manifestEntry] = found
     return { manifestEntry, manifestKey }
   }
 

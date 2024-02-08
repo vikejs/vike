@@ -1,6 +1,5 @@
 export { assertClientEntryId }
 
-import { getGlobalContext } from '../../globalContext.js'
 import { assert, assertPosixPath, isNpmPackageImport } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 
@@ -19,8 +18,4 @@ function assertClientEntryId(id: string) {
       isPkg,
     id
   )
-  if (isPkg) {
-    const { configVike } = getGlobalContext()
-    assert(configVike === null || configVike.extensions.some(({ npmPackageName }) => id.startsWith(npmPackageName)), id)
-  }
 }

@@ -17,7 +17,8 @@ import {
   normalizeRollupInput,
   assertNodeEnvIsNotDev,
   getOutDirs,
-  type OutDirs
+  type OutDirs,
+  isNpmPackageImport
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
@@ -34,6 +35,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 import { set_constant_ASSETS_MAP } from './importBuild/index.js'
+import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -207,6 +209,12 @@ async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedB
 }
 
 function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
+  if (isNpmPackageImport(clientEntry)) {
+    const entryTarget = clientEntry
+    const entryName = prependEntriesDir(clientEntry)
+    return { entryName, entryTarget }
+  }
+
   const filePath = clientEntry
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
@@ -227,15 +235,6 @@ function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide
   let entryName = pageId
   entryName = prependEntriesDir(entryName)
   return { entryName, entryTarget }
-}
-
-function prependEntriesDir(entryName: string): string {
-  if (entryName.startsWith('/')) {
-    entryName = entryName.slice(1)
-  }
-  assert(!entryName.startsWith('/'))
-  entryName = `entries/${entryName}`
-  return entryName
 }
 
 function resolve(filePath: string) {

@@ -249,7 +249,7 @@ importers:
     dependencies:
       '@brillout/docpress':
         specifier: 0.5.40-commit-52b00c7
-        version: 0.5.40-commit-52b00c7(@brillout/vite@5.1.0-commit-a79c8943)(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)
+        version: 0.5.40-commit-52b00c7(@brillout/vite@5.1.0-commit-3dc7abd)(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)
       '@types/node':
         specifier: ^20.11.16
         version: 20.11.16
@@ -272,8 +272,8 @@ importers:
         specifier: link:../vike
         version: link:../vike
       vite:
-        specifier: npm:@brillout/vite@5.1.0-commit-a79c8943
-        version: /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.11.16)
+        specifier: npm:@brillout/vite@5.1.0-commit-3dc7abd
+        version: /@brillout/vite@5.1.0-commit-3dc7abd(@types/node@20.11.16)
 
   examples/auth:
     dependencies:
@@ -1953,8 +1953,8 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
       vite:
-        specifier: npm:@brillout/vite@5.1.0-commit-a79c8943
-        version: /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.10.5)
+        specifier: npm:@brillout/vite@5.1.0-commit-3dc7abd
+        version: /@brillout/vite@5.1.0-commit-3dc7abd(@types/node@20.10.5)
 
 packages:
 
@@ -2279,7 +2279,7 @@ packages:
       to-fast-properties: 2.0.0
     dev: false
 
-  /@brillout/docpress@0.5.40-commit-52b00c7(@brillout/vite@5.1.0-commit-a79c8943)(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike):
+  /@brillout/docpress@0.5.40-commit-52b00c7(@brillout/vite@5.1.0-commit-3dc7abd)(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike):
     resolution: {integrity: sha512-grxCvcMJL6W+EelkZ7iPNcs27ruoxffhhRcBgWEWavCw5JvOkA05wvUnxu65fn5PDpAnjCz+tMGQe+YnT9emLQ==}
     peerDependencies:
       '@types/node': '*'
@@ -2297,7 +2297,7 @@ packages:
       '@types/node': 20.11.16
       '@types/react': 18.2.55
       '@types/react-dom': 18.2.19
-      '@vitejs/plugin-react-swc': 3.6.0(@brillout/vite@5.1.0-commit-a79c8943)
+      '@vitejs/plugin-react-swc': 3.6.0(@brillout/vite@5.1.0-commit-3dc7abd)
       balloon-css: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -2308,7 +2308,7 @@ packages:
       typescript: 5.3.3
       vike: link:vike
       vike-contributors: 0.0.9
-      vite: /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.11.16)
+      vite: /@brillout/vite@5.1.0-commit-3dc7abd(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@swc/helpers'
       - rollup
@@ -2393,8 +2393,8 @@ packages:
       '@brillout/import': 0.2.3
     dev: false
 
-  /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.10.5):
-    resolution: {integrity: sha512-zu2AhsGvXgU9JrxcjjwWDpu13vvEmC4Dp6HEdD4h7QP28wIkUnA//9YojrWE/J6koXA1YOlBqXHladpYQma+MA==}
+  /@brillout/vite@5.1.0-commit-3dc7abd(@types/node@20.10.5):
+    resolution: {integrity: sha512-G+0Qxyl8z7vEXLn8O7uJ2CwzpeW7XwQIi0HMQeqXmhgnXbiaI32P+sYiXSa9E6VFL6YfFtMkUze68OCmrSq57A==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -2429,8 +2429,8 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.11.16):
-    resolution: {integrity: sha512-zu2AhsGvXgU9JrxcjjwWDpu13vvEmC4Dp6HEdD4h7QP28wIkUnA//9YojrWE/J6koXA1YOlBqXHladpYQma+MA==}
+  /@brillout/vite@5.1.0-commit-3dc7abd(@types/node@20.11.16):
+    resolution: {integrity: sha512-G+0Qxyl8z7vEXLn8O7uJ2CwzpeW7XwQIi0HMQeqXmhgnXbiaI32P+sYiXSa9E6VFL6YfFtMkUze68OCmrSq57A==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -4527,13 +4527,13 @@ packages:
       - '@swc/helpers'
     dev: false
 
-  /@vitejs/plugin-react-swc@3.6.0(@brillout/vite@5.1.0-commit-a79c8943):
+  /@vitejs/plugin-react-swc@3.6.0(@brillout/vite@5.1.0-commit-3dc7abd):
     resolution: {integrity: sha512-XFRbsGgpGxGzEV5i5+vRiro1bwcIaZDIdBRP16qwm+jP68ue/S8FJTBEgOeojtVDYrbSua3XFp71kC8VJE6v+g==}
     peerDependencies:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.4.0
-      vite: /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.11.16)
+      vite: /@brillout/vite@5.1.0-commit-3dc7abd(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: false
