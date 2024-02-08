@@ -13,10 +13,12 @@ import {
   viteIsSSR_options,
   scriptFileExtensions,
   debugGlob,
-  getOutDirs
+  getOutDirs,
+  isVersionOrAbove
 } from '../../utils.js'
 import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
@@ -213,10 +215,14 @@ function getGlobs(
       varNameLocals.push(varNameLocal)
       const globIncludePath = `'${getGlobPath(globRoot.includeDir, fileType)}'`
       const globExcludePath = globRoot.excludeDir ? `'!${getGlobPath(globRoot.excludeDir, fileType)}'` : null
-      const globOptions = JSON.stringify({ eager: isEager, as: query })
-      assert(globOptions.startsWith('{"eager":true') || globOptions.startsWith('{"eager":false'))
+      const globOptions: Record<string, unknown> = { eager: isEager }
+      if (isVersionOrAbove(viteVersion, '5.1.0')) {
+        globOptions.as = query
+      } else {
+        globOptions.query = `?${query}`
+      }
       const globPaths = globExcludePath ? `[${globIncludePath}, ${globExcludePath}]` : `[${globIncludePath}]`
-      const globLine = `const ${varNameLocal} = import.meta.glob(${globPaths}, ${globOptions});`
+      const globLine = `const ${varNameLocal} = import.meta.glob(${globPaths}, ${JSON.stringify(globOptions)});`
       return globLine
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,

@@ -84,8 +84,9 @@ function tolerateError({ logSource, logText }) {
     isNodeExperimentalLoader() ||
     isNotV1Design() ||
     [
-      // TODO: use new API
+      // TODO: remove once all examples/tests use >=5.1.0
       'The glob option "as" has been deprecated in favour of "query"'
+      // TODO: move everything to this array
     ].some((t) => logText.includes(t))
   )
 
