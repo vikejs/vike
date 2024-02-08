@@ -28,7 +28,7 @@ import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
-import { removeSourceMap } from '../shared/removeSourceMap.js'
+import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
@@ -66,7 +66,7 @@ function extractAssetsPlugin(): Plugin[] {
         const moduleNames = getImportedModules(importStatements)
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
         debugTransformResult(id, code, importStatements)
-        return removeSourceMap(code)
+        return sourceMapRemove(code)
       }
     },
     // This plugin appends `?extractAssets` to module IDs

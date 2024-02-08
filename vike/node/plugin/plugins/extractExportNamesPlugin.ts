@@ -13,7 +13,7 @@ import {
   assertUsage
 } from '../utils.js'
 import { getExportNames } from '../shared/parseEsModule.js'
-import { removeSourceMap } from '../shared/removeSourceMap.js'
+import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debugNamespace = 'vike:extractExportNames'
 const debug = createDebugger(debugNamespace)
@@ -50,7 +50,7 @@ async function getExtractExportNamesCode(src: string, isClientSide: boolean, isP
     globalObject.usesClientRouter = true
   }
   const code = getCode(exportNames, wildcardReExports, isClientSide, isProduction, id)
-  return removeSourceMap(code)
+  return sourceMapRemove(code)
 }
 
 function getCode(
