@@ -24,6 +24,7 @@ function importBuild(): Plugin[] {
   return [
     {
       name: 'vike:importBuild:config',
+      enforce: 'post',
       async configResolved(config_) {
         config = config_
         configVike = await getConfigVike(config)
