@@ -147,18 +147,18 @@ async function resolveClientEntriesDev(
     if (isNpmPackageImport(clientEntry)) {
       filePath = res(clientEntry)
     } else {
-    assert(clientEntry.endsWith('.js'))
-    try {
-      // For Vitest (which doesn't resolve vike to its dist but to its source files)
-      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/runtime/renderPage/getPageAssets.js
-      filePath = toPosixPath(
-        res(clientEntry.replace('@@vike/dist/esm/client/', '../../../client/').replace('.js', '.ts'))
-      )
-    } catch {
-      // For users
-      // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/runtime/renderPage/getPageAssets.js
-      filePath = toPosixPath(res(clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/')))
-    }
+      assert(clientEntry.endsWith('.js'))
+      try {
+        // For Vitest (which doesn't resolve vike to its dist but to its source files)
+        // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/runtime/renderPage/getPageAssets.js
+        filePath = toPosixPath(
+          res(clientEntry.replace('@@vike/dist/esm/client/', '../../../client/').replace('.js', '.ts'))
+        )
+      } catch {
+        // For users
+        // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/runtime/renderPage/getPageAssets.js
+        filePath = toPosixPath(res(clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/')))
+      }
     }
   } else {
     assert(false)
