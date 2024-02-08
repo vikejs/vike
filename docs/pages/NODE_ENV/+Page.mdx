@@ -3,7 +3,7 @@ import { Link } from '@brillout/docpress'
 In development:
 
 - Don't set `process.env.NODE_ENV`, or set it to one of the following values: `['development', 'dev', '', undefined]`.
-- If you use a sever, add Vite's middleware to your server. (As shown in <Link href="/renderPage#usage" />.)
+- If you use a sever, then add Vite's middleware to your server. (See <Link href="/renderPage#usage" />.)
 
 In production (and staging):
 
@@ -12,6 +12,6 @@ In production (and staging):
 
 > `process.env.NODE_ENV` is a widespread convention that many tools use to determine whether your app is running in production or development.
 >
-> It's important to respect that convention as may tools, such as React, will otherwise misbehave.
+> It's important to respect that convention as may tools will otherwise misbehave (such as React).
 
-> While the convention was introduced by Node.js, it's used by tools regardless of whether you use Node.js or not. Thus make sure to properly set `process.env.NODE_ENV` also in non-Node.js environments.
+> While the `process.env.NODE_ENV` convention was introduced by Node.js, it's used by tools regardless of whether you use Node.js or not. Thus make sure to follow the convention even in non-Node.js environments.
