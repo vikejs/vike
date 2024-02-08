@@ -177,7 +177,9 @@ async function getVikeConfig(
 }
 
 async function isV1Design(config: ResolvedConfig, isDev: boolean): Promise<boolean> {
-  const isV1Design = (await getVikeConfig(config, isDev)).pageConfigs.length > 0
+  const vikeConfig = await getVikeConfig(config, isDev)
+  const { pageConfigs } = vikeConfig
+  const isV1Design = pageConfigs.length > 0
   return isV1Design
 }
 

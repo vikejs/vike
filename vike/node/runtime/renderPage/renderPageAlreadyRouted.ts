@@ -10,7 +10,7 @@ export type { PageContextInitEnhanced }
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
-import { assert, assertUsage, assertWarning, hasProp, isNotNullish, objectAssign, unique } from '../utils.js'
+import { assert, assertUsage, hasProp, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { addUrlComputedProps, type PageContextUrlComputedPropsInternal } from '../../../shared/addUrlComputedProps.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -33,9 +33,9 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
 import pc from '@brillout/picocolors'
-import { getConfigValueFilePathToShowToUser } from '../../../shared/page-configs/helpers.js'
 import type { Hook } from '../../../shared/hooks/getHook.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
+import { assertV1Design } from '../../shared/assertV1Design.js'
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
@@ -242,7 +242,7 @@ async function getRenderContext(): Promise<RenderContext> {
     pageConfigGlobal,
     allPageIds
   )
-  assertV1Design(pageFilesAll, pageConfigs)
+  assertV1Design(pageFilesAll.length > 0, pageConfigs, pageFilesAll)
   const renderContext = {
     pageFilesAll: pageFilesAll,
     pageConfigs,
@@ -252,37 +252,4 @@ async function getRenderContext(): Promise<RenderContext> {
     onBeforeRouteHook
   }
   return renderContext
-}
-
-function assertV1Design(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]) {
-  const isV1Design = pageConfigs.length !== 0
-  const isDesignOld = pageFilesAll.length !== 0
-  if (isV1Design && isDesignOld) {
-    const indent = '- '
-    const v1Files: string[] = unique(
-      pageConfigs
-        .map((p) =>
-          Object.values(p.configValues)
-            .map(getConfigValueFilePathToShowToUser)
-            .filter(isNotNullish)
-            .map((filePathToShowToUser) => indent + filePathToShowToUser)
-        )
-        .flat(2)
-    )
-    assertUsage(
-      false,
-      [
-        'Mixing the new V1 design with the old V0.4 design is forbidden.',
-        'V1 files:',
-        ...v1Files,
-        'V0.4 files:',
-        ...pageFilesAll.map((p) => indent + p.filePath)
-      ].join('\n')
-    )
-  }
-  assertWarning(
-    !isDesignOld,
-    "You are using Vike's deprecated design. Update to the new V1 design, see https://vike.dev/migration/v1-design for how to migrate.",
-    { onlyOnce: true }
-  )
 }
