@@ -1,13 +1,16 @@
 export { startDevServer }
+assertNodeVersion()
 
 import pc from '@brillout/picocolors'
 import { BirpcReturn, createBirpc } from 'birpc'
 import http from 'http'
 import { HMRChannel, ModuleNode, ViteDevServer, createServer } from 'vite'
 import { SHARE_ENV, Worker } from 'worker_threads'
+import { isNodeJS } from '../../utils/isNodeJS.js'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
-import { assert } from '../runtime/utils.js'
+import { isVersionOrAbove } from '../plugin/utils.js'
+import { assert, assertUsage } from '../runtime/utils.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { bindCLIShortcuts } from './shortcuts.js'
 import { ClientFunctions, MinimalModuleNode, ServerFunctions } from './types.js'
@@ -174,4 +177,10 @@ function convertToMinimalModuleNode(
   }
 
   return minimalNode
+}
+
+function assertNodeVersion() {
+  if (!isNodeJS()) return
+  const version = process.versions.node
+  assertUsage(isVersionOrAbove(version, '18.0.0'), `Node.js ${version} isn't supported, use Node.js >=16.0.0 instead.`)
 }
