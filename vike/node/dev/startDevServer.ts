@@ -182,5 +182,5 @@ function convertToMinimalModuleNode(
 function assertNodeVersion() {
   if (!isNodeJS()) return
   const version = process.versions.node
-  assertUsage(isVersionOrAbove(version, '18.0.0'), `Node.js ${version} isn't supported, use Node.js >=16.0.0 instead.`)
+  assertUsage(isVersionOrAbove(version, '18.0.0'), `Node.js ${version} isn't supported, use Node.js >=18.0.0 instead.`)
 }
