@@ -3,7 +3,7 @@ export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
 export { isV1Design }
-
+export type { VikeConfig }
 export type { InterfaceValueFile }
 
 import {

@@ -32,7 +32,8 @@ import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig, isV1Design, type VikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
+import { assertV1Design } from '../../shared/assertV1Design.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -47,6 +48,7 @@ const debugEnabled = isDebugEnabled(debugNamespace)
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
+  let vikeConfig: VikeConfig
   let isServerAssetsFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
@@ -59,7 +61,11 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(id)) {
           return
         }
-        assert(!isServerAssetsFixEnabled)
+        if (isServerAssetsFixEnabled) {
+          // I'm guessing isServerAssetsFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
+          assertV1Design(true, vikeConfig.pageConfigs)
+          assert(false)
+        }
         assert(configVike.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
@@ -170,6 +176,7 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         configVike = await getConfigVike(config_)
         config = config_
+        vikeConfig = await getVikeConfig(config, false)
         isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
       },
       load(id) {

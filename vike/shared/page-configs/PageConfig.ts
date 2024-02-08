@@ -27,12 +27,11 @@ type PageConfigBase = {
     routeString: string
     definedBy: string
   }
+  configValues: ConfigValues
 }
 
 /** Page config data structure available at runtime */
 type PageConfigRuntime = PageConfigBase & {
-  /** All loaded config values */
-  configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
   loadConfigValuesAll: () => Promise<{
     configValuesImported: ConfigValueImported[]
@@ -47,7 +46,6 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
 
 /** Page config data structure available at build-time */
 type PageConfigBuildTime = PageConfigBase & {
-  configValues: ConfigValues
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
 }

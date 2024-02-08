@@ -1,11 +1,15 @@
 export { assertV1Design }
 
 import { PageFile } from '../../shared/getPageFiles.js'
-import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime, PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
 import { assert, assertUsage, assertWarning, isNotNullish, unique } from './utils.js'
 
-function assertV1Design(isOldDesign: boolean, pageConfigs: PageConfigRuntime[], pageFilesAll?: PageFile[]): void {
+function assertV1Design(
+  isOldDesign: boolean,
+  pageConfigs: (PageConfigRuntime | PageConfigBuildTime)[],
+  pageFilesAll?: PageFile[]
+): void {
   const isV1Design = pageConfigs.length > 0
   if (isV1Design && isOldDesign) {
     const lines = ['Mixing the new V1 design with the old V0.4 design is forbidden.']
