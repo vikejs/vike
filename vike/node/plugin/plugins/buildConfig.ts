@@ -29,7 +29,7 @@ import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfi
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
-import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
+import { getClientEntry } from '../../shared/getClientEntry.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
@@ -154,7 +154,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
   let hasClientRouting = false
   let hasServerRouting = false
   let clientEntries: Record<string, string> = {}
-  let clientFilePaths: string[] = []
+  let clientEntryList: string[] = []
   pageConfigs.forEach((pageConfig) => {
     const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
     if (configValue?.value) {
@@ -168,15 +168,15 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
       clientEntries[entryName] = entryTarget
     }
     {
-      const clientFilePath = getClientEntryFilePath(pageConfig)
-      if (clientFilePath) {
-        clientFilePaths.push(clientFilePath)
+      const clientEntry = getClientEntry(pageConfig)
+      if (clientEntry) {
+        clientEntryList.push(clientEntry)
       }
     }
   })
-  clientFilePaths = unique(clientFilePaths)
-  clientFilePaths.forEach((pageFile) => {
-    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config)
+  clientEntryList = unique(clientEntryList)
+  clientEntryList.forEach((clientEntry) => {
+    const { entryName, entryTarget } = getEntryFromClientEntry(clientEntry, config)
     clientEntries[entryName] = entryTarget
   })
 
@@ -200,13 +200,14 @@ async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedB
       assert(includeAssetsImportedByServer)
       addExtractAssetsQuery = true
     }
-    const { entryName, entryTarget } = getEntryFromFilePath(pageFile, config, addExtractAssetsQuery)
+    const { entryName, entryTarget } = getEntryFromClientEntry(pageFile, config, addExtractAssetsQuery)
     pageFileEntries[entryName] = entryTarget
   })
   return pageFileEntries
 }
 
-function getEntryFromFilePath(filePath: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
+function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
+  const filePath = clientEntry
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
 

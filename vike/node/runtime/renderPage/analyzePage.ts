@@ -8,12 +8,12 @@ import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getP
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
 import { getGlobalContext } from '../globalContext.js'
-import { getClientEntryFilePath } from '../../shared/getClientEntryFilePath.js'
+import { getClientEntry } from '../../shared/getClientEntry.js'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
   if (pageConfig) {
     const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
-    const clientFilePath = getClientEntryFilePath(pageConfig)
+    const clientFilePath = getClientEntry(pageConfig)
     const clientEntry = !isClientSideRenderable ? clientFilePath : getVikeClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
