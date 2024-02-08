@@ -189,7 +189,7 @@
     "@types/source-map-support": "^0.5.10",
     "rimraf": "^5.0.5",
     "typescript": "^5.3.3",
-    "vite": "^5.0.10"
+    "vite": "npm:@brillout/vite@5.1.0-commit-a79c8943"
   },
   "engines": {
     "node": ">=16.0.0"

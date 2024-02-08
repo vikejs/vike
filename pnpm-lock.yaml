@@ -249,7 +249,7 @@ importers:
     dependencies:
       '@brillout/docpress':
         specifier: 0.5.40-commit-307d08d
-        version: 0.5.40-commit-307d08d(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)(vite@5.0.12)
+        version: 0.5.40-commit-307d08d(@brillout/vite@5.1.0-commit-a79c8943)(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)
       '@types/node':
         specifier: ^20.11.16
         version: 20.11.16
@@ -272,8 +272,8 @@ importers:
         specifier: link:../vike
         version: link:../vike
       vite:
-        specifier: ^5.0.12
-        version: 5.0.12(@types/node@20.11.16)
+        specifier: npm:@brillout/vite@5.1.0-commit-a79c8943
+        version: /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.11.16)
 
   examples/auth:
     dependencies:
@@ -771,7 +771,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.12(@types/node@20.11.16)
+        version: 5.0.12
 
   examples/react-streaming:
     dependencies:
@@ -906,7 +906,7 @@ importers:
         version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.12)
       vite:
         specifier: ^5.0.12
-        version: 5.0.12(@types/node@20.11.16)
+        version: 5.0.12
 
   examples/vike-react-simple:
     dependencies:
@@ -984,7 +984,7 @@ importers:
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.0.12(@types/node@20.11.16)
+        version: 5.0.12
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1953,8 +1953,8 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
       vite:
-        specifier: ^5.0.10
-        version: 5.0.10(@types/node@20.10.5)
+        specifier: npm:@brillout/vite@5.1.0-commit-a79c8943
+        version: /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.10.5)
 
 packages:
 
@@ -2279,7 +2279,7 @@ packages:
       to-fast-properties: 2.0.0
     dev: false
 
-  /@brillout/docpress@0.5.40-commit-307d08d(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)(vite@5.0.12):
+  /@brillout/docpress@0.5.40-commit-307d08d(@brillout/vite@5.1.0-commit-a79c8943)(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike):
     resolution: {integrity: sha512-Nc5lUuL5on15SiY9LVumpw5ZCR8GUdhWy98l2pQUxfHYsS+AJ/2LYWK0KnNI2onnp7sI3YYO6TORrN3ihLWyXQ==}
     peerDependencies:
       '@types/node': '*'
@@ -2297,7 +2297,7 @@ packages:
       '@types/node': 20.11.16
       '@types/react': 18.2.55
       '@types/react-dom': 18.2.19
-      '@vitejs/plugin-react-swc': 3.6.0(vite@5.0.12)
+      '@vitejs/plugin-react-swc': 3.6.0(@brillout/vite@5.1.0-commit-a79c8943)
       balloon-css: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -2308,7 +2308,7 @@ packages:
       typescript: 5.3.3
       vike: link:vike
       vike-contributors: 0.0.9
-      vite: 5.0.12(@types/node@20.11.16)
+      vite: /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@swc/helpers'
       - rollup
@@ -2391,6 +2391,78 @@ packages:
     resolution: {integrity: sha512-JDWFZOsSJfDo9511r7OJDeNON7x5mwIGNZCi1DQWaVuYK2cs9J/eD3Jwypg4M1ex9iAb/WvI+aSAEfsVGmNeMQ==}
     dependencies:
       '@brillout/import': 0.2.3
+    dev: false
+
+  /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.10.5):
+    resolution: {integrity: sha512-zu2AhsGvXgU9JrxcjjwWDpu13vvEmC4Dp6HEdD4h7QP28wIkUnA//9YojrWE/J6koXA1YOlBqXHladpYQma+MA==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 20.10.5
+      esbuild: 0.19.10
+      postcss: 8.4.35
+      rollup: 4.9.6
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
+
+  /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.11.16):
+    resolution: {integrity: sha512-zu2AhsGvXgU9JrxcjjwWDpu13vvEmC4Dp6HEdD4h7QP28wIkUnA//9YojrWE/J6koXA1YOlBqXHladpYQma+MA==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 20.11.16
+      esbuild: 0.19.10
+      postcss: 8.4.35
+      rollup: 4.9.6
+    optionalDependencies:
+      fsevents: 2.3.3
     dev: false
 
   /@cloudflare/kv-asset-handler@0.2.0:
@@ -3491,6 +3563,7 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-android-arm-eabi@4.9.6:
@@ -3505,6 +3578,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-android-arm64@4.9.6:
@@ -3519,6 +3593,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-darwin-arm64@4.9.6:
@@ -3533,6 +3608,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-darwin-x64@4.9.6:
@@ -3547,6 +3623,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm-gnueabihf@4.9.6:
@@ -3561,6 +3638,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm64-gnu@4.9.6:
@@ -3575,6 +3653,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm64-musl@4.9.6:
@@ -3596,6 +3675,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-linux-x64-gnu@4.9.6:
@@ -3610,6 +3690,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-linux-x64-musl@4.9.6:
@@ -3624,6 +3705,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-win32-arm64-msvc@4.9.6:
@@ -3638,6 +3720,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-win32-ia32-msvc@4.9.6:
@@ -3652,6 +3735,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: false
     optional: true
 
   /@rollup/rollup-win32-x64-msvc@4.9.6:
@@ -4443,13 +4527,13 @@ packages:
       - '@swc/helpers'
     dev: false
 
-  /@vitejs/plugin-react-swc@3.6.0(vite@5.0.12):
+  /@vitejs/plugin-react-swc@3.6.0(@brillout/vite@5.1.0-commit-a79c8943):
     resolution: {integrity: sha512-XFRbsGgpGxGzEV5i5+vRiro1bwcIaZDIdBRP16qwm+jP68ue/S8FJTBEgOeojtVDYrbSua3XFp71kC8VJE6v+g==}
     peerDependencies:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.4.0
-      vite: 5.0.12(@types/node@20.11.16)
+      vite: /@brillout/vite@5.1.0-commit-a79c8943(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: false
@@ -4497,7 +4581,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 5.0.12(@types/node@20.11.16)
+      vite: 5.0.12
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4542,7 +4626,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.12(@types/node@20.11.16)
+      vite: 5.0.12
       vue: 3.3.10(typescript@4.8.4)
     dev: false
 
@@ -9546,9 +9630,10 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.0.2
+    dev: false
 
-  /postcss@8.4.34:
-    resolution: {integrity: sha512-4eLTO36woPSocqZ1zIrFD2K1v6wH7pY1uBh0JIM2KKfrVtGvPFiAku6aNOP0W1Wr9qwnaCsF0Z+CrVnryB2A8Q==}
+  /postcss@8.4.35:
+    resolution: {integrity: sha512-u5U8qYpBCpN13BsiEB0CbR1Hhh4Gc0zLFuedrHJKMctHCHAGrMdG0PRM/KErzAL3CU6/eckEtmHNB3x6e3c0vA==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.7
@@ -9968,6 +10053,7 @@ packages:
       '@rollup/rollup-win32-ia32-msvc': 4.5.1
       '@rollup/rollup-win32-x64-msvc': 4.5.1
       fsevents: 2.3.3
+    dev: false
 
   /rollup@4.9.6:
     resolution: {integrity: sha512-05lzkCS2uASX0CiLFybYfVkwNbKZG5NFQ6Go0VWyogFTXXbR039UVsegViTntkk4OglHBdF54ccApXRRuXRbsg==}
@@ -11210,7 +11296,7 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-streaming: 0.3.20(react-dom@18.2.0)(react@18.2.0)
       vike: link:vike
-      vite: 5.0.12(@types/node@20.11.16)
+      vite: 5.0.12
     dev: false
 
   /vite-node@1.1.3:
@@ -11222,7 +11308,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.12(@types/node@20.11.16)
+      vite: 5.0.12
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -11373,8 +11459,9 @@ packages:
       rollup: 4.5.1
     optionalDependencies:
       fsevents: 2.3.3
+    dev: false
 
-  /vite@5.0.12(@types/node@20.11.16):
+  /vite@5.0.12:
     resolution: {integrity: sha512-4hsnEkG3q0N4Tzf1+t6NdN9dg/L3BM+q8SWgbSPnJvrgH2kgdyzfVJwbR1ic69/4uMJJ/3dqDZZE5/WwqW8U1w==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -11402,9 +11489,8 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.11.16
       esbuild: 0.19.10
-      postcss: 8.4.34
+      postcss: 8.4.35
       rollup: 4.9.6
     optionalDependencies:
       fsevents: 2.3.3
@@ -11452,7 +11538,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.1
-      vite: 5.0.12(@types/node@20.11.16)
+      vite: 5.0.12
       vite-node: 1.1.3
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
