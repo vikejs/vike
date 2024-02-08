@@ -3,7 +3,7 @@ export { startDevServer }
 import pc from '@brillout/picocolors'
 import { BirpcReturn, createBirpc } from 'birpc'
 import http from 'http'
-import { ModuleNode, ViteDevServer, createServer } from 'vite'
+import { HMRChannel, ModuleNode, ViteDevServer, createServer } from 'vite'
 import { SHARE_ENV, Worker } from 'worker_threads'
 import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
@@ -15,17 +15,15 @@ import { ClientFunctions, MinimalModuleNode, ServerFunctions } from './types.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const workerPath = new URL('./worker.js', import.meta.url)
 const viteMiddlewareProxyPort = 3333
+
+let ws: HMRChannel | undefined
 let vite: ViteDevServer
 let rpc: BirpcReturn<ClientFunctions, ServerFunctions>
-let worker: Worker
-let exited = false
-let httpServer: http.Server
+let worker: Worker | undefined
 
 async function startDevServer() {
-  if (!httpServer) {
-    httpServer = http.createServer()
-    httpServer.listen(viteMiddlewareProxyPort)
-  }
+  const httpServer = http.createServer()
+  httpServer.listen(viteMiddlewareProxyPort)
 
   await createServer({
     server: {
@@ -35,7 +33,7 @@ async function startDevServer() {
       {
         name: 'vike:devserver',
         async handleHotUpdate(ctx) {
-          if (exited) {
+          if (!worker) {
             await restartWorker()
             return
           }
@@ -45,25 +43,25 @@ async function startDevServer() {
             await restartWorker()
           }
         },
+        // called on start & vite.config.js changes
         configureServer(vite_) {
           vite = vite_
           httpServer.removeAllListeners('request')
           httpServer.addListener('request', vite.middlewares)
-
-          const ws = vite.hot.channels.find((ch) => ch.name === 'ws')
-          bindCLIShortcuts({
-            onRestart: async () => {
-              await restartWorker()
-              ws?.send({
-                type: 'full-reload'
-              })
-            }
-          })
-
+          ws = vite.hot.channels.find((ch) => ch.name === 'ws')
           restartWorker()
         }
       }
     ]
+  })
+
+  bindCLIShortcuts({
+    onRestart: async () => {
+      await restartWorker()
+      ws?.send({
+        type: 'full-reload'
+      })
+    }
   })
 
   async function restartWorker() {
@@ -74,17 +72,16 @@ async function startDevServer() {
     } = serverConfig
     // This might be needed, but slows down the restart
     // vite.moduleGraph.invalidateAll()
-    if (worker && !exited) {
+    if (worker) {
       await worker.terminate()
     }
     worker = new Worker(workerPath, { env: SHARE_ENV, stdin: true })
-    exited = false
-    const listener = (data: Buffer) => worker.stdin?.emit('data', data)
+    const listener = (data: Buffer) => worker?.stdin!.emit('data', data)
     process.stdin.on('data', listener)
     worker.once('exit', (code) => {
       process.stdin.off('data', listener)
       if (code === 33) {
-        exited = true
+        worker = undefined
         logViteAny(
           `Server shutdown. Update a server file, or press ${pc.cyan('r + Enter')}, to restart.`,
           'info',
@@ -102,6 +99,7 @@ async function startDevServer() {
           const result = await vite.ssrFetchModule(id, importer)
           if (configVikePromise.native.includes(id)) {
             // sharp needs to load the .node file on this thread for some reason
+            // maybe it's the case for other natives as well
             await import(id)
           }
           return result
@@ -121,8 +119,10 @@ async function startDevServer() {
         }
       },
       {
-        post: (data) => worker.postMessage(data),
-        on: (data) => worker.on('message', data),
+        // lazy
+        post: (data) => worker?.postMessage(data),
+        // eager
+        on: (data) => worker!.on('message', data),
         timeout: 1000
       }
     )

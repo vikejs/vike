@@ -91,14 +91,19 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
 
 function patchHttp(httpPort: number) {
   const proxyReq = async (req: IncomingMessage) => {
-    if (req.url?.includes('_telefunc')) {
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
       return {
-        ok: false
+        skip: true
       } as const
     }
+
+    const controller = new AbortController()
+    req.on('close', () => controller.abort())
+
     return fetch(`http://127.0.0.1:${httpPort}${req.url}`, {
       headers: parseHeaders(req.headers),
-      method: req.method
+      method: req.method,
+      signal: controller.signal
     })
   }
 
