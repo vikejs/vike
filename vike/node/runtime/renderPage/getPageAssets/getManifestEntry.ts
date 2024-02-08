@@ -8,9 +8,7 @@ import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(
   id: string,
-  clientManifest: ViteManifest,
-  // TODO: remove
-  manifestKeyMap: Record<string, string>
+  clientManifest: ViteManifest
 ): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertClientEntryId(id)
   const debugInfo = getDebugInfo(id, clientManifest)

@@ -2,16 +2,7 @@ export { assertPluginManifest }
 export type { PluginManifest }
 
 import { assertRuntimeManifest } from './assertRuntimeManifest.js'
-import {
-  assert,
-  assertUsage,
-  isPlainObject,
-  projectInfo,
-  checkType,
-  hasProp,
-  isStringRecord,
-  objectAssign
-} from './utils.js'
+import { assert, assertUsage, isPlainObject, projectInfo, checkType, hasProp } from './utils.js'
 
 type PluginManifest = {
   version: string
@@ -19,7 +10,6 @@ type PluginManifest = {
   baseAssets: string | null
   usesClientRouter: boolean
   includeAssetsImportedByServer: boolean
-  manifestKeyMap: Record<string, string>
   redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
@@ -33,15 +23,12 @@ function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest i
   assertRuntimeManifest(pluginManifest)
   assert(hasProp(pluginManifest, 'usesClientRouter', 'boolean'))
   assert(hasProp(pluginManifest, 'version', 'string'))
-  assert(hasProp(pluginManifest, 'manifestKeyMap', 'object'))
-  const { manifestKeyMap } = pluginManifest
-  assert(isStringRecord(manifestKeyMap))
   // Avoid:
   // ```
   // Uncaught (in promise) TypeError: Cannot set property manifestKeyMap of #<Object> which has only a getter
   // ```
+  // We removed manifestKeyMap, maybe this isn't needed anymore.
   // See https://github.com/vikejs/vike/issues/596
   const pluginManifestClone = { ...pluginManifest }
-  objectAssign(pluginManifestClone, { manifestKeyMap })
   checkType<PluginManifest>(pluginManifestClone)
 }

@@ -41,7 +41,7 @@ function importBuild(): Plugin[] {
 
 function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): string {
   const importPath = getImportPath(config)
-  const vikeManifest = getVikeManifest(config, configVike)
+  const vikeManifest = getVikeManifest(configVike)
   const importerCode = [
     `  import { setImportBuildGetters } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,

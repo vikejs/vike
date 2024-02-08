@@ -9,8 +9,7 @@ import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePa
 function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
-  includeAssetsImportedByServer: boolean,
-  manifestKeyMap: Record<string, string>
+  includeAssetsImportedByServer: boolean
 ): string[] {
   let assetUrls = new Set<string>()
   assert(clientManifest)
@@ -25,7 +24,7 @@ function retrieveAssetsProd(
         id = extractAssetsAddQuery(id)
       }
     }
-    const { manifestKey } = getManifestEntry(id, clientManifest, manifestKeyMap)
+    const { manifestKey } = getManifestEntry(id, clientManifest)
     collectAssets(manifestKey, assetUrls, visistedAssets, clientManifest, onlyAssets)
   })
 
