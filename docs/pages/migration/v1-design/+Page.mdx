@@ -134,6 +134,8 @@ Apply following additional steps if you've defined:
  - [`onBeforeRender` in `.page.js`](#onbeforerender-in-page-js) (instead of `.page.server.js`)
  - <Link href="#client-init-code" />
 
+> If you have many `/pages/**/*.page.js` files then see <Link href="#migration-scripts" />.
+
 
 ## Examples
 
@@ -170,6 +172,13 @@ Notable migrations:
  - Domain-driven file structure (that uses `filesystemRoutingRoot`)
    - [migrate /examples/file-structure-domain-driven/](https://github.com/vikejs/vike/commit/09c47412f94af825c0b48ad4553a42e6896363b3#diff-fb554213bca0ce54bf15ec3d058d4a214ec35fc797bda13ed877d767244b875bL1)
 
+
+
+## Migration scripts
+
+- Basic & good starting point: [v1-design-migration.js](https://gist.github.com/brillout/ca4d166415704d2545eb5241bca8d76d).
+
+> PR welcome to add your migration script.
 
 
 ## Renamed hooks
