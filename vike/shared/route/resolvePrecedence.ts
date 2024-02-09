@@ -16,6 +16,7 @@ type RouteMatch = {
 // See https://vike.dev/route-function#precedence
 function resolvePrecendence<T extends RouteMatch>(routeMatches: T[]): void {
   // prettier-ignore
+  // biome-ignore format:
   routeMatches
     .sort(sortMatches)
     .sort(makeFirst((routeMatch) => routeMatch.routeType === 'FUNCTION' && !!routeMatch.precedence && routeMatch.precedence < 0))

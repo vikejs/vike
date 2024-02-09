@@ -16,6 +16,7 @@ import { assert } from './assert.js'
 //     - A post `import.meta.glob()` blacklist filtering doesn't work because Vite would still process the files (e.g. including them in the bundle).
 
 // prettier-ignore
+// biome-ignore format:
 const extJavaScript = [
   'js',
   'ts',
@@ -31,6 +32,7 @@ const extJavaScript = [
   'mtsx',
 ] as const
 // prettier-ignore
+// biome-ignore format:
 const extTemplates = [
   'vue',
   'svelte',

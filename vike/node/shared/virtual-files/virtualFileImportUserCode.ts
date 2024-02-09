@@ -15,6 +15,7 @@ function isVirtualFileIdImportUserCode(id: string): false | { isForClientSide: b
   if (!id.startsWith(idBase)) return false
   assert(
     // prettier-ignore
+    // biome-ignore format:
     [
       virtualFileIdImportUserCodeServer,
       virtualFileIdImportUserCodeClientCR,

@@ -45,8 +45,8 @@ function envVarsPlugin(): Plugin {
           const envPrefix = !config.envPrefix
             ? []
             : Array.isArray(config.envPrefix)
-            ? config.envPrefix
-            : [config.envPrefix]
+              ? config.envPrefix
+              : [config.envPrefix]
           return !envPrefix.some((prefix) => key.startsWith(prefix))
         })
         .forEach(([envName, envVal]) => {

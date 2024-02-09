@@ -31,6 +31,7 @@ async function loadUserFilesClientSide(
   const isDev: boolean = import.meta.env.DEV
   try {
     // prettier-ignore
+    // biome-ignore format:
     const result = await Promise.all([
       pageConfig && loadConfigValues(pageConfig, isDev),
       ...pageFilesClientSide.map((p) => p.loadFile?.()),

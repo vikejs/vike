@@ -34,6 +34,7 @@ describe('getPrettyErrMessage()', () => {
     {
       const codeSnippet = [
         // prettier-ignore
+        // biome-ignore format:
         '  | some',
         '> | fake',
         '  | code'

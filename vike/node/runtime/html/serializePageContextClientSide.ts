@@ -123,6 +123,7 @@ function serializePageContextAbort(
     (prop) =>
       ![
         // prettier-ignore
+        // biome-ignore format:
         '_abortCall',
         /* Not needed on the client-side
         '_abortCaller',

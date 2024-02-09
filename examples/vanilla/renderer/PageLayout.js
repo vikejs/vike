@@ -7,6 +7,7 @@ function PageLayout(children) {
     [
       Sidebar(
         // prettier-ignore
+        // biome-ignore format:
         [
           '<a class="navitem" href="/">Home</a>',
           '<a class="navitem" href="/about">About</a>'
@@ -19,6 +20,7 @@ function PageLayout(children) {
 
 function Layout(children) {
   // prettier-ignore
+  // biome-ignore format:
   return (
 `<div
   style="${[
@@ -34,6 +36,7 @@ function Layout(children) {
 
 function Sidebar(children) {
   // prettier-ignore
+  // biome-ignore format:
   return (
 `<div
   style="${[
@@ -53,6 +56,7 @@ function Sidebar(children) {
 
 function Content(children) {
   // prettier-ignore
+  // biome-ignore format:
   return (
 `<div
   style="${[

@@ -9,6 +9,7 @@ function formatHintLog(msg: string) {
   const sep = '─'.repeat(msgLength)
   return [
     // prettier-ignore
+    // biome-ignore format:
     `┌─${sep}─┐`,
     `│ ${msg} │`,
     `└─${sep}─┘`

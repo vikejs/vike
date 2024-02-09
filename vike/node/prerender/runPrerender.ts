@@ -353,6 +353,7 @@ async function callOnBeforePrerenderStartHooks(
   const onBeforePrerenderStartHooks: {
     hookFn: Function
     // prettier-ignore
+    // biome-ignore format:
     hookName:
     // 0.4 design
     | 'prerender'
@@ -553,6 +554,7 @@ async function callOnPrerenderStartHook(
         hookFn: unknown
         hookFilePath: string
         // prettier-ignore
+        // biome-ignore format:
         hookName:
       // V1 design
       'onPrerenderStart' |

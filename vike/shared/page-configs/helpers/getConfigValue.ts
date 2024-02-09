@@ -9,12 +9,16 @@ type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
 // prettier-ignore
+// biome-ignore format:
 function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
 // prettier-ignore
+// biome-ignore format:
 function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
 // prettier-ignore
+// biome-ignore format:
 function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | ConfigValue & { value: unknown }
 // prettier-ignore
+// biome-ignore format:
 function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue & { value: unknown } {
   const configValue = getConfigValueEntry(pageConfig, configName)
   if (configValue === null) return null

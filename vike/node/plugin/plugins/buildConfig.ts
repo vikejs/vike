@@ -256,6 +256,7 @@ function addLogHook() {
   })
   // Exhaustive list extracted from writeLine() calls at https://github.com/vitejs/vite/blob/193d55c7b9cbfec5b79ebfca276d4a721e7de14d/packages/vite/src/node/plugins/reporter.ts
   // prettier-ignore
+  // biome-ignore format:
   const viteTransientLogs = [
     'transforming (',
     'rendering chunks (',

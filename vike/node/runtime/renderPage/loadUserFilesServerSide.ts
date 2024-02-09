@@ -69,7 +69,6 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
         mediaType: null | NonNullable<MediaType>['mediaType']
         preloadType: null | NonNullable<MediaType>['assetType']
       }[] = []
-
       ;(await pageContextAddendum.__getPageAssets()).forEach((p) => {
         if (p.assetType === 'script' && p.isEntry) {
           pageAssetsOldFormat.push({

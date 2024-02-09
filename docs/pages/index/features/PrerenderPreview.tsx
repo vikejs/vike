@@ -7,6 +7,7 @@ function PrerenderPreview() {
   const colorAction = 'rgb(19, 115, 86)'
   const colorPath = 'rgb(154, 160, 166)'
   // prettier-ignore
+  // biome-ignore format:
   return (
     <pre>
     <code className="language-custom" style={{backgroundColor: '#262626', color: 'white', overflowX: 'auto'}}>

@@ -61,7 +61,6 @@ function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookF
       )
       reject(err)
     }, timeoutErr)
-
   ;(async () => {
     try {
       const ret = await hookFnCaller()

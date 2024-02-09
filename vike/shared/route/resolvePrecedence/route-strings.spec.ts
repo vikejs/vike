@@ -21,7 +21,6 @@ describe('Route Strings Precedence', () => {
 
   it('basics', () => {
     const routes = ['/', '/about', '/about/team', '/about/@path', '/about/*']
-
     ;[
       ['/', '/'],
       ['/about', '/about'],
@@ -33,7 +32,6 @@ describe('Route Strings Precedence', () => {
 
   it('catch-all', () => {
     const routes = ['/', '/*', '/hello/@name']
-
     ;[
       ['/', '/'],
       ['/hello', '/*'],
@@ -57,7 +55,6 @@ describe('Route Strings Precedence', () => {
       '/product/@productId/@view',
       '/product/*'
     ]
-
     ;[
       ['/', '/'],
       ['/about', '/about'],
@@ -82,7 +79,6 @@ describe('Route Strings Precedence', () => {
       '/news/press-releases/*', // press releases landing and paginated news pages (nested in /news)
       '/news/press-releases/@year/@slug' // press releases (nested in /news)
     ]
-
     ;[
       ['/', '/'],
       ['/news', '/news'],

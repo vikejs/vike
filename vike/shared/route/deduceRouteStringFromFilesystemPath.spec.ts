@@ -27,6 +27,7 @@ describe('deduceRouteStringFromFilesystemPath', () => {
 
   it('filesystem roots', () => {
     // prettier-ignore
+    // biome-ignore format:
     const pS = [
       '/pages/admin/index/index',
       '/pages/admin/login/index',
@@ -44,6 +45,7 @@ describe('deduceRouteStringFromFilesystemPath', () => {
 
   it('domain-driven file structure', () => {
     // prettier-ignore
+    // biome-ignore format:
     const pS = [
       '/product/pages/index',
       '/product/pages/@id',
