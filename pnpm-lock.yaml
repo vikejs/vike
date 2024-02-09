@@ -1901,8 +1901,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/vite-plugin-server-entry':
-        specifier: ^0.4.3
-        version: 0.4.3
+        specifier: ^0.4.4
+        version: 0.4.4
       acorn:
         specifier: ^8.0.0
         version: 8.11.2
@@ -2387,8 +2387,8 @@ packages:
       '@brillout/import': 0.2.3
     dev: false
 
-  /@brillout/vite-plugin-server-entry@0.4.3:
-    resolution: {integrity: sha512-JDWFZOsSJfDo9511r7OJDeNON7x5mwIGNZCi1DQWaVuYK2cs9J/eD3Jwypg4M1ex9iAb/WvI+aSAEfsVGmNeMQ==}
+  /@brillout/vite-plugin-server-entry@0.4.4:
+    resolution: {integrity: sha512-jS2CX4qcYdim09/kR83I+6HDA2JGrhP1HtX1hqPnDXna44aqsgRIxOzjoah6widA8XAykAWBwljynwK5nwQuGA==}
     dependencies:
       '@brillout/import': 0.2.3
     dev: false
