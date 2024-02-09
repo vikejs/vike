@@ -1,3 +1,7 @@
+// Utils to manage process.env.NODE_ENV and, most notably, to assert correct usage, which is crucial:
+//  - https://github.com/vikejs/vike/issues/1469#issuecomment-1919518096
+//  - https://github.com/vitejs/vite/blob/76f30ae23b92f9af910ec02d98e2baaefa12141f/packages/vite/src/node/config.ts#L567
+
 export { getNodeEnv }
 export { setNodeEnvToProduction }
 export { isNodeEnvDev }
