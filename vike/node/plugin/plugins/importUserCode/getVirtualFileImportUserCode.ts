@@ -217,9 +217,9 @@ function getGlobs(
       const globExcludePath = globRoot.excludeDir ? `'!${getGlobPath(globRoot.excludeDir, fileType)}'` : null
       const globOptions: Record<string, unknown> = { eager: isEager }
       if (isVersionOrAbove(viteVersion, '5.1.0')) {
-        globOptions.as = query
-      } else {
         globOptions.query = `?${query}`
+      } else {
+        globOptions.as = query
       }
       const globPaths = globExcludePath ? `[${globIncludePath}, ${globExcludePath}]` : `[${globIncludePath}]`
       const globLine = `const ${varNameLocal} = import.meta.glob(${globPaths}, ${JSON.stringify(globOptions)});`
