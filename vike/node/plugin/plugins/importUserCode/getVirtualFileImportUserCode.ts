@@ -222,21 +222,23 @@ function getGlobs(
       const globIncludePath = `'${getGlobPath(globRoot.includeDir, fileType)}'`
       const globExcludePath = globRoot.excludeDir ? `'!${getGlobPath(globRoot.excludeDir, fileType)}'` : null
       const globOptions: Record<string, unknown> = { eager: isEager }
-      const isNewViteInterface = isVersionOrAbove(viteVersion, '5.1.0')
-      if (
-        isNewViteInterface &&
-        // When used for the old design, the new syntax breaks Vike's CI (surprinsigly so). I couldn't reproduce locally (I didn't dig much).
-        isV1Design
-      ) {
-        globOptions.query = `?${query}`
-      } else {
-        globOptions.as = query
-        const msg = [
-          "Update to the new V1 design to get rid of Vite's warning:",
-          'The glob option "as" has been deprecated in favour of "query".',
-          'See https://vike.dev/migration/v1-design for how to migrate.'
-        ].join(' ')
-        assertWarning(!isNewViteInterface, msg, { onlyOnce: true })
+      if (query) {
+        const isNewViteInterface = isVersionOrAbove(viteVersion, '5.1.0')
+        if (
+          isNewViteInterface &&
+          // When used for the old design, the new syntax breaks Vike's CI (surprinsigly so). I couldn't reproduce locally (I didn't dig much).
+          isV1Design
+        ) {
+          globOptions.query = `?${query}`
+        } else {
+          globOptions.as = query
+          const msg = [
+            "Update to the new V1 design to get rid of Vite's warning:",
+            'The glob option "as" has been deprecated in favour of "query".',
+            'See https://vike.dev/migration/v1-design for how to migrate.'
+          ].join(' ')
+          assertWarning(!isNewViteInterface, msg, { onlyOnce: true })
+        }
       }
       const globPaths = globExcludePath ? `[${globIncludePath}, ${globExcludePath}]` : `[${globIncludePath}]`
       const globLine = `const ${varNameLocal} = import.meta.glob(${globPaths}, ${JSON.stringify(globOptions)});`

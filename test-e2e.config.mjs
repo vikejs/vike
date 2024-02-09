@@ -85,6 +85,7 @@ function tolerateError({ logSource, logText }) {
     isNotV1Design() ||
     [
       // TODO: move everything to this array
+      'The glob option "as" has been deprecated in favour of "query"'
     ].some((t) => logText.includes(t))
   )
 
