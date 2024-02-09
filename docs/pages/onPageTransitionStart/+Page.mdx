@@ -1,9 +1,7 @@
 import { Link } from '@brillout/docpress'
-import { HookTypeScriptHints } from '../../components'
+import { HookTypeScriptHints, UiFrameworkVikeExtension } from '../../components'
 
 The `onPageTransitionStart()` hook, together with <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>, enables you to implement page transition animations.
-
-> The `onPageTransitionStart()` hook requires <Link href="/client-routing">Client Routing</Link>.
 
 ```js
 // /pages/+onPageTransitionStart.js
@@ -39,8 +37,14 @@ const onPageTransitionStart: OnPageTransitionStartAsync = async (
 
 <HookTypeScriptHints hookTypeName="OnPageTransitionStartAsync" />
 
+
+## Without Vike extension
+
+If you don't use a <UiFrameworkVikeExtension />, then make sure to use <Link href="/client-routing">Client Routing</Link>: the `onPageTransitionStart()` hook requires it (it's executed upon *client-side* navigation).
+
+
 ## See also
 
- - <Link href="/clientRouting" />
- - <Link href="/onHydrationEnd" />
  - <Link href="/onPageTransitionEnd" />
+ - <Link href="/onHydrationEnd" />
+ - <Link href="/clientRouting" />
