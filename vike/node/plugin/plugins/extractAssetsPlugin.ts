@@ -130,30 +130,6 @@ function extractAssetsPlugin(): Plugin[] {
           return emptyModule(file, importer)
         }
 
-        // If the dependency is a Vike extension and has `configVike.extension[number].pageConfigsSrcDir`, then include its CSS
-        if (
-          configVike.extensions
-            .filter(({ pageConfigsSrcDir }) => pageConfigsSrcDir !== null)
-            .some(({ npmPackageName }) => {
-              const check1 =
-                source === npmPackageName ||
-                source.startsWith(npmPackageName + '/') ||
-                // Include relative imports within modules of `npmPackageName`. (This only works for dependencies: user may use import path aliases.)
-                source.startsWith('.')
-              // This doesn't work for linked dependencies
-              const check2 =
-                file.includes('node_modules/' + npmPackageName + '/') ||
-                file.includes('node_modules\\' + npmPackageName + '\\')
-              if (check1) {
-                return true
-              }
-              assert(!check2)
-              return false
-            })
-        ) {
-          return appendExtractAssetsQuery(file, importer)
-        }
-
         // If the import path resolves to a file in `node_modules/`, we ignore that file:
         //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
         //  - Loading CSS from a library (living in `node_modules/`) in a non-direct way is non-standard; we can safely not support this case. (I'm not aware of any library that does this.)
