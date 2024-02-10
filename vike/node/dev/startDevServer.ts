@@ -7,7 +7,6 @@ import http from 'http'
 import { HMRChannel, ModuleNode, ViteDevServer, createServer } from 'vite'
 import { SHARE_ENV, Worker } from 'worker_threads'
 import { isNodeJS } from '../../utils/isNodeJS.js'
-import { getServerConfig } from '../plugin/plugins/serverEntryPlugin.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { isVersionOrAbove } from '../plugin/utils.js'
 import { assert, assertUsage } from '../runtime/utils.js'
@@ -68,11 +67,6 @@ async function startDevServer() {
   })
 
   async function restartWorker() {
-    const serverConfig = getServerConfig()
-    assert(serverConfig)
-    const {
-      entry: { index }
-    } = serverConfig
     // This might be needed, but slows down the restart
     // vite.moduleGraph.invalidateAll()
     if (worker) {
@@ -95,6 +89,8 @@ async function startDevServer() {
     })
 
     const configVikePromise = await getConfigVike(vite.config)
+    assert(configVikePromise.server)
+    const index = configVikePromise.server.entry.index
 
     rpc = createBirpc<ClientFunctions, ServerFunctions>(
       {

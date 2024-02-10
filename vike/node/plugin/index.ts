@@ -34,6 +34,7 @@ import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
 import { serverEntryPlugin } from './plugins/serverEntryPlugin.js'
+import { standalonePlugin } from './plugins/standalonePlugin.js'
 
 assertNodeEnv()
 markEnvAsVikePluginLoaded()
@@ -59,7 +60,8 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     baseUrls(vikeConfig),
     envVarsPlugin(),
     fileEnv(),
-    ...serverEntryPlugin(vikeConfig)
+    serverEntryPlugin(),
+    standalonePlugin()
   ]
   return plugins
 }

@@ -4,20 +4,20 @@ import esbuild from 'esbuild'
 import fs from 'fs/promises'
 import path from 'path'
 import { Plugin, searchForWorkspaceRoot } from 'vite'
+import { ConfigVikeResolved, ServerResolved } from '../../../shared/ConfigVike.js'
 import { pLimit } from '../../../utils/pLimit.js'
-import { assert, assertUsage, toPosixPath, unique } from '../utils.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
-import { ServerResolved } from '../../../shared/ConfigVike.js'
+import { assert, assertUsage, toPosixPath, unique } from '../utils.js'
 
-function standalonePlugin(serverConfig: ServerResolved): Plugin {
-  assert(serverConfig?.entry)
+function standalonePlugin(): Plugin {
+  let enabled: boolean
+  let configVike: ConfigVikeResolved
+
   let root = ''
   let outDir = ''
   let outDirAbs = ''
   let rollupEntryFilePaths: Set<string>
 
-  // Native dependencies always need to be esbuild external
-  let native: string[] = []
   let rollupResolve: any
 
   // Support Nestjs
@@ -33,21 +33,29 @@ function standalonePlugin(serverConfig: ServerResolved): Plugin {
   return {
     name: 'vike:standalone',
     apply(_, env) {
-      //@ts-expect-error Vite 5 || Vite 4
-      return !!(env.isSsrBuild || env.ssrBuild)
+      return !!env.isSsrBuild
     },
     async configResolved(config) {
-      const configVike = await getConfigVike(config)
-      native = configVike.native
+      configVike = await getConfigVike(config)
+      enabled = !!(configVike.server && configVike.standalone)
+      if (!enabled) {
+        return
+      }
       root = toPosixPath(config.root)
       outDir = toPosixPath(config.build.outDir)
       outDirAbs = path.posix.join(root, outDir)
     },
     buildStart() {
+      if (!enabled) {
+        return
+      }
       rollupResolve = this.resolve.bind(this)
     },
     writeBundle(_, bundle) {
-      const entries = findRollupBundleEntries(bundle, serverConfig, root)
+      if (!enabled) {
+        return
+      }
+      const entries = findRollupBundleEntries(bundle, configVike.server, root)
       const serverIndex = entries.find((e) => e.name === 'index')
       assert(serverIndex)
       rollupEntryFilePaths = new Set(entries.map((e) => path.posix.join(outDirAbs, e.fileName)))
@@ -55,6 +63,9 @@ function standalonePlugin(serverConfig: ServerResolved): Plugin {
     // closeBundle() + `enforce: 'post'` in order to start the final build step as late as possible
     enforce: 'post',
     async closeBundle() {
+      if (!enabled) {
+        return
+      }
       const bundledEntryPaths: string[] = []
       const filesToRemoveAfterBundle = new Set<string>()
       const base = toPosixPath(searchForWorkspaceRoot(root))
@@ -66,7 +77,7 @@ function standalonePlugin(serverConfig: ServerResolved): Plugin {
           platform: 'node',
           format: 'esm',
           bundle: true,
-          external: native,
+          external: configVike.native,
           entryPoints: { index: entryFilePath },
           outfile: entryFilePath,
           allowOverwrite: true,
