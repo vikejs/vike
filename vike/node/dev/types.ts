@@ -7,7 +7,6 @@ import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
 type ClientFunctions = {
   deleteByModuleId(modulePath: string): boolean
   start(options: {
-    viteMiddlewareProxyPort: number
     entry: string
     viteConfig: {
       root: string

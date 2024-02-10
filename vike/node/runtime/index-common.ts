@@ -1,4 +1,5 @@
 export { renderPage } from './renderPage.js'
+export { renderAsset } from './renderAsset.js'
 export { escapeInject, dangerouslySkipEscape } from './html/renderHtml.js'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream.js'
 export { PROJECT_VERSION as version } from './utils.js'

@@ -8,6 +8,8 @@ import { markEnvAsViteDev } from '../../utils.js'
 import { improveViteLogs } from '../../shared/loggerVite.js'
 import { isErrorDebug } from '../../shared/isErrorDebug.js'
 import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore.js'
+import { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import { getConfigVike } from '../../../shared/getConfigVike.js'
 
 if (isErrorDebug()) {
   Error.stackTraceLimit = Infinity
@@ -19,6 +21,7 @@ const isDev = true
 
 function devConfig(): Plugin[] {
   let config: ResolvedConfig
+  let configVike: ConfigVikeResolved
   return [
     {
       name: 'vike:devConfig',
@@ -61,6 +64,7 @@ function devConfig(): Plugin[] {
       },
       async configResolved(config_) {
         config = config_
+        configVike = await getConfigVike(config_)
         await determineOptimizeDeps(config, isDev)
         await determineFsAllowList(config)
         if (!isErrorDebug()) {
@@ -80,7 +84,7 @@ function devConfig(): Plugin[] {
       configureServer: {
         order: 'post',
         handler(server) {
-          if (config.server.middlewareMode) return
+          if (config.server.middlewareMode || configVike.server) return
           return () => {
             addSsrMiddleware(server.middlewares)
           }

@@ -1,6 +1,4 @@
 import { createBirpc } from 'birpc'
-import http, { IncomingMessage } from 'http'
-import { Readable } from 'stream'
 import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
 import { parentPort } from 'worker_threads'
 import { assert } from '../runtime/utils.js'
@@ -30,7 +28,7 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
       return shouldRestart
     },
     deleteByModuleId: (mod) => runtime.moduleCache.deleteByModuleId(mod),
-    async start({ entry, viteMiddlewareProxyPort, viteConfig }) {
+    async start({ entry, viteConfig }) {
       entry_ = entry
       // This is the minimal required object for vike + telefunc to function
       const globalObject = {
@@ -63,7 +61,6 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
       //@ts-ignore telefunc only needs viteDevServer.ssrLoadModule and viteDevServer.ssrFixStackTrace
       global._telefunc['globalContext.ts'] = { viteDevServer: globalObject.viteDevServer }
 
-      patchHttp(viteMiddlewareProxyPort)
       runtime = new ViteRuntime(
         {
           fetchModule: rpc.fetchModule,
@@ -89,85 +86,11 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
   }
 )
 
-function patchHttp(httpPort: number) {
-  const proxyReq = async (req: IncomingMessage) => {
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
-      return {
-        skip: true
-      } as const
-    }
-
-    const controller = new AbortController()
-    req.on('close', () => controller.abort())
-
-    return fetch(`http://127.0.0.1:${httpPort}${req.url}`, {
-      headers: parseHeaders(req.headers),
-      method: req.method,
-      signal: controller.signal
-    })
+if (typeof process !== 'undefined' && 'on' in process && typeof process.on === 'function') {
+  process.on('unhandledRejection', onError)
+  process.on('uncaughtException', onError)
+  function onError(err: unknown) {
+    console.error(err)
+    process.exit(33)
   }
-
-  const originalCreateServer = http.createServer.bind(http.createServer)
-  http.createServer = (...args) => {
-    //@ts-ignore
-    const httpServer = originalCreateServer(...args)
-    httpServer.on('listening', () => {
-      const listeners = httpServer.listeners('request')
-      httpServer.removeAllListeners('request')
-      httpServer.on('request', async (req, res) => {
-        const result = await proxyReq(req)
-        const ok = 'status' in result && ((200 <= result.status && result.status <= 299) || result.status === 304)
-        if (ok) {
-          res.statusCode = result.status
-          for (const [k, v] of result.headers) {
-            res.setHeader(k, v)
-          }
-
-          if (result.body) {
-            //@ts-ignore
-            Readable.fromWeb(result.body).pipe(res)
-          } else {
-            res.end()
-          }
-          return
-        }
-
-        for (const listener of listeners) {
-          listener(req, res)
-        }
-      })
-    })
-    return httpServer
-  }
-}
-
-export const parseHeaders = (
-  headers: Record<string, string | string[] | undefined> | Headers
-): Record<string, string> => {
-  const result: Record<string, string> = {}
-  if (typeof headers.forEach === 'function') {
-    headers.forEach((value, key) => {
-      if (Array.isArray(value)) {
-        result[key] = value[0]
-      } else {
-        result[key] = value || ''
-      }
-    })
-  } else {
-    for (const [key, value] of Object.entries(headers)) {
-      if (Array.isArray(value)) {
-        result[key] = value[0]
-      } else {
-        result[key] = value || ''
-      }
-    }
-  }
-
-  return result
-}
-process.on('unhandledRejection', onError)
-process.on('uncaughtException', onError)
-function onError(err: unknown) {
-  console.error(err)
-  process.exit(33)
 }

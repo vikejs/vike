@@ -3,7 +3,6 @@ assertNodeVersion()
 
 import pc from '@brillout/picocolors'
 import { BirpcReturn, createBirpc } from 'birpc'
-import http from 'http'
 import { HMRChannel, ModuleNode, ViteDevServer, createServer } from 'vite'
 import { SHARE_ENV, Worker } from 'worker_threads'
 import { isNodeJS } from '../../utils/isNodeJS.js'
@@ -11,13 +10,13 @@ import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { isVersionOrAbove } from '../plugin/utils.js'
 import { assert, assertUsage } from '../runtime/utils.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
+import { viteMiddlewareProxyPort } from './constants.js'
 import { bindCLIShortcuts } from './shortcuts.js'
 import { ClientFunctions, MinimalModuleNode, ServerFunctions } from './types.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 
 const workerPath = new URL('./worker.js', importMetaUrl)
-const viteMiddlewareProxyPort = 3333
 
 let ws: HMRChannel | undefined
 let vite: ViteDevServer
@@ -25,12 +24,12 @@ let rpc: BirpcReturn<ClientFunctions, ServerFunctions>
 let worker: Worker | undefined
 
 async function startDevServer() {
-  const httpServer = http.createServer()
-  httpServer.listen(viteMiddlewareProxyPort)
-
-  await createServer({
+  const server = await createServer({
     server: {
-      middlewareMode: true
+      port: viteMiddlewareProxyPort,
+      hmr: {
+        port: 24678
+      }
     },
     plugins: [
       {
@@ -49,14 +48,14 @@ async function startDevServer() {
         // called on start & vite.config.js changes
         configureServer(vite_) {
           vite = vite_
-          httpServer.removeAllListeners('request')
-          httpServer.addListener('request', vite.middlewares)
           ws = vite.hot.channels.find((ch) => ch.name === 'ws')
           restartWorker()
         }
       }
     ]
   })
+
+  await server.listen()
 
   bindCLIShortcuts({
     onRestart: async () => {
@@ -144,7 +143,6 @@ async function startDevServer() {
     assert(entryAbs?.id)
     await rpc.start({
       entry: entryAbs.id,
-      viteMiddlewareProxyPort,
       viteConfig: { root: vite.config.root, configVikePromise }
     })
   }

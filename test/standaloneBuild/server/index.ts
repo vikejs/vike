@@ -1,6 +1,6 @@
 import express from 'express'
 import { telefunc } from 'telefunc'
-import { renderPage } from 'vike/server'
+import { renderAsset, renderPage } from 'vike/server'
 import { Worker } from 'worker_threads'
 import { init } from '../database/todoItems'
 import { root } from './root'
@@ -18,6 +18,19 @@ async function startServer() {
   const app = express()
   if (import.meta.env.PROD) {
     app.use(express.static(`${root}/client`))
+  } else {
+    app.get('*', async (req, res, next) => {
+      const httpResponse = await renderAsset({
+        url: req.originalUrl,
+        headers: req.headers
+      })
+      if (!httpResponse) {
+        return next()
+      }
+      const { body, statusCode, headers } = httpResponse
+      headers.forEach(([name, value]) => res.setHeader(name, value))
+      res.status(statusCode).send(body)
+    })
   }
 
   app.use(express.text()) // Parse & make HTTP request body available at `req.body`
