@@ -429,5 +429,9 @@ const headingsDetached = [
   {
     title: '`onCreateApp()`',
     url: '/onCreateApp'
+  },
+  {
+    title: '`prerender`',
+    url: '/prerender-config'
   }
 ] satisfies HeadingDetachedDefinition[]
