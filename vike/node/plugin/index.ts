@@ -29,7 +29,6 @@ import { suppressRollupWarning } from './plugins/suppressRollupWarning.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
 import { importBuild } from './plugins/importBuild/index.js'
 import { commonConfig } from './plugins/commonConfig.js'
-import { extensionsAssets } from './plugins/extensionsAssets.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
@@ -56,7 +55,6 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     suppressRollupWarning(),
     setGlobalContext(),
     ...importBuild(),
-    extensionsAssets(),
     baseUrls(vikeConfig),
     envVarsPlugin(),
     fileEnv()
