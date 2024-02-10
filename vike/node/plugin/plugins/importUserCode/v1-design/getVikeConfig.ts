@@ -50,7 +50,6 @@ import {
   type ConfigDefinitionInternal,
   type ConfigNameGlobal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
-import type { ExtensionResolved } from '../../../../../shared/ConfigVike.js'
 import {
   type LocationId,
   getLocationId,
@@ -72,7 +71,6 @@ import {
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
 import type { ResolvedConfig } from 'vite'
-import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
@@ -120,10 +118,10 @@ let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfig> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
-function reloadVikeConfig(userRootDir: string, outDirRoot: string, extensions: ExtensionResolved[]) {
+function reloadVikeConfig(userRootDir: string, outDirRoot: string) {
   vikeConfigDependencies.clear()
   clearFilesEnvMap()
-  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, outDirRoot, true, extensions, true)
+  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, outDirRoot, true, true)
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
@@ -160,7 +158,6 @@ async function getVikeConfig(
   config: ResolvedConfig,
   isDev: boolean,
   tolerateInvalidConfig = false,
-  extensions?: ExtensionResolved[]
 ): Promise<VikeConfig> {
   const { outDirRoot } = getOutDirs(config)
   const userRootDir = config.root
@@ -169,7 +166,6 @@ async function getVikeConfig(
       userRootDir,
       outDirRoot,
       isDev,
-      extensions ?? (await getConfigVike(config)).extensions,
       tolerateInvalidConfig
     )
   }
@@ -187,9 +183,8 @@ async function loadInterfaceFiles(
   userRootDir: string,
   outDirRoot: string,
   isDev: boolean,
-  extensions: ExtensionResolved[]
 ): Promise<InterfaceFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, outDirRoot, isDev, extensions)
+  const plusFiles = await findPlusFiles(userRootDir, outDirRoot, isDev)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
@@ -313,14 +308,13 @@ async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
   outDirRoot: string,
   isDev: boolean,
-  extensions: ExtensionResolved[],
   tolerateInvalidConfig: boolean
 ): Promise<VikeConfig> {
   let hasError = false
   let ret: VikeConfig | undefined
   let err: unknown
   try {
-    ret = await loadVikeConfig(userRootDir, outDirRoot, isDev, extensions)
+    ret = await loadVikeConfig(userRootDir, outDirRoot, isDev)
   } catch (err_) {
     hasError = true
     err = err_
@@ -357,9 +351,8 @@ async function loadVikeConfig(
   userRootDir: string,
   outDirRoot: string,
   isDev: boolean,
-  extensions: ExtensionResolved[]
 ): Promise<VikeConfig> {
-  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, isDev, extensions)
+  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, isDev)
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
 
@@ -997,30 +990,12 @@ async function findPlusFiles(
   userRootDir: string,
   outDirRoot: string,
   isDev: boolean,
-  extensions: ExtensionResolved[]
 ): Promise<FilePathResolved[]> {
   const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathRelativeToUserRootDir }) =>
     resolveFilePathRelativeToUserRootDir(filePathRelativeToUserRootDir, userRootDir)
   )
-
-  // TODO/v1-release: remove
-  extensions.forEach((extension) => {
-    extension.pageConfigsDistFiles?.forEach((pageConfigDistFile) => {
-      if (!pageConfigDistFile.importPath.includes('+')) return
-      assert(pageConfigDistFile.importPath.includes('+'))
-      assert(path.posix.basename(pageConfigDistFile.importPath).startsWith('+'))
-      const { importPath, filePath } = pageConfigDistFile
-      plusFiles.push({
-        filePathRelativeToUserRootDir: null,
-        filePathAbsoluteVite: importPath,
-        filePathAbsoluteFilesystem: filePath,
-        filePathToShowToUser: importPath,
-        importPathAbsolute: importPath
-      })
-    })
-  })
 
   return plusFiles
 }

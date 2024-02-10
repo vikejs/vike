@@ -47,7 +47,7 @@ function importUserCode(): Plugin {
     },
     handleHotUpdate(ctx) {
       try {
-        return handleHotUpdate(ctx, config, configVike)
+        return handleHotUpdate(ctx, config)
       } catch (err) {
         // Vite swallows errors thrown by handleHotUpdate()
         console.error(err)
@@ -72,12 +72,12 @@ function importUserCode(): Plugin {
     },
     configureServer(server) {
       isDev1_onConfigureServer()
-      handleFileAddRemove(server, config, configVike)
+      handleFileAddRemove(server, config)
     }
   }
 }
 
-function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, configVike: ConfigVikeResolved) {
+function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   server.watcher.prependListener('add', (f) => listener(f, false))
   server.watcher.prependListener('unlink', (f) => listener(f, true))
   return
@@ -89,12 +89,12 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig, conf
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
       })
-      reloadConfig(file, config, configVike, isRemove ? 'removed' : 'created')
+      reloadConfig(file, config, isRemove ? 'removed' : 'created')
     }
   }
 }
 
-function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVike: ConfigVikeResolved) {
+function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   assertPosixPath(file)
   vikeConfigDependencies.forEach((f) => assertPosixPath(f))
@@ -129,7 +129,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig, configVike: Co
     /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
     assert(!isViteModule)
     */
-    reloadConfig(file, config, configVike, 'modified')
+    reloadConfig(file, config, 'modified')
     const virtualModules = getVirtualModules(server)
     return virtualModules
   }
@@ -142,7 +142,6 @@ function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
 function reloadConfig(
   filePath: string,
   config: ResolvedConfig,
-  configVike: ConfigVikeResolved,
   op: 'modified' | 'created' | 'removed'
 ) {
   {
@@ -150,7 +149,7 @@ function reloadConfig(
     const msg = `${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config.root, getOutDirs(config).outDirRoot, configVike.extensions)
+  reloadVikeConfig(config.root, getOutDirs(config).outDirRoot)
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {
