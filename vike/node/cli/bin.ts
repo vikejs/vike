@@ -1,7 +1,6 @@
 import pc from '@brillout/picocolors'
 import { cac } from 'cac'
 import { resolve } from 'path'
-import { startDevServer } from '../dev/startDevServer.js'
 import { logViteAny } from '../plugin/shared/loggerNotProd.js'
 import { runPrerenderFromCLI, runPrerender_forceExit } from '../prerender/runPrerender.js'
 import { assertUsage, assertWarning, projectInfo } from './utils.js'
@@ -23,7 +22,8 @@ cli
   .command('[root]', 'Start the development server')
   .alias('serve')
   .alias('dev')
-  .action(() => {
+  .action(async () => {
+    const { startDevServer } = await import('../dev/startDevServer.js')
     logViteAny('Starting development server', 'info', null, true)
     startDevServer()
   })
