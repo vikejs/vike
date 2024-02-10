@@ -147,11 +147,11 @@ type PrerenderOptions = {
   root?: string
   /** @deprecated Define `prerender({ viteConfig: { configFile }})` instead. */
   configFile?: string
-  /** @deprecated Define `partial` in vite.config.js instead, see https://vike.dev/prerender-config */
+  /** @deprecated Define `partial` in vite.config.js instead, see https://vike.dev/prerender */
   partial?: boolean
-  /** @deprecated Define `noExtraDir` in vite.config.js instead, see https://vike.dev/prerender-config */
+  /** @deprecated Define `noExtraDir` in vite.config.js instead, see https://vike.dev/prerender */
   noExtraDir?: boolean
-  /** @deprecated Define `parallel` in vite.config.js instead, see https://vike.dev/prerender-config */
+  /** @deprecated Define `parallel` in vite.config.js instead, see https://vike.dev/prerender */
   parallel?: number
   /** @deprecated */
   outDir?: string
@@ -865,7 +865,7 @@ function warnMissingPages(
       const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``
       assertWarning(
         partial,
-        `Cannot pre-render page ${pageAt} because it has a non-static route, while no ${hookName}() hook returned any URL matching the page's route. You need to use a ${hookName}() hook (https://vike.dev/${hookName}) providing a list of URLs for ${pageAt} that should be pre-rendered. If you don't want to pre-render ${pageAt} then use the option prerender.partial (https://vike.dev/prerender-config#partial) to suppress this warning.`,
+        `Cannot pre-render page ${pageAt} because it has a non-static route, while no ${hookName}() hook returned any URL matching the page's route. You need to use a ${hookName}() hook (https://vike.dev/${hookName}) providing a list of URLs for ${pageAt} that should be pre-rendered. If you don't want to pre-render ${pageAt} then use the option prerender.partial (https://vike.dev/prerender#partial) to suppress this warning.`,
         { onlyOnce: true }
       )
     })
@@ -1077,7 +1077,7 @@ function checkOutdatedOptions(options: {
       options[prop] === undefined,
       `[prerender()] Option ${pc.cyan(prop)} is deprecated. Define ${pc.cyan(
         prop
-      )} in vite.config.js instead. See https://vike.dev/prerender-config`,
+      )} in vite.config.js instead. See https://vike.dev/prerender`,
       { showStackTrace: true }
     )
   })

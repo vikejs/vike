@@ -208,14 +208,6 @@ const headingsDetached = [
     url: '/common-problems'
   },
   {
-    title: (
-      <>
-        <code>prerender()</code> hook
-      </>
-    ),
-    url: '/prerender'
-  },
-  {
     title: <code>doNotPrerender</code>,
     url: '/doNotPrerender'
   },
