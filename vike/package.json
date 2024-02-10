@@ -190,7 +190,9 @@
     "react-streaming": "^0.3.22",
     "rimraf": "^5.0.5",
     "typescript": "^5.3.3",
-    "vite": "npm:@brillout/vite@5.1.0-commit-3dc7abd"
+    "vite": "npm:@brillout/vite@5.1.0-commit-3dc7abd",
+    "@vercel/nft": "^0.26.3",
+    "birpc": "^0.2.15"
   },
   "engines": {
     "node": ">=16.0.0"

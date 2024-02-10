@@ -6,7 +6,6 @@ settings:
 
 overrides:
   vike: link:./vike/
-  vite: 5.1.0-beta.6
 
 packageExtensionsChecksum: f050d50401848e89704474c6985d439e
 
@@ -46,7 +45,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -87,8 +86,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   boilerplates/boilerplate-react-ts:
     dependencies:
@@ -115,7 +114,7 @@ importers:
         version: 6.13.2(eslint@8.55.0)(typescript@5.3.3)
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -159,14 +158,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.4)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.4)
 
   boilerplates/boilerplate-vue:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.3.10
         version: 3.3.10
@@ -192,8 +191,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.3.10
         version: 3.3.10(typescript@4.8.4)
@@ -211,7 +210,7 @@ importers:
         version: 20.10.4
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.3.10
         version: 3.3.10
@@ -243,8 +242,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.4)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.4)
       vue:
         specifier: ^3.3.10
         version: 3.3.10(typescript@5.3.3)
@@ -292,7 +291,7 @@ importers:
         version: 18.2.15
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cookie-parser:
         specifier: ^1.4.6
         version: 1.4.6
@@ -313,16 +312,16 @@ importers:
         version: link:../../vike
       vike-react:
         specifier: ^0.4.4
-        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.1.0-beta.6)
+        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.1.1)
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/base-url:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -333,14 +332,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/base-url-cdn:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       concurrently:
         specifier: ^7.1.0
         version: 7.6.0
@@ -363,14 +362,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/base-url-server:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       concurrently:
         specifier: ^7.1.0
         version: 7.6.0
@@ -393,8 +392,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/cloudflare-workers-react:
     dependencies:
@@ -403,7 +402,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -414,8 +413,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       wrangler:
         specifier: ^2.9.1
         version: 2.20.1
@@ -427,7 +426,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -450,8 +449,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       wrangler:
         specifier: ^2.9.1
         version: 2.20.1
@@ -463,7 +462,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.3.10
@@ -474,8 +473,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -487,7 +486,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -498,14 +497,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/file-structure-domain-driven:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -516,8 +515,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/graphql-apollo-react:
     dependencies:
@@ -526,7 +525,7 @@ importers:
         version: 3.8.7(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -549,8 +548,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/graphql-apollo-vue:
     dependencies:
@@ -559,7 +558,7 @@ importers:
         version: 3.8.7(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
         version: 4.0.0-beta.11(@apollo/client@3.8.7)(graphql@16.8.1)(typescript@4.8.4)(vue@3.3.10)
@@ -588,8 +587,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -603,14 +602,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/i18n:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -621,14 +620,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/layouts-react:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -639,14 +638,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/layouts-vue:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.2.33
         version: 3.3.10
@@ -657,8 +656,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.33
         version: 3.3.10(typescript@4.8.4)
@@ -679,7 +678,7 @@ importers:
         version: 18.2.17
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -705,8 +704,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@17.0.45)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@17.0.45)
 
   examples/react-full:
     dependencies:
@@ -733,7 +732,7 @@ importers:
         version: 18.2.18
       '@vitejs/plugin-react-swc':
         specifier: ^3.5.0
-        version: 3.6.0(vite@5.1.0-beta.6)
+        version: 3.6.0(vite@5.1.1)
       cross-fetch:
         specifier: ^4.0.0
         version: 4.0.0
@@ -756,14 +755,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/react-minimal:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -774,14 +773,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/react-streaming:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -810,14 +809,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/render-modes:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -828,8 +827,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/telefunc:
     dependencies:
@@ -841,7 +840,7 @@ importers:
         version: 18.2.17
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -864,8 +863,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/vanilla:
     dependencies:
@@ -876,8 +875,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/vike-react:
     dependencies:
@@ -889,7 +888,7 @@ importers:
         version: 18.2.18
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -907,16 +906,16 @@ importers:
         version: link:../../vike
       vike-react:
         specifier: ^0.4.4
-        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.1.0-beta.6)
+        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.1.1)
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.12
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/vike-react-simple:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -930,8 +929,8 @@ importers:
         specifier: ^0.1.1
         version: 0.1.1(react-dom@18.2.0)(react@18.2.0)(vike@vike)
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   examples/vue-full:
     dependencies:
@@ -943,7 +942,7 @@ importers:
         version: 2.6.9
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.3.4
         version: 3.3.10
@@ -961,13 +960,13 @@ importers:
         version: 5.3.3
       unplugin-vue-markdown:
         specifier: ^0.24.3
-        version: 0.24.3(vite@5.1.0-beta.6)
+        version: 0.24.3(vite@5.1.1)
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@17.0.45)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@17.0.45)
       vue:
         specifier: ^3.3.4
         version: 3.3.10(typescript@5.3.3)
@@ -976,7 +975,7 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.3.10
@@ -987,8 +986,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1011,8 +1010,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       webpack:
         specifier: ^5.79.0
         version: 5.89.0(webpack-cli@5.1.4)
@@ -1024,7 +1023,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1035,14 +1034,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/base-url-cdn:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       concurrently:
         specifier: ^7.1.0
         version: 7.6.0
@@ -1065,14 +1064,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/base-url-server:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       concurrently:
         specifier: ^7.1.0
         version: 7.6.0
@@ -1095,8 +1094,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/cloudflare-workers-react:
     dependencies:
@@ -1105,7 +1104,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1116,8 +1115,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       wrangler:
         specifier: ^2.9.1
         version: 2.20.1
@@ -1129,7 +1128,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -1152,8 +1151,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       wrangler:
         specifier: ^2.9.1
         version: 2.20.1
@@ -1165,7 +1164,7 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.3.10
@@ -1176,8 +1175,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1189,7 +1188,7 @@ importers:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1200,8 +1199,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/graphql-apollo-react:
     dependencies:
@@ -1210,7 +1209,7 @@ importers:
         version: 3.8.7(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1233,8 +1232,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/graphql-apollo-vue:
     dependencies:
@@ -1243,7 +1242,7 @@ importers:
         version: 3.8.7(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
         version: 4.0.0-beta.11(@apollo/client@3.8.7)(graphql@16.8.1)(typescript@4.8.4)(vue@3.3.10)
@@ -1272,8 +1271,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1287,14 +1286,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/i18n:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       node-fetch:
         specifier: ^2.6.9
         version: 2.7.0
@@ -1308,14 +1307,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/layouts-react:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1326,14 +1325,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/layouts-vue:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.2.33
         version: 3.3.10
@@ -1344,8 +1343,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.33
         version: 3.3.10(typescript@4.8.4)
@@ -1366,7 +1365,7 @@ importers:
         version: 18.2.17
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1392,14 +1391,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@17.0.45)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@17.0.45)
 
   test-deprecated-design/react:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1410,8 +1409,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/react-full:
     dependencies:
@@ -1438,7 +1437,7 @@ importers:
         version: 18.2.17
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cross-fetch:
         specifier: ^3.1.5
         version: 3.1.8
@@ -1461,14 +1460,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@17.0.45)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@17.0.45)
 
   test-deprecated-design/react-streaming:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -1494,14 +1493,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/render-modes:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1512,8 +1511,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/telefunc:
     dependencies:
@@ -1525,7 +1524,7 @@ importers:
         version: 18.2.17
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1548,14 +1547,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test-deprecated-design/vue:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.10)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.10)
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.3.10
@@ -1566,8 +1565,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.47
         version: 3.3.10(typescript@4.8.4)
@@ -1582,7 +1581,7 @@ importers:
         version: 2.6.9
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.2.33)
+        version: 5.0.0(vite@5.1.1)(vue@3.2.33)
       '@vue/compiler-sfc':
         specifier: 3.2.33
         version: 3.2.33
@@ -1600,13 +1599,13 @@ importers:
         version: 4.8.4
       unplugin-vue-markdown:
         specifier: ^0.24.3
-        version: 0.24.3(vite@5.1.0-beta.6)
+        version: 0.24.3(vite@5.1.1)
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@17.0.45)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@17.0.45)
       vue:
         specifier: 3.2.33
         version: 3.2.33
@@ -1621,7 +1620,7 @@ importers:
         version: 18.2.17
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1635,8 +1634,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/assertFileEnv:
     dependencies:
@@ -1645,7 +1644,7 @@ importers:
         version: 18.2.42
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1657,16 +1656,16 @@ importers:
         version: link:../../vike
       vike-react:
         specifier: ^0.4.4
-        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.1.0-beta.6)
+        version: 0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.1.1)
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/cjs:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -1686,8 +1685,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/contra:
     dependencies:
@@ -1701,14 +1700,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/disableAutoImporter:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1719,14 +1718,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/env:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1737,8 +1736,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/hook-override:
     dependencies:
@@ -1750,7 +1749,7 @@ importers:
         version: 18.2.15
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1764,8 +1763,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/includeAssetsImportedByServer:
     dependencies:
@@ -1773,14 +1772,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/misc:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1794,8 +1793,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/preload:
     dependencies:
@@ -1809,8 +1808,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/require-shim:
     dependencies:
@@ -1819,7 +1818,7 @@ importers:
         version: 3.6.9(graphql@16.5.0)(react-dom@18.2.0)(react@18.2.0)
       '@vitejs/plugin-react':
         specifier: 3.0.0
-        version: 3.0.0(vite@5.1.0-beta.6)
+        version: 3.0.0(vite@4.0.3)
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -1842,8 +1841,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: 4.0.3
+        version: 4.0.3
 
   test/standaloneBuild:
     dependencies:
@@ -1861,7 +1860,7 @@ importers:
         version: 18.2.17
       '@vitejs/plugin-react':
         specifier: ^4.1.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1890,14 +1889,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/stream:
     dependencies:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.2.1(vite@5.1.0-beta.6)
+        version: 4.2.1(vite@5.1.1)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1911,14 +1910,14 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
 
   test/stream-vue-onServerPrefetch:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.0(vite@5.1.0-beta.6)(vue@3.3.8)
+        version: 5.0.0(vite@5.1.1)(vue@3.3.8)
       '@vue/compiler-sfc':
         specifier: ^3.2.31
         version: 3.3.8
@@ -1932,8 +1931,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: 5.1.0-beta.6
-        version: 5.1.0-beta.6(@types/node@20.10.5)
+        specifier: ^5.0.10
+        version: 5.1.1(@types/node@20.10.5)
       vue:
         specifier: ^3.2.37
         version: 3.3.8(typescript@4.8.4)
@@ -1995,6 +1994,12 @@ importers:
       '@types/source-map-support':
         specifier: ^0.5.10
         version: 0.5.10
+      '@vercel/nft':
+        specifier: ^0.26.3
+        version: 0.26.3
+      birpc:
+        specifier: ^0.2.15
+        version: 0.2.15
       react-streaming:
         specifier: ^0.3.22
         version: 0.3.22(react-dom@18.2.0)(react@18.2.0)
@@ -2653,7 +2658,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-arm64@0.16.3:
@@ -2679,7 +2683,6 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-arm@0.16.3:
@@ -2705,7 +2708,6 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-x64@0.16.3:
@@ -2731,7 +2733,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/darwin-arm64@0.16.3:
@@ -2757,7 +2758,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/darwin-x64@0.16.3:
@@ -2783,7 +2783,6 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/freebsd-arm64@0.16.3:
@@ -2809,7 +2808,6 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/freebsd-x64@0.16.3:
@@ -2835,7 +2833,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-arm64@0.16.3:
@@ -2861,7 +2858,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-arm@0.16.3:
@@ -2887,7 +2883,6 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-ia32@0.16.3:
@@ -2913,7 +2908,6 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-loong64@0.16.3:
@@ -2939,7 +2933,6 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-mips64el@0.16.3:
@@ -2965,7 +2958,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-ppc64@0.16.3:
@@ -2991,7 +2983,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-riscv64@0.16.3:
@@ -3017,7 +3008,6 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-s390x@0.16.3:
@@ -3043,7 +3033,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-x64@0.16.3:
@@ -3069,7 +3058,6 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/netbsd-x64@0.16.3:
@@ -3095,7 +3083,6 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/openbsd-x64@0.16.3:
@@ -3121,7 +3108,6 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/sunos-x64@0.16.3:
@@ -3147,7 +3133,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/win32-arm64@0.16.3:
@@ -3173,7 +3158,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/win32-ia32@0.16.3:
@@ -3199,7 +3183,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/win32-x64@0.16.3:
@@ -3925,27 +3908,11 @@ packages:
       rollup: 4.9.6
     dev: false
 
-  /@rollup/rollup-android-arm-eabi@4.5.1:
-    resolution: {integrity: sha512-YaN43wTyEBaMqLDYeze+gQ4ZrW5RbTEGtT5o1GVDkhpdNcsLTnLRcLccvwy3E9wiDKWg9RIhuoy3JQKDRBfaZA==}
-    cpu: [arm]
-    os: [android]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /@rollup/rollup-android-arm-eabi@4.9.6:
     resolution: {integrity: sha512-MVNXSSYN6QXOulbHpLMKYi60ppyO13W9my1qogeiAqtjb2yR4LSmfU2+POvDkLzhjYLXz9Rf9+9a3zFHW1Lecg==}
     cpu: [arm]
     os: [android]
     requiresBuild: true
-    optional: true
-
-  /@rollup/rollup-android-arm64@4.5.1:
-    resolution: {integrity: sha512-n1bX+LCGlQVuPlCofO0zOKe1b2XkFozAVRoczT+yxWZPGnkEAKTTYVOGZz8N4sKuBnKMxDbfhUsB1uwYdup/sw==}
-    cpu: [arm64]
-    os: [android]
-    requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-android-arm64@4.9.6:
@@ -3955,27 +3922,11 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@rollup/rollup-darwin-arm64@4.5.1:
-    resolution: {integrity: sha512-QqJBumdvfBqBBmyGHlKxje+iowZwrHna7pokj/Go3dV1PJekSKfmjKrjKQ/e6ESTGhkfPNLq3VXdYLAc+UtAQw==}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /@rollup/rollup-darwin-arm64@4.9.6:
     resolution: {integrity: sha512-CqNNAyhRkTbo8VVZ5R85X73H3R5NX9ONnKbXuHisGWC0qRbTTxnF1U4V9NafzJbgGM0sHZpdO83pLPzq8uOZFw==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    optional: true
-
-  /@rollup/rollup-darwin-x64@4.5.1:
-    resolution: {integrity: sha512-RrkDNkR/P5AEQSPkxQPmd2ri8WTjSl0RYmuFOiEABkEY/FSg0a4riihWQGKDJ4LnV9gigWZlTMx2DtFGzUrYQw==}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-darwin-x64@4.9.6:
@@ -3985,14 +3936,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@rollup/rollup-linux-arm-gnueabihf@4.5.1:
-    resolution: {integrity: sha512-ZFPxvUZmE+fkB/8D9y/SWl/XaDzNSaxd1TJUSE27XAKlRpQ2VNce/86bGd9mEUgL3qrvjJ9XTGwoX0BrJkYK/A==}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /@rollup/rollup-linux-arm-gnueabihf@4.9.6:
     resolution: {integrity: sha512-oNk8YXDDnNyG4qlNb6is1ojTOGL/tRhbbKeE/YuccItzerEZT68Z9gHrY3ROh7axDc974+zYAPxK5SH0j/G+QQ==}
     cpu: [arm]
@@ -4000,27 +3943,11 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@rollup/rollup-linux-arm64-gnu@4.5.1:
-    resolution: {integrity: sha512-FEuAjzVIld5WVhu+M2OewLmjmbXWd3q7Zcx+Rwy4QObQCqfblriDMMS7p7+pwgjZoo9BLkP3wa9uglQXzsB9ww==}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /@rollup/rollup-linux-arm64-gnu@4.9.6:
     resolution: {integrity: sha512-Z3O60yxPtuCYobrtzjo0wlmvDdx2qZfeAWTyfOjEDqd08kthDKexLpV97KfAeUXPosENKd8uyJMRDfFMxcYkDQ==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    optional: true
-
-  /@rollup/rollup-linux-arm64-musl@4.5.1:
-    resolution: {integrity: sha512-f5Gs8WQixqGRtI0Iq/cMqvFYmgFzMinuJO24KRfnv7Ohi/HQclwrBCYkzQu1XfLEEt3DZyvveq9HWo4bLJf1Lw==}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm64-musl@4.9.6:
@@ -4037,27 +3964,11 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@rollup/rollup-linux-x64-gnu@4.5.1:
-    resolution: {integrity: sha512-CWPkPGrFfN2vj3mw+S7A/4ZaU3rTV7AkXUr08W9lNP+UzOvKLVf34tWCqrKrfwQ0NTk5GFqUr2XGpeR2p6R4gw==}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /@rollup/rollup-linux-x64-gnu@4.9.6:
     resolution: {integrity: sha512-HUNqM32dGzfBKuaDUBqFB7tP6VMN74eLZ33Q9Y1TBqRDn+qDonkAUyKWwF9BR9unV7QUzffLnz9GrnKvMqC/fw==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    optional: true
-
-  /@rollup/rollup-linux-x64-musl@4.5.1:
-    resolution: {integrity: sha512-ZRETMFA0uVukUC9u31Ed1nx++29073goCxZtmZARwk5aF/ltuENaeTtRVsSQzFlzdd4J6L3qUm+EW8cbGt0CKQ==}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-x64-musl@4.9.6:
@@ -4067,14 +3978,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@rollup/rollup-win32-arm64-msvc@4.5.1:
-    resolution: {integrity: sha512-ihqfNJNb2XtoZMSCPeoo0cYMgU04ksyFIoOw5S0JUVbOhafLot+KD82vpKXOurE2+9o/awrqIxku9MRR9hozHQ==}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /@rollup/rollup-win32-arm64-msvc@4.9.6:
     resolution: {integrity: sha512-VD6qnR99dhmTQ1mJhIzXsRcTBvTjbfbGGwKAHcu+52cVl15AC/kplkhxzW/uT0Xl62Y/meBKDZvoJSJN+vTeGA==}
     cpu: [arm64]
@@ -4082,27 +3985,11 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@rollup/rollup-win32-ia32-msvc@4.5.1:
-    resolution: {integrity: sha512-zK9MRpC8946lQ9ypFn4gLpdwr5a01aQ/odiIJeL9EbgZDMgbZjjT/XzTqJvDfTmnE1kHdbG20sAeNlpc91/wbg==}
-    cpu: [ia32]
-    os: [win32]
-    requiresBuild: true
-    dev: false
-    optional: true
-
   /@rollup/rollup-win32-ia32-msvc@4.9.6:
     resolution: {integrity: sha512-J9AFDq/xiRI58eR2NIDfyVmTYGyIZmRcvcAoJ48oDld/NTR8wyiPUu2X/v1navJ+N/FGg68LEbX3Ejd6l8B7MQ==}
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    optional: true
-
-  /@rollup/rollup-win32-x64-msvc@4.5.1:
-    resolution: {integrity: sha512-5I3Nz4Sb9TYOtkRwlH0ow+BhMH2vnh38tZ4J4mggE48M/YyJyp/0sPSxhw1UeS1+oBgQ8q7maFtSeKpeRJu41Q==}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-win32-x64-msvc@4.9.6:
@@ -4764,14 +4651,15 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: false
 
-  /@vercel/nft@0.24.4:
-    resolution: {integrity: sha512-KjYAZty7boH5fi5udp6p+lNu6nawgs++pHW+3koErMgbRkkHuToGX/FwjN5clV1FcaM3udfd4zW/sUapkMgpZw==}
+  /@vercel/nft@0.26.3:
+    resolution: {integrity: sha512-h1z/NN9ppS4YOKwSgBoopJlhm7tS2Qb/9Ld1HXjDpvvTE7mY0xVD8nllXs+RihD9uTGJISOIMzp18Eg0EApaMA==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11
       '@rollup/pluginutils': 4.2.1
       acorn: 8.11.2
+      acorn-import-attributes: 1.9.2(acorn@8.11.2)
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
@@ -4788,7 +4676,7 @@ packages:
   /@vitejs/plugin-react-swc@3.6.0(@brillout/vite@5.1.0-commit-3dc7abd):
     resolution: {integrity: sha512-XFRbsGgpGxGzEV5i5+vRiro1bwcIaZDIdBRP16qwm+jP68ue/S8FJTBEgOeojtVDYrbSua3XFp71kC8VJE6v+g==}
     peerDependencies:
-      vite: 5.1.0-beta.6
+      vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.4.0
       vite: /@brillout/vite@5.1.0-commit-3dc7abd(@types/node@20.11.16)
@@ -4796,11 +4684,22 @@ packages:
       - '@swc/helpers'
     dev: false
 
-  /@vitejs/plugin-react@3.0.0(vite@5.1.0-beta.6):
+  /@vitejs/plugin-react-swc@3.6.0(vite@5.1.1):
+    resolution: {integrity: sha512-XFRbsGgpGxGzEV5i5+vRiro1bwcIaZDIdBRP16qwm+jP68ue/S8FJTBEgOeojtVDYrbSua3XFp71kC8VJE6v+g==}
+    peerDependencies:
+      vite: ^4 || ^5
+    dependencies:
+      '@swc/core': 1.4.0
+      vite: 5.1.1(@types/node@20.10.5)
+    transitivePeerDependencies:
+      - '@swc/helpers'
+    dev: false
+
+  /@vitejs/plugin-react@3.0.0(vite@4.0.3):
     resolution: {integrity: sha512-1mvyPc0xYW5G8CHQvJIJXLoMjl5Ct3q2g5Y2s6Ccfgwm45y48LBvsla7az+GkkAtYikWQ4Lxqcsq5RHLcZgtNQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: 5.1.0-beta.6
+      vite: ^4.0.0
     dependencies:
       '@babel/core': 7.23.5
       '@babel/plugin-transform-react-jsx-self': 7.23.3(@babel/core@7.23.5)
@@ -4812,7 +4711,7 @@ packages:
       - supports-color
     dev: false
 
-  /@vitejs/plugin-react@4.2.1(vite@5.0.10):
+  /@vitejs/plugin-react@4.2.1(vite@5.1.1):
     resolution: {integrity: sha512-oojO9IDc4nCUUi8qIR11KoQm0XFFLIwsRBwHRR4d/88IWghn1y6ckz/bJ8GHDCsYEJee8mDzqtJxh15/cisJNQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -4823,69 +4722,42 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 5.0.10(@types/node@20.10.4)
+      vite: 5.1.1(@types/node@20.10.5)
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@vitejs/plugin-react@4.2.1(vite@5.1.0-beta.6):
-    resolution: {integrity: sha512-oojO9IDc4nCUUi8qIR11KoQm0XFFLIwsRBwHRR4d/88IWghn1y6ckz/bJ8GHDCsYEJee8mDzqtJxh15/cisJNQ==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    peerDependencies:
-      vite: 5.1.0-beta.6
-    dependencies:
-      '@babel/core': 7.23.5
-      '@babel/plugin-transform-react-jsx-self': 7.23.3(@babel/core@7.23.5)
-      '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
-      '@types/babel__core': 7.20.5
-      react-refresh: 0.14.0
-      vite: 5.1.0-beta.6(@types/node@20.10.5)
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@vitejs/plugin-vue@5.0.0(vite@5.1.0-beta.6)(vue@3.2.33):
-    resolution: {integrity: sha512-7x5e8X4J1Wi4NxudGjJBd2OFerAi/0nzF80ojCzvfj347WVr0YSn82C8BSsgwSHzlk9Kw5xnZfj0/7RLnNwP5w==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    peerDependencies:
-      vite: 5.1.0-beta.6
-      vue: ^3.2.25
-    dependencies:
-      vite: 5.1.0-beta.6(@types/node@17.0.45)
-      vue: 3.2.33
-    dev: false
-
-  /@vitejs/plugin-vue@5.0.0(vite@5.1.0-beta.6)(vue@3.3.10):
-    resolution: {integrity: sha512-7x5e8X4J1Wi4NxudGjJBd2OFerAi/0nzF80ojCzvfj347WVr0YSn82C8BSsgwSHzlk9Kw5xnZfj0/7RLnNwP5w==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    peerDependencies:
-      vite: 5.1.0-beta.6
-      vue: ^3.2.25
-    dependencies:
-      vite: 5.0.10(@types/node@20.10.5)
-      vue: 3.3.10(typescript@4.8.4)
-    dev: false
-
-  /@vitejs/plugin-vue@5.0.0(vite@5.1.0-beta.6)(vue@3.3.8):
-    resolution: {integrity: sha512-7x5e8X4J1Wi4NxudGjJBd2OFerAi/0nzF80ojCzvfj347WVr0YSn82C8BSsgwSHzlk9Kw5xnZfj0/7RLnNwP5w==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    peerDependencies:
-      vite: 5.1.0-beta.6
-      vue: ^3.2.25
-    dependencies:
-      vite: 5.0.10(@types/node@20.10.5)
-      vue: 3.3.8(typescript@4.8.4)
-    dev: false
-
-  /@vitejs/plugin-vue@5.0.0(vite@5.0.12)(vue@3.3.10):
+  /@vitejs/plugin-vue@5.0.0(vite@5.1.1)(vue@3.2.33):
     resolution: {integrity: sha512-7x5e8X4J1Wi4NxudGjJBd2OFerAi/0nzF80ojCzvfj347WVr0YSn82C8BSsgwSHzlk9Kw5xnZfj0/7RLnNwP5w==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.0.12
+      vite: 5.1.1(@types/node@17.0.45)
+      vue: 3.2.33
+    dev: false
+
+  /@vitejs/plugin-vue@5.0.0(vite@5.1.1)(vue@3.3.10):
+    resolution: {integrity: sha512-7x5e8X4J1Wi4NxudGjJBd2OFerAi/0nzF80ojCzvfj347WVr0YSn82C8BSsgwSHzlk9Kw5xnZfj0/7RLnNwP5w==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      vite: ^5.0.0
+      vue: ^3.2.25
+    dependencies:
+      vite: 5.1.1(@types/node@20.10.5)
       vue: 3.3.10(typescript@4.8.4)
+    dev: false
+
+  /@vitejs/plugin-vue@5.0.0(vite@5.1.1)(vue@3.3.8):
+    resolution: {integrity: sha512-7x5e8X4J1Wi4NxudGjJBd2OFerAi/0nzF80ojCzvfj347WVr0YSn82C8BSsgwSHzlk9Kw5xnZfj0/7RLnNwP5w==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      vite: ^5.0.0
+      vue: ^3.2.25
+    dependencies:
+      vite: 5.1.1(@types/node@20.10.5)
+      vue: 3.3.8(typescript@4.8.4)
     dev: false
 
   /@vitest/expect@1.2.2:
@@ -5418,6 +5290,14 @@ packages:
     dependencies:
       acorn: 8.11.2
     dev: false
+
+  /acorn-import-attributes@1.9.2(acorn@8.11.2):
+    resolution: {integrity: sha512-O+nfJwNolEA771IYJaiLWK1UAwjNsQmZbTRqqwBYxCgVQTmpFEMvBw6LOIQV0Me339L5UMVYFyRohGnGlQDdIQ==}
+    peerDependencies:
+      acorn: ^8
+    dependencies:
+      acorn: 8.11.2
+    dev: true
 
   /acorn-jsx@5.3.2(acorn@8.11.2):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -6698,7 +6578,6 @@ packages:
       '@esbuild/win32-arm64': 0.16.17
       '@esbuild/win32-ia32': 0.16.17
       '@esbuild/win32-x64': 0.16.17
-    dev: true
 
   /esbuild@0.16.3:
     resolution: {integrity: sha512-71f7EjPWTiSguen8X/kxEpkAS7BFHwtQKisCDDV3Y4GLGWBaoSCyD5uXkaUew6JDzA9FEN1W23mdnSwW9kqCeg==}
@@ -10140,6 +10019,25 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
+  /prebuild-install@7.1.1:
+    resolution: {integrity: sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      detect-libc: 2.0.2
+      expand-template: 2.0.3
+      github-from-package: 0.0.0
+      minimist: 1.2.8
+      mkdirp-classic: 0.5.3
+      napi-build-utils: 1.0.2
+      node-abi: 3.52.0
+      pump: 3.0.0
+      rc: 1.2.8
+      simple-get: 4.0.1
+      tar-fs: 2.1.1
+      tunnel-agent: 0.6.0
+    dev: false
+
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -10556,23 +10454,11 @@ packages:
       estree-walker: 0.6.1
     dev: false
 
-  /rollup@4.5.1:
-    resolution: {integrity: sha512-0EQribZoPKpb5z1NW/QYm3XSR//Xr8BeEXU49Lc/mQmpmVVG5jPUVrpc2iptup/0WMrY9mzas0fxH+TjYvG2CA==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
+  /rollup@3.29.4:
+    resolution: {integrity: sha512-oWzmBZwvYrU0iJHtDmhsm662rC15FRXmcjCk1xD771dFDx5jJ02ufAQQTn0etB2emNk4J9EZg/yWKpsn9BWGRw==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
-      '@rollup/rollup-android-arm-eabi': 4.5.1
-      '@rollup/rollup-android-arm64': 4.5.1
-      '@rollup/rollup-darwin-arm64': 4.5.1
-      '@rollup/rollup-darwin-x64': 4.5.1
-      '@rollup/rollup-linux-arm-gnueabihf': 4.5.1
-      '@rollup/rollup-linux-arm64-gnu': 4.5.1
-      '@rollup/rollup-linux-arm64-musl': 4.5.1
-      '@rollup/rollup-linux-x64-gnu': 4.5.1
-      '@rollup/rollup-linux-x64-musl': 4.5.1
-      '@rollup/rollup-win32-arm64-msvc': 4.5.1
-      '@rollup/rollup-win32-ia32-msvc': 4.5.1
-      '@rollup/rollup-win32-x64-msvc': 4.5.1
       fsevents: 2.3.3
     dev: false
 
@@ -11749,10 +11635,10 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /unplugin-vue-markdown@0.24.3(vite@5.1.0-beta.6):
+  /unplugin-vue-markdown@0.24.3(vite@5.1.1):
     resolution: {integrity: sha512-v9fNupSfGnQTYrzpDO51DTppR6IsR/ufNdKycBe7HK0nApuXYiLzo5i5ejG63NSnMauTDFZB1kYOlUjJZ5auvQ==}
     peerDependencies:
-      vite: 5.1.0-beta.6
+      vite: ^2.0.0 || ^3.0.0-0 || ^4.0.0
     dependencies:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
@@ -11761,7 +11647,7 @@ packages:
       '@types/markdown-it': 13.0.6
       markdown-it: 13.0.2
       unplugin: 1.5.0
-      vite: 5.1.0-beta.6(@types/node@17.0.45)
+      vite: 5.1.1(@types/node@17.0.45)
     transitivePeerDependencies:
       - rollup
     dev: false
@@ -11893,22 +11779,7 @@ packages:
       vike: link:vike
     dev: false
 
-  /vike-react@0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.1.0-beta.6):
-    resolution: {integrity: sha512-d5+dgs7sWfTZ/L1co3SIReFSNrJYHcfxBTtjDtk5MPHVfpkZFtfIRufslWjK5NN/tJYxsDFwqZjLeWmA/s6V1A==}
-    peerDependencies:
-      react: 18.x.x
-      react-dom: 18.x.x
-      vike: link:./vike/
-      vite: 5.1.0-beta.6
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-streaming: 0.3.20(react-dom@18.2.0)(react@18.2.0)
-      vike: link:vike
-      vite: 5.1.0-beta.6(@types/node@20.10.5)
-    dev: false
-
-  /vike-react@0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.0.12):
+  /vike-react@0.4.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)(vite@5.1.1):
     resolution: {integrity: sha512-d5+dgs7sWfTZ/L1co3SIReFSNrJYHcfxBTtjDtk5MPHVfpkZFtfIRufslWjK5NN/tJYxsDFwqZjLeWmA/s6V1A==}
     peerDependencies:
       react: 18.x.x
@@ -11920,7 +11791,7 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-streaming: 0.3.20(react-dom@18.2.0)(react@18.2.0)
       vike: link:vike
-      vite: 5.0.12
+      vite: 5.1.1(@types/node@20.10.5)
     dev: false
 
   /vite-node@1.2.2:
@@ -11932,7 +11803,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.1.0-beta.6(@types/node@20.10.5)
+      vite: 5.1.1(@types/node@20.10.5)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -11944,9 +11815,9 @@ packages:
       - terser
     dev: true
 
-  /vite@5.1.0-beta.6(@types/node@15.14.9):
-    resolution: {integrity: sha512-Tnham+O97w9GAQfeYyh1wZF2iePQdr/MgU+8k23O8aa+DtUbAPTmg09CsFgIi4eMta2utRa0pOjSqtYIMcUKbQ==}
-    engines: {node: ^18.0.0 || >=20.0.0}
+  /vite@4.0.3:
+    resolution: {integrity: sha512-HvuNv1RdE7deIfQb8mPk51UKjqptO/4RXZ5yXSAvurd5xOckwS/gg8h9Tky3uSbnjYTgUm0hVCet1cyhKd73ZA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
       '@types/node': '>= 14'
@@ -11970,15 +11841,15 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.16.17
-      postcss: 8.4.32
+      postcss: 8.4.35
       resolve: 1.22.8
       rollup: 3.29.4
     optionalDependencies:
       fsevents: 2.3.3
     dev: false
 
-  /vite@5.0.10(@types/node@17.0.45):
-    resolution: {integrity: sha512-2P8J7WWgmc355HUMlFrwofacvr98DAjoE52BfdbwQtyLH06XKwaL/FMnmKM2crF0iX4MpmMKoDlNCB1ok7zHCw==}
+  /vite@5.1.1(@types/node@17.0.45):
+    resolution: {integrity: sha512-wclpAgY3F1tR7t9LL5CcHC41YPkQIpKUGeIuT8MdNwNZr6OqOTLs7JX5vIHAtzqLWXts0T+GDrh9pN2arneKqg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -12007,14 +11878,14 @@ packages:
     dependencies:
       '@types/node': 17.0.45
       esbuild: 0.19.10
-      postcss: 8.4.34
-      rollup: 4.5.1
+      postcss: 8.4.35
+      rollup: 4.9.6
     optionalDependencies:
       fsevents: 2.3.3
     dev: false
 
-  /vite@5.1.0-beta.6(@types/node@20.10.4):
-    resolution: {integrity: sha512-Tnham+O97w9GAQfeYyh1wZF2iePQdr/MgU+8k23O8aa+DtUbAPTmg09CsFgIi4eMta2utRa0pOjSqtYIMcUKbQ==}
+  /vite@5.1.1(@types/node@20.10.4):
+    resolution: {integrity: sha512-wclpAgY3F1tR7t9LL5CcHC41YPkQIpKUGeIuT8MdNwNZr6OqOTLs7JX5vIHAtzqLWXts0T+GDrh9pN2arneKqg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -12043,14 +11914,14 @@ packages:
     dependencies:
       '@types/node': 20.10.4
       esbuild: 0.19.10
-      postcss: 8.4.34
-      rollup: 4.5.1
+      postcss: 8.4.35
+      rollup: 4.9.6
     optionalDependencies:
       fsevents: 2.3.3
     dev: false
 
-  /vite@5.1.0-beta.6(@types/node@20.10.5):
-    resolution: {integrity: sha512-Tnham+O97w9GAQfeYyh1wZF2iePQdr/MgU+8k23O8aa+DtUbAPTmg09CsFgIi4eMta2utRa0pOjSqtYIMcUKbQ==}
+  /vite@5.1.1(@types/node@20.10.5):
+    resolution: {integrity: sha512-wclpAgY3F1tR7t9LL5CcHC41YPkQIpKUGeIuT8MdNwNZr6OqOTLs7JX5vIHAtzqLWXts0T+GDrh9pN2arneKqg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -12078,41 +11949,6 @@ packages:
         optional: true
     dependencies:
       '@types/node': 20.10.5
-      esbuild: 0.19.10
-      postcss: 8.4.32
-      rollup: 4.5.1
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: false
-
-  /vite@5.0.12:
-    resolution: {integrity: sha512-4hsnEkG3q0N4Tzf1+t6NdN9dg/L3BM+q8SWgbSPnJvrgH2kgdyzfVJwbR1ic69/4uMJJ/3dqDZZE5/WwqW8U1w==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || >=20.0.0
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
       esbuild: 0.19.10
       postcss: 8.4.35
       rollup: 4.9.6
@@ -12162,7 +11998,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.2
-      vite: 5.0.12
+      vite: 5.1.1(@types/node@20.10.5)
       vite-node: 1.2.2
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
