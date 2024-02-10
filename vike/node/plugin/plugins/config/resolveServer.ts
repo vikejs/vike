@@ -5,7 +5,7 @@ import { assert, assertUsage } from '../../utils.js'
 
 function resolveServerConfig(configVike?: ConfigVikeUserProvided): ServerResolved {
   if (!configVike?.server) {
-    return undefined
+    return null
   }
 
   if (typeof configVike.server === 'object') {

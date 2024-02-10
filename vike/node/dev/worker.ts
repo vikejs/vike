@@ -4,7 +4,7 @@ import { Readable } from 'stream'
 import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
 import { parentPort } from 'worker_threads'
 import { assert } from '../runtime/utils.js'
-import { ClientFunctions, ServerFunctions } from './types.js'
+import type { ClientFunctions, ServerFunctions } from './types.js'
 
 let runtime: ViteRuntime
 let entry_: string

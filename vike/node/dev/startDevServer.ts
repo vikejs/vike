@@ -13,9 +13,10 @@ import { assert, assertUsage } from '../runtime/utils.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { bindCLIShortcuts } from './shortcuts.js'
 import { ClientFunctions, MinimalModuleNode, ServerFunctions } from './types.js'
-
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
-const workerPath = new URL('./worker.js', import.meta.url)
+const importMetaUrl: string = import.meta.url
+
+const workerPath = new URL('./worker.js', importMetaUrl)
 const viteMiddlewareProxyPort = 3333
 
 let ws: HMRChannel | undefined
@@ -67,11 +68,14 @@ async function startDevServer() {
   })
 
   async function restartWorker() {
-    // This might be needed, but slows down the restart
-    // vite.moduleGraph.invalidateAll()
+    /* This might be needed, but slows down the restart
+    vite.moduleGraph.invalidateAll()
+    //*/
+
     if (worker) {
       await worker.terminate()
     }
+
     worker = new Worker(workerPath, { env: SHARE_ENV, stdin: true })
     const listener = (data: Buffer) => worker?.stdin!.emit('data', data)
     process.stdin.on('data', listener)
