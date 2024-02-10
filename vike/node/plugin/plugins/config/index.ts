@@ -6,7 +6,6 @@ import { assertVikeConfig } from './assertVikeConfig.js'
 import { isDev2 } from '../../utils.js'
 import { findConfigVikeFromStemPackages } from './findConfigVikeFromStemPackages.js'
 import { pickFirst } from './pickFirst.js'
-import { resolveExtensions } from './resolveExtensions.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
@@ -30,8 +29,6 @@ async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig):
 
   const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
 
-  const extensions = resolveExtensions(configs, config)
-
   const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev2(config), false)
   configs.push(fromPlusConfigFile)
 
@@ -47,7 +44,6 @@ async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig):
 
   const configVike: ConfigVikeResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
-    extensions,
     prerender: resolvePrerenderOptions(configs),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
     baseServer,

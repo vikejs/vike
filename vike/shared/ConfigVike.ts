@@ -1,29 +1,5 @@
 export type { ConfigVikeUserProvided }
 export type { ConfigVikeResolved }
-export type { ExtensionResolved }
-
-type ExtensionUserProvided = {
-  npmPackageName: string
-  pageConfigsDistFiles?: string[]
-  pageConfigsSrcDir?: string
-  assetsDir?: string
-  /** @deprecated */
-  pageFilesDist?: string[]
-  /** @deprecated */
-  pageFilesSrc?: string
-}
-type ExtensionResolved = {
-  npmPackageName: string
-  npmPackageRootDir: string
-  pageConfigsDistFiles:
-    | null
-    | {
-        importPath: string
-        filePath: string
-      }[]
-  pageConfigsSrcDir: null | string
-  assetsDir: null | string
-}
 
 type ConfigVikeResolved = {
   prerender:
@@ -34,7 +10,6 @@ type ConfigVikeResolved = {
         partial: boolean
         disableAutoRun: boolean
       }
-  extensions: ExtensionResolved[]
   disableAutoFullBuild: boolean | null
   includeAssetsImportedByServer: boolean
   baseAssets: string
@@ -91,11 +66,6 @@ type ConfigVikeUserProvided = {
         disableAutoRun?: boolean
       }
 
-  /**
-   * @beta
-   * Don't use without having talked to a vike maintainer.
-   */
-  extensions?: ExtensionUserProvided[]
   /**
    * Set to `true` to disable the automatic chaining of all the build steps.
    *
