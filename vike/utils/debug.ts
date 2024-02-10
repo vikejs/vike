@@ -24,7 +24,6 @@ type Flag =
   | 'vike:extractAssets'
   | 'vike:glob'
   | 'vike:pageFiles'
-  | 'vike:stem'
   | 'vike:setup'
 type Debug = ReturnType<typeof createDebugger>
 type Options = {

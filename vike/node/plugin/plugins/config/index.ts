@@ -4,7 +4,6 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { assertVikeConfig } from './assertVikeConfig.js'
 import { isDev2 } from '../../utils.js'
-import { findConfigVikeFromStemPackages } from './findConfigVikeFromStemPackages.js'
 import { pickFirst } from './pickFirst.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
@@ -25,9 +24,8 @@ function resolveVikeConfig(vikeConfig: unknown): Plugin {
 async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig): Promise<ConfigVikeResolved> {
   const fromPluginOptions = (vikeConfig ?? {}) as ConfigVikeUserProvided
   const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVikeUserProvided
-  const fromStemPackages = await findConfigVikeFromStemPackages(config.root)
 
-  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
+  const configs = [fromPluginOptions, fromViteConfig]
 
   const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev2(config), false)
   configs.push(fromPlusConfigFile)

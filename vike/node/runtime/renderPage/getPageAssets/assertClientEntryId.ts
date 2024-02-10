@@ -6,7 +6,6 @@ import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-file
 function assertClientEntryId(id: string) {
   assertPosixPath(id)
   assert(!id.startsWith('/@fs'), id)
-  const isPkg = isNpmPackageImport(id)
   assert(
     // Client entry
     id.startsWith('@@vike/') ||
@@ -14,8 +13,8 @@ function assertClientEntryId(id: string) {
       id.startsWith('/') ||
       // Page code importer
       isVirtualFileIdPageConfigValuesAll(id) ||
-      // Stem packages
-      isPkg,
+      // Import
+      isNpmPackageImport(id),
     id
   )
 }
