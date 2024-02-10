@@ -5,7 +5,9 @@ import type { InlineConfig } from 'vite'
 
 async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve' | 'preview') {
   const { default: pc } = await import('@brillout/picocolors')
-  const { resolveConfig: resolveViteConfig, mergeConfig } = await import('vite')
+  const { resolveConfig: resolveViteConfig } = await import('vite')
+
+  //TODO: do we need this?
   let nodeEnv = 'development'
   if (['build', 'preview'].includes(command)) {
     nodeEnv = 'production'
@@ -37,6 +39,8 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve
 
   const { getConfigVike } = await import('../shared/getConfigVike.js')
   const vikeConfigResolved = await getConfigVike(viteConfigResolved)
+
+  //TODO: add vite plugins from extension to viteConfig.plugins
 
   return {
     viteConfig,
