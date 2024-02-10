@@ -5,10 +5,10 @@ import type { PrerenderOptions } from '../prerender/runPrerender.js'
 
 // only called programatically on user-land or by running vike prerender
 // adds the vike plugin if not present
-async function prerender(options: PrerenderOptions) {
+async function prerender(options: PrerenderOptions = {}) {
   const { resolveConfig } = await import('./utils.js')
-  const { viteConfig, pageContextInit, onPagePrerender } = options
-  const resolved = await resolveConfig({ vite: viteConfig }, 'build')
+  const { viteConfig = {}, pageContextInit, onPagePrerender } = options
+  const resolved = await resolveConfig(viteConfig, 'build')
   return _prerender({ viteConfig: resolved.viteConfig, pageContextInit, onPagePrerender })
 }
 

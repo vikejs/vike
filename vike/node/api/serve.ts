@@ -1,12 +1,10 @@
 export { serve }
 
-import type { InlineCliConfig } from './utils.js'
-
-async function serve(config: InlineCliConfig = {}) {
+async function serve() {
   const { createServer: createServerVite } = await import('vite')
   const { resolveConfig, isCliCall } = await import('./utils.js')
   // Adds vike to viteConfig if not present
-  const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig(config, 'serve')
+  const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'serve')
   if (!isCliCall) return createServerVite(viteConfig)
 
   const { default: pc } = await import('@brillout/picocolors')

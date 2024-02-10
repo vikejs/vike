@@ -1,12 +1,10 @@
 export { preview }
 
-import type { InlineCliConfig } from './utils.js'
-
-async function preview(config: InlineCliConfig = {}) {
+async function preview() {
   const { preview: previewVite } = await import('vite')
   const { resolveConfig, isCliCall } = await import('./utils.js')
   // Adds vike to viteConfig if not present
-  const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig(config, 'preview')
+  const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'preview')
   if (!isCliCall) return previewVite(viteConfig)
 
   const { default: pc } = await import('@brillout/picocolors')

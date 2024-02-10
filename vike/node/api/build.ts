@@ -1,12 +1,10 @@
 export { build }
 
-import type { InlineCliConfig } from './utils.js'
-
-async function build(config: InlineCliConfig = {}) {
+async function build() {
   const { default: pc } = await import('@brillout/picocolors')
   const { build: buildVite } = await import('vite')
   const { resolveConfig, isCliCall } = await import('./utils.js')
-  const { viteConfig, vikeConfigResolved, viteConfigResolved: resolvedConfig } = await resolveConfig(config, 'build')
+  const { viteConfig, vikeConfigResolved, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'build')
 
   const clientOutput = await buildVite(viteConfig).catch((error) => {
     if (!isCliCall) {
