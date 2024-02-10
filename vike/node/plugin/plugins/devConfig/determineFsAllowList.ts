@@ -3,8 +3,6 @@ export { determineFsAllowList }
 import { searchForWorkspaceRoot } from 'vite'
 import type { ResolvedConfig } from 'vite'
 import path from 'path'
-import fs from 'fs'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { assert } from '../../utils.js'
 import { createRequire } from 'module'
 import { dirname } from 'path'
@@ -14,7 +12,7 @@ const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const __dirname_ = dirname(fileURLToPath(importMetaUrl))
 
-async function determineFsAllowList(config: ResolvedConfig, configVike: ConfigVikeResolved) {
+async function determineFsAllowList(config: ResolvedConfig) {
   const fsAllow = config.server.fs.allow
 
   // fsAllow should already contain searchForWorkspaceRoot()
@@ -34,11 +32,4 @@ async function determineFsAllowList(config: ResolvedConfig, configVike: ConfigVi
     require_.resolve(`${vikeRoot}/dist/esm/node/plugin/plugins/devConfig/index.js`)
     fsAllow.push(vikeRoot)
   }
-
-  // Add Vike extensions, e.g. node_modules/stem-react/
-  configVike.extensions.forEach(({ npmPackageRootDir }) => {
-    const npmPackageRootDirReal = fs.realpathSync(npmPackageRootDir)
-    fsAllow.push(npmPackageRootDir)
-    fsAllow.push(npmPackageRootDirReal)
-  })
 }

@@ -2,9 +2,8 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, getFilePathAbsolute, isNotNullish, isNpmPackageImport, unique } from '../../utils.js'
+import { assert, getFilePathAbsolute, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
-import { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getConfigValueSourcesNotOverriden } from '../../shared/getConfigValueSourcesNotOverriden.js'
 import { analyzeClientEntries } from '../buildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
@@ -13,7 +12,7 @@ import {
   virtualFileIdImportUserCodeClientSR
 } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 
-async function determineOptimizeDeps(config: ResolvedConfig, configVike: ConfigVikeResolved, isDev: true) {
+async function determineOptimizeDeps(config: ResolvedConfig, isDev: true) {
   const { pageConfigs } = await getVikeConfig(config, isDev)
 
   const { entries, include } = await getPageDeps(config, pageConfigs, isDev)
@@ -25,8 +24,6 @@ async function determineOptimizeDeps(config: ResolvedConfig, configVike: ConfigV
     const entriesVirtualFiles = getVirtualFiles(config, pageConfigs)
     entries.push(...entriesVirtualFiles)
   }
-
-  include.push(...getExtensionsDeps(configVike))
 
   /* Other Vite plugins may populate optimizeDeps, e.g. Cypress: https://github.com/vikejs/vike/issues/386
   assert(config.optimizeDeps.entries === undefined)
@@ -102,23 +99,6 @@ function getVirtualFiles(config: ResolvedConfig, pageConfigs: PageConfigBuildTim
   if (hasServerRouting) entriesVirtualFiles.push(virtualFileIdImportUserCodeClientSR)
 
   return entriesVirtualFiles
-}
-
-function getExtensionsDeps(configVike: ConfigVikeResolved): string[] {
-  return [
-    /* Doesn't work since `pageConfigsSrcDir` is a directory. We could make it work by using find-glob.
-    ...configVike.extensions
-      .map(({ pageConfigsSrcDir }) => pageConfigsSrcDir)
-      .flat()
-      .filter(isNotNullish),
-    //*/
-    ...configVike.extensions
-      .map(({ pageConfigsDistFiles }) => pageConfigsDistFiles)
-      .flat()
-      .filter(isNotNullish)
-      .filter(({ importPath }) => !importPath.endsWith('.css'))
-      .map(({ importPath }) => importPath)
-  ]
 }
 
 function normalizeEntries(entries: string | string[] | undefined) {
