@@ -4,7 +4,9 @@ import { viteMiddlewareProxyPort } from '../dev/constants.js'
 import { getViteDevServer } from './globalContext.js'
 import { assert } from './utils.js'
 
-async function renderAsset({ url, headers }: { url: string; headers: any }) {
+type HeadersProvided = Record<string, string | string[] | undefined> | Headers
+
+async function renderAsset({ url, headers }: { url: string; headers: HeadersProvided }) {
   const devServer = getViteDevServer()
   assert(devServer)
   const response = await fetch(`http://127.0.0.1:${viteMiddlewareProxyPort}${url}`, {
@@ -23,7 +25,7 @@ async function renderAsset({ url, headers }: { url: string; headers: any }) {
   }
 }
 
-export const parseHeaders = (headers: Record<string, string | string[] | undefined> | Headers): [string, string][] => {
+export const parseHeaders = (headers: HeadersProvided): [string, string][] => {
   const result: [string, string][] = []
   if (typeof headers.forEach === 'function') {
     headers.forEach((value, key) => {
