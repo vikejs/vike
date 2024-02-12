@@ -1,12 +1,14 @@
 export { prerender }
 export { _prerender }
 
+import { isVikeCli } from './isVikeCli.js'
+import { runPrerenderFromAPI, runPrerender_forceExit, runPrerenderFromCLI } from '../prerender/runPrerender.js'
+import { resolveConfig } from './resolveConfig.js'
 import type { PrerenderOptions } from '../prerender/runPrerender.js'
 
 // only called programatically on user-land or by running vike prerender
 // adds the vike plugin if not present
 async function prerender(options: PrerenderOptions = {}) {
-  const { resolveConfig } = await import('./resolveConfig.js')
   const { viteConfig = {}, pageContextInit, onPagePrerender } = options
   const resolved = await resolveConfig(viteConfig, 'build')
   return _prerender({ viteConfig: resolved.viteConfig, pageContextInit, onPagePrerender })
@@ -14,13 +16,10 @@ async function prerender(options: PrerenderOptions = {}) {
 
 async function _prerender(options: PrerenderOptions) {
   const { pageContextInit, onPagePrerender, viteConfig } = options
-  const { isVikeCli } = await import('./isVikeCli.js')
   if (isVikeCli) {
-    const { runPrerender_forceExit, runPrerenderFromCLI } = await import('../prerender/runPrerender.js')
     await runPrerenderFromCLI({ pageContextInit, onPagePrerender, viteConfig })
     runPrerender_forceExit()
   } else {
-    const { runPrerenderFromAPI } = await import('../prerender/runPrerender.js')
     await runPrerenderFromAPI({
       pageContextInit,
       onPagePrerender,

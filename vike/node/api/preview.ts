@@ -1,14 +1,15 @@
 export { preview }
 
+import { resolveConfig } from './resolveConfig.js'
+import { isVikeCli } from './isVikeCli.js'
+import { preview as previewVite } from 'vite'
+import pc from '@brillout/picocolors'
+
 async function preview() {
-  const { preview: previewVite } = await import('vite')
-  const { resolveConfig } = await import('./resolveConfig.js')
-  const { isVikeCli } = await import('./isVikeCli.js')
   // Adds vike to viteConfig if not present
   const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'preview')
   if (!isVikeCli) return previewVite(viteConfig)
 
-  const { default: pc } = await import('@brillout/picocolors')
   try {
     const server = await previewVite(viteConfig)
     server.printUrls()

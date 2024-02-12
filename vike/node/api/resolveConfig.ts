@@ -1,11 +1,11 @@
 export { resolveConfig }
 
+import { resolveConfig as resolveViteConfig } from 'vite'
+import { getConfigVike } from '../shared/getConfigVike.js'
+import pc from '@brillout/picocolors'
 import type { InlineConfig } from 'vite'
 
 async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve' | 'preview') {
-  const { default: pc } = await import('@brillout/picocolors')
-  const { resolveConfig: resolveViteConfig } = await import('vite')
-
   //TODO: do we need this?
   let nodeEnv = 'development'
   if (['build', 'preview'].includes(command)) {
@@ -27,6 +27,7 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve
 
   // Add vike to plugins if not present
   if (!viteConfigResolved.plugins.some((p) => p.name.startsWith('vike:'))) {
+    // We using a dynamic import because the script calling the VIke API may not live in the same place as vite.config.js, thus have vike/plugin may resolved to two different node_modules/vike directories
     const { plugin } = await import('../plugin/index.js')
 
     viteConfig ??= {}
@@ -36,7 +37,6 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve
     return resolveConfig(viteConfig, command)
   }
 
-  const { getConfigVike } = await import('../shared/getConfigVike.js')
   const vikeConfigResolved = await getConfigVike(viteConfigResolved)
 
   //TODO: add vite plugins from extension to viteConfig.plugins

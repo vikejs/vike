@@ -1,19 +1,21 @@
 export { serve }
 
+import { resolveConfig } from './resolveConfig.js'
+import { isVikeCli } from './isVikeCli.js'
+import { startTime } from '../cli/bin.js'
+import { projectInfo } from '../../utils/projectInfo.js'
+import { createServer } from 'vite'
+import pc from '@brillout/picocolors'
+
+const { projectName, projectVersion } = projectInfo
+
 async function serve() {
-  const { createServer: createServerVite } = await import('vite')
-  const { resolveConfig } = await import('./resolveConfig.js')
-  const { isVikeCli } = await import('./isVikeCli.js')
   // Adds vike to viteConfig if not present
   const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'serve')
-  if (!isVikeCli) return createServerVite(viteConfig)
+  if (!isVikeCli) return createServer(viteConfig)
 
-  const { default: pc } = await import('@brillout/picocolors')
-  const { startTime } = await import('../cli/bin.js')
-  const { projectInfo } = await import('../../utils/projectInfo.js')
-  const { projectName, projectVersion } = projectInfo
   try {
-    const server = await createServerVite(viteConfig)
+    const server = await createServer(viteConfig)
     await server.listen()
     const info = server.config.logger.info
     const startupDurationString = pc.dim(

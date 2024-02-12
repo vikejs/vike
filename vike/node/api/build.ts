@@ -1,10 +1,12 @@
 export { build }
 
+import { resolveConfig } from './resolveConfig.js'
+import { isVikeCli } from './isVikeCli.js'
+import { _prerender } from './prerender.js'
+import { build as buildVite } from 'vite'
+import pc from '@brillout/picocolors'
+
 async function build() {
-  const { default: pc } = await import('@brillout/picocolors')
-  const { build: buildVite } = await import('vite')
-  const { resolveConfig } = await import('./resolveConfig.js')
-  const { isVikeCli } = await import('./isVikeCli.js')
   const { viteConfig, vikeConfigResolved, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'build')
 
   const clientOutput = await buildVite(viteConfig).catch((error) => {
@@ -33,7 +35,6 @@ async function build() {
     return { clientOutput, serverOutput }
   }
 
-  const { _prerender } = await import('./prerender.js')
   await _prerender({
     viteConfig
   })
