@@ -16,7 +16,8 @@ import {
   unique,
   assertWarning,
   isObject,
-  toPosixPath
+  toPosixPath,
+  assertUsage
 } from '../../../../utils.js'
 import { isImportData, transformFileImports, type FileImport } from './transformFileImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
@@ -33,11 +34,17 @@ async function transpileAndExecuteFile(
   doNotTranspile = false
 ): Promise<{ fileExports: Record<string, unknown> }> {
   const { filePathAbsoluteFilesystem } = filePath
+  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
+  assertUsage(
+    filePathAbsoluteFilesystem.endsWith('.js') || filePathAbsoluteFilesystem.endsWith('.ts'),
+    `${filePathToShowToUser2} has file extension .${getFileExtension(
+      filePathAbsoluteFilesystem
+    )} but a config file can only be a .js or .ts file`
+  )
   if (doNotTranspile) {
     assert(!transformImports)
     const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
     if (isHeaderFile(filePathAbsoluteFilesystem)) {
-      const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
       assertWarning(
         false,
         `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files don't apply to the config files of extensions`,
@@ -329,6 +336,10 @@ function isHeaderFile(filePath: string) {
 function getFileExtensions(filePath: string) {
   const fileExtensions = path.posix.basename(filePath).split('.').slice(1)
   return fileExtensions
+}
+function getFileExtension(filePath: string): string {
+  const fileExtensions = path.posix.basename(filePath).split('.').slice(1)
+  return fileExtensions.pop()!
 }
 function appendHeaderFileExtension(filePath: string) {
   assertPosixPath(filePath)
