@@ -322,7 +322,7 @@ function getExportedStrings(obj: Record<string, unknown>): string[] {
 
 function isHeaderFile(filePath: string) {
   assertPosixPath(filePath)
-  const basenameParts = path.posix.basename(filePath).split('.')
+  const basenameParts = path.posix.basename(filePath).split('.').slice(1)
   return basenameParts.includes('h')
 }
 function appendHeaderFileExtension(filePath: string) {
