@@ -3,7 +3,7 @@ export { autoFullBuild }
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
-import { runPrerenderFromAutoFullBuild, runPrerender_forceExit } from '../../prerender/runPrerender.js'
+import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
@@ -95,7 +95,7 @@ async function triggerFullBuild(
   }
 
   if (configVike.prerender && !configVike.prerender.disableAutoRun) {
-    await runPrerenderFromAutoFullBuild({ viteConfig: configInline })
+    await runPrerenderFromAutoRun(configInline)
     forceExit = true
   }
 }

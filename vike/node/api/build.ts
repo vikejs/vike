@@ -2,7 +2,6 @@ export { build }
 
 import { resolveConfig } from './resolveConfig.js'
 import { isVikeCli } from './isVikeCli.js'
-import { _prerender } from './prerender.js'
 import { build as buildVite } from 'vite'
 import pc from '@brillout/picocolors'
 
@@ -31,13 +30,10 @@ async function build() {
     process.exit(1)
   })
 
-  if (!vikeConfigResolved.prerender) {
-    return { clientOutput, serverOutput }
+  if (vikeConfigResolved.prerender) {
+    const { runPrerenderFromAutoRun } = await import('../prerender/runPrerender.js')
+    await runPrerenderFromAutoRun(viteConfig)
   }
-
-  await _prerender({
-    viteConfig
-  })
 
   return { clientOutput, serverOutput }
 }

@@ -1,7 +1,7 @@
 import { cac } from 'cac'
 import { projectInfo, assertUsage, assertIsNotBrowser } from './utils.js'
 import { setIsVikeCli } from '../api/isVikeCli.js'
-import { serve, build, preview, prerender } from '../api/index.js'
+import { serve, build, preview } from '../api/index.js'
 assertIsNotBrowser()
 
 setIsVikeCli()
@@ -10,7 +10,8 @@ const cli = cac(projectInfo.projectName)
 export const startTime = performance.now()
 
 cli.command('prerender', 'Pre-render the HTML of your pages').action(async () => {
-  await prerender()
+  const { runPrerenderFromCLIStandalone } = await import('../prerender/runPrerender.js')
+  await runPrerenderFromCLIStandalone()
 })
 
 cli
