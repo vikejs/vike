@@ -139,11 +139,7 @@ function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
   return vikeConfigDependencies.has(filePathAbsoluteFilesystem)
 }
 
-function reloadConfig(
-  filePath: string,
-  config: ResolvedConfig,
-  op: 'modified' | 'created' | 'removed'
-) {
+function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
   {
     const filePathToShowToUser = pc.dim(getFilePathRelativeToUserRootDir(filePath, config.root, true))
     const msg = `${op} ${filePathToShowToUser}`

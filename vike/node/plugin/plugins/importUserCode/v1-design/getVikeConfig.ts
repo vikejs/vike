@@ -157,17 +157,12 @@ async function handleReloadSideEffects() {
 async function getVikeConfig(
   config: ResolvedConfig,
   isDev: boolean,
-  tolerateInvalidConfig = false,
+  tolerateInvalidConfig = false
 ): Promise<VikeConfig> {
   const { outDirRoot } = getOutDirs(config)
   const userRootDir = config.root
   if (!vikeConfigPromise) {
-    vikeConfigPromise = loadVikeConfig_withErrorHandling(
-      userRootDir,
-      outDirRoot,
-      isDev,
-      tolerateInvalidConfig
-    )
+    vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, outDirRoot, isDev, tolerateInvalidConfig)
   }
   return await vikeConfigPromise
 }
@@ -182,7 +177,7 @@ async function isV1Design(config: ResolvedConfig, isDev: boolean): Promise<boole
 async function loadInterfaceFiles(
   userRootDir: string,
   outDirRoot: string,
-  isDev: boolean,
+  isDev: boolean
 ): Promise<InterfaceFilesByLocationId> {
   const plusFiles = await findPlusFiles(userRootDir, outDirRoot, isDev)
   const configFiles: FilePathResolved[] = []
@@ -347,11 +342,7 @@ async function loadVikeConfig_withErrorHandling(
     }
   }
 }
-async function loadVikeConfig(
-  userRootDir: string,
-  outDirRoot: string,
-  isDev: boolean,
-): Promise<VikeConfig> {
+async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: boolean): Promise<VikeConfig> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, isDev)
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
@@ -986,11 +977,7 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
   return configValuesComputed
 }
 
-async function findPlusFiles(
-  userRootDir: string,
-  outDirRoot: string,
-  isDev: boolean,
-): Promise<FilePathResolved[]> {
+async function findPlusFiles(userRootDir: string, outDirRoot: string, isDev: boolean): Promise<FilePathResolved[]> {
   const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathRelativeToUserRootDir }) =>
