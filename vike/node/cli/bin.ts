@@ -1,9 +1,9 @@
 import { cac } from 'cac'
 import { projectInfo, assertUsage, assertIsNotBrowser } from './utils.js'
-import { setCliCall } from '../api/isVikeCli.js'
+import { setIsVikeCli } from '../api/isVikeCli.js'
 assertIsNotBrowser()
 
-setCliCall()
+setIsVikeCli()
 
 const cli = cac(projectInfo.projectName)
 export const startTime = performance.now()

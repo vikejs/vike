@@ -1,7 +1,7 @@
-export { isCliCall }
-export { setCliCall }
+export { isVikeCli }
+export { setIsVikeCli }
 
-let isCliCall = false
-function setCliCall() {
-  isCliCall = true
+let isVikeCli = false
+function setIsVikeCli() {
+  isVikeCli = true
 }

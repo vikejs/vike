@@ -14,8 +14,8 @@ async function prerender(options: PrerenderOptions = {}) {
 
 async function _prerender(options: PrerenderOptions) {
   const { pageContextInit, onPagePrerender, viteConfig } = options
-  const { isCliCall } = await import('./isVikeCli.js')
-  if (isCliCall) {
+  const { isVikeCli } = await import('./isVikeCli.js')
+  if (isVikeCli) {
     const { runPrerender_forceExit, runPrerenderFromCLI } = await import('../prerender/runPrerender.js')
     await runPrerenderFromCLI({ pageContextInit, onPagePrerender, viteConfig })
     runPrerender_forceExit()

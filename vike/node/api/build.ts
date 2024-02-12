@@ -4,11 +4,11 @@ async function build() {
   const { default: pc } = await import('@brillout/picocolors')
   const { build: buildVite } = await import('vite')
   const { resolveConfig } = await import('./resolveConfig.js')
-  const { isCliCall } = await import('./isVikeCli.js')
+  const { isVikeCli } = await import('./isVikeCli.js')
   const { viteConfig, vikeConfigResolved, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'build')
 
   const clientOutput = await buildVite(viteConfig).catch((error) => {
-    if (!isCliCall) {
+    if (!isVikeCli) {
       throw error
     }
     resolvedConfig.logger.error(pc.red(`error during build:\n${error.stack}`), { error })
@@ -22,7 +22,7 @@ async function build() {
       ssr: true
     }
   }).catch((error) => {
-    if (!isCliCall) {
+    if (!isVikeCli) {
       throw error
     }
     resolvedConfig.logger.error(pc.red(`error during build:\n${error.stack}`), { error })

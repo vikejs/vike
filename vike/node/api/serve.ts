@@ -3,10 +3,10 @@ export { serve }
 async function serve() {
   const { createServer: createServerVite } = await import('vite')
   const { resolveConfig } = await import('./resolveConfig.js')
-  const { isCliCall } = await import('./isVikeCli.js')
+  const { isVikeCli } = await import('./isVikeCli.js')
   // Adds vike to viteConfig if not present
   const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'serve')
-  if (!isCliCall) return createServerVite(viteConfig)
+  if (!isVikeCli) return createServerVite(viteConfig)
 
   const { default: pc } = await import('@brillout/picocolors')
   const { startTime } = await import('../cli/bin.js')
