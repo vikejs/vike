@@ -1,7 +1,7 @@
 import { cac } from 'cac'
-import { projectInfo } from '../../utils/projectInfo.js'
-import { assertUsage } from '../../utils/assert.js'
-import { setCliCall } from '../api/utils.js'
+import { projectInfo, assertUsage, assertIsNotBrowser } from './utils.js'
+import { setCliCall } from '../api/isVikeCli.js'
+assertIsNotBrowser()
 
 setCliCall()
 

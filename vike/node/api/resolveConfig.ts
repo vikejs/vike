@@ -1,5 +1,4 @@
 export { resolveConfig }
-export { isCliCall, setCliCall }
 
 import type { InlineConfig } from 'vite'
 
@@ -47,9 +46,4 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve
     vikeConfigResolved,
     viteConfigResolved
   }
-}
-
-let isCliCall = false
-function setCliCall() {
-  isCliCall = true
 }

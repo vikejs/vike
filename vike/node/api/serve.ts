@@ -2,7 +2,8 @@ export { serve }
 
 async function serve() {
   const { createServer: createServerVite } = await import('vite')
-  const { resolveConfig, isCliCall } = await import('./utils.js')
+  const { resolveConfig } = await import('./resolveConfig.js')
+  const { isCliCall } = await import('./isVikeCli.js')
   // Adds vike to viteConfig if not present
   const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'serve')
   if (!isCliCall) return createServerVite(viteConfig)

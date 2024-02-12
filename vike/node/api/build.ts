@@ -3,7 +3,8 @@ export { build }
 async function build() {
   const { default: pc } = await import('@brillout/picocolors')
   const { build: buildVite } = await import('vite')
-  const { resolveConfig, isCliCall } = await import('./utils.js')
+  const { resolveConfig } = await import('./resolveConfig.js')
+  const { isCliCall } = await import('./isVikeCli.js')
   const { viteConfig, vikeConfigResolved, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'build')
 
   const clientOutput = await buildVite(viteConfig).catch((error) => {

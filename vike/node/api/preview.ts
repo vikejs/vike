@@ -2,7 +2,8 @@ export { preview }
 
 async function preview() {
   const { preview: previewVite } = await import('vite')
-  const { resolveConfig, isCliCall } = await import('./utils.js')
+  const { resolveConfig } = await import('./resolveConfig.js')
+  const { isCliCall } = await import('./isVikeCli.js')
   // Adds vike to viteConfig if not present
   const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'preview')
   if (!isCliCall) return previewVite(viteConfig)
