@@ -32,10 +32,11 @@ async function transpileAndExecuteFile(
   userRootDir: string,
   doNotTranspile = false
 ): Promise<{ fileExports: Record<string, unknown> }> {
+  const { filePathAbsoluteFilesystem } = filePath
   if (doNotTranspile) {
     assert(!transformImports)
-    const fileExports = await executeFile(filePath.filePathAbsoluteFilesystem, filePath)
-    if (isHeaderFile(filePath.filePathAbsoluteFilesystem)) {
+    const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
+    if (isHeaderFile(filePathAbsoluteFilesystem)) {
       const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
       assertWarning(
         false,
@@ -322,13 +323,18 @@ function getExportedStrings(obj: Record<string, unknown>): string[] {
 
 function isHeaderFile(filePath: string) {
   assertPosixPath(filePath)
-  const basenameParts = path.posix.basename(filePath).split('.').slice(1)
-  return basenameParts.includes('h')
+  const fileExtensions = getFileExtensions(filePath)
+  return fileExtensions.includes('h')
+}
+function getFileExtensions(filePath: string) {
+  const fileExtensions = path.posix.basename(filePath).split('.').slice(1)
+  return fileExtensions
 }
 function appendHeaderFileExtension(filePath: string) {
-  const basenameParts = path.posix.basename(filePath).split('.')
-  basenameParts.splice(-1, 0, 'h')
-  const basenameCorrect = basenameParts.join('.')
+  assertPosixPath(filePath)
+  const fileNameParts = path.posix.basename(filePath).split('.')
+  fileNameParts.splice(-1, 0, 'h')
+  const basenameCorrect = fileNameParts.join('.')
   return path.posix.join(path.posix.dirname(filePath), basenameCorrect)
 }
 
