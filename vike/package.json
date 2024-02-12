@@ -174,7 +174,7 @@
     }
   },
   "bin": {
-    "vike": "./bin/vike.js"
+    "vike": "./node/cli/bin-entry.js"
   },
   "devDependencies": {
     "@brillout/import": "^0.2.3",
@@ -207,7 +207,6 @@
   "repository": "https://github.com/vikejs/vike",
   "files": [
     "dist/",
-    "bin/",
     "cli.js",
     "api.js",
     "client.js",
