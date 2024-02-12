@@ -29,8 +29,8 @@ assertIsNotProductionRuntime()
 
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
-  canBeHeaderFile: boolean,
-  userRootDir: string
+  userRootDir: string,
+  isConfigFile = false
 ): Promise<{ fileExports: Record<string, unknown> }> {
   const { filePathAbsoluteFilesystem } = filePath
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
@@ -42,12 +42,12 @@ async function transpileAndExecuteFile(
   )
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   assertWarning(
-    !(isHeader && !canBeHeaderFile),
+    !(isHeader && !isConfigFile),
     `${filePathToShowToUser2} is a JavaScript header file (.h.js), but header files can only be used for +config.h.js files, see https://vike.dev/header-file`,
     { onlyOnce: true }
   )
 
-  const transformImports = canBeHeaderFile && isHeader
+  const transformImports = isConfigFile && isHeader
   if (!transformImports && fileExtension === 'js') {
     const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
     return { fileExports }
