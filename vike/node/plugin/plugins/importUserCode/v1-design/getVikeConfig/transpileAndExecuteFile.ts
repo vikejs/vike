@@ -29,28 +29,27 @@ assertIsNotProductionRuntime()
 
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
-  transformImports: boolean,
-  userRootDir: string,
-  doNotTranspile = false
+  canBeHeaderFile: boolean,
+  userRootDir: string
 ): Promise<{ fileExports: Record<string, unknown> }> {
   const { filePathAbsoluteFilesystem } = filePath
+  const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
+
   assertUsage(
-    filePathAbsoluteFilesystem.endsWith('.js') || filePathAbsoluteFilesystem.endsWith('.ts'),
-    `${filePathToShowToUser2} has file extension .${getFileExtension(
-      filePathAbsoluteFilesystem
-    )} but a config file can only be a .js or .ts file`
+    fileExtension === 'js' || fileExtension === 'ts',
+    `${filePathToShowToUser2} has file extension .${fileExtension} but a config file can only be a .js or .ts file`
   )
-  if (doNotTranspile) {
-    assert(!transformImports)
+  const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
+  assertWarning(
+    !(isHeader && !canBeHeaderFile),
+    `${filePathToShowToUser2} is a JavaScript header file (.h.js), but header files can only be used for +config.h.js files, see https://vike.dev/header-file`,
+    { onlyOnce: true }
+  )
+
+  const transformImports = canBeHeaderFile && isHeader
+  if (!transformImports && fileExtension === 'js') {
     const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
-    if (isHeaderFile(filePathAbsoluteFilesystem)) {
-      assertWarning(
-        false,
-        `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files don't apply to the config files of extensions`,
-        { onlyOnce: true }
-      )
-    }
     return { fileExports }
   } else {
     const { code, fileImportsTransformed } = await transpileFile(filePath, transformImports, userRootDir)
@@ -61,7 +60,6 @@ async function transpileAndExecuteFile(
 
 async function transpileFile(filePath: FilePathResolved, transformImports: boolean, userRootDir: string) {
   const { filePathAbsoluteFilesystem } = filePath
-  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
@@ -74,20 +72,11 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
       code = res.code
       fileImportsTransformed = res.fileImportsTransformed
     }
-  } else {
-    if (isHeaderFile(filePathAbsoluteFilesystem)) {
-      assertWarning(
-        false,
-        `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files only apply to +config.h.js, see https://vike.dev/header-file`,
-        { onlyOnce: true }
-      )
-    }
   }
   return { code, fileImportsTransformed }
 }
 
 function transformFileImports_(codeOriginal: string, filePath: FilePathResolved) {
-  const { filePathAbsoluteFilesystem } = filePath
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
 
   // Replace import statements with import strings
@@ -96,13 +85,6 @@ function transformFileImports_(codeOriginal: string, filePath: FilePathResolved)
     return null
   }
   const { code, fileImportsTransformed } = res
-
-  if (!isHeaderFile(filePathAbsoluteFilesystem)) {
-    const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser2)
-    assertWarning(false, `Rename ${filePathToShowToUser2} to ${filePathCorrect}, see https://vike.dev/header-file`, {
-      onlyOnce: true
-    })
-  }
 
   return { code, fileImportsTransformed }
 }

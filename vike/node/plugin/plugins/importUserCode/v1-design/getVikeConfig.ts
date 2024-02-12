@@ -197,7 +197,7 @@ async function loadInterfaceFiles(
     ...configFiles.map(async (filePath) => {
       const { filePathRelativeToUserRootDir } = filePath
       assert(filePathRelativeToUserRootDir)
-      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
+      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [])
       assert(filePath.filePathRelativeToUserRootDir)
       const locationId = getLocationId(filePathRelativeToUserRootDir)
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId)

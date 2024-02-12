@@ -63,17 +63,11 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
 async function loadConfigFile(
   configFilePath: FilePathResolved,
   userRootDir: string,
-  visited: string[],
-  isConfigOfExtension: boolean
+  visited: string[]
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsoluteFilesystem } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
-  const { fileExports } = await transpileAndExecuteFile(
-    configFilePath,
-    !isConfigOfExtension,
-    userRootDir,
-    isConfigOfExtension
-  )
+  const { fileExports } = await transpileAndExecuteFile(configFilePath, true, userRootDir)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
     ...visited,
     filePathAbsoluteFilesystem
@@ -122,7 +116,7 @@ async function loadExtendsConfigs(
   const extendsConfigs: ConfigFile[] = []
   await Promise.all(
     extendsConfigFiles.map(async (configFilePath) => {
-      const result = await loadConfigFile(configFilePath, userRootDir, visited, true)
+      const result = await loadConfigFile(configFilePath, userRootDir, visited)
       extendsConfigs.push(result.configFile)
       extendsConfigs.push(...result.extendsConfigs)
     })
