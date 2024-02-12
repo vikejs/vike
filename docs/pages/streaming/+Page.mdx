@@ -1,10 +1,15 @@
-import { RepoLink, Link } from '@brillout/docpress'
+import { RepoLink, Link, Warning } from '@brillout/docpress'
 import progressiveRenderingDemo from './progressive-rendering-demo.webm'
-import { UseUiFrameworkVikeExtensionAnyHint } from '../../components'
+import { UseUiFrameworkVikeExtensionAnyHint, UiFrameworkVikeExtensionNames } from '../../components'
 
-Vike not only has first-class support for HTML streaming (aka SSR streaming), but also provides you with extensive control over the stream.
+Vike not only has first-class support for HTML streaming (aka SSR streaming), but also provides you with extensive control over the HTML stream.
+
+If you want to enable/disable HTML streaming, see <Link href="/stream" /> instead.
+
+Unfamiliar with HTML Streaming? Check out [Dan Abramov's explanation of SSR and HTML Streaming](https://github.com/reactwg/react-18/discussions/37).
 
 <UseUiFrameworkVikeExtensionAnyHint featureName="HTML streaming" />
+<Warning>The documentation down below is meant for expert users: using <UiFrameworkVikeExtensionNames /> automatically integrates everything and you can usually skip reading this documentation.</Warning>
 
 ## Examples
 
@@ -322,6 +327,8 @@ See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.
 
 ## See also
 
+- [Dan Abramov's explanation of SSR and HTML Streaming](https://github.com/reactwg/react-18/discussions/37).
 - [Node.js Streams](https://nodejs.org/api/stream.html) (Node.js documentation)
 - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) (MDN documentation)
 - <Link href="/preloading" />
+- <Link href="/stream" />
