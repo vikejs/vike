@@ -37,8 +37,8 @@ async function transpileAndExecuteFile(
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
 
   assertUsage(
-    fileExtension === 'js' || fileExtension === 'ts',
-    `${filePathToShowToUser2} has file extension .${fileExtension} but a config file can only be a .js or .ts file`
+    ['js', 'mjs', 'ts', 'mts'].includes(fileExtension),
+    `${filePathToShowToUser2} has file extension .${fileExtension} but a config file can only be a JavaScript or TypeScript file`
   )
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   assertWarning(
@@ -48,7 +48,7 @@ async function transpileAndExecuteFile(
   )
 
   const transformImports = isConfigFile && isHeader
-  if (!transformImports && fileExtension === 'js') {
+  if (!transformImports && fileExtension.endsWith('js')) {
     const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
     return { fileExports }
   } else {
