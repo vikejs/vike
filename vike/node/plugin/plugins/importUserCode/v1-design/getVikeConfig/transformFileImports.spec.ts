@@ -2,7 +2,7 @@ import { expect, describe, it } from 'vitest'
 import { transformFileImports } from './transformFileImports.js'
 
 function t(code: string) {
-  return transformFileImports(code, '/fake-file.js', true)
+  return transformFileImports(code, '/fake-file.js', 'all', true)
 }
 
 describe('transformFileImports()', () => {

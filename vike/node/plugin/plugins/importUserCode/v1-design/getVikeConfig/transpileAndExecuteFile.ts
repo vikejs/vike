@@ -17,7 +17,9 @@ import {
   assertWarning,
   isObject,
   toPosixPath,
-  assertUsage
+  assertUsage,
+  isJavaScriptFile,
+  createDebugger
 } from '../../../../utils.js'
 import { isImportData, transformFileImports, type FileImport } from './transformFileImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
@@ -26,6 +28,7 @@ import type { FilePathResolved } from '../../../../../../shared/page-configs/Pag
 import { getConfigFileExport } from '../getConfigFileExport.js'
 
 assertIsNotProductionRuntime()
+const debug = createDebugger('vike:pointer-imports')
 
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
@@ -37,8 +40,8 @@ async function transpileAndExecuteFile(
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
 
   assertUsage(
-    ['js', 'mjs', 'ts', 'mts'].includes(fileExtension),
-    `${filePathToShowToUser2} has file extension .${fileExtension} but a config file can only be a JavaScript or TypeScript file`
+    isJavaScriptFile(filePathAbsoluteFilesystem),
+    `${filePathToShowToUser2} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`
   )
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   assertWarning(
@@ -47,8 +50,9 @@ async function transpileAndExecuteFile(
     { onlyOnce: true }
   )
 
-  const transformImports = isConfigFile && isHeader
+  const transformImports = isConfigFile && (isHeader ? 'all' : true)
   if (!transformImports && fileExtension.endsWith('js')) {
+    // TODO: this doesn't track dependencies, always transpile instead? Or directly execute iff config defined by npm packages?
     const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
     return { fileExports }
   } else {
@@ -58,29 +62,43 @@ async function transpileAndExecuteFile(
   }
 }
 
-async function transpileFile(filePath: FilePathResolved, transformImports: boolean, userRootDir: string) {
+async function transpileFile(filePath: FilePathResolved, transformImports: boolean | 'all', userRootDir: string) {
+  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
   const { filePathAbsoluteFilesystem } = filePath
+
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
-  let code = await transpileWithEsbuild(filePath, userRootDir, transformImports)
+  if (debug.isEnabled) debug('transpile', filePathToShowToUser2)
+  let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports)
+  if (debug.isEnabled) debug(`code, post esbuild (${filePathToShowToUser2})`, code)
 
   let fileImportsTransformed: FileImport[] | null = null
+  let isImportTransformed = false
   if (transformImports) {
-    const res = transformFileImports_(code, filePath)
+    const res = transformFileImports_(code, filePath, pointerImports)
     if (res) {
       code = res.code
+      isImportTransformed = true
+      if (debug.isEnabled) debug(`code, post transformImports() (${filePathToShowToUser2})`, code)
       fileImportsTransformed = res.fileImportsTransformed
     }
+  }
+  if (!isImportTransformed) {
+    if (debug.isEnabled) debug(`code, no transformImports() (${filePathToShowToUser2})`)
   }
   return { code, fileImportsTransformed }
 }
 
-function transformFileImports_(codeOriginal: string, filePath: FilePathResolved) {
+function transformFileImports_(
+  codeOriginal: string,
+  filePath: FilePathResolved,
+  pointerImports: 'all' | Record<string, boolean>
+) {
   const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
 
   // Replace import statements with import strings
-  const res = transformFileImports(codeOriginal, filePathToShowToUser2)
+  const res = transformFileImports(codeOriginal, filePathToShowToUser2, pointerImports)
   if (res.noTransformation) {
     return null
   }
@@ -89,7 +107,11 @@ function transformFileImports_(codeOriginal: string, filePath: FilePathResolved)
   return { code, fileImportsTransformed }
 }
 
-async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: string, transformImports: boolean) {
+async function transpileWithEsbuild(
+  filePath: FilePathResolved,
+  userRootDir: string,
+  transformImports: boolean | 'all'
+) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
@@ -111,15 +133,66 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
     // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
     treeShaking: false,
     minify: false,
-    metafile: !transformImports,
-    // We cannot bundle imports that are meant to be transformed
-    bundle: !transformImports
+    metafile: transformImports !== 'all',
+    bundle: transformImports !== 'all'
   }
 
-  // Track dependencies
-  if (!transformImports) {
+  let pointerImports: 'all' | Record<string, boolean>
+  if (transformImports === 'all') {
+    pointerImports = 'all'
     options.packages = 'external'
+  } else {
+    const pointerImports_: Record<string, boolean> = (pointerImports = {})
     options.plugins = [
+      // Determine what import should be externalized (and then transformed to a pointer/fake import)
+      {
+        name: 'vike:externalize-heuristic',
+        setup(build) {
+          // https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
+          const useEsbuildResolver = 'useEsbuildResolver'
+          // https://github.com/brillout/esbuild-playground
+          build.onResolve({ filter: /.*/ }, async (args) => {
+            if (args.kind !== 'import-statement') return
+            if (args.pluginData?.[useEsbuildResolver]) return
+
+            const isImportAbsolute = !args.path.startsWith('.')
+
+            const { path, ...opts } = args
+            opts.pluginData = { [useEsbuildResolver]: true }
+            const resolved = await build.resolve(path, opts)
+
+            // vike-{react,vue,solid} follow the convention that their config export resolves to a file named +config.js
+            //  - This is temporary, see comment below.
+            const isVikeExtensionConfigImport = resolved.path.endsWith('+config.js')
+
+            const isPointerImport =
+              // .jsx, .vue, .svg, ... => obviously not config code
+              !isJavaScriptFile(resolved.path) ||
+              // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a config has been set by the user or by a Vike extension).
+              //  - Alternatively, we can (and should) have Node.js directly load vike-{react,vue,solid} while enforcing Vike extensions to set 'name' in their +config.js file.
+              isVikeExtensionConfigImport ||
+              // Cannot be resolved by esbuild => take a leap of faith and make it a pointer import.
+              //  - For example if esbuild cannot resolve a path alias while Vite can.
+              //    - When tsconfig.js#compilerOptions.paths is set, then esbuild is able to resolve the path alias.
+              resolved.errors.length > 0
+            pointerImports_[args.path] = isPointerImport
+
+            const isExternal =
+              isPointerImport ||
+              // npm package imports that aren't pointer imports (e.g. Vite plugin import)
+              isImportAbsolute
+
+            if (debug.isEnabled) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
+
+            if (isExternal) {
+              return { external: true, path: args.path }
+            } else {
+              return resolved
+            }
+          })
+        }
+      },
+      // Track dependencies
       {
         name: 'vike:dependency-tracker',
         setup(b) {
@@ -153,7 +226,7 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
   }
 
   // Track dependencies
-  if (!transformImports) {
+  if (transformImports !== 'all') {
     assert(result.metafile)
     Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
       filePathRelative = toPosixPath(filePathRelative)
@@ -165,7 +238,7 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
 
   const code = result.outputFiles![0]!.text
   assert(typeof code === 'string')
-  return code
+  return { code, pointerImports }
 }
 
 async function executeTranspiledFile(

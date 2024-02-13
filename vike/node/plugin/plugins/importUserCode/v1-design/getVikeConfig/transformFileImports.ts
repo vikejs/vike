@@ -18,9 +18,11 @@ type FileImport = {
   importString: string
   importLocalName: string
 }
+// TODO: rename transformFileImports() => transformPointerImports()
 function transformFileImports(
   code: string,
   filePathToShowToUser2: string,
+  pointerImports: 'all' | Record<string, boolean>,
   // For ./transformFileImports.spec.ts
   skipWarnings?: true
 ): { noTransformation: true } | { noTransformation: false; code: string; fileImportsTransformed: FileImport[] } {
@@ -38,6 +40,13 @@ function transformFileImports(
 
     const importPath = node.source.value
     assert(typeof importPath === 'string')
+
+    if (pointerImports !== 'all') {
+      assert(importPath in pointerImports)
+      const isPointerImport = pointerImports[importPath]
+      assert(isPointerImport === true || isPointerImport === false)
+      if (!isPointerImport) return
+    }
 
     // - This doesn't work. To make it work we would need to run esbuild twice: esbuild for TypeScript to JavaScript => transformFileImports() => esbuild for bundling.
     //   - Or we use an esbuild plugin to apply transformFileImports(). Maybe we can completely skip the need for acorn?

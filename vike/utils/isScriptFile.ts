@@ -1,4 +1,5 @@
 export { isScriptFile }
+export { isJavaScriptFile }
 export { isTemplateFile }
 export { scriptFileExtensions }
 export { scriptFileExtensionList }
