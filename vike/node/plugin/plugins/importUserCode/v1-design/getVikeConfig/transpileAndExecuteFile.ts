@@ -33,7 +33,7 @@ const debug = createDebugger('vike:pointer-imports')
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
   userRootDir: string,
-  isConfigFile = false
+  isConfigFile: boolean | 'is-extension-config'
 ): Promise<{ fileExports: Record<string, unknown> }> {
   const { filePathAbsoluteFilesystem } = filePath
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
@@ -50,12 +50,12 @@ async function transpileAndExecuteFile(
     { onlyOnce: true }
   )
 
-  const transformImports = isConfigFile && (isHeader ? 'all' : true)
-  if (!transformImports && fileExtension.endsWith('js')) {
-    // TODO: this doesn't track dependencies, always transpile instead? Or directly execute iff config defined by npm packages?
+  if (isConfigFile === 'is-extension-config' && !isHeader && fileExtension.endsWith('js')) {
+    // This doesn't track dependencies => we should never use this for user land configs
     const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
     return { fileExports }
   } else {
+    const transformImports = isConfigFile && (isHeader ? 'all' : true)
     const { code, fileImportsTransformed } = await transpileFile(filePath, transformImports, userRootDir)
     const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed)
     return { fileExports }
