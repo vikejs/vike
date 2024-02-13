@@ -20,7 +20,7 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve
     nodeEnv,
     command === 'preview'
   ).catch((error) => {
-    if (isVikeCli) {
+    if (!isVikeCli) {
       throw error
     }
     console.error(pc.red(`error resolving config:\n${error.stack}`), {
