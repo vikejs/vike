@@ -1,15 +1,11 @@
 export { config }
 
 import type { Config } from 'vike/types'
-import { onHydrationEnd, onPageTransitionStart, onPageTransitionEnd } from './onPageTransitionHooks'
 
 // https://vike.dev/config
 const config = {
   clientRouting: true,
   prefetchStaticAssets: 'viewport',
-  onHydrationEnd,
-  onPageTransitionStart,
-  onPageTransitionEnd,
   // https://vike.dev/meta
   meta: {
     // Define new setting 'title'
