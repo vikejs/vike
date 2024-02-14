@@ -16,7 +16,7 @@ function standalonePlugin(): Plugin {
   let root = ''
   let outDir = ''
   let outDirAbs = ''
-  let rollupEntryFilePaths: Set<string>
+  let rollupEntryFilePaths: string[]
 
   let rollupResolve: any
 
@@ -56,9 +56,7 @@ function standalonePlugin(): Plugin {
         return
       }
       const entries = findRollupBundleEntries(bundle, configVike.server, root)
-      const serverIndex = entries.find((e) => e.name === 'index')
-      assert(serverIndex)
-      rollupEntryFilePaths = new Set(entries.map((e) => path.posix.join(outDirAbs, e.fileName)))
+      rollupEntryFilePaths = entries.map((e) => path.posix.join(outDirAbs, e.fileName))
     },
     // closeBundle() + `enforce: 'post'` in order to start the final build step as late as possible
     enforce: 'post',
@@ -66,81 +64,71 @@ function standalonePlugin(): Plugin {
       if (!enabled) {
         return
       }
-      const bundledEntryPaths: string[] = []
-      const filesToRemoveAfterBundle = new Set<string>()
       const base = toPosixPath(searchForWorkspaceRoot(root))
       const relativeRoot = path.posix.relative(base, root)
       const relativeOutDir = path.posix.join(relativeRoot, outDir)
 
-      for (const entryFilePath of rollupEntryFilePaths) {
-        const res = await esbuild.build({
-          platform: 'node',
-          format: 'esm',
-          bundle: true,
-          external: configVike.native,
-          entryPoints: { index: entryFilePath },
-          outfile: entryFilePath,
-          allowOverwrite: true,
-          metafile: true,
-          logOverride: {
-            'ignored-bare-import': 'silent'
-          },
-          banner: {
-            js: [
-              "import { dirname as dirname987 } from 'path';",
-              "import { fileURLToPath as fileURLToPath987 } from 'url';",
-              "import { createRequire as createRequire987 } from 'module';",
-              'var require = createRequire987(import.meta.url);',
-              'var __filename = fileURLToPath987(import.meta.url);',
-              'var __dirname = dirname987(__filename);'
-            ].join('\n')
-          },
-          plugins: [
-            {
-              name: 'standalone-ignore',
-              setup(build) {
-                build.onResolve({ filter: /.*/, namespace: 'ignore' }, (args) => ({
-                  path: args.path,
-                  namespace: 'ignore'
-                }))
-                build.onResolve({ filter: new RegExp(`^(${lazyNpmImports.join('|')})`) }, async (args) => {
-                  const resolved = await rollupResolve(args.path)
-                  // if the package is not installed, ignore the import
-                  // if the package is installed, try to bundle it
-                  if (!resolved) {
-                    return {
-                      path: args.path,
-                      namespace: 'ignore'
-                    }
+      const res = await esbuild.build({
+        platform: 'node',
+        format: 'esm',
+        bundle: true,
+        external: configVike.native,
+        entryPoints: rollupEntryFilePaths,
+        // .mjs set in getEntryFileName
+        outExtension: { '.js': '.mjs' },
+        outdir: outDirAbs,
+        allowOverwrite: true,
+        metafile: true,
+        logOverride: {
+          'ignored-bare-import': 'silent'
+        },
+        banner: {
+          js: [
+            "import { dirname as dirname987 } from 'path';",
+            "import { fileURLToPath as fileURLToPath987 } from 'url';",
+            "import { createRequire as createRequire987 } from 'module';",
+            'var require = createRequire987(import.meta.url);',
+            'var __filename = fileURLToPath987(import.meta.url);',
+            'var __dirname = dirname987(__filename);'
+          ].join('\n')
+        },
+        plugins: [
+          {
+            name: 'standalone-ignore',
+            setup(build) {
+              build.onResolve({ filter: /.*/, namespace: 'ignore' }, (args) => ({
+                path: args.path,
+                namespace: 'ignore'
+              }))
+              build.onResolve({ filter: new RegExp(`^(${lazyNpmImports.join('|')})`) }, async (args) => {
+                const resolved = await rollupResolve(args.path)
+                // if the package is not installed, ignore the import
+                // if the package is installed, try to bundle it
+                if (!resolved) {
+                  return {
+                    path: args.path,
+                    namespace: 'ignore'
                   }
-                })
-                build.onLoad({ filter: /.*/, namespace: 'ignore' }, () => ({
-                  contents: ''
-                }))
-              }
+                }
+              })
+              build.onLoad({ filter: /.*/, namespace: 'ignore' }, () => ({
+                contents: ''
+              }))
             }
-          ]
-        })
-
-        // The inputs of the bundled files are safe to remove from the outDir folder
-        const bundledFilesFromOutDir = Object.keys(res.metafile.inputs).filter(
-          (relativeFile) => !entryFilePath.endsWith(relativeFile) && relativeFile.startsWith(outDir)
-        )
-
-        for (const relativeFile of bundledFilesFromOutDir) {
-          filesToRemoveAfterBundle.add(relativeFile)
-        }
-
-        bundledEntryPaths.push(entryFilePath)
-      }
-      const filesToRemoveAfterBundleArr = Array.from(filesToRemoveAfterBundle)
-
-      for (const relativeFile of filesToRemoveAfterBundleArr) {
+          }
+        ]
+      })
+      // The inputs of the bundled files are safe to remove from the outDir folder
+      const bundledFilesFromOutDir = Object.keys(res.metafile.inputs).filter(
+        (relativeFile) =>
+          !rollupEntryFilePaths.some((entryFilePath) => entryFilePath.endsWith(relativeFile)) &&
+          relativeFile.startsWith(outDir)
+      )
+      for (const relativeFile of bundledFilesFromOutDir) {
         await fs.rm(path.posix.join(root, relativeFile))
       }
-
       // Remove leftover empty dirs
-      const relativeDirs = unique(filesToRemoveAfterBundleArr.map((file) => path.dirname(file)))
+      const relativeDirs = unique(bundledFilesFromOutDir.map((file) => path.dirname(file)))
       for (const relativeDir of relativeDirs) {
         const absDir = path.posix.join(root, relativeDir)
         const files = await fs.readdir(absDir)
@@ -148,54 +136,52 @@ function standalonePlugin(): Plugin {
           await fs.rm(absDir, { recursive: true })
         }
       }
-      for (const entryFilePath of bundledEntryPaths) {
-        const { nodeFileTrace } = await import('@vercel/nft')
-        const result = await nodeFileTrace([entryFilePath], {
-          base
-        })
+      const { nodeFileTrace } = await import('@vercel/nft')
+      const result = await nodeFileTrace(rollupEntryFilePaths, {
+        base
+      })
 
-        const tracedDeps = new Set<string>()
-        for (const file of result.fileList) {
-          if (result.reasons.get(file)?.type.includes('initial')) {
-            continue
-          }
-          tracedDeps.add(toPosixPath(file))
+      const tracedDeps = new Set<string>()
+      for (const file of result.fileList) {
+        if (result.reasons.get(file)?.type.includes('initial')) {
+          continue
         }
-
-        const files = [...tracedDeps].filter((path) => !path.startsWith(relativeOutDir) && !path.startsWith('usr/'))
-
-        // We are done, no native dependencies need to be copied
-        if (!files.length) {
-          return
-        }
-
-        if (result.warnings.size && isYarnPnP()) {
-          assertUsage(false, 'Standalone build is not supported when using Yarn PnP and native dependencies.')
-        }
-
-        const commonAncestor = findCommonAncestor(files)
-
-        const concurrencyLimit = pLimit(10)
-        const copiedFiles = new Set<string>()
-        await Promise.all(
-          files.map((relativeFile) =>
-            concurrencyLimit(async () => {
-              const tracedFilePath = path.posix.join(base, relativeFile)
-              const isNodeModules = relativeFile.includes('node_modules')
-
-              relativeFile = relativeFile.replace(relativeRoot, '').replace(commonAncestor, '')
-              const relativeFileHoisted = `node_modules${relativeFile.split('node_modules').pop()}`
-              const fileOutputPath = path.posix.join(outDirAbs, isNodeModules ? relativeFileHoisted : relativeFile)
-              const isDir = (await fs.stat(tracedFilePath)).isDirectory()
-
-              if (!isDir && !copiedFiles.has(fileOutputPath)) {
-                copiedFiles.add(fileOutputPath)
-                await fs.cp(await fs.realpath(tracedFilePath), fileOutputPath, { recursive: true })
-              }
-            })
-          )
-        )
+        tracedDeps.add(toPosixPath(file))
       }
+
+      const files = [...tracedDeps].filter((path) => !path.startsWith(relativeOutDir) && !path.startsWith('usr/'))
+
+      // We are done, no native dependencies need to be copied
+      if (!files.length) {
+        return
+      }
+
+      if (result.warnings.size && isYarnPnP()) {
+        assertUsage(false, 'Standalone build is not supported when using Yarn PnP and native dependencies.')
+      }
+
+      const commonAncestor = findCommonAncestor(files)
+
+      const concurrencyLimit = pLimit(10)
+      const copiedFiles = new Set<string>()
+      await Promise.all(
+        files.map((relativeFile) =>
+          concurrencyLimit(async () => {
+            const tracedFilePath = path.posix.join(base, relativeFile)
+            const isNodeModules = relativeFile.includes('node_modules')
+
+            relativeFile = relativeFile.replace(relativeRoot, '').replace(commonAncestor, '')
+            const relativeFileHoisted = `node_modules${relativeFile.split('node_modules').pop()}`
+            const fileOutputPath = path.posix.join(outDirAbs, isNodeModules ? relativeFileHoisted : relativeFile)
+            const isDir = (await fs.stat(tracedFilePath)).isDirectory()
+
+            if (!isDir && !copiedFiles.has(fileOutputPath)) {
+              copiedFiles.add(fileOutputPath)
+              await fs.cp(await fs.realpath(tracedFilePath), fileOutputPath, { recursive: true })
+            }
+          })
+        )
+      )
     }
   }
 }
@@ -258,6 +244,8 @@ function findRollupBundleEntries<OutputBundle extends Record<string, { name: str
       entries.push(entry)
     }
   }
+  const serverIndex = entries.find((e) => e.name === 'index')
+  assert(serverIndex)
 
   // bundle the index entry first
   return entries.sort((a, b) => {
