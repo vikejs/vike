@@ -926,8 +926,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react-simple:
-        specifier: ^0.1.1
-        version: 0.1.1(react-dom@18.2.0)(react@18.2.0)(vike@vike)
+        specifier: ^0.1.4
+        version: 0.1.4(react-dom@18.2.0)(react@18.2.0)(vike@vike)
       vite:
         specifier: ^5.0.10
         version: 5.0.10(@types/node@20.10.5)
@@ -11336,8 +11336,8 @@ packages:
     requiresBuild: true
     dev: false
 
-  /vike-react-simple@0.1.1(react-dom@18.2.0)(react@18.2.0)(vike@vike):
-    resolution: {integrity: sha512-TgeSlhGQ6Ovj3+mHDwKYlr5Ov+8DhG4mi0b/6Sri2ymLN03SCnV2eqluRbDvq6KE7w75b/x9hALx3pV9cFxtpw==}
+  /vike-react-simple@0.1.4(react-dom@18.2.0)(react@18.2.0)(vike@vike):
+    resolution: {integrity: sha512-4odC6++w6aW6pO+Bv4nDTLeRsJZ5FiFFBXgy8jbgonRSMl1jMnOuPUHM2cmTmil4/yBi/ioG1KhtLDS2k70h2w==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
