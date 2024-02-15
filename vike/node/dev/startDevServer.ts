@@ -16,7 +16,7 @@ import { ClientFunctions, MinimalModuleNode, ServerFunctions, WorkerData } from 
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 
-const workerPath = new URL(import.meta.resolve('./worker.js'), importMetaUrl)
+const workerPath = new URL('./worker.js', importMetaUrl)
 
 let ws: HMRChannel | undefined
 let vite: ViteDevServer
@@ -59,10 +59,11 @@ async function startDevServer() {
 
   bindCLIShortcuts({
     onRestart: async () => {
-      await restartWorker()
-      ws?.send({
-        type: 'full-reload'
-      })
+      if (await restartWorker()) {
+        ws?.send({
+          type: 'full-reload'
+        })
+      }
     }
   })
 
@@ -101,11 +102,11 @@ async function startDevServer() {
       workerData
     })
 
-    let loaded: () => void
+    let loaded: (success: boolean) => void
     rpc = createBirpc<ClientFunctions, ServerFunctions>(
       {
         onLoadedEntry() {
-          loaded()
+          loaded(true)
         },
         async fetchModule(id, importer) {
           const result = await vite.ssrFetchModule(id, importer)
@@ -138,13 +139,9 @@ async function startDevServer() {
         timeout: 1000
       }
     )
-    await new Promise<void>((loaded_) => {
-      loaded = loaded_
-    })
 
     worker.once('error', (err) => {
       console.error(err)
-
       logViteAny(
         `Server shutdown. Update a server file, or press ${pc.cyan('r + Enter')}, to restart.`,
         'info',
@@ -157,6 +154,10 @@ async function startDevServer() {
     worker.once('exit', () => {
       process.stdin.off('data', listener)
       worker = undefined
+      loaded(false)
+    })
+    return new Promise<boolean>((loaded_) => {
+      loaded = loaded_
     })
   }
 }
