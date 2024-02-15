@@ -1,8 +1,8 @@
 import { createBirpc } from 'birpc'
 import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
-import { parentPort } from 'worker_threads'
+import { parentPort, workerData } from 'worker_threads'
 import { assert } from '../runtime/utils.js'
-import type { ClientFunctions, ServerFunctions } from './types.js'
+import type { ClientFunctions, ServerFunctions, WorkerData } from './types.js'
 
 let runtime: ViteRuntime
 let entry_: string
@@ -27,51 +27,7 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
       runtime.moduleCache.invalidateDepTree(mods)
       return shouldRestart
     },
-    deleteByModuleId: (mod) => runtime.moduleCache.deleteByModuleId(mod),
-    async start({ entry, viteConfig }) {
-      entry_ = entry
-      // This is the minimal required object for vike + telefunc to function
-      const globalObject = {
-        viteConfig,
-        viteDevServer: {
-          config: {
-            ...viteConfig,
-            logger: {
-              // called by telefunc
-              hasErrorLogged: () => false
-            }
-          },
-          ssrLoadModule: (id: string) => runtime.executeUrl(id),
-          // called by telefunc
-          ssrFixStacktrace: (_err: unknown) => {},
-          transformIndexHtml: rpc.transformIndexHtml,
-          moduleGraph: {
-            resolveUrl: rpc.moduleGraphResolveUrl,
-            getModuleById: rpc.moduleGraphGetModuleById
-          }
-        }
-      }
-
-      //@ts-ignore
-      global._vike ??= {}
-      //@ts-ignore
-      global._telefunc ??= {}
-      //@ts-ignore
-      global._vike['globalContext.ts'] = globalObject
-      //@ts-ignore telefunc only needs viteDevServer.ssrLoadModule and viteDevServer.ssrFixStackTrace
-      global._telefunc['globalContext.ts'] = { viteDevServer: globalObject.viteDevServer }
-
-      runtime = new ViteRuntime(
-        {
-          fetchModule: rpc.fetchModule,
-          root: viteConfig.root,
-          hmr: false
-        },
-        new ESModulesRunner()
-      )
-
-      await runtime.executeUrl(entry)
-    }
+    deleteByModuleId: (mod) => runtime.moduleCache.deleteByModuleId(mod)
   },
   {
     post: (data) => {
@@ -86,11 +42,51 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
   }
 )
 
-if (typeof process !== 'undefined' && 'on' in process && typeof process.on === 'function') {
-  process.on('unhandledRejection', onError)
-  process.on('uncaughtException', onError)
-  function onError(err: unknown) {
-    console.error(err)
-    process.exit(33)
+start()
+
+async function start() {
+  const { entry, viteConfig } = workerData as WorkerData
+  entry_ = entry
+  // This is the minimal required object for vike + telefunc to function
+  const globalObject = {
+    viteConfig,
+    viteDevServer: {
+      config: {
+        ...viteConfig,
+        logger: {
+          // called by telefunc
+          hasErrorLogged: () => false
+        }
+      },
+      ssrLoadModule: (id: string) => runtime.executeUrl(id),
+      // called by telefunc
+      ssrFixStacktrace: (_err: unknown) => {},
+      transformIndexHtml: rpc.transformIndexHtml,
+      moduleGraph: {
+        resolveUrl: rpc.moduleGraphResolveUrl,
+        getModuleById: rpc.moduleGraphGetModuleById
+      }
+    }
   }
+
+  //@ts-ignore
+  global._vike ??= {}
+  //@ts-ignore
+  global._telefunc ??= {}
+  //@ts-ignore
+  global._vike['globalContext.ts'] = globalObject
+  //@ts-ignore telefunc only needs viteDevServer.ssrLoadModule and viteDevServer.ssrFixStackTrace
+  global._telefunc['globalContext.ts'] = { viteDevServer: globalObject.viteDevServer }
+
+  runtime = new ViteRuntime(
+    {
+      fetchModule: rpc.fetchModule,
+      root: viteConfig.root,
+      hmr: false
+    },
+    new ESModulesRunner()
+  )
+
+  await runtime.executeUrl(entry)
+  rpc.onLoadedEntry()
 }

@@ -1,18 +1,19 @@
-export type { ClientFunctions, MinimalModuleNode, ServerFunctions }
+export type { ClientFunctions, MinimalModuleNode, ServerFunctions, WorkerData }
 
 import type { ModuleNode, ResolvedUrl } from 'vite'
 import type { FetchResult } from 'vite/runtime'
 import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
 
+type WorkerData = {
+  entry: string
+  viteConfig: {
+    root: string
+    configVikePromise: ConfigVikeResolved
+  }
+}
+
 type ClientFunctions = {
   deleteByModuleId(modulePath: string): boolean
-  start(options: {
-    entry: string
-    viteConfig: {
-      root: string
-      configVikePromise: ConfigVikeResolved
-    }
-  }): Promise<void>
   invalidateDepTree(ids: string[]): boolean
 }
 
@@ -23,4 +24,5 @@ type ServerFunctions = {
   moduleGraphResolveUrl(url: string): Promise<ResolvedUrl>
   moduleGraphGetModuleById(id: string): MinimalModuleNode | undefined
   transformIndexHtml(url: string, html: string, originalUrl?: string): Promise<string>
+  onLoadedEntry(): void
 }

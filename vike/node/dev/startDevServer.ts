@@ -12,11 +12,11 @@ import { assert, assertUsage } from '../runtime/utils.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { viteMiddlewareProxyPort } from './constants.js'
 import { bindCLIShortcuts } from './shortcuts.js'
-import { ClientFunctions, MinimalModuleNode, ServerFunctions } from './types.js'
+import { ClientFunctions, MinimalModuleNode, ServerFunctions, WorkerData } from './types.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 
-const workerPath = new URL('./worker.js', importMetaUrl)
+const workerPath = new URL(import.meta.resolve('./worker.js'), importMetaUrl)
 
 let ws: HMRChannel | undefined
 let vite: ViteDevServer
@@ -75,28 +75,38 @@ async function startDevServer() {
       await worker.terminate()
     }
 
-    worker = new Worker(workerPath, { env: SHARE_ENV, stdin: true })
-    const listener = (data: Buffer) => worker?.stdin!.emit('data', data)
-    process.stdin.on('data', listener)
-    worker.once('exit', (code) => {
-      process.stdin.off('data', listener)
-      if (code === 33) {
-        worker = undefined
-        logViteAny(
-          `Server shutdown. Update a server file, or press ${pc.cyan('r + Enter')}, to restart.`,
-          'info',
-          null,
-          true
-        )
-      }
-    })
-
     const configVikePromise = await getConfigVike(vite.config)
     assert(configVikePromise.server)
     const index = configVikePromise.server.entry.index
 
+    const originalInvalidateModule = vite.moduleGraph.invalidateModule.bind(vite.moduleGraph)
+    vite.moduleGraph.invalidateModule = (mod, ...rest) => {
+      if (mod.id) {
+        // timeout error
+        rpc.deleteByModuleId(mod.id).catch(() => {})
+      }
+      return originalInvalidateModule(mod, ...rest)
+    }
+
+    logViteAny('Loading server entry', 'info', null, true)
+    const entryAbs = await vite.pluginContainer.resolveId(index)
+    assert(entryAbs?.id)
+    const workerData: WorkerData = {
+      entry: entryAbs.id,
+      viteConfig: { root: vite.config.root, configVikePromise }
+    }
+    worker = new Worker(workerPath, {
+      env: SHARE_ENV,
+      stdin: true,
+      workerData
+    })
+
+    let loaded: () => void
     rpc = createBirpc<ClientFunctions, ServerFunctions>(
       {
+        onLoadedEntry() {
+          loaded()
+        },
         async fetchModule(id, importer) {
           const result = await vite.ssrFetchModule(id, importer)
           if (configVikePromise.native.includes(id)) {
@@ -128,22 +138,25 @@ async function startDevServer() {
         timeout: 1000
       }
     )
+    await new Promise<void>((loaded_) => {
+      loaded = loaded_
+    })
 
-    const originalInvalidateModule = vite.moduleGraph.invalidateModule.bind(vite.moduleGraph)
-    vite.moduleGraph.invalidateModule = (mod, ...rest) => {
-      if (mod.id) {
-        // timeout error
-        rpc.deleteByModuleId(mod.id).catch(() => {})
-      }
-      return originalInvalidateModule(mod, ...rest)
-    }
+    worker.once('error', (err) => {
+      console.error(err)
 
-    logViteAny('Loading server entry', 'info', null, true)
-    const entryAbs = await vite.pluginContainer.resolveId(index)
-    assert(entryAbs?.id)
-    await rpc.start({
-      entry: entryAbs.id,
-      viteConfig: { root: vite.config.root, configVikePromise }
+      logViteAny(
+        `Server shutdown. Update a server file, or press ${pc.cyan('r + Enter')}, to restart.`,
+        'info',
+        null,
+        true
+      )
+    })
+    const listener = (data: Buffer) => worker?.stdin!.emit('data', data)
+    process.stdin.on('data', listener)
+    worker.once('exit', () => {
+      process.stdin.off('data', listener)
+      worker = undefined
     })
   }
 }
