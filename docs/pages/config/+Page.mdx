@@ -184,20 +184,3 @@ There can be different multiple defaults that apply to different groups of pages
 
 The `marketing/+*.js` files apply as default to `marketing/**/+Page.js`, while `admin-panel/+*.js` apply as default to
 `admin-panel/**/+Page.js`.
-
-
-## `renderer/`
-
-The `renderer/` directory is a convenient way to organize and put all code related to rendering in one place:
-
-```
-admin-panel/renderer/+onRenderHtml.js
-admin-panel/renderer/+onRenderClient.js
-admin-panel/pages/index/+Page.js
-```
-
-The hooks `admin-panel/renderer/+onRender{Html,Client}.js` apply as default to all pages `admin-panel/**/+Page.js`.
-
-The `renderer/` directory doesn't add any functionality: `/renderer/+config.h.js` is equivalent to `/pages/+config.h.js`. It's just an (optional) convenience for moving renderer files outside of `pages/` (to avoid cluttering the `pages/` directory). That way, the entire renderer logic can be organized and tucked into a single place `renderer/`.
-
-> The `renderer/` directory is usually only used by users who don't use a <UiFrameworkVikeExtension />.

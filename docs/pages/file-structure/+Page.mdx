@@ -126,6 +126,10 @@ In case you don't use a <UiFrameworkVikeExtension />, we recommend placing your 
 /renderer/logo.svg # Website logo (favicon and used by <Header>)
 ```
 
+The hooks `/renderer/+onRender{Html,Client}.js` apply as default to all pages `/pages/**/+Page.js`.
+
+The `renderer/` directory doesn't add any functionality: defining the hooks `+onRender{Html,Client}.js` at `/renderer/` is equivalent to defining them at `/pages/` or `/`. It's just an optional convenience for moving rendering logic outside of `pages/`: in order to avoid cluttering the `pages/` directory and to organize and put all rendering code in one place.
+
 
 ## See also
  - <Link href="/routing" />
