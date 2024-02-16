@@ -161,7 +161,7 @@ function assertFileEnv(filePathForEnvCheck: string, configEnv: ConfigEnvInternal
               JSON.stringify(c.configEnv)
             )}`
         ),
-        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/header-file'
+        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/config#pointer-imports'
       ].join('\n')
     )
   }

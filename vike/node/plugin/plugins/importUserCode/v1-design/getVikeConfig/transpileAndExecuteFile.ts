@@ -44,11 +44,19 @@ async function transpileAndExecuteFile(
     `${filePathToShowToUser2} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`
   )
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
-  assertWarning(
-    !(isHeader && !isConfigFile),
-    `${filePathToShowToUser2} is a JavaScript header file (.h.js), but header files can only be used for +config.h.js files, see https://vike.dev/header-file`,
-    { onlyOnce: true }
-  )
+  if (isHeader) {
+    assertWarning(
+      false,
+      `${pc.cyan(
+        '.h.js'
+      )} files are deprecated: simply renaming ${filePathToShowToUser2} to ${removeHeaderFileExtension(
+        filePathToShowToUser2
+      )} is usually enough, although you may occasionally need to use ${pc.cyan(
+        "with { type: 'pointer' }"
+      )} as explained at https://vike.dev/config#pointer-imports`,
+      { onlyOnce: true }
+    )
+  }
 
   if (isConfigFile === 'is-extension-config' && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
@@ -361,7 +369,7 @@ function assertImportsAreReExported(
         singular ? "isn't" : "aren't"
       } re-exported at ${pc.cyan('export default { ... }')} and therefore ${
         singular ? 'has' : 'have'
-      } no effect, see explanation at https://vike.dev/header-file`
+      } no effect, see https://vike.dev/config#pointer-imports`
     ].join('\n'),
     { onlyOnce: true }
   )
@@ -396,12 +404,14 @@ function getFileExtension(filePath: string): string {
   const fileExtensions = path.posix.basename(filePath).split('.').slice(1)
   return fileExtensions.pop()!
 }
-function appendHeaderFileExtension(filePath: string) {
+function removeHeaderFileExtension(filePath: string) {
   assertPosixPath(filePath)
-  const fileNameParts = path.posix.basename(filePath).split('.')
-  fileNameParts.splice(-1, 0, 'h')
-  const basenameCorrect = fileNameParts.join('.')
-  return path.posix.join(path.posix.dirname(filePath), basenameCorrect)
+  const fileName = path.posix.basename(filePath)
+  const fileNameParts = fileName.split('.')
+  const fileNamePartsMod = fileNameParts.filter((p) => p !== 'h')
+  assert(fileNamePartsMod.length < fileNameParts.length)
+  const fileNameMod = fileNamePartsMod.join('.')
+  return path.posix.join(path.posix.dirname(filePath), fileNameMod)
 }
 
 // Needed for the npm package 'source-map-support'. The Error.prepareStackTrace() hook of 'source-map-support' needs to be called before the file containing the source map is removed. The clean() call above removes the transpiled file from disk but it contains the inline source map.

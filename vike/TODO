@@ -1,4 +1,3 @@
-- Update assertUsage() "cannot live inside"
 - Start to soft require Vike extensions to set `name`
 
 - userAgent for vike-{vue,solid}

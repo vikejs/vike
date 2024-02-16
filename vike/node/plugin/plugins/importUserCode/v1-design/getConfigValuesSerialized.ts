@@ -75,15 +75,9 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
     assert(configValueFilePathToShowToUser)
     assertUsage(
       false,
-      [
-        `The code of ${pc.cyan(configName)} cannot live inside ${configValueFilePathToShowToUser},`,
-        'see https://vike.dev/header-file#runtime-code'
-        /* I guess showing this is more confusing than adding value.
-        `(technically speaking: the value of ${pc.cyan(
-          configName
-        )} isn't serializable (${serializationErrMsg}) and it's therefore runtime code that needs to be imported).`
-        //*/
-      ].join(' ')
+      `${pc.cyan(
+        configName
+      )} defined by ${configValueFilePathToShowToUser} must be imported with a so-called "pointer import", see https://vike.dev/config#pointer-imports`
     )
   }
   configValueSerialized = JSON.stringify(configValueSerialized)

@@ -85,8 +85,9 @@ function transformFileImports(
         quote = pc.bold(pc.red(quote))
       }
       const errMsg = [
-        `As explained in https://vike.dev/header-file the following import in ${filePathToShowToUser2} has no effect:`,
-        quote
+        `The following import in ${filePathToShowToUser2} has no effect:`,
+        quote,
+        'See https://vike.dev/config#pointer-imports'
       ].join('\n')
       if (!skipWarnings) {
         if (!isWarning) {
