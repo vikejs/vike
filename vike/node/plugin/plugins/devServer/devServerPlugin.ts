@@ -1,18 +1,18 @@
-export { startDevServer }
+export { devServerPlugin }
 assertNodeVersion()
 
 import pc from '@brillout/picocolors'
 import { BirpcReturn, createBirpc } from 'birpc'
-import { HMRChannel, ModuleNode, ViteDevServer, createServer } from 'vite'
+import { HMRChannel, ModuleNode, Plugin, ViteDevServer } from 'vite'
 import { SHARE_ENV, Worker } from 'worker_threads'
-import { isNodeJS } from '../../utils/isNodeJS.js'
-import { logViteAny } from '../plugin/shared/loggerNotProd.js'
-import { isVersionOrAbove } from '../plugin/utils.js'
-import { assert, assertUsage } from '../runtime/utils.js'
-import { getConfigVike } from '../shared/getConfigVike.js'
-import { viteMiddlewareProxyPort } from './constants.js'
+import { viteHmrPort, viteMiddlewareProxyPort } from './constants.js'
 import { bindCLIShortcuts } from './shortcuts.js'
 import { ClientFunctions, MinimalModuleNode, ServerFunctions, WorkerData } from './types.js'
+import { getConfigVike } from '../../../shared/getConfigVike.js'
+import { assert, assertUsage, isVersionOrAbove } from '../../utils.js'
+import { isNodeJS } from '../../../../utils/isNodeJS.js'
+import { logViteAny } from '../../shared/loggerNotProd.js'
+import { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 
@@ -22,50 +22,59 @@ let ws: HMRChannel | undefined
 let vite: ViteDevServer
 let rpc: BirpcReturn<ClientFunctions, ServerFunctions>
 let worker: Worker | undefined
+let enabled = false
 
-async function startDevServer() {
-  const server = await createServer({
-    server: {
-      port: viteMiddlewareProxyPort,
-      hmr: {
-        port: 24678
-      }
-    },
-    plugins: [
-      {
-        name: 'vike:devserver',
-        async handleHotUpdate(ctx) {
-          if (!worker) {
-            await restartWorker()
-            return
-          }
-          const mods = ctx.modules.map((m) => m.id).filter(Boolean) as string[]
-          const shouldRestart = await rpc.invalidateDepTree(mods)
-          if (shouldRestart) {
-            await restartWorker()
-          }
-        },
-        // called on start & vite.config.js changes
-        configureServer(vite_) {
-          vite = vite_
-          ws = vite.hot.channels.find((ch) => ch.name === 'ws')
-          restartWorker()
+function devServerPlugin(): Plugin {
+  let configVikePromise: ConfigVikeResolved
+  return {
+    name: 'vike:devserver',
+    enforce: 'post',
+    async configResolved(config) {
+      configVikePromise = await getConfigVike(config)
+      enabled = !!configVikePromise.server
+      if (!enabled) return
+
+      config.server.port = viteMiddlewareProxyPort
+      if (typeof config.server.hmr !== 'boolean') {
+        config.server.hmr ??= {}
+        config.server.hmr.port = viteHmrPort
+      } else {
+        config.server.hmr = {
+          port: viteHmrPort
         }
       }
-    ]
-  })
-
-  await server.listen()
-
-  bindCLIShortcuts({
-    onRestart: async () => {
-      if (await restartWorker()) {
-        ws?.send({
-          type: 'full-reload'
-        })
+    },
+    async handleHotUpdate(ctx) {
+      if (!enabled) return
+      if (!worker) {
+        await restartWorker()
+        return
       }
+      const mods = ctx.modules.map((m) => m.id).filter(Boolean) as string[]
+      const shouldRestart = await rpc.invalidateDepTree(mods)
+      if (shouldRestart) {
+        await restartWorker()
+      }
+    },
+    // called on start & vite.config.js changes
+    configureServer(vite_) {
+      if (!enabled) return
+      vite = vite_
+      ws = vite.hot.channels.find((ch) => ch.name === 'ws')
+      vite.bindCLIShortcuts = () =>
+        bindCLIShortcuts({
+          onRestart: async () => {
+            if (await restartWorker()) {
+              ws?.send({
+                type: 'full-reload'
+              })
+            }
+          }
+        })
+      vite.printUrls = () => {}
+      restartWorker()
     }
-  })
+  }
 
   async function restartWorker() {
     /* This might be needed, but slows down the restart
@@ -76,7 +85,6 @@ async function startDevServer() {
       await worker.terminate()
     }
 
-    const configVikePromise = await getConfigVike(vite.config)
     assert(configVikePromise.server)
     const index = configVikePromise.server.entry.index
 

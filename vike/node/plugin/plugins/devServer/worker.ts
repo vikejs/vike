@@ -1,8 +1,8 @@
 import { createBirpc } from 'birpc'
 import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
 import { parentPort, workerData } from 'worker_threads'
-import { assert } from '../runtime/utils.js'
 import type { ClientFunctions, ServerFunctions, WorkerData } from './types.js'
+import { assert } from '../../../runtime/utils.js'
 
 let runtime: ViteRuntime
 let entry_: string

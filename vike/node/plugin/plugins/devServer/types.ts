@@ -2,7 +2,7 @@ export type { ClientFunctions, MinimalModuleNode, ServerFunctions, WorkerData }
 
 import type { ModuleNode, ResolvedUrl } from 'vite'
 import type { FetchResult } from 'vite/runtime'
-import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 
 type WorkerData = {
   entry: string

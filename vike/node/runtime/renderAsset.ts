@@ -1,6 +1,6 @@
 export { renderAsset }
 
-import { viteMiddlewareProxyPort } from '../dev/constants.js'
+import { viteMiddlewareProxyPort } from '../plugin/plugins/devServer/constants.js';
 import { getViteDevServer } from './globalContext.js'
 import { assert } from './utils.js'
 
