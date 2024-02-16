@@ -1,5 +1,4 @@
 export { devServerPlugin }
-assertNodeVersion()
 
 import pc from '@brillout/picocolors'
 import { BirpcReturn, createBirpc } from 'birpc'
@@ -13,6 +12,9 @@ import { assert, assertUsage, isVersionOrAbove } from '../../utils.js'
 import { isNodeJS } from '../../../../utils/isNodeJS.js'
 import { logViteAny } from '../../shared/loggerNotProd.js'
 import { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+
+assertNodeVersion()
+
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 
@@ -28,6 +30,7 @@ function devServerPlugin(): Plugin {
   let configVikePromise: ConfigVikeResolved
   return {
     name: 'vike:devserver',
+    apply: 'serve',
     enforce: 'post',
     async configResolved(config) {
       configVikePromise = await getConfigVike(config)
