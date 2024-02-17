@@ -13,7 +13,6 @@ import {
   getRandomId,
   assertIsNotProductionRuntime,
   assert,
-  unique,
   assertWarning,
   isObject,
   toPosixPath,
@@ -21,11 +20,10 @@ import {
   isJavaScriptFile,
   createDebugger
 } from '../../../../utils.js'
-import { isImportData, transformFileImports, type FileImport } from './transformFileImports.js'
+import { transformFileImports } from './transformFileImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
 import 'source-map-support/register.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
-import { getConfigFileExport } from '../getConfigFileExport.js'
 
 assertIsNotProductionRuntime()
 const debug = createDebugger('vike:pointer-imports')
@@ -64,8 +62,8 @@ async function transpileAndExecuteFile(
     return { fileExports }
   } else {
     const transformImports = isConfigFile && (isHeader ? 'all' : true)
-    const { code, fileImportsTransformed } = await transpileFile(filePath, transformImports, userRootDir)
-    const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed)
+    const code = await transpileFile(filePath, transformImports, userRootDir)
+    const fileExports = await executeTranspiledFile(filePath, code)
     return { fileExports }
   }
 }
@@ -81,38 +79,19 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
   let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports)
   if (debug.isEnabled) debug(`code, post esbuild (${filePathToShowToUser2})`, code)
 
-  let fileImportsTransformed: FileImport[] | null = null
   let isImportTransformed = false
   if (transformImports) {
-    const res = transformFileImports_(code, filePath, pointerImports)
-    if (res) {
-      code = res.code
+    const codeMod = transformFileImports(code, filePathToShowToUser2, pointerImports)
+    if (codeMod) {
+      code = codeMod
       isImportTransformed = true
       if (debug.isEnabled) debug(`code, post transformImports() (${filePathToShowToUser2})`, code)
-      fileImportsTransformed = res.fileImportsTransformed
     }
   }
   if (!isImportTransformed) {
     if (debug.isEnabled) debug(`code, no transformImports() (${filePathToShowToUser2})`)
   }
-  return { code, fileImportsTransformed }
-}
-
-function transformFileImports_(
-  codeOriginal: string,
-  filePath: FilePathResolved,
-  pointerImports: 'all' | Record<string, boolean>
-) {
-  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
-
-  // Replace import statements with import strings
-  const res = transformFileImports(codeOriginal, filePathToShowToUser2, pointerImports)
-  if (res.noTransformation) {
-    return null
-  }
-  const { code, fileImportsTransformed } = res
-
-  return { code, fileImportsTransformed }
+  return code
 }
 
 async function transpileWithEsbuild(
@@ -249,12 +228,8 @@ async function transpileWithEsbuild(
   return { code, pointerImports }
 }
 
-async function executeTranspiledFile(
-  filePath: FilePathResolved,
-  code: string,
-  fileImportsTransformed: FileImport[] | null
-) {
-  const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
+async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
+  const { filePathAbsoluteFilesystem } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
   const filePathTmp = getFilePathTmp(filePathAbsoluteFilesystem)
@@ -265,11 +240,6 @@ async function executeTranspiledFile(
     fileExports = await executeFile(filePathTmp, filePath)
   } finally {
     clean()
-  }
-  if (fileImportsTransformed) {
-    assert(filePathRelativeToUserRootDir !== undefined)
-    const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
-    assertImportsAreReExported(fileImportsTransformed, fileExports, filePathToShowToUser2)
   }
   return fileExports
 }
@@ -334,61 +304,6 @@ function isTmpFile(filePath: string): boolean {
   assertPosixPath(filePath)
   const fileName = path.posix.basename(filePath)
   return fileName.startsWith(tmpPrefix)
-}
-
-function assertImportsAreReExported(
-  fileImportsTransformed: (FileImport & { isReExported?: true })[],
-  fileExports: Record<string, unknown>,
-  filePathToShowToUser2: string
-) {
-  const fileExport = getConfigFileExport(fileExports, filePathToShowToUser2)
-  const exportedStrings = getExportedStrings(fileExport)
-  Object.values(exportedStrings).forEach((exportVal) => {
-    if (typeof exportVal !== 'string') return
-    if (!isImportData(exportVal)) return
-    const importString = exportVal
-    fileImportsTransformed.forEach((fileImport) => {
-      if (fileImport.importString === importString) {
-        fileImport.isReExported = true
-      }
-    })
-  })
-
-  const fileImportsTransformedUnused = fileImportsTransformed.filter((fi) => !fi.isReExported)
-  if (fileImportsTransformedUnused.length === 0) return
-
-  const importStatements = unique(fileImportsTransformedUnused.map((fi) => fi.importStatementCode))
-  const importNamesUnused: string = fileImportsTransformedUnused.map((fi) => pc.cyan(fi.importLocalName)).join(', ')
-  const singular = fileImportsTransformedUnused.length === 1
-  assertWarning(
-    fileImportsTransformedUnused.length === 0,
-    [
-      `${filePathToShowToUser2} imports the following:`,
-      ...importStatements.map((s) => pc.cyan(`  ${s}`)),
-      `But the import${singular ? '' : 's'} ${importNamesUnused} ${
-        singular ? "isn't" : "aren't"
-      } re-exported at ${pc.cyan('export default { ... }')} and therefore ${
-        singular ? 'has' : 'have'
-      } no effect, see https://vike.dev/config#pointer-imports`
-    ].join('\n'),
-    { onlyOnce: true }
-  )
-}
-
-function getExportedStrings(obj: Record<string, unknown>): string[] {
-  const exportedStrings: string[] = []
-  Object.values(obj).forEach((val) => {
-    if (typeof val === 'string') {
-      exportedStrings.push(val)
-    } else if (Array.isArray(val)) {
-      val.forEach((v) => {
-        if (typeof v === 'string') {
-          exportedStrings.push(v)
-        }
-      })
-    }
-  })
-  return exportedStrings
 }
 
 function isHeaderFile(filePath: string) {

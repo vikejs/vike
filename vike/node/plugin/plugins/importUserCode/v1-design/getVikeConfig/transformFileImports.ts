@@ -1,7 +1,6 @@
 export { transformFileImports }
 export { parseImportData }
 export { isImportData }
-export type { FileImport }
 export type { ImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
@@ -13,11 +12,6 @@ import type { Program, Identifier, ImportDeclaration } from 'estree'
 import { assert, assertUsage, assertWarning, styleFileRE } from '../../../../utils.js'
 import pc from '@brillout/picocolors'
 
-type FileImport = {
-  importStatementCode: string
-  importString: string
-  importLocalName: string
-}
 // TODO: rename transformFileImports() => transformPointerImports()
 function transformFileImports(
   code: string,
@@ -25,15 +19,14 @@ function transformFileImports(
   pointerImports: 'all' | Record<string, boolean>,
   // For ./transformFileImports.spec.ts
   skipWarnings?: true
-): { noTransformation: true } | { noTransformation: false; code: string; fileImportsTransformed: FileImport[] } {
+): string | null {
   const spliceOperations: SpliceOperation[] = []
-  const fileImportsTransformed: FileImport[] = []
 
   // Performance trick
-  if (!code.includes('import')) return { noTransformation: true }
+  if (!code.includes('import')) return null
 
   const imports = getImports(code)
-  if (imports.length === 0) return { noTransformation: true }
+  if (imports.length === 0) return null
 
   imports.forEach((node) => {
     if (node.type !== 'ImportDeclaration') return
@@ -75,7 +68,13 @@ function transformFileImports(
 
     const importStatementCode = code.slice(start, end)
 
-    // No variable imported
+    /* Pointer import without importing any value => doesn't make sense and doesn't have any effect.
+    ```js
+    // Useless
+    import './some.css'
+    // Useless
+    import './Layout.jsx'
+    ``` */
     if (node.specifiers.length === 0) {
       const isWarning = !styleFileRE.test(importPath)
       let quote = indent(importStatementCode)
@@ -116,11 +115,6 @@ function transformFileImports(
       })()
       const importString = serializeImportData({ importPath, exportName, importStringWasGenerated: true })
       replacement += `const ${importLocalName} = '${importString}';`
-      fileImportsTransformed.push({
-        importStatementCode,
-        importString,
-        importLocalName
-      })
     })
 
     spliceOperations.push({
@@ -131,7 +125,7 @@ function transformFileImports(
   })
 
   const codeMod = spliceMany(code, spliceOperations)
-  return { code: codeMod, fileImportsTransformed, noTransformation: false }
+  return codeMod
 }
 function getImports(code: string): ImportDeclaration[] {
   const { body } = parse(code, {

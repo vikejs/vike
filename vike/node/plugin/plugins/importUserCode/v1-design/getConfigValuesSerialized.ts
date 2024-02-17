@@ -77,7 +77,7 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
       false,
       `${pc.cyan(
         configName
-      )} defined by ${configValueFilePathToShowToUser} must be imported with a so-called "pointer import", see https://vike.dev/config#pointer-imports`
+      )} defined by ${configValueFilePathToShowToUser} must be defined over a so-called "pointer import", see https://vike.dev/config#pointer-imports`
     )
   }
   configValueSerialized = JSON.stringify(configValueSerialized)
