@@ -1,3 +1,24 @@
+## [0.4.162](https://github.com/vikejs/vike/compare/v0.4.161...v0.4.162) (2024-02-17)
+
+
+### Bug Fixes
+
+* assertUsage() config file extension ([a6c3398](https://github.com/vikejs/vike/commit/a6c3398645561f44b05fe253f1d6721ddb89a4e7))
+* explicitly pass through source map avoid Rollup warning (fix [#1481](https://github.com/vikejs/vike/issues/1481)) ([b94db0f](https://github.com/vikejs/vike/commit/b94db0ff66f185fd1b619da3f896f8c6695475c4))
+* improve error message upon build when mixing designs ([#1480](https://github.com/vikejs/vike/issues/1480)) ([0e9c635](https://github.com/vikejs/vike/commit/0e9c635b1bd6921bc8f0ae2b4f8904760a2130c4))
+* only apply new Vite syntax for V1 design ([#1485](https://github.com/vikejs/vike/issues/1485)) ([5b523fa](https://github.com/vikejs/vike/commit/5b523fa601906f2646e43f0a4f9897f50c2a1882))
+* remove superfluous pointer import warning ([0309330](https://github.com/vikejs/vike/commit/03093307b979edcbb50a9aa99fd3e344c4a2b0dd))
+* skip transpiling only for extension configs ([bf221a4](https://github.com/vikejs/vike/commit/bf221a41f65b35735de96243c06856c38bfc9971))
+* start requiring Vike extensions to set the name setting ([82573a5](https://github.com/vikejs/vike/commit/82573a56fa8c3b101fac85c336eb99b74e9e028d))
+* support client entry import ([ba539a4](https://github.com/vikejs/vike/commit/ba539a404408f06ccbf40ffab689c453246509ba))
+* transform imports iff .h.js ([b19a853](https://github.com/vikejs/vike/commit/b19a853025eadbe7a100a0c84e4512936f3ada11))
+* update @brillout/vite-plugin-server-entry ([ead4a94](https://github.com/vikejs/vike/commit/ead4a94550c213aa3e578b4e421914b053b639e6))
+* update warnings around header files / pointer imports ([56687d4](https://github.com/vikejs/vike/commit/56687d49fa12f1a3a93b838b5d4abe165d706929))
+* use heuristic to decide whether config import is a pointer/fake import ([563bd60](https://github.com/vikejs/vike/commit/563bd60b625bcd241f6a5b12d502cf3476b8d417))
+* use latest Vite interface ([f7e5cd8](https://github.com/vikejs/vike/commit/f7e5cd85d015cc08d3757b305b3f47f1c5f9e4e4))
+
+
+
 ## [0.4.161](https://github.com/vikejs/vike/compare/v0.4.160...v0.4.161) (2024-02-07)
 
 
