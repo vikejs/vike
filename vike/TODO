@@ -1,5 +1,3 @@
-- Start to soft require Vike extensions to set `name`
-
 - userAgent for vike-{vue,solid}
 - improve vike.dev/head
 - Remove `pageContext.data.title` from boilerplates

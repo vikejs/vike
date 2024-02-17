@@ -156,7 +156,8 @@ async function transpileWithEsbuild(
               // .jsx, .vue, .svg, ... => obviously not config code
               !isJavaScriptFile(resolved.path) ||
               // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a configas been set by the user or by a Vike extension).
-              //  - Alternatively, we can (and should) have Node.js directly load vike-{react,vue,solid} while enforcing Vike extensions to set 'name' in their +config.js file.
+              //  - We should have Node.js directly load vike-{react,vue,solid} while enforcing Vike extensions to set 'name' in their +config.js file.
+              //    - vike@0.4.162 already started soft-requiring Vike extensions to set the name config
               isVikeExtensionConfigImport ||
               // Cannot be resolved by esbuild => take a leap of faith and make it a pointer import.
               //  - For example if esbuild cannot resolve a path alias while Vite can.

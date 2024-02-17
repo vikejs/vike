@@ -160,6 +160,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   cacheControl: {
     env: { server: true }
+  },
+  name: {
+    env: { config: true }
   }
 }
 

@@ -409,6 +409,12 @@ type ConfigBuiltIn = {
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
    */
   cacheControl?: string
+
+  /** Used by Vike extensions to set their name.
+   *
+   * https://vike.dev/extends
+   */
+  name?: string
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`

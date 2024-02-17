@@ -222,6 +222,27 @@ async function loadInterfaceFiles(
         ```
         */
         const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId)
+        {
+          const alreadyMigrated = [
+            'vike-react',
+            'vike-react-query',
+            'vike-react-zustand',
+            'vike-vue',
+            'vike-pinia',
+            'vike-solid'
+          ]
+          const extensionName = extendsConfig.filePath.importPathAbsolute!.split('/')[0]!
+          const warnMsg = alreadyMigrated.includes(extensionName)
+            ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version`
+            : `The config of the Vike extension ${extensionName} should set a ${pc.cyan('name')} value`
+          const isNameDefined = interfaceFile.fileExportsByConfigName.name?.configValue
+          if (alreadyMigrated) {
+            // Eventually always make it a assertUsage()
+            assertWarning(isNameDefined, warnMsg, { onlyOnce: true })
+          } else {
+            assertUsage(isNameDefined, warnMsg)
+          }
+        }
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
     }),
