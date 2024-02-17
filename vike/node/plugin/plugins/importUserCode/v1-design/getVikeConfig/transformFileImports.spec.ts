@@ -8,7 +8,9 @@ function t(code: string) {
 describe('transformFileImports()', () => {
   it('basics', () => {
     expect(t('bla')).toMatchInlineSnapshot(`null`)
-    expect(t("import { something } from './bla.js'")).toMatchInlineSnapshot(`"const something = '​import:./bla.js:something';"`)
+    expect(t("import { something } from './bla.js'")).toMatchInlineSnapshot(
+      `"const something = '​import:./bla.js:something';"`
+    )
     expect(t("import def from './bla.js'")).toMatchInlineSnapshot(`"const def = '​import:./bla.js:default';"`)
   })
   it('removes unused imports', () => {
