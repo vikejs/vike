@@ -622,11 +622,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Header file (`.h.js`)',
-    url: '/header-file'
-  },
-  {
-    level: 2,
     title: 'Error Page',
     url: '/error-page'
   },

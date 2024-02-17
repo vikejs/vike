@@ -90,6 +90,32 @@ PROJECT FILES                               ROUTE
 /products/pages/product/+Page.js            /product/@id
 ```
 
+Such domain-driven file structure is also convenient for setting different default configurations.
+
+```bash
+# Defaults
+/marketing/pages/+title.js
+/marketing/pages/+ssr.js
+/marketing/pages/+prerender.js
+# Pages
+/marketing/pages/index/+Page.js
+/marketing/pages/about/+Page.js
+/marketing/pages/jobs/+Page.js
+
+# Defaults
+/admin-panel/pages/+title.js
+/admin-panel/pages/+config.js
+# Pages
+/admin-panel/pages/index/+Page.js
+/admin-panel/pages/edit-product/+Page.js
+/admin-panel/pages/database/+Page.js
+```
+
+Note how <Link href="/config#inheritance">config inheritance</Link> applies:
+- The `/marketing/pages/+*.js` files apply as default to all pages living at `/marketing/pages/**`.
+- The `/admin-panel/pages/+*.js` files apply as default to all pages living at `/admin-panel/pages/**`.
+
+
 Example:
  - <Link href='/examples/file-structure-domain-driven/' />
 

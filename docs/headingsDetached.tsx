@@ -284,6 +284,10 @@ const headingsDetached = [
     url: '/NODE_ENV'
   },
   {
+    title: 'Header file (`.h.js`)',
+    url: '/header-file'
+  },
+  {
     title: (
       <>
         Header file (<code>.h.js</code>), import from same file
@@ -417,6 +421,10 @@ const headingsDetached = [
   {
     title: 'Add to existing Vite app',
     url: '/add'
+  },
+  {
+    title: 'Tour',
+    url: '/tour'
   },
   {
     title: 'Vue Tour',
