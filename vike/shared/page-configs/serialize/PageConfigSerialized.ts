@@ -34,7 +34,7 @@ type ConfigValueImported = {
       exportValues: Record<string, unknown>
     }
   | {
-      // `importPath` comes from `import { something } from '${importPath}'` in a +config.h.js file
+      // `importPath` comes from `import { something } from '${importPath}'` in a +config.js file
       isValueFile: false
       // import { something } from '${importPath}'
       // -> exportName === 'something' (the variable name "something")

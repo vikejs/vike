@@ -27,7 +27,7 @@ export default 'https://restcountries.com/v3.1/all'
 ```
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
@@ -78,7 +78,7 @@ export const sql = { modelName: 'User', select: ['firstName', 'lastName'], where
 ```
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
@@ -135,10 +135,10 @@ export default 'About Us'
 export default 'Who we are, our values, and what we stand for.'
 ```
 
-> You can also use `+config.h.js` instead of creating the files `+title.js` and `+description.js`:
+> You can also use `+config.js` instead of creating the files `+title.js` and `+description.js`:
 >
 > ```js
-> // /pages/about/+config.h.js
+> // /pages/about/+config.js
 >
 > export default {
 >   title: 'About Us',
@@ -167,7 +167,7 @@ export default pageContext => {
 #### Implementation
 
 ```ts
-// /pages/+config.h.ts
+// /pages/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -280,7 +280,7 @@ export { Layout } from '../layouts/LayoutDefault'
 ```
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
@@ -343,7 +343,7 @@ Examples:
 You can use `meta` to change the environment in which built-in hooks are loaded. For example you can change the environment of `data()` from `{ server: true, client: false }` to `{ server: true, client: true }`.
 
 ```ts
-// /pages/some-page/+config.h.ts
+// /pages/some-page/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -364,7 +364,7 @@ export default {
 For more convenience, you can create a `dataIsomorph` toggle:
 
 ```ts
-// /pages/+config.h.ts
+// /pages/+config.ts
 
 import type { Config, Effect } from 'vike/types'
 
@@ -395,7 +395,7 @@ export default {
 
 Example:
  - [/examples/react-full/](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/)
-   - Toggle definition: [/renderer/+config.h.ts > `meta.dataIsomorph`](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/renderer/+config.h.ts#L14-L33)
+   - Toggle definition: [/renderer/+config.ts > `meta.dataIsomorph`](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/renderer/+config.ts#L14-L33)
    - Toggle usage: [/pages/star-wars/@id/+dataIsomorph.ts](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/pages/star-wars/@id/+dataIsomorph.ts)
    - Hook: [/pages/star-wars/@id/+data.tsx](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/pages/star-wars/@id/+data.tsx)
 
@@ -403,7 +403,7 @@ Example:
 ## API
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
@@ -448,7 +448,7 @@ export default {
 Similar to <Link href="/pageContext#typescript">`Vike.PageContext`</Link>, you can extend (or refine) Vike's `Config` type by using the global interface `Vike.Config`.
 
 ```ts
-// /pages/+config.h.ts
+// /pages/+config.ts
 // Environment: config
 
 export default {
@@ -475,7 +475,7 @@ export {}
 ```
 
 ```ts
-// /pages/product/@id/+config.h.ts
+// /pages/product/@id/+config.ts
 
 import { Config } from 'vike/types'
 

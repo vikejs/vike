@@ -129,7 +129,7 @@ type FilePath = {
    *
    * Its value is equivalent to `filePath.filePathRelativeToUserRootDir ?? filePath.importPathAbsolute`, for example:
    *   - `vike-react/config`, or
-   *   - `/pages/+config.h.js`.
+   *   - `/pages/+config.js`.
    */
   filePathAbsoluteVite: string
   /** The file's path, absolute from the filesystem root.

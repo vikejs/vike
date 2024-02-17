@@ -50,7 +50,7 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 ```
 
 ```diff
-+ // /renderer/+config.h.js
++ // /renderer/+config.js
 + 
 + export default {
 +   passToClient: ['pageProps']
@@ -62,7 +62,7 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
 > The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/vikejs/vike/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
 
-Move `/renderer/` configurations to `/renderer/+config.h.ts`:
+Move `/renderer/` configurations to `/renderer/+config.ts`:
 
 ```diff
 - // /renderer/_default.page.client.ts
@@ -72,7 +72,7 @@ Move `/renderer/` configurations to `/renderer/+config.h.ts`:
 ```
 
 ```ts
-// /renderer/+config.h.ts
+// /renderer/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -204,7 +204,7 @@ Old name | New name
 - export const doNotPrerender = true
 ```
 ```diff
-// /pages/news/+config.h.js
+// /pages/news/+config.js
 
   export default {
 +   prerender: false
@@ -219,7 +219,7 @@ If you use [custom hooks/exports](https://vite-plugin-ssr.com/exports), then rep
 You can create your own hooks and settings by using `meta`:
 
 ```ts
-// /renderer/+config.h.ts
+// /renderer/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -252,7 +252,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 ```js
-// /pages/about/+config.h.js
+// /pages/about/+config.js
 
 export default {
   title: 'Demo showcasing the V1 design'
@@ -261,7 +261,7 @@ export default {
 
 See:
  - <Link href="#examples" />
- - [Advanced example of implementing `config.renderMode`](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/render-modes/renderer/+config.h.ts#L10-L24)
+ - [Advanced example of implementing `config.renderMode`](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/render-modes/renderer/+config.ts#L10-L24)
 
 
 ## `onBeforeRender` in `.page.js`
@@ -269,7 +269,7 @@ See:
 If you've defined `onBeforeRender()` hooks in `.page.js` (instead of `.page.server.js`):
 
 ```ts
-// /renderer/+config.h.ts
+// /renderer/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -284,7 +284,7 @@ export default {
 } satisfies Config
 ```
 
-For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/renderer/+config.h.ts#L14-L33) for a [page-per-page toggle](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/pages/star-wars/@id/+onBeforeRenderIsomorph.ts).
+For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/renderer/+config.ts#L14-L33) for a [page-per-page toggle](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/pages/star-wars/@id/+onBeforeRenderIsomorph.ts).
 
 
 ## Client init code
@@ -294,7 +294,7 @@ The new config <Link text={<code>client</code>} href="/client" /> allows you to 
 > You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/onHydrationEnd" />.
 
 ```js
-// +config.h.js
+// +config.js
 export default {
   client: './some-client-code.js'
 }

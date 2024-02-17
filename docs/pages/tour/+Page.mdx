@@ -4,14 +4,14 @@ TODO: write a new guided tour.
  - The content down below was copy-pasted as-is from old removed /config content.
 
 
-## `+config.h.js`
+## `+config.js`
 
-The `+config.h.js` files is the interface between Vike and your code.
+The `+config.js` files is the interface between Vike and your code.
 
-You can use `+config.h.js` to define a new page:
+You can use `+config.js` to define a new page:
 
 ```js
-// /pages/about/+config.h.js
+// /pages/about/+config.js
 
 // The file defines a new page with URL /about
 
@@ -22,7 +22,7 @@ export default {
 }
 ```
 
-> The URL `/about` is determined by the filesystem location of `/pages/about/+config.h.js`, see <Link href="/filesystem-routing" />.
+> The URL `/about` is determined by the filesystem location of `/pages/about/+config.js`, see <Link href="/filesystem-routing" />.
 
 ```jsx
 // /pages/about/AboutPage.jsx
@@ -33,7 +33,7 @@ export const AboutPage = () => <>Vike Demo</>
 Another example:
 
 ```js
-// /pages/product/+config.h.js
+// /pages/product/+config.js
 
 // This file defines a new page with URL '/product/@id'
 
@@ -63,12 +63,12 @@ function ProductPage() {
 }
 ```
 
-> You can also create a file `/pages/product/+Page.js` instead of setting `/pages/product/+config.h.js > export default { Page }`, see <Link href="#other-files" doNotInferSectionTitle />.
+> You can also create a file `/pages/product/+Page.js` instead of setting `/pages/product/+config.js > export default { Page }`, see <Link href="#other-files" doNotInferSectionTitle />.
 
 
 ## Other `+` files
 
-For convenience, instead of defining <Link href="#config-h-js">`+config.h.js`</Link>, you can define `+Page.js` and `+route.js`:
+For convenience, instead of defining <Link href="#config-js">`+config.js`</Link>, you can define `+Page.js` and `+route.js`:
 
 ```js
 // /pages/product/+route.js
@@ -94,7 +94,7 @@ Which is equivalent to:
 
 
 ```js
-// /pages/product/+config.h.js
+// /pages/product/+config.js
 
 import { ProductPage } from './ProductPage'
 
@@ -119,4 +119,4 @@ function ProductPage() {
 }
 ```
 
-It doesn't make a difference whether you define the `Page` value by creating a plus file `+Page.js` or by setting `+config.h.js > export default { Page }`.
+It doesn't make a difference whether you define the `Page` value by creating a plus file `+Page.js` or by setting `+config.js > export default { Page }`.

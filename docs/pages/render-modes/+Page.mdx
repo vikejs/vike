@@ -30,7 +30,7 @@ To achieve that:
 By setting `Page`'s meta config `env` to `{ client: true, server: false }` we tell Vike to load `+Page.js` only in the browser.
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 // Environment: config
 
 export default {
@@ -43,7 +43,7 @@ export default {
 ```
 
 React example (SPA + SSR):
- - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.h.ts" />
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.ts" />
  - SPA page: <RepoLink path="/examples/render-modes/pages/spa/+Page.jsx" />
  - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/spa/+renderMode.js" />
  - SSR page: <RepoLink path="/examples/render-modes/pages/ssr/+Page.jsx" />
@@ -144,7 +144,7 @@ export const description = 'My App is ...'
 ```
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 export default {
   meta: {
     Page: {
@@ -192,7 +192,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 > If we set the `Page` meta config `env` to `{ server: false, client: true }` instead of
-> `{ server: true, client: true }` in `config.h.js`, then `pageContext.Page` is
+> `{ server: true, client: true }` in `config.js`, then `pageContext.Page` is
 > only defined in the browser.
 
 ```js
@@ -226,7 +226,7 @@ async function onRenderClient(pageContext) {
 React example: <Link href="/examples/render-modes/" />.
  - Server-side hook: <RepoLink path="/examples/render-modes/renderer/+onRenderHtml.jsx" />
  - Client-side hook: <RepoLink path="/examples/render-modes/renderer/+onRenderClient.jsx" />
- - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.h.ts" />
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.ts" />
  - SPA page: <RepoLink path="/examples/render-modes/pages/spa/+Page.jsx" />
  - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/spa/+renderMode.js" />
  - SSR page: <RepoLink path="/examples/render-modes/pages/ssr/+Page.jsx" />
@@ -266,7 +266,7 @@ To render a page to HTML-only:
 
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 // Environment: config
 
 export default {

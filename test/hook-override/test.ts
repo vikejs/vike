@@ -106,7 +106,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     await fetchHtml('/page-2')
     await autoRetry(() => {
       expectLog(
-        '[Wrong Usage] Set onBeforeRender to null in a +config.h.js file instead of /pages/page-2/+onBeforeRender.tsx',
+        '[Wrong Usage] Set onBeforeRender to null in a +config.js file instead of /pages/page-2/+onBeforeRender.tsx',
         (log) => log.logSource === 'stderr'
       )
     })

@@ -90,7 +90,7 @@ function assertIsNotNull(configValue: unknown, configName: string, importPath: s
    *  - for cumulative values in the future: we don't need this for now because, currently, cumulative values are never imported.
   assertUsage(
     configValue !== null,
-    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.h.js file instead of ${importPath}`
+    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.js file instead of ${importPath}`
   )
   */
 }

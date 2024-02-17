@@ -10,7 +10,7 @@ export type { HookTimeout }
 export type { HooksTimeoutProvidedByUser }
 
 // TODO/v1-release: remove
-// We export for old V0.4 design which doesn't support config.hooksTimeout
+// We export for old V0.4 design which doesn't support configooksTimeout
 export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
@@ -76,7 +76,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   // hook isn't a computed nor a cumulative config => definedAt should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
-  // We could use the global value of config.hooksTimeout but it requires some non-trivial refactoring
+  // We could use the global value of configooksTimeout but it requires some non-trivial refactoring
   const hookTimeout = getHookTimeoutDefault(hookName)
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }

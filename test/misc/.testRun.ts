@@ -15,8 +15,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   assert(cmd.startsWith('npm run '))
   const isDev = cmd === 'npm run dev'
 
-  test('Route String defined in +config.h.js', async () => {
-    // Route String '/markdown' defined in `+config.h.js > export default { route }` instead of +route.js
+  test('Route String defined in +config.js', async () => {
+    // Route String '/markdown' defined in `+config.js > export default { route }` instead of +route.js
     const html = await fetchHtml('/markdown')
     expect(html).toContain('<p>Some text</p>')
   })

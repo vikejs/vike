@@ -8,7 +8,7 @@ If you don't use a <UiFrameworkVikeExtension /> then Vike does <Link text="Serve
 You can opt into <Link text="Client Routing" href="/client-routing" /> by:
  1. Setting `clientRouting: true`.
     ```js
-    // +config.h.js
+    // +config.js
     export default {
       // Enable Client Routing
       clientRouting: true
@@ -34,7 +34,7 @@ Vue example:
 
 1. Set `clientRouting` to `true`:
    ```js
-   // /pages/+config.h.js
+   // /pages/+config.js
    export default {
      clientRouting: true
    }
@@ -155,7 +155,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 // Environment: config
 
 export default {

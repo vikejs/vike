@@ -92,7 +92,7 @@ type InterfaceFileCommons = {
   filePath: FilePathResolved
   fileExportsByConfigName: Record<ConfigName, { configValue?: unknown }>
 }
-// +config.h.js
+// +config.js
 type InterfaceConfigFile = InterfaceFileCommons & {
   isConfigFile: true
   isValueFile: false
@@ -207,14 +207,14 @@ async function loadInterfaceFiles(
       extendsConfigs.forEach((extendsConfig) => {
         /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
         ```js
-        // /pages/admin/+config.h.js
+        // /pages/admin/+config.js
 
         import vikeVue from 'vike-vue/config'
         // Should only apply to /pages/admin/**
         export default { extends: [vikeVue] }
         ```
         ```js
-        // /pages/marketing/+config.h.js
+        // /pages/marketing/+config.js
 
         import vikeReact from 'vike-react/config'
         // Should only apply to /pages/marketing/**
@@ -600,7 +600,7 @@ async function resolveConfigValueSources(
       // Make this value:
       //   /pages/some-page/+{configName}.js > `export default`
       // override that value:
-      //   /pages/some-page/+config.h.js > `export default { someConfig }`
+      //   /pages/some-page/+config.js > `export default { someConfig }`
       const interfaceFileWinner = interfaceValueFile ?? interfaceConfigFile
       if (interfaceFileWinner) {
         const interfaceFilesOverriden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(

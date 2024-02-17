@@ -75,7 +75,7 @@ const headingsDetached = [
   {
     title: (
       <>
-        <code>+config.h.js</code> code splitting
+        <code>+config.js</code> code splitting
       </>
     ),
     url: '/config-code-splitting'

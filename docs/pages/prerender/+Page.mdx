@@ -37,7 +37,7 @@ For example a news page that displays the latest news fetched from a database sh
 You can use `prerender: false` to tell Vike to skip a page from pre-rendering.
 
 ```js
-// /pages/news/+config.h.js
+// /pages/news/+config.js
 
 export default {
   prerender: false
@@ -63,7 +63,7 @@ export const prerender = true
 You can also make pre-rendering opt-in instead of opt-out:
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 
 export default {
   // By default, pages are not pre-rendered
