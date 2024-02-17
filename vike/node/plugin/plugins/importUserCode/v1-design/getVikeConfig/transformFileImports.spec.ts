@@ -19,7 +19,4 @@ describe('transformFileImports()', () => {
     expect(t("import { bla as blu } from './bla.js'")).toMatchInlineSnapshot(`"const blu = '​import:./bla.js:bla';"`)
     expect(t("import * as blo from './bla.js'")).toMatchInlineSnapshot(`"const blo = '​import:./bla.js:*';"`)
   })
-  it('real imports', () => {
-    expect(t("import { something } from './bla.js?real'")).toMatchInlineSnapshot(`"import { something } from ./bla.js"`)
-  })
 })

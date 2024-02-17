@@ -4,8 +4,21 @@ export { isImportData }
 export type { ImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
-// Import attributes support: https://github.com/acornjs/acorn/issues/983
-//  - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
+
+// Notes about `with { type: 'pointer' }`
+// - It works well with TypeScript: it doesn't complain upon `with { type: 'unknown-to-typescript' }` and go-to-definition & types are preserved: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html#import-attributes
+// - Acorn support for import attributes: https://github.com/acornjs/acorn/issues/983
+//   - Acorn plugin: https://github.com/acornjs/acorn/issues/983
+//   - Isn't stage 4 yet: https://github.com/tc39/proposal-import-attributes
+// - Using a import path suffix such as `import { Layout } from './Layout?real` breaks TypeScript, and TypeScript isn't working on supporting query params: https://github.com/microsoft/TypeScript/issues/10988#issuecomment-867135453
+// - Node.js >=21 supports import attribtues: https://nodejs.org/api/esm.html#import-attributes
+// - Esbuid supports
+//   - Blocker: https://github.com/evanw/esbuild/issues/3646
+//     - Ugly hack to make it work: https://github.com/brillout/esbuild-playground/tree/experiment/import-attribute
+//   - Discussion with esbuild maintainer: https://github.com/evanw/esbuild/issues/3384
+// - Using a magic comment `// @vike-real-import` is probably a bad idea:
+//   - Esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
+//   - Using source maps to track these magic comments is brittle (source maps can easily break)
 
 import { parse } from 'acorn'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
@@ -41,31 +54,7 @@ function transformFileImports(
       if (!isPointerImport) return
     }
 
-    // - This doesn't work. To make it work we would need to run esbuild twice: esbuild for TypeScript to JavaScript => transformFileImports() => esbuild for bundling.
-    //   - Or we use an esbuild plugin to apply transformFileImports(). Maybe we can completely skip the need for acorn?
-    // - ?real breaks TypeScript, and TypeScript isn't working on supporting query params: https://github.com/microsoft/TypeScript/issues/10988#issuecomment-867135453
-    // - Import attributes would be the best.
-    //   - But it only works with Node.js >=21: https://nodejs.org/api/esm.html#import-attributes
-    //     - But it's probably ok to tell users "to use real imports you need Node.js 21 or above".
-    //   - It works well with TypeScript: it doesn't complain upon `with { type: 'unknown-to-typescript' }` and go-to-definition & types are preserved: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-3.html#import-attributes
-    //   - Esbuid seems to support it: https://esbuild.github.io/plugins/#on-load-arguments:~:text=This%20contains%20a%20map%20of%20the%20import%20attributes%20that
-    //   - acorn supports it over an acorn plugin: https://github.com/acornjs/acorn/issues/983
-    //     - Maybe we can use an esbuild plugin instead of acorn to apply transformFileImports()?
-    // - Using a magic comment `// @vike-real-import` is tricky:
-    //   - Esbuild removes comments: https://github.com/evanw/esbuild/issues/1439#issuecomment-877656182
-    //   - Using source maps to track these magic comments is brittle (source maps can easily break)
-    if (importPath.endsWith('?real')) {
-      const { start, end } = node.source
-      spliceOperations.push({
-        start,
-        end,
-        replacement: importPath.slice(0, -1 * '?real'.length)
-      })
-      return
-    }
-
     const { start, end } = node
-
     const importStatementCode = code.slice(start, end)
 
     /* Pointer import without importing any value => doesn't make sense and doesn't have any effect.
