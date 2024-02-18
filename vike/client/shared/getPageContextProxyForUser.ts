@@ -1,7 +1,7 @@
 export { getPageContextProxyForUser }
 export { PageContextForPassToClientWarning }
 
-import { assert, assertUsage, getGlobalObject } from '../server-routing-runtime/utils.js'
+import { assert, assertUsage, assertWarning, getGlobalObject } from '../server-routing-runtime/utils.js'
 import { notSerializable } from '../../shared/notSerializable.js'
 const globalObject = getGlobalObject<{ prev?: string }>('getPageContextProxyForUser.ts', {})
 
@@ -41,6 +41,9 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
   ignoreNextRead(prop)
   if (prop in pageContext) return
   if (isExpected(prop)) return
+  // - If no pageContext was fetchd from the server, then adding props to passToClient is useless.
+  // - Showing a warning, even though no pageContext was fetched from the server, is actually erroneous as the client runtime cannot deduce the passToClient list.
+  if (!pageContext._hasPageContextFromServer) return
 
   const propName = JSON.stringify(prop)
 
@@ -51,7 +54,7 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
   assertUsage(false, errMsg)
   */
 
-  if (pageContext._hasPageContextFromServer && !pageContext._hasPageContextFromClient) {
+  if (!pageContext._hasPageContextFromClient) {
     // We can safely assume that the property is missing in passToClient, because the server-side defines all passToClient properties even if they have an undefined value:
     // ```
     // <script id="vike_pageContext" type="application/json">{"_pageId":"/pages/admin","user":"!undefined","pageProps":"!undefined","title":"!undefined","abortReason":"!undefined","_urlRewrite":null}</script>
@@ -63,6 +66,24 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
     )
   } else {
     // Do nothing, not even a warning, because we don't know whether the user expects that the pageContext value can be undefined. (E.g. a pageContext value that is defined by an optional hook.)
+
+    // TODO/next-major-release make it an assertUsage()
+    assertWarning(
+      false,
+      [
+        `pageContext[${propName}] isn't defined on the client-side:`,
+        `1. if it's defined by the server-side then add ${propName} to passToClient (https://vike.dev/passToClient), or`,
+        `2. if it's expected that it may not be defined:`,
+        '   ```js',
+        '   // ❌ Replace code like this:',
+        `   const val = pageContext[${propName}] ?? someDefaultValue`,
+        '   // ✅ With that:',
+        `   const val = ${propName} in pageContext ? pageContext[${propName}] : someDefaultValue`,
+        '   ```',
+        `See stack track below to find where pageContext[${propName}] is being accessed.`
+      ].join('\n'),
+      { showStackTrace: true, onlyOnce: false }
+    )
   }
 }
 
