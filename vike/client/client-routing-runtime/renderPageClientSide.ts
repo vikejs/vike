@@ -41,7 +41,7 @@ import { getErrorPageId } from '../../shared/error-page.js'
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
-  onRenderClientPromise?: Promise<void>
+  onRenderClientPromise?: Promise<unknown>
   isTransitioning?: true
   previousPageContext?: { _pageId: string }
 }>('renderPageClientSide.ts', { renderCounter: 0 })
@@ -382,23 +382,29 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     globalObject.previousPageContext = pageContext
     assert(globalObject.onRenderClientPromise === undefined)
     globalObject.onRenderClientPromise = (async () => {
+      let onRenderClientError: unknown
       try {
         await executeOnRenderClientHook(pageContext, true)
       } catch (err) {
-        await onError(err)
-        return
+        onRenderClientError = err
       }
-      addLinkPrefetchHandlers(pageContext)
       globalObject.onRenderClientPromise = undefined
+      return onRenderClientError
     })()
-    await globalObject.onRenderClientPromise
+    const onRenderClientError = await globalObject.onRenderClientPromise
     assert(globalObject.onRenderClientPromise === undefined)
+    if (onRenderClientError) {
+      await onError(onRenderClientError)
+      if (!isErrorPage) return
+    }
     /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
     if (isRenderOutdated(true)) return
     */
 
+    addLinkPrefetchHandlers(pageContext)
+
     // onHydrationEnd()
-    if (isHydrationRender) {
+    if (isHydrationRender && !onRenderClientError) {
       assertHook(pageContext, 'onHydrationEnd')
       const hook = getHook(pageContext, 'onHydrationEnd')
       if (hook) {
