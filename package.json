@@ -16,8 +16,6 @@
     "test:units": "vitest run",
     "test:e2e": "test-e2e",
     "test:types": "test-types",
-    "// Run `$ pnpm test:setup` before running `$ pnpm test`": "",
-    "test:setup": "pnpm run clean && pnpm install && pnpm run build",
     "========= Docs": "",
     "// Develop website https://vike.dev": "",
     "docs": "cd docs/ && pnpm run dev",
