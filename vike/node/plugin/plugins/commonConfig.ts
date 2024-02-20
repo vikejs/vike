@@ -90,7 +90,7 @@ function assertSingleInstance(config: ResolvedConfig) {
   assertUsage(
     numberOfInstances === 1,
     `Vike's Vite plugin (${pc.cyan(
-      "'import vike from 'vike/plugin'"
+      "import vike from 'vike/plugin'"
     )}) is being added ${numberOfInstances} times to the list of Vite plugins. Make sure to add it only once instead.`
   )
 }
