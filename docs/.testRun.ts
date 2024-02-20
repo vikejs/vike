@@ -1,8 +1,14 @@
 export { testRun }
 
-import { page, test, expect, run, fetchHtml, getServerUrl, testScreenshotFixture } from '@brillout/test-e2e'
+import { page, test, expect, run, fetchHtml, getServerUrl, testScreenshotFixture, skip } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
+  if (process.env.VITE_ECOSYSTEM_CI && cmd === 'pnpm run preview') {
+    // Skip until https://github.com/vitejs/vite/pull/15849 is merged
+    skip('SKIPPED: temporarily skip vite-ecosystem-ci')
+    return
+  }
+
   {
     // Preview => `npm run preview` takes a long time
     // Dev => `Learn more collapsible` takes a long time
