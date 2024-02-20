@@ -473,6 +473,8 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
   const { trailingSlash, disableUrlNormalization, baseServer } = getGlobalContext()
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
+  const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
+  if (isPageContextRequest) return null
   const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash, baseServer)
   if (!urlNormalized) return null
   logRuntimeInfo?.(
