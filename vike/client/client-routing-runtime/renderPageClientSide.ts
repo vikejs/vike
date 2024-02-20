@@ -41,7 +41,7 @@ import { getErrorPageId } from '../../shared/error-page.js'
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
-  renderPromise?: Promise<void>
+  onRenderClientPromise?: Promise<void>
   isTransitioning?: true
   previousPageContext?: { _pageId: string }
 }>('renderPageClientSide.ts', { renderCounter: 0 })
@@ -371,17 +371,17 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // We use globalObject.renderPromise in order to ensure that there is never two concurrent onRenderClient() calls
-    if (globalObject.renderPromise) {
+    // We use globalObject.onRenderClientPromise in order to ensure that there is never two concurrent onRenderClient() calls
+    if (globalObject.onRenderClientPromise) {
       // Make sure that the previous render has finished
-      await globalObject.renderPromise
-      assert(globalObject.renderPromise === undefined)
+      await globalObject.onRenderClientPromise
+      assert(globalObject.onRenderClientPromise === undefined)
       if (isRenderOutdated()) return
     }
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
-    assert(globalObject.renderPromise === undefined)
-    globalObject.renderPromise = (async () => {
+    assert(globalObject.onRenderClientPromise === undefined)
+    globalObject.onRenderClientPromise = (async () => {
       try {
         await executeOnRenderClientHook(pageContext, true)
       } catch (err) {
@@ -389,10 +389,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       addLinkPrefetchHandlers(pageContext)
-      globalObject.renderPromise = undefined
+      globalObject.onRenderClientPromise = undefined
     })()
-    await globalObject.renderPromise
-    assert(globalObject.renderPromise === undefined)
+    await globalObject.onRenderClientPromise
+    assert(globalObject.onRenderClientPromise === undefined)
     /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
     if (isRenderOutdated(true)) return
     */
@@ -413,7 +413,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // We abort *after* onHydrationEnd() is called
+    // We purposely abort *after* onHydrationEnd() is called (see comment above).
     if (isRenderOutdated(true)) return
 
     // onPageTransitionEnd()
