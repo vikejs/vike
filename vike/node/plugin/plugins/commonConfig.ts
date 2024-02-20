@@ -15,13 +15,13 @@ const require_ = createRequire(importMetaUrl)
 function commonConfig(): Plugin[] {
   return [
     {
-      name: 'vike-commonConfig-1',
+      name: 'vike:commonConfig-1',
       configResolved(config) {
         installRequireShim_setUserRootDir(config.root)
       }
     },
     {
-      name: 'vike-.commonConfig-2',
+      name: 'vike:commonConfig-2',
       enforce: 'post',
       configResolved: {
         order: 'post',
