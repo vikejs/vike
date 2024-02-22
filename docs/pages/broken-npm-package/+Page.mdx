@@ -223,79 +223,47 @@ The following is a common React error and the root cause is usually a CJS/ESM is
 
 <CodeBlockTransformer lineBreak="white-space">
 ```
-Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
-    at renderElement (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
-    at renderNodeDestructiveImpl (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at renderElement (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5975:9)
-    at renderNodeDestructiveImpl (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at retryTask (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6532:5)
-    at performWork (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
-    at node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
-    at scheduleWork (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined.
+    at renderElement (node_modules/react-dom/...)
+    at renderNodeDestructiveImpl (node_modules/react-dom/...)
+    at renderNodeDestructive (node_modules/react-dom/...)
+    ...
 ```
 </CodeBlockTransformer>
-
-And `but got: object` is also common.
-
+Or `got: object`.
 <CodeBlockTransformer lineBreak="white-space">
 ```
-Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object.
 ```
 </CodeBlockTransformer>
 
-The problem here is that the stack trace doesn't say which React component is invalid. The following patch will provide you with that information.
+React usually logs a component trace before throwing the error:
 
-```js
-// node_modules/react/cjs/react.production.min.js
-
-// ...
-
-// Insert this at this end of the file
-exports.createElement = debugEl(exports.createElement);
-function debugEl(fn) {
-  return (...args) => {
-    const el = args[0];
-    if (typeof el === 'object' && !el.$$typeof && !el.getModuleId) {
-      console.error('Error: INVALID REACT ELEMENT:');
-      console.error(el);
-      console.error(new Error('INVALID REACT ELEMENT, ORIGIN:'));
-      globalThis.process?.exit?.(1);
-    }
-    return fn(...args);
-  }
-}
+```
+Check your code at +Page.tsx:26.
+    at Page
+    at div
+    at div
+    at Layout (/pages/+Layout.tsx:66:19)
 ```
 
-```js
-// node_modules/react/cjs/react-jsx-runtime.production.min.js
+> Sometimes React doesn't log a component trace. In that case you can use [this temporary patch](https://gist.github.com/brillout/c27b780f009d141acec7bda29d136e6e) to get a component trace.
+>
+> You can also use the temporary patch to get a more precise component trace. (For example the component trace above says `Check your code at +Page.tsx:26` but there can be hundreds of `+Page.tsx` files and it doesn't say which `+Page.tsx` file it is.)
 
-// ...
+Use the component trace to find out which component is `undefined` (or an `object`). You'll likely discover that the React component is imported, while the import value is `undefined` or an object instead of a React component because of CJS/ESM interoperability quirks.
 
-// Insert this at this end of the file
-exports.jsx = debugEl(exports.jsx);
-function debugEl(fn) {
-  return (...args) => {
-    const el = args[0];
-    if (typeof el === 'object' && !el.$$typeof && !el.getModuleId) {
-      console.error('Error: INVALID REACT ELEMENT:');
-      console.error(el);
-      console.error(new Error('INVALID REACT ELEMENT, ORIGIN:'));
-      globalThis.process?.exit?.(1);
-    }
-    return fn(...args);
-  }
-}
+A local workaround is usually this:
+
+```diff
+- import SomeComponent from "some-npm-package"
++ import pkg from "some-npm-package"
++ const { SomeComponent } = pkg
++ // Or
++ const SomeComponent = pkg.default
 ```
 
-> This patch works with React `18.2.0` (and probably with most other React versions). Let us know if it doesn't work with your React version.
-
-The debug logs will help you find which React component is `undefined` (or an `object`). You'll likely discover that the React component is imported, while the import value is `undefined` (or an object instead of a React component function/class) because of some CJS/ESM interoperability quirks.
-
-If the component lives inside `node_modules/`, then consider <Link href="#workaround">adding the npm package(s) to `ssr.noExternal`</Link>.
-
-Once you fixed the problem, you can remove the patch.
+For a global workaround see <Link href="#workaround" />.
 
 
 ## See also
