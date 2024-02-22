@@ -1,0 +1,27 @@
+import { Warning, Link } from '@brillout/docpress'
+
+<Warning>`getGlobalContextSync()` and `getGlobalContextAsync()` are beta features: expect breaking changes in any minor version update.</Warning>
+
+`getGlobalContextSync()` and `getGlobalContextAsync()` allow you to access global information about your app.
+
+Most notably the <Link href="/preloading#assets-manifest">assets manifest</Link>.
+
+```js
+import {
+  getGlobalContextSync,
+  /* Or:
+  getGlobalContextAsync */
+} from 'vike/server'
+
+const globalContext = getGlobalContextSync()
+const { assetsManifest } = globalContext
+```
+
+> The `globalContext` object also contains internals (they are prefixed with `_`, e.g. `globalContext._viteDevServer`). You should use them only if strictly needed, and if you do then let us know so that we make what you need part of the official API.
+
+> In certain situations, you may need to use `await getGlobalContextAsync()` instead of `getGlobalContextSync()`. The `getGlobalContextSync()` function will let you know when that is the case.
+
+
+## See also
+
+- <Link href="/preloading#assets-manifest" />

@@ -1,3 +1,8 @@
+// Public use
+export { getGlobalContextSync }
+export { getGlobalContextAsync }
+
+// Internal use
 export { initGlobalContext }
 export { getGlobalContext }
 export { getViteDevServer }
@@ -9,12 +14,14 @@ export { getRuntimeManifest }
 import {
   assert,
   assertUsage,
+  assertWarning,
   getGlobalObject,
   getNodeEnv,
   getNodeEnvDesc,
   isNodeEnvDev,
   isPlainObject,
-  objectAssign
+  objectAssign,
+  objectKeys
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -25,12 +32,19 @@ import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
+let resolveGlobalContext: (globalContext: GlobalContext) => void
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
+  globalContextPromise: Promise<GlobalContext>
   viteDevServer?: ViteDevServer
   viteConfig?: ResolvedConfig
-}>('globalContext.ts', {})
+}>('globalContext.ts', {
+  globalContextPromise: new Promise((r) => (resolveGlobalContext = r))
+})
 
+type GlobalContextPublic = {
+  assetsManifest: null | ViteManifest
+}
 type GlobalContext = {
   baseServer: string
   baseAssets: null | string
@@ -67,6 +81,51 @@ type GlobalContext = {
 function getGlobalContext(): GlobalContext {
   assert(globalObject.globalContext)
   return globalObject.globalContext
+}
+
+/** @experimental https://vike.dev/getGlobalContext */
+function getGlobalContextSync(): GlobalContextPublic {
+  assertUsage(
+    globalObject.globalContext,
+    "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContextAsync() instead."
+  )
+  return makePublic(globalObject.globalContext)
+}
+/** @experimental https://vike.dev/getGlobalContext */
+async function getGlobalContextAsync(): Promise<GlobalContextPublic> {
+  await globalObject.globalContextPromise
+  assert(globalObject.globalContext)
+  return makePublic(globalObject.globalContext)
+}
+function makePublic(globalContext: GlobalContext): GlobalContextPublic {
+  const globalContextPublic = {
+    assetsManifest: globalContext.assetsManifest
+  }
+
+  // Add internals (and prepended _ prefix to their keys)
+  {
+    const publicKeys = Object.keys(globalContextPublic)
+    objectKeys(globalContext)
+      .filter((key) => !publicKeys.includes(key))
+      .forEach((key) => {
+        const keyPublic = `_${key}`
+        Object.defineProperty(globalContextPublic, keyPublic, {
+          enumerable: true,
+          get() {
+            assertWarning(
+              false,
+              `Using internal globalContext.${keyPublic} which is discouraged: it may break in any minor version update. Instead, reach out on GitHub and elaborate your use case.`,
+              {
+                onlyOnce: true
+              }
+            )
+            return globalContext[key]
+          }
+        })
+      })
+  }
+
+  return globalContextPublic
 }
 
 function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
@@ -150,6 +209,8 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       globalObject.globalContext = globalContext
     }
   }
+
+  resolveGlobalContext(globalObject.globalContext)
 }
 
 function getRuntimeManifest(configVike: ConfigVikeResolved): RuntimeManifest {

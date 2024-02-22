@@ -17,6 +17,13 @@ const knownErrors = [
     errMsg:
       'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)',
     link: 'https://vike.dev/broken-npm-package#react-invalid-component'
+  },
+  {
+    // ```
+    // Error [RollupError]: Could not resolve "../dist/client/assets.json" from "renderer/+onRenderHtml.tsx"
+    // ```
+    errMsg: 'assets.json',
+    link: 'https://vike.dev/getGlobalContext'
   }
 ]
 
