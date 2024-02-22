@@ -1,37 +1,70 @@
 import { Warning, CodeBlockTransformer, Link } from '@brillout/docpress'
 
-Some npm packages contain code that isn't valid JavaScript, which makes Node.js crash.
+Some [npm packages](https://www.npmjs.com) contain invalid JavaScript code that lead to errors (see <Link href="#common-errors" />).
+
+The most notable errors are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) code, ESM code importing [CJS](https://nodejs.org/api/modules.html#modules-commonjs-modules:~:text=CommonJS%20modules%20are%20the%20original%20way%20to%20package%20JavaScript%20code%20for%20Node.js) code in an invalid fashion, and invalid CSS imports.
+
+See <Link href="#workaround" />.
+
+> The reason why an npm package can contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. We elaborate further at <Link href="#why" />.
 
 
-## Solution
+## Workaround
 
-The workaround is to add npm packages containing invalid code to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
+You can usually workaround problematic npm packages by using [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
 
 ```js
 // vite.config.js
 
 export default {
   ssr: {
-    // Add npm packages containing invalid code here
-    noExternal: ['some-library']
+    // Add problematic npm packages here
+    noExternal: ['some-npm-package']
   }
 }
 ```
 
-You may need to add several npm packages to `ssr.noExternal`, because CJS/ESM issues sometime cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
+> See <Link href="#why" /> for explanation why `ssr.noExternal` is a workaround.
 
-If you were to add all your npm packages to `ssr.noExternal` then you'd likely get rid of all CJS/ESM issues, but you'd slow down development speed in a non-negligible way (because of <Link href="/lazy-transpiling">Vite's lazy transpiling approach</Link>). Therefore, a sensible strategy is to eagerly add npm packages to `ssr.noExternal` until you get rid of all your CJS/ESM issues and, then, remove npm packages from `ssr.noExternal` to fasten development speed.
+You may need to add several/nested npm packages to `ssr.noExternal`, because CJS/ESM issues sometime cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
 
-> Don't hesitate to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link> if you run into CJS/ESM issues.
+If the npm package is CJS code then, instead of `ssr.noExternal`, consider using [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop).
 
-> The reason why many npm packages contain erroneous code is because frameworks like Next.js transpile the server-side code of npm packages. (Whereas Vite lets Node.js directly execute npm packages in order to improve DX speed: Vite transpiles only what is strictly needed). Where Next.js is permissive and is able to process invalid code, Node.js is strict and crashes upon invalid code. By adding npm packages to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
+```js
+// vite.config.js
+
+import { cjsInterop } from "vite-plugin-cjs-interop";
+
+export default {
+  plugins: [
+    cjsInterop({
+      dependencies: [
+        // Add problematic npm package here
+        "some-package",
+      ]
+    })
+  ]
+}
+```
+
+> If none of these workarounds work, then don't hesitate to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link>.
 
 
-## Errors
+## Why
 
-List of known errors that Node.js throws when it tries to execute the invalid code of some library.
+You may ask yourself, rightfully so, how it's possible that npm packages can publish invalid JavaScript code that doesn't get fixed for months.
 
-The most notable issues are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) and invalid CSS imports, see [errors](#errors) and [solution](#solution).
+The main reason is that some frameworks (such as Next.js) transpile the server-side code of npm packages, whereas Vite transpiles only the client-side code of npm packages. When server-side code contains invalid JavaScript then Node.js crashes and throws one of <Link href="#common-errors">these errors</Link>, while transpilers are more tolerant and transform invalid JavaScript (that Node.js isn't able to execute) into valid JavaScript (that Node.js is able to execute).
+
+Vite doesn't transpile the server-side code of npm packages by default for a much faster development DX: Node.js directly executes server-side code without involving a slow transpilition process.
+
+That's why adding an npm package to `ssr.noExternal` (see <Link href="#workaround" />) is a workaround if the npm package contains invalid JavaScript.
+Essentially, by adding an npm package to `ssr.noExternal`, you replicate the behavior of frameworks like Next.js.
+
+
+## Common errors
+
+Common invalid JavaScript code and their errors.
 
 ### Cannot use import statement outside a module
 
@@ -91,7 +124,7 @@ The workaround proposed by Node.js often doesn't work for default exports. If it
 
 Alternatives:
  - [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop)
- - The [`ssr.noExternal` solution](#solution).
+ - The <Link href="#workaround">`ssr.noExternal` workaround</Link>.
 
 
 ### ERR_MODULE_NOT_FOUND
@@ -176,7 +209,7 @@ TypeError: Cannot read properties of undefined (reading 'someProp')
 > }
 > ```
 
-[Adding `some-broken-lib` to `vite.config.js > ssr.noExternal`](#solution) often solves the issue.
+<Link href="#workaround">Adding `some-broken-lib` to `vite.config.js > ssr.noExternal`</Link> often solves the issue.
 
 > Sometimes, when dependency injection is used, the `import` to `some-broken-lib` isn't in the file in which the
 > exception is being raised, making it harder to understand which library is broken. See
@@ -186,21 +219,21 @@ TypeError: Cannot read properties of undefined (reading 'someProp')
 
 ### React invalid component
 
-The following is a very common React error and the root cause is usually a CJS/ESM issue.
+The following is a common React error and the root cause is usually a CJS/ESM issue.
 
 <CodeBlockTransformer lineBreak="white-space">
 ```
 Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
-    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
-    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at renderElement (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5975:9)
-    at renderNodeDestructiveImpl (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
-    at renderNodeDestructive (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
-    at retryTask (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6532:5)
-    at performWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
-    at /home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
-    at scheduleWork (/home/romu/code/vike/node_modules/.pnpm/react-dom@18.2.0_react@18.2.0/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
+    at renderElement (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6047:9)
+    at renderNodeDestructiveImpl (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
+    at renderNodeDestructive (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
+    at renderElement (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5975:9)
+    at renderNodeDestructiveImpl (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6108:11)
+    at renderNodeDestructive (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6080:14)
+    at retryTask (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6532:5)
+    at performWork (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6580:7)
+    at node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6904:12
+    at scheduleWork (node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:78:3)
 ```
 </CodeBlockTransformer>
 
@@ -260,7 +293,7 @@ function debugEl(fn) {
 
 The debug logs will help you find which React component is `undefined` (or an `object`). You'll likely discover that the React component is imported, while the import value is `undefined` (or an object instead of a React component function/class) because of some CJS/ESM interoperability quirks.
 
-If the component lives inside `node_modules/`, then consider <Link href="#solution">adding the npm package(s) to `ssr.noExternal`</Link>.
+If the component lives inside `node_modules/`, then consider <Link href="#workaround">adding the npm package(s) to `ssr.noExternal`</Link>.
 
 Once you fixed the problem, you can remove the patch.
 
