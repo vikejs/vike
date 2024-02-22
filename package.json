@@ -9,7 +9,7 @@
     "dev:setup": "pnpm run clean && pnpm install",
     "========= Build": "",
     "// Build Vike": "",
-    "build": "cd vike/ && pnpm run build",
+    "build": "pnpm --recursive --filter {/vike} --filter {packages/*} run build",
     "========= Test": "",
     "// Run tests": "",
     "test": "pnpm run test:units && pnpm run test:e2e && pnpm run test:types",
@@ -49,7 +49,8 @@
   },
   "pnpm": {
     "overrides": {
-      "vike": "link:./vike/"
+      "vike": "link:./vike/",
+      "vike-node": "link:./packages/vike-node/"
     },
     "packageExtensions": {
       "@apollo/client": {
