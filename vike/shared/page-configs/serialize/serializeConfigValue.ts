@@ -8,8 +8,7 @@ export { serializeConfigValueImported }
 import { assertIsNotProductionRuntime } from '../../../utils/assertIsNotProductionRuntime.js'
 assertIsNotProductionRuntime()
 
-import path from 'path'
-import { assert, assertPosixPath } from '../../utils.js'
+import { assert } from '../../utils.js'
 import { ConfigValueSource } from '../PageConfig.js'
 import { ConfigValueSerialized } from './PageConfigSerialized.js'
 import { generateEagerImport } from '../../../node/plugin/plugins/importUserCode/generateEagerImport.js'
