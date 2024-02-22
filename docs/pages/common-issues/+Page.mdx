@@ -2,9 +2,9 @@ import { Link } from '@brillout/docpress'
 
 ## Npm packages containing invalid code
 
-Vite purposely doesn't transpile server-side code but lets your Node.js server directly execute npm packages (in order to improve DX speed).
+Vite purposely doesn't transpile server-side code but lets Node.js directly execute npm packages (for a much faster development DX).
 
-But some npm packages contain invalid JavaScript code and you need to add them to `vite.config.js > ssr.noExternal`, see <Link href="/broken-npm-package#solution" />.
+But some npm packages contain invalid JavaScript code and you need to add them to `vite.config.js > ssr.noExternal`, see <Link href="/broken-npm-package" />.
 
 
 ## Hydration mismatch
