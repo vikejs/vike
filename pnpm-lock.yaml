@@ -1930,7 +1930,7 @@ importers:
         specifier: ^3.2.37
         version: 3.3.8(typescript@4.8.4)
 
-  test/vikeNode:
+  test/vike-node:
     dependencies:
       '@hattip/adapter-node':
         specifier: ^0.0.42
