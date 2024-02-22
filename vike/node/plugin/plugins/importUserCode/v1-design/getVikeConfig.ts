@@ -735,6 +735,7 @@ async function getConfigValueSource(
       valueIsFilePath: true,
       configEnv,
       valueIsImportedAtRuntime: true,
+      valueIsDefinedByValueFile: false,
       definedAt
     }
     return configValueSource
@@ -752,6 +753,7 @@ async function getConfigValueSource(
         locationId,
         configEnv,
         valueIsImportedAtRuntime: true,
+        valueIsDefinedByValueFile: false,
         definedAt: import_
       }
       // Load fake import
@@ -779,6 +781,7 @@ async function getConfigValueSource(
       value: configValue,
       configEnv,
       valueIsImportedAtRuntime: false,
+      valueIsDefinedByValueFile: false,
       definedAt: definedAtConfigFile
     }
     return configValueSource
@@ -792,6 +795,7 @@ async function getConfigValueSource(
       locationId,
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
+      valueIsDefinedByValueFile: true,
       definedAt: {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser:
