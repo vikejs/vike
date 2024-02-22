@@ -1,6 +1,6 @@
 import { Warning, CodeBlockTransformer, Link } from '@brillout/docpress'
 
-Some [npm packages](https://www.npmjs.com) contain invalid JavaScript code that lead to errors (see <Link href="#common-errors" />).
+Some [npm packages](https://www.npmjs.com) contain invalid JavaScript code. (See <Link href="#common-errors" />.)
 
 The most notable errors are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) code, ESM code importing [CJS](https://nodejs.org/api/modules.html#modules-commonjs-modules:~:text=CommonJS%20modules%20are%20the%20original%20way%20to%20package%20JavaScript%20code%20for%20Node.js) code in an invalid fashion, and invalid CSS imports.
 
@@ -24,11 +24,11 @@ export default {
 }
 ```
 
-> See <Link href="#why" /> for explanation why `ssr.noExternal` is a workaround.
+> See <Link href="#why" /> for an explanation why `ssr.noExternal` is a workaround.
 
 You may need to add several/nested npm packages to `ssr.noExternal`, because CJS/ESM issues sometime cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
 
-If the npm package is CJS code then, instead of `ssr.noExternal`, consider using [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop).
+If the npm package is CJS code then, instead of `ssr.noExternal`, use [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop).
 
 ```js
 // vite.config.js
@@ -47,7 +47,7 @@ export default {
 }
 ```
 
-> If none of these workarounds work, then don't hesitate to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link>.
+> If the workarounds don't work, then don't hesitate to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link>.
 
 
 ## Why
