@@ -681,10 +681,11 @@ function warnOverridenConfigValues(
   interfaceFilesOverriden.forEach((interfaceFileLoser) => {
     const loserFilePath = interfaceFileLoser.filePath.filePathToShowToUser
     const winnerFilePath = interfaceFileWinner.filePath.filePathToShowToUser
+    const confName = pc.cyan(configName)
     assertWarning(
       false,
-      `Config ${configName} defined at ${loserFilePath} is always overwritten by ${configName} defined at ${winnerFilePath}, remove the superfluous ${configName} value defined at ${interfaceFileLoser}`,
-      { onlyOnce: false }
+      `The value of the config ${confName} defined at ${loserFilePath} is always overwritten by the value defined at ${winnerFilePath}, remove the superfluous value defined at ${loserFilePath}`,
+      { onlyOnce: true }
     )
   })
 }
