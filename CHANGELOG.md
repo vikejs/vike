@@ -1,3 +1,22 @@
+## [0.4.163](https://github.com/vikejs/vike/compare/v0.4.162...v0.4.163) (2024-02-22)
+
+
+### Bug Fixes
+
+* always show a passToClient warning (closes [#1494](https://github.com/vikejs/vike/issues/1494)) ([9365fa5](https://github.com/vikejs/vike/commit/9365fa5e429831c7daf639a0edb374810e8e74a1))
+* disambiguate value file (fix [#1490](https://github.com/vikejs/vike/issues/1490)) ([b163627](https://github.com/vikejs/vike/commit/b1636273a72e9c15b82d3ff4e730a00f8e3603fa))
+* don't try to normalize .pageContext.json URLs ([#1502](https://github.com/vikejs/vike/issues/1502)) ([46e97c0](https://github.com/vikejs/vike/commit/46e97c09a7d3310f2adee9f6ab969ca1c198a552))
+* fix client-side error page rendering ([49fe40c](https://github.com/vikejs/vike/commit/49fe40c6640fc3238516b07a7d0c4bfb102bd5a0))
+* improve error message upon adding Vike's Vite plugin twice (fix [#1502](https://github.com/vikejs/vike/issues/1502)) ([6812418](https://github.com/vikejs/vike/commit/68124188a60c7b96f7c35ba4739cc05b148d8aeb))
+* improve warning upon overwritten config value ([421de1c](https://github.com/vikejs/vike/commit/421de1cb3cb8c7608b73b3e1b65f0f76b2a35656))
+
+
+### Features
+
+* `getGlobalContext{Sync,Async}()` (fix [#1501](https://github.com/vikejs/vike/issues/1501)) ([dbb52e9](https://github.com/vikejs/vike/commit/dbb52e97b026e1143aa7b826ff160f8d973df509))
+
+
+
 ## [0.4.162](https://github.com/vikejs/vike/compare/v0.4.161...v0.4.162) (2024-02-17)
 
 

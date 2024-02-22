@@ -15,7 +15,7 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.10",
     "unplugin-vue-markdown": "^0.24.3",
-    "vike": "0.4.162",
+    "vike": "0.4.163",
     "vue": "^3.3.4"
   },
   "type": "module"
