@@ -8,15 +8,15 @@ import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
 function getManifestEntry(
   id: string,
-  clientManifest: ViteManifest
+  assetsManifest: ViteManifest
 ): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertClientEntryId(id)
-  const debugInfo = getDebugInfo(id, clientManifest)
+  const debugInfo = getDebugInfo(id, assetsManifest)
 
   // Vike client entry
   if (id.startsWith('@@vike/')) {
     const manifestKeyEnd = slice(id, '@@vike'.length, 0)
-    const { manifestKey, manifestEntry } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
+    const { manifestKey, manifestEntry } = findEntryWithKeyEnd(manifestKeyEnd, assetsManifest, id)
     assert(manifestEntry && manifestKey, debugInfo)
     return { manifestEntry, manifestKey }
   }
@@ -25,7 +25,7 @@ function getManifestEntry(
   if (isVirtualFileIdPageConfigValuesAll(id)) {
     {
       const manifestKey = id
-      const manifestEntry = clientManifest[manifestKey]
+      const manifestEntry = assetsManifest[manifestKey]
       if (manifestEntry) {
         return { manifestEntry, manifestKey }
       }
@@ -38,7 +38,7 @@ function getManifestEntry(
     //  - This workaround was implemented to support Vitest runnung /tests/*
     //    - I don't know whether end users actually need this workaround? (I'm not sure what the bug actually is.)
     const manifestKeyEnd = id
-    const { manifestKey, manifestEntry } = getEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
+    const { manifestKey, manifestEntry } = getEntryWithKeyEnd(manifestKeyEnd, assetsManifest, id)
     assert(manifestEntry, debugInfo)
     return { manifestEntry, manifestKey }
   }
@@ -46,14 +46,14 @@ function getManifestEntry(
   // User files
   if (id.startsWith('/')) {
     const manifestKey = id.slice(1)
-    let manifestEntry = clientManifest[manifestKey]
+    let manifestEntry = assetsManifest[manifestKey]
     assert(manifestEntry, debugInfo)
     return { manifestEntry, manifestKey }
   }
 
   // npm package import
   if (isNpmPackageImport(id)) {
-    const found = Object.entries(clientManifest).find(([, e]) => e.name === prependEntriesDir(id))
+    const found = Object.entries(assetsManifest).find(([, e]) => e.name === prependEntriesDir(id))
     assert(found)
     const [manifestKey, manifestEntry] = found
     return { manifestEntry, manifestKey }
@@ -66,7 +66,7 @@ function getManifestEntry(
     assert(!manifestKeyEnd.startsWith('/'), debugInfo)
     manifestKeyEnd = '/' + manifestKeyEnd
     {
-      const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
+      const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, assetsManifest, id)
       if (manifestEntry) {
         assert(manifestKey, debugInfo)
         return { manifestEntry, manifestKey }
@@ -80,7 +80,7 @@ function getManifestEntry(
       assert(manifestKeyEnd.startsWith('/'), debugInfo)
     }
     {
-      const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
+      const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, assetsManifest, id)
       if (manifestEntry) {
         assert(manifestKey, debugInfo)
         return { manifestEntry, manifestKey }
@@ -92,11 +92,11 @@ function getManifestEntry(
   assert(false, debugInfo)
 }
 
-function findEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
-  const debugInfo = getDebugInfo(id, clientManifest, manifestKeyEnd)
+function findEntryWithKeyEnd(manifestKeyEnd: string, assetsManifest: ViteManifest, id: string) {
+  const debugInfo = getDebugInfo(id, assetsManifest, manifestKeyEnd)
   assert(manifestKeyEnd.startsWith('/'), debugInfo)
   const manifestKeys: string[] = []
-  for (const manifestKey in clientManifest) {
+  for (const manifestKey in assetsManifest) {
     if (manifestKey.endsWith(manifestKeyEnd)) {
       manifestKeys.push(manifestKey)
     }
@@ -107,14 +107,14 @@ function findEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifes
   if (!manifestKey) {
     return { manifestEntry: null, manifestKey: null }
   }
-  const manifestEntry = clientManifest[manifestKey]!
+  const manifestEntry = assetsManifest[manifestKey]!
   return { manifestEntry, manifestKey }
 }
 
-function getEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
-  const debugInfo = getDebugInfo(id, clientManifest, manifestKeyEnd)
+function getEntryWithKeyEnd(manifestKeyEnd: string, assetsManifest: ViteManifest, id: string) {
+  const debugInfo = getDebugInfo(id, assetsManifest, manifestKeyEnd)
   const manifestKeys: string[] = []
-  for (const manifestKey in clientManifest) {
+  for (const manifestKey in assetsManifest) {
     if (manifestKey.endsWith(manifestKeyEnd)) {
       manifestKeys.push(manifestKey)
     }
@@ -124,12 +124,12 @@ function getEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifest
   if (!manifestKey) {
     return { manifestEntry: null, manifestKey: null }
   }
-  const manifestEntry = clientManifest[manifestKey]!
+  const manifestEntry = assetsManifest[manifestKey]!
   return { manifestEntry, manifestKey }
 }
 
-function getDebugInfo(id: string, clientManifest: ViteManifest, manifestKeyEnd?: string) {
-  const manifestKeys = Object.keys(clientManifest)
+function getDebugInfo(id: string, assetsManifest: ViteManifest, manifestKeyEnd?: string) {
+  const manifestKeys = Object.keys(assetsManifest)
   if (manifestKeyEnd === undefined) {
     return { manifestKeys, id }
   } else {

@@ -47,9 +47,9 @@ async function getPageAssets(
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
-    const { clientManifest } = globalContext
-    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, clientManifest))
-    assetUrls = retrieveAssetsProd(clientDependencies, clientManifest, pageContext._includeAssetsImportedByServer)
+    const { assetsManifest } = globalContext
+    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
+    assetUrls = retrieveAssetsProd(clientDependencies, assetsManifest, pageContext._includeAssetsImportedByServer)
   }
 
   let pageAssets: PageAsset[] = []
@@ -161,8 +161,8 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
 
   return filePath
 }
-function resolveClientEntriesProd(clientEntry: string, clientManifest: ViteManifest): string {
-  const { manifestEntry } = getManifestEntry(clientEntry, clientManifest)
+function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManifest): string {
+  const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
   let { file } = manifestEntry
   assert(!file.startsWith('/'))

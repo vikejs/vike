@@ -44,12 +44,12 @@ type GlobalContext = {
       isPrerendering: false
       viteConfig: ResolvedConfig
       viteDevServer: ViteDevServer
-      clientManifest: null
+      assetsManifest: null
       pluginManifest: null
     }
   | ({
       isProduction: true
-      clientManifest: ViteManifest
+      assetsManifest: ViteManifest
       pluginManifest: PluginManifest
       viteDevServer: null
     } & (
@@ -103,7 +103,7 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
     globalObject.globalContext = {
       isProduction: false,
       isPrerendering: false,
-      clientManifest: null,
+      assetsManifest: null,
       pluginManifest: null,
       viteDevServer,
       viteConfig,
@@ -117,13 +117,13 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
   } else {
     const buildEntries = await loadImportBuild(outDir)
     assertBuildEntries(buildEntries, isPrerendering ?? false)
-    const { pageFiles, clientManifest, pluginManifest } = buildEntries
+    const { pageFiles, assetsManifest, pluginManifest } = buildEntries
     setPageFiles(pageFiles)
-    assertViteManifest(clientManifest)
+    assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
     const globalContext = {
       isProduction: true as const,
-      clientManifest,
+      assetsManifest,
       pluginManifest,
       viteDevServer: null,
       baseServer: pluginManifest.baseServer,

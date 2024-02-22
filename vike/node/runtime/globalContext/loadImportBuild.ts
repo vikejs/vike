@@ -10,7 +10,7 @@ const buildGetters = (globalThis.__vike_buildGetters = globalThis.__vike_buildGe
 
 type BuildGetters = null | {
   pageFiles: () => Promise<Record<string, unknown>>
-  clientManifest: () => Promise<Record<string, unknown>>
+  getAssetsManifest: () => Promise<Record<string, unknown>>
   pluginManifest: () => Promise<Record<string, unknown>>
 }
 
@@ -24,13 +24,13 @@ async function loadImportBuild(outDir?: string) {
     assert(buildGetters.getters)
   }
 
-  const [pageFiles, clientManifest, pluginManifest] = await Promise.all([
+  const [pageFiles, assetsManifest, pluginManifest] = await Promise.all([
     buildGetters.getters.pageFiles(),
-    buildGetters.getters.clientManifest(),
+    buildGetters.getters.getAssetsManifest(),
     buildGetters.getters.pluginManifest()
   ])
 
-  const buildEntries = { pageFiles, clientManifest, pluginManifest }
+  const buildEntries = { pageFiles, assetsManifest, pluginManifest }
   return buildEntries
 }
 
