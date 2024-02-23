@@ -1,3 +1,7 @@
+- remove ConfigGlobal type?
+- vike.dev/config
+- update all examples and remove warning from test-e2e.config.mjs
+
 - userAgent for vike-{vue,solid}
 - improve vike.dev/head
 - Remove `pageContext.data.title` from boilerplates
