@@ -169,6 +169,7 @@
     "vike": "./node/cli/bin-entry.js"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.5.3",
     "@brillout/import": "^0.2.3",
     "@brillout/json-serializer": "^0.5.8",
     "@brillout/picocolors": "^1.0.10",
