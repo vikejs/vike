@@ -32,7 +32,7 @@ import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { getVikeConfig, isV1Design, type VikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 type ResolvedId = Rollup.ResolvedId
 
@@ -48,7 +48,7 @@ const debugEnabled = isDebugEnabled(debugNamespace)
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
-  let vikeConfig: VikeConfig
+  let vikeConfig: VikeConfigObject
   let isServerAssetsFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).

@@ -3,7 +3,7 @@ export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
 export { isV1Design }
-export type { VikeConfig }
+export type { VikeConfigObject }
 export type { InterfaceValueFile }
 
 import {
@@ -108,7 +108,7 @@ type InterfaceValueFile = InterfaceFileCommons & {
 type ConfigName = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
-type VikeConfig = {
+type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   globalVikeConfig: Record<string, unknown>
@@ -116,7 +116,7 @@ type VikeConfig = {
 
 let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
-let vikeConfigPromise: Promise<VikeConfig> | null = null
+let vikeConfigPromise: Promise<VikeConfigObject> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
 function reloadVikeConfig(userRootDir: string, outDirRoot: string) {
   vikeConfigDependencies.clear()
@@ -158,7 +158,7 @@ async function getVikeConfig(
   config: ResolvedConfig,
   isDev: boolean,
   tolerateInvalidConfig = false
-): Promise<VikeConfig> {
+): Promise<VikeConfigObject> {
   const { outDirRoot } = getOutDirs(config)
   const userRootDir = config.root
   if (!vikeConfigPromise) {
@@ -325,9 +325,9 @@ async function loadVikeConfig_withErrorHandling(
   outDirRoot: string,
   isDev: boolean,
   tolerateInvalidConfig: boolean
-): Promise<VikeConfig> {
+): Promise<VikeConfigObject> {
   let hasError = false
-  let ret: VikeConfig | undefined
+  let ret: VikeConfigObject | undefined
   let err: unknown
   try {
     ret = await loadVikeConfig(userRootDir, outDirRoot, isDev)
@@ -352,7 +352,7 @@ async function loadVikeConfig_withErrorHandling(
       if (!tolerateInvalidConfig) {
         devServerIsCorrupt = true
       }
-      const dummyData: VikeConfig = {
+      const dummyData: VikeConfigObject = {
         pageConfigs: [],
         pageConfigGlobal: {
           configValueSources: {}
@@ -363,7 +363,7 @@ async function loadVikeConfig_withErrorHandling(
     }
   }
 }
-async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: boolean): Promise<VikeConfig> {
+async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: boolean): Promise<VikeConfigObject> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, isDev)
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
