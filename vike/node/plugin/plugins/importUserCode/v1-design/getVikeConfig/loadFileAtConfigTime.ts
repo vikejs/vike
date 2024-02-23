@@ -70,7 +70,7 @@ async function loadVikeConfigFile() {
   const found = findVikeConfigFile(process.cwd())
   if (!found) return null
   const { vikeConfigFilePath, userRootDir } = found
-  const { fileExports } = await transpileAndExecuteFile(vikeConfigFilePath, true, userRootDir)
+  const { fileExports } = await transpileAndExecuteFile(vikeConfigFilePath, userRootDir, true)
   return { fileExports }
 }
 function findVikeConfigFile(cwd: string): { vikeConfigFilePath: FilePathResolved; userRootDir: string } | null {

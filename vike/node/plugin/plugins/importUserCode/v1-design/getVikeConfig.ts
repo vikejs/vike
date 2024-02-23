@@ -375,6 +375,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
     importedFilesLoaded
   )
 
+  // interfaceFilesByLocationId => pageConfigs
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     objectEntries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
@@ -388,8 +389,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
           getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
             const { configName } = interfaceFile
-            const configValue = interfaceFile.fileExportsByConfigName[configName]?.configValue
-            if (isGlobalConfig(configName, configValue)) return
+            if (isGlobalConfig_interfaceFile(configName, interfaceFile)) return
             const configDef = getConfigDefinition(
               configDefinitions,
               configName,
@@ -406,19 +406,18 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
 
         let configValueSources: ConfigValueSources = {}
         await Promise.all(
-          objectEntries(configDefinitions)
-            .filter(([configName]) => !isGlobalConfig(configName))
-            .map(async ([configName, configDef]) => {
-              const sources = await resolveConfigValueSources(
-                configName,
-                configDef,
-                interfaceFilesRelevant,
-                userRootDir,
-                importedFilesLoaded
-              )
-              if (sources.length === 0) return
-              configValueSources[configName] = sources
-            })
+          objectEntries(configDefinitions).map(async ([configName, configDef]) => {
+            const sources = await resolveConfigValueSources(
+              configName,
+              configDef,
+              interfaceFilesRelevant,
+              userRootDir,
+              importedFilesLoaded,
+              true
+            )
+            if (sources.length === 0) return
+            configValueSources[configName] = sources
+          })
         )
         configValueSources = sortConfigValueSources(configValueSources, locationId)
 
@@ -553,7 +552,8 @@ async function getGlobalConfigs(
         configDef,
         interfaceFilesGlobal,
         userRootDir,
-        importedFilesLoaded
+        importedFilesLoaded,
+        false
       )
       const configValueSource = sources[0]
       if (!configValueSource) return
@@ -575,14 +575,17 @@ async function resolveConfigValueSources(
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: ImportedFilesLoaded,
+  isForGlobalConfig: boolean
 ): Promise<ConfigValueSource[]> {
   const sourcesInfo: Parameters<typeof getConfigValueSource>[] = []
 
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     const interfaceFilesDefiningConfig = interfaceFiles.filter(
-      (interfaceFile) => interfaceFile.fileExportsByConfigName[configName]
+      (interfaceFile) =>
+        interfaceFile.fileExportsByConfigName[configName] &&
+        (isForGlobalConfig || !isGlobalConfig_interfaceFile(configName, interfaceFile))
     )
     if (interfaceFilesDefiningConfig.length === 0) continue
     const visited = new WeakSet<InterfaceFile>()
@@ -1319,6 +1322,13 @@ function isGlobalConfig(configName: string, configValue: undefined | unknown): c
   if (configName === 'prerender' && !isObject(configValue)) return false
   const configNamesGlobal = getConfigNamesGlobal()
   return arrayIncludes(configNamesGlobal, configName)
+}
+function isGlobalConfig_interfaceFile(
+  configName: string,
+  interfaceFile: InterfaceFile
+): configName is ConfigNameGlobal {
+  const configValue = interfaceFile.fileExportsByConfigName[configName]?.configValue
+  return isGlobalConfig(configName, configValue)
 }
 function getConfigNamesGlobal() {
   return Object.keys(configDefinitionsBuiltInGlobal)
