@@ -41,7 +41,7 @@ function resolveConfig(configVike: ConfigVikeNode): ConfigVikeNodeResolved {
     server: {
       entry: { index: configVike.server },
       standalone: false,
-      native: []
+      native: nativeDependecies
     }
   }
 }
