@@ -45,6 +45,7 @@ function devServerPlugin(): Plugin {
         return
       }
       const mods = ctx.modules.map((m) => m.id).filter(Boolean) as string[]
+      if (!mods.length) return
       const shouldRestart = await rpc.invalidateDepTree(mods)
       if (shouldRestart) {
         await restartWorker()
