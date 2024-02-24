@@ -10,9 +10,7 @@ describe('getHint()', () => {
           "Cannot find module 'node_modules/vike-react/dist/renderer/getPageElement' imported from node_modules/vike-react/dist/renderer/onRenderHtml.js",
         code: 'ERR_MODULE_NOT_FOUND'
       })
-    ).toMatchInlineSnapshot(
-      '"Error could be a CJS/ESM issue, consider adding vike-react to ssr.noExternal, see https://vike.dev/broken-npm-package"'
-    )
+    ).toMatchInlineSnapshot('"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"')
 
     expect(
       getLog({

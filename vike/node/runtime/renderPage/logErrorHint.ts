@@ -5,8 +5,7 @@ export { isCjsEsmError }
 export { isKnownError }
 export { getHint }
 
-import pc from '@brillout/picocolors'
-import { assert, formatHintLog, isNotNullish, isObject, unique, joinEnglish } from '../utils.js'
+import { assert, formatHintLog, isNotNullish, isObject, unique } from '../utils.js'
 
 const knownErrors = [
   {
@@ -42,18 +41,7 @@ function getHint(error: unknown): null | string {
 
   const res = isCjsEsmError(error)
   if (res) {
-    const packageNames = res === true ? null : res
-    const hint = [
-      'Error could be a CJS/ESM issue, consider ',
-      !packageNames || packageNames.length === 0
-        ? 'using'
-        : `adding ${joinEnglish(
-            packageNames!.map((p) => pc.cyan(p)),
-            'or'
-          )} to`,
-      ` ${pc.cyan('ssr.noExternal')}`,
-      ', see https://vike.dev/broken-npm-package'
-    ].join('')
+    const hint = 'The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package'
     return hint
   }
 
@@ -84,6 +72,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   packageNames.forEach((packageName) => {
     assert(!['vite', 'vike'].includes(packageName))
   })
+  // We don't use this anymore: we could return `true` instead. Shall we remove returning a list of npm packages?
   return packageNames
 }
 function normalizeRes(res: string | string[]): string[] | false {
