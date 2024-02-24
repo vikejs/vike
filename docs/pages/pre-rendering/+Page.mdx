@@ -1,4 +1,5 @@
 import { RepoLink, Link } from '@brillout/docpress'
+import PreRenderDynamicRoutes from './PreRenderDynamicRoutes.mdx'
 
 
 ## What is pre-rendering?
@@ -48,7 +49,9 @@ List of options: <Link href="/prerender" />.
 
 Your pages' HTML will be rendered when you run `$ vite build` and the generated HTML files are available at `dist/client/`.
 
-For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the [`onBeforePrerenderStart()` hook](/onBeforePrerenderStart) in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
+For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link> in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
+
+<PreRenderDynamicRoutes />
 
 By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender#toggle" text={<code>prerender: false</code>} />.
 
@@ -80,7 +83,9 @@ The only difference between SSG and SSR is *when* the HTML is rendered:
 
 ## See also
 
+- <Link href="/ssr" />
 - <Link href="/prerender" />
 - <Link href="/command-prerender" />
 - <Link href="/prerender-programmatic" />
-- <Link href="/ssr" />
+- <Link href="/onBeforePrerenderStart" />
+- <Link href="/onPrerenderStart" />

@@ -1,11 +1,13 @@
 import { HookTypeScriptHints } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
+import PreRenderDynamicRoutes from '../pre-rendering/PreRenderDynamicRoutes.mdx'
 
 
 The `onBeforePrerenderStart()` hook is executed during <Link text="pre-rendering" href="/pre-rendering" />
 (and only during pre-rendering) and has two purposes:
  - For providing a list of URLs for parameterized routes (e.g. `/movie/1` and `/movie/2` for a route `/movie/@id`).
- - For fetching data in bulk in order to make pre-rendering faster.
+   <PreRenderDynamicRoutes />
+ - For fetching data in bulk, in order to make the pre-rendering process faster.
 
 
 ## For providing URLs
@@ -140,3 +142,9 @@ const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (
 ```
 
 <HookTypeScriptHints hookTypeName="OnBeforePrerenderStartAsync" />
+
+
+## See also
+
+- <Link href="/pre-rendering" />
+- <Link href="/onPrerenderStart" />
