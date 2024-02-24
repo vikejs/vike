@@ -4,7 +4,7 @@ Some [npm packages](https://www.npmjs.com) contain invalid JavaScript code.
 
 The most notable errors are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) code, ESM code importing [CJS](https://nodejs.org/api/modules.html#modules-commonjs-modules:~:text=CommonJS%20modules%20are%20the%20original%20way%20to%20package%20JavaScript%20code%20for%20Node.js) code in an invalid fashion, and invalid CSS imports.
 
-For a solution, see <Link href="#workaround" />
+For a solution, see <Link href="#workaround" />.
 
 > The reason why an npm package can contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. For further explanation, see <Link href="#why" />.
 
@@ -56,9 +56,9 @@ You may ask yourself, rightfully so, how it's possible that npm packages can pub
 
 The main reason is that some frameworks (such as Next.js) transpile the server-side code of npm packages, whereas Vite transpiles only the client-side code of npm packages. When server-side code contains invalid JavaScript then Node.js crashes and throws one of <Link href="#common-errors">these errors</Link>, while transpilers are more tolerant and transform invalid JavaScript (that Node.js isn't able to execute) into valid JavaScript (that Node.js is able to execute).
 
-Vite doesn't transpile the server-side code of npm packages by default for a much faster development DX: Node.js directly executes server-side code without involving a slow transpilition process.
+By default, Vite doesn't transpile the server-side code of npm packages for a much faster development DX: Node.js directly executes server-side code without involving a slow transpilition process.
 
-That's why adding an npm package to `ssr.noExternal` (see <Link href="#workaround" />) is a workaround if the npm package contains invalid JavaScript.
+That's why <Link href="#workaround">adding an npm package to `ssr.noExternal`</Link> is a workaround if the npm package contains invalid JavaScript.
 Essentially, by adding an npm package to `ssr.noExternal`, you replicate the behavior of frameworks like Next.js.
 
 
