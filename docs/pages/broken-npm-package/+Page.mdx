@@ -1,12 +1,12 @@
 import { Warning, CodeBlockTransformer, Link } from '@brillout/docpress'
 
-Some [npm packages](https://www.npmjs.com) contain invalid JavaScript code. (See <Link href="#common-errors" />.)
+Some [npm packages](https://www.npmjs.com) contain invalid JavaScript code.
 
 The most notable errors are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) code, ESM code importing [CJS](https://nodejs.org/api/modules.html#modules-commonjs-modules:~:text=CommonJS%20modules%20are%20the%20original%20way%20to%20package%20JavaScript%20code%20for%20Node.js) code in an invalid fashion, and invalid CSS imports.
 
-See <Link href="#workaround" />.
+For a solution, see <Link href="#workaround" />
 
-> The reason why an npm package can contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. We elaborate further at <Link href="#why" />.
+> The reason why an npm package can contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. For further explanation, see <Link href="#why" />.
 
 
 ## Workaround
@@ -24,11 +24,11 @@ export default {
 }
 ```
 
-> See <Link href="#why" /> for an explanation why `ssr.noExternal` is a workaround.
+> The seection <Link href="#why" /> explains why `ssr.noExternal` is a workaround.
 
 You may need to add several/nested npm packages to `ssr.noExternal`, because CJS/ESM issues sometime cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
 
-If the npm package is CJS code then, instead of `ssr.noExternal`, use [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop).
+If the npm package is CJS code then, instead of `ssr.noExternal`, consider using [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop).
 
 ```js
 // vite.config.js
@@ -64,7 +64,7 @@ Essentially, by adding an npm package to `ssr.noExternal`, you replicate the beh
 
 ## Common errors
 
-Common invalid JavaScript code and their errors.
+Common invalid JavaScript code.
 
 ### Cannot use import statement outside a module
 
@@ -251,7 +251,7 @@ Check your code at +Page.tsx:26.
 >
 > You can also use the temporary patch to get a more precise component trace. (For example the component trace above says `Check your code at +Page.tsx:26` but there can be hundreds of `+Page.tsx` files and it doesn't say which `+Page.tsx` file it is.)
 
-Use the component trace to find out which component is `undefined` (or an `object`). You'll likely discover that the React component is imported, while the import value is `undefined` or an object instead of a React component because of CJS/ESM interoperability quirks.
+Use the component trace to find out which component is `undefined` (or an `object`). You'll likely discover that the React component is imported, while the import value is `undefined` or an `object` (instead of a React component) because of CJS/ESM interoperability quirks.
 
 A local workaround is usually this:
 
@@ -263,9 +263,4 @@ A local workaround is usually this:
 + const SomeComponent = pkg.default
 ```
 
-For a global workaround see <Link href="#workaround" />.
-
-
-## See also
-
-- [List of examples](https://github.com/vikejs/vike/issues/621)
+For a workaround that is global (and TypeScript friendly), see <Link href="#workaround" />.
