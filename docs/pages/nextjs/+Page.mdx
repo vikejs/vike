@@ -137,19 +137,20 @@ Next.js aggressively uses [caching](https://nextjs.org/docs/app/building-your-ap
 Vike does not cache, by design, so by default your app will behave as you expect. If you do want caching, you can opt into it by using one of the many industry-standard caching tools.
 
 
-### Server-first mentality
+### Server-first orientation
 
-Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components as Server Components, so you have to mark React components with "use client" to opt-out of always hitting the server. It makes sense for many types of apps as it reduces the size of client-side bundles (the client doesn't need to download JS libraries that now by default run on the server, e.g. markdown). But the fact that Next.js leans more on the server may not be what you want.
+Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components in the React render tree as React Server Components (RSC), and if you don't want that, you have to opt-out. With RSCs, you have to inject the bundler directive "use client" (aka. start client bundling) into your React component tree at the start of every branch with components that you want to turn into Client Components. The default server orientation makes sense for _websites_ that consist of large static sections with no client interactivity. Using RSCs reduce the size of client-side bundles (and hydration), due to the JS code in RSC's only running on the server (e.g. useful for a static site using a heavy markdown library). But RSC's carry serialization and parsing overhead, has special rules (no state, context, or effects), and conceptual overhead that many developers struggle with. In all, the fact that Next.js leans more on the server (and RSC's and caching by default) may not be what you want, especially if you are building a _webapp_ which you expect will become more and more dynamic and interactive anyway.
 
-If your product either:
+If your product either should be:
 
-- leans more towards being an app than a site/page
-- has a lot of dynamically generated and/or frequently updating content (coming from a DB), where caching doesn't give a lot of gains
-- is a [PWA](https://web.dev/learn/pwa/assets-and-data#platform-specific_apps_vs_pwa) and/or local/offline-first
-- is a cross-platform app (reusing code between web and native), since native platforms are typically client-centered (and Server Components don't work on React Native)
-- should use less server resources (scalability, cost-wise), in favor of requiring slightly more processing power on the client
+- leaning more towards being an _app_ than a _site/page_.
+- having a lot of dynamically generated and/or frequently updating content (coming from a DB), where caching doesn't give a lot of gains.
+- having a [single unified model for data loading](https://x.com/DevtoolsFM/status/1756091319632683073) that may include polling and [live UI updates](https://www.flightcontrol.dev/blog/nextjs-app-router-migration-the-good-bad-and-ugly#bad-have-to-add-client-side-fetching-for-live-ui-updates).
+- local/offline-first, and/or a [PWA](https://web.dev/learn/pwa/assets-and-data#platform-specific_apps_vs_pwa).
+- cross-platform (reusing code between web and native), since native platforms are typically client-centered (and it [isn't prioritized](https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md#what-does-it-mean-for-react-native) or very clear how React Server Components would work on React Native).
+- using less server resources (scalability, cost-wise), in favor of requiring slightly more processing power on the client.
 
-then the server-first mentality of Next.js and Vercel isn't helpful and can be a hindrance.
+then the server-first orientation of Next.js and Vercel isn't helpful and can be a hindrance.
 
 With Vike, you can choose setups that fit the aforementioned use cases.
 You can partially or completely opt out of SSR (turn on/off for whole app, <Link href="/ssr">for some pages</Link>, or <Link href="/ClientOnly">for some components</Link>).
