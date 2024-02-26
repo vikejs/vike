@@ -113,7 +113,7 @@ Check whether the tests defined in `examples/some-example/*.spec.ts` are still v
 
 To develop Vike's documentation (`https://vike.dev`):
 
-1. Download and install the entire monorepo.
+1. Download and install the entire monorepo:
    ```shell
    git clone git@github.com:vikejs/vike
    # Go to the monorepo root
@@ -121,18 +121,18 @@ To develop Vike's documentation (`https://vike.dev`):
    pnpm install
    ```
 
-1. Build Vike.
+1. Build Vike:
    ```shell
    # At the monorepo root
    pnpm run build
    ```
 
-1. Develop Vike's docs.
+1. Develop Vike's docs:
    ```shell
    cd docs/ # From the monorepo root
    pnpm run dev
    ```
-   Or build Vike's docs.
+   Or build Vike's docs:
    ```shell
    cd docs/ # From the monorepo root
    pnpm run build
