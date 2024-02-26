@@ -4,6 +4,7 @@
 - [Basics](#basics)
 - [Create new example](#create-new-example)
 - [Modify existing example](#modify-existing-example)
+- [Docs](#docs)
 
 <br/>
 
@@ -63,15 +64,21 @@ pnpm exec vitest
 pnpm exec test-types
 ```
 
+> On Debian, [these additional steps](https://github.com/vikejs/vike/issues/283#issuecomment-1072974554) are required.
+
 Run only the tests of one example/boilerplate:
 
 ```shell
-cd examples/some-example/ && pnpm exec test-e2e
-# Altenertively: provide a substring of the path
-pnpm exec test-e2e ome-exampl # At the monorepo root
+cd examples/some-example/ # From the monorepo root
+pnpm exec test-e2e
 ```
 
-> On Debian, [these additional steps](https://github.com/vikejs/vike/issues/283#issuecomment-1072974554) are required.
+Alternatively:
+
+```shell
+# At the monorepo root
+pnpm exec test-e2e ome-exampl
+```
 
 <br/>
 
@@ -92,9 +99,41 @@ Follow the setup instructions at [Basics](#basics).
 To run the example:
 
 ```shell
-cd examples/some-example/
+cd examples/some-example/ # From the monorepo root
 # See package.json#scripts, e.g. package.json#scripts['dev']:
 pnpm run dev
 ```
 
 Check whether the tests defined in `examples/some-example/*.spec.ts` are still valid and make changes accordingly. See [Basics](#basics) for how to run the example's tests.
+
+<br/>
+
+
+## Docs
+
+To develop Vike's documentation (`https://vike.dev`):
+
+1. Download and install the entire monorepo.
+   ```shell
+   git clone git@github.com:vikejs/vike
+   # Go to the monorepo root
+   cd vike/
+   pnpm install
+   ```
+
+1. Build Vike.
+   ```shell
+   # At the monorepo root
+   pnpm run build
+   ```
+
+1. Develop Vike's docs.
+   ```shell
+   cd docs/ # From the monorepo root
+   pnpm run dev
+   ```
+   Or build Vike's docs.
+   ```shell
+   cd docs/ # From the monorepo root
+   pnpm run build
+   ```
