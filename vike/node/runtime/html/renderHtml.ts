@@ -10,7 +10,7 @@ export type { DocumentHtml }
 export type { TemplateWrapped }
 
 import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils.js'
-import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
+import { htmlPartsToString, injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
 import type { PageContextInjectAssets } from './injectAssets.js'
 import {
   processStream,
@@ -23,7 +23,7 @@ import {
 import { isStreamReactStreaming } from './stream/react-streaming.js'
 import type { InjectToStream } from './stream/react-streaming.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
-import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
+import { getHtmlTags, type PreloadFilter } from './injectAssets/getHtmlTags.js'
 import { getGlobalContext } from '../globalContext.js'
 import pc from '@brillout/picocolors'
 
@@ -57,7 +57,9 @@ async function renderDocumentHtml(
   if (isEscapedString(documentHtml)) {
     objectAssign(pageContext, { _isStream: false as const })
     let htmlString = getEscapedString(documentHtml)
-    htmlString = await injectHtmlTagsToString([htmlString], pageContext, injectFilter)
+    if (!pageContext.skipInject) {
+      htmlString = await injectHtmlTagsToString([htmlString], pageContext, injectFilter)
+    }
     return htmlString
   }
   if (isStream(documentHtml)) {
@@ -72,7 +74,14 @@ async function renderDocumentHtml(
     if (!('htmlStream' in render)) {
       objectAssign(pageContext, { _isStream: false as const })
       const { htmlPartsAll } = render
-      const htmlString = await injectHtmlTagsToString(htmlPartsAll, pageContext, injectFilter)
+      var htmlString
+      if (pageContext.skipInject) {
+        const htmlTags = await getHtmlTags(pageContext, null, injectFilter)
+        const pageAssets = await pageContext.__getPageAssets()
+        htmlString = htmlPartsToString(htmlPartsAll, pageAssets)        
+      } else {
+        htmlString = await injectHtmlTagsToString(htmlPartsAll, pageContext, injectFilter)
+      }
       return htmlString
     } else {
       objectAssign(pageContext, { _isStream: true as const })

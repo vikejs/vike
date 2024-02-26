@@ -138,6 +138,7 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
   return hookFound
 }
 
+// todo: allow .skipInject here
 function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook) {
   let documentHtml: null | DocumentHtml = null
   let pageContextPromise: PageContextPromise = null

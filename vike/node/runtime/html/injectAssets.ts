@@ -26,6 +26,7 @@ type PageContextInjectAssets = {
   _baseServer: string
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
+  skipInject?: boolean
 } & PageContextSerialization
 
 async function injectHtmlTagsToString(
@@ -115,7 +116,7 @@ async function resolvePageContextPromise(pageContext: {
   Object.assign(pageContext, pageContextProvidedByUser)
 }
 
-function htmlPartsToString(htmlParts: HtmlPart[], pageAssets: PageAsset[]): string {
+export function htmlPartsToString(htmlParts: HtmlPart[], pageAssets: PageAsset[]): string {
   let htmlString = ''
   htmlParts.forEach((p) => {
     htmlString += typeof p === 'string' ? p : p(pageAssets)
