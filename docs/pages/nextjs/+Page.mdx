@@ -1,23 +1,16 @@
 import { Link } from '@brillout/docpress'
 
 Vike differs from Next.js in three fundamental ways:
- 1. Vike is UI Framework agnostic.
-    > Vike is completely agnostic to React and its source code has zero dependency on React. You can actually use Vike with any other UI Framework (Vue, Preact, Solid, etc.).
-    >
-    > With Vike, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js.
- 1. Vike is server and deployment agnostic.
-    > With Vike, you keep full control over your server and you can use any deployment strategy.
- 1. Vike is full-fledged yet minimal.
-    > [All dependencies](https://github.com/vikejs/vike/blob/3d042da/vike/package.json#L15-L26) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully owned (e.g. we own [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding Vike to your Vite app doesn't add any frivolous dependency.
-    >
-    > We believe Vike hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
+ 1. Vike is <Link href="#ui-framework-agnostic" doNotInferSectionTitle />.
+ 1. Vike is <Link href="#deployment/hosting-agnostic" doNotInferSectionTitle />.
+ 1. Vike is full-fledged yet <Link href="#minimal-and-self-contained-(no-deps)" doNotInferSectionTitle />.
 
 Beyond these structural differences,
-Vike introduces features such as blazing fast HMR (powered by Vite), optional SSR, Domain-driven File Structure, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, [Build Your Own Framework](https://vike.land), etc.
+Vike introduces features such as blazing fast HMR (powered by Vite), optional SSR, Domain-driven File Structure, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, <Link href="#build-your-own-framework" doNotInferSectionTitle />, etc.
 
 > Turbopack replicates some of Vite's techniques, but it's still in its infancy and it will take a while until Turbopack is production-ready. With Vite, you can use lightning fast DX today.
 
-Finally, Vike is a community project: instead of leaning on a framework with business interests that are fundamentally at odds with yours, use a community-driven project that is sponsored by, made for, and made from the community.
+Finally, Vike is a community project: instead of leaning on a framework with business interests that are fundamentally at odds with yours, use a community-driven project that is sponsored by, made for, and made by the community.
 
 
 
@@ -82,6 +75,10 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 
 ## UI Framework agnostic
 
+> Vike is completely agnostic to React and its source code has zero dependency on React. You can actually use Vike with any other UI Framework (Vue, Preact, Solid, etc.).
+>
+> With Vike, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js.
+
 With Vike, you can integrate React yourself. This means you need to write a little bit more boilerplate, but in exchange you get a lot more flexibility.
 You can even use [vike-react](https://vike.dev/react) to do it for you, and later when you need more control you can eject.
 
@@ -129,6 +126,8 @@ Edge deployment with Next.js is another story. [Cloudflare](https://blog.cloudfl
 
 ### Vike
 
+> With Vike, you keep full control over your server and you can use any deployment strategy.
+
 Vike is server and deployment agnostic, which means you can use any hosting provider and any server/serverless setup of choice. Vike is built with Serverless and Edge compatibility from the start.
 
 From a server perspective, <Link text="Vike is just a middleware" href="/deploy" /> that doesn't depend on Node.js and that can run anywhere where JavaScript runs such as AWS, Vercel, Cloudflare, Deno Deploy, or even in the browser.
@@ -142,6 +141,14 @@ You can develop apps with a server that doesn't depend on Node.js and deploy it 
 To integrate Vike, you simply add Vike's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function, etc.).
 
 With Vike, you have full control over your server and over your deployment strategy, two critical aspects of your business.
+
+
+
+## Minimal and self-contained (no deps)
+
+[All dependencies](https://github.com/vikejs/vike/blob/3d042da/vike/package.json#L15-L26) are either shared with Vite (e.g. [`fast-glob`](https://github.com/mrmlnc/fast-glob)) or fully owned (e.g. we own [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)). Adding Vike to your Vite app doesn't add any frivolous dependency.
+
+We believe Vike hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
 
 
 
@@ -216,3 +223,5 @@ You can build your own framework with only hundreds of lines of code.
 > While there are many [uses cases for building your own framework](https://vike.land), the most prominent one is [building company internal frameworks](https://vike.land#scale).
 
 We foster the proliferation of React frameworks, highly-tailored to specific use cases.
+
+Read more at [Vike.land](https://vike.land).
