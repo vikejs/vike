@@ -45,13 +45,15 @@ function buildConfig(): Plugin {
   let isServerAssetsFixEnabled: boolean
   let isSsrBuild: boolean
   let outDirs: OutDirs
+  let config: ResolvedConfig
   return {
     name: 'vike:buildConfig',
     apply: 'build',
     enforce: 'post',
     configResolved: {
       order: 'post',
-      async handler(config) {
+      async handler(config_) {
+        config = config_
         assertNodeEnv()
         assertRollupInput(config)
         const entries = await getEntries(config)
@@ -98,7 +100,7 @@ function buildConfig(): Plugin {
           if (!isServerAssetsFixEnabled) {
             await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
           } else {
-            const clientManifestMod = await fixServerAssets(outDirs)
+            const clientManifestMod = await fixServerAssets(config)
             await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
           }
           await fs.rm(clientManifestFilePath)

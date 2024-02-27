@@ -7,6 +7,7 @@ export { distFileNames }
 import { assertPosixPath, assert, assertUsage } from '../utils.js'
 import path from 'path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
+import { getAssetsDir } from '../shared/getAssetsDir.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
@@ -188,11 +189,4 @@ function getRollupOutputs(config: ResolvedConfig) {
     return [output]
   }
   return output
-}
-
-function getAssetsDir(config: ResolvedConfig) {
-  let { assetsDir } = config.build
-  assertUsage(assetsDir, `${assetsDir} cannot be an empty string`)
-  assetsDir = assetsDir.split(/\/|\\/).filter(Boolean).join('/')
-  return assetsDir
 }

@@ -5,9 +5,11 @@ import fs from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
-import { OutDirs, assert, pLimit, unique } from '../../utils.js'
+import { assert, getOutDirs, pLimit, unique } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { manifestTempFile } from '../buildConfig.js'
+import { ResolvedConfig } from 'vite'
+import { getAssetsDir } from '../../shared/getAssetsDir.js'
 
 /**
  * true  => use workaround config.build.ssrEmitAssets
@@ -22,12 +24,13 @@ function fixServerAssets_isEnabled(): boolean {
 }
 
 /** https://github.com/vikejs/vike/issues/1339 */
-async function fixServerAssets(outDirs: OutDirs): Promise<ViteManifest> {
+async function fixServerAssets(config: ResolvedConfig): Promise<ViteManifest> {
+  const outDirs = getOutDirs(config)
   const clientManifest = await loadManifest(outDirs.outDirClient)
   const serverManifest = await loadManifest(outDirs.outDirServer)
 
   const { clientManifestMod, filesToCopy } = addServerAssets(clientManifest, serverManifest)
-  await copyAssets(filesToCopy, outDirs)
+  await copyAssets(filesToCopy, config)
 
   return clientManifestMod
 }
@@ -39,10 +42,12 @@ async function loadManifest(outDir: string) {
   assert(manifest)
   return manifest
 }
-async function copyAssets(filesToCopy: string[], { outDirClient, outDirServer }: OutDirs) {
-  const assetsDirServer = path.posix.join(outDirServer, 'assets')
-  if (!filesToCopy.length) return
+async function copyAssets(filesToCopy: string[], config: ResolvedConfig) {
+  const { outDirClient, outDirServer } = getOutDirs(config)
+  const assetsDir = getAssetsDir(config)
+  const assetsDirServer = path.posix.join(outDirServer, assetsDir)
   assert(existsSync(assetsDirServer))
+  if (!filesToCopy.length) return
   const concurrencyLimit = pLimit(10)
   await Promise.all(
     filesToCopy.map((file) =>
