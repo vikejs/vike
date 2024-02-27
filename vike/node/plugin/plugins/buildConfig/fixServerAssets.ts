@@ -46,8 +46,8 @@ async function copyAssets(filesToCopy: string[], config: ResolvedConfig) {
   const { outDirClient, outDirServer } = getOutDirs(config)
   const assetsDir = getAssetsDir(config)
   const assetsDirServer = path.posix.join(outDirServer, assetsDir)
-  assert(existsSync(assetsDirServer))
   if (!filesToCopy.length) return
+  assert(existsSync(assetsDirServer))
   const concurrencyLimit = pLimit(10)
   await Promise.all(
     filesToCopy.map((file) =>
