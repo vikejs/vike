@@ -9,6 +9,7 @@ import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
+import { manifestTempFile } from './buildConfig.js'
 
 let forceExit = false
 
@@ -65,10 +66,11 @@ async function triggerFullBuild(
 ) {
   if (config.build.ssr) return // already triggered
   if (isDisabled(configVike)) return
-  /* Is this @vitejs/plugin-legacy workaround still needed? Should we re-implement it?
-  // vike.json missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's build() API) => skip
-  if (!bundle['vike.json']) return
-  */
+  // Workaround for @vitejs/plugin-legacy
+  //  - The legacy plugin triggers its own Rollup build for the client-side.
+  //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
+  //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
+  if (!bundle[manifestTempFile]) return
 
   const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
   const configInline = {
