@@ -21,7 +21,7 @@ export { handleNodeEnv_vitePluginVercel }
 
 import pc from '@brillout/picocolors'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-import { assertUsage } from './assert.js'
+import { assertWarning } from './assert.js'
 import { vikeVitePluginLoadedInProductionError } from './assertIsNotProductionRuntime.js'
 assertIsNotBrowser()
 
@@ -36,20 +36,21 @@ function assertNodeEnv_runtime(viteDevServerExists: boolean) {
   // Calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
   if (viteDevServerExists === isDev) return
   const nodeEnvDesc = getNodeEnvDesc()
-  // We should change this to be a warning if it blocks users (e.g. if a bad-citizen tool sets a wrong process.env.NODE_ENV value)
-  assertUsage(
+  // TODO: make it assertUsage() again once #1528 is implemented.
+  assertWarning(
     false,
     `Vite's development server was${
       viteDevServerExists ? '' : "n't"
-    } instantiated while the ${nodeEnvDesc} which is contradictory, see https://vike.dev/NODE_ENV`
+    } instantiated while the ${nodeEnvDesc} which is contradictory, see https://vike.dev/NODE_ENV`,
+    { onlyOnce: true }
   )
 }
 
 function assertNodeEnv_onVikePluginLoad() {
   const nodeEnv = getNodeEnv()
   if (nodeEnv === 'test') return
-  // We should change this to be a warning if it blocks users (e.g. if a bad-citizen tool sets a wrong process.env.NODE_ENV value).
-  assertUsage(
+  // TODO: make it assertUsage() again once #1528 is implemented.
+  assertWarning(
     /* We can enable this assertion after Vike's CLI is implemented and using Vite's CLI is deprecated (we can then check whether the context is a `$ vike build`).
     isNodeEnvDev() || isVikeCliBuild(),
     /*/
@@ -60,7 +61,8 @@ function assertNodeEnv_onVikePluginLoad() {
       '(which Vike interprets as a non-development environment https://vike.dev/NODE_ENV)',
       'while the vike/plugin module is loaded.',
       vikeVitePluginLoadedInProductionError
-    ].join(' ')
+    ].join(' '),
+    { onlyOnce: true }
   )
 }
 
@@ -108,5 +110,8 @@ function assertNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
   const isDev = isNodeEnvDev()
   if (!isDev) return
   const nodeEnvDesc = getNodeEnvDesc()
-  assertUsage(false, `The ${nodeEnvDesc} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`)
+  // TODO: make it assertUsage() again once #1528 is implemented.
+  assertWarning(false, `The ${nodeEnvDesc} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`, {
+    onlyOnce: true
+  })
 }
