@@ -1,3 +1,15 @@
+## [0.4.164](https://github.com/vikejs/vike/compare/v0.4.163...v0.4.164) (2024-02-28)
+
+
+### Bug Fixes
+
+* fix support for config.build.assetsDir ([#1154](https://github.com/vikejs/vike/issues/1154)) ([407cb5c](https://github.com/vikejs/vike/commit/407cb5cd466767fc3c4e7e07d894973f45bd58ea))
+* improve hint for ESM/CJS errors ([a53cd6c](https://github.com/vikejs/vike/commit/a53cd6ce904ce3b3fa1aa7807e5b25c2a4aa0d26))
+* re-implement workaround for legacy plugin (fix [#1154](https://github.com/vikejs/vike/issues/1154)) ([2305d5b](https://github.com/vikejs/vike/commit/2305d5b1a2918dfdc3693553efe36ee0e680bea6))
+* warn instead of error upon unexpected NODE_ENV value ([#1526](https://github.com/vikejs/vike/issues/1526), [#1482](https://github.com/vikejs/vike/issues/1482)) ([f0bf7ee](https://github.com/vikejs/vike/commit/f0bf7ee8a404b5686545b50ad4b56936c7f6274d))
+
+
+
 ## [0.4.163](https://github.com/vikejs/vike/compare/v0.4.162...v0.4.163) (2024-02-22)
 
 
