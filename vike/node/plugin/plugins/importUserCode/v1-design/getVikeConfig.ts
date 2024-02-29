@@ -413,7 +413,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               interfaceFilesRelevant,
               userRootDir,
               importedFilesLoaded,
-              true
+              false
             )
             if (sources.length === 0) return
             configValueSources[configName] = sources
@@ -553,7 +553,7 @@ async function getGlobalConfigs(
         interfaceFilesGlobal,
         userRootDir,
         importedFilesLoaded,
-        false
+        true
       )
       const configValueSource = sources[0]
       if (!configValueSource) return
