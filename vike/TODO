@@ -7,6 +7,8 @@
 - +client https://github.com/vikejs/vike/commit/732568999c11bd2904d0e2aec19a370c40594315
 - Review & merge Dani's PRs
 
+- New setting `cjsInterop`? Or `fixNpmPackage`?
+
 Docs:
  - Improve /nextjs
  - Add /{react,vue,solid} links under "Overview"
