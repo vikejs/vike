@@ -154,6 +154,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
 
   logDirectly(err, 'error')
 
+  // Needs to be called after logging the error.
   onRuntimeError(err)
 }
 

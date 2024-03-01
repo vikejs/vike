@@ -46,12 +46,14 @@ function intercept(logType: LogType, config: ResolvedConfig) {
       return
     }
 
-    // Only allow Vite to clear its first log. All other clearing is controlled by vike.
+    // Only allow Vite to clear for its first log. All other clearing is controlled by vike.
     if (options.clear) clearLogs({ clearIfFirstLog: true })
     if (options.error) store?.markErrorAsLogged(options.error)
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
     logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag)
+
+    // Needs to be called after logging the error.
     if (options.error) onRuntimeError(options.error)
   }
 }
