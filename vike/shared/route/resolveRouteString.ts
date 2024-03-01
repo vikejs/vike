@@ -138,7 +138,6 @@ function parseRouteString(routeString: string) {
 }
 
 function getUrlFromRouteString(routeString: string): null | string {
-  assert(routeString.startsWith('/'))
   if (isStaticRouteString(routeString)) {
     const url = routeString
     return url
