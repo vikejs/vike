@@ -64,8 +64,7 @@ const globalObject = getGlobalObject('runtime/renderPage.ts', {
   pendingRequestsCount: 0
 })
 let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
-  pageContextReturn: await ret(),
-  onRequestDone: () => {}
+  pageContextReturn: await ret()
 })
 const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
   renderPage_wrapper = wrapper
@@ -103,13 +102,12 @@ async function renderPage<
   logHttpRequest(urlOriginal, httpRequestId)
   globalObject.pendingRequestsCount++
 
-  const { pageContextReturn, onRequestDone } = await renderPage_wrapper(httpRequestId, () =>
+  const { pageContextReturn } = await renderPage_wrapper(httpRequestId, () =>
     renderPageAndPrepare(pageContextInit, httpRequestId)
   )
 
   logHttpResponse(urlOriginal, httpRequestId, pageContextReturn)
   globalObject.pendingRequestsCount--
-  onRequestDone()
 
   checkType<PageContextAfterRender>(pageContextReturn)
   return pageContextReturn as any

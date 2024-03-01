@@ -34,11 +34,6 @@ function intercept(logType: LogType, config: ResolvedConfig) {
     if (options.error && store?.shouldErrorBeSwallowed(options.error)) {
       return
     }
-    // Remove this once https://github.com/vitejs/vite/pull/13495 is released and widely used
-    if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
-      store.markErrorMessageAsLogged(msg)
-      return
-    }
 
     if (options.error) {
       // Vite does a poor job of handling errors.

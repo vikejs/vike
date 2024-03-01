@@ -28,7 +28,6 @@ type HttpRequestAsyncStore = {
   // Error swallowing mechanism
   shouldErrorBeSwallowed: (err: unknown) => boolean
   markErrorAsLogged: (err: unknown) => void
-  markErrorMessageAsLogged: (errMsg: string) => void
   errorDebugNoteAlreadyShown: boolean
 }
 let asyncLocalStorage: null | AsyncLocalStorageType<HttpRequestAsyncStore> = null
@@ -63,30 +62,14 @@ async function installHttpRequestAsyncStore(): Promise<void> {
       }
     }
 
-    // Remove once https://github.com/vitejs/vite/pull/13495 is released
-    const swallowedErrorMessages = new Set<string>()
-    const markErrorMessageAsLogged = (errMsg: string) => {
-      swallowedErrorMessages.add(errMsg)
-    }
-    const onRequestDone = () => {
-      swallowedErrorMessages.forEach((errMsg) => {
-        if (!Array.from(loggedErrors).some((err) => String(err).includes(errMsg))) {
-          console.error('loggedErrors', loggedErrors)
-          console.error('swallowedErrorMessages', swallowedErrorMessages)
-          assert(false)
-        }
-      })
-    }
-
     const store = {
       httpRequestId,
       markErrorAsLogged,
-      markErrorMessageAsLogged,
       shouldErrorBeSwallowed,
       errorDebugNoteAlreadyShown: false
     }
     const pageContextReturn = await asyncLocalStorage.run(store, renderPage)
-    return { pageContextReturn, onRequestDone }
+    return { pageContextReturn }
   })
   return
 }

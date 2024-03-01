@@ -5,8 +5,8 @@ export { plugin as ssr }
 export type { ConfigVikeUserProvided as UserConfig }
 export { PROJECT_VERSION as version } from './utils.js'
 
-import type { Plugin } from 'vite'
-import { assertNodeEnv_onVikePluginLoad, assertUsage, markEnvAsVikePluginLoaded } from './utils.js'
+import { version, type Plugin } from 'vite'
+import { assertNodeEnv_onVikePluginLoad, assertUsage, isVersionOrAbove, markEnvAsVikePluginLoaded } from './utils.js'
 import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
@@ -30,6 +30,7 @@ import { fileEnv } from './plugins/fileEnv.js'
 
 assertNodeEnv_onVikePluginLoad()
 markEnvAsVikePluginLoaded()
+assertViteVersion()
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(vikeConfig?: ConfigVikeUserProvided): any {
@@ -76,3 +77,8 @@ Object.defineProperty(plugin, 'apply', {
     )
   }
 })
+
+// node_modules/vike/package.json#peerDependencies.vite isn't enough as users can ignore it
+function assertViteVersion() {
+  assertUsage(isVersionOrAbove(version, '4.4.0'), `Vite ${version} isn't supported, use Vite >= 4.4.0 instead.`)
+}
