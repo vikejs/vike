@@ -6,7 +6,6 @@ import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
 import { isErrorDebug } from './isErrorDebug.js'
-import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
@@ -30,18 +29,11 @@ function intercept(logType: LogType, config: ResolvedConfig) {
 
     const store = getHttpRequestAsyncStore()
 
-    // Dedupe Vite error messages
-    if (options.error && store?.shouldErrorBeSwallowed(options.error)) {
-      return
-    }
-
     if (options.error) {
       // Vite does a poor job of handling errors.
       //  - It doesn't format error code snippets.
       //  - It only shows error.message which means that crucial information such as error.id isn't shown to the user.
       logViteError(options.error, store?.httpRequestId)
-      // Needs to be called after logging the error.
-      onRuntimeError(options.error)
       // We swallow Vite's message: we didn't see it add any value so far.
       //  - It can even be confusing, such as the following:
       //    ```
