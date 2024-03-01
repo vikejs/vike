@@ -6,7 +6,7 @@
 // In other words: everywhere except in production
 
 export { logViteAny }
-export { logViteErrorContainingCodeSnippet }
+export { logViteError }
 export { logConfigInfo }
 export { logConfigError }
 export { logConfigErrorRecover }
@@ -100,7 +100,7 @@ function logRuntimeError(
 ): void {
   logErr(err, httpRequestId)
 }
-function logViteErrorContainingCodeSnippet(err: ErrorWithCodeSnippet): void {
+function logViteError(err: unknown): void {
   logErr(err)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
