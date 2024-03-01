@@ -9,7 +9,7 @@
     "@vue/compiler-sfc": "^3.2.33",
     "@vue/server-renderer": "^3.2.33",
     "vite": "^5.0.10",
-    "vike": "0.4.164",
+    "vike": "0.4.165",
     "vue": "^3.2.33"
   },
   "type": "module"

@@ -1,3 +1,16 @@
+## [0.4.165](https://github.com/vikejs/vike/compare/v0.4.164...v0.4.165) (2024-03-01)
+
+
+### Bug Fixes
+
+* improve error deduping ([9e34c0d](https://github.com/vikejs/vike/commit/9e34c0dd82c372edc82782511e4c01bb665eead8))
+* improve error preamble ([d547664](https://github.com/vikejs/vike/commit/d54766478f61b601d42914a65610172c8d410d1d))
+* improve logging of errors coming from Vite ([5a42d7d](https://github.com/vikejs/vike/commit/5a42d7d721baec62e655293dec9d80e4e5fa7541))
+* remove faulty assert() (fix [#1529](https://github.com/vikejs/vike/issues/1529)) ([9fa3358](https://github.com/vikejs/vike/commit/9fa3358aea51bb0aecb9208aa1ea1a6497402361))
+* simplify error handling logic and require >= vite@4.4.0 ([60d6ef4](https://github.com/vikejs/vike/commit/60d6ef4520b844d9d85225bc507a71ef05f7d132))
+
+
+
 ## [0.4.164](https://github.com/vikejs/vike/compare/v0.4.163...v0.4.164) (2024-02-28)
 
 
