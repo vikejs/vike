@@ -39,7 +39,8 @@ function intercept(logType: LogType, config: ResolvedConfig) {
       //    ```
       //    Error when evaluating SSR module virtual:vike:pageConfigValuesAll:server:/pages/abort: failed to import "/pages/abort/+Page.mdx"
       //    ```
-      if (!isErrorDebug()) return
+      assert(!isErrorDebug())
+      return
     }
 
     // Only allow Vite to clear for its first log. All other clearing is controlled by vike.

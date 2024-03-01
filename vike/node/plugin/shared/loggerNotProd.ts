@@ -34,11 +34,7 @@ import {
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { isErrorDebug } from './isErrorDebug.js'
-import {
-  isErrorWithCodeSnippet,
-  getPrettyErrorWithCodeSnippet,
-  type ErrorWithCodeSnippet
-} from './loggerNotProd/errorWithCodeSnippet.js'
+import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,
   getConfigBuildErrorFormatted
