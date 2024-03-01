@@ -95,13 +95,17 @@ function logConfigErrorRecover(): void {
 
 function logRuntimeError(
   err: unknown,
-  /** `httpRequestId` is `null` when pre-rendering */
+  // httpRequestId is `null` when pre-rendering
   httpRequestId: number | null
 ): void {
   logErr(err, httpRequestId)
 }
-function logViteError(err: unknown): void {
-  logErr(err)
+function logViteError(
+  err: unknown,
+  // httpRequestId is `undefined` if development environment doesn't support async stores
+  httpRequestId: number | undefined
+): void {
+  logErr(err, httpRequestId)
 }
 function logErr(err: unknown, httpRequestId: number | null = null): void {
   warnIfErrorIsNotObject(err)
