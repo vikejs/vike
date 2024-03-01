@@ -94,16 +94,16 @@ function logRuntimeError(
   // httpRequestId is `null` when pre-rendering
   httpRequestId: number | null
 ): void {
-  logErr(err, httpRequestId)
+  logErr(err, httpRequestId, false)
 }
 function logViteError(
   err: unknown,
   // httpRequestId is `undefined` if development environment doesn't support async stores
   httpRequestId: number | undefined
 ): void {
-  logErr(err, httpRequestId)
+  logErr(err, httpRequestId, true)
 }
-function logErr(err: unknown, httpRequestId: number | null = null): void {
+function logErr(err: unknown, httpRequestId: number | null = null, errorComesFromVite: boolean): void {
   warnIfErrorIsNotObject(err)
 
   if (isAbortError(err) && !isErrorDebug()) {
@@ -149,7 +149,7 @@ function logErr(err: unknown, httpRequestId: number | null = null): void {
       category
     )
   } else if (category) {
-    logFallbackErrIntro(category)
+    logFallbackErrIntro(category, errorComesFromVite)
   }
 
   logDirectly(err, 'error')
@@ -191,12 +191,13 @@ function logConfigError(err: unknown): void {
     if (logged) return
   }
 
-  if (category) logFallbackErrIntro(category)
+  if (category) logFallbackErrIntro(category, false)
   logDirectly(err, 'error')
 }
 
-function logFallbackErrIntro(category: LogCategory) {
-  logWithVikeTag(pc.bold(pc.red('[Error] An error was thrown:')), 'error', category)
+function logFallbackErrIntro(category: LogCategory, errorComesFromVite: boolean) {
+  const msg = errorComesFromVite ? 'Transpilation error' : 'An error was thrown'
+  logWithVikeTag(pc.bold(pc.red(`[Error] ${msg}:`)), 'error', category)
 }
 
 function getConfigCategory(): LogCategory {
