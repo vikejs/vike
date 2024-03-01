@@ -3,9 +3,9 @@ import { UiFrameworkVikeExtension } from '../../components'
 
 <Construction>This is currently being implemented. [ETA very soon](https://github.com/vikejs/vike/issues/1468).</Construction>
 
-The `+client.js` file adds client-side JavaScript. It's usually used for initializing client-side code, such as <Link href="/errors">error tracking</Link>.
+The `+client.js` file adds client-side JavaScript. The code of `+client.js` is executed only once at the very beginning when the user goes to your website.
 
-The code of `+client.js` is executed only once at the very beginning when the user goes to your website.
+It's usually used for initializing the client-side code of <Link href="/errors">error tracking</Link>, user tracking, cookie consent, CSS frameworks, etc.
 
 > If you inspect the HTML of your page, you'll see that it's the first JavaScript file to be referenced, and thus the first JavaScript file to be executed.
 
@@ -14,13 +14,13 @@ The code of `+client.js` is executed only once at the very beginning when the us
 > - <Link href="/onPageTransitionStart" />
 > - <Link href="/onPageTransitionEnd" />
 >
-> If you don't use a <UiFrameworkVikeExtension />, then also see the <Link href="/onRenderClient" /> hook.
+> If you don't use a <UiFrameworkVikeExtension />, then also see <Link href="/onRenderClient" />.
 
 ```js
 // /pages/+client.js
 // Environment: client
 
-console.log("I'm the first line of executed client-side JavaScript.")
+console.log("I'm the first line of client-side JavaScript.")
 ```
 
 ## Examples
