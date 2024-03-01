@@ -6,7 +6,7 @@ export type { ConfigVikeUserProvided as UserConfig }
 export { PROJECT_VERSION as version } from './utils.js'
 
 import { version, type Plugin } from 'vite'
-import { assertNodeEnv_onVikePluginLoad, assertUsage, isVersionOrAbove, markEnvAsVikePluginLoaded } from './utils.js'
+import { assertNodeEnv_onVikePluginLoad, assertUsage, assertVersion, markEnvAsVikePluginLoaded } from './utils.js'
 import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
@@ -80,5 +80,5 @@ Object.defineProperty(plugin, 'apply', {
 
 // node_modules/vike/package.json#peerDependencies.vite isn't enough as users can ignore it
 function assertViteVersion() {
-  assertUsage(isVersionOrAbove(version, '4.4.0'), `Vite ${version} isn't supported, use Vite >= 4.4.0 instead.`)
+  assertVersion('Vite', version, '4.4.0')
 }

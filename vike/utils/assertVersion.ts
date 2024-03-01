@@ -1,6 +1,18 @@
+export { assertVersion }
 export { isVersionOrAbove }
 
-import { assert } from './assert.js'
+import { assert, assertUsage } from './assert.js'
+
+function assertVersion(
+  dependencyName: 'Vite' | 'Node.js',
+  versionActual: string,
+  versionExpected: `${number}.${number}.${number}`
+) {
+  assertUsage(
+    isVersionOrAbove(versionActual, versionExpected),
+    `${dependencyName} ${versionActual} isn't supported, use ${dependencyName} >= ${versionExpected} instead.`
+  )
+}
 
 function isVersionOrAbove(versionActual: string, versionExpected: `${number}.${number}.${number}`): boolean {
   const p1 = parseVersion(versionActual)
