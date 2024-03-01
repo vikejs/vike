@@ -627,7 +627,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Client Entry',
+    title: '`+client.js`',
     url: '/client'
   },
   {
