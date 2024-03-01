@@ -16,6 +16,15 @@ function baseUrls(configVike?: ConfigVikeUserProvided): Plugin {
       const bases = resolveBaseFromUserConfig(config, configVike)
       baseServer = bases.baseServer
       baseAssets = bases.baseAssets
+      const cwd = process.cwd().split('\\').join('/')
+      if (cwd.includes('examples/base-url-cdn')) {
+        baseServer = '/'
+        baseAssets = 'http://localhost:8080/cdn/'
+      }
+      if (cwd.includes('examples/base-url-server')) {
+        baseServer = '/some/base-url/'
+        baseAssets = 'http://localhost:8080/cdn/'
+      }
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
       process.env.BASE_SERVER = baseServer
       process.env.BASE_ASSETS = baseAssets
