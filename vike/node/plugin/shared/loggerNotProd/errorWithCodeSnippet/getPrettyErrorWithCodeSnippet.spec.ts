@@ -12,6 +12,7 @@ import { errVueHtml } from './fixture-errors/errVueHtml.js'
 import { errSwc } from './fixture-errors/errSwc.js'
 import { errSwcBig } from './fixture-errors/errSwcBig.js'
 import { errMdx1 } from './fixture-errors/errMdx1.js'
+import { errMdx2 } from './fixture-errors/errMdx2.js'
 import { errPostcss } from './fixture-errors/errPostcss.js'
 
 // To generate new test cases:
@@ -162,10 +163,13 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
 })
 
 describe('getPrettyErrorWithCodeSnippet() - failure', () => {
+  // We can't prettify these errors because there isn't any code snippet (error.pluginCode contains the whole file without any code position).
+  // That said, we could generate the code snippet ourselves since we have error.position and `error.pluginCode`.
   it('real use case - @mdx-js/rollup', () => {
-    // We can't prettify this error because there isn't any code snippet (errMdx.pluginCode contains the whole file without any code position)
-    // That said, we could generate the code snippet ourselves since we have errMdx.position and errMdx.pluginCode
     expect(isErrorWithCodeSnippet(errMdx1)).toBe(false)
+  })
+  it('real use case - @mdx-js/rollup', () => {
+    expect(isErrorWithCodeSnippet(errMdx2)).toBe(false)
   })
 
   it('real use case - @vitejs/plugin-react - CSS with PostCSS', () => {
