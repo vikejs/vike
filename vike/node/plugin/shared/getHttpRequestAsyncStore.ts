@@ -15,11 +15,12 @@ export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
 
 import { renderPage_addWrapper } from '../../runtime/renderPage.js'
-import { assert, assertIsNotProductionRuntime, isObject } from '../utils.js'
+import { assert, assertIsNotProductionRuntime, isObject, unique } from '../utils.js'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
 import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile.js'
 import { logErrorDebugNote } from './loggerNotProd.js'
 import { isEquivalentErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
+import { isDeepStrictEqual } from 'node:util'
 
 assertIsNotProductionRuntime()
 
@@ -94,16 +95,21 @@ function isEquivalent(err1: unknown, err2: unknown) {
   if (isEquivalentErrorWithCodeSnippet(err1, err2)) return true
 
   if (
-    err1.constructor === (Error as any) &&
-    Object.keys(err1).length === 0 &&
-    isDefinedAndSame(err1.message, err2.message) &&
-    isDefinedAndSame(err1.stack, err2.stack)
+    unique([
+      // error.message and error.stack aren't enumerable and therefore not listed by Object.keys()
+      'message',
+      'stack',
+      ...Object.keys(err1),
+      ...Object.keys(err2)
+    ]).every((k) => {
+      // isDeepStrictEqual() need to compare error.position wich is an object.
+      if (isDeepStrictEqual(err1[k], err2[k])) return true
+      // console.log('diff', k)
+      return false
+    })
   ) {
     return true
   }
 
   return false
-}
-function isDefinedAndSame(val1: unknown, val2: unknown) {
-  return val1 && val1 === val2
 }
