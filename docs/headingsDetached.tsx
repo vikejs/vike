@@ -354,7 +354,7 @@ const headingsDetached = [
   {
     title: 'Abort',
     url: '/abort',
-    sectionTitles: ['`throw redirect()` VS `throw render()`']
+    sectionTitles: ['`throw redirect()` VS `throw render()` VS `navigate()`']
   },
   {
     title: 'Custom Exports/Hooks',

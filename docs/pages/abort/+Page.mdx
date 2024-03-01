@@ -1,24 +1,51 @@
 import { Link } from '@brillout/docpress'
 
-By using <Link href="/render" text={<code>throw render()</code>}></Link> or <Link href="/redirect" text={<code>throw redirect()</code>}></Link> you abort the rendering of the current page and render something else instead.
+You can use <Link href="/render">`throw render()`</Link> or <Link href="/redirect">`throw redirect()`</Link> in order to abort rendering the current page and render something else instead.
 
-## `throw redirect()` VS `throw render()`
 
-While `throw redirect()` changes the URL, `throw render()` preserves it:
- - If a user goes to `/admin` and `throw redirect('/login')` is called, then the user will see the new URL `/login` in the browser's address bar.
- - If a user goes to `/admin` and `throw render('/login')` is called, then the user keeps seeing the same URL `/admin` in the browser's address bar.
+## `throw redirect()` VS `throw render()` VS `navigate()`
 
-In general, we recommend using `throw render('/login')` instead of `throw redirect('/login')` as it preserves the URL and, therefore, the user's intention. We further explain this techniue at <Link href="/auth#login-flow" />.
+**`throw redirect()` VS `throw render()`**
+
+While <Link href="/redirect">`throw redirect()`</Link> changes the URL, <Link href="/render">`throw render()`</Link> preserves it:
+ - If a user goes to `/admin` and `throw redirect('/login')` is called, then the `/login` page is rendered and the user sees a new URL `/login` in the address bar of his browser.
+ - If a user goes to `/admin` and `throw render('/login')` is called, then the `/login` page is rendered but the user keeps seeing the same URL `/admin` in the address bar of his browser (even though the `/login` page is rendered).
+
+> We usually recommend using `throw render()` instead of `throw redirect()` as it preserves the URL and, therefore, the user's intention. We further explain this technique at <Link href="/auth#login-flow" />.
+
+**`throw redirect()` VS `navigate()`**
+
+Difference between `throw redirect()` and <Link href="/navigate">`navigate()`</Link>:
+ - `navigate()` only works on the client-side and shouldn't be called during the rendering of a page.
+ - `throw redirect()` works on both client- and server-side but only works during the rendering a page.
+
+In a nuthsell: if you want to abort the rendering of a page then use `throw redirect()`, otherwise use `navigate()`.
+
+For example:
+ - For redirecting the user upon a form submit action, use `navigate()`. (Since the page is already rendered and thus `throw redirect()` doesn't make sense as there is no pending page rendering to abort.)
+ - For protecting a page from unprivileged access, such as a normal user trying to access an admin page, use `throw redirect()` in order to abort (on both server- and client-side) the rendering of the admin page and redirect the user to another page instead (for example the login page).
+
 
 ## Debug
 
 If `throw redirect()` or `throw render()` doesn't work:
- - **Make sure `throw redirect()` / `throw render()` isn't swallowed.**  
-   In developement, check your server logs for the following log. If this log is missing then this means that Vike didn't receive the `throw redirect()` / `throw render()` exception: some other code is catching and swallowing it.
+ - **Make sure `throw redirect()` / `throw render()` isn't intercepted.**  
+   In developement, check your server logs for the following log. If the log is missing then it means that Vike didn't catch the `throw redirect()` / `throw render()` exception: some other code is intercepting it and thus prevents Vike from catching it.
    ```
    10:00:00 AM [vike][request(42)] throw redirect('/some-url') intercepted while
    rendering /some-other-url
    ```
+   > Most notably, using `throw redirect()` / `throw render()` inside a UI component usually doesn't work because most <Link href="/ui-framework">UI frameworks</Link> will intercept the execption, and thus Vike won't be able to catch it. Instead, consider using `throw redirect()` / `throw render()` in a Vike hook such as <Link href="/guard">`guard()`</Link> or <Link href="/data">`data()`</Link>, or use <Link href="/navigate">`navigate()`</Link>.
+ - **Make sure to use `throw redirect()` / `throw render()` within a Vike hook.**  
+   If you use `throw redirect()` / `throw render()` outside of Vike hooks, for example in some server middleware code, then Vike won't be able to intercept it.
+
 If `throw redirect()` doesn't work:
  - **Make sure to add `pageContext.httpResponse.headers` to the HTTP response.**  
    If you've embedded Vike into your server using <Link text={<code>renderPage()</code>} href="/renderPage" />, then insepct whether `pageContext.httpResponse.headers` contains the `Location` header and double check that you're correctly adding all the headers defined by `pageContext.httpResponse.headers` to the HTTP response.
+
+
+## See also
+
+ - <Link href="/redirect" />
+ - <Link href="/render" />
+ - <Link href="/navigate" />

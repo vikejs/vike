@@ -26,7 +26,7 @@ async function onSubmit() {
 }
 ```
 
-> If you want to redirect while rendering a page (e.g. redirect non-authenticated users to a login page), then use <Link href='/redirect' noBreadcrumb /> instead.
+> If you want to redirect the user while rendering a page (e.g. redirect non-authenticated users to a login page), then use <Link href='/redirect'>`throw redirect()`</Link> instead. See <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />.
 
 > If you want to navigate back, then use [`window.history.back()`](https://developer.mozilla.org/en-US/docs/Web/API/History/back) instead.
 
@@ -76,4 +76,6 @@ If you don't use a <UiFrameworkVikeExtension /> and if you use <Link text="Serve
 
 ## See also
 
- - <Link href="/redirect" />
+- <Link href="/redirect" />
+- <Link href="/redirects" />
+- <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />

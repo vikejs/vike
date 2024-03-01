@@ -1,9 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-See also:
- - <Link href="/redirects" noBreadcrumb={true} />
- - <Link href="/redirect" noBreadcrumb={true} />
- - <Link href="/abort#throw-redirect-vs-throw-render" doNotInferSectionTitle={true} noBreadcrumb={true} />
+`throw render()` is like <Link href="/redirect">`throw redirect()`</Link> but preserves the URL, see <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />.
 
 ```ts
 // Render the error page
@@ -11,8 +8,6 @@ render(abortStatusCode: 401 | 403 | 404 | 429 | 500 | 503, abortReason?: unknown
 // Render another page (aka URL rewrite)
 render(url: `/${string}`, abortReason?: unknown)
 ```
-
-> If you use TypeScript, you can define the `abortReason` type by using the global interface `Vike.PageContext`, see <Link href="/error-page" />.
 
 ```js
 import { render } from 'vike/abort'
@@ -36,6 +31,7 @@ function onSomeHook() {
   - [`500` Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) - App has a bug.
   - [`503` Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) - Server is overloaded and/or a third-party API isn't responding.
 - The `abortReason` and `abortStatusCode` arguments are made available at `pageContext.abortReason` and `pageContext.abortStatusCode` which is useful for enabling the error page to show a useful error message to the user, see <Link href="/error-page" />.
+  > If you use TypeScript, you can define the `abortReason` type by using the global interface `Vike.PageContext`, see <Link href="/error-page" />.
 
 While it's most commonly used with [`guard()`](/guard) or [`data()`](/data) you can use it with any hook.
 
@@ -45,3 +41,10 @@ Common use cases:
 - Data fetching error handling, see <Link href="/data#error-handling" />.
 
 If `throw render()` doesn't work, see <Link href="/abort#debug" />.
+
+
+## See also
+
+- <Link href="/redirect"  />
+- <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />
+- <Link href="/abort#debug" />
