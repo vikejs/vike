@@ -6,6 +6,7 @@ import type { Combine, IsNotEmpty, XOR5 } from './helpers.ts'
 
 // Like the type `Config` but meant for pageContext.config
 type PageContextConfig = ConfigBuiltIn &
+  Vike.Config &
   (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
 
 // Preserves JSDocs, such as the the JSDoc pageContext.config.title defined by vike-react
