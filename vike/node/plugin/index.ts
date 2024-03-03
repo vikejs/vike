@@ -39,7 +39,7 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     ...commonConfig(),
     importUserCode(),
     ...devConfig(),
-    buildConfig(),
+    ...buildConfig(),
     previewConfig(),
     ...autoFullBuild(),
     packageJsonFile(),
