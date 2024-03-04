@@ -14,6 +14,7 @@ function resolveVikeConfig(vikeConfig: unknown): Plugin {
     name: 'vike:resolveVikeConfig',
     enforce: 'pre',
     async configResolved(config) {
+      ;(config as Record<string, unknown>)._vikeConfig = vikeConfig
       const promise = getConfigVikPromise(vikeConfig, config)
       ;(config as Record<string, unknown>).configVikePromise = promise
       await promise
