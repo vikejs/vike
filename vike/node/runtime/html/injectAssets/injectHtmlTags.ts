@@ -118,7 +118,7 @@ function injectBreakLines(htmlFragment: string, before: string, after: string) {
   const whitespace = `${paddingParent}${whitespaceExtra}`
   const padding = `\n${whitespace}`
 
-  htmlFragment = htmlFragment.split(/<(?=[^\/])/).join(`${padding}<`)
+  htmlFragment = htmlFragment.replace(/<[^\/]/g, (match) => `${padding}${match}`)
   if (isBlankLine) {
     assert(htmlFragment.startsWith(padding), { htmlFragment })
     htmlFragment = whitespaceExtra + htmlFragment.slice(padding.length)
