@@ -4,10 +4,10 @@ exports[`preload tags > Preload Default 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/client/server-routing-runtime/entry.ts>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/client/server-routing-runtime/entry.ts",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
   },
   {
     "assetType": "style",
@@ -35,7 +35,7 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 import("/@vite/client");
-import("/@fs/$ROOT/vike/client/server-routing-runtime/entry.ts");
+import("/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js");
 </script>
       </body>
     </html>"
@@ -45,10 +45,10 @@ exports[`preload tags > Preload Disabled 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/client/server-routing-runtime/entry.ts>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/client/server-routing-runtime/entry.ts",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
   },
   {
     "assetType": "style",
@@ -76,7 +76,7 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 import("/@vite/client");
-import("/@fs/$ROOT/vike/client/server-routing-runtime/entry.ts");
+import("/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js");
 </script>
       </body>
     </html>"
@@ -86,10 +86,10 @@ exports[`preload tags > Preload Eager 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/client/server-routing-runtime/entry.ts>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/client/server-routing-runtime/entry.ts",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
   },
   {
     "assetType": "style",
@@ -117,7 +117,7 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 import("/@vite/client");
-import("/@fs/$ROOT/vike/client/server-routing-runtime/entry.ts");
+import("/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js");
 </script>
       </body>
     </html>"
@@ -127,10 +127,10 @@ exports[`preload tags > Preload Images 1`] = `
 [
   {
     "assetType": "script",
-    "earlyHintLink": "</@fs/$ROOT/vike/client/server-routing-runtime/entry.ts>; rel=modulepreload; as=script",
+    "earlyHintLink": "</@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js>; rel=modulepreload; as=script",
     "isEntry": true,
     "mediaType": "text/javascript",
-    "src": "/@fs/$ROOT/vike/client/server-routing-runtime/entry.ts",
+    "src": "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js",
   },
   {
     "assetType": "style",
@@ -158,7 +158,7 @@ window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
 import("/@vite/client");
-import("/@fs/$ROOT/vike/client/server-routing-runtime/entry.ts");
+import("/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js");
 </script>
       </body>
     </html>"
