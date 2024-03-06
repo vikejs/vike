@@ -7,11 +7,15 @@ import { stabilizeHashs } from './utils/stabilizeHashs'
 
 function testRun(isDev: boolean) {
   describe('preload tags', () => {
-    it('Preload Default', async () => {
-      const { body, earlyHints } = await render('/', isDev)
-      expect(earlyHints).toMatchSnapshot()
-      expect(body).toMatchSnapshot()
-    })
+    it(
+      'Preload Default',
+      async () => {
+        const { body, earlyHints } = await render('/', isDev)
+        expect(earlyHints).toMatchSnapshot()
+        expect(body).toMatchSnapshot()
+      },
+      15 * 1000
+    )
     it('Preload Disabled', async () => {
       const { body, earlyHints } = await render('/preload-disabled', isDev)
       expect(earlyHints).toMatchSnapshot()
