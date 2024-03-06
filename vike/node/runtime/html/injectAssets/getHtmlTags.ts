@@ -186,8 +186,11 @@ async function mergeScriptEntries(pageAssets: PageAsset[], isProduction: boolean
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlTag = `<script id="vike_pageContext" type="application/json">${pageContextSerialized}</script>`
+
+  // Used by contra.com https://github.com/gajus
   // @ts-expect-error
   pageContext._pageContextHtmlTag = htmlTag
+
   return htmlTag
 }
 
