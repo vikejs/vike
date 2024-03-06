@@ -60,6 +60,7 @@ Minor features that can be life changing for some users:
 - `pageContext.isBackwardsNavigation` (https://vike.dev/pageContext) for backwards/forward page transition animations
 - Vike can be loaded twice (or more) on the server-side, (some deployment architectures need this)
 - Catches and interrupts infinite loops of URL redirections and URL rewrites
+- Supports [`@vitejs/plugin-legacy`](https://github.com/vitejs/vite/tree/main/packages/plugin-legacy).
 
 And lots of details:
 - [Automatic frontend deployment synchronization](https://vike.dev/deploy-sync)
