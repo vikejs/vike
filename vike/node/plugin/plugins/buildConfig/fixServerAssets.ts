@@ -58,6 +58,9 @@ async function copyAssets(filesToCopy: string[], config: ResolvedConfig) {
       )
     )
   )
+  /* We cannot do that because, with some edge case Rollup settings (outputing JavaScript chunks and static assets to the same directoy), this removes JavaScript chunks, see https://github.com/vikejs/vike/issues/1154#issuecomment-1975762404
+  await fs.rm(assetsDirServer, { recursive: true })
+  */
 }
 
 type Resource = { src: string; hash: string }
