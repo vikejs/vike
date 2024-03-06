@@ -17,7 +17,7 @@
     "test:e2e": "test-e2e",
     "test:types": "test-types",
     "// For https://github.com/vitejs/vite-ecosystem-ci": "",
-    "test:vite-ecosystem-ci": "(export VITE_ECOSYSTEM_CI=true; pnpm run test)",
+    "test:vite-ecosystem-ci": "(export VITE_ECOSYSTEM_CI=true; pnpm run test:units && pnpm run test:e2e --exclude test-deprecated-design && pnpm run test:types)",
     "========= Docs": "",
     "// Develop website https://vike.dev": "",
     "docs": "cd docs/ && pnpm run dev",
