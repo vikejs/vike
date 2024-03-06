@@ -11,6 +11,18 @@ testRun(true)
 async function devApp() {
   await createServer({
     root: __dirname,
-    server: { middlewareMode: true }
+    server: {
+      middlewareMode: true,
+      /* Doesn't seem to work
+      hmr: false
+      */
+      hmr: {
+        // Avoid:
+        // ```
+        // Error: listen EADDRINUSE: address already in use :::24678
+        // ```
+        port: 11323
+      }
+    }
   })
 }
