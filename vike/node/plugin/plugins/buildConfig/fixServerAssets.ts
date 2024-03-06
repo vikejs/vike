@@ -58,7 +58,6 @@ async function copyAssets(filesToCopy: string[], config: ResolvedConfig) {
       )
     )
   )
-  await fs.rm(assetsDirServer, { recursive: true })
 }
 
 type Resource = { src: string; hash: string }
