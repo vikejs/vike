@@ -156,7 +156,13 @@ We believe Vike hits the sweet spot of being a full-fledged frontend tool while 
 
 ### Next.js
 
-Next.js aggressively uses [caching](https://nextjs.org/docs/app/building-your-application/caching), for performance and cost-saving reasons. Less server load means your app uses less compute resources, which saves you money on Vercel's paid plans, but saves Vercel money on their free tier (which most developers will be on; Vercel's long-tail). Next.js leans towards making as many routes as possible statically rendered (SSG over SSR wherever possible). Caching is enabled by default (both on the server and the client), and you have to **explicitly opt-out** to disable it (using more or less hacky solutions) each time you don't want it. But people are [finding](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_anyone_abandoned_nextjs_after_using_it_on_a/kffjox2/) the aggressive [caching to be a nightmare](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_anyone_abandoned_nextjs_after_using_it_on_a/kfh6nh2/), and hard to disable. Caching can give a wrong/stale view of your app, and cost precious development time hunting for the cause. As the saying goes, _"There are only two hard things in Computer Science: cache invalidation and naming things."_ -- Phil Karlton
+Next.js aggressively uses [caching](https://nextjs.org/docs/app/building-your-application/caching), for performance and cost-saving reasons. Less server load means your app uses less compute resources, which saves you money on Vercel's paid plans, but saves Vercel money on their free tier (which most developers will be on; Vercel's long-tail).
+
+Next.js leans towards making as many routes as possible statically rendered (SSG over SSR wherever possible). Caching is enabled by default (both on the server and the client), and you have to **explicitly opt-out** to disable it (using more or less hacky solutions) each time you don't want it.
+
+But people are [finding](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_anyone_abandoned_nextjs_after_using_it_on_a/kffjox2/) the aggressive [caching to be a nightmare](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_anyone_abandoned_nextjs_after_using_it_on_a/kfh6nh2/), and hard to disable. Caching can give a wrong/stale view of your app, and cost precious development time hunting for the cause.
+
+As the saying goes, _"There are only two hard things in Computer Science: cache invalidation and naming things."_ -- Phil Karlton
 
 ### Vike
 
@@ -169,7 +175,13 @@ Vike does not cache, by design, so by default your app will behave as you expect
 
 ### Next.js - server-first oriented
 
-Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components in the React render tree as React Server Components (RSC), and if you don't want that, you have to opt-out. With RSCs, you have to inject the bundler directive "use client" (aka. start client bundling) into your React component tree at the start of every branch with components that you want to turn into Client Components. The default server orientation makes sense for _websites_ that consist of large static sections with no client interactivity. Using RSCs reduce the size of client-side bundles (and hydration), due to the JS code in RSC's only running on the server (e.g. useful for a static site using a heavy markdown library). But RSC's carry serialization and parsing overhead, has special rules (no state, context, or effects), and conceptual overhead that many developers struggle with. In all, the fact that Next.js leans more on the server (and RSC's and caching by default) may not be what you want, especially if you are building a _webapp_ which you expect will become more and more dynamic and interactive anyway.
+Next.js - made by Vercel, a hosting provider - is server-focused. It now defaults to interpreting all React components in the React render tree as React Server Components (RSC), and if you don't want that, you have to opt-out. 
+
+With RSCs, you have to inject the bundler directive "use client" (aka. start client bundling) into your React component tree at the start of every branch with components that you want to turn into Client Components.
+
+The default server orientation makes sense for _websites_ that consist of large static sections with no client interactivity. Using RSCs reduce the size of client-side bundles (and hydration), due to the JS code in RSC's only running on the server (e.g. useful for a static site using a heavy markdown library). But RSC's carry serialization and parsing overhead, has special rules (no state, context, or effects), and conceptual overhead that many developers struggle with.
+
+In all, the fact that Next.js leans more on the server (and RSC's and caching by default) may not be what you want, especially if you are building a _webapp_ which you expect will become more and more dynamic and interactive anyway.
 
 If your product either should be:
 
