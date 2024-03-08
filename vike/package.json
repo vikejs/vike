@@ -188,7 +188,7 @@
     "@types/node": "^20.10.5",
     "@types/resolve": "^1.20.6",
     "@types/source-map-support": "^0.5.10",
-    "react-streaming": "^0.3.22",
+    "react-streaming": "^0.3.24",
     "rimraf": "^5.0.5",
     "typescript": "^5.3.3",
     "vite": "npm:@brillout/vite@5.1.0-commit-3dc7abd"

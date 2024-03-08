@@ -14,7 +14,7 @@
     "express": "^4.18.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-streaming": "^0.3.22",
+    "react-streaming": "^0.3.24",
     "sirv": "^2.0.2",
     "vite": "^5.0.10",
     "vike": "0.4.165"

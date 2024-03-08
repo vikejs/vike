@@ -443,8 +443,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.3.22
-        version: 0.3.22(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.24
+        version: 0.3.24(react-dom@18.2.0)(react@18.2.0)
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -746,8 +746,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.3.22
-        version: 0.3.22(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.24
+        version: 0.3.24(react-dom@18.2.0)(react@18.2.0)
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -800,8 +800,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.3.22
-        version: 0.3.22(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.24
+        version: 0.3.24(react-dom@18.2.0)(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.3
@@ -1145,8 +1145,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.3.22
-        version: 0.3.22(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.24
+        version: 0.3.24(react-dom@18.2.0)(react@18.2.0)
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1451,8 +1451,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.3.22
-        version: 0.3.22(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.24
+        version: 0.3.24(react-dom@18.2.0)(react@18.2.0)
       typescript:
         specifier: ^4.8.4
         version: 4.8.4
@@ -1484,8 +1484,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: ^0.3.22
-        version: 0.3.22(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.24
+        version: 0.3.24(react-dom@18.2.0)(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.3
@@ -1914,8 +1914,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: ^0.3.22
-        version: 0.3.22(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^0.3.24
+        version: 0.3.24(react-dom@18.2.0)(react@18.2.0)
       rimraf:
         specifier: ^5.0.5
         version: 5.0.5
@@ -9827,6 +9827,19 @@ packages:
 
   /react-streaming@0.3.22(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-8kFMtAZQ1oUVnVKJvBqy/DUl1ZjoaRDe/v6GuYQWN4OX4K8jnmDt1NBuQxcjKob26+9Wx618km4m+/Q7PmAPfw==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.8
+      isbot-fast: 1.2.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /react-streaming@0.3.24(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-sKqhgFJswZR3yFDmtwKYVZMJB7nkjQ0r4BHEQTZHLQzM5Ro8Bv4F/kgygdYfivncOu+H6apUugK2bL/WB7z5qQ==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
