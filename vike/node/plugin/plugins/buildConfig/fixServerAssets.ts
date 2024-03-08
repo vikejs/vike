@@ -52,6 +52,7 @@ async function copyAssets(filesToCopy: string[], config: ResolvedConfig) {
   await Promise.all(
     filesToCopy.map((file) =>
       concurrencyLimit(() =>
+        // TODO: move instead of copying
         fs.cp(path.posix.join(outDirServer, file), path.posix.join(outDirClient, file), {
           recursive: true
         })
