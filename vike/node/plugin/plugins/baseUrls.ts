@@ -12,7 +12,7 @@ function baseUrls(configVike?: ConfigVikeUserProvided): Plugin {
   return {
     name: 'vike:baseUrls',
     enforce: 'post',
-    config: (config) => {
+    async config(config) {
       const bases = resolveBaseFromUserConfig(config, configVike)
       baseServer = bases.baseServer
       baseAssets = bases.baseAssets
