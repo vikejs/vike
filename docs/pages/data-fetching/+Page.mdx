@@ -56,14 +56,23 @@ import { useData } from 'vike-solid/useData'
 
 > `useData()` is provided by the <UiFrameworkVikeExtension />. If you don't use <UiFrameworkVikeExtensionNames /> then see <Link href="/useData#without-vike-extension" doNotInferSectionTitle />.
 
+The `data()` hook is only meant for fetching the initial data of a page (in technical words: the SSR data). For other use cases see the sections below <Link href="#api-routes">API routes</Link> and <Link href="#rpc">RPC</Link>.
+
+
+## API Routes
+
+To perform data mutations and subsequent data fetching (e.g. pagination data), a common technique is to use API routes. But we recommand RPC instead of API routes, see <Link href="/api-routes" />.
+
 
 ## RPC
 
-RPC (aka "Server Actions"), enable you to call backend functions remotely and seamlessly from your frontend, see <Link href="/RPC" />.
+RPC enables you to call backend functions remotely from your frontend in a seamless fashion, see <Link href="/RPC" />.
 
-In general, we recommend using RPC to perform data mutations, while using `data()` for fetching data.
+We recommend [Telefunc](https://telefunc.com) wich is maintained by the Vike author.
 
-> Instead of using a `data()` hook, you'll soon also be able to use [Telefunc](https://telefunc.com) to fetch data.
+We recommend using Telefunc to perform data mutations and subsequent data fetching (e.g. pagination data) while using `data()` for fetching the initial data of a page (in technical words: the SSR data).
+
+> With React, you'll soon also be able to use Telefunc to fetch the initial SSR data instead of using the `data()` hook, see [Telefunc > #102](https://github.com/brillout/telefunc/issues/102).
 
 
 ## GraphQL

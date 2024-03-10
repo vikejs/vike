@@ -133,6 +133,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'RPC',
+    url: '/RPC'
+  },
+  {
+    level: 2,
     title: 'Error Handling',
     url: '/errors'
   },

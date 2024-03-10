@@ -386,10 +386,6 @@ const headingsDetached = [
     url: '/extends'
   },
   {
-    title: 'RPC',
-    url: '/RPC'
-  },
-  {
     title: 'Image Optimizing',
     url: '/img'
   },
