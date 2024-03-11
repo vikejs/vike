@@ -118,7 +118,11 @@ async function renderPageAndPrepare(
 ): Promise<PageContextAfterRender> {
   // Invalid config
   const handleInvalidConfig = () => {
-    logRuntimeInfo?.(pc.bold(pc.red("Couldn't load configuration: see error above.")), httpRequestId, 'error')
+    logRuntimeInfo?.(
+      pc.bold(pc.red('Error while loading a Vike config file, see error above.')),
+      httpRequestId,
+      'error'
+    )
     const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
     return pageContextHttpResponseNull
   }
