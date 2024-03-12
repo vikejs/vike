@@ -8,6 +8,7 @@ export { getAssertErrMsg }
 export { overwriteAssertProductionLogger }
 export { isBug }
 
+import { onAssertModuleLoad } from './assertSingleInstance.js'
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { isObject } from './isObject.js'
@@ -31,6 +32,7 @@ const globalObject = getGlobalObject<{
   showStackTraceList: new WeakSet()
 })
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
+onAssertModuleLoad()
 
 const projectTag = `[vike]` as const
 const projectTagWithVersion = `[vike@${projectInfo.projectVersion}]` as const

@@ -1,6 +1,6 @@
 export { onClientEntry_ServerRouting }
 export { onClientEntry_ClientRouting }
-export { onProjectInfo }
+export { onAssertModuleLoad }
 
 //  - Throw error if there are two different versions of vike loaded
 //  - Show warning if entry of Client Routing and entry of Server Routing are both loaded
@@ -8,6 +8,7 @@ export { onProjectInfo }
 
 import { unique } from './unique.js'
 import { getGlobalObject } from './getGlobalObject.js'
+import { projectInfo } from './projectInfo.js'
 /* Use original assertUsage() & assertWarning() after all CJS is removed from node_modules/vike/dist/
 import { assertUsage, assertWarning } from './assert.js'
 */
@@ -73,9 +74,9 @@ function onClientEntry_ClientRouting(isProduction: boolean) {
   assertSingleInstance()
 }
 
-// Called by utils/projectInfo.ts which is loaded by all entries (since utils/asserts.ts depends on utils/projectInfo.ts, we can have confidence that onProjectInfo() is called by each entry). That way we don't have to call a callback for every entry (there are a *lot* of entries: `client/router/`, `client/`, `node/runtime/`, `node/plugin/`, `node/cli`).
-function onProjectInfo(projectVersion: string) {
-  globalObject.instances.push(projectVersion)
+// Called by utils/assert.ts which is (most likely / with high confidence) loaded by all entries. That way we don't have to call a callback for every entry. (There are a lot of entries: `client/router/`, `client/`, `node/runtime/`, `node/plugin/`, `node/cli`.)
+function onAssertModuleLoad() {
+  globalObject.instances.push(projectInfo.projectVersion)
   assertSingleInstance()
 }
 
