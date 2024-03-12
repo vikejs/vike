@@ -334,7 +334,9 @@ function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContext
       //   - We should show `HTTP response ${urlOriginal} ERR` instead.
       //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
       assert(errorWhileRendering === null || errorWhileRendering === undefined)
-      return
+      msg = `HTTP response ${pc.bold(urlOriginal)} ${pc.dim('null')}`
+      // Erroneous value (it shoud sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
+      isNominal = true
     } else {
       const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
       isNominal = isSuccess || statusCode === 404
