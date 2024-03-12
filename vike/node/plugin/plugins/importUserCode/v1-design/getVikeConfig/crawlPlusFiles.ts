@@ -9,7 +9,8 @@ import {
   scriptFileExtensions,
   humanizeTime,
   assertIsSingleModuleInstance,
-  assertIsNotProductionRuntime
+  assertIsNotProductionRuntime,
+  isVersionOrAbove
 } from '../../../../utils.js'
 import path from 'path'
 import glob from 'fast-glob'
@@ -156,6 +157,21 @@ function getIgnoreAsFilterFn(outDirRelativeFromUserRootDir: string | null): (fil
 
 // Whether Git is installed and whether we can use it
 async function isGitNotUsable(userRootDir: string) {
+  // Check Git version
+  {
+    const res = await runCmd2('git --version', userRootDir)
+    if ('err' in res) return true
+    let { stdout, stderr } = res
+    assert(stderr === '')
+    const prefix = 'git version '
+    assert(stdout.startsWith(prefix))
+    const gitVersion = stdout.slice(prefix.length)
+    //  - Works with Git 2.43.1 but also (most certainly) with earlier versions.
+    //    - We didn't bother test which is the earliest verision that works.
+    //  - Git 2.32.0 doesn't seem to work: https://github.com/vikejs/vike/discussions/1549
+    //    - Maybe it's because of StackBlitz: looking at the release notes, Git 2.32.0 should be working.
+    if (!isVersionOrAbove(gitVersion, '2.43.1')) return true
+  }
   // Is userRootDir inside a Git repository?
   {
     const res = await runCmd2('git rev-parse --is-inside-work-tree', userRootDir)

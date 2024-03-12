@@ -33,9 +33,14 @@ function parseVersion(version: string): [number, number, number] {
   // Remove pre-release tag
   version = version.split('-')[0]!
 
+  let partsStr = version.split('.')
+
+  // Git seems to be using a fourth number: https://github.com/git/git/tree/master/Documentation/RelNotes
+  partsStr = partsStr.slice(0, 3)
+
   // major.minor.patch
-  const partsStr = version.split('.')
   assert(partsStr.length === 3)
+  assert(partsStr.every((s) => s.length > 0))
 
   const parts = partsStr.map((s) => parseInt(s, 10)) as [number, number, number]
   return parts
