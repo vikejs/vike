@@ -321,32 +321,40 @@ function getRequestInfoMessage(urlOriginal: string) {
 }
 function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
+
+  let msg: `HTTP response ${string}` | `HTTP redirect ${string}`
+  let isNominal: boolean
   {
-    // If URL doesn't include Base URL
     const { errorWhileRendering } = pageContextReturn
-    const isSkipped = statusCode === null && (errorWhileRendering === null || errorWhileRendering === undefined)
-    if (isSkipped) return
+    const isSkipped = statusCode === null && !errorWhileRendering
+    if (isSkipped) {
+      // - URL doesn't include Base URL
+      //   - Can we abort earlier so that `logHttpResponse()` and `logHttpRequest()` aren't even called?
+      // - Error loading a Vike config file
+      //   - We should show `HTTP response ${urlOriginal} ERR` instead.
+      //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
+      assert(errorWhileRendering === null || errorWhileRendering === undefined)
+      return
+    } else {
+      const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
+      isNominal = isSuccess || statusCode === 404
+      const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
+      const isRedirect = statusCode && 300 <= statusCode && statusCode <= 399
+      const type = isRedirect ? 'redirect' : 'response'
+      if (isRedirect) {
+        assert(pageContextReturn.httpResponse)
+        const headerRedirect = pageContextReturn.httpResponse.headers
+          .slice()
+          .reverse()
+          .find((header) => header[0] === 'Location')
+        assert(headerRedirect)
+        const urlRedirect = headerRedirect[1]
+        urlOriginal = urlRedirect
+      }
+      msg = `HTTP ${type} ${pc.bold(urlOriginal)} ${color(statusCode ?? 'ERR')}`
+    }
   }
-  const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
-  const isNominal = isSuccess || statusCode === 404
-  const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
-  const isRedirect = statusCode && 300 <= statusCode && statusCode <= 399
-  const type = isRedirect ? 'redirect' : 'response'
-  if (isRedirect) {
-    assert(pageContextReturn.httpResponse)
-    const headerRedirect = pageContextReturn.httpResponse.headers
-      .slice()
-      .reverse()
-      .find((header) => header[0] === 'Location')
-    assert(headerRedirect)
-    const urlRedirect = headerRedirect[1]
-    urlOriginal = urlRedirect
-  }
-  logRuntimeInfo?.(
-    `HTTP ${type} ${pc.bold(urlOriginal)} ${color(statusCode ?? 'ERR')}`,
-    httpRequestId,
-    isNominal ? 'info' : 'error'
-  )
+  logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')
 }
 
 function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
