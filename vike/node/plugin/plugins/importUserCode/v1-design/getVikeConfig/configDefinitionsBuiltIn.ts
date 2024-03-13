@@ -170,7 +170,6 @@ type ConfigNameGlobal =
   | 'onPrerenderStart'
   | 'onBeforeRoute'
   | 'prerender'
-  | 'extensions'
   | 'disableAutoFullBuild'
   | 'includeAssetsImportedByServer'
   | 'baseAssets'
@@ -188,7 +187,6 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionI
   prerender: {
     env: { config: true }
   },
-  extensions: { env: { config: true } },
   disableAutoFullBuild: { env: { config: true } },
   includeAssetsImportedByServer: { env: { config: true } },
   baseAssets: { env: { config: true } },

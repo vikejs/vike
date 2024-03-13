@@ -59,6 +59,7 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
+  /* Can we remove this?
   // extensions[number].pageConfigsSrcDir
   if (id.startsWith('/node_modules/') || id.startsWith('/../')) {
     let manifestKeyEnd = id.split('/node_modules/').slice(-1)[0]
@@ -88,6 +89,7 @@ function getManifestEntry(
     }
     assert(false, debugInfo)
   }
+  */
 
   assert(false, debugInfo)
 }
