@@ -5,9 +5,39 @@
   - Make `<Head>` cumulative
   - passToClient.dev/cumulative => point to it from vike.dev/passToClient
 - +client https://github.com/vikejs/vike/commit/732568999c11bd2904d0e2aec19a370c40594315
-- Review & merge Dani's PRs
+- New setting `cjsInterop` https://github.com/vikejs/vike/issues/1512
+- Add x-powered-by header and add warning if missing (likely means that pageContext.httpResponse.headers isn't used)
 
-- New setting `cjsInterop`? Or `fixNpmPackage`?
+v0.5 breaking changes:
+- pageContext.url
+- Forbid async Route Functions
+- Forbid content-type
+  - Maybe use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
+- Deprecate old design
+- Remove dist/server/importBuild.{cjs,mjs,js}
+- See vike.dev/migration/v0.5
+  - See also vike.dev/migration/v1
+  - Shall all breaking changes be listed or is it enough to say "first update to latest 0.4.x then follow all warnings then update to 0.5"?
+- See all TODOs
+- Improve import paths.
+  - Either move all isomorphic exports to `import * from 'vike'` or create individual export path for each export e.g. `import { render } from 'vike/render'`
+    - E.g. remove `import * from 'vike/abort'` and `import * from 'vike/client'`
+      ```diff
+      - import * from 'vike/client/router'
+      + import * from 'vike'
+      // Or:
+      + import { navigate } from 'vike/navigate'
+      + import { prefetch } from 'vike/prefetch'
+      ```
+    - How about `vike/server`?
+      - This one can probably stay bundled as loaded superfluous code on the server-side is probably ok, but let's double check how big the loaded superfluous code can be.
+  - How about 'vike/types'? I guess move it to 'vike' iff. moving all isomorphics to 'vike'.
+- Set `cjsInterop: true` by default?
+- Communicate that v0.5 essentially is the v1.0.0 in disguise: the plan is to eventually rename the latest `v0.5.x` to `v1.0.0`.
+  - The plan for releasing the v1.0.0 being:
+    - Implement feature requests considered essential, most notably: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562)
+    - Make a big release announcement and blog post with a completely rehauled landing page.
+      - Blog post: my personal journey towards building Vike (for rationle why Vike exists, see landing page instead of reading blog bost).
 
 Docs:
  - Improve /nextjs
@@ -95,11 +125,6 @@ Sometime:
  - Make `.server.js` and `.client.js` change env?
  - Replace "isomorphic"/"isomorph" to "universal"
  - remove documentProps from examples and boilerplates
-
-Release 1.0.0 breaking changes:
-  - `import * from 'vike'`
-  - pageContext.url
-  - Forbid async Route Functions
 
 Contact:
  - Bun
