@@ -27,7 +27,7 @@ async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig):
 
   const configs = [fromPluginOptions, fromViteConfig]
 
-  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev2(config), false)
+  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev2(config))
   configs.push(fromPlusConfigFile)
 
   assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {

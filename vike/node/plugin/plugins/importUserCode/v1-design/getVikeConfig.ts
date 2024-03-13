@@ -157,7 +157,7 @@ async function handleReloadSideEffects() {
 async function getVikeConfig(
   config: ResolvedConfig,
   isDev: boolean,
-  tolerateInvalidConfig = false
+  tolerateInvalidConfig?: true
 ): Promise<VikeConfigObject> {
   const { outDirRoot } = getOutDirs(config)
   const userRootDir = config.root
@@ -324,7 +324,7 @@ async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
   outDirRoot: string,
   isDev: boolean,
-  tolerateInvalidConfig: boolean
+  tolerateInvalidConfig?: boolean
 ): Promise<VikeConfigObject> {
   let hasError = false
   let ret: VikeConfigObject | undefined
