@@ -38,6 +38,8 @@ v0.5 breaking changes:
     - Implement feature requests considered essential, most notably: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562)
     - Make a big release announcement and blog post with a completely rehauled landing page.
       - Blog post: my personal journey towards building Vike (for rationle why Vike exists, see landing page instead of reading blog bost).
+- Make CJS warning an error.
+  - Keep the CJS build for a little while and if no one complains then remove the CJS build.
 
 Docs:
  - Improve /nextjs
