@@ -5,12 +5,27 @@ import { UiFrameworkVikeExtension } from '../../components'
 
 ## Optional Control
 
-A core belief of Vike is what we call *optional control*: you begin with a full-fledged zero-config setup enabling you to quickly ship prototypes and apps while later, as the need arises at scale, you can eject and take control over integration code that was initially hidden from you.
+A core belief of Vike is what we call *optional control*: you begin with a full-fledged zero-config setup to quickly get started, while later as you scale you can take control over integration code that was initially hidden from you.
 
-For example, you can use a <UiFrameworkVikeExtension /> to get a quick start similar to frameworks such as Next.js or Nuxt, and later replace `vike-react` with a custom React integration. If you use Vike without any Vike extension, then you have complete control over the integration code.
+You can for example use <Link href="/extensions">`vike-react`</Link> to get a quick start similar to Next.js, and later replace `vike-react` with a fully custom React integration.
 
-With Vike you can start quick while optionally take control as the need arises.
+If you use Vike without any Vike extension then you have complete control over how your tools integrate with Vike.
 
-> Vike extensions use the same interface as Vike users. This means that everything a Vike extension can do, you can also do without using a Vike extension. Consequently, Vike extensions are fully ejectable.
+> Vike extensions use the same interface as Vike applications: anything a Vike extension can do, you as a Vike user can do as well. This means that Vike extensions are fully ejectable.
 
-This is particularly relevant for large enterprises with complex apps that end up needing a lot more control than what frameworks typically offer. For example, `facebook.com` uses React but doesn't use a framework like Next.js. Vike is unique in that regard because, when used without any Vike extension, it prescribes very few things. This is also relevant for small companies with expert developers who prefer control over integration code instead of being hindered by the framework.
+Vike enables you to double down on the [Lean Software](https://en.wikipedia.org/wiki/Lean_startup) methodology:
+1. Quickly ship a prototype/[MVP](https://en.wikipedia.org/wiki/Minimum_viable_product) in order to quickly get your first users.
+1. Quickly get feedback about what users want.
+1. As you grow: focus, take control over, and polish features that make your app unique to your users.
+
+Examples of quick starts with more control down the line:
+- While <Link href="/RPC">RPC</Link> is an excellent choice to quickly get started, you usually need GraphQL if you scale to a larger organization.
+  > Vike is unique in the sense that it allows you to have complete control over the GraphQL integration. (But you can also use a Vike extension such as `vike-react-apollo` to quickly get started with GraphQL.)
+- If <Link href="/i18n">i18n</Link> becomes a central part of your app, then you can use Vike's low-level hooks to have complete control over how you internationalize your app.
+  > Vike's flexibility is unique as well for i18n.
+- If your authentication strategy becomes an important aspect of your app, then you can eject your Vike extension for authentication and take full control over the authentication process.
+  > Vike extensions such as `vike-authjs` and `vike-lucia` are work-in-progress.
+
+Many large enterprises end up needing a lot more control than what frameworks typically offer. For example, the websites `facebook.com` and `twitter.com` use React but don't use a framework like Next.js. Vike's unique flexibility can accommodate a lot of advanced needs not previously possible with other frameworks.
+
+With Vike, you get the best of both words: a quick start as well as control.
