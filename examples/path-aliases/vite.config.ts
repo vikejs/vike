@@ -8,12 +8,7 @@ const config: UserConfig = {
       '#root': __dirname
     }
   },
-  plugins: [
-    react(),
-    vike({
-      prerender: true
-    })
-  ],
+  plugins: [react(), vike()],
   optimizeDeps: {
     include: ['react-dom/client']
   }

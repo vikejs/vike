@@ -7,15 +7,9 @@ When `includeAssetsImportedByServer` is `true`, then static assets (CSS, images,
 It's `true` by default and, in principle, there isn't any reason to disable it. You can however disable it:
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// vike.config.js
 
 export default {
-  plugins: [
-    vike({
-      includeAssetsImportedByServer: false
-    })
-  ]
+  includeAssetsImportedByServer: false
 }
 ```

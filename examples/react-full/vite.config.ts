@@ -4,11 +4,5 @@ import vike from 'vike/plugin'
 import { UserConfig } from 'vite'
 
 export default {
-  plugins: [
-    vike({
-      prerender: true
-    }),
-    mdx(),
-    react()
-  ]
+  plugins: [vike(), mdx(), react()]
 } as UserConfig

@@ -11,6 +11,7 @@ export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.
 
 export type {
   Config,
+  ConfigGlobal,
   ConfigMeta as Meta,
   DataAsync,
   DataSync,

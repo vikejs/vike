@@ -19,7 +19,7 @@ import {
 } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig.js'
+import { vikeConfigDependencies, reloadVikeConfig, isVikeFile } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd.js'
 
@@ -83,7 +83,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    const isVikeConfig = isVikeConfigModule(file) || isVikeConfigFile(file)
+    const isVikeConfig = isVikeConfigModule(file) || isVikeFile(file)
     if (isVikeConfig) {
       const virtualModules = getVirtualModules(server)
       virtualModules.forEach((mod) => {
