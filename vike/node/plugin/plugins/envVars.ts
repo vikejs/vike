@@ -11,7 +11,7 @@ import {
   assertUsage,
   assertWarning,
   escapeRegex,
-  getFilePathRelativeToUserRootDir,
+  getFilePathAbsoluteUserRootDir,
   lowerFirst
 } from '../utils.js'
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
@@ -57,7 +57,7 @@ function envVarsPlugin(): Plugin {
             const isPrivate = !envName.startsWith(publicPrefix)
             if (isPrivate && isClientSide) {
               if (!code.includes(envStatement)) return
-              const filePathToShowToUser = getFilePathRelativeToUserRootDir(id, config.root)
+              const filePathToShowToUser = getFilePathAbsoluteUserRootDir(id, config.root)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
               const keyPublic = `${publicPrefix}${envName}` as const
               const errMsg =

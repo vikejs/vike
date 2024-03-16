@@ -9,7 +9,7 @@ import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import {
   assert,
   assertPosixPath,
-  getFilePathRelativeToUserRootDir,
+  getFilePathAbsoluteUserRootDir,
   getOutDirs,
   getVirtualFileId,
   isDev1,
@@ -141,7 +141,7 @@ function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
 
 function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
   {
-    const filePathToShowToUser = pc.dim(getFilePathRelativeToUserRootDir(filePath, config.root, true))
+    const filePathToShowToUser = pc.dim(getFilePathAbsoluteUserRootDir(filePath, config.root, true))
     const msg = `${op} ${filePathToShowToUser}`
     logConfigInfo(msg, 'info')
   }

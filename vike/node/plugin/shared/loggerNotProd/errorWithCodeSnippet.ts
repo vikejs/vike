@@ -15,7 +15,7 @@ import pc from '@brillout/picocolors'
 import {
   assert,
   escapeRegex,
-  getFilePathRelativeToUserRootDir,
+  getFilePathAbsoluteUserRootDir,
   isObject,
   removeEmptyLines,
   stripAnsi,
@@ -66,7 +66,7 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
 
   const msgFirstLine = [
     pc.red('Failed to transpile'),
-    pc.bold(pc.red(getFilePathRelativeToUserRootDir(normalizeId(id), userRootDir))),
+    pc.bold(pc.red(getFilePathAbsoluteUserRootDir(normalizeId(id), userRootDir))),
     pc.red('because:')
   ].join(' ')
 

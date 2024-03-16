@@ -1,5 +1,5 @@
 export { getFilePathAbsolute }
-export { getFilePathRelativeToUserRootDir }
+export { getFilePathAbsoluteUserRootDir }
 
 import type { ResolvedConfig } from 'vite'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
@@ -47,7 +47,7 @@ function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
   return filePathAbsoluteFilesystem
 }
 
-function getFilePathRelativeToUserRootDir(
+function getFilePathAbsoluteUserRootDir(
   filePathAbsoluteFilesystem: string,
   userRootDir: string,
   alwaysRelative = false

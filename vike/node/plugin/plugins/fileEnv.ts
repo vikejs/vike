@@ -3,13 +3,7 @@ export { fileEnv }
 // Implementation for https://vike.dev/file-env
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  capitalizeFirstLetter,
-  getFilePathRelativeToUserRootDir
-} from '../utils.js'
+import { assert, assertUsage, assertWarning, capitalizeFirstLetter, getFilePathAbsoluteUserRootDir } from '../utils.js'
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
@@ -67,7 +61,7 @@ function fileEnv(): Plugin {
         // Show error message
         let errMsg: string
 
-        let modulePathPretty = getFilePathRelativeToUserRootDir(modulePath, config.root)
+        let modulePathPretty = getFilePathAbsoluteUserRootDir(modulePath, config.root)
         modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
         errMsg = `${capitalizeFirstLetter(
           envExpect
@@ -80,7 +74,7 @@ function fileEnv(): Plugin {
           // I don't know why and who sets importer to '<stdin>' (I guess Vite?)
           importer !== '<stdin>'
         ) {
-          const importerPath = getFilePathRelativeToUserRootDir(importer.split('?')[0]!, config.root)
+          const importerPath = getFilePathAbsoluteUserRootDir(importer.split('?')[0]!, config.root)
           errMsg += ` by ${importerPath}`
         }
 
