@@ -105,14 +105,14 @@ async function loadExtendsConfigs(
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
     warnUserLandExtension(importPath, configFilePath)
-    // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
+    // - filePathAbsoluteUserRootDir has no functionality beyond nicer error messages for user
     // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsoluteFilesystem for added clarity
-    const filePathRelativeToUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
-    const filePathAbsoluteVite = filePathRelativeToUserRootDir ?? importPath
+    const filePathAbsoluteUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
+    const filePathAbsoluteVite = filePathAbsoluteUserRootDir ?? importPath
     extendsConfigFiles.push({
       filePathAbsoluteFilesystem,
       filePathAbsoluteVite,
-      filePathRelativeToUserRootDir,
+      filePathAbsoluteUserRootDir,
       filePathToShowToUser: filePathAbsoluteVite,
       importPathAbsolute: importPath
     })
@@ -137,10 +137,9 @@ function determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem: string, 
   if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
     return null
   }
-  let filePathRelativeToUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
-  if (!filePathRelativeToUserRootDir.startsWith('/'))
-    filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
-  return filePathRelativeToUserRootDir
+  let filePathAbsoluteUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
+  if (!filePathAbsoluteUserRootDir.startsWith('/')) filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
+  return filePathAbsoluteUserRootDir
 }
 function warnUserLandExtension(importPath: string, configFilePath: FilePathResolved) {
   assertWarning(

@@ -54,18 +54,18 @@ function getFilePathRelativeToUserRootDir(
 ): string {
   assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(userRootDir)
-  let filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
+  let filePathAbsoluteUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
   if (filePathAbsoluteFilesystem.startsWith(userRootDir)) {
     assert(
-      !filePathRelativeToUserRootDir.startsWith('.') && !filePathRelativeToUserRootDir.startsWith('/'),
+      !filePathAbsoluteUserRootDir.startsWith('.') && !filePathAbsoluteUserRootDir.startsWith('/'),
       // Surprinsingly, this assertion seem to fail sometimes: https://github.com/vikejs/vike/issues/1139
-      { filePathRelativeToUserRootDir, filePathAbsoluteFilesystem, userRootDir }
+      { filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem, userRootDir }
     )
-    filePathRelativeToUserRootDir = `/${filePathRelativeToUserRootDir}`
-    return filePathRelativeToUserRootDir
+    filePathAbsoluteUserRootDir = `/${filePathAbsoluteUserRootDir}`
+    return filePathAbsoluteUserRootDir
   } else {
     if (alwaysRelative) {
-      return filePathRelativeToUserRootDir
+      return filePathAbsoluteUserRootDir
     } else {
       return filePathAbsoluteFilesystem
     }

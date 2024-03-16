@@ -6,33 +6,33 @@ import { assert, assertPosixPath } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
 
 function resolveFilePathRelativeToUserRootDir(
-  filePathRelativeToUserRootDir: string,
+  filePathAbsoluteUserRootDir: string,
   userRootDir: string
 ): FilePathResolved {
-  assertPosixPath(filePathRelativeToUserRootDir)
+  assertPosixPath(filePathAbsoluteUserRootDir)
   assertPosixPath(userRootDir)
-  const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelativeToUserRootDir)
-  return getFilePathResolved(filePathRelativeToUserRootDir, filePathAbsoluteFilesystem)
+  const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathAbsoluteUserRootDir)
+  return getFilePathResolved(filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem)
 }
 
 function resolveFilePathAbsoluteFilesystem(filePathAbsoluteFilesystem: string, userRootDir: string): FilePathResolved {
   assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(userRootDir)
-  let filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
-  assert(!filePathRelativeToUserRootDir.startsWith('.') && !filePathRelativeToUserRootDir.startsWith('/'))
-  filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
-  return getFilePathResolved(filePathRelativeToUserRootDir, filePathAbsoluteFilesystem)
+  let filePathAbsoluteUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
+  assert(!filePathAbsoluteUserRootDir.startsWith('.') && !filePathAbsoluteUserRootDir.startsWith('/'))
+  filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
+  return getFilePathResolved(filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem)
 }
 
 function getFilePathResolved(
-  filePathRelativeToUserRootDir: string,
+  filePathAbsoluteUserRootDir: string,
   filePathAbsoluteFilesystem: string
 ): FilePathResolved {
   return {
-    filePathRelativeToUserRootDir,
-    filePathAbsoluteVite: filePathRelativeToUserRootDir,
+    filePathAbsoluteUserRootDir,
+    filePathAbsoluteVite: filePathAbsoluteUserRootDir,
     filePathAbsoluteFilesystem,
-    filePathToShowToUser: filePathRelativeToUserRootDir,
+    filePathToShowToUser: filePathAbsoluteUserRootDir,
     importPathAbsolute: null
   }
 }

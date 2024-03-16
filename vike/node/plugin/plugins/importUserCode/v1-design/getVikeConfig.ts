@@ -195,11 +195,11 @@ async function loadInterfaceFiles(
   await Promise.all([
     // Config files
     ...configFiles.map(async (filePath) => {
-      const { filePathRelativeToUserRootDir } = filePath
-      assert(filePathRelativeToUserRootDir)
+      const { filePathAbsoluteUserRootDir } = filePath
+      assert(filePathAbsoluteUserRootDir)
       const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
-      assert(filePath.filePathRelativeToUserRootDir)
-      const locationId = getLocationId(filePathRelativeToUserRootDir)
+      assert(filePath.filePathAbsoluteUserRootDir)
+      const locationId = getLocationId(filePathAbsoluteUserRootDir)
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId)
 
       interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
@@ -248,13 +248,13 @@ async function loadInterfaceFiles(
     }),
     // Value files
     ...valueFiles.map(async (filePath) => {
-      const { filePathRelativeToUserRootDir } = filePath
-      assert(filePathRelativeToUserRootDir)
+      const { filePathAbsoluteUserRootDir } = filePath
+      assert(filePathAbsoluteUserRootDir)
 
-      const configName = getConfigName(filePathRelativeToUserRootDir)
+      const configName = getConfigName(filePathAbsoluteUserRootDir)
       assert(configName)
 
-      const locationId = getLocationId(filePathRelativeToUserRootDir)
+      const locationId = getLocationId(filePathAbsoluteUserRootDir)
 
       const interfaceFile: InterfaceValueFile = {
         locationId,
@@ -509,9 +509,9 @@ async function getGlobalConfigs(
     const interfaceFilesGlobalPaths: string[] = []
     objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
       assert(isGlobalLocation(locationId, locationIds))
-      interfaceFiles.forEach(({ filePath: { filePathRelativeToUserRootDir } }) => {
-        if (filePathRelativeToUserRootDir) {
-          interfaceFilesGlobalPaths.push(filePathRelativeToUserRootDir)
+      interfaceFiles.forEach(({ filePath: { filePathAbsoluteUserRootDir } }) => {
+        if (filePathAbsoluteUserRootDir) {
+          interfaceFilesGlobalPaths.push(filePathAbsoluteUserRootDir)
         }
       })
     })
@@ -667,10 +667,10 @@ async function resolveConfigValueSources(
 }
 function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: InterfaceFile): 0 | -1 | 1 {
   return lowerFirst<InterfaceFile>((interfaceFile) => {
-    const { filePathRelativeToUserRootDir } = interfaceFile.filePath
+    const { filePathAbsoluteUserRootDir } = interfaceFile.filePath
     assert(isInterfaceFileUserLand(interfaceFile))
-    assert(filePathRelativeToUserRootDir)
-    return filePathRelativeToUserRootDir.length
+    assert(filePathAbsoluteUserRootDir)
+    return filePathAbsoluteUserRootDir.length
   })(interfaceFile1, interfaceFile2)
 }
 function warnOverridenConfigValues(
@@ -1006,8 +1006,8 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 async function findPlusFiles(userRootDir: string, outDirRoot: string, isDev: boolean): Promise<FilePathResolved[]> {
   const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev)
 
-  const plusFiles: FilePathResolved[] = files.map(({ filePathRelativeToUserRootDir }) =>
-    resolveFilePathRelativeToUserRootDir(filePathRelativeToUserRootDir, userRootDir)
+  const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
+    resolveFilePathRelativeToUserRootDir(filePathAbsoluteUserRootDir, userRootDir)
   )
 
   return plusFiles
@@ -1108,9 +1108,9 @@ function getFilesystemRoutingRootEffect(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  const { filePathRelativeToUserRootDir } = configFilesystemRoutingRoot.definedAt
-  assert(filePathRelativeToUserRootDir)
-  const before = getFilesystemRouteString(getLocationId(filePathRelativeToUserRootDir))
+  const { filePathAbsoluteUserRootDir } = configFilesystemRoutingRoot.definedAt
+  assert(filePathAbsoluteUserRootDir)
+  const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
   return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configDefinedAt }

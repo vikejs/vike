@@ -40,7 +40,7 @@ function resolveImport(
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
     assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
-    const filePathRelativeToUserRootDir = resolveImportPath_relativeToUserRootDir(
+    const filePathAbsoluteUserRootDir = resolveImportPath_relativeToUserRootDir(
       filePathAbsoluteFilesystem,
       importData,
       importerFilePath,
@@ -48,9 +48,9 @@ function resolveImport(
     )
     const filePath: FilePath = {
       filePathAbsoluteFilesystem,
-      filePathRelativeToUserRootDir,
-      filePathAbsoluteVite: filePathRelativeToUserRootDir,
-      filePathToShowToUser: filePathRelativeToUserRootDir,
+      filePathAbsoluteUserRootDir,
+      filePathAbsoluteVite: filePathAbsoluteUserRootDir,
+      filePathToShowToUser: filePathAbsoluteUserRootDir,
       importPathAbsolute: null
     }
     return {
@@ -64,7 +64,7 @@ function resolveImport(
     //  - a path alias
     const filePath: FilePath = {
       filePathAbsoluteFilesystem,
-      filePathRelativeToUserRootDir: null,
+      filePathAbsoluteUserRootDir: null,
       filePathAbsoluteVite: importPath,
       filePathToShowToUser: importPath,
       importPathAbsolute: importPath
@@ -84,9 +84,9 @@ function resolveImportPath_relativeToUserRootDir(
   userRootDir: string
 ) {
   assertPosixPath(userRootDir)
-  let filePathRelativeToUserRootDir: string
+  let filePathAbsoluteUserRootDir: string
   if (filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    filePathRelativeToUserRootDir = getVitePathFromAbsolutePath(filePathAbsoluteFilesystem, userRootDir)
+    filePathAbsoluteUserRootDir = getVitePathFromAbsolutePath(filePathAbsoluteFilesystem, userRootDir)
   } else {
     assertUsage(
       false,
@@ -99,15 +99,15 @@ function resolveImportPath_relativeToUserRootDir(
     // assert(filePathAbsoluteFilesystem.startsWith('/'))
     // filePath = `/@fs${filePathAbsoluteFilesystem}`
     // /*/
-    // filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
-    // assert(filePathRelativeToUserRootDir.startsWith('../'))
-    // filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
+    // filePathAbsoluteUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
+    // assert(filePathAbsoluteUserRootDir.startsWith('../'))
+    // filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
     // //*/
   }
 
-  assertPosixPath(filePathRelativeToUserRootDir)
-  assert(filePathRelativeToUserRootDir.startsWith('/'))
-  return filePathRelativeToUserRootDir
+  assertPosixPath(filePathAbsoluteUserRootDir)
+  assert(filePathAbsoluteUserRootDir.startsWith('/'))
+  return filePathAbsoluteUserRootDir
 }
 
 function resolveImportPath(importData: ImportData, importerFilePath: FilePathResolved): string | null {

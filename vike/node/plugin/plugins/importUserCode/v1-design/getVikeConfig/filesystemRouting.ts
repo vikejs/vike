@@ -45,11 +45,11 @@ type LocationId = string & { __brand: 'LocationId' }
  */
 function getLocationId(
   // We always determine `locationId` from a real user-land file: the `locationId` for Vike extensions is the `locationId` of the the user's `+config.js` that extends the Vike extension.
-  filePathRelativeToUserRootDir: string
+  filePathAbsoluteUserRootDir: string
 ): LocationId {
-  assertPosixPath(filePathRelativeToUserRootDir)
-  assert(filePathRelativeToUserRootDir.startsWith('/'))
-  const locationId = removeFilename(filePathRelativeToUserRootDir)
+  assertPosixPath(filePathAbsoluteUserRootDir)
+  assert(filePathAbsoluteUserRootDir.startsWith('/'))
+  const locationId = removeFilename(filePathAbsoluteUserRootDir)
   assertLocationId(locationId)
   return locationId as LocationId
 }
@@ -139,8 +139,8 @@ function removeDirectories(somePath: string, removeDirs: string[]): string {
   return somePath
 }
 
-function removeFilename(filePathRelativeToUserRootDir: string) {
-  const filePathParts = filePathRelativeToUserRootDir.split('/')
+function removeFilename(filePathAbsoluteUserRootDir: string) {
+  const filePathParts = filePathAbsoluteUserRootDir.split('/')
   {
     const filename = filePathParts.slice(-1)[0]!
     assert(filename.includes('.'))

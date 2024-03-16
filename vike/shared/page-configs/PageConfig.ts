@@ -126,7 +126,7 @@ type FilePathResolved = FilePath & { filePathAbsoluteFilesystem: string }
 type FilePath = {
   /** The file's path, non-relative from Vite's perspective.
    *
-   * Its value is equivalent to `filePath.filePathRelativeToUserRootDir ?? filePath.importPathAbsolute`, for example:
+   * Its value is equivalent to `filePath.filePathAbsoluteUserRootDir ?? filePath.importPathAbsolute`, for example:
    *   - `vike-react/config`, or
    *   - `/pages/+config.js`.
    *
@@ -147,7 +147,7 @@ type FilePath = {
   filePathToShowToUser: string
 } & (
   | {
-      filePathRelativeToUserRootDir: null
+      filePathAbsoluteUserRootDir: null
       /** The file's path, as absolute import path. It's either:
        *  - an npm package import (e.g. `vike-react/config`), or
        *  - an alias (`#components/Counter').
@@ -159,7 +159,7 @@ type FilePath = {
        *
        * Example: `/pages/some-page/Page.js`
        */
-      filePathRelativeToUserRootDir: string
+      filePathAbsoluteUserRootDir: string
       importPathAbsolute: null | string
     }
 )

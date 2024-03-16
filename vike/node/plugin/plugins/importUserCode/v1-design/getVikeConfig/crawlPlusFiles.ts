@@ -27,7 +27,7 @@ async function crawlPlusFiles(
   userRootDir: string,
   outDirAbsoluteFilesystem: string,
   isDev: boolean
-): Promise<{ filePathRelativeToUserRootDir: string }[]> {
+): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
   assertPosixPath(outDirAbsoluteFilesystem)
   let outDirRelativeFromUserRootDir: string | null = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
@@ -72,8 +72,8 @@ async function crawlPlusFiles(
   const plusFiles = files.map((p) => {
     p = toPosixPath(p)
     assert(!p.startsWith(userRootDir))
-    const filePathRelativeToUserRootDir = path.posix.join('/', p)
-    return { filePathRelativeToUserRootDir }
+    const filePathAbsoluteUserRootDir = path.posix.join('/', p)
+    return { filePathAbsoluteUserRootDir }
   })
 
   return plusFiles
