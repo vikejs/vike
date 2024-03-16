@@ -124,16 +124,16 @@ type ConfigValues = Record<
 
 type FilePathResolved = FilePath & { filePathAbsoluteFilesystem: string }
 type FilePath = {
-  /** The file's path, absolute from Vite's perspective.
-   *
-   * We use this to generate import paths in virtual modules. (Virtual modules cannot have relative import paths.)
+  /** The file's path, non-relative from Vite's perspective.
    *
    * Its value is equivalent to `filePath.filePathRelativeToUserRootDir ?? filePath.importPathAbsolute`, for example:
    *   - `vike-react/config`, or
    *   - `/pages/+config.js`.
+   *
+   * We use it to generate import paths in virtual modules. (Since virtual modules cannot have relative import paths.)
    */
   filePathAbsoluteVite: string
-  /** The file's path, absolute from the filesystem root.
+  /** The file's path, absolute starting from the filesystem root.
    *
    * Example: `/home/rom/code/my-app/pages/some-page/Page.js`
    *
@@ -155,7 +155,7 @@ type FilePath = {
       importPathAbsolute: string
     }
   | {
-      /** The file's path, relative to Vite's root (i.e. the user project's root directory).
+      /** The file's path, absolute starting from the user root directory (i.e. Vite's `config.root`).
        *
        * Example: `/pages/some-page/Page.js`
        */
