@@ -105,8 +105,6 @@ async function loadExtendsConfigs(
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
     warnUserLandExtension(importPath, configFilePath)
-    // - filePathAbsoluteUserRootDir has no functionality beyond nicer error messages for user
-    // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsoluteFilesystem for added clarity
     const filePathAbsoluteUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
     const filePathAbsoluteVite = filePathAbsoluteUserRootDir ?? importPath
     extendsConfigFiles.push({

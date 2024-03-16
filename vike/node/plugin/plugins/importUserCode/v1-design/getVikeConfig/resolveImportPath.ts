@@ -40,7 +40,7 @@ function resolveImport(
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
     assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
-    const filePathAbsoluteUserRootDir = resolveImportPath_relativeToUserRootDir(
+    const filePathAbsoluteUserRootDir = resolveImportPath_absoluteUserRootDir(
       filePathAbsoluteFilesystem,
       importData,
       importerFilePath,
@@ -77,7 +77,7 @@ function resolveImport(
   }
 }
 
-function resolveImportPath_relativeToUserRootDir(
+function resolveImportPath_absoluteUserRootDir(
   filePathAbsoluteFilesystem: string,
   importData: ImportData,
   configFilePath: FilePathResolved,
