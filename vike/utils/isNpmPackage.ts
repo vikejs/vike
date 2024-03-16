@@ -1,8 +1,10 @@
 export { isNpmPackageImport }
+export { isValidPathAlias }
+/* Currently not used
 export { isNpmPackageName }
 export { getNpmPackageName }
 export { getNpmPackageImportPath }
-export { isValidPathAlias }
+*/
 
 // For ./isNpmPackage.spec.ts
 export { parse }
