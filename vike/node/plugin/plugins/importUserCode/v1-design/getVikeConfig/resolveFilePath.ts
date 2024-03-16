@@ -1,11 +1,11 @@
-export { resolveFilePathRelativeToUserRootDir }
+export { resolveFilePathAbsoluteUserRootDir }
 export { resolveFilePathAbsoluteFilesystem }
 
 import path from 'path'
 import { assert, assertPosixPath } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
 
-function resolveFilePathRelativeToUserRootDir(
+function resolveFilePathAbsoluteUserRootDir(
   filePathAbsoluteUserRootDir: string,
   userRootDir: string
 ): FilePathResolved {

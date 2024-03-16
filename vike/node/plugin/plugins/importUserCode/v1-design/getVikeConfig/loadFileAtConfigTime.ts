@@ -105,7 +105,7 @@ async function loadExtendsConfigs(
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
     warnUserLandExtension(importPath, configFilePath)
-    const filePathAbsoluteUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
+    const filePathAbsoluteUserRootDir = determineFilePathAbsoluteUserRootDir(filePathAbsoluteFilesystem, userRootDir)
     const filePathAbsoluteVite = filePathAbsoluteUserRootDir ?? importPath
     extendsConfigFiles.push({
       filePathAbsoluteFilesystem,
@@ -129,7 +129,7 @@ async function loadExtendsConfigs(
 
   return { extendsConfigs, extendsFilePaths }
 }
-function determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem: string, userRootDir: string): null | string {
+function determineFilePathAbsoluteUserRootDir(filePathAbsoluteFilesystem: string, userRootDir: string): null | string {
   assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(userRootDir)
   if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
