@@ -7,7 +7,7 @@ import {
   assert,
   resolveOutDir,
   viteIsSSR,
-  getFilePathAbsolute,
+  getFilePathAbsoluteFilesystem,
   addOnBeforeLogHook,
   removeFileExtention,
   unique,
@@ -235,7 +235,7 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
 
-  let entryTarget = getFilePathAbsolute(filePath, config)
+  let entryTarget = getFilePathAbsoluteFilesystem(filePath, config)
   if (addExtractAssetsQuery) entryTarget = extractAssetsAddQuery(entryTarget)
 
   let entryName = filePath

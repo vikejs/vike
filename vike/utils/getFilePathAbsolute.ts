@@ -1,4 +1,4 @@
-export { getFilePathAbsolute }
+export { getFilePathAbsoluteFilesystem }
 export { getFilePathAbsoluteUserRootDir }
 
 import type { ResolvedConfig } from 'vite'
@@ -17,7 +17,7 @@ assertIsNotProductionRuntime()
 // Vite handles paths such as /pages/index.page.js which are relative to `config.root`.
 // Make them absolute starting from the filesystem root.
 // Also resolve plus files living in npm packages such as restack/renderer/+onRenderHtml.js
-function getFilePathAbsolute(filePath: string, config: ResolvedConfig): string {
+function getFilePathAbsoluteFilesystem(filePath: string, config: ResolvedConfig): string {
   assertPosixPath(filePath)
 
   if (filePath.startsWith('/@fs/')) {

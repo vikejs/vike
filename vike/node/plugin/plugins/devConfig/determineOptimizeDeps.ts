@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, getFilePathAbsolute, isNpmPackageImport, unique } from '../../utils.js'
+import { assert, getFilePathAbsoluteFilesystem, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValueSourcesNotOverriden } from '../../shared/getConfigValueSourcesNotOverriden.js'
 import { analyzeClientEntries } from '../buildConfig.js'
@@ -81,7 +81,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   {
     const pageFiles = await findPageFiles(config, ['.page', '.page.client'], isDev)
     pageFiles.forEach((filePath) => {
-      const entry = getFilePathAbsolute(filePath, config)
+      const entry = getFilePathAbsoluteFilesystem(filePath, config)
       entries.push(entry)
     })
   }
