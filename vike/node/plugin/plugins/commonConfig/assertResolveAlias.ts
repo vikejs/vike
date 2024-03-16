@@ -4,6 +4,20 @@ import type { ResolvedConfig } from 'vite'
 import { assert, assertUsage, assertWarning, isValidPathAlias } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
+// Recommend users to avoid un-distinguishable path aliases.
+
+// There are a lot of libraries that don't or cannot follow that recommendation, for example:
+// - Nx
+//   - Not sure why, but Nx seems to add a path alias for each monorepo package
+//   - https://github.com/vikejs/vike/discussions/1134
+// - MUI
+//   - https://mui.com/material-ui/guides/minimizing-bundle-size/#how-to-use-custom-bundles
+//   - https://github.com/vikejs/vike/discussions/1549#discussioncomment-8789002
+// - @preact/preset-vite
+//   - Aliases react imports
+// - @vitejs/plugin-vue2
+//   - https://github.com/vikejs/vike/issues/1329
+
 // TODO/v1-release: replace assertWarning() with assertUsage()
 function assertResolveAlias(config: ResolvedConfig) {
   const aliases = getAliases(config)
