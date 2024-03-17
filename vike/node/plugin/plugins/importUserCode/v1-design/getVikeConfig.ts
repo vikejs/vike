@@ -39,8 +39,7 @@ import type {
   DefinedAt,
   DefinedAtFileFullInfo,
   DefinedAtFile,
-  ConfigValuesComputed,
-  FilePathResolved
+  ConfigValuesComputed
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -83,6 +82,7 @@ import {
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import { clearFilesEnvMap, resolveImport } from './getVikeConfig/resolveImportPath.js'
 import { getFilePathResolved } from './getVikeConfig/getFilePath.js'
+import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 
 assertIsNotProductionRuntime()
 

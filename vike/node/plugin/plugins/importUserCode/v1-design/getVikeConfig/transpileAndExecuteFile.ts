@@ -23,7 +23,7 @@ import {
 import { transformFileImports } from './transformFileImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
 import 'source-map-support/register.js'
-import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
+import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 
 assertIsNotProductionRuntime()
 const debug = createDebugger('vike:pointer-imports')
