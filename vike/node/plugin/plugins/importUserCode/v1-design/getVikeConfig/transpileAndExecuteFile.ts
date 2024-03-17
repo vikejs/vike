@@ -33,13 +33,12 @@ async function transpileAndExecuteFile(
   userRootDir: string,
   isConfigFile: boolean | 'is-extension-config'
 ): Promise<{ fileExports: Record<string, unknown> }> {
-  const { filePathAbsoluteFilesystem } = filePath
+  const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
-  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
 
   assertUsage(
     isJavaScriptFile(filePathAbsoluteFilesystem),
-    `${filePathToShowToUser2} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`
+    `${filePathToShowToUserResolved} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`
   )
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
   if (isHeader) {
@@ -47,8 +46,8 @@ async function transpileAndExecuteFile(
       false,
       `${pc.cyan(
         '.h.js'
-      )} files are deprecated: simply renaming ${filePathToShowToUser2} to ${removeHeaderFileExtension(
-        filePathToShowToUser2
+      )} files are deprecated: simply renaming ${filePathToShowToUserResolved} to ${removeHeaderFileExtension(
+        filePathToShowToUserResolved
       )} is usually enough, although you may occasionally need to use ${pc.cyan(
         "with { type: 'pointer' }"
       )} as explained at https://vike.dev/config#pointer-imports`,
@@ -69,27 +68,26 @@ async function transpileAndExecuteFile(
 }
 
 async function transpileFile(filePath: FilePathResolved, transformImports: boolean | 'all', userRootDir: string) {
-  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
-  const { filePathAbsoluteFilesystem } = filePath
+  const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
 
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
-  if (debug.isEnabled) debug('transpile', filePathToShowToUser2)
+  if (debug.isEnabled) debug('transpile', filePathToShowToUserResolved)
   let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports)
-  if (debug.isEnabled) debug(`code, post esbuild (${filePathToShowToUser2})`, code)
+  if (debug.isEnabled) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
 
   let isImportTransformed = false
   if (transformImports) {
-    const codeMod = transformFileImports(code, filePathToShowToUser2, pointerImports)
+    const codeMod = transformFileImports(code, filePathToShowToUserResolved, pointerImports)
     if (codeMod) {
       code = codeMod
       isImportTransformed = true
-      if (debug.isEnabled) debug(`code, post transformImports() (${filePathToShowToUser2})`, code)
+      if (debug.isEnabled) debug(`code, post transformImports() (${filePathToShowToUserResolved})`, code)
     }
   }
   if (!isImportTransformed) {
-    if (debug.isEnabled) debug(`code, no transformImports() (${filePathToShowToUser2})`)
+    if (debug.isEnabled) debug(`code, no transformImports() (${filePathToShowToUserResolved})`)
   }
   return code
 }
@@ -341,19 +339,12 @@ function triggerPrepareStackTrace(err: unknown) {
 }
 
 function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathResolved) {
-  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
+  const { filePathToShowToUserResolved } = filePath
   const msg = [
     // prettier ignore
     pc.red(`Failed to ${operation}`),
-    pc.bold(pc.red(filePathToShowToUser2)),
+    pc.bold(pc.red(filePathToShowToUserResolved)),
     pc.red(`because:`)
   ].join(' ')
   return msg
-}
-
-/** `filePath.filePathToShowToUser` may show the import path of a package, use `filePathToShowToUser2` instead always show a file path instead. */
-function getFilePathToShowToUser2(filePath: FilePathResolved): string {
-  const { filePathToShowToUserResolved } = filePath
-  assert(filePathToShowToUserResolved)
-  return filePathToShowToUserResolved
 }
