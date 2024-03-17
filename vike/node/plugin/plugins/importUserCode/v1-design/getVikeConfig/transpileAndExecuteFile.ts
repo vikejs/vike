@@ -353,8 +353,7 @@ function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathRe
 
 /** `filePath.filePathToShowToUser` may show the import path of a package, use `filePathToShowToUser2` instead always show a file path instead. */
 function getFilePathToShowToUser2(filePath: FilePathResolved): string {
-  const { filePathAbsoluteFilesystem, filePathAbsoluteUserRootDir } = filePath
-  const filePathToShowToUser2 = filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
-  assert(filePathToShowToUser2)
-  return filePathToShowToUser2
+  const { filePathToShowToUserResolved } = filePath
+  assert(filePathToShowToUserResolved)
+  return filePathToShowToUserResolved
 }

@@ -82,7 +82,7 @@ import {
   loadValueFile
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import { clearFilesEnvMap, resolveImport } from './getVikeConfig/resolveImportPath.js'
-import { resolveFilePathAbsoluteUserRootDir } from './getVikeConfig/resolveFilePath.js'
+import { getFilePathResolved } from './getVikeConfig/getFilePath.js'
 
 assertIsNotProductionRuntime()
 
@@ -765,6 +765,7 @@ async function getConfigValueSource(
       ) {
         if (import_.filePathAbsoluteFilesystem) {
           assert(hasProp(import_, 'filePathAbsoluteFilesystem', 'string')) // Help TS
+          assert(hasProp(import_, 'filePathToShowToUserResolved', 'string')) // Help TS
           const fileExport = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
@@ -1007,7 +1008,7 @@ async function findPlusFiles(userRootDir: string, outDirRoot: string, isDev: boo
   const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
-    resolveFilePathAbsoluteUserRootDir(filePathAbsoluteUserRootDir, userRootDir)
+    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir, importPathAbsolute: null })
   )
 
   return plusFiles

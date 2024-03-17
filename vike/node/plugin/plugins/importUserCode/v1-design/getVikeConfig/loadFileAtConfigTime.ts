@@ -7,7 +7,6 @@ export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
 import {
-  assertPosixPath,
   assert,
   assertUsage,
   assertWarning,
@@ -23,6 +22,7 @@ import pc from '@brillout/picocolors'
 import { type ImportData, parseImportData } from './transformFileImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
 import { assertImportPath, resolveImportPath } from './resolveImportPath.js'
+import { getFilePathResolved } from './getFilePath.js'
 
 assertIsNotProductionRuntime()
 
@@ -101,19 +101,12 @@ async function loadExtendsConfigs(
   const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
   extendsImportData.map((importData) => {
-    const { importPath: importPath } = importData
+    const { importPath: importPathAbsolute } = importData
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
-    warnUserLandExtension(importPath, configFilePath)
-    const filePathAbsoluteUserRootDir = determineFilePathAbsoluteUserRootDir(filePathAbsoluteFilesystem, userRootDir)
-    const filePathAbsoluteVite = filePathAbsoluteUserRootDir ?? importPath
-    extendsConfigFiles.push({
-      filePathAbsoluteFilesystem,
-      filePathAbsoluteVite,
-      filePathAbsoluteUserRootDir,
-      filePathToShowToUser: filePathAbsoluteVite,
-      importPathAbsolute: importPath
-    })
+    warnUserLandExtension(importPathAbsolute, configFilePath)
+    const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute })
+    extendsConfigFiles.push(filePath)
   })
 
   const extendsConfigs: ConfigFile[] = []
@@ -128,16 +121,6 @@ async function loadExtendsConfigs(
   const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsoluteFilesystem)
 
   return { extendsConfigs, extendsFilePaths }
-}
-function determineFilePathAbsoluteUserRootDir(filePathAbsoluteFilesystem: string, userRootDir: string): null | string {
-  assertPosixPath(filePathAbsoluteFilesystem)
-  assertPosixPath(userRootDir)
-  if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    return null
-  }
-  let filePathAbsoluteUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
-  if (!filePathAbsoluteUserRootDir.startsWith('/')) filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
-  return filePathAbsoluteUserRootDir
 }
 function warnUserLandExtension(importPath: string, configFilePath: FilePathResolved) {
   assertWarning(

@@ -13,6 +13,7 @@ import type {
 import { assert, assertPosixPath, assertUsage, deepEqual, requireResolve } from '../../../../utils.js'
 import { type ImportData, parseImportData } from './transformFileImports.js'
 import path from 'path'
+import { getFilePathResolved, getFilePathUnresolved } from './getFilePath.js'
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 
@@ -46,13 +47,7 @@ function resolveImport(
       importerFilePath,
       userRootDir
     )
-    const filePath: FilePath = {
-      filePathAbsoluteFilesystem,
-      filePathAbsoluteUserRootDir,
-      filePathAbsoluteVite: filePathAbsoluteUserRootDir,
-      filePathToShowToUser: filePathAbsoluteUserRootDir,
-      importPathAbsolute: null
-    }
+    const filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir, importPathAbsolute: null })
     return {
       ...filePath,
       fileExportName: exportName,
@@ -62,13 +57,11 @@ function resolveImport(
     // importPath can be:
     //  - an npm package import
     //  - a path alias
-    const filePath: FilePath = {
+    const filePath: FilePath = getFilePathUnresolved({
       filePathAbsoluteFilesystem,
       filePathAbsoluteUserRootDir: null,
-      filePathAbsoluteVite: importPath,
-      filePathToShowToUser: importPath,
       importPathAbsolute: importPath
-    }
+    })
     return {
       ...filePath,
       fileExportName: exportName,
