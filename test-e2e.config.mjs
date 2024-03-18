@@ -83,9 +83,11 @@ function tolerateError({ logSource, logText }) {
     isNodeExperimentalEsmLoader() ||
     isNodeExperimentalLoader() ||
     isNotV1Design() ||
+    // TODO: move everything to this array
     [
-      // TODO: move everything to this array
-      'The glob option "as" has been deprecated in favour of "query"'
+      'The glob option "as" has been deprecated in favour of "query"',
+      // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
+      "is slow: it's taking more than"
     ].some((t) => logText.includes(t))
   )
 
