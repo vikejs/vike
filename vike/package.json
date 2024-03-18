@@ -30,18 +30,18 @@
     ".": {
       "worker": "./dist/esm/node/runtime/index-deprecated.js",
       "edge-light": "./dist/esm/node/runtime/index-deprecated.js",
-      "require": "./dist/cjs/node/runtime/index-deprecated.js",
       "node": "./dist/esm/node/runtime/index-deprecated.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/node/runtime/index-deprecated.d.ts"
+      "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
+      "require": "./dist/cjs/node/runtime/index-deprecated.js"
     },
     "./server": {
       "worker": "./dist/esm/node/runtime/index.js",
       "edge-light": "./dist/esm/node/runtime/index.js",
-      "require": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/esm/node/runtime/index.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/node/runtime/index.d.ts"
+      "types": "./dist/esm/node/runtime/index.d.ts",
+      "require": "./dist/cjs/node/runtime/index.js"
     },
     "./client": {
       "types": "./dist/esm/client/server-routing-runtime/index.d.ts"
@@ -52,66 +52,66 @@
     "./client/router": {
       "worker": "./dist/esm/node/client/router.js",
       "edge-light": "./dist/esm/node/client/router.js",
-      "require": "./dist/cjs/node/client/router.js",
       "node": "./dist/esm/node/client/router.js",
       "browser": "./dist/esm/client/client-routing-runtime/index.js",
-      "types": "./dist/esm/client/client-routing-runtime/index.d.ts"
+      "types": "./dist/esm/client/client-routing-runtime/index.d.ts",
+      "require": "./dist/cjs/node/client/router.js"
     },
     "./routing": {
       "worker": "./dist/esm/shared/route/routing.js",
       "edge-light": "./dist/esm/shared/route/routing.js",
-      "require": "./dist/cjs/shared/route/routing.js",
       "node": "./dist/esm/shared/route/routing.js",
       "browser": "./dist/esm/shared/route/routing.js",
-      "types": "./dist/esm/shared/route/routing.d.ts"
+      "types": "./dist/esm/shared/route/routing.d.ts",
+      "require": "./dist/cjs/shared/route/routing.js"
     },
     "./cli": {
-      "require": "./dist/cjs/node/cli/index.js",
       "node": "./dist/esm/node/cli/index.js",
-      "types": "./dist/esm/node/cli/index.d.ts"
+      "types": "./dist/esm/node/cli/index.d.ts",
+      "require": "./dist/cjs/node/cli/index.js"
     },
     "./prerender": {
-      "require": "./dist/cjs/node/prerender/index.js",
       "node": "./dist/esm/node/prerender/index.js",
-      "types": "./dist/esm/node/prerender/index.d.ts"
+      "types": "./dist/esm/node/prerender/index.d.ts",
+      "require": "./dist/cjs/node/prerender/index.js"
     },
     "./plugin": {
-      "require": "./dist/cjs/node/plugin/index.js",
       "node": "./dist/esm/node/plugin/index.js",
-      "types": "./dist/esm/node/plugin/index.d.ts"
+      "types": "./dist/esm/node/plugin/index.d.ts",
+      "require": "./dist/cjs/node/plugin/index.js"
     },
     "./RenderErrorPage": {
       "worker": "./dist/esm/shared/RenderErrorPage.js",
       "edge-light": "./dist/esm/shared/RenderErrorPage.js",
-      "require": "./dist/cjs/shared/RenderErrorPage.js",
       "node": "./dist/esm/shared/RenderErrorPage.js",
       "browser": "./dist/esm/shared/RenderErrorPage.js",
-      "types": "./dist/esm/shared/RenderErrorPage.d.ts"
+      "types": "./dist/esm/shared/RenderErrorPage.d.ts",
+      "require": "./dist/cjs/shared/RenderErrorPage.js"
     },
     "./abort": {
       "worker": "./dist/esm/shared/abort.js",
       "edge-light": "./dist/esm/shared/abort.js",
-      "require": "./dist/cjs/shared/abort.js",
       "node": "./dist/esm/shared/abort.js",
       "browser": "./dist/esm/shared/abort.js",
-      "types": "./dist/esm/shared/abort.d.ts"
+      "types": "./dist/esm/shared/abort.d.ts",
+      "require": "./dist/cjs/shared/abort.js"
     },
     "./__internal": {
-      "require": "./dist/cjs/__internal/index.js",
       "node": "./dist/esm/__internal/index.js",
-      "types": "./dist/esm/__internal/index.d.ts"
+      "types": "./dist/esm/__internal/index.d.ts",
+      "require": "./dist/cjs/__internal/index.js"
     },
     "./__internal/setup": {
-      "require": "./dist/cjs/node/runtime/page-files/setup.js",
       "node": "./dist/esm/node/runtime/page-files/setup.js",
-      "types": "./dist/esm/node/runtime/page-files/setup.d.ts"
+      "types": "./dist/esm/node/runtime/page-files/setup.d.ts",
+      "require": "./dist/cjs/node/runtime/page-files/setup.js"
     },
     "./__internal/loadImportBuild": {
       "worker": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
       "edge-light": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
-      "require": "./dist/cjs/node/runtime/globalContext/loadImportBuild.js",
       "node": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
-      "types": "./dist/esm/node/runtime/globalContext/loadImportBuild.d.ts"
+      "types": "./dist/esm/node/runtime/globalContext/loadImportBuild.d.ts",
+      "require": "./dist/cjs/node/runtime/globalContext/loadImportBuild.js"
     }
   },
   "peerDependencies": {
