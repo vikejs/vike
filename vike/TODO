@@ -40,6 +40,7 @@ v0.5 breaking changes:
       - Blog post: my personal journey towards building Vike (for rationle why Vike exists, see landing page instead of reading blog bost).
 - Make CJS warning an error.
   - Keep the CJS build for a little while and if no one complains then remove the CJS build.
+- Make guard() hook server-side only by default?
 
 Docs:
  - Improve /nextjs
