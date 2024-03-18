@@ -7,6 +7,12 @@ env:
 
 on:
   push:
+  pull_request:
+  workflow_run:
+    workflows:
+      - 'CI'
+    types:
+      - completed
 
 jobs:
   prepare:
