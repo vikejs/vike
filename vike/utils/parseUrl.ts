@@ -16,7 +16,14 @@ import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
 import pc from '@brillout/picocolors'
 
-const PROTOCOLS = ['http://', 'https://', 'tauri://', 'file://']
+const PROTOCOLS = [
+  'http://',
+  'https://',
+  // For [Tauri](https://tauri.app/)
+  'tauri://',
+  // For Electron: https://github.com/vikejs/vike/issues/1557
+  'file://'
+]
 
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
