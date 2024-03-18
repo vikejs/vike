@@ -54,7 +54,7 @@
     "./client/router": {
       "worker": "./dist/esm/node/client/router.js",
       "edge-light": "./dist/esm/node/client/router.js",
-      "import": "./dist/esm/client/client-routing-runtime/index.js",
+      "import": "./dist/esm/node/client/router.js",
       "require": "./dist/cjs/node/client/router.js",
       "node": "./dist/esm/node/client/router.js",
       "browser": "./dist/esm/client/client-routing-runtime/index.js",
