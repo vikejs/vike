@@ -1,12 +1,12 @@
 import { Warning, CodeBlockTransformer, Link } from '@brillout/docpress'
 
-Some [npm packages](https://www.npmjs.com) contain invalid JavaScript code.
+Some npm packages contain invalid JavaScript code.
 
-The most notable errors are invalid [ESM](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) code, ESM code importing [CJS](https://nodejs.org/api/modules.html#modules-commonjs-modules:~:text=CommonJS%20modules%20are%20the%20original%20way%20to%20package%20JavaScript%20code%20for%20Node.js) code in an invalid fashion, and invalid CSS imports.
+See <Link href="#workaround" />.
 
-For a solution, see <Link href="#workaround" />.
-
-> The reason why an npm package can contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. For further explanation, see <Link href="#why" />.
+> The reason why an npm package can contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. Learn more at <Link href="#why" />.
+>
+> The situation is going to improve over time as Vite-powered frameworks gain popularity.
 
 
 ## Workaround
@@ -24,9 +24,9 @@ export default {
 }
 ```
 
-> The seection <Link href="#why" /> explains why `ssr.noExternal` is a workaround.
+> You may need to add several/nested npm packages to `ssr.noExternal`, because CJS/ESM issues sometime cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
 
-You may need to add several/nested npm packages to `ssr.noExternal`, because CJS/ESM issues sometime cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
+> The section <Link href="#why" /> explains why `ssr.noExternal` is a workaround.
 
 If the npm package is CJS code then, instead of `ssr.noExternal`, consider using [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop).
 
@@ -47,20 +47,21 @@ export default {
 }
 ```
 
-> If the workarounds don't work, then don't hesitate to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link>.
+> Feel free to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link> if the workarounds don't work.
 
 
 ## Why
 
-You may ask yourself, rightfully so, how it's possible that npm packages can publish invalid JavaScript code that doesn't get fixed for months.
+You may ask yourself how it's possible that an npm package can publish invalid JavaScript code that doesn't get fixed for months.
 
-The main reason is that some frameworks (such as Next.js) transpile the server-side code of npm packages, whereas Vite transpiles only the client-side code of npm packages. When server-side code contains invalid JavaScript then Node.js crashes and throws one of <Link href="#common-errors">these errors</Link>, while transpilers are more tolerant and transform invalid JavaScript (that Node.js isn't able to execute) into valid JavaScript (that Node.js is able to execute).
+The main reason is that some frameworks such as Next.js transpile the server-side code of npm packages, whereas Vite transpiles only the client-side code of npm packages. When server-side code contains invalid JavaScript then Node.js crashes and throws one of <Link href="#common-errors">these errors</Link>, while transpilers are more tolerant and transform invalid JavaScript (that Node.js isn't able to execute) into valid JavaScript (that Node.js is able to execute).
 
-By default, Vite doesn't transpile the server-side code of npm packages for a much faster development DX: Node.js directly executes server-side code without involving a slow transpilition process.
+By default, Vite doesn't transpile the server-side code of npm packages for a faster development DX, so that Node.js directly executes server-side code without involving a slow transpilition process.
 
-That's why <Link href="#workaround">adding an npm package to `ssr.noExternal`</Link> is a workaround if the npm package contains invalid JavaScript.
-Essentially, by adding an npm package to `ssr.noExternal`, you replicate the behavior of frameworks like Next.js.
+That's why <Link href="#workaround">adding an npm package to `ssr.noExternal`</Link> is usually a workaround when the npm package contains invalid JavaScript.
+By adding an npm package to `ssr.noExternal`, you replicate the behavior of frameworks like Next.js.
 
+> The issue is most widepread in the React ecosystem because of Next.js's prevalence, but this is going to less and less of an issue as Vite-powered React frameworks gain popularity.
 
 ## Common errors
 
@@ -251,7 +252,7 @@ Check your code at +Page.tsx:26.
 >
 > You can also use the temporary patch to get a more precise component trace. (For example the component trace above says `Check your code at +Page.tsx:26` but there can be hundreds of `+Page.tsx` files and it doesn't say which `+Page.tsx` file it is.)
 
-Use the component trace to find out which component is `undefined` (or an `object`). You'll likely discover that the React component is imported, while the import value is `undefined` or an `object` (instead of a React component) because of CJS/ESM interoperability quirks.
+Use the component trace to find out which component is `undefined` / an `object`. You'll likely discover that the React component is imported, while the import value is `undefined` / an `object` (instead of a React component) because of CJS/ESM interoperability quirks.
 
 A local workaround is usually this:
 
