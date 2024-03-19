@@ -49,6 +49,7 @@ function fileEnv(): Plugin {
         if (modulePath.includes('/node_modules/')) return
 
         // TODO/v1-release: remove
+        // - I don't remember exactly, but I think I've added `TODO/v1-release: remove` because I vaguely remember that we can remove this after we remove the 0.4 design.
         if (modulePath.endsWith('.css')) return
 
         const isServerSide = options?.ssr
