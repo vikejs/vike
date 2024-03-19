@@ -3,10 +3,11 @@ export { fileEnv }
 // Implementation for https://vike.dev/file-env
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, capitalizeFirstLetter, getFilePathAbsoluteUserRootDir } from '../utils.js'
+import { assert, assertUsage, assertWarning, capitalizeFirstLetter } from '../utils.js'
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
+import { getFilePathResolved } from '../shared/getFilePath.js'
 
 function fileEnv(): Plugin {
   let config: ResolvedConfig
@@ -43,7 +44,8 @@ function fileEnv(): Plugin {
         })
         // resolved is null when import path is erroneous and doesn't actually point to a file
         if (!resolved) return
-        const modulePath = resolved.id.split('?')[0]!
+        const moduleId = resolved.id
+        const modulePath = moduleId.split('?')[0]!
 
         // `.server.js` and `.client.js` should only apply to user files
         if (modulePath.includes('/node_modules/')) return
@@ -62,7 +64,7 @@ function fileEnv(): Plugin {
         // Show error message
         let errMsg: string
 
-        let modulePathPretty = getFilePathAbsoluteUserRootDir(modulePath, config.root)
+        let modulePathPretty = getModuleFilePath(moduleId, config)
         modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
         errMsg = `${capitalizeFirstLetter(
           envExpect
@@ -75,7 +77,7 @@ function fileEnv(): Plugin {
           // I don't know why and who sets importer to '<stdin>' (I guess Vite?)
           importer !== '<stdin>'
         ) {
-          const importerPath = getFilePathAbsoluteUserRootDir(importer.split('?')[0]!, config.root)
+          const importerPath = getModuleFilePath(importer, config)
           errMsg += ` by ${importerPath}`
         }
 
@@ -109,4 +111,12 @@ function fileEnv(): Plugin {
       assert(!id.includes(`.${envWrong}.`))
     }
   }
+}
+
+function getModuleFilePath(moduleId: string, config: ResolvedConfig): string {
+  const userRootDir = config.root
+  const filePathAbsoluteFilesystem = moduleId.split('?')[0]!
+  const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute: null })
+  const { filePathToShowToUserResolved } = filePath
+  return filePathToShowToUserResolved
 }
