@@ -146,12 +146,15 @@ function getFilePathToShowToUserFromUnkown(
 
   filePathUnkown = cleanFilePathUnkown(filePathUnkown)
 
-  if (!filePathUnkown.startsWith(userRootDir)) return filePathUnkown
-
-  return getFilePathAbsoluteUserRootDir2(filePathUnkown, userRootDir)
+  if (!filePathUnkown.startsWith(userRootDir)) {
+    return filePathUnkown
+  } else {
+    return getFilePathAbsoluteUserRootDir2(filePathUnkown, userRootDir)
+  }
 }
 
 function getFilePathAbsoluteUserRootDir2(filePathAbsoluteFilesystem: string, userRootDir: string): string {
+  assert(filePathAbsoluteFilesystem.startsWith(userRootDir))
   let filePathAbsoluteUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
   if (!filePathAbsoluteUserRootDir.startsWith('/')) filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
   return filePathAbsoluteUserRootDir
