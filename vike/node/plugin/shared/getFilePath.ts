@@ -98,24 +98,19 @@ function getFilePathAbsoluteUserRootDir({
   assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(userRootDir)
 
-  const filePathRelativeToUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
+  const filePathRelative = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
 
   if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
+    assert(filePathRelative.startsWith('../'))
     return null
   }
 
-  let filePathAbsoluteUserRootDir: string
+  assert(!filePathRelative.startsWith('.') && !filePathRelative.startsWith('/'))
+  const filePathAbsoluteUserRootDir = `/${filePathRelative}`
   {
-    let filePathAbsoluteUserRootDir1 = filePathAbsoluteFilesystem.slice(userRootDir.length)
-    if (!filePathAbsoluteUserRootDir1.startsWith('/')) filePathAbsoluteUserRootDir1 = '/' + filePathAbsoluteUserRootDir1
-    filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir1
+    let check = filePathAbsoluteFilesystem.slice(userRootDir.length)
+    if (!check.startsWith('/')) check = '/' + check
+    assert(filePathAbsoluteUserRootDir === check)
   }
-  {
-    let filePathAbsoluteUserRootDir2 = filePathRelativeToUserRootDir
-    assert(!filePathAbsoluteUserRootDir2.startsWith('.') && !filePathAbsoluteUserRootDir2.startsWith('/'))
-    filePathAbsoluteUserRootDir2 = '/' + filePathAbsoluteUserRootDir2
-    assert(filePathAbsoluteUserRootDir === filePathAbsoluteUserRootDir2)
-  }
-
   return filePathAbsoluteUserRootDir
 }
