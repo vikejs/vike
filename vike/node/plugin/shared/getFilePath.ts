@@ -114,7 +114,7 @@ function getFilePathAbsoluteUserRootDir({
     let filePathAbsoluteUserRootDir2 = filePathRelativeToUserRootDir
     assert(!filePathAbsoluteUserRootDir2.startsWith('.') && !filePathAbsoluteUserRootDir2.startsWith('/'))
     filePathAbsoluteUserRootDir2 = '/' + filePathAbsoluteUserRootDir2
-    assert(filePathAbsoluteFilesystem === filePathAbsoluteUserRootDir2)
+    assert(filePathAbsoluteUserRootDir === filePathAbsoluteUserRootDir2)
   }
 
   return filePathAbsoluteUserRootDir
