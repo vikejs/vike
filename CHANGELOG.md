@@ -1,3 +1,25 @@
+## [0.4.166](https://github.com/vikejs/vike/compare/v0.4.165...v0.4.166) (2024-03-19)
+
+
+### Bug Fixes
+
+* add `Vike.Config` to `PageContextConfig` (fix [#1532](https://github.com/vikejs/vike/issues/1532)) ([74b18b0](https://github.com/vikejs/vike/commit/74b18b0dbd21600f0a15d0871da437bc1d57caf1))
+* conservatively preserve all assets in dist/server (fix [#1154](https://github.com/vikejs/vike/issues/1154)) ([6dfef11](https://github.com/vikejs/vike/commit/6dfef11d74c420b5d695f0897f1d292f3b8b7e95))
+* emphasize CJS/ESM error hint ([3e344b9](https://github.com/vikejs/vike/commit/3e344b9734c267bc43abd7e49402456aebc4cc18))
+* generate assets.json early (fix [#1527](https://github.com/vikejs/vike/issues/1527)) ([2598887](https://github.com/vikejs/vike/commit/259888792f8906282951f89d7602ce1c2a601cb8))
+* improve handling of unsuable Git ([#1549](https://github.com/vikejs/vike/issues/1549)) ([42d58ff](https://github.com/vikejs/vike/commit/42d58ff9d9aa9eb27c7495e216ecaf3e29970614))
+* improve HTTP request error message upon Vike config error ([e405b77](https://github.com/vikejs/vike/commit/e405b7795328582bef08d4a4e24b8fa5abb7170d))
+* improve logging upon skipped HTTP request ([0e4145b](https://github.com/vikejs/vike/commit/0e4145b03b2b5d6f6f6673ccc3d0a4084cfe674f))
+* improve package.json#exports by adding import export ([#1382](https://github.com/vikejs/vike/issues/1382)) ([c270210](https://github.com/vikejs/vike/commit/c27021060034f5245873cc196e700d5e54cbb427))
+* improve package.json#exports by making require export last ([#1382](https://github.com/vikejs/vike/issues/1382)) ([ca218b3](https://github.com/vikejs/vike/commit/ca218b3f9b0277e9ad6f47bae1e5e2d87a076732))
+* improve package.json#exports order ([#1382](https://github.com/vikejs/vike/issues/1382)) ([7def2dd](https://github.com/vikejs/vike/commit/7def2ddd8d5019e9f29cc23a9469d767fe8b8bdc))
+* injectBreakLines regex speedup ([b3cc3cb](https://github.com/vikejs/vike/commit/b3cc3cb82439a42e2d14ef5b34d70131f7c8e152))
+* package.json#exports replace "import" with "default" ([#1382](https://github.com/vikejs/vike/issues/1382)) ([6942f61](https://github.com/vikejs/vike/commit/6942f61589d038a4d3d51f3a7e08fbe1eddf5383))
+* rename `triggedBy` to `triggeredBy` (fix [#1563](https://github.com/vikejs/vike/issues/1563)) ([a08160f](https://github.com/vikejs/vike/commit/a08160fb3465d126a49c41863308200e73960493))
+* support Electron by adding 'file://' protocol (fix [#1557](https://github.com/vikejs/vike/issues/1557)) ([8eba585](https://github.com/vikejs/vike/commit/8eba58501bb593a26de94543e55145e6c4fa08a7))
+
+
+
 ## [0.4.165](https://github.com/vikejs/vike/compare/v0.4.164...v0.4.165) (2024-03-01)
 
 
