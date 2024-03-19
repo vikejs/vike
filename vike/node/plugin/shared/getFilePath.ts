@@ -13,8 +13,6 @@ function getFilePathUnresolved(
     importPathAbsolute: string | null
   } & ({ filePathAbsoluteUserRootDir: string } | { importPathAbsolute: string })
 ): FilePath {
-  const { filePathAbsoluteFilesystem, filePathAbsoluteUserRootDir } = args
-
   let filePathAbsoluteVite: string
   if (args.filePathAbsoluteUserRootDir !== null) {
     filePathAbsoluteVite = args.filePathAbsoluteUserRootDir
@@ -29,8 +27,7 @@ function getFilePathUnresolved(
   return {
     ...args,
     filePathAbsoluteVite,
-    filePathToShowToUser,
-    filePathToShowToUserResolved: filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
+    filePathToShowToUser
   }
 }
 
@@ -52,8 +49,7 @@ function getFilePathResolved(
     filePathAbsoluteFilesystem = getFilePathAbsoluteUserFilesystem({ filePathAbsoluteUserRootDir, userRootDir })
   }
 
-  let filePathResolved: FilePath
-
+  let filePath: FilePath
   const common = {
     filePathAbsoluteUserRootDir,
     filePathAbsoluteFilesystem,
@@ -61,21 +57,25 @@ function getFilePathResolved(
     userRootDir
   }
   if (importPathAbsolute) {
-    filePathResolved = getFilePathUnresolved({
+    filePath = getFilePathUnresolved({
       ...common,
       importPathAbsolute
     })
   } else {
     assert(filePathAbsoluteUserRootDir)
-    filePathResolved = getFilePathUnresolved({
+    filePath = getFilePathUnresolved({
       ...common,
       filePathAbsoluteUserRootDir
     })
   }
+  assert(hasProp(filePath, 'filePathAbsoluteFilesystem', 'string'))
 
-  assert(filePathAbsoluteFilesystem)
-  assert(hasProp(filePathResolved, 'filePathAbsoluteFilesystem', 'string'))
-  assert(hasProp(filePathResolved, 'filePathToShowToUserResolved', 'string'))
+  const filePathToShowToUserResolved = filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
+  assert(filePathToShowToUserResolved)
+  const filePathResolved: FilePathResolved = {
+    ...filePath,
+    filePathToShowToUserResolved
+  }
 
   return filePathResolved
 }

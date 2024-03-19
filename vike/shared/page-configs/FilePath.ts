@@ -3,6 +3,13 @@ export type { FilePathResolved }
 
 type FilePathResolved = FilePath & {
   filePathAbsoluteFilesystem: string
+  /**
+   * The file's path, shown to the user in logs.
+   *
+   * Resolved: it always shows a file path. (It nevers shows an import path such as `vike-react/config`.)
+   *
+   * Its value is equivalent to `filePath.filePathAbsoluteUserRootDir ?? filePath.filePathAbsoluteFilesystem`.
+   */
   filePathToShowToUserResolved: string
 }
 
@@ -38,15 +45,6 @@ type FilePathProps = {
    * Its value is equivalent to `filePath.filePathAbsoluteUserRootDir ?? filePath.importPathAbsolute`.
    */
   filePathToShowToUser: string
-
-  /**
-   * The file's path, shown to the user in logs.
-   *
-   * Resolved: it always shows a file path. (It nevers shows an import path such as `vike-react/config`.)
-   *
-   * Its value is equivalent to `filePath.filePathAbsoluteUserRootDir ?? filePath.filePathAbsoluteFilesystem`.
-   */
-  filePathToShowToUserResolved: string | null
 
   /**
    * The file's non-relative path, from Vite's perspective.
