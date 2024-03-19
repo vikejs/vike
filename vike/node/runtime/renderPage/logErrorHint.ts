@@ -6,6 +6,7 @@ export { isKnownError }
 export { getHint }
 
 import { assert, formatHintLog, isNotNullish, isObject, unique } from '../utils.js'
+import pc from '@brillout/picocolors'
 
 const knownErrors = [
   {
@@ -49,6 +50,7 @@ function getHint(error: unknown): null | string {
 }
 function logHint(hint: string) {
   hint = formatHintLog(hint)
+  hint = pc.bold(hint)
   console.error(hint)
 }
 
