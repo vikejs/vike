@@ -5,9 +5,8 @@ export { getFilePathToShowToUserFromUnkown }
 export { cleanFilePathUnkown }
 
 import path from 'path'
-import { assert, assertPosixPath, hasProp, toPosixPath } from '../utils.js'
+import { assert, assertPathIsFilesystemAbsolute, assertPosixPath, hasProp, toPosixPath } from '../utils.js'
 import type { FilePath, FilePathResolved } from '../../../shared/page-configs/FilePath.js'
-import { assertPathIsFilesystemAbsolute } from '../../../utils/assertPathIsFilesystemAbsolute.js'
 import type { ResolvedConfig } from 'vite'
 
 function getFilePathUnresolved(

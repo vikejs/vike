@@ -20,12 +20,12 @@ import {
   isPropertyGetter,
   assertPosixPath,
   urlToFile,
-  executeHook,
   isPlainObject,
-  isUserHookError,
-  handleNodeEnv_prerender
+  handleNodeEnv_prerender,
+  pLimit,
+  PLimit,
+  assertPathIsFilesystemAbsolute
 } from './utils.js'
-import { pLimit, PLimit } from '../../utils/pLimit.js'
 import {
   prerenderPage,
   prerender404Page,
@@ -48,7 +48,6 @@ import { getConfigValue, getConfigValueFilePathToShowToUser } from '../../shared
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
-import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
@@ -62,6 +61,7 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
+import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
 
 type HtmlFile = {
   urlOriginal: string

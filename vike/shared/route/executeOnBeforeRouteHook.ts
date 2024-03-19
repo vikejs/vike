@@ -9,13 +9,13 @@ import {
   assertWarning,
   assertUsageUrl,
   joinEnglish,
-  assert,
-  executeHook
+  assert
 } from './utils.js'
 import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
 import pc from '@brillout/picocolors'
 import type { PageContextForRoute, PageContextFromRoute } from './index.js'
 import type { Hook } from '../hooks/getHook.js'
+import { executeHook } from '../hooks/executeHook.js'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute

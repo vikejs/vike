@@ -9,7 +9,6 @@ export * from '../runtime/utils.js'
 
 // Utils only needed by `plugin/*`
 export * from '../../utils/viteIsSSR.js'
-export * from '../../utils/getFilePathAbsolute.js'
 export * from '../../utils/requireResolve.js'
 export * from '../../utils/arrayIncludes.js'
 export * from '../../utils/isDev.js'
@@ -29,3 +28,4 @@ export * from '../../utils/injectRollupInputs.js'
 export * from '../../utils/humanizeTime.js'
 export * from '../../utils/pLimit.js'
 export * from '../../utils/assertVersion.js'
+export * from '../../utils/assertPathIsFilesystemAbsolute.js'

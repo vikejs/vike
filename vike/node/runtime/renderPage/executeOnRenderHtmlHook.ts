@@ -9,16 +9,7 @@ import {
   dangerouslySkipEscape
 } from '../html/renderHtml.js'
 import { getHook, type Hook } from '../../../shared/hooks/getHook.js'
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  isObject,
-  objectAssign,
-  isPromise,
-  executeHook,
-  isCallable
-} from '../utils.js'
+import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../utils.js'
 import type { PageAsset } from './getPageAssets.js'
 import { isStream } from '../html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
@@ -33,6 +24,7 @@ import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObje
 import { logRuntimeError } from './loggerRuntime.js'
 import type { PageContextSerialization } from '../html/serializePageContextClientSide.js'
 import pc from '@brillout/picocolors'
+import { executeHook } from '../../../shared/hooks/executeHook.js'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 

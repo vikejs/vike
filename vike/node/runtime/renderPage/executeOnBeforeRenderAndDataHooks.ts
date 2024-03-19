@@ -6,8 +6,8 @@ import {
   preparePageContextForUserConsumptionServerSide,
   type PageContextForUserConsumptionServerSide
 } from './preparePageContextForUserConsumptionServerSide.js'
-import { executeHook } from '../utils.js'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
+import { executeHook } from '../../../shared/hooks/executeHook.js'
 
 async function executeOnBeforeRenderAndDataHooks(
   pageContext: {

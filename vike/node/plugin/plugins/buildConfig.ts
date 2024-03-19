@@ -7,11 +7,9 @@ import {
   assert,
   resolveOutDir,
   viteIsSSR,
-  getFilePathAbsoluteFilesystem,
   addOnBeforeLogHook,
   removeFileExtention,
   unique,
-  assertPosixPath,
   assertUsage,
   injectRollupInputs,
   normalizeRollupInput,
@@ -36,6 +34,7 @@ import path from 'path'
 import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 import { set_constant_ASSETS_MAP } from './importBuild/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
+import { getFilePathResolved } from '../shared/getFilePath.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -232,14 +231,18 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
     return { entryName, entryTarget }
   }
 
-  const filePath = clientEntry
-  assertPosixPath(filePath)
-  assert(filePath.startsWith('/'))
+  const filePathAbsoluteUserRootDir = clientEntry
+  assert(filePathAbsoluteUserRootDir.startsWith('/'))
 
-  let entryTarget = getFilePathAbsoluteFilesystem(filePath, config)
+  const filePath = getFilePathResolved({
+    filePathAbsoluteUserRootDir,
+    userRootDir: config.root,
+    importPathAbsolute: null
+  })
+  let entryTarget = filePath.filePathAbsoluteFilesystem
   if (addExtractAssetsQuery) entryTarget = extractAssetsAddQuery(entryTarget)
 
-  let entryName = filePath
+  let entryName = filePathAbsoluteUserRootDir
   if (addExtractAssetsQuery) entryName = extractAssetsAddQuery(entryName)
   entryName = removeFileExtention(entryName)
   entryName = prependEntriesDir(entryName)

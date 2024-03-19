@@ -13,6 +13,7 @@ export type { ErrorAbort }
 export type { PageContextFromRewrite }
 export type { UrlRedirect }
 
+import { isUserHookError } from '../hooks/executeHook.js'
 import {
   assert,
   assertInfo,
@@ -21,10 +22,8 @@ import {
   checkType,
   hasProp,
   isUriWithProtocol,
-  isUserHookError,
   joinEnglish,
   objectAssign,
-  projectInfo,
   truncateString
 } from './utils.js'
 import pc from '@brillout/picocolors'

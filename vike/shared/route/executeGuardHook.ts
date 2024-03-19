@@ -1,9 +1,10 @@
 export { executeGuardHook }
 
 import { getHook, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
-import { assert, assertUsage, executeHook, isCallable } from './utils.js'
+import { assert, assertUsage, isCallable } from './utils.js'
 import type { PageContextExports, PageFile } from '../getPageFiles.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
+import { executeHook } from '../hooks/executeHook.js'
 const errIntro = 'The guard() hook defined by'
 
 async function executeGuardHook<

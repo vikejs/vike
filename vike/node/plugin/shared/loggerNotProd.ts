@@ -27,7 +27,6 @@ import {
   assertIsNotProductionRuntime,
   formatHintLog,
   getAssertErrMsg,
-  isUserHookError,
   overwriteAssertProductionLogger,
   stripAnsi,
   warnIfErrorIsNotObject
@@ -52,6 +51,7 @@ import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'
 import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid.js'
 import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
+import { isUserHookError } from '../../../shared/hooks/executeHook.js'
 
 assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)
