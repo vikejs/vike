@@ -5,13 +5,12 @@ export { getFilePathToShowToUserFromUnkown }
 export { cleanFilePathUnkown }
 
 import path from 'path'
-import { assert, assertPathIsFilesystemAbsolute, assertPosixPath, hasProp, toPosixPath } from '../utils.js'
+import { assert, assertPathIsFilesystemAbsolute, assertPosixPath, toPosixPath } from '../utils.js'
 import type { FilePath, FilePathResolved } from '../../../shared/page-configs/FilePath.js'
 import type { ResolvedConfig } from 'vite'
 
 function getFilePathUnresolved(
   args: {
-    filePathAbsoluteFilesystem: string | null
     filePathAbsoluteUserRootDir: string | null
     importPathAbsolute: string | null
   } & ({ filePathAbsoluteUserRootDir: string } | { importPathAbsolute: string })
@@ -29,6 +28,7 @@ function getFilePathUnresolved(
 
   return {
     ...args,
+    filePathAbsoluteFilesystem: null,
     filePathAbsoluteVite,
     filePathToShowToUser
   }
@@ -55,7 +55,6 @@ function getFilePathResolved(
   let filePath: FilePath
   const common = {
     filePathAbsoluteUserRootDir,
-    filePathAbsoluteFilesystem,
     importPathAbsolute,
     userRootDir
   }
@@ -71,12 +70,13 @@ function getFilePathResolved(
       filePathAbsoluteUserRootDir
     })
   }
-  assert(hasProp(filePath, 'filePathAbsoluteFilesystem', 'string'))
 
+  assert(filePathAbsoluteFilesystem)
   const filePathToShowToUserResolved = filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
   assert(filePathToShowToUserResolved)
   const filePathResolved: FilePathResolved = {
     ...filePath,
+    filePathAbsoluteFilesystem,
     filePathToShowToUserResolved
   }
 

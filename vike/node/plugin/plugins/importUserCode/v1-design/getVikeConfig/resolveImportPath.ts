@@ -31,6 +31,7 @@ function resolveImport(
 
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
+  let filePath: FilePath
   if (importPath.startsWith('.')) {
     // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
     // ```
@@ -43,26 +44,28 @@ function resolveImport(
       importerFilePath,
       userRootDir
     )
-    const filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir, importPathAbsolute: null })
-    return {
-      ...filePath,
-      fileExportName: exportName,
-      fileExportPathToShowToUser
-    }
+    filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir, importPathAbsolute: null })
   } else {
     // importPath can be:
     //  - an npm package import
     //  - a path alias
-    const filePath: FilePath = getFilePathUnresolved({
-      filePathAbsoluteFilesystem,
-      filePathAbsoluteUserRootDir: null,
-      importPathAbsolute: importPath
-    })
-    return {
-      ...filePath,
-      fileExportName: exportName,
-      fileExportPathToShowToUser
+    if (filePathAbsoluteFilesystem) {
+      filePath = getFilePathResolved({
+        userRootDir,
+        filePathAbsoluteFilesystem,
+        importPathAbsolute: importPath
+      })
+    } else {
+      filePath = getFilePathUnresolved({
+        filePathAbsoluteUserRootDir: null,
+        importPathAbsolute: importPath
+      })
     }
+  }
+  return {
+    ...filePath,
+    fileExportName: exportName,
+    fileExportPathToShowToUser
   }
 }
 
