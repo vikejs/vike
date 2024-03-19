@@ -13,31 +13,6 @@ function getFilePathUnresolved({ importPathAbsolute }: { importPathAbsolute: str
   return getFilePath({ importPathAbsolute, filePathAbsoluteUserRootDir: null })
 }
 
-function getFilePath(
-  args: {
-    filePathAbsoluteUserRootDir: string | null
-    importPathAbsolute: string | null
-  } & ({ filePathAbsoluteUserRootDir: string } | { importPathAbsolute: string })
-): FilePath {
-  let filePathAbsoluteVite: string
-  if (args.filePathAbsoluteUserRootDir !== null) {
-    filePathAbsoluteVite = args.filePathAbsoluteUserRootDir
-  } else {
-    assert(args.importPathAbsolute !== null) // Help TS
-    filePathAbsoluteVite = args.importPathAbsolute
-  }
-
-  const filePathToShowToUser = filePathAbsoluteVite
-  assert(filePathToShowToUser)
-
-  return {
-    ...args,
-    filePathAbsoluteFilesystem: null,
-    filePathAbsoluteVite,
-    filePathToShowToUser
-  }
-}
-
 function getFilePathResolved(
   args: {
     userRootDir: string
@@ -86,6 +61,31 @@ function getFilePathResolved(
   }
 
   return filePathResolved
+}
+
+function getFilePath(
+  args: {
+    filePathAbsoluteUserRootDir: string | null
+    importPathAbsolute: string | null
+  } & ({ filePathAbsoluteUserRootDir: string } | { importPathAbsolute: string })
+): FilePath {
+  let filePathAbsoluteVite: string
+  if (args.filePathAbsoluteUserRootDir !== null) {
+    filePathAbsoluteVite = args.filePathAbsoluteUserRootDir
+  } else {
+    assert(args.importPathAbsolute !== null) // Help TS
+    filePathAbsoluteVite = args.importPathAbsolute
+  }
+
+  const filePathToShowToUser = filePathAbsoluteVite
+  assert(filePathToShowToUser)
+
+  return {
+    ...args,
+    filePathAbsoluteFilesystem: null,
+    filePathAbsoluteVite,
+    filePathToShowToUser
+  }
 }
 
 function getFilePathAbsoluteUserFilesystem({
