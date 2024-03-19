@@ -3,12 +3,11 @@ export { fileEnv }
 // Implementation for https://vike.dev/file-env
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertPosixPath, assertUsage, assertWarning, capitalizeFirstLetter } from '../utils.js'
+import { assert, assertUsage, assertWarning, capitalizeFirstLetter } from '../utils.js'
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
-import { getFilePathResolved } from '../shared/getFilePath.js'
-import { assertPathIsFilesystemAbsolute } from '../../../utils/assertPathIsFilesystemAbsolute.js'
+import { getModuleFilePath } from '../shared/getFilePath.js'
 
 function fileEnv(): Plugin {
   let config: ResolvedConfig
@@ -112,17 +111,4 @@ function fileEnv(): Plugin {
       assert(!id.includes(`.${envWrong}.`))
     }
   }
-}
-
-function getModuleFilePath(moduleId: string, config: ResolvedConfig): string {
-  const userRootDir = config.root
-  assertPosixPath(moduleId)
-  assertPosixPath(userRootDir)
-
-  const filePathAbsoluteFilesystem = moduleId.split('?')[0]!
-  assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
-
-  const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute: null })
-
-  return filePath.filePathToShowToUserResolved
 }

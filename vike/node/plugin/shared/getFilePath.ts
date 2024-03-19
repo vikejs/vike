@@ -1,10 +1,12 @@
 export { getFilePathResolved }
 export { getFilePathUnresolved }
+export { getModuleFilePath }
 
 import path from 'path'
 import { assert, assertPosixPath, hasProp } from '../utils.js'
 import type { FilePath, FilePathResolved } from '../../../shared/page-configs/FilePath.js'
 import { assertPathIsFilesystemAbsolute } from '../../../utils/assertPathIsFilesystemAbsolute.js'
+import type { ResolvedConfig } from 'vite'
 
 function getFilePathUnresolved(
   args: {
@@ -121,4 +123,17 @@ function getFilePathAbsoluteUserRootDir({
     assert(filePathAbsoluteUserRootDir === check)
   }
   return filePathAbsoluteUserRootDir
+}
+
+function getModuleFilePath(moduleId: string, config: ResolvedConfig): string {
+  const userRootDir = config.root
+  assertPosixPath(moduleId)
+  assertPosixPath(userRootDir)
+
+  const filePathAbsoluteFilesystem = moduleId.split('?')[0]!
+  assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
+
+  const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute: null })
+
+  return filePath.filePathToShowToUserResolved
 }
