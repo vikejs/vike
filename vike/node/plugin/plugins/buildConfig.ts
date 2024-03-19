@@ -17,8 +17,8 @@ import {
   normalizeRollupInput,
   getOutDirs,
   type OutDirs,
-  isNpmPackageImport,
-  assertNodeEnv_build
+  assertNodeEnv_build,
+  assertIsNpmPackageImport
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValue } from '../../../shared/page-configs/helpers.js'
@@ -225,7 +225,8 @@ async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedB
 }
 
 function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
-  if (isNpmPackageImport(clientEntry)) {
+  if (!clientEntry.startsWith('/')) {
+    assertIsNpmPackageImport(clientEntry)
     const entryTarget = clientEntry
     const entryName = prependEntriesDir(clientEntry)
     return { entryName, entryTarget }

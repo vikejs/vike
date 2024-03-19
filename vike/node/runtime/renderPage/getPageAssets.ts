@@ -3,7 +3,15 @@ export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
 
-import { assert, prependBase, assertPosixPath, toPosixPath, isNpmPackageImport, unique, pathJoin } from '../utils.js'
+import {
+  assert,
+  prependBase,
+  assertPosixPath,
+  toPosixPath,
+  unique,
+  pathJoin,
+  assertIsNpmPackageImport
+} from '../utils.js'
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev.js'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
@@ -12,7 +20,6 @@ import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
 import { getGlobalContext } from '../globalContext.js'
-import { assertClientEntryId } from './getPageAssets/assertClientEntryId.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
 import { import_ } from '@brillout/import'
 
@@ -94,8 +101,6 @@ async function getPageAssets(
 }
 
 async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): Promise<string> {
-  assertClientEntryId(clientEntry)
-
   let root = viteDevServer.config.root
   assert(root)
   root = toPosixPath(root)
@@ -114,11 +119,8 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
   assertPosixPath(clientEntry)
   let filePath: string
   if (clientEntry.startsWith('/')) {
-    // User files
     filePath = pathJoin(root, clientEntry)
-  } else if (clientEntry.startsWith('@@vike/') || isNpmPackageImport(clientEntry)) {
-    // Vike client entry
-
+  } else {
     const { createRequire } = (await import_('module')).default as Awaited<typeof import('module')>
     const { dirname } = (await import_('path')).default as Awaited<typeof import('path')>
     const { fileURLToPath } = (await import_('url')).default as Awaited<typeof import('url')>
@@ -131,9 +133,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
     // Bun workaround https://github.com/vikejs/vike/pull/1048
     const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname_) : require_.resolve
 
-    if (isNpmPackageImport(clientEntry)) {
-      filePath = res(clientEntry)
-    } else {
+    if (clientEntry.startsWith('@@vike/')) {
       assert(clientEntry.endsWith('.js'))
       try {
         // For Vitest (which doesn't resolve vike to its dist but to its source files)
@@ -146,9 +146,10 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
         // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/runtime/renderPage/getPageAssets.js
         filePath = toPosixPath(res(clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/')))
       }
+    } else {
+      assertIsNpmPackageImport(clientEntry)
+      filePath = res(clientEntry)
     }
-  } else {
-    assert(false)
   }
 
   if (!filePath.startsWith('/')) {

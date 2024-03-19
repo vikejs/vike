@@ -1313,7 +1313,13 @@ function sortConfigValueSources(
       .sort(
         makeFirst(([, [source]]) => {
           const { importPathAbsolute } = source!.definedAt
-          return !!importPathAbsolute && isNpmPackageImport(importPathAbsolute)
+          return (
+            !!importPathAbsolute &&
+            isNpmPackageImport(importPathAbsolute, {
+              // Vike config files don't support path aliases. (If they do one day, then Vike will/should be able to resolve path aliases.)
+              cannotBePathAlias: true
+            })
+          )
         })
       )
       // Sort after the filesystem inheritance of the config value

@@ -23,7 +23,10 @@ function retrieveAssetsProd(
       onlyAssets &&
       id.includes('.page.server.') &&
       // We assume that all npm packages have already built their files: bundlers (Rollup, esbuild, tsup, ...) extract the CSS out of JavaScript => we can assume JavaScript to not import any CSS/assets.
-      !isNpmPackageImport(id)
+      !isNpmPackageImport(id, {
+        // I presume Vite already resolves path aliases when Vite sets the module's id
+        cannotBePathAlias: true
+      })
     ) {
       id = extractAssetsAddQuery(id)
     }

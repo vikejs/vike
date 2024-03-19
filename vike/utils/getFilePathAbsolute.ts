@@ -5,7 +5,7 @@ import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
 import { assert } from './assert.js'
 import path from 'path'
 import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.js'
-import { isNpmPackageImport } from './isNpmPackage.js'
+import { assertIsNpmPackageImport } from './isNpmPackage.js'
 import { assertPathIsFilesystemAbsolute } from './assertPathIsFilesystemAbsolute.js'
 import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
@@ -24,14 +24,14 @@ function getFilePathAbsoluteFilesystem(filePath: string, config: ResolvedConfig)
   }
 
   let filePathUnresolved: string
-  if (isNpmPackageImport(filePath)) {
-    filePathUnresolved = filePath
-  } else {
-    assert(filePath.startsWith('/'))
+  if (filePath.startsWith('/')) {
     const { root } = config
     assertPathIsFilesystemAbsolute(root)
     filePathUnresolved = path.posix.join(root, filePath)
     assertPathIsFilesystemAbsolute(filePathUnresolved)
+  } else {
+    assertIsNpmPackageImport(filePath)
+    filePathUnresolved = filePath
   }
 
   let filePathAbsoluteFilesystem: string

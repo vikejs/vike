@@ -1,4 +1,5 @@
 export { isNpmPackageImport }
+export { assertIsNpmPackageImport }
 export { isValidPathAlias }
 /* Currently not used
 export { isNpmPackageName }
@@ -14,9 +15,24 @@ import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 
-function isNpmPackageImport(str: string): boolean {
+function isNpmPackageImport(
+  str: string,
+  {
+    cannotBePathAlias
+  }: {
+    cannotBePathAlias: boolean
+  }
+): boolean {
+  /* TODO
+  assert(cannotBePathAlias)
+  */
   const res = parse(str)
   return res !== null
+}
+
+// If `str` is a path alias that looks like an npm package => assertIsNpmPackageImport() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
+function assertIsNpmPackageImport(str: string): void {
+  assert(isNpmPackageName(str))
 }
 
 function isNpmPackageName(str: string | undefined): boolean {
