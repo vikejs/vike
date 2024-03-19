@@ -168,5 +168,8 @@ function cleanFilePathUnkown(filePathUnknown: string) {
 
 function cleanModuleId(moduleId: string): string {
   // remove query
-  return moduleId.split('?')[0]!
+  const parts = moduleId.split('?')
+  if (parts.length > 1) parts.pop()
+  assert(parts.length >= 1)
+  return parts.join('?')
 }
