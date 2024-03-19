@@ -4,6 +4,7 @@ export { getFilePathUnresolved }
 import path from 'path'
 import { assert, assertPosixPath, hasProp } from '../utils.js'
 import type { FilePath, FilePathResolved } from '../../../shared/page-configs/FilePath.js'
+import { assertPathIsFilesystemAbsolute } from '../../../utils/assertPathIsFilesystemAbsolute.js'
 
 function getFilePathUnresolved(
   args: {
@@ -22,10 +23,13 @@ function getFilePathUnresolved(
     filePathAbsoluteVite = args.importPathAbsolute
   }
 
+  const filePathToShowToUser = filePathAbsoluteVite
+  assert(filePathToShowToUser)
+
   return {
     ...args,
     filePathAbsoluteVite,
-    filePathToShowToUser: filePathAbsoluteVite,
+    filePathToShowToUser,
     filePathToShowToUserResolved: filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
   }
 }
@@ -85,6 +89,8 @@ function getFilePathAbsoluteUserFilesystem({
 }): string {
   assertPosixPath(filePathAbsoluteUserRootDir)
   assertPosixPath(userRootDir)
+  assertPathIsFilesystemAbsolute(userRootDir)
+
   const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathAbsoluteUserRootDir)
   return filePathAbsoluteFilesystem
 }
@@ -97,6 +103,8 @@ function getFilePathAbsoluteUserRootDir({
 }): string | null {
   assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(userRootDir)
+  assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
+  assertPathIsFilesystemAbsolute(userRootDir)
 
   const filePathRelative = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
 
