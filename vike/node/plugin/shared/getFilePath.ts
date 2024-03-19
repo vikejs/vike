@@ -52,6 +52,7 @@ function getFilePathResolved(
   }
 
   assert(filePathAbsoluteFilesystem)
+  assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
   const filePathToShowToUserResolved = filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
   assert(filePathToShowToUserResolved)
   const filePathResolved: FilePathResolved = {

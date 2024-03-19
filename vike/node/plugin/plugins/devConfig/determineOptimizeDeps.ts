@@ -56,7 +56,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
         } else {
           // Adding definedAt.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
           const { importPathAbsolute } = definedAt
-          assert(importPathAbsolute)
+          assert(importPathAbsolute) // Help TS
           // We need to differentiate between npm package imports and path aliases.
           // There are path aliases that cannot be distinguished from npm package names.
           // We recommend users to use the '#' prefix convention for path aliases, see https://vike.dev/path-aliases#vite and assertResolveAlias()

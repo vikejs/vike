@@ -14,8 +14,8 @@ type FilePathResolved = FilePath & {
 }
 
 // FilePath always comes from user-land code analysis, thus at least one of the following is defined:
-type IsUserLandImport = { filePathAbsoluteUserRootDir: string } | { importPathAbsolute: string }
-type FilePath = IsUserLandImport & FilePathProps
+type IsReferencedByUserLandFile = { filePathAbsoluteUserRootDir: string } | { importPathAbsolute: string }
+type FilePath = FilePathProps & IsReferencedByUserLandFile
 
 type FilePathProps = {
   /**
