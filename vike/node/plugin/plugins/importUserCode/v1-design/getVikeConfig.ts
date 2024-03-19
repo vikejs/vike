@@ -1008,7 +1008,7 @@ async function findPlusFiles(userRootDir: string, outDirRoot: string, isDev: boo
   const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
-    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir, importPathAbsolute: null })
+    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   )
 
   return plusFiles

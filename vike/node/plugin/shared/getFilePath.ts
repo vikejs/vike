@@ -37,10 +37,11 @@ function getFilePathUnresolved(
 function getFilePathResolved(
   args: {
     userRootDir: string
-    importPathAbsolute: string | null
+    importPathAbsolute?: string
   } & ({ filePathAbsoluteFilesystem: string } | { filePathAbsoluteUserRootDir: string })
 ): FilePathResolved {
-  const { userRootDir, importPathAbsolute } = args
+  const { userRootDir } = args
+  const importPathAbsolute = args.importPathAbsolute ?? null
 
   let filePathAbsoluteFilesystem: string
   let filePathAbsoluteUserRootDir: string | null
@@ -131,7 +132,7 @@ function getModuleFilePath(moduleId: string, config: ResolvedConfig): string {
   const filePathAbsoluteFilesystem = cleanModuleId(moduleId)
   assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
 
-  const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute: null })
+  const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir })
 
   return filePath.filePathToShowToUserResolved
 }

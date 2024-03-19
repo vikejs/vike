@@ -44,7 +44,7 @@ function resolveImport(
       importerFilePath,
       userRootDir
     )
-    filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir, importPathAbsolute: null })
+    filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
     // importPath can be:
     //  - an npm package import
@@ -62,6 +62,7 @@ function resolveImport(
       })
     }
   }
+
   return {
     ...filePath,
     fileExportName: exportName,

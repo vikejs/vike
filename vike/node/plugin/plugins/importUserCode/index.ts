@@ -143,8 +143,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
   {
     const { filePathToShowToUserResolved } = getFilePathResolved({
       filePathAbsoluteFilesystem: filePath,
-      userRootDir: config.root,
-      importPathAbsolute: null
+      userRootDir: config.root
     })
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')

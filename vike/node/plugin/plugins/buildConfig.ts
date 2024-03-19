@@ -236,8 +236,7 @@ function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, ad
 
   const filePath = getFilePathResolved({
     filePathAbsoluteUserRootDir,
-    userRootDir: config.root,
-    importPathAbsolute: null
+    userRootDir: config.root
   })
   let entryTarget = filePath.filePathAbsoluteFilesystem
   if (addExtractAssetsQuery) entryTarget = extractAssetsAddQuery(entryTarget)
