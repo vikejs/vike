@@ -9,7 +9,6 @@ import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import {
   assert,
   assertPosixPath,
-  getFilePathAbsoluteUserRootDir,
   getOutDirs,
   getVirtualFileId,
   isDev1,
@@ -22,6 +21,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd.js'
+import { getFilePathResolved } from '../../shared/getFilePath.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -141,8 +141,12 @@ function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
 
 function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
   {
-    const filePathToShowToUser = pc.dim(getFilePathAbsoluteUserRootDir(filePath, config.root, true))
-    const msg = `${op} ${filePathToShowToUser}`
+    const { filePathToShowToUserResolved } = getFilePathResolved({
+      filePathAbsoluteFilesystem: filePath,
+      userRootDir: config.root,
+      importPathAbsolute: null
+    })
+    const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
   reloadVikeConfig(config.root, getOutDirs(config).outDirRoot)
