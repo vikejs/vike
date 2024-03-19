@@ -5,16 +5,9 @@ export { applyEnvVar }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
-import {
-  assert,
-  assertPosixPath,
-  assertUsage,
-  assertWarning,
-  escapeRegex,
-  getFilePathAbsoluteUserRootDir,
-  lowerFirst
-} from '../utils.js'
+import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, lowerFirst } from '../utils.js'
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
+import { getModuleFilePath } from '../shared/getFilePath.js'
 
 function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>
@@ -57,11 +50,11 @@ function envVarsPlugin(): Plugin {
             const isPrivate = !envName.startsWith(publicPrefix)
             if (isPrivate && isClientSide) {
               if (!code.includes(envStatement)) return
-              const filePathToShowToUser = getFilePathAbsoluteUserRootDir(id, config.root)
+              const modulePath = getModuleFilePath(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
               const keyPublic = `${publicPrefix}${envName}` as const
               const errMsg =
-                `${envStatement} is used in client-side file ${filePathToShowToUser} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
+                `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
               if (isBuild) {
                 assertUsage(false, errMsg)
               } else {
