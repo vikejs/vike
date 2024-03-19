@@ -57,7 +57,6 @@ function resolveImport(
       })
     } else {
       filePath = getFilePathUnresolved({
-        filePathAbsoluteUserRootDir: null,
         importPathAbsolute: importPath
       })
     }

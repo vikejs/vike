@@ -9,7 +9,11 @@ import { assert, assertPathIsFilesystemAbsolute, assertPosixPath, toPosixPath } 
 import type { FilePath, FilePathResolved } from '../../../shared/page-configs/FilePath.js'
 import type { ResolvedConfig } from 'vite'
 
-function getFilePathUnresolved(
+function getFilePathUnresolved({ importPathAbsolute }: { importPathAbsolute: string }): FilePath {
+  return getFilePath({ importPathAbsolute, filePathAbsoluteUserRootDir: null })
+}
+
+function getFilePath(
   args: {
     filePathAbsoluteUserRootDir: string | null
     importPathAbsolute: string | null
@@ -60,13 +64,13 @@ function getFilePathResolved(
     userRootDir
   }
   if (importPathAbsolute) {
-    filePath = getFilePathUnresolved({
+    filePath = getFilePath({
       ...common,
       importPathAbsolute
     })
   } else {
     assert(filePathAbsoluteUserRootDir)
-    filePath = getFilePathUnresolved({
+    filePath = getFilePath({
       ...common,
       filePathAbsoluteUserRootDir
     })
