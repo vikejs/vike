@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, getFilePathAbsoluteFilesystem, isNpmPackageImport, unique } from '../../utils.js'
+import { assert, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValueSourcesNotOverriden } from '../../shared/getConfigValueSourcesNotOverriden.js'
 import { analyzeClientEntries } from '../buildConfig.js'
@@ -11,6 +11,7 @@ import {
   virtualFileIdImportUserCodeClientCR,
   virtualFileIdImportUserCodeClientSR
 } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+import { getFilePathResolved } from '../../shared/getFilePath.js'
 
 async function determineOptimizeDeps(config: ResolvedConfig, isDev: true) {
   const { pageConfigs } = await getVikeConfig(config, isDev)
@@ -85,9 +86,12 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   // V0.4 design
   {
     const pageFiles = await findPageFiles(config, ['.page', '.page.client'], isDev)
-    pageFiles.forEach((filePath) => {
-      const entry = getFilePathAbsoluteFilesystem(filePath, config)
-      entries.push(entry)
+    const userRootDir = config.root
+    pageFiles.forEach((filePathAbsoluteUserRootDir) => {
+      const entry = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir, importPathAbsolute: null })
+      const { filePathAbsoluteFilesystem } = entry
+      assert(filePathAbsoluteFilesystem)
+      entries.push(filePathAbsoluteFilesystem)
     })
   }
 
