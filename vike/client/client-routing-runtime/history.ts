@@ -16,7 +16,7 @@ const globalObject = getGlobalObject<{
 type HistoryState = {
   timestamp?: number
   scrollPosition?: null | ScrollPosition
-  triggedBy?: 'user' | 'vike' | 'browser'
+  triggeredBy?: 'user' | 'vike' | 'browser'
 }
 type ScrollPosition = { x: number; y: number }
 
@@ -40,8 +40,8 @@ function initHistoryState() {
     hasModifications = true
     state.scrollPosition = getScrollPosition()
   }
-  if (!('triggedBy' in state)) {
-    state.triggedBy = 'browser'
+  if (!('triggeredBy' in state)) {
+    state.triggeredBy = 'browser'
   }
   assertState(state)
   if (hasModifications) {
@@ -72,7 +72,7 @@ function saveScrollPosition() {
 function pushHistory(url: string, overwriteLastHistoryEntry: boolean) {
   if (!overwriteLastHistoryEntry) {
     const timestamp = getTimestamp()
-    pushHistoryState({ timestamp, scrollPosition: null, triggedBy: 'vike' }, url)
+    pushHistoryState({ timestamp, scrollPosition: null, triggeredBy: 'vike' }, url)
   } else {
     replaceHistoryState(getHistoryState(), url)
   }
@@ -111,8 +111,8 @@ function monkeyPatchHistoryPushState() {
       scrollPosition: getScrollPosition(),
       timestamp: getTimestamp(),
       ...stateFromUser,
-      // Don't allow user to overwrite triggedBy as it would break Vike's handling of the 'popstate' event
-      triggedBy: 'user'
+      // Don't allow user to overwrite triggeredBy as it would break Vike's handling of the 'popstate' event
+      triggeredBy: 'user'
     }
     return pushStateOriginal!(state, ...rest)
   }

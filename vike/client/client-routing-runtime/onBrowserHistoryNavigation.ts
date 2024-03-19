@@ -25,7 +25,7 @@ function onBrowserHistoryNavigation() {
 
     const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
 
-    const isUserLandPushStateNavigation = currentState.historyState.triggedBy === 'user'
+    const isUserLandPushStateNavigation = currentState.historyState.triggeredBy === 'user'
 
     const isHashNavigation = currentState.urlWithoutHash === globalObject.previousState.urlWithoutHash
 
