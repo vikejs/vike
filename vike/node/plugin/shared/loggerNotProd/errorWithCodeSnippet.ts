@@ -12,15 +12,8 @@ export { getPrettyErrMessage }
 // Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
 import pc from '@brillout/picocolors'
-import {
-  assert,
-  escapeRegex,
-  getFilePathAbsoluteUserRootDir,
-  isObject,
-  removeEmptyLines,
-  stripAnsi,
-  toPosixPath
-} from '../../utils.js'
+import { assert, escapeRegex, isObject, removeEmptyLines, stripAnsi } from '../../utils.js'
+import { cleanFilePathUnkown, getFilePathToShowToUserFromUnkown } from '../getFilePath.js'
 
 // Subset of RollupError
 type ErrorWithCodeSnippet = { id: string; frame?: string; message?: string; plugin?: string }
@@ -66,7 +59,7 @@ function getPrettyErrorWithCodeSnippet(err: ErrorWithCodeSnippet, userRootDir: s
 
   const msgFirstLine = [
     pc.red('Failed to transpile'),
-    pc.bold(pc.red(getFilePathAbsoluteUserRootDir(normalizeId(id), userRootDir))),
+    pc.bold(pc.red(getFilePathToShowToUserFromUnkown(id, userRootDir))),
     pc.red('because:')
   ].join(' ')
 
@@ -111,7 +104,7 @@ function getPrettyErrMessage(err: ErrorWithCodeSnippet): string | null {
   // Remove "/home/rom/code/vike/examples/react-full/components/Counter.tsx:1:8:" (redundant since we already print the filename)
   const pos = /(?:\:\d+|)/
   errMsg = errMsg.split(reg([id, pos, pos, trail], 'gi')).join('')
-  errMsg = errMsg.split(reg([normalizeId(id), pos, pos, trail], 'gi')).join('')
+  errMsg = errMsg.split(reg([cleanFilePathUnkown(id), pos, pos, trail], 'gi')).join('')
   // Remove "ERROR:" (useless)
   errMsg = errMsg.split(reg(['ERROR:', trail])).join('')
   // Remove "Internal server error:" (useless)
@@ -185,11 +178,4 @@ function isEquivalentErrorWithCodeSnippet(err1: unknown, err2: unknown): boolean
 }
 function isDefinedAndSame(val1: unknown, val2: unknown) {
   return val1 && val1 === val2
-}
-
-function normalizeId(id: string): string {
-  id = toPosixPath(id)
-  // remove query
-  id = id.split('?')[0]!
-  return id
 }

@@ -1,9 +1,11 @@
 export { getFilePathResolved }
 export { getFilePathUnresolved }
 export { getModuleFilePath }
+export { getFilePathToShowToUserFromUnkown }
+export { cleanFilePathUnkown }
 
 import path from 'path'
-import { assert, assertPosixPath, hasProp } from '../utils.js'
+import { assert, assertPosixPath, hasProp, toPosixPath } from '../utils.js'
 import type { FilePath, FilePathResolved } from '../../../shared/page-configs/FilePath.js'
 import { assertPathIsFilesystemAbsolute } from '../../../utils/assertPathIsFilesystemAbsolute.js'
 import type { ResolvedConfig } from 'vite'
@@ -117,11 +119,7 @@ function getFilePathAbsoluteUserRootDir({
 
   assert(!filePathRelative.startsWith('.') && !filePathRelative.startsWith('/'))
   const filePathAbsoluteUserRootDir = `/${filePathRelative}`
-  {
-    let check = filePathAbsoluteFilesystem.slice(userRootDir.length)
-    if (!check.startsWith('/')) check = '/' + check
-    assert(filePathAbsoluteUserRootDir === check)
-  }
+  assert(filePathAbsoluteUserRootDir === getFilePathAbsoluteUserRootDir2(filePathAbsoluteFilesystem, userRootDir))
   return filePathAbsoluteUserRootDir
 }
 
@@ -130,10 +128,42 @@ function getModuleFilePath(moduleId: string, config: ResolvedConfig): string {
   assertPosixPath(moduleId)
   assertPosixPath(userRootDir)
 
-  const filePathAbsoluteFilesystem = moduleId.split('?')[0]!
+  const filePathAbsoluteFilesystem = cleanModuleId(moduleId)
   assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
 
   const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute: null })
 
   return filePath.filePathToShowToUserResolved
+}
+
+function getFilePathToShowToUserFromUnkown(
+  // We don't have any guarentee about filePath, e.g. about whether is filePathAbsoluteFilesystem or filePathAbsoluteUserRootDir
+  filePathUnkown: string,
+  userRootDir: string
+): string {
+  assertPosixPath(userRootDir)
+  assertPathIsFilesystemAbsolute(userRootDir)
+
+  filePathUnkown = cleanFilePathUnkown(filePathUnkown)
+
+  if (!filePathUnkown.startsWith(userRootDir)) return filePathUnkown
+
+  return getFilePathAbsoluteUserRootDir2(filePathUnkown, userRootDir)
+}
+
+function getFilePathAbsoluteUserRootDir2(filePathAbsoluteFilesystem: string, userRootDir: string): string {
+  let filePathAbsoluteUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
+  if (!filePathAbsoluteUserRootDir.startsWith('/')) filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
+  return filePathAbsoluteUserRootDir
+}
+
+function cleanFilePathUnkown(filePathUnknown: string) {
+  filePathUnknown = toPosixPath(filePathUnknown)
+  filePathUnknown = cleanModuleId(filePathUnknown)
+  return filePathUnknown
+}
+
+function cleanModuleId(moduleId: string): string {
+  // remove query
+  return moduleId.split('?')[0]!
 }

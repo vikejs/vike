@@ -1,5 +1,4 @@
 export { getFilePathAbsoluteFilesystem }
-export { getFilePathAbsoluteUserRootDir }
 
 import type { ResolvedConfig } from 'vite'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
@@ -45,29 +44,4 @@ function getFilePathAbsoluteFilesystem(filePath: string, config: ResolvedConfig)
   filePathAbsoluteFilesystem = toPosixPath(filePathAbsoluteFilesystem)
   assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
   return filePathAbsoluteFilesystem
-}
-
-function getFilePathAbsoluteUserRootDir(
-  filePathAbsoluteFilesystem: string,
-  userRootDir: string,
-  alwaysRelative = false
-): string {
-  assertPosixPath(filePathAbsoluteFilesystem)
-  assertPosixPath(userRootDir)
-  let filePathAbsoluteUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
-  if (filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    assert(
-      !filePathAbsoluteUserRootDir.startsWith('.') && !filePathAbsoluteUserRootDir.startsWith('/'),
-      // Surprinsingly, this assertion seem to fail sometimes: https://github.com/vikejs/vike/issues/1139
-      { filePathAbsoluteUserRootDir, filePathAbsoluteFilesystem, userRootDir }
-    )
-    filePathAbsoluteUserRootDir = `/${filePathAbsoluteUserRootDir}`
-    return filePathAbsoluteUserRootDir
-  } else {
-    if (alwaysRelative) {
-      return filePathAbsoluteUserRootDir
-    } else {
-      return filePathAbsoluteFilesystem
-    }
-  }
 }
