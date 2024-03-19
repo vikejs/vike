@@ -2,8 +2,8 @@ export { getFilePathResolved }
 export { getFilePathUnresolved }
 
 import path from 'path'
-import { assert, assertPosixPath, hasProp } from '../../../../utils.js'
-import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
+import { assert, assertPosixPath, hasProp } from '../utils.js'
+import type { FilePath, FilePathResolved } from '../../../shared/page-configs/FilePath.js'
 
 function getFilePathUnresolved(
   args: {

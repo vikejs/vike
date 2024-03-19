@@ -81,7 +81,7 @@ import {
   loadValueFile
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import { clearFilesEnvMap, resolveImport } from './getVikeConfig/resolveImportPath.js'
-import { getFilePathResolved } from './getVikeConfig/getFilePath.js'
+import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 
 assertIsNotProductionRuntime()

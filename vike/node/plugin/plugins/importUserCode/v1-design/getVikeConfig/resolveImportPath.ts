@@ -8,7 +8,7 @@ import type { ConfigEnvInternal, DefinedAtFileFullInfo } from '../../../../../..
 import { assert, assertPosixPath, assertUsage, deepEqual, requireResolve } from '../../../../utils.js'
 import { type ImportData, parseImportData } from './transformFileImports.js'
 import path from 'path'
-import { getFilePathResolved, getFilePathUnresolved } from './getFilePath.js'
+import { getFilePathResolved, getFilePathUnresolved } from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()

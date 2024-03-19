@@ -22,7 +22,7 @@ import pc from '@brillout/picocolors'
 import { type ImportData, parseImportData } from './transformFileImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
 import { assertImportPath, resolveImportPath } from './resolveImportPath.js'
-import { getFilePathResolved } from './getFilePath.js'
+import { getFilePathResolved } from '../../../../shared/getFilePath.js'
 
 assertIsNotProductionRuntime()
 
