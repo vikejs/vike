@@ -95,6 +95,7 @@ function getFilePathAbsoluteUserFilesystem({
   assertPathIsFilesystemAbsolute(userRootDir)
 
   const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathAbsoluteUserRootDir)
+  assertPathIsFilesystemAbsolute(userRootDir)
   return filePathAbsoluteFilesystem
 }
 function getFilePathAbsoluteUserRootDir({
