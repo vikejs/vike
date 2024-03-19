@@ -16,14 +16,18 @@ function retrieveAssetsProd(
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets, eagerlyImported }) => {
     if (eagerlyImported) return // Eagerly imported assets aren't imported with import() and therefore don't create a new Rollup entry and aren't listed in the manifest file
-    if (onlyAssets) {
-      if (!includeAssetsImportedByServer) return
+
+    // TODO/v1-release: remove
+    if (
+      includeAssetsImportedByServer &&
+      onlyAssets &&
+      id.includes('.page.server.') &&
       // We assume that all npm packages have already built their files: bundlers (Rollup, esbuild, tsup, ...) extract the CSS out of JavaScript => we can assume JavaScript to not import any CSS/assets.
-      if (isNpmPackageImport(id)) return
-      if (id.includes('.page.server.')) {
-        id = extractAssetsAddQuery(id)
-      }
+      !isNpmPackageImport(id)
+    ) {
+      id = extractAssetsAddQuery(id)
     }
+
     const { manifestKey } = getManifestEntry(id, assetsManifest)
     collectAssets(manifestKey, assetUrls, visistedAssets, assetsManifest, onlyAssets)
   })
