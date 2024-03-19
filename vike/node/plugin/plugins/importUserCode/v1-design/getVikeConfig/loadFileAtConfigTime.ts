@@ -123,6 +123,7 @@ async function loadExtendsConfigs(
   return { extendsConfigs, extendsFilePaths }
 }
 function warnUserLandExtension(importPath: string, configFilePath: FilePathResolved) {
+  // We preserve this feature because we may need it for eject
   assertWarning(
     isNpmPackageImport(importPath),
     `${configFilePath.filePathToShowToUser} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
