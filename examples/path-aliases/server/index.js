@@ -1,5 +1,4 @@
-// Note that our scripts defined at `package.json#scripts` use `ts-node` which
-// means that Node.js directly executes this file; Vite doesn't process this file.
+// Note that Node.js directly executes this file; Vite doesn't process this file.
 // We use `package.json#imports` to define path aliases for Node.js files that are
 // not processed by Vite, such as this one.
 import { msg } from '#root/server/msg'

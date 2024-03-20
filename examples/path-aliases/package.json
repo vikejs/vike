@@ -1,13 +1,13 @@
 {
   "imports": {
-    "#root/*": "./*.ts"
+    "#root/*": "./*.js"
   },
   "scripts": {
     "dev": "npm run server:dev",
     "prod": "npm run build && npm run server:prod",
     "prod:static": "npm run build && npm run server:static",
     "build": "vite build",
-    "server": "node --loader ts-node/esm ./server/index.ts",
+    "server": "node ./server/index.js",
     "server:dev": "npm run server",
     "server:prod": "cross-env NODE_ENV=production npm run server",
     "server:static": "serve dist/client/ --listen 3000"
@@ -23,7 +23,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "serve": "^13.0.2",
-    "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "vite": "^5.0.10",
     "vike": "0.4.166"
