@@ -128,7 +128,7 @@ function warnUserLandExtension(importPath: string, configFilePath: FilePathResol
     isNpmPackageImport(importPath, {
       // Vike config files don't support path aliases. (If they do one day, then Vike will/should be able to resolve path aliases.)
       cannotBePathAlias: true
-    }),
+    }) || importPath.includes('/node_modules/'),
     `${configFilePath.filePathToShowToUser} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
       importPath
     )} which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this.`,

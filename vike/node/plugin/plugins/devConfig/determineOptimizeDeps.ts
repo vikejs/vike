@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, assertIsNpmPackageImport, createDebugger, isNpmPackageImport, unique } from '../../utils.js'
+import { assert, assertIsNpmPackageImport, createDebugger, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValueSourcesNotOverriden } from '../../shared/getConfigValueSourcesNotOverriden.js'
 import { analyzeClientEntries } from '../buildConfig.js'
@@ -63,27 +63,9 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
           // Adding definedAt.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
           const { importPathAbsolute } = definedAt
           assert(importPathAbsolute) // Help TS
-          // We need to differentiate between npm package imports and path aliases.
-          // There are path aliases that cannot be distinguished from npm package names.
-          // We recommend users to use the '#' prefix convention for path aliases, see https://vike.dev/path-aliases#vite and assertResolveAlias()
-          if (
-            isNpmPackageImport(importPathAbsolute, {
-              // TODO
-              cannotBePathAlias: false
-            })
-          ) {
-            // isNpmPackageImport() returns false for a path alias like #root/renderer/onRenderClient
-            assert(!importPathAbsolute.startsWith('#'))
-            include.push(importPathAbsolute)
-          } else {
-            /* Path aliases, e.g.:
-             * ```js
-             * // /renderer/+config.js
-             * import onRenderClient from '#root/renderer/onRenderClient'
-             * ```
-             */
-            entries.push(importPathAbsolute)
-          }
+          // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
+          assertIsNpmPackageImport(importPathAbsolute)
+          include.push(importPathAbsolute)
         }
       })
     })
