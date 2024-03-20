@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, isNpmPackageImport, unique } from '../../utils.js'
+import { assert, assertIsNpmPackageImport, createDebugger, isNpmPackageImport, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValueSourcesNotOverriden } from '../../shared/getConfigValueSourcesNotOverriden.js'
 import { analyzeClientEntries } from '../buildConfig.js'
@@ -12,6 +12,8 @@ import {
   virtualFileIdImportUserCodeClientSR
 } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
+
+const debug = createDebugger('vike:optimizeDeps')
 
 async function determineOptimizeDeps(config: ResolvedConfig, isDev: true) {
   const { pageConfigs } = await getVikeConfig(config, isDev)
@@ -32,7 +34,11 @@ async function determineOptimizeDeps(config: ResolvedConfig, isDev: true) {
   config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]
   config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
 
-  // console.log('config.optimizeDeps', { entries: config.optimizeDeps.entries, include: config.optimizeDeps.include })
+  if (debug.isEnabled)
+    debug('config.optimizeDeps', {
+      'config.optimizeDeps.entries': config.optimizeDeps.entries,
+      'config.optimizeDeps.include': config.optimizeDeps.include
+    })
 }
 
 async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[], isDev: true) {

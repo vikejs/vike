@@ -26,6 +26,7 @@ type Flag =
   | 'vike:pageFiles'
   | 'vike:setup'
   | 'vike:pointer-imports'
+  | 'vike:optimizeDeps'
 type Debug = ReturnType<typeof createDebugger>
 type Options = {
   serialization?: {
