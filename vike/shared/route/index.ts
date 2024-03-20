@@ -74,12 +74,8 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
 
   // Vike's routing
   const allPageIds = pageContext._allPageIds
-  assert(allPageIds.length >= 0)
-  assertUsage(
-    pageContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0,
-    'No *.page.js file found. You must create at least one *.page.js file.'
-  )
-  assertUsage(allPageIds.length > 0, "You must create at least one *.page.js file that isn't _default.page.*")
+  assertUsage(allPageIds.length > 0, 'No page found. You must create at least one page.')
+  assert(pageContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0)
   const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
 
