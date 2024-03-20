@@ -9,12 +9,15 @@ export { onBeforeRoute }
 
 function onBeforeRoute(pageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
+
+  const searchOriginal = pageContext.urlParsed.searchOriginal ?? "";
+  
   return {
     pageContext: {
       // Make `locale` available as `pageContext.locale`
       locale,
       // Vike's router will use pageContext.urlLogical instead of pageContext.urlOriginal
-      urlLogical: urlWithoutLocale
+      urlLogical: urlWithoutLocale + searchOriginal
     }
   }
 }
