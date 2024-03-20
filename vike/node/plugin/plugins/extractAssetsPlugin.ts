@@ -149,12 +149,6 @@ function extractAssetsPlugin(): Plugin[] {
     {
       name: 'vike:extractAssets-3',
       apply: 'build',
-      async configResolved(config_) {
-        configVike = await getConfigVike(config_)
-        config = config_
-        vikeConfig = await getVikeConfig(config, false)
-        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
-      },
       load(id) {
         if (!isVirtualFileId(id)) return undefined
         id = getVirtualFileId(id)
@@ -171,12 +165,18 @@ function extractAssetsPlugin(): Plugin[] {
     },
     {
       name: 'vike:extractAssets-4',
-      configResolved(config) {
-        // https://github.com/vikejs/vike/issues/1060
-        assertUsage(
-          !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
-          'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'
-        )
+      async configResolved(config_) {
+        configVike = await getConfigVike(config_)
+        config = config_
+        vikeConfig = await getVikeConfig(config, false)
+        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
+        if (!isServerAssetsFixEnabled) {
+          // https://github.com/vikejs/vike/issues/1060
+          assertUsage(
+            !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
+            'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'
+          )
+        }
       }
     }
   ]
