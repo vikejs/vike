@@ -42,7 +42,7 @@ function UseUiFrameworkVikeExtensionHint({
 function UseBatiHint({ feature }: { feature: string | React.ReactElement }) {
   return (
     <>
-      You can use <a href="https://batijs.github.io/">Bati</a> to scaffold a Vike app using {feature}.
+      You can use <a href="https://batijs.dev/">Bati</a> to scaffold a Vike app using {feature}.
     </>
   )
 }
@@ -60,5 +60,5 @@ function UseBatiHint_insteadOfManuelIntegration({ toolName }: { toolName: string
 }
 
 function Bati() {
-  return <a href="https://batijs.github.io/">Bati</a>
+  return <a href="https://batijs.dev/">Bati</a>
 }
