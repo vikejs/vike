@@ -5,7 +5,7 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@brillout/docpress": "^0.6.4",
+    "@brillout/docpress": "^0.6.5",
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
@@ -13,7 +13,7 @@
     "react-dom": "^18.2.0",
     "typescript": "^5.3.3",
     "vike": "0.4.166",
-    "vite": "npm:@brillout/vite@5.1.0-commit-3dc7abd"
+    "vite": "^5.2.2"
   },
   "type": "module"
 }
