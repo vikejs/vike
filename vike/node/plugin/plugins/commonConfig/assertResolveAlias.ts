@@ -20,7 +20,7 @@ import pc from '@brillout/picocolors'
 
 function assertResolveAlias(config: ResolvedConfig) {
   // TODO: re-implement warning https://github.com/vikejs/vike/issues/1567
-  return;
+  return
   const aliases = getAliases(config)
   const errPrefix = config.configFile || 'Your Vite configuration'
   const errSuffix1 = 'see https://vike.dev/path-aliases#vite'
