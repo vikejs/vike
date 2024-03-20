@@ -41,6 +41,8 @@ v0.5 breaking changes:
 - Make CJS warning an error.
   - Keep the CJS build for a little while and if no one complains then remove the CJS build.
 - Make guard() hook server-side only by default?
+- Presrve scroll for route parameters other than the first one?
+  - https://github.com/vikejs/vike/issues/1459
 
 Docs:
  - Improve /nextjs
