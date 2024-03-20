@@ -8,22 +8,20 @@ You can internationalize (i18n) your app by using the <Link text={<><code>onBefo
 export { onBeforeRoute }
 
 function onBeforeRoute(pageContext) {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
-
-  const searchOriginal = pageContext.urlParsed.searchOriginal ?? "";
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlParsed)
   
   return {
     pageContext: {
       // Make `locale` available as `pageContext.locale`
       locale,
       // Vike's router will use pageContext.urlLogical instead of pageContext.urlOriginal
-      urlLogical: urlWithoutLocale + searchOriginal
+      urlLogical: urlWithoutLocale
     }
   }
 }
 
 // You can also use a library instead of implementing your own locale retrieval mechanism
-function extractLocale(url) {
+function extractLocale(urlParsed) {
   // Determine the locale, for example:
   //  extractLocale('/en-US/film/42').locale === 'en-US'
   //  extractLocale('/de-DE/film/42').locale === 'de-DE'
@@ -34,6 +32,11 @@ function extractLocale(url) {
   //  extractLocale('/de-DE/film/42').urlWithoutLocale === '/film/42'
   //  ...
   urlWithoutLocale = /* ... */
+
+  // If you want to keep the query params
+  if (urlParsed.searchOriginal !== null) {
+    urlWithoutLocale += urlParsed.searchOriginal
+  }
 
   return { locale, urlWithoutLocale }
 }
