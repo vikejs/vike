@@ -34,13 +34,13 @@ This [makes Node.js treat all .js files as ESM](https://nodejs.org/docs/latest-v
 
 If you have .js files written in CJS then migrate them to ESM, for example:
 
-```diff
-- // CJS code
-- const express = require('express')
-- const { renderPage } = require('vike/server')
-+ // ESM code
-+ import express from 'express'
-+ import { renderPage } from 'vike/server'
+```js
+// CJS code // [!code --]
+const express = require('express') // [!code --]
+const { renderPage } = require('vike/server') // [!code --]
+// ESM code // [!code ++]
+import express from 'express' // [!code ++]
+import { renderPage } from 'vike/server' // [!code ++]
 ```
 
 > An escape hatch is to use [the `.cjs` and `.mjs` file extensions](https://nodejs.org/api/esm.html#enabling:~:text=Authors%20can%20tell%20Node.js%20to%20use%20the%20ECMAScript%20modules%20loader%20via%20the%20.mjs%20file%20extension): it enables you to choose between CJS and ESM on a file-by-file basis (regardless of `package.json#type`).
