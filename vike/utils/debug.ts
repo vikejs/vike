@@ -5,28 +5,35 @@ export type { Debug }
 import { isBrowser } from './isBrowser.js'
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
-import { assert } from './assert.js'
+import { assert, assertUsage } from './assert.js'
 import { checkType } from './checkType.js'
 import { getTerminalWidth } from './getTerminWidth.js'
+import pc from '@brillout/picocolors'
 
 // Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils.js'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
-type Flag =
-  | 'vike:routing'
-  | 'vike:error'
-  | 'vike:stream'
-  | 'vike:log'
-  | 'vike:virtual-files'
-  | 'vike:outDir'
-  | 'vike:extractExportNames'
-  | 'vike:extractAssets'
-  | 'vike:glob'
-  | 'vike:pageFiles'
-  | 'vike:setup'
-  | 'vike:pointer-imports'
-  | 'vike:optimizeDeps'
+const flags = [
+  'vike:routing',
+  'vike:error',
+  'vike:stream',
+  'vike:log',
+  'vike:virtual-files',
+  'vike:outDir',
+  'vike:extractExportNames',
+  'vike:extractAssets',
+  'vike:glob',
+  'vike:pageFiles',
+  'vike:setup',
+  'vike:pointer-imports',
+  'vike:optimizeDeps'
+] as const
+const flagRegex = /\bvike:[a-zA-Z-]+/g
+
+assertDEBUG()
+
+type Flag = (typeof flags)[number]
 type Debug = ReturnType<typeof createDebugger>
 type Options = {
   serialization?: {
@@ -36,6 +43,7 @@ type Options = {
 
 function createDebugger(flag: Flag, optionsGlobal?: Options) {
   checkType<`vike:${string}`>(flag)
+  assert(flags.includes(flag))
 
   const debugWithOptions = (optionsLocal: Options) => {
     return (...msgs: unknown[]) => {
@@ -76,13 +84,8 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
 
 function isDebugEnabled(flag: Flag): boolean {
   checkType<`vike:${string}`>(flag)
-
-  let DEBUG: undefined | string
-  // - `process` can be undefined in edge workers
-  // - We want bundlers to be able to statically replace `process.env.*`
-  try {
-    DEBUG = process.env.DEBUG
-  } catch {}
+  assert(flags.includes(flag))
+  const DEBUG = getDEBUG()
   const isEnabled = DEBUG?.includes(flag) ?? false
   return isEnabled
 }
@@ -154,4 +157,25 @@ function replaceFunctionSerializer(this: Record<string, unknown>, _key: string, 
     return value.toString().split(/\s+/).join(' ')
   }
   return value
+}
+
+function assertDEBUG() {
+  const DEBUG = getDEBUG() ?? ''
+  const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
+  flagsActivated.forEach((flag) => {
+    assertUsage(
+      (flags as readonly string[]).includes(flag),
+      `Unknown DEBUG flag ${pc.cyan(flag)}. Valid flags:\n${flags.map((f) => `  ${pc.cyan(f)}`).join('\n')}`
+    )
+  })
+}
+
+function getDEBUG() {
+  let DEBUG: undefined | string
+  // - `process` can be undefined in edge workers
+  // - We want bundlers to be able to statically replace `process.env.*`
+  try {
+    DEBUG = process.env.DEBUG
+  } catch {}
+  return DEBUG
 }
