@@ -3,21 +3,11 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin } from 'vite'
-import {
-  assert,
-  getFileExtension,
-  viteIsSSR_options,
-  createDebugger,
-  isDebugActivated,
-  getGlobalObject,
-  assertUsage
-} from '../utils.js'
+import { assert, getFileExtension, viteIsSSR_options, createDebugger, getGlobalObject, assertUsage } from '../utils.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
-const debugNamespace = 'vike:extractExportNames'
-const debug = createDebugger(debugNamespace)
-const debugEnabled = isDebugActivated(debugNamespace)
+const debug = createDebugger('vike:extractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('extractExportNamesPlugin.ts', {})
 
 function extractExportNamesPlugin(): Plugin {
@@ -37,7 +27,7 @@ function extractExportNamesPlugin(): Plugin {
       isDev = true
     },
     config() {
-      if (debugEnabled) {
+      if (debug.isActivated) {
         return { logLevel: 'silent' }
       }
     }
