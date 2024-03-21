@@ -1,5 +1,5 @@
 export { createDebugger }
-export { isDebugEnabled }
+export { isDebugActivated }
 export type { Debug }
 
 import { isBrowser } from './isBrowser.js'
@@ -52,12 +52,12 @@ function createDebugger(flag: Flag, optionsGlobal?: Options) {
     }
   }
   const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
-  objectAssign(debug, { options: debugWithOptions, isEnabled: isDebugEnabled(flag) })
+  objectAssign(debug, { options: debugWithOptions, isActivated: isDebugActivated(flag) })
   return debug
 }
 
 function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
-  if (!isDebugEnabled(flag)) return
+  if (!isDebugActivated(flag)) return
   let [msgFirst, ...msgsRest] = msgs
   const padding = ' '.repeat(flag.length + 1)
   msgFirst = formatMsg(msgFirst, options, padding, 'FIRST')
@@ -82,12 +82,12 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
   })
 }
 
-function isDebugEnabled(flag: Flag): boolean {
+function isDebugActivated(flag: Flag): boolean {
   checkType<`vike:${string}`>(flag)
   assert(flags.includes(flag))
   const DEBUG = getDEBUG()
-  const isEnabled = DEBUG?.includes(flag) ?? false
-  return isEnabled
+  const isActivated = DEBUG?.includes(flag) ?? false
+  return isActivated
 }
 
 function formatMsg(

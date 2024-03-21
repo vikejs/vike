@@ -1,7 +1,7 @@
 export { isErrorDebug }
 
-import { isDebugEnabled } from '../utils.js'
+import { isDebugActivated } from '../utils.js'
 
 function isErrorDebug(): boolean {
-  return isDebugEnabled('vike:error')
+  return isDebugActivated('vike:error')
 }

@@ -34,7 +34,7 @@ async function determineOptimizeDeps(config: ResolvedConfig, isDev: true) {
   config.optimizeDeps.include = [...include, ...normalizeInclude(config.optimizeDeps.include)]
   config.optimizeDeps.entries = [...entries, ...normalizeEntries(config.optimizeDeps.entries)]
 
-  if (debug.isEnabled)
+  if (debug.isActivated)
     debug('config.optimizeDeps', {
       'config.optimizeDeps.entries': config.optimizeDeps.entries,
       'config.optimizeDeps.include': config.optimizeDeps.include

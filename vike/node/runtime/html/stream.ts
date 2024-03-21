@@ -486,7 +486,7 @@ async function createStreamWrapper({
     const writeChunk = (chunk: unknown) => {
       assert(writableOriginal)
       writableOriginal.write(chunk)
-      if (debug.isEnabled) {
+      if (debug.isActivated) {
         debug('data written (Node.js Writable)', String(chunk))
       }
     }
@@ -564,7 +564,7 @@ async function createStreamWrapper({
     const writeChunk = (chunk: unknown) => {
       assert(writerOriginal)
       writerOriginal.write(encodeForWebStream(chunk))
-      if (debug.isEnabled) {
+      if (debug.isActivated) {
         debug('data written (Web Writable)', String(chunk))
       }
     }
@@ -664,11 +664,11 @@ async function createStreamWrapper({
         !controllerProxyIsClosed
       ) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
-        if (debug.isEnabled) {
+        if (debug.isActivated) {
           debug('data written (Web Readable)', String(chunk))
         }
       } else {
-        if (debug.isEnabled) {
+        if (debug.isActivated) {
           debug('data emitted but not written (Web Readable)', String(chunk))
         }
       }
@@ -695,7 +695,7 @@ async function createStreamWrapper({
 
     const writeChunk = (chunk: unknown) => {
       readableProxy.push(chunk)
-      if (debug.isEnabled) {
+      if (debug.isActivated) {
         debug('data written (Node.js Readable)', String(chunk))
       }
     }

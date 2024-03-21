@@ -8,7 +8,7 @@ import {
   getFileExtension,
   viteIsSSR_options,
   createDebugger,
-  isDebugEnabled,
+  isDebugActivated,
   getGlobalObject,
   assertUsage
 } from '../utils.js'
@@ -17,7 +17,7 @@ import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debugNamespace = 'vike:extractExportNames'
 const debug = createDebugger(debugNamespace)
-const debugEnabled = isDebugEnabled(debugNamespace)
+const debugEnabled = isDebugActivated(debugNamespace)
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('extractExportNamesPlugin.ts', {})
 
 function extractExportNamesPlugin(): Plugin {

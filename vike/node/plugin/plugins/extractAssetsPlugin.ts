@@ -16,7 +16,7 @@ import {
   assertPosixPath,
   styleFileRE,
   createDebugger,
-  isDebugEnabled,
+  isDebugActivated,
   isScriptFile,
   resolveVirtualFileId,
   isVirtualFileId,
@@ -43,7 +43,7 @@ const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
 const debugNamespace = 'vike:extractAssets'
 const debug = createDebugger(debugNamespace)
-const debugEnabled = isDebugEnabled(debugNamespace)
+const debugEnabled = isDebugActivated(debugNamespace)
 
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig

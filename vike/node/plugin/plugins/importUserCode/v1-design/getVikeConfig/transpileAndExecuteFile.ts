@@ -73,9 +73,9 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
-  if (debug.isEnabled) debug('transpile', filePathToShowToUserResolved)
+  if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
   let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports)
-  if (debug.isEnabled) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
+  if (debug.isActivated) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
 
   let isImportTransformed = false
   if (transformImports) {
@@ -83,11 +83,11 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
     if (codeMod) {
       code = codeMod
       isImportTransformed = true
-      if (debug.isEnabled) debug(`code, post transformImports() (${filePathToShowToUserResolved})`, code)
+      if (debug.isActivated) debug(`code, post transformImports() (${filePathToShowToUserResolved})`, code)
     }
   }
   if (!isImportTransformed) {
-    if (debug.isEnabled) debug(`code, no transformImports() (${filePathToShowToUserResolved})`)
+    if (debug.isActivated) debug(`code, no transformImports() (${filePathToShowToUserResolved})`)
   }
   return code
 }
@@ -168,7 +168,7 @@ async function transpileWithEsbuild(
               // npm package imports that aren't pointer imports (e.g. importing a Vite plugin)
               resolved.path.includes('/node_modules/')
 
-            if (debug.isEnabled) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
+            if (debug.isActivated) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
 
             if (isExternal) {
               return { external: true, path: resolved.path }
