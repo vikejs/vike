@@ -251,8 +251,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.6.5
-        version: 0.6.5(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)(vite@5.2.2)
+        specifier: ^0.6.6
+        version: 0.6.6(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.2)
       '@types/node':
         specifier: ^20.11.16
         version: 20.11.16
@@ -714,7 +714,7 @@ importers:
         version: 3.0.0(@types/react@18.2.45)(react@18.2.0)
       '@mdx-js/rollup':
         specifier: ^3.0.0
-        version: 3.0.0(rollup@4.9.6)
+        version: 3.0.0(rollup@4.13.0)
       '@types/node':
         specifier: ^20.10.5
         version: 20.10.5
@@ -1419,7 +1419,7 @@ importers:
         version: 2.3.0(react@18.2.0)
       '@mdx-js/rollup':
         specifier: ^2.1.1
-        version: 2.3.0(rollup@4.9.6)
+        version: 2.3.0(rollup@4.13.0)
       '@types/node':
         specifier: ^17.0.31
         version: 17.0.45
@@ -2334,8 +2334,8 @@ packages:
     dev: true
     optional: true
 
-  /@brillout/docpress@0.6.5(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.9.6)(typescript@5.3.3)(vike@vike)(vite@5.2.2):
-    resolution: {integrity: sha512-u+JYhrpItIVoprAVQ1U9fgX25I/jp3pHsi8/m41Vhu2HByTbNgCmdrrs+GNmzW1N/QYnCmSMs/qIyqwUcJiRbQ==}
+  /@brillout/docpress@0.6.6(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.2):
+    resolution: {integrity: sha512-9NCyE3Mo4O5kqWgl4/m5YLOT1WiilaI28H+/k/j9p0lSI/T7EzIGedS1eaP5SnEc6AGUP73QA7E2MbvYYxgZyw==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -2348,7 +2348,7 @@ packages:
     dependencies:
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@18.2.55)(react@18.2.0)
-      '@mdx-js/rollup': 3.0.1(rollup@4.9.6)
+      '@mdx-js/rollup': 3.0.1(rollup@4.13.0)
       '@shikijs/transformers': 1.2.0
       '@types/node': 20.11.16
       '@types/react': 18.2.55
@@ -3502,7 +3502,7 @@ packages:
     dependencies:
       '@types/estree': 1.0.5
       '@types/estree-jsx': 1.0.3
-      '@types/hast': 3.0.3
+      '@types/hast': 3.0.4
       '@types/mdx': 2.0.10
       collapse-white-space: 2.1.0
       devlop: 1.1.0
@@ -3559,42 +3559,42 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@mdx-js/rollup@2.3.0(rollup@4.9.6):
+  /@mdx-js/rollup@2.3.0(rollup@4.13.0):
     resolution: {integrity: sha512-wLvRfJS/M4UmdqTd+WoaySEE7q4BIejYf1xAHXYvtT1du/1Tl/z2450Gg2+Hu7fh05KwRRiehiTP9Yc/Dtn0fA==}
     peerDependencies:
       rollup: '>=2'
     dependencies:
       '@mdx-js/mdx': 2.3.0
-      '@rollup/pluginutils': 5.0.5(rollup@4.9.6)
-      rollup: 4.9.6
+      '@rollup/pluginutils': 5.0.5(rollup@4.13.0)
+      rollup: 4.13.0
       source-map: 0.7.4
       vfile: 5.3.7
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@mdx-js/rollup@3.0.0(rollup@4.9.6):
+  /@mdx-js/rollup@3.0.0(rollup@4.13.0):
     resolution: {integrity: sha512-ITvGiwPGEBW+D7CCnpSA9brzAosIWHAi4y+Air8wgfLnez8aWue50avHtWMfnFLCp7vt+JQ9UM8nwfuQuuydxw==}
     peerDependencies:
       rollup: '>=2'
     dependencies:
       '@mdx-js/mdx': 3.0.0
-      '@rollup/pluginutils': 5.0.5(rollup@4.9.6)
-      rollup: 4.9.6
+      '@rollup/pluginutils': 5.0.5(rollup@4.13.0)
+      rollup: 4.13.0
       source-map: 0.7.4
       vfile: 6.0.1
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@mdx-js/rollup@3.0.1(rollup@4.9.6):
+  /@mdx-js/rollup@3.0.1(rollup@4.13.0):
     resolution: {integrity: sha512-j0II91OCm4ld+l5QVgXXMQGxVVcAWIQJakYWi1dv5pefDHASJyCYER2TsdH7Alf958GoFSM7ugukWyvDq/UY4A==}
     peerDependencies:
       rollup: '>=2'
     dependencies:
       '@mdx-js/mdx': 3.0.1
-      '@rollup/pluginutils': 5.0.5(rollup@4.9.6)
-      rollup: 4.9.6
+      '@rollup/pluginutils': 5.0.5(rollup@4.13.0)
+      rollup: 4.13.0
       source-map: 0.7.4
       vfile: 6.0.1
     transitivePeerDependencies:
@@ -3800,7 +3800,7 @@ packages:
     resolution: {integrity: sha512-C16M+IYz0rgRhWZdCmK+h58JMv8vijAA61gmz2rspCSwKwzBebpdcsiUmwrtJRdphuY30i6BSLEOP8ppbNLyLg==}
     dev: false
 
-  /@rollup/pluginutils@5.0.5(rollup@4.9.6):
+  /@rollup/pluginutils@5.0.5(rollup@4.13.0):
     resolution: {integrity: sha512-6aEYR910NyP73oHiJglti74iRyOwgFU4x3meH/H8OJx6Ry0j6cOVZ5X/wTvub7G7Ao6qaHBEaNsV3GLJkSsF+Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -3812,7 +3812,7 @@ packages:
       '@types/estree': 1.0.5
       estree-walker: 2.0.2
       picomatch: 2.3.1
-      rollup: 4.9.6
+      rollup: 4.13.0
     dev: false
 
   /@rollup/rollup-android-arm-eabi@4.13.0:
@@ -11632,7 +11632,7 @@ packages:
       '@mdit-vue/plugin-component': 0.12.1
       '@mdit-vue/plugin-frontmatter': 0.12.1
       '@mdit-vue/types': 0.12.0
-      '@rollup/pluginutils': 5.0.5(rollup@4.9.6)
+      '@rollup/pluginutils': 5.0.5(rollup@4.13.0)
       '@types/markdown-it': 13.0.6
       markdown-it: 13.0.2
       unplugin: 1.5.0
