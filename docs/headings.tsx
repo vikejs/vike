@@ -622,7 +622,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Config files',
+    title: 'Config',
     url: '/config'
   },
   {
