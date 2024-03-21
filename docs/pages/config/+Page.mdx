@@ -1,4 +1,4 @@
-import { Link, Construction, RemovedFile } from '@brillout/docpress'
+import { Link, Construction, FileRemoved } from '@brillout/docpress'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
 
 Everything there is to know about config files.
@@ -138,7 +138,7 @@ export default /* ... */
 
 For more convenience, you can do that instead:
 
-<RemovedFile>
+<FileRemoved>
 ```js
 // /pages/product/@id/+config.js
 
@@ -150,7 +150,7 @@ export default {
   Layout
 }
 ```
-</RemovedFile>
+</FileRemoved>
 ```js
 // /pages/product/@id/Page.js // [!code --]
 // /pages/product/@id/+Page.js // [!code ++]

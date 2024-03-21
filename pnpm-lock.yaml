@@ -251,8 +251,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.6.6
-        version: 0.6.6(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.2)
+        specifier: ^0.6.7
+        version: 0.6.7(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.2)
       '@types/node':
         specifier: ^20.11.16
         version: 20.11.16
@@ -2334,8 +2334,8 @@ packages:
     dev: true
     optional: true
 
-  /@brillout/docpress@0.6.6(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.2):
-    resolution: {integrity: sha512-9NCyE3Mo4O5kqWgl4/m5YLOT1WiilaI28H+/k/j9p0lSI/T7EzIGedS1eaP5SnEc6AGUP73QA7E2MbvYYxgZyw==}
+  /@brillout/docpress@0.6.7(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.2):
+    resolution: {integrity: sha512-whxC5mxeCTX9oehGZUZX4fpzSK1qYkEFjpNeN79Eq3vJvQA+2bh5ucy6AdN9q6koSH/pVDZv1sTFerVQ04ZX9w==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'

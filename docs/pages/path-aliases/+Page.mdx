@@ -5,9 +5,9 @@ Instead of using relative import paths,
 which can be cumbersome,
 you can use path aliases:
 
-```diff
-- import { Counter } from '../../../../components/Counter'
-+ import { Counter } from `#root/components/Counter`
+```js
+import { Counter } from '../../../../components/Counter' // [!code --]
+import { Counter } from '#root/components/Counter' // [!code ++]
 ```
 
 Where `#root/` denotes your project's root directory.

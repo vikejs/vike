@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, FileAdded, FileRemoved } from '@brillout/docpress'
 
 Despite being a simple change, the V1 design introduces new foundational capabilities. If you're curious: <Link href="/why-the-v1-design" />
 
@@ -23,39 +23,41 @@ Most of the migration boils down to the following two steps.
 
 Move your `renderer/` hooks to `+` files:
 
-```diff
-- // /renderer/_default.page.client.js
-+ // /renderer/+onRenderClient.js
+```js
+// /renderer/_default.page.client.js // [!code --]
+// /renderer/+onRenderClient.js // [!code ++]
 
-- export { render }
-+ export { render as onRenderClient }
+export { render } // [!code --]
+export { render as onRenderClient } // [!code ++]
 ```
 
-```diff
-- // /renderer/_default.page.server.js
-+ // /renderer/+onRenderHtml.js
+```js
+// /renderer/_default.page.server.js // [!code --]
+// /renderer/+onRenderHtml.js // [!code ++]
 
-- export { render }
-+ export { render as onRenderHtml }
+export { render } // [!code --]
+export { render as onRenderHtml } // [!code ++]
 ```
 
 If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
-```diff
-- // /renderer/_default.page.server.js
-+ // /renderer/+onBeforeRender.js
+```js
+// /renderer/_default.page.server.js // [!code --]
+// /renderer/+onBeforeRender.js // [!code ++]
 
-  export { onBeforeRender }
-- export const passToClient = ['pageProps']
+export { onBeforeRender }
+export const passToClient = ['pageProps'] // [!code --]
 ```
 
-```diff
-+ // /renderer/+config.js
-+ 
-+ export default {
-+   passToClient: ['pageProps']
-+ }
+<FileAdded>
+```js
+// /renderer/+config.js
+
+export default {
+  passToClient: ['pageProps']
+}
 ```
+</FileAdded>
 
 
 > See <Link href="/config" /> for more information about what `+` and `.h.js` means.
@@ -64,13 +66,15 @@ If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
 Move `/renderer/` configurations to `/renderer/+config.ts`:
 
-```diff
-- // /renderer/_default.page.client.ts
+<FileRemoved>
+```ts
+// /renderer/_default.page.client.ts
 
-- export { clientRouting }
-- export { hydrationCanBeAborted }
+export { clientRouting }
+export { hydrationCanBeAborted }
 ```
-
+</FileRemoved>
+<FileAdded>
 ```ts
 // /renderer/+config.ts
 
@@ -81,37 +85,38 @@ export default {
   hydrationCanBeAborted: true
 } satisfies Config
 ```
+</FileAdded>
 
 Move your error page (if you defined one):
 
-```diff
-- // /renderer/_error.page.js
-+ // /pages/_error/+Page.js
+```js
+/renderer/_error.page.js // [!code --]
+/pages/_error/+Page.js // [!code ++]
 
-  export { Page }
+export { Page }
 ```
 
 
 **2. Migrate `/pages/**/*.page.*`**
 
-```diff
-- // /pages/some-page/index.page.ts
-+ // /pages/some-page/+Page.ts
+```js
+// /pages/some-page/index.page.js // [!code --]
+// /pages/some-page/+Page.js // [!code ++]
 
-  export { Page }
+export { Page }
 ```
-```diff
-- // /pages/some-page/index.page.server.ts
-+ // /pages/some-page/+onBeforeRender.ts
+```js
+// /pages/some-page/index.page.server.js // [!code --]
+// /pages/some-page/+onBeforeRender.js // [!code ++]
 
-  export { onBeforeRender }
+export { onBeforeRender }
 ```
 
-```diff
-- // /pages/some-page/index.page.route.ts
-+ // /pages/some-page/+route.ts
+```js
+// /pages/some-page/index.page.route.js // [!code --]
+// /pages/some-page/+route.js // [!code ++]
 
-  export default route
+export default route
 ```
 
 > Each page now lives in its own directory.
@@ -198,17 +203,19 @@ Old name | New name
 -|-
 `doNotPrerender: true` | `prerender: false`
 
-```diff
+<FileRemoved>
+```js
 // /pages/news.page.server.js
 
-- export const doNotPrerender = true
+export const doNotPrerender = true
 ```
-```diff
+</FileRemoved>
+```js
 // /pages/news/+config.js
 
-  export default {
-+   prerender: false
-  }
+export default {
+  prerender: false // [!code ++]
+}
 ```
 
 
