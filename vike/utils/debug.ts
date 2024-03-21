@@ -15,19 +15,19 @@ assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
 const flags = [
-  'vike:routing',
   'vike:error',
-  'vike:stream',
-  'vike:log',
-  'vike:virtual-files',
-  'vike:outDir',
-  'vike:extractExportNames',
   'vike:extractAssets',
+  'vike:extractExportNames',
   'vike:glob',
+  'vike:log',
+  'vike:optimizeDeps',
+  'vike:outDir',
   'vike:pageFiles',
-  'vike:setup',
   'vike:pointer-imports',
-  'vike:optimizeDeps'
+  'vike:routing',
+  'vike:setup',
+  'vike:stream',
+  'vike:virtual-files'
 ] as const
 const flagRegex = /\bvike:[a-zA-Z-]+/g
 
