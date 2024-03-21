@@ -117,10 +117,10 @@ Node.js v18.0.0
 
 The workaround proposed by Node.js often doesn't work for default exports. If it doesn't, try this instead:
 
-```diff
-- import theDefaultExport from 'some-library'
-+ import lib from 'some-library';
-+ const theDefaultExport = lib.default ?? lib
+```js
+import theDefaultExport from 'some-library' // [!code --]
+import lib from 'some-library'; // [!code ++]
+const theDefaultExport = lib.default ?? lib // [!code ++]
 ```
 
 Alternatives:
@@ -256,12 +256,12 @@ Use the component trace to find out which component is `undefined` / an `object`
 
 A local workaround is usually this:
 
-```diff
-- import SomeComponent from "some-npm-package"
-+ import pkg from "some-npm-package"
-+ const { SomeComponent } = pkg
-+ // Or
-+ const SomeComponent = pkg.default
+```js
+import SomeComponent from "some-npm-package" // [!code --]
+import pkg from "some-npm-package" // [!code ++]
+const { SomeComponent } = pkg // [!code ++]
+// Or // [!code ++]
+const SomeComponent = pkg.default // [!code ++]
 ```
 
 For a workaround that is global (and TypeScript friendly), see <Link href="#workaround" />.
