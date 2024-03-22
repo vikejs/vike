@@ -2,14 +2,16 @@ import { RepoLink, Link } from '@brillout/docpress'
 
 You can internationalize (i18n) your app by using the <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
 
-```js
+```ts
 // /renderer/+onBeforeRoute.js
 
 export { onBeforeRoute }
 
+import type { Url } from 'vike/types'
+
 function onBeforeRoute(pageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlParsed)
-  
+
   return {
     pageContext: {
       // Make `locale` available as `pageContext.locale`
@@ -20,23 +22,23 @@ function onBeforeRoute(pageContext) {
   }
 }
 
-// You can also use a library instead of implementing your own locale retrieval mechanism
-function extractLocale(urlParsed) {
+// Or use a library instead of implementing your own locale retrieval mechanism
+function extractLocale(url: Url) {
+  const { pathname } = url
+
   // Determine the locale, for example:
-  //  extractLocale('/en-US/film/42').locale === 'en-US'
-  //  extractLocale('/de-DE/film/42').locale === 'de-DE'
+  //  /en-US/film/42 => en-US
+  //  /de-DE/film/42 => de-DE
   const locale = /* ... */
 
   // Remove the locale, for example:
-  //  extractLocale('/en-US/film/42').urlWithoutLocale === '/film/42'
-  //  extractLocale('/de-DE/film/42').urlWithoutLocale === '/film/42'
-  //  ...
-  urlWithoutLocale = /* ... */
+  //  /en-US/film/42 => /film/42
+  //  /de-DE/film/42 => /film/42
+  const pathnameWithoutLocale = /* ... */
 
-  // If you want to keep the query params
-  if (urlParsed.searchOriginal !== null) {
-    urlWithoutLocale += urlParsed.searchOriginal
-  }
+  // Reconstruct full URL
+  const { origin, searchOriginal, hashOriginal } = url
+  const urlWithoutLocale = `${origin || ''}${pathnameWithoutLocale}${searchOriginal || ''}${hashOriginal || ''}`
 
   return { locale, urlWithoutLocale }
 }
