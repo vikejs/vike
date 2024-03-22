@@ -1,3 +1,18 @@
+## [0.4.167](https://github.com/vikejs/vike/compare/v0.4.166...v0.4.167) (2024-03-22)
+
+
+### Bug Fixes
+
+* allow vite-tsconfig-paths again ([a5e2596](https://github.com/vikejs/vike/commit/a5e25969f0787d1caf390fadf2e28cbecdfae155))
+* call onPageTransitionStart() earlier (fix [#1560](https://github.com/vikejs/vike/issues/1560)) ([1a3a59f](https://github.com/vikejs/vike/commit/1a3a59f8dfc1d6fe054a5c298df5c304a12f23a5))
+* improve DEBUG flags DX ([0f5ac02](https://github.com/vikejs/vike/commit/0f5ac0229900af1964a1efdffda1f54a86cbda80))
+* only call page transition hooks if page was rendered before ([e334999](https://github.com/vikejs/vike/commit/e3349998ce75f502967e35c85f3caa014e601780))
+* remove faulty assertion (fix [#1571](https://github.com/vikejs/vike/issues/1571)) ([b457127](https://github.com/vikejs/vike/commit/b45712739a1022aa9c2603da85c9f008e21055c3))
+* support path aliases that look like npm package imports (fix [#1146](https://github.com/vikejs/vike/issues/1146)) ([8b5827e](https://github.com/vikejs/vike/commit/8b5827efd11ec2af28409d5e43d5e2f146df905d))
+* update error message upon no page find found ([#1570](https://github.com/vikejs/vike/issues/1570)) ([d7b56d6](https://github.com/vikejs/vike/commit/d7b56d68c9829b5f2cee59210c201ea77d8228a3))
+
+
+
 ## [0.4.166](https://github.com/vikejs/vike/compare/v0.4.165...v0.4.166) (2024-03-19)
 
 
