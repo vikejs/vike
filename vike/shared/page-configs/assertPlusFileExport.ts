@@ -29,9 +29,11 @@ function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToSh
       )
     } else {
       assert(exportsAll.length === 2) // because `exportsInvalid.length === 0`
-      assertWarning(false, `${filePathToShowToUser} remove ${exportNamed} or ${exportDefault}`, {
-        onlyOnce: true
-      })
+      assertWarning(
+        false,
+        `The exports of ${filePathToShowToUser} are ambiguous: remove ${exportDefault} or ${exportNamed}`,
+        { onlyOnce: true }
+      )
     }
   } else {
     if (TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) return
