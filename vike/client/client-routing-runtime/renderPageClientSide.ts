@@ -42,6 +42,7 @@ const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
   onRenderClientPromise?: Promise<unknown>
+  isFirstRenderDone?: true
   isTransitioning?: true
   previousPageContext?: { _pageId: string }
 }>('renderPageClientSide.ts', { renderCounter: 0 })
@@ -160,7 +161,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
 
     // onPageTransitionStart()
-    if (!isHydrationRender) {
+    if (globalObject.isFirstRenderDone) {
       assertHook(pageContext, 'onPageTransitionStart')
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
@@ -389,6 +390,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         onRenderClientError = err
       }
       globalObject.onRenderClientPromise = undefined
+      globalObject.isFirstRenderDone = true
       return onRenderClientError
     })()
     const onRenderClientError = await globalObject.onRenderClientPromise
