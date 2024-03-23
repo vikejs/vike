@@ -19,10 +19,10 @@ export { testRun }
 const HMR_SLEEP = 500
 
 // TODO:v1/release: remove non-V1 design case
-function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
+function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1Design?: true) {
   run(cmd, { isFlaky: true })
 
-  const isPreview = cmd === 'npm run preview'
+  const isProd = cmd !== 'npm run dev'
 
   const hash = /[a-zA-Z0-9_-]+/
   const path = /[^\>]+/
@@ -31,7 +31,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     const html = await fetchHtml('/html-only')
     expect(html).toContain('<h1>HTML-only</h1>')
     expect(html).toContain('This page has zero browser-side JavaScript.')
-    if (isPreview) {
+    if (isProd) {
       expect(html).not.toContain('<script')
       expect(html).not.toContain('as="rel="modulepreload""')
       expect(html).not.toContain('as="script"')
@@ -67,7 +67,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     await page.goto(getServerUrl() + '/html-only')
     await testColor('orange')
   })
-  if (!isPreview) {
+  if (!isProd) {
     test('HTML-only - HMR', async () => {
       {
         const url = getServerUrl() + '/html-only'
@@ -127,7 +127,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     await clickCounter()
 
     expect(await page.textContent('button')).toContain('Counter 1')
-    if (!isPreview) {
+    if (!isProd) {
       {
         expect(await page.textContent('h1')).toBe('SPA')
         await sleep(HMR_SLEEP)
@@ -162,7 +162,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     {
       const html = await fetchHtml('/html-js')
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
-      if (isPreview) {
+      if (isProd) {
         const jsImport = isV1Design
           ? partRegex`<script src="/assets/entries/pages_html-js_client.${hash}.js" type="module" async></script>`
           : partRegex`<script src="/assets/entries/pages_html-js_default.page.client.${hash}.js" type="module" async>`
@@ -178,7 +178,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     await page.goto(getServerUrl() + '/html-js')
     await clickCounter()
   })
-  if (!isPreview) {
+  if (!isProd) {
     test('HTML + JS - HMR', async () => {
       expect(await page.textContent('button')).toContain('Counter 1')
       // JS auto-reload
@@ -229,7 +229,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     await clickCounter()
     expect(await page.textContent('button')).toContain('Counter 1')
 
-    if (!isPreview) {
+    if (!isProd) {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
@@ -265,14 +265,14 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     {
       const html = await fetchHtml('/')
       expect(html.split('text/css').length).toBe(2)
-      if (!isPreview) {
+      if (!isProd) {
         expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css')
       }
     }
     for (const page of ['html-only', 'html-js', 'spa', 'ssr']) {
       const html = await fetchHtml(`/${page}`)
       expect(html.split('text/css').length).toBe(3)
-      if (!isPreview) {
+      if (!isProd) {
         expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css')
         expect(html).toContain(`<link rel="stylesheet" type="text/css" href="/pages/${page}/index.css`)
       }
@@ -303,7 +303,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     })
   }
   function testClientRouting(html: string) {
-    if (isPreview) {
+    if (isProd) {
       expect(html).toMatch(
         partRegex`<script src="/assets/entries/entry-client-routing.${hash}.js" type="module" async>`
       )
