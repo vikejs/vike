@@ -4,31 +4,42 @@ Some npm packages contain invalid JavaScript code.
 
 See <Link href="#workaround" />.
 
-> The reason why an npm package can contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. Learn more at <Link href="#why" />.
+> The reason why some npm packages contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. You can learn more at <Link href="#why" />.
 >
 > The situation is going to improve over time as Vite-powered frameworks gain popularity.
 
-
 ## Workaround
 
-You can usually workaround problematic npm packages by using [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
+You can workaround problematic npm packages by using either:
+ - `ssr.noExternal` or
+ - `vite-plugin-cjs-interop`.
+
+> The workarounds usually work. But if you struggle working around a broken npm package then feel free to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link>.
+
+
+### `ssr.noExternal`
 
 ```js
 // vite.config.js
 
 export default {
   ssr: {
-    // Add problematic npm packages here
+    // Add problematic npm package here:
     noExternal: ['some-npm-package']
   }
 }
 ```
 
-> You may need to add several/nested npm packages to `ssr.noExternal`, because CJS/ESM issues sometime cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
+See also: [Vite > `ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
+
+> You may need to add nested npm packages to `ssr.noExternal`, because CJS/ESM issues somtimes cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
 
 > The section <Link href="#why" /> explains why `ssr.noExternal` is a workaround.
 
-If the npm package is CJS code then, instead of `ssr.noExternal`, consider using [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop).
+### `vite-plugin-cjs-interop`
+
+Upon certain errors, we recommend trying [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop) first before trying `ssr.noExternal`.
+
 
 ```js
 // vite.config.js
@@ -40,14 +51,33 @@ export default {
     cjsInterop({
       dependencies: [
         // Add problematic npm package here
-        "some-package",
+        "some-package/**", // Use /** to apply the interop patch to all imports
       ]
     })
   ]
 }
 ```
 
-> Feel free to <Link href="/faq#can-i-reach-out-for-help">reach out for help</Link> if the workarounds don't work.
+Errors for which we recommend trying `vite-plugin-cjs-interop` first before trying `ssr.noExternal`:
+
+
+<Link href="#react-invalid-component">**React invalid component**</Link>
+
+<CodeBlockTransformer lineBreak="white-space">
+```
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: something-else.
+```
+
+
+</CodeBlockTransformer>
+<Link href="#named-export-not-found">**Named export not found**</Link>
+
+<CodeBlockTransformer lineBreak="white-space">
+```
+SyntaxError: Named export 'SomeImport' not found. The requested module 'some-library' is a CommonJS module, which may not support all module.exports as named exports.
+```
+</CodeBlockTransformer>
+
 
 
 ## Why
@@ -65,13 +95,9 @@ By adding an npm package to `ssr.noExternal`, you replicate the behavior of fram
 
 ## Common errors
 
-Common invalid JavaScript code.
+Common invalid JavaScript code published by npm packages.
 
 ### Cannot use import statement outside a module
-
-```
-SyntaxError: Cannot use import statement outside a module
-```
 
 <CodeBlockTransformer lineBreak="white-space">
 ```
@@ -93,7 +119,14 @@ Node.js v18.0.0
 ```
 </CodeBlockTransformer>
 
-> Node.js's message `set "type": "module" in package.json or use the .mjs extension` is misleading because it means the library's `node_modules/some-library/package.json`, not our `package.json`. It's not really actionable (unless we patch the library, e.g. with [pnpm.packageExtensions](https://pnpm.io/package_json#pnpmpackageextensions) or [pnpm patch](https://pnpm.io/cli/patch)).
+> Node.js's message `set "type": "module" in package.json or use the .mjs extension` is misleading because it means the library's `node_modules/some-library/package.json`, not your `package.json`. It isn't really actionable (unless you patch the library).
+
+Recommended workaround:
+ - <Link href="#ssr-noexternal" />
+
+Alternatively, you can try to patch the broken npm package with:
+ - [pnpm.packageExtensions](https://pnpm.io/package_json#pnpmpackageextensions)
+ - [pnpm patch](https://pnpm.io/cli/patch)
 
 
 ### Named export not found
@@ -123,9 +156,7 @@ import lib from 'some-library'; // [!code ++]
 const theDefaultExport = lib.default ?? lib // [!code ++]
 ```
 
-Alternatives:
- - [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop)
- - The <Link href="#workaround">`ssr.noExternal` workaround</Link>.
+For a workaround that is global (and TypeScript friendly), see <Link href="#vite-plugin-cjs-interop" />.
 
 
 ### ERR_MODULE_NOT_FOUND
@@ -155,6 +186,8 @@ Node.js v18.0.0
 
 > The error is usually thrown when the library's ESM code contains `import './some-file'`. (It should be `import './some-file.js'` instead, as imports in ESM code are required to include the file extension.)
 
+Recommended workaround: <Link href="#ssr-noexternal" />.
+
 
 ### ERR_UNSUPPORTED_DIR_IMPORT
 
@@ -167,6 +200,8 @@ Did you mean to import ./some-dir/index.js?
 </CodeBlockTransformer>
 
 > ESM doesn't allow directory imports: all import paths need to point to a filename instead.
+
+Recommended workaround: <Link href="#ssr-noexternal" />.
 
 
 ### ERR_UNKNOWN_FILE_EXTENSION .css
@@ -182,6 +217,8 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css node_modules/some-library/dist/main.css
 ```
 </CodeBlockTransformer>
 
+Recommended workaround: <Link href="#ssr-noexternal" />.
+
 
 ### Cannot read properties of undefined
 
@@ -195,7 +232,7 @@ TypeError: Cannot read properties of undefined (reading 'someProp')
 ```
 </CodeBlockTransformer>
 
-> The underlying issue being:
+> The underlying issue is often this:
 > ```js
 > // node_modules/some-good-lib/dist/index.js
 >
@@ -209,12 +246,14 @@ TypeError: Cannot read properties of undefined (reading 'someProp')
 >   someImport.someProp
 > }
 > ```
-
-<Link href="#workaround">Adding `some-broken-lib` to `vite.config.js > ssr.noExternal`</Link> often solves the issue.
-
+>
 > Sometimes, when dependency injection is used, the `import` to `some-broken-lib` isn't in the file in which the
 > exception is being raised, making it harder to understand which library is broken. See
 > [here](https://github.com/vikejs/vike/discussions/1235) an example of this.
+
+Adding `some-broken-lib` to <Link href="#ssr-noexternal">`ssr.noExternal`</Link> usually solves the issue.
+
+Alternatively, you can add `some-good-lib` to `ssr.noExternal` while adding `some-broken-lib` to <Link href="#vite-plugin-cjs-interop">`vite-plugin-cjs-interop`</Link>.
 
 
 
@@ -250,18 +289,19 @@ Check your code at +Page.tsx:26.
 
 > Sometimes React doesn't log a component trace. In that case you can use [this temporary patch](https://gist.github.com/brillout/c27b780f009d141acec7bda29d136e6e) to get a component trace.
 >
-> You can also use the temporary patch to get a more precise component trace. (For example the component trace above says `Check your code at +Page.tsx:26` but there can be hundreds of `+Page.tsx` files and it doesn't say which `+Page.tsx` file it is.)
+> You can also use the temporary patch to get a more precise component trace. (For example the component trace above says `Check your code at +Page.tsx:26` but there can be hundreds of `+Page.tsx` files.)
 
-Use the component trace to find out which component is `undefined` / an `object`. You'll likely discover that the React component is imported, while the import value is `undefined` / an `object` (instead of a React component) because of CJS/ESM interoperability quirks.
+Use the component trace to find out which component is `undefined` / an `object`. You'll likely see that the component is imported and that the import value is `undefined` / an `object` (instead of a React component) because of CJS/ESM interoperability quirks.
 
 A local workaround is usually this:
 
 ```js
 import SomeComponent from "some-npm-package" // [!code --]
 import pkg from "some-npm-package" // [!code ++]
+// This: // [!code ++]
 const { SomeComponent } = pkg // [!code ++]
-// Or // [!code ++]
+// Or that: // [!code ++]
 const SomeComponent = pkg.default // [!code ++]
 ```
 
-For a workaround that is global (and TypeScript friendly), see <Link href="#workaround" />.
+For a workaround that is global (and TypeScript friendly), see <Link href="#vite-plugin-cjs-interop" />.
