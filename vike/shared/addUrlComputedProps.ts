@@ -10,7 +10,7 @@ export type { Url }
 
 import { assert, parseUrl, assertWarning, isPlainObject, isPropertyGetter, isBrowser } from './utils.js'
 
-// Copy paste from https://vike.dev/pageContext
+// JSDocs copied from https://vike.dev/pageContext
 type Url = {
   /** The URL origin, e.g. `https://example.com` of `https://example.com/product/42?details=yes#reviews` */
   origin: null | string
@@ -24,14 +24,16 @@ type Url = {
   searchAll: Record<string, string[]>
   /** The URL search parameterer string, e.g. `?details=yes` of `https://example.com/product/42?details=yes#reviews` */
   searchOriginal: null | string
-  /** @deprecated */
-  searchString: null | string
   /** The URL hash, e.g. `reviews` of `https://example.com/product/42?details=yes#reviews` */
   hash: string
   /** The URL hash string, e.g. `#reviews` of `https://example.com/product/42?details=yes#reviews` */
   hashOriginal: null | string
+
+  // TODO/v1-release: remove
   /** @deprecated */
   hashString: null | string
+  /** @deprecated */
+  searchString: null | string
 }
 
 type PageContextUrlComputedPropsClient = {
