@@ -1,0 +1,1 @@
+Test the `DynamicAssetImportFilter` callback with asynchronous vue components.
