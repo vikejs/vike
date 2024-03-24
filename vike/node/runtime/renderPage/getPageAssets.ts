@@ -2,6 +2,7 @@ export { getPageAssets }
 export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
+export type { DynamicAssetImportFilter }
 
 import {
   assert,
@@ -23,6 +24,8 @@ import { getGlobalContext } from '../globalContext.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
 import { import_ } from '@brillout/import'
 
+type DynamicAssetImportFilter = null | ((importer: string) => boolean)
+
 type PageAsset = {
   src: string
   assetType: null | NonNullable<MediaType>['assetType']
@@ -35,6 +38,7 @@ type PageContextGetPageAssets = {
   _baseServer: string
   _baseAssets: string | null
   _includeAssetsImportedByServer: boolean
+  _dynamicAssetImportFilter?: DynamicAssetImportFilter
 }
 
 async function getPageAssets(
@@ -44,6 +48,7 @@ async function getPageAssets(
 ): Promise<PageAsset[]> {
   const globalContext = getGlobalContext()
   const isDev = !globalContext.isProduction
+  const dynamicAssetImportFilter = pageContext._dynamicAssetImportFilter || null;
 
   let assetUrls: string[]
   let clientEntriesSrc: string[]
@@ -52,11 +57,11 @@ async function getPageAssets(
     clientEntriesSrc = await Promise.all(
       clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
     )
-    assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
+    assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer, dynamicAssetImportFilter)
   } else {
     const { assetsManifest } = globalContext
     clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
-    assetUrls = retrieveAssetsProd(clientDependencies, assetsManifest, pageContext._includeAssetsImportedByServer)
+    assetUrls = retrieveAssetsProd(clientDependencies, assetsManifest, pageContext._includeAssetsImportedByServer, dynamicAssetImportFilter)
   }
 
   let pageAssets: PageAsset[] = []

@@ -48,6 +48,8 @@ export type { Url } from '../shared/addUrlComputedProps.js'
 
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
 
+export type { DynamicAssetImportFilter } from '../node/runtime/renderPage/getPageAssets.js'
+
 export { defineConfig } from './defineConfig.js'
 
 // TODO/v1-release: remove

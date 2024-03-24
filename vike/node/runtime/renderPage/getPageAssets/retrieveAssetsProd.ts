@@ -5,11 +5,13 @@ import type { ViteManifest } from '../../../shared/ViteManifest.js'
 import { getManifestEntry } from './getManifestEntry.js'
 import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import { DynamicAssetImportFilter } from '../getPageAssets.js'
 
 function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   assetsManifest: ViteManifest,
-  includeAssetsImportedByServer: boolean
+  includeAssetsImportedByServer: boolean,
+  dynamicAssetImportFilter: DynamicAssetImportFilter
 ): string[] {
   let assetUrls = new Set<string>()
   assert(assetsManifest)
@@ -32,7 +34,7 @@ function retrieveAssetsProd(
     }
 
     const { manifestKey } = getManifestEntry(id, assetsManifest)
-    collectAssets(manifestKey, assetUrls, visistedAssets, assetsManifest, onlyAssets)
+    collectAssets(manifestKey, assetUrls, visistedAssets, assetsManifest, onlyAssets, dynamicAssetImportFilter)
   })
 
   collectSingleStyle(assetUrls, assetsManifest)
@@ -45,7 +47,8 @@ function collectAssets(
   assetUrls: Set<string>,
   visistedAssets: Set<string>,
   assetsManifest: ViteManifest,
-  onlyCollectStaticAssets: boolean
+  onlyCollectStaticAssets: boolean,
+  dynamicAssetImportFilter: DynamicAssetImportFilter
 ): void {
   if (visistedAssets.has(manifestKey)) return
   visistedAssets.add(manifestKey)
@@ -62,7 +65,18 @@ function collectAssets(
   for (const manifestKey of imports) {
     const importManifestEntry = assetsManifest[manifestKey]
     assert(importManifestEntry)
-    collectAssets(manifestKey, assetUrls, visistedAssets, assetsManifest, onlyCollectStaticAssets)
+    collectAssets(manifestKey, assetUrls, visistedAssets, assetsManifest, onlyCollectStaticAssets, dynamicAssetImportFilter)
+  }
+
+  if (dynamicAssetImportFilter && manifestEntry.dynamicImports) {
+    for (const manifestKey of manifestEntry.dynamicImports) {
+      const importManifestEntry = assetsManifest[manifestKey]
+      assert(importManifestEntry)
+      const { src } = importManifestEntry
+      if (!src || dynamicAssetImportFilter(`/${src}`)) {
+        collectAssets(manifestKey, assetUrls, visistedAssets, assetsManifest, onlyCollectStaticAssets, dynamicAssetImportFilter)
+      }
+    }
   }
 
   for (const cssAsset of css) {

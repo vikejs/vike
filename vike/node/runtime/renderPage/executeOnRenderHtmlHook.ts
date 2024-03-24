@@ -10,7 +10,7 @@ import {
 } from '../html/renderHtml.js'
 import { getHook, type Hook } from '../../../shared/hooks/getHook.js'
 import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../utils.js'
-import type { PageAsset } from './getPageAssets.js'
+import type { DynamicAssetImportFilter, PageAsset } from './getPageAssets.js'
 import { isStream } from '../html/stream.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags.js'
@@ -54,13 +54,14 @@ async function executeOnRenderHtmlHook(
 
   preparePageContextForUserConsumptionServerSide(pageContext)
   const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook)
-  const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
+  const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter, dynamicAssetImportFilter } = processHookReturnValue(
     hookReturnValue,
     renderHook
   )
 
   Object.assign(pageContext, pageContextProvidedByRenderHook)
   objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
+  objectAssign(pageContext, { _dynamicAssetImportFilter: dynamicAssetImportFilter })
 
   if (documentHtml === null || documentHtml === undefined) {
     return { htmlRender: null, renderHook }
@@ -135,7 +136,8 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
   let pageContextPromise: PageContextPromise = null
   let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
   let injectFilter: PreloadFilter = null
-  const ret = () => ({ documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter })
+  let dynamicAssetImportFilter: DynamicAssetImportFilter = null;
+  const ret = () => ({ documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter, dynamicAssetImportFilter })
 
   if (hookReturnValue === null) return ret()
 
@@ -172,11 +174,16 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
       errSuffix
     ].join(' ')
   )
-  assertHookReturnedObject(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
+  assertHookReturnedObject(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter', 'dynamicAssetImportFilter'] as const, errPrefix)
 
   if (hookReturnValue.injectFilter) {
     assertUsage(isCallable(hookReturnValue.injectFilter), 'injectFilter should be a function')
     injectFilter = hookReturnValue.injectFilter
+  }
+
+  if (hookReturnValue.dynamicAssetImportFilter) {
+    assertUsage(isCallable(hookReturnValue.dynamicAssetImportFilter), 'dynamicAssetImportFilter should be a function')
+    dynamicAssetImportFilter = hookReturnValue.dynamicAssetImportFilter
   }
 
   if (hookReturnValue.documentHtml) {

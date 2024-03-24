@@ -3,8 +3,9 @@ export { retrieveAssetsDev }
 import { assert, styleFileRE } from '../../utils.js'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import { DynamicAssetImportFilter } from '../getPageAssets.js'
 
-async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
+async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer, dynamicAssetImportFilter: DynamicAssetImportFilter) {
   const visitedModules = new Set<string>()
   const assetUrls = new Set<string>()
   await Promise.all(
@@ -24,7 +25,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
         return
       }
       assert(mod, { id })
-      collectCss(mod, assetUrls, visitedModules)
+      collectCss(mod, assetUrls, visitedModules, dynamicAssetImportFilter)
     })
   )
   return Array.from(assetUrls)
@@ -32,7 +33,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
 
 // Collect the CSS to be injected to the HTML to avoid FLOUC
 //  - We only collect the root import: https://github.com/vikejs/vike/issues/400
-function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set<string>, importer?: ModuleNode): void {
+function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set<string>, dynamicAssetImportFilter: DynamicAssetImportFilter, importer?: ModuleNode): void {
   assert(mod)
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
@@ -57,7 +58,9 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
     //*/
   }
   mod.importedModules.forEach((dep) => {
-    collectCss(dep, styleUrls, visitedModules, mod)
+    if (!dynamicAssetImportFilter || dynamicAssetImportFilter(mod.url)) {
+      collectCss(dep, styleUrls, visitedModules, dynamicAssetImportFilter, mod)
+    }
   })
 }
 
