@@ -1,4 +1,4 @@
-export { renderAsset }
+export { renderAsset, convertToHttpHeaders }
 export type { RenderAssetHttpResponse }
 
 import pc from '@brillout/picocolors'
