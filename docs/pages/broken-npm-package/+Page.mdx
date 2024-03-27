@@ -30,7 +30,7 @@ export default {
 }
 ```
 
-See also: [Vite > `ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
+See [Vite > `ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
 
 > You may need to add nested npm packages to `ssr.noExternal`, because CJS/ESM issues somtimes cascade down along the "`noExternal` boundary" as you add npm packages to `ssr.noExternal`.
 
@@ -38,7 +38,7 @@ See also: [Vite > `ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#s
 
 ### `vite-plugin-cjs-interop`
 
-Upon certain errors, we recommend trying [vite-plugin-cjs-interop](https://github.com/cyco130/vite-plugin-cjs-interop) first before trying `ssr.noExternal`.
+Upon certain errors, we recommend trying the `vite-plugin-cjs-interop` plugin before trying `ssr.noExternal`.
 
 
 ```js
@@ -58,8 +58,9 @@ export default {
 }
 ```
 
-Errors for which we recommend trying `vite-plugin-cjs-interop` first before trying `ssr.noExternal`:
+See [GitHub > `cyco130/vite-plugin-cjs-interop`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
 
+Errors for which we recommend trying `vite-plugin-cjs-interop` before trying `ssr.noExternal`:
 
 <Link href="#react-invalid-component">**React invalid component**</Link>
 
@@ -148,12 +149,12 @@ Node.js v18.0.0
 ```
 </CodeBlockTransformer>
 
-The workaround proposed by Node.js often doesn't work for default exports. If it doesn't, try this instead:
+For default exports, the workaround proposed by Node.js may not work and you may need to do this instead:
 
 ```js
-import theDefaultExport from 'some-library' // [!code --]
-import lib from 'some-library'; // [!code ++]
-const theDefaultExport = lib.default ?? lib // [!code ++]
+import DefaultImport from "some-library"; // [!code --]
+import pkg from 'some-library'; // [!code ++]
+const DefaultImport = pkg.default ?? pkg; // [!code ++]
 ```
 
 For a workaround that is global (and TypeScript friendly), see <Link href="#vite-plugin-cjs-interop" />.
