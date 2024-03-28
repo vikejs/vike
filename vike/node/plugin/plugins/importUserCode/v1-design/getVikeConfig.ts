@@ -1046,7 +1046,34 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 */
 
 function handleUnknownConfig(configName: string, configNames: string[], filePathToShowToUser: string) {
-  let errMsg = `${filePathToShowToUser} defines an unknown config ${pc.cyan(configName)}`
+  {
+    const ui = ['vike-react', 'vike-vue', 'vike-solid'] as const
+    const knownVikeExntensionConfigs = {
+      description: ui,
+      favicon: ui,
+      Head: ui,
+      Layout: ui,
+      onCreateApp: ['vike-vue'],
+      title: ui,
+      ssr: ui,
+      stream: ui,
+      Wrapper: ui
+    } as const
+    if (configName in knownVikeExntensionConfigs) {
+      const requiredVikeExtension = knownVikeExntensionConfigs[configName as keyof typeof knownVikeExntensionConfigs]
+      assertUsage(
+        false,
+        [
+          `${filePathToShowToUser} uses the config ${pc.cyan(configName)} (https://vike.dev/${configName})`,
+          `which requires the Vike extension ${requiredVikeExtension.map((e) => pc.bold(e)).join('/')}.`,
+          `Make sure to install the Vike extension,`,
+          `and make sure it applies to ${filePathToShowToUser} as explained at https://vike.dev/extends#inheritance.`
+        ].join(' ')
+      )
+    }
+  }
+
+  let errMsg = `${filePathToShowToUser} sets an unknown config ${pc.cyan(configName)}`
   let configNameSimilar: string | null = null
   if (configName === 'page') {
     configNameSimilar = 'Page'
@@ -1055,16 +1082,12 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
   }
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
-    errMsg += `, did you mean to define ${pc.cyan(configNameSimilar)} instead?`
+    errMsg += `, did you mean to set ${pc.cyan(configNameSimilar)} instead?`
     if (configName === 'page') {
       errMsg += ` (The name of the config ${pc.cyan('Page')} starts with a capital letter ${pc.cyan(
         'P'
       )} because it usually defines a UI component: a ubiquitous JavaScript convention is to start the name of UI components with a capital letter.)`
     }
-  } else {
-    errMsg += `, you need to define the config ${pc.cyan(configName)} by using ${pc.cyan(
-      'config.meta'
-    )} https://vike.dev/meta`
   }
   assertUsage(false, errMsg)
 }
