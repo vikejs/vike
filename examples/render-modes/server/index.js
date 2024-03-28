@@ -48,7 +48,7 @@ async function startServer() {
         const htmlOnlyPage = '/html-only'
         const { urlPathname } = pageContext
         assert(
-          hasJavaScriptEarlyHint === (urlPathname !== htmlOnlyPage),
+          !hasJavaScriptEarlyHint === [htmlOnlyPage, '/'].includes(urlPathname),
           `Unexpected early hints for the page ${urlPathname}`
         )
         assert(
