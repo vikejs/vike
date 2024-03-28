@@ -18,7 +18,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
       id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, true),
-      onlyAssets: false,
+      onlyAssets: isClientSideRenderable ? false : true,
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
