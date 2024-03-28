@@ -7,10 +7,7 @@ export {
   monkeyPatchHistoryPushState
 }
 
-import { assert, assertUsage, getGlobalObject, hasProp, isObject } from './utils.js'
-const globalObject = getGlobalObject<{
-  pushStateOriginal?: PushStateOriginal
-}>('history.ts', {})
+import { assert, assertUsage, hasProp, isObject } from './utils.js'
 
 // No way found to add TypeScript types to `history.state`: https://github.com/microsoft/TypeScript/issues/36178
 type HistoryState = {
@@ -19,6 +16,12 @@ type HistoryState = {
   triggeredBy?: 'user' | 'vike' | 'browser'
 }
 type ScrollPosition = { x: number; y: number }
+
+function isVikeHistoryState(state: unknown): state is HistoryState {
+  return (
+    !!state && typeof state === 'object' && 'timestamp' in state && 'scrollPosition' in state && 'triggeredBy' in state
+  )
+}
 
 // Fill missing state information:
 //  - `history.state` can uninitialized (i.e. `null`):
@@ -97,27 +100,27 @@ function replaceHistoryState(state: HistoryState, url?: string) {
   window.history.replaceState(state, '', url ?? /* Passing `undefined` chokes older Edge versions */ null)
 }
 function pushHistoryState(state: HistoryState, url: string) {
-  pushStateOriginal(state, '', url)
+  // Call history.pushState so that any other libraries that monkey patch pushState after Vike does will still run
+  window.history.pushState(state, '', url)
 }
 
 function monkeyPatchHistoryPushState() {
-  globalObject.pushStateOriginal = globalObject.pushStateOriginal ?? window.history.pushState
-  window.history.pushState = (stateFromUser: unknown = {}, ...rest) => {
-    assertUsage(
-      null === stateFromUser || undefined === stateFromUser || isObject(stateFromUser),
-      'history.pushState(state) argument state must be an object'
-    )
-    const state: HistoryState = {
-      scrollPosition: getScrollPosition(),
-      timestamp: getTimestamp(),
-      ...stateFromUser,
-      // Don't allow user to overwrite triggeredBy as it would break Vike's handling of the 'popstate' event
-      triggeredBy: 'user'
+  window.history.pushState = new Proxy(window.history.pushState, {
+    apply: (target, thisArg, [stateFromUser, unused, url]) => {
+      assertUsage(
+        null === stateFromUser || undefined === stateFromUser || isObject(stateFromUser),
+        'history.pushState(state) argument state must be an object'
+      )
+      const state: HistoryState = isVikeHistoryState(stateFromUser)
+        ? stateFromUser
+        : {
+            scrollPosition: getScrollPosition(),
+            timestamp: getTimestamp(),
+            ...stateFromUser,
+            // Don't allow user to overwrite triggeredBy as it would break Vike's handling of the 'popstate' event
+            triggeredBy: 'user'
+          }
+      target.apply(thisArg, [state, unused, url])
     }
-    return pushStateOriginal!(state, ...rest)
-  }
-}
-type PushStateOriginal = typeof history.pushState
-function pushStateOriginal(...args: Parameters<PushStateOriginal>): ReturnType<PushStateOriginal> {
-  globalObject.pushStateOriginal!.apply(history, args)
+  })
 }
