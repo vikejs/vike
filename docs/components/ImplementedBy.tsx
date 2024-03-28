@@ -24,7 +24,8 @@ function ImplementedBy({
           in order to use the {children}.
           {!noCustomGuide && (
             <>
-            {' '}If you don't use {by ?? <UiFrameworkVikeExtensionNames />} then see{' '}
+              {' '}
+              If you don't use {by ?? <UiFrameworkVikeExtensionNames />} then see{' '}
               <Link href="#without-vike-extension" />.
             </>
           )}
