@@ -33,14 +33,19 @@ async function getTestJobs() {
 
   /** @type { Job[] } */
   let jobs = [
-    // Unit tests
     {
-      jobName: 'Unit Tests',
-      jobCmd: 'pnpm exec vitest run',
+      jobName: 'Vitest (unit tests)',
+      jobCmd: 'pnpm exec vitest run --project unit',
       jobTestFiles: specFiles,
       jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
-    // Typecheck `.ts` files
+    {
+      jobName: 'Vitest (E2E tests)',
+      jobCmd: 'pnpm exec vitest run --project e2e',
+      jobTestFiles: specFiles,
+      jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
+    },
+    // Check TypeScript types
     {
       jobName: 'TypeScript',
       jobCmd: 'pnpm exec test-types',
