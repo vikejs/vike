@@ -49,7 +49,7 @@ function DataRenderControl({
         With Vike you have full control over rendering, data fetching, data management, and HTML streaming. Integrating{' '}
         {toolEl}
         {isGeneric ? ' you want' : ''} is mostly a matter of following its official SSR guide
-        {toolDocs && <>: {toolDocs}</>}. (Vike is pretty successful at sparing you from "fighting the framework".)
+        {toolDocs && <>: {toolDocs}</>}. (Vike saves you from "fighting the framework".)
       </p>
     </blockquote>
   )
