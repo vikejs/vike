@@ -133,7 +133,7 @@ async function transpileWithEsbuild(
       //  - A pointer import
       //  - Externalized
       {
-        name: 'vike:externalize-heuristic',
+        name: 'vike-esbuild-plugin',
         setup(build) {
           // https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
           const useEsbuildResolver = 'useEsbuildResolver'
@@ -145,6 +145,18 @@ async function transpileWithEsbuild(
             const { path, ...opts } = args
             opts.pluginData = { [useEsbuildResolver]: true }
             const resolved = await build.resolve(path, opts)
+
+            if (resolved.errors.length > 0) {
+              /* We could do the following to let Node.js throw the error, but we don't because the error shown by esbuild is prettier: the Node.js error refers to the transpiled [build-f7i251e0iwnw]+config.ts.mjs file which isn't that nice, whereas esbuild refers to the source +config.ts file.
+              pointerImports_[args.path] = false
+              return { external: true }
+              */
+
+              // Let esbuild throw the error. (It throws a nice & pretty error.)
+              return resolved
+            }
+
+            assert(resolved.path)
             resolved.path = toPosixPath(resolved.path)
 
             // vike-{react,vue,solid} follow the convention that their config export resolves to a file named +config.js
