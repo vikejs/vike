@@ -42,14 +42,20 @@ async function startServer() {
     } else {
       const { statusCode, headers, earlyHints } = httpResponse
 
-      // Assert no JavaScript early hint for HTML-only
-      earlyHints.forEach((h) => {
-        if (h.assetType === 'script' && pageContext.urlPathname === '/html-only') {
-          throw new Error(
-            `Unexpected early hint for the ${pageContext.urlPathname} page: ${JSON.stringify(h, null, 2)}`
-          )
-        }
-      })
+      // No JavaScript early hint <=> HTML-only without +client.js
+      {
+        const hasJavaScriptEarlyHint = earlyHints.some((h) => h.assetType === 'script')
+        const htmlOnlyPage = '/html-only'
+        const { urlPathname } = pageContext
+        assert(
+          hasJavaScriptEarlyHint === (urlPathname !== htmlOnlyPage),
+          `Unexpected early hints for the page ${urlPathname}`
+        )
+        assert(
+          [htmlOnlyPage, '/', '/html-js', '/spa', '/ssr'].includes(urlPathname),
+          'Assertion at server/index.js needs to be updated'
+        )
+      }
 
       if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
       headers.forEach(([name, value]) => res.setHeader(name, value))
@@ -61,4 +67,9 @@ async function startServer() {
   const port = process.env.PORT || 3000
   app.listen(port)
   console.log(`Server running at http://localhost:${port}`)
+}
+
+function assert(condition, msg) {
+  if (condition) return
+  throw new Error(msg)
 }
