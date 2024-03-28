@@ -36,14 +36,14 @@ async function getTestJobs() {
     // Unit tests
     {
       jobName: 'Unit Tests',
-      jobCmd: 'pnpm run test:units',
+      jobCmd: 'pnpm exec vitest run',
       jobTestFiles: specFiles,
       jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     // Typecheck `.ts` files
     {
       jobName: 'TypeScript',
-      jobCmd: 'pnpm run test:types',
+      jobCmd: 'pnpm exec test-types',
       jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     // E2e tests
@@ -99,7 +99,7 @@ async function crawlE2eJobs(testFiles) {
         jobName,
         jobTestFiles: [],
         jobSetups,
-        jobCmd: 'pnpm run test:e2e'
+        jobCmd: 'pnpm exec test-e2e'
       })
     })
   }
@@ -144,7 +144,7 @@ async function crawlE2eJobs(testFiles) {
         if (!job) {
           job = {
             jobName: 'E2E Tests',
-            jobCmd: 'pnpm run test:e2e',
+            jobCmd: 'pnpm exec test-e2e',
             jobTestFiles: [],
             jobSetups: [{ os: 'ubuntu-latest', node_version: '20' }]
           }
