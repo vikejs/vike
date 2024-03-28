@@ -1,7 +1,7 @@
 export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
-export { isTmpFile }
+export { isTemporaryBuildFile }
 
 import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
 import fs from 'fs'
@@ -309,10 +309,10 @@ function getFilePathTmp(filePathAbsoluteFilesystem: string): string {
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
   // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
   const filePathTmp = path.posix.join(dirname, `${filename}.build-${getRandomId(12)}.mjs`)
-  assert(isTmpFile(filePathTmp))
+  assert(isTemporaryBuildFile(filePathTmp))
   return filePathTmp
 }
-function isTmpFile(filePath: string): boolean {
+function isTemporaryBuildFile(filePath: string): boolean {
   assertPosixPath(filePath)
   const fileName = path.posix.basename(filePath)
   return /\.build-[a-z0-9]{12}\.mjs$/.test(fileName)

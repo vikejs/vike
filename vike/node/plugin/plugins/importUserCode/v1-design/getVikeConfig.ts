@@ -59,7 +59,7 @@ import {
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting.js'
-import { isTmpFile } from './getVikeConfig/transpileAndExecuteFile.js'
+import { isTemporaryBuildFile } from './getVikeConfig/transpileAndExecuteFile.js'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
@@ -1016,7 +1016,7 @@ async function findPlusFiles(userRootDir: string, outDirRoot: string, isDev: boo
 
 function getConfigName(filePath: string): string | null {
   assertPosixPath(filePath)
-  if (isTmpFile(filePath)) return null
+  if (isTemporaryBuildFile(filePath)) return null
   const fileName = path.posix.basename(filePath)
   // assertNoUnexpectedPlusSign(filePath, fileName)
   const basename = fileName.split('.')[0]!
