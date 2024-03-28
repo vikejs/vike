@@ -17,6 +17,7 @@ import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import pc from '@brillout/picocolors'
+import { isTmpFile } from './transpileAndExecuteFile.js'
 const execA = promisify(exec)
 
 assertIsNotProductionRuntime()
@@ -50,6 +51,8 @@ async function crawlPlusFiles(
   } else {
     files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
   }
+
+  files = files.filter((file) => !isTmpFile(file))
 
   {
     const timeAfter = new Date().getTime()

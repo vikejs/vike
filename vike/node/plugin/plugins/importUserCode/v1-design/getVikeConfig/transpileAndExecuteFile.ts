@@ -303,20 +303,19 @@ function getConfigExecutionErrorIntroMsg(err: unknown): string | null {
   return errIntroMsg ?? null
 }
 
-const tmpPrefix = `[build-`
 function getFilePathTmp(filePathAbsoluteFilesystem: string): string {
   assertPosixPath(filePathAbsoluteFilesystem)
   const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
-  // Syntax with semicolon `[build:${/*...*/}]` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
-  const tag = `${tmpPrefix}${getRandomId(12)}]`
-  const filePathTmp = path.posix.join(dirname, `${tag}${filename}.mjs`)
+  // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
+  const filePathTmp = path.posix.join(dirname, `${filename}.build-${getRandomId(12)}.mjs`)
+  assert(isTmpFile(filePathTmp))
   return filePathTmp
 }
 function isTmpFile(filePath: string): boolean {
   assertPosixPath(filePath)
   const fileName = path.posix.basename(filePath)
-  return fileName.startsWith(tmpPrefix)
+  return /\.build-[a-z0-9]{12}\.mjs$/.test(fileName)
 }
 
 function isHeaderFile(filePath: string) {
