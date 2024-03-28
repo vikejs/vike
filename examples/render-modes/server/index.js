@@ -41,6 +41,16 @@ async function startServer() {
       return next()
     } else {
       const { statusCode, headers, earlyHints } = httpResponse
+
+      // Assert no JavaScript early hint for HTML-only
+      earlyHints.forEach((h) => {
+        if (h.assetType === 'script' && pageContext.urlPathname === '/html-only') {
+          throw new Error(
+            `Unexpected early hint for the ${pageContext.urlPathname} page: ${JSON.stringify(h, null, 2)}`
+          )
+        }
+      })
+
       if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
       headers.forEach(([name, value]) => res.setHeader(name, value))
       res.status(statusCode)
