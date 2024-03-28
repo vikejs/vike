@@ -129,7 +129,9 @@ async function transpileWithEsbuild(
   } else {
     const pointerImports_: Record<string, boolean> = (pointerImports = {})
     options.plugins = [
-      // Determine what import should be externalized (and then transformed to a pointer/fake import)
+      // Determine whether an import should be:
+      //  - A pointer import
+      //  - Externalized
       {
         name: 'vike:externalize-heuristic',
         setup(build) {
@@ -165,7 +167,7 @@ async function transpileWithEsbuild(
             assertPosixPath(resolved.path)
             const isExternal =
               isPointerImport ||
-              // npm package imports that aren't pointer imports (e.g. importing a Vite plugin)
+              // Performance: npm package imports that aren't pointer imports can be externalized. For example, if Vike eventually adds support for setting Vite configs in the vike.config.js file, then the user may import a Vite plugin in his vike.config.js file. (We could as well let esbuild always transpile /node_modules/ code but it would be useless and would unnecessarily slow down transpilation.)
               resolved.path.includes('/node_modules/')
 
             if (debug.isActivated) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
