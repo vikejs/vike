@@ -245,7 +245,7 @@ async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
   const { filePathAbsoluteFilesystem } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
-  const filePathTmp = getFilePathTmp(filePathAbsoluteFilesystem)
+  const filePathTmp = getTemporaryBuildFilePath(filePathAbsoluteFilesystem)
   fs.writeFileSync(filePathTmp, code)
   const clean = () => fs.unlinkSync(filePathTmp)
   let fileExports: Record<string, unknown> = {}
@@ -303,7 +303,7 @@ function getConfigExecutionErrorIntroMsg(err: unknown): string | null {
   return errIntroMsg ?? null
 }
 
-function getFilePathTmp(filePathAbsoluteFilesystem: string): string {
+function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string): string {
   assertPosixPath(filePathAbsoluteFilesystem)
   const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
