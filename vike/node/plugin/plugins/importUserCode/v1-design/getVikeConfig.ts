@@ -1053,8 +1053,7 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
   } else {
     configNameSimilar = getMostSimilar(configName, configNames)
   }
-  if (configNameSimilar || configName === 'page') {
-    assert(configNameSimilar)
+  if (configNameSimilar) {
     assert(configNameSimilar !== configName)
     errMsg += `, did you mean to define ${pc.cyan(configNameSimilar)} instead?`
     if (configName === 'page') {
