@@ -2,6 +2,7 @@ export { UseBatiHint }
 export { UseBatiHint_insteadOfManuelIntegration }
 export { UseUiFrameworkVikeExtensionHint }
 export { UseUiFrameworkVikeExtensionAnyHint }
+export { UseVikeExtension }
 
 import React from 'react'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
@@ -12,6 +13,25 @@ function UseUiFrameworkVikeExtensionAnyHint({ featureName }: { featureName: stri
       <p>
         Instead of manually integrating {featureName} yourself, you can use a <UiFrameworkVikeExtension /> which already
         integrates {featureName}. You can use <Bati /> to scaffold an app that uses <UiFrameworkVikeExtensionNames />.
+      </p>
+    </blockquote>
+  )
+}
+
+function UseVikeExtension({
+  children,
+  href
+}: { children: 'Pinia' | 'React Query' | string; href: `https://github.com/${string}` }) {
+  return (
+    <blockquote>
+      <p>
+        You can use{' '}
+        {
+          <a href={href}>
+            <code>{`vike-${children.toLowerCase().replaceAll(' ', '-')}`}</code>
+          </a>
+        }{' '}
+        instead of manually integrating {children} yourself.
       </p>
     </blockquote>
   )
