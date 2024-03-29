@@ -18,7 +18,8 @@ import {
   toPosixPath,
   assertUsage,
   isJavaScriptFile,
-  createDebugger
+  createDebugger,
+  assertPathIsFilesystemAbsolute
 } from '../../../../utils.js'
 import { transformFileImports } from './transformFileImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
@@ -181,6 +182,11 @@ async function transpileWithEsbuild(
               resolved.path.includes('/node_modules/')
 
             if (debug.isActivated) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
+
+            // We need esbuild to resolve path aliases so that we can use:
+            //   isNpmPackageImport(str, { cannotBePathAlias: true })
+            //   assertIsNpmPackageImport()
+            assertPathIsFilesystemAbsolute(resolved.path)
 
             if (isExternal) {
               return { external: true, path: resolved.path }
