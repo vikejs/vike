@@ -101,7 +101,7 @@ function pushHistoryState(state: HistoryState, url: string) {
 }
 
 function monkeyPatchHistoryPushState() {
-  const pushStateOriginal = window.history.pushState
+  const pushStateOriginal = window.history.pushState.bind(window.history)
   window.history.pushState = (stateOriginal: unknown = {}, ...rest) => {
     assertUsage(
       stateOriginal === undefined || stateOriginal === null || isObject(stateOriginal),
