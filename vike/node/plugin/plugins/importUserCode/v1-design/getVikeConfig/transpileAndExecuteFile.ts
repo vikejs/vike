@@ -122,12 +122,10 @@ async function transpileWithEsbuild(
     bundle: transformImports !== 'all'
   }
 
-  let pointerImports: 'all' | Record<string, boolean>
+  let pointerImports = transformImports === 'all' ? 'all' : {}
   if (transformImports === 'all') {
-    pointerImports = 'all'
     options.packages = 'external'
   } else {
-    const pointerImports_: Record<string, boolean> = (pointerImports = {})
     options.plugins = [
       // Determine whether an import should be:
       //  - A pointer import
@@ -141,6 +139,7 @@ async function transpileWithEsbuild(
           build.onResolve({ filter: /.*/ }, async (args) => {
             if (args.kind !== 'import-statement') return
             if (args.pluginData?.[useEsbuildResolver]) return
+            assert(isObject(pointerImports))
 
             const { path, ...opts } = args
             opts.pluginData = { [useEsbuildResolver]: true }
@@ -148,7 +147,7 @@ async function transpileWithEsbuild(
 
             if (resolved.errors.length > 0) {
               /* We could do the following to let Node.js throw the error, but we don't because the error shown by esbuild is prettier: the Node.js error refers to the transpiled [build-f7i251e0iwnw]+config.ts.mjs file which isn't that nice, whereas esbuild refers to the source +config.ts file.
-              pointerImports_[args.path] = false
+              pointerImports[args.path] = false
               return { external: true }
               */
 
@@ -174,7 +173,7 @@ async function transpileWithEsbuild(
               //  - For example if esbuild cannot resolve a path alias while Vite can.
               //    - When tsconfig.js#compilerOptions.paths is set, then esbuild is able to resolve the path alias.
               resolved.errors.length > 0
-            pointerImports_[resolved.path] = isPointerImport
+            pointerImports[resolved.path] = isPointerImport
 
             assertPosixPath(resolved.path)
             const isExternal =
