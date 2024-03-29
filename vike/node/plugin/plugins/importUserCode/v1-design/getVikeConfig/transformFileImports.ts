@@ -29,7 +29,10 @@ import pc from '@brillout/picocolors'
 function transformFileImports(
   code: string,
   filePathToShowToUser2: string,
-  pointerImports: 'all' | Record<string, boolean>,
+  pointerImports:
+    | Record<string, boolean>
+    // Used by ./transformFileImports.spec.ts
+    | 'all',
   // For ./transformFileImports.spec.ts
   skipWarnings?: true
 ): string | null {

@@ -122,7 +122,7 @@ async function transpileWithEsbuild(
     bundle: transformImports !== 'all'
   }
 
-  let pointerImports = transformImports === 'all' ? 'all' : {}
+  let pointerImports: Record<string, boolean> = {}
   if (transformImports === 'all') {
     options.packages = 'external'
   } else {
@@ -139,7 +139,6 @@ async function transpileWithEsbuild(
           build.onResolve({ filter: /.*/ }, async (args) => {
             if (args.kind !== 'import-statement') return
             if (args.pluginData?.[useEsbuildResolver]) return
-            assert(isObject(pointerImports))
 
             const { path, ...opts } = args
             opts.pluginData = { [useEsbuildResolver]: true }
