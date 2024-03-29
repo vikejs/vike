@@ -20,6 +20,12 @@ type HistoryState = {
 }
 type ScrollPosition = { x: number; y: number }
 
+function isVikeHistoryState(state: unknown): state is HistoryState {
+  return (
+    !!state && typeof state === 'object' && 'timestamp' in state && 'scrollPosition' in state && 'triggeredBy' in state
+  )
+}
+
 // Fill missing state information:
 //  - `history.state` can uninitialized (i.e. `null`):
 //    - The very first render
@@ -97,7 +103,7 @@ function replaceHistoryState(state: HistoryState, url?: string) {
   window.history.replaceState(state, '', url ?? /* Passing `undefined` chokes older Edge versions */ null)
 }
 function pushHistoryState(state: HistoryState, url: string) {
-  pushStateOriginal(state, '', url)
+  window.history.pushState(state, '', url)
 }
 
 function monkeyPatchHistoryPushState() {
@@ -107,7 +113,8 @@ function monkeyPatchHistoryPushState() {
       null === stateFromUser || undefined === stateFromUser || isObject(stateFromUser),
       'history.pushState(state) argument state must be an object'
     )
-    const state: HistoryState = {
+    // biome-ignore format:
+    const state: HistoryState = isVikeHistoryState(stateFromUser) ? stateFromUser : {
       scrollPosition: getScrollPosition(),
       timestamp: getTimestamp(),
       ...stateFromUser,
