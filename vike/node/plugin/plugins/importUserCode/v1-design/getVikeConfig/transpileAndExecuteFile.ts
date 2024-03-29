@@ -3,7 +3,7 @@ export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
 
-import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
+import { build, type BuildResult, type BuildOptions, formatMessages, type Message } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import pc from '@brillout/picocolors'
@@ -129,7 +129,7 @@ async function transpileWithEsbuild(
     //  - A pointer import
     //  - Externalized
     {
-      name: 'vike-esbuild-plugin',
+      name: 'vike-esbuild',
       setup(build) {
         // https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
         const useEsbuildResolver = 'useEsbuildResolver'
@@ -149,6 +149,7 @@ async function transpileWithEsbuild(
             */
 
             // Let esbuild throw the error. (It throws a nice & pretty error.)
+            cleanEsbuildErrors(resolved.errors)
             return resolved
           }
 
@@ -359,4 +360,30 @@ function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathRe
     pc.red(`because:`)
   ].join(' ')
   return msg
+}
+
+function cleanEsbuildErrors(errors: Message[]) {
+  errors.forEach(
+    (e) =>
+      (e.notes = e.notes.filter(
+        (note) =>
+          // Remove note:
+          // ```shell
+          // You can mark the path "#root/renderer/onRenderHtml_typo" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+          // ```
+          //
+          // From error:
+          // ```shell
+          // ✘ [ERROR] Could not resolve "#root/renderer/onRenderHtml_typo" [plugin vike-esbuild]
+          //
+          //    renderer/+config.h.js:1:29:
+          //      1 │ import { onRenderHtml } from "#root/renderer/onRenderHtml_typo"
+          //        ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          //
+          //  You can mark the path "#root/renderer/onRenderHtml_typo" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+          //
+          // ```
+          !note.text.includes('as external to exclude it from the bundle')
+      ))
+  )
 }
