@@ -8,9 +8,9 @@ import { assertPosixPath } from './filesystemPathHandling.js'
 function assertPathIsFilesystemAbsolute(p: string) {
   assertPosixPath(p)
   assert(!p.startsWith('/@fs/'))
-  if (process.platform === 'win32') {
-    assert(path.win32.isAbsolute(p))
-  } else {
+  if (process.platform !== 'win32') {
     assert(p.startsWith('/'))
+  } else {
+    assert(path.win32.isAbsolute(p))
   }
 }
