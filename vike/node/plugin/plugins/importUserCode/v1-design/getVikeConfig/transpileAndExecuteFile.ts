@@ -119,14 +119,11 @@ async function transpileWithEsbuild(
     // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
     treeShaking: false,
     minify: false,
-    metafile: transformImports !== 'all',
-    bundle: transformImports !== 'all'
+    metafile: true,
+    bundle: true
   }
 
   let pointerImports: Record<string, boolean> = {}
-  if (transformImports === 'all') {
-    options.packages = 'external'
-  } else {
     options.plugins = [
       // Determine whether an import should be:
       //  - A pointer import
@@ -163,6 +160,7 @@ async function transpileWithEsbuild(
             const isVikeExtensionConfigImport = resolved.path.endsWith('+config.js')
 
             const isPointerImport =
+              transformImports === 'all' ||
               // .jsx, .vue, .svg, ... => obviously not config code
               !isJavaScriptFile(resolved.path) ||
               // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a configas been set by the user or by a Vike extension).
@@ -219,7 +217,6 @@ async function transpileWithEsbuild(
         }
       }
     ]
-  }
 
   let result: BuildResult
   try {
@@ -230,7 +227,6 @@ async function transpileWithEsbuild(
   }
 
   // Track dependencies
-  if (transformImports !== 'all') {
     assert(result.metafile)
     Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
       filePathRelative = toPosixPath(filePathRelative)
@@ -238,7 +234,6 @@ async function transpileWithEsbuild(
       const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
       vikeConfigDependencies.add(filePathAbsoluteFilesystem)
     })
-  }
 
   const code = result.outputFiles![0]!.text
   assert(typeof code === 'string')
