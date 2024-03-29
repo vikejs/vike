@@ -124,99 +124,99 @@ async function transpileWithEsbuild(
   }
 
   let pointerImports: Record<string, boolean> = {}
-    options.plugins = [
-      // Determine whether an import should be:
-      //  - A pointer import
-      //  - Externalized
-      {
-        name: 'vike-esbuild-plugin',
-        setup(build) {
-          // https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
-          const useEsbuildResolver = 'useEsbuildResolver'
-          // https://github.com/brillout/esbuild-playground
-          build.onResolve({ filter: /.*/ }, async (args) => {
-            if (args.kind !== 'import-statement') return
-            if (args.pluginData?.[useEsbuildResolver]) return
+  options.plugins = [
+    // Determine whether an import should be:
+    //  - A pointer import
+    //  - Externalized
+    {
+      name: 'vike-esbuild-plugin',
+      setup(build) {
+        // https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
+        const useEsbuildResolver = 'useEsbuildResolver'
+        // https://github.com/brillout/esbuild-playground
+        build.onResolve({ filter: /.*/ }, async (args) => {
+          if (args.kind !== 'import-statement') return
+          if (args.pluginData?.[useEsbuildResolver]) return
 
-            const { path, ...opts } = args
-            opts.pluginData = { [useEsbuildResolver]: true }
-            const resolved = await build.resolve(path, opts)
+          const { path, ...opts } = args
+          opts.pluginData = { [useEsbuildResolver]: true }
+          const resolved = await build.resolve(path, opts)
 
-            if (resolved.errors.length > 0) {
-              /* We could do the following to let Node.js throw the error, but we don't because the error shown by esbuild is prettier: the Node.js error refers to the transpiled [build-f7i251e0iwnw]+config.ts.mjs file which isn't that nice, whereas esbuild refers to the source +config.ts file.
-              pointerImports[args.path] = false
-              return { external: true }
-              */
+          if (resolved.errors.length > 0) {
+            /* We could do the following to let Node.js throw the error, but we don't because the error shown by esbuild is prettier: the Node.js error refers to the transpiled [build-f7i251e0iwnw]+config.ts.mjs file which isn't that nice, whereas esbuild refers to the source +config.ts file.
+            pointerImports[args.path] = false
+            return { external: true }
+            */
 
-              // Let esbuild throw the error. (It throws a nice & pretty error.)
-              return resolved
-            }
+            // Let esbuild throw the error. (It throws a nice & pretty error.)
+            return resolved
+          }
 
-            assert(resolved.path)
-            resolved.path = toPosixPath(resolved.path)
+          assert(resolved.path)
+          resolved.path = toPosixPath(resolved.path)
 
-            // vike-{react,vue,solid} follow the convention that their config export resolves to a file named +config.js
-            //  - This is temporary, see comment below.
-            const isVikeExtensionConfigImport = resolved.path.endsWith('+config.js')
+          // vike-{react,vue,solid} follow the convention that their config export resolves to a file named +config.js
+          //  - This is temporary, see comment below.
+          const isVikeExtensionConfigImport = resolved.path.endsWith('+config.js')
 
-            const isPointerImport =
-              transformImports === 'all' ||
-              // .jsx, .vue, .svg, ... => obviously not config code
-              !isJavaScriptFile(resolved.path) ||
-              // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a configas been set by the user or by a Vike extension).
-              //  - We should have Node.js directly load vike-{react,vue,solid} while enforcing Vike extensions to set 'name' in their +config.js file.
-              //    - vike@0.4.162 already started soft-requiring Vike extensions to set the name config
-              isVikeExtensionConfigImport ||
-              // Cannot be resolved by esbuild => take a leap of faith and make it a pointer import.
-              //  - For example if esbuild cannot resolve a path alias while Vite can.
-              //    - When tsconfig.js#compilerOptions.paths is set, then esbuild is able to resolve the path alias.
-              resolved.errors.length > 0
-            pointerImports[resolved.path] = isPointerImport
+          const isPointerImport =
+            transformImports === 'all' ||
+            // .jsx, .vue, .svg, ... => obviously not config code
+            !isJavaScriptFile(resolved.path) ||
+            // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a configas been set by the user or by a Vike extension).
+            //  - We should have Node.js directly load vike-{react,vue,solid} while enforcing Vike extensions to set 'name' in their +config.js file.
+            //    - vike@0.4.162 already started soft-requiring Vike extensions to set the name config
+            isVikeExtensionConfigImport ||
+            // Cannot be resolved by esbuild => take a leap of faith and make it a pointer import.
+            //  - For example if esbuild cannot resolve a path alias while Vite can.
+            //    - When tsconfig.js#compilerOptions.paths is set, then esbuild is able to resolve the path alias.
+            resolved.errors.length > 0
+          pointerImports[resolved.path] = isPointerImport
 
-            assertPosixPath(resolved.path)
-            const isExternal =
-              isPointerImport ||
-              // Performance: npm package imports that aren't pointer imports can be externalized. For example, if Vike eventually adds support for setting Vite configs in the vike.config.js file, then the user may import a Vite plugin in his vike.config.js file. (We could as well let esbuild always transpile /node_modules/ code but it would be useless and would unnecessarily slow down transpilation.)
-              resolved.path.includes('/node_modules/')
+          assertPosixPath(resolved.path)
+          const isExternal =
+            isPointerImport ||
+            // Performance: npm package imports that aren't pointer imports can be externalized. For example, if Vike eventually adds support for setting Vite configs in the vike.config.js file, then the user may import a Vite plugin in his vike.config.js file. (We could as well let esbuild always transpile /node_modules/ code but it would be useless and would unnecessarily slow down transpilation.)
+            resolved.path.includes('/node_modules/')
 
-            if (debug.isActivated) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
+          if (debug.isActivated) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
 
-            // We need esbuild to resolve path aliases so that we can use:
-            //   isNpmPackageImport(str, { cannotBePathAlias: true })
-            //   assertIsNpmPackageImport()
-            assertPathIsFilesystemAbsolute(resolved.path)
+          // We need esbuild to resolve path aliases so that we can use:
+          //   isNpmPackageImport(str, { cannotBePathAlias: true })
+          //   assertIsNpmPackageImport()
+          assertPathIsFilesystemAbsolute(resolved.path)
 
-            if (isExternal) {
-              return { external: true, path: resolved.path }
-            } else {
-              return resolved
-            }
-          })
-        }
-      },
-      // Track dependencies
-      {
-        name: 'vike:dependency-tracker',
-        setup(b) {
-          b.onLoad({ filter: /./ }, (args) => {
-            // We collect the dependency `args.path` in case the bulid fails (upon build error => error is thrown => no metafile)
-            let { path } = args
-            path = toPosixPath(path)
-            vikeConfigDependencies.add(path)
-            return undefined
-          })
-          /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
-           *  - Because onLoad() isn't call if the config dependency can't be resolved.
-           *  - For example, the following breaks auto-reload (the config is stuck in its error state and the user needs to touch the importer for the config to reload):
-           *    ```bash
-           *    mv ./some-config-dependency.js /tmp/ && mv /tmp/some-config-dependency.js .
-           *    ```
-           *  - But implementing a fix is complex and isn't worth it.
-          b.onResolve(...)
-          */
-        }
+          if (isExternal) {
+            return { external: true, path: resolved.path }
+          } else {
+            return resolved
+          }
+        })
       }
-    ]
+    },
+    // Track dependencies
+    {
+      name: 'vike:dependency-tracker',
+      setup(b) {
+        b.onLoad({ filter: /./ }, (args) => {
+          // We collect the dependency `args.path` in case the bulid fails (upon build error => error is thrown => no metafile)
+          let { path } = args
+          path = toPosixPath(path)
+          vikeConfigDependencies.add(path)
+          return undefined
+        })
+        /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
+         *  - Because onLoad() isn't call if the config dependency can't be resolved.
+         *  - For example, the following breaks auto-reload (the config is stuck in its error state and the user needs to touch the importer for the config to reload):
+         *    ```bash
+         *    mv ./some-config-dependency.js /tmp/ && mv /tmp/some-config-dependency.js .
+         *    ```
+         *  - But implementing a fix is complex and isn't worth it.
+        b.onResolve(...)
+        */
+      }
+    }
+  ]
 
   let result: BuildResult
   try {
@@ -227,13 +227,13 @@ async function transpileWithEsbuild(
   }
 
   // Track dependencies
-    assert(result.metafile)
-    Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
-      filePathRelative = toPosixPath(filePathRelative)
-      assertPosixPath(userRootDir)
-      const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
-      vikeConfigDependencies.add(filePathAbsoluteFilesystem)
-    })
+  assert(result.metafile)
+  Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
+    filePathRelative = toPosixPath(filePathRelative)
+    assertPosixPath(userRootDir)
+    const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
+    vikeConfigDependencies.add(filePathAbsoluteFilesystem)
+  })
 
   const code = result.outputFiles![0]!.text
   assert(typeof code === 'string')
