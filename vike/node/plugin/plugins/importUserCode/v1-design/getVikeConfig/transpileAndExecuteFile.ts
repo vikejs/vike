@@ -131,15 +131,16 @@ async function transpileWithEsbuild(
     {
       name: 'vike-esbuild',
       setup(build) {
-        // https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
-        const useEsbuildResolver = 'useEsbuildResolver'
         // https://github.com/brillout/esbuild-playground
         build.onResolve({ filter: /.*/ }, async (args) => {
           if (args.kind !== 'import-statement') return
-          if (args.pluginData?.[useEsbuildResolver]) return
 
+          // Avoid infinite loop: https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
+          const useEsbuildResolver = 'useEsbuildResolver'
+          if (args.pluginData?.[useEsbuildResolver]) return
           const { path, ...opts } = args
           opts.pluginData = { [useEsbuildResolver]: true }
+
           const resolved = await build.resolve(path, opts)
 
           if (resolved.errors.length > 0) {
