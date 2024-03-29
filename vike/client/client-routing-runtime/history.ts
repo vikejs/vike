@@ -7,24 +7,15 @@ export {
   monkeyPatchHistoryPushState
 }
 
-import { assert, assertUsage, getGlobalObject, hasProp, isObject } from './utils.js'
-const globalObject = getGlobalObject<{
-  pushStateOriginal?: PushStateOriginal
-}>('history.ts', {})
+import { assert, assertUsage, hasProp, isObject } from './utils.js'
 
-// No way found to add TypeScript types to `history.state`: https://github.com/microsoft/TypeScript/issues/36178
 type HistoryState = {
   timestamp?: number
   scrollPosition?: null | ScrollPosition
   triggeredBy?: 'user' | 'vike' | 'browser'
+  _isVikeEnhanced: true
 }
 type ScrollPosition = { x: number; y: number }
-
-function isVikeHistoryState(state: unknown): state is HistoryState {
-  return (
-    !!state && typeof state === 'object' && 'timestamp' in state && 'scrollPosition' in state && 'triggeredBy' in state
-  )
-}
 
 // Fill missing state information:
 //  - `history.state` can uninitialized (i.e. `null`):
@@ -33,9 +24,10 @@ function isVikeHistoryState(state: unknown): state is HistoryState {
 //    - The user clicks on an anchor link `<a href="#section">Section</a>` (Vike's `onLinkClick()` handler skips hash links).
 //  - State information may be incomplete if `history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
 function initHistoryState() {
+  // No way found to add TypeScript types to `window.history.state`: https://github.com/microsoft/TypeScript/issues/36178
   let state: HistoryState = window.history.state
   if (!state) {
-    state = {}
+    state = { _isVikeEnhanced: true }
   }
   let hasModifications = false
   if (!('timestamp' in state)) {
@@ -78,7 +70,7 @@ function saveScrollPosition() {
 function pushHistory(url: string, overwriteLastHistoryEntry: boolean) {
   if (!overwriteLastHistoryEntry) {
     const timestamp = getTimestamp()
-    pushHistoryState({ timestamp, scrollPosition: null, triggeredBy: 'vike' }, url)
+    pushHistoryState({ timestamp, scrollPosition: null, triggeredBy: 'vike', _isVikeEnhanced: true }, url)
   } else {
     replaceHistoryState(getHistoryState(), url)
   }
@@ -100,31 +92,34 @@ function assertState(state: unknown): asserts state is HistoryState {
   }
 }
 function replaceHistoryState(state: HistoryState, url?: string) {
-  window.history.replaceState(state, '', url ?? /* Passing `undefined` chokes older Edge versions */ null)
+  const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
+  window.history.replaceState(state, '', url_)
 }
 function pushHistoryState(state: HistoryState, url: string) {
+  // Vike should call window.history.pushState() (and not the orignal `pushStateOriginal()`) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls, see https://github.com/vikejs/vike/issues/1582.
   window.history.pushState(state, '', url)
 }
 
 function monkeyPatchHistoryPushState() {
-  globalObject.pushStateOriginal = globalObject.pushStateOriginal ?? window.history.pushState
-  window.history.pushState = (stateFromUser: unknown = {}, ...rest) => {
+  const pushStateOriginal = window.history.pushState
+  window.history.pushState = (stateOriginal: unknown = {}, ...rest) => {
     assertUsage(
-      null === stateFromUser || undefined === stateFromUser || isObject(stateFromUser),
+      stateOriginal === undefined || stateOriginal === null || isObject(stateOriginal),
       'history.pushState(state) argument state must be an object'
     )
-    // biome-ignore format:
-    const state: HistoryState = isVikeHistoryState(stateFromUser) ? stateFromUser : {
-      scrollPosition: getScrollPosition(),
-      timestamp: getTimestamp(),
-      ...stateFromUser,
-      // Don't allow user to overwrite triggeredBy as it would break Vike's handling of the 'popstate' event
-      triggeredBy: 'user'
-    }
-    return pushStateOriginal!(state, ...rest)
+    const stateEnhanced: HistoryState = isVikeEnhanced(stateOriginal)
+      ? stateOriginal
+      : {
+          _isVikeEnhanced: true,
+          scrollPosition: getScrollPosition(),
+          timestamp: getTimestamp(),
+          triggeredBy: 'user',
+          ...stateOriginal
+        }
+    return pushStateOriginal!(stateEnhanced, ...rest)
   }
 }
-type PushStateOriginal = typeof history.pushState
-function pushStateOriginal(...args: Parameters<PushStateOriginal>): ReturnType<PushStateOriginal> {
-  globalObject.pushStateOriginal!.apply(history, args)
+
+function isVikeEnhanced(state: unknown): state is HistoryState {
+  return isObject(state) && '_isVikeEnhanced' in state
 }
