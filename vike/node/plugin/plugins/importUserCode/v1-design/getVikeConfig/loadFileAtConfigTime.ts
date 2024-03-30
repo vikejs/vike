@@ -6,14 +6,7 @@ export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  hasProp,
-  assertIsNotProductionRuntime,
-  isNpmPackageImport
-} from '../../../../utils.js'
+import { assert, assertUsage, hasProp, assertIsNotProductionRuntime } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
@@ -104,7 +97,6 @@ async function loadExtendsConfigs(
     const { importPath: importPathAbsolute } = importData
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
-    warnUserLandExtension(importPathAbsolute, configFilePath)
     const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute })
     extendsConfigFiles.push(filePath)
   })
@@ -121,19 +113,6 @@ async function loadExtendsConfigs(
   const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsoluteFilesystem)
 
   return { extendsConfigs, extendsFilePaths }
-}
-function warnUserLandExtension(importPath: string, configFilePath: FilePathResolved) {
-  // We preserve this feature because we may need it for eject
-  assertWarning(
-    isNpmPackageImport(importPath, {
-      // Vike config files don't support path aliases. (If they do one day, then Vike will/should be able to resolve path aliases.)
-      cannotBePathAlias: true
-    }) || importPath.includes('/node_modules/'),
-    `${configFilePath.filePathToShowToUser} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
-      importPath
-    )} which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this.`,
-    { onlyOnce: true }
-  )
 }
 function getExtendsImportData(
   configFileExports: Record<string, unknown>,
