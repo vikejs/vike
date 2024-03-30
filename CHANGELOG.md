@@ -1,3 +1,20 @@
+## [0.4.168](https://github.com/vikejs/vike/compare/v0.4.167...v0.4.168) (2024-03-30)
+
+
+### Bug Fixes
+
+* always use esbuild to resolve import paths (fix [#1580](https://github.com/vikejs/vike/issues/1580)) ([4996ef0](https://github.com/vikejs/vike/commit/4996ef0fe9c2f9fdb824f20c5c4388e80cfa2519))
+* clean esbuild errros ([ea598f8](https://github.com/vikejs/vike/commit/ea598f8e2e192510fa44e59ec189737911b0f439))
+* don't send superfluous JavaScript Early Hint for HTML-only page (fix [#1574](https://github.com/vikejs/vike/issues/1574)) ([14e4b5e](https://github.com/vikejs/vike/commit/14e4b5e362841ad98a084927ba2a6ed344295b6b))
+* enable tools to monkey path `history.pushState()` to listen to Vike navigations ([#1582](https://github.com/vikejs/vike/issues/1582)) ([b4b3e0c](https://github.com/vikejs/vike/commit/b4b3e0ccaa0ab48864cae74a280632f7538c3815))
+* improve DX & docs upon using vike-{react,vue,solid} configs without installing (fix [#1578](https://github.com/vikejs/vike/issues/1578)) ([c08a6bb](https://github.com/vikejs/vike/commit/c08a6bbeb8edb2411504a3313ad9c8841fca0c6d))
+* improve error message upon non-existing import path in +config.js (fix [#1576](https://github.com/vikejs/vike/issues/1576)) ([1525f69](https://github.com/vikejs/vike/commit/1525f691f32e9bdcb929543f490a042e5be9c9be))
+* improve hint for CJS/ESM error ([e0596ba](https://github.com/vikejs/vike/commit/e0596ba47c7476d51b06520e3ec48f8accf8275c))
+* improve tmp build file names ([ee414f3](https://github.com/vikejs/vike/commit/ee414f34f5b5e7349d007f612f25ead3dd082122))
+* remove superfluous user-land extends warning ([28dc27a](https://github.com/vikejs/vike/commit/28dc27a213d396a8b9094be41bdaf29fa25a8120))
+
+
+
 ## [0.4.167](https://github.com/vikejs/vike/compare/v0.4.166...v0.4.167) (2024-03-22)
 
 
