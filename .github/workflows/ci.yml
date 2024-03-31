@@ -1,9 +1,5 @@
 name: CI
 on: [ push, pull_request ]
-env:
-  # 7 GiB by default on GitHub, setting to 6 GiB
-  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-  NODE_OPTIONS: --max-old-space-size=6144
 
 jobs:
   prepare:
@@ -35,7 +31,7 @@ jobs:
     name: '${{ matrix.jobName }}'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
       - name: Set node version to ${{ matrix.node_version }}
         uses: actions/setup-node@v3
