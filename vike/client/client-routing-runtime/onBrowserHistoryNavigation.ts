@@ -6,9 +6,7 @@ import { initHistoryState, getHistoryState } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 
-const globalObject = getGlobalObject<{
-  previousState: ReturnType<typeof getState>
-}>('onBrowserHistoryNavigation.ts', { previousState: getState() })
+const globalObject = getGlobalObject('onBrowserHistoryNavigation.ts', { previousState: getState() })
 
 function onBrowserHistoryNavigation() {
   // - The popstate event is trigged upon:
@@ -23,14 +21,14 @@ function onBrowserHistoryNavigation() {
   window.addEventListener('popstate', async (): Promise<undefined> => {
     const currentState = getState()
 
-    const scrollTarget: ScrollTarget = currentState.historyState.scrollPosition || undefined
+    const scrollTarget: ScrollTarget = currentState.historyState?.scrollPosition || undefined
 
-    const isUserLandPushStateNavigation = currentState.historyState.triggeredBy === 'user'
+    const isUserLandPushStateNavigation = currentState.historyState?.triggeredBy === 'user'
 
     const isHashNavigation = currentState.urlWithoutHash === globalObject.previousState.urlWithoutHash
 
     const isBackwardNavigation =
-      !currentState.historyState.timestamp || !globalObject.previousState.historyState.timestamp
+      !currentState.historyState?.timestamp || !globalObject.previousState.historyState?.timestamp
         ? null
         : currentState.historyState.timestamp < globalObject.previousState.historyState.timestamp
 
@@ -40,7 +38,6 @@ function onBrowserHistoryNavigation() {
       // - `history.state` is uninitialized (`null`) when:
       //   - The user's code runs `window.location.hash = '#section'`.
       //   - The user clicks on an anchor link `<a href="#section">Section</a>` (because Vike's `initOnLinkClick()` handler skips hash links).
-      // - `history.state` is `null` when uninitialized: https://developer.mozilla.org/en-US/docs/Web/API/History/state
       // - Alternatively, we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
       //   - Problem: we cannot intercept `window.location.hash = '#section'`. (Or maybe we can with the `hashchange` event?)
       //   - Other potential problem: would there be a conflict when the user wants to override the browser's default behavior? E.g. for smooth scrolling, or when using hashes for saving states of some fancy animations.
