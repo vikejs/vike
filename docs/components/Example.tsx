@@ -1,5 +1,4 @@
 export { Example }
-export { Github }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
