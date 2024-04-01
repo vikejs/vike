@@ -378,7 +378,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
     objectEntries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
-        const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
+        const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId) 
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
@@ -393,6 +393,14 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
+
+            configDef.env = determineConfigValueFileEnv(
+              configDef,
+              configName,
+              interfaceFile.filePath.fileName,
+              interfaceFile.filePath.filePathToShowToUser
+            )
+
             if (!isConfigEnv(configDef, configName)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
@@ -442,6 +450,33 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
 
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
 }
+
+function determineConfigValueFileEnv(
+  configDef: ConfigDefinitionInternal,
+  configName: string,
+  fileName: string,
+  filePathToShowToUser: string
+) {
+  assert(configDef.env)
+  const env = { ...configDef.env }
+
+  if (fileName.includes('.server.')) {
+    assertUsage(
+      configDef.env.server === true,
+      `${filePathToShowToUser} defines the config ${configName} for the server environment, but meta.${configName}.env.server is not true`
+    )
+    env.client = false
+  } else if (fileName.includes('.client.')) {
+    assertUsage(
+      configDef.env.client === true,
+      `${filePathToShowToUser} defines the config ${configName} for the client environment, but meta.${configName}.env.client is not true`
+    )
+    env.server = false
+  }
+
+  return env
+}
+
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
   pageConfigs.forEach((pageConfig) => {
     assertOnBeforeRenderEnv(pageConfig)

@@ -81,11 +81,14 @@ function getFilePath(
   const filePathToShowToUser = filePathAbsoluteVite
   assert(filePathToShowToUser)
 
+  const fileName = path.posix.basename(filePathToShowToUser)
+
   return {
     ...args,
     filePathAbsoluteFilesystem: null,
     filePathAbsoluteVite,
-    filePathToShowToUser
+    filePathToShowToUser,
+    fileName
   }
 }
 

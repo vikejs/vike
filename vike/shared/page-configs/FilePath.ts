@@ -65,4 +65,7 @@ type FilePathProps = {
    *  - a path alias import (e.g. `#components/Counter').
    */
   importPathAbsolute: string | null
+
+
+  fileName: string
 }
