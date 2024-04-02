@@ -33,18 +33,27 @@ function resolveImport(
 
   let filePath: FilePath
   if (importPath.startsWith('.')) {
-    // We need to resolve relative paths into absolute paths. Because the import paths are included in virtual files:
+    assert(importPath.startsWith('./') || importPath.startsWith('../'))
+    assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
+    filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir })
+    // Imports are included in virtual files, thus the relative path of imports need to resolved.
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
-    assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
-    const filePathAbsoluteUserRootDir = resolveImportPath_absoluteUserRootDir(
-      filePathAbsoluteFilesystem,
-      importData,
-      importerFilePath,
-      userRootDir
+    assertUsage(
+      filePath.filePathAbsoluteUserRootDir,
+      `${importerFilePath.filePathToShowToUser} imports a relative path ${pc.cyan(
+        importPath
+      )} resolving outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
     )
-    filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
+    // Alternativey, we can try one of the following but last time we tried none of the following worked.
+    // /*
+    // assert(filePathAbsoluteFilesystem.startsWith('/'))
+    // filePath = `/@fs${filePathAbsoluteFilesystem}`
+    // /*/
+    // assert(filePathAbsoluteUserRootDir.startsWith('../'))
+    // filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
+    // //*/
   } else {
     // importPath can be:
     //  - an npm package import
@@ -67,39 +76,6 @@ function resolveImport(
     fileExportName: exportName,
     fileExportPathToShowToUser
   }
-}
-
-function resolveImportPath_absoluteUserRootDir(
-  filePathAbsoluteFilesystem: string,
-  importData: ImportData,
-  configFilePath: FilePathResolved,
-  userRootDir: string
-) {
-  assertPosixPath(userRootDir)
-  let filePathAbsoluteUserRootDir: string
-  if (filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    filePathAbsoluteUserRootDir = getVitePathFromAbsolutePath(filePathAbsoluteFilesystem, userRootDir)
-  } else {
-    assertUsage(
-      false,
-      `${configFilePath.filePathToShowToUser} imports from a relative path ${pc.cyan(
-        importData.importPath
-      )} outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
-    )
-    // None of the following works. Seems to be a Vite bug?
-    // /*
-    // assert(filePathAbsoluteFilesystem.startsWith('/'))
-    // filePath = `/@fs${filePathAbsoluteFilesystem}`
-    // /*/
-    // filePathAbsoluteUserRootDir = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
-    // assert(filePathAbsoluteUserRootDir.startsWith('../'))
-    // filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
-    // //*/
-  }
-
-  assertPosixPath(filePathAbsoluteUserRootDir)
-  assert(filePathAbsoluteUserRootDir.startsWith('/'))
-  return filePathAbsoluteUserRootDir
 }
 
 function resolveImportPath(importData: ImportData, importerFilePath: FilePathResolved): string | null {
@@ -161,14 +137,4 @@ function assertFileEnv(filePathForEnvCheck: string, configEnv: ConfigEnvInternal
 }
 function clearFilesEnvMap() {
   filesEnvMap.clear()
-}
-
-function getVitePathFromAbsolutePath(filePathAbsoluteFilesystem: string, root: string): string {
-  assertPosixPath(filePathAbsoluteFilesystem)
-  assertPosixPath(root)
-  assert(filePathAbsoluteFilesystem.startsWith(root))
-  let vitePath = path.posix.relative(root, filePathAbsoluteFilesystem)
-  assert(!vitePath.startsWith('/') && !vitePath.startsWith('.'))
-  vitePath = '/' + vitePath
-  return vitePath
 }
