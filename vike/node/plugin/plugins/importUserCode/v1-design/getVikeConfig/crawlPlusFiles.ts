@@ -36,7 +36,15 @@ async function crawlPlusFiles(
     // config.outDir is outside of config.root => it's going to be ignored anyways
     outDirRelativeFromUserRootDir = null
   }
-  assert(outDirRelativeFromUserRootDir === null || !outDirRelativeFromUserRootDir.startsWith('.'))
+  assert(
+    outDirRelativeFromUserRootDir === null ||
+      /* Not true if outDirRelativeFromUserRootDir starts with a hidden directory (i.e. a directory with a name that starts with `.`)
+      !outDirRelativeFromUserRootDir.startsWith('.') &&
+      */
+      (!outDirRelativeFromUserRootDir.startsWith('./') &&
+        //
+        !outDirRelativeFromUserRootDir.startsWith('../'))
+  )
 
   const timeBefore = new Date().getTime()
 
