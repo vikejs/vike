@@ -34,10 +34,15 @@ type StateNotInitialized =
 function initHistoryState() {
   const stateNotInitialized: StateNotInitialized = window.history.state
 
+  const stateVikeEnhanced = enhanceState(stateNotInitialized)
+
+  replaceHistoryState(stateVikeEnhanced)
+}
+
+function enhanceState(stateNotInitialized: StateNotInitialized): StateVikeEnhanced {
   // Already enhanced
   if (isVikeEnhanced(stateNotInitialized)) {
-    assertState(stateNotInitialized)
-    return
+    return stateNotInitialized
   }
 
   const timestamp = getTimestamp()
@@ -52,7 +57,6 @@ function initHistoryState() {
       triggeredBy,
       _isVikeEnhanced: true
     }
-    assertState(stateVikeEnhanced)
   } else {
     // State information may be incomplete if `window.history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
     stateVikeEnhanced = {
@@ -61,15 +65,15 @@ function initHistoryState() {
       triggeredBy: stateNotInitialized.triggeredBy ?? triggeredBy,
       _isVikeEnhanced: true
     }
-    assertState(stateVikeEnhanced)
   }
 
-  replaceHistoryState(stateVikeEnhanced)
+  assert(isVikeEnhanced(stateVikeEnhanced))
+  return stateVikeEnhanced
 }
 
-function getState(): StateVikeEnhanced {
+function getState_alreadyEnhanced(): StateVikeEnhanced {
   const state = getHistoryState()
-  assertState(state)
+  assert(isVikeEnhanced(state))
   return state
 }
 
@@ -88,7 +92,7 @@ function getTimestamp() {
 
 function saveScrollPosition() {
   const scrollPosition = getScrollPosition()
-  const state = getState()
+  const state = getState_alreadyEnhanced()
   replaceHistoryState({ ...state, scrollPosition })
 }
 
@@ -106,21 +110,10 @@ function pushHistory(url: string, overwriteLastHistoryEntry: boolean) {
       url
     )
   } else {
-    replaceHistoryState(getState(), url)
+    replaceHistoryState(getState_alreadyEnhanced(), url)
   }
 }
 
-function assertState(state: unknown): asserts state is StateVikeEnhanced {
-  assert(isObject(state))
-  assert(hasProp(state, '_isVikeEnhanced', 'true'))
-  // TODO/eventually: remove assert() below to save client-side KBs
-  assert(hasProp(state, 'timestamp', 'number'))
-  assert(hasProp(state, 'scrollPosition'))
-  if (state.scrollPosition !== null) {
-    assert(hasProp(state, 'scrollPosition', 'object'))
-    assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
-  }
-}
 function replaceHistoryState(state: StateVikeEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
@@ -146,11 +139,24 @@ function monkeyPatchHistoryPushState() {
           triggeredBy: 'user',
           ...stateOriginal
         }
-    assertState(stateEnhanced)
+    assert(isVikeEnhanced(stateEnhanced))
     return pushStateOriginal!(stateEnhanced, ...rest)
   }
 }
 
 function isVikeEnhanced(state: unknown): state is StateVikeEnhanced {
-  return isObject(state) && '_isVikeEnhanced' in state
+  const yes = isObject(state) && '_isVikeEnhanced' in state
+  if (yes) assertStateVikeEnhanced(state)
+  return yes
+}
+function assertStateVikeEnhanced(state: unknown): asserts state is StateVikeEnhanced {
+  assert(isObject(state))
+  assert(hasProp(state, '_isVikeEnhanced', 'true'))
+  // TODO/eventually: remove assert() below to save client-side KBs
+  assert(hasProp(state, 'timestamp', 'number'))
+  assert(hasProp(state, 'scrollPosition'))
+  if (state.scrollPosition !== null) {
+    assert(hasProp(state, 'scrollPosition', 'object'))
+    assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
+  }
 }
