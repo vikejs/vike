@@ -378,7 +378,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
     objectEntries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
-        const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId) 
+        const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
@@ -394,12 +394,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               interfaceFile.filePath.filePathToShowToUser
             )
 
-            configDef.env = determineConfigValueFileEnv(
-              configDef,
-              configName,
-              interfaceFile.filePath.fileName,
-              interfaceFile.filePath.filePathToShowToUser
-            )
+            configDef.env = determineConfigValueFileEnv(configDef, interfaceFile.filePath.fileName)
 
             if (!isConfigEnv(configDef, configName)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
@@ -451,27 +446,19 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
 }
 
-function determineConfigValueFileEnv(
-  configDef: ConfigDefinitionInternal,
-  configName: string,
-  fileName: string,
-  filePathToShowToUser: string
-) {
+function determineConfigValueFileEnv(configDef: ConfigDefinitionInternal, fileName: string) {
   assert(configDef.env)
   const env = { ...configDef.env }
 
   if (fileName.includes('.server.')) {
-    assertUsage(
-      configDef.env.server === true,
-      `${filePathToShowToUser} defines the config ${configName} for the server environment, but meta.${configName}.env.server is not true`
-    )
+    env.server = true
     env.client = false
   } else if (fileName.includes('.client.')) {
-    assertUsage(
-      configDef.env.client === true,
-      `${filePathToShowToUser} defines the config ${configName} for the client environment, but meta.${configName}.env.client is not true`
-    )
+    env.client = true
     env.server = false
+  } else if (fileName.includes('.shared.')) {
+    env.server = true
+    env.client = true
   }
 
   return env
