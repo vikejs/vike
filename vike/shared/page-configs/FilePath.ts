@@ -66,6 +66,5 @@ type FilePathProps = {
    */
   importPathAbsolute: string | null
 
-
   fileName: string
 }
