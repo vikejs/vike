@@ -104,6 +104,7 @@ function assertImportPath(
       : (`The import ${pc.cyan(importString)} defined in ${filePathToShowToUser}` as const)
     const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
     if (importPath.startsWith('.')) {
+      assert(importPath.startsWith('./') || importPath.startsWith('../'))
       assertUsage(false, `${errIntro2} point to an existing file?`)
     } else {
       assertUsage(false, `${errIntro2} exist?`)
