@@ -252,7 +252,14 @@ function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide
   let { pageId } = pageConfig
   const entryTarget = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
   let entryName = pageId
+  // Avoid:
+  // ```
+  // dist/client/assets/entries/.Dp9wM6PK.js
+  // dist/server/entries/.mjs
+  // ```
+  if (entryName === '/') entryName = 'root'
   entryName = prependEntriesDir(entryName)
+  assert(!entryName.endsWith('/'))
   return { entryName, entryTarget }
 }
 
