@@ -764,7 +764,7 @@ async function getConfigValueSource(
     assert('configValue' in conf)
     const { configValue } = conf
 
-    // fake import
+    // Pointer import
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
       const configValueSource: ConfigValueSource = {

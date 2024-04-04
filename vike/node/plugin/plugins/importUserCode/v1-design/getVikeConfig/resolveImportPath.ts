@@ -43,6 +43,12 @@ function resolveImport(
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
   let filePath: FilePath
+  // - importPath is one of the following. (See `transpileAndExecuteFile()`.)
+  //   - A relative import path
+  //   - A filesystem absolute path
+  //   - An npm package import
+  // - importPath cannot be a path alias (since esbuild resolves path aliases, see transpileAndExecuteFile.ts)
+  assertPosixPath(importPath)
   if (importPath.startsWith('.') || importPath.startsWith('/')) {
     if (importPath.startsWith('.')) {
       assert(importPath.startsWith('./') || importPath.startsWith('../'))
@@ -60,7 +66,7 @@ function resolveImport(
     // //*/
     assertUsage(
       filePathAbsoluteUserRootDir,
-      `${importerFilePath.filePathToShowToUser} imports a relative path ${pc.cyan(
+      `${importerFilePath.filePathToShowToUser} imports ${pc.cyan(
         importPath
       )} resolving outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
     )
@@ -71,6 +77,7 @@ function resolveImport(
     // ```
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
+    // importPath cannot be a path alias (since esbuild resolves path aliases, see transpileAndExecuteFile.ts)
     assertIsNpmPackageImport(importPath)
     if (filePathAbsoluteFilesystem) {
       filePath = getFilePathResolved({
