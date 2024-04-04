@@ -157,15 +157,16 @@ async function transpileWithEsbuild(
           }
 
           assert(resolved.path)
+          const importPathResolved = toPosixPath(resolved.path)
+          const importPathOriginal = args.path
+
           // Esbuild resolves path aliases.
           // - Enabling us to use:
           //   ```js
           //   isNpmPackageImport(str, { cannotBePathAlias: true })
           //   assertIsNpmPackageImport()
           //   ```
-          assertPathIsFilesystemAbsolute(resolved.path)
-          const importPathResolved = toPosixPath(resolved.path)
-          const importPathOriginal = args.path
+          assertPathIsFilesystemAbsolute(importPathResolved)
 
           // vike-{react,vue,solid} follow the convention that their config export resolves to a file named +config.js
           //  - This is temporary, see comment below.
