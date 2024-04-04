@@ -27,7 +27,8 @@ function assertIsNpmPackageImport(str: string): void {
     isNpmPackageImport(str, {
       // If `str` is a path alias that looks like an npm package => assertIsNpmPackageImport() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
       cannotBePathAlias: true
-    })
+    }),
+    str
   )
 }
 
