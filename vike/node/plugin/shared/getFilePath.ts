@@ -113,7 +113,14 @@ function getFilePathAbsoluteUserRootDir({
     return null
   }
 
-  assert(!filePathRelative.startsWith('.') && !filePathRelative.startsWith('/'))
+  assert(
+    !filePathRelative.startsWith('/') &&
+      /* Not true if filePathRelative starts with a hidden directory  (i.e. a directory with a name that starts with `.`)
+      !filePathRelative.startsWith('.') &&
+      */
+      !filePathRelative.startsWith('./') &&
+      !filePathRelative.startsWith('../')
+  )
   const filePathAbsoluteUserRootDir = `/${filePathRelative}`
   assert(filePathAbsoluteUserRootDir === getFilePathAbsoluteUserRootDir2(filePathAbsoluteFilesystem, userRootDir))
   return filePathAbsoluteUserRootDir

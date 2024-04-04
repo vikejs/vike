@@ -132,6 +132,14 @@ function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string
   }
   name = removeLeadingUnderscoreInFilename(name)
   name = removeUnderscoreDoublets(name)
+
+  // Avoid:
+  // ```
+  // dist/client/assets/entries/.Dp9wM6PK.js
+  // dist/server/entries/.mjs
+  // ```
+  assert(!name.endsWith('/'))
+
   return name
 }
 function fixExtractAssetsQuery(name: string): string {

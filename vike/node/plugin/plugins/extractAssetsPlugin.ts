@@ -226,7 +226,7 @@ function analyzeImport(importStatement: ImportStatement): { moduleName: string |
     return { moduleName, skip: true }
   }
 
-  /* We should not do this because of aliased imports
+  /* We shouldn't do this because of aliased imports
   if (!moduleName.startsWith('.')) {
     return { moduleName, skip: true }
   }

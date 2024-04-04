@@ -7,6 +7,7 @@ function prependEntriesDir(entryName: string): string {
     entryName = entryName.slice(1)
   }
   assert(!entryName.startsWith('/'))
+  assert(entryName)
   entryName = `entries/${entryName}`
   return entryName
 }

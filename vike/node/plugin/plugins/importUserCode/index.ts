@@ -13,6 +13,7 @@ import {
   getVirtualFileId,
   isDev1,
   isDev1_onConfigureServer,
+  isDev3,
   isVirtualFileId,
   resolveVirtualFileId
 } from '../../utils.js'
@@ -26,9 +27,11 @@ import { getModuleFilePath } from '../../shared/getFilePath.js'
 function importUserCode(): Plugin {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
+  let isDev_: boolean | null
   return {
     name: 'vike:importUserCode',
-    config() {
+    config(_, env) {
+      isDev_ = isDev3(env)
       return {
         experimental: {
           // TODO/v1-release: remove
@@ -55,7 +58,7 @@ function importUserCode(): Plugin {
       }
     },
     async load(id, options) {
-      const isDev = isDev1()
+      const isDev = isDev_ !== null ? isDev_ : isDev1()
 
       if (!isVirtualFileId(id)) return undefined
       id = getVirtualFileId(id)
@@ -71,7 +74,7 @@ function importUserCode(): Plugin {
       }
     },
     configureServer(server) {
-      isDev1_onConfigureServer()
+      if (isDev_ === null) isDev1_onConfigureServer()
       handleFileAddRemove(server, config)
     }
   }
