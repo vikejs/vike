@@ -1,8 +1,21 @@
 export type { FilePath }
+export type { FilePathUnresolved }
 export type { FilePathResolved }
 
-type FilePathResolved = FilePath & {
+type FilePath = FilePathResolved | FilePathUnresolved
+
+type FilePathUnresolved = FilePathCommon & { filePathAbsoluteFilesystem: null } & ImportPathAbsolute
+
+type FilePathResolved = FilePathCommon & {
+  /**
+   * The file's path, absolute starting from the filesystem root.
+   *
+   * Example: `/home/rom/code/my-app/pages/some-page/+Page.js`
+   *
+   * The value is `null` for imports using path aliases. (Because Vike cannot resolve path aliases, otherwise Vike would need to re-implement https://www.npmjs.com/package/@rollup/plugin-alias.)
+   */
   filePathAbsoluteFilesystem: string
+
   /**
    * The file's path, shown to the user in logs.
    *
@@ -11,22 +24,27 @@ type FilePathResolved = FilePath & {
    * Its value is equivalent to `filePath.filePathAbsoluteUserRootDir ?? filePath.filePathAbsoluteFilesystem`.
    */
   filePathToShowToUserResolved: string
-}
 
-// FilePath always comes from user-land code analysis, thus at least one of the following is defined:
-type IsReferencedByUserLandFile = { filePathAbsoluteUserRootDir: string } | { importPathAbsolute: string }
-type FilePath = FilePathProps & IsReferencedByUserLandFile
-
-type FilePathProps = {
   /**
-   * The file's path, absolute starting from the filesystem root.
+   * File's name (without its file path).
    *
-   * Example: `/home/rom/code/my-app/pages/some-page/+Page.js`
-   *
-   * The value is `null` for imports using path aliases. (Because Vike cannot resolve path aliases, otherwise Vike would need to re-implement https://www.npmjs.com/package/@rollup/plugin-alias.)
+   * Example: `+Page.js`
    */
-  filePathAbsoluteFilesystem: string | null
+  fileName: string
 
+  // At least filePathAbsoluteUserRootDir or importPathAbsolute is defined. (FilePath always originates from user-land code analysis.)
+} & (FilePathAbsoluteUserRootDir | ImportPathAbsolute)
+
+type ImportPathAbsolute = {
+  /**
+   * The file's non-relative import path. It's either:
+   *  - an npm package import (e.g. `vike-react/config`), or
+   *  - a path alias import (e.g. `#components/Counter').
+   */
+  importPathAbsolute: string
+  filePathAbsoluteUserRootDir: null
+}
+type FilePathAbsoluteUserRootDir = {
   /**
    * The file's path, absolute starting from the user root directory (i.e. Vite's `config.root`).
    *
@@ -35,8 +53,10 @@ type FilePathProps = {
    * Its value is `null` if the file is outside of the user root directory (i.e. Vite's `config.root`).
    *
    */
-  filePathAbsoluteUserRootDir: string | null
-
+  filePathAbsoluteUserRootDir: string
+  importPathAbsolute: string | null
+}
+type FilePathCommon = {
   /**
    * The file's path, shown to the user in logs.
    *
@@ -53,18 +73,9 @@ type FilePathProps = {
    *   - `/pages/+config.js`
    *   - `vike-react/config`
    *
-   * We use it to generate import paths in virtual modules. (Since import paths in virtual modules cannot be relative.)
+   * We use it to generate imports in virtual modules. (Since import paths in virtual modules cannot be relative.)
    *
    * Its value is equivalent to `filePath.filePathAbsoluteUserRootDir ?? filePath.importPathAbsolute`.
    */
   filePathAbsoluteVite: string
-
-  /**
-   * The file's non-relative import path. It's either:
-   *  - an npm package import (e.g. `vike-react/config`), or
-   *  - a path alias import (e.g. `#components/Counter').
-   */
-  importPathAbsolute: string | null
-
-  fileName: string
 }

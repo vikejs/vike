@@ -786,8 +786,6 @@ async function getConfigValueSource(
         configName !== 'extends'
       ) {
         if (import_.filePathAbsoluteFilesystem) {
-          assert(hasProp(import_, 'filePathAbsoluteFilesystem', 'string')) // Help TS
-          assert(hasProp(import_, 'filePathToShowToUserResolved', 'string')) // Help TS
           const fileExport = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
