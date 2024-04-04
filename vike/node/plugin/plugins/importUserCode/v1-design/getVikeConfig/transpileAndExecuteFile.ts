@@ -191,18 +191,35 @@ async function transpileWithEsbuild(
             // Performance: npm package imports that aren't pointer imports can be externalized. For example, if Vike eventually adds support for setting Vite configs in the vike.config.js file, then the user may import a Vite plugin in his vike.config.js file. (We could as well let esbuild always transpile /node_modules/ code but it would be useless and would unnecessarily slow down transpilation.)
             importPathResolved.includes('/node_modules/')
 
+          const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({
+            filePathAbsoluteFilesystem: importPathResolved,
+            userRootDir
+          })
+
           let importPathTranspiled: string
           assertPosixPath(importPathOriginal)
           if (importPathOriginal.startsWith('./') || importPathOriginal.startsWith('../')) {
-            importPathTranspiled = importPathOriginal
+            // - We need this assertUsage() because we didn't find a way (yet?) to use filesystem absolute import paths in virtual files.
+            // - Alternatively, we can again try one of the following for generating the imports of virtual files. (Last time we tried none of it worked.)
+            //   - ~~~js
+            //     assert(filePathAbsoluteFilesystem.startsWith('/'))
+            //     filePath = `/@fs${filePathAbsoluteFilesystem}`
+            //     ~~~
+            //   - ~~~js
+            //     assert(filePathAbsoluteUserRootDir.startsWith('../'))
+            //     filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
+            //     ~~~
+            assertUsage(
+              filePathAbsoluteUserRootDir,
+              `Import ${pc.cyan(
+                importPathOriginal
+              )} resolves to ${importPathResolved} outside of ${userRootDir} which is forbidden: make sure your relative import paths resolve inside ${userRootDir}, or import from an npm package.`
+            )
+            importPathTranspiled = importPathResolved
           } else {
             // importPathOriginal is either:
             //  - Npm package import
             //  - Path alias
-            const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({
-              filePathAbsoluteFilesystem: importPathResolved,
-              userRootDir
-            })
             if (filePathAbsoluteUserRootDir) {
               // importPathOriginal is most likely a path alias. (Is it even possible for an npm package import to resolved inside `userRootDir`?)
               importPathTranspiled = importPathResolved

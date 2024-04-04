@@ -56,20 +56,8 @@ function resolveImport(
     assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
 
     const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
-    // Alternatively to the following assertUsage(), we can try one of the following (but last time we tried none of it worked).
-    // /*
-    // assert(filePathAbsoluteFilesystem.startsWith('/'))
-    // filePath = `/@fs${filePathAbsoluteFilesystem}`
-    // /*/
-    // assert(filePathAbsoluteUserRootDir.startsWith('../'))
-    // filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
-    // //*/
-    assertUsage(
-      filePathAbsoluteUserRootDir,
-      `${importerFilePath.filePathToShowToUser} imports ${pc.cyan(
-        importPath
-      )} resolving outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
-    )
+    // This assert() is guarenteed, see assertUsage() in the onResolve() esbuild hook in transpileAndExecuteFile.ts
+    assert(filePathAbsoluteUserRootDir)
 
     // Imports are included in virtual files, thus the relative path of imports need to resolved.
     // ```
