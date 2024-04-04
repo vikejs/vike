@@ -393,9 +393,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
-
-            configDef.env = determineConfigValueFileEnv(configDef, interfaceFile.filePath.fileName)
-
+            configDef.env = deriveConfigEnvFromFileName(configDef.env, interfaceFile.filePath.fileName)
             if (!isConfigEnv(configDef, configName)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
@@ -446,10 +444,8 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
 }
 
-function determineConfigValueFileEnv(configDef: ConfigDefinitionInternal, fileName: string) {
-  assert(configDef.env)
-  const env = { ...configDef.env }
-
+function deriveConfigEnvFromFileName(env: ConfigEnvInternal, fileName: string) {
+  env = { ...env }
   if (fileName.includes('.server.')) {
     env.server = true
     env.client = false
@@ -460,7 +456,6 @@ function determineConfigValueFileEnv(configDef: ConfigDefinitionInternal, fileNa
     env.server = true
     env.client = true
   }
-
   return env
 }
 
