@@ -8,7 +8,11 @@ import type { ConfigEnvInternal, DefinedAtFileFullInfo } from '../../../../../..
 import { assert, assertPosixPath, assertUsage, deepEqual, requireResolve } from '../../../../utils.js'
 import { type ImportData, parseImportData } from './transformFileImports.js'
 import path from 'path'
-import { getFilePathResolved, getFilePathUnresolved } from '../../../../shared/getFilePath.js'
+import {
+  getFilePathAbsoluteUserRootDir,
+  getFilePathResolved,
+  getFilePathUnresolved
+} from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
@@ -35,18 +39,9 @@ function resolveImport(
   if (importPath.startsWith('.')) {
     assert(importPath.startsWith('./') || importPath.startsWith('../'))
     assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
-    filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir })
-    // Imports are included in virtual files, thus the relative path of imports need to resolved.
-    // ```
-    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
-    // ```
-    assertUsage(
-      filePath.filePathAbsoluteUserRootDir,
-      `${importerFilePath.filePathToShowToUser} imports a relative path ${pc.cyan(
-        importPath
-      )} resolving outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
-    )
-    // Alternativey, we can try one of the following but last time we tried none of the following worked.
+
+    const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
+    // Alternatively to the following assertUsage(), we can try one of the following (but last time we tried none of it worked).
     // /*
     // assert(filePathAbsoluteFilesystem.startsWith('/'))
     // filePath = `/@fs${filePathAbsoluteFilesystem}`
@@ -54,6 +49,18 @@ function resolveImport(
     // assert(filePathAbsoluteUserRootDir.startsWith('../'))
     // filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
     // //*/
+    assertUsage(
+      filePathAbsoluteUserRootDir,
+      `${importerFilePath.filePathToShowToUser} imports a relative path ${pc.cyan(
+        importPath
+      )} resolving outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
+    )
+
+    // Imports are included in virtual files, thus the relative path of imports need to resolved.
+    // ```
+    // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
+    // ```
+    filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
     // importPath can be:
     //  - an npm package import

@@ -3,6 +3,7 @@ export { getFilePathUnresolved }
 export { getModuleFilePath }
 export { getFilePathToShowToUserFromUnkown }
 export { cleanFilePathUnkown }
+export { getFilePathAbsoluteUserRootDir }
 
 import path from 'path'
 import { assert, assertPathIsFilesystemAbsolute, assertPosixPath, toPosixPath } from '../utils.js'
