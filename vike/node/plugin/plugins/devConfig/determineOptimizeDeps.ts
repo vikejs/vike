@@ -51,6 +51,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   }
   const addInclude = (e: string) => {
     assert(e)
+    // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
     assertIsNpmPackageImport(e)
     include.push(e)
   }
@@ -65,14 +66,11 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
         if (!configEnv.client) return
 
         if (definedAt.filePathAbsoluteUserRootDir !== null) {
-          const { filePathAbsoluteFilesystem } = definedAt
-          // Surprisingly Vite expects entries to be absolute paths
-          addEntry(filePathAbsoluteFilesystem)
+          // Vite expects entries to be filesystem absolute paths (surprisingly so).
+          addEntry(definedAt.filePathAbsoluteFilesystem)
         } else {
           // Adding definedAt.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
-          const { importPathAbsolute } = definedAt
-          // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
-          addInclude(importPathAbsolute)
+          addInclude(definedAt.importPathAbsolute)
         }
       })
     })
