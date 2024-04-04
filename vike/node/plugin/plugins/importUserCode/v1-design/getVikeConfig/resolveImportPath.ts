@@ -5,7 +5,14 @@ export { clearFilesEnvMap }
 
 import pc from '@brillout/picocolors'
 import type { ConfigEnvInternal, DefinedAtFileFullInfo } from '../../../../../../shared/page-configs/PageConfig.js'
-import { assert, assertPosixPath, assertUsage, deepEqual, requireResolve } from '../../../../utils.js'
+import {
+  assert,
+  assertIsNpmPackageImport,
+  assertPosixPath,
+  assertUsage,
+  deepEqual,
+  requireResolve
+} from '../../../../utils.js'
 import { type ImportData, parseImportData } from './transformFileImports.js'
 import path from 'path'
 import {
@@ -62,9 +69,7 @@ function resolveImport(
     // ```
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
-    // importPath can be:
-    //  - an npm package import
-    //  - a path alias
+    assertIsNpmPackageImport(importPath)
     if (filePathAbsoluteFilesystem) {
       filePath = getFilePathResolved({
         userRootDir,
