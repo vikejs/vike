@@ -3,7 +3,7 @@ export { standalonePlugin }
 import esbuild from 'esbuild'
 import fs from 'fs/promises'
 import path from 'path'
-import { Plugin, searchForWorkspaceRoot } from 'vite'
+import { type Plugin, type ResolvedConfig, searchForWorkspaceRoot } from 'vite'
 import type { ConfigVikeNodeResolved } from '../../types.js'
 import { assert, assertUsage } from '../../utils/assert.js'
 import { toPosixPath } from '../utils/filesystemPathHandling.js'
@@ -12,7 +12,8 @@ import { pLimit } from '../utils/pLimit.js'
 import { unique } from '../utils/unique.js'
 
 function standalonePlugin(): Plugin {
-  let resolvedConfig: ConfigVikeNodeResolved
+  let configResolved: ResolvedConfig
+  let configResolvedVike: ConfigVikeNodeResolved
   let enabled = false
 
   let root = ''
@@ -37,9 +38,10 @@ function standalonePlugin(): Plugin {
       return !!env.isSsrBuild
     },
     async configResolved(config) {
-      resolvedConfig = getConfigVikeNode(config)
-      assert(typeof resolvedConfig.server.standalone === 'boolean')
-      enabled = resolvedConfig.server.standalone
+      configResolved = config
+      configResolvedVike = getConfigVikeNode(config)
+      assert(typeof configResolvedVike.server.standalone === 'boolean')
+      enabled = configResolvedVike.server.standalone
       if (!enabled) return
       root = toPosixPath(config.root)
       outDir = toPosixPath(config.build.outDir)
@@ -51,7 +53,7 @@ function standalonePlugin(): Plugin {
     },
     writeBundle(_, bundle) {
       if (!enabled) return
-      const entries = findRollupBundleEntries(bundle, resolvedConfig, root)
+      const entries = findRollupBundleEntries(bundle, configResolvedVike, root)
       rollupEntryFilePaths = entries.map((e) => path.posix.join(outDirAbs, e.fileName))
     },
     // closeBundle() + `enforce: 'post'` in order to start the final build step as late as possible
@@ -66,8 +68,9 @@ function standalonePlugin(): Plugin {
         platform: 'node',
         format: 'esm',
         bundle: true,
-        external: resolvedConfig.server.native,
+        external: configResolvedVike.server.native,
         entryPoints: rollupEntryFilePaths,
+        sourcemap: configResolved.build.sourcemap === 'hidden' ? true : configResolved.build.sourcemap,
         // .mjs set in getEntryFileName
         outExtension: { '.js': '.mjs' },
         splitting: rollupEntryFilePaths.length > 1,
@@ -124,6 +127,9 @@ function standalonePlugin(): Plugin {
       )
       for (const relativeFile of bundledFilesFromOutDir) {
         await fs.rm(path.posix.join(root, relativeFile))
+        if (![false, 'inline'].includes(configResolved.build.sourcemap)) {
+          await fs.rm(path.posix.join(root, `${relativeFile}.map`))
+        }
       }
       // Remove leftover empty dirs
       const relativeDirs = unique(bundledFilesFromOutDir.map((file) => path.dirname(file)))
