@@ -43,8 +43,10 @@ function resolveImport(
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
   let filePath: FilePath
-  if (importPath.startsWith('.')) {
-    assert(importPath.startsWith('./') || importPath.startsWith('../'))
+  if (importPath.startsWith('.') || importPath.startsWith('/')) {
+    if (importPath.startsWith('.')) {
+      assert(importPath.startsWith('./') || importPath.startsWith('../'))
+    }
     assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
 
     const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
