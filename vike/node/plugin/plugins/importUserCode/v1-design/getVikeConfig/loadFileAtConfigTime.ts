@@ -133,8 +133,8 @@ function getExtendsPointerImportData(
   } else {
     assertUsage(false, wrongUsage)
   }
-  const extendsPointerImportData = extendList.map((pointerImportDataSerialized) => {
-    const pointerImportData = parsePointerImportData(pointerImportDataSerialized)
+  const extendsPointerImportData = extendList.map((importString) => {
+    const pointerImportData = parsePointerImportData(importString)
     assertUsage(pointerImportData, wrongUsage)
     return pointerImportData
   })
