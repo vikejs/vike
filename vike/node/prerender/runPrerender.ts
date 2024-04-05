@@ -24,7 +24,7 @@ import {
   handleNodeEnv_prerender,
   pLimit,
   PLimit,
-  isPathAbsolute
+  assertPathIsFilesystemAbsolute
 } from './utils.js'
 import {
   prerenderPage,
@@ -221,7 +221,7 @@ async function runPrerender(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
   )
 
-  assert(isPathAbsolute(outDirRoot)) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
+  assertPathIsFilesystemAbsolute(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
   await initGlobalContext(true, outDirRoot)
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
