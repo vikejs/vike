@@ -1,21 +1,21 @@
-export { assertPathIsFilesystemAbsolute }
-export { isPathAbsolute }
+export { assertPathFilesystemAbsolute }
+export { isPathFilesystemAbsolute }
 
 import path from 'path'
 import { assert } from './assert.js'
 import { assertPosixPath } from './filesystemPathHandling.js'
 
 /** Assert path is absolute starting from the filesystem root. */
-function assertPathIsFilesystemAbsolute(p: string) {
+function assertPathFilesystemAbsolute(p: string) {
   // The assert is "eventually reliable":
   // - For Windows users, the assert is correct.
-  // - For Linux users assertPathIsFilesystemAbsolute() will erroneously succeed if `p` is a path absolute from the user root dir.
+  // - For Linux users assertPathFilesystemAbsolute() will erroneously succeed if `p` is a path absolute from the user root dir.
   //   - But that's okay because the assertion will eventually fail for Windows users.
-  assert(isPathAbsolute(p))
+  assert(isPathFilesystemAbsolute(p))
 }
 
-/** Whether path is absolute starting from the filesystem root. Isn't reliable for Linux users: isPathAbsolute() returns `true` for paths absolute from the user root dir. */
-function isPathAbsolute(p: string) {
+/** Whether path is absolute starting from the filesystem root. Isn't reliable for Linux users: isPathFilesystemAbsolute() returns `true` for paths absolute from the user root dir. */
+function isPathFilesystemAbsolute(p: string) {
   assertPosixPath(p)
   assert(!p.startsWith('/@fs/'))
   if (process.platform !== 'win32') {
@@ -27,7 +27,7 @@ function isPathAbsolute(p: string) {
     return p.startsWith('/')
   } else {
     const yes = path.win32.isAbsolute(p)
-    // Ensure isPathAbsolute() returns `false` if path is absolute starting from the user root dir (see comments above).
+    // Ensure isPathFilesystemAbsolute() returns `false` if path is absolute starting from the user root dir (see comments above).
     if (yes) assert(!p.startsWith('/'))
     return yes
   }

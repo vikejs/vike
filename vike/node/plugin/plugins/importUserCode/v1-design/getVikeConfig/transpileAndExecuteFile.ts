@@ -19,7 +19,7 @@ import {
   assertUsage,
   isJavaScriptFile,
   createDebugger,
-  assertPathIsFilesystemAbsolute,
+  assertPathFilesystemAbsolute,
   assertIsNpmPackageImport
 } from '../../../../utils.js'
 import { transformFileImports } from './transformFileImports.js'
@@ -166,7 +166,7 @@ async function transpileWithEsbuild(
           //   isNpmPackageImport(str, { cannotBePathAlias: true })
           //   assertIsNpmPackageImport()
           //   ```
-          assertPathIsFilesystemAbsolute(importPathResolved)
+          assertPathFilesystemAbsolute(importPathResolved)
 
           // vike-{react,vue,solid} follow the convention that their config export resolves to a file named +config.js
           //  - This is temporary, see comment below.
