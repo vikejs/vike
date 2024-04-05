@@ -12,7 +12,7 @@ import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
-import { type ImportData, parseImportData } from './transformFileImports.js'
+import { type PointerImportData, parsePointerImportData } from './transformFileImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
 import { assertImportPath, resolveImportPath } from './resolveImportPath.js'
 import { getFilePathResolved } from '../../../../shared/getFilePath.js'
@@ -91,9 +91,9 @@ async function loadExtendsConfigs(
   userRootDir: string,
   visited: string[]
 ) {
-  const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
+  const extendsPointerImportData = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
-  extendsImportData.map((importData) => {
+  extendsPointerImportData.map((importData) => {
     const { importPath: importPathAbsolute } = importData
     const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
     assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
@@ -114,10 +114,10 @@ async function loadExtendsConfigs(
 
   return { extendsConfigs, extendsFilePaths }
 }
-function getExtendsImportData(
+function getExtendsPointerImportData(
   configFileExports: Record<string, unknown>,
   configFilePath: FilePathResolved
-): ImportData[] {
+): PointerImportData[] {
   const { filePathToShowToUser } = configFilePath
   const configFileExport = getConfigFileExport(configFileExports, filePathToShowToUser)
   const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
@@ -133,10 +133,10 @@ function getExtendsImportData(
   } else {
     assertUsage(false, wrongUsage)
   }
-  const extendsImportData = extendList.map((importDataSerialized) => {
-    const importData = parseImportData(importDataSerialized)
+  const extendsPointerImportData = extendList.map((importDataSerialized) => {
+    const importData = parsePointerImportData(importDataSerialized)
     assertUsage(importData, wrongUsage)
     return importData
   })
-  return extendsImportData
+  return extendsPointerImportData
 }

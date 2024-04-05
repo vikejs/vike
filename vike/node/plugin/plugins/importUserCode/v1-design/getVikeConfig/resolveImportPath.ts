@@ -14,7 +14,7 @@ import {
   isPathFilesystemAbsolute,
   requireResolve
 } from '../../../../utils.js'
-import { type ImportData, parseImportData } from './transformFileImports.js'
+import { type PointerImportData, parsePointerImportData } from './transformFileImports.js'
 import path from 'path'
 import {
   getFilePathAbsoluteUserRootDir,
@@ -33,7 +33,7 @@ function resolveImport(
   configName: string
 ): null | (DefinedAtFileFullInfo & { fileExportName: string }) {
   if (typeof configValue !== 'string') return null
-  const importData = parseImportData(configValue)
+  const importData = parsePointerImportData(configValue)
   if (!importData) return null
 
   const { importPath, exportName } = importData
@@ -88,7 +88,7 @@ function resolveImport(
   }
 }
 
-function resolveImportPath(importData: ImportData, importerFilePath: FilePathResolved): string | null {
+function resolveImportPath(importData: PointerImportData, importerFilePath: FilePathResolved): string | null {
   const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
@@ -101,7 +101,7 @@ function resolveImportPath(importData: ImportData, importerFilePath: FilePathRes
 
 function assertImportPath(
   filePathAbsoluteFilesystem: string | null,
-  importData: ImportData,
+  importData: PointerImportData,
   importerFilePath: FilePathResolved
 ): asserts filePathAbsoluteFilesystem is string {
   const { importPath: importPath, importStringWasGenerated, importString } = importData

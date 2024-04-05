@@ -1,7 +1,7 @@
 export { transformFileImports }
-export { parseImportData }
-export { isImportData }
-export type { ImportData }
+export { parsePointerImportData }
+export { isPointerImportData }
+export type { PointerImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
 
@@ -105,7 +105,7 @@ function transformFileImports(
         }
         return importLocalName
       })()
-      const importString = serializeImportData({ importPath, exportName, importStringWasGenerated: true })
+      const importString = serializePointerImportData({ importPath, exportName, importStringWasGenerated: true })
       replacement += `const ${importLocalName} = '${importString}';`
     })
 
@@ -147,26 +147,26 @@ const zeroWidthSpace = '\u200b'
  *    `}`
  * We discard the import name `someImport` because we don't need it.
  */
-type ImportData = {
+type PointerImportData = {
   importPath: string
   exportName: string
   importString: string
   importStringWasGenerated: boolean
 }
-function serializeImportData({
+function serializePointerImportData({
   importPath,
   exportName,
   importStringWasGenerated
-}: Omit<ImportData, 'importString'>): string {
+}: Omit<PointerImportData, 'importString'>): string {
   const tag = importStringWasGenerated ? zeroWidthSpace : ''
   // `import:${importPath}:${importPath}`
   return `${tag}${import_}${SEP}${importPath}${SEP}${exportName}`
 }
-function isImportData(str: string): boolean {
+function isPointerImportData(str: string): boolean {
   return str.startsWith(import_ + SEP) || str.startsWith(zeroWidthSpace + import_ + SEP)
 }
-function parseImportData(importString: string): null | ImportData {
-  if (!isImportData(importString)) {
+function parsePointerImportData(importString: string): null | PointerImportData {
+  if (!isPointerImportData(importString)) {
     return null
   }
 
