@@ -6,7 +6,7 @@ export { cleanFilePathUnkown }
 export { getFilePathAbsoluteUserRootDir }
 
 import path from 'path'
-import { assert, assertPathIsFilesystemAbsolute, assertPosixPath, toPosixPath } from '../utils.js'
+import { assert, isPathAbsolute, assertPosixPath, toPosixPath } from '../utils.js'
 import type { FilePathResolved, FilePathUnresolved } from '../../../shared/page-configs/FilePath.js'
 import type { ResolvedConfig } from 'vite'
 
@@ -31,7 +31,7 @@ function getFilePathResolved(
   }
 
   assert(filePathAbsoluteFilesystem)
-  assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
+  assert(isPathAbsolute(filePathAbsoluteFilesystem))
   const filePathToShowToUserResolved = filePathAbsoluteUserRootDir || filePathAbsoluteFilesystem
   assert(filePathToShowToUserResolved)
 
@@ -89,10 +89,10 @@ function getFilePathAbsoluteUserFilesystem({
 }): string {
   assertPosixPath(filePathAbsoluteUserRootDir)
   assertPosixPath(userRootDir)
-  assertPathIsFilesystemAbsolute(userRootDir)
+  assert(isPathAbsolute(userRootDir))
 
   const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathAbsoluteUserRootDir)
-  assertPathIsFilesystemAbsolute(userRootDir)
+  assert(isPathAbsolute(userRootDir))
   return filePathAbsoluteFilesystem
 }
 function getFilePathAbsoluteUserRootDir({
@@ -104,8 +104,8 @@ function getFilePathAbsoluteUserRootDir({
 }): string | null {
   assertPosixPath(filePathAbsoluteFilesystem)
   assertPosixPath(userRootDir)
-  assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
-  assertPathIsFilesystemAbsolute(userRootDir)
+  assert(isPathAbsolute(filePathAbsoluteFilesystem))
+  assert(isPathAbsolute(userRootDir))
 
   const filePathRelative = path.posix.relative(userRootDir, filePathAbsoluteFilesystem)
 
@@ -133,7 +133,7 @@ function getModuleFilePath(moduleId: string, config: ResolvedConfig): string {
   assertPosixPath(userRootDir)
 
   const filePathAbsoluteFilesystem = cleanModuleId(moduleId)
-  assertPathIsFilesystemAbsolute(filePathAbsoluteFilesystem)
+  assert(isPathAbsolute(filePathAbsoluteFilesystem))
 
   const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
 
@@ -146,7 +146,7 @@ function getFilePathToShowToUserFromUnkown(
   userRootDir: string
 ): string {
   assertPosixPath(userRootDir)
-  assertPathIsFilesystemAbsolute(userRootDir)
+  assert(isPathAbsolute(userRootDir))
 
   filePathUnkown = cleanFilePathUnkown(filePathUnkown)
 
