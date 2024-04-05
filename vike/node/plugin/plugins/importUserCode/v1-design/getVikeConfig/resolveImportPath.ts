@@ -11,6 +11,7 @@ import {
   assertPosixPath,
   assertUsage,
   deepEqual,
+  isPathAbsolute,
   requireResolve
 } from '../../../../utils.js'
 import { type ImportData, parseImportData } from './transformFileImports.js'
@@ -49,7 +50,7 @@ function resolveImport(
   //   - An npm package import
   // - importPath cannot be a path alias (since esbuild resolves path aliases, see transpileAndExecuteFile.ts)
   assertPosixPath(importPath)
-  if (importPath.startsWith('.') || importPath.startsWith('/')) {
+  if (importPath.startsWith('.') || isPathAbsolute(importPath)) {
     if (importPath.startsWith('.')) {
       assert(importPath.startsWith('./') || importPath.startsWith('../'))
     }
