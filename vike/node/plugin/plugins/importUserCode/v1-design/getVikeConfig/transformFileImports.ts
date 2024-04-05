@@ -136,7 +136,7 @@ const import_ = 'import'
 const SEP = ':'
 const zeroWidthSpace = '\u200b'
 /**
- * Data Structure holding info about import statement:
+ * Data Structure for [pointer imports](https://vike.dev/config#pointer-imports):
  *   `import { someExport as someImport } from './some-file'`
  * <=>
  *   `pointerImportData === {`
