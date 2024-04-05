@@ -33,11 +33,11 @@ function resolveImport(
   configName: string
 ): null | (DefinedAtFileFullInfo & { fileExportName: string }) {
   if (typeof configValue !== 'string') return null
-  const importData = parsePointerImportData(configValue)
-  if (!importData) return null
+  const pointerImportData = parsePointerImportData(configValue)
+  if (!pointerImportData) return null
 
-  const { importPath, exportName } = importData
-  const filePathAbsoluteFilesystem = resolveImportPath(importData, importerFilePath)
+  const { importPath, exportName } = pointerImportData
+  const filePathAbsoluteFilesystem = resolveImportPath(pointerImportData, importerFilePath)
 
   assertFileEnv(filePathAbsoluteFilesystem ?? importPath, configEnv, configName)
 
@@ -54,7 +54,7 @@ function resolveImport(
     if (importPath.startsWith('.')) {
       assert(importPath.startsWith('./') || importPath.startsWith('../'))
     }
-    assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
+    assertImportPath(filePathAbsoluteFilesystem, pointerImportData, importerFilePath)
 
     const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
     // This assert() is guarenteed, see assertUsage() in the onResolve() esbuild hook in transpileAndExecuteFile.ts
@@ -88,23 +88,23 @@ function resolveImport(
   }
 }
 
-function resolveImportPath(importData: PointerImportData, importerFilePath: FilePathResolved): string | null {
+function resolveImportPath(pointerImportData: PointerImportData, importerFilePath: FilePathResolved): string | null {
   const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
   // We can't use import.meta.resolve() as of Junary 2023 (and probably for a lot longer)
   // https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment137174954_62272600:~:text=But%20the%20argument%20parent%20(aka%20cwd)%20still%20requires%20a%20flag
-  // filePathAbsoluteFilesystem is expected to be null when importData.importPath is a Vite path alias
-  const filePathAbsoluteFilesystem = requireResolve(importData.importPath, cwd)
+  // filePathAbsoluteFilesystem is expected to be null when pointerImportData.importPath is a Vite path alias
+  const filePathAbsoluteFilesystem = requireResolve(pointerImportData.importPath, cwd)
   return filePathAbsoluteFilesystem
 }
 
 function assertImportPath(
   filePathAbsoluteFilesystem: string | null,
-  importData: PointerImportData,
+  pointerImportData: PointerImportData,
   importerFilePath: FilePathResolved
 ): asserts filePathAbsoluteFilesystem is string {
-  const { importPath: importPath, importStringWasGenerated, importString } = importData
+  const { importPath: importPath, importStringWasGenerated, importString } = pointerImportData
   const { filePathToShowToUser } = importerFilePath
 
   if (!filePathAbsoluteFilesystem) {

@@ -139,7 +139,7 @@ const zeroWidthSpace = '\u200b'
  * Data Structure holding info about import statement:
  *   `import { someExport as someImport } from './some-file'`
  * <=>
- *   `importData === {`
+ *   `pointerImportData === {`
  *      `importPath: './some-file',`
  *      `exportName: 'someExport',`
  *      `importString: 'import:./some-file:someExport',`

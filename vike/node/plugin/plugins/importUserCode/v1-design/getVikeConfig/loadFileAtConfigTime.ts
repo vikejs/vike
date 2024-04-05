@@ -93,10 +93,10 @@ async function loadExtendsConfigs(
 ) {
   const extendsPointerImportData = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
-  extendsPointerImportData.map((importData) => {
-    const { importPath: importPathAbsolute } = importData
-    const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
-    assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
+  extendsPointerImportData.map((pointerImportData) => {
+    const { importPath: importPathAbsolute } = pointerImportData
+    const filePathAbsoluteFilesystem = resolveImportPath(pointerImportData, configFilePath)
+    assertImportPath(filePathAbsoluteFilesystem, pointerImportData, configFilePath)
     const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute })
     extendsConfigFiles.push(filePath)
   })
@@ -133,10 +133,10 @@ function getExtendsPointerImportData(
   } else {
     assertUsage(false, wrongUsage)
   }
-  const extendsPointerImportData = extendList.map((importDataSerialized) => {
-    const importData = parsePointerImportData(importDataSerialized)
-    assertUsage(importData, wrongUsage)
-    return importData
+  const extendsPointerImportData = extendList.map((pointerImportDataSerialized) => {
+    const pointerImportData = parsePointerImportData(pointerImportDataSerialized)
+    assertUsage(pointerImportData, wrongUsage)
+    return pointerImportData
   })
   return extendsPointerImportData
 }
