@@ -393,6 +393,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
+            configDef.env = deriveConfigEnvFromFileName(configDef.env, interfaceFile.filePath.fileName)
             if (!isConfigEnv(configDef, configName)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
@@ -442,6 +443,22 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
 
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
 }
+
+function deriveConfigEnvFromFileName(env: ConfigEnvInternal, fileName: string) {
+  env = { ...env }
+  if (fileName.includes('.server.')) {
+    env.server = true
+    env.client = false
+  } else if (fileName.includes('.client.')) {
+    env.client = true
+    env.server = false
+  } else if (fileName.includes('.shared.')) {
+    env.server = true
+    env.client = true
+  }
+  return env
+}
+
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
   pageConfigs.forEach((pageConfig) => {
     assertOnBeforeRenderEnv(pageConfig)
@@ -747,7 +764,7 @@ async function getConfigValueSource(
     assert('configValue' in conf)
     const { configValue } = conf
 
-    // fake import
+    // Pointer import
     const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
     if (import_) {
       const configValueSource: ConfigValueSource = {
@@ -764,8 +781,6 @@ async function getConfigValueSource(
         configName !== 'extends'
       ) {
         if (import_.filePathAbsoluteFilesystem) {
-          assert(hasProp(import_, 'filePathAbsoluteFilesystem', 'string')) // Help TS
-          assert(hasProp(import_, 'filePathToShowToUserResolved', 'string')) // Help TS
           const fileExport = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {

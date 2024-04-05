@@ -12,11 +12,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     await page.goto(getServerUrl() + '/')
     await testCounter()
     expectLog(
-      `Server-only module /pages/index/+Page.server.jsx (https://vike.dev/file-env) imported on the client-side (building your app for production will be prevented and an error will be thrown).`,
+      `Server-only module /pages/index/secret.server.js (https://vike.dev/file-env) imported on the client-side by /pages/index/+Page.jsx (building your app for production will be prevented and an error will be thrown).`,
       (log) => log.logSource === 'stderr'
     )
     expectLog(
-      'Client-only module /pages/index/Counter.client.jsx (https://vike.dev/file-env) imported on the server-side by /pages/index/+Page.server.jsx (building your app for production will be prevented and an error will be thrown).',
+      'Client-only module /pages/index/Counter.client.jsx (https://vike.dev/file-env) imported on the server-side by /pages/index/+Page.jsx (building your app for production will be prevented and an error will be thrown).',
       (log) => log.logSource === 'stderr'
     )
   })

@@ -45,6 +45,17 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   let entries: string[] = []
   let include: string[] = []
 
+  const addEntry = (e: string) => {
+    assert(e)
+    entries.push(e)
+  }
+  const addInclude = (e: string) => {
+    assert(e)
+    // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
+    assertIsNpmPackageImport(e)
+    include.push(e)
+  }
+
   // V1 design
   {
     pageConfigs.forEach((pageConfig) => {
@@ -55,17 +66,11 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
         if (!configEnv.client) return
 
         if (definedAt.filePathAbsoluteUserRootDir !== null) {
-          const { filePathAbsoluteFilesystem } = definedAt
-          assert(filePathAbsoluteFilesystem)
-          // Surprisingly Vite expects entries to be absolute paths
-          entries.push(filePathAbsoluteFilesystem)
+          // Vite expects entries to be filesystem absolute paths (surprisingly so).
+          addEntry(definedAt.filePathAbsoluteFilesystem)
         } else {
           // Adding definedAt.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
-          const { importPathAbsolute } = definedAt
-          assert(importPathAbsolute) // Help TS
-          // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
-          assertIsNpmPackageImport(importPathAbsolute)
-          include.push(importPathAbsolute)
+          addInclude(definedAt.importPathAbsolute)
         }
       })
     })
@@ -78,8 +83,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     pageFiles.forEach((filePathAbsoluteUserRootDir) => {
       const entry = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
       const { filePathAbsoluteFilesystem } = entry
-      assert(filePathAbsoluteFilesystem)
-      entries.push(filePathAbsoluteFilesystem)
+      addEntry(filePathAbsoluteFilesystem)
     })
   }
 

@@ -5,10 +5,22 @@ export { clearFilesEnvMap }
 
 import pc from '@brillout/picocolors'
 import type { ConfigEnvInternal, DefinedAtFileFullInfo } from '../../../../../../shared/page-configs/PageConfig.js'
-import { assert, assertPosixPath, assertUsage, deepEqual, requireResolve } from '../../../../utils.js'
+import {
+  assert,
+  assertIsNpmPackageImport,
+  assertPosixPath,
+  assertUsage,
+  deepEqual,
+  isPathAbsolute,
+  requireResolve
+} from '../../../../utils.js'
 import { type ImportData, parseImportData } from './transformFileImports.js'
 import path from 'path'
-import { getFilePathResolved, getFilePathUnresolved } from '../../../../shared/getFilePath.js'
+import {
+  getFilePathAbsoluteUserRootDir,
+  getFilePathResolved,
+  getFilePathUnresolved
+} from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
@@ -32,32 +44,30 @@ function resolveImport(
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
   let filePath: FilePath
-  if (importPath.startsWith('.')) {
-    assert(importPath.startsWith('./') || importPath.startsWith('../'))
+  // - importPath is one of the following. (See `transpileAndExecuteFile()`.)
+  //   - A relative import path
+  //   - A filesystem absolute path
+  //   - An npm package import
+  // - importPath cannot be a path alias (since esbuild resolves path aliases, see transpileAndExecuteFile.ts)
+  assertPosixPath(importPath)
+  if (importPath.startsWith('.') || isPathAbsolute(importPath)) {
+    if (importPath.startsWith('.')) {
+      assert(importPath.startsWith('./') || importPath.startsWith('../'))
+    }
     assertImportPath(filePathAbsoluteFilesystem, importData, importerFilePath)
-    filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir })
+
+    const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
+    // This assert() is guarenteed, see assertUsage() in the onResolve() esbuild hook in transpileAndExecuteFile.ts
+    assert(filePathAbsoluteUserRootDir)
+
     // Imports are included in virtual files, thus the relative path of imports need to resolved.
     // ```
     // [vite] Internal server error: Failed to resolve import "./onPageTransitionHooks" from "virtual:vike:pageConfigValuesAll:client:/pages/index". Does the file exist?
     // ```
-    assertUsage(
-      filePath.filePathAbsoluteUserRootDir,
-      `${importerFilePath.filePathToShowToUser} imports a relative path ${pc.cyan(
-        importPath
-      )} resolving outside of ${userRootDir} which is forbidden: import from a relative path inside ${userRootDir}, or import from a dependency's package.json#exports entry instead`
-    )
-    // Alternativey, we can try one of the following but last time we tried none of the following worked.
-    // /*
-    // assert(filePathAbsoluteFilesystem.startsWith('/'))
-    // filePath = `/@fs${filePathAbsoluteFilesystem}`
-    // /*/
-    // assert(filePathAbsoluteUserRootDir.startsWith('../'))
-    // filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
-    // //*/
+    filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
-    // importPath can be:
-    //  - an npm package import
-    //  - a path alias
+    // importPath cannot be a path alias (since esbuild resolves path aliases, see transpileAndExecuteFile.ts)
+    assertIsNpmPackageImport(importPath)
     if (filePathAbsoluteFilesystem) {
       filePath = getFilePathResolved({
         userRootDir,
