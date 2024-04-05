@@ -144,6 +144,7 @@ function assertFileEnv(
   if (filePathAbsoluteFilesystem) {
     key = filePathAbsoluteFilesystem
   } else {
+    assertIsNpmPackageImport(importPath)
     key = importPath
   }
   assertPosixPath(key)
