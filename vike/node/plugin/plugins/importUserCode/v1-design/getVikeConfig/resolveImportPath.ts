@@ -37,10 +37,13 @@ function resolveImport(
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
   if (!pointerImportData) return null
-  const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
   const { importPath, exportName } = pointerImportData
-  assertFileEnv(filePath.filePathAbsoluteFilesystem, importPath, configEnv, configName)
+
+  const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
+
+  assertFileEnv(filePath.filePathAbsoluteFilesystem, importPath, configEnv, configName)
+
   return {
     ...filePath,
     fileExportName: exportName,
@@ -137,19 +140,24 @@ function assertFileEnv(
   configEnv: ConfigEnvInternal,
   configName: string
 ) {
-  const filePathForEnvCheck = filePathAbsoluteFilesystem ?? importPath
-  assertPosixPath(filePathForEnvCheck)
-  if (!filesEnvMap.has(filePathForEnvCheck)) {
-    filesEnvMap.set(filePathForEnvCheck, [])
+  let key: string
+  if (filePathAbsoluteFilesystem) {
+    key = filePathAbsoluteFilesystem
+  } else {
+    key = importPath
   }
-  const fileEnv = filesEnvMap.get(filePathForEnvCheck)!
+  assertPosixPath(key)
+  if (!filesEnvMap.has(key)) {
+    filesEnvMap.set(key, [])
+  }
+  const fileEnv = filesEnvMap.get(key)!
   fileEnv.push({ configEnv, configName })
   const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
       [
-        `${filePathForEnvCheck} defines the value of configs living in different environments:`,
+        `${key} defines the value of configs living in different environments:`,
         ...[configDifferentEnv, { configName, configEnv }].map(
           (c) =>
             `  - config ${pc.cyan(c.configName)} which value lives in environment ${pc.cyan(
