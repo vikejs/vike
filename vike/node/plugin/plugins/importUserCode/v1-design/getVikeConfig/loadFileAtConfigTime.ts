@@ -14,8 +14,7 @@ import { assertPlusFileExport } from '../../../../../../shared/page-configs/asse
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformFileImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
-import { assertImportPath, resolveImportPath } from './resolveImportPath.js'
-import { getFilePathResolved } from '../../../../shared/getFilePath.js'
+import { resolvePointerImport } from './resolveImportPath.js'
 
 assertIsNotProductionRuntime()
 
@@ -94,10 +93,8 @@ async function loadExtendsConfigs(
   const extendsPointerImportData = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
   extendsPointerImportData.map((pointerImportData) => {
-    const { importPath: importPathAbsolute } = pointerImportData
-    const filePathAbsoluteFilesystem = resolveImportPath(pointerImportData, configFilePath)
-    assertImportPath(filePathAbsoluteFilesystem, pointerImportData, configFilePath)
-    const filePath = getFilePathResolved({ filePathAbsoluteFilesystem, userRootDir, importPathAbsolute })
+    const filePath = resolvePointerImport(pointerImportData, configFilePath, userRootDir)
+    assert(filePath.filePathAbsoluteFilesystem)
     extendsConfigFiles.push(filePath)
   })
 

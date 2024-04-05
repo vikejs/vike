@@ -1,6 +1,5 @@
 export { resolveImport }
-export { resolveImportPath }
-export { assertImportPath }
+export { resolvePointerImport }
 export { clearFilesEnvMap }
 
 import pc from '@brillout/picocolors'
@@ -57,7 +56,7 @@ function resolvePointerImport(
   userRootDir: string
 ): FilePath {
   const { importPath } = pointerImportData
-  const filePathAbsoluteFilesystem = resolveImportPath(pointerImportData, importerFilePath)
+  const filePathAbsoluteFilesystem = resolveImportPathWithNode(pointerImportData, importerFilePath)
 
   let filePath: FilePath
   // - importPath is one of the following. (See `transpileAndExecuteFile()`.)
@@ -82,17 +81,18 @@ function resolvePointerImport(
     // ```
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
+    const importPathAbsolute = importPath
     // importPath cannot be a path alias (since esbuild resolves path aliases, see transpileAndExecuteFile.ts)
-    assertIsNpmPackageImport(importPath)
+    assertIsNpmPackageImport(importPathAbsolute)
     if (filePathAbsoluteFilesystem) {
       filePath = getFilePathResolved({
         userRootDir,
         filePathAbsoluteFilesystem,
-        importPathAbsolute: importPath
+        importPathAbsolute
       })
     } else {
       filePath = getFilePathUnresolved({
-        importPathAbsolute: importPath
+        importPathAbsolute
       })
     }
   }
@@ -100,7 +100,10 @@ function resolvePointerImport(
   return filePath
 }
 
-function resolveImportPath(pointerImportData: PointerImportData, importerFilePath: FilePathResolved): string | null {
+function resolveImportPathWithNode(
+  pointerImportData: PointerImportData,
+  importerFilePath: FilePathResolved
+): string | null {
   const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
