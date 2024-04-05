@@ -1,21 +1,16 @@
 import { createPinia } from 'pinia'
-import { createSSRApp, h, reactive, markRaw } from 'vue'
+import { createSSRApp, h, reactive, markRaw, ref } from 'vue'
 import { setPageContext } from './usePageContext'
 
 export { createApp }
 
 function createApp(pageContext) {
-  let rootComponent
+  const pageRef = ref(markRaw(Page))
+  const pagePropsRef = ref(markRaw(pageContext.pageProps || {}))
+
   const app = createSSRApp({
-    data: () => ({
-      Page: markRaw(pageContext.Page),
-      pageProps: markRaw(pageContext.pageProps || {})
-    }),
     render() {
-      return h(this.Page, this.pageProps)
-    },
-    created() {
-      rootComponent = this
+      return h(pageRef.value, pagePropsRef.value)
     }
   })
 
@@ -26,8 +21,8 @@ function createApp(pageContext) {
   Object.assign(app, {
     changePage: (pageContext) => {
       Object.assign(pageContextReactive, pageContext)
-      rootComponent.Page = markRaw(pageContext.Page)
-      rootComponent.pageProps = markRaw(pageContext.pageProps || {})
+      pageRef.value = markRaw(pageContext.Page)
+      pagePropsRef.value = markRaw(pageContext.pageProps || {})
     }
   })
 
