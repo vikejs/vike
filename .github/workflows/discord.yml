@@ -1,4 +1,4 @@
-name: CI Discord Notification
+name: Discord Notification
 
 on:
   workflow_run:
@@ -9,12 +9,11 @@ jobs:
   notify:
     # if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
-    name: 'CI Status - Discord Notification'
     steps:
-      - name: Send Discord message
+      - name: Push the notification using Discord webhook
         env:
           # 🟢 has poor compatibility: https://www.unicompat.com/1F7E2
-          CI_STATUS: ${{ github.event.workflow_run.conclusion == 'success' && '✅' || '🔴' }}
+          CI_STATUS: ${{ github.event.workflow_run.conclusion == 'success' && '✅' ||  github.event.workflow_run.conclusion == 'failure' && '🔴' || github.event.workflow_run.conclusion }}
           REPO_NAME: ${{ github.event.repository.name }}
           GIT_BRANCH: ${{ github.event.workflow_run.head_branch }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
@@ -29,7 +28,7 @@ jobs:
             -X POST \
             --data "{\"content\":\"$CI_STATUS $REPO_NAME $WORKFLOW_NAME $GIT_BRANCH $WORKFLOW_URL\",\"username\":\"GitHub\",\"avatar_url\":\"https://i.imgur.com/OOtUMJD.png\"}" \
             $DISCORD_WEBHOOK
-      - name: Inspect Event Object
+      - name: Debug/inspect
         env:
           EVENT: ${{ toJSON( github.event ) }}
         run: echo $EVENT
