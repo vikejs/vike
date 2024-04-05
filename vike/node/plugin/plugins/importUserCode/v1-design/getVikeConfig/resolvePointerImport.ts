@@ -1,4 +1,4 @@
-export { resolveImport }
+export { resolvePointerImportOfConfig }
 export { resolvePointerImport }
 export { clearFilesEnvMap }
 
@@ -26,7 +26,7 @@ const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: strin
 
 type PointerImportResolved = DefinedAtFileFullInfo & { fileExportName: string }
 
-function resolveImport(
+function resolvePointerImportOfConfig(
   configValue: unknown,
   importerFilePath: FilePathResolved,
   userRootDir: string,

@@ -80,7 +80,7 @@ import {
   loadImportedFile,
   loadValueFile
 } from './getVikeConfig/loadFileAtConfigTime.js'
-import { clearFilesEnvMap, resolveImport } from './getVikeConfig/resolveImportPath.js'
+import { clearFilesEnvMap, resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 
@@ -734,11 +734,17 @@ async function getConfigValueSource(
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
-      const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
+      const pointerImport = resolvePointerImportOfConfig(
+        configValue,
+        interfaceFile.filePath,
+        userRootDir,
+        configEnv,
+        configName
+      )
       const configDefinedAt = getConfigDefinedAtString('Config', configName, { definedAt: definedAtConfigFile })
-      assertUsage(import_, `${configDefinedAt} should be an import`)
-      valueFilePath = import_.filePathAbsoluteVite
-      definedAt = import_
+      assertUsage(pointerImport, `${configDefinedAt} should be an import`)
+      valueFilePath = pointerImport.filePathAbsoluteVite
+      definedAt = pointerImport
     } else {
       assert(interfaceFile.isValueFile)
       valueFilePath = interfaceFile.filePath.filePathAbsoluteVite
@@ -765,14 +771,20 @@ async function getConfigValueSource(
     const { configValue } = conf
 
     // Pointer import
-    const import_ = resolveImport(configValue, interfaceFile.filePath, userRootDir, configEnv, configName)
-    if (import_) {
+    const pointerImport = resolvePointerImportOfConfig(
+      configValue,
+      interfaceFile.filePath,
+      userRootDir,
+      configEnv,
+      configName
+    )
+    if (pointerImport) {
       const configValueSource: ConfigValueSource = {
         locationId,
         configEnv,
         valueIsImportedAtRuntime: true,
         valueIsDefinedByValueFile: false,
-        definedAt: import_
+        definedAt: pointerImport
       }
       // Load fake import
       if (
@@ -780,8 +792,8 @@ async function getConfigValueSource(
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
         configName !== 'extends'
       ) {
-        if (import_.filePathAbsoluteFilesystem) {
-          const fileExport = await loadImportedFile(import_, userRootDir, importedFilesLoaded)
+        if (pointerImport.filePathAbsoluteFilesystem) {
+          const fileExport = await loadImportedFile(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
           const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)

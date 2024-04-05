@@ -14,7 +14,7 @@ import { assertPlusFileExport } from '../../../../../../shared/page-configs/asse
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformFileImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
-import { resolvePointerImport } from './resolveImportPath.js'
+import { resolvePointerImport } from './resolvePointerImport.js'
 
 assertIsNotProductionRuntime()
 
