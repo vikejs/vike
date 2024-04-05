@@ -5,7 +5,7 @@ import { setPageContext } from './usePageContext'
 export { createApp }
 
 function createApp(pageContext) {
-  const pageRef = ref(markRaw(Page))
+  const pageRef = ref(markRaw(pageContext.Page))
   const pagePropsRef = ref(markRaw(pageContext.pageProps || {}))
 
   const app = createSSRApp({
