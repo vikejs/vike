@@ -25,23 +25,36 @@ import type { FilePath, FilePathResolved } from '../../../../../../shared/page-c
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 
+type PointerImportResolved = DefinedAtFileFullInfo & { fileExportName: string }
+
 function resolveImport(
   configValue: unknown,
   importerFilePath: FilePathResolved,
   userRootDir: string,
   configEnv: ConfigEnvInternal,
   configName: string
-): null | (DefinedAtFileFullInfo & { fileExportName: string }) {
+): null | PointerImportResolved {
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
   if (!pointerImportData) return null
-
+  const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
   const { importPath, exportName } = pointerImportData
-  const filePathAbsoluteFilesystem = resolveImportPath(pointerImportData, importerFilePath)
-
-  assertFileEnv(filePathAbsoluteFilesystem ?? importPath, configEnv, configName)
-
+  assertFileEnv(filePath.filePathAbsoluteFilesystem, importPath, configEnv, configName)
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
+  return {
+    ...filePath,
+    fileExportName: exportName,
+    fileExportPathToShowToUser
+  }
+}
+
+function resolvePointerImport(
+  pointerImportData: PointerImportData,
+  importerFilePath: FilePathResolved,
+  userRootDir: string
+): FilePath {
+  const { importPath } = pointerImportData
+  const filePathAbsoluteFilesystem = resolveImportPath(pointerImportData, importerFilePath)
 
   let filePath: FilePath
   // - importPath is one of the following. (See `transpileAndExecuteFile()`.)
@@ -81,11 +94,7 @@ function resolveImport(
     }
   }
 
-  return {
-    ...filePath,
-    fileExportName: exportName,
-    fileExportPathToShowToUser
-  }
+  return filePath
 }
 
 function resolveImportPath(pointerImportData: PointerImportData, importerFilePath: FilePathResolved): string | null {
@@ -122,7 +131,13 @@ function assertImportPath(
   }
 }
 
-function assertFileEnv(filePathForEnvCheck: string, configEnv: ConfigEnvInternal, configName: string) {
+function assertFileEnv(
+  filePathAbsoluteFilesystem: string | null,
+  importPath: string,
+  configEnv: ConfigEnvInternal,
+  configName: string
+) {
+  const filePathForEnvCheck = filePathAbsoluteFilesystem ?? importPath
   assertPosixPath(filePathForEnvCheck)
   if (!filesEnvMap.has(filePathForEnvCheck)) {
     filesEnvMap.set(filePathForEnvCheck, [])
