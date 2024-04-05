@@ -6,7 +6,13 @@ export { cleanFilePathUnkown }
 export { getFilePathAbsoluteUserRootDir }
 
 import path from 'path'
-import { assert, assertPathFilesystemAbsolute, assertPosixPath, toPosixPath } from '../utils.js'
+import {
+  assert,
+  assertIsNpmPackageImport,
+  assertPathFilesystemAbsolute,
+  assertPosixPath,
+  toPosixPath
+} from '../utils.js'
 import type { FilePathResolved, FilePathUnresolved } from '../../../shared/page-configs/FilePath.js'
 import type { ResolvedConfig } from 'vite'
 
@@ -53,6 +59,7 @@ function getComputedProps(
   if ('filePathAbsoluteUserRootDir' in args) {
     const importPathAbsolute = args.importPathAbsolute ?? null
     const { filePathAbsoluteUserRootDir } = args
+    if (importPathAbsolute) assertIsNpmPackageImport(importPathAbsolute)
     return {
       importPathAbsolute,
       filePathAbsoluteUserRootDir,
@@ -65,6 +72,7 @@ function getComputedProps(
 }
 function getComputedPropsImportPathAbsolute(args: { importPathAbsolute: string }) {
   const { importPathAbsolute } = args
+  assertIsNpmPackageImport(importPathAbsolute)
   return {
     filePathAbsoluteUserRootDir: null,
     importPathAbsolute,
