@@ -1,30 +1,17 @@
 export { createApp }
 
-import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
+import { createSSRApp, defineComponent, h, markRaw, reactive, ref } from 'vue'
 import PageShell from './PageShell.vue'
 import { setPageContext } from './usePageContext'
 
 function createApp(pageContext) {
   const { Page } = pageContext
 
-  let rootComponent
+  const pageRef = ref(markRaw(Page))
+
   const PageWithShell = defineComponent({
-    data: () => ({
-      Page: markRaw(Page)
-    }),
-    created() {
-      rootComponent = this
-    },
     render() {
-      return h(
-        PageShell,
-        {},
-        {
-          default: () => {
-            return h(this.Page)
-          }
-        }
-      )
+      return h(PageShell, {}, { default: () => h(pageRef.value) })
     }
   })
 
@@ -34,7 +21,7 @@ function createApp(pageContext) {
   Object.assign(app, {
     changePage: (pageContext) => {
       Object.assign(pageContextReactive, pageContext)
-      rootComponent.Page = markRaw(pageContext.Page)
+      pageRef.value = markRaw(pageContext.Page)
     }
   })
 
