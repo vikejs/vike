@@ -627,7 +627,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Error Page',
+    title: 'Error page',
     url: '/error-page'
   },
   {
