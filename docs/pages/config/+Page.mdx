@@ -1,7 +1,7 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
 
-Everything there is to know about config files.
+Everything there is to know about configuring your Vike app.
 
 For a list of configs, see:
  - <Link href="/settings" />
@@ -10,9 +10,9 @@ For a list of configs, see:
 
 ## `+` files
 
-Files that start with `+`, such as `+config.js` and `+Page.js`,  configure your app.
+You configure your Vike app by creating files that start with `+`, such as `+config.js` and `+Page.js`.
 
-For example, you can set the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> components of a page like this:
+For example, you can define the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> component of a page by creating a `+config.js` file like this:
 
 ```js
 // /pages/product/@id/+config.js
@@ -36,7 +36,7 @@ export default /* ... */
 export default /* ... */
 ```
 
-For more convenience, you can do that instead:
+For more convenience, you can also do that instead:
 
 <FileRemoved>
 ```js
@@ -64,7 +64,9 @@ export default /* ... */
 export default /* ... */
 ```
 
-Both achieve the same, it's just convenience as the latter allows you to skip creating a `+config.js` file.
+Both achieve the same, it's just convenience as the latter allows you to skip creating the `+config.js` file.
+
+> Expect of the `+config.js` file, each `+` file corresponds to a <Link href="/settings">Vike setting</Link> or a <Link href="/hooks">Vike hook</Link>.
 
 
 ## Inheritance
