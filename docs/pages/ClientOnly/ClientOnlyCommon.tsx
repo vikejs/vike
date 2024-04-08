@@ -11,9 +11,9 @@ export const ClientOnlyCommon = ({ packageName }: { packageName: string }) => {
   return (
     <div>
       <h3>Usage</h3>
-      {isReact && <ReactUsage />}
-      {isSolid && <SolidUsage />}
-      {isVue && <VueUsage />}
+      {isReact && <ReactUsage/>}
+      {isSolid && <SolidUsage/>}
+      {isVue && <VueUsage/>}
       <h3>Props</h3>
       {isVue && (
         <blockquote>
@@ -24,18 +24,20 @@ export const ClientOnlyCommon = ({ packageName }: { packageName: string }) => {
         </blockquote>
       )}
       <ul>
-        <li>
-          <strong>load</strong>: The function that imports the component.
-        </li>
+        {!isSolid && (
+          <li>
+            <strong>load</strong>: The function that imports the component.
+          </li>
+        )}
+        {isReact && (
+          <li>
+            <strong>children</strong>: The function that renders the component.
+          </li>
+        )}
         {!isVue && (
-          <>
-            <li>
-              <strong>children</strong>: The function that renders the component.
-            </li>
-            <li>
-              <strong>fallback</strong>: The element that is displayed while the component is being loaded.
-            </li>
-          </>
+          <li>
+            <strong>fallback</strong>: The element that is displayed while the component is being loaded.
+          </li>
         )}
         {isReact && (
           <li>
