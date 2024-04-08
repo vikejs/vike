@@ -49,9 +49,18 @@ import { cjsInterop } from "vite-plugin-cjs-interop";
 export default {
   plugins: [
     cjsInterop({
+      // Add broken npm package here
       dependencies: [
-        // Add problematic npm package here
-        "some-package/**", // Use /** to apply the interop patch to all imports
+
+        // Apply patch to root import:
+        //   import someImport from 'some-package'
+        "some-package",
+
+        // Apply patch to all sub imports:
+        //   import someImport from 'some-package/path'
+        //   import someImport from 'some-package/sub/path'
+        //   ...
+        "some-package/**",
       ]
     })
   ]
