@@ -8,6 +8,65 @@ For a list of configs, see:
  - <Link href="/hooks" />
 
 
+## `+` files
+
+Files that start with `+`, such as `+config.js` and `+Page.js`,  configure your app.
+
+For example, you can set the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> components of a page like this:
+
+```js
+// /pages/product/@id/+config.js
+
+import Page from './Page'
+import Layout from './Layout'
+
+export default {
+  Page,
+  Layout
+}
+```
+```js
+// /pages/product/@id/Page.js
+
+export default /* ... */
+```
+```js
+// /pages/product/@id/Layout.js
+
+export default /* ... */
+```
+
+For more convenience, you can do that instead:
+
+<FileRemoved>
+```js
+// /pages/product/@id/+config.js
+
+import Page from './Page'
+import Layout from './Layout'
+
+export default {
+  Page,
+  Layout
+}
+```
+</FileRemoved>
+```js
+// /pages/product/@id/Page.js // [!code --]
+// /pages/product/@id/+Page.js // [!code ++]
+
+export default /* ... */
+```
+```js
+// /pages/product/@id/Layout.js // [!code --]
+// /pages/product/@id/+Layout.js // [!code ++]
+
+export default /* ... */
+```
+
+Both achieve the same, it's just convenience as the latter allows you to skip creating a `+config.js` file.
+
+
 ## Inheritance
 
 You can apply configurations to all your pages, a subset of pages, or one page only.
@@ -106,65 +165,6 @@ export default {
   extends: [vikeReact]
 }
 ```
-
-
-## `+` files
-
-Files that start with `+`, such as `+config.js` and `+Page.js`,  configure your app.
-
-For example, you can set the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> components of a page like this:
-
-```js
-// /pages/product/@id/+config.js
-
-import Page from './Page'
-import Layout from './Layout'
-
-export default {
-  Page,
-  Layout
-}
-```
-```js
-// /pages/product/@id/Page.js
-
-export default /* ... */
-```
-```js
-// /pages/product/@id/Layout.js
-
-export default /* ... */
-```
-
-For more convenience, you can do that instead:
-
-<FileRemoved>
-```js
-// /pages/product/@id/+config.js
-
-import Page from './Page'
-import Layout from './Layout'
-
-export default {
-  Page,
-  Layout
-}
-```
-</FileRemoved>
-```js
-// /pages/product/@id/Page.js // [!code --]
-// /pages/product/@id/+Page.js // [!code ++]
-
-export default /* ... */
-```
-```js
-// /pages/product/@id/Layout.js // [!code --]
-// /pages/product/@id/+Layout.js // [!code ++]
-
-export default /* ... */
-```
-
-Both achieve the same, it's just convenience as the latter allows you to skip creating a `+config.js` file.
 
 
 ## Pointer imports
