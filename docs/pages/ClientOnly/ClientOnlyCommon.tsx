@@ -11,9 +11,9 @@ export const ClientOnlyCommon = ({ packageName }: { packageName: string }) => {
   return (
     <div>
       <h3>Usage</h3>
-      {isReact && <ReactUsage/>}
-      {isSolid && <SolidUsage/>}
-      {isVue && <VueUsage/>}
+      {isReact && <ReactUsage />}
+      {isSolid && <SolidUsage />}
+      {isVue && <VueUsage />}
       <h3>Props</h3>
       {isVue && (
         <blockquote>
