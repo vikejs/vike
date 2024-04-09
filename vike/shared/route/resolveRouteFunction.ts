@@ -4,7 +4,7 @@ export { assertSyncRouting }
 export { warnDeprecatedAllowKey }
 
 import { assertPageContextUrlComputedProps, PageContextUrlComputedPropsInternal } from '../addUrlComputedProps.js'
-import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise, isStringRecord } from './utils.js'
+import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise } from './utils.js'
 import pc from '@brillout/picocolors'
 
 async function resolveRouteFunction(
@@ -108,6 +108,5 @@ function assertRouteParams<T>(
     return
   }
   assert(errPrefix.endsWith(' should'))
-  assertUsage(isPlainObject(result.routeParams), `${errPrefix} be a plain JavaScript object.`)
-  assertUsage(isStringRecord(result.routeParams), `${errPrefix} only hold string values.`)
+  assertUsage(hasProp(result, 'routeParams', 'string{}'), `${errPrefix} be an object holding string values.`)
 }

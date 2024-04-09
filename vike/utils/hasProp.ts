@@ -26,6 +26,9 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'string[]'): obj is ObjectType & Record<PropName, string[]>;
 // prettier-ignore
 // biome-ignore format:
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'string{}'): obj is ObjectType & Record<PropName, Record<string, string>>;
+// prettier-ignore
+// biome-ignore format:
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'function'): obj is ObjectType & Record<PropName, (...args: any[]) => unknown>;
 // prettier-ignore
 // biome-ignore format:
@@ -63,7 +66,10 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
     return isObject(propValue)
   }
   if( type === 'string[]') {
-    return Array.isArray(propValue) && propValue.every(el => typeof el === 'string')
+    return Array.isArray(propValue) && propValue.every(val => typeof val === 'string')
+  }
+  if( type === 'string{}') {
+    return isObject(propValue) && Object.values(propValue).every((val) => typeof val === 'string')
   }
   if( type === 'function') {
     return isCallable(propValue)
