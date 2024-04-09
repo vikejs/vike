@@ -2,8 +2,9 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vite": "^5.0.10",
-    "vike": "0.4.168"
+    "typescript": "^5.3.3",
+    "vike": "0.4.168",
+    "vite": "^5.0.10"
   },
   "type": "module"
 }
