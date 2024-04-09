@@ -20,8 +20,8 @@ importers:
         specifier: ^0.5.28
         version: 0.5.28
       '@brillout/test-types':
-        specifier: ^0.1.12
-        version: 0.1.12(typescript@4.8.4)
+        specifier: ^0.1.13
+        version: 0.1.13(typescript@4.8.4)
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
@@ -2446,8 +2446,8 @@ packages:
       - encoding
     dev: true
 
-  /@brillout/test-types@0.1.12(typescript@4.8.4):
-    resolution: {integrity: sha512-rSLr0qxlO71CRv8wqAEoqKvOg+mnhYIIDjxK4Svd7bXezRKwVibX2v/2cFFfMbNcE69OZj3IBLIyE6UYce4kCQ==}
+  /@brillout/test-types@0.1.13(typescript@4.8.4):
+    resolution: {integrity: sha512-LJVJzKA1dFnzbLkCxlUBKFeIZNUdd01yPaEIHCcEzgkWrchu1jTmewjPxwOL4Gk4qVmwEk8eROuwTZzzSs/zPA==}
     hasBin: true
     requiresBuild: true
     peerDependencies:
