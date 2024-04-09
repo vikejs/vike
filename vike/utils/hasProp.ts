@@ -48,46 +48,48 @@ function hasProp<ObjectType, PropName extends PropertyKey, Enum>(obj: ObjectType
 // prettier-ignore
 // biome-ignore format:
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName): obj is ObjectType & Record<PropName, unknown>;
-// prettier-ignore
-// biome-ignore format:
-function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: string | string[] = 'unknown'): boolean {
-  if( !isObject(obj) ) return false
-  if( !(prop in obj) ){
+function hasProp<ObjectType, PropName extends PropertyKey>(
+  obj: ObjectType,
+  prop: PropName,
+  type: string | string[] = 'unknown'
+): boolean {
+  if (!isObject(obj)) return false
+  if (!(prop in obj)) {
     return type === 'undefined'
   }
-  if( type === 'unknown' ) {
+  if (type === 'unknown') {
     return true
   }
-  const propValue = (obj as Record<any,unknown>)[prop]
-  if( type === 'array') {
+  const propValue = (obj as Record<any, unknown>)[prop]
+  if (type === 'array') {
     return Array.isArray(propValue)
   }
-  if( type === 'object') {
+  if (type === 'object') {
     return isObject(propValue)
   }
-  if( type === 'string[]') {
-    return Array.isArray(propValue) && propValue.every(val => typeof val === 'string')
+  if (type === 'string[]') {
+    return Array.isArray(propValue) && propValue.every((val) => typeof val === 'string')
   }
-  if( type === 'string{}') {
+  if (type === 'string{}') {
     return isObject(propValue) && Object.values(propValue).every((val) => typeof val === 'string')
   }
-  if( type === 'function') {
+  if (type === 'function') {
     return isCallable(propValue)
   }
-  if( Array.isArray(type) ) {
+  if (Array.isArray(type)) {
     return typeof propValue === 'string' && type.includes(propValue)
   }
-  if( type === 'null') {
-    return propValue===null
+  if (type === 'null') {
+    return propValue === null
   }
-  if( type === 'undefined') {
-    return propValue===undefined
+  if (type === 'undefined') {
+    return propValue === undefined
   }
-  if( type === 'true') {
-    return propValue===true
+  if (type === 'true') {
+    return propValue === true
   }
-  if( type === 'false') {
-    return propValue===false
+  if (type === 'false') {
+    return propValue === false
   }
-  return typeof propValue === type;
+  return typeof propValue === type
 }
