@@ -16,7 +16,6 @@
     // Strictness
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitAny": true,
     // Misc
     "skipLibCheck": true
   },
