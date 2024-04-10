@@ -31,8 +31,8 @@ window.onclick = () => {
 }
 ```
 
-In addition, `.server.js`, `.client.js` and `.shared.js` can be used as a simpler way to set the environment of a [+ file](https://vike.dev/config#files), instead of setting it in [`meta`](https://vike.dev/meta).
-For example, we can use `.server.js` make the `/about` page [HTML-only](https://vike.dev/render-modes#html-only).
+In addition, `.server.js`, `.client.js` and `.shared.js` serve as a simpler way to set the environment of a [+ file](https://vike.dev/config#files), instead of setting it in [`meta`](https://vike.dev/meta).
+For example, naming a page file `+Page.server.js` makes the page [HTML-only](https://vike.dev/render-modes#html-only).
 ```js
 // /pages/about/+Page.server.js
 // Environment: server
