@@ -137,20 +137,21 @@ async function data(pageContext) {
 
 ## Client-side
 
-By default, `data()` always runs on the server-side.
+By default, the `data()` hook always runs on the server-side.
 
 But,
-by using `meta`,
-you can tell Vike to run `data()` also on the client-side: Vike calls `data()` on the server-side for the first page the user visits
-and then, for subsequent page navigations, Vike calls `data()` on the client-side.
+by using the <Link href="/file-env">file extension `.shared.js`</Link> (renaming `+data.js` to `+data.shared.js`),
+you can tell Vike to run `data()` also on the client-side. This will make Vike:
+- Call `data()` on the server-side for the first page the user visits.
+- Call `data()` on the client-side for subsequent page navigations.
 
-See <Link href="/meta#example-modify-data-env" doNotInferSectionTitle />.
+> In general, we recommend running `data()` only on the server-side because it's usually easier to write code that runs only on the server-side.
+>
+> That said, if you want to minimize requests made to your server, then it can make sense to run `data()` on the client-side.
 
-In general, we recommend running `data()` only on the server-side because it's usually easier to write code that only runs on the server-side.
-That said, if you want to minimize requests made to your server, then it makes sense to run `data()` on the client-side.
-Keep in mind that you'll have to make sure that your `data()` hook is isomorphic: it needs to be able to run on the server-side as well as on the client-side.
+You can also set `.client.js` instead of `.shared.js`: Vike will then always call `data()` on the client-side (never on the server-side).
 
-You can also set `data()`'s meta config `env` to `{ client: true, server: false}`: Vike will then always call `data()` on the client-side and never on the server-side.
+> Alternatively to `.shared.js` and `.client.js`, you can change the <Link href="/meta#example-modify-data-env">`meta.env` setting</Link> of the `data()` hook in a global fashion, alleviating the need to add `.shared.js` / `.client.js` to each `+data.js` file.
 
 
 ## `pageContext.data`

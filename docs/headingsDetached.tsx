@@ -348,7 +348,7 @@ const headingsDetached = [
     url: '/vike-packages'
   },
   {
-    title: 'Extensions',
+    title: 'Vike Extensions',
     url: '/extensions'
   },
   {

@@ -1,9 +1,11 @@
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
 
-> Using `meta` is a powerful and advanced technique: generally, we recommend using <Link href="/extensions">Vike extensions</Link> instead.
+> Using `meta` is an advanced and powerful technique which we recommend using only for advanced use cases. Consider using the following instead:
+> - <Link href="/extensions" noBreadcrumb={true} />
+> - <Link href="/file-env" noBreadcrumb={true} />
 
-`meta` enables:
+The `meta` settings enables you to create:
  - **New settings**.
    - <Link href="#example-dataendpointurl" doNotInferSectionTitle />
    - <Link href="#example-sql" doNotInferSectionTitle />
