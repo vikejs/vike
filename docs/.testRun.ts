@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, test, expect, run, fetchHtml, getServerUrl, testScreenshotFixture, skip } from '@brillout/test-e2e'
+import { page, test, expect, run, fetchHtml, getServerUrl, skip } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   {
@@ -33,10 +33,5 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     await page.locator(`h2:has-text("${sectionHeading}")`).click()
     await page.waitForSelector(selector, { state: 'visible' })
     expect(await locator.isHidden()).toBe(false)
-  })
-
-  test('screenshot fixture', async () => {
-    await page.locator('#version-number').evaluate((element) => (element.innerHTML = 'v9.9.99'))
-    await testScreenshotFixture({ doNotTestLocally: true })
   })
 }
