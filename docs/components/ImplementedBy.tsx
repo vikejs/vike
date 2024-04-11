@@ -1,7 +1,7 @@
 export { ImplementedBy }
 
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
+import { UiFrameworkVikeExtensionNames } from '../components'
 import React from 'react'
 
 function ImplementedBy({
@@ -15,13 +15,7 @@ function ImplementedBy({
       Implemented by: {by ?? <UiFrameworkVikeExtensionNames />}.
       <blockquote>
         <p>
-          You need to use{' '}
-          {by ?? (
-            <>
-              a <UiFrameworkVikeExtension />
-            </>
-          )}{' '}
-          in order to use the {children}.
+          You need {by ?? <UiFrameworkVikeExtensionNames />} to be able to use {children}.
           {!noCustomGuide && (
             <>
               {' '}
