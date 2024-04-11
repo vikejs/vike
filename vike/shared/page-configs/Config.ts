@@ -374,7 +374,7 @@ type ConfigBuiltIn = {
    * https://vike.dev/hydrationCanBeAborted
    */
   hydrationCanBeAborted?: boolean | ImportString
-  /** Additional client code.
+  /** Add client code.
    *
    * https://vike.dev/client
    */
