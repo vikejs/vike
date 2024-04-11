@@ -289,7 +289,7 @@ type ConfigBuiltIn = {
   prerender?: boolean | ImportString
 
   /**
-   * Inherit from other configurations.
+   * Install Vike extensions.
    *
    * https://vike.dev/extends
    */
