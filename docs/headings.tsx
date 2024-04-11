@@ -93,7 +93,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`.server.js`/`.client.js`/`.shared.js`',
+    title: '`.server.js` / `.client.js` / `.shared.js`',
+    titleInNav: '`.server.js`/`.client.js`/`.shared.js`',
     url: '/file-env'
   },
   {
