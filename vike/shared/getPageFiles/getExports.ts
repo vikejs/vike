@@ -1,4 +1,3 @@
-export { getExportUnion }
 export { getExports }
 export type { ExportsAll }
 export type { PageContextExports }
@@ -197,16 +196,5 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
         return Reflect.get(...args)
       }
     }
-  )
-}
-
-function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
-  return (
-    exportsAll[propName]
-      ?.map((e) => {
-        assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource} should be an array of strings.`)
-        return e.exportValue
-      })
-      .flat() ?? []
   )
 }

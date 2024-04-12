@@ -2,9 +2,9 @@ export { loadUserFilesServerSide }
 export type { PageFiles }
 export type { PageContext_loadUserFilesServerSide }
 
-import { type PageFile, getExportUnion, getPageFilesServerSide, getExports } from '../../../shared/getPageFiles.js'
+import { type PageFile, getPageFilesServerSide, getExports, type ExportsAll } from '../../../shared/getPageFiles.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { assertWarning, objectAssign, PromiseType } from '../utils.js'
+import { assertUsage, assertWarning, hasProp, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
@@ -124,4 +124,13 @@ async function loadPageUserFiles(
     pageFilesLoaded: pageFilesServerSide,
     pageConfigLoaded
   }
+}
+
+function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
+  return (
+    exportsAll[propName]?.flatMap((e) => {
+      assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource} should be an array of strings.`)
+      return e.exportValue
+    }) ?? []
+  )
 }
