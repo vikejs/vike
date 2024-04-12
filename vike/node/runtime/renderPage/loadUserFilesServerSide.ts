@@ -2,7 +2,7 @@ export { loadUserFilesServerSide }
 export type { PageFiles }
 export type { PageContext_loadUserFilesServerSide }
 
-import { type PageFile, getPageFilesServerSide, getExports, type ExportsAll } from '../../../shared/getPageFiles.js'
+import { type PageFile, getPageFilesServerSide, getExports } from '../../../shared/getPageFiles.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import { assertUsage, assertWarning, hasProp, objectAssign, PromiseType } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
@@ -31,6 +31,14 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
     ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
     analyzePage(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
+
+  const passToClient: string[] = []
+  const errMsg = ' should be an array of strings.'
+  exportsAll.passToClient?.forEach((e) => {
+    assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsg}`)
+    passToClient.push(...e.exportValue)
+  })
+
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
     config,
@@ -40,7 +48,7 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
     pageExports,
     Page: exports.Page,
     _isHtmlOnly: isHtmlOnly,
-    _passToClient: getExportUnion(exportsAll, 'passToClient'),
+    _passToClient: passToClient,
     _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath)
   })
 
@@ -124,13 +132,4 @@ async function loadPageUserFiles(
     pageFilesLoaded: pageFilesServerSide,
     pageConfigLoaded
   }
-}
-
-function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
-  return (
-    exportsAll[propName]?.flatMap((e) => {
-      assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource} should be an array of strings.`)
-      return e.exportValue
-    }) ?? []
-  )
 }
