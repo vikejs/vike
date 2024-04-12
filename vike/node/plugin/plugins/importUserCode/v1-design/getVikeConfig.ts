@@ -19,7 +19,6 @@ import {
   getMostSimilar,
   joinEnglish,
   lowerFirst,
-  mergeCumulativeValues,
   getOutDirs,
   assertKeys,
   objectKeys,
@@ -1220,8 +1219,8 @@ function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
 }
 
 function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] | Set<unknown> {
-  const valuesArr: unknown[][] = []
-  const valuesSet: Set<unknown>[] = []
+  const arrList: unknown[][] = []
+  const setList: Set<unknown>[] = []
   let configValueSourcePrevious: ConfigValueSource | null = null
   configValueSources.forEach((configValueSource) => {
     const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
@@ -1233,9 +1232,9 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
 
     const assertNoMixing = (isSet: boolean) => {
       type T = 'a Set' | 'an array'
-      const vals1 = isSet ? valuesSet : valuesArr
+      const vals1 = isSet ? setList : arrList
       const t1: T = isSet ? 'a Set' : 'an array'
-      const vals2 = !isSet ? valuesSet : valuesArr
+      const vals2 = !isSet ? setList : arrList
       const t2: T = !isSet ? 'a Set' : 'an array'
       assert(vals1.length > 0)
       if (vals2.length === 0) return
@@ -1249,10 +1248,10 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
 
     const { value } = configValueSource
     if (Array.isArray(value)) {
-      valuesArr.push(value)
+      arrList.push(value)
       assertNoMixing(false)
     } else if (value instanceof Set) {
-      valuesSet.push(value)
+      setList.push(value)
       assertNoMixing(true)
     } else {
       assertUsage(false, `${configDefinedAt} must be an array or a Set`)
@@ -1261,16 +1260,16 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     configValueSourcePrevious = configValueSource
   })
 
-  if (valuesArr.length > 0) {
-    assert(valuesSet.length === 0)
-    const result = mergeCumulativeValues(valuesArr)
-    assert(result !== null)
+  if (arrList.length > 0) {
+    assert(setList.length === 0)
+    assert(arrList.every((v) => Array.isArray(v)))
+    const result = arrList.flat()
     return result
   }
-  if (valuesSet.length > 0) {
-    assert(valuesArr.length === 0)
-    const result = mergeCumulativeValues(valuesSet)
-    assert(result !== null)
+  if (setList.length > 0) {
+    assert(arrList.length === 0)
+    assert(setList.every((v) => v instanceof Set))
+    const result = new Set(setList.map((v) => [...v]).flat())
     return result
   }
   assert(false)
