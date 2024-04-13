@@ -20,7 +20,7 @@ function getConfigValuesSerialized(
 ): string {
   const lines: string[] = []
   Object.entries(pageConfig.configValuesComputed).forEach(([configName, configValuesComputed]) => {
-    const { value, configEnv } = configValuesComputed
+    const { configEnv } = configValuesComputed
 
     if (!isEnvMatch(configEnv)) return
     // configValeSources has higher precedence
@@ -28,9 +28,11 @@ function getConfigValuesSerialized(
 
     const configValue = pageConfig.configValues[configName]
     assert(configValue)
-    const { definedAt } = configValue
-    const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-    serializeConfigValue(lines, configName, { definedAt, valueSerialized })
+    const { value, ...common } = configValue
+    assert(value === configValuesComputed.value)
+    const valueSerialized = getConfigValueSerialized(value, configName, configValue.definedAt)
+    const configValueSerialized = { valueSerialized, ...common }
+    serializeConfigValue(lines, configName, configValueSerialized)
   })
   getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
     const { configName, configEnv } = configValueSource
@@ -41,9 +43,10 @@ function getConfigValuesSerialized(
       return
     }
 
-    const { value, definedAt } = configValue
-    const valueSerialized = getConfigValueSerialized(value, configName, definedAt)
-    serializeConfigValue(lines, configName, { definedAt, valueSerialized })
+    const { value, ...common } = configValue
+    const valueSerialized = getConfigValueSerialized(value, configName, configValue.definedAt)
+    const configValueSerialized = { valueSerialized, ...common }
+    serializeConfigValue(lines, configName, configValueSerialized)
   })
   const code = lines.join('\n')
   return code

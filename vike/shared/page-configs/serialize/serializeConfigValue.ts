@@ -19,7 +19,7 @@ function serializeConfigValue(lines: string[], configName: string, configValueSe
   whitespace += '  '
 
   Object.entries(configValueSerialized).forEach(([key, val]) => {
-    const valSerialized = key === 'definedAt' ? JSON.stringify(val) : val
+    const valSerialized = key === 'valueSerialized' ? val : JSON.stringify(val)
     lines.push(`${whitespace}  ${key}: ${valSerialized},`)
   })
 

@@ -3,7 +3,13 @@ export type { PageConfigGlobalRuntimeSerialized }
 export type { ConfigValueSerialized }
 export type { ConfigValueImported }
 
-import type { DefinedAt, PageConfigRuntime } from '../PageConfig.js'
+import type {
+  ConfigValue,
+  ConfigValueClassic,
+  ConfigValueComputed,
+  ConfigValueCumulative,
+  PageConfigRuntime
+} from '../PageConfig.js'
 
 /** Page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
 type PageConfigRuntimeSerialized = Omit<PageConfigRuntime, 'configValues'> & {
@@ -18,10 +24,14 @@ type PageConfigGlobalRuntimeSerialized = {
 }
 
 /** Value is serialized */
-type ConfigValueSerialized = {
-  valueSerialized: string
-  definedAt: DefinedAt
-}
+type ConfigValueSerialized =
+  | (Omit<ConfigValueClassic, 'value'> & { valueSerialized: string })
+  | (Omit<ConfigValueCumulative, 'value'> & { valueSerialized: string })
+  | (Omit<ConfigValueComputed, 'value'> & { valueSerialized: string })
+/* We don't use this because it loses union logic.
+type ConfigValueSerialized = Omit<ConfigValue, 'value'> & { valueSerialized: string }
+*/
+
 /** Value is imported */
 type ConfigValueImported = {
   configName: string

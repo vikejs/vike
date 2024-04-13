@@ -35,7 +35,6 @@ import type {
   ConfigValueSources,
   PageConfigBuildTime,
   ConfigValues,
-  DefinedAt,
   DefinedAtFileFullInfo,
   DefinedAtFile,
   ConfigValuesComputed
@@ -1181,8 +1180,9 @@ function getConfigValues(
   const configValues: ConfigValues = {}
   Object.entries(configValuesComputed).forEach(([configName, configValueComputed]) => {
     configValues[configName] = {
+      type: 'computed',
       value: configValueComputed.value,
-      definedAt: { isComputed: true }
+      definedAt: null
     }
   })
   Object.entries(configValueSources).forEach(([configName, sources]) => {
@@ -1192,17 +1192,19 @@ function getConfigValues(
       const configValueSource = sources[0]!
       if ('value' in configValueSource) {
         configValues[configName] = {
+          type: 'classic',
           value: configValueSource.value,
-          definedAt: getDefinedAt(configValueSource)
+          definedAt: getDefinedAtFile(configValueSource)
         }
       }
     } else {
       const value = mergeCumulative(configName, sources)
+      const definedAt = sources.map((source) => getDefinedAtFile(source))
+      assert(value.length === definedAt.length)
       configValues[configName] = {
+        type: 'cumulative',
         value,
-        definedAt: {
-          files: sources.map((source) => getDefinedAtFile(source))
-        }
+        definedAt
       }
     }
   })
@@ -1214,9 +1216,6 @@ function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
     fileExportPathToShowToUser: configValueSource.definedAt.fileExportPathToShowToUser
   }
 }
-function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
-  return getDefinedAtFile(configValueSource)
-}
 
 function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] {
   const configValues: unknown[] = []
@@ -1225,7 +1224,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     assert('value' in configValueSource)
 
     // Make sure configValueSource.value is serializable
-    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAt(configValueSource))
+    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtFile(configValueSource))
 
     const { value } = configValueSource
     configValues.push(value)

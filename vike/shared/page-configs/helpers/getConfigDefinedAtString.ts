@@ -1,7 +1,7 @@
 export { getConfigDefinedAtString }
 export { getDefinedAtString }
 
-import { assert } from '../../utils.js'
+import { assert, isArray } from '../../utils.js'
 import type { DefinedAt, DefinedAtFile } from '../PageConfig.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from '../getExportPath.js'
@@ -18,13 +18,11 @@ function getConfigDefinedAtString<ConfigName extends string, SentenceBegin exten
   return configDefinedAt
 }
 function getDefinedAtString(definedAt: DefinedAt, configName: string): string {
-  if ('isComputed' in definedAt) {
-    return 'internally'
-  }
+  if (!definedAt) return 'internally'
 
   let files: DefinedAtFile[]
-  if ('files' in definedAt) {
-    files = definedAt.files
+  if (isArray(definedAt)) {
+    files = definedAt
   } else {
     files = [definedAt]
   }

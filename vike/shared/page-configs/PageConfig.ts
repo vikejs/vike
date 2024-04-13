@@ -6,10 +6,12 @@ export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigValue }
+export type { ConfigValueClassic }
+export type { ConfigValueCumulative }
+export type { ConfigValueComputed }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
-export type { ConfigValueComputed }
 export type { ConfigValuesComputed }
 export type { DefinedAt }
 export type { DefinedAtFile }
@@ -90,33 +92,43 @@ type ConfigValueSources = Record<
   ConfigValueSource[]
 >
 
-type ConfigValueComputed = {
-  configEnv: ConfigEnvInternal
-  value: unknown
-}
 type ConfigValuesComputed = Record<
   // configName
   string,
-  ConfigValueComputed
+  {
+    configEnv: ConfigEnvInternal
+    value: unknown
+  }
 >
 
-type ConfigValue = {
+type ConfigValue = ConfigValueClassic | ConfigValueCumulative | ConfigValueComputed
+/** Defined by a unique source (thus unique file path). */
+type ConfigValueClassic = {
+  type: 'classic'
   value: unknown
-  definedAt: DefinedAt
+  definedAt: DefinedAtFile
 }
-type DefinedAt =
-  // Normal config values => defined by a unique source / file path
-  | DefinedAtFile
-  // Cumulative config values => defined at multiple sources / file paths
-  | { files: DefinedAtFile[] }
-  // Computed config values => defined internally by Vike (currently, Vike doesn't support computed configs craeted by users)
-  | { isComputed: true }
-type DefinedAtFile = {
-  filePathToShowToUser: string
-  fileExportPathToShowToUser: null | string[]
+/** Defined by multiple sources (thus multiple file paths). */
+type ConfigValueCumulative = {
+  type: 'cumulative'
+  value: unknown[]
+  definedAt: DefinedAtFile[]
 }
+/** Defined internally by Vike (currently, Vike doesn't support computed configs created by users). */
+type ConfigValueComputed = {
+  type: 'computed'
+  value: unknown
+  definedAt: null
+}
+
 type ConfigValues = Record<
   // configName
   string,
   ConfigValue
 >
+
+type DefinedAt = DefinedAtFile | DefinedAtFile[] | null
+type DefinedAtFile = {
+  filePathToShowToUser: string
+  fileExportPathToShowToUser: null | string[]
+}
