@@ -9,28 +9,24 @@ import {
 } from '../../../shared/addUrlComputedProps.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
-import type { ConfigEntries, ExportsAll } from '../../../shared/getPageFiles/getExports.js'
+import type { PageContextExports } from '../../../shared/getPageFiles/getExports.js'
 import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
 
-type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal & {
-  urlOriginal: string
-  /** @deprecated */
-  url: string
-  urlPathname: string
-  urlParsed: PageContextUrlComputedPropsInternal['urlParsed']
-  routeParams: Record<string, string>
-  Page: unknown
-  pageExports: Record<string, unknown>
-  config: Record<string, unknown>
-  configEntries: ConfigEntries
-  exports: Record<string, unknown>
-  exportsAll: ExportsAll
-  _pageId: string
-  _pageConfigs: PageConfigRuntime[]
-  is404: null | boolean
-  isClientSideNavigation: boolean
-  pageProps?: Record<string, unknown>
-} & Record<string, unknown>
+type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal &
+  PageContextExports & {
+    urlOriginal: string
+    /** @deprecated */
+    url: string
+    urlPathname: string
+    urlParsed: PageContextUrlComputedPropsInternal['urlParsed']
+    routeParams: Record<string, string>
+    Page: unknown
+    _pageId: string
+    _pageConfigs: PageConfigRuntime[]
+    is404: null | boolean
+    isClientSideNavigation: boolean
+    pageProps?: Record<string, unknown>
+  } & Record<string, unknown>
 function preparePageContextForUserConsumptionServerSide(pageContext: PageContextForUserConsumptionServerSide): void {
   assertPageContextUrlComputedProps(pageContext)
 

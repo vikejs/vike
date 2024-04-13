@@ -1,10 +1,10 @@
-export { getExports }
+export { getPageContextExports }
 export type { ExportsAll }
 export type { PageContextExports }
 export type { ConfigEntries }
 
 import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
-import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
+import { assert, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
 import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_old_design.js'
 import type { FileType } from './fileTypes.js'
 import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
@@ -48,7 +48,7 @@ type PageContextExports = {
   pageExports: Record<string, unknown>
 }
 
-function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded | null): PageContextExports {
+function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded | null): PageContextExports {
   const configEntries: ConfigEntries = {}
   const config: Record<string, unknown> = {}
   const exportsAll: ExportsAll = {}
@@ -122,7 +122,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
   assert(!('default' in exports))
   assert(!('default' in exportsAll))
 
-  return {
+  const pageContextExports = {
     config,
     configEntries,
     // TODO/v1-release: remove
@@ -130,6 +130,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
     exportsAll,
     pageExports
   }
+  return pageContextExports
 }
 
 function getExportValues(pageFile: PageFile) {

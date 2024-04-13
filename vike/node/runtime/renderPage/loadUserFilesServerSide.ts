@@ -2,7 +2,7 @@ export { loadUserFilesServerSide }
 export type { PageFiles }
 export type { PageContext_loadUserFilesServerSide }
 
-import { type PageFile, getPageFilesServerSide, getExports } from '../../../shared/getPageFiles.js'
+import { type PageFile, getPageFilesServerSide, getPageContextExports } from '../../../shared/getPageFiles.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import {
   assert,
@@ -33,11 +33,10 @@ type PageFiles = PromiseType<ReturnType<typeof loadUserFilesServerSide>>
 async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageContext_loadUserFilesServerSide) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
-  const [{ config, configEntries, exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] =
-    await Promise.all([
-      loadPageUserFiles(pageContext._pageFilesAll, pageConfig, pageContext._pageId, !getGlobalContext().isProduction),
-      analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
-    ])
+  const [{ pageFilesLoaded, pageConfigLoaded, ...pageContextExports }] = await Promise.all([
+    loadPageUserFiles(pageContext._pageFilesAll, pageConfig, pageContext._pageId, !getGlobalContext().isProduction),
+    analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
+  ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
     analyzePage(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
   const isV1Design = !!pageConfig
@@ -45,12 +44,12 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
   const passToClient: string[] = []
   const errMsg = ' should be an array of strings.'
   if (!isV1Design) {
-    exportsAll.passToClient?.forEach((e) => {
+    pageContextExports.exportsAll.passToClient?.forEach((e) => {
       assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsg}`)
       passToClient.push(...e.exportValue)
     })
   } else {
-    configEntries.passToClient?.forEach((e) => {
+    pageContextExports.configEntries.passToClient?.forEach((e) => {
       const { configValue } = e
       assert(isArray(configValue))
       const vals = configValue.flat(1)
@@ -62,12 +61,8 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
 
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
-    config,
-    configEntries,
-    exports,
-    exportsAll,
-    pageExports,
-    Page: exports.Page,
+    ...pageContextExports,
+    Page: pageContextExports.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
     _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath)
@@ -143,13 +138,9 @@ async function loadPageUserFiles(
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
+  const pageContextExports = getPageContextExports(pageFilesServerSide, pageConfigLoaded)
   return {
-    config,
-    configEntries,
-    exports,
-    exportsAll,
-    pageExports,
+    ...pageContextExports,
     pageFilesLoaded: pageFilesServerSide,
     pageConfigLoaded
   }

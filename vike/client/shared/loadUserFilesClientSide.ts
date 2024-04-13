@@ -4,7 +4,7 @@ export type { PageContextUserFiles }
 
 import {
   getPageFilesClientSide,
-  getExports,
+  getPageContextExports,
   type PageFile,
   type PageContextExports
 } from '../../shared/getPageFiles.js'
@@ -45,13 +45,9 @@ async function loadUserFilesClientSide(
     }
     throw err
   }
-  const { config, configEntries, exports, exportsAll, pageExports } = getExports(pageFilesClientSide, pageConfigLoaded)
+  const pageContextExports = getPageContextExports(pageFilesClientSide, pageConfigLoaded)
   const pageContextAddendum = {
-    config,
-    configEntries,
-    exports,
-    exportsAll,
-    pageExports,
+    ...pageContextExports,
     _pageFilesLoaded: pageFilesClientSide
   }
   return pageContextAddendum
