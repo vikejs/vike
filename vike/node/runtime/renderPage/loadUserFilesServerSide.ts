@@ -4,7 +4,16 @@ export type { PageContext_loadUserFilesServerSide }
 
 import { type PageFile, getPageFilesServerSide, getExports } from '../../../shared/getPageFiles.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { assertUsage, assertWarning, hasProp, objectAssign, PromiseType } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  hasProp,
+  isArrayOfStrings,
+  objectAssign,
+  PromiseType,
+  isArray
+} from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
@@ -31,13 +40,24 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
     ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
     analyzePage(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
+  const isV1Design = !!pageConfig
 
   const passToClient: string[] = []
   const errMsg = ' should be an array of strings.'
-  exportsAll.passToClient?.forEach((e) => {
-    assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsg}`)
-    passToClient.push(...e.exportValue)
-  })
+  if (!isV1Design) {
+    exportsAll.passToClient?.forEach((e) => {
+      assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource}${errMsg}`)
+      passToClient.push(...e.exportValue)
+    })
+  } else {
+    configEntries.passToClient?.forEach((e) => {
+      const { configValue } = e
+      assert(isArray(configValue))
+      const vals = configValue.flat(1)
+      assertUsage(isArrayOfStrings(vals), `${e.configDefinedAt}${errMsg}`)
+      passToClient.push(...vals)
+    })
+  }
 
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {

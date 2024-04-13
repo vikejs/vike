@@ -1219,60 +1219,19 @@ function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
 }
 
 function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] | Set<unknown> {
-  const arrList: unknown[][] = []
-  const setList: Set<unknown>[] = []
-  let configValueSourcePrevious: ConfigValueSource | null = null
+  const configValues: unknown[] = []
   configValueSources.forEach((configValueSource) => {
-    const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
     // We could, in principle, also support cumulative for values that aren't loaded at config-time but it isn't completely trivial to implement.
     assert('value' in configValueSource)
 
     // Make sure configValueSource.value is serializable
     assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAt(configValueSource))
 
-    const assertNoMixing = (isSet: boolean) => {
-      type T = 'a Set' | 'an array'
-      const vals1 = isSet ? setList : arrList
-      const t1: T = isSet ? 'a Set' : 'an array'
-      const vals2 = !isSet ? setList : arrList
-      const t2: T = !isSet ? 'a Set' : 'an array'
-      assert(vals1.length > 0)
-      if (vals2.length === 0) return
-      assert(configValueSourcePrevious)
-      const configPreviousDefinedAt = getConfigDefinedAtString('Config', configName, configValueSourcePrevious)
-      assertUsage(
-        false,
-        `${configDefinedAt} sets ${t1} but another ${configPreviousDefinedAt} sets ${t2} which is forbidden: the values must be all arrays or all sets (you cannot mix).`
-      )
-    }
-
     const { value } = configValueSource
-    if (Array.isArray(value)) {
-      arrList.push(value)
-      assertNoMixing(false)
-    } else if (value instanceof Set) {
-      setList.push(value)
-      assertNoMixing(true)
-    } else {
-      assertUsage(false, `${configDefinedAt} must be an array or a Set`)
-    }
-
-    configValueSourcePrevious = configValueSource
+    configValues.push(value)
   })
 
-  if (arrList.length > 0) {
-    assert(setList.length === 0)
-    assert(arrList.every((v) => Array.isArray(v)))
-    const result = arrList.flat()
-    return result
-  }
-  if (setList.length > 0) {
-    assert(arrList.length === 0)
-    assert(setList.every((v) => v instanceof Set))
-    const result = new Set(setList.map((v) => [...v]).flat())
-    return result
-  }
-  assert(false)
+  return configValues
 }
 
 function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnvInternal {
