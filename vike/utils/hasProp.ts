@@ -5,6 +5,8 @@ export { hasProp }
 
 import { isCallable } from './isCallable.js'
 import { isObject } from './isObject.js'
+import { isStringArray } from './isStringArray.js'
+import { isStringObject } from './isStringObject.js'
 
 // prettier-ignore
 // biome-ignore format:
@@ -68,10 +70,10 @@ function hasProp<ObjectType, PropName extends PropertyKey>(
     return isObject(propValue)
   }
   if (type === 'string[]') {
-    return Array.isArray(propValue) && propValue.every((val) => typeof val === 'string')
+    return isStringArray(propValue)
   }
   if (type === 'string{}') {
-    return isObject(propValue) && Object.values(propValue).every((val) => typeof val === 'string')
+    return isStringObject(propValue)
   }
   if (type === 'function') {
     return isCallable(propValue)
