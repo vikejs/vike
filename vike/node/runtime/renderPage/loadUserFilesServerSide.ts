@@ -54,6 +54,7 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
       const { configValue } = e
       assert(isArray(configValue))
       const vals = configValue.flat(1)
+      // TODO: improve error message by using (upcoming) new data structure instead of configEntries
       assertUsage(isArrayOfStrings(vals), `${e.configDefinedAt}${errMsg}`)
       passToClient.push(...vals)
     })

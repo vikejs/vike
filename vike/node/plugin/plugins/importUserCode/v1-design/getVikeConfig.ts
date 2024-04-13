@@ -1218,7 +1218,7 @@ function getDefinedAt(configValueSource: ConfigValueSource): DefinedAt {
   return getDefinedAtFile(configValueSource)
 }
 
-function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] | Set<unknown> {
+function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] {
   const configValues: unknown[] = []
   configValueSources.forEach((configValueSource) => {
     // We could, in principle, also support cumulative for values that aren't loaded at config-time but it isn't completely trivial to implement.
