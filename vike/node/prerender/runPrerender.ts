@@ -24,7 +24,8 @@ import {
   handleNodeEnv_prerender,
   pLimit,
   PLimit,
-  assertPathFilesystemAbsolute
+  assertPathFilesystemAbsolute,
+  isArray
 } from './utils.js'
 import {
   prerenderPage,
@@ -995,7 +996,7 @@ function normalizeOnPrerenderHookResult(
   prerenderHookFile: string,
   hookName: 'prerender' | 'onBeforePrerenderStart'
 ): { url: string; pageContext: null | Record<string, unknown> }[] {
-  if (Array.isArray(prerenderResult)) {
+  if (isArray(prerenderResult)) {
     return prerenderResult.map(normalize)
   } else {
     return [normalize(prerenderResult)]

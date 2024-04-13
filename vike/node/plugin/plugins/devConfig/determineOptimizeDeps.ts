@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, assertIsNpmPackageImport, createDebugger, unique } from '../../utils.js'
+import { assert, assertIsNpmPackageImport, createDebugger, isArray, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getConfigValueSourcesNotOverriden } from '../../shared/getConfigValueSourcesNotOverriden.js'
 import { analyzeClientEntries } from '../buildConfig.js'
@@ -103,13 +103,13 @@ function getVirtualFiles(config: ResolvedConfig, pageConfigs: PageConfigBuildTim
 }
 
 function normalizeEntries(entries: string | string[] | undefined) {
-  if (Array.isArray(entries)) return entries
+  if (isArray(entries)) return entries
   if (typeof entries === 'string') return [entries]
   if (entries === undefined) return []
   assert(false)
 }
 function normalizeInclude(include: string[] | undefined) {
-  if (Array.isArray(include)) return include
+  if (isArray(include)) return include
   if (include === undefined) return []
   assert(false)
 }

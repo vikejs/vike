@@ -4,7 +4,7 @@ export { distFileNames }
 //  - https://github.com/vikejs/vike/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage } from '../utils.js'
+import { assertPosixPath, assert, assertUsage, isArray } from '../utils.js'
 import path from 'path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../shared/getAssetsDir.js'
@@ -193,7 +193,7 @@ function getRollupOutputs(config: ResolvedConfig) {
   config.build.rollupOptions ??= {}
   config.build.rollupOptions.output ??= {}
   const { output } = config.build.rollupOptions
-  if (!Array.isArray(output)) {
+  if (!isArray(output)) {
     return [output]
   }
   return output

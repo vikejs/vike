@@ -2,11 +2,12 @@ export { findFile }
 
 import path from 'path'
 import fs from 'fs'
+import { isArray } from './isArray.js'
 
 type Filename = 'package.json' | 'vike.config.js' | 'vike.config.ts'
 
 function findFile(arg: Filename | Filename[], cwd: string): null | string {
-  const filenames = Array.isArray(arg) ? arg : [arg]
+  const filenames = isArray(arg) ? arg : [arg]
   let dir = cwd
   while (true) {
     for (const filename of filenames) {

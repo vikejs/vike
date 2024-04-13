@@ -7,6 +7,7 @@ import { isCallable } from './isCallable.js'
 import { isObject } from './isObject.js'
 import { isArrayOfStrings } from './isArrayOfStrings.js'
 import { isObjectOfStrings } from './isObjectOfStrings.js'
+import { isArray } from './isArray.js'
 
 // prettier-ignore
 // biome-ignore format:
@@ -64,7 +65,7 @@ function hasProp<ObjectType, PropName extends PropertyKey>(
   }
   const propValue = (obj as Record<any, unknown>)[prop]
   if (type === 'array') {
-    return Array.isArray(propValue)
+    return isArray(propValue)
   }
   if (type === 'object') {
     return isObject(propValue)
@@ -78,7 +79,7 @@ function hasProp<ObjectType, PropName extends PropertyKey>(
   if (type === 'function') {
     return isCallable(propValue)
   }
-  if (Array.isArray(type)) {
+  if (isArray(type)) {
     return typeof propValue === 'string' && type.includes(propValue)
   }
   if (type === 'null') {

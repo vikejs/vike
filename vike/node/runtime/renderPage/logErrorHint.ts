@@ -5,7 +5,7 @@ export { isCjsEsmError }
 export { isKnownError }
 export { getHint }
 
-import { assert, formatHintLog, isNotNullish, isObject, unique } from '../utils.js'
+import { assert, formatHintLog, isArray, isNotNullish, isObject, unique } from '../utils.js'
 import pc from '@brillout/picocolors'
 
 const knownErrors = [
@@ -82,7 +82,7 @@ function isCjsEsmError(error: unknown): boolean | string[] {
   return packageNames
 }
 function normalizeRes(res: string | string[]): string[] | false {
-  let packageNames: string[] = Array.isArray(res) ? res : [res]
+  let packageNames: string[] = isArray(res) ? res : [res]
   packageNames = unique(packageNames.filter(isNotNullish).filter((packageName) => packageName !== '@brillout/import'))
   if (packageNames.length === 0) return false
   return packageNames

@@ -1,7 +1,7 @@
 export { assertResolveAlias }
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, isValidPathAlias } from '../../utils.js'
+import { assert, assertUsage, assertWarning, isArray, isValidPathAlias } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 // Recommend users to avoid un-distinguishable path aliases.
@@ -82,7 +82,7 @@ function assertResolveAlias(config: ResolvedConfig) {
 }
 function getAliases(config: ResolvedConfig) {
   const { alias } = config.resolve
-  if (!Array.isArray(alias)) {
+  if (!isArray(alias)) {
     return [alias]
   } else {
     return alias

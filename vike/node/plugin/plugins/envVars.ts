@@ -5,7 +5,7 @@ export { applyEnvVar }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
-import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, lowerFirst } from '../utils.js'
+import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
 import { getModuleFilePath } from '../shared/getFilePath.js'
 
@@ -35,11 +35,7 @@ function envVarsPlugin(): Plugin {
       Object.entries(envsAll)
         .filter(([key]) => {
           // Already handled by Vite
-          const envPrefix = !config.envPrefix
-            ? []
-            : Array.isArray(config.envPrefix)
-              ? config.envPrefix
-              : [config.envPrefix]
+          const envPrefix = !config.envPrefix ? [] : isArray(config.envPrefix) ? config.envPrefix : [config.envPrefix]
           return !envPrefix.some((prefix) => key.startsWith(prefix))
         })
         .forEach(([envName, envVal]) => {

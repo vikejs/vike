@@ -9,6 +9,7 @@ import { assert, assertUsage } from './assert.js'
 import { checkType } from './checkType.js'
 import { getTerminalWidth } from './getTerminWidth.js'
 import pc from '@brillout/picocolors'
+import { isArray } from './isArray.js'
 
 // Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils.js'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
@@ -104,7 +105,7 @@ function formatMsg(
 
   if (typeof info === 'string') {
     str += info
-  } else if (Array.isArray(info)) {
+  } else if (isArray(info)) {
     if (info.length === 0) {
       str += options.serialization?.emptyArray ?? '[]'
     } else {
