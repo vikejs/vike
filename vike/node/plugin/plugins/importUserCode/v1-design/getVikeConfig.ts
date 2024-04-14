@@ -573,7 +573,7 @@ async function getGlobalConfigs(
       } else {
         assert('value' in configValueSource)
         if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-        const { filePathToShowToUser } = configValueSource.definedAt
+        const { filePathToShowToUser } = configValueSource.definedAtFilePath
         assertWarning(
           false,
           `Being able to define config ${pc.cyan(
@@ -721,14 +721,14 @@ async function getConfigValueSource(
   const configEnv = configDef.env
   const { locationId } = interfaceFile
 
-  const definedAtFilePath: DefinedAtFilePath = {
+  const definedAtFilePath_: DefinedAtFilePath = {
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
 
   // +client.js
   if (configDef._valueIsFilePath) {
-    let definedAt: DefinedAtFilePath
+    let definedAtFilePath: DefinedAtFilePath
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
@@ -739,14 +739,14 @@ async function getConfigValueSource(
         configEnv,
         configName
       )
-      const configDefinedAt = getConfigDefinedAtString('Config', configName, definedAtFilePath)
+      const configDefinedAt = getConfigDefinedAtString('Config', configName, definedAtFilePath_)
       assertUsage(pointerImport, `${configDefinedAt} should be an import`)
       valueFilePath = pointerImport.filePathAbsoluteVite
-      definedAt = pointerImport
+      definedAtFilePath = pointerImport
     } else {
       assert(interfaceFile.isValueFile)
       valueFilePath = interfaceFile.filePath.filePathAbsoluteVite
-      definedAt = {
+      definedAtFilePath = {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser: []
       }
@@ -758,7 +758,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: true,
       valueIsDefinedByValueFile: false,
-      definedAt
+      definedAtFilePath
     }
     return configValueSource
   }
@@ -782,7 +782,7 @@ async function getConfigValueSource(
         configEnv,
         valueIsImportedAtRuntime: true,
         valueIsDefinedByValueFile: false,
-        definedAt: pointerImport
+        definedAtFilePath: pointerImport
       }
       // Load fake import
       if (
@@ -794,7 +794,7 @@ async function getConfigValueSource(
           const fileExport = await loadImportedFile(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
-          const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource.definedAt)
+          const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource.definedAtFilePath)
           assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
         }
       }
@@ -809,7 +809,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: false,
       valueIsDefinedByValueFile: false,
-      definedAt: definedAtFilePath
+      definedAtFilePath: definedAtFilePath_
     }
     return configValueSource
   }
@@ -823,7 +823,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       valueIsDefinedByValueFile: true,
-      definedAt: {
+      definedAtFilePath: {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser:
           configName === interfaceFile.configName
@@ -973,7 +973,7 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
-      configDefinedAt: getConfigDefinedAtString('Config', configName, source.definedAt)
+      configDefinedAt: getConfigDefinedAtString('Config', configName, source.definedAtFilePath)
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
@@ -1155,13 +1155,13 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAtString('Config', configName, configFilesystemRoutingRoot.definedAt)
+  const configDefinedAt = getConfigDefinedAtString('Config', configName, configFilesystemRoutingRoot.definedAtFilePath)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  const { filePathAbsoluteUserRootDir } = configFilesystemRoutingRoot.definedAt
+  const { filePathAbsoluteUserRootDir } = configFilesystemRoutingRoot.definedAtFilePath
   assert(filePathAbsoluteUserRootDir)
   const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value
@@ -1217,8 +1217,8 @@ function getConfigValues(
 }
 function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
   return {
-    filePathToShowToUser: configValueSource.definedAt.filePathToShowToUser,
-    fileExportPathToShowToUser: configValueSource.definedAt.fileExportPathToShowToUser
+    filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
+    fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
   }
 }
 
@@ -1318,12 +1318,12 @@ function sortConfigValueSources(
     Object.entries(configValueSources)
       // Make order deterministic (no other purpose)
       .sort(([, [source1]], [, [source2]]) =>
-        source1!.definedAt.filePathAbsoluteVite < source2!.definedAt.filePathAbsoluteVite ? -1 : 1
+        source1!.definedAtFilePath.filePathAbsoluteVite < source2!.definedAtFilePath.filePathAbsoluteVite ? -1 : 1
       )
       // Sort after whether the config value was defined by an npm package
       .sort(
         makeFirst(([, [source]]) => {
-          const { importPathAbsolute } = source!.definedAt
+          const { importPathAbsolute } = source!.definedAtFilePath
           return (
             !!importPathAbsolute &&
             isNpmPackageImport(importPathAbsolute, {

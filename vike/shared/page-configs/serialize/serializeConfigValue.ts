@@ -37,9 +37,9 @@ function serializeConfigValueImported(
   assert(!configValueSource.valueIsFilePath)
   assert(whitespace.replaceAll(' ', '').length === 0)
 
-  const { valueIsImportedAtRuntime, valueIsDefinedByValueFile, definedAt } = configValueSource
+  const { valueIsImportedAtRuntime, valueIsDefinedByValueFile, definedAtFilePath } = configValueSource
   assert(valueIsImportedAtRuntime)
-  const { filePathAbsoluteVite, fileExportName } = definedAt
+  const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
   if (valueIsDefinedByValueFile) assert(fileExportName === undefined)
   const { importName, importStatement } = generateEagerImport(

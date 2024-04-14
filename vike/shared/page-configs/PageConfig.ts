@@ -77,7 +77,7 @@ type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
 type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
-  definedAt: DefinedAtFilePath
+  definedAtFilePath: DefinedAtFilePath
   locationId: LocationId
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
