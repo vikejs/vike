@@ -865,11 +865,11 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
         const meta = configMeta.configValue
         assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
-        // Set configDef._userEffectDefinedAtData
+        // Set configDef._userEffectDefinedAtDataFilePath
         Object.entries(meta).forEach(([configName, configDef]) => {
           if (!configDef.effect) return
           assert(interfaceFile.isConfigFile)
-          configDef._userEffectDefinedAtData = {
+          configDef._userEffectDefinedAtDataFilePath = {
             ...interfaceFile.filePath,
             fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
           }
@@ -989,9 +989,9 @@ function applyEffect(
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
-      if (configDefEffect._userEffectDefinedAtData) {
+      if (configDefEffect._userEffectDefinedAtDataFilePath) {
         configDefinedAtString = getConfigDefinedAtString('Config', configName, {
-          definedAt: configDefEffect._userEffectDefinedAtData
+          definedAt: configDefEffect._userEffectDefinedAtDataFilePath
         })
       } else {
         configDefinedAtString = null

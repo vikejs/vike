@@ -64,7 +64,7 @@ type ConfigEffect = (config: {
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   _computed?: (configValueSources: ConfigValueSources) => unknown
   _valueIsFilePath?: true
-  _userEffectDefinedAtData?: DefinedAtDataFilePath
+  _userEffectDefinedAtDataFilePath?: DefinedAtDataFilePath
   env: ConfigEnvInternal
 }
 
