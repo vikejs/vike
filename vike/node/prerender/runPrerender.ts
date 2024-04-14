@@ -279,7 +279,7 @@ async function collectDoNoPrerenderList(
     const configName = 'prerender'
     const configValue = getConfigValue(pageConfig, configName, 'boolean')
     if (configValue?.value === false) {
-      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue)
+      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAt)
       assert(configValueFilePathToShowToUser)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,

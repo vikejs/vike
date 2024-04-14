@@ -74,7 +74,7 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
       serializationErrMsg = 'see serialization error printed above'
     }
     */
-    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser({ definedAt })
+    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(definedAt)
     assert(configValueFilePathToShowToUser)
     assertUsage(
       false,
