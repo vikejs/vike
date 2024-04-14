@@ -35,7 +35,7 @@ import type {
   ConfigValueSources,
   PageConfigBuildTime,
   ConfigValues,
-  DefinedAtDataFileFullInfo,
+  DefinedAtDataFilePath,
   DefinedAtDataFile,
   ConfigValuesComputed
 } from '../../../../../shared/page-configs/PageConfig.js'
@@ -721,14 +721,14 @@ async function getConfigValueSource(
   const configEnv = configDef.env
   const { locationId } = interfaceFile
 
-  const definedAtConfigFile: DefinedAtDataFileFullInfo = {
+  const definedAtConfigFile: DefinedAtDataFilePath = {
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
 
   // +client.js
   if (configDef._valueIsFilePath) {
-    let definedAt: DefinedAtDataFileFullInfo
+    let definedAt: DefinedAtDataFilePath
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf

@@ -15,7 +15,7 @@ export type { ConfigValueSources }
 export type { ConfigValuesComputed }
 export type { DefinedAtData }
 export type { DefinedAtDataFile }
-export type { DefinedAtDataFileFullInfo }
+export type { DefinedAtDataFilePath }
 
 import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
@@ -77,7 +77,7 @@ type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
 type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
-  definedAt: DefinedAtDataFileFullInfo
+  definedAt: DefinedAtDataFilePath
   locationId: LocationId
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
@@ -85,7 +85,7 @@ type ConfigValueSource = {
   valueIsFilePath?: true
   valueIsDefinedByValueFile: boolean
 }
-type DefinedAtDataFileFullInfo = DefinedAtDataFile & FilePath & { fileExportName?: string }
+type DefinedAtDataFilePath = DefinedAtDataFile & FilePath & { fileExportName?: string }
 type ConfigValueSources = Record<
   // configName
   string,

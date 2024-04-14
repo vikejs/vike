@@ -3,7 +3,7 @@ export { resolvePointerImport }
 export { clearFilesEnvMap }
 
 import pc from '@brillout/picocolors'
-import type { ConfigEnvInternal, DefinedAtDataFileFullInfo } from '../../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigEnvInternal, DefinedAtDataFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
 import {
   assert,
   assertIsNpmPackageImport,
@@ -24,7 +24,7 @@ import type { FilePath, FilePathResolved } from '../../../../../../shared/page-c
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 
-type PointerImportResolved = DefinedAtDataFileFullInfo & { fileExportName: string }
+type PointerImportResolved = DefinedAtDataFilePath & { fileExportName: string }
 
 function resolvePointerImportOfConfig(
   configValue: unknown,
