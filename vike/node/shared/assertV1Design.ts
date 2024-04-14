@@ -20,7 +20,7 @@ function assertV1Design(
         pageConfigs
           .map((p) =>
             Object.values(p.configValues)
-              .map((c) => getConfigValueFilePathToShowToUser(c.definedAt))
+              .map((c) => getConfigValueFilePathToShowToUser(c.definedAtData))
               .filter(isNotNullish)
               .map((filePathToShowToUser) => indent + filePathToShowToUser)
           )

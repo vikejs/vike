@@ -60,7 +60,7 @@ function getHookFromPageConfig(
   if (!configValue) return null
   const hookFn = configValue.value
   if (!hookFn) return null
-  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAt)
+  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
   // hook isn't a computed nor a cumulative config => definedAt should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
@@ -72,7 +72,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   if (!configValue) return null
   const hookFn = configValue.value
   if (!hookFn) return null
-  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAt)
+  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
   // hook isn't a computed nor a cumulative config => definedAt should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })

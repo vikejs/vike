@@ -22,7 +22,7 @@ function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): n
 function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue & { value: unknown } {
   const configValue = getConfigValueEntry(pageConfig, configName)
   if (configValue === null) return null
-  const { value, definedAt } = configValue
+  const { value, definedAtData: definedAt } = configValue
   if (type) assertConfigValueType(value, type, configName, definedAt)
   return configValue
 }

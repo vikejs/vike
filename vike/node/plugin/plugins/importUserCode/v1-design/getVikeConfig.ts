@@ -1187,7 +1187,7 @@ function getConfigValues(
     configValues[configName] = {
       type: 'computed',
       value: configValueComputed.value,
-      definedAt: null
+      definedAtData: null
     }
   })
   Object.entries(configValueSources).forEach(([configName, sources]) => {
@@ -1199,7 +1199,7 @@ function getConfigValues(
         configValues[configName] = {
           type: 'classic',
           value: configValueSource.value,
-          definedAt: getDefinedAtFile(configValueSource)
+          definedAtData: getDefinedAtFile(configValueSource)
         }
       }
     } else {
@@ -1209,7 +1209,7 @@ function getConfigValues(
       configValues[configName] = {
         type: 'cumulative',
         value,
-        definedAt
+        definedAtData: definedAt
       }
     }
   })

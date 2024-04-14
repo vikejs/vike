@@ -106,19 +106,19 @@ type ConfigValue = ConfigValueClassic | ConfigValueCumulative | ConfigValueCompu
 type ConfigValueClassic = {
   type: 'classic'
   value: unknown
-  definedAt: DefinedAtFile
+  definedAtData: DefinedAtFile
 }
 /** Defined by multiple sources (thus multiple file paths). */
 type ConfigValueCumulative = {
   type: 'cumulative'
   value: unknown[]
-  definedAt: DefinedAtFile[]
+  definedAtData: DefinedAtFile[]
 }
 /** Defined internally by Vike (currently, Vike doesn't support computed configs created by users). */
 type ConfigValueComputed = {
   type: 'computed'
   value: unknown
-  definedAt: null
+  definedAtData: null
 }
 
 type ConfigValues = Record<

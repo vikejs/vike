@@ -66,7 +66,7 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
       configValues[configName] = {
         type: 'classic',
         value,
-        definedAt: {
+        definedAtData: {
           // importPath cannot be relative to the current file, since the current file is a virtual file
           filePathToShowToUser: importPath,
           fileExportPathToShowToUser: [configName, 'default'].includes(exportName)
