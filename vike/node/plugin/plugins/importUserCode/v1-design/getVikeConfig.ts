@@ -721,7 +721,7 @@ async function getConfigValueSource(
   const configEnv = configDef.env
   const { locationId } = interfaceFile
 
-  const definedAtConfigFile: DefinedAtFilePath = {
+  const definedAtFilePath: DefinedAtFilePath = {
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
@@ -739,7 +739,7 @@ async function getConfigValueSource(
         configEnv,
         configName
       )
-      const configDefinedAt = getConfigDefinedAtString('Config', configName, { definedAt: definedAtConfigFile })
+      const configDefinedAt = getConfigDefinedAtString('Config', configName, { definedAt: definedAtFilePath })
       assertUsage(pointerImport, `${configDefinedAt} should be an import`)
       valueFilePath = pointerImport.filePathAbsoluteVite
       definedAt = pointerImport
@@ -809,7 +809,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: false,
       valueIsDefinedByValueFile: false,
-      definedAt: definedAtConfigFile
+      definedAt: definedAtFilePath
     }
     return configValueSource
   }
