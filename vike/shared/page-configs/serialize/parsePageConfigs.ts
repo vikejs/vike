@@ -50,17 +50,17 @@ function assertRouteConfigValue(configValues: ConfigValues) {
   if (!configValue) return
   const { value } = configValue
   const configValueType = typeof value
-  const configDefinedAt = getConfigDefinedAtString('Config', configName, configValue.definedAtData)
+  const configDefinedAtString = getConfigDefinedAtString('Config', configName, configValue.definedAtData)
   assertUsage(
     configValueType === 'string' || isCallable(value),
-    `${configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
+    `${configDefinedAtString} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
   )
   /* We don't use assertRouteString() in order to avoid unnecessarily bloating the client-side bundle when using Server Routing:
   * - When using Server Routing, this file is loaded => loading assertRouteString() would bloat the client bundle.
   * - assertRouteString() is already called on the server-side
   * - When using Server Routing, client-side validation is superfluous as Route Strings only need to be validated on the server-side
  if (typeof configValue === 'string') {
-   assertRouteString(configValue, `${configElement.configDefinedAt} defines an`)
+   assertRouteString(configValue, `${configElement.configDefinedAtString} defines an`)
  }
  */
 }

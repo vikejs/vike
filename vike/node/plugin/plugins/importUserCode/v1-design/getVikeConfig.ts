@@ -739,8 +739,8 @@ async function getConfigValueSource(
         configEnv,
         configName
       )
-      const configDefinedAt = getConfigDefinedAtString('Config', configName, definedAtFilePath_)
-      assertUsage(pointerImport, `${configDefinedAt} should be an import`)
+      const configDefinedAtString = getConfigDefinedAtString('Config', configName, definedAtFilePath_)
+      assertUsage(pointerImport, `${configDefinedAtString} should be an import`)
       valueFilePath = pointerImport.filePathAbsoluteVite
       definedAtFilePath = pointerImport
     } else {
@@ -794,8 +794,12 @@ async function getConfigValueSource(
           const fileExport = await loadImportedFile(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
-          const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource.definedAtFilePath)
-          assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
+          const configDefinedAtString = getConfigDefinedAtString(
+            'Config',
+            configName,
+            configValueSource.definedAtFilePath
+          )
+          assertUsage(!configDef.cumulative, `${configDefinedAtString} cannot be defined over an aliased import`)
         }
       }
 
@@ -1155,18 +1159,22 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAtString('Config', configName, configFilesystemRoutingRoot.definedAtFilePath)
-  assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
+  const configDefinedAtString = getConfigDefinedAtString(
+    'Config',
+    configName,
+    configFilesystemRoutingRoot.definedAtFilePath
+  )
+  assertUsage(typeof value === 'string', `${configDefinedAtString} should be a string`)
   assertUsage(
     value.startsWith('/'),
-    `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
+    `${configDefinedAtString} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
   const { filePathAbsoluteUserRootDir } = configFilesystemRoutingRoot.definedAtFilePath
   assert(filePathAbsoluteUserRootDir)
   const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
-  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAtData: configDefinedAt }
+  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAtData: configDefinedAtString }
 }
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)

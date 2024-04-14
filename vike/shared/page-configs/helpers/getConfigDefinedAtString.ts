@@ -14,8 +14,8 @@ function getConfigDefinedAtString<ConfigName extends string, SentenceBegin exten
   const definedAtString = getDefinedAtString(definedAtData, configName)
   const definedAtStr = definedAtString === 'internally' ? definedAtString : (`at ${definedAtString}` as const)
   let configNameStr: `${ConfigName}${string}` = `${configName}${/*sentenceBegin === 'Hook' ? '()' :*/ ''}`
-  const configDefinedAt = `${sentenceBegin} ${pc.cyan(configNameStr)} defined ${definedAtStr}` as const
-  return configDefinedAt
+  const configDefinedAtString = `${sentenceBegin} ${pc.cyan(configNameStr)} defined ${definedAtStr}` as const
+  return configDefinedAtString
 }
 function getDefinedAtString(definedAtData: DefinedAtData, configName: string): string {
   if (!definedAtData) return 'internally'

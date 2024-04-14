@@ -41,12 +41,12 @@ function assertConfigValueType(
     valuePrintable !== null
       ? (`value ${pc.cyan(valuePrintable)}` as const)
       : (`type ${pc.cyan(typeActual) as string}` as const)
-  const configDefinedAt: `Config ${string} defined ${string}` = getConfigDefinedAtString(
+  const configDefinedAtString: `Config ${string} defined ${string}` = getConfigDefinedAtString(
     'Config',
     configName,
     definedAtData
   )
-  const errMsg = `${configDefinedAt} has an invalid ${problem}: it should be a ${
+  const errMsg = `${configDefinedAtString} has an invalid ${problem}: it should be a ${
     pc.cyan(type) as string
   } instead` as const
   assertUsage(false, errMsg)

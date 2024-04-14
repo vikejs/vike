@@ -78,7 +78,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
       const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
-      const configDefinedAt = getConfigDefinedAtString('Config', configName, configValue.definedAtData)
+      const configDefinedAtString = getConfigDefinedAtString('Config', configName, configValue.definedAtData)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []
@@ -86,7 +86,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
       assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
         configValue: value,
-        configDefinedAt,
+        configDefinedAt: configDefinedAtString,
         configDefinedByFile: configValueFilePathToShowToUser
       })
 
@@ -95,7 +95,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue: value,
-        exportSource: configDefinedAt,
+        exportSource: configDefinedAtString,
         filePath: configValueFilePathToShowToUser,
         _filePath: configValueFilePathToShowToUser,
         _fileType: null,
