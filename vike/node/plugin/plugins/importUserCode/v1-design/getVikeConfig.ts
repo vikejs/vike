@@ -66,7 +66,7 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtDataString } from '../../../../../shared/page-configs/helpers.js'
+import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
 import type { ResolvedConfig } from 'vite'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
@@ -739,7 +739,7 @@ async function getConfigValueSource(
         configEnv,
         configName
       )
-      const configDefinedAt = getConfigDefinedAtDataString('Config', configName, { definedAt: definedAtConfigFile })
+      const configDefinedAt = getConfigDefinedAtString('Config', configName, { definedAt: definedAtConfigFile })
       assertUsage(pointerImport, `${configDefinedAt} should be an import`)
       valueFilePath = pointerImport.filePathAbsoluteVite
       definedAt = pointerImport
@@ -794,7 +794,7 @@ async function getConfigValueSource(
           const fileExport = await loadImportedFile(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
-          const configDefinedAt = getConfigDefinedAtDataString('Config', configName, configValueSource)
+          const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
           assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
         }
       }
@@ -973,7 +973,7 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
-      configDefinedAt: getConfigDefinedAtDataString('Config', configName, source)
+      configDefinedAt: getConfigDefinedAtString('Config', configName, source)
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
@@ -990,7 +990,7 @@ function applyEffect(
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
       if (configDefEffect._userEffectDefinedAtData) {
-        configDefinedAtString = getConfigDefinedAtDataString('Config', configName, {
+        configDefinedAtString = getConfigDefinedAtString('Config', configName, {
           definedAt: configDefEffect._userEffectDefinedAtData
         })
       } else {
@@ -1153,7 +1153,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAtDataString('Config', configName, configFilesystemRoutingRoot)
+  const configDefinedAt = getConfigDefinedAtString('Config', configName, configFilesystemRoutingRoot)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),

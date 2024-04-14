@@ -8,7 +8,7 @@ import { assert, assertUsage, hasProp, slice } from './utils.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import { getConfigValue, getDefinedAtDataString } from '../page-configs/helpers.js'
+import { getConfigValue, getDefinedAtString } from '../page-configs/helpers.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 
@@ -59,7 +59,7 @@ function getPageRoutes(
           const configValue = getConfigValue(pageConfig, configName)
           if (configValue) {
             const route = configValue.value
-            const definedAt = getDefinedAtDataString(configValue.definedAt, configName)
+            const definedAt = getDefinedAtString(configValue.definedAt, configName)
             if (typeof route === 'string') {
               pageRoute = {
                 pageId,
