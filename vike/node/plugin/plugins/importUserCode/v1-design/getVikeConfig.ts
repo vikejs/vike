@@ -916,7 +916,10 @@ function assertMetaValue(
     {
       assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
       if (!('env' in def)) {
-        assertUsage(false, `${configMetaDefinedAtData} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`)
+        assertUsage(
+          false,
+          `${configMetaDefinedAtData} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`
+        )
       }
       configEnv = getConfigEnvValue(def.env, `${configMetaDefinedAtData} sets ${pc.cyan(`meta.${configName}.env`)} to`)
       // Overwrite deprecated value with valid value

@@ -6,7 +6,10 @@ import type { DefinedAtData, DefinedAtDataFile } from '../PageConfig.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from '../getExportPath.js'
 
-function getConfigDefinedAtDataString<ConfigName extends string, SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/>(
+function getConfigDefinedAtDataString<
+  ConfigName extends string,
+  SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/
+>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
   { definedAt }: { definedAt: DefinedAtData }

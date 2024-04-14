@@ -27,7 +27,12 @@ function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, ty
   return configValue
 }
 
-function assertConfigValueType(value: unknown, type: 'string' | 'boolean', configName: string, definedAt: DefinedAtData) {
+function assertConfigValueType(
+  value: unknown,
+  type: 'string' | 'boolean',
+  configName: string,
+  definedAt: DefinedAtData
+) {
   assert(value !== null)
   const typeActual = typeof value
   if (typeActual === type) return
