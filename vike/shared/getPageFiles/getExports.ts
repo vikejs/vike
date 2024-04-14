@@ -78,7 +78,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
       const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAt)
-      const configDefinedAt = getConfigDefinedAtString('Config', configName, configValue)
+      const configDefinedAt = getConfigDefinedAtString('Config', configName, configValue.definedAt)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []

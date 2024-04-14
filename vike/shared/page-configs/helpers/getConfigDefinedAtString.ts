@@ -9,7 +9,7 @@ import { getExportPath } from '../getExportPath.js'
 function getConfigDefinedAtString<ConfigName extends string, SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
-  { definedAt }: { definedAt: DefinedAtData }
+  definedAt: DefinedAtData
 ): `${SentenceBegin} ${ConfigName}${string} defined ${'internally' | `at ${string}`}` {
   const definedAtString = getDefinedAtString(definedAt, configName)
   const definedAtStr = definedAtString === 'internally' ? definedAtString : (`at ${definedAtString}` as const)
