@@ -22,8 +22,8 @@ function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): n
 function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue & { value: unknown } {
   const configValue = getConfigValueEntry(pageConfig, configName)
   if (configValue === null) return null
-  const { value, definedAtData: definedAt } = configValue
-  if (type) assertConfigValueType(value, type, configName, definedAt)
+  const { value, definedAtData } = configValue
+  if (type) assertConfigValueType(value, type, configName, definedAtData)
   return configValue
 }
 
@@ -31,7 +31,7 @@ function assertConfigValueType(
   value: unknown,
   type: 'string' | 'boolean',
   configName: string,
-  definedAt: DefinedAtData
+  definedAtData: DefinedAtData
 ) {
   assert(value !== null)
   const typeActual = typeof value
@@ -44,7 +44,7 @@ function assertConfigValueType(
   const configDefinedAt: `Config ${string} defined ${string}` = getConfigDefinedAtString(
     'Config',
     configName,
-    definedAt
+    definedAtData
   )
   const errMsg = `${configDefinedAt} has an invalid ${problem}: it should be a ${
     pc.cyan(type) as string

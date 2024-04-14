@@ -1015,7 +1015,7 @@ function applyEffect(
     } else {
       assertUsage(false, notSupported)
       // If we do end implementing being able to set the value of a config:
-      //  - For setting definedAt: we could take the definedAt of the effect config while appending '(effect)' to definedAt.fileExportPathToShowToUser
+      //  - For setting definedAtFile: we could take the definedAtFile of the effect config while appending '(effect)' to definedAtFile.fileExportPathToShowToUser
     }
   })
 }
@@ -1204,12 +1204,12 @@ function getConfigValues(
       }
     } else {
       const value = mergeCumulative(configName, sources)
-      const definedAt = sources.map((source) => getDefinedAtFile(source))
-      assert(value.length === definedAt.length)
+      const definedAtData = sources.map((source) => getDefinedAtFile(source))
+      assert(value.length === definedAtData.length)
       configValues[configName] = {
         type: 'cumulative',
         value,
-        definedAtData: definedAt
+        definedAtData
       }
     }
   })

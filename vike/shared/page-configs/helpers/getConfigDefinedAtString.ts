@@ -9,22 +9,22 @@ import { getExportPath } from '../getExportPath.js'
 function getConfigDefinedAtString<ConfigName extends string, SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
-  definedAt: DefinedAtData
+  definedAtData: DefinedAtData
 ): `${SentenceBegin} ${ConfigName}${string} defined ${'internally' | `at ${string}`}` {
-  const definedAtString = getDefinedAtString(definedAt, configName)
+  const definedAtString = getDefinedAtString(definedAtData, configName)
   const definedAtStr = definedAtString === 'internally' ? definedAtString : (`at ${definedAtString}` as const)
   let configNameStr: `${ConfigName}${string}` = `${configName}${/*sentenceBegin === 'Hook' ? '()' :*/ ''}`
   const configDefinedAt = `${sentenceBegin} ${pc.cyan(configNameStr)} defined ${definedAtStr}` as const
   return configDefinedAt
 }
-function getDefinedAtString(definedAt: DefinedAtData, configName: string): string {
-  if (!definedAt) return 'internally'
+function getDefinedAtString(definedAtData: DefinedAtData, configName: string): string {
+  if (!definedAtData) return 'internally'
 
   let files: DefinedAtFile[]
-  if (isArray(definedAt)) {
-    files = definedAt
+  if (isArray(definedAtData)) {
+    files = definedAtData
   } else {
-    files = [definedAt]
+    files = [definedAtData]
   }
 
   assert(files.length >= 1)

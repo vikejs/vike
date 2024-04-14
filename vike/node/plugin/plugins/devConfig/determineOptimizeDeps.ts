@@ -69,7 +69,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
           // Vite expects entries to be filesystem absolute paths (surprisingly so).
           addEntry(definedAtFilePath.filePathAbsoluteFilesystem)
         } else {
-          // Adding definedAt.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
+          // Adding definedAtFilePath.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
           addInclude(definedAtFilePath.importPathAbsolute)
         }
       })

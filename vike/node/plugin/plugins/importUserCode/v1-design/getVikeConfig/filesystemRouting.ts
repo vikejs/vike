@@ -17,9 +17,9 @@ import { assert, assertPosixPath, higherFirst } from '../../../../utils.js'
  *
  * Each config value is assigned with a `locationId` value. That's the source-of-truth for determining inheritance between config values.
  *
- * For Vike extensions, `locationId` is different than the config value's `definedAt`, for example the `onRenderHtml()` hook of `vike-react`:
+ * For Vike extensions, `locationId` is different than the config value's `definedAtFilePath`, for example the `onRenderHtml()` hook of `vike-react`:
  *  - `locationId === '/pages'` (the directory of `/pages/+config.js` which extends `vike-react`)
- *  - `definedAt.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
+ *  - `definedAtFilePath.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
  *
  *  This is an important distinction because the Vike extension's config should only apply to where it's being extended from, for example:
  *  ```js

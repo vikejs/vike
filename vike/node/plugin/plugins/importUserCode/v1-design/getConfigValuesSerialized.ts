@@ -52,12 +52,12 @@ function getConfigValuesSerialized(
   return code
 }
 
-function assertConfigValueIsSerializable(value: unknown, configName: string, definedAt: DefinedAtData) {
+function assertConfigValueIsSerializable(value: unknown, configName: string, definedAtData: DefinedAtData) {
   // Contains asserts
-  getConfigValueSerialized(value, configName, definedAt)
+  getConfigValueSerialized(value, configName, definedAtData)
 }
 
-function getConfigValueSerialized(value: unknown, configName: string, definedAt: DefinedAtData): string {
+function getConfigValueSerialized(value: unknown, configName: string, definedAtData: DefinedAtData): string {
   const valueName = `config${getPropAccessNotation(configName)}`
   let configValueSerialized: string
   try {
@@ -74,7 +74,7 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAt:
       serializationErrMsg = 'see serialization error printed above'
     }
     */
-    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(definedAt)
+    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(definedAtData)
     assert(configValueFilePathToShowToUser)
     assertUsage(
       false,
