@@ -8,7 +8,7 @@ import { assert, assertUsage, hasProp, slice } from './utils.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import { getConfigValue, getDefinedAtString } from '../page-configs/helpers.js'
+import { getConfigValue, getDefinedAtDataString } from '../page-configs/helpers.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 
@@ -16,9 +16,9 @@ type PageRoute = {
   pageId: string
   comesFromV1PageConfig: boolean
 } & (
-  | { routeString: string; routeDefinedAt: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
-  | { routeString: string; routeDefinedAt: string; routeType: 'STRING' }
-  | { routeFunction: Function; routeDefinedAt: string; routeType: 'FUNCTION' }
+  | { routeString: string; routeDefinedAtData: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
+  | { routeString: string; routeDefinedAtData: string; routeType: 'STRING' }
+  | { routeFunction: Function; routeDefinedAtData: string; routeType: 'FUNCTION' }
 )
 type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
@@ -59,13 +59,13 @@ function getPageRoutes(
           const configValue = getConfigValue(pageConfig, configName)
           if (configValue) {
             const route = configValue.value
-            const definedAt = getDefinedAtString(configValue.definedAt, configName)
+            const definedAt = getDefinedAtDataString(configValue.definedAt, configName)
             if (typeof route === 'string') {
               pageRoute = {
                 pageId,
                 comesFromV1PageConfig,
                 routeString: route,
-                routeDefinedAt: definedAt,
+                routeDefinedAtData: definedAt,
                 routeType: 'STRING'
               }
             } else {
@@ -76,7 +76,7 @@ function getPageRoutes(
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
-                routeDefinedAt: definedAt,
+                routeDefinedAtData: definedAt,
                 routeType: 'FUNCTION'
               }
             }
@@ -93,7 +93,7 @@ function getPageRoutes(
             routeFilesystemDefinedBy: definedBy,
             comesFromV1PageConfig,
             routeString,
-            routeDefinedAt: null,
+            routeDefinedAtData: null,
             routeType: 'FILESYSTEM'
           }
         }
@@ -120,7 +120,7 @@ function getPageRoutes(
             pageId,
             comesFromV1PageConfig,
             routeString,
-            routeDefinedAt: null,
+            routeDefinedAtData: null,
             routeFilesystemDefinedBy: `${pageId}.page.*`,
             routeType: 'FILESYSTEM'
           })
@@ -137,7 +137,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeString,
-              routeDefinedAt: filePath,
+              routeDefinedAtData: filePath,
               routeType: 'STRING'
             })
             return
@@ -154,7 +154,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeFunction,
-              routeDefinedAt: filePath,
+              routeDefinedAtData: filePath,
               routeType: 'FUNCTION'
             })
             return

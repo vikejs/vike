@@ -5,7 +5,7 @@ import { assert, assertUsage, getPropAccessNotation } from '../../../utils.js'
 import type {
   ConfigEnvInternal,
   ConfigValueSource,
-  DefinedAt,
+  DefinedAtData,
   PageConfigBuildTime
 } from '../../../../../shared/page-configs/PageConfig.js'
 import { stringify } from '@brillout/json-serializer/stringify'
@@ -52,12 +52,12 @@ function getConfigValuesSerialized(
   return code
 }
 
-function assertConfigValueIsSerializable(value: unknown, configName: string, definedAt: DefinedAt) {
+function assertConfigValueIsSerializable(value: unknown, configName: string, definedAt: DefinedAtData) {
   // Contains asserts
   getConfigValueSerialized(value, configName, definedAt)
 }
 
-function getConfigValueSerialized(value: unknown, configName: string, definedAt: DefinedAt): string {
+function getConfigValueSerialized(value: unknown, configName: string, definedAt: DefinedAtData): string {
   const valueName = `config${getPropAccessNotation(configName)}`
   let configValueSerialized: string
   try {

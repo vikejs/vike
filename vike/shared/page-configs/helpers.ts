@@ -1,11 +1,11 @@
 export { getPageConfig }
 export { getConfigValueFilePathToShowToUser }
 export { getHookFilePathToShowToUser }
-export { getConfigDefinedAtString, getDefinedAtString } from './helpers/getConfigDefinedAtString.js'
+export { getConfigDefinedAtDataString, getDefinedAtDataString } from './helpers/getConfigDefinedAtDataString.js'
 export { getConfigValue } from './helpers/getConfigValue.js'
 
 import { assert, isArray } from '../utils.js'
-import type { PageConfigRuntime, DefinedAt } from './PageConfig.js'
+import type { PageConfigRuntime, DefinedAtData } from './PageConfig.js'
 
 function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageConfigRuntime {
   const pageConfig = pageConfigs.find((p) => p.pageId === pageId)
@@ -14,7 +14,7 @@ function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageCo
   return pageConfig
 }
 
-function getConfigValueFilePathToShowToUser({ definedAt }: { definedAt: DefinedAt }): null | string {
+function getConfigValueFilePathToShowToUser({ definedAt }: { definedAt: DefinedAtData }): null | string {
   // A unique file path only exists if the config value isn't cumulative nor computed:
   //  - cumulative config values have multiple file paths
   //  - computed values don't have any file path
@@ -24,7 +24,7 @@ function getConfigValueFilePathToShowToUser({ definedAt }: { definedAt: DefinedA
   return filePathToShowToUser
 }
 
-function getHookFilePathToShowToUser({ definedAt }: { definedAt: DefinedAt }): string {
+function getHookFilePathToShowToUser({ definedAt }: { definedAt: DefinedAtData }): string {
   const filePathToShowToUser = getConfigValueFilePathToShowToUser({ definedAt })
   assert(filePathToShowToUser)
   return filePathToShowToUser

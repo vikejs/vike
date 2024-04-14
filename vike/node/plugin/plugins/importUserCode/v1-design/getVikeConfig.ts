@@ -35,8 +35,8 @@ import type {
   ConfigValueSources,
   PageConfigBuildTime,
   ConfigValues,
-  DefinedAtFileFullInfo,
-  DefinedAtFile,
+  DefinedAtDataFileFullInfo,
+  DefinedAtDataFile,
   ConfigValuesComputed
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
@@ -66,7 +66,7 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
+import { getConfigDefinedAtDataString } from '../../../../../shared/page-configs/helpers.js'
 import type { ResolvedConfig } from 'vite'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
@@ -721,14 +721,14 @@ async function getConfigValueSource(
   const configEnv = configDef.env
   const { locationId } = interfaceFile
 
-  const definedAtConfigFile: DefinedAtFileFullInfo = {
+  const definedAtConfigFile: DefinedAtDataFileFullInfo = {
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
 
   // +client.js
   if (configDef._valueIsFilePath) {
-    let definedAt: DefinedAtFileFullInfo
+    let definedAt: DefinedAtDataFileFullInfo
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
@@ -739,7 +739,7 @@ async function getConfigValueSource(
         configEnv,
         configName
       )
-      const configDefinedAt = getConfigDefinedAtString('Config', configName, { definedAt: definedAtConfigFile })
+      const configDefinedAt = getConfigDefinedAtDataString('Config', configName, { definedAt: definedAtConfigFile })
       assertUsage(pointerImport, `${configDefinedAt} should be an import`)
       valueFilePath = pointerImport.filePathAbsoluteVite
       definedAt = pointerImport
@@ -794,7 +794,7 @@ async function getConfigValueSource(
           const fileExport = await loadImportedFile(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
-          const configDefinedAt = getConfigDefinedAtString('Config', configName, configValueSource)
+          const configDefinedAt = getConfigDefinedAtDataString('Config', configName, configValueSource)
           assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
         }
       }
@@ -865,11 +865,11 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
         const meta = configMeta.configValue
         assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
-        // Set configDef._userEffectDefinedAt
+        // Set configDef._userEffectDefinedAtData
         Object.entries(meta).forEach(([configName, configDef]) => {
           if (!configDef.effect) return
           assert(interfaceFile.isConfigFile)
-          configDef._userEffectDefinedAt = {
+          configDef._userEffectDefinedAtData = {
             ...interfaceFile.filePath,
             fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
           }
@@ -891,21 +891,21 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
 
 function assertMetaValue(
   metaVal: unknown,
-  configMetaDefinedAt: `Config meta${string}` | null
+  configMetaDefinedAtData: `Config meta${string}` | null
 ): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
-    assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+    assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
     assertUsage(
       false,
-      `${configMetaDefinedAt} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
+      `${configMetaDefinedAtData} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
     )
   }
   objectEntries(metaVal).forEach(([configName, def]) => {
     if (!isObject(def)) {
-      assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+      assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
       assertUsage(
         false,
-        `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}`)} to a value with an invalid type ${pc.cyan(
+        `${configMetaDefinedAtData} sets ${pc.cyan(`meta.${configName}`)} to a value with an invalid type ${pc.cyan(
           typeof def
         )}: it should be an object instead.`
       )
@@ -914,11 +914,11 @@ function assertMetaValue(
     // env
     let configEnv: ConfigEnvInternal
     {
-      assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+      assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
       if (!('env' in def)) {
-        assertUsage(false, `${configMetaDefinedAt} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`)
+        assertUsage(false, `${configMetaDefinedAtData} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`)
       }
-      configEnv = getConfigEnvValue(def.env, `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to`)
+      configEnv = getConfigEnvValue(def.env, `${configMetaDefinedAtData} sets ${pc.cyan(`meta.${configName}.env`)} to`)
       // Overwrite deprecated value with valid value
       // TODO/v1-release: remove once support for the deprecated values is removed
       if (typeof def.env === 'string') def.env = configEnv
@@ -927,19 +927,19 @@ function assertMetaValue(
     // effect
     if ('effect' in def) {
       if (!hasProp(def, 'effect', 'function')) {
-        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+        assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAt} sets ${pc.cyan(`meta.${configName}.effect`)} to an invalid type ${pc.cyan(
+          `${configMetaDefinedAtData} sets ${pc.cyan(`meta.${configName}.effect`)} to an invalid type ${pc.cyan(
             typeof def.effect
           )}: it should be a function instead`
         )
       }
       if (!configEnv.config) {
-        assert(configMetaDefinedAt) // We expect internal effects to return a valid meta value
+        assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAt} sets ${pc.cyan(
+          `${configMetaDefinedAtData} sets ${pc.cyan(
             `meta.${configName}.effect`
           )} but it's only supported if meta.${configName}.env has ${pc.cyan('{ config: true }')} (but it's ${pc.cyan(
             JSON.stringify(configEnv)
@@ -970,7 +970,7 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
-      configDefinedAt: getConfigDefinedAtString('Config', configName, source)
+      configDefinedAt: getConfigDefinedAtDataString('Config', configName, source)
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
@@ -986,9 +986,9 @@ function applyEffect(
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
-      if (configDefEffect._userEffectDefinedAt) {
-        configDefinedAtString = getConfigDefinedAtString('Config', configName, {
-          definedAt: configDefEffect._userEffectDefinedAt
+      if (configDefEffect._userEffectDefinedAtData) {
+        configDefinedAtString = getConfigDefinedAtDataString('Config', configName, {
+          definedAt: configDefEffect._userEffectDefinedAtData
         })
       } else {
         configDefinedAtString = null
@@ -1128,11 +1128,11 @@ function determineRouteFilesystem(locationId: LocationId, configValueSources: Co
   if (configFilesystemRoutingRoot) {
     const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot, configName)
     if (routingRoot) {
-      const { filesystemRoutingRootEffect /*, filesystemRoutingRootDefinedAt*/ } = routingRoot
+      const { filesystemRoutingRootEffect /*, filesystemRoutingRootDefinedAtData*/ } = routingRoot
       const debugInfo = { locationId, routeFilesystem: filesystemRouteString, configFilesystemRoutingRoot }
       assert(filesystemRouteString.startsWith(filesystemRoutingRootEffect.before), debugInfo)
       filesystemRouteString = applyFilesystemRoutingRootEffect(filesystemRouteString, filesystemRoutingRootEffect)
-      // filesystemRouteDefinedBy = `${filesystemRouteDefinedBy} (with ${filesystemRoutingRootDefinedAt})`
+      // filesystemRouteDefinedBy = `${filesystemRouteDefinedBy} (with ${filesystemRoutingRootDefinedAtData})`
     }
   }
   assert(filesystemRouteString.startsWith('/'))
@@ -1150,7 +1150,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAtString('Config', configName, configFilesystemRoutingRoot)
+  const configDefinedAt = getConfigDefinedAtDataString('Config', configName, configFilesystemRoutingRoot)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
@@ -1161,7 +1161,7 @@ function getFilesystemRoutingRootEffect(
   const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
-  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAt: configDefinedAt }
+  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAtData: configDefinedAt }
 }
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)
@@ -1194,12 +1194,12 @@ function getConfigValues(
         configValues[configName] = {
           type: 'classic',
           value: configValueSource.value,
-          definedAt: getDefinedAtFile(configValueSource)
+          definedAt: getDefinedAtDataFile(configValueSource)
         }
       }
     } else {
       const value = mergeCumulative(configName, sources)
-      const definedAt = sources.map((source) => getDefinedAtFile(source))
+      const definedAt = sources.map((source) => getDefinedAtDataFile(source))
       assert(value.length === definedAt.length)
       configValues[configName] = {
         type: 'cumulative',
@@ -1210,7 +1210,7 @@ function getConfigValues(
   })
   return configValues
 }
-function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
+function getDefinedAtDataFile(configValueSource: ConfigValueSource): DefinedAtDataFile {
   return {
     filePathToShowToUser: configValueSource.definedAt.filePathToShowToUser,
     fileExportPathToShowToUser: configValueSource.definedAt.fileExportPathToShowToUser
@@ -1224,7 +1224,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     assert('value' in configValueSource)
 
     // Make sure configValueSource.value is serializable
-    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtFile(configValueSource))
+    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtDataFile(configValueSource))
 
     const { value } = configValueSource
     configValues.push(value)

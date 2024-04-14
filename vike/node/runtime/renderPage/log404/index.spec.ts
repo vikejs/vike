@@ -27,7 +27,7 @@ describe('getRoutesInfo()', () => {
 const routeFunction = {
   pageId: '/pages/hello',
   comesFromV1PageConfig: true,
-  routeDefinedAt: '/pages/hello/+route.ts > export default',
+  routeDefinedAtData: '/pages/hello/+route.ts > export default',
   routeType: 'FUNCTION',
   routeFunction: function route(pageContext: { urlPathname: string }) {
     if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {
@@ -43,7 +43,7 @@ const pageRoutes1 = [
     routeFilesystemDefinedBy: '/pages/index/',
     comesFromV1PageConfig: true,
     routeString: '/',
-    routeDefinedAt: null,
+    routeDefinedAtData: null,
     routeType: 'FILESYSTEM'
   },
   {
@@ -51,7 +51,7 @@ const pageRoutes1 = [
     routeFilesystemDefinedBy: '/pages/markdown/',
     comesFromV1PageConfig: true,
     routeString: '/markdown',
-    routeDefinedAt: null,
+    routeDefinedAtData: null,
     routeType: 'FILESYSTEM'
   },
   {
@@ -59,7 +59,7 @@ const pageRoutes1 = [
     routeFilesystemDefinedBy: '/pages/star-wars/@id/',
     comesFromV1PageConfig: true,
     routeString: '/star-wars/@id',
-    routeDefinedAt: null,
+    routeDefinedAtData: null,
     routeType: 'FILESYSTEM'
   },
   {
@@ -67,7 +67,7 @@ const pageRoutes1 = [
     routeFilesystemDefinedBy: '/pages/star-wars/index/',
     comesFromV1PageConfig: true,
     routeString: '/star-wars',
-    routeDefinedAt: null,
+    routeDefinedAtData: null,
     routeType: 'FILESYSTEM'
   }
 ] satisfies PageRoutes

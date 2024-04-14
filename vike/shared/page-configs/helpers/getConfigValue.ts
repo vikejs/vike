@@ -1,10 +1,10 @@
 export { getConfigValue }
 
 import { assert, assertUsage, getValuePrintable } from '../../utils.js'
-import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAt } from '../PageConfig.js'
+import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData } from '../PageConfig.js'
 import type { ConfigNameBuiltIn } from '../Config.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtString } from './getConfigDefinedAtString.js'
+import { getConfigDefinedAtDataString } from './getConfigDefinedAtDataString.js'
 type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
@@ -27,7 +27,7 @@ function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, ty
   return configValue
 }
 
-function assertConfigValueType(value: unknown, type: 'string' | 'boolean', configName: string, definedAt: DefinedAt) {
+function assertConfigValueType(value: unknown, type: 'string' | 'boolean', configName: string, definedAt: DefinedAtData) {
   assert(value !== null)
   const typeActual = typeof value
   if (typeActual === type) return
@@ -36,7 +36,7 @@ function assertConfigValueType(value: unknown, type: 'string' | 'boolean', confi
     valuePrintable !== null
       ? (`value ${pc.cyan(valuePrintable)}` as const)
       : (`type ${pc.cyan(typeActual) as string}` as const)
-  const configDefinedAt: `Config ${string} defined ${string}` = getConfigDefinedAtString('Config', configName, {
+  const configDefinedAt: `Config ${string} defined ${string}` = getConfigDefinedAtDataString('Config', configName, {
     definedAt
   })
   const errMsg = `${configDefinedAt} has an invalid ${problem}: it should be a ${

@@ -56,8 +56,8 @@ function getRoutesInfo(pageRoutes: PageRoutes): string | null {
         assert(pageRoute.routeFilesystemDefinedBy)
         routeDefinedBy = pageRoute.routeFilesystemDefinedBy
       } else {
-        assert(pageRoute.routeDefinedAt)
-        routeDefinedBy = pageRoute.routeDefinedAt
+        assert(pageRoute.routeDefinedAtData)
+        routeDefinedBy = pageRoute.routeDefinedAtData
       }
       if (pageRoute.routeType === 'STRING') {
         routeStr = pageRoute.routeString
