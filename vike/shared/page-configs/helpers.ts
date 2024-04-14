@@ -14,18 +14,18 @@ function getPageConfig(pageId: string, pageConfigs: PageConfigRuntime[]): PageCo
   return pageConfig
 }
 
-function getConfigValueFilePathToShowToUser(definedAt: DefinedAtData): null | string {
+function getConfigValueFilePathToShowToUser(definedAtData: DefinedAtData): null | string {
   // A unique file path only exists if the config value isn't cumulative nor computed:
   //  - cumulative config values have multiple file paths
   //  - computed values don't have any file path
-  if (!definedAt || isArray(definedAt)) return null
-  const { filePathToShowToUser } = definedAt
+  if (!definedAtData || isArray(definedAtData)) return null
+  const { filePathToShowToUser } = definedAtData
   assert(filePathToShowToUser)
   return filePathToShowToUser
 }
 
-function getHookFilePathToShowToUser(definedAt: DefinedAtData): string {
-  const filePathToShowToUser = getConfigValueFilePathToShowToUser(definedAt)
+function getHookFilePathToShowToUser(definedAtData: DefinedAtData): string {
+  const filePathToShowToUser = getConfigValueFilePathToShowToUser(definedAtData)
   assert(filePathToShowToUser)
   return filePathToShowToUser
 }
