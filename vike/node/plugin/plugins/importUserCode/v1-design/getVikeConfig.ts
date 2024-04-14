@@ -35,8 +35,8 @@ import type {
   ConfigValueSources,
   PageConfigBuildTime,
   ConfigValues,
-  DefinedAtDataFilePath,
-  DefinedAtDataFile,
+  DefinedAtFilePath,
+  DefinedAtFile,
   ConfigValuesComputed
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
@@ -721,14 +721,14 @@ async function getConfigValueSource(
   const configEnv = configDef.env
   const { locationId } = interfaceFile
 
-  const definedAtConfigFile: DefinedAtDataFilePath = {
+  const definedAtConfigFile: DefinedAtFilePath = {
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
 
   // +client.js
   if (configDef._valueIsFilePath) {
-    let definedAt: DefinedAtDataFilePath
+    let definedAt: DefinedAtFilePath
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       const { configValue } = conf
@@ -865,11 +865,11 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
         const meta = configMeta.configValue
         assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
-        // Set configDef._userEffectDefinedAtDataFilePath
+        // Set configDef._userEffectDefinedAtFilePath
         Object.entries(meta).forEach(([configName, configDef]) => {
           if (!configDef.effect) return
           assert(interfaceFile.isConfigFile)
-          configDef._userEffectDefinedAtDataFilePath = {
+          configDef._userEffectDefinedAtFilePath = {
             ...interfaceFile.filePath,
             fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
           }
@@ -989,9 +989,9 @@ function applyEffect(
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
-      if (configDefEffect._userEffectDefinedAtDataFilePath) {
+      if (configDefEffect._userEffectDefinedAtFilePath) {
         configDefinedAtString = getConfigDefinedAtString('Config', configName, {
-          definedAt: configDefEffect._userEffectDefinedAtDataFilePath
+          definedAt: configDefEffect._userEffectDefinedAtFilePath
         })
       } else {
         configDefinedAtString = null
@@ -1197,12 +1197,12 @@ function getConfigValues(
         configValues[configName] = {
           type: 'classic',
           value: configValueSource.value,
-          definedAt: getDefinedAtDataFile(configValueSource)
+          definedAt: getDefinedAtFile(configValueSource)
         }
       }
     } else {
       const value = mergeCumulative(configName, sources)
-      const definedAt = sources.map((source) => getDefinedAtDataFile(source))
+      const definedAt = sources.map((source) => getDefinedAtFile(source))
       assert(value.length === definedAt.length)
       configValues[configName] = {
         type: 'cumulative',
@@ -1213,7 +1213,7 @@ function getConfigValues(
   })
   return configValues
 }
-function getDefinedAtDataFile(configValueSource: ConfigValueSource): DefinedAtDataFile {
+function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
   return {
     filePathToShowToUser: configValueSource.definedAt.filePathToShowToUser,
     fileExportPathToShowToUser: configValueSource.definedAt.fileExportPathToShowToUser
@@ -1227,7 +1227,7 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     assert('value' in configValueSource)
 
     // Make sure configValueSource.value is serializable
-    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtDataFile(configValueSource))
+    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtFile(configValueSource))
 
     const { value } = configValueSource
     configValues.push(value)

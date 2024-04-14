@@ -14,8 +14,8 @@ export type { ConfigValueSource }
 export type { ConfigValueSources }
 export type { ConfigValuesComputed }
 export type { DefinedAtData }
-export type { DefinedAtDataFile }
-export type { DefinedAtDataFilePath }
+export type { DefinedAtFile }
+export type { DefinedAtFilePath }
 
 import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
@@ -77,7 +77,7 @@ type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
 type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
-  definedAt: DefinedAtDataFilePath
+  definedAt: DefinedAtFilePath
   locationId: LocationId
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
@@ -85,7 +85,7 @@ type ConfigValueSource = {
   valueIsFilePath?: true
   valueIsDefinedByValueFile: boolean
 }
-type DefinedAtDataFilePath = DefinedAtDataFile & FilePath & { fileExportName?: string }
+type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 type ConfigValueSources = Record<
   // configName
   string,
@@ -106,13 +106,13 @@ type ConfigValue = ConfigValueClassic | ConfigValueCumulative | ConfigValueCompu
 type ConfigValueClassic = {
   type: 'classic'
   value: unknown
-  definedAt: DefinedAtDataFile
+  definedAt: DefinedAtFile
 }
 /** Defined by multiple sources (thus multiple file paths). */
 type ConfigValueCumulative = {
   type: 'cumulative'
   value: unknown[]
-  definedAt: DefinedAtDataFile[]
+  definedAt: DefinedAtFile[]
 }
 /** Defined internally by Vike (currently, Vike doesn't support computed configs created by users). */
 type ConfigValueComputed = {
@@ -127,8 +127,8 @@ type ConfigValues = Record<
   ConfigValue
 >
 
-type DefinedAtData = DefinedAtDataFile | DefinedAtDataFile[] | null
-type DefinedAtDataFile = {
+type DefinedAtData = DefinedAtFile | DefinedAtFile[] | null
+type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPathToShowToUser: null | string[]
 }

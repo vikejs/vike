@@ -2,7 +2,7 @@ export { getConfigDefinedAtString }
 export { getDefinedAtString }
 
 import { assert, isArray } from '../../utils.js'
-import type { DefinedAtData, DefinedAtDataFile } from '../PageConfig.js'
+import type { DefinedAtData, DefinedAtFile } from '../PageConfig.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from '../getExportPath.js'
 
@@ -20,7 +20,7 @@ function getConfigDefinedAtString<ConfigName extends string, SentenceBegin exten
 function getDefinedAtString(definedAt: DefinedAtData, configName: string): string {
   if (!definedAt) return 'internally'
 
-  let files: DefinedAtDataFile[]
+  let files: DefinedAtFile[]
   if (isArray(definedAt)) {
     files = definedAt
   } else {
