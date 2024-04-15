@@ -69,7 +69,7 @@ import pc from '@brillout/picocolors'
 import {
   getConfigDefinedAtString,
   getConfigDefinedAtStringOptional
-} from '../../../../../shared/page-configs/helpers.js'
+} from '../../../../../shared/page-configs/helpers/getConfigDefinedAtString.js'
 import type { ResolvedConfig } from 'vite'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'

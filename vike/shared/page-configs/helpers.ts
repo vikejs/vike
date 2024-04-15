@@ -1,14 +1,6 @@
 export { getPageConfig }
 export { getConfigValueFilePathToShowToUser }
 export { getHookFilePathToShowToUser }
-export {
-  getConfigDefinedAtStringOptional,
-  getConfigDefinedAtString,
-  getDefinedAtString,
-  type ConfigDefinedAtStringOptional,
-  type ConfigDefinedAtString
-} from './helpers/getConfigDefinedAtString.js'
-export { getConfigValue } from './helpers/getConfigValue.js'
 
 import { assert, isArray } from '../utils.js'
 import type { PageConfigRuntime, DefinedAtData } from './PageConfig.js'

@@ -4,7 +4,7 @@ import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime } from '.
 import type { PageConfigGlobalRuntimeSerialized, PageConfigRuntimeSerialized } from './PageConfigSerialized.js'
 import { parseConfigValuesImported } from './parseConfigValuesImported.js'
 import { assertUsage, isCallable } from '../../utils.js'
-import { getConfigDefinedAtStringOptional } from '../helpers.js'
+import { getConfigDefinedAtStringOptional } from '../helpers/getConfigDefinedAtString.js'
 import { parseConfigValuesSerialized } from './parseConfigValuesSerialized.js'
 
 function parsePageConfigs(

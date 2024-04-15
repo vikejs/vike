@@ -15,7 +15,7 @@ import type {
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { assert } from '../../../../utils.js'
-import type { ConfigDefinedAtString } from '../../../../../../shared/page-configs/helpers.js'
+import type { ConfigDefinedAtString } from '../../../../../../shared/page-configs/helpers/getConfigDefinedAtString.js'
 
 // For users
 /** The meta definition of a config.
