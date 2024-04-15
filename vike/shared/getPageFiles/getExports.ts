@@ -9,7 +9,7 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_
 import type { FileType } from './fileTypes.js'
 import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getConfigDefinedAtString, getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
+import { getConfigDefinedAtStringOptional, getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
@@ -78,7 +78,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
       const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
-      const configDefinedAtString = getConfigDefinedAtString('Config', configName, configValue.definedAtData)
+      const configDefinedAtString = getConfigDefinedAtStringOptional('Config', configName, configValue.definedAtData)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []

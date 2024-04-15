@@ -4,7 +4,7 @@ import { assert, assertUsage, getValuePrintable } from '../../utils.js'
 import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData } from '../PageConfig.js'
 import type { ConfigNameBuiltIn } from '../Config.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtString } from './getConfigDefinedAtString.js'
+import { getConfigDefinedAtStringOptional } from './getConfigDefinedAtString.js'
 type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
@@ -41,11 +41,7 @@ function assertConfigValueType(
     valuePrintable !== null
       ? (`value ${pc.cyan(valuePrintable)}` as const)
       : (`type ${pc.cyan(typeActual) as string}` as const)
-  const configDefinedAtString: `Config ${string} defined ${string}` = getConfigDefinedAtString(
-    'Config',
-    configName,
-    definedAtData
-  )
+  const configDefinedAtString = getConfigDefinedAtStringOptional('Config', configName, definedAtData)
   const errMsg = `${configDefinedAtString} has an invalid ${problem}: it should be a ${
     pc.cyan(type) as string
   } instead` as const

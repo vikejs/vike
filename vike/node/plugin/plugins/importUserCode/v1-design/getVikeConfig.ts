@@ -66,7 +66,7 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtString } from '../../../../../shared/page-configs/helpers.js'
+import { getConfigDefinedAtStringOptional } from '../../../../../shared/page-configs/helpers.js'
 import type { ResolvedConfig } from 'vite'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
@@ -739,7 +739,7 @@ async function getConfigValueSource(
         configEnv,
         configName
       )
-      const configDefinedAtString = getConfigDefinedAtString('Config', configName, definedAtFilePath_)
+      const configDefinedAtString = getConfigDefinedAtStringOptional('Config', configName, definedAtFilePath_)
       assertUsage(pointerImport, `${configDefinedAtString} should be an import`)
       valueFilePath = pointerImport.filePathAbsoluteVite
       definedAtFilePath = pointerImport
@@ -794,7 +794,7 @@ async function getConfigValueSource(
           const fileExport = await loadImportedFile(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
-          const configDefinedAtString = getConfigDefinedAtString(
+          const configDefinedAtString = getConfigDefinedAtStringOptional(
             'Config',
             configName,
             configValueSource.definedAtFilePath
@@ -977,7 +977,7 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
-      configDefinedAt: getConfigDefinedAtString('Config', configName, source.definedAtFilePath)
+      configDefinedAt: getConfigDefinedAtStringOptional('Config', configName, source.definedAtFilePath)
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
@@ -994,7 +994,7 @@ function applyEffect(
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
       if (configDefEffect._userEffectDefinedAtFilePath) {
-        configDefinedAtString = getConfigDefinedAtString(
+        configDefinedAtString = getConfigDefinedAtStringOptional(
           'Config',
           configName,
           configDefEffect._userEffectDefinedAtFilePath
@@ -1159,7 +1159,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAtString = getConfigDefinedAtString(
+  const configDefinedAtString = getConfigDefinedAtStringOptional(
     'Config',
     configName,
     configFilesystemRoutingRoot.definedAtFilePath

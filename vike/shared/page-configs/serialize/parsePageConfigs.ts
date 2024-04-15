@@ -4,7 +4,7 @@ import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime } from '.
 import type { PageConfigGlobalRuntimeSerialized, PageConfigRuntimeSerialized } from './PageConfigSerialized.js'
 import { parseConfigValuesImported } from './parseConfigValuesImported.js'
 import { assertUsage, isCallable } from '../../utils.js'
-import { getConfigDefinedAtString } from '../helpers.js'
+import { getConfigDefinedAtStringOptional } from '../helpers.js'
 import { parseConfigValuesSerialized } from './parseConfigValuesSerialized.js'
 
 function parsePageConfigs(
@@ -50,7 +50,7 @@ function assertRouteConfigValue(configValues: ConfigValues) {
   if (!configValue) return
   const { value } = configValue
   const configValueType = typeof value
-  const configDefinedAtString = getConfigDefinedAtString('Config', configName, configValue.definedAtData)
+  const configDefinedAtString = getConfigDefinedAtStringOptional('Config', configName, configValue.definedAtData)
   assertUsage(
     configValueType === 'string' || isCallable(value),
     `${configDefinedAtString} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
