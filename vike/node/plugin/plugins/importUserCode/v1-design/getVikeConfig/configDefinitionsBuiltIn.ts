@@ -15,7 +15,7 @@ import type {
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
 import { assert } from '../../../../utils.js'
-import type { ConfigDefinedAtString } from '../../../../../../shared/page-configs/getConfigDefinedAtString.js'
+import type { ConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
 // For users
 /** The meta definition of a config.
@@ -58,7 +58,7 @@ type ConfigEffect = (config: {
    *
    * https://vike.dev/meta
    */
-  configDefinedAt: ConfigDefinedAtString
+  configDefinedAt: ConfigDefinedAt
 }) => Config | undefined
 
 /** For Vike internal use */

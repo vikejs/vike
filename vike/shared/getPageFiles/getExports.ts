@@ -10,9 +10,9 @@ import type { FileType } from './fileTypes.js'
 import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
 import {
-  type ConfigDefinedAtStringOptional,
-  getConfigDefinedAtStringOptional
-} from '../page-configs/getConfigDefinedAtString.js'
+  type ConfigDefinedAtOptional,
+  getConfigDefinedAtOptional
+} from '../page-configs/getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
 import pc from '@brillout/picocolors'
 
@@ -39,7 +39,7 @@ type ConfigEntries = Record<
   string,
   {
     configValue: unknown
-    configDefinedAt: ConfigDefinedAtStringOptional
+    configDefinedAt: ConfigDefinedAtOptional
     configDefinedByFile: string | null
   }[]
 >
@@ -82,7 +82,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
       const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
-      const configDefinedAtString = getConfigDefinedAtStringOptional('Config', configName, configValue.definedAtData)
+      const configDefinedAt = getConfigDefinedAtOptional('Config', configName, configValue.definedAtData)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []
@@ -90,7 +90,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
       assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
         configValue: value,
-        configDefinedAt: configDefinedAtString,
+        configDefinedAt: configDefinedAt,
         configDefinedByFile: configValueFilePathToShowToUser
       })
 
@@ -99,7 +99,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue: value,
-        exportSource: configDefinedAtString,
+        exportSource: configDefinedAt,
         filePath: configValueFilePathToShowToUser,
         _filePath: configValueFilePathToShowToUser,
         _fileType: null,

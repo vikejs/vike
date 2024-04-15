@@ -9,7 +9,7 @@ import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRou
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import { getConfigValue } from '../page-configs/getConfigValue.js'
-import { getDefinedAtString } from '../page-configs/getConfigDefinedAtString.js'
+import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 

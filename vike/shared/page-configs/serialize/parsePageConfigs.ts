@@ -4,7 +4,7 @@ import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime } from '.
 import type { PageConfigGlobalRuntimeSerialized, PageConfigRuntimeSerialized } from './PageConfigSerialized.js'
 import { parseConfigValuesImported } from './parseConfigValuesImported.js'
 import { assert, assertUsage, isCallable } from '../../utils.js'
-import { getConfigDefinedAtString } from '../getConfigDefinedAtString.js'
+import { getConfigDefinedAt } from '../getConfigDefinedAt.js'
 import { parseConfigValuesSerialized } from './parseConfigValuesSerialized.js'
 
 function parsePageConfigs(
@@ -51,17 +51,17 @@ function assertRouteConfigValue(configValues: ConfigValues) {
   const { value, definedAtData } = configValue
   const configValueType = typeof value
   assert(definedAtData)
-  const configDefinedAtString = getConfigDefinedAtString('Config', configName, definedAtData)
+  const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtData)
   assertUsage(
     configValueType === 'string' || isCallable(value),
-    `${configDefinedAtString} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
+    `${configDefinedAt} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`
   )
   /* We don't use assertRouteString() in order to avoid unnecessarily bloating the client-side bundle when using Server Routing:
   * - When using Server Routing, this file is loaded => loading assertRouteString() would bloat the client bundle.
   * - assertRouteString() is already called on the server-side
   * - When using Server Routing, client-side validation is superfluous as Route Strings only need to be validated on the server-side
  if (typeof configValue === 'string') {
-   assertRouteString(configValue, `${configElement.configDefinedAtString} defines an`)
+   assertRouteString(configValue, `${configElement.configDefinedAt} defines an`)
  }
  */
 }

@@ -1,25 +1,25 @@
-export { getConfigDefinedAtString }
-export { getConfigDefinedAtStringOptional }
+export { getConfigDefinedAt }
+export { getConfigDefinedAtOptional }
 export { getDefinedAtString }
-export type { ConfigDefinedAtString }
-export type { ConfigDefinedAtStringOptional }
+export type { ConfigDefinedAt }
+export type { ConfigDefinedAtOptional }
 
 import { assert, isArray } from '../utils.js'
 import type { DefinedAtData, DefinedAtFile } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
-type ConfigDefinedAtStringOptional = ConfigDefinedAtString | `Config ${string} defined internally`
-type ConfigDefinedAtString = `Config ${string} defined at ${string}`
+type ConfigDefinedAtOptional = ConfigDefinedAt | `Config ${string} defined internally`
+type ConfigDefinedAt = `Config ${string} defined at ${string}`
 
-function getConfigDefinedAtString<SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/, ConfigName extends string>(
+function getConfigDefinedAt<SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/, ConfigName extends string>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
   definedAtData: DefinedAtFile | DefinedAtFile[]
 ): `${SentenceBegin} ${ConfigName} defined at ${string}` {
   return `${begin(sentenceBegin, configName)} at ${getDefinedAtString(definedAtData, configName)}`
 }
-function getConfigDefinedAtStringOptional<
+function getConfigDefinedAtOptional<
   SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/,
   ConfigName extends string
 >(
