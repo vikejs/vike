@@ -12,16 +12,16 @@ import { getExportPath } from './getExportPath.js'
 type ConfigDefinedAtStringOptional = ConfigDefinedAtString | `Config ${string} defined internally`
 type ConfigDefinedAtString = `Config ${string} defined at ${string}`
 
-function getConfigDefinedAtString(
-  sentenceBegin: 'Config',
-  configName: string,
+function getConfigDefinedAtString<SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/, ConfigName extends string>(
+  sentenceBegin: SentenceBegin,
+  configName: ConfigName,
   definedAtData: DefinedAtFile | DefinedAtFile[]
-): ConfigDefinedAtString {
+): `${SentenceBegin} ${ConfigName} defined at ${string}` {
   return `${begin(sentenceBegin, configName)} at ${getDefinedAtString(definedAtData, configName)}`
 }
 function getConfigDefinedAtStringOptional<
-  ConfigName extends string,
-  SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/
+  SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/,
+  ConfigName extends string
 >(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
