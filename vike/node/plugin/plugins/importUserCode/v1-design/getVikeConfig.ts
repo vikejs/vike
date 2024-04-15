@@ -66,7 +66,10 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtStringOptional } from '../../../../../shared/page-configs/helpers.js'
+import {
+  getConfigDefinedAtString,
+  getConfigDefinedAtStringOptional
+} from '../../../../../shared/page-configs/helpers.js'
 import type { ResolvedConfig } from 'vite'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
@@ -977,7 +980,7 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
-      configDefinedAt: getConfigDefinedAtStringOptional('Config', configName, source.definedAtFilePath)
+      configDefinedAt: getConfigDefinedAtString('Config', configName, source.definedAtFilePath)
     })
     if (!configModFromEffect) return
     assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time

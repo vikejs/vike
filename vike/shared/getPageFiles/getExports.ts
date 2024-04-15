@@ -9,7 +9,11 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_
 import type { FileType } from './fileTypes.js'
 import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getConfigDefinedAtStringOptional, getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
+import {
+  type ConfigDefinedAtStringOptional,
+  getConfigDefinedAtStringOptional,
+  getConfigValueFilePathToShowToUser
+} from '../page-configs/helpers.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
@@ -35,7 +39,7 @@ type ConfigEntries = Record<
   string,
   {
     configValue: unknown
-    configDefinedAt: string
+    configDefinedAt: ConfigDefinedAtStringOptional
     configDefinedByFile: string | null
   }[]
 >
