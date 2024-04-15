@@ -17,9 +17,9 @@ type PageRoute = {
   pageId: string
   comesFromV1PageConfig: boolean
 } & (
-  | { routeString: string; routeDefinedAtData: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
-  | { routeString: string; routeDefinedAtData: string; routeType: 'STRING' }
-  | { routeFunction: Function; routeDefinedAtData: string; routeType: 'FUNCTION' }
+  | { routeString: string; routeDefinedAtString: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
+  | { routeString: string; routeDefinedAtString: string; routeType: 'STRING' }
+  | { routeFunction: Function; routeDefinedAtString: string; routeType: 'FUNCTION' }
 )
 type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
@@ -67,7 +67,7 @@ function getPageRoutes(
                 pageId,
                 comesFromV1PageConfig,
                 routeString: route,
-                routeDefinedAtData: definedAtString,
+                routeDefinedAtString: definedAtString,
                 routeType: 'STRING'
               }
             } else {
@@ -78,7 +78,7 @@ function getPageRoutes(
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
-                routeDefinedAtData: definedAtString,
+                routeDefinedAtString: definedAtString,
                 routeType: 'FUNCTION'
               }
             }
@@ -95,7 +95,7 @@ function getPageRoutes(
             routeFilesystemDefinedBy: definedBy,
             comesFromV1PageConfig,
             routeString,
-            routeDefinedAtData: null,
+            routeDefinedAtString: null,
             routeType: 'FILESYSTEM'
           }
         }
@@ -122,7 +122,7 @@ function getPageRoutes(
             pageId,
             comesFromV1PageConfig,
             routeString,
-            routeDefinedAtData: null,
+            routeDefinedAtString: null,
             routeFilesystemDefinedBy: `${pageId}.page.*`,
             routeType: 'FILESYSTEM'
           })
@@ -139,7 +139,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeString,
-              routeDefinedAtData: filePath,
+              routeDefinedAtString: filePath,
               routeType: 'STRING'
             })
             return
@@ -156,7 +156,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeFunction,
-              routeDefinedAtData: filePath,
+              routeDefinedAtString: filePath,
               routeType: 'FUNCTION'
             })
             return
