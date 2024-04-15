@@ -1,7 +1,7 @@
 export { getClientEntry }
 
 import type { PageConfigRuntime, PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import { getConfigValue } from '../../shared/page-configs/helpers/getConfigValue.js'
+import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
 
 function getClientEntry(pageConfig: PageConfigRuntime | PageConfigBuildTime): null | string {
   const configName = 'client'

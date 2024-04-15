@@ -18,7 +18,7 @@ import type { PageContextExports } from '../getPageFiles.js'
 import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigBuildTime, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
-import { getConfigValue } from '../page-configs/helpers/getConfigValue.js'
+import { getConfigValue } from '../page-configs/getConfigValue.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject('getHook.ts', {

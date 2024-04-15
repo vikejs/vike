@@ -19,7 +19,7 @@ import {
   assertIsNpmPackageImport
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
-import { getConfigValue } from '../../../shared/page-configs/helpers/getConfigValue.js'
+import { getConfigValue } from '../../../shared/page-configs/getConfigValue.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'

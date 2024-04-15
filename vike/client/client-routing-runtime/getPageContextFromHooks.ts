@@ -23,7 +23,7 @@ import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageConfig } from '../../shared/page-configs/helpers.js'
-import { getConfigValue } from '../../shared/page-configs/helpers/getConfigValue.js'
+import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'

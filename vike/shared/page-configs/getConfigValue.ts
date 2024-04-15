@@ -1,10 +1,10 @@
 export { getConfigValue }
 
-import { assert, assertUsage, getValuePrintable } from '../../utils.js'
-import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData } from '../PageConfig.js'
-import type { ConfigNameBuiltIn } from '../Config.js'
+import { assert, assertUsage, getValuePrintable } from '../utils.js'
+import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData } from './PageConfig.js'
+import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtStringOptional } from '../getConfigDefinedAtString.js'
+import { getConfigDefinedAtStringOptional } from './getConfigDefinedAtString.js'
 type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
