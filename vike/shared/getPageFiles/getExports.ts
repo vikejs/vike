@@ -12,7 +12,7 @@ import type { PageFile } from './getPageFileObject.js'
 import {
   type ConfigDefinedAtStringOptional,
   getConfigDefinedAtStringOptional
-} from '../page-configs/helpers/getConfigDefinedAtString.js'
+} from '../page-configs/getConfigDefinedAtString.js'
 import { getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
 import pc from '@brillout/picocolors'
 
