@@ -895,21 +895,21 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
 
 function assertMetaValue(
   metaVal: unknown,
-  configMetaDefinedAtData: `Config meta${string}` | null
+  configMetaDefinedAtString: `Config meta${string}` | null
 ): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
-    assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
+    assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
     assertUsage(
       false,
-      `${configMetaDefinedAtData} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
+      `${configMetaDefinedAtString} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
     )
   }
   objectEntries(metaVal).forEach(([configName, def]) => {
     if (!isObject(def)) {
-      assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
+      assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
       assertUsage(
         false,
-        `${configMetaDefinedAtData} sets ${pc.cyan(`meta.${configName}`)} to a value with an invalid type ${pc.cyan(
+        `${configMetaDefinedAtString} sets ${pc.cyan(`meta.${configName}`)} to a value with an invalid type ${pc.cyan(
           typeof def
         )}: it should be an object instead.`
       )
@@ -918,14 +918,17 @@ function assertMetaValue(
     // env
     let configEnv: ConfigEnvInternal
     {
-      assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
+      assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
       if (!('env' in def)) {
         assertUsage(
           false,
-          `${configMetaDefinedAtData} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`
+          `${configMetaDefinedAtString} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`
         )
       }
-      configEnv = getConfigEnvValue(def.env, `${configMetaDefinedAtData} sets ${pc.cyan(`meta.${configName}.env`)} to`)
+      configEnv = getConfigEnvValue(
+        def.env,
+        `${configMetaDefinedAtString} sets ${pc.cyan(`meta.${configName}.env`)} to`
+      )
       // Overwrite deprecated value with valid value
       // TODO/v1-release: remove once support for the deprecated values is removed
       if (typeof def.env === 'string') def.env = configEnv
@@ -934,19 +937,19 @@ function assertMetaValue(
     // effect
     if ('effect' in def) {
       if (!hasProp(def, 'effect', 'function')) {
-        assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
+        assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAtData} sets ${pc.cyan(`meta.${configName}.effect`)} to an invalid type ${pc.cyan(
+          `${configMetaDefinedAtString} sets ${pc.cyan(`meta.${configName}.effect`)} to an invalid type ${pc.cyan(
             typeof def.effect
           )}: it should be a function instead`
         )
       }
       if (!configEnv.config) {
-        assert(configMetaDefinedAtData) // We expect internal effects to return a valid meta value
+        assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAtData} sets ${pc.cyan(
+          `${configMetaDefinedAtString} sets ${pc.cyan(
             `meta.${configName}.effect`
           )} but it's only supported if meta.${configName}.env has ${pc.cyan('{ config: true }')} (but it's ${pc.cyan(
             JSON.stringify(configEnv)
