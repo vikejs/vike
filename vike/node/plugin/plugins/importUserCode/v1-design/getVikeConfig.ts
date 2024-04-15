@@ -1140,11 +1140,11 @@ function determineRouteFilesystem(locationId: LocationId, configValueSources: Co
   if (configFilesystemRoutingRoot) {
     const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot, configName)
     if (routingRoot) {
-      const { filesystemRoutingRootEffect /*, filesystemRoutingRootDefinedAtData*/ } = routingRoot
+      const { filesystemRoutingRootEffect /*, filesystemRoutingRootDefinedAtString*/ } = routingRoot
       const debugInfo = { locationId, routeFilesystem: filesystemRouteString, configFilesystemRoutingRoot }
       assert(filesystemRouteString.startsWith(filesystemRoutingRootEffect.before), debugInfo)
       filesystemRouteString = applyFilesystemRoutingRootEffect(filesystemRouteString, filesystemRoutingRootEffect)
-      // filesystemRouteDefinedBy = `${filesystemRouteDefinedBy} (with ${filesystemRoutingRootDefinedAtData})`
+      // filesystemRouteDefinedBy = `${filesystemRouteDefinedBy} (with ${filesystemRoutingRootDefinedAtString})`
     }
   }
   assert(filesystemRouteString.startsWith('/'))
@@ -1177,7 +1177,7 @@ function getFilesystemRoutingRootEffect(
   const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
-  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAtData: configDefinedAtString }
+  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAtString: configDefinedAtString }
 }
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)
