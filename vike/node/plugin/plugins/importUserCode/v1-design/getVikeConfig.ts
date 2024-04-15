@@ -895,21 +895,21 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
 
 function assertMetaValue(
   metaVal: unknown,
-  configMetaDefinedAtString: `Config meta${string}` | null
+  metaConfigDefinedAtString: `Config meta${string}` | null
 ): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
-    assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
+    assert(metaConfigDefinedAtString) // We expect internal effects to return a valid meta value
     assertUsage(
       false,
-      `${configMetaDefinedAtString} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
+      `${metaConfigDefinedAtString} has an invalid type ${pc.cyan(typeof metaVal)}: it should be an object instead.`
     )
   }
   objectEntries(metaVal).forEach(([configName, def]) => {
     if (!isObject(def)) {
-      assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
+      assert(metaConfigDefinedAtString) // We expect internal effects to return a valid meta value
       assertUsage(
         false,
-        `${configMetaDefinedAtString} sets ${pc.cyan(`meta.${configName}`)} to a value with an invalid type ${pc.cyan(
+        `${metaConfigDefinedAtString} sets ${pc.cyan(`meta.${configName}`)} to a value with an invalid type ${pc.cyan(
           typeof def
         )}: it should be an object instead.`
       )
@@ -918,16 +918,16 @@ function assertMetaValue(
     // env
     let configEnv: ConfigEnvInternal
     {
-      assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
+      assert(metaConfigDefinedAtString) // We expect internal effects to return a valid meta value
       if (!('env' in def)) {
         assertUsage(
           false,
-          `${configMetaDefinedAtString} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`
+          `${metaConfigDefinedAtString} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`
         )
       }
       configEnv = getConfigEnvValue(
         def.env,
-        `${configMetaDefinedAtString} sets ${pc.cyan(`meta.${configName}.env`)} to`
+        `${metaConfigDefinedAtString} sets ${pc.cyan(`meta.${configName}.env`)} to`
       )
       // Overwrite deprecated value with valid value
       // TODO/v1-release: remove once support for the deprecated values is removed
@@ -937,19 +937,19 @@ function assertMetaValue(
     // effect
     if ('effect' in def) {
       if (!hasProp(def, 'effect', 'function')) {
-        assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
+        assert(metaConfigDefinedAtString) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAtString} sets ${pc.cyan(`meta.${configName}.effect`)} to an invalid type ${pc.cyan(
+          `${metaConfigDefinedAtString} sets ${pc.cyan(`meta.${configName}.effect`)} to an invalid type ${pc.cyan(
             typeof def.effect
           )}: it should be a function instead`
         )
       }
       if (!configEnv.config) {
-        assert(configMetaDefinedAtString) // We expect internal effects to return a valid meta value
+        assert(metaConfigDefinedAtString) // We expect internal effects to return a valid meta value
         assertUsage(
           false,
-          `${configMetaDefinedAtString} sets ${pc.cyan(
+          `${metaConfigDefinedAtString} sets ${pc.cyan(
             `meta.${configName}.effect`
           )} but it's only supported if meta.${configName}.env has ${pc.cyan('{ config: true }')} (but it's ${pc.cyan(
             JSON.stringify(configEnv)
@@ -1140,11 +1140,11 @@ function determineRouteFilesystem(locationId: LocationId, configValueSources: Co
   if (configFilesystemRoutingRoot) {
     const routingRoot = getFilesystemRoutingRootEffect(configFilesystemRoutingRoot, configName)
     if (routingRoot) {
-      const { filesystemRoutingRootEffect /*, filesystemRoutingRootDefinedAtString*/ } = routingRoot
+      const { filesystemRoutingRootEffect /*, filesystemRoutingRootConfigDefinedAtString*/ } = routingRoot
       const debugInfo = { locationId, routeFilesystem: filesystemRouteString, configFilesystemRoutingRoot }
       assert(filesystemRouteString.startsWith(filesystemRoutingRootEffect.before), debugInfo)
       filesystemRouteString = applyFilesystemRoutingRootEffect(filesystemRouteString, filesystemRoutingRootEffect)
-      // filesystemRouteDefinedBy = `${filesystemRouteDefinedBy} (with ${filesystemRoutingRootDefinedAtString})`
+      // filesystemRouteDefinedBy = `${filesystemRouteDefinedBy} (with ${filesystemRoutingRootConfigDefinedAtString})`
     }
   }
   assert(filesystemRouteString.startsWith('/'))
@@ -1177,7 +1177,7 @@ function getFilesystemRoutingRootEffect(
   const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value
   const filesystemRoutingRootEffect = { before, after }
-  return { filesystemRoutingRootEffect, filesystemRoutingRootDefinedAtString: configDefinedAtString }
+  return { filesystemRoutingRootEffect, filesystemRoutingRootConfigDefinedAtString: configDefinedAtString }
 }
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)
