@@ -9,10 +9,7 @@ import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_
 import type { FileType } from './fileTypes.js'
 import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import {
-  type ConfigDefinedAtOptional,
-  getConfigDefinedAtOptional
-} from '../page-configs/getConfigDefinedAt.js'
+import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional } from '../page-configs/getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
 import pc from '@brillout/picocolors'
 

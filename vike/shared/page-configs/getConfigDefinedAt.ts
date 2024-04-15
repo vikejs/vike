@@ -19,10 +19,7 @@ function getConfigDefinedAt<SentenceBegin extends 'Config' | 'config' /*| 'Hook'
 ): `${SentenceBegin} ${ConfigName} defined at ${string}` {
   return `${begin(sentenceBegin, configName)} at ${getDefinedAtString(definedAtData, configName)}`
 }
-function getConfigDefinedAtOptional<
-  SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/,
-  ConfigName extends string
->(
+function getConfigDefinedAtOptional<SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/, ConfigName extends string>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
   definedAtData: DefinedAtData

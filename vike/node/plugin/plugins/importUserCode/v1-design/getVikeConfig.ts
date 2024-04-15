@@ -794,11 +794,7 @@ async function getConfigValueSource(
           const fileExport = await loadImportedFile(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
-          const configDefinedAt = getConfigDefinedAt(
-            'Config',
-            configName,
-            configValueSource.definedAtFilePath
-          )
+          const configDefinedAt = getConfigDefinedAt('Config', configName, configValueSource.definedAtFilePath)
           assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
         }
       }
@@ -920,15 +916,9 @@ function assertMetaValue(
     {
       assert(metaConfigDefinedAt) // We expect internal effects to return a valid meta value
       if (!('env' in def)) {
-        assertUsage(
-          false,
-          `${metaConfigDefinedAt} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`
-        )
+        assertUsage(false, `${metaConfigDefinedAt} doesn't set ${pc.cyan(`meta.${configName}.env`)} but it's required.`)
       }
-      configEnv = getConfigEnvValue(
-        def.env,
-        `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to`
-      )
+      configEnv = getConfigEnvValue(def.env, `${metaConfigDefinedAt} sets ${pc.cyan(`meta.${configName}.env`)} to`)
       // Overwrite deprecated value with valid value
       // TODO/v1-release: remove once support for the deprecated values is removed
       if (typeof def.env === 'string') def.env = configEnv
@@ -997,11 +987,7 @@ function applyEffect(
     if (configName === 'meta') {
       let configDefinedAt: Parameters<typeof assertMetaValue>[1]
       if (configDefEffect._userEffectDefinedAtFilePath) {
-        configDefinedAt = getConfigDefinedAt(
-          'Config',
-          configName,
-          configDefEffect._userEffectDefinedAtFilePath
-        )
+        configDefinedAt = getConfigDefinedAt('Config', configName, configDefEffect._userEffectDefinedAtFilePath)
       } else {
         configDefinedAt = null
       }
@@ -1162,11 +1148,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAt(
-    'Config',
-    configName,
-    configFilesystemRoutingRoot.definedAtFilePath
-  )
+  const configDefinedAt = getConfigDefinedAt('Config', configName, configFilesystemRoutingRoot.definedAtFilePath)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
