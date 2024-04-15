@@ -3,8 +3,8 @@ export { parsePageConfigs }
 import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime } from '../PageConfig.js'
 import type { PageConfigGlobalRuntimeSerialized, PageConfigRuntimeSerialized } from './PageConfigSerialized.js'
 import { parseConfigValuesImported } from './parseConfigValuesImported.js'
-import { assertUsage, isCallable } from '../../utils.js'
-import { getConfigDefinedAtStringOptional } from '../getConfigDefinedAtString.js'
+import { assert, assertUsage, isCallable } from '../../utils.js'
+import { getConfigDefinedAtString } from '../getConfigDefinedAtString.js'
 import { parseConfigValuesSerialized } from './parseConfigValuesSerialized.js'
 
 function parsePageConfigs(
@@ -48,9 +48,10 @@ function assertRouteConfigValue(configValues: ConfigValues) {
   const configName = 'route'
   const configValue = configValues[configName]
   if (!configValue) return
-  const { value } = configValue
+  const { value, definedAtData } = configValue
   const configValueType = typeof value
-  const configDefinedAtString = getConfigDefinedAtStringOptional('Config', configName, configValue.definedAtData)
+  assert(definedAtData)
+  const configDefinedAtString = getConfigDefinedAtString('Config', configName, definedAtData)
   assertUsage(
     configValueType === 'string' || isCallable(value),
     `${configDefinedAtString} has an invalid type '${configValueType}': it should be a string or a function instead, see https://vike.dev/route`

@@ -1,8 +1,8 @@
-export { getConfigDefinedAtStringOptional }
 export { getConfigDefinedAtString }
+export { getConfigDefinedAtStringOptional }
 export { getDefinedAtString }
-export type { ConfigDefinedAtStringOptional }
 export type { ConfigDefinedAtString }
+export type { ConfigDefinedAtStringOptional }
 
 import { assert, isArray } from '../utils.js'
 import type { DefinedAtData, DefinedAtFile } from './PageConfig.js'

@@ -66,10 +66,7 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import {
-  getConfigDefinedAtString,
-  getConfigDefinedAtStringOptional
-} from '../../../../../shared/page-configs/getConfigDefinedAtString.js'
+import { getConfigDefinedAtString } from '../../../../../shared/page-configs/getConfigDefinedAtString.js'
 import type { ResolvedConfig } from 'vite'
 import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
@@ -742,7 +739,7 @@ async function getConfigValueSource(
         configEnv,
         configName
       )
-      const configDefinedAtString = getConfigDefinedAtStringOptional('Config', configName, definedAtFilePath_)
+      const configDefinedAtString = getConfigDefinedAtString('Config', configName, definedAtFilePath_)
       assertUsage(pointerImport, `${configDefinedAtString} should be an import`)
       valueFilePath = pointerImport.filePathAbsoluteVite
       definedAtFilePath = pointerImport
@@ -797,7 +794,7 @@ async function getConfigValueSource(
           const fileExport = await loadImportedFile(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
-          const configDefinedAtString = getConfigDefinedAtStringOptional(
+          const configDefinedAtString = getConfigDefinedAtString(
             'Config',
             configName,
             configValueSource.definedAtFilePath
@@ -997,7 +994,7 @@ function applyEffect(
     if (configName === 'meta') {
       let configDefinedAtString: Parameters<typeof assertMetaValue>[1]
       if (configDefEffect._userEffectDefinedAtFilePath) {
-        configDefinedAtString = getConfigDefinedAtStringOptional(
+        configDefinedAtString = getConfigDefinedAtString(
           'Config',
           configName,
           configDefEffect._userEffectDefinedAtFilePath
@@ -1162,7 +1159,7 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert('value' in configFilesystemRoutingRoot)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAtString = getConfigDefinedAtStringOptional(
+  const configDefinedAtString = getConfigDefinedAtString(
     'Config',
     configName,
     configFilesystemRoutingRoot.definedAtFilePath
