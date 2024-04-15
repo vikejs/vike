@@ -87,7 +87,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
       assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
         configValue: value,
-        configDefinedAt: configDefinedAt,
+        configDefinedAt,
         configDefinedByFile: configValueFilePathToShowToUser
       })
 
