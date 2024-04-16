@@ -59,9 +59,18 @@ async function startServer() {
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
   app.get('*', async (req, res, next) => {
+    // Required: the URL of the page
     const pageContextInit = { urlOriginal: req.originalUrl }
+
+    // Optionally, we can provide additional information about the request.
+    // Such as information about the logged-in user (e.g. when using an
+    // Express.js authentication middleware), or the User Agent header.
+    pageContextInit.user = req.user
+    pageContextInit.userAgent = req.headers['user-agent']
+
     const pageContext = await renderPage(pageContextInit)
     if (pageContext.httpResponse === null) return next()
+
     const { body, statusCode, headers } = pageContext.httpResponse
     headers.forEach(([name, value]) => res.setHeader(name, value))
     res.status(statusCode).send(body)
