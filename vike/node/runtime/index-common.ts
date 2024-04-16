@@ -9,12 +9,15 @@ export { injectAssets__public as _injectAssets } from './html/injectAssets/injec
 // TODO/v1-release: remove
 export { createPageRenderer } from '../createPageRenderer.js'
 
-// Help Telefunc detect the user's stack
-globalThis._isVitePluginSsr = true
-globalThis._isVike = true
-declare global {
-  var _isVitePluginSsr: true
-  var _isVike: true
-}
+addEcosystemStamp()
 
 import './page-files/setup.js'
+
+// Used by:
+// - Telefunc (to detect the user's stack)
+function addEcosystemStamp() {
+  const g = globalThis as Record<string, unknown>
+  g._isVikeApp = true
+  // We keep the old stamp for older Telefunc versions
+  g._isVitePluginSsr = true
+}
