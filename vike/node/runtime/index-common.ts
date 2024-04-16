@@ -14,7 +14,7 @@ addEcosystemStamp()
 import './page-files/setup.js'
 
 // Used by:
-// - Telefunc (to detect the user's stack)
+// - Telefunc (to detect the user's stack https://github.com/brillout/telefunc/blob/8288310e88e06a42b710d39c39fb502364ca6d30/telefunc/utils/isVikeApp.ts#L4)
 function addEcosystemStamp() {
   const g = globalThis as Record<string, unknown>
   g._isVikeApp = true
