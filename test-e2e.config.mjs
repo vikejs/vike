@@ -21,6 +21,10 @@ function getCiJobs() {
     os: 'windows-latest',
     node_version: '16'
   }
+  const win20 = {
+    os: 'windows-latest',
+    node_version: '18'
+  }
   const mac17 = {
     os: 'macos-latest',
     node_version: '16'
@@ -47,7 +51,7 @@ function getCiJobs() {
     },
     {
       name: 'Unit Tests E2E',
-      setups: [ubuntu20, win16]
+      setups: [ubuntu20, win20]
     },
     {
       name: 'Cloudflare',
