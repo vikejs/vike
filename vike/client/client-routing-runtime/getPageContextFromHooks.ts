@@ -42,7 +42,7 @@ type PageContextSerialized = {
   _pageId: string
   _hasPageContextFromServer: true
 }
-function getPageContextFromHooks_serialized(): PageContextSerialized {
+function getPageContextFromHooks_serialized(): PageContextSerialized & { routeParams: Record<string, string> } {
   const pageContextSerialized = getPageContextSerializedInHtml()
   processPageContextFromServer(pageContextSerialized)
   objectAssign(pageContextSerialized, {

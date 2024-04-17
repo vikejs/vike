@@ -24,12 +24,14 @@ const PASS_TO_CLIENT: string[] = [
   */
   pageContextInitIsPassedToClient,
   '_pageId',
+  'routeParams',
   'data' // for data() hook
 ]
 const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', isServerSideError]
 
 type PageContextSerialization = {
   _pageId: string
+  routeParams: Record<string, string>
   _passToClient: string[]
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean

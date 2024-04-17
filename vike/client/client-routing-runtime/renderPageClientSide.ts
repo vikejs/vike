@@ -118,7 +118,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     // Route
-    let pageContextRouted: { _pageId: string }
+    let pageContextRouted: { _pageId: string; routeParams: Record<string, string> }
     if (isHydrationRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       pageContextRouted = pageContextSerialized
