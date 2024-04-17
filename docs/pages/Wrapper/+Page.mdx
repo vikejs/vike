@@ -1,7 +1,7 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkVikeExtension, ImplementedBy } from '../../components'
 
-<ImplementedBy>the `Wrapper` setting</ImplementedBy>
+<ImplementedBy by={<code>vike-react</code>}>the `Wrapper` setting</ImplementedBy>
 
 The `Wrapper` setting wraps your <Link href="/Page">Page component</Link> with another component.
 
@@ -36,11 +36,9 @@ The `<Wrapper>` component is usually used for integrating tools, such as data fe
 
 In case you don't use a <UiFrameworkVikeExtension />, you can implement the `Wrapper` setting yourself by using <Link href="/meta">meta</Link>.
 
-Examples:
+Example:
 
  - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
- - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
- - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
 
 
 ## See also
