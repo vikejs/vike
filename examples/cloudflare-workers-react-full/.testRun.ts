@@ -46,7 +46,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
       // Vite/Express.js dev server
       return undefined
     })()
-    run(cmd, { additionalTimeout, serverIsReadyMessage, isFlaky: true })
+    run(cmd, {
+      additionalTimeout,
+      serverIsReadyMessage,
+      // Randomly fails because of Cloudflare: it seems like uploading assets to Cloudflare sometimes fails.
+      isFlaky: true
+    })
   }
 
   test('page content is rendered to HTML', async () => {

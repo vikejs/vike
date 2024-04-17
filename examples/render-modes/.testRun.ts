@@ -20,7 +20,10 @@ const HMR_SLEEP = 500
 
 // TODO:v1/release: remove non-V1 design case
 function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1Design?: true) {
-  run(cmd, { isFlaky: true })
+  run(cmd, {
+    // HMR tests are flaky (I couldn't make them reliable)
+    isFlaky: true
+  })
 
   const isProd = cmd !== 'npm run dev'
 
