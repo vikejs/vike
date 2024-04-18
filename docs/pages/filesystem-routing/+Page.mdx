@@ -4,12 +4,13 @@ By default, Vike does Filesystem Routing: the URL of a page is determined based 
 
 ```bash
 FILESYSTEM                   URL
+========================     =================================
 pages/about/+Page.js         /about
 # `index` is mapped to the empty string
 pages/index/+Page.js         /
 # Case sensitive
 pages/HELLO/+Page.js         /HELLO
-# Parameterized
+# Route parameter
 pages/movie/@id/+Page.js     /movie/1, /movie/2, /movie/3, ...
 ```
 
@@ -20,8 +21,9 @@ Filesystem Routing ignores all the following directories:
 
 For example:
 
-```
+```bash
 FILESYSTEM                                          URL
+==============================================      ========
 src/pages/jobs/+Page.js                             /jobs
 pages/pages/src/src/index/pages/about/+Page.js      /about
 contact/+Page.js                                    /contact
@@ -29,8 +31,9 @@ contact/+Page.js                                    /contact
 
 This enables you to implement a <Link text="domain-driven file structure" href='/file-structure#domain-driven' /> such as:
 
-```
+```bash
 FILESYSTEM                         URL
+==========================         ============
 user/pages/list/+Page.js           /user/list
 user/pages/create/+Page.js         /user/create
 todo/pages/list/+Page.js           /todo/list
