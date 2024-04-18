@@ -3,22 +3,6 @@ import { resolveRouteString } from '../resolveRouteString.js'
 import { expect, describe, it } from 'vitest'
 
 describe('Route Strings Precedence', () => {
-  /*
-  it('tmp', () => {
-    testUrl('/product/42', '/product/@productId', [
-      //
-      '/@path/@subpath',
-      '/product/@productId'
-    ])
-    testUrl('/news/press-releases', '/news/press-releases/*', [
-      //
-      '/news/@page',
-      '/news/press-releases/*'
-    ])
-  })
-  return
-  //*/
-
   it('basics', () => {
     const routes = ['/', '/about', '/about/team', '/about/@path', '/about/*']
     ;[
@@ -90,23 +74,23 @@ describe('Route Strings Precedence', () => {
       ['/other', '/*']
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
-
-  function testUrl(url: string, routeString: string, routes: string[]) {
-    const route = findRoute(url, routes)
-    expect(`${url} -> ${route}`).toBe(`${url} -> ${routeString}`)
-  }
-
-  function findRoute(url: string, routes: string[]): string | null {
-    const candidates = routes
-      .map((routeString) => {
-        const result = resolveRouteString(routeString, url)
-        if (result === null) {
-          return null
-        }
-        return { ...result, routeString, routeType: 'STRING' as const }
-      })
-      .filter(<T>(match: T | null): match is T => match !== null)
-    resolvePrecendence(candidates)
-    return candidates[0]?.routeString || null
-  }
 })
+
+function testUrl(url: string, routeString: string, routes: string[]) {
+  const route = findRoute(url, routes)
+  expect(`${url} -> ${route}`).toBe(`${url} -> ${routeString}`)
+}
+
+function findRoute(url: string, routes: string[]): string | null {
+  const candidates = routes
+    .map((routeString) => {
+      const result = resolveRouteString(routeString, url)
+      if (result === null) {
+        return null
+      }
+      return { ...result, routeString, routeType: 'STRING' as const }
+    })
+    .filter(<T>(match: T | null): match is T => match !== null)
+  resolvePrecendence(candidates)
+  return candidates[0]?.routeString || null
+}
