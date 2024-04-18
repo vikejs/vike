@@ -7,7 +7,7 @@ const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)
 describe('resolveRouteString', () => {
   /*
   it('tmp', () => {
-    expect(r('/a/*', '/a/b')).toEqual({ routeParams: { '*': 'b' } })
+    expect(r('/a/*', '/a')).toEqual(null)
   })
   return
   //*/
@@ -56,6 +56,18 @@ describe('resolveRouteString', () => {
   it('glob - trailing', () => {
     expect(r('*', '/')).toEqual({ routeParams: { '*': '/' } })
     expect(r('/*', '/')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/a*', '/b')).toEqual(null)
+    expect(r('/a*', '/a')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/a/*', '/a')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/a/*', '/a/b')).toEqual({ routeParams: { '*': 'b' } })
+    expect(r('/a/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'b/c/d' } })
+    expect(r('/a/b/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'c/d' } })
+    expect(r('/a/*', '/b/c')).toEqual(null)
+  })
+  // routeParams['*'] is exactly the substring that `*` matches
+  it("glob - trailing - precise routeParams['*']", () => {
+    expect(r('*', '/')).toEqual({ routeParams: { '*': '/' } })
+    expect(r('/*', '/')).toEqual({ routeParams: { '*': '' } })
     expect(r('/*', '/a')).toEqual({ routeParams: { '*': 'a' } })
     expect(r('*', '/a')).toEqual({ routeParams: { '*': '/a' } })
     expect(r('/*', '/a/b')).toEqual({ routeParams: { '*': 'a/b' } })
@@ -63,10 +75,6 @@ describe('resolveRouteString', () => {
     expect(r('*', '/a/b/')).toEqual({ routeParams: { '*': '/a/b/' } })
     expect(r('/*', '/a/b/c')).toEqual({ routeParams: { '*': 'a/b/c' } })
     expect(r('*', '/a/b/c')).toEqual({ routeParams: { '*': '/a/b/c' } })
-    expect(r('/a/*', '/a/b')).toEqual({ routeParams: { '*': 'b' } })
-    expect(r('/a/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'b/c/d' } })
-    expect(r('/a/b/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'c/d' } })
-    expect(r('/a/*', '/b/c')).toEqual(null)
   })
   it('glob - middle', () => {
     expect(r('/a/*/c', '/a/b/c')).toEqual({ routeParams: { '*': 'b' } })
@@ -108,9 +116,10 @@ describe('resolveRouteString', () => {
     expect(r('/some/route*.html', '/some/routea/b/c.html')).toEqual({ routeParams: { '*': 'a/b/c' } })
   })
 
-  it('trailing slash', () => {
+  it('URL with trailing slash', () => {
     expect(r('/@p', '/a/')).toEqual({ routeParams: { p: 'a' } })
     expect(r('/a/*', '/a')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/a*', '/a')).toEqual({ routeParams: { '*': '' } })
     expect(r('/news/press-releases/*', '/news/press-releases')).toEqual({ routeParams: { '*': '' } })
     expect(r('/news/press-releases*', '/news/press-releases')).toEqual({ routeParams: { '*': '' } })
   })
