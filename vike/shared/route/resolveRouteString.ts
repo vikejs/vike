@@ -101,8 +101,7 @@ function parseRouteString(routeString: string) {
   }
   const parts = routeString.split('/')
   parts.forEach((s, i) => {
-    const isFirst = i === 0
-    const isLast = i === parts.length - 1
+    if (i !== 0) pushStatic('/')
     if (isParam(s)) {
       assertWarning(
         !s.startsWith(PARAM_TOKEN_OLD),
@@ -111,14 +110,11 @@ function parseRouteString(routeString: string) {
         )} instead`,
         { onlyOnce: true }
       )
-      if (!isFirst) pushStatic('/')
       segments.push({ param: s.slice(1) })
     } else {
-      if (s === '*' && isLast && routeString !== '*' && routeString !== '/*') {
-        if (!isFirst) pushStatic('/')
+      if (s === '*' && i === parts.length - 1 && routeString !== '*' && routeString !== '/*') {
         segments.push({ glob: true })
       } else {
-        if (!isFirst) pushStatic('/')
         s.split('*').forEach((s, i) => {
           if (i !== 0) segments.push({ glob: true })
           if (s !== '') {
