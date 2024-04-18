@@ -76,4 +76,7 @@ And lots of details:
 - User can use `history.pushState()`: Vike's router detects that and gets out of the user's way
 
 Misc:
-- `throw Render()`
+- `throw render()`
+- Powerful Routing (Route Functions, powerful globing)
+- First-class SSG support
+  - https://github.com/vikejs/vike-react/issues/105#issuecomment-2061601329
