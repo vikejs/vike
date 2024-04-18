@@ -36,11 +36,7 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
         return '[^/]+'
       }
       if (segment.glob) {
-        if (segment.isLastDir) {
-          return '|/.*'
-        } else {
-          return '.*'
-        }
+        return '.*'
       }
       // segment.static
       return escapeRegex(segment.static!)
@@ -72,7 +68,6 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
     }
     if (segment.glob) {
       const param = `*${hasMultipleGlobs ? ++globIdx : ''}` as const
-      if (segment.isLastDir) val = val.slice(1)
       routeParams[param] = val
     }
   })
@@ -81,8 +76,6 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
 type Segment =
   | {
       glob: true
-      /** Make route /a/* match URL /a */
-      isLastDir?: true
       static?: undefined
       param?: undefined
     }
@@ -122,7 +115,8 @@ function parseRouteString(routeString: string) {
       segments.push({ param: s.slice(1) })
     } else {
       if (s === '*' && isLast && routeString !== '*' && routeString !== '/*') {
-        segments.push({ glob: true, isLastDir: true })
+        if (!isFirst) pushStatic('/')
+        segments.push({ glob: true })
       } else {
         if (!isFirst) pushStatic('/')
         s.split('*').forEach((s, i) => {

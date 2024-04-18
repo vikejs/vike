@@ -60,7 +60,7 @@ describe('Route Strings Precedence', () => {
       '/news', // news landing page
       '/news/@page', // news paginated news results
       '/news/@year/@slug', // news articles
-      '/news/press-releases/*', // press releases landing and paginated news pages (nested in /news)
+      '/news/press-releases*', // press releases landing and paginated news pages (nested in /news)
       '/news/press-releases/@year/@slug' // press releases (nested in /news)
     ]
     ;[
@@ -68,8 +68,8 @@ describe('Route Strings Precedence', () => {
       ['/news', '/news'],
       ['/news/1', '/news/@page'],
       ['/news/2021/breaking-news', '/news/@year/@slug'],
-      ['/news/press-releases', '/news/press-releases/*'],
-      ['/news/press-releases/1', '/news/press-releases/*'],
+      ['/news/press-releases', '/news/press-releases*'],
+      ['/news/press-releases/1', '/news/press-releases*'],
       ['/news/press-releases/2021/new-funding', '/news/press-releases/@year/@slug'],
       ['/other', '/*']
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))

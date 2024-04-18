@@ -58,7 +58,7 @@ describe('resolveRouteString', () => {
     expect(r('/*', '/')).toEqual({ routeParams: { '*': '' } })
     expect(r('/a*', '/b')).toEqual(null)
     expect(r('/a*', '/a')).toEqual({ routeParams: { '*': '' } })
-    expect(r('/a/*', '/a')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/a/*', '/a')).toEqual(null)
     expect(r('/a/*', '/a/b')).toEqual({ routeParams: { '*': 'b' } })
     expect(r('/a/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'b/c/d' } })
     expect(r('/a/b/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'c/d' } })
@@ -118,9 +118,9 @@ describe('resolveRouteString', () => {
 
   it('URL with trailing slash', () => {
     expect(r('/@p', '/a/')).toEqual({ routeParams: { p: 'a' } })
-    expect(r('/a/*', '/a')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/a/*', '/a')).toEqual(null)
     expect(r('/a*', '/a')).toEqual({ routeParams: { '*': '' } })
-    expect(r('/news/press-releases/*', '/news/press-releases')).toEqual({ routeParams: { '*': '' } })
+    expect(r('/news/press-releases/*', '/news/press-releases')).toEqual(null)
     expect(r('/news/press-releases*', '/news/press-releases')).toEqual({ routeParams: { '*': '' } })
   })
 
