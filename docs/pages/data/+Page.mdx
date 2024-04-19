@@ -147,7 +147,7 @@ you can tell Vike to run `data()` also on the client-side. This will make Vike:
 
 > In general, we recommend running `data()` only on the server-side because it's usually easier to write code that runs only on the server-side.
 >
-> That said, if you want to minimize requests made to your server, then it can make sense to run `data()` on the client-side.
+> That said, if you want to minimize requests made to your server, then it can make sense to run `data()` on the client-side. In that case Vike won't make any requests to your server upon page navigation (otherwise Vike makes `index.pageContext.json` HTTP GET requests in order to pass the data fetched on the server-side to the client-side). If you define `onBeforeRender()`, then also make sure to change the environment of your `onBeforeRender()` render hook, see <Link href="/onBeforeRender#client-side" />.
 
 You can also set `.client.js` instead of `.shared.js`: Vike will then always call `data()` on the client-side (never on the server-side).
 
