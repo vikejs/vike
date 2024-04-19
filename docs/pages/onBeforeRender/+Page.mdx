@@ -90,7 +90,7 @@ See full implementation at <Link href="/meta#example-sql" doNotInferSectionTitle
 
 ## Override
 
-There can be only one `onBeforeRender()` hook per page. For example, if you define a global `onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one.
+There can be only one `onBeforeRender()` hook per page. For example, if you define a global `onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one. See <Link href="/config#inheritance" />.
 
 > If you want multiple `onBeforeRender()` hooks, then consider:
 > - <Link href="/meta">Creating custom hooks</Link> instead: you can then use one global `onBeforeRender()` hook that orchestrates many custom hooks.
