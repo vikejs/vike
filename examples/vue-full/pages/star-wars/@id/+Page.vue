@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Data } from './+data'
+import type { Data } from './+data.shared'
 import { useData } from '../../../renderer/useData'
 const data = useData<Data>()
 </script>
