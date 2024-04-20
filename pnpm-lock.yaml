@@ -255,7 +255,7 @@ importers:
     dependencies:
       '@brillout/docpress':
         specifier: ^0.6.10
-        version: 0.6.10(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.2)
+        version: 0.6.10(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.10)
       '@types/node':
         specifier: ^20.11.16
         version: 20.11.16
@@ -278,8 +278,8 @@ importers:
         specifier: link:../vike
         version: link:../vike
       vite:
-        specifier: ^5.2.2
-        version: 5.2.2(@types/node@20.11.16)
+        specifier: ^5.2.10
+        version: 5.2.10(@types/node@20.11.16)
 
   examples/auth:
     dependencies:
@@ -2360,7 +2360,7 @@ packages:
     dev: true
     optional: true
 
-  /@brillout/docpress@0.6.10(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.2):
+  /@brillout/docpress@0.6.10(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.10):
     resolution: {integrity: sha512-RLs0fbfkasn6hons603N6g0RApg0oIhGUFxyz4UefV1QhPnUEqQmY0gVGGtAspmV+k7fJFS4wF/1QQQGPDWWNw==}
     peerDependencies:
       '@types/node': '*'
@@ -2380,7 +2380,7 @@ packages:
       '@types/node': 20.11.16
       '@types/react': 18.2.55
       '@types/react-dom': 18.2.19
-      '@vitejs/plugin-react-swc': 3.6.0(vite@5.2.2)
+      '@vitejs/plugin-react-swc': 3.6.0(vite@5.2.10)
       balloon-css: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -2391,7 +2391,7 @@ packages:
       typescript: 5.3.3
       vike: link:vike
       vike-contributors: 0.0.9
-      vite: 5.2.2(@types/node@20.11.16)
+      vite: 5.2.10(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@swc/helpers'
       - rollup
@@ -4912,13 +4912,13 @@ packages:
       - '@swc/helpers'
     dev: false
 
-  /@vitejs/plugin-react-swc@3.6.0(vite@5.2.2):
+  /@vitejs/plugin-react-swc@3.6.0(vite@5.2.10):
     resolution: {integrity: sha512-XFRbsGgpGxGzEV5i5+vRiro1bwcIaZDIdBRP16qwm+jP68ue/S8FJTBEgOeojtVDYrbSua3XFp71kC8VJE6v+g==}
     peerDependencies:
       vite: ^4 || ^5
     dependencies:
       '@swc/core': 1.4.0
-      vite: 5.2.2(@types/node@20.11.16)
+      vite: 5.2.10(@types/node@20.11.16)
     transitivePeerDependencies:
       - '@swc/helpers'
     dev: false
@@ -5109,7 +5109,7 @@ packages:
       '@babel/parser': 7.23.5
       '@vue/shared': 3.3.10
       estree-walker: 2.0.2
-      source-map-js: 1.0.2
+      source-map-js: 1.2.0
     dev: false
 
   /@vue/compiler-core@3.3.8:
@@ -5118,7 +5118,7 @@ packages:
       '@babel/parser': 7.23.5
       '@vue/shared': 3.3.8
       estree-walker: 2.0.2
-      source-map-js: 1.0.2
+      source-map-js: 1.2.0
     dev: false
 
   /@vue/compiler-core@3.4.21:
@@ -10201,7 +10201,7 @@ packages:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.0
-      source-map-js: 1.0.2
+      source-map-js: 1.2.0
     dev: false
 
   /postcss@8.4.32:
@@ -10210,7 +10210,7 @@ packages:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.0
-      source-map-js: 1.0.2
+      source-map-js: 1.2.0
     dev: false
 
   /postcss@8.4.35:
@@ -10219,7 +10219,7 @@ packages:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.0
-      source-map-js: 1.0.2
+      source-map-js: 1.2.0
 
   /postcss@8.4.37:
     resolution: {integrity: sha512-7iB/v/r7Woof0glKLH8b1SPHrsX7uhdO+Geb41QpF/+mWZHU3uxxSlN+UXGVit1PawOYDToO+AbZzhBzWRDwbQ==}
@@ -10228,6 +10228,16 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.2.0
+    dev: true
+
+  /postcss@8.4.38:
+    resolution: {integrity: sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.0.0
+      source-map-js: 1.2.0
+    dev: false
 
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -10991,6 +11001,7 @@ packages:
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
+    dev: false
 
   /source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
@@ -11929,7 +11940,7 @@ packages:
       debug: 4.3.4
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.2.2(@types/node@20.11.16)
+      vite: 5.2.2
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -12117,8 +12128,8 @@ packages:
       fsevents: 2.3.3
     dev: false
 
-  /vite@5.2.2(@types/node@20.11.16):
-    resolution: {integrity: sha512-FWZbz0oSdLq5snUI0b6sULbz58iXFXdvkZfZWR/F0ZJuKTSPO7v72QPXt6KqYeMFb0yytNp6kZosxJ96Nr/wDQ==}
+  /vite@5.2.10(@types/node@20.11.16):
+    resolution: {integrity: sha512-PAzgUZbP7msvQvqdSD+ErD5qGnSFiGOoWmV5yAKUEI0kdhjbH6nMWVyZQC/hSc4aXwc0oJ9aEdIiF9Oje0JFCw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -12147,10 +12158,46 @@ packages:
     dependencies:
       '@types/node': 20.11.16
       esbuild: 0.20.2
+      postcss: 8.4.38
+      rollup: 4.13.0
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: false
+
+  /vite@5.2.2:
+    resolution: {integrity: sha512-FWZbz0oSdLq5snUI0b6sULbz58iXFXdvkZfZWR/F0ZJuKTSPO7v72QPXt6KqYeMFb0yytNp6kZosxJ96Nr/wDQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.20.2
       postcss: 8.4.37
       rollup: 4.13.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
   /vitest@1.3.1:
     resolution: {integrity: sha512-/1QJqXs8YbCrfv/GPQ05wAZf2eakUPLPa18vkJAKE7RXOKfVHqMZZ1WlTjiwl6Gcn65M5vpNUB6EFLnEdRdEXQ==}
@@ -12194,7 +12241,7 @@ packages:
       strip-literal: 2.0.0
       tinybench: 2.5.1
       tinypool: 0.8.2
-      vite: 5.2.2(@types/node@20.11.16)
+      vite: 5.2.2
       vite-node: 1.3.1
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
