@@ -14,7 +14,7 @@
     "node-fetch": "^2.6.1",
     "typescript": "^5.2.2",
     "unplugin-vue-markdown": "^0.24.3",
-    "vike": "0.4.168",
+    "vike": "0.4.169",
     "vite": "^5.0.10",
     "vue": "^3.3.4",
     "vue-tsc": "^2.0.11"
