@@ -1,3 +1,12 @@
+## [0.4.170](https://github.com/vikejs/vike/compare/v0.4.169...v0.4.170) (2024-04-20)
+
+
+### Bug Fixes
+
+* fix distinguishing npm package imports from path aliases ([7ee74f4](https://github.com/vikejs/vike/commit/7ee74f483e88d7e7140544dc95771f72e0ccb1f7))
+
+
+
 ## [0.4.169](https://github.com/vikejs/vike/compare/v0.4.168...v0.4.169) (2024-04-20)
 
 
