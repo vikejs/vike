@@ -229,7 +229,8 @@ async function loadInterfaceFiles(
             'vike-pinia',
             'vike-solid'
           ]
-          const extensionName = extendsConfig.filePath.importPathAbsolute!.split('/')[0]!
+          assert(extendsConfig.filePath.importPathAbsolute)
+          const extensionName = extendsConfig.filePath.importPathAbsolute.split('/')[0]!
           const warnMsg = alreadyMigrated.includes(extensionName)
             ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version.`
             : `The config of the Vike extension ${extensionName} should set a ${pc.cyan('name')} value`

@@ -186,10 +186,12 @@ async function transpileWithEsbuild(
             resolved.errors.length > 0
 
           assertPosixPath(importPathResolved)
+          const isNodeModules = importPathResolved.includes('/node_modules/')
+
           const isExternal =
             isPointerImport ||
             // Performance: npm package imports that aren't pointer imports can be externalized. For example, if Vike eventually adds support for setting Vite configs in the vike.config.js file, then the user may import a Vite plugin in his vike.config.js file. (We could as well let esbuild always transpile /node_modules/ code but it would be useless and would unnecessarily slow down transpilation.)
-            importPathResolved.includes('/node_modules/')
+            isNodeModules
 
           const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({
             filePathAbsoluteFilesystem: importPathResolved,
@@ -220,8 +222,8 @@ async function transpileWithEsbuild(
             // importPathOriginal is either:
             //  - Npm package import
             //  - Path alias
-            if (filePathAbsoluteUserRootDir) {
-              // importPathOriginal is most likely a path alias. (Is it even possible for an npm package import to resolved inside `userRootDir`?)
+            if (filePathAbsoluteUserRootDir && !isNodeModules) {
+              // importPathOriginal is most likely (always?) a path alias.
               importPathTranspiled = importPathResolved
             } else {
               // importPathOriginal is an npm package import. (Assuming path aliases always resolve inside `userRootDir`.)
