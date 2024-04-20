@@ -1,4 +1,4 @@
-const PROJECT_VERSION = '0.4.170'
+const PROJECT_VERSION = '0.4.171'
 
 export const projectInfo = {
   projectName: 'Vike' as const,

@@ -1,3 +1,12 @@
+## [0.4.171](https://github.com/vikejs/vike/compare/v0.4.170...v0.4.171) (2024-04-20)
+
+
+### Bug Fixes
+
+* fix meta env change upon `.server.js`/`.client.js`/`.shared.js` ([#1588](https://github.com/vikejs/vike/issues/1588)) ([f3f2b2f](https://github.com/vikejs/vike/commit/f3f2b2fb517c7890f66a8265a65e05fc70123b4f))
+
+
+
 ## [0.4.170](https://github.com/vikejs/vike/compare/v0.4.169...v0.4.170) (2024-04-20)
 
 
