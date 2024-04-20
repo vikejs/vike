@@ -439,7 +439,12 @@ const headingsDetached = [
     url: '/prerender-config'
   },
   {
-    title: '`getGlobalContextSync()` & `getGlobalContextAsync()` ',
+    title: '`getGlobalContextSync()` & `getGlobalContextAsync()`',
     url: '/getGlobalContext'
+  },
+  {
+    title: '`pageContext.json`',
+    url: '/pageContext.json',
+    sectionTitles: ['Avoid `pageContext.json` requests']
   }
 ] satisfies HeadingDetachedDefinition[]

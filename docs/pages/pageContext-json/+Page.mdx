@@ -1,0 +1,73 @@
+import { Link } from '@brillout/docpress'
+
+Upon page navigation, Vike makes a `pageContext.json` HTTP request to your server, in order to pass data fetched on the server-side (e.g. with <Link href="/data">`data()`</Link>) to the client-side.
+
+```shell
+HTTP GET /star-wars/index.pageContext.json
+```
+
+## Example
+
+```js
+// /pages/star-wars/+data.server.js
+
+// This data() hook is always called on the server-side. But, upon page navigation, the data
+// needs to be available on the client-side thus Vike makes a /star-wars/index.pageContext.json
+// request in order to pass the data from the server to the client.
+export async function data() {
+  const response = await fetch('https://star-wars.brillout.com/api/films.json')
+  const movies = await response.json()
+  return { movies }
+}
+```
+The request `/star-wars/index.pageContext.json` returns the data fetched by the `data()` hook.
+
+```bash
+$ curl /star-wars/index.pageContext.json
+{
+  "data": {
+    "movies": [
+      {
+        "title": "A New Hope",
+        "release_date": "1977-05-25"
+      },
+      {
+        "title": "The Empire Strikes Back",
+        "release_date": "1980-05-17"
+      },
+      {
+        "title": "Return of the Jedi",
+        "release_date": "1983-05-25"
+      }
+    ]
+  }
+}
+```
+
+## Avoid `pageContext.json` requests
+
+If you want to minimize requests made to your server, then you may want Vike to not make `pageContext.json` requests.
+
+> Most commonly, if the data you fetch comes from another server, then you don't want to make an unnecessary detour over your JavaScript server.
+
+Vike makes a `pageContext.json` request for a page if and only if:
+- The page has a server-only `data()` or `onBeforeRender()` hook.
+  > See:
+  > - <Link href="/data#client-side" />
+  > - <Link href="/onBeforeRender#client-side" />
+- The `pageContextInit` at <Link href="/renderPage">`renderPage()`</Link> contains a property that is included in <Link href="/passToClient">`passToClient`</Link>.
+  ```js
+  // Vike server middleware
+  async (req, res, next) => {
+    const pageContextInit = {
+      urlOriginal: req.originalUrl,
+      // If passToClient contains 'user' then Vike makes a pageContext.json request
+      // upon page navigation in order the retrieve the pageContextInit.user value.
+      user: req.user
+    }
+    const pageContext = await renderPage(pageContextInit)
+    return pageContext.httpResponse
+  }
+  ```
+
+If both conditions are false, then Vike won't make any requests to your server upon page navigation.

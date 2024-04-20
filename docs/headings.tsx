@@ -645,7 +645,7 @@ const headings = [
     title: '`data()` hook',
     titleInNav: '`data()`',
     url: '/data',
-    sectionTitles: ['Without `useData()`', '`pageContext.data`', '`pageContext`']
+    sectionTitles: ['Without `useData()`', '`pageContext.data`', '`pageContext`', 'Client-side']
   },
   {
     level: 2,
@@ -658,7 +658,7 @@ const headings = [
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
     url: '/onBeforeRender',
-    sectionTitles: ['`onBeforeRender()` + `meta`']
+    sectionTitles: ['`onBeforeRender()` + `meta`', 'Client-side']
   },
   {
     level: 2,
