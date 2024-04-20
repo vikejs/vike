@@ -1236,6 +1236,7 @@ function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnv
   const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
 
   // Legacy outdated values
+  // TODO/v1-release: remove
   if (typeof val === 'string') {
     const valConverted: ConfigEnvInternal = (() => {
       if (val === 'client-only') return { client: true }
