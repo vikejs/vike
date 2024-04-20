@@ -392,7 +392,6 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
-            configDef.env = deriveConfigEnvFromFileName(configDef.env, interfaceFile.filePath.fileName)
             if (!isConfigEnv(configDef, configName)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
@@ -719,7 +718,7 @@ async function getConfigValueSource(
 ): Promise<ConfigValueSource> {
   const conf = interfaceFile.fileExportsByConfigName[configName]
   assert(conf)
-  const configEnv = configDef.env
+  const configEnv = deriveConfigEnvFromFileName(configDef.env, interfaceFile.filePath.fileName)
   const { locationId } = interfaceFile
 
   const definedAtFilePath_: DefinedAtFilePath = {
