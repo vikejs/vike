@@ -46,11 +46,11 @@ $ curl /star-wars/index.pageContext.json
 
 ## Avoid `pageContext.json` requests
 
-If you want to minimize requests made to your server, then you may want Vike to not make `pageContext.json` requests.
+If you want to minimize requests made to your server, then you may want Vike to stop making `pageContext.json` requests.
 
-> Most commonly, if the data you fetch comes from another server, then you don't want to make an unnecessary detour over your JavaScript server.
+> Most commonly, if the data you fetch comes from another server, then you typically don't want to make an unnecessary detour over your JavaScript/SSR server.
 
-Vike makes a `pageContext.json` request for a page if and only if:
+Vike makes a `pageContext.json` request for a page if and only if one of the two following conditions is true:
 - The page has a server-only `data()` or `onBeforeRender()` hook.
   > See:
   > - <Link href="/data#client-side" />
@@ -70,4 +70,4 @@ Vike makes a `pageContext.json` request for a page if and only if:
   }
   ```
 
-If both conditions are false, then Vike won't make any requests to your server upon page navigation.
+If both conditions are false, then Vike won't make a `pageContext.json` request upon page navigation.

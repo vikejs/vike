@@ -342,7 +342,7 @@ Examples:
 
 ## Example: modify `data()` env
 
-You can use `meta` to change the environment in which built-in hooks are loaded. For example you can change the environment of `data()` from `{ server: true, client: false }` to `{ server: true, client: true }`.
+You can use `meta` to change the environment in which built-in hooks are loaded. For example, you can change the environment of the <Link href="/data">`data()` hook</Link> from `{ server: true, client: false }` to `{ server: true, client: true }`.
 
 ```ts
 // /pages/some-page/+config.ts
@@ -363,12 +363,23 @@ export default {
 
 > Making `data()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/data#client-side" />.
 
-For more convenience, you can create a `dataIsomorph` toggle:
+If you want to change the `meta.env` on a page-by-page basis, you can use the the <Link href="/file-env">file extension `.shared.js`</Link> (renaming `+data.js` to `+data.shared.js`), or you can create a new `dataIsomorph` config:
 
 ```ts
 // /pages/+config.ts
 
+export { config }
+
 import type { Config, Effect } from 'vike/types'
+
+const config = {
+  meta: {
+    dataIsomorph: {
+      env: { config: true },
+      effect
+    }
+  }
+} satisfies Config
 
 const effect: Effect = ({ configDefinedAt, configValue }) => {
   if (typeof configValue !== 'boolean') {
@@ -384,15 +395,6 @@ const effect: Effect = ({ configDefinedAt, configValue }) => {
     }
   }
 }
-
-export default {
-  meta: {
-    dataIsomorph: {
-      env: { config: true },
-      effect
-    }
-  }
-} satisfies Config
 ```
 
 Example:
