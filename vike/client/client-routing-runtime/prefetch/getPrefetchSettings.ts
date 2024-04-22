@@ -1,29 +1,38 @@
 export { getPrefetchSettings }
 
-import type { PrefetchStaticAssets } from '../../../shared/types/PrefetchStaticAssets.js'
+import type { PrefetchWhen, PrefetchExpire } from '../../../shared/types/Prefetch.js'
 import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.js'
 
 type PageContextPrefetch = {
   exports: Record<string, unknown>
 }
 
+type PrefetchPageContext = {
+  when: PrefetchWhen
+  expire: PrefetchExpire
+}
+
 type PrefetchSettings = {
-  prefetchStaticAssets: PrefetchStaticAssets
+  prefetchStaticAssets: PrefetchWhen
+  prefetchPageContext: PrefetchPageContext
 }
 
 function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchSettings {
   let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
-  if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {
+  let prefetchPageContext = getPrefetchPageContext(pageContext)
+  if ((prefetchStaticAssets === 'viewport' || prefetchPageContext.when === 'viewport') && import.meta.env.DEV) {
     assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
     prefetchStaticAssets = 'hover'
   }
   return {
-    prefetchStaticAssets
+    prefetchStaticAssets,
+    prefetchPageContext
   }
 }
-function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchStaticAssets {
+
+function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchWhen {
   {
-    const prefetchAttribute = getPrefetchAttribute(linkTag)
+    const prefetchAttribute = getPrefetchStaticAssetsAttribute(linkTag)
     if (prefetchAttribute !== null) return prefetchAttribute
   }
 
@@ -67,7 +76,31 @@ function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTML
   return 'hover'
 }
 
-function getPrefetchAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null {
+function getPrefetchPageContext(pageContext: PageContextPrefetch): PrefetchPageContext {
+  if ('prefetchPageContext' in pageContext.exports) {
+    const { prefetchPageContext } = pageContext.exports
+
+    const wrongUsageMsg = `prefetchPageContext should be an object with 'when' and 'expire' properties. 'when' should be false, 'hover' or 'viewport', and 'expire' should be a number`
+
+    assertUsage(isPlainObject(prefetchPageContext), wrongUsageMsg)
+    const keys = Object.keys(prefetchPageContext)
+    assertUsage(keys.length === 2 && keys[0] === 'when' && keys[1] === 'expire', wrongUsageMsg)
+    const { when, expire } = prefetchPageContext
+    if (when === false) {
+      return { when: false, expire: 0 }
+    }
+    if ((when === 'HOVER' || when === 'VIEWPORT') && typeof expire === 'number') {
+      const correctValue: 'hover' | 'viewport' = when.toLowerCase() as any
+      return { when: correctValue, expire }
+    }
+
+    assertUsage(false, wrongUsageMsg)
+  }
+
+  return { when: false, expire: 0 }
+}
+
+function getPrefetchStaticAssetsAttribute(linkTag: HTMLElement): PrefetchWhen | null {
   const attr = linkTag.getAttribute('data-prefetch-static-assets')
   const attrOld = linkTag.getAttribute('data-prefetch')
 
