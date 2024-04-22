@@ -37,7 +37,7 @@ import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
-import type { PrefetchStaticAssets } from '../types/PrefetchStaticAssets.js'
+import type { PrefetchWhen } from '../types/Prefetch.js'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
 type HookNamePage =
@@ -395,7 +395,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/prefetchStaticAssets
    */
-  prefetchStaticAssets?: PrefetchStaticAssets | ImportString
+  prefetchStaticAssets?: PrefetchWhen | ImportString
 
   /** Modify the timeouts of hooks. */
   hooksTimeout?: HooksTimeoutProvidedByUser
