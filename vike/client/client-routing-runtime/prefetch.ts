@@ -23,6 +23,7 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
+import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
@@ -32,6 +33,19 @@ const globalObject = getGlobalObject<{
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {
     await loadUserFilesClientSide(pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+  } catch (err) {
+    if (isErrorFetchingStaticAssets(err)) {
+      disableClientRouting(err, true)
+    } else {
+      throw err
+    }
+  }
+}
+
+// todo
+async function prefetchPageContext(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
+  try {
+    await preparePageContextForUserConsumptionClientSide(pageContext, true)
   } catch (err) {
     if (isErrorFetchingStaticAssets(err)) {
       disableClientRouting(err, true)
@@ -95,17 +109,17 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
 
     if (isAlreadyPrefetched(url)) return
 
-    const { prefetchStaticAssets } = getPrefetchSettings(pageContext, linkTag)
-    if (!prefetchStaticAssets) return
+    const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(pageContext, linkTag)
+    if (!prefetchStaticAssets && !prefetchPageContext) return
 
     if (prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchIfPossible(url)
+        prefetchAssetsIfPossible(url)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchIfPossible(url)
+          prefetchAssetsIfPossible(url)
         },
         { passive: true }
       )
@@ -115,7 +129,32 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetchIfPossible(url)
+            prefetchAssetsIfPossible(url)
+            observer.disconnect()
+          }
+        })
+      })
+      observer.observe(linkTag)
+    }
+
+    if (prefetchPageContext.when === 'hover') {
+      linkTag.addEventListener('mouseover', () => {
+        prefetchContextIfPossible(url)
+      })
+      linkTag.addEventListener(
+        'touchstart',
+        () => {
+          prefetchContextIfPossible(url)
+        },
+        { passive: true }
+      )
+    }
+
+    if (prefetchPageContext.when === 'viewport') {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            prefetchContextIfPossible(url)
             observer.disconnect()
           }
         })
@@ -125,7 +164,21 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
   })
 }
 
-async function prefetchIfPossible(url: string): Promise<void> {
+async function prefetchAssetsIfPossible(url: string): Promise<void> {
+  const pageContext = await createPageContext(url)
+  let pageContextFromRoute: PageContextFromRoute
+  try {
+    pageContextFromRoute = await route(pageContext)
+  } catch {
+    // If a route() hook has a bug or `throw render()` / `throw redirect()`
+    return
+  }
+  if (!pageContextFromRoute?._pageId) return
+  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
+  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
+}
+
+async function prefetchContextIfPossible(url: string): Promise<void> {
   const pageContext = await createPageContext(url)
   let pageContextFromRoute: PageContextFromRoute
   try {
