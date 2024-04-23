@@ -1911,8 +1911,8 @@ importers:
         specifier: ^1.5.3
         version: 1.5.3
       '@brillout/release-me':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.3.4
+        version: 0.3.4
       '@types/estree':
         specifier: ^1.0.5
         version: 1.0.5
@@ -2411,15 +2411,18 @@ packages:
   /@brillout/picocolors@1.0.10:
     resolution: {integrity: sha512-dh+JJlsBf3QYX+91Ezma8RLKNOjGDoBBmORv/NzRpQuasdyzwQCMXGGjsDu12ZhGz92TqQbL9pv79rvbheI21A==}
 
-  /@brillout/release-me@0.3.0:
-    resolution: {integrity: sha512-j/TorJ4c2vyOFr6zJ0srMluPpRrlE6KmzPk8gHVnKl8cc6WCFYk7p3zVyMYCoIdYuE9RqbwXHhu97T59DD49KA==}
+  /@brillout/picocolors@1.0.11:
+    resolution: {integrity: sha512-ZDIx2xNRjCKm9c6n+zNDXa3qxXniaVlGKXK1F5OKPCYbDt7EfkH2q5ppzowMITt1lxPyVplxy/b3GpTWwJF+Og==}
+    dev: true
+
+  /@brillout/release-me@0.3.4:
+    resolution: {integrity: sha512-GfMQQWvpRLlh7w1ie4GfpdsYqrgFzL4oLu2PEPa9R2WaW4x0RClyUwZGvaDyqypHiDHXbmb6kEeld94Mr+NMTQ==}
     hasBin: true
     dependencies:
+      '@brillout/picocolors': 1.0.11
       commander: 11.1.0
       conventional-changelog: 5.1.0
       execa: 5.1.1
-      js-yaml: 4.1.0
-      picocolors: 1.0.0
       semver: 7.5.4
     dev: true
 
@@ -5730,6 +5733,7 @@ packages:
 
   /argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+    dev: false
 
   /array-buffer-byte-length@1.0.0:
     resolution: {integrity: sha512-LPuwb2P+NrQw3XhxGc36+XSvuBPopovXYTR9Ew++Du9Yb/bx5AzBfrIsBoj0EZUifjQU+sHL21sseZ3jerWO/A==}
@@ -8379,6 +8383,7 @@ packages:
     hasBin: true
     dependencies:
       argparse: 2.0.1
+    dev: false
 
   /jsesc@2.5.2:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
