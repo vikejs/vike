@@ -19,7 +19,7 @@ import type {
   PageContextUrlComputedPropsClient,
   PageContextUrlComputedPropsServer
 } from './addUrlComputedProps.js'
-import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
+import type { ConfigEntries, ExportsAll, From, Source, Sources } from './getPageFiles/getExports.js'
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
@@ -111,6 +111,13 @@ type PageContextBuiltInCommon<Data> = {
    */
   errorWhileRendering?: unknown
 
+  /** @experimental https://github.com/vikejs/vike/issues/1268 */
+  from: From
+  /** @experimental https://github.com/vikejs/vike/issues/1268 */
+  source: Source
+  /** @experimental https://github.com/vikejs/vike/issues/1268 */
+  sources: Sources
+
   // TODO/v1-release: move pageContext.urlParsed to pageContext.url
   /** @deprecated */
   url: string
@@ -125,7 +132,17 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> & PageConte
 type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
   Pick<
     PageContextBuiltInCommon<Data>,
-    'Page' | 'pageExports' | 'config' | 'configEntries' | 'exports' | 'exportsAll' | 'abortReason' | 'data'
+    | 'Page'
+    | 'pageExports'
+    | 'config'
+    | 'configEntries'
+    | 'exports'
+    | 'exportsAll'
+    | 'abortReason'
+    | 'data'
+    | 'source'
+    | 'sources'
+    | 'from'
   > & {
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
