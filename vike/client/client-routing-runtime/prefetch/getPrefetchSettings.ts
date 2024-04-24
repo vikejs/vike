@@ -76,7 +76,12 @@ function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTML
   return 'hover'
 }
 
-function getPrefetchPageContext(pageContext: PageContextPrefetch): PrefetchPageContext {
+function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchPageContext {
+  {
+    const prefetchAttribute = getPrefetchPageContextAttribute(linkTag)
+    if (prefetchAttribute !== null) return prefetchAttribute
+  }
+
   if ('prefetchPageContext' in pageContext.exports) {
     const { prefetchPageContext } = pageContext.exports
 
@@ -138,6 +143,50 @@ function getPrefetchStaticAssetsAttribute(linkTag: HTMLElement): PrefetchWhen | 
       return 'hover'
     }
     assertUsage(false, `data-prefetch has value "${attrOld}" but it should instead be "true" or "false"`)
+  }
+
+  assert(false)
+}
+
+function getPrefetchPageContextAttribute(linkTag: HTMLElement): PrefetchPageContext | null {
+  const whenAttr = linkTag.getAttribute('data-prefetch-page-context-when')
+  const expireAttr = linkTag.getAttribute('data-prefetch-page-context-expire')
+
+  if (whenAttr === null && expireAttr === null) {
+    return null
+  }
+
+  if (whenAttr) {
+    if (whenAttr === 'false') {
+      return { when: false, expire: 0 }
+    }
+
+    if (whenAttr === 'hover' || whenAttr === 'viewport') {
+      const correctValue: 'hover' | 'viewport' = whenAttr.toLowerCase() as any
+
+      if (expireAttr === null) {
+        return { when: correctValue, expire: 0 }
+      }
+
+      if (!Number.isNaN(parseInt(expireAttr, 10))) {
+        return { when: correctValue, expire: parseInt(expireAttr, 10) }
+      }
+
+      assertUsage(false, `data-prefetch-page-context-expire has value "${expireAttr}" but it should instead be number`)
+    }
+
+    assertUsage(
+      false,
+      `data-prefetch-page-context has value "${whenAttr}" but it should instead be "false", "hover", or "viewport"`
+    )
+  }
+
+  if (expireAttr !== null) {
+    if (!Number.isNaN(parseInt(expireAttr, 10))) {
+      return { when: 'hover', expire: parseInt(expireAttr, 10) }
+    }
+
+    assertUsage(false, `data-prefetch-page-context-expire has value "${expireAttr}" but it should instead be number`)
   }
 
   assert(false)
