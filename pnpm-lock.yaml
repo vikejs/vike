@@ -1911,8 +1911,8 @@ importers:
         specifier: ^1.5.3
         version: 1.5.3
       '@brillout/release-me':
-        specifier: ^0.3.4
-        version: 0.3.4
+        specifier: ^0.3.7
+        version: 0.3.7
       '@types/estree':
         specifier: ^1.0.5
         version: 1.0.5
@@ -2411,15 +2411,15 @@ packages:
   /@brillout/picocolors@1.0.10:
     resolution: {integrity: sha512-dh+JJlsBf3QYX+91Ezma8RLKNOjGDoBBmORv/NzRpQuasdyzwQCMXGGjsDu12ZhGz92TqQbL9pv79rvbheI21A==}
 
-  /@brillout/picocolors@1.0.11:
-    resolution: {integrity: sha512-ZDIx2xNRjCKm9c6n+zNDXa3qxXniaVlGKXK1F5OKPCYbDt7EfkH2q5ppzowMITt1lxPyVplxy/b3GpTWwJF+Og==}
+  /@brillout/picocolors@1.0.12:
+    resolution: {integrity: sha512-2gowgbpAqEQz4U1D/dh3tU2fKcRm+yt724d8YTbCsVHxnLTHWP2J5RMO1iTWcoViX7rTmLvPkHHlYtEiKP4gLA==}
     dev: true
 
-  /@brillout/release-me@0.3.4:
-    resolution: {integrity: sha512-GfMQQWvpRLlh7w1ie4GfpdsYqrgFzL4oLu2PEPa9R2WaW4x0RClyUwZGvaDyqypHiDHXbmb6kEeld94Mr+NMTQ==}
+  /@brillout/release-me@0.3.7:
+    resolution: {integrity: sha512-6S+aNEQtiwkoFBGGZCD1K5omItyR+Pv/MAPxhECPVS3rnpvb60NEIS2ljGKuGdrna956yxPkFxKhblSfVVyitw==}
     hasBin: true
     dependencies:
-      '@brillout/picocolors': 1.0.11
+      '@brillout/picocolors': 1.0.12
       commander: 11.1.0
       conventional-changelog: 5.1.0
       execa: 5.1.1
