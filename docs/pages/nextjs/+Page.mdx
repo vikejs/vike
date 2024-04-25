@@ -32,9 +32,13 @@ Finally, Vike is a community project: instead of leaning on a framework with bus
 | <p align="center">**Routing**</p>                                                        |                                                            |                               |
 | Filesystem Routing                                              | Yes                                                        | Yes                           |
 | <Link text="Domain-driven Filesystem Routing" href="/file-structure#domain-driven" />                                        | Yes                                                        | No                            |
-| <Link text="Client Routing" href="/client-routing" />           | Yes                                                        | Yes                           |
+| <Link text="Client Routing" href="/client-routing" />           | Yes                                                        | Yes, but limited in SPA-only mode ***                           |
 | <Link text="Server Routing" href="/server-routing" />           | Yes                                                        | No                            |
 | <Link text="Base URL" href="/base-url" />                       | Yes                                                        | Limited                       |
+| <p align="center">**Pre-rendering (SSG)**</p>                                                   |                                                            |                               |
+| Pre-rendering (SSG)                                    | Yes, for pages                                                        | Yes, for pages, or components ([Partial Pre-rendering](https://nextjs.org/learn/dashboard-app/partial-prerendering) using RSC)                               |
+| Incremental Static Regeneration (ISR)                  | No*, use <Link text="vite-plugin-vercel" href="/vercel#vite-plugin-vercel" />        | Yes, in the Node.js runtime, on Vercel    |
+| SPA-only mode (popular for PWAs) ***                   | Yes                                                        | Limited: [no dynamic routing in App Router](https://github.com/vercel/next.js/discussions/64660)                       |
 | <p align="center">**Integrations**</p>                                                    |                                                            |                               |
 HTTP server | No*, bring your own | Baked-in, custom server partially supported with caveats[[1]](https://github.com/vikejs/vike/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
 | Apollo Client with SSR                                          | Fully supported                                            | Partially supported           |
@@ -54,7 +58,10 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 
 
 (\*) Vike doesn't ship those extras by design.
+
 (\**) Industry-standard ways of caching is to use the HTTP Cache-Control header to [cache in the client's browser](https://web.dev/articles/http-cache) and potentially also on a shared/public [CDN](https://www.cloudflare.com/lp/ppc/cdn-x/) cache in front of your server side. Additionally, if you ever need even more caching than that, it's possible to have an in-memory cache on your server-side using e.g. [Redis](https://developer.redis.com/howtos/solutions/microservices/caching/) or Memcached.
+
+(\***) SPA-only mode means you make a static export of your app, into HTML, CSS and JS files, and serve them from a CDN, which means you don't need any server compute on requests (as opposed to SSR).
 
 
 
@@ -96,7 +103,7 @@ Vike includes everything you'd expect from a frontend framework: Client-side Rou
 
 ## Deployment/hosting agnostic
 
-### Next.js
+### Next.js - optimised for Vercel
 
 Next.js is made by [Vercel](https://vercel.com), a hosting provider. It is therefore naturally optimised to run in their environment and infrastructure. But Vercel
 is
@@ -124,7 +131,7 @@ These kinds of difficulties led the open source community to develop [Open-Next.
 Edge deployment with Next.js is another story. [Cloudflare](https://blog.cloudflare.com/next-on-pages), the most prominent edge hosting provider, uses its own runtime instead of Node.js. Meaning that some Next.js apps built to run on Node.js won't immediately work on the Edge. So Next.js has an Edge Runtime toolkit/mode that uses only a subset of the Node.js API, but it has [a lot of issues](https://github.com/search?q=repo%3Avercel%2Fnext.js+edge+runtime&type=issues).
 
 
-### Vike
+### Vike - hosting agnostic
 
 > With Vike, you keep full control over your server and you can use any deployment strategy.
 
@@ -154,7 +161,7 @@ We believe Vike hits the sweet spot of being a full-fledged frontend tool while 
 
 ## Caching by default vs. opt-in
 
-### Next.js
+### Next.js - caches by default, must opt-out
 
 Next.js aggressively uses [caching](https://nextjs.org/docs/app/building-your-application/caching), for performance and cost-saving reasons. Less server load means your app uses less compute resources, which saves you money on Vercel's paid plans, but saves Vercel money on their free tier (which most developers will be on; Vercel's long-tail).
 
@@ -164,7 +171,7 @@ But people are [finding](https://www.reddit.com/r/nextjs/comments/18tkmdb/has_an
 
 As the saying goes, _"There are only two hard things in Computer Science: cache invalidation and naming things."_ -- Phil Karlton
 
-### Vike
+### Vike - opt-in caching
 
 Vike does not cache, by design, so by default your app will behave as you expect. If you do want caching, you can opt into it by using one of the many industry-standard caching tools.
 
@@ -181,7 +188,11 @@ With RSCs, you have to inject the bundler directive "use client" (aka. start cli
 
 The default server orientation makes sense for _websites_ that consist of large static sections with no client interactivity. Using RSCs reduce the size of client-side bundles (and hydration), due to the JS code in RSC's only running on the server (e.g. useful for a static site using a heavy markdown library). But RSC's carry serialization and parsing overhead, has special rules (no state, context, or effects), and conceptual overhead that many developers struggle with.
 
+In addition, with Next.js new App Router, there's been a long standing open issue that you [can't render dynamic routes in the app when it is exported to static assets](https://github.com/vercel/next.js/discussions/64660). This is the so called SPA-only mode (render everything only on the client; often used for PWAs), which means you could serving your app from a CDN, and thus obviating the need any server compute.
+
 In all, the fact that Next.js leans more on the server (and RSC's and caching by default) may not be what you want, especially if you are building a _webapp_ which you expect will become more and more dynamic and interactive anyway.
+
+### Vike - granular work-split between server and client
 
 If your product either should be:
 
@@ -190,12 +201,9 @@ If your product either should be:
 - having a [single unified model for data loading](https://x.com/DevtoolsFM/status/1756091319632683073) that may include polling and [live UI updates](https://www.flightcontrol.dev/blog/nextjs-app-router-migration-the-good-bad-and-ugly#bad-have-to-add-client-side-fetching-for-live-ui-updates).
 - local/offline-first, and/or a [PWA](https://web.dev/learn/pwa/assets-and-data#platform-specific_apps_vs_pwa).
 - cross-platform (reusing code between web and native), since native platforms are typically client-centered (and it [isn't prioritized](https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md#what-does-it-mean-for-react-native) or very clear how React Server Components would work on React Native).
-- using less server resources (scalability, cost-wise), in favor of requiring slightly more processing power on the client.
+- using less server resources (scalability, cost-wise), in favor of requiring slightly more processing power on the client. Like using a SPA-only mode (static export, to serve from CDN, with no server compute needed), which is often a favored approach for PWAs.
 
 then the server-first orientation of Next.js and Vercel isn't helpful and can be a hindrance.
-
-
-### Vike - granular work-split between server and client
 
 With Vike, you can choose setups that fit the aforementioned use cases.
 You can partially or completely opt out of SSR (turn on/off for whole app, <Link href="/ssr">for some pages</Link>, or <Link href="/ClientOnly">for some components</Link>).
