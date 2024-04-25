@@ -133,6 +133,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   prefetchStaticAssets: {
     env: { client: true }
   },
+  prefetchPageContext: {
+    env: { client: true }
+  },
   extends: {
     env: { config: true }
   },
