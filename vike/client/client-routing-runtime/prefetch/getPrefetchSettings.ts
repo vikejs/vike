@@ -98,6 +98,10 @@ function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: HTMLE
     if (when === false) {
       return { when: false, expire: 0 }
     }
+    if ((when === 'hover' || when === 'viewport') && typeof expire === 'number') {
+      return { when, expire }
+    }
+
     if ((when === 'HOVER' || when === 'VIEWPORT') && typeof expire === 'number') {
       const correctValue: 'hover' | 'viewport' = when.toLowerCase() as any
       return { when: correctValue, expire }
