@@ -42,12 +42,14 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
 
 function passToClientHint(pageContext: PageContextForPassToClientWarning, prop: string, propName: string) {
   if (handleVueReactivity(prop)) return
-  // `prop in pageContext` is the trick we use to know the passToClient value on the client-side, as we set values to `undefined`:
+  // `prop in pageContext` is the trick we use to know the passToClient value on the client-side, as we set a value to all passToClient props, even `undefined` ones:
   // ```html
   // <script id="vike_pageContext" type="application/json">{"pageProps":"!undefined"}</script>
   // ```
   if (prop in pageContext) return
   if (isWhitelisted(prop)) return
+  // The trick described above (`prop in pageContext`) doesn't work if Vike doesn't fetch any pageContext from the server.
+  // - There would still be some value to show a warning, but it isn't worth it because of the confusion that the first recommendation (adding `prop` to `passToClient`) wouldn't actually remove the warning, and only the second recommendation (using `prop in pageContext` instead of `pageContext[prop]`) would work.
   if (!pageContext._hasPageContextFromServer) return
 
   const errMsg = `pageContext${propName} isn't defined on the client-side, see https://vike.dev/passToClient#error`
