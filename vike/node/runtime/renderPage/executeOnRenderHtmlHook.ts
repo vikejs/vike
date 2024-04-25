@@ -53,7 +53,7 @@ async function executeOnRenderHtmlHook(
   objectAssign(pageContext, { _renderHook: renderHook })
 
   preparePageContextForUserConsumptionServerSide(pageContext)
-  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook)
+  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook, pageContext)
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturnValue,
     renderHook

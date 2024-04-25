@@ -423,7 +423,11 @@ async function callOnBeforePrerenderStartHooks(
           return
         }
 
-        const prerenderResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeout })
+        const prerenderResult: unknown = await executeHook(
+          () => hookFn(),
+          { hookName, hookFilePath, hookTimeout },
+          null
+        )
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
           {
@@ -665,7 +669,8 @@ async function callOnPrerenderStartHook(
           return prerenderContext.pageContexts
         }
       }),
-    onPrerenderStartHook
+    onPrerenderStartHook,
+    null
   )
   if (result === null || result === undefined) {
     return

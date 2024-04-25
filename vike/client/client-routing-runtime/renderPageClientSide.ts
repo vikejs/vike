@@ -107,7 +107,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           const hook = onPageTransitionStartHook
           const { hookFn } = hook
           try {
-            await executeHook(() => hookFn(pageContext), hook)
+            await executeHook(() => hookFn(pageContext), hook, pageContext)
           } catch (err) {
             await onError(err)
             return
@@ -417,7 +417,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (hook) {
         const { hookFn } = hook
         try {
-          await executeHook(() => hookFn(pageContext), hook)
+          await executeHook(() => hookFn(pageContext), hook, pageContext)
         } catch (err) {
           await onError(err)
           if (!isErrorPage) return
@@ -439,7 +439,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (hook) {
         const { hookFn } = hook
         try {
-          await executeHook(() => hookFn(pageContext), hook)
+          await executeHook(() => hookFn(pageContext), hook, pageContext)
         } catch (err) {
           await onError(err)
           if (!isErrorPage) return

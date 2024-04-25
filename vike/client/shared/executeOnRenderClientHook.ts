@@ -71,7 +71,7 @@ async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClien
   assert(hookName)
 
   // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-  const hookResult = await executeHook(() => renderHook(pageContextForUserConsumption), hook)
+  const hookResult = await executeHook(() => renderHook(pageContextForUserConsumption), hook, pageContext)
   assertUsage(
     hookResult === undefined,
     `The ${hookName}() hook defined by ${hook.hookFilePath} isn't allowed to return a value`

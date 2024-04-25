@@ -156,7 +156,7 @@ async function executeHookClientSide(
     return null
   }
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
-  const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook)
+  const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook, pageContext)
 
   const pageContextFromHook = {}
   if (hookName === 'onBeforeRender') {

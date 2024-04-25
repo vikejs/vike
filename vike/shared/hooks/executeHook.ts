@@ -6,17 +6,22 @@ import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
 import type { Hook, HookLoc } from './getHook.js'
-
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>()
 })
+
+type PageContext = null | Record<string, unknown>
 
 function isUserHookError(err: unknown): false | HookLoc {
   if (!isObject(err)) return false
   return globalObject.userHookErrors.get(err) ?? false
 }
 
-function executeHook<T = unknown>(hookFnCaller: () => T, hook: Omit<Hook, 'hookFn'>): Promise<T> {
+function executeHook<T = unknown>(
+  hookFnCaller: () => T,
+  hook: Omit<Hook, 'hookFn'>,
+  pageContext: PageContext
+): Promise<T> {
   const {
     hookName,
     hookFilePath,
