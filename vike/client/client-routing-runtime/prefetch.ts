@@ -8,7 +8,8 @@ import {
   assertWarning,
   checkIfClientRouting,
   getGlobalObject,
-  isExternalLink
+  isExternalLink,
+  objectAssign
 } from './utils.js'
 import {
   type PageContextUserFiles,
@@ -97,7 +98,6 @@ async function prefetch(url: string): Promise<void> {
 }
 
 function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>; urlPathname: string }) {
-  console.log('きてる？')
   // Current URL is already prefetched
   markAsAlreadyPrefetched(pageContext.urlPathname)
 
@@ -192,6 +192,16 @@ async function prefetchContextIfPossible(url: string): Promise<void> {
     return
   }
   if (!pageContextFromRoute?._pageId) return
+  objectAssign(
+    pageContext,
+    await loadUserFilesClientSide(pageContextFromRoute._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+  )
+  objectAssign(pageContext, {
+    _hasPageContextFromServer: false as const,
+    _hasPageContextFromClient: true as const,
+    _pageId: pageContextFromRoute._pageId,
+    _pageConfigs: pageContext._pageConfigs
+  })
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
   await prefetchPageContext(pageContext)
 }
