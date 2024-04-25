@@ -37,7 +37,7 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
   if (handleVueReactivity(prop)) return
   if (prop in pageContext) return
   if (isWhitelisted(prop)) return
-  // - If no pageContext was fetchd from the server, then adding props to passToClient is useless.
+  // - If no pageContext was fetched from the server, then adding props to passToClient is useless.
   // - Showing a warning, even though no pageContext was fetched from the server, is actually erroneous as the client runtime cannot deduce the passToClient list.
   if (!pageContext._hasPageContextFromServer) return
 
@@ -61,8 +61,6 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
       `pageContext[${propName}] isn't available on the client-side because ${propName} is missing in passToClient, see https://vike.dev/passToClient`
     )
   } else {
-    // Do nothing, not even a warning, because we don't know whether the user expects that the pageContext value can be undefined. (E.g. a pageContext value that is defined by an optional hook.)
-
     // TODO/next-major-release make it an assertUsage()
     assertWarning(
       false,
@@ -83,21 +81,22 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
   }
 }
 
-const IGNORE_LIST = [
+const WHITELIST = [
   'then',
   'toJSON' // Vue triggers `toJSON`
 ]
 function isWhitelisted(prop: string): boolean {
-  if (IGNORE_LIST.includes(prop)) return true
+  if (WHITELIST.includes(prop)) return true
   if (typeof prop === 'symbol') return true // Vue tries to access some symbols
   if (typeof prop !== 'string') return true
   if (prop.startsWith('__v_')) return true // Vue internals upon `reactive(pageContext)`
   return false
 }
 
-// We disable assertIsDefined() for the next attempt to read `prop`, because of how Vue's reactivity work. When changing a reactive object:
-//  - Vue tries to read its old value first. This triggers a `assertIsDefined()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.
-//  - Vue seems to read __v_raw before reading the property
+// Handle Vue's reactivity.
+// When changing a reactive object:
+// - Vue tries to read its old value first. This triggers a `assertIsDefined()` failure if e.g. `pageContextReactive.routeParams = pageContextNew.routeParams` and `pageContextReactive` has no `routeParams`.
+// - Vue seems to read __v_raw before reading the property.
 function handleVueReactivity(prop: string): boolean {
   if (globalObject.prev === prop || globalObject.prev === '__v_raw') return true
   globalObject.prev = prop
