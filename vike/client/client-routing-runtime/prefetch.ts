@@ -46,7 +46,6 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
   }
 }
 
-// todo
 async function prefetchPageContext(pageContext: PageContextForUserConsumptionClientSide): Promise<void> {
   try {
     await preparePageContextForUserConsumptionClientSide(pageContext, true)
@@ -197,6 +196,8 @@ async function prefetchContextIfPossible(url: string): Promise<void> {
     await loadUserFilesClientSide(pageContextFromRoute._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
   )
   objectAssign(pageContext, {
+    isHydration: false as const,
+    isBackwardNavigation: null,
     _hasPageContextFromServer: false as const,
     _hasPageContextFromClient: true as const,
     _pageId: pageContextFromRoute._pageId,
