@@ -106,6 +106,15 @@
       "types": "./dist/esm/shared/abort.d.ts",
       "default": "./dist/esm/shared/abort.js"
     },
+    "./getPageContext": {
+      "worker": "./dist/esm/shared/getPageContext.js",
+      "edge-light": "./dist/esm/shared/getPageContext.js",
+      "require": "./dist/cjs/shared/getPageContext.js",
+      "node": "./dist/esm/shared/getPageContext.js",
+      "browser": "./dist/esm/shared/getPageContext.js",
+      "types": "./dist/esm/shared/getPageContext.d.ts",
+      "default": "./dist/esm/shared/getPageContext.js"
+    },
     "./__internal": {
       "require": "./dist/cjs/__internal/index.js",
       "node": "./dist/esm/__internal/index.js",

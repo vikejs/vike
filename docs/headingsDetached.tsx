@@ -443,6 +443,10 @@ const headingsDetached = [
     url: '/getGlobalContext'
   },
   {
+    title: '`getPageContext()`',
+    url: '/getPageContext'
+  },
+  {
     title: '`pageContext.json`',
     url: '/pageContext.json',
     sectionTitles: ['Avoid `pageContext.json` requests']

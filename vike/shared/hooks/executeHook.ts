@@ -1,16 +1,20 @@
 export { executeHook }
+export { getPageContext }
 export { isUserHookError }
 
 import { getProjectError, assertWarning } from '../../utils/assert.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import { humanizeTime } from '../../utils/humanizeTime.js'
 import { isObject } from '../../utils/isObject.js'
+import type { PageContextClient, PageContextServer } from '../types.js'
+import { isBrowser } from '../utils.js'
 import type { Hook, HookLoc } from './getHook.js'
 const globalObject = getGlobalObject('utils/executeHook.ts', {
-  userHookErrors: new WeakMap<object, HookLoc>()
+  userHookErrors: new WeakMap<object, HookLoc>(),
+  pageContext: null as PageContextUnknown
 })
 
-type PageContext = null | Record<string, unknown>
+type PageContextUnknown = null | Record<string, unknown>
 
 function isUserHookError(err: unknown): false | HookLoc {
   if (!isObject(err)) return false
@@ -20,7 +24,7 @@ function isUserHookError(err: unknown): false | HookLoc {
 function executeHook<T = unknown>(
   hookFnCaller: () => T,
   hook: Omit<Hook, 'hookFn'>,
-  pageContext: PageContext
+  pageContext: PageContextUnknown
 ): Promise<T> {
   const {
     hookName,
@@ -68,6 +72,7 @@ function executeHook<T = unknown>(
     }, timeoutErr)
   ;(async () => {
     try {
+      providePageContext(pageContext)
       const ret = await hookFnCaller()
       resolve(ret)
     } catch (err) {
@@ -83,4 +88,21 @@ function executeHook<T = unknown>(
 
 function isNotDisabled(timeout: false | number): timeout is number {
   return !!timeout && timeout !== Infinity
+}
+
+/**
+ * Access `pageContext` object inside Vike hooks, in order to create universal hooks.
+ *
+ * https://vike.dev/getPageContext
+ */
+function getPageContext<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
+  return globalObject.pageContext as any
+}
+function providePageContext(pageContext: PageContextUnknown) {
+  globalObject.pageContext = pageContext
+  // Promise.resolve() is quicker than process.nextTick() and setImmediate()
+  // https://stackoverflow.com/questions/67949576/process-nexttick-before-promise-resolve-then
+  Promise.resolve().then(() => {
+    globalObject.pageContext = null
+  })
 }
