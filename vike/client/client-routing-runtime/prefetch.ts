@@ -23,7 +23,10 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
+import {
+  PageContextForUserConsumptionClientSide,
+  preparePageContextForUserConsumptionClientSide
+} from '../shared/preparePageContextForUserConsumptionClientSide.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
@@ -43,7 +46,7 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
 }
 
 // todo
-async function prefetchPageContext(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
+async function prefetchPageContext(pageContext: PageContextForUserConsumptionClientSide): Promise<void> {
   try {
     await preparePageContextForUserConsumptionClientSide(pageContext, true)
   } catch (err) {
@@ -94,6 +97,7 @@ async function prefetch(url: string): Promise<void> {
 }
 
 function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>; urlPathname: string }) {
+  console.log('きてる？')
   // Current URL is already prefetched
   markAsAlreadyPrefetched(pageContext.urlPathname)
 
@@ -189,5 +193,5 @@ async function prefetchContextIfPossible(url: string): Promise<void> {
   }
   if (!pageContextFromRoute?._pageId) return
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
+  await prefetchPageContext(pageContext)
 }
