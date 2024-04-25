@@ -40,7 +40,7 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
   if (globalObject.prev === prop || globalObject.prev === '__v_raw') return
   ignoreNextRead(prop)
   if (prop in pageContext) return
-  if (isExpected(prop)) return
+  if (isWhitelisted(prop)) return
   // - If no pageContext was fetchd from the server, then adding props to passToClient is useless.
   // - Showing a warning, even though no pageContext was fetched from the server, is actually erroneous as the client runtime cannot deduce the passToClient list.
   if (!pageContext._hasPageContextFromServer) return
@@ -89,9 +89,9 @@ function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: s
 
 const IGNORE_LIST = [
   'then',
-  'toJSON' // Vue tries to get `toJSON`
+  'toJSON' // Vue triggers `toJSON`
 ]
-function isExpected(prop: string): boolean {
+function isWhitelisted(prop: string): boolean {
   if (IGNORE_LIST.includes(prop)) return true
   if (typeof prop === 'symbol') return true // Vue tries to access some symbols
   if (typeof prop !== 'string') return true
