@@ -19,8 +19,12 @@ type PrefetchSettings = {
 
 function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchSettings {
   let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
-  let prefetchPageContext = getPrefetchPageContext(pageContext)
-  if ((prefetchStaticAssets === 'viewport' || prefetchPageContext.when === 'viewport') && import.meta.env.DEV) {
+  let prefetchPageContext = getPrefetchPageContext(pageContext, linkTag)
+  if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {
+    assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
+    prefetchStaticAssets = 'hover'
+  }
+  if (prefetchPageContext.when === 'viewport' && import.meta.env.DEV) {
     assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
     prefetchStaticAssets = 'hover'
   }
