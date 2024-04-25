@@ -393,7 +393,7 @@ const headings = [
   },
   {
     level: 2,
-    title: '`styled-components`',
+    title: 'styled-components',
     titleInNav: 'styled-components',
     url: '/styled-components'
   },
