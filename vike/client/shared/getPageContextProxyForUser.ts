@@ -34,11 +34,7 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
 }
 
 function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: string) {
-  // We disable assertIsDefined() for the next attempt to read `prop`, because of how Vue's reactivity work. When changing a reactive object:
-  //  - Vue tries to read its old value first. This triggers a `assertIsDefined()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.
-  //  - Vue seems to read __v_raw before reading the property
-  if (globalObject.prev === prop || globalObject.prev === '__v_raw') return
-  ignoreNextRead(prop)
+  if (handleVueReactivity(prop)) return
   if (prop in pageContext) return
   if (isWhitelisted(prop)) return
   // - If no pageContext was fetchd from the server, then adding props to passToClient is useless.
@@ -99,9 +95,14 @@ function isWhitelisted(prop: string): boolean {
   return false
 }
 
-function ignoreNextRead(prop: string) {
+// We disable assertIsDefined() for the next attempt to read `prop`, because of how Vue's reactivity work. When changing a reactive object:
+//  - Vue tries to read its old value first. This triggers a `assertIsDefined()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.
+//  - Vue seems to read __v_raw before reading the property
+function handleVueReactivity(prop: string): boolean {
+  if (globalObject.prev === prop || globalObject.prev === '__v_raw') return true
   globalObject.prev = prop
   window.setTimeout(() => {
     globalObject.prev = undefined
   }, 0)
+  return false
 }
