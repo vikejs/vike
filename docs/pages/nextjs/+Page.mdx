@@ -32,7 +32,7 @@ Finally, Vike is a community project: instead of leaning on a framework with bus
 | <p align="center">**Routing**</p>                                                        |                                                            |                               |
 | Filesystem Routing                                              | Yes                                                        | Yes                           |
 | <Link text="Domain-driven Filesystem Routing" href="/file-structure#domain-driven" />                                        | Yes                                                        | No                            |
-| <Link text="Client Routing" href="/client-routing" />           | Yes                                                        | Yes, but limited in SPA-only mode ***                           |
+| <Link text="Client Routing" href="/client-routing" />           | Yes                                                        | Yes, but [limited](https://github.com/vercel/next.js/discussions/64660) in SPA-only mode ***                           |
 | <Link text="Server Routing" href="/server-routing" />           | Yes                                                        | No                            |
 | <Link text="Base URL" href="/base-url" />                       | Yes                                                        | Limited                       |
 | <p align="center">**Pre-rendering (SSG)**</p>                                                   |                                                            |                               |
@@ -80,28 +80,7 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 
 
 
-## UI Framework agnostic
-
-> Vike is completely agnostic to React and its source code has zero dependency on React. You can actually use Vike with any other UI Framework (Vue, Preact, Solid, etc.).
->
-> With Vike, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js.
-
-With Vike, you can integrate React yourself. This means you need to write a little bit more boilerplate, but in exchange you get a lot more flexibility.
-You can even use [vike-react](https://vike.dev/react) to do it for you, and later when you need more control you can eject.
-
-Because you can control the React integration, you also have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
-
-For example, you can use Relay and Apollo in ways that aren't possible with Next.js.
-
-> Relay is a state-of-the-art GraphQL client developed and used at scale by Facebook (which invented GraphQL). The [YouTube video "Re-introducing Relay"](https://www.youtube.com/watch?v=lhVGdErZuN4) explains in detail the benefits of Relay.
->
-> Many users and sponsors leverage Vike's flexibility to integrate Relay with SSR Streaming.
-
-Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering (SSG), Data Fetching, Code Splitting, Layouts, i18n, etc.
-
-
-
-## Deployment/hosting agnostic
+## Deployment / hosting
 
 ### Next.js - optimised for Vercel
 
@@ -159,7 +138,7 @@ We believe Vike hits the sweet spot of being a full-fledged frontend tool while 
 
 
 
-## Caching by default vs. opt-in
+## Caching
 
 ### Next.js - caches by default, must opt-out
 
@@ -177,8 +156,7 @@ Vike does not cache, by design, so by default your app will behave as you expect
 
 
 
-## Server-first vs. granular work-split
-
+## Server vs. client workloads
 
 ### Next.js - server-first oriented
 
@@ -212,6 +190,29 @@ You can also use SSR for the first page and then, from there on, use client-only
 Vike has first-class support for leaning towards the client-side, as well as first-class support for SSR use cases.
 Vike is made by the community and has no incentive to favor any side of the work-split between the client and the server.
 
+
+## UI Framework agnostic
+
+Next.js is deeply tied to React. So if you want to move to another UI framework later, like for instance [SolidJS](https://www.solidjs.com/), then it means a laborious refactor away from NextJS.
+But with Vike, you keep your options open, and can swap out your UI framework rather easily with various <Link text="UI extensions for Vike" href="/extensions" />.
+
+> Vike is completely agnostic to React and its source code has zero dependency on React. You can actually use Vike with any other UI Framework (Vue, Preact, Solid, etc.).
+>
+> With Vike, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js.
+
+With Vike, you can integrate React yourself. This means you need to write a little bit more boilerplate, but in exchange you get a lot more flexibility.
+You can even use [vike-react](https://vike.dev/react) to do it for you, and later when you need more control you can eject.
+If you want to switch UI framework to Solid, then you can swap vike-react with [vike-solid](https://github.com/vikejs/vike-solid).
+
+Because you can control the React integration, you also have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
+
+For example, you can use Relay and Apollo in ways that aren't possible with Next.js.
+
+> Relay is a state-of-the-art GraphQL client developed and used at scale by Facebook (which invented GraphQL). The [YouTube video "Re-introducing Relay"](https://www.youtube.com/watch?v=lhVGdErZuN4) explains in detail the benefits of Relay.
+>
+> Many users and sponsors leverage Vike's flexibility to integrate Relay with SSR Streaming.
+
+Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering (SSG), Data Fetching, Code Splitting, Layouts, i18n, etc.
 
 
 ## Manual integrations
