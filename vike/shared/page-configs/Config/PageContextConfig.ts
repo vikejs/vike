@@ -2,7 +2,7 @@ export type { PageContextConfig }
 
 import type { VikePackages } from '../../VikeNamespace.js'
 import type { ConfigBuiltIn } from '../Config.js'
-import type { Combine, IsNotEmpty, XOR5 } from './helpers.ts'
+import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
 
 // Like the type `Config` but meant for pageContext.config
 type PageContextConfig = ConfigBuiltIn &
