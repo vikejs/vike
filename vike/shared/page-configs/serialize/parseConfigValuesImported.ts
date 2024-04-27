@@ -64,7 +64,7 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
       assert(val)
       const { value, importPath, exportName } = val
       configValues[configName] = {
-        type: 'classic',
+        type: 'standard',
         value,
         definedAtData: {
           // importPath cannot be relative to the current file, since the current file is a virtual file

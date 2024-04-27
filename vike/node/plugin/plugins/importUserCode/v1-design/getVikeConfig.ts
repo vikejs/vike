@@ -1190,7 +1190,7 @@ function getConfigValues(
       const configValueSource = sources[0]!
       if ('value' in configValueSource) {
         configValues[configName] = {
-          type: 'classic',
+          type: 'standard',
           value: configValueSource.value,
           definedAtData: getDefinedAtFile(configValueSource)
         }

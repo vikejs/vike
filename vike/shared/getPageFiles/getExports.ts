@@ -167,7 +167,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
         configDefinedByFile: configValueFilePathToShowToUser
       })
 
-      if (configValue.type === 'classic') {
+      if (configValue.type === 'standard') {
         const src: SourceConfigsOverridable = {
           type: 'configsOverridable',
           value: configValue.value,

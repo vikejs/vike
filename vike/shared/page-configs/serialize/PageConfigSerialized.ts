@@ -5,7 +5,7 @@ export type { ConfigValueImported }
 
 import type {
   ConfigValue,
-  ConfigValueClassic,
+  ConfigValueStandard,
   ConfigValueComputed,
   ConfigValueCumulative,
   PageConfigRuntime
@@ -25,7 +25,7 @@ type PageConfigGlobalRuntimeSerialized = {
 
 /** Value is serialized */
 type ConfigValueSerialized =
-  | (Omit<ConfigValueClassic, 'value'> & { valueSerialized: string })
+  | (Omit<ConfigValueStandard, 'value'> & { valueSerialized: string })
   | (Omit<ConfigValueCumulative, 'value'> & { valueSerialized: string })
   | (Omit<ConfigValueComputed, 'value'> & { valueSerialized: string })
 /* We don't use this because it loses union logic.

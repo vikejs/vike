@@ -6,7 +6,7 @@ export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigValue }
-export type { ConfigValueClassic }
+export type { ConfigValueStandard }
 export type { ConfigValueCumulative }
 export type { ConfigValueComputed }
 export type { ConfigValues }
@@ -101,10 +101,10 @@ type ConfigValuesComputed = Record<
   }
 >
 
-type ConfigValue = ConfigValueClassic | ConfigValueCumulative | ConfigValueComputed
+type ConfigValue = ConfigValueStandard | ConfigValueCumulative | ConfigValueComputed
 /** Defined by a unique source (thus unique file path). */
-type ConfigValueClassic = {
-  type: 'classic'
+type ConfigValueStandard = {
+  type: 'standard'
   value: unknown
   definedAtData: DefinedAtFile
 }
