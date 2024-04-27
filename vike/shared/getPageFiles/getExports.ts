@@ -62,9 +62,9 @@ type PageContextExports = {
 }
 
 type From = {
-  configsOverridable: Record<
+  configsStandard: Record<
     string, // configName
-    SourceConfigsOverridable
+    SourceConfigsStandard
   >
   configsCumulative: Record<
     string, // configName
@@ -91,13 +91,13 @@ type SourceAny = SourceConfigs
   | SourceVikeInternal
   */
 
-type SourceConfigs = SourceConfigsOverridable | SourceConfigsCumulative | SourceConfigsComputed
+type SourceConfigs = SourceConfigsStandard | SourceConfigsCumulative | SourceConfigsComputed
 /* Potential upcoming feature: resolve cumulative values at config-time instead of runtime,
    in order to save KBs on the client-side.
  | SourceConfigsResolved
  */
-type SourceConfigsOverridable = {
-  type: 'configsOverridable'
+type SourceConfigsStandard = {
+  type: 'configsStandard'
   value: unknown
   definedAt: string
 }
@@ -147,7 +147,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
     sources[configName]!.push(src)
   }
   const from: From = {
-    configsOverridable: {},
+    configsStandard: {},
     configsCumulative: {},
     configsComputed: {}
   }
@@ -168,13 +168,13 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
       })
 
       if (configValue.type === 'standard') {
-        const src: SourceConfigsOverridable = {
-          type: 'configsOverridable',
+        const src: SourceConfigsStandard = {
+          type: 'configsStandard',
           value: configValue.value,
           definedAt: getDefinedAtString(configValue.definedAtData, configName)
         }
         addSrc(src, configName)
-        from.configsOverridable[configName] = src
+        from.configsStandard[configName] = src
       }
       if (configValue.type === 'cumulative') {
         const src: SourceConfigsCumulative = {
