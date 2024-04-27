@@ -491,6 +491,34 @@ export default {
 
 > `sqlQuery` is a custom setting, see <Link href="#example-sql" doNotInferSectionTitle />.
 
+If you define a <Link href="#api">`cumulative` config</Link>, then also make sure to use the global interface `Vike.ConfigResolved`.
+
+```ts
+// /pages/+config.ts
+// Environment: config
+
+export default {
+  meta: {
+    viewport: {
+      env: { server: true }
+    }
+  }
+}
+
+declare global {
+  namespace Vike {
+    interface Config {
+      viewport?: number
+    }
+    interface ConfigResolved {
+      // Set the pageContext.config.viewport type
+      viewport?: number[]
+    }
+  }
+}
+```
+
+
 ## See also
 
 - <Link href="/migration/v1-design" />
