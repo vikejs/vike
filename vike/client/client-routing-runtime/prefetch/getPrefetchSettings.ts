@@ -1,4 +1,5 @@
 export { getPrefetchSettings }
+export { PrefetchPageContext }
 
 import type { PrefetchWhen, PrefetchExpire } from '../../../shared/types/Prefetch.js'
 import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.js'
@@ -8,8 +9,8 @@ type PageContextPrefetch = {
 }
 
 type PrefetchPageContext = {
-  when: PrefetchWhen
-  expire: PrefetchExpire
+  when?: PrefetchWhen
+  expire?: PrefetchExpire
 }
 
 type PrefetchSettings = {

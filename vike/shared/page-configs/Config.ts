@@ -31,6 +31,7 @@ export type { OnRenderHtmlSync }
 export type { RouteAsync }
 export type { RouteSync }
 
+import { PrefetchPageContext } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
@@ -391,13 +392,14 @@ type ConfigBuiltIn = {
    */
   meta?: ConfigMeta | ImportString
 
-  /** Prefetch links.
+  /** Prefetch static assets.
    *
    * https://vike.dev/prefetchStaticAssets
    */
   prefetchStaticAssets?: PrefetchWhen | ImportString
 
-  prefetchPageContext?: PrefetchExpire
+  /** Prefetch page context. */
+  prefetchPageContext?: PrefetchPageContext
 
   /** Modify the timeouts of hooks. */
   hooksTimeout?: HooksTimeoutProvidedByUser
