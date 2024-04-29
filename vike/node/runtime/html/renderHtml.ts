@@ -9,7 +9,17 @@ export type { DocumentHtml }
 // This export is needed even though it's not used anywhere, see https://github.com/vikejs/vike/issues/511
 export type { TemplateWrapped }
 
-import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  checkType,
+  escapeHtml,
+  hasProp,
+  isHtml,
+  isPromise,
+  objectAssign
+} from '../utils.js'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
 import type { PageContextInjectAssets } from './injectAssets.js'
 import {
@@ -325,17 +335,6 @@ async function renderTemplate(
     htmlPartsBegin,
     htmlPartsEnd
   }
-}
-
-function escapeHtml(unsafeString: string): string {
-  // Source: https://stackoverflow.com/questions/6234773/can-i-escape-html-special-chars-in-javascript/6234804#6234804
-  const safe = unsafeString
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-  return safe
 }
 
 async function getHtmlString(htmlRender: HtmlRender): Promise<string> {
