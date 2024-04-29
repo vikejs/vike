@@ -27,6 +27,11 @@ const headings = [
     sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
   },
   {
+    level: 2,
+    title: 'FAQ',
+    url: '/faq'
+  },
+  {
     level: 1,
     title: 'Get Started',
     titleEmoji: 'seedling'
@@ -35,11 +40,6 @@ const headings = [
     level: 2,
     title: 'Scaffold new app',
     url: '/scaffold'
-  },
-  {
-    level: 2,
-    title: 'FAQ',
-    url: '/faq'
   },
   {
     level: 1,
