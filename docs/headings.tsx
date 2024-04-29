@@ -37,6 +37,11 @@ const headings = [
     url: '/scaffold'
   },
   {
+    level: 2,
+    title: 'FAQ',
+    url: '/faq'
+  },
+  {
     level: 1,
     title: 'Guides',
     titleEmoji: 'books'
@@ -60,12 +65,6 @@ const headings = [
     level: 2,
     title: 'Pre-rendering (SSG)',
     url: '/pre-rendering'
-  },
-  {
-    level: 2,
-    title: 'FAQ',
-    url: '/faq',
-    sectionTitles: ['Can I reach out for help?']
   },
   {
     level: 2,
