@@ -24,8 +24,8 @@ import { projectInfo } from '../../utils'
 
 On:
 - <a href={projectInfo.discordInvite}>Discord</a>, to get help from the community.
-  > There aren't any rules and you can post what you. That said, questions often don't get any answers on Discord, so we recommend reading the help guide (see the `#help-guide` channel on Discord) to increase the chance of receiving valuable assistance. And please consider giving back by helping others!
-- <a href={projectInfo.githubDiscussions}>GitHub Discussions</a>, to get official help from the Vike team.
+  > There aren't any rules and you can post what you want. That said, questions sometime don't get any answers on Discord, so we recommend reading the help guide to increase the chance of receiving valuable assistance (see the channel `#help-guide` on Vike's Discord). And please consider giving back by helping others!
+- <a href={projectInfo.githubDiscussions}>GitHub Discussions</a>, to get help from the Vike team.
   > You'll always get a response from the Vike team on GitHub, but the expectation is that you follow [these rules](https://brillout.github.io/rules/).
 - [GitHub Issues](https://github.com/vikejs/vike/issues), to report a bug or request a feature.
 
@@ -39,13 +39,6 @@ If it turns out that your difficulties are because of Vike, then we consider thi
 In general, Vike <Link href="#can-i-use-vike-to-achieve-what-i-want">aims to be highly flexible</Link>, thus resolving blockers is very important to us (ideally by design and at least by helping).
 
 
-## What are these cryptic JavaScript errors?
-
-Many cryptic errors come from CJS/ESM issues around npm packages that distribute invalid code, for a solution see <Link href="/broken-npm-package" />.
-
-> In general, we care a lot about crafting error messages that are helpful. But we don't control error messages from other tools such as Node.js errors which are sometimes hard to understand.
-
-
 ## Can I use Vike in production?
 
 Yes. Many companies, from small startups to large corporations, are using Vike in production in a wide range of scenarios.
@@ -53,9 +46,9 @@ Yes. Many companies, from small startups to large corporations, are using Vike i
 Consider, for example, the use case of some of Vike sponsors:
  - [Alignable](https://www.alignable.com) (social network), using a bespoke React integration with their Ruby on Rails backend.
    ([Sponsoring `brillout`](https://github.com/AlignableUser#:~:text=www.alignable.com-,Sponsoring,-Achievements), the creator of Vike.)
- - [Contra](https://contra.com) (freelance market), large codebase (>150 routes) with a bespoke React rendering strategy and GraphQL integration using Vike and Relay.
+ - [Contra](https://contra.com) (freelance market), large codebase (>150 routes) with a bespoke React rendering strategy and GraphQL integration using Relay.
    ([Sponsoring `brillout`](https://github.com/contra#:~:text=of%20this%20organization.-,Sponsoring,-Top%20languages).)
- - [Ecosia](https://www.ecosia.org) (search engine), migrating their entire frontend from Nuxt to Vike.
+ - [Ecosia](https://www.ecosia.org) (search engine), migrating their entire frontend from Nuxt to Vike for a substantial performance increase.
    ([Sponsoring `vikejs`](https://github.com/Ecosia#:~:text=People-,Sponsoring,-Top%20languages).)
  - [Burda](https://www.burda-forward.de) (publishing house with online newspapers reaching half of the German population), migrating their fragmented tech stacks of multiple and diverse online newspapers into one unified bespoke framework using Vike and Solid.
    ([Sponsoring `brillout`](https://github.com/BurdaForward#:~:text=People-,Sponsoring,-Top%20languages).)
@@ -63,12 +56,12 @@ Consider, for example, the use case of some of Vike sponsors:
 
 ## Will Vike survive?
 
-We are a group of passionate developers: for us, working on Vike is the thrill of a lifetime and there is no reason for us to stop.
+We are a group of passionate developers; working on Vike is the thrill of a lifetime and there is no reason for us to stop.
 
 We're making significant progress on being able to financially sustain ourselfes.
 
-> Without relying on investor money, but through sponsorships and upcoming innovative Open Source business models.
-> Not taking investor investor is paramount to keep Vike an independent and community-driven project, with transparent interests that are aligned with its users.
+> Without relying on investor money, but through sponsorships and upcoming innovative open source business models.
+> Independence is paramount for keeping Vike a community-driven project with transparent interests that are well aligned with its users.
 
 As a company, you can secure Vike's future by [sponsoring](https://github.com/vikejs/vike/issues/1350).
 
@@ -78,25 +71,32 @@ As a company, you can secure Vike's future by [sponsoring](https://github.com/vi
 Vike prides itself on being a highly adaptable frontend framework. See for example the <Link href="#can-i-use-vike-in-production">use case of some of Vike sponsors</Link>.
 
 Vike supports all common use cases:
- - <Link href="/deploy">Deploy anywhere</Link> (VPS, AWS, GCP, Cloudflare, Vercel, etc.).
  - <Link href="/ui-framework">Any UI framework</Link> (React, Vue, Solid, etc.), <Link href="/integration">any UI tool</Link> (state management, data fetching, CSS framework, etc.).
  - <Link href="/pre-rendering#should-i-pre-render">Without backend</Link>, with <Link href="/server">any JavaScript backend</Link> (Express.js, Hono, Fastify, Adonis, Nest, Deno, Bun, etc.), or with other backends (Java, Ruby on Rails, etc.).
  - <Link href="/data-fetching-tools">Any data fetching tool</Link> (REST, RPC, GraphQL, etc.).
- - <Link href="/pre-rendering#ssg-vs-ssr">Server-side rendered HTML (SSR)</Link>, <Link href="/pre-rendering">pre-rendered HTML (SSG)</Link>, <Link href="/vercel#vite-plugin-vercel">incremental pre-rendering (ISR)</Link>.
- - <Link href="/streaming">HTML streaming</Link> (with <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>).
+ - Optional <Link href="/ssr">Server-Side Rendering (SSR)</Link>, optional <Link href="/pre-rendering">pre-rendering (SSG)</Link>, and optional <Link href="/vercel#vite-plugin-vercel">Incremental Static Regeneration (ISR)</Link>.
+ - Optional <Link href="/stream">HTML streaming</Link> (with <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>).
+ - <Link href="/deploy">Deploy anywhere</Link> (VPS, AWS, GCP, Cloudflare, Vercel, etc.).
 
-A common source of blockers are bugs. Vike is also unique because we quickly fix bugs and, to this date, [we have been able to fix all bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22bug+%3Aboom%3A%22). We value clean abstractions and correctness significantly reducing bugs.
+A common source of blockers are bugs; Vike is also unique because we quickly fix bugs and, to this date, [we have been able to fix all bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22bug+%3Aboom%3A%22). We value clean abstractions and correctness, which significantly reduces potential bugs.
 
 Vike has been designed from the ground up to be extensible, so that you can <Link href="/build-your-own-framework">Build Your Own Framework</Link>.
 
 If you have a use case you believe you cannot achieve with Vike, then <a href={projectInfo.githubDiscussions}>let us know</a>.
 
-> In general, Vike aims to be as less blocking as possible. If you run into a blocker then please reach out, see also: <Link href="#i-ve-difficulties-integrating-a-tool-can-i-get-help" doNotInferSectionTitle />
+> In general, Vike aims to be as less blocking as possible. If you run into a blocker then please reach out. See also: <Link href="#i-ve-difficulties-integrating-a-tool-can-i-get-help" doNotInferSectionTitle />
 
 
 ## How can I contribute and/or support?
 
 Contributions in forms of [code](https://github.com/vikejs/vike/issues/1349) and/or [sponsoring](https://github.com/vikejs/vike/issues/1350) are much welcome.
+
+
+## What are these cryptic JavaScript errors?
+
+Many cryptic errors come from CJS/ESM issues around npm packages that distribute invalid code, see solution at <Link href="/broken-npm-package" />.
+
+> In general, we care a lot about crafting helpful error messages. But we don't control error messages from other tools such as Node.js errors which are sometimes hard to understand.
 
 
 ## Why is CSS leaked to other pages?
