@@ -268,34 +268,35 @@ async function renderTemplate(
       continue
     }
 
-    const getErrMsg = (typeText: string, end: null | string) => {
+    const getErrMsg = (msg: `${string}.` | `${string}?`) => {
       const { hookName, hookFilePath } = pageContext._renderHook
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
-      return [`The ${nth} HTML variable is ${typeText}, see ${hookName}() hook defined by ${hookFilePath}.`, end]
+      return [
+        `The ${nth} HTML variable is ${msg}`,
+        `The HTML was provided by the ${hookName}() hook at ${hookFilePath}.`
+      ]
         .filter(Boolean)
         .join(' ')
     }
 
-    assertUsage(!isPromise(templateVar), getErrMsg('a promise', `Did you forget to ${pc.cyan('await')} the promise?`))
+    assertUsage(!isPromise(templateVar), getErrMsg(`a promise, did you forget to ${pc.cyan('await')} the promise?`))
 
     if (templateVar === undefined || templateVar === null) {
-      assertWarning(
-        false,
-        getErrMsg(
-          `${pc.cyan(String(templateVar))} which will be converted to an empty string`,
-          `Pass the empty string ${pc.cyan("''")} instead of ${pc.cyan(String(templateVar))} to remove this warning.`
-        ),
-        { onlyOnce: false }
-      )
+      const msgVal = pc.cyan(String(templateVar))
+      const msgEmptyString = pc.cyan("''")
+      const msg =
+        `${msgVal} which will be converted to an empty string. Pass the empty string ${msgEmptyString} instead of ${msgVal} to remove this warning.` as const
+      assertWarning(false, getErrMsg(msg), { onlyOnce: false })
       templateVar = ''
     }
 
     {
       const varType = typeof templateVar
-      const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
-        ? null
-        : '(See https://vike.dev/streaming for HTML streaming.)'
-      assertUsage(varType === 'string', getErrMsg(pc.cyan(`typeof htmlVar === "${varType}"`), streamNote))
+      if (varType !== 'string') {
+        const msgType = pc.cyan(`typeof htmlVariable === "${varType as string}"`)
+        const msg = `${msgType} but a string or stream (https://vike.dev/streaming) is expected instead.` as const
+        assertUsage(false, getErrMsg(msg))
+      }
     }
 
     {
@@ -305,14 +306,10 @@ async function renderTemplate(
         // We don't show this warning in production because it's expected that some users may (un)willingly do some XSS injection: we avoid flooding the production logs.
         !isProduction
       ) {
-        assertWarning(
-          false,
-          getErrMsg(
-            `${pc.cyan(templateVar)} which seems to be HTML code`,
-            'Did you forget to wrap the value with dangerouslySkipEscape()?'
-          ),
-          { onlyOnce: false }
-        )
+        const msgVal = pc.cyan(String(templateVar))
+        const msg =
+          `${msgVal} which seems to be HTML code. Did you forget to wrap the value with dangerouslySkipEscape()?` as const
+        assertWarning(false, getErrMsg(msg), { onlyOnce: false })
       }
     }
 
