@@ -10,6 +10,7 @@ import {
   assertPosixPath,
   assertUsage,
   deepEqual,
+  isObject,
   isPathFilesystemAbsolute,
   requireResolve
 } from '../../../../utils.js'
@@ -33,9 +34,19 @@ function resolvePointerImportOfConfig(
   configEnv: ConfigEnvInternal,
   configName: string
 ): null | PointerImportResolved {
-  if (typeof configValue !== 'string') return null
-  const pointerImportData = parsePointerImportData(configValue)
-  if (!pointerImportData) return null
+  const pointerImportData = typeof configValue === 'string' && parsePointerImportData(configValue)
+  if (!pointerImportData) {
+    // Temporary workaround to support document.title config.
+    // - We'll be able to remove that workaround once Vike supports custom nested configs (being able to define document.title and document.description as two different configs).
+    replaceStringValues(configValue, (str) => {
+      const pointerImportData = parsePointerImportData(str)
+      if (pointerImportData) {
+        const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
+        return filePath.filePathAbsoluteVite
+      }
+    })
+    return null
+  }
   const { importPath, exportName } = pointerImportData
 
   const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
@@ -175,4 +186,30 @@ function assertFileEnv(
 }
 function clearFilesEnvMap() {
   filesEnvMap.clear()
+}
+
+type Replacer = (str: string) => string | void
+function replaceStringValues(obj: unknown, replacer: Replacer) {
+  const visited = new WeakSet()
+  return traverse(obj, replacer)
+
+  function traverse(obj: unknown, replacer: Replacer) {
+    // Check if the input is an object
+    if (isObject(obj)) {
+      if (visited.has(obj)) return
+      visited.add(obj)
+      for (const key in obj) {
+        if (!obj.hasOwnProperty(key)) continue
+        const val = obj[key]
+        if (typeof val !== 'string') {
+          traverse(val, replacer)
+        } else {
+          const replacement = replacer(val)
+          if (replacement) {
+            obj[key] = replacement
+          }
+        }
+      }
+    }
+  }
 }
