@@ -2,6 +2,7 @@ export { addSsrMiddleware }
 
 import { renderPage } from '../../runtime/renderPage.js'
 import type { ViteDevServer } from 'vite'
+import { assertWarning } from '../utils.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function addSsrMiddleware(middlewares: ConnectServer) {
@@ -10,10 +11,15 @@ function addSsrMiddleware(middlewares: ConnectServer) {
     const url = req.originalUrl || req.url
     if (!url) return next()
     const { headers } = req
-    const userAgent = headers['user-agent']
     const pageContextInit = {
       urlOriginal: url,
-      userAgent,
+      get userAgent() {
+        assertWarning(false, "pageContext.userAgent is deprecated in favor of pageContext.headers['user-agent']", {
+          showStackTrace: true,
+          onlyOnce: true
+        })
+        return headers['user-agent']
+      },
       headers
     }
     let pageContext: Awaited<ReturnType<typeof renderPage>>
