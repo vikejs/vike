@@ -25,7 +25,7 @@ type ConfigFile = {
   extendsFilePaths: string[]
 }
 
-// Load fake import
+// Load pointer import
 async function loadImportedFile(
   import_: FilePathResolved & { fileExportName: string },
   userRootDir: string,
@@ -51,7 +51,7 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
   })
 }
 
-// Load +config.js, including all its extends fake imports
+// Load +config.js, including all its extends pointer imports
 async function loadConfigFile(
   configFilePath: FilePathResolved,
   userRootDir: string,

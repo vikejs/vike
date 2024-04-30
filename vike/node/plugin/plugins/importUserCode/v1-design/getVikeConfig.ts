@@ -784,7 +784,7 @@ async function getConfigValueSource(
         valueIsDefinedByValueFile: false,
         definedAtFilePath: pointerImport
       }
-      // Load fake import
+      // Load pointer import
       if (
         isConfigEnv(configDef, configName) &&
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
