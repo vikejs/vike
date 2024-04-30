@@ -1,12 +1,11 @@
 export { objectEntries }
 export { objectFromEntries }
 export { objectKeys }
+// export { forEach }
 
-type ValueOf<T> = T[keyof T]
-type Entries<T> = [keyof T, ValueOf<T>][]
 // https://stackoverflow.com/questions/60141960/typescript-key-value-relation-preserving-object-entries-type/75337277#75337277
 /** Same as Object.entries() but with type inference */
-function objectEntries<T extends object>(obj: T): Entries<T> {
+function objectEntries<T extends object>(obj: T): [keyof T, T[keyof T]][] {
   return Object.entries(obj) as any
 }
 
@@ -21,8 +20,12 @@ function objectFromEntries<T extends [PropertyKey, unknown][]>(arr: T): Record<T
 function objectKeys<T extends object>(obj: T): (keyof T)[] {
   return Object.keys(obj) as any
 }
-/*
-function objectKeys2<T extends Record<string, unknown>>(obj: T): Array<keyof T> {
-  return Object.keys(obj)
+
+/* Not used yet, but can be quite useful.
+function forEach<Obj extends object>(
+  obj: Obj,
+  iterator: <Key extends keyof Obj>(key: Key, val: Obj[Key]) => void
+): void {
+  Object.entries(obj).forEach(([key, val]) => iterator(key as keyof Obj, val))
 }
-*/
+//*/
