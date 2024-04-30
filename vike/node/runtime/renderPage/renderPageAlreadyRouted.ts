@@ -160,9 +160,9 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   }
 
   const pageContextInit = {
-    urlOriginal: '/fake-404-url', // A URL is needed for `applyViteHtmlTransform`
-    ...pageContextInit_
+    urlOriginal: '/fake-404-url' // A URL is needed for `applyViteHtmlTransform`
   }
+  objectAssign(pageContextInit, pageContextInit_)
   {
     const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitEnhanced)
@@ -196,8 +196,9 @@ function getPageContextInitEnhanced(
   assert(pageContextInit.urlOriginal)
 
   const globalContext = getGlobalContext()
-  const pageContextInitEnhanced = {
-    ...pageContextInit,
+  const pageContextInitEnhanced = {}
+  objectAssign(pageContextInitEnhanced, pageContextInit)
+  objectAssign(pageContextInitEnhanced, {
     _objectCreatedByVike: true,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
     _baseServer: globalContext.baseServer,
@@ -214,7 +215,7 @@ function getPageContextInitEnhanced(
     _urlRewrite: urlRewrite,
     _urlHandler: urlHandler,
     isClientSideNavigation
-  }
+  })
   addUrlComputedProps(pageContextInitEnhanced, !urlComputedPropsNonEnumerable)
 
   return pageContextInitEnhanced
