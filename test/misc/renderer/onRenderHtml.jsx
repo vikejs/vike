@@ -5,10 +5,11 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { PageLayout } from './PageLayout'
+import { getTitle } from './getTitle'
 
 async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
-  const title = pageContext.config.frontmatter?.title ?? ''
+  const title = getTitle(pageContext)
   const viewHtml = dangerouslySkipEscape(
     renderToString(
       <PageLayout>

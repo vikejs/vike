@@ -24,7 +24,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   test('Side export - HTML', async () => {
     const html = await fetchHtml('/markdown')
     // 'Some title' is defined by `export { frontmatter }` of /pages/markdown-page/+Page.md
-    expect(html).toContain('<title>Some title</title>')
+    expect(html).toContain('<title>Some title set in mdx</title>')
   })
 
   test('Side export - DOM', async () => {
@@ -95,6 +95,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   test('Redirect to URI without http protocol (e.g. `mailto:`)', async () => {
     const resp = await fetch(getServerUrl() + '/mail', { redirect: 'manual' })
     expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
+  })
+
+  test('Nested config document.title', async () => {
+    const html = await fetchHtml('/')
+    expect(html).toContain('<title>Some title set by nested config</title>')
   })
 }
 
