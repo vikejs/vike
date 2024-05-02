@@ -89,7 +89,6 @@ function getConfigValuesImported(
   importStatements: string[]
 ): string {
   const lines: string[] = []
-  const varCounterContainer = { varCounter: 0 }
 
   getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
     if (
@@ -102,13 +101,7 @@ function getConfigValuesImported(
       return
     const whitespace = '  '
     lines.push(
-      ...serializeConfigValueImported(
-        configValueSource,
-        configValueSource.configName,
-        whitespace,
-        varCounterContainer,
-        importStatements
-      )
+      ...serializeConfigValueImported(configValueSource, configValueSource.configName, whitespace, importStatements)
     )
   })
 

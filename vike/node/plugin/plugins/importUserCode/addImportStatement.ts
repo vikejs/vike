@@ -1,7 +1,5 @@
 export { addImportStatement }
 
-let varCounterGlobal = 0
-
 /**
  * Naming:
  *   `import { someExport as someImport } from './some-file'`
@@ -15,10 +13,10 @@ let varCounterGlobal = 0
  */
 function addImportStatement(
   importPath: string,
-  varCounter?: number,
+  importStatements: string[],
   exportName?: string
-): { importName: string; importStatement: string } {
-  if (varCounter === undefined) varCounter = varCounterGlobal++
+): { importName: string } {
+  const varCounter = importStatements.length + 1
   const importName = `import_${varCounter}` as const
   const importLiteral = (() => {
     if (!exportName || exportName === '*') {
@@ -30,5 +28,6 @@ function addImportStatement(
     return `{ ${exportName} as ${importName} }` as const
   })()
   const importStatement = `import ${importLiteral} from '${importPath}';`
-  return { importName, importStatement }
+  importStatements.push(importStatement)
+  return { importName }
 }

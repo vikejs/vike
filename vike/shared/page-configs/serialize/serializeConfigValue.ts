@@ -31,7 +31,6 @@ function serializeConfigValueImported(
   configValueSource: ConfigValueSource,
   configName: string,
   whitespace: string,
-  varCounterContainer: { varCounter: number },
   importStatements: string[]
 ): string[] {
   assert(!configValueSource.valueIsFilePath)
@@ -42,12 +41,7 @@ function serializeConfigValueImported(
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
   if (valueIsDefinedByValueFile) assert(fileExportName === undefined)
-  const { importName, importStatement } = addImportStatement(
-    filePathAbsoluteVite,
-    varCounterContainer.varCounter++,
-    fileExportName
-  )
-  importStatements.push(importStatement)
+  const { importName } = addImportStatement(filePathAbsoluteVite, importStatements, fileExportName)
 
   const lines: string[] = []
   lines.push(`  {`)
