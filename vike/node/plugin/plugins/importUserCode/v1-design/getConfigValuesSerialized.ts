@@ -63,26 +63,32 @@ function getConfigValueSerialized(value: unknown, configName: string, definedAtD
   try {
     configValueSerialized = stringify(value, { valueName, forbidReactElements: true })
   } catch (err) {
-    /*
-    let serializationErrMsg = ''
-    if (isJsonSerializerError(err)) {
-      serializationErrMsg = err.messageCore
-    } else {
-      // When a property getter throws an error
-      console.error('Serialization error:')
-      console.error(err)
-      serializationErrMsg = 'see serialization error printed above'
-    }
-    */
-    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(definedAtData)
-    assert(configValueFilePathToShowToUser)
-    assertUsage(
-      false,
-      `${pc.cyan(
-        configName
-      )} defined by ${configValueFilePathToShowToUser} must be defined over a so-called "pointer import", see https://vike.dev/config#pointer-imports`
-    )
+    logJsonSerializeError(err, configName, definedAtData)
+    assert(false)
   }
   configValueSerialized = JSON.stringify(configValueSerialized)
   return configValueSerialized
+}
+
+function logJsonSerializeError(err: unknown, configName: string, definedAtData: DefinedAtData) {
+  /*
+  // import { isJsonSerializerError } from '@brillout/json-serializer/stringify'
+  let serializationErrMsg = ''
+  if (isJsonSerializerError(err)) {
+    serializationErrMsg = err.messageCore
+  } else {
+    // When a property getter throws an error
+    console.error('Serialization error:')
+    console.error(err)
+    serializationErrMsg = 'see serialization error printed above'
+  }
+  //*/
+  const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(definedAtData)
+  assert(configValueFilePathToShowToUser)
+  assertUsage(
+    false,
+    `${pc.cyan(
+      configName
+    )} defined by ${configValueFilePathToShowToUser} must be defined over a so-called "pointer import", see https://vike.dev/config#pointer-imports`
+  )
 }
