@@ -41,7 +41,7 @@ function serializeConfigValueImported(
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
   if (valueIsDefinedByValueFile) assert(fileExportName === undefined)
-  const { importName } = addImportStatement(filePathAbsoluteVite, importStatements, fileExportName)
+  const { importName } = addImportStatement(importStatements, filePathAbsoluteVite, fileExportName || '*')
 
   const lines: string[] = []
   lines.push(`  {`)

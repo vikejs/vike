@@ -9,17 +9,16 @@ export { addImportStatement }
  *      `exportName: 'someExport',`
  *      `importName: 'someImport',`
  *    `}`
- * We discard the information that the import variable is called `someImport` because we don't need it.
  */
 function addImportStatement(
-  importPath: string,
   importStatements: string[],
-  exportName?: string
+  importPath: string,
+  exportName: string
 ): { importName: string } {
-  const varCounter = importStatements.length + 1
-  const importName = `import_${varCounter}` as const
+  const importCounter = importStatements.length + 1
+  const importName = `import${importCounter}` as const
   const importLiteral = (() => {
-    if (!exportName || exportName === '*') {
+    if (exportName === '*') {
       return `* as ${importName}` as const
     }
     if (exportName === 'default') {
