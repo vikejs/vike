@@ -64,7 +64,7 @@ function getLoadConfigValuesAll(
 
   lines.push('export const configValuesSerialized = {')
   lines.push(
-    getConfigValuesSerialized(pageConfig, (configEnv, configValueSource) =>
+    getConfigValuesSerialized(pageConfig, importStatements, (configEnv, configValueSource) =>
       isEnvMatch(configEnv, !configValueSource ? false : checkWhetherIsImport(configValueSource), {
         isImport: false,
         isForClientSide,

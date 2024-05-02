@@ -65,7 +65,7 @@ function getCodePageConfigsSerialized(
     // Serialized config values
     lines.push(`    configValuesSerialized: {`)
     lines.push(
-      getConfigValuesSerialized(pageConfig, (configEnv) =>
+      getConfigValuesSerialized(pageConfig, importStatements, (configEnv) =>
         isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })
       )
     )

@@ -13,9 +13,14 @@ import pc from '@brillout/picocolors'
 import { getConfigValueFilePathToShowToUser } from '../../../../../shared/page-configs/helpers.js'
 import { serializeConfigValue } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 import { getConfigValueSourcesNotOverriden } from '../../../shared/getConfigValueSourcesNotOverriden.js'
+import { parsePointerImportData } from './getVikeConfig/transformFileImports.js'
+import { addImportStatement } from '../addImportStatement.js'
+const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
+const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
 
 function getConfigValuesSerialized(
   pageConfig: PageConfigBuildTime,
+  importStatements: string[],
   isEnvMatch: (configEnv: ConfigEnvInternal, configValueSource?: ConfigValueSource) => boolean
 ): string {
   const lines: string[] = []
@@ -30,7 +35,7 @@ function getConfigValuesSerialized(
     assert(configValue)
     const { value, ...common } = configValue
     assert(value === configValuesComputed.value)
-    const valueSerialized = getConfigValueSerialized(value, configName, configValue.definedAtData)
+    const valueSerialized = getConfigValueSerialized(value, configName, configValue.definedAtData, importStatements)
     const configValueSerialized = { valueSerialized, ...common }
     serializeConfigValue(lines, configName, configValueSerialized)
   })
@@ -44,7 +49,7 @@ function getConfigValuesSerialized(
     }
 
     const { value, ...common } = configValue
-    const valueSerialized = getConfigValueSerialized(value, configName, configValue.definedAtData)
+    const valueSerialized = getConfigValueSerialized(value, configName, configValue.definedAtData, importStatements)
     const configValueSerialized = { valueSerialized, ...common }
     serializeConfigValue(lines, configName, configValueSerialized)
   })
@@ -54,19 +59,43 @@ function getConfigValuesSerialized(
 
 function assertConfigValueIsSerializable(value: unknown, configName: string, definedAtData: DefinedAtData) {
   // Contains asserts
-  getConfigValueSerialized(value, configName, definedAtData)
+  getConfigValueSerialized(value, configName, definedAtData, [])
 }
 
-function getConfigValueSerialized(value: unknown, configName: string, definedAtData: DefinedAtData): string {
+function getConfigValueSerialized(
+  value: unknown,
+  configName: string,
+  definedAtData: DefinedAtData,
+  importStatements: string[]
+): string {
   const valueName = `config${getPropAccessNotation(configName)}`
+
   let configValueSerialized: string
   try {
-    configValueSerialized = stringify(value, { valueName, forbidReactElements: true })
+    configValueSerialized = stringify(value, {
+      valueName,
+      forbidReactElements: true,
+      replacer(_, value) {
+        if (typeof value === 'string') {
+          const importData = parsePointerImportData(value)
+          if (importData) {
+            const { importName } = addImportStatement(importStatements, importData.importPath, importData.exportName)
+            const replacement = [REPLACE_ME_BEFORE, importName, REPLACE_ME_AFTER].join('')
+            return { replacement }
+          }
+        }
+      }
+    })
   } catch (err) {
     logJsonSerializeError(err, configName, definedAtData)
     assert(false)
   }
-  configValueSerialized = JSON.stringify(configValueSerialized)
+
+  configValueSerialized = configValueSerialized.replaceAll(`"${REPLACE_ME_BEFORE}`, '')
+  configValueSerialized = configValueSerialized.replaceAll(`${REPLACE_ME_AFTER}"`, '')
+  assert(!configValueSerialized.includes(REPLACE_ME_BEFORE))
+  assert(!configValueSerialized.includes(REPLACE_ME_AFTER))
+
   return configValueSerialized
 }
 

@@ -1874,8 +1874,8 @@ importers:
         specifier: ^0.2.3
         version: 0.2.3
       '@brillout/json-serializer':
-        specifier: ^0.5.8
-        version: 0.5.8
+        specifier: ^0.5.10
+        version: 0.5.10
       '@brillout/picocolors':
         specifier: ^1.0.10
         version: 1.0.10
@@ -2401,8 +2401,16 @@ packages:
   /@brillout/import@0.2.3:
     resolution: {integrity: sha512-1T8WlD75eeFSMrptGy8jiLHmfHgMmSjWvLOIUvHmSVZt+6k0eQqYUoK4KbmE4T9pVLIfxvZSOm2D68VEqKRHRw==}
 
+  /@brillout/json-serializer@0.5.10:
+    resolution: {integrity: sha512-3bh/MS5pudu3H9l3a0KAE1RBfy/L95JWAEo8b2mPBN3H98wzCHYzgjQb9xRl58y+Kc7FgkjApgCFJV+zR06P5Q==}
+    dev: false
+
   /@brillout/json-serializer@0.5.8:
     resolution: {integrity: sha512-vEuXw30ok+mJfJutOxXKBb4lBJ0HymA7lev9PcYK6W/hzjhCTPk9Bdk85HrcNcKZWRQiwoWtw0F2Di4TRJ7ssQ==}
+    dev: false
+
+  /@brillout/json-serializer@0.5.9:
+    resolution: {integrity: sha512-T3Pw6Y/jwpbhs9XinemDTom3PjZ+m/lhSiCA4Rhj2XhXr+ZHLb4GU5lF55/j5jMK+hVBrzB9AnCP1WHEAlQPgA==}
 
   /@brillout/part-regex@0.1.3:
     resolution: {integrity: sha512-ZyqtOYHvQs3Ca0xt9fb2OlGzCrKwXtMcAATDObkFmI4jKuObEORjWrqAslWTelquXlyEYLz7h1nt6jp50LDyJA==}
@@ -10382,7 +10390,7 @@ packages:
       react-dom: '>=18'
     dependencies:
       '@brillout/import': 0.2.3
-      '@brillout/json-serializer': 0.5.8
+      '@brillout/json-serializer': 0.5.10
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -10395,7 +10403,7 @@ packages:
       react-dom: '>=18'
     dependencies:
       '@brillout/import': 0.2.3
-      '@brillout/json-serializer': 0.5.8
+      '@brillout/json-serializer': 0.5.9
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
