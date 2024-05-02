@@ -1,4 +1,4 @@
-export { generateEagerImport }
+export { addImportStatement }
 
 let varCounterGlobal = 0
 
@@ -13,7 +13,7 @@ let varCounterGlobal = 0
  *    `}`
  * We discard the information that the import variable is called `someImport` because we don't need it.
  */
-function generateEagerImport(
+function addImportStatement(
   importPath: string,
   varCounter?: number,
   exportName?: string

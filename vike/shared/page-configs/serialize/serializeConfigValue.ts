@@ -11,7 +11,7 @@ assertIsNotProductionRuntime()
 import { assert } from '../../utils.js'
 import { ConfigValueSource } from '../PageConfig.js'
 import { ConfigValueSerialized } from './PageConfigSerialized.js'
-import { generateEagerImport } from '../../../node/plugin/plugins/importUserCode/generateEagerImport.js'
+import { addImportStatement } from '../../../node/plugin/plugins/importUserCode/addImportStatement.js'
 
 function serializeConfigValue(lines: string[], configName: string, configValueSerialized: ConfigValueSerialized) {
   let whitespace = '      '
@@ -42,7 +42,7 @@ function serializeConfigValueImported(
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
   if (valueIsDefinedByValueFile) assert(fileExportName === undefined)
-  const { importName, importStatement } = generateEagerImport(
+  const { importName, importStatement } = addImportStatement(
     filePathAbsoluteVite,
     varCounterContainer.varCounter++,
     fileExportName
