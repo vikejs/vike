@@ -1,4 +1,4 @@
-export { handlePageContextRequestUrl }
+export { handlePageContextRequestUrl, removePageContextUrlSuffix }
 
 import { pageContextJsonFileExtension, doNotCreateExtraDirectory } from '../../../shared/getPageContextRequestUrl.js'
 import { baseServer, parseUrl, assert, slice } from '../utils.js'
