@@ -216,7 +216,7 @@
     "vite": "npm:@brillout/vite@5.1.0-commit-3dc7abd"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "description": "Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.",
   "repository": "https://github.com/vikejs/vike",

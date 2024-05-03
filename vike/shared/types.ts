@@ -78,6 +78,26 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/renderPage
    */
   urlOriginal: string
+  /**
+   * The HTTP Headers of the incoming HTTP Request.
+   *
+   * As a string object normalized by Vike.
+   *
+   * See also:
+   * - https://vike.dev/headers
+   * - `pageContext.headersOriginal`
+   */
+  headers: Record<string, string> | null
+  /**
+   * The HTTP Headers of the incoming HTTP Request.
+   *
+   * The original object provided by the server.
+   *
+   * See also:
+   * - https://vike.dev/headers
+   * - `pageContext.headers`
+   */
+  headersOriginal?: unknown
   /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
    * https://vike.dev/error-page

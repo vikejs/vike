@@ -11,7 +11,6 @@ declare global {
     interface PageContext {
       Page: Page
       pageProps?: PageProps
-      userAgent?: string
       fetch?: typeof fetch
     }
   }

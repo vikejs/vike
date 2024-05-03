@@ -17,9 +17,8 @@ addEventListener('fetch', (event) => {
 async function handleFetchEvent(event) {
   const { url } = event.request
   if (!isAssetUrl(url)) {
-    const userAgent = event.request.headers.get('User-Agent')
-    console.log('ua', userAgent)
-    const response = await handleSsr(url, userAgent)
+    const { headers } = event.request
+    const response = await handleSsr(url, headers)
     if (response !== null) return response
   }
   const response = await handleStaticAssets(event)

@@ -14,13 +14,13 @@ function addSsrMiddleware(middlewares: ConnectServer) {
     const pageContextInit = {
       urlOriginal: url,
       get userAgent() {
-        assertWarning(false, "pageContext.userAgent is deprecated in favor of pageContext.headers['user-agent']", {
+        assertWarning(false, "pageContext.userAgent is deprecated: use pageContext.headers['user-agent'] instead", {
           showStackTrace: true,
           onlyOnce: true
         })
         return headers['user-agent']
       },
-      headers
+      headersOriginal: headers
     }
     let pageContext: Awaited<ReturnType<typeof renderPage>>
     try {

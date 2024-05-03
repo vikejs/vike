@@ -17,7 +17,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   )
 
   // Streaming is optional and we can use renderToString() instead
-  const stream = await renderToStream(page, { userAgent: pageContext.userAgent })
+  const stream = await renderToStream(page, { userAgent: pageContext.headers['user-agent'] })
 
   return escapeInject`<!DOCTYPE html>
     <html>

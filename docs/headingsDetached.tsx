@@ -450,5 +450,9 @@ const headingsDetached = [
     title: '`pageContext.json`',
     url: '/pageContext.json',
     sectionTitles: ['Avoid `pageContext.json` requests']
+  },
+  {
+    title: 'HTTP Headers',
+    url: '/headers'
   }
 ] satisfies HeadingDetachedDefinition[]

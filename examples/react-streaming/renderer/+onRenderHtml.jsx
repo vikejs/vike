@@ -7,12 +7,12 @@ import { escapeInject } from 'vike/server'
 import { PageLayout } from './PageLayout'
 
 async function onRenderHtml(pageContext) {
-  const { Page, pageProps, userAgent } = pageContext
+  const { Page, pageProps, headers } = pageContext
   const stream = await renderToStream(
     <PageLayout>
       <Page {...pageProps} />
     </PageLayout>,
-    { userAgent }
+    { userAgent: headers['user-agent'] }
   )
 
   return escapeInject`<!DOCTYPE html>

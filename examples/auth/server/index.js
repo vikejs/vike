@@ -62,10 +62,8 @@ async function assets(app) {
 
 function vike(app) {
   app.get('*', async (req, res, next) => {
-    const userAgent = req.headers['user-agent']
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      userAgent,
       user: req.user,
       userFullName: req.user?.fullName
     }

@@ -10,7 +10,7 @@ export type { PageContextInitEnhanced }
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
-import { assert, assertUsage, hasProp, objectAssign } from '../utils.js'
+import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { addUrlComputedProps, type PageContextUrlComputedPropsInternal } from '../../../shared/addUrlComputedProps.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -175,7 +175,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
 
 type PageContextInitEnhanced = ReturnType<typeof getPageContextInitEnhanced>
 function getPageContextInitEnhanced(
-  pageContextInit: { urlOriginal: string },
+  pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
   renderContext: RenderContext,
   {
     urlComputedPropsNonEnumerable = false,
@@ -216,7 +216,32 @@ function getPageContextInitEnhanced(
     _urlHandler: urlHandler,
     isClientSideNavigation
   })
+
+  // pageContext.urlParsed
   addUrlComputedProps(pageContextInitEnhanced, !urlComputedPropsNonEnumerable)
+
+  // pageContext.headers
+  {
+    let headers: null | Record<string, string>
+    if (pageContextInit.headersOriginal) {
+      headers = normalizeHeaders(pageContextInit.headersOriginal)
+      assertUsage(
+        !('headers' in pageContextInit),
+        "You're defining pageContextInit.headersOriginal as well as pageContextInit.headers but you should only define pageContextInit.headersOriginal instead, see https://vike.dev/headers"
+      )
+    } else if (pageContextInit.headers) {
+      headers = pageContextInit.headers as Record<string, string>
+      // TODO/next-major-release: assertUsage() instead of assertWarning()
+      assertWarning(
+        false,
+        'Setting pageContextInit.headers is deprecated: set pageContextInit.headersOriginal instead, see https://vike.dev/headers',
+        { onlyOnce: true }
+      )
+    } else {
+      headers = null
+    }
+    objectAssign(pageContextInitEnhanced, { headers })
+  }
 
   return pageContextInitEnhanced
 }
