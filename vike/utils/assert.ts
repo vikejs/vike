@@ -113,7 +113,7 @@ function assertWarning(
   }
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
-    const err = new Error(msg)
+    const err = createErrorWithCleanStackTrace(msg, numberOfStackTraceLinesToRemove)
     globalObject.showStackTraceList.add(err)
     globalObject.logger(err, 'warn')
   } else {
