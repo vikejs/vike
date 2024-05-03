@@ -5,7 +5,7 @@ export { assertPageContextUrlComputedProps }
 export type { PageContextUrlComputedPropsInternal }
 export type { PageContextUrlComputedPropsClient }
 export type { PageContextUrlComputedPropsServer }
-export type { PageContextUrlSources }
+export type { PageContextUrlSource }
 export type { Url }
 
 import { assert, parseUrl, assertWarning, isPlainObject, isPropertyGetter, isBrowser } from './utils.js'
@@ -62,7 +62,7 @@ type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
   }
 }
 
-function addUrlComputedProps<PageContext extends Record<string, unknown> & PageContextUrlSources>(
+function addUrlComputedProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
   pageContext: PageContext,
   enumerable = true
 ): asserts pageContext is PageContext & PageContextUrlComputedPropsInternal {
@@ -105,14 +105,14 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
   })
 }
 
-type PageContextUrlSources = {
+type PageContextUrlSource = {
   urlOriginal: string
   urlLogical?: string
   _urlRewrite: string | null
   _baseServer: string
   _urlHandler: null | ((url: string) => string)
 }
-function getUrlParsed(pageContext: PageContextUrlSources) {
+function getUrlParsed(pageContext: PageContextUrlSource) {
   // We need a url handler function because the onBeforeRoute() hook may set pageContext.urlLogical (typically for i18n)
   let urlHandler = pageContext._urlHandler
   if (!urlHandler) {
@@ -148,13 +148,13 @@ function getUrlParsed(pageContext: PageContextUrlSources) {
   assert(baseServer.startsWith('/'))
   return parseUrl(urlResolved, baseServer)
 }
-function urlPathnameGetter(this: PageContextUrlSources) {
+function urlPathnameGetter(this: PageContextUrlSource) {
   const { pathname } = getUrlParsed(this)
   const urlPathname = pathname
   assert(urlPathname.startsWith('/'))
   return urlPathname
 }
-function urlGetter(this: PageContextUrlSources) {
+function urlGetter(this: PageContextUrlSource) {
   // TODO/v1-release: remove
   assertWarning(
     false,
@@ -163,7 +163,7 @@ function urlGetter(this: PageContextUrlSources) {
   )
   return urlPathnameGetter.call(this)
 }
-function urlParsedGetter(this: PageContextUrlSources) {
+function urlParsedGetter(this: PageContextUrlSource) {
   const urlParsedOriginal = getUrlParsed(this)
   const { origin, pathname, pathnameOriginal, search, searchAll, searchOriginal, hash, hashOriginal } =
     urlParsedOriginal

@@ -16,7 +16,7 @@ import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import {
   addUrlComputedProps,
   PageContextUrlComputedPropsInternal,
-  PageContextUrlSources
+  PageContextUrlSource
 } from '../addUrlComputedProps.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
@@ -35,7 +35,7 @@ type PageContextForRoute = PageContextUrlComputedPropsInternal & {
   _pageConfigGlobal: PageConfigGlobalRuntime
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: Hook | null
-} & PageContextUrlSources
+} & PageContextUrlSource
 type PageContextFromRoute = {
   _pageId: string | null
   routeParams: Record<string, string>
