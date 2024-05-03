@@ -1,7 +1,7 @@
 export { ImplementedBy }
 
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtensionNames } from '../components'
+import { UiFrameworkVikeExtensionNames } from '../components/UiFrameworkVikeExtension'
 import React from 'react'
 
 function ImplementedBy({
