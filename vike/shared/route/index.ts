@@ -13,7 +13,11 @@ if (isBrowser()) {
 
 import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
-import type { PageContextUrlComputedPropsInternal, PageContextUrlSource } from '../getPageContextUrlComputed.js'
+import {
+  assertPageContextUrlComputedProps,
+  type PageContextUrlComputedPropsInternal,
+  type PageContextUrlSource
+} from '../getPageContextUrlComputed.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
@@ -49,6 +53,7 @@ type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 async function route(pageContextForRoute: PageContextForRoute): Promise<PageContextFromRoute> {
   debug('Pages routes:', pageContextForRoute._pageRoutes)
+  assertPageContextUrlComputedProps(pageContextForRoute)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
