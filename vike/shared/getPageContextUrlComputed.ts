@@ -59,17 +59,16 @@ type PageContextUrlComputed = {
   url: string
 }
 
-type PageContextUrlClient = {
+type PageContextUrl = {
   /** The URL of the HTTP request */
   urlOriginal: string
 } & PageContextUrlComputed
-/** For Vike internal use */
-type PageContextUrlInternal = PageContextUrlClient & {
+type PageContextUrlInternal = PageContextUrl & {
   _urlRewrite: string | null
 }
-type HashProps = 'hash' | 'hashString' | 'hashOriginal'
-type PageContextUrlServer = PageContextUrlClient & {
-  urlParsed: Omit<PageContextUrlClient['urlParsed'], HashProps> & {
+type PageContextUrlClient = PageContextUrl
+type PageContextUrlServer = PageContextUrl & {
+  urlParsed: Omit<PageContextUrl['urlParsed'], HashProps> & {
     /** Only available on the client-side */
     hash: ''
     /** Only available on the client-side */
@@ -78,6 +77,7 @@ type PageContextUrlServer = PageContextUrlClient & {
     hashOriginal: null
   }
 }
+type HashProps = 'hash' | 'hashString' | 'hashOriginal'
 
 function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageContextUrlComputed {
   assert(typeof pageContext.urlOriginal === 'string')
