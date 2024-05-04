@@ -1,12 +1,16 @@
-// URLs props need to be computed props, because the user can modify the URL e.g. with onBeforeRoute() for i18n
-
 export { getPageContextUrlComputed }
 export { assertPageContextUrl }
 export type { PageContextUrlComputedPropsInternal }
 export type { PageContextUrlComputedPropsClient }
 export type { PageContextUrlComputedPropsServer }
 export type { PageContextUrlSource }
+// Public type (https://github.com/vikejs/vike/issues/1184)
 export type { Url }
+
+// =====================
+// File determining the URL logic.
+// URLs need to be computed, because the user can modify the URL e.g. with onBeforeRoute() for i18n.
+// =====================
 
 import { objectDefineProperty } from '../utils/objectDefineProperty.js'
 import {
