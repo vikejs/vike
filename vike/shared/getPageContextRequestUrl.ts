@@ -11,6 +11,6 @@ const doNotCreateExtraDirectory = false
 
 // See node/renderPage/handlePageContextRequestUrl.ts
 function getPageContextRequestUrl(url: string): string {
-  let pageContextRequestUrl = urlToFile(url, pageContextJsonFileExtension, doNotCreateExtraDirectory, true)
+  let pageContextRequestUrl = urlToFile(url, pageContextJsonFileExtension, doNotCreateExtraDirectory)
   return pageContextRequestUrl
 }

@@ -27,11 +27,9 @@ function removePageContextUrlSuffix(url: string): string {
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = urlParsed
   assert(doNotCreateExtraDirectory === false)
-  const hasTrailingSlash = pathnameOriginal.endsWith('/')
-  const urlSuffix = hasTrailingSlash ? `/index${pageContextJsonFileExtension}/` : `/index${pageContextJsonFileExtension}`
+  const urlSuffix = `/index${pageContextJsonFileExtension}`
   assert(pathnameOriginal.endsWith(urlSuffix), { url })
   let pathnameModified = slice(pathnameOriginal, 0, -1 * urlSuffix.length)
-  if (hasTrailingSlash) pathnameModified += '/'
   if (pathnameModified === '') pathnameModified = '/'
   assert(url === `${origin || ''}${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })
   return `${origin || ''}${pathnameModified}${searchOriginal || ''}${hashOriginal || ''}`
