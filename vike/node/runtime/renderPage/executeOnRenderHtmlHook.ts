@@ -117,13 +117,13 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
       [
         `No ${hookName}() hook found, see https://vike.dev/${hookName}`
         /*
-      'See https://vike.dev/render-modes for more information.',
-      [
-        // 'Loaded config files (none of them define the onRenderHtml() hook):',
-        'Loaded server-side page files (none of them `export { render }`):',
-        ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
-      ].join('\n')
-      */
+        'See https://vike.dev/render-modes for more information.',
+        [
+          // 'Loaded config files (none of them define the onRenderHtml() hook):',
+          'Loaded server-side page files (none of them `export { render }`):',
+          ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
+        ].join('\n')
+        */
       ].join(' ')
     )
   }
