@@ -52,7 +52,7 @@ import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import {
   getPageContextUrlComputed,
-  PageContextUrlComputedPropsInternal,
+  PageContextUrlInternal,
   PageContextUrlSource
 } from '../../shared/getPageContextUrlComputed.js'
 import { isAbortError } from '../../shared/route/abort.js'
@@ -114,7 +114,7 @@ type PageContext = PageContextInitEnhanced & {
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-} & PageContextUrlComputedPropsInternal
+} & PageContextUrlInternal
 
 type PrerenderOptions = {
   /** Initial `pageContext` values */
@@ -1192,7 +1192,7 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
   )
 }
 
-function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlComputedPropsInternal[]) {
+function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlInternal[]) {
   change(false)
   return { restoreEnumerable, addPageContextComputedUrl }
   function restoreEnumerable() {

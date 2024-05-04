@@ -1,8 +1,8 @@
 export { getPageContextUrlComputed }
 export { assertPageContextUrl }
-export type { PageContextUrlComputedPropsInternal }
-export type { PageContextUrlComputedPropsClient }
-export type { PageContextUrlComputedPropsServer }
+export type { PageContextUrlInternal }
+export type { PageContextUrlClient }
+export type { PageContextUrlServer }
 export type { PageContextUrlSource }
 // Public type (https://github.com/vikejs/vike/issues/1184)
 export type { Url }
@@ -59,17 +59,17 @@ type PageContextUrlComputed = {
   url: string
 }
 
-type PageContextUrlComputedPropsClient = {
+type PageContextUrlClient = {
   /** The URL of the HTTP request */
   urlOriginal: string
 } & PageContextUrlComputed
 /** For Vike internal use */
-type PageContextUrlComputedPropsInternal = PageContextUrlComputedPropsClient & {
+type PageContextUrlInternal = PageContextUrlClient & {
   _urlRewrite: string | null
 }
 type HashProps = 'hash' | 'hashString' | 'hashOriginal'
-type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
-  urlParsed: Omit<PageContextUrlComputedPropsClient['urlParsed'], HashProps> & {
+type PageContextUrlServer = PageContextUrlClient & {
+  urlParsed: Omit<PageContextUrlClient['urlParsed'], HashProps> & {
     /** Only available on the client-side */
     hash: ''
     /** Only available on the client-side */
@@ -218,7 +218,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
   return urlParsed
 }
 
-function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlComputedPropsClient) {
+function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlClient) {
   assert(typeof pageContext.urlOriginal === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))

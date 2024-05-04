@@ -3,7 +3,7 @@ export type { PageContextForUserConsumptionServerSide }
 
 import { assert, isPlainObject, isObject } from '../utils.js'
 import { sortPageContext } from '../../../shared/sortPageContext.js'
-import { assertPageContextUrl, PageContextUrlComputedPropsInternal } from '../../../shared/getPageContextUrlComputed.js'
+import { assertPageContextUrl, PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import type { PageContextExports } from '../../../shared/getPageFiles/getExports.js'
@@ -15,7 +15,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
     /** @deprecated */
     url: string
     urlPathname: string
-    urlParsed: PageContextUrlComputedPropsInternal['urlParsed']
+    urlParsed: PageContextUrlInternal['urlParsed']
     routeParams: Record<string, string>
     Page: unknown
     _pageId: string

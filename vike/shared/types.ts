@@ -14,11 +14,7 @@ export { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
 export { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
-import type {
-  PageContextUrlComputedPropsInternal,
-  PageContextUrlComputedPropsClient,
-  PageContextUrlComputedPropsServer
-} from './getPageContextUrlComputed.js'
+import type { PageContextUrlInternal, PageContextUrlClient, PageContextUrlServer } from './getPageContextUrlComputed.js'
 import type { ConfigEntries, ExportsAll, From, Source, Sources } from './getPageFiles/getExports.js'
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
@@ -147,7 +143,7 @@ type PageContextBuiltInCommon<Data> = {
   pageExports: Record<string, unknown>
 }
 
-type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> & PageContextUrlComputedPropsServer
+type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> & PageContextUrlServer
 
 type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
   Pick<
@@ -172,7 +168,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
      */
     isBackwardNavigation: boolean | null
-  } & PageContextUrlComputedPropsClient
+  } & PageContextUrlClient
 
 type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
   Pick<PageContextBuiltInCommon<Data>, 'Page' | 'pageExports' | 'exports' | 'abortReason' | 'data'> & {
@@ -191,10 +187,7 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
   }
 
 /** For Vike internal use */
-type PageContextBuiltInServerInternal = Omit<
-  PageContextBuiltInCommon<unknown> & PageContextUrlComputedPropsInternal,
-  'data'
->
+type PageContextBuiltInServerInternal = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
 
 /** @deprecated
  * Replace:

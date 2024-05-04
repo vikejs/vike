@@ -15,7 +15,7 @@ import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import {
   assertPageContextUrl,
-  type PageContextUrlComputedPropsInternal,
+  type PageContextUrlInternal,
   type PageContextUrlSource
 } from '../getPageContextUrlComputed.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
@@ -28,7 +28,7 @@ import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs
 import pc from '@brillout/picocolors'
 import type { Hook } from '../hooks/getHook.js'
 
-type PageContextForRoute = PageContextUrlComputedPropsInternal & {
+type PageContextForRoute = PageContextUrlInternal & {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
   _allPageIds: string[]
