@@ -75,7 +75,7 @@ type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
 }
 
 function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageContextUrlComputed {
-  assert(pageContext.urlOriginal)
+  assert(typeof pageContext.urlOriginal === 'string')
   assertPageContextUrlComputed(pageContext)
 
   const pageContextUrl = {}
