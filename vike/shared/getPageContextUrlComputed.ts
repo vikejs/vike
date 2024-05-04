@@ -166,7 +166,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
   const warnHashNotAvailable = (prop: HashProps) => {
     assertWarning(
       hashIsAvailable,
-      `pageContext.urlParsed.${prop} isn't available on the server-side (HTTP requests don't include the URL hash by design)`,
+      `pageContext.urlParsed.${prop} isn't available on the server-side (HTTP requests don't include the URL hash)`,
       { onlyOnce: true, showStackTrace: true }
     )
   }
