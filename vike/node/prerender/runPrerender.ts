@@ -50,7 +50,11 @@ import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/he
 import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
-import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
+import {
+  addUrlComputedProps,
+  PageContextUrlComputedPropsInternal,
+  PageContextUrlSource
+} from '../../shared/addUrlComputedProps.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
@@ -655,7 +659,9 @@ async function callOnPrerenderStartHook(
   const docLink = 'https://vike.dev/i18n#pre-rendering'
 
   // Set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in onPrerenderStart() hook, e.g. /examples/i18n/
-  const restoreEnumerable = makePageContextComputedUrlNonEnumerable(prerenderContext.pageContexts)
+  const { restoreEnumerable, addPageContextComputedUrl } = makePageContextComputedUrlNonEnumerable(
+    prerenderContext.pageContexts
+  )
 
   let result: unknown = await executeHook(
     () =>
@@ -736,10 +742,9 @@ async function callOnPrerenderStartHook(
         hookName
       }
     }
-
-    // Restore as URL computed props are lost when user makes a pageContext copy
-    addUrlComputedProps(pageContext)
   })
+
+  addPageContextComputedUrl(prerenderContext.pageContexts)
 }
 
 async function routeAndPrerender(
@@ -1189,9 +1194,15 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
 
 function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlComputedPropsInternal[]) {
   change(false)
-  return restoreEnumerable
+  return { restoreEnumerable, addPageContextComputedUrl }
   function restoreEnumerable() {
     change(true)
+  }
+  function addPageContextComputedUrl(pageContexts: PageContextUrlSource[]) {
+    // Add URL computed props to the user-generated pageContext copies
+    pageContexts.forEach((pageContext) => {
+      addUrlComputedProps(pageContext)
+    })
   }
   function change(enumerable: boolean) {
     pageContexts.forEach((pageContext) => {
