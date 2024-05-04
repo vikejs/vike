@@ -25,7 +25,8 @@ import {
   pLimit,
   PLimit,
   assertPathFilesystemAbsolute,
-  isArray
+  isArray,
+  changeEnumerable
 } from './utils.js'
 import {
   prerenderPage,
@@ -49,11 +50,7 @@ import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/he
 import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
-import {
-  addUrlComputedProps,
-  getPageContextUrl_makeNonEnumerable,
-  PageContextUrlComputedPropsInternal
-} from '../../shared/addUrlComputedProps.js'
+import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
@@ -658,7 +655,7 @@ async function callOnPrerenderStartHook(
   const docLink = 'https://vike.dev/i18n#pre-rendering'
 
   // Set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in onPrerenderStart() hook, e.g. /examples/i18n/
-  const restoreEnumerable = getPageContextUrl_makeNonEnumerable(prerenderContext.pageContexts)
+  const restoreEnumerable = makePageContextComputedUrlNonEnumerable(prerenderContext.pageContexts)
 
   let result: unknown = await executeHook(
     () =>
@@ -1188,4 +1185,18 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
       abortCaller
     )} isn't supported for pre-rendered pages`
   )
+}
+
+function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlComputedPropsInternal[]) {
+  change(false)
+  return restoreEnumerable
+  function restoreEnumerable() {
+    change(true)
+  }
+  function change(enumerable: boolean) {
+    pageContexts.forEach((pageContext) => {
+      changeEnumerable(pageContext, 'urlPathname', enumerable)
+      changeEnumerable(pageContext, 'urlParsed', enumerable)
+    })
+  }
 }

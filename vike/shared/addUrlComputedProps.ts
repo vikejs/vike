@@ -2,14 +2,21 @@
 
 export { addUrlComputedProps }
 export { assertPageContextUrlComputedProps }
-export { getPageContextUrl_makeNonEnumerable }
 export type { PageContextUrlComputedPropsInternal }
 export type { PageContextUrlComputedPropsClient }
 export type { PageContextUrlComputedPropsServer }
 export type { PageContextUrlSource }
 export type { Url }
 
-import { assert, parseUrl, assertWarning, isPlainObject, isPropertyGetter, isBrowser } from './utils.js'
+import {
+  assert,
+  parseUrl,
+  assertWarning,
+  isPlainObject,
+  isPropertyGetter,
+  isBrowser,
+  changeEnumerable
+} from './utils.js'
 
 // JSDocs copied from https://vike.dev/pageContext
 type Url = {
@@ -60,20 +67,6 @@ type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
     hashString: null
     /** @deprecated */
     hashOriginal: null
-  }
-}
-
-function getPageContextUrl_makeNonEnumerable(pageContexts: PageContextUrlComputedPropsInternal[]) {
-  change(false)
-  return restoreEnumerable
-  function restoreEnumerable() {
-    change(true)
-  }
-  function change(enumerable: boolean) {
-    pageContexts.forEach((pageContext) => {
-      changeEnumerable(pageContext, 'urlPathname', enumerable)
-      changeEnumerable(pageContext, 'urlParsed', enumerable)
-    })
   }
 }
 
@@ -232,11 +225,6 @@ function urlParsedGetter(this: PageContextUrlSource) {
   }
 
   return urlParsed
-}
-
-function changeEnumerable(obj: Object, prop: string, enumerable: boolean) {
-  const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
-  Object.defineProperty(obj, prop, { ...descriptor, enumerable })
 }
 
 function assertPageContextUrlComputedProps(pageContext: { urlOriginal: string } & PageContextUrlComputedPropsClient) {
