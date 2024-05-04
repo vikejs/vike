@@ -1,7 +1,7 @@
 // URLs props need to be computed props, because the user can modify the URL e.g. with onBeforeRoute() for i18n
 
 export { getPageContextUrlComputed }
-export { assertPageContextUrlComputedProps }
+export { assertPageContextUrl }
 export type { PageContextUrlComputedPropsInternal }
 export type { PageContextUrlComputedPropsClient }
 export type { PageContextUrlComputedPropsServer }
@@ -214,7 +214,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
   return urlParsed
 }
 
-function assertPageContextUrlComputedProps(pageContext: { urlOriginal: string } & PageContextUrlComputedPropsClient) {
+function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlComputedPropsClient) {
   assert(typeof pageContext.urlOriginal === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))
