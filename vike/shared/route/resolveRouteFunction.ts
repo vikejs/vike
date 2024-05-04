@@ -3,7 +3,7 @@ export { assertRouteParams }
 export { assertSyncRouting }
 export { warnDeprecatedAllowKey }
 
-import { assertPageContextUrlComputedProps, PageContextUrlComputedPropsInternal } from '../addUrlComputedProps.js'
+import { assertPageContextUrlComputedProps, PageContextUrlComputedPropsInternal } from '../getPageContextUrlComputed.js'
 import { assert, assertUsage, assertWarning, hasProp, isPlainObject, isPromise } from './utils.js'
 import pc from '@brillout/picocolors'
 

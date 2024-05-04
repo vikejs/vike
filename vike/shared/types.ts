@@ -18,7 +18,7 @@ import type {
   PageContextUrlComputedPropsInternal,
   PageContextUrlComputedPropsClient,
   PageContextUrlComputedPropsServer
-} from './addUrlComputedProps.js'
+} from './getPageContextUrlComputed.js'
 import type { ConfigEntries, ExportsAll, From, Source, Sources } from './getPageFiles/getExports.js'
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'

@@ -12,7 +12,10 @@ import { getHtmlString } from '../html/renderHtml.js'
 import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
 import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
-import { addUrlComputedProps, type PageContextUrlComputedPropsInternal } from '../../../shared/addUrlComputedProps.js'
+import {
+  getPageContextUrlComputed,
+  type PageContextUrlComputedPropsInternal
+} from '../../../shared/getPageContextUrlComputed.js'
 import { getGlobalContext } from '../globalContext.js'
 import {
   createHttpResponseObject,
@@ -216,7 +219,7 @@ function getPageContextInitEnhanced(
   })
 
   // pageContext.urlParsed
-  const pageContextUrlComputed = addUrlComputedProps(pageContextInitEnhanced)
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContextInitEnhanced)
   objectAssign(pageContextInitEnhanced, pageContextUrlComputed)
 
   // pageContext.headers

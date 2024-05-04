@@ -6,7 +6,7 @@ import { sortPageContext } from '../../../shared/sortPageContext.js'
 import {
   assertPageContextUrlComputedProps,
   PageContextUrlComputedPropsInternal
-} from '../../../shared/addUrlComputedProps.js'
+} from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import type { PageContextExports } from '../../../shared/getPageFiles/getExports.js'

@@ -51,10 +51,10 @@ import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import {
-  addUrlComputedProps,
+  getPageContextUrlComputed,
   PageContextUrlComputedPropsInternal,
   PageContextUrlSource
-} from '../../shared/addUrlComputedProps.js'
+} from '../../shared/getPageContextUrlComputed.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
@@ -1201,7 +1201,7 @@ function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlCom
   function addPageContextComputedUrl(pageContexts: PageContextUrlSource[]) {
     // Add URL computed props to the user-generated pageContext copies
     pageContexts.forEach((pageContext) => {
-      const pageContextUrlComputed = addUrlComputedProps(pageContext)
+      const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
       objectAssign(pageContext, pageContextUrlComputed)
     })
   }

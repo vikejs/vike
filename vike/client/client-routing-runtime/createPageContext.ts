@@ -1,6 +1,6 @@
 export { createPageContext }
 
-import { addUrlComputedProps } from '../../shared/addUrlComputedProps.js'
+import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
 import { getPageFilesAll } from '../../shared/getPageFiles.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
@@ -35,7 +35,7 @@ async function createPageContext(urlOriginal: string) {
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook
   }
-  const pageContextUrlComputed = addUrlComputedProps(pageContext)
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
   objectAssign(pageContext, pageContextUrlComputed)
   return pageContext
 }

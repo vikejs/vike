@@ -1,6 +1,6 @@
 // URLs props need to be computed props, because the user can modify the URL e.g. with onBeforeRoute() for i18n
 
-export { addUrlComputedProps }
+export { getPageContextUrlComputed }
 export { assertPageContextUrlComputedProps }
 export type { PageContextUrlComputedPropsInternal }
 export type { PageContextUrlComputedPropsClient }
@@ -73,7 +73,7 @@ type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
   }
 }
 
-function addUrlComputedProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
+function getPageContextUrlComputed<PageContext extends Record<string, unknown> & PageContextUrlSource>(
   pageContext: PageContext
 ): PageContextUrlComputed {
   assert(pageContext.urlOriginal)
@@ -83,8 +83,8 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
     /* If the following assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
        ```js
        // Add property getters such as pageContext.urlPathname to pageContext
-       addUrlComputedProps(pageContext)
-       // ❌ Breaks the property getters of pageContext set by addUrlComputedProps() such as pageContext.urlPathname
+       getPageContextUrlComputed(pageContext)
+       // ❌ Breaks the property getters of pageContext set by getPageContextUrlComputed() such as pageContext.urlPathname
        Object.assign(pageContext2, pageContext)
        // ❌ Also breaks the property getters
        const pageContext3 = { ...pageContext }

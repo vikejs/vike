@@ -13,7 +13,7 @@ if (isBrowser()) {
 
 import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
-import type { PageContextUrlComputedPropsInternal, PageContextUrlSource } from '../addUrlComputedProps.js'
+import type { PageContextUrlComputedPropsInternal, PageContextUrlSource } from '../getPageContextUrlComputed.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
