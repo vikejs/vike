@@ -8,6 +8,7 @@ export type { PageContextUrlComputedPropsServer }
 export type { PageContextUrlSource }
 export type { Url }
 
+import { objectDefineProperty } from '../utils/objectDefineProperty.js'
 import {
   assert,
   parseUrl,
@@ -73,30 +74,9 @@ type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
   }
 }
 
-function getPageContextUrlComputed<PageContext extends Record<string, unknown> & PageContextUrlSource>(
-  pageContext: PageContext
-): PageContextUrlComputed {
+function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageContextUrlComputed {
   assert(pageContext.urlOriginal)
-
-  if ('urlPathname' in pageContext) {
-    assert(typeof pageContext.urlPathname === 'string')
-    /* If the following assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
-       ```js
-       // Add property getters such as pageContext.urlPathname to pageContext
-       getPageContextUrlComputed(pageContext)
-       // ❌ Breaks the property getters of pageContext set by getPageContextUrlComputed() such as pageContext.urlPathname
-       Object.assign(pageContext2, pageContext)
-       // ❌ Also breaks the property getters
-       const pageContext3 = { ...pageContext }
-       // ✅ Preserves property getters of pageContext (see objectAssign() implementation)
-       objectAssign(pageContext2, pageContext)
-       ```
-    */
-    assert(isPropertyGetter(pageContext, 'urlPathname'))
-  }
-  if ('urlParsed' in pageContext) assert(isPropertyGetter(pageContext, 'urlParsed'))
-  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
-  if ('url' in pageContext) assert(isPropertyGetter(pageContext, 'url'))
+  assertPageContextUrlComputed(pageContext)
 
   const pageContextUrl = {}
   objectDefineProperty(pageContextUrl, 'urlPathname', {
@@ -114,16 +94,8 @@ function getPageContextUrlComputed<PageContext extends Record<string, unknown> &
     enumerable: true,
     configurable: true
   })
-  return pageContextUrl
-}
 
-/** Like Object.defineProperty() but with type inference */
-function objectDefineProperty<Obj extends object, Prop extends PropertyKey, PropertyType>(
-  obj: Obj,
-  prop: Prop,
-  { get, ...args }: { get: () => PropertyType } & Omit<PropertyDescriptor, 'set' | 'get'>
-): asserts obj is Obj & Record<Prop, PropertyType> {
-  Object.defineProperty(obj, prop, { ...args, get })
+  return pageContextUrl
 }
 
 type PageContextUrlSource = {
@@ -246,4 +218,26 @@ function assertPageContextUrlComputedProps(pageContext: { urlOriginal: string } 
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))
   assert(pageContext.urlPathname === pageContext.urlParsed.pathname)
+}
+
+function assertPageContextUrlComputed(pageContext: object) {
+  if ('urlPathname' in pageContext) {
+    assert(typeof pageContext.urlPathname === 'string')
+    /* If the following assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
+       ```js
+       // Add property getters such as pageContext.urlPathname to pageContext
+       getPageContextUrlComputed(pageContext)
+       // ❌ Breaks the property getters of pageContext set by getPageContextUrlComputed() such as pageContext.urlPathname
+       Object.assign(pageContext2, pageContext)
+       // ❌ Also breaks the property getters
+       const pageContext3 = { ...pageContext }
+       // ✅ Preserves property getters of pageContext (see objectAssign() implementation)
+       objectAssign(pageContext2, pageContext)
+       ```
+    */
+    assert(isPropertyGetter(pageContext, 'urlPathname'))
+  }
+  if ('urlParsed' in pageContext) assert(isPropertyGetter(pageContext, 'urlParsed'))
+  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
+  if ('url' in pageContext) assert(isPropertyGetter(pageContext, 'url'))
 }
