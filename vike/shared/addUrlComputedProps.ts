@@ -210,19 +210,19 @@ function urlParsedGetter(this: PageContextUrlSource) {
     }
   }
 
-  makeNonEnumerable(urlParsed, 'hashString')
-  makeNonEnumerable(urlParsed, 'searchString')
+  changeEnumerable(urlParsed, 'hashString', false)
+  changeEnumerable(urlParsed, 'searchString', false)
   if (!hashIsAvailable) {
-    makeNonEnumerable(urlParsed, 'hash')
-    makeNonEnumerable(urlParsed, 'hashOriginal')
+    changeEnumerable(urlParsed, 'hash', false)
+    changeEnumerable(urlParsed, 'hashOriginal', false)
   }
 
   return urlParsed
 }
 
-function makeNonEnumerable(obj: Object, prop: string) {
+function changeEnumerable(obj: Object, prop: string, enumerable: boolean) {
   const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
-  Object.defineProperty(obj, prop, { ...descriptor, enumerable: false })
+  Object.defineProperty(obj, prop, { ...descriptor, enumerable })
 }
 
 function assertPageContextUrlComputedProps(pageContext: { urlOriginal: string } & PageContextUrlComputedPropsClient) {
