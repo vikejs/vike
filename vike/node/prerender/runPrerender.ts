@@ -49,7 +49,11 @@ import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/he
 import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
-import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
+import {
+  addUrlComputedProps,
+  getPageContextUrl_makeNonEnumerable,
+  PageContextUrlComputedPropsInternal
+} from '../../shared/addUrlComputedProps.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
@@ -537,10 +541,7 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
   }
   objectAssign(pageContextInit, prerenderContext.pageContextInit)
   {
-    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, {
-      // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/
-      urlComputedPropsNonEnumerable: true
-    })
+    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
   return pageContext
@@ -656,6 +657,9 @@ async function callOnPrerenderStartHook(
 
   const docLink = 'https://vike.dev/i18n#pre-rendering'
 
+  // Set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in onPrerenderStart() hook, e.g. /examples/i18n/
+  const restoreEnumerable = getPageContextUrl_makeNonEnumerable(prerenderContext.pageContexts)
+
   let result: unknown = await executeHook(
     () =>
       hookFn({
@@ -672,6 +676,9 @@ async function callOnPrerenderStartHook(
     onPrerenderStartHook,
     null
   )
+
+  restoreEnumerable()
+
   if (result === null || result === undefined) {
     return
   }

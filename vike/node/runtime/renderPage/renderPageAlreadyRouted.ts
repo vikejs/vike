@@ -178,14 +178,12 @@ function getPageContextInitEnhanced(
   pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
   renderContext: RenderContext,
   {
-    urlComputedPropsNonEnumerable = false,
     ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
       urlRewrite: null,
       urlHandler: null,
       isClientSideNavigation: false
     }
   }: {
-    urlComputedPropsNonEnumerable?: boolean
     ssr?: {
       urlRewrite: null | string
       urlHandler: null | ((url: string) => string)
@@ -218,7 +216,7 @@ function getPageContextInitEnhanced(
   })
 
   // pageContext.urlParsed
-  addUrlComputedProps(pageContextInitEnhanced, !urlComputedPropsNonEnumerable)
+  addUrlComputedProps(pageContextInitEnhanced)
 
   // pageContext.headers
   {

@@ -2,6 +2,7 @@
 
 export { addUrlComputedProps }
 export { assertPageContextUrlComputedProps }
+export { getPageContextUrl_makeNonEnumerable }
 export type { PageContextUrlComputedPropsInternal }
 export type { PageContextUrlComputedPropsClient }
 export type { PageContextUrlComputedPropsServer }
@@ -62,9 +63,22 @@ type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
   }
 }
 
+function getPageContextUrl_makeNonEnumerable(pageContexts: PageContextUrlComputedPropsInternal[]) {
+  change(false)
+  return restoreEnumerable
+  function restoreEnumerable() {
+    change(true)
+  }
+  function change(enumerable: boolean) {
+    pageContexts.forEach((pageContext) => {
+      changeEnumerable(pageContext, 'urlPathname', enumerable)
+      changeEnumerable(pageContext, 'urlParsed', enumerable)
+    })
+  }
+}
+
 function addUrlComputedProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
-  pageContext: PageContext,
-  enumerable = true
+  pageContext: PageContext
 ): asserts pageContext is PageContext & PageContextUrlComputedPropsInternal {
   assert(pageContext.urlOriginal)
 
@@ -90,7 +104,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
 
   Object.defineProperty(pageContext, 'urlPathname', {
     get: urlPathnameGetter,
-    enumerable,
+    enumerable: true,
     configurable: true
   })
   Object.defineProperty(pageContext, 'url', {
@@ -100,7 +114,7 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
   })
   Object.defineProperty(pageContext, 'urlParsed', {
     get: urlParsedGetter,
-    enumerable,
+    enumerable: true,
     configurable: true
   })
 }
