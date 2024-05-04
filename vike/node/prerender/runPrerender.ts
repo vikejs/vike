@@ -1201,7 +1201,8 @@ function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlCom
   function addPageContextComputedUrl(pageContexts: PageContextUrlSource[]) {
     // Add URL computed props to the user-generated pageContext copies
     pageContexts.forEach((pageContext) => {
-      addUrlComputedProps(pageContext)
+      const pageContextUrlComputed = addUrlComputedProps(pageContext)
+      objectAssign(pageContext, pageContextUrlComputed)
     })
   }
   function change(enumerable: boolean) {

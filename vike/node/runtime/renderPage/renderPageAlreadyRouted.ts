@@ -216,7 +216,8 @@ function getPageContextInitEnhanced(
   })
 
   // pageContext.urlParsed
-  addUrlComputedProps(pageContextInitEnhanced)
+  const pageContextUrlComputed = addUrlComputedProps(pageContextInitEnhanced)
+  objectAssign(pageContextInitEnhanced, pageContextUrlComputed)
 
   // pageContext.headers
   {

@@ -44,16 +44,19 @@ type Url = {
   searchString: null | string
 }
 
-type PageContextUrlComputedPropsClient = {
-  /** @deprecated */
-  url: string
-  /** The URL of the HTTP request */
-  urlOriginal: string
-  /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
-  urlPathname: string
+type PageContextUrlComputed = {
   /** Parsed information about the current URL */
   urlParsed: Url
+  /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
+  urlPathname: string
+  /** @deprecated */
+  url: string
 }
+
+type PageContextUrlComputedPropsClient = {
+  /** The URL of the HTTP request */
+  urlOriginal: string
+} & PageContextUrlComputed
 /** For Vike internal use */
 type PageContextUrlComputedPropsInternal = PageContextUrlComputedPropsClient & {
   _urlRewrite: string | null
@@ -72,7 +75,7 @@ type PageContextUrlComputedPropsServer = PageContextUrlComputedPropsClient & {
 
 function addUrlComputedProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
   pageContext: PageContext
-): asserts pageContext is PageContext & PageContextUrlComputedPropsInternal {
+): PageContextUrlComputed {
   assert(pageContext.urlOriginal)
 
   if ('urlPathname' in pageContext) {
@@ -95,21 +98,32 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
   // TODO/v1-release: move pageContext.urlParsed to pageContext.url
   if ('url' in pageContext) assert(isPropertyGetter(pageContext, 'url'))
 
-  Object.defineProperty(pageContext, 'urlPathname', {
+  const pageContextUrl = {}
+  objectDefineProperty(pageContextUrl, 'urlPathname', {
     get: urlPathnameGetter,
     enumerable: true,
     configurable: true
   })
-  Object.defineProperty(pageContext, 'url', {
+  objectDefineProperty(pageContextUrl, 'url', {
     get: urlGetter,
     enumerable: false,
     configurable: true
   })
-  Object.defineProperty(pageContext, 'urlParsed', {
+  objectDefineProperty(pageContextUrl, 'urlParsed', {
     get: urlParsedGetter,
     enumerable: true,
     configurable: true
   })
+  return pageContextUrl
+}
+
+/** Like Object.defineProperty() but with type inference */
+function objectDefineProperty<Obj extends object, Prop extends PropertyKey, PropertyType>(
+  obj: Obj,
+  prop: Prop,
+  { get, ...args }: { get: () => PropertyType } & Omit<PropertyDescriptor, 'set' | 'get'>
+): asserts obj is Obj & Record<Prop, PropertyType> {
+  Object.defineProperty(obj, prop, { ...args, get })
 }
 
 type PageContextUrlSource = {
