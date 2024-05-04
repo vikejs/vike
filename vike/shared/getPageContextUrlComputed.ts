@@ -232,13 +232,13 @@ function assertPageContextUrlComputed(pageContext: object) {
   ```js
   const PageContextUrlComputed = getPageContextUrlComputed(pageContext)
 
-  // ❌ Breaks the property getters of pageContext set by getPageContextUrlComputed() such as pageContext.urlPathname
+  // ❌ Breaks the property descriptors/getters of pageContext defined by getPageContextUrlComputed() such as pageContext.urlPathname
   Object.assign(pageContext, pageContextUrlComputed)
 
-  // ❌ Also breaks property getters
+  // ❌ Also breaks property descriptors/getters
   const pageContext = { ...pageContextUrlComputed }
 
-  // ✅ Preserves property getters of pageContext (see objectAssign() implementation)
+  // ✅ Preserves property descriptors/getters (see objectAssign() implementation)
   objectAssign(pageContext, pageContextUrlComputed)
   ```
   */
