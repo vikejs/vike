@@ -9,7 +9,7 @@ import { slice } from './slice.js'
 // - While prerendering there is no base URL
 const baseServer = '/'
 
-function urlToFile(url: string, fileExtension: '.pageContext.json' | '.html', doNotCreateExtraDirectory: boolean) {
+function urlToFile(url: string, fileExtension: '.pageContext.json' | '.html', doNotCreateExtraDirectory: boolean, forwardTrailingSlash: boolean = false) {
   const { pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseServer)
   if (url.startsWith('/')) {
     assert(url === `${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })
@@ -31,6 +31,10 @@ function urlToFile(url: string, fileExtension: '.pageContext.json' | '.html', do
   assert(pathnameModified)
 
   pathnameModified = pathnameModified + fileExtension
+
+  if (hasTrailingSlash && forwardTrailingSlash) {
+    pathnameModified += '/'
+  }
 
   const fileUrl = `${pathnameModified}${searchOriginal || ''}${hashOriginal || ''}`
   return fileUrl

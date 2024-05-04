@@ -12,4 +12,9 @@ describe('getPageContextRequestUrl()', () => {
       getPageContextRequestUrl('/test/')
     ).toMatchInlineSnapshot('"/test/index.pageContext.json/"')
   })
+  it('return page context request url with trailing slash, query and hash', () => {
+    expect(
+      getPageContextRequestUrl('/test/?query=1#hash')
+    ).toMatchInlineSnapshot('"/test/index.pageContext.json/?query=1#hash"')
+  })
 })
