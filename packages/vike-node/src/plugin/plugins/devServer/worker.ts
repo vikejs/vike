@@ -1,17 +1,22 @@
 import { createBirpc } from 'birpc'
-import { ESModulesRunner, ViteRuntime } from 'vite/runtime'
+import { ESModulesEvaluator, ModuleRunner, RemoteRunnerTransport } from 'vite/module-runner'
 import { setIsWorkerEnv } from '../../../runtime/env.js'
 import { logViteInfo } from '../../utils/logVite.js'
 import type { ClientFunctions, ServerFunctions, WorkerData } from './types.js'
 
-let runtime: ViteRuntime
-let entry_: string
-
+let runner: ModuleRunner
+let hmrHandler: (data: any) => void
+let viteTransportHandler: (data: any) => void
 const rpc = createBirpc<ServerFunctions, ClientFunctions>(
   {
+    onHmrReceive(data) {
+      hmrHandler(data)
+    },
+    onViteTransportMessage(data) {
+      viteTransportHandler(data)
+    },
     async start(workerData: WorkerData) {
       const { entry, viteConfig } = workerData
-      entry_ = entry
       // This is the minimal required object for vike + telefunc to function
       const globalObject = {
         viteConfig,
@@ -23,7 +28,7 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
               hasErrorLogged: () => false
             }
           },
-          ssrLoadModule: (id: string) => runtime.executeUrl(id),
+          ssrLoadModule: (id: string) => runner.import(id),
           // called by telefunc
           ssrFixStacktrace: (_err: unknown) => {},
           transformIndexHtml: rpc.transformIndexHtml,
@@ -45,28 +50,34 @@ const rpc = createBirpc<ServerFunctions, ClientFunctions>(
         viteDevServer: globalObject.viteDevServer
       }
 
-      runtime = new ViteRuntime(
+      runner = new ModuleRunner(
         {
-          fetchModule: rpc.fetchModule,
           root: viteConfig.root,
-          hmr: false
+          transport: new RemoteRunnerTransport({
+            send(data) {
+              rpc.onViteTransportMessage(data)
+            },
+            onMessage(handler) {
+              viteTransportHandler = handler
+            }
+          }),
+          hmr: {
+            connection: {
+              onUpdate(callback) {
+                hmrHandler = callback
+              },
+              isReady() {
+                return true
+              },
+              send(messages) {}
+            }
+          }
         },
-        new ESModulesRunner()
+        new ESModulesEvaluator()
       )
-
       logViteInfo('Loading server entry')
-      await runtime.executeUrl(entry)
-    },
-    invalidateDepTree(mods) {
-      const shouldRestart = runtime.moduleCache.isImported({
-        importedBy: entry_,
-        importedId: mods[0]!
-      })
-
-      runtime.moduleCache.invalidateDepTree(mods)
-      return shouldRestart
-    },
-    deleteByModuleId: (mod) => runtime.moduleCache.deleteByModuleId(mod)
+      await runner.import(entry)
+    }
   },
   {
     post: (data) => {

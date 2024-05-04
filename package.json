@@ -50,7 +50,8 @@
   "pnpm": {
     "overrides": {
       "vike": "link:./vike/",
-      "vike-node": "link:./packages/vike-node/"
+      "vike-node": "link:./packages/vike-node/",
+      "vite": "v6.0.0-alpha.11"
     },
     "packageExtensions": {
       "@apollo/client": {
