@@ -218,6 +218,7 @@ function assertPageContextUrlComputedProps(pageContext: { urlOriginal: string } 
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))
   assert(pageContext.urlPathname === pageContext.urlParsed.pathname)
+  assertPageContextUrlComputed(pageContext)
 }
 
 function assertPageContextUrlComputed(pageContext: object) {
