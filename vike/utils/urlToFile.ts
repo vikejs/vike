@@ -26,7 +26,7 @@ function urlToFile(url: string, fileExtension: '.pageContext.json' | '.html', do
     assert(!pathnameModified.endsWith('/'), { url })
     assert(pathnameModified !== '')
   } else {
-    pathnameModified = pathnameOriginal + '/index'
+    pathnameModified = pathnameOriginal + (hasTrailingSlash ? '' : '/') + 'index'
   }
   assert(pathnameModified)
 
