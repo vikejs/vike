@@ -45,6 +45,7 @@ type Url = {
   searchString: null | string
 }
 
+// TODO/v1-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {
   /** Parsed information about the current URL */
   urlParsed: Url
@@ -78,24 +79,24 @@ function getPageContextUrlComputed(pageContext: PageContextUrlSource): PageConte
   assert(typeof pageContext.urlOriginal === 'string')
   assertPageContextUrlComputed(pageContext)
 
-  const pageContextUrl = {}
-  objectDefineProperty(pageContextUrl, 'urlPathname', {
+  const pageContextUrlComputed = {}
+  objectDefineProperty(pageContextUrlComputed, 'urlPathname', {
     get: urlPathnameGetter,
     enumerable: true,
     configurable: true
   })
-  objectDefineProperty(pageContextUrl, 'url', {
+  objectDefineProperty(pageContextUrlComputed, 'url', {
     get: urlGetter,
     enumerable: false,
     configurable: true
   })
-  objectDefineProperty(pageContextUrl, 'urlParsed', {
+  objectDefineProperty(pageContextUrlComputed, 'urlParsed', {
     get: urlParsedGetter,
     enumerable: true,
     configurable: true
   })
 
-  return pageContextUrl
+  return pageContextUrlComputed
 }
 
 type PageContextUrlSource = {
@@ -222,23 +223,25 @@ function assertPageContextUrlComputedProps(pageContext: { urlOriginal: string } 
 }
 
 function assertPageContextUrlComputed(pageContext: object) {
+  /*
+  If the isPropertyGetter() assertions fail then it's most likely because Object.assign() was used instead of `objectAssign()`:
+  ```js
+  const PageContextUrlComputed = getPageContextUrlComputed(pageContext)
+
+  // ❌ Breaks the property getters of pageContext set by getPageContextUrlComputed() such as pageContext.urlPathname
+  Object.assign(pageContext, pageContextUrlComputed)
+
+  // ❌ Also breaks property getters
+  const pageContext = { ...pageContextUrlComputed }
+
+  // ✅ Preserves property getters of pageContext (see objectAssign() implementation)
+  objectAssign(pageContext, pageContextUrlComputed)
+  ```
+  */
   if ('urlPathname' in pageContext) {
     assert(typeof pageContext.urlPathname === 'string')
-    /* If the following assert() fails then it's most likely because Object.assign() was used instead of objectAssign(), i.e.:
-       ```js
-       // Add property getters such as pageContext.urlPathname to pageContext
-       getPageContextUrlComputed(pageContext)
-       // ❌ Breaks the property getters of pageContext set by getPageContextUrlComputed() such as pageContext.urlPathname
-       Object.assign(pageContext2, pageContext)
-       // ❌ Also breaks the property getters
-       const pageContext3 = { ...pageContext }
-       // ✅ Preserves property getters of pageContext (see objectAssign() implementation)
-       objectAssign(pageContext2, pageContext)
-       ```
-    */
     assert(isPropertyGetter(pageContext, 'urlPathname'))
   }
   if ('urlParsed' in pageContext) assert(isPropertyGetter(pageContext, 'urlParsed'))
-  // TODO/v1-release: move pageContext.urlParsed to pageContext.url
   if ('url' in pageContext) assert(isPropertyGetter(pageContext, 'url'))
 }
