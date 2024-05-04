@@ -456,9 +456,9 @@ async function callOnBeforePrerenderStartHooks(
           prerenderContext.pageContexts.push(pageContextNew)
           if (pageContext) {
             objectAssign(pageContextNew, {
-              _pageContextAlreadyProvidedByOnPrerenderHook: true,
-              ...pageContext
+              _pageContextAlreadyProvidedByOnPrerenderHook: true
             })
+            objectAssign(pageContextNew, pageContext)
           }
         })
       })
@@ -533,9 +533,9 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     _prerenderContext: prerenderContext
   }
   const pageContextInit = {
-    urlOriginal,
-    ...prerenderContext.pageContextInit
+    urlOriginal
   }
+  objectAssign(pageContextInit, prerenderContext.pageContextInit)
   {
     const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, {
       // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/

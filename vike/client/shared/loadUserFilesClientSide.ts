@@ -11,6 +11,7 @@ import {
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../shared/page-configs/PageConfig.js'
+import { objectAssign } from '../server-routing-runtime/utils.js'
 
 const stamp = '__whileFetchingAssets'
 
@@ -46,10 +47,9 @@ async function loadUserFilesClientSide(
     throw err
   }
   const pageContextExports = getPageContextExports(pageFilesClientSide, pageConfigLoaded)
-  const pageContextAddendum = {
-    ...pageContextExports,
-    _pageFilesLoaded: pageFilesClientSide
-  }
+  const pageContextAddendum = {}
+  objectAssign(pageContextAddendum, pageContextExports)
+  objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })
   return pageContextAddendum
 }
 

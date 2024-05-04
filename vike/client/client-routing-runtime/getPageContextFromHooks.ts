@@ -59,7 +59,9 @@ async function getPageContextFromHooks_isHydration(
     _hasPageContextFromServer: true as const
   }
   for (const hookName of ['data', 'onBeforeRender'] as const) {
-    const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
+    const pageContextForHook = {}
+    objectAssign(pageContextForHook, pageContext)
+    objectAssign(pageContextForHook, pageContextFromHooks)
     if (hookClientOnlyExists(hookName, pageContextForHook)) {
       const pageContextFromHook = await executeHookClientSide(hookName, pageContextForHook)
       Object.assign(pageContextFromHooks, pageContextFromHook)
@@ -77,6 +79,10 @@ async function getPageContextFromHooks_isNotHydration(
     _hasPageContextFromClient: false
   }
 
+  const pageContextForCondition = {}
+  objectAssign(pageContextForCondition, pageContext)
+  objectAssign(pageContextForCondition, pageContextFromHooks)
+
   let hasPageContextFromServer = false
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
   // only, then we need to fetch pageContext from the server.
@@ -85,7 +91,7 @@ async function getPageContextFromHooks_isNotHydration(
     // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
     !isErrorPage &&
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
-    (await hasPageContextServer({ ...pageContext, ...pageContextFromHooks }))
+    (await hasPageContextServer(pageContextForCondition))
   ) {
     const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true }
@@ -105,11 +111,10 @@ async function getPageContextFromHooks_isNotHydration(
   // Note: for the error page, we also execute the client-side data() and onBeforeRender() hooks, but maybe we
   // shouldn't? The server-side does it as well (but maybe it shouldn't).
   for (const hookName of ['guard', 'data', 'onBeforeRender'] as const) {
-    const pageContextForHook = {
-      _hasPageContextFromServer: hasPageContextFromServer,
-      ...pageContext,
-      ...pageContextFromHooks
-    }
+    const pageContextForHook = {}
+    objectAssign(pageContextForHook, { _hasPageContextFromServer: hasPageContextFromServer })
+    objectAssign(pageContextForHook, pageContext)
+    objectAssign(pageContextForHook, pageContextFromHooks)
     if (hookName === 'guard') {
       if (
         !isErrorPage &&
