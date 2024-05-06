@@ -103,6 +103,11 @@ function addUrlComputedProps<PageContext extends Record<string, unknown> & PageC
     enumerable,
     configurable: true
   })
+  Object.defineProperty(pageContext, '_urlHasTrailingSlash', {
+    get: () => pageContext.urlOriginal.endsWith('/'),
+    enumerable: false,
+    configurable: true
+  })
 }
 
 type PageContextUrlSources = {

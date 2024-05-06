@@ -17,6 +17,7 @@ const PASS_TO_CLIENT: string[] = [
   'abortReason',
   '_urlRewrite',
   '_urlRedirect',
+  '_urlHasTrailingSlash',
   'abortStatusCode',
   '_abortCall',
   /* Not needed on the client-side
