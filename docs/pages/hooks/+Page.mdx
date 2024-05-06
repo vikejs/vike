@@ -3,6 +3,7 @@ import { TextEnv, TextEnv2 } from './TextEnv'
 
 List of built-in hooks. (You can <Link href="/meta">create your own hooks</Link>.)
 
+
 ## Basic
 
 - [**`data()`**](/data): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, for fetching data.
@@ -14,6 +15,7 @@ List of built-in hooks. (You can <Link href="/meta">create your own hooks</Link>
 - [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server</TextEnv> Global hook called when pre-rendering starts.
 - [**`onCreateApp()`**](/onCreateApp): <TextEnv>server & client</TextEnv> `vike-vue` Called after creating Vue's `app` instance.
 
+
 ## Advanced
 
 > Most users don't need to know about these hooks.
@@ -23,6 +25,7 @@ List of built-in hooks. (You can <Link href="/meta">create your own hooks</Link>
 - [**`onRenderClient()`**](/onRenderClient): <TextEnv>client</TextEnv> Called when a page is rendered on the client-side.
 - [**`onBeforeRoute()`**](/onBeforeRoute): <TextEnv>server & client</TextEnv> Called before the URL is routed to a page.
 
+
 ## Upcoming
 
 Potentially upcoming hooks:
@@ -31,9 +34,10 @@ Potentially upcoming hooks:
 - [New hook `onLog()`](https://github.com/vikejs/vike/issues/1438)
 - [New hook `onRenderContent()`: generate non-HTML files with arbitrary content](https://github.com/vikejs/vike/issues/1525)
 
+
 ## Order
 
-First page:
+### First page:
 
 1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
@@ -46,7 +50,7 @@ First page:
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
 
-Page navigation:
+### Page navigation
 
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
@@ -60,7 +64,7 @@ Page navigation:
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
 
-Page navigation <Link href="/data#client-side">with client-side data fetching</Link>:
+### Page navigation <Link href="/data#client-side">with client-side data fetching</Link>
 
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
@@ -70,6 +74,7 @@ Page navigation <Link href="/data#client-side">with client-side data fetching</L
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
+
 
 ## See also
 
