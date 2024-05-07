@@ -2,11 +2,21 @@ import type { Config } from 'vike/types'
 
 export default {
   meta: {
+    /*
+    For supporting nested configs, is the following the only thing missing?
+    ```diff
+    // /pages/some-page/+config.js
+
+      export {
+    -   ['document.title']: 'Some Title'
+    +   document: {
+    +     title: 'Some Title'
+    +   }
+      }
+    ```
+    */
     ['document.title']: {
       env: { server: true, client: true }
-    },
-    ['document.description']: {
-      env: { server: true }
     }
   }
 } satisfies Config

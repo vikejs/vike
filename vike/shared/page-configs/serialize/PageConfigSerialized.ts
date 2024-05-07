@@ -4,7 +4,6 @@ export type { ConfigValueSerialized }
 export type { ConfigValueImported }
 
 import type {
-  ConfigValue,
   ConfigValueStandard,
   ConfigValueComputed,
   ConfigValueCumulative,

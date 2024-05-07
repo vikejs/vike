@@ -11,14 +11,13 @@ const dir = path.dirname(fileURLToPath(import.meta.url))
 let isDev: boolean
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   isDev = cmd === 'npm run dev'
-
   testRunClassic(cmd, { skipScreenshotTest: true })
   testRouteStringDefinedInConfigFile()
   testSideExports()
   testPrerenderSettings()
   testHistoryPushState()
-  testRedirectToMailto()
-  testNestedConfig()
+  testRedirectMailto()
+  testNestedConfigWorkaround()
 }
 
 function testRouteStringDefinedInConfigFile() {
@@ -130,15 +129,16 @@ function testHistoryPushState() {
   }
 }
 
-function testRedirectToMailto() {
+function testRedirectMailto() {
   test('Redirect to URI without http protocol (e.g. `mailto:`)', async () => {
     const resp = await fetch(getServerUrl() + '/mail', { redirect: 'manual' })
     expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
   })
 }
 
-function testNestedConfig() {
-  test('Nested config document.title', async () => {
+function testNestedConfigWorkaround() {
+  // See comment in /test/misc/pages/+config.ts
+  test('Nested config workaround', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<title>Some title set by nested config</title>')
   })
