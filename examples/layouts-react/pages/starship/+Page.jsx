@@ -11,9 +11,8 @@ function Page() {
       <h1>Starship 🚀</h1>
       <p>
         <b>
-          This page uses the default layout <code>/renderer/LayouDefault.jsx</code>.
-          <br />
-          With the nested layout <code>/pages/starship/Layout.jsx</code>.
+          This page uses the default layout <code>/renderer/LayouDefault.jsx</code> with a nested layout (see{' '}
+          <code>{'<InnerView>'}</code> at <code>/pages/starship/+Page.jsx</code>).
         </b>
       </p>
       <p>
