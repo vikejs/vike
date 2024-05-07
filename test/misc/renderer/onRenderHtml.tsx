@@ -20,10 +20,14 @@ async function onRenderHtml(pageContext: PageContextServer) {
     )
   )
 
+  const Head = pageContext.config.Head ?? (() => <></>)
+  const head = dangerouslySkipEscape(renderToString(<Head />))
+
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>${title}</title>
+        ${head}
       </head>
       <body>
         <div id="page-view">${viewHtml}</div>

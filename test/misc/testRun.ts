@@ -12,6 +12,7 @@ let isDev: boolean
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   isDev = cmd === 'npm run dev'
   testRunClassic(cmd, { skipScreenshotTest: true })
+  testCumulativeSetting()
   testRouteStringDefinedInConfigFile()
   testSideExports()
   testPrerenderSettings()
@@ -25,6 +26,28 @@ function testRouteStringDefinedInConfigFile() {
     // Route String '/markdown' defined in `+config.js > export default { route }` instead of +route.js
     const html = await fetchHtml('/markdown')
     expect(html).toContain('<p>Some text</p>')
+  })
+}
+
+function testCumulativeSetting() {
+  test('Cumulative setting (not serialiazed but imported)', async () => {
+    let html: string
+    const expectGlobalMetaTags = () => {
+      expect(html).toContain('<meta charSet="UTF-8"/>')
+      expect(html).toContain('<meta name="viewport" content="width=device-width, initial-scale=1.0"/>')
+    }
+    const expectAboutMetaTags = () => {
+      expect(html).toContain('<meta name="description" content="Playground for testing."/>')
+    }
+
+    html = await fetchHtml('/')
+    expectGlobalMetaTags()
+
+    html = await fetchHtml('/about')
+    expectAboutMetaTags()
+    /* TODO
+    expectGlobalMetaTags()
+    */
   })
 }
 

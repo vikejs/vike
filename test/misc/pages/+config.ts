@@ -17,6 +17,12 @@ export default {
     */
     ['document.title']: {
       env: { server: true, client: true }
+    },
+    Head: {
+      env: { server: true }
+      /* TODO
+      cumulative: true
+      */
     }
   }
 } satisfies Config
@@ -28,6 +34,7 @@ declare global {
       frontmatter?: {
         title: string
       }
+      Head?: () => JSX.Element
     }
     interface PageContext {
       Page?: any
