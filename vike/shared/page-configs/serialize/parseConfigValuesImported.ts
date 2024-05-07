@@ -23,8 +23,8 @@ function parseConfigValuesImported(configValuesImported: ConfigValueImported[]):
         const { exportValues, importPath, configName } = configValueLoaded
         assertPlusFileExport(exportValues, importPath, configName)
         Object.entries(exportValues).forEach(([exportName, exportValue]) => {
-          const isSideExport = exportName !== 'default' // .md files may have "side-exports" such as `export { frontmatter }`
-          const configName = isSideExport ? exportName : configValueLoaded.configName
+          const configName = exportName !== 'default' ? exportName : configValueLoaded.configName
+          const isSideExport = configName !== configValueLoaded.configName // .md files may have "side-exports" such as `export { frontmatter }`
           configValuesUnmerged[configName] ??= []
           configValuesUnmerged[configName]!.push({
             value: exportValue,
