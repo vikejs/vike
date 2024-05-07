@@ -35,7 +35,7 @@ function getConfigValuesSerialized(
     assert(configValue)
     const { value, ...common } = configValue
     assert(value === configValuesComputed.value)
-    const valueSerialized = getConfigValueSerialized(value, configName, configValue.definedAtData, importStatements)
+    const valueSerialized = getValueSerialized(value, configName, configValue.definedAtData, importStatements)
     const configValueSerialized = { valueSerialized, ...common }
     serializeConfigValue(lines, configName, configValueSerialized)
   })
@@ -49,7 +49,7 @@ function getConfigValuesSerialized(
     }
 
     const { value, ...common } = configValue
-    const valueSerialized = getConfigValueSerialized(value, configName, configValue.definedAtData, importStatements)
+    const valueSerialized = getValueSerialized(value, configName, configValue.definedAtData, importStatements)
     const configValueSerialized = { valueSerialized, ...common }
     serializeConfigValue(lines, configName, configValueSerialized)
   })
@@ -59,10 +59,10 @@ function getConfigValuesSerialized(
 
 function assertConfigValueIsSerializable(value: unknown, configName: string, definedAtData: DefinedAtData) {
   // Contains asserts
-  getConfigValueSerialized(value, configName, definedAtData, [])
+  getValueSerialized(value, configName, definedAtData, [])
 }
 
-function getConfigValueSerialized(
+function getValueSerialized(
   value: unknown,
   configName: string,
   definedAtData: DefinedAtData,
