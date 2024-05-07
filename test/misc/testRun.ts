@@ -15,9 +15,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testRouteStringDefinedInConfigFile()
   testSideExports()
   testPrerenderSettings()
-  testHistoryPushState()
   testRedirectMailto()
   testNestedConfigWorkaround()
+  testHistoryPushState()
 }
 
 function testRouteStringDefinedInConfigFile() {
@@ -55,6 +55,21 @@ function testPrerenderSettings() {
       })
     })
   }
+}
+
+function testRedirectMailto() {
+  test('Redirect to URI without http protocol (e.g. `mailto:`)', async () => {
+    const resp = await fetch(getServerUrl() + '/mail', { redirect: 'manual' })
+    expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
+  })
+}
+
+function testNestedConfigWorkaround() {
+  // See comment in /test/misc/pages/+config.ts
+  test('Nested config workaround', async () => {
+    const html = await fetchHtml('/')
+    expect(html).toContain('<title>Some title set by nested config</title>')
+  })
 }
 
 function testHistoryPushState() {
@@ -127,19 +142,4 @@ function testHistoryPushState() {
     const url = await page.evaluate(() => location.href)
     return url
   }
-}
-
-function testRedirectMailto() {
-  test('Redirect to URI without http protocol (e.g. `mailto:`)', async () => {
-    const resp = await fetch(getServerUrl() + '/mail', { redirect: 'manual' })
-    expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
-  })
-}
-
-function testNestedConfigWorkaround() {
-  // See comment in /test/misc/pages/+config.ts
-  test('Nested config workaround', async () => {
-    const html = await fetchHtml('/')
-    expect(html).toContain('<title>Some title set by nested config</title>')
-  })
 }
