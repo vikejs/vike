@@ -270,7 +270,7 @@ async function loadInterfaceFiles(
         //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
         //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
         const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
-        if (configDef && isConfigEnv(configDef, configName)) {
+        if (configDef && isConfigEnv(configDef)) {
           await loadValueFile(interfaceFile, configName, userRootDir)
         }
       }
@@ -392,7 +392,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
-            if (!isConfigEnv(configDef, configName)) return
+            if (!isConfigEnv(configDef)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
             // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
@@ -611,7 +611,15 @@ async function resolveConfigValueSources(
     const add = (interfaceFile: InterfaceFile) => {
       assert(!visited.has(interfaceFile))
       visited.add(interfaceFile)
-      sourcesInfo.push([configName, interfaceFile, configDef, userRootDir, importedFilesLoaded])
+      const isHighestInheritancePrecedence = sourcesInfo.length === 0
+      sourcesInfo.push([
+        configName,
+        interfaceFile,
+        configDef,
+        userRootDir,
+        importedFilesLoaded,
+        isHighestInheritancePrecedence
+      ])
     }
 
     // Main resolution logic
@@ -715,7 +723,8 @@ async function getConfigValueSource(
   interfaceFile: InterfaceFile,
   configDef: ConfigDefinitionInternal,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: ImportedFilesLoaded,
+  isHighestInheritancePrecedence: boolean
 ): Promise<ConfigValueSource> {
   const conf = interfaceFile.fileExportsByConfigName[configName]
   assert(conf)
@@ -726,6 +735,8 @@ async function getConfigValueSource(
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
+
+  const isOverriden = configDef.cumulative ? false : !isHighestInheritancePrecedence
 
   // +client.js
   if (configDef._valueIsFilePath) {
@@ -759,6 +770,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: true,
       valueIsDefinedByValueFile: false,
+      isOverriden,
       definedAtFilePath
     }
     return configValueSource
@@ -783,11 +795,12 @@ async function getConfigValueSource(
         configEnv,
         valueIsImportedAtRuntime: true,
         valueIsDefinedByValueFile: false,
+        isOverriden,
         definedAtFilePath: pointerImport
       }
       // Load pointer import
       if (
-        isConfigEnv(configDef, configName) &&
+        isConfigEnv(configDef) &&
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
         configName !== 'extends'
       ) {
@@ -810,6 +823,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: false,
       valueIsDefinedByValueFile: false,
+      isOverriden,
       definedAtFilePath: definedAtFilePath_
     }
     return configValueSource
@@ -824,6 +838,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       valueIsDefinedByValueFile: true,
+      isOverriden,
       definedAtFilePath: {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser:
@@ -1197,8 +1212,7 @@ function getConfigValues(
         }
       }
     } else {
-      const value = mergeCumulative(configName, sources)
-      const definedAtData = sources.map((source) => getDefinedAtFile(source))
+      const { value, definedAtData } = mergeCumulative(configName, sources)
       assert(value.length === definedAtData.length)
       configValues[configName] = {
         type: 'cumulative',
@@ -1216,20 +1230,22 @@ function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
   }
 }
 
-function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] {
-  const configValues: unknown[] = []
+function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]) {
+  const value: unknown[] = []
+  const definedAtData: DefinedAtFile[] = []
   configValueSources.forEach((configValueSource) => {
-    // We could, in principle, also support cumulative for values that aren't loaded at config-time but it isn't completely trivial to implement.
-    assert('value' in configValueSource)
+    assert(configValueSource.isOverriden === false)
+
+    // Imported and merged at runtime
+    if (!('value' in configValueSource)) return
 
     // Make sure configValueSource.value is serializable
     assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtFile(configValueSource))
 
-    const { value } = configValueSource
-    configValues.push(value)
+    value.push(configValueSource.value)
+    definedAtData.push(getDefinedAtFile(configValueSource))
   })
-
-  return configValues
+  return { value, definedAtData }
 }
 
 function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnvInternal {
@@ -1277,18 +1293,8 @@ function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: s
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
   return configDefinitions[configName] ?? null
 }
-function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string): boolean {
-  const configEnv = configDef.env
-  if (configDef.cumulative) {
-    // In principle we could lift that requirement (but it requires non-trivial modifications)
-    assertUsage(
-      configEnv.config,
-      `Config ${pc.cyan(configName)} needs its ${pc.cyan('env')} to have ${pc.cyan(
-        '{ config: true }'
-      )} (because ${pc.cyan(configName)} is a ${pc.cyan('cumulative')} config)`
-    )
-  }
-  return !!configEnv.config
+function isConfigEnv(configDef: ConfigDefinitionInternal): boolean {
+  return !!configDef.env.config
 }
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false

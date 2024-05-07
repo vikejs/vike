@@ -8,9 +8,8 @@ function getConfigValueSourcesNotOverriden(
   pageConfig: PageConfigBuildTime
 ): (ConfigValueSource & { configName: string })[] {
   const configValueSourcesRelevant = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
-    const configValueSource = sources[0]
-    assert(configValueSource)
-    return { configName, ...configValueSource }
-  })
+    assert(sources.length > 0)
+    return sources.filter((c) => !c.isOverriden).map((configValueSource) => ({ configName, ...configValueSource }))
+  }).flat(1)
   return configValueSourcesRelevant
 }

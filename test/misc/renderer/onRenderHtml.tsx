@@ -20,8 +20,10 @@ async function onRenderHtml(pageContext: PageContextServer) {
     )
   )
 
-  const Head = pageContext.config.Head ?? (() => <></>)
-  const head = dangerouslySkipEscape(renderToString(<Head />))
+  // TODO: should always be an array
+  if (!Array.isArray(pageContext.config.Head)) pageContext.config.Head = [pageContext.config.Head]
+
+  const head = dangerouslySkipEscape(pageContext.config.Head.map((Head) => renderToString(<Head />)).join(''))
 
   return escapeInject`<!DOCTYPE html>
     <html>

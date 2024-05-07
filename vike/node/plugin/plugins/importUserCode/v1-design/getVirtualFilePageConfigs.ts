@@ -77,11 +77,13 @@ function getCodePageConfigsSerialized(
     Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
       const configValue = pageConfig.configValues[configName]
       if (configValue) return
-      const configValueSource = sources[0]
-      assert(configValueSource)
+      assert(sources.length > 0)
+      sources.forEach((configValueSource) => {
       if (!configValueSource.configEnv.eager) return
+      if (configValueSource.isOverriden) return
       if (!isRuntimeEnvMatch(configValueSource.configEnv, { isForClientSide, isClientRouting, isEager: true })) return
       lines.push(...serializeConfigValueImported(configValueSource, configName, whitespace, importStatements))
+      })
     })
     lines.push(`${whitespace}],`)
 
@@ -115,10 +117,12 @@ function getCodePageConfigGlobalSerialized(
     } else {
       assert(false)
     }
-    const configValueSource = sources[0]
-    assert(configValueSource)
+    assert(sources.length > 0)
+    sources.forEach((configValueSource) => {
+      if (configValueSource.isOverriden) return
     const whitespace = '    '
     lines.push(...serializeConfigValueImported(configValueSource, configName, whitespace, importStatements))
+    })
   })
   lines.push(`  ],`)
 

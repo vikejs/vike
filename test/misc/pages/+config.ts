@@ -19,10 +19,8 @@ export default {
       env: { server: true, client: true }
     },
     Head: {
-      env: { server: true }
-      /* TODO
+      env: { server: true },
       cumulative: true
-      */
     }
   }
 } satisfies Config
@@ -35,6 +33,9 @@ declare global {
         title: string
       }
       Head?: () => JSX.Element
+    }
+    interface ConfigResolved {
+      Head: (() => JSX.Element)[]
     }
     interface PageContext {
       Page?: any

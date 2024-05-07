@@ -45,9 +45,7 @@ function testCumulativeSetting() {
 
     html = await fetchHtml('/about')
     expectAboutMetaTags()
-    /* TODO
     expectGlobalMetaTags()
-    */
   })
 }
 
