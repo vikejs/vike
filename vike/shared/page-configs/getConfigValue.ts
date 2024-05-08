@@ -8,14 +8,6 @@ import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
 type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
-type ResolveType<Type extends 'string' | 'boolean' | undefined = undefined> = Type extends 'boolean'
-  ? boolean
-  : Type extends 'string'
-    ? string
-    : Type extends undefined
-      ? unknown
-      : never
-
 function getConfigValue<Type extends 'string' | 'boolean' | undefined = undefined>(
   pageConfig: PageConfigCommon,
   configName: ConfigName,
@@ -56,3 +48,11 @@ function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigNam
   if (configValue.value === null) return null
   return configValue
 }
+
+type ResolveType<Type extends 'string' | 'boolean' | undefined = undefined> = Type extends 'boolean'
+  ? boolean
+  : Type extends 'string'
+    ? string
+    : Type extends undefined
+      ? unknown
+      : never
