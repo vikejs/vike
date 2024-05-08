@@ -85,7 +85,7 @@ function devConfig(): Plugin[] {
             // With Hono middlewareMode is `false` even thouh the Vite dev server is used.
             // - See https://vitejs.dev/guide/api-javascript.html#vitedevserver
             //   - "httpServer [...] Will be null in middleware mode."
-            server.httpServer !== null
+            server.httpServer
           )
             return
           return () => {
