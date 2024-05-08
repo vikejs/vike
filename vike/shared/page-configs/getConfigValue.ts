@@ -1,6 +1,6 @@
 export { getConfigValue }
 
-import { assert, assertUsage, getValuePrintable } from '../utils.js'
+import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
@@ -8,16 +8,16 @@ import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
 type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
-function getConfigValue<Type extends 'string' | 'boolean' | undefined = undefined>(
+function getConfigValue<TypeAsString extends 'string' | 'boolean' | undefined = undefined>(
   pageConfig: PageConfigCommon,
   configName: ConfigName,
-  type?: Type
-): null | (ConfigValue & { value: ResolveType<Type> }) {
+  type?: TypeAsString
+): null | (ConfigValue & { value: ResolveTypeAsString<TypeAsString> }) {
   const configValue = getConfigValueEntry(pageConfig, configName)
   if (configValue === null) return null
   const { value, definedAtData } = configValue
   if (type) assertConfigValueType(value, type, configName, definedAtData)
-  return configValue as ConfigValue & { value: ResolveType<Type> }
+  return configValue as ConfigValue & { value: ResolveTypeAsString<TypeAsString> }
 }
 
 function assertConfigValueType(
@@ -48,11 +48,3 @@ function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigNam
   if (configValue.value === null) return null
   return configValue
 }
-
-type ResolveType<Type extends 'string' | 'boolean' | undefined = undefined> = Type extends 'boolean'
-  ? boolean
-  : Type extends 'string'
-    ? string
-    : Type extends undefined
-      ? unknown
-      : never
