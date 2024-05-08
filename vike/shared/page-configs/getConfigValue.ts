@@ -8,23 +8,24 @@ import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
 type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
-// prettier-ignore
-// biome-ignore format:
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
-// prettier-ignore
-// biome-ignore format:
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
-// prettier-ignore
-// biome-ignore format:
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | ConfigValue & { value: unknown }
-// prettier-ignore
-// biome-ignore format:
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue & { value: unknown } {
+type ResolveType<Type extends 'string' | 'boolean' | undefined = undefined> = Type extends 'boolean'
+  ? boolean
+  : Type extends 'string'
+    ? string
+    : Type extends undefined
+      ? unknown
+      : never
+
+function getConfigValue<Type extends 'string' | 'boolean' | undefined = undefined>(
+  pageConfig: PageConfigCommon,
+  configName: ConfigName,
+  type?: Type
+): null | (ConfigValue & { value: ResolveType<Type> }) {
   const configValue = getConfigValueEntry(pageConfig, configName)
   if (configValue === null) return null
   const { value, definedAtData } = configValue
   if (type) assertConfigValueType(value, type, configName, definedAtData)
-  return configValue
+  return configValue as ConfigValue & { value: ResolveType<Type> }
 }
 
 function assertConfigValueType(
