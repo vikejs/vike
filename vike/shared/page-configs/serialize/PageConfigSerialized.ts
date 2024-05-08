@@ -14,7 +14,7 @@ import type {
 type PageConfigRuntimeSerialized = Omit<PageConfigRuntime, 'configValues'> & {
   /** Config values that are serializable and loaded eagerly such as config.passToClient */
   configValuesSerialized: Record<string, ConfigValueSerialized>
-  /** Config values imported eagerly such as config.route */
+  /** Config values imported eagerly such as Route Functions */
   configValuesImported: ConfigValueImported[]
 }
 
