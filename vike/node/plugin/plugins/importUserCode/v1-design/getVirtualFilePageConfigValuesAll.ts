@@ -13,7 +13,7 @@ import {
 import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
-import { getConfigValue } from '../../../../../shared/page-configs/getConfigValue.js'
+import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValue.js'
 import { getConfigValueSourcesNotOverriden } from '../../../shared/getConfigValueSourcesNotOverriden.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { serializeConfigValueImported } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
@@ -56,7 +56,7 @@ function getLoadConfigValuesAll(
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
-  const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+  const isClientRouting = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
 
   lines.push('export const configValuesImported = [')
   lines.push(getConfigValuesImported(pageConfig, isForClientSide, isClientRouting, importStatements))

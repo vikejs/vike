@@ -47,7 +47,7 @@ import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
-import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
+import { getConfigValue, getConfigValueBuildTime } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import {
@@ -283,7 +283,7 @@ async function collectDoNoPrerenderList(
   // V1 design
   pageConfigs.forEach((pageConfig) => {
     const configName = 'prerender'
-    const configValue = getConfigValue(pageConfig, configName, 'boolean')
+    const configValue = getConfigValueBuildTime(pageConfig, configName, 'boolean')
     if (configValue?.value === false) {
       const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
       assert(configValueFilePathToShowToUser)

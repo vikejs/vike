@@ -1,4 +1,5 @@
 export { getConfigValue }
+export { getConfigValueBuildTime }
 
 import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData } from './PageConfig.js'
@@ -8,7 +9,7 @@ import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
 type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 
-function getConfigValue<TypeAsString extends 'string' | 'boolean' | undefined = undefined>(
+function getConfigValueCommon<TypeAsString extends 'string' | 'boolean' | undefined = undefined>(
   pageConfig: PageConfigCommon,
   configName: ConfigName,
   type?: TypeAsString
@@ -18,6 +19,22 @@ function getConfigValue<TypeAsString extends 'string' | 'boolean' | undefined = 
   const { value, definedAtData } = configValue
   if (type) assertConfigValueType(value, type, configName, definedAtData)
   return configValue as ConfigValue & { value: ResolveTypeAsString<TypeAsString> }
+}
+
+function getConfigValue<TypeAsString extends 'string' | 'boolean' | undefined = undefined>(
+  pageConfig: PageConfigRuntime,
+  configName: ConfigName,
+  type?: TypeAsString
+): null | (ConfigValue & { value: ResolveTypeAsString<TypeAsString> }) {
+  return getConfigValueCommon(pageConfig, configName, type)
+}
+
+function getConfigValueBuildTime<TypeAsString extends 'string' | 'boolean' | undefined = undefined>(
+  pageConfig: PageConfigBuildTime,
+  configName: ConfigName,
+  type?: TypeAsString
+): null | (ConfigValue & { value: ResolveTypeAsString<TypeAsString> }) {
+  return getConfigValueCommon(pageConfig, configName, type)
 }
 
 function assertConfigValueType(
