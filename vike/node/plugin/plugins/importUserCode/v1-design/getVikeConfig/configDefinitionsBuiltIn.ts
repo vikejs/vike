@@ -69,7 +69,10 @@ type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   env: ConfigEnvInternal
 }
 
-type ConfigDefinitions = Record<string, ConfigDefinitionInternal>
+type ConfigDefinitions = Record<
+  string, // configName
+  ConfigDefinitionInternal
+>
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {

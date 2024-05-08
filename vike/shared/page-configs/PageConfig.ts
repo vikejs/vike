@@ -20,6 +20,7 @@ export type { DefinedAtFilePath }
 import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
+import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 
 type PageConfigBase = {
   pageId: string
@@ -47,6 +48,7 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
 
 /** Page config data structure available at build-time */
 type PageConfigBuildTime = PageConfigBase & {
+  configDefinitions: ConfigDefinitions
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
 }

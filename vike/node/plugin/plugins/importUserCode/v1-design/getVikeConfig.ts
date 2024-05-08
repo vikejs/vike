@@ -429,6 +429,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
           pageId: locationId,
           isErrorPage,
           routeFilesystem,
+          configDefinitions,
           configValueSources,
           configValuesComputed,
           configValues
