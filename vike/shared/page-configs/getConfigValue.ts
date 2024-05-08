@@ -6,17 +6,14 @@ import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
-type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
 type TypeAsString = 'string' | 'boolean' | undefined
 
-function getConfigValue<Type extends TypeAsString = undefined>(
-  pageConfig: PageConfigCommon,
+function getConfigValueTyped<Type extends TypeAsString = undefined>(
+  configValue: ConfigValue,
   configName: ConfigName,
   type?: Type
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
-  const configValue = pageConfig.configValues[configName]
-  if (!configValue) return null
   // Enable users to suppress global config values by setting the local config value to null
   if (configValue.value === null) return null
   const { value, definedAtData } = configValue
@@ -29,14 +26,18 @@ function getConfigValueRuntime<Type extends TypeAsString = undefined>(
   configName: ConfigName,
   type?: Type
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
-  return getConfigValue(pageConfig, configName, type)
+  const configValue = pageConfig.configValues[configName]
+  if (!configValue) return null
+  return getConfigValueTyped(configValue, configName, type)
 }
 function getConfigValueBuildTime<Type extends TypeAsString = undefined>(
   pageConfig: PageConfigBuildTime,
   configName: ConfigName,
   type?: Type
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
-  return getConfigValue(pageConfig, configName, type)
+  const configValue = pageConfig.configValues[configName]
+  if (!configValue) return null
+  return getConfigValueTyped(configValue, configName, type)
 }
 
 function assertConfigValueType(
