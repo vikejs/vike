@@ -79,10 +79,10 @@ function getCodePageConfigsSerialized(
       if (configValue) return
       assert(sources.length > 0)
       sources.forEach((configValueSource) => {
-      if (!configValueSource.configEnv.eager) return
-      if (configValueSource.isOverriden) return
-      if (!isRuntimeEnvMatch(configValueSource.configEnv, { isForClientSide, isClientRouting, isEager: true })) return
-      lines.push(...serializeConfigValueImported(configValueSource, configName, whitespace, importStatements))
+        if (!configValueSource.configEnv.eager) return
+        if (configValueSource.isOverriden) return
+        if (!isRuntimeEnvMatch(configValueSource.configEnv, { isForClientSide, isClientRouting, isEager: true })) return
+        lines.push(...serializeConfigValueImported(configValueSource, configName, whitespace, importStatements))
       })
     })
     lines.push(`${whitespace}],`)
@@ -120,8 +120,8 @@ function getCodePageConfigGlobalSerialized(
     assert(sources.length > 0)
     sources.forEach((configValueSource) => {
       if (configValueSource.isOverriden) return
-    const whitespace = '    '
-    lines.push(...serializeConfigValueImported(configValueSource, configName, whitespace, importStatements))
+      const whitespace = '    '
+      lines.push(...serializeConfigValueImported(configValueSource, configName, whitespace, importStatements))
     })
   })
   lines.push(`  ],`)
