@@ -39,8 +39,14 @@ function getConfigValuesSerialized(
     const configValueSerialized = { valueSerialized, ...common }
     serializeConfigValue(lines, configName, configValueSerialized)
   })
+  // We iterate over pageConfig.configValueSources instead of pageConfig.configValues in order to access configEnv
+  // Shouldn't we create a new map pageConfig.configEnv instead?
+  const configNameVisited = new Set<string>()
   getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
     const { configName, configEnv } = configValueSource
+    if (configNameVisited.has(configName)) return
+    configNameVisited.add(configName)
+
     const configValue = pageConfig.configValues[configName]
 
     if (!configValue) return
