@@ -16,7 +16,7 @@ export { getHookTimeoutDefault }
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageContextExports } from '../getPageFiles.js'
 import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
-import type { PageConfigBuildTime, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
+import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValue } from '../page-configs/getConfigValue.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
@@ -52,10 +52,7 @@ function getHook(pageContext: PageContextExports, hookName: HookName): null | Ho
   assertHookFn(hookFn, { hookName, hookFilePath })
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
-function getHookFromPageConfig(
-  pageConfig: PageConfigRuntime | PageConfigBuildTime,
-  hookName: HookNamePage
-): null | Hook {
+function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
   const configValue = getConfigValue(pageConfig, hookName)
   const hooksTimeout = getConfigValue(pageConfig, 'hooksTimeout')?.value
   if (!configValue) return null
