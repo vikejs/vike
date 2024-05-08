@@ -1,4 +1,4 @@
-export { getConfigValue }
+export { getConfigValueRuntime }
 export { getConfigValueBuildTime }
 
 import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils.js'
@@ -8,33 +8,33 @@ import pc from '@brillout/picocolors'
 import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
 type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
+type TypeAsString = 'string' | 'boolean' | undefined
 
-function getConfigValueCommon<TypeAsString extends 'string' | 'boolean' | undefined = undefined>(
+function getConfigValue<Type extends TypeAsString = undefined>(
   pageConfig: PageConfigCommon,
   configName: ConfigName,
-  type?: TypeAsString
-): null | (ConfigValue & { value: ResolveTypeAsString<TypeAsString> }) {
+  type?: Type
+): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
   const configValue = getConfigValueEntry(pageConfig, configName)
   if (configValue === null) return null
   const { value, definedAtData } = configValue
   if (type) assertConfigValueType(value, type, configName, definedAtData)
-  return configValue as ConfigValue & { value: ResolveTypeAsString<TypeAsString> }
+  return configValue as ConfigValue & { value: ResolveTypeAsString<Type> }
 }
 
-function getConfigValue<TypeAsString extends 'string' | 'boolean' | undefined = undefined>(
+function getConfigValueRuntime<Type extends TypeAsString = undefined>(
   pageConfig: PageConfigRuntime,
   configName: ConfigName,
-  type?: TypeAsString
-): null | (ConfigValue & { value: ResolveTypeAsString<TypeAsString> }) {
-  return getConfigValueCommon(pageConfig, configName, type)
+  type?: Type
+): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
+  return getConfigValue(pageConfig, configName, type)
 }
-
-function getConfigValueBuildTime<TypeAsString extends 'string' | 'boolean' | undefined = undefined>(
+function getConfigValueBuildTime<Type extends TypeAsString = undefined>(
   pageConfig: PageConfigBuildTime,
   configName: ConfigName,
-  type?: TypeAsString
-): null | (ConfigValue & { value: ResolveTypeAsString<TypeAsString> }) {
-  return getConfigValueCommon(pageConfig, configName, type)
+  type?: Type
+): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
+  return getConfigValue(pageConfig, configName, type)
 }
 
 function assertConfigValueType(

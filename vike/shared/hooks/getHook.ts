@@ -18,7 +18,7 @@ import type { PageContextExports } from '../getPageFiles.js'
 import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
-import { getConfigValue } from '../page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject('getHook.ts', {
@@ -53,8 +53,8 @@ function getHook(pageContext: PageContextExports, hookName: HookName): null | Ho
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
 function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
-  const configValue = getConfigValue(pageConfig, hookName)
-  const hooksTimeout = getConfigValue(pageConfig, 'hooksTimeout')?.value
+  const configValue = getConfigValueRuntime(pageConfig, hookName)
+  const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
   if (!configValue) return null
   const hookFn = configValue.value
   if (!hookFn) return null

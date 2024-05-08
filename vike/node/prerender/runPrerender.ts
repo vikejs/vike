@@ -47,7 +47,7 @@ import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
-import { getConfigValue, getConfigValueBuildTime } from '../../shared/page-configs/getConfigValue.js'
+import { getConfigValueRuntime, getConfigValueBuildTime } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import {
@@ -800,7 +800,7 @@ async function routeAndPrerender(
           if (pageContext._pageConfigs.length > 0) {
             const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
             assert(pageConfig)
-            usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+            usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
             usesClientRouter = globalContext.pluginManifest.usesClientRouter
           }

@@ -8,7 +8,7 @@ import { assert, assertUsage, hasProp, slice } from './utils.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import { getConfigValue } from '../page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
 import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
@@ -57,7 +57,7 @@ function getPageRoutes(
         let pageRoute: null | PageRoute = null
         {
           const configName = 'route'
-          const configValue = getConfigValue(pageConfig, configName)
+          const configValue = getConfigValueRuntime(pageConfig, configName)
           if (configValue) {
             const route = configValue.value
             assert(configValue.definedAtData)
@@ -72,7 +72,7 @@ function getPageRoutes(
               }
             } else {
               assert(isCallable(route))
-              if (getConfigValue(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
+              if (getConfigValueRuntime(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
                 warnDeprecatedAllowKey()
               pageRoute = {
                 pageId,

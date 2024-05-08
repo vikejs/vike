@@ -23,7 +23,7 @@ import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageConfig } from '../../shared/page-configs/helpers.js'
-import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValue.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
@@ -230,7 +230,7 @@ async function hookServerOnlyExists(
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    const hookEnv = getConfigValue(pageConfig, `${hookName}Env`)?.value ?? {}
+    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}
     assert(isObject(hookEnv))
     return !!hookEnv.server && !hookEnv.client
   } else {
@@ -264,7 +264,7 @@ function hookClientOnlyExists(
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    const hookEnv = getConfigValue(pageConfig, `${hookName}Env`)?.value ?? {}
+    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}
     assert(isObject(hookEnv))
     return !!hookEnv.client && !hookEnv.server
   } else {

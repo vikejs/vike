@@ -1,6 +1,6 @@
 export { analyzeClientSide }
 
-import { getConfigValue } from '../page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
 import { analyzePageClientSide } from './analyzePageClientSide.js'
@@ -12,8 +12,9 @@ function analyzeClientSide(
 ): { isClientSideRenderable: boolean; isClientRouting: boolean } {
   // V1 design
   if (pageConfig) {
-    const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
-    const isClientSideRenderable = getConfigValue(pageConfig, 'isClientSideRenderable', 'boolean')?.value ?? false
+    const isClientRouting = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+    const isClientSideRenderable =
+      getConfigValueRuntime(pageConfig, 'isClientSideRenderable', 'boolean')?.value ?? false
     return { isClientSideRenderable, isClientRouting }
   } else {
     // TODO/v1-release: remove
