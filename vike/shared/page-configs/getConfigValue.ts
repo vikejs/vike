@@ -15,8 +15,10 @@ function getConfigValueTyped<Type extends TypeAsString = undefined>(
   configName: ConfigName,
   type?: Type
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
+  /* This doesn't seem to make sense, let's eventually (re)move this.
   // Enable users to suppress global config values by setting the local config value to null
   if (configValue.value === null) return null
+  */
   const { value, definedAtData } = configValue
   if (type) assertConfigValueType(value, type, configName, definedAtData)
   return configValue as ConfigValue & { value: ResolveTypeAsString<Type> }

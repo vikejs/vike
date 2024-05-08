@@ -36,10 +36,9 @@ import type {
   PageConfigBuildTime,
   ConfigValues,
   DefinedAtFilePath,
-  DefinedAtFile,
   ConfigValuesComputed
 } from '../../../../../shared/page-configs/PageConfig.js'
-import type { Config } from '../../../../../shared/page-configs/Config.js'
+import type { Config, ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
   configDefinitionsBuiltInGlobal,
@@ -68,7 +67,6 @@ import {
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
 import type { ResolvedConfig } from 'vite'
-import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import {
@@ -81,6 +79,7 @@ import {
 import { clearFilesEnvMap, resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
+import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 
 assertIsNotProductionRuntime()
 
@@ -423,7 +422,11 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
 
         applyEffectsAll(configValueSources, configDefinitions)
         const configValuesComputed = getComputed(configValueSources, configDefinitions)
-        const configValues = getConfigValues(configValueSources, configValuesComputed, configDefinitions)
+        const configValues = getConfigValues({
+          configValueSources,
+          configValuesComputed,
+          configDefinitions
+        } as PageConfigBuildTime)
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
@@ -1186,66 +1189,15 @@ function isVikeConfigFile(filePath: string): boolean {
   return !!getConfigName(filePath)
 }
 
-function getConfigValues(
-  configValueSources: ConfigValueSources,
-  configValuesComputed: ConfigValuesComputed,
-  configDefinitions: ConfigDefinitions
-): ConfigValues {
+function getConfigValues(pageConfig: PageConfigBuildTime): ConfigValues {
   const configValues: ConfigValues = {}
-  Object.entries(configValuesComputed).forEach(([configName, configValueComputed]) => {
-    configValues[configName] = {
-      type: 'computed',
-      value: configValueComputed.value,
-      definedAtData: null
-    }
-  })
-  Object.entries(configValueSources).forEach(([configName, sources]) => {
-    const configDef = configDefinitions[configName]
-    assert(configDef)
-    if (!configDef.cumulative) {
-      const configValueSource = sources[0]!
-      if ('value' in configValueSource) {
-        configValues[configName] = {
-          type: 'standard',
-          value: configValueSource.value,
-          definedAtData: getDefinedAtFile(configValueSource)
-        }
-      }
-    } else {
-      const { value, definedAtData } = mergeCumulative(configName, sources)
-      assert(value.length === definedAtData.length)
-      configValues[configName] = {
-        type: 'cumulative',
-        value,
-        definedAtData
-      }
-    }
+  const { configValueSources, configValuesComputed } = pageConfig
+  ;[...Object.keys(configValueSources), ...Object.keys(configValuesComputed)].forEach((configName) => {
+    const configValue = getConfigValueBuildTime(pageConfig, configName as ConfigNameBuiltIn)
+    if (!configValue) return
+    configValues[configName] = configValue
   })
   return configValues
-}
-function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
-  return {
-    filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
-    fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
-  }
-}
-
-function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]) {
-  const value: unknown[] = []
-  const definedAtData: DefinedAtFile[] = []
-  configValueSources.forEach((configValueSource) => {
-    assert(configValueSource.isOverriden === false)
-
-    // Imported and merged at runtime
-    if (!('value' in configValueSource)) return
-
-    // Make sure configValueSource.value is serializable
-    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtFile(configValueSource))
-
-    value.push(configValueSource.value)
-    definedAtData.push(getDefinedAtFile(configValueSource))
-  })
-  return { value, definedAtData }
 }
 
 function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnvInternal {
