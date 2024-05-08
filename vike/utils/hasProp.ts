@@ -74,7 +74,13 @@ function hasProp(
   if (!(prop in obj)) {
     return type === 'undefined'
   }
+  if (type === undefined) {
+    return true
+  }
   const propValue = (obj as Record<any, unknown>)[prop]
+  if (type === 'undefined') {
+    return propValue === undefined
+  }
   if (type === 'array') {
     return isArray(propValue)
   }
@@ -95,9 +101,6 @@ function hasProp(
   }
   if (type === 'null') {
     return propValue === null
-  }
-  if (type === 'undefined') {
-    return propValue === undefined
   }
   if (type === 'true') {
     return propValue === true
