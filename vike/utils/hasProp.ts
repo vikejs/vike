@@ -19,6 +19,7 @@ type TypeAsString =
   | 'true'
   | 'false'
   | 'null'
+  | 'unknown'
   | 'undefined'
   | undefined
 
@@ -46,11 +47,13 @@ type ResolveTypeAsString<Type extends TypeAsString = undefined> =
                       ? false
                       : Type extends 'null'
                         ? null
-                        : Type extends 'undefined'
-                          ? undefined
-                          : Type extends undefined
-                            ? unknown
-                            : never
+                        : Type extends 'unknown'
+                          ? unknown
+                          : Type extends 'undefined'
+                            ? undefined
+                            : Type extends undefined
+                              ? unknown
+                              : never
 
 function hasProp<ObjectType, PropName extends PropertyKey, Type extends TypeAsString = undefined>(
   obj: ObjectType,
@@ -73,6 +76,9 @@ function hasProp(
   if (!isObject(obj)) return false
   if (!(prop in obj)) {
     return type === 'undefined'
+  }
+  if (type === 'unknown') {
+    return true
   }
   const propValue = (obj as Record<any, unknown>)[prop]
   if (type === 'array') {
