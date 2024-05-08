@@ -80,7 +80,14 @@ function devConfig(): Plugin[] {
       configureServer: {
         order: 'post',
         handler(server) {
-          if (config.server.middlewareMode) return
+          if (
+            config.server.middlewareMode ||
+            // With Hono middlewareMode is `false` even thouh the Vite dev server is used.
+            // - See https://vitejs.dev/guide/api-javascript.html#vitedevserver
+            //   - "httpServer [...] Will be null in middleware mode."
+            server.httpServer !== null
+          )
+            return
           return () => {
             addSsrMiddleware(server.middlewares)
           }
