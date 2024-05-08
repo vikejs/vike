@@ -267,7 +267,8 @@ async function getRenderContext(): Promise<RenderContext> {
     pageConfigGlobal,
     allPageIds
   )
-  assertV1Design(pageFilesAll.length > 0, pageConfigs, pageFilesAll)
+  // We assume assertV1Design() was already called at build-time
+  assert(pageFilesAll.length === 0 || pageConfigs.length === 0)
   const renderContext = {
     pageFilesAll: pageFilesAll,
     pageConfigs,
