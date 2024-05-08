@@ -15,8 +15,10 @@ function getConfigValue<Type extends TypeAsString = undefined>(
   configName: ConfigName,
   type?: Type
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
-  const configValue = getConfigValueEntry(pageConfig, configName)
-  if (configValue === null) return null
+  const configValue = pageConfig.configValues[configName]
+  if (!configValue) return null
+  // Enable users to suppress global config values by setting the local config value to null
+  if (configValue.value === null) return null
   const { value, definedAtData } = configValue
   if (type) assertConfigValueType(value, type, configName, definedAtData)
   return configValue as ConfigValue & { value: ResolveTypeAsString<Type> }
@@ -56,12 +58,4 @@ function assertConfigValueType(
     pc.cyan(type) as string
   } instead` as const
   assertUsage(false, errMsg)
-}
-
-function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigName) {
-  const configValue = pageConfig.configValues[configName]
-  if (!configValue) return null
-  // Enable users to suppress global config values by setting the local config value to null
-  if (configValue.value === null) return null
-  return configValue
 }
