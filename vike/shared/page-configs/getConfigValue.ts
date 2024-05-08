@@ -1,8 +1,9 @@
 export { getConfigValueRuntime }
-export { getConfigValueBuildTime }
+export { getConfigValueTyped }
+export type { TypeAsString }
 
 import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData } from './PageConfig.js'
+import type { PageConfigRuntime, ConfigValue, DefinedAtData } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
@@ -23,15 +24,6 @@ function getConfigValueTyped<Type extends TypeAsString = undefined>(
 
 function getConfigValueRuntime<Type extends TypeAsString = undefined>(
   pageConfig: PageConfigRuntime,
-  configName: ConfigName,
-  type?: Type
-): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
-  const configValue = pageConfig.configValues[configName]
-  if (!configValue) return null
-  return getConfigValueTyped(configValue, configName, type)
-}
-function getConfigValueBuildTime<Type extends TypeAsString = undefined>(
-  pageConfig: PageConfigBuildTime,
   configName: ConfigName,
   type?: Type
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {

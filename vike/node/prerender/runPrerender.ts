@@ -47,7 +47,7 @@ import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
-import { getConfigValueRuntime, getConfigValueBuildTime } from '../../shared/page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import {
@@ -69,6 +69,7 @@ import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVik
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
+import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 
 type HtmlFile = {
   urlOriginal: string

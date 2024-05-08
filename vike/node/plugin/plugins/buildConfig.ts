@@ -19,7 +19,6 @@ import {
   assertIsNpmPackageImport
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
-import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValue.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
@@ -34,6 +33,7 @@ import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixSer
 import { set_constant_ASSETS_MAP } from './importBuild/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
+import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)

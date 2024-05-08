@@ -13,7 +13,6 @@ import {
 import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
-import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValue.js'
 import { getConfigValueSourcesNotOverriden } from '../../../shared/getConfigValueSourcesNotOverriden.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { serializeConfigValueImported } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
@@ -21,6 +20,7 @@ import type { ResolvedConfig } from 'vite'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { getConfigValuesSerialized } from './getConfigValuesSerialized.js'
 import { fixServerAssets_isEnabled } from '../../buildConfig/fixServerAssets.js'
+import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 
 async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = isVirtualFileIdPageConfigValuesAll(id)
