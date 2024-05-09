@@ -1,6 +1,5 @@
 export { parsePageConfigs }
 export { parseConfigValuesSerialized }
-export { parseConfigValuesImported }
 
 import type {
   ConfigValues,
@@ -24,23 +23,32 @@ type ConfigValueUnmerged = {
   isSideExport?: boolean
 }
 
+function parseConfigValuesSerialized(
+  configValuesSerialized: Record<string, ConfigValueSerialized>,
+  configValuesImported: ConfigValueImported[]
+): ConfigValues {
+  const configValues: ConfigValues = {}
+  {
+    const configValuesAddendum = parseConfigValuesSerialized_tmp(configValuesSerialized)
+    Object.assign(configValues, configValuesAddendum)
+  }
+  {
+    const configValuesAddendum = parseConfigValuesImported(configValuesImported)
+    Object.assign(configValues, configValuesAddendum)
+  }
+  return configValues
+}
+
 function parsePageConfigs(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
   pageConfigGlobalSerialized: PageConfigGlobalRuntimeSerialized
 ): { pageConfigs: PageConfigRuntime[]; pageConfigGlobal: PageConfigGlobalRuntime } {
+  // pageConfigs
   const pageConfigs: PageConfigRuntime[] = pageConfigsSerialized.map((pageConfigSerialized) => {
-    const configValues: ConfigValues = {}
-    {
-      const { configValuesSerialized } = pageConfigSerialized
-      const configValuesAddendum = parseConfigValuesSerialized(configValuesSerialized)
-      Object.assign(configValues, configValuesAddendum)
-    }
-    {
-      const { configValuesImported } = pageConfigSerialized
-      const configValuesAddendum = parseConfigValuesImported(configValuesImported)
-      Object.assign(configValues, configValuesAddendum)
-    }
-
+    const configValues = parseConfigValuesSerialized(
+      pageConfigSerialized.configValuesSerialized,
+      pageConfigSerialized.configValuesImported
+    )
     const { pageId, isErrorPage, routeFilesystem, loadConfigValuesAll } = pageConfigSerialized
     assertRouteConfigValue(configValues)
     return {
@@ -52,10 +60,11 @@ function parsePageConfigs(
     } satisfies PageConfigRuntime
   })
 
+  // pageConfigsGlobal
   const pageConfigGlobal: PageConfigGlobalRuntime = { configValues: {} }
   {
-    const configValuesAddendum = parseConfigValuesImported(pageConfigGlobalSerialized.configValuesImported)
-    Object.assign(pageConfigGlobal.configValues, configValuesAddendum)
+    const configValues = parseConfigValuesSerialized({}, pageConfigGlobalSerialized.configValuesImported)
+    Object.assign(pageConfigGlobal.configValues, configValues)
   }
 
   return { pageConfigs, pageConfigGlobal }
@@ -83,7 +92,7 @@ function assertRouteConfigValue(configValues: ConfigValues) {
  */
 }
 
-function parseConfigValuesSerialized(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
+function parseConfigValuesSerialized_tmp(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
   const configValues: ConfigValues = {}
   Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
     assert(!configValues[configName])
