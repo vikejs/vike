@@ -1,10 +1,9 @@
 export { serializeConfigValue }
 export { serializeConfigValueImported }
 
-// This file is never loaded on the client-side but we save it under the vike/shared/ directory in order to collocate it with:
-//   - vike/shared/page-configs/serialize/parsePageConfigs.ts
-//   - vike/shared/page-configs/serialize/parseConfigValuesImported.ts
-// Both parsePageConfigs() parseConfigValuesImported() and are loaded on the client-side and server-side
+// This file is never loaded on the client-side but we save it under the vike/shared/ directory in order to collocate it with parsePageConfigs()
+// - vike/shared/page-configs/serialize/parsePageConfigs.ts
+// - parsePageConfigs() is loaded on both the client- and server-side.
 import { assertIsNotProductionRuntime } from '../../../utils/assertIsNotProductionRuntime.js'
 assertIsNotProductionRuntime()
 
