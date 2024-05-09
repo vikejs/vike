@@ -24,9 +24,9 @@ type PageConfigGlobalRuntimeSerialized = {
 
 /** Value is serialized */
 type ConfigValueSerialized =
-  | (Omit<ConfigValueStandard, 'value'> & { valueSerialized: string })
-  | (Omit<ConfigValueCumulative, 'value'> & { valueSerialized: string })
-  | (Omit<ConfigValueComputed, 'value'> & { valueSerialized: string })
+  | (Omit<ConfigValueStandard, 'value'> & { valueSerialized: unknown })
+  | (Omit<ConfigValueCumulative, 'value'> & { valueSerialized: unknown })
+  | (Omit<ConfigValueComputed, 'value'> & { valueSerialized: unknown })
 /* We don't use this because it loses union logic.
 type ConfigValueSerialized = Omit<ConfigValue, 'value'> & { valueSerialized: string }
 */
