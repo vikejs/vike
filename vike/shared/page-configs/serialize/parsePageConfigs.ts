@@ -8,47 +8,32 @@ import type {
   ConfigValue,
   DefinedAtFile
 } from '../PageConfig.js'
-import type { PageConfigGlobalRuntimeSerialized, PageConfigRuntimeSerialized } from './PageConfigSerialized.js'
-import { assert, assertUsage, isArray, isCallable } from '../../utils.js'
+import type {
+  PageConfigGlobalRuntimeSerialized,
+  PageConfigRuntimeSerialized,
+  ValueSerialized
+} from './PageConfigSerialized.js'
+import { assert, assertUsage, isCallable } from '../../utils.js'
 import { getConfigDefinedAt } from '../getConfigDefinedAt.js'
 import type { ConfigValueSerialized } from './PageConfigSerialized.js'
 import { parseTransform } from '@brillout/json-serializer/parse'
 import { assertPlusFileExport } from '../assertPlusFileExport.js'
-import type { ConfigValueImported } from './PageConfigSerialized.js'
 
-type ConfigValueUnmerged = {
-  value: unknown
-  importPath: string
-  exportName: string
-  isSideExport?: boolean
-}
-
-function parseConfigValuesSerialized(
-  configValuesSerialized: Record<string, ConfigValueSerialized>,
-  configValuesImported: ConfigValueImported[]
-): ConfigValues {
-  const configValues: ConfigValues = {}
-  {
-    const configValuesAddendum = parseConfigValuesSerialized_tmp(configValuesSerialized)
-    Object.assign(configValues, configValuesAddendum)
-  }
-  {
-    const configValuesAddendum = parseConfigValuesImported(configValuesImported)
-    Object.assign(configValues, configValuesAddendum)
-  }
+function parseConfigValuesSerialized(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
+  const configValues = parseConfigValuesSerialized_tmp(configValuesSerialized)
   return configValues
 }
 
 function parsePageConfigs(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
   pageConfigGlobalSerialized: PageConfigGlobalRuntimeSerialized
-): { pageConfigs: PageConfigRuntime[]; pageConfigGlobal: PageConfigGlobalRuntime } {
+): {
+  pageConfigs: PageConfigRuntime[]
+  pageConfigGlobal: PageConfigGlobalRuntime
+} {
   // pageConfigs
   const pageConfigs: PageConfigRuntime[] = pageConfigsSerialized.map((pageConfigSerialized) => {
-    const configValues = parseConfigValuesSerialized(
-      pageConfigSerialized.configValuesSerialized,
-      pageConfigSerialized.configValuesImported
-    )
+    const configValues = parseConfigValuesSerialized(pageConfigSerialized.configValuesSerialized)
     const { pageId, isErrorPage, routeFilesystem, loadConfigValuesAll } = pageConfigSerialized
     assertRouteConfigValue(configValues)
     return {
@@ -63,7 +48,7 @@ function parsePageConfigs(
   // pageConfigsGlobal
   const pageConfigGlobal: PageConfigGlobalRuntime = { configValues: {} }
   {
-    const configValues = parseConfigValuesSerialized({}, pageConfigGlobalSerialized.configValuesImported)
+    const configValues = parseConfigValuesSerialized(pageConfigGlobalSerialized.configValuesSerialized)
     Object.assign(pageConfigGlobal.configValues, configValues)
   }
 
@@ -94,113 +79,109 @@ function assertRouteConfigValue(configValues: ConfigValues) {
 
 function parseConfigValuesSerialized_tmp(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
   const configValues: ConfigValues = {}
-  Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
-    assert(!configValues[configName])
-    const { valueSerialized, ...common } = configValueSeriliazed
-    const value = parseTransform(valueSerialized)
-    let configValue: ConfigValue
-    if (common.type === 'cumulative') {
-      assert(isArray(value))
-      configValue = { value, ...common }
-    } else {
-      configValue = { value, ...common }
-    }
-    configValues[configName] = configValue
-  })
-  return configValues
-}
 
-function parseConfigValuesImported(configValuesImported: ConfigValueImported[]): ConfigValues {
-  const configValuesUnmerged: Record<
-    // configName
-    string,
-    ConfigValueUnmerged[]
-  > = {}
-  configValuesImported
-    .filter((c) => c.configName !== 'client')
-    .forEach((configValueLoaded) => {
-      if (configValueLoaded.isValueFile) {
-        const { exportValues, importPath, configName } = configValueLoaded
-        assertPlusFileExport(exportValues, importPath, configName)
-        Object.entries(exportValues).forEach(([exportName, exportValue]) => {
-          const configName = exportName !== 'default' ? exportName : configValueLoaded.configName
-          const isSideExport = configName !== configValueLoaded.configName // .md files may have "side-exports" such as `export { frontmatter }`
-          configValuesUnmerged[configName] ??= []
-          configValuesUnmerged[configName]!.push({
-            value: exportValue,
-            importPath,
-            exportName,
-            isSideExport
+  Object.entries(configValuesSerialized)
+    .forEach(([configName, configValueSeriliazed]) => {
+      let configValue: ConfigValue
+      if (configValueSeriliazed.type === 'cumulative') {
+        const { valueSerialized, ...common } = configValueSeriliazed
+        const value = valueSerialized.map((valueSerializedElement, i) => {
+          const { value, sideExports } = parseValueSerialized(valueSerializedElement, configName, () => {
+            const definedAtFile = configValueSeriliazed.definedAtData[i]
+            assert(definedAtFile)
+            return definedAtFile
           })
+          addSideExports(sideExports)
+          return value
         })
+        configValue = { value, ...common }
       } else {
-        const { configName, importPath, exportValue, exportName } = configValueLoaded
-        configValuesUnmerged[configName] ??= []
-        configValuesUnmerged[configName]!.push({
-          value: exportValue,
-          importPath,
-          exportName,
-          isSideExport: false
+        const { valueSerialized, ...common } = configValueSeriliazed
+        const { value, sideExports } = parseValueSerialized(valueSerialized, configName, () => {
+          assert(configValueSeriliazed.type !== 'computed')
+          return configValueSeriliazed.definedAtData
         })
+        addSideExports(sideExports)
+        configValue = { value, ...common }
       }
+      configValues[configName] = configValue
     })
 
-  const configValues: ConfigValues = {}
-  Object.entries(configValuesUnmerged).forEach(([configName, values]) => {
-    const valuesWithoutSideExports = values.filter((v) => !v.isSideExport)
-    const isCumulative = valuesWithoutSideExports.length > 1
-    const noSideExports = valuesWithoutSideExports.length === values.length
-    assert(!(configName in configValues))
-    if (isCumulative) {
-      // Vike currently doesn't support side exports for cumulative configs
-      assert(noSideExports)
-      configValues[configName] = {
-        type: 'cumulative',
-        value: valuesWithoutSideExports.map((val) => val.value),
-        definedAtData: valuesWithoutSideExports.map((v) => getDefinedAtData(v, configName))
-      }
-    } else {
-      const val =
-        valuesWithoutSideExports[0] ??
-        // We can't avoid side-export conflicts upstream. (We cannot know about side-exports at build-time.)
-        // Side-exports have lower precedence.
-        values[0]
-      assert(val)
-      const { value, importPath } = val
-      configValues[configName] = {
-        type: 'standard',
-        value,
-        definedAtData: getDefinedAtData(val, configName)
-      }
-      assertIsNotNull(value, configName, importPath)
-    }
-  })
-
   return configValues
-}
 
-function getDefinedAtData(configValueUnmerged: ConfigValueUnmerged, configName: string): DefinedAtFile {
-  const { importPath, exportName } = configValueUnmerged
-  return {
-    // importPath cannot be relative to the current file, since the current file is a virtual file
-    filePathToShowToUser: importPath,
-    fileExportPathToShowToUser: [configName, 'default'].includes(exportName)
-      ? []
-      : [
-          // Side-export
-          exportName
-        ]
+  function addSideExports(sideExports: SideExport[]) {
+    sideExports.forEach((sideExport) => {
+      const { configName, configValue } = sideExport
+      if (!configValues[configName]) {
+        configValues[configName] = configValue
+      } else {
+        // Side-exports have lower precedence.
+        // We can't avoid side-export conflicts upstream. (We cannot know about side-exports at build-time.)
+      }
+    })
   }
 }
 
-function assertIsNotNull(configValue: unknown, configName: string, importPath: string) {
-  assert(!importPath.includes('+config.'))
-  /* Re-use this for:
-   *  - upcoming config.requestPageContextOnNavigation
-   *  - for cumulative values in the future: we don't need this for now because, currently, cumulative values are never imported.
+type SideExport = {
+  configName: string
+  configValue: ConfigValue
+}
+function parseValueSerialized(
+  valueSerialized: ValueSerialized,
+  configName: string,
+  getDefinedAtFile: () => DefinedAtFile
+): { value: unknown; sideExports: SideExport[] } {
+  if (valueSerialized.type === 'js-serialized') {
+    let { value } = valueSerialized
+    value = parseTransform(value)
+    return { value, sideExports: [] }
+  }
+  if (valueSerialized.type === 'pointer-import') {
+    const { value } = valueSerialized
+    return { value, sideExports: [] }
+  }
+  if (valueSerialized.type === 'plus-file') {
+    const definedAtFile = getDefinedAtFile()
+    const { exportValues } = valueSerialized
+    assertPlusFileExport(exportValues, definedAtFile.filePathToShowToUser, configName)
+    let value: unknown
+    let valueWasFound = false
+    const sideExports: SideExport[] = []
+    Object.entries(exportValues).forEach(([exportName, exportValue]) => {
+      const isSideExport = exportName !== 'default' && exportName !== configName
+      if (!isSideExport) {
+        value = exportValue
+        assert(!valueWasFound)
+        valueWasFound = true
+      } else {
+        sideExports.push({
+          configName: exportName,
+          configValue: {
+            type: 'standard', // We don't support side exports for cumulative values. We could support it but it isn't trivial.
+            value: exportValue,
+            definedAtData: {
+              filePathToShowToUser: definedAtFile.filePathToShowToUser,
+              fileExportPathToShowToUser: [exportName]
+            }
+          }
+        })
+      }
+    })
+    assert(valueWasFound)
+    return { value, sideExports }
+  }
+  assert(false)
+}
+
+/* [NULL_HANDLING] Do we really need this?
+function assertIsNotNull(configValue: unknown, configName: string, filePathToShowToUser: string) {
+  assert(!filePathToShowToUser.includes('+config.'))
+  // Re-use this for:
+  //  - upcoming config.requestPageContextOnNavigation
+  //  - for cumulative values in the future: we don't need this for now because, currently, cumulative values are never imported.
   assertUsage(
     configValue !== null,
-    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.js file instead of ${importPath}`
+    `Set ${pc.cyan(configName)} to ${pc.cyan('null')} in a +config.js file instead of ${filePathToShowToUser}`
   )
-  */
 }
+*/

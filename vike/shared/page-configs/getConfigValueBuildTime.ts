@@ -5,7 +5,7 @@ import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile
 import type { ConfigNameBuiltIn } from './Config.js'
 import { getConfigValueTyped, type TypeAsString } from './getConfigValue.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime.js'
-import { assertConfigValueIsSerializable } from './serialize/serializeConfigValue.js'
+import { assertConfigValueIsSerializable } from './serialize/serializeConfigValues.js'
 assertIsNotProductionRuntime()
 type ConfigName = ConfigNameBuiltIn
 
@@ -70,9 +70,14 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
   configValueSources.forEach((configValueSource) => {
     assert(configValueSource.isOverriden === false)
 
+    /* TODO: try this assert after refactor
+    assert(configValueSource.configEnv.config === true)
+    assert('value' in configValueSource)
+    /*/
     // Imported and merged at runtime
     if (!('value' in configValueSource)) return
 
+    // TODO: Do we really need this?
     // Make sure configValueSource.value is serializable
     assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtFile(configValueSource))
 

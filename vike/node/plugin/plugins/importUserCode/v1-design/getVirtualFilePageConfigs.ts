@@ -1,15 +1,11 @@
 export { getVirtualFilePageConfigs }
 
-import { assert, objectEntries } from '../../../utils.js'
 import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { getVikeConfig } from './getVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import {
-  getConfigValuesSerialized,
-  serializeConfigValueImported
-} from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
+import { serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
 
 async function getVirtualFilePageConfigs(
@@ -35,11 +31,13 @@ function getCode(
   const importStatements: string[] = []
 
   lines.push('export const pageConfigsSerialized = [')
-  lines.push(getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, importStatements))
+  lines.push(getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, isDev, importStatements))
   lines.push('];')
 
   lines.push('export const pageConfigGlobalSerialized = {')
-  lines.push(getCodePageConfigGlobalSerialized(pageConfigGlobal, isForClientSide, isDev, importStatements))
+  lines.push(
+    getCodePageConfigGlobalSerialized(pageConfigGlobal, isForClientSide, isClientRouting, isDev, importStatements)
+  )
   lines.push('};')
 
   const code = [...importStatements, ...lines].join('\n')
@@ -51,6 +49,7 @@ function getCodePageConfigsSerialized(
   pageConfigs: PageConfigBuildTime[],
   isForClientSide: boolean,
   isClientRouting: boolean,
+  isDev: boolean,
   importStatements: string[]
 ): string {
   const lines: string[] = []
@@ -63,32 +62,16 @@ function getCodePageConfigsSerialized(
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
     lines.push(`    loadConfigValuesAll: () => import(${JSON.stringify(virtualFileIdPageConfigValuesAll)}),`)
-
-    // Serialized config values
     lines.push(`    configValuesSerialized: {`)
     lines.push(
-      getConfigValuesSerialized(pageConfig, importStatements, (configEnv) =>
-        isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true })
+      ...serializeConfigValues(
+        pageConfig,
+        importStatements,
+        (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true, isDev }),
+        '    '
       )
     )
     lines.push(`    },`)
-
-    // Imported config values
-    const whitespace = '    '
-    lines.push(`${whitespace}configValuesImported: [`)
-    Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-      const configValue = pageConfig.configValues[configName]
-      if (configValue) return
-      assert(sources.length > 0)
-      sources.forEach((configValueSource) => {
-        if (!configValueSource.configEnv.eager) return
-        if (configValueSource.isOverriden) return
-        if (!isRuntimeEnvMatch(configValueSource.configEnv, { isForClientSide, isClientRouting, isEager: true })) return
-        lines.push(...serializeConfigValueImported(configValueSource, configName, whitespace, importStatements))
-      })
-    })
-    lines.push(`${whitespace}],`)
-
     lines.push(`  },`)
   })
 
@@ -99,34 +82,22 @@ function getCodePageConfigsSerialized(
 function getCodePageConfigGlobalSerialized(
   pageConfigGlobal: PageConfigGlobalBuildTime,
   isForClientSide: boolean,
+  isClientRouting: boolean,
   isDev: boolean,
   importStatements: string[]
 ) {
   const lines: string[] = []
-  /* Nothing (yet)
+
   lines.push(`  configValuesSerialized: {`)
+  lines.push(
+    ...serializeConfigValues(
+      pageConfigGlobal,
+      importStatements,
+      (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: true, isDev }),
+      '    '
+    )
+  )
   lines.push(`  },`)
-  */
-  lines.push(`  configValuesImported: [`)
-  objectEntries(pageConfigGlobal.configValueSources).forEach(([configName, sources]) => {
-    if (configName === 'onBeforeRoute') {
-      // if( isForClientSide && !isClientRouting ) return
-    } else if (configName === 'onPrerenderStart') {
-      if (isDev || isForClientSide) {
-        // Only load onPrerenderStart() in server production runtime
-        return
-      }
-    } else {
-      assert(false)
-    }
-    assert(sources.length > 0)
-    sources.forEach((configValueSource) => {
-      if (configValueSource.isOverriden) return
-      const whitespace = '    '
-      lines.push(...serializeConfigValueImported(configValueSource, configName, whitespace, importStatements))
-    })
-  })
-  lines.push(`  ],`)
 
   const code = lines.join('\n')
   return code

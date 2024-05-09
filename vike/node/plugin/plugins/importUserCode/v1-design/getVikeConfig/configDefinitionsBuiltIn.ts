@@ -94,7 +94,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true }
   },
   onBeforePrerenderStart: {
-    env: { server: true }
+    env: { server: true, production: true }
   },
   Page: {
     env: { server: true, client: true }
@@ -183,7 +183,7 @@ type ConfigNameGlobal =
   | 'disableUrlNormalization'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
-    env: { server: true }
+    env: { server: true, production: true }
   },
   onBeforeRoute: {
     env: { server: true, client: 'if-client-routing', eager: true }

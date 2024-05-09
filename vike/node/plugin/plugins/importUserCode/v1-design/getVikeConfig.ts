@@ -353,6 +353,7 @@ async function loadVikeConfig_withErrorHandling(
       const dummyData: VikeConfigObject = {
         pageConfigs: [],
         pageConfigGlobal: {
+          configDefinitions: {},
           configValueSources: {}
         },
         globalVikeConfig: {}
@@ -558,6 +559,7 @@ async function getGlobalConfigs(
 
   const globalVikeConfig: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
+    configDefinitions: configDefinitionsBuiltInGlobal,
     configValueSources: {}
   }
   await Promise.all(

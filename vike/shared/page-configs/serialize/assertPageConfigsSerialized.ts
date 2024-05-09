@@ -13,12 +13,11 @@ function assertPageConfigsSerialized(
     assert(hasProp(pageConfigSerialized, 'pageId', 'string'))
     assert(hasProp(pageConfigSerialized, 'routeFilesystem'))
     assert(hasProp(pageConfigSerialized, 'configValuesSerialized'))
-    assert(hasProp(pageConfigSerialized, 'configValuesImported'))
   })
 }
 
 function assertPageConfigGlobalSerialized(
   pageConfigGlobalSerialized: unknown
 ): asserts pageConfigGlobalSerialized is PageConfigGlobalRuntimeSerialized {
-  assert(hasProp(pageConfigGlobalSerialized, 'configValuesImported'))
+  assert(hasProp(pageConfigGlobalSerialized, 'configValuesSerialized'))
 }

@@ -13,10 +13,7 @@ async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): 
     return pageConfig as PageConfigRuntimeLoaded
   }
   const configValuesLoaded = await pageConfig.loadConfigValuesAll()
-  const configValues = parseConfigValuesSerialized(
-    configValuesLoaded.configValuesSerialized,
-    configValuesLoaded.configValuesImported
-  )
+  const configValues = parseConfigValuesSerialized(configValuesLoaded.configValuesSerialized)
   Object.assign(pageConfig.configValues, configValues)
   objectAssign(pageConfig, { isAllLoaded: true as const })
   return pageConfig
