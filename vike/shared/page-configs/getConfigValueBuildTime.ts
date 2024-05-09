@@ -5,7 +5,7 @@ import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile
 import type { ConfigNameBuiltIn } from './Config.js'
 import { getConfigValueTyped, type TypeAsString } from './getConfigValue.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime.js'
-import { assertConfigValueIsSerializable } from '../../node/plugin/plugins/importUserCode/v1-design/getConfigValuesSerialized.js'
+import { assertConfigValueIsSerializable } from './serialize/serializeConfigValue.js'
 assertIsNotProductionRuntime()
 type ConfigName = ConfigNameBuiltIn
 

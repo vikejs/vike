@@ -6,9 +6,11 @@ import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-
 import { debug } from './debug.js'
 import { getVikeConfig } from './getVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { serializeConfigValueImported } from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
+import {
+  getConfigValuesSerialized,
+  serializeConfigValueImported
+} from '../../../../../shared/page-configs/serialize/serializeConfigValue.js'
 import type { ResolvedConfig } from 'vite'
-import { getConfigValuesSerialized } from './getConfigValuesSerialized.js'
 
 async function getVirtualFilePageConfigs(
   isForClientSide: boolean,
