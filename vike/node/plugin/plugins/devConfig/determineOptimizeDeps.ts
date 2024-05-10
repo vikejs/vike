@@ -4,7 +4,6 @@ import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, assertIsNpmPackageImport, createDebugger, isArray, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
-import { getConfigValueSourcesNotOverriden } from '../../shared/getConfigValueSourcesNotOverriden.js'
 import { analyzeClientEntries } from '../buildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import {
@@ -59,7 +58,10 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   // V1 design
   {
     pageConfigs.forEach((pageConfig) => {
-      getConfigValueSourcesNotOverriden(pageConfig).forEach((configValueSource) => {
+      Object.values(pageConfig.configValueSources).forEach((sources) => {
+        sources
+          .filter((c) => !c.isOverriden)
+          .forEach((configValueSource) => {
         if (!configValueSource.valueIsImportedAtRuntime) return
         const { definedAtFilePath, configEnv } = configValueSource
 
@@ -72,6 +74,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
           // Adding definedAtFilePath.filePathAbsoluteFilesystem doesn't work for npm packages, I guess because of Vite's config.server.fs.allow
           addInclude(definedAtFilePath.importPathAbsolute)
         }
+          })
       })
     })
   }
