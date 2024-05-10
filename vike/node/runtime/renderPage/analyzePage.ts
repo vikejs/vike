@@ -13,8 +13,10 @@ import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigVal
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
   if (pageConfig) {
     const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
+    const clientEntries: string[] = []
     const clientFilePath = getConfigValueRuntime(pageConfig, 'client', 'string')?.value ?? null
-    const clientEntry = !isClientSideRenderable ? clientFilePath : getVikeClientEntry(isClientRouting)
+    if (clientFilePath) clientEntries.push(clientFilePath)
+    if (isClientSideRenderable) clientEntries.push(getVikeClientEntry(isClientRouting))
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
       id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, true),
@@ -46,15 +48,13 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       }
     })
     */
-    const clientEntries: string[] = []
-    if (clientEntry) {
+    clientEntries.forEach((clientEntry) => {
       clientDependencies.push({
         id: clientEntry,
         onlyAssets: false,
         eagerlyImported: false
       })
-      clientEntries.push(clientEntry)
-    }
+    })
     return {
       isHtmlOnly: !isClientSideRenderable,
       isClientRouting,
