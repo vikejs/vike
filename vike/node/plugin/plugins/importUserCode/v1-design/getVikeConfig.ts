@@ -767,7 +767,7 @@ async function getConfigValueSource(
       valueIsFilePath: true,
       configEnv,
       valueIsImportedAtRuntime: true,
-      valueIsDefinedByValueFile: false,
+      valueIsDefinedByPlusFile: false,
       isOverriden,
       definedAtFilePath
     }
@@ -792,7 +792,7 @@ async function getConfigValueSource(
         locationId,
         configEnv,
         valueIsImportedAtRuntime: true,
-        valueIsDefinedByValueFile: false,
+        valueIsDefinedByPlusFile: false,
         isOverriden,
         definedAtFilePath: pointerImport
       }
@@ -820,7 +820,7 @@ async function getConfigValueSource(
       value: configValue,
       configEnv,
       valueIsImportedAtRuntime: false,
-      valueIsDefinedByValueFile: false,
+      valueIsDefinedByPlusFile: false,
       isOverriden,
       definedAtFilePath: definedAtFilePath_
     }
@@ -835,7 +835,7 @@ async function getConfigValueSource(
       locationId,
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
-      valueIsDefinedByValueFile: true,
+      valueIsDefinedByPlusFile: true,
       isOverriden,
       definedAtFilePath: {
         ...interfaceFile.filePath,

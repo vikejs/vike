@@ -89,8 +89,7 @@ type ConfigValueSource = {
   valueIsImportedAtRuntime: boolean
   /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true
-  // TODO: rename
-  valueIsDefinedByValueFile: boolean
+  valueIsDefinedByPlusFile: boolean
 }
 type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 type ConfigValueSources = Record<

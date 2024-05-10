@@ -172,15 +172,15 @@ function serializeConfigValue(
 function serializeWithImport(configValueSource: ConfigValueSource, importStatements: string[]): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
-  const { valueIsImportedAtRuntime, valueIsDefinedByValueFile, definedAtFilePath } = configValueSource
+  const { valueIsImportedAtRuntime, valueIsDefinedByPlusFile, definedAtFilePath } = configValueSource
   assert(valueIsImportedAtRuntime)
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
-  if (valueIsDefinedByValueFile) assert(fileExportName === undefined)
+  if (valueIsDefinedByPlusFile) assert(fileExportName === undefined)
   const { importName } = addImportStatement(importStatements, filePathAbsoluteVite, fileExportName || '*')
 
   return {
-    type: valueIsDefinedByValueFile ? 'plus-file' : 'pointer-import',
+    type: valueIsDefinedByPlusFile ? 'plus-file' : 'pointer-import',
     valueAsJsCode: importName
   }
 }
