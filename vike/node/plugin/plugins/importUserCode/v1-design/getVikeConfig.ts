@@ -1230,7 +1230,7 @@ function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, confi
   return configDefinitions[configName] ?? null
 }
 function isLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
-  return !!configDef.env.config
+  return !!configDef.env.config && !configDef._valueIsFilePath
 }
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false
