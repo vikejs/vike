@@ -268,7 +268,7 @@ async function loadInterfaceFiles(
         //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
         //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
         const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
-        if (configDef && isConfigEnv(configDef)) {
+        if (configDef && isLoadableAtBuildTime(configDef)) {
           await loadValueFile(interfaceFile, configName, userRootDir)
         }
       }
@@ -391,7 +391,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
-            if (!isConfigEnv(configDef)) return
+            if (!isLoadableAtBuildTime(configDef)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
             // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
@@ -798,7 +798,7 @@ async function getConfigValueSource(
       }
       // Load pointer import
       if (
-        isConfigEnv(configDef) &&
+        isLoadableAtBuildTime(configDef) &&
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
         configName !== 'extends'
       ) {
@@ -1229,7 +1229,7 @@ function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: s
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
   return configDefinitions[configName] ?? null
 }
-function isConfigEnv(configDef: ConfigDefinitionInternal): boolean {
+function isLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
   return !!configDef.env.config
 }
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
