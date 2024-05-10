@@ -1,5 +1,4 @@
 export { serializeConfigValues }
-export { assertConfigValueIsSerializable }
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertIsNotProductionRuntime.js'
 import { assert, assertUsage, getPropAccessNotation } from '../../../node/plugin/utils.js'
@@ -255,9 +254,4 @@ function logJsonSerializeError(err: unknown, configName: string, definedAtData: 
       configName
     )} defined by ${configValueFilePathToShowToUser} must be defined over a so-called "pointer import", see https://vike.dev/config#pointer-imports`
   )
-}
-
-function assertConfigValueIsSerializable(value: unknown, configName: string, definedAtData: DefinedAtData) {
-  // Contains asserts
-  serializeWithJson(value, configName, definedAtData, [])
 }

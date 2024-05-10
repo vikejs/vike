@@ -5,7 +5,6 @@ import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile
 import type { ConfigNameBuiltIn } from './Config.js'
 import { getConfigValueTyped, type TypeAsString } from './getConfigValue.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime.js'
-import { assertConfigValueIsSerializable } from './serialize/serializeConfigValues.js'
 assertIsNotProductionRuntime()
 type ConfigName = ConfigNameBuiltIn
 
@@ -54,7 +53,7 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigName)
       definedAtData: getDefinedAtFile(configValueSource)
     }
   } else {
-    const { value, definedAtData } = mergeCumulative(configName, sources)
+    const { value, definedAtData } = mergeCumulative(sources)
     assert(value.length === definedAtData.length)
     return {
       type: 'cumulative',
@@ -64,7 +63,7 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigName)
   }
 }
 
-function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]) {
+function mergeCumulative(configValueSources: ConfigValueSource[]) {
   const value: unknown[] = []
   const definedAtData: DefinedAtFile[] = []
   configValueSources.forEach((configValueSource) => {
@@ -76,10 +75,6 @@ function mergeCumulative(configName: string, configValueSources: ConfigValueSour
     /*/
     // Imported and merged at runtime
     if (!('value' in configValueSource)) return
-
-    // TODO: Do we really need this?
-    // Make sure configValueSource.value is serializable
-    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtFile(configValueSource))
 
     value.push(configValueSource.value)
     definedAtData.push(getDefinedAtFile(configValueSource))
