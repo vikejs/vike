@@ -34,11 +34,10 @@ import type {
   ConfigValueSource,
   ConfigValueSources,
   PageConfigBuildTime,
-  ConfigValues,
   DefinedAtFilePath,
   ConfigValuesComputed
 } from '../../../../../shared/page-configs/PageConfig.js'
-import type { Config, ConfigNameBuiltIn } from '../../../../../shared/page-configs/Config.js'
+import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
   configDefinitionsBuiltInGlobal,
@@ -423,11 +422,6 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
 
         applyEffectsAll(configValueSources, configDefinitions)
         const configValuesComputed = getComputed(configValueSources, configDefinitions)
-        const configValues = getConfigValues({
-          configValueSources,
-          configValuesComputed,
-          configDefinitions
-        } as PageConfigBuildTime)
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
@@ -435,8 +429,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
           routeFilesystem,
           configDefinitions,
           configValueSources,
-          configValuesComputed,
-          configValues
+          configValuesComputed
         }
         return pageConfig
       })
@@ -471,7 +464,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   const onBeforeRenderConfig = pageConfig.configValueSources.onBeforeRender?.[0]
   if (!onBeforeRenderConfig) return
   const onBeforeRenderEnv = onBeforeRenderConfig.configEnv
-  const isClientRouting = !!pageConfig.configValues.clientRouting?.value
+  const isClientRouting = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')
   // When using Server Routing, loading a onBeforeRender() hook on the client-side hasn't any effect (the Server Routing's client runtime never calls it); it unnecessarily bloats client bundle sizes
   assertUsage(
     !(onBeforeRenderEnv.client && !isClientRouting),
@@ -1189,17 +1182,6 @@ function determineIsErrorPage(routeFilesystem: string) {
 
 function isVikeConfigFile(filePath: string): boolean {
   return !!getConfigName(filePath)
-}
-
-function getConfigValues(pageConfig: PageConfigBuildTime): ConfigValues {
-  const configValues: ConfigValues = {}
-  const { configValueSources, configValuesComputed } = pageConfig
-  ;[...Object.keys(configValueSources), ...Object.keys(configValuesComputed)].forEach((configName) => {
-    const configValue = getConfigValueBuildTime(pageConfig, configName as ConfigNameBuiltIn)
-    if (!configValue) return
-    configValues[configName] = configValue
-  })
-  return configValues
 }
 
 function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnvInternal {

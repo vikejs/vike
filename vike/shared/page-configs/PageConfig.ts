@@ -29,11 +29,11 @@ type PageConfigBase = {
     routeString: string
     definedBy: string
   }
-  configValues: ConfigValues
 }
 
 /** Page config data structure available at runtime */
 type PageConfigRuntime = PageConfigBase & {
+  configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
   loadConfigValuesAll: () => Promise<{
     configValuesSerialized: Record<string, ConfigValueSerialized>
