@@ -80,32 +80,31 @@ function assertRouteConfigValue(configValues: ConfigValues) {
 function parseConfigValuesSerialized_tmp(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
   const configValues: ConfigValues = {}
 
-  Object.entries(configValuesSerialized)
-    .forEach(([configName, configValueSeriliazed]) => {
-      let configValue: ConfigValue
-      if (configValueSeriliazed.type === 'cumulative') {
-        const { valueSerialized, ...common } = configValueSeriliazed
-        const value = valueSerialized.map((valueSerializedElement, i) => {
-          const { value, sideExports } = parseValueSerialized(valueSerializedElement, configName, () => {
-            const definedAtFile = configValueSeriliazed.definedAtData[i]
-            assert(definedAtFile)
-            return definedAtFile
-          })
-          addSideExports(sideExports)
-          return value
-        })
-        configValue = { value, ...common }
-      } else {
-        const { valueSerialized, ...common } = configValueSeriliazed
-        const { value, sideExports } = parseValueSerialized(valueSerialized, configName, () => {
-          assert(configValueSeriliazed.type !== 'computed')
-          return configValueSeriliazed.definedAtData
+  Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
+    let configValue: ConfigValue
+    if (configValueSeriliazed.type === 'cumulative') {
+      const { valueSerialized, ...common } = configValueSeriliazed
+      const value = valueSerialized.map((valueSerializedElement, i) => {
+        const { value, sideExports } = parseValueSerialized(valueSerializedElement, configName, () => {
+          const definedAtFile = configValueSeriliazed.definedAtData[i]
+          assert(definedAtFile)
+          return definedAtFile
         })
         addSideExports(sideExports)
-        configValue = { value, ...common }
-      }
-      configValues[configName] = configValue
-    })
+        return value
+      })
+      configValue = { value, ...common }
+    } else {
+      const { valueSerialized, ...common } = configValueSeriliazed
+      const { value, sideExports } = parseValueSerialized(valueSerialized, configName, () => {
+        assert(configValueSeriliazed.type !== 'computed')
+        return configValueSeriliazed.definedAtData
+      })
+      addSideExports(sideExports)
+      configValue = { value, ...common }
+    }
+    configValues[configName] = configValue
+  })
 
   return configValues
 
