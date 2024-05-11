@@ -30,7 +30,7 @@ async function getViteDevScripts(): Promise<string> {
     'You are using a Vite Plugin that transforms the HTML in a way that conflicts with vike. Create a new GitHub ticket to discuss a solution.'
   )
   const viteInjection = fakeHtml.slice(fakeHtmlBegin.length, -1 * fakeHtmlEnd.length)
-  assert(viteInjection.includes('script'), { viteInjection })
+  assert(viteInjection.includes('script'))
   const scriptTags = viteInjection
   return scriptTags
 }
