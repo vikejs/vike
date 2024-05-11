@@ -84,6 +84,10 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
   markAsAlreadyPrefetched(pageContext.urlPathname)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
+  assertWarning(linkTags.length > 0, 'No <a> tag found, see https://vike.dev/prefetchStaticAssets#debug', {
+    showStackTrace: true,
+    onlyOnce: true
+  })
   linkTags.forEach((linkTag) => {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
     globalObject.linkPrefetchHandlerAdded.set(linkTag, true)

@@ -81,6 +81,10 @@ See also:
  - [MDN > Web API > Window > matchMedia()](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia)
  - [Stack Overflow > Detecting that the browser has no mouse and is touch-only](https://stackoverflow.com/questions/7838680/detecting-that-the-browser-has-no-mouse-and-is-touch-only/52854585#52854585)
 
+## Debug
+
+If you get the warning `No <a> tag found` then it most likely means that you need to `await` your React/Vue/... rendering/hydration in your <Link href="/onRenderClient">`onRenderClient()` hook</Link>.
+
 ## See also
 
 - <Link href="/preloading" />
