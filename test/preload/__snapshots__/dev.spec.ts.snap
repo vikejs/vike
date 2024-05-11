@@ -34,8 +34,8 @@ RefreshRuntime.injectIntoGlobalHook(window)
 window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
-import("/@vite/client");
-import("/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js");
+import "/@vite/client";
+import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
 </script>
       </body>
     </html>"
@@ -75,8 +75,8 @@ RefreshRuntime.injectIntoGlobalHook(window)
 window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
-import("/@vite/client");
-import("/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js");
+import "/@vite/client";
+import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
 </script>
       </body>
     </html>"
@@ -116,8 +116,8 @@ RefreshRuntime.injectIntoGlobalHook(window)
 window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
-import("/@vite/client");
-import("/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js");
+import "/@vite/client";
+import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
 </script>
       </body>
     </html>"
@@ -157,8 +157,8 @@ RefreshRuntime.injectIntoGlobalHook(window)
 window.$RefreshReg$ = () => {}
 window.$RefreshSig$ = () => (type) => type
 window.__vite_plugin_react_preamble_installed__ = true
-import("/@vite/client");
-import("/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js");
+import "/@vite/client";
+import "/@fs/$ROOT/vike/dist/esm/client/server-routing-runtime/entry.js";
 </script>
       </body>
     </html>"
