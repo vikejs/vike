@@ -10,8 +10,6 @@ export default {
 }
 ```
 
-> The `prefetchStaticAssets` setting requires <Link href="/client-routing">Client Routing</Link>.
-
 By default,
 the static assets of `/some-url` are loaded as soon as the user hovers his mouse over a link `<a href="/some-url">`.
 This means that static assets are often already loaded before even the user clicks on the link.
@@ -34,9 +32,11 @@ export default {
 }
 ```
 
-> Viewport prefetching is disabled in development. (Because preloading pages <ViteLazyTranspilingContradiction />.)
+> Viewport prefetching is disabled in development. (Because preloading pages that eargly <ViteLazyTranspilingContradiction />.)
 
 > Only static assets are prefetched: the `pageContext` of pages isn't prefetched, see [#246](https://github.com/vikejs/vike/issues/246).
+
+> The `prefetchStaticAssets` setting requires <Link href="/client-routing">Client Routing</Link>.
 
 
 ## Override for individual links
@@ -57,18 +57,30 @@ You can programmatically call <code>prefetch('/some/url')</code>, see <Link href
 You can viewport prefetch for mobile users while only hover prefetch for desktop users:
 
 ```js
+// /pages/+prefetchStaticAssets.js
+
 // For small screens, such as mobile, viewport prefetching can be a sensible strategy
 export const prefetchStaticAssets =
   window.matchMedia('(max-width: 600px)').matches ? 'viewport' : 'hover'
 ```
 
 ```js
+// /pages/+prefetchStaticAssets.js
+
 // Or we enable viewport prefetching for any device without a mouse: mobile and tablets (but
 // not laptops that have a touch display).
 export const prefetchStaticAssets =
   window.matchMedia('(any-hover: none)').matches ? 'viewport' : 'hover'
 ```
 
+> Make sure to define such dynamic/runtime code in a `+prefetchStaticAssets.js` file.
+>
+> (Don't define it inside a `+config.js` file because `window.matchMedia()` only exists in the browser and it would <Link href="/config#pointer-imports">prevent Vike from loading `+config.js` files</Link>.)
+
 See also:
  - [MDN > Web API > Window > matchMedia()](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia)
  - [Stack Overflow > Detecting that the browser has no mouse and is touch-only](https://stackoverflow.com/questions/7838680/detecting-that-the-browser-has-no-mouse-and-is-touch-only/52854585#52854585)
+
+## See also
+
+- <Link href="/preloading" />
