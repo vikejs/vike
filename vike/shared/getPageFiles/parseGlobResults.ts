@@ -1,15 +1,15 @@
 export { parseGlobResults }
 
-import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils.js'
+import { assert, hasProp, isCallable, isObject, cast, assertUsage, isArray } from '../utils.js'
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import {
-  assertPageConfigGlobalSerialized,
-  assertPageConfigsSerialized
-} from '../page-configs/serialize/assertPageConfigsSerialized.js'
 import { parsePageConfigs } from '../page-configs/serialize/parsePageConfigs.js'
+import type {
+  PageConfigGlobalRuntimeSerialized,
+  PageConfigRuntimeSerialized
+} from '../page-configs/serialize/PageConfigSerialized.js'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
@@ -110,4 +110,22 @@ function parseGlobResult(globObject: Record<string, unknown>): GlobResult {
 
 function assertLoadModule(globValue: unknown): asserts globValue is () => Promise<Record<string, unknown>> {
   assert(isCallable(globValue))
+}
+
+function assertPageConfigsSerialized(
+  pageConfigsSerialized: unknown
+): asserts pageConfigsSerialized is PageConfigRuntimeSerialized[] {
+  assert(isArray(pageConfigsSerialized))
+  pageConfigsSerialized.forEach((pageConfigSerialized) => {
+    assert(isObject(pageConfigSerialized))
+    assert(hasProp(pageConfigSerialized, 'pageId', 'string'))
+    assert(hasProp(pageConfigSerialized, 'routeFilesystem'))
+    assert(hasProp(pageConfigSerialized, 'configValuesSerialized'))
+  })
+}
+
+function assertPageConfigGlobalSerialized(
+  pageConfigGlobalSerialized: unknown
+): asserts pageConfigGlobalSerialized is PageConfigGlobalRuntimeSerialized {
+  assert(hasProp(pageConfigGlobalSerialized, 'configValuesSerialized'))
 }
