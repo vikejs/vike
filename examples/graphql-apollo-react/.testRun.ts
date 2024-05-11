@@ -4,7 +4,10 @@ import { fetchHtml, page, test, expect, run, getServerUrl } from '@brillout/test
 import { testCounter } from '../../test/utils'
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
-  run(cmd)
+  run(cmd, {
+    // The GraphQL API is flaky
+    isFlaky: true
+  })
 
   test('page is rendered to HTML', async () => {
     const html = await fetchHtml('/')
