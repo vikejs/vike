@@ -1,5 +1,7 @@
 export { parseGlobResults }
 
+// TODO/v1-release: remove old design code, and remove all assertions.
+
 import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils.js'
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
