@@ -1,6 +1,6 @@
 export { parseGlobResults }
 
-import { assert, hasProp, isCallable, isObject, cast, assertUsage, isArray } from '../utils.js'
+import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils.js'
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
@@ -16,9 +16,6 @@ function parseGlobResults(pageFilesExports: unknown): {
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
 } {
-  assert(hasProp(pageFilesExports, 'isGeneratedFile'))
-  assert(pageFilesExports.isGeneratedFile !== false, `vike was re-installed(/re-built). Restart your app.`)
-  assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
   assert(hasProp(pageFilesExports, 'pageFilesLazy', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesEager', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesExportNamesLazy', 'object'))
@@ -55,11 +52,6 @@ function parseGlobResults(pageFilesExports: unknown): {
     pageFile.loadExportNames = async () => {
       if (!('exportNames' in pageFile)) {
         const moduleExports = await loadModule()
-        // Vite 2 seems to choke following assertion: https://github.com/vikejs/vike/issues/455
-        assertUsage(
-          'exportNames' in moduleExports,
-          'You seem to be using Vite 2 but the latest vike versions only work with Vite 3'
-        )
         assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)
         pageFile.exportNames = moduleExports.exportNames
       }

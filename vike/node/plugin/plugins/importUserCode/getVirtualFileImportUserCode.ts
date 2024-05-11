@@ -135,7 +135,6 @@ export const pageFilesExportNamesLazy = {};
 export const pageFilesExportNamesEager = {};
 export const pageFilesList = [];
 export const neverLoaded = {};
-export const isGeneratedFile = true;
 
 ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, config)}
 
