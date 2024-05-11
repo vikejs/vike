@@ -12,7 +12,9 @@ It's usually used for initializing the client-side code of <Link href="/errors">
 console.log("I'm the first line of client-side JavaScript.")
 ```
 
-> If you inspect the HTML of your page, you'll see that it's the first JavaScript file to be referenced, and thus the first JavaScript file to be executed.
+> In production, it's the first JavaScript code to be executed.
+>
+> In development, it's also first but only after Vite's HMR code. (In development, Vite's HMR preamble code needs to be run first. In production, the HMR preamble code isn't injected.)
 
 > The code of `+client.js` isn't re-executed upon client-side navigation. For executing code upon the lifecycle of page rendering, see following hooks instead:
 > - <Link href="/onHydrationEnd" />
