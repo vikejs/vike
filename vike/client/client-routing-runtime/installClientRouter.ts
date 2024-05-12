@@ -9,25 +9,35 @@ import { setupNativeScrollRestoration } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
 
 async function installClientRouter() {
-  setupNativeScrollRestoration()
-  initHistoryState()
-  autoSaveScrollPosition()
-  monkeyPatchHistoryPushState()
+  // Init navigation history and scroll restoration
+  initHistoryAndScroll()
 
-  // First initial render
+  // Render initial page
+  const renderPromise = render()
+
+  // Intercept <a> clicks
+  onLinkClick()
+
+  // Preserve stack track
+  await renderPromise
+}
+
+function render() {
   assert(getRenderCount() === 0)
-  const promise = renderPageClientSide({
+  const renderPromise = renderPageClientSide({
     scrollTarget: 'preserve-scroll',
     isBackwardNavigation: null,
     isClientSideNavigation: false
   })
   assert(getRenderCount() === 1)
+  return renderPromise
+}
 
-  // Intercept <a> links
-  onLinkClick()
+function initHistoryAndScroll() {
+  setupNativeScrollRestoration()
+  initHistoryState()
+  autoSaveScrollPosition()
+  monkeyPatchHistoryPushState()
   // Handle back-/forward navigation
   onBrowserHistoryNavigation()
-
-  // Only for full stack straces
-  await promise
 }
