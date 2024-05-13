@@ -10,9 +10,10 @@ See <Link href="#workaround" />.
 
 ## Workaround
 
-You can workaround problematic npm packages by using either:
- - `ssr.noExternal` or
- - `vite-plugin-cjs-interop`.
+You can workaround problematic npm packages by using on of the following:
+ - `ssr.noExternal`
+ - `vite-plugin-cjs-interop`
+ - SSR opt-out
 
 > The workarounds usually work. But if you struggle working around a broken npm package then feel free to <Link href="/faq#how-can-i-reach-out-for-help">reach out for help</Link>.
 
@@ -86,6 +87,13 @@ SyntaxError: Named export 'SomeImport' not found. The requested module 'some-lib
 ```
 </CodeBlockTransformer>
 
+### SSR opt-out
+
+As a last resort, if both `ssr.noExternal` and `vite-plugin-cjs-interop` doesn't work, you can opt out of SSR:
+ - <Link href="/ClientOnly" />
+ - <Link href="/ssr" />
+
+> Opting out of SSR almost always works, see explanation at <Link href="#why" />.
 
 
 ## Why
