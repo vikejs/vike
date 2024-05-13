@@ -458,5 +458,17 @@ const headingsDetached = [
   {
     title: '`vike-react`',
     url: '/vike-react'
-  }
+  },
+  {
+    title: 'reactStrictMode',
+    url: '/reactStrictMode'
+  },
+  {
+    title: '`onBeforeRenderClient()`',
+    url: '/onBeforeRenderClient'
+  },
+  {
+    title: '`onAfterRenderClient()`',
+    url: '/onAfterRenderClient'
+  },
 ] satisfies HeadingDetachedDefinition[]
