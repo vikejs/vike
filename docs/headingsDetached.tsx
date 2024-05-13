@@ -348,7 +348,7 @@ const headingsDetached = [
     url: '/vike-packages'
   },
   {
-    title: 'Vike Extensions',
+    title: 'Vike extensions',
     url: '/extensions'
   },
   {
@@ -454,5 +454,9 @@ const headingsDetached = [
   {
     title: 'HTTP Headers',
     url: '/headers'
+  },
+  {
+    title: '`vike-react`',
+    url: '/vike-react'
   }
 ] satisfies HeadingDetachedDefinition[]
