@@ -1,23 +1,22 @@
 export { logErrorHint }
-
 // For ./logErrorHint/getErrorHint.spec.ts
 export { getErrorHint }
 
-import { formatHintLog, isObject } from '../utils.js'
+import { assert, formatHintLog, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 
 const hintDefault = 'The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package'
+const hintLinkPrefix = 'To fix this error, see '
 
-const knownErrors = [
+type Errors = {
+  errMsg: string | RegExp
+  link?: string
+  shouldMentionNodeModules?: false
+}
+const errorsMisc: Errors[] = [
   {
     errMsg: 'jsxDEV is not a function',
     link: 'https://github.com/vikejs/vike/issues/1469#issuecomment-1919518096',
-    shouldMentionNodeModules: false
-  },
-  {
-    errMsg:
-      'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)',
-    link: 'https://vike.dev/broken-npm-package#react-invalid-component',
     shouldMentionNodeModules: false
   },
   {
@@ -27,18 +26,27 @@ const knownErrors = [
     errMsg: 'assets.json',
     link: 'https://vike.dev/getGlobalContext',
     shouldMentionNodeModules: false
-  },
+  }
+]
+const errorsReact: Errors[] = [
   {
+    errMsg:
+      'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)',
+    link: 'https://vike.dev/broken-npm-package#react-invalid-component',
+    shouldMentionNodeModules: false
+  }
+]
+const errorsCjsEsm_withPreciseLink: Errors[] = [
+  {
+    // `SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.`
     errMsg: /Named export.*not found/i,
     link: 'https://vike.dev/broken-npm-package#named-export-not-found',
+    // It seems that this always points to an npm package import.
     shouldMentionNodeModules: false
-  },
-  {
-    errMsg: /Named export.*not found/i,
-    link: 'https://vike.dev/broken-npm-package#named-export-not-found'
-  },
+  }
+]
+const errorsCjsEsm: Errors[] = [
   { errMsg: 'ERR_UNSUPPORTED_DIR_IMPORT' },
-  { errMsg: 'is not exported' },
   { errMsg: 'ERR_REQUIRE_ESM' },
   { errMsg: 'Must use import' },
 
@@ -54,12 +62,9 @@ const knownErrors = [
     shouldMentionNodeModules: false
   },
 
-  // `SyntaxError: Named export '${exportName}' not found. The requested module '${packageName}' is a CommonJS module, which may not support all module.exports as named exports.`
-  {
-    errMsg: /Named export.*not found/,
-    // It seems that this always points to an npm package import.
-    shouldMentionNodeModules: false
-  },
+  { errMsg: 'is not exported' },
+
+  { errMsg: 'Cannot read properties of undefined' },
 
   // Using CJS inside ESM modules.
   { errMsg: 'require is not a function' },
@@ -67,9 +72,7 @@ const knownErrors = [
   { errMsg: 'module is not defined' },
   { errMsg: 'window is not defined' },
   { errMsg: 'not defined in ES' },
-  { errMsg: "Unexpected token 'export'" },
-
-  { errMsg: 'Cannot read properties of undefined' }
+  { errMsg: "Unexpected token 'export'" }
 ]
 
 function logErrorHint(error: unknown): void {
@@ -84,7 +87,7 @@ function getErrorHint(error: unknown): null | string {
     const knownErr = isKnownError(error)
     if (knownErr) {
       if (knownErr.link) {
-        return `To fix this error, see ${knownErr.link}`
+        return hintLinkPrefix + knownErr.link
       } else {
         return hintDefault
       }
@@ -101,30 +104,41 @@ function logHint(hint: string) {
 
 function isKnownError(error: unknown) {
   const anywhere = getAnywhere(error)
-  const mentionsNodeModules = anywhere.includes('node_modules')
-  const knownErr = knownErrors.find((knownErorr) => {
-    if (!includes(anywhere, knownErorr.errMsg)) return false
-    if (knownErorr.shouldMentionNodeModules !== false && !mentionsNodeModules) return false
+  const knownErr = [
+    //
+    ...errorsMisc,
+    ...errorsReact,
+    ...errorsCjsEsm_withPreciseLink,
+    ...errorsCjsEsm
+  ].find((knownErorr) => {
+    if (!includesLowercase(anywhere, knownErorr.errMsg)) return false
+    if (knownErorr.shouldMentionNodeModules !== false && !includesLowercase(anywhere, 'node_modules')) return false
     return true
   })
   if (!knownErr) return false
   return knownErr
 }
 
-function includes(str1: string | null, str2: string | RegExp): boolean {
-  if (!str1) return false
-  if (str2 instanceof RegExp) {
-    let { flags } = str2
+function includesLowercase(str: string, substr: string | RegExp): boolean {
+  if (substr instanceof RegExp) {
+    let { flags } = substr
     if (!flags.includes('i')) flags += 'i'
-    const regex = new RegExp(str2.source, flags)
-    return regex.test(str1)
+    const regex = new RegExp(substr.source, flags)
+    return regex.test(str)
   }
-  if (typeof str2 === 'string') {
-    return str1.toLowerCase().includes(str2.toLowerCase())
+  if (typeof substr === 'string') {
+    return str.toLowerCase().includes(substr.toLowerCase())
   }
-  return false
+  assert(false)
 }
 
+function getAnywhere(error: unknown): string {
+  const code = getErrCode(error)
+  const message = getErrMessage(error)
+  const stack = getErrStack(error)
+  const anywhere = [code, message, stack].filter(Boolean).join('\n')
+  return anywhere
+}
 function getErrMessage(err: unknown): null | string {
   if (!isObject(err)) return null
   if (!err.message) return null
@@ -142,13 +156,6 @@ function getErrStack(err: unknown): null | string {
   if (!err.stack) return null
   if (typeof err.stack !== 'string') return null
   return err.stack
-}
-function getAnywhere(error: unknown): string {
-  const code = getErrCode(error)
-  const message = getErrMessage(error)
-  const stack = getErrStack(error)
-  const anywhere = [code, message, stack].filter(Boolean).join('\n')
-  return anywhere
 }
 
 function collectError(err: any) {
