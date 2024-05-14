@@ -66,6 +66,7 @@ const errorsCjsEsm: Errors[] = [
   { errMsg: 'is not exported' },
 
   { errMsg: 'Cannot read properties of undefined' },
+  { errMsg: '.default is not' },
 
   // Using CJS inside ESM modules.
   { errMsg: 'require is not a function' },

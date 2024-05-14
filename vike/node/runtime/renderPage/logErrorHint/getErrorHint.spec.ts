@@ -7,6 +7,7 @@ describe('getErrorHint()', () => {
   ERR_UNKNOWN_FILE_EXTENSION()
   ERR_UNSUPPORTED_DIR_IMPORT()
   cannot_read_property_of_undefined()
+  default_is_not()
   ERR_REQUIRE_ESM()
   cjs_named_export()
   cannot_use_import_outside_of_module()
@@ -448,6 +449,22 @@ TypeError: Cannot read properties of undefined (reading 'extendTheme')
     at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
 `)
       )
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+  })
+}
+
+function default_is_not() {
+  it('TypeError: __vite_ssr_import_0__.default is not a function', () => {
+    expect(
+      getErrorHint({
+        message: '__vite_ssr_import_0__.default is not a function',
+        code: undefined,
+        stack: `
+TypeError: __vite_ssr_import_0__.default is not a function
+    at /home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-native-web@0.19.11_react-dom@18.3.1_react@18.3.1/node_modules/react-native-web/dist/modules/prefixStyles/index.js:3:31
+    at instantiateModule (file:///home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/vite@5.2.11/node_modules/vite/dist/node/chunks/dep-cNe07EU9.js:55058:9)
+`
+      })
     ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
