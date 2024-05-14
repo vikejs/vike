@@ -46,7 +46,7 @@ Did you mean to import lodash@4.17.21/node_modules/lodash/debounce.js?
 }
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -71,7 +71,7 @@ Error: Cannot find package '/test/node_modules/@mdxeditor/editor/dist/node_modul
     at link (node:internal/modules/esm/module_job:76:36)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -102,7 +102,7 @@ Error: Cannot find module '/home/romu/code/vike/node_modules/.pnpm/vike-react@0.
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -120,7 +120,7 @@ Error: Failed to load url ../../components/does-not-exist/Counter (resolved id: 
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     expect(
       t1(
@@ -144,7 +144,7 @@ Cannot find package 'some-not-installed-package' imported from /home/romu/code/v
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     expect(
       t1(
@@ -163,7 +163,7 @@ Error: Cannot find module 'some-not-installed-package' imported from '/home/romu
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     expect(
       t1(false, {
@@ -177,7 +177,7 @@ Error: Failed to load url some-not-installed-package (resolved id: some-not-inst
     at loadAndTransform (file:///home/romu/code/vike/node_modules/.pnpm/vite@4.5.1_@types+node@20.10.4/node_modules/vite/dist/node/chunks/dep-68d1a114.js:55015:21)
 `
       })
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     expect(
       t1(
@@ -199,7 +199,7 @@ Error: Cannot find module '/home/romu/code/vike/node_modules/.pnpm/@brillout+imp
 }
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
   })
 }
 
@@ -239,7 +239,7 @@ TypeError: Unknown file extension ".css" for /home/romu/code/vike/node_modules/.
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -259,7 +259,7 @@ TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css" for /Users
     at ESMLoader.getModuleJob (node:internal/modules/esm/loader:441:34)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -279,7 +279,7 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css /home/stuart/tmp/vite-ssr-example/node_mo
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -301,7 +301,7 @@ code: 'ERR_UNKNOWN_FILE_EXTENSION'
 }
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     expect(
       t1(
@@ -313,7 +313,7 @@ code: 'ERR_UNKNOWN_FILE_EXTENSION'
           `TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".ts" for /media/oem/MyFiles/8_DEVELOPMENT/vite-ssr-ts-project/server/index.ts`
         )
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
   })
 }
 
@@ -338,7 +338,7 @@ Error: ERR_UNSUPPORTED_DIR_IMPORT /Users/xxx/Documents/Github/xxx/node_modules/@
     at nextResolve (node:internal/modules/esm/loader:165:28)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -348,7 +348,7 @@ Error: ERR_UNSUPPORTED_DIR_IMPORT /Users/xxx/Documents/Github/xxx/node_modules/@
 Error: ERR_UNSUPPORTED_DIR_IMPORT ...\\vite-ssr-app\\node_modules\\@mui\\material\\styles from ...\\vite-ssr-app\\dist\\server\\renderer\\default-page-server.js
     `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -368,7 +368,7 @@ url: 'file:///Users/xxx/xxx/src/models'
 }
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     // More similar errors:
     //  - https://github.com/vikejs/vike/discussions/571#discussioncomment-6145155
@@ -411,7 +411,7 @@ TypeError: Cannot read properties of undefined (reading 'foo')
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -441,7 +441,7 @@ TypeError: Cannot read properties of undefined (reading '__H')
     at file:///Users/xxx/Code/Repos/xxx/node_modules/vike/dist/esm/node/plugin/shared/addSsrMiddleware.js:18:27
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -458,7 +458,7 @@ TypeError: Cannot read properties of undefined (reading 'b')
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     expect(
       t1(
@@ -471,7 +471,7 @@ TypeError: Cannot read properties of undefined (reading 'extendTheme')
     at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
   })
 }
 
@@ -499,7 +499,7 @@ Instead change the require of getPageElement.js in /home/romu/code/vike/node_mod
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // Make sure the right package is picked: the issue is the importer, not the importee
     expect(
@@ -517,7 +517,7 @@ Instead change the require of getPageElement.js in /home/romu/code/vike/node_mod
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -531,7 +531,7 @@ from
 not supported.
       `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     expect(
       t1(
@@ -556,7 +556,7 @@ Instead rename index.js to end in .cjs, change the requiring code to use import(
     at Module.load (internal/modules/cjs/loader.js:928:32)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -581,7 +581,7 @@ Instead change the require of +config.js in /home/romu/code/vike/node_modules/.p
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
 
@@ -620,7 +620,7 @@ const { ApolloClient } = pkg;
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#named-export-not-found"`)
 
     expect(
       t1(
@@ -653,7 +653,7 @@ const { LiveProvider, LiveEditor } = pkg;
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#named-export-not-found"`)
 
     expect(
       t1(
@@ -670,7 +670,7 @@ import pkg from 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js';
 const { useI18n, createI18n } = pkg;
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#named-export-not-found"`)
 
     // More similar errors:
     //  - https://github.com/vikejs/vike/discussions/934#discussioncomment-6085697
@@ -707,10 +707,10 @@ import{useRunner as e}from"react-runner";export*from"react-runner";import t,{use
       at async Promise.all (index 0)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
-    expect(t1('react-runner', createErr(errror_cannot_use_import_outside_of_module))).toMatchInlineSnapshot(`"bla"`)
+    expect(t1('react-runner', createErr(errror_cannot_use_import_outside_of_module))).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // More similar errors:
     //  - https://github.com/vikejs/vike/discussions/1153#discussion-5682749
@@ -729,7 +729,7 @@ ReferenceError: exports is not defined
     at instantiateModule (file:///Users/xxx/git/xxx/xxx/node_modules/vite/dist/node/chunks/dep-e8f070e8.js:54405:15)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -741,7 +741,7 @@ ReferenceError: exports is not defined
     at instantiateModule (file:///home/stuart/tmp/vite-ssr-example/node_modules/.pnpm/vite@4.2.1_@types+node@18.15.11/node_modules/vite/dist/node/chunks/dep-79892de8.js:53996:15)
       `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       t1(
@@ -754,7 +754,7 @@ This file is being treated as an ES module because it has a '.js' file extension
     at ModuleJob.run (node:internal/modules/esm/module_job:194:25)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
 
     // More similar errors:
     //  - https://github.com/vikejs/vike/discussions/571#discussioncomment-6145155
@@ -777,7 +777,7 @@ TypeError: require is not a function
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 
   it('module is not defined', () => {
@@ -791,7 +791,7 @@ TypeError: require is not a function
     at instantiateModule (file:///home/rui/Projects/binedge-website/node_modules/vite/dist/node/chunks/dep-24daf00c.js:54351:15)
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // More similar errors:
     //  - https://github.com/vikejs/vike/issues/984#issuecomment-1640267319
@@ -816,7 +816,7 @@ ReferenceError: window is not defined
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 
   // The issue here is the other way around: the library shouldn't be ssr.noExternal, see https://github.com/vikejs/vike/issues/621#issuecomment-1781661083
@@ -843,7 +843,7 @@ This file is being treated as an ES module because it has a '.js' file extension
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
 
@@ -868,7 +868,7 @@ RollupError: "MenuIcon" is not exported by "node_modules/.pnpm/@mui+icons-materi
  ELIFECYCLE  Command failed with exit code 1.
 `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
 
@@ -901,7 +901,7 @@ SyntaxError: Unexpected token 'export'
 `
         }
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
 
@@ -922,6 +922,6 @@ Error: [vike][Wrong Usage] The guard() hook of /pages/maps/ingestion/@id/+guard.
     at async file:///usr/src/app/server/index.js:75:25
       `)
       )
-    ).toMatchInlineSnapshot(`"bla"`)
+    ).toMatchInlineSnapshot(`null`)
   })
 }
