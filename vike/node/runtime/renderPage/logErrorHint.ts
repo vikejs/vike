@@ -5,7 +5,7 @@ export { getErrorHint }
 import { assert, formatHintLog, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 
-const hintDefault = 'The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package'
+const hintDefault = 'The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package'
 const hintLinkPrefix = 'To fix this error, see '
 
 type Errors = {
