@@ -17,10 +17,4 @@
 <br/>
 **Request a feature** :arrow_right: [GitHub Issue > Feature Request](https://github.com/vitejs/vite/issues/new/choose).
 <br/>
-**Get help** :arrow_right: [GitHub Discussions](https://github.com/vikejs/vike/discussions).
-<br/>
-**Chit-chat** :arrow_right: [Discord](https://discord.com/invite/hfHhnJyVg8).
-
-**Feel free to PM `brillout`** :arrow_right: On [Twitter](https://twitter.com/brillout), or on [Discord](https://discord.com/invite/hfHhnJyVg8) right-click on the username `brillout` => `Message`.
-<br/>
-**Sponsor `brillout`** :arrow_right: [Rom Brillout Sponsors](https://github.com/sponsors/brillout). You'll get a private Discord channel and get live support from `brillout` directly.
+**Get help** :arrow_right: [Vike > FAQ > How can I reach out for help?](https://vike.dev/faq#how-can-i-reach-out-for-help).
