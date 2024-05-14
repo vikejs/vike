@@ -470,5 +470,5 @@ const headingsDetached = [
   {
     title: '`onAfterRenderClient()`',
     url: '/onAfterRenderClient'
-  },
+  }
 ] satisfies HeadingDetachedDefinition[]
