@@ -413,20 +413,20 @@ Example:
 export default {
   meta: {
     someSettingOrHook: {
-      // Required. Defines the environment in which the config value is loaded.
+      // [Required] Defines the environment in which the config value is loaded.
       env: {
-        //  Load the config value on the server.
+        // Load the config value on the server. [Required]
         server: true,
-        //  Load the config value on the client.
+        // Load the config value on the client. [Required]
         client: true,
-        // Load the config value at config time. Required for `effect`. Optional.
+        // Load the config value at config-time (when Vike loads +config.js files). [Optional]
         config: false // default value
       },
 
-      // Optional. Whether config values should be merged instead of overwritten.
+      // [Optional] Whether config values should be merged (instead of overwritten).
       cumulative: false, // default value
 
-      // Optional. Function called when the config value is defined.
+      // [Optional] Function called when the config value is loaded at config-time.
       // Requires `env.config` to be `true`.
       effect({ configDefinedAt, configValue }) {
         if (someCondition) {
