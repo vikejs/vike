@@ -257,9 +257,9 @@ function extractFromPath(filePath: string): string | null {
   } else {
     packageName = filePath.split('node_modules/').pop()!
     // This assert is fairly risk, we should eventually remove it
-    assert(!packageName.startsWith('.'))
+    //assert(!packageName.startsWith('.'))
     // This assert is fairly risk, we should eventually remove it
-    assert(!packageName.startsWith('/'))
+    //assert(!packageName.startsWith('/'))
   }
   if (!packageName) return null
 
