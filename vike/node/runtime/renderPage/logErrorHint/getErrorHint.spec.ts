@@ -2,7 +2,7 @@ import { getErrorHint } from '../logErrorHint'
 import { expect, describe, it } from 'vitest'
 import { errror_cannot_use_import_outside_of_module } from './errors'
 
-describe('isCjsEsmError()', () => {
+describe('getErrorHint()', () => {
   ERR_MODULE_NOT_FOUND()
   ERR_UNKNOWN_FILE_EXTENSION()
   ERR_UNSUPPORTED_DIR_IMPORT()
