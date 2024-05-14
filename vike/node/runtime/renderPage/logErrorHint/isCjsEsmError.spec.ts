@@ -1,4 +1,4 @@
-import { isCjsEsmError } from '../logErrorHint'
+import { getHint, isCjsEsmError } from '../logErrorHint'
 import { expect, describe, it } from 'vitest'
 import { errror_cannot_use_import_outside_of_module } from './errors'
 
@@ -18,7 +18,8 @@ describe('isCjsEsmError()', () => {
 
 function t1(expectedResult: Res, error: { message?: string; code?: string | undefined; stack: string }) {
   expectRes(isCjsEsmError(error), expectedResult)
-  return 'bla'
+  const hint = getHint(error)
+  return hint
 }
 function createErr(errStr: string) {
   return { stack: errStr }
