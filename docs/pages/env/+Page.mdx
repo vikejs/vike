@@ -48,5 +48,7 @@ function data() {
 <Warning>
   As explained in [Vite's security note](https://vitejs.dev/guide/env-and-mode.html#env-files:~:text=the%20envPrefix%20option.-,SECURITY%20NOTES,-.env.*.local%20files):
    - Never add secret information to `PUBLIC_ENV__` environment variables.
-   - Consider using `.env.local` to avoid including secret information to your repository (e.g. if your repository is public on GitHub).
+   - If your repository is public (e.g. on GitHub), then make sure you don't publicly share secret information:
+     - Consider defining secrets with system environment variables (e.g. [`$ export DATABASE_PASSWORD=some-secret-password`](https://askubuntu.com/questions/730/how-do-i-set-environment-variables/731#731)).
+     - Consider [defining secrets with `.env.local` files](https://vitejs.dev/guide/env-and-mode.html#env-files:~:text=.env.*.local%20files%20are%20local%2Donly) while adding `*.local` to your `.gitignore`.
 </Warning>
