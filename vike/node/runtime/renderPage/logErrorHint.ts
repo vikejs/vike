@@ -35,6 +35,10 @@ const errorsReact: Errors[] = [
     link: 'https://vike.dev/broken-npm-package#react-invalid-component',
     // The stack trace can be user-land while the import is coming from node_modules
     shouldMentionNodeModules: false
+  },
+  {
+    // React's "Invalid hook call.", see https://github.com/vikejs/vike/discussions/1637#discussioncomment-9424712
+    errMsg: "Cannot read properties of null (reading 'useContext')"
   }
 ]
 const errorsCjsEsm_withPreciseLink: Errors[] = [

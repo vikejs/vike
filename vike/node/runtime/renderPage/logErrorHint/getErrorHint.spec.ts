@@ -457,6 +457,7 @@ function default_is_not() {
   it('TypeError: __vite_ssr_import_0__.default is not a function', () => {
     expect(
       getErrorHint({
+        // https://github.com/vikejs/vike/discussions/1637#discussion-6646661
         message: '__vite_ssr_import_0__.default is not a function',
         code: undefined,
         stack: `
@@ -944,6 +945,7 @@ function react_invalid_hook_usage() {
   it('React: invalid hook usage, side effect', () => {
     expect(
       getErrorHint({
+        // React's "Invalid hook call.", see https://github.com/vikejs/vike/discussions/1637#discussioncomment-9424712
         message: "Cannot read properties of null (reading 'useContext')",
         code: undefined,
         stack: `
@@ -960,7 +962,7 @@ TypeError: Cannot read properties of null (reading 'useContext')
     at renderElement (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5967:5)
 `
       })
-    ).toMatchInlineSnapshot(`null`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
 
