@@ -1,8 +1,6 @@
 export { logErrorHint }
 
 // For ./logErrorHint/*.spec.ts
-export { isCjsEsmError }
-export { isKnownError }
 export { getHint }
 
 import { assert, formatHintLog, isArray, isNotNullish, isObject, unique } from '../utils.js'
