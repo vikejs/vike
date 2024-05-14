@@ -1,7 +1,7 @@
 export { logErrorHint }
 
 // For ./logErrorHint/*.spec.ts
-export { getHint }
+export { getErrorHint }
 
 import { assert, formatHintLog, isArray, isNotNullish, isObject, unique } from '../utils.js'
 import pc from '@brillout/picocolors'
@@ -33,10 +33,10 @@ function logErrorHint(error: unknown): void {
   /* Collect errors for ./logErrorHint.spec.ts
   collectError(error)
   //*/
-  const hint = getHint(error)
+  const hint = getErrorHint(error)
   if (hint) logHint(hint)
 }
-function getHint(error: unknown): null | string {
+function getErrorHint(error: unknown): null | string {
   {
     const link = isKnownError(error)
     if (link) return `To fix this error, see ${link}`
