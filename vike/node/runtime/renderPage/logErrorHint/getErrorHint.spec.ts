@@ -14,6 +14,7 @@ describe('getErrorHint()', () => {
   is_not_exported()
   unexpected_token_export()
   react_invalid_component()
+  react_invalid_hook_usage()
   misc()
 })
 
@@ -913,6 +914,31 @@ Error: Element type is invalid: expected a string (for built-in components) or a
         )
       )
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
+  })
+}
+
+// Classic: React's infamous hook rules
+function react_invalid_hook_usage() {
+  it('React: invalid hook usage, side effect', () => {
+    expect(
+      getErrorHint({
+        message: "Cannot read properties of null (reading 'useContext')",
+        code: undefined,
+        stack: `
+TypeError: Cannot read properties of null (reading 'useContext')
+    at Object.useContext6 (/home/rom/tmp/vike-react-native-web-bug/node_modules/.vite/deps_ssr/react-native-web.js?v=a726e3ce:3119:29)
+    at /home/rom/tmp/vike-react-native-web-bug/node_modules/.vite/deps_ssr/react-native-web.js?v=a726e3ce:35328:33
+    at renderWithHooks (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5662:16)
+    at renderForwardRef (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5857:18)
+    at renderElement (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6020:11)
+    at renderNodeDestructiveImpl (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6119:11)
+    at renderNodeDestructive (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)
+    at renderNode (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6274:12)
+    at renderHostElement (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5646:3)
+    at renderElement (/home/rom/tmp/vike-react-native-web-bug/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5967:5)
+`
+      })
+    ).toMatchInlineSnapshot(`null`)
   })
 }
 
