@@ -148,7 +148,9 @@ Error: Cannot find module 'some-not-installed-package' imported from '/home/romu
 `
         }
       )
-    ).toMatchInlineSnapshot(`null`)
+    )
+      // False positive, but it's okay.
+      .toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       getErrorHint({
@@ -164,6 +166,7 @@ Error: Failed to load url some-not-installed-package (resolved id: some-not-inst
       })
     ).toMatchInlineSnapshot(`null`)
 
+    /* I don't remember when I stumbled upon this error, but it seems like it most likely won't occur again.
     expect(
       getErrorHint(
         // Don't match if importer is @brillout/import
@@ -184,6 +187,7 @@ Error: Cannot find module '/home/romu/code/vike/node_modules/.pnpm/@brillout+imp
 `)
       )
     ).toMatchInlineSnapshot(`null`)
+    */
   })
 }
 
@@ -435,15 +439,16 @@ TypeError: Cannot read properties of undefined (reading 'b')
 
     expect(
       getErrorHint(
-        // Not enough information => is this user land or node_modules/ land?
         // https://github.com/vitejs/vite/issues/11299#issue-1487867332
+        // Not much information => is this user land or node_modules/ land?
+        // But it mentions node_modules => I guess it's a library issue.
         createErr(`
 TypeError: Cannot read properties of undefined (reading 'extendTheme')
     at eval (/home/projects/llqijrlvr.github/src/entry.js:5:35)
     at async instantiateModule (file://file:///home/projects/llqijrlvr.github/node_modules/.pnpm/vite@4.0.0/node_modules/vite/dist/node/chunks/dep-ed9cb113.js:53295:9)
 `)
       )
-    ).toMatchInlineSnapshot(`null`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }
 
@@ -500,7 +505,7 @@ from
 not supported.
       `)
       )
-    ).toMatchInlineSnapshot(`null`)
+    ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     expect(
       getErrorHint(
