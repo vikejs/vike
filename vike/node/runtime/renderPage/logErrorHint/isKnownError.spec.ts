@@ -1,4 +1,4 @@
-import { isKnownError } from '../logErrorHint'
+import { getHint } from '../logErrorHint'
 import { expect, describe, it } from 'vitest'
 
 describe('isKnownError()', () => {
@@ -10,7 +10,7 @@ describe('isKnownError()', () => {
 function react_invalid_component() {
   it('React: invalid component', () => {
     expect(
-      isKnownError(
+      getHint(
         /* Error artificially created:
         ```diff
         // node_modules/vike-react/dist/renderer/onRenderHtml.js:
@@ -42,30 +42,30 @@ Error: Element type is invalid: expected a string (for built-in components) or a
 `
         }
       )
-    ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#react-invalid-component"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
     expect(
-      isKnownError(
+      getHint(
         // Also catch `but got: object`
         getFakeErrorObject(
           "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports."
         )
       )
-    ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#react-invalid-component"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
     expect(
-      isKnownError(
+      getHint(
         // Or any other invalid value
         getFakeErrorObject(
           "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: foo. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports."
         )
       )
-    ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#react-invalid-component"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
   })
 }
 
 function named_export_not_found() {
   it('Named export not found', () => {
     expect(
-      isKnownError({
+      getHint({
         message:
           "Named export 'LiveEditor' not found. The requested module 'react-live-runner' is a CommonJS module, which may not support all module.exports as named exports.\nCommonJS modules can always be imported via the default export, for example using:\n\nimport pkg from 'react-live-runner';\nconst { LiveProvider, LiveEditor } = pkg;\n",
         code: undefined,
@@ -90,7 +90,7 @@ const { LiveProvider, LiveEditor } = pkg;
     at async /home/romu/tmp/vite-ssr-redux-react-live-runner-example/node_modules/.pnpm/vite-plugin-ssr@0.4.131_vite@4.3.9/node_modules/vite-plugin-ssr/dist/cjs/node/prerender/runPrerender.js:247:48
 `
       })
-    ).toMatchInlineSnapshot(`"https://vike.dev/broken-npm-package#named-export-not-found"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#named-export-not-found"`)
   })
 }
 
