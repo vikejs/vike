@@ -508,7 +508,6 @@ Instead rename index.js to end in .cjs, change the requiring code to use import(
     at Module.load (internal/modules/cjs/loader.js:928:32)
 `)
     )).toMatchInlineSnapshot(`"bla"`)
-  })
 
   expect(t1(
     'react-dom',
@@ -532,6 +531,7 @@ Instead change the require of +config.js in /home/romu/code/vike/node_modules/.p
 `
     }
   )).toMatchInlineSnapshot(`"bla"`)
+  })
 }
 
 // Classic: Importing CJS named export from ESM
