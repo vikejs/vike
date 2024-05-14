@@ -4,9 +4,9 @@ Some npm packages contain invalid JavaScript code.
 
 See <Link href="#workaround" />.
 
-> The reason why some npm packages contain invalid code is because the transpilation process of some frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work in other JavaScript environments. You can learn more at <Link href="#why" />.
+> The reason why some npm packages contain invalid code is because the transpilation process of webpack-based frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work with Vite-based frameworks. You can learn more at <Link href="#why" />.
 >
-> The situation is going to improve over time as Vite-powered frameworks gain popularity.
+> The situation is going to improve a lot and eventually be completely resolved as Vite-based frameworks gain popularity, which is happening quickly as all frameworks other than Next.js are now Vite-based.
 
 ## Workaround
 
@@ -107,7 +107,7 @@ By default, Vite doesn't transpile the server-side code of npm packages for a fa
 That's why <Link href="#workaround">adding an npm package to `ssr.noExternal`</Link> is usually a workaround when the npm package contains invalid JavaScript.
 By adding an npm package to `ssr.noExternal`, you replicate the behavior of frameworks like Next.js.
 
-> The issue is most widespread in the React ecosystem because of Next.js's prevalence, but this is going to less and less of an issue as Vite-powered React frameworks gain popularity.
+> The issue is most widespread in the React ecosystem because of Next.js's prevalence, but this is going to less and less of an issue as Vite-based React frameworks gain popularity. All frameworks other than Next.js are now Vite-based (e.g. Remix), thus the situation will quickly improve.
 
 ## Common errors
 
