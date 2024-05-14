@@ -676,7 +676,9 @@ import{useRunner as e}from"react-runner";export*from"react-runner";import t,{use
     ).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
 
     // https://github.com/vikejs/vike/discussions/571#discussioncomment-6137618
-    expect(t1(createErr(errror_cannot_use_import_outside_of_module))).toMatchInlineSnapshot(`"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+    expect(t1(createErr(errror_cannot_use_import_outside_of_module))).toMatchInlineSnapshot(
+      `"The error seems to be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`
+    )
 
     // More similar errors:
     //  - https://github.com/vikejs/vike/discussions/1153#discussion-5682749
