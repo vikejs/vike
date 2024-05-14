@@ -24,15 +24,17 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import {
-  PageContextForUserConsumptionClientSide,
-  preparePageContextForUserConsumptionClientSide
-} from '../shared/preparePageContextForUserConsumptionClientSide.js'
+import { getPageContextFromHooks_isNotHydration } from './getPageContextFromHooks.js'
+import { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
+import { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap() })
+  // todo
+  pageContext: any
+  // todo
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), pageContext: null })
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {
@@ -46,9 +48,20 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
   }
 }
 
-async function prefetchPageContext(pageContext: PageContextForUserConsumptionClientSide): Promise<void> {
+async function prefetchPageContext(
+  pageContext: { _pageId: string } & {
+    urlOriginal: string
+    _urlRewrite: string | null
+    _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfigRuntime[]
+  } & PageContextExports
+): Promise<void> {
   try {
-    await preparePageContextForUserConsumptionClientSide(pageContext, true)
+    const pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, false)
+    // todo: getPageContextFromHooks_isNotHydration return does not contains "urlOriginal", "Page".
+    // maybe I need to merge with pageContext(props).
+    console.log('pageContextFromHooks', pageContextFromHooks)
+    globalObject.pageContext = pageContextFromHooks
   } catch (err) {
     if (isErrorFetchingStaticAssets(err)) {
       disableClientRouting(err, true)
