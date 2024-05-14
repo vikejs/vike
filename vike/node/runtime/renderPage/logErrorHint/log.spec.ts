@@ -1,6 +1,5 @@
 import { getHint } from '../logErrorHint'
 import { expect, describe, it, assert } from 'vitest'
-import { stripAnsi } from '../../utils'
 
 describe('getHint()', () => {
   it('log fixtures', () => {
@@ -25,6 +24,5 @@ function getLog(error: Parameters<typeof getHint>[0]): string {
   let log = getHint(error)
   expect(log).toBeTruthy()
   assert(log)
-  log = stripAnsi(log)
   return log
 }
