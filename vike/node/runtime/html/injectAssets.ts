@@ -26,7 +26,6 @@ type PageContextInjectAssets = {
   _baseServer: string
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
-  nonce?: boolean
 } & PageContextSerialization
 
 async function injectHtmlTagsToString(
