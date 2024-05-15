@@ -36,6 +36,7 @@ type PageContextSerialization = {
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
   pageProps?: Record<string, unknown>
+  nonce?: boolean
   _pageContextInit: Record<string, unknown>
 }
 function serializePageContextClientSide(pageContext: PageContextSerialization) {

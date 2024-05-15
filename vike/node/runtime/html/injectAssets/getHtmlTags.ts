@@ -3,6 +3,7 @@ export type { HtmlTag }
 export type { PreloadFilter }
 export type { InjectFilterEntry }
 
+import crypto from 'crypto'
 import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils.js'
 import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide.js'
 import { sanitizeJson } from './sanitizeJson.js'
@@ -40,7 +41,7 @@ type HtmlTag = {
   position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 }
 async function getHtmlTags(
-  pageContext: { _isStream: boolean } & PageContextInjectAssets,
+  pageContext: { _isStream: boolean; nonce?: boolean } & PageContextInjectAssets,
   injectToStream: null | InjectToStream,
   injectFilter: PreloadFilter
 ) {
@@ -185,7 +186,8 @@ async function mergeScriptEntries(pageAssets: PageAsset[]): Promise<null | strin
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
-  const htmlTag = `<script id="vike_pageContext" type="application/json">${pageContextSerialized}</script>`
+
+  const htmlTag = `<script id="vike_pageContext" type="application/json" ${pageContext.nonce && `nonce="${crypto.randomBytes(16).toString('hex')}"`}>${pageContextSerialized}</script>`
 
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
