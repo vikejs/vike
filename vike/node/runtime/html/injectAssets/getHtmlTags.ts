@@ -190,7 +190,7 @@ async function mergeScriptEntries(pageAssets: PageAsset[]): Promise<null | strin
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization, nonce?: string): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
 
-  const htmlTag = `<script id="vike_pageContext" type="application/json" ${nonce && `nonce="${nonce}"`}>${pageContextSerialized}</script>`
+  const htmlTag = `<script id="vike_pageContext" type="application/json" ${nonce ? `nonce="${nonce}"` : undefined}>${pageContextSerialized}</script>`
 
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
