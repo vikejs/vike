@@ -1,10 +1,10 @@
-export { UseUiFrameworkVikeExtensionAnyHint }
+export { UseVikeExtensionUiFramework }
 export { UseVikeExtension }
 
 import React from 'react'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../components'
 
-function UseUiFrameworkVikeExtensionAnyHint({ featureName }: { featureName: string }) {
+function UseVikeExtensionUiFramework({ featureName }: { featureName: string }) {
   return (
     <blockquote>
       <p>
