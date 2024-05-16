@@ -48,6 +48,10 @@ const globalObject = getGlobalObject<{
   previousPageContext?: { _pageId: string } & PageContextExports
 }>('renderPageClientSide.ts', { renderCounter: 0 })
 
+const globalObjectForPrefetchedPageContext = getGlobalObject<{
+  pageContextFromHooks?: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>['pageContextFromHooks']
+}>('prefetch.ts', {})
+
 type RenderArgs = {
   scrollTarget: ScrollTarget
   isBackwardNavigation: boolean | null
@@ -205,7 +209,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     } else {
       let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
       try {
-        res = await getPageContextFromHooks_isNotHydration(pageContext, false)
+        res = globalObjectForPrefetchedPageContext?.pageContextFromHooks
+          ? globalObjectForPrefetchedPageContext
+          : await getPageContextFromHooks_isNotHydration(pageContext, false)
       } catch (err) {
         await onError(err)
         return

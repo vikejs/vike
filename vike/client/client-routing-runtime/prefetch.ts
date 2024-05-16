@@ -27,14 +27,13 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { getPageContextFromHooks_isNotHydration } from './getPageContextFromHooks.js'
 import { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import { PageContextBeforeRenderClient } from '../shared/executeOnRenderClientHook.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  // todo
-  pageContext: any
-  // todo
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), pageContext: null })
+  pageContextFromHooks?: any
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap() })
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {
@@ -57,11 +56,8 @@ async function prefetchPageContext(
   } & PageContextExports
 ): Promise<void> {
   try {
-    const pageContextFromHooks = await getPageContextFromHooks_isNotHydration(pageContext, false)
-    // todo: getPageContextFromHooks_isNotHydration return does not contains "urlOriginal", "Page".
-    // maybe I need to merge with pageContext(props).
-    console.log('pageContextFromHooks', pageContextFromHooks)
-    globalObject.pageContext = pageContextFromHooks
+    const res = await getPageContextFromHooks_isNotHydration(pageContext, false)
+    globalObject.pageContextFromHooks = res.pageContextFromHooks
   } catch (err) {
     if (isErrorFetchingStaticAssets(err)) {
       disableClientRouting(err, true)
