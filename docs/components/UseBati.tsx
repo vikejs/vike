@@ -1,8 +1,8 @@
-export { UseBatiHint }
+export { UseBati }
 
 import React from 'react'
 
-function UseBatiHint({ children }: { children: string | React.ReactElement }) {
+function UseBati({ children }: { children: string | React.ReactElement }) {
   return (
     <p>
       You can use <Bati /> to scaffold a Vike app that uses {children}.
