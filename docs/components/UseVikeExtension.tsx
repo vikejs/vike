@@ -9,7 +9,8 @@ function UseVikeExtensionUiFramework({ featureName }: { featureName: string }) {
     <blockquote>
       <p>
         Instead of manually integrating {featureName} yourself, you can use a <UiFrameworkVikeExtension /> which already
-        integrates {featureName}. And you can use <Bati /> to scaffold an app that uses <UiFrameworkVikeExtensionNames />.
+        integrates {featureName}. And you can use <Bati /> to scaffold an app that uses{' '}
+        <UiFrameworkVikeExtensionNames />.
       </p>
     </blockquote>
   )
