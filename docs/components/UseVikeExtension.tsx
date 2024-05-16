@@ -1,4 +1,3 @@
-export { UseUiFrameworkVikeExtensionHint }
 export { UseUiFrameworkVikeExtensionAnyHint }
 export { UseVikeExtension }
 
@@ -33,28 +32,6 @@ function UseVikeExtension({
       </p>
     </blockquote>
   )
-}
-
-function UseUiFrameworkVikeExtensionHint({
-  uiFrameworkName,
-  noQuote
-}: {
-  uiFrameworkName: 'React' | 'Vue' | 'Solid'
-  noQuote?: true
-}) {
-  const pkg = <code>vike-{uiFrameworkName.toLowerCase()}</code>
-  const pkgWithLink = <a href="/extensions#ui-framework">{pkg}</a>
-  const hint = (
-    <p>
-      Instead of manually integrating {uiFrameworkName} yourself, you can use {pkgWithLink} which integrates{' '}
-      {uiFrameworkName} in a full-featured manner. You can use <Bati /> to scaffold an app that uses {pkg}.
-    </p>
-  )
-  if (noQuote) {
-    return hint
-  } else {
-    return <blockquote>{hint}</blockquote>
-  }
 }
 
 function Bati() {
