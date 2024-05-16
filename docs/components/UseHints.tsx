@@ -1,5 +1,4 @@
 export { UseBatiHint }
-export { UseBatiHint_insteadOfManuelIntegration }
 export { UseUiFrameworkVikeExtensionHint }
 export { UseUiFrameworkVikeExtensionAnyHint }
 export { UseVikeExtension }
@@ -59,23 +58,11 @@ function UseUiFrameworkVikeExtensionHint({
   }
 }
 
-function UseBatiHint({ feature }: { feature: string | React.ReactElement }) {
+function UseBatiHint({ children }: { children: string | React.ReactElement }) {
   return (
-    <>
-      You can use <a href="https://batijs.dev/">Bati</a> to scaffold a Vike app using {feature}.
-    </>
-  )
-}
-function UseBatiHint_insteadOfManuelIntegration({ toolName }: { toolName: string }) {
-  return (
-    <>
-      <blockquote>
-        <p>
-          Instead of manually integrating {toolName} yourself, you can use <Bati /> to scaffold an app that already
-          integrates {toolName}.
-        </p>
-      </blockquote>
-    </>
+    <p>
+      You can use <Bati /> to scaffold a Vike app that uses {children}.
+    </p>
   )
 }
 
