@@ -377,6 +377,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Compiled',
+    url: '/compiled'
+  },
+  {
+    level: 2,
     title: 'Vuetify',
     url: '/vuetify'
   },
