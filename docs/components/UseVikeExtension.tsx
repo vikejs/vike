@@ -1,4 +1,3 @@
-export { UseBatiHint }
 export { UseUiFrameworkVikeExtensionHint }
 export { UseUiFrameworkVikeExtensionAnyHint }
 export { UseVikeExtension }
@@ -56,14 +55,6 @@ function UseUiFrameworkVikeExtensionHint({
   } else {
     return <blockquote>{hint}</blockquote>
   }
-}
-
-function UseBatiHint({ children }: { children: string | React.ReactElement }) {
-  return (
-    <p>
-      You can use <Bati /> to scaffold a Vike app that uses {children}.
-    </p>
-  )
 }
 
 function Bati() {
