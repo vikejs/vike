@@ -474,5 +474,13 @@ const headingsDetached = [
   {
     title: '`onAfterRenderClient()`',
     url: '/onAfterRenderClient'
-  }
+  },
+  {
+    title: 'Scaffold new app',
+    url: '/scaffold'
+  },
+  {
+    title: 'Add Vike to Vite app',
+    url: '/add'
+  },
 ] satisfies HeadingDetachedDefinition[]

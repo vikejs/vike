@@ -38,8 +38,14 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Scaffold new app',
-    url: '/scaffold'
+    title: 'Scaffold new Vike app',
+    url: '/new'
+  },
+  {
+    level: 2,
+    title: 'Add SSR or SSG to existing Vite App',
+    titleInNav: 'Add to existing Vite App',
+    url: '/add-ssr-to-vite-app'
   },
   {
     level: 1,
