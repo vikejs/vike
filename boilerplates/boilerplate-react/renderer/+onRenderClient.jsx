@@ -2,7 +2,7 @@
 export { onRenderClient }
 
 import ReactDOM from 'react-dom/client'
-import { PageShell } from './PageShell'
+import { PageLayout } from './PageLayout'
 import { getPageTitle } from './getPageTitle'
 
 let root
@@ -17,9 +17,9 @@ function onRenderClient(pageContext) {
   if (!container) throw new Error('DOM element #react-root not found')
 
   const page = (
-    <PageShell pageContext={pageContext}>
+    <PageLayout pageContext={pageContext}>
       <Page />
-    </PageShell>
+    </PageLayout>
   )
   if (pageContext.isHydration) {
     root = ReactDOM.hydrateRoot(container, page)

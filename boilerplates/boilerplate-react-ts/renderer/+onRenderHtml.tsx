@@ -2,7 +2,7 @@
 export { onRenderHtml }
 
 import ReactDOMServer from 'react-dom/server'
-import { PageShell } from './PageShell'
+import { PageLayout } from './PageLayout'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import logoUrl from './logo.svg'
 import type { OnRenderHtmlAsync } from 'vike/types'
@@ -17,9 +17,9 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
 
   // Alternativly, we can use an HTML stream, see https://vike.dev/streaming
   const pageHtml = ReactDOMServer.renderToString(
-    <PageShell pageContext={pageContext}>
+    <PageLayout pageContext={pageContext}>
       <Page />
-    </PageShell>
+    </PageLayout>
   )
 
   // See https://vike.dev/head

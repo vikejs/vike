@@ -1,7 +1,7 @@
 export { createApp }
 
 import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
-import PageShell from './PageShell.vue'
+import PageLayout from './PageLayout.vue'
 import { setPageContext } from './usePageContext'
 import type { PageContext } from 'vike/types'
 
@@ -12,7 +12,7 @@ function createApp(pageContext: PageContext) {
 
   const PageWithShell = {
     render() {
-      return h(PageShell, {}, { default: () => h(pageRef.value) })
+      return h(PageLayout, {}, { default: () => h(pageRef.value) })
     }
   }
 

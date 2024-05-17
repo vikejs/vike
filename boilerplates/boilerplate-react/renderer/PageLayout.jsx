@@ -1,4 +1,4 @@
-export { PageShell }
+export { PageLayout }
 
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -7,13 +7,13 @@ import logoUrl from './logo.svg'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
 import './css/index.css'
-import './PageShell.css'
+import './PageLayout.css'
 
-PageShell.propTypes = {
+PageLayout.propTypes = {
   pageContext: PropTypes.any,
   children: childrenPropType
 }
-function PageShell({ pageContext, children }) {
+function PageLayout({ pageContext, children }) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>
