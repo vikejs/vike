@@ -1,6 +1,6 @@
 export { createApp }
 
-import { createSSRApp, defineComponent, h, markRaw, reactive, ref } from 'vue'
+import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
 import PageShell from './PageShell.vue'
 import { setPageContext } from './usePageContext'
 
@@ -9,11 +9,11 @@ function createApp(pageContext) {
 
   const pageRef = ref(markRaw(Page))
 
-  const PageWithShell = defineComponent({
+  const PageWithShell = {
     render() {
       return h(PageShell, {}, { default: () => h(pageRef.value) })
     }
-  })
+  }
 
   const app = createSSRApp(PageWithShell)
 
@@ -25,7 +25,7 @@ function createApp(pageContext) {
     }
   })
 
-  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `+onRenderClient.ts`).
+  // When doing Client Routing, we mutate pageContext (see usage of app.changePage() in +onRenderClient.ts).
   // We therefore use a reactive pageContext.
   const pageContextReactive = reactive(pageContext)
 
