@@ -482,5 +482,5 @@ const headingsDetached = [
   {
     title: 'Add Vike to Vite app',
     url: '/add'
-  },
+  }
 ] satisfies HeadingDetachedDefinition[]
