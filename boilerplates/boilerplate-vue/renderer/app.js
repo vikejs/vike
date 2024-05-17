@@ -9,13 +9,13 @@ function createApp(pageContext) {
 
   const pageRef = ref(markRaw(Page))
 
-  const PageWithShell = {
+  const PageWithLayout = {
     render() {
       return h(PageLayout, {}, { default: () => h(pageRef.value) })
     }
   }
 
-  const app = createSSRApp(PageWithShell)
+  const app = createSSRApp(PageWithLayout)
 
   // We use `app.changePage()` to do Client Routing, see `+onRenderClient.ts`
   Object.assign(app, {
