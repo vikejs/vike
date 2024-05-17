@@ -1,4 +1,4 @@
-import { createSSRApp, defineComponent, h, markRaw, reactive, ref } from 'vue'
+import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
 import LayoutDefault from './LayoutDefault.vue'
 import { setPageContext } from './usePageContext'
 
@@ -12,13 +12,13 @@ function createApp(pageContext) {
   // The config 'Layout' is a custom config we defined at ./+config.ts
   const layoutRef = ref(markRaw(pageContext.config.Layout || LayoutDefault))
 
-  const PageWithWrapper = defineComponent({
+  const PageWithLayout = {
     render() {
       return h(layoutRef.value, {}, { default: () => h(pageRef.value, pagePropsRef.value) })
     }
-  })
+  }
 
-  const app = createSSRApp(PageWithWrapper)
+  const app = createSSRApp(PageWithLayout)
 
   // We use `app.changePage()` to do Client Routing, see `+onRenderClient.js`
   app.changePage = (pageContext) => {
