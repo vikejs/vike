@@ -1,11 +1,11 @@
-export { PageShell }
+export { PageLayout }
 
 import React from 'react'
-import './PageShell.css'
+import './PageLayout.css'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
 
-function PageShell({ pageContext, children }) {
+function PageLayout({ pageContext, children }) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>

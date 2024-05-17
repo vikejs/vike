@@ -3,7 +3,7 @@ export { onRenderHtml }
 
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { PageShell } from './PageShell'
+import { PageLayout } from './PageLayout'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // Assets deployed to a CDN:
 //  - logo.svg
@@ -13,9 +13,9 @@ import logoUrl from './logo.svg'
 function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
-    <PageShell>
+    <PageLayout>
       <Page {...pageProps} />
-    </PageShell>
+    </PageLayout>
   )
 
   // Vite automatically injects the Base URL to `logoUrl`.

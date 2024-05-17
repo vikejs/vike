@@ -1,10 +1,10 @@
 import React from 'react'
 import logo from './logo.svg'
-import './PageShell.css'
+import './PageLayout.css'
 
-export { PageShell }
+export { PageLayout }
 
-function PageShell({ children }) {
+function PageLayout({ children }) {
   return (
     <React.StrictMode>
       <Layout>

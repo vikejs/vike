@@ -4,14 +4,14 @@ export { onRenderHtml }
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageShell } from './PageShell'
+import { PageLayout } from './PageLayout'
 
 function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
-    <PageShell pageContext={pageContext}>
+    <PageLayout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>
+    </PageLayout>
   )
 
   return escapeInject`<!DOCTYPE html>
