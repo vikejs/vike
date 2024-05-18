@@ -464,7 +464,7 @@ const headingsDetached = [
     url: '/vike-vue'
   },
   {
-    title: 'reactStrictMode',
+    title: '`reactStrictMode`',
     url: '/reactStrictMode'
   },
   {

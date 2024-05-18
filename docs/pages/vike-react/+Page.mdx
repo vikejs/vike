@@ -1,13 +1,13 @@
 import { Link } from '@brillout/docpress'
 import { UseBati } from '../../components'
 
-`vike-react` is a <Link href="/extensions">Vike extension</Link> that integrates [React](https://react.dev) in a full-fledged manner, providing a DX similar to other React frameworks.
+`vike-react` is a <Link href="/extensions">Vike extension</Link> that integrates [React](https://react.dev) in a full-fledged manner, providing a DX similar to other React frameworks such as Next.js.
 
 > <UseBati>`vike-react`</UseBati>
 
 See also:
 - [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
-- [GitHub > `vikejs/vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
+- [`CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
 - <Link href="/react" />
 
 
@@ -17,7 +17,6 @@ To add `vike-react` to an existing Vike app: install the `vike-react` npm packag
 
 ```js
 // /pages/+config.js
-
 import vikeReact from 'vike-react/config' // [!code ++]
 
 export default {
@@ -52,9 +51,9 @@ Browsing the [source code of `vike-react`](https://github.com/vikejs/vike-react)
 
 Basically `vike-react` does this:
 - Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf. (Most notably <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link>, see their implementation at
-  [`/src/renderer/onRenderHtml.tsx`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderHtml.tsx)
+  [`renderer/onRenderHtml.tsx`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderHtml.tsx)
   and
-  [`/src/renderer/onRenderClient.tsx`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderClient.tsx).)
+  [`renderer/onRenderClient.tsx`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderClient.tsx).)
 - Introduces new <Link href="/meta">custom hooks</Link> (e.g. <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link>) and <Link href="/meta">custom settings</Link> (e.g. <Link href="/Wrapper">`<Wrapper>`</Link> and <Link href="/stream">`stream`</Link>).
 - Introduces new component hooks (e.g. <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>).
 - Uses [`react-streaming`](https://github.com/brillout/react-streaming) for <Link href="/streaming">HTML Streaming</Link>.
@@ -66,6 +65,8 @@ It implements following features:
 - <Link noBreadcrumb href="/Layout" />
 - <Link noBreadcrumb href="/Wrapper" />
 - <Link href="/head">`<Head>`</Link>
+- <Link href="/head">`title`</Link>
+- <Link href="/head">`favicon`</Link>
 - <Link noBreadcrumb href="/lang" />
 - <Link noBreadcrumb href="/ssr" />
 - <Link noBreadcrumb href="/stream" />
@@ -86,4 +87,3 @@ It implements following features:
 - [GitHub > `vikejs/vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
 - <Link href="/react" />
 - <Link href="/nextjs" />
-- [Bati](https://batijs.dev)
