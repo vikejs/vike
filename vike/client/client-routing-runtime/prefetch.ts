@@ -27,12 +27,11 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { getPageContextFromHooks_isNotHydration } from './getPageContextFromHooks.js'
 import { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { PageContextBeforeRenderClient } from '../shared/executeOnRenderClientHook.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  pageContextFromHooks?: any
+  pageContextFromHooks?: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap() })
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
@@ -57,8 +56,9 @@ async function prefetchPageContext(
 ): Promise<void> {
   try {
     const res = await getPageContextFromHooks_isNotHydration(pageContext, false)
-    globalObject.pageContextFromHooks = res.pageContextFromHooks
+    globalObject.pageContextFromHooks = res
   } catch (err) {
+    // todo
     if (isErrorFetchingStaticAssets(err)) {
       disableClientRouting(err, true)
     } else {

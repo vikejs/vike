@@ -49,7 +49,7 @@ const globalObject = getGlobalObject<{
 }>('renderPageClientSide.ts', { renderCounter: 0 })
 
 const globalObjectForPrefetchedPageContext = getGlobalObject<{
-  pageContextFromHooks?: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>['pageContextFromHooks']
+  pageContextFromHooks?: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
 }>('prefetch.ts', {})
 
 type RenderArgs = {
@@ -209,9 +209,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     } else {
       let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
       try {
-        res = globalObjectForPrefetchedPageContext?.pageContextFromHooks
-          ? globalObjectForPrefetchedPageContext
-          : await getPageContextFromHooks_isNotHydration(pageContext, false)
+        if (globalObjectForPrefetchedPageContext?.pageContextFromHooks?.pageContextFromHooks !== undefined) {
+          res = globalObjectForPrefetchedPageContext?.pageContextFromHooks
+        } else {
+          res = await getPageContextFromHooks_isNotHydration(pageContext, false)
+        }
       } catch (err) {
         await onError(err)
         return
