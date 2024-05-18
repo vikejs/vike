@@ -1,6 +1,6 @@
 Example of using Vike with Vue that showcases many features.
 
-For a simpler example, check out [/examples/vue/](/examples/vue/).
+For a simpler example, check out [/examples/vue-minimal/](/examples/vue-minimal/).
 
 Features:
  - Client Routing (+ usage of `navigate()`)

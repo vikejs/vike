@@ -1,6 +1,6 @@
 React example showcasing many features.
 
-For a simpler example, check out [/examples/react/](/examples/react/) instead.
+For a simpler example, check out [/examples/react-minimal/](/examples/react-minimal/) instead.
 
 Features:
  - Client Routing (+ usage of `navigate()`)
