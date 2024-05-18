@@ -415,10 +415,6 @@ const headingsDetached = [
     url: '/server-routing-vs-client-routing'
   },
   {
-    title: 'Add to existing Vite app',
-    url: '/add'
-  },
-  {
     title: 'Tour',
     url: '/tour'
   },
