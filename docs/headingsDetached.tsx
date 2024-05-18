@@ -464,6 +464,10 @@ const headingsDetached = [
     url: '/vike-vue'
   },
   {
+    title: '`vike-solid`',
+    url: '/vike-solid'
+  },
+  {
     title: '`reactStrictMode`',
     url: '/reactStrictMode'
   },

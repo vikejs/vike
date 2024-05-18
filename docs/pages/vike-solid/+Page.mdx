@@ -1,0 +1,83 @@
+import { Link } from '@brillout/docpress'
+import { UseBati } from '../../components'
+
+`vike-solid` is a <Link href="/extensions">Vike extension</Link> that integrates [Solid](https://solidjs.com) in a full-fledged manner, providing a DX similar to other frontend frameworks such as Solid Start.
+
+> <UseBati>`vike-solid`</UseBati>
+
+See also:
+- [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
+- [`MIGRATION.md`](https://github.com/vikejs/vike-solid/blob/main/MIGRATION.md)
+- <Link href="/solid" />
+
+
+## Add to existing app
+
+To add `vike-solid` to an existing Vike app: install the `vike-solid` npm package (e.g. `$ npm install vike-solid`) then extend your existing `+config.js` file (or create one) with `vike-solid`:
+
+```js
+// /pages/+config.js
+
+import vikeSolid from 'vike-solid/config' // [!code ++]
+
+export default {
+  // ...
+  extends: [vikeSolid] // [!code ++]
+}
+```
+
+You can then use <Link href="#under-the-hood">new settings introduced by `vike-solid`</Link>:
+
+```js
+// /pages/+config.js
+
+import vikeSolid from 'vike-solid/config'
+
+export default {
+  // ...
+
+  // Setting to toggle SSR // [!code ++]
+  ssr: false, // [!code ++]
+
+  extends: [vikeSolid]
+}
+```
+
+
+## Under the hood
+
+`vike-solid` is only `542` lines of code ([as of Mai 2024](https://gist.github.com/brillout/e2134686d682e9a450e10e95f1ff570b)).
+
+Browsing the [source code of `vike-solid`](https://github.com/vikejs/vike-solid) is therefore very much an option for deepening your understanding of Vike or for debugging.
+
+Basically `vike-solid` does this:
+- Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf. (Most notably <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link>, see their implementation at
+  [`renderer/onRenderHtml.tsx`](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/onRenderHtml.tsx)
+  and
+  [`renderer/onRenderClient.tsx`](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/onRenderClient.tsx).)
+- Introduces new <Link href="/meta">custom hooks</Link> and <Link href="/meta">custom settings</Link> (e.g. <Link href="/ssr">`ssr`</Link> and <Link href="/stream">`stream`</Link>).
+- Introduces new component hooks (e.g. <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>).
+
+It implements following features:
+
+- <Link noBreadcrumb href="/useData" />
+- <Link noBreadcrumb href="/usePageContext" />
+- <Link noBreadcrumb href="/Layout" />
+- <Link href="/head">`<Head>`</Link>
+- <Link href="/head">`title`</Link>
+- <Link href="/head">`favicon`</Link>
+- <Link noBreadcrumb href="/lang" />
+- <Link noBreadcrumb href="/ssr" />
+- <Link noBreadcrumb href="/stream" />
+- <Link noBreadcrumb href="/ClientOnly" />
+
+> For a friendlier list, see the following which also includes all settings & hooks implemented by `vike-solid`.
+> - <Link href="/settings" />
+> - <Link href="/hooks" />
+
+
+## See also
+
+- [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
+- [GitHub > `vikejs/vike-solid` > `MIGRATION.md`](https://github.com/vikejs/vike-solid/blob/main/MIGRATION.md)
+- <Link href="/solid" />
