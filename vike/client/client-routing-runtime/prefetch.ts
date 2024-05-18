@@ -161,18 +161,6 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
         { passive: true }
       )
     }
-
-    if (prefetchPageContext.when === 'viewport') {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            prefetchContextIfPossible(url)
-            observer.disconnect()
-          }
-        })
-      })
-      observer.observe(linkTag)
-    }
   })
 }
 
