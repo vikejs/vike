@@ -9,8 +9,8 @@ type PageContextPrefetch = {
 }
 
 type PrefetchPageContext = {
-  when?: PrefetchWhen
-  expire?: PrefetchExpire
+  when?: Exclude<PrefetchWhen, 'viewport'>
+  expire?: number
 }
 
 type PrefetchSettings = {
@@ -22,10 +22,6 @@ function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElem
   let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
   let prefetchPageContext = getPrefetchPageContext(pageContext, linkTag)
   if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {
-    assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
-    prefetchStaticAssets = 'hover'
-  }
-  if (prefetchPageContext.when === 'viewport' && import.meta.env.DEV) {
     assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
     prefetchStaticAssets = 'hover'
   }
@@ -90,7 +86,7 @@ function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: HTMLE
   if ('prefetchPageContext' in pageContext.exports) {
     const { prefetchPageContext } = pageContext.exports
 
-    const wrongUsageMsg = `prefetchPageContext should be an object with 'when' and 'expire' properties. 'when' should be false, 'hover' or 'viewport', and 'expire' should be a number`
+    const wrongUsageMsg = `prefetchPageContext should be an object with 'when' and 'expire' properties. 'when' should be false, 'hover', and 'expire' should be a number`
 
     assertUsage(isPlainObject(prefetchPageContext), wrongUsageMsg)
     const keys = Object.keys(prefetchPageContext)
@@ -99,12 +95,12 @@ function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: HTMLE
     if (when === false) {
       return { when: false, expire: 0 }
     }
-    if ((when === 'hover' || when === 'viewport') && typeof expire === 'number') {
+    if (when === 'hover' && typeof expire === 'number') {
       return { when, expire }
     }
 
-    if ((when === 'HOVER' || when === 'VIEWPORT') && typeof expire === 'number') {
-      const correctValue: 'hover' | 'viewport' = when.toLowerCase() as any
+    if (when === 'HOVER' && typeof expire === 'number') {
+      const correctValue: 'hover' = when.toLowerCase() as any
       return { when: correctValue, expire }
     }
 
@@ -170,8 +166,8 @@ function getPrefetchPageContextAttribute(linkTag: HTMLElement): PrefetchPageCont
       return { when: false, expire: 0 }
     }
 
-    if (whenAttr === 'hover' || whenAttr === 'viewport') {
-      const correctValue: 'hover' | 'viewport' = whenAttr.toLowerCase() as any
+    if (whenAttr === 'hover') {
+      const correctValue: 'hover' = whenAttr.toLowerCase() as any
 
       if (expireAttr === null) {
         return { when: correctValue, expire: 0 }
@@ -184,10 +180,7 @@ function getPrefetchPageContextAttribute(linkTag: HTMLElement): PrefetchPageCont
       assertUsage(false, `data-prefetch-page-context-expire has value "${expireAttr}" but it should instead be number`)
     }
 
-    assertUsage(
-      false,
-      `data-prefetch-page-context has value "${whenAttr}" but it should instead be "false", "hover", or "viewport"`
-    )
+    assertUsage(false, `data-prefetch-page-context has value "${whenAttr}" but it should instead be "false", "hover"`)
   }
 
   if (expireAttr !== null) {
