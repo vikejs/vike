@@ -25,7 +25,8 @@ import {
   pLimit,
   PLimit,
   assertPathFilesystemAbsolute,
-  isArray
+  isArray,
+  changeEnumerable
 } from './utils.js'
 import {
   prerenderPage,
@@ -46,10 +47,14 @@ import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
-import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
-import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
+import {
+  getPageContextUrlComputed,
+  PageContextUrlInternal,
+  PageContextUrlSource
+} from '../../shared/getPageContextUrlComputed.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
@@ -64,6 +69,7 @@ import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVik
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
+import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -109,7 +115,7 @@ type PageContext = PageContextInitEnhanced & {
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-} & PageContextUrlComputedPropsInternal
+} & PageContextUrlInternal
 
 type PrerenderOptions = {
   /** Initial `pageContext` values */
@@ -278,7 +284,7 @@ async function collectDoNoPrerenderList(
   // V1 design
   pageConfigs.forEach((pageConfig) => {
     const configName = 'prerender'
-    const configValue = getConfigValue(pageConfig, configName, 'boolean')
+    const configValue = getConfigValueBuildTime(pageConfig, configName, 'boolean')
     if (configValue?.value === false) {
       const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
       assert(configValueFilePathToShowToUser)
@@ -423,7 +429,11 @@ async function callOnBeforePrerenderStartHooks(
           return
         }
 
-        const prerenderResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeout })
+        const prerenderResult: unknown = await executeHook(
+          () => hookFn(),
+          { hookName, hookFilePath, hookTimeout },
+          null
+        )
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
           {
@@ -452,9 +462,9 @@ async function callOnBeforePrerenderStartHooks(
           prerenderContext.pageContexts.push(pageContextNew)
           if (pageContext) {
             objectAssign(pageContextNew, {
-              _pageContextAlreadyProvidedByOnPrerenderHook: true,
-              ...pageContext
+              _pageContextAlreadyProvidedByOnPrerenderHook: true
             })
+            objectAssign(pageContextNew, pageContext)
           }
         })
       })
@@ -529,14 +539,11 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     _prerenderContext: prerenderContext
   }
   const pageContextInit = {
-    urlOriginal,
-    ...prerenderContext.pageContextInit
+    urlOriginal
   }
+  objectAssign(pageContextInit, prerenderContext.pageContextInit)
   {
-    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, {
-      // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/
-      urlComputedPropsNonEnumerable: true
-    })
+    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
   return pageContext
@@ -652,6 +659,11 @@ async function callOnPrerenderStartHook(
 
   const docLink = 'https://vike.dev/i18n#pre-rendering'
 
+  // Set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in onPrerenderStart() hook, e.g. /examples/i18n/
+  const { restoreEnumerable, addPageContextComputedUrl } = makePageContextComputedUrlNonEnumerable(
+    prerenderContext.pageContexts
+  )
+
   let result: unknown = await executeHook(
     () =>
       hookFn({
@@ -665,8 +677,12 @@ async function callOnPrerenderStartHook(
           return prerenderContext.pageContexts
         }
       }),
-    onPrerenderStartHook
+    onPrerenderStartHook,
+    null
   )
+
+  restoreEnumerable()
+
   if (result === null || result === undefined) {
     return
   }
@@ -727,10 +743,9 @@ async function callOnPrerenderStartHook(
         hookName
       }
     }
-
-    // Restore as URL computed props are lost when user makes a pageContext copy
-    addUrlComputedProps(pageContext)
   })
+
+  addPageContextComputedUrl(prerenderContext.pageContexts)
 }
 
 async function routeAndPrerender(
@@ -786,7 +801,7 @@ async function routeAndPrerender(
           if (pageContext._pageConfigs.length > 0) {
             const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
             assert(pageConfig)
-            usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+            usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
             usesClientRouter = globalContext.pluginManifest.usesClientRouter
           }
@@ -1176,4 +1191,25 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
       abortCaller
     )} isn't supported for pre-rendered pages`
   )
+}
+
+function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlInternal[]) {
+  change(false)
+  return { restoreEnumerable, addPageContextComputedUrl }
+  function restoreEnumerable() {
+    change(true)
+  }
+  function addPageContextComputedUrl(pageContexts: PageContextUrlSource[]) {
+    // Add URL computed props to the user-generated pageContext copies
+    pageContexts.forEach((pageContext) => {
+      const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
+      objectAssign(pageContext, pageContextUrlComputed)
+    })
+  }
+  function change(enumerable: boolean) {
+    pageContexts.forEach((pageContext) => {
+      changeEnumerable(pageContext, 'urlPathname', enumerable)
+      changeEnumerable(pageContext, 'urlParsed', enumerable)
+    })
+  }
 }

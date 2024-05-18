@@ -80,7 +80,9 @@ function devConfig(): Plugin[] {
       configureServer: {
         order: 'post',
         handler(server) {
-          if (config.server.middlewareMode) return
+          const hasHonoViteDevServer = !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
+
+          if (config.server.middlewareMode || hasHonoViteDevServer) return
           return () => {
             addSsrMiddleware(server.middlewares)
           }

@@ -9,6 +9,7 @@ Features:
  - Route Function
  - TypeScript
  - Markdown
+ - [`+client.js`](https://vike.dev/client)
  - Error Page
  - Active Links
  - Access `pageContext` from any React component (using React Context)

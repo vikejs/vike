@@ -1,0 +1,46 @@
+import { Link, Warning } from '@brillout/docpress'
+
+## With Bâti
+
+We recommend using [Bati](https://batijs.dev) to scaffold a new Vike app.
+
+> Apps scaffolded by Bati use <Link href="/extensions">Vike extensions</Link>.
+
+## Without Bâti
+
+You can also scaffold a new Vike app that doesn't use any <Link href="/extensions">Vike extension</Link>, which means you control the UI framework (React/Vue/Solid/...) integration.
+
+> See <Link href="/why#optional-control" />.
+
+<Warning>
+We recommend using the following command only if:
+ - you are an expert user and you want control over integration code, or
+ - you are curious.
+</Warning>
+
+With [npm](https://www.npmjs.com):
+
+```shell
+npm init vike@latest
+```
+
+With [pnpm](https://pnpm.io):
+
+```shell
+pnpm create vike
+```
+
+With [Yarn](https://yarnpkg.com):
+
+```shell
+yarn create vike
+```
+
+Options:
+- `--skip-git`: don't initialize a new Git repository
+
+A prompt will let you choose between:
+- `react`: React + JavaScript
+- `react-ts`: React + TypeScript
+- `vue`: Vue + JavaScript
+- `vue-ts`: Vue + TypeScript

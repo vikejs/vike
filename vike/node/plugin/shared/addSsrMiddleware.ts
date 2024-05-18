@@ -2,6 +2,8 @@ export { addSsrMiddleware }
 
 import { renderPage } from '../../runtime/renderPage.js'
 import type { ViteDevServer } from 'vite'
+import { assertWarning } from '../utils.js'
+import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
 function addSsrMiddleware(middlewares: ConnectServer) {
@@ -10,11 +12,27 @@ function addSsrMiddleware(middlewares: ConnectServer) {
     const url = req.originalUrl || req.url
     if (!url) return next()
     const { headers } = req
-    const userAgent = headers['user-agent']
     const pageContextInit = {
       urlOriginal: url,
-      userAgent
+      headersOriginal: headers
     }
+    Object.defineProperty(pageContextInit, 'userAgent', {
+      get() {
+        // TODO/next-major-release: assertUsage() instead of assertWarning()
+        assertWarning(
+          false,
+          `${pc.cyan('pageContext.userAgent')} is deprecated: use ${pc.cyan(
+            "pageContext.headers['user-agent']"
+          )} instead.`,
+          {
+            showStackTrace: true,
+            onlyOnce: true
+          }
+        )
+        return headers['user-agent']
+      },
+      enumerable: false
+    })
     let pageContext: Awaited<ReturnType<typeof renderPage>>
     try {
       pageContext = await renderPage(pageContextInit)

@@ -1,0 +1,89 @@
+import { Link } from '@brillout/docpress'
+import { UseBati } from '../../components'
+
+`vike-react` is a <Link href="/extensions">Vike extension</Link> that integrates [React](https://react.dev) in a full-fledged manner, providing a DX similar to other React frameworks.
+
+> <UseBati>`vike-react`</UseBati>
+
+See also:
+- [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
+- [GitHub > `vikejs/vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
+- <Link href="/react" />
+
+
+## Add to existing app
+
+To add `vike-react` to an existing Vike app: install the `vike-react` npm package (e.g. `$ npm install vike-react`) then extend your existing `+config.js` file (or create one) with `vike-react`:
+
+```js
+// /pages/+config.js
+
+import vikeReact from 'vike-react/config' // [!code ++]
+
+export default {
+  // ...
+  extends: [vikeReact] // [!code ++]
+}
+```
+
+You can then use <Link href="#under-the-hood">new settings introduced by `vike-react`</Link>:
+
+```js
+// /pages/+config.js
+
+import vikeReact from 'vike-react/config'
+
+export default {
+  // ...
+
+  // Setting to toggle SSR // [!code ++]
+  ssr: false, // [!code ++]
+
+  extends: [vikeReact]
+}
+```
+
+
+## Under the hood
+
+`vike-react` is only `494` lines of code ([as of April 2024](https://gist.github.com/brillout/6267ecb8c996fb4a401985106cc81936)).
+
+Browsing the [source code of `vike-react`](https://github.com/vikejs/vike-react) is therefore very much an option for deepening your understanding of Vike or for debugging.
+
+Basically `vike-react` does this:
+- Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf. (Most notably <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link>, see their implementation at
+  [`/src/renderer/onRenderHtml.tsx`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderHtml.tsx)
+  and
+  [`/src/renderer/onRenderClient.tsx`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderClient.tsx).)
+- Introduces new <Link href="/meta">custom hooks</Link> (e.g. <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link>) and <Link href="/meta">custom settings</Link> (e.g. <Link href="/Wrapper">`<Wrapper>`</Link> and <Link href="/stream">`stream`</Link>).
+- Introduces new component hooks (e.g. <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>).
+- Uses [`react-streaming`](https://github.com/brillout/react-streaming) for <Link href="/streaming">HTML Streaming</Link>.
+
+It implements following features:
+
+- <Link noBreadcrumb href="/useData" />
+- <Link noBreadcrumb href="/usePageContext" />
+- <Link noBreadcrumb href="/Layout" />
+- <Link noBreadcrumb href="/Wrapper" />
+- <Link href="/head">`<Head>`</Link>
+- <Link noBreadcrumb href="/lang" />
+- <Link noBreadcrumb href="/ssr" />
+- <Link noBreadcrumb href="/stream" />
+- <Link noBreadcrumb href="/ClientOnly" />
+- <Link noBreadcrumb href="/onBeforeRenderClient" />
+- <Link noBreadcrumb href="/onAfterRenderClient" />
+- <Link noBreadcrumb href="/reactStrictMode" />
+
+> For a friendlier list, see the following which includes all settings & hooks implemented by `vike-react`.
+> - <Link href="/settings" />
+> - <Link href="/hooks" />
+
+
+
+## See also
+
+- [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
+- [GitHub > `vikejs/vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
+- <Link href="/react" />
+- <Link href="/nextjs" />
+- [Bati](https://batijs.dev)

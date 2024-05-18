@@ -1,24 +1,23 @@
 export { parseGlobResults }
 
-import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils.js'
+// TODO/v1-release: remove old design code, and remove all assertions.
+
+import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils.js'
 import { assertExportValues } from './assert_exports_old_design.js'
 import { getPageFileObject, type PageFile } from './getPageFileObject.js'
 import { fileTypes, type FileType } from './fileTypes.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import {
-  assertPageConfigGlobalSerialized,
-  assertPageConfigsSerialized
-} from '../page-configs/serialize/assertPageConfigsSerialized.js'
 import { parsePageConfigs } from '../page-configs/serialize/parsePageConfigs.js'
+import type {
+  PageConfigGlobalRuntimeSerialized,
+  PageConfigRuntimeSerialized
+} from '../page-configs/serialize/PageConfigSerialized.js'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
 } {
-  assert(hasProp(pageFilesExports, 'isGeneratedFile'))
-  assert(pageFilesExports.isGeneratedFile !== false, `vike was re-installed(/re-built). Restart your app.`)
-  assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
   assert(hasProp(pageFilesExports, 'pageFilesLazy', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesEager', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesExportNamesLazy', 'object'))
@@ -55,11 +54,6 @@ function parseGlobResults(pageFilesExports: unknown): {
     pageFile.loadExportNames = async () => {
       if (!('exportNames' in pageFile)) {
         const moduleExports = await loadModule()
-        // Vite 2 seems to choke following assertion: https://github.com/vikejs/vike/issues/455
-        assertUsage(
-          'exportNames' in moduleExports,
-          'You seem to be using Vite 2 but the latest vike versions only work with Vite 3'
-        )
         assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)
         pageFile.exportNames = moduleExports.exportNames
       }
@@ -110,4 +104,22 @@ function parseGlobResult(globObject: Record<string, unknown>): GlobResult {
 
 function assertLoadModule(globValue: unknown): asserts globValue is () => Promise<Record<string, unknown>> {
   assert(isCallable(globValue))
+}
+
+function assertPageConfigsSerialized(
+  pageConfigsSerialized: unknown
+): asserts pageConfigsSerialized is PageConfigRuntimeSerialized[] {
+  assert(isArray(pageConfigsSerialized))
+  pageConfigsSerialized.forEach((pageConfigSerialized) => {
+    assert(isObject(pageConfigSerialized))
+    assert(hasProp(pageConfigSerialized, 'pageId', 'string'))
+    assert(hasProp(pageConfigSerialized, 'routeFilesystem'))
+    assert(hasProp(pageConfigSerialized, 'configValuesSerialized'))
+  })
+}
+
+function assertPageConfigGlobalSerialized(
+  pageConfigGlobalSerialized: unknown
+): asserts pageConfigGlobalSerialized is PageConfigGlobalRuntimeSerialized {
+  assert(hasProp(pageConfigGlobalSerialized, 'configValuesSerialized'))
 }

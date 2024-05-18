@@ -17,11 +17,11 @@ Built-in properties:
    On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
     ```js
     // Server middleware
-    app.get('*', async (req, res, next) => {
+    app.get('*', async (req) => {
       const pageContextInit = {}
       // `pageContext.urlOriginal` is defined here
       pageContextInit.urlOriginal = req.url
-      const result = await renderPage(pageContextInit)
+      const pageContext = await renderPage(pageContextInit)
       /* ... */
     })
     ```
@@ -58,6 +58,8 @@ Built-in properties:
      hashOriginal: '#%C3%A2ge'
    }
    ```
+ - **`pageContext.headers`**: The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.
+ - **`pageContext.headersOriginal`**: The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
  - **`pageContext.config`**: See <Link href="/meta" />.
  - **`pageContext.isHydration`**: Whether the current page is already rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is usually `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.)
  - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
@@ -74,19 +76,17 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
 
  - At your <Link href="/renderPage">Vike server middleware `renderPage()`</Link>:
     ```js
-    app.get('*', async (req, res, next) => {
+    app.get('*', async (req) => {
       const pageContextInit = {
         urlOriginal: req.url,
+        headersOriginal: req.headers,
 
         // ***************************************
         // **** Custom pageContext properties ****
         // ***************************************
 
-        // Common use cases:
-        // pageContext.user – information about logged-in user
+        // Common use case: make information about logged-in user available at pageContext.user
         user: req.user,
-        // pageContext.headers – e.g. make cookies available over pageContext.headers.cookies
-        headers: req.headers,
 
         // Or any other value:
         // pageContext.anyCustomProp

@@ -23,7 +23,7 @@ import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageConfig } from '../../shared/page-configs/helpers.js'
-import { getConfigValue } from '../../shared/page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValue.js'
 import { assertOnBeforeRenderHookReturn } from '../../shared/assertOnBeforeRenderHookReturn.js'
 import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
@@ -59,7 +59,9 @@ async function getPageContextFromHooks_isHydration(
     _hasPageContextFromServer: true as const
   }
   for (const hookName of ['data', 'onBeforeRender'] as const) {
-    const pageContextForHook = { ...pageContext, ...pageContextFromHooks }
+    const pageContextForHook = {}
+    objectAssign(pageContextForHook, pageContext)
+    objectAssign(pageContextForHook, pageContextFromHooks)
     if (hookClientOnlyExists(hookName, pageContextForHook)) {
       const pageContextFromHook = await executeHookClientSide(hookName, pageContextForHook)
       Object.assign(pageContextFromHooks, pageContextFromHook)
@@ -77,6 +79,10 @@ async function getPageContextFromHooks_isNotHydration(
     _hasPageContextFromClient: false
   }
 
+  const pageContextForCondition = {}
+  objectAssign(pageContextForCondition, pageContext)
+  objectAssign(pageContextForCondition, pageContextFromHooks)
+
   let hasPageContextFromServer = false
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
   // only, then we need to fetch pageContext from the server.
@@ -85,7 +91,7 @@ async function getPageContextFromHooks_isNotHydration(
     // For the error page, we cannot fetch pageContext from the server because the pageContext JSON request is based on the URL
     !isErrorPage &&
     // true if pageContextInit has some client data or at least one of the data() and onBeforeRender() hooks is server-side only:
-    (await hasPageContextServer({ ...pageContext, ...pageContextFromHooks }))
+    (await hasPageContextServer(pageContextForCondition))
   ) {
     const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true }
@@ -105,11 +111,10 @@ async function getPageContextFromHooks_isNotHydration(
   // Note: for the error page, we also execute the client-side data() and onBeforeRender() hooks, but maybe we
   // shouldn't? The server-side does it as well (but maybe it shouldn't).
   for (const hookName of ['guard', 'data', 'onBeforeRender'] as const) {
-    const pageContextForHook = {
-      _hasPageContextFromServer: hasPageContextFromServer,
-      ...pageContext,
-      ...pageContextFromHooks
-    }
+    const pageContextForHook = {}
+    objectAssign(pageContextForHook, { _hasPageContextFromServer: hasPageContextFromServer })
+    objectAssign(pageContextForHook, pageContext)
+    objectAssign(pageContextForHook, pageContextFromHooks)
     if (hookName === 'guard') {
       if (
         !isErrorPage &&
@@ -156,7 +161,7 @@ async function executeHookClientSide(
     return null
   }
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
-  const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook)
+  const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook, pageContext)
 
   const pageContextFromHook = {}
   if (hookName === 'onBeforeRender') {
@@ -225,7 +230,7 @@ async function hookServerOnlyExists(
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    const hookEnv = getConfigValue(pageConfig, `${hookName}Env`)?.value ?? {}
+    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}
     assert(isObject(hookEnv))
     return !!hookEnv.server && !hookEnv.client
   } else {
@@ -259,7 +264,7 @@ function hookClientOnlyExists(
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    const hookEnv = getConfigValue(pageConfig, `${hookName}Env`)?.value ?? {}
+    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}
     assert(isObject(hookEnv))
     return !!hookEnv.client && !hookEnv.server
   } else {
@@ -301,7 +306,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
   // Is there a reason for having two different properties? Can't we use only one property? I guess/think the isServerSideError property was an attempt (a bad idea really) for rendering the error page even though an error occured on the server-side (which is a bad idea because the added complexity is non-negligible while the added value is minuscule since the error page usually doesn't have any (meaningful / server-side) hooks).
   if ('serverSideError' in pageContextFromServer || isServerSideError in pageContextFromServer) {
     throw getProjectError(
-      `The pageContext object couldn't be fetched from the server as an error occurred on the server-side. Check your server logs.`
+      `pageContext couldn't be fetched from server: an error occurred on the server-side (see your server logs)`
     )
   }
 

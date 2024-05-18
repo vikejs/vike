@@ -1,7 +1,7 @@
 export { getViteDevScripts }
 
 import { getGlobalContext } from '../../globalContext.js'
-import { assert, assertUsage } from '../../utils.js'
+import { assert, assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 async function getViteDevScripts(): Promise<string> {
@@ -30,7 +30,13 @@ async function getViteDevScripts(): Promise<string> {
     'You are using a Vite Plugin that transforms the HTML in a way that conflicts with vike. Create a new GitHub ticket to discuss a solution.'
   )
   const viteInjection = fakeHtml.slice(fakeHtmlBegin.length, -1 * fakeHtmlEnd.length)
-  assert(viteInjection.includes('script'), { viteInjection })
+  assert(viteInjection.includes('script'))
+  assertWarning(
+    !viteInjection.includes('import('),
+    'Unexpected Vite HMR code. Reach out to a Vike maintainer on GitHub.',
+    { onlyOnce: true }
+  )
+
   const scriptTags = viteInjection
   return scriptTags
 }

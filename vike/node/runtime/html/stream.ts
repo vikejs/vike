@@ -921,19 +921,19 @@ async function loadStreamNodeModule(): Promise<{
 }
 
 function getStreamName(
-  type: 'pipe' | 'readable' | 'writable',
-  standard: 'web' | 'node'
+  kind: 'pipe' | 'readable' | 'writable',
+  type: 'web' | 'node'
 ): `a ${string} Stream` | `a ${string} Stream Pipe` {
-  let standardName = capitalizeFirstLetter(standard)
-  if (standardName === 'Node') {
-    standardName = 'Node.js'
+  let typeName = capitalizeFirstLetter(type)
+  if (typeName === 'Node') {
+    typeName = 'Node.js'
   }
-  const typeName = capitalizeFirstLetter(type)
-  if (type !== 'pipe') {
-    return `a ${typeName} ${standardName} Stream`
+  const kindName = capitalizeFirstLetter(kind)
+  if (kind !== 'pipe') {
+    return `a ${kindName} ${typeName} Stream`
   }
-  if (type === 'pipe') {
-    return `a ${standardName} Stream Pipe`
+  if (kind === 'pipe') {
+    return `a ${typeName} Stream Pipe`
   }
   assert(false)
 }

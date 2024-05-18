@@ -1,15 +1,10 @@
 export { assertV1Design }
 
 import { PageFile } from '../../shared/getPageFiles.js'
-import type { PageConfigBuildTime, PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
+import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { assert, assertUsage, assertWarning, isNotNullish, unique } from './utils.js'
 
-function assertV1Design(
-  isOldDesign: boolean,
-  pageConfigs: (PageConfigRuntime | PageConfigBuildTime)[],
-  pageFilesAll?: PageFile[]
-): void {
+function assertV1Design(isOldDesign: boolean, pageConfigs: PageConfigBuildTime[], pageFilesAll?: PageFile[]): void {
   const isV1Design = pageConfigs.length > 0
   if (isV1Design && isOldDesign) {
     const lines = ['Mixing the new V1 design with the old V0.4 design is forbidden.']
@@ -19,10 +14,12 @@ function assertV1Design(
       const filesV1: string[] = unique(
         pageConfigs
           .map((p) =>
-            Object.values(p.configValues)
-              .map((c) => getConfigValueFilePathToShowToUser(c.definedAtData))
-              .filter(isNotNullish)
-              .map((filePathToShowToUser) => indent + filePathToShowToUser)
+            Object.values(p.configValueSources).map((sources) =>
+              sources
+                .map((c) => c.definedAtFilePath.filePathAbsoluteUserRootDir)
+                .filter(isNotNullish)
+                .map((filePathToShowToUser) => indent + filePathToShowToUser)
+            )
           )
           .flat(2)
       )

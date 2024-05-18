@@ -54,7 +54,8 @@ function envVarsPlugin(): Plugin {
               if (isBuild) {
                 assertUsage(false, errMsg)
               } else {
-                // Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`)
+                // - Only a warning for faster development DX (e.g. when user toggles `ssr: boolean` or `onBeforeRenderIsomorph: boolean`).
+                // - But only showing a warning can be confusing: https://github.com/vikejs/vike/issues/1641
                 assertWarning(false, errMsg, { onlyOnce: true })
               }
             }

@@ -32,10 +32,9 @@ async function startServer() {
   }
 
   app.get('*', async (req, res, next) => {
-    const userAgent = req.headers['user-agent']
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      userAgent
+      headersOriginal: req.headers
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext

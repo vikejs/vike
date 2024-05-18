@@ -14,10 +14,10 @@ if (isBrowser()) {
 import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import {
-  addUrlComputedProps,
-  PageContextUrlComputedPropsInternal,
-  PageContextUrlSources
-} from '../addUrlComputedProps.js'
+  assertPageContextUrl,
+  type PageContextUrlInternal,
+  type PageContextUrlSource
+} from '../getPageContextUrlComputed.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
@@ -28,14 +28,14 @@ import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs
 import pc from '@brillout/picocolors'
 import type { Hook } from '../hooks/getHook.js'
 
-type PageContextForRoute = PageContextUrlComputedPropsInternal & {
+type PageContextForRoute = PageContextUrlInternal & {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
   _allPageIds: string[]
   _pageConfigGlobal: PageConfigGlobalRuntime
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: Hook | null
-} & PageContextUrlSources
+} & PageContextUrlSource
 type PageContextFromRoute = {
   _pageId: string | null
   routeParams: Record<string, string>
@@ -53,7 +53,7 @@ type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
 async function route(pageContextForRoute: PageContextForRoute): Promise<PageContextFromRoute> {
   debug('Pages routes:', pageContextForRoute._pageRoutes)
-  addUrlComputedProps(pageContextForRoute)
+  assertPageContextUrl(pageContextForRoute)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()

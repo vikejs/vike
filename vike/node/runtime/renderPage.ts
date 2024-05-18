@@ -416,12 +416,13 @@ async function getPageContextErrorPageInit(
   const pageContextInitEnhanced = getPageContextInitEnhancedSSR(pageContextInit, renderContext, null, httpRequestId)
 
   assert(errNominalPage)
-  const pageContext = {
-    ...pageContextInitEnhanced,
+  const pageContext = {}
+  objectAssign(pageContext, pageContextInitEnhanced)
+  objectAssign(pageContext, {
     is404: false,
     errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>
-  }
+  })
 
   objectAssign(pageContext, {
     _debugRouteMatches:
@@ -498,7 +499,9 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
     { url: urlNormalized, statusCode: 301 },
     pageContextInit.urlOriginal
   )
-  const pageContextHttpResponse = { ...pageContextInit, httpResponse }
+  const pageContextHttpResponse = {}
+  objectAssign(pageContextHttpResponse, pageContextInit)
+  objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
 }
 
@@ -534,7 +537,9 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
     'info'
   )
   const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
-  const pageContextHttpResponse = { ...pageContextInit, httpResponse }
+  const pageContextHttpResponse = {}
+  objectAssign(pageContextHttpResponse, pageContextInit)
+  objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
 }
 
@@ -572,11 +577,11 @@ async function handleAbortError(
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
       const pageContext = {
-        _pageId: errorPageId,
-        ...pageContextAbort,
-        ...pageContextErrorPageInit,
-        ...renderContext
+        _pageId: errorPageId
       }
+      objectAssign(pageContext, pageContextAbort)
+      objectAssign(pageContext, pageContextErrorPageInit)
+      objectAssign(pageContext, renderContext)
       objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = serializePageContextClientSide(pageContext)
@@ -597,10 +602,9 @@ async function handleAbortError(
     return { pageContextReturn }
   }
   if (pageContextAbort._urlRedirect) {
-    const pageContextReturn = {
-      ...pageContextInit,
-      ...pageContextAbort
-    }
+    const pageContextReturn = {}
+    objectAssign(pageContextReturn, pageContextInit)
+    objectAssign(pageContextReturn, pageContextAbort)
     const httpResponse = createHttpResponseObjectRedirect(
       pageContextAbort._urlRedirect,
       (() => {

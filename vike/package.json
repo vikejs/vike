@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@brillout/import": "^0.2.3",
-    "@brillout/json-serializer": "^0.5.8",
+    "@brillout/json-serializer": "^0.5.10",
     "@brillout/picocolors": "^1.0.10",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.4.5",
@@ -106,6 +106,15 @@
       "types": "./dist/esm/shared/abort.d.ts",
       "default": "./dist/esm/shared/abort.js"
     },
+    "./getPageContext": {
+      "worker": "./dist/esm/shared/getPageContext.js",
+      "edge-light": "./dist/esm/shared/getPageContext.js",
+      "require": "./dist/cjs/shared/getPageContext.js",
+      "node": "./dist/esm/shared/getPageContext.js",
+      "browser": "./dist/esm/shared/getPageContext.js",
+      "types": "./dist/esm/shared/getPageContext.d.ts",
+      "default": "./dist/esm/shared/getPageContext.js"
+    },
     "./__internal": {
       "require": "./dist/cjs/__internal/index.js",
       "node": "./dist/esm/__internal/index.js",
@@ -186,28 +195,28 @@
     "@brillout/import": "^0.2.3",
     "@brillout/json-serializer": "^0.5.8",
     "@brillout/picocolors": "^1.0.10",
+    "@brillout/release-me": "^0.3.7",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.4.0",
-    "acorn": "^8.11.2",
-    "cac": "^6.7.14",
-    "es-module-lexer": "^1.4.1",
-    "esbuild": "^0.19.10",
-    "fast-glob": "^3.3.2",
-    "sirv": "^2.0.4",
-    "source-map-support": "^0.5.21",
-    "@brillout/release-me": "^0.2.2",
     "@types/estree": "^1.0.5",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
     "@types/resolve": "^1.20.6",
     "@types/source-map-support": "^0.5.10",
+    "acorn": "^8.11.2",
+    "cac": "^6.7.14",
+    "es-module-lexer": "^1.4.1",
+    "esbuild": "^0.19.10",
+    "fast-glob": "^3.3.2",
     "react-streaming": "^0.3.24",
     "rimraf": "^5.0.5",
-    "typescript": "^5.3.3",
+    "sirv": "^2.0.4",
+    "source-map-support": "^0.5.21",
+    "typescript": "^5.4.5",
     "vite": "npm:@brillout/vite@5.1.0-commit-3dc7abd"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "description": "Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.",
   "repository": "https://github.com/vikejs/vike",

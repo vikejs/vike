@@ -1,7 +1,13 @@
 export { getPageContextProxyForUser }
 export { PageContextForPassToClientWarning }
 
-import { assert, assertUsage, assertWarning, getGlobalObject } from '../server-routing-runtime/utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  getGlobalObject,
+  getPropAccessNotation
+} from '../server-routing-runtime/utils.js'
 import { notSerializable } from '../../shared/notSerializable.js'
 const globalObject = getGlobalObject<{ prev?: string }>('getPageContextProxyForUser.ts', {})
 
@@ -11,8 +17,9 @@ type PageContextForPassToClientWarning = {
 }
 
 /**
- * - Throw error when pageContext value isn't serializable
- * - Throw error when pageContext prop is missing in passToClient
+ * Throw error when pageContext value isn't:
+ * - serializable, or
+ * - defined.
  */
 function getPageContextProxyForUser<PageContext extends Record<string, unknown> & PageContextForPassToClientWarning>(
   pageContext: PageContext
@@ -22,86 +29,62 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
   return new Proxy(pageContext, {
     get(_: never, prop: string) {
       const val = pageContext[prop]
-      const propName = JSON.stringify(prop)
+      const propName = getPropAccessNotation(prop)
       assertUsage(
         val !== notSerializable,
-        `pageContext[${propName}] couldn't be serialized and, therefore, is missing on the client-side. Check the server logs for more information.`
+        `pageContext${propName} couldn't be serialized and, therefore, is missing on the client-side. Check the server logs for more information.`
       )
-      assertIsDefined(pageContext, prop)
+      passToClientHint(pageContext, prop, propName)
       return val
     }
   })
 }
 
-function assertIsDefined(pageContext: PageContextForPassToClientWarning, prop: string) {
-  // We disable assertIsDefined() for the next attempt to read `prop`, because of how Vue's reactivity work. When changing a reactive object:
-  //  - Vue tries to read its old value first. This triggers a `assertIsDefined()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.
-  //  - Vue seems to read __v_raw before reading the property
-  if (globalObject.prev === prop || globalObject.prev === '__v_raw') return
-  ignoreNextRead(prop)
+function passToClientHint(pageContext: PageContextForPassToClientWarning, prop: string, propName: string) {
+  if (handleVueReactivity(prop)) return
+  // `prop in pageContext` is the trick we use to know the passToClient value on the client-side, as we set a value to all passToClient props, even `undefined` ones:
+  // ```html
+  // <script id="vike_pageContext" type="application/json">{"pageProps":"!undefined"}</script>
+  // ```
   if (prop in pageContext) return
-  if (isExpected(prop)) return
-  // - If no pageContext was fetchd from the server, then adding props to passToClient is useless.
-  // - Showing a warning, even though no pageContext was fetched from the server, is actually erroneous as the client runtime cannot deduce the passToClient list.
+  if (isWhitelisted(prop)) return
+  // The trick described above (`prop in pageContext`) doesn't work if Vike doesn't fetch any pageContext from the server.
+  // - There would still be some value to show a warning, but it isn't worth it because of the confusion that the first recommendation (adding `prop` to `passToClient`) wouldn't actually remove the warning, and only the second recommendation (using `prop in pageContext` instead of `pageContext[prop]`) would work.
   if (!pageContext._hasPageContextFromServer) return
 
-  const propName = JSON.stringify(prop)
-
-  /* This handling would be the clearest but, unfortunately, it's fundamentally problematic:
-   *  - It would force the pageContext value consumer to be synchronized with the pageContext value provider. For example, if vike-react wants to conditionally do something dependening on wehther some optional pageContext value was provided by some optional vike-react-* integration package.
-   *  - If a pageContext value is set by an optional hook, then it's expected that the value is undefined if the hook doesn't exist.
-  const errMsg = `pageContext[${propName}] is \`undefined\` on the client-side. If it's defined on the server-side then add ${propName} to passToClient (https://vike.dev/passToClient), otherwise make sure your client-side hooks always define it (e.g. set it to \`null\` instead of \`undefined\`).`
-  assertUsage(false, errMsg)
-  */
-
-  if (!pageContext._hasPageContextFromClient) {
-    // We can safely assume that the property is missing in passToClient, because the server-side defines all passToClient properties even if they have an undefined value:
-    // ```
-    // <script id="vike_pageContext" type="application/json">{"_pageId":"/pages/admin","user":"!undefined","pageProps":"!undefined","title":"!undefined","abortReason":"!undefined","_urlRewrite":null}</script>
-    // ```
-    // Note how properties have "!undefined" values => we can tell whether an undefined pageContext value exists in passToClient.
-    assertUsage(
-      false,
-      `pageContext[${propName}] isn't available on the client-side because ${propName} is missing in passToClient, see https://vike.dev/passToClient`
-    )
+  const errMsg = `pageContext${propName} isn't defined on the client-side, see https://vike.dev/passToClient#error`
+  if (
+    // TODO/next-major-release always make it an error.
+    // - Remove pageContext._hasPageContextFromClient logic (IIRC this is its only use case).
+    pageContext._hasPageContextFromClient
+  ) {
+    assertWarning(false, errMsg, { onlyOnce: false, showStackTrace: true })
   } else {
-    // Do nothing, not even a warning, because we don't know whether the user expects that the pageContext value can be undefined. (E.g. a pageContext value that is defined by an optional hook.)
-
-    // TODO/next-major-release make it an assertUsage()
-    assertWarning(
-      false,
-      [
-        `pageContext[${propName}] isn't defined on the client-side:`,
-        `1. if it's defined by the server-side then add ${propName} to passToClient (https://vike.dev/passToClient), or`,
-        `2. if it's expected that it may not be defined:`,
-        '   ```js',
-        '   // ❌ Replace code like this:',
-        `   const val = pageContext[${propName}] ?? someDefaultValue`,
-        '   // ✅ With that:',
-        `   const val = ${propName} in pageContext ? pageContext[${propName}] : someDefaultValue`,
-        '   ```',
-        `See stack track below to find where pageContext[${propName}] is being accessed.`
-      ].join('\n'),
-      { showStackTrace: true, onlyOnce: false }
-    )
+    assertUsage(false, errMsg)
   }
 }
 
-const IGNORE_LIST = [
+const WHITELIST = [
   'then',
-  'toJSON' // Vue tries to get `toJSON`
+  'toJSON' // Vue triggers `toJSON`
 ]
-function isExpected(prop: string): boolean {
-  if (IGNORE_LIST.includes(prop)) return true
+function isWhitelisted(prop: string): boolean {
+  if (WHITELIST.includes(prop)) return true
   if (typeof prop === 'symbol') return true // Vue tries to access some symbols
   if (typeof prop !== 'string') return true
   if (prop.startsWith('__v_')) return true // Vue internals upon `reactive(pageContext)`
   return false
 }
 
-function ignoreNextRead(prop: string) {
+// Handle Vue's reactivity.
+// When changing a reactive object:
+// - Vue tries to read its old value first. This triggers a `assertIsDefined()` failure if e.g. `pageContextReactive.routeParams = pageContextNew.routeParams` and `pageContextReactive` has no `routeParams`.
+// - Vue seems to read __v_raw before reading the property.
+function handleVueReactivity(prop: string): boolean {
+  if (globalObject.prev === prop || globalObject.prev === '__v_raw') return true
   globalObject.prev = prop
   window.setTimeout(() => {
     globalObject.prev = undefined
   }, 0)
+  return false
 }

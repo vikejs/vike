@@ -4,34 +4,65 @@ import { test, expect, fetch, fetchHtml, page, getServerUrl, autoRetry, sleep } 
 import { testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react-minimal/.testRun'
 import fs from 'fs'
-import assert from 'assert'
 import path from 'path'
 import { fileURLToPath } from 'url'
 const dir = path.dirname(fileURLToPath(import.meta.url))
 
+let isDev: boolean
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
+  isDev = cmd === 'npm run dev'
   testRunClassic(cmd, { skipScreenshotTest: true })
+  testCumulativeSetting()
+  testRouteStringDefinedInConfigFile()
+  testSideExports()
+  testPrerenderSettings()
+  testRedirectMailto()
+  testNestedConfigWorkaround()
+  testHistoryPushState()
+}
 
-  assert(cmd.startsWith('npm run '))
-  const isDev = cmd === 'npm run dev'
-
+function testRouteStringDefinedInConfigFile() {
   test('Route String defined in +config.js', async () => {
     // Route String '/markdown' defined in `+config.js > export default { route }` instead of +route.js
     const html = await fetchHtml('/markdown')
     expect(html).toContain('<p>Some text</p>')
   })
+}
 
+function testCumulativeSetting() {
+  test('Cumulative setting (not serialiazed but imported)', async () => {
+    let html: string
+    const expectGlobalMetaTags = () => {
+      expect(html).toContain('<meta charSet="UTF-8"/>')
+      expect(html).toContain('<meta name="viewport" content="width=device-width, initial-scale=1.0"/>')
+    }
+    const expectAboutMetaTags = () => {
+      expect(html).toContain('<meta name="description" content="Playground for testing."/>')
+    }
+
+    html = await fetchHtml('/')
+    expectGlobalMetaTags()
+
+    html = await fetchHtml('/about')
+    expectAboutMetaTags()
+    expectGlobalMetaTags()
+  })
+}
+
+function testSideExports() {
   test('Side export - HTML', async () => {
     const html = await fetchHtml('/markdown')
     // 'Some title' is defined by `export { frontmatter }` of /pages/markdown-page/+Page.md
-    expect(html).toContain('<title>Some title</title>')
+    expect(html).toContain('<title>Some title set in mdx</title>')
   })
 
   test('Side export - DOM', async () => {
     await page.goto(getServerUrl() + '/markdown')
     await testCounter()
   })
+}
 
+function testPrerenderSettings() {
   if (!isDev) {
     test('pre-render settings', async () => {
       ;[
@@ -45,7 +76,24 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
       })
     })
   }
+}
 
+function testRedirectMailto() {
+  test('Redirect to URI without http protocol (e.g. `mailto:`)', async () => {
+    const resp = await fetch(getServerUrl() + '/mail', { redirect: 'manual' })
+    expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
+  })
+}
+
+function testNestedConfigWorkaround() {
+  // See comment in /test/misc/pages/+config.ts
+  test('Nested config workaround', async () => {
+    const html = await fetchHtml('/')
+    expect(html).toContain('<title>Some title set by nested config</title>')
+  })
+}
+
+function testHistoryPushState() {
   test('history.pushState()', async () => {
     // Timestamp component works as expected
     await page.goto(getServerUrl() + '/')
@@ -92,29 +140,27 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     expect(timestamp7).toBe(timestamp6)
   })
 
-  test('Redirect to URI without http protocol (e.g. `mailto:`)', async () => {
-    const resp = await fetch(getServerUrl() + '/mail', { redirect: 'manual' })
-    expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
-  })
-}
+  return
 
-async function getTimestamp() {
-  let timestampStr: string
-  await autoRetry(async () => {
-    const val = await page.evaluate(() => document.querySelector('#timestamp')?.textContent)
-    expect(val).toBeTruthy()
-    timestampStr = val!
-  })
-  const timestamp = parseInt(timestampStr!, 10)
-  const timestampNow = new Date('2023-11-11').getTime()
-  expect(timestamp > timestampNow).toBe(true)
-  return timestamp
-}
-async function expectUrl(endsWith: `/${string}`) {
-  const url = await getUrl()
-  expect(url.endsWith(endsWith)).toBe(true)
-}
-async function getUrl() {
-  const url = await page.evaluate(() => location.href)
-  return url
+  async function getTimestamp() {
+    let timestampStr: string
+    await autoRetry(async () => {
+      const val = await page.evaluate(() => document.querySelector('#timestamp')?.textContent)
+      expect(val).toBeTruthy()
+      timestampStr = val!
+    })
+    const timestamp = parseInt(timestampStr!, 10)
+    const timestampNow = new Date('2023-11-11').getTime()
+    expect(timestamp > timestampNow).toBe(true)
+    return timestamp
+  }
+
+  async function expectUrl(endsWith: `/${string}`) {
+    const url = await getUrl()
+    expect(url.endsWith(endsWith)).toBe(true)
+  }
+  async function getUrl() {
+    const url = await page.evaluate(() => location.href)
+    return url
+  }
 }

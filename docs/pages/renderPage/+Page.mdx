@@ -11,10 +11,11 @@ You only need `renderPage()` if you use SSR, see [Optional](#optional).
 
 ## Examples
 
- - <RepoLink text='Express.js' path='/boilerplates/boilerplate-vue/server/index.js' />
+ - <RepoLink text='Express.js' path='/boilerplates/boilerplate-react/server/index.js' />
  - <RepoLink text='Express.js + TypeScript' path='/boilerplates/boilerplate-vue-ts/server/index.ts' />
- - <Link text="Cloudflare Workers" href="/cloudflare-workers#example" />
+ - <Link text="Cloudflare Workers" href="/cloudflare-workers#examples" />
  - <Link text="Vercel" href="/vercel#api-route" />
+ - [Bati](https://batijs.dev) (make sure to select a server like Express.js, H3, ...)
 
 
 ## Usage
@@ -59,14 +60,19 @@ async function startServer() {
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
   app.get('*', async (req, res, next) => {
-    // Required: the URL of the page
-    const pageContextInit = { urlOriginal: req.originalUrl }
+    const pageContextInit = {
+      // Required: the URL of the page
+      urlOriginal: req.originalUrl
 
-    // Optionally, we can provide additional information about the request.
-    // Such as information about the logged-in user (e.g. when using an
-    // Express.js authentication middleware), or the User Agent header.
-    pageContextInit.user = req.user
-    pageContextInit.userAgent = req.headers['user-agent']
+      // Optional: the HTTP Headers
+      headersOriginal: req.headers,
+
+      // Optional: information about the logged-in user (when using an
+      // Express.js authentication middleware that defines `req.user`).
+      user: req.user
+
+      // ... we can provide any additional information about the request here ...
+    }
 
     const pageContext = await renderPage(pageContextInit)
     if (pageContext.httpResponse === null) return next()
@@ -101,6 +107,7 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 
 See also:
  - <Link href="/NODE_ENV" />
+ - <Link href="/headers" />
  - <Link href="/onRenderHtml" />
 
 
@@ -111,3 +118,8 @@ If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you 
  - Upon pre-rendering (`$ vite build`/`$ vike prerender`) Vike renders all your pages.
 
 But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your pages, then you need a production server and you need to use `renderPage()` in order to embed Vike into your server. See <Link href="/pre-rendering"/>.
+
+## See also
+
+- <Link href="/headers" />
+- <Link href="/pageContext" />

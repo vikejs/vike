@@ -2,8 +2,8 @@ import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../c
 import { Link, RepoLink } from '@brillout/docpress'
 
 > Using `meta` is an advanced and powerful technique which we recommend using only for advanced use cases. Consider using the following instead:
-> - <Link href="/extensions" noBreadcrumb={true} />
-> - <Link href="/file-env" noBreadcrumb={true} />
+> - <Link href="/extensions" noBreadcrumb={true} /> (which use `meta` under the hood).
+> - The file extensions <Link href="/file-env" noBreadcrumb={true} />.
 
 The `meta` settings enables you to create:
  - **New settings**.
@@ -413,20 +413,20 @@ Example:
 export default {
   meta: {
     someSettingOrHook: {
-      // Required. Defines the environment in which the config value is loaded.
+      // [Required] Defines the environment in which the config value is loaded.
       env: {
-        //  Load the config value on the server.
+        // Load the config value on the server. [Required]
         server: true,
-        //  Load the config value on the client.
+        // Load the config value on the client. [Required]
         client: true,
-        // Load the config value at config time. Required for `effect`. Optional.
+        // Load the config value at config-time (when Vike loads +config.js files). [Optional]
         config: false // default value
       },
 
-      // Optional. Whether config values should be merged instead of overwritten.
+      // [Optional] Whether config values should be merged (instead of overwritten).
       cumulative: false, // default value
 
-      // Optional. Function called when the config value is defined.
+      // [Optional] Function called when the config value is loaded at config-time.
       // Requires `env.config` to be `true`.
       effect({ configDefinedAt, configValue }) {
         if (someCondition) {
@@ -490,6 +490,34 @@ export default {
 ```
 
 > `sqlQuery` is a custom setting, see <Link href="#example-sql" doNotInferSectionTitle />.
+
+If you define a <Link href="#api">`cumulative` config</Link>, then also make sure to use the global interface `Vike.ConfigResolved`.
+
+```ts
+// /pages/+config.ts
+// Environment: config
+
+export default {
+  meta: {
+    viewport: {
+      env: { server: true }
+    }
+  }
+}
+
+declare global {
+  namespace Vike {
+    interface Config {
+      viewport?: number
+    }
+    interface ConfigResolved {
+      // Set the pageContext.config.viewport type
+      viewport?: number[]
+    }
+  }
+}
+```
+
 
 ## See also
 

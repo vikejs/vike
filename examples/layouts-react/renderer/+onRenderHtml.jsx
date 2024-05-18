@@ -4,15 +4,15 @@ export { onRenderHtml }
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageShell } from './PageShell'
+import { PageLayout } from './PageLayout'
 
 async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
 
   const pageHtml = renderToString(
-    <PageShell pageContext={pageContext}>
+    <PageLayout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>
+    </PageLayout>
   )
 
   return escapeInject`<!DOCTYPE html>

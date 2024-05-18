@@ -2,11 +2,11 @@ import { renderPage } from 'vike/server'
 
 export { handleSsr }
 
-async function handleSsr(url: string, userAgent: string) {
+async function handleSsr(url: string, headers: Headers) {
   const pageContextInit = {
     urlOriginal: url,
-    fetch: (...args: Parameters<typeof fetch>) => fetch(...args),
-    userAgent
+    headersOriginal: headers,
+    fetch: (...args: Parameters<typeof fetch>) => fetch(...args)
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext

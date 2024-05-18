@@ -1,6 +1,6 @@
 export default Page
 export const frontmatter = {
-  title: 'Some title'
+  title: 'Some title set in mdx'
 }
 
 import { createElement as h, Fragment } from 'react'

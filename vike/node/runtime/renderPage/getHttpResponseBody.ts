@@ -163,8 +163,8 @@ function getHttpResponseBodyStreamHandlers(htmlRender: HtmlRender, renderHook: n
     }
   }
 
-  function getFixMsg(type: 'pipe' | 'readable', standard: 'web' | 'node') {
-    const streamName = getStreamName(type, standard)
+  function getFixMsg(kind: 'pipe' | 'readable', type: 'web' | 'node') {
+    const streamName = getStreamName(kind, type)
     assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
     assert(renderHook)
     const { hookFilePath, hookName } = renderHook

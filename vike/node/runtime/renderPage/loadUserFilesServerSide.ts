@@ -33,7 +33,7 @@ type PageFiles = PromiseType<ReturnType<typeof loadUserFilesServerSide>>
 async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageContext_loadUserFilesServerSide) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
-  const [{ pageFilesLoaded, pageConfigLoaded, ...pageContextExports }] = await Promise.all([
+  const [{ pageFilesLoaded, pageContextExports }] = await Promise.all([
     loadPageUserFiles(pageContext._pageFilesAll, pageConfig, pageContext._pageId, !getGlobalContext().isProduction),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
   ])
@@ -60,8 +60,8 @@ async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageCo
   }
 
   const pageContextAddendum = {}
+  objectAssign(pageContextAddendum, pageContextExports)
   objectAssign(pageContextAddendum, {
-    ...pageContextExports,
     Page: pageContextExports.exports.Page,
     _isHtmlOnly: isHtmlOnly,
     _passToClient: passToClient,
@@ -140,8 +140,7 @@ async function loadPageUserFiles(
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
   const pageContextExports = getPageContextExports(pageFilesServerSide, pageConfigLoaded)
   return {
-    ...pageContextExports,
-    pageFilesLoaded: pageFilesServerSide,
-    pageConfigLoaded
+    pageContextExports,
+    pageFilesLoaded: pageFilesServerSide
   }
 }

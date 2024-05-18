@@ -129,7 +129,7 @@ function extractAssetsPlugin(): Plugin[] {
 
         // If the import path resolves to a file in `node_modules/`, we ignore that file:
         //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
-        //  - Loading CSS from a library (living in `node_modules/`) in a non-direct way is non-standard; we can safely not support this case. (I'm not aware of any library that does this.)
+        //  - Loading CSS from a library (living in `node_modules/`) in a non-direct way is unconventional; we can safely not support this case. (I'm not aware of any library that does this.)
         assertPosixPath(file)
         if (file.includes('/node_modules/')) {
           return emptyModule(file, importer)

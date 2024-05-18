@@ -14,12 +14,8 @@ export { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
 export { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
-import type {
-  PageContextUrlComputedPropsInternal,
-  PageContextUrlComputedPropsClient,
-  PageContextUrlComputedPropsServer
-} from './addUrlComputedProps.js'
-import type { ConfigEntries, ExportsAll } from './getPageFiles/getExports.js'
+import type { PageContextUrlInternal, PageContextUrlClient, PageContextUrlServer } from './getPageContextUrlComputed.js'
+import type { ConfigEntries, ExportsAll, From, Source, Sources } from './getPageFiles/getExports.js'
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
@@ -78,6 +74,26 @@ type PageContextBuiltInCommon<Data> = {
    * https://vike.dev/renderPage
    */
   urlOriginal: string
+  /**
+   * The HTTP Headers of the incoming HTTP Request.
+   *
+   * As a string object normalized by Vike.
+   *
+   * See also:
+   * - https://vike.dev/headers
+   * - `pageContext.headersOriginal`
+   */
+  headers: Record<string, string> | null
+  /**
+   * The HTTP Headers of the incoming HTTP Request.
+   *
+   * The original object provided by the server.
+   *
+   * See also:
+   * - https://vike.dev/headers
+   * - `pageContext.headers`
+   */
+  headersOriginal?: unknown
   /** If an error occurs, whether the error is a `404 Page Not Found`.
    *
    * https://vike.dev/error-page
@@ -111,6 +127,13 @@ type PageContextBuiltInCommon<Data> = {
    */
   errorWhileRendering?: unknown
 
+  /** @experimental https://github.com/vikejs/vike/issues/1268 */
+  from: From
+  /** @experimental https://github.com/vikejs/vike/issues/1268 */
+  source: Source
+  /** @experimental https://github.com/vikejs/vike/issues/1268 */
+  sources: Sources
+
   // TODO/v1-release: move pageContext.urlParsed to pageContext.url
   /** @deprecated */
   url: string
@@ -120,12 +143,22 @@ type PageContextBuiltInCommon<Data> = {
   pageExports: Record<string, unknown>
 }
 
-type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> & PageContextUrlComputedPropsServer
+type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> & PageContextUrlServer
 
 type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
   Pick<
     PageContextBuiltInCommon<Data>,
-    'Page' | 'pageExports' | 'config' | 'configEntries' | 'exports' | 'exportsAll' | 'abortReason' | 'data'
+    | 'Page'
+    | 'pageExports'
+    | 'config'
+    | 'configEntries'
+    | 'exports'
+    | 'exportsAll'
+    | 'abortReason'
+    | 'data'
+    | 'source'
+    | 'sources'
+    | 'from'
   > & {
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
@@ -135,7 +168,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
      */
     isBackwardNavigation: boolean | null
-  } & PageContextUrlComputedPropsClient
+  } & PageContextUrlClient
 
 type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
   Pick<PageContextBuiltInCommon<Data>, 'Page' | 'pageExports' | 'exports' | 'abortReason' | 'data'> & {
@@ -154,10 +187,7 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
   }
 
 /** For Vike internal use */
-type PageContextBuiltInServerInternal = Omit<
-  PageContextBuiltInCommon<unknown> & PageContextUrlComputedPropsInternal,
-  'data'
->
+type PageContextBuiltInServerInternal = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
 
 /** @deprecated
  * Replace:

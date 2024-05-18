@@ -53,7 +53,7 @@ async function executeOnRenderHtmlHook(
   objectAssign(pageContext, { _renderHook: renderHook })
 
   preparePageContextForUserConsumptionServerSide(pageContext)
-  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook)
+  const hookReturnValue = await executeHook(() => hookFn(pageContext), renderHook, pageContext)
   const { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter } = processHookReturnValue(
     hookReturnValue,
     renderHook
@@ -117,13 +117,13 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
       [
         `No ${hookName}() hook found, see https://vike.dev/${hookName}`
         /*
-      'See https://vike.dev/render-modes for more information.',
-      [
-        // 'Loaded config files (none of them define the onRenderHtml() hook):',
-        'Loaded server-side page files (none of them `export { render }`):',
-        ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
-      ].join('\n')
-      */
+        'See https://vike.dev/render-modes for more information.',
+        [
+          // 'Loaded config files (none of them define the onRenderHtml() hook):',
+          'Loaded server-side page files (none of them `export { render }`):',
+          ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
+        ].join('\n')
+        */
       ].join(' ')
     )
   }

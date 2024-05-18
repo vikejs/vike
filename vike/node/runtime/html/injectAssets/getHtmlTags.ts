@@ -153,7 +153,7 @@ async function getHtmlTags(
     })
   }
   // The JavaScript entry <script> tag
-  const scriptEntry = await mergeScriptEntries(pageAssets, isProduction)
+  const scriptEntry = await mergeScriptEntries(pageAssets)
   if (scriptEntry) {
     htmlTags.push({
       htmlTag: scriptEntry,
@@ -175,11 +175,11 @@ async function getHtmlTags(
   return htmlTags
 }
 
-async function mergeScriptEntries(pageAssets: PageAsset[], isProduction: boolean): Promise<null | string> {
+async function mergeScriptEntries(pageAssets: PageAsset[]): Promise<null | string> {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
   const viteScripts = await getViteDevScripts()
   const scriptTagsHtml = `${viteScripts}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
-  const scriptTag = mergeScriptTags(scriptTagsHtml, isProduction)
+  const scriptTag = mergeScriptTags(scriptTagsHtml)
   return scriptTag
 }
 

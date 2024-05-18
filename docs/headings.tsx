@@ -27,14 +27,25 @@ const headings = [
     sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
   },
   {
+    level: 2,
+    title: 'FAQ',
+    url: '/faq'
+  },
+  {
     level: 1,
     title: 'Get Started',
     titleEmoji: 'seedling'
   },
   {
     level: 2,
-    title: 'Scaffold new app',
-    url: '/scaffold'
+    title: 'Scaffold new Vike app',
+    url: '/new'
+  },
+  {
+    level: 2,
+    title: 'Add SSR or SSG to existing Vite App',
+    titleInNav: 'Add to existing Vite App',
+    url: '/add-ssr-to-vite-app'
   },
   {
     level: 1,
@@ -60,12 +71,6 @@ const headings = [
     level: 2,
     title: 'Pre-rendering (SSG)',
     url: '/pre-rendering'
-  },
-  {
-    level: 2,
-    title: 'FAQ',
-    url: '/faq',
-    sectionTitles: ['Can I reach out for help?']
   },
   {
     level: 2,
@@ -378,8 +383,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Windi CSS',
-    url: '/windi-css'
+    title: 'Compiled',
+    url: '/compiled'
   },
   {
     level: 2,
@@ -393,7 +398,7 @@ const headings = [
   },
   {
     level: 2,
-    title: '`styled-components`',
+    title: 'styled-components',
     titleInNav: 'styled-components',
     url: '/styled-components'
   },

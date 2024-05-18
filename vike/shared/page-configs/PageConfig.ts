@@ -6,7 +6,7 @@ export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigValue }
-export type { ConfigValueClassic }
+export type { ConfigValueStandard }
 export type { ConfigValueCumulative }
 export type { ConfigValueComputed }
 export type { ConfigValues }
@@ -17,9 +17,10 @@ export type { DefinedAtData }
 export type { DefinedAtFile }
 export type { DefinedAtFilePath }
 
-import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
+import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
+import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 
 type PageConfigBase = {
   pageId: string
@@ -28,14 +29,13 @@ type PageConfigBase = {
     routeString: string
     definedBy: string
   }
-  configValues: ConfigValues
 }
 
 /** Page config data structure available at runtime */
 type PageConfigRuntime = PageConfigBase & {
+  configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
   loadConfigValuesAll: () => Promise<{
-    configValuesImported: ConfigValueImported[]
     configValuesSerialized: Record<string, ConfigValueSerialized>
   }>
 }
@@ -47,6 +47,7 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
 
 /** Page config data structure available at build-time */
 type PageConfigBuildTime = PageConfigBase & {
+  configDefinitions: ConfigDefinitions
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
 }
@@ -57,6 +58,7 @@ type PageConfigGlobalRuntime = {
 }
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
+  configDefinitions: ConfigDefinitions
 }
 
 /** In what environment(s) the config value is loaded.
@@ -71,7 +73,10 @@ type ConfigEnv = {
 /** For Vike internal use */
 type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
   client?: boolean | 'if-client-routing'
+  /** Always load value, not matter what page is loaded. */
   eager?: boolean
+  /** Load value only in production or only in development. */
+  production?: boolean
 }
 
 type ConfigValueSource = {
@@ -79,11 +84,12 @@ type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   definedAtFilePath: DefinedAtFilePath
   locationId: LocationId
+  isOverriden: boolean
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
   /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true
-  valueIsDefinedByValueFile: boolean
+  valueIsDefinedByPlusFile: boolean
 }
 type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 type ConfigValueSources = Record<
@@ -101,10 +107,10 @@ type ConfigValuesComputed = Record<
   }
 >
 
-type ConfigValue = ConfigValueClassic | ConfigValueCumulative | ConfigValueComputed
+type ConfigValue = ConfigValueStandard | ConfigValueCumulative | ConfigValueComputed
 /** Defined by a unique source (thus unique file path). */
-type ConfigValueClassic = {
-  type: 'classic'
+type ConfigValueStandard = {
+  type: 'standard'
   value: unknown
   definedAtData: DefinedAtFile
 }

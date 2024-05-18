@@ -69,7 +69,10 @@ type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   env: ConfigEnvInternal
 }
 
-type ConfigDefinitions = Record<string, ConfigDefinitionInternal>
+type ConfigDefinitions = Record<
+  string, // configName
+  ConfigDefinitionInternal
+>
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
@@ -91,7 +94,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true }
   },
   onBeforePrerenderStart: {
-    env: { server: true }
+    env: { server: true, production: true }
   },
   Page: {
     env: { server: true, client: true }
@@ -117,7 +120,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   client: {
     // The value of the client config is merely the file path to the client entry file, which is only needed on the sever-side
-    env: { server: true },
+    env: { server: true, config: true },
     _valueIsFilePath: true
   },
   clientRouting: {
@@ -183,7 +186,7 @@ type ConfigNameGlobal =
   | 'disableUrlNormalization'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
-    env: { server: true }
+    env: { server: true, production: true }
   },
   onBeforeRoute: {
     env: { server: true, client: 'if-client-routing', eager: true }

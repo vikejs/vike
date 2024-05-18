@@ -1,30 +1,37 @@
-export { getConfigValue }
+export { getConfigValueRuntime }
+export { getConfigValueTyped }
+export type { TypeAsString }
 
-import { assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { PageConfigRuntime, PageConfigBuildTime, ConfigValue, DefinedAtData } from './PageConfig.js'
+import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils.js'
+import type { PageConfigRuntime, ConfigValue, DefinedAtData } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
-type PageConfigCommon = PageConfigRuntime | PageConfigBuildTime
 type ConfigName = ConfigNameBuiltIn
+type TypeAsString = 'string' | 'boolean' | undefined
 
-// prettier-ignore
-// biome-ignore format:
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'string'): null | ConfigValue & { value: string }
-// prettier-ignore
-// biome-ignore format:
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type: 'boolean'): null | ConfigValue & { value: boolean }
-// prettier-ignore
-// biome-ignore format:
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName): null | ConfigValue & { value: unknown }
-// prettier-ignore
-// biome-ignore format:
-function getConfigValue(pageConfig: PageConfigCommon, configName: ConfigName, type?: 'string' | 'boolean'): null | ConfigValue & { value: unknown } {
-  const configValue = getConfigValueEntry(pageConfig, configName)
-  if (configValue === null) return null
+function getConfigValueTyped<Type extends TypeAsString = undefined>(
+  configValue: ConfigValue,
+  configName: ConfigName,
+  type?: Type
+): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
+  /* [NULL_HANDLING] Do we really need this? This doesn't seem to make sense, let's eventually (re)move this.
+  // Enable users to suppress global config values by setting the local config value to null
+  if (configValue.value === null) return null
+  */
   const { value, definedAtData } = configValue
   if (type) assertConfigValueType(value, type, configName, definedAtData)
-  return configValue
+  return configValue as ConfigValue & { value: ResolveTypeAsString<Type> }
+}
+
+function getConfigValueRuntime<Type extends TypeAsString = undefined>(
+  pageConfig: PageConfigRuntime,
+  configName: ConfigName,
+  type?: Type
+): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
+  const configValue = pageConfig.configValues[configName]
+  if (!configValue) return null
+  return getConfigValueTyped(configValue, configName, type)
 }
 
 function assertConfigValueType(
@@ -46,12 +53,4 @@ function assertConfigValueType(
     pc.cyan(type) as string
   } instead` as const
   assertUsage(false, errMsg)
-}
-
-function getConfigValueEntry(pageConfig: PageConfigCommon, configName: ConfigName) {
-  const configValue = pageConfig.configValues[configName]
-  if (!configValue) return null
-  // Enable users to suppress global config values by setting the local config value to null
-  if (configValue.value === null) return null
-  return configValue
 }

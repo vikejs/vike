@@ -348,7 +348,7 @@ const headingsDetached = [
     url: '/vike-packages'
   },
   {
-    title: 'Vike Extensions',
+    title: 'Vike extensions',
     url: '/extensions'
   },
   {
@@ -443,8 +443,44 @@ const headingsDetached = [
     url: '/getGlobalContext'
   },
   {
+    title: '`getPageContext()`',
+    url: '/getPageContext'
+  },
+  {
     title: '`pageContext.json`',
     url: '/pageContext.json',
     sectionTitles: ['Avoid `pageContext.json` requests']
+  },
+  {
+    title: 'HTTP Headers',
+    url: '/headers'
+  },
+  {
+    title: '`vike-react`',
+    url: '/vike-react'
+  },
+  {
+    title: '`vike-vue`',
+    url: '/vike-vue'
+  },
+  {
+    title: 'reactStrictMode',
+    url: '/reactStrictMode'
+  },
+  {
+    title: '`onBeforeRenderClient()`',
+    url: '/onBeforeRenderClient'
+  },
+  {
+    title: '`onAfterRenderClient()`',
+    url: '/onAfterRenderClient'
+  },
+  {
+    title: 'Scaffold new app',
+    url: '/scaffold'
+  },
+  {
+    title: 'Add Vike to Vite app',
+    url: '/add'
   }
 ] satisfies HeadingDetachedDefinition[]

@@ -34,9 +34,7 @@ import type {
   ConfigValueSource,
   ConfigValueSources,
   PageConfigBuildTime,
-  ConfigValues,
   DefinedAtFilePath,
-  DefinedAtFile,
   ConfigValuesComputed
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
@@ -68,7 +66,6 @@ import {
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
 import type { ResolvedConfig } from 'vite'
-import { assertConfigValueIsSerializable } from './getConfigValuesSerialized.js'
 import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import {
@@ -81,6 +78,7 @@ import {
 import { clearFilesEnvMap, resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
+import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 
 assertIsNotProductionRuntime()
 
@@ -270,7 +268,7 @@ async function loadInterfaceFiles(
         //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
         //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
         const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
-        if (configDef && isConfigEnv(configDef, configName)) {
+        if (configDef && isLoadableAtBuildTime(configDef)) {
           await loadValueFile(interfaceFile, configName, userRootDir)
         }
       }
@@ -354,6 +352,7 @@ async function loadVikeConfig_withErrorHandling(
       const dummyData: VikeConfigObject = {
         pageConfigs: [],
         pageConfigGlobal: {
+          configDefinitions: {},
           configValueSources: {}
         },
         globalVikeConfig: {}
@@ -392,7 +391,7 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
-            if (!isConfigEnv(configDef, configName)) return
+            if (!isLoadableAtBuildTime(configDef)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
             // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
@@ -423,15 +422,14 @@ async function loadVikeConfig(userRootDir: string, outDirRoot: string, isDev: bo
 
         applyEffectsAll(configValueSources, configDefinitions)
         const configValuesComputed = getComputed(configValueSources, configDefinitions)
-        const configValues = getConfigValues(configValueSources, configValuesComputed, configDefinitions)
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
           isErrorPage,
           routeFilesystem,
+          configDefinitions,
           configValueSources,
-          configValuesComputed,
-          configValues
+          configValuesComputed
         }
         return pageConfig
       })
@@ -466,7 +464,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   const onBeforeRenderConfig = pageConfig.configValueSources.onBeforeRender?.[0]
   if (!onBeforeRenderConfig) return
   const onBeforeRenderEnv = onBeforeRenderConfig.configEnv
-  const isClientRouting = !!pageConfig.configValues.clientRouting?.value
+  const isClientRouting = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')
   // When using Server Routing, loading a onBeforeRender() hook on the client-side hasn't any effect (the Server Routing's client runtime never calls it); it unnecessarily bloats client bundle sizes
   assertUsage(
     !(onBeforeRenderEnv.client && !isClientRouting),
@@ -554,6 +552,7 @@ async function getGlobalConfigs(
 
   const globalVikeConfig: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
+    configDefinitions: configDefinitionsBuiltInGlobal,
     configValueSources: {}
   }
   await Promise.all(
@@ -610,7 +609,15 @@ async function resolveConfigValueSources(
     const add = (interfaceFile: InterfaceFile) => {
       assert(!visited.has(interfaceFile))
       visited.add(interfaceFile)
-      sourcesInfo.push([configName, interfaceFile, configDef, userRootDir, importedFilesLoaded])
+      const isHighestInheritancePrecedence = sourcesInfo.length === 0
+      sourcesInfo.push([
+        configName,
+        interfaceFile,
+        configDef,
+        userRootDir,
+        importedFilesLoaded,
+        isHighestInheritancePrecedence
+      ])
     }
 
     // Main resolution logic
@@ -714,7 +721,8 @@ async function getConfigValueSource(
   interfaceFile: InterfaceFile,
   configDef: ConfigDefinitionInternal,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: ImportedFilesLoaded,
+  isHighestInheritancePrecedence: boolean
 ): Promise<ConfigValueSource> {
   const conf = interfaceFile.fileExportsByConfigName[configName]
   assert(conf)
@@ -725,6 +733,8 @@ async function getConfigValueSource(
     ...interfaceFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
+
+  const isOverriden = configDef.cumulative ? false : !isHighestInheritancePrecedence
 
   // +client.js
   if (configDef._valueIsFilePath) {
@@ -757,7 +767,8 @@ async function getConfigValueSource(
       valueIsFilePath: true,
       configEnv,
       valueIsImportedAtRuntime: true,
-      valueIsDefinedByValueFile: false,
+      valueIsDefinedByPlusFile: false,
+      isOverriden,
       definedAtFilePath
     }
     return configValueSource
@@ -781,12 +792,13 @@ async function getConfigValueSource(
         locationId,
         configEnv,
         valueIsImportedAtRuntime: true,
-        valueIsDefinedByValueFile: false,
+        valueIsDefinedByPlusFile: false,
+        isOverriden,
         definedAtFilePath: pointerImport
       }
-      // Load fake import
+      // Load pointer import
       if (
-        isConfigEnv(configDef, configName) &&
+        isLoadableAtBuildTime(configDef) &&
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
         configName !== 'extends'
       ) {
@@ -808,7 +820,8 @@ async function getConfigValueSource(
       value: configValue,
       configEnv,
       valueIsImportedAtRuntime: false,
-      valueIsDefinedByValueFile: false,
+      valueIsDefinedByPlusFile: false,
+      isOverriden,
       definedAtFilePath: definedAtFilePath_
     }
     return configValueSource
@@ -822,7 +835,8 @@ async function getConfigValueSource(
       locationId,
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
-      valueIsDefinedByValueFile: true,
+      valueIsDefinedByPlusFile: true,
+      isOverriden,
       definedAtFilePath: {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser:
@@ -1170,67 +1184,6 @@ function isVikeConfigFile(filePath: string): boolean {
   return !!getConfigName(filePath)
 }
 
-function getConfigValues(
-  configValueSources: ConfigValueSources,
-  configValuesComputed: ConfigValuesComputed,
-  configDefinitions: ConfigDefinitions
-): ConfigValues {
-  const configValues: ConfigValues = {}
-  Object.entries(configValuesComputed).forEach(([configName, configValueComputed]) => {
-    configValues[configName] = {
-      type: 'computed',
-      value: configValueComputed.value,
-      definedAtData: null
-    }
-  })
-  Object.entries(configValueSources).forEach(([configName, sources]) => {
-    const configDef = configDefinitions[configName]
-    assert(configDef)
-    if (!configDef.cumulative) {
-      const configValueSource = sources[0]!
-      if ('value' in configValueSource) {
-        configValues[configName] = {
-          type: 'classic',
-          value: configValueSource.value,
-          definedAtData: getDefinedAtFile(configValueSource)
-        }
-      }
-    } else {
-      const value = mergeCumulative(configName, sources)
-      const definedAtData = sources.map((source) => getDefinedAtFile(source))
-      assert(value.length === definedAtData.length)
-      configValues[configName] = {
-        type: 'cumulative',
-        value,
-        definedAtData
-      }
-    }
-  })
-  return configValues
-}
-function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
-  return {
-    filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
-    fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
-  }
-}
-
-function mergeCumulative(configName: string, configValueSources: ConfigValueSource[]): unknown[] {
-  const configValues: unknown[] = []
-  configValueSources.forEach((configValueSource) => {
-    // We could, in principle, also support cumulative for values that aren't loaded at config-time but it isn't completely trivial to implement.
-    assert('value' in configValueSource)
-
-    // Make sure configValueSource.value is serializable
-    assertConfigValueIsSerializable(configValueSource.value, configName, getDefinedAtFile(configValueSource))
-
-    const { value } = configValueSource
-    configValues.push(value)
-  })
-
-  return configValues
-}
-
 function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnvInternal {
   const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
 
@@ -1276,18 +1229,8 @@ function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: s
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
   return configDefinitions[configName] ?? null
 }
-function isConfigEnv(configDef: ConfigDefinitionInternal, configName: string): boolean {
-  const configEnv = configDef.env
-  if (configDef.cumulative) {
-    // In principle we could lift that requirement (but it requires non-trivial modifications)
-    assertUsage(
-      configEnv.config,
-      `Config ${pc.cyan(configName)} needs its ${pc.cyan('env')} to have ${pc.cyan(
-        '{ config: true }'
-      )} (because ${pc.cyan(configName)} is a ${pc.cyan('cumulative')} config)`
-    )
-  }
-  return !!configEnv.config
+function isLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
+  return !!configDef.env.config && !configDef._valueIsFilePath
 }
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false

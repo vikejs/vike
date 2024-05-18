@@ -1,0 +1,98 @@
+import { Link } from '@brillout/docpress'
+import { UiFrameworkVikeExtensionNames } from '../../components'
+
+The `getPageContext()` function allows you to access the <Link href="/pageContext">`pageContext` object</Link> inside Vike hooks.
+
+> It's only useful if you're building a <Link href="/extensions">Vike extension</Link> and you want to implement a <Link href="#universal-hooks">universal hook</Link>. If you aren't building a Vike extension, then you don't need to know about `getPageContext()`.
+
+For example:
+
+```js
+ // /pages/some-page/+data.js
+
+export { data }
+
+import { getPageContext } from 'vike/getPageContext'
+
+function data() {
+  const pageContext = getPageContext()
+
+  // ...
+}
+```
+
+It's the same object than the `function data(pageContext)` argument and the following is equivalent:
+
+```js
+ // /pages/some-page/+data.js
+
+export { data }
+
+import { getPageContext } from 'vike/getPageContext' // [!code --]
+
+function data() { // [!code --]
+  const pageContext = getPageContext() // [!code --]
+function data(pageContext) { // [!code ++]
+
+  // ...
+}
+```
+
+You may ask yourself what the purpose of `getPageContext()` is and, indeed, it's useless for Vike users. But, if you are implementing a <Link href="/extensions">Vike extension</Link> and you want to implement a <Link href="#universal-hooks">universal hook</Link>, then `getPageContext()` is useful, see <Link href="#example" />.
+
+
+## Universal Hooks
+
+A *universal hook* is a component hook that also works inside Vike hooks, such as the `useDocument()` hook of <UiFrameworkVikeExtensionNames />:
+
+```js
+ // /components/SomeReactComponent.jsx
+
+import { useDocument } from 'vike-react/useDocument' // or vike-{vue,solid}
+
+function SomeReactComponent() {
+  // Not only can useDocument() be used inside a React component...
+  const document = useDocument()
+}
+```
+```js
+ // /pages/some-page/+data.js
+
+import { useDocument } from 'vike-react/useDocument'
+
+export function data() {
+  // ... but it can also be used inside a Vike hook.
+  const document = useDocument()
+}
+```
+
+## Example
+
+In order to make `useDocument()` a universal hook (see <Link href="#universal-hooks" doNotInferSectionTitle />), the `useDocument()` implementation uses `getPageContext()`:
+
+```js
+// vike-{react,vue,solid}/src/hooks/useDocument.js
+
+import { usePageContext } from './usePageContext'
+import { getPageContext } from 'vike/getPageContext'
+
+export function useDocument() {
+  // useDocument() needs to access the pageContext object
+
+  // In case useDocument() is used inside a Vike hook
+  let pageContext = getPageContext()
+
+  // In case useDocument() is used inside a React component
+  if (!pageContext) {
+    pageContext = usePageContext()
+  }
+
+  // ...
+}
+```
+
+
+## See also
+
+- <Link href="/pageContext" />
+- <Link href="/getGlobalContext" />

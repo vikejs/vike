@@ -6,36 +6,29 @@ export default {
 }
 
 function getCiJobs() {
-  const ubuntu16 = {
+  const linux_nodeOld = {
     os: 'ubuntu-latest',
-    node_version: '16'
+    node_version: '18'
   }
-  const ubuntu20 = {
+  const linux_nodeNew = {
     os: 'ubuntu-latest',
-    // Pin until fix for the following is released
-    //   - https://github.com/nodejs/node/issues/49497
-    //   - https://github.com/vitejs/vite/issues/14299
     node_version: '20'
   }
-  const win16 = {
-    os: 'windows-latest',
-    node_version: '16'
-  }
-  const win20 = {
+  const windows_nodeOld = {
     os: 'windows-latest',
     node_version: '18'
   }
-  const mac17 = {
+  const macos_nodeOld = {
     os: 'macos-latest',
-    node_version: '16'
+    node_version: '18'
   }
 
-  const setupsExamples = [ubuntu20, win16]
+  const setupsExamples = [linux_nodeNew, windows_nodeOld]
 
   return [
     {
       name: 'Boilerplates',
-      setups: [ubuntu16]
+      setups: [linux_nodeOld]
     },
     {
       name: 'Examples React',
@@ -47,19 +40,19 @@ function getCiJobs() {
     },
     {
       name: 'Examples Misc',
-      setups: [ubuntu16, mac17, win16]
+      setups: [linux_nodeOld, macos_nodeOld, windows_nodeOld]
     },
     {
       name: 'Unit Tests E2E',
-      setups: [ubuntu20, win20]
+      setups: [linux_nodeNew, windows_nodeOld]
     },
     {
       name: 'Cloudflare',
-      setups: [ubuntu16]
+      setups: [linux_nodeNew]
     },
     {
       name: 'https://vike.dev',
-      setups: [ubuntu20]
+      setups: [linux_nodeNew]
     }
   ]
 }

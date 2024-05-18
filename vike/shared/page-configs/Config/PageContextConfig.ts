@@ -2,11 +2,14 @@ export type { PageContextConfig }
 
 import type { VikePackages } from '../../VikeNamespace.js'
 import type { ConfigBuiltIn } from '../Config.js'
-import type { Combine, IsNotEmpty, XOR5 } from './helpers.ts'
+import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
 
 // Like the type `Config` but meant for pageContext.config
 type PageContextConfig = ConfigBuiltIn &
-  Vike.Config &
+  // https://vike.dev/meta#typescript
+  Vike.ConfigResolved &
+  Omit<Vike.Config, keyof Vike.ConfigResolved> &
+  // TODO/eventually: remove the whole XOR logic
   (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
 
 // Preserves JSDocs, such as the the JSDoc pageContext.config.title defined by vike-react

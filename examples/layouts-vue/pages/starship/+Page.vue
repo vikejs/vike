@@ -2,9 +2,7 @@
   <h1>Starship 🚀</h1>
   <p>
     <b>
-      This page uses the default layout <code>/renderer/LayouDefault.vue</code>.
-      <br />
-      With the nested layout <code>/pages/starship/Layout.vue</code>.
+      This page uses the default layout <code>/renderer/LayouDefault.vue</code> with a nested layout (see <code>/pages/starship/+Page.vue</code>).
     </b>
   </p>
   <p>

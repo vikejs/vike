@@ -19,7 +19,6 @@ import {
   assertIsNpmPackageImport
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
-import { getConfigValue } from '../../../shared/page-configs/getConfigValue.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
@@ -28,13 +27,13 @@ import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfi
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
-import { getClientEntry } from '../../shared/getClientEntry.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 import { set_constant_ASSETS_MAP } from './importBuild/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
+import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -173,7 +172,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
   let clientEntries: Record<string, string> = {}
   let clientEntryList: string[] = []
   pageConfigs.forEach((pageConfig) => {
-    const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
+    const configValue = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')
     if (configValue?.value) {
       hasClientRouting = true
     } else {
@@ -185,7 +184,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
       clientEntries[entryName] = entryTarget
     }
     {
-      const clientEntry = getClientEntry(pageConfig)
+      const clientEntry = getConfigValueBuildTime(pageConfig, 'client', 'string')?.value ?? null
       if (clientEntry) {
         clientEntryList.push(clientEntry)
       }

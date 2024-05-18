@@ -1,23 +1,13 @@
 import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
-import { UseUiFrameworkVikeExtensionAnyHint, UiFrameworkVikeExtension } from '../../components'
+import { UseVikeExtensionUiFramework, UiFrameworkVikeExtension } from '../../components'
 
 Environment: client.
 
 If you don't use a <UiFrameworkVikeExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
 
-You can opt into <Link text="Client Routing" href="/client-routing" /> by:
- 1. Setting `clientRouting: true`.
-    ```js
-    // +config.js
-    export default {
-      // Enable Client Routing
-      clientRouting: true
-    }
-    ```
- 2. Adapting your <Link text={<><code>onRenderClient()</code> hook</>} href="/onRenderClient" /> to
-    hydrate the DOM only when rendering the first page.
+You can opt into <Link text="Client Routing" href="/client-routing" /> by using the `clientRouting` setting, see <Link href="#getting-started" />.
 
-<UseUiFrameworkVikeExtensionAnyHint featureName="Client Routing" />
+<UseVikeExtensionUiFramework featureName="Client Routing" />
 
 
 ## Examples
@@ -30,7 +20,7 @@ Vue example:
  - <RepoLink path='/boilerplates/boilerplate-vue-ts/renderer/app.ts' />
 
 
-## Usage
+## Getting started
 
 1. Set `clientRouting` to `true`:
    ```js

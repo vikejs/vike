@@ -1,7 +1,7 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
 
-Everything there is to know about configuring your Vike app.
+Everything there is to know about config files.
 
 For a list of configs, see:
  - <Link href="/settings" />
@@ -198,7 +198,7 @@ export default {
 }
 ```
 
-This enables Vike to load the file `/pages/+config.js` without having to load `LayoutDefault.jsx`. Vike can quickly load all your `+config.js` files, without having to load any runtime code.
+This enables Vike to load the file `/pages/+config.js` without having to load `LayoutDefault.jsx`. This means that Vike can quickly load all your `+config.js` files without having to load any runtime code.
 
 > These fake imports, which we call *pointer imports*, apply only to `+config.js` files. Imports in other `+` files are normal imports as usual.
 
