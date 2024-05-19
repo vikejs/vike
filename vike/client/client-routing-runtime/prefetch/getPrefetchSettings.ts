@@ -107,7 +107,7 @@ function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: HTMLE
     assertUsage(false, wrongUsageMsg)
   }
 
-  return { when: false, expire: 0 }
+  return { when: 'hover', expire: 0 }
 }
 
 function getPrefetchStaticAssetsAttribute(linkTag: HTMLElement): PrefetchWhen | null {
