@@ -18,7 +18,7 @@ import {
   getPageContextFromHooks_serialized
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
-import { addLinkPrefetchHandlers } from './prefetch.js'
+import { PrefetchedPageContext, addLinkPrefetchHandlers } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook, getHook } from '../../shared/hooks/getHook.js'
@@ -49,7 +49,7 @@ const globalObject = getGlobalObject<{
 }>('renderPageClientSide.ts', { renderCounter: 0 })
 
 const globalObjectForPrefetchedPageContext = getGlobalObject<{
-  pageContextFromHooks?: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
+  prefetchedPageContext?: PrefetchedPageContext
 }>('prefetch.ts', {})
 
 type RenderArgs = {
@@ -207,10 +207,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // Render page view
       await renderPageView(pageContext)
     } else {
-      let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
+      let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>> | PrefetchedPageContext
       try {
-        if (globalObjectForPrefetchedPageContext?.pageContextFromHooks?.pageContextFromHooks !== undefined) {
-          res = globalObjectForPrefetchedPageContext?.pageContextFromHooks
+        const prefetchedPageContext = globalObjectForPrefetchedPageContext?.prefetchedPageContext
+        if (
+          prefetchedPageContext?.pageContextFromHooks &&
+          '_pageId' in prefetchedPageContext.pageContextFromHooks &&
+          prefetchedPageContext.pageContextFromHooks._pageId === pageContext._pageId
+        ) {
+          res = prefetchedPageContext
         } else {
           res = await getPageContextFromHooks_isNotHydration(pageContext, false)
         }

@@ -1,5 +1,6 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
+export { PrefetchedPageContext }
 
 import {
   assert,
@@ -30,10 +31,28 @@ import { PageConfigGlobalRuntime, PageConfigRuntime } from '../../shared/page-co
 import { Hook } from '../../shared/hooks/getHook.js'
 import { PageContextUrlClient } from '../../shared/getPageContextUrlComputed.js'
 
+type PrefetchedPageContext =
+  | {
+      is404ServerSideRouted: boolean
+      pageContextFromHooks?: {
+        _pageId: string
+        data: unknown
+      }
+    }
+  | {
+      pageContextFromHooks: {
+        isHydration: false
+        _hasPageContextFromClient: boolean
+        _hasPageContextFromServer: boolean
+      }
+      is404ServerSideRouted?: undefined
+    }
+  | undefined
+
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  pageContextFromHooks?: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
+  prefetchedPageContext?: PrefetchedPageContext
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap() })
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
@@ -78,7 +97,7 @@ async function prefetchPageContext(
       _pageConfigs: pageContext._pageConfigs
     })
     const res = await getPageContextFromHooks_isNotHydration(pageContext, false)
-    globalObject.pageContextFromHooks = res
+    globalObject.prefetchedPageContext = res
   } catch {
     return
   }
