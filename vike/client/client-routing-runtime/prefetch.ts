@@ -25,7 +25,7 @@ import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute, PageRoutes } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { getPageContextFromHooks_isNotHydration } from './getPageContextFromHooks.js'
-import { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
+import { PageFile } from '../../shared/getPageFiles.js'
 import { PageConfigGlobalRuntime, PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { Hook } from '../../shared/hooks/getHook.js'
 import { PageContextUrlClient } from '../../shared/getPageContextUrlComputed.js'
@@ -49,6 +49,7 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
 }
 
 async function prefetchPageContext(
+  pageId: string,
   pageContext: {
     urlOriginal: string
     _objectCreatedByVike: boolean
@@ -61,8 +62,7 @@ async function prefetchPageContext(
     _allPageIds: string[]
     _pageRoutes: PageRoutes
     _onBeforeRouteHook: Hook | null
-  } & PageContextUrlClient,
-  pageId: string
+  } & PageContextUrlClient
 ): Promise<void> {
   try {
     objectAssign(
@@ -79,13 +79,8 @@ async function prefetchPageContext(
     })
     const res = await getPageContextFromHooks_isNotHydration(pageContext, false)
     globalObject.pageContextFromHooks = res
-  } catch (err) {
-    // todo
-    if (isErrorFetchingStaticAssets(err)) {
-      disableClientRouting(err, true)
-    } else {
-      throw err
-    }
+  } catch {
+    return
   }
 }
 
@@ -125,7 +120,7 @@ async function prefetch(url: string): Promise<void> {
   }
 
   await prefetchAssets(pageId, pageContext)
-  await prefetchPageContext(pageContext, pageId)
+  await prefetchPageContext(pageId, pageContext)
 }
 
 function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>; urlPathname: string }) {
@@ -213,5 +208,5 @@ async function prefetchContextIfPossible(url: string): Promise<void> {
   if (!pageContextFromRoute?._pageId) return
 
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchPageContext(pageContext, pageContextFromRoute._pageId)
+  await prefetchPageContext(pageContextFromRoute._pageId, pageContext)
 }
