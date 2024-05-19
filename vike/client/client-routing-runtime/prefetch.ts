@@ -22,11 +22,13 @@ import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/already
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
-import { route, type PageContextFromRoute } from '../../shared/route/index.js'
+import { route, type PageContextFromRoute, PageRoutes } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { getPageContextFromHooks_isNotHydration } from './getPageContextFromHooks.js'
 import { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
-import { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import { PageConfigGlobalRuntime, PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import { Hook } from '../../shared/hooks/getHook.js'
+import { PageContextUrlClient } from '../../shared/getPageContextUrlComputed.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
@@ -47,14 +49,34 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
 }
 
 async function prefetchPageContext(
-  pageContext: { _pageId: string } & {
+  pageContext: {
     urlOriginal: string
-    _urlRewrite: string | null
+    _objectCreatedByVike: boolean
+    _urlHandler: null
+    _urlRewrite: null
+    _baseServer: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
-  } & PageContextExports
+    _pageConfigGlobal: PageConfigGlobalRuntime
+    _allPageIds: string[]
+    _pageRoutes: PageRoutes
+    _onBeforeRouteHook: Hook | null
+  } & PageContextUrlClient,
+  pageId: string
 ): Promise<void> {
   try {
+    objectAssign(
+      pageContext,
+      await loadUserFilesClientSide(pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+    )
+    objectAssign(pageContext, {
+      isHydration: false as const,
+      isBackwardNavigation: null,
+      _hasPageContextFromServer: false as const,
+      _hasPageContextFromClient: true as const,
+      _pageId: pageId,
+      _pageConfigs: pageContext._pageConfigs
+    })
     const res = await getPageContextFromHooks_isNotHydration(pageContext, false)
     globalObject.pageContextFromHooks = res
   } catch (err) {
@@ -103,6 +125,7 @@ async function prefetch(url: string): Promise<void> {
   }
 
   await prefetchAssets(pageId, pageContext)
+  await prefetchPageContext(pageContext, pageId)
 }
 
 function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>; urlPathname: string }) {
@@ -188,18 +211,7 @@ async function prefetchContextIfPossible(url: string): Promise<void> {
     return
   }
   if (!pageContextFromRoute?._pageId) return
-  objectAssign(
-    pageContext,
-    await loadUserFilesClientSide(pageContextFromRoute._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
-  )
-  objectAssign(pageContext, {
-    isHydration: false as const,
-    isBackwardNavigation: null,
-    _hasPageContextFromServer: false as const,
-    _hasPageContextFromClient: true as const,
-    _pageId: pageContextFromRoute._pageId,
-    _pageConfigs: pageContext._pageConfigs
-  })
+
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchPageContext(pageContext)
+  await prefetchPageContext(pageContext, pageContextFromRoute._pageId)
 }
