@@ -53,7 +53,8 @@ assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
   prefetchedPageContext?: PrefetchedPageContext
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap() })
+  lastPrefetchTime: Map<string, number>
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), lastPrefetchTime: new Map() })
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {
@@ -186,14 +187,14 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
       observer.observe(linkTag)
     }
 
-    if (prefetchPageContext.when === 'hover') {
+    if (prefetchPageContext?.when === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchContextIfPossible(url)
+        prefetchContextIfPossible(url, prefetchPageContext?.expire)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchContextIfPossible(url)
+          prefetchContextIfPossible(url, prefetchPageContext?.expire)
         },
         { passive: true }
       )
@@ -215,7 +216,12 @@ async function prefetchAssetsIfPossible(url: string): Promise<void> {
   await prefetchAssets(pageContextFromRoute._pageId, pageContext)
 }
 
-async function prefetchContextIfPossible(url: string): Promise<void> {
+async function prefetchContextIfPossible(url: string, expire: number | undefined): Promise<void> {
+  const now = Date.now()
+  const lastPrefetch = globalObject?.lastPrefetchTime?.get(url)
+  if (lastPrefetch && expire && now - lastPrefetch < expire) {
+    return
+  }
   const pageContext = await createPageContext(url)
   let pageContextFromRoute: PageContextFromRoute
   try {
@@ -228,4 +234,5 @@ async function prefetchContextIfPossible(url: string): Promise<void> {
 
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
   await prefetchPageContext(pageContextFromRoute._pageId, pageContext)
+  globalObject.lastPrefetchTime?.set(url, now)
 }
