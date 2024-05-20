@@ -1,5 +1,6 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
+export { getPrefetchedPageContext }
 export { type PrefetchedPageContext }
 
 import {
@@ -69,6 +70,10 @@ const globalObject = getGlobalObject<{
   prefetchedPageContext?: PrefetchedPageContext
   lastPrefetchTime: Map<string, number>
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), lastPrefetchTime: new Map() })
+
+function getPrefetchedPageContext() {
+  return globalObject.prefetchedPageContext
+}
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {

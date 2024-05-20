@@ -18,7 +18,7 @@ import {
   getPageContextFromHooks_serialized
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
-import { type PrefetchedPageContext, addLinkPrefetchHandlers } from './prefetch.js'
+import { type PrefetchedPageContext, addLinkPrefetchHandlers, getPrefetchedPageContext } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook, getHook } from '../../shared/hooks/getHook.js'
@@ -47,10 +47,6 @@ const globalObject = getGlobalObject<{
   isTransitioning?: true
   previousPageContext?: { _pageId: string } & PageContextExports
 }>('renderPageClientSide.ts', { renderCounter: 0 })
-
-const globalObjectForPrefetchedPageContext = getGlobalObject<{
-  prefetchedPageContext?: PrefetchedPageContext
-}>('prefetch.ts', {})
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
@@ -208,7 +204,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await renderPageView(pageContext)
     } else {
       let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>> | PrefetchedPageContext
-      const prefetchedPageContext = globalObjectForPrefetchedPageContext?.prefetchedPageContext
+      const prefetchedPageContext = getPrefetchedPageContext()
       if (
         prefetchedPageContext?.pageContextFromHooks &&
         '_pageId' in prefetchedPageContext.pageContextFromHooks &&
