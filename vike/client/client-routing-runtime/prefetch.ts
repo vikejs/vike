@@ -31,6 +31,20 @@ import { type PageConfigGlobalRuntime, type PageConfigRuntime } from '../../shar
 import { type Hook } from '../../shared/hooks/getHook.js'
 import { type PageContextUrlClient } from '../../shared/getPageContextUrlComputed.js'
 
+type BasicPageContext = {
+  urlOriginal: string
+  _objectCreatedByVike: boolean
+  _urlHandler: null
+  _urlRewrite: null
+  _baseServer: string
+  _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfigRuntime[]
+  _pageConfigGlobal: PageConfigGlobalRuntime
+  _allPageIds: string[]
+  _pageRoutes: PageRoutes
+  _onBeforeRouteHook: Hook | null
+} & PageContextUrlClient
+
 type PrefetchedPageContext =
   | {
       is404ServerSideRouted: boolean
@@ -68,22 +82,7 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
   }
 }
 
-async function prefetchPageContext(
-  pageId: string,
-  pageContext: {
-    urlOriginal: string
-    _objectCreatedByVike: boolean
-    _urlHandler: null
-    _urlRewrite: null
-    _baseServer: string
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
-    _pageConfigGlobal: PageConfigGlobalRuntime
-    _allPageIds: string[]
-    _pageRoutes: PageRoutes
-    _onBeforeRouteHook: Hook | null
-  } & PageContextUrlClient
-): Promise<void> {
+async function prefetchPageContext(pageId: string, pageContext: BasicPageContext): Promise<void> {
   try {
     objectAssign(
       pageContext,
@@ -143,12 +142,15 @@ async function prefetch(url: string): Promise<void> {
   await prefetchPageContext(pageId, pageContext)
 }
 
-function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>; urlPathname: string }) {
+function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
+  exports: Record<string, unknown>
+  urlPathname: string
+}) {
   // Current URL is already prefetched
-  markAsAlreadyPrefetched(pageContext.urlPathname)
+  markAsAlreadyPrefetched(pageContextBeforeRenderClient.urlPathname)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
-  linkTags.forEach((linkTag) => {
+  linkTags.forEach(async (linkTag) => {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
     globalObject.linkPrefetchHandlerAdded.set(linkTag, true)
 
@@ -159,17 +161,26 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
 
     if (isAlreadyPrefetched(url)) return
 
-    const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(pageContext, linkTag)
+    const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(pageContextBeforeRenderClient, linkTag)
     if (!prefetchStaticAssets && !prefetchPageContext) return
+
+    const pageContext = await createPageContext(url)
+    let pageContextFromRoute: PageContextFromRoute
+    try {
+      pageContextFromRoute = await route(pageContext)
+    } catch {
+      // If a route() hook has a bug or `throw render()` / `throw redirect()`
+      return
+    }
 
     if (prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchAssetsIfPossible(url)
+        prefetchAssetsIfPossible(pageContextFromRoute._pageId, pageContext)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchAssetsIfPossible(url)
+          prefetchAssetsIfPossible(pageContextFromRoute._pageId, pageContext)
         },
         { passive: true }
       )
@@ -179,7 +190,7 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetchAssetsIfPossible(url)
+            prefetchAssetsIfPossible(pageContextFromRoute._pageId, pageContext)
             observer.disconnect()
           }
         })
@@ -189,12 +200,12 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
 
     if (prefetchPageContext?.when === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchContextIfPossible(url, prefetchPageContext?.expire)
+        prefetchContextIfPossible(prefetchPageContext?.expire, pageContextFromRoute._pageId, pageContext)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchContextIfPossible(url, prefetchPageContext?.expire)
+          prefetchContextIfPossible(prefetchPageContext?.expire, pageContextFromRoute._pageId, pageContext)
         },
         { passive: true }
       )
@@ -202,37 +213,24 @@ function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>
   })
 }
 
-async function prefetchAssetsIfPossible(url: string): Promise<void> {
-  const pageContext = await createPageContext(url)
-  let pageContextFromRoute: PageContextFromRoute
-  try {
-    pageContextFromRoute = await route(pageContext)
-  } catch {
-    // If a route() hook has a bug or `throw render()` / `throw redirect()`
-    return
-  }
-  if (!pageContextFromRoute?._pageId) return
-  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
+async function prefetchAssetsIfPossible(pageId: string | null, pageContext: BasicPageContext): Promise<void> {
+  if (!pageId) return
+  if (!(await isClientSideRoutable(pageId, pageContext))) return
+  await prefetchAssets(pageId, pageContext)
 }
 
-async function prefetchContextIfPossible(url: string, expire: number | undefined): Promise<void> {
+async function prefetchContextIfPossible(
+  expire: number | undefined,
+  pageId: string | null,
+  pageContext: BasicPageContext
+): Promise<void> {
+  if (!pageId) return
+  if (!(await isClientSideRoutable(pageId, pageContext))) return
   const now = Date.now()
-  const lastPrefetch = globalObject?.lastPrefetchTime?.get(url)
+  const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageId)
   if (lastPrefetch && expire && now - lastPrefetch < expire) {
     return
   }
-  const pageContext = await createPageContext(url)
-  let pageContextFromRoute: PageContextFromRoute
-  try {
-    pageContextFromRoute = await route(pageContext)
-  } catch {
-    // If a route() hook has a bug or `throw render()` / `throw redirect()`
-    return
-  }
-  if (!pageContextFromRoute?._pageId) return
-
-  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchPageContext(pageContextFromRoute._pageId, pageContext)
-  globalObject.lastPrefetchTime?.set(url, now)
+  await prefetchPageContext(pageId, pageContext)
+  globalObject.lastPrefetchTime?.set(pageId, now)
 }
