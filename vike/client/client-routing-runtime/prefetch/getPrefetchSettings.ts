@@ -1,16 +1,10 @@
 export { getPrefetchSettings }
-export { PrefetchPageContext }
 
-import type { PrefetchWhen, PrefetchExpire } from '../../../shared/types/Prefetch.js'
+import type { PrefetchPageContext, PrefetchWhen } from '../../../shared/types/Prefetch.js'
 import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.js'
 
 type PageContextPrefetch = {
   exports: Record<string, unknown>
-}
-
-type PrefetchPageContext = {
-  when?: Exclude<PrefetchWhen, 'viewport'>
-  expire?: number
 }
 
 type PrefetchSettings = {

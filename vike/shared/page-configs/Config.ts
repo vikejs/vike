@@ -31,14 +31,13 @@ export type { OnRenderHtmlSync }
 export type { RouteAsync }
 export type { RouteSync }
 
-import { PrefetchPageContext } from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
-import type { PrefetchExpire, PrefetchWhen } from '../types/Prefetch.js'
+import type { PrefetchPageContext, PrefetchWhen } from '../types/Prefetch.js'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
 type HookNamePage =

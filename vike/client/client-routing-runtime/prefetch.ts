@@ -1,6 +1,6 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
-export { PrefetchedPageContext }
+export { type PrefetchedPageContext }
 
 import {
   assert,
@@ -27,9 +27,9 @@ import { route, type PageContextFromRoute, PageRoutes } from '../../shared/route
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { getPageContextFromHooks_isNotHydration } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
-import { PageConfigGlobalRuntime, PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { Hook } from '../../shared/hooks/getHook.js'
-import { PageContextUrlClient } from '../../shared/getPageContextUrlComputed.js'
+import { type PageConfigGlobalRuntime, type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import { type Hook } from '../../shared/hooks/getHook.js'
+import { type PageContextUrlClient } from '../../shared/getPageContextUrlComputed.js'
 
 type PrefetchedPageContext =
   | {
@@ -56,7 +56,7 @@ const globalObject = getGlobalObject<{
   lastPrefetchTime: Map<string, number>
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), lastPrefetchTime: new Map() })
 
-async function getPrefetchedStaticAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
+async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {
     await loadUserFilesClientSide(pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
   } catch (err) {
@@ -68,7 +68,7 @@ async function getPrefetchedStaticAssets(pageId: string, pageContext: PageContex
   }
 }
 
-async function getPrefetchedPageContext(
+async function prefetchPageContext(
   pageId: string,
   pageContext: {
     urlOriginal: string
@@ -139,8 +139,8 @@ async function prefetch(url: string): Promise<void> {
     return
   }
 
-  await getPrefetchedStaticAssets(pageId, pageContext)
-  await getPrefetchedPageContext(pageId, pageContext)
+  await prefetchAssets(pageId, pageContext)
+  await prefetchPageContext(pageId, pageContext)
 }
 
 function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>; urlPathname: string }) {
@@ -213,7 +213,7 @@ async function prefetchAssetsIfPossible(url: string): Promise<void> {
   }
   if (!pageContextFromRoute?._pageId) return
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await getPrefetchedStaticAssets(pageContextFromRoute._pageId, pageContext)
+  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
 }
 
 async function prefetchContextIfPossible(url: string, expire: number | undefined): Promise<void> {
@@ -233,6 +233,6 @@ async function prefetchContextIfPossible(url: string, expire: number | undefined
   if (!pageContextFromRoute?._pageId) return
 
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await getPrefetchedPageContext(pageContextFromRoute._pageId, pageContext)
+  await prefetchPageContext(pageContextFromRoute._pageId, pageContext)
   globalObject.lastPrefetchTime?.set(url, now)
 }
