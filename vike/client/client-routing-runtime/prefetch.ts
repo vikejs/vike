@@ -56,7 +56,7 @@ const globalObject = getGlobalObject<{
   lastPrefetchTime: Map<string, number>
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), lastPrefetchTime: new Map() })
 
-async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
+async function getPrefetchedStaticAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
   try {
     await loadUserFilesClientSide(pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
   } catch (err) {
@@ -68,7 +68,7 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
   }
 }
 
-async function prefetchPageContext(
+async function getPrefetchedPageContext(
   pageId: string,
   pageContext: {
     urlOriginal: string
@@ -139,8 +139,8 @@ async function prefetch(url: string): Promise<void> {
     return
   }
 
-  await prefetchAssets(pageId, pageContext)
-  await prefetchPageContext(pageId, pageContext)
+  await getPrefetchedStaticAssets(pageId, pageContext)
+  await getPrefetchedPageContext(pageId, pageContext)
 }
 
 function addLinkPrefetchHandlers(pageContext: { exports: Record<string, unknown>; urlPathname: string }) {
@@ -213,7 +213,7 @@ async function prefetchAssetsIfPossible(url: string): Promise<void> {
   }
   if (!pageContextFromRoute?._pageId) return
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
+  await getPrefetchedStaticAssets(pageContextFromRoute._pageId, pageContext)
 }
 
 async function prefetchContextIfPossible(url: string, expire: number | undefined): Promise<void> {
@@ -233,6 +233,6 @@ async function prefetchContextIfPossible(url: string, expire: number | undefined
   if (!pageContextFromRoute?._pageId) return
 
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchPageContext(pageContextFromRoute._pageId, pageContext)
+  await getPrefetchedPageContext(pageContextFromRoute._pageId, pageContext)
   globalObject.lastPrefetchTime?.set(url, now)
 }
