@@ -69,10 +69,15 @@ const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
   prefetchedPageContext?: PrefetchedPageContext
   lastPrefetchTime: Map<string, number>
+  expire?: number
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), lastPrefetchTime: new Map() })
 
 function getPrefetchedPageContext() {
-  return globalObject.prefetchedPageContext
+  return {
+    prefetchedPageContext: globalObject.prefetchedPageContext,
+    lastPrefetchTime: globalObject.lastPrefetchTime,
+    expire: globalObject.expire
+  }
 }
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
@@ -204,6 +209,7 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
     }
 
     if (typeof prefetchPageContext === 'number') {
+      globalObject.expire = prefetchPageContext
       linkTag.addEventListener('mouseover', () => {
         prefetchContextIfPossible(prefetchPageContext, pageContextFromRoute._pageId, pageContext)
       })
