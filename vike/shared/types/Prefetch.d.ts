@@ -1,8 +1,8 @@
-export type { PrefetchWhen, PrefetchExpire, PrefetchPageContext }
+export type { PrefetchStaticAssets, PrefetchExpire, PrefetchPageContext }
 
-type PrefetchWhen = false | 'hover' | 'viewport'
+type PrefetchStaticAssets = false | 'hover' | 'viewport'
 type PrefetchExpire = number
 type PrefetchPageContext = {
-  when?: Exclude<PrefetchWhen, 'viewport'>
+  when?: Exclude<PrefetchStaticAssets, 'viewport'>
   expire?: number
 }

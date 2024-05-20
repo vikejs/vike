@@ -1,6 +1,6 @@
 export { getPrefetchSettings }
 
-import type { PrefetchPageContext, PrefetchWhen } from '../../../shared/types/Prefetch.js'
+import type { PrefetchPageContext, PrefetchStaticAssets } from '../../../shared/types/Prefetch.js'
 import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.js'
 
 type PageContextPrefetch = {
@@ -8,7 +8,7 @@ type PageContextPrefetch = {
 }
 
 type PrefetchSettings = {
-  prefetchStaticAssets: PrefetchWhen
+  prefetchStaticAssets: PrefetchStaticAssets
   prefetchPageContext: PrefetchPageContext
 }
 
@@ -25,7 +25,7 @@ function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElem
   }
 }
 
-function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchWhen {
+function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchStaticAssets {
   {
     const prefetchAttribute = getPrefetchStaticAssetsAttribute(linkTag)
     if (prefetchAttribute !== null) return prefetchAttribute
@@ -104,7 +104,7 @@ function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: HTMLE
   return { when: 'hover', expire: 0 }
 }
 
-function getPrefetchStaticAssetsAttribute(linkTag: HTMLElement): PrefetchWhen | null {
+function getPrefetchStaticAssetsAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null {
   const attr = linkTag.getAttribute('data-prefetch-static-assets')
   const attrOld = linkTag.getAttribute('data-prefetch')
 
