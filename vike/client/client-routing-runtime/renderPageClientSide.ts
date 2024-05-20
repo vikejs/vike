@@ -208,20 +208,20 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await renderPageView(pageContext)
     } else {
       let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>> | PrefetchedPageContext
-      try {
-        const prefetchedPageContext = globalObjectForPrefetchedPageContext?.prefetchedPageContext
-        if (
-          prefetchedPageContext?.pageContextFromHooks &&
-          '_pageId' in prefetchedPageContext.pageContextFromHooks &&
-          prefetchedPageContext.pageContextFromHooks._pageId === pageContext._pageId
-        ) {
-          res = prefetchedPageContext
-        } else {
+      const prefetchedPageContext = globalObjectForPrefetchedPageContext?.prefetchedPageContext
+      if (
+        prefetchedPageContext?.pageContextFromHooks &&
+        '_pageId' in prefetchedPageContext.pageContextFromHooks &&
+        prefetchedPageContext.pageContextFromHooks._pageId === pageContext._pageId
+      ) {
+        res = prefetchedPageContext
+      } else {
+        try {
           res = await getPageContextFromHooks_isNotHydration(pageContext, false)
+        } catch (err) {
+          await onError(err)
+          return
         }
-      } catch (err) {
-        await onError(err)
-        return
       }
       if (isRenderOutdated()) return
       if ('is404ServerSideRouted' in res) return
