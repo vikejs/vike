@@ -79,29 +79,21 @@ function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: HTMLE
 
   if ('prefetchPageContext' in pageContext.exports) {
     const { prefetchPageContext } = pageContext.exports
-
-    const wrongUsageMsg = `prefetchPageContext should be an object with 'when' and 'expire' properties. 'when' should be false, 'hover', and 'expire' should be a number`
-
-    assertUsage(isPlainObject(prefetchPageContext), wrongUsageMsg)
-    const keys = Object.keys(prefetchPageContext)
-    assertUsage(keys.length === 2 && keys[0] === 'when' && keys[1] === 'expire', wrongUsageMsg)
-    const { when, expire } = prefetchPageContext
-    if (when === false) {
-      return { when: false, expire: 0 }
+    if (prefetchPageContext === false) {
+      return false
     }
-    if (when === 'hover' && typeof expire === 'number') {
-      return { when, expire }
+    if (prefetchPageContext === true) {
+      return 5000
+    }
+    if (typeof prefetchPageContext === 'number') {
+      return prefetchPageContext
     }
 
-    if (when === 'HOVER' && typeof expire === 'number') {
-      const correctValue: 'hover' = when.toLowerCase() as any
-      return { when: correctValue, expire }
-    }
-
+    const wrongUsageMsg = `prefetchPageContext value should be number or false`
     assertUsage(false, wrongUsageMsg)
   }
 
-  return { when: 'hover', expire: 0 }
+  return 5000
 }
 
 function getPrefetchStaticAssetsAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null {
@@ -148,41 +140,23 @@ function getPrefetchStaticAssetsAttribute(linkTag: HTMLElement): PrefetchStaticA
 }
 
 function getPrefetchPageContextAttribute(linkTag: HTMLElement): PrefetchPageContext | null {
-  const whenAttr = linkTag.getAttribute('data-prefetch-page-context-when')
-  const expireAttr = linkTag.getAttribute('data-prefetch-page-context-expire')
+  const attr = linkTag.getAttribute('data-prefetch-page-context')
 
-  if (whenAttr === null && expireAttr === null) {
+  if (attr === null) {
     return null
   }
 
-  if (whenAttr) {
-    if (whenAttr === 'false') {
-      return { when: false, expire: 0 }
+  if (attr) {
+    if (attr === 'false') {
+      return false
     }
-
-    if (whenAttr === 'hover') {
-      const correctValue: 'hover' = whenAttr.toLowerCase() as any
-
-      if (expireAttr === null) {
-        return { when: correctValue, expire: 0 }
-      }
-
-      if (!Number.isNaN(parseInt(expireAttr, 10))) {
-        return { when: correctValue, expire: parseInt(expireAttr, 10) }
-      }
-
-      assertUsage(false, `data-prefetch-page-context-expire has value "${expireAttr}" but it should instead be number`)
+    if (attr === 'true') {
+      return 5000
     }
-
-    assertUsage(false, `data-prefetch-page-context has value "${whenAttr}" but it should instead be "false", "hover"`)
-  }
-
-  if (expireAttr !== null) {
-    if (!Number.isNaN(parseInt(expireAttr, 10))) {
-      return { when: 'hover', expire: parseInt(expireAttr, 10) }
+    if (!Number.isNaN(parseInt(attr, 10))) {
+      return parseInt(attr, 10)
     }
-
-    assertUsage(false, `data-prefetch-page-context-expire has value "${expireAttr}" but it should instead be number`)
+    assertUsage(false, `data-prefetch-page-context has value "${attr}" but it should instead be number or boolean`)
   }
 
   assert(false)

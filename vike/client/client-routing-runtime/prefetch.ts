@@ -198,14 +198,14 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
       observer.observe(linkTag)
     }
 
-    if (prefetchPageContext?.when === 'hover') {
+    if (typeof prefetchPageContext === 'number') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchContextIfPossible(prefetchPageContext?.expire, pageContextFromRoute._pageId, pageContext)
+        prefetchContextIfPossible(prefetchPageContext, pageContextFromRoute._pageId, pageContext)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchContextIfPossible(prefetchPageContext?.expire, pageContextFromRoute._pageId, pageContext)
+          prefetchContextIfPossible(prefetchPageContext, pageContextFromRoute._pageId, pageContext)
         },
         { passive: true }
       )
