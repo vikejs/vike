@@ -1,4 +1,4 @@
-import { RepoLink, Link } from '@brillout/docpress'
+import { RepoLink, Link, Warning } from '@brillout/docpress'
 import { ViteLazyTranspilingContradiction } from '../../components'
 
 
@@ -27,31 +27,34 @@ Example:
 
 ## Metadata
 
-There are several ways you can define the metadata of your pages (title, publishing date, author, ...).
+There are several techniques for defining the metadata (title, publishing date, author, ...) of your markdown pages.
 
-The best way to define metadata depends on whether the metadata is global or local.
- - Global metadata.
-   > For example, if you want to show the list of all your blog posts, and you want to always show that list on the left side of your website.
-   > ```
-   > ALL MY BLOG POSTS
-   > 2024-01-01 New Year 2024 Resolution
-   > 2023-12-20 Wrapping up 2023
-   > 2023-06-15 My summer 2023
-   > ...
-   > ```
-   > Because that list is shown on every page, the publishing date and the title of all blog posts are always needed when rendering any page. Thus, this metadata is needed for every page.
- - Local metadata.
-   > For example, if you want to show some detailed information below the blog post, such as the author's name and country. This metadata is only shown, and thus only needed, for that page.
+The preferred technique depends on whether the metadata is global or local.
 
-For global metadata, we recommend:
-- [With a `metadata.js` file](#with-a-metadata-js-file)
+#### Local metadata
+
+ > **What is local metadata?**  For example, if you want to show some detailed information below the blog post, such as the author's name and country. This metadata is only shown and only needed for that page.
 
 For local metadata, we recommend:
 - [With custom settings](#with-custom-settings)
 - [With frontmatter](#with-frontmatter)
 
-> You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all your pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
+#### Global metadata
 
+> **What is global metadata?** For example, if you want to show a list of all your blog posts, and you want to always show that list on the left side of your website.
+> ```
+> 2024-01-01 New Year 2024 Resolution
+> 2023-12-20 Wrapping up 2023
+> 2023-06-15 My summer 2023
+> ```
+> Because this list is shown in the sidebar of every page, the publishing date and the title of all blog posts is always needed regardless of which page is rendered. This metadata is needed for every page.
+
+For global metadata, we recommend:
+- <Link href="#with-a-metadata-js-file" />
+
+<Warning>
+ You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all your pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
+</Warning>
 
 ### With a `metadata.js` file
 
