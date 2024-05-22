@@ -14,7 +14,7 @@ export default {
   navHeaderMobile: <NavHeaderMobile />,
   headings,
   headingsDetached,
-  tagline: '🔨 Flexible, lean, reliable, community-driven, fast Vite-based frontend framework.',
+  tagline: '🔨 Flexible, lean, community-driven, dependable, fast Vite-based frontend framework.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',

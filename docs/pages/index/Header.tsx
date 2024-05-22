@@ -10,7 +10,7 @@ function Header() {
       <img src={iconVike} />
       <div>
         <h1>Vike</h1>
-        <p id="header-tagline">Flexible, lean, reliable, community-driven, fast Vite-based frontend framework.</p>
+        <p id="header-tagline">Flexible, lean, community-driven, dependable, fast Vite-based frontend framework.</p>
       </div>
     </div>
   )
