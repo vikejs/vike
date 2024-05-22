@@ -14,7 +14,7 @@ export default {
   navHeaderMobile: <NavHeaderMobile />,
   headings,
   headingsDetached,
-  tagline: 'Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.',
+  tagline: '🔨 Flexible, lean, reliable, community-driven, fast Vite-based frontend framework.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
