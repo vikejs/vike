@@ -1,6 +1,7 @@
 export { getPageContextFromHooks_isHydration }
-export { getPageContextFromHooks_isNotHydration }
 export { getPageContextFromHooks_serialized }
+export { preparePageContextFromServer }
+export { executeClientSideHooks }
 
 import {
   assert,
@@ -70,7 +71,7 @@ async function getPageContextFromHooks_isHydration(
   return pageContextFromHooks
 }
 
-async function getPageContextFromHooks_isNotHydration(
+async function preparePageContextFromServer(
   pageContext: { _pageId: string } & PageContext & PageContextExports,
   isErrorPage: boolean
 ) {
@@ -105,6 +106,18 @@ async function getPageContextFromHooks_isNotHydration(
     objectAssign(pageContextFromHooks, pageContextFromServer)
   }
 
+  return { hasPageContextFromServer, pageContextFromHooks }
+}
+
+async function executeClientSideHooks(
+  pageContext: { _pageId: string } & PageContext & PageContextExports,
+  pageContextFromHooks: {
+    isHydration: false
+    _hasPageContextFromClient: boolean
+  } & Partial<Record<string, unknown> & Record<'_pageId', string>>,
+  hasPageContextFromServer: boolean,
+  isErrorPage: boolean
+) {
   // At this point, we need to call the client-side guard(), data() and onBeforeRender() hooks, if they exist on client
   // env. However if we have fetched pageContext from the server, some of them might have run already on the
   // server-side, so we run only the client-only ones in this case.

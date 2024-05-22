@@ -26,7 +26,7 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute, PageRoutes } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import { getPageContextFromHooks_isNotHydration } from './getPageContextFromHooks.js'
+import { preparePageContextFromServer } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigGlobalRuntime, type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { type Hook } from '../../shared/hooks/getHook.js'
@@ -49,17 +49,15 @@ type BasicPageContext = {
 type PrefetchedPageContext =
   | {
       is404ServerSideRouted: boolean
-      pageContextFromHooks?: {
-        _pageId: string
-        data: unknown
-      }
+      hasPageContextFromServer?: undefined
+      pageContextFromHooks?: undefined
     }
   | {
+      hasPageContextFromServer: boolean
       pageContextFromHooks: {
         isHydration: false
         _hasPageContextFromClient: boolean
-        _hasPageContextFromServer: boolean
-      }
+      } & Partial<Record<string, unknown> & Record<'_pageId', string>>
       is404ServerSideRouted?: undefined
     }
   | undefined
@@ -106,7 +104,7 @@ async function prefetchPageContext(pageId: string, pageContext: BasicPageContext
       _pageId: pageId,
       _pageConfigs: pageContext._pageConfigs
     })
-    const res = await getPageContextFromHooks_isNotHydration(pageContext, false)
+    const res = await preparePageContextFromServer(pageContext, false)
     globalObject.prefetchedPageContext = res
   } catch {
     return

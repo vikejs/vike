@@ -13,9 +13,10 @@ import {
   hasProp
 } from './utils.js'
 import {
+  executeClientSideHooks,
   getPageContextFromHooks_isHydration,
-  getPageContextFromHooks_isNotHydration,
-  getPageContextFromHooks_serialized
+  getPageContextFromHooks_serialized,
+  preparePageContextFromServer
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { type PrefetchedPageContext, addLinkPrefetchHandlers, getPrefetchedPageContext } from './prefetch.js'
@@ -203,10 +204,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // Render page view
       await renderPageView(pageContext)
     } else {
-      let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>> | PrefetchedPageContext
-      const prefetchedPageContext = getPrefetchedPageContext().prefetchedPageContext
-      const lastPrefetch = getPrefetchedPageContext().lastPrefetchTime.get(pageContext._pageId)
-      const expire = getPrefetchedPageContext().expire
+      let res: Awaited<ReturnType<typeof executeClientSideHooks>> | PrefetchedPageContext
+      const { prefetchedPageContext, lastPrefetchTime, expire } = getPrefetchedPageContext()
+      const lastPrefetch = lastPrefetchTime.get(pageContext._pageId)
       const now = Date.now()
       if (
         prefetchedPageContext?.pageContextFromHooks &&
@@ -216,10 +216,25 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         expire &&
         now - lastPrefetch < expire
       ) {
-        res = prefetchedPageContext
+        res = await executeClientSideHooks(
+          pageContext,
+          prefetchedPageContext.pageContextFromHooks,
+          prefetchedPageContext.hasPageContextFromServer,
+          false
+        )
       } else {
         try {
-          res = await getPageContextFromHooks_isNotHydration(pageContext, false)
+          const pageContextFromServer = await preparePageContextFromServer(pageContext, false)
+          if (!pageContextFromServer.is404ServerSideRouted && pageContextFromServer.pageContextFromHooks) {
+            res = await executeClientSideHooks(
+              pageContext,
+              pageContextFromServer.pageContextFromHooks,
+              pageContextFromServer.hasPageContextFromServer,
+              false
+            )
+          } else {
+            res = { is404ServerSideRouted: true }
+          }
         } catch (err) {
           await onError(err)
           return
@@ -359,9 +374,19 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
     if (isRenderOutdated()) return
 
-    let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
+    let res: Awaited<ReturnType<typeof executeClientSideHooks>> | PrefetchedPageContext
     try {
-      res = await getPageContextFromHooks_isNotHydration(pageContext, true)
+      const pageContextFromServer = await preparePageContextFromServer(pageContext, true)
+      if (!pageContextFromServer.is404ServerSideRouted && pageContextFromServer.pageContextFromHooks) {
+        res = await executeClientSideHooks(
+          pageContext,
+          pageContextFromServer.pageContextFromHooks,
+          pageContextFromServer.hasPageContextFromServer,
+          true
+        )
+      } else {
+        res = { is404ServerSideRouted: true }
+      }
     } catch (err: unknown) {
       // - When user hasn't defined a `_error.page.js` file
       // - Some Vike unpexected internal error
