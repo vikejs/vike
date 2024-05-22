@@ -65,14 +65,14 @@ type PrefetchedPageContext =
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  prefetchedPageContext?: PrefetchedPageContext
+  prefetchedPageContexts: { pageId: string; prefetchedPageContext: PrefetchedPageContext }[]
   lastPrefetchTime: Map<string, number>
   expire?: number
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), lastPrefetchTime: new Map() })
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [], lastPrefetchTime: new Map() })
 
 function getPrefetchedPageContext() {
   return {
-    prefetchedPageContext: globalObject.prefetchedPageContext,
+    prefetchedPageContexts: globalObject.prefetchedPageContexts,
     lastPrefetchTime: globalObject.lastPrefetchTime,
     expire: globalObject.expire
   }
@@ -105,7 +105,10 @@ async function prefetchPageContext(pageId: string, pageContext: BasicPageContext
       _pageConfigs: pageContext._pageConfigs
     })
     const res = await preparePageContextFromServer(pageContext, false)
-    globalObject.prefetchedPageContext = res
+    const pageContextWithDuplicateKey = globalObject.prefetchedPageContexts.find((pc) => pc.pageId === pageId)
+    if (!pageContextWithDuplicateKey) {
+      globalObject.prefetchedPageContexts.push({ pageId, prefetchedPageContext: res })
+    }
   } catch {
     return
   }

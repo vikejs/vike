@@ -205,21 +205,21 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await renderPageView(pageContext)
     } else {
       let res: Awaited<ReturnType<typeof executeClientSideHooks>> | PrefetchedPageContext
-      const { prefetchedPageContext, lastPrefetchTime, expire } = getPrefetchedPageContext()
+      const { prefetchedPageContexts, lastPrefetchTime, expire } = getPrefetchedPageContext()
+      const matchedPageContext = prefetchedPageContexts.find((pc) => pc.pageId === pageContext._pageId)
       const lastPrefetch = lastPrefetchTime.get(pageContext._pageId)
       const now = Date.now()
       if (
-        prefetchedPageContext?.pageContextFromHooks &&
-        '_pageId' in prefetchedPageContext.pageContextFromHooks &&
-        prefetchedPageContext.pageContextFromHooks._pageId === pageContext._pageId &&
+        matchedPageContext &&
+        matchedPageContext.prefetchedPageContext?.pageContextFromHooks &&
         lastPrefetch &&
         expire &&
         now - lastPrefetch < expire
       ) {
         res = await executeClientSideHooks(
           pageContext,
-          prefetchedPageContext.pageContextFromHooks,
-          prefetchedPageContext.hasPageContextFromServer,
+          matchedPageContext.prefetchedPageContext.pageContextFromHooks,
+          matchedPageContext.prefetchedPageContext.hasPageContextFromServer,
           false
         )
       } else {
