@@ -146,7 +146,7 @@ async function getPageContextFromClientHooks(
     }
   }
 
-  return { pageContextFromHooks }
+  return pageContextFromHooks
 }
 
 async function executeHookClientSide(
