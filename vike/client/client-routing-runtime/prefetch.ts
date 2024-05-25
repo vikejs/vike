@@ -26,7 +26,7 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute, PageRoutes } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import { preparePageContextFromServer } from './getPageContextFromHooks.js'
+import { getPageContextFromServerHooks } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigGlobalRuntime, type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { type Hook } from '../../shared/hooks/getHook.js'
@@ -49,14 +49,12 @@ type BasicPageContext = {
 type PrefetchedPageContext =
   | {
       is404ServerSideRouted: boolean
-      hasPageContextFromServer?: undefined
       pageContextFromHooks?: undefined
     }
   | {
-      hasPageContextFromServer: boolean
       pageContextFromHooks: {
         isHydration: false
-        _hasPageContextFromClient: boolean
+        _hasPageContextFromServer: boolean
       } & Partial<Record<string, unknown> & Record<'_pageId', string>>
       is404ServerSideRouted?: undefined
     }
@@ -104,7 +102,7 @@ async function prefetchPageContext(pageId: string, pageContext: BasicPageContext
       _pageId: pageId,
       _pageConfigs: pageContext._pageConfigs
     })
-    const res = await preparePageContextFromServer(pageContext, false)
+    const res = await getPageContextFromServerHooks(pageContext, false)
     const pageContextWithDuplicateKey = globalObject.prefetchedPageContexts.find((pc) => pc.pageId === pageId)
     if (!pageContextWithDuplicateKey) {
       globalObject.prefetchedPageContexts.push({ pageId, prefetchedPageContext: res })

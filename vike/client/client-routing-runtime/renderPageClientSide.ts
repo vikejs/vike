@@ -13,10 +13,10 @@ import {
   hasProp
 } from './utils.js'
 import {
-  executeClientSideHooks,
+  getPageContextFromClientHooks,
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_serialized,
-  preparePageContextFromServer
+  getPageContextFromServerHooks
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { type PrefetchedPageContext, addLinkPrefetchHandlers, getPrefetchedPageContext } from './prefetch.js'
@@ -204,7 +204,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // Render page view
       await renderPageView(pageContext)
     } else {
-      let res: Awaited<ReturnType<typeof executeClientSideHooks>> | PrefetchedPageContext
+      let res: Awaited<ReturnType<typeof getPageContextFromClientHooks>> | PrefetchedPageContext
       const { prefetchedPageContexts, lastPrefetchTime, expire } = getPrefetchedPageContext()
       const matchedPageContext = prefetchedPageContexts.find((pc) => pc.pageId === pageContext._pageId)
       const lastPrefetch = lastPrefetchTime.get(pageContext._pageId)
@@ -216,25 +216,14 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         expire &&
         now - lastPrefetch < expire
       ) {
-        res = await executeClientSideHooks(
-          pageContext,
-          matchedPageContext.prefetchedPageContext.pageContextFromHooks,
-          matchedPageContext.prefetchedPageContext.hasPageContextFromServer,
-          false
-        )
+        objectAssign(pageContext, matchedPageContext.prefetchedPageContext.pageContextFromHooks)
+        res = await getPageContextFromClientHooks(pageContext, false)
       } else {
         try {
-          const pageContextFromServer = await preparePageContextFromServer(pageContext, false)
-          if (!pageContextFromServer.is404ServerSideRouted && pageContextFromServer.pageContextFromHooks) {
-            res = await executeClientSideHooks(
-              pageContext,
-              pageContextFromServer.pageContextFromHooks,
-              pageContextFromServer.hasPageContextFromServer,
-              false
-            )
-          } else {
-            res = { is404ServerSideRouted: true }
-          }
+          const pageContextFromServer = await getPageContextFromServerHooks(pageContext, false)
+          if ('is404ServerSideRouted' in pageContextFromServer) return
+          objectAssign(pageContext, pageContextFromServer.pageContextFromHooks)
+          res = await getPageContextFromClientHooks(pageContext, false)
         } catch (err) {
           await onError(err)
           return
@@ -374,19 +363,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
     if (isRenderOutdated()) return
 
-    let res: Awaited<ReturnType<typeof executeClientSideHooks>> | PrefetchedPageContext
+    let res: Awaited<ReturnType<typeof getPageContextFromClientHooks>> | PrefetchedPageContext
     try {
-      const pageContextFromServer = await preparePageContextFromServer(pageContext, true)
-      if (!pageContextFromServer.is404ServerSideRouted && pageContextFromServer.pageContextFromHooks) {
-        res = await executeClientSideHooks(
-          pageContext,
-          pageContextFromServer.pageContextFromHooks,
-          pageContextFromServer.hasPageContextFromServer,
-          true
-        )
-      } else {
-        res = { is404ServerSideRouted: true }
-      }
+      const pageContextFromServer = await getPageContextFromServerHooks(pageContext, true)
+      if ('is404ServerSideRouted' in pageContextFromServer) return
+      objectAssign(pageContext, pageContextFromServer.pageContextFromHooks)
+      res = await getPageContextFromClientHooks(pageContext, true)
     } catch (err: unknown) {
       // - When user hasn't defined a `_error.page.js` file
       // - Some Vike unpexected internal error
@@ -394,7 +376,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
     if (isRenderOutdated()) return
-    if ('is404ServerSideRouted' in res) return
     const pageContextFromHooks = res.pageContextFromHooks
 
     assert(pageContextFromHooks)
