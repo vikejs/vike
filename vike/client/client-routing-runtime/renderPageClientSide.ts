@@ -214,7 +214,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         matchedPageContext.prefetchedPageContext?.pageContextFromHooks &&
         lastPrefetch &&
         expire &&
-        Date.now() - lastPrefetch < expire
+        Date.now() - lastPrefetch < expire &&
+        (false as boolean)
       ) {
         if (matchedPageContext.prefetchedPageContext.is404ServerSideRouted) return
         pageContextFromServerHooks = matchedPageContext.prefetchedPageContext.pageContextFromHooks
