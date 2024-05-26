@@ -64,14 +64,14 @@ assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
   prefetchedPageContexts: { pageId: string; prefetchedPageContext: PrefetchedPageContext }[]
-  lastPrefetch: { pageId: string; time: number }[]
+  lastPrefetchTime: Map<string, number>
   expire?: number
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [], lastPrefetch: [] })
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [], lastPrefetchTime: new Map() })
 
 function getPrefetchedPageContext() {
   return {
     prefetchedPageContexts: globalObject.prefetchedPageContexts,
-    lastPrefetch: globalObject.lastPrefetch,
+    lastPrefetchTime: globalObject.lastPrefetchTime,
     expire: globalObject.expire
   }
 }
@@ -237,15 +237,10 @@ async function prefetchContextIfPossible(
   if (!pageId) return
   if (!(await isClientSideRoutable(pageId, pageContext))) return
   const now = Date.now()
-  const matchedLastPrefetch = globalObject.lastPrefetch.find((lp) => lp.pageId === pageId)
-  if (matchedLastPrefetch?.time && expire && Date.now() - matchedLastPrefetch.time < expire) {
+  const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageId)
+  if (lastPrefetch && expire && now - lastPrefetch < expire) {
     return
   }
   await prefetchPageContext(pageId, pageContext)
-  const index = globalObject.lastPrefetch.findIndex((lp) => lp.pageId === pageId)
-  if (index !== -1) {
-    globalObject.lastPrefetch[index] = { pageId, time: now }
-  } else {
-    globalObject.lastPrefetch.push({ pageId, time: now })
-  }
+  globalObject.lastPrefetchTime?.set(pageId, now)
 }

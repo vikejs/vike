@@ -206,15 +206,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     } else {
       // Fetch pageContext from server-side hooks
       let pageContextFromServerHooks: { _hasPageContextFromServer: boolean }
-      const { prefetchedPageContexts, lastPrefetch, expire } = getPrefetchedPageContext()
+      const { prefetchedPageContexts, lastPrefetchTime, expire } = getPrefetchedPageContext()
       const matchedPageContext = prefetchedPageContexts.find((pc) => pc.pageId === pageContext._pageId)
-      const matchedLastPrefetch = lastPrefetch.find((lp) => lp.pageId === pageContext._pageId)
+      const lastPrefetch = lastPrefetchTime.get(pageContext._pageId)
       if (
         matchedPageContext &&
         matchedPageContext.prefetchedPageContext?.pageContextFromHooks &&
-        matchedLastPrefetch?.time &&
+        lastPrefetch &&
         expire &&
-        Date.now() - matchedLastPrefetch.time < expire
+        Date.now() - lastPrefetch < expire
       ) {
         if (matchedPageContext.prefetchedPageContext.is404ServerSideRouted) return
         pageContextFromServerHooks = matchedPageContext.prefetchedPageContext.pageContextFromHooks
