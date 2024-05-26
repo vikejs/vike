@@ -237,10 +237,12 @@ async function prefetchContextIfPossible(
   if (!pageId) return
   if (!(await isClientSideRoutable(pageId, pageContext))) return
   const now = Date.now()
-  const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageId)
+  const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageContext.urlOriginal)
+  console.log('globalobject', globalObject.lastPrefetchTime)
+  console.log('lastprefetch', lastPrefetch)
   if (lastPrefetch && expire && now - lastPrefetch < expire) {
     return
   }
   await prefetchPageContext(pageId, pageContext)
-  globalObject.lastPrefetchTime?.set(pageId, now)
+  globalObject.lastPrefetchTime?.set(pageContext.urlOriginal, now)
 }
