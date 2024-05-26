@@ -32,7 +32,7 @@ import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  prefetchedPageContexts: { pageId: string; prefetchedPageContext: PrefetchedPageContext }[]
+  prefetchedPageContexts: { url: string; prefetchedPageContext: PrefetchedPageContext }[]
   lastPrefetchTime: Map<string, number>
   expire?: number
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [], lastPrefetchTime: new Map() })
@@ -72,12 +72,13 @@ async function prefetchPageContext(pageId: string, pageContext: PageContextForPr
   try {
     objectAssign(pageContext, { _pageId: pageId })
     const res = await getPageContextFromServerHooks(pageContext, false)
-    const matchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.pageId === pageId)
+    const matchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
     if (matchedPageContext) {
       matchedPageContext.prefetchedPageContext = res
     } else {
-      globalObject.prefetchedPageContexts.push({ pageId, prefetchedPageContext: res })
+      globalObject.prefetchedPageContexts.push({ url: pageContext.urlOriginal, prefetchedPageContext: res })
     }
+    globalObject.lastPrefetchTime?.set(pageContext.urlOriginal, Date.now())
   } catch {
     return
   }
@@ -207,13 +208,9 @@ async function prefetchContextIfPossible(
 ): Promise<void> {
   if (!pageId) return
   if (!(await isClientSideRoutable(pageId, pageContext))) return
-  const now = Date.now()
   const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageContext.urlOriginal)
-  console.log('globalobject', globalObject.lastPrefetchTime)
-  console.log('lastprefetch', lastPrefetch)
-  if (lastPrefetch && expire && now - lastPrefetch < expire) {
+  if (lastPrefetch && expire && Date.now() - lastPrefetch < expire) {
     return
   }
   await prefetchPageContext(pageId, pageContext)
-  globalObject.lastPrefetchTime?.set(pageContext.urlOriginal, now)
 }
