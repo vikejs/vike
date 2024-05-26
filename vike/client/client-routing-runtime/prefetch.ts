@@ -24,42 +24,11 @@ import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/already
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
-import { route, type PageContextFromRoute, PageRoutes } from '../../shared/route/index.js'
+import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { getPageContextFromServerHooks } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
-import { type PageConfigGlobalRuntime, type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { type Hook } from '../../shared/hooks/getHook.js'
-import { type PageContextUrlClient } from '../../shared/getPageContextUrlComputed.js'
-
-type BasicPageContext = {
-  urlOriginal: string
-  _objectCreatedByVike: boolean
-  _urlHandler: null
-  _urlRewrite: null
-  _baseServer: string
-  _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfigRuntime[]
-  _pageConfigGlobal: PageConfigGlobalRuntime
-  _allPageIds: string[]
-  _pageRoutes: PageRoutes
-  _onBeforeRouteHook: Hook | null
-} & PageContextUrlClient
-
-type PrefetchedPageContext =
-  | {
-      is404ServerSideRouted: boolean
-      pageContextFromHooks?: undefined
-    }
-  | {
-      pageContextFromHooks: {
-        isHydration: false
-        _hasPageContextFromServer: boolean
-      } & Partial<Record<string, unknown> & Record<'_pageId', string>>
-      is404ServerSideRouted?: undefined
-    }
-  | undefined
-
+import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
@@ -67,6 +36,17 @@ const globalObject = getGlobalObject<{
   lastPrefetchTime: Map<string, number>
   expire?: number
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [], lastPrefetchTime: new Map() })
+
+type PrefetchedPageContext =
+  | { pageContextFromHooks: undefined; is404ServerSideRouted: true }
+  | { pageContextFromHooks: { _hasPageContextFromServer: boolean } }
+
+type PageContextForPrefetch = {
+  urlOriginal: string
+  _urlRewrite: null
+  _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfigRuntime[]
+}
 
 function getPrefetchedPageContext() {
   return {
@@ -88,20 +68,9 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
   }
 }
 
-async function prefetchPageContext(pageId: string, pageContext: BasicPageContext): Promise<void> {
+async function prefetchPageContext(pageId: string, pageContext: PageContextForPrefetch): Promise<void> {
   try {
-    objectAssign(
-      pageContext,
-      await loadUserFilesClientSide(pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
-    )
-    objectAssign(pageContext, {
-      isHydration: false as const,
-      isBackwardNavigation: null,
-      _hasPageContextFromServer: false as const,
-      _hasPageContextFromClient: true as const,
-      _pageId: pageId,
-      _pageConfigs: pageContext._pageConfigs
-    })
+    objectAssign(pageContext, { _pageId: pageId })
     const res = await getPageContextFromServerHooks(pageContext, false)
     const pageContextWithDuplicateKey = globalObject.prefetchedPageContexts.find((pc) => pc.pageId === pageId)
     if (!pageContextWithDuplicateKey) {
@@ -223,16 +192,16 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
   })
 }
 
-async function prefetchAssetsIfPossible(pageId: string | null, pageContext: BasicPageContext): Promise<void> {
+async function prefetchAssetsIfPossible(pageId: string | null, pageContext: PageContextForPrefetch): Promise<void> {
   if (!pageId) return
   if (!(await isClientSideRoutable(pageId, pageContext))) return
   await prefetchAssets(pageId, pageContext)
 }
 
 async function prefetchContextIfPossible(
-  expire: number | undefined,
+  expire: number,
   pageId: string | null,
-  pageContext: BasicPageContext
+  pageContext: PageContextForPrefetch
 ): Promise<void> {
   if (!pageId) return
   if (!(await isClientSideRoutable(pageId, pageContext))) return

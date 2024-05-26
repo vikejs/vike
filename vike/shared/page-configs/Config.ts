@@ -397,7 +397,7 @@ type ConfigBuiltIn = {
    */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
-  /** Prefetch page context. */
+  /** Prefetch data. */
   prefetchPageContext?: PrefetchPageContext | ImportString
 
   /** Modify the timeouts of hooks. */

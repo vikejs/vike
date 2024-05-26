@@ -14,9 +14,9 @@ import {
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
+  getPageContextFromServerHooks,
   getPageContextFromHooks_isHydration,
-  getPageContextFromHooks_serialized,
-  getPageContextFromServerHooks
+  getPageContextFromHooks_serialized
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers, getPrefetchedPageContext } from './prefetch.js'
@@ -210,13 +210,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       const matchedPageContext = prefetchedPageContexts.find((pc) => pc.pageId === pageContext._pageId)
       const lastPrefetch = lastPrefetchTime.get(pageContext._pageId)
       if (
-        matchedPageContext &&
-        matchedPageContext.prefetchedPageContext?.pageContextFromHooks &&
+        matchedPageContext?.prefetchedPageContext?.pageContextFromHooks &&
         lastPrefetch &&
         expire &&
         Date.now() - lastPrefetch < expire
       ) {
-        if (matchedPageContext.prefetchedPageContext.is404ServerSideRouted) return
         pageContextFromServerHooks = matchedPageContext.prefetchedPageContext.pageContextFromHooks
       } else {
         try {
