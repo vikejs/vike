@@ -15,7 +15,7 @@ type PrefetchSettings = {
 function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchSettings {
   let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
   let prefetchPageContext = getPrefetchPageContext(pageContext, linkTag)
-  if (prefetchStaticAssets === 'viewport' && process.env.NODE_ENV === 'development') {
+  if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {
     assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
     prefetchStaticAssets = 'hover'
   }
