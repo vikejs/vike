@@ -72,8 +72,10 @@ async function prefetchPageContext(pageId: string, pageContext: PageContextForPr
   try {
     objectAssign(pageContext, { _pageId: pageId })
     const res = await getPageContextFromServerHooks(pageContext, false)
-    const pageContextWithDuplicateKey = globalObject.prefetchedPageContexts.find((pc) => pc.pageId === pageId)
-    if (!pageContextWithDuplicateKey) {
+    const matchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.pageId === pageId)
+    if (matchedPageContext) {
+      matchedPageContext.prefetchedPageContext = res
+    } else {
       globalObject.prefetchedPageContexts.push({ pageId, prefetchedPageContext: res })
     }
   } catch {
