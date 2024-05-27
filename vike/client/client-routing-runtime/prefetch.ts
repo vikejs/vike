@@ -211,7 +211,11 @@ async function prefetchContextIfPossible(
   if (!pageId) return
   if (!(await isClientSideRoutable(pageId, pageContext))) return
   const lastPrefetchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
-  if (lastPrefetchedPageContext && expire && Date.now() - lastPrefetchedPageContext.lastPrefetchTime < expire) {
+  if (
+    lastPrefetchedPageContext?.lastPrefetchTime &&
+    expire &&
+    Date.now() - lastPrefetchedPageContext.lastPrefetchTime < expire
+  ) {
     return
   }
   await prefetchPageContext(pageId, pageContext)
