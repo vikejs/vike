@@ -195,7 +195,7 @@
     "@brillout/import": "^0.2.3",
     "@brillout/json-serializer": "^0.5.8",
     "@brillout/picocolors": "^1.0.10",
-    "@brillout/release-me": "^0.3.7",
+    "@brillout/release-me": "^0.3.8",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.4.0",
     "@types/estree": "^1.0.5",
