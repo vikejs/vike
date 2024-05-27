@@ -222,7 +222,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           objectAssign(pageContext, pageContextFromServer.pageContextFromHooks)
           pageContextFromServerHooks = pageContextFromServer.pageContextFromHooks
         } catch (err) {
-          console.log('pageContext in getPageContextFromServerHooks error', pageContext)
           await onError(err)
           return
         }
@@ -236,7 +235,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       try {
         pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, false)
       } catch (err) {
-        console.log('pageContext in getPageContextFromClientHooks error', pageContext)
         await onError(err)
         return
       }
