@@ -220,6 +220,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         try {
           const pageContextFromServer = await getPageContextFromServerHooks(pageContext, false)
           if ('is404ServerSideRouted' in pageContextFromServer) return
+          objectAssign(pageContext, pageContextFromServer.pageContextFromHooks)
           pageContextFromServerHooks = pageContextFromServer.pageContextFromHooks
         } catch (err) {
           await onError(err)
