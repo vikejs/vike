@@ -68,6 +68,10 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
 
 async function prefetchPageContext(pageId: string, pageContext: PageContextForPrefetch): Promise<void> {
   try {
+    objectAssign(
+      pageContext,
+      await loadUserFilesClientSide(pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+    )
     objectAssign(pageContext, { _pageId: pageId })
     const res = await getPageContextFromServerHooks(pageContext, false)
     const matchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
