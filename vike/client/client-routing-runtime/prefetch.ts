@@ -32,9 +32,10 @@ import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  prefetchedPageContexts: { url: string; prefetchedPageContext: PrefetchedPageContext; lastPrefetchTime: number }[]
+  prefetchedPageContexts: { url: string; prefetchedPageContext: PrefetchedPageContext }[]
   expire?: number
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [] })
+  lastPrefetchTime: Map<string, number>
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [], lastPrefetchTime: new Map() })
 
 type PrefetchedPageContext =
   | { pageContextFromHooks: undefined; is404ServerSideRouted: true }
@@ -50,6 +51,7 @@ type PageContextForPrefetch = {
 function getPrefetchedPageContext() {
   return {
     prefetchedPageContexts: globalObject.prefetchedPageContexts,
+    lastPrefetchTime: globalObject.lastPrefetchTime,
     expire: globalObject.expire
   }
 }
@@ -77,14 +79,10 @@ async function prefetchPageContext(pageId: string, pageContext: PageContextForPr
     const matchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
     if (matchedPageContext) {
       matchedPageContext.prefetchedPageContext = res
-      matchedPageContext.lastPrefetchTime = Date.now()
     } else {
-      globalObject.prefetchedPageContexts.push({
-        url: pageContext.urlOriginal,
-        prefetchedPageContext: res,
-        lastPrefetchTime: Date.now()
-      })
+      globalObject.prefetchedPageContexts.push({ url: pageContext.urlOriginal, prefetchedPageContext: res })
     }
+    globalObject.lastPrefetchTime?.set(pageContext.urlOriginal, Date.now())
   } catch {
     return
   }
@@ -214,8 +212,8 @@ async function prefetchContextIfPossible(
 ): Promise<void> {
   if (!pageId) return
   if (!(await isClientSideRoutable(pageId, pageContext))) return
-  const lastPrefetchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
-  if (lastPrefetchedPageContext && expire && Date.now() - lastPrefetchedPageContext.lastPrefetchTime < expire) {
+  const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageContext.urlOriginal)
+  if (lastPrefetch && expire && Date.now() - lastPrefetch < expire) {
     return
   }
   await prefetchPageContext(pageId, pageContext)
