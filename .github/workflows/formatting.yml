@@ -6,7 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.1.3
       - run: pnpm install
       - run: pnpm run format:check
 
