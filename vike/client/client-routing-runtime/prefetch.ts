@@ -78,9 +78,9 @@ async function prefetchPageContext(pageId: string, pageContext: PageContextForPr
   try {
     objectAssign(pageContext, { _pageId: pageId })
     const res = await getPageContextFromServerHooks(pageContext, false)
-    const matchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
-    if (matchedPageContext) {
-      matchedPageContext.prefetchedPageContext = res
+    const found = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
+    if (found) {
+      found.prefetchedPageContext = res
     } else {
       globalObject.prefetchedPageContexts.push({ url: pageContext.urlOriginal, prefetchedPageContext: res })
     }
