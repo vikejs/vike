@@ -49,15 +49,15 @@ type PageContextForPrefetch = {
 }
 
 function getPrefetchedPageContextFromServerHooks(pageContext: { urlOriginal: string; _pageId: string }) {
-  const matchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
+  const found = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
   const lastPrefetch = globalObject.lastPrefetchTime.get(pageContext._pageId)
   if (
-    matchedPageContext?.prefetchedPageContext?.pageContextFromHooks &&
+    found?.prefetchedPageContext?.pageContextFromHooks &&
     lastPrefetch &&
     globalObject.expire &&
     Date.now() - lastPrefetch < globalObject.expire
   ) {
-    return matchedPageContext.prefetchedPageContext.pageContextFromHooks
+    return found.prefetchedPageContext.pageContextFromHooks
   }
   return null
 }
