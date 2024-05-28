@@ -22,7 +22,8 @@ export default {
       env: { server: true },
       cumulative: true
     }
-  }
+  },
+  prefetchPageContext: false
 } satisfies Config
 
 declare global {
