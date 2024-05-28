@@ -48,12 +48,18 @@ type PageContextForPrefetch = {
   _pageConfigs: PageConfigRuntime[]
 }
 
-function getPrefetchedPageContextFromServerHooks() {
-  return {
-    prefetchedPageContexts: globalObject.prefetchedPageContexts,
-    lastPrefetchTime: globalObject.lastPrefetchTime,
-    expire: globalObject.expire
+function getPrefetchedPageContextFromServerHooks(pageContext: { urlOriginal: string; _pageId: string }) {
+  const matchedPageContext = globalObject.prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
+  const lastPrefetch = globalObject.lastPrefetchTime.get(pageContext._pageId)
+  if (
+    matchedPageContext?.prefetchedPageContext?.pageContextFromHooks &&
+    lastPrefetch &&
+    globalObject.expire &&
+    Date.now() - lastPrefetch < globalObject.expire
+  ) {
+    return matchedPageContext.prefetchedPageContext.pageContextFromHooks
   }
+  return null
 }
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {

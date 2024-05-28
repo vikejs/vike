@@ -206,16 +206,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     } else {
       // Fetch pageContext from server-side hooks
       let pageContextFromServerHooks: { _hasPageContextFromServer: boolean }
-      const { prefetchedPageContexts, lastPrefetchTime, expire } = getPrefetchedPageContextFromServerHooks()
-      const matchedPageContext = prefetchedPageContexts.find((pc) => pc.url === pageContext.urlOriginal)
-      const lastPrefetch = lastPrefetchTime.get(pageContext._pageId)
-      if (
-        matchedPageContext?.prefetchedPageContext?.pageContextFromHooks &&
-        lastPrefetch &&
-        expire &&
-        Date.now() - lastPrefetch < expire
-      ) {
-        pageContextFromServerHooks = matchedPageContext.prefetchedPageContext.pageContextFromHooks
+      const prefetchedPageContextFromServerHooks = getPrefetchedPageContextFromServerHooks(pageContext)
+      if (prefetchedPageContextFromServerHooks) {
+        pageContextFromServerHooks = prefetchedPageContextFromServerHooks
       } else {
         try {
           const pageContextFromServer = await getPageContextFromServerHooks(pageContext, false)
