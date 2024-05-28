@@ -317,7 +317,7 @@ function logHttpRequest(urlOriginal: string, httpRequestId: number) {
   logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), httpRequestId, 'info', clearErrors)
 }
 function getRequestInfoMessage(urlOriginal: string) {
-  return `HTTP request: ${pc.bold(urlOriginal)}`
+  return `HTTP request: ${prettyUrl(urlOriginal)}`
 }
 function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
@@ -334,7 +334,7 @@ function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContext
       //   - We should show `HTTP response ${urlOriginal} ERR` instead.
       //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
       assert(errorWhileRendering === null || errorWhileRendering === undefined)
-      msg = `HTTP response ${pc.bold(urlOriginal)} ${pc.dim('null')}`
+      msg = `HTTP response ${prettyUrl(urlOriginal)} ${pc.dim('null')}`
       // Erroneous value (it shoud sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
       isNominal = true
     } else {
@@ -353,7 +353,7 @@ function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContext
         const urlRedirect = headerRedirect[1]
         urlOriginal = urlRedirect
       }
-      msg = `HTTP ${type} ${pc.bold(urlOriginal)} ${color(statusCode ?? 'ERR')}`
+      msg = `HTTP ${type} ${prettyUrl(urlOriginal)} ${color(statusCode ?? 'ERR')}`
     }
   }
   logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')
@@ -633,9 +633,9 @@ function checkBaseUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
   const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
   if (!hasBaseServer) {
     logRuntimeInfo?.(
-      `${getRequestInfoMessage(urlOriginal)} skipped because URL ${pc.bold(
+      `${getRequestInfoMessage(urlOriginal)} skipped because URL ${prettyUrl(
         urlOriginal
-      )} doesn't start with Base URL ${pc.bold(baseServer)} (https://vike.dev/base-url)`,
+      )} doesn't start with Base URL ${prettyUrl(baseServer)} (https://vike.dev/base-url)`,
       httpRequestId,
       'info'
     )
@@ -643,4 +643,8 @@ function checkBaseUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
     return pageContextHttpResponseNull
   }
   return null
+}
+
+function prettyUrl(url: string) {
+  return pc.bold(decodeURI(url))
 }
