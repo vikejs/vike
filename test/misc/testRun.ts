@@ -100,12 +100,10 @@ function testHistoryPushState() {
     await testCounter()
     await page.click('a[href="/pushState"]')
     const timestamp1 = await getTimestamp()
-    console.log('timestamp1', timestamp1)
     await sleep(10)
     await page.click('a[href="/markdown"]')
     await page.click('a[href="/pushState"]')
     const timestamp2 = await getTimestamp()
-    console.log('timestamp2', timestamp2)
     expect(timestamp2 > timestamp1).toBe(true)
 
     // calling history.pushState() doesn't lead to a re-render, thus timestamp doesn't change
@@ -135,7 +133,6 @@ function testHistoryPushState() {
     await page.goForward()
     await expectUrl('/pushState')
     const timestamp6 = await getTimestamp()
-    console.log('timestamp6', timestamp6)
     expect(timestamp6 > timestamp2).toBe(true)
     await page.goForward()
     await expectUrl('/pushState?query')
