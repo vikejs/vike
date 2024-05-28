@@ -110,6 +110,7 @@ async function prefetch(url: string): Promise<void> {
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
 
+  // TODO: rename to pageContextTmp
   const pageContext = await createPageContext(url)
   let pageContextFromRoute: PageContextFromRoute
   try {
@@ -144,6 +145,7 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
     globalObject.linkPrefetchHandlerAdded.set(linkTag, true)
 
+    // TODO: rename to urlOfLink
     const url = linkTag.getAttribute('href')
 
     if (skipLink(linkTag)) return
@@ -154,6 +156,7 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
     const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(pageContextBeforeRenderClient, linkTag)
     if (!prefetchStaticAssets && !prefetchPageContext) return
 
+    // TODO: rename to pageContextTmp
     const pageContext = await createPageContext(url)
 
     if (prefetchStaticAssets === 'hover') {
