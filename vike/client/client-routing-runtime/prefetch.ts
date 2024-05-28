@@ -146,22 +146,15 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
     if (!prefetchStaticAssets && !prefetchPageContext) return
 
     const pageContext = await createPageContext(url)
-    let pageContextFromRoute: PageContextFromRoute
-    try {
-      pageContextFromRoute = await route(pageContext)
-    } catch {
-      // If a route() hook has a bug or `throw render()` / `throw redirect()`
-      return
-    }
 
     if (prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchAssetsIfPossible(pageContextFromRoute._pageId, pageContext)
+        prefetchAssetsAndPageContextIfPossible(pageContext, prefetchPageContext)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchAssetsIfPossible(pageContextFromRoute._pageId, pageContext)
+          prefetchAssetsAndPageContextIfPossible(pageContext, prefetchPageContext)
         },
         { passive: true }
       )
@@ -171,46 +164,38 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetchAssetsIfPossible(pageContextFromRoute._pageId, pageContext)
+            prefetchAssetsAndPageContextIfPossible(pageContext)
             observer.disconnect()
           }
         })
       })
       observer.observe(linkTag)
     }
-
-    if (typeof prefetchPageContext === 'number') {
-      globalObject.expire = prefetchPageContext
-      linkTag.addEventListener('mouseover', () => {
-        prefetchContextIfPossible(prefetchPageContext, pageContextFromRoute._pageId, pageContext)
-      })
-      linkTag.addEventListener(
-        'touchstart',
-        () => {
-          prefetchContextIfPossible(prefetchPageContext, pageContextFromRoute._pageId, pageContext)
-        },
-        { passive: true }
-      )
-    }
   })
 }
 
-async function prefetchAssetsIfPossible(pageId: string | null, pageContext: PageContextForPrefetch): Promise<void> {
-  if (!pageId) return
-  if (!(await isClientSideRoutable(pageId, pageContext))) return
-  await prefetchAssets(pageId, pageContext)
-}
-
-async function prefetchContextIfPossible(
-  expire: number,
-  pageId: string | null,
-  pageContext: PageContextForPrefetch
+async function prefetchAssetsAndPageContextIfPossible(
+  pageContext: Awaited<ReturnType<typeof createPageContext>>,
+  expire?: number | boolean
 ): Promise<void> {
-  if (!pageId) return
-  if (!(await isClientSideRoutable(pageId, pageContext))) return
+  let pageContextFromRoute: PageContextFromRoute
+  try {
+    pageContextFromRoute = await route(pageContext)
+  } catch {
+    // If a route() hook has a bug or `throw render()` / `throw redirect()`
+    return
+  }
+
+  if (!pageContextFromRoute._pageId) return
+  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
+  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
+
+  if (typeof expire !== 'number') return
+  globalObject.expire = expire
+
   const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageContext.urlOriginal)
   if (lastPrefetch && expire && Date.now() - lastPrefetch < expire) {
     return
   }
-  await prefetchPageContext(pageId, pageContext)
+  await prefetchPageContext(pageContextFromRoute._pageId, pageContext)
 }
