@@ -74,7 +74,7 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
   }
 }
 
-async function prefetchPageContext(pageId: string, pageContext: PageContextForPrefetch): Promise<void> {
+async function prefetchPageContextFromServer(pageId: string, pageContext: PageContextForPrefetch): Promise<void> {
   try {
     objectAssign(pageContext, { _pageId: pageId })
     const res = await getPageContextFromServerHooks(pageContext, false)
@@ -130,7 +130,7 @@ async function prefetch(url: string): Promise<void> {
   }
 
   await prefetchAssets(pageId, pageContext)
-  await prefetchPageContext(pageId, pageContext)
+  await prefetchPageContextFromServer(pageId, pageContext)
 }
 
 function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
@@ -206,5 +206,5 @@ async function prefetchIfPossible(url: string, expire?: number | boolean): Promi
   if (lastPrefetch && expire && Date.now() - lastPrefetch < expire) {
     return
   }
-  await prefetchPageContext(pageContextFromRoute._pageId, pageContext)
+  await prefetchPageContextFromServer(pageContextFromRoute._pageId, pageContext)
 }
