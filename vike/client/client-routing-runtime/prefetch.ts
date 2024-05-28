@@ -33,7 +33,7 @@ const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
   prefetchedPageContexts: {
     urlOfPrefetchedLink: string
-    prefetchedPageContext: Awaited<ReturnType<typeof getPageContextFromServerHooks>>
+    result: Awaited<ReturnType<typeof getPageContextFromServerHooks>>
   }[]
   expire?: number
   lastPrefetchTime: Map<string, number>
@@ -52,9 +52,9 @@ function getPrefetchedPageContextFromServerHooks(pageContext: {
   const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContext.urlOriginal)
   const lastPrefetch = globalObject.lastPrefetchTime.get(pageContext.urlOriginal)
   if (!found) return null
-  if ('is404ServerSideRouted' in found.prefetchedPageContext) return null
+  if ('is404ServerSideRouted' in found.result) return null
   if (lastPrefetch && globalObject.expire && Date.now() - lastPrefetch < globalObject.expire) {
-    return found.prefetchedPageContext.pageContextFromHooks
+    return found.result.pageContextFromHooks
   }
   return null
 }
@@ -77,11 +77,11 @@ async function prefetchPageContextFromServer(pageId: string, pageContext: PageCo
     const res = await getPageContextFromServerHooks(pageContext, false)
     const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContext.urlOriginal)
     if (found) {
-      found.prefetchedPageContext = res
+      found.result = res
     } else {
       globalObject.prefetchedPageContexts.push({
         urlOfPrefetchedLink: pageContext.urlOriginal,
-        prefetchedPageContext: res
+        result: res
       })
     }
     globalObject.lastPrefetchTime.set(pageContext.urlOriginal, Date.now())
