@@ -130,12 +130,12 @@ async function prefetch(url: string): Promise<void> {
   await prefetchPageContextFromServer(pageId, pageContext)
 }
 
-function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
+function addLinkPrefetchHandlers(pageContextAfterOnRenderClient: {
   exports: Record<string, unknown>
   urlPathname: string
 }) {
   // Current URL is already prefetched
-  markAsAlreadyPrefetched(pageContextBeforeRenderClient.urlPathname)
+  markAsAlreadyPrefetched(pageContextAfterOnRenderClient.urlPathname)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
@@ -150,7 +150,7 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
 
     if (isAlreadyPrefetched(url)) return
 
-    const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(pageContextBeforeRenderClient, linkTag)
+    const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(pageContextAfterOnRenderClient, linkTag)
     if (!prefetchStaticAssets && !prefetchPageContext) return
 
     if (prefetchStaticAssets === 'hover') {
