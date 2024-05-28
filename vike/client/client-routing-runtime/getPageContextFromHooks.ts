@@ -32,6 +32,7 @@ import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextIn
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>('router/getPageContext.ts', {})
 
+// TODO: rename
 type PageContext = {
   urlOriginal: string
   _urlRewrite: string | null
@@ -73,6 +74,7 @@ async function getPageContextFromHooks_isHydration(
 
 async function getPageContextFromServerHooks(pageContext: { _pageId: string } & PageContext, isErrorPage: boolean) {
   const pageContextFromHooks = {
+    // TODO: move this upstream
     isHydration: false as const,
     _hasPageContextFromServer: false
   }
@@ -102,6 +104,7 @@ async function getPageContextFromServerHooks(pageContext: { _pageId: string } & 
     objectAssign(pageContextFromHooks, pageContextFromServer)
   }
 
+  // TODO: rename pageContextFromServerHooks
   return { pageContextFromHooks }
 }
 
@@ -146,6 +149,7 @@ async function getPageContextFromClientHooks(
     }
   }
 
+  // TODO: rename to pageContextFromClientHooks
   return pageContextFromHooks
 }
 

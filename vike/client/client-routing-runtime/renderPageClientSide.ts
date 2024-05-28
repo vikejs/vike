@@ -227,6 +227,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         }
       }
       if (isRenderOutdated()) return
+      // TODO: create helder assertPageContextFromHook()
       assert(!('urlOriginal' in pageContextFromServerHooks))
       objectAssign(pageContext, pageContextFromServerHooks)
 
