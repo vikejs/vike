@@ -97,11 +97,19 @@ async function crawlPlusFiles(
 async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[] | null> {
   if (gitIsNotUsable) return null
 
+  // Preserve UTF-8 file paths.
+  // https://github.com/vikejs/vike/issues/1658
+  // https://stackoverflow.com/questions/22827239/how-to-make-git-properly-display-utf-8-encoded-pathnames-in-the-console-window/22828826#22828826
+  // https://stackoverflow.com/questions/15884180/how-do-i-override-git-configuration-options-by-command-line-parameters/15884261#15884261
+  const preserveUTF8 = '-c core.quotepath=off'
+
   const ignoreAsPatterns = getIgnoreAsPatterns(outDirRelativeFromUserRootDir)
   const ignoreAsFilterFn = getIgnoreAsFilterFn(outDirRelativeFromUserRootDir)
 
   const cmd = [
-    'git ls-files',
+    'git',
+    preserveUTF8,
+    'ls-files',
     ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
     ...ignoreAsPatterns.map((pattern) => `--exclude="${pattern}"`),
     // --others lists untracked files only (but using .gitignore because --exclude-standard)
