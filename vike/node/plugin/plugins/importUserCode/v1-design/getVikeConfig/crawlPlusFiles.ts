@@ -48,6 +48,7 @@ async function crawlPlusFiles(
 
   const timeBefore = new Date().getTime()
 
+  // Crawl
   let files: string[] = []
   const res = await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir)
   if (
@@ -60,8 +61,7 @@ async function crawlPlusFiles(
     files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
   }
 
-  files = files.filter((file) => !isTemporaryBuildFile(file))
-
+  // Check performance
   {
     const timeAfter = new Date().getTime()
     const timeSpent = timeAfter - timeBefore
@@ -80,10 +80,12 @@ async function crawlPlusFiles(
     }
   }
 
-  const plusFiles = files.map((p) => {
-    p = toPosixPath(p)
-    assert(!p.startsWith(userRootDir))
-    const filePathAbsoluteUserRootDir = path.posix.join('/', p)
+  // Normalize
+  const plusFiles = files.map((filePath) => {
+    assert(!isTemporaryBuildFile(filePath))
+    filePath = toPosixPath(filePath)
+    assert(!filePath.startsWith(userRootDir))
+    const filePathAbsoluteUserRootDir = path.posix.join('/', filePath)
     return { filePathAbsoluteUserRootDir }
   })
 
