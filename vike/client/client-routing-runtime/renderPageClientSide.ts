@@ -213,9 +213,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         pageContextFromServerHooks = prefetchedPageContextFromServerHooks
       } else {
         try {
-          const res = await getPageContextFromServerHooks(pageContext, false)
-          if ('is404ServerSideRouted' in res) return
-          pageContextFromServerHooks = res.pageContextFromHooks
+          const result = await getPageContextFromServerHooks(pageContext, false)
+          if ('is404ServerSideRouted' in result) return
+          pageContextFromServerHooks = result.pageContextFromHooks
         } catch (err) {
           await onError(err)
           return
@@ -367,9 +367,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     let pageContextFromServerHooks: { _hasPageContextFromServer: boolean }
     try {
-      const res = await getPageContextFromServerHooks(pageContext, true)
-      if ('is404ServerSideRouted' in res) return
-      pageContextFromServerHooks = res.pageContextFromHooks
+      const result = await getPageContextFromServerHooks(pageContext, true)
+      if ('is404ServerSideRouted' in result) return
+      pageContextFromServerHooks = result.pageContextFromHooks
     } catch (err: unknown) {
       onError(err)
       return

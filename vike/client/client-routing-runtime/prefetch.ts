@@ -74,14 +74,14 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
 async function prefetchPageContextFromServer(pageId: string, pageContext: PageContextForPrefetch): Promise<void> {
   try {
     objectAssign(pageContext, { _pageId: pageId })
-    const res = await getPageContextFromServerHooks(pageContext, false)
+    const result = await getPageContextFromServerHooks(pageContext, false)
     const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContext.urlOriginal)
     if (found) {
-      found.result = res
+      found.result = result
     } else {
       globalObject.prefetchedPageContexts.push({
         urlOfPrefetchedLink: pageContext.urlOriginal,
-        result: res
+        result
       })
     }
     globalObject.lastPrefetchTime.set(pageContext.urlOriginal, Date.now())
