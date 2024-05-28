@@ -183,7 +183,7 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
   })
 }
 
-async function prefetchIfPossible(url: string, expire?: number | boolean): Promise<void> {
+async function prefetchIfPossible(url: string, prefetchPageContext?: number | boolean): Promise<void> {
   // TODO: rename to pageContextTmp
   const pageContext = await createPageContext(url)
 
@@ -199,11 +199,11 @@ async function prefetchIfPossible(url: string, expire?: number | boolean): Promi
   if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
   await prefetchAssets(pageContextFromRoute._pageId, pageContext)
 
-  if (typeof expire !== 'number') return
-  globalObject.expire = expire
+  if (typeof prefetchPageContext !== 'number') return
+  globalObject.expire = prefetchPageContext
 
   const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageContext.urlOriginal)
-  if (lastPrefetch && expire && Date.now() - lastPrefetch < expire) {
+  if (lastPrefetch && prefetchPageContext && Date.now() - lastPrefetch < prefetchPageContext) {
     return
   }
   await prefetchPageContextFromServer(pageContextFromRoute._pageId, pageContext)
