@@ -1,7 +1,7 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
 export { getPrefetchedPageContextFromServerHooks }
-export { type PrefetchedPageContext }
+export type { PrefetchedPageContext }
 
 import {
   assert,
