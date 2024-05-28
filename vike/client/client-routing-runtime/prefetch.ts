@@ -87,7 +87,7 @@ async function prefetchPageContextFromServer(pageId: string, pageContext: PageCo
         prefetchedPageContext: res
       })
     }
-    globalObject.lastPrefetchTime?.set(pageContext.urlOriginal, Date.now())
+    globalObject.lastPrefetchTime.set(pageContext.urlOriginal, Date.now())
   } catch {
     return
   }
@@ -202,7 +202,7 @@ async function prefetchIfPossible(url: string, prefetchPageContext?: number | bo
   if (typeof prefetchPageContext !== 'number') return
   globalObject.expire = prefetchPageContext
 
-  const lastPrefetch = globalObject?.lastPrefetchTime?.get(pageContext.urlOriginal)
+  const lastPrefetch = globalObject.lastPrefetchTime.get(pageContext.urlOriginal)
   if (lastPrefetch && prefetchPageContext && Date.now() - lastPrefetch < prefetchPageContext) {
     return
   }
