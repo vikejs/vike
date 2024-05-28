@@ -1,6 +1,6 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
-export { getPrefetchedPageContext }
+export { getPrefetchedPageContextFromServerHooks }
 export { type PrefetchedPageContext }
 
 import {
@@ -48,7 +48,7 @@ type PageContextForPrefetch = {
   _pageConfigs: PageConfigRuntime[]
 }
 
-function getPrefetchedPageContext() {
+function getPrefetchedPageContextFromServerHooks() {
   return {
     prefetchedPageContexts: globalObject.prefetchedPageContexts,
     lastPrefetchTime: globalObject.lastPrefetchTime,
