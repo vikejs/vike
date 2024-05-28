@@ -156,17 +156,14 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
     const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(pageContextBeforeRenderClient, linkTag)
     if (!prefetchStaticAssets && !prefetchPageContext) return
 
-    // TODO: rename to pageContextTmp
-    const pageContext = await createPageContext(url)
-
     if (prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchAssetsAndPageContextIfPossible(pageContext, prefetchPageContext)
+        prefetchAssetsAndPageContextIfPossible(url, prefetchPageContext)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchAssetsAndPageContextIfPossible(pageContext, prefetchPageContext)
+          prefetchAssetsAndPageContextIfPossible(url, prefetchPageContext)
         },
         { passive: true }
       )
@@ -176,7 +173,7 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetchAssetsAndPageContextIfPossible(pageContext)
+            prefetchAssetsAndPageContextIfPossible(url)
             observer.disconnect()
           }
         })
@@ -186,10 +183,10 @@ function addLinkPrefetchHandlers(pageContextBeforeRenderClient: {
   })
 }
 
-async function prefetchAssetsAndPageContextIfPossible(
-  pageContext: Awaited<ReturnType<typeof createPageContext>>,
-  expire?: number | boolean
-): Promise<void> {
+async function prefetchAssetsAndPageContextIfPossible(url: string, expire?: number | boolean): Promise<void> {
+  // TODO: rename to pageContextTmp
+  const pageContext = await createPageContext(url)
+
   let pageContextFromRoute: PageContextFromRoute
   try {
     pageContextFromRoute = await route(pageContext)
