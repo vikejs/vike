@@ -2,6 +2,8 @@ export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
+export type { PageContextFromServerHooks }
+export type { PageContextFromClientHooks }
 
 import {
   assert,
@@ -72,7 +74,19 @@ async function getPageContextFromHooks_isHydration(
   return pageContextFromHooks
 }
 
-async function getPageContextFromServerHooks(pageContext: { _pageId: string } & PageContext, isErrorPage: boolean) {
+type PageContextFromServerHooks = { _hasPageContextFromServer: boolean }
+async function getPageContextFromServerHooks(
+  pageContext: { _pageId: string } & PageContext,
+  isErrorPage: boolean
+): Promise<
+  | { is404ServerSideRouted: true }
+  | {
+      pageContextFromHooks: {
+        isHydration: false
+        _hasPageContextFromServer: boolean
+      }
+    }
+> {
   const pageContextFromHooks = {
     // TODO: move this upstream
     isHydration: false as const,
@@ -108,10 +122,11 @@ async function getPageContextFromServerHooks(pageContext: { _pageId: string } & 
   return { pageContextFromHooks }
 }
 
+type PageContextFromClientHooks = { _hasPageContextFromClient: boolean }
 async function getPageContextFromClientHooks(
   pageContext: { _pageId: string; _hasPageContextFromServer: boolean } & PageContext & PageContextExports,
   isErrorPage: boolean
-) {
+): Promise<PageContextFromClientHooks> {
   const pageContextFromHooks = {
     _hasPageContextFromClient: false
   }

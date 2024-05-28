@@ -16,7 +16,9 @@ import {
   getPageContextFromClientHooks,
   getPageContextFromServerHooks,
   getPageContextFromHooks_isHydration,
-  getPageContextFromHooks_serialized
+  getPageContextFromHooks_serialized,
+  type PageContextFromServerHooks,
+  type PageContextFromClientHooks
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers, getPrefetchedPageContextFromServerHooks } from './prefetch.js'
@@ -205,15 +207,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await renderPageView(pageContext)
     } else {
       // Fetch pageContext from server-side hooks
-      let pageContextFromServerHooks: { _hasPageContextFromServer: boolean }
+      let pageContextFromServerHooks: PageContextFromServerHooks
       const prefetchedPageContextFromServerHooks = getPrefetchedPageContextFromServerHooks(pageContext)
       if (prefetchedPageContextFromServerHooks) {
         pageContextFromServerHooks = prefetchedPageContextFromServerHooks
       } else {
         try {
-          const pageContextFromServer = await getPageContextFromServerHooks(pageContext, false)
-          if ('is404ServerSideRouted' in pageContextFromServer) return
-          pageContextFromServerHooks = pageContextFromServer.pageContextFromHooks
+          const res = await getPageContextFromServerHooks(pageContext, false)
+          if ('is404ServerSideRouted' in res) return
+          pageContextFromServerHooks = res.pageContextFromHooks
         } catch (err) {
           await onError(err)
           return
@@ -225,7 +227,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       objectAssign(pageContext, pageContextFromServerHooks)
 
       // Get pageContext from client-side hooks
-      let pageContextFromClientHooks: { _hasPageContextFromClient: boolean }
+      let pageContextFromClientHooks: PageContextFromClientHooks
       try {
         pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, false)
       } catch (err) {
@@ -377,7 +379,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     assert(!('urlOriginal' in pageContextFromServerHooks))
     objectAssign(pageContext, pageContextFromServerHooks)
 
-    let pageContextFromClientHooks: { _hasPageContextFromClient: boolean }
+    let pageContextFromClientHooks: PageContextFromClientHooks
     try {
       pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, true)
     } catch (err: unknown) {

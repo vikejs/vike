@@ -1,7 +1,6 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
 export { getPrefetchedPageContextFromServerHooks }
-export type { PrefetchedPageContext }
 
 import {
   assert,
@@ -26,20 +25,19 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import { getPageContextFromServerHooks } from './getPageContextFromHooks.js'
+import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  prefetchedPageContexts: { urlOfPrefetchedLink: string; prefetchedPageContext: PrefetchedPageContext }[]
+  prefetchedPageContexts: {
+    urlOfPrefetchedLink: string
+    prefetchedPageContext: Awaited<ReturnType<typeof getPageContextFromServerHooks>>
+  }[]
   expire?: number
   lastPrefetchTime: Map<string, number>
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [], lastPrefetchTime: new Map() })
-
-type PrefetchedPageContext =
-  | { pageContextFromHooks: undefined; is404ServerSideRouted: true }
-  | { pageContextFromHooks: { _hasPageContextFromServer: boolean } }
 
 type PageContextForPrefetch = {
   urlOriginal: string
@@ -48,15 +46,14 @@ type PageContextForPrefetch = {
   _pageConfigs: PageConfigRuntime[]
 }
 
-function getPrefetchedPageContextFromServerHooks(pageContext: { urlOriginal: string }) {
+function getPrefetchedPageContextFromServerHooks(pageContext: {
+  urlOriginal: string
+}): null | PageContextFromServerHooks {
   const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContext.urlOriginal)
   const lastPrefetch = globalObject.lastPrefetchTime.get(pageContext.urlOriginal)
-  if (
-    found?.prefetchedPageContext?.pageContextFromHooks &&
-    lastPrefetch &&
-    globalObject.expire &&
-    Date.now() - lastPrefetch < globalObject.expire
-  ) {
+  if (!found) return null
+  if ('is404ServerSideRouted' in found.prefetchedPageContext) return null
+  if (lastPrefetch && globalObject.expire && Date.now() - lastPrefetch < globalObject.expire) {
     return found.prefetchedPageContext.pageContextFromHooks
   }
   return null
