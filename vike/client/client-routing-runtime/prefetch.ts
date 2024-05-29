@@ -10,8 +10,7 @@ import {
   checkIfClientRouting,
   getGlobalObject,
   isExternalLink,
-  objectAssign,
-  parseUrl
+  objectAssign
 } from './utils.js'
 import {
   type PageContextUserFiles,
@@ -45,7 +44,6 @@ type PageContextForPrefetch = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
 }
-const linkAlreadyPrefetched = new Map<string, true>()
 
 function getPrefetchedPageContextFromServerHooks(pageContext: {
   urlOriginal: string
@@ -105,9 +103,6 @@ async function prefetch(url: string): Promise<void> {
   const errPrefix = `Cannot prefetch URL ${url} because it` as const
   assertUsage(!isExternalLink(url), `${errPrefix} lives on another domain`, { showStackTrace: true })
 
-  if (isAlreadyPrefetched(url)) return
-  markAsAlreadyPrefetched(url)
-
   // TODO: rename to pageContextTmp
   const pageContext = await createPageContext(url)
   let pageContextFromRoute: PageContextFromRoute
@@ -135,9 +130,6 @@ function addLinkPrefetchHandlers(pageContextAfterOnRenderClient: {
   exports: Record<string, unknown>
   urlPathname: string
 }) {
-  // Current URL is already prefetched
-  markAsAlreadyPrefetched(pageContextAfterOnRenderClient.urlPathname)
-
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
@@ -148,8 +140,6 @@ function addLinkPrefetchHandlers(pageContextAfterOnRenderClient: {
 
     if (skipLink(linkTag)) return
     assert(url)
-
-    if (isAlreadyPrefetched(url)) return
 
     const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(pageContextAfterOnRenderClient, linkTag)
     if (!prefetchStaticAssets && !prefetchPageContext) return
@@ -205,18 +195,4 @@ async function prefetchIfPossible(url: string, prefetchPageContext?: number | bo
     return
   }
   await prefetchPageContextFromServer(pageContextFromRoute._pageId, pageContext)
-}
-
-function isAlreadyPrefetched(url: string): boolean {
-  const urlPathname = getUrlPathname(url)
-  return linkAlreadyPrefetched.has(urlPathname)
-}
-function markAsAlreadyPrefetched(url: string): void {
-  const urlPathname = getUrlPathname(url)
-  linkAlreadyPrefetched.set(urlPathname, true)
-}
-
-function getUrlPathname(url: string): string {
-  const urlPathname = parseUrl(url, '/').pathname
-  return urlPathname
 }
