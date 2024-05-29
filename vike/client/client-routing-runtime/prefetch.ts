@@ -28,7 +28,7 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { getCurrentPageContext } from './getCurrentPageContext.js'
+import { getCurrentPageContext, getCurrentPageContextAwait } from './getCurrentPageContext.js'
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
@@ -126,8 +126,8 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     await prefetchAssets(pageContextLink)
   }
   if (options?.pageContext !== false) {
-    const pageContext = getCurrentPageContext()
-    assert(pageContext)
+    // If user calls prefetch() before hydration finished => await the pageContext to be set
+    const pageContext = await getCurrentPageContextAwait()
     const prefetchSettings = getPrefetchSettings(pageContext)
     // TODO: allow options.pageContext to be a number
     await prefetchPageContextFromServerHooks(pageContextLink, prefetchSettings)
