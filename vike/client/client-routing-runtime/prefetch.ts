@@ -32,13 +32,15 @@ import { getCurrentPageContext, getCurrentPageContextAwait } from './getCurrentP
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  prefetchedPageContexts: PrefetchedPageContext[]
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [] })
+  prefetchedPageContexts: Record<
+    string, // URL
+    PrefetchedPageContext
+  >
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: {} })
 const PAGE_CONTEXT_EXPIRE_DEFAULT = 5000
 
 type Result = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
 type PrefetchedPageContext = {
-  urlOfLink: string
   resultFetchedAt: number
   resultExpire: number
   result: Result
@@ -54,7 +56,7 @@ type PageContextForPrefetch = {
 function getPrefetchedPageContextFromServerHooks(pageContext: {
   urlOriginal: string
 }): null | PageContextFromServerHooks {
-  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === pageContext.urlOriginal)
+  const found = globalObject.prefetchedPageContexts[pageContext.urlOriginal]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
   return found.result.pageContextFromHooks
 }
@@ -81,17 +83,11 @@ async function prefetchPageContextFromServerHooks(
   } catch {
     return
   }
-  const entry: PrefetchedPageContext = {
-    urlOfLink: pageContextLink.urlOriginal,
+  const urlOfLink = pageContextLink.urlOriginal
+  globalObject.prefetchedPageContexts[urlOfLink] = {
     resultFetchedAt: Date.now(),
     resultExpire,
     result
-  }
-  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === pageContextLink.urlOriginal)
-  if (found) {
-    objectAssign(found, entry)
-  } else {
-    globalObject.prefetchedPageContexts.push(entry)
   }
 }
 
@@ -200,7 +196,7 @@ async function prefetchOnEvent(
   }
 
   if (event !== 'viewport' && prefetchSettings.prefetchPageContext) {
-    const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === urlOfLink)
+    const found = globalObject.prefetchedPageContexts[urlOfLink]
     if (!found || isExpired(found)) {
       // TODO: move this logic in getPrefetchSettings()
       const resultExpire =
