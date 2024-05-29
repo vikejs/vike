@@ -37,12 +37,12 @@ const globalObject = getGlobalObject<{
     PrefetchedPageContext
   >
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: {} })
-const PAGE_CONTEXT_EXPIRE_DEFAULT = 5000
+const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 
 type Result = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
 type PrefetchedPageContext = {
   resultFetchedAt: number
-  resultExpire: number
+  resultMaxAge: number
   result: Result
 }
 type PageContextForPrefetch = {
@@ -79,7 +79,7 @@ async function prefetchAssets(pageContextLink: { _pageId: string } & PageContext
 
 async function prefetchPageContextFromServerHooks(
   pageContextLink: PageContextForPrefetch,
-  resultExpire: number
+  resultMaxAge: number
 ): Promise<void> {
   let result: Result
   try {
@@ -90,7 +90,7 @@ async function prefetchPageContextFromServerHooks(
   const urlOfLink = pageContextLink.urlOriginal
   globalObject.prefetchedPageContexts[urlOfLink] = {
     resultFetchedAt: Date.now(),
-    resultExpire,
+    resultMaxAge,
     result
   }
 }
@@ -123,13 +123,13 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     await prefetchAssets(pageContextLink)
   }
   if (options?.pageContext !== false) {
-    const resultExpire = await getResultExpire()
-    await prefetchPageContextFromServerHooks(pageContextLink, resultExpire)
+    const resultMaxAge = await getResultMaxAge()
+    await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
   }
 
   return
 
-  async function getResultExpire(): Promise<number> {
+  async function getResultMaxAge(): Promise<number> {
     if (typeof options?.pageContext === 'number') {
       return options.pageContext
     } else {
@@ -137,11 +137,11 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
       const pageContext = await getCurrentPageContextAwait()
       const prefetchSettings = getPrefetchSettings(pageContext, null)
       // TODO: move this logic in getPrefetchSettings()
-      const resultExpire =
+      const resultMaxAge =
         typeof prefetchSettings.prefetchPageContext === 'number'
           ? prefetchSettings.prefetchPageContext
-          : PAGE_CONTEXT_EXPIRE_DEFAULT
-      return resultExpire
+          : PAGE_CONTEXT_MAX_AGE_DEFAULT
+      return resultMaxAge
     }
   }
 }
@@ -203,17 +203,17 @@ async function prefetchOnEvent(
     const found = globalObject.prefetchedPageContexts[urlOfLink]
     if (!found || isExpired(found)) {
       // TODO: move this logic in getPrefetchSettings()
-      const resultExpire =
+      const resultMaxAge =
         typeof prefetchSettings.prefetchPageContext === 'number'
           ? prefetchSettings.prefetchPageContext
-          : PAGE_CONTEXT_EXPIRE_DEFAULT
-      await prefetchPageContextFromServerHooks(pageContextLink, resultExpire)
+          : PAGE_CONTEXT_MAX_AGE_DEFAULT
+      await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
     }
   }
 }
 
 function isExpired(found: PrefetchedPageContext) {
-  return Date.now() - found.resultFetchedAt > found.resultExpire
+  return Date.now() - found.resultFetchedAt > found.resultMaxAge
 }
 
 async function getPageContextLink(urlOfLink: string) {
