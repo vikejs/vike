@@ -71,18 +71,18 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
 
 async function prefetchPageContextFromServerHooks(
   pageId: string,
-  pageContextTmp: PageContextForPrefetch,
+  pageContextLink: PageContextForPrefetch,
   prefetchSettings: PrefetchSettings
 ): Promise<void> {
-  objectAssign(pageContextTmp, { _pageId: pageId })
+  objectAssign(pageContextLink, { _pageId: pageId })
   let result: Result
   try {
-    result = await getPageContextFromServerHooks(pageContextTmp, false)
+    result = await getPageContextFromServerHooks(pageContextLink, false)
   } catch {
     return
   }
   const entry: PrefetchedPageContext = {
-    urlOfPrefetchedLink: pageContextTmp.urlOriginal,
+    urlOfPrefetchedLink: pageContextLink.urlOriginal,
     resultFetchedAt: Date.now(),
     resultExpire:
       typeof prefetchSettings.prefetchPageContext === 'number'
@@ -90,7 +90,7 @@ async function prefetchPageContextFromServerHooks(
         : PAGE_CONTEXT_EXPIRE_DEFAULT,
     result
   }
-  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContextTmp.urlOriginal)
+  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContextLink.urlOriginal)
   if (found) {
     objectAssign(found, entry)
   } else {
@@ -112,10 +112,10 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
   const errPrefix = `Cannot prefetch URL ${url} because it` as const
   assertUsage(!isExternalLink(url), `${errPrefix} lives on another domain`, { showStackTrace: true })
 
-  const pageContextTmp = await createPageContext(url)
+  const pageContextLink = await createPageContext(url)
   let pageContextFromRoute: PageContextFromRoute
   try {
-    pageContextFromRoute = await route(pageContextTmp)
+    pageContextFromRoute = await route(pageContextLink)
   } catch {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
@@ -130,14 +130,14 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
   }
 
   if (options?.staticAssets !== false) {
-    await prefetchAssets(pageId, pageContextTmp)
+    await prefetchAssets(pageId, pageContextLink)
   }
   if (options?.pageContext !== false) {
     const pageContext = getCurrentPageContext()
     assert(pageContext)
     const prefetchSettings = getPrefetchSettings(pageContext)
     // TODO: allow options.pageContext to be a number
-    await prefetchPageContextFromServerHooks(pageId, pageContextTmp, prefetchSettings)
+    await prefetchPageContextFromServerHooks(pageId, pageContextLink, prefetchSettings)
   }
 }
 
@@ -191,24 +191,24 @@ async function prefetchIfEnabled(
   prefetchSettings: PrefetchSettings,
   skipPageContext?: true
 ): Promise<void> {
-  const pageContextTmp = await createPageContext(url)
+  const pageContextLink = await createPageContext(url)
 
   let pageContextFromRoute: PageContextFromRoute
   try {
-    pageContextFromRoute = await route(pageContextTmp)
+    pageContextFromRoute = await route(pageContextLink)
   } catch {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
   if (!pageContextFromRoute._pageId) return
-  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContextTmp))) return
+  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContextLink))) return
 
-  await prefetchAssets(pageContextFromRoute._pageId, pageContextTmp)
+  await prefetchAssets(pageContextFromRoute._pageId, pageContextLink)
 
   if (!skipPageContext && prefetchSettings.prefetchPageContext) {
     const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === url)
     if (!found || isExpired(found)) {
-      await prefetchPageContextFromServerHooks(pageContextFromRoute._pageId, pageContextTmp, prefetchSettings)
+      await prefetchPageContextFromServerHooks(pageContextFromRoute._pageId, pageContextLink, prefetchSettings)
     }
   }
 }
