@@ -18,7 +18,7 @@ import {
   loadUserFilesClientSide
 } from '../shared/loadUserFilesClientSide.js'
 import { skipLink } from './skipLink.js'
-import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
+import { type PrefetchSettings, getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
@@ -27,17 +27,21 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import { getCurrentPageContext } from './getCurrentPageContext.js'
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
-  prefetchedPageContexts: {
-    urlOfPrefetchedLink: string
-    result: Awaited<ReturnType<typeof getPageContextFromServerHooks>>
-  }[]
-  expire?: number
-  lastPrefetchTime: Map<string, number>
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [], lastPrefetchTime: new Map() })
+  prefetchedPageContexts: PrefetchedPageContext[]
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: [] })
+const PAGE_CONTEXT_EXPIRE_DEFAULT = 5000
 
+type Result = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
+type PrefetchedPageContext = {
+  urlOfPrefetchedLink: string
+  resultFetchedAt: number
+  resultExpire: number
+  result: Result
+}
 type PageContextForPrefetch = {
   urlOriginal: string
   _urlRewrite: null
@@ -49,13 +53,8 @@ function getPrefetchedPageContextFromServerHooks(pageContext: {
   urlOriginal: string
 }): null | PageContextFromServerHooks {
   const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContext.urlOriginal)
-  const lastPrefetch = globalObject.lastPrefetchTime.get(pageContext.urlOriginal)
-  if (!found) return null
-  if ('is404ServerSideRouted' in found.result) return null
-  if (lastPrefetch && globalObject.expire && Date.now() - lastPrefetch < globalObject.expire) {
-    return found.result.pageContextFromHooks
-  }
-  return null
+  if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
+  return found.result.pageContextFromHooks
 }
 
 async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles): Promise<void> {
@@ -70,22 +69,32 @@ async function prefetchAssets(pageId: string, pageContext: PageContextUserFiles)
   }
 }
 
-async function prefetchPageContextFromServer(pageId: string, pageContext: PageContextForPrefetch): Promise<void> {
+async function prefetchPageContextFromServerHooks(
+  pageId: string,
+  pageContextTmp: PageContextForPrefetch,
+  prefetchSettings: PrefetchSettings
+): Promise<void> {
+  objectAssign(pageContextTmp, { _pageId: pageId })
+  let result: Result
   try {
-    objectAssign(pageContext, { _pageId: pageId })
-    const result = await getPageContextFromServerHooks(pageContext, false)
-    const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContext.urlOriginal)
-    if (found) {
-      found.result = result
-    } else {
-      globalObject.prefetchedPageContexts.push({
-        urlOfPrefetchedLink: pageContext.urlOriginal,
-        result
-      })
-    }
-    globalObject.lastPrefetchTime.set(pageContext.urlOriginal, Date.now())
+    result = await getPageContextFromServerHooks(pageContextTmp, false)
   } catch {
     return
+  }
+  const entry: PrefetchedPageContext = {
+    urlOfPrefetchedLink: pageContextTmp.urlOriginal,
+    resultFetchedAt: Date.now(),
+    resultExpire:
+      typeof prefetchSettings.prefetchPageContext === 'number'
+        ? prefetchSettings.prefetchPageContext
+        : PAGE_CONTEXT_EXPIRE_DEFAULT,
+    result
+  }
+  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContextTmp.urlOriginal)
+  if (found) {
+    objectAssign(found, entry)
+  } else {
+    globalObject.prefetchedPageContexts.push(entry)
   }
 }
 
@@ -124,12 +133,18 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     await prefetchAssets(pageId, pageContextTmp)
   }
   if (options?.pageContext !== false) {
+    const pageContext = getCurrentPageContext()
+    assert(pageContext)
+    const prefetchSettings = getPrefetchSettings(pageContext)
     // TODO: allow options.pageContext to be a number
-    await prefetchPageContextFromServer(pageId, pageContextTmp)
+    await prefetchPageContextFromServerHooks(pageId, pageContextTmp, prefetchSettings)
   }
 }
 
 function addLinkPrefetchHandlers() {
+  const pageContext = getCurrentPageContext()
+  assert(pageContext)
+
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
@@ -141,27 +156,27 @@ function addLinkPrefetchHandlers() {
     if (skipLink(linkTag)) return
     assert(url)
 
-    const { prefetchStaticAssets, prefetchPageContext } = getPrefetchSettings(linkTag)
-    if (!prefetchStaticAssets && !prefetchPageContext) return
+    const prefetchSettings = getPrefetchSettings(pageContext, linkTag)
+    if (!prefetchSettings.prefetchStaticAssets && !prefetchSettings.prefetchPageContext) return
 
-    if (prefetchStaticAssets === 'hover') {
+    if (prefetchSettings.prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchIfPossible(url, prefetchPageContext)
+        prefetchIfEnabled(url, prefetchSettings)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchIfPossible(url, prefetchPageContext)
+          prefetchIfEnabled(url, prefetchSettings)
         },
         { passive: true }
       )
     }
 
-    if (prefetchStaticAssets === 'viewport') {
+    if (prefetchSettings.prefetchStaticAssets === 'viewport') {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetchIfPossible(url)
+            prefetchIfEnabled(url, prefetchSettings, true)
             observer.disconnect()
           }
         })
@@ -171,28 +186,33 @@ function addLinkPrefetchHandlers() {
   })
 }
 
-async function prefetchIfPossible(url: string, prefetchPageContext?: number | boolean): Promise<void> {
-  // TODO: rename to pageContextTmp
-  const pageContext = await createPageContext(url)
+async function prefetchIfEnabled(
+  url: string,
+  prefetchSettings: PrefetchSettings,
+  skipPageContext?: true
+): Promise<void> {
+  const pageContextTmp = await createPageContext(url)
 
   let pageContextFromRoute: PageContextFromRoute
   try {
-    pageContextFromRoute = await route(pageContext)
+    pageContextFromRoute = await route(pageContextTmp)
   } catch {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
-
   if (!pageContextFromRoute._pageId) return
-  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
+  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContextTmp))) return
 
-  if (typeof prefetchPageContext !== 'number') return
-  globalObject.expire = prefetchPageContext
+  await prefetchAssets(pageContextFromRoute._pageId, pageContextTmp)
 
-  const lastPrefetch = globalObject.lastPrefetchTime.get(pageContext.urlOriginal)
-  if (lastPrefetch && prefetchPageContext && Date.now() - lastPrefetch < prefetchPageContext) {
-    return
+  if (!skipPageContext && prefetchSettings.prefetchPageContext) {
+    const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === url)
+    if (!found || isExpired(found)) {
+      await prefetchPageContextFromServerHooks(pageContextFromRoute._pageId, pageContextTmp, prefetchSettings)
+    }
   }
-  await prefetchPageContextFromServer(pageContextFromRoute._pageId, pageContext)
+}
+
+function isExpired(found: PrefetchedPageContext) {
+  return Date.now() - found.resultFetchedAt > found.resultExpire
 }

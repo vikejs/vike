@@ -81,6 +81,7 @@ async function getPageContextFromServerHooks(
 ): Promise<
   | { is404ServerSideRouted: true }
   | {
+      is404ServerSideRouted?: undefined
       pageContextFromHooks: {
         isHydration: false
         _hasPageContextFromServer: boolean

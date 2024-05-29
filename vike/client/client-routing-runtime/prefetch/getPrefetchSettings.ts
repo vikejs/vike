@@ -1,7 +1,7 @@
 export { getPrefetchSettings }
+export type { PrefetchSettings }
 
 import type { PrefetchPageContext, PrefetchStaticAssets } from '../../../shared/types/Prefetch.js'
-import { getCurrentPageContext } from '../getCurrentPageContext.js'
 import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.js'
 
 type PageContextPrefetch = {
@@ -13,9 +13,7 @@ type PrefetchSettings = {
   prefetchPageContext: PrefetchPageContext
 }
 
-function getPrefetchSettings(linkTag: HTMLElement): PrefetchSettings {
-  const pageContext = getCurrentPageContext()
-  assert(pageContext)
+function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag?: HTMLElement): PrefetchSettings {
   let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
   let prefetchPageContext = getPrefetchPageContext(pageContext, linkTag)
   if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {
@@ -28,9 +26,9 @@ function getPrefetchSettings(linkTag: HTMLElement): PrefetchSettings {
   }
 }
 
-function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchStaticAssets {
+function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag?: HTMLElement): PrefetchStaticAssets {
   {
-    const prefetchAttribute = getPrefetchStaticAssetsAttribute(linkTag)
+    const prefetchAttribute = !linkTag ? null : getPrefetchStaticAssetsAttribute(linkTag)
     if (prefetchAttribute !== null) return prefetchAttribute
   }
 
@@ -74,9 +72,9 @@ function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTML
   return 'hover'
 }
 
-function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchPageContext {
+function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag?: HTMLElement): PrefetchPageContext {
   {
-    const prefetchAttribute = getPrefetchPageContextAttribute(linkTag)
+    const prefetchAttribute = !linkTag ? null : getPrefetchPageContextAttribute(linkTag)
     if (prefetchAttribute !== null) return prefetchAttribute
   }
 
