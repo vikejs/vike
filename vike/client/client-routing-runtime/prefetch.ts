@@ -37,7 +37,7 @@ const PAGE_CONTEXT_EXPIRE_DEFAULT = 5000
 
 type Result = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
 type PrefetchedPageContext = {
-  urlOfPrefetchedLink: string
+  urlOfLink: string
   resultFetchedAt: number
   resultExpire: number
   result: Result
@@ -52,7 +52,7 @@ type PageContextForPrefetch = {
 function getPrefetchedPageContextFromServerHooks(pageContext: {
   urlOriginal: string
 }): null | PageContextFromServerHooks {
-  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContext.urlOriginal)
+  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === pageContext.urlOriginal)
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
   return found.result.pageContextFromHooks
 }
@@ -82,7 +82,7 @@ async function prefetchPageContextFromServerHooks(
     return
   }
   const entry: PrefetchedPageContext = {
-    urlOfPrefetchedLink: pageContextLink.urlOriginal,
+    urlOfLink: pageContextLink.urlOriginal,
     resultFetchedAt: Date.now(),
     resultExpire:
       typeof prefetchSettings.prefetchPageContext === 'number'
@@ -90,7 +90,7 @@ async function prefetchPageContextFromServerHooks(
         : PAGE_CONTEXT_EXPIRE_DEFAULT,
     result
   }
-  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === pageContextLink.urlOriginal)
+  const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === pageContextLink.urlOriginal)
   if (found) {
     objectAssign(found, entry)
   } else {
@@ -150,23 +150,22 @@ function addLinkPrefetchHandlers() {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
     globalObject.linkPrefetchHandlerAdded.set(linkTag, true)
 
-    // TODO: rename to urlOfLink
-    const url = linkTag.getAttribute('href')
+    const urlOfLink = linkTag.getAttribute('href')
 
     if (skipLink(linkTag)) return
-    assert(url)
+    assert(urlOfLink)
 
     const prefetchSettings = getPrefetchSettings(pageContext, linkTag)
     if (!prefetchSettings.prefetchStaticAssets && !prefetchSettings.prefetchPageContext) return
 
     if (prefetchSettings.prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchIfEnabled(url, prefetchSettings)
+        prefetchIfEnabled(urlOfLink, prefetchSettings)
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchIfEnabled(url, prefetchSettings)
+          prefetchIfEnabled(urlOfLink, prefetchSettings)
         },
         { passive: true }
       )
@@ -176,7 +175,7 @@ function addLinkPrefetchHandlers() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetchIfEnabled(url, prefetchSettings, true)
+            prefetchIfEnabled(urlOfLink, prefetchSettings, true)
             observer.disconnect()
           }
         })
@@ -187,11 +186,11 @@ function addLinkPrefetchHandlers() {
 }
 
 async function prefetchIfEnabled(
-  url: string,
+  urlOfLink: string,
   prefetchSettings: PrefetchSettings,
   skipPageContext?: true
 ): Promise<void> {
-  const pageContextLink = await createPageContext(url)
+  const pageContextLink = await createPageContext(urlOfLink)
 
   let pageContextFromRoute: PageContextFromRoute
   try {
@@ -206,7 +205,7 @@ async function prefetchIfEnabled(
   await prefetchAssets(pageContextFromRoute._pageId, pageContextLink)
 
   if (!skipPageContext && prefetchSettings.prefetchPageContext) {
-    const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfPrefetchedLink === url)
+    const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === urlOfLink)
     if (!found || isExpired(found)) {
       await prefetchPageContextFromServerHooks(pageContextFromRoute._pageId, pageContextLink, prefetchSettings)
     }
