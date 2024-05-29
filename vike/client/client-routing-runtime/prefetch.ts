@@ -151,12 +151,12 @@ function addLinkPrefetchHandlers() {
     if (!prefetchSettings.prefetchStaticAssets && !prefetchSettings.prefetchPageContext) return
 
     linkTag.addEventListener('mouseover', () => {
-      prefetchIfEnabled(urlOfLink, prefetchSettings, 'hover')
+      prefetchOnEvent(urlOfLink, prefetchSettings, 'hover')
     })
     linkTag.addEventListener(
       'touchstart',
       () => {
-        prefetchIfEnabled(urlOfLink, prefetchSettings, 'hover')
+        prefetchOnEvent(urlOfLink, prefetchSettings, 'hover')
       },
       { passive: true }
     )
@@ -164,7 +164,7 @@ function addLinkPrefetchHandlers() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          prefetchIfEnabled(urlOfLink, prefetchSettings, 'viewport')
+          prefetchOnEvent(urlOfLink, prefetchSettings, 'viewport')
           observer.disconnect()
         }
       })
@@ -173,7 +173,7 @@ function addLinkPrefetchHandlers() {
   })
 }
 
-async function prefetchIfEnabled(
+async function prefetchOnEvent(
   urlOfLink: string,
   prefetchSettings: PrefetchSettings,
   event: 'hover' | 'viewport'
