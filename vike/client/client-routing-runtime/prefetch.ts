@@ -56,9 +56,11 @@ type PageContextForPrefetch = {
 function getPrefetchedPageContextFromServerHooks(pageContext: {
   urlOriginal: string
 }): null | PageContextFromServerHooks {
-  const found = globalObject.prefetchedPageContexts[pageContext.urlOriginal]
+  const url = pageContext.urlOriginal
+  const found = globalObject.prefetchedPageContexts[url]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
-  return found.result.pageContextFromHooks
+  const prefetchedPageContextFromServerHooks = found.result.pageContextFromHooks
+  return prefetchedPageContextFromServerHooks
 }
 
 async function prefetchAssets(pageContextLink: { _pageId: string } & PageContextUserFiles): Promise<void> {
