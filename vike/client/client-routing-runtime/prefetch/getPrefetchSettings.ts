@@ -1,6 +1,7 @@
 export { getPrefetchSettings }
 
 import type { PrefetchPageContext, PrefetchStaticAssets } from '../../../shared/types/Prefetch.js'
+import { getCurrentPageContext } from '../getCurrentPageContext.js'
 import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.js'
 
 type PageContextPrefetch = {
@@ -12,7 +13,9 @@ type PrefetchSettings = {
   prefetchPageContext: PrefetchPageContext
 }
 
-function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchSettings {
+function getPrefetchSettings(linkTag: HTMLElement): PrefetchSettings {
+  const pageContext = getCurrentPageContext()
+  assert(pageContext)
   let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
   let prefetchPageContext = getPrefetchPageContext(pageContext, linkTag)
   if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {

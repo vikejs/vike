@@ -41,6 +41,7 @@ import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageContextExports } from '../../shared/getPageFiles.js'
+import { setCurrentPageContext } from './getCurrentPageContext.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -439,7 +440,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated(true)) return
     */
 
-    addLinkPrefetchHandlers(pageContext)
+    setCurrentPageContext(pageContext)
+    addLinkPrefetchHandlers()
 
     // onHydrationEnd()
     if (isHydrationRender && !onRenderClientError) {
