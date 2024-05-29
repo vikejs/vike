@@ -150,46 +150,44 @@ function addLinkPrefetchHandlers() {
     const prefetchSettings = getPrefetchSettings(pageContext, linkTag)
     if (!prefetchSettings.prefetchStaticAssets && !prefetchSettings.prefetchPageContext) return
 
-    if (prefetchSettings.prefetchStaticAssets === 'hover') {
       linkTag.addEventListener('mouseover', () => {
-        prefetchIfEnabled(urlOfLink, prefetchSettings)
+        prefetchIfEnabled(urlOfLink, prefetchSettings, 'hover')
       })
       linkTag.addEventListener(
         'touchstart',
         () => {
-          prefetchIfEnabled(urlOfLink, prefetchSettings)
+          prefetchIfEnabled(urlOfLink, prefetchSettings, 'hover')
         },
         { passive: true }
       )
-    }
 
-    if (prefetchSettings.prefetchStaticAssets === 'viewport') {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            prefetchIfEnabled(urlOfLink, prefetchSettings, true)
+            prefetchIfEnabled(urlOfLink, prefetchSettings, 'viewport')
             observer.disconnect()
           }
         })
       })
       observer.observe(linkTag)
-    }
   })
 }
 
 async function prefetchIfEnabled(
   urlOfLink: string,
   prefetchSettings: PrefetchSettings,
-  skipPageContext?: true
+  event: 'hover' | 'viewport'
 ): Promise<void> {
   const pageContextLink = await getPageContextLink(urlOfLink)
   if (!pageContextLink?._pageId) return
   assert(hasProp(pageContextLink, '_pageId', 'string')) // help TypeScript
   if (!(await isClientSideRoutable(pageContextLink._pageId, pageContextLink))) return
 
-  await prefetchAssets(pageContextLink)
+  if (prefetchSettings.prefetchStaticAssets === event) {
+    await prefetchAssets(pageContextLink)
+  }
 
-  if (!skipPageContext && prefetchSettings.prefetchPageContext) {
+  if (event !== 'viewport' && prefetchSettings.prefetchPageContext) {
     const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === urlOfLink)
     if (!found || isExpired(found)) {
       await prefetchPageContextFromServerHooks(pageContextLink, prefetchSettings)
