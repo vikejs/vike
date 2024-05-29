@@ -154,8 +154,9 @@ function getPrefetchPageContextAttribute(linkTag: HTMLElement): PrefetchPageCont
     if (attr === 'true') {
       return 5000
     }
-    if (!Number.isNaN(parseInt(attr, 10))) {
-      return parseInt(attr, 10)
+    const n = parseInt(attr, 10)
+    if (!Number.isNaN(n)) {
+      return n
     }
     assertUsage(false, `data-prefetch-page-context has value "${attr}" but it should instead be number or boolean`)
   }
