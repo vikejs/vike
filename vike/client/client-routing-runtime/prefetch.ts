@@ -60,6 +60,8 @@ function getPrefetchedPageContextFromServerHooks(pageContext: {
   const found = globalObject.prefetchedPageContexts[url]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
   const prefetchedPageContextFromServerHooks = found.result.pageContextFromHooks
+  // We discard the prefetched pageContext whenever we use it, so that when the user clicks on a link he always gets a fresh pageContext.
+  delete globalObject.prefetchedPageContexts[url]
   return prefetchedPageContextFromServerHooks
 }
 
