@@ -1,3 +1,34 @@
+## [0.4.172](https://github.com/vikejs/vike/compare/v0.4.171...v0.4.172) (2024-05-26)
+
+
+### Bug Fixes
+
+* add CJS/ESM error hint ([90101cd](https://github.com/vikejs/vike/commit/90101cd1c5c5635ca9049ee3fc50386f9d0fa163))
+* add hint for React's invalid hook call ([42c3173](https://github.com/vikejs/vike/commit/42c31737fc615d150eafd66f66fa009db40a9f15))
+* further preserve pageContext property getters ([155b2ea](https://github.com/vikejs/vike/commit/155b2ea045f9732991bfb8b5757d146a8f087cba))
+* improve & simplify passToClient error ([0c459cc](https://github.com/vikejs/vike/commit/0c459cc5b7f12372187a4e345f0d608ad8d0ee14))
+* improve cumulative support, and fix bugs ([c14c8d0](https://github.com/vikejs/vike/commit/c14c8d08a99053606fc3c199b1506cb79be24c13))
+* improve error hint messag ([e02a1b6](https://github.com/vikejs/vike/commit/e02a1b632da3bb040ae3c97c7853b447079384ea))
+* improve warning stack traces ([9af790a](https://github.com/vikejs/vike/commit/9af790a11bd4183047f628837b932264f257373b))
+* make client-side script order determinisic also in dev ([#1468](https://github.com/vikejs/vike/issues/1468)) ([a3be198](https://github.com/vikejs/vike/commit/a3be1984ab8d80bff5a4048aeef18b3275334d94))
+* pointer imports used anywhere in config object ([b4ba6b7](https://github.com/vikejs/vike/commit/b4ba6b70e6bdc2e1f460c0d2e4c3faae5d0a733c))
+* polish error message ([ff5af85](https://github.com/vikejs/vike/commit/ff5af85172ee25f2804a44824e1f4e1b1a1bd213))
+* polish HTML errors ([642566b](https://github.com/vikejs/vike/commit/642566be420a08e2badaf0310c3e5cf22f9effae))
+* remove faulty logErrorHint() assertion ([061f51e](https://github.com/vikejs/vike/commit/061f51e8b5bedc4a1998cc83e559bacd5e79eaac))
+
+
+### Features
+
+* [experimental] `pageContext.source` and `pageContext.from` ([#1268](https://github.com/vikejs/vike/issues/1268)) ([8cc0de4](https://github.com/vikejs/vike/commit/8cc0de484d98172792370f4ea5661454015cade9))
+* add headers to pageContext in dev ([2ea822a](https://github.com/vikejs/vike/commit/2ea822a3dc742e49385a2f1bc937454d0c04510d))
+* cumulative for non-serializable configs ([da4f0c3](https://github.com/vikejs/vike/commit/da4f0c37d4c4310f39b769a24112e1c935f39ded))
+* getPageContext() ([b2d327e](https://github.com/vikejs/vike/commit/b2d327ec358fe0cc24a5975d5ad3e71c408c116b))
+* pageContext.headersOriginal ([a78a110](https://github.com/vikejs/vike/commit/a78a1101956fa0f5e41b96e13a09342584014838))
+* support +client.js for all render modes (closes [#1468](https://github.com/vikejs/vike/issues/1468)) ([6e37128](https://github.com/vikejs/vike/commit/6e371286c04f53e37ed00ec23b71bbe6c033339f))
+* Vike.ConfigResolved ([978d69d](https://github.com/vikejs/vike/commit/978d69d3a5209b8990165f70ddb7fa76a364ebdd))
+
+
+
 ## [0.4.171](https://github.com/vikejs/vike/compare/v0.4.170...v0.4.171) (2024-04-20)
 
 

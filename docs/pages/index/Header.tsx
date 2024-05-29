@@ -10,7 +10,7 @@ function Header() {
       <img src={iconVike} />
       <div>
         <h1>Vike</h1>
-        <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
+        <p id="header-tagline">Flexible, lean, community-driven, dependable, fast Vite-based frontend framework.</p>
       </div>
     </div>
   )

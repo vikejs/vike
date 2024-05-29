@@ -415,10 +415,6 @@ const headingsDetached = [
     url: '/server-routing-vs-client-routing'
   },
   {
-    title: 'Add to existing Vite app',
-    url: '/add'
-  },
-  {
     title: 'Tour',
     url: '/tour'
   },
@@ -464,7 +460,11 @@ const headingsDetached = [
     url: '/vike-vue'
   },
   {
-    title: 'reactStrictMode',
+    title: '`vike-solid`',
+    url: '/vike-solid'
+  },
+  {
+    title: '`reactStrictMode`',
     url: '/reactStrictMode'
   },
   {
@@ -480,7 +480,7 @@ const headingsDetached = [
     url: '/scaffold'
   },
   {
-    title: 'Add Vike to Vite app',
-    url: '/add'
+    title: 'Add SSR/SSG to existing Vite app',
+    url: '/add-ssr-to-vite-app'
   }
 ] satisfies HeadingDetachedDefinition[]

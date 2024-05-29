@@ -43,9 +43,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Add SSR or SSG to existing Vite App',
-    titleInNav: 'Add to existing Vite App',
-    url: '/add-ssr-to-vite-app'
+    title: 'Add SSR/SSG to existing Vite app',
+    url: '/add'
   },
   {
     level: 1,

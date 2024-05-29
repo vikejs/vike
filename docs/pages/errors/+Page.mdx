@@ -86,11 +86,11 @@ Vike prettifies transpilation errors, such as errors thrown by [esbuild](https:/
 While Vike is careful about not removing relevant information, it may mistakenly do so. In that case [create a new GitHub issue](https://github.com/vikejs/vike/issues/new). Until a Vike maintainer fixes the issue you can use the debug flag `DEBUG=vike:error`.
 
 ```shell
-# Show verbose and original errors
+# Show verbose original errors, with infinite stack trace (`Error.stackTraceLimit = Infinity`)
 DEBUG=vike:error npm run dev
 ```
 
-For even more verbose errors:
+For even more information:
 
 ```shell
 # Usually only used by Vike maintainers

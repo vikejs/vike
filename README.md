@@ -1,7 +1,7 @@
 > [!NOTE]  
 > The [`vite-plugin-ssr`](https://vite-plugin-ssr.com/) project has been renamed Vike. See [migration guide](https://vite-plugin-ssr.com/vike).
 
-*🔨 Flexible, robust, community-driven, fast Vite-based frontend framework.*
+*🔨 Flexible, lean, reliable, community-driven, fast Vite-based frontend framework.*
 
 **Introduction & documentation** :arrow_right: [vike.dev](https://vike.dev)
 <br/>

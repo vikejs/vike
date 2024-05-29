@@ -9,14 +9,24 @@ function UiFrameworkVikeExtension({ plural, noLink }: { plural?: true; noLink?: 
   const linkOrText = noLink ? linkText : <Link href="/extensions">{linkText}</Link>
   return (
     <>
-      UI framework {linkOrText} (<UiFrameworkVikeExtensionNames />)
+      UI framework {linkOrText} (<UiFrameworkVikeExtensionNames links={!noLink} />)
     </>
   )
 }
-function UiFrameworkVikeExtensionNames() {
+function UiFrameworkVikeExtensionNames({
+  links,
+  list = ['vike-react', 'vike-vue', 'vike-solid']
+}: { links?: boolean; list?: `vike-${'react' | 'vue' | 'solid'}`[] }) {
   return (
     <>
-      <code>vike-react</code>/<code>vike-vue</code>/<code>vike-solid</code>
+      {list.map((name, i) => {
+        let content = <code>{name}</code>
+        if (links) content = <Link href={`/${name}`}>{content}</Link>
+        if (i !== list.length - 1) {
+          content = <>{content}/</>
+        }
+        return <React.Fragment key={name}>{content}</React.Fragment>
+      })}
     </>
   )
 }

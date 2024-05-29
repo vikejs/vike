@@ -1,14 +1,13 @@
 import { Link, Warning } from '@brillout/docpress'
-
-## With Bâti
+import { UiFrameworkVikeExtensionNames } from '../../components'
 
 We recommend using [Bati](https://batijs.dev) to scaffold a new Vike app.
 
-> Apps scaffolded by Bati use <Link href="/extensions">Vike extensions</Link>.
+> Apps scaffolded by Bati use <UiFrameworkVikeExtensionNames links/>.
 
-## Without Bâti
+## Without Vike Extension
 
-You can also scaffold a new Vike app that doesn't use any <Link href="/extensions">Vike extension</Link>, which means you control the UI framework (React/Vue/Solid/...) integration.
+You can also scaffold a new Vike app that doesn't use <UiFrameworkVikeExtensionNames links/>, which means you control the UI framework (React/Vue/Solid/...) integration.
 
 > See <Link href="/why#optional-control" />.
 
@@ -21,13 +20,19 @@ We recommend using the following command only if:
 With [npm](https://www.npmjs.com):
 
 ```shell
-npm init vike@latest
+npm create vike@latest
 ```
 
 With [pnpm](https://pnpm.io):
 
 ```shell
 pnpm create vike
+```
+
+With [Bun](https://bun.sh):
+
+```shell
+bun create vike
 ```
 
 With [Yarn](https://yarnpkg.com):
@@ -44,3 +49,15 @@ A prompt will let you choose between:
 - `react-ts`: React + TypeScript
 - `vue`: Vue + JavaScript
 - `vue-ts`: Vue + TypeScript
+
+See also:
+- [GitHub > `vikejs/vike` > `boilerplates/`](https://github.com/vikejs/vike/tree/main/boilerplates)
+- [GitHub > `vikejs/vike` > `examples/react-minimal`](https://github.com/vikejs/vike/tree/main/examples/react-minimal)
+- [GitHub > `vikejs/vike` > `examples/react-full`](https://github.com/vikejs/vike/tree/main/examples/react-full)
+- [GitHub > `vikejs/vike` > `examples/vue-minimal`](https://github.com/vikejs/vike/tree/main/examples/react-minimal)
+- [GitHub > `vikejs/vike` > `examples/vue-full`](https://github.com/vikejs/vike/tree/main/examples/vue-full)
+
+
+## See also
+
+- <Link href="/add" />

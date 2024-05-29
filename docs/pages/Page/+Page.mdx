@@ -1,6 +1,8 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
 
+Environment: client and/or server (depending on the <Link href="/ssr">`ssr` setting</Link>).
+
 The `Page` setting determines the root component of the page.
 
 With JSX (React/Solid):
@@ -31,7 +33,9 @@ With Vue:
 </template>
 ```
 
-What happens with the `Page` value is determined by the <UiFrameworkVikeExtension />. Alternatively, for complete control over the <Link href="/ui-framework">UI framework</Link> integration, you can <Link href="#without-vike-extension">manually integrate</Link> the UI framework yourself.
+What happens with the `Page` value is determined by the <UiFrameworkVikeExtension />.
+
+> Instead of <UiFrameworkVikeExtensionNames />, you can manually integrate the <Link href="/ui-framework">UI framework</Link> yourself, see <Link href="#without-vike-extension" />.
 
 
 
