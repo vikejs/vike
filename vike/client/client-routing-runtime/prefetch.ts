@@ -150,26 +150,26 @@ function addLinkPrefetchHandlers() {
     const prefetchSettings = getPrefetchSettings(pageContext, linkTag)
     if (!prefetchSettings.prefetchStaticAssets && !prefetchSettings.prefetchPageContext) return
 
-      linkTag.addEventListener('mouseover', () => {
+    linkTag.addEventListener('mouseover', () => {
+      prefetchIfEnabled(urlOfLink, prefetchSettings, 'hover')
+    })
+    linkTag.addEventListener(
+      'touchstart',
+      () => {
         prefetchIfEnabled(urlOfLink, prefetchSettings, 'hover')
-      })
-      linkTag.addEventListener(
-        'touchstart',
-        () => {
-          prefetchIfEnabled(urlOfLink, prefetchSettings, 'hover')
-        },
-        { passive: true }
-      )
+      },
+      { passive: true }
+    )
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            prefetchIfEnabled(urlOfLink, prefetchSettings, 'viewport')
-            observer.disconnect()
-          }
-        })
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          prefetchIfEnabled(urlOfLink, prefetchSettings, 'viewport')
+          observer.disconnect()
+        }
       })
-      observer.observe(linkTag)
+    })
+    observer.observe(linkTag)
   })
 }
 
