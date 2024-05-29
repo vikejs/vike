@@ -10,7 +10,8 @@ import {
   checkIfClientRouting,
   getGlobalObject,
   isExternalLink,
-  objectAssign
+  objectAssign,
+  parseUrl
 } from './utils.js'
 import {
   type PageContextUserFiles,
@@ -19,7 +20,6 @@ import {
 } from '../shared/loadUserFilesClientSide.js'
 import { skipLink } from './skipLink.js'
 import { getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
-import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched.js'
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
@@ -45,6 +45,7 @@ type PageContextForPrefetch = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
 }
+const linkAlreadyPrefetched = new Map<string, true>()
 
 function getPrefetchedPageContextFromServerHooks(pageContext: {
   urlOriginal: string
@@ -204,4 +205,18 @@ async function prefetchIfPossible(url: string, prefetchPageContext?: number | bo
     return
   }
   await prefetchPageContextFromServer(pageContextFromRoute._pageId, pageContext)
+}
+
+function isAlreadyPrefetched(url: string): boolean {
+  const urlPathname = getUrlPathname(url)
+  return linkAlreadyPrefetched.has(urlPathname)
+}
+function markAsAlreadyPrefetched(url: string): void {
+  const urlPathname = getUrlPathname(url)
+  linkAlreadyPrefetched.set(urlPathname, true)
+}
+
+function getUrlPathname(url: string): string {
+  const urlPathname = parseUrl(url, '/').pathname
+  return urlPathname
 }
