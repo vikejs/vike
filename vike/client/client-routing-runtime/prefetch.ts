@@ -96,24 +96,22 @@ async function prefetchPageContextFromServer(pageId: string, pageContext: PageCo
  *
  * @param url - The URL of the page you want to prefetch.
  */
-async function prefetch(url: string): Promise<void> {
+async function prefetch(url: string, options?: { pageContext?: boolean; staticAssets?: boolean }): Promise<void> {
   assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
     showStackTrace: true
   })
   const errPrefix = `Cannot prefetch URL ${url} because it` as const
   assertUsage(!isExternalLink(url), `${errPrefix} lives on another domain`, { showStackTrace: true })
 
-  // TODO: rename to pageContextTmp
-  const pageContext = await createPageContext(url)
+  const pageContextTmp = await createPageContext(url)
   let pageContextFromRoute: PageContextFromRoute
   try {
-    pageContextFromRoute = await route(pageContext)
+    pageContextFromRoute = await route(pageContextTmp)
   } catch {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
   const pageId = pageContextFromRoute._pageId
-
   if (!pageId) {
     assertWarning(false, `${errPrefix} ${noRouteMatch}`, {
       showStackTrace: true,
@@ -122,8 +120,13 @@ async function prefetch(url: string): Promise<void> {
     return
   }
 
-  await prefetchAssets(pageId, pageContext)
-  await prefetchPageContextFromServer(pageId, pageContext)
+  if (options?.staticAssets !== false) {
+    await prefetchAssets(pageId, pageContextTmp)
+  }
+  if (options?.pageContext !== false) {
+    // TODO: allow options.pageContext to be a number
+    await prefetchPageContextFromServer(pageId, pageContextTmp)
+  }
 }
 
 function addLinkPrefetchHandlers() {
