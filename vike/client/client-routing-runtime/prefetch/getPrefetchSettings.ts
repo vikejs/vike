@@ -13,7 +13,7 @@ type PrefetchSettings = {
   prefetchPageContext: PrefetchPageContext
 }
 
-function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag?: HTMLElement): PrefetchSettings {
+function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: null | HTMLElement): PrefetchSettings {
   let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
   let prefetchPageContext = getPrefetchPageContext(pageContext, linkTag)
   if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {
@@ -26,7 +26,7 @@ function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag?: HTMLEle
   }
 }
 
-function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag?: HTMLElement): PrefetchStaticAssets {
+function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: null | HTMLElement): PrefetchStaticAssets {
   {
     const prefetchAttribute = !linkTag ? null : getPrefetchStaticAssetsAttribute(linkTag)
     if (prefetchAttribute !== null) return prefetchAttribute
@@ -72,7 +72,7 @@ function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag?: HTM
   return 'hover'
 }
 
-function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag?: HTMLElement): PrefetchPageContext {
+function getPrefetchPageContext(pageContext: PageContextPrefetch, linkTag: null | HTMLElement): PrefetchPageContext {
   {
     const prefetchAttribute = !linkTag ? null : getPrefetchPageContextAttribute(linkTag)
     if (prefetchAttribute !== null) return prefetchAttribute

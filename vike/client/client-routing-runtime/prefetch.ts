@@ -73,7 +73,7 @@ async function prefetchAssets(pageContextLink: { _pageId: string } & PageContext
 
 async function prefetchPageContextFromServerHooks(
   pageContextLink: PageContextForPrefetch,
-  prefetchSettings: PrefetchSettings
+  resultExpire: number
 ): Promise<void> {
   let result: Result
   try {
@@ -84,10 +84,7 @@ async function prefetchPageContextFromServerHooks(
   const entry: PrefetchedPageContext = {
     urlOfLink: pageContextLink.urlOriginal,
     resultFetchedAt: Date.now(),
-    resultExpire:
-      typeof prefetchSettings.prefetchPageContext === 'number'
-        ? prefetchSettings.prefetchPageContext
-        : PAGE_CONTEXT_EXPIRE_DEFAULT,
+    resultExpire,
     result
   }
   const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === pageContextLink.urlOriginal)
@@ -126,11 +123,26 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     await prefetchAssets(pageContextLink)
   }
   if (options?.pageContext !== false) {
-    // If user calls prefetch() before hydration finished => await the pageContext to be set
-    const pageContext = await getCurrentPageContextAwait()
-    const prefetchSettings = getPrefetchSettings(pageContext)
-    // TODO: allow options.pageContext to be a number
-    await prefetchPageContextFromServerHooks(pageContextLink, prefetchSettings)
+    const resultExpire = await getResultExpire()
+    await prefetchPageContextFromServerHooks(pageContextLink, resultExpire)
+  }
+
+  return
+
+  async function getResultExpire(): Promise<number> {
+    if (typeof options?.pageContext === 'number') {
+      return options.pageContext
+    } else {
+      // If user calls prefetch() before hydration finished => await the pageContext to be set
+      const pageContext = await getCurrentPageContextAwait()
+      const prefetchSettings = getPrefetchSettings(pageContext, null)
+      // TODO: move this logic in getPrefetchSettings()
+      const resultExpire =
+        typeof prefetchSettings.prefetchPageContext === 'number'
+          ? prefetchSettings.prefetchPageContext
+          : PAGE_CONTEXT_EXPIRE_DEFAULT
+      return resultExpire
+    }
   }
 }
 
@@ -190,7 +202,12 @@ async function prefetchOnEvent(
   if (event !== 'viewport' && prefetchSettings.prefetchPageContext) {
     const found = globalObject.prefetchedPageContexts.find((pc) => pc.urlOfLink === urlOfLink)
     if (!found || isExpired(found)) {
-      await prefetchPageContextFromServerHooks(pageContextLink, prefetchSettings)
+      // TODO: move this logic in getPrefetchSettings()
+      const resultExpire =
+        typeof prefetchSettings.prefetchPageContext === 'number'
+          ? prefetchSettings.prefetchPageContext
+          : PAGE_CONTEXT_EXPIRE_DEFAULT
+      await prefetchPageContextFromServerHooks(pageContextLink, resultExpire)
     }
   }
 }
