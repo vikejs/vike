@@ -2,9 +2,7 @@
 
 export { getPrefetchSetting }
 export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
-export type { PrefetchSetting }
 export type { PrefetchSettingResolved }
-export type { PrefetchStaticAssets }
 
 import { assertUsage, assertInfo, assertWarning } from '../utils.js'
 
@@ -24,18 +22,6 @@ type PrefetchSettingResolved = {
   staticAssets: false | 'hover' | 'viewport'
   pageContext: false | number
 }
-type PrefetchSetting =
-  // { staticAssets: 'hover', pageContext: false }
-  | false
-  // { staticAssets: 'hover', pageContext: true }
-  | true
-  | {
-      staticAssets?: false | 'hover' | 'viewport'
-      pageContext?: boolean | number
-    }
-// TODO/v1-design: remove
-/** @deprecated Use `prefetch` setting instead, see https://vike.dev/prefetch */
-type PrefetchStaticAssets = false | 'hover' | 'viewport'
 
 type PageContextPrefetch = {
   exports: Record<string, unknown>
