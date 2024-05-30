@@ -25,7 +25,9 @@ export default {
       env: { server: true, client: true }
     }
   },
-  prefetchPageContext: false
+  prefetch: {
+    pageContext: false
+  }
 } satisfies Config
 
 declare global {
