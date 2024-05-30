@@ -72,7 +72,6 @@ function getPrefetchSetting(pageContext: PageContextPrefetch, linkTag: null | HT
     {
       let attr = linkTag.getAttribute('data-prefetch-static-assets')
       if (attr !== null) {
-        if (attr === '') attr = 'viewport'
         if (attr === 'false') prefetchSetting.staticAssets = false
         // No validation in order to save client-side KBs
         prefetchSetting.staticAssets = attr as 'hover' | 'viewport'
