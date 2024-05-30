@@ -19,7 +19,6 @@ import {
   loadUserFilesClientSide
 } from '../shared/loadUserFilesClientSide.js'
 import { skipLink } from './skipLink.js'
-import { type PrefetchSettings, getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import { disableClientRouting } from './renderPageClientSide.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
@@ -29,6 +28,11 @@ import { type PageContextFromServerHooks, getPageContextFromServerHooks } from '
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getCurrentPageContext, getCurrentPageContextAwait } from './getCurrentPageContext.js'
+import {
+  PAGE_CONTEXT_MAX_AGE_DEFAULT,
+  type PrefetchSettingResolved,
+  getPrefetchSetting
+} from './prefetch/getPrefetchSettings.js'
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
@@ -37,7 +41,6 @@ const globalObject = getGlobalObject<{
     PrefetchedPageContext
   >
 }>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: {} })
-const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 
 type Result = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
 type PrefetchedPageContext = {
@@ -135,12 +138,9 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     } else {
       // If user calls prefetch() before hydration finished => await the pageContext to be set
       const pageContext = await getCurrentPageContextAwait()
-      const prefetchSettings = getPrefetchSettings(pageContext, null)
-      // TODO: move this logic in getPrefetchSettings()
+      const prefetchSettings = getPrefetchSetting(pageContext, null)
       const resultMaxAge =
-        typeof prefetchSettings.prefetchPageContext === 'number'
-          ? prefetchSettings.prefetchPageContext
-          : PAGE_CONTEXT_MAX_AGE_DEFAULT
+        typeof prefetchSettings.pageContext === 'number' ? prefetchSettings.pageContext : PAGE_CONTEXT_MAX_AGE_DEFAULT
       return resultMaxAge
     }
   }
@@ -159,8 +159,7 @@ function addLinkPrefetchHandlers() {
     const urlOfLink = linkTag.getAttribute('href')
     assert(urlOfLink)
 
-    const prefetchSettings = getPrefetchSettings(pageContext, linkTag)
-    if (!prefetchSettings.prefetchStaticAssets && !prefetchSettings.prefetchPageContext) return
+    const prefetchSettings = getPrefetchSetting(pageContext, linkTag)
 
     linkTag.addEventListener('mouseover', () => {
       prefetchOnEvent(urlOfLink, prefetchSettings, 'hover')
@@ -187,7 +186,7 @@ function addLinkPrefetchHandlers() {
 
 async function prefetchOnEvent(
   urlOfLink: string,
-  prefetchSettings: PrefetchSettings,
+  prefetchSettings: PrefetchSettingResolved,
   event: 'hover' | 'viewport'
 ): Promise<void> {
   const pageContextLink = await getPageContextLink(urlOfLink)
@@ -195,18 +194,15 @@ async function prefetchOnEvent(
   assert(hasProp(pageContextLink, '_pageId', 'string')) // help TypeScript
   if (!(await isClientSideRoutable(pageContextLink._pageId, pageContextLink))) return
 
-  if (prefetchSettings.prefetchStaticAssets === event) {
+  if (prefetchSettings.staticAssets === event) {
     await prefetchAssets(pageContextLink)
   }
 
-  if (event !== 'viewport' && prefetchSettings.prefetchPageContext) {
+  if (event !== 'viewport' && prefetchSettings.pageContext) {
     const found = globalObject.prefetchedPageContexts[urlOfLink]
     if (!found || isExpired(found)) {
       // TODO: move this logic in getPrefetchSettings()
-      const resultMaxAge =
-        typeof prefetchSettings.prefetchPageContext === 'number'
-          ? prefetchSettings.prefetchPageContext
-          : PAGE_CONTEXT_MAX_AGE_DEFAULT
+      const resultMaxAge = prefetchSettings.pageContext
       await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
     }
   }

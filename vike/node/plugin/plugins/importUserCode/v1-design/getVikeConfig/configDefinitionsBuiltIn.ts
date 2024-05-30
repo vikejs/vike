@@ -133,10 +133,11 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   hydrationCanBeAborted: {
     env: { client: true }
   },
-  prefetchStaticAssets: {
+  prefetch: {
     env: { client: true }
   },
-  prefetchPageContext: {
+  // TODO/v1-release: remove
+  prefetchStaticAssets: {
     env: { client: true }
   },
   extends: {

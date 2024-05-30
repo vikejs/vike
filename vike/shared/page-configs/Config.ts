@@ -37,7 +37,10 @@ import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
-import type { PrefetchPageContext, PrefetchStaticAssets } from '../types/Prefetch.js'
+import type {
+  PrefetchSetting,
+  PrefetchStaticAssets
+} from '../../client/client-routing-runtime/prefetch/getPrefetchSettings.js'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
 type HookNamePage =
@@ -391,14 +394,15 @@ type ConfigBuiltIn = {
    */
   meta?: ConfigMeta | ImportString
 
-  /** Prefetch static assets.
+  /**
+   * Prefetch links.
    *
-   * https://vike.dev/prefetchStaticAssets
+   * https://vike.dev/prefetch
    */
-  prefetchStaticAssets?: PrefetchStaticAssets | ImportString
+  prefetch?: PrefetchSetting | ImportString
 
-  /** Prefetch data. */
-  prefetchPageContext?: PrefetchPageContext | ImportString
+  /** @deprecated Use `prefetch` setting instead, see https://vike.dev/prefetch */
+  prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
   /** Modify the timeouts of hooks. */
   hooksTimeout?: HooksTimeoutProvidedByUser
