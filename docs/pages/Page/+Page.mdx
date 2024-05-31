@@ -39,7 +39,7 @@ What happens with the `Page` value is determined by the <UiFrameworkVikeExtensio
 
 
 
-## Without Vike extension
+## Without `vike-{react,vue,solid}`
 
 Vike itself never uses the `Page` value: it just makes the value available at `pageContext.Page`.
 The `pageContext.Page` value is typically used by the <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> hooks: these two hooks essentially determine how the `Page` value is rendered to HTML and the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model).

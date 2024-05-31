@@ -708,7 +708,7 @@ const headings = [
     level: 2,
     title: '`useData()`',
     url: '/useData',
-    sectionTitles: ['TypeScript', 'Without Vike extension']
+    sectionTitles: ['TypeScript', 'Without `vike-{react,vue,solid}`']
   },
   {
     level: 2,
