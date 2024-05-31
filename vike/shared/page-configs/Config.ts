@@ -392,13 +392,13 @@ type ConfigBuiltIn = {
   meta?: ConfigMeta | ImportString
 
   /**
-   * Prefetch links.
+   * Prefetch page/links.
    *
    * https://vike.dev/prefetch
    */
   prefetch?: PrefetchSetting | ImportString
 
-  /** @deprecated Use `prefetch` setting instead, see https://vike.dev/prefetch */
+  /** @deprecated Use `prefetch` setting (https://vike.dev/prefetch) instead.  */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
   /** Modify the timeouts of hooks. */
