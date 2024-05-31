@@ -18,7 +18,8 @@ import {
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
-  type PageContextFromClientHooks
+  type PageContextFromClientHooks,
+  setPageContextInitIsPassedToClient
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers, getPrefetchedPageContextFromServerHooks } from './prefetch.js'
@@ -485,6 +486,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     setScrollPosition(scrollTarget)
     browserNativeScrollRestoration_disable()
     setInitialRenderIsDone()
+    if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
   }
 }
 

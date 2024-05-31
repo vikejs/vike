@@ -2,6 +2,7 @@ export { getPageContextFromHooks_isHydration }
 export { getPageContextFromHooks_serialized }
 export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
+export { setPageContextInitIsPassedToClient }
 export type { PageContextFromServerHooks }
 export type { PageContextFromClientHooks }
 
@@ -340,6 +341,5 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 }
 
 function processPageContextFromServer(pageContextFromServer: Record<string, unknown>) {
-  setPageContextInitIsPassedToClient(pageContextFromServer)
   removeBuiltInOverrides(pageContextFromServer)
 }
