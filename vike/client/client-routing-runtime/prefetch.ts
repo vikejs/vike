@@ -86,7 +86,6 @@ async function prefetchPageContextFromServerHooks(
 ): Promise<void> {
   let result: Result
   try {
-    // TODO: fetch static assets before
     result = await getPageContextFromServerHooks(pageContextLink, false)
   } catch {
     return

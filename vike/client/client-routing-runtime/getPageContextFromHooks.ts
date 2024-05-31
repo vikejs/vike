@@ -254,9 +254,14 @@ async function hookServerOnlyExists(
   if (pageContext._pageConfigs.length > 0) {
     // V1
     const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
-    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}
+    const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value
+    if (hookEnv === null) return false
     assert(isObject(hookEnv))
-    return !!hookEnv.server && !hookEnv.client
+    const { client, server } = hookEnv
+    assert(client === true || client === undefined)
+    assert(server === true || server === undefined)
+    assert(client || server)
+    return !!server && !client
   } else {
     // TODO/v1-release: remove
     // V0.4

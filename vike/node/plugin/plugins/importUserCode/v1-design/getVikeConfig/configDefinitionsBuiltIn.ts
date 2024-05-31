@@ -134,7 +134,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true }
   },
   prefetch: {
-    env: { client: true }
+    env: { client: true, eager: true }
   },
   // TODO/v1-release: remove
   prefetchStaticAssets: {
@@ -154,12 +154,12 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       !!getConfigEnv(configValueSources, 'Page')?.client
   },
   onBeforeRenderEnv: {
-    env: { client: true },
+    env: { client: true, eager: true },
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
   },
   dataEnv: {
-    env: { client: true },
+    env: { client: true, eager: true },
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
   },
@@ -207,7 +207,11 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionI
 function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {
   const configValueSource = getConfigValueSource(configValueSources, configName)
   if (!configValueSource) return null
-  return configValueSource.configEnv
+  const { configEnv } = configValueSource
+  const env: { client?: true; server?: true } = {}
+  if (!!configEnv.client) env.client = true
+  if (!!configEnv.server) env.server = true
+  return env
 }
 function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
   const configValueSource = getConfigValueSource(configValueSources, configName)
