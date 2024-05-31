@@ -85,7 +85,7 @@ async function crawlPlusFiles(
     // Both `$ git-ls files` and fast-glob return posix paths
     assertPosixPath(filePath)
     assert(!filePath.startsWith(userRootDir))
-    assert(!isTemporaryBuildFile(filePath))
+    assert(!isTemporaryBuildFile(filePath), { filePath, withGit: res && res.length > 0 })
     const filePathAbsoluteUserRootDir = path.posix.join('/', filePath)
     return { filePathAbsoluteUserRootDir }
   })
