@@ -20,7 +20,7 @@ function ImplementedBy({
             <>
               {' '}
               If you don't use {by ?? <UiFrameworkVikeExtensionNames />} then see{' '}
-              <Link href="#without-vike-extension" />.
+              <Link href="#without-vike-react-vue-solid" />.
             </>
           )}
         </p>
