@@ -44,7 +44,7 @@ What happens with the `Page` value is determined by the <UiFrameworkVikeExtensio
 Vike itself never uses the `Page` value: it just makes the value available at `pageContext.Page`.
 The `pageContext.Page` value is typically used by the <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> hooks: these two hooks essentially determine how the `Page` value is rendered to HTML and the [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model).
 
-The <UiFrameworkVikeExtension /> implements the `onRenderHtml()` and `onRenderClient()` hooks, so that you don't have to implement them: everything just works like a regular framework such as Next.js or Nuxt.
+The <UiFrameworkVikeExtension /> implements the `onRenderHtml()` and `onRenderClient()` hooks, so that you don't have to implement them: everything just works like a regular frontend framework such as Next.js or Nuxt.
 
 Instead of using <UiFrameworkVikeExtensionNames />, you can integrate your favorite UI framework yourself: you then have complete control over the UI framework integration.
 
