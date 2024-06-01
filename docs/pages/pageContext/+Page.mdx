@@ -2,13 +2,20 @@ import { Link } from '@brillout/docpress'
 
 The `pageContext` object holds contextual information about the current page.
 
-It's available to all <Link href="/hooks">hooks</Link>. For example <Link href="/data">`data()`</Link>:
+It's <Link href="#access-anywhere">accessible from Vike hooks and UI components</Link>.
+
+It comes with <Link href="#built-in">built-in properties</Link>, and you can <Link href="#custom">add custom properties</Link> to it.
+
+
+## Access anywhere
+
+It's accessible from any <Link href="/hooks">Vike hook</Link>. For example <Link href="/data">`data()`</Link>:
 
 ```js
 // /pages/some-page/+data.js
 
 export function data(pageContext) {
-  // pageContext is available here
+  // pageContext is accessible here
   console.log('Current user:'    , pageContext.user)
   console.log('URL:'             , pageContext.urlParsed.pathname)
   console.log('Route parameters:', pageContext.routeParams)
@@ -16,9 +23,9 @@ export function data(pageContext) {
 }
 ```
 
-It's also available to any UI component, see <Link href="/usePageContext" />.
+It's also accessible from any UI component, see <Link href="/usePageContext" />.
 
-It comes with <Link href="#built-in">built-in properties</Link>, and you can <Link href="#custom">add custom properties</Link> to it.
+By using <Link href="/passToClient">`passToClient`</Link>, you can access `pageContext` also from the client-side.
 
 
 ## Built-in
@@ -152,11 +159,6 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
       }
     }
     ```
-
-
-## Access anywhere
-
-By using <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/passToClient">`passToClient`</Link>, you can access `pageContext` from anywhere.
 
 
 ## TypeScript
