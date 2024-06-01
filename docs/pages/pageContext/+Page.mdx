@@ -2,7 +2,23 @@ import { Link } from '@brillout/docpress'
 
 The `pageContext` object holds contextual information about the current page.
 
-> Once the page is rendered we recommend treating `pageContext` as immutable, see <Link href="#lifecycle" />.
+It's available in all <Link href="/hooks">hooks</Link>, such as <Link href="/data">`data()`</Link>:
+
+```js
+// /pages/some-page/+data.js
+
+export function data(pageContext) {
+  // pageContext is available here
+  console.log('Current user:'    , pageContext.user)
+  console.log('URL:'             , pageContext.urlOriginal)
+  console.log('Route parameters:', pageContext.routeParams)
+  console.log('HTTP headers:'    , pageContext.headers)
+}
+```
+
+It's also available in any UI component with <Link href="/usePageContext">`usePageContext()`</Link>.
+
+You can <Link href="#custom">add custom properties</Link> to `pageContext`.
 
 
 ## Built-in

@@ -15,15 +15,31 @@ function UiFrameworkVikeExtension({ plural, noLink }: { plural?: true; noLink?: 
 }
 function UiFrameworkVikeExtensionNames({
   links,
-  list = ['vike-react', 'vike-vue', 'vike-solid']
-}: { links?: boolean; list?: `vike-${'react' | 'vue' | 'solid'}`[] }) {
+  list = ['vike-react', 'vike-vue', 'vike-solid'],
+  comma
+}: { links?: boolean; list?: `vike-${'react' | 'vue' | 'solid'}`[]; comma?: true }) {
   return (
     <>
       {list.map((name, i) => {
         let content = <code>{name}</code>
         if (links) content = <Link href={`/${name}`}>{content}</Link>
-        if (i !== list.length - 1) {
-          content = <>{content}/</>
+        const isLast1 = i === list.length - 1
+        const isLast2 = i === list.length - 2
+        if (!isLast1) {
+          let sep = '/'
+          if (comma) {
+            if (isLast2) {
+              sep = ', or '
+            } else {
+              sep = ', '
+            }
+          }
+          content = (
+            <>
+              {content}
+              {sep}
+            </>
+          )
         }
         return <React.Fragment key={name}>{content}</React.Fragment>
       })}
