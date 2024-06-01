@@ -10,7 +10,7 @@ It's available to all <Link href="/hooks">hooks</Link>. For example <Link href="
 export function data(pageContext) {
   // pageContext is available here
   console.log('Current user:'    , pageContext.user)
-  console.log('URL:'             , pageContext.urlOriginal)
+  console.log('URL:'             , pageContext.urlParsed.pathname)
   console.log('Route parameters:', pageContext.routeParams)
   console.log('HTTP headers:'    , pageContext.headers)
 }
@@ -18,7 +18,7 @@ export function data(pageContext) {
 
 It's also available to any UI component, see <Link href="/usePageContext" />.
 
-You can <Link href="#custom">add custom properties</Link> to `pageContext`.
+It comes with <Link href="#built-in">built-in properties</Link>, and you can <Link href="#custom">add custom properties</Link> to it.
 
 
 ## Built-in
