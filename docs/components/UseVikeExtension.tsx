@@ -2,15 +2,14 @@ export { UseVikeExtensionUiFramework }
 export { UseVikeExtension }
 
 import React from 'react'
-import { UiFrameworkVikeExtension } from '../components'
+import { UiFrameworkExtension } from '../components'
 
 function UseVikeExtensionUiFramework({ featureName }: { featureName: string }) {
   return (
     <blockquote>
       <p>
-        Instead of manually integrating {featureName} yourself, you can use a <UiFrameworkVikeExtension /> which already
-        integrates {featureName}. And you can use <Bati /> to scaffold an app that uses{' '}
-        <UiFrameworkVikeExtension name />.
+        Instead of manually integrating {featureName} yourself, you can use a <UiFrameworkExtension /> which already
+        integrates {featureName}. And you can use <Bati /> to scaffold an app that uses <UiFrameworkExtension name />.
       </p>
     </blockquote>
   )

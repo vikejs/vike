@@ -1,9 +1,9 @@
-export { UiFrameworkVikeExtension }
+export { UiFrameworkExtension }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
 
-function UiFrameworkVikeExtension({
+function UiFrameworkExtension({
   plural,
   noLink,
   name,

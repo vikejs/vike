@@ -1,6 +1,6 @@
 export * from './CSSinJSTool'
 export * from './DataArchitecture'
-export * from './UiFrameworkVikeExtension'
+export * from './UiFrameworkExtension'
 export * from './UseBati'
 export * from './UseVikeExtension'
 export { default as DefaultRouting } from './DefaultRouting.mdx'

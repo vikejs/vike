@@ -1,4 +1,4 @@
-import { HookTypeScriptHints, UiFrameworkVikeExtension } from '../../components'
+import { HookTypeScriptHints, UiFrameworkExtension } from '../../components'
 import { Link } from '@brillout/docpress'
 
 > The `onBeforeRender()` hook is for expert Vike users. If you're new to Vike, we recommend using the
@@ -124,7 +124,7 @@ export default {
 
 The following is an advanced example of using `onBeforeRender()` with `meta` in order to integrate data fetching tools. In particular, this approach can be used for advanced integration with GraphQL tools.
 
-> If you use a custom renderer instead of <UiFrameworkVikeExtension name />, then you can modify your `onRenderHtml()`/`onRenderClient()` hooks instead of doing the following.
+> If you use a custom renderer instead of <UiFrameworkExtension name />, then you can modify your `onRenderHtml()`/`onRenderClient()` hooks instead of doing the following.
 
 ```js
 // /pages/+config.js
