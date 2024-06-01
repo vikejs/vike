@@ -1,18 +1,27 @@
 import { Link } from '@brillout/docpress'
-import { UseBati } from '../../components'
+import { UseBati, UiFrameworkVikeExtensionNames } from '../../components'
 
-`vike-solid` is a <Link href="/extensions">Vike extension</Link> that integrates [Solid](https://solidjs.com) in a full-fledged manner, providing a DX like a regular frontend framework such as Solid Start.
+The `vike-solid` package is a <Link href="/extensions">Vike extension</Link> that integrates [Solid](https://solidjs.com) in a full-fledged manner, providing a DX like a regular frontend framework such as Solid Start.
 
-> <UseBati>`vike-solid`</UseBati>
+Source code: [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)  
+Version history: [`MIGRATION.md`](https://github.com/vikejs/vike-solid/blob/main/MIGRATION.md)  
+Examples: [Bati](https://batijs.dev) and [`examples/`](https://github.com/vikejs/vike-solid/tree/main/examples)  
 
-See also:
-- [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
-- [`examples/`](https://github.com/vikejs/vike-solid/tree/main/examples)
-- [`MIGRATION.md`](https://github.com/vikejs/vike-solid/blob/main/MIGRATION.md)
-- <Link href="/solid" />
+The documentation for using `vike-solid` can be found throughout this website (`vike.dev`).
+
+> The guides, such as <Link href="/data-fetching" />, assume you're using Vike with <UiFrameworkVikeExtensionNames comma />. If you aren't then see the sections `Without vike-{react,vue,solid}` such as <Link href="/useData#without-vike-react-vue-solid" />.
+
+You can also integrate Solid yourself instead of using `vike-solid`, see <Link href="/solid" />.
 
 
-## Add to existing app
+## Scaffold new `vike-solid` app
+
+Use [Bati](https://batijs.dev) for creating new apps.
+
+> If you select Solid then Bati scaffolds a Vike + `vike-solid` app.
+
+
+## Add `vike-solid` to existing Vike app
 
 To add `vike-solid` to an existing Vike app: install the `vike-solid` npm package (e.g. `$ npm install vike-solid`) then extend your existing `+config.js` file (or create one) with `vike-solid`:
 
@@ -47,9 +56,7 @@ export default {
 
 ## Under the hood
 
-`vike-solid` is only `542` lines of code ([as of Mai 2024](https://gist.github.com/brillout/e2134686d682e9a450e10e95f1ff570b)).
-
-Browsing the [source code of `vike-solid`](https://github.com/vikejs/vike-solid) is therefore very much an option for deepening your understanding of Vike or for debugging.
+The `vike-solid` extension is only `542` lines of code ([as of Mai 2024](https://gist.github.com/brillout/e2134686d682e9a450e10e95f1ff570b)). Browsing the [source code of `vike-solid`](https://github.com/vikejs/vike-solid) is therefore very much an option for deepening your understanding of Vike or for debugging.
 
 Basically `vike-solid` does this:
 - Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf. (Most notably <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link>, see their implementation at
@@ -72,7 +79,7 @@ It implements following features:
 - <Link noBreadcrumb href="/stream" />
 - <Link noBreadcrumb href="/ClientOnly" />
 
-> For a friendlier list, see the following which also includes all settings & hooks implemented by `vike-solid`.
+> For a friendlier list, see the following (which also includes `vike-solid` settings & hooks):
 > - <Link href="/settings" />
 > - <Link href="/hooks" />
 
