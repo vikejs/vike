@@ -7,11 +7,11 @@ The following shows how to add SSR / <Link href="/pre-rendering">pre-rendering (
 
 It showcases how to do so in a step-by-step, progressive, and customizable fashion:
 - Choose between SSR and pre-rendering (SSG).
-- With or without <UiFrameworkExtension name noLink links list={['vike-react', 'vike-vue']} />.
+- With or without <UiFrameworkExtension name list={['vike-react', 'vike-vue']} />.
 - With [Server Routing](https://vike.dev/server-routing) or [Client Routing](https://vike.dev/client-routing).
 - Progressively migrate towards the stack you (eventually) want.
 
-You can choose whether you want to migrate towards a full-fledged SSR/SSG framework DX (like Next.js and Nuxt by using <UiFrameworkExtension name noLink links />), or add a minimal SSR/SSG implementation (applying a minimal amount of changes to your existing code), or something in-between.
+You can choose whether you want to migrate towards a full-fledged SSR/SSG framework DX (like Next.js and Nuxt by using <UiFrameworkExtension name />), or add a minimal SSR/SSG implementation (applying a minimal amount of changes to your existing code), or something in-between.
 
 This way, you can move quickly while progressively choosing your stack as you go.
 
@@ -28,7 +28,7 @@ On a high-level, this is how you add Vike to your existing Vite app:
      > Example: <RepoLink path="/boilerplates/boilerplate-react/server/index.js" />
 
 3. Either:
-   - Use <UiFrameworkExtension name noLink links />, or
+   - Use <UiFrameworkExtension name />, or
    - define <Link href="/onAfterRenderClient">`+onRenderClient.js`</Link> and <Link href="/onRenderHtml">`+onRenderHtml.js`</Link>.
      > Examples:
      > - <RepoLink text="Vue" path="/boilerplates/boilerplate-vue/renderer/" />
