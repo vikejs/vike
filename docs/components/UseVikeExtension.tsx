@@ -2,7 +2,7 @@ export { UseVikeExtensionUiFramework }
 export { UseVikeExtension }
 
 import React from 'react'
-import { UiFrameworkVikeExtension, UiFrameworkVikeExtension } from '../components'
+import { UiFrameworkVikeExtension } from '../components'
 
 function UseVikeExtensionUiFramework({ featureName }: { featureName: string }) {
   return (
