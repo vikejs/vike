@@ -7,23 +7,20 @@ function UiFrameworkExtension({
   plural,
   noLink,
   name,
-  links,
   list = ['vike-react', 'vike-vue', 'vike-solid'],
   comma
 }: {
   plural?: true
   noLink?: true
   name?: boolean
-  links?: boolean
   list?: `vike-${'react' | 'vue' | 'solid'}`[]
   comma?: true
 }) {
-  links = name ? links : !noLink
   let content = (
     <>
       {list.map((name, i) => {
         let content = <code>{name}</code>
-        if (links) content = <Link href={`/${name}`}>{content}</Link>
+        if (!noLink) content = <Link href={`/${name}`}>{content}</Link>
         const isLast1 = i === list.length - 1
         const isLast2 = i === list.length - 2
         if (!isLast1) {
