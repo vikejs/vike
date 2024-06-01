@@ -9,7 +9,7 @@ function UiFrameworkVikeExtension({ plural, noLink }: { plural?: true; noLink?: 
   const linkOrText = noLink ? linkText : <Link href="/extensions">{linkText}</Link>
   return (
     <>
-      UI framework {linkOrText} (<UiFrameworkVikeExtensionNames links={!noLink} />)
+      UI framework {linkOrText} (<UiFrameworkVikeExtension name links={!noLink} />)
     </>
   )
 }

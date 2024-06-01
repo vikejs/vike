@@ -12,14 +12,14 @@ function ImplementedBy({
   return (
     <>
       <br />
-      Implemented by: {by ?? <UiFrameworkVikeExtensionNames />}.
+      Implemented by: {by ?? <UiFrameworkVikeExtension name />}.
       <blockquote>
         <p>
-          You need {by ?? <UiFrameworkVikeExtensionNames />} to be able to use {children}.
+          You need {by ?? <UiFrameworkVikeExtension name />} to be able to use {children}.
           {!noCustomGuide && (
             <>
               {' '}
-              If you don't use {by ?? <UiFrameworkVikeExtensionNames />} then see{' '}
+              If you don't use {by ?? <UiFrameworkVikeExtension name />} then see{' '}
               <Link href="#without-vike-react-vue-solid" />.
             </>
           )}
