@@ -1,5 +1,5 @@
 import { RepoLink, Link, Warning } from '@brillout/docpress'
-import { UiFrameworkVikeExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
 Environment: client.
 
@@ -69,9 +69,9 @@ window.addEventListener('popstate', (event) => {
 
 ## Without `vike-{react,vue,solid}`
 
-If you don't use a <UiFrameworkVikeExtension /> and if you use <Link text="Server Routing" href="/server-routing" /> then use `window.location.href = '/some/url'` instead of `navigate()` (because `navigate()` requires <Link text="Client Routing" href="/client-routing" />).
+If you don't use a <UiFrameworkExtension /> and if you use <Link text="Server Routing" href="/server-routing" /> then use `window.location.href = '/some/url'` instead of `navigate()` (because `navigate()` requires <Link text="Client Routing" href="/client-routing" />).
 
-> The <UiFrameworkVikeExtension plural noLink /> use Client Routing.
+> The <UiFrameworkExtension plural noLink /> use Client Routing.
 
 
 ## See also

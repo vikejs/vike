@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtensionNames } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
 The `getPageContext()` function allows you to access the <Link href="/pageContext">`pageContext` object</Link> inside Vike hooks.
 
@@ -43,7 +43,7 @@ You may ask yourself what the purpose of `getPageContext()` is and, indeed, it's
 
 ## Universal Hooks
 
-A *universal hook* is a component hook that also works inside Vike hooks, such as the `useDocument()` hook of <UiFrameworkVikeExtensionNames />:
+A *universal hook* is a component hook that also works inside Vike hooks, such as the `useDocument()` hook of <UiFrameworkExtension name noLink />:
 
 ```js
  // /components/SomeReactComponent.jsx

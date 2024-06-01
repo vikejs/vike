@@ -1,5 +1,5 @@
 import { Link, RepoLink } from '@brillout/docpress'
-import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
 The `data()` hook is used for fetching data.
 
@@ -163,11 +163,11 @@ This means that, beyond using <Link href="/useData">`useData()`</Link>, you can 
 
 ## Without `useData()`
 
-The `data()` hook is usually used together with the component hook <Link href="/useData">`useData()`</Link> which is provided by the <UiFrameworkVikeExtension />.
+The `data()` hook is usually used together with the component hook <Link href="/useData">`useData()`</Link> which is provided by the <UiFrameworkExtension />.
 
 In general, for improved DX, we recommend using `data()` together with a `useData()` implementation.
 
-> In case you don't use <UiFrameworkVikeExtensionNames />, you can implement `useData()` yourself as shown at <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />
+> In case you don't use <UiFrameworkExtension name noLink />, you can implement `useData()` yourself as shown at <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />
 
 That said, you can also use `data()` without `useData()`:
 
