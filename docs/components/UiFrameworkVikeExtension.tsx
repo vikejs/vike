@@ -3,21 +3,23 @@ export { UiFrameworkVikeExtension }
 import React from 'react'
 import { Link } from '@brillout/docpress'
 
-function UiFrameworkVikeExtension({ plural, noLink }: { plural?: true; noLink?: true }) {
-  const linkText = `Vike extension${plural ? 's' : ''}`
-  const linkOrText = noLink ? linkText : <Link href="/extensions">{linkText}</Link>
-  return (
-    <>
-      UI framework {linkOrText} (<UiFrameworkVikeExtension name links={!noLink} />)
-    </>
-  )
-}
 function UiFrameworkVikeExtension({
+  plural,
+  noLink,
+  name,
   links,
   list = ['vike-react', 'vike-vue', 'vike-solid'],
   comma
-}: { links?: boolean; list?: `vike-${'react' | 'vue' | 'solid'}`[]; comma?: true }) {
-  return (
+}: {
+  plural?: true
+  noLink?: true
+  name?: boolean
+  links?: boolean
+  list?: `vike-${'react' | 'vue' | 'solid'}`[]
+  comma?: true
+}) {
+  links = name ? links : !noLink
+  let content = (
     <>
       {list.map((name, i) => {
         let content = <code>{name}</code>
@@ -44,4 +46,15 @@ function UiFrameworkVikeExtension({
       })}
     </>
   )
+
+  if (!name) {
+    const linkText = `Vike extension${plural ? 's' : ''}`
+    const linkOrText = noLink ? linkText : <Link href="/extensions">{linkText}</Link>
+    content = (
+      <>
+        UI framework {linkOrText} {content}
+      </>
+    )
+  }
+  return content
 }
