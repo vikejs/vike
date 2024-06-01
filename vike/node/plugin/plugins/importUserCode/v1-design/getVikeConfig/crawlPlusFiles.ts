@@ -3,7 +3,6 @@ export { crawlPlusFiles }
 import {
   assertPosixPath,
   assert,
-  toPosixPath,
   assertWarning,
   scriptFileExtensionList,
   scriptFileExtensions,
@@ -61,6 +60,9 @@ async function crawlPlusFiles(
     files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
   }
 
+  // Filter build files
+  files = files.filter((file) => !isTemporaryBuildFile(file))
+
   // Check performance
   {
     const timeAfter = new Date().getTime()
@@ -85,7 +87,6 @@ async function crawlPlusFiles(
     // Both `$ git-ls files` and fast-glob return posix paths
     assertPosixPath(filePath)
     assert(!filePath.startsWith(userRootDir))
-    assert(!isTemporaryBuildFile(filePath), { filePath, withGit: res && res.length > 0 })
     const filePathAbsoluteUserRootDir = path.posix.join('/', filePath)
     return { filePathAbsoluteUserRootDir }
   })
