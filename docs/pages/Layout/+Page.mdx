@@ -5,10 +5,14 @@ Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>.
 <ImplementedBy>the `Layout` setting</ImplementedBy>
 
 > **What are layouts?**
-> Pages can have different layouts:
-> for example, if admin panel pages (`/admin/product/@id` and `/admin/user/@id`) have a sidebar while marketing pages (`/` and `/about-us`) have a sticky header instead. The admin pages can share the same `<Layout>` component that includes the sidebar, while the marketing pages can share the `<Layout>` component that includes the sticky header.
+>
+> Your pages will usually share a common visual design.
+>
+> You may also have some of your pages share a common visual design, while other pages share another visual design. (For example, two admin pages `/admin/product/@id` and `/admin/user/@id` sharing the same navigation sidebar, while two marketing pages `/` and `/about-us` not having any sidebar but sharing a sticky header instead.)
+>
+> The `Layout` setting enables you to define such visual design shared among pages.
 
-The `Layout` setting wraps your <Link href="/Page">Page component</Link> with another component (the *layout component*).
+The component defined by the `Layout` setting wraps the <Link href="/Page">`Page` component</Link>.
 
 ```jsx
 <Layout>   ⟸ component defined by the setting "Layout"
@@ -16,37 +20,49 @@ The `Layout` setting wraps your <Link href="/Page">Page component</Link> with an
 </Layout>
 ```
 
-You can apply a layout as default to all pages:
+> See also <Link href="/Wrapper">`<Wrapper>`</Link> which also wraps `<Page>`, but for different use cases.
+
+
+## Default `<Layout>`
+
+You can define a `<Layout>` as default to all pages:
 
 ```js
 // /pages/+Layout.js
 
-// This layout component is the default layout
+// The default <Layout>
 export { Layout }
 
 // ...
 ```
 
-> See also: <Link href="#examples" />.
+If you don't override it, then this `<Layout>` applies to all your pages.
 
-You can then override the default layout on a page-by-page basis:
+> Setting inheritance/overriding is explained at <Link href="/config#inheritance" />.
+
+See <Link href="#examples" />.
+
+## Multiple `<Layout>`
+
+You can override your default `<Layout>` on a page-by-page basis:
 
 ```js
-// pages/product/@id/+Layout.js
+// /pages/product/@id/+Layout.js
 
-// This layout component overrides the default layout and
-// applies to the product page /product/@id
+// This <Layout> overrides the default and applies to the product page /product/@id
 export { Layout }
 
 // ...
 ```
 
-You can also define a layout for a group of pages:
+This means that this product page has a different `<Layout>` from all other pages.
+
+You can also define a `<Layout>` for a group of pages:
 
 ```js
 // /pages/admin/+Layout.js
 
-/* This layout applies only to admin pages (/pages/admin/**) such as:
+/* This <Layout> applies to all admin pages /pages/admin/** such as:
    URL                     FILESYSTEM
    /admin                  /pages/admin/+Page.js
    /admin/user/@id         /pages/admin/user/@id/+Page.js
@@ -57,8 +73,10 @@ export { Layout }
 // ...
 ```
 
-> See also <Link href="/Wrapper">`<Wrapper>`</Link> which also wraps `<Page>`, but for different use cases.
-
+To summarize, we defined three different `<Layout>`:
+ - `/pages/product/@id/+Layout.js` for the product page (`/product/@id`)
+ - `/pages/admin/+Layout.js` for admin pages (`/admin`, `/admin/user/@id`, `/admin/product/@id`)
+ - `/pages/+Layout.js` for all other pages (see <Link href="#default-layout" />)
 
 ## Examples
 
