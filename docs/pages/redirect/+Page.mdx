@@ -6,9 +6,11 @@ redirect(url: `/${string}` | `https://${string}` | `http://${string}`)
 ```
 
 ```js
+// /pages/some-page/+someHook.js
+
 import { redirect } from 'vike/abort'
 
-function onSomeHook() {
+export function someHook() {
   if (someCondition) {
     throw redirect('/some-url')
   }

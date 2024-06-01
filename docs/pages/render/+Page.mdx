@@ -10,9 +10,11 @@ render(url: `/${string}`, abortReason?: unknown)
 ```
 
 ```js
+// /pages/some-page/+someHook.js
+
 import { render } from 'vike/abort'
 
-function onSomeHook() {
+export function someHook() {
   if (someCondition) {
     throw render('/login')
   }
