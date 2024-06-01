@@ -1,5 +1,5 @@
 export { UiFrameworkVikeExtension }
-export { UiFrameworkVikeExtensionNames }
+export { UiFrameworkVikeExtension }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
@@ -13,7 +13,7 @@ function UiFrameworkVikeExtension({ plural, noLink }: { plural?: true; noLink?: 
     </>
   )
 }
-function UiFrameworkVikeExtensionNames({
+function UiFrameworkVikeExtension({
   links,
   list = ['vike-react', 'vike-vue', 'vike-solid'],
   comma
