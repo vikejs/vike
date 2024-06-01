@@ -4,17 +4,17 @@ import React from 'react'
 import { Link } from '@brillout/docpress'
 
 function UiFrameworkExtension({
-  plural,
-  noLink,
   name,
-  list = ['vike-react', 'vike-vue', 'vike-solid'],
-  comma
+  noLink,
+  plural,
+  comma,
+  list = ['vike-react', 'vike-vue', 'vike-solid']
 }: {
-  plural?: true
+  name?: true
   noLink?: true
-  name?: boolean
-  list?: `vike-${'react' | 'vue' | 'solid'}`[]
+  plural?: true
   comma?: true
+  list?: `vike-${'react' | 'vue' | 'solid'}`[]
 }) {
   let content = (
     <>
