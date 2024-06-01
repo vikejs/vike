@@ -254,8 +254,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.6.10
-        version: 0.6.10(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.10(@types/node@20.11.16)(terser@5.24.0))
+        specifier: ^0.6.11
+        version: 0.6.11(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.10(@types/node@20.11.16)(terser@5.24.0))
       '@types/node':
         specifier: ^20.11.16
         version: 20.11.16
@@ -2161,8 +2161,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.6.10':
-    resolution: {integrity: sha512-RLs0fbfkasn6hons603N6g0RApg0oIhGUFxyz4UefV1QhPnUEqQmY0gVGGtAspmV+k7fJFS4wF/1QQQGPDWWNw==}
+  '@brillout/docpress@0.6.11':
+    resolution: {integrity: sha512-u3Na0UVPjxWxGVxDjsjMa6kkbZ1/mKn0hHVQ0jX7JdjtcgjYkfOSCMKz1dJv1MIambH+AktTUZ76IqN8UN+M5g==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -2170,7 +2170,7 @@ packages:
       react: ^18.0.0
       react-dom: ^18.0.0
       typescript: '*'
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/rom/tmp/vike/vike/
       vite: ^5.2.0
 
   '@brillout/import@0.2.3':
@@ -6998,14 +6998,14 @@ packages:
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/rom/tmp/vike/vike/
 
   vike-react@0.4.6:
     resolution: {integrity: sha512-CjfhmPX/OtQhMaFCC8UzPr2O4RlB7FlRX3EDa/EP3q7wRRdb5AGVkkUkx+NNj7bxQiMHlR2+njiKrr0x5ITEUw==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/rom/tmp/vike/vike/
       vite: ^4.3.8 || ^5.0.10
 
   vite-node@1.6.0:
@@ -7618,9 +7618,9 @@ snapshots:
   '@biomejs/cli-win32-x64@1.5.3':
     optional: true
 
-  '@brillout/docpress@0.6.10(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.10(@types/node@20.11.16)(terser@5.24.0))':
+  '@brillout/docpress@0.6.11(@types/node@20.11.16)(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.13.0)(typescript@5.3.3)(vike@vike)(vite@5.2.10(@types/node@20.11.16)(terser@5.24.0))':
     dependencies:
-      '@brillout/picocolors': 1.0.10
+      '@brillout/picocolors': 1.0.12
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@18.2.55)(react@18.2.0)
       '@mdx-js/rollup': 3.0.1(rollup@4.13.0)
