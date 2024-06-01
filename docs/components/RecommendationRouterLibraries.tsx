@@ -22,12 +22,12 @@ function RecommendationRouterLibraries({
         </p>
         <p>
           That said, if you have an existing app using {libraryName} that you want to migrate to Vike, then it can makes
-          sense to start using Vike with {libraryName}. After your migration is done you can later/progressively migrate from{' '}
-          {libraryName} to Vike's built-in router.
+          sense to start using Vike with {libraryName}. After your migration is done you can later/progressively migrate
+          from {libraryName} to Vike's built-in router.
         </p>
         <p>
-          Vike's router aims to be as feature-rich as {libraryName}: if you need a {libraryName} feature that
-          is missing then create a new feature request.
+          Vike's router aims to be as feature-rich as {libraryName}: if you need a {libraryName} feature that is missing
+          then create a new feature request.
         </p>
       </Warning>
       <blockquote>
