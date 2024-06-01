@@ -1,9 +1,9 @@
+export { createApp }
+
 import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
 import PageLayout from './PageLayout.vue'
 import { setPageContext } from './usePageContext'
 import type { PageContext } from 'vike/types'
-
-export { createApp }
 
 function createApp(pageContext: PageContext) {
   const { Page } = pageContext
@@ -30,7 +30,7 @@ function createApp(pageContext: PageContext) {
   // We therefore use a reactive pageContext.
   const pageContextReactive = reactive(pageContext)
 
-  // Make `pageContext` accessible from any Vue component
+  // Make pageContext available from any Vue component
   setPageContext(app, pageContextReactive)
 
   return app
