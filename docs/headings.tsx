@@ -36,6 +36,13 @@ const headings = [
     title: 'Get Started',
     titleEmoji: 'seedling'
   },
+  /*
+  {
+    level: 2,
+    title: 'Getting started with Vike',
+    url: '/start'
+  },
+  */
   {
     level: 2,
     title: 'Scaffold new Vike app',
