@@ -486,5 +486,9 @@ const headingsDetached = [
   {
     title: 'Getting started with Vike',
     url: '/start'
+  },
+  {
+    title: 'Custom Integrations',
+    url: '/custom-integrations'
   }
 ] satisfies HeadingDetachedDefinition[]

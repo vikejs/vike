@@ -1,21 +1,27 @@
 export { UiFrameworkExtension }
+export type { UiFrameworkExtensionList }
 
 import React from 'react'
 import { Link } from '@brillout/docpress'
 
+type UiFrameworkExtensionList = `vike-${'react' | 'vue' | 'solid'}`[]
+
 function UiFrameworkExtension({
   name,
   noLink,
+  concise,
   plural,
   comma,
   list = ['vike-react', 'vike-vue', 'vike-solid']
 }: {
+  concise?: true
   name?: true
   noLink?: true
   plural?: true
   comma?: true
-  list?: `vike-${'react' | 'vue' | 'solid'}`[]
+  list?: UiFrameworkExtensionList
 }) {
+  if (concise) return <code>{'vike-{react,vue,solid}'}</code>
   let content = (
     <>
       {list.map((name, i) => {
