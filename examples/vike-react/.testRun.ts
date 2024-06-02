@@ -53,6 +53,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isStem?: true) {
     expect(html).toContain('<link rel="icon"')
     // <body> isn't rendered to HTML
     expect(html).not.toContain('<h1>')
-    expect(html).toContain('<div id="page-view"></div>')
+    expect(html).toContain('<div id="root"></div>')
   })
 }
