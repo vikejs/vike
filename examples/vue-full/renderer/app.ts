@@ -4,6 +4,7 @@ import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
 import PageLayout from './PageLayout.vue'
 import { setPageContext } from './usePageContext'
 import type { PageContext } from 'vike/types'
+import { setData } from './useData'
 
 function createApp(pageContext: PageContext) {
   const { Page } = pageContext
@@ -18,20 +19,23 @@ function createApp(pageContext: PageContext) {
 
   const app = createSSRApp(PageWithLayout)
 
-  // We use `app.changePage()` to do Client Routing, see `+onRenderClient.ts`
+  // app.changePage() is called upon navigation, see +onRenderClient.ts
   objectAssign(app, {
     changePage: (pageContext: PageContext) => {
+      const data = pageContext.data ?? {}
+      assertDataIsObject(data)
+      Object.assign(dataReactive, data)
       Object.assign(pageContextReactive, pageContext)
       pageRef.value = markRaw(pageContext.Page)
     }
   })
 
-  // When doing Client Routing, we mutate pageContext (see usage of app.changePage() in +onRenderClient.ts).
-  // We therefore use a reactive pageContext.
+  const data = pageContext.data ?? {}
+  assertDataIsObject(data)
+  const dataReactive = reactive(data)
   const pageContextReactive = reactive(pageContext)
-
-  // Make pageContext available from any Vue component
   setPageContext(app, pageContextReactive)
+  setData(app, dataReactive)
 
   return app
 }
@@ -42,4 +46,12 @@ function objectAssign<Obj extends object, ObjAddendum>(
   objAddendum: ObjAddendum
 ): asserts obj is Obj & ObjAddendum {
   Object.assign(obj, objAddendum)
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+function assertDataIsObject(data: unknown): asserts data is Record<string, unknown> {
+  if (!isObject(data)) throw new Error('Return value of data() hook should be an object, undefined, or null')
 }
