@@ -941,43 +941,43 @@ importers:
   examples/vue-full:
     dependencies:
       '@types/node':
-        specifier: ^17.0.31
-        version: 17.0.45
+        specifier: ^20.13.0
+        version: 20.13.0
       '@types/node-fetch':
-        specifier: ^2.5.12
+        specifier: ^2.6.11
         version: 2.6.11
       '@vitejs/plugin-vue':
-        specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@17.0.45)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
+        specifier: ^5.0.5
+        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
       '@vue/compiler-sfc':
-        specifier: ^3.3.4
+        specifier: ^3.4.27
         version: 3.4.27
       '@vue/server-renderer':
-        specifier: ^3.3.4
+        specifier: ^3.4.27
         version: 3.4.27(vue@3.4.27(typescript@5.4.5))
       cross-fetch:
-        specifier: ^3.1.5
-        version: 3.1.8
+        specifier: ^4.0.0
+        version: 4.0.0
       node-fetch:
-        specifier: ^2.6.1
-        version: 2.7.0
+        specifier: ^3.3.2
+        version: 3.3.2
       typescript:
-        specifier: ^5.2.2
+        specifier: ^5.4.5
         version: 5.4.5
       unplugin-vue-markdown:
-        specifier: ^0.24.3
-        version: 0.24.3(rollup@4.18.0)(vite@5.2.12(@types/node@17.0.45)(terser@5.31.0))
+        specifier: ^0.26.2
+        version: 0.26.2(rollup@4.18.0)(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: ^5.0.10
-        version: 5.2.12(@types/node@17.0.45)(terser@5.31.0)
+        specifier: ^5.2.12
+        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
       vue:
-        specifier: ^3.3.4
+        specifier: ^3.4.27
         version: 3.4.27(typescript@5.4.5)
       vue-tsc:
-        specifier: ^2.0.11
+        specifier: ^2.0.19
         version: 2.0.19(typescript@5.4.5)
 
   examples/vue-minimal:
@@ -2864,11 +2864,20 @@ packages:
   '@mdit-vue/plugin-component@0.12.1':
     resolution: {integrity: sha512-L3elbvuKUufXwPLHrmJGd/ijd/QKxfcHXy3kRy4O+P7UIV7HSWePpfB0k+wWee+by3MviYYxjVAi392z+DGy3Q==}
 
+  '@mdit-vue/plugin-component@2.1.3':
+    resolution: {integrity: sha512-9AG17beCgpEw/4ldo/M6Y/1Rh4E1bqMmr/rCkWKmCAxy9tJz3lzY7HQJanyHMJufwsb3WL5Lp7Om/aPcQTZ9SA==}
+
   '@mdit-vue/plugin-frontmatter@0.12.1':
     resolution: {integrity: sha512-C6ycNjrJ+T4JgbVxwo9cUkfLacOO841Yl8ogqd5PJmAVpc5cM2OLBkqqkZxNRXos3g9xM1VvIQ7gK/047UNADg==}
 
+  '@mdit-vue/plugin-frontmatter@2.1.3':
+    resolution: {integrity: sha512-KxsSCUVBEmn6sJcchSTiI5v9bWaoRxe68RBYRDGcSEY1GTnfQ5gQPMIsM48P4q1luLEIWurVGGrRu7u93//LDQ==}
+
   '@mdit-vue/types@0.12.0':
     resolution: {integrity: sha512-mrC4y8n88BYvgcgzq9bvTlDgFyi2zuvzmPilRvRc3Uz1iIvq8mDhxJ0rHKFUNzPEScpDvJdIujqiDrulMqiudA==}
+
+  '@mdit-vue/types@2.1.0':
+    resolution: {integrity: sha512-TMBB/BQWVvwtpBdWD75rkZx4ZphQ6MN0O4QB2Bc0oI5PC2uE57QerhNxdRZ7cvBHE2iY2C+BUNUziCfJbjIRRA==}
 
   '@mdx-js/mdx@2.3.0':
     resolution: {integrity: sha512-jLuwRlz8DQfQNiUCJR50Y09CGPq3fLtmtUQfVrj79E0JWu3dvsVcxVIcfhR5h0iXu+/z++zDrYeiJqifRynJkA==}
@@ -3251,8 +3260,14 @@ packages:
   '@types/linkify-it@3.0.5':
     resolution: {integrity: sha512-yg6E+u0/+Zjva+buc3EIb+29XEg4wltq7cSmd4Uc2EE/1nUVmxyzpX6gUXD0V8jIrG0r7YeOGVIbYRkxeooCtw==}
 
+  '@types/linkify-it@5.0.0':
+    resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
+
   '@types/markdown-it@13.0.8':
     resolution: {integrity: sha512-V+KmpgiipS+zoypeUSS9ojesWtY/0k4XfqcK2fnVrX/qInJhX7rsCxZ/rygiPH2zxlPPrhfuW0I6ddMcWTKLsg==}
+
+  '@types/markdown-it@14.1.1':
+    resolution: {integrity: sha512-4NpsnpYl2Gt1ljyBGrKMxFYAYvpqbnnkgP/i/g+NLpjEUa3obn1XJCur9YbEXKDAkaXqsR1LbDnGEJ0MmKFxfg==}
 
   '@types/mdast@3.0.15':
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
@@ -3262,6 +3277,9 @@ packages:
 
   '@types/mdurl@1.0.5':
     resolution: {integrity: sha512-6L6VymKTzYSrEf4Nev4Xa1LCHKrlTlYCBMTlQKFuddo1CvQcE52I0mwfOJayueUC7MJuXOeHTcIU683lzd0cUA==}
+
+  '@types/mdurl@2.0.0':
+    resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
 
   '@types/mdx@2.0.13':
     resolution: {integrity: sha512-+OWZQfAYyio6YkJb3HLxDrvnx6SWWDbC0zVPfBRzUk0/nqoDyf6dNxQi3eArPe8rJ473nobTMQ/8Zk+LxJ+Yuw==}
@@ -5163,6 +5181,9 @@ packages:
   linkify-it@4.0.1:
     resolution: {integrity: sha512-C7bfi1UZmoj8+PQx22XyeXCuBlokoyWQL5pWSP+EI6nzRylyThouddufc2c1NDIcP9k5agmN9fLpA7VNJfIiqw==}
 
+  linkify-it@5.0.0:
+    resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
+
   loader-runner@4.3.0:
     resolution: {integrity: sha512-3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==}
     engines: {node: '>=6.11.5'}
@@ -5229,6 +5250,10 @@ packages:
 
   markdown-it@13.0.2:
     resolution: {integrity: sha512-FtwnEuuK+2yVU7goGn/MJ0WBZMM9ZPgU9spqlFs7/A/pDIUNSOQZhUgOqYCficIuR2QaFnrt8LHqBWsbTAoI5w==}
+    hasBin: true
+
+  markdown-it@14.1.0:
+    resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
 
   markdown-table@3.0.3:
@@ -5314,6 +5339,9 @@ packages:
 
   mdurl@1.0.1:
     resolution: {integrity: sha512-/sKlQJCBYVY9Ers9hqzKou4H6V5UWc/M59TH2dvkt+84itfnq7uFOMLpOiOS4ujvHP4etln18fmIxA5R5fll0g==}
+
+  mdurl@2.0.0:
+    resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
 
   media-typer@0.3.0:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
@@ -5962,6 +5990,10 @@ packages:
 
   pump@3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
+
+  punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
 
   punycode@1.4.1:
     resolution: {integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==}
@@ -6666,6 +6698,9 @@ packages:
   uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
 
+  uc.micro@2.1.0:
+    resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
+
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
 
@@ -6747,6 +6782,11 @@ packages:
     resolution: {integrity: sha512-v9fNupSfGnQTYrzpDO51DTppR6IsR/ufNdKycBe7HK0nApuXYiLzo5i5ejG63NSnMauTDFZB1kYOlUjJZ5auvQ==}
     peerDependencies:
       vite: ^2.0.0 || ^3.0.0-0 || ^4.0.0
+
+  unplugin-vue-markdown@0.26.2:
+    resolution: {integrity: sha512-FjmhLZ+RRx7PFmfBCTwNUZLAj0Y9z0y/j79rTgYuXH9u+K6tZBFB+GpFFBm+4yMQ0la3MNCl7KHbaSvfna2bEA==}
+    peerDependencies:
+      vite: ^2.0.0 || ^3.0.0-0 || ^4.0.0-0 || ^5.0.0-0
 
   unplugin@1.10.1:
     resolution: {integrity: sha512-d6Mhq8RJeGA8UfKCu54Um4lFA0eSaRa3XxdAJg8tIdxbu1ubW0hBCZUL7yI2uGyYCRndvbK8FLHzqy2XKfeMsg==}
@@ -7830,6 +7870,11 @@ snapshots:
       '@types/markdown-it': 13.0.8
       markdown-it: 13.0.2
 
+  '@mdit-vue/plugin-component@2.1.3':
+    dependencies:
+      '@types/markdown-it': 14.1.1
+      markdown-it: 14.1.0
+
   '@mdit-vue/plugin-frontmatter@0.12.1':
     dependencies:
       '@mdit-vue/types': 0.12.0
@@ -7837,7 +7882,16 @@ snapshots:
       gray-matter: 4.0.3
       markdown-it: 13.0.2
 
+  '@mdit-vue/plugin-frontmatter@2.1.3':
+    dependencies:
+      '@mdit-vue/types': 2.1.0
+      '@types/markdown-it': 14.1.1
+      gray-matter: 4.0.3
+      markdown-it: 14.1.0
+
   '@mdit-vue/types@0.12.0': {}
+
+  '@mdit-vue/types@2.1.0': {}
 
   '@mdx-js/mdx@2.3.0':
     dependencies:
@@ -8292,10 +8346,17 @@ snapshots:
 
   '@types/linkify-it@3.0.5': {}
 
+  '@types/linkify-it@5.0.0': {}
+
   '@types/markdown-it@13.0.8':
     dependencies:
       '@types/linkify-it': 3.0.5
       '@types/mdurl': 1.0.5
+
+  '@types/markdown-it@14.1.1':
+    dependencies:
+      '@types/linkify-it': 5.0.0
+      '@types/mdurl': 2.0.0
 
   '@types/mdast@3.0.15':
     dependencies:
@@ -8306,6 +8367,8 @@ snapshots:
       '@types/unist': 3.0.2
 
   '@types/mdurl@1.0.5': {}
+
+  '@types/mdurl@2.0.0': {}
 
   '@types/mdx@2.0.13': {}
 
@@ -8510,11 +8573,6 @@ snapshots:
     dependencies:
       vite: 5.2.12(@types/node@17.0.45)(terser@5.31.0)
       vue: 3.2.33
-
-  '@vitejs/plugin-vue@5.0.5(vite@5.2.12(@types/node@17.0.45)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
-    dependencies:
-      vite: 5.2.12(@types/node@17.0.45)(terser@5.31.0)
-      vue: 3.4.27(typescript@5.4.5)
 
   '@vitejs/plugin-vue@5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
@@ -10746,6 +10804,10 @@ snapshots:
     dependencies:
       uc.micro: 1.0.6
 
+  linkify-it@5.0.0:
+    dependencies:
+      uc.micro: 2.1.0
+
   loader-runner@4.3.0: {}
 
   local-pkg@0.5.0:
@@ -10810,6 +10872,15 @@ snapshots:
       linkify-it: 4.0.1
       mdurl: 1.0.1
       uc.micro: 1.0.6
+
+  markdown-it@14.1.0:
+    dependencies:
+      argparse: 2.0.1
+      entities: 4.5.0
+      linkify-it: 5.0.0
+      mdurl: 2.0.0
+      punycode.js: 2.3.1
+      uc.micro: 2.1.0
 
   markdown-table@3.0.3: {}
 
@@ -11078,6 +11149,8 @@ snapshots:
       '@types/mdast': 4.0.4
 
   mdurl@1.0.1: {}
+
+  mdurl@2.0.0: {}
 
   media-typer@0.3.0: {}
 
@@ -11971,6 +12044,8 @@ snapshots:
       end-of-stream: 1.4.4
       once: 1.4.0
 
+  punycode.js@2.3.1: {}
+
   punycode@1.4.1: {}
 
   punycode@2.3.1: {}
@@ -12785,6 +12860,8 @@ snapshots:
 
   uc.micro@1.0.6: {}
 
+  uc.micro@2.1.0: {}
+
   ufo@1.5.3: {}
 
   uglify-js@3.17.4:
@@ -12903,6 +12980,19 @@ snapshots:
       markdown-it: 13.0.2
       unplugin: 1.10.1
       vite: 5.2.12(@types/node@17.0.45)(terser@5.31.0)
+    transitivePeerDependencies:
+      - rollup
+
+  unplugin-vue-markdown@0.26.2(rollup@4.18.0)(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0)):
+    dependencies:
+      '@mdit-vue/plugin-component': 2.1.3
+      '@mdit-vue/plugin-frontmatter': 2.1.3
+      '@mdit-vue/types': 2.1.0
+      '@rollup/pluginutils': 5.1.0(rollup@4.18.0)
+      '@types/markdown-it': 14.1.1
+      markdown-it: 14.1.0
+      unplugin: 1.10.1
+      vite: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
     transitivePeerDependencies:
       - rollup
 

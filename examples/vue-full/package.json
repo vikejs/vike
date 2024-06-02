@@ -5,19 +5,19 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@types/node": "^17.0.31",
-    "@types/node-fetch": "^2.5.12",
-    "@vitejs/plugin-vue": "^5.0.0",
-    "@vue/compiler-sfc": "^3.3.4",
-    "@vue/server-renderer": "^3.3.4",
-    "cross-fetch": "^3.1.5",
-    "node-fetch": "^2.6.1",
-    "typescript": "^5.2.2",
-    "unplugin-vue-markdown": "^0.24.3",
+    "@types/node": "^20.13.0",
+    "@types/node-fetch": "^2.6.11",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/compiler-sfc": "^3.4.27",
+    "@vue/server-renderer": "^3.4.27",
+    "cross-fetch": "^4.0.0",
+    "node-fetch": "^3.3.2",
+    "typescript": "^5.4.5",
+    "unplugin-vue-markdown": "^0.26.2",
     "vike": "0.4.172",
-    "vite": "^5.0.10",
-    "vue": "^3.3.4",
-    "vue-tsc": "^2.0.11"
+    "vite": "^5.2.12",
+    "vue": "^3.4.27",
+    "vue-tsc": "^2.0.19"
   },
   "type": "module"
 }
