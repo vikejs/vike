@@ -5,15 +5,16 @@ export { setPageContext }
 import { inject } from 'vue'
 import type { App, InjectionKey } from 'vue'
 import type { PageContext } from 'vike/types'
+
 const key: InjectionKey<PageContext> = Symbol()
 
 /** https://vike.dev/usePageContext */
-function usePageContext() {
+function usePageContext(): PageContext {
   const pageContext = inject(key)
   if (!pageContext) throw new Error('setPageContext() not called in parent')
   return pageContext
 }
 
-function setPageContext(app: App, pageContext: PageContext) {
+function setPageContext(app: App, pageContext: PageContext): void {
   app.provide(key, pageContext)
 }
