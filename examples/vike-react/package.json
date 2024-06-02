@@ -5,16 +5,16 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@types/react": "^18.2.48",
-    "@types/react-dom": "^18.2.18",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
     "node-fetch": "^3.3.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^5.3.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.5",
     "vike": "0.4.172",
-    "vike-react": "^0.4.6",
-    "vite": "^5.0.12"
+    "vike-react": "^0.4.11",
+    "vite": "^5.2.12"
   },
   "type": "module"
 }
