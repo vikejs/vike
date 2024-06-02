@@ -60,5 +60,6 @@
         }
       }
     }
-  }
+  },
+  "packageManager": "pnpm@9.1.3"
 }
