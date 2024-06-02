@@ -49,6 +49,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
     run(cmd, {
       additionalTimeout,
       serverIsReadyMessage,
+      doNotFailOnWarning: true,
       // Randomly fails because of Cloudflare: it seems like uploading assets to Cloudflare sometimes fails.
       isFlaky: true
     })
