@@ -5,6 +5,7 @@ import PageLayout from './PageLayout.vue'
 import { setPageContext } from './usePageContext'
 import type { PageContext } from 'vike/types'
 import { setData } from './useData'
+import { isObject, objectAssign } from './utils'
 
 function createApp(pageContext: PageContext) {
   const { Page } = pageContext
@@ -38,18 +39,6 @@ function createApp(pageContext: PageContext) {
   setData(app, dataReactive)
 
   return app
-}
-
-// Same as `Object.assign()` but with type inference
-function objectAssign<Obj extends object, ObjAddendum>(
-  obj: Obj,
-  objAddendum: ObjAddendum
-): asserts obj is Obj & ObjAddendum {
-  Object.assign(obj, objAddendum)
-}
-
-function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
 
 function assertDataIsObject(data: unknown): asserts data is Record<string, unknown> {
