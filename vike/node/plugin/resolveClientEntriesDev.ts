@@ -41,26 +41,24 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
   if (clientEntry.startsWith('/')) {
     filePath = pathJoin(root, clientEntry)
   } else {
-    // @ts-expect-error
-    // Bun workaround https://github.com/vikejs/vike/pull/1048
-    const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname_) : require_.resolve
-
     if (clientEntry.startsWith('@@vike/')) {
       assert(clientEntry.endsWith('.js'))
       try {
         // For Vitest (which doesn't resolve vike to its dist but to its source files)
         // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/plugin/resolveClientEntriesDev.js
         filePath = toPosixPath(
-          res(clientEntry.replace('@@vike/dist/esm/client/', '../../client/').replace('.js', '.ts'))
+          require_.resolve(clientEntry.replace('@@vike/dist/esm/client/', '../../client/').replace('.js', '.ts'))
         )
       } catch {
         // For users
         // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/resolveClientEntriesDev.js
-        filePath = toPosixPath(res(clientEntry.replace('@@vike/dist/esm/client/', '../../../../dist/esm/client/')))
+        filePath = toPosixPath(
+          require_.resolve(clientEntry.replace('@@vike/dist/esm/client/', '../../../../dist/esm/client/'))
+        )
       }
     } else {
       assertIsNpmPackageImport(clientEntry)
-      filePath = res(clientEntry)
+      filePath = require_.resolve(clientEntry)
     }
   }
 
