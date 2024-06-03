@@ -7,7 +7,7 @@ import { UiFrameworkExtension, type UiFrameworkExtensionList } from './UiFramewo
 function CustomIntegrationWarning({ list }: { list?: UiFrameworkExtensionList }) {
   return (
     <Warning>
-      Do this only if you have a clear reason for not using <UiFrameworkExtension name noLink list={list} />, see{' '}
+      Do this only if you have a clear reason for not using <UiFrameworkExtension name noLink list={list} />. See{' '}
       <Link href="/extension-vs-custom" />.
     </Warning>
   )
