@@ -6,7 +6,7 @@ import { assertWarning } from '../utils.js'
 import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
-function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig) {
+function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig, isPreview: boolean) {
   middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
@@ -45,9 +45,9 @@ function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig) {
       return next()
     }
 
-    const serverHeaders = config?.server?.headers
-    if (serverHeaders) {
-      for (const [name, value] of Object.entries(serverHeaders))
+    const configHeaders = isPreview && config?.preview?.headers || config?.server?.headers
+    if (configHeaders) {
+      for (const [name, value] of Object.entries(configHeaders))
         if (value)
           res.setHeader(name, value)
     }

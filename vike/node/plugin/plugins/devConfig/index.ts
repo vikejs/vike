@@ -84,7 +84,7 @@ function devConfig(): Plugin[] {
 
           if (config.server.middlewareMode || hasHonoViteDevServer) return
           return () => {
-            addSsrMiddleware(server.middlewares, server.config)
+            addSsrMiddleware(server.middlewares, config, false)
           }
         }
       },

@@ -5,6 +5,12 @@ export default {
   server: {
     headers: {
       'cross-origin-opener-policy': 'same-origin',
+      'cross-origin-embedder-policy': 'credentialless'
+    }
+  },
+  preview: {
+    headers: {
+      'cross-origin-opener-policy': 'same-origin',
       'cross-origin-embedder-policy': 'require-corp'
     }
   },

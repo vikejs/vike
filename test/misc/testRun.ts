@@ -173,6 +173,7 @@ function testServerHeaders(cmd: 'npm run dev' | 'npm run preview' | 'npm run pro
     const res = await page.goto(getServerUrl() + '/')
     expect(res).toBeTruthy()
     expect(await res?.headerValue('cross-origin-opener-policy')).toBe('same-origin')
-    expect(await res?.headerValue('cross-origin-embedder-policy')).toBe('require-corp')
+    expect(await res?.headerValue('cross-origin-embedder-policy'))
+      .toBe(cmd == 'npm run preview' ? 'require-corp' : 'credentialless')
   })
 }
