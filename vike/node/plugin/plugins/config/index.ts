@@ -26,17 +26,17 @@ async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig):
   const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVikeUserProvided
 
   const configs = [fromPluginOptions, fromViteConfig]
+  assertVikeConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vike.${prop} ${errMsg}`)
+  // TODO/v1-release: deprecate this
+  assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
-  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev2(config))
+  const crawlWithGit = fromPluginOptions.crawl?.git ?? null
+  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev2(config), { crawlWithGit })
   configs.push(fromPlusConfigFile)
-
   assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
     // TODO: add config file path ?
     return `config ${pc.cyan(prop)} ${errMsg}`
   })
-  assertVikeConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vike.${prop} ${errMsg}`)
-  // TODO/v1-release: deprecate this
-  assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
   const { baseServer, baseAssets } = resolveBase(configs, config)
 
@@ -48,7 +48,10 @@ async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig):
     baseAssets,
     redirects: merge(configs.map((c) => c.redirects)) ?? {},
     disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
-    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
+    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false,
+    crawl: {
+      git: crawlWithGit
+    }
   }
 
   return configVike
