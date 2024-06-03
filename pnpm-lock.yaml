@@ -1877,8 +1877,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       '@brillout/picocolors':
-        specifier: ^1.0.10
-        version: 1.0.12
+        specifier: ^1.0.13
+        version: 1.0.13
       '@brillout/require-shim':
         specifier: ^0.1.2
         version: 0.1.2
@@ -2166,6 +2166,9 @@ packages:
 
   '@brillout/picocolors@1.0.12':
     resolution: {integrity: sha512-2gowgbpAqEQz4U1D/dh3tU2fKcRm+yt724d8YTbCsVHxnLTHWP2J5RMO1iTWcoViX7rTmLvPkHHlYtEiKP4gLA==}
+
+  '@brillout/picocolors@1.0.13':
+    resolution: {integrity: sha512-LblvMKItHbvkaIMI+Awsk1EEjmReE8E8Mgjtj3Pdn/qBvwQ6e+ts5uEqG6iTrK6JWndcxrQgSe664KfoteN6fA==}
 
   '@brillout/release-me@0.3.9':
     resolution: {integrity: sha512-7Q9YD+rnVF9hFmRFNSEePAejYSgZzWABJTA5sFrfD1utREt5K8aokoldvm/WES83SOMIkPO97c2kII9J4snc7Q==}
@@ -7663,9 +7666,11 @@ snapshots:
 
   '@brillout/picocolors@1.0.12': {}
 
+  '@brillout/picocolors@1.0.13': {}
+
   '@brillout/release-me@0.3.9':
     dependencies:
-      '@brillout/picocolors': 1.0.12
+      '@brillout/picocolors': 1.0.13
       commander: 11.1.0
       conventional-changelog: 5.1.0
       execa: 5.1.1
