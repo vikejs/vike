@@ -19,6 +19,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testRedirectMailto()
   testNestedConfigWorkaround()
   testHistoryPushState()
+  testServerHeaders(cmd)
 }
 
 function testRouteStringDefinedInConfigFile() {
@@ -163,4 +164,15 @@ function testHistoryPushState() {
     const url = await page.evaluate(() => location.href)
     return url
   }
+}
+
+function testServerHeaders(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
+  if (cmd == 'npm run prod')
+    return
+  test('Vite config server headers are applied', async () => {
+    const res = await page.goto(getServerUrl() + '/')
+    expect(res).toBeTruthy()
+    expect(await res?.headerValue('cross-origin-opener-policy')).toBe('same-origin')
+    expect(await res?.headerValue('cross-origin-embedder-policy')).toBe('require-corp')
+  })
 }
