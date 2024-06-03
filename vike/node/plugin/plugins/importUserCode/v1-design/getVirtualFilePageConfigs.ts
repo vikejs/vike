@@ -15,7 +15,7 @@ async function getVirtualFilePageConfigs(
   isClientRouting: boolean,
   config: ResolvedConfig
 ): Promise<string> {
-  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(config, isDev, true)
+  const { pageConfigs, pageConfigGlobal } = await getVikeConfig(config, isDev, { tolerateInvalidConfig: true })
   return getCode(pageConfigs, pageConfigGlobal, isForClientSide, isDev, id, isClientRouting)
 }
 
