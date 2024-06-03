@@ -490,5 +490,9 @@ const headingsDetached = [
   {
     title: 'Vike extension VS custom integration',
     url: '/extension-vs-custom'
+  },
+  {
+    title: '`clientHooks`',
+    url: '/clientHooks'
   }
 ] satisfies HeadingDetachedDefinition[]

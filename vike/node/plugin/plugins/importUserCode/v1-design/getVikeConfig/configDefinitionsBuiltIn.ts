@@ -14,8 +14,8 @@ import type {
   ConfigValueSource
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
-import { assert } from '../../../../utils.js'
-import type { ConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
+import { assert, assertUsage } from '../../../../utils.js'
+import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
 // For users
 /** The meta definition of a config.
@@ -127,6 +127,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     // We could make it { client: false } but we don't yet because of some legacy V0.4 design code
     env: { server: true, client: true, config: true, eager: true }
   },
+  clientHooks: {
+    env: { config: true }
+  },
   prerender: {
     env: { config: true }
   },
@@ -144,10 +147,22 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   clientEntryLoaded: {
     env: { server: true, client: true, eager: true },
-    _computed: (configValueSources): boolean =>
-      isConfigSet(configValueSources, 'onRenderClient') &&
-      isConfigSet(configValueSources, 'Page') &&
-      !!getConfigEnv(configValueSources, 'Page')?.client
+    _computed: (configValueSources): boolean => {
+      {
+        const source = getConfigValueSource(configValueSources, 'clientHooks')
+        if (source && source.value !== null) {
+          const { value } = source
+          const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAtFilePath)
+          assertUsage(typeof value === 'boolean', `${definedAt} should be a boolean`)
+          return value
+        }
+      }
+      return (
+        isConfigSet(configValueSources, 'onRenderClient') &&
+        isConfigSet(configValueSources, 'Page') &&
+        !!getConfigEnv(configValueSources, 'Page')?.client
+      )
+    }
   },
   onBeforeRenderEnv: {
     env: { client: true },

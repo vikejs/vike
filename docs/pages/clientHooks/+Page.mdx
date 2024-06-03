@@ -1,0 +1,26 @@
+import { Link } from '@brillout/docpress'
+
+The `clientHooks` setting determines whether <Link href="/hooks">hooks</Link> should be loaded on the client-side.
+
+If `false` then hooks aren't loaded on the client-side (saving KBs).
+
+> <Link href="/client">`+client.js`</Link> is always loaded, regardless of this setting. Set/<Link href="/config#inheritance">override</Link> the value of the `client` setting to `null` if you also want to skip loading `+client.js`.
+
+The usual use case is to control what code is loaded on the client-side for HTML-only pages, see <Link href="/render-modes#html-only" doNotInferSectionTitle />.
+
+By default, Vike sets its value to `true` (client-side hooks are loaded) if and only if:
+ - <Link href="/onRenderClient">`onRenderClient()`</Link> is defined, and
+ - <Link href="/Page">`Page`</Link> is defined and its <Link href="/meta#api">`meta.env.client`</Link> is `true`.
+
+Use this setting to override the default:
+ - Set to `false` if you want to skip loading hooks on the client-side (saving KBs).
+ - Set to `true` if you want to ensure hooks are loaded on the client-side.
+
+
+
+## See also
+
+- <Link href="/render-modes" />
+- <Link href="/render-modes#html-only" />
+- <Link href="/client" />
+- <Link href="/settings" />
