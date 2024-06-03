@@ -1,12 +1,12 @@
 export { addSsrMiddleware }
 
 import { renderPage } from '../../runtime/renderPage.js'
-import type { ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../utils.js'
 import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
-function addSsrMiddleware(middlewares: ConnectServer) {
+function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig) {
   middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
@@ -45,6 +45,13 @@ function addSsrMiddleware(middlewares: ConnectServer) {
       return next()
     }
 
+    const serverHeaders = config?.server?.headers
+    if (serverHeaders) {
+      for (const [name, value] of Object.entries(serverHeaders))
+        if (value)
+          res.setHeader(name, value)
+    }
+    
     if (!pageContext.httpResponse) {
       return next()
     } else {
