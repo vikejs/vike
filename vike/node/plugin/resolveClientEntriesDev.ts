@@ -10,7 +10,13 @@ import {
   assertIsNotProductionRuntime
 } from './utils.js'
 import type { ViteDevServer } from 'vite'
-import { import_ } from '@brillout/import'
+import { createRequire } from 'module'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
+const __dirname_ = dirname(fileURLToPath(importMetaUrl))
 
 assertIsNotProductionRuntime()
 
@@ -35,14 +41,6 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
   if (clientEntry.startsWith('/')) {
     filePath = pathJoin(root, clientEntry)
   } else {
-    const { createRequire } = (await import_('module')).default as Awaited<typeof import('module')>
-    const { dirname } = (await import_('path')).default as Awaited<typeof import('path')>
-    const { fileURLToPath } = (await import_('url')).default as Awaited<typeof import('url')>
-    // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
-    const importMetaUrl: string = import.meta.url
-    const require_ = createRequire(importMetaUrl)
-    const __dirname_ = dirname(fileURLToPath(importMetaUrl))
-
     // @ts-expect-error
     // Bun workaround https://github.com/vikejs/vike/pull/1048
     const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname_) : require_.resolve
