@@ -932,8 +932,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react-simple:
-        specifier: ^0.1.4
-        version: 0.1.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike)
+        specifier: ^0.2.0
+        version: 0.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike)
       vite:
         specifier: ^5.0.10
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
@@ -7067,8 +7067,8 @@ packages:
   vike-contributors@0.0.9:
     resolution: {integrity: sha512-uOvGIv5XZZ7Gm9BdQty/K2f22641+ZTBH1Ccq7Qh/uvH2gI+SA8npSSS6zwdVlSWFsvecZqSn45AYKrAYSIMNg==}
 
-  vike-react-simple@0.1.4:
-    resolution: {integrity: sha512-4odC6++w6aW6pO+Bv4nDTLeRsJZ5FiFFBXgy8jbgonRSMl1jMnOuPUHM2cmTmil4/yBi/ioG1KhtLDS2k70h2w==}
+  vike-react-simple@0.2.0:
+    resolution: {integrity: sha512-A87keGdPDswMqTvB3aGmyiYjh3VjC467t53LiBORiYUtaiKLNXzAQpm36QxlVjyiZrs8/QcVYymcOg84ZGihMg==}
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
@@ -13484,7 +13484,7 @@ snapshots:
 
   vike-contributors@0.0.9: {}
 
-  vike-react-simple@0.1.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike):
+  vike-react-simple@0.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike):
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
