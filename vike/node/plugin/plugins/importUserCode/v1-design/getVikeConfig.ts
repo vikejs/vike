@@ -258,6 +258,46 @@ async function loadInterfaceFiles(
           } else {
             assertUsage(extensionNameValue, warnMsg)
           }
+          {
+            const { filePathToShowToUserResolved } = interfaceFile.filePath
+            assert(filePathToShowToUserResolved)
+            const errPrefix = `The setting ${pc.bold('name')} defined at ${filePathToShowToUserResolved}`
+            assertUsage(typeof extensionNameValue === 'string', `${errPrefix} should be a string`)
+            assertWarning(
+              extensionNameValue === extensionName,
+              `${errPrefix} is ${pc.bold(extensionNameValue)} but it should be ${pc.bold(extensionName)} instead`,
+              { onlyOnce: true }
+            )
+          }
+          {
+            const importPathAbsoluteExpected = `${extensionName}/config`
+            assertWarning(
+              importPathAbsolute === importPathAbsoluteExpected,
+              `The Vike configuration of ${extensionName} is exported at ${pc.bold(
+                importPathAbsolute
+              )} but it should be exported at ${pc.bold(importPathAbsoluteExpected)} instead`,
+              { onlyOnce: true }
+            )
+          }
+          if (extensionName.startsWith('vike-')) {
+            const prefix = [
+              //
+              'vike-react',
+              'vike-vue',
+              'vike-solid',
+              'vike-svelte',
+              'vike-angular',
+              'vike-preact'
+            ]
+            assertWarning(
+              prefix.some((p) => extensionName === p || extensionName.startsWith(`${p}-`)),
+              `The name of the Vike extension ${pc.bold(extensionName)} should be or start with ${joinEnglish(
+                prefix.map(pc.bold),
+                'or'
+              )}`,
+              { onlyOnce: true }
+            )
+          }
         }
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
