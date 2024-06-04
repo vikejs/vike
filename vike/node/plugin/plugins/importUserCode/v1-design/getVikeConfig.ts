@@ -248,15 +248,15 @@ async function loadInterfaceFiles(
             .split('/')
             .slice(0, importPathAbsolute.startsWith('@') ? 2 : 1)
             .join('/')
-          const warnMsg = alreadyMigrated.includes(extensionName)
+          const errMsg = alreadyMigrated.includes(extensionName)
             ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version.`
             : `The config of the Vike extension ${extensionName} should set a ${pc.cyan('name')} value`
           const extensionNameValue = interfaceFile.fileExportsByConfigName.name?.configValue
           if (alreadyMigrated) {
-            // Eventually always make it a assertUsage()
-            assertWarning(extensionNameValue, warnMsg, { onlyOnce: true })
+            // Eventually remove (always use assertUsage())
+            assertWarning(extensionNameValue, errMsg, { onlyOnce: true })
           } else {
-            assertUsage(extensionNameValue, warnMsg)
+            assertUsage(extensionNameValue, errMsg)
           }
           {
             const { filePathToShowToUserResolved } = interfaceFile.filePath
