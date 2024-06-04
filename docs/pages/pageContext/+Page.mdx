@@ -2,7 +2,30 @@ import { Link } from '@brillout/docpress'
 
 The `pageContext` object holds contextual information about the current page.
 
-> Once the page is rendered we recommend treating `pageContext` as immutable, see <Link href="#lifecycle" />.
+It's <Link href="#access-anywhere">accessible from Vike hooks and UI components</Link>.
+
+It comes with <Link href="#built-in">built-in properties</Link>, and you can <Link href="#custom">add custom properties</Link> to it.
+
+
+## Access anywhere
+
+It's accessible from any <Link href="/hooks">Vike hook</Link>. For example <Link href="/data">`data()`</Link>:
+
+```js
+// /pages/some-page/+data.js
+
+export function data(pageContext) {
+  // pageContext is accessible here
+  console.log('Current user:'    , pageContext.user)
+  console.log('URL:'             , pageContext.urlParsed.pathname)
+  console.log('Route parameters:', pageContext.routeParams)
+  console.log('HTTP headers:'    , pageContext.headers)
+}
+```
+
+It's also accessible from any UI component, see <Link href="/usePageContext" />.
+
+By using <Link href="/passToClient">`passToClient`</Link>, you can access `pageContext` also from the client-side.
 
 
 ## Built-in
@@ -138,11 +161,6 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
     ```
 
 
-## Access anywhere
-
-By using <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/passToClient">`passToClient`</Link>, you can access `pageContext` from anywhere.
-
-
 ## TypeScript
 
 ```ts
@@ -206,3 +224,10 @@ At build-time, upon <Link text="pre-rendering" href="/pre-rendering" />, a `page
 Vike adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as immutable after the rendering of the page has finished. Consequently:
  - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/store" /> instead.)
  - If you use <Link text="pre-rendering" href="/pre-rendering" />, then the `pageContext` object of each URL is set in stone already at build-time.
+
+
+## See also
+
+- <Link href="/usePageContext" />
+- <Link href="/useData" />
+- <Link href="/renderPage" />

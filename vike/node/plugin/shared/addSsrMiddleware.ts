@@ -1,12 +1,12 @@
 export { addSsrMiddleware }
 
 import { renderPage } from '../../runtime/renderPage.js'
-import type { ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { assertWarning } from '../utils.js'
 import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
-function addSsrMiddleware(middlewares: ConnectServer) {
+function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig, isPreview: boolean) {
   middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
@@ -43,6 +43,11 @@ function addSsrMiddleware(middlewares: ConnectServer) {
       //   - But it only works for users using Vite's standalone dev server (it doesn't work for users using Vite's dev middleware)
       // - We purposely don't use next(err) to align behavior: we use our own/copied implementation of buildErrorMessage() regardless of whether the user uses Vite's dev middleware or Vite's standalone dev server
       return next()
+    }
+
+    const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
+    if (configHeaders) {
+      for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
     }
 
     if (!pageContext.httpResponse) {

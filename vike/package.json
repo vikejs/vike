@@ -15,7 +15,7 @@
   "dependencies": {
     "@brillout/import": "^0.2.3",
     "@brillout/json-serializer": "^0.5.10",
-    "@brillout/picocolors": "^1.0.10",
+    "@brillout/picocolors": "^1.0.13",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.4.5",
     "acorn": "^8.0.0",
@@ -194,7 +194,7 @@
     "@biomejs/biome": "^1.5.3",
     "@brillout/import": "^0.2.3",
     "@brillout/json-serializer": "^0.5.8",
-    "@brillout/picocolors": "^1.0.10",
+    "@brillout/picocolors": "^1.0.13",
     "@brillout/release-me": "^0.3.8",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.4.0",

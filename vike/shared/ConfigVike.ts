@@ -17,6 +17,9 @@ type ConfigVikeResolved = {
   redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
+  crawl: {
+    git: null | boolean
+  }
 }
 
 type ConfigVikeUserProvided = {
@@ -111,4 +114,9 @@ type ConfigVikeUserProvided = {
    * @default false
    */
   disableUrlNormalization?: boolean
+
+  /** @experimental https://github.com/vikejs/vike/issues/1655 */
+  crawl?: {
+    git?: boolean
+  }
 }

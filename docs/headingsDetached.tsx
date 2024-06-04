@@ -482,5 +482,17 @@ const headingsDetached = [
   {
     title: 'Add SSR/SSG to existing Vite app',
     url: '/add-ssr-to-vite-app'
+  },
+  {
+    title: 'Getting started with Vike',
+    url: '/start'
+  },
+  {
+    title: 'Vike extension VS custom integration',
+    url: '/extension-vs-custom'
+  },
+  {
+    title: '`clientHooks`',
+    url: '/clientHooks'
   }
 ] satisfies HeadingDetachedDefinition[]

@@ -1,5 +1,4 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
-import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
 
 Everything there is to know about config files.
 
@@ -74,7 +73,7 @@ Both achieve the same and it's just convenience: the latter allows you to skip c
 You can apply configurations to all your pages, a subset of pages, or one page only.
 
 
-Example of configuring the <Link href="/Layout">`Layout`</Link> and <Link href="/ssr">`ssr`</Link> settings:
+For example with the <Link href="/Layout">`Layout`</Link> and <Link href="/ssr">`ssr`</Link> settings:
 
 
 ```js
@@ -88,7 +87,7 @@ import Layout from '../layouts/LayoutDefault'
 //   /pages/product/@id/+Page.js
 
 export default {
-  // Set <Layout> for all pages (as overridable default)
+  // The <Layout> for all pages (as overridable default)
   Layout,
   // Disable SSR for all pages (as overridable default)
   ssr: false
@@ -98,14 +97,14 @@ export default {
 ```js
 // /pages/admin/+config.js
 
-// Applies only to Admin Panel pages:
+// Applies only to admin pages:
 //   /pages/admin/income/+Page.js
 //   /pages/admin/kpi/+Page.js
 
 import Layout from '../../layouts/LayoutDashboard.jsx'
 
 export default {
-  // Set the <Layout> for all Admin Panel pages (overriding the default set by /pages/+config.js)
+  // The <Layout> of all admin pages (overriding the default set by /pages/+config.js)
   Layout
 }
 ```
@@ -120,7 +119,7 @@ export default {
 import Layout from './Layout'
 
 export default {
-  // Set the <Layout> of the product page (overriding the default set by /pages/+config.js)
+  // The <Layout> of the product page (overriding the default set by /pages/+config.js)
   Layout,
   // Enable SSR (overriding the default set by /pages/+config.js)
   ssr: true
@@ -149,7 +148,7 @@ The config inheritance mechanism is a powerful way to configure your pages. For 
 
 import vikeVue from 'vike-vue/config'
 
-// Make all Admin Panel pages use Vue without SSR:
+// Admin pages using Vue without SSR:
 export default {
   ssr: false,
   extends: [vikeVue]
@@ -161,7 +160,7 @@ export default {
 
 import vikeReact from 'vike-react/config'
 
-// Make the product page use React with SSR:
+// Product page using React with SSR:
 export default {
   ssr: true,
   extends: [vikeReact]

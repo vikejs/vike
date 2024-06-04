@@ -6,9 +6,11 @@ redirect(url: `/${string}` | `https://${string}` | `http://${string}`)
 ```
 
 ```js
+// /pages/some-page/+someHook.js
+
 import { redirect } from 'vike/abort'
 
-function onSomeHook() {
+export function someHook() {
   if (someCondition) {
     throw redirect('/some-url')
   }
@@ -36,5 +38,6 @@ If `throw redirect()` doesn't work, see <Link href="/abort#debug" /> and <Link h
 - <Link href="/redirects" />
 - <Link href="/navigate" />
 - <Link href="/render"  />
+- <Link href="/guard" />
 - <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />
 - <Link href="/abort#debug" />

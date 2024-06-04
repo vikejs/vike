@@ -1,35 +1,58 @@
 import { Link } from '@brillout/docpress'
 
-By default, Vike does Filesystem Routing: the URL of a page is determined based on where its <Link href="/Page">`+Page.js`</Link> (or <Link href="/config">`+config.js`</Link>) file is located on the filesystem.
+Vike supports *Filesystem Routing*: the URL of a page is determined by where the page is located on your filesystem.
 
 ```bash
-FILESYSTEM                   URL
-========================     =================================
-pages/about/+Page.js         /about
-# `index` is mapped to the empty string
-pages/index/+Page.js         /
-# Case sensitive
-pages/HELLO/+Page.js         /HELLO
-# Route parameter
-pages/movie/@id/+Page.js     /movie/1, /movie/2, /movie/3, ...
+FILESYSTEM                     URL
+====================           ======
+pages/about/+Page.js           /about
+pages/faq/+Page.js             /faq
 ```
 
-Filesystem Routing ignores all the following directories:
+For more advanced routing, use [Route Strings](/route-string) and [Route Functions](route-function) instead.
+
+#### Paramterized routes
+
+You can define parameterized routes:
+
+```bash
+FILESYSTEM                     URL
+========================       ===========================
+pages/movie/@id/+Page.js       /movie/123, /movie/abc, ...
+```
+
+> The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
+
+#### Case sensitive
+
+It's case senstive:
+
+```bash
+FILESYSTEM                     URL
+========================       ======
+pages/HELLO/+Page.js           /HELLO
+```
+
+### Ignored directories
+
+Filesystem Routing ignores the following directories:
  - `index/`
  - `pages/`
  - `src/`
 
-For example:
-
 ```bash
 FILESYSTEM                                          URL
 ==============================================      ========
+pages/index/+Page.js                                /
+src/pages/index/+Page.js                            /
 src/pages/jobs/+Page.js                             /jobs
 pages/pages/src/src/index/pages/about/+Page.js      /about
 contact/+Page.js                                    /contact
 ```
 
-This enables you to implement a <Link text="domain-driven file structure" href='/file-structure#domain-driven' /> such as:
+### Domain-driven file structure
+
+You can setup a <Link text="domain-driven file structure" href='/file-structure#domain-driven' /> such as:
 
 ```bash
 FILESYSTEM                         URL
@@ -42,4 +65,6 @@ todo/pages/create/+Page.js         /todo/create
 
 You can change the URL root of Filesystem Routing by using <Link href="/filesystemRoutingRoot" noBreadcrumb />.
 
-For more advanced routing, use [Route Strings](/route-string) and [Route Functions](route-function).
+## See also
+
+ - <Link href="/routing" />

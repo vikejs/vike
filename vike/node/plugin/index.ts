@@ -27,10 +27,13 @@ import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
+import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
+import { resolveClientEntriesDev } from './resolveClientEntriesDev.js'
 
 assertNodeEnv_onVikePluginLoad()
 markEnvAsVikePluginLoaded()
 assertViteVersion()
+setResolveClientEntriesDev(resolveClientEntriesDev)
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(vikeConfig?: ConfigVikeUserProvided): any {

@@ -1,11 +1,18 @@
 // https://vike.dev/useData
 export { useData }
+export { setData }
 
-import { computed } from 'vue'
-import { usePageContext } from './usePageContext'
+import { inject } from 'vue'
+
+const key = Symbol()
 
 /** https://vike.dev/useData */
 function useData() {
-  const data = computed(() => usePageContext().data)
+  const data = inject(key)
+  if (!data) throw new Error('setData() not called')
   return data
+}
+
+function setData(app, data) {
+  app.provide(key, data)
 }

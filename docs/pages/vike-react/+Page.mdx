@@ -1,18 +1,31 @@
 import { Link } from '@brillout/docpress'
-import { UseBati } from '../../components'
+import { UseBati, UiFrameworkExtension } from '../../components'
 
-`vike-react` is a <Link href="/extensions">Vike extension</Link> that integrates [React](https://react.dev) in a full-fledged manner, providing a DX like a regular frontend framework such as Next.js.
+The `vike-react` package is a <Link href="/extensions">Vike extension</Link> that integrates [React](https://react.dev) in a full-fledged manner, providing a DX like a regular frontend framework such as Next.js.
 
-> <UseBati>`vike-react`</UseBati>
+Source code: [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)  
+Version history: [`CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)  
+Examples: [Bati](https://batijs.dev) and [`examples/`](https://github.com/vikejs/vike-react/tree/main/examples)  
 
-See also:
-- [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
-- [`examples/`](https://github.com/vikejs/vike-react/tree/main/examples)
-- [`CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
-- <Link href="/react" />
+The documentation for using `vike-react` can be found throughout this website (`vike.dev`).
+
+> The guides, such as <Link href="/data-fetching" />, assume you're using Vike with <UiFrameworkExtension name noLink comma />. If you aren't then see the sections `Without vike-{react,vue,solid}` such as <Link href="/useData#without-vike-react-vue-solid" />.
+
+You can also integrate React yourself instead of using `vike-react`, see <Link href="/react" />.
+
+Notes about RSC:
+- <Link href="/nextjs#react-server-components" doNotInferSectionTitle />.
+- <Link href="/react#react-server-components" doNotInferSectionTitle />.
 
 
-## Add to existing app
+## Scaffold new `vike-react` app
+
+Use [Bati](https://batijs.dev) for creating new apps.
+
+> If you select React then Bati scaffolds a Vike + `vike-react` app.
+
+
+## Add `vike-react` to existing Vike app
 
 To add `vike-react` to an existing Vike app: install the `vike-react` npm package (e.g. `$ npm install vike-react`) then extend your existing `+config.js` file (or create one) with `vike-react`:
 
@@ -46,9 +59,7 @@ export default {
 
 ## Under the hood
 
-`vike-react` is only `494` lines of code ([as of April 2024](https://gist.github.com/brillout/6267ecb8c996fb4a401985106cc81936)).
-
-Browsing the [source code of `vike-react`](https://github.com/vikejs/vike-react) is therefore very much an option for deepening your understanding of Vike or for debugging.
+The `vike-react` extension is only `494` lines of code ([as of April 2024](https://gist.github.com/brillout/6267ecb8c996fb4a401985106cc81936)). Browsing the [source code of `vike-react`](https://github.com/vikejs/vike-react) is therefore very much an option for deepening your understanding of Vike or for debugging.
 
 Basically `vike-react` does this:
 - Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf. (Most notably <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link>, see their implementation at
@@ -76,7 +87,7 @@ It implements following features:
 - <Link noBreadcrumb href="/onAfterRenderClient" />
 - <Link noBreadcrumb href="/reactStrictMode" />
 
-> For a friendlier list, see the following which also includes all settings & hooks implemented by `vike-react`.
+> For a friendlier list, see the following (which also includes `vike-react` settings & hooks):
 > - <Link href="/settings" />
 > - <Link href="/hooks" />
 
@@ -88,6 +99,7 @@ It implements following features:
 - [GitHub > `vikejs/vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
 - [GitHub > `vikejs/vike-react` > `examples/`](https://github.com/vikejs/vike-react/tree/main/examples)
 - <Link href="/react" />
+- <Link href="/react#react-server-components" doNotInferSectionTitle />.
 - <Link href="/nextjs" />
 - <Link href="/why#optional-control" />
 - <Link href="/vike-vue" />

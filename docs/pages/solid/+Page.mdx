@@ -1,18 +1,20 @@
 import { Link } from '@brillout/docpress'
-import { Example, UseBati } from '../../components'
+import { Example, UseBati, CustomIntegrationWarning } from '../../components'
 
 ## `vike-solid`
 
-We recommend using <Link href="/extensions">`vike-solid`</Link> which integrates [Solid](https://www.solidjs.com) in a full-fledged manner.
+We recommend using <Link href="/vike-solid">`vike-solid`</Link> which integrates [Solid](https://www.solidjs.com) in a full-fledged manner.
 
 > <UseBati>`vike-solid`</UseBati>
 
-You can also <Link href="#without-vike-extension">integrate Solid yourself</Link> if you want full control over the Solid integration.
+You can also <Link href="#custom-integration">integrate Solid yourself</Link> if you want full control over the Solid integration.
 
 
-## Without Vike extension
+## Custom integration
 
-Instead of using a Vike extension, you can manually integrate Solid yourself, giving you full control over the integration of not only Solid itself but also Solid libraries.
+Instead of using <Link href="/vike-solid">`vike-solid`</Link>, you can implement your own Solid integration, giving you full control over the integration of both Solid and Solid libraries.
+
+<CustomIntegrationWarning list={['vike-solid']} />
 
 Official example:
  - [`vike-solid` source code](https://github.com/vikejs/vike-solid/tree/main/vike-solid) - Full-featured integeration.

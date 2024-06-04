@@ -50,11 +50,9 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     return pc.dim(`Debug info (for Vike maintainers; you can ignore this): ${debugInfoSerialized}`)
   })()
 
+  const link = pc.blue('https://github.com/vikejs/vike/issues/new')
   let errMsg = [
-    `You stumbled upon a Vike bug.`,
-    `Go to ${pc.blue(
-      'https://github.com/vikejs/vike/issues/new'
-    )} and copy-paste this error. A maintainer will fix the bug (usually under 24 hours).`,
+    `You stumbled upon a Vike bug. Go to ${link} and copy-paste this error. A maintainer will fix the bug (usually under 24 hours).`,
     debugStr
   ]
     .filter(Boolean)

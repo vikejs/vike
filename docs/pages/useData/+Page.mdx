@@ -1,8 +1,8 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
 Environment: server, client.  
-Implemented by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
+Implemented by: <UiFrameworkExtension /> (or <Link href="#without-vike-react-vue-solid">yourself</Link>).
 
 The `useData()` component hook allows you to access the data that is returned by a <Link href="/data">`data()` hook</Link>.
 
@@ -89,9 +89,9 @@ const data: DataAsync = async (pageContext): Promise<Data> => {
 }
 ```
 
-## Without Vike extension
+## Without `vike-{react,vue,solid}`
 
-In case you don't use a <UiFrameworkVikeExtension />, you can implement `useData()` yourself.
+In case you don't use a <UiFrameworkExtension />, you can implement `useData()` yourself.
 
 > In general, for improved DX, we recommend using a `useData()` implementation. But you don't have to as shown at <Link href="/data#without-usedata" doNotInferSectionTitle />.
 

@@ -1,75 +1,123 @@
 import { Link } from '@brillout/docpress'
 
-With Vike we have the choice between:
- - Server Routing and Client Routing.
- - Filesystem Routing, Route Strings and Route Functions.
+Overview of how to define the route of your pages.
 
+## Filesystem Routing
 
-## Server Routing or Client Routing?
-
-Vike has first-class support for both Server-side Routing (full HTML reload upon page navigation) and Client-side Routing (DOM mutations upon page navigation).
-
-The guide <Link href="/server-routing-vs-client-routing" noBreadcrumb /> helps you choose which one to use.
-
-
-## Route Strings & Route Functions
-
-By default, Vike does Filesystem Routing:
+Vike supports *Filesystem Routing*: the URL of a page is determined by where the page is located on your filesystem.
 
 ```bash
-FILESYSTEM                      URL
-========================        =================================
-pages/about/+Page.js            /about
-pages/faq/+Page.js              /faq
-
-# index/ is mapped to the empty string
-pages/index/+Page.js            /
-
-# Parameterized route
-pages/movie/@id/+Page.js        /movie/1, /movie/2, /movie/3, ...
+FILESYSTEM                     URL
+====================           ======
+pages/about/+Page.js           /about
+pages/faq/+Page.js             /faq
+```
+Note that `index/` and `src/` are mapped to the empty string:
+```bash
+FILESYSTEM                     URL
+========================       ======
+pages/index/+Page.js           /
+src/pages/index/+Page.js       /
+src/pages/about/+Page.js       /about
 ```
 
-We can also define so-called "Route Strings" and "Route Functions".
+You can define parameterized routes:
+
+```bash
+FILESYSTEM                     URL
+========================       =======================
+pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
+```
+
+> The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
+
+
+More information at:
+ - <Link href="/filesystem-routing" />.
+
+
+## Route String
+
+Instead of Filesystem Routing, you can define a Route String.
 
 ```js
 // /pages/product/+route.js
 
-// This file defines the route of `/pages/product/+Page.js`
+// This file defines the route of /pages/product/+Page.js
 
 // Route String
-export default '/product/@productId'
+export default '/product/@id'
 ```
 
-> The parameter `productId` is available at `pageContext.routeParams.productId`.
+> The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
-Route Functions give us full programmatic flexibility to implement advanced routing logic, for example route guards:
+More information at:
+ - <Link href="/route-string" />
+
+
+## Route Function
+
+You can use Route Functions to get full programmatic flexibility for advanced routing logic.
 
 ```js
 // /pages/product/edit/+route.js
 
-// This file defines the route of `/pages/product/edit/+Page.js`
+// This file defines the route of /pages/product/edit/+Page.js
 
-import { resolveRoute } from 'vike/routing'
+// We use a RegExp, but we could as well use a routing library.
+import partRegex from 'part-regex'
+const routeRegex = partRegex`/product/${/([0-9]+)/}/edit`
 
-export default async (pageContext) => {
-  // Ensure that `/product/@id/edit` can be accessed only by admins
-  if (!pageContext.user.isAdmin) {
-    return false
-  }
-
-  // We can use Vike's Route String resolver
-  return resolveRoute('/product/@id/edit', pageContext.urlPathname)
+// Route Function
+export function route(pageContext) {
+  const match = pageContext.urlPathname.match(routeRegex)
+  if (!match) return false
+  const [, id] = match
+  return { routeParams: { id } }
 }
 ```
 
-See also:
- - <Link href="/filesystem-routing" />
- - <Link href="/route-string" />
+More information at:
  - <Link href="/route-function" />
+
+## Route Guards
+
+You can use a `guard()` hook to protect pages from unauthorized/unexpected access.
+
+```js
+// /pages/admin/+guard.js
+
+import { render } from 'vike/abort'
+
+// This guard() hook protects all pages /pages/admin/**/+Page.js
+
+export async function guard(pageContext) {
+  if (!pageContext.user.isAdmin) {
+    throw render(401, "You aren't allowed to access this page.')
+  }
+}
+```
+
+> This `guard()` hook applies to all pages living at `/pages/admin/**/*`, see <Link href="/config#inheritance" />.
+
+More information at:
+ - <Link href="/guard" />
 
 
 ## React Router / Vue Router
 
-See:
+Although we usually don't recommend it, you can use Vike with React Router and Vue Router:
+ - <Link href="/react-router" />
+ - <Link href="/vue-router" />
+
+## See also
+
+ - <Link href="/filesystem-routing" />
+ - <Link href="/route-string" />
+ - <Link href="/route-function" />
+ - <Link href="/routing-precedence" />
+ - <Link href="/base-url" />
+ - <Link href="/guard" />
  - <Link href="/vue-router" />
  - <Link href="/react-router" />
+ - <Link href="/server-routing-vs-client-routing" />

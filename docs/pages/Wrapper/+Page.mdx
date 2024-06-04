@@ -1,9 +1,10 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtension, ImplementedBy } from '../../components'
+import { UiFrameworkExtension, ImplementedBy } from '../../components'
 
+Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>.
 <ImplementedBy by={<code>vike-react</code>}>the `Wrapper` setting</ImplementedBy>
 
-The `Wrapper` setting wraps your <Link href="/Page">Page component</Link> with another component.
+The component defined by the  `Wrapper` setting wraps the <Link href="/Page">`<Page>` component</Link>.
 
 ```jsx
 <Wrapper>     ⟸ component defined by the setting "Wrapper"
@@ -32,9 +33,9 @@ A page can be wrapped by multiple `<Wrapper>` components:
 The `<Wrapper>` component is usually used for integrating tools, such as data fetching and state management tools.
 
 
-## Without Vike extension
+## Without `vike-{react,vue,solid}`
 
-In case you don't use a <UiFrameworkVikeExtension />, you can implement the `Wrapper` setting yourself by using <Link href="/meta">meta</Link>.
+In case you don't use a <UiFrameworkExtension />, you can implement the `Wrapper` setting yourself by using <Link href="/meta">meta</Link>.
 
 Example:
 

@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
 For advanced apps we recommend a domain-driven file structure using multiple `pages/` directories,
 while for basic apps we recommend using a single `pages/` directory.
@@ -132,9 +132,9 @@ You can embed `pages/` in `src/`:
 See <Link href="/filesystem-routing" /> for more information.
 
 
-## Without Vike extensions
+## Without `vike-{react,vue,solid}`
 
-In case you don't use a <UiFrameworkVikeExtension />, we recommend placing your UI framework integration code in a `renderer/` directory.
+In case you don't use a <UiFrameworkExtension />, we recommend placing your UI framework integration code in a `renderer/` directory.
 
 ```bash
 # Same as above

@@ -1,21 +1,17 @@
 import { Link, Warning } from '@brillout/docpress'
-import { UiFrameworkVikeExtensionNames } from '../../components'
+import { UiFrameworkExtension, CustomIntegrationWarning } from '../../components'
 
-We recommend using [Bati](https://batijs.dev) to scaffold a new Vike app.
+We recommend using [Bati](https://batijs.dev) for creating new apps.
 
-> Apps scaffolded by Bati use <UiFrameworkVikeExtensionNames links/>.
+> Apps scaffolded by Bati use <UiFrameworkExtension name />.
 
-## Without Vike Extension
+## Without `vike-{react,vue,solid}`
 
-You can also scaffold a new Vike app that doesn't use <UiFrameworkVikeExtensionNames links/>, which means you control the UI framework (React/Vue/Solid/...) integration.
+You can also create a new Vike app that doesn't use <UiFrameworkExtension name />.
 
-> See <Link href="/why#optional-control" />.
+The following command scaffolds a Vike app with a production-ready React/Vue/Solid integration that lives in user land (whereas with <UiFrameworkExtension succint /> the integration lives at `node_modules/vike-{react,vue,solid}`). Thus, you control the integration of React/Vue/Solid and can modify it to fit your bespoke needs. You can also integrate any other <Link href="/ui-framework">UI framework</Link>.
 
-<Warning>
-We recommend using the following command only if:
- - you are an expert user and you want control over integration code, or
- - you are curious.
-</Warning>
+<CustomIntegrationWarning />
 
 With [npm](https://www.npmjs.com):
 

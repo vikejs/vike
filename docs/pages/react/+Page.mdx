@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { Example, UseBati } from '../../components'
+import { Example, UseBati, CustomIntegrationWarning } from '../../components'
 
 ## `vike-react`
 
@@ -7,38 +7,14 @@ We recommend using <Link href="/vike-react">`vike-react`</Link> which integrates
 
 > <UseBati>`vike-react`</UseBati>
 
-You can also <Link href="#without-vike-extension">integrate React yourself</Link> if you want full control over the React integration.
+You can also <Link href="#custom-integration">integrate React yourself</Link> if you want full control over the React integration.
 
 
-## React Server Components
+## Custom integration
 
-[React Server Components (RSC)](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components) is a new application architecture designed by the React team.
+Instead of using <Link href="/vike-react">`vike-react`</Link>, you can implement your own React integration, giving you full control over the integration of both React and React libraries.
 
-The design can be broken down into three parts:
- -	✅ Server Actions
- -	✅ Progressive Rendering
- - :construction: Server Components
-
-Vike supports <Link href="/streaming#progressive-rendering">Progressive Rendering</Link> as well as <Link href="/RPC">Server Actions</Link>. Server Components is work-in-progress.
-
-> Instead of using [Server Actions using `'use server'`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), we recommend using [Telefunc](https://telefunc.com/) which we believe to be a superior design. That said, a <Link href="/vike-react">`vike-react`</Link> fork can be developed that supports `'use server'`.
-
-> While [we are thrilled about Server Components](https://github.com/reactjs/rfcs/pull/188#issuecomment-754815233), we believe it isn't production ready yet.
->
-> There are multiple reasons for that. For example, use cases that are essential such as infinite scroll aren't supported yet, [RFC: injectToStream](https://github.com/reactjs/rfcs/pull/219) is a major blocker, and there doesn't seem to be a clear recommendation (yet) where to set the [`'use client'`](https://react.dev/reference/react/use-client) boundaries (minimizing the number of client components is, counterintuitively, [not always the best strategy](https://twitter.com/cyco130/status/1663515982218838017)).
->
-> Also, while the added value of Server Components which is to reduce the size of client-side bundles is definitely a nice-to-have, we believe the slight performance gain isn't worth the added DX complexity. We are hopeful this is going to change as the Server Components design matures: several React frameworks are experimenting and pushing the Server Components design forward. In the meantime, we recommend sticking to the classic and battle tested SSR/SPA/SSG approach (with Vike you can <Link href="/ssr">toggle SSR</Link> and <Link href="/pre-rendering">toggle SSG</Link>).
-
-The most significant added value of the RSC architecture is its novel approach to SSR streaming which unlocks many exciting features around data fetching. Not only does Vike has first-class support for SSR streaming, but it also supports it in a unique way that enables both an easy DX as well as flexibility: you can integrate tools with the SSR stream manually yourself (e.g. using [react-streaming](https://github.com/brillout/react-streaming#readme)), or you can use built-in integrations such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [Telefunc](https://telefunc.com).
-
-> SSR streaming enables you to define components that can fetch data, while each of these data-fetching components are loaded and rendered independently of each other: the user sees a UI with non-data-fetching parts that are rendered quickly, and data-fetching parts that are rendered as data comes in. This leads to a significantly improved (perceived) page speed. See <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>.
-
-See also <Link href="/nextjs#react-server-components" doNotInferSectionTitle />.
-
-
-## Without Vike extension
-
-Instead of using a Vike extension, you can manually integrate React yourself and have full control over the integration of not only React itself but also React libraries.
+<CustomIntegrationWarning list={['vike-react']} />
 
 Official examples:
  - <Link href="/boilerplates/boilerplate-react-ts" /> - Classic integration, using <Link href="/client-routing">Client Routing</Link>.
@@ -53,6 +29,34 @@ Community examples:
  - <Example timestamp="2023.12" repo="luisfloat/vike-island-example" /> - [Islands Architecture](https://jasonformat.com/islands-architecture/) implementation, mixing React and Vue.
 
 > For more community examples, see integration guides such as <Link href="/react-query" />.
+
+
+## React Server Components
+
+[React Server Components (RSC)](https://react.dev/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components) is a new application architecture designed by the React team.
+
+The design can be broken down into three parts:
+ -	✅ RPC (Server Actions)
+ -	✅ Progressive Rendering
+ - :construction: Server Components
+
+Vike already supports <Link href="/streaming#progressive-rendering">Progressive Rendering</Link> as well as <Link href="/RPC">RPC</Link>.
+
+> Instead of using [Server Actions using `'use server'`](https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations), we recommend using [Telefunc](https://telefunc.com/) which we believe to be a superior design. That said, a <Link href="/vike-react">`vike-react`</Link> fork can be developed that supports `'use server'`.
+
+Being able to integrate Server Components is work-in-progress.
+
+> While [we are thrilled about Server Components](https://github.com/reactjs/rfcs/pull/188#issuecomment-754815233), we believe it isn't production ready yet.
+>
+> There are multiple reasons for that. For example, use cases that are essential such as infinite scroll aren't supported yet, [RFC: injectToStream](https://github.com/reactjs/rfcs/pull/219) is a major blocker, and there doesn't seem to be a clear recommendation (yet) where to set the [`'use client'`](https://react.dev/reference/react/use-client) boundaries (minimizing the number of client components is, counterintuitively, [not always the best strategy](https://twitter.com/cyco130/status/1663515982218838017)).
+>
+> Also, while the added value of Server Components which is to reduce the size of client-side bundles is definitely a nice-to-have, we believe the slight performance gain isn't worth the added DX complexity. We are hopeful this is going to change as the Server Components design matures: several React frameworks are experimenting and pushing the Server Components design forward. In the meantime, we recommend sticking to the classic and battle tested SSR/SPA/SSG approach (with Vike you can <Link href="/ssr">toggle SSR</Link> and <Link href="/pre-rendering">toggle SSG</Link>).
+
+The most significant added value of the RSC architecture is its novel approach to SSR streaming which unlocks many exciting features around data fetching. Not only does Vike has first-class support for SSR streaming, but it also supports it in a unique way that enables both an easy DX as well as flexibility: you can integrate tools with the SSR stream manually yourself (e.g. using [react-streaming](https://github.com/brillout/react-streaming#readme)), or you can use built-in integrations such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [Telefunc](https://telefunc.com).
+
+> SSR streaming enables you to define components that can fetch data, while each of these data-fetching components are loaded and rendered independently of each other: the user sees a UI with non-data-fetching parts that are rendered quickly, and data-fetching parts that are rendered as data comes in. This leads to a significantly improved (perceived) page speed. See <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>.
+
+See also <Link href="/nextjs#react-server-components" doNotInferSectionTitle />.
 
 
 ## See also

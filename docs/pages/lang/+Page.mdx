@@ -1,9 +1,9 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
 Default value: `'en'`.  
 Environment: server.  
-Implemented by: <UiFrameworkVikeExtension />.
+Implemented by: <UiFrameworkExtension />.
 
 You can set the value of the [`<html lang>` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax) by using Vike's `lang` setting.
 
@@ -28,9 +28,9 @@ export default (pageContext) => {
 > The `pageContext.locale` value is usually set by your `onBeforeRoute()` hook, see <Link href="/i18n" />.
 
 
-## Without Vike extension
+## Without `vike-{react,vue,solid}`
 
-The `lang` setting is implemented by the <UiFrameworkVikeExtension />. If you don't use such extension, then you usually don't need to implement a setting like `lang` as you can directly set the value of the `<html lang>` attribute at your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
+The `lang` setting is implemented by the <UiFrameworkExtension />. If you don't use such extension, then you usually don't need to implement a setting like `lang` as you can directly set the value of the `<html lang>` attribute at your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
 
 ```js
 // /renderer/+onRenderHtml.js
@@ -47,7 +47,7 @@ export function onRenderHtml(pageContext) {
 
 ```
 
-That said, you can also implement and replicate the `lang` setting described in this page, see the source code of <UiFrameworkVikeExtensionNames />.
+That said, you can also implement and replicate the `lang` setting described in this page, see the source code of <UiFrameworkExtension name noLink />.
 
 
 ## See also

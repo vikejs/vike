@@ -41,7 +41,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
     const additionalTimeout = !isWrangler ? 0 : (isCI() ? 2 : 1) * 10 * 1000
     const serverIsReadyMessage = (() => {
       if (isWrangler) {
-        return 'Listening at'
+        return (log: string) => log.includes('Listening at') || log.includes('Ready on')
       }
       // Vite/Express.js dev server
       return undefined

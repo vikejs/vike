@@ -46,7 +46,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
   })
   if (Object.keys(pageContext._pageContextInit).some((p) => passToClient.includes(p))) {
-    pageContextClient._pageContextInitIsPassedToClient = true
+    pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
   let pageContextSerialized: string

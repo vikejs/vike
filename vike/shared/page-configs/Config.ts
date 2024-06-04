@@ -57,10 +57,11 @@ type HookNameOldDesign = 'render' | 'prerender'
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
-  | 'isClientSideRenderable'
+  | 'clientEntryLoaded'
   | 'onBeforeRenderEnv'
   | 'dataEnv'
   | 'hooksTimeout'
+  | 'clientHooks'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -384,6 +385,13 @@ type ConfigBuiltIn = {
    * https://vike.dev/clientRouting
    */
   clientRouting?: boolean | ImportString
+
+  /**
+   * Whether hooks are loaded on the client-side.
+   *
+   * https://vike.dev/clientHooks
+   */
+  clientHooks?: boolean | null | ImportString
 
   /** Create new or modify existing configurations.
    *

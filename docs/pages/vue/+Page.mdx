@@ -1,18 +1,20 @@
 import { Link } from '@brillout/docpress'
-import { Example, UseBati } from '../../components'
+import { Example, UseBati, CustomIntegrationWarning } from '../../components'
 
 ## `vike-vue`
 
-We recommend using <Link href="/extensions">`vike-vue`</Link> which integrates [Vue](https://vuejs.org) in a full-fledged manner.
+We recommend using <Link href="/vike-vue">`vike-vue`</Link> which integrates [Vue](https://vuejs.org) in a full-fledged manner.
 
 > <UseBati>`vike-vue`</UseBati>
 
-You can also <Link href="#without-vike-extension">integrate Vue yourself</Link> if you want full control over the Vue integration.
+You can also <Link href="#custom-integration">integrate Vue yourself</Link> if you want full control over the Vue integration.
 
 
-## Without Vike extension
+## Custom integration
 
-Instead of using a Vike extension, you can manually integrate Vue yourself, giving you full control over the integration of not only Vue itself but also Vue libraries.
+Instead of using <Link href="/vike-vue">`vike-vue`</Link>, you can implement your own Vue integration, giving you full control over the integration of both Vue and Vue libraries.
+
+<CustomIntegrationWarning list={['vike-vue']} />
 
 Official examples:
  - <Link href="/boilerplates/boilerplate-vue-ts" /> - Classic integration, using <Link href="/client-routing">Client Routing</Link>.

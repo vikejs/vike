@@ -10,9 +10,11 @@ render(url: `/${string}`, abortReason?: unknown)
 ```
 
 ```js
+// /pages/some-page/+someHook.js
+
 import { render } from 'vike/abort'
 
-function onSomeHook() {
+export function someHook() {
   if (someCondition) {
     throw render('/login')
   }
@@ -46,5 +48,6 @@ If `throw render()` doesn't work, see <Link href="/abort#debug" />.
 ## See also
 
 - <Link href="/redirect"  />
+- <Link href="/guard" />
 - <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />
 - <Link href="/abort#debug" />

@@ -215,20 +215,16 @@ For example, you can use Relay and Apollo in ways that aren't possible with Next
 Vike includes everything you'd expect from a frontend framework: Client-side Routing, HMR, Filesystem Routing, Pre-rendering (SSG), Data Fetching, Code Splitting, Layouts, i18n, etc.
 
 
-## Manual integrations
+## Custom integrations
 
-As depicted above, Vike's philosophy is that you integrate tools manually instead of being locked into decisions made by your framework. Use any tool you want, however you want.
-
-All-in-all, Vike is less easy, but simpler. For large scale projects, simplicity is *fundamentally* more important than being "easy".
-
-Last but not least, manual integration is fun and insightful. (Whereas fighting a framework is pesky.)
+As depicted above, Vike's philosophy is that you can integrate tools yourself instead of being locked into decisions made by your framework. Use any tool you want, however you want.
 
 
 ## React Server Components
 
 React 18 introduced novel techniques that unlock many capabilities.
 
-Vike, and in particular <Link href="/react#vike-react">`vike-react`</Link>, extensively leverages React's 18 new techniques. (<Link href="/streaming">Streaming</Link>, <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>, independent and collocated data fetching, <Link href="/RPC">RPC</Link>, etc.)
+Vike, and in particular <Link href="/vike-react">`vike-react`</Link>, extensively leverages React's 18 new techniques. (<Link href="/streaming">Streaming</Link>, <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>, independent and collocated data fetching, <Link href="/RPC">RPC</Link>, etc.)
 
 Vike provides you with extensive control for integrating tools as you see fit, such as control over React's SSR <Link href="/streaming">stream</Link>. At the same time <a href="/extensions">Vike extensions</a> provide built-in integrations for a quick start. We call this dual approach <Link href="/why#optional-control">optional control</Link>.
 

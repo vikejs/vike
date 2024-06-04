@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkVikeExtension, ImplementedBy } from '../../components'
+import { UiFrameworkExtension, ImplementedBy } from '../../components'
 
 Default value: `false`. (Or `true` if using a <Link href="/extensions">Vike extension</Link> that requires streaming.)  
 Requires: <Link href="/ssr">`ssr: true`</Link>.
@@ -38,9 +38,9 @@ export default {
 For an improved file and config organization, you can consider using a <Link href="/file-structure#domain-driven">domain-driven file structure</Link>.
 
 
-## Without Vike extension
+## Without `vike-{react,vue,solid}`
 
-In case you don't use a <UiFrameworkVikeExtension />, you can implement the `stream` setting yourself by using <Link href="/meta">meta</Link>.
+In case you don't use a <UiFrameworkExtension />, you can implement the `stream` setting yourself by using <Link href="/meta">meta</Link>.
 
 Examples:
 

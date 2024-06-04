@@ -10,6 +10,8 @@ For a page `/pages/movie/+Page.js`, you can define its Route String in an adjace
 export default '/movie/@id'
 ```
 
+> Route Strings and <Link href="/route-function">Route Functions</Link> override <Link href="/filesystem-routing">Filesystem Routing</Link>. If you always use Route Strings and Route Functions then you effectively opt-out of Filesystem Routing.
+
 The value `@id` is available at `pageContext.routeParams.id`.
 
 ```
@@ -26,7 +28,7 @@ You can define:
  - Multiple parameters, for example `/movie/@category/@name`.
  - <Link href="#globs">Globs</Link>, for example `/movie/*` to also match `/movie/123/reviews`.
 
-For more advanced routing logic, consider using a [Route Function](/route-function) instead of Route String.
+For more advanced routing logic, consider using a <Link href="/route-function">Route Function</Link> instead of a Route String.
 
 
 ## Globs
@@ -41,8 +43,8 @@ export default '/product/*'
 URL                         MATCH /product/@id    MATCH /product/*    MATCH /product*
 ========================    ==================    ================    ===============
 /product/123                ✅                    ✅                  ✅
-/product/123/details        ❌                    ✅                  ✅
-/product/123/nested/path    ❌                    ❌                  ✅
+/product/123/nested         ❌                    ✅                  ✅
+/product/123/nested/path    ❌                    ✅                  ✅
 /product                    ❌                    ❌                  ✅
 ```
 
@@ -53,7 +55,7 @@ The value of the glob is available at `pageContext.routeParams['*']`, for exampl
 URL                          pageContext.routeParams['*']
 =========================    ============================
 /product/123                 123
-/product/123/details         123/details
+/product/123/nested          123/nested
 /product/123/nested/path/    123/nested/path/
 ```
 
@@ -99,3 +101,7 @@ The special character `@` cannot be escaped, use a [Route Function](/route-funct
 ## Domain-driven file structure
 
 <RouteDomainDriven />
+
+## See also
+
+ - <Link href="/routing" />

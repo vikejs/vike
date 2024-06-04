@@ -36,6 +36,13 @@ const headings = [
     title: 'Get Started',
     titleEmoji: 'seedling'
   },
+  /*
+  {
+    level: 2,
+    title: 'Getting started with Vike',
+    url: '/start'
+  },
+  */
   {
     level: 2,
     title: 'Scaffold new Vike app',
@@ -708,7 +715,7 @@ const headings = [
     level: 2,
     title: '`useData()`',
     url: '/useData',
-    sectionTitles: ['TypeScript', 'Without Vike extension']
+    sectionTitles: ['TypeScript', 'Without `vike-{react,vue,solid}`']
   },
   {
     level: 2,

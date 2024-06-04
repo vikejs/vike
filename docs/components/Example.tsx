@@ -21,7 +21,6 @@ function Timestamp({ children }: { children: TimestampType }) {
         background: 'white',
         fontSize: '1.13em',
         fontWeight: 'bold',
-        verticalAlign: 'middle',
         fontFamily: 'monospace',
         marginRight: 2
       }}

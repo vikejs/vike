@@ -3,7 +3,6 @@ export { crawlPlusFiles }
 import {
   assertPosixPath,
   assert,
-  toPosixPath,
   assertWarning,
   scriptFileExtensionList,
   scriptFileExtensions,
@@ -27,7 +26,8 @@ let gitIsNotUsable = false
 async function crawlPlusFiles(
   userRootDir: string,
   outDirAbsoluteFilesystem: string,
-  isDev: boolean
+  isDev: boolean,
+  crawlWithGit: null | boolean
 ): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
   assertPosixPath(outDirAbsoluteFilesystem)
@@ -50,7 +50,7 @@ async function crawlPlusFiles(
 
   // Crawl
   let files: string[] = []
-  const res = await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir)
+  const res = crawlWithGit !== false && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
   if (
     res &&
     // Fallback to fast-glob for users that dynamically generate plus files. (Assuming all (generetad) plus files to be skipped because users usually included them in `.gitignore`.)
@@ -60,6 +60,9 @@ async function crawlPlusFiles(
   } else {
     files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
   }
+
+  // Filter build files
+  files = files.filter((file) => !isTemporaryBuildFile(file))
 
   // Check performance
   {
@@ -85,7 +88,6 @@ async function crawlPlusFiles(
     // Both `$ git-ls files` and fast-glob return posix paths
     assertPosixPath(filePath)
     assert(!filePath.startsWith(userRootDir))
-    assert(!isTemporaryBuildFile(filePath))
     const filePathAbsoluteUserRootDir = path.posix.join('/', filePath)
     return { filePathAbsoluteUserRootDir }
   })
