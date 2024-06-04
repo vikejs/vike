@@ -244,7 +244,10 @@ async function loadInterfaceFiles(
           ]
           const { importPathAbsolute } = extendsConfig.filePath
           assert(importPathAbsolute)
-          const extensionName = importPathAbsolute.split('/')[0]!
+          const extensionName = importPathAbsolute
+            .split('/')
+            .slice(0, importPathAbsolute.startsWith('@') ? 2 : 1)
+            .join('/')
           const warnMsg = alreadyMigrated.includes(extensionName)
             ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version.`
             : `The config of the Vike extension ${extensionName} should set a ${pc.cyan('name')} value`
