@@ -242,17 +242,18 @@ async function loadInterfaceFiles(
             'vike-pinia',
             'vike-solid'
           ]
-          assert(extendsConfig.filePath.importPathAbsolute)
-          const extensionName = extendsConfig.filePath.importPathAbsolute.split('/')[0]!
+          const { importPathAbsolute } = extendsConfig.filePath
+          assert(importPathAbsolute)
+          const extensionName = importPathAbsolute.split('/')[0]!
           const warnMsg = alreadyMigrated.includes(extensionName)
             ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version.`
             : `The config of the Vike extension ${extensionName} should set a ${pc.cyan('name')} value`
-          const isNameDefined = interfaceFile.fileExportsByConfigName.name?.configValue
+          const extensionNameValue = interfaceFile.fileExportsByConfigName.name?.configValue
           if (alreadyMigrated) {
             // Eventually always make it a assertUsage()
-            assertWarning(isNameDefined, warnMsg, { onlyOnce: true })
+            assertWarning(extensionNameValue, warnMsg, { onlyOnce: true })
           } else {
-            assertUsage(isNameDefined, warnMsg)
+            assertUsage(extensionNameValue, warnMsg)
           }
         }
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
