@@ -142,7 +142,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   meta: {
     env: { config: true }
   },
-  isClientSideRenderable: {
+  clientEntryLoaded: {
     env: { server: true, client: true, eager: true },
     _computed: (configValueSources): boolean =>
       isConfigSet(configValueSources, 'onRenderClient') &&

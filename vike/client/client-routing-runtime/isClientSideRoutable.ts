@@ -15,6 +15,6 @@ async function isClientSideRoutable(pageId: string, pageContext: PageContextPage
     sharedPageFilesAlreadyLoaded: false
   })
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageId)
-  const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageContext._pageFilesAll, pageId)
-  return isClientSideRenderable && isClientRouting
+  const { clientEntryLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageContext._pageFilesAll, pageId)
+  return clientEntryLoaded && isClientRouting
 }

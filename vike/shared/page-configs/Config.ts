@@ -57,7 +57,7 @@ type HookNameOldDesign = 'render' | 'prerender'
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
-  | 'isClientSideRenderable'
+  | 'clientEntryLoaded'
   | 'onBeforeRenderEnv'
   | 'dataEnv'
   | 'hooksTimeout'
