@@ -295,7 +295,7 @@ function assertVikeExtensionConventions(extendsConfig: ConfigFile, interfaceFile
   const errMsg = alreadyMigrated.includes(extensionName)
     ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version.`
     : `The config of the Vike extension ${extensionName} should define the ${pc.cyan('name')} setting.`
-  const extensionNameValue = interfaceFile.fileExportsByConfigName.name?.configValue
+  const extensionNameValue = getConfigValueInterfaceFile(interfaceFile, 'name')
   if (alreadyMigrated) {
     // Eventually remove (always use assertUsage())
     assertWarning(extensionNameValue, errMsg, { onlyOnce: true })
@@ -443,12 +443,13 @@ async function loadVikeConfig(
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
+        const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesByLocationId).flat(1)
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
         // Load value files of custom config-only configs
         await Promise.all(
-          getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
+          interfaceFilesRelevantList.map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
             const { configName } = interfaceFile
             if (isGlobalConfig(configName)) return
@@ -561,14 +562,6 @@ function getInterfaceFilesRelevant(
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return interfaceFilesRelevant
-}
-
-function getInterfaceFileList(interfaceFilesByLocationId: InterfaceFilesByLocationId): InterfaceFile[] {
-  const interfaceFiles: InterfaceFile[] = []
-  Object.values(interfaceFilesByLocationId).forEach((interfaceFiles_) => {
-    interfaceFiles.push(...interfaceFiles_)
-  })
-  return interfaceFiles
 }
 
 async function getGlobalConfigs(
@@ -1346,4 +1339,8 @@ function sortConfigValueSources(
         reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
       )
   )
+}
+
+function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: string): unknown {
+  return interfaceFile.fileExportsByConfigName[configName]?.configValue
 }
