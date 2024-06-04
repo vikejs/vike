@@ -45,13 +45,11 @@ function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig, is
       return next()
     }
 
-    const configHeaders = isPreview && config?.preview?.headers || config?.server?.headers
+    const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
     if (configHeaders) {
-      for (const [name, value] of Object.entries(configHeaders))
-        if (value)
-          res.setHeader(name, value)
+      for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
     }
-    
+
     if (!pageContext.httpResponse) {
       return next()
     } else {
