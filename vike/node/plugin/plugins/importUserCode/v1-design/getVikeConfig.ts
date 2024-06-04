@@ -250,7 +250,7 @@ async function loadInterfaceFiles(
             .join('/')
           const errMsg = alreadyMigrated.includes(extensionName)
             ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version.`
-            : `The config of the Vike extension ${extensionName} should set a ${pc.cyan('name')} value`
+            : `The config of the Vike extension ${extensionName} should define the ${pc.cyan('name')} setting.`
           const extensionNameValue = interfaceFile.fileExportsByConfigName.name?.configValue
           if (alreadyMigrated) {
             // Eventually remove (always use assertUsage())
@@ -262,10 +262,10 @@ async function loadInterfaceFiles(
             const { filePathToShowToUserResolved } = interfaceFile.filePath
             assert(filePathToShowToUserResolved)
             const errPrefix = `The setting ${pc.bold('name')} defined at ${filePathToShowToUserResolved}`
-            assertUsage(typeof extensionNameValue === 'string', `${errPrefix} should be a string`)
+            assertUsage(typeof extensionNameValue === 'string', `${errPrefix} should be a string.`)
             assertWarning(
               extensionNameValue === extensionName,
-              `${errPrefix} is ${pc.bold(extensionNameValue)} but it should be ${pc.bold(extensionName)} instead`,
+              `${errPrefix} is ${pc.bold(extensionNameValue)} but it should be ${pc.bold(extensionName)} instead.`,
               { onlyOnce: true }
             )
           }
@@ -275,7 +275,7 @@ async function loadInterfaceFiles(
               importPathAbsolute === importPathAbsoluteExpected,
               `The Vike configuration of ${extensionName} is exported at ${pc.bold(
                 importPathAbsolute
-              )} but it should be exported at ${pc.bold(importPathAbsoluteExpected)} instead`,
+              )} but it should be exported at ${pc.bold(importPathAbsoluteExpected)} instead.`,
               { onlyOnce: true }
             )
           }
@@ -294,7 +294,7 @@ async function loadInterfaceFiles(
               `The name of the Vike extension ${pc.bold(extensionName)} should be or start with ${joinEnglish(
                 prefix.map(pc.bold),
                 'or'
-              )}`,
+              )}.`,
               { onlyOnce: true }
             )
           }
