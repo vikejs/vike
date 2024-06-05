@@ -7,6 +7,7 @@ export { addOnBeforeLogHook }
 export { getAssertErrMsg }
 export { overwriteAssertProductionLogger }
 export { isBug }
+export { setAlwaysShowStackTrace }
 
 import { onAssertModuleLoad } from './assertSingleInstance.js'
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
@@ -19,6 +20,7 @@ const globalObject = getGlobalObject<{
   onBeforeLog?: () => void
   logger: Logger
   showStackTraceList: WeakSet<Error>
+  alwaysShowStackTrace?: true
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
   // Production logger. Overwritten by loggerNotProd.ts in non-production environments.
@@ -72,6 +74,7 @@ function assertUsage(
   { showStackTrace }: { showStackTrace?: true } = {}
 ): asserts condition {
   if (condition) return
+  showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   errMsg = addWhitespace(errMsg)
   errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
   errMsg = addPrefixProjctName(errMsg)
@@ -97,6 +100,7 @@ function assertWarning(
   { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace?: true }
 ): void {
   if (condition) return
+  showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   msg = addWhitespace(msg)
   msg = addPrefixAssertType(msg, 'Warning')
   msg = addPrefixProjctName(msg)
@@ -207,4 +211,8 @@ function overwriteAssertProductionLogger(logger: Logger): void {
 
 function isBug(err: unknown): boolean {
   return !String(err).includes('[Bug]')
+}
+
+function setAlwaysShowStackTrace() {
+  globalObject.alwaysShowStackTrace = true
 }
