@@ -103,6 +103,7 @@ function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceF
           isVersionRange(PROJECT_VERSION, reqVersion),
           `${errBase} version ${pc.bold(reqVersion)} but ${pc.bold(PROJECT_VERSION)} is installed.`
         )
+        return
       }
       const extensionVersion = extensions[reqName]
       assertUsage(extensionVersion, `${errBase}.`)
