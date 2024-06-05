@@ -100,14 +100,14 @@ function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceF
       const errBase = `${pc.bold(name)} requires ${pc.bold(reqName)}`
       if (reqName === 'vike') {
         assertUsage(
-          semver.satisfies(PROJECT_VERSION, reqVersion),
+          isVersionRange(PROJECT_VERSION, reqVersion),
           `${errBase} version ${pc.bold(reqVersion)} but ${pc.bold(PROJECT_VERSION)} is installed.`
         )
       }
       const extensionVersion = extensions[reqName]
       assertUsage(extensionVersion, `${errBase}.`)
       assertUsage(
-        semver.satisfies(extensionVersion, reqVersion),
+        isVersionRange(extensionVersion, reqVersion),
         `${errBase} version ${pc.bold(reqVersion)} but ${pc.bold(extensionVersion)} is installed.`
       )
     })
@@ -171,4 +171,10 @@ function getFilePathToShowToUser(interfaceFile: InterfaceFile): string {
   const { filePathToShowToUserResolved } = interfaceFile.filePath
   assert(filePathToShowToUserResolved)
   return filePathToShowToUserResolved
+}
+
+function isVersionRange(version: string, range: string) {
+  // Remove pre-release tag
+  version = version.split('-')[0]!
+  return semver.satisfies(version, range)
 }
