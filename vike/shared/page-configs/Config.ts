@@ -5,6 +5,7 @@ export type { ConfigMeta }
 export type { HookName }
 export type { HookNamePage }
 export type { HookNameGlobal }
+export type { ImportString }
 
 export type { DataAsync }
 export type { DataSync }
