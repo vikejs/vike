@@ -236,7 +236,7 @@ async function loadInterfaceFiles(
         ```
         */
         const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId)
-        assertExtensionsConventions(extendsConfig, interfaceFile)
+        assertExtensionsConventions(interfaceFile)
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
     }),
