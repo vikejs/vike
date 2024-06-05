@@ -6,7 +6,7 @@ import { determineFsAllowList } from './determineFsAllowList.js'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware.js'
 import { markEnvAsViteDev } from '../../utils.js'
 import { improveViteLogs } from '../../shared/loggerVite.js'
-import { isErrorDebug } from '../../shared/isErrorDebug.js'
+import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore.js'
 
 if (isErrorDebug()) {

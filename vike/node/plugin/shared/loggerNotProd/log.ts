@@ -8,7 +8,7 @@ export { applyViteSourceMapToStackTrace }
 
 import { assert, projectInfo, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils.js'
 import pc from '@brillout/picocolors'
-import { isErrorDebug } from '../isErrorDebug.js'
+import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { getViteDevServer } from '../../../runtime/globalContext.js'
 import type { LogCategory, LogType } from '../loggerNotProd.js'
 import type { ResolvedConfig } from 'vite'

@@ -5,7 +5,7 @@ import { logViteError, logViteAny, clearLogs } from './loggerNotProd.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
-import { isErrorDebug } from './isErrorDebug.js'
+import { isErrorDebug } from '../../shared/isErrorDebug.js'
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)

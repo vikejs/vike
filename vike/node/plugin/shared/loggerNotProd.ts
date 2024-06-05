@@ -32,7 +32,7 @@ import {
   warnIfErrorIsNotObject
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
-import { isErrorDebug } from './isErrorDebug.js'
+import { isErrorDebug } from '../../shared/isErrorDebug.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,
