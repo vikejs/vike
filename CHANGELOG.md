@@ -1,3 +1,30 @@
+## [0.4.173](https://github.com/vikejs/vike/compare/v0.4.172...v0.4.173) (2024-06-05)
+
+
+### Bug Fixes
+
+* `export type { ImportString }` ([1161acd](https://github.com/vikejs/vike/commit/1161acd6f45d26a037631c238945b01dd1740667))
+* add vite.config.js headers to SSR response ([#1669](https://github.com/vikejs/vike/issues/1669)) ([605b4a5](https://github.com/vikejs/vike/commit/605b4a502fc5e34ea8948216ddee607e9a558666))
+* always show assert stack traces upon DEBUG=vike:error ([a437fe9](https://github.com/vikejs/vike/commit/a437fe9b67375cb124889eeee7e28db438caa854))
+* enforce Vike extension conventions ([be770f2](https://github.com/vikejs/vike/commit/be770f2edcecf051c0556e0774e7b77b614b529f))
+* fix deducing of extension name ([2c361cc](https://github.com/vikejs/vike/commit/2c361cc87228304af728164cc3615bd0900b7e9e))
+* move dev code outside of prod runtime ([5d69efa](https://github.com/vikejs/vike/commit/5d69efa41688c1608fff215646b8641bc6a99b66))
+* prettify logged URL ([#1658](https://github.com/vikejs/vike/issues/1658)) ([ea2b76c](https://github.com/vikejs/vike/commit/ea2b76c5fd96298f7b5b750c78a4993f11e1b2c2))
+* remove ImportString from pageContext.config type ([1b7b761](https://github.com/vikejs/vike/commit/1b7b7613f9364e617341f5285b27646a72592edf))
+* remove outdated Bun workaround ([6701c7b](https://github.com/vikejs/vike/commit/6701c7b4bfeb0fd23cccc6bd870ff4ade72c2267))
+* remove too strict convention ([7b30d71](https://github.com/vikejs/vike/commit/7b30d7197dbee6545e4b0db65744d619f34c569c))
+* support pre-releases for require setting ([24e2d90](https://github.com/vikejs/vike/commit/24e2d909ab49f128711e96de31d544a574a74c71))
+* support UTF-9 file paths (fix [#1658](https://github.com/vikejs/vike/issues/1658)) ([a7cc8ad](https://github.com/vikejs/vike/commit/a7cc8adb3f8ccdf2718ad334280d232b3c6069a5))
+
+
+### Features
+
+* [experimental] new setting crawl.git (closes [#1655](https://github.com/vikejs/vike/issues/1655)) ([c1b0884](https://github.com/vikejs/vike/commit/c1b08840bd2a0d741bffc78a045edbc77fbf64f4))
+* new setting `clientHooks` (closes [#1671](https://github.com/vikejs/vike/issues/1671)) ([c1dcd5f](https://github.com/vikejs/vike/commit/c1dcd5f3c01eee8cb888912f0860d30b87f71521))
+* new setting `require` for Vike extensions (fix [#1668](https://github.com/vikejs/vike/issues/1668)) ([5ceeb1a](https://github.com/vikejs/vike/commit/5ceeb1ac0affae3de47bf4d881f477dccea62a94))
+
+
+
 ## [0.4.172](https://github.com/vikejs/vike/compare/v0.4.171...v0.4.172) (2024-05-26)
 
 
