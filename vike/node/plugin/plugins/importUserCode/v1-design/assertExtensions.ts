@@ -22,7 +22,7 @@ function assertConfigExportPath(interfaceFile: InterfaceFile): void {
     importPathAbsolute === importPathAbsoluteExpected,
     `The Vike configuration of ${pc.bold(name)} is exported at ${pc.bold(
       importPathAbsolute
-    )} but it should be exported at ${pc.bold(importPathAbsoluteExpected)} instead.`,
+    )}, but it should be exported at ${pc.bold(importPathAbsoluteExpected)} instead.`,
     { onlyOnce: true }
   )
 }
@@ -42,9 +42,9 @@ function assertExtensionName(interfaceFile: InterfaceFile): void {
   if (name) {
     assertWarning(
       name === nameDeduced,
-      `The setting ${pc.bold('name')} defined at ${filePathToShowToUser} is ${pc.bold(name)} but it should be ${pc.bold(
-        nameDeduced
-      )} instead (the name of the npm package).`,
+      `The setting ${pc.bold('name')} defined at ${filePathToShowToUser} is ${pc.bold(
+        name
+      )}, but it should be ${pc.bold(nameDeduced)} instead (the name of the npm package).`,
       { onlyOnce: true }
     )
   } else {
@@ -101,7 +101,7 @@ function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceF
       if (reqName === 'vike') {
         assertUsage(
           isVersionRange(PROJECT_VERSION, reqVersion),
-          `${errBase} version ${pc.bold(reqVersion)} but ${pc.bold(PROJECT_VERSION)} is installed.`
+          `${errBase} version ${pc.bold(reqVersion)}, but ${pc.bold(PROJECT_VERSION)} is installed.`
         )
         return
       }
@@ -109,7 +109,7 @@ function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceF
       assertUsage(extensionVersion, `${errBase}.`)
       assertUsage(
         isVersionRange(extensionVersion, reqVersion),
-        `${errBase} version ${pc.bold(reqVersion)} but ${pc.bold(extensionVersion)} is installed.`
+        `${errBase} version ${pc.bold(reqVersion)}, but ${pc.bold(extensionVersion)} is installed.`
       )
     })
   })
@@ -156,7 +156,7 @@ function getExtensionVersion(name: string, interfaceFile: InterfaceFile): string
       name === nameExpected,
       `The setting ${pc.bold('name')} defined at ${filePathToShowToUser} is ${pc.bold(
         JSON.stringify(name)
-      )} but it should be equal to ${pc.bold(JSON.stringify(nameExpected))} (the value of ${packageJsonPath}${pc.dim(
+      )}, but it should be equal to ${pc.bold(JSON.stringify(nameExpected))} (the value of ${packageJsonPath}${pc.dim(
         '#'
       )}${pc.bold('name')})`,
       { onlyOnce: true }
