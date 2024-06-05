@@ -1,16 +1,12 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, findFile } from '../utils.js'
+import { assert, assertUsage, assertWarning, findPackageJson } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
-import { createRequire } from 'module'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
-// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
-const importMetaUrl: string = import.meta.url
-const require_ = createRequire(importMetaUrl)
 const pluginName = 'vike:commonConfig-1'
 
 function commonConfig(): Plugin[] {
@@ -68,9 +64,9 @@ function workaroundCI(config: ResolvedConfig) {
 }
 
 function assertEsm(userViteRoot: string) {
-  const packageJsonPath = findFile('package.json', userViteRoot)
-  if (!packageJsonPath) return
-  const packageJson = require_(packageJsonPath)
+  const found = findPackageJson(userViteRoot)
+  if (!found) return
+  const { packageJson, packageJsonPath } = found
   let dir = path.posix.dirname(packageJsonPath)
   if (dir !== '/') {
     assert(!dir.endsWith('/'))
