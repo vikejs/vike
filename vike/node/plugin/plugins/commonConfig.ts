@@ -71,7 +71,7 @@ function assertEsm(userViteRoot: string) {
   const packageJsonPath = findFile('package.json', userViteRoot)
   if (!packageJsonPath) return
   const packageJson = require_(packageJsonPath)
-  let dir = path.dirname(packageJsonPath)
+  let dir = path.posix.dirname(packageJsonPath)
   if (dir !== '/') {
     assert(!dir.endsWith('/'))
     dir = dir + '/'
