@@ -70,6 +70,10 @@ Even if you use a monorepo that uses a mix of ESM/CJS packages, the migration of
 
 That said, migrating your whole monorepo isn't easy: the issue is that CJS modules cannot (easily) import ESM modules.
 
+> Node.js 22 added support for `require()`'ing ES modules behind a `--experimental-require-module` flag, see [Node.js Blog > Node.js 22 is now available! > Support require()ing synchronous ESM graphs](https://nodejs.org/en/blog/announcements/v22-release-announce#support-requireing-synchronous-esm-graphs).
+>
+> This means you can use Node.js 22 and ignore the following recommendation.
+
 But because ESM modules can import CJS modules (unlike the opposite), a sensible strategy is to migrate your monorepo in a top-down fashion: first migrate CJS modules that aren't required by other CJS modules.
 
 For example, you can usually starting migrating your Vike app and then later migrate its monorepo dependencies.
