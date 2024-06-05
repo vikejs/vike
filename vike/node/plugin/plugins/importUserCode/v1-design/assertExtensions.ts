@@ -1,11 +1,80 @@
 export { assertExtensionsPeerDependencies }
+export { assertExtensionsConventions }
 
 import pc from '@brillout/picocolors'
 import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
-import { PROJECT_VERSION, assert, assertUsage, findPackageJson } from '../../../utils.js'
+import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson, joinEnglish } from '../../../utils.js'
 import { getConfigValueInterfaceFile, type InterfaceFile } from './getVikeConfig.js'
 import path from 'path'
 import semver from 'semver'
+import type { ConfigFile } from './getVikeConfig/loadFileAtConfigTime.js'
+
+function assertExtensionsConventions(extendsConfig: ConfigFile, interfaceFile: InterfaceFile) {
+  const alreadyMigrated = [
+    'vike-react',
+    'vike-react-query',
+    'vike-react-zustand',
+    'vike-vue',
+    'vike-pinia',
+    'vike-solid'
+  ]
+  const { importPathAbsolute } = extendsConfig.filePath
+  assert(importPathAbsolute)
+  const extensionName = importPathAbsolute
+    .split('/')
+    .slice(0, importPathAbsolute.startsWith('@') ? 2 : 1)
+    .join('/')
+  const errMsg = alreadyMigrated.includes(extensionName)
+    ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version.`
+    : `The config of the Vike extension ${extensionName} should define the ${pc.cyan('name')} setting.`
+  const extensionNameValue = getConfigValueInterfaceFile(interfaceFile, 'name')
+  if (alreadyMigrated) {
+    // Eventually remove (always use assertUsage())
+    assertWarning(extensionNameValue, errMsg, { onlyOnce: true })
+  } else {
+    assertUsage(extensionNameValue, errMsg)
+  }
+  {
+    const { filePathToShowToUserResolved } = interfaceFile.filePath
+    assert(filePathToShowToUserResolved)
+    const errPrefix = `The setting ${pc.bold('name')} defined at ${filePathToShowToUserResolved}`
+    assertUsage(typeof extensionNameValue === 'string', `${errPrefix} should be a string.`)
+    assertWarning(
+      extensionNameValue === extensionName,
+      `${errPrefix} is ${pc.bold(extensionNameValue)} but it should be ${pc.bold(extensionName)} instead.`,
+      { onlyOnce: true }
+    )
+  }
+  {
+    const importPathAbsoluteExpected = `${extensionName}/config`
+    assertWarning(
+      importPathAbsolute === importPathAbsoluteExpected,
+      `The Vike configuration of ${extensionName} is exported at ${pc.bold(
+        importPathAbsolute
+      )} but it should be exported at ${pc.bold(importPathAbsoluteExpected)} instead.`,
+      { onlyOnce: true }
+    )
+  }
+  if (extensionName.startsWith('vike-')) {
+    const prefix = [
+      //
+      'vike-react',
+      'vike-vue',
+      'vike-solid',
+      'vike-svelte',
+      'vike-angular',
+      'vike-preact'
+    ]
+    assertWarning(
+      prefix.some((p) => extensionName === p || extensionName.startsWith(`${p}-`)),
+      `The name of the Vike extension ${pc.bold(extensionName)} should be or start with ${joinEnglish(
+        prefix.map(pc.bold),
+        'or'
+      )}.`,
+      { onlyOnce: true }
+    )
+  }
+}
 
 function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceFile[]) {
   // Get installed extensions
