@@ -424,6 +424,12 @@ type ConfigBuiltIn = {
    * https://vike.dev/extends
    */
   name?: string
+
+  /** Used by Vike extensions to enforce their peer dependencies.
+   *
+   * https://vike.dev/require
+   */
+  require?: Record<string, string>
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`

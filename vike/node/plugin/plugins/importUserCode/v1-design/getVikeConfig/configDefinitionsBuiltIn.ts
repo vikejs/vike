@@ -182,6 +182,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   name: {
     env: { config: true }
+  },
+  require: {
+    env: { config: true }
   }
 }
 

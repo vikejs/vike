@@ -3,8 +3,10 @@ export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
 export { isV1Design }
+export { getConfigValueInterfaceFile }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
+export type { InterfaceFile }
 
 import {
   assertPosixPath,
@@ -80,6 +82,7 @@ import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
+import { assertExtensionsPeerDependencies } from './assertExtensions.js'
 
 assertIsNotProductionRuntime()
 
@@ -444,6 +447,8 @@ async function loadVikeConfig(
       .map(async ([locationId]) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
         const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesByLocationId).flat(1)
+
+        assertExtensionsPeerDependencies(interfaceFilesRelevantList)
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 

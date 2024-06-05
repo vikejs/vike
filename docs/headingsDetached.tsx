@@ -494,5 +494,9 @@ const headingsDetached = [
   {
     title: '`clientHooks`',
     url: '/clientHooks'
+  },
+  {
+    title: '`require`',
+    url: '/require'
   }
 ] satisfies HeadingDetachedDefinition[]
