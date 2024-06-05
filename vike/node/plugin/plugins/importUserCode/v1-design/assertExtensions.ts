@@ -3,7 +3,7 @@ export { assertExtensionsConventions }
 
 import pc from '@brillout/picocolors'
 import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
-import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson, joinEnglish } from '../../../utils.js'
+import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../utils.js'
 import { getConfigValueInterfaceFile, type InterfaceFile } from './getVikeConfig.js'
 import path from 'path'
 import semver from 'semver'
@@ -52,25 +52,6 @@ function assertExtensionsConventions(extendsConfig: ConfigFile, interfaceFile: I
       `The Vike configuration of ${extensionName} is exported at ${pc.bold(
         importPathAbsolute
       )} but it should be exported at ${pc.bold(importPathAbsoluteExpected)} instead.`,
-      { onlyOnce: true }
-    )
-  }
-  if (extensionName.startsWith('vike-')) {
-    const prefix = [
-      //
-      'vike-react',
-      'vike-vue',
-      'vike-solid',
-      'vike-svelte',
-      'vike-angular',
-      'vike-preact'
-    ]
-    assertWarning(
-      prefix.some((p) => extensionName === p || extensionName.startsWith(`${p}-`)),
-      `The name of the Vike extension ${pc.bold(extensionName)} should be or start with ${joinEnglish(
-        prefix.map(pc.bold),
-        'or'
-      )}.`,
       { onlyOnce: true }
     )
   }
