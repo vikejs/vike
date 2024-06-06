@@ -1,3 +1,12 @@
+## [0.4.174](https://github.com/vikejs/vike/compare/v0.4.173...v0.4.174) (2024-06-06)
+
+
+### Bug Fixes
+
+* declare semver dependency (fix [#1676](https://github.com/vikejs/vike/issues/1676)) ([8f0b499](https://github.com/vikejs/vike/commit/8f0b49997f9ccdb5f1f9802b99e723c2bf0f8cce))
+
+
+
 ## [0.4.173](https://github.com/vikejs/vike/compare/v0.4.172...v0.4.173) (2024-06-05)
 
 
