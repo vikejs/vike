@@ -1900,6 +1900,9 @@ importers:
       fast-glob:
         specifier: ^3.0.0
         version: 3.3.2
+      semver:
+        specifier: ^7.6.2
+        version: 7.6.2
       sirv:
         specifier: ^2.0.0
         version: 2.0.4
