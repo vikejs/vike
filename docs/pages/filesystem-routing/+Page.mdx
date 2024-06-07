@@ -12,7 +12,7 @@ pages/faq/+Page.js             /faq
 > You can use a [Route String](/route-string) or [Route Function](route-function) to override the route of a page determined by Filesystem Routing.
 
 
-### Paramterized routes
+## Paramterized routes
 
 You can define parameterized routes:
 
@@ -25,7 +25,7 @@ pages/movie/@id/+Page.js       /movie/123, /movie/abc, ...
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
 
-### Case sensitive
+## Case sensitive
 
 Filesystem Routing is case senstive:
 
@@ -35,7 +35,7 @@ FILESYSTEM                     URL
 pages/HELLO/+Page.js           /HELLO
 ```
 
-### Ignored directories
+## Ignored directories
 
 Filesystem Routing ignores the following directories:
  - `index/`
@@ -53,7 +53,7 @@ contact/+Page.js                                    /contact
 ```
 
 
-### Domain-driven file structure
+## Domain-driven file structure
 
 You can setup a file structure that is domain-driven such as:
 
@@ -69,7 +69,7 @@ todo/pages/create/+Page.js         /todo/create
 See <Link href='/file-structure#domain-driven' />.
 
 
-### Crawl
+## Crawl
 
 Vike crawls all files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root).
 
