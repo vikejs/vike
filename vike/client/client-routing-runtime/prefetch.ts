@@ -1,6 +1,6 @@
 export { prefetch }
 export { addLinkPrefetchHandlers }
-export { getPrefetchedPageContextFromServerHooks }
+export { getPrefetchedPageContext }
 
 import {
   assert,
@@ -56,7 +56,7 @@ type PageContextForPrefetch = {
   _pageConfigs: PageConfigRuntime[]
 }
 
-function getPrefetchedPageContextFromServerHooks(pageContext: {
+function getPrefetchedPageContext(pageContext: {
   urlOriginal: string
 }): null | PageContextFromServerHooks {
   const url = pageContext.urlOriginal
