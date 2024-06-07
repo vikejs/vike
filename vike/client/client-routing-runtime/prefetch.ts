@@ -84,12 +84,7 @@ async function prefetchPageContextFromServerHooks(
   pageContextLink: PageContextForPrefetch,
   resultMaxAge: number
 ): Promise<void> {
-  let result: Result
-  try {
-    result = await getPageContextFromServerHooks(pageContextLink, false)
-  } catch {
-    return
-  }
+  const result = await getPageContextFromServerHooks(pageContextLink, false)
   const urlOfLink = pageContextLink.urlOriginal
   globalObject.prefetchedPageContexts[urlOfLink] = {
     resultFetchedAt: Date.now(),
