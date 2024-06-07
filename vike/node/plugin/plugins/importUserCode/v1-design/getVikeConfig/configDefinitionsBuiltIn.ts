@@ -224,8 +224,8 @@ function getConfigEnv(configValueSources: ConfigValueSources, configName: string
   if (!configValueSource) return null
   const { configEnv } = configValueSource
   const env: { client?: true; server?: true } = {}
-  if (!!configEnv.client) env.client = true
-  if (!!configEnv.server) env.server = true
+  if (configEnv.client) env.client = true
+  if (configEnv.server) env.server = true
   return env
 }
 function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
