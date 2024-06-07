@@ -5,6 +5,7 @@ export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }
 
 import { assertUsage, assertInfo, assertWarning } from '../utils.js'
+import { PrefetchSetting } from './PrefetchSetting.js'
 
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 const prefetchSettingTrue = {
@@ -53,6 +54,9 @@ function getPrefetchSetting(pageContext: PageContextPrefetch, linkTag: null | HT
     if (prefetch === false) prefetchSetting = prefetchSettingFalse
     // No validation in order to save client-side KBs
     Object.assign(prefetchSetting, prefetch)
+    if ((prefetchSetting as Exclude<PrefetchSetting, boolean>).pageContext === true) {
+      prefetchSetting.pageContext = PAGE_CONTEXT_MAX_AGE_DEFAULT
+    }
   }
 
   if (prefetchSetting.staticAssets === 'viewport' && import.meta.env.DEV) {
