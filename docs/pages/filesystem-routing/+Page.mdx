@@ -9,9 +9,10 @@ pages/about/+Page.js           /about
 pages/faq/+Page.js             /faq
 ```
 
-For more advanced routing, use [Route Strings](/route-string) and [Route Functions](route-function) instead.
+> You can use a [Route String](/route-string) or [Route Function](route-function) to override the route of a page determined by Filesystem Routing.
 
-#### Paramterized routes
+
+### Paramterized routes
 
 You can define parameterized routes:
 
@@ -23,9 +24,10 @@ pages/movie/@id/+Page.js       /movie/123, /movie/abc, ...
 
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
-#### Case sensitive
 
-It's case senstive:
+### Case sensitive
+
+Filesystem Routing is case senstive:
 
 ```bash
 FILESYSTEM                     URL
@@ -50,9 +52,10 @@ pages/pages/src/src/index/pages/about/+Page.js      /about
 contact/+Page.js                                    /contact
 ```
 
+
 ### Domain-driven file structure
 
-You can setup a <Link text="domain-driven file structure" href='/file-structure#domain-driven' /> such as:
+You can setup a file structure that is domain-driven such as:
 
 ```bash
 FILESYSTEM                         URL
@@ -63,8 +66,21 @@ todo/pages/list/+Page.js           /todo/list
 todo/pages/create/+Page.js         /todo/create
 ```
 
-You can change the URL root of Filesystem Routing by using <Link href="/filesystemRoutingRoot" noBreadcrumb />.
+See <Link href='/file-structure#domain-driven' />.
+
+
+### Crawl
+
+Vike crawls all files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root).
+
+In other words: all your <Link href="/config#files">`+` files</Link> need to live inside `root`.
+
+> You can use soft symlinks (`$ ln -s`) to link outside directories into `root` and thus make them crawlable.
+
+> You can use the <Link href="/filesystemRoutingRoot">`filesystemRoutingRoot` setting</Link> to get lot of flexibility, as shown for example at <Link href='/file-structure#domain-driven' />.
+
 
 ## See also
 
  - <Link href="/routing" />
+ - <Link href="/filesystemRoutingRoot" />
