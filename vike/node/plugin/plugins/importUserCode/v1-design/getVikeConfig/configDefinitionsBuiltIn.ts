@@ -189,6 +189,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
 }
 
 type ConfigNameGlobal =
+  | 'onBoot'
   | 'onPrerenderStart'
   | 'onBeforeRoute'
   | 'prerender'
@@ -205,6 +206,9 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionI
   },
   onBeforeRoute: {
     env: { server: true, client: 'if-client-routing', eager: true }
+  },
+  onBoot: {
+    env: { server: true, client: true, eager: true }
   },
   prerender: {
     env: { config: true }
