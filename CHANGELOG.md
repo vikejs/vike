@@ -1,3 +1,17 @@
+## [0.4.175](https://github.com/vikejs/vike/compare/v0.4.174...v0.4.175) (2024-06-10)
+
+
+### Bug Fixes
+
+* workaround pseudo headers (fix [#1683](https://github.com/vikejs/vike/issues/1683)) ([8abdb8f](https://github.com/vikejs/vike/commit/8abdb8fbb7c2d0ac6fcfb23576f9825c75465b89))
+
+
+### Features
+
+* [Filesystem Routing] skip `(someDir)/` directories (closes [#1684](https://github.com/vikejs/vike/issues/1684)) ([d226ee7](https://github.com/vikejs/vike/commit/d226ee776b5a8abf2ab3f7a108154f1abf54811f))
+
+
+
 ## [0.4.174](https://github.com/vikejs/vike/compare/v0.4.173...v0.4.174) (2024-06-06)
 
 
