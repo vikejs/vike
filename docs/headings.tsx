@@ -64,11 +64,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Routing',
-    url: '/routing'
-  },
-  {
-    level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
     sectionTitles: ['`data()`']
@@ -82,6 +77,25 @@ const headings = [
     level: 2,
     title: 'Common Issues',
     url: '/common-issues'
+  },
+  {
+    level: 4,
+    title: 'Routing'
+  },
+  {
+    level: 2,
+    title: 'Routing',
+    url: '/routing'
+  },
+  {
+    level: 2,
+    title: 'Base URL',
+    url: '/base-url'
+  },
+  {
+    level: 2,
+    title: 'Active Links',
+    url: '/active-links'
   },
   {
     level: 4,
@@ -162,41 +176,6 @@ const headings = [
     level: 2,
     title: 'Build Your Own Framework',
     url: '/build-your-own-framework'
-  },
-  {
-    level: 1,
-    title: 'Routing',
-    titleEmoji: 'road-fork'
-  },
-  {
-    level: 2,
-    title: 'Filesystem Routing',
-    url: '/filesystem-routing'
-  },
-  {
-    level: 2,
-    title: 'Route String',
-    url: '/route-string'
-  },
-  {
-    level: 2,
-    title: 'Route Function',
-    url: '/route-function'
-  },
-  {
-    level: 2,
-    title: 'Active Links',
-    url: '/active-links'
-  },
-  {
-    level: 2,
-    title: 'Base URL',
-    url: '/base-url'
-  },
-  {
-    level: 2,
-    title: 'Routing Precedence',
-    url: '/routing-precedence'
   },
   {
     level: 1,
@@ -607,10 +586,6 @@ const headings = [
     titleEmoji: 'gear'
   },
   {
-    level: 4,
-    title: 'Core'
-  },
-  {
     level: 2,
     title: '`pageContext`',
     url: '/pageContext'
@@ -646,6 +621,30 @@ const headings = [
     level: 2,
     title: '`+client.js`',
     url: '/client'
+  },
+  {
+    level: 4,
+    title: 'Routing'
+  },
+  {
+    level: 2,
+    title: 'Filesystem Routing',
+    url: '/filesystem-routing'
+  },
+  {
+    level: 2,
+    title: 'Route String',
+    url: '/route-string'
+  },
+  {
+    level: 2,
+    title: 'Route Function',
+    url: '/route-function'
+  },
+  {
+    level: 2,
+    title: 'Routing Precedence',
+    url: '/routing-precedence'
   },
   {
     level: 4,
