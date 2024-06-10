@@ -812,11 +812,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`filesystemRoutingRoot`',
-    url: '/filesystemRoutingRoot'
-  },
-  {
-    level: 2,
     title: '`passToClient`',
     url: '/passToClient'
   },

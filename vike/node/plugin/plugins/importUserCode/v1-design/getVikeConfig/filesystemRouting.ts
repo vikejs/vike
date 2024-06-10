@@ -10,7 +10,15 @@ export type { LocationId }
 // For ./filesystemRouting.spec.ts
 export { getLogicalPath }
 
-import { assert, assertIsNotProductionRuntime, assertPosixPath, higherFirst } from '../../../../utils.js'
+import pc from '@brillout/picocolors'
+import {
+  assert,
+  assertIsNotProductionRuntime,
+  assertPosixPath,
+  assertWarning,
+  higherFirst,
+  slice
+} from '../../../../utils.js'
 assertIsNotProductionRuntime()
 
 /**
@@ -136,6 +144,26 @@ function removeIgnoredDirectories(somePath: string, ignoredDirs: string[]): stri
     .split('/')
     .filter((dir) => {
       if (ignoredDirs.includes(dir)) {
+        return false
+      }
+      if (dir.startsWith('(') && dir.endsWith(')')) {
+        const dirname = dir.slice(1, -1)
+        if (ignoredDirs.includes(dirname)) {
+          const dirnameActual = dir
+          const dirnameCorect = dirname
+          const dirpathActual = somePath.slice(0, somePath.indexOf(dirnameActual) + dirnameActual.length)
+          const dirpathCorect = dirpathActual.replaceAll(dirnameActual, dirnameCorect)
+          const logDir = (d: string) => pc.bold(d + '/')
+          assertWarning(
+            false,
+            [
+              `The directories ${logDir(dirnameCorect)} are always ignored by Vike's Filesystem Routing`,
+              '(https://vike.dev/filesystem-routing):',
+              `rename directory ${logDir(dirpathActual)} to ${logDir(dirpathCorect)}`
+            ].join(' '),
+            { onlyOnce: true }
+          )
+        }
         return false
       }
       return true

@@ -31,8 +31,23 @@ pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
 
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
+You can setup a domain-driven file structure:
+
+```
+FILESYSTEM                             URL
+================================       ============
+(marketing)/pages/index/+Page.js       /
+(marketing)/pages/about/+Page.js       /about
+user/pages/list/+Page.js               /user/list
+user/pages/create/+Page.js             /user/create
+todo/pages/list/+Page.js               /todo/list
+todo/pages/create/+Page.js             /todo/create
+```
+
+> The directory `(marketing)` is ignored because it's wrapped by parentheses.
 
 More information at:
+ - <Link href='/file-structure#domain-driven' />
  - <Link href="/filesystem-routing" />
 
 
@@ -112,6 +127,7 @@ Although we usually don't recommend it, you can use Vike with React Router and V
 
 ## See also
 
+ - <Link href="/file-structure" />
  - <Link href="/filesystem-routing" />
  - <Link href="/route-string" />
  - <Link href="/route-function" />

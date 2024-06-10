@@ -498,5 +498,9 @@ const headingsDetached = [
   {
     title: '`require`',
     url: '/require'
+  },
+  {
+    title: '`filesystemRoutingRoot`',
+    url: '/filesystemRoutingRoot'
   }
 ] satisfies HeadingDetachedDefinition[]

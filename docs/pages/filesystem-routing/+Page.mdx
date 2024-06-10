@@ -37,36 +37,23 @@ pages/HELLO/+Page.js           /HELLO
 
 ## Ignored directories
 
-Filesystem Routing ignores the following directories:
+Following directories are ignored:
  - `index/`
  - `pages/`
  - `src/`
+ - `(someDir)/` (any directory wrapped with parentheses)
 
-```bash
-FILESYSTEM                                          URL
-==============================================      ========
-pages/index/+Page.js                                /
-src/pages/index/+Page.js                            /
-src/pages/jobs/+Page.js                             /jobs
-pages/pages/src/src/index/pages/about/+Page.js      /about
-contact/+Page.js                                    /contact
+```
+FILESYSTEM                                                     URL
+=========================================================      ========
+pages/index/+Page.js                                           /
+(marketing)/src/pages/jobs/+Page.js                            /jobs
+(some)/(path)/src/pages/jobs/+Page.js                          /jobs
+contact/+Page.js                                               /contact
+pages/pages/src/(some-dir)/src/index/pages/about/+Page.js      /about
 ```
 
-
-## Domain-driven file structure
-
-You can setup a file structure that is domain-driven such as:
-
-```bash
-FILESYSTEM                         URL
-==========================         ============
-user/pages/list/+Page.js           /user/list
-user/pages/create/+Page.js         /user/create
-todo/pages/list/+Page.js           /todo/list
-todo/pages/create/+Page.js         /todo/create
-```
-
-See <Link href='/file-structure#domain-driven' />.
+This enables you to set up a domain-driven file structure: <Link href='/file-structure#domain-driven' />.
 
 
 ## Crawl
@@ -79,10 +66,8 @@ In other words: all your <Link href="/config#files">`+` files</Link> need to liv
 
 If you use Git then Vike doesn't crawl and skips all directories defined by your `.gitignore` files.
 
-You can use the <Link href="/filesystemRoutingRoot">`filesystemRoutingRoot` setting</Link> to get lot of flexibility, as shown for example at <Link href='/file-structure#domain-driven' />.
-
 
 ## See also
 
  - <Link href="/routing" />
- - <Link href="/filesystemRoutingRoot" />
+ - <Link href="/file-structure" />
