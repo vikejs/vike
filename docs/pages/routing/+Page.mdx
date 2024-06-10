@@ -9,17 +9,12 @@ Vike supports *Filesystem Routing*: the URL of a page is determined by where the
 ```bash
 FILESYSTEM                     URL
 ====================           ======
-pages/about/+Page.js           /about
-pages/faq/+Page.js             /faq
-```
-Note that `index/` and `src/` are mapped to the empty string:
-```bash
-FILESYSTEM                     URL
-========================       ======
 pages/index/+Page.js           /
-src/pages/index/+Page.js       /
-src/pages/about/+Page.js       /about
+pages/about/+Page.js           /about
+pages/jobs/+Page.js            /jobs
 ```
+
+> The directories `pages/`, `index/` and `src/` are ignored.
 
 You can define parameterized routes:
 
@@ -31,20 +26,17 @@ pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
 
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
-You can setup a domain-driven file structure:
+You can set up a domain-driven file structure:
 
 ```
 FILESYSTEM                             URL
 ================================       ============
 (marketing)/pages/index/+Page.js       /
 (marketing)/pages/about/+Page.js       /about
-user/pages/list/+Page.js               /user/list
-user/pages/create/+Page.js             /user/create
-todo/pages/list/+Page.js               /todo/list
-todo/pages/create/+Page.js             /todo/create
+admin-panel/pages/index/+Page.js       /admin-panel
 ```
 
-> The directory `(marketing)` is ignored because it's wrapped by parentheses.
+> The directory `(marketing)/` is ignored because it's wrapped by parentheses.
 
 More information at:
  - <Link href='/file-structure#domain-driven' />

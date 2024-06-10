@@ -1,10 +1,11 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-For advanced apps we recommend a domain-driven file structure using multiple `pages/` directories,
-while for basic apps we recommend using a single `pages/` directory.
+For advanced apps we recommend a domain-driven file structure using multiple `pages/` directories.
 
-## Basic Apps
+For basic apps we recommend using a single `pages/` directory.
+
+## Basic
 
 ```yaml
 # Landing page
@@ -63,7 +64,7 @@ while for basic apps we recommend using a single `pages/` directory.
 export default '/product/@id'
 ```
 
-Resulting route table:
+Route table:
 
 ```
 FILEYSTEM                                   ROUTE
@@ -77,32 +78,36 @@ FILEYSTEM                                   ROUTE
 /products/pages/product/+Page.js            /product/@id
 ```
 
-> The directory `(marketing)` is ignored because it's wrapped by parentheses.
+> The directory `(marketing)/` is ignored because it's wrapped by parentheses.
 
-Such domain-driven file structure is also convenient for setting different default configurations.
+Such domain-driven file structure is also convenient for having different configs:
 
 ```yaml
-# Defaults
+# Configs for marketing pages
+/(marketing)/pages/+Layout.js
 /(marketing)/pages/+title.js
 /(marketing)/pages/+ssr.js
 /(marketing)/pages/+prerender.js
-# Pages
+
+# Marketing pages
 /(marketing)/pages/index/+Page.js
 /(marketing)/pages/about/+Page.js
 /(marketing)/pages/jobs/+Page.js
 
-# Defaults
+# Configs for admin pages
+/admin-panel/pages/+Layout.js
 /admin-panel/pages/+title.js
 /admin-panel/pages/+config.js
-# Pages
+
+# Admin pages
 /admin-panel/pages/index/+Page.js
 /admin-panel/pages/edit-product/+Page.js
 /admin-panel/pages/database/+Page.js
 ```
 
 Note how <Link href="/config#inheritance">config inheritance</Link> applies:
-- The `/(marketing)/pages/+*.js` files apply as default to all pages living at `/(marketing)/pages/**`.
-- The `/admin-panel/pages/+*.js` files apply as default to all pages living at `/admin-panel/pages/**`.
+- The `/(marketing)/pages/+*.js` configs apply to all pages living at `/(marketing)/pages/**`.
+- The `/admin-panel/pages/+*.js` configs apply to all pages living at `/admin-panel/pages/**`.
 
 
 Example:
@@ -118,12 +123,10 @@ You can embed `pages/` in `src/`:
 /src/pages/about/+Page.js # => URL /about
 ```
 
-See <Link href="/filesystem-routing" /> for more information.
 
+## `renderer/`
 
-## Without `vike-{react,vue,solid}`
-
-In case you don't use a <UiFrameworkExtension />, we recommend placing your UI framework integration code in a `renderer/` directory.
+If you don't use a <UiFrameworkExtension /> then we recommend placing your UI framework integration in a `renderer/` directory.
 
 ```yaml
 # Same as above

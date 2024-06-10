@@ -62,9 +62,9 @@ Vike crawls all files inside [Vite's `root` directory](https://vitejs.dev/config
 
 In other words: all your <Link href="/config#files">`+` files</Link> need to live inside `root`.
 
-> You can use soft symlinks (`$ ln -s`) to link outside directories into `root` and thus make them crawlable.
+> You can use a soft symlink (`$ ln -s`) to make a directory outside of `root` crawlable.
 
-If you use Git then Vike doesn't crawl and skips all directories defined by your `.gitignore` files.
+If you use Git then Vike skips `.gitignore` files.
 
 
 ## See also
