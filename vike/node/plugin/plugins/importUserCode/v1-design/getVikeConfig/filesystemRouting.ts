@@ -10,7 +10,8 @@ export type { LocationId }
 // For ./filesystemRouting.spec.ts
 export { getLogicalPath }
 
-import { assert, assertPosixPath, higherFirst } from '../../../../utils.js'
+import { assert, assertIsNotProductionRuntime, assertPosixPath, higherFirst } from '../../../../utils.js'
+assertIsNotProductionRuntime()
 
 /**
  * The `locationId` value is used for filesystem inheritance.
