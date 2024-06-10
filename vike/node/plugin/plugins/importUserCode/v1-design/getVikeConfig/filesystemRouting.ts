@@ -65,8 +65,8 @@ function getInheritanceRoot(locationId: LocationId): string {
 /**
  * getLogicalPath('/pages/some-page', ['pages']) => '/some-page'
  */
-function getLogicalPath(locationId: LocationId, removeDirs: string[]): string {
-  let logicalPath = removeDirectories(locationId, removeDirs)
+function getLogicalPath(locationId: LocationId, ignoredDirs: string[]): string {
+  let logicalPath = removeIgnoredDirectories(locationId, ignoredDirs)
   assertIsPath(logicalPath)
   return logicalPath
 }
@@ -130,11 +130,16 @@ function isInherited(locationId1: LocationId, locationId2: LocationId): boolean 
   return startsWith(inheritanceRoot2, inheritanceRoot1)
 }
 
-function removeDirectories(somePath: string, removeDirs: string[]): string {
+function removeIgnoredDirectories(somePath: string, ignoredDirs: string[]): string {
   assertPosixPath(somePath)
   somePath = somePath
     .split('/')
-    .filter((p) => !removeDirs.includes(p))
+    .filter((dir) => {
+      if (ignoredDirs.includes(dir)) {
+        return false
+      }
+      return true
+    })
     .join('/')
   if (somePath === '') somePath = '/'
   return somePath
