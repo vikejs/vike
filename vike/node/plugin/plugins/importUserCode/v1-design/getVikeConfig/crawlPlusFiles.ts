@@ -50,7 +50,9 @@ async function crawlPlusFiles(
 
   // Crawl
   let files: string[] = []
-  const res = crawlWithGit !== false && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
+  const symlinksExists = await isSymlinksExists(userRootDir, outDirRelativeFromUserRootDir)
+  const res =
+    crawlWithGit !== false && !symlinksExists && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
   if (
     res &&
     // Fallback to fast-glob for users that dynamically generate plus files. (Assuming all (generetad) plus files to be skipped because users usually included them in `.gitignore`.)
@@ -151,6 +153,25 @@ async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: stri
     dot: false
   })
   return files
+}
+// We cannot find files inside symlinks with `git ls-files` because it doesn't follow symlinks
+// So we check if there are any symlinks in the user's project, and if there are, we fallback to fast-glob
+async function isSymlinksExists(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<boolean> {
+  const preserveUTF8 = '-c core.quotepath=off'
+  const ignoreAsPatterns = getIgnoreAsPatterns(outDirRelativeFromUserRootDir)
+  const cmd = [
+    'git',
+    preserveUTF8,
+    'ls-files',
+    ...ignoreAsPatterns.map((pattern) => `--exclude="${pattern}"`),
+    // --others lists untracked files only (but using .gitignore because --exclude-standard)
+    // --cached adds the tracked files to the output
+    // --stage is needed to get the mode of the files
+    '--others --cached --exclude-standard --stage'
+  ].join(' ')
+  const { stdout } = await execA(cmd, { cwd: userRootDir })
+  // 120000 is the mode for symlinks
+  return /^120000/m.test(stdout.toString())
 }
 
 // Same as getIgnoreFilter() but as glob pattern
