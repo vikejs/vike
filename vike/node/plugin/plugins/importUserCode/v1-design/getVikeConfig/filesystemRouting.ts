@@ -151,22 +151,23 @@ function removeIgnoredDirectories(somePath: string, ignoredDirs: string[], remov
   return somePath
 }
 function assertRedundantParentheses(dir: string, dirname: string, ignoredDirs: string[], somePath: string) {
-  if (ignoredDirs.includes(dirname)) {
-    const dirnameActual = dir
-    const dirnameCorect = dirname
-    const dirpathActual = somePath.slice(0, somePath.indexOf(dirnameActual) + dirnameActual.length)
-    const dirpathCorect = dirpathActual.replaceAll(dirnameActual, dirnameCorect)
-    const logDir = (d: string) => pc.bold(d + '/')
-    assertWarning(
-      false,
-      [
-        `The directories ${logDir(dirnameCorect)} are always ignored by Vike's Filesystem Routing`,
-        '(https://vike.dev/filesystem-routing):',
-        `rename directory ${logDir(dirpathActual)} to ${logDir(dirpathCorect)}`
-      ].join(' '),
-      { onlyOnce: true }
-    )
+  if (!ignoredDirs.includes(dirname)) {
+    return
   }
+  const dirnameActual = dir
+  const dirnameCorect = dirname
+  const dirpathActual = somePath.slice(0, somePath.indexOf(dirnameActual) + dirnameActual.length)
+  const dirpathCorect = dirpathActual.replaceAll(dirnameActual, dirnameCorect)
+  const logDir = (d: string) => pc.bold(d + '/')
+  assertWarning(
+    false,
+    [
+      `The directories ${logDir(dirnameCorect)} are always ignored by Vike's Filesystem Routing`,
+      '(https://vike.dev/filesystem-routing):',
+      `rename directory ${logDir(dirpathActual)} to ${logDir(dirpathCorect)}`
+    ].join(' '),
+    { onlyOnce: true }
+  )
 }
 
 function removeFilename(filePathAbsoluteUserRootDir: string) {
