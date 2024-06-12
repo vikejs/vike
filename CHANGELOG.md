@@ -1,3 +1,13 @@
+## [0.4.176](https://github.com/vikejs/vike/compare/v0.4.175...v0.4.176) (2024-06-12)
+
+
+### Bug Fixes
+
+* fix config inheritance of parentheses directories (fix [#1690](https://github.com/vikejs/vike/issues/1690)) ([fef43b1](https://github.com/vikejs/vike/commit/fef43b17dbb4d49a9c9cdbe79a4e708a55eb28b2))
+* fix export assertion ([d4c1df7](https://github.com/vikejs/vike/commit/d4c1df735259b2137a34262ae3b0957b8f805321))
+
+
+
 ## [0.4.175](https://github.com/vikejs/vike/compare/v0.4.174...v0.4.175) (2024-06-10)
 
 
