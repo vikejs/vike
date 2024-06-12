@@ -8,9 +8,9 @@ Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>.
 >
 > Your pages will usually share a common visual design.
 >
-> You may also have some of your pages share a common visual design, while other pages share another visual design. (For example, two admin pages `/admin/product/@id` and `/admin/user/@id` sharing the same navigation sidebar, while two marketing pages `/` and `/about-us` not having any sidebar but sharing a sticky header instead.)
+> Some pages may share a design while other pages share another design. (For example, two admin pages `/admin/product/@id` and `/admin/user/@id` sharing the same navigation sidebar, and two marketing pages `/` and `/about-us` not having any sidebar but sharing a sticky header instead.)
 >
-> The `Layout` setting enables you to define such visual design shared among pages.
+> The `Layout` setting enables you to define such shared visual appearance.
 
 The component defined by the `Layout` setting wraps the <Link href="/Page">`<Page>` component</Link>.
 
@@ -23,149 +23,106 @@ The component defined by the `Layout` setting wraps the <Link href="/Page">`<Pag
 > See also <Link href="/Wrapper">`<Wrapper>`</Link> which also wraps `<Page>`, but for different use cases.
 
 
-## Default `<Layout>`
+## Global layout
 
-You can define a `<Layout>` as default to all pages:
+You can define a layout that applies to all your pages:
 
-```js
-// /pages/+Layout.js
+```jsx
+// /pages/+Layout.jsx
 
-// The default <Layout>
 export { Layout }
 
-// ...
+// children includes <Page/>
+function Layout({ children }) {
+  return <>
+    <Navigation/>
+    <Content>{children}</Content>
+  </>
+}
+function Navigation() { /* ... */ }
+function Content() { /* ... */ }
 ```
 
-If you don't override it, then this `<Layout>` applies to all your pages.
+> Why `/pages/+Layout.jsx` applies to all pages is explained at <Link href="/config#inheritance" />.
 
-> Setting inheritance/overriding is explained at <Link href="/config#inheritance" />.
+## Multiple layouts
 
-See <Link href="#examples" />.
+You can define several layouts that apply to different groups of pages.
 
-## Multiple `<Layout>`
+```yaml
+# Marketing pages share a layout
+pages/(marketing)/+Layout.js
+pages/(marketing)/index/+Page.js    # URL: /
+pages/(marketing)/about/+Page.js    # URL: /about
 
-You can override your default `<Layout>` on a page-by-page basis:
-
-```js
-// /pages/product/@id/+Layout.js
-
-// This <Layout> overrides the default and applies to the product page /product/@id
-export { Layout }
-
-// ...
+# Admin pages share another layout
+pages/admin-panel/+Layout.js
+pages/admin-panel/index/+Page.js    # URL: /admin-panel
+pages/admin-panel/users/+Page.js    # URL: /admin-panel/users
 ```
+> See <Link href="/config#inheritance" />.
 
-This means that this product page has a different `<Layout>` from all other pages.
+> The directory `(marketing)` is skipped by Filesystem Routing, see <Link href="/routing#filesystem-routing" />.
 
-You can also define a `<Layout>` for a group of pages:
-
-```js
-// /pages/admin/+Layout.js
-
-/* This <Layout> applies to all admin pages /pages/admin/** such as:
-   URL                     FILESYSTEM
-   /admin                  /pages/admin/+Page.js
-   /admin/user/@id         /pages/admin/user/@id/+Page.js
-   /admin/product/@id      /pages/admin/product/@id/+Page.js
-*/
-export { Layout }
-
-// ...
-```
-
-To summarize, we defined three different `<Layout>`:
- - `/pages/product/@id/+Layout.js` for the product page (`/product/@id`)
- - `/pages/admin/+Layout.js` for admin pages (`/admin`, `/admin/user/@id`, `/admin/product/@id`)
- - `/pages/+Layout.js` for all other pages (see <Link href="#default-layout" />)
-
-## Examples
-
-[React](https://github.com/vikejs/vike-react/blob/main/examples/minimal/pages/%2Bconfig.js) / [Vue](https://github.com/vikejs/vike-vue/blob/main/examples/minimal/pages/%2BLayout.vue) / [Solid](https://github.com/vikejs/vike-solid/blob/main/examples/basic/pages/%2BLayout.ts)
-
+> Setting a default `<Layout>` that is overridable isn't currently supported, see [#1692 - [Cumulative configs] New settings `override` and `default`](https://github.com/vikejs/vike/issues/1692).
 
 ## Nested Layouts
 
-> **What are nested layouts?** A nested layout is, essentially, when a page has a route with multiple parameters. For example `/product/@id/@view`:
-> ```
-> URL                        id            view
-> =====================      ====          =======
-> /product/1337              1337          null
-> /product/1337/pricing      1337          pricing
-> /product/42/reviews        42            reviews
-> ```
-> ```
-> /product/42/pricing                   /product/42/reviews
-> +------------------+                  +-----------------+
-> | Product          |                  | Product         |
-> | +--------------+ |                  | +-------------+ |
-> | | Pricing      | |  +------------>  | | Reviews     | |
-> | |              | |                  | |             | |
-> | +--------------+ |                  | +-------------+ |
-> +------------------+                  +-----------------+
-> ```
 
-> If your nested layout isn't associated with a URL (in other words the pricing page and the reviews page share the same URL `/product/42`), then you can simply use a stateful component instead of the following.
+You can define layouts that nest into each other:
 
-You can implement a nested layout by using a route with multiple parameters:
-
-```js
-// /pages/product/+route.js
-
-export default '/product/@id/@view'
+```yaml
+# Global outer layout that applies to all pages
+pages/+Layout.js
+# Inner layout nested into the global outer layout, for marketing pages
+pages/(marketing)/+Layout.js
+# Inner layout nested into the global outer layout, for admin pages
+pages/admin-panel/+Layout.js
 ```
 
-> You can also use a <Link href="/route-function">Route Function</Link> for full programmatic flexibility, see [this example](https://gist.github.com/brillout/a75fd8430dbc562dd10e69007121fea0).
+Here `pages/+Layout.js` applies to all pages, including all marketing and admin pages.
 
+> The `Layout` setting is cumulative: `pages/(marketing)/+Layout.js` doesn't override `pages/+Layout.js` but nests into it.
+>
+> The `<Layout>` components wrap into each other:
+> ```jsx
+> <Layout>      ⟸ pages/+Layout.js
+>   <Layout>    ⟸ pages/(marketing)/+Layout.js
+>     <Page />  ⟸ pages/(marketing)/about-us/+Page.js
+>   </Layout>
+> </Layout>
+> ```
 
-To ensure `@view` matches a list of pre-defined values, you can use a <Link href="/guard">`guard()`</Link> hook with <Link href="/render">`throw render(404)`</Link>:
+You can also define same-page navigations such as tabs.
 
-```js
-// /pages/product/+guard.js
-
-import { render } from 'vike/abort'
-
-export function guard(pageContext) {
-  const { view } = pageContext.routeParams
-  if (!['reviews', 'pricing'].includes(view)) {
-    throw render(404)
-  }
-}
+```
+/product/42/pricing                   /product/42/reviews
++------------------+                  +-----------------+
+| Macbook          |                  | Macbook         |
+| ...              |                  | ...             |
+| +--------------+ |                  | +-------------+ |
+| | Pricing      | |  +------------>  | | Reviews     | |
+| | ...          | |                  | | ...         | |
+| +--------------+ |                  | +-------------+ |
++------------------+                  +-----------------+
 ```
 
-You can then use `pageContext.routeParams.view` to implement the nested layout:
-
-```jsx
-// /pages/product/+Page.js
-
-export { Page }
-
-import { usePageContext } from 'vike-react/usePageContext' // or 'vike-vue' / 'vike-solid'
-
-function Page() {
-  const pageContext = usePageContext()
-  const nestedLayout = (() => {
-    const { view } = pageContext.routeParams
-    if (view === 'reviews') return <Reviews />
-    if (view === 'pricing') return <Pricing />
-  })()
-  return <>
-     {/* ... */}
-       {/* Somewhere deep */ }
-       { nestedLayout }
-     {/* ... */}
-  </>
-}
+```yaml
+pages/+Layout.js                      # Global layout (shared among all pages)
+pages/product/@id/+Layout.js          # Outer content ("Macbook" ...)
+pages/product/@id/pricing/+Page.js    # Inner content ("Pricing" ...)
+pages/product/@id/reviews/+Page.js    # Inner content ("Reviews" ...)
 ```
 
-Finally, make sure to use <Link href="/clientRouting#settings">`<a href="/product/42/reviews" keep-scroll-position />`</Link> (and <Link href="/navigate#options">`navigate('/product/42/reviews', { keepScrollPosition: true })`</Link>) to avoid the browser to scroll to the top.
+Make sure to use <Link href="/clientRouting#settings">`<a href="/product/42/reviews" keep-scroll-position />`</Link> to avoid scrolling to the top.
 
-> Once [#1459 - Nested Routes](https://github.com/vikejs/vike/issues/1459) is implemented, Vike will automatically preserve the scroll position.
+> If your nested layout isn't associated with a URL then you can use a stateful component instead of `<Layout>`. (If the pricing and reviews tabs share the same URL `/product/42`.)
+
+> Caching the data of the outer layout is work-in-progress, see [#1689 - [Nested Layouts] Cache data of outer layout](https://github.com/vikejs/vike/issues/1689).
 
 Examples:
- - <RepoLink path="/examples/layouts-react/" />
-   - [Nested Layout implementation](https://github.com/vikejs/vike/blob/main/examples/layouts-react/pages/starship/%2BPage.jsx)
- - <RepoLink path="/examples/layouts-vue/" />
-   - [Nested Layout implementation](https://github.com/vikejs/vike/blob/main/examples/layouts-vue/pages/starship/%2BPage.vue)
+- [React](https://github.com/vikejs/vike-react/blob/main/examples/full/pages/starship)
+- [Vue](https://github.com/vikejs/vike-vue/blob/main/examples/full/pages/starship)
 
 
 ## Without `vike-{react,vue,solid}`
@@ -210,7 +167,7 @@ function Page() {
 
 #### With a custom setting
 
-In case you don't use a <UiFrameworkExtension />, you can implement the `Layout` setting yourself by using <Link href="/meta">meta</Link>.
+You can implement the `Layout` setting yourself by using <Link href="/meta">meta</Link>.
 
 Examples:
  - <Link href="/meta#example-layout" doNotInferSectionTitle />
@@ -221,7 +178,7 @@ Examples:
 
 #### Nested Layout
 
-See the <Link href="#nested-layouts" /> section above. For smooth nested layout navigation, we recommend using <Link href="/clientRouting">Client Routing</Link>. (Using <Link href="/server-routing">Server Routing</Link> leads to full page reloads upon nested layout navigation which usually isn't an acceptable UX.)
+See the <Link href="#nested-layouts" /> section above. For smooth nested layout navigation, we recommend using <Link href="/clientRouting">Client Routing</Link>. (Using <Link href="/server-routing">Server Routing</Link> leads to full page reloads which usually isn't acceptable for same-page navigations.)
 
 
 ## See also
@@ -229,4 +186,3 @@ See the <Link href="#nested-layouts" /> section above. For smooth nested layout 
 - <Link href="/Wrapper" />
 - <Link href="/usePageContext" />
 - <Link href="/Page" />
-- [#1459 - Nested Routes](https://github.com/vikejs/vike/issues/1459)

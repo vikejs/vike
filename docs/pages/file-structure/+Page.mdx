@@ -5,6 +5,7 @@ For advanced apps we recommend a domain-driven file structure using multiple `pa
 
 For basic apps we recommend using a single `pages/` directory.
 
+
 ## Basic
 
 ```yaml
@@ -32,30 +33,51 @@ For basic apps we recommend using a single `pages/` directory.
 
 ## Domain-driven
 
+You can have what we call a *domain-driven file structure*.
+
 ```yaml
-# Marketing pages
-/(marketing)/pages/index/+Page.js # URL: /
-/(marketing)/pages/about/+Page.js # URL: /about
-/(marketing)/pages/jobs/+Page.js # URL: /jobs
-/(marketing)/+config.js # Configures the URL of the pages aboves, see below
+# ===========================
+# ======= Marketing =========
+# ===========================
+# Pages
+(marketing)/pages/index/+Page.js      # URL: /
+(marketing)/pages/about/+Page.js      # URL: /about
+# Configs
+(marketing)/pages/+Layout.js
+(marketing)/pages/+prerender.js
+# Components
+(marketing)/components/ContactUs.js
 
-# Auth related code & pages
-/auth/pages/signup/+Page.js
-/auth/pages/login/+Page.js
-/auth/components/UserInfo.js
-/auth/db/fetchUser.js
+# ===========================
+# ===== Authentication ======
+# ===========================
+# Pages
+auth/pages/signup/+Page.js            # URL: /auth/signup
+auth/pages/login/+Page.js             # URL: /auth/login
+# Configs
+auth/pages/+Layout.js
+# Components
+auth/components/UserInfo.js
+# Database
+auth/database/fetchUser.js
 
-# All code related to products
-/products/pages/index/+Page.js
-/products/pages/product/+Page.js
-/products/pages/product/+route.js
-/products/db/fetchProduct.js
-/products/db/fetchProductList.js
+# ===========================
+# ===== Product pages =======
+# ===========================
+# Pages
+products/pages/index/+Page.js         # URL: /products
+products/pages/product/+Page.js       # URL: /product/@id
+products/pages/product/+route.js
+# Configs
+products/pages/+Layout.js
+products/pages/+ssr.js
+# Database
+products/database/fetchProduct.js
+products/database/fetchProductList.js
 
-# Components shared accross domains
-/components/
-# Server code (Express.js/Fastify/...)
-/server/
+# Shared accross all domains
+components/
+server/
 ```
 
 ```js
@@ -64,54 +86,13 @@ For basic apps we recommend using a single `pages/` directory.
 export default '/product/@id'
 ```
 
-Route table:
+> The directory `(marketing)/` is used for <Link href="/routing#groups">grouping</Link> and is ignored by <Link href="/filesystem-routing">Filesystem Routing</Link>.
+>
+> Alternatively, you can have `marketing/` (without parentheses) and <Link href="/filesystemRoutingRoot">set `marketing/+filesystemRoutingRoot.js`</Link> to change the Filesystem Routing URL from `/marketing` to `/`.
 
-```
-FILEYSTEM                                   ROUTE
-=================================           ============
-/(marketing)/pages/index/+Page.js           /
-/(marketing)/pages/about/+Page.js           /about
-/(marketing)/pages/jobs/+Page.js            /jobs
-/auth/pages/signup/+Page.js                 /auth/signup
-/auth/pages/login/+Page.js                  /auth/login
-/products/pages/index/+Page.js              /products
-/products/pages/product/+Page.js            /product/@id
-```
+> See <Link href="/config#inheritance" />.
 
-> The directory `(marketing)/` is ignored because it's wrapped by parentheses.
-
-Such domain-driven file structure is also convenient for having different configs:
-
-```yaml
-# Configs for marketing pages
-/(marketing)/pages/+Layout.js
-/(marketing)/pages/+title.js
-/(marketing)/pages/+ssr.js
-/(marketing)/pages/+prerender.js
-
-# Marketing pages
-/(marketing)/pages/index/+Page.js
-/(marketing)/pages/about/+Page.js
-/(marketing)/pages/jobs/+Page.js
-
-# Configs for admin pages
-/admin-panel/pages/+Layout.js
-/admin-panel/pages/+title.js
-/admin-panel/pages/+config.js
-
-# Admin pages
-/admin-panel/pages/index/+Page.js
-/admin-panel/pages/edit-product/+Page.js
-/admin-panel/pages/database/+Page.js
-```
-
-Note how <Link href="/config#inheritance">config inheritance</Link> applies:
-- The `/(marketing)/pages/+*.js` configs apply to all pages living at `/(marketing)/pages/**`.
-- The `/admin-panel/pages/+*.js` configs apply to all pages living at `/admin-panel/pages/**`.
-
-
-Example:
- - <Link href='/examples/file-structure-domain-driven/' />
+Example: <Link href='/examples/file-structure-domain-driven/' />.
 
 
 ## `src/pages/`
@@ -152,3 +133,4 @@ The `renderer/` directory doesn't add any functionality: defining the hooks `+on
 ## See also
  - <Link href="/routing" />
  - <Link href="/filesystem-routing" />
+ - <Link href="/config#inheritance" />

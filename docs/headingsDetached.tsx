@@ -502,5 +502,17 @@ const headingsDetached = [
   {
     title: '`filesystemRoutingRoot`',
     url: '/filesystemRoutingRoot'
+  },
+  {
+    title: 'Releases',
+    url: '/releases'
+  },
+  {
+    title: 'Releases Mai 2024',
+    url: '/releases/2024-05'
+  },
+  {
+    title: 'Releases June 2024',
+    url: '/releases/2024-06'
   }
 ] satisfies HeadingDetachedDefinition[]

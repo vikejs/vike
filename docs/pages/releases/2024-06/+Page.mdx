@@ -1,0 +1,50 @@
+import { Link } from '@brillout/docpress'
+
+## Improved Nested Layouts
+
+Vike now has first-class support for nested layouts.
+
+```yaml
+pages/+Layout.js
+pages/product/@id/+Layout.js
+pages/product/@id/pricing/+Page.js
+pages/product/@id/reviews/+Page.js
+```
+
+See <Link href="/Layout#nested-layout" />.
+
+> Caching the data of the outer layout is work-in-progress, see [#1689 - [Nested Layouts] Cache data of outer layout](https://github.com/vikejs/vike/issues/1689).
+
+Thank you [`@Blankeos`](https://github.com/Blankeos) for your contributions!
+
+
+## Getting close to `1.0.0`
+
+The three main reasons why we aren't releasing `1.0.0` are:
+
+1. [x] Nested Layouts.
+2. [ ] Using Vite to transpile server code.
+3. [ ] A big announcement we'll unveil later this sommer.
+   > It will be pivotal to the project. Stay tuned.
+
+We're getting close to the [`1.0.0` release](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22v1+release+%3Astar2%3A%22).
+
+
+## Roadmap
+
+Major features we're working on:
+
+- Vike CLI.
+  > Replacing the Vite CLI which is an important structural change enabling a lot of upcoming features.
+- Use Vite to transpile server code.
+  > Including standalone server builds, and development directly against edge runtimes (e.g. Cloudflare's workerd). Led by [@nitedani](https://github.com/nitedani).
+- Rehaul `vike.dev` aesthetics and UX. (New design is done and we'll implement it once we're finished with all `highest-priority` tickets.)
+
+
+## See also
+
+- <Link href="/releases" />
+- [`vike` > `CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md)
+- [`vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
+- [`vike-vue` > `CHANGELOG.md`](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/CHANGELOG.md)
+- [`vike-solid` > `MIGRATION.md`](https://github.com/vikejs/vike-solid/blob/main/MIGRATION.md)

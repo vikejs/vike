@@ -16,6 +16,8 @@ pages/jobs/+Page.js            /jobs
 
 > The directories `pages/`, `index/` and `src/` are ignored.
 
+### Parameterized routes
+
 You can define parameterized routes:
 
 ```bash
@@ -26,20 +28,58 @@ pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
 
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
-You can set up a domain-driven file structure:
+### Groups
 
-```
+You can organize your pages into groups:
+
+```yaml
 FILESYSTEM                             URL
-================================       ============
-(marketing)/pages/index/+Page.js       /
-(marketing)/pages/about/+Page.js       /about
-admin-panel/pages/index/+Page.js       /admin-panel
+================================       ==================
+pages/(marketing)/index/+Page.js       /
+pages/(marketing)/about/+Page.js       /about
+pages/admin-panel/index/+Page.js       /admin-panel
+pages/admin-panel/users/+Page.js       /admin-panel/users
+```
+> The directory `(marketing)` is ignored because it's wrapped by parentheses.
+
+Beyond improved organization, it allows you to apply different configurations to different pages:
+
+```yaml
+# Define a layout for all marketing pages
+pages/(marketing)/+Layout.js
+pages/(marketing)/index/+Page.js
+pages/(marketing)/about/+Page.js
+
+# Define a layout for all admin pages
+pages/admin-panel/+Layout.js
+pages/admin-panel/index/+Page.js
+pages/admin-panel/users/+Page.js
 ```
 
-> The directory `(marketing)/` is ignored because it's wrapped by parentheses.
+> See <Link href="/config#inheritance" />.
 
-More information at:
- - <Link href='/file-structure#domain-driven' />
+You can also have a *domain-driven file structure*:
+
+```yaml
+# Domain: marketing
+(marketing)/pages/+Layout.js
+(marketing)/pages/index/+Page.js
+(marketing)/pages/about/+Page.js
+(marketing)/components/ContactUs.js
+
+# Domain: admin panel
+admin-panel/pages/+Layout.js
+admin-panel/pages/index/+Page.js
+admin-panel/pages/users/+Page.js
+admin-panel/components/Charts.js
+admin-panel/database/fetchUsers.js
+```
+
+> See <Link href='/file-structure#domain-driven' />.
+
+
+### More information
+
  - <Link href="/filesystem-routing" />
 
 
