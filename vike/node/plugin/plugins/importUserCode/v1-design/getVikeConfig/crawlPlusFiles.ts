@@ -12,6 +12,7 @@ import {
   isVersionOrAbove
 } from '../../../../utils.js'
 import path from 'path'
+import fs from 'fs/promises'
 import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
@@ -54,18 +55,18 @@ async function crawlPlusFiles(
   if (!res || res.files.length === 0) {
     // Fallback to fast-glob for users that dynamically generate plus files. (Assuming all (generetad) plus files to be skipped because users usually included them in `.gitignore`.)
     files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
-  } else if (res.symlinks.length > 0) {
+  } else if (res.symlinkDirs.length > 0) {
     // We cannot find files inside symlinks with `git ls-files` because it doesn't follow symlinks
-    const filesInSymlinks = (
+    const filesInSymlinkDirs = (
       await Promise.all(
-        res.symlinks.map(async (symlink) => {
-          return (await fastGlob(path.posix.join(userRootDir, symlink), outDirRelativeFromUserRootDir)).map((file) =>
-            path.posix.join(symlink, file)
+        res.symlinkDirs.map(async (symlinkDir) => {
+          return (await fastGlob(path.posix.join(userRootDir, symlinkDir), outDirRelativeFromUserRootDir)).map(
+            (fileInSymlinkDir) => path.posix.join(symlinkDir, fileInSymlinkDir)
           )
         })
       )
-    ).flatMap((filesInSymlink) => filesInSymlink)
-    files = res.files.concat(...filesInSymlinks)
+    ).flatMap((filesInSymlinkDir) => filesInSymlinkDir)
+    files = res.files.concat(...filesInSymlinkDirs)
   } else {
     // Use result of `git ls-files` as is, becouse no symlinks found
     files = res.files
@@ -111,7 +112,7 @@ async function gitLsFiles(
   outDirRelativeFromUserRootDir: string | null
 ): Promise<{
   files: string[]
-  symlinks: string[]
+  symlinkDirs: string[]
 } | null> {
   if (gitIsNotUsable) return null
 
@@ -154,7 +155,7 @@ async function gitLsFiles(
     throw err
   }
 
-  const symlinks: string[] = []
+  const symlinkDirs: string[] = []
   const files: string[] = []
   for (const stagedRawResult of stagedRawResults) {
     // stagedRawResult content examples:
@@ -171,9 +172,13 @@ async function gitLsFiles(
     if (!ignoreAsFilterFn(file)) {
       continue
     }
+    // 120000 is the mode for symlinks
     if (mode === '120000') {
-      symlinks.push(file)
-      continue
+      const isDirectory = (await fs.stat(path.join(userRootDir, file))).isDirectory()
+      if (isDirectory) {
+        symlinkDirs.push(file)
+        continue
+      }
     }
     const basename = path.basename(file)
     if (!basename.startsWith('+')) {
@@ -183,15 +188,10 @@ async function gitLsFiles(
     if (!scriptFileExtensions.includes(extname)) {
       continue
     }
-    // 120000 is the mode for symlinks
-    if (mode === '120000') {
-      symlinks.push(file)
-    } else {
-      files.push(file)
-    }
+    files.push(file)
   }
 
-  return { files, symlinks }
+  return { files, symlinkDirs }
 }
 // Same as gitLsFiles() but using fast-glob
 async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[]> {
