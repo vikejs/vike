@@ -51,16 +51,24 @@ async function crawlPlusFiles(
   // Crawl
   let files: string[] = []
   const res = crawlWithGit !== false && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
-  if (
-    res &&
-    // We cannot find files inside symlinks with `git ls-files` because it doesn't follow symlinks
-    res.symlinks.length === 0 &&
+  if (!res || res.files.length === 0) {
     // Fallback to fast-glob for users that dynamically generate plus files. (Assuming all (generetad) plus files to be skipped because users usually included them in `.gitignore`.)
-    res.files.length > 0
-  ) {
-    files = res.files
-  } else {
     files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
+  } else if (res.symlinks.length > 0) {
+    // We cannot find files inside symlinks with `git ls-files` because it doesn't follow symlinks
+    const filesInSymlinks = (
+      await Promise.all(
+        res.symlinks.map(async (symlink) => {
+          return (await fastGlob(path.posix.join(userRootDir, symlink), outDirRelativeFromUserRootDir)).map((file) =>
+            path.posix.join(symlink, file)
+          )
+        })
+      )
+    ).flatMap((filesInSymlink) => filesInSymlink)
+    files = res.files.concat(...filesInSymlinks)
+  } else {
+    // Use result of `git ls-files` as is, becouse no symlinks found
+    files = res.files
   }
 
   // Filter build files
