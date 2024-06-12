@@ -150,12 +150,12 @@ function removeIgnoredDirectories(somePath: string, ignoredDirs: string[], remov
   return somePath
 }
 function assertRedundantParentheses(dir: string, ignoredDirs: string[], somePath: string) {
-  const dirname = dir.slice(1, -1)
-  if (!ignoredDirs.includes(dirname)) {
+  const dirWithoutParentheses = dir.slice(1, -1)
+  if (!ignoredDirs.includes(dirWithoutParentheses)) {
     return
   }
   const dirnameActual = dir
-  const dirnameCorect = dirname
+  const dirnameCorect = dirWithoutParentheses
   const dirpathActual = somePath.slice(0, somePath.indexOf(dirnameActual) + dirnameActual.length)
   const dirpathCorect = dirpathActual.replaceAll(dirnameActual, dirnameCorect)
   const logDir = (d: string) => pc.bold(d + '/')
