@@ -140,8 +140,7 @@ function removeIgnoredDirectories(somePath: string, ignoredDirs: string[], remov
         return false
       }
       if (removeParenthesesDirs && dir.startsWith('(') && dir.endsWith(')')) {
-        const dirname = dir.slice(1, -1)
-        assertRedundantParentheses(dir, dirname, ignoredDirs, somePath)
+        assertRedundantParentheses(dir, ignoredDirs, somePath)
         return false
       }
       return true
@@ -150,7 +149,8 @@ function removeIgnoredDirectories(somePath: string, ignoredDirs: string[], remov
   if (somePath === '') somePath = '/'
   return somePath
 }
-function assertRedundantParentheses(dir: string, dirname: string, ignoredDirs: string[], somePath: string) {
+function assertRedundantParentheses(dir: string, ignoredDirs: string[], somePath: string) {
+  const dirname = dir.slice(1, -1)
   if (!ignoredDirs.includes(dirname)) {
     return
   }
