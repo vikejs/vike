@@ -57,7 +57,7 @@ function getLocationId(
 }
 /** Filesystem Routing: get the URL */
 function getFilesystemRouteString(locationId: LocationId): string {
-  return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
+  return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'], true)
 }
 /** Filesystem Inheritance: get the apply root */
 function getInheritanceRoot(locationId: LocationId): string {
@@ -66,8 +66,8 @@ function getInheritanceRoot(locationId: LocationId): string {
 /**
  * getLogicalPath('/pages/some-page', ['pages']) => '/some-page'
  */
-function getLogicalPath(locationId: LocationId, ignoredDirs: string[]): string {
-  let logicalPath = removeIgnoredDirectories(locationId, ignoredDirs)
+function getLogicalPath(locationId: LocationId, ignoredDirs: string[], removeParenthesesDirs?: true): string {
+  let logicalPath = removeIgnoredDirectories(locationId, ignoredDirs, removeParenthesesDirs)
   assertIsPath(logicalPath)
   return logicalPath
 }
@@ -131,7 +131,7 @@ function isInherited(locationId1: LocationId, locationId2: LocationId): boolean 
   return startsWith(inheritanceRoot2, inheritanceRoot1)
 }
 
-function removeIgnoredDirectories(somePath: string, ignoredDirs: string[]): string {
+function removeIgnoredDirectories(somePath: string, ignoredDirs: string[], removeParenthesesDirs?: true): string {
   assertPosixPath(somePath)
   somePath = somePath
     .split('/')
@@ -139,7 +139,7 @@ function removeIgnoredDirectories(somePath: string, ignoredDirs: string[]): stri
       if (ignoredDirs.includes(dir)) {
         return false
       }
-      if (dir.startsWith('(') && dir.endsWith(')')) {
+      if (removeParenthesesDirs && dir.startsWith('(') && dir.endsWith(')')) {
         const dirname = dir.slice(1, -1)
         if (ignoredDirs.includes(dirname)) {
           const dirnameActual = dir
