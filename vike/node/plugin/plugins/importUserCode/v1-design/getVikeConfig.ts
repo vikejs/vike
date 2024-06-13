@@ -1019,8 +1019,13 @@ function applyEffect(
       })
     } else {
       assertUsage(false, notSupported)
-      // If we do end implementing being able to set the value of a config:
-      //  - For setting definedAtFile: we could take the definedAtFile of the effect config while appending '(effect)' to definedAtFile.fileExportPathToShowToUser
+      /* To implement being able to set a config value in an effect:
+       * - Copy and append definedAtFile.fileExportPathToShowToUser with ['meta', configName, 'effect']
+       *   - Copying the definedAtFile of the config that defines the effect
+       * - Same precedence as the config that sets the value triggering the effect (not the config defining the effect)
+       *   - Apply sortConfigValueSources() again?
+      configValueSources.push()
+      */
     }
   })
 }
