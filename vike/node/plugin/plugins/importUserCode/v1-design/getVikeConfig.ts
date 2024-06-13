@@ -875,7 +875,7 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
         const configMeta = interfaceFile.fileExportsByConfigName['meta']
         if (!configMeta) return
         const meta = configMeta.configValue
-        assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
+        assertMetaUsage(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
         // Set configDef._userEffectDefinedAtFilePath
         Object.entries(meta).forEach(([configName, configDef]) => {
@@ -901,9 +901,9 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
   return configDefinitions
 }
 
-function assertMetaValue(
+function assertMetaUsage(
   metaVal: unknown,
-  metaConfigDefinedAt: `Config meta${string}` | null
+  metaConfigDefinedAt: `Config meta defined at ${string}` | null
 ): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
     assert(metaConfigDefinedAt) // We expect internal effects to return a valid meta value
@@ -997,13 +997,13 @@ function applyEffect(
   const notSupported = `Effects currently only supports modifying the the ${pc.cyan('env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
-      let configDefinedAt: Parameters<typeof assertMetaValue>[1]
+      let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
       if (configDefEffect._userEffectDefinedAtFilePath) {
         configDefinedAt = getConfigDefinedAt('Config', configName, configDefEffect._userEffectDefinedAtFilePath)
       } else {
         configDefinedAt = null
       }
-      assertMetaValue(configValue, configDefinedAt)
+      assertMetaUsage(configValue, configDefinedAt)
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
         {
           const keys = Object.keys(configTargetDef)
@@ -1187,7 +1187,12 @@ function isVikeConfigFile(filePath: string): boolean {
   return !!getConfigName(filePath)
 }
 
-function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnvInternal {
+function getConfigEnvValue(
+  val: unknown,
+  errMsgIntro: `Config meta defined at ${string} sets meta.${
+    string // configName
+  }.env to`
+): ConfigEnvInternal {
   const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
 
   // Legacy outdated values
@@ -1216,7 +1221,10 @@ function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnv
   assertUsage(hasProp(val, 'config', 'undefined') || hasProp(val, 'config', 'boolean'), errInvalidValue)
   assertUsage(hasProp(val, 'server', 'undefined') || hasProp(val, 'server', 'boolean'), errInvalidValue)
   assertUsage(hasProp(val, 'client', 'undefined') || hasProp(val, 'client', 'boolean'), errInvalidValue)
-  /* Uncomment to allow users to set an eager config. Same for `{ client: 'if-client-routing' }`.
+  /* To allow users to set an eager config:
+   * - Uncomment line below.
+   * - Add 'eager' to assertKeys() call above.
+   * - Add `eager: boolean` to ConfigEnv type.
   assertUsage(hasProp(val, 'eager', 'undefined') || hasProp(val, 'eager', 'boolean'), errInvalidValue)
   */
 
