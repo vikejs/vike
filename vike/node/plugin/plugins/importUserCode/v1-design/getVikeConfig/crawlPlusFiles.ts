@@ -179,7 +179,7 @@ async function gitLsFiles(
     // ```
     // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0 pages/index/+Page.tsx
     // ```
-    const [mode, _, __, filePath, ...rest] = resultLine.split(' ')
+    const [mode, _, __, filePath, ...rest] = resultLine.split(/\s/)
     assert(mode && filePath && rest.length === 0)
 
     // Deleted?
