@@ -255,9 +255,7 @@ async function onRenderHtml(pageContext) {
 
 ## Example: `Layout`
 
-> If you use a <UiFrameworkExtension />, then you don't need to create the `Layout` setting as it's already created by <UiFrameworkExtension name noLink />.
-
-Another common use case is to create a component `<Layout>` that defines the layout of a page.
+Another common use case for `meta` is to create a component `<Layout>` that defines the layout of the page.
 
 ```js
 // /pages/product/+Layout.js
@@ -336,10 +334,6 @@ async function onRenderClient(pageContext) {
   )
 }
 ```
-
-Examples:
- - <RepoLink path="/examples/layouts-react/" />
- - <RepoLink path="/examples/layouts-vue/" />
 
 
 ## Example: modify `data()` env

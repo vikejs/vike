@@ -626,45 +626,6 @@ importers:
         specifier: ^5.0.10
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
 
-  examples/layouts-react:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^4.2.1
-        version: 4.3.0(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^5.0.10
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
-
-  examples/layouts-vue:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
-      '@vue/compiler-sfc':
-        specifier: ^3.2.33
-        version: 3.4.27
-      '@vue/server-renderer':
-        specifier: ^3.2.33
-        version: 3.4.27(vue@3.4.27(typescript@5.4.5))
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^5.0.10
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
-      vue:
-        specifier: ^3.2.33
-        version: 3.4.27(typescript@5.4.5)
-
   examples/path-aliases:
     dependencies:
       '@types/express':
@@ -1318,45 +1279,6 @@ importers:
       vite:
         specifier: ^5.0.10
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
-
-  test-deprecated-design/layouts-react:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^4.2.1
-        version: 4.3.0(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^5.0.10
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
-
-  test-deprecated-design/layouts-vue:
-    dependencies:
-      '@vitejs/plugin-vue':
-        specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.4.5))
-      '@vue/compiler-sfc':
-        specifier: ^3.2.33
-        version: 3.4.27
-      '@vue/server-renderer':
-        specifier: ^3.2.33
-        version: 3.4.27(vue@3.4.27(typescript@5.4.5))
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^5.0.10
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
-      vue:
-        specifier: ^3.2.33
-        version: 3.4.27(typescript@5.4.5)
 
   test-deprecated-design/path-aliases:
     dependencies:
