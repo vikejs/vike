@@ -180,7 +180,7 @@ async function gitLsFiles(
     // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0 pages/index/+Page.tsx
     // ```
     const [info, filePath, ...rest1] = resultLine.split('\t')
-    assert(info && filePath && rest1.length === 0)
+    assert(info && filePath && rest1.length === 0, { resultLine, info, filePath, rest1 })
     const [mode, _, __, ...rest2] = info.split(' ')
     assert(mode && _ && __ && rest2.length === 0)
 
