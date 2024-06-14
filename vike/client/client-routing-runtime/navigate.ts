@@ -18,10 +18,9 @@ async function navigate(
   url: string,
   { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}
 ): Promise<void> {
-  assertUsage(isBrowser(), 'The navigate() function can be called only on the client-side', { showStackTrace: true })
-  const errMsg = 'navigate() works only with Client Routing, see https://vike.dev/navigate'
-  assertUsage(checkIfClientRouting(), errMsg, { showStackTrace: true })
-  assertUsage(url, '[navigate(url)] Missing argument url', { showStackTrace: true })
+  assertUsage(isBrowser(), 'navigate() can only be called on the client-side', { showStackTrace: true })
+  assertUsage(checkIfClientRouting(), 'navigate() requires Client Routing', { showStackTrace: true })
+  assertUsage(url, 'Missing navigate() argument url', { showStackTrace: true })
   assertUsage(typeof url === 'string', '[navigate(url)] Argument url should be a string', { showStackTrace: true })
   assertUsage(
     typeof keepScrollPosition === 'boolean',
