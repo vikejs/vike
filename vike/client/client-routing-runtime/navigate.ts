@@ -19,8 +19,9 @@ async function navigate(
   url: string,
   {
     keepScrollPosition,
-    overwriteLastHistoryEntry = false
-  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean } = {}
+    overwriteLastHistoryEntry = false,
+    scroll
+  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean; scroll?: boolean } = {}
 ): Promise<void> {
   assertUsageUrlPathname(url, '[navigate(url)] url')
   // TODO/next-major-release: remove
@@ -30,8 +31,10 @@ async function navigate(
     { onlyOnce: true, showStackTrace: true }
   )
   let scrollTarget: ScrollTarget
-  if (keepScrollPosition !== undefined) {
-    scrollTarget = { preserveScroll: keepScrollPosition }
+  for (const v of [scroll, keepScrollPosition]) {
+    if (v === undefined) continue
+    scrollTarget = { preserveScroll: v }
+    break
   }
   await renderPageClientSide({
     scrollTarget,
