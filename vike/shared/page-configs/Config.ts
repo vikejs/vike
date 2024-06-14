@@ -436,6 +436,12 @@ type ConfigBuiltIn = {
    * https://vike.dev/require
    */
   require?: Record<string, string>
+
+  /** Whether the page scrolls to the top when navigating to a new page.
+   *
+   * https://vike.dev/scroll
+   */
+  scroll?: boolean | string
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
