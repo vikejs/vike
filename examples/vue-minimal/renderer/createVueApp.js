@@ -1,9 +1,9 @@
 import { createSSRApp, h } from 'vue'
 import PageLayout from './PageLayout.vue'
 
-export { createApp }
+export { createVueApp }
 
-function createApp(pageContext) {
+function createVueApp(pageContext) {
   const { Page, pageProps } = pageContext
   const PageWithLayout = {
     render() {

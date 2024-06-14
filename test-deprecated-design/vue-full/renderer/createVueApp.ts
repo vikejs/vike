@@ -3,9 +3,9 @@ import PageShell from './PageShell.vue'
 import type { PageContext } from './types'
 import { setPageContext } from './usePageContext'
 
-export { createApp }
+export { createVueApp }
 
-function createApp(pageContext: PageContext) {
+function createVueApp(pageContext: PageContext) {
   const { Page } = pageContext
 
   const pageRef = ref(markRaw(Page))

@@ -1,13 +1,12 @@
-export { createApp }
+export { createVueApp }
 
 import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
 import PageLayout from './PageLayout.vue'
 import { setPageContext } from './usePageContext'
-import type { PageContext } from 'vike/types'
 import { setData } from './useData'
-import { isObject, objectAssign } from './utils'
+import { isObject } from './utils'
 
-function createApp(pageContext: PageContext) {
+function createVueApp(pageContext) {
   const { Page } = pageContext
 
   const pageRef = ref(markRaw(Page))
@@ -21,8 +20,8 @@ function createApp(pageContext: PageContext) {
   const app = createSSRApp(PageWithLayout)
 
   // app.changePage() is called upon navigation, see +onRenderClient.ts
-  objectAssign(app, {
-    changePage: (pageContext: PageContext) => {
+  Object.assign(app, {
+    changePage: (pageContext) => {
       const data = pageContext.data ?? {}
       assertDataIsObject(data)
       Object.assign(dataReactive, data)
@@ -41,6 +40,6 @@ function createApp(pageContext: PageContext) {
   return app
 }
 
-function assertDataIsObject(data: unknown): asserts data is Record<string, unknown> {
+function assertDataIsObject(data) {
   if (!isObject(data)) throw new Error('Return value of data() hook should be an object, undefined, or null')
 }

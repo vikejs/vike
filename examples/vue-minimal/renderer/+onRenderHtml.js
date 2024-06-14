@@ -3,10 +3,10 @@ export { onRenderHtml }
 
 import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { createApp } from './app'
+import { createVueApp } from './createVueApp'
 
 async function onRenderHtml(pageContext) {
-  const app = createApp(pageContext)
+  const app = createVueApp(pageContext)
   const appHtml = await renderToString(app)
 
   return escapeInject`<!DOCTYPE html>

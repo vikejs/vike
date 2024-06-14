@@ -1,7 +1,7 @@
 // https://vike.dev/onRenderClient
 export { onRenderClient }
 
-import { createApp } from './app'
+import { createVueApp } from './createVueApp'
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 import fetch from 'cross-fetch'
 
@@ -12,6 +12,6 @@ function onRenderClient(pageContext) {
     connectToDevTools: true
   })
 
-  const app = createApp(pageContext, defaultClient)
+  const app = createVueApp(pageContext, defaultClient)
   app.mount('#app')
 }
