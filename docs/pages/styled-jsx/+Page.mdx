@@ -39,7 +39,7 @@ export { onRenderHtml }
 import React from 'react'
 import { renderToString, renderToStaticMarkup } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 import { createStyleRegistry, StyleRegistry } from 'styled-jsx'
 
 const registry = createStyleRegistry()
@@ -53,9 +53,9 @@ async function onRenderHtml(pageContext) {
   const viewHtml = dangerouslySkipEscape(
     renderToString(
       <StyleRegistry registry={registry}>
-        <PageLayout>
+        <Layout>
           <Page />
-        </PageLayout>
+        </Layout>
       </StyleRegistry>
     )
   )

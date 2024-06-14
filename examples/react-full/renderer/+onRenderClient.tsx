@@ -3,7 +3,7 @@ export { onRenderClient }
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 import { getPageTitle } from './getPageTitle'
 import type { OnRenderClientAsync } from 'vike/types'
 
@@ -11,9 +11,9 @@ let root: ReactDOM.Root
 const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
   const { Page } = pageContext
   const page = (
-    <PageLayout pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page />
-    </PageLayout>
+    </Layout>
   )
   const container = document.getElementById('react-root')!
   if (pageContext.isHydration) {

@@ -4,14 +4,14 @@ export { onRenderHtml }
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 async function onRenderHtml(pageContext) {
   const { Page, pageProps } = pageContext
   const page = (
-    <PageLayout>
+    <Layout>
       <Page {...pageProps} />
-    </PageLayout>
+    </Layout>
   )
   const pageHtml = renderToString(page)
 

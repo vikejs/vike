@@ -3,7 +3,7 @@ export { createVueApp }
 import { createSSRApp, h, shallowRef } from 'vue'
 import { setPageContext } from './usePageContext'
 import { setData } from './useData'
-import PageLayout from './PageLayout.vue'
+import Layout from './Layout.vue'
 import type { PageContext } from 'vike/types'
 import { objectAssign } from './utils'
 
@@ -12,7 +12,7 @@ function createVueApp(pageContext: PageContext) {
   const dataRef = shallowRef(pageContext.data)
   const pageRef = shallowRef(pageContext.Page)
 
-  const RootComponent = () => h(PageLayout, null, () => h(pageRef.value))
+  const RootComponent = () => h(Layout, null, () => h(pageRef.value))
   const app = createSSRApp(RootComponent)
   setPageContext(app, pageContextRef)
   setData(app, dataRef)

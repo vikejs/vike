@@ -2,11 +2,11 @@
 export { onRenderHtml }
 
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 async function onRenderHtml(pageContext) {
   const { Page } = pageContext
-  const pageHtml = PageLayout(Page)
+  const pageHtml = Layout(Page)
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>

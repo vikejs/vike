@@ -5,7 +5,7 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 // @ts-expect-error
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 import { getTitle } from './getTitle'
 import type { PageContextServer } from 'vike/types'
 
@@ -14,9 +14,9 @@ async function onRenderHtml(pageContext: PageContextServer) {
   const title = getTitle(pageContext)
   const viewHtml = dangerouslySkipEscape(
     renderToString(
-      <PageLayout>
+      <Layout>
         <Page {...pageProps} />
-      </PageLayout>
+      </Layout>
     )
   )
 

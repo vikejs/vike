@@ -1,7 +1,7 @@
 export { createVueApp }
 
 import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
-import PageLayout from './PageLayout.vue'
+import Layout from './Layout.vue'
 import { setPageContext } from './usePageContext'
 import type { PageContext } from 'vike/types'
 import { setData } from './useData'
@@ -14,7 +14,7 @@ function createVueApp(pageContext: PageContext) {
 
   const PageWithLayout = {
     render() {
-      return h(PageLayout, {}, { default: () => h(pageRef.value) })
+      return h(Layout, {}, { default: () => h(pageRef.value) })
     }
   }
 

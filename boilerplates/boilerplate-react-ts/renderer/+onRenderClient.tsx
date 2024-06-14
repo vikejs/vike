@@ -2,7 +2,7 @@
 export { onRenderClient }
 
 import ReactDOM from 'react-dom/client'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 import { getPageTitle } from './getPageTitle'
 import type { OnRenderClientAsync } from 'vike/types'
 
@@ -18,9 +18,9 @@ const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRe
   if (!container) throw new Error('DOM element #react-root not found')
 
   const page = (
-    <PageLayout pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page />
-    </PageLayout>
+    </Layout>
   )
   if (pageContext.isHydration) {
     root = ReactDOM.hydrateRoot(container, page)

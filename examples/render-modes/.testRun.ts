@@ -48,7 +48,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
         try {
           // rollup@3.21.0
           expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/PageLayout.${hash}.css">`
+            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/Layout.${hash}.css">`
           )
         } catch {
           // rollup@3.25.2
@@ -64,7 +64,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(html).toContain('<script')
       expect(html).toContain('@vite/client')
       expect(html).toContain('import RefreshRuntime from "/@react-refresh"')
-      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css?direct">')
+      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css?direct">')
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
     }
     await page.goto(getServerUrl() + '/html-only')
@@ -269,14 +269,14 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       const html = await fetchHtml('/')
       expect(html.split('text/css').length).toBe(2)
       if (!isProd) {
-        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css')
+        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css')
       }
     }
     for (const page of ['html-only', 'html-js', 'spa', 'ssr']) {
       const html = await fetchHtml(`/${page}`)
       expect(html.split('text/css').length).toBe(3)
       if (!isProd) {
-        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css')
+        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css')
         expect(html).toContain(`<link rel="stylesheet" type="text/css" href="/pages/${page}/index.css`)
       }
     }
