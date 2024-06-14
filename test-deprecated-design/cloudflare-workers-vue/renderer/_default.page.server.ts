@@ -1,7 +1,7 @@
 import { pipeToWebWritable, pipeToNodeWritable } from '@vue/server-renderer'
 
 import { escapeInject, stampPipe } from 'vike/server'
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 import type { Writable } from 'stream'
 
 export { render }

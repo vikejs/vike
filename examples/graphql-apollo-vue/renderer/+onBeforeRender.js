@@ -1,7 +1,7 @@
 export default onBeforeRender
 
 import { renderToString } from '@vue/server-renderer'
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 
 async function onBeforeRender(pageContext) {
   const app = createVueApp(pageContext, pageContext.apolloClient)

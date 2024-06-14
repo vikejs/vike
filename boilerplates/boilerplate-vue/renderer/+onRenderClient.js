@@ -1,7 +1,7 @@
 // https://vike.dev/onRenderClient
 export { onRenderClient }
 
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 import { getPageTitle } from './getPageTitle'
 
 let app

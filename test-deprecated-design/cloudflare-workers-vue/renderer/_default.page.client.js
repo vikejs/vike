@@ -1,4 +1,4 @@
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 
 export { render }
 

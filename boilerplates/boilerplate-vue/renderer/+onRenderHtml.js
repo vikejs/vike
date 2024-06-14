@@ -3,7 +3,7 @@ export { onRenderHtml }
 
 import { renderToString as renderToString_ } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 import logoUrl from './logo.svg'
 import { getPageTitle } from './getPageTitle'
 

@@ -1,6 +1,6 @@
 export { render }
 
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 
 async function render(pageContext) {
   const app = createVueApp(pageContext)

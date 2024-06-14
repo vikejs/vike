@@ -1,7 +1,7 @@
 // https://vike.dev/onRenderClient
 export default onRenderClient
 
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 
 let app
 function onRenderClient(pageContext) {
