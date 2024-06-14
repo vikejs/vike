@@ -5,14 +5,13 @@ export type { ScrollTarget }
 import { assert, onPageHide, sleep, throttle } from './utils.js'
 import { saveScrollPosition, type ScrollPosition } from './history.js'
 
-type ScrollTarget = undefined | { preserveScroll?: boolean } | ScrollPosition
+type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 function setScrollPosition(scrollTarget: ScrollTarget): void {
-  if (!scrollTarget) scrollTarget = {}
-  if ('x' in scrollTarget) {
+  if (scrollTarget && 'x' in scrollTarget) {
     setScroll(scrollTarget)
     return
   }
-  if (scrollTarget.preserveScroll) {
+  if (scrollTarget?.preserveScroll) {
     return
   }
   scrollToTopOrHash()
