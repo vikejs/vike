@@ -39,7 +39,7 @@ with
 to make `pageContext` accessible from any Vue component.
 
 ```js
-// app.js
+// createVueApp.js
 
 const app = createSSRApp(/*...*/)
 app.provide('pageContext', pageContext)
@@ -96,13 +96,12 @@ Examples:
  - JavaScript: <RepoLink path='/boilerplates/boilerplate-vue/renderer/usePageContext.js' />
  - TypeScript: <RepoLink path='/boilerplates/boilerplate-vue-ts/renderer/usePageContext.ts' />
 
-
 ### Vue 3 - `globalProperties`
 
 Alternatively, you can make `pageContext` available to all Vue components by using [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
 
 ```js
-// app.js
+// createVueApp.js
 
 const app = createSSRApp(/*...*/)
 app.config.globalProperties.$pageContext = pageContext
@@ -123,11 +122,7 @@ const pageContext = getCurrentInstance().appContext.config.globalProperties.$pag
 </script>
 ```
 
-Example:
- - [/boilerplates/boilerplate-vue/renderer/app.js (@abff8de)](https://github.com/vikejs/vike/blob/abff8debc4c7cd6ab11e99e757379e5237a6c18c/boilerplates/boilerplate-vue/renderer/app.js#L26)
-   (`app.config.globalProperties.$pageContext = pageContext`)
- - [/boilerplates/boilerplate-vue/renderer/Link.vue (@abff8de)](https://github.com/vikejs/vike/blob/abff8debc4c7cd6ab11e99e757379e5237a6c18c/boilerplates/boilerplate-vue/renderer/Link.vue#L2)
-   (accessing `pageContext` from any Vue component)
+Example: [/boilerplates/boilerplate-vue/](https://github.com/vikejs/vike/tree/main/boilerplates/boilerplate-vue).
 
 ### Vue 2
 
