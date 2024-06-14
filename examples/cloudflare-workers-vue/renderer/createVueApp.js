@@ -5,19 +5,7 @@ export { createVueApp }
 
 function createVueApp(pageContext) {
   const { Page, pageProps } = pageContext
-  const PageWithLayout = {
-    render() {
-      return h(
-        Layout,
-        {},
-        {
-          default() {
-            return h(Page, pageProps || {})
-          }
-        }
-      )
-    }
-  }
-  const app = createSSRApp(PageWithLayout)
+  const RootComponent = () => h(Layout, null, () => h(Page, pageProps))
+  const app = createSSRApp(RootComponent)
   return app
 }
