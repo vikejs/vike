@@ -115,6 +115,28 @@ async function crawlSymlinkDirs(
   return filesInSymlinkDirs
 }
 
+function parseGitLsFilesResultLine(resultLine: string): { filePath: string | undefined; mode: string | undefined } {
+  // Parse:
+  // ```
+  // path/to/not/tracked/file
+  // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0 pages/index/+Page.tsx
+  // ```
+
+  const [info, filePath, ...rest1] = resultLine.split('\t')
+  if (!filePath) {
+    // Then it is an untracked file
+    // path/to/not/tracked/file
+    return { filePath: info, mode: undefined }
+  }
+  // Else it is
+  // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0 pages/index/+Page.tsx
+  assert(info && filePath && rest1.length === 0, { resultLine, info, filePath, rest1 })
+  const [mode, _, __, ...rest2] = info.split(' ')
+  assert(mode && _ && __ && rest2.length === 0)
+
+  return { filePath, mode }
+}
+
 // Same as fastGlob() but using `$ git ls-files`
 async function gitLsFiles(
   userRootDir: string,
@@ -174,15 +196,14 @@ async function gitLsFiles(
 
   const symlinkDirs: string[] = []
   const files: string[] = []
+  let filesWithoutModeCount = 0
+  // we will parse modes manually with fs untill this value, after that we will use fast-glob
+  const maxFilesWithoutModeCount = 10
   for (const resultLine of resultLines) {
-    // Parse:
-    // ```
-    // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0 pages/index/+Page.tsx
-    // ```
-    const [info, filePath, ...rest1] = resultLine.split('\t')
-    assert(info && filePath && rest1.length === 0, { resultLine, info, filePath, rest1 })
-    const [mode, _, __, ...rest2] = info.split(' ')
-    assert(mode && _ && __ && rest2.length === 0)
+    const { filePath, mode } = parseGitLsFilesResultLine(resultLine)
+
+    // Check for safety
+    if (!filePath) continue
 
     // Deleted?
     if (filesDeleted.includes(filePath)) continue
@@ -190,10 +211,30 @@ async function gitLsFiles(
     // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
     if (!ignoreAsFilterFn(filePath)) continue
 
-    // Symlink directory?
-    if (await isSymlinkDirectory(mode, filePath, userRootDir)) {
-      symlinkDirs.push(filePath)
-      continue
+    if (!mode) {
+      // It means that the file is untracked and we have to get the mode manually
+      filesWithoutModeCount++
+      if (filesWithoutModeCount > maxFilesWithoutModeCount) {
+        return null
+      }
+      const lstats = await fs.lstat(path.posix.join(userRootDir, filePath))
+      const isSymlink = lstats.isSymbolicLink()
+      const stats = await fs.stat(path.posix.join(userRootDir, filePath))
+      const isDirectory = stats.isDirectory()
+      if (isSymlink && isDirectory) {
+        symlinkDirs.push(filePath)
+        continue
+      }
+      if (isDirectory) {
+        continue
+      }
+    } else if (mode === '120000') {
+      // mode 120000 means symlink
+      const stats = await fs.stat(path.posix.join(userRootDir, filePath))
+      if (stats.isDirectory()) {
+        symlinkDirs.push(filePath)
+        continue
+      }
     }
 
     // + file?
@@ -268,13 +309,6 @@ async function isGitNotUsable(userRootDir: string) {
     assert(stdout === 'true')
     return false
   }
-}
-
-async function isSymlinkDirectory(mode: string, filePath: string, userRootDir: string) {
-  // 120000 => symlink
-  if (mode !== '120000') return false
-  const isDirectory = (await fs.stat(path.posix.join(userRootDir, filePath))).isDirectory()
-  return isDirectory
 }
 
 async function runCmd1(cmd: string, cwd: string): Promise<string[]> {
