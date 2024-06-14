@@ -137,6 +137,22 @@ function parseGitLsFilesResultLine(resultLine: string): { filePath: string | und
   return { filePath, mode }
 }
 
+function isCountOfGitLsFilesResultLinesWithoutModeTooLarge(resultLines: string[], maxFilesWithoutModeCount: number) {
+  let filesWithoutModeCount = 0
+  for (const resultLine of resultLines) {
+    const { mode } = parseGitLsFilesResultLine(resultLine)
+    if (!mode) {
+      filesWithoutModeCount++
+      if (filesWithoutModeCount > maxFilesWithoutModeCount) {
+        return true
+      }
+    } else {
+      return false
+    }
+  }
+  return false
+}
+
 // Same as fastGlob() but using `$ git ls-files`
 async function gitLsFiles(
   userRootDir: string,
@@ -194,11 +210,13 @@ async function gitLsFiles(
     throw err
   }
 
+  if (isCountOfGitLsFilesResultLinesWithoutModeTooLarge(resultLines, 2)) {
+    // If there are too many files without mode, we fallback to fast-glob, else we will get mode manually
+    return null
+  }
+
   const symlinkDirs: string[] = []
   const files: string[] = []
-  let filesWithoutModeCount = 0
-  // we will parse modes manually with fs untill this value, after that we will use fast-glob
-  const maxFilesWithoutModeCount = 10
   for (const resultLine of resultLines) {
     const { filePath, mode } = parseGitLsFilesResultLine(resultLine)
 
@@ -213,10 +231,6 @@ async function gitLsFiles(
 
     if (!mode) {
       // It means that the file is untracked and we have to get the mode manually
-      filesWithoutModeCount++
-      if (filesWithoutModeCount > maxFilesWithoutModeCount) {
-        return null
-      }
       const lstats = await fs.lstat(path.posix.join(userRootDir, filePath))
       const isSymlink = lstats.isSymbolicLink()
       const stats = await fs.stat(path.posix.join(userRootDir, filePath))
