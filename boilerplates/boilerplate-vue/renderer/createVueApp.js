@@ -1,45 +1,28 @@
 export { createVueApp }
 
-import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
-import Layout from './Layout.vue'
+import { createSSRApp, h, shallowRef } from 'vue'
 import { setPageContext } from './usePageContext'
 import { setData } from './useData'
-import { isObject } from './utils'
+import Layout from './Layout.vue'
 
 function createVueApp(pageContext) {
-  const { Page } = pageContext
+  const pageContextRef = shallowRef(pageContext)
+  const dataRef = shallowRef(pageContext.data)
+  const pageRef = shallowRef(pageContext.Page)
 
-  const pageRef = ref(markRaw(Page))
-
-  const PageWithLayout = {
-    render() {
-      return h(Layout, {}, { default: () => h(pageRef.value) })
-    }
-  }
-
-  const app = createSSRApp(PageWithLayout)
+  const RootComponent = () => h(Layout, null, () => h(pageRef.value))
+  const app = createSSRApp(RootComponent)
+  setPageContext(app, pageContextRef)
+  setData(app, dataRef)
 
   // app.changePage() is called upon navigation, see +onRenderClient.ts
   Object.assign(app, {
     changePage: (pageContext) => {
-      const data = pageContext.data ?? {}
-      assertDataIsObject(data)
-      Object.assign(dataReactive, data)
-      Object.assign(pageContextReactive, pageContext)
-      pageRef.value = markRaw(pageContext.Page)
+      pageContextRef.value = pageContext
+      dataRef.value = pageContext.data
+      pageRef.value = pageContext.Page
     }
   })
 
-  const data = pageContext.data ?? {}
-  assertDataIsObject(data)
-  const dataReactive = reactive(data)
-  const pageContextReactive = reactive(pageContext)
-  setPageContext(app, pageContextReactive)
-  setData(app, dataReactive)
-
   return app
-}
-
-function assertDataIsObject(data) {
-  if (!isObject(data)) throw new Error('Return value of data() hook should be an object, undefined, or null')
 }
