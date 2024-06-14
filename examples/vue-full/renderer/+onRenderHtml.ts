@@ -3,7 +3,7 @@ export { onRenderHtml }
 
 import { renderToNodeStream } from '@vue/server-renderer'
 import { escapeInject } from 'vike/server'
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 import { getPageTitle } from './getPageTitle'
 import type { OnRenderHtmlAsync } from 'vike/types'
 

@@ -1,6 +1,6 @@
 import { renderToNodeStream } from '@vue/server-renderer'
 import { escapeInject } from 'vike/server'
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
 import type { PageContextBuiltInServer } from 'vike/types'

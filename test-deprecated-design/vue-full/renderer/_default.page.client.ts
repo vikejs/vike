@@ -1,4 +1,4 @@
-import { createVueApp } from './app'
+import { createVueApp } from './createVueApp'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
 import type {
