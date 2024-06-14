@@ -1,5 +1,7 @@
 export { assertV1Design }
 
+// TODO/next-major-release: remove
+
 import { PageFile } from '../../shared/getPageFiles.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { assert, assertUsage, assertWarning, isNotNullish, unique } from './utils.js'
@@ -12,21 +14,19 @@ function assertV1Design(pageConfigs: PageConfigBuildTime[] | boolean, pageFilesA
     const indent = '- '
     if (typeof pageConfigs !== 'boolean') {
       assert(pageConfigs.length > 0)
-      if (pageConfigs.length) {
-        const filesV1: string[] = unique(
-          pageConfigs
-            .map((p) =>
-              Object.values(p.configValueSources).map((sources) =>
-                sources
-                  .map((c) => c.definedAtFilePath.filePathAbsoluteUserRootDir)
-                  .filter(isNotNullish)
-                  .map((filePathToShowToUser) => indent + filePathToShowToUser)
-              )
+      const filesV1: string[] = unique(
+        pageConfigs
+          .map((p) =>
+            Object.values(p.configValueSources).map((sources) =>
+              sources
+                .map((c) => c.definedAtFilePath.filePathAbsoluteUserRootDir)
+                .filter(isNotNullish)
+                .map((filePathToShowToUser) => indent + filePathToShowToUser)
             )
-            .flat(2)
-        )
-        lines.push(...['V1 design files:', ...filesV1])
-      }
+          )
+          .flat(2)
+      )
+      lines.push(...['V1 design files:', ...filesV1])
     }
     if (typeof pageFilesAll !== 'boolean') {
       assert(pageFilesAll.length > 0)
