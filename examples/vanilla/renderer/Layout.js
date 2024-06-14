@@ -3,7 +3,7 @@ export { Layout }
 import './Layout.css'
 
 function Layout(children) {
-  return Layout(
+  return Frame(
     [
       Sidebar(
         // prettier-ignore
@@ -18,7 +18,7 @@ function Layout(children) {
   )
 }
 
-function Layout(children) {
+function Frame(children) {
   // prettier-ignore
   // biome-ignore format:
   return (
