@@ -2,7 +2,7 @@ export { navigate }
 export { reload }
 
 import { renderPageClientSide } from './renderPageClientSide.js'
-import { assertUsage, isBrowser, assertClientRouting, checkIfClientRouting, getCurrentUrl } from './utils.js'
+import { assertClientRouting, getCurrentUrl } from './utils.js'
 
 assertClientRouting()
 
@@ -18,24 +18,6 @@ async function navigate(
   url: string,
   { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}
 ): Promise<void> {
-  assertUsage(isBrowser(), 'navigate() can only be called on the client-side', { showStackTrace: true })
-  assertUsage(checkIfClientRouting(), 'navigate() requires Client Routing', { showStackTrace: true })
-  assertUsage(url, 'Missing navigate() argument url', { showStackTrace: true })
-  assertUsage(typeof url === 'string', '[navigate(url)] Argument url should be a string', { showStackTrace: true })
-  assertUsage(
-    typeof keepScrollPosition === 'boolean',
-    '[navigate(url, { keepScrollPosition })] Argument keepScrollPosition should be a boolean',
-    { showStackTrace: true }
-  )
-  assertUsage(
-    typeof overwriteLastHistoryEntry === 'boolean',
-    '[navigate(url, { overwriteLastHistoryEntry })] Argument overwriteLastHistoryEntry should be a boolean',
-    { showStackTrace: true }
-  )
-  assertUsage(url.startsWith('/'), '[navigate(url)] Argument url should start with a leading /', {
-    showStackTrace: true
-  })
-
   const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
   await renderPageClientSide({
     scrollTarget,
