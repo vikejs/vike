@@ -17,7 +17,7 @@ function Layout({ pageContext, children }) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>
-        <Layout>
+        <Frame>
           <Sidebar>
             <Logo />
             <Link href="/">Welcome</Link>
@@ -25,16 +25,16 @@ function Layout({ pageContext, children }) {
             <Link href="/star-wars">Data Fetching</Link>
           </Sidebar>
           <Content>{children}</Content>
-        </Layout>
+        </Frame>
       </PageContextProvider>
     </React.StrictMode>
   )
 }
 
-Layout.propTypes = {
+Frame.propTypes = {
   children: childrenPropType
 }
-function Layout({ children }) {
+function Frame({ children }) {
   return (
     <div
       style={{

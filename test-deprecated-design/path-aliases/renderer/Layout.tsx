@@ -6,7 +6,7 @@ export { Layout }
 function Layout({ children }: any) {
   return (
     <React.StrictMode>
-      <Layout>
+      <Frame>
         <Sidebar>
           <a className="navitem" href="/">
             Home
@@ -16,12 +16,12 @@ function Layout({ children }: any) {
           </a>
         </Sidebar>
         <Content>{children}</Content>
-      </Layout>
+      </Frame>
     </React.StrictMode>
   )
 }
 
-function Layout({ children }: any) {
+function Frame({ children }: any) {
   return (
     <div
       style={{

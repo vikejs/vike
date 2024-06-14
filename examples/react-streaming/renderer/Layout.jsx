@@ -8,7 +8,7 @@ function Layout({ pageContext, children }) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>
-        <Layout>
+        <Frame>
           <Sidebar>
             <a className="navitem" href="/">
               Home
@@ -21,13 +21,13 @@ function Layout({ pageContext, children }) {
             </a>
           </Sidebar>
           <Content>{children}</Content>
-        </Layout>
+        </Frame>
       </PageContextProvider>
     </React.StrictMode>
   )
 }
 
-function Layout({ children }) {
+function Frame({ children }) {
   return (
     <div
       style={{

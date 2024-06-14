@@ -12,7 +12,7 @@ function Layout({ pageContext, children }: { pageContext: PageContext; children:
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>
-        <Layout>
+        <Frame>
           <Sidebar>
             <Logo />
             <Link href="/">Welcome</Link>
@@ -21,13 +21,13 @@ function Layout({ pageContext, children }: { pageContext: PageContext; children:
             <Link href="/hello">Routing</Link>
           </Sidebar>
           <Content>{children}</Content>
-        </Layout>
+        </Frame>
       </PageContextProvider>
     </React.StrictMode>
   )
 }
 
-function Layout({ children }: { children: React.ReactNode }) {
+function Frame({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{

@@ -7,19 +7,19 @@ export { Layout }
 function Layout({ children }) {
   return (
     <React.StrictMode>
-      <Layout>
+      <Frame>
         <Sidebar>
           <Logo />
           <a href="/">Home</a>
           <a href="/about">About</a>
         </Sidebar>
         <Content>{children}</Content>
-      </Layout>
+      </Frame>
     </React.StrictMode>
   )
 }
 
-function Layout({ children }) {
+function Frame({ children }) {
   return (
     <div
       style={{

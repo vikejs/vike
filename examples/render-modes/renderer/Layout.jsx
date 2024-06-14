@@ -6,7 +6,7 @@ import React from 'react'
 function Layout({ children }) {
   return (
     <React.StrictMode>
-      <Layout>
+      <Frame>
         <Sidebar>
           <a className="navitem" href="/">
             <b>Render Modes</b>
@@ -25,12 +25,12 @@ function Layout({ children }) {
           </a>
         </Sidebar>
         <Content>{children}</Content>
-      </Layout>
+      </Frame>
     </React.StrictMode>
   )
 }
 
-function Layout({ children }) {
+function Frame({ children }) {
   return (
     <div
       style={{

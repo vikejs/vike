@@ -9,7 +9,7 @@ function Layout({ children, pageContext }: { children: React.ReactNode; pageCont
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>
-        <Layout>
+        <Frame>
           <Sidebar>
             <Nav href="/" />
             <Nav href="/page-2" />
@@ -17,7 +17,7 @@ function Layout({ children, pageContext }: { children: React.ReactNode; pageCont
             <Nav href="/page-4" />
           </Sidebar>
           <Content>{children}</Content>
-        </Layout>
+        </Frame>
       </PageContextProvider>
     </React.StrictMode>
   )
@@ -31,7 +31,7 @@ function Nav({ href }: { href: string }) {
   )
 }
 
-function Layout({ children }: { children: React.ReactNode }) {
+function Frame({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{

@@ -8,19 +8,19 @@ export { Layout }
 function Layout({ children }) {
   return (
     <React.StrictMode>
-      <Layout>
+      <Frame>
         <Sidebar>
           <Logo />
           <Link href="/">Home</Link>
           <Link href="/about">About</Link>
         </Sidebar>
         <Content>{children}</Content>
-      </Layout>
+      </Frame>
     </React.StrictMode>
   )
 }
 
-function Layout({ children }) {
+function Frame({ children }) {
   return (
     <div
       style={{
