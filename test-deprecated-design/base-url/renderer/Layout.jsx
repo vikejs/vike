@@ -1,11 +1,11 @@
 import React from 'react'
-import logo from './logo.svg'
-import './PageShell.css'
 import { Link } from '../components/Link'
+import logo from './logo.svg'
+import './Layout.css'
 
-export { PageShell }
+export { Layout }
 
-function PageShell({ children }) {
+function Layout({ children }) {
   return (
     <React.StrictMode>
       <Layout>

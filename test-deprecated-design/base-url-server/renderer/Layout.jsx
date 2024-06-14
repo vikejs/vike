@@ -1,29 +1,21 @@
-export { PageShell }
-
 import React from 'react'
-import './PageShell.css'
-import { PageContextProvider } from './usePageContext'
-import { Link } from './Link'
+import logo from './logo.svg'
+import './Layout.css'
+import { Link } from '../components/Link'
 
-function PageShell({ pageContext, children }) {
+export { Layout }
+
+function Layout({ children }) {
   return (
     <React.StrictMode>
-      <PageContextProvider pageContext={pageContext}>
-        <Layout>
-          <Sidebar>
-            <Link className="navitem" href="/">
-              Home
-            </Link>
-            <Link className="navitem" href="/about">
-              About
-            </Link>
-            <Link className="navitem" href="/movies">
-              Movies
-            </Link>
-          </Sidebar>
-          <Content>{children}</Content>
-        </Layout>
-      </PageContextProvider>
+      <Layout>
+        <Sidebar>
+          <Logo />
+          <Link href="/">Home</Link>
+          <Link href="/about">About</Link>
+        </Sidebar>
+        <Content>{children}</Content>
+      </Layout>
     </React.StrictMode>
   )
 }
@@ -47,7 +39,6 @@ function Sidebar({ children }) {
     <div
       style={{
         padding: 20,
-        paddingTop: 42,
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -71,6 +62,21 @@ function Content({ children }) {
       }}
     >
       {children}
+    </div>
+  )
+}
+
+function Logo() {
+  return (
+    <div
+      style={{
+        marginTop: 20,
+        marginBottom: 10
+      }}
+    >
+      <Link href="/">
+        <img src={logo} height={64} width={64} />
+      </Link>
     </div>
   )
 }

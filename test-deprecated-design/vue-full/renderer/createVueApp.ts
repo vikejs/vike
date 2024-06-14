@@ -1,5 +1,5 @@
 import { createSSRApp, defineComponent, h, markRaw, reactive, ref } from 'vue'
-import PageShell from './PageShell.vue'
+import Layout from './Layout.vue'
 import type { PageContext } from './types'
 import { setPageContext } from './usePageContext'
 
@@ -13,7 +13,7 @@ function createVueApp(pageContext: PageContext) {
 
   const PageWithWrapper = defineComponent({
     render() {
-      return h(PageShell, {}, { default: () => h(pageRef.value, pagePropsRef.value) })
+      return h(Layout, {}, { default: () => h(pageRef.value, pagePropsRef.value) })
     }
   })
 

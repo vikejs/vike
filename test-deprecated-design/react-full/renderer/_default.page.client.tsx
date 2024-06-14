@@ -8,7 +8,7 @@ export const hydrationCanBeAborted = true
 import './css/index.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { PageShell } from './PageShell'
+import { Layout } from './Layout'
 import { getPageTitle } from './getPageTitle'
 import type { OnRenderClientAsync } from 'vike/types'
 
@@ -16,9 +16,9 @@ let root: ReactDOM.Root
 const render: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
   const { Page, pageProps } = pageContext
   const page = (
-    <PageShell pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>
+    </Layout>
   )
   const container = document.getElementById('page-view')!
   if (pageContext.isHydration) {

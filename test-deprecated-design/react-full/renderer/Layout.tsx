@@ -4,9 +4,9 @@ import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
 import type { PageContext } from 'vike/types'
 
-export { PageShell }
+export { Layout }
 
-function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
+function Layout({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>

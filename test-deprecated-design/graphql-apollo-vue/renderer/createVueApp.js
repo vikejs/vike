@@ -1,5 +1,5 @@
 import { createSSRApp, h, provide } from 'vue'
-import PageShell from './PageShell.vue'
+import Layout from './Layout.vue'
 import { setPageContext } from './usePageContext'
 export { createVueApp }
 import { DefaultApolloClient } from '@vue/apollo-composable'
@@ -12,7 +12,7 @@ function createVueApp(pageContext, apolloClient) {
     },
     render() {
       return h(
-        PageShell,
+        Layout,
         {},
         {
           default() {
