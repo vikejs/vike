@@ -5,28 +5,30 @@ export type { ScrollTarget }
 import { assert, onPageHide, sleep, throttle } from './utils.js'
 import { saveScrollPosition, type ScrollPosition } from './history.js'
 
-type ScrollTarget = ScrollPosition | 'scroll-to-top-or-hash' | 'preserve-scroll'
+type ScrollTarget = undefined | { preserveScroll?: boolean } | ScrollPosition
 function setScrollPosition(scrollTarget: ScrollTarget): void {
-  if (scrollTarget === 'preserve-scroll') {
+  if (!scrollTarget) scrollTarget = {}
+  if ('x' in scrollTarget) {
+    setScroll(scrollTarget)
     return
   }
-  let scrollPosition: ScrollPosition
-  if (scrollTarget === 'scroll-to-top-or-hash') {
-    const hash = getUrlHash()
-    // We replicate the browser's native behavior
-    if (hash && hash !== 'top') {
-      const hashTarget = document.getElementById(hash) || document.getElementsByName(hash)[0]
-      if (hashTarget) {
-        hashTarget.scrollIntoView()
-        return
-      }
-    }
-    scrollPosition = { x: 0, y: 0 }
-  } else {
-    assert('x' in scrollTarget && 'y' in scrollTarget)
-    scrollPosition = scrollTarget
+  if (scrollTarget.preserveScroll) {
+    return
   }
-  setScroll(scrollPosition)
+  scrollToTopOrHash()
+}
+
+// Replicates the browser's native behavior
+function scrollToTopOrHash() {
+  const hash = getUrlHash()
+  if (!hash || hash === 'top') {
+    setScroll({ x: 0, y: 0 })
+  } else {
+    const hashTarget = document.getElementById(hash) || document.getElementsByName(hash)[0]
+    if (hashTarget) {
+      hashTarget.scrollIntoView()
+    }
+  }
 }
 
 /** Change the browser's scoll position, in a way that works during a repaint. */

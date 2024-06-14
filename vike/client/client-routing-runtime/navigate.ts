@@ -2,6 +2,7 @@ export { navigate }
 export { reload }
 
 import { renderPageClientSide } from './renderPageClientSide.js'
+import type { ScrollTarget } from './setScrollPosition.js'
 import { assertClientRouting, getCurrentUrl } from './utils.js'
 
 assertClientRouting()
@@ -16,9 +17,12 @@ assertClientRouting()
  */
 async function navigate(
   url: string,
-  { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}
+  {
+    keepScrollPosition = false,
+    overwriteLastHistoryEntry = false
+  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean } = {}
 ): Promise<void> {
-  const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+  const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition }
   await renderPageClientSide({
     scrollTarget,
     urlOriginal: url,
