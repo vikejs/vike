@@ -1,4 +1,4 @@
-export { createApp }
+export { createVueApp }
 
 import { createSSRApp, h, markRaw, reactive, ref } from 'vue'
 import PageLayout from './PageLayout.vue'
@@ -7,7 +7,7 @@ import type { PageContext } from 'vike/types'
 import { setData } from './useData'
 import { isObject, objectAssign } from './utils'
 
-function createApp(pageContext: PageContext) {
+function createVueApp(pageContext: PageContext) {
   const { Page } = pageContext
 
   const pageRef = ref(markRaw(Page))

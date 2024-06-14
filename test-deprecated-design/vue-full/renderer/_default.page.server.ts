@@ -1,6 +1,6 @@
 import { renderToNodeStream } from '@vue/server-renderer'
 import { escapeInject } from 'vike/server'
-import { createApp } from './app'
+import { createVueApp } from './app'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
 import type { PageContextBuiltInServer } from 'vike/types'
@@ -11,7 +11,7 @@ export { render }
 const passToClient = ['pageProps', 'documentProps']
 
 async function render(pageContext: PageContextBuiltInServer & PageContext) {
-  const app = createApp(pageContext)
+  const app = createVueApp(pageContext)
   const stream = renderToNodeStream(app)
 
   const title = getPageTitle(pageContext)

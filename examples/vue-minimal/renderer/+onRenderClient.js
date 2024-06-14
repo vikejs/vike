@@ -1,9 +1,9 @@
 // https://vike.dev/onRenderClient
 export { onRenderClient }
 
-import { createApp } from './app'
+import { createVueApp } from './app'
 
 async function onRenderClient(pageContext) {
-  const app = createApp(pageContext)
+  const app = createVueApp(pageContext)
   app.mount('#app')
 }

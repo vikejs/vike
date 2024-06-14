@@ -1,6 +1,6 @@
 export { render }
 
-import { createApp } from './app'
+import { createVueApp } from './app'
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 import fetch from 'cross-fetch'
 
@@ -11,6 +11,6 @@ function render(pageContext) {
     connectToDevTools: true
   })
 
-  const app = createApp(pageContext, defaultClient)
+  const app = createVueApp(pageContext, defaultClient)
   app.mount('#app')
 }

@@ -1,6 +1,6 @@
 import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { createApp } from './app'
+import { createVueApp } from './app'
 import logoUrl from './logo.svg'
 
 export { render }
@@ -39,7 +39,7 @@ async function render(pageContext) {
 }
 
 async function onBeforeRender(pageContext) {
-  const app = createApp(pageContext, pageContext.apolloClient)
+  const app = createVueApp(pageContext, pageContext.apolloClient)
   const appHtml = await renderToString(app)
   const apolloInitialState = pageContext.apolloClient.extract()
   return {

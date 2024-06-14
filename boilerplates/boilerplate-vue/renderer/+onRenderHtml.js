@@ -3,7 +3,7 @@ export { onRenderHtml }
 
 import { renderToString as renderToString_ } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { createApp } from './app'
+import { createVueApp } from './app'
 import logoUrl from './logo.svg'
 import { getPageTitle } from './getPageTitle'
 
@@ -12,7 +12,7 @@ async function onRenderHtml(pageContext) {
   // onRenderHtml() to support SPA
   if (!pageContext.Page) throw new Error('My render() hook expects pageContext.Page to be defined')
 
-  const app = createApp(pageContext)
+  const app = createVueApp(pageContext)
 
   const appHtml = await renderToString(app)
 

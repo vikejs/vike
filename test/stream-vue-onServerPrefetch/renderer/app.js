@@ -2,9 +2,9 @@ import { createPinia } from 'pinia'
 import { createSSRApp, h, reactive, markRaw, ref } from 'vue'
 import { setPageContext } from './usePageContext'
 
-export { createApp }
+export { createVueApp }
 
-function createApp(pageContext) {
+function createVueApp(pageContext) {
   const pageRef = ref(markRaw(pageContext.Page))
   const pagePropsRef = ref(markRaw(pageContext.pageProps || {}))
 
