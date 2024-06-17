@@ -427,7 +427,7 @@ const headingsDetached = [
     url: '/react-tour'
   },
   {
-    title: '`onCreateApp()`',
+    title: '`onCreateApp()` hook',
     url: '/onCreateApp'
   },
   {
