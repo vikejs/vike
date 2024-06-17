@@ -9,6 +9,7 @@ export { onAssertModuleLoad }
 import { unique } from './unique.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { projectInfo } from './projectInfo.js'
+import pc from '@brillout/picocolors'
 /* Use original assertUsage() & assertWarning() after all CJS is removed from node_modules/vike/dist/
 import { assertUsage, assertWarning } from './assert.js'
 */
@@ -34,7 +35,7 @@ function assertSingleInstance() {
     assertUsage(
       versions.length <= 1,
       // DO *NOT* patch vike to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/vikejs/vike/issues/1108
-      `Both vike@${versions[0]} and vike@${versions[1]} loaded. Only one version should be loaded.`
+      `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded but only one version should be loaded`
     )
   }
 

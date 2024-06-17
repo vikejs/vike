@@ -45,8 +45,8 @@ function warnMissingErrorPage(isV1: boolean): void {
   if (!globalContext.isProduction) {
     const msg = [
       `No ${isV1 ? 'error page' : pc.cyan('_error.page.js')} found,`,
-      'we recommend defining an error page,',
-      'see https://vike.dev/error-page'
+      'we recommend defining one',
+      'https://vike.dev/error-page'
     ].join(' ')
     assertWarning(false, msg, { onlyOnce: true })
   }
