@@ -468,12 +468,16 @@ const headingsDetached = [
     url: '/reactStrictMode'
   },
   {
-    title: '`onBeforeRenderClient()`',
+    title: '`onBeforeRenderClient()` hook',
     url: '/onBeforeRenderClient'
   },
   {
-    title: '`onAfterRenderClient()`',
+    title: '`onAfterRenderClient()` hook',
     url: '/onAfterRenderClient'
+  },
+  {
+    title: '`onAfterRenderHtml()` hook',
+    url: '/onAfterRenderHtml'
   },
   {
     title: 'Scaffold new app',
