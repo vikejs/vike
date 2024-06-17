@@ -723,8 +723,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`ClientOnly`',
-    url: '/ClientOnly'
+    title: '`clientOnly()`',
+    url: '/clientOnly'
   },
   {
     level: 2,

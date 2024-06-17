@@ -514,5 +514,9 @@ const headingsDetached = [
   {
     title: 'Releases June 2024',
     url: '/releases/2024-06'
+  },
+  {
+    title: '`<ClientOnly>`',
+    url: '/ClientOnly'
   }
 ] satisfies HeadingDetachedDefinition[]
