@@ -56,17 +56,24 @@ export default {
 
 ## Under the hood
 
-The `vike-vue` extension is only `687` lines of code ([as of Mai 2024](https://gist.github.com/brillout/b4b2a2547a9b8111f9c3fc8cb5e7bafd)). Browsing the [source code of `vike-vue`](https://github.com/vikejs/vike-vue) is therefore very much an option for deepening your understanding of Vike or for debugging.
+The `vike-vue` extension is only `687` lines of code ([as of Mai 2024](https://gist.github.com/brillout/b4b2a2547a9b8111f9c3fc8cb5e7bafd)).
+It's simple, readable, and highly polished.
 
-Browsing the [source code of `vike-vue`](https://github.com/vikejs/vike-vue) is therefore very much an option for deepening your understanding of Vike or for debugging.
+Reading the [source code of `vike-vue`](https://github.com/vikejs/vike-vue) is very much an option for understanding, debugging, and/or contributing.
 
-Basically `vike-vue` does this:
-- Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf. (Most notably <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link>, see their implementation at
-  [`renderer/onRenderHtml.ts`](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/src/renderer/onRenderHtml.ts)
-  and
-  [`renderer/onRenderClient.ts`](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/src/renderer/onRenderClient.ts).)
-- Introduces new <Link href="/meta">custom hooks</Link> (e.g. <Link href="/onCreateApp">`onCreateApp()`</Link>) and <Link href="/meta">custom settings</Link> (e.g. <Link href="/ssr">`ssr`</Link> and <Link href="/stream">`stream`</Link>).
-- Introduces new component hooks (e.g. <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>).
+> Contributions are welcome! See [CONTRIBUTING.md](https://github.com/vikejs/vike-vue/blob/main/CONTRIBUTING.md) to get started.
+
+Essentially `vike-vue` does this:
+- Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf.
+  > Most notably:
+  > - <Link href="/onRenderHtml">`onRenderHtml()`</Link>
+  >   (see [renderer/onRenderHtml.ts](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/src/renderer/onRenderHtml.ts))
+  > - <Link href="/onRenderClient">`onRenderClient()`</Link>
+  >   (see [renderer/onRenderClient.ts](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/src/renderer/onRenderClient.ts))
+- Creates new Vike settings and new Vike hooks. (By using <Link href="/meta" />.)
+  > For example <Link href="/Layout">`<Layout>`</Link>, <Link href="/ssr">`ssr`</Link>, and <Link href="/onCreateApp">`onCreateApp()`</Link>.
+- Implements Vue component hooks.
+  > For example <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>.
 
 
 

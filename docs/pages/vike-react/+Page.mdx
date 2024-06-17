@@ -59,18 +59,27 @@ export default {
 
 ## Under the hood
 
-The `vike-react` extension is only `494` lines of code ([as of April 2024](https://gist.github.com/brillout/6267ecb8c996fb4a401985106cc81936)). Browsing the [source code of `vike-react`](https://github.com/vikejs/vike-react) is therefore very much an option for deepening your understanding of Vike or for debugging.
+The `vike-react` extension is only `494` lines of code ([as of April 2024](https://gist.github.com/brillout/6267ecb8c996fb4a401985106cc81936)).
+It's simple, readable, and highly polished.
 
-Basically `vike-react` does this:
-- Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf. (Most notably <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link>, see their implementation at
-  [`renderer/onRenderHtml.tsx`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderHtml.tsx)
-  and
-  [`renderer/onRenderClient.tsx`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderClient.tsx).)
-- Introduces new <Link href="/meta">custom hooks</Link> (e.g. <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link>) and <Link href="/meta">custom settings</Link> (e.g. <Link href="/Wrapper">`<Wrapper>`</Link> and <Link href="/stream">`stream`</Link>).
-- Introduces new component hooks (e.g. <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>).
+Reading the [source code of `vike-react`](https://github.com/vikejs/vike-react) is very much an option for understanding, debugging, and/or contributing.
+
+> Contributions are welcome! See [CONTRIBUTING.md](https://github.com/vikejs/vike-react/blob/main/CONTRIBUTING.md) to get started.
+
+Essentially `vike-react` does this:
+- Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf.
+  > Most notably:
+  > - <Link href="/onRenderHtml">`onRenderHtml()`</Link>
+  >   (see [renderer/onRenderHtml.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderHtml.tsx))
+  > - <Link href="/onRenderClient">`onRenderClient()`</Link>
+  >   (see [renderer/onRenderClient.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderClient.tsx))
+- Creates new Vike settings and new Vike hooks. (By using <Link href="/meta" />.)
+  > For example <Link href="/Layout">`<Layout>`</Link> and <Link href="/ssr">`ssr`</Link>.
+- Implements React component hooks.
+  > For example <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>.
 - Uses [`react-streaming`](https://github.com/brillout/react-streaming) for <Link href="/streaming">HTML Streaming</Link>.
 
-It implements following features:
+It implements the following:
 
 - <Link noBreadcrumb href="/useData" />
 - <Link noBreadcrumb href="/usePageContext" />
@@ -87,7 +96,7 @@ It implements following features:
 - <Link noBreadcrumb href="/onAfterRenderClient" />
 - <Link noBreadcrumb href="/reactStrictMode" />
 
-> For a friendlier list, see the following (which also includes `vike-react` settings & hooks):
+> For a better overview, see the following lists instead. (They also include all settings and hooks created by `vike-react`.)
 > - <Link href="/settings" />
 > - <Link href="/hooks" />
 

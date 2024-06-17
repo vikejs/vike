@@ -56,15 +56,24 @@ export default {
 
 ## Under the hood
 
-The `vike-solid` extension is only `542` lines of code ([as of Mai 2024](https://gist.github.com/brillout/e2134686d682e9a450e10e95f1ff570b)). Browsing the [source code of `vike-solid`](https://github.com/vikejs/vike-solid) is therefore very much an option for deepening your understanding of Vike or for debugging.
+The `vike-solid` extension is only `542` lines of code ([as of Mai 2024](https://gist.github.com/brillout/e2134686d682e9a450e10e95f1ff570b)).
+It's simple, readable, and highly polished.
 
-Basically `vike-solid` does this:
-- Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf. (Most notably <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link>, see their implementation at
-  [`renderer/onRenderHtml.tsx`](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/onRenderHtml.tsx)
-  and
-  [`renderer/onRenderClient.tsx`](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/onRenderClient.tsx).)
-- Introduces new <Link href="/meta">custom hooks</Link> and <Link href="/meta">custom settings</Link> (e.g. <Link href="/ssr">`ssr`</Link> and <Link href="/stream">`stream`</Link>).
-- Introduces new component hooks (e.g. <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>).
+Reading the [source code of `vike-solid`](https://github.com/vikejs/vike-solid) is very much an option for understanding, debugging, and/or contributing.
+
+> Contributions are welcome!
+
+Essentially `vike-solid` does this:
+- Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf.
+  > Most notably:
+  > - <Link href="/onRenderHtml">`onRenderHtml()`</Link>
+  >   (see [renderer/onRenderHtml.tsx](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/onRenderHtml.tsx))
+  > - <Link href="/onRenderClient">`onRenderClient()`</Link>
+  >   (see [renderer/onRenderClient.tsx](https://github.com/vikejs/vike-solid/blob/main/vike-solid/renderer/onRenderClient.tsx))
+- Creates new Vike settings and new Vike hooks. (By using <Link href="/meta" />.)
+  > For example <Link href="/Layout">`<Layout>`</Link> and <Link href="/ssr">`ssr`</Link>.
+- Implements Solid component hooks.
+  > For example <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link>.
 
 It implements following features:
 
@@ -79,7 +88,7 @@ It implements following features:
 - <Link noBreadcrumb href="/stream" />
 - <Link noBreadcrumb href="/ClientOnly" />
 
-> For a friendlier list, see the following (which also includes `vike-solid` settings & hooks):
+> For a better overview, see the following lists instead. (They also include all settings and hooks created by `vike-solid`.)
 > - <Link href="/settings" />
 > - <Link href="/hooks" />
 
