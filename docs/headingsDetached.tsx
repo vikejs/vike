@@ -522,5 +522,13 @@ const headingsDetached = [
   {
     title: '`<ClientOnly>`',
     url: '/ClientOnly'
+  },
+  {
+    title: '`bodyHtmlBegin`',
+    url: '/bodyHtmlBegin'
+  },
+  {
+    title: '`bodyHtmlEnd`',
+    url: '/bodyHtmlEnd'
   }
 ] satisfies HeadingDetachedDefinition[]
