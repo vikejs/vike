@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { ClientOnlyCommon } from './ClientOnlyCommon.tsx'
 import { UiFrameworkExtension } from '../../components'
 
@@ -22,9 +22,13 @@ Common use cases:
 
 ## Solid
 
+<Warning>The `<ClientOnly>` wrapper is deprecated, use <Link href="/clientOnly#solid">the `clientOnly()` helper</Link> instead.</Warning>
+
 <ClientOnlyCommon packageName="vike-solid" />
 
 ## Vue
+
+<Warning>The `<ClientOnly>` wrapper is deprecated, use <Link href="/clientOnly#vue">the `clientOnly()` helper</Link> instead.</Warning>
 
 <ClientOnlyCommon packageName="vike-vue" />
 
@@ -36,3 +40,8 @@ See, for example, the source code at:
  - [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
  - [GitHub > `vikejs/vike-vue`](https://github.com/vikejs/vike-vue)
  - [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)
+
+
+## See also
+
+- <Link href="/clientOnly" />
