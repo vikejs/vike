@@ -508,11 +508,11 @@ const headingsDetached = [
     url: '/releases'
   },
   {
-    title: 'Releases Mai 2024',
+    title: 'Mai 2024 Releases',
     url: '/releases/2024-05'
   },
   {
-    title: 'Releases June 2024',
+    title: 'June 2024 Releases',
     url: '/releases/2024-06'
   },
   {
