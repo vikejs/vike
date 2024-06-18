@@ -125,18 +125,18 @@ async function gitLsFiles(
     'ls-files',
 
     // We don't filter because:
-    //  - It would skip symlinks
+    //  - It would skip symlink directories
     //  - Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
     // ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    //  - When node_modules/ is untracked the performance gain may be significant?
+    //  - When node_modules/ is untracked the performance gain could be significant?
     ...ignoreAsPatterns.map((pattern) => `--exclude="${pattern}"`),
 
     // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
     // --cached => list tracked files
-    // --stage => get file modes which we use to find symlinks
+    // --stage => get file modes which we use to find symlink directories
     '--others --exclude-standard --cached --stage'
   ].join(' ')
 
