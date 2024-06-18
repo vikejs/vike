@@ -100,23 +100,6 @@ async function crawlPlusFiles(
   return plusFiles
 }
 
-async function crawlSymlinkDirs(
-  symlinkDirs: string[],
-  userRootDir: string,
-  outDirRelativeFromUserRootDir: string | null
-) {
-  const filesInSymlinkDirs = (
-    await Promise.all(
-      symlinkDirs.map(async (symlinkDir) =>
-        (
-          await fastGlob(path.posix.join(userRootDir, symlinkDir), outDirRelativeFromUserRootDir)
-        ).map((filePath) => path.posix.join(symlinkDir, filePath))
-      )
-    )
-  ).flat()
-  return filesInSymlinkDirs
-}
-
 // Same as fastGlob() but using `$ git ls-files`
 async function gitLsFiles(
   userRootDir: string,
@@ -273,6 +256,23 @@ async function isGitNotUsable(userRootDir: string) {
     assert(stdout === 'true')
     return false
   }
+}
+
+async function crawlSymlinkDirs(
+  symlinkDirs: string[],
+  userRootDir: string,
+  outDirRelativeFromUserRootDir: string | null
+) {
+  const filesInSymlinkDirs = (
+    await Promise.all(
+      symlinkDirs.map(async (symlinkDir) =>
+        (
+          await fastGlob(path.posix.join(userRootDir, symlinkDir), outDirRelativeFromUserRootDir)
+        ).map((filePath) => path.posix.join(symlinkDir, filePath))
+      )
+    )
+  ).flat()
+  return filesInSymlinkDirs
 }
 
 // Parse:
