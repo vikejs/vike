@@ -1,28 +1,67 @@
 import { Link, Construction } from '@brillout/docpress'
 
+Vike is a <Link href="#flexible">flexible</Link> and <Link href="#dependable">dependable</Link> framework that provides a <Link href="#quick-start">quick start</Link>.
+
 <Construction>This page is under construction.</Construction>
 
-## Optional Control
 
-A core belief of Vike is what we call optional control: you begin with a full-fledged zero-config setup to quickly get started, while later if/when the need arises you can take control over integration code that was initially hidden from you.
+## Flexible
 
-You can for example use <Link href="/extensions">`vike-react`</Link> to get a quick start like a regular frontend framework such as Next.js while later replacing `vike-react` with a fully custom React integration.
+Vike has been designed from the ground up to be flexible so that it can fit your needs.
 
-If you use Vike without any Vike extension then you have complete control over how your favorite tools integrate with Vike.
+### Architecture
 
-> Vike extensions use the same interface as Vike applications: anything a Vike extension can do, you as a Vike user can do as well. In other words, Vike extensions are fully ejectable.
+With Vike you have architectural control, and you can choose any deployment strategy, any backend and data fetching setup, and any UI tool.
 
-With Vike, you get the best of both words: a quick start as well as control.
+Use <Link href="/extensions">Vike extensions</Link> for a quick start, and if an extension doesn't do what you need then you can eject and go for a custom integration instead. (We call this <Link href="/optional-control">Optional Control</Link>.)
 
-You can double down on the [Lean Software](https://en.wikipedia.org/wiki/Lean_startup) methodology:
-1. Quickly ship a prototype/[MVP](https://en.wikipedia.org/wiki/Minimum_viable_product) in order to quickly get your first users.
-1. Quickly get feedback about what users want.
-1. As you grow: focus, take control over, and polish features that make your app unique to your users.
+Choose any tool, and integrate it however you want so that it fits your needs.
 
-For example:
-- While <Link href="/RPC">RPC</Link> is an excellent choice to quickly get started, you may need GraphQL if you scale to a larger organization.
-  > A unique aspect of Vike is that it gives you unprecedented and complete control over the GraphQL integration. (While you can also use Vike extensions such as `vike-react-apollo` to quickly get started with GraphQL.)
-- If polishing <Link href="/i18n">i18n</Link> becomes a crucial part of your UX, then you can consider using Vike's low-level hooks for complete control over internationalization.
-  > Vike's flexibility is unique as well for i18n.
-- If your authentication strategy becomes an important aspect of your business model, then you can eject your authentication Vike extension in order to take full control over the authentication process.
-  > Vike extensions such as `vike-authjs` and `vike-lucia` are work-in-progress.
+### Customizable
+
+With Vike you can build your own framework with a bespoke architecture.
+
+For example, you can build a company internal framework that embeds all your company best practices and tools.
+
+Vike enables your highly technical/senior engineers to provide internal frameworks for your product-focused/junior engineers to ship as fast as never before.
+
+### Less blockers
+
+We focus on the long tail of details and features that unblock users. It's often the small details that decide whether you can achieve what you want.
+
+A common source of blockers are bugs. That's why we systematically and quickly fix bugs &mdash; usually under 24 hours.
+
+
+## Dependable
+
+Vike is a highly dependable framework.
+
+### Stable core
+
+Vike is essentially a core that is extensible, robust, and stable.
+
+This sturdy core enables stability as well as innovation. Building on top of Vike is a robust foundation enabling a diverse ecosystem and a wide range of <Link href="/extensions">Vike extensions</Link>.
+
+Prominent extensions focus on dependability to support businesses in a stable and long-term fashion, while bleeding edge extensions focus on exploring the limits of what's possible in terms of performance and DX.
+
+### Use new technologies at your own pace
+
+Stop using a framework that forces you to use the bleeding edge. Use new technologies at your own pace and only if you see fit.
+
+Vike's dual approach of having stable as well as cutting-edge extensions gives you choice.
+
+### Minimize vendor lock-in
+
+Choose tools, so that you aren't vender-locked into a specific tool or platform.
+
+### Independent
+
+Vike is an independent, transparent, and community-driven project that doesn't serve the special interests of a company. We serve the interests of our users.
+
+Vike is made by engineers, for engineers.
+
+## Quick start
+
+We believe you can have both: a quick start as well as flexibility.
+
+<Link href="/extensions">Vike extensions</Link> and [Bati](https://batijs.dev) provide a blazing fast start, without compromising on flexibility.

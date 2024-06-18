@@ -9,6 +9,10 @@ const headingsDetached = [
     url: '/why'
   },
   {
+    title: 'Optional Control',
+    url: '/optional-control'
+  },
+  {
     title: 'Consulting',
     url: '/consulting'
   },
@@ -348,7 +352,7 @@ const headingsDetached = [
     url: '/vike-packages'
   },
   {
-    title: 'Vike extensions',
+    title: 'Extensions',
     url: '/extensions'
   },
   {
