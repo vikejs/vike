@@ -115,44 +115,6 @@ async function crawlSymlinkDirs(
   return filesInSymlinkDirs
 }
 
-function parseGitLsFilesResultLine(resultLine: string): { filePath: string | undefined; mode: string | undefined } {
-  // Parse:
-  // ```
-  // path/to/not/tracked/file
-  // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0 pages/index/+Page.tsx
-  // ```
-
-  const [info, filePath, ...rest1] = resultLine.split('\t')
-  if (!filePath) {
-    // Then it is an untracked file
-    // path/to/not/tracked/file
-    return { filePath: info, mode: undefined }
-  }
-  // Else it is
-  // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0 pages/index/+Page.tsx
-  assert(info && filePath && rest1.length === 0, { resultLine, info, filePath, rest1 })
-  const [mode, _, __, ...rest2] = info.split(' ')
-  assert(mode && _ && __ && rest2.length === 0)
-
-  return { filePath, mode }
-}
-
-function isCountOfGitLsFilesResultLinesWithoutModeTooLarge(resultLines: string[], maxFilesWithoutModeCount: number) {
-  let filesWithoutModeCount = 0
-  for (const resultLine of resultLines) {
-    const { mode } = parseGitLsFilesResultLine(resultLine)
-    if (!mode) {
-      filesWithoutModeCount++
-      if (filesWithoutModeCount > maxFilesWithoutModeCount) {
-        return true
-      }
-    } else {
-      return false
-    }
-  }
-  return false
-}
-
 // Same as fastGlob() but using `$ git ls-files`
 async function gitLsFiles(
   userRootDir: string,
@@ -210,45 +172,24 @@ async function gitLsFiles(
     throw err
   }
 
-  if (isCountOfGitLsFilesResultLinesWithoutModeTooLarge(resultLines, 2)) {
-    // If there are too many files without mode, we fallback to fast-glob, else we will get mode manually
-    return null
-  }
+  const filePaths = resultLines.map(parseGitLsResultLine)
+
+  // If there are too many files without mode we fallback to fast-glob
+  if (filePaths.filter((f) => !f.mode).length > 2) return null
 
   const symlinkDirs: string[] = []
   const files: string[] = []
-  for (const resultLine of resultLines) {
-    const { filePath, mode } = parseGitLsFilesResultLine(resultLine)
-
-    // Check for safety
-    if (!filePath) continue
-
+  for (const { filePath, mode } of filePaths) {
     // Deleted?
     if (filesDeleted.includes(filePath)) continue
 
     // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
     if (!ignoreAsFilterFn(filePath)) continue
 
-    if (!mode) {
-      // It means that the file is untracked and we have to get the mode manually
-      const lstats = await fs.lstat(path.posix.join(userRootDir, filePath))
-      const isSymlink = lstats.isSymbolicLink()
-      const stats = await fs.stat(path.posix.join(userRootDir, filePath))
-      const isDirectory = stats.isDirectory()
-      if (isSymlink && isDirectory) {
-        symlinkDirs.push(filePath)
-        continue
-      }
-      if (isDirectory) {
-        continue
-      }
-    } else if (mode === '120000') {
-      // mode 120000 means symlink
-      const stats = await fs.stat(path.posix.join(userRootDir, filePath))
-      if (stats.isDirectory()) {
-        symlinkDirs.push(filePath)
-        continue
-      }
+    // Symlink directory?
+    if (await isSymlinkDirectory(mode, filePath, userRootDir)) {
+      symlinkDirs.push(filePath)
+      continue
     }
 
     // + file?
@@ -323,6 +264,54 @@ async function isGitNotUsable(userRootDir: string) {
     assert(stdout === 'true')
     return false
   }
+}
+
+// Parse:
+// ```
+// some/not/tracked/path
+// 100644 f6928073402b241b468b199893ff6f4aed0b7195 0\tpages/index/+Page.tsx
+// ```
+function parseGitLsResultLine(resultLine: string): { filePath: string; mode: string | null } {
+  const [part1, part2, ...rest] = resultLine.split('\t')
+  assert(part1)
+  assert(rest.length === 0)
+
+  // Git doesn't provide the mode for untracked paths.
+  // `resultLine` is:
+  // ```
+  // some/not/tracked/path
+  // ```
+  if (part2 === undefined) {
+    return { filePath: part1, mode: null }
+  }
+  assert(part2)
+
+  // `resultLine` is:
+  // ```
+  // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0\tpages/index/+Page.tsx
+  // ```
+  const [mode, _, __, ...rest2] = part1.split(' ')
+  assert(mode && _ && __ && rest2.length === 0)
+
+  return { filePath: part2, mode }
+}
+
+async function isSymlinkDirectory(mode: string | null, filePath: string, userRootDir: string) {
+  const filePathAbsolute = path.posix.join(userRootDir, filePath)
+  let isSymlink = false
+  if (mode === '120000') {
+    isSymlink = true
+  } else if (mode === null) {
+    // `$ git ls-files` doesn't provide the mode when Git doesn't track the path
+    const lstats = await fs.lstat(filePathAbsolute)
+    isSymlink = lstats.isSymbolicLink()
+  } else {
+    assert(mode)
+  }
+  if (!isSymlink) return false
+  const stats = await fs.stat(filePathAbsolute)
+  const isDirectory = stats.isDirectory()
+  return isDirectory
 }
 
 async function runCmd1(cmd: string, cwd: string): Promise<string[]> {
