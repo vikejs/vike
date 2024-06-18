@@ -13,6 +13,7 @@ import {
 } from '../../../../utils.js'
 import path from 'path'
 import fs from 'fs/promises'
+import type { Stats } from 'fs'
 import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
@@ -188,9 +189,16 @@ async function gitLsFiles(
     if (!ignoreAsFilterFn(filePath)) continue
 
     // Symlink directory?
-    if (await isSymlinkDirectory(mode, filePath, userRootDir)) {
-      symlinkDirs.push(filePath)
-      continue
+    {
+      const isSymlinkDir = await isSymlinkDirectory(mode, filePath, userRootDir)
+      if (isSymlinkDir) {
+        symlinkDirs.push(filePath)
+        continue
+      }
+      // Skip deleted files and non-symlink directories
+      if (isSymlinkDir === null) {
+        continue
+      }
     }
 
     // + file?
@@ -297,22 +305,38 @@ function parseGitLsResultLine(resultLine: string): { filePath: string; mode: str
   return { filePath: part2, mode }
 }
 
-async function isSymlinkDirectory(mode: string | null, filePath: string, userRootDir: string) {
+async function isSymlinkDirectory(mode: string | null, filePath: string, userRootDir: string): Promise<boolean | null> {
   const filePathAbsolute = path.posix.join(userRootDir, filePath)
+  let stats: Stats | null = null
   let isSymlink = false
   if (mode === '120000') {
     isSymlink = true
   } else if (mode === null) {
     // `$ git ls-files` doesn't provide the mode when Git doesn't track the path
-    const lstats = await fs.lstat(filePathAbsolute)
-    isSymlink = lstats.isSymbolicLink()
+    stats = await getFileStats(filePathAbsolute)
+    if (stats === null) return null
+    isSymlink = stats.isSymbolicLink()
+    if (!isSymlink && stats.isDirectory()) return null
   } else {
     assert(mode)
   }
   if (!isSymlink) return false
-  const stats = await fs.stat(filePathAbsolute)
+  if (!stats) stats = await getFileStats(filePathAbsolute)
+  if (stats === null) return null
   const isDirectory = stats.isDirectory()
   return isDirectory
+}
+async function getFileStats(filePathAbsolute: string): Promise<Stats | null> {
+  let stats: Stats
+  try {
+    stats = await fs.lstat(filePathAbsolute)
+  } catch (err) {
+    // File was deleted, usually a temporary file such as +config.js.build-j95xb988fpln.mjs
+    // ENOENT: no such file or directory
+    assert((err as any).code === 'ENOENT')
+    return null
+  }
+  return stats
 }
 
 async function runCmd1(cmd: string, cwd: string): Promise<string[]> {
