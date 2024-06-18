@@ -19,6 +19,7 @@ import { promisify } from 'util'
 import pc from '@brillout/picocolors'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 const execA = promisify(exec)
+const TOO_MANY_UNTRACKED_FILES = 5
 
 assertIsNotProductionRuntime()
 assertIsSingleModuleInstance('crawlPlusFiles.ts')
@@ -175,7 +176,7 @@ async function gitLsFiles(
   const filePaths = resultLines.map(parseGitLsResultLine)
 
   // If there are too many files without mode we fallback to fast-glob
-  if (filePaths.filter((f) => !f.mode).length > 2) return null
+  if (filePaths.filter((f) => !f.mode).length > TOO_MANY_UNTRACKED_FILES) return null
 
   const symlinkDirs: string[] = []
   const files: string[] = []
