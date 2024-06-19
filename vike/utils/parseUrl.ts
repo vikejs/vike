@@ -22,7 +22,9 @@ const PROTOCOLS = [
   // For [Tauri](https://tauri.app/)
   'tauri://',
   // For Electron: https://github.com/vikejs/vike/issues/1557
-  'file://'
+  'file://',
+  // For Capacitor: https://github.com/vikejs/vike/issues/1706
+  'capacitor://'
 ]
 
 function isParsable(url: string): boolean {
