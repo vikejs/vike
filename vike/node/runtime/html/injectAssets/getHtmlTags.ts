@@ -3,6 +3,8 @@ export type { HtmlTag }
 export type { PreloadFilter }
 export type { InjectFilterEntry }
 
+import { import_ } from '@brillout/import'
+
 import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils.js'
 import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide.js'
 import { sanitizeJson } from './sanitizeJson.js'
@@ -40,7 +42,7 @@ type HtmlTag = {
   position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 }
 async function getHtmlTags(
-  pageContext: { _isStream: boolean } & PageContextInjectAssets,
+  pageContext: { _isStream: boolean; nonce?: boolean } & PageContextInjectAssets,
   injectToStream: null | InjectToStream,
   injectFilter: PreloadFilter
 ) {
@@ -145,10 +147,12 @@ async function getHtmlTags(
   })()
   // <script id="vike_pageContext" type="application/json">
   if (!isHtmlOnly) {
+    const crypto = (await import_('crypto')).default as Awaited<typeof import('crypto')>
+    const nonce = pageContext.nonce ? crypto.randomBytes(16).toString('hex') : undefined
     htmlTags.push({
       htmlTag: () =>
         // Needs to be called after resolvePageContextPromise()
-        getPageContextJsonScriptTag(pageContext),
+        getPageContextJsonScriptTag(pageContext, nonce),
       position: positionJavaScriptEntry
     })
   }
@@ -183,9 +187,10 @@ async function mergeScriptEntries(pageAssets: PageAsset[]): Promise<null | strin
   return scriptTag
 }
 
-function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
+function getPageContextJsonScriptTag(pageContext: PageContextSerialization, nonce?: string): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
-  const htmlTag = `<script id="vike_pageContext" type="application/json">${pageContextSerialized}</script>`
+
+  const htmlTag = `<script id="vike_pageContext" type="application/json"${nonce ? ` nonce="${nonce}"` : ''}>${pageContextSerialized}</script>`
 
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
