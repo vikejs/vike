@@ -4,13 +4,26 @@ import { Link, Warning } from '@brillout/docpress'
   This page is a draft until `01.07.2024`.
 </Warning>
 
+**Features**
+
 [Improved Nested Layouts](#improved-nested-layouts)  
+[`+client.js`](#client-js)  
 [`clientOnly()`](#clientonly)  
 [`bodyHtmlBegin`/`bodyHtmlEnd`](#bodyhtmlbegin-bodyhtmlend)  
+
+**Bug fixes and misc improvements**
+
+[Fixes & improvements](#fixes-improvements)  
+
+**Project**
+
 [Getting close to `1.0.0`](#getting-close-to-1-0-0)  
-[Roadmap](#roadmap)  
 [New marketing](#new-marketing)  
-[See also](#see-also)
+[Roadmap](#roadmap)  
+
+**See also**
+
+[See also](#see-also)  
 
 
 ## Improved Nested Layouts
@@ -28,21 +41,54 @@ See <Link href="/Layout#nested-layout" />.
 
 > Caching the data of the outer layout is work-in-progress, see [#1689 - [Nested Layouts] Cache data of outer layout](https://github.com/vikejs/vike/issues/1689).
 
-Thank you [`@Blankeos`](https://github.com/Blankeos) for your contributions!
+> 🙏 Author: [`Blankeos`](https://github.com/Blankeos), [`brillout`](https://github.com/brillout)
+
+
+## `+client.js`
+
+You can now define a `+client.js` file to add client-side JavaScript, which is run first before any other JavaScript.
+
+See <Link href="/client" />.
+
+> 🙏 Author: [`brillout`](https://github.com/brillout)
 
 
 ## `clientOnly()`
 
 Vue users can now use the <Link href="/clientOnly">`clientOnly()`</Link> helper which is like`<ClientOnly>` wrapper (now depreacted) but with a much improved DX.
 
-Solid users already had `clientOnly()` for a while now, and there is a feature request for `vike-react`: [#102 - `clientOnly()` instead of `<ClientOnly>`](https://github.com/vikejs/vike-react/issues/102). Contribution welcome!
+> 🙏 Author: [`pdanpdan`](https://github.com/pdanpdan)
+
+Solid users already had `clientOnly()` for a while now.
+
+There is a feature request for `vike-react`: [#102 - `clientOnly()` instead of `<ClientOnly>`](https://github.com/vikejs/vike-react/issues/102). Contribution welcome!
 
 
 ## `bodyHtmlBegin`/`bodyHtmlEnd`
 
-A common need with Vue is to insert the HTML of teleports. You can now do that with the following new settings:
+With Vue, a common need is to insert the HTML of teleports. You can now do that with the following new settings:
 - <Link href="/bodyHtmlBegin" />
 - <Link href="/bodyHtmlEnd" />
+
+> 🙏 Author: [`4350pChris`](https://github.com/4350pChris)
+
+
+## Fixes & improvements
+
+There have been internal structural changes to provide new capabilities for Vike extension, most notably being able to create cumulative hooks.
+
+> 🙏 Author: [`brillout`](https://github.com/brillout)
+
+New [Bati](https://batijs.dev) integrations:
+ - [Drizzle ORM](https://orm.drizzle.team)
+ - [ts-rest](https://ts-rest.com)
+
+> 🙏 Author: [`phonzammi`](https://github.com/phonzammi), [`magne4000`](https://github.com/magne4000)
+
+We've been working on [Universal Handlers](https://github.com/magne4000/universal-handler) which will enable Vike extensions to automatically integrate the server-side of tools.
+
+> 🙏 Author: [`magne4000`](https://github.com/magne4000)
+
 
 
 ## Getting close to `1.0.0`
@@ -50,7 +96,7 @@ A common need with Vue is to insert the HTML of teleports. You can now do that w
 The three main reasons why we aren't releasing `1.0.0` are:
 
 1. [x] Nested Layouts.
-2. [ ] Using Vite to transpile server code.
+2. [ ] Use Vite to transpile server code.
 3. [ ] A big announcement we'll unveil later this sommer.
    > It will be pivotal to the project. Stay tuned.
 
@@ -70,6 +116,8 @@ In the coming months, the website `vike.dev` will get a facelift to be aesthetic
 
 Major features we're working on:
 
+- Improved head management DX.
+- [Prefetching of `pageContext`](https://github.com/vikejs/vike/issues/246)
 - Vike CLI.
   > Replacing the Vite CLI which is an important structural change enabling a lot of upcoming features.
 - Use Vite to transpile server code.
@@ -79,8 +127,8 @@ Major features we're working on:
 
 ## See also
 
-- <Link href="/releases" />
 - [`vike` > `CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md)
 - [`vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
 - [`vike-vue` > `CHANGELOG.md`](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/CHANGELOG.md)
 - [`vike-solid` > `MIGRATION.md`](https://github.com/vikejs/vike-solid/blob/main/MIGRATION.md)
+- <Link href="/releases" />
