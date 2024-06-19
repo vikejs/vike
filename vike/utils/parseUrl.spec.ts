@@ -385,6 +385,16 @@ describe('parseUrl', () => {
     })
   })
 
+  // https://github.com/vikejs/vike/issues/1706
+  it('capacitor', () => {
+    expect(parseUrl('capacitor://localhost/assets/chunks/chunk-v3mOCch-.js', '/')).toEqual({
+      ...resultBase,
+      origin: 'capacitor://localhost',
+      pathname: '/assets/chunks/chunk-v3mOCch-.js',
+      pathnameOriginal: '/assets/chunks/chunk-v3mOCch-.js'
+    })
+  })
+
   it('relative paths', () => {
     expect(parseUrl('.', '/b1/b2/')).toEqual({
       ...resultBase,
