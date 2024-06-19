@@ -1,11 +1,17 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
+
+<Warning>
+  This page is a draft until `01.07.2024`.
+</Warning>
 
 [Improved Nested Layouts](#improved-nested-layouts)  
 [`clientOnly()`](#clientonly)  
 [`bodyHtmlBegin`/`bodyHtmlEnd`](#bodyhtmlbegin-bodyhtmlend)  
 [Getting close to `1.0.0`](#getting-close-to-1-0-0)  
 [Roadmap](#roadmap)  
+[New marketing](#new-marketing)  
 [See also](#see-also)
+
 
 ## Improved Nested Layouts
 
@@ -24,11 +30,20 @@ See <Link href="/Layout#nested-layout" />.
 
 Thank you [`@Blankeos`](https://github.com/Blankeos) for your contributions!
 
+
 ## `clientOnly()`
 
 Vue users can now use the <Link href="/clientOnly">`clientOnly()`</Link> helper which is like`<ClientOnly>` wrapper (now depreacted) but with a much improved DX.
 
 Solid users already had `clientOnly()` for a while now, and there is a feature request for `vike-react`: [#102 - `clientOnly()` instead of `<ClientOnly>`](https://github.com/vikejs/vike-react/issues/102). Contribution welcome!
+
+
+## `bodyHtmlBegin`/`bodyHtmlEnd`
+
+A common need with Vue is to insert the HTML of teleports. You can now do that with the following new settings:
+- <Link href="/bodyHtmlBegin" />
+- <Link href="/bodyHtmlEnd" />
+
 
 ## Getting close to `1.0.0`
 
@@ -42,11 +57,13 @@ The three main reasons why we aren't releasing `1.0.0` are:
 We're getting close to the [`1.0.0` release](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22v1+release+%3Astar2%3A%22).
 
 
-## `bodyHtmlBegin`/`bodyHtmlEnd`
+## New marketing
 
-A common need with Vue is to insert the HTML of teleports. You can now do that with the following new settings:
-- <Link href="/bodyHtmlBegin" />
-- <Link href="/bodyHtmlEnd" />
+We're slowy starting to focus on marketing and advertising Vike.
+
+For example, we started creating a new <Link href="/why">Why Vike</Link> page. This page is the long-form version of the upcoming new landing page.
+
+In the coming months, the website `vike.dev` will get a facelift to be aesthetically much more pleasing.
 
 
 ## Roadmap
@@ -57,7 +74,7 @@ Major features we're working on:
   > Replacing the Vite CLI which is an important structural change enabling a lot of upcoming features.
 - Use Vite to transpile server code.
   > Including standalone server builds, and development directly against edge runtimes (e.g. Cloudflare's workerd). Led by [@nitedani](https://github.com/nitedani).
-- Rehaul `vike.dev` aesthetics and UX. (New design is done and we'll implement it once we're finished with all `highest-priority` tickets.)
+- Rehaul `vike.dev` aesthetics and UX. (New design is done and we'll implement it once we're finished with all [`highest-priority` tickets](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22highest-prio+%F0%9F%94%A5%22).)
 
 
 ## See also
