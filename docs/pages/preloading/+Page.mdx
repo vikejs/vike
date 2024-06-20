@@ -14,9 +14,11 @@ To improve preloading performance, you can use <Link href="#early-hints" /> whic
 > See also <Link href="/prefetchStaticAssets" />.
 
 
-## Early Hints
+## Early hints
 
-> The [Early Hints Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the official successor of the now deprecated HTTP2/Push.
+You can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 Early Hint`).
+
+> [`103 Early Hint`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the official successor of the now deprecated HTTP2/Push.
 
 ```js
 // server.js
@@ -35,7 +37,7 @@ app.get('*', async (req, res) => {
 type PageContext = {
   httpResponse: {
     earlyHints: {
-      earlyHintLink: string // Header Line for the Early Hint Header
+      earlyHintLink: string // Early hint value
       assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
                  "fetch" | "track" | "worker" | "embed" | "object" | null
       mediaType: string // MIME type
