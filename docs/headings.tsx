@@ -655,7 +655,7 @@ const headings = [
     title: '`data()` hook',
     titleInNav: '`data()`',
     url: '/data',
-    sectionTitles: ['Without `useData()`', '`pageContext.data`', '`pageContext`', 'Client-side']
+    sectionTitles: ['Without `vike-{react,vue,solid}`', 'Client-side']
   },
   {
     level: 2,

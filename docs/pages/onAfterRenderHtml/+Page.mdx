@@ -10,7 +10,7 @@ It's called upon rendering the first page.
 - It's called regardless of whether <Link href="/ssr">SSR</Link> is disabled. (The first page the user visits is always rendered to HTML: when SSR is disabled then the HTML is just an HTML shell that doesn't contain the content of the page.)
 - It isn't called upon page navigation. (Pages aren't rendered to HTML upon page navigation.)
 
-> If you want to perform an action only upon SSR then check whether <Link href="/pageContext#:~:text=pageContext.Page">`pageContext.Page`</Link> is set:
+> If you want to perform an action only upon SSR then check whether <Link href="/pageContext#:~:text=pageContext.Page,-%3A">`pageContext.Page`</Link> is set:
 >
 > ```js
 > // +onAfterRenderHtml.js

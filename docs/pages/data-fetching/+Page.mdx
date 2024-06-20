@@ -4,7 +4,7 @@ import { UiFrameworkExtension } from '../../components'
 
 ## `data()`
 
-The usual way to fetch data is to use the <Link href="/data">`data()`</Link> Vike hook and the <Link href="/useData">`useData()`</Link> component hook.
+You can fetch data by using the Vike hook <Link href="/data">`data()`</Link> together with the component hook <Link href="/useData">`useData()`</Link>.
 
 ```js
 // /pages/movies/@id/+data.js
@@ -35,9 +35,9 @@ async function data(pageContext) {
 }
 ```
 
-> The `@id` in the path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at `pageContext.routeParams.id`, see <Link href="/routing" />.
+> `pageContext` holds contextual information, see <Link href="/pageContext" />.
 
-> `pageContext` holds contextual information, see <Link href="/data#pagecontext" doNotInferSectionTitle/>.
+> The `@id` in the path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at `pageContext.routeParams.id`, see <Link href="/routing" />.
 
 ```js
 // SomeComponent.js
@@ -92,7 +92,7 @@ A common use case is to fetch global initialization data that is needed by all p
 
 You can <Link href="/pageContext#custom">add your initial data to `pageContext` at `renderPage()`</Link>.
 
-The <Link href="/pageContext#access-anywhere">`pageContext` object is accessible from any Vike hook and any UI component</Link>, thus you can access your initialization data there as well.
+The <Link href="/pageContext">`pageContext` object is accessible from any Vike hook and any UI component</Link>, thus you can access your initialization data there as well.
 
 If you use <Link href="/pre-rendering">pre-rendering</Link> then see the workaround described at [#962 - New hook `onBoot()`](https://github.com/vikejs/vike/issues/962).
 
