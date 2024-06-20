@@ -12,40 +12,36 @@ It's usually used with <Link href="/useData">`useData()`</Link>.
 > For a lower-level hook with more control, see <Link href="/onBeforeRender" />.
 
 
-## Examples
+## ORM/SQL
 
-React + JavaScript:
+By default, the `data()` hook always runs the server-side, which means you can directly use ORM/SQL database queries:
 
-- <Link href='/boilerplates/boilerplate-react/pages/star-wars/index/+data.js' />
-- <Link href='/boilerplates/boilerplate-react/pages/star-wars/index/+Page.jsx' /> (`useData()` usage)
-- <Link href='/boilerplates/boilerplate-react/pages/star-wars/@id/+data.js' />
-- <Link href='/boilerplates/boilerplate-react/pages/star-wars/@id/+Page.jsx' /> (`useData()` usage)
+```js
+// /pages/movies/+data.js
 
-React + TypeScript:
+export { data }
 
-- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/index/+data.ts' />
-- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/index/+Page.tsx' /> (`useData()` usage)
-- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/@id/+data.ts' />
-- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/@id/+Page.tsx' /> (`useData()` usage)
+// Note how we use `node-fetch`; this file is only run on the server-side, thus we don't need
+// to use an isomorphic (aka universal) implementation such as `cross-fetch`.
+import fetch from 'node-fetch'
 
-Vue + JavaScript:
+async function data(pageContext) {
+  const response = await fetch('https://star-wars.brillout.com/api/films.json')
+  let { movies } = await response.json()
+  /* Or with an ORM:
+  let movies = await Movie.findAll() */
+  /* Or with SQL:
+  let movies = await sql.run('SELECT * FROM movies;') */
 
-- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/index/+data.js' />
-- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/index/+Page.vue' /> (`useData()` usage)
-- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/@id/+data.js' />
-- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/@id/+Page.vue' /> (`useData()` usage)
+  // `movies` is serialized and passed to the client. Therefore, we pick only the
+  // data the client needs in order to minimize what is sent over the network.
+  movies = movies.map(({ title, release_date }) => ({ title, release_date }))
 
-Vue + TypeScript:
-
-- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/index/+data.ts' />
-- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/index/+Page.vue' /> (`useData()` usage)
-- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/@id/+data.ts' />
-- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/@id/+Page.vue' /> (`useData()` usage)
-
-
-## TypeScript
-
-See <Link href="/useData#typescript" doNotInferSectionTitle />.
+  return {
+    movies
+  }
+}
+```
 
 
 ## Error handling
@@ -85,38 +81,6 @@ async function data(pageContext) {
 Alternatively, you can use `throw render()` and `throw redirect()` inside of a <Link href="/guard">`guard()` hook</Link>, see <Link href="/auth" />.
 
 
-## ORM/SQL
-
-By default, the `data()` hook always runs the server-side, which means you can directly use ORM/SQL database queries:
-
-```js
-// /pages/movies/+data.js
-
-export { data }
-
-// Note how we use `node-fetch`; this file is only run on the server-side, thus we don't need
-// to use an isomorphic (aka universal) implementation such as `cross-fetch`.
-import fetch from 'node-fetch'
-
-async function data(pageContext) {
-  const response = await fetch('https://star-wars.brillout.com/api/films.json')
-  let { movies } = await response.json()
-  /* Or with an ORM:
-  let movies = await Movie.findAll() */
-  /* Or with SQL:
-  let movies = await sql.run('SELECT * FROM movies;') */
-
-  // `movies` is serialized and passed to the client. Therefore, we pick only the
-  // data the client needs in order to minimize what is sent over the network.
-  movies = movies.map(({ title, release_date }) => ({ title, release_date }))
-
-  return {
-    movies
-  }
-}
-```
-
-
 ## Client-side
 
 By default, the `data()` hook always runs on the server-side.
@@ -134,6 +98,42 @@ you can tell Vike to run `data()` also on the client-side. This will make Vike:
 You can also set `.client.js` instead of `.shared.js`: Vike will then always call `data()` on the client-side (never on the server-side).
 
 > Alternatively, instead of using `.shared.js` and `.client.js`, you can modify the <Link href="/meta#example-modify-data-env">`meta.env` setting</Link> of the `data()` hook in a global fashion, removing the need to add `.shared.js` / `.client.js` to each of your `+data.js` files.
+
+
+## Examples
+
+React + JavaScript:
+
+- <Link href='/boilerplates/boilerplate-react/pages/star-wars/index/+data.js' />
+- <Link href='/boilerplates/boilerplate-react/pages/star-wars/index/+Page.jsx' /> (`useData()` usage)
+- <Link href='/boilerplates/boilerplate-react/pages/star-wars/@id/+data.js' />
+- <Link href='/boilerplates/boilerplate-react/pages/star-wars/@id/+Page.jsx' /> (`useData()` usage)
+
+React + TypeScript:
+
+- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/index/+data.ts' />
+- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/index/+Page.tsx' /> (`useData()` usage)
+- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/@id/+data.ts' />
+- <Link href='/boilerplates/boilerplate-react-ts/pages/star-wars/@id/+Page.tsx' /> (`useData()` usage)
+
+Vue + JavaScript:
+
+- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/index/+data.js' />
+- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/index/+Page.vue' /> (`useData()` usage)
+- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/@id/+data.js' />
+- <Link href='/boilerplates/boilerplate-vue/pages/star-wars/@id/+Page.vue' /> (`useData()` usage)
+
+Vue + TypeScript:
+
+- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/index/+data.ts' />
+- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/index/+Page.vue' /> (`useData()` usage)
+- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/@id/+data.ts' />
+- <Link href='/boilerplates/boilerplate-vue-ts/pages/star-wars/@id/+Page.vue' /> (`useData()` usage)
+
+
+## TypeScript
+
+See <Link href="/useData#typescript" doNotInferSectionTitle />.
 
 
 ## Without `vike-{react,vue,solid}`
