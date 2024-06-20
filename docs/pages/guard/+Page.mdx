@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-The `guard()` hook enables you to protect pages from unauthorized/unexpected access.
+The `guard()` hook enables you to protect pages from unauthorized or unexpected access.
 
 ```js
 // /pages/admin/+guard.js
@@ -18,7 +18,7 @@ export async function guard(pageContext) {
 
 Note that:
 
-- It can be asynchronous. (Unlike Route Functions which are synchronous.)
+- It can be asynchronous. (Unlike <Link href="/route-function">Route Functions</Link> which are synchronous.)
 - A single `guard()` hook <Link href="/config#inheritance">can apply to one or multiple pages</Link>.
 - It's always used together with <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} />. The `guard()` hook doesn't accept any return value.
 
@@ -42,7 +42,7 @@ const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
 
 ## See also
 
-- <Link href="/routing" />
 - <Link href="/auth#login-flow" />
 - <Link href="/render" />
 - <Link href="/redirect" />
+- <Link href="/data" />

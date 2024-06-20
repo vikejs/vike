@@ -14,7 +14,7 @@ It's usually used with <Link href="/useData">`useData()`</Link>.
 
 ## ORM/SQL
 
-By default, the `data()` hook always runs the server-side, which means you can directly use ORM/SQL database queries:
+By default (<Link href="#client-side">it's configurable</Link>) the `data()` hook always runs the server-side, which means you can directly use ORM/SQL database queries:
 
 ```js
 // /pages/movies/+data.js
@@ -215,5 +215,6 @@ function Page(data) {
 - <Link href="/data-fetching" />
 - <Link href="/useData" />
 - <Link href="/pageContext#:~:text=pageContext.data,-%3A">API > `pageContext.data`</Link>
+- <Link href="/guard" />
 - <Link href="/onBeforeRender" />
 - <Link href="/pageContext.json" />
