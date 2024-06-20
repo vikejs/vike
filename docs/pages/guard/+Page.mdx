@@ -22,16 +22,16 @@ Note that:
 
 - It can be asynchronous. (Unlike <Link href="/route-function">Route Functions</Link> which are always synchronous.)
 - A single `guard()` hook <Link href="/config#inheritance">can apply to one or multiple pages</Link>.
-- It's always used together with <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} />. (The `guard()` hook doesn't accept any return value.)
+- It's always used together with <Link href="/render">`throw render()`</Link> or <Link href="/redirect">`throw redirect()`</Link>. (The `guard()` hook doesn't accept any return value.)
 
 
 ## Execution order
 
-The `guard()` hook is the first hook called after routing and before <Link href="/data">`data()`</Link>, see <Link href="/hooks#order" />.
+The `guard()` hook is the first hook called after routing and before the <Link href="/data">`data()` hook</Link>, see <Link href="/hooks#order" />.
 
 > We generally recommend to guard your pages as early as possible: unauthorized and unexpected data fetching can be problematic.
 
-If you want to guard your pages after fetching data then use `throw render()` / `throw redirect()` inside another <Link href="/hooks">Vike hook</Link>.
+If you want to guard your pages after or during fetching data, then use <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside your `data()` hook (or another <Link href="/hooks">Vike hook</Link>).
 
 > You'll soon also be able to do it inside UI components, see [#1707: Use `throw render()` / `throw redirect()` inside React/Vue/Solid components](https://github.com/vikejs/vike/issues/1707).
 
@@ -39,6 +39,10 @@ If you want to guard your pages after fetching data then use `throw render()` / 
 ## Client-side
 
 The `guard()` hook is called in the same environment as <Link href="/data">`data()`</Link>: always on the server-side unless you <Link href="/data#client-side">configure `data()` to run on the client-side</Link>.
+
+If there isn't any `data()` hook, then `guard()` executes in the environment where the routing is executed, see <Link href="/hooks#order" />.
+
+Instead of using the `guard()` hook, consider using `throw render()` / `throw redirect()` inside another hook for more control on where and when your guarding logic is executed, see <Link href="#execution-order" />.
 
 
 ## TypeScript
