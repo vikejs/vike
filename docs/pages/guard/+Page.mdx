@@ -1,6 +1,8 @@
 import { Link } from '@brillout/docpress'
 
-The `guard()` hook enables you to protect pages from unauthorized or unexpected access.
+Environment: server (<Link href="#client-side">configurable</Link>).
+
+The `guard()` hook enables you to protect pages from unauthorized and unexpected access.
 
 ```js
 // /pages/admin/+guard.js
@@ -18,13 +20,25 @@ export async function guard(pageContext) {
 
 Note that:
 
-- It can be asynchronous. (Unlike <Link href="/route-function">Route Functions</Link> which are synchronous.)
+- It can be asynchronous. (Unlike <Link href="/route-function">Route Functions</Link> which are always synchronous.)
 - A single `guard()` hook <Link href="/config#inheritance">can apply to one or multiple pages</Link>.
-- It's always used together with <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} />. The `guard()` hook doesn't accept any return value.
+- It's always used together with <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} />. (The `guard()` hook doesn't accept any return value.)
 
 
-See also: <Link href="/auth#login-flow" />.
+## Execution order
 
+The `guard()` hook is the first hook called after routing and before <Link href="/data">`data()`</Link>, see <Link href="/hooks#order" />.
+
+> We generally recommend to guard your pages as early as possible: unauthorized and unexpected data fetching can be problematic.
+
+If you want to guard your pages after fetching data then use `throw render()` / `throw redirect()` inside another <Link href="/hooks">Vike hook</Link>.
+
+> You'll soon also be able to do it inside UI components, see [#1707: Use `throw render()` / `throw redirect()` inside React/Vue/Solid components](https://github.com/vikejs/vike/issues/1707).
+
+
+## Client-side
+
+The `guard()` hook is called in the same environment as <Link href="/data">`data()`</Link>: always on the server-side unless you <Link href="/data#client-side">configure `data()` to run on the client-side</Link>.
 
 
 ## TypeScript
@@ -39,6 +53,7 @@ const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
   // ...
 }
 ```
+
 
 ## See also
 
