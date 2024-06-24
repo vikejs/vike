@@ -42,11 +42,15 @@ Potentially upcoming hooks:
 
 ## Order
 
-The order in which the hooks are called.
+The order in which the hooks are called:
+- <Link href="#with-default-environment-hooks" />, if you didn't change the environment of `data()` and `onBeforeRender()`.
+- <Link href="#with-client-side-hooks" />, if you <Link href="/data#environment">configured `data()`</Link> and <Link href="/onBeforeRender#environment">also `onBeforeRender()`</Link> to run only the client-side.
 
 > The following doesn't contain the hooks of the Vike extensions <UiFrameworkExtension name /> such as <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link> or <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link>.
 
-**First render:**
+### With default-environment hooks
+
+**First render**
 
 1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
@@ -59,8 +63,7 @@ The order in which the hooks are called.
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
 
-<br/>
-**Page navigation:**
+**Page navigation**
 
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
@@ -74,8 +77,22 @@ The order in which the hooks are called.
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
 
-<br/>
-**Page navigation, <Link href="/data#environment">with client-side data fetching</Link>:**
+### With client-side hooks
+
+**First render**
+
+1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
+   > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
+1. <TextEnv2>server</TextEnv2> <Link href="/onRenderHtml">`onRenderHtml()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/guard">`guard()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
+
+**Page navigation**
 
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
