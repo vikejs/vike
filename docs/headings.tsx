@@ -655,7 +655,7 @@ const headings = [
     title: '`data()` hook',
     titleInNav: '`data()`',
     url: '/data',
-    sectionTitles: ['Without `vike-{react,vue,solid}`', 'Client-side']
+    sectionTitles: ['Without `vike-{react,vue,solid}`']
   },
   {
     level: 2,
@@ -668,7 +668,7 @@ const headings = [
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
     url: '/onBeforeRender',
-    sectionTitles: ['`onBeforeRender()` + `meta`', 'Client-side']
+    sectionTitles: ['`onBeforeRender()` + `meta`']
   },
   {
     level: 2,
