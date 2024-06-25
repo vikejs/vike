@@ -515,28 +515,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'PM2',
-    url: '/PM2'
-  },
-  {
-    level: 2,
-    title: 'Koa',
-    url: '/koa'
-  },
-  {
-    level: 2,
-    title: 'hapi',
-    url: '/hapi'
-  },
-  {
-    level: 2,
     title: 'H3',
     url: '/h3'
-  },
-  {
-    level: 2,
-    title: 'HatTip',
-    url: '/hattip'
   },
   {
     level: 2,
