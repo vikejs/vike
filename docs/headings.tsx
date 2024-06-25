@@ -358,7 +358,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'CSS, styling, CSS tools'
+    title: 'CSS tools'
   },
   {
     level: 2,
