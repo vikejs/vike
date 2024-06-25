@@ -1,10 +1,10 @@
-export { Integration }
+export { IntegrationHelp }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
 import { projectInfo } from '../utils'
 
-function Integration({ toolTypeName }: { toolTypeName: string }) {
+function IntegrationHelp({ toolTypeName }: { toolTypeName: string }) {
   assert(toolTypeName)
   return (
     <>

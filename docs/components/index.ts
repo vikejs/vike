@@ -1,6 +1,6 @@
 export * from './DataArchitecture'
 export * from './UiFrameworkExtension'
-export * from './Integration'
+export * from './IntegrationHelp'
 export * from './UseBati'
 export * from './UseVikeExtension'
 export { default as DefaultRouting } from './DefaultRouting.mdx'
