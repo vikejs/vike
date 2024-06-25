@@ -2,7 +2,7 @@ export { DataArchitecture }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
-import { P, Link, ReadingRecommendation } from '@brillout/docpress'
+import { P, Link } from '@brillout/docpress'
 
 function DataArchitecture({
   toolName,
@@ -17,11 +17,9 @@ function DataArchitecture({
   toolType: 'data-store' | 'graphql' | 'data-fetching'
   toolDocs: JSX.Element
 }) {
-  const recommendation = <ReadingRecommendation tour={true} links={['/data-fetching']} />
   return (
     <>
       <DataRenderControl toolName={toolName} toolLink={toolLink} isGeneric={isGeneric} toolDocs={toolDocs} />
-      {recommendation}
       {<DataPassToClient toolType={toolType} isGenericDoc={isGeneric} toolName={toolName} />}
     </>
   )
