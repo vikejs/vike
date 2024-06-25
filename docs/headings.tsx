@@ -323,11 +323,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Vuex',
-    url: '/vuex'
-  },
-  {
-    level: 2,
     title: 'Redux',
     url: '/redux'
   },
@@ -335,11 +330,6 @@ const headings = [
     level: 2,
     title: 'Pinia',
     url: '/pinia'
-  },
-  {
-    level: 2,
-    title: 'PullState',
-    url: '/pullstate'
   },
   {
     level: 2,

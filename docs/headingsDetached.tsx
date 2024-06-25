@@ -5,6 +5,14 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
+    title: 'Vuex',
+    url: '/vuex'
+  },
+  {
+    title: 'PullState',
+    url: '/pullstate'
+  },
+  {
     title: 'Panda CSS',
     url: '/panda-css'
   },
