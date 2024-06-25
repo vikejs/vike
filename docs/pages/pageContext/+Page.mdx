@@ -143,7 +143,7 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
       }
     }
     ```
-    > Setting `pageContext.initialStoreState` is a common use case for integrating state management tools, see <Link href="/store" />.
+    > Setting `pageContext.initialStoreState` is a common use case for integrating state management tools, see <Link href="/stores" />.
 
  - Using the <Link href="/onRenderHtml">`onRenderHtml()`</Link> hook:
     ```js
@@ -223,7 +223,7 @@ On the client-side, upon <Link text="client-side page navigation" href="/client-
 At build-time, upon <Link text="pre-rendering" href="/pre-rendering" />, a `pageContext` object is created for each URL and saved at `dist/client/${url}/index.pageContext.json`.
 
 Vike adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as immutable after the rendering of the page has finished. Consequently:
- - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/store" /> instead.)
+ - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/stores" /> instead.)
  - If you use <Link text="pre-rendering" href="/pre-rendering" />, then the `pageContext` object of each URL is set in stone already at build-time.
 
 

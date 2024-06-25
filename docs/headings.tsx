@@ -343,9 +343,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Data Store',
+    title: 'Data Stores',
     titleInNav: '... other data stores',
-    url: '/store'
+    url: '/stores'
   },
   {
     level: 4,
@@ -358,7 +358,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'CSS, styling, CSS frameworks'
+    title: 'CSS, styling, CSS tools'
   },
   {
     level: 2,
