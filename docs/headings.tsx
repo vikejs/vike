@@ -481,7 +481,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'Server'
+    title: 'JavaScript Server'
   },
   {
     level: 2,
@@ -515,21 +515,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Firebase',
-    url: '/firebase'
-  },
-  {
-    level: 2,
-    title: 'Nginx',
-    url: '/nginx'
-  },
-  {
-    level: 2,
-    title: 'Ruby on Rails',
-    url: '/ruby-on-rails'
-  },
-  {
-    level: 2,
     title: 'PM2',
     url: '/PM2'
   },
@@ -556,8 +541,33 @@ const headings = [
   {
     level: 2,
     title: 'Servers',
-    titleInNav: '... other servers',
+    titleInNav: '... other JavaScript servers',
     url: '/servers'
+  },
+  {
+    level: 4,
+    title: 'Backend'
+  },
+  {
+    level: 2,
+    title: 'Ruby on Rails',
+    url: '/ruby-on-rails'
+  },
+  {
+    level: 2,
+    title: 'Firebase',
+    url: '/firebase'
+  },
+  {
+    level: 2,
+    title: 'Nginx',
+    url: '/nginx'
+  },
+  {
+    level: 2,
+    title: 'Backends',
+    titleInNav: '... other backends',
+    url: '/backends'
   },
   {
     level: 4,
