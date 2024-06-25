@@ -555,9 +555,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Server Integration',
+    title: 'Servers',
     titleInNav: '... other servers',
-    url: '/server'
+    url: '/servers'
   },
   {
     level: 4,
