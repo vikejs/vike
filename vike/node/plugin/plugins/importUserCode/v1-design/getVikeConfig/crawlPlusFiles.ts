@@ -80,9 +80,9 @@ async function crawlPlusFiles(
         timeSpent < 3 * 1000,
         `Crawling your ${pc.cyan('+')} files took an unexpected long time (${humanizeTime(
           timeSpent
-        )}). If you repeatedly get this warning, then consider creating a new issue on Vike's GitHub.`,
+        )}). If you consistently get this warning, then consider reaching out on GitHub.`,
         {
-          onlyOnce: 'slow-page-files-search'
+          onlyOnce: 'slow-crawling'
         }
       )
     }
