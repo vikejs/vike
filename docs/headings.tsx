@@ -432,7 +432,7 @@ const headings = [
     level: 2,
     titleInNav: 'Other',
     title: 'CSS Frameworks',
-    url: '/css-frameworks'
+    url: '/css-tools'
   },
   {
     level: 4,
