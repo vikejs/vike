@@ -204,7 +204,7 @@ const headings = [
   {
     level: 2,
     title: 'Static Hosts',
-    titleInNav: 'Other',
+    titleInNav: '... other static hosts',
     url: '/static-hosts'
   },
   {
@@ -247,9 +247,13 @@ const headings = [
     url: '/docker'
   },
   {
+    level: 4,
+    title: 'Other'
+  },
+  {
     level: 2,
     title: 'Deploy',
-    titleInNav: 'Other',
+    titleInNav: 'Other deployment provider/strategy',
     url: '/deploy'
   },
   {
@@ -309,7 +313,7 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
+    titleInNav: '... other data fetching tools',
     title: 'Data Fetching Tools',
     url: '/data-fetching-tools'
   },
@@ -340,7 +344,7 @@ const headings = [
   {
     level: 2,
     title: 'Data Store',
-    titleInNav: 'Other',
+    titleInNav: '... other data stores',
     url: '/store'
   },
   {
@@ -430,7 +434,7 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
+    titleInNav: '... other CSS tools',
     title: 'CSS tools',
     url: '/css-tools'
   },
@@ -471,8 +475,8 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
-    title: 'UI Framework',
+    titleInNav: '... other UI frameworks',
+    title: 'UI framework',
     url: '/ui-framework'
   },
   {
@@ -552,7 +556,7 @@ const headings = [
   {
     level: 2,
     title: 'Server Integration',
-    titleInNav: 'Other',
+    titleInNav: '... other servers',
     url: '/server'
   },
   {
@@ -576,8 +580,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Other Integrations',
-    titleInNav: 'Other',
+    title: 'Tool integration',
+    titleInNav: '... other tools',
     url: '/integration'
   },
   {
