@@ -1,4 +1,4 @@
-import { Integration } from '../../components/Integration'
+import { Integration, UiFrameworkExtension } from '../../components'
 import { Link } from '@brillout/docpress'
 
 <Integration toolTypeName="CSS tool" />
@@ -8,7 +8,6 @@ For example:
 - <Link href="/daisyui" />
 - <Link href="/compiled" />
 - <Link href="/vuetify" />
-- <Link href="/css-in-js" />
 - <Link href="/styled-components" />
 - <Link href="/styled-jsx" />
 - <Link href="/mui" />
@@ -19,3 +18,56 @@ For example:
 - <Link href="/mantine" />
 - <Link href="/sass" />
 - <Link href="/panda-css">Integration &gt; Panda CSS</Link>
+
+## Collect styles upon SSR
+
+If you use a CSS-in-JS tool, then make sure to avoid [FOUC (**f**lash **o**f **u**nstyled **c**ontent)](https://en.wikipedia.org/wiki/Flash_of_unstyled_content).
+
+You avoid FOUC by collecting the page's styles upon SSR, in order to add the collected styles to the HTML (so that the browser loads styles before loading JavaScript).
+
+### With `vike-{react,vue,solid}`
+
+You cannot (yet) collect and inject styles when using <UiFrameworkExtension name />. Adding support for this is work-in-progress, see [#141 - CSS-in-JS with SSR](https://github.com/vikejs/vike-vue/issues/141).
+
+### Without `vike-{react,vue,solid}`
+
+You can directly collect and inject the page's styles inside your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
+
+React example:
+
+```jsx
+// /renderer/+onRenderHtml.jsx
+
+import ReactDOMServer from "react-dom/server";
+import React from "react";
+import { escapeInject, dangerouslySkipEscape } from "vike/server";
+import { CssCollector } from 'some-css-in-js-tool'
+
+export { onRenderHtml };
+
+async function onRenderHtml(pageContext) {
+  const { Page } = pageContext;
+  const page = <Page />;
+
+  const collect = new CssCollector()
+
+  const pageHtml = ReactDOMServer.renderToString(collect(page));
+
+  // Vike inserts the `<script>` tags at the end of the HTML; the
+  // browser will load the `<style>` tag first.
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <style>${dangerouslySkipEscape(collect.getCSS())}</style>
+      </head>
+      <body>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`;
+}
+```
+
+Eamples:
+- <Link href="/styled-components" />
+- <Link href="/grommet" />
+- <Link href="/styled-jsx" />

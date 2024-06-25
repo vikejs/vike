@@ -372,11 +372,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'CSS-in-JS',
-    url: '/css-in-js'
-  },
-  {
-    level: 2,
     title: 'styled-components',
     titleInNav: 'styled-components',
     url: '/styled-components'
@@ -426,7 +421,8 @@ const headings = [
     level: 2,
     titleInNav: '... other CSS tools',
     title: 'CSS tools',
-    url: '/css-tools'
+    url: '/css-tools',
+    sectionTitles: ['Collect styles upon SSR']
   },
   {
     level: 4,
