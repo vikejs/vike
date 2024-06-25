@@ -1,18 +1,15 @@
 export { IntegrationHelp }
 
 import React from 'react'
-import { assert } from '@brillout/docpress'
-import { projectInfo } from '../utils'
+import { Link } from '@brillout/docpress'
 
-function IntegrationHelp({ toolTypeName }: { toolTypeName: string }) {
-  assert(toolTypeName)
+function IntegrationHelp() {
   return (
-    <>
+    <blockquote>
       <p>
-        In principle, you can use Vike with any {toolTypeName}.{' '}
-        <a href={projectInfo.githubDiscussions}>Create a new discussion on GitHub</a> if you have questions or if you
-        want help with integrating {toolTypeName.startsWith('a') ? 'an' : 'a'} {toolTypeName}.
+        <Link href="/faq#i-ve-difficulties-integrating-a-tool-can-i-get-help">Feel free to reach out</Link> if you
+        run into an issue for integrating a tool.
       </p>
-    </>
+    </blockquote>
   )
 }
