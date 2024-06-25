@@ -85,23 +85,31 @@ Alternatively, you can use `throw render()` and `throw redirect()` inside of a <
 
 By default, the `data()` hook always runs on the server-side.
 
-But,
-by using the <Link href="/file-env">file extension `.shared.js`</Link> (renaming `+data.js` to `+data.shared.js`),
-you can tell Vike to run `data()` also on the client-side. This will make Vike:
-- Call `data()` on the server-side for the first page the user visits.
-- Call `data()` on the client-side for subsequent page navigations.
-
-> In general, we recommend running `data()` only on the server-side because it's easier to write code that runs only on the server-side.
->
-> That said, if you want to minimize requests made to your server, then it can make sense to run `data()` on the client-side. See <Link href="/pageContext.json#avoid-pagecontext-json-requests" doNotInferSectionTitle noBreadcrumb />.
-
-You can also set `.client.js` instead of `.shared.js`: Vike will then always call `data()` on the client-side (never on the server-side).
-
-> For <Link href="/pre-rendering">pre-rendered pages (SSG)</Link>, the data fetched from the "server-side" is the static JSON file <Link href="/pageContext.json">`dist/client/some-page/index.pageContext.json`</Link> that was generated at build-time upon pre-rendering the page.
->
-> If, for a pre-rendered page, you want to fetch data that is dynamically provided by a (Java/PHP/Ruby/JavaScript/...) server, then always call `data()` on the client-side (i.e. `+data.client.js`).
+By using <Link href="/file-env#for-files">`.client.js` (or `.shared.js`)</Link>,
+you can tell Vike to only (or also) load and execute `data()` on the client-side.
 
 > Alternatively, instead of using `.shared.js` and `.client.js`, you can modify the <Link href="/meta#example-modify-data-env">`meta.env` setting</Link> of the `data()` hook in a global fashion, removing the need to add `.shared.js` / `.client.js` to each of your `+data.js` files.
+
+### Client-side only
+
+By using `.client.js`,
+you can tell Vike to load and execute `data()` only on the client-side (never on the server-side).
+
+> For <Link href="/pre-rendering">pre-rendered pages (SSG)</Link>, if you want to fetch dynamic data provided by some server (Java/PHP/JavaScript/...), then make sure to always call `data()` on the client-side (i.e. `+data.client.js`).
+>
+> Note that, for pre-rendered pages, the data that is fetched from the "server-side" is the static JSON file <Link href="/pageContext.json">`dist/client/some-page/index.pageContext.json`</Link> that was generated at build-time upon pre-rendering the page.
+
+### Server- and client-side
+
+By using `.shared.js`,
+you can tell Vike to load and execute `data()` also on the client-side:
+- `data()` runs on the server-side for the first page the user visits.
+- `data()` runs on the client-side for subsequent page navigations.
+
+> In general, we recommend running `data()` only on the server-side because it's easier to write code that runs in only one environment.
+>
+> That said, if you want to minimize requests made to your server, then it can make sense to run `data()` also on the client-side. See:
+> - <Link href="/pageContext.json#avoid-pagecontext-json-requests" doNotInferSectionTitle noBreadcrumb />
 
 
 ## Examples
