@@ -345,7 +345,7 @@ const headings = [
     level: 2,
     title: 'Data Stores',
     titleInNav: '... other data stores',
-    url: '/stores'
+    url: '/data-stores'
   },
   {
     level: 4,
