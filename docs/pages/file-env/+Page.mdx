@@ -1,8 +1,8 @@
 import { CodeBlockTransformer, Link } from '@brillout/docpress'
 
 Adding `.server.js` / `.client.js` / `.shared.js` to a file has following effect:
- - For all files, it *asserts* in which environment the file is loaded.
- - For <Link href="/config#files">`+` files</Link>, it *changes* in which environment the file is loaded.
+ - For all files, it *guarantees* in which environment the file is loaded.
+ - For <Link href="/config#files">`+` files</Link>, it *determines* in which environment the file is loaded.
 
 ## For all files
 
@@ -13,15 +13,16 @@ The most common use case for `.server.js` is to ensure that a file that contains
 ```js
 // /server/database/credentials.server.js
 
-// Should *never* be imported by client-side code. We use .server.js to guarantee that.
+// This file should *never* be imported by client-side code.
+// We use .server.js to guarantee that.
 export default {
   password: 'WLa!9HW?E10a'
 }
 ```
 
-> It's crucial that `credentials.server.js` is never loaded by the client-side: otherwise, because the client-side JavaScript is public, everyone could read the `password` defined in `credentials.server.js`.
+> In this example, it's crucial that `credentials.server.js` is never loaded by the client-side: otherwise, because client-side JavaScript is public, everyone could read the password defined in `credentials.server.js`.
 
-If some client-side code does load `credentials.server.js` then Vike will throw an error and abort any attempt to build for production. (In development Vike shows a warning.)
+If some client-side code does load `credentials.server.js` then Vike throws an error and aborts any attempt to build for production. (In development Vike shows a warning.)
 
 <CodeBlockTransformer lineBreak="white-space">
 ```
@@ -52,10 +53,10 @@ The file extension `.shared.js` has an effect only for `+` files (see section be
 
 ## For `+` files
 
-For <Link href="/config#files">`+` files</Link>, the most common use case is to change the environment of the <Link href="/data">`data()` hook</Link>: by renaming `+data.js` to `+data.shared.js` / `+data.server.js` / `+data.client.js` you tell Vike in which environment the `data()` hook should be loaded and executed, see <Link href="/data#environment" />.
+For <Link href="/config#files">`+` files</Link>, the most common use case is to change the environment of the <Link href="/data">`data()` hook</Link>: by renaming `+data.js` to `+data.shared.js`/`+data.server.js`/`+data.client.js` you tell Vike in which environment `data()` should be loaded and executed, see <Link href="/data#environment" />.
 
 > Essentially, it's a simpler way to set the <Link href="/meta#example-modify-data-env">`meta.env` setting</Link> of a `+` file.
-> Adding `.server.js` / `.client.js` / `.shared` to a `+` file, for example `/pages/product/@id/+data.js`, is equivalent to:
+> Adding `.server.js`/`.client.js`/`.shared` to a `+` file, for example `/pages/product/@id/+data.js`, is equivalent to:
 >
 > ```ts
 > // /pages/product/@id/+config.ts

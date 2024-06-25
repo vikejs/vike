@@ -204,7 +204,7 @@ const headings = [
   {
     level: 2,
     title: 'Static Hosts',
-    titleInNav: 'Other',
+    titleInNav: '... other static hosts',
     url: '/static-hosts'
   },
   {
@@ -247,9 +247,13 @@ const headings = [
     url: '/docker'
   },
   {
+    level: 4,
+    title: 'Other'
+  },
+  {
     level: 2,
     title: 'Deploy',
-    titleInNav: 'Other',
+    titleInNav: 'Other deployment provider/strategy',
     url: '/deploy'
   },
   {
@@ -309,18 +313,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
+    titleInNav: '... other data fetching tools',
     title: 'Data Fetching Tools',
     url: '/data-fetching-tools'
   },
   {
     level: 4,
     title: 'Data store'
-  },
-  {
-    level: 2,
-    title: 'Vuex',
-    url: '/vuex'
   },
   {
     level: 2,
@@ -334,14 +333,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'PullState',
-    url: '/pullstate'
-  },
-  {
-    level: 2,
-    title: 'Data Store',
-    titleInNav: 'Other',
-    url: '/store'
+    title: 'Data Stores',
+    titleInNav: '... other data stores',
+    url: '/data-stores'
   },
   {
     level: 4,
@@ -354,7 +348,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'CSS, styling, CSS frameworks'
+    title: 'CSS tools'
   },
   {
     level: 2,
@@ -430,9 +424,9 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
-    title: 'CSS Frameworks',
-    url: '/css-frameworks'
+    titleInNav: '... other CSS tools',
+    title: 'CSS tools',
+    url: '/css-tools'
   },
   {
     level: 4,
@@ -471,13 +465,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
-    title: 'UI Framework',
-    url: '/ui-framework'
+    titleInNav: '... other UI frameworks',
+    title: 'UI frameworks',
+    url: '/ui-frameworks'
   },
   {
     level: 4,
-    title: 'Server'
+    title: 'JavaScript Server'
   },
   {
     level: 2,
@@ -511,6 +505,26 @@ const headings = [
   },
   {
     level: 2,
+    title: 'H3',
+    url: '/h3'
+  },
+  {
+    level: 2,
+    title: 'Servers',
+    titleInNav: '... other JavaScript servers',
+    url: '/servers'
+  },
+  {
+    level: 4,
+    title: 'Backend'
+  },
+  {
+    level: 2,
+    title: 'Ruby on Rails',
+    url: '/ruby-on-rails'
+  },
+  {
+    level: 2,
     title: 'Firebase',
     url: '/firebase'
   },
@@ -521,39 +535,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Ruby on Rails',
-    url: '/ruby-on-rails'
-  },
-  {
-    level: 2,
-    title: 'PM2',
-    url: '/PM2'
-  },
-  {
-    level: 2,
-    title: 'Koa',
-    url: '/koa'
-  },
-  {
-    level: 2,
-    title: 'hapi',
-    url: '/hapi'
-  },
-  {
-    level: 2,
-    title: 'H3',
-    url: '/h3'
-  },
-  {
-    level: 2,
-    title: 'HatTip',
-    url: '/hattip'
-  },
-  {
-    level: 2,
-    title: 'Server Integration',
-    titleInNav: 'Other',
-    url: '/server'
+    title: 'Backends',
+    titleInNav: '... other backends',
+    url: '/backends'
   },
   {
     level: 4,
@@ -576,8 +560,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Other Integrations',
-    titleInNav: 'Other',
+    title: 'Tool integration',
+    titleInNav: '... other tools',
     url: '/integration'
   },
   {

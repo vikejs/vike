@@ -1,6 +1,8 @@
 import { HookTypeScriptHints, UiFrameworkExtension } from '../../components'
 import { Link } from '@brillout/docpress'
 
+Environment: server (<Link href="#environment">configurable</Link>).
+
 > The `onBeforeRender()` hook is for expert Vike users. If you're new to Vike, we recommend using the
 > <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/extensions">Vike extensions</Link> for
 > automatically integrating data fetching tools (RPC with Telefunc/tRPC, REST with Tanstack Query, GraphQL with Apollo/Relay, etc).
@@ -54,7 +56,7 @@ In a nutshell: while `onBeforeRender()` requires more manual work, it also gives
 
 ## Environment
 
-Like `data()`, the `onBeforeRender()` hook always runs on the server-side by default. But you can use the <Link href="/file-env">file extension `.shared.js`</Link> to make Vike run `onBeforeRender()` on the client-side, see <Link href="/data#environment" />.
+Like `data()`, the `onBeforeRender()` hook always runs on the server-side by default. By using <Link href="/file-env">`.shared.js` or `.client.js`</Link> you can tell Vike to run `onBeforeRender()` on the client-side instead, see <Link href="/data#environment" />.
 
 
 ## `onBeforeRender()` + `meta`
