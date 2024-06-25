@@ -476,8 +476,8 @@ const headings = [
   {
     level: 2,
     titleInNav: '... other UI frameworks',
-    title: 'UI framework',
-    url: '/ui-framework'
+    title: 'UI frameworks',
+    url: '/ui-frameworks'
   },
   {
     level: 4,
