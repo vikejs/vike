@@ -13,7 +13,6 @@ function DataArchitecture({
 }) {
   assert(toolType === 'data-store' || toolType === 'data-fetching' || toolType === 'graphql')
   const isGenericDoc = !toolName
-  const dataName = toolType === 'data-store' ? 'state' : 'data'
   const pageContextName = toolType === 'data-store' ? 'initialStoreState' : 'initialData'
   return (
     <>
@@ -51,7 +50,7 @@ function DataArchitecture({
             {toolType === 'data-store' ? 'state' : 'data'} is rendered to HTML.)
           </li>
           <li>
-            You make the initial {dataName} available as <code>pageContext.{pageContextName}</code>.
+            You make the initial {toolType === 'data-store' ? 'state' : 'data'} available as <code>pageContext.{pageContextName}</code>.
           </li>
           <li>
             You make <code>pageContext.{pageContextName}</code> available on the client-side by adding{' '}
