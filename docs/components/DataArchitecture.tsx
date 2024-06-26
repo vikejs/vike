@@ -50,8 +50,8 @@ function DataArchitecture({
   assert(preamble)
 
   const steps = (() => {
-  const isGenericDoc = !toolName
-  const pageContextName = toolType === 'data-store' ? 'initialStoreState' : 'initialData'
+    const isGenericDoc = !toolName
+    const pageContextName = toolType === 'data-store' ? 'initialStoreState' : 'initialData'
     return (
       <>
         On a high-level, {isGenericDoc ? 'an' : 'the'} integration {isGenericDoc ? 'usually ' : ''}works like this:
