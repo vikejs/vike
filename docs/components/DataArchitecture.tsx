@@ -27,7 +27,7 @@ function DataArchitecture({
       {toolType === 'graphql' && (
         <p>
           When using a GraphQL tool{toolName && ` such as ${toolName}`}, you define GraphQL queries/fragments on a
-          component-level, while fetching the GraphQL data in a single global hook (usually{' '}
+          component-level, while fetching the GraphQL data in one global hook common to all pages (usually{' '}
           <Link href="/onBeforeRender">
             <code>onBeforeRender()</code>
           </Link>
