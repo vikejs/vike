@@ -267,16 +267,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Apollo (GraphQL)',
-    url: '/apollo-graphql'
-  },
-  {
-    level: 2,
-    title: 'Relay (GraphQL)',
-    url: '/relay'
-  },
-  {
-    level: 2,
     titleInNav: 'Telefunc (RPC)',
     title: 'Telefunc',
     url: '/telefunc'
@@ -288,13 +278,18 @@ const headings = [
   },
   {
     level: 2,
-    title: 'React Query',
-    url: '/react-query'
+    title: 'TanStack Query',
+    url: '/tanstack-query'
   },
   {
     level: 2,
-    title: 'Vue Query',
-    url: '/vue-query'
+    title: 'Apollo (GraphQL)',
+    url: '/apollo-graphql'
+  },
+  {
+    level: 2,
+    title: 'Relay (GraphQL)',
+    url: '/relay'
   },
   {
     level: 2,
