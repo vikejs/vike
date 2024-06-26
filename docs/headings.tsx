@@ -193,7 +193,8 @@ const headings = [
   {
     level: 2,
     title: 'Cloudflare Pages',
-    url: '/cloudflare-pages'
+    url: '/cloudflare-pages',
+    sectionTitles: ['Full-stack']
   },
   {
     level: 2,
