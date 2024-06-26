@@ -1,11 +1,16 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-To fetch and mutate data, the default recommendation is to use `data()` along with a data-fetching tool.
+The default recommendation is to use `data()` for fetching initial data, and a data-fetching tool for data mutation and subsequent data (such as pagination data).
 
-## `data()`
 
-To fetch the initial data of a page, you can use the <Link href="/data">Vike hook `data()`</Link> together with the <Link href="/useData">component hook `useData()`</Link>.
+## Initial data
+
+For fetching the initial data of a page, we generally recommend using Vike's `data()` hook but you can also use a tool such TanStack Query instead.
+
+### The `data()` hook
+
+A simple and straightforward way to fetch the initial data of a page is to use the <Link href="/data">Vike hook `data()`</Link> together with the <Link href="/useData">component hook `useData()`</Link>.
 
 ```js
 // /pages/movies/@id/+data.js
@@ -59,22 +64,30 @@ import { useData } from 'vike-solid/useData'
 
 The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutation and pagination data, use a data-fetching tool.
 
+### Tools
 
-## Tools
+Some tools, such as [TanStack Query](https://tanstack.com/query), can be used to fetch the initial data of a page.
+
+> It's a novel approach, and currently, if you have a preference for stability, we recommend using Vike's `data()` hook instead.
+
+> We are currently working on <Link href="/extensions">Vike extensions</Link>, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query) and `vike-vue-telefunc`, that enable you to use your favorite data-fetching tool also for fetching initial data, in a seamless and zero-config fashion.
+
+
+## Subsequent data & data mutation
 
 For data mutation and subsequent data fetching (such as pagination data), use a data-fetching tool.
 
-**RPC**
+### RPC
 
 We generally recommend using RPC. It's simple, flexible, and performant.
 
 For a list of RPC tools, see <Link href="/RPC" />.
 
-**API routes**
+### API routes
 
 A common alternative to RPC is to use API routes, see <Link href="/api-routes" />.
 
-**GraphQL**
+### GraphQL
 
 For large teams, it may make more sense to use GraphQL instead of RPC.
 

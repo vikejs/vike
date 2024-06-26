@@ -65,8 +65,7 @@ const headings = [
   {
     level: 2,
     title: 'Data Fetching',
-    url: '/data-fetching',
-    sectionTitles: ['`data()`']
+    url: '/data-fetching'
   },
   {
     level: 2,
@@ -313,8 +312,8 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: '... other data fetching tools',
-    title: 'Data Fetching Tools',
+    titleInNav: '... other data-fetching tools',
+    title: 'Data-fetching Tools',
     url: '/data-fetching-tools'
   },
   {
