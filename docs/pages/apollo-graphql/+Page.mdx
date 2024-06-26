@@ -1,5 +1,5 @@
 import { RepoLink, Link } from '@brillout/docpress'
-import { DataArchitecture } from '../../components'
+import { DataIntegrationFetch, DataIntegrationIntro } from '../../components'
 
 You can use Vike with [Apollo GraphQL](https://www.apollographql.com).
 
@@ -8,15 +8,16 @@ This page documents how to manually integrate Apollo.
 > There isn't a <Link href="/extensions">Vike extension</Link> for Apollo yet, but [contribution welcome to create one](https://github.com/vikejs/vike/issues/1715).
 
 
-## Architecture
+## Initial data
 
-<DataArchitecture
- toolName={'Apollo'}
- toolType="graphql"
-/>
+<DataIntegrationIntro toolType="graphql" toolName="Apollo" />
+
+Integration example:
+<DataIntegrationFetch toolName="Apollo" />
 
 See also:
 - [Apollo Docs > Server-side rendering](https://www.apollographql.com/docs/react/performance/server-side-rendering/)
+- <Link href="/data-fetching-tools#initial-data" />
 
 
 ## Examples
@@ -28,3 +29,4 @@ See also:
 ## See also
 
 - [Apollo Docs > Server-side rendering](https://www.apollographql.com/docs/react/performance/server-side-rendering/)
+- <Link href="/data-fetching-tools#initial-data" />

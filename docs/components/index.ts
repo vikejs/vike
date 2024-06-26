@@ -1,4 +1,4 @@
-export * from './DataArchitecture'
+export * from './DataIntegration'
 export * from './UiFrameworkExtension'
 export * from './IntegrationHelp'
 export * from './UseBati'

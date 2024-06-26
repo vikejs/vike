@@ -1,5 +1,5 @@
 import { RepoLink, Link } from '@brillout/docpress'
-import { DataArchitecture, Example } from '../../components'
+import { DataIntegrationFetch, DataIntegrationIntro, Example } from '../../components'
 
 You can use Vike with [urql](https://formidable.com/open-source/urql/).
 
@@ -8,15 +8,16 @@ This page documents how to manually integrate urql.
 > There isn't a <Link href="/extensions">Vike extension</Link> for urql yet, but [contribution welcome to create one](https://github.com/vikejs/vike/issues/1715).
 
 
-## Architecture
+## Initial data
 
-<DataArchitecture
-  toolName="urql"
-  toolType="graphql"
-/>
+<DataIntegrationIntro toolType="graphql" toolName="urql" />
+
+Integration example:
+<DataIntegrationFetch toolName="urql" />
 
 See also:
 - [urql > Server-side rendering](https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/)
+- <Link href="/data-fetching-tools#initial-data" />
 
 
 ## Example
@@ -26,3 +27,4 @@ See also:
 ## See also
 
 - [urql > Server-side rendering](https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/)
+- <Link href="/data-fetching-tools#initial-data" />

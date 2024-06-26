@@ -1,5 +1,5 @@
 import { RepoLink, Link } from '@brillout/docpress'
-import { DataArchitecture, Example } from '../../components'
+import { DataIntegrationIntro, DataIntegrationStore, Example, ExampleTimestamp } from '../../components'
 
 You can use Vike with [Pinia](https://pinia.vuejs.org).
 
@@ -8,12 +8,15 @@ This page documents how to manually integrate Pinia.
 > You can use [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia) instead of manually integrating Pinia yourself.
 
 
-## Architecture
+## Initial state
 
-<DataArchitecture
-  toolName={'Pinia'}
+<DataIntegrationIntro
+  toolName="Pinia"
   toolType="data-store"
 />
+
+Integration example:
+<DataIntegrationStore toolName="Pinia" vue />
 
 See also:
 - [Pinia Docs > Server Side Rendering (SSR)](https://pinia.vuejs.org/ssr/)
@@ -21,8 +24,7 @@ See also:
 
 ## Examples
 
-Examples of custom integrations:
-
+ - <ExampleTimestamp>2024.06</ExampleTimestamp> [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia)
  - <Example timestamp="2024.03" repo="IT4Change/boilerplate-frontend" />
  - <Example timestamp="2023.10" repo="brillout/vike-with-pinia" />
 

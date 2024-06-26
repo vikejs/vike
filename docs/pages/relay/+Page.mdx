@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { DataArchitecture, Example } from '../../components'
+import { DataIntegrationFetch, DataIntegrationIntro, Example } from '../../components'
 
 You can use Vike with [Relay](https://github.com/facebook/relay).
 
@@ -8,16 +8,17 @@ This page documents how to manually integrate Relay.
 > There isn't a <Link href="/extensions">Vike extension</Link> for Relay yet, but [contribution welcome to create one](https://github.com/vikejs/vike/issues/1715).
 
 
-## Architecture
+## Initial data
 
-<DataArchitecture
-  toolName={'Relay'}
-  toolType="graphql"
-/>
+<DataIntegrationIntro toolType="graphql" toolName="Relay" />
+
+Integration example:
+<DataIntegrationFetch toolName="Relay" />
 
 See also:
- - [GitHub> facebook/relay > #3468 - SSR docs (comment)](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
- - [nextjs-relay-streaming-ssr](https://github.com/tobias-tengler/nextjs-relay-streaming-ssr), which has an explanation in the Readme on how it works.
+- [GitHub> facebook/relay > #3468 - SSR docs (comment)](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
+- [nextjs-relay-streaming-ssr](https://github.com/tobias-tengler/nextjs-relay-streaming-ssr), which has an explanation in the Readme on how it works.
+- <Link href="/data-fetching-tools#initial-data" />
 
 
 ## React Streaming
@@ -36,5 +37,6 @@ Example of a deep Relay integration with React 18's new SSR Suspense Render-as-y
 ## See also
 
 See also:
- - [GitHub> facebook/relay > #3468 - SSR docs (comment)](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
- - [nextjs-relay-streaming-ssr](https://github.com/tobias-tengler/nextjs-relay-streaming-ssr), which has an explanation in the Readme on how it works.
+- [GitHub> facebook/relay > #3468 - SSR docs (comment)](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
+- [nextjs-relay-streaming-ssr](https://github.com/tobias-tengler/nextjs-relay-streaming-ssr), which has an explanation in the Readme on how it works.
+- <Link href="/data-fetching-tools#initial-data" />

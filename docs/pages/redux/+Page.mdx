@@ -1,5 +1,5 @@
 import { RepoLink, Link } from '@brillout/docpress'
-import { DataArchitecture, Example } from '../../components'
+import { DataIntegrationIntro, DataIntegrationStore, Example } from '../../components'
 
 You can use Vike with [Redux](https://redux.js.org).
 
@@ -8,12 +8,15 @@ This page documents how to manually integrate Redux.
 > There isn't a <Link href="/extensions">Vike extension</Link> for Redux yet, but [contribution welcome to create one](https://github.com/vikejs/vike/issues/1715).
 
 
-## Architecture
+## Initial state
 
-<DataArchitecture
-  toolName={'Redux'}
+<DataIntegrationIntro
+  toolName="Redux"
   toolType="data-store"
 />
+
+Integration example:
+<DataIntegrationStore toolName="Redux" />
 
 See also:
 - [Redux > SSR Recipe](https://redux.js.org/recipes/server-rendering)
