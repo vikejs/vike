@@ -11,20 +11,6 @@ function DataArchitecture({
   toolName?: string
   toolType: 'data-store' | 'graphql' | 'data-fetching'
 }) {
-  return (
-    <>
-      <DataPassToClient toolType={toolType} toolName={toolName} />
-    </>
-  )
-}
-
-function DataPassToClient({
-  toolType,
-  toolName
-}: {
-  toolType: 'data-store' | 'data-fetching' | 'graphql'
-  toolName?: string
-}) {
   assert(toolType === 'data-store' || toolType === 'data-fetching' || toolType === 'graphql')
   const isGenericDoc = !toolName
   const dataName = toolType === 'data-store' ? 'state' : 'data'
