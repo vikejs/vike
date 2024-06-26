@@ -20,7 +20,7 @@ function DataArchitecture({
   return (
     <>
       <DataRenderControl toolName={toolName} toolLink={toolLink} isGeneric={isGeneric} toolDocs={toolDocs} />
-      {<DataPassToClient toolType={toolType} isGenericDoc={isGeneric} toolName={toolName} />}
+      <DataPassToClient toolType={toolType} isGenericDoc={isGeneric} toolName={toolName} />
     </>
   )
 }
