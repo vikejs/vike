@@ -65,7 +65,8 @@ const headings = [
   {
     level: 2,
     title: 'Data Fetching',
-    url: '/data-fetching'
+    url: '/data-fetching',
+    sectionTitles: ['Pre-rendering (SSG)']
   },
   {
     level: 2,

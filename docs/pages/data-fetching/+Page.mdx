@@ -6,7 +6,7 @@ The default recommendation is to use `data()` for fetching initial data, and a d
 
 ## Initial data
 
-For fetching the initial data of a page, we generally recommend using Vike's `data()` hook but you can also use a tool such TanStack Query instead.
+For fetching the initial data of a page, we generally recommend using Vike's `data()` hook but you can also use a tool such as TanStack Query instead.
 
 ### The `data()` hook
 
@@ -73,7 +73,7 @@ Some tools, such as [TanStack Query](https://tanstack.com/query), can be used to
 > We are currently working on <Link href="/extensions">Vike extensions</Link>, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query) and `vike-vue-telefunc`, that enable you to use your favorite data-fetching tool also for fetching initial data, in a seamless and zero-config fashion.
 
 
-## Subsequent data & data mutation
+## Data mutation & subsequent data
 
 For data mutation and subsequent data fetching (such as pagination data), use a data-fetching tool.
 
@@ -100,6 +100,11 @@ With Vike, you can manually integrate GraphQL tools yourself, giving you complet
 > In addtion to manual integration, [you will soon](https://github.com/vikejs/vike/issues/1715) have the option to use <Link href="/extensions">Vike Extensions</Link> for automatic integration.
 
 
+## Pre-rendering (SSG)
+
+For <Link href="/pre-rendering">pre-rendered pages / SSG apps</Link>, in order to fetch dynamic data from an external server, make sure to load and execute `data()` only on the client-side, see <Link href="/data#environment" />.
+
+
 ## Global data
 
 A common use case is to fetch global data that is needed by all pages. (For example i18n data.)
@@ -111,14 +116,16 @@ The <Link href="/pageContext">`pageContext` object is accessible from any Vike h
 If you use <Link href="/pre-rendering">pre-rendering</Link> then see the workaround described at [#962 - New hook `onBoot()`](https://github.com/vikejs/vike/issues/962).
 
 
-## Store data
+## Data stores
 
-With Vike, you can manually integrate state management stores (Vuex/Redux...) yourself, giving you complete control over the integration. See:
+For a reliable handling of complex state logic, you can use state management stores. See following <Link href="/extensions">Vike Extensions</Link> for automatic integration:
 
-- <Link href="/redux" />
-- <Link href="/pinia" />
+- [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia)
 
-> In addtion to manual integration, [you will soon](https://github.com/vikejs/vike/issues/1715) have the option to use <Link href="/extensions">Vike Extensions</Link> for automatic integration.
+> [Contribution welcome to create extensions](https://github.com/vikejs/vike/issues/1715).
+
+You can also manually integrate state management stores (Redux/Zustand/...) yourself, giving you complete control over the integration, see <Link href="/data-stores" />.
+
 
 
 ## See also
