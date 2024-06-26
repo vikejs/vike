@@ -1,11 +1,11 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-To fetch and mutate data we generally recommend using the <Link href="#data">`data()`</Link> hook and <Link href="#rpc">RPC</Link>.
+To fetch and mutate data, the default recommendation is to use `data()` along with a data-fetching tool.
 
 ## `data()`
 
-You can fetch data by using the <Link href="/data">Vike hook `data()`</Link> together with the <Link href="/useData">component hook `useData()`</Link>.
+To fetch the initial data of a page, you can use the <Link href="/data">Vike hook `data()`</Link> together with the <Link href="/useData">component hook `useData()`</Link>.
 
 ```js
 // /pages/movies/@id/+data.js
@@ -55,22 +55,24 @@ import { useData } from 'vike-solid/useData'
   const { name, price } = data
 ```
 
-> `useData()` is implemented by the <UiFrameworkExtension />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
+> `useData()` is implemented by the <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
 
-The `data()` hook can only be used for fetching the initial data of the page: for other use cases, such as data mutation and pagination data, use <Link href="#rpc">RPC</Link> instead.
+The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutation and pagination data, use a data-fetching tool.
 
 
-## RPC
+## Tools
 
-For data mutation, and for subsequent data fetching (such as pagination data), we recommend using an RPC tool, see <Link href="/RPC" />.
+For data mutation and subsequent data fetching (such as pagination data), use a data-fetching tool.
 
-Alternatively, you can use API routes or GraphQL.
+**RPC**
 
-> We generally recommend RPC as it's usually simpler, more flexible and more performant.
+We generally recommend using RPC. It's simple, flexible, and performant.
+
+For a list of RPC tools, see <Link href="/RPC" />.
 
 **API routes**
 
-A common alternative to RPC is to use API routes, <Link href="/api-routes" />.
+A common alternative to RPC is to use API routes, see <Link href="/api-routes" />.
 
 **GraphQL**
 
