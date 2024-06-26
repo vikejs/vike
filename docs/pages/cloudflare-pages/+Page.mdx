@@ -2,10 +2,11 @@ import { Link } from '@brillout/docpress'
 import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
 import { Example } from '../../components'
 
+
 ## Full-stack
 
-The [vike-cloudflare](https://github.com/vikejs/vike-cloudflare) package enables zero-configuration deployment to <a href="https://pages.cloudflare.com/">Cloudflare Pages</a>.
-It will deploy prerendered routes as static files, and dynamic routes as <a href="https://developers.cloudflare.com/pages/functions/advanced-mode/">Pages Functions</a>.
+The [vike-cloudflare](https://github.com/vikejs/vike-cloudflare) package enables zero-configuration deployment to [Cloudflare Pages](https://pages.cloudflare.com).
+It will deploy prerendered routes as static files, and dynamic routes as [Pages Functions](https://developers.cloudflare.com/pages/functions/advanced-mode/).
 
 ### Without a server
 
@@ -20,6 +21,7 @@ export default {
 ```
 
 ### With a server
+
 `vike-cloudflare` currently supports <Link href="/hono" /> and <Link href="/hattip" />
 
 > <Link href="/hattip" /> also requires the installation of `@hattip/adapter-cloudflare-workers`
