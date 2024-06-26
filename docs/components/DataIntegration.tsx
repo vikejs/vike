@@ -123,7 +123,7 @@ function DataIntegrationFetch({
           </blockquote>
         </li>
         <li>
-          Initialize {toolName || 'your data fetching tool'} on the client-side using{' '}
+          Initialize {toolName || 'your data fetching tool'} on the client-side with{' '}
           <code>pageContext.initialData</code>.
           <blockquote>
             <p>
