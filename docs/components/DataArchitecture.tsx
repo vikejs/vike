@@ -12,19 +12,19 @@ function DataArchitecture({
   toolType: 'data-store' | 'graphql' | 'data-fetching'
 }) {
   assert(toolType === 'data-store' || toolType === 'data-fetching' || toolType === 'graphql')
-  const isGenericDoc = !toolName
-  const pageContextName = toolType === 'data-store' ? 'initialStoreState' : 'initialData'
-  return (
-    <>
-      {toolType === 'data-store' && (
-        <p>
+  const preamble = (() => {
+    if (toolType === 'data-store') {
+      return (
+        <>
           When using a state management store{toolName && ` such as ${toolName}`}, your components don't access fetched
           data directly: your components only access the store. Fetched data merely determines the initial state of the
           store.
-        </p>
-      )}
-      {toolType === 'graphql' && (
-        <p>
+        </>
+      )
+    }
+    if (toolType === 'graphql') {
+      return (
+        <>
           When using a GraphQL tool{toolName && ` such as ${toolName}`}, you define GraphQL queries/fragments on a
           component-level, while fetching the GraphQL data in one global hook common to all pages (usually{' '}
           <Link href="/onBeforeRender">
@@ -39,9 +39,21 @@ function DataArchitecture({
             <code>onRenderClient()</code>
           </Link>
           ).
-        </p>
-      )}
-      <P>
+        </>
+      )
+    }
+    if (toolType === 'data-fetching') {
+      // TODO
+      return <></>
+    }
+  })()
+  assert(preamble)
+
+  const steps = (() => {
+  const isGenericDoc = !toolName
+  const pageContextName = toolType === 'data-store' ? 'initialStoreState' : 'initialData'
+    return (
+      <>
         On a high-level, {isGenericDoc ? 'an' : 'the'} integration {isGenericDoc ? 'usually ' : ''}works like this:
         <ol>
           <li>
@@ -50,7 +62,8 @@ function DataArchitecture({
             {toolType === 'data-store' ? 'state' : 'data'} is rendered to HTML.)
           </li>
           <li>
-            You make the initial {toolType === 'data-store' ? 'state' : 'data'} available as <code>pageContext.{pageContextName}</code>.
+            You make the initial {toolType === 'data-store' ? 'state' : 'data'} available as{' '}
+            <code>pageContext.{pageContextName}</code>.
           </li>
           <li>
             You make <code>pageContext.{pageContextName}</code> available on the client-side by adding{' '}
@@ -61,7 +74,15 @@ function DataArchitecture({
             client-side using <code>pageContext.{pageContextName}</code>.
           </li>
         </ol>
-      </P>
+      </>
+    )
+  })()
+  assert(steps)
+
+  return (
+    <>
+      <p>{preamble}</p>
+      <P>{steps}</P>
     </>
   )
 }
