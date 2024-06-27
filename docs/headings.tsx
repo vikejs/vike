@@ -254,7 +254,7 @@ const headings = [
   {
     level: 2,
     title: 'Deploy',
-    titleInNav: 'Other deployment provider/strategy',
+    titleInNav: 'Other deployment',
     url: '/deploy'
   },
   {
