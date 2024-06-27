@@ -416,7 +416,7 @@ const headings = [
   {
     level: 2,
     titleInNav: '... more',
-    title: 'CSS tools',
+    title: 'CSS Tools',
     url: '/css-tools',
     sectionTitles: ['Collect styles upon SSR']
   },
@@ -458,7 +458,7 @@ const headings = [
   {
     level: 2,
     titleInNav: '... more',
-    title: 'UI frameworks',
+    title: 'UI Frameworks',
     url: '/ui-frameworks'
   },
   {
