@@ -329,9 +329,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'State Management',
+    title: 'Stores',
     titleInNav: '... more',
-    url: '/data-stores'
+    url: '/stores'
   },
   {
     level: 4,
