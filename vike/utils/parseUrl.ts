@@ -83,7 +83,7 @@ function parseUrl(
   const { origin, pathname: pathnameResolved } = getPathname(urlWithoutHashNorSearch, baseServer)
   assert(origin === null || origin === decodeSafe(origin)) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'))
-  assert(origin === null || url.startsWith(origin), { url, origin })
+  assert(origin === null || url.startsWith(origin))
 
   // `pathnameOriginal`
   const pathnameOriginal = urlWithoutHashNorSearch.slice((origin || '').length)
