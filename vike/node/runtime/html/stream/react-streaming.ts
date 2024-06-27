@@ -9,16 +9,12 @@ export type { InjectToStream }
 import { assert, hasProp } from '../../utils.js'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
 
-// Same type than:
+// Same as:
 // ```
 // import type { InjectToStream } from 'react-streaming/server'
 // ```
-type InjectToStream = (
-  chunk: unknown,
-  options?: {
-    flush?: boolean
-  }
-) => void
+type InjectToStreamOptions = { flush?: boolean; expectStreamEnd?: boolean }
+type InjectToStream = (chunk: unknown, options?: InjectToStreamOptions) => boolean
 
 // ```js
 // import { renderToStream } from 'react-streaming/server'
