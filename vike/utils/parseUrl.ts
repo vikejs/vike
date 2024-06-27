@@ -292,7 +292,6 @@ function isUriWithProtocol(str: string): boolean {
   //   capacitor:// # [Capacitor](https://github.com/vikejs/vike/issues/1706)
   return /^[a-z][a-z0-9\+\-]*:/i.test(str)
 }
-
 // Same as isUriWithProtocol() but with trailing :// which is needed for parseOrigin()
 function isUrlWithProtocol(str: string): boolean {
   return /^[a-z][a-z0-9\+\-]*:\/\//i.test(str)
