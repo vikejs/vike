@@ -268,8 +268,7 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Telefunc (RPC)',
-    title: 'Telefunc',
+    title: 'Telefunc (RPC)',
     url: '/telefunc'
   },
   {
