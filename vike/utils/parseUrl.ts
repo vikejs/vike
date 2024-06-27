@@ -19,7 +19,7 @@ import pc from '@brillout/picocolors'
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
   return (
-    isUrlWithProtocal(url) ||
+    isUrlWithProtocol(url) ||
     url.startsWith('/') ||
     url.startsWith('.') ||
     url.startsWith('?') ||
@@ -161,7 +161,7 @@ function getPathname(url: string, baseServer: string): { origin: null | string; 
 }
 
 function parseOrigin(url: string): { pathname: string; origin: null | string } {
-  if (!isUrlWithProtocal(url)) {
+  if (!isUrlWithProtocol(url)) {
     assert(!isUriWithProtocol(url))
     return { pathname: url, origin: null }
   } else {
@@ -292,7 +292,7 @@ function isUriWithProtocol(str: string): boolean {
   return /^[a-z][a-z0-9\+\-\.]*:/i.test(str)
 }
 
-// Same as isUrlWithProtocal() but with trailing :// which is needed for parseOrigin()
-function isUrlWithProtocal(str: string): boolean {
+// Same as isUriWithProtocol() but with trailing :// which is needed for parseOrigin()
+function isUrlWithProtocol(str: string): boolean {
   return /^[a-z][a-z0-9\+\-\.]*:\/\//i.test(str)
 }
