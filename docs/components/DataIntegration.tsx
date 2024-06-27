@@ -55,7 +55,7 @@ function DataIntegrationIntro({
     return (
       <>
         <p>
-          When using a state management store{toolName && ` such as ${toolName}`}, your components don't access fetched
+          When using a store{toolName && ` such as ${toolName}`}, your components don't access fetched
           data directly: your components only access the store.
         </p>
         {/*
