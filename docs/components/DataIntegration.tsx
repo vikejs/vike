@@ -41,7 +41,7 @@ function DataIntegrationIntro({
 }: {
   children?: React.ReactNode
   toolName?: string
-  toolType?: 'graphql' | 'data-store'
+  toolType?: 'graphql' | 'store'
 }) {
   const insteadOfDataHook = (
     <>
@@ -51,12 +51,12 @@ function DataIntegrationIntro({
       </Link>
     </>
   )
-  if (toolType === 'data-store') {
+  if (toolType === 'store') {
     return (
       <>
         <p>
-          When using a store{toolName && ` such as ${toolName}`}, your components don't access fetched
-          data directly: your components only access the store.
+          When using a store{toolName && ` such as ${toolName}`}, your components don't access fetched data directly:
+          your components only access the store.
         </p>
         {/*
       <p>
