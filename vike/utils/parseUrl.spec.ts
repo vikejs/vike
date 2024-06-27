@@ -478,9 +478,9 @@ describe('isUriWithProtocol()', () => {
     expect(isUriWithProtocol('a:')).toBe(true)
     expect(isUriWithProtocol('a-b:')).toBe(true)
     expect(isUriWithProtocol('a+b:')).toBe(true)
-    //expect(isUriWithProtocol('a.b:')).toBe(true)
+    expect(isUriWithProtocol('a.b:')).toBe(true)
     expect(isUriWithProtocol('a2:')).toBe(true)
-    //expect(isUriWithProtocol('2a:')).toBe(true)
+    expect(isUriWithProtocol('2a:')).toBe(true)
 
     // Invalid
     expect(isUriWithProtocol('a!b:')).toBe(false)

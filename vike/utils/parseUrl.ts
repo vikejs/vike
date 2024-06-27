@@ -19,7 +19,7 @@ import pc from '@brillout/picocolors'
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
   return (
-    isUriWithProtocol(url) ||
+    isUrlWithProtocal(url) ||
     url.startsWith('/') ||
     url.startsWith('.') ||
     url.startsWith('?') ||
@@ -83,7 +83,7 @@ function parseUrl(
   const { origin, pathname: pathnameResolved } = getPathname(urlWithoutHashNorSearch, baseServer)
   assert(origin === null || origin === decodeSafe(origin)) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'))
-  assert(origin === null || url.startsWith(origin))
+  assert(origin === null || url.startsWith(origin), { url, origin })
 
   // `pathnameOriginal`
   const pathnameOriginal = urlWithoutHashNorSearch.slice((origin || '').length)
@@ -161,7 +161,8 @@ function getPathname(url: string, baseServer: string): { origin: null | string; 
 }
 
 function parseOrigin(url: string): { pathname: string; origin: null | string } {
-  if (!isUriWithProtocol(url)) {
+  if (!isUrlWithProtocal(url)) {
+    assert(!isUriWithProtocol(url))
     return { pathname: url, origin: null }
   } else {
     const [originPart1, originPart2, originPart3, ...pathnameParts] = url.split('/')
@@ -279,7 +280,7 @@ function createUrlFromComponents(
   return urlRecreated
 }
 
-function isUriWithProtocol(uri: string): boolean {
+function isUriWithProtocol(str: string): boolean {
   // https://en.wikipedia.org/wiki/List_of_URI_schemes
   // https://www.rfc-editor.org/rfc/rfc7595
   // For example:
@@ -288,5 +289,10 @@ function isUriWithProtocol(uri: string): boolean {
   //   tauri:// # [Tauri](https://tauri.app)
   //   file:// # [Electron](https://github.com/vikejs/vike/issues/1557)
   //   capacitor:// # [Capacitor](https://github.com/vikejs/vike/issues/1706)
-  return /^[a-z][a-z0-9\+\-]*:/i.test(uri)
+  return /^[a-z][a-z0-9\+\-\.]*:/i.test(str)
+}
+
+// Same as isUrlWithProtocal() but with trailing :// which is needed for parseOrigin()
+function isUrlWithProtocal(str: string): boolean {
+  return /^[a-z][a-z0-9\+\-\.]*:\/\//i.test(str)
 }
