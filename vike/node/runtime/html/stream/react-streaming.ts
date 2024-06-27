@@ -7,7 +7,7 @@ export type { StreamReactStreaming }
 export type { InjectToStream }
 
 import { assert, hasProp } from '../../utils.js'
-import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
+import { StreamReadableWeb, StreamWritableNode, streamPipeNodeToString, streamReadableWebToString } from '../stream.js'
 
 // Same as:
 // ```
@@ -22,6 +22,7 @@ type InjectToStream = (chunk: unknown, options?: InjectToStreamOptions) => boole
 // ```
 type StreamReactStreaming = {
   injectToStream: InjectToStream
+  streamEnd: Promise<boolean>
   // Older `react-streaming` versions don't define `disabled`
   disabled?: boolean
 } & (

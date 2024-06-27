@@ -9,6 +9,9 @@ export type { DocumentHtml }
 // This export is needed even though it's not used anywhere, see https://github.com/vikejs/vike/issues/511
 export type { TemplateWrapped }
 
+import pc from '@brillout/picocolors'
+import { getGlobalContext } from '../globalContext.js'
+import type { PageAsset } from '../renderPage/getPageAssets.js'
 import {
   assert,
   assertUsage,
@@ -20,22 +23,19 @@ import {
   isPromise,
   objectAssign
 } from '../utils.js'
-import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
+import { injectHtmlTagsToStream, injectHtmlTagsToString } from './injectAssets.js'
 import type { PageContextInjectAssets } from './injectAssets.js'
+import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
 import {
-  processStream,
-  isStream,
   StreamProviderAny,
-  streamToString,
+  StreamProviderNormalized,
   StreamTypePatch,
-  StreamProviderNormalized
+  isStream,
+  processStream,
+  streamToString
 } from './stream.js'
 import { isStreamReactStreaming } from './stream/react-streaming.js'
 import type { InjectToStream } from './stream/react-streaming.js'
-import type { PageAsset } from '../renderPage/getPageAssets.js'
-import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
-import { getGlobalContext } from '../globalContext.js'
-import pc from '@brillout/picocolors'
 
 type DocumentHtml = TemplateWrapped | EscapedString | StreamProviderAny
 type HtmlRender = string | StreamProviderNormalized
@@ -117,7 +117,7 @@ async function renderHtmlStream(
   }
   if (injectString) {
     let injectToStream: null | InjectToStream = null
-    if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
+    if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled && !(await streamOriginal.streamEnd)) {
       injectToStream = streamOriginal.injectToStream
     }
     const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream, injectFilter)
