@@ -1,7 +1,7 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-The default recommendation is to use `data()` for fetching initial data, and a data-fetching tool for data mutations and subsequent data (such as pagination data).
+The default recommendation is to use `data()` for fetching initial data, and a data tool for data mutations and subsequent data (such as pagination data).
 
 
 ## Initial data
@@ -62,20 +62,20 @@ import { useData } from 'vike-solid/useData'
 
 > `useData()` is implemented by the <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
 
-The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutations and pagination data, use a data-fetching tool.
+The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutations and pagination data, use a data tool.
 
-### Tools
+### Data tools
 
 Some tools, such as [TanStack Query](https://tanstack.com/query), can be used to fetch the initial data of a page.
 
 > It's a novel approach, and currently, if you have a preference for stability, we recommend using Vike's `data()` hook instead.
 
-> We are currently working on <Link href="/extensions">Vike extensions</Link>, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query) and `vike-vue-telefunc`, that enable you to use your favorite data-fetching tool also for fetching initial data, in a seamless and zero-config fashion.
+> We are currently working on <Link href="/extensions">Vike extensions</Link>, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query) and `vike-vue-telefunc`, that enable you to use your favorite data tool also for fetching initial data, in a seamless and zero-config fashion.
 
 
 ## Data mutation & subsequent data
 
-For data mutation and subsequent data fetching (such as pagination data), use a data-fetching tool.
+For data mutation and subsequent data fetching (such as pagination data), use a data tool.
 
 ### RPC
 

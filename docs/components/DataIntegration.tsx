@@ -12,7 +12,7 @@ function DataIntegrationIntroGeneric() {
   return (
     <>
       <DataIntegrationIntro>
-        Some data-fetching tools allow you to fetch the initial data of the page on a component-level
+        Some data tools allow you to fetch the initial data of the page on a component-level
       </DataIntegrationIntro>
       <p>Generally, on a high-level, the integration works in two steps:</p>
       <ol>
