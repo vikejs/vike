@@ -205,7 +205,7 @@ const headings = [
   {
     level: 2,
     title: 'Static Hosts',
-    titleInNav: '... other static hosts',
+    titleInNav: '... more',
     url: '/static-hosts'
   },
   {
@@ -309,13 +309,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: '... other data-fetching tools',
+    titleInNav: '... more',
     title: 'Data-fetching Tools',
     url: '/data-fetching-tools'
   },
   {
     level: 4,
-    title: 'Data store'
+    title: 'State management'
   },
   {
     level: 2,
@@ -329,8 +329,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Data Stores',
-    titleInNav: '... other data stores',
+    title: 'State Management',
+    titleInNav: '... more',
     url: '/data-stores'
   },
   {
@@ -344,7 +344,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'CSS tools'
+    title: 'CSS'
   },
   {
     level: 2,
@@ -415,14 +415,14 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: '... other CSS tools',
+    titleInNav: '... more',
     title: 'CSS tools',
     url: '/css-tools',
     sectionTitles: ['Collect styles upon SSR']
   },
   {
     level: 4,
-    title: 'UI frameworks'
+    title: 'UI framework'
   },
   {
     level: 2,
@@ -457,7 +457,7 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: '... other UI frameworks',
+    titleInNav: '... more',
     title: 'UI frameworks',
     url: '/ui-frameworks'
   },
@@ -482,11 +482,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Nitro',
-    url: '/nitro'
-  },
-  {
-    level: 2,
     title: 'Deno',
     url: '/deno'
   },
@@ -497,13 +492,18 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Nitro',
+    url: '/nitro'
+  },
+  {
+    level: 2,
     title: 'H3',
     url: '/h3'
   },
   {
     level: 2,
     title: 'Servers',
-    titleInNav: '... other JavaScript servers',
+    titleInNav: '... more',
     url: '/servers'
   },
   {
@@ -528,7 +528,7 @@ const headings = [
   {
     level: 2,
     title: 'Backends',
-    titleInNav: '... other backends',
+    titleInNav: '... more',
     url: '/backends'
   },
   {
@@ -553,7 +553,7 @@ const headings = [
   {
     level: 2,
     title: 'Tool integration',
-    titleInNav: '... other tools',
+    titleInNav: '... more',
     url: '/integration'
   },
   {
@@ -679,7 +679,7 @@ const headings = [
   {
     level: 2,
     title: 'Hooks',
-    titleInNav: 'more...',
+    titleInNav: '... more',
     url: '/hooks'
   },
   {
@@ -810,7 +810,7 @@ const headings = [
   {
     level: 2,
     title: 'Settings',
-    titleInNav: 'more...',
+    titleInNav: '... more',
     url: '/settings'
   }
 ] satisfies HeadingDefinition[]

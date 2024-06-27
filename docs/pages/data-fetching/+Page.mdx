@@ -1,7 +1,7 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-The default recommendation is to use `data()` for fetching initial data, and a data-fetching tool for data mutation and subsequent data (such as pagination data).
+The default recommendation is to use `data()` for fetching initial data, and a data-fetching tool for data mutations and subsequent data (such as pagination data).
 
 
 ## Initial data
@@ -62,7 +62,7 @@ import { useData } from 'vike-solid/useData'
 
 > `useData()` is implemented by the <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
 
-The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutation and pagination data, use a data-fetching tool.
+The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutations and pagination data, use a data-fetching tool.
 
 ### Tools
 
@@ -89,7 +89,7 @@ A common alternative to RPC is to use API routes, see <Link href="/api-routes" /
 
 ### GraphQL
 
-For large teams, it may make more sense to use GraphQL instead of RPC.
+For large teams, it may make sense to use GraphQL instead of RPC.
 
 With Vike, you can manually integrate GraphQL tools yourself, giving you complete control over integration:
 
@@ -97,7 +97,7 @@ With Vike, you can manually integrate GraphQL tools yourself, giving you complet
 - <Link href="/relay" />
 - <Link href="/urql" />
 
-> In addtion to manual integration, [you will soon](https://github.com/vikejs/vike/issues/1715) have the option to use <Link href="/extensions">Vike Extensions</Link> for automatic integration.
+> In addtion to manual integration, [you will soon](https://github.com/vikejs/vike/issues/1715) have the option to use <Link href="/extensions">Vike extensions</Link> for automatic integration.
 
 
 ## Pre-rendering (SSG)
@@ -116,15 +116,23 @@ The <Link href="/pageContext">`pageContext` object is accessible from any Vike h
 If you use <Link href="/pre-rendering">pre-rendering</Link> then see the workaround described at [#962 - New hook `onBoot()`](https://github.com/vikejs/vike/issues/962).
 
 
-## Data stores
+## State management
 
-For a reliable handling of complex state logic, you can use state management stores. See following <Link href="/extensions">Vike Extensions</Link> for automatic integration:
+For managing complex UI state logic, you can use a store (Redux/Pinia/Zustand/...).
+
+When using a store, all fetched data, including the initial data, is typically managed by the store. We recommend using an extension for automatic integration.
+
+### Extensions
+
+<Link href="/extensions">Vike extensions</Link> for state management tools:
 
 - [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia)
 
 > [Contribution welcome to create extensions](https://github.com/vikejs/vike/issues/1715).
 
-You can also manually integrate state management stores (Redux/Zustand/...) yourself, giving you complete control over the integration, see <Link href="/data-stores" />.
+### Custom integration
+
+For complete control over integration, instead of using an extension, you can manually integrate a store yourself. See <Link href="/data-stores" />.
 
 
 
