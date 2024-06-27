@@ -481,8 +481,8 @@ describe('isUriWithProtocol()', () => {
     expect(isUriWithProtocol('a2:')).toBe(true)
 
     // Invalid
-    expect(isUriWithProtocol('a.b:')).toBe(true)
-    expect(isUriWithProtocol('2a:')).toBe(true)
+    expect(isUriWithProtocol('a.b:')).toBe(false)
+    expect(isUriWithProtocol('2a:')).toBe(false)
     expect(isUriWithProtocol('a!b:')).toBe(false)
     expect(isUriWithProtocol('a_b:')).toBe(false)
     expect(isUriWithProtocol('.ab:')).toBe(false)
