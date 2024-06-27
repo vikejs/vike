@@ -19,7 +19,7 @@ import pc from '@brillout/picocolors'
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
   return (
-    isUrlWithProtocol(url) ||
+    isUriWithProtocol(url) ||
     url.startsWith('/') ||
     url.startsWith('.') ||
     url.startsWith('?') ||
@@ -161,7 +161,7 @@ function getPathname(url: string, baseServer: string): { origin: null | string; 
 }
 
 function parseOrigin(url: string): { pathname: string; origin: null | string } {
-  if (!isUrlWithProtocol(url)) {
+  if (!isUriWithProtocol(url)) {
     return { pathname: url, origin: null }
   } else {
     const [originPart1, originPart2, originPart3, ...pathnameParts] = url.split('/')
@@ -281,14 +281,12 @@ function createUrlFromComponents(
 
 function isUriWithProtocol(uri: string): boolean {
   // https://en.wikipedia.org/wiki/List_of_URI_schemes
-  return /^[a-z0-9][a-z0-9\.\+\-]*:/i.test(uri)
-}
-
-function isUrlWithProtocol(url: string) {
-  // http://
-  // https://
-  // tauri:// # For [Tauri](https://tauri.app/)
-  // file:// # For Electron: https://github.com/vikejs/vike/issues/1557
-  // capacitor:// # For Capacitor: https://github.com/vikejs/vike/issues/1706
-  return /[a-z]+\:\/\//i.test(url)
+  // https://www.rfc-editor.org/rfc/rfc7595
+  // For example:
+  //   http://
+  //   https://
+  //   tauri:// # [Tauri](https://tauri.app)
+  //   file:// # [Electron](https://github.com/vikejs/vike/issues/1557)
+  //   capacitor:// # [Capacitor](https://github.com/vikejs/vike/issues/1706)
+  return /^[a-z][a-z0-9\+\-]*:/i.test(uri)
 }
