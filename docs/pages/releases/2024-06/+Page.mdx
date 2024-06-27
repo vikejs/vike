@@ -1,33 +1,54 @@
 import { Link, Warning } from '@brillout/docpress'
+import { UiFrameworkExtension } from '../../../components'
 
 <Warning>
   This page is a draft until `01.07.2024`.
 </Warning>
 
-TODO:
-- `vike-cloudflare`
-- Improved docs (data fetching + data integration)
+We've been working hard on:
+- Shipping new features
+- Fixing bugs
+- Improving the documentation
+- Making structural improvements to further enable Vike extensions
+- Working on the upcoming new marketing pages
 
-**Features**
+We're looking forward to further implement <Link href="#roadmap">Vike's roadmap</Link> in next coming months (and years), as we believe there is a need for <Link href="/why">a flexible framework with a sound architecture</Link>.
 
-[Improved Nested Layouts](#improved-nested-layouts)  
-[`+client.js`](#client-js)  
-[`clientOnly()`](#clientonly)  
-[`bodyHtmlBegin`/`bodyHtmlEnd`](#bodyhtmlbegin-bodyhtmlend)  
+> 🙏 [We're looking for sponsors](https://github.com/vikejs/vike/issues/1350)! If you could try to convince your employer that'd be wonderful 💚
 
-**Bug fixes and misc improvements**
 
-[Fixes & improvements](#fixes-improvements)  
+**Bug fixes:** `n` (TODO: count)
 
-**Project**
+**Features:**
 
-[Getting close to `1.0.0`](#getting-close-to-1-0-0)  
-[New marketing](#new-marketing)  
-[Roadmap](#roadmap)  
+<Link href="#improved-nested-layouts" /><br/>
+<Link href="#pages-marketing" /><br/>
+<Link href="#client-js" /><br/>
+<Link href="#clientonly" /><br/>
+<Link href="#pagecontext-headersoriginal" /><br/>
+<Link href="#bodyhtmlbegin-bodyhtmlend" /><br/>
+<Link href="#vike-cloudflare" /><br/>
+<Link href="#new-bati-integrations" /><br/>
+<Link href="#new-capabilities-for-extensions" /><br/>
+<Link href="#universal-handlers" /><br/>
 
-**See also**
+**Performance:**
 
-[See also](#see-also)  
+<Link href="#slimmer-client" /><br/>
+
+**Project:**
+
+<Link href="#improved-docs" /><br/>
+<Link href="#new-marketing" /><br/>
+<Link href="#getting-close-to-1-0-0" /><br/>
+<Link href="#roadmap" /><br/>
+
+**See also:**
+
+[`vike` > `CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md)  
+[`vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)  
+[`vike-vue` > `CHANGELOG.md`](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/CHANGELOG.md)  
+[`vike-solid` > `CHANGELOG.md`](https://github.com/vikejs/vike-solid/blob/main/CHANGELOG.md)  
 
 
 ## Improved Nested Layouts
@@ -35,22 +56,49 @@ TODO:
 Vike now has first-class support for nested layouts.
 
 ```yaml
+# Outer layout, common to all pages
 pages/+Layout.js
+# Layout for product page
 pages/product/@id/+Layout.js
+# Nested layout
 pages/product/@id/pricing/+Page.js
+# Nested layout
 pages/product/@id/reviews/+Page.js
 ```
 
-See <Link href="/Layout#nested-layout" />.
+See <Link href="/Layout#nested-layouts" />.
 
-> Caching the data of the outer layout is work-in-progress, see [#1689 - [Nested Layouts] Cache data of outer layout](https://github.com/vikejs/vike/issues/1689).
+> Fetching data in outer layouts is work-in-progress, see [#1689 - [Nested Layouts] Fetch data on layout-level](https://github.com/vikejs/vike/issues/1689).
 
 > 🙏 Author: [`Blankeos`](https://github.com/Blankeos), [`brillout`](https://github.com/brillout)
 
 
+## `pages/(marketing)/`
+
+You can now organize your pages into groups:
+
+```yaml
+FILESYSTEM                             URL
+================================       ==================
+pages/(marketing)/index/+Page.js       /
+pages/(marketing)/about/+Page.js       /about
+pages/admin-panel/index/+Page.js       /admin-panel
+pages/admin-panel/users/+Page.js       /admin-panel/users
+```
+> The directory `(marketing)` is ignored because it's wrapped by parentheses.
+
+Beyond improved organization, it allows you to apply different configurations to different pages.
+
+See: <Link href="/routing#groups" />.
+
+> 🙏 Author: [`brillout`](https://github.com/brillout)
+
+
 ## `+client.js`
 
-You can now define a `+client.js` file to add client-side JavaScript, which is run first before any other JavaScript.
+You can now define a `+client.js` file which defines the first client-side code to be executed.
+
+It's usually used for initializing error tracking, user tracking, vanilla CSS tools, etc.
 
 See <Link href="/client" />.
 
@@ -59,13 +107,37 @@ See <Link href="/client" />.
 
 ## `clientOnly()`
 
-Vue users can now use the <Link href="/clientOnly">`clientOnly()`</Link> helper which is like`<ClientOnly>` wrapper (now depreacted) but with a much improved DX.
+Vue users can now use the <Link href="/clientOnly">`clientOnly()`</Link> helper which has the same functionality as the `<ClientOnly>` wrapper (now depreacted) but with a much improved DX.
 
 > 🙏 Author: [`pdanpdan`](https://github.com/pdanpdan)
 
 Solid users already had `clientOnly()` for a while now.
 
 There is a feature request for `vike-react`: [#102 - `clientOnly()` instead of `<ClientOnly>`](https://github.com/vikejs/vike-react/issues/102). Contribution welcome!
+
+
+## `pageContext.headersOriginal`
+
+There is now an official way to pass the HTTP request headers:
+
+```js
+import { renderPage } from 'vike/server'
+
+// Server middleware
+app.get('*', async (req) => {
+  const pageContextInit = {
+    urlOriginal: req.url,
+    headersOriginal: req.headers
+  }
+  const pageContext = await renderPage(pageContextInit)
+  // ...
+})
+```
+
+Like `pageContext.urlOriginal` and `pageContext.urlParsed` (`pageContext.urlParsed` will be renamed `pageContext.url` in the next major release), the `pageContext.headersOriginal` contains the untouched original headers object you passed to `renderPage()` while `pageContext.headers` is a convenient normalized object of strings (`Record<string, string>`).
+
+See: <Link href="/headers#request" />.
+
 
 
 ## `bodyHtmlBegin`/`bodyHtmlEnd`
@@ -77,11 +149,16 @@ With Vue, a common need is to insert the HTML of teleports. You can now do that 
 > 🙏 Author: [`4350pChris`](https://github.com/4350pChris)
 
 
-## Fixes & improvements
+## vike-cloudflare
 
-There have been internal structural changes to provide new capabilities for Vike extension, most notably being able to create cumulative hooks.
+The new package [vike-cloudflare](https://github.com/vikejs/vike-cloudflare) enables zero-config integration with Cloudflare.
 
-> 🙏 Author: [`brillout`](https://github.com/brillout)
+> It will also soon use the upcoming [Vite Runtime API](https://github.com/vitejs/vite/pull/16471), for being able to develop directly against the [Cloudflare workerd runtime](https://github.com/cloudflare/workerd). In other words: no more runtime discrepancy between dev and prod!
+
+> 🙏 Author: [`magne4000`](https://github.com/magne4000)
+
+
+## New Bati integrations
 
 New [Bati](https://batijs.dev) integrations:
  - [Drizzle ORM](https://orm.drizzle.team)
@@ -89,10 +166,60 @@ New [Bati](https://batijs.dev) integrations:
 
 > 🙏 Author: [`phonzammi`](https://github.com/phonzammi), [`magne4000`](https://github.com/magne4000)
 
-We've been working on [Universal Handlers](https://github.com/magne4000/universal-handler) which will enable Vike extensions to automatically integrate the server-side of tools.
+
+## New capabilities for extensions
+
+There have been internal structural improvements for providing new capabilities to Vike extension, for example:
+- Cumulative hooks.
+- Extensions can declare hard dependencies.
+  > For example, `vike-vue-pinia` depends on `vike>=0.4.174` and `vike-vue>=0.7.6`. Any unmet dependency throws an error, unlike `peerDependencies` warnings which are often ignored.
+- <Link href="/getPageContext" /> which powers the upcoming "universal" hooks such as `useConfig()`.
+
+> 🙏 Author: [`brillout`](https://github.com/brillout)
+
+
+## Universal Handlers
+
+We've been prototyping on [Universal Handlers](https://github.com/magne4000/universal-handler) to enable Vike extensions to automatically integrate the server middlewares of tools.
 
 > 🙏 Author: [`magne4000`](https://github.com/magne4000)
 
+
+## Slimmer client
+
+In order to save client-side KBs, we started removing client code such as:
+- [Client-side validation](https://github.com/vikejs/vike/commit/9168c5be9342e4adcfa3d42c7d5c10a09f3ac513).
+  > This  means that errors will be silent or less helpful, but we believe it's worth it.
+- `assert()` calls.
+  > The code had *many* `assert()` calls which were very helpful for fixing bugs, but we need them less now that things are stablizing.
+
+> 🙏 Author: [`brillout`](https://github.com/brillout)
+
+
+## Improved docs
+
+We're continuously improving documentation.
+
+For example:
+- Rewritten <Link href="/guard" /> docs explaining when and where `guard()` is called, with new guides about limitations and workarounds.
+- Rewritten <Link href="/data-fetching" /> docs covering all common use cases, with clear recommendations.
+- Rewritten <Link href="/data#environment" /> docs, explaining how and when to change the environment of `data()`.
+- Rewritten integration guides for stores and data tools, e.g. <Link href="/pinia#initial-state" />.
+- <UiFrameworkExtension succint /> are now fully documented (on `vike.dev`).
+- ... and much more
+
+> 🙏 Author: [`brillout`](https://github.com/brillout)
+
+
+## New marketing
+
+We're starting to focus on marketing and advertising Vike.
+
+We created a new page <Link href="/why" />, which will essentially be the long-form version of the upcoming new marketing copy.
+
+In the coming months, the website `vike.dev` will get a facelift to be a lot more aesthetically pleasing.
+
+> 🙏 Author: [`brillout`](https://github.com/brillout)
 
 
 ## Getting close to `1.0.0`
@@ -104,29 +231,22 @@ The three main reasons why we aren't releasing `1.0.0` are:
 3. [ ] A big announcement we'll unveil later this sommer.
    > It will be pivotal to the project. Stay tuned.
 
-We're getting close to the [`1.0.0` release](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22v1+release+%3Astar2%3A%22).
-
-
-## New marketing
-
-We're slowy starting to focus on marketing and advertising Vike.
-
-For example, we started creating a new <Link href="/why">Why Vike</Link> page. This page is the long-form version of the upcoming new landing page.
-
-In the coming months, the website `vike.dev` will get a facelift to be aesthetically much more pleasing.
+Now that Nested Layouts are mostly done, we're getting close to the [`1.0.0` release](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22v1+release+%3Astar2%3A%22).
 
 
 ## Roadmap
 
 Major features we're working on:
 
-- Improved head management DX.
+- Improved head management DX for <UiFrameworkExtension succint />
 - [Prefetching of `pageContext`](https://github.com/vikejs/vike/issues/246)
 - Vike CLI.
-  > Replacing the Vite CLI which is an important structural change enabling a lot of upcoming features.
+  > Replacing the Vite CLI is a foundational change enabling a lot of upcoming features.
 - Use Vite to transpile server code.
-  > Including standalone server builds, and development directly against edge runtimes (e.g. Cloudflare's workerd). Led by [@nitedani](https://github.com/nitedani).
-- Rehaul `vike.dev` aesthetics and UX. (New design is done and we'll implement it once we're finished with all [`highest-priority` tickets](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22highest-prio+%F0%9F%94%A5%22).)
+  > Including standalone server builds, and development directly against edge runtimes (e.g. Cloudflare's workerd).
+
+  > 🙏 Author: [`nitedani`](https://github.com/nitedani)
+- Improve `vike.dev` aesthetics and UX. (We have a new design in mind, which we'll implement after we finish the [`highest-priority` tickets](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22highest-prio+%F0%9F%94%A5%22).)
 
 
 ## See also
