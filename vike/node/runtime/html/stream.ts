@@ -487,7 +487,7 @@ async function createStreamWrapper({
       assert(writableOriginal)
       writableOriginal.write(chunk)
       if (debug.isActivated) {
-        debug('data written (Node.js Writable)', String(chunk))
+        debug('data written (Node.js Writable)', getChunkAsString(chunk))
       }
     }
     // For libraries such as https://www.npmjs.com/package/compression
@@ -565,7 +565,7 @@ async function createStreamWrapper({
       assert(writerOriginal)
       writerOriginal.write(encodeForWebStream(chunk))
       if (debug.isActivated) {
-        debug('data written (Web Writable)', String(chunk))
+        debug('data written (Web Writable)', getChunkAsString(chunk))
       }
     }
     // Web Streams have compression built-in
@@ -665,11 +665,11 @@ async function createStreamWrapper({
       ) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
         if (debug.isActivated) {
-          debug('data written (Web Readable)', String(chunk))
+          debug('data written (Web Readable)', getChunkAsString(chunk))
         }
       } else {
         if (debug.isActivated) {
-          debug('data emitted but not written (Web Readable)', String(chunk))
+          debug('data emitted but not written (Web Readable)', getChunkAsString(chunk))
         }
       }
     }
@@ -696,7 +696,7 @@ async function createStreamWrapper({
     const writeChunk = (chunk: unknown) => {
       readableProxy.push(chunk)
       if (debug.isActivated) {
-        debug('data written (Node.js Readable)', String(chunk))
+        debug('data written (Node.js Readable)', getChunkAsString(chunk))
       }
     }
     // Readables don't have the notion of flushing
@@ -952,4 +952,12 @@ function inferStreamName(stream: StreamProviderNormalized) {
     return getStreamName('pipe', 'web')
   }
   assert(false)
+}
+
+function getChunkAsString(chunk: unknown): string {
+  try {
+    return new TextDecoder().decode(chunk as any)
+  } catch (err) {
+    return String(chunk)
+  }
 }
