@@ -1,10 +1,10 @@
 interface TodoItem {
-  text: string;
+  text: string
 }
 
 const todos = {
-  todo: [{ text: "Buy milk" }, { text: "Buy strawberries" }],
-};
+  todo: [{ text: 'Buy milk' }, { text: 'Buy strawberries' }]
+}
 
-export { todos };
-export type { TodoItem };
+export { todos }
+export type { TodoItem }

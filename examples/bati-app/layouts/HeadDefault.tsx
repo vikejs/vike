@@ -1,5 +1,5 @@
-import React from "react";
-import logoUrl from "../assets/logo.svg";
+import React from 'react'
+import logoUrl from '../assets/logo.svg'
 
 // Default <head> (can be overridden by pages)
 
@@ -10,5 +10,5 @@ export default function HeadDefault() {
       <meta name="description" content="Demo showcasing Vike" />
       <link rel="icon" href={logoUrl} />
     </>
-  );
+  )
 }
