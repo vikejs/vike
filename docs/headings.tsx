@@ -310,8 +310,8 @@ const headings = [
   {
     level: 2,
     titleInNav: '... more',
-    title: 'Data-fetching Tools',
-    url: '/data-fetching-tools'
+    title: 'Data Tools',
+    url: '/data-tools'
   },
   {
     level: 4,
