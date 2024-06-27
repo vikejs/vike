@@ -117,7 +117,7 @@ async function renderHtmlStream(
   }
   if (injectString) {
     let injectToStream: null | InjectToStream = null
-    if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled && !(await streamOriginal.streamEnd)) {
+    if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
       injectToStream = streamOriginal.injectToStream
     }
     const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream, injectFilter)
