@@ -13,7 +13,7 @@ import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, S
 // ```
 // import type { InjectToStream } from 'react-streaming/server'
 // ```
-type InjectToStreamOptions = { flush?: boolean; expectStreamEnd?: boolean }
+type InjectToStreamOptions = { flush?: boolean; tolerateStreamEnded?: boolean }
 type InjectToStream = (chunk: unknown, options?: InjectToStreamOptions) => boolean
 
 // ```js
