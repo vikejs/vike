@@ -1,3 +1,4 @@
+release new vike-react version
 minor refactor: rename StreamReactStreaming => StreamFromReactStreamingPackage
 minor refactor: rename getStreamFromReactStreaming => getStreamOfReactStreamingPackage
 minor refactor: rename streamReactStreamingToString => streamFromReactStreamingPackageToString
