@@ -37,6 +37,6 @@ async function getViteDevScript(): Promise<string> {
     { onlyOnce: true }
   )
 
-  const scriptTags = viteInjection
-  return scriptTags
+  const viteDevScript = viteInjection
+  return viteDevScript
 }

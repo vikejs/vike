@@ -177,8 +177,8 @@ async function getHtmlTags(
 
 async function mergeScriptEntries(pageAssets: PageAsset[]): Promise<null | string> {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  const viteScripts = await getViteDevScript()
-  const scriptTagsHtml = `${viteScripts}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
+  const viteDevScript = await getViteDevScript()
+  const scriptTagsHtml = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
   const scriptTag = mergeScriptTags(scriptTagsHtml)
   return scriptTag
 }
