@@ -7,7 +7,7 @@ import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../
 import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide.js'
 import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
-import { getViteDevScripts } from './getViteDevScripts.js'
+import { getViteDevScript } from './getViteDevScript.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { InjectToStream } from '../stream/react-streaming.js'
@@ -177,7 +177,7 @@ async function getHtmlTags(
 
 async function mergeScriptEntries(pageAssets: PageAsset[]): Promise<null | string> {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  const viteScripts = await getViteDevScripts()
+  const viteScripts = await getViteDevScript()
   const scriptTagsHtml = `${viteScripts}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
   const scriptTag = mergeScriptTags(scriptTagsHtml)
   return scriptTag
