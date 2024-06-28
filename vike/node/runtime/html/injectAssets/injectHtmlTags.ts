@@ -42,15 +42,6 @@ function injectHtmlFragment(
     htmlString = injectAtOpeningTag('head', htmlString, htmlFragment)
     return htmlString
   }
-  if (position === 'STREAM') {
-    assert(injectToStream)
-    const success = injectToStream(htmlFragment, { flush: true, expectStreamEnd: true })
-    if (success !== false) {
-      return htmlString
-    } else {
-      position = 'HTML_END'
-    }
-  }
   if (position === 'HTML_END') {
     {
       const res = injectAtPaceholder(htmlFragment, htmlString, false)
@@ -63,6 +54,11 @@ function injectHtmlFragment(
       return injectAtClosingTag('html', htmlString, htmlFragment)
     }
     return htmlString + '\n' + htmlFragment
+  }
+  if (position === 'STREAM') {
+    assert(injectToStream)
+    injectToStream(htmlFragment, { flush: true })
+    return htmlString
   }
   assert(false)
 }
