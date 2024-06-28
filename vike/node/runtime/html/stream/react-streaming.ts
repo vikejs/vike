@@ -48,8 +48,6 @@ function isStreamReactStreaming(thing: unknown): thing is StreamReactStreaming {
   if (hasProp(thing, 'injectToStream', 'function')) {
     return true
   }
-  // TODO
-  //if( isStreamPipeNode
   return false
 }
 
