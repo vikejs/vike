@@ -8,20 +8,24 @@ export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
 import { assert, assertUsage, slice } from '../../utils.js'
+import type { StreamReactStreaming } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
-import type { InjectToStream } from '../stream/react-streaming.js'
 
 type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]
 
-function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
+function injectHtmlTags(
+  htmlString: string,
+  htmlTags: HtmlTag[],
+  streamFromReactStreamingPackage: null | StreamReactStreaming
+): string {
   POSITIONS.forEach((position) => {
     const htmlFragment = htmlTags
       .filter((h) => h.position === position)
       .map((h) => resolveHtmlTag(h.htmlTag))
       .join('')
     if (htmlFragment) {
-      htmlString = injectHtmlFragment(position, htmlFragment, htmlString, injectToStream)
+      htmlString = injectHtmlFragment(position, htmlFragment, htmlString, streamFromReactStreamingPackage)
     }
   })
   return htmlString
@@ -31,7 +35,7 @@ function injectHtmlFragment(
   position: Position,
   htmlFragment: string,
   htmlString: string,
-  injectToStream: null | InjectToStream
+  streamFromReactStreamingPackage: null | StreamReactStreaming
 ): string {
   if (position === 'HTML_BEGIN') {
     {
@@ -56,8 +60,8 @@ function injectHtmlFragment(
     return htmlString + '\n' + htmlFragment
   }
   if (position === 'STREAM') {
-    assert(injectToStream)
-    injectToStream(htmlFragment, { flush: true })
+    assert(streamFromReactStreamingPackage)
+    streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
     return htmlString
   }
   assert(false)

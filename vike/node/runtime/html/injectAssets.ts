@@ -9,7 +9,7 @@ import { assertPageContextProvidedByUser } from '../../../shared/assertPageConte
 import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHtmlTags.js'
 import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
-import type { InjectToStream } from './stream/react-streaming.js'
+import type { StreamReactStreaming } from './stream/react-streaming.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import type { PageContextSerialization } from './serializePageContextClientSide.js'
 import { getViteDevScript } from './injectAssets/getViteDevScript.js'
@@ -45,7 +45,7 @@ async function injectHtmlTagsToString(
 
 function injectHtmlTagsToStream(
   pageContext: PageContextInjectAssets & { _isStream: true },
-  injectToStream: null | InjectToStream,
+  streamFromReactStreamingPackage: null | StreamReactStreaming,
   injectFilter: PreloadFilter
 ) {
   let htmlTags: HtmlTag[] | undefined
@@ -58,11 +58,11 @@ function injectHtmlTagsToStream(
   async function injectAtStreamBegin(htmlPartsBegin: HtmlPart[]): Promise<string> {
     const pageAssets = await pageContext.__getPageAssets()
     const viteDevScript = await getViteDevScript()
-    htmlTags = getHtmlTags(pageContext, injectToStream, injectFilter, pageAssets, viteDevScript)
+    htmlTags = getHtmlTags(pageContext, streamFromReactStreamingPackage, injectFilter, pageAssets, viteDevScript)
 
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
 
-    htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags, injectToStream)
+    htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags, streamFromReactStreamingPackage)
     return htmlBegin
   }
 
@@ -76,13 +76,17 @@ function injectHtmlTagsToStream(
   }
 }
 
-function injectToHtmlBegin(htmlBegin: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
+function injectToHtmlBegin(
+  htmlBegin: string,
+  htmlTags: HtmlTag[],
+  streamFromReactStreamingPackage: null | StreamReactStreaming
+): string {
   const htmlTagsAtBegin = htmlTags.filter((snippet) => snippet.position !== 'HTML_END')
 
   // Ensure existence of `<head>`
   htmlBegin = createHtmlHeadIfMissing(htmlBegin)
 
-  htmlBegin = injectHtmlTags(htmlBegin, htmlTagsAtBegin, injectToStream)
+  htmlBegin = injectHtmlTags(htmlBegin, htmlTagsAtBegin, streamFromReactStreamingPackage)
 
   return htmlBegin
 }
