@@ -6,7 +6,7 @@ export { getStreamFromReactStreaming }
 export type { StreamReactStreaming }
 export type { InjectToStream }
 
-import { assert, hasProp } from '../../utils.js'
+import { assert, assertUsage, hasProp } from '../../utils.js'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
 
 // Same as:
@@ -46,6 +46,10 @@ function streamReactStreamingToString(stream: StreamReactStreaming) {
 
 function isStreamReactStreaming(thing: unknown): thing is StreamReactStreaming {
   if (hasProp(thing, 'injectToStream', 'function')) {
+    assertUsage(
+      hasProp(thing, 'hasStreamEnded', 'function'),
+      'Update vike-react or react-streaming to its latest version'
+    )
     return true
   }
   return false
