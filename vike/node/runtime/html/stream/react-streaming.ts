@@ -22,7 +22,6 @@ type InjectToStream = (chunk: unknown, options?: InjectToStreamOptions) => boole
 // ```
 type StreamReactStreaming = {
   injectToStream: InjectToStream
-  hasStreamEnded: () => boolean
   disabled: boolean
 } & (
   | {

@@ -61,7 +61,6 @@ function injectHtmlFragment(
   }
   if (position === 'STREAM') {
     assert(streamFromReactStreamingPackage)
-    assert(!streamFromReactStreamingPackage.hasStreamEnded())
     streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
     return htmlString
   }
