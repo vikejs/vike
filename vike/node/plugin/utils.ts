@@ -1,6 +1,8 @@
 // Utils needed by Vike's Vite plugin.
 
-// We assume all runtime entries will load this utils.ts file
+// We call onLoad() here in order to make sure it's always called, even if only a subset of node/plugin/** is loaded.
+//  - (Calling onLoad() in node/plugin/index.ts wouldn't be enough: for example if node/runtime/** mistakenly loads a node/plugin/** file.)
+//  - (It isn't 100% guaranteed that onLoad() is called: it isn't called when the loaded module doesn't use utils.ts but it's unlikely.)
 import { onLoad } from './onLoad.js'
 onLoad()
 

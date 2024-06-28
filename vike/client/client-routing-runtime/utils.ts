@@ -1,6 +1,9 @@
 // Utils needed by Client Routing.
 
-// We assume all runtime entries will load this utils.ts file
+// We call onLoad() here in order to make sure it's always called, even if only a subset of client/client-routing-runtime/** is loaded.
+//  - (Otherwise we'd need to call onLoad() in both client/client-routing-runtime/index.ts and client/client-routing-runtime/entry.ts)
+//  - (Calling onLoad() here is also future-proof in case we move `import { navigate } from 'vike/client/router'` to `import { navigate } from 'vike/navigate';` or `import { navigate } from 'vike/client';`.)
+//  - (Also, calling onLoad() here avoids node/** to mistakenly load a client/** file, as the assertIsBrowser() call inside onLoad() will throw an error.)
 import { onLoad } from './onLoad.js'
 onLoad()
 
