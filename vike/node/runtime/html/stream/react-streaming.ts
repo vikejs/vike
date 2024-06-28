@@ -22,8 +22,7 @@ type InjectToStream = (chunk: unknown, options?: InjectToStreamOptions) => boole
 // ```
 type StreamReactStreaming = {
   injectToStream: InjectToStream
-  // Older `react-streaming` versions don't define `disabled`
-  disabled?: boolean
+  disabled: boolean
 } & (
   | {
       pipe: (writable: StreamWritableNode) => void
