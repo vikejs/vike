@@ -315,18 +315,18 @@ async function onRenderHtml(pageContext) {
 
 ## Progressive Rendering
 
-Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered (as well as <Link href="/hydration">hydrated</Link>!).
+Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered.
 
-Demo:
+(as well as <Link href="/hydration">hydrated</Link>!).
 
 <video src={progressiveRenderingDemo} width="500" controls muted autoPlay loop></video>
 
-> Instead of using HTML streaming, an alternative and easy way to achieve this is to use a stateful component. But the issue with that approach is that the content that is rendered later isn't rendered to HTML. For example, a product page with content fetched from a database will be missing out on the SEO and performance perks of SSR.
+> Instead of using HTML streaming, an easy alternative is to use a stateful component. But the issue is that the content that is rendered later isn't rendered to HTML. For example, a product page with content fetched from a database won't get <Link href="/SPA-vs-SSR#ssr">the SEO nor performance advantages of SSR</Link>.
 >
-> The benefit of using HTML streaming to implement progressive rendering is that all content, even the content that is rendered later, is rendered to HTML.
+> With streaming all content, including the content that is rendered later, is rendered to HTML.
 
 
-Vike has first-class support for progressive rendering. (Make sure your UI framework supports progressive rendering.)
+Vike has first-class support for HTML streaming and progressive rendering.
 
 Example: [`vike-react` > `examples/full/`](https://github.com/vikejs/vike-react/tree/main/examples/full#readme).
 
