@@ -228,6 +228,10 @@ const headingsDetached = [
     url: '/SPA-vs-SSR'
   },
   {
+    title: 'Server-side Rendering (SSR)',
+    url: '/server-side-rendering'
+  },
+  {
     title: 'Hydration Mismatch',
     url: '/hydration-mismatch'
   },
