@@ -254,11 +254,40 @@ async function runPrerender(
 
   const prerenderedPageContexts: PrerenderedPageContexts = {}
   let prerenderedCount = 0
+
+  const vitePlugins = viteConfig.plugins.filter((plugin) => plugin.transformIndexHtml)
+
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     if (htmlFile.pageId) {
       prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
     }
+
+    for (const plugin of vitePlugins) {
+      //TODO: the transformIndexHtml can be an object too
+      if (typeof plugin.transformIndexHtml === 'function') {
+        const { fileName, filePath } = getFilePath(
+          htmlFile.urlOriginal,
+          '.html',
+          outDirClient,
+          htmlFile.doNotCreateExtraDirectory
+        )
+
+        const result = await plugin.transformIndexHtml(htmlFile.htmlString, {
+          path: filePath,
+          filename: fileName,
+          //TODO: add bundle from vite build step?
+          bundle: {}
+          // chunk: {}
+        })
+
+        // TODO: the result can be an object too
+        if (typeof result === 'string') {
+          htmlFile.htmlString = result
+        }
+      }
+    }
+
     await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
   }
 
@@ -955,16 +984,11 @@ async function writeFiles(
   await Promise.all(writeJobs)
 }
 
-async function write(
+function getFilePath(
   urlOriginal: string,
-  pageContext: Record<string, unknown>,
-  fileExtension: '.html' | '.pageContext.json',
-  fileContent: string,
-  root: string,
+  fileExtension: string,
   outDirClient: string,
-  doNotCreateExtraDirectory: boolean,
-  onPagePrerender: Function | undefined,
-  logLevel: 'info' | 'warn'
+  doNotCreateExtraDirectory: boolean
 ) {
   let fileUrl: string
   if (fileExtension === '.html') {
@@ -980,6 +1004,27 @@ async function write(
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
+  const fileName = path.posix.basename(filePath)
+  return { fileName, filePath, filePathRelative }
+}
+
+async function write(
+  urlOriginal: string,
+  pageContext: Record<string, unknown>,
+  fileExtension: '.html' | '.pageContext.json',
+  fileContent: string,
+  root: string,
+  outDirClient: string,
+  doNotCreateExtraDirectory: boolean,
+  onPagePrerender: Function | undefined,
+  logLevel: 'info' | 'warn'
+) {
+  const { filePath, filePathRelative } = getFilePath(
+    urlOriginal,
+    fileExtension,
+    outDirClient,
+    doNotCreateExtraDirectory
+  )
   if (onPagePrerender) {
     const prerenderPageContext = {}
     objectAssign(prerenderPageContext, pageContext)
