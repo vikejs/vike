@@ -21,14 +21,14 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Next.js Comparison',
-    url: '/nextjs',
-    sectionTitles: ['React Server Components']
+    title: 'FAQ',
+    url: '/faq'
   },
   {
     level: 2,
-    title: 'FAQ',
-    url: '/faq'
+    title: 'Next.js Comparison',
+    url: '/nextjs',
+    sectionTitles: ['React Server Components']
   },
   {
     level: 1,
