@@ -6,19 +6,15 @@ export { getStreamFromReactStreaming }
 export type { StreamReactStreaming }
 export type { InjectToStream }
 
-import { assert, hasProp } from '../../utils.js'
+import { assert, assertUsage, hasProp, isVikeReactApp } from '../../utils.js'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
 
-// Same type than:
+// Same as:
 // ```
 // import type { InjectToStream } from 'react-streaming/server'
 // ```
-type InjectToStream = (
-  chunk: unknown,
-  options?: {
-    flush?: boolean
-  }
-) => void
+type InjectToStreamOptions = { flush?: boolean; tolerateStreamEnded?: boolean }
+type InjectToStream = (chunk: unknown, options?: InjectToStreamOptions) => boolean
 
 // ```js
 // import { renderToStream } from 'react-streaming/server'
@@ -26,8 +22,8 @@ type InjectToStream = (
 // ```
 type StreamReactStreaming = {
   injectToStream: InjectToStream
-  // Older `react-streaming` versions don't define `disabled`
-  disabled?: boolean
+  hasStreamEnded: () => boolean
+  disabled: boolean
 } & (
   | {
       pipe: (writable: StreamWritableNode) => void
@@ -50,10 +46,15 @@ function streamReactStreamingToString(stream: StreamReactStreaming) {
 
 function isStreamReactStreaming(thing: unknown): thing is StreamReactStreaming {
   if (hasProp(thing, 'injectToStream', 'function')) {
+    assertUsage(
+      hasProp(thing, 'hasStreamEnded', 'function'),
+      isVikeReactApp()
+        ? //
+          'Update vike-react to its latest version'
+        : 'Update react-streaming to its latest version'
+    )
     return true
   }
-  // TODO
-  //if( isStreamPipeNode
   return false
 }
 
