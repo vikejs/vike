@@ -560,7 +560,7 @@ const headingsDetached = [
     url: '/releases/2024-05'
   },
   {
-    title: 'June 2024 Releases',
+    title: 'June Releases',
     url: '/releases/2024-06'
   },
   {
