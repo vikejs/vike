@@ -43,7 +43,6 @@ const headingsDetached = [
   {
     title: 'Architecture',
     url: '/architecture',
-    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
   },
   {
     title: 'Optional Control',
