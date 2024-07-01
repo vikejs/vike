@@ -564,7 +564,7 @@ async function getGlobalConfigs(
       )
       const configValueSource = sources[0]
       if (!configValueSource) return
-      if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
+      if (['onBeforeRoute', 'onPrerenderStart', 'onBoot'].includes(configName)) {
         assert(!('value' in configValueSource))
         pageConfigGlobal.configValueSources[configName] = [configValueSource]
       } else {

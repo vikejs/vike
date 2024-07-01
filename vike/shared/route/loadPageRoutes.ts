@@ -30,11 +30,11 @@ async function loadPageRoutes(
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
   allPageIds: string[]
-): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook }> {
+): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | Hook; onBootHook: null | Hook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
-  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
+  const { onBootHook, onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs, pageConfigGlobal)
   const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
-  return { pageRoutes, onBeforeRouteHook }
+  return { pageRoutes, onBeforeRouteHook, onBootHook }
 }
 
 function getPageRoutes(
@@ -175,12 +175,14 @@ function getGlobalHooks(
   pageConfigGlobal: PageConfigGlobalRuntime
 ): {
   onBeforeRouteHook: null | Hook
+  onBootHook: null | Hook
   filesystemRoots: null | FilesystemRoot[]
 } {
   // V1 Design
   if (pageConfigs.length > 0) {
-    const hook = getHookFromPageConfigGlobal(pageConfigGlobal, 'onBeforeRoute')
-    return { onBeforeRouteHook: hook, filesystemRoots: null }
+    const onBootHook = getHookFromPageConfigGlobal(pageConfigGlobal, 'onBoot')
+    const onBeforeRouteHook = getHookFromPageConfigGlobal(pageConfigGlobal, 'onBeforeRoute')
+    return { onBootHook, onBeforeRouteHook, filesystemRoots: null }
   }
 
   // Old design
@@ -221,7 +223,7 @@ function getGlobalHooks(
       }
     })
 
-  return { onBeforeRouteHook, filesystemRoots }
+  return { onBootHook: null, onBeforeRouteHook, filesystemRoots }
 }
 
 function dirname(filePath: string): string {
