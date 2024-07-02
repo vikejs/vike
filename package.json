@@ -46,7 +46,7 @@
   },
   "pnpm": {
     "overrides": {
-      "react-streaming": "link:../react-streaming/",
+      "react-streaming": "0.3.33-commit-a6da6e2",
       "vike": "link:./vike/"
     },
     "packageExtensions": {
