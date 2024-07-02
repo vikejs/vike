@@ -42,7 +42,7 @@ const headingsDetached = [
   },
   {
     title: 'Architecture',
-    url: '/architecture',
+    url: '/architecture'
   },
   {
     title: 'Optional Control',
