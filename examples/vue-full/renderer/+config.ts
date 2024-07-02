@@ -5,7 +5,10 @@ import type { Config } from 'vike/types'
 // https://vike.dev/config
 const config = {
   clientRouting: true,
-  prefetchStaticAssets: 'viewport',
+  prefetch: {
+    staticAssets: 'viewport',
+    pageContext: true
+  },
   // https://vike.dev/meta
   meta: {
     // Define new setting 'title'

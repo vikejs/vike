@@ -12,7 +12,6 @@ import type {
 } from 'vike/types'
 
 export const clientRouting = true
-export const prefetchStaticAssets = 'viewport'
 export { render }
 export { onHydrationEnd }
 export { onPageTransitionStart }

@@ -13,12 +13,16 @@ import {
   hasProp
 } from './utils.js'
 import {
+  getPageContextFromClientHooks,
+  getPageContextFromServerHooks,
   getPageContextFromHooks_isHydration,
-  getPageContextFromHooks_isNotHydration,
-  getPageContextFromHooks_serialized
+  getPageContextFromHooks_serialized,
+  type PageContextFromServerHooks,
+  type PageContextFromClientHooks,
+  setPageContextInitIsPassedToClient
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
-import { addLinkPrefetchHandlers } from './prefetch.js'
+import { addLinkPrefetchHandlers, getPrefetchedPageContext } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook, getHook } from '../../shared/hooks/getHook.js'
@@ -38,6 +42,7 @@ import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageContextExports } from '../../shared/getPageFiles.js'
+import { setCurrentPageContext } from './getCurrentPageContext.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -203,19 +208,37 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       // Render page view
       await renderPageView(pageContext)
     } else {
-      let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
+      // Fetch pageContext from server-side hooks
+      let pageContextFromServerHooks: PageContextFromServerHooks
+      const prefetchedPageContext = getPrefetchedPageContext(pageContext)
+      if (prefetchedPageContext) {
+        pageContextFromServerHooks = prefetchedPageContext
+      } else {
+        try {
+          const result = await getPageContextFromServerHooks(pageContext, false)
+          if ('is404ServerSideRouted' in result) return
+          pageContextFromServerHooks = result.pageContextFromHooks
+        } catch (err) {
+          await onError(err)
+          return
+        }
+      }
+      if (isRenderOutdated()) return
+      // TODO: create helder assertPageContextFromHook()
+      assert(!('urlOriginal' in pageContextFromServerHooks))
+      objectAssign(pageContext, pageContextFromServerHooks)
+
+      // Get pageContext from client-side hooks
+      let pageContextFromClientHooks: PageContextFromClientHooks
       try {
-        res = await getPageContextFromHooks_isNotHydration(pageContext, false)
+        pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, false)
       } catch (err) {
         await onError(err)
         return
       }
       if (isRenderOutdated()) return
-      if ('is404ServerSideRouted' in res) return
-      const pageContextFromHooks = res.pageContextFromHooks
-
-      assert(!('urlOriginal' in pageContextFromHooks))
-      objectAssign(pageContext, pageContextFromHooks)
+      assert(!('urlOriginal' in pageContextFromClientHooks))
+      objectAssign(pageContext, pageContextFromClientHooks)
 
       // Render page view
       await renderPageView(pageContext)
@@ -344,22 +367,32 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
     if (isRenderOutdated()) return
 
-    let res: Awaited<ReturnType<typeof getPageContextFromHooks_isNotHydration>>
+    let pageContextFromServerHooks: { _hasPageContextFromServer: boolean }
     try {
-      res = await getPageContextFromHooks_isNotHydration(pageContext, true)
+      const result = await getPageContextFromServerHooks(pageContext, true)
+      if ('is404ServerSideRouted' in result) return
+      pageContextFromServerHooks = result.pageContextFromHooks
     } catch (err: unknown) {
-      // - When user hasn't defined a `_error.page.js` file
-      // - Some Vike unpexected internal error
       onError(err)
       return
     }
     if (isRenderOutdated()) return
-    if ('is404ServerSideRouted' in res) return
-    const pageContextFromHooks = res.pageContextFromHooks
+    assert(pageContextFromServerHooks)
+    assert(!('urlOriginal' in pageContextFromServerHooks))
+    objectAssign(pageContext, pageContextFromServerHooks)
 
-    assert(pageContextFromHooks)
-    assert(!('urlOriginal' in pageContextFromHooks))
-    objectAssign(pageContext, pageContextFromHooks)
+    let pageContextFromClientHooks: PageContextFromClientHooks
+    try {
+      pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, true)
+    } catch (err: unknown) {
+      onError(err)
+      return
+    }
+    if (isRenderOutdated()) return
+    assert(pageContextFromClientHooks)
+    assert(!('urlOriginal' in pageContextFromClientHooks))
+    objectAssign(pageContext, pageContextFromClientHooks)
+
     await renderPageView(pageContext, args)
   }
 
@@ -408,7 +441,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated(true)) return
     */
 
-    addLinkPrefetchHandlers(pageContext)
+    setCurrentPageContext(pageContext)
+    addLinkPrefetchHandlers()
 
     // onHydrationEnd()
     if (isHydrationRender && !onRenderClientError) {
@@ -452,6 +486,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     setScrollPosition(scrollTarget)
     browserNativeScrollRestoration_disable()
     setInitialRenderIsDone()
+    if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
   }
 }
 
