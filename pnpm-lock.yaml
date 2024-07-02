@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  react-streaming: 0.3.33-commit-914f21d
+  react-streaming: 0.3.33-commit-485ed46
   vike: link:./vike/
 
 packageExtensionsChecksum: f050d50401848e89704474c6985d439e
@@ -447,8 +447,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.33-commit-914f21d
-        version: 0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 0.3.33-commit-485ed46
+        version: 0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -708,8 +708,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.33-commit-914f21d
-        version: 0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 0.3.33-commit-485ed46
+        version: 0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: ^5.3.3
         version: 5.4.5
@@ -762,8 +762,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.33-commit-914f21d
-        version: 0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 0.3.33-commit-485ed46
+        version: 0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -823,7 +823,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       telefunc:
         specifier: ^0.1.70
-        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.4.5
@@ -1116,8 +1116,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.33-commit-914f21d
-        version: 0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 0.3.33-commit-485ed46
+        version: 0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1383,8 +1383,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.33-commit-914f21d
-        version: 0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 0.3.33-commit-485ed46
+        version: 0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: ^4.8.4
         version: 4.8.4
@@ -1416,8 +1416,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.33-commit-914f21d
-        version: 0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 0.3.33-commit-485ed46
+        version: 0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       sirv:
         specifier: ^2.0.2
         version: 2.0.4
@@ -1471,7 +1471,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       telefunc:
         specifier: ^0.1.70
-        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.4.5
@@ -1855,8 +1855,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: 0.3.33-commit-914f21d
-        version: 0.3.33-commit-914f21d(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 0.3.33-commit-485ed46
+        version: 0.3.33-commit-485ed46(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rimraf:
         specifier: ^5.0.5
         version: 5.0.7
@@ -6190,8 +6190,8 @@ packages:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
     engines: {node: '>=0.10.0'}
 
-  react-streaming@0.3.33-commit-914f21d:
-    resolution: {integrity: sha512-PMTKToC2JrcMFDNZOEzTsXIOmZOvVaPz69oSctbMlgQquAr17G7vJU7Ay/DwwVaI2P7NDi8Cxg8HPA5sd3pjJA==}
+  react-streaming@0.3.33-commit-485ed46:
+    resolution: {integrity: sha512-Uiy5fbcXkeA38jeOE5BmKQccM5V+E+VvW9fZesegSeYSdtSDpnQoio8gingRsUsNmZLPscRUyo0Y+H7/wZdScA==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -6658,7 +6658,7 @@ packages:
       '@babel/parser': ^7.0.0
       '@babel/types': ^7.0.0
       react: ^18.0.0
-      react-streaming: 0.3.33-commit-914f21d
+      react-streaming: 0.3.33-commit-485ed46
     peerDependenciesMeta:
       '@babel/core':
         optional: true
@@ -12436,7 +12436,7 @@ snapshots:
 
   react-refresh@0.14.2: {}
 
-  react-streaming@0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+  react-streaming@0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.10
@@ -12445,7 +12445,7 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  react-streaming@0.3.33-commit-914f21d(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-streaming@0.3.33-commit-485ed46(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.10
@@ -13011,7 +13011,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  telefunc@0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0):
+  telefunc@0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0):
     dependencies:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.10
@@ -13025,7 +13025,7 @@ snapshots:
       '@babel/parser': 7.24.6
       '@babel/types': 7.24.6
       react: 18.2.0
-      react-streaming: 0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-streaming: 0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
   terser-webpack-plugin@5.3.10(webpack@5.91.0(webpack-cli@5.1.4)):
     dependencies:
@@ -13420,7 +13420,7 @@ snapshots:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      react-streaming: 0.3.33-commit-914f21d(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-streaming: 0.3.33-commit-485ed46(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       vike: link:vike
       vite: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
 
@@ -13428,7 +13428,7 @@ snapshots:
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-streaming: 0.3.33-commit-914f21d(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-streaming: 0.3.33-commit-485ed46(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       vike: link:vike
       vite: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
 
