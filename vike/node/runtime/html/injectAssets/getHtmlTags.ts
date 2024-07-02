@@ -7,7 +7,6 @@ import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../
 import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide.js'
 import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
-import { getViteDevScripts } from './getViteDevScripts.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { InjectToStream } from '../stream/react-streaming.js'
@@ -39,16 +38,17 @@ type HtmlTag = {
   htmlTag: string | (() => string)
   position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 }
-async function getHtmlTags(
+function getHtmlTags(
   pageContext: { _isStream: boolean } & PageContextInjectAssets,
   injectToStream: null | InjectToStream,
-  injectFilter: PreloadFilter
+  injectFilter: PreloadFilter,
+  pageAssets: PageAsset[],
+  viteDevScript: string
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { isProduction } = getGlobalContext()
 
-  const pageAssets = await pageContext.__getPageAssets()
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
       if (asset.isEntry && asset.assetType === 'script') {
@@ -153,7 +153,7 @@ async function getHtmlTags(
     })
   }
   // The JavaScript entry <script> tag
-  const scriptEntry = await mergeScriptEntries(pageAssets)
+  const scriptEntry = mergeScriptEntries(pageAssets, viteDevScript)
   if (scriptEntry) {
     htmlTags.push({
       htmlTag: scriptEntry,
@@ -175,10 +175,9 @@ async function getHtmlTags(
   return htmlTags
 }
 
-async function mergeScriptEntries(pageAssets: PageAsset[]): Promise<null | string> {
+function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): null | string {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  const viteScripts = await getViteDevScripts()
-  const scriptTagsHtml = `${viteScripts}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
+  const scriptTagsHtml = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
   const scriptTag = mergeScriptTags(scriptTagsHtml)
   return scriptTag
 }

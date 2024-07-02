@@ -1,9 +1,27 @@
-import { DataArchitecture } from '../../components'
+import { Link } from '@brillout/docpress'
+import { DataIntegrationIntro, DataIntegrationStore } from '../../components'
 
-<DataArchitecture
-  toolName={'PullState'}
-  toolLink={'https://github.com/lostpebble/pullstate'}
-  isGeneric={false}
-  toolType="data-store"
-  toolDocs={<a href="https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered">PullState &gt; SSR Example</a>}
+You can use Vike with [PullState](https://github.com/lostpebble/pullstate).
+
+This page documents how to manually integrate PullState.
+
+> There isn't a <Link href="/extensions">Vike extension</Link> for PullState yet, but [contribution welcome to create one](https://github.com/vikejs/vike/issues/1715).
+
+
+## Initial state
+
+<DataIntegrationIntro
+  toolName="PullState"
+  toolType="store"
 />
+
+Integration example:
+<DataIntegrationStore toolName="PullState" />
+
+See also:
+- [PullState > SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)
+
+
+## See also
+
+- [PullState > SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)

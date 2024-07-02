@@ -1,6 +1,10 @@
 import { RepoLink, Link, Warning } from '@brillout/docpress'
 import { Example } from '../../components'
 
+You can use Vike with [Cloudflare Workers](https://workers.cloudflare.com).
+
+> For a much improved DX, instead of directly using Cloudflare Workers, we recommend using <Link href="/cloudflare-pages#full-stack" doNotInferSectionTitle />.
+
 ## Examples
 
  - React: <RepoLink path='/examples/cloudflare-workers-react/' />
@@ -38,8 +42,6 @@ The bundle size of our worker should not exceed 1MB, but we can request sizes of
 We can also use [Cloudflare Pages](https://developers.cloudflare.com/pages/) to deploy our Vike app.
 
 To deploy our SSR worker, we use a [Cloudflare Pages Function](https://developers.cloudflare.com/pages/platform/functions/).
-
-<Warning>Cloudflare Pages Functions is [in beta](https://developers.cloudflare.com/pages/platform/functions/).</Warning>
 
 Example:
   - <Example timestamp="2022.04" repo="Immortalin/vite-plugin-ssr-cloudflare-pages-demo" />

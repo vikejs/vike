@@ -1,9 +1,17 @@
 ```tsx
-import { clientOnly } from 'vike-solid/ClientOnly'
-
-const ClientOnlyCounter = clientOnly(() => import("./MyComponent.jsx"));
+import { ClientOnly } from 'vike-solid/ClientOnly'
 
 function MyComponent(props) {
-  return <ClientOnlyCounter fallback={<Loading />} />
+  return (
+    <ClientOnly
+      load={() => import('./MyComponent.jsx')}
+      /* Or:
+      load={async () => (await import('some-library')).SomeComponent}
+      */
+      fallback={<Loading />}
+    >
+      {(MyComponent) => <MyComponent {...props} />}
+    </ClientOnly>
+  )
 }
 ```

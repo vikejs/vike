@@ -6,16 +6,16 @@ import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import type { InjectFilterEntry, OnRenderHtmlAsync } from 'vike/types'
 // @ts-ignore
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const { Page, pageProps } = pageContext
   // The config 'preloadStrategy' is a custom config we defined at ./+config.ts
   const { preloadStrategy } = pageContext.config
   const pageHtml = renderToString(
-    <PageLayout>
+    <Layout>
       <Page {...pageProps} />
-    </PageLayout>
+    </Layout>
   )
 
   const documentHtml = escapeInject`<!DOCTYPE html>

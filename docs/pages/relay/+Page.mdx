@@ -1,13 +1,25 @@
 import { Link } from '@brillout/docpress'
-import { DataArchitecture, Example } from '../../components'
+import { DataIntegrationFetch, DataIntegrationIntro, Example } from '../../components'
 
-<DataArchitecture
-  toolName={'Relay'}
-  toolLink={'https://relay.dev/'}
-  isGeneric={false}
-  toolType="graphql"
-  toolDocs={<a href="https://github.com/facebook/relay/issues/3468#issuecomment-824872147">Relay &gt; #3468 - SSR docs (comment)</a>}
-/>
+You can use Vike with [Relay](https://github.com/facebook/relay).
+
+This page documents how to manually integrate Relay.
+
+> There isn't a <Link href="/extensions">Vike extension</Link> for Relay yet, but [contribution welcome to create one](https://github.com/vikejs/vike/issues/1715).
+
+
+## Initial data
+
+<DataIntegrationIntro toolType="graphql" toolName="Relay" />
+
+Integration example:
+<DataIntegrationFetch toolName="Relay" />
+
+See also:
+- [GitHub> facebook/relay > #3468 - SSR docs (comment)](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
+- [nextjs-relay-streaming-ssr](https://github.com/tobias-tengler/nextjs-relay-streaming-ssr), which has an explanation in the Readme on how it works.
+- <Link href="/data-tools#initial-data" />
+
 
 ## React Streaming
 
@@ -15,7 +27,16 @@ For using Relay with React Streaming, see:
  - <Link href="/streaming#initial-data-after-stream-end" />
  - [Relay - #3762 React 18 docs](https://github.com/facebook/relay/issues/3762)
 
+
 ## Example
 
 Example of a deep Relay integration with React 18's new SSR Suspense Render-as-you-Fetch architecture:
  - <Example timestamp="2022.08" repo="XiNiHa/vilay" />
+
+
+## See also
+
+See also:
+- [GitHub> facebook/relay > #3468 - SSR docs (comment)](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
+- [nextjs-relay-streaming-ssr](https://github.com/tobias-tengler/nextjs-relay-streaming-ssr), which has an explanation in the Readme on how it works.
+- <Link href="/data-tools#initial-data" />

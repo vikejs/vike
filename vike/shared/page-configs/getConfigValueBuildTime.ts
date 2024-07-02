@@ -32,7 +32,6 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigName)
 
   const sources = configValueSources[configName]
   if (!sources) return null
-  assert(sources.every((s) => s.configEnv.config === true))
   const configDef = configDefinitions[configName]
   assert(configDef)
   if (!configDef.cumulative) {

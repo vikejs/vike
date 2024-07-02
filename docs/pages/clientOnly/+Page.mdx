@@ -1,0 +1,89 @@
+import { Link } from '@brillout/docpress'
+import { ClientOnlyCommon } from '../ClientOnly/ClientOnlyCommon.tsx'
+import { UiFrameworkExtension } from '../../components'
+
+Implemented by: <UiFrameworkExtension /> (or <Link href="#without-vike-react-vue-solid">yourself</Link>).
+
+The `clientOnly()` helper enables you to load and render a component only on the client-side.
+
+> Alternatively, you can set <Link href="/ssr">`ssr: false`</Link> to load and render the entire page on the client-side only.
+
+Common use cases:
+
+ - **Library components that don't support SSR**. A solution is to render and load the component only on the client-side.
+   > Most component libraries nowadays support SSR but some don't. Some even crash when they're merely loaded on the server-side (for example if the library has a hard reference to browser-only APIs such as `window`).
+ - **Performance**. `clientOnly()` allows you to defer loading heavy components, such as a complex interactive map. That way, your users can already interact with your page before even the browser starts loading that heavy component.
+   > Vite code-splits dynamic imports such as `const { SomeComponent } = await import('./SomeComponent')`. In other words, the code of `<SomeComponent />` isn't included in the initial JavaScript client bundle: it's loaded only when/if `import()` is called.
+
+
+## React
+
+The `vike-react` extension doesn't implement the `clientOnly()` helper (yet). Use the <Link href="/ClientOnly#react">`<ClientOnly>`</Link> wrapper instead.
+
+> Contribution welcome, see [#102 - `clientOnly()` instead of `<ClientOnly>`](https://github.com/vikejs/vike-react/issues/102)
+
+
+## Solid
+
+### Usage
+
+```tsx
+import { clientOnly } from 'vike-solid/clientOnly'
+
+const SomeComponent = clientOnly(() => import("./SomeComponent.jsx"));
+/* If the component isn't the default export:
+const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
+*/
+
+function MyComponent(props) {
+  return <SomeComponent fallback={<Loading />} />
+}
+```
+
+#### Props
+
+- **fallback**: Content shown while the component is being loaded.
+
+All other props are passed to the loaded component.
+
+
+## Vue
+
+```vue
+<template>
+  <SomeComponent>
+    <template #fallback>
+      <p>Loading...</p>
+    </template>
+  </SomeComponent>
+</template>
+
+<script setup>
+import clientOnly from 'vike-vue/clientOnly'
+const SomeComponent = clientOnly(() => import('./SomeComponent.vue'))
+/* If the component isn't the default export:
+const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
+*/
+</script>
+```
+
+#### Props
+
+All props are passed to the loaded component.
+
+#### Slots
+
+- **fallback**: Content shown while the component is being loaded.
+- **client-only-fallback**: Use it instead of the `#fallback` slot in case of conflicts.
+
+All slots are passed to the loaded component.
+
+
+## Without `vike-{react,vue,solid}`
+
+If you don't use a <UiFrameworkExtension />, you can implement the `clientOnly()` helper yourself.
+
+See, for example, the source code at:
+ - [GitHub > `vikejs/vike-react`](https://github.com/vikejs/vike-react)
+ - [GitHub > `vikejs/vike-vue`](https://github.com/vikejs/vike-vue)
+ - [GitHub > `vikejs/vike-solid`](https://github.com/vikejs/vike-solid)

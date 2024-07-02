@@ -60,7 +60,7 @@ function extractAssetsPlugin(): Plugin[] {
         }
         if (isServerAssetsFixEnabled) {
           // I'm guessing isServerAssetsFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
-          assertV1Design(true, vikeConfig.pageConfigs)
+          assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
         assert(configVike.includeAssetsImportedByServer)

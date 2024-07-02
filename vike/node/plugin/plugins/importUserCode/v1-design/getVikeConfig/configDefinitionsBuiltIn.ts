@@ -202,7 +202,7 @@ type ConfigNameGlobal =
   | 'disableUrlNormalization'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
-    env: { server: true, production: true }
+    env: { server: true, production: true, eager: true }
   },
   onBeforeRoute: {
     env: { server: true, client: 'if-client-routing', eager: true }

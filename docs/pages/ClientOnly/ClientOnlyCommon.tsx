@@ -24,20 +24,18 @@ export const ClientOnlyCommon = ({ packageName }: { packageName: string }) => {
         </blockquote>
       )}
       <ul>
-        {!isSolid && (
-          <li>
-            <strong>load</strong>: The function that imports the component.
-          </li>
-        )}
-        {isReact && (
-          <li>
-            <strong>children</strong>: The function that renders the component.
-          </li>
-        )}
+        <li>
+          <strong>load</strong>: The function that imports the component.
+        </li>
         {!isVue && (
-          <li>
-            <strong>fallback</strong>: The element that is displayed while the component is being loaded.
-          </li>
+          <>
+            <li>
+              <strong>children</strong>: The function that renders the component.
+            </li>
+            <li>
+              <strong>fallback</strong>: The element that is displayed while the component is being loaded.
+            </li>
+          </>
         )}
         {isReact && (
           <li>

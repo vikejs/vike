@@ -1,4 +1,5 @@
 export { Example }
+export { ExampleTimestamp }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
@@ -9,12 +10,12 @@ type TimestampType = `${number}.${number}`
 function Example({ repo, timestamp }: { repo: Repo; timestamp: TimestampType }) {
   return (
     <>
-      <Timestamp>{timestamp}</Timestamp> <Github>{repo}</Github>
+      <ExampleTimestamp>{timestamp}</ExampleTimestamp> <Github>{repo}</Github>
     </>
   )
 }
 
-function Timestamp({ children }: { children: TimestampType }) {
+function ExampleTimestamp({ children }: { children: TimestampType }) {
   return (
     <span
       style={{
@@ -33,7 +34,7 @@ function Timestamp({ children }: { children: TimestampType }) {
 function Github({ children }: { children: Repo }) {
   const repo = children
   assert(repo)
-  assert(repo.split('/').length === 2)
+  assert(repo.split('/').length >= 2)
   return (
     <a href={'https://github.com/' + repo}>
       GitHub &gt; <code>{repo}</code>

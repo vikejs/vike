@@ -16,20 +16,19 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Next.js Comparison',
-    url: '/nextjs',
-    sectionTitles: ['React Server Components']
-  },
-  {
-    level: 2,
-    title: 'Architecture',
-    url: '/architecture',
-    sectionTitles: ['`onRenderHtml()` & `onRenderClient()`', 'Do-one-thing-do-it-well']
+    title: 'Why Vike',
+    url: '/why'
   },
   {
     level: 2,
     title: 'FAQ',
     url: '/faq'
+  },
+  {
+    level: 2,
+    title: 'Next.js Comparison',
+    url: '/nextjs',
+    sectionTitles: ['React Server Components']
   },
   {
     level: 1,
@@ -64,14 +63,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Routing',
-    url: '/routing'
-  },
-  {
-    level: 2,
     title: 'Data Fetching',
     url: '/data-fetching',
-    sectionTitles: ['`data()`']
+    sectionTitles: ['Pre-rendering (SSG)']
   },
   {
     level: 2,
@@ -82,6 +76,25 @@ const headings = [
     level: 2,
     title: 'Common Issues',
     url: '/common-issues'
+  },
+  {
+    level: 4,
+    title: 'Routing'
+  },
+  {
+    level: 2,
+    title: 'Routing',
+    url: '/routing'
+  },
+  {
+    level: 2,
+    title: 'Base URL',
+    url: '/base-url'
+  },
+  {
+    level: 2,
+    title: 'Active Links',
+    url: '/active-links'
   },
   {
     level: 4,
@@ -165,41 +178,6 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Routing',
-    titleEmoji: 'road-fork'
-  },
-  {
-    level: 2,
-    title: 'Filesystem Routing',
-    url: '/filesystem-routing'
-  },
-  {
-    level: 2,
-    title: 'Route String',
-    url: '/route-string'
-  },
-  {
-    level: 2,
-    title: 'Route Function',
-    url: '/route-function'
-  },
-  {
-    level: 2,
-    title: 'Active Links',
-    url: '/active-links'
-  },
-  {
-    level: 2,
-    title: 'Base URL',
-    url: '/base-url'
-  },
-  {
-    level: 2,
-    title: 'Routing Precedence',
-    url: '/routing-precedence'
-  },
-  {
-    level: 1,
     title: 'Deploy',
     titleEmoji: 'earth'
   },
@@ -215,7 +193,8 @@ const headings = [
   {
     level: 2,
     title: 'Cloudflare Pages',
-    url: '/cloudflare-pages'
+    url: '/cloudflare-pages',
+    sectionTitles: ['Full-stack']
   },
   {
     level: 2,
@@ -225,7 +204,7 @@ const headings = [
   {
     level: 2,
     title: 'Static Hosts',
-    titleInNav: 'Other',
+    titleInNav: '... more',
     url: '/static-hosts'
   },
   {
@@ -268,9 +247,13 @@ const headings = [
     url: '/docker'
   },
   {
+    level: 4,
+    title: 'Other'
+  },
+  {
     level: 2,
     title: 'Deploy',
-    titleInNav: 'Other',
+    titleInNav: 'Other deployment',
     url: '/deploy'
   },
   {
@@ -284,18 +267,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Apollo (GraphQL)',
-    url: '/apollo-graphql'
-  },
-  {
-    level: 2,
-    title: 'Relay (GraphQL)',
-    url: '/relay'
-  },
-  {
-    level: 2,
-    titleInNav: 'Telefunc (RPC)',
-    title: 'Telefunc',
+    title: 'Telefunc (RPC)',
     url: '/telefunc'
   },
   {
@@ -305,13 +277,18 @@ const headings = [
   },
   {
     level: 2,
-    title: 'React Query',
-    url: '/react-query'
+    title: 'TanStack Query',
+    url: '/tanstack-query'
   },
   {
     level: 2,
-    title: 'Vue Query',
-    url: '/vue-query'
+    title: 'Apollo (GraphQL)',
+    url: '/apollo-graphql'
+  },
+  {
+    level: 2,
+    title: 'Relay (GraphQL)',
+    url: '/relay'
   },
   {
     level: 2,
@@ -330,18 +307,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
-    title: 'Data Fetching Tools',
-    url: '/data-fetching-tools'
+    titleInNav: '... more',
+    title: 'Data Tools',
+    url: '/data-tools'
   },
   {
     level: 4,
-    title: 'Data store'
-  },
-  {
-    level: 2,
-    title: 'Vuex',
-    url: '/vuex'
+    title: 'State management'
   },
   {
     level: 2,
@@ -355,14 +327,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'PullState',
-    url: '/pullstate'
-  },
-  {
-    level: 2,
-    title: 'Data Store',
-    titleInNav: 'Other',
-    url: '/store'
+    title: 'Stores',
+    titleInNav: '... more',
+    url: '/stores'
   },
   {
     level: 4,
@@ -375,7 +342,7 @@ const headings = [
   },
   {
     level: 4,
-    title: 'CSS, styling, CSS frameworks'
+    title: 'CSS'
   },
   {
     level: 2,
@@ -396,11 +363,6 @@ const headings = [
     level: 2,
     title: 'Vuetify',
     url: '/vuetify'
-  },
-  {
-    level: 2,
-    title: 'CSS-in-JS',
-    url: '/css-in-js'
   },
   {
     level: 2,
@@ -451,13 +413,14 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
-    title: 'CSS Frameworks',
-    url: '/css-frameworks'
+    titleInNav: '... more',
+    title: 'CSS Tools',
+    url: '/css-tools',
+    sectionTitles: ['Collect styles upon SSR']
   },
   {
     level: 4,
-    title: 'UI frameworks'
+    title: 'UI framework'
   },
   {
     level: 2,
@@ -492,13 +455,13 @@ const headings = [
   },
   {
     level: 2,
-    titleInNav: 'Other',
-    title: 'UI Framework',
-    url: '/ui-framework'
+    titleInNav: '... more',
+    title: 'UI Frameworks',
+    url: '/ui-frameworks'
   },
   {
     level: 4,
-    title: 'Server'
+    title: 'JavaScript Server'
   },
   {
     level: 2,
@@ -517,11 +480,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Nitro',
-    url: '/nitro'
-  },
-  {
-    level: 2,
     title: 'Deno',
     url: '/deno'
   },
@@ -529,6 +487,31 @@ const headings = [
     level: 2,
     title: 'Fastify',
     url: '/fastify'
+  },
+  {
+    level: 2,
+    title: 'Nitro',
+    url: '/nitro'
+  },
+  {
+    level: 2,
+    title: 'H3',
+    url: '/h3'
+  },
+  {
+    level: 2,
+    title: 'Servers',
+    titleInNav: '... more',
+    url: '/servers'
+  },
+  {
+    level: 4,
+    title: 'Backend'
+  },
+  {
+    level: 2,
+    title: 'Ruby on Rails',
+    url: '/ruby-on-rails'
   },
   {
     level: 2,
@@ -542,39 +525,9 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Ruby on Rails',
-    url: '/ruby-on-rails'
-  },
-  {
-    level: 2,
-    title: 'PM2',
-    url: '/PM2'
-  },
-  {
-    level: 2,
-    title: 'Koa',
-    url: '/koa'
-  },
-  {
-    level: 2,
-    title: 'hapi',
-    url: '/hapi'
-  },
-  {
-    level: 2,
-    title: 'H3',
-    url: '/h3'
-  },
-  {
-    level: 2,
-    title: 'HatTip',
-    url: '/hattip'
-  },
-  {
-    level: 2,
-    title: 'Server Integration',
-    titleInNav: 'Other',
-    url: '/server'
+    title: 'Backends',
+    titleInNav: '... more',
+    url: '/backends'
   },
   {
     level: 4,
@@ -597,18 +550,14 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Other Integrations',
-    titleInNav: 'Other',
+    title: 'Tool integration',
+    titleInNav: '... more',
     url: '/integration'
   },
   {
     level: 1,
     title: 'API',
     titleEmoji: 'gear'
-  },
-  {
-    level: 4,
-    title: 'Core'
   },
   {
     level: 2,
@@ -649,6 +598,30 @@ const headings = [
   },
   {
     level: 4,
+    title: 'Routing'
+  },
+  {
+    level: 2,
+    title: 'Filesystem Routing',
+    url: '/filesystem-routing'
+  },
+  {
+    level: 2,
+    title: 'Route String',
+    url: '/route-string'
+  },
+  {
+    level: 2,
+    title: 'Route Function',
+    url: '/route-function'
+  },
+  {
+    level: 2,
+    title: 'Routing Precedence',
+    url: '/routing-precedence'
+  },
+  {
+    level: 4,
     title: 'Hooks'
   },
   {
@@ -656,7 +629,7 @@ const headings = [
     title: '`data()` hook',
     titleInNav: '`data()`',
     url: '/data',
-    sectionTitles: ['Without `useData()`', '`pageContext.data`', '`pageContext`', 'Client-side']
+    sectionTitles: ['Without `vike-{react,vue,solid}`']
   },
   {
     level: 2,
@@ -669,7 +642,7 @@ const headings = [
     title: '`onBeforeRender()` hook',
     titleInNav: '`onBeforeRender()`',
     url: '/onBeforeRender',
-    sectionTitles: ['`onBeforeRender()` + `meta`', 'Client-side']
+    sectionTitles: ['`onBeforeRender()` + `meta`']
   },
   {
     level: 2,
@@ -704,7 +677,7 @@ const headings = [
   {
     level: 2,
     title: 'Hooks',
-    titleInNav: 'more...',
+    titleInNav: '... more',
     url: '/hooks'
   },
   {
@@ -724,8 +697,8 @@ const headings = [
   },
   {
     level: 2,
-    title: '`ClientOnly`',
-    url: '/ClientOnly'
+    title: '`clientOnly()`',
+    url: '/clientOnly'
   },
   {
     level: 2,
@@ -812,11 +785,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`filesystemRoutingRoot`',
-    url: '/filesystemRoutingRoot'
-  },
-  {
-    level: 2,
     title: '`passToClient`',
     url: '/passToClient'
   },
@@ -840,7 +808,7 @@ const headings = [
   {
     level: 2,
     title: 'Settings',
-    titleInNav: 'more...',
+    titleInNav: '... more',
     url: '/settings'
   }
 ] satisfies HeadingDefinition[]

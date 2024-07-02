@@ -25,7 +25,7 @@ async function installClientRouter() {
 function render() {
   assert(getRenderCount() === 0)
   const renderPromise = renderPageClientSide({
-    scrollTarget: 'preserve-scroll',
+    scrollTarget: { preserveScroll: true },
     isBackwardNavigation: null,
     isClientSideNavigation: false
   })

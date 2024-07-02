@@ -1,12 +1,21 @@
-When doing SSR our pages are rendered to HTML. But HTML alone isn't sufficient to make a page interactive.
-For example, a page with zero browser-side JavaScript cannot be interactive (there are no JavaScript event handlers to react to user actions such as a click on a button).
+import { Link } from '@brillout/docpress'
 
-To make our page interactive, in addition to render our page to HTML in Node.js, our UI framework (Vue/React/...) also loads and renders the page in the browser. (It creates an internal representation of the page, and then maps the internal representation to the DOM elements of the HTML we rendered in Node.js.)
+When doing <Link href="/server-side-rendering">SSR</Link> your page is rendered to HTML. But HTML alone isn't sufficient to make the page interactive.
 
-This process is called *hydration*. Informally speaking: it makes our page interactive/alive/hydrated.
+A page without any client-side JavaScript cannot be interactive: there isn't any JavaScript event handler to react to a user action, such as a click on a button.
 
-Further reading:
- - [Hydration Mismatch](/hydration-mismatch)
- - [Vue Docs - Hydration](https://ssr.vuejs.org/guide/hydration.html)
- - [React Docs - `hydrate()`](https://reactjs.org/docs/react-dom.html#hydrate)
+In order to make the components of a page interactive, the <Link href="/ui-frameworks">UI framework (Vue/React/...)</Link> loads and renders the page's components also on the client-side.
 
+> The UI framework creates an internal representation of page's component tree, and maps that internal representation to the [DOM tree](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model).
+
+This process is called *hydration*. Informally speaking: it brings the page's interactivity alive.
+
+
+## See also
+
+- [Vue Docs - Hydration](https://ssr.vuejs.org/guide/hydration.html)
+- [React Docs - `hydrate()`](https://reactjs.org/docs/react-dom.html#hydrate)
+- <Link href="/hydration-mismatch" />
+- <Link href="/server-side-rendering" />
+- <Link href="/ui-frameworks" />
+- [MDN > DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)

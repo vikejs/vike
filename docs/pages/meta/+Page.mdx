@@ -12,7 +12,7 @@ The `meta` settings enables you to create:
    - <Link href="#example-title-and-description" doNotInferSectionTitle />
    - <Link href="#example-layout" doNotInferSectionTitle />
  - **New hooks**.
-   - Example: `onInit()` or `onBeforeFetchingData()`.
+   - Example: `onInit()` or `onBeforeFetchingData()`
  - **Modifying the environment of existing hooks**.
    - <Link href="#example-modify-data-env" doNotInferSectionTitle />
 
@@ -255,9 +255,7 @@ async function onRenderHtml(pageContext) {
 
 ## Example: `Layout`
 
-> If you use a <UiFrameworkExtension />, then you don't need to create the `Layout` setting as it's already created by <UiFrameworkExtension name noLink />.
-
-Another common use case is to create a component `<Layout>` that defines the layout of a page.
+Another common use case for `meta` is to create a component `<Layout>` that defines the layout of the page.
 
 ```js
 // /pages/product/+Layout.js
@@ -289,7 +287,9 @@ export default {
   meta: {
     Layout: {
       // Load the value of /pages/**/+Layout.js on both the server and client
-      env: { server: true, client: true }
+      env: { server: true, client: true },
+      // Make it cumulative for nested layouts
+      cumulative: true
     }
   }
 }
@@ -335,10 +335,6 @@ async function onRenderClient(pageContext) {
 }
 ```
 
-Examples:
- - <RepoLink path="/examples/layouts-react/" />
- - <RepoLink path="/examples/layouts-vue/" />
-
 
 ## Example: modify `data()` env
 
@@ -361,7 +357,7 @@ export default {
 } satisfies Config
 ```
 
-> Making `data()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/data#client-side" />.
+> Making `data()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/data#environment" />.
 
 If you want to change the `meta.env` on a page-by-page basis, you can use the the <Link href="/file-env">file extension `.shared.js`</Link> (renaming `+data.js` to `+data.shared.js`), or you can create a new `dataIsomorph` config:
 

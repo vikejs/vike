@@ -1,6 +1,6 @@
 import { Link, Warning } from '@brillout/docpress'
 
-The `filesystemRoutingRoot` setting allows you to change the URL root of <Link href="/filesystem-routing">Filesystem Routing</Link>. It's usually used for <Link href="/file-structure#domain-driven">domain-driven file structure</Link>.
+The `filesystemRoutingRoot` setting allows you to change the <Link href="/filesystem-routing">Filesystem Routing</Link> URL. It's usually used for <Link href="/file-structure#domain-driven">domain-driven file structure</Link>.
 
 <Warning>Don't use `filesystemRoutingRoot` to change the Base URL, see <Link href="/base-url" /> instead.</Warning>
 
@@ -8,7 +8,6 @@ The `filesystemRoutingRoot` setting allows you to change the URL root of <Link h
 // /marketing/+config.js
 
 export default {
-  // Routing root is / instead of /marketing
   filesystemRoutingRoot: '/'
 }
 ```
@@ -23,4 +22,6 @@ PROJECT FILES                               URL
 
 ## See also
 
+ - <Link href="/file-structure#domain-driven" />
  - <Link href="/filesystem-routing" />
+ - <Link href="/base-url" />

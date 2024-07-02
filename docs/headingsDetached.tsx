@@ -5,8 +5,48 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
-    title: 'Why Vike',
-    url: '/why'
+    title: 'React Query',
+    url: '/react-query'
+  },
+  {
+    title: 'Vue Query',
+    url: '/vue-query'
+  },
+  {
+    title: 'Vuex',
+    url: '/vuex'
+  },
+  {
+    title: 'PullState',
+    url: '/pullstate'
+  },
+  {
+    title: 'Panda CSS',
+    url: '/panda-css'
+  },
+  {
+    title: 'PM2',
+    url: '/PM2'
+  },
+  {
+    title: 'Koa',
+    url: '/koa'
+  },
+  {
+    title: 'hapi',
+    url: '/hapi'
+  },
+  {
+    title: 'HatTip',
+    url: '/hattip'
+  },
+  {
+    title: 'Architecture',
+    url: '/architecture'
+  },
+  {
+    title: 'Optional Control',
+    url: '/optional-control'
   },
   {
     title: 'Consulting',
@@ -188,6 +228,10 @@ const headingsDetached = [
     url: '/SPA-vs-SSR'
   },
   {
+    title: 'Server-side Rendering (SSR)',
+    url: '/server-side-rendering'
+  },
+  {
     title: 'Hydration Mismatch',
     url: '/hydration-mismatch'
   },
@@ -348,7 +392,7 @@ const headingsDetached = [
     url: '/vike-packages'
   },
   {
-    title: 'Vike extensions',
+    title: 'Extensions',
     url: '/extensions'
   },
   {
@@ -427,7 +471,7 @@ const headingsDetached = [
     url: '/react-tour'
   },
   {
-    title: '`onCreateApp()`',
+    title: '`onCreateApp()` hook',
     url: '/onCreateApp'
   },
   {
@@ -468,12 +512,16 @@ const headingsDetached = [
     url: '/reactStrictMode'
   },
   {
-    title: '`onBeforeRenderClient()`',
+    title: '`onBeforeRenderClient()` hook',
     url: '/onBeforeRenderClient'
   },
   {
-    title: '`onAfterRenderClient()`',
+    title: '`onAfterRenderClient()` hook',
     url: '/onAfterRenderClient'
+  },
+  {
+    title: '`onAfterRenderHtml()` hook',
+    url: '/onAfterRenderHtml'
   },
   {
     title: 'Scaffold new app',
@@ -498,5 +546,37 @@ const headingsDetached = [
   {
     title: '`require`',
     url: '/require'
+  },
+  {
+    title: '`filesystemRoutingRoot`',
+    url: '/filesystemRoutingRoot'
+  },
+  {
+    title: 'Releases',
+    url: '/releases'
+  },
+  {
+    title: 'Mai 2024 Releases',
+    url: '/releases/2024-05'
+  },
+  {
+    title: 'June Releases',
+    url: '/releases/2024-06'
+  },
+  {
+    title: 'July Releases',
+    url: '/releases/2024-07'
+  },
+  {
+    title: '`<ClientOnly>`',
+    url: '/ClientOnly'
+  },
+  {
+    title: '`bodyHtmlBegin`',
+    url: '/bodyHtmlBegin'
+  },
+  {
+    title: '`bodyHtmlEnd`',
+    url: '/bodyHtmlEnd'
   }
 ] satisfies HeadingDetachedDefinition[]

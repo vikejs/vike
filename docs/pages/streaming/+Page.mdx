@@ -6,14 +6,14 @@ Vike not only has first-class support for HTML streaming (aka SSR streaming), bu
 
 If you merely want to enable/disable HTML streaming, see the <Link href="/stream" /> setting instead.
 
-<UseVikeExtensionUiFramework featureName="HTML streaming" />
-<Warning>The documentation on this page is meant for expert users who want to manually integrate HTML Streaming. If you use <UiFrameworkExtension name noLink /> then HTML Streaming is already built-in and you can skip reading this page.</Warning>
+<UseVikeExtensionUiFramework featureName="HTML Streaming" />
+<Warning>The documentation on this page is meant for users who want to manually integrate HTML Streaming. If you use <UiFrameworkExtension name noLink /> then HTML Streaming is already built-in and you can skip reading this page.</Warning>
 
-> **What is HTML Streaming?** If you're unfamiliar with HTML Streaming then check out [Dan Abramov's explanation of SSR, HTML Streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37). (While it explains it in the context of React, we still recommend reading it if you use a UI framework other than React.)
+> **What is HTML Streaming?** If you're unfamiliar with HTML streaming then check out [Dan Abramov's explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37). (While it explains it in the context of React, we still recommend reading it if you use a UI framework other than React.)
 
 ## Examples
 
-Examples of manually integrating HTML Streaming (without using a <Link href="/extensions">Vike extension</Link>).
+Examples of manually integrating HTML streaming (without using a <Link href="/extensions">Vike extension</Link>).
 
 **React**
  - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
@@ -315,13 +315,16 @@ async function onRenderHtml(pageContext) {
 
 ## Progressive Rendering
 
-Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered (as well as <Link href="/hydration">hydrated</Link>).
-
-Demo:
+Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered (as well as already <Link href="/hydration">hydrated</Link>).
 
 <video src={progressiveRenderingDemo} width="500" controls muted autoPlay loop></video>
 
-Vike has first-class support for progressive rendering. (Make sure your UI framework supports progressive rendering.)
+> Instead of using HTML streaming, an easy alternative is to use a stateful component. But the issue is that the content that is rendered later isn't rendered to HTML. For example, a product page with content fetched from a database won't get <Link href="/SPA-vs-SSR#ssr">the SEO nor performance advantages of SSR</Link>.
+>
+> With HTML streaming, all content (including the content that is rendered later) is rendered to HTML.
+
+
+Vike has first-class support for HTML streaming and progressive rendering.
 
 Example: [`vike-react` > `examples/full/`](https://github.com/vikejs/vike-react/tree/main/examples/full#readme).
 
@@ -330,7 +333,7 @@ See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.
 
 ## See also
 
-- [Dan Abramov's explanation of SSR, HTML Streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37)
+- [Dan Abramov's explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37)
 - [Node.js Streams](https://nodejs.org/api/stream.html) (Node.js documentation)
 - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) (MDN documentation)
 - <Link href="/preloading" />

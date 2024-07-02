@@ -9,17 +9,14 @@ Vike supports *Filesystem Routing*: the URL of a page is determined by where the
 ```bash
 FILESYSTEM                     URL
 ====================           ======
-pages/about/+Page.js           /about
-pages/faq/+Page.js             /faq
-```
-Note that `index/` and `src/` are mapped to the empty string:
-```bash
-FILESYSTEM                     URL
-========================       ======
 pages/index/+Page.js           /
-src/pages/index/+Page.js       /
-src/pages/about/+Page.js       /about
+pages/about/+Page.js           /about
+pages/jobs/+Page.js            /jobs
 ```
+
+> The directories `pages/`, `index/` and `src/` are ignored.
+
+### Parameterized routes
 
 You can define parameterized routes:
 
@@ -31,9 +28,59 @@ pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
 
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
+### Groups
 
-More information at:
- - <Link href="/filesystem-routing" />.
+You can organize your pages into groups:
+
+```yaml
+FILESYSTEM                             URL
+================================       ==================
+pages/(marketing)/index/+Page.js       /
+pages/(marketing)/about/+Page.js       /about
+pages/admin-panel/index/+Page.js       /admin-panel
+pages/admin-panel/users/+Page.js       /admin-panel/users
+```
+> The directory `(marketing)` is ignored because it's wrapped by parentheses.
+
+Beyond improved organization, it allows you to apply different configurations to different pages:
+
+```yaml
+# Define a layout for all marketing pages
+pages/(marketing)/+Layout.js
+pages/(marketing)/index/+Page.js
+pages/(marketing)/about/+Page.js
+
+# Define a layout for all admin pages
+pages/admin-panel/+Layout.js
+pages/admin-panel/index/+Page.js
+pages/admin-panel/users/+Page.js
+```
+
+> See <Link href="/config#inheritance" />.
+
+You can also have a *domain-driven file structure*:
+
+```yaml
+# Domain: marketing
+(marketing)/pages/+Layout.js
+(marketing)/pages/index/+Page.js
+(marketing)/pages/about/+Page.js
+(marketing)/components/ContactUs.js
+
+# Domain: admin panel
+admin-panel/pages/+Layout.js
+admin-panel/pages/index/+Page.js
+admin-panel/pages/users/+Page.js
+admin-panel/components/Charts.js
+admin-panel/database/fetchUsers.js
+```
+
+> See <Link href='/file-structure#domain-driven' />.
+
+
+### More information
+
+ - <Link href="/filesystem-routing" />
 
 
 ## Route String
@@ -112,11 +159,12 @@ Although we usually don't recommend it, you can use Vike with React Router and V
 
 ## See also
 
+ - <Link href="/file-structure" />
+ - <Link href="/base-url" />
  - <Link href="/filesystem-routing" />
  - <Link href="/route-string" />
  - <Link href="/route-function" />
  - <Link href="/routing-precedence" />
- - <Link href="/base-url" />
  - <Link href="/guard" />
  - <Link href="/vue-router" />
  - <Link href="/react-router" />

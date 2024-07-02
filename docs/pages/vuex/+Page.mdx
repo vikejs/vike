@@ -1,14 +1,31 @@
-import { RepoLink } from '@brillout/docpress'
-import { Example, DataArchitecture } from '../../components'
+import { RepoLink, Link } from '@brillout/docpress'
+import { DataIntegrationIntro, DataIntegrationStore, Example } from '../../components'
 
-<DataArchitecture
-  toolName={'Vuex'}
-  toolLink={'https://vuex.vuejs.org/'}
-  isGeneric={false}
-  toolType="data-store"
-  toolDocs={
-<a href="https://ssr.vuejs.org/guide/data.html#data-store">Vue &gt; SSR &gt; Data Store (Vuex)</a>  }
+You can use Vike with [Vuex](https://vuex.vuejs.org).
+
+This page documents how to manually integrate Vuex.
+
+> There isn't a <Link href="/extensions">Vike extension</Link> for Vuex yet, but [contribution welcome to create one](https://github.com/vikejs/vike/issues/1715).
+
+
+## Initial state
+
+<DataIntegrationIntro
+  toolName="Vuex"
+  toolType="store"
 />
+
+Integration example:
+<DataIntegrationStore toolName="Vuex" vue />
+
+See also:
+- [Vue Docs > SSR > Cross-Request State Pollution](https://vuejs.org/guide/scaling-up/ssr.html#cross-request-state-pollution)
+
 
 ## Example
  - <Example timestamp="2023.10" repo="brillout/vike-with-vuex" />
+
+
+## See also
+
+- [Vue Docs > SSR > Cross-Request State Pollution](https://vuejs.org/guide/scaling-up/ssr.html#cross-request-state-pollution)

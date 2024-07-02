@@ -284,7 +284,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         if (pageContextAbort._urlRewrite) {
           await renderPageClientSide({
             ...renderArgs,
-            scrollTarget: 'scroll-to-top-or-hash',
+            scrollTarget: undefined,
             pageContextsFromRewrite: [...pageContextsFromRewrite, pageContextAbort]
           })
           return
@@ -300,7 +300,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           } else {
             await renderPageClientSide({
               ...renderArgs,
-              scrollTarget: 'scroll-to-top-or-hash',
+              scrollTarget: undefined,
               urlOriginal: urlRedirect,
               overwriteLastHistoryEntry: false,
               isBackwardNavigation: false,

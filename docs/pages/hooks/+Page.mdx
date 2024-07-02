@@ -1,5 +1,6 @@
 import { Link } from '@brillout/docpress'
 import { TextEnv, TextEnv2 } from './TextEnv'
+import { UiFrameworkExtension } from '../../components'
 
 List of built-in hooks. (You can <Link href="/meta">create your own</Link>.)
 
@@ -24,8 +25,9 @@ List of built-in hooks. (You can <Link href="/meta">create your own</Link>.)
 - [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server</TextEnv> Called when a page is rendered to HTML on the server-side.
 - [**`onRenderClient()`**](/onRenderClient): <TextEnv>client</TextEnv> Called when a page is rendered on the client-side.
 - [**`onBeforeRoute()`**](/onBeforeRoute): <TextEnv>server & client</TextEnv> Called before the URL is routed to a page.
-- [**`onBeforeRenderClient()`**](/onBeforeRenderClient): <TextEnv>client</TextEnv> `vike-react` Called before <Link href="/onRenderClient">`onRenderClient()`</Link>.
-- [**`onAfterRenderClient()`**](/onAfterRenderClient): <TextEnv>client</TextEnv> `vike-react` Called after <Link href="/onRenderClient">`onRenderClient()`</Link>.
+- [**`onBeforeRenderClient()`**](/onBeforeRenderClient): <TextEnv>client</TextEnv> Called at the beginning of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+- [**`onAfterRenderClient()`**](/onAfterRenderClient): <TextEnv>client</TextEnv> Called at the end of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+- [**`onAfterRenderHtml()`**](/onAfterRenderHtml): <TextEnv>server</TextEnv> Called at the end of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
 
 
 
@@ -40,7 +42,15 @@ Potentially upcoming hooks:
 
 ## Order
 
-**First render:**
+The order in which the hooks are called, see for example:
+- <Link href="#with-default-environment-hooks" />, if you didn't change the environment of `data()` and `onBeforeRender()`.
+- <Link href="#with-client-side-hooks" />, if you <Link href="/data#environment">configured `data()`</Link> and <Link href="/onBeforeRender#environment">also `onBeforeRender()`</Link> to run only the client-side.
+
+> The following doesn't contain the hooks of the Vike extensions <UiFrameworkExtension name /> such as <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link> or <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link>.
+
+### With default-environment hooks
+
+**First render**
 
 1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
 1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
@@ -53,8 +63,7 @@ Potentially upcoming hooks:
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
 
-<br/>
-**Page navigation:**
+**Page navigation**
 
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
@@ -68,8 +77,22 @@ Potentially upcoming hooks:
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
 
-<br/>
-**Page navigation, <Link href="/data#client-side">with client-side data fetching</Link>:**
+### With client-side hooks
+
+**First render**
+
+1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
+   > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
+1. <TextEnv2>server</TextEnv2> <Link href="/onRenderHtml">`onRenderHtml()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/guard">`guard()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
+
+**Page navigation**
 
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>

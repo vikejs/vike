@@ -1,12 +1,12 @@
 // https://vike.dev/onRenderClient
 export { onRenderClient }
 
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 async function onRenderClient(pageContext) {
   if (!pageContext.isHydration) {
     const { Page } = pageContext
-    const pageHtml = PageLayout(Page)
+    const pageHtml = Layout(Page)
     document.getElementById('page-view').innerHTML = pageHtml
   }
   hydrateCounters()

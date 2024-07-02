@@ -64,6 +64,7 @@ function vike(app) {
   app.get('*', async (req, res, next) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
+      headersOriginal: req.headers,
       user: req.user,
       userFullName: req.user?.fullName
     }

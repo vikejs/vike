@@ -16,19 +16,10 @@ import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
 import pc from '@brillout/picocolors'
 
-const PROTOCOLS = [
-  'http://',
-  'https://',
-  // For [Tauri](https://tauri.app/)
-  'tauri://',
-  // For Electron: https://github.com/vikejs/vike/issues/1557
-  'file://'
-]
-
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
   return (
-    PROTOCOLS.some((p) => url.startsWith(p)) ||
+    isUrlWithProtocol(url) ||
     url.startsWith('/') ||
     url.startsWith('.') ||
     url.startsWith('?') ||
@@ -170,7 +161,8 @@ function getPathname(url: string, baseServer: string): { origin: null | string; 
 }
 
 function parseOrigin(url: string): { pathname: string; origin: null | string } {
-  if (!PROTOCOLS.some((protocol) => url.startsWith(protocol))) {
+  if (!isUrlWithProtocol(url)) {
+    assert(!isUriWithProtocol(url))
     return { pathname: url, origin: null }
   } else {
     const [originPart1, originPart2, originPart3, ...pathnameParts] = url.split('/')
@@ -288,7 +280,19 @@ function createUrlFromComponents(
   return urlRecreated
 }
 
-function isUriWithProtocol(uri: string): boolean {
+function isUriWithProtocol(str: string): boolean {
   // https://en.wikipedia.org/wiki/List_of_URI_schemes
-  return /^[a-z0-9][a-z0-9\.\+\-]*:/i.test(uri)
+  // https://www.rfc-editor.org/rfc/rfc7595
+  // https://github.com/vikejs/vike/commit/886a99ff21e86a8ca699a25cee7edc184aa058e4#r143308934
+  // Examples:
+  //   http://
+  //   https://
+  //   tauri:// # [Tauri](https://tauri.app)
+  //   file:// # [Electron](https://github.com/vikejs/vike/issues/1557)
+  //   capacitor:// # [Capacitor](https://github.com/vikejs/vike/issues/1706)
+  return /^[a-z][a-z0-9\+\-]*:/i.test(str)
+}
+// Same as isUriWithProtocol() but with trailing :// which is needed for parseOrigin()
+function isUrlWithProtocol(str: string): boolean {
+  return /^[a-z][a-z0-9\+\-]*:\/\//i.test(str)
 }

@@ -2,7 +2,7 @@ export default onRenderClient
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 import type { PageContextClient } from './types'
 
 let root: ReactDOM.Root
@@ -10,9 +10,9 @@ async function onRenderClient(pageContext: PageContextClient) {
   const { Page } = pageContext
 
   const page = (
-    <PageLayout pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page />
-    </PageLayout>
+    </Layout>
   )
 
   const container = document.getElementById('page-view')!

@@ -1,17 +1,17 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
 
-Everything there is to know about config files.
+Everything there is to know about configuration files.
 
-For a list of configs, see:
+For the list of configurations, see:
  - <Link href="/settings" />
  - <Link href="/hooks" />
 
 
 ## `+` files
 
-You configure your Vike app by creating files that start with `+` such as `+config.js`.
+You configure your Vike app by creating `+` files such as `+config.js`.
 
-For example, you can define the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> component of a page by creating a `+config.js` file like this:
+For example, you can set the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> settings of a page by defining `+config.js`:
 
 ```js
 // /pages/product/@id/+config.js
@@ -35,7 +35,7 @@ export default /* ... */
 export default /* ... */
 ```
 
-For more convenience, you can also do that instead:
+For more convenience, you can do this instead:
 
 <FileRemoved>
 ```js
@@ -63,92 +63,82 @@ export default /* ... */
 export default /* ... */
 ```
 
-Both achieve the same and it's just convenience: the latter allows you to skip creating the `+config.js` file.
+Both achieve the same: it's just convenience.
 
-> Except of `+config.js`, the `+` files corresponds to a <Link href="/settings">Vike setting</Link> or a <Link href="/hooks">Vike hook</Link>.
+> Except of `+config.js`, any `+` file corresponds to a <Link href="/settings">Vike setting</Link> or a <Link href="/hooks">Vike hook</Link>.
 
 
 ## Inheritance
 
-You can apply configurations to all your pages, a subset of pages, or one page only.
+You can apply configurations to all your pages, a group of pages, or only one page.
 
+For example the <Link href="/Layout">`Layout` setting</Link>:
 
-For example with the <Link href="/Layout">`Layout`</Link> and <Link href="/ssr">`ssr`</Link> settings:
+```yaml
+pages/(marketing)/index/+Page.js    # URL: /
+pages/(marketing)/about/+Page.js    # URL: /about
+# Layout for marketing pages
+pages/(marketing)/+Layout.js
 
+pages/admin-panel/index/+Page.js    # URL: /admin-panel
+pages/admin-panel/users/+Page.js    # URL: /admin-panel/users
+# Layout for admin pages
+pages/admin-panel/+Layout.js
+
+pages/product/@id/+Page.js
+# Layout for the product page
+pages/product/@id/+Layout.js
+```
+
+> The directory `(marketing)` is used for <Link href="/routing#groups">grouping</Link> and is ignored by <Link href="/filesystem-routing">Filesystem Routing</Link>.
+
+- `pages/(marketing)/+Layout.js` applies to all pages living at `pages/(marketing)/**`
+- `pages/admin-panel/+Layout.js` applies to all pages living at `pages/admin-panel/**`
+- `pages/product/@id/+Layout.js` applies to one page `pages/product/@id/+Page.js`
+  > Technically `pages/product/@id/+Layout.js` applies to all pages at `/pages/product/@id/**` but there is only one page living there.
+
+### Defaults
+
+You can set defaults and override them.
+
+For example the <Link href="/ssr">`ssr` setting</Link>:
 
 ```js
-// /pages/+config.js
-
-import Layout from '../layouts/LayoutDefault'
-
-// Applies to all pages:
-//   /pages/admin/income/+Page.js
-//   /pages/admin/kpi/+Page.js
-//   /pages/product/@id/+Page.js
+// pages/+config.js
 
 export default {
-  // The <Layout> for all pages (as overridable default)
-  Layout,
-  // Disable SSR for all pages (as overridable default)
+  // Disable SSR by default
   ssr: false
 }
 ```
 
 ```js
-// /pages/admin/+config.js
-
-// Applies only to admin pages:
-//   /pages/admin/income/+Page.js
-//   /pages/admin/kpi/+Page.js
-
-import Layout from '../../layouts/LayoutDashboard.jsx'
+// pages/(marketing)/+config.js
 
 export default {
-  // The <Layout> of all admin pages (overriding the default set by /pages/+config.js)
-  Layout
-}
-```
-
-
-```js
-// /pages/product/@id/+config.js
-
-// Applies only to the product page:
-//   /pages/product/@id/+Page.js
-
-import Layout from './Layout'
-
-export default {
-  // The <Layout> of the product page (overriding the default set by /pages/+config.js)
-  Layout,
-  // Enable SSR (overriding the default set by /pages/+config.js)
+  // Enable SSR for marketing pages
   ssr: true
 }
 ```
 
-> Technically:
-> - `/pages/+config.js` applies to `/pages/**`
-> - `/pages/admin/+config.js` applies to `/pages/admin/**`
-> - `/pages/product/@id/+config.js` applies to `/pages/product/@id/**`
->
-> This means that `/pages/+config.js` doesn't necessarily apply to all pages, for example if a page is defined at `/somewhere-else/+Page.js`. But assuming that all pages are defined under `/pages/**` then `/pages/+config.js` does apply to all pages.
->
-> Likewise `/pages/product/@id/+config.js` may apply to more than one page, but assuming `/pages/product/@id/+Page.js` is the only page defined under `/pages/product/@id/**` then it applies only to that one page.
+> Cumulative configurations, such as <Link href="/Layout">`<Layout>`</Link>, don't get overriden. See [#1692 - [Cumulative configs] New settings `override` and `default`](https://github.com/vikejs/vike/issues/1692).
 
-#### Domain-driven File Structure
+### Domain-driven File Structure
 
-For an improved organization of your pages and their configuration, you can use a <Link href="/file-structure#domain-driven">domain-driven file structure</Link>.
+You can use a <Link href="/file-structure#domain-driven">domain-driven file structure</Link> for an improved organization of your pages and their configurations.
 
-#### Powerful
+### Powerful
 
-The config inheritance mechanism is a powerful way to configure your pages. For example, you can use two completely different rendering strategy: some pages can use Vue without SSR while other pages can use React with SSR.
+You can use multiple completely different rendering strategies for the same app.
+
+For example, some pages can use Vue without SSR while other pages can use React with SSR:
 
 ```js
-// /pages/admin/+config.js
+// pages/admin/+config.js
 
 import vikeVue from 'vike-vue/config'
 
-// Admin pages using Vue without SSR:
+// Admin pages using Vue without SSR
 export default {
   ssr: false,
   extends: [vikeVue]
@@ -156,11 +146,11 @@ export default {
 ```
 
 ```js
-// /pages/product/@id/+config.js
+// pages/product/@id/+config.js
 
 import vikeReact from 'vike-react/config'
 
-// Product page using React with SSR:
+// Product page using React with SSR
 export default {
   ssr: true,
   extends: [vikeReact]

@@ -1,3 +1,45 @@
+## [0.4.177](https://github.com/vikejs/vike/compare/v0.4.176...v0.4.177) (2024-06-17)
+
+
+### Bug Fixes
+
+* enable setting `env: { client: false, server: false, config: false }` (fix [#1693](https://github.com/vikejs/vike/issues/1693)) ([775d83b](https://github.com/vikejs/vike/commit/775d83b5a10d4afd8ada5e8b7043826ada6f0166))
+* fix error message upon mixing old and new design (fix [#1701](https://github.com/vikejs/vike/issues/1701)) ([03270e7](https://github.com/vikejs/vike/commit/03270e79b9d3c6f254d1cadc2f9aa6618ffe7f71))
+* improve error message ([6e30d15](https://github.com/vikejs/vike/commit/6e30d1534283df68ca376c0f3ba4a18c8ae8422a))
+* improve error messages ([e2c5e93](https://github.com/vikejs/vike/commit/e2c5e9308e80d6c53ea1e949e1d5859084fcf762))
+* make onPrerenderStart eager (fix [#1702](https://github.com/vikejs/vike/issues/1702)) ([1442a4a](https://github.com/vikejs/vike/commit/1442a4a49aba081bb72adabc4d3e86be331f73b7))
+
+
+### Performance Improvements
+
+* remove client-side validation to save KBs ([9168c5b](https://github.com/vikejs/vike/commit/9168c5be9342e4adcfa3d42c7d5c10a09f3ac513))
+
+
+
+## [0.4.176](https://github.com/vikejs/vike/compare/v0.4.175...v0.4.176) (2024-06-12)
+
+
+### Bug Fixes
+
+* fix config inheritance of parentheses directories (fix [#1690](https://github.com/vikejs/vike/issues/1690)) ([fef43b1](https://github.com/vikejs/vike/commit/fef43b17dbb4d49a9c9cdbe79a4e708a55eb28b2))
+* fix export assertion ([d4c1df7](https://github.com/vikejs/vike/commit/d4c1df735259b2137a34262ae3b0957b8f805321))
+
+
+
+## [0.4.175](https://github.com/vikejs/vike/compare/v0.4.174...v0.4.175) (2024-06-10)
+
+
+### Bug Fixes
+
+* workaround pseudo headers (fix [#1683](https://github.com/vikejs/vike/issues/1683)) ([8abdb8f](https://github.com/vikejs/vike/commit/8abdb8fbb7c2d0ac6fcfb23576f9825c75465b89))
+
+
+### Features
+
+* [Filesystem Routing] skip `(someDir)/` directories (closes [#1684](https://github.com/vikejs/vike/issues/1684)) ([d226ee7](https://github.com/vikejs/vike/commit/d226ee776b5a8abf2ab3f7a108154f1abf54811f))
+
+
+
 ## [0.4.174](https://github.com/vikejs/vike/compare/v0.4.173...v0.4.174) (2024-06-06)
 
 

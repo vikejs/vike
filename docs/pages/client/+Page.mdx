@@ -1,9 +1,9 @@
 import { Link, RepoLink, Construction } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-The `+client.js` file adds client-side JavaScript. The code of `+client.js` is executed only once at the very beginning when the user goes to your website.
+You can define a `+client.js` file to add client-side JavaScript.
 
-It's usually used for initializing the client-side code of <Link href="/errors">error tracking</Link>, user tracking, cookie consent, CSS frameworks, etc.
+It's usually used for initializing <Link href="/errors">error tracking</Link>, user tracking, cookie consent, CSS frameworks, etc.
 
 ```js
 // /pages/+client.js
@@ -12,16 +12,13 @@ It's usually used for initializing the client-side code of <Link href="/errors">
 console.log("I'm the first line of client-side JavaScript.")
 ```
 
-> In production, it's the first JavaScript code to be executed.
->
-> In development, it's also first but only after Vite's HMR code. (In development, Vite's HMR preamble code needs to be run first. In production, the HMR preamble code isn't injected.)
+> In production, it's the very first JavaScript code to be executed. In development, it's run first after Vite's HMR preamble.
 
-> The code of `+client.js` isn't re-executed upon client-side navigation. For executing code upon the lifecycle of page rendering, see following hooks instead:
+> The code of `+client.js` isn't re-executed upon client-side page navigation. For executing code upon the lifecycle of page rendering, see following hooks instead:
 > - <Link href="/onHydrationEnd" />
 > - <Link href="/onPageTransitionStart" />
 > - <Link href="/onPageTransitionEnd" />
->
-> If you don't use a <UiFrameworkExtension />, then also see <Link href="/onRenderClient" />.
+> - <Link href="/onBeforeRenderClient" />
 
 ## Examples
 
@@ -31,4 +28,7 @@ console.log("I'm the first line of client-side JavaScript.")
 
 ## See also
 
-- <Link href="/client-routing" />
+- <Link href="/onHydrationEnd" />
+- <Link href="/onPageTransitionStart" />
+- <Link href="/onPageTransitionEnd" />
+- <Link href="/onBeforeRenderClient" />

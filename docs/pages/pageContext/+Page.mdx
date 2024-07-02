@@ -1,39 +1,40 @@
 import { Link } from '@brillout/docpress'
 
-The `pageContext` object holds contextual information about the current page.
-
-It's <Link href="#access-anywhere">accessible from Vike hooks and UI components</Link>.
-
-It comes with <Link href="#built-in">built-in properties</Link>, and you can <Link href="#custom">add custom properties</Link> to it.
-
-
-## Access anywhere
-
-It's accessible from any <Link href="/hooks">Vike hook</Link>. For example <Link href="/data">`data()`</Link>:
+The `pageContext` object provides contextual information about the current page.
 
 ```js
-// /pages/some-page/+data.js
+// /pages/product/@id/+data.js
 
-export function data(pageContext) {
-  // pageContext is accessible here
-  console.log('Current user:'    , pageContext.user)
-  console.log('URL:'             , pageContext.urlParsed.pathname)
-  console.log('Route parameters:', pageContext.routeParams)
-  console.log('HTTP headers:'    , pageContext.headers)
+export async function data(pageContext) {
+  // Common built-in properties
+  pageContext.urlParsed.pathname // /product/42
+  pageContext.routeParams.id // 42
+  pageContext.headers // { cookie: 'user-id=1337', ... }
+  // Common custom properties
+  pageContext.user // { name: 'John', id: 1337 }
+  pageContext.initialStoreState // { time: 1718872184291 }
 }
 ```
 
-It's also accessible from any UI component, see <Link href="/usePageContext" />.
+> The `data()` hook is explained at <Link href="/data-fetching" />.
 
-By using <Link href="/passToClient">`passToClient`</Link>, you can access `pageContext` also from the client-side.
+It includes:
+ - <Link href="#built-in">Built-in properties</Link> such as `pageContext.urlParsed` and `pageContext.routeParams`.
+ - <Link href="#custom">Custom properties</Link> that you can add, for example `pagecontext.user`.
+
+It's accessible to all:
+ - <Link href="/hooks">Vike hooks</Link>, such as <Link href="/data">`data()`</Link>.
+ - UI components, see <Link href="/usePageContext">`usePageContext()`</Link>.
+
+You can also access `pageContext` from the client-side by using <Link href="/passToClient">`passToClient`</Link>.
 
 
 ## Built-in
 
 Built-in properties:
 
- - **`pageContext.Page`**: the `export { Page }` or `export default` of the `+Page.js` file.
- - **`pageContext.data`**: the value returned by the `data()` hook, see <Link href="/data#pagecontext-data" doNotInferSectionTitle/>.
+ - **`pageContext.Page`**: the `export { Page }` or `export default` of the <Link href="/Page">`+Page.js` file</Link>.
+ - **`pageContext.data`**: the value returned by the <Link href="/data">`data()` hook</Link>, see also <Link href="/useData" />.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.urlOriginal`**: the current URL.
 
@@ -142,7 +143,7 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
       }
     }
     ```
-    > Setting `pageContext.initialStoreState` is a common use case for integrating state management tools, see <Link href="/store" />.
+    > Setting `pageContext.initialStoreState` is a common use case for integrating state management tools, see <Link href="/stores" />.
 
  - Using the <Link href="/onRenderHtml">`onRenderHtml()`</Link> hook:
     ```js
@@ -222,7 +223,7 @@ On the client-side, upon <Link text="client-side page navigation" href="/client-
 At build-time, upon <Link text="pre-rendering" href="/pre-rendering" />, a `pageContext` object is created for each URL and saved at `dist/client/${url}/index.pageContext.json`.
 
 Vike adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as immutable after the rendering of the page has finished. Consequently:
- - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/store" /> instead.)
+ - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/stores" /> instead.)
  - If you use <Link text="pre-rendering" href="/pre-rendering" />, then the `pageContext` object of each URL is set in stone already at build-time.
 
 

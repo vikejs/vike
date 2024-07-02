@@ -184,7 +184,7 @@ If your product either should be:
 then the server-first orientation of Next.js and Vercel isn't helpful and can be a hindrance.
 
 With Vike, you can choose setups that fit the aforementioned use cases.
-You can partially or completely opt out of SSR (turn on/off for whole app, <Link href="/ssr">for some pages</Link>, or <Link href="/ClientOnly">for some components</Link>).
+You can partially or completely opt out of SSR (turn on/off for whole app, <Link href="/ssr">for some pages</Link>, or <Link href="/clientOnly">for some components</Link>).
 You can also use SSR for the first page and then, from there on, use client-only navigation while fetching data directly from the data source (without involving your SSR server).
 
 Vike has first-class support for leaning towards the client-side, as well as first-class support for SSR use cases.
@@ -201,7 +201,7 @@ But with Vike, you keep your options open, and can swap out your UI framework ra
 > With Vike, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js.
 
 With Vike, you can integrate React yourself. This means you need to write a little bit more boilerplate, but in exchange you get a lot more flexibility.
-You can even use [vike-react](https://vike.dev/react) to do it for you, and later when you need more control you can eject.
+You can even use <Link href="/vike-react">vike-react</Link> to do it for you, and later when you need more control you can eject.
 If you want to switch UI framework to Solid, then you can swap vike-react with [vike-solid](https://github.com/vikejs/vike-solid).
 
 Because you can control the React integration, you also have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
@@ -226,7 +226,7 @@ React 18 introduced novel techniques that unlock many capabilities.
 
 Vike, and in particular <Link href="/vike-react">`vike-react`</Link>, extensively leverages React's 18 new techniques. (<Link href="/streaming">Streaming</Link>, <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>, independent and collocated data fetching, <Link href="/RPC">RPC</Link>, etc.)
 
-Vike provides you with extensive control for integrating tools as you see fit, such as control over React's SSR <Link href="/streaming">stream</Link>. At the same time <a href="/extensions">Vike extensions</a> provide built-in integrations for a quick start. We call this dual approach <Link href="/why#optional-control">optional control</Link>.
+Vike provides you with extensive control for integrating tools as you see fit, such as control over React's SSR <Link href="/streaming">stream</Link>. At the same time <a href="/extensions">Vike extensions</a> provide built-in integrations for a quick start. We call this dual approach <Link href="/optional-control">optional control</Link>.
 
 One aspect `vike-react` doesn't support yet are components that are loaded only on the server-side. While we are researching a DX for such components, we believe this new paradigm is too early for being used in production. See <Link href="/react#react-server-components" doNotInferSectionTitle />.
 

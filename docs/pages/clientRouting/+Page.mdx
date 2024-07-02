@@ -1,4 +1,4 @@
-import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
+import { Link, RepoLink } from '@brillout/docpress'
 import { UseVikeExtensionUiFramework, UiFrameworkExtension } from '../../components'
 
 Environment: client.
@@ -83,7 +83,7 @@ And following hooks ot implement page transition animations:
 
 Page settings:
 - `prefetchStaticAssets`: Link prefetching settings, see <Link href="/prefetchStaticAssets" />.
-- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-framework" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
+- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-frameworks" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
 
 Anchor link options:
 - `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also <Link href="/navigate#options">`navigate('/some-url', { keepScrollPosition: true })`</Link>.
@@ -104,8 +104,6 @@ Usually, when using tools such as Apollo GraphQL, Redux or Vuex, you determine t
 Depending on the tool, you do either one of the following:
  - You initialize the state once.
  - You re-initialize the state on every page navigation.
-
-<ReadingRecommendation tour={true} links={['/data-fetching', '/data-fetching-tools', '/store']} />
 
 To initialize once:
 

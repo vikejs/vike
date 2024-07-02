@@ -92,7 +92,11 @@ The `pageContext.httpResponse.body` value is the HTML string returned by the
 <Link text={<><code>onRenderHtml()</code> hook</>} href="/onRenderHtml" /> with additional `<script>` and `<style>` tags
 automatically injected by Vike.
 
+> You can control where and what Vike injects using <Link href="/injectFilter" />.
+
 For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/streaming" />.
+
+Optionally, you can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 Early Hint`), see <Link href="/preloading#early-hints" />.
 
 The `pageContext.httpResponse` value is `null` if:
    - An error occurred while rendering the page and no <Link text="error page" href="/error-page" noBreadcrumb /> is defined.
@@ -104,11 +108,6 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
 > When modifying your server, you may need to manually restart your server for your changes to take effect. See [#562](https://github.com/vikejs/vike/issues/562).
-
-See also:
- - <Link href="/NODE_ENV" />
- - <Link href="/headers" />
- - <Link href="/onRenderHtml" />
 
 
 ## Optional
@@ -122,4 +121,8 @@ But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your 
 ## See also
 
 - <Link href="/headers" />
+- <Link href="/injectFilter" />
+- <Link href="/preloading#early-hints" />
+- <Link href="/onRenderHtml" />
+- <Link href="/NODE_ENV" />
 - <Link href="/pageContext" />

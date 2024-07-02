@@ -1,10 +1,16 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
+The default recommendation is to use `data()` for fetching initial data, and a data tool for data mutations and subsequent data (such as pagination data).
 
-## `data()`
 
-The usual way to fetch data is to use the <Link href="/data">`data()`</Link> Vike hook and the <Link href="/useData">`useData()`</Link> component hook.
+## Initial data
+
+For fetching the initial data of a page, we generally recommend using Vike's `data()` hook but you can also use a tool such as TanStack Query instead.
+
+### The `data()` hook
+
+A simple and straightforward way to fetch the initial data of a page is to use the <Link href="/data">Vike hook `data()`</Link> together with the <Link href="/useData">component hook `useData()`</Link>.
 
 ```js
 // /pages/movies/@id/+data.js
@@ -35,9 +41,9 @@ async function data(pageContext) {
 }
 ```
 
-> The `@id` in the path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at `pageContext.routeParams.id`, see <Link href="/routing" />.
+> `pageContext` holds contextual information, see <Link href="/pageContext" />.
 
-> `pageContext` holds contextual information, see <Link href="/data#pagecontext" doNotInferSectionTitle/>.
+> The `@id` in the file path `/pages/movie/@id/+data.js` denotes a route parameter which value is available at `pageContext.routeParams.id`, see <Link href="/routing" />.
 
 ```js
 // SomeComponent.js
@@ -54,64 +60,85 @@ import { useData } from 'vike-solid/useData'
   const { name, price } = data
 ```
 
-> `useData()` is implemented by the <UiFrameworkExtension />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
+> `useData()` is implemented by the <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name noLink /> then see <Link href="/useData#without-vike-react-vue-solid" doNotInferSectionTitle />.
 
-The `data()` hook is only meant for fetching the initial data of a page (in technical words: the SSR data). For other use cases see the sections below <Link href="#api-routes">API routes</Link> and <Link href="#rpc">RPC</Link>.
+The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutations and pagination data, use a data tool.
 
+### Data tools
 
-## API Routes
+Some tools, such as [TanStack Query](https://tanstack.com/query), can be used to fetch the initial data of a page.
 
-To perform data mutations and subsequent data fetching (e.g. pagination data), a common technique is to use API routes. But we recommand RPC instead of API routes, see <Link href="/api-routes" />.
+> It's a novel approach, and currently, if you have a preference for stability, we recommend using Vike's `data()` hook instead.
 
-
-## RPC
-
-RPC enables you to call backend functions remotely from your frontend in a seamless fashion, see <Link href="/RPC" />.
-
-We recommend [Telefunc](https://telefunc.com) wich is maintained by the Vike author.
-
-We recommend using Telefunc to perform data mutations and subsequent data fetching (e.g. pagination data) while using `data()` for fetching the initial data of a page (in technical words: the SSR data).
-
-> With React, you'll soon also be able to use Telefunc to fetch the initial SSR data instead of using the `data()` hook, see [Telefunc > #102](https://github.com/brillout/telefunc/issues/102).
+> We are currently working on <Link href="/extensions">Vike extensions</Link>, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query) and `vike-vue-telefunc`, that enable you to use your favorite data tool also for fetching initial data, in a seamless and zero-config fashion.
 
 
-## GraphQL
+## Data mutation & subsequent data
 
-With Vike, you can manually integrate GraphQL tools yourself, giving you complete control over the integration. See:
+For data mutation and subsequent data fetching (such as pagination data), use a data tool.
+
+### RPC
+
+We generally recommend using RPC. It's simple, flexible, and performant.
+
+For a list of RPC tools, see <Link href="/RPC" />.
+
+### API routes
+
+A common alternative to RPC is to use API routes, see <Link href="/api-routes" />.
+
+### GraphQL
+
+For large teams, it may make sense to use GraphQL instead of RPC.
+
+With Vike, you can manually integrate GraphQL tools yourself, giving you complete control over integration:
 
 - <Link href="/apollo-graphql" />
 - <Link href="/relay" />
 - <Link href="/urql" />
 
-> In addtion to manual integration, you will soon also have the option to use Vike Extensions for automatic integration. See [#1373 - Vike Extensions: GraphQL](https://github.com/vikejs/vike/issues/1373).
+> In addtion to manual integration, [you will soon](https://github.com/vikejs/vike/issues/1715) have the option to use <Link href="/extensions">Vike extensions</Link> for automatic integration.
 
 
-## Initial data
+## Pre-rendering (SSG)
 
-A common use case is to fetch global initialization data that is needed by all pages. (For example i18n data.)
+For <Link href="/pre-rendering">pre-rendered pages / SSG apps</Link>, in order to fetch dynamic data from an external server, make sure to load and execute `data()` only on the client-side, see <Link href="/data#environment" />.
+
+
+## Global data
+
+A common use case is to fetch global data that is needed by all pages. (For example i18n data.)
 
 You can <Link href="/pageContext#custom">add your initial data to `pageContext` at `renderPage()`</Link>.
 
-The <Link href="/pageContext#access-anywhere">`pageContext` object is accessible from any Vike hook and any UI component</Link>, thus you can access your initialization data there as well.
+The <Link href="/pageContext">`pageContext` object is accessible from any Vike hook and any UI component</Link>, thus you can access your initialization data there as well.
 
 If you use <Link href="/pre-rendering">pre-rendering</Link> then see the workaround described at [#962 - New hook `onBoot()`](https://github.com/vikejs/vike/issues/962).
 
 
-## Store (Vuex/Redux...)
+## State management
 
-With Vike, you can manually integrate state management stores yourself, giving you complete control over the integration. See:
+For managing complex UI state logic, you can use a store (Redux/Pinia/Zustand/...).
 
-- <Link href="/redux" />
-- <Link href="/vuex" />
-- <Link href="/pinia" />
-- <Link href="/pullstate" />
+When using a store, all fetched data, including the initial data, is typically managed by the store. We recommend using an extension for automatic integration.
 
-> In addtion to manual integration, you will soon also have the option to use Vike Extensions for automatic integration. See [#1374 - Vike Extensions: Data Management Stores (Redux, Vuex, ...)](https://github.com/vikejs/vike/issues/1374).
+### Extensions
+
+<Link href="/extensions">Vike extensions</Link> for state management tools:
+
+- [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia)
+
+> [Contribution welcome to create extensions](https://github.com/vikejs/vike/issues/1715).
+
+### Custom integration
+
+For complete control over integration, instead of using an extension, you can manually integrate a store yourself. See <Link href="/stores" />.
+
 
 
 ## See also
 
 - <Link href="/data" />
 - <Link href="/useData" />
-- <Link href="/api-routes" />
 - <Link href="/RPC" />
+- <Link href="/api-routes" />

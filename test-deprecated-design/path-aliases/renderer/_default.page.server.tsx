@@ -3,15 +3,15 @@ export { render }
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 import type { PageContext } from '#root/types'
 
 function render(pageContext: PageContext) {
   const { Page } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
-    <PageLayout>
+    <Layout>
       <Page />
-    </PageLayout>
+    </Layout>
   )
   return escapeInject`<!DOCTYPE html>
     <html>

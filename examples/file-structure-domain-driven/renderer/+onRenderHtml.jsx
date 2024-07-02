@@ -4,14 +4,14 @@ export { onRenderHtml }
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 function onRenderHtml(pageContext) {
   const { Page, routeParams } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
-    <PageLayout>
+    <Layout>
       <Page routeParams={routeParams} />
-    </PageLayout>
+    </Layout>
   )
 
   return escapeInject`<!DOCTYPE html>
