@@ -1,4 +1,4 @@
-import { RepoLink, ImportMeta, Warning } from '@brillout/docpress'
+import { RepoLink, ImportMeta, Warning, Contribution } from '@brillout/docpress'
 
 Environment variables can be defined in `.env` and `.env.[mode]` files.
 
@@ -52,3 +52,19 @@ function data() {
      - Consider defining secrets with system environment variables (e.g. [`$ export DATABASE_PASSWORD=some-secret-password`](https://askubuntu.com/questions/730/how-do-i-set-environment-variables/731#731)).
      - Consider [defining secrets with `.env.local` files](https://vitejs.dev/guide/env-and-mode.html#env-files:~:text=.env.*.local%20files%20are%20local%2Donly) while adding `*.local` to your `.gitignore`.
 </Warning>
+
+
+## Public whitelist
+
+The following environment variables can be accessed from the client-side without having to prefix them with `PUBLIC_ENV__`:
+
+- `STORYBOOK`
+
+<Contribution>
+  Contribution welcome to [add further environment variables to the whitelist](https://github.com/vikejs/vike/blob/main/vike/node/plugin/plugins/envVars.ts).
+</Contribution>
+
+
+## See also
+
+- [#1726 Improve environment variables support](https://github.com/vikejs/vike/issues/1726)

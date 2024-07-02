@@ -9,6 +9,12 @@ import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArr
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
 import { getModuleFilePath } from '../shared/getFilePath.js'
 
+const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
+const PUBLIC_ENV_WHITELIST = [
+  // https://github.com/vikejs/vike/issues/1724
+  'STORYBOOK'
+]
+
 function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
@@ -42,13 +48,12 @@ function envVarsPlugin(): Plugin {
           // Security check
           {
             const envStatement = getEnvStatement(envName)
-            const publicPrefix = 'PUBLIC_ENV__'
-            const isPrivate = !envName.startsWith(publicPrefix)
+            const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
             if (isPrivate && isClientSide) {
               if (!code.includes(envStatement)) return
               const modulePath = getModuleFilePath(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
-              const keyPublic = `${publicPrefix}${envName}` as const
+              const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
               const errMsg =
                 `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
               if (isBuild) {
