@@ -46,8 +46,6 @@
   },
   "pnpm": {
     "overrides": {
-      "react": "18.3.1",
-      "react-dom": "18.3.1",
       "react-streaming": "0.3.33-commit-2cf1712",
       "vike": "link:./vike/"
     },
