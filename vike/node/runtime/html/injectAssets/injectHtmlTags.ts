@@ -19,7 +19,7 @@ async function injectHtmlTags(
   htmlTags: HtmlTag[],
   streamFromReactStreamingPackage: null | StreamReactStreaming
 ): Promise<string> {
-  const injectPromises = POSITIONS.map(async (position) => {
+  for (const position of POSITIONS) {
     const htmlFragment = htmlTags
       .filter((h) => h.position === position)
       .map((h) => resolveHtmlTag(h.htmlTag))
@@ -27,8 +27,7 @@ async function injectHtmlTags(
     if (htmlFragment) {
       htmlString = await injectHtmlFragment(position, htmlFragment, htmlString, streamFromReactStreamingPackage)
     }
-  })
-  await Promise.all(injectPromises)
+  }
   return htmlString
 }
 
