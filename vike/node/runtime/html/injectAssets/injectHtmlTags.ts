@@ -1,7 +1,7 @@
 // Unit tests at ./injectHtmlTags.spec.ts
 
 export { injectHtmlTags }
-export { injectHtmlTagsWithStream }
+export { injectHtmlTagsUsingStream }
 export { createHtmlHeadIfMissing }
 
 // Only needed for unit tests
@@ -13,23 +13,19 @@ import type { StreamReactStreaming } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
 
 type Position = 'HTML_BEGIN' | 'HTML_END'
-const POSITIONS = ['HTML_BEGIN', 'HTML_END'] as const
-
-function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[]): string {
-  for (const position of POSITIONS) {
-    const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === position))
-    if (htmlFragment) {
-      htmlString = injectHtmlFragment(position, htmlFragment, htmlString)
-    }
+function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Position): string {
+  const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === position))
+  if (htmlFragment) {
+    htmlString = injectHtmlFragment(position, htmlFragment, htmlString)
   }
   return htmlString
 }
 
-async function injectHtmlTagsWithStream(
+async function injectHtmlTagsUsingStream(
   htmlTags: HtmlTag[],
   streamFromReactStreamingPackage: null | StreamReactStreaming
 ): Promise<void> {
-  const htmlFragment = joinHtmlTags(htmlTags)
+  const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
   if (htmlFragment) {
     assert(streamFromReactStreamingPackage)
     assert(!streamFromReactStreamingPackage.hasStreamEnded())

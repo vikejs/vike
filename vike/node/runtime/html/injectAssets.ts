@@ -6,7 +6,7 @@ export type { PageContextPromise }
 import { assert, isCallable, isPromise } from '../utils.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
-import { injectHtmlTags, createHtmlHeadIfMissing, injectHtmlTagsWithStream } from './injectAssets/injectHtmlTags.js'
+import { injectHtmlTags, createHtmlHeadIfMissing, injectHtmlTagsUsingStream } from './injectAssets/injectHtmlTags.js'
 import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
 import type { StreamReactStreaming } from './stream/react-streaming.js'
@@ -63,10 +63,7 @@ function injectHtmlTagsToStream(
 
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
     htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags)
-    await injectHtmlTagsWithStream(
-      htmlTags.filter((snippet) => snippet.position === 'STREAM'),
-      streamFromReactStreamingPackage
-    )
+    await injectHtmlTagsUsingStream(htmlTags, streamFromReactStreamingPackage)
 
     return htmlBegin
   }
@@ -84,16 +81,12 @@ function injectHtmlTagsToStream(
 function injectToHtmlBegin(htmlBegin: string, htmlTags: HtmlTag[]): string {
   // Ensure existence of `<head>`
   htmlBegin = createHtmlHeadIfMissing(htmlBegin)
-  htmlBegin = injectHtmlTags(
-    htmlBegin,
-    htmlTags.filter((snippet) => snippet.position === 'HTML_BEGIN')
-  )
+  htmlBegin = injectHtmlTags(htmlBegin, htmlTags, 'HTML_BEGIN')
   return htmlBegin
 }
 
 function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): string {
-  const htmlTagsAtEnd = htmlTags.filter((snippet) => snippet.position === 'HTML_END')
-  htmlEnd = injectHtmlTags(htmlEnd, htmlTagsAtEnd)
+  htmlEnd = injectHtmlTags(htmlEnd, htmlTags, 'HTML_END')
   return htmlEnd
 }
 
