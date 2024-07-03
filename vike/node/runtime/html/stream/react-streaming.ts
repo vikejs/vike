@@ -1,7 +1,7 @@
 // Zero-config support for https://www.npmjs.com/package/react-streaming
 
 export { isStreamFromReactStreamingPackage }
-export { streamReactStreamingToString }
+export { streamFromReactStreamingPackageToString }
 export { getStreamOfReactStreamingPackage }
 export type { StreamFromReactStreamingPackage }
 export type { StreamFromReactStreamingPackagePublic }
@@ -14,7 +14,7 @@ import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, S
 type StreamFromReactStreamingPackagePublic = { injectToStream: Function }
 type StreamFromReactStreamingPackage = Awaited<ReturnType<typeof renderToStream>>
 
-function streamReactStreamingToString(stream: StreamFromReactStreamingPackage) {
+function streamFromReactStreamingPackageToString(stream: StreamFromReactStreamingPackage) {
   if (stream.pipe) {
     return streamPipeNodeToString(stream.pipe)
   }

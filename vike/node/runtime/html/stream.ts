@@ -47,7 +47,7 @@ import {
   getStreamOfReactStreamingPackage,
   isStreamFromReactStreamingPackage,
   StreamFromReactStreamingPackagePublic,
-  streamReactStreamingToString
+  streamFromReactStreamingPackageToString
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
@@ -884,7 +884,7 @@ async function streamToString(stream: StreamProviderAny): Promise<string> {
     return await streamPipeWebToString(getStreamPipeWeb(stream))
   }
   if (isStreamFromReactStreamingPackage(stream)) {
-    return await streamReactStreamingToString(stream)
+    return await streamFromReactStreamingPackageToString(stream)
   }
   assert(false)
 }
