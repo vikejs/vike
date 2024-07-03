@@ -1,8 +1,3 @@
-release new vike-react version
-minor refactor: rename StreamReactStreaming => StreamFromReactStreamingPackage
-minor refactor: rename getStreamFromReactStreaming => getStreamOfReactStreamingPackage
-minor refactor: rename streamReactStreamingToString => streamFromReactStreamingPackageToString
-
 - userAgent for vike-{vue,solid}
 - improve vike.dev/head
 - Remove `pageContext.data.title` from boilerplates
