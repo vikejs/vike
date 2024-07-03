@@ -1,6 +1,7 @@
 // Unit tests at ./injectHtmlTags.spec.ts
 
 export { injectHtmlTags }
+export { injectHtmlTagsUsingStream }
 export { createHtmlHeadIfMissing }
 
 // Only needed for unit tests
@@ -8,31 +9,35 @@ export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
 import { assert, assertUsage, slice } from '../../utils.js'
+import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
-import type { InjectToStream } from '../stream/react-streaming.js'
 
-type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
-const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]
-
-function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
-  POSITIONS.forEach((position) => {
-    const htmlFragment = htmlTags
-      .filter((h) => h.position === position)
-      .map((h) => resolveHtmlTag(h.htmlTag))
-      .join('')
-    if (htmlFragment) {
-      htmlString = injectHtmlFragment(position, htmlFragment, htmlString, injectToStream)
-    }
-  })
+type Position = 'HTML_BEGIN' | 'HTML_END'
+function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Position): string {
+  const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === position))
+  if (htmlFragment) {
+    htmlString = injectHtmlFragment(position, htmlFragment, htmlString)
+  }
   return htmlString
 }
 
-function injectHtmlFragment(
-  position: Position,
-  htmlFragment: string,
-  htmlString: string,
-  injectToStream: null | InjectToStream
-): string {
+async function injectHtmlTagsUsingStream(
+  htmlTags: HtmlTag[],
+  streamFromReactStreamingPackage: StreamFromReactStreamingPackage
+): Promise<void> {
+  const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
+  if (htmlFragment) {
+    assert(!streamFromReactStreamingPackage.hasStreamEnded())
+    await streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
+  }
+}
+
+function joinHtmlTags(htmlTags: HtmlTag[]): string {
+  const htmlFragment = htmlTags.map((h) => resolveHtmlTag(h.htmlTag)).join('')
+  return htmlFragment
+}
+
+function injectHtmlFragment(position: Position, htmlFragment: string, htmlString: string): string {
   if (position === 'HTML_BEGIN') {
     {
       const res = injectAtPaceholder(htmlFragment, htmlString, true)
@@ -54,11 +59,6 @@ function injectHtmlFragment(
       return injectAtClosingTag('html', htmlString, htmlFragment)
     }
     return htmlString + '\n' + htmlFragment
-  }
-  if (position === 'STREAM') {
-    assert(injectToStream)
-    injectToStream(htmlFragment, { flush: true })
-    return htmlString
   }
   assert(false)
 }

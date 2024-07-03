@@ -9,7 +9,7 @@ import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
-import type { InjectToStream } from '../stream/react-streaming.js'
+import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
@@ -40,7 +40,7 @@ type HtmlTag = {
 }
 function getHtmlTags(
   pageContext: { _isStream: boolean } & PageContextInjectAssets,
-  injectToStream: null | InjectToStream,
+  streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
   injectFilter: PreloadFilter,
   pageAssets: PageAsset[],
   viteDevScript: string
@@ -129,14 +129,14 @@ function getHtmlTags(
   const positionJavaScriptEntry = (() => {
     if (pageContext._pageContextPromise) {
       assertWarning(
-        !injectToStream,
+        !streamFromReactStreamingPackage,
         "[getHtmlTags()] We recommend against using streaming and a pageContext promise at the same time, because progressive hydration won't work.",
         { onlyOnce: true }
       )
       // If there is a pageContext._pageContextPromise (which is resolved after the stream has ended) then the pageContext JSON data needs to await for it: https://vike.dev/streaming#initial-data-after-stream-end
       return 'HTML_END'
     }
-    if (injectToStream) {
+    if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
       // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
       return 'STREAM'
     } else {
