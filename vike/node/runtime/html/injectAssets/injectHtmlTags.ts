@@ -20,15 +20,17 @@ async function injectHtmlTags(
   streamFromReactStreamingPackage: null | StreamReactStreaming
 ): Promise<string> {
   for (const position of POSITIONS) {
-    const htmlFragment = htmlTags
-      .filter((h) => h.position === position)
-      .map((h) => resolveHtmlTag(h.htmlTag))
-      .join('')
+    const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === position))
     if (htmlFragment) {
       htmlString = await injectHtmlFragment(position, htmlFragment, htmlString, streamFromReactStreamingPackage)
     }
   }
   return htmlString
+}
+
+function joinHtmlTags(htmlTags: HtmlTag[]): string {
+  const htmlFragment = htmlTags.map((h) => resolveHtmlTag(h.htmlTag)).join('')
+  return htmlFragment
 }
 
 async function injectHtmlFragment(
