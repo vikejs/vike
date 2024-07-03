@@ -14,25 +14,29 @@ import type { InjectToStream } from 'react-streaming/server'
 type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]
 
-function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
-  POSITIONS.forEach((position) => {
+async function injectHtmlTags(
+  htmlString: string,
+  htmlTags: HtmlTag[],
+  injectToStream: null | InjectToStream
+): Promise<string> {
+  for (const position of POSITIONS) {
     const htmlFragment = htmlTags
       .filter((h) => h.position === position)
       .map((h) => resolveHtmlTag(h.htmlTag))
       .join('')
     if (htmlFragment) {
-      htmlString = injectHtmlFragment(position, htmlFragment, htmlString, injectToStream)
+      htmlString = await injectHtmlFragment(position, htmlFragment, htmlString, injectToStream)
     }
-  })
+  }
   return htmlString
 }
 
-function injectHtmlFragment(
+async function injectHtmlFragment(
   position: Position,
   htmlFragment: string,
   htmlString: string,
   injectToStream: null | InjectToStream
-): string {
+): Promise<string> {
   if (position === 'HTML_BEGIN') {
     {
       const res = injectAtPaceholder(htmlFragment, htmlString, true)
@@ -57,7 +61,7 @@ function injectHtmlFragment(
   }
   if (position === 'STREAM') {
     assert(injectToStream)
-    injectToStream(htmlFragment, { flush: true })
+    await injectToStream(htmlFragment, { flush: true })
     return htmlString
   }
   assert(false)

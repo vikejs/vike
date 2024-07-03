@@ -38,8 +38,8 @@ async function injectHtmlTagsToString(
   const viteDevScript = await getViteDevScript()
   const htmlTags = getHtmlTags(pageContext, null, injectFilter, pageAssets, viteDevScript)
   let htmlString = htmlPartsToString(htmlParts, pageAssets)
-  htmlString = injectToHtmlBegin(htmlString, htmlTags, null)
-  htmlString = injectToHtmlEnd(htmlString, htmlTags)
+  htmlString = await injectToHtmlBegin(htmlString, htmlTags, null)
+  htmlString = await injectToHtmlEnd(htmlString, htmlTags)
   return htmlString
 }
 
@@ -62,7 +62,7 @@ function injectHtmlTagsToStream(
 
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
 
-    htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags, injectToStream)
+    htmlBegin = await injectToHtmlBegin(htmlBegin, htmlTags, injectToStream)
     return htmlBegin
   }
 
@@ -71,25 +71,29 @@ function injectHtmlTagsToStream(
     await resolvePageContextPromise(pageContext)
     const pageAssets = await pageContext.__getPageAssets()
     let htmlEnd = htmlPartsToString(htmlPartsEnd, pageAssets)
-    htmlEnd = injectToHtmlEnd(htmlEnd, htmlTags)
+    htmlEnd = await injectToHtmlEnd(htmlEnd, htmlTags)
     return htmlEnd
   }
 }
 
-function injectToHtmlBegin(htmlBegin: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
+async function injectToHtmlBegin(
+  htmlBegin: string,
+  htmlTags: HtmlTag[],
+  injectToStream: null | InjectToStream
+): Promise<string> {
   const htmlTagsAtBegin = htmlTags.filter((snippet) => snippet.position !== 'HTML_END')
 
   // Ensure existence of `<head>`
   htmlBegin = createHtmlHeadIfMissing(htmlBegin)
 
-  htmlBegin = injectHtmlTags(htmlBegin, htmlTagsAtBegin, injectToStream)
+  htmlBegin = await injectHtmlTags(htmlBegin, htmlTagsAtBegin, injectToStream)
 
   return htmlBegin
 }
 
-function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): string {
+async function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): Promise<string> {
   const htmlTagsAtEnd = htmlTags.filter((snippet) => snippet.position === 'HTML_END')
-  htmlEnd = injectHtmlTags(htmlEnd, htmlTagsAtEnd, null)
+  htmlEnd = await injectHtmlTags(htmlEnd, htmlTagsAtEnd, null)
   return htmlEnd
 }
 
