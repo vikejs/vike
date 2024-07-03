@@ -23,10 +23,11 @@ function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Posit
 
 async function injectHtmlTagsUsingStream(
   htmlTags: HtmlTag[],
-  streamFromReactStreamingPackage: StreamFromReactStreamingPackage
+  streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage
 ): Promise<void> {
   const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
   if (htmlFragment) {
+    assert(streamFromReactStreamingPackage)
     assert(!streamFromReactStreamingPackage.hasStreamEnded())
     await streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
   }
