@@ -172,7 +172,6 @@ function assertDEBUG() {
 }
 
 function getDEBUG() {
-  return "vike:stream,react-streaming:buffer"
   let DEBUG: undefined | string
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`
