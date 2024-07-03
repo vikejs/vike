@@ -15,8 +15,7 @@ import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, S
 type StreamReactStreaming = {
   // We set its type to Function instead of InjectToStream (`import type { InjectToStream } from 'react-streaming/server'`) to avoid type mismatches. (When the user has an another version installed than Vike's `devDependency#react-streaming`.)
   injectToStream: Function
-  // Older `react-streaming` versions don't define `disabled`
-  disabled?: boolean
+  disabled: boolean
 } & (
   | {
       pipe: (writable: StreamWritableNode) => void
