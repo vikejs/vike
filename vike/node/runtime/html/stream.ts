@@ -46,7 +46,7 @@ import { HtmlRender } from './renderHtml.js'
 import {
   getStreamFromReactStreaming,
   isStreamReactStreaming,
-  StreamReactStreaming,
+  StreamReactStreamingPublic,
   streamReactStreamingToString
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
@@ -71,7 +71,7 @@ type StreamProviderNormalized =
   | StreamPipeNode
 type StreamProviderAny =
   | StreamProviderNormalized
-  | StreamReactStreaming
+  | StreamReactStreamingPublic
   // pipeWebStream()
   | StreamPipeWebWrapped
   // pipeNodeStream()

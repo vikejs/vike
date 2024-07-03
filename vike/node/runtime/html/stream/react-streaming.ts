@@ -4,36 +4,16 @@ export { isStreamReactStreaming }
 export { streamReactStreamingToString }
 export { getStreamFromReactStreaming }
 export type { StreamReactStreaming }
-export type { InjectToStream }
+export type { StreamReactStreamingPublic }
 
+import type { renderToStream } from 'react-streaming/server'
 import { assert, assertUsage, hasProp, isVikeReactApp } from '../../utils.js'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
 
-// Same as:
-// ```
-// import type { InjectToStream } from 'react-streaming/server'
-// ```
-type InjectToStreamOptions = { flush?: boolean; tolerateStreamEnded?: boolean }
-type InjectToStream = (chunk: unknown, options?: InjectToStreamOptions) => boolean
+// We use this simplistic public type to avoid type mismatches (when the user installed another version than Vike's devDependency#react-streaming install).
+type StreamReactStreamingPublic = { injectToStream: Function }
+type StreamReactStreaming = Awaited<ReturnType<typeof renderToStream>>
 
-// ```js
-// import { renderToStream } from 'react-streaming/server'
-// const { pipe, readable, injectToStream } = await renderToStream()`
-// ```
-type StreamReactStreaming = {
-  injectToStream: InjectToStream
-  hasStreamEnded: () => boolean
-  disabled: boolean
-} & (
-  | {
-      pipe: (writable: StreamWritableNode) => void
-      readable: null
-    }
-  | {
-      pipe: null
-      readable: StreamReadableWeb
-    }
-)
 function streamReactStreamingToString(stream: StreamReactStreaming) {
   if (stream.pipe) {
     return streamPipeNodeToString(stream.pipe)
@@ -58,9 +38,10 @@ function isStreamReactStreaming(thing: unknown): thing is StreamReactStreaming {
   return false
 }
 
-function getStreamFromReactStreaming(stream: StreamReactStreaming) {
+type Pipe = { __streamPipeNode: (writable: StreamWritableNode) => void }
+type Readable = StreamReadableWeb
+function getStreamFromReactStreaming(stream: StreamReactStreaming): Pipe | Readable {
   if (stream.pipe) {
-    // TODO
     return { __streamPipeNode: stream.pipe }
   }
   if (stream.readable) {
