@@ -2,7 +2,7 @@
 
 export { isStreamFromReactStreamingPackage }
 export { streamReactStreamingToString }
-export { getStreamFromReactStreaming }
+export { getStreamOfReactStreamingPackage }
 export type { StreamFromReactStreamingPackage }
 export type { StreamFromReactStreamingPackagePublic }
 
@@ -40,7 +40,7 @@ function isStreamFromReactStreamingPackage(thing: unknown): thing is StreamFromR
 
 type Pipe = { __streamPipeNode: (writable: StreamWritableNode) => void }
 type Readable = StreamReadableWeb
-function getStreamFromReactStreaming(stream: StreamFromReactStreamingPackage): Pipe | Readable {
+function getStreamOfReactStreamingPackage(stream: StreamFromReactStreamingPackage): Pipe | Readable {
   if (stream.pipe) {
     return { __streamPipeNode: stream.pipe }
   }

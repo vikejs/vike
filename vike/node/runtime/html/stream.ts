@@ -44,7 +44,7 @@ import {
 } from '../utils.js'
 import { HtmlRender } from './renderHtml.js'
 import {
-  getStreamFromReactStreaming,
+  getStreamOfReactStreamingPackage,
   isStreamFromReactStreamingPackage,
   StreamFromReactStreamingPackagePublic,
   streamReactStreamingToString
@@ -465,7 +465,7 @@ async function createStreamWrapper({
 }> {
   if (isStreamFromReactStreamingPackage(streamOriginal)) {
     debug(`onRenderHtml() hook returned ${pc.cyan('react-streaming')} result`)
-    const stream = getStreamFromReactStreaming(streamOriginal)
+    const stream = getStreamOfReactStreamingPackage(streamOriginal)
     ;(streamOriginal as StreamProviderAny) = stream
   }
 
