@@ -45,8 +45,8 @@ import {
 import { HtmlRender } from './renderHtml.js'
 import {
   getStreamFromReactStreaming,
-  isStreamReactStreaming,
-  StreamReactStreamingPublic,
+  isStreamFromReactStreamingPackage,
+  StreamFromReactStreamingPackagePublic,
   streamReactStreamingToString
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
@@ -71,7 +71,7 @@ type StreamProviderNormalized =
   | StreamPipeNode
 type StreamProviderAny =
   | StreamProviderNormalized
-  | StreamReactStreamingPublic
+  | StreamFromReactStreamingPackagePublic
   // pipeWebStream()
   | StreamPipeWebWrapped
   // pipeNodeStream()
@@ -463,7 +463,7 @@ async function createStreamWrapper({
   streamWrapper: StreamProviderNormalized
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
-  if (isStreamReactStreaming(streamOriginal)) {
+  if (isStreamFromReactStreamingPackage(streamOriginal)) {
     debug(`onRenderHtml() hook returned ${pc.cyan('react-streaming')} result`)
     const stream = getStreamFromReactStreaming(streamOriginal)
     ;(streamOriginal as StreamProviderAny) = stream
@@ -761,7 +761,7 @@ function isStream(something: unknown): something is StreamProviderAny {
     isStreamReadableNode(something) ||
     isStreamPipeNode(something) ||
     isStreamPipeWeb(something) ||
-    isStreamReactStreaming(something)
+    isStreamFromReactStreamingPackage(something)
   ) {
     checkType<StreamProviderAny>(something)
     return true
@@ -883,7 +883,7 @@ async function streamToString(stream: StreamProviderAny): Promise<string> {
   if (isStreamPipeWeb(stream)) {
     return await streamPipeWebToString(getStreamPipeWeb(stream))
   }
-  if (isStreamReactStreaming(stream)) {
+  if (isStreamFromReactStreamingPackage(stream)) {
     return await streamReactStreamingToString(stream)
   }
   assert(false)

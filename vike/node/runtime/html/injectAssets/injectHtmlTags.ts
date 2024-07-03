@@ -9,7 +9,7 @@ export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
 import { assert, assertUsage, slice } from '../../utils.js'
-import type { StreamReactStreaming } from '../stream/react-streaming.js'
+import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
 
 type Position = 'HTML_BEGIN' | 'HTML_END'
@@ -23,7 +23,7 @@ function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Posit
 
 async function injectHtmlTagsUsingStream(
   htmlTags: HtmlTag[],
-  streamFromReactStreamingPackage: null | StreamReactStreaming
+  streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage
 ): Promise<void> {
   const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
   if (htmlFragment) {

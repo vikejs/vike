@@ -9,7 +9,7 @@ import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
-import type { StreamReactStreaming } from '../stream/react-streaming.js'
+import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
@@ -40,7 +40,7 @@ type HtmlTag = {
 }
 function getHtmlTags(
   pageContext: { _isStream: boolean } & PageContextInjectAssets,
-  streamFromReactStreamingPackage: null | StreamReactStreaming,
+  streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
   injectFilter: PreloadFilter,
   pageAssets: PageAsset[],
   viteDevScript: string
