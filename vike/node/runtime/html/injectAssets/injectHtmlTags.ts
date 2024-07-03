@@ -14,29 +14,30 @@ import type { HtmlTag } from './getHtmlTags.js'
 type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]
 
-function injectHtmlTags(
+async function injectHtmlTags(
   htmlString: string,
   htmlTags: HtmlTag[],
   streamFromReactStreamingPackage: null | StreamReactStreaming
-): string {
-  POSITIONS.forEach((position) => {
+): Promise<string> {
+  const injectPromises = POSITIONS.map(async (position) => {
     const htmlFragment = htmlTags
       .filter((h) => h.position === position)
       .map((h) => resolveHtmlTag(h.htmlTag))
       .join('')
     if (htmlFragment) {
-      htmlString = injectHtmlFragment(position, htmlFragment, htmlString, streamFromReactStreamingPackage)
+      htmlString = await injectHtmlFragment(position, htmlFragment, htmlString, streamFromReactStreamingPackage)
     }
   })
+  await Promise.all(injectPromises)
   return htmlString
 }
 
-function injectHtmlFragment(
+async function injectHtmlFragment(
   position: Position,
   htmlFragment: string,
   htmlString: string,
   streamFromReactStreamingPackage: null | StreamReactStreaming
-): string {
+): Promise<string> {
   if (position === 'HTML_BEGIN') {
     {
       const res = injectAtPaceholder(htmlFragment, htmlString, true)
@@ -62,7 +63,7 @@ function injectHtmlFragment(
   if (position === 'STREAM') {
     assert(streamFromReactStreamingPackage)
     assert(!streamFromReactStreamingPackage.hasStreamEnded())
-    streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
+    await streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
     return htmlString
   }
   assert(false)
