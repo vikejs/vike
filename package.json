@@ -46,8 +46,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vike": "link:./vike/",
-      "react-streaming": "0.3.36"
+      "vike": "link:./vike/"
     },
     "packageExtensions": {
       "@apollo/client": {

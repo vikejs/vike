@@ -6,7 +6,6 @@ settings:
 
 overrides:
   vike: link:./vike/
-  react-streaming: 0.3.36
 
 packageExtensionsChecksum: f050d50401848e89704474c6985d439e
 
@@ -508,7 +507,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.36
+        specifier: ^0.3.36
         version: 0.3.36(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       vike:
         specifier: link:../../vike
@@ -769,7 +768,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.36
+        specifier: ^0.3.36
         version: 0.3.36(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: ^5.3.3
@@ -823,7 +822,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.36
+        specifier: ^0.3.36
         version: 0.3.36(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       sirv:
         specifier: ^2.0.2
@@ -1177,7 +1176,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.36
+        specifier: ^0.3.36
         version: 0.3.36(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       vike:
         specifier: link:../../vike
@@ -1444,7 +1443,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.36
+        specifier: ^0.3.36
         version: 0.3.36(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: ^4.8.4
@@ -1477,7 +1476,7 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       react-streaming:
-        specifier: 0.3.36
+        specifier: ^0.3.36
         version: 0.3.36(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       sirv:
         specifier: ^2.0.2
@@ -1916,7 +1915,7 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: 0.3.36
+        specifier: ^0.3.36
         version: 0.3.36(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rimraf:
         specifier: ^5.0.5
@@ -7074,7 +7073,7 @@ packages:
       '@babel/parser': ^7.0.0
       '@babel/types': ^7.0.0
       react: ^18.0.0
-      react-streaming: 0.3.36
+      react-streaming: ^0.3.3
     peerDependenciesMeta:
       '@babel/core':
         optional: true
