@@ -1,6 +1,7 @@
 // Unit tests at ./injectHtmlTags.spec.ts
 
 export { injectHtmlTags }
+export { injectHtmlTagsWithStream }
 export { createHtmlHeadIfMissing }
 
 // Only needed for unit tests
@@ -11,21 +12,29 @@ import { assert, assertUsage, slice } from '../../utils.js'
 import type { StreamReactStreaming } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
 
-type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
-const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]
+type Position = 'HTML_BEGIN' | 'HTML_END'
+const POSITIONS = ['HTML_BEGIN', 'HTML_END'] as const
 
-async function injectHtmlTags(
-  htmlString: string,
-  htmlTags: HtmlTag[],
-  streamFromReactStreamingPackage: null | StreamReactStreaming
-): Promise<string> {
+function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[]): string {
   for (const position of POSITIONS) {
     const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === position))
     if (htmlFragment) {
-      htmlString = await injectHtmlFragment(position, htmlFragment, htmlString, streamFromReactStreamingPackage)
+      htmlString = injectHtmlFragment(position, htmlFragment, htmlString)
     }
   }
   return htmlString
+}
+
+async function injectHtmlTagsWithStream(
+  htmlTags: HtmlTag[],
+  streamFromReactStreamingPackage: null | StreamReactStreaming
+): Promise<void> {
+  const htmlFragment = joinHtmlTags(htmlTags)
+  if (htmlFragment) {
+    assert(streamFromReactStreamingPackage)
+    assert(!streamFromReactStreamingPackage.hasStreamEnded())
+    await streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
+  }
 }
 
 function joinHtmlTags(htmlTags: HtmlTag[]): string {
@@ -33,12 +42,7 @@ function joinHtmlTags(htmlTags: HtmlTag[]): string {
   return htmlFragment
 }
 
-async function injectHtmlFragment(
-  position: Position,
-  htmlFragment: string,
-  htmlString: string,
-  streamFromReactStreamingPackage: null | StreamReactStreaming
-): Promise<string> {
+function injectHtmlFragment(position: Position, htmlFragment: string, htmlString: string): string {
   if (position === 'HTML_BEGIN') {
     {
       const res = injectAtPaceholder(htmlFragment, htmlString, true)
@@ -60,12 +64,6 @@ async function injectHtmlFragment(
       return injectAtClosingTag('html', htmlString, htmlFragment)
     }
     return htmlString + '\n' + htmlFragment
-  }
-  if (position === 'STREAM') {
-    assert(streamFromReactStreamingPackage)
-    assert(!streamFromReactStreamingPackage.hasStreamEnded())
-    await streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
-    return htmlString
   }
   assert(false)
 }
