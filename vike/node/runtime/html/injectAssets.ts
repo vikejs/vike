@@ -9,7 +9,7 @@ import { assertPageContextProvidedByUser } from '../../../shared/assertPageConte
 import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHtmlTags.js'
 import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
-import type { InjectToStream } from './stream/react-streaming.js'
+import type { InjectToStream } from 'react-streaming/server'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import type { PageContextSerialization } from './serializePageContextClientSide.js'
 import { getViteDevScript } from './injectAssets/getViteDevScript.js'

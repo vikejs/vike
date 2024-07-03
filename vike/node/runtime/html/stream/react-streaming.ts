@@ -4,28 +4,17 @@ export { isStreamReactStreaming }
 export { streamReactStreamingToString }
 export { getStreamFromReactStreaming }
 export type { StreamReactStreaming }
-export type { InjectToStream }
 
 import { assert, hasProp } from '../../utils.js'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
-
-// Same type than:
-// ```
-// import type { InjectToStream } from 'react-streaming/server'
-// ```
-type InjectToStream = (
-  chunk: unknown,
-  options?: {
-    flush?: boolean
-  }
-) => void
 
 // ```js
 // import { renderToStream } from 'react-streaming/server'
 // const { pipe, readable, injectToStream } = await renderToStream()`
 // ```
 type StreamReactStreaming = {
-  injectToStream: InjectToStream
+  // We set its type to Function instead of InjectToStream (`import type { InjectToStream } from 'react-streaming/server'`) to avoid type mismatches. (When the user has an another version installed than Vike's `devDependency#react-streaming`.)
+  injectToStream: Function
   // Older `react-streaming` versions don't define `disabled`
   disabled?: boolean
 } & (

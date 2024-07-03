@@ -9,10 +9,10 @@ import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
-import type { InjectToStream } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
+import type { InjectToStream } from 'react-streaming/server'
 
 const stamp = '__injectFilterEntry'
 

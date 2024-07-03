@@ -31,7 +31,7 @@ import {
   StreamProviderNormalized
 } from './stream.js'
 import { isStreamReactStreaming } from './stream/react-streaming.js'
-import type { InjectToStream } from './stream/react-streaming.js'
+import type { InjectToStream } from 'react-streaming/server'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -118,7 +118,7 @@ async function renderHtmlStream(
   if (injectString) {
     let injectToStream: null | InjectToStream = null
     if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
-      injectToStream = streamOriginal.injectToStream
+      injectToStream = streamOriginal.injectToStream as InjectToStream
     }
     const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream, injectFilter)
     objectAssign(opts, {
