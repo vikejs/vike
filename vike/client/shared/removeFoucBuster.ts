@@ -2,6 +2,12 @@ export { removeFoucBuster }
 
 import { assert } from './utils.js'
 
+// See also:
+// - Alternative approach of exactly injecting what Vite injects:
+//   - https://github.com/remix-run/remix/issues/8830#issuecomment-1968368351
+//   - https://github.com/rakkasjs/rakkasjs/blob/7d75ccc915e93bca04e6bab37dc6abdb68a85e4a/packages/rakkasjs/src/features/pages/middleware.tsx#L701
+// - https://github.com/remix-run/remix/issues/8830
+
 function removeFoucBuster() {
   assert(import.meta.env.DEV)
 
