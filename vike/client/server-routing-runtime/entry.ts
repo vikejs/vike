@@ -6,9 +6,12 @@ import { getPageContext } from './getPageContext.js'
 import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook } from '../../shared/hooks/getHook.js'
 import { assertSingleInstance_onClientEntryServerRouting } from './utils.js'
+import { removeFoucBuster } from '../shared/removeFoucBuster.js'
 // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
 const isProd: boolean = import.meta.env.PROD
 assertSingleInstance_onClientEntryServerRouting(isProd)
+
+if (import.meta.env.DEV) removeFoucBuster()
 
 hydrate()
 
