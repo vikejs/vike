@@ -65,6 +65,13 @@ The following environment variables can be accessed from the client-side without
 </Contribution>
 
 
+## Config files
+
+Note that [`import.meta.env` isn't available in config files](https://github.com/vikejs/vike/issues/1726#issuecomment-2208626928) (neither `vite.config.js` nor `+config.js`).
+
+> A workaround is to use [`process.env`](https://nodejs.org/en/learn/command-line/how-to-read-environment-variables-from-nodejs) instead of `import.meta.env`. But note that you'll then only be able to access environment variables coming from your operating system (you won't be able to access those defined in `.env` files).
+
+
 ## See also
 
 - [#1726 Improve environment variables support](https://github.com/vikejs/vike/issues/1726)
