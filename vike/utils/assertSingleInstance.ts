@@ -1,4 +1,4 @@
-export { onClientEntry_ServerRouting }
+export { assertSingleInstance_onClientEntryServerRouting }
 export { onClientEntry_ClientRouting }
 export { onAssertModuleLoad }
 
@@ -48,7 +48,7 @@ function assertSingleInstance() {
   }
 }
 
-function onClientEntry_ServerRouting(isProduction: boolean) {
+function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) {
   assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
