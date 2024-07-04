@@ -7,9 +7,9 @@ function removeFoucBuster() {
 
   let sleep = 2
   const runClean = () => {
-    if (sleep < 1000) sleep = 2 * sleep
     const isClean = clean()
     if (!isClean) {
+      if (sleep < 1000) sleep = 2 * sleep
       setTimeout(runClean, sleep)
     }
   }
@@ -21,15 +21,17 @@ function clean() {
   const injectedByVite = [...document.querySelectorAll(`style[${VITE_ID}]`)].map(
     (style) => style.getAttribute(VITE_ID)!
   )
+
   // ```
   // <link rel="stylesheet" type="text/css" href="/renderer/css/index.css?direct">
   // <link rel="stylesheet" type="text/css" href="/renderer/Layout.css?direct">
   // ```
   const suffix = '?direct'
+  // <link> defined by:
+  //  - https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/node/runtime/html/injectAssets/inferHtmlTags.ts#L35
+  //  - https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/node/runtime/renderPage/getPageAssets.ts#L68
   const injectedByVike = [...document.querySelectorAll(`link[rel="stylesheet"][type="text/css"][href$="${suffix}"]`)]
-  if (injectedByVike.length === 0) {
-    // clearInterval(interval)
-  }
+
   let isClean = true
   injectedByVike.forEach((link) => {
     const filePathAbsoluteUserRootDir = link.getAttribute('href')!.slice(0, -suffix.length)

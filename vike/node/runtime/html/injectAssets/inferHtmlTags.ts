@@ -32,6 +32,7 @@ function inferAssetTag(pageAsset: PageAsset): string {
     return `<script src="${src}" ${scriptAttrs}></script>`
   }
   if (assetType === 'style') {
+    // WARNING: if changing following line, then also update https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/client/shared/removeFoucBuster.ts#L29
     return `<link rel="stylesheet" type="text/css" href="${src}">`
   }
   assert(false, { pageAsset })
