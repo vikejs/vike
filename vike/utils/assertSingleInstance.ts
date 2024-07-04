@@ -1,5 +1,5 @@
 export { assertSingleInstance_onClientEntryServerRouting }
-export { onClientEntry_ClientRouting }
+export { assertSingleInstance_onClientEntryClientRouting }
 export { onAssertModuleLoad }
 
 //  - Throw error if there are two different versions of vike loaded
@@ -61,7 +61,7 @@ function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) 
   if (isProduction) globalObject.checkSingleInstance = true
   assertSingleInstance()
 }
-function onClientEntry_ClientRouting(isProduction: boolean) {
+function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) {
   assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
