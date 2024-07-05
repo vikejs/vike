@@ -21,15 +21,15 @@ function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Posit
   return htmlString
 }
 
-async function injectHtmlTagsUsingStream(
+function injectHtmlTagsUsingStream(
   htmlTags: HtmlTag[],
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage
-): Promise<void> {
+): void {
   const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
   if (htmlFragment) {
     assert(streamFromReactStreamingPackage)
     assert(!streamFromReactStreamingPackage.hasStreamEnded())
-    await streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
+    streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
   }
 }
 
