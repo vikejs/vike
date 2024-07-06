@@ -1,3 +1,13 @@
+## [0.4.179](https://github.com/vikejs/vike/compare/v0.4.178...v0.4.179) (2024-07-06)
+
+
+### Bug Fixes
+
+* remove fouc buster (fix [#1003](https://github.com/vikejs/vike/issues/1003)) ([fae90a1](https://github.com/vikejs/vike/commit/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229))
+* update react-streaming ([#1733](https://github.com/vikejs/vike/issues/1733)) ([c638d40](https://github.com/vikejs/vike/commit/c638d401148bfba74c8637db5d004fbc8c74c0df))
+
+
+
 ## [0.4.178](https://github.com/vikejs/vike/compare/v0.4.177...v0.4.178) (2024-07-03)
 
 
