@@ -17,9 +17,9 @@
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-streaming": "^0.3.24",
+    "react-streaming": "^0.3.41",
     "typescript": "^5.3.3",
-    "vike": "0.4.177",
+    "vike": "0.4.179",
     "vite": "^5.2.11"
   },
   "type": "module"

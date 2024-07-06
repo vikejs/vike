@@ -1,6 +1,6 @@
-export { onClientEntry_ServerRouting }
-export { onClientEntry_ClientRouting }
-export { onAssertModuleLoad }
+export { assertSingleInstance_onClientEntryServerRouting }
+export { assertSingleInstance_onClientEntryClientRouting }
+export { assertSingleInstance_onAssertModuleLoad }
 
 //  - Throw error if there are two different versions of vike loaded
 //  - Show warning if entry of Client Routing and entry of Server Routing are both loaded
@@ -48,7 +48,7 @@ function assertSingleInstance() {
   }
 }
 
-function onClientEntry_ServerRouting(isProduction: boolean) {
+function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) {
   assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
@@ -61,7 +61,7 @@ function onClientEntry_ServerRouting(isProduction: boolean) {
   if (isProduction) globalObject.checkSingleInstance = true
   assertSingleInstance()
 }
-function onClientEntry_ClientRouting(isProduction: boolean) {
+function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) {
   assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
@@ -76,7 +76,7 @@ function onClientEntry_ClientRouting(isProduction: boolean) {
 }
 
 // Called by utils/assert.ts which is (most certainly) loaded by all entries. That way we don't have to call a callback for every entry. (There are a lot of entries: `client/router/`, `client/`, `node/runtime/`, `node/plugin/`, `node/cli`.)
-function onAssertModuleLoad() {
+function assertSingleInstance_onAssertModuleLoad() {
   globalObject.instances.push(projectInfo.projectVersion)
   assertSingleInstance()
 }

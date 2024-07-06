@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.177",
+  "version": "0.4.179",
   "scripts": {
     "dev": "tsc --watch",
     "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
@@ -138,7 +138,7 @@
     }
   },
   "peerDependencies": {
-    "react-streaming": ">=0.3.5",
+    "react-streaming": ">=0.3.41",
     "vite": ">=4.4.0"
   },
   "peerDependenciesMeta": {
@@ -209,7 +209,7 @@
     "es-module-lexer": "^1.4.1",
     "esbuild": "^0.19.10",
     "fast-glob": "^3.3.2",
-    "react-streaming": "^0.3.24",
+    "react-streaming": "^0.3.41",
     "rimraf": "^5.0.5",
     "sirv": "^2.0.4",
     "source-map-support": "^0.5.21",

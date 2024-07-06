@@ -1,5 +1,4 @@
 import { Link } from '@brillout/docpress'
-import { ClientOnlyCommon } from '../ClientOnly/ClientOnlyCommon.tsx'
 import { UiFrameworkExtension } from '../../components'
 
 Implemented by: <UiFrameworkExtension /> (or <Link href="#without-vike-react-vue-solid">yourself</Link>).
@@ -18,9 +17,26 @@ Common use cases:
 
 ## React
 
-The `vike-react` extension doesn't implement the `clientOnly()` helper (yet). Use the <Link href="/ClientOnly#react">`<ClientOnly>`</Link> wrapper instead.
+### Usage
 
-> Contribution welcome, see [#102 - `clientOnly()` instead of `<ClientOnly>`](https://github.com/vikejs/vike-react/issues/102)
+```tsx
+import { clientOnly } from 'vike-react/clientOnly'
+
+const SomeComponent = clientOnly(() => import("./SomeComponent.jsx"));
+/* If the component isn't the default export:
+const SomeComponent = clientOnly(async () => (await import('some-library')).SomeComponent)
+*/
+
+function MyComponent(props) {
+  return <SomeComponent fallback={<Loading />} />
+}
+```
+
+#### Props
+
+- **fallback**: Content shown while the component is being loaded.
+
+All other props are passed to the loaded component.
 
 
 ## Solid

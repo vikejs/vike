@@ -1,3 +1,29 @@
+## [0.4.179](https://github.com/vikejs/vike/compare/v0.4.178...v0.4.179) (2024-07-06)
+
+
+### Bug Fixes
+
+* remove fouc buster (fix [#1003](https://github.com/vikejs/vike/issues/1003)) ([fae90a1](https://github.com/vikejs/vike/commit/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229))
+* update react-streaming ([#1733](https://github.com/vikejs/vike/issues/1733)) ([c638d40](https://github.com/vikejs/vike/commit/c638d401148bfba74c8637db5d004fbc8c74c0df))
+
+
+
+## [0.4.178](https://github.com/vikejs/vike/compare/v0.4.177...v0.4.178) (2024-07-03)
+
+
+### Bug Fixes
+
+* imporve error message (fix [#1720](https://github.com/vikejs/vike/issues/1720)) ([36d13be](https://github.com/vikejs/vike/commit/36d13bec72a240999dc00d41f2d0f9e567ab87ae))
+* improve DEBUG:vike-stream ([ef0eb3d](https://github.com/vikejs/vike/commit/ef0eb3d4fe9af2c39e2876c4431fed983a8b2ef3))
+* improve url protocol parsing ([#1719](https://github.com/vikejs/vike/issues/1719)) ([027858d](https://github.com/vikejs/vike/commit/027858d895b45b74fdc398e241e12bfe996ee962))
+* make env var STORYBOOK public (fix [#1724](https://github.com/vikejs/vike/issues/1724)) ([51d612a](https://github.com/vikejs/vike/commit/51d612a0a655e27b19338e3659f89a127a025c1e))
+* support any URL protocol ([886a99f](https://github.com/vikejs/vike/commit/886a99ff21e86a8ca699a25cee7edc184aa058e4))
+* support capacitor protocol (fix [#1706](https://github.com/vikejs/vike/issues/1706)) ([f4a92e0](https://github.com/vikejs/vike/commit/f4a92e0db20eb50e494459d0aba5e1c3f8a6aa81))
+* support symlink directories ([#1688](https://github.com/vikejs/vike/issues/1688)) ([ff3d6cd](https://github.com/vikejs/vike/commit/ff3d6cd090d27cbdd606b28f39b83aa218332e2e))
+* tolerate injecting to stream after it ended ([#1722](https://github.com/vikejs/vike/issues/1722)) ([3f4283f](https://github.com/vikejs/vike/commit/3f4283fe994b8a55a023d38d560c0a459193bcb2))
+
+
+
 ## [0.4.177](https://github.com/vikejs/vike/compare/v0.4.176...v0.4.177) (2024-06-17)
 
 
