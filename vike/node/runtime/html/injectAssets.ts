@@ -63,7 +63,7 @@ function injectHtmlTagsToStream(
 
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
     htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags)
-    await injectHtmlTagsUsingStream(htmlTags, streamFromReactStreamingPackage)
+    injectHtmlTagsUsingStream(htmlTags, streamFromReactStreamingPackage)
 
     return htmlBegin
   }
