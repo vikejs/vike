@@ -5,6 +5,14 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
+    title: '`<Loading>`',
+    url: '/Loading'
+  },
+  {
+    title: '`<LoadingComponent>`',
+    url: '/LoadingComponent'
+  },
+  {
     title: 'React Query',
     url: '/react-query'
   },
