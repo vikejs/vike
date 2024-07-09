@@ -32,8 +32,11 @@
     "format:prettier": "git ls-files | egrep '\\.(json|js|jsx|css|ts|tsx|vue|mjs|cjs)$' | grep --invert-match package.json | xargs pnpm exec prettier --write",
     "format:biome": "biome format --write .",
     "format:check": "biome format . || (echo 'Fix formatting by running `$ pnpm run -w format`.' && exit 1)",
+    "========= Clean": "",
+    "// Remove all generated files": "",
+    "clean": "git clean -Xdf",
     "========= Reset": "",
-    "reset": "git clean -Xdf && pnpm install && pnpm run build",
+    "reset": "pnpm run clean && pnpm install && pnpm run build",
     "========= Only allow pnpm; forbid yarn & npm": "",
     "preinstall": "npx only-allow pnpm"
   },
