@@ -51,13 +51,13 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
-async function route(pageContextForRoute: PageContextForRoute): Promise<PageContextFromRoute> {
-  debug('Pages routes:', pageContextForRoute._pageRoutes)
-  assertPageContextUrl(pageContextForRoute)
+async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
+  debug('Pages routes:', pageContext._pageRoutes)
+  assertPageContextUrl(pageContext)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
-  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContextForRoute)
+  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
   if (pageContextFromOnBeforeRouteHook) {
     if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
       assert(pageContextFromOnBeforeRouteHook._pageId)
@@ -68,20 +68,20 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
   }
 
   // We take into account pageContext.urlLogical set by onBeforeRoute()
-  const pageContext = {}
-  objectAssign(pageContext, pageContextForRoute)
-  objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
+  const pageContextTmp = {}
+  objectAssign(pageContextTmp, pageContext)
+  objectAssign(pageContextTmp, pageContextFromOnBeforeRouteHook)
 
   // Vike's routing
-  const allPageIds = pageContext._allPageIds
+  const allPageIds = pageContextTmp._allPageIds
   assertUsage(allPageIds.length > 0, 'No page found. You must create at least one page.')
-  assert(pageContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0)
-  const { urlPathname } = pageContext
+  assert(pageContextTmp._pageFilesAll.length > 0 || pageContextTmp._pageConfigs.length > 0)
+  const { urlPathname } = pageContextTmp
   assert(urlPathname.startsWith('/'))
 
   const routeMatches: RouteMatch[] = []
   await Promise.all(
-    pageContext._pageRoutes.map(async (pageRoute): Promise<void> => {
+    pageContextTmp._pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, routeType } = pageRoute
 
       // Filesytem Routing
@@ -115,7 +115,7 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
       // Route Function defined in `.page.route.js`
       if (pageRoute.routeType === 'FUNCTION') {
         const { routeFunction, routeDefinedAtString } = pageRoute
-        const match = await resolveRouteFunction(routeFunction, pageContext, routeDefinedAtString)
+        const match = await resolveRouteFunction(routeFunction, pageContextTmp, routeDefinedAtString)
         if (match) {
           const { routeParams, precedence } = match
           routeMatches.push({ pageId, precedence, routeParams, routeType })
