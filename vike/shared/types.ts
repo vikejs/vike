@@ -149,6 +149,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
   Pick<
     PageContextBuiltInCommon<Data>,
     | 'Page'
+    | 'routeParams'
     | 'pageExports'
     | 'config'
     | 'configEntries'
