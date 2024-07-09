@@ -525,10 +525,10 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^3.7.10
-        version: 3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.3.0(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))
+        version: 4.3.0(vite@5.3.2(@types/node@20.13.0)(terser@5.31.0))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -537,34 +537,34 @@ importers:
         version: 4.19.2
       graphql:
         specifier: ^16.6.0
-        version: 16.8.1
+        version: 16.9.0
       node-fetch:
         specifier: ^2.6.7
         version: 2.7.0
       react:
         specifier: ^18.2.0
-        version: 18.2.0
+        version: 18.3.1
       react-dom:
         specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
+        version: 18.3.1(react@18.3.1)
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
+        version: 5.3.2(@types/node@20.13.0)(terser@5.31.0)
 
   examples/graphql-apollo-vue:
     dependencies:
       '@apollo/client':
         specifier: ^3.7.10
-        version: 3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
+        version: 5.0.5(vite@5.3.2(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
-        version: 4.0.2(@apollo/client@3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.8.1)(typescript@5.5.2)(vue@3.4.27(typescript@5.5.2))
+        version: 4.0.2(@apollo/client@3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.9.0)(typescript@5.5.2)(vue@3.4.27(typescript@5.5.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.4.27
@@ -585,13 +585,13 @@ importers:
         version: 4.19.2
       graphql:
         specifier: ^16.6.0
-        version: 16.8.1
+        version: 16.9.0
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
+        version: 5.3.2(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.47
         version: 3.4.27(typescript@5.5.2)
@@ -1176,10 +1176,10 @@ importers:
     dependencies:
       '@apollo/client':
         specifier: ^3.7.10
-        version: 3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vitejs/plugin-react':
         specifier: ^4.2.1
-        version: 4.3.0(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))
+        version: 4.3.0(vite@5.3.2(@types/node@20.13.0)(terser@5.31.0))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1188,34 +1188,34 @@ importers:
         version: 4.19.2
       graphql:
         specifier: ^16.6.0
-        version: 16.8.1
+        version: 16.9.0
       node-fetch:
         specifier: ^2.6.7
         version: 2.7.0
       react:
         specifier: ^18.2.0
-        version: 18.2.0
+        version: 18.3.1
       react-dom:
         specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
+        version: 18.3.1(react@18.3.1)
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
+        version: 5.3.2(@types/node@20.13.0)(terser@5.31.0)
 
   test-deprecated-design/graphql-apollo-vue:
     dependencies:
       '@apollo/client':
         specifier: ^3.7.10
-        version: 3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
+        version: 5.0.5(vite@5.3.2(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
       '@vue/apollo-composable':
         specifier: ^4.0.0-beta.4
-        version: 4.0.2(@apollo/client@3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.8.1)(typescript@5.5.2)(vue@3.4.27(typescript@5.5.2))
+        version: 4.0.2(@apollo/client@3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.9.0)(typescript@5.5.2)(vue@3.4.27(typescript@5.5.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.4.27
@@ -1236,13 +1236,13 @@ importers:
         version: 4.19.2
       graphql:
         specifier: ^16.6.0
-        version: 16.8.1
+        version: 16.9.0
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vite:
         specifier: ^5.0.10
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
+        version: 5.3.2(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.47
         version: 3.4.27(typescript@5.5.2)
@@ -1872,8 +1872,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@apollo/client@3.10.4':
-    resolution: {integrity: sha512-51gk0xOwN6Ls1EbTG5svFva1kdm2APHYTzmFhaAdvUQoJFDxfc0UwQgDxGptzH84vkPlo1qunY1FuboyF9LI3Q==}
+  '@apollo/client@3.10.8':
+    resolution: {integrity: sha512-UaaFEitRrPRWV836wY2L7bd3HRCfbMie1jlYMcmazFAK23MVhz/Uq7VG1nwbotPb5xzFsw5RF4Wnp2G3dWPM3g==}
     peerDependencies:
       graphql: ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5
@@ -4999,8 +4999,8 @@ packages:
     resolution: {integrity: sha512-qbHgh8Ix+j/qY+a/ZcJnFQ+j8ezakqPiHwPiZhV/3PgGlgf96QMBB5/f2rkiC9sgLoy/xvT6TSiaf2nTHJh5iA==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
-  graphql@16.8.1:
-    resolution: {integrity: sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==}
+  graphql@16.9.0:
+    resolution: {integrity: sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   gray-matter@4.0.3:
@@ -6841,8 +6841,8 @@ packages:
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
 
-  throttle-debounce@5.0.0:
-    resolution: {integrity: sha512-2iQTSgkkc1Zyk0MeVrt/3BvuOXYPl/R8Z0U2xxo9rjwNciaHDG3R+Lm6dh4EeUci49DanvBnuqI6jshoQQRGEg==}
+  throttle-debounce@5.0.2:
+    resolution: {integrity: sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A==}
     engines: {node: '>=12.22'}
 
   through@2.3.8:
@@ -7493,37 +7493,14 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@apollo/client@3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@apollo/client@3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
       '@wry/caches': 1.0.1
       '@wry/equality': 0.5.7
       '@wry/trie': 0.5.0
-      graphql: 16.8.1
-      graphql-tag: 2.12.6(graphql@16.8.1)
-      hoist-non-react-statics: 3.3.2
-      optimism: 0.18.0
-      prop-types: 15.8.1
-      rehackt: 0.1.0(@types/react@18.3.3)(react@18.2.0)
-      response-iterator: 0.2.6
-      symbol-observable: 4.0.0
-      ts-invariant: 0.10.3
-      tslib: 2.6.2
-      zen-observable-ts: 1.2.5
-    optionalDependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    transitivePeerDependencies:
-      - '@types/react'
-
-  '@apollo/client@3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
-      '@wry/caches': 1.0.1
-      '@wry/equality': 0.5.7
-      '@wry/trie': 0.5.0
-      graphql: 16.8.1
-      graphql-tag: 2.12.6(graphql@16.8.1)
+      graphql: 16.9.0
+      graphql-tag: 2.12.6(graphql@16.9.0)
       hoist-non-react-statics: 3.3.2
       optimism: 0.18.0
       prop-types: 15.8.1
@@ -8299,9 +8276,9 @@ snapshots:
     dependencies:
       graphql: 16.5.0
 
-  '@graphql-typed-document-node/core@3.2.0(graphql@16.8.1)':
+  '@graphql-typed-document-node/core@3.2.0(graphql@16.9.0)':
     dependencies:
-      graphql: 16.8.1
+      graphql: 16.9.0
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
@@ -9076,6 +9053,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vitejs/plugin-react@4.3.0(vite@5.3.2(@types/node@20.13.0)(terser@5.31.0))':
+    dependencies:
+      '@babel/core': 7.24.6
+      '@babel/plugin-transform-react-jsx-self': 7.24.6(@babel/core@7.24.6)
+      '@babel/plugin-transform-react-jsx-source': 7.24.6(@babel/core@7.24.6)
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.14.2
+      vite: 5.3.2(@types/node@20.13.0)(terser@5.31.0)
+    transitivePeerDependencies:
+      - supports-color
+
   '@vitejs/plugin-vue@5.0.5(vite@5.2.12(@types/node@17.0.45)(terser@5.31.0))(vue@3.2.33)':
     dependencies:
       vite: 5.2.12(@types/node@17.0.45)(terser@5.31.0)
@@ -9089,6 +9077,11 @@ snapshots:
   '@vitejs/plugin-vue@5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))':
     dependencies:
       vite: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
+      vue: 3.4.27(typescript@5.5.2)
+
+  '@vitejs/plugin-vue@5.0.5(vite@5.3.2(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))':
+    dependencies:
+      vite: 5.3.2(@types/node@20.13.0)(terser@5.31.0)
       vue: 3.4.27(typescript@5.5.2)
 
   '@vitest/expect@1.6.0':
@@ -9133,11 +9126,11 @@ snapshots:
       '@volar/language-core': 2.2.5
       path-browserify: 1.0.1
 
-  '@vue/apollo-composable@4.0.2(@apollo/client@3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.8.1)(typescript@5.5.2)(vue@3.4.27(typescript@5.5.2))':
+  '@vue/apollo-composable@4.0.2(@apollo/client@3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(graphql@16.9.0)(typescript@5.5.2)(vue@3.4.27(typescript@5.5.2))':
     dependencies:
-      '@apollo/client': 3.10.4(@types/react@18.3.3)(graphql@16.8.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      graphql: 16.8.1
-      throttle-debounce: 5.0.0
+      '@apollo/client': 3.10.8(@types/react@18.3.3)(graphql@16.9.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      graphql: 16.9.0
+      throttle-debounce: 5.0.2
       ts-essentials: 9.4.2(typescript@5.5.2)
       vue: 3.4.27(typescript@5.5.2)
       vue-demi: 0.14.8(vue@3.4.27(typescript@5.5.2))
@@ -10899,14 +10892,14 @@ snapshots:
       graphql: 16.5.0
       tslib: 2.6.2
 
-  graphql-tag@2.12.6(graphql@16.8.1):
+  graphql-tag@2.12.6(graphql@16.9.0):
     dependencies:
-      graphql: 16.8.1
+      graphql: 16.9.0
       tslib: 2.6.2
 
   graphql@16.5.0: {}
 
-  graphql@16.8.1: {}
+  graphql@16.9.0: {}
 
   gray-matter@4.0.3:
     dependencies:
@@ -12792,11 +12785,6 @@ snapshots:
     dependencies:
       rc: 1.2.8
 
-  rehackt@0.1.0(@types/react@18.3.3)(react@18.2.0):
-    optionalDependencies:
-      '@types/react': 18.3.3
-      react: 18.2.0
-
   rehackt@0.1.0(@types/react@18.3.3)(react@18.3.1):
     optionalDependencies:
       '@types/react': 18.3.3
@@ -13328,7 +13316,7 @@ snapshots:
 
   text-table@0.2.0: {}
 
-  throttle-debounce@5.0.0: {}
+  throttle-debounce@5.0.2: {}
 
   through@2.3.8: {}
 
