@@ -38,15 +38,15 @@ If you try to access a `pageContext` value that isn't defined on the client-side
 [Vike][Wrong Usage] pageContext.someProp isn't defined on the client-side
 ```
 
-> See the stack trace to find which `pageContext.someProp` occurrence in your code triggers the error.
+> You can look at the stack trace to find the `pageContext.someProp` occurrence in your code that triggers the error.
 
 To avoid the error:
 1. Add `'someProp'` to `passToClient` (see above), or
 2. Replace `pageContext.someProp` with `'someProp' in pageContext && pageContext.someProp`.
    ```js
-   // ❌ Vike throws an error if pageContext.someProp isn't defined. // [!code --]
+   // ❌ Vike throws an error if pageContext.someProp isn't defined // [!code --]
    const val = pageContext.someProp // [!code --]
-   // ✅ With doesn't throw any error if pageContext.someProp isn't defined. // [!code ++]
+   // ✅ Vike doesn't throw an error if pageContext.someProp isn't defined // [!code ++]
    const val = 'someProp' in pageContext && pageContext.someProp // [!code ++]
    // Or: // [!code ++]
    const val = 'someProp' in pageContext ? pageContext.someProp : someDefaultValue // [!code ++]
