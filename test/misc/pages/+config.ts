@@ -24,6 +24,9 @@ export default {
     ['document.title']: {
       env: { server: true, client: true }
     }
+  },
+  prefetch: {
+    pageContext: false
   }
 } satisfies Config
 
