@@ -360,8 +360,7 @@ function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContext
 }
 
 function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
-  const pageContextHttpResponseNull = {}
-  objectAssign(pageContextHttpResponseNull, pageContextInit)
+  const pageContextHttpResponseNull = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponseNull, {
     httpResponse: null,
     errorWhileRendering: err
@@ -369,13 +368,20 @@ function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: 
   return pageContextHttpResponseNull
 }
 function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>): PageContextAfterRender {
-  const pageContextHttpResponseNull = {}
-  objectAssign(pageContextHttpResponseNull, pageContextInit)
+  const pageContextHttpResponseNull = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponseNull, {
     httpResponse: null,
     errorWhileRendering: null
   })
   return pageContextHttpResponseNull
+}
+
+function createPageContext(pageContextInit: Record<string, unknown>) {
+  const pageContext = {
+    _isPageContextObject: true
+  }
+  Object.assign(pageContext, pageContextInit)
+  return pageContext
 }
 
 async function renderPageNominal(
@@ -499,8 +505,7 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
     { url: urlNormalized, statusCode: 301 },
     pageContextInit.urlOriginal
   )
-  const pageContextHttpResponse = {}
-  objectAssign(pageContextHttpResponse, pageContextInit)
+  const pageContextHttpResponse = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
 }
@@ -537,8 +542,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
     'info'
   )
   const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
-  const pageContextHttpResponse = {}
-  objectAssign(pageContextHttpResponse, pageContextInit)
+  const pageContextHttpResponse = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
 }
@@ -576,9 +580,8 @@ async function handleAbortError(
           abortCall
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
-      const pageContext = {
-        _pageId: errorPageId
-      }
+      const pageContext = createPageContext({})
+      objectAssign(pageContext, { _pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit)
       objectAssign(pageContext, renderContext)
@@ -602,8 +605,7 @@ async function handleAbortError(
     return { pageContextReturn }
   }
   if (pageContextAbort._urlRedirect) {
-    const pageContextReturn = {}
-    objectAssign(pageContextReturn, pageContextInit)
+    const pageContextReturn = createPageContext(pageContextInit)
     objectAssign(pageContextReturn, pageContextAbort)
     const httpResponse = createHttpResponseObjectRedirect(
       pageContextAbort._urlRedirect,

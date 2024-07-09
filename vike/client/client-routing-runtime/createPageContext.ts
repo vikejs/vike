@@ -33,7 +33,8 @@ async function createPageContext(urlOriginal: string) {
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds,
     _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook
+    _onBeforeRouteHook: onBeforeRouteHook,
+    _isPageContextObject: true
   }
   const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
   objectAssign(pageContext, pageContextUrlComputed)
