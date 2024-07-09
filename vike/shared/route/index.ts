@@ -66,22 +66,19 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
       objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
     }
   }
-
   // We take into account pageContext.urlLogical set by onBeforeRoute()
-  const pageContextTmp = {}
-  objectAssign(pageContextTmp, pageContext)
-  objectAssign(pageContextTmp, pageContextFromOnBeforeRouteHook)
+  objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
 
   // Vike's routing
-  const allPageIds = pageContextTmp._allPageIds
+  const allPageIds = pageContext._allPageIds
   assertUsage(allPageIds.length > 0, 'No page found. You must create at least one page.')
-  assert(pageContextTmp._pageFilesAll.length > 0 || pageContextTmp._pageConfigs.length > 0)
-  const { urlPathname } = pageContextTmp
+  assert(pageContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0)
+  const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
 
   const routeMatches: RouteMatch[] = []
   await Promise.all(
-    pageContextTmp._pageRoutes.map(async (pageRoute): Promise<void> => {
+    pageContext._pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, routeType } = pageRoute
 
       // Filesytem Routing
@@ -115,7 +112,7 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
       // Route Function defined in `.page.route.js`
       if (pageRoute.routeType === 'FUNCTION') {
         const { routeFunction, routeDefinedAtString } = pageRoute
-        const match = await resolveRouteFunction(routeFunction, pageContextTmp, routeDefinedAtString)
+        const match = await resolveRouteFunction(routeFunction, pageContext, routeDefinedAtString)
         if (match) {
           const { routeParams, precedence } = match
           routeMatches.push({ pageId, precedence, routeParams, routeType })
