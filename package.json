@@ -43,18 +43,6 @@
   "pnpm": {
     "overrides": {
       "vike": "link:./vike/"
-    },
-    "packageExtensions": {
-      "@apollo/client": {
-        "peerDependencies": {
-          "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
-        },
-        "peerDependenciesMeta": {
-          "react-dom": {
-            "optional": true
-          }
-        }
-      }
     }
   },
   "packageManager": "pnpm@9.2.0"
