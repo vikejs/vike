@@ -10,7 +10,8 @@ import {
   serverSideRouteTo,
   getGlobalObject,
   executeHook,
-  hasProp
+  hasProp,
+  augmentType
 } from './utils.js'
 import {
   getPageContextFromHooks_isHydration,
@@ -188,17 +189,15 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
     if (isHydrationRender) {
       assert(hasProp(pageContext, '_hasPageContextFromServer', 'true'))
-      let pageContextFromHooks: Awaited<ReturnType<typeof getPageContextFromHooks_isHydration>>
+      let pageContextAugmented: Awaited<ReturnType<typeof getPageContextFromHooks_isHydration>>
       try {
-        pageContextFromHooks = await getPageContextFromHooks_isHydration(pageContext)
+        pageContextAugmented = await getPageContextFromHooks_isHydration(pageContext)
       } catch (err) {
         await onError(err)
         return
       }
       if (isRenderOutdated()) return
-
-      assert(!('urlOriginal' in pageContextFromHooks))
-      objectAssign(pageContext, pageContextFromHooks)
+      augmentType(pageContext, pageContextAugmented)
 
       // Render page view
       await renderPageView(pageContext)
@@ -212,10 +211,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
       if (isRenderOutdated()) return
       if ('is404ServerSideRouted' in res) return
-      const pageContextFromHooks = res.pageContextFromHooks
-
-      assert(!('urlOriginal' in pageContextFromHooks))
-      objectAssign(pageContext, pageContextFromHooks)
+      augmentType(pageContext, res.pageContextAugmented)
 
       // Render page view
       await renderPageView(pageContext)
@@ -355,11 +351,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
     if (isRenderOutdated()) return
     if ('is404ServerSideRouted' in res) return
-    const pageContextFromHooks = res.pageContextFromHooks
+    augmentType(pageContext, res.pageContextAugmented)
 
-    assert(pageContextFromHooks)
-    assert(!('urlOriginal' in pageContextFromHooks))
-    objectAssign(pageContext, pageContextFromHooks)
     await renderPageView(pageContext, args)
   }
 
