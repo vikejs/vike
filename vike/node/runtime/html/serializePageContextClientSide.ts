@@ -3,7 +3,7 @@ export { serializePageContextAbort }
 export type { PageContextSerialization }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
-import { assert, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
+import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
@@ -65,6 +65,22 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
       } catch (err) {
         hasWarned = true
         propsNonSerializable.push(prop)
+
+        // useConfig() wrong usage
+        if (prop === '_configFromHook') {
+          let pathString = ''
+          if (isJsonSerializerError(err)) {
+            pathString = err.pathString
+          }
+          assertUsage(
+            false,
+            `Cannot serialize config ${h(
+              pathString
+            )} set by useConfig(), see https://vike.dev/useConfig#serialization-error`
+          )
+        }
+
+        // Non-serializable pageContext set by the user
         let msg = [
           `${h(varName)} can't be serialized and, therefore, can't be passed to the client side.`,
           `Make sure ${h(varName)} is serializable, or remove ${h(propName2)} from ${h('passToClient')}.`
