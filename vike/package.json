@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@brillout/import": "^0.2.3",
-    "@brillout/json-serializer": "^0.5.10",
+    "@brillout/json-serializer": "^0.5.13",
     "@brillout/picocolors": "^1.0.13",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.4.5",
