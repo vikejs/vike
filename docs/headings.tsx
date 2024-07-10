@@ -577,6 +577,12 @@ const headings = [
   },
   {
     level: 2,
+    titleInNav: '`Head`',
+    title: '`<Head>`',
+    url: '/Head'
+  },
+  {
+    level: 2,
     titleInNav: '`Layout`',
     title: '`<Layout>`',
     url: '/Layout'
@@ -697,6 +703,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`useConfig()`',
+    url: '/useConfig'
+  },
+  {
+    level: 2,
     title: '`clientOnly()`',
     url: '/clientOnly'
   },
@@ -756,6 +767,11 @@ const headings = [
   {
     level: 4,
     title: 'Settings'
+  },
+  {
+    level: 2,
+    title: '`title`',
+    url: '/title'
   },
   {
     level: 2,
