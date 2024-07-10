@@ -69,7 +69,7 @@ async function executeOnRenderHtmlHook(
   const onErrorWhileStreaming = (err: unknown) => {
     // Should the stream inject the following?
     // ```
-    // <script>console.error("An error occurred on the server while streaming the app to HTML. Check the server logs for more information.")</script>
+    // <script>console.error("An error occurred on the server side while streaming the page to HTML, see server logs.")</script>
     // ```
     logRuntimeError(err, pageContext._httpRequestId)
     if (!pageContext.errorWhileRendering) {

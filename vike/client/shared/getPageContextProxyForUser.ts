@@ -32,7 +32,7 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
       const propName = getPropAccessNotation(prop)
       assertUsage(
         val !== notSerializable,
-        `pageContext${propName} couldn't be serialized and, therefore, is missing on the client-side. Check the server logs for more information.`
+        `Can't access pageContext${propName} on the client side. Because it can't be serialized, see server logs.`
       )
       passToClientHint(pageContext, prop, propName)
       return val

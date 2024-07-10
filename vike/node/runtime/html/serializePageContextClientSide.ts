@@ -3,7 +3,7 @@ export { serializePageContextAbort }
 export type { PageContextSerialization }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
-import { assert, assertWarning, hasProp, unique } from '../utils.js'
+import { assert, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
@@ -57,16 +57,17 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const propName = JSON.stringify(prop)
-      const varName = h(`pageContext[${propName}]`)
+      const propName1 = getPropAccessNotation(prop)
+      const propName2 = JSON.stringify(prop)
+      const varName = `pageContext${propName1}`
       try {
         serialize((pageContext as Record<string, unknown>)[prop], varName)
       } catch (err) {
         hasWarned = true
         propsNonSerializable.push(prop)
         let msg = [
-          `${varName} cannot be serialized and, therefore, cannot be passed to the client.`,
-          `Make sure that ${varName} is serializable, or remove ${h(propName)} from ${h('passToClient')}.`
+          `${h(varName)} can't be serialized and, therefore, can't be passed to the client side.`,
+          `Make sure ${h(varName)} is serializable, or remove ${h(propName2)} from ${h('passToClient')}.`
         ].join(' ')
         if (isJsonSerializerError(err)) {
           msg = `${msg} Serialization error: ${err.messageCore}.`
