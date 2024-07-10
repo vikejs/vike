@@ -1,0 +1,85 @@
+import { Link, Contribution } from '@brillout/docpress'
+import { ImplementedBy } from '../../components'
+
+Environment: server, client.
+<ImplementedBy by={<code>vike-react</code>} noCustomGuide={true}>`useConfig()`</ImplementedBy>
+
+The `useConfig()` hook enables you to modify configurations on a component-level.
+
+```jsx
+import { useConfig } from 'vike-react/useConfig'
+import { useSuspenseQuery } from '@tanstack/react-query'
+
+function Movies() {
+  // Fetch data
+  const result = useSuspenseQuery({
+    queryKey: ['movies'],
+    queryFn: () => fetch('https://star-wars.brillout.com/api/films.json')
+  })
+  const movies = result.data
+
+  // Set <head> tags
+  const config = useConfig()
+  config({
+    title: `${moviesData.length} Star Wars Movies` // <title>
+    Head: <meta name="description" content={`List of ${movies.length} Star Wars movies.`} />
+  })
+
+  // Render UI
+  return (
+    <ul>
+      { movies.map(({ title }) => (
+        <li>{title}</li>
+      )) }
+    </ul>
+  )
+}
+```
+
+It currently supports two configs:
+- <Link href="/title" noBreadcrumb />
+- <Link href="/Head" noBreadcrumb />
+
+<Contribution>
+It's currently only implemented by `vike-react`. Contribution welcome to implement it for `vike-vue` and `vike-solid`.
+</Contribution>
+
+
+## Serialization Error
+
+You may get a serialization error while using `useConfig()`.
+
+```
+Cannot serialize config set by useConfig()
+```
+
+The most common reason is because you're using `useConfig()` in a `+data.js` to modify a non-serializable config such as `head` (it's a React element and thus cannot be serialized).
+
+The workaround is to define <Link href="/data#environment">`+data.shared.js` instead of `+data.js`</Link>.
+
+> The issue here is that defining the <Link href="/data">`data()` hook</Link> inside a `+data.js` file means that it's always called on the server-side, even upon client-side page navigation. Consequently, upon client-side page navigation, the data fetched on the server-side needs to be serialized and passed to the client-side.
+>
+> ```js
+> // pages/some-page/+data.js // [!code --]
+> // pages/some-page/+data.shared.js // [!code ++]
+>
+> import { useConfig } from 'vike-react/useConfig'
+>
+> const data = async (pageContext) => {
+>   const config = useConfig()
+>
+>   const response = await fetch('https://star-wars.brillout.com/api/films.json').json()
+>   const movies = await response.json()
+>
+>   config({
+>     Upon client-side page navigation, the head nee
+>     head: (
+>       <>
+>         <meta name="description" content={`${movies.length} Star Wars Movies`} />
+>       </>
+>     )
+>   })
+>
+>   // ...
+> }
+> ```
