@@ -4,7 +4,19 @@ import { UiFrameworkExtension, ImplementedBy } from '../../components'
 Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>.
 <ImplementedBy by={<code>vike-react</code>} noCustomGuide={true}>the `Loading` setting</ImplementedBy>
 
-TODO
+The the `Loading` setting helps you create page/layout level Loading UI.<br/>
+With this config, you can show an instant loading state while the content of a route segment loads.<br/>
+The new content is automatically swapped in once rendering is complete.
+
+
+```jsx
+// pages/+Loading.jsx
+
+export default function Loading() {
+  // Applies to the page and all layouts
+  return <div>Loading...</div>
+}
+```
 
 <Contribution>
   Contribution welcome to implement the `Loading` setting for `vike-vue` and `vike-solid`.
