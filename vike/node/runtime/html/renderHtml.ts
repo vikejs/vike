@@ -25,6 +25,7 @@ import type { PageContextInjectAssets } from './injectAssets.js'
 import {
   processStream,
   isStream,
+  isSolidStream,
   StreamProviderAny,
   streamToString,
   StreamTypePatch,
@@ -120,9 +121,12 @@ async function renderHtmlStream(
     if (isStreamFromReactStreamingPackage(streamOriginal) && !streamOriginal.disabled) {
       streamFromReactStreamingPackage = streamOriginal
     }
-    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(
+    const isStreamFromSolidjs = isSolidStream(streamOriginal)
+
+    const { injectAtStreamBegin, injectAtStreamEnd, injectAtSolidStream } = injectHtmlTagsToStream(
       pageContext,
       streamFromReactStreamingPackage,
+      isStreamFromSolidjs,
       injectFilter
     )
     objectAssign(opts, {
@@ -131,6 +135,9 @@ async function renderHtmlStream(
       },
       injectStringAtEnd: async () => {
         return await injectAtStreamEnd(injectString.htmlPartsEnd)
+      },
+      injectStringAtSolidStream: () => {
+        return injectAtSolidStream()
       }
     })
   }

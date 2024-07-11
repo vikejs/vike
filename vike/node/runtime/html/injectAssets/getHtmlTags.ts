@@ -36,11 +36,12 @@ type InjectFilterEntry = {
 
 type HtmlTag = {
   htmlTag: string | (() => string)
-  position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
+  position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM' | 'SOLID_STREAM'
 }
 function getHtmlTags(
   pageContext: { _isStream: boolean } & PageContextInjectAssets,
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
+  isStreamFromSolidjs: boolean,
   injectFilter: PreloadFilter,
   pageAssets: PageAsset[],
   viteDevScript: string
@@ -139,6 +140,8 @@ function getHtmlTags(
     if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
       // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
       return 'STREAM'
+    } else if (isStreamFromSolidjs) {
+      return 'SOLID_STREAM'
     } else {
       return 'HTML_END'
     }

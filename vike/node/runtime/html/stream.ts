@@ -9,6 +9,7 @@ export { getStreamReadableWeb }
 export { pipeToStreamWritableNode }
 export { pipeToStreamWritableWeb }
 export { isStream }
+export { isSolidStream }
 export { isStreamPipeWeb }
 export { isStreamPipeNode }
 export { isStreamReadableWeb }
@@ -272,11 +273,13 @@ async function processStream(
   {
     injectStringAtBegin,
     injectStringAtEnd,
+    injectStringAtSolidStream,
     onErrorWhileStreaming,
     enableEagerStreaming
   }: {
     injectStringAtBegin?: () => Promise<string>
     injectStringAtEnd?: () => Promise<string>
+    injectStringAtSolidStream?: () => string
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
   }
@@ -292,6 +295,7 @@ async function processStream(
   let resolve: (result: StreamProviderNormalized) => void
   let reject: (err: unknown) => void
   let promiseHasResolved = false
+  let solidStreamHasInjected = false
   const streamWrapperPromise = new Promise<StreamProviderNormalized>((resolve_, reject_) => {
     resolve = (streamWrapper) => {
       promiseHasResolved = true
@@ -337,6 +341,11 @@ async function processStream(
     onData(chunk: unknown) {
       onStreamDataOrEnd(() => {
         writeStream(chunk)
+        if (injectStringAtSolidStream && !solidStreamHasInjected) {
+          const injectScriptTags = injectStringAtSolidStream()
+          writeStream(injectScriptTags)
+          solidStreamHasInjected = true
+        }
       })
     },
     async onEnd(
@@ -845,7 +854,18 @@ function isStreamPipeNode(thing: unknown): thing is StreamPipeNodeWrapped | Stre
   return false
 }
 
-function stampPipe(pipe: StreamPipeNode | StreamPipeWeb, pipeType: 'web-stream' | 'node-stream') {
+function isSolidStream(thing: unknown) {
+  if (isCallable(thing) && 'isSolidStream' in thing) {
+    return true
+  }
+  return false
+}
+
+function stampPipe(
+  pipe: StreamPipeNode | StreamPipeWeb,
+  pipeType: 'web-stream' | 'node-stream',
+  isSolidStream: boolean = false
+) {
   assertUsage(pipeType, `stampPipe(pipe, pipeType): argument ${pc.cyan('pipeType')} is missing.)`, {
     showStackTrace: true
   })
@@ -860,6 +880,9 @@ function stampPipe(pipe: StreamPipeNode | StreamPipeWeb, pipeType: 'web-stream' 
     Object.assign(pipe, { isNodeStreamPipe: true })
   } else {
     Object.assign(pipe, { isWebStreamPipe: true })
+  }
+  if (isSolidStream) {
+    Object.assign(pipe, { isSolidStream })
   }
 }
 

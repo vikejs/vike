@@ -36,7 +36,7 @@ async function injectHtmlTagsToString(
 ): Promise<string> {
   const pageAssets = await pageContext.__getPageAssets()
   const viteDevScript = await getViteDevScript()
-  const htmlTags = getHtmlTags(pageContext, null, injectFilter, pageAssets, viteDevScript)
+  const htmlTags = getHtmlTags(pageContext, null, false, injectFilter, pageAssets, viteDevScript)
   let htmlString = htmlPartsToString(htmlParts, pageAssets)
   htmlString = injectToHtmlBegin(htmlString, htmlTags)
   htmlString = injectToHtmlEnd(htmlString, htmlTags)
@@ -47,19 +47,28 @@ async function injectHtmlTagsToString(
 function injectHtmlTagsToStream(
   pageContext: PageContextInjectAssets & { _isStream: true },
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
+  isStreamFromSolidjs: boolean,
   injectFilter: PreloadFilter
 ) {
   let htmlTags: HtmlTag[] | undefined
 
   return {
     injectAtStreamBegin,
-    injectAtStreamEnd
+    injectAtStreamEnd,
+    injectAtSolidStream
   }
 
   async function injectAtStreamBegin(htmlPartsBegin: HtmlPart[]): Promise<string> {
     const pageAssets = await pageContext.__getPageAssets()
     const viteDevScript = await getViteDevScript()
-    htmlTags = getHtmlTags(pageContext, streamFromReactStreamingPackage, injectFilter, pageAssets, viteDevScript)
+    htmlTags = getHtmlTags(
+      pageContext,
+      streamFromReactStreamingPackage,
+      isStreamFromSolidjs,
+      injectFilter,
+      pageAssets,
+      viteDevScript
+    )
 
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
     htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags)
@@ -75,6 +84,12 @@ function injectHtmlTagsToStream(
     let htmlEnd = htmlPartsToString(htmlPartsEnd, pageAssets)
     htmlEnd = injectToHtmlEnd(htmlEnd, htmlTags)
     return htmlEnd
+  }
+
+  function injectAtSolidStream(): string {
+    assert(htmlTags)
+    const scriptTags = injectHtmlTags('', htmlTags, 'SOLID_STREAM')
+    return scriptTags
   }
 }
 
