@@ -11,6 +11,9 @@ import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
+import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
+import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
+import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
 
@@ -48,6 +51,7 @@ function getHtmlTags(
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { isProduction } = getGlobalContext()
+  const injectVikeScriptsAtHtmlBegin = getInjectVikeScriptsAtHtmlBegin(pageContext._pageId, pageContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
@@ -126,6 +130,10 @@ function getHtmlTags(
   // 4. the entry <script> should be towards the end of the HTML as performance-wise it's more interesting to parse
   //    <div id="page-view"> before running the entry <script> which initiates the hydration.
   // See https://github.com/vikejs/vike/pull/1271
+  // Exceptions:
+  // 1. To support `Progressive Rendering` for vike-solid, the entry <script> needs to be injected before the stream has ended
+  // 2. We can achieve that by inject it into SolidJS's stream (after the first stream), see https://github.com/vikejs/vike/pull/1740/commits/eb4ab6a2cf1b7260d51458f57a5abd57397b8ca6
+  // 3. Alternatively, we can also inject it at `HTML_BEGIN` using a new setting `injectVikeScriptsAtHtmlBegin: boolean`.
   const positionJavaScriptEntry = (() => {
     if (pageContext._pageContextPromise) {
       assertWarning(
@@ -139,6 +147,8 @@ function getHtmlTags(
     if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
       // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
       return 'STREAM'
+    } else if (injectVikeScriptsAtHtmlBegin) {
+      return 'HTML_BEGIN'
     } else {
       return 'HTML_END'
     }
@@ -244,4 +254,14 @@ function checkForWarnings(injectFilterEntries: InjectFilterEntry[]) {
       })
     }
   })
+}
+function getInjectVikeScriptsAtHtmlBegin(pageId: string, pageConfigs: PageConfigRuntime[]): boolean {
+  if (pageConfigs.length === 0) return false
+
+  const pageConfig = getPageConfig(pageId, pageConfigs)
+  const configValue = getConfigValueRuntime(pageConfig, 'injectVikeScriptsAtHtmlBegin', 'boolean')
+  const value = configValue?.value
+  if (value) return value
+
+  return false
 }

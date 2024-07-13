@@ -180,6 +180,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   cacheControl: {
     env: { server: true }
   },
+  injectVikeScriptsAtHtmlBegin: {
+    env: { server: true }
+  },
   name: {
     env: { config: true }
   },
