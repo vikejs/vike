@@ -419,7 +419,7 @@ type ConfigBuiltIn = {
    */
   cacheControl?: string
 
-  /** Inject scripts at the beginning of the HTML.
+  /** Where scripts are injected in the HTML.
    *
    * https://vike.dev/injectScriptsAt
    */
