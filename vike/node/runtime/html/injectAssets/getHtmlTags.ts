@@ -132,9 +132,6 @@ function getHtmlTags(
   // - The entry <script> should be towards the end of the HTML as performance-wise it's more interesting to parse <div id="page-view"> before running the entry <script> which initiates the hydration.
   //   - But with HTML streaming, in order to support [Progressive Rendering](https://vike.dev/streaming#progressive-rendering), the entry <script> should be injected early instead.
   const positionJavaScriptEntry = (() => {
-    if (injectScriptsAt !== null) {
-      return injectScriptsAt
-    }
     if (pageContext._pageContextPromise) {
       assertWarning(
         !streamFromReactStreamingPackage,
@@ -143,6 +140,9 @@ function getHtmlTags(
       )
       // If there is a pageContext._pageContextPromise (which is resolved after the stream has ended) then the pageContext JSON data needs to await for it: https://vike.dev/streaming#initial-data-after-stream-end
       return 'HTML_END'
+    }
+    if (injectScriptsAt !== null) {
+      return injectScriptsAt
     }
     if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
       // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
