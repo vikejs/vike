@@ -48,7 +48,8 @@ function getHtmlTags(
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
   injectFilter: PreloadFilter,
   pageAssets: PageAsset[],
-  viteDevScript: string
+  viteDevScript: string,
+  isStream: boolean
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
@@ -138,7 +139,7 @@ function getHtmlTags(
     if (pageContext._pageContextPromise) {
       assertWarning(
         !streamFromReactStreamingPackage,
-        "[getHtmlTags()] We recommend against using streaming and a pageContext promise at the same time, because progressive hydration won't work.",
+        "We recommend against using HTML streaming and a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) at the same time, because progressive hydration won't work.",
         { onlyOnce: true }
       )
       // If there is a pageContext._pageContextPromise (which is resolved after the stream has ended) then the pageContext JSON data needs to await for it: https://vike.dev/streaming#initial-data-after-stream-end
