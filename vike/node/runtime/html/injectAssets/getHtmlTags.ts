@@ -16,6 +16,7 @@ import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
+import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 
 const stamp = '__injectFilterEntry'
 
@@ -37,9 +38,10 @@ type InjectFilterEntry = {
   inject: PreloadFilterInject
 }
 
+type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 type HtmlTag = {
   htmlTag: string | (() => string)
-  position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
+  position: Position
 }
 function getHtmlTags(
   pageContext: { _isStream: boolean } & PageContextInjectAssets,
@@ -51,7 +53,7 @@ function getHtmlTags(
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { isProduction } = getGlobalContext()
-  const injectScriptsAtHtmlBegin = getInjectVikeScriptsAtHtmlBegin(pageContext._pageId, pageContext._pageConfigs)
+  const injectScriptsAtHtmlBegin = getInjectScriptsAt(pageContext._pageId, pageContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
@@ -130,6 +132,9 @@ function getHtmlTags(
   // - The entry <script> should be towards the end of the HTML as performance-wise it's more interesting to parse <div id="page-view"> before running the entry <script> which initiates the hydration.
   //   - But with HTML streaming, in order to support [Progressive Rendering](https://vike.dev/streaming#progressive-rendering), the entry <script> should be injected early instead.
   const positionJavaScriptEntry = (() => {
+    if (injectScriptsAtHtmlBegin !== null) {
+      return injectScriptsAtHtmlBegin
+    }
     if (pageContext._pageContextPromise) {
       assertWarning(
         !streamFromReactStreamingPackage,
@@ -143,11 +148,7 @@ function getHtmlTags(
       // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
       return 'STREAM'
     }
-    if (injectScriptsAtHtmlBegin) {
-      return 'HTML_BEGIN'
-    } else {
-      return 'HTML_END'
-    }
+    return 'HTML_END'
   })()
   // <script id="vike_pageContext" type="application/json">
   if (!isHtmlOnly) {
@@ -251,10 +252,19 @@ function checkForWarnings(injectFilterEntries: InjectFilterEntry[]) {
     }
   })
 }
-function getInjectVikeScriptsAtHtmlBegin(pageId: string, pageConfigs: PageConfigRuntime[]): boolean {
-  if (pageConfigs.length === 0) return false // only support V1 design
+function getInjectScriptsAt(pageId: string, pageConfigs: PageConfigRuntime[]): null | Position {
+  if (pageConfigs.length === 0) return null // only support V1 design
   const pageConfig = getPageConfig(pageId, pageConfigs)
-  const configValue = getConfigValueRuntime(pageConfig, 'injectScriptsAtHtmlBegin', 'boolean')
-  const injectScriptsAtHtmlBegin = configValue?.value ?? false
+  const configValue = getConfigValueRuntime(pageConfig, 'injectScriptsAtHtmlBegin')
+  if (!configValue) return null
+  const injectScriptsAtHtmlBegin = configValue.value
+  assert(configValue.definedAtData)
+  const configDefinedAt = getConfigDefinedAt('Config', 'injectScriptsAtHtmlBegin', configValue.definedAtData)
+  assertUsage(
+    injectScriptsAtHtmlBegin === 'HTML_BEGIN' ||
+      injectScriptsAtHtmlBegin === 'HTML_END' ||
+      injectScriptsAtHtmlBegin === null,
+    `${configDefinedAt} has an invalid value`
+  )
   return injectScriptsAtHtmlBegin
 }
