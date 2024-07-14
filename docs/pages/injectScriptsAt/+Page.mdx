@@ -16,13 +16,17 @@ You can use the `injectScriptsAt` setting to override Vike's heuristics and cont
 
 export default {
   // Inject scripts at the beginning of the HTML
-  injectScriptsAt: 'HTML_BEGIN'
+  injectScriptsAt: 'HTML_BEGIN',
   // Inject scripts at the end of the HTML
-  injectScriptsAt: 'HTML_END'
+  injectScriptsAt: 'HTML_END',
+  // Let Vike decide
+  injectScriptsAt: null
 }
 ```
 
 > Being able to set `injectScriptsAt: 'STREAM'` isn't implemented yet.
+
+> Setting `injectAssetsAt` to `null` can be useful in the context of <Link href="/config#inheritance">config inheritance</Link>.
 
 ## See also
 
