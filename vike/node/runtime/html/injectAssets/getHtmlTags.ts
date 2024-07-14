@@ -134,6 +134,15 @@ function getHtmlTags(
   //   - But with HTML streaming, in order to support [Progressive Rendering](https://vike.dev/streaming#progressive-rendering), the entry <script> should be injected early instead.
   const positionJavaScriptEntry = (() => {
     if (injectScriptsAt !== null) {
+      if (pageContext._pageContextPromise) {
+        assertWarning(
+          injectScriptsAt === 'HTML_END' || !isStream,
+          `You're setting injectScriptsAt to ${pc.code(
+            JSON.stringify(injectScriptsAt)
+          )} while using HTML streaming with a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) which is contradictory: the pageContext promise is ignored.`,
+          { onlyOnce: true }
+        )
+      }
       return injectScriptsAt
     }
     if (pageContext._pageContextPromise) {
