@@ -421,9 +421,9 @@ type ConfigBuiltIn = {
 
   /** Inject scripts at the beginning of the HTML.
    *
-   * https://vike.dev/injectScriptsAtHtmlBegin
+   * https://vike.dev/injectScriptsAt
    */
-  injectScriptsAtHtmlBegin?: boolean
+  injectScriptsAt?: boolean
 
   /** Used by Vike extensions to set their name.
    *

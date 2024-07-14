@@ -180,7 +180,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   cacheControl: {
     env: { server: true }
   },
-  injectScriptsAtHtmlBegin: {
+  injectScriptsAt: {
     env: { server: true }
   },
   name: {

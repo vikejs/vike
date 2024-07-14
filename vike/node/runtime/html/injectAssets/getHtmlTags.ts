@@ -53,7 +53,7 @@ function getHtmlTags(
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { isProduction } = getGlobalContext()
-  const injectScriptsAtHtmlBegin = getInjectScriptsAt(pageContext._pageId, pageContext._pageConfigs)
+  const injectScriptsAt = getInjectScriptsAt(pageContext._pageId, pageContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
@@ -132,8 +132,8 @@ function getHtmlTags(
   // - The entry <script> should be towards the end of the HTML as performance-wise it's more interesting to parse <div id="page-view"> before running the entry <script> which initiates the hydration.
   //   - But with HTML streaming, in order to support [Progressive Rendering](https://vike.dev/streaming#progressive-rendering), the entry <script> should be injected early instead.
   const positionJavaScriptEntry = (() => {
-    if (injectScriptsAtHtmlBegin !== null) {
-      return injectScriptsAtHtmlBegin
+    if (injectScriptsAt !== null) {
+      return injectScriptsAt
     }
     if (pageContext._pageContextPromise) {
       assertWarning(
@@ -255,16 +255,14 @@ function checkForWarnings(injectFilterEntries: InjectFilterEntry[]) {
 function getInjectScriptsAt(pageId: string, pageConfigs: PageConfigRuntime[]): null | Position {
   if (pageConfigs.length === 0) return null // only support V1 design
   const pageConfig = getPageConfig(pageId, pageConfigs)
-  const configValue = getConfigValueRuntime(pageConfig, 'injectScriptsAtHtmlBegin')
+  const configValue = getConfigValueRuntime(pageConfig, 'injectScriptsAt')
   if (!configValue) return null
-  const injectScriptsAtHtmlBegin = configValue.value
+  const injectScriptsAt = configValue.value
   assert(configValue.definedAtData)
-  const configDefinedAt = getConfigDefinedAt('Config', 'injectScriptsAtHtmlBegin', configValue.definedAtData)
+  const configDefinedAt = getConfigDefinedAt('Config', 'injectScriptsAt', configValue.definedAtData)
   assertUsage(
-    injectScriptsAtHtmlBegin === 'HTML_BEGIN' ||
-      injectScriptsAtHtmlBegin === 'HTML_END' ||
-      injectScriptsAtHtmlBegin === null,
+    injectScriptsAt === 'HTML_BEGIN' || injectScriptsAt === 'HTML_END' || injectScriptsAt === null,
     `${configDefinedAt} has an invalid value`
   )
-  return injectScriptsAtHtmlBegin
+  return injectScriptsAt
 }
