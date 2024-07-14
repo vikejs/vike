@@ -51,7 +51,7 @@ function getHtmlTags(
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { isProduction } = getGlobalContext()
-  const injectVikeScriptsAtHtmlBegin = getInjectVikeScriptsAtHtmlBegin(pageContext._pageId, pageContext._pageConfigs)
+  const injectScriptsAtHtmlBegin = getInjectVikeScriptsAtHtmlBegin(pageContext._pageId, pageContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
@@ -133,7 +133,7 @@ function getHtmlTags(
   // Exceptions:
   // 1. To support `Progressive Rendering` for vike-solid, the entry <script> needs to be injected before the stream has ended
   // 2. We can achieve that by inject it into SolidJS's stream (after the first stream), see https://github.com/vikejs/vike/pull/1740/commits/eb4ab6a2cf1b7260d51458f57a5abd57397b8ca6
-  // 3. Alternatively, we can also inject it at `HTML_BEGIN` using a new setting `injectVikeScriptsAtHtmlBegin: boolean`.
+  // 3. Alternatively, we can also inject it at `HTML_BEGIN` using a new setting `injectScriptsAtHtmlBegin: boolean`.
   const positionJavaScriptEntry = (() => {
     if (pageContext._pageContextPromise) {
       assertWarning(
@@ -147,7 +147,7 @@ function getHtmlTags(
     if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
       // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
       return 'STREAM'
-    } else if (injectVikeScriptsAtHtmlBegin) {
+    } else if (injectScriptsAtHtmlBegin) {
       return 'HTML_BEGIN'
     } else {
       return 'HTML_END'
@@ -259,7 +259,7 @@ function getInjectVikeScriptsAtHtmlBegin(pageId: string, pageConfigs: PageConfig
   if (pageConfigs.length === 0) return false
 
   const pageConfig = getPageConfig(pageId, pageConfigs)
-  const configValue = getConfigValueRuntime(pageConfig, 'injectVikeScriptsAtHtmlBegin', 'boolean')
+  const configValue = getConfigValueRuntime(pageConfig, 'injectScriptsAtHtmlBegin', 'boolean')
   const value = configValue?.value
   if (value) return value
 
