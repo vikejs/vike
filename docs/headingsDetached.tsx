@@ -586,5 +586,9 @@ const headingsDetached = [
   {
     title: '`bodyHtmlEnd`',
     url: '/bodyHtmlEnd'
+  },
+  {
+    title: '`injectScriptsAt`',
+    url: '/injectScriptsAt'
   }
 ] satisfies HeadingDetachedDefinition[]
