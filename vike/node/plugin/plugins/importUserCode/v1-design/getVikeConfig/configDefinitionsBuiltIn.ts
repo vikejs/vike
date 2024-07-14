@@ -180,6 +180,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   cacheControl: {
     env: { server: true }
   },
+  injectScriptsAt: {
+    env: { server: true }
+  },
   name: {
     env: { config: true }
   },

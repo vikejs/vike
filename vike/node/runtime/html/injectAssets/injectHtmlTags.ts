@@ -12,11 +12,11 @@ import { assert, assertUsage, slice } from '../../utils.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
 
-type Position = 'HTML_BEGIN' | 'HTML_END' | 'SOLID_STREAM'
+type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Position): string {
   const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === position))
   if (htmlFragment) {
-    if (position === 'SOLID_STREAM') return htmlFragment
+    if (position === 'STREAM') return htmlFragment
     htmlString = injectHtmlFragment(position, htmlFragment, htmlString)
   }
   return htmlString
@@ -27,7 +27,7 @@ function injectHtmlTagsUsingStream(
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage
 ): void {
   const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
-  if (htmlFragment) {
+  if (htmlFragment && streamFromReactStreamingPackage) {
     assert(streamFromReactStreamingPackage)
     assert(!streamFromReactStreamingPackage.hasStreamEnded())
     streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
