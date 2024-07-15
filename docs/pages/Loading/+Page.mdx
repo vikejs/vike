@@ -1,18 +1,47 @@
 import { Link, Contribution } from '@brillout/docpress'
-import { UiFrameworkExtension, ImplementedBy } from '../../components'
+import { UiFrameworkExtension, ImplementedBy, Figure } from '../../components'
+import { LoadingComponent } from './LoadingComponent'
 
 Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>.
 <ImplementedBy by={<code>vike-react</code>} noCustomGuide={true}>the `Loading` setting</ImplementedBy>
-
-TODO
-
 <Contribution>
   Contribution welcome to implement the `Loading` setting for `vike-vue` and `vike-solid`.
 </Contribution>
 
+The `Loading` setting allows you to define a loading animation.
+
+```jsx
+// pages/+Loading.jsx
+
+export default {
+  layout: LoadingLayout,
+  component: LoadingComponent
+}
+
+function LoadingLayout() {
+  // Applies to the page and all layouts
+  return <div>Loading...</div>
+}
+
+function LoadingComponent() {
+  // Applies on a component-level
+  return <div>Loading...</div>
+}
+```
+
+
+## Default
+
+The default `Loading.component` is the following.
+
+<Figure width={400} text={<>The default loading animation. Its width is <code>100%</code> of the parent (here the parent is artificially set to <code>400px</code>), and its height is proportional to its width.</>}>
+  <LoadingComponent />
+</Figure>
+
+If you want to use a different loading animation, then make sure to define `Loading.component` in order to override the default.
+
 
 ## See also
 
-- <Link href="/LoadingComponent" />
 - [vike-react-query](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme)
 - [vike-react-apollo](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme)
