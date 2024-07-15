@@ -294,7 +294,7 @@ async function processStream(
   let resolve: (result: StreamProviderNormalized) => void
   let reject: (err: unknown) => void
   let promiseHasResolved = false
-  let injectedAfterFirstStream = false
+  let injectStringAtMiddle_done = false
   const streamWrapperPromise = new Promise<StreamProviderNormalized>((resolve_, reject_) => {
     resolve = (streamWrapper) => {
       promiseHasResolved = true
@@ -340,10 +340,10 @@ async function processStream(
     onData(chunk: unknown) {
       onStreamDataOrEnd(() => {
         writeStream(chunk)
-        if (injectStringAtMiddle && !injectedAfterFirstStream) {
-          const injectMiddle = injectStringAtMiddle()
-          writeStream(injectMiddle)
-          injectedAfterFirstStream = true
+        if (injectStringAtMiddle && !injectStringAtMiddle_done) {
+          const chunkInjection = injectStringAtMiddle()
+          writeStream(chunkInjection)
+          injectStringAtMiddle_done = true
         }
       })
     },
