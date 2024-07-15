@@ -14,9 +14,9 @@ import type { PageAsset } from '../../renderPage/getPageAssets.js'
 import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
 import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue.js'
-import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
+import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 
 const stamp = '__injectFilterEntry'
 
@@ -139,27 +139,35 @@ function getHtmlTags(
           injectScriptsAt === 'HTML_END' || !isStream,
           `You're setting injectScriptsAt to ${pc.code(
             JSON.stringify(injectScriptsAt)
-          )} while using HTML streaming with a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) which is contradictory: the pageContext promise is ignored.`,
+          )} while using HTML streaming with a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) which is contradictory: the pageContext promise is skipped.`,
           { onlyOnce: true }
         )
       }
       return injectScriptsAt
     }
     if (pageContext._pageContextPromise) {
-      assertWarning(
-        !streamFromReactStreamingPackage,
-        "We recommend against using HTML streaming and a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) at the same time, because progressive hydration won't work.",
-        { onlyOnce: true }
-      )
-      // If there is a pageContext._pageContextPromise (which is resolved after the stream has ended) then the pageContext JSON data needs to await for it: https://vike.dev/streaming#initial-data-after-stream-end
+      // - If there is a pageContext._pageContextPromise then <script id="vike_pageContext" type="application/json"> needs to await for it.
+      // - pageContext._pageContextPromise is typically resolved only after the page's components are rendered and the stream ended.
+      // - https://vike.dev/streaming#initial-data-after-stream-end
       return 'HTML_END'
     }
     if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
-      // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
+      // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary.
       return 'STREAM'
     }
     return 'HTML_END'
   })()
+  if (pageContext._pageContextPromise && streamFromReactStreamingPackage) {
+    // - Should we show this warning for Solid as well? Solid seems to also support progressive rendering.
+    //   - https://github.com/vikejs/vike-solid/issues/95
+    // - Vue doesn't seem to support progressive rendering yet.
+    //   - https://github.com/vikejs/vike-vue/issues/85
+    assertWarning(
+      false,
+      "We recommend against using HTML streaming and a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) at the same time, because progressive hydration (https://vike.dev/streaming#progressive-rendering) won't work.",
+      { onlyOnce: true }
+    )
+  }
   // <script id="vike_pageContext" type="application/json">
   if (!isHtmlOnly) {
     htmlTags.push({

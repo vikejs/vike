@@ -210,6 +210,10 @@ function valueToJson(
     configValueSerialized = stringify(value, {
       valueName,
       forbidReactElements: true,
+      // Replace import strings with import variables.
+      // - We don't need this anymore and could remove it.
+      //   - We temporarily needed it for nested document configs (`config.document.{title,description,favicon}`), but we finally decided to go for flat document configs instead (`config.{title,description,favicon}`).
+      //   - https://github.com/vikejs/vike-react/pull/113
       replacer(_, value) {
         if (typeof value === 'string') {
           const importData = parsePointerImportData(value)
