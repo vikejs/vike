@@ -159,9 +159,9 @@ function getHtmlTags(
   })()
   if (pageContext._pageContextPromise && streamFromReactStreamingPackage) {
     // - Should we show this warning for Solid as well? Solid seems to also support progressive rendering.
-    //   - https://github.com/vikejs/vike-vue/issues/85
-    // - Vue doesn't seem to support progressive rendering yet.
     //   - https://github.com/vikejs/vike-solid/issues/95
+    // - Vue doesn't seem to support progressive rendering yet.
+    //   - https://github.com/vikejs/vike-vue/issues/85
     assertWarning(
       false,
       "We recommend against using HTML streaming and a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) at the same time, because progressive hydration (https://vike.dev/streaming#progressive-rendering) won't work.",

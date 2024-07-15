@@ -423,7 +423,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/injectScriptsAt
    */
-  injectScriptsAt?: 'HTML_BEGIN' | 'HTML_END'
+  injectScriptsAt?: 'HTML_BEGIN' | 'HTML_END' | null
 
   /** Used by Vike extensions to set their name.
    *
