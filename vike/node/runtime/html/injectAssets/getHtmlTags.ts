@@ -11,8 +11,12 @@ import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
+import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
+import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
+import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
+import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 
 const stamp = '__injectFilterEntry'
 
@@ -34,20 +38,23 @@ type InjectFilterEntry = {
   inject: PreloadFilterInject
 }
 
+type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 type HtmlTag = {
   htmlTag: string | (() => string)
-  position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
+  position: Position
 }
 function getHtmlTags(
   pageContext: { _isStream: boolean } & PageContextInjectAssets,
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
   injectFilter: PreloadFilter,
   pageAssets: PageAsset[],
-  viteDevScript: string
+  viteDevScript: string,
+  isStream: boolean
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { isProduction } = getGlobalContext()
+  const injectScriptsAt = getInjectScriptsAt(pageContext._pageId, pageContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
@@ -118,31 +125,49 @@ function getHtmlTags(
   // ==========
   // JavaScript
   // ==========
-  // In order to avoid the race-condition depicted in https://github.com/vikejs/vike/issues/567
-  // 1. <script id="vike_pageContext" type="application/json"> must appear before the entry <script> (which loads Vike's client runtime).
-  // 2. <script id="vike_pageContext" type="application/json"> can't be async nor defer.
-  // Additionally:
-  // 3. the entry <script> can't be defer, otherwise progressive hydration while SSR streaming won't work.
-  // 4. the entry <script> should be towards the end of the HTML as performance-wise it's more interesting to parse
-  //    <div id="page-view"> before running the entry <script> which initiates the hydration.
-  // See https://github.com/vikejs/vike/pull/1271
+  // - The pageContext JSON should be fully sent before Vike's client runtime starts executing.
+  //   - Otherwise, race condition "SyntaxError: Unterminated string in JSON": https://github.com/vikejs/vike/issues/567
+  //   - <script id="vike_pageContext" type="application/json"> must appear before the entry <script> (which loads Vike's client runtime).
+  //   - <script id="vike_pageContext" type="application/json"> can't be async nor defer.
+  // - The entry <script> can't be defer, otherwise progressive hydration while SSR streaming won't work.
+  // - The entry <script> should be towards the end of the HTML as performance-wise it's more interesting to parse <div id="page-view"> before running the entry <script> which initiates the hydration.
+  //   - But with HTML streaming, in order to support [Progressive Rendering](https://vike.dev/streaming#progressive-rendering), the entry <script> should be injected early instead.
   const positionJavaScriptEntry = (() => {
+    if (injectScriptsAt !== null) {
+      if (pageContext._pageContextPromise) {
+        assertWarning(
+          injectScriptsAt === 'HTML_END' || !isStream,
+          `You're setting injectScriptsAt to ${pc.code(
+            JSON.stringify(injectScriptsAt)
+          )} while using HTML streaming with a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) which is contradictory: the pageContext promise is skipped.`,
+          { onlyOnce: true }
+        )
+      }
+      return injectScriptsAt
+    }
     if (pageContext._pageContextPromise) {
-      assertWarning(
-        !streamFromReactStreamingPackage,
-        "[getHtmlTags()] We recommend against using streaming and a pageContext promise at the same time, because progressive hydration won't work.",
-        { onlyOnce: true }
-      )
-      // If there is a pageContext._pageContextPromise (which is resolved after the stream has ended) then the pageContext JSON data needs to await for it: https://vike.dev/streaming#initial-data-after-stream-end
+      // - If there is a pageContext._pageContextPromise then <script id="vike_pageContext" type="application/json"> needs to await for it.
+      // - pageContext._pageContextPromise is typically resolved only after the page's components are rendered and the stream ended.
+      // - https://vike.dev/streaming#initial-data-after-stream-end
       return 'HTML_END'
     }
     if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
-      // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
+      // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary.
       return 'STREAM'
-    } else {
-      return 'HTML_END'
     }
+    return 'HTML_END'
   })()
+  if (pageContext._pageContextPromise && streamFromReactStreamingPackage) {
+    // - Should we show this warning for Solid as well? Solid seems to also support progressive rendering.
+    //   - https://github.com/vikejs/vike-solid/issues/95
+    // - Vue doesn't seem to support progressive rendering yet.
+    //   - https://github.com/vikejs/vike-vue/issues/85
+    assertWarning(
+      false,
+      "We recommend against using HTML streaming and a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) at the same time, because progressive hydration (https://vike.dev/streaming#progressive-rendering) won't work.",
+      { onlyOnce: true }
+    )
+  }
   // <script id="vike_pageContext" type="application/json">
   if (!isHtmlOnly) {
     htmlTags.push({
@@ -244,4 +269,18 @@ function checkForWarnings(injectFilterEntries: InjectFilterEntry[]) {
       })
     }
   })
+}
+function getInjectScriptsAt(pageId: string, pageConfigs: PageConfigRuntime[]): null | Position {
+  if (pageConfigs.length === 0) return null // only support V1 design
+  const pageConfig = getPageConfig(pageId, pageConfigs)
+  const configValue = getConfigValueRuntime(pageConfig, 'injectScriptsAt')
+  if (!configValue) return null
+  const injectScriptsAt = configValue.value
+  assert(configValue.definedAtData)
+  const configDefinedAt = getConfigDefinedAt('Config', 'injectScriptsAt', configValue.definedAtData)
+  assertUsage(
+    injectScriptsAt === 'HTML_BEGIN' || injectScriptsAt === 'HTML_END' || injectScriptsAt === null,
+    `${configDefinedAt} has an invalid value`
+  )
+  return injectScriptsAt
 }

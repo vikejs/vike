@@ -419,6 +419,12 @@ type ConfigBuiltIn = {
    */
   cacheControl?: string
 
+  /** Where scripts are injected in the HTML.
+   *
+   * https://vike.dev/injectScriptsAt
+   */
+  injectScriptsAt?: 'HTML_BEGIN' | 'HTML_END' | null
+
   /** Used by Vike extensions to set their name.
    *
    * https://vike.dev/extends

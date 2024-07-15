@@ -1,13 +1,17 @@
 import { Link, Warning } from '@brillout/docpress'
 
-The `injectFilter()` hook allows you to control which and where preload and asset tags are injected in the HTML.
+The `injectFilter()` hook allows you to control where and what preload and asset tags Vike injects in the HTML.
+
+> If you merely want to change the position of scripts then, instead, see <Link href="/injectScriptsAt" />.
 
 See <Link href="/preloading" />.
+
 
 ## Examples
 
  - <Link href="/examples/custom-preload/renderer/+onRenderHtml.tsx" />
  - <Link href="/test/preload/renderer/+onRenderHtml.tsx" />
+
 
 ## Usage
 
@@ -80,3 +84,4 @@ type InjectFilterEntry = {
 
 - <Link href="/preloading" />
 - <Link href="/streaming" />
+- <Link href="/injectScriptsAt" />
