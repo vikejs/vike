@@ -6,7 +6,12 @@ export type { PageContextPromise }
 import { assert, isCallable, isPromise } from '../utils.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
-import { injectHtmlTags, createHtmlHeadIfMissing, injectHtmlTagsUsingStream } from './injectAssets/injectHtmlTags.js'
+import {
+  joinHtmlTags,
+  injectHtmlTags,
+  createHtmlHeadIfMissing,
+  injectHtmlTagsUsingStream
+} from './injectAssets/injectHtmlTags.js'
 import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
@@ -71,7 +76,7 @@ function injectHtmlTagsToStream(
 
   function injectAtStreamMiddle(): string {
     assert(htmlTags)
-    const htmlMiddle = injectHtmlTags('', htmlTags, 'STREAM')
+    const htmlMiddle = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
     return htmlMiddle
   }
 

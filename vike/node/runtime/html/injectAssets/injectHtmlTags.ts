@@ -3,6 +3,7 @@
 export { injectHtmlTags }
 export { injectHtmlTagsUsingStream }
 export { createHtmlHeadIfMissing }
+export { joinHtmlTags }
 
 // Only needed for unit tests
 export { injectAtOpeningTag }
@@ -12,11 +13,10 @@ import { assert, assertUsage, slice } from '../../utils.js'
 import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { HtmlTag } from './getHtmlTags.js'
 
-type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
+type Position = 'HTML_BEGIN' | 'HTML_END'
 function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Position): string {
   const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === position))
   if (htmlFragment) {
-    if (position === 'STREAM') return htmlFragment
     htmlString = injectHtmlFragment(position, htmlFragment, htmlString)
   }
   return htmlString
