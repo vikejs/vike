@@ -9,10 +9,6 @@ const headingsDetached = [
     url: '/Loading'
   },
   {
-    title: '`<LoadingComponent>`',
-    url: '/LoadingComponent'
-  },
-  {
     title: 'React Query',
     url: '/react-query'
   },
