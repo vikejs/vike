@@ -201,6 +201,9 @@ async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: stri
     cwd: userRootDir,
     dot: false
   })
+  // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
+  // https://github.com/vikejs/vike/pull/1750
+  files.sort()
   return files
 }
 
