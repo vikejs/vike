@@ -271,11 +271,13 @@ async function processStream(
   streamOriginal: StreamProviderAny,
   {
     injectStringAtBegin,
+    injectStringAfterFirstChunk,
     injectStringAtEnd,
     onErrorWhileStreaming,
     enableEagerStreaming
   }: {
     injectStringAtBegin?: () => Promise<string>
+    injectStringAfterFirstChunk?: () => string
     injectStringAtEnd?: () => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
@@ -292,6 +294,7 @@ async function processStream(
   let resolve: (result: StreamProviderNormalized) => void
   let reject: (err: unknown) => void
   let promiseHasResolved = false
+  let injectStringAfterFirstChunk_done = false
   const streamWrapperPromise = new Promise<StreamProviderNormalized>((resolve_, reject_) => {
     resolve = (streamWrapper) => {
       promiseHasResolved = true
@@ -306,8 +309,8 @@ async function processStream(
   const promiseReadyToWrite = new Promise<void>((r) => (resolveReadyToWrite = r))
 
   if (injectStringAtBegin) {
-    const injectionBegin: string = await injectStringAtBegin()
-    writeStream(injectionBegin) // Adds injectionBegin to buffer
+    const injectedChunk: string = await injectStringAtBegin()
+    writeStream(injectedChunk) // Adds injectedChunk to buffer
     flushStream() // Sets shouldFlushStream to true
   }
 
@@ -337,6 +340,11 @@ async function processStream(
     onData(chunk: unknown) {
       onStreamDataOrEnd(() => {
         writeStream(chunk)
+        if (injectStringAfterFirstChunk && !injectStringAfterFirstChunk_done) {
+          const injectedChunk = injectStringAfterFirstChunk()
+          writeStream(injectedChunk)
+          injectStringAfterFirstChunk_done = true
+        }
       })
     },
     async onEnd(
@@ -352,8 +360,8 @@ async function processStream(
           streamOriginalEnded = true
         })
         if (injectStringAtEnd) {
-          const injectEnd = await injectStringAtEnd()
-          writeStream(injectEnd)
+          const injectedChunk = await injectStringAtEnd()
+          writeStream(injectedChunk)
         }
         await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
         assert(isReady())

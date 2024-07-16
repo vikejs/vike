@@ -120,7 +120,7 @@ async function renderHtmlStream(
     if (isStreamFromReactStreamingPackage(streamOriginal) && !streamOriginal.disabled) {
       streamFromReactStreamingPackage = streamOriginal
     }
-    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(
+    const { injectAtStreamBegin, injectAtStreamAfterFirstChunk, injectAtStreamEnd } = injectHtmlTagsToStream(
       pageContext,
       streamFromReactStreamingPackage,
       injectFilter
@@ -128,6 +128,9 @@ async function renderHtmlStream(
     objectAssign(opts, {
       injectStringAtBegin: async () => {
         return await injectAtStreamBegin(injectString.htmlPartsBegin)
+      },
+      injectStringAfterFirstChunk: () => {
+        return injectAtStreamAfterFirstChunk()
       },
       injectStringAtEnd: async () => {
         return await injectAtStreamEnd(injectString.htmlPartsEnd)

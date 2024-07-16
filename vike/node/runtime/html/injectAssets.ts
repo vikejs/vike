@@ -6,7 +6,12 @@ export type { PageContextPromise }
 import { assert, isCallable, isPromise } from '../utils.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
-import { injectHtmlTags, createHtmlHeadIfMissing, injectHtmlTagsUsingStream } from './injectAssets/injectHtmlTags.js'
+import {
+  joinHtmlTags,
+  injectHtmlTags,
+  createHtmlHeadIfMissing,
+  injectHtmlTagsUsingStream
+} from './injectAssets/injectHtmlTags.js'
 import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
@@ -53,6 +58,7 @@ function injectHtmlTagsToStream(
 
   return {
     injectAtStreamBegin,
+    injectAtStreamAfterFirstChunk,
     injectAtStreamEnd
   }
 
@@ -66,6 +72,12 @@ function injectHtmlTagsToStream(
     injectHtmlTagsUsingStream(htmlTags, streamFromReactStreamingPackage)
 
     return htmlBegin
+  }
+
+  function injectAtStreamAfterFirstChunk(): string {
+    assert(htmlTags)
+    const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
+    return htmlFragment
   }
 
   async function injectAtStreamEnd(htmlPartsEnd: HtmlPart[]): Promise<string> {

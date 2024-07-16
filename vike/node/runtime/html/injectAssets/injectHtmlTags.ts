@@ -3,6 +3,7 @@
 export { injectHtmlTags }
 export { injectHtmlTagsUsingStream }
 export { createHtmlHeadIfMissing }
+export { joinHtmlTags }
 
 // Only needed for unit tests
 export { injectAtOpeningTag }
