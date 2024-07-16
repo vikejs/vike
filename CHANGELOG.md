@@ -1,3 +1,23 @@
+## [0.4.180](https://github.com/vikejs/vike/compare/v0.4.179...v0.4.180) (2024-07-16)
+
+
+### Bug Fixes
+
+* avoid cloning pageContext on the client-side ([9f4ee04](https://github.com/vikejs/vike/commit/9f4ee04c56206d19b975474acbd963bc3f1c0c02))
+* avoid cloning pageContext when routing ([6ade0d5](https://github.com/vikejs/vike/commit/6ade0d5770cea2774c609bd631a7130df7a100fa))
+* fix type PageContext['routeParams'] ([1a2bff3](https://github.com/vikejs/vike/commit/1a2bff30a59941593262b75fa8ca18c7d35bffa1))
+* improve handling of useConfig() serialization error ([9384166](https://github.com/vikejs/vike/commit/9384166a4f4cbfabd59946434f9fda43738f624b))
+* improve serialization error message ([0b717ad](https://github.com/vikejs/vike/commit/0b717ad90a7f7223ddb63cf3de7a0c15b2681da3))
+* support `injectScriptsAt: 'STREAM'` ([#1740](https://github.com/vikejs/vike/issues/1740)) ([b0d2d3a](https://github.com/vikejs/vike/commit/b0d2d3a435025aad94e12d51d68e6de676de15a7))
+* update react-streaming ([c4d759a](https://github.com/vikejs/vike/commit/c4d759aa9c46974593b633d8c373075acb843023))
+
+
+### Features
+
+* new setting `injectScriptsAt` ([#1743](https://github.com/vikejs/vike/issues/1743)) ([6a03f74](https://github.com/vikejs/vike/commit/6a03f74a8472f0134380477e1a8a0a5c10a3eb9f))
+
+
+
 ## [0.4.179](https://github.com/vikejs/vike/compare/v0.4.178...v0.4.179) (2024-07-06)
 
 
