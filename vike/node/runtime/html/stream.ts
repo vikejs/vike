@@ -277,7 +277,7 @@ async function processStream(
     enableEagerStreaming
   }: {
     injectStringAtBegin?: () => Promise<string>
-    injectStringAfterFirstChunk?: () => string
+    injectStringAfterFirstChunk?: () => string | null
     injectStringAtEnd?: () => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
@@ -342,7 +342,7 @@ async function processStream(
         writeStream(chunk)
         if (injectStringAfterFirstChunk && !injectStringAfterFirstChunk_done) {
           const injectedChunk = injectStringAfterFirstChunk()
-          writeStream(injectedChunk)
+          if (injectedChunk !== null) writeStream(injectedChunk)
           injectStringAfterFirstChunk_done = true
         }
       })

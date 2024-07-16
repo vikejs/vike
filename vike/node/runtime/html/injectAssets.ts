@@ -69,14 +69,20 @@ function injectHtmlTagsToStream(
 
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
     htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags)
-    injectHtmlTagsUsingStream(htmlTags, streamFromReactStreamingPackage)
+    if (streamFromReactStreamingPackage) {
+      injectHtmlTagsUsingStream(htmlTags, streamFromReactStreamingPackage)
+    }
 
     return htmlBegin
   }
 
-  function injectAtStreamAfterFirstChunk(): string {
+  function injectAtStreamAfterFirstChunk(): null | string {
+    // React has its own stream injection mechanism, see injectHtmlTagsUsingStream()
+    if (streamFromReactStreamingPackage) return null
     assert(htmlTags)
-    const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
+    const tags = htmlTags.filter((h) => h.position === 'STREAM')
+    if (tags.length === 0) return null
+    const htmlFragment = joinHtmlTags(tags)
     return htmlFragment
   }
 

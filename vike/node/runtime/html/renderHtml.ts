@@ -111,7 +111,7 @@ async function renderHtmlStream(
   onErrorWhileStreaming: (err: unknown) => void,
   injectFilter: PreloadFilter
 ) {
-  const opts = {
+  const processStreamOptions: Parameters<typeof processStream>[1] = {
     onErrorWhileStreaming,
     enableEagerStreaming: pageContext.enableEagerStreaming
   }
@@ -125,26 +125,17 @@ async function renderHtmlStream(
       streamFromReactStreamingPackage,
       injectFilter
     )
-    objectAssign(opts, {
-      injectStringAtBegin: async () => {
-        return await injectAtStreamBegin(injectString.htmlPartsBegin)
-      },
-      injectStringAtEnd: async () => {
-        return await injectAtStreamEnd(injectString.htmlPartsEnd)
-      }
-    })
-    if (
-      // React needs its own chunk stream injection mechanism
-      !isStreamFromReactStreamingPackage
-    ) {
-      objectAssign(opts, {
-        injectStringAfterFirstChunk: () => {
-          return injectAtStreamAfterFirstChunk()
-        }
-      })
+    processStreamOptions.injectStringAtBegin = async () => {
+      return await injectAtStreamBegin(injectString.htmlPartsBegin)
+    }
+    processStreamOptions.injectStringAtEnd = async () => {
+      return await injectAtStreamEnd(injectString.htmlPartsEnd)
+    }
+    processStreamOptions.injectStringAfterFirstChunk = () => {
+      return injectAtStreamAfterFirstChunk()
     }
   }
-  const streamWrapper = await processStream(streamOriginal, opts)
+  const streamWrapper = await processStream(streamOriginal, processStreamOptions)
   return streamWrapper
 }
 
