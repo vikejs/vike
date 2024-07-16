@@ -57,12 +57,12 @@ function injectHtmlTagsToStream(
   let htmlTags: HtmlTag[] | undefined
 
   return {
-    injectAtStreamBegin,
+    injectAtStreamAfterFirstChunk,
     injectAtStreamMiddle,
     injectAtStreamEnd
   }
 
-  async function injectAtStreamBegin(htmlPartsBegin: HtmlPart[]): Promise<string> {
+  async function injectAtStreamAfterFirstChunk(htmlPartsBegin: HtmlPart[]): Promise<string> {
     const pageAssets = await pageContext.__getPageAssets()
     const viteDevScript = await getViteDevScript()
     htmlTags = getHtmlTags(pageContext, streamFromReactStreamingPackage, injectFilter, pageAssets, viteDevScript, true)
