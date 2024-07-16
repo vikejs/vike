@@ -279,10 +279,10 @@ function getInjectScriptsAt(pageId: string, pageConfigs: PageConfigRuntime[]): n
   assert(configValue.definedAtData)
   const configDefinedAt = getConfigDefinedAt('Config', 'injectScriptsAt', configValue.definedAtData)
   assertUsage(
-    injectScriptsAt === 'HTML_BEGIN' ||
-      injectScriptsAt === 'STREAM' ||
+    injectScriptsAt === null ||
+      injectScriptsAt === 'HTML_BEGIN' ||
       injectScriptsAt === 'HTML_END' ||
-      injectScriptsAt === null,
+      injectScriptsAt === 'STREAM',
     `${configDefinedAt} has an invalid value`
   )
   return injectScriptsAt
