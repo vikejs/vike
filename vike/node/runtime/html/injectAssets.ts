@@ -58,7 +58,7 @@ function injectHtmlTagsToStream(
 
   return {
     injectAtStreamBegin,
-    injectAtStreamMiddle,
+    injectAtStreamAfterFirstChunk,
     injectAtStreamEnd
   }
 
@@ -74,7 +74,7 @@ function injectHtmlTagsToStream(
     return htmlBegin
   }
 
-  function injectAtStreamMiddle(): string {
+  function injectAtStreamAfterFirstChunk(): string {
     assert(htmlTags)
     const htmlMiddle = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
     return htmlMiddle
