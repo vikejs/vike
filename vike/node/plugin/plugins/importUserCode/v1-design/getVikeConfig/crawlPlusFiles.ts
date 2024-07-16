@@ -201,7 +201,7 @@ async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: stri
     cwd: userRootDir,
     dot: false
   })
-  return files
+  return files?.sort()
 }
 
 // Same as getIgnoreAsFilterFn() but as glob pattern
