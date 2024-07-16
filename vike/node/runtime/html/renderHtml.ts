@@ -129,13 +129,20 @@ async function renderHtmlStream(
       injectStringAtBegin: async () => {
         return await injectAtStreamBegin(injectString.htmlPartsBegin)
       },
-      injectStringAfterFirstChunk: () => {
-        return injectAtStreamAfterFirstChunk()
-      },
       injectStringAtEnd: async () => {
         return await injectAtStreamEnd(injectString.htmlPartsEnd)
       }
     })
+    if (
+      // React needs its own chunk stream injection mechanism
+      !isStreamFromReactStreamingPackage
+    ) {
+      objectAssign(opts, {
+        injectStringAfterFirstChunk: () => {
+          return injectAtStreamAfterFirstChunk()
+        }
+      })
+    }
   }
   const streamWrapper = await processStream(streamOriginal, opts)
   return streamWrapper
