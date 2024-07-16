@@ -129,7 +129,7 @@ async function renderHtmlStream(
       injectStringAtBegin: async () => {
         return await injectAtStreamBegin(injectString.htmlPartsBegin)
       },
-      injectStringAtMiddle: () => {
+      injectStringAfterFirstChunk: () => {
         return injectAtStreamAfterFirstChunk()
       },
       injectStringAtEnd: async () => {
