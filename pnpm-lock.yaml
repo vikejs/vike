@@ -19,7 +19,7 @@ importers:
         version: 0.5.33
       '@brillout/test-types':
         specifier: ^0.1.13
-        version: 0.1.14(typescript@5.5.2)
+        version: 0.1.14(typescript@5.5.3)
       prettier:
         specifier: ^3.2.5
         version: 3.3.0
@@ -163,13 +163,13 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
+        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.3))
       '@vue/compiler-sfc':
         specifier: ^3.3.10
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.3.10
-        version: 3.4.27(vue@3.4.27(typescript@5.5.2))
+        version: 3.4.27(vue@3.4.27(typescript@5.5.3))
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -193,7 +193,7 @@ importers:
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.3.10
-        version: 3.4.27(typescript@5.5.2)
+        version: 3.4.27(typescript@5.5.3)
 
   boilerplates/boilerplate-vue-ts:
     dependencies:
@@ -463,13 +463,13 @@ importers:
         version: 0.3.2
       '@vitejs/plugin-vue':
         specifier: ^5.0.5
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
+        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.3))
       '@vue/compiler-sfc':
         specifier: ^3.4.27
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.4.27
-        version: 3.4.27(vue@3.4.27(typescript@5.5.2))
+        version: 3.4.27(vue@3.4.27(typescript@5.5.3))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -478,7 +478,7 @@ importers:
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.4.27
-        version: 3.4.27(typescript@5.5.2)
+        version: 3.4.27(typescript@5.5.3)
       wrangler:
         specifier: ^3.58.0
         version: 3.58.0
@@ -777,8 +777,8 @@ importers:
         specifier: ^18.3.0
         version: 18.3.0
       '@vitejs/plugin-react':
-        specifier: ^4.3.0
-        version: 4.3.0(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))
+        specifier: ^4.3.1
+        version: 4.3.1(vite@5.3.3(@types/node@20.13.0)(terser@5.31.0))
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -789,17 +789,17 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
+        specifier: ^5.5.3
+        version: 5.5.3
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.4.16
-        version: 0.4.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))
+        specifier: ^0.4.17
+        version: 0.4.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)(vite@5.3.3(@types/node@20.13.0)(terser@5.31.0))
       vite:
-        specifier: ^5.2.12
-        version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
+        specifier: ^5.3.3
+        version: 5.3.3(@types/node@20.13.0)(terser@5.31.0)
 
   examples/vike-react-simple:
     dependencies:
@@ -868,13 +868,13 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
+        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.3))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.2.47
-        version: 3.4.27(vue@3.4.27(typescript@5.5.2))
+        version: 3.4.27(vue@3.4.27(typescript@5.5.3))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -883,7 +883,7 @@ importers:
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.47
-        version: 3.4.27(typescript@5.5.2)
+        version: 3.4.27(typescript@5.5.3)
 
   examples/webpack:
     dependencies:
@@ -1057,13 +1057,13 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
+        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.3))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.2.47
-        version: 3.4.27(vue@3.4.27(typescript@5.5.2))
+        version: 3.4.27(vue@3.4.27(typescript@5.5.3))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1072,7 +1072,7 @@ importers:
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.47
-        version: 3.4.27(typescript@5.5.2)
+        version: 3.4.27(typescript@5.5.3)
       wrangler:
         specifier: ^2.9.1
         version: 2.21.1(cron-schedule@3.0.6)
@@ -1333,13 +1333,13 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
+        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.3))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.2.47
-        version: 3.4.27(vue@3.4.27(typescript@5.5.2))
+        version: 3.4.27(vue@3.4.27(typescript@5.5.3))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1348,7 +1348,7 @@ importers:
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.47
-        version: 3.4.27(typescript@5.5.2)
+        version: 3.4.27(typescript@5.5.3)
 
   test-deprecated-design/vue-full:
     dependencies:
@@ -1618,16 +1618,16 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))
+        version: 5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.3))
       '@vue/compiler-sfc':
         specifier: ^3.2.31
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.2.37
-        version: 3.4.27(vue@3.4.27(typescript@5.5.2))
+        version: 3.4.27(vue@3.4.27(typescript@5.5.3))
       pinia:
         specifier: ^2.0.14
-        version: 2.1.7(typescript@5.5.2)(vue@3.4.27(typescript@5.5.2))
+        version: 2.1.7(typescript@5.5.3)(vue@3.4.27(typescript@5.5.3))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1636,7 +1636,7 @@ importers:
         version: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.37
-        version: 3.4.27(typescript@5.5.2)
+        version: 3.4.27(typescript@5.5.3)
 
   vike:
     dependencies:
@@ -3499,6 +3499,12 @@ packages:
 
   '@vitejs/plugin-react@4.3.0':
     resolution: {integrity: sha512-KcEbMsn4Dpk+LIbHMj7gDPRKaTMStxxWRkRmxsg/jVdFdJCZWt1SchZcf0M4t8lIKdwwMsEyzhrcOXRrDPtOBw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      vite: ^4.2.0 || ^5.0.0
+
+  '@vitejs/plugin-react@4.3.1':
+    resolution: {integrity: sha512-m/V2syj5CuVnaxcUJOQRel/Wr31FFXRFlnOoq1TVtkCxsY5veGMTEmpWHndrhB2U8ScHtCQB1e+4hWYExQc6Lg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0
@@ -6038,6 +6044,10 @@ packages:
     resolution: {integrity: sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postcss@8.4.39:
+    resolution: {integrity: sha512-0vzE+lAiG7hZl1/9I8yzKLx3aR9Xbof3fBHKunvMfOCYAtMhrsnccJY2iTURb9EZd5+pLuiNV9/c/GZJOHsgIw==}
+    engines: {node: ^10 || ^12 || >=14}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -6761,8 +6771,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.5.2:
-    resolution: {integrity: sha512-NcRtPEOsPFFWjobJEtfihkLCZCXZt/os3zf8nTxjVH3RvTSxjrCamJpbExGvYOF+tFHc3pA65qpdwPbzjohhew==}
+  typescript@5.5.3:
+    resolution: {integrity: sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -6934,6 +6944,14 @@ packages:
       vike: link:/home/rom/code/vike/vike/
       vite: '>=4.3.8'
 
+  vike-react@0.4.17:
+    resolution: {integrity: sha512-kUhJr7DmxwQy4NEK0ghDLXEqjprmai8gLut5721s57o1OUQWwq3sjiVsi1rSc2h2gN4BmZctXDjIYjPbwDIy9g==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+      vike: link:/home/rom/code/vike/vike/
+      vite: '>=4.3.8'
+
   vite-node@1.6.0:
     resolution: {integrity: sha512-de6HJgzC+TFzOu0NTC4RAIsyf/DY/ibWDYQUcuEA84EMHhcefTUGkjFHKKEJhQN4A+6I0u++kr3l36ZF2d7XRw==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -6992,8 +7010,8 @@ packages:
       terser:
         optional: true
 
-  vite@5.3.2:
-    resolution: {integrity: sha512-6lA7OBHBlXUxiJxbO5aAY2fsHHzDr1q7DvXYnyZycRs2Dz+dXBWuhpWHvmljTRTpQC2uvGmUFFkSHF2vGo90MA==}
+  vite@5.3.3:
+    resolution: {integrity: sha512-NPQdeCU0Dv2z5fu+ULotpuq5yfCS1BzKUIPhNbP3YBfAMGJXbt2nS+sbTFu+qchaqWTD+H3JK++nRwr6XIcp6A==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -7529,12 +7547,12 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@brillout/test-types@0.1.14(typescript@5.5.2)':
+  '@brillout/test-types@0.1.14(typescript@5.5.3)':
     dependencies:
       '@brillout/picocolors': 1.0.12
       fast-glob: 3.3.2
       source-map-support: 0.5.21
-      typescript: 5.5.2
+      typescript: 5.5.3
 
   '@brillout/vite-plugin-server-entry@0.4.6':
     dependencies:
@@ -8806,6 +8824,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vitejs/plugin-react@4.3.1(vite@5.3.3(@types/node@20.13.0)(terser@5.31.0))':
+    dependencies:
+      '@babel/core': 7.24.6
+      '@babel/plugin-transform-react-jsx-self': 7.24.6(@babel/core@7.24.6)
+      '@babel/plugin-transform-react-jsx-source': 7.24.6(@babel/core@7.24.6)
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.14.2
+      vite: 5.3.3(@types/node@20.13.0)(terser@5.31.0)
+    transitivePeerDependencies:
+      - supports-color
+
   '@vitejs/plugin-vue@5.0.5(vite@5.2.12(@types/node@17.0.45)(terser@5.31.0))(vue@3.2.33)':
     dependencies:
       vite: 5.2.12(@types/node@17.0.45)(terser@5.31.0)
@@ -8816,10 +8845,10 @@ snapshots:
       vite: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
       vue: 3.4.27(typescript@5.4.5)
 
-  '@vitejs/plugin-vue@5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.2))':
+  '@vitejs/plugin-vue@5.0.5(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.3))':
     dependencies:
       vite: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
-      vue: 3.4.27(typescript@5.5.2)
+      vue: 3.4.27(typescript@5.5.3)
 
   '@vitest/expect@1.6.0':
     dependencies:
@@ -8999,11 +9028,11 @@ snapshots:
       '@vue/shared': 3.4.27
       vue: 3.4.27(typescript@5.4.5)
 
-  '@vue/server-renderer@3.4.27(vue@3.4.27(typescript@5.5.2))':
+  '@vue/server-renderer@3.4.27(vue@3.4.27(typescript@5.5.3))':
     dependencies:
       '@vue/compiler-ssr': 3.4.27
       '@vue/shared': 3.4.27
-      vue: 3.4.27(typescript@5.5.2)
+      vue: 3.4.27(typescript@5.5.3)
 
   '@vue/shared@3.2.33': {}
 
@@ -12279,13 +12308,13 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  pinia@2.1.7(typescript@5.5.2)(vue@3.4.27(typescript@5.5.2)):
+  pinia@2.1.7(typescript@5.5.3)(vue@3.4.27(typescript@5.5.3)):
     dependencies:
       '@vue/devtools-api': 6.6.2
-      vue: 3.4.27(typescript@5.5.2)
-      vue-demi: 0.14.8(vue@3.4.27(typescript@5.5.2))
+      vue: 3.4.27(typescript@5.5.3)
+      vue-demi: 0.14.8(vue@3.4.27(typescript@5.5.3))
     optionalDependencies:
-      typescript: 5.5.2
+      typescript: 5.5.3
 
   pixelmatch@5.3.0:
     dependencies:
@@ -12312,6 +12341,12 @@ snapshots:
   possible-typed-array-names@1.0.0: {}
 
   postcss@8.4.38:
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.0.1
+      source-map-js: 1.2.0
+
+  postcss@8.4.39:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.1
@@ -12418,15 +12453,6 @@ snapshots:
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-
-  react-streaming@0.3.41(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      '@brillout/import': 0.2.3
-      '@brillout/json-serializer': 0.5.13
-      '@brillout/picocolors': 1.0.13
-      isbot-fast: 1.2.0
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
 
   react-streaming@0.3.42(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
@@ -13170,7 +13196,7 @@ snapshots:
 
   typescript@5.4.5: {}
 
-  typescript@5.5.2: {}
+  typescript@5.5.3: {}
 
   uc.micro@1.0.6: {}
 
@@ -13400,13 +13426,13 @@ snapshots:
       vike: link:vike
       vite: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
 
-  vike-react@0.4.16(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)(vite@5.2.12(@types/node@20.13.0)(terser@5.31.0)):
+  vike-react@0.4.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)(vite@5.3.3(@types/node@20.13.0)(terser@5.31.0)):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-streaming: 0.3.41(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-streaming: 0.3.42(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       vike: link:vike
-      vite: 5.2.12(@types/node@20.13.0)(terser@5.31.0)
+      vite: 5.3.3(@types/node@20.13.0)(terser@5.31.0)
 
   vite-node@1.6.0(@types/node@20.13.0)(terser@5.31.0):
     dependencies:
@@ -13414,7 +13440,7 @@ snapshots:
       debug: 4.3.5
       pathe: 1.1.2
       picocolors: 1.0.1
-      vite: 5.3.2(@types/node@20.13.0)(terser@5.31.0)
+      vite: 5.3.3(@types/node@20.13.0)(terser@5.31.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -13456,10 +13482,10 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.31.0
 
-  vite@5.3.2(@types/node@20.13.0)(terser@5.31.0):
+  vite@5.3.3(@types/node@20.13.0)(terser@5.31.0):
     dependencies:
       esbuild: 0.21.5
-      postcss: 8.4.38
+      postcss: 8.4.39
       rollup: 4.18.0
     optionalDependencies:
       '@types/node': 20.13.0
@@ -13485,7 +13511,7 @@ snapshots:
       strip-literal: 2.1.0
       tinybench: 2.8.0
       tinypool: 0.8.4
-      vite: 5.3.2(@types/node@20.13.0)(terser@5.31.0)
+      vite: 5.3.3(@types/node@20.13.0)(terser@5.31.0)
       vite-node: 1.6.0(@types/node@20.13.0)(terser@5.31.0)
       why-is-node-running: 2.2.2
     optionalDependencies:
@@ -13499,9 +13525,9 @@ snapshots:
       - supports-color
       - terser
 
-  vue-demi@0.14.8(vue@3.4.27(typescript@5.5.2)):
+  vue-demi@0.14.8(vue@3.4.27(typescript@5.5.3)):
     dependencies:
-      vue: 3.4.27(typescript@5.5.2)
+      vue: 3.4.27(typescript@5.5.3)
 
   vue-template-compiler@2.7.16:
     dependencies:
@@ -13540,15 +13566,15 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.5
 
-  vue@3.4.27(typescript@5.5.2):
+  vue@3.4.27(typescript@5.5.3):
     dependencies:
       '@vue/compiler-dom': 3.4.27
       '@vue/compiler-sfc': 3.4.27
       '@vue/runtime-dom': 3.4.27
-      '@vue/server-renderer': 3.4.27(vue@3.4.27(typescript@5.5.2))
+      '@vue/server-renderer': 3.4.27(vue@3.4.27(typescript@5.5.3))
       '@vue/shared': 3.4.27
     optionalDependencies:
-      typescript: 5.5.2
+      typescript: 5.5.3
 
   watchpack@2.4.1:
     dependencies:
