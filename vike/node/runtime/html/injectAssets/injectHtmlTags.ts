@@ -22,6 +22,7 @@ function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Posit
   return htmlString
 }
 
+// Is it worth it? Should we remove this? https://github.com/vikejs/vike/pull/1740#issuecomment-2230540892
 function injectHtmlTagsUsingStream(
   htmlTags: HtmlTag[],
   streamFromReactStreamingPackage: StreamFromReactStreamingPackage

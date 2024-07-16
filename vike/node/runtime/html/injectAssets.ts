@@ -76,6 +76,7 @@ function injectHtmlTagsToStream(
     return htmlBegin
   }
 
+  // Is it worth it? Should we remove this? https://github.com/vikejs/vike/pull/1740#issuecomment-2230540892
   function injectAtStreamAfterFirstChunk(): null | string {
     // React has its own stream injection mechanism, see injectHtmlTagsUsingStream()
     if (streamFromReactStreamingPackage) return null
