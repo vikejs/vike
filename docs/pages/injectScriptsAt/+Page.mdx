@@ -19,12 +19,12 @@ export default {
   injectScriptsAt: 'HTML_BEGIN',
   // Inject scripts at the end of the HTML
   injectScriptsAt: 'HTML_END',
+  // Inject scripts the beginning of the HTML stream.
+  injectScriptsAt: 'STREAM',
   // Let Vike decide
   injectScriptsAt: null
 }
 ```
-
-> Being able to set `injectScriptsAt: 'STREAM'` isn't implemented yet.
 
 > Setting `injectAssetsAt` to `null` can be useful in the context of <Link href="/config#inheritance">config inheritance</Link>.
 
