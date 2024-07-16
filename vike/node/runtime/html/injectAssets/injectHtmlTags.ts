@@ -27,7 +27,7 @@ function injectHtmlTagsUsingStream(
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage
 ): void {
   const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
-  if (htmlFragment && streamFromReactStreamingPackage) {
+  if (htmlFragment) {
     assert(streamFromReactStreamingPackage)
     assert(!streamFromReactStreamingPackage.hasStreamEnded())
     streamFromReactStreamingPackage.injectToStream(htmlFragment, { flush: true })
