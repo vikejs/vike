@@ -76,8 +76,8 @@ function injectHtmlTagsToStream(
 
   function injectAtStreamAfterFirstChunk(): string {
     assert(htmlTags)
-    const htmlMiddle = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
-    return htmlMiddle
+    const htmlFragment = joinHtmlTags(htmlTags.filter((h) => h.position === 'STREAM'))
+    return htmlFragment
   }
 
   async function injectAtStreamEnd(htmlPartsEnd: HtmlPart[]): Promise<string> {
