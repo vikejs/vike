@@ -207,17 +207,13 @@ function assertUsageBaseServer(baseServer: string, usageErrorMessagePrefix: stri
 }
 */
 
-function assertPathname(urlPathname: string) {
-  assert(urlPathname.startsWith('/'))
-  assert(!urlPathname.includes('?'))
-  assert(!urlPathname.includes('#'))
-}
-
 function analyzeBaseServer(
   urlPathnameWithBase: string,
   baseServer: string
 ): { pathname: string; hasBaseServer: boolean } {
-  assertPathname(urlPathnameWithBase)
+  assert(urlPathnameWithBase.startsWith('/'))
+  assert(!urlPathnameWithBase.includes('?'))
+  assert(!urlPathnameWithBase.includes('#'))
   assert(isBaseServer(baseServer))
 
   // Mutable
