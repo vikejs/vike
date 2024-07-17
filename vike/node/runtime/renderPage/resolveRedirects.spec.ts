@@ -1,5 +1,5 @@
 import { resolveRouteStringRedirect } from './resolveRedirects.js'
-import { stripAnsi } from '../../utils/stripAnsi.js'
+import { stripAnsi } from '../../../utils/stripAnsi.js'
 import { expect, describe, it } from 'vitest'
 
 describe('resolveRouteStringRedirect', () => {

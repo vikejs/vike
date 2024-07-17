@@ -56,7 +56,7 @@ import { serializePageContextAbort, serializePageContextClientSide } from './htm
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
 import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
-import { resolveRedirects } from '../../shared/route/resolveRedirects.js'
+import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
