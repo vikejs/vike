@@ -295,9 +295,9 @@ function isUrlWithProtocol(str: string): boolean {
   return !!protocol && protocol.endsWith('://')
 }
 
-function parseProtocol(url: string) {
+function parseProtocol(uri: string) {
   const SEP = ':'
-  const [before, ...after] = url.split(SEP)
+  const [before, ...after] = uri.split(SEP)
   if (
     after.length === 0 ||
     // https://github.com/vikejs/vike/commit/886a99ff21e86a8ca699a25cee7edc184aa058e4#r143308934
@@ -305,14 +305,14 @@ function parseProtocol(url: string) {
     // https://www.rfc-editor.org/rfc/rfc7595
     !/^[a-z][a-z0-9\+\-]*$/i.test(before!)
   ) {
-    return { protocol: null, urlWithoutProtocol: url }
+    return { protocol: null, uriWithoutProtocol: uri }
   }
   let protocol = before! + SEP
-  let urlWithoutProtocol = after.join(SEP)
+  let uriWithoutProtocol = after.join(SEP)
   const SEP2 = '//'
-  if (urlWithoutProtocol.startsWith(SEP2)) {
+  if (uriWithoutProtocol.startsWith(SEP2)) {
     protocol = protocol + SEP2
-    urlWithoutProtocol = urlWithoutProtocol.slice(SEP2.length)
+    uriWithoutProtocol = uriWithoutProtocol.slice(SEP2.length)
   }
-  return { protocol, urlWithoutProtocol }
+  return { protocol, uriWithoutProtocol }
 }
