@@ -11,7 +11,7 @@ export { assertUsageUrlRedirectTarget }
 export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
-export { isUriWithProtocol }
+export { isUri }
 export { isUrlRedirectTarget }
 
 import { slice } from './slice.js'
@@ -282,19 +282,32 @@ function createUrlFromComponents(
 }
 
 function isUrlRedirectTarget(url: string): boolean {
-  return url.startsWith('/') || isUriWithProtocol(url) || isUrlWithProtocol(url)
+  return url.startsWith('/') || isUri(url) || isUrlWithProtocol(url)
 }
 
-/** Real-world examples:
+/**
+ * URIs that aren't URLs.
+ *
+ * Real-world examples:
  *    mailto:
  *    ipfs:
  *    magnet:
+ *
+ * We need to treat URIs differently than URLs.
+ *  - For exmaple, we cannot parse URIs (their structure is unknown e.g. a `magnet:` URI is completely different than a `http://` URL).
+ *    - The protocols tauri:// file:// capacitor:// follow the same structure as http:// and https:// URLs.
+ *      - Thus we can parse them like http:// and https:// URLs.
+ *  - So far, checking whether the protocol ends with :// seems to be a reliable way to distinguish URIs from URLs.
+ *    - If it turns out to be unreliable, then use a whitelist ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
  */
-function isUriWithProtocol(uri: string): boolean {
+function isUri(uri: string): boolean {
   const { protocol } = parseProtocol(uri)
   return !!protocol && !isUrlProtocol(uri)
 }
-/** Real-world examples:
+/**
+ * URL with protocol.
+ *
+ * Real-world examples:
  *    http://
  *    https://
  *    tauri://         [Tauri](https://tauri.app)

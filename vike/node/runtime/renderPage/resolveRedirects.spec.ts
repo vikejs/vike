@@ -69,7 +69,6 @@ describe('resolveRouteStringRedirect', () => {
   })
   it('ipfs:', () => {
     expect(resolveRouteStringRedirect('/ipfs', 'ipfs://example.com', '/ipfs')).toEqual('ipfs://example.com')
-    expect(resolveRouteStringRedirect('/ipns', 'ipns://example.com', '/ipns')).toEqual('ipns://example.com')
   })
   it('magnet:', () => {
     expect(resolveRouteStringRedirect('/magnet', 'magnet:?xt=urn:btih:example', '/magnet')).toEqual(

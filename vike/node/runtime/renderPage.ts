@@ -27,7 +27,7 @@ import {
   removeUrlOrigin,
   addUrlOrigin,
   createUrlFromComponents,
-  isUriWithProtocol
+  isUri
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -520,7 +520,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
     if (urlTarget === null) return null
     if (!isParsable(urlTarget)) {
       // E.g. `urlTarget === 'mailto:some@example.com'`
-      assert(isUriWithProtocol(urlTarget))
+      assert(isUri(urlTarget))
       urlTargetExternal = urlTarget
       return null
     }
