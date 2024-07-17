@@ -280,16 +280,22 @@ function createUrlFromComponents(
   return urlRecreated
 }
 
+/** Real-world examples:
+ *    mailto:
+ *    ipfs:
+ *    magnet:
+ */
 function isUriWithProtocol(str: string): boolean {
-  // Real-world examples:
-  //   http://
-  //   https://
-  //   tauri:// # [Tauri](https://tauri.app)
-  //   file:// # [Electron](https://github.com/vikejs/vike/issues/1557)
-  //   capacitor:// # [Capacitor](https://github.com/vikejs/vike/issues/1706)
   const { protocol } = parseProtocol(str)
   return !!protocol
 }
+/** Real-world examples:
+ *    http://
+ *    https://
+ *    tauri://         [Tauri](https://tauri.app)
+ *    file://          [Electron](https://github.com/vikejs/vike/issues/1557)
+ *    capacitor://     [Capacitor](https://github.com/vikejs/vike/issues/1706)
+ */
 function isUrlWithProtocol(str: string): boolean {
   const { protocol } = parseProtocol(str)
   return !!protocol && protocol.endsWith('://')
