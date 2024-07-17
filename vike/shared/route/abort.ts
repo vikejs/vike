@@ -53,7 +53,7 @@ type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abor
  */
 function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
-  assertUrl(url, abortCaller, true)
+  assertAbortUrl(url, abortCaller, false)
   const args = [JSON.stringify(url)]
   if (!statusCode) {
     statusCode = 302
@@ -125,7 +125,7 @@ function render_(
   }
   if (typeof urlOrStatusCode === 'string') {
     const url = urlOrStatusCode
-    assertUrl(url, abortCaller)
+    assertAbortUrl(url, abortCaller, true)
     objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
@@ -293,13 +293,13 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
   )
 }
 
-function assertUrl(url: string, abortCaller: AbortCaller, allowAbsoluteUrl?: true) {
+function assertAbortUrl(url: string, abortCaller: AbortCaller, forbidExternal: boolean) {
   assertUsage(
-    url.startsWith('/') || (allowAbsoluteUrl && isUriWithProtocol(url)),
+    url.startsWith('/') || (!forbidExternal && isUriWithProtocol(url)),
     [
       `Invalid URL ${pc.cyan(url)} passed to ${pc.cyan(abortCaller)}:`,
       `the URL should start with ${pc.cyan('/')}`,
-      allowAbsoluteUrl && `or a valid protocol (${pc.cyan('https:')}, ${pc.cyan('ipfs:')}, ...)`
+      !forbidExternal && `or a valid protocol (${pc.cyan('https:')}, ${pc.cyan('ipfs:')}, ...)`
     ]
       .filter(Boolean)
       .join(' ')
