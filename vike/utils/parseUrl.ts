@@ -167,12 +167,13 @@ function getPathname(url: string, baseServer: string): { origin: null | string; 
 
 function parseOrigin(url: string): { pathname: string; origin: null | string } {
   if (!isUrlWithProtocol(url)) {
-    assert(!isUriWithProtocol(url))
     return { pathname: url, origin: null }
   } else {
-    const [originPart1, originPart2, originPart3, ...pathnameParts] = url.split('/')
-    const origin = [originPart1, originPart2, originPart3].join('/')
-    const pathname = ['', ...pathnameParts].join('/') || '/'
+    const { protocol, uriWithoutProtocol } = parseProtocol(url)
+    assert(protocol)
+    const [hostname, ...rest] = uriWithoutProtocol.split('/')
+    const origin = protocol + hostname!
+    const pathname = '/' + rest.join('/')
     return { origin, pathname }
   }
 }
