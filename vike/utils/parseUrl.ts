@@ -7,6 +7,7 @@
 export { parseUrl }
 export { isParsable }
 export { assertUsageUrlPathnameAbsolute }
+export { assertUsageUrlRedirectTarget }
 export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
@@ -20,8 +21,18 @@ function isParsable(url: string): boolean {
   // parseUrl() works with these URLs
   return isUrlWithProtocol(url) || isUrlPathname(url)
 }
+
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): asserts url is UrlPathnameAbsolute {
   assertUsage(isUrlPathnameAbsolute(url), `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`)
+}
+function assertUsageUrlRedirectTarget(url: string, errPrefix: string) {
+  assertUsage(
+    url.startsWith('/') || isUriWithProtocol(url),
+    [
+      `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`,
+      `or a valid protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
+    ].join(' ')
+  )
 }
 
 function isUrlPathname(url: string): url is UrlPathnameRelative | UrlPathnameAbsolute {

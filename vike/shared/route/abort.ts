@@ -19,10 +19,10 @@ import {
   assertInfo,
   assertUsage,
   assertUsageUrlPathnameAbsolute,
+  assertUsageUrlRedirectTarget,
   assertWarning,
   checkType,
   hasProp,
-  isUriWithProtocol,
   joinEnglish,
   objectAssign,
   truncateString
@@ -296,16 +296,4 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
 
 function getErrPrefix(abortCaller: AbortCaller): string {
   return `URL passed to ${pc.code(abortCaller)}`
-}
-
-function assertUsageUrlRedirectTarget(url: string, errPrefix: string) {
-  assertUsage(
-    url.startsWith('/') || isUriWithProtocol(url),
-    [
-      errPrefix,
-      `is ${pc.bold(url)}`,
-      `but it should start with ${pc.bold('/')}`,
-      `or a valid protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
-    ].join(' ')
-  )
 }
