@@ -60,15 +60,30 @@ describe('resolveRouteStringRedirect', () => {
     expect(resolveRouteStringRedirect('/a/*', 'http://a.org/b/c/d/*', '/a/1/2/3')).toEqual('http://a.org/b/c/d/1/2/3')
     expect(resolveRouteStringRedirect('/a/b/c', 'http://a.com', '/a/b/c')).toEqual('http://a.com')
   })
-  it('any protocol redirects', () => {
+  it('mailto:', () => {
+    // mailto:
     expect(resolveRouteStringRedirect('/contact', 'mailto:foo@bar.test', '/contact')).toEqual('mailto:foo@bar.test')
     expect(resolveRouteStringRedirect('/contact', 'mailto:foo@bar.test?subject=Hello', '/contact')).toEqual(
       'mailto:foo@bar.test?subject=Hello'
     )
+  })
+  it('ipfs:', () => {
     expect(resolveRouteStringRedirect('/ipfs', 'ipfs://example.com', '/ipfs')).toEqual('ipfs://example.com')
     expect(resolveRouteStringRedirect('/ipns', 'ipns://example.com', '/ipns')).toEqual('ipns://example.com')
+  })
+  it('magnet:', () => {
     expect(resolveRouteStringRedirect('/magnet', 'magnet:?xt=urn:btih:example', '/magnet')).toEqual(
       'magnet:?xt=urn:btih:example'
+    )
+    // Real world example
+    expect(
+      resolveRouteStringRedirect(
+        '/magnet',
+        'magnet:?xt=urn:btih:3a15e1ac49683d91b20c2ffc252ea612a6c01bd7&dn=The.Empire.Strikes.Back.1980.Remastered.1080p.BluRay.DDP.7.1.x265-EDGE2020.mkv&xl=3225443573&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://tracker.torrent.eu.org:451&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.openbittorrent.com:6969&tr=udp://tracker.tiny-vps.com:6969/announce&tr=udp://open.demonii.com:1337',
+        '/magnet'
+      )
+    ).toEqual(
+      'magnet:?xt=urn:btih:3a15e1ac49683d91b20c2ffc252ea612a6c01bd7&dn=The.Empire.Strikes.Back.1980.Remastered.1080p.BluRay.DDP.7.1.x265-EDGE2020.mkv&xl=3225443573&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://tracker.torrent.eu.org:451&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.openbittorrent.com:6969&tr=udp://tracker.tiny-vps.com:6969/announce&tr=udp://open.demonii.com:1337'
     )
   })
 })
