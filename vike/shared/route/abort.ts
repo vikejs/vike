@@ -53,7 +53,7 @@ type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abor
  */
 function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
-  assertAbortUrl(url, abortCaller, false)
+  assertUsageUrlAbort(url, abortCaller, false)
   const args = [JSON.stringify(url)]
   if (!statusCode) {
     statusCode = 302
@@ -125,7 +125,7 @@ function render_(
   }
   if (typeof urlOrStatusCode === 'string') {
     const url = urlOrStatusCode
-    assertAbortUrl(url, abortCaller, true)
+    assertUsageUrlAbort(url, abortCaller, true)
     objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
@@ -293,7 +293,7 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
   )
 }
 
-function assertAbortUrl(url: string, abortCaller: AbortCaller, forbidExternal: boolean) {
+function assertUsageUrlAbort(url: string, abortCaller: AbortCaller, forbidExternal: boolean) {
   assertUsage(
     url.startsWith('/') || (!forbidExternal && isUriWithProtocol(url)),
     [
