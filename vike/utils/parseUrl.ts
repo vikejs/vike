@@ -18,14 +18,7 @@ import pc from '@brillout/picocolors'
 
 function isParsable(url: string): boolean {
   // parseUrl() works with these URLs
-  return (
-    isUrlWithProtocol(url) ||
-    url.startsWith('/') ||
-    url.startsWith('.') ||
-    url.startsWith('?') ||
-    url.startsWith('#') ||
-    url === ''
-  )
+  return isUrlWithProtocol(url) || isUrlPathname(url)
 }
 function assertUsageUrl(url: unknown, errPrefix: string): asserts url is string {
   assert(errPrefix.includes(' but '))
@@ -36,6 +29,18 @@ function assertUsageUrl(url: unknown, errPrefix: string): asserts url is string 
   } else {
     assertUsage(false, `${errPrefix} isn't a valid URL`)
   }
+}
+
+function isUrlPathname(url: string): url is UrlPathnameRelative | UrlPathnameAbsolute {
+  return isUrlPathnameAbsolute(url) || isUrlPathnameRelative(url)
+}
+type UrlPathnameAbsolute = `/${string}`
+function isUrlPathnameAbsolute(url: string): url is UrlPathnameAbsolute {
+  return url.startsWith('/')
+}
+type UrlPathnameRelative = '' | `${'.' | '?' | '#'}${string}`
+function isUrlPathnameRelative(url: string): url is UrlPathnameRelative {
+  return url.startsWith('.') || url.startsWith('?') || url.startsWith('#') || url === ''
 }
 
 function parseUrl(
