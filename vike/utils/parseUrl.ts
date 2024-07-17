@@ -281,18 +281,38 @@ function createUrlFromComponents(
 }
 
 function isUriWithProtocol(str: string): boolean {
-  // https://en.wikipedia.org/wiki/List_of_URI_schemes
-  // https://www.rfc-editor.org/rfc/rfc7595
-  // https://github.com/vikejs/vike/commit/886a99ff21e86a8ca699a25cee7edc184aa058e4#r143308934
-  // Examples:
+  // Real-world examples:
   //   http://
   //   https://
   //   tauri:// # [Tauri](https://tauri.app)
   //   file:// # [Electron](https://github.com/vikejs/vike/issues/1557)
   //   capacitor:// # [Capacitor](https://github.com/vikejs/vike/issues/1706)
-  return /^[a-z][a-z0-9\+\-]*:/i.test(str)
+  const { protocol } = parseProtocol(str)
+  return !!protocol
 }
-// Same as isUriWithProtocol() but with trailing :// which is needed for parseOrigin()
 function isUrlWithProtocol(str: string): boolean {
-  return /^[a-z][a-z0-9\+\-]*:\/\//i.test(str)
+  const { protocol } = parseProtocol(str)
+  return !!protocol && protocol.endsWith('://')
+}
+
+function parseProtocol(url: string) {
+  const SEP = ':'
+  const [before, ...after] = url.split(SEP)
+  if (
+    after.length === 0 ||
+    // https://github.com/vikejs/vike/commit/886a99ff21e86a8ca699a25cee7edc184aa058e4#r143308934
+    // https://en.wikipedia.org/wiki/List_of_URI_schemes
+    // https://www.rfc-editor.org/rfc/rfc7595
+    !/^[a-z][a-z0-9\+\-]*$/i.test(before!)
+  ) {
+    return { protocol: null, urlWithoutProtocol: url }
+  }
+  let protocol = before! + SEP
+  let urlWithoutProtocol = after.join(SEP)
+  const SEP2 = '//'
+  if (urlWithoutProtocol.startsWith(SEP2)) {
+    protocol = protocol + SEP2
+    urlWithoutProtocol = urlWithoutProtocol.slice(SEP2.length)
+  }
+  return { protocol, urlWithoutProtocol }
 }
