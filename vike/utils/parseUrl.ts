@@ -12,6 +12,7 @@ export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
 export { isUriWithProtocol }
+export { isUrlRedirectTarget }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
@@ -27,7 +28,7 @@ function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): asserts
 }
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string) {
   assertUsage(
-    url.startsWith('/') || isUriWithProtocol(url),
+    isUrlRedirectTarget(url),
     [
       `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`,
       `or a valid protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
@@ -280,14 +281,18 @@ function createUrlFromComponents(
   return urlRecreated
 }
 
+function isUrlRedirectTarget(url: string): boolean {
+  return url.startsWith('/') || isUriWithProtocol(url) || isUrlWithProtocol(url)
+}
+
 /** Real-world examples:
  *    mailto:
  *    ipfs:
  *    magnet:
  */
-function isUriWithProtocol(str: string): boolean {
-  const { protocol } = parseProtocol(str)
-  return !!protocol
+function isUriWithProtocol(uri: string): boolean {
+  const { protocol } = parseProtocol(uri)
+  return !!protocol && !isUrlProtocol(uri)
 }
 /** Real-world examples:
  *    http://
@@ -296,11 +301,13 @@ function isUriWithProtocol(str: string): boolean {
  *    file://          [Electron](https://github.com/vikejs/vike/issues/1557)
  *    capacitor://     [Capacitor](https://github.com/vikejs/vike/issues/1706)
  */
-function isUrlWithProtocol(str: string): boolean {
-  const { protocol } = parseProtocol(str)
-  return !!protocol && protocol.endsWith('://')
+function isUrlWithProtocol(url: string): boolean {
+  const { protocol } = parseProtocol(url)
+  return !!protocol && isUrlProtocol(protocol)
 }
-
+function isUrlProtocol(protocol: string) {
+  return protocol.endsWith('://')
+}
 function parseProtocol(uri: string) {
   const SEP = ':'
   const [before, ...after] = uri.split(SEP)

@@ -520,7 +520,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
     if (urlTarget === null) return null
     if (!isParsable(urlTarget)) {
       // E.g. `urlTarget === 'mailto:some@example.com'`
-      assert(isUriWithProtocol(urlTarget) && !urlTarget.startsWith('http'))
+      assert(isUriWithProtocol(urlTarget))
       urlTargetExternal = urlTarget
       return null
     }

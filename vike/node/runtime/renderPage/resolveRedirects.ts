@@ -4,7 +4,7 @@ export { resolveRedirects }
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser.js'
-import { assert, assertUsage, isUriWithProtocol } from '../../../shared/utils.js'
+import { assert, assertUsage, isUrlRedirectTarget } from '../../../shared/utils.js'
 import { resolveUrlPathname } from '../../../shared/route/resolveUrlPathname.js'
 import { assertRouteString, resolveRouteString } from '../../../shared/route/resolveRouteString.js'
 import pc from '@brillout/picocolors'
@@ -24,10 +24,8 @@ function resolveRedirects(redirects: Record<string, string>, urlPathname: string
 function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPathname: string): null | string {
   assertRouteString(urlSource, `${configSrc} Invalid`)
   assertUsage(
-    urlTarget.startsWith('/') ||
-      // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
-      isUriWithProtocol(urlTarget) ||
-      urlTarget === '*',
+    // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
+    isUrlRedirectTarget(urlTarget) || urlTarget === '*',
     `${configSrc} Invalid redirection target ${pc.code(urlTarget)}: it should start with ${pc.code(
       '/'
     )}, a valid protocol (${pc.code('https://')}, ${pc.code('http://')}, ${pc.code('mailto:')}, ${pc.code(
@@ -39,7 +37,7 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
   if (!match) return null
   const urlResolved = resolveUrlPathname(urlTarget, match.routeParams)
   if (urlResolved === urlPathname) return null
-  assert(urlResolved.startsWith('/') || isUriWithProtocol(urlResolved))
+  assert(isUrlRedirectTarget(urlResolved))
   return urlResolved
 }
 
