@@ -21,7 +21,7 @@ function isParsable(url: string): boolean {
   return isUrlWithProtocol(url) || isUrlPathname(url)
 }
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): asserts url is UrlPathnameAbsolute {
-  assertUsage(isUrlPathnameAbsolute(url), `${errPrefix} is ${pc.cyan(url)} but it should be /${pc.cyan(url)} instead`)
+  assertUsage(isUrlPathnameAbsolute(url), `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`)
 }
 
 function isUrlPathname(url: string): url is UrlPathnameRelative | UrlPathnameAbsolute {

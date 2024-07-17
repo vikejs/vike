@@ -18,6 +18,7 @@ import {
   assert,
   assertInfo,
   assertUsage,
+  assertUsageUrlPathnameAbsolute,
   assertWarning,
   checkType,
   hasProp,
@@ -53,7 +54,7 @@ type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abor
  */
 function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
-  assertUsageUrlAbort(url, abortCaller, false)
+  assertUsageUrlRedirectTarget(url, getErrPrefix(abortCaller))
   const args = [JSON.stringify(url)]
   if (!statusCode) {
     statusCode = 302
@@ -125,7 +126,7 @@ function render_(
   }
   if (typeof urlOrStatusCode === 'string') {
     const url = urlOrStatusCode
-    assertUsageUrlAbort(url, abortCaller, true)
+    assertUsageUrlPathnameAbsolute(url, getErrPrefix(abortCaller))
     objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
@@ -293,15 +294,18 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
   )
 }
 
-function assertUsageUrlAbort(url: string, abortCaller: AbortCaller, forbidExternal: boolean) {
+function getErrPrefix(abortCaller: AbortCaller): string {
+  return `URL passed to ${pc.code(abortCaller)}`
+}
+
+function assertUsageUrlRedirectTarget(url: string, errPrefix: string) {
   assertUsage(
-    url.startsWith('/') || (!forbidExternal && isUriWithProtocol(url)),
+    url.startsWith('/') || isUriWithProtocol(url),
     [
-      `Invalid URL ${pc.cyan(url)} passed to ${pc.cyan(abortCaller)}:`,
-      `the URL should start with ${pc.cyan('/')}`,
-      !forbidExternal && `or a valid protocol (${pc.cyan('https:')}, ${pc.cyan('ipfs:')}, ...)`
-    ]
-      .filter(Boolean)
-      .join(' ')
+      errPrefix,
+      `is ${pc.bold(url)}`,
+      `but it should start with ${pc.bold('/')}`,
+      `or a valid protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
+    ].join(' ')
   )
 }
