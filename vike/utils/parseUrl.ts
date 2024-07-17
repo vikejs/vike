@@ -6,7 +6,7 @@
 
 export { parseUrl }
 export { isParsable }
-export { assertUsageUrl }
+export { assertUsageUrlPathnameAbsolute }
 export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
@@ -20,15 +20,8 @@ function isParsable(url: string): boolean {
   // parseUrl() works with these URLs
   return isUrlWithProtocol(url) || isUrlPathname(url)
 }
-function assertUsageUrl(url: unknown, errPrefix: string): asserts url is string {
-  assert(errPrefix.includes(' but '))
-  assertUsage(typeof url === 'string', `${errPrefix} should be a string`)
-  if (isParsable(url)) return
-  if (!url.startsWith('/') && !url.includes(':')) {
-    assertUsage(false, `${errPrefix} is ${pc.cyan(url)} but it should be /${pc.cyan(url)} instead`)
-  } else {
-    assertUsage(false, `${errPrefix} isn't a valid URL`)
-  }
+function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): asserts url is UrlPathnameAbsolute {
+  assertUsage(isUrlPathnameAbsolute(url), `${errPrefix} is ${pc.cyan(url)} but it should be /${pc.cyan(url)} instead`)
 }
 
 function isUrlPathname(url: string): url is UrlPathnameRelative | UrlPathnameAbsolute {
