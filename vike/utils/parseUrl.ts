@@ -62,7 +62,11 @@ function parseUrl(
   hash: string
   hashOriginal: null | string
 } {
-  assert(isParsable(url))
+  assert(
+    isParsable(url),
+    // Eventually remove debug log once URL handling is stable
+    { url }
+  )
   assert(baseServer.startsWith('/'))
 
   // Hash
