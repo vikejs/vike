@@ -8,7 +8,7 @@ import {
   hasProp,
   objectAssign,
   getProjectError,
-  serverSideRouteTo,
+  redirectHard,
   executeHook,
   isObject,
   getGlobalObject
@@ -278,7 +278,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
 
     // Static hosts + page doesn't exist
     if (!isCorrect && response.status === 404) {
-      serverSideRouteTo(pageContext.urlOriginal)
+      redirectHard(pageContext.urlOriginal)
       return { is404ServerSideRouted: true }
     }
 

@@ -7,7 +7,7 @@ import {
   getCurrentUrl,
   isSameErrorMessage,
   objectAssign,
-  serverSideRouteTo,
+  redirectHard,
   getGlobalObject,
   executeHook,
   hasProp,
@@ -78,7 +78,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
   if (globalObject.clientRoutingIsDisabled) {
-    serverSideRouteTo(urlOriginal)
+    redirectHard(urlOriginal)
     return
   }
 
@@ -140,7 +140,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         if (isRenderOutdated()) return
       }
       if (!isClientRoutable) {
-        serverSideRouteTo(urlOriginal)
+        redirectHard(urlOriginal)
         return
       }
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
@@ -238,7 +238,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
            - We risk running into an infinite loop of reloads which would overload the server.
            - An infinite reloading page is a even worse UX than a blank page.
-        serverSideRouteTo(urlOriginal)
+        redirectHard(urlOriginal)
         */
         console.error(err)
       }
@@ -291,7 +291,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           const urlRedirect = pageContextAbort._urlRedirect.url
           if (!urlRedirect.startsWith('/')) {
             // External redirection
-            serverSideRouteTo(urlRedirect)
+            redirectHard(urlRedirect)
             return
           } else {
             await renderPageClientSide({
@@ -473,7 +473,7 @@ function handleErrorFetchingStaticAssets(
     disableClientRouting(err, true)
   }
 
-  serverSideRouteTo(pageContext.urlOriginal)
+  redirectHard(pageContext.urlOriginal)
 
   return true
 }
