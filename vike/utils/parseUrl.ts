@@ -17,7 +17,7 @@ import { assert, assertUsage } from './assert.js'
 import pc from '@brillout/picocolors'
 
 function isParsable(url: string): boolean {
-  // `parseUrl()` works with these URLs
+  // parseUrl() works with these URLs
   return (
     isUrlWithProtocol(url) ||
     url.startsWith('/') ||
