@@ -32,12 +32,7 @@ function assertUsageUrl(url: unknown, errPrefix: string): asserts url is string 
   assertUsage(typeof url === 'string', `${errPrefix} should be a string`)
   if (isParsable(url)) return
   if (!url.startsWith('/') && !url.includes(':')) {
-    assertUsage(
-      false,
-      `${errPrefix} is ${pc.cyan(url)} and it should be /${pc.cyan(
-        url
-      )} instead (URL pathnames should start with a leading slash)`
-    )
+    assertUsage(false, `${errPrefix} is ${pc.cyan(url)} but it should be /${pc.cyan(url)} instead`)
   } else {
     assertUsage(false, `${errPrefix} isn't a valid URL`)
   }
