@@ -475,9 +475,9 @@ function getRequestId(): number {
 }
 
 function isIgnoredUrl(urlOriginal: string): boolean {
-  const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
+  const isViteRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
   assertWarning(
-    !isViteClientRequest,
+    !isViteRequest,
     `The vike middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* Vike's middleware, see https://vike.dev/renderPage`,
     { onlyOnce: true }
   )
@@ -485,7 +485,7 @@ function isIgnoredUrl(urlOriginal: string): boolean {
     urlOriginal.endsWith('/__vite_ping') ||
     urlOriginal.endsWith('/favicon.ico') ||
     !isParsable(urlOriginal) ||
-    isViteClientRequest
+    isViteRequest
   )
 }
 function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
