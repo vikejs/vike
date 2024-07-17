@@ -28,11 +28,11 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
       // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
       isUriWithProtocol(urlTarget) ||
       urlTarget === '*',
-    `${configSrc} Invalid redirection target URL ${pc.cyan(urlTarget)}: the target URL should start with ${pc.cyan(
+    `${configSrc} Invalid redirection target ${pc.code(urlTarget)}: it should start with ${pc.code(
       '/'
-    )}, a valid protocol (${pc.cyan('https:')}, ${pc.cyan('http:')}, ${pc.cyan('mailto:')}, ${pc.cyan(
+    )}, a valid protocol (${pc.code('https://')}, ${pc.code('http://')}, ${pc.code('mailto:')}, ${pc.code(
       'ipfs:'
-    )}, ${pc.cyan('magnet:')}, ...), or be ${pc.cyan('*')}`
+    )}, ${pc.code('magnet:')}, ...), or be ${pc.code('*')}`
   )
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
@@ -50,9 +50,9 @@ function assertParams(urlSource: string, urlTarget: string) {
       const segments = urlSource.split('/')
       assertUsage(
         segments.includes(routeSegment),
-        `${configSrc} The redirection source URL ${pc.cyan(urlSource)} is missing the URL parameter ${pc.cyan(
+        `${configSrc} The redirection source URL ${pc.code(urlSource)} is missing the URL parameter ${pc.code(
           routeSegment
-        )} used by the redirection target URL ${pc.cyan(urlTarget)}`
+        )} used by the redirection target URL ${pc.code(urlTarget)}`
       )
     }
   })
