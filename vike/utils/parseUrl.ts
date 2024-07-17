@@ -23,7 +23,7 @@ function isParsable(url: string): boolean {
 }
 
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): asserts url is UrlPathnameAbsolute {
-  assertUsage(isUrlPathnameAbsolute(url), `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`)
+  assertUsage(url.startsWith('/'), `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`)
 }
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string) {
   assertUsage(

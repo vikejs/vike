@@ -1,5 +1,3 @@
-export { redirectHard }
-
-function redirectHard(url: string) {
+export function redirectHard(url: string) {
   window.location.href = url
 }
