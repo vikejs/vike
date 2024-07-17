@@ -289,7 +289,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // throw redirect('/some-url')
         if (pageContextAbort._urlRedirect) {
           const urlRedirect = pageContextAbort._urlRedirect.url
-          if (urlRedirect.startsWith('http')) {
+          if (!urlRedirect.startsWith('/')) {
             // External redirection
             window.location.href = urlRedirect
             return
