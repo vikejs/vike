@@ -5,6 +5,7 @@ import {
   assert,
   assertClientRouting,
   assertUsage,
+  assertUsageUrlPathname,
   assertWarning,
   checkIfClientRouting,
   getGlobalObject,
@@ -23,6 +24,7 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
+import pc from '@brillout/picocolors'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
@@ -52,8 +54,9 @@ async function prefetch(url: string): Promise<void> {
   assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
     showStackTrace: true
   })
-  const errPrefix = `Cannot prefetch URL ${url} because it` as const
-  assertUsage(!isExternalLink(url), `${errPrefix} lives on another domain`, { showStackTrace: true })
+  const errPrefix = '[prefetch(url)] url' as const
+  assertUsageUrlPathname(url, errPrefix)
+  assert(!isExternalLink(url))
 
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
@@ -69,7 +72,7 @@ async function prefetch(url: string): Promise<void> {
   const pageId = pageContextFromRoute._pageId
 
   if (!pageId) {
-    assertWarning(false, `${errPrefix} ${noRouteMatch}`, {
+    assertWarning(false, `${errPrefix} ${pc.string(url)} ${noRouteMatch}`, {
       showStackTrace: true,
       onlyOnce: false
     })
