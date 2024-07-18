@@ -92,10 +92,11 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   // Base URL
   let { pathname, hasBaseServer } = removeBaseServer(pathnameAbsoluteWithBase, baseServer)
   pathname = decodePathname(pathname)
+  pathnameAbsoluteWithBase = decodePathname(pathnameAbsoluteWithBase)
 
   // More props
   const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
-  const hrefOriginal = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
+  const hrefOriginal = createUrlFromComponents(origin, pathnameAbsoluteWithBase, searchOriginal, hashOriginal)
   const host = !origin ? null : origin.slice(protocol!.length)
 
   assert(pathname.startsWith('/'))
