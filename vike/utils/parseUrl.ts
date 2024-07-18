@@ -8,11 +8,11 @@ export { parseUrl }
 export { isParsable }
 export { assertUsageUrlPathnameAbsolute }
 export { assertUsageUrlRedirectTarget }
+export { isUri }
+export { isUrlRedirectTarget }
 export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
-export { isUri }
-export { isUrlRedirectTarget }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
@@ -20,20 +20,20 @@ import pc from '@brillout/picocolors'
 
 function isParsable(url: string): boolean {
   // parseUrl() works with these URLs
-  return isUrlWithProtocol(url) || isUrlPathname(url)
+  return isUrlWithProtocol(url) || url.startsWith('/') || isUrlPathnameRelative(url)
 }
 
-function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string) {
+function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
   assertUsageUrl(url, errPrefix, { allowRelative: true })
 }
-function assertUsageUrlRedirectTarget(url: string, errPrefix: string) {
+function assertUsageUrlRedirectTarget(url: string, errPrefix: string): void {
   assertUsageUrl(url, errPrefix, { isRedirectTarget: true })
 }
 function assertUsageUrl(
   url: string,
   errPrefix: string,
   { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true } = {}
-): asserts url is UrlPathnameAbsolute {
+) {
   if (url.startsWith('/')) return
   let errMsg = `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`
   if (isRedirectTarget) {
@@ -47,15 +47,7 @@ function assertUsageUrl(
   assertUsage(false, errMsg)
 }
 
-function isUrlPathname(url: string): url is UrlPathnameRelative | UrlPathnameAbsolute {
-  return isUrlPathnameAbsolute(url) || isUrlPathnameRelative(url)
-}
-type UrlPathnameAbsolute = `/${string}`
-function isUrlPathnameAbsolute(url: string): url is UrlPathnameAbsolute {
-  return url.startsWith('/')
-}
-type UrlPathnameRelative = '' | `${'.' | '?' | '#'}${string}`
-function isUrlPathnameRelative(url: string): url is UrlPathnameRelative {
+function isUrlPathnameRelative(url: string) {
   return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
 }
 
