@@ -2,6 +2,8 @@ import { RepoLink, Link } from '@brillout/docpress'
 
 You can internationalize (i18n) your app by using the <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
 
+For example:
+
 ```ts
 // /renderer/+onBeforeRoute.js
 
@@ -22,7 +24,6 @@ function onBeforeRoute(pageContext) {
   }
 }
 
-// Or use a library instead of implementing your own locale retrieval mechanism
 function extractLocale(url: Url) {
   const { pathname } = url
 
