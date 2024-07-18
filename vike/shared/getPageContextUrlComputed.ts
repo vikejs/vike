@@ -27,21 +27,21 @@ import {
 type Url = {
   /** The URL protocol, e.g. `https://` in `https://example.com` */
   protocol: null | string
-  /** The URL origin, e.g. `https://example.com` of `https://example.com/product/42?details=yes#reviews` */
+  /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42?details=yes#reviews` */
   origin: null | string
-  /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
+  /** The URL pathname, e.g. `/product/42` in `https://example.com/product/42?details=yes#reviews` */
   pathname: string
-  /** URL pathname including the Base URL, e.g. `/some-base-url/product/42` of `https://example.com/some-base-url/product/42` (whereas `pageContext.urlParsed.pathname` is `/product/42`) */
+  /** URL pathname including the Base URL, e.g. `/some-base-url/product/42` in `https://example.com/some-base-url/product/42` (whereas `pageContext.urlParsed.pathname` is `/product/42`) */
   pathnameOriginal: string
   /** The URL search parameters, e.g. `{ details: 'yes' }` for `https://example.com/product/42?details=yes#reviews` */
   search: Record<string, string>
   /** The URL search parameters array, e.g. `{ fruit: ['apple', 'orange'] }` for `https://example.com?fruit=apple&fruit=orange` **/
   searchAll: Record<string, string[]>
-  /** The URL search parameterer string, e.g. `?details=yes` of `https://example.com/product/42?details=yes#reviews` */
+  /** The URL search parameterer string, e.g. `?details=yes` in `https://example.com/product/42?details=yes#reviews` */
   searchOriginal: null | string
-  /** The URL hash, e.g. `reviews` of `https://example.com/product/42?details=yes#reviews` */
+  /** The URL hash, e.g. `reviews` in `https://example.com/product/42?details=yes#reviews` */
   hash: string
-  /** The URL hash string, e.g. `#reviews` of `https://example.com/product/42?details=yes#reviews` */
+  /** The URL hash string, e.g. `#reviews` in `https://example.com/product/42?details=yes#reviews` */
   hashOriginal: null | string
 
   // TODO/v1-release: remove
