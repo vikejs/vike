@@ -24,10 +24,8 @@ import pc from '@brillout/picocolors'
 
 // JSDocs copied from https://vike.dev/pageContext
 type UrlPublic = {
-  /** The full URL. (Without Base URL.) */
+  /** The full URL. */
   href: string
-  /** The full URL. (With Base URL.) */
-  hrefWithBase: string
   /** The URL protocol, e.g. `https://` in `https://example.com` */
   protocol: null | string
   /** The URL host, e.g. `example.com` in `https://example.com/product` */
@@ -96,13 +94,11 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
 
   // More props
   const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
-  const hrefWithBase = createUrlFromComponents(origin, pathnameAbsoluteWithBase, searchOriginal, hashOriginal)
   const host = !origin ? null : origin.slice(protocol!.length)
 
   assert(pathname.startsWith('/'))
   return {
     href,
-    hrefWithBase,
     protocol,
     host,
     origin,
