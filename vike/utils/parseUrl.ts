@@ -5,9 +5,9 @@
 // Unit tests at ./parseUrl.spec.ts
 
 export { parseUrl }
-export { isParsable }
 export { assertUsageUrlPathnameAbsolute }
 export { assertUsageUrlRedirectTarget }
+export { isUrl }
 export { isUri }
 export { isUrlRedirectTarget }
 export { isBaseServer }
@@ -33,7 +33,7 @@ function parseUrl(
   hashOriginal: null | string
 } {
   assert(
-    isParsable(url),
+    isUrl(url),
     // Eventually remove debug log once URL handling is stable
     { url }
   )
@@ -262,7 +262,7 @@ function createUrlFromComponents(
   return urlRecreated
 }
 
-function isParsable(url: string): boolean {
+function isUrl(url: string): boolean {
   // parseUrl() works with these URLs
   return isUrlWithProtocol(url) || url.startsWith('/') || isUrlPathnameRelative(url)
 }

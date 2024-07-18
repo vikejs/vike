@@ -13,7 +13,7 @@ import {
   assert,
   hasProp,
   objectAssign,
-  isParsable,
+  isUrl,
   parseUrl,
   assertEnv,
   assertWarning,
@@ -482,10 +482,7 @@ function isIgnoredUrl(urlOriginal: string): boolean {
     { onlyOnce: true }
   )
   return (
-    urlOriginal.endsWith('/__vite_ping') ||
-    urlOriginal.endsWith('/favicon.ico') ||
-    !isParsable(urlOriginal) ||
-    isViteRequest
+    urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isUrl(urlOriginal) || isViteRequest
   )
 }
 function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
@@ -518,7 +515,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
     const urlTarget = resolveRedirects(redirects, urlPathname)
     if (urlTarget === null) return null
-    if (!isParsable(urlTarget)) {
+    if (!isUrl(urlTarget)) {
       // E.g. `urlTarget === 'mailto:some@example.com'`
       assert(isUri(urlTarget))
       urlTargetExternal = urlTarget

@@ -1,7 +1,7 @@
 export { skipLink }
 
 import { getBaseServer } from './getBaseServer.js'
-import { assert, parseUrl, isBaseServer, isParsable, isExternalLink } from './utils.js'
+import { assert, parseUrl, isBaseServer, isUrl, isExternalLink } from './utils.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
@@ -14,7 +14,7 @@ function skipLink(linkTag: HTMLElement): boolean {
   if (!hasBaseServer(url)) {
     return true
   }
-  if (!isParsable(url)) {
+  if (!isUrl(url)) {
     return true
   }
   // Purposely last because disableAutomaticLinkInterception will be removed in the major release
