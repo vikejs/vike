@@ -28,9 +28,7 @@ function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPat
     isUrlRedirectTarget(urlTarget) || urlTarget === '*',
     `${configSrc} Invalid redirection target ${pc.code(urlTarget)}: it should start with ${pc.code(
       '/'
-    )}, a valid protocol (${pc.code('https://')}, ${pc.code('http://')}, ${pc.code('mailto:')}, ${pc.code(
-      'ipfs:'
-    )}, ${pc.code('magnet:')}, ...), or be ${pc.code('*')}`
+    )} or a protocol (${pc.code('http://')}, ${pc.code('mailto:')}, ...), or be ${pc.code('*')}`
   )
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
