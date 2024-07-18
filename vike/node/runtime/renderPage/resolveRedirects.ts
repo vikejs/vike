@@ -41,9 +41,9 @@ function assertParams(urlSource: string, urlTarget: string) {
       const segments = urlSource.split('/')
       assertUsage(
         segments.includes(routeSegment),
-        `${configSrc} The redirection source URL ${pc.code(urlSource)} is missing the URL parameter ${pc.code(
+        `${configSrc} The redirection source URL ${pc.string(urlSource)} is missing the URL parameter ${pc.string(
           routeSegment
-        )} used by the redirection target URL ${pc.code(urlTarget)}`
+        )} used by the redirection target URL ${pc.string(urlTarget)}`
       )
     }
   })

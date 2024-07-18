@@ -326,13 +326,13 @@ function assertUsageUrl(
   { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true | 'unresolved' } = {}
 ) {
   if (url.startsWith('/')) return
-  let errMsg = `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`
+  let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
   if (isRedirectTarget) {
     if (isUrlRedirectTarget(url)) return
-    errMsg += ` or a protocol (${pc.code('http://')}, ${pc.code('mailto:')}, ...)`
+    errMsg += ` or a protocol (${pc.string('http://')}, ${pc.string('mailto:')}, ...)`
     if (isRedirectTarget === 'unresolved') {
       if (url === '*') return
-      errMsg += `, or be ${pc.code('*')}`
+      errMsg += `, or be ${pc.string('*')}`
     }
   }
   if (allowRelative) {
