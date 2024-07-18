@@ -111,12 +111,6 @@ type PageContextUrlSource = {
   _urlHandler: null | ((url: string) => string)
 }
 function getUrlParsed(pageContext: PageContextUrlSource) {
-  // We need a url handler function because the onBeforeRoute() hook may set pageContext.urlLogical (typically for i18n)
-  let urlHandler = pageContext._urlHandler
-  if (!urlHandler) {
-    urlHandler = (url: string) => url
-  }
-
   // Example of i18n app using `throw render()`:
   //  1. User goes to '/fr-FR/admin'.
   //  2. The first onBeforeRoute() call accesses pageContext.urlPathname (its value is '/fr-FR/admin': the pathname of pageContext.urlOriginal, since both pageContext.urlLogical and pageContext._urlRewrite are undefined) and sets pageContext.urlLogical to '/admin'.
@@ -125,13 +119,28 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   //  5. The second onBeforeRoute() call accesses pageContext.urlPathname (its value is '/fr-FR/login': the pathname of pageContext._urlRewrite, since pageContext.urlLogical is undefined) and sets pageContext.urlLogical to '/login'.
   //  6. The value of pageContext.urlPathname is now '/login': the pathname of `pageContext.urlLogical`. (While pageContext.urlOriginal is still '/fr-FR/admin'.)
   // Reproduction: https://github.com/vikejs/vike/discussions/1436#discussioncomment-8142023
-  let urlResolved =
+
+  // Determine logical URL
+  let urlResolved: string
+  let baseToBeRemoved: boolean
+  if (pageContext.urlLogical) {
     // Set by onBeforeRoute()
-    pageContext.urlLogical ??
+    urlResolved = pageContext.urlLogical
+    baseToBeRemoved = false
+  } else if (pageContext._urlRewrite) {
     // Set by `throw render()`
-    pageContext._urlRewrite ??
+    urlResolved = pageContext._urlRewrite
+    baseToBeRemoved = false
+  } else {
     // Set by renderPage()
-    pageContext.urlOriginal
+    urlResolved = pageContext.urlOriginal
+    baseToBeRemoved = true
+  }
+  assert(urlResolved && typeof urlResolved === 'string')
+
+  // Remove .pageContext.json
+  let urlHandler = pageContext._urlHandler
+  if (!urlHandler) urlHandler = (url: string) => url
   urlResolved = urlHandler(urlResolved)
   /*
   console.log('pageContext.urlLogical', pageContext.urlLogical)
@@ -140,10 +149,13 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   console.log()
   //*/
 
-  const baseServer = pageContext._baseServer
+  // Remove Base URL.
+  // - We assume there isn't any Base URL to the URLs set by the user at `throw render()` and onBeforeRoute()
+  //   - This makes sense because the Base URL is merely a setting: ideally the user should write code that doesn't know anything about it (so that the user can remove/add/change Base URL without having to modify any code).
+  // - pageContext.urlOriginal is the URL of the HTTP request and thus contains the Base URL.
+  const baseServer = !baseToBeRemoved ? '/' : pageContext._baseServer
 
-  assert(urlResolved && typeof urlResolved === 'string')
-  assert(baseServer.startsWith('/'))
+  // Parse URL
   return parseUrl(urlResolved, baseServer)
 }
 function urlPathnameGetter(this: PageContextUrlSource) {
