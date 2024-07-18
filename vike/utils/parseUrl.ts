@@ -11,6 +11,7 @@ export { assertUsageUrlRedirectTarget }
 export { isUrl }
 export { isUri }
 export { isUrlRedirectTarget }
+export { isUrlExternal }
 export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
@@ -272,6 +273,9 @@ function isUrlRedirectTarget(url: string): boolean {
 }
 function isUrlPathnameRelative(url: string) {
   return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
+}
+function isUrlExternal(url: string): boolean {
+  return !url.startsWith('/') && !isUrlPathnameRelative(url)
 }
 /*
 URL with protocol.

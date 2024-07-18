@@ -1,14 +1,14 @@
 export { skipLink }
 
 import { getBaseServer } from './getBaseServer.js'
-import { assert, parseUrl, isBaseServer, isUrl, isExternalLink } from './utils.js'
+import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
 
   if (url === null) return true
   if (url === '') return true
-  if (isExternalLink(url)) return true
+  if (isUrlExternal(url)) return true
   if (isNewTabLink(linkTag)) return true
   if (isHashUrl(url)) return true
   if (!hasBaseServer(url)) {

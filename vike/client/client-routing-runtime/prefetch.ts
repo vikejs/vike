@@ -8,8 +8,7 @@ import {
   assertUsageUrlPathname,
   assertWarning,
   checkIfClientRouting,
-  getGlobalObject,
-  isExternalLink
+  getGlobalObject
 } from './utils.js'
 import {
   type PageContextUserFiles,
@@ -56,7 +55,6 @@ async function prefetch(url: string): Promise<void> {
   })
   const errPrefix = '[prefetch(url)] url' as const
   assertUsageUrlPathname(url, errPrefix)
-  assert(!isExternalLink(url))
 
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
