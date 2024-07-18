@@ -83,14 +83,13 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   })
 
   // Origin + pathname
-  let { protocol, origin, pathnameAbsoluteWithBase } = getPathnameWithBase(urlWithoutHashNorSearch, baseServer)
+  const { protocol, origin, pathnameAbsoluteWithBase } = getPathnameWithBase(urlWithoutHashNorSearch, baseServer)
   const pathnameOriginal = urlWithoutHashNorSearch.slice((origin || '').length)
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
 
   // Base URL
   let { pathname, hasBaseServer } = removeBaseServer(pathnameAbsoluteWithBase, baseServer)
   pathname = decodePathname(pathname)
-  pathnameAbsoluteWithBase = decodePathname(pathnameAbsoluteWithBase)
 
   // More props
   const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
