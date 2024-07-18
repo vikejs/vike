@@ -174,6 +174,14 @@ function parseProtocol(uri: string) {
   return { protocol, uriWithoutProtocol }
 }
 function isUrlProtocol(protocol: string) {
+  // Is there an altenrative to having a blacklist?
+  // - If the blacklist becomes too big, maybe use a whitelist instead ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
+  const blacklist = [
+    // https://docs.ipfs.tech/how-to/address-ipfs-on-web
+    'ipfs://',
+    'ipns://'
+  ]
+  if (blacklist.includes(protocol)) return false
   return protocol.endsWith('://')
 }
 // Adapted from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript/14780463#14780463
@@ -307,8 +315,6 @@ We need to treat URIs differently than URLs.
  - For example, we cannot parse URIs (their structure is unknown e.g. a `magnet:` URI is completely different than a `http://` URL).
    - The protocols tauri:// file:// capacitor:// follow the same structure as http:// and https:// URLs.
      - Thus we can parse them like http:// and https:// URLs.
- - So far, checking whether the protocol ends with :// seems to be a reliable way to distinguish URIs from URLs.
-   - If it turns out to be unreliable, then use a whitelist ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
 */
 function isUri(uri: string): boolean {
   const { protocol } = parseProtocol(uri)
