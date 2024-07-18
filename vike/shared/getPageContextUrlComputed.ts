@@ -31,6 +31,8 @@ type Url = {
   hrefOriginal: null | string
   /** The URL protocol, e.g. `https://` in `https://example.com` */
   protocol: null | string
+  /** The URL host, e.g. `example.com` in `https://example.com/product` */
+  host: null | string
   /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42?details=yes#reviews` */
   origin: null | string
   /** The URL pathname, e.g. `/product/42` in `https://example.com/product/42?details=yes#reviews` */

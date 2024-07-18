@@ -27,6 +27,7 @@ function parseUrl(
   href: string
   hrefOriginal: string
   protocol: null | string
+  host: null | string
   origin: null | string
   pathname: string
   pathnameOriginal: string
@@ -80,12 +81,14 @@ function parseUrl(
 
   const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
   const hrefOriginal = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
+  const host = !origin ? null : origin.slice(protocol!.length)
 
   assert(pathname.startsWith('/'))
   return {
     href,
     hrefOriginal,
     protocol,
+    host,
     origin,
     pathname,
     pathnameOriginal: pathnameOriginal,
