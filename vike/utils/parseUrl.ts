@@ -158,8 +158,8 @@ function parseOrigin(url: string): { pathname: string; origin: null | string; pr
   } else {
     const { protocol, uriWithoutProtocol } = parseProtocol(url)
     assert(protocol)
-    const [hostname, ...rest] = uriWithoutProtocol.split('/')
-    const origin = protocol + hostname!
+    const [host, ...rest] = uriWithoutProtocol.split('/')
+    const origin = protocol + host!
     const pathname = '/' + rest.join('/')
     return { pathname, origin, protocol }
   }
