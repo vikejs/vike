@@ -255,20 +255,20 @@ function isBaseServer(baseServer: string): boolean {
 function assertUrlComponents(
   url: string,
   origin: string | null,
-  pathname: string,
+  pathnameOriginal: string,
   searchOriginal: string | null,
   hashOriginal: string | null
-) {
-  const urlRecreated = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
+): void {
+  const urlRecreated = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
   assert(url === urlRecreated)
 }
 function createUrlFromComponents(
   origin: string | null,
   pathname: string,
-  searchOriginal: string | null,
-  hashOriginal: string | null
-) {
-  const urlRecreated = `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`
+  search: string | null,
+  hash: string | null
+): string {
+  const urlRecreated = `${origin || ''}${pathname}${search || ''}${hash || ''}`
   return urlRecreated
 }
 
