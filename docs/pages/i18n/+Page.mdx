@@ -9,6 +9,7 @@ For example:
 
 export { onBeforeRoute }
 
+import { modifyUrl } from 'vike/modifyUrl'
 import type { Url } from 'vike/types'
 
 function onBeforeRoute(pageContext) {
@@ -38,8 +39,7 @@ function extractLocale(url: Url) {
   const pathnameWithoutLocale = /* ... */
 
   // Reconstruct full URL
-  const { origin, searchOriginal, hashOriginal } = url
-  const urlWithoutLocale = `${origin || ''}${pathnameWithoutLocale}${searchOriginal || ''}${hashOriginal || ''}`
+  const urlWithoutLocale = modifyUrl(url.href, { pathname: pathnameWithoutLocale })
 
   return { locale, urlWithoutLocale }
 }

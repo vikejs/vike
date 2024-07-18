@@ -116,6 +116,15 @@
       "types": "./dist/esm/shared/getPageContext.d.ts",
       "default": "./dist/esm/shared/getPageContext.js"
     },
+    "./modifyUrl": {
+      "worker": "./dist/esm/shared/modifyUrl.js",
+      "edge-light": "./dist/esm/shared/modifyUrl.js",
+      "require": "./dist/cjs/shared/modifyUrl.js",
+      "node": "./dist/esm/shared/modifyUrl.js",
+      "browser": "./dist/esm/shared/modifyUrl.js",
+      "types": "./dist/esm/shared/modifyUrl.d.ts",
+      "default": "./dist/esm/shared/modifyUrl.js"
+    },
     "./__internal": {
       "require": "./dist/cjs/__internal/index.js",
       "node": "./dist/esm/__internal/index.js",
@@ -182,6 +191,9 @@
       ],
       "getPageContext": [
         "./dist/esm/shared/getPageContext.d.ts"
+      ],
+      "modifyUrl": [
+        "./dist/esm/shared/modifyUrl.d.ts"
       ],
       "__internal": [
         "./dist/esm/__internal/index.d.ts"
