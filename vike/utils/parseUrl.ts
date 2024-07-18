@@ -38,7 +38,7 @@ function assertUsageUrl(
   let errMsg = `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`
   if (isRedirectTarget) {
     if (isUrlRedirectTarget(url)) return
-    errMsg += ` or a valid protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
+    errMsg += ` or a protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
   }
   if (allowRelative) {
     if (isUrlPathnameRelative(url)) return
