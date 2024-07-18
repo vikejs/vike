@@ -33,7 +33,7 @@ type Url = {
   protocol: null | string
   /** The URL host, e.g. `example.com` in `https://example.com/product` */
   host: null | string
-  /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42?details=yes#reviews` */
+  /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42` */
   origin: null | string
   /** The URL pathname, e.g. `/product/42` in `https://example.com/product/42?details=yes#reviews` */
   pathname: string
@@ -182,9 +182,7 @@ function urlGetter(this: PageContextUrlSource) {
   return urlPathnameGetter.call(this)
 }
 function urlParsedGetter(this: PageContextUrlSource) {
-  const urlParsedOriginal = getUrlParsed(this)
-  const { origin, pathname, pathnameOriginal, search, searchAll, searchOriginal, hash, hashOriginal } =
-    urlParsedOriginal
+  const urlParsed = getUrlParsed(this)
 
   const hashIsAvailable = isBrowser()
   const warnHashNotAvailable = (prop: HashProps) => {
@@ -195,20 +193,15 @@ function urlParsedGetter(this: PageContextUrlSource) {
     )
   }
 
-  const urlParsed: Url = {
-    origin,
-    pathname,
-    pathnameOriginal,
-    search,
-    searchAll,
-    searchOriginal,
+  const urlParsedEnhanced: Url = {
+    ...urlParsed,
     get hash() {
       warnHashNotAvailable('hash')
-      return hash
+      return urlParsed.hash
     },
     get hashOriginal() {
       warnHashNotAvailable('hashOriginal')
-      return hashOriginal
+      return urlParsed.hashOriginal
     },
     get hashString() {
       assertWarning(false, 'pageContext.urlParsed.hashString has been renamed to pageContext.urlParsed.hashOriginal', {
@@ -216,7 +209,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
         showStackTrace: true
       })
       warnHashNotAvailable('hashString')
-      return hashOriginal
+      return urlParsed.hashOriginal
     },
     get searchString() {
       assertWarning(
@@ -224,18 +217,18 @@ function urlParsedGetter(this: PageContextUrlSource) {
         'pageContext.urlParsed.searchString has been renamed to pageContext.urlParsed.searchOriginal',
         { onlyOnce: true, showStackTrace: true }
       )
-      return searchOriginal
+      return urlParsed.searchOriginal
     }
   }
 
-  changeEnumerable(urlParsed, 'hashString', false)
-  changeEnumerable(urlParsed, 'searchString', false)
+  changeEnumerable(urlParsedEnhanced, 'hashString', false)
+  changeEnumerable(urlParsedEnhanced, 'searchString', false)
   if (!hashIsAvailable) {
-    changeEnumerable(urlParsed, 'hash', false)
-    changeEnumerable(urlParsed, 'hashOriginal', false)
+    changeEnumerable(urlParsedEnhanced, 'hash', false)
+    changeEnumerable(urlParsedEnhanced, 'hashOriginal', false)
   }
 
-  return urlParsed
+  return urlParsedEnhanced
 }
 
 function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlClient) {
