@@ -4,13 +4,13 @@ export { resolveRedirects }
 export { resolveRouteStringRedirect }
 
 import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser.js'
-import { assert, assertUsage, isUrlRedirectTarget } from '../../../shared/utils.js'
+import { assert, assertUsage, assertUsageUrlRedirectTarget, isUrlRedirectTarget } from '../../../shared/utils.js'
 import { resolveUrlPathname } from '../../../shared/route/resolveUrlPathname.js'
 import { assertRouteString, resolveRouteString } from '../../../shared/route/resolveRouteString.js'
 import pc from '@brillout/picocolors'
 assertIsNotBrowser() // Don't bloat the client
 
-// TODO/v1-release: update
+// TODO/next-major-release: update
 const configSrc = '[vite.config.js > vike({ redirects })]'
 
 function resolveRedirects(redirects: Record<string, string>, urlPathname: string): null | string {
@@ -23,13 +23,8 @@ function resolveRedirects(redirects: Record<string, string>, urlPathname: string
 
 function resolveRouteStringRedirect(urlSource: string, urlTarget: string, urlPathname: string): null | string {
   assertRouteString(urlSource, `${configSrc} Invalid`)
-  assertUsage(
-    // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
-    isUrlRedirectTarget(urlTarget) || urlTarget === '*',
-    `${configSrc} Invalid redirection target ${pc.code(urlTarget)}: it should start with ${pc.code(
-      '/'
-    )} or a protocol (${pc.code('http://')}, ${pc.code('mailto:')}, ...), or be ${pc.code('*')}`
-  )
+  // Is allowing any protocol a safety issue? https://github.com/vikejs/vike/pull/1292#issuecomment-1828043917
+  assertUsageUrlRedirectTarget(urlTarget, `${configSrc} The URL redirection target`, true)
   assertParams(urlSource, urlTarget)
   const match = resolveRouteString(urlSource, urlPathname)
   if (!match) return null

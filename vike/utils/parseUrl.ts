@@ -313,23 +313,27 @@ function isUri(uri: string): boolean {
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
   assertUsageUrl(url, errPrefix, { allowRelative: true })
 }
-function assertUsageUrlRedirectTarget(url: string, errPrefix: string): void {
-  assertUsageUrl(url, errPrefix, { isRedirectTarget: true })
+function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolved?: true): void {
+  assertUsageUrl(url, errPrefix, { isRedirectTarget: isUnresolved ? 'unresolved' : true })
 }
 function assertUsageUrl(
   url: string,
   errPrefix: string,
-  { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true } = {}
+  { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true | 'unresolved' } = {}
 ) {
   if (url.startsWith('/')) return
   let errMsg = `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`
   if (isRedirectTarget) {
     if (isUrlRedirectTarget(url)) return
-    errMsg += ` or a protocol (${pc.bold('http://')}, ${pc.bold('mailto:')}, ...)`
+    errMsg += ` or a protocol (${pc.code('http://')}, ${pc.code('mailto:')}, ...)`
+    if (isRedirectTarget === 'unresolved') {
+      if (url === '*') return
+      errMsg += `, or be ${pc.code('*')}`
+    }
   }
   if (allowRelative) {
     if (isUrlPathnameRelative(url)) return
-    errMsg += ' or be a relative URL'
+    errMsg += ', or be a relative URL'
   }
   assertUsage(false, errMsg)
 }

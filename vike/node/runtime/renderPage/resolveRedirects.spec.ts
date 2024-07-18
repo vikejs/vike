@@ -31,7 +31,7 @@ describe('resolveRouteStringRedirect', () => {
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', 'b', '/'),
-      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] Invalid redirection target b: it should start with / or a protocol (http://, mailto:, ...), or be *'
+      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] The URL redirection target is b but it should start with / or a protocol (http://, mailto:, ...), or be *'
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', '/@i', '/'),
