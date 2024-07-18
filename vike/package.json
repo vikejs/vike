@@ -180,6 +180,9 @@
       "abort": [
         "./dist/esm/shared/abort.d.ts"
       ],
+      "getPageContext": [
+        "./dist/esm/shared/getPageContext.d.ts"
+      ],
       "__internal": [
         "./dist/esm/__internal/index.d.ts"
       ],
