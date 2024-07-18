@@ -1014,6 +1014,7 @@ describe('parseUrl', () => {
   })
 
   it('relative paths', () => {
+    // Shouldn't this resolve to `{ pathname: '/b1/b2' }`? I don't remember why I used to be fine with following test.
     expect(parseUrl('.', '/b1/b2/')).toMatchInlineSnapshot(`
       {
         "hasBaseServer": true,
