@@ -85,20 +85,15 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   })
 
   // Origin + pathname
-  const { protocol, origin, pathnameWithBase } = getPathnameWithBase(urlWithoutHashNorSearch, baseServer)
-  assert(origin === null || origin === decodeSafe(origin)) // AFAICT decoding the origin is useless
-  assert(pathnameWithBase.startsWith('/'))
-  assert(origin === null || url.startsWith(origin))
-
-  // `pathnameOriginal`
+  let { protocol, origin, pathnameAbsoluteWithBase } = getPathnameWithBase(urlWithoutHashNorSearch, baseServer)
   const pathnameOriginal = urlWithoutHashNorSearch.slice((origin || '').length)
-
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
 
   // Base URL
-  let { pathname, hasBaseServer } = analyzeBaseServer(pathnameWithBase, baseServer)
+  let { pathname, hasBaseServer } = removeBaseServer(pathnameAbsoluteWithBase, baseServer)
   pathname = decodePathname(pathname)
 
+  // More props
   const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
   const hrefOriginal = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
   const host = !origin ? null : origin.slice(protocol!.length)
@@ -140,7 +135,7 @@ function decodePathname(urlPathname: string) {
 function getPathnameWithBase(
   url: string,
   baseServer: string
-): { origin: null | string; pathnameWithBase: string; protocol: null | string } {
+): { origin: null | string; pathnameAbsoluteWithBase: string; protocol: null | string } {
   // Search and hash already extracted
   assert(!url.includes('?') && !url.includes('#'))
 
@@ -148,14 +143,14 @@ function getPathnameWithBase(
   {
     const { protocol, origin, pathname } = parseOrigin(url)
     if (origin) {
-      return { protocol, origin, pathnameWithBase: pathname }
+      return { protocol, origin, pathnameAbsoluteWithBase: pathname }
     }
     assert(pathname === url)
   }
 
   // url doesn't have origin
   if (url.startsWith('/')) {
-    return { protocol: null, origin: null, pathnameWithBase: url }
+    return { protocol: null, origin: null, pathnameAbsoluteWithBase: url }
   } else {
     // url is a relative path
 
@@ -171,8 +166,8 @@ function getPathnameWithBase(
       base = baseServer
     }
 
-    const pathnameWithBase = resolveUrlPathnameRelative(url, base)
-    return { protocol: null, origin: null, pathnameWithBase: pathnameWithBase }
+    const pathnameAbsoluteWithBase = resolveUrlPathnameRelative(url, base)
+    return { protocol: null, origin: null, pathnameAbsoluteWithBase: pathnameAbsoluteWithBase }
   }
 }
 function parseOrigin(url: string): { pathname: string; origin: null | string; protocol: null | string } {
@@ -244,20 +239,21 @@ function resolveUrlPathnameRelative(pathnameRelative: string, base: string) {
   return pathnameAbsolute
 }
 
-function analyzeBaseServer(pathnameWithBase: string, baseServer: string): { pathname: string; hasBaseServer: boolean } {
-  assert(pathnameWithBase.startsWith('/'))
-  assert(!pathnameWithBase.includes('?'))
-  assert(!pathnameWithBase.includes('#'))
+function removeBaseServer(
+  pathnameAbsoluteWithBase: string,
+  baseServer: string
+): { pathname: string; hasBaseServer: boolean } {
+  assert(pathnameAbsoluteWithBase.startsWith('/'))
   assert(isBaseServer(baseServer))
 
   // Mutable
-  let urlPathname = pathnameWithBase
+  let urlPathname = pathnameAbsoluteWithBase
 
   assert(urlPathname.startsWith('/'))
   assert(baseServer.startsWith('/'))
 
   if (baseServer === '/') {
-    const pathname = pathnameWithBase
+    const pathname = pathnameAbsoluteWithBase
     return { pathname, hasBaseServer: true }
   }
 
@@ -269,7 +265,7 @@ function analyzeBaseServer(pathnameWithBase: string, baseServer: string): { path
   }
 
   if (!urlPathname.startsWith(baseServerNormalized)) {
-    const pathname = pathnameWithBase
+    const pathname = pathnameAbsoluteWithBase
     return { pathname, hasBaseServer: false }
   }
   assert(urlPathname.startsWith('/') || urlPathname.startsWith('http'))
