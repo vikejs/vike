@@ -18,39 +18,6 @@ import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
 import pc from '@brillout/picocolors'
 
-function isParsable(url: string): boolean {
-  // parseUrl() works with these URLs
-  return isUrlWithProtocol(url) || url.startsWith('/') || isUrlPathnameRelative(url)
-}
-
-function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
-  assertUsageUrl(url, errPrefix, { allowRelative: true })
-}
-function assertUsageUrlRedirectTarget(url: string, errPrefix: string): void {
-  assertUsageUrl(url, errPrefix, { isRedirectTarget: true })
-}
-function assertUsageUrl(
-  url: string,
-  errPrefix: string,
-  { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true } = {}
-) {
-  if (url.startsWith('/')) return
-  let errMsg = `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`
-  if (isRedirectTarget) {
-    if (isUrlRedirectTarget(url)) return
-    errMsg += ` or a protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
-  }
-  if (allowRelative) {
-    if (isUrlPathnameRelative(url)) return
-    errMsg += ' or be a relative URL'
-  }
-  assertUsage(false, errMsg)
-}
-
-function isUrlPathnameRelative(url: string) {
-  return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
-}
-
 function parseUrl(
   url: string,
   baseServer: string
@@ -171,7 +138,6 @@ function getPathname(url: string, baseServer: string): { origin: null | string; 
     return { origin: null, pathname }
   }
 }
-
 function parseOrigin(url: string): { pathname: string; origin: null | string } {
   if (!isUrlWithProtocol(url)) {
     return { pathname: url, origin: null }
@@ -184,7 +150,30 @@ function parseOrigin(url: string): { pathname: string; origin: null | string } {
     return { origin, pathname }
   }
 }
-
+function parseProtocol(uri: string) {
+  const SEP = ':'
+  const [before, ...after] = uri.split(SEP)
+  if (
+    after.length === 0 ||
+    // https://github.com/vikejs/vike/commit/886a99ff21e86a8ca699a25cee7edc184aa058e4#r143308934
+    // https://en.wikipedia.org/wiki/List_of_URI_schemes
+    // https://www.rfc-editor.org/rfc/rfc7595
+    !/^[a-z][a-z0-9\+\-]*$/i.test(before!)
+  ) {
+    return { protocol: null, uriWithoutProtocol: uri }
+  }
+  let protocol = before! + SEP
+  let uriWithoutProtocol = after.join(SEP)
+  const SEP2 = '//'
+  if (uriWithoutProtocol.startsWith(SEP2)) {
+    protocol = protocol + SEP2
+    uriWithoutProtocol = uriWithoutProtocol.slice(SEP2.length)
+  }
+  return { protocol, uriWithoutProtocol }
+}
+function isUrlProtocol(protocol: string) {
+  return protocol.endsWith('://')
+}
 // Adapted from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript/14780463#14780463
 function resolveUrlPathnameRelative(pathnameRelative: string, base: string) {
   const stack = base.split('/')
@@ -209,21 +198,6 @@ function resolveUrlPathnameRelative(pathnameRelative: string, base: string) {
   if (!pathnameAbsolute.startsWith('/')) pathnameAbsolute = '/' + pathnameAbsolute
   return pathnameAbsolute
 }
-
-/* Not needed anymore?
-function assertUsageBaseServer(baseServer: string, usageErrorMessagePrefix: string = '') {
-  assertUsage(
-    !baseServer.startsWith('http'),
-    usageErrorMessagePrefix +
-      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vike.dev/base-url'
-  )
-  assertUsage(
-    baseServer.startsWith('/'),
-    usageErrorMessagePrefix + 'Wrong `base` value `' + baseServer + '`; `base` should start with `/`.'
-  )
-  assert(isBaseServer(baseServer))
-}
-*/
 
 function analyzeBaseServer(
   urlPathnameWithBase: string,
@@ -264,7 +238,6 @@ function analyzeBaseServer(
   assert(urlPathname.startsWith('/'))
   return { pathname: urlPathname, hasBaseServer: true }
 }
-
 function isBaseServer(baseServer: string): boolean {
   return baseServer.startsWith('/')
 }
@@ -289,10 +262,16 @@ function createUrlFromComponents(
   return urlRecreated
 }
 
+function isParsable(url: string): boolean {
+  // parseUrl() works with these URLs
+  return isUrlWithProtocol(url) || url.startsWith('/') || isUrlPathnameRelative(url)
+}
 function isUrlRedirectTarget(url: string): boolean {
   return url.startsWith('/') || isUri(url) || isUrlWithProtocol(url)
 }
-
+function isUrlPathnameRelative(url: string) {
+  return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
+}
 /**
  * URIs that aren't URLs.
  *
@@ -326,27 +305,27 @@ function isUrlWithProtocol(url: string): boolean {
   const { protocol } = parseProtocol(url)
   return !!protocol && isUrlProtocol(protocol)
 }
-function isUrlProtocol(protocol: string) {
-  return protocol.endsWith('://')
+
+function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
+  assertUsageUrl(url, errPrefix, { allowRelative: true })
 }
-function parseProtocol(uri: string) {
-  const SEP = ':'
-  const [before, ...after] = uri.split(SEP)
-  if (
-    after.length === 0 ||
-    // https://github.com/vikejs/vike/commit/886a99ff21e86a8ca699a25cee7edc184aa058e4#r143308934
-    // https://en.wikipedia.org/wiki/List_of_URI_schemes
-    // https://www.rfc-editor.org/rfc/rfc7595
-    !/^[a-z][a-z0-9\+\-]*$/i.test(before!)
-  ) {
-    return { protocol: null, uriWithoutProtocol: uri }
+function assertUsageUrlRedirectTarget(url: string, errPrefix: string): void {
+  assertUsageUrl(url, errPrefix, { isRedirectTarget: true })
+}
+function assertUsageUrl(
+  url: string,
+  errPrefix: string,
+  { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true } = {}
+) {
+  if (url.startsWith('/')) return
+  let errMsg = `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`
+  if (isRedirectTarget) {
+    if (isUrlRedirectTarget(url)) return
+    errMsg += ` or a protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
   }
-  let protocol = before! + SEP
-  let uriWithoutProtocol = after.join(SEP)
-  const SEP2 = '//'
-  if (uriWithoutProtocol.startsWith(SEP2)) {
-    protocol = protocol + SEP2
-    uriWithoutProtocol = uriWithoutProtocol.slice(SEP2.length)
+  if (allowRelative) {
+    if (isUrlPathnameRelative(url)) return
+    errMsg += ' or be a relative URL'
   }
-  return { protocol, uriWithoutProtocol }
+  assertUsage(false, errMsg)
 }
