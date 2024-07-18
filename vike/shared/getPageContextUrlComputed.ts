@@ -115,12 +115,6 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   let urlHandler = pageContext._urlHandler
   if (!urlHandler) urlHandler = (url: string) => url
   urlResolved = urlHandler(urlResolved)
-  /*
-  console.log('pageContext.urlLogical', pageContext.urlLogical)
-  console.log('pageContext._urlRewrite', pageContext._urlRewrite)
-  console.log('pageContext.urlOriginal', pageContext.urlOriginal)
-  console.log()
-  //*/
 
   // Remove Base URL.
   // - We assume there isn't any Base URL to the URLs set by the user at `throw render()` and onBeforeRoute()
