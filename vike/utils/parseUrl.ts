@@ -272,38 +272,42 @@ function isUrlRedirectTarget(url: string): boolean {
 function isUrlPathnameRelative(url: string) {
   return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
 }
-/**
- * URIs that aren't URLs.
- *
- * Real-world examples:
- *    mailto:
- *    ipfs:
- *    magnet:
- *
- * We need to treat URIs differently than URLs.
- *  - For exmaple, we cannot parse URIs (their structure is unknown e.g. a `magnet:` URI is completely different than a `http://` URL).
- *    - The protocols tauri:// file:// capacitor:// follow the same structure as http:// and https:// URLs.
- *      - Thus we can parse them like http:// and https:// URLs.
- *  - So far, checking whether the protocol ends with :// seems to be a reliable way to distinguish URIs from URLs.
- *    - If it turns out to be unreliable, then use a whitelist ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
- */
-function isUri(uri: string): boolean {
-  const { protocol } = parseProtocol(uri)
-  return !!protocol && !isUrlProtocol(uri)
-}
-/**
- * URL with protocol.
- *
- * Real-world examples:
- *    http://
- *    https://
- *    tauri://         [Tauri](https://tauri.app)
- *    file://          [Electron](https://github.com/vikejs/vike/issues/1557)
- *    capacitor://     [Capacitor](https://github.com/vikejs/vike/issues/1706)
+/*
+URL with protocol.
+
+  http://example.com
+  https://exmaple.com
+  tauri://localhost
+  file://example.com
+  capacitor://localhost/assets/chunks/chunk-DJBYDrsP.js
+
+[Tauri](https://github.com/vikejs/vike/issues/808)
+[Electron (`file://`)](https://github.com/vikejs/vike/issues/1557)
+[Capacitor](https://github.com/vikejs/vike/issues/1706)
  */
 function isUrlWithProtocol(url: string): boolean {
   const { protocol } = parseProtocol(url)
   return !!protocol && isUrlProtocol(protocol)
+}
+/*
+URIs that aren't URLs.
+
+  mailto:john@example.com
+
+  ipfs://bafybeiemxf5abjwjbikoz4mc3a3dla6ual3jsgpdr4cjr3oz3evfyavhwq/wiki/Vincent_van_Gogh.html
+
+  magnet:?xt=urn:btih:3a15e1ac49683d91b20c2ffc252ea612a6c01bd7&dn=The.Empire.Strikes.Back.1980.Remastered.1080p.BluRay.DDP.7.1.x265-EDGE2020.mkv&xl=3225443573&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://tracker.torrent.eu.org:451&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.openbittorrent.com:6969&tr=udp://tracker.tiny-vps.com:6969/announce&tr=udp://open.demonii.com:1337
+
+We need to treat URIs differently than URLs.
+ - For example, we cannot parse URIs (their structure is unknown e.g. a `magnet:` URI is completely different than a `http://` URL).
+   - The protocols tauri:// file:// capacitor:// follow the same structure as http:// and https:// URLs.
+     - Thus we can parse them like http:// and https:// URLs.
+ - So far, checking whether the protocol ends with :// seems to be a reliable way to distinguish URIs from URLs.
+   - If it turns out to be unreliable, then use a whitelist ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
+*/
+function isUri(uri: string): boolean {
+  const { protocol } = parseProtocol(uri)
+  return !!protocol && !isUrlProtocol(uri)
 }
 
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
