@@ -23,17 +23,28 @@ function isParsable(url: string): boolean {
   return isUrlWithProtocol(url) || isUrlPathname(url)
 }
 
-function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): asserts url is UrlPathnameAbsolute {
-  assertUsage(url.startsWith('/'), `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`)
+function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string) {
+  assertUsageUrl(url, errPrefix, { allowRelative: true })
 }
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string) {
-  assertUsage(
-    isUrlRedirectTarget(url),
-    [
-      `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`,
-      `or a valid protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
-    ].join(' ')
-  )
+  assertUsageUrl(url, errPrefix, { allowProtocol: true })
+}
+function assertUsageUrl(
+  url: string,
+  errPrefix: string,
+  { allowRelative, allowProtocol }: { allowRelative?: true; allowProtocol?: true } = {}
+): asserts url is UrlPathnameAbsolute {
+  if (url.startsWith('/')) return
+  let errMsg = `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`
+  if (allowProtocol) {
+    if (isUrlRedirectTarget(url)) return
+    errMsg += ` or a valid protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
+  }
+  if (allowRelative) {
+    if (isUrlPathnameRelative(url)) return
+    errMsg += ' or be a relative URL'
+  }
+  assertUsage(false, errMsg)
 }
 
 function isUrlPathname(url: string): url is UrlPathnameRelative | UrlPathnameAbsolute {
@@ -45,7 +56,7 @@ function isUrlPathnameAbsolute(url: string): url is UrlPathnameAbsolute {
 }
 type UrlPathnameRelative = '' | `${'.' | '?' | '#'}${string}`
 function isUrlPathnameRelative(url: string): url is UrlPathnameRelative {
-  return url.startsWith('.') || url.startsWith('?') || url.startsWith('#') || url === ''
+  return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
 }
 
 function parseUrl(
