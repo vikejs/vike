@@ -27,7 +27,7 @@ type UrlPublic = {
   /** The full URL. (Without Base URL.) */
   href: string
   /** The full URL. (With Base URL.) */
-  hrefOriginal: string
+  hrefWithBase: string
   /** The URL protocol, e.g. `https://` in `https://example.com` */
   protocol: null | string
   /** The URL host, e.g. `example.com` in `https://example.com/product` */
@@ -96,13 +96,13 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
 
   // More props
   const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
-  const hrefOriginal = createUrlFromComponents(origin, pathnameAbsoluteWithBase, searchOriginal, hashOriginal)
+  const hrefWithBase = createUrlFromComponents(origin, pathnameAbsoluteWithBase, searchOriginal, hashOriginal)
   const host = !origin ? null : origin.slice(protocol!.length)
 
   assert(pathname.startsWith('/'))
   return {
     href,
-    hrefOriginal,
+    hrefWithBase,
     protocol,
     host,
     origin,
