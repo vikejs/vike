@@ -25,6 +25,10 @@ import {
 
 // JSDocs copied from https://vike.dev/pageContext
 type Url = {
+  /** The full URL. (Without Base URL.) */
+  href: null | string
+  /** The full URL. (With Base URL.) */
+  hrefOriginal: null | string
   /** The URL protocol, e.g. `https://` in `https://example.com` */
   protocol: null | string
   /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42?details=yes#reviews` */

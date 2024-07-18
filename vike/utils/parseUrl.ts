@@ -24,6 +24,8 @@ function parseUrl(
   url: string,
   baseServer: string
 ): {
+  href: string
+  hrefOriginal: string
   protocol: null | string
   origin: null | string
   pathname: string
@@ -76,8 +78,13 @@ function parseUrl(
   let { pathname, hasBaseServer } = analyzeBaseServer(pathnameResolved, baseServer)
   pathname = decodePathname(pathname)
 
+  const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
+  const hrefOriginal = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
+
   assert(pathname.startsWith('/'))
   return {
+    href,
+    hrefOriginal,
     protocol,
     origin,
     pathname,
