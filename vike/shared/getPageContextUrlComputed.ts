@@ -4,8 +4,6 @@ export type { PageContextUrlInternal }
 export type { PageContextUrlClient }
 export type { PageContextUrlServer }
 export type { PageContextUrlSource }
-// Public type (https://github.com/vikejs/vike/issues/1184)
-export type { Url }
 
 // =====================
 // File determining the URL logic.
@@ -20,47 +18,14 @@ import {
   isPlainObject,
   isPropertyGetter,
   isBrowser,
-  changeEnumerable
+  changeEnumerable,
+  UrlPublic
 } from './utils.js'
-
-// JSDocs copied from https://vike.dev/pageContext
-type Url = {
-  /** The full URL. (Without Base URL.) */
-  href: null | string
-  /** The full URL. (With Base URL.) */
-  hrefOriginal: null | string
-  /** The URL protocol, e.g. `https://` in `https://example.com` */
-  protocol: null | string
-  /** The URL host, e.g. `example.com` in `https://example.com/product` */
-  host: null | string
-  /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42` */
-  origin: null | string
-  /** The URL pathname, e.g. `/product/42` in `https://example.com/product/42?details=yes#reviews` */
-  pathname: string
-  /** URL pathname including the Base URL, e.g. `/some-base-url/product/42` in `https://example.com/some-base-url/product/42` (whereas `pageContext.urlParsed.pathname` is `/product/42`) */
-  pathnameOriginal: string
-  /** The URL search parameters, e.g. `{ details: 'yes' }` for `https://example.com/product/42?details=yes#reviews` */
-  search: Record<string, string>
-  /** The URL search parameters array, e.g. `{ fruit: ['apple', 'orange'] }` for `https://example.com?fruit=apple&fruit=orange` **/
-  searchAll: Record<string, string[]>
-  /** The URL search parameterer string, e.g. `?details=yes` in `https://example.com/product/42?details=yes#reviews` */
-  searchOriginal: null | string
-  /** The URL hash, e.g. `reviews` in `https://example.com/product/42?details=yes#reviews` */
-  hash: string
-  /** The URL hash string, e.g. `#reviews` in `https://example.com/product/42?details=yes#reviews` */
-  hashOriginal: null | string
-
-  // TODO/v1-release: remove
-  /** @deprecated */
-  hashString: null | string
-  /** @deprecated */
-  searchString: null | string
-}
 
 // TODO/v1-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {
   /** Parsed information about the current URL */
-  urlParsed: Url
+  urlParsed: UrlPublic
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
   urlPathname: string
   /** @deprecated */
@@ -182,7 +147,7 @@ function urlGetter(this: PageContextUrlSource) {
   return urlPathnameGetter.call(this)
 }
 function urlParsedGetter(this: PageContextUrlSource) {
-  const urlParsed = getUrlParsed(this)
+  const { hasBaseServer: _, ...urlParsed } = getUrlParsed(this)
 
   const hashIsAvailable = isBrowser()
   const warnHashNotAvailable = (prop: HashProps) => {
@@ -193,7 +158,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
     )
   }
 
-  const urlParsedEnhanced: Url = {
+  const urlParsedEnhanced: UrlPublic = {
     ...urlParsed,
     get hash() {
       warnHashNotAvailable('hash')
