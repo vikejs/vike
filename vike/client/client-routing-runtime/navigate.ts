@@ -22,7 +22,7 @@ async function navigate(
     overwriteLastHistoryEntry = false
   }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean } = {}
 ): Promise<void> {
-  assertUsageUrlPathname(url, '[navigate(url)] url is')
+  assertUsageUrlPathname(url, '[navigate(url)] url')
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition }
   await renderPageClientSide({
     scrollTarget,
