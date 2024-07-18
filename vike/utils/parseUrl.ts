@@ -25,9 +25,9 @@ import pc from '@brillout/picocolors'
 // JSDocs copied from https://vike.dev/pageContext
 type UrlPublic = {
   /** The full URL. (Without Base URL.) */
-  href: null | string
+  href: string
   /** The full URL. (With Base URL.) */
-  hrefOriginal: null | string
+  hrefOriginal: string
   /** The URL protocol, e.g. `https://` in `https://example.com` */
   protocol: null | string
   /** The URL host, e.g. `example.com` in `https://example.com/product` */
