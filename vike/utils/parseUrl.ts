@@ -27,16 +27,16 @@ function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string) {
   assertUsageUrl(url, errPrefix, { allowRelative: true })
 }
 function assertUsageUrlRedirectTarget(url: string, errPrefix: string) {
-  assertUsageUrl(url, errPrefix, { allowProtocol: true })
+  assertUsageUrl(url, errPrefix, { isRedirectTarget: true })
 }
 function assertUsageUrl(
   url: string,
   errPrefix: string,
-  { allowRelative, allowProtocol }: { allowRelative?: true; allowProtocol?: true } = {}
+  { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true } = {}
 ): asserts url is UrlPathnameAbsolute {
   if (url.startsWith('/')) return
   let errMsg = `${errPrefix} is ${pc.code(url)} but it should start with ${pc.code('/')}`
-  if (allowProtocol) {
+  if (isRedirectTarget) {
     if (isUrlRedirectTarget(url)) return
     errMsg += ` or a valid protocol (${pc.bold('https://')}, ${pc.bold('ipfs:')}, ...)`
   }
