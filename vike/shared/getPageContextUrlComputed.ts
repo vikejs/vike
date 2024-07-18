@@ -25,6 +25,8 @@ import {
 
 // JSDocs copied from https://vike.dev/pageContext
 type Url = {
+  /** The URL protocol, e.g. `https://` in `https://example.com` */
+  protocol: null | string
   /** The URL origin, e.g. `https://example.com` of `https://example.com/product/42?details=yes#reviews` */
   origin: null | string
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */

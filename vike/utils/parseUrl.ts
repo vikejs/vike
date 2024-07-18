@@ -24,6 +24,7 @@ function parseUrl(
   url: string,
   baseServer: string
 ): {
+  protocol: null | string
   origin: null | string
   pathname: string
   pathnameOriginal: string
@@ -61,7 +62,7 @@ function parseUrl(
   })
 
   // Origin + pathname
-  const { origin, pathname: pathnameResolved } = getPathname(urlWithoutHashNorSearch, baseServer)
+  const { protocol, origin, pathname: pathnameResolved } = getPathname(urlWithoutHashNorSearch, baseServer)
   assert(origin === null || origin === decodeSafe(origin)) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'))
   assert(origin === null || url.startsWith(origin))
@@ -77,6 +78,7 @@ function parseUrl(
 
   assert(pathname.startsWith('/'))
   return {
+    protocol,
     origin,
     pathname,
     pathnameOriginal: pathnameOriginal,
@@ -105,22 +107,25 @@ function decodePathname(urlPathname: string) {
     .join('/')
   return urlPathname
 }
-function getPathname(url: string, baseServer: string): { origin: null | string; pathname: string } {
+function getPathname(
+  url: string,
+  baseServer: string
+): { origin: null | string; pathname: string; protocol: null | string } {
   // Search and hash already extracted
   assert(!url.includes('?') && !url.includes('#'))
 
   // url has origin
   {
-    const { origin, pathname } = parseOrigin(url)
+    const { protocol, origin, pathname } = parseOrigin(url)
     if (origin) {
-      return { origin, pathname }
+      return { protocol, origin, pathname }
     }
     assert(pathname === url)
   }
 
   // url doesn't have origin
   if (url.startsWith('/')) {
-    return { origin: null, pathname: url }
+    return { protocol: null, origin: null, pathname: url }
   } else {
     // url is a relative path
 
@@ -137,19 +142,19 @@ function getPathname(url: string, baseServer: string): { origin: null | string; 
     }
 
     const pathname = resolveUrlPathnameRelative(url, base)
-    return { origin: null, pathname }
+    return { protocol: null, origin: null, pathname }
   }
 }
-function parseOrigin(url: string): { pathname: string; origin: null | string } {
+function parseOrigin(url: string): { pathname: string; origin: null | string; protocol: null | string } {
   if (!isUrlWithProtocol(url)) {
-    return { pathname: url, origin: null }
+    return { pathname: url, origin: null, protocol: null }
   } else {
     const { protocol, uriWithoutProtocol } = parseProtocol(url)
     assert(protocol)
     const [hostname, ...rest] = uriWithoutProtocol.split('/')
     const origin = protocol + hostname!
     const pathname = '/' + rest.join('/')
-    return { origin, pathname }
+    return { pathname, origin, protocol }
   }
 }
 function parseProtocol(uri: string) {
