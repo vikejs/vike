@@ -53,33 +53,44 @@ Built-in properties:
     On the client-side:
      - When using <Link href="/client-routing">Client Routing</Link>, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
      - When using <Link href="/server-routing">Server Routing</Link>, the value of `pageContext.urlOriginal` is `undefined` (unless you use [`passToClient`](/passToClient)).
- - **`pageContext.urlPathname`**: alias of `pageContext.urlParsed.pathname`.
+ - **`pageContext.urlPathname`**: alias for `pageContext.urlParsed.pathname`.
  - **`pageContext.urlParsed`**: URL information:
    ```ts
    {
-     origin: null | string
      pathname: string
      pathnameOriginal: string
-     search: Record<string, string> // (AKA query parameters)
+     search: Record<string, string> // AKA query parameters
      searchAll: Record<string, string[]>
      searchOriginal: null | string
      hash: string
      hashOriginal: null | string
+     href: string
+     origin: null | string
+     protocol: null | string
+     host: null | string
    }
    ```
 
    For example:
+   ```
+   https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
+   ```
    ```js
-   // https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
    {
-     origin: 'https://example.com',
-     pathname: '/hello/sébastien', // Without Base URL
+     // Without Base URL, decodes escaped characters
+     pathname: '/hello/sébastien',
+     // With Base URL, doesn't decode escaped characters
      pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',
-     search: { fruit: 'orânge' }, // (AKA query params)
+     search: { fruit: 'orânge' },
      searchAll: { fruit: ['âpple', 'orânge'] },
      searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
      hash: 'âge',
      hashOriginal: '#%C3%A2ge'
+     // Without Base URL, doesn't decode escaped characters
+     href: 'https://example.com/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
+     origin: 'https://example.com',
+     protocol: 'https://',
+     host: 'example.com',
    }
    ```
  - **`pageContext.headers`**: The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.

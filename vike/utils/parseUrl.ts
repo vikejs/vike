@@ -22,7 +22,6 @@ import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
 import pc from '@brillout/picocolors'
 
-// JSDocs copied from https://vike.dev/pageContext
 type UrlPublic = {
   /** The full URL. */
   href: string
