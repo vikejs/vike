@@ -5,6 +5,7 @@
 // Unit tests at ./parseUrl.spec.ts
 
 export { parseUrl }
+export { assertUsageUrlPathname }
 export { assertUsageUrlPathnameAbsolute }
 export { assertUsageUrlRedirectTarget }
 export { isUrl }
@@ -310,6 +311,9 @@ function isUri(uri: string): boolean {
   return !!protocol && !isUrlProtocol(uri)
 }
 
+function assertUsageUrlPathname(url: string, errPrefix: string): void {
+  assertUsageUrl(url, errPrefix, { allowRelative: true })
+}
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
   assertUsageUrl(url, errPrefix)
 }
