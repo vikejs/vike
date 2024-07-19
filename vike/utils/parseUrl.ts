@@ -80,7 +80,7 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   })
 
   // Origin + pathname
-  let { protocol, origin, pathnameAbsoluteWithBase } = getPathnameWithBase(urlWithoutHashNorSearch, baseServer)
+  let { protocol, origin, pathnameAbsoluteWithBase } = getPathnameAbsoluteWithBase(urlWithoutHashNorSearch, baseServer)
   const pathnameOriginal = urlWithoutHashNorSearch.slice((origin || '').length)
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
 
@@ -131,7 +131,7 @@ function decodePathname(urlPathname: string) {
     .join('/')
   return urlPathname
 }
-function getPathnameWithBase(
+function getPathnameAbsoluteWithBase(
   url: string,
   baseServer: string
 ): { origin: null | string; pathnameAbsoluteWithBase: string; protocol: null | string } {

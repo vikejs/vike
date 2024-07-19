@@ -19,7 +19,7 @@ import {
   isPropertyGetter,
   isBrowser,
   changeEnumerable,
-  UrlPublic
+  type UrlPublic
 } from './utils.js'
 
 // TODO/v1-release: move pageContext.urlParsed to pageContext.url
@@ -141,7 +141,11 @@ function urlGetter(this: PageContextUrlSource) {
   return urlPathnameGetter.call(this)
 }
 function urlParsedGetter(this: PageContextUrlSource) {
-  const { hasBaseServer: _, ...urlParsed } = getUrlParsed(this)
+  const {
+    // remove hasBaseServer as it isn't part of UrlPublic
+    hasBaseServer: _,
+    ...urlParsed
+  } = getUrlParsed(this)
 
   const hashIsAvailable = isBrowser()
   const warnHashNotAvailable = (prop: HashProps) => {
@@ -162,6 +166,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       warnHashNotAvailable('hashOriginal')
       return urlParsed.hashOriginal
     },
+    // TODO/next-major-release: remove
     get hashString() {
       assertWarning(false, 'pageContext.urlParsed.hashString has been renamed to pageContext.urlParsed.hashOriginal', {
         onlyOnce: true,
@@ -170,6 +175,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       warnHashNotAvailable('hashString')
       return urlParsed.hashOriginal
     },
+    // TODO/next-major-release: remove
     get searchString() {
       assertWarning(
         false,
