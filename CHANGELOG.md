@@ -1,3 +1,29 @@
+## [0.4.181](https://github.com/vikejs/vike/compare/v0.4.180...v0.4.181) (2024-07-19)
+
+
+### Bug Fixes
+
+* add assertUsage() to navigate() (fix [#1751](https://github.com/vikejs/vike/issues/1751)) ([01873ad](https://github.com/vikejs/vike/commit/01873ad65fe0dfe6e03210dd7d3ad50043a170d3))
+* add missing getPageContext() type pointer ([39f5754](https://github.com/vikejs/vike/commit/39f57543e0643e7ee263475d8887516f599e4b79))
+* always hard redirect upon external URL ([24641cd](https://github.com/vikejs/vike/commit/24641cd638e5dd9588f135a920dc18de55199cc9))
+* condense client-side error message ([3a7b262](https://github.com/vikejs/vike/commit/3a7b26218ea739e982cded3ccc168063340fab6a))
+* don't try to remove Base URL from pageContext.urlLogical or pageContext._urlRewrite ([0d35bc9](https://github.com/vikejs/vike/commit/0d35bc9038c93dd7fbba062c082acf881a8f8edc))
+* fix * redirection ([c9f5331](https://github.com/vikejs/vike/commit/c9f5331276248c4bc06fe488fcf7965958e3953b))
+* fix ipfs:// and ipns:// URL handling ([6b75eae](https://github.com/vikejs/vike/commit/6b75eae7d03bf1113d4b5563b9bec4bd9c306b81))
+* improve JSDocs ([2eaeea4](https://github.com/vikejs/vike/commit/2eaeea42d91927f27ec34c9a163193e47e36b02c))
+* improve prefetch() validation ([2bc59a9](https://github.com/vikejs/vike/commit/2bc59a9c9d93fc210ba7af1919b857b824290159))
+* make build deterministic (closes [#1750](https://github.com/vikejs/vike/issues/1750)) ([648cd01](https://github.com/vikejs/vike/commit/648cd01c67e40c10ee35bb4bb0f5d0d55443622a))
+* make client-side error message more precise and compact ([ad30cc4](https://github.com/vikejs/vike/commit/ad30cc4a038189fb38403595f7bf9e337e76d43a))
+
+
+### Features
+
+* modifyUrl() ([fbd3354](https://github.com/vikejs/vike/commit/fbd3354637ff0326f1cf36fa3f1456f8b685150e))
+* pageContext.urlParsed.href (closes [#1630](https://github.com/vikejs/vike/issues/1630)) ([d802189](https://github.com/vikejs/vike/commit/d8021898b009033e97ee8a1d543a7c118428cb51))
+* pageContext.urlParsed.protocol ([60fdd43](https://github.com/vikejs/vike/commit/60fdd434823c02b3f0c3a712996b46bcc16e742b))
+
+
+
 ## [0.4.180](https://github.com/vikejs/vike/compare/v0.4.179...v0.4.180) (2024-07-16)
 
 
