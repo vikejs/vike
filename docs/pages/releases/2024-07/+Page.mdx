@@ -31,7 +31,6 @@ What we have been working on in July.
 [`vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)  
 [`vike-vue` > `CHANGELOG.md`](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/CHANGELOG.md)  
 [`vike-solid` > `CHANGELOG.md`](https://github.com/vikejs/vike-solid/blob/main/CHANGELOG.md)  
-<Link href="/releases" />  
 
 
 ## vike-react-apollo
@@ -111,13 +110,17 @@ New [Bati](https://batijs.dev) integrations:
 
 ## More robust foundation
 
-We are continuously working on internal improvements. These aren't visible to the user but they have a foundational impact on Vike and its ecosystem, and we invest a lot in such foundational improvements.
+We continuously work on internal improvements. These aren't visible to the user but they have a foundational impact on Vike and its ecosystem.
 
-For example, we refactored the stream chunk orchestration logic of [`react-streaming`](https://github.com/brillout/react-streaming) (which powers `vike-react` and other projects). [The code is now crystal clear and robust](https://github.com/brillout/react-streaming/commit/c052e72f33254fd6deb474cd784fa4cee07b6e92#diff-52301d8ceb8d9165f156883711407609a842701365fc32f512083f81c7c02dc4). (It was somewhat messy & buggy before.)
-
-<Contribution>
-  Authors: [`nitedani`](https://github.com/nitedani), [`brillout`](https://github.com/brillout)
-</Contribution>
+Examples:
+ - We refactored the stream chunk orchestration logic of [`react-streaming`](https://github.com/brillout/react-streaming) (which powers `vike-react` and other projects). [The logic is now crystal clear and robust](https://github.com/brillout/react-streaming/commit/c052e72f33254fd6deb474cd784fa4cee07b6e92#diff-52301d8ceb8d9165f156883711407609a842701365fc32f512083f81c7c02dc4) (it was messy and buggy).
+   <Contribution>
+     Authors: [`nitedani`](https://github.com/nitedani), [`brillout`](https://github.com/brillout)
+   </Contribution>
+ - We [refactored Vike's URL handling](https://github.com/vikejs/vike/compare/63b1f5caf36ea125d7ecf5271f10d0d9065ac916..09420db329dbaaa9dfe6b900964ff158f8a6f1b3~). (The logic is now crystal clear with lot's explanation comments.)
+   <Contribution>
+     Authors: [`brillout`](https://github.com/brillout)
+   </Contribution>
 
 
 ## See also
