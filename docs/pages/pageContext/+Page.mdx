@@ -67,7 +67,8 @@ Built-in properties:
      href: string
      origin: null | string
      protocol: null | string
-     host: null | string
+     hostname: null | string
+     port: null | string
    }
    ```
 
@@ -90,7 +91,8 @@ Built-in properties:
      href: 'https://example.com/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
      origin: 'https://example.com',
      protocol: 'https://',
-     host: 'example.com',
+     hostname: 'example.com', // 'localhost' for http://localhost:3000
+     port: null // 3000 for http://localhost:3000
    }
    ```
  - **`pageContext.headers`**: The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.

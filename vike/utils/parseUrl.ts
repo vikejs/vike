@@ -27,8 +27,10 @@ type UrlPublic = {
   href: string
   /** The URL protocol, e.g. `https://` in `https://example.com` */
   protocol: null | string
-  /** The URL host, e.g. `example.com` in `https://example.com/product` */
-  host: null | string
+  /** The URL hostname, e.g. `example.com` in `https://example.com/product` and `localhost` in `http://localhost:3000/product` */
+  hostname: null | string
+  /** The URL host port, e.g. `3000` in `http://localhost:3000/product` */
+  port: null | number
   /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42` */
   origin: null | string
   /** The URL pathname, e.g. `/product/42` in `https://example.com/product/42?details=yes#reviews` */
@@ -55,11 +57,7 @@ type UrlPublic = {
 type UrlPrivate = Omit<UrlPublic, 'hashString' | 'searchString'> & { hasBaseServer: boolean }
 
 function parseUrl(url: string, baseServer: string): UrlPrivate {
-  assert(
-    isUrl(url),
-    // Eventually remove debug log once URL handling is stable
-    { url }
-  )
+  assert(isUrl(url), url)
   assert(baseServer.startsWith('/'))
 
   // Hash
@@ -89,9 +87,12 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   // Base URL
   let { pathname, hasBaseServer } = removeBaseServer(pathnameAbsoluteWithBase, baseServer)
 
-  // More props
+  // pageContext.urlParsed.href
   const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
+
+  // pageContext.urlParsed.{hostname, port}
   const host = !origin ? null : origin.slice(protocol!.length)
+  const { hostname, port } = parseHost(host, url)
 
   // decode after setting href
   pathname = decodePathname(pathname)
@@ -100,7 +101,8 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   return {
     href,
     protocol,
-    host,
+    hostname,
+    port,
     origin,
     pathname,
     pathnameOriginal: pathnameOriginal,
@@ -178,6 +180,25 @@ function parseOrigin(url: string): { pathname: string; origin: null | string; pr
     const pathname = '/' + rest.join('/')
     return { pathname, origin, protocol }
   }
+}
+function parseHost(host: string | null, url: string) {
+  const ret: { hostname: string | null; port: number | null } = { hostname: null, port: null }
+  if (!host) return ret
+
+  // hostname
+  const [hostname, ...rest] = host.split(':')
+  ret.hostname = hostname!
+
+  // port
+  if (rest.length > 0) {
+    assert(rest.length === 1, url)
+    const portStr = rest[0]!
+    const port = parseInt(portStr, 10)
+    assert(port || port === 0, url)
+    ret.port = port
+  }
+
+  return ret
 }
 function parseProtocol(uri: string) {
   const SEP = ':'
