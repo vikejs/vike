@@ -265,6 +265,42 @@ describe('parseUrl', () => {
         "searchOriginal": null,
       }
     `)
+
+    // Port
+    expect(parseUrl('http://localhost:3000/base/hello', '/base')).toMatchInlineSnapshot(`
+      {
+        "hasBaseServer": true,
+        "hash": "",
+        "hashOriginal": null,
+        "hostname": "localhost",
+        "href": "http://localhost:3000/hello",
+        "origin": "http://localhost:3000",
+        "pathname": "/hello",
+        "pathnameOriginal": "/base/hello",
+        "port": 3000,
+        "protocol": "http://",
+        "search": {},
+        "searchAll": {},
+        "searchOriginal": null,
+      }
+    `)
+    expect(parseUrl('https://example.org:0', '/')).toMatchInlineSnapshot(`
+      {
+        "hasBaseServer": true,
+        "hash": "",
+        "hashOriginal": null,
+        "hostname": "example.org",
+        "href": "https://example.org:0/",
+        "origin": "https://example.org:0",
+        "pathname": "/",
+        "pathnameOriginal": "",
+        "port": 0,
+        "protocol": "https://",
+        "search": {},
+        "searchAll": {},
+        "searchOriginal": null,
+      }
+    `)
   })
 
   it('hash', () => {
