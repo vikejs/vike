@@ -45,6 +45,8 @@ function extractLocale(url: Url) {
 }
 ```
 
+> See also: <Link href="/modifyUrl" />
+
 Upon rendering a page, `onBeforeRoute()` is the first hook that Vike calls, which means that the rest of your app doesn't have to deal with localized URLs anymore and you can simply use `pageContext.locale` instead.
 
 > See <Link href="/usePageContext" /> for being able to access `pageContext.locale` in any React/Vue component.
@@ -216,3 +218,4 @@ You can use the `lang` setting to define the value of the `<html lang>` attribut
 - <Link href="/head#internationalization" />
 - <Link href="/lang" />
 - <Link href="/onBeforeRoute" />
+- <Link href="/modifyUrl" />
