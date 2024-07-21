@@ -5,7 +5,6 @@ import { Worker } from 'worker_threads'
 import { init } from '../database/todoItems.js'
 import { two } from './shared-chunk.js'
 
-
 if (two() !== 2) {
   throw new Error()
 }

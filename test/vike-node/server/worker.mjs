@@ -9,7 +9,6 @@ const argon2Opts = {
   salt_length: 16,
   key_length: 32
 }
-
 ;(async () => {
   const hashed = await hash('password', argon2Opts)
   if (typeof hashed !== 'string') {
