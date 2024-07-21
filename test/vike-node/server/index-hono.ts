@@ -30,8 +30,6 @@ async function startServer() {
       port: +port,
       // Needed for Bun
       overrideGlobalObjects: false,
-      // Needed for CI
-      hostname: '0.0.0.0'
     },
     () => console.log(`Server running at http://localhost:${port}`)
   )

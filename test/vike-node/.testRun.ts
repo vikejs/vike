@@ -3,7 +3,7 @@ export { testRun }
 import { page, test, expect, run, getServerUrl, autoRetry, fetchHtml } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
-  run(cmd)
+  run(cmd, { serverUrl: 'http://127.0.0.1:3000' })
   const isProd = cmd === 'npm run prod'
 
   test('HTML', async () => {
