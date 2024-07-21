@@ -14,6 +14,8 @@ In development, the server process is restarted when a change is detected in som
 [Installation](#installation)  
 [Standalone build](#standalone-build)  
 [External packages](#external-packages)  
+[Caching and compression](#caching-and-compression)  
+[Custom pageContext](#custom-pagecontext)  
 [Framework examples](#framework-examples)  
 [Migration guide](#migration-guide)  
 
@@ -113,6 +115,40 @@ export default {
         })
     ]
 }
+```
+
+## Caching and compression:
+
+In production, `vike-node`:
+- compresses all Vike responses
+- caches the compressed static assets(.js, .css).
+
+On a request, if the asset(.js, .css) is not yet in the cache, `vike-node` compresses it using a fast compression level, sends it in the response, then recompresses it with a high compression level and caches the compressed data.<br>
+You disable compression/caching:
+
+```js
+  app.use(
+    vike({
+      serveAssets: {
+        compress: false,
+        cache: false
+      }
+    })
+  )
+```
+
+## Custom [pageContext](https://vike.dev/pageContext):
+
+You can define custom [pageContext](https://vike.dev/pageContext) properties:
+
+```js
+  app.use(
+    vike({
+      pageContext: (req) => ({
+        user: req.user
+      })
+    })
+  )
 ```
 
 
