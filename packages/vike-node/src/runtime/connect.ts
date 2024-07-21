@@ -8,12 +8,14 @@ function vike<PlatformRequest extends IncomingMessage, PlatformResponse extends 
   options?: VikeOptions<PlatformRequest>
 ): (req: PlatformRequest, res: PlatformResponse, next?: NextFunction) => void {
   const handler = createHandler(options)
-  return function middleware(req, res, next): void {
-    handler({
+  return async function middleware(req, res, next) {
+    const handled = await handler({
       req,
       res,
-      next,
       platformRequest: req
     })
+    if (!handled && next) {
+      next()
+    }
   }
 }

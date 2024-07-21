@@ -5,7 +5,8 @@ export type VikeHttpResponse = Awaited<ReturnType<typeof import('vike/server').r
 export type NextFunction = (err?: Error) => void
 export type VikeOptions<PlatformRequest = null> = {
   pageContext?: ((req: PlatformRequest) => Record<string, any> | Promise<Record<string, any>>) | Record<string, any>
-  serveAssets?: boolean | { root?: string; compress?: boolean; cache?: boolean }
+  compress?: boolean | 'static'
+  static?: boolean | string | { root?: string; cache?: boolean }
   onError?: (err: unknown) => void
 }
 export type ConnectMiddleware<

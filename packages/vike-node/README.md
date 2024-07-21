@@ -123,14 +123,14 @@ In production, `vike-node`:
 - compresses all Vike responses
 - caches the compressed static assets(.js, .css).
 
-On a request, if the asset(.js, .css) is not yet in the cache, `vike-node` compresses it using a fast compression level, sends it in the response, then recompresses it with a high compression level and caches the compressed data.<br>
+On a request, if the asset(.js, .css) is not in the cache, `vike-node` compresses it with a fast compression level, sends it in the response, then recompresses it with a high compression level and finally caches the compressed data.<br>
 You can disable compression/caching:
 
 ```js
 app.use(
   vike({
-    serveAssets: {
-      compress: false,
+    compress: false,
+    static: {
       cache: false
     }
   })
