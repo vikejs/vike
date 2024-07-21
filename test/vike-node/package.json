@@ -6,6 +6,8 @@
     "prod": "pnpm run build && cp ./prisma/test.db ./dist/server/node_modules/.prisma/client && cross-env NODE_ENV=production node dist/server/index.mjs"
   },
   "dependencies": {
+    "@hono/node-server": "^1.12.0",
+    "hono": "^4.5.1",
     "@hattip/adapter-node": "^0.0.46",
     "@hattip/compose": "^0.0.46",
     "@node-rs/argon2": "^1.7.2",

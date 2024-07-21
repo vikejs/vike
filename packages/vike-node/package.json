@@ -8,6 +8,7 @@
     "./connect": "./dist/connect.js",
     "./fastify": "./dist/fastify.js",
     "./hattip": "./dist/hattip.js",
+    "./hono": "./dist/hono.js",
     "./plugin": "./dist/plugin/index.js",
     ".": "./dist/index.js"
   },
@@ -33,6 +34,7 @@
     "@types/node": "^20.11.19",
     "fastify": "^4.26.1",
     "@hattip/compose": "^0.0.46",
+    "hono": "^4.5.1",
     "typescript": "^5.3.3",
     "vike": "^0.4.162",
     "vite": "^5.0.10"
@@ -47,6 +49,9 @@
       ],
       "hattip": [
         "./dist/hattip.d.ts"
+      ],
+      "hono": [
+        "./dist/hono.d.ts"
       ],
       "plugin": [
         "./dist/plugin/index.d.ts"

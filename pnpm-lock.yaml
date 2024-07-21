@@ -943,6 +943,9 @@ importers:
       fastify:
         specifier: ^4.26.1
         version: 4.28.1
+      hono:
+        specifier: ^4.5.1
+        version: 4.5.1
       typescript:
         specifier: ^5.3.3
         version: 5.5.3
@@ -1687,6 +1690,9 @@ importers:
       '@hattip/compose':
         specifier: ^0.0.46
         version: 0.0.46
+      '@hono/node-server':
+        specifier: ^1.12.0
+        version: 1.12.0
       '@node-rs/argon2':
         specifier: ^1.7.2
         version: 1.8.3
@@ -1714,6 +1720,9 @@ importers:
       fastify:
         specifier: ^4.26.1
         version: 4.28.1
+      hono:
+        specifier: ^4.5.1
+        version: 4.5.1
       prisma:
         specifier: ^5.9.1
         version: 5.17.0
@@ -3025,6 +3034,10 @@ packages:
   '@hattip/walk@0.0.46':
     resolution: {integrity: sha512-LFzLLNgEpf8ulR/ni/5IuQ1c3rTEDj7f9LD6xnMvlIZsYklRDFY6BmfcJTGMICVG3g0tOQjsAL0xkPPPGAv8WQ==}
     hasBin: true
+
+  '@hono/node-server@1.12.0':
+    resolution: {integrity: sha512-e6oHjNiErRxsZRZBmc2KucuvY3btlO/XPncIpP2X75bRdTilF9GLjm3NHvKKunpJbbJJj31/FoPTksTf8djAVw==}
+    engines: {node: '>=18.14.1'}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -5440,6 +5453,10 @@ packages:
 
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+
+  hono@4.5.1:
+    resolution: {integrity: sha512-6q8AugoWG5wlrjdGG8OFFiqEsPlPGjODjUik48sEJeko4Tae1UsLS2vUiYHLEJx1gJvOZa4BWkQC+urwDmkEvQ==}
+    engines: {node: '>=16.0.0'}
 
   hosted-git-info@7.0.2:
     resolution: {integrity: sha512-puUZAUKT5m8Zzvs72XWy3HtvVbTWljRE66cP60bxJzAqf2DgICo7lYTY2IHUmLnNpjYvw5bvmoHvPc0QO2a62w==}
@@ -8841,6 +8858,8 @@ snapshots:
       cac: 6.7.14
       mime-types: 2.1.35
 
+  '@hono/node-server@1.12.0': {}
+
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -11966,6 +11985,8 @@ snapshots:
   hoist-non-react-statics@3.3.2:
     dependencies:
       react-is: 16.13.1
+
+  hono@4.5.1: {}
 
   hosted-git-info@7.0.2:
     dependencies:
