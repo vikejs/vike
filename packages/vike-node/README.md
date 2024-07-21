@@ -127,14 +127,14 @@ On a request, if the asset(.js, .css) is not yet in the cache, `vike-node` compr
 You disable compression/caching:
 
 ```js
-  app.use(
-    vike({
-      serveAssets: {
-        compress: false,
-        cache: false
-      }
-    })
-  )
+app.use(
+  vike({
+    serveAssets: {
+      compress: false,
+      cache: false
+    }
+  })
+)
 ```
 
 ## Custom [pageContext](https://vike.dev/pageContext):
@@ -142,13 +142,13 @@ You disable compression/caching:
 You can define custom [pageContext](https://vike.dev/pageContext) properties:
 
 ```js
-  app.use(
-    vike({
-      pageContext: (req) => ({
-        user: req.user
-      })
+app.use(
+  vike({
+    pageContext: (req) => ({
+      user: req.user
     })
-  )
+  })
+)
 ```
 
 
