@@ -63,16 +63,14 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     })
   })
 
-  test('Brotli compression and headers in production', async () => {
-    if (!isProd) {
-      return
-    }
-    const response = await page.goto(`${getServerUrl()}/`)
-    const contentEncoding = await response.headerValue('content-encoding')
-    expect(contentEncoding).toBe('br')
-    const varyHeader = await response.headerValue('vary')
-    expect(varyHeader).toContain('Accept-Encoding')
-  })
+  if (isProd)
+    test('Brotli compression and headers in production', async () => {
+      const response = await page.goto(`${getServerUrl()}/`)
+      const contentEncoding = await response.headerValue('content-encoding')
+      expect(contentEncoding).toBe('br')
+      const varyHeader = await response.headerValue('vary')
+      expect(varyHeader).toContain('Accept-Encoding')
+    })
 }
 
 async function getNumberOfItems() {
