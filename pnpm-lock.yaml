@@ -925,9 +925,6 @@ importers:
       '@vercel/nft':
         specifier: ^0.26.4
         version: 0.26.5
-      birpc:
-        specifier: ^0.2.15
-        version: 0.2.17
       esbuild:
         specifier: ^0.19.0
         version: 0.19.12
@@ -1682,15 +1679,6 @@ importers:
 
   test/vike-node:
     dependencies:
-      '@hattip/adapter-node':
-        specifier: ^0.0.45
-        version: 0.0.45
-      '@hattip/router':
-        specifier: ^0.0.45
-        version: 0.0.45
-      '@hono/node-server':
-        specifier: ^1.9.0
-        version: 1.12.0
       '@node-rs/argon2':
         specifier: ^1.7.2
         version: 1.8.3
@@ -1718,24 +1706,21 @@ importers:
       fastify:
         specifier: ^4.26.1
         version: 4.28.1
-      hono:
-        specifier: ^4.1.5
-        version: 4.5.0
       prisma:
         specifier: ^5.9.1
         version: 5.17.0
       react:
         specifier: ^18.2.0
-        version: 18.2.0
+        version: 18.3.1
       react-dom:
         specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
+        version: 18.3.1(react@18.3.1)
       sharp:
         specifier: ^0.33.2
         version: 0.33.4
       telefunc:
         specifier: ^0.1.71
-        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.42(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.42(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       typescript:
         specifier: ^5.3.3
         version: 5.5.3
@@ -2848,32 +2833,6 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@hattip/adapter-node@0.0.45':
-    resolution: {integrity: sha512-doZZbmI4y3AQ1nObGNIHTD+5+u0KjfEvpnpwgxVzyh6/SLC3w+G2Za9lNtv9PXiwHMXWFph942aXnZFOx7M4YQ==}
-
-  '@hattip/compose@0.0.45':
-    resolution: {integrity: sha512-Xrxk2kx6htAoR/fBQEnhhqfjBdHFBi2UtiFuhD6qSSwEaD2jTGkyDzYAmVqPIO0ZSvIlIBBpGKdXip4JhdBMww==}
-
-  '@hattip/core@0.0.45':
-    resolution: {integrity: sha512-4BK9dPU7sLvmP9sUq048uSaKFvQY2Qa6D0xQteQBIiDYuTdbopcUQLETM1sdkUeUtFxHPwPu/NclfJAC5INarw==}
-
-  '@hattip/headers@0.0.45':
-    resolution: {integrity: sha512-owgxAt1jdhEcAdDfnlpPa8iQx/swItReYUlo8UFZ0GUCMiWJvnpl6rTdUsS6bCwMK9IJOliivN4dHEY8VKdGQw==}
-
-  '@hattip/polyfills@0.0.45':
-    resolution: {integrity: sha512-H8a+NVu/rAspycnkLSLVvWu3ei/ndFhA+3KQS1p2YjCcuf4Wuj4EWfScrwgL4d6CR0J+FxqX1P9NDGa4tdJQmQ==}
-
-  '@hattip/router@0.0.45':
-    resolution: {integrity: sha512-tMfLFTwhZuLbUcqQwGmeh4vgGN/F8GdIVcPcWbDguQErqhxVLvvfKvrxzwBzYGOFJD8IC2KvyRGu//8eTDhRfw==}
-
-  '@hattip/walk@0.0.45':
-    resolution: {integrity: sha512-GYEQN5n2JUzjLl9hdMJ+0mbsfwvldRKMBdxx+l29SxmRhOwyWURDyaSfX7UEkEmmxjbg4YqEoWyYgaAtxeW7Jw==}
-    hasBin: true
-
-  '@hono/node-server@1.12.0':
-    resolution: {integrity: sha512-e6oHjNiErRxsZRZBmc2KucuvY3btlO/XPncIpP2X75bRdTilF9GLjm3NHvKKunpJbbJJj31/FoPTksTf8djAVw==}
-    engines: {node: '>=18.14.1'}
-
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
     engines: {node: '>=10.10.0'}
@@ -3044,9 +3003,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
-
-  '@kamilkisiela/fast-url-parser@1.1.4':
-    resolution: {integrity: sha512-gbkePEBupNydxCelHCESvFSFM8XPh1Zs/OAVRW/rKpEqPAl5PbOM90Si8mv9bvnR53uPD2s/FiRxdvSejpRJew==}
 
   '@mapbox/node-pre-gyp@1.0.11':
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
@@ -3931,18 +3887,6 @@ packages:
       webpack-dev-server:
         optional: true
 
-  '@whatwg-node/events@0.1.1':
-    resolution: {integrity: sha512-AyQEn5hIPV7Ze+xFoXVU3QTHXVbWPrzaOkxtENMPMuNL6VVHrp4hHfDt9nrQpjO7BgvuM95dMtkycX5M/DZR3w==}
-    engines: {node: '>=16.0.0'}
-
-  '@whatwg-node/fetch@0.9.18':
-    resolution: {integrity: sha512-hqoz6StCW+AjV/3N+vg0s1ah82ptdVUb9nH2ttj3UbySOXUvytWw2yqy8c1cKzyRk6mDD00G47qS3fZI9/gMjg==}
-    engines: {node: '>=16.0.0'}
-
-  '@whatwg-node/node-fetch@0.5.11':
-    resolution: {integrity: sha512-LS8tSomZa3YHnntpWt3PP43iFEEl6YeIsvDakczHBKlay5LdkXFr8w7v8H6akpG5nRrzydyB0k1iE2eoL6aKIQ==}
-    engines: {node: '>=16.0.0'}
-
   '@wry/context@0.6.1':
     resolution: {integrity: sha512-LOmVnY1iTU2D8tv4Xf6MVMZZ+juIJ87Kt/plMijjN20NMAXGmH4u8bS1t0uT74cZ5gwpocYueV58YwyI8y+GKw==}
     engines: {node: '>=8'}
@@ -4187,9 +4131,6 @@ packages:
 
   bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
-
-  birpc@0.2.17:
-    resolution: {integrity: sha512-+hkTxhot+dWsLpp3gia5AkVHIsKlZybNT5gIYiDlNzJrmYPcTM9k5/w2uaj3IPpd7LlEYpmCj4Jj1nC41VhDFg==}
 
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
@@ -5287,10 +5228,6 @@ packages:
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-  hono@4.5.0:
-    resolution: {integrity: sha512-ZbezypZfn4odyApjCCv+Fw5OgweBqRLA/EsMyc4FUknFvBJcBIKhHy4sqmD1rWpBc/3wUlaQ6tqOPjk36R1ckg==}
-    engines: {node: '>=16.0.0'}
-
   hosted-git-info@7.0.2:
     resolution: {integrity: sha512-puUZAUKT5m8Zzvs72XWy3HtvVbTWljRE66cP60bxJzAqf2DgICo7lYTY2IHUmLnNpjYvw5bvmoHvPc0QO2a62w==}
     engines: {node: ^16.14.0 || >=18.0.0}
@@ -6215,9 +6152,6 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
-
-  node-fetch-native@1.6.4:
-    resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
 
   node-fetch@2.6.1:
     resolution: {integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==}
@@ -7435,9 +7369,6 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
-  urlpattern-polyfill@10.0.0:
-    resolution: {integrity: sha512-H/A06tKD7sS1O1X2SshBVeA5FLycRpjqiBeqGKmBwBDBy28EnRjORxTNe269KSSr5un5qyWi1iL61wLxpd+ZOg==}
-
   urlpattern-polyfill@4.0.3:
     resolution: {integrity: sha512-DOE84vZT2fEcl9gqCUTcnAw5ZY5Id55ikUcziSUntuEFL3pRvavg5kwDmTEUJkeCHInTlV/HexFomgYnzO5kdQ==}
 
@@ -8523,41 +8454,6 @@ snapshots:
     dependencies:
       graphql: 16.5.0
 
-  '@hattip/adapter-node@0.0.45':
-    dependencies:
-      '@hattip/core': 0.0.45
-      '@hattip/polyfills': 0.0.45
-      '@hattip/walk': 0.0.45
-
-  '@hattip/compose@0.0.45':
-    dependencies:
-      '@hattip/core': 0.0.45
-
-  '@hattip/core@0.0.45': {}
-
-  '@hattip/headers@0.0.45':
-    dependencies:
-      '@hattip/core': 0.0.45
-
-  '@hattip/polyfills@0.0.45':
-    dependencies:
-      '@hattip/core': 0.0.45
-      '@whatwg-node/fetch': 0.9.18
-      node-fetch-native: 1.6.4
-
-  '@hattip/router@0.0.45':
-    dependencies:
-      '@hattip/compose': 0.0.45
-      '@hattip/core': 0.0.45
-
-  '@hattip/walk@0.0.45':
-    dependencies:
-      '@hattip/headers': 0.0.45
-      cac: 6.7.14
-      mime-types: 2.1.35
-
-  '@hono/node-server@1.12.0': {}
-
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -8701,8 +8597,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
-
-  '@kamilkisiela/fast-url-parser@1.1.4': {}
 
   '@mapbox/node-pre-gyp@1.0.11':
     dependencies:
@@ -9863,21 +9757,6 @@ snapshots:
       webpack: 5.91.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.91.0)
 
-  '@whatwg-node/events@0.1.1': {}
-
-  '@whatwg-node/fetch@0.9.18':
-    dependencies:
-      '@whatwg-node/node-fetch': 0.5.11
-      urlpattern-polyfill: 10.0.0
-
-  '@whatwg-node/node-fetch@0.5.11':
-    dependencies:
-      '@kamilkisiela/fast-url-parser': 1.1.4
-      '@whatwg-node/events': 0.1.1
-      busboy: 1.6.0
-      fast-querystring: 1.1.2
-      tslib: 2.6.2
-
   '@wry/context@0.6.1':
     dependencies:
       tslib: 2.6.2
@@ -10119,8 +9998,6 @@ snapshots:
   bindings@1.5.0:
     dependencies:
       file-uri-to-path: 1.0.0
-
-  birpc@0.2.17: {}
 
   blake3-wasm@2.1.5: {}
 
@@ -11660,8 +11537,6 @@ snapshots:
     dependencies:
       react-is: 16.13.1
 
-  hono@4.5.0: {}
-
   hosted-git-info@7.0.2:
     dependencies:
       lru-cache: 10.2.2
@@ -13001,8 +12876,6 @@ snapshots:
 
   node-domexception@1.0.0: {}
 
-  node-fetch-native@1.6.4: {}
-
   node-fetch@2.6.1: {}
 
   node-fetch@2.7.0:
@@ -14091,6 +13964,22 @@ snapshots:
       react: 18.2.0
       react-streaming: 0.3.42(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
+  telefunc@0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.42(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.13
+      '@brillout/picocolors': 1.0.14
+      '@brillout/vite-plugin-server-entry': 0.4.6
+      es-module-lexer: 0.7.1
+      picocolors: 1.0.1
+      ts-morph: 19.0.0
+    optionalDependencies:
+      '@babel/core': 7.24.6
+      '@babel/parser': 7.24.6
+      '@babel/types': 7.24.6
+      react: 18.3.1
+      react-streaming: 0.3.42(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+
   terser-webpack-plugin@5.3.10(webpack@5.91.0(webpack-cli@5.1.4)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
@@ -14410,8 +14299,6 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
-
-  urlpattern-polyfill@10.0.0: {}
 
   urlpattern-polyfill@4.0.3: {}
 
