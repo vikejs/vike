@@ -10,10 +10,11 @@ Node integration for Vike.
 Using this extension, your server-side code is transpiled using Vite.<br>
 In development, the server process is restarted when a change is detected in some of your server files.
 
+
 [Installation](#installation)  
 [Basic usage](#basic-usage)  
 [Standalone build](#standalone-build)  
-[Minimal examples](#minimal-examples)  
+[Framework examples](#framework-examples)  
 [Migration guide](#migration-guide)  
 
 <br/>
@@ -55,7 +56,7 @@ In development, the server process is restarted when a change is detected in som
 
    "scripts": {
    - "dev": "vite",
-   + "dev": "vike dev",
+   + "dev": "vike",
    }
    ```
 
@@ -86,7 +87,13 @@ export default {
 ```
 
 
-## Minimal examples:
+## Framework examples:
+
+`vike-node` includes middlewares for the most popular web frameworks:
+- Express
+- Fastify
+- Hattip
+- Hono
 
 Express:
 ```js
@@ -171,41 +178,50 @@ async function startServer() {
 
 ## Migration guide:
 
-   ```diff
-   // server/index.js
+```diff
+// server/index.js
 
-   - import { renderPage } from 'vike/server'
-   + import { vike } from 'vike-node/connect'
+- import { renderPage } from 'vike/server'
++ import { vike } from 'vike-node/connect'
 
-   - if (isProduction) {
-   -   app.use(express.static(`${root}/dist/client`))
-   - } else {
-   -   const vite = await import('vite')
-   -   const viteDevMiddleware = (
-   -     await vite.createServer({
-   -       root,
-   -       server: { middlewareMode: true }
-   -     })
-   -   ).middlewares
-   -   app.use(viteDevMiddleware)
-   - }
+- if (isProduction) {
+-   app.use(express.static(`${root}/dist/client`))
+- } else {
+-   const vite = await import('vite')
+-   const viteDevMiddleware = (
+-     await vite.createServer({
+-       root,
+-       server: { middlewareMode: true }
+-     })
+-   ).middlewares
+-   app.use(viteDevMiddleware)
+- }
 
-   - app.get('*', async (req, res, next) => {
-   -   const pageContextInit = {
-   -     urlOriginal: req.originalUrl
-   -   }
-   -   const pageContext = await renderPage(pageContextInit)
-   -   const { httpResponse } = pageContext
-   -   if (!httpResponse) {
-   -     return next()
-   -   } else {
-   -     const { statusCode, headers } = httpResponse
-   -     headers.forEach(([name, value]) => res.setHeader(name, value))
-   -     res.status(statusCode)
-   -     httpResponse.pipe(res)
-   -   }
-   - })
+- app.get('*', async (req, res, next) => {
+-   const pageContextInit = {
+-     urlOriginal: req.originalUrl
+-   }
+-   const pageContext = await renderPage(pageContextInit)
+-   const { httpResponse } = pageContext
+-   if (!httpResponse) {
+-     return next()
+-   } else {
+-     const { statusCode, headers } = httpResponse
+-     headers.forEach(([name, value]) => res.setHeader(name, value))
+-     res.status(statusCode)
+-     httpResponse.pipe(res)
+-   }
+- })
 
-   + app.use(vike())
++ app.use(vike())
 
-   ```
+```
+
+```diff
+// package.json
+
+"scripts": {
+- "dev": "node ./server",
++ "dev": "vike",
+}
+```
