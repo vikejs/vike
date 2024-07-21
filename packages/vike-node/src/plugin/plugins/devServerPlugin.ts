@@ -1,11 +1,10 @@
 import { createServer } from 'http'
 import type { Plugin, ViteDevServer } from 'vite'
-import { globalStore } from '../../../runtime/globalStore.js'
-import type { ConfigVikeNodeResolved } from '../../../types.js'
-import { assert } from '../../../utils/assert.js'
-import { getConfigVikeNode } from '../../utils/getConfigVikeNode.js'
-import { logViteInfo } from '../../utils/logVite.js'
-import { bindCLIShortcuts } from './shortcuts.js'
+import { globalStore } from '../../runtime/globalStore.js'
+import type { ConfigVikeNodeResolved } from '../../types.js'
+import { assert } from '../../utils/assert.js'
+import { getConfigVikeNode } from '../utils/getConfigVikeNode.js'
+import { logViteInfo } from '../utils/logVite.js'
 
 let viteDevServer: ViteDevServer
 
@@ -79,10 +78,9 @@ export function devServerPlugin(): Plugin {
   }
 
   function patchViteServer(vite: ViteDevServer) {
-    vite.httpServer = true as any
+    vite.httpServer = { on: () => {} } as any
     vite.listen = (() => {}) as any
     vite.printUrls = () => {}
-    vite.bindCLIShortcuts = () => bindCLIShortcuts({ onRestart: restartProcess })
   }
 
   async function initializeServerEntry(vite: ViteDevServer) {
