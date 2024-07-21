@@ -7,6 +7,7 @@
   "exports": {
     "./connect": "./dist/connect.js",
     "./fastify": "./dist/fastify.js",
+    "./hattip": "./dist/hattip.js",
     "./plugin": "./dist/plugin/index.js",
     ".": "./dist/index.js"
   },
@@ -31,6 +32,7 @@
     "@brillout/release-me": "^0.1.14",
     "@types/node": "^20.11.19",
     "fastify": "^4.26.1",
+    "@hattip/compose": "^0.0.46",
     "typescript": "^5.3.3",
     "vike": "^0.4.162",
     "vite": "^5.0.10"
@@ -42,6 +44,9 @@
       ],
       "fastify": [
         "./dist/fastify.d.ts"
+      ],
+      "hattip": [
+        "./dist/hattip.d.ts"
       ],
       "plugin": [
         "./dist/plugin/index.d.ts"

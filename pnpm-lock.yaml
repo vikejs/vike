@@ -934,6 +934,9 @@ importers:
       '@brillout/release-me':
         specifier: ^0.1.14
         version: 0.1.15
+      '@hattip/compose':
+        specifier: ^0.0.46
+        version: 0.0.46
       '@types/node':
         specifier: ^20.11.19
         version: 20.13.0
@@ -1678,6 +1681,12 @@ importers:
 
   test/vike-node:
     dependencies:
+      '@hattip/adapter-node':
+        specifier: ^0.0.46
+        version: 0.0.46
+      '@hattip/compose':
+        specifier: ^0.0.46
+        version: 0.0.46
       '@node-rs/argon2':
         specifier: ^1.7.2
         version: 1.8.3
@@ -2998,6 +3007,25 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
+  '@hattip/adapter-node@0.0.46':
+    resolution: {integrity: sha512-DvG2VH4/116T7x1ibzzeGcoGA940w4G0Gy7XjVOgE6ZXwAOunoXS2zfqTlSxFsdTegDnXpGxI50XVq6cdcwBKA==}
+
+  '@hattip/compose@0.0.46':
+    resolution: {integrity: sha512-CZRQ+6CnJWY5tslKGgRnS8kKaEBvkViIz9V49Obk4ieGXK0HlGMU9Cyflktx5Pcb5tVNwbrX0dTRiIDesJ1maA==}
+
+  '@hattip/core@0.0.46':
+    resolution: {integrity: sha512-6pk22hPi9qVc6jyROu89T2yV2IcORTJZUq5OdFDfWmu4ynMP4I2avC+hnCJj6o3vlN1Io7zBbdT5OIPxpBIX7A==}
+
+  '@hattip/headers@0.0.46':
+    resolution: {integrity: sha512-kk6hzTjTv0McRgt8bv8IwUOWsphrRQzaUvtXz4w60eQQCO6RHL/wzX6BEh+3eJQFVtmu6yFnh/O6NDnSxSPM7Q==}
+
+  '@hattip/polyfills@0.0.46':
+    resolution: {integrity: sha512-S+0lm8lDZrw5nT9QZwf9+3LukPL6z0kOgMFqW0xkCnJvzZ7NTmn/xc4SsOFD7bYZ4bH/Z4kdi5xw38hLyfMYOw==}
+
+  '@hattip/walk@0.0.46':
+    resolution: {integrity: sha512-LFzLLNgEpf8ulR/ni/5IuQ1c3rTEDj7f9LD6xnMvlIZsYklRDFY6BmfcJTGMICVG3g0tOQjsAL0xkPPPGAv8WQ==}
+    hasBin: true
+
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
     engines: {node: '>=10.10.0'}
@@ -3168,6 +3196,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
+
+  '@kamilkisiela/fast-url-parser@1.1.4':
+    resolution: {integrity: sha512-gbkePEBupNydxCelHCESvFSFM8XPh1Zs/OAVRW/rKpEqPAl5PbOM90Si8mv9bvnR53uPD2s/FiRxdvSejpRJew==}
 
   '@mapbox/node-pre-gyp@1.0.11':
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
@@ -4051,6 +4082,18 @@ packages:
     peerDependenciesMeta:
       webpack-dev-server:
         optional: true
+
+  '@whatwg-node/events@0.1.1':
+    resolution: {integrity: sha512-AyQEn5hIPV7Ze+xFoXVU3QTHXVbWPrzaOkxtENMPMuNL6VVHrp4hHfDt9nrQpjO7BgvuM95dMtkycX5M/DZR3w==}
+    engines: {node: '>=16.0.0'}
+
+  '@whatwg-node/fetch@0.9.18':
+    resolution: {integrity: sha512-hqoz6StCW+AjV/3N+vg0s1ah82ptdVUb9nH2ttj3UbySOXUvytWw2yqy8c1cKzyRk6mDD00G47qS3fZI9/gMjg==}
+    engines: {node: '>=16.0.0'}
+
+  '@whatwg-node/node-fetch@0.5.12':
+    resolution: {integrity: sha512-3wBgVdAOlS5jnITT6fbzQPfRs+rgYhyjwEeALlXfgg/0GvokNK5rPuh60iraS/x5UQXNcHSI3Vb+37B9RPSjrA==}
+    engines: {node: '>=16.0.0'}
 
   '@wry/context@0.6.1':
     resolution: {integrity: sha512-LOmVnY1iTU2D8tv4Xf6MVMZZ+juIJ87Kt/plMijjN20NMAXGmH4u8bS1t0uT74cZ5gwpocYueV58YwyI8y+GKw==}
@@ -6323,6 +6366,9 @@ packages:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
 
+  node-fetch-native@1.6.4:
+    resolution: {integrity: sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==}
+
   node-fetch@2.6.1:
     resolution: {integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==}
     engines: {node: 4.x || >=6.0.0}
@@ -7384,6 +7430,9 @@ packages:
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
+  tslib@2.6.3:
+    resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
+
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -7543,6 +7592,9 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  urlpattern-polyfill@10.0.0:
+    resolution: {integrity: sha512-H/A06tKD7sS1O1X2SshBVeA5FLycRpjqiBeqGKmBwBDBy28EnRjORxTNe269KSSr5un5qyWi1iL61wLxpd+ZOg==}
 
   urlpattern-polyfill@4.0.3:
     resolution: {integrity: sha512-DOE84vZT2fEcl9gqCUTcnAw5ZY5Id55ikUcziSUntuEFL3pRvavg5kwDmTEUJkeCHInTlV/HexFomgYnzO5kdQ==}
@@ -8761,6 +8813,34 @@ snapshots:
     dependencies:
       graphql: 16.5.0
 
+  '@hattip/adapter-node@0.0.46':
+    dependencies:
+      '@hattip/core': 0.0.46
+      '@hattip/polyfills': 0.0.46
+      '@hattip/walk': 0.0.46
+
+  '@hattip/compose@0.0.46':
+    dependencies:
+      '@hattip/core': 0.0.46
+
+  '@hattip/core@0.0.46': {}
+
+  '@hattip/headers@0.0.46':
+    dependencies:
+      '@hattip/core': 0.0.46
+
+  '@hattip/polyfills@0.0.46':
+    dependencies:
+      '@hattip/core': 0.0.46
+      '@whatwg-node/fetch': 0.9.18
+      node-fetch-native: 1.6.4
+
+  '@hattip/walk@0.0.46':
+    dependencies:
+      '@hattip/headers': 0.0.46
+      cac: 6.7.14
+      mime-types: 2.1.35
+
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -8904,6 +8984,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  '@kamilkisiela/fast-url-parser@1.1.4': {}
 
   '@mapbox/node-pre-gyp@1.0.11':
     dependencies:
@@ -10063,6 +10145,21 @@ snapshots:
     dependencies:
       webpack: 5.91.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.91.0)
+
+  '@whatwg-node/events@0.1.1': {}
+
+  '@whatwg-node/fetch@0.9.18':
+    dependencies:
+      '@whatwg-node/node-fetch': 0.5.12
+      urlpattern-polyfill: 10.0.0
+
+  '@whatwg-node/node-fetch@0.5.12':
+    dependencies:
+      '@kamilkisiela/fast-url-parser': 1.1.4
+      '@whatwg-node/events': 0.1.1
+      busboy: 1.6.0
+      fast-querystring: 1.1.2
+      tslib: 2.6.3
 
   '@wry/context@0.6.1':
     dependencies:
@@ -13209,6 +13306,8 @@ snapshots:
 
   node-domexception@1.0.0: {}
 
+  node-fetch-native@1.6.4: {}
+
   node-fetch@2.6.1: {}
 
   node-fetch@2.7.0:
@@ -14424,6 +14523,8 @@ snapshots:
 
   tslib@2.6.2: {}
 
+  tslib@2.6.3: {}
+
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
@@ -14636,6 +14737,8 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  urlpattern-polyfill@10.0.0: {}
 
   urlpattern-polyfill@4.0.3: {}
 

@@ -34,17 +34,20 @@ export function createHandler<PlatformRequest>(options: VikeOptions<PlatformRequ
     res: ServerResponse
     next?: NextFunction
     platformRequest: PlatformRequest
-  }) {
-    if (req.method !== 'GET') return next?.()
+  }): Promise<boolean> {
+    if (req.method !== 'GET') {
+      next?.()
+      return false
+    }
 
     const urlOriginal = req.url ?? ''
 
     if (globalStore.isPluginLoaded) {
       const handled = await handleViteDevServer(req, res)
-      if (handled) return
+      if (handled) return true
     } else if (serveAssets) {
       const handled = await handleAssets(req, res, serveAssets)
-      if (handled) return
+      if (handled) return true
     }
 
     const pageContext = await renderPage({
@@ -57,8 +60,12 @@ export function createHandler<PlatformRequest>(options: VikeOptions<PlatformRequ
       options.onError?.(pageContext.errorWhileRendering)
     }
 
-    if (!pageContext.httpResponse) return next?.()
+    if (!pageContext.httpResponse) {
+      next?.()
+      return false
+    }
     await writeHttpResponse(pageContext.httpResponse, res)
+    return true
   }
 
   function handleViteDevServer(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
