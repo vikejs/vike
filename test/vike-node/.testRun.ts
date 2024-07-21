@@ -4,6 +4,7 @@ import { page, test, expect, run, getServerUrl, autoRetry, fetchHtml } from '@br
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
   run(cmd)
+  const isProd = cmd === 'npm run prod'
 
   test('HTML', async () => {
     const html = await fetchHtml('/')
@@ -60,6 +61,17 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       await page.click('button[type="button"]')
       expect(await page.textContent('body')).toContain('240000 bytes')
     })
+  })
+
+  test('Brotli compression and headers in production', async () => {
+    if (!isProd) {
+      return
+    }
+    const response = await page.goto(`${getServerUrl()}/`)
+    const contentEncoding = await response.headerValue('content-encoding')
+    expect(contentEncoding).toBe('br')
+    const varyHeader = await response.headerValue('vary')
+    expect(varyHeader).toContain('Accept-Encoding')
   })
 }
 
