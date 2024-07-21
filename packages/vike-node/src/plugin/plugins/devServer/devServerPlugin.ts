@@ -1,6 +1,6 @@
 import { createServer } from 'http'
 import type { Plugin, ViteDevServer } from 'vite'
-import { store } from '../../../runtime/env.js'
+import { globalStore } from '../../../runtime/globalStore.js'
 import type { ConfigVikeNodeResolved } from '../../../types.js'
 import { assert } from '../../../utils/assert.js'
 import { getConfigVikeNode } from '../../utils/getConfigVikeNode.js'
@@ -46,7 +46,7 @@ export function devServerPlugin(): Plugin {
       }
 
       viteDevServer = vite
-      store.viteDevServer = vite
+      globalStore.viteDevServer = vite
 
       setupHMRMiddleware(vite)
       patchViteServer(vite)
@@ -95,11 +95,6 @@ export function devServerPlugin(): Plugin {
 }
 
 function restartProcess() {
-  try {
-    logViteInfo('Restarting server...')
-    process.exit(33)
-  } catch (error) {
-    console.error('Failed to restart:', error)
-    process.exit(1)
-  }
+  logViteInfo('Restarting server...')
+  process.exit(33)
 }

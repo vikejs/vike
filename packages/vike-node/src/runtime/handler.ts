@@ -3,7 +3,7 @@ import { dirname, isAbsolute, join } from 'path'
 import { fileURLToPath } from 'url'
 import { renderPage } from 'vike/server'
 import { assert } from '../utils/assert.js'
-import { getIsPluginLoaded, store } from './env.js'
+import { globalStore } from './globalStore.js'
 import type { ConnectMiddleware, NextFunction, VikeOptions } from './types.js'
 import { writeHttpResponse } from './utils.js'
 
@@ -39,7 +39,7 @@ export function createHandler<PlatformRequest>(options: VikeOptions<PlatformRequ
 
     const urlOriginal = req.url ?? ''
 
-    if (getIsPluginLoaded()) {
+    if (globalStore.isPluginLoaded) {
       const handled = await handleViteDevServer(req, res)
       if (handled) return
     } else if (serveAssets) {
@@ -64,8 +64,8 @@ export function createHandler<PlatformRequest>(options: VikeOptions<PlatformRequ
   function handleViteDevServer(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       res.once('finish', () => resolve(true))
-      assert(store.viteDevServer)
-      store.viteDevServer.middlewares(req, res, () => resolve(false))
+      assert(globalStore.viteDevServer)
+      globalStore.viteDevServer.middlewares(req, res, () => resolve(false))
     })
   }
 
