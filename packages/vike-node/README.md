@@ -89,6 +89,30 @@ export default {
 }
 ```
 
+When standalone build is enabled, libraries that import native/external binaries need to be added to `external`.<br>
+When building, `external` packages are analyzed and the required binaries copied to the output `dist` directory.<br>
+By default, the `external` setting includes:
+- `sharp`
+- `@prisma/client`
+- `@node-rs/*`
+
+```js
+// vite.config.js
+
+import vikeNode from 'vike-node/plugin'
+
+export default {
+    // ...
+    plugins: [
+        vikeNode({
+            entry: 'server/index.js',
+            standalone: true,
+            external: ["my-rust-package"]
+        })
+    ]
+}
+```
+
 
 ## Framework examples:
 
