@@ -10,10 +10,11 @@ async function startServer() {
 
   app.use(vike())
 
-  serve({
-    fetch: app.fetch,
-    port: +port
-  })
-
-  console.log(`Server running at http://localhost:${port}`)
+  serve(
+    {
+      fetch: app.fetch,
+      port: +port
+    },
+    () => console.log(`Server running at http://localhost:${port}`)
+  )
 }
