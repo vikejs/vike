@@ -165,7 +165,7 @@ import vike from 'vike-node/hattip'
 
 startServer()
 
-async function startServer() {
+function startServer() {
   const app = createRouter()
   app.use(vike())
   const server = createServer(app.buildHandler())
@@ -184,7 +184,7 @@ import vike from 'vike-node/hono'
 
 startServer()
 
-async function startServer() {
+function startServer() {
   const app = new Hono()
   app.use(vike())
 
