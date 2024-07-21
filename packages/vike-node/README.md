@@ -12,7 +12,6 @@ In development, the server process is restarted when a change is detected in som
 
 
 [Installation](#installation)  
-[Basic usage](#basic-usage)  
 [Standalone build](#standalone-build)  
 [Framework examples](#framework-examples)  
 [Migration guide](#migration-guide)  
