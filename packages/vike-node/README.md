@@ -54,7 +54,7 @@ In development, the server process is restarted when a change is detected in som
    // package.json
 
    "scripts": {
-   - "dev": "node ./server",
+   - "dev": "vite",
    + "dev": "vike dev",
    }
    ```
