@@ -84,9 +84,12 @@ In development, the server process is restarted when a change is detected in som
 ## Standalone build:
 
 You can enable standalone builds by setting `standalone` to `true`.
-After build, the output `dist` folder will contain everything for a deployment.<br>
+<br>
+After build, the output `dist` folder will contain everything for a deployment.
+<br>
 With standalone mode, the production environment only needs the `dist` folder to be present.
-<br>Example start script: `NODE_ENV=production node dist/server/index.mjs`
+<br>
+Example start script: `NODE_ENV=production node dist/server/index.mjs`
 
 ```js
 // vite.config.js
