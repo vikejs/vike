@@ -28,7 +28,7 @@ cli
     start()
 
     function start() {
-      const cp = fork('node_modules/vite/bin/vite', ['dev'], { stdio: 'inherit' })
+      const cp = fork('./node_modules/vite/bin/vite', ['dev'], { stdio: 'inherit' })
       cp.on('exit', (code) => {
         if (code === 33) {
           start()
