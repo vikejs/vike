@@ -7,7 +7,7 @@
 
 Node/Bun integration for Vike.
 
-Using this extension, your server-side code is transpiled with Vite.<br>
+With this extension, your server-side code is transpiled with Vite.<br>
 In development, the server process is restarted when a change is detected in some of your server files.
 
 
@@ -56,9 +56,9 @@ In development, the server process is restarted when a change is detected in som
 
    "scripts": {
    - "dev": "vite",
-   // Using Node
+   // With Node
    + "dev": "vike",
-   // Using Bun
+   // With Bun
    + "dev": "bun run --bun vike",
    }
    ```
