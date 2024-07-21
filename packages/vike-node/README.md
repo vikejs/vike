@@ -22,7 +22,7 @@ In development, the server process is restarted when a change is detected in som
 
 ## Installation
 
-1. `npm install vike-node`
+1. `npm install vike-node express`
 2. Extend `vite.config.js`:
    ```js
    // vite.config.js
