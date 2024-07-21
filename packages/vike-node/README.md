@@ -10,10 +10,10 @@ Node integration for Vike.
 Using this extension, your server-side code is transpiled using Vite.<br>
 In development, the server process is restarted when a change is detected in some of your server files.
 
-[Installation](#installation)
-[Basic usage](#basic-usage)
-[Standalone build](#standalone-build) 
-[Minimal examples](#minimal-examples) 
+[Installation](#installation)  
+[Basic usage](#basic-usage)  
+[Standalone build](#standalone-build)  
+[Minimal examples](#minimal-examples)  
 
 <br/>
 
