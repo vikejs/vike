@@ -14,7 +14,7 @@ async function startServer() {
     {
       fetch: app.fetch,
       port: +port,
-      // Needed for Bun support
+      // Needed for Bun
       overrideGlobalObjects: false
     },
     () => console.log(`Server running at http://localhost:${port}`)
