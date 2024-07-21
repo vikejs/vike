@@ -149,7 +149,7 @@ Hattip:
 // server/index.js
 
 import { createServer } from '@hattip/adapter-node'
-import { RequestContext, compose } from '@hattip/compose'
+import { compose } from '@hattip/compose'
 import vikeNode from 'vike-node/hattip'
 
 startServer()
@@ -161,7 +161,7 @@ async function startServer() {
   console.log(`Server running at http://localhost:${port}`)
 }
 
-function handler(ctx: RequestContext) {
+function handler(ctx) {
   console.log('My request handler')
 }
 ```
