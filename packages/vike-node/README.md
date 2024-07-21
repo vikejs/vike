@@ -29,7 +29,7 @@ In development, the server process is restarted when a change is detected in som
 
    export default {
      // ...
-     plugins: [vikeNode({ entry: "./server/index.js" })]
+     plugins: [vikeNode("server/index.js")]
    }
    ```
 3. Change `server/index.js`:
@@ -100,7 +100,7 @@ export default {
     // ...
     plugins: [
         vikeNode({
-            entry: './server/index.js',
+            entry: 'server/index.js',
             standalone: true
         })
     ]
