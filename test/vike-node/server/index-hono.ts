@@ -2,10 +2,12 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { telefunc } from 'telefunc'
 import vike from 'vike-node/hono'
+import { init } from '../database/todoItems'
 
 startServer()
 
 async function startServer() {
+  await init()
   const app = new Hono()
   const port = process.env.PORT || 3000
   app.post('/_telefunc', async (ctx) => {

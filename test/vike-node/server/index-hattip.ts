@@ -2,10 +2,12 @@ import { createServer } from '@hattip/adapter-node'
 import { createRouter } from '@hattip/router'
 import { telefunc } from 'telefunc'
 import vike from 'vike-node/hattip'
+import { init } from '../database/todoItems'
 
 startServer()
 
 async function startServer() {
+  await init()
   const app = createRouter()
   app.post('/_telefunc', async (ctx) => {
     const context = {}
