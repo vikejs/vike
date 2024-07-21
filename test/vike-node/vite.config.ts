@@ -7,9 +7,7 @@ export default {
   plugins: [
     react(),
     vike(),
-    vikeNode({
-      server: { entry: { index: './server/index-express.ts', worker: './server/worker.mjs' }, standalone: true }
-    }),
+    vikeNode({ entry: { index: './server/index-express.ts', worker: './server/worker.mjs' }, standalone: true }),
     telefunc()
   ]
 }

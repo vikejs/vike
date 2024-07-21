@@ -31,7 +31,7 @@ function resolveConfig(configVike: ConfigVikeNode): ConfigVikeNodeResolved {
       server: {
         entry: entriesProvided,
         standalone: configVike.server.standalone ?? false,
-        native: unique([...nativeDependecies, ...(configVike.server.native ?? [])])
+        external: unique([...nativeDependecies, ...(configVike.server.external ?? [])])
       }
     }
   }
@@ -41,7 +41,7 @@ function resolveConfig(configVike: ConfigVikeNode): ConfigVikeNodeResolved {
     server: {
       entry: { index: configVike.server },
       standalone: false,
-      native: nativeDependecies
+      external: nativeDependecies
     }
   }
 }

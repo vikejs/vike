@@ -1,4 +1,4 @@
-export type { ConfigVikeNode, ConfigVikeNodeResolved }
+export type { ConfigVikeNode, ConfigVikeNodeResolved, ConfigVikeNodePlugin }
 
 type ConfigVikeNode = {
   /** Server entry path.
@@ -14,13 +14,15 @@ type ConfigVikeNode = {
          */
         standalone?: boolean
 
-        /** List of native dependencies.
+        /** List of external/native dependencies.
          *
          */
-        native?: string[]
+        external?: string[]
       }
 }
 
 type ConfigVikeNodeResolved = {
-  server: { entry: { index: string; [name: string]: string }; native: string[]; standalone: boolean }
+  server: { entry: { index: string; [name: string]: string }; external: string[]; standalone: boolean }
 }
+
+type ConfigVikeNodePlugin = ConfigVikeNode['server']

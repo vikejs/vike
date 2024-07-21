@@ -8,7 +8,7 @@ import { toPosixPath } from '../utils/filesystemPathHandling.js'
 import { getConfigVikeNode } from '../utils/getConfigVikeNode.js'
 import { pLimit } from '../utils/pLimit.js'
 
-const LAZY_NPM_IMPORTS = [
+const OPTIONAL_NPM_IMPORTS = [
   '@nestjs/microservices',
   '@nestjs/websockets',
   'cache-manager',
@@ -66,7 +66,7 @@ export function standalonePlugin(): Plugin {
       platform: 'node',
       format: 'esm',
       bundle: true,
-      external: configResolvedVike.server.native,
+      external: configResolvedVike.server.external,
       entryPoints: rollupEntryFilePaths,
       sourcemap: configResolved.build.sourcemap === 'hidden' ? true : configResolved.build.sourcemap,
       outExtension: { '.js': '.mjs' },
@@ -174,7 +174,7 @@ function createStandaloneIgnorePlugin(rollupResolve: any): esbuild.Plugin {
         path: args.path,
         namespace: 'ignore'
       }))
-      build.onResolve({ filter: new RegExp(`^(${LAZY_NPM_IMPORTS.join('|')})`) }, async (args) => {
+      build.onResolve({ filter: new RegExp(`^(${OPTIONAL_NPM_IMPORTS.join('|')})`) }, async (args) => {
         const resolved = await rollupResolve(args.path)
         if (!resolved) {
           return { path: args.path, namespace: 'ignore' }

@@ -7,7 +7,6 @@
   "exports": {
     "./connect": "./dist/connect.js",
     "./fastify": "./dist/fastify.js",
-    "./config": "./dist/+config.js",
     "./plugin": "./dist/plugin/index.js",
     ".": "./dist/index.js"
   },
@@ -43,9 +42,6 @@
       ],
       "fastify": [
         "./dist/fastify.d.ts"
-      ],
-      "config": [
-        "./dist/+config.d.ts"
       ],
       "plugin": [
         "./dist/plugin/index.d.ts"
