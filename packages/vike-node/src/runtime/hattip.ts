@@ -1,9 +1,9 @@
 export { vike }
 
 import type { RequestHandler } from '@hattip/compose'
+import type { IncomingMessage, ServerResponse } from 'http'
 import { createHandler } from './handler.js'
 import type { VikeOptions } from './types.js'
-import { IncomingMessage, ServerResponse } from 'http'
 
 function vike(options?: VikeOptions): RequestHandler {
   const handler = createHandler<Request>(options)

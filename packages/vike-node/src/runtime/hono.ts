@@ -1,7 +1,7 @@
 export { vike }
 
 import type { HonoRequest, MiddlewareHandler } from 'hono'
-import { IncomingMessage, ServerResponse } from 'http'
+import type { IncomingMessage, ServerResponse } from 'http'
 import { createHandler } from './handler.js'
 import type { VikeOptions } from './types.js'
 

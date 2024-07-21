@@ -1,8 +1,8 @@
-export { writeHttpResponse, groupHeaders }
+export { groupHeaders, writeHttpResponse }
 
-import { ServerResponse } from 'http'
+import type { ServerResponse } from 'http'
 import { assert } from '../utils/assert.js'
-import { VikeHttpResponse } from './types.js'
+import type { VikeHttpResponse } from './types.js'
 
 async function writeHttpResponse(httpResponse: VikeHttpResponse, res: ServerResponse) {
   assert(httpResponse)
