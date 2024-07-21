@@ -14,6 +14,7 @@ In development, the server process is restarted when a change is detected in som
 [Basic usage](#basic-usage)  
 [Standalone build](#standalone-build)  
 [Minimal examples](#minimal-examples)  
+[Migration guide](#migration-guide)  
 
 <br/>
 
@@ -32,44 +33,21 @@ In development, the server process is restarted when a change is detected in som
      plugins: [vikeNode("server/index.js")]
    }
    ```
-3. Change `server/index.js`:
-   ```diff
+3. Create `server/index.js`:
+   ```js
    // server/index.js
-
-   - import { renderPage } from 'vike/server'
-   + import { vike } from 'vike-node/connect'
-
-   - if (isProduction) {
-   -   app.use(express.static(`${root}/dist/client`))
-   - } else {
-   -   const vite = await import('vite')
-   -   const viteDevMiddleware = (
-   -     await vite.createServer({
-   -       root,
-   -       server: { middlewareMode: true }
-   -     })
-   -   ).middlewares
-   -   app.use(viteDevMiddleware)
-   - }
-
-   - app.get('*', async (req, res, next) => {
-   -   const pageContextInit = {
-   -     urlOriginal: req.originalUrl
-   -   }
-   -   const pageContext = await renderPage(pageContextInit)
-   -   const { httpResponse } = pageContext
-   -   if (!httpResponse) {
-   -     return next()
-   -   } else {
-   -     const { statusCode, headers } = httpResponse
-   -     headers.forEach(([name, value]) => res.setHeader(name, value))
-   -     res.status(statusCode)
-   -     httpResponse.pipe(res)
-   -   }
-   - })
-
-   + app.use(vike())
-
+   
+   import express from 'express'
+   import vike from 'vike-node/connect'
+   
+   startServer()
+   
+   function startServer() {
+     const app = express()
+     app.use(vike())
+     const port = process.env.PORT || 3000
+     app.listen(port, () => console.log(`Server running at http://localhost:${port}`))
+   }
    ```
 4. Change `package.json`:
    ```diff
@@ -190,3 +168,44 @@ async function startServer() {
   )
 }
 ```
+
+## Migration guide:
+
+   ```diff
+   // server/index.js
+
+   - import { renderPage } from 'vike/server'
+   + import { vike } from 'vike-node/connect'
+
+   - if (isProduction) {
+   -   app.use(express.static(`${root}/dist/client`))
+   - } else {
+   -   const vite = await import('vite')
+   -   const viteDevMiddleware = (
+   -     await vite.createServer({
+   -       root,
+   -       server: { middlewareMode: true }
+   -     })
+   -   ).middlewares
+   -   app.use(viteDevMiddleware)
+   - }
+
+   - app.get('*', async (req, res, next) => {
+   -   const pageContextInit = {
+   -     urlOriginal: req.originalUrl
+   -   }
+   -   const pageContext = await renderPage(pageContextInit)
+   -   const { httpResponse } = pageContext
+   -   if (!httpResponse) {
+   -     return next()
+   -   } else {
+   -     const { statusCode, headers } = httpResponse
+   -     headers.forEach(([name, value]) => res.setHeader(name, value))
+   -     res.status(statusCode)
+   -     httpResponse.pipe(res)
+   -   }
+   - })
+
+   + app.use(vike())
+
+   ```
