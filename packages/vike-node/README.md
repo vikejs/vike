@@ -13,7 +13,7 @@ In development, the server process is restarted when a change is detected in som
 
 [Installation](#installation)  
 [Standalone build](#standalone-build)  
-[Native packages](#native-packages)  
+[External packages](#external-packages)  
 [Framework examples](#framework-examples)  
 [Migration guide](#migration-guide)  
 
@@ -89,7 +89,7 @@ export default {
 }
 ```
 
-## Native packages:
+## External packages:
 
 Packages that import native binaries/custom assets need to be added to `external`.<br>
 When building with `standalone` enabled, `external` packages and their assets are copied to the output `dist` directory.<br>
