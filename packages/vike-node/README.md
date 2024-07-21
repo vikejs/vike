@@ -56,7 +56,10 @@ In development, the server process is restarted when a change is detected in som
 
    "scripts": {
    - "dev": "vite",
+   // Using Node
    + "dev": "vike",
+   // Using Bun
+   + "dev": "bun run --bun vike",
    }
    ```
 
