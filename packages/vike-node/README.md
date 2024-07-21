@@ -89,7 +89,7 @@ export default {
 }
 ```
 
-When standalone build is enabled, libraries that import native/external binaries need to be added to `external`.<br>
+When standalone build is enabled, packages that import native binaries/custom assets need to be added to `external`.<br>
 When building, `external` packages are analyzed and the required binaries copied to the output `dist` directory.<br>
 By default, the `external` setting includes:
 - `sharp`
