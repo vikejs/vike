@@ -1,4 +1,5 @@
 export default {
   passToClient: ['pageProps'],
-  clientRouting: true
+  clientRouting: true,
+  hydrationCanBeAborted: true
 }
