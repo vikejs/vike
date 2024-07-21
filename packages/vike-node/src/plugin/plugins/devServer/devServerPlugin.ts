@@ -33,8 +33,8 @@ export function devServerPlugin(): Plugin {
       resolvedConfig = getConfigVikeNode(config)
     },
 
-    hotUpdate(ctx) {
-      if (ctx.environment.name === 'ssr' && isImported(ctx.file)) {
+    handleHotUpdate(ctx) {
+      if (isImported(ctx.file)) {
         restartProcess()
       }
     },
@@ -55,9 +55,10 @@ export function devServerPlugin(): Plugin {
   }
 
   function isImported(id: string): boolean {
-    const moduleNode = viteDevServer.environments.ssr.moduleGraph.getModuleById(id)
-    assert(moduleNode)
-
+    const moduleNode = viteDevServer.moduleGraph.getModuleById(id)
+    if (!moduleNode) {
+      return false
+    }
     const modules = new Set([moduleNode])
     for (const module of modules) {
       if (module.file === entryAbs) return true
@@ -87,7 +88,7 @@ export function devServerPlugin(): Plugin {
   async function initializeServerEntry(vite: ViteDevServer) {
     assert(resolvedConfig.server)
     const index = resolvedConfig.server.entry.index
-    const indexResolved = await vite.environments.ssr.pluginContainer.resolveId(index)
+    const indexResolved = await vite.pluginContainer.resolveId(index)
     assert(indexResolved?.id)
     entryAbs = indexResolved.id
     vite.ssrLoadModule(entryAbs)

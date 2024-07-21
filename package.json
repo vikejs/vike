@@ -43,8 +43,7 @@
   "pnpm": {
     "overrides": {
       "vike": "link:./vike/",
-      "vike-node": "link:./packages/vike-node/",
-      "vite": "v6.0.0-alpha.18"
+      "vike-node": "link:./packages/vike-node/"
     }
   },
   "packageManager": "pnpm@9.2.0"
