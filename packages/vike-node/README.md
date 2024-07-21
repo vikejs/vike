@@ -150,12 +150,12 @@ Hattip:
 
 import { createServer } from '@hattip/adapter-node'
 import { compose } from '@hattip/compose'
-import vikeNode from 'vike-node/hattip'
+import vike from 'vike-node/hattip'
 
 startServer()
 
 async function startServer() {
-  const server = createServer(compose(vikeNode(), handler))
+  const server = createServer(compose(vike(), handler))
   const port = process.env.PORT || 3000
   server.listen(port)
   console.log(`Server running at http://localhost:${port}`)
@@ -172,7 +172,7 @@ Hono:
 
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import vikeNode from 'vike-node/hono'
+import vike from 'vike-node/hono'
 
 startServer()
 
@@ -180,7 +180,7 @@ async function startServer() {
   const app = new Hono()
   const port = process.env.PORT || 3000
 
-  app.use(vikeNode())
+  app.use(vike())
 
   serve({
     fetch: app.fetch,
