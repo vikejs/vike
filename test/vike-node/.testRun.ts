@@ -44,6 +44,23 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     const html = await fetchHtml('/')
     expect(html).toContain('<li>Buy bananas</li>')
   })
+
+  test('argon2', async () => {
+    await page.goto(`${getServerUrl()}/argon2`)
+    await page.fill('input[type="text"]', 'correct-password')
+    await autoRetry(async () => {
+      await page.click('button[type="submit"]')
+      expect(await page.textContent('body')).toContain('Valid password')
+    })
+  })
+
+  test('sharp', async () => {
+    await page.goto(`${getServerUrl()}/sharp`)
+    await autoRetry(async () => {
+      await page.click('button[type="button"]')
+      expect(await page.textContent('body')).toContain('240000 bytes')
+    })
+  })
 }
 
 async function getNumberOfItems() {

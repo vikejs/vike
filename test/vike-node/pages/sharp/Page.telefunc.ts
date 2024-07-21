@@ -13,7 +13,5 @@ async function onCreateImage() {
     .raw()
     .toBuffer()
 
-  console.log(imageData.byteLength)
-
-  return true
+  return imageData.byteLength
 }
