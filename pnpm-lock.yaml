@@ -1687,7 +1687,7 @@ importers:
       '@hattip/adapter-node':
         specifier: ^0.0.46
         version: 0.0.46
-      '@hattip/compose':
+      '@hattip/router':
         specifier: ^0.0.46
         version: 0.0.46
       '@hono/node-server':
@@ -3030,6 +3030,9 @@ packages:
 
   '@hattip/polyfills@0.0.46':
     resolution: {integrity: sha512-S+0lm8lDZrw5nT9QZwf9+3LukPL6z0kOgMFqW0xkCnJvzZ7NTmn/xc4SsOFD7bYZ4bH/Z4kdi5xw38hLyfMYOw==}
+
+  '@hattip/router@0.0.46':
+    resolution: {integrity: sha512-+cDVNElFOUqCf89aK2qJWck12U+i51JzW1q8KgEJCCCEbni2L6BIWjeJ+Cgxx80Mk27B+In3EdEOdX043qNGbA==}
 
   '@hattip/walk@0.0.46':
     resolution: {integrity: sha512-LFzLLNgEpf8ulR/ni/5IuQ1c3rTEDj7f9LD6xnMvlIZsYklRDFY6BmfcJTGMICVG3g0tOQjsAL0xkPPPGAv8WQ==}
@@ -8851,6 +8854,11 @@ snapshots:
       '@hattip/core': 0.0.46
       '@whatwg-node/fetch': 0.9.18
       node-fetch-native: 1.6.4
+
+  '@hattip/router@0.0.46':
+    dependencies:
+      '@hattip/compose': 0.0.46
+      '@hattip/core': 0.0.46
 
   '@hattip/walk@0.0.46':
     dependencies:

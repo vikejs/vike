@@ -160,19 +160,17 @@ Hattip:
 // server/index.js
 
 import { createServer } from '@hattip/adapter-node'
-import { compose } from '@hattip/compose'
+import { createRouter } from '@hattip/router'
 import vike from 'vike-node/hattip'
 
 startServer()
 
 async function startServer() {
-  const server = createServer(compose(vike(), handler))
+  const app = createRouter()
+  app.use(vike())
+  const server = createServer(app.buildHandler())
   const port = process.env.PORT || 3000
   server.listen(port, () => console.log(`Server running at http://localhost:${port}`))
-}
-
-function handler(ctx) {
-  console.log('My request handler')
 }
 ```
 

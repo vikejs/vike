@@ -17,7 +17,6 @@ function vike(options?: VikeOptions): MiddlewareHandler {
     })
     if (handled) {
       res.writeHead = (() => {}) as any
-      res.write = (() => {}) as any
       return new Response()
     } else {
       await next()

@@ -15,8 +15,7 @@ function vike(options?: VikeOptions): RequestHandler {
       platformRequest: ctx.request
     })
     if (handled) {
-      response.writeHead = (() => {}) as any
-      response.write = (() => {}) as any
+      response.setHeader = (() => {}) as any
       return new Response()
     }
   }
