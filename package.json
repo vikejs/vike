@@ -5,7 +5,7 @@
     "dev": "cd vike/ && pnpm run dev",
     "========= Build": "",
     "// Build Vike": "",
-    "build": "cd vike/ && pnpm run build",
+    "build": "pnpm --recursive --filter {/vike} --filter {packages/*} run build",
     "========= Test": "",
     "test": "vitest run && test-e2e && test-types",
     "test:units": "vitest --project unit",
@@ -42,7 +42,9 @@
   },
   "pnpm": {
     "overrides": {
-      "vike": "link:./vike/"
+      "vike": "link:./vike/",
+      "vike-node": "link:./packages/vike-node/",
+      "vite": "v6.0.0-alpha.18"
     }
   },
   "packageManager": "pnpm@9.2.0"

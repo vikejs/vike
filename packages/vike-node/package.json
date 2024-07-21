@@ -1,0 +1,61 @@
+{
+  "name": "vike-node",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./connect": "./dist/connect.js",
+    "./fastify": "./dist/fastify.js",
+    "./config": "./dist/+config.js",
+    "./plugin": "./dist/plugin/index.js",
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rm -rf dist/ && tsc",
+    "release": "release-me --git-prefix vike-node --changelog-dir packages/vike-node/ patch",
+    "release:commit": "release-me --git-prefix vike-node --changelog-dir packages/vike-node/ commit"
+  },
+  "dependencies": {
+    "@brillout/picocolors": "^1.0.10",
+    "@nitedani/shrink-ray-current": "^4.2.0",
+    "@vercel/nft": "^0.26.4",
+    "birpc": "^0.2.15",
+    "esbuild": "^0.19.0",
+    "sirv": "^2.0.0"
+  },
+  "peerDependencies": {
+    "vike": "^0.4.181",
+    "vite": "^5.2.6"
+  },
+  "devDependencies": {
+    "@brillout/release-me": "^0.1.14",
+    "@types/node": "^20.11.19",
+    "fastify": "^4.26.1",
+    "typescript": "^5.3.3",
+    "vike": "^0.4.162",
+    "vite": "^5.2.6"
+  },
+  "typesVersions": {
+    "*": {
+      "connect": [
+        "./dist/connect.d.ts"
+      ],
+      "fastify": [
+        "./dist/fastify.d.ts"
+      ],
+      "config": [
+        "./dist/+config.d.ts"
+      ],
+      "plugin": [
+        "./dist/plugin/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "repository": "https://github.com/vikejs/vike/tree/main/packages/vike-node",
+  "license": "MIT"
+}
