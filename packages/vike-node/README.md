@@ -187,7 +187,6 @@ startServer()
 function startServer() {
   const app = new Hono()
   app.use(vike())
-
   const port = +(process.env.PORT || 3000)
   serve(
     {
