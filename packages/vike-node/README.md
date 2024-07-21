@@ -13,6 +13,7 @@ In development, the server process is restarted when a change is detected in som
 
 [Installation](#installation)  
 [Standalone build](#standalone-build)  
+[Native packages](#native-packages)  
 [Framework examples](#framework-examples)  
 [Migration guide](#migration-guide)  
 
@@ -88,8 +89,10 @@ export default {
 }
 ```
 
-When standalone build is enabled, packages that import native binaries/custom assets need to be added to `external`.<br>
-When building, `external` packages are analyzed and the required binaries copied to the output `dist` directory.<br>
+## Native packages:
+
+Packages that import native binaries/custom assets need to be added to `external`.<br>
+When building with `standalone` enabled, `external` packages and their assets are copied to the output `dist` directory.<br>
 By default, the `external` setting includes:
 - `sharp`
 - `@prisma/client`
