@@ -186,14 +186,13 @@ startServer()
 
 async function startServer() {
   const app = new Hono()
-  const port = process.env.PORT || 3000
-
   app.use(vike())
 
+  const port = +(process.env.PORT || 3000)
   serve(
     {
       fetch: app.fetch,
-      port: +port,
+      port,
       // Needed for Bun
       overrideGlobalObjects: false
     },
