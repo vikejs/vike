@@ -5,6 +5,7 @@ import type { ConfigVikeNodeResolved } from '../../types.js'
 import { assert } from '../../utils/assert.js'
 import { getConfigVikeNode } from '../utils/getConfigVikeNode.js'
 import { logViteInfo } from '../utils/logVite.js'
+import { VITE_HMR_PATH } from '../../constants.js'
 
 let viteDevServer: ViteDevServer
 
@@ -12,7 +13,7 @@ export function devServerPlugin(): Plugin {
   let resolvedConfig: ConfigVikeNodeResolved
   let entryAbs: string
   const hmrServer = createServer()
-  const hmrPath = '/__vite_hmr'
+
   return {
     name: 'vite-node:devserver',
     apply: 'serve',
@@ -23,7 +24,7 @@ export function devServerPlugin(): Plugin {
         middlewareMode: true,
         hmr: {
           server: hmrServer,
-          path: hmrPath
+          path: VITE_HMR_PATH
         }
       }
     }),
@@ -69,7 +70,7 @@ export function devServerPlugin(): Plugin {
 
   function setupHMRMiddleware(vite: ViteDevServer) {
     vite.middlewares.use((req, _res, next) => {
-      if (req.url === hmrPath && req.headers['connection']?.toLowerCase() === 'upgrade') {
+      if (req.url === VITE_HMR_PATH && req.headers['connection']?.toLowerCase() === 'upgrade') {
         hmrServer.emit('upgrade', req, req.socket, Buffer.from(''))
       } else {
         next()

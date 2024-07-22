@@ -1,9 +1,11 @@
 export { connectToWeb }
 
-import { ServerResponse, type IncomingMessage } from 'node:http'
+import { OutgoingHttpHeader, OutgoingHttpHeaders, ServerResponse, type IncomingMessage } from 'node:http'
 import type { Socket } from 'node:net'
 import { Duplex, PassThrough, Readable } from 'node:stream'
 import { ConnectMiddleware } from './types.js'
+import { flattenHeaders } from './utils.js'
+import { assert } from '../utils/assert.js'
 
 type WebHandler = (request: Request) => Response | undefined | Promise<Response | undefined>
 
@@ -73,40 +75,40 @@ class ResponseWrapper extends ServerResponse {
 
   constructor(req: IncomingMessage) {
     super(req)
-    const passThrough = new PassThrough()
-    this.assignSocket(passThrough as any as Socket)
-    this.once('end', passThrough.end.bind(passThrough))
+    this.assignSocket(new PassThrough() as any as Socket)
+    this.once('finish', () => {
+      assert(this.socket)
+      this.socket.end()
+    })
   }
 
   write(chunk: any, encoding?: any, callback?: any) {
     super.write(chunk, encoding, callback)
-    setTimeout(() => {
-      this.resolveResponse()
-    }, 0)
+    this.resolveResponse()
     return true
   }
 
-  writeHead() {
-    setTimeout(() => {
-      this.resolveResponse()
-    }, 0)
-    return this
-  }
-
-  end(chunk?: any, encoding?: any, cb?: any) {
-    super.end(chunk, encoding, cb)
-    this.emit('end')
-    return this
-  }
-
-  // Express-compatible methods
-  status(code: number): this {
-    this.statusCode = code
-    return this
-  }
-
-  send(body: string | object | Buffer): this {
-    this.end(body)
+  writeHead(
+    statusCode: number,
+    statusMessage?: string | OutgoingHttpHeaders | OutgoingHttpHeader[] | undefined,
+    headers?: OutgoingHttpHeaders | OutgoingHttpHeader[] | undefined
+  ) {
+    // Don't write the actual headers to the response stream, instead we need to pass them to Response
+    // (don't call super.writeHead, because that could send the headers to the response stream)
+    this.statusCode = statusCode
+    if (typeof statusMessage === 'object') {
+      headers = statusMessage
+      statusMessage = undefined
+    }
+    if (headers) {
+      Object.entries(headers).forEach(([key, value]) => {
+        if (value !== undefined) {
+          this.setHeader(key, value)
+        }
+      })
+    }
+    // Send the headers now in the Response
+    this.resolveResponse()
     return this
   }
 
@@ -115,11 +117,23 @@ class ResponseWrapper extends ServerResponse {
       return
     }
     this.resolved = true
-    this.resolve!(
-      new Response(this.statusCode === 304 ? null : (Readable.toWeb(this.socket!) as ReadableStream), {
+    assert(this.resolve)
+    assert(this.socket)
+    this.resolve(
+      new Response(this.statusCode === 304 ? null : (Readable.toWeb(this.socket) as ReadableStream), {
         status: this.statusCode,
-        headers: this.getHeaders() as HeadersInit
+        headers: flattenHeaders(this.getHeaders())
       })
     )
+  }
+
+  // Express-compatible methods
+  status(code: number): this {
+    this.statusCode = code
+    return this
+  }
+  send(body: string | object | Buffer): this {
+    this.end(body)
+    return this
   }
 }

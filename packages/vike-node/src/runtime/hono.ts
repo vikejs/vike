@@ -5,6 +5,7 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { createHandler } from './handler.js'
 import type { VikeOptions } from './types.js'
 import { connectToWeb } from './web.js'
+import { VITE_HMR_PATH } from '../constants.js'
 
 /**
  * Creates a Vike middleware for Hono
@@ -17,7 +18,7 @@ function vike(options?: VikeOptions): MiddlewareHandler {
     const req = ctx.env.incoming as IncomingMessage
     const res = ctx.env.outgoing as ServerResponse
 
-    if (ctx.req.path === '/__vite_hmr' && ctx.req.header('connection') === 'Upgrade') {
+    if (ctx.req.path === VITE_HMR_PATH) {
       // Handle Vite HMR websocket proxy
       const handled = await handler({
         req,
@@ -25,7 +26,7 @@ function vike(options?: VikeOptions): MiddlewareHandler {
         platformRequest: ctx.req
       })
       if (handled) {
-        res.writeHead = (() => res) as any
+        res.writeHead = () => res
         return new Response()
       }
     } else {

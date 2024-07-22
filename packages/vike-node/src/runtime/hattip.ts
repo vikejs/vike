@@ -5,6 +5,7 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import { createHandler } from './handler.js'
 import type { VikeOptions } from './types.js'
 import { connectToWeb } from './web.js'
+import { VITE_HMR_PATH } from '../constants.js'
 
 /**
  * Creates a Vike middleware for HatTip
@@ -14,7 +15,7 @@ import { connectToWeb } from './web.js'
 function vike(options?: VikeOptions): RequestHandler {
   const handler = createHandler<Request>(options)
   return async function middleware(ctx) {
-    if (ctx.url.pathname === '/__vite_hmr' && ctx.request.headers.get('connection') === 'Upgrade') {
+    if (ctx.url.pathname === VITE_HMR_PATH) {
       // Handle Vite HMR websocket proxy
       const { request, response } = ctx.platform as { request: IncomingMessage; response: ServerResponse }
       const handled = await handler({
@@ -23,7 +24,7 @@ function vike(options?: VikeOptions): RequestHandler {
         platformRequest: ctx.request
       })
       if (handled) {
-        response.setHeader = (() => {}) as any
+        response.setHeader = () => response
         return new Response()
       }
     } else {

@@ -1,6 +1,6 @@
-export { groupHeaders, writeHttpResponse }
+export { flattenHeaders, groupHeaders, writeHttpResponse }
 
-import type { ServerResponse } from 'http'
+import type { OutgoingHttpHeaders, ServerResponse } from 'http'
 import { assert } from '../utils/assert.js'
 import type { VikeHttpResponse } from './types.js'
 
@@ -16,7 +16,7 @@ async function writeHttpResponse(httpResponse: VikeHttpResponse, res: ServerResp
   })
 }
 
-function groupHeaders(headers: [string, string][]) {
+function groupHeaders(headers: [string, string][]): [string, string | string[]][] {
   const grouped: { [key: string]: string | string[] } = {}
 
   headers.forEach(([key, value]) => {
@@ -35,4 +35,26 @@ function groupHeaders(headers: [string, string][]) {
 
   // Convert the object back to an array
   return Object.entries(grouped)
+}
+
+function flattenHeaders(headers: OutgoingHttpHeaders): [string, string][] {
+  const flatHeaders: [string, string][] = []
+
+  for (const [key, value] of Object.entries(headers)) {
+    if (value === undefined || value === null) {
+      continue
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => {
+        if (v != null) {
+          flatHeaders.push([key, String(v)])
+        }
+      })
+    } else {
+      flatHeaders.push([key, String(value)])
+    }
+  }
+
+  return flatHeaders
 }
