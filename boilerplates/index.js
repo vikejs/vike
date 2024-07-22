@@ -191,11 +191,11 @@ function initGitRepo(cwd) {
     execSync(
       [
         'git',
-        '-c user.name="Romuald Brillout"',
-        '-c user.email="vike@brillout.com"',
+        '-c user.name="Vike"',
+        '-c user.email="noreply@vikejs.dev"',
         'commit',
         '--no-gpg-sign',
-        '--message="Scaffold Vike app"'
+        '--message="scaffold Vike app"'
       ].join(' '),
       { cwd, stdio: 'ignore' }
     )
