@@ -11,15 +11,19 @@ import type { VikeOptions } from './types.js'
 function vike(options?: VikeOptions<FastifyRequest>): FastifyPluginCallback {
   const handler = createHandler(options)
   return function plugin(instance, _options, done) {
-    instance.get('*', (req, reply) =>
-      handler({
+    instance.get('*', async (req, reply) => {
+      await handler({
         req: req.raw,
         // FastifyServerResponse solves the following issue:
         // https://fastify.dev/docs/latest/Reference/Reply/#raw
         res: new FastifyServerResponse(req.raw, reply),
-        platformRequest: req
+        platformRequest: req,
+        next() {
+          reply.callNotFound()
+        }
       })
-    )
+    })
+
     done()
   }
 }
