@@ -1,11 +1,11 @@
 export { connectToWeb }
 
-import { OutgoingHttpHeader, OutgoingHttpHeaders, ServerResponse, type IncomingMessage } from 'node:http'
+import { ServerResponse, type IncomingMessage, type OutgoingHttpHeader, type OutgoingHttpHeaders } from 'node:http'
 import type { Socket } from 'node:net'
 import { Duplex, PassThrough, Readable } from 'node:stream'
-import { ConnectMiddleware } from './types.js'
-import { flattenHeaders } from './utils.js'
 import { assert } from '../utils/assert.js'
+import type { ConnectMiddleware } from './types.js'
+import { flattenHeaders } from './utils.js'
 
 type WebHandler = (request: Request) => Response | undefined | Promise<Response | undefined>
 
@@ -75,17 +75,15 @@ class ResponseWrapper extends ServerResponse {
 
   constructor(req: IncomingMessage) {
     super(req)
-    this.assignSocket(new PassThrough() as any as Socket)
+    this.assignSocket(new PassThrough() as Duplex as Socket)
     this.once('finish', () => {
       assert(this.socket)
       this.socket.end()
     })
-  }
-
-  write(chunk: any, encoding?: any, callback?: any) {
-    super.write(chunk, encoding, callback)
-    this.resolveResponse()
-    return true
+    assert(this.socket)
+    this.socket.on('drain', () => {
+      this.emit('drain')
+    })
   }
 
   writeHead(
