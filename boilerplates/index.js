@@ -192,7 +192,7 @@ function initGitRepo(cwd) {
       [
         'git',
         '-c user.name="Vike"',
-        '-c user.email="noreply@vike.dev"',
+        '-c user.email="no-reply@vike.dev"',
         'commit',
         '--no-gpg-sign',
         '--message="scaffold Vike app"'
