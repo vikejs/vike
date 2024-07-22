@@ -22,6 +22,10 @@ async function startServer() {
     return new Response(body, { headers: { 'content-type': contentType }, status: statusCode })
   })
 
+  app.use('*', async (ctx, next) => {
+    await next()
+    ctx.header('x-test', 'test')
+  })
   app.use(vike())
 
   serve(

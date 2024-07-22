@@ -21,6 +21,11 @@ async function startServer() {
     res.status(statusCode).type(contentType).send(body)
   })
 
+  app.addHook('onSend', (request, reply, payload, done) => {
+    reply.header('x-test', 'test')
+    done()
+  })
+
   app.register(vike())
   const port = process.env.PORT || 3000
   app.listen({ port: +port })

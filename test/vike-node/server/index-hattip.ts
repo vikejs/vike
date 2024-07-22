@@ -20,6 +20,11 @@ async function startServer() {
     const { body, statusCode, contentType } = httpResponse
     return new Response(body, { headers: { 'content-type': contentType }, status: statusCode })
   })
+  app.use('*', async (ctx) => {
+    const res = await ctx.next()
+    res.headers.append('x-test', 'test')
+    return res
+  })
   app.use(vike())
   const server = createServer(app.buildHandler())
   const port = process.env.PORT || 3000

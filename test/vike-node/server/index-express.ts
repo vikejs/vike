@@ -21,7 +21,10 @@ async function startServer() {
     const { body, statusCode, contentType } = httpResponse
     res.status(statusCode).type(contentType).send(body)
   })
-
+  app.use((req, res, next) => {
+    res.set('x-test', 'test')
+    next()
+  })
   app.use(vike())
   const port = process.env.PORT || 3000
   app.listen(port)

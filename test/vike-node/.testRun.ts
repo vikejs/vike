@@ -63,6 +63,26 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     })
   })
 
+  test('x-test header is present', async () => {
+    const response = await page.goto(`${getServerUrl()}/`)
+    const xTestHeader = await response.headerValue('x-test')
+    expect(xTestHeader).toBe('test')
+  })
+
+  if (!isProd)
+    test('vite hmr websocket', async () => {
+      const logs = []
+      page.on('console', (msg) => logs.push(msg.text()))
+
+      await page.goto(`${getServerUrl()}/`)
+
+      // Wait for the connection message
+      await autoRetry(async () => {
+        const connected = logs.some((log) => log.includes('[vite] connected.'))
+        expect(connected).toBe(true)
+      })
+    })
+
   if (isProd)
     test('Brotli compression and headers in production', async () => {
       const response = await page.goto(`${getServerUrl()}/`)
