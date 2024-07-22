@@ -23,13 +23,16 @@ export function createHandler<PlatformRequest>(options: VikeOptions<PlatformRequ
   return async function handler({
     req,
     res,
+    next,
     platformRequest
   }: {
     req: IncomingMessage
     res: ServerResponse
+    next?: (err?: unknown) => void
     platformRequest: PlatformRequest
   }): Promise<boolean> {
     if (req.method !== 'GET') {
+      next?.()
       return false
     }
 
@@ -49,7 +52,10 @@ export function createHandler<PlatformRequest>(options: VikeOptions<PlatformRequ
       }
     }
 
-    return renderPageAndRespond(req, res, platformRequest)
+    const handled = await renderPageAndRespond(req, res, platformRequest)
+    if (handled) return true
+    next?.()
+    return false
   }
 
   async function applyCompression(req: IncomingMessage, res: ServerResponse, shouldCache: boolean) {
