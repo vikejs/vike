@@ -2,8 +2,9 @@ export { connectToWeb }
 
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { Readable } from 'node:stream'
+import { createServerResponse } from './createServerResponse.js'
 import type { ConnectMiddleware } from './types.js'
-import { createServerResponse, flattenHeaders } from './utils.js'
+import { flattenHeaders } from './utils.js'
 
 type WebHandler = (request: Request) => Response | undefined | Promise<Response | undefined>
 
@@ -18,16 +19,18 @@ declare global {
 function connectToWeb(handler: ConnectMiddleware): WebHandler {
   return async (request: Request) => {
     const req = createIncomingMessage(request)
+    const { res, onReadable } = createServerResponse(req)
 
     return new Promise<Response | undefined>((resolve, reject) => {
-      const res = createServerResponse(req, ({ readable, headers, statusCode }) => {
+      ;(async () => {
+        const { readable, headers, statusCode } = await onReadable
         resolve(
           new Response(statusCode === 304 ? null : (Readable.toWeb(readable) as ReadableStream), {
             status: statusCode,
             headers: flattenHeaders(headers)
           })
         )
-      })
+      })()
 
       const next = (error?: unknown) => {
         if (error) {
