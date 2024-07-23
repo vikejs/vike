@@ -1,1 +1,1 @@
-export { vike, vike as default } from './runtime/connect.js'
+export { vike, vike as default } from './runtime/frameworks/connect.js'

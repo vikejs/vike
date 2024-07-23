@@ -26,6 +26,7 @@ async function startServer() {
     await next()
     ctx.header('x-test', 'test')
   })
+
   app.use(vike())
 
   serve(

@@ -1,1 +1,1 @@
-export { vike, vike as default } from './runtime/hono.js'
+export { vike, vike as default } from './runtime/frameworks/hono.js'

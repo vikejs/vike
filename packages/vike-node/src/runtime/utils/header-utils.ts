@@ -1,20 +1,6 @@
-export { flattenHeaders, groupHeaders, writeHttpResponse }
+export { flattenHeaders, groupHeaders }
 
-import { ServerResponse, type OutgoingHttpHeaders } from 'http'
-import { assert } from '../utils/assert.js'
-import type { VikeHttpResponse } from './types.js'
-
-async function writeHttpResponse(httpResponse: VikeHttpResponse, res: ServerResponse) {
-  assert(httpResponse)
-  const { statusCode, headers } = httpResponse
-  const groupedHeaders = groupHeaders(headers)
-  groupedHeaders.forEach(([name, value]) => res.setHeader(name, value))
-  res.statusCode = statusCode
-  httpResponse.pipe(res)
-  await new Promise<void>((resolve) => {
-    res.once('finish', resolve)
-  })
-}
+import type { OutgoingHttpHeaders } from 'http'
 
 function groupHeaders(headers: [string, string][]): [string, string | string[]][] {
   const grouped: { [key: string]: string | string[] } = {}

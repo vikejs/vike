@@ -7,7 +7,6 @@
   "exports": {
     "./connect": "./dist/connect.js",
     "./fastify": "./dist/fastify.js",
-    "./hattip": "./dist/hattip.js",
     "./hono": "./dist/hono.js",
     "./plugin": "./dist/plugin/index.js",
     ".": "./dist/index.js"
@@ -33,7 +32,6 @@
     "@brillout/release-me": "^0.1.14",
     "@types/node": "^20.11.19",
     "fastify": "^4.26.1",
-    "@hattip/compose": "^0.0.46",
     "hono": "^4.5.1",
     "typescript": "^5.3.3",
     "vike": "^0.4.162",
@@ -46,9 +44,6 @@
       ],
       "fastify": [
         "./dist/fastify.d.ts"
-      ],
-      "hattip": [
-        "./dist/hattip.d.ts"
       ],
       "hono": [
         "./dist/hono.d.ts"

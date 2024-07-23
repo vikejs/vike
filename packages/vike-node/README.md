@@ -154,7 +154,6 @@ app.use(
 `vike-node` includes middlewares for the most popular web frameworks:
 - Express
 - Fastify
-- Hattip
 - Hono
 
 Express:
@@ -188,25 +187,6 @@ function startServer() {
   app.register(vike())
   const port = process.env.PORT || 3000
   app.listen({ port: +port }, () => console.log(`Server running at http://localhost:${port}`))
-}
-```
-
-Hattip:
-```js
-// server/index.js
-
-import { createServer } from '@hattip/adapter-node'
-import { createRouter } from '@hattip/router'
-import vike from 'vike-node/hattip'
-
-startServer()
-
-function startServer() {
-  const app = createRouter()
-  app.use(vike())
-  const server = createServer(app.buildHandler())
-  const port = process.env.PORT || 3000
-  server.listen(port, () => console.log(`Server running at http://localhost:${port}`))
 }
 ```
 

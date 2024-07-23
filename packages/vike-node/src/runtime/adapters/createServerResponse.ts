@@ -10,7 +10,6 @@ function createServerResponse(incomingMessage: IncomingMessage) {
   const onReadable = new Promise<{ readable: PassThrough; headers: OutgoingHttpHeaders; statusCode: number }>(
     (resolve) => {
       passThrough.once('readable', () => {
-        res.writeHead(res.statusCode)
         resolve({ readable: passThrough, headers: res.getHeaders(), statusCode: res.statusCode })
       })
     }

@@ -5,7 +5,7 @@ import { renderPage } from 'vike/server'
 import { assert } from '../utils/assert.js'
 import { globalStore } from './globalStore.js'
 import type { ConnectMiddleware, VikeOptions } from './types.js'
-import { writeHttpResponse } from './utils.js'
+import { writeHttpResponse } from './utils/writeHttpResponse.js'
 
 const argv1 = process.argv[1]
 const entrypointDirAbs = argv1

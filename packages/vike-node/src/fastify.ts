@@ -1,1 +1,1 @@
-export { vike, vike as default } from './runtime/fastify.js'
+export { vike, vike as default } from './runtime/frameworks/fastify.js'

@@ -2,9 +2,9 @@ export { connectToWeb }
 
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { Readable } from 'node:stream'
+import type { ConnectMiddleware } from '../types.js'
+import { flattenHeaders } from '../utils/header-utils.js'
 import { createServerResponse } from './createServerResponse.js'
-import type { ConnectMiddleware } from './types.js'
-import { flattenHeaders } from './utils.js'
 
 type WebHandler = (request: Request) => Response | undefined | Promise<Response | undefined>
 
