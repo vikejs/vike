@@ -697,11 +697,6 @@ const headings = [
   },
   {
     level: 2,
-    title: '`clientOnly()`',
-    url: '/clientOnly'
-  },
-  {
-    level: 2,
     title: '`throw redirect()`',
     url: '/redirect'
   },
@@ -709,6 +704,16 @@ const headings = [
     level: 2,
     title: '`throw render()`',
     url: '/render'
+  },
+  {
+    level: 2,
+    title: '`clientOnly()`',
+    url: '/clientOnly'
+  },
+  {
+    level: 2,
+    title: '`modifyUrl()`',
+    url: '/modifyUrl'
   },
   {
     level: 4,

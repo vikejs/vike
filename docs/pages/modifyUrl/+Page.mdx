@@ -1,20 +1,20 @@
 import { Link } from '@brillout/docpress'
 
-The `modifyUrl()` function allows you to easily modify a URL.
+The `modifyUrl()` function allows you to manipulate URLs.
 
-It's usually used for extracting the locale from URLs, see example at <Link href="/i18n" />.
+> It's usually used for extracting the locale from URLs, see <Link href="/i18n" />.
 
 ```js
 import { modifyUrl } from 'vike/modifyUrl'
 
-const url = 'http://example.com:3000/en-US/hello/john?fruit=apple'
+const url = 'http://localhost:3000/en-US/hello/john?fruit=apple'
 const urlModified = modifyUrl(url, {
-  pathname: '/hello/john',
+  pathname: '/hello/john', // Removed en-US/
   protocol: 'https://',
-  hostname: 'example.us',
+  hostname: 'example.com',
   port: 3001
 })
-// https://example.us:3001/hello/john?fruit=apple
+// https://example.com:3001/hello/john?fruit=apple
 console.log(urlModified)
 ```
 

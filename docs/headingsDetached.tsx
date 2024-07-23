@@ -5,10 +5,6 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
-    title: '`modifyUrl()`',
-    url: '/modifyUrl'
-  },
-  {
     title: '`<Loading>`',
     url: '/Loading'
   },
