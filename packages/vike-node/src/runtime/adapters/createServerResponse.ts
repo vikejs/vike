@@ -2,14 +2,14 @@ export { createServerResponse }
 
 import { ServerResponse, type IncomingMessage, type OutgoingHttpHeader, type OutgoingHttpHeaders } from 'http'
 import { Socket } from 'net'
-import { PassThrough } from 'stream'
+import { PassThrough, Readable } from 'stream'
 import { createWriteOnlyStream } from './createWriteOnlyStream.js'
 
 /**
  * Creates a custom ServerResponse object that allows for intercepting and streaming the response.
  *
  * @param {IncomingMessage} incomingMessage - The incoming HTTP request message.
- * @returns {{ res: ServerResponse; onReadable: Promise<{ readable: PassThrough; headers: OutgoingHttpHeaders; statusCode: number }> }}
+ * @returns {{ res: ServerResponse; onReadable: Promise<{ readable: Readable; headers: OutgoingHttpHeaders; statusCode: number }> }}
  * An object containing:
  *   - res: The custom ServerResponse object.
  *   - onReadable: A promise that resolves when the response is readable, providing the readable stream, headers, and status code.
@@ -19,10 +19,10 @@ function createServerResponse(incomingMessage: IncomingMessage) {
   const passThrough = new PassThrough()
   // Adds compatibility for downstream websocket handlers (res.socket)
   res.assignSocket(createWriteOnlyStream(passThrough) as Socket)
-  const onReadable = new Promise<{ readable: PassThrough; headers: OutgoingHttpHeaders; statusCode: number }>(
+  const onReadable = new Promise<{ readable: Readable; headers: OutgoingHttpHeaders; statusCode: number }>(
     (resolve, reject) => {
       passThrough.once('readable', () => {
-        resolve({ readable: passThrough, headers: res.getHeaders(), statusCode: res.statusCode })
+        resolve({ readable: Readable.from(passThrough), headers: res.getHeaders(), statusCode: res.statusCode })
       })
       passThrough.once('error', (err) => {
         reject(err)
