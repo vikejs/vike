@@ -932,8 +932,8 @@ importers:
         version: 2.0.4
     devDependencies:
       '@brillout/release-me':
-        specifier: ^0.1.14
-        version: 0.1.15
+        specifier: ^0.3.9
+        version: 0.3.9
       '@types/node':
         specifier: ^20.11.19
         version: 20.13.0
@@ -2008,7 +2008,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '*'
-      vike: link:/home/dani/projects/vike/vike/
+      vike: link:/home/nitedani/projects/vike/vike/
       vite: '>=5.2.0'
 
   '@brillout/import@0.2.3':
@@ -2031,10 +2031,6 @@ packages:
 
   '@brillout/picocolors@1.0.14':
     resolution: {integrity: sha512-XhyZY3/FUh56mDuLIjv5kN9qy+oQj7A/d2uQ6cJJ4uVv55+velua3abcrM5WIvs2RHZGA3EE7S9FWo+TjF10ew==}
-
-  '@brillout/release-me@0.1.15':
-    resolution: {integrity: sha512-dufP72aSrPoO/iKwHqBs/xiLD01OzUofp1XkTHt3gGhPHUzvxRiLfsGllT/uOemjzEIhSxBOYiwmRE/Q8tN5kw==}
-    hasBin: true
 
   '@brillout/release-me@0.3.9':
     resolution: {integrity: sha512-7Q9YD+rnVF9hFmRFNSEePAejYSgZzWABJTA5sFrfD1utREt5K8aokoldvm/WES83SOMIkPO97c2kII9J4snc7Q==}
@@ -7613,14 +7609,14 @@ packages:
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
-      vike: link:/home/dani/projects/vike/vike/
+      vike: link:/home/nitedani/projects/vike/vike/
 
   vike-react@0.4.16:
     resolution: {integrity: sha512-lawyL8HHjVgDNwPRp21qsmOLHokGdjElm6zgKaVg0ul5Dcv6JxglaTfqq5P8NU6V8MW4vYd7WqxSpv64iscu4Q==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/dani/projects/vike/vike/
+      vike: link:/home/nitedani/projects/vike/vike/
       vite: '>=4.3.8'
 
   vike-react@0.4.17:
@@ -7628,7 +7624,7 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/dani/projects/vike/vike/
+      vike: link:/home/nitedani/projects/vike/vike/
       vite: '>=4.3.8'
 
   vite-node@1.6.0:
@@ -8206,15 +8202,6 @@ snapshots:
   '@brillout/picocolors@1.0.13': {}
 
   '@brillout/picocolors@1.0.14': {}
-
-  '@brillout/release-me@0.1.15':
-    dependencies:
-      commander: 11.1.0
-      conventional-changelog: 5.1.0
-      execa: 5.1.1
-      js-yaml: 4.1.0
-      picocolors: 1.0.1
-      semver: 7.6.2
 
   '@brillout/release-me@0.3.9':
     dependencies:
