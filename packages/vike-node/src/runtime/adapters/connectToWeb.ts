@@ -6,22 +6,34 @@ import type { ConnectMiddleware } from '../types.js'
 import { flattenHeaders } from '../utils/header-utils.js'
 import { createServerResponse } from './createServerResponse.js'
 
+/** Type definition for a web-compatible request handler */
 type WebHandler = (request: Request) => Response | undefined | Promise<Response | undefined>
 
+/**
+ * Converts a Connect-style middleware to a web-compatible request handler.
+ *
+ * @param {ConnectMiddleware} handler - The Connect-style middleware function to be converted.
+ * @returns {WebHandler} A function that handles web requests and returns a Response or undefined.
+ */
 function connectToWeb(handler: ConnectMiddleware): WebHandler {
-  return async (request: Request) => {
+  return async (request: Request): Promise<Response | undefined> => {
     const req = createIncomingMessage(request)
     const { res, onReadable } = createServerResponse(req)
 
     return new Promise<Response | undefined>((resolve, reject) => {
       ;(async () => {
-        const { readable, headers, statusCode } = await onReadable
-        resolve(
-          new Response(statusCode === 304 ? null : (Readable.toWeb(readable) as ReadableStream), {
-            status: statusCode,
-            headers: flattenHeaders(headers)
-          })
-        )
+        try {
+          const { readable, headers, statusCode } = await onReadable
+          const responseBody = statusCode === 304 ? null : (Readable.toWeb(readable) as ReadableStream)
+          resolve(
+            new Response(responseBody, {
+              status: statusCode,
+              headers: flattenHeaders(headers)
+            })
+          )
+        } catch (error) {
+          reject(error instanceof Error ? error : new Error('Error creating response'))
+        }
       })()
 
       const next = (error?: unknown) => {
@@ -38,13 +50,23 @@ function connectToWeb(handler: ConnectMiddleware): WebHandler {
         reject(error instanceof Error ? error : new Error(String(error)))
       }
 
-      request.signal.addEventListener('abort', () => {
-        resolve(undefined)
-      })
+      request.signal.addEventListener(
+        'abort',
+        () => {
+          resolve(undefined)
+        },
+        { once: true }
+      )
     })
   }
 }
 
+/**
+ * Creates an IncomingMessage object from a web Request.
+ *
+ * @param {Request} request - The web Request object.
+ * @returns {IncomingMessage} An IncomingMessage-like object compatible with Node.js HTTP module.
+ */
 function createIncomingMessage(request: Request): IncomingMessage {
   const parsedUrl = new URL(request.url)
   const pathnameAndQuery = (parsedUrl.pathname || '') + (parsedUrl.search || '')

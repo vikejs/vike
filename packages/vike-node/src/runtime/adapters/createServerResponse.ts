@@ -2,7 +2,8 @@ export { createServerResponse }
 
 import { ServerResponse, type IncomingMessage, type OutgoingHttpHeader, type OutgoingHttpHeaders } from 'http'
 import { Socket } from 'net'
-import { Duplex, PassThrough } from 'stream'
+import { PassThrough } from 'stream'
+import { createWriteOnlyStream } from './createWriteOnlyStream.js'
 
 /**
  * Creates a custom ServerResponse object that allows for intercepting and streaming the response.
@@ -17,11 +18,7 @@ function createServerResponse(incomingMessage: IncomingMessage) {
   const res = new ServerResponse(incomingMessage)
   const passThrough = new PassThrough()
   // Adds compatibility for downstream websocket handlers (res.socket)
-  const socket = Duplex.from({
-    readable: incomingMessage,
-    writable: passThrough
-  })
-  res.assignSocket(socket as Socket)
+  res.assignSocket(createWriteOnlyStream(passThrough) as Socket)
   const onReadable = new Promise<{ readable: PassThrough; headers: OutgoingHttpHeaders; statusCode: number }>(
     (resolve, reject) => {
       passThrough.once('readable', () => {
