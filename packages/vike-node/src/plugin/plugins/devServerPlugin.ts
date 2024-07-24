@@ -1,5 +1,5 @@
 import { ServerResponse, createServer, type IncomingMessage, type Server } from 'http'
-import { type Plugin, type ViteDevServer } from 'vite'
+import type { Plugin, ViteDevServer } from 'vite'
 import { globalStore } from '../../runtime/globalStore.js'
 import type { ConfigVikeNodeResolved } from '../../types.js'
 import { assert } from '../../utils/assert.js'
@@ -83,13 +83,16 @@ export function devServerPlugin(): Plugin {
     vite.ssrLoadModule(entryAbs)
   }
 
-  function HMRProxy(req_: IncomingMessage, res_: ServerResponse, next?: (err?: unknown) => void): boolean {
+  function HMRProxy(req: IncomingMessage, res: ServerResponse, next?: (err?: unknown) => void): boolean {
+    const canHandle = req.url === VITE_HMR_PATH
+    const isUpgrade = req.headers.upgrade === 'Upgrade'
     function nextIfCantHandle() {
-      if (req_.url !== VITE_HMR_PATH) {
-        next?.()
-        return false
-      }
-      return true
+      if (!canHandle) next?.()
+      return canHandle
+    }
+
+    if (canHandle && !isUpgrade) {
+      viteDevServer.middlewares(req, res)
     }
 
     if (setupHMRProxyDone) {
@@ -97,16 +100,12 @@ export function devServerPlugin(): Plugin {
     }
 
     setupHMRProxyDone = true
-    const server = (req_.socket as any).server as Server
+    const server = (req.socket as any).server as Server
     server.on('upgrade', (clientReq, clientSocket, wsHead) => {
       if (clientReq.url === VITE_HMR_PATH) {
         HMRServer.emit('upgrade', clientReq, clientSocket, wsHead)
       }
     })
-
-    if (req_.url === VITE_HMR_PATH) {
-      viteDevServer.middlewares(req_, res_)
-    }
 
     return nextIfCantHandle()
   }

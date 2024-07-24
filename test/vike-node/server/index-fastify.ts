@@ -1,3 +1,4 @@
+Error.stackTraceLimit = Infinity
 import fastify from 'fastify'
 import { telefunc } from 'telefunc'
 import { vike } from 'vike-node/fastify'

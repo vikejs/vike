@@ -2,14 +2,11 @@
   "name": "vike-node",
   "version": "0.1.0",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     "./connect": "./dist/connect.js",
     "./fastify": "./dist/fastify.js",
     "./hono": "./dist/hono.js",
-    "./plugin": "./dist/plugin/index.js",
-    ".": "./dist/index.js"
+    "./plugin": "./dist/plugin/index.js"
   },
   "scripts": {
     "dev": "tsc --watch",

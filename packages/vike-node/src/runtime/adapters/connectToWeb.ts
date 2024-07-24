@@ -1,20 +1,12 @@
 export { connectToWeb }
 
-import type { IncomingMessage, ServerResponse } from 'node:http'
+import type { IncomingMessage } from 'node:http'
 import { Readable } from 'node:stream'
 import type { ConnectMiddleware } from '../types.js'
 import { flattenHeaders } from '../utils/header-utils.js'
 import { createServerResponse } from './createServerResponse.js'
 
 type WebHandler = (request: Request) => Response | undefined | Promise<Response | undefined>
-
-const CTX = Symbol.for('__connectToWeb')
-
-declare global {
-  interface Request {
-    [CTX]?: { req: IncomingMessage; res: ServerResponse }
-  }
-}
 
 function connectToWeb(handler: ConnectMiddleware): WebHandler {
   return async (request: Request) => {

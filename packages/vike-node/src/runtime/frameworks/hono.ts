@@ -8,9 +8,20 @@ import { createHandler } from '../handler.js'
 import type { VikeOptions } from '../types.js'
 
 /**
- * Creates a Vike middleware for Hono
- * @param options Vike options
- * @returns A Hono middleware handler
+ * Creates a Hono middleware to handle Vike requests.
+ *
+ * @param {VikeOptions} [options] - Configuration options for Vike.
+ *
+ * @returns {MiddlewareHandler} A Hono middleware function that processes requests with Vike.
+ *
+ * @example
+ * ```js
+ * import { Hono } from 'hono'
+ * import { vike } from 'vike-node/hono'
+ *
+ * const app = new Hono()
+ * app.use('*', vike())
+ * ```
  */
 function vike(options?: VikeOptions): MiddlewareHandler {
   const handler = createHandler<HonoRequest>(options)

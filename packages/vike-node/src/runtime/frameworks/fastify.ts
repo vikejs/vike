@@ -6,6 +6,22 @@ import { globalStore } from '../globalStore.js'
 import { createHandler } from '../handler.js'
 import type { VikeOptions } from '../types.js'
 
+/**
+ * Creates a Fastify plugin to handle Vike requests.
+ *
+ * @param {VikeOptions<FastifyRequest>} [options] - Configuration options for Vike.
+ *
+ * @returns {FastifyPluginCallback} A Fastify plugin that handles all GET requests and processes them with Vike.
+ *
+ * @example
+ * ```js
+ * import fastify from 'fastify'
+ * import { vike } from 'vike-node/fastify'
+ *
+ * const app = fastify()
+ * app.register(vike())
+ * ```
+ */
 function vike(options?: VikeOptions<FastifyRequest>): FastifyPluginCallback {
   const handler = createHandler(options)
   return function plugin(instance, _options, done) {
