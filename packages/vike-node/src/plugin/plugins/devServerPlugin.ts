@@ -4,6 +4,7 @@ import { globalStore } from '../../runtime/globalStore.js'
 import type { ConfigVikeNodeResolved } from '../../types.js'
 import { assert } from '../../utils/assert.js'
 import { getConfigVikeNode } from '../utils/getConfigVikeNode.js'
+import { isBun } from '../utils/isBun.js'
 import { logViteInfo } from '../utils/logVite.js'
 
 let viteDevServer: ViteDevServer
@@ -13,22 +14,33 @@ export function devServerPlugin(): Plugin {
   let resolvedConfig: ConfigVikeNodeResolved
   let entryAbs: string
   let setupHMRProxyDone = false
-  const HMRServer = createServer()
+  let HMRServer: ReturnType<typeof createServer> | undefined
 
   return {
     name: 'vite-node:devserver',
     apply: 'serve',
     enforce: 'post',
 
-    config: () => ({
-      server: {
-        middlewareMode: true,
-        hmr: {
-          server: HMRServer,
-          path: VITE_HMR_PATH
+    config: () => {
+      if (!isBun) {
+        HMRServer = createServer()
+        return {
+          server: {
+            middlewareMode: true,
+            hmr: {
+              server: HMRServer,
+              path: VITE_HMR_PATH
+            }
+          }
         }
       }
-    }),
+
+      return {
+        server: {
+          middlewareMode: true
+        }
+      }
+    },
 
     configResolved(config) {
       resolvedConfig = getConfigVikeNode(config)
@@ -95,7 +107,7 @@ export function devServerPlugin(): Plugin {
       viteDevServer.middlewares(req, res)
     }
 
-    if (setupHMRProxyDone) {
+    if (!HMRServer || setupHMRProxyDone) {
       return nextIfCantHandle()
     }
 
@@ -103,6 +115,7 @@ export function devServerPlugin(): Plugin {
     const server = (req.socket as any).server as Server
     server.on('upgrade', (clientReq, clientSocket, wsHead) => {
       if (clientReq.url === VITE_HMR_PATH) {
+        assert(HMRServer)
         HMRServer.emit('upgrade', clientReq, clientSocket, wsHead)
       }
     })
