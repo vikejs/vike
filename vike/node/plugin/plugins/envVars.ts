@@ -20,6 +20,15 @@ const PUBLIC_ENV_WHITELIST = [
   'STORYBOOK'
 ]
 
+function isEnvNameInWhiteList(envName: string): boolean {
+  // OS Windows reserved PUBLIC env variable
+  
+  if(process.platform === 'win32' && envName === 'PUBLIC') {
+    return true;
+  }
+  return PUBLIC_ENV_WHITELIST.includes(envName);
+}
+
 function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>
   let config: ResolvedConfig
@@ -53,7 +62,7 @@ function envVarsPlugin(): Plugin {
           // Security check
           {
             const envStatement = getEnvStatement(envName)
-            const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
+            const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !isEnvNameInWhiteList(envName)
             if (isPrivate && isClientSide) {
               if (!code.includes(envStatement)) return
               const modulePath = getModuleFilePath(id, config)
