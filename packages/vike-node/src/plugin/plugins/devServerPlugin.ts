@@ -1,4 +1,4 @@
-import { ServerResponse, createServer, type IncomingMessage, type Server } from 'http'
+import { ServerResponse, createServer, type IncomingMessage } from 'http'
 import type { Plugin, ViteDevServer } from 'vite'
 import { globalStore } from '../../runtime/globalStore.js'
 import type { ConfigVikeNodeResolved } from '../../types.js'
@@ -13,7 +13,6 @@ const VITE_HMR_PATH = '/__vite_hmr'
 export function devServerPlugin(): Plugin {
   let resolvedConfig: ConfigVikeNodeResolved
   let entryAbs: string
-  let setupHMRProxyDone = false
   let HMRServer: ReturnType<typeof createServer> | undefined
 
   return {
@@ -22,22 +21,22 @@ export function devServerPlugin(): Plugin {
     enforce: 'post',
 
     config: () => {
-      if (!isBun) {
-        HMRServer = createServer()
+      if (isBun) {
         return {
           server: {
-            middlewareMode: true,
-            hmr: {
-              server: HMRServer,
-              path: VITE_HMR_PATH
-            }
+            middlewareMode: true
           }
         }
       }
 
+      HMRServer = createServer()
       return {
         server: {
-          middlewareMode: true
+          middlewareMode: true,
+          hmr: {
+            server: HMRServer,
+            path: VITE_HMR_PATH
+          }
         }
       }
     },
@@ -60,7 +59,12 @@ export function devServerPlugin(): Plugin {
 
       viteDevServer = vite
       globalStore.viteDevServer = vite
-      globalStore.HMRProxy = HMRProxy
+      if (!isBun) {
+        // With Bun, httpServer.on( "request", ... ) callback doesn't get called on websocket upgrade requests
+        // We fallback to using a second server for HMR, served by Vite on port 24678 (default)
+        globalStore.HMRProxy = HMRProxy
+      }
+      vite.middlewares.use(HMRProxy)
       patchViteServer(vite)
       initializeServerEntry(vite)
     }
@@ -95,32 +99,42 @@ export function devServerPlugin(): Plugin {
     vite.ssrLoadModule(entryAbs)
   }
 
+  /**
+   * HMRProxy: WebSocket Upgrade Handler for Hot Module Replacement (HMR)
+   *
+   * This function is primarily needed because the WHATWG Response object doesn't natively
+   * support returning a 101 (Switching Protocols) response along with a streaming WebSocket
+   * response body. It acts as a middleware to handle WebSocket upgrades for HMR connections.
+   *
+   * Use Case:
+   * - For frameworks that work with WHATWG Response objects (e.g., Hono, Hattip),
+   *   this middleware should be placed at the beginning of the Node.js http request pipeline.
+   * - For traditional Node.js frameworks (e.g., Express, Fastify), this middleware
+   *   is not necessary as they can handle WebSocket upgrades natively.
+   */
   function HMRProxy(req: IncomingMessage, res: ServerResponse, next?: (err?: unknown) => void): boolean {
-    const canHandle = req.url === VITE_HMR_PATH
-    const isUpgrade = req.headers.upgrade === 'Upgrade'
-    function nextIfCantHandle() {
-      if (!canHandle) next?.()
-      return canHandle
+    const canHandle = req.url === VITE_HMR_PATH && req.headers.upgrade === 'websocket'
+    if (!canHandle) {
+      next?.()
+      return false
     }
 
-    if (canHandle && !isUpgrade) {
-      viteDevServer.middlewares(req, res)
-    }
+    // Pause the socket to prevent data loss
+    req.socket.pause()
 
-    if (!HMRServer || setupHMRProxyDone) {
-      return nextIfCantHandle()
-    }
+    // Prepare the socket for upgrade
+    req.socket.setTimeout(0)
+    req.socket.setNoDelay(true)
+    req.socket.setKeepAlive(true, 0)
 
-    setupHMRProxyDone = true
-    const server = (req.socket as any).server as Server
-    server.on('upgrade', (clientReq, clientSocket, wsHead) => {
-      if (clientReq.url === VITE_HMR_PATH) {
-        assert(HMRServer)
-        HMRServer.emit('upgrade', clientReq, clientSocket, wsHead)
-      }
-    })
+    // Emit the upgrade event
+    assert(HMRServer)
+    HMRServer.emit('upgrade', req, req.socket, Buffer.alloc(0))
 
-    return nextIfCantHandle()
+    // Resume the socket
+    req.socket.resume()
+
+    return true
   }
 }
 

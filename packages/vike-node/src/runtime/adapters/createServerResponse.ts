@@ -1,9 +1,7 @@
 export { createServerResponse }
 
 import { ServerResponse, type IncomingMessage, type OutgoingHttpHeader, type OutgoingHttpHeaders } from 'http'
-import { Socket } from 'net'
 import { PassThrough, Readable } from 'stream'
-import { createWriteOnlyStream } from './createWriteOnlyStream.js'
 
 /**
  * Creates a custom ServerResponse object that allows for intercepting and streaming the response.
@@ -17,8 +15,6 @@ import { createWriteOnlyStream } from './createWriteOnlyStream.js'
 function createServerResponse(incomingMessage: IncomingMessage) {
   const res = new ServerResponse(incomingMessage)
   const passThrough = new PassThrough()
-  // Adds compatibility for downstream websocket handlers (res.socket)
-  res.assignSocket(createWriteOnlyStream(passThrough) as Socket)
   const onReadable = new Promise<{ readable: Readable; headers: OutgoingHttpHeaders; statusCode: number }>(
     (resolve, reject) => {
       passThrough.once('readable', () => {
@@ -67,7 +63,13 @@ function createServerResponse(incomingMessage: IncomingMessage) {
   }
 
   return {
-    res,
+    res: new Proxy(res, {
+      get: (target, prop) => {
+        // Needed for downstream websocket compatibility (res.socket)
+        if (prop === 'socket') return incomingMessage.socket
+        return Reflect.get(target, prop)
+      }
+    }),
     onReadable
   }
 }

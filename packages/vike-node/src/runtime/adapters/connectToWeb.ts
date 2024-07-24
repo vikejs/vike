@@ -1,13 +1,24 @@
 export { connectToWeb }
 
 import type { IncomingMessage } from 'node:http'
-import { Readable } from 'node:stream'
+import { Socket } from 'node:net'
+import { Duplex, Readable } from 'node:stream'
 import type { ConnectMiddleware } from '../types.js'
 import { flattenHeaders } from '../utils/header-utils.js'
 import { createServerResponse } from './createServerResponse.js'
 
 /** Type definition for a web-compatible request handler */
 type WebHandler = (request: Request) => Response | undefined | Promise<Response | undefined>
+
+const statusCodesWithoutBody = [
+  100, // Continue
+  101, // Switching Protocols
+  102, // Processing (WebDAV)
+  103, // Early Hints
+  204, // No Content
+  205, // Reset Content
+  304 // Not Modified
+]
 
 /**
  * Converts a Connect-style middleware to a web-compatible request handler.
@@ -24,7 +35,9 @@ function connectToWeb(handler: ConnectMiddleware): WebHandler {
       ;(async () => {
         try {
           const { readable, headers, statusCode } = await onReadable
-          const responseBody = statusCode === 304 ? null : (Readable.toWeb(readable) as ReadableStream)
+          const responseBody = statusCodesWithoutBody.includes(statusCode)
+            ? null
+            : (Readable.toWeb(readable) as ReadableStream)
           resolve(
             new Response(responseBody, {
               status: statusCode,

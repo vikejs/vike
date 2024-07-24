@@ -1,7 +1,6 @@
 export { vike }
 
 import type { IncomingMessage, ServerResponse } from 'http'
-import { globalStore } from '../globalStore.js'
 import { createHandler } from '../handler.js'
 import type { NextFunction, VikeOptions } from '../types.js'
 
@@ -13,10 +12,11 @@ import type { NextFunction, VikeOptions } from '../types.js'
  *
  * @param {VikeOptions<PlatformRequest>} [options] - Configuration options for Vike.
  *
- * @returns {Array<(req: PlatformRequest, res: PlatformResponse, next?: NextFunction) => void>}
- * An array of middleware functions:
- * - The first element is the HMR proxy middleware.
- * - The second element is the main Vike request handler middleware.
+ * @returns {(req: PlatformRequest, res: PlatformResponse, next?: NextFunction) => void}
+ * A single middleware function that handles Vike requests. This function:
+ * 1. Checks for and handles HMR WebSocket upgrade requests.
+ * 2. Processes regular requests using Vike's handler.
+ * 3. Calls the next middleware if the request is not handled by Vike.
  *
  * @example
  * ```js
@@ -26,20 +26,18 @@ import type { NextFunction, VikeOptions } from '../types.js'
  * const app = express()
  * app.use(vike())
  * ```
+ *
  */
 function vike<PlatformRequest extends IncomingMessage, PlatformResponse extends ServerResponse>(
   options?: VikeOptions<PlatformRequest>
-): ((req: PlatformRequest, res: PlatformResponse, next?: NextFunction) => void)[] {
+): (req: PlatformRequest, res: PlatformResponse, next?: NextFunction) => void {
   const handler = createHandler(options)
-  return [
-    globalStore.HMRProxy,
-    (req, res, next) => {
-      handler({
-        req,
-        res,
-        next,
-        platformRequest: req
-      })
-    }
-  ]
+  return (req, res, next) => {
+    handler({
+      req,
+      res,
+      next,
+      platformRequest: req
+    })
+  }
 }
