@@ -22,11 +22,10 @@ const PUBLIC_ENV_WHITELIST = [
 
 function isEnvNameInWhiteList(envName: string): boolean {
   // OS Windows reserved PUBLIC env variable
-  
-  if(process.platform === 'win32' && envName === 'PUBLIC') {
-    return true;
+  if (process.platform === 'win32' && envName === 'PUBLIC') {
+    return true
   }
-  return PUBLIC_ENV_WHITELIST.includes(envName);
+  return PUBLIC_ENV_WHITELIST.includes(envName)
 }
 
 function envVarsPlugin(): Plugin {
