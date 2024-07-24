@@ -63,13 +63,7 @@ function createServerResponse(incomingMessage: IncomingMessage) {
   }
 
   return {
-    res: new Proxy(res, {
-      get: (target, prop) => {
-        // Needed for downstream websocket compatibility (res.socket)
-        if (prop === 'socket') return incomingMessage.socket
-        return Reflect.get(target, prop)
-      }
-    }),
+    res,
     onReadable
   }
 }

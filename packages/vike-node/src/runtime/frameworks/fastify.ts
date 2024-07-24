@@ -4,6 +4,7 @@ import type { FastifyPluginCallback, FastifyRequest } from 'fastify'
 import { createServerResponse } from '../adapters/createServerResponse.js'
 import { createHandler } from '../handler.js'
 import type { VikeOptions } from '../types.js'
+import { globalStore } from '../globalStore.js'
 
 /**
  * Creates a Fastify plugin to handle Vike requests and Hot Module Replacement (HMR).
@@ -33,6 +34,10 @@ function vike(options?: VikeOptions<FastifyRequest>): FastifyPluginCallback {
   const handler = createHandler(options)
   return function plugin(instance, _options, done) {
     instance.get('*', async (req, reply) => {
+      const handled = globalStore.HMRProxy(req.raw, reply.raw)
+      if (handled) {
+        return
+      }
       const { res, onReadable } = createServerResponse(req.raw)
       ;(async () => {
         const { readable, headers, statusCode } = await onReadable

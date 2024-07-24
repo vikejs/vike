@@ -59,12 +59,7 @@ export function devServerPlugin(): Plugin {
 
       viteDevServer = vite
       globalStore.viteDevServer = vite
-      if (!isBun) {
-        // With Bun, httpServer.on( "request", ... ) callback doesn't get called on websocket upgrade requests
-        // We fallback to using a second server for HMR, served by Vite on port 24678 (default)
-        globalStore.HMRProxy = HMRProxy
-      }
-      vite.middlewares.use(HMRProxy)
+      globalStore.HMRProxy = HMRProxy
       patchViteServer(vite)
       initializeServerEntry(vite)
     }
@@ -99,19 +94,6 @@ export function devServerPlugin(): Plugin {
     vite.ssrLoadModule(entryAbs)
   }
 
-  /**
-   * HMRProxy: WebSocket Upgrade Handler for Hot Module Replacement (HMR)
-   *
-   * This function is primarily needed because the WHATWG Response object doesn't natively
-   * support returning a 101 (Switching Protocols) response along with a streaming WebSocket
-   * response body. It acts as a middleware to handle WebSocket upgrades for HMR connections.
-   *
-   * Use Case:
-   * - For frameworks that work with WHATWG Response objects (e.g., Hono, Hattip),
-   *   this middleware should be placed at the beginning of the Node.js http request pipeline.
-   * - For traditional Node.js frameworks (e.g., Express, Fastify), this middleware
-   *   is not necessary as they can handle WebSocket upgrades natively.
-   */
   function HMRProxy(req: IncomingMessage, res: ServerResponse, next?: (err?: unknown) => void): boolean {
     const canHandle = req.url === VITE_HMR_PATH && req.headers.upgrade === 'websocket'
     if (!canHandle) {
@@ -123,6 +105,7 @@ export function devServerPlugin(): Plugin {
     req.socket.pause()
 
     // Prepare the socket for upgrade
+    res.detachSocket(req.socket)
     req.socket.setTimeout(0)
     req.socket.setNoDelay(true)
     req.socket.setKeepAlive(true, 0)

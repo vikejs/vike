@@ -3,6 +3,7 @@ export { vike }
 import type { IncomingMessage, ServerResponse } from 'http'
 import { createHandler } from '../handler.js'
 import type { NextFunction, VikeOptions } from '../types.js'
+import { globalStore } from '../globalStore.js'
 
 /**
  * Creates middleware for Express-like frameworks to handle Vike requests.
@@ -33,6 +34,12 @@ function vike<PlatformRequest extends IncomingMessage, PlatformResponse extends 
 ): (req: PlatformRequest, res: PlatformResponse, next?: NextFunction) => void {
   const handler = createHandler(options)
   return (req, res, next) => {
+    const handled = globalStore.HMRProxy(req, res)
+    if (handled) {
+      next?.()
+      return
+    }
+
     handler({
       req,
       res,
