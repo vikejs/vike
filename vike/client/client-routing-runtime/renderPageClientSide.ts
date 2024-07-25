@@ -72,9 +72,11 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isClientSideNavigation = true
   } = renderArgs
 
-  // isHydrationRender <=> the first render attempt
-  const { isRenderOutdated, setHydrationCanBeAborted, isHydrationRender } = getIsRenderOutdated()
-  assert(isClientSideNavigation === !isHydrationRender) // isHydrationRender === (renderNumber === 1)
+  const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
+  // Note that pageContext.isHydration isn't equivalent to isFirstRender
+  // - Thus pageContext.isHydration isn't equivalent to !pageContext.isClientSideNavigation
+  // - `pageContext.isHydration === !isFirstRender && !isErrorPage`
+  assert(isClientSideNavigation === !isFirstRender)
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
   if (globalObject.clientRoutingIsDisabled) {
@@ -120,7 +122,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // Route
     let pageContextRouted: { _pageId: string; routeParams: Record<string, string> }
-    if (isHydrationRender) {
+    if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       pageContextRouted = pageContextSerialized
     } else {
@@ -163,7 +165,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
       )
     } catch (err) {
-      if (handleErrorFetchingStaticAssets(err, pageContext, isHydrationRender)) {
+      if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
         return
       } else {
         // A user file has a syntax error
@@ -187,7 +189,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if (isRenderOutdated()) return
 
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
-    if (isHydrationRender) {
+    if (isFirstRender) {
       assert(hasProp(pageContext, '_hasPageContextFromServer', 'true'))
       let pageContextAugmented: Awaited<ReturnType<typeof getPageContextFromHooks_isHydration>>
       try {
@@ -330,7 +332,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
       )
     } catch (err) {
-      if (handleErrorFetchingStaticAssets(err, pageContext, isHydrationRender)) {
+      if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
         return
       } else {
         // A user file has a syntax error
@@ -404,7 +406,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     addLinkPrefetchHandlers(pageContext)
 
     // onHydrationEnd()
-    if (isHydrationRender && !onRenderClientError) {
+    if (isFirstRender && !onRenderClientError) {
       assertHook(pageContext, 'onHydrationEnd')
       const hook = getHook(pageContext, 'onHydrationEnd')
       if (hook) {
@@ -458,13 +460,13 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
 function handleErrorFetchingStaticAssets(
   err: unknown,
   pageContext: { urlOriginal: string },
-  isHydrationRender: boolean
+  isFirstRender: boolean
 ): boolean {
   if (!isErrorFetchingStaticAssets(err)) {
     return false
   }
 
-  if (isHydrationRender) {
+  if (isFirstRender) {
     disableClientRouting(err, false)
     // This may happen if the frontend was newly deployed during hydration.
     // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
@@ -514,10 +516,10 @@ function getIsRenderOutdated() {
 
   /** Whether the rendering should be aborted because a new rendering has started. We should call this after each `await`. */
   const isRenderOutdated = (isRenderCleanup?: true) => {
-    // Never abort hydration if `hydrationCanBeAborted` isn't `true`
+    // Never abort first render if `hydrationCanBeAborted` isn't `true`
     {
-      const isHydration = renderNumber === 1
-      if (isHydration && !hydrationCanBeAborted && !isRenderCleanup) {
+      const isFirstRender = renderNumber === 1
+      if (isFirstRender && !hydrationCanBeAborted && !isRenderCleanup) {
         return false
       }
     }
@@ -529,7 +531,7 @@ function getIsRenderOutdated() {
   return {
     isRenderOutdated,
     setHydrationCanBeAborted,
-    isHydrationRender: renderNumber === 1
+    isFirstRender: renderNumber === 1
   }
 }
 

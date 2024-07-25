@@ -1788,8 +1788,8 @@ importers:
         specifier: ^1.5.3
         version: 1.7.3
       '@brillout/release-me':
-        specifier: ^0.3.8
-        version: 0.3.9
+        specifier: ^0.4.0
+        version: 0.4.0
       '@types/estree':
         specifier: ^1.0.5
         version: 1.0.5
@@ -2008,7 +2008,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '*'
-      vike: link:/home/nitedani/projects/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.2.0'
 
   '@brillout/import@0.2.3':
@@ -2036,8 +2036,8 @@ packages:
     resolution: {integrity: sha512-Fi1HirObB31ZWTJKyb4TC4wYyP3FgWTuKuMvuCx2nodphQu0zGackTQrHWtH1suQxovjKTnyF+if0TKDYyy18A==}
     hasBin: true
 
-  '@brillout/release-me@0.3.9':
-    resolution: {integrity: sha512-7Q9YD+rnVF9hFmRFNSEePAejYSgZzWABJTA5sFrfD1utREt5K8aokoldvm/WES83SOMIkPO97c2kII9J4snc7Q==}
+  '@brillout/release-me@0.4.0':
+    resolution: {integrity: sha512-V4YwITguHK3zOy9B4606lc9PQiFDp3p3Ifeq4KF7V8o9fs7OmcrfTWBE0EWFtiLhG2JeKb2RzM0t6Y4tLgXd6w==}
     hasBin: true
 
   '@brillout/require-shim@0.1.2':
@@ -7613,14 +7613,14 @@ packages:
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
-      vike: link:/home/nitedani/projects/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
 
   vike-react@0.4.16:
     resolution: {integrity: sha512-lawyL8HHjVgDNwPRp21qsmOLHokGdjElm6zgKaVg0ul5Dcv6JxglaTfqq5P8NU6V8MW4vYd7WqxSpv64iscu4Q==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/nitedani/projects/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=4.3.8'
 
   vike-react@0.4.17:
@@ -7628,7 +7628,7 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/nitedani/projects/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=4.3.8'
 
   vite-node@1.6.0:
@@ -8215,7 +8215,7 @@ snapshots:
       execa: 5.1.1
       semver: 7.6.2
 
-  '@brillout/release-me@0.3.9':
+  '@brillout/release-me@0.4.0':
     dependencies:
       '@brillout/picocolors': 1.0.14
       commander: 11.1.0

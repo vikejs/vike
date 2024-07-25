@@ -219,7 +219,7 @@ export { onBeforeRender }
 
 import type { OnBeforeRenderAsync } from 'vike/types'
 
-const onBeforeRender: OnBeforeRenderAsync = async (
+export const onBeforeRender: OnBeforeRenderAsync = async (
   pageContext
 ): ReturnType<OnBeforeRenderAsync> => {
   // ...
