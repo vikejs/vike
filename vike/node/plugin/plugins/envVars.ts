@@ -50,9 +50,10 @@ function envVarsPlugin(): Plugin {
           return !envPrefix.some((prefix) => key.startsWith(prefix))
         })
         .forEach(([envName, envVal]) => {
+          const envStatement = `import.meta.env.${envName}` as const
+          const envStatementRegEx = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
           // Security check
           {
-            const envStatement = getEnvStatement(envName)
             const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
             if (isPrivate && isClientSide) {
               if (!code.includes(envStatement)) return
@@ -74,7 +75,7 @@ function envVarsPlugin(): Plugin {
           }
 
           // Apply
-          code = applyEnvVar(envName, envVal, code)
+          code = applyEnvVar(envStatementRegEx, envVal, code)
         })
 
       // Line numbers didn't change.
@@ -85,13 +86,8 @@ function envVarsPlugin(): Plugin {
     }
   }
 }
-function applyEnvVar(envName: string, envVal: string, code: string) {
-  const envStatement = getEnvStatement(envName)
-  const regex = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
-  return code.replace(regex, JSON.stringify(envVal))
-}
-function getEnvStatement(envName: string) {
-  return `import.meta.env.${envName}` as const
+function applyEnvVar(envStatementRegEx: RegExp, envVal: string, code: string) {
+  return code.replace(envStatementRegEx, JSON.stringify(envVal))
 }
 
 function getIsClientSide(config: ResolvedConfig, options?: { ssr?: boolean }): boolean {
