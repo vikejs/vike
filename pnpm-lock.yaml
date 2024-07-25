@@ -932,7 +932,7 @@ importers:
         version: 2.0.4
     devDependencies:
       '@brillout/release-me':
-        specifier: 0.3.10
+        specifier: ^0.3.10
         version: 0.3.10
       '@types/node':
         specifier: ^20.11.19
