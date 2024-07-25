@@ -1,8 +1,5 @@
 export { envVarsPlugin }
 
-// For ./envVars.spec.ts
-export { applyEnvVar }
-
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
