@@ -1,5 +1,4 @@
-const PROJECT_VERSION = '0.4.181'
-
+import { PROJECT_VERSION } from './PROJECT_VERSION'
 export const projectInfo = {
   projectName: 'Vike' as const,
   projectVersion: PROJECT_VERSION,
