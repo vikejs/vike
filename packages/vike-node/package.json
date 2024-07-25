@@ -27,7 +27,7 @@
     "vite": "^5.0.10"
   },
   "devDependencies": {
-    "@brillout/release-me": "^0.3.10",
+    "@brillout/release-me": "^0.4.0",
     "@types/node": "^20.11.19",
     "fastify": "^4.26.1",
     "hono": "^4.5.1",
