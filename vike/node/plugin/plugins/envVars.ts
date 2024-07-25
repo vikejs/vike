@@ -49,11 +49,12 @@ function envVarsPlugin(): Plugin {
         .forEach(([envName, envVal]) => {
           const envStatement = `import.meta.env.${envName}` as const
           const envStatementRegEx = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
+
           // Security check
           {
             const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
             if (isPrivate && isClientSide) {
-              if (!code.includes(envStatement)) return
+              if (!envStatementRegEx.test(code)) return
               const modulePath = getModuleFilePath(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
               const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
