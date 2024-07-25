@@ -932,8 +932,8 @@ importers:
         version: 2.0.4
     devDependencies:
       '@brillout/release-me':
-        specifier: ^0.3.9
-        version: 0.3.9
+        specifier: 0.3.10
+        version: 0.3.10
       '@types/node':
         specifier: ^20.11.19
         version: 20.13.0
@@ -2031,6 +2031,10 @@ packages:
 
   '@brillout/picocolors@1.0.14':
     resolution: {integrity: sha512-XhyZY3/FUh56mDuLIjv5kN9qy+oQj7A/d2uQ6cJJ4uVv55+velua3abcrM5WIvs2RHZGA3EE7S9FWo+TjF10ew==}
+
+  '@brillout/release-me@0.3.10':
+    resolution: {integrity: sha512-Fi1HirObB31ZWTJKyb4TC4wYyP3FgWTuKuMvuCx2nodphQu0zGackTQrHWtH1suQxovjKTnyF+if0TKDYyy18A==}
+    hasBin: true
 
   '@brillout/release-me@0.3.9':
     resolution: {integrity: sha512-7Q9YD+rnVF9hFmRFNSEePAejYSgZzWABJTA5sFrfD1utREt5K8aokoldvm/WES83SOMIkPO97c2kII9J4snc7Q==}
@@ -8202,6 +8206,14 @@ snapshots:
   '@brillout/picocolors@1.0.13': {}
 
   '@brillout/picocolors@1.0.14': {}
+
+  '@brillout/release-me@0.3.10':
+    dependencies:
+      '@brillout/picocolors': 1.0.14
+      commander: 11.1.0
+      conventional-changelog: 5.1.0
+      execa: 5.1.1
+      semver: 7.6.2
 
   '@brillout/release-me@0.3.9':
     dependencies:
