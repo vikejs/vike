@@ -2,7 +2,169 @@ import { Link } from '@brillout/docpress'
 
 import { UiFrameworkExtension, ImplementedBy } from '../../components'
 
-Environment: server, client.
+Environment: server.
 <ImplementedBy noCustomGuide>the `Head` setting</ImplementedBy>
 
-TODO
+The `Head` setting allows you to add <Link href="/head">`<head>` tags</Link>.
+
+> As explained at <Link href="#only-html" />, the `<Head>` component is only used when rendering the HTML of the first page the user visits.
+>
+> Consequently, the `Head` setting cannot be used to set the `<title>` tag (unless you have only one title value that is the same for all pages).
+
+```jsx
+// /pages/+Head.jsx or
+// /pages/+Head.vue
+// Environment: server
+
+export { Head }
+
+import previewImage from '../assets/images/previewImage.jpg'
+import favicon from '../assets/images/favicon.png'
+import iconMobile from '../assets/images/iconMobile.png'
+
+function Head() {
+  return <>
+    {/* Add script tags */}
+    <script type="text/javascript" src="https://example.com/some-script.js"></script>
+
+    {/* Icon shown in the browser tab (aka favicon) */
+    <link rel="icon" href={favicon}>
+
+    {/* SMO: Icon shown on mobile homescreens (aka PWA) */
+    <link rel="apple-touch-icon" href={iconMobile}>
+
+    {/* SMO: image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
+    <meta property="og:image" content={previewImage}>
+  </>
+}
+```
+
+## Only HTML
+
+## Only for HTML
+
+## Only rendered to HTML
+
+**Only for the first page's HTML**
+
+The `<Head>` component is only used when rendering the HTML of the first page the user visits: the tags set by `<Head>` aren't updated upon <Link href="/client-routing">client-side page navigation</Link>.
+
+**Limitation**
+
+**Just a small limitation**
+
+This may seem like a strong limitation but it actually isn't: the vast majority of `<head>` tags are meant for HTML crawling.
+
+Let's consider the most common use cases for `<head>` tags:
+For example, you can still use `<Head>` setting to
+
+- Provide meta information to search engines bots (aka SEO) and social sharing bots (aka SMO), because these bots navigate your website only by using HTML requests: they don't execute client-side JavaScript and, consequently, don't do client-side navigation.
+  > While Google *can* do client-side navigation (in addition to its HTML crawling), it still discovers `<head>` tags by using its HTML crawling.
+- Setting the favicon (`<link rel="icon">`): assuming you have only one global favicon that applies to all pages (which is the case for the vast majority of websites) there isn't any need to update it upon client-side navigation.
+- Set PWA settings (e.g. ``), since they are global. (Like a global favicon, there isn't any need to update upon client-side navigation.)
+- Adding a `<script>` tag, assuming it applies to all pages.
+
+  > As explained at <Link href="#only-html" />, `<Head>` cannot be used set browser settings that aren't global (settings that can have a different value depending on the page), such as `<title>` (unless you have only one title for your whole website). 
+`<Head>` is to add `<script>` tags, in which case it isn't a limitation either (
+
+
+**Example**
+
+- Browser settings (favicon and PWA settings).
+
+Anoth other common use case for
+
+> For `<head>` tags that aren't exclusively meant for crawlers, Vike offers settings that are updated upon client-side navigation:
+
+
+Consequently, the following doesn't work:
+
+```js
+// pages/index/+Head.jsx
+// Environment: server
+
+function Head() {
+  return <>
+    <title>Welcome</title>
+  </>
+}
+```
+```js
+// pages/about/+Head.jsx
+// Environment: server
+
+function Head() {
+  return <>
+    <title>About us</title>
+  </>
+}
+```
+
+If the user visits `/`
+
+If the first URL the user visits is `/` then the rendered HTML is:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcome</title>
+  </head>
+</html>
+```
+
+If the user then clicks on a link `<a href="/about">About us</a>`, then the page's title isn't updated and the browser shows `Welcome` instead of `About us`.
+
+
+
+> It's because `<Head>` is only rendered to HTML
+
+
+then Vike does client-side and the `<Head>` isn't re-rendered.
+
+The problem is that when the user goes to `/about`
+
+
+the   when the user navigates from `
+
+```
+  <title>AwesomeRockets</title>
+```
+
+rendered to the HTML of
+
+
+When the user the HTML will be this:
+
+
+
+
+
+For example:
+
+```js
+// pages/index/+Head.jsx
+// Environment: server
+
+function Head() {
+  return <>
+    <meta name="description" content="AwesomeRockets: the rocket company.">
+  </>
+}
+```
+```js
+// pages/about/+Head.jsx
+// Environment: server
+
+function Head() {
+  return <>
+    <meta name="description" content="We deliver payload to space.">
+  </>
+}
+```
+
+Ths
+
+the browser and crawlers (search engines and social sites), thus
+
+

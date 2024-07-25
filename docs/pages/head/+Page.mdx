@@ -2,18 +2,35 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
 To add `<head>` tags, such as `<title>` and `<meta name="description">`, you can use:
+To add `<head>` tags:
+
+- Use the Vike settings `title` and `description`, and `lang`
+- The `Head` setting for other `<head>` tags
+- The `useConfig()` hook to set component 
+- 
+
+> These settings are provided by <UiFrameworkExtension name />, see <Link href="#without-vike-react-vue-solid" /> if you don't use such extension.
+
+, such as `<title>` and `<meta name="description">`, you can use:
 
 - The page setting <Link href="#head">`Head`</Link>.
 - The page settings <Link href="#title-favicon">`title` & `favicon`</Link>.
 - 🚧 The <Link href="#usehead">`useHead()`</Link> component hook.
 
-> These options are implemented by the <UiFrameworkExtension />. See <Link href="#without-vike-react-vue-solid" /> if you don't use such extension.
+You can set some global default `<title>` and `<meta name="description">`:
 
+For example:
 
-## `Head`
+```js
+// pages/+config.js
 
-To add `<head>` tags to all your pages:
-
+export default {
+  // Default <title>
+  title: 'Awesome Rockets',
+ // Default <meta name="description">
+  description: 'We deliver payload to space'
+}
+```
 ```jsx
 // /pages/+Head.jsx or
 // /pages/+Head.vue
@@ -21,22 +38,56 @@ To add `<head>` tags to all your pages:
 
 export { Head }
 
-import socialImage from '../assets/images/socialImage.jpg'
-import favicon from '../assets/images/favicon.png'
+import previewImage from './previewImage.jpg'
 
 function Head() {
   return <>
-    <meta charset="utf-8">
-    <title>SpaceX</title>
-    <meta name="description" content="We deliver payload to space.">
-    <meta property="og:image" content={socialImage}>
-    <link rel="icon" href={favicon}>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:image" content={previewImage}>
   </>
 }
 ```
 
-Example: [React](https://github.com/vikejs/vike-react/blob/main/examples/full/pages/%2Bconfig.ts) / [Vue](https://github.com/vikejs/vike-vue/blob/main/examples/full/pages/%2Bconfig.ts) / [Solid](https://github.com/vikejs/vike-solid/blob/main/examples/full/pages/%2BHead.tsx).
+> This doesn't work:
+> ```js
+> // pages/about/+Head.jsx
+>
+> function Head() {
+>   return <>
+>     <title>About us</title> // [!code ++]
+>   </>
+> }
+> ```
+> ```js
+> // pages/index/+Head.jsx
+>
+> function Head() {
+>   return <>
+>     <title>About us</title> // [!code ++]
+>   </>
+> }
+> ```
+> Because `<Head>` is rendered only for the first page the user navigates to: for subsequent
+> rendered for the very first to HTML
+> The problem is that, upon <Link href="/client-routing">client-side page navigation</Link>, the title of the page won't be updated.
+
+```ts
+// pages/product/+title.ts
+// Environment: server, client
+import type { PageContext } from 'vike/types'
+export default (pageContext) => pageContext.data.rocket.name
+```
+
+```ts
+// pages/product/+description.ts
+// Environment: server, client
+import type { PageContext } from 'vike/types'
+export default (pageContext) => pageContext.data.rocket.description
+```
+
+> Alternatively, you can also use `useConfig()` to 
+
+
+## `Head`
 
 Setting `<head>` tags only to one page and based on <Link href="/data-fetching">fetched data</Link>:
 
