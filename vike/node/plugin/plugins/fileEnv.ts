@@ -68,7 +68,7 @@ function fileEnv(): Plugin {
         modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
         errMsg = `${capitalizeFirstLetter(
           envExpect
-        )}-only module ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
+        )}-only file ${modulePathPretty} (https://vike.dev/file-env) imported on the ${envActual}-side`
 
         if (
           importer &&
