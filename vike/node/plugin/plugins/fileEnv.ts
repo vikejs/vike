@@ -58,12 +58,12 @@ function fileEnv(): Plugin {
         const envActual = isServerSide ? 'server' : 'client'
         const envExpect = isServerSide ? 'client' : 'server'
         const suffix = `.${envExpect}.` as const
-        // Everything nonimal
+
+        // Everything is good
         if (!modulePath.includes(suffix)) return
 
         // Show error message
         let errMsg: string
-
         let modulePathPretty = getModuleFilePath(moduleId, config)
         modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
         errMsg = `${capitalizeFirstLetter(
@@ -83,9 +83,6 @@ function fileEnv(): Plugin {
 
         if (isDev) {
           errMsg += ' and, therefore, Vike will prevent building your app for production.'
-        }
-
-        if (isDev) {
           assertWarning(false, errMsg, { onlyOnce: true })
         } else {
           assertUsage(false, errMsg)
