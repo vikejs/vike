@@ -31,6 +31,10 @@ function fileEnv(): Plugin {
       order: 'pre',
       */
       async handler(source, importer, options) {
+        // It seems like Vite's scan doesn't apply transformers. (We need the `.telefunc.js` transformer to apply for our analysis to be correct.)
+        // @ts-expect-error Vite's type is wrong
+        if (options.scan) return
+
         // TODO/v1-release: remove
         if (extractAssetsRE.test(source) || extractExportNamesRE.test(source)) return
 
