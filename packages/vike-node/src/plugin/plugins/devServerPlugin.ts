@@ -1,3 +1,4 @@
+import { fork } from 'child_process'
 import { ServerResponse, createServer, type IncomingMessage } from 'http'
 import type { Plugin, ViteDevServer } from 'vite'
 import { globalStore } from '../../runtime/globalStore.js'
@@ -14,13 +15,13 @@ export function devServerPlugin(): Plugin {
   let resolvedConfig: ConfigVikeNodeResolved
   let entryAbs: string
   let HMRServer: ReturnType<typeof createServer> | undefined
-
   return {
     name: 'vite-node:devserver',
     apply: 'serve',
-    enforce: 'post',
+    enforce: 'pre',
+    config: async () => {
+      await setupReloader()
 
-    config: () => {
       if (isBun) {
         return {
           server: {
@@ -118,6 +119,25 @@ export function devServerPlugin(): Plugin {
     req.socket.resume()
 
     return true
+  }
+}
+
+async function setupReloader() {
+  const isReloaderSetup = process.env.VIKE_NODE_RELOADER_SETUP === 'true'
+  if (!isReloaderSetup) {
+    process.env.VIKE_NODE_RELOADER_SETUP = 'true'
+    function start() {
+      const cp = fork(process.argv[1]!, process.argv.slice(2), { stdio: 'inherit' })
+      cp.on('exit', (code) => {
+        if (code === 33) {
+          start()
+        } else {
+          process.exit(code)
+        }
+      })
+    }
+    start()
+    await new Promise(() => {})
   }
 }
 

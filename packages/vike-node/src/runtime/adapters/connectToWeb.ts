@@ -1,8 +1,7 @@
 export { connectToWeb }
 
 import type { IncomingMessage } from 'node:http'
-import { Socket } from 'node:net'
-import { Duplex, Readable } from 'node:stream'
+import { Readable } from 'node:stream'
 import type { ConnectMiddleware } from '../types.js'
 import { flattenHeaders } from '../utils/header-utils.js'
 import { createServerResponse } from './createServerResponse.js'

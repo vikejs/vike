@@ -10,22 +10,21 @@ Node integration for Vike.
 With this extension, your server-side code is transpiled with Vite.<br>
 In development, the server process is restarted when a change is detected in some of your server files.
 
-
 [Installation](#installation)  
 [Standalone build](#standalone-build)  
 [External packages](#external-packages)  
 [Caching and compression](#caching-and-compression)  
 [Custom pageContext](#custom-pagecontext)  
 [Framework examples](#framework-examples)  
-[Migration guide](#migration-guide)  
+[Migration guide](#migration-guide)
 
 <br/>
-
 
 ## Installation
 
 1. `npm install vike-node express`
 2. Extend `vite.config.js`:
+
    ```js
    // vite.config.js
 
@@ -33,32 +32,25 @@ In development, the server process is restarted when a change is detected in som
 
    export default {
      // ...
-     plugins: [vikeNode("server/index.js")]
+     plugins: [vikeNode('server/index.js')]
    }
    ```
+
 3. Create `server/index.js`:
+
    ```js
    // server/index.js
-   
+
    import express from 'express'
    import vike from 'vike-node/connect'
-   
+
    startServer()
-   
+
    function startServer() {
      const app = express()
      app.use(vike())
      const port = process.env.PORT || 3000
      app.listen(port, () => console.log(`Server running at http://localhost:${port}`))
-   }
-   ```
-4. Change `package.json`:
-   ```diff
-   // package.json
-
-   "scripts": {
-   - "dev": "vite",
-   + "dev": "vike",
    }
    ```
 
@@ -78,13 +70,13 @@ Example start script: `NODE_ENV=production node dist/server/index.mjs`
 import vikeNode from 'vike-node/plugin'
 
 export default {
-    // ...
-    plugins: [
-        vikeNode({
-            entry: 'server/index.js',
-            standalone: true
-        })
-    ]
+  // ...
+  plugins: [
+    vikeNode({
+      entry: 'server/index.js',
+      standalone: true
+    })
+  ]
 }
 ```
 
@@ -93,6 +85,7 @@ export default {
 Packages that import native binaries/custom assets need to be added to `external`.<br>
 When building with `standalone` enabled, `external` packages and their assets are copied to the output `dist` directory.<br>
 By default, the `external` setting includes:
+
 - `sharp`
 - `@prisma/client`
 - `@node-rs/*`
@@ -103,20 +96,21 @@ By default, the `external` setting includes:
 import vikeNode from 'vike-node/plugin'
 
 export default {
-    // ...
-    plugins: [
-        vikeNode({
-            entry: 'server/index.js',
-            standalone: true,
-            external: ["my-rust-package"]
-        })
-    ]
+  // ...
+  plugins: [
+    vikeNode({
+      entry: 'server/index.js',
+      standalone: true,
+      external: ['my-rust-package']
+    })
+  ]
 }
 ```
 
 ## Caching and compression:
 
 In production, `vike-node`:
+
 - compresses all Vike responses
 - caches the compressed static assets(.js, .css).
 
@@ -148,15 +142,16 @@ app.use(
 )
 ```
 
-
 ## Framework examples:
 
 `vike-node` includes middlewares for the most popular web frameworks:
+
 - Express
 - Fastify
 - Hono
 
 Express:
+
 ```js
 // server/index.js
 
@@ -174,6 +169,7 @@ function startServer() {
 ```
 
 Fastify:
+
 ```js
 // server/index.js
 
@@ -191,6 +187,7 @@ function startServer() {
 ```
 
 Hono:
+
 ```js
 // server/index.js
 
@@ -207,7 +204,7 @@ function startServer() {
   serve(
     {
       fetch: app.fetch,
-      port,
+      port
     },
     () => console.log(`Server running at http://localhost:${port}`)
   )
@@ -260,6 +257,6 @@ function startServer() {
 
 "scripts": {
 - "dev": "node ./server",
-+ "dev": "vike",
++ "dev": "vite",
 }
 ```

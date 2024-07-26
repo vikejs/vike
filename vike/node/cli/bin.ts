@@ -18,26 +18,22 @@ cli
   })
 
 // TODO: remove dummy implementation
-cli
-  .command('', 'Start the development server')
-  .alias('dev')
-  .alias('serve')
-  .action(async () => {
-    const { fork } = await import('child_process')
+cli.command('dev').action(async () => {
+  const { fork } = await import('child_process')
 
-    start()
+  start()
 
-    function start() {
-      const cp = fork('./node_modules/vite/bin/vite', ['dev'], { stdio: 'inherit' })
-      cp.on('exit', (code) => {
-        if (code === 33) {
-          start()
-        } else {
-          process.exit(code)
-        }
-      })
-    }
-  })
+  function start() {
+    const cp = fork('node_modules/vite/bin/vite', ['dev'], { stdio: 'inherit' })
+    cp.on('exit', (code) => {
+      if (code === 33) {
+        start()
+      } else {
+        process.exit(code)
+      }
+    })
+  }
+})
 
 function assertOptions() {
   // Using process.argv because cac convert names to camelCase
@@ -75,7 +71,7 @@ cli.on('command:*', () => {
 cli.help()
 cli.version(projectInfo.projectVersion)
 
-cli.parse(process.argv)
+cli.parse(process.argv.length === 2 ? [...process.argv, '--help'] : process.argv)
 
 process.on('unhandledRejection', (rejectValue) => {
   throw rejectValue
