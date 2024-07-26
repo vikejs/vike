@@ -12,7 +12,7 @@ describe('build', () => {
       } catch (err) {
         stripAnsi
         expect(stripAnsi(err.message)).toContain(
-          'Server-only module /pages/index/secret.server.js (https://vike.dev/file-env) imported on the client-side by /pages/index/+Page.jsx.'
+          'Server-only module /pages/index/secret.server.js (https://vike.dev/file-env) imported on the client-side by /pages/index/+Page.jsx'
         )
         return
       }
