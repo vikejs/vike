@@ -39,18 +39,17 @@ export function Head() {
 
 ## Access data / `pageContext`
 
-You can set `<head>` tags based on fetched data (or <Link href="/pageContext">`pageContext`</Link>) by:
+You can set `<head>` tags based on fetched data (or <Link href="/pageContext">`pageContext`</Link>) with:
 
-- Using the component hooks `getPageContext()` and `getData()` inside `+Head`
-- Using <Link href="/useConfig">`useConfig()`</Link> inside <Link href="/data">`+data`</Link>.
-- Using `useConfig()` inside any component.
+- `usePageContext()` and `useData()` inside `+Head`
+- `useConfig()` inside `+data` or components.
 
-**`getPageContext()` and `getData()`**
+**`usePageContext()` and `useData()`**
 
-You can use <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/useData">`useData()`</Link> as usual.
+The value defined by the `Head` setting is a component and thus you can use <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/useData">`useData()`</Link> as usual:
 
 ```jsx
-// /pages/+Head.js
+// /pages/product/@id/+Head.js
 // Environment: server
 
 import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
@@ -64,30 +63,10 @@ export function Head() {
 }
 ```
 
-Because `+Head` The `<Head>` 
+**`useConfig()`**
 
+See <Link href="/useConfig"/>.
 
-- Using the `<Head>` component (not `+Head`) inside any component.
-  > There are two different `<Head>` components:
-    - One defined by `+Head` (as documented throughout this page).
-    - Another one exported 
-
-To access
-The easiest way
-
-```js
-
-export 
-
-```
-
-You can use `useData()` as well `usePageContext()` inside the `<Head>` component:
-
-```js
-const pageContext = usePageContext()
-```
-
-## `useConfig()`
 
 ## Only HTML
 
