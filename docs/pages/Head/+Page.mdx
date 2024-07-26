@@ -47,7 +47,7 @@ You can set `<head>` tags based on fetched data (or <Link href="/pageContext">`p
 
 **`getPageContext()` and `getData()`**
 
-You can use <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/useData">`useData()`</Link> as usual:
+You can use <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/useData">`useData()`</Link> as usual.
 
 ```jsx
 // /pages/+Head.js
@@ -58,17 +58,8 @@ import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
 export function Head() {
   const data = useData()
   return <>
-    {/* Adding a script tag */}
-    <script type="text/javascript" src="https://example.com/some-script.js"></script>
-
-    {/* Icon shown in the browser tab (aka favicon) */
-    <link rel="icon" href={favicon}>
-
-    {/* Icon shown on mobile homescreens (PWA) */
-    <link rel="apple-touch-icon" href={iconMobile}>
-
     {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
-    <meta property="og:image" content={previewImage}>
+    <meta property="og:image" content={data.product.image}>
   </>
 }
 ```
