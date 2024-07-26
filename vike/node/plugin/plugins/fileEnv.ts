@@ -82,9 +82,8 @@ function fileEnv(): Plugin {
         }
 
         if (isDev) {
-          errMsg += ' (building your app for production will be prevented and an error will be thrown)'
+          errMsg += ' and, therefore, Vike will prevent building your app for production.'
         }
-        errMsg += '.'
 
         if (isDev) {
           assertWarning(false, errMsg, { onlyOnce: true })
