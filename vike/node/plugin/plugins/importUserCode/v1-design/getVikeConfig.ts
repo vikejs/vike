@@ -448,6 +448,8 @@ async function loadVikeConfig(
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
 }
 
+// TODO/soon: refactor
+//  - Dedupe: most of the assertUsageGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
 // Global configs should be defined at global locations
 function assertUsageGlobalConfigs(
   interfaceFilesRelevantList: InterfaceFile[],
@@ -464,8 +466,6 @@ function assertUsageGlobalConfigs(
     configNames.forEach((configName) => {
       if (isGlobalConfig(configName)) return
       const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
-      // TODO/soon: refactor
-      //  - Dedupe: most of the code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
       if (configDef.global) {
         const locationIds = objectKeys(interfaceFilesByLocationId)
         if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
