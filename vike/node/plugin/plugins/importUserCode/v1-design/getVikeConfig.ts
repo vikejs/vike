@@ -495,8 +495,8 @@ function assertUsageGlobalConfigs(
                 configName
               )} but it's a global config:`,
               configFilesGlobal.length > 0
-                ? `define ${pc.cyan(configName)} at ${joinEnglish(configFilesGlobal, 'or')} instead`
-                : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead`
+                ? `define ${pc.cyan(configName)} at ${joinEnglish(configFilesGlobal, 'or')} instead.`
+                : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead.`
             ].join(' ')
           )
         }
