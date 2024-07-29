@@ -448,12 +448,12 @@ async function loadVikeConfig(
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
 }
 
+// Global configs should be defined at global locations
 function assertUsageGlobalConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
   interfaceFilesRelevantList: InterfaceFile[],
   configDefinitions: ConfigDefinitions
 ) {
-  // assertUsage() that global configs are defined at global locations
   interfaceFilesRelevantList.forEach(async (interfaceFile) => {
     const configNames: string[] = []
     if (interfaceFile.isValueFile) {
