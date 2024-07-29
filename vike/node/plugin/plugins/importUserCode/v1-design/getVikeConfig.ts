@@ -386,8 +386,6 @@ async function loadVikeConfig(
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
-        assertUsageGlobalConfigs(interfaceFilesByLocationId, interfaceFilesRelevantList, configDefinitions)
-
         // Load value files of custom config-only configs
         await Promise.all(
           interfaceFilesRelevantList.map(async (interfaceFile) => {
@@ -430,6 +428,8 @@ async function loadVikeConfig(
 
         applyEffectsAll(configValueSources, configDefinitions)
         const configValuesComputed = getComputed(configValueSources, configDefinitions)
+
+        assertUsageGlobalConfigs(interfaceFilesByLocationId, interfaceFilesRelevantList, configDefinitions)
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
