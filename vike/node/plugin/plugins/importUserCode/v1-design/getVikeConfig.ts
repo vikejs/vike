@@ -429,7 +429,7 @@ async function loadVikeConfig(
         applyEffectsAll(configValueSources, configDefinitions)
         const configValuesComputed = getComputed(configValueSources, configDefinitions)
 
-        assertUsageGlobalConfigs(interfaceFilesByLocationId, interfaceFilesRelevantList, configDefinitions)
+        assertUsageGlobalConfigs(interfaceFilesRelevantList, configDefinitions, interfaceFilesByLocationId)
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
@@ -450,9 +450,9 @@ async function loadVikeConfig(
 
 // Global configs should be defined at global locations
 function assertUsageGlobalConfigs(
-  interfaceFilesByLocationId: InterfaceFilesByLocationId,
   interfaceFilesRelevantList: InterfaceFile[],
-  configDefinitions: ConfigDefinitions
+  configDefinitions: ConfigDefinitions,
+  interfaceFilesByLocationId: InterfaceFilesByLocationId
 ) {
   interfaceFilesRelevantList.forEach(async (interfaceFile) => {
     const configNames: string[] = []
