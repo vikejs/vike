@@ -397,6 +397,44 @@ async function loadVikeConfig(
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
+
+            // TODO/soon: refactor
+            //  - Dedupe: most of the code below is a copy-paste of the assertUsage() inside getGlobalConfigs()
+            //  - update comment above `await Promise.all`
+            if (configDef.global) {
+              const locationIds = objectKeys(interfaceFilesByLocationId)
+              if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
+                const interfaceFilesGlobal = objectFromEntries(
+                  objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
+                    return isGlobalLocation(locationId, locationIds)
+                  })
+                )
+                const interfaceFilesGlobalPaths: string[] = []
+                objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
+                  assert(isGlobalLocation(locationId, locationIds))
+                  interfaceFiles.forEach(({ filePath: { filePathAbsoluteUserRootDir } }) => {
+                    if (filePathAbsoluteUserRootDir) {
+                      interfaceFilesGlobalPaths.push(filePathAbsoluteUserRootDir)
+                    }
+                  })
+                })
+                const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
+                assertUsage(
+                  false,
+                  [
+                    `${interfaceFile.filePath.filePathToShowToUser} defines the config ${pc.cyan(
+                      configName
+                    )} which is global:`,
+                    globalPaths.length
+                      ? `define ${pc.cyan(configName)} in ${joinEnglish(globalPaths, 'or')} instead`
+                      : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(
+                          configName
+                        )} there instead`
+                  ].join(' ')
+                )
+              }
+            }
+
             if (!isLoadableAtBuildTime(configDef)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
