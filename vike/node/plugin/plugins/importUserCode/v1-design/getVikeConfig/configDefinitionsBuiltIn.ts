@@ -41,6 +41,16 @@ type ConfigDefinition = {
    * https://vike.dev/meta
    */
   effect?: ConfigEffect
+
+  // TODO/soon: use `global` internally and remove configDefinitionsBuiltInGlobal
+  /**
+   * Whether the configuration always applies to all pages (no config inheritance).
+   *
+   * @default false
+   *
+   * https://vike.dev/extends#inheritance
+   */
+  global?: boolean
 }
 
 /**
