@@ -491,9 +491,9 @@ function assertUsageGlobalConfigs(
           assertUsage(
             false,
             [
-              `${interfaceFile.filePath.filePathToShowToUser} defines the config ${pc.cyan(
+              `${interfaceFile.filePath.filePathToShowToUser} sets the config ${pc.cyan(
                 configName
-              )} which is global:`,
+              )} but it's a global config:`,
               configFilesGlobal.length > 0
                 ? `define ${pc.cyan(configName)} at ${joinEnglish(configFilesGlobal, 'or')} instead`
                 : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead`
