@@ -386,21 +386,22 @@ async function loadVikeConfig(
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
-        // Load value files of custom config-only configs
-        await Promise.all(
-          interfaceFilesRelevantList.map(async (interfaceFile) => {
-            if (!interfaceFile.isValueFile) return
-            const { configName } = interfaceFile
-            if (isGlobalConfig(configName)) return
+        // assertUsage() that global configs are defined at global locations
+        interfaceFilesRelevantList.forEach(async (interfaceFile) => {
+          const configNames: string[] = []
+          if (interfaceFile.isValueFile) {
+            configNames.push(interfaceFile.configName)
+          } else {
+            configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
+          }
+          configNames.forEach((configName) => {
             const configDef = getConfigDefinition(
               configDefinitions,
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
-
             // TODO/soon: refactor
             //  - Dedupe: most of the code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
-            //  - update comment above `await Promise.all()`
             if (configDef.global) {
               const locationIds = objectKeys(interfaceFilesByLocationId)
               if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
@@ -434,7 +435,20 @@ async function loadVikeConfig(
                 )
               }
             }
+          })
+        })
 
+        // Load value files of custom config-only configs
+        await Promise.all(
+          interfaceFilesRelevantList.map(async (interfaceFile) => {
+            if (!interfaceFile.isValueFile) return
+            const { configName } = interfaceFile
+            if (isGlobalConfig(configName)) return
+            const configDef = getConfigDefinition(
+              configDefinitions,
+              configName,
+              interfaceFile.filePath.filePathToShowToUser
+            )
             if (!isLoadableAtBuildTime(configDef)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
