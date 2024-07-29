@@ -450,6 +450,7 @@ async function loadVikeConfig(
 
 // TODO/soon: refactor
 //  - Dedupe: most of the assertUsageGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
+//    - This assertUsage() message is slightly better: use this one for getGlobalConfigs()
 // Global configs should be defined at global locations
 function assertUsageGlobalConfigs(
   interfaceFilesRelevantList: InterfaceFile[],
@@ -474,24 +475,27 @@ function assertUsageGlobalConfigs(
               return isGlobalLocation(locationId, locationIds)
             })
           )
-          const interfaceFilesGlobalPaths: string[] = []
+          const configFilesGlobal: string[] = []
           objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
             assert(isGlobalLocation(locationId, locationIds))
-            interfaceFiles.forEach(({ filePath: { filePathAbsoluteUserRootDir } }) => {
+            interfaceFiles.forEach((interfaceFile) => {
+              if (!interfaceFile.isConfigFile) return
+              const {
+                filePath: { filePathAbsoluteUserRootDir }
+              } = interfaceFile
               if (filePathAbsoluteUserRootDir) {
-                interfaceFilesGlobalPaths.push(filePathAbsoluteUserRootDir)
+                configFilesGlobal.push(filePathAbsoluteUserRootDir)
               }
             })
           })
-          const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
           assertUsage(
             false,
             [
               `${interfaceFile.filePath.filePathToShowToUser} defines the config ${pc.cyan(
                 configName
               )} which is global:`,
-              globalPaths.length
-                ? `define ${pc.cyan(configName)} in ${joinEnglish(globalPaths, 'or')} instead`
+              configFilesGlobal.length > 0
+                ? `define ${pc.cyan(configName)} at ${joinEnglish(configFilesGlobal, 'or')} instead`
                 : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead`
             ].join(' ')
           )
