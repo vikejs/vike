@@ -399,8 +399,8 @@ async function loadVikeConfig(
             )
 
             // TODO/soon: refactor
-            //  - Dedupe: most of the code below is a copy-paste of the assertUsage() inside getGlobalConfigs()
-            //  - update comment above `await Promise.all`
+            //  - Dedupe: most of the code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
+            //  - update comment above `await Promise.all()`
             if (configDef.global) {
               const locationIds = objectKeys(interfaceFilesByLocationId)
               if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
