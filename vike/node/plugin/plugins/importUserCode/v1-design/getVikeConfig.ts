@@ -462,6 +462,7 @@ function assertUsageGlobalConfigs(
       configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
     }
     configNames.forEach((configName) => {
+      if (isGlobalConfig(configName)) return
       const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
       // TODO/soon: refactor
       //  - Dedupe: most of the code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
