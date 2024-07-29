@@ -386,57 +386,7 @@ async function loadVikeConfig(
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
-        // assertUsage() that global configs are defined at global locations
-        interfaceFilesRelevantList.forEach(async (interfaceFile) => {
-          const configNames: string[] = []
-          if (interfaceFile.isValueFile) {
-            configNames.push(interfaceFile.configName)
-          } else {
-            configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
-          }
-          configNames.forEach((configName) => {
-            const configDef = getConfigDefinition(
-              configDefinitions,
-              configName,
-              interfaceFile.filePath.filePathToShowToUser
-            )
-            // TODO/soon: refactor
-            //  - Dedupe: most of the code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
-            if (configDef.global) {
-              const locationIds = objectKeys(interfaceFilesByLocationId)
-              if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
-                const interfaceFilesGlobal = objectFromEntries(
-                  objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
-                    return isGlobalLocation(locationId, locationIds)
-                  })
-                )
-                const interfaceFilesGlobalPaths: string[] = []
-                objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
-                  assert(isGlobalLocation(locationId, locationIds))
-                  interfaceFiles.forEach(({ filePath: { filePathAbsoluteUserRootDir } }) => {
-                    if (filePathAbsoluteUserRootDir) {
-                      interfaceFilesGlobalPaths.push(filePathAbsoluteUserRootDir)
-                    }
-                  })
-                })
-                const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
-                assertUsage(
-                  false,
-                  [
-                    `${interfaceFile.filePath.filePathToShowToUser} defines the config ${pc.cyan(
-                      configName
-                    )} which is global:`,
-                    globalPaths.length
-                      ? `define ${pc.cyan(configName)} in ${joinEnglish(globalPaths, 'or')} instead`
-                      : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(
-                          configName
-                        )} there instead`
-                  ].join(' ')
-                )
-              }
-            }
-          })
-        })
+        assertUsageGlobalConfigs(interfaceFilesByLocationId, interfaceFilesRelevantList, configDefinitions)
 
         // Load value files of custom config-only configs
         await Promise.all(
@@ -496,6 +446,58 @@ async function loadVikeConfig(
   assertPageConfigs(pageConfigs)
 
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
+}
+
+function assertUsageGlobalConfigs(
+  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  interfaceFilesRelevantList: InterfaceFile[],
+  configDefinitions: ConfigDefinitions
+) {
+  // assertUsage() that global configs are defined at global locations
+  interfaceFilesRelevantList.forEach(async (interfaceFile) => {
+    const configNames: string[] = []
+    if (interfaceFile.isValueFile) {
+      configNames.push(interfaceFile.configName)
+    } else {
+      configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
+    }
+    configNames.forEach((configName) => {
+      const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
+      // TODO/soon: refactor
+      //  - Dedupe: most of the code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
+      if (configDef.global) {
+        const locationIds = objectKeys(interfaceFilesByLocationId)
+        if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
+          const interfaceFilesGlobal = objectFromEntries(
+            objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
+              return isGlobalLocation(locationId, locationIds)
+            })
+          )
+          const interfaceFilesGlobalPaths: string[] = []
+          objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
+            assert(isGlobalLocation(locationId, locationIds))
+            interfaceFiles.forEach(({ filePath: { filePathAbsoluteUserRootDir } }) => {
+              if (filePathAbsoluteUserRootDir) {
+                interfaceFilesGlobalPaths.push(filePathAbsoluteUserRootDir)
+              }
+            })
+          })
+          const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
+          assertUsage(
+            false,
+            [
+              `${interfaceFile.filePath.filePathToShowToUser} defines the config ${pc.cyan(
+                configName
+              )} which is global:`,
+              globalPaths.length
+                ? `define ${pc.cyan(configName)} in ${joinEnglish(globalPaths, 'or')} instead`
+                : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead`
+            ].join(' ')
+          )
+        }
+      }
+    })
+  })
 }
 
 function deriveConfigEnvFromFileName(env: ConfigEnvInternal, fileName: string) {
