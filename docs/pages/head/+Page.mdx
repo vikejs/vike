@@ -9,7 +9,7 @@ Setting | Sets
 -- | --
 <Link href="/title">`title`</Link> | <ul><li>[`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)</li> <li>[`<meta property="og:title">`](https://ogp.me/#metadata:~:text=every%20page%20are%3A-,og%3Atitle,-%2D%20The%20title%20of)</li></ul>
 <Link href="/description">`description`</Link> | <ul><li>[`<meta name="description">`](https://moz.com/learn/seo/meta-description)</li> <li>[`<meta property="og:description">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
-<Link href="/image">`image`</Link> | <ul> <li>[`<meta property="og:image">`](https://ahrefs.com/blog/open-graph-meta-tags/) (preview image)</li> <li>[`<meta name="twitter:card" content="summary_large_image">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
+<Link href="/image">`image`</Link> | <ul> <li>[`<meta property="og:image">`](https://ahrefs.com/blog/open-graph-meta-tags/) (preview image upon URL sharing)</li> <li>[`<meta name="twitter:card" content="summary_large_image">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
 <Link href="/viewport">`viewport`</Link> | <ul><li>[`<meta name="viewport">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag)</li></ul>
 <Link href="/Head-setting">`Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
 </TableStyle>
@@ -41,7 +41,7 @@ Setting | Sets
 > These settings are provided by <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name /> then instead see <Link href="/head-manual" />.
 
 
-## Typical usage
+## Example
 
 Let's see how you typically use these settings.
 
@@ -86,6 +86,18 @@ export function Head() {
 
 You can overriding the defaults and set different `<head>` tags for different pages.
 
+```js
+// /pages/rocket/starship/+title.js
+// Environment: server, client
+export const title = 'AwesomeRockets | Rockets | Starship'
+```
+```js
+// /pages/rocket/falcon-9/+title.js
+// Environment: server, client
+export const title = 'AwesomeRockets | Rockets | Falcon 9'
+```
+
+> As explained at <Link href="/config#files"/> defining the `title` setting with a `+title.js` file is the same as defining it with `+config.js`.
 
 ### Using data
 
@@ -96,128 +108,117 @@ Setting `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
 // Environment: server
 
 export async function data() {
-  const rocket = await sql.run(
+  const data = await sql.run(
     'SELECT { title, description } FROM rockets WHERE name = "starship";'
   )
-  return rocket
+  return data
 }
 ```
 ```ts
-// pages/product/+title.ts
+// pages/rocket/starship/+title.ts
 // Environment: server, client
-
-import type { PageContext } from 'vike/types'
 
 // Overrides the default <title>
-export default (pageContext) => pageContext.data.rocket.name
+export default (pageContext) => pageContext.data.title
 ```
 
-```ts
-// pages/product/+description.ts
-// Environment: server, client
+You can also define the logic only once and apply to all your pages:
 
-import type { PageContext } from 'vike/types'
+```js
+// pages/+title.js
 
-// Overrides the default <meta name="description">
-export default (pageContext) => pageContext.data.rocket.description
+// This title setter applies to all pages: if a page fetches data and
+// data.title is defined then use it to set the page's title.
+export default (pageContext) => pageContext.data?.title || 'Some Default Title'
 ```
-
-> You can dynamically set these settings inside your `+data` hook, by using the
-> You can dynamically set these settings inside your components, by using the
 
 You can also use:
 - <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> inside the `+Head` setting, see <Link href="/Head-setting#using-data" />.
-- <Link href="/useConfig">The `useConfig()` hook</Link> to set `<head>` tags directly inside your `+data` hook (or any Vike hook).
-- <Link href="/useConfig#config-head">The `<Config>` and `<Head>` components</Link> to set `<head>` tags directly inside your components.
+- <Link href="/useConfig">The `useConfig()` hook</Link> to set `<head>` tags inside your `+data` hook (or any Vike hook).
+- <Link href="/useConfig#config-head">The `<Config>` and `<Head>` components</Link> to set `<head>` tags inside your components.
   > The `<Config>` and `<Head>` components are particularly relevant when using integrations that enable components to fetch data, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
-
-
-## `Head`
-
-Setting `<head>` tags only to one page and based on <Link href="/data-fetching">fetched data</Link>:
-
-```js
-// /pages/rocket/starship/+data.js
-// Environment: server
-
-export { data }
-
-async function data() {
-  const rocket = await sql.run(
-    'SELECT { title, description, social_image } FROM rockets WHERE name = "starship";'
-  )
-  return rocket
-}
-```
-```jsx
-// /pages/rocket/starship/+Head.jsx
-// Environment: server
-
-export { Head }
-
-import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
-
-function Head() {
-  const rocket = useData()
-  return <>
-    <meta name="description" content={rocket.description}>
-    <meta property="og:image" content={rocket.social_image}>
-  </>
-}
-```
-
-
-## `title` & `favicon`
-
-If your pages can have different `<title>` values, then use the setting `title` instead of the <Link href="#head">`Head`</Link> setting:
-
-```js
-// /pages/rocket/starship/+title.js
-// Environment: server, client
-export const title = 'SpaceX | Rocket Starship'
-```
-```js
-// /pages/rocket/falcon-9/+title.js
-// Environment: server, client
-export const title = 'SpaceX | Rocket Falcon 9'
-```
-
-Upon <Link href="/client-routing">client-side navigating</Link> from the URL `/rocket/starship` to `/rocket/falcon-9`, the page's title is dynamically updated from `SpaceX | Rocket Starship` to `SpaceX | Rocket Falcon 9`. (By mutating the DOM with [`document.title = 'SpaceX | Rocket Falcon 9'`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title).)
-
-While defining `<title>` by using the `Head` setting correctly sets the page's title for the first page the user visits, it doesn't update the page's title upon <Link href="/client-routing">client-side navigation</Link>.
-
-> Most `<head>` tags, such as [the social image tag `<meta property="og:image">`](https://ogp.me/), don't need to be updated upon client-side navigation because they are only used by crawlers. (Browsers don't do anything with `<meta property="og:image">`.) Crawlers don't execute JavaScript and, therefore, don't client-side navigate.
-
-Likewise, if your [favicon](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_custom_icons_to_your_site) can change from page to page, then define `/pages/rocket/starship/+favicon.png` instead of using the `Head` setting.
-
-You can set `title` and `favicon` based on <Link href="/data-fetching">fetched data</Link>, for example:
-
-```js
-// /pages/rocket/starship/+title.js
-// Environment: server, client
-
-export function title(pageContext) {
-  const rocket = pageContext.data
-  return rocket.title
-}
-```
-```tsx
-// With TypeScript:
-
-import type { Data } from './+data'
-import type { PageContext } from 'vike/types'
-export function title(pageContext: PageContext<Data>) {
-  const rocket = pageContext.data
-  return rocket.title
-}
-```
-> As shown [here](https://gist.github.com/brillout/e7fe603bd44c9ec1be7e98f3ae28636a) you can define the logic, of using `data.title` to set the page's title, once and apply it to all your pages.
 
 
 ## Custom settings
 
-TODO
+You can also create your own custom settings.
 
+For example, let's create a new setting `dynamicFavicon` that allows different favicons to be set for different pages.
+
+### Setting creation
+
+```js
+// pages/+config.js
+
+export default {
+  meta: {
+    dynamicFavicon: {
+      env: { server: true, client: true }
+    }
+  }
+}
+```
+> See <Link href="/meta" />.
+
+```js
+// pages/+Head.jsx
+
+export default () => {
+  const pageContext = usePageContext()
+  const { dynamicFavicon } = pageContext.config
+  return <>
+    { dynamicFavicon && <link rel="icon" href={dynamicFavicon}> }
+  <>
+}
+```
+```js
+// pages/+onAfterRenderClient.js
+
+export default () => {
+  if (!pageContext.isHydration) {
+    const { dynamicFavicon } = pageContext.config
+    updateFavicon(dynamicFavicon)
+  }
+}
+
+function updateFavicon(dynamicFavicon) {
+  let link = document.querySelector("link[rel~='icon']")
+  if (!dynamicFavicon) {
+    if (link) document.head.removeChild(link)
+    return
+  }
+  if (!link) {
+    link = document.createElement('link')
+    link.rel = 'icon'
+    document.head.appendChild(link)
+  }
+  link.href = dynamicFavicon
+}
+```
+
+### Setting usage
+
+```js
+// pages/+config.js
+
+import favicon from './favicon.svg'
+
+export {
+  // Default favicon
+  dynamicFavicon: favicon
+}
+```
+
+```js
+// pages/premium-members/+config.js
+
+import favicon from './favicon.svg'
+
+export {
+  // Favicon for /premium-members pages
+  dynamicFavicon: favicon
+}
+```
 
 ## Internationalization
 

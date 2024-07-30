@@ -578,7 +578,7 @@ const headings = [
   {
     level: 2,
     titleInNav: '`Head`',
-    title: '`<Head>`',
+    title: '`Head`',
     url: '/Head-setting'
   },
   {
@@ -590,7 +590,8 @@ const headings = [
   {
     level: 2,
     title: 'Config',
-    url: '/config'
+    url: '/config',
+    sectionTitles: ['`+` files']
   },
   {
     level: 2,

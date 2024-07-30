@@ -7,6 +7,33 @@ Environment: server, client.
 
 TODO
 
+```js
+// /pages/rocket/starship/+title.js
+// Environment: server, client
+
+export function title(pageContext) {
+  const rocket = pageContext.data
+  return rocket.title
+}
+```
+
+## TypeScript
+
+```tsx
+import type { Data } from './+data'
+import type { PageContext } from 'vike/types'
+export function title(pageContext: PageContext<Data>) {
+  const rocket = pageContext.data
+  return rocket.title
+}
+```
+
+## Under the hood
+
+On the server-side, upon rendering the HTML of the first page, the `title` setting adds the [`<title>` tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title) to the [`<head>` tag](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML).
+
+On the client-side, upon <Link href="/client-routing">client-side page navigation</Link>, the `title` setting dynamically updates the page's title by mutating the DOM with [`document.title = 'Some Title'`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title).
+
 ## See also
 
 - <Link href="/Head-setting" />
