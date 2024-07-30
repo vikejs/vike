@@ -67,7 +67,19 @@ function passToClientHint(pageContext: PageContextForPassToClientWarning, prop: 
 const WHITELIST = [
   'then',
   // Vue calls toJSON()
-  'toJSON'
+  'toJSON',
+  // vite-plugin-vue-devtools, see https://github.com/vuejs/devtools-next/issues/542
+  'render',
+  // vite-plugin-vue-devtools
+  '_',
+  // vite-plugin-vue-devtools
+  '__asyncLoader',
+  // vite-plugin-vue-devtools
+  'effect',
+  // vite-plugin-vue-devtools
+  'state',
+  // vite-plugin-vue-devtools
+  'currentRoute'
 ]
 function isWhitelisted(prop: string): boolean {
   if (WHITELIST.includes(prop)) return true
