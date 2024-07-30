@@ -32,7 +32,7 @@ function Movies() {
   // Set <head> tags
   const config = useConfig()
   config({
-    title: `${moviesData.length} Star Wars Movies` // <title>
+    title: `${movies.length} Star Wars Movies` // <title>
     Head: <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
   })
 
@@ -46,6 +46,8 @@ function Movies() {
   )
 }
 ```
+
+### `<Config>` & `<Head>`
 
 For more convenience, you can use the `<Config>` and `<Head>` inside components:
 
@@ -64,7 +66,7 @@ function Movies() {
 
   // Render UI
   return (
-    <Config title={`${moviesData.length} Star Wars Movies`} />
+    <Config title={`${movies.length} Star Wars Movies`} />
     <Head>
       <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
     <Head>

@@ -2,22 +2,41 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 import { TableStyle } from './TableStyle'
 
-You can use the following settings for adding `<head>` tags.
+You can add `<head>` tags with following settings.
 
 <TableStyle>
 Setting | Sets
 -- | --
-`title` | <ul><li>`<title>`</li> <li>[`<meta property="og:title">`](https://ogp.me/#metadata:~:text=every%20page%20are%3A-,og%3Atitle,-%2D%20The%20title%20of)</li></ul>
-`description` | <ul><li>`<meta name="description">`</li> <li>[`<meta property="og:description">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
-`viewport` | <ul><li>`<meta name="viewport">`</li></ul>
-`Head` | Other `<head>` tags such as: <ul> <li>`<link rel="icon">` (favicon)</li> <li>`<link rel="apple-touch-icon">` (mobile icon)</li> <li>`<meta property="og:image">` (preview image)</li> <li>`<script>`</li> <li>...</li> </ul>
-> You can also create <Link href="#custom-settings">custom settings</Link>.
+<Link href="/title">`title`</Link> | <ul><li>[`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)</li> <li>[`<meta property="og:title">`](https://ogp.me/#metadata:~:text=every%20page%20are%3A-,og%3Atitle,-%2D%20The%20title%20of)</li></ul>
+<Link href="/description">`description`</Link> | <ul><li>[`<meta name="description">`](https://moz.com/learn/seo/meta-description)</li> <li>[`<meta property="og:description">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
+<Link href="/image">`image`</Link> | <ul> <li>[`<meta property="og:image">`](https://ahrefs.com/blog/open-graph-meta-tags/) (preview image)</li> <li>[`<meta name="twitter:card" content="summary_large_image">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
+<Link href="/viewport">`viewport`</Link> | <ul><li>[`<meta name="viewport">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag)</li></ul>
+<Link href="/Head">`Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
 </TableStyle>
 
-- Low-level setting `Head` for setting other `<head>` tags (for example  or `<script>`).
-- The `useConfig()` hook to dynamically set the above settings inside components (e.g. ) or Vike hooks (most notably the `+data` hook).
+> You can dynamically set these settings inside your `+data` hook by using the <Link href="/useConfig">`useConfig()` hook</Link>.
+
+> You can dynamically set these settings inside your components by using the <Link href="/useConfig#config-head">`<Head>` component</Link>.
+> ```jsx
+> import { Config } from 'vike-react/Config' // or vike-vue / vike-solid
+> import { Head } from 'vike-react/Head'
+> import { useAsync } from 'react-streaming'
+>
+> function Movies() {
+>   const movies = useAsync(() => fetch('https://star-wars.brillout.com/api/films.json'))
+>   return (
+>     <Config title={`${moviesData.length} Star Wars Movies`} />
+>     <Head>
+>       <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
+>     <Head>
+>     <ul>{ movies.map(movie => <li>{movie.title}</li>) }</ul>
+>   )
+> }
+> ```
 
 > See also `htmlAttributes` and `bodyAttributes` to add attributes such as `<html class="dark">` or `<body class="dark">`.
+
+> You can create <Link href="#custom-settings">custom settings</Link>.
 
 > These settings are provided by <UiFrameworkExtension name />, see <Link href="#without-vike-react-vue-solid" /> if you don't use such extension.
 
@@ -30,28 +49,30 @@ For example:
 ```js
 // pages/+config.js
 
+import image from './previewImage.jpg'
+
+// Sets defaults, which some pages will override
 export default {
-  // Default <title>
   title: 'Awesome Rockets',
- // Default <meta name="description">
-  description: 'We deliver payload to space'
+  description: 'We deliver payload to space',
+  image
 }
 ```
 ```jsx
 // /pages/+Head.jsx or
 // /pages/+Head.vue
-// Environment: server
 
 export { Head }
 
-import previewImage from './previewImage.jpg'
-
-function Head() {
+// Applies to all pages (cannot be overriden)
+export function Head() {
   return <>
-    <meta property="og:image" content={previewImage}>
+    <link rel="icon" href={favicon} type="image/svg+xml">
   </>
 }
 ```
+
+> Unlike the other settings, the `Head` setting is cumulative which means that `pages/+Head.js` applies to all your pages and you cannot override it, see <Link href="/Head#cumulative"></Link>.
 
 > This doesn't work:
 > ```js

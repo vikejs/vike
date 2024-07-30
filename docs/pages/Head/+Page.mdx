@@ -175,6 +175,31 @@ export const Head = () =>
   <meta property="og:image" content={previewImage}>
 ```
 
+You can, however, apply different `Head` settings to different pages:
+
+```jsx
+// /pages/(marketing)/+Head.js
+// Environment: server
+
+import favicon from './favicon.png'
+
+// Applies to all marketing pages
+export const Head = () => <link rel="icon" href={favicon}>
+```
+
+```jsx
+// /pages/admin/+Head.js
+// Environment: server
+
+import favicon from './favicon.png'
+
+// Applies to all admin pages
+export const Head = () => <link rel="icon" href={favicon}>
+```
+
+> See <Link href="/config#inheritance"/>.
+
+
 > If you have a need for overriding, then add a comment at: [#1692 - Add `override` and `default` options for cumulative configs](https://github.com/vikejs/vike/issues/1692).
 
 
