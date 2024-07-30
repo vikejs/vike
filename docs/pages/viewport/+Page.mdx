@@ -3,10 +3,58 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension, ImplementedBy } from '../../components'
 
 Environment: server.
-<ImplementedBy noCustomGuide>the `title` setting</ImplementedBy>
+<ImplementedBy noCustomGuide>this setting</ImplementedBy>
 
-TODO
+The `viewport` setting sets [the page's viewport scaling on mobile devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
+
+By default, it's assumed your page is responsive, and the following responsive `<meta name="viewport">` tag is injected:
+
+```html
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+  </head>
+</html>
+```
+
+If your page isn't responsive, then we recommend setting a initial page width:
+
+```js
+// pages/+config.js
+
+export default {
+  // For example, the following value makes sense if your page looks good with a 1200px width.
+  // The user will be able to dynamically change the viewport size (by using pinch gestures).
+  viewport: 1200 // <meta name="viewport" content="width=1200" />
+}
+```
+
+> On mobile devices, browsers will zoom so that the page with a width of `1200px` is shown to the user. For example, if the real width of the mobile screen is `600px` then the browser zooms out by a factor of `2x` in order to show a virtual width of `1200px`.
+
+You can also set any aribtrary `<meta name="viewport">` tag:
+
+```js
+// pages/+config.js
+
+export default {
+  // Don't inject any `<meta name="viewport">` tag.
+  viewport: null
+}
+```
+```js
+// pages/+Head.js
+
+// Same as the defualt but adding `user-scalable=no` which can be important for
+// highly interactive apps such as games.
+export default () => <>
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+</>
+```
 
 ## See also
 
 - <Link href="/head" />
+- <Link href="/Head-setting" />
+- <Link href="/title" />
+- <Link href="/description" />
+- <Link href="/image" />

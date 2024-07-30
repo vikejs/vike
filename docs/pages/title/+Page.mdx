@@ -3,28 +3,53 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension, ImplementedBy } from '../../components'
 
 Environment: server, client.
-<ImplementedBy noCustomGuide>the `title` setting</ImplementedBy>
+<ImplementedBy noCustomGuide>this setting</ImplementedBy>
 
-TODO
+The `title` setting sets [the page's title](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_a_title).
+
+> See <Link href="/head" /> for a general introduction about `<head>` tags.
 
 ```js
-// /pages/rocket/starship/+title.js
+// pages/+config.js
+
+export default {
+  title: 'Awesome Web App'
+}
+```
+
+```js
+// pages/about/+title.js
+
+// Overrides the default
+export default 'About us'
+```
+
+> As explained at <Link href="/config#files"/> defining the `title` setting with a `+title.js` file has the same effect as defining it inside `+config.js`.
+
+You can also access the <Link href="/pageContext">`pageContext` object</Link>:
+
+```js
+// pages/some-page/+title.js
 // Environment: server, client
 
 export function title(pageContext) {
-  const rocket = pageContext.data
-  return rocket.title
+  const { data } = pageContext
+  return data.title
 }
 ```
 
 ## TypeScript
 
 ```tsx
+// pages/some-page/+title.js
+// Environment: server, client
+
 import type { Data } from './+data'
 import type { PageContext } from 'vike/types'
+
 export function title(pageContext: PageContext<Data>) {
-  const rocket = pageContext.data
-  return rocket.title
+  const { data } = pageContext
+  return data.title
 }
 ```
 
@@ -36,4 +61,9 @@ On the client-side, upon <Link href="/client-routing">client-side page navigatio
 
 ## See also
 
+- <Link href="/head" />
 - <Link href="/Head-setting" />
+- <Link href="/description" />
+- <Link href="/viewport" />
+- <Link href="/image" />
+- [MDN > What's in the head? Metadata in HTML > Adding a title](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_a_title)
