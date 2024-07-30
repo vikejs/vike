@@ -1,9 +1,9 @@
-export { HookTypeScriptHints }
+export {HookTypeScriptHints}
 
 import React from 'react'
-import { assert, Link } from '@brillout/docpress'
+import {assert, Link} from '@brillout/docpress'
 
-function HookTypeScriptHints({ hookTypeName }: { hookTypeName: `${string}Sync` | `${string}Async` }) {
+function HookTypeScriptHints({hookTypeName}: {hookTypeName: `${string}Sync` | `${string}Async`}) {
   // Ensure hookTypeName starts with an upper case
   assert(hookTypeName[0] !== hookTypeName[0].toLowerCase(), hookTypeName)
 
@@ -25,13 +25,10 @@ function HookTypeScriptHints({ hookTypeName }: { hookTypeName: `${string}Sync` |
     <>
       <blockquote>
         <p>
-          Don't omit <code>ReturnType&lt;{hookTypeName}&gt;</code> (don't write{' '}
-          <code>{`const ${hookName}: ${hookTypeName} = ${isSync ? '' : 'async '}(pageContext) => {`}</code>), otherwise
-          TypeScript won't strictly check the return type for unknown extra properties: see this TypeScript{' '}
-          <a href="https://www.typescriptlang.org/play?#code/C4TwDgpgBAYgdlAvFAFGAhgJ3QWwFxQDOwmAlnAOYCUSAfFAN5ToFwCuOARhJlAL4AoAQHphUQDLkUAOqYA9pShtC6ChAEBjecSgAzOAEYC8JKgzYcNRPRQMBUZgX0AaO1FESoAFXAQAyurIwYCgAE1kIQjgAcmDNHDAAG3RyV04CACYBPiohd0BQcigAYVlMTAh1YKUVNU04bT10owRkNCxcKgIAJQhgNkw4b0gAHnh6K1RbexYoZ1d8rx9-QNjZeKTyQlSMrKogA">
-            playground
-          </a>{' '}
-          and <a href="https://github.com/microsoft/TypeScript/issues/54661">issue</a>.
+          Don't omit <code>ReturnType&lt;{hookTypeName}&gt;</code> otherwise TypeScript{' '}
+          <a href="https://www.typescriptlang.org/play/?#code/PTAEEkDNQTwewK6jgWwJYBdQAMBKBTDBAJwDsAVGAB321AwAt9TRKaBlAY2LSqwHc4pAORZOTTgGt6TUMUIkWGavlCQ4xUAlKTScfi3wAPDMQCGoKsTg1iGNPgDOAOgBQIUAwwYqjgFwgAOaYDAgARs6cqMDo3HCOcJAYwGz4XDx8wGiOjghOwACsACwAbCUAjK6uyjSgAGIsALygABRUZuYofqCOpmikgQCUoI0AfKAA3qBm3aQIKGH4mgC+VR6AMuSgAOrWA1qOZoH4rlGkvWqk5d0NI63tncNjrROuoNPd5QA0r6AbrCrpXhYAAmcCcIjEqCoABszP0fmFugAmVzLQZrMCAUHJQABhDTyThYBAHI4nITnSCkJHXJp3DpmFCDboEIhkVIAHga4yeLRebxmoC+Pw82NSgL4oCiKBhcLOCORqMGQA">
+            won't strictly check the return type
+          </a>.
         </p>
       </blockquote>
       <blockquote>
