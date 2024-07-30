@@ -41,6 +41,8 @@ Setting | Sets
 > These settings are provided by <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name /> then instead see <Link href="/head-manual" />.
 
 
+## Typical usage
+
 Let's see how you typically use these settings.
 
 ### Defaults
@@ -52,8 +54,11 @@ import image from './previewImage.jpg'
 
 // Sets defaults, which some pages will override
 export default {
+  // Default <title>
   title: 'Awesome Rockets',
+  // Default <meta name="description">
   description: 'We deliver payload to space',
+  // Default <meta property="og:image">
   image
 }
 ```
@@ -64,7 +69,7 @@ export default {
 // /pages/+Head.jsx or
 // /pages/+Head.vue
 
-export { Head }
+import favicon from './favicon.svg'
 
 // Applies to all pages (cannot be overriden)
 export function Head() {
@@ -74,28 +79,57 @@ export function Head() {
 }
 ```
 
-> Unlike the other settings, the `Head` setting is cumulative which means that `pages/+Head.js` applies to all your pages and you cannot override it, see <Link href="/Head-setting#cumulative"></Link>.
+> Unlike the other settings, the `Head` setting is cumulative which means that `pages/+Head.js` applies to all your pages and cannot be overriden. See <Link href="/Head-setting#cumulative"></Link>.
 
 
-### Override defaults
+### Page-specific
 
-You can set different `<head>` tags for specific pages, overriding the default.
+You can overriding the defaults and set different `<head>` tags for different pages.
 
+
+### Using data
+
+Setting `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
+
+```js
+// /pages/rocket/starship/+data.js
+// Environment: server
+
+export async function data() {
+  const rocket = await sql.run(
+    'SELECT { title, description } FROM rockets WHERE name = "starship";'
+  )
+  return rocket
+}
+```
 ```ts
 // pages/product/+title.ts
 // Environment: server, client
+
 import type { PageContext } from 'vike/types'
+
+// Overrides the default <title>
 export default (pageContext) => pageContext.data.rocket.name
 ```
 
 ```ts
 // pages/product/+description.ts
 // Environment: server, client
+
 import type { PageContext } from 'vike/types'
+
+// Overrides the default <meta name="description">
 export default (pageContext) => pageContext.data.rocket.description
 ```
 
-> Alternatively, you can also use `useConfig()` to 
+> You can dynamically set these settings inside your `+data` hook, by using the
+> You can dynamically set these settings inside your components, by using the
+
+You can also use:
+- <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> inside the `+Head` setting, see <Link href="/Head-setting#using-data" />.
+- <Link href="/useConfig">The `useConfig()` hook</Link> to set `<head>` tags directly inside your `+data` hook (or any Vike hook).
+- <Link href="/useConfig#config-head">The `<Config>` and `<Head>` components</Link> to set `<head>` tags directly inside your components.
+  > The `<Config>` and `<Head>` components are particularly relevant when using integrations that enable components to fetch data, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
 
 
 ## `Head`

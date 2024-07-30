@@ -49,7 +49,7 @@ function Movies() {
 
 ### `<Config>` & `<Head>`
 
-For more convenience, you can use the `<Config>` and `<Head>` inside components:
+You can use the `<Config>` and `<Head>` components for more convenience:
 
 ```jsx
 import { Config } from 'vike-react/Config'
@@ -79,9 +79,11 @@ function Movies() {
 }
 ```
 
-> Setting `<Head><something/></Head>` is the same as setting `<Config Head={<something />}/>`.
+> Both achieve the same:
+> - `<Head><something /></Head>`
+> - `<Config Head={<something />}/>`
 
-> There in't any `<title>` component because title is expected to be a string (and not a component element): for example, setting `<title><span>hello</span></title>` wouldn't make sense.
+> There in't any `<Title>` component because its value is expected to be a string: a value such as `<Title><span>hello</span></Title>` wouldn't make sense.
 
 
 ## Inside `+data`
