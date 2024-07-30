@@ -1,3 +1,19 @@
+## [0.4.182](https://github.com/vikejs/vike/compare/v0.4.181...v0.4.182) (2024-07-29)
+
+
+### Bug Fixes
+
+* fix import.meta.env security check (fix [#1764](https://github.com/vikejs/vike/issues/1764)) ([ee50efa](https://github.com/vikejs/vike/commit/ee50efa944535d01b392b0f52691dd01ba3b4f26))
+* improve file-env error message ([#1769](https://github.com/vikejs/vike/issues/1769)) ([163123b](https://github.com/vikejs/vike/commit/163123ba15b269f09c038542ac343d3a96d84382))
+* skip file-env check upon Vite scan (fix [#1768](https://github.com/vikejs/vike/issues/1768)) ([2f53249](https://github.com/vikejs/vike/commit/2f53249bf8c4bb7c3a9da261487ad5d73ca465e7))
+
+
+### Features
+
+* new meta config `global` ([#1772](https://github.com/vikejs/vike/issues/1772)) ([785730b](https://github.com/vikejs/vike/commit/785730b5dfafde4d2d02288e5ae19361284cdbee))
+
+
+
 ## [0.4.181](https://github.com/vikejs/vike/compare/v0.4.180...v0.4.181) (2024-07-19)
 
 

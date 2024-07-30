@@ -66,7 +66,8 @@ function passToClientHint(pageContext: PageContextForPassToClientWarning, prop: 
 
 const WHITELIST = [
   'then',
-  'toJSON' // Vue triggers `toJSON`
+  // Vue calls toJSON()
+  'toJSON'
 ]
 function isWhitelisted(prop: string): boolean {
   if (WHITELIST.includes(prop)) return true
