@@ -14,31 +14,19 @@ Setting | Sets
 <Link href="/Head-setting">`Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
 </TableStyle>
 
-> You can dynamically set these settings inside your `+data` hook, by using the <Link href="/useConfig">`useConfig()` hook</Link>.
+See the <Link href="#example">example below</Link> to see how these settings are typically used.
 
-> You can dynamically set these settings inside your components, by using the <Link href="/useConfig#config-head">`<Head>` component</Link>.
-> ```jsx
-> import { Config } from 'vike-react/Config' // or vike-vue / vike-solid
-> import { Head } from 'vike-react/Head'
-> import { useAsync } from 'react-streaming'
->
-> function Movies() {
->   const movies = useAsync(() => fetch('https://star-wars.brillout.com/api/films.json'))
->   return (
->     <Config title={`${moviesData.length} Star Wars Movies`} />
->     <Head>
->       <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
->     <Head>
->     <ul>{ movies.map(movie => <li>{movie.title}</li>) }</ul>
->   )
-> }
-> ```
+> You can dynamically set these settings:
+> - Inside your `+data` hook, by using the <Link href="/useConfig">`useConfig()` hook</Link>.
+> - Inside your components, by using the <Link href="/useConfig#config-head">`<Head>` component</Link>.
 
-> See also `htmlAttributes` and `bodyAttributes` to add attributes such as `<html class="dark">` or `<body class="dark">`.
+> See also:
+> - <Link href="/htmlAttributes">`htmlAttributes`</Link> to set tag attributes such as `<html class="dark">`.
+> - <Link href="/bodyAttributes">`bodyAttributes`</Link> to set tag attributes such as `<body class="dark">`.
 
-> You can create <Link href="#custom-settings">custom settings</Link>.
+> These settings are provided by <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name /> then see <Link href="/head-manual" />.
 
-> These settings are provided by <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name /> then instead see <Link href="/head-manual" />.
+> You can <Link href="#custom-settings">create your own custom settings</Link>.
 
 
 ## Example
@@ -97,7 +85,7 @@ export const title = 'AwesomeRockets | Rockets | Starship'
 export const title = 'AwesomeRockets | Rockets | Falcon 9'
 ```
 
-> As explained at <Link href="/config#files"/> defining the `title` setting with a `+title.js` file is the same as defining it with `+config.js`.
+> As explained at <Link href="/config#files"/> defining the `title` setting with a `+title.js` file has the same effect as defining it inside `+config.js`.
 
 ### Using data
 
@@ -163,6 +151,8 @@ export default {
 ```js
 // pages/+Head.jsx
 
+import { usePageContext } from 'vike-react/usePageContext' // or vike-vue / vike-solid
+
 export default () => {
   const pageContext = usePageContext()
   const { dynamicFavicon } = pageContext.config
@@ -215,7 +205,7 @@ export {
 import favicon from './favicon.svg'
 
 export {
-  // Favicon for /premium-members pages
+  // Favicon for /premium-members
   dynamicFavicon: favicon
 }
 ```
@@ -248,8 +238,8 @@ function Head() {
 
 export function title(pageContext) {
   const title = pageContext.locale === 'de-DE' ?
-    'SpaceX | Das Weltall Unternehmen' :
-    'SpaceX | The space company'
+    'AwesomeRockets | Das Weltall Unternehmen' :
+    'AwesomeRockets | The space company'
   return title
 }
 ```
@@ -262,9 +252,12 @@ See also:
 ## See also
 
 - <Link href="/Head-setting" />
+- <Link href="/title" />
+- <Link href="/description" />
+- <Link href="/image" />
+- <Link href="/viewport" />
 - <Link href="/markdown#metadata" />
 - <Link href="/data-fetching" />
-- <Link href="/lang" />
 - <Link href="/usePageContext" />
 - <Link href="/useData" />
 - <Link href="/pageContext" />

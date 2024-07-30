@@ -5,6 +5,14 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
+    title: '`htmlAttributes`',
+    url: '/htmlAttributes'
+  },
+  {
+    title: '`bodyAttributes`',
+    url: '/bodyAttributes'
+  },
+  {
     title: '`<head>` tags without `vike-{react,vue,solid}`',
     url: '/head-manual'
   },

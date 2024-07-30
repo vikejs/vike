@@ -9,7 +9,7 @@ The `Head` setting allows you to add `<head>` tags to your pages.
 
 > See <Link href="/head" /> for a general introduction and for other ways to add `<head>` tags.
 
-> As explained <Link href="#only-html">below</Link>, it's only used when rendering the HTML of the first page the user visits. Consequently, it usually cannot be used for setting the `<title>` value.
+> As explained <Link href="#only-html">below</Link>, it's only used when rendering the HTML of the first page the user visits. Consequently, it usually cannot be used for setting the `<title>` tag.
 
 ```jsx
 // /pages/+Head.jsx
@@ -41,10 +41,10 @@ export function Head() {
 
 You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link> (or <Link href="/pageContext">`pageContext`</Link>) with:
 
-- `useData()` (or `usePageContext()`) inside `+Head`
+- `useData()` and `usePageContext()` inside `+Head`.
 - `useConfig()` inside `+data` or components.
 
-**`usePageContext()` and `useData()`**
+### `usePageContext()` and `useData()`
 
 The value defined by the `Head` setting is a component and thus you can use <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/useData">`useData()`</Link> as usual:
 
@@ -63,7 +63,7 @@ export function Head() {
 }
 ```
 
-**`useConfig()`**
+### `useConfig()`
 
 See <Link href="/useConfig"/>.
 
