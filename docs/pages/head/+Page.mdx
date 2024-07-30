@@ -14,9 +14,9 @@ Setting | Sets
 <Link href="/Head-setting">`Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
 </TableStyle>
 
-> You can dynamically set these settings inside your `+data` hook by using the <Link href="/useConfig">`useConfig()` hook</Link>.
+> You can dynamically set these settings inside your `+data` hook, by using the <Link href="/useConfig">`useConfig()` hook</Link>.
 
-> You can dynamically set these settings inside your components by using the <Link href="/useConfig#config-head">`<Head>` component</Link>.
+> You can dynamically set these settings inside your components, by using the <Link href="/useConfig#config-head">`<Head>` component</Link>.
 > ```jsx
 > import { Config } from 'vike-react/Config' // or vike-vue / vike-solid
 > import { Head } from 'vike-react/Head'
@@ -38,13 +38,12 @@ Setting | Sets
 
 > You can create <Link href="#custom-settings">custom settings</Link>.
 
-> These settings are provided by <UiFrameworkExtension name />, see <Link href="#without-vike-react-vue-solid" /> if you don't use such extension.
+> These settings are provided by <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name /> then instead see <Link href="/head-manual" />.
 
-## Example
 
-You can set some global default `<title>` and `<meta name="description">`:
+Let's see how you typically use these settings.
 
-For example:
+### Defaults
 
 ```js
 // pages/+config.js
@@ -58,6 +57,9 @@ export default {
   image
 }
 ```
+
+### Globals
+
 ```jsx
 // /pages/+Head.jsx or
 // /pages/+Head.vue
@@ -74,28 +76,10 @@ export function Head() {
 
 > Unlike the other settings, the `Head` setting is cumulative which means that `pages/+Head.js` applies to all your pages and you cannot override it, see <Link href="/Head-setting#cumulative"></Link>.
 
-> This doesn't work:
-> ```js
-> // pages/about/+Head.jsx
->
-> function Head() {
->   return <>
->     <title>About us</title> // [!code ++]
->   </>
-> }
-> ```
-> ```js
-> // pages/index/+Head.jsx
->
-> function Head() {
->   return <>
->     <title>About us</title> // [!code ++]
->   </>
-> }
-> ```
-> Because `<Head>` is rendered only for the first page the user navigates to: for subsequent
-> rendered for the very first to HTML
-> The problem is that, upon <Link href="/client-routing">client-side page navigation</Link>, the title of the page won't be updated.
+
+### Override defaults
+
+You can set different `<head>` tags for specific pages, overriding the default.
 
 ```ts
 // pages/product/+title.ts
@@ -196,10 +180,6 @@ export function title(pageContext: PageContext<Data>) {
 > As shown [here](https://gist.github.com/brillout/e7fe603bd44c9ec1be7e98f3ae28636a) you can define the logic, of using `data.title` to set the page's title, once and apply it to all your pages.
 
 
-## `useHead()`
-
-The upcoming `useHead()` component hook will enable any UI component to add `<head>` tags, see: [New component hook `useHead()`](https://github.com/vikejs/vike-react/issues/67).
-
 ## Custom settings
 
 TODO
@@ -243,145 +223,6 @@ See also:
  - <Link href="/i18n" />
  - <Link href="/usePageContext" />
 
-
-## Without `vike-{react,vue,solid}`
-
-If you don't use a Vike extension, then you have direct control over `<head>` tags in your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
-
-```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
-
-export { onRenderHtml }
-
-async function onRenderHtml(pageContext) {
-  return escapeInject`<html>
-    <head>
-      <title>SpaceX</title>
-      <meta name="description" content="We deliver payload to space.">
-    </head>
-    <body>
-      <div id="root">
-        ${dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
-      </div>
-    </body>
-  </html>`
-}
-```
-
-
-### By page
-
-To define `<head>` tags on page-by-page basis, we recommend creating new settings, for example `title` and `description` as shown at <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
-
-
-### By component
-
-To define `<head>` tags by any UI component:
- 1. Add `'headProps'` to [`passToClient`](/passToClient).
- 2. Use <Link href="/usePageContext">`usePageContext()`</Link> so that `pageContext.headProps` can be accessed and modified by any component.
-
-For example:
-
-```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-export { onRenderHtml }
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import renderToHtml from 'some-ui-framework'
-
-async function onRenderHtml(pageContext) {
-  // We use our UI framework to pass `pageContext.headProps` to all components
-  // of our component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
-  const pageHtml = await renderToHtml(
-    <ContextProvider headProps={pageContext.headProps} >
-      <Page />
-    </ContextProvider>
-  )
-
-  // 1. One of our UI component modified pageContext.headProps while rendering components.
-  // 2. We now render `headProps` to HTML meta tags.
-  return escapeInject`<html>
-    <head>
-      <title>${pageContext.headProps.title}</title>
-      <meta name="description" content="${pageContext.headProps.description}">
-    </head>
-    <body>
-      <div id="app">
-        ${dangerouslySkipEscape(pageHtml)}
-      </div>
-    </body>
-  </html>`
-}
-```
-
-```js
-// SomeComponent.js
-
-  // Inside a UI component
-  const pageContext = usePageContext()
-  const { headProps } = pageContext
-  headProps.title = 'I was set by some component.'
-  headProps.description = 'Me too.'
-```
-
-
-### Client Routing
-
-If you use Client Routing, make sure to update `document.title` upon page navigation:
-
-```js
-// /renderer/+config.js
-// Environment: config
-
-export default {
-  // Make pageContext.headProps available on the client-side.
-  passToClient: ['headProps']
-}
-```
-
-```js
-// /renderer/+onRenderClient.js
-// Environment: client
-
-export { onRenderClient }
-
-async function onRenderClient(pageContext) {
-  if (!pageContext.isHydration) {
-    // Client-side navigation — we update the page's title
-    document.title = pageContext.headProps.title
-  }
-  // ...
-}
-```
-
-
-### Libraries
-
-You can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet).
-
-But we recommend using such library only if you have a rationale as the aforementioned solutions are simpler.
-
-Head libraries already sanitize the HTML `<head>`, this means you can skip `escapeInject` and wrap the overall result with `dangerouslySkipEscape()`.
-
-```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-export { onRenderHtml }
-
-import { dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
-
-async function onRenderHtml(pageContext) {
-  return dangerouslySkipEscape(await renderToHtml(pageContext.Page))
-}
-```
 
 ## See also
 

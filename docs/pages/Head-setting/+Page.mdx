@@ -37,11 +37,11 @@ export function Head() {
 }
 ```
 
-## Access data / `pageContext`
+## Using data
 
 You can set `<head>` tags based on fetched data (or <Link href="/pageContext">`pageContext`</Link>) with:
 
-- `usePageContext()` and `useData()` inside `+Head`
+- `useData()` (or `usePageContext()`) inside `+Head`
 - `useConfig()` inside `+data` or components.
 
 **`usePageContext()` and `useData()`**
@@ -104,7 +104,7 @@ For example, you can use the `Head` setting for:
 
 ### Example
 
-For example, in the following, setting `<title>` won't work while setting.
+For example, in the following, using the `Head` setting for `<title>` doens't work while it does work for `<meta name="description">`.
 
 ```js
 // /pages/index/+Head.jsx
@@ -145,7 +145,7 @@ If the user then clicks on a link `<a href="/about">About us</a>`, then Vike doe
 
 > The `<Head>` component is only loaded on the server-side and only used when rendering HTML of the first page by design.
 
-Note that this isn't an issue for `<meta name="description">` tag because it's meant for search engines bots which
+This isn't an issue for `<meta name="description">` tag because it's meant for search engines bots which
 <Link href="#:~:text=Search%20engine%20bots%20as%20well%20as%20social%20sharing%20bots%20(aka%20SMO)%20navigate%20your%20website%20only%20by%20using%20HTML%20requests">crawl your website using HTML</Link>.
 
 
