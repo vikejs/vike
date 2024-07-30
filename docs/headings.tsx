@@ -579,7 +579,7 @@ const headings = [
     level: 2,
     titleInNav: '`Head`',
     title: '`<Head>`',
-    url: '/Head'
+    url: '/Head-setting'
   },
   {
     level: 2,
