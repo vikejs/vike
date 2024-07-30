@@ -50,7 +50,7 @@ To avoid the error:
    // ✅ Vike doesn't throw an error if pageContext.someProp isn't defined // [!code ++]
    const val = 'someProp' in pageContext && pageContext.someProp // [!code ++]
 
-   // ✅ Or: // [!code ++]
+   // ✅ Alternative // [!code ++]
    const val = 'someProp' in pageContext ? pageContext.someProp : someDefaultValue // [!code ++]
    ```
 
