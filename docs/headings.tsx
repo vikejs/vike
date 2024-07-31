@@ -797,6 +797,16 @@ const headings = [
   },
   {
     level: 2,
+    title: '`htmlAttributes`',
+    url: '/htmlAttributes'
+  },
+  {
+    level: 2,
+    title: '`bodyAttributes`',
+    url: '/bodyAttributes'
+  },
+  {
+    level: 2,
     title: '`ssr`',
     url: '/ssr'
   },
@@ -847,6 +857,7 @@ const headings = [
     level: 2,
     title: 'Settings',
     titleInNav: '... more',
-    url: '/settings'
+    url: '/settings',
+    sectionTitles: ['HTML']
   }
 ] satisfies HeadingDefinition[]

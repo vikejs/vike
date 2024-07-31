@@ -2,9 +2,19 @@ import { Link } from '@brillout/docpress'
 
 import { UiFrameworkExtension, ImplementedBy, GlobalNote } from '../../components'
 
+Kind: global.  
 Environment: server. <ImplementedBy noCustomGuide />
 
-TODO
+The `htmlAttributes` setting adds attributes to the `<html>` tag.
+
+```js
+// pages/+config.js
+
+export default {
+  // <html class="dark">
+  htmlAttributes: { class: 'dark' }
+}
+```
 
 ## Global
 
@@ -14,3 +24,4 @@ TODO
 ## See also
 
 - <Link href="/head" />
+- <Link href="/settings#html" doNotInferSectionTitle />
