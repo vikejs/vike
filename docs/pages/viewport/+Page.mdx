@@ -4,7 +4,7 @@ import { UiFrameworkExtension, ImplementedBy, GlobalNote } from '../../component
 
 Environment: server. <ImplementedBy noCustomGuide />
 
-The `viewport` setting sets [the page's viewport scaling on mobile devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
+The `viewport` setting sets [the page's shown width on mobile devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
 
 By default, it's assumed your page is responsive, and the following responsive `<meta name="viewport">` tag is injected:
 
@@ -23,12 +23,12 @@ If your page isn't responsive, then we recommend setting a initial page width:
 
 export default {
   // For example, the following value makes sense if your page looks good with a 1200px width.
-  // The user will be able to dynamically change the viewport size (by using pinch gestures).
+  // The user will be able to manually change the viewport size with pinch gestures.
   viewport: 1200 // <meta name="viewport" content="width=1200" />
 }
 ```
 
-> On mobile devices, browsers will zoom so that the page with a width of `1200px` is shown to the user. For example, if the real width of the mobile screen is `600px` then the browser zooms out by a factor of `2x` in order to show a virtual width of `1200px`.
+> On mobile devices, browsers will zoom the page so that a page width of `1200px` is shown to the user. For example, if the real width of the mobile screen is `600px` then the browser zooms out by a factor of `2x` in order to show a page width of `1200px`.
 
 You can also set any aribtrary `<meta name="viewport">` tag:
 
@@ -36,14 +36,14 @@ You can also set any aribtrary `<meta name="viewport">` tag:
 // pages/+config.js
 
 export default {
-  // Don't inject any `<meta name="viewport">` tag.
+  // Don't inject any `<meta name="viewport">` tag
   viewport: null
 }
 ```
 ```js
 // pages/+Head.js
 
-// Same as default but adding `user-scalable=no` which is usually needed for
+// Same as default but adding `user-scalable=no` which makes sense for
 // highly interactive apps such as games.
 export default () => <>
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
