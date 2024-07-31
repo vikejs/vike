@@ -17,18 +17,6 @@ const headingsDetached = [
     url: '/head-manual'
   },
   {
-    title: '`description`',
-    url: '/description'
-  },
-  {
-    title: '`image`',
-    url: '/image'
-  },
-  {
-    title: '`viewport`',
-    url: '/viewport'
-  },
-  {
     title: '`<Loading>`',
     url: '/Loading'
   },

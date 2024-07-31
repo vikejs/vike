@@ -782,6 +782,21 @@ const headings = [
   },
   {
     level: 2,
+    title: '`description`',
+    url: '/description'
+  },
+  {
+    level: 2,
+    title: '`image`',
+    url: '/image'
+  },
+  {
+    level: 2,
+    title: '`viewport`',
+    url: '/viewport'
+  },
+  {
+    level: 2,
     title: '`ssr`',
     url: '/ssr'
   },

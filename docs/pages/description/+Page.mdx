@@ -39,11 +39,10 @@ As shown at:
 // Environment: server, client
 
 import type { Data } from './+data'
-import type { PageContext } from 'vike/types'
+import type { PageContextServer } from 'vike/types'
 
-export function description(pageContext: PageContext<Data>) {
-  const { data } = pageContext
-  return data.description
+export function description(pageContext: PageContextServer<Data>) {
+  return pageContext.data.product.description
 }
 ```
 

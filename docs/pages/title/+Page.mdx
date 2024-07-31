@@ -42,8 +42,7 @@ import type { Data } from './+data'
 import type { PageContext } from 'vike/types'
 
 export function title(pageContext: PageContext<Data>) {
-  const { data } = pageContext
-  return data.title
+  return pageContext.data.product.title
 }
 ```
 
