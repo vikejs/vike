@@ -2,11 +2,13 @@ import { Link } from '@brillout/docpress'
 
 import { UiFrameworkExtension, ImplementedBy, OnlyHtmlNote } from '../../components'
 
+Type: `string | (pageContext) => string`  
+Kind: overridable.  
 Environment: server. <ImplementedBy noCustomGuide />
 
 > See <Link href="/head" /> for a general introduction about `<head>` tags.
 
-The `description` setting sets [the `<head>` description tags, mostly for SEO](https://moz.com/learn/seo/meta-description).
+The `description` setting sets the [SEO description tags](https://moz.com/learn/seo/meta-description).
 
 ```js
 // pages/+config.js
@@ -16,7 +18,7 @@ export default {
 }
 ```
 
-> It generates the following:
+> It adds the following tags to `<head>`:
 >
 > ```html
 > <head>
@@ -25,32 +27,10 @@ export default {
 > </head>
 > ```
 
+As shown at:
+ - <Link href="/head#page-specific" /> you can override it.
+ - <Link href="/head#data" /> you can set it based on fetched data.
 
-You can override it:
-
-
-```js
-// pages/about/+description.js
-
-// Overrides the default
-export default 'The Vike team is a group of passionate engineers.'
-```
-
-> See: <Link href="/config#inheritance"/>
-
-> As explained at <Link href="/config#files" doNotInferSectionTitle /> defining the `description` setting with a `+description.js` file has the same effect as defining it inside `+config.js`.
-
-You can access <Link href="/pageContext">`pageContext`</Link>:
-
-```js
-// pages/some-page/+description.js
-// Environment: server, client
-
-export function description(pageContext) {
-  const { data } = pageContext
-  return data.description
-}
-```
 
 ## TypeScript
 
@@ -76,8 +56,4 @@ export function description(pageContext: PageContext<Data>) {
 ## See also
 
 - <Link href="/head" />
-- <Link href="/Head-setting" />
-- <Link href="/title" />
-- <Link href="/viewport" />
-- <Link href="/image" />
-- [MDN > What's in the head? Metadata in HTML > Adding a title](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_a_title)
+- [Moz > Learn SEO > What Are Meta Descriptions and How to Write Them](https://moz.com/learn/seo/meta-description)

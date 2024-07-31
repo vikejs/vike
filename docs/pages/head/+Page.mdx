@@ -14,8 +14,6 @@ Setting | Sets
 <Link href="/Head-setting">`Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
 </TableStyle>
 
-See the <Link href="#example">example below</Link> to see how these settings are typically used.
-
 > You can set these settings dynamically:
 > - Inside your `+data` hook, by using the <Link href="/useConfig">`useConfig()` hook</Link>.
 > - Inside your components, by using the <Link href="/useConfig#config-head">`<Config>` and `<Head>` components</Link>.
@@ -29,18 +27,15 @@ See the <Link href="#example">example below</Link> to see how these settings are
 > You can <Link href="#custom-settings">create your own custom settings</Link>.
 
 
-## Example
+## Defaults
 
-Let's see how the settings above are typically used.
-
-### Defaults
+You can set defaults (that pages can override).
 
 ```js
 // pages/+config.js
 
 import image from './previewImage.jpg'
 
-// Set some defaults (some pages will override them)
 export default {
   // Default <title>
   title: 'Awesome Rockets',
@@ -51,26 +46,25 @@ export default {
 }
 ```
 
-### Page-specific
+## Page-specific
 
-You can override the defaults, on a page-by-page basis:
+You can set values for one page or a group of pages (potentially overriding defaults).
 
 ```js
-// pages/rocket/starship/+title.js
+// pages/starship/+config.js
 
-// Overrides the title defined at pages/+config.js
-export const title = 'Rocket: Starship'
-```
-```js
-// pages/rocket/falcon-9/+title.js
-
-// Overrides the title defined at pages/+config.js
-export const title = 'Rocket: Falcon 9'
+export default {
+  title: 'Rocket: Starship',
+  description: 'The Starship is the largest rocket ever built.'
+}
 ```
 
 > See: <Link href="/config#inheritance"/>
 
-### Global
+
+## Head
+
+For other `<head>` tags, you can use the `Head` setting:
 
 ```jsx
 // pages/+Head.jsx or
@@ -89,7 +83,8 @@ export function Head() {
 
 > Unlike `title`/`description`/`image`, the `Head` setting is cumulative which means that `pages/+Head.js` cannot be overriden, see <Link href="/Head-setting#cumulative"></Link>.
 
-### Using data
+
+## Data
 
 You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
 
@@ -128,6 +123,8 @@ You can use:
 - <Link href="/useConfig">The `useConfig()` hook</Link> to set `<head>` tags inside your `+data` hook (or any Vike hook).
 - <Link href="/useConfig#config-head">The `<Config>` and `<Head>` components</Link> to set `<head>` tags inside your components.
   > The `<Config>` and `<Head>` components are particularly relevant when using integrations that enable data-fetching components, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
+
+> The settings `description` and `image` can also access the <Link href="/pageContext">`pageContext`</Link> like this.
 
 
 ## Custom settings
@@ -279,5 +276,4 @@ See also:
 - <Link href="/data-fetching" />
 - <Link href="/usePageContext" />
 - <Link href="/useData" />
-- <Link href="/pageContext" />
 - [Blog post "My current HTML boilerplate" showcasing and explaing a common boilerplate](https://www.matuzo.at/blog/html-boilerplate/)
