@@ -16,9 +16,9 @@ Setting | Sets
 
 See the <Link href="#example">example below</Link> to see how these settings are typically used.
 
-> You can dynamically set these settings:
+> You can set these settings dynamically:
 > - Inside your `+data` hook, by using the <Link href="/useConfig">`useConfig()` hook</Link>.
-> - Inside your components, by using the <Link href="/useConfig#config-head">`<Head>` component</Link>.
+> - Inside your components, by using the <Link href="/useConfig#config-head">`<Config>` and `<Head>` components</Link>.
 
 > See also:
 > - <Link href="/htmlAttributes">`htmlAttributes`</Link> to set tag attributes such as `<html class="dark">`.
@@ -31,7 +31,7 @@ See the <Link href="#example">example below</Link> to see how these settings are
 
 ## Example
 
-Let's see how you typically use these settings.
+Let's see how you typically use the settings mentioned above.
 
 ### Defaults
 
@@ -40,7 +40,7 @@ Let's see how you typically use these settings.
 
 import image from './previewImage.jpg'
 
-// Sets defaults, which some pages will override
+// Setting some defaults (some pages will override them)
 export default {
   // Default <title>
   title: 'Awesome Rockets',
@@ -51,46 +51,52 @@ export default {
 }
 ```
 
-### Globals
+### Page-specific
+
+You can override the defaults set at `pages/+config.js` on a page-by-page basis:
+
+```js
+// pages/rocket/starship/+title.js
+// Environment: server, client
+
+// Overrides the title defined at pages/+config.js
+export const title = 'AwesomeRockets | Rockets | Starship'
+```
+```js
+// pages/rocket/falcon-9/+title.js
+// Environment: server, client
+
+// Overrides the title defined at pages/+config.js
+export const title = 'AwesomeRockets | Rockets | Falcon 9'
+```
+
+> See: <Link href="/config#inheritance"/>
+
+### Global
 
 ```jsx
-// /pages/+Head.jsx or
-// /pages/+Head.vue
+// pages/+Head.jsx or
+// pages/+Head.vue
 
 import favicon from './favicon.svg'
 
 // Applies to all pages (cannot be overriden)
 export function Head() {
+  // All pages share the same favicon
   return <>
     <link rel="icon" href={favicon} type="image/svg+xml">
   </>
 }
 ```
 
-> Unlike the other settings, the `Head` setting is cumulative which means that `pages/+Head.js` applies to all your pages and cannot be overriden. See <Link href="/Head-setting#cumulative"></Link>.
-
-
-### Page-specific
-
-You can overriding the defaults and set different `<head>` tags for different pages.
-
-```js
-// /pages/rocket/starship/+title.js
-// Environment: server, client
-export const title = 'AwesomeRockets | Rockets | Starship'
-```
-```js
-// /pages/rocket/falcon-9/+title.js
-// Environment: server, client
-export const title = 'AwesomeRockets | Rockets | Falcon 9'
-```
+> Unlike `title`/`description`/`image`, the `Head` setting is cumulative which means that `pages/+Head.js` cannot be overriden. See <Link href="/Head-setting#cumulative"></Link>.
 
 ### Using data
 
 Setting `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
 
 ```js
-// /pages/rocket/starship/+data.js
+// pages/rocket/starship/+data.js
 // Environment: server
 
 export async function data() {
@@ -108,13 +114,13 @@ export async function data() {
 export default (pageContext) => pageContext.data.title
 ```
 
-You can also define the logic only once and apply to all your pages:
+You can also define the logic once and apply to all your pages:
 
 ```js
 // pages/+title.js
 
-// This title setter applies to all pages: if a page fetches data and
-// data.title is defined then use it to set the page's title.
+// Applies to all pages: if a page fetches data and data.title is defined then
+// use it to set the page's title.
 export default (pageContext) => pageContext.data?.title || 'Some Default Title'
 ```
 
@@ -144,7 +150,7 @@ export default {
   }
 }
 ```
-> See <Link href="/meta" />.
+> See: <Link href="/meta" />
 
 ```js
 // pages/+Head.jsx
@@ -213,7 +219,7 @@ export {
 Example of internationalizing (i18n) `<head>` tags:
 
 ```jsx
-// /pages/+Head.js
+// pages/+Head.js
 // Environment: server
 
 export { Head }
@@ -231,7 +237,7 @@ function Head() {
 }
 ```
 ```js
-// /pages/+title.js
+// pages/+title.js
 // Environment: server, client
 
 export function title(pageContext) {
