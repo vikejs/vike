@@ -31,7 +31,7 @@ See the <Link href="#example">example below</Link> to see how these settings are
 
 ## Example
 
-Let's see how you typically use the settings mentioned above.
+Let's see how the settings above are typically used.
 
 ### Defaults
 
@@ -40,7 +40,7 @@ Let's see how you typically use the settings mentioned above.
 
 import image from './previewImage.jpg'
 
-// Setting some defaults (some pages will override them)
+// Set some defaults (some pages will override them)
 export default {
   // Default <title>
   title: 'Awesome Rockets',
@@ -53,21 +53,19 @@ export default {
 
 ### Page-specific
 
-You can override the defaults set at `pages/+config.js` on a page-by-page basis:
+You can override the defaults, on a page-by-page basis:
 
 ```js
 // pages/rocket/starship/+title.js
-// Environment: server, client
 
 // Overrides the title defined at pages/+config.js
-export const title = 'AwesomeRockets | Rockets | Starship'
+export const title = 'Rocket: Starship'
 ```
 ```js
 // pages/rocket/falcon-9/+title.js
-// Environment: server, client
 
 // Overrides the title defined at pages/+config.js
-export const title = 'AwesomeRockets | Rockets | Falcon 9'
+export const title = 'Rocket: Falcon 9'
 ```
 
 > See: <Link href="/config#inheritance"/>
@@ -89,15 +87,14 @@ export function Head() {
 }
 ```
 
-> Unlike `title`/`description`/`image`, the `Head` setting is cumulative which means that `pages/+Head.js` cannot be overriden. See <Link href="/Head-setting#cumulative"></Link>.
+> Unlike `title`/`description`/`image`, the `Head` setting is cumulative which means that `pages/+Head.js` cannot be overriden, see <Link href="/Head-setting#cumulative"></Link>.
 
 ### Using data
 
-Setting `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
+You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
 
 ```js
 // pages/rocket/starship/+data.js
-// Environment: server
 
 export async function data() {
   const data = await sql.run(
@@ -108,7 +105,6 @@ export async function data() {
 ```
 ```ts
 // pages/rocket/starship/+title.ts
-// Environment: server, client
 
 import type { PageContext } from 'vike/types'
 import type { Data } from './+data'
@@ -117,7 +113,7 @@ import type { Data } from './+data'
 export default (pageContext: PageContext<Data>) => pageContext.data.title
 ```
 
-You can also define the logic once and apply to all your pages:
+You can define the logic once and apply it to all pages:
 
 ```js
 // pages/+title.js
@@ -127,16 +123,16 @@ You can also define the logic once and apply to all your pages:
 export default (pageContext) => pageContext.data?.title || 'Some Default Title'
 ```
 
-You can also use:
+You can use:
 - <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> inside the `+Head` setting, see <Link href="/Head-setting#using-data" />.
 - <Link href="/useConfig">The `useConfig()` hook</Link> to set `<head>` tags inside your `+data` hook (or any Vike hook).
 - <Link href="/useConfig#config-head">The `<Config>` and `<Head>` components</Link> to set `<head>` tags inside your components.
-  > The `<Config>` and `<Head>` components are particularly relevant when using integrations that enable components to fetch data, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
+  > The `<Config>` and `<Head>` components are particularly relevant when using integrations that enable data-fetching components, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
 
 
 ## Custom settings
 
-You can also create your own custom settings.
+You can create your own custom settings.
 
 For example, let's create a new setting `dynamicFavicon` that allows different favicons to be set for different pages.
 
@@ -171,7 +167,7 @@ export default () => {
 ```js
 // pages/+onAfterRenderClient.js
 
-export default () => {
+export default (pageContext) => {
   if (!pageContext.isHydration) {
     const { dynamicFavicon } = pageContext.config
     updateFavicon(dynamicFavicon)
