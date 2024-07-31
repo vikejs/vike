@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ImplementedBy } from '../../components'
+import { UiFrameworkExtension, ImplementedBy, GlobalNote } from '../../components'
 
 Environment: server.
 <ImplementedBy noCustomGuide>this setting</ImplementedBy>
@@ -44,12 +44,17 @@ export default {
 ```js
 // pages/+Head.js
 
-// Same as the defualt but adding `user-scalable=no` which can be important for
+// Same as default but adding `user-scalable=no` which is usually needed for
 // highly interactive apps such as games.
 export default () => <>
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
 </>
 ```
+
+## Global
+
+<GlobalNote />
+
 
 ## See also
 

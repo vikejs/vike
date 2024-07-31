@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { ImplementedBy, UiFrameworkExtension } from '../../components'
+import { ImplementedBy, UiFrameworkExtension, GlobalNote } from '../../components'
 
 Environment: server.
 <ImplementedBy by={<UiFrameworkExtension name list={['vike-vue']}/>} noCustomGuide={true}>`bodyHtmlEnd`</ImplementedBy>
@@ -29,6 +29,11 @@ Teleports work out of the box when using `<Teleport to="teleported">` and you do
 >   return `<div id="someTeleport">${content}</div>`
 > }
 > ```
+
+## Global
+
+<GlobalNote />
+
 
 ## See also
 
