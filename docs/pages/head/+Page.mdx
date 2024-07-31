@@ -110,8 +110,11 @@ export async function data() {
 // pages/rocket/starship/+title.ts
 // Environment: server, client
 
+import type { PageContext } from 'vike/types'
+import type { Data } from './+data'
+
 // Overrides the default <title>
-export default (pageContext) => pageContext.data.title
+export default (pageContext: PageContext<Data>) => pageContext.data.title
 ```
 
 You can also define the logic once and apply to all your pages:
@@ -189,6 +192,22 @@ function updateFavicon(dynamicFavicon) {
   link.href = dynamicFavicon
 }
 ```
+
+For TypeScript users:
+
+```ts
+// pages/+config.js
+
+declare global {
+  namespace Vike {
+    interface Config {
+      dynamicFavicon?: string
+    }
+  }
+}
+```
+
+> See: <Link href="/meta#typescript" />
 
 ### Setting usage
 

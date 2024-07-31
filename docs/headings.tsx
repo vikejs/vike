@@ -579,7 +579,8 @@ const headings = [
     level: 2,
     titleInNav: '`Head`',
     title: '`Head`',
-    url: '/Head-setting'
+    url: '/Head-setting',
+    sectionTitles: ['Only HTML']
   },
   {
     level: 2,

@@ -1,0 +1,83 @@
+import { Link } from '@brillout/docpress'
+
+import { UiFrameworkExtension, ImplementedBy, OnlyHtmlNote } from '../../components'
+
+Environment: server. <ImplementedBy noCustomGuide />
+
+> See <Link href="/head" /> for a general introduction about `<head>` tags.
+
+The `description` setting sets [the `<head>` description tags, mostly for SEO](https://moz.com/learn/seo/meta-description).
+
+```js
+// pages/+config.js
+
+export default {
+  description: 'This website is a Vike demo.'
+}
+```
+
+> It generates the following:
+>
+> ```html
+> <head>
+>   <meta name="description" content="This website is a Vike demo.">
+>   <meta property="og:description" content="This website is a Vike demo.">
+> </head>
+> ```
+
+
+You can override it:
+
+
+```js
+// pages/about/+description.js
+
+// Overrides the default
+export default 'The Vike team is a group of passionate engineers.'
+```
+
+> See: <Link href="/config#inheritance"/>
+
+> As explained at <Link href="/config#files" doNotInferSectionTitle /> defining the `description` setting with a `+description.js` file has the same effect as defining it inside `+config.js`.
+
+You can access <Link href="/pageContext">`pageContext`</Link>:
+
+```js
+// pages/some-page/+description.js
+// Environment: server, client
+
+export function description(pageContext) {
+  const { data } = pageContext
+  return data.description
+}
+```
+
+## TypeScript
+
+```tsx
+// pages/some-page/+description.js
+// Environment: server, client
+
+import type { Data } from './+data'
+import type { PageContext } from 'vike/types'
+
+export function description(pageContext: PageContext<Data>) {
+  const { data } = pageContext
+  return data.description
+}
+```
+
+
+## Under the hood
+
+<OnlyHtmlNote />
+
+
+## See also
+
+- <Link href="/head" />
+- <Link href="/Head-setting" />
+- <Link href="/title" />
+- <Link href="/viewport" />
+- <Link href="/image" />
+- [MDN > What's in the head? Metadata in HTML > Adding a title](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_a_title)
