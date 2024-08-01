@@ -5,16 +5,18 @@ import { UiFrameworkExtension, ImplementedBy, GlobalNote } from '../../component
 Kind: global.  
 Environment: server. <ImplementedBy noCustomGuide />
 
-The `bodyAttributes` setting adds attributes to the `<body>` tag.
+The `htmlAttributes` setting adds attributes to the `<html>` tag.
 
 ```js
 // pages/+config.js
 
 export default {
-  // <body class="dark">
-  bodyAttributes: { class: 'dark' }
+  // <html class="dark">
+  htmlAttributes: { class: 'dark' }
 }
 ```
+
+See <Link href="/lang"> if you merely want to set the `<html lang>` attribute.
 
 
 ## Global
@@ -24,5 +26,6 @@ export default {
 
 ## See also
 
+- <Link href="/lang" />
 - <Link href="/head" />
 - <Link href="/settings#html" doNotInferSectionTitle />

@@ -5,14 +5,14 @@ import { UiFrameworkExtension, ImplementedBy, GlobalNote } from '../../component
 Kind: global.  
 Environment: server. <ImplementedBy noCustomGuide />
 
-The `htmlAttributes` setting adds attributes to the `<html>` tag.
+The `bodyAttributes` setting adds attributes to the `<body>` tag.
 
 ```js
 // pages/+config.js
 
 export default {
-  // <html class="dark">
-  htmlAttributes: { class: 'dark' }
+  // <body class="dark">
+  bodyAttributes: { class: 'dark' }
 }
 ```
 
