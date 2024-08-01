@@ -169,6 +169,7 @@ export default (pageContext) => {
   }
 }
 
+// https://stackoverflow.com/questions/260857/changing-website-favicon-dynamically
 function updateFavicon(dynamicFavicon) {
   let link = document.querySelector("link[rel~='icon']")
   if (!dynamicFavicon) {
