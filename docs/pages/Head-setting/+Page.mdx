@@ -1,0 +1,212 @@
+import { Link } from '@brillout/docpress'
+
+import { UiFrameworkExtension, ImplementedBy } from '../../components'
+
+Kind: cumulative.  
+Environment: server. <ImplementedBy noCustomGuide />
+
+The `Head` setting allows you to add `<head>` tags to your pages.
+
+> See <Link href="/head" /> for a general introduction and for other ways to add `<head>` tags.
+
+> As explained <Link href="#only-html">below</Link>, it's only used when rendering the HTML of the first page the user visits. Consequently, it usually cannot be used for setting the `<title>` tag.
+
+```jsx
+// /pages/+Head.jsx
+// /pages/+Head.vue
+// Environment: server
+
+import previewImage from './previewImage.jpg'
+import favicon from './favicon.png'
+import iconMobile from './iconMobile.png'
+
+export function Head() {
+  return <>
+    {/* Adding a script tag */}
+    <script type="text/javascript" src="https://example.com/some-script.js"></script>
+
+    {/* Icon shown in the browser tab (aka favicon) */
+    <link rel="icon" href={favicon}>
+
+    {/* Icon shown on mobile homescreens (PWA) */
+    <link rel="apple-touch-icon" href={iconMobile}>
+
+    {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
+    <meta property="og:image" content={previewImage}>
+  </>
+}
+```
+
+## Using data
+
+You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link> (or <Link href="/pageContext">`pageContext`</Link>) with:
+
+- `useData()` and `usePageContext()` inside `+Head`.
+- `useConfig()` inside `+data` or components.
+
+### `usePageContext()` and `useData()`
+
+The value defined by the `Head` setting is a component and thus you can use <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/useData">`useData()`</Link> as usual:
+
+```jsx
+// /pages/product/@id/+Head.js
+// Environment: server
+
+import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
+
+export function Head() {
+  const data = useData()
+  return <>
+    {/* Image shown when sharing on social sites (Twitter, WhatsApp, ...) */}
+    <meta property="og:image" content={data.product.image}>
+  </>
+}
+```
+
+### `useConfig()`
+
+See <Link href="/useConfig"/>.
+
+
+## Only HTML
+
+### Only renders for the first page's HTML
+
+The `<Head>` component is only used when rendering the HTML of the first page the user visits: the tags set by `<Head>` aren't updated upon <Link href="/client-routing">client-side page navigation</Link>.
+
+### Limitation
+
+The most notable limitation is that the `Head` setting cannot be used to set the `<title>` value, because the title isn't updated upon client-side navigating between two pages that have a different title.
+
+> See <Link href="#example">example below</Link> for a more detailed explanation.
+
+For use cases where the `Head` setting cannot be used, Vike offers settings that update upon client-side navigation, such as the <Link href="/title">`title` setting</Link>.
+
+> Don't hesitate to reach out if you have a use case that you cannot achieve.
+
+
+### A small limitation
+
+This may seem like a major limitation but it actually isn't: you can still use the `Head` setting for the vast majority of use cases.
+
+Many `<head>` tags are only meant for HTML crawling:
+
+- Tags for social sites (Twitter, Instagram, ...) such as `<meta property="og:image">` (preview image upon URL sharing).
+  > Social site bots navigate your website only by using HTML requests: they don't execute client-side JavaScript and, consequently, don't do client-side navigation.
+- Tags for SEO such as `<meta name="description">`.
+  > While Google can do client-side navigation, it does discovers `<head>` tags by using its HTML crawler.
+
+Many `<head>` tags are global (they have the same value for you all your pages):
+
+- Favicon.
+  > Assuming all your pages share the same favicon (`<link rel="icon">`), there isn't any need to update it upon client-side navigation.
+- PWA settings.
+  > PWA settings are global and there isn't any need to update them upon client-side navigation.
+- `<script>`
+  > Assuming the script should apply to all your pages.
+
+### Example
+
+For example, in the following, using the `Head` setting for `<title>` doesn't work, but it does work for `<meta name="description">`.
+
+```js
+// /pages/index/+Head.jsx
+// Environment: server
+
+function Head() {
+  return <>
+    <title>AwesomeRockets</title>
+    <meta name="description" content="The rocket company.">
+  </>
+}
+```
+```js
+// /pages/about/+Head.jsx
+// Environment: server
+
+function Head() {
+  return <>
+    <title>About us</title>
+    <meta name="description" content="We deliver payload to space.">
+  </>
+}
+```
+
+If the first URL the user visits is `/` then the rendered HTML is:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AwesomeRockets</title>
+    <meta name="description" content="The rocket company.">
+  </head>
+</html>
+```
+
+If the user then clicks on a link `<a href="/about">About us</a>`, then Vike does client-side navigation and the page's title isn't updated: the browser sill shows `Welcome` even though the URL is now `/about`. That's because the <Link href="/client-routing">HTML isn't used upon client-side navigation (DOM manipulations are made instead)</Link> while the `Head` setting only sets HTML.
+
+> The `<Head>` component is only loaded on the server-side and only used when rendering HTML of the first page by design.
+
+This isn't an issue for `<meta name="description">` tag because it's meant for search engines bots which
+<Link href="#:~:text=Search%20engine%20bots%20as%20well%20as%20social%20sharing%20bots%20(aka%20SMO)%20navigate%20your%20website%20only%20by%20using%20HTML%20requests">crawl your website using HTML</Link>.
+
+
+## Cumulative
+
+The `Head` setting is cumulative. For example:
+
+```jsx
+// /pages/+Head.js
+// Environment: server
+
+import favicon from './favicon.png'
+
+export const Head = () =>
+  // This favicon applies to all pages
+  <link rel="icon" href={favicon}>
+```
+
+```jsx
+// /pages/about-us/+Head.js
+// Environment: server
+
+import previewImage from './previewImage.jpg'
+
+export const Head = () =>
+  // Both the favicon above and this tag applies to /pages/about-us/+Page.js
+  <meta property="og:image" content={previewImage}>
+```
+
+You can, however, apply different `Head` settings to different pages:
+
+```jsx
+// /pages/(marketing)/+Head.js
+// Environment: server
+
+import favicon from './favicon.png'
+
+// Applies to all marketing pages
+export const Head = () => <link rel="icon" href={favicon}>
+```
+
+```jsx
+// /pages/admin/+Head.js
+// Environment: server
+
+import favicon from './favicon.png'
+
+// Applies to all admin pages
+export const Head = () => <link rel="icon" href={favicon}>
+```
+
+> See: <Link href="/config#inheritance"/>
+
+
+> If you have a need for overriding, then add a comment at: [#1692 - Add `override` and `default` options for cumulative configs](https://github.com/vikejs/vike/issues/1692)
+
+
+## See also
+
+- <Link href="/head" />
+- <Link href="/settings#html" doNotInferSectionTitle />

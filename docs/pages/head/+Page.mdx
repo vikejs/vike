@@ -1,134 +1,236 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
+import { TableStyle } from './TableStyle'
 
-To add `<head>` tags, such as `<title>` and `<meta name="description">`, you can use:
+You can add `<head>` tags with following settings.
 
-- The page setting <Link href="#head">`Head`</Link>.
-- The page settings <Link href="#title-favicon">`title` & `favicon`</Link>.
-- 🚧 The <Link href="#usehead">`useHead()`</Link> component hook.
+<TableStyle>
+Setting | Sets
+-- | --
+<Link href="/title">`title`</Link> | <ul><li>[`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)</li> <li>[`<meta property="og:title">`](https://ogp.me/#metadata:~:text=every%20page%20are%3A-,og%3Atitle,-%2D%20The%20title%20of)</li></ul>
+<Link href="/description">`description`</Link> | <ul><li>[`<meta name="description">`](https://moz.com/learn/seo/meta-description)</li> <li>[`<meta property="og:description">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
+<Link href="/image">`image`</Link> | <ul> <li>[`<meta property="og:image">`](https://ahrefs.com/blog/open-graph-meta-tags/#:~:text=8%20simple%20steps.%22%20/%3E-,%3Cmeta%20property%3D%22og%3Aimage%22,-content%3D%22https%3A//ahrefs) (preview image upon URL sharing)</li> <li>[`<meta name="twitter:card" content="summary_large_image">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
+<Link href="/viewport">`viewport`</Link> | <ul><li>[`<meta name="viewport">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag)</li></ul>
+<Link href="/Head-setting">`Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
+</TableStyle>
 
-> These options are implemented by the <UiFrameworkExtension />. See <Link href="#without-vike-react-vue-solid" /> if you don't use such extension.
+> You can set these settings dynamically:
+> - Inside your `+data` hook, by using the <Link href="/useConfig">`useConfig()` hook</Link>.
+> - Inside your components, by using the <Link href="/useConfig#config-head">`<Config>` and `<Head>` components</Link>.
+
+> See <Link href="/settings#html" /> for other HTML settings (most notably `bodyAttributes`, `htmlAttributes`, `lang`).
+
+> These settings are provided by <UiFrameworkExtension name />. If you don't use <UiFrameworkExtension name /> then see <Link href="/head-manual" />.
+
+> You can <Link href="#custom-settings">create your own custom settings</Link>.
 
 
-## `Head`
+## Defaults
 
-To add `<head>` tags to all your pages:
+You can set defaults (that pages can override).
+
+```js
+// pages/+config.js
+
+import image from './previewImage.jpg'
+
+export default {
+  // Default <title>
+  title: 'Awesome Rockets',
+  // Default <meta name="description">
+  description: 'We deliver payload to space',
+  // Default <meta property="og:image">
+  image
+}
+```
+
+## Page-specific
+
+You can set values for one page or a group of pages (potentially overriding defaults).
+
+```js
+// pages/starship/+config.js
+
+export default {
+  title: 'Rocket: Starship',
+  description: 'The Starship is the largest rocket ever built.'
+}
+```
+
+> See: <Link href="/config#inheritance"/>
+
+
+## `Head` setting
+
+For other `<head>` tags, you can use the `Head` setting:
 
 ```jsx
-// /pages/+Head.jsx or
-// /pages/+Head.vue
-// Environment: server
+// pages/+Head.jsx or
+// pages/+Head.vue
 
-export { Head }
+import favicon from './favicon.svg'
 
-import socialImage from '../assets/images/socialImage.jpg'
-import favicon from '../assets/images/favicon.png'
-
-function Head() {
+// Applies to all pages (cannot be overriden)
+export function Head() {
+  // All pages share the same favicon
   return <>
-    <meta charset="utf-8">
-    <title>SpaceX</title>
-    <meta name="description" content="We deliver payload to space.">
-    <meta property="og:image" content={socialImage}>
-    <link rel="icon" href={favicon}>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href={favicon} type="image/svg+xml">
   </>
 }
 ```
 
-Example: [React](https://github.com/vikejs/vike-react/blob/main/examples/full/pages/%2Bconfig.ts) / [Vue](https://github.com/vikejs/vike-vue/blob/main/examples/full/pages/%2Bconfig.ts) / [Solid](https://github.com/vikejs/vike-solid/blob/main/examples/full/pages/%2BHead.tsx).
+> Unlike `title`/`description`/`image`, the `Head` setting is cumulative which means that `pages/+Head.js` cannot be overriden, see <Link href="/Head-setting#cumulative"></Link>.
 
-Setting `<head>` tags only to one page and based on <Link href="/data-fetching">fetched data</Link>:
+
+## Data
+
+You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link>:
 
 ```js
-// /pages/rocket/starship/+data.js
-// Environment: server
+// pages/rocket/starship/+data.js
 
-export { data }
-
-async function data() {
-  const rocket = await sql.run(
-    'SELECT { title, description, social_image } FROM rockets WHERE name = "starship";'
+export async function data() {
+  const data = await sql.run(
+    'SELECT { title, description } FROM rockets WHERE name = "starship";'
   )
-  return rocket
+  return data
 }
 ```
-```jsx
-// /pages/rocket/starship/+Head.jsx
-// Environment: server
+```ts
+// pages/rocket/starship/+title.ts
 
-export { Head }
-
-import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
-
-function Head() {
-  const rocket = useData()
-  return <>
-    <meta name="description" content={rocket.description}>
-    <meta property="og:image" content={rocket.social_image}>
-  </>
-}
-```
-
-
-## `title` & `favicon`
-
-If your pages can have different `<title>` values, then use the setting `title` instead of the <Link href="#head">`Head`</Link> setting:
-
-```js
-// /pages/rocket/starship/+title.js
-// Environment: server, client
-export const title = 'SpaceX | Rocket Starship'
-```
-```js
-// /pages/rocket/falcon-9/+title.js
-// Environment: server, client
-export const title = 'SpaceX | Rocket Falcon 9'
-```
-
-Upon <Link href="/client-routing">client-side navigating</Link> from the URL `/rocket/starship` to `/rocket/falcon-9`, the page's title is dynamically updated from `SpaceX | Rocket Starship` to `SpaceX | Rocket Falcon 9`. (By mutating the DOM with [`document.title = 'SpaceX | Rocket Falcon 9'`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title).)
-
-While defining `<title>` by using the `Head` setting correctly sets the page's title for the first page the user visits, it doesn't update the page's title upon <Link href="/client-routing">client-side navigation</Link>.
-
-> Most `<head>` tags, such as [the social image tag `<meta property="og:image">`](https://ogp.me/), don't need to be updated upon client-side navigation because they are only used by crawlers. (Browsers don't do anything with `<meta property="og:image">`.) Crawlers don't execute JavaScript and, therefore, don't client-side navigate.
-
-Likewise, if your [favicon](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/The_head_metadata_in_HTML#adding_custom_icons_to_your_site) can change from page to page, then define `/pages/rocket/starship/+favicon.png` instead of using the `Head` setting.
-
-You can set `title` and `favicon` based on <Link href="/data-fetching">fetched data</Link>, for example:
-
-```js
-// /pages/rocket/starship/+title.js
-// Environment: server, client
-
-export function title(pageContext) {
-  const rocket = pageContext.data
-  return rocket.title
-}
-```
-```tsx
-// With TypeScript:
-
-import type { Data } from './+data'
 import type { PageContext } from 'vike/types'
-export function title(pageContext: PageContext<Data>) {
-  const rocket = pageContext.data
-  return rocket.title
+import type { Data } from './+data'
+
+// Overrides the default <title>
+export default (pageContext: PageContext<Data>) => pageContext.data.title
+```
+
+You can define the logic once and apply it to all pages:
+
+```js
+// pages/+title.js
+
+// Applies to all pages: if a page fetches data and data.title is defined then
+// use it to set the page's title.
+export default (pageContext) => pageContext.data?.title || 'Some Default Title'
+```
+
+You can use:
+- <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> inside the `+Head` setting, see <Link href="/Head-setting#using-data" />.
+- <Link href="/useConfig">The `useConfig()` hook</Link> to set `<head>` tags inside your `+data` hook (or any Vike hook).
+- <Link href="/useConfig#config-head">The `<Config>` and `<Head>` components</Link> to set `<head>` tags inside your components.
+  > The `<Config>` and `<Head>` components are particularly relevant when using integrations that enable data-fetching components, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
+
+> The settings `description` and `image` can also access the <Link href="/pageContext">`pageContext`</Link> like this.
+
+
+## Custom settings
+
+You can create your own custom settings.
+
+For example, let's create a new setting `dynamicFavicon` that allows different favicons to be set for different pages.
+
+### Setting creation
+
+```js
+// pages/+config.js
+
+export default {
+  meta: {
+    dynamicFavicon: {
+      env: { server: true, client: true }
+    }
+  }
 }
 ```
-> As shown [here](https://gist.github.com/brillout/e7fe603bd44c9ec1be7e98f3ae28636a) you can define the logic, of using `data.title` to set the page's title, once and apply it to all your pages.
+> See: <Link href="/meta" />
 
+```js
+// pages/+Head.jsx
 
-## `useHead()`
+import { usePageContext } from 'vike-react/usePageContext' // or vike-vue / vike-solid
 
-The upcoming `useHead()` component hook will enable any UI component to add `<head>` tags, see: [New component hook `useHead()`](https://github.com/vikejs/vike-react/issues/67).
+export default () => {
+  const pageContext = usePageContext()
+  const { dynamicFavicon } = pageContext.config
+  return <>
+    { dynamicFavicon && <link rel="icon" href={dynamicFavicon}> }
+  <>
+}
+```
+```js
+// pages/+onAfterRenderClient.js
 
+export default (pageContext) => {
+  if (!pageContext.isHydration) {
+    const { dynamicFavicon } = pageContext.config
+    updateFavicon(dynamicFavicon)
+  }
+}
+
+// https://stackoverflow.com/questions/260857/changing-website-favicon-dynamically
+function updateFavicon(dynamicFavicon) {
+  let link = document.querySelector("link[rel~='icon']")
+  if (!dynamicFavicon) {
+    if (link) document.head.removeChild(link)
+    return
+  }
+  if (!link) {
+    link = document.createElement('link')
+    link.rel = 'icon'
+    document.head.appendChild(link)
+  }
+  link.href = dynamicFavicon
+}
+```
+
+For TypeScript users:
+
+```ts
+// pages/+config.js
+
+declare global {
+  namespace Vike {
+    interface Config {
+      dynamicFavicon?: string
+    }
+  }
+}
+```
+
+> See: <Link href="/meta#typescript" />
+
+### Setting usage
+
+```js
+// pages/+config.js
+
+import favicon from './favicon.svg'
+
+export {
+  // Default favicon
+  dynamicFavicon: favicon
+}
+```
+
+```js
+// pages/premium-members/+config.js
+
+import favicon from './favicon.svg'
+
+export {
+  // Favicon for /premium-members
+  dynamicFavicon: favicon
+}
+```
 
 ## Internationalization
 
 Example of internationalizing (i18n) `<head>` tags:
 
 ```jsx
-// /pages/+Head.js
+// pages/+Head.js
 // Environment: server
 
 export { Head }
@@ -146,13 +248,13 @@ function Head() {
 }
 ```
 ```js
-// /pages/+title.js
+// pages/+title.js
 // Environment: server, client
 
 export function title(pageContext) {
   const title = pageContext.locale === 'de-DE' ?
-    'SpaceX | Das Weltall Unternehmen' :
-    'SpaceX | The space company'
+    'AwesomeRockets | Das Weltall Unternehmen' :
+    'AwesomeRockets | The space company'
   return title
 }
 ```
@@ -162,152 +264,12 @@ See also:
  - <Link href="/usePageContext" />
 
 
-## Without `vike-{react,vue,solid}`
+## Markdown
 
-If you don't use a Vike extension, then you have direct control over `<head>` tags in your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
-
-```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
-
-export { onRenderHtml }
-
-async function onRenderHtml(pageContext) {
-  return escapeInject`<html>
-    <head>
-      <title>SpaceX</title>
-      <meta name="description" content="We deliver payload to space.">
-    </head>
-    <body>
-      <div id="root">
-        ${dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
-      </div>
-    </body>
-  </html>`
-}
-```
-
-
-### By page
-
-To define `<head>` tags on page-by-page basis, we recommend creating new settings, for example `title` and `description` as shown at <Link href="/meta#example-title-and-description" doNotInferSectionTitle />.
-
-
-### By component
-
-To define `<head>` tags by any UI component:
- 1. Add `'headProps'` to [`passToClient`](/passToClient).
- 2. Use <Link href="/usePageContext">`usePageContext()`</Link> so that `pageContext.headProps` can be accessed and modified by any component.
-
-For example:
-
-```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-export { onRenderHtml }
-
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import renderToHtml from 'some-ui-framework'
-
-async function onRenderHtml(pageContext) {
-  // We use our UI framework to pass `pageContext.headProps` to all components
-  // of our component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
-  const pageHtml = await renderToHtml(
-    <ContextProvider headProps={pageContext.headProps} >
-      <Page />
-    </ContextProvider>
-  )
-
-  // 1. One of our UI component modified pageContext.headProps while rendering components.
-  // 2. We now render `headProps` to HTML meta tags.
-  return escapeInject`<html>
-    <head>
-      <title>${pageContext.headProps.title}</title>
-      <meta name="description" content="${pageContext.headProps.description}">
-    </head>
-    <body>
-      <div id="app">
-        ${dangerouslySkipEscape(pageHtml)}
-      </div>
-    </body>
-  </html>`
-}
-```
-
-```js
-// SomeComponent.js
-
-  // Inside a UI component
-  const pageContext = usePageContext()
-  const { headProps } = pageContext
-  headProps.title = 'I was set by some component.'
-  headProps.description = 'Me too.'
-```
-
-
-### Client Routing
-
-If you use Client Routing, make sure to update `document.title` upon page navigation:
-
-```js
-// /renderer/+config.js
-// Environment: config
-
-export default {
-  // Make pageContext.headProps available on the client-side.
-  passToClient: ['headProps']
-}
-```
-
-```js
-// /renderer/+onRenderClient.js
-// Environment: client
-
-export { onRenderClient }
-
-async function onRenderClient(pageContext) {
-  if (!pageContext.isHydration) {
-    // Client-side navigation — we update the page's title
-    document.title = pageContext.headProps.title
-  }
-  // ...
-}
-```
-
-
-### Libraries
-
-You can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet).
-
-But we recommend using such library only if you have a rationale as the aforementioned solutions are simpler.
-
-Head libraries already sanitize the HTML `<head>`, this means you can skip `escapeInject` and wrap the overall result with `dangerouslySkipEscape()`.
-
-```js
-// /renderer/+onRenderHtml.js
-// Environment: server
-
-export { onRenderHtml }
-
-import { dangerouslySkipEscape } from 'vike/server'
-import { renderToHtml } from 'some-ui-framework'
-
-async function onRenderHtml(pageContext) {
-  return dangerouslySkipEscape(await renderToHtml(pageContext.Page))
-}
-```
+See <Link href="/markdown#metadata" />.
 
 
 ## See also
 
-- <Link href="/markdown#metadata" />
-- <Link href="/data-fetching" />
-- <Link href="/lang" />
-- <Link href="/usePageContext" />
-- <Link href="/useData" />
-- <Link href="/pageContext" />
 - [Blog post "My current HTML boilerplate" showcasing and explaing a common boilerplate](https://www.matuzo.at/blog/html-boilerplate/)
+- <Link href="/settings#html" doNotInferSectionTitle />

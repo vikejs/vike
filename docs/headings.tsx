@@ -577,6 +577,13 @@ const headings = [
   },
   {
     level: 2,
+    titleInNav: '`Head`',
+    title: '`Head`',
+    url: '/Head-setting',
+    sectionTitles: ['Only HTML']
+  },
+  {
+    level: 2,
     titleInNav: '`Layout`',
     title: '`<Layout>`',
     url: '/Layout'
@@ -584,7 +591,8 @@ const headings = [
   {
     level: 2,
     title: 'Config',
-    url: '/config'
+    url: '/config',
+    sectionTitles: ['`+` files']
   },
   {
     level: 2,
@@ -697,6 +705,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`useConfig()`',
+    url: '/useConfig'
+  },
+  {
+    level: 2,
     title: '`throw redirect()`',
     url: '/redirect'
   },
@@ -764,6 +777,36 @@ const headings = [
   },
   {
     level: 2,
+    title: '`title`',
+    url: '/title'
+  },
+  {
+    level: 2,
+    title: '`description`',
+    url: '/description'
+  },
+  {
+    level: 2,
+    title: '`image`',
+    url: '/image'
+  },
+  {
+    level: 2,
+    title: '`viewport`',
+    url: '/viewport'
+  },
+  {
+    level: 2,
+    title: '`htmlAttributes`',
+    url: '/htmlAttributes'
+  },
+  {
+    level: 2,
+    title: '`bodyAttributes`',
+    url: '/bodyAttributes'
+  },
+  {
+    level: 2,
     title: '`ssr`',
     url: '/ssr'
   },
@@ -814,6 +857,7 @@ const headings = [
     level: 2,
     title: 'Settings',
     titleInNav: '... more',
-    url: '/settings'
+    url: '/settings',
+    sectionTitles: ['HTML']
   }
 ] satisfies HeadingDefinition[]

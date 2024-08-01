@@ -1,0 +1,28 @@
+import { Link } from '@brillout/docpress'
+
+import { UiFrameworkExtension, ImplementedBy, GlobalNote } from '../../components'
+
+Kind: global.  
+Environment: server. <ImplementedBy noCustomGuide />
+
+The `bodyAttributes` setting adds attributes to the `<body>` tag.
+
+```js
+// pages/+config.js
+
+export default {
+  // <body class="dark">
+  bodyAttributes: { class: 'dark' }
+}
+```
+
+
+## Global
+
+<GlobalNote />
+
+
+## See also
+
+- <Link href="/head" />
+- <Link href="/settings#html" doNotInferSectionTitle />
