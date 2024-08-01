@@ -1,0 +1,33 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ImplementedBy, GlobalNote } from '../../components'
+
+Type: `string | (pageContext) => string`  
+Kind: global.  
+Environment: server. <ImplementedBy noCustomGuide />
+
+<Warning>
+  This setting is experimental and may be removed in the future.
+</Warning>
+
+The `favicon` setting sets the page's favicon.
+
+```js
+// pages/+config.js
+
+import favicon from './favicon.svg'
+
+export default {
+  favicon
+}
+```
+
+
+## Global
+
+<GlobalNote />
+
+
+## See also
+
+- <Link href="/head" />
+- <Link href="/settings#html" doNotInferSectionTitle />
