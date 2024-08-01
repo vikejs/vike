@@ -1,10 +1,9 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkExtension, ImplementedBy, GlobalNote } from '../../components'
+import { ImplementedBy } from '../../components'
 
 Type: `'responsive' | number | null`  
 Default: `'responsive'`  
-Kind: global.  
 Environment: server. <ImplementedBy noCustomGuide />
 
 The `viewport` setting sets [the page's shown width on mobile/tablet devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
@@ -70,12 +69,6 @@ export default () => <>
 
 > If there isn't any `<meta name="viewport">` tag, then the browser will fallback to its default. We don't recommend this (it's unpredictable) and instead consider always setting a `<meta name="viewport">` tag.
 
-
-## Global
-
-<GlobalNote />
-
-> Reach out if you need config inheritance (it's very much on the radar to support it).
 
 ## See also
 
