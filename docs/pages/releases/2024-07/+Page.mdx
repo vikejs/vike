@@ -1,21 +1,18 @@
-import { Link, Contribution, Construction } from '@brillout/docpress'
-import { UiFrameworkExtension } from '../../../components'
+import { Link, Contribution } from '@brillout/docpress'
 
-What we have been working on in July.
-
-<Construction>
- This page is work-in-progress until <code>01.08.2024</code>.
-</Construction>
+What we have been working on in July 2024.
 
 <Contribution>
   We are [looking for sponsors](https://github.com/vikejs/vike/issues/1350).
 </Contribution>
 
-**Bug fixes:** `n` (TODO)
+**Bug fixes:** `40`
 
 **Features**
 
+<Link href="#improved-head-management" /><br/>
 <Link href="#vike-react-apollo" /><br/>
+<Link href="#vike-node" /><br/>
 <Link href="#improved-url-handling" /><br/>
 <Link href="#injectscriptsat" /><br/>
 <Link href="#clientonly" /><br/>
@@ -24,6 +21,7 @@ What we have been working on in July.
 **Project**
 
 <Link href="#internal-refactoring" /><br/>
+<Link href="#new-marketing" /><br/>
 
 **See also**
 
@@ -33,9 +31,25 @@ What we have been working on in July.
 [`vike-solid` > `CHANGELOG.md`](https://github.com/vikejs/vike-solid/blob/main/CHANGELOG.md)  
 
 
-## vike-react-apollo
+## Improved head management
 
-The <Link href="/vike-react">`vike-react` extension</Link> now has first-class support for GraphQL Apollo thanks to the new [`vike-react-apollo` extension](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
+We've made a ton of improvements to `<head>` management when using `vike-{react,vue,solid}`.
+
+See <Link href="/head" />.
+
+> It's already implemented and released for `vike-react`. For `vike-{vue,solid}` the ETA is this week (first August days).
+
+<Contribution>
+  Author: [`brillout`](https://github.com/brillout)
+</Contribution>
+
+
+
+## `vike-react-apollo`
+
+We released a new
+[Vike extension `vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme)
+to seamlessly use <Link href="/vike-react">`vike-react`</Link> with GraphQL Apollo.
 
 Like other extensions, `vike-react-apollo` is lightweight (only `202` lines of code!). This means that, instead of using `vike-react-apollo`, you can easily integrate GraphQL Apollo (or any other GraphQL client) yourself.
 
@@ -46,11 +60,24 @@ Like other extensions, `vike-react-apollo` is lightweight (only `202` lines of c
 </Contribution>
 
 
+## `vike-node`
+
+One fundamental feature missing for releasing Vike `1.0.0` is being able to use Vite to transpile server code such as Express.js or Hono code ([#562](https://github.com/vikejs/vike/issues/562)).
+
+We released a [new package `vike-node`](https://github.com/vikejs/vike-node) for that purpose.
+
+> It's somewhat experimental so expect issues here and there. We may built it directly into Vike (instead of being a seperate package).
+
+<Contribution>
+  Author: [`nitedani`](https://github.com/nitedani)
+</Contribution>
+
+
 ## Improved URL handling
 
 Vike exports a new <Link href="/modifyUrl">`modifyUrl()` utiltiy</Link>, which is convenient for internationalization as shown in the example at <Link href="/i18n" />.
 
-Also `pageContext.urlParsed` got new properties:
+Also, `pageContext.urlParsed` has new properties:
 
 ```
 http://localhost:3000/some-base-url/hello/s%C3%A9bastien
@@ -82,7 +109,7 @@ http://localhost:3000/some-base-url/hello/s%C3%A9bastien
 
 The <Link href="/injectScriptsAt">new `injectScriptsAt` setting</Link> allows you to control where Vike injects scripts.
 
-> It was already possible with <Link href="/injectFilter">`injectFilter()`</Link> but `injectScriptsAt` allows you to inject scripts at the begining of the <Link href="/streaming">HTML stream</Link> and is simpler to use.
+> It was already possible with <Link href="/injectFilter">`injectFilter()`</Link> but only partially: `injectScriptsAt` allows you to inject scripts at the begining of the <Link href="/streaming">HTML stream</Link>. It's also simpler to use than `injectFilter()` and it can be used by Vike extensions.
 
 <Contribution>
   Author: [`phonzammi`](https://github.com/phonzammi)
@@ -110,10 +137,14 @@ New [Bati](https://batijs.dev) integrations:
 
 ## Internal refactoring
 
-We continuously work on internal improvements. These aren't visible to the user but they have a foundational impact on Vike and its ecosystem.
+We continuously work on internal improvements. They aren't visible to the user but they have a foundational impact on Vike and its ecosystem.
 
-Examples:
- - We refactored the stream chunk orchestration logic of [`react-streaming`](https://github.com/brillout/react-streaming) (which powers `vike-react` and other projects). [The logic is now crystal clear and robust](https://github.com/brillout/react-streaming/commit/c052e72f33254fd6deb474cd784fa4cee07b6e92#diff-52301d8ceb8d9165f156883711407609a842701365fc32f512083f81c7c02dc4) (it was messy and buggy).
+For example:
+ - We are making progress on [Universal Middlewares](https://github.com/magne4000/universal-middleware), in order to enable Vike extensions to automatically and seamlessly integrate server middlewares.
+   <Contribution>
+     Author: [`magne4000`](https://github.com/magne4000)
+   </Contribution>
+ - We refactored the stream chunk orchestration logic of [`react-streaming`](https://github.com/brillout/react-streaming) (which powers `vike-react` and other projects). [The logic is now crystal clear and robust](https://github.com/brillout/react-streaming/commit/c052e72f33254fd6deb474cd784fa4cee07b6e92#diff-52301d8ceb8d9165f156883711407609a842701365fc32f512083f81c7c02dc4) (it was somewhat messy and buggy).
    <Contribution>
      Authors: [`nitedani`](https://github.com/nitedani), [`brillout`](https://github.com/brillout)
    </Contribution>
@@ -121,6 +152,17 @@ Examples:
    <Contribution>
      Authors: [`brillout`](https://github.com/brillout)
    </Contribution>
+
+
+## New marketing
+
+We've been talking with the community to gather feedback for the upcoming new marketing. For example:
+ - [Discussions about Vike + Vue](https://www.reddit.com/r/vuejs/comments/1dsucor/vike_june_releases/)
+ - [Discussions about Vike's upcoming new tagline](https://x.com/brillout/status/1815350370740105507)
+
+<Contribution>
+  Author: [`brillout`](https://github.com/brillout)
+</Contribution>
 
 
 ## See also
