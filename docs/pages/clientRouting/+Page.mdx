@@ -46,7 +46,7 @@ Vue example:
      if (pageContext.isHydration) {
        // We hydrate the first page. (Since we do SSR, the first page is already
        // rendered to HTML and we merely have to hydrate it.)
-       await hydrate(pageContext.Page)
+       await hydrateDom(pageContext.Page)
      } else {
        // We render a new page. (When the user navigates to a new page.)
        await renderToDom(pageContext.Page)
