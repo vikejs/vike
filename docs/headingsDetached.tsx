@@ -5,6 +5,14 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
+    title: 'Page moved',
+    url: '/Head-setting'
+  },
+  {
+    title: 'Page moved',
+    url: '/head'
+  },
+  {
     title: '`favicon`',
     url: '/favicon'
   },

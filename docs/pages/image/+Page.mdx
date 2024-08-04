@@ -6,7 +6,7 @@ Type: `string | (pageContext) => string`
 Kind: overridable.  
 Environment: server. <ImplementedBy noCustomGuide />
 
-> See <Link href="/head" /> for a general introduction about `<head>` tags.
+> See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 
 The `image` setting sets the [preview image upon URL sharing](https://ahrefs.com/blog/open-graph-meta-tags/#:~:text=8%20simple%20steps.%22%20/%3E-,%3Cmeta%20property%3D%22og%3Aimage%22,-content%3D%22https%3A//ahrefs).
 
@@ -30,8 +30,8 @@ export default {
 > ```
 
 As shown at:
- - <Link href="/head#page-specific" /> you can override it.
- - <Link href="/head#data" /> you can set it based on fetched data.
+ - <Link href="/head-tags#page-specific" /> you can override it.
+ - <Link href="/head-tags#data" /> you can set it based on fetched data.
 
 
 ## TypeScript
@@ -57,5 +57,5 @@ export function image(pageContext: PageContextServer<Data>) {
 ## See also
 
 - [Ahrefs > Blog > Open Graph Meta Tags: Everything You Need to Know](https://ahrefs.com/blog/open-graph-meta-tags/)
-- <Link href="/head" />
+- <Link href="/head-tags" />
 - <Link href="/settings#html" doNotInferSectionTitle />
