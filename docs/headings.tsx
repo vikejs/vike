@@ -103,7 +103,7 @@ const headings = [
   {
     level: 2,
     title: '`<head>` meta tags',
-    url: '/head'
+    url: '/head-tags'
   },
   {
     level: 2,
@@ -579,7 +579,7 @@ const headings = [
     level: 2,
     titleInNav: '`Head`',
     title: '`Head`',
-    url: '/Head-setting',
+    url: '/Head',
     sectionTitles: ['Only HTML']
   },
   {
