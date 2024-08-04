@@ -21,7 +21,6 @@ function onRenderHtml(pageContext) {
     </Layout>
   )
 
-  // See https://vike.dev/head
   const title = getPageTitle(pageContext)
   const desc = pageContext.data?.description || pageContext.config.description || 'Demo of using Vike'
 

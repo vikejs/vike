@@ -18,7 +18,6 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
 
   const appHtml = await renderToString(app)
 
-  // https://vike.dev/head
   const title = getPageTitle(pageContext)
   const desc = pageContext.data?.description || pageContext.config.description || 'Demo of using Vike'
 
