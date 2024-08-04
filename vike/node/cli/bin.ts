@@ -17,6 +17,24 @@ cli
     runPrerender_forceExit()
   })
 
+// TODO: remove dummy implementation
+cli.command('dev').action(async () => {
+  const { fork } = await import('child_process')
+
+  start()
+
+  function start() {
+    const cp = fork('node_modules/vite/bin/vite', ['dev'], { stdio: 'inherit' })
+    cp.on('exit', (code) => {
+      if (code === 33) {
+        start()
+      } else {
+        process.exit(code)
+      }
+    })
+  }
+})
+
 function assertOptions() {
   // Using process.argv because cac convert names to camelCase
   const rawOptions = process.argv.slice(3)

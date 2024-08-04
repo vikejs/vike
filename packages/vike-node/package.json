@@ -1,0 +1,59 @@
+{
+  "name": "vike-node",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    "./connect": "./dist/connect.js",
+    "./fastify": "./dist/fastify.js",
+    "./hono": "./dist/hono.js",
+    "./plugin": "./dist/plugin/index.js"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rm -rf dist/ && tsc",
+    "release": "release-me patch",
+    "release:minor": "release-me minor",
+    "release:commit": "release-me commit"
+  },
+  "dependencies": {
+    "@brillout/picocolors": "^1.0.10",
+    "@nitedani/shrink-ray-current": "^4.2.0",
+    "@vercel/nft": "^0.26.4",
+    "esbuild": "^0.19.0",
+    "sirv": "^2.0.0"
+  },
+  "peerDependencies": {
+    "vike": "^0.4.181",
+    "vite": "^5.0.10"
+  },
+  "devDependencies": {
+    "@brillout/release-me": "^0.4.0",
+    "@types/node": "^20.11.19",
+    "fastify": "^4.26.1",
+    "hono": "^4.5.1",
+    "typescript": "^5.3.3",
+    "vike": "^0.4.162",
+    "vite": "^5.0.10"
+  },
+  "typesVersions": {
+    "*": {
+      "connect": [
+        "./dist/connect.d.ts"
+      ],
+      "fastify": [
+        "./dist/fastify.d.ts"
+      ],
+      "hono": [
+        "./dist/hono.d.ts"
+      ],
+      "plugin": [
+        "./dist/plugin/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "repository": "https://github.com/vikejs/vike/tree/main/packages/vike-node",
+  "license": "MIT"
+}
