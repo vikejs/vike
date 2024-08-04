@@ -79,7 +79,7 @@ export function Head() {
 }
 ```
 
-> Unlike `title`/`description`/`image`, the `Head` setting is cumulative which means that `pages/+Head.js` cannot be overriden, see <Link href="/Head-setting#cumulative"></Link>.
+> Unlike `title`/`description`/`image`, the `Head` setting is cumulative which means that `pages/+Head.js` cannot be overriden, see <Link href="/Head#cumulative"></Link>.
 
 
 ## Data
@@ -117,7 +117,7 @@ export default (pageContext) => pageContext.data?.title || 'Some Default Title'
 ```
 
 You can use:
-- <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> inside the `+Head` setting, see <Link href="/Head-setting#using-data" />.
+- <Link href="/useData">`useData()`</Link> and <Link href="/usePageContext">`usePageContext()`</Link> inside the `+Head` setting, see <Link href="/Head#using-data" />.
 - <Link href="/useConfig">The `useConfig()` hook</Link> to set `<head>` tags inside your `+data` hook (or any Vike hook).
 - <Link href="/useConfig#config-head">The `<Config>` and `<Head>` components</Link> to set `<head>` tags inside your components.
   > The `<Config>` and `<Head>` components are particularly relevant when using integrations that enable data-fetching components, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme).
