@@ -45,7 +45,8 @@ const headings = [
   {
     level: 2,
     title: 'Scaffold new Vike app',
-    url: '/new'
+    url: '/new',
+    sectionTitles: ['Without `vike-{react,vue,solid}`']
   },
   {
     level: 2,
