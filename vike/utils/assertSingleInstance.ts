@@ -25,9 +25,8 @@ const globalObject = getGlobalObject<{
 })
 
 const clientRuntimesClonflict =
-  "The client runtime of Server Routing as well as the client runtime of Client Routing are both being loaded. Make sure they aren't loaded both at the same time for a given page. See https://vike.dev/client-runtimes-conflict"
-const clientNotSingleInstance =
-  "Two vike client runtime instances are being loaded. Make sure your client-side bundles don't include vike twice. (In order to reduce the size of your client-side JavaScript bundles.)"
+  'Client runtime of both Server Routing and Client Routing loaded https://vike.dev/client-runtimes-conflict'
+const clientNotSingleInstance = 'Client runtime loaded twice https://vike.dev/client-runtime-duplicated'
 
 function assertSingleInstance() {
   {

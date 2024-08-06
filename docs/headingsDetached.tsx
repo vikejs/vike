@@ -368,6 +368,10 @@ const headingsDetached = [
     url: '/client-runtimes-conflict'
   },
   {
+    title: 'Client runtime loaded twice',
+    url: '/client-runtime-twice'
+  },
+  {
     title: '`includeAssetsImportedByServer`',
     url: '/includeAssetsImportedByServer'
   },
