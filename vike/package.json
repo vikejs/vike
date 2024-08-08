@@ -225,7 +225,7 @@
     "sirv": "^2.0.4",
     "source-map-support": "^0.5.21",
     "typescript": "^5.4.5",
-    "vite": "^5.3.5"
+    "vite": "^5.4.0"
   },
   "engines": {
     "node": ">=18.0.0"
