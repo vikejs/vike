@@ -19,7 +19,7 @@ const globalObject = getGlobalObject<{
   isClientRouting?: boolean
   // For assertWarning() shim
   alreadyLogged: Set<string>
-}>('assertPackageInstances.ts', {
+}>('assertSingleInstance.ts', {
   instances: [],
   alreadyLogged: new Set()
 })
