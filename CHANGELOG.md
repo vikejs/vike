@@ -1,3 +1,13 @@
+## [0.4.183](https://github.com/vikejs/vike/compare/v0.4.182...v0.4.183) (2024-08-08)
+
+
+### Bug Fixes
+
+* also exclude vike/getPageContext from optimizeDeps ([4405294](https://github.com/vikejs/vike/commit/4405294d03eddcc45a959bae45cd9b0b074209d4))
+* more lightweight and succint client-side err msg ([83bd1b7](https://github.com/vikejs/vike/commit/83bd1b7f3f6cf700a6a8248637674e7b2e409e31))
+
+
+
 ## [0.4.182](https://github.com/vikejs/vike/compare/v0.4.181...v0.4.182) (2024-07-29)
 
 
