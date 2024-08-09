@@ -1,12 +1,12 @@
 import { RepoLink } from '@brillout/docpress'
 import { ImportMeta } from '@brillout/docpress'
 
-> **What is the Base URL?** The Base URL (aka Public Path) configures the URL root of our website.
-> For example, instead of serving our app at `https://example.org/*` (the Base URL is `/`), we can serve our website at `https://example.org/some-base/*` by setting the Base URL to `/some-base/`.
+> **What is the Base URL?** The Base URL (aka Public Path) configures the URL root of your website.
+> For example, instead of serving your app at `https://example.org/*` (the Base URL is `/`), you can serve your website at `https://example.org/some-base/*` by setting the Base URL to `/some-base/`.
 
 ## `base`
 
-To change the Base URL we:
+To change the Base URL:
 
 1. Set [`vite.config.js#base`](https://vitejs.dev/config/shared-options.html#base).
    ```js
@@ -15,13 +15,13 @@ To change the Base URL we:
      base: '/some-base/'
    }
    ```
-1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
+1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to implement a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
 1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/+onRenderHtml.jsx' />.
 
 ```html
 <!-- view-source:https://my-website.com/some-base/ -->
 
-<!-- Note how our website is served at https://my-website.com/some-base/ and
+<!-- Note how the website is served at https://my-website.com/some-base/ and
      how the asset URLs are prepended with the Base URL /some-base/ -->
 
 <html>
@@ -45,7 +45,7 @@ Example:
 
 ## `baseAssets`
 
-We can change the Base URL *only* of our assets by using the `baseAssets` configuration. The Base URL of our page URLs is left unchanged.
+You can change the Base URL only for your assets by using the `baseAssets` setting. The Base URL of the URL of your pages is left unchanged.
 
 > The most common use case for using `baseAssets` is when deploying assets to a CDN.
 
@@ -63,7 +63,7 @@ export default {
 }
 ```
 
-Note how the Base URL of our page URLs isn't changed: our app is still served at `https://my-website.com/*` (the Base URL is still `/`).
+Note how the Base URL of the URL of your pages isn't changed: your app is still served at `https://my-website.com/*` (the Base URL is still `/`).
 
 ```html
 <!-- view-source:https://my-website.com/ -->
@@ -93,7 +93,7 @@ Note how the Base URL of our page URLs isn't changed: our app is still served at
 </html>
 ```
 
-> We can use `process.env.BASE_ASSETS` and <ImportMeta prop='env.BASE_ASSETS' /> to access the `baseAssets` value in our code.
+> You can use `process.env.BASE_ASSETS` and <ImportMeta prop='env.BASE_ASSETS' /> to access the `baseAssets` value in your code.
 
 Example:
  - <RepoLink path='/examples/base-url-cdn/' />
@@ -101,9 +101,9 @@ Example:
 
 ## `baseServer`
 
-We can do both:
- - Deploy our static assets to a CDN using the `baseAssets` configuration.
- - Change the Base URL of our server using the `baseServer` configuration.
+You can do both:
+ - Deploy your static assets to a CDN using the `baseAssets` setting.
+ - Change the Base URL of your server using the `baseServer` setting.
 
 ```js
 // vite.config.js
@@ -148,7 +148,7 @@ export default {
 </html>
 ```
 
-> We can use `process.env.BASE_SERVER` and <ImportMeta prop='env.BASE_SERVER' /> to access the `baseServer` value in our code.
+> You can use `process.env.BASE_SERVER` and <ImportMeta prop='env.BASE_SERVER' /> to access the `baseServer` value in your code.
 
 Example:
  - <RepoLink path='/examples/base-url-server/' />
