@@ -8,6 +8,7 @@ export { getGlobalContext }
 export { getViteDevServer }
 export { getViteConfig }
 export { setGlobalContext_viteDevServer }
+export { setGlobalContext_isDev }
 export { setGlobalContext_prerender }
 export { getRuntimeManifest }
 
@@ -35,6 +36,7 @@ const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   globalContextPromise: Promise<GlobalContext>
   viteDevServer?: ViteDevServer
+  isDev?: boolean
   viteConfig?: ResolvedConfig
 }>('globalContext.ts', {
   globalContextPromise: new Promise((r) => (resolveGlobalContext = r))
@@ -132,6 +134,9 @@ function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   globalObject.viteConfig = viteDevServer.config
   globalObject.viteDevServer = viteDevServer
 }
+function setGlobalContext_isDev(isDev: boolean) {
+  globalObject.isDev = isDev
+}
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
 }
@@ -147,13 +152,13 @@ function getViteConfig(): ResolvedConfig | null {
 async function initGlobalContext(isPrerendering = false, outDir?: string): Promise<void> {
   if (globalObject.globalContext) return
 
-  const { viteDevServer, viteConfig } = globalObject
-  assertNodeEnv_runtime(!!viteDevServer)
-  const isProduction = !viteDevServer
+  const { viteDevServer, viteConfig, isDev } = globalObject
+  assertNodeEnv_runtime(isDev ?? false)
 
-  if (!isProduction) {
+  if (isDev) {
     assert(viteConfig)
     assert(!isPrerendering)
+    assert(viteDevServer)
     const configVike = await getConfigVike(viteConfig)
     const pluginManifest = getRuntimeManifest(configVike)
     globalObject.globalContext = {

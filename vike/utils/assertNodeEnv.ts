@@ -29,21 +29,18 @@ function assertNodeEnv_build() {
   assertNodeEnvIsNotDev('building')
 }
 
-function assertNodeEnv_runtime(viteDevServerExists: boolean) {
+function assertNodeEnv_runtime(isViteDev: boolean) {
   const nodeEnv = getNodeEnv()
   if (nodeEnv === null || nodeEnv === 'test') return
-  const isDev = isNodeEnvDev()
+  const isNodeDev = isNodeEnvDev()
   // Calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
-  if (viteDevServerExists === isDev) return
+  if (isViteDev === isNodeDev) return
   const nodeEnvDesc = getNodeEnvDesc()
   // TODO: make it assertUsage() again once #1528 is implemented.
-  assertWarning(
-    false,
-    `Vite's development server was${
-      viteDevServerExists ? '' : "n't"
-    } instantiated while the ${nodeEnvDesc} which is contradictory, see https://vike.dev/NODE_ENV`,
-    { onlyOnce: true }
-  )
+  const errMsg = `Running ${
+    isViteDev ? pc.cyan('$ vite dev') : 'app in production'
+  } while the ${nodeEnvDesc} which is contradictory, see https://vike.dev/NODE_ENV` as const
+  assertWarning(false, errMsg, { onlyOnce: true })
 }
 
 function assertNodeEnv_onVikePluginLoad() {

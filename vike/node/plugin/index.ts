@@ -83,5 +83,5 @@ Object.defineProperty(plugin, 'apply', {
 
 // package.json#peerDependencies isn't enough as users can ignore it
 function assertViteVersion() {
-  assertVersion('Vite', version, '4.4.0')
+  assertVersion('Vite', version, '5.1.0')
 }
