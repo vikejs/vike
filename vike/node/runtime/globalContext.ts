@@ -129,7 +129,6 @@ function makePublic(globalContext: GlobalContext): GlobalContextPublic {
 function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
   assert(!globalObject.globalContext)
-  assert(!globalObject.globalContext)
   globalObject.viteConfig = viteDevServer.config
   globalObject.viteDevServer = viteDevServer
 }
