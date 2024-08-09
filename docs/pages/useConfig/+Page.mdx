@@ -22,7 +22,7 @@ It currently supports following configs:
 
 export { data }
 
-import { useConfig } from 'vike-react/useConfig'
+import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
 
 async function data(pageContext) {
   const config = useConfig()
@@ -78,8 +78,8 @@ function Movies() {
 Inside components, you can also use `<Config>` and `<Head>`:
 
 ```jsx
-import { Config } from 'vike-react/Config'
-import { Head } from 'vike-react/Head'
+import { Config } from 'vike-react/Config' // or vike-solid
+import { Head } from 'vike-react/Head' // or vike-solid
 
 function Movies() {
   // Fetch data
@@ -100,7 +100,7 @@ function Movies() {
 }
 ```
 
-> It's currently only implemented by `vike-react`. Contribution welcome [for `vike-vue`](https://github.com/vikejs/vike-vue/issues/175) and [for `vike-solid`](https://github.com/vikejs/vike-solid/issues/105).
+> It's currently only implemented by `vike-react` and `vike-solid`. Contribution welcome [for `vike-vue`](https://github.com/vikejs/vike-vue/issues/175).
 
 > Both achieve the same:
 > - `<Head><something/></Head>`
@@ -191,7 +191,7 @@ The workaround is to define <Link href="/data#environment">`+data.shared.js` ins
 // pages/some-page/+data.js // [!code --]
 // pages/some-page/+data.shared.js // [!code ++]
 
-import { useConfig } from 'vike-react/useConfig'
+import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
 
 export async function data (pageContext) {
   const config = useConfig()
