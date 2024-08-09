@@ -9,6 +9,12 @@ export default {
       prerender: true
     }),
     mdx(),
-    react()
+    react(),
+    {
+      name: 'html-minify',
+      transformIndexHtml(html) {
+        return html.replaceAll('\n', '')
+      }
+    }
   ]
 } as UserConfig
