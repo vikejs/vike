@@ -189,7 +189,7 @@ export default {
 
 This enables Vike to load the file `/pages/+config.js` without having to load `LayoutDefault.jsx`. This means that Vike can quickly load all your `+config.js` files without having to load any runtime code.
 
-> These fake imports, which we call *pointer imports*, apply only to `+config.js` files. Imports in other `+` files are normal imports as usual.
+> These fake imports, which we call *pointer imports*, apply only to `+config.js` files. Imports in other `+` files are normal imports.
 
 It's similar to when you import images:
 
@@ -199,7 +199,9 @@ import logo from '../images/logo.svg'
 console.log(logo) // Prints: /assets/logo.svg
 ```
 
-Vike transforms an import inside `+config.js` to be a pointer import if and only if it resolve to a `.jsx` file, a `.vue` file, or any other file that doesn't end with `.js` or `.ts` (or `.mjs`/`.mts`/`.cjs`/`.cts`). For example:
+Vike transforms an import inside `+config.js` to be a pointer import if and only if the import resolves to a file that doesn't end with `.js`/`.ts`/`.mjs`/`.mts`/`.cjs`/`.cts`.
+
+For example, an import that resolves to a `.jsx` or `.vue` file is transformed to be a pointer import:
 
 ```js
 // /pages/ssr.js
@@ -225,7 +227,7 @@ export default {
 }
 ```
 
-> A `.jsx` or `.vue` file is always meant to be client- / server-side runtime code. (I.e. it's never used for config logic.) That's why it makes sense that Vike always treats `.jsx` and `.vue` as pointer imports.
+> A `.jsx` or `.vue` file is always meant to be client-/server-side runtime code (it's never used for defining configuration logic). That's why it makes sense that Vike always treats `.jsx` and `.vue` files as pointer imports.
 
 #### Manually mark pointer imports
 
@@ -252,7 +254,7 @@ The config code in itself is never included in runtimes:
 // be imported in runtime files such as +Page.js instead.
 import './some.css'
 
-// This log is printed only when Vike loads this +config.js file (at development, and when
+// This log is printed only when Vike loads this +config.js file (at development and when
 // building your app). This log isn't included in the client nor server runtime.
 // Consequently, you won't see this log in production.
 console.log("I will never be logged in production")
