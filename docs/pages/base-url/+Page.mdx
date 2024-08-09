@@ -98,6 +98,24 @@ Note how the Base URL of the URL of your pages isn't changed: your website is st
 Example:
  - <RepoLink path='/examples/base-url-cdn/' />
 
+By default, the `baseAssets` setting applies to both development and production. You can apply it only to production by using `process.env.NODE_ENV`:
+
+```js
+// vite.config.js
+
+import vike from 'vike/plugin'
+
+const isProduction = process.env.NODE_ENV === 'production'
+const baseAssets = isProduction ? 'https://cdn.example.org/my-website-assets/' : undefined
+
+export default {
+  plugins: [
+    vike({ baseAssets })
+  ]
+}
+```
+
+> There is [work-in-progress to apply it only in production by default](https://github.com/vikejs/vike/issues/1794).
 
 ## `baseServer`
 
