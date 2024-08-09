@@ -3,10 +3,11 @@ export { isDev1_onConfigureServer }
 export { isDev2 }
 export { isDev3 }
 
-// We can remove this file after we implement the Vike CLI
+// We can propbably remove this file after we implement the Vike CLI
 
 // There isn't any reliable way to test whether Vite is ran as dev/build/preview/optimizeDep
-//  - Failed attempt to make a PR: https://github.com/brillout/vite/tree/fix/config-operation
+//  - Failed attempt to make a PR: https://github.com/vitejs/vite/pull/12298
+//    - Superseded by https://github.com/vitejs/vite/pull/14855
 
 // ********
 // Method 3 - most reliable, requires newer Vite version
@@ -16,7 +17,10 @@ function isDev3(configEnv: ConfigEnv): null | boolean {
   const { isPreview, command } = configEnv
   if (command !== 'serve') return false
   if (typeof isPreview === 'boolean') return !isPreview
-  // isPreview is undefined in older Vite versions, see https://github.com/vitejs/vite/commit/93fce55
+  // `isPreview` is `undefined` in older Vite versions.
+  // https://github.com/vitejs/vite/pull/14855
+  // https://github.com/vitejs/vite/pull/15695O
+  // - Released at `vite@5.1.0`: https://github.com/vitejs/vite/blob/main/packages/vite/CHANGELOG.md#510-beta4-2024-01-26:~:text=fix(preview)%3A%20set%20isPreview%20true%20(%2315695)%20(93fce55)%2C%20closes%20%2315695
   return null
 }
 

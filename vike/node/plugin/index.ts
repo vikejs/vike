@@ -81,7 +81,7 @@ Object.defineProperty(plugin, 'apply', {
   }
 })
 
-// node_modules/vike/package.json#peerDependencies.vite isn't enough as users can ignore it
+// package.json#peerDependencies isn't enough as users can ignore it
 function assertViteVersion() {
   assertVersion('Vite', version, '4.4.0')
 }
