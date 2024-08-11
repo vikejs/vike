@@ -120,11 +120,11 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 function Movies() {
   // Fetch data
-  const result = useSuspenseQuery({
+  const query = useSuspenseQuery({
     queryKey: ['movies'],
     queryFn: () => fetch('https://star-wars.brillout.com/api/films.json')
   })
-  const movies = result.data
+  const movies = query.data
 
   // Set <head> tags
   const config = useConfig()
@@ -153,11 +153,11 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 function Movies() {
   // Fetch data
-  const result = useSuspenseQuery({
+  const query = useSuspenseQuery({
     queryKey: ['movies'],
     queryFn: () => fetch('https://star-wars.brillout.com/api/films.json')
   })
-  const movies = result.data
+  const movies = query.data
 
   // Render UI and <head> tags
   return (
