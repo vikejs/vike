@@ -16,7 +16,7 @@ import {
   assertWarning,
   objectEntries,
   hasProp,
-  arrayIncludes,
+  includes,
   assertIsNotProductionRuntime,
   getMostSimilar,
   joinEnglish,
@@ -1310,7 +1310,7 @@ function isLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false
   const configNamesGlobal = getConfigNamesGlobal()
-  return arrayIncludes(configNamesGlobal, configName)
+  return includes(configNamesGlobal, configName)
 }
 function getConfigNamesGlobal() {
   return Object.keys(configDefinitionsBuiltInGlobal)
