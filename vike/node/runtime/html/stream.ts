@@ -117,15 +117,17 @@ async function streamReadableNodeToString(readableNode: StreamReadableNode): Pro
 async function streamReadableWebToString(readableWeb: ReadableStream): Promise<string> {
   const reader = readableWeb.getReader()
   const decoder = new TextDecoder()
-  let str: string = ''
 
+  let str: string = ''
   while (true) {
     const { done, value } = await reader.read()
     if (done) break
     str += decoder.decode(value, { stream: true })
   }
 
+  // https://github.com/vikejs/vike/pull/1799#discussion_r1713554096
   str += decoder.decode()
+
   return str
 }
 async function stringToStreamReadableNode(str: string): Promise<StreamReadableNode> {
