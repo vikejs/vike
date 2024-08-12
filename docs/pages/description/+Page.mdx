@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 import { UiFrameworkExtension, ImplementedBy, OnlyHtmlNote } from '../../components'
 
-Type: `string | (pageContext) => string`  
+Type: `string | null | ((pageContext) => string | null | undefined)`  
 Kind: overridable.  
 Environment: server. <ImplementedBy noCustomGuide />
 

@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 import { ImplementedBy } from '../../components'
 
-Type: `'responsive' | number | null`  
+Type: `'responsive' | number | null | ((pageContext) => 'responsive' | number | null | undefined)`  
 Default: `'responsive'`  
 Environment: server. <ImplementedBy noCustomGuide />
 
