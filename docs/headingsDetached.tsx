@@ -548,6 +548,10 @@ const headingsDetached = [
     url: '/onAfterRenderClient'
   },
   {
+    title: '`onBeforeRenderHtml()` hook',
+    url: '/onBeforeRenderHtml'
+  },
+  {
     title: '`onAfterRenderHtml()` hook',
     url: '/onAfterRenderHtml'
   },
