@@ -1,3 +1,18 @@
+## [0.4.184](https://github.com/vikejs/vike/compare/v0.4.183...v0.4.184) (2024-08-12)
+
+
+### Bug Fixes
+
+* stop using `createServer()` to distinguish dev/prod (fix [#1791](https://github.com/vikejs/vike/issues/1791)) ([38f60f1](https://github.com/vikejs/vike/commit/38f60f148e97562b2af00b4379bff68b634c8196))
+* streamReadableWebToString encoding ([#1799](https://github.com/vikejs/vike/issues/1799)) ([6268228](https://github.com/vikejs/vike/commit/62682283574d0c83914a4e470dbef9057e1cd1d0))
+
+
+### BREAKING CHANGES
+
+* Update to `vite@5.1.0` or above.
+
+
+
 ## [0.4.183](https://github.com/vikejs/vike/compare/v0.4.182...v0.4.183) (2024-08-08)
 
 
