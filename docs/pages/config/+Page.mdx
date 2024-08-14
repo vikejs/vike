@@ -251,7 +251,7 @@ console.log("I will never be logged in production")
 If you get this error:
 
 ```js
-title defined by /pages/+config.ts must be defined over a so-called "pointer import"
+[Wrong Usage] title defined by /pages/+config.ts must be defined over a so-called "pointer import"
 ```
 
 Then this means you're trying to define runtime code inside a `+config.js` file which is forbidden.
@@ -273,6 +273,7 @@ Instead do this:
 // pages/+title.js
 
 // ✅ Allowed: Vike is able to lazily load this function at runtime
+
 export default (pageContext) => pageContext.data.title
 ```
 
@@ -281,10 +282,11 @@ Or this:
 ```js
 // pages/+config.js
 
+// ✅ Allowed: same as defining +title.js
+
 import title from './title' with { type: 'pointer' }
 
 export default {
-  // ✅ Allowed: same as defining +title.js
   title
 }
 ```
