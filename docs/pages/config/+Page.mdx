@@ -229,20 +229,6 @@ export default {
 
 > A `.jsx` or `.vue` file is always meant to be client-/server-side runtime code (it's never used for defining configuration logic). That's why it makes sense that Vike always treats `.jsx` and `.vue` files as pointer imports.
 
-#### Manually mark pointer imports
-
-You can manually mark an import to be a pointer import:
-
-```js
-// /pages/+config.js
-// Environment: config
-
-import ssr from './ssr' with { type: 'pointer' }
-console.log(ssr) // Prints: import:./ssr:default
-```
-
-<Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>
-
 #### Config code isn't runtime code
 
 The config code itself is never included in runtimes:
@@ -259,6 +245,63 @@ import './some.css'
 // Consequently, you won't see this log in production.
 console.log("I will never be logged in production")
 ```
+
+#### Forbidden runtime code
+
+If you get this error:
+
+```js
+title defined by /pages/+config.ts must be defined over a so-called "pointer import"
+```
+
+Then this means you're trying to define runtime code inside a `+config.js` file which is forbidden.
+
+```js
+// pages/+config.js
+
+export default {
+  // ❌ Forbidden: the function title() is runtime code
+  title: (pageContext) => pageContext.data.title
+}
+```
+
+> Note that `title()` is called at runtime (i.e. when the page is rendered) and *not* at config time (i.e. when Vike loads the `+config.js` file).
+
+Instead do this:
+
+```js
+// pages/+title.js
+
+// ✅ Allowed: Vike is able to lazily load this function at runtime
+export default (pageContext) => pageContext.data.title
+```
+
+Or this:
+
+```js
+// pages/+config.js
+
+import title from './title' with { type: 'pointer' }
+
+export default {
+  // ✅ Allowed: same as defining +title.js
+  title
+}
+```
+
+#### Manually mark pointer imports
+
+You can manually mark an import to be a pointer import:
+
+```js
+// /pages/+config.js
+// Environment: config
+
+import ssr from './ssr' with { type: 'pointer' }
+console.log(ssr) // Prints: import:./ssr:default
+```
+
+<Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>
 
 
 ## See also
