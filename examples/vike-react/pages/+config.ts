@@ -9,5 +9,10 @@ export default {
   title: 'My Vike + React App',
   // <link rel="icon" href="${favicon}" />
   favicon: logoUrl,
+  // @ts-ignore
+  myglobalthing: false,
+  meta: {
+    myglobalthing: { env: { client: true } }
+  },
   extends: vikeReact
 } satisfies Config
