@@ -76,38 +76,36 @@ The `<Head>` component is only used when rendering the HTML of the first page th
 
 ### Limitation
 
-The most notable limitation is that the `Head` setting cannot be used to set the `<title>` value, because the title isn't updated upon client-side navigating between two pages that have a different title.
+The most notable limitation is that the `Head` setting cannot be used to set the `<title>` value, because the title isn't updated upon client-side navigating to a page that has a different title.
 
 > See <Link href="#example">example below</Link> for a more detailed explanation.
 
-For use cases where the `Head` setting cannot be used, Vike offers settings that update upon client-side navigation, such as the <Link href="/title">`title` setting</Link>.
-
-> Don't hesitate to reach out if you have a use case that you cannot achieve.
+For use cases where the `Head` setting cannot be used, Vike offers settings that update upon client-side navigation such as <Link href="/title">`title`</Link>.
 
 
 ### A small limitation
 
-This may seem like a major limitation but it actually isn't: you can still use the `Head` setting for the vast majority of use cases.
+This may seem like a major limitation but it actually isn't: you can use the `Head` setting for the vast majority of use cases.
 
-Many `<head>` tags are only meant for HTML crawling:
+You can use the `Head` setting for `<head>` tags are read by HTML crawlers:
 
-- Tags for social sites (Twitter, Instagram, ...) such as `<meta property="og:image">` (preview image upon URL sharing).
-  > Social site bots navigate your website only by using HTML requests: they don't execute client-side JavaScript and, consequently, don't do client-side navigation.
+- Tags for social sites (Twitter, Instagram, ...) such as `<meta property="og:image">` (the preview image upon URL sharing).
+  > Social site bots navigate your website only by using HTML requests: they don't execute client-side JavaScript and don't do client-side navigation.
 - Tags for SEO such as `<meta name="description">`.
-  > While Google can do client-side navigation, it does discovers `<head>` tags by using its HTML crawler.
+  > While Google can do client-side navigation, it still discovers `<head>` tags by using its HTML crawler.
 
-Many `<head>` tags are global (they have the same value for you all your pages):
+You can use the `Head` setting for `<head>` tags are global (they have the same value for you all your pages):
 
 - Favicon.
-  > Assuming all your pages share the same favicon (`<link rel="icon">`), there isn't any need to update it upon client-side navigation.
+  > Assuming all your pages share the same favicon (`<link rel="icon">`), there isn't any need to update the favicon upon client-side navigation.
 - PWA settings.
   > PWA settings are global and there isn't any need to update them upon client-side navigation.
 - `<script>`
-  > Assuming the script should apply to all your pages.
+  > Assuming the script applies to all your pages.
 
 ### Example
 
-For example, in the following, using the `Head` setting for `<title>` doesn't work, but it does work for `<meta name="description">`.
+The following example showcases that using the `Head` setting for `<title>` doesn't work while it does work for `<meta name="description">`.
 
 ```js
 // /pages/index/+Head.jsx
@@ -178,7 +176,7 @@ export const Head = () =>
   <meta property="og:image" content={previewImage}>
 ```
 
-You can, however, apply different `Head` settings to different pages:
+To apply different `Head` settings to different pages:
 
 ```jsx
 // /pages/(marketing)/+Head.js
