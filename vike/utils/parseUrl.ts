@@ -185,18 +185,16 @@ function parseHost(host: string | null, url: string) {
   const ret: { hostname: string | null; port: number | null } = { hostname: null, port: null }
   if (!host) return ret
 
-  // hostname
-  const [hostname, ...rest] = host.split(':')
-  ret.hostname = hostname!
-
   // port
-  if (rest.length > 0) {
-    assert(rest.length === 1, url)
-    const portStr = rest[0]!
-    const port = parseInt(portStr, 10)
+  const parts = host.split(':')
+  if (parts.length > 1) {
+    const port = parseInt(parts.pop()!, 10)
     assert(port || port === 0, url)
     ret.port = port
   }
+
+  // hostname
+  ret.hostname = parts.join(':')
 
   return ret
 }
