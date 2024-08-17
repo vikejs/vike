@@ -327,6 +327,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Effector',
+    url: '/effector',
+  },
+  {
+    level: 2,
     title: 'Stores',
     titleInNav: '... more',
     url: '/stores'
