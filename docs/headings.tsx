@@ -328,7 +328,7 @@ const headings = [
   {
     level: 2,
     title: 'Effector',
-    url: '/effector',
+    url: '/effector'
   },
   {
     level: 2,
