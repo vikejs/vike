@@ -1,3 +1,12 @@
+## [0.4.186](https://github.com/vikejs/vike/compare/v0.4.185...v0.4.186) (2024-08-18)
+
+
+### Bug Fixes
+
+* fix rollupOptions.output.manualChunks passthrough ([8d75b15](https://github.com/vikejs/vike/commit/8d75b155d0aeced5bc128d3a52800d1b505b36ad))
+
+
+
 ## [0.4.185](https://github.com/vikejs/vike/compare/v0.4.184...v0.4.185) (2024-08-18)
 
 
