@@ -4,7 +4,7 @@ export { distFileNames }
 //  - https://github.com/vikejs/vike/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage, isArray } from '../utils.js'
+import { assertPosixPath, assert, assertUsage, isArray, isCallable } from '../utils.js'
 import path from 'path'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../shared/getAssetsDir.js'
@@ -38,6 +38,22 @@ function distFileNames(): Plugin {
             false,
             "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use."
           )
+        }
+        {
+          const manualChunksOriginal = rollupOutput.manualChunks
+          rollupOutput.manualChunks = function (id, ...args) {
+            if (id.endsWith('.css') && id.includes('node_modules')) return 'vendor'
+            if (manualChunksOriginal) {
+              if (isCallable(manualChunksOriginal)) {
+                manualChunksOriginal.call(this, id, ...args)
+              } else {
+                assertUsage(
+                  false,
+                  "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value."
+                )
+              }
+            }
+          }
         }
       })
     }
