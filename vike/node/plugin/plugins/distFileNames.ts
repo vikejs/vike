@@ -45,7 +45,7 @@ function distFileNames(): Plugin {
             if (id.endsWith('.css') && id.includes('node_modules')) return 'vendor'
             if (manualChunksOriginal) {
               if (isCallable(manualChunksOriginal)) {
-                manualChunksOriginal.call(this, id, ...args)
+                return manualChunksOriginal.call(this, id, ...args)
               } else {
                 assertUsage(
                   false,
