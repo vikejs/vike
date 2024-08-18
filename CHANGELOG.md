@@ -1,3 +1,15 @@
+## [0.4.185](https://github.com/vikejs/vike/compare/v0.4.184...v0.4.185) (2024-08-18)
+
+
+### Bug Fixes
+
+* avoid CSS code duplication ([#1815](https://github.com/vikejs/vike/issues/1815)) ([35c0916](https://github.com/vikejs/vike/commit/35c0916b38491e96e454b0b94800ce50a9c3f653))
+* improve error message ([9e92b7e](https://github.com/vikejs/vike/commit/9e92b7e462dd84e0106bc77959035cc4255805ec))
+* support IPV6 (fix [#1808](https://github.com/vikejs/vike/issues/1808)) ([7048cc1](https://github.com/vikejs/vike/commit/7048cc125bd1a3c783ca1e676aac3b6483fc0417))
+* support latest esbuild versions ([0ad7dc7](https://github.com/vikejs/vike/commit/0ad7dc7db8a0980ffed1023531d473723433315c))
+
+
+
 ## [0.4.184](https://github.com/vikejs/vike/compare/v0.4.183...v0.4.184) (2024-08-12)
 
 
