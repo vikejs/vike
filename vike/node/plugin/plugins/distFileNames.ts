@@ -4,7 +4,7 @@ export { distFileNames }
 //  - https://github.com/vikejs/vike/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage, isArray, isCallable } from '../utils.js'
+import { assertPosixPath, assert, assertUsage, isArray, isCallable, isFilePathAbsolute } from '../utils.js'
 import path from 'path'
 import crypto from 'crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
@@ -58,22 +58,40 @@ function distFileNames(): Plugin {
 
             // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
             if (id.endsWith('.css')) {
+              if (isFilePathAbsolute(id)) {
+              assertModuleId(id)
+
               const filePath = getModuleFilePathAbsolute(id, config)
               const fileName = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
 
-              assertModuleId(id)
               // Make fileHash the same between local development and CI
               const idStable = path.posix.relative(config.root, id)
               // Don't remove `?` queries because each `id` should belong to a unique bundle.
-              const fileHash = crypto.createHash('md5').update(idStable).digest('hex').slice(0, 8)
+              const fileHash = getIdHash(idStable)
 
               return `${fileName}-${fileHash}`
+              } else {
+                let name: string
+                const isVirtualModule = id.match(/virtual:([^:]+):/)
+                if (!isVirtualModule) {
+                  name = 'style'
+                } else {
+                  name = isVirtualModule[1]!
+                  assert(name)
+                }
+                const hash = getIdHash(id)
+                return `${name}-${hash}`
+              }
             }
           }
         }
       })
     }
   }
+}
+
+function getIdHash(id: string) {
+  return crypto.createHash('md5').update(id).digest('hex').slice(0, 8)
 }
 
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
