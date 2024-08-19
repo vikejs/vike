@@ -59,17 +59,17 @@ function distFileNames(): Plugin {
             // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
             if (id.endsWith('.css')) {
               if (isFilePathAbsolute(id)) {
-              assertModuleId(id)
+                assertModuleId(id)
 
-              const filePath = getModuleFilePathAbsolute(id, config)
-              const fileName = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
+                const filePath = getModuleFilePathAbsolute(id, config)
+                const fileName = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
 
-              // Make fileHash the same between local development and CI
-              const idStable = path.posix.relative(config.root, id)
-              // Don't remove `?` queries because each `id` should belong to a unique bundle.
-              const fileHash = getIdHash(idStable)
+                // Make fileHash the same between local development and CI
+                const idStable = path.posix.relative(config.root, id)
+                // Don't remove `?` queries because each `id` should belong to a unique bundle.
+                const fileHash = getIdHash(idStable)
 
-              return `${fileName}-${fileHash}`
+                return `${fileName}-${fileHash}`
               } else {
                 let name: string
                 const isVirtualModule = id.match(/virtual:([^:]+):/)
