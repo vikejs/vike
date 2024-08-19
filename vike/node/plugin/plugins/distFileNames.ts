@@ -40,12 +40,13 @@ function distFileNames(): Plugin {
           )
         }
         {
+          // https://github.com/vikejs/vike/issues/1815
           const manualChunksOriginal = rollupOutput.manualChunks
           rollupOutput.manualChunks = function (id, ...args) {
-            if (id.endsWith('.css') && id.includes('node_modules')) return 'vendor'
             if (manualChunksOriginal) {
               if (isCallable(manualChunksOriginal)) {
-                return manualChunksOriginal.call(this, id, ...args)
+                const result = manualChunksOriginal.call(this, id, ...args)
+                if (result !== undefined) return result
               } else {
                 assertUsage(
                   false,
@@ -53,6 +54,7 @@ function distFileNames(): Plugin {
                 )
               }
             }
+            if (id.endsWith('.css') && id.includes('node_modules')) return 'vendor'
           }
         }
       })
