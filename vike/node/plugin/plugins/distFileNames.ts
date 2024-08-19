@@ -55,14 +55,16 @@ function distFileNames(): Plugin {
                 )
               }
             }
+
             // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
             if (id.endsWith('.css')) {
               const filePath = getModuleFilePathAbsolute(id, config)
               const fileName = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
 
               assertModuleId(id)
-              // Don't remove `?` queries, because in principle each `id` should belong to a unique bundle.
+              // Make fileHash the same between local development and CI
               const idStable = path.posix.relative(config.root, id)
+              // Don't remove `?` queries because each `id` should belong to a unique bundle.
               const fileHash = crypto.createHash('md5').update(idStable).digest('hex').slice(0, 8)
 
               return `${fileName}-${fileHash}`
