@@ -1,4 +1,4 @@
-export { assertPathFilesystemAbsolute }
+export { assertFilePathAbsoluteFilesystem }
 export { isPathFilesystemAbsolute }
 
 import path from 'path'
@@ -6,10 +6,10 @@ import { assert } from './assert.js'
 import { assertPosixPath } from './filesystemPathHandling.js'
 
 /** Assert path is absolute starting from the filesystem root. */
-function assertPathFilesystemAbsolute(p: string) {
+function assertFilePathAbsoluteFilesystem(p: string) {
   // The assert is "eventually reliable":
   // - For Windows users, the assert is correct.
-  // - For Linux users assertPathFilesystemAbsolute() will erroneously succeed if `p` is a path absolute from the user root dir.
+  // - For Linux users assertFilePathAbsoluteFilesystem() will erroneously succeed if `p` is a path absolute from the user root dir.
   //   - But that's okay because the assertion will eventually fail for Windows users.
   assert(isPathFilesystemAbsolute(p))
 }
