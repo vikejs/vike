@@ -6,8 +6,10 @@ export { distFileNames }
 
 import { assertPosixPath, assert, assertUsage, isArray, isCallable } from '../utils.js'
 import path from 'path'
+import crypto from 'crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../shared/getAssetsDir.js'
+import { assertModuleId, getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
@@ -40,7 +42,6 @@ function distFileNames(): Plugin {
           )
         }
         {
-          // https://github.com/vikejs/vike/issues/1815
           const manualChunksOriginal = rollupOutput.manualChunks
           rollupOutput.manualChunks = function (id, ...args) {
             if (manualChunksOriginal) {
@@ -54,7 +55,18 @@ function distFileNames(): Plugin {
                 )
               }
             }
-            if (id.endsWith('.css') && id.includes('node_modules')) return 'vendor'
+            // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
+            if (id.endsWith('.css')) {
+              const filePath = getModuleFilePathAbsolute(id, config)
+              const fileName = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
+
+              assertModuleId(id)
+              // Don't remove `?` queries, because in principle each `id` should belong to a unique bundle.
+              const idStable = path.posix.relative(config.root, id)
+              const fileHash = crypto.createHash('md5').update(idStable).digest('hex').slice(0, 8)
+
+              return `${fileName}-${fileHash}`
+            }
           }
         }
       })

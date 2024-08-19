@@ -8,7 +8,7 @@ function testRun(cmd: 'npm run preview') {
   const hash = /[a-zA-Z0-9_-]+/
   const fontRE = partRegex`<link rel="preload" href="/assets/static/Sono-Light.${hash}.ttf" as="font" type="font/ttf" crossorigin>`
   const logoRE = partRegex`<link rel="preload" href="/assets/static/logo.${hash}.svg" as="image" type="image/svg+xml">`
-  const styleRE = partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`
+  const styleRE = partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/Layout-031b266d.${hash}.css">`
   const script1RE = partRegex`<script src="/assets/entries/entry-server-routing.${hash}.js" type="module" async></script>`
   const script2RE = partRegex`<link rel="modulepreload" href="/assets/chunks/chunk-${hash}.js" as="script" type="text/javascript">`
 

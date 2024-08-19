@@ -38,18 +38,12 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(html).not.toContain('<script')
       expect(html).not.toContain('as="rel="modulepreload""')
       expect(html).not.toContain('as="script"')
-      if (isV1Design) {
-        expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`
-        )
-      } else {
-        expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/default.page.server.${hash}.css">`
-        )
-        expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index.page.server.${hash}.css">`
-        )
-      }
+      expect(html).toMatch(
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index-bda8e411.${hash}.css">`
+      )
+      expect(html).toMatch(
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/Layout-031b266d.${hash}.css">`
+      )
     } else {
       expect(html).toContain('<script')
       expect(html).toContain('@vite/client')
@@ -257,7 +251,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
   test("CSS of other pages isn't loaded", async () => {
     {
       const html = await fetchHtml('/')
-      expect(html.split('text/css').length).toBe(2)
+      expect(html.split('text/css').length).toBe(!isV1Design && isProd ? 4 : 2)
       if (!isProd) {
         expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css')
       }
