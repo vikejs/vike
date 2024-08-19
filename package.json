@@ -38,7 +38,7 @@
     "@brillout/test-e2e": "^0.5.33",
     "@brillout/test-types": "^0.1.13",
     "prettier": "^3.2.5",
-    "vitest": "^1.6.0"
+    "vitest": "^2.0.5"
   },
   "pnpm": {
     "overrides": {
