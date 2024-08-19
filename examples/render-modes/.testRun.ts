@@ -39,23 +39,13 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(html).not.toContain('as="rel="modulepreload""')
       expect(html).not.toContain('as="script"')
       if (isV1Design) {
-        const cssImport = isV1Design
-          ? partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`
-          : partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/html-only.${hash}.css">`
-        expect(html).toMatch(cssImport)
+        expect(html).toMatch(
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`
+        )
       } else {
-        // Different test depending on Rollup version, see https://github.com/vitejs/vite/pull/13608#issuecomment-1606133506
-        try {
-          // rollup@3.21.0
-          expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/Layout.${hash}.css">`
-          )
-        } catch {
-          // rollup@3.25.2
-          expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/default.page.server.${hash}.css">`
-          )
-        }
+        expect(html).toMatch(
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/default.page.server.${hash}.css">`
+        )
         expect(html).toMatch(
           partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index.page.server.${hash}.css">`
         )
