@@ -7,7 +7,7 @@ import { assert, assertUsage, assertWarning, capitalizeFirstLetter } from '../ut
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
-import { getModuleFilePath } from '../shared/getFilePath.js'
+import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 
 function fileEnv(): Plugin {
   let config: ResolvedConfig
@@ -68,7 +68,7 @@ function fileEnv(): Plugin {
 
         // Show error message
         let errMsg: string
-        let modulePathPretty = getModuleFilePath(moduleId, config)
+        let modulePathPretty = getModuleFilePathAbsolute(moduleId, config)
         modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
         errMsg = `${capitalizeFirstLetter(
           envExpect
@@ -81,7 +81,7 @@ function fileEnv(): Plugin {
           // I don't know why and who sets importer to '<stdin>' (I guess Vite?)
           importer !== '<stdin>'
         ) {
-          const importerPath = getModuleFilePath(importer, config)
+          const importerPath = getModuleFilePathAbsolute(importer, config)
           errMsg += ` by ${importerPath}`
         }
 

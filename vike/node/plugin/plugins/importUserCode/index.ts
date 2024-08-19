@@ -20,7 +20,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd.js'
-import { getModuleFilePath } from '../../shared/getFilePath.js'
+import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -140,7 +140,7 @@ function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
 
 function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
   {
-    const filePathToShowToUserResolved = getModuleFilePath(filePath, config)
+    const filePathToShowToUserResolved = getModuleFilePathAbsolute(filePath, config)
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
