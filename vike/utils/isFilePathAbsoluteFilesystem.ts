@@ -5,7 +5,11 @@ import path from 'path'
 import { assert } from './assert.js'
 import { assertPosixPath } from './filesystemPathHandling.js'
 
-/** Assert path is absolute starting from the filesystem root. */
+/**
+ * Asserts that `filePath` is an absolute file path starting from the filesystem root.
+ *
+ * It isn't reliable for Linux users, but that's okay because the assertion will eventually fail on windows.
+ */
 function assertFilePathAbsoluteFilesystem(filePath: string) {
   // The assert is "eventually reliable":
   // - For Windows users, the assert is correct.
@@ -14,7 +18,11 @@ function assertFilePathAbsoluteFilesystem(filePath: string) {
   assert(isFilePathAbsoluteFilesystem(filePath))
 }
 
-/** Whether path is absolute starting from the filesystem root. Isn't reliable for Linux users: isFilePathAbsoluteFilesystem() returns `true` for paths absolute from the user root dir. */
+/**
+ * Whether `filePath` is an absolute file path starting from the filesystem root.
+ *
+ * Isn't reliable for Linux users: it returns `true` for an absolute path starting from the user root dir.
+ */
 function isFilePathAbsoluteFilesystem(filePath: string) {
   assertPosixPath(filePath)
   assert(!filePath.startsWith('/@fs/'))
