@@ -1,3 +1,13 @@
+## [0.4.187](https://github.com/vikejs/vike/compare/v0.4.186...v0.4.187) (2024-08-19)
+
+
+### Bug Fixes
+
+* disable CSS bundling (fix [#1815](https://github.com/vikejs/vike/issues/1815)) ([420e8f5](https://github.com/vikejs/vike/commit/420e8f52546a2bae9e894558c96915270904a85e))
+* improve support for user-defined manualChunk ([80d6c55](https://github.com/vikejs/vike/commit/80d6c55501d30681b48d6e1e9bf5b75e1dda7d7c))
+
+
+
 ## [0.4.186](https://github.com/vikejs/vike/compare/v0.4.185...v0.4.186) (2024-08-18)
 
 
