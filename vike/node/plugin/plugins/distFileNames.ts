@@ -62,8 +62,16 @@ function distFileNames(): Plugin {
                 assertPosixPath(id)
                 assertModuleId(id)
 
-                const filePath = getModuleFilePathAbsolute(id, config)
-                const name = filePath.split('/').pop()!.split('.').slice(0, -1).join('.')
+                let name: string
+                const isNodeModules = id.match(/node_modules\/([^\/]+)\/(?!.*node_modules)/)
+                if (isNodeModules) {
+                  name = isNodeModules[1]!
+                } else {
+                  const filePath = getModuleFilePathAbsolute(id, config)
+                  name = filePath
+                  name = name.split('.').slice(0, -1).join('.') // remove file extension
+                  name = name.split('/').join('_')
+                }
 
                 // Make fileHash the same between local development and CI
                 const idStable = path.posix.relative(config.root, id)

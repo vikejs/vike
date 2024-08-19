@@ -39,10 +39,10 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(html).not.toContain('as="rel="modulepreload""')
       expect(html).not.toContain('as="script"')
       expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index-bda8e411.${hash}.css">`
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/pages_html-only_index-bda8e411.${hash}.css">`
       )
       expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/Layout-031b266d.${hash}.css">`
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/renderer_Layout-031b266d.${hash}.css">`
       )
     } else {
       expect(html).toContain('<script')
