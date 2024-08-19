@@ -1,5 +1,5 @@
 export { assertFilePathAbsoluteFilesystem }
-export { isFilePathAbsoluteFilesystem }
+export { isFilePathAbsolute }
 
 import path from 'path'
 import { assert } from './assert.js'
@@ -16,6 +16,7 @@ function assertFilePathAbsoluteFilesystem(filePath: string) {
   // - For Linux users assertFilePathAbsoluteFilesystem() will erroneously succeed if `p` is a path absolute from the user root dir.
   //   - But that's okay because the assertion will eventually fail for Windows users.
   assert(isFilePathAbsoluteFilesystem(filePath))
+  assertPosixPath(filePath)
 }
 
 /**
@@ -24,7 +25,6 @@ function assertFilePathAbsoluteFilesystem(filePath: string) {
  * Isn't reliable for Linux users: it returns `true` for an absolute path starting from the user root dir.
  */
 function isFilePathAbsoluteFilesystem(filePath: string) {
-  assertPosixPath(filePath)
   assert(!filePath.startsWith('/@fs/'))
   if (process.platform !== 'win32') {
     // - For linux users, there doesn't seem to be a reliable way to distinguish between:
@@ -39,4 +39,17 @@ function isFilePathAbsoluteFilesystem(filePath: string) {
     if (yes) assert(!filePath.startsWith('/'))
     return yes
   }
+}
+
+/**
+ * Whether `filePath` is an absolute file path.
+ *
+ * Returns `true` regardless whether it starts from the user root dir or filesystem root.
+ */
+function isFilePathAbsolute(filePath: string): boolean {
+  assert(!filePath.startsWith('/@fs/'))
+  // Absolute path starting from the user root dir.
+  if (filePath.startsWith('/')) return true
+  // Seems to be reliable: https://nodejs.org/api/path.html#pathisabsolutepath
+  return path.isAbsolute(filePath)
 }

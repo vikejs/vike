@@ -10,7 +10,7 @@ import {
   assertPosixPath,
   assertUsage,
   deepEqual,
-  isFilePathAbsoluteFilesystem,
+  isFilePathAbsolute,
   requireResolve
 } from '../../../../utils.js'
 import { type PointerImportData, parsePointerImportData } from './transformFileImports.js'
@@ -65,7 +65,7 @@ function resolvePointerImport(
   //   - An npm package import
   // - importPath cannot be a path alias (since esbuild resolves path aliases, see transpileAndExecuteFile.ts)
   assertPosixPath(importPath)
-  if (importPath.startsWith('.') || isFilePathAbsoluteFilesystem(importPath)) {
+  if (importPath.startsWith('.') || isFilePathAbsolute(importPath)) {
     if (importPath.startsWith('.')) {
       assert(importPath.startsWith('./') || importPath.startsWith('../'))
     }
