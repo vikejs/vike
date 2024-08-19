@@ -1,3 +1,13 @@
+## [0.4.188](https://github.com/vikejs/vike/compare/v0.4.187...v0.4.188) (2024-08-19)
+
+
+### Bug Fixes
+
+* improve built css file names ([#1815](https://github.com/vikejs/vike/issues/1815)) ([d5ebcdc](https://github.com/vikejs/vike/commit/d5ebcdcacf76d0ba07399411db630da5c8c32192))
+* support virtual modules upon disabling CSS bundling (fix [#1816](https://github.com/vikejs/vike/issues/1816)) ([#1815](https://github.com/vikejs/vike/issues/1815)) ([17ed1f2](https://github.com/vikejs/vike/commit/17ed1f2db763e88695d1840b22e18e58e5dd792b))
+
+
+
 ## [0.4.187](https://github.com/vikejs/vike/compare/v0.4.186...v0.4.187) (2024-08-19)
 
 
