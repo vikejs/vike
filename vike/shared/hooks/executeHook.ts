@@ -14,7 +14,7 @@ const globalObject = getGlobalObject('utils/executeHook.ts', {
   pageContext: null as PageContextUnknown
 })
 
-type PageContextUnknown = null | Record<string, unknown>
+type PageContextUnknown = null | Record<string, any>
 
 function isUserHookError(err: unknown): false | HookLoc {
   if (!isObject(err)) return false
