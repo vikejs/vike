@@ -1,5 +1,6 @@
 export { executeHook }
 export { getPageContext }
+export { providePageContext }
 export { isUserHookError }
 
 import { getProjectError, assertWarning } from '../../utils/assert.js'
@@ -97,6 +98,11 @@ function isNotDisabled(timeout: false | number): timeout is number {
 function getPageContext<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
   return globalObject.pageContext as any
 }
+/**
+ * Provide `pageContext` to custom Vike hooks.
+ *
+ * https://vike.dev/getPageContext
+ */
 function providePageContext(pageContext: PageContextUnknown) {
   globalObject.pageContext = pageContext
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()
