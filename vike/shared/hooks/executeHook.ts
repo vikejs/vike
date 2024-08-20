@@ -99,7 +99,7 @@ function getPageContext<PageContext = PageContextClient | PageContextServer>(): 
   return globalObject.pageContext as any
 }
 /**
- * Provide `pageContext` to custom Vike hooks.
+ * Provide `pageContext` for universal hooks.
  *
  * https://vike.dev/getPageContext
  */
