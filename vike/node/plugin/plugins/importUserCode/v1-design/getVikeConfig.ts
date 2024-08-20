@@ -429,17 +429,7 @@ async function loadVikeConfig(
         applyEffectsAll(configValueSources, configDefinitions)
         const configValuesComputed = getComputed(configValueSources, configDefinitions)
 
-        console.log('configDefinitions.mything 10', configDefinitions.mything)
-        console.log('locationId before', locationId)
-        console.log('interfaceFilesRelevantList', interfaceFilesRelevantList.map(i => i.filePath.filePathToShowToUser))
-         try {
         assertUsageGlobalConfigs(interfaceFilesRelevantList, configDefinitions, interfaceFilesByLocationId)
-         } catch(err) {
-           console.log('catch tmp 1')
-           console.log(err)
-           process.exit(0)
-           throw err
-         }
 
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
