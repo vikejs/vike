@@ -1,3 +1,14 @@
+## [0.4.189](https://github.com/vikejs/vike/compare/v0.4.188...v0.4.189) (2024-08-20)
+
+
+### Bug Fixes
+
+* avoid untracked async flow ([178c3b7](https://github.com/vikejs/vike/commit/178c3b7529ae6b375b368cbb9620e3ad0343bf19))
+* fix config inheritance (fix [#1802](https://github.com/vikejs/vike/issues/1802)) ([#1817](https://github.com/vikejs/vike/issues/1817)) ([94c0c43](https://github.com/vikejs/vike/commit/94c0c43d5d29c96521bc63167f976099fe34c8fc))
+* workaround CSS module HMR (fix [#1127](https://github.com/vikejs/vike/issues/1127)) ([373ae21](https://github.com/vikejs/vike/commit/373ae21adb2b6a55054d986bdaac8ff9d2611b43))
+
+
+
 ## [0.4.188](https://github.com/vikejs/vike/compare/v0.4.187...v0.4.188) (2024-08-19)
 
 
