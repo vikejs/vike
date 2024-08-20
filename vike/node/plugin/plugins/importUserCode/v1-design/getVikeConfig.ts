@@ -380,7 +380,7 @@ async function loadVikeConfig(
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
-        const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesByLocationId).flat(1)
+        const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesRelevant).flat(1)
 
         assertExtensionsPeerDependencies(interfaceFilesRelevantList)
 
