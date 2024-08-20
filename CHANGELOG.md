@@ -1,3 +1,13 @@
+## [0.4.190](https://github.com/vikejs/vike/compare/v0.4.189...v0.4.190) (2024-08-20)
+
+
+### Bug Fixes
+
+* improve built css file names ([ac192a4](https://github.com/vikejs/vike/commit/ac192a4b0a24777d96b98093ccf81799887038f9))
+* support fake paths upon disable CSS bundling (fix [#1818](https://github.com/vikejs/vike/issues/1818)) ([6dfac95](https://github.com/vikejs/vike/commit/6dfac95352edc476981bfae9461f2af660702c53))
+
+
+
 ## [0.4.189](https://github.com/vikejs/vike/compare/v0.4.188...v0.4.189) (2024-08-20)
 
 
