@@ -70,7 +70,7 @@ function distFileNames(): Plugin {
                   const filePath = getModuleFilePathAbsolute(id, config)
                   name = filePath
                   name = name.split('.').slice(0, -1).join('.') // remove file extension
-                  name = name.split('/').join('_')
+                  name = name.split('/').filter(Boolean).join('_')
                 }
 
                 // Make fileHash the same between local development and CI
