@@ -4,7 +4,7 @@ export { distFileNames }
 //  - https://github.com/vikejs/vike/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage, isArray, isCallable, isFilePathAbsolute } from '../utils.js'
+import { assertPosixPath, assert, assertUsage, isArray, isCallable } from '../utils.js'
 import path from 'path'
 import crypto from 'crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
@@ -59,7 +59,7 @@ function distFileNames(): Plugin {
             // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
             if (id.endsWith('.css')) {
               const userRootDir = config.root
-              if (isFilePathAbsolute(id)) {
+              if (id.startsWith(userRootDir)) {
                 assertPosixPath(id)
                 assertModuleId(id)
 
@@ -86,6 +86,11 @@ function distFileNames(): Plugin {
                 if (isVirtualModule) {
                   name = isVirtualModule[1]!
                   assert(name)
+                } else if (
+                  // https://github.com/vikejs/vike/issues/1818#issuecomment-2298478321
+                  id.startsWith('/__uno')
+                ) {
+                  name = 'uno'
                 } else {
                   name = 'style'
                 }
