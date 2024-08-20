@@ -1,3 +1,12 @@
+## [0.4.191](https://github.com/vikejs/vike/compare/v0.4.190...v0.4.191) (2024-08-20)
+
+
+### Features
+
+* export providePageContext() ([94c527f](https://github.com/vikejs/vike/commit/94c527f752eb294ff85daf77fea2d3e621858bc4))
+
+
+
 ## [0.4.190](https://github.com/vikejs/vike/compare/v0.4.189...v0.4.190) (2024-08-20)
 
 
