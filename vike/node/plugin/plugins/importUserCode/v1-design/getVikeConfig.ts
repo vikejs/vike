@@ -457,7 +457,7 @@ function assertUsageGlobalConfigs(
   configDefinitions: ConfigDefinitions,
   interfaceFilesByLocationId: InterfaceFilesByLocationId
 ) {
-  interfaceFilesRelevantList.forEach(async (interfaceFile) => {
+  interfaceFilesRelevantList.forEach((interfaceFile) => {
     const configNames: string[] = []
     if (interfaceFile.isValueFile) {
       configNames.push(interfaceFile.configName)
