@@ -6,9 +6,16 @@
 
 import express from 'express'
 import { renderPage } from 'vike/server'
+import { getPageFilesAllSafe } from 'vike/__internal'
 import { telefunc } from 'telefunc'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
+
+// Access eager config
+;(async () => {
+  const { pageConfigs } = await getPageFilesAllSafe(isProduction) // We recommend, whenever possible, using import.meta.env.PROD instead
+  pageConfigs[0].configValues.middleware.value()
+})()
 
 startServer()
 
