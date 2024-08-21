@@ -4,7 +4,7 @@ import { ImplementedBy, UiFrameworkExtension } from '../../components'
 Environment: server.
 <ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>} noCustomGuide={true}>`onAfterRenderHtml()`</ImplementedBy>
 
-Hook called right after rendering the page on the server-side.
+Hook called right after rendering <Link href="/Page">the `+Page` component</Link> to HTML.
 
 It's called upon rendering the first page.
 - It's called regardless of whether <Link href="/ssr">SSR</Link> is disabled. (The first page the user visits is always rendered to HTML: when SSR is disabled then the HTML is just an HTML shell that doesn't contain the content of the page.)

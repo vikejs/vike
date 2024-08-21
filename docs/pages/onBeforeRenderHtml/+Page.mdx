@@ -4,7 +4,7 @@ import { ImplementedBy } from '../../components'
 Environment: server.
 <ImplementedBy by={<Link href="/vike-vue"><code>vike-vue</code></Link>} noCustomGuide={true}>`onBeforeRenderHtml()`</ImplementedBy>
 
-Hook called before rendering the page to HTML.
+Hook called right before rendering <Link href="/Page">the `+Page` component</Link> to HTML.
 
 It's called upon rendering the first page.
 - It's called regardless of whether <Link href="/ssr">SSR</Link> is disabled. (The first page the user visits is always rendered to HTML: when SSR is disabled then the HTML is just an HTML shell that doesn't contain the content of the page.)
