@@ -31,6 +31,7 @@ import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
+import { getPageFilesExports } from './page-files/getPageFilesExports.js'
 let resolveGlobalContext: (globalContext: GlobalContext) => void
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
@@ -133,6 +134,7 @@ function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   assert(!globalObject.globalContext)
   globalObject.viteConfig = viteDevServer.config
   globalObject.viteDevServer = viteDevServer
+  eagerlyLoadUserFiles()
 }
 function setGlobalContext_isDev(isDev: boolean) {
   globalObject.isDev = isDev
@@ -252,4 +254,10 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
       assert(typeof entry.file === 'string')
     })
   */
+}
+
+function eagerlyLoadUserFiles() {
+  // Other than here, the getPageFilesExports() function is only called only upon calling the renderPage() function.
+  // We call it as early as possible here for better performance.
+  getPageFilesExports()
 }
