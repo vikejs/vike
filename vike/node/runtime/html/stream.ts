@@ -122,7 +122,13 @@ async function streamReadableWebToString(readableWeb: ReadableStream): Promise<s
   while (true) {
     const { done, value } = await reader.read()
     if (done) break
-    str += decoder.decode(value, { stream: true })
+    if (typeof value === 'string') {
+      str += value
+    } else if (value instanceof Uint8Array) {
+      str += decoder.decode(value, { stream: true })
+    } else {
+      assert(false)
+    }
   }
 
   // https://github.com/vikejs/vike/pull/1799#discussion_r1713554096
@@ -191,15 +197,24 @@ async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<s
   return promise
 }
 function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
+  const decoder = new TextDecoder()
+
   let str: string = ''
   let resolve: (s: string) => void
   const promise = new Promise<string>((r) => (resolve = r))
   const writable = new WritableStream({
     write(chunk) {
-      assert(typeof chunk === 'string')
-      str += chunk
+      if (typeof chunk === 'string') {
+        str += chunk
+      } else if (chunk instanceof Uint8Array) {
+        str += decoder.decode(chunk, { stream: true })
+      } else {
+        assert(false)
+      }
     },
     close() {
+      // https://github.com/vikejs/vike/pull/1799#discussion_r1713554096
+      str += decoder.decode()
       resolve(str)
     }
   })
