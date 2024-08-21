@@ -29,6 +29,7 @@ function serializeConfigValues(
   pageConfig: PageConfigBuildTime | (PageConfigGlobalBuildTime & { configValuesComputed?: undefined }),
   importStatements: string[],
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
+  { isEager }: { isEager: boolean },
   tabspace: string
 ): string[] {
   const lines: string[] = []
@@ -49,6 +50,7 @@ function serializeConfigValues(
   Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
     const configDef = pageConfig.configDefinitions[configName]
     assert(configDef)
+    if (isEager !== !!configDef.eager) return
     if (!configDef.cumulative) {
       const configValueSource = sources[0]
       assert(configValueSource)
