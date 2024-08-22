@@ -9,6 +9,7 @@ export { getViteConfig }
 export { getRuntimeManifest }
 export { initGlobalContext_renderPage }
 export { initGlobalContext_runPrerender }
+export { initGlobalContext_getGlobalConfig }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_isDev }
@@ -39,6 +40,8 @@ const globalObject = getGlobalObject<{
   globalContextPromise: Promise<GlobalContext>
   globalContextPromiseResolve: (globalContext: GlobalContext) => void
   viteDevServer?: ViteDevServer
+  viteDevServerPromise: Promise<ViteDevServer>
+  viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
   isDev?: boolean
   viteConfig?: ResolvedConfig
   outDirRoot?: string
@@ -46,9 +49,12 @@ const globalObject = getGlobalObject<{
   'globalContext.ts',
   (() => {
     const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContext>()
+    const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
     return {
       globalContextPromise,
-      globalContextPromiseResolve
+      globalContextPromiseResolve,
+      viteDevServerPromise,
+      viteDevServerPromiseResolve
     }
   })()
 )
@@ -144,6 +150,7 @@ function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   assert(!globalObject.globalContext)
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
+  globalObject.viteDevServerPromiseResolve(viteDevServer)
   eagerlyLoadUserFiles()
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: string): void {
@@ -170,6 +177,20 @@ async function initGlobalContext_renderPage(): Promise<void> {
 async function initGlobalContext_runPrerender(skipAssertOutDirRoot?: true): Promise<void> {
   if (!skipAssertOutDirRoot) assert(globalObject.outDirRoot)
   await initGlobalContext('prerender')
+}
+
+async function initGlobalContext_getGlobalConfig(isProduction: boolean): Promise<void> {
+  const mode = isProduction ? 'prod' : 'dev'
+  if (mode === 'dev') {
+    const waitFor = 20
+    const timeout = setTimeout(() => {
+      const err = new Error(`Vite's development server still not created after ${waitFor} seconds.`)
+      console.warn(err)
+    }, waitFor * 1000)
+    await globalObject.viteDevServerPromise
+    clearTimeout(timeout)
+  }
+  await initGlobalContext(mode)
 }
 
 async function initGlobalContext(mode: 'dev' | 'prod' | 'prerender'): Promise<void> {
