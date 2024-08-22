@@ -43,6 +43,7 @@ async function getPagesAndRoutes() {
 }
 
 // TODO: make it cleaner once the internal refactoring about global configs is done
+// Demo usage: https://github.com/vikejs/vike/pull/1823
 async function getPageFilesAllSafe(isProduction: boolean) {
   await initGlobalContext_getGlobalConfig(isProduction)
   await getGlobalContextAsync()
