@@ -30,7 +30,11 @@ A page can be wrapped by multiple `<Wrapper>` components:
 
 The `<Wrapper>` component is usually used for integrating tools, such as data fetching and state management tools.
 
-> Both `<Wrapper>` and <Link href="/Layout">`<Layout>`</Link> have the exact same effect of wrapping `<Page>`. For a clean organization and for ensuring that tool wrappers also wrap `<Layout>`, we recommend using `<Wrapper>` for integrating tools while using `<Layout>` for defining the visual appearance of your pages.
+> Both `<Wrapper>` and <Link href="/Layout">`<Layout>`</Link> achieve the same, except that `<Wrapper>` is guaranteed to also wrap all <Layout>` components.
+>
+> Since the wrapper component of tools usually want to wrap as much as possible, we generally recommend using `<Wrapper>` for integrating tools and using `<Layout>` for defining the visual appearance of your pages.
+>
+> It's also more idiomatic and common to use `<Wrapper>` for tool integration and `<Layout>` for visual appearance.
 
 
 ## Without `vike-{react,vue,solid}`
