@@ -38,7 +38,7 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
-import { getGlobalContext, initGlobalContext } from './globalContext.js'
+import { getGlobalContext, initGlobalContext_renderPage } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
   createHttpResponseObjectRedirect,
@@ -134,11 +134,11 @@ async function renderPageAndPrepare(
   // Prepare context
   let renderContext: RenderContext
   try {
-    await initGlobalContext()
+    await initGlobalContext_renderPage()
     renderContext = await getRenderContext()
   } catch (err) {
-    // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
-    // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code
+    // Errors are expected since assertUsage() is used in both initGlobalContext_renderPage() and getRenderContext().
+    // initGlobalContext_renderPage() and getRenderContext() don't call any user hooks => err isn't thrown from user code.
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
     const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
