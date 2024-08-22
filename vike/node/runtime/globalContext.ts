@@ -21,7 +21,8 @@ import {
   getGlobalObject,
   isPlainObject,
   objectAssign,
-  objectKeys
+  objectKeys,
+  genPromise
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -44,8 +45,7 @@ const globalObject = getGlobalObject<{
 }>(
   'globalContext.ts',
   (() => {
-    let globalContextPromiseResolve!: (globalContext: GlobalContext) => void
-    const globalContextPromise = new Promise<GlobalContext>((r) => (globalContextPromiseResolve = r))
+    const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContext>()
     return {
       globalContextPromise,
       globalContextPromiseResolve
