@@ -120,7 +120,10 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
 function isDisabled(configVike: ConfigVikeResolved): boolean {
   const { disableAutoFullBuild } = configVike
   if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
-    // TODO/v1-release: also enable autoFullBuild when running Vite's build() API
+    // TODO/v1-release: remove autoFullBuild for both Vite's build() API and Vite's CLI
+    //  - Tell users to use `$ vike build` instead of `$ vite build`
+    //  - Remove the whole writeBundle() hook logic
+    //  - make `$ vite build` only build the client-side
     return !isViteCliCall()
   } else {
     return disableAutoFullBuild
