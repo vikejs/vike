@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-Set to `true` to disable the automatic chaining of all build steps.
+Disable the automatic chaining of build steps.
 
 ```js
 // vite.config.js
@@ -10,7 +10,10 @@ import vike from 'vike/plugin'
 export default {
   plugins: [
     vike({
-      disableAutoFullBuild: true
+      // Disable all chaining
+      disableAutoFullBuild: true,
+      // Only disable the automatic pre-render triggering
+      disableAutoFullBuild: 'prerender',
     })
   ]
 }
@@ -21,13 +24,17 @@ Running `$ vite build` executes three build steps:
  1. Server-side build (`dist/server/`).
  1. Pre-rendering (if <Link text="pre-rendering is enabled" href="/pre-rendering" />).
 
-When setting `disableAutoFullBuild` to `true` then only step `1` is executed. To run the full build, we then have to:
+When setting `disableAutoFullBuild` to `true` then only step `1` is executed. To run the full build, you then have to:
 
  - Run `$ vite build`, to build the client-side (`dist/client/`).
  - Run `$ vite build --ssr`, to build the server-side (`dist/server/`).
  - Run the pre-rendering programmatically, see <Link href="/prerender-programmatic" />.
 
-> We use `disableAutoFullBuild` when we want fine grain programmatic control over the build process.
+> If your goal is only to <Link href="/prerender-programmatic">programmatically run pre-rendering</Link> then consider using <Link href="/prerender#disableautorun"><code>prerender.disableAutoRun</code></Link> insead.
 
-> If our goal is to <Link text="programmatically run pre-rendering" href="/prerender-programmatic" /> then,
-> instead, we can set <Link text={<code>prerender.disableAutoRun</code>} href="/prerender#disableautorun" /> to `true` as it merely disables the automatic run of step `3`.
+
+## See also
+
+- <Link href="/prerender-programmatic" />
+- <Link href="/prerender#disableautorun" />
+- [Vite Docs > JavaScript API > `build`](https://vitejs.dev/guide/api-javascript.html#build)
