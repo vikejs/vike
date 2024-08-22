@@ -116,24 +116,14 @@ async function streamReadableNodeToString(readableNode: StreamReadableNode): Pro
 
 async function streamReadableWebToString(readableWeb: ReadableStream): Promise<string> {
   const reader = readableWeb.getReader()
-  const decoder = new TextDecoder()
-
+  const { decode, close } = decodeChunks()
   let str: string = ''
   while (true) {
     const { done, value } = await reader.read()
     if (done) break
-    if (typeof value === 'string') {
-      str += value
-    } else if (value instanceof Uint8Array) {
-      str += decoder.decode(value, { stream: true })
-    } else {
-      assert(false)
-    }
+    str += decode(value)
   }
-
-  // https://github.com/vikejs/vike/pull/1799#discussion_r1713554096
-  str += decoder.decode()
-
+  str += close()
   return str
 }
 async function stringToStreamReadableNode(str: string): Promise<StreamReadableNode> {
@@ -197,24 +187,16 @@ async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<s
   return promise
 }
 function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
-  const decoder = new TextDecoder()
-
+  const { decode, close } = decodeChunks()
   let str: string = ''
   let resolve: (s: string) => void
   const promise = new Promise<string>((r) => (resolve = r))
   const writable = new WritableStream({
     write(chunk) {
-      if (typeof chunk === 'string') {
-        str += chunk
-      } else if (chunk instanceof Uint8Array) {
-        str += decoder.decode(chunk, { stream: true })
-      } else {
-        assert(false)
-      }
+      str += decode(chunk)
     },
     close() {
-      // https://github.com/vikejs/vike/pull/1799#discussion_r1713554096
-      str += decoder.decode()
+      str += close()
       resolve(str)
     }
   })
@@ -969,6 +951,24 @@ function inferStreamName(stream: StreamProviderNormalized) {
     return getStreamName('pipe', 'web')
   }
   assert(false)
+}
+
+function decodeChunks() {
+  const decoder = new TextDecoder()
+  const decode = (chunk: unknown): string => {
+    if (typeof chunk === 'string') {
+      return chunk
+    } else if (chunk instanceof Uint8Array) {
+      return decoder.decode(chunk, { stream: true })
+    } else {
+      assert(false)
+    }
+  }
+  // https://github.com/vikejs/vike/pull/1799#discussion_r1713554096
+  const close = (): string => {
+    return decoder.decode()
+  }
+  return { decode, close }
 }
 
 function debugWithChunk(msg: string, chunk: unknown): void {
