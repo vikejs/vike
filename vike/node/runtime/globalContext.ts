@@ -147,7 +147,7 @@ function makePublic(globalContext: GlobalContext): GlobalContextPublic {
 
 function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
-  assert(!globalObject.globalContext)
+  assertIsNotInitilizedYet()
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
   globalObject.viteDevServerPromiseResolve(viteDevServer)
@@ -155,9 +155,13 @@ function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: string): void {
   if (globalObject.viteConfig) return
-  assert(!globalObject.globalContext)
+  assertIsNotInitilizedYet()
   globalObject.viteConfig = viteConfig
   globalObject.outDirRoot = outDirRoot
+}
+function assertIsNotInitilizedYet() {
+  // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
+  assert(!globalObject.globalContext)
 }
 function setGlobalContext_isDev(isDev: boolean) {
   globalObject.isDev = isDev
