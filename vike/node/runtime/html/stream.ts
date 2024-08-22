@@ -513,9 +513,7 @@ async function createStreamWrapper({
     const writeChunk = (chunk: unknown) => {
       assert(writableOriginal)
       writableOriginal.write(chunk)
-      if (debug.isActivated) {
-        debug('data written (Node.js Writable)', debug_makeChunkReadable(chunk))
-      }
+      debugWithChunk('data written (Node.js Writable)', chunk)
     }
     // For libraries such as https://www.npmjs.com/package/compression
     //  - React calls writable.flush() when available
@@ -591,9 +589,7 @@ async function createStreamWrapper({
     const writeChunk = (chunk: unknown) => {
       assert(writerOriginal)
       writerOriginal.write(encodeForWebStream(chunk))
-      if (debug.isActivated) {
-        debug('data written (Web Writable)', debug_makeChunkReadable(chunk))
-      }
+      debugWithChunk('data written (Web Writable)', chunk)
     }
     // Web Streams have compression built-in
     //  - https://developer.mozilla.org/en-US/docs/Web/API/Compression_Streams_API
@@ -691,13 +687,9 @@ async function createStreamWrapper({
         !controllerProxyIsClosed
       ) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
-        if (debug.isActivated) {
-          debug('data written (Web Readable)', debug_makeChunkReadable(chunk))
-        }
+        debugWithChunk('data written (Web Readable)', chunk)
       } else {
-        if (debug.isActivated) {
-          debug('data emitted but not written (Web Readable)', debug_makeChunkReadable(chunk))
-        }
+        debugWithChunk('data emitted but not written (Web Readable)', chunk)
       }
     }
     // Readables don't have the notion of flushing
@@ -722,9 +714,7 @@ async function createStreamWrapper({
 
     const writeChunk = (chunk: unknown) => {
       readableProxy.push(chunk)
-      if (debug.isActivated) {
-        debug('data written (Node.js Readable)', debug_makeChunkReadable(chunk))
-      }
+      debugWithChunk('data written (Node.js Readable)', chunk)
     }
     // Readables don't have the notion of flushing
     const flushStream = null
@@ -981,11 +971,15 @@ function inferStreamName(stream: StreamProviderNormalized) {
   assert(false)
 }
 
-function debug_makeChunkReadable(chunk: unknown): string {
-  assert(debug.isActivated)
+function debugWithChunk(msg: string, chunk: unknown): void {
+  if (!debug.isActivated) return
+
+  let chunkStr: string
   try {
-    return new TextDecoder().decode(chunk as any)
+    chunkStr = new TextDecoder().decode(chunk as any)
   } catch (err) {
-    return String(chunk)
+    chunkStr = String(chunk)
   }
+
+  debug(msg, chunkStr)
 }
