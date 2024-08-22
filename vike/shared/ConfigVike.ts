@@ -10,7 +10,7 @@ type ConfigVikeResolved = {
         partial: boolean
         disableAutoRun: boolean
       }
-  disableAutoFullBuild: boolean | null
+  disableAutoFullBuild: boolean | 'prerender' | null
   includeAssetsImportedByServer: boolean
   baseAssets: string
   baseServer: string
@@ -70,13 +70,13 @@ type ConfigVikeUserProvided = {
       }
 
   /**
-   * Set to `true` to disable the automatic chaining of all the build steps.
+   * Disable the automatic chaining of build steps.
    *
    * https://vike.dev/disableAutoFullBuild
    *
    * @default false
    */
-  disableAutoFullBuild?: boolean
+  disableAutoFullBuild?: boolean | 'prerender'
 
   /** The Base URL of your server.
    *
