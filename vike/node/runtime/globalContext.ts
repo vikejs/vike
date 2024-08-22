@@ -36,7 +36,7 @@ import { getPageFilesExports } from './page-files/getPageFilesExports.js'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   globalContextPromise: Promise<GlobalContext>
-  resolveGlobalContext: (globalContext: GlobalContext) => void
+  globalContextPromiseResolve: (globalContext: GlobalContext) => void
   viteDevServer?: ViteDevServer
   isDev?: boolean
   viteConfig?: ResolvedConfig
@@ -44,11 +44,11 @@ const globalObject = getGlobalObject<{
 }>(
   'globalContext.ts',
   (() => {
-    let resolveGlobalContext!: (globalContext: GlobalContext) => void
-    const globalContextPromise = new Promise<GlobalContext>((r) => (resolveGlobalContext = r))
+    let globalContextPromiseResolve!: (globalContext: GlobalContext) => void
+    const globalContextPromise = new Promise<GlobalContext>((r) => (globalContextPromiseResolve = r))
     return {
       globalContextPromise,
-      resolveGlobalContext
+      globalContextPromiseResolve
     }
   })()
 )
@@ -246,7 +246,7 @@ async function initGlobalContext(mode: 'dev' | 'prod' | 'prerender'): Promise<vo
     }
   }
 
-  globalObject.resolveGlobalContext(globalObject.globalContext)
+  globalObject.globalContextPromiseResolve(globalObject.globalContext)
 }
 
 function getRuntimeManifest(configVike: ConfigVikeResolved): RuntimeManifest {
