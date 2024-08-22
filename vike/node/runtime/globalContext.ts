@@ -165,7 +165,19 @@ async function initGlobalContext_runPrerender(skipAssertOutDirRoot?: true): Prom
 }
 
 async function initGlobalContext(mode: 'dev' | 'prod' | 'prerender'): Promise<void> {
-  if (globalObject.globalContext) return
+  if (globalObject.globalContext) {
+    const modeAlreadySet: typeof mode = (() => {
+      if (!globalObject.globalContext.isProduction) {
+        return 'dev'
+      }
+      if (globalObject.globalContext.isPrerendering) {
+        return 'prerender'
+      }
+      return 'prod'
+    })()
+    assert(modeAlreadySet === mode)
+    return
+  }
 
   const { viteDevServer, viteConfig, isDev } = globalObject
   assertNodeEnv_runtime(isDev ?? false)
