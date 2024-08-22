@@ -442,7 +442,6 @@ const headingsDetached = [
   },
   {
     title: '`onBeforeRoute()` hook',
-    // titleInNav: '`onBeforeRoute`',
     url: '/onBeforeRoute'
   },
   {

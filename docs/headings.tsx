@@ -372,7 +372,6 @@ const headings = [
   {
     level: 2,
     title: 'styled-components',
-    titleInNav: 'styled-components',
     url: '/styled-components'
   },
   {
