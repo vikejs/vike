@@ -184,8 +184,10 @@ async function initGlobalContext_getGlobalConfig(isProduction: boolean): Promise
   if (mode === 'dev') {
     const waitFor = 20
     const timeout = setTimeout(() => {
-      const err = new Error(`Vite's development server still not created after ${waitFor} seconds.`)
-      console.warn(err)
+      assertWarning(false, `Vite's development server still not created after ${waitFor} seconds.`, {
+        onlyOnce: false,
+        showStackTrace: true
+      })
     }, waitFor * 1000)
     await globalObject.viteDevServerPromise
     clearTimeout(timeout)
