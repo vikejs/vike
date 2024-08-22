@@ -24,7 +24,6 @@ import {
   handleNodeEnv_prerender,
   pLimit,
   PLimit,
-  assertFilePathAbsoluteFilesystem,
   isArray,
   changeEnumerable
 } from './utils.js'
@@ -39,7 +38,7 @@ import {
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
-import { getGlobalContext, initGlobalContext, setGlobalContext_prerender } from '../runtime/globalContext.js'
+import { getGlobalContext, initGlobalContext_runPrerender } from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import type { InlineConfig } from 'vite'
@@ -206,11 +205,10 @@ async function runPrerender(
   await disableReactStreaming()
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'vike pre-rendering' as any, 'production')
-  setGlobalContext_prerender(viteConfig)
   assertLoadedConfig(viteConfig, options)
   const configVike = await getConfigVike(viteConfig)
 
-  const { outDirClient, outDirRoot } = getOutDirs(viteConfig)
+  const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = configVike.prerender
   if (!prerenderConfig) {
@@ -229,8 +227,7 @@ async function runPrerender(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
   )
 
-  assertFilePathAbsoluteFilesystem(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
-  await initGlobalContext(true, outDirRoot)
+  await initGlobalContext_runPrerender()
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
 

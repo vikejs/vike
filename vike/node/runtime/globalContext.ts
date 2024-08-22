@@ -3,14 +3,15 @@ export { getGlobalContextSync }
 export { getGlobalContextAsync }
 
 // Internal use
-export { initGlobalContext }
 export { getGlobalContext }
 export { getViteDevServer }
 export { getViteConfig }
-export { setGlobalContext_viteDevServer }
-export { setGlobalContext_isDev }
-export { setGlobalContext_prerender }
 export { getRuntimeManifest }
+export { initGlobalContext_renderPage }
+export { initGlobalContext_runPrerender }
+export { setGlobalContext_viteDevServer }
+export { setGlobalContext_viteConfig }
+export { setGlobalContext_isDev }
 
 import {
   assert,
@@ -39,6 +40,7 @@ const globalObject = getGlobalObject<{
   viteDevServer?: ViteDevServer
   isDev?: boolean
   viteConfig?: ResolvedConfig
+  outDirRoot?: string
 }>('globalContext.ts', {
   globalContextPromise: new Promise((r) => (resolveGlobalContext = r))
 })
@@ -132,9 +134,15 @@ function makePublic(globalContext: GlobalContext): GlobalContextPublic {
 function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
   assert(!globalObject.globalContext)
-  globalObject.viteConfig = viteDevServer.config
+  assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
   eagerlyLoadUserFiles()
+}
+function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: string): void {
+  if (globalObject.viteConfig) return
+  assert(!globalObject.globalContext)
+  globalObject.viteConfig = viteConfig
+  globalObject.outDirRoot = outDirRoot
 }
 function setGlobalContext_isDev(isDev: boolean) {
   globalObject.isDev = isDev
@@ -142,16 +150,20 @@ function setGlobalContext_isDev(isDev: boolean) {
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
 }
-function setGlobalContext_prerender(viteConfig: ResolvedConfig): void {
-  if (globalObject.viteConfig) return
-  assert(!globalObject.globalContext)
-  globalObject.viteConfig = viteConfig
-}
 function getViteConfig(): ResolvedConfig | null {
   return globalObject.viteConfig ?? null
 }
 
-async function initGlobalContext(isPrerendering = false, outDir?: string): Promise<void> {
+async function initGlobalContext_renderPage(): Promise<void> {
+  await initGlobalContext()
+}
+
+async function initGlobalContext_runPrerender(skipAssertOutDirRoot?: true): Promise<void> {
+  if (!skipAssertOutDirRoot) assert(globalObject.outDirRoot)
+  await initGlobalContext(true)
+}
+
+async function initGlobalContext(isPrerendering = false): Promise<void> {
   if (globalObject.globalContext) return
 
   const { viteDevServer, viteConfig, isDev } = globalObject
@@ -178,7 +190,7 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
   } else {
-    const buildEntries = await loadImportBuild(outDir)
+    const buildEntries = await loadImportBuild(globalObject.outDirRoot)
     assertBuildEntries(buildEntries, isPrerendering ?? false)
     const { pageFiles, assetsManifest, pluginManifest } = buildEntries
     setPageFiles(pageFiles)
