@@ -155,23 +155,23 @@ function getViteConfig(): ResolvedConfig | null {
 }
 
 async function initGlobalContext_renderPage(): Promise<void> {
-  await initGlobalContext()
+  const mode = globalObject.isDev ? 'dev' : 'prod'
+  await initGlobalContext(mode)
 }
 
 async function initGlobalContext_runPrerender(skipAssertOutDirRoot?: true): Promise<void> {
   if (!skipAssertOutDirRoot) assert(globalObject.outDirRoot)
-  await initGlobalContext(true)
+  await initGlobalContext('prerender')
 }
 
-async function initGlobalContext(isPrerendering = false): Promise<void> {
+async function initGlobalContext(mode: 'dev' | 'prod' | 'prerender'): Promise<void> {
   if (globalObject.globalContext) return
 
   const { viteDevServer, viteConfig, isDev } = globalObject
   assertNodeEnv_runtime(isDev ?? false)
 
-  if (isDev) {
+  if (mode === 'dev') {
     assert(viteConfig)
-    assert(!isPrerendering)
     assert(viteDevServer)
     const configVike = await getConfigVike(viteConfig)
     const pluginManifest = getRuntimeManifest(configVike)
@@ -191,7 +191,7 @@ async function initGlobalContext(isPrerendering = false): Promise<void> {
     }
   } else {
     const buildEntries = await loadImportBuild(globalObject.outDirRoot)
-    assertBuildEntries(buildEntries, isPrerendering ?? false)
+    assertBuildEntries(buildEntries, mode === 'prerender')
     const { pageFiles, assetsManifest, pluginManifest } = buildEntries
     setPageFiles(pageFiles)
     assertViteManifest(assetsManifest)
@@ -208,7 +208,7 @@ async function initGlobalContext(isPrerendering = false): Promise<void> {
       trailingSlash: pluginManifest.trailingSlash,
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
-    if (isPrerendering) {
+    if (mode === 'prerender') {
       assert(viteConfig)
       const configVike = await getConfigVike(viteConfig)
       assert(configVike)
