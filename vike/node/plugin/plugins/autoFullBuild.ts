@@ -96,14 +96,14 @@ async function triggerFullBuild(
     process.exit(1)
   }
 
-  if (configVike.prerender && !configVike.prerender.disableAutoRun) {
+  if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
     await runPrerenderFromAutoFullBuild({ viteConfig: configInline })
     forceExit = true
   }
 }
 
 function abortViteBuildSsr(configVike: ConfigVikeResolved) {
-  if (!configVike.disableAutoFullBuild && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+  if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -118,10 +118,11 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
 }
 
 function isDisabled(configVike: ConfigVikeResolved): boolean {
-  if (configVike.disableAutoFullBuild === null) {
+  const { disableAutoFullBuild } = configVike
+  if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
     // TODO/v1-release: also enable autoFullBuild when running Vite's build() API
     return !isViteCliCall()
   } else {
-    return configVike.disableAutoFullBuild
+    return disableAutoFullBuild
   }
 }
