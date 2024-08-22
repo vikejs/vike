@@ -33,17 +33,25 @@ import { getConfigVike } from '../shared/getConfigVike.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 import { getPageFilesExports } from './page-files/getPageFilesExports.js'
-let resolveGlobalContext: (globalContext: GlobalContext) => void
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   globalContextPromise: Promise<GlobalContext>
+  resolveGlobalContext: (globalContext: GlobalContext) => void
   viteDevServer?: ViteDevServer
   isDev?: boolean
   viteConfig?: ResolvedConfig
   outDirRoot?: string
-}>('globalContext.ts', {
-  globalContextPromise: new Promise((r) => (resolveGlobalContext = r))
-})
+}>(
+  'globalContext.ts',
+  (() => {
+    let resolveGlobalContext!: (globalContext: GlobalContext) => void
+    const globalContextPromise = new Promise<GlobalContext>((r) => (resolveGlobalContext = r))
+    return {
+      globalContextPromise,
+      resolveGlobalContext
+    }
+  })()
+)
 
 type GlobalContextPublic = {
   assetsManifest: null | ViteManifest
@@ -238,7 +246,7 @@ async function initGlobalContext(mode: 'dev' | 'prod' | 'prerender'): Promise<vo
     }
   }
 
-  resolveGlobalContext(globalObject.globalContext)
+  globalObject.resolveGlobalContext(globalObject.globalContext)
 }
 
 function getRuntimeManifest(configVike: ConfigVikeResolved): RuntimeManifest {
