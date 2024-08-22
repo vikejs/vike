@@ -116,14 +116,14 @@ async function streamReadableNodeToString(readableNode: StreamReadableNode): Pro
 
 async function streamReadableWebToString(readableWeb: ReadableStream): Promise<string> {
   const reader = readableWeb.getReader()
-  const { decode, close } = decodeChunks()
+  const { decode, getClosingChunk } = decodeChunks()
   let str: string = ''
   while (true) {
     const { done, value } = await reader.read()
     if (done) break
     str += decode(value)
   }
-  str += close()
+  str += getClosingChunk()
   return str
 }
 async function stringToStreamReadableNode(str: string): Promise<StreamReadableNode> {
@@ -187,7 +187,7 @@ async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<s
   return promise
 }
 function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
-  const { decode, close } = decodeChunks()
+  const { decode, getClosingChunk } = decodeChunks()
   let str: string = ''
   let resolve: (s: string) => void
   const promise = new Promise<string>((r) => (resolve = r))
@@ -196,7 +196,7 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
       str += decode(chunk)
     },
     close() {
-      str += close()
+      str += getClosingChunk()
       resolve(str)
     }
   })
@@ -965,10 +965,10 @@ function decodeChunks() {
     }
   }
   // https://github.com/vikejs/vike/pull/1799#discussion_r1713554096
-  const close = (): string => {
+  const getClosingChunk = (): string => {
     return decoder.decode()
   }
-  return { decode, close }
+  return { decode, getClosingChunk }
 }
 
 function debugWithChunk(msg: string, chunk: unknown): void {
