@@ -514,7 +514,7 @@ async function createStreamWrapper({
       assert(writableOriginal)
       writableOriginal.write(chunk)
       if (debug.isActivated) {
-        debug('data written (Node.js Writable)', getChunkAsString(chunk))
+        debug('data written (Node.js Writable)', debug_makeChunkReadable(chunk))
       }
     }
     // For libraries such as https://www.npmjs.com/package/compression
@@ -592,7 +592,7 @@ async function createStreamWrapper({
       assert(writerOriginal)
       writerOriginal.write(encodeForWebStream(chunk))
       if (debug.isActivated) {
-        debug('data written (Web Writable)', getChunkAsString(chunk))
+        debug('data written (Web Writable)', debug_makeChunkReadable(chunk))
       }
     }
     // Web Streams have compression built-in
@@ -692,11 +692,11 @@ async function createStreamWrapper({
       ) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
         if (debug.isActivated) {
-          debug('data written (Web Readable)', getChunkAsString(chunk))
+          debug('data written (Web Readable)', debug_makeChunkReadable(chunk))
         }
       } else {
         if (debug.isActivated) {
-          debug('data emitted but not written (Web Readable)', getChunkAsString(chunk))
+          debug('data emitted but not written (Web Readable)', debug_makeChunkReadable(chunk))
         }
       }
     }
@@ -723,7 +723,7 @@ async function createStreamWrapper({
     const writeChunk = (chunk: unknown) => {
       readableProxy.push(chunk)
       if (debug.isActivated) {
-        debug('data written (Node.js Readable)', getChunkAsString(chunk))
+        debug('data written (Node.js Readable)', debug_makeChunkReadable(chunk))
       }
     }
     // Readables don't have the notion of flushing
@@ -981,7 +981,8 @@ function inferStreamName(stream: StreamProviderNormalized) {
   assert(false)
 }
 
-function getChunkAsString(chunk: unknown): string {
+function debug_makeChunkReadable(chunk: unknown): string {
+  assert(debug.isActivated)
   try {
     return new TextDecoder().decode(chunk as any)
   } catch (err) {
