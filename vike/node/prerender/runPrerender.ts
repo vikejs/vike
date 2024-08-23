@@ -60,7 +60,7 @@ import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
   getHookTimeoutDefault,
-  setIsPrerenderering
+  getHook_setIsPrerenderering
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
@@ -193,7 +193,7 @@ async function runPrerender(
 ): Promise<void> {
   checkOutdatedOptions(options)
 
-  setIsPrerenderering()
+  getHook_setIsPrerenderering()
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
