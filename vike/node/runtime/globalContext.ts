@@ -109,8 +109,8 @@ function getGlobalContextSync(): GlobalContextPublic {
 async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
   assertUsage(
     typeof isProduction === 'boolean',
-    `[getGlobalContextAsync(isProduction)] Argument isProduction ${
-      isProduction === undefined ? 'is missing' : `should be a ${pc.cyan('true')} or ${pc.cyan('false')}`
+    `[getGlobalContextAsync(isProduction)] Argument ${pc.cyan('isProduction')} ${
+      isProduction === undefined ? 'is missing' : `should be ${pc.cyan('true')} or ${pc.cyan('false')}`
     }`
   )
   await initGlobalContext_getGlobalContextAsync(isProduction)
