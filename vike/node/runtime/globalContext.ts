@@ -214,7 +214,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   if (globalObject.globalContext) {
     assert(globalObject.globalContext.isProduction === isProduction)
     // We assume setGlobalContext_isPrerendering() is called before initGlobalContext()
-    assert(globalObject.globalContext.isPrerendering === globalObject.isPrerendering)
+    assert(globalObject.globalContext.isPrerendering === (globalObject.isPrerendering ?? false))
     return
   }
 
