@@ -219,7 +219,7 @@
     "es-module-lexer": "^1.4.1",
     "esbuild": "^0.23.0",
     "fast-glob": "^3.3.2",
-    "react-streaming": "^0.3.42",
+    "react-streaming": "^0.3.43",
     "rimraf": "^5.0.5",
     "semver": "^7.6.3",
     "sirv": "^2.0.4",

@@ -745,7 +745,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       telefunc:
         specifier: ^0.1.70
-        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.42(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.43(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.4.5
@@ -1318,7 +1318,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       telefunc:
         specifier: ^0.1.70
-        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.42(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
+        version: 0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.43(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)
       typescript:
         specifier: ^5.2.2
         version: 5.4.5
@@ -1702,8 +1702,8 @@ importers:
         specifier: ^0.5.10
         version: 0.5.10
       react-streaming:
-        specifier: ^0.3.42
-        version: 0.3.42(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^0.3.43
+        version: 0.3.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rimraf:
         specifier: ^5.0.5
         version: 5.0.7
@@ -5986,6 +5986,12 @@ packages:
 
   react-streaming@0.3.42:
     resolution: {integrity: sha512-HiJYIB9RgSB0iC7PuJLRn/a4qGo92ZkWooLdpLRbo5lRJwC9xriVTKZ8xz5EXiS/43O3wvnefrV8dS8oDtll9w==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+
+  react-streaming@0.3.43:
+    resolution: {integrity: sha512-ULRCEEJu9bhMiupIR96dmE7i1j1+y7K/InE5uuF3AcP0iFFzsqdKLltGqB72ktOhfwn++iyWnzh1PHnKqR/xNw==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -12180,6 +12186,25 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  react-streaming@0.3.43(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.13
+      '@brillout/picocolors': 1.0.14
+      isbot-fast: 1.2.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    optional: true
+
+  react-streaming@0.3.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.13
+      '@brillout/picocolors': 1.0.14
+      isbot-fast: 1.2.0
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   react@18.2.0:
     dependencies:
       loose-envify: 1.4.0
@@ -12721,7 +12746,7 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  telefunc@0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.42(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0):
+  telefunc@0.1.73(@babel/core@7.24.6)(@babel/parser@7.24.6)(@babel/types@7.24.6)(react-streaming@0.3.43(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0):
     dependencies:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.10
@@ -12735,7 +12760,7 @@ snapshots:
       '@babel/parser': 7.24.6
       '@babel/types': 7.24.6
       react: 18.2.0
-      react-streaming: 0.3.42(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-streaming: 0.3.43(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
   terser-webpack-plugin@5.3.10(webpack@5.91.0(webpack-cli@5.1.4)):
     dependencies:
