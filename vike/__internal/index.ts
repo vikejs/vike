@@ -10,7 +10,7 @@ import { getPageFilesAll, type PageFile } from '../shared/getPageFiles.js'
 import {
   getGlobalContext,
   getGlobalContextAsync,
-  initGlobalContext_getGlobalConfig
+  initGlobalContext_getGlobalContextAsync
 } from '../node/runtime/globalContext.js'
 import { handleNodeEnv_vitePluginVercel } from '../utils/assertNodeEnv.js'
 import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'
@@ -43,7 +43,7 @@ async function getPagesAndRoutes() {
 // TODO: make it cleaner once the internal refactoring about global configs is done.
 // Demo usage: https://github.com/vikejs/vike/pull/1823
 async function getPageFilesAllSafe(isProduction: boolean) {
-  await initGlobalContext_getGlobalConfig(isProduction)
+  await initGlobalContext_getGlobalContextAsync(isProduction)
   const globalContext = getGlobalContext()
   const pageFilesAll = await getPageFilesAll(false, globalContext.isProduction)
   return pageFilesAll

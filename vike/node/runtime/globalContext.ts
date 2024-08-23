@@ -9,7 +9,7 @@ export { getViteConfig }
 export { getRuntimeManifest }
 export { initGlobalContext_renderPage }
 export { initGlobalContext_runPrerender }
-export { initGlobalContext_getGlobalConfig }
+export { initGlobalContext_getGlobalContextAsync }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_isDev }
@@ -113,7 +113,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
       isProduction === undefined ? 'is missing' : `should be a ${pc.cyan('true')} or ${pc.cyan('false')}`
     }`
   )
-  await initGlobalContext_getGlobalConfig(isProduction)
+  await initGlobalContext_getGlobalContextAsync(isProduction)
   const { globalContext } = globalObject
   assert(globalContext)
   return makePublic(globalContext)
@@ -190,12 +190,12 @@ async function initGlobalContext_runPrerender(): Promise<void> {
   assert(globalObject.outDirRoot)
   // We assume initGlobalContext_runPrerender() to be called before:
   // - initGlobalContext_renderPage()
-  // - initGlobalContext_getGlobalConfig()
+  // - initGlobalContext_getGlobalContextAsync()
   assert(!globalObject.globalContext)
   await initGlobalContext(true)
 }
 
-async function initGlobalContext_getGlobalConfig(isProduction: boolean): Promise<void> {
+async function initGlobalContext_getGlobalContextAsync(isProduction: boolean): Promise<void> {
   if (!isProduction) {
     const waitFor = 20
     const timeout = setTimeout(() => {
