@@ -2,7 +2,7 @@ export { getHook }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { assertHook }
-export { setIsPrerenderering }
+export { getHook_setIsPrerenderering }
 export type { Hook }
 export type { HookName }
 export type { HookLoc }
@@ -21,9 +21,7 @@ import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
-const globalObject = getGlobalObject('getHook.ts', {
-  isPrerendering: false
-})
+const globalObject = getGlobalObject<{ isPrerendering?: true }>('getHook.ts', {})
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
 type HookLoc = { hookName: HookName; hookFilePath: string }
@@ -162,6 +160,6 @@ function getHookTimeoutDefault(hookName: HookName): HookTimeout {
     warning: 4 * 1000
   }
 }
-function setIsPrerenderering() {
+function getHook_setIsPrerenderering() {
   globalObject.isPrerendering = true
 }
