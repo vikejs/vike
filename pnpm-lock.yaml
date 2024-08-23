@@ -1653,8 +1653,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/vite-plugin-server-entry':
-        specifier: ^0.4.5
-        version: 0.4.6
+        specifier: ^0.4.9
+        version: 0.4.9
       acorn:
         specifier: ^8.0.0
         version: 8.11.3
@@ -1947,6 +1947,9 @@ packages:
 
   '@brillout/vite-plugin-server-entry@0.4.6':
     resolution: {integrity: sha512-VmnbkEVNY9pGnr2ICu+5lFnT3Zz4oblWxKZ1D4kutkzljxDOOBld8oWQI1RVup7c5OiG7XOHFJYYZS38BAXiLw==}
+
+  '@brillout/vite-plugin-server-entry@0.4.9':
+    resolution: {integrity: sha512-ETiWJlljweuxXS/0TBk4eLotZ3ZFC26u7s983z2P9lmDGifZzgj7BCJzgopnDihbl8Y8usKZSLq0grrCivtMSA==}
 
   '@cloudflare/kv-asset-handler@0.2.0':
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}
@@ -7359,6 +7362,10 @@ snapshots:
       typescript: 5.5.4
 
   '@brillout/vite-plugin-server-entry@0.4.6':
+    dependencies:
+      '@brillout/import': 0.2.3
+
+  '@brillout/vite-plugin-server-entry@0.4.9':
     dependencies:
       '@brillout/import': 0.2.3
 
