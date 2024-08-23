@@ -1,3 +1,27 @@
+## [0.4.192](https://github.com/vikejs/vike/compare/v0.4.191...v0.4.192) (2024-08-23)
+
+
+### Bug Fixes
+
+* add argument getGlobalContextAsync(isProduction) ([#1826](https://github.com/vikejs/vike/issues/1826)) ([d2ca712](https://github.com/vikejs/vike/commit/d2ca7121e4023e6024fbe25a3160a8982e96f62e))
+* fix providePageContext() type ([142a999](https://github.com/vikejs/vike/commit/142a9991a3bbdba2fe7a09fe850d1a8e9f86f4f4))
+* update @brillout/vite-plugin-server-entry ([311c52d](https://github.com/vikejs/vike/commit/311c52d440808c5fea0e3a22bde5996a054a2f7c))
+* web stream encoding ([#1821](https://github.com/vikejs/vike/issues/1821)) ([5d81041](https://github.com/vikejs/vike/commit/5d81041b1605d655ba5fe1838b10390e81befe96))
+
+
+### Features
+
+* [experimental][temporary] getPageFilesAllSafe() ([#1823](https://github.com/vikejs/vike/issues/1823)) ([59d5e23](https://github.com/vikejs/vike/commit/59d5e2303042e8ac7b02afe2a0aa0a9ad699db71))
+* expose eager meta config ([dffe6a2](https://github.com/vikejs/vike/commit/dffe6a23729358af8cae1731a1d166dfcb46b5e7))
+* new option 'prerender' for disableAutoFullBuild ([#1824](https://github.com/vikejs/vike/issues/1824)) ([a9b66fe](https://github.com/vikejs/vike/commit/a9b66fe43145d8ed3791680af5c4dcca0b98d654))
+
+
+### Performance Improvements
+
+* eagerly load user files ([b8d3619](https://github.com/vikejs/vike/commit/b8d36192f0580db1b019329d05597bd64a6366f1))
+
+
+
 ## [0.4.191](https://github.com/vikejs/vike/compare/v0.4.190...v0.4.191) (2024-08-20)
 
 
