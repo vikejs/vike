@@ -1,3 +1,13 @@
+## [0.4.193](https://github.com/vikejs/vike/compare/v0.4.192...v0.4.193) (2024-08-23)
+
+
+### Bug Fixes
+
+* inject assets map in a reliable way (vikejs/vike-node[#8](https://github.com/vikejs/vike/issues/8)) ([c4d8f61](https://github.com/vikejs/vike/commit/c4d8f619050c3957bf6dfe8040f2612c5e899849))
+* update @brillout/vite-plugin-server-entry ([6da64f6](https://github.com/vikejs/vike/commit/6da64f677a383cd712d48e34093b1ee7e36783ce))
+
+
+
 ## [0.4.192](https://github.com/vikejs/vike/compare/v0.4.191...v0.4.192) (2024-08-23)
 
 
