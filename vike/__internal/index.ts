@@ -44,7 +44,6 @@ async function getPagesAndRoutes() {
 // Demo usage: https://github.com/vikejs/vike/pull/1823
 async function getPageFilesAllSafe(isProduction: boolean) {
   await initGlobalContext_getGlobalConfig(isProduction)
-  await getGlobalContextAsync()
   const globalContext = getGlobalContext()
   const pageFilesAll = await getPageFilesAll(false, globalContext.isProduction)
   return pageFilesAll
