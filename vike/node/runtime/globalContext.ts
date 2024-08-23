@@ -45,6 +45,7 @@ const globalObject = getGlobalObject<{
   viteConfig?: ResolvedConfig
   outDirRoot?: string
   isPrerendering?: true
+  initGlobalContext_runPrerender_alreadyCalled?: true
 }>(
   'globalContext.ts',
   (() => {
@@ -185,6 +186,9 @@ async function initGlobalContext_renderPage(): Promise<void> {
 }
 
 async function initGlobalContext_runPrerender(): Promise<void> {
+  if (globalObject.initGlobalContext_runPrerender_alreadyCalled) return
+  globalObject.initGlobalContext_runPrerender_alreadyCalled = true
+
   assert(globalObject.isPrerendering)
   assert(globalObject.viteConfig)
   assert(globalObject.outDirRoot)
