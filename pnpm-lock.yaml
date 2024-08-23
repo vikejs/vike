@@ -1653,8 +1653,8 @@ importers:
         specifier: ^0.1.2
         version: 0.1.2
       '@brillout/vite-plugin-server-entry':
-        specifier: ^0.4.9
-        version: 0.4.9
+        specifier: ^0.4.10
+        version: 0.4.10
       acorn:
         specifier: ^8.0.0
         version: 8.11.3
@@ -1945,8 +1945,8 @@ packages:
     peerDependencies:
       typescript: ^4.0.0
 
-  '@brillout/vite-plugin-server-entry@0.4.9':
-    resolution: {integrity: sha512-ETiWJlljweuxXS/0TBk4eLotZ3ZFC26u7s983z2P9lmDGifZzgj7BCJzgopnDihbl8Y8usKZSLq0grrCivtMSA==}
+  '@brillout/vite-plugin-server-entry@0.4.10':
+    resolution: {integrity: sha512-Ui9s3VR+Zb3MYHY40HiHazujbnLvF6p1BG3b19u50EgqwkDqmqrW/zt1fBr/+d2+HiplhyjltWjKkuB6qSpoiA==}
 
   '@cloudflare/kv-asset-handler@0.2.0':
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}
@@ -7358,7 +7358,7 @@ snapshots:
       source-map-support: 0.5.21
       typescript: 5.5.4
 
-  '@brillout/vite-plugin-server-entry@0.4.9':
+  '@brillout/vite-plugin-server-entry@0.4.10':
     dependencies:
       '@brillout/import': 0.2.3
 
@@ -12726,7 +12726,7 @@ snapshots:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.10
       '@brillout/picocolors': 1.0.12
-      '@brillout/vite-plugin-server-entry': 0.4.9
+      '@brillout/vite-plugin-server-entry': 0.4.10
       es-module-lexer: 0.7.1
       picocolors: 1.0.1
       ts-morph: 19.0.0
