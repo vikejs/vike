@@ -38,8 +38,6 @@ import pc from '@brillout/picocolors'
 import { getPageFilesExports } from './page-files/getPageFilesExports.js'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
-  globalContextPromise: Promise<GlobalContext>
-  globalContextPromiseResolve: (globalContext: GlobalContext) => void
   viteDevServer?: ViteDevServer
   viteDevServerPromise: Promise<ViteDevServer>
   viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
@@ -50,11 +48,8 @@ const globalObject = getGlobalObject<{
 }>(
   'globalContext.ts',
   (() => {
-    const { promise: globalContextPromise, resolve: globalContextPromiseResolve } = genPromise<GlobalContext>()
     const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
     return {
-      globalContextPromise,
-      globalContextPromiseResolve,
       viteDevServerPromise,
       viteDevServerPromiseResolve
     }
@@ -111,10 +106,17 @@ function getGlobalContextSync(): GlobalContextPublic {
   return makePublic(globalObject.globalContext)
 }
 /** @experimental https://vike.dev/getGlobalContext */
-async function getGlobalContextAsync(): Promise<GlobalContextPublic> {
-  await globalObject.globalContextPromise
-  assert(globalObject.globalContext)
-  return makePublic(globalObject.globalContext)
+async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
+  assertUsage(
+    typeof isProduction === 'boolean',
+    `[getGlobalContextAsync(isProduction)] Argument isProduction ${
+      isProduction === undefined ? 'is missing' : `should be a ${pc.cyan('true')} or ${pc.cyan('false')}`
+    }`
+  )
+  await initGlobalContext_getGlobalConfig(isProduction)
+  const { globalContext } = globalObject
+  assert(globalContext)
+  return makePublic(globalContext)
 }
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
   const globalContextPublic = {
@@ -275,8 +277,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       globalObject.globalContext = globalContext
     }
   }
-
-  globalObject.globalContextPromiseResolve(globalObject.globalContext)
 }
 
 function getRuntimeManifest(configVike: ConfigVikeResolved): RuntimeManifest {
