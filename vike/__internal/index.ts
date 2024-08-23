@@ -10,7 +10,6 @@ import { getPageFilesAll, type PageFile } from '../shared/getPageFiles.js'
 import {
   getGlobalContext,
   getGlobalContextAsync,
-  initGlobalContext_runPrerender,
   initGlobalContext_getGlobalConfig
 } from '../node/runtime/globalContext.js'
 import { handleNodeEnv_vitePluginVercel } from '../utils/assertNodeEnv.js'
@@ -25,10 +24,7 @@ import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
  */
 async function getPagesAndRoutes() {
   handleNodeEnv_vitePluginVercel()
-
-  await initGlobalContext_runPrerender(true)
   const renderContext = await getRenderContext()
-
   const {
     //
     pageRoutes,

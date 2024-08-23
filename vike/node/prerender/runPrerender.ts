@@ -38,7 +38,11 @@ import {
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
-import { getGlobalContext, initGlobalContext_runPrerender } from '../runtime/globalContext.js'
+import {
+  getGlobalContext,
+  initGlobalContext_runPrerender,
+  setGlobalContext_isPrerendering
+} from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import type { InlineConfig } from 'vite'
@@ -192,7 +196,7 @@ async function runPrerender(
   manuallyTriggered: null | '$ vike prerender' | 'prerender()'
 ): Promise<void> {
   checkOutdatedOptions(options)
-
+  setGlobalContext_isPrerendering()
   getHook_setIsPrerenderering()
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
