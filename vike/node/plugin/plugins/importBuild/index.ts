@@ -2,7 +2,7 @@ export { importBuild }
 export { set_ASSETS_MAP }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import { serverEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin.js'
+import { serverEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
