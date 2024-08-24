@@ -1,43 +1,8 @@
 {
   "name": "vike",
   "version": "0.4.193",
-  "scripts": {
-    "dev": "tsc --watch",
-    "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
-    "build:esm": "tsc",
-    "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
-    "build:cjs:ts": "tsc --project ./tsconfig.cjs.json",
-    "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
-    "release": "release-me patch",
-    "release:minor": "release-me minor",
-    "release:commit": "release-me commit"
-  },
-  "dependencies": {
-    "@brillout/import": "^0.2.3",
-    "@brillout/json-serializer": "^0.5.13",
-    "@brillout/picocolors": "^1.0.14",
-    "@brillout/require-shim": "^0.1.2",
-    "@brillout/vite-plugin-server-entry": "^0.4.10",
-    "acorn": "^8.0.0",
-    "cac": "^6.0.0",
-    "es-module-lexer": "^1.0.0",
-    "esbuild": "^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0",
-    "fast-glob": "^3.0.0",
-    "semver": "^7.0.0",
-    "sirv": "^2.0.0",
-    "source-map-support": "^0.5.0"
-  },
-  "type": "module",
+  "repository": "https://github.com/vikejs/vike",
   "exports": {
-    ".": {
-      "worker": "./dist/esm/node/runtime/index-deprecated.js",
-      "edge-light": "./dist/esm/node/runtime/index-deprecated.js",
-      "require": "./dist/cjs/node/runtime/index-deprecated.js",
-      "node": "./dist/esm/node/runtime/index-deprecated.js",
-      "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
-      "default": "./dist/esm/node/runtime/index-deprecated.js"
-    },
     "./server": {
       "worker": "./dist/esm/node/runtime/index.js",
       "edge-light": "./dist/esm/node/runtime/index.js",
@@ -144,7 +109,31 @@
       "node": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
       "types": "./dist/esm/node/runtime/globalContext/loadImportBuild.d.ts",
       "default": "./dist/esm/node/runtime/globalContext/loadImportBuild.js"
+    },
+    ".": {
+      "worker": "./dist/esm/node/runtime/index-deprecated.js",
+      "edge-light": "./dist/esm/node/runtime/index-deprecated.js",
+      "require": "./dist/cjs/node/runtime/index-deprecated.js",
+      "node": "./dist/esm/node/runtime/index-deprecated.js",
+      "browser": "./dist/esm/client/node.js",
+      "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
+      "default": "./dist/esm/node/runtime/index-deprecated.js"
     }
+  },
+  "dependencies": {
+    "@brillout/import": "^0.2.3",
+    "@brillout/json-serializer": "^0.5.13",
+    "@brillout/picocolors": "^1.0.14",
+    "@brillout/require-shim": "^0.1.2",
+    "@brillout/vite-plugin-server-entry": "^0.4.10",
+    "acorn": "^8.0.0",
+    "cac": "^6.0.0",
+    "es-module-lexer": "^1.0.0",
+    "esbuild": "^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0",
+    "fast-glob": "^3.0.0",
+    "semver": "^7.0.0",
+    "sirv": "^2.0.0",
+    "source-map-support": "^0.5.0"
   },
   "peerDependencies": {
     "react-streaming": ">=0.3.42",
@@ -155,8 +144,19 @@
       "optional": true
     }
   },
-  "main": "./dist/esm/node/runtime/index-deprecated.js",
-  "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "description": "Flexible, lean, community-driven, dependable, fast Vite-based frontend framework.",
+  "keywords": [
+    "react",
+    "vue",
+    "solid",
+    "vite",
+    "vite-plugin",
+    "ssr"
+  ],
   "typesVersions": {
     "*": {
       "types": [
@@ -203,9 +203,26 @@
       ]
     }
   },
+  "main": "./dist/esm/node/runtime/index-deprecated.js",
+  "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
+  "type": "module",
   "bin": {
     "vike": "./node/cli/bin-entry.js"
   },
+  "files": [
+    "dist/",
+    "cli.js",
+    "client.js",
+    "client/router.js",
+    "plugin.js",
+    "prerender.js",
+    "routing.js",
+    "abort.js",
+    "RenderErrorPage.js",
+    "server.js",
+    "__internal.js",
+    "__internal/setup.js"
+  ],
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",
     "@brillout/release-me": "^0.4.0",
@@ -227,32 +244,15 @@
     "typescript": "^5.4.5",
     "vite": "^5.4.0"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "description": "Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.",
-  "repository": "https://github.com/vikejs/vike",
-  "files": [
-    "dist/",
-    "cli.js",
-    "client.js",
-    "client/router.js",
-    "plugin.js",
-    "prerender.js",
-    "routing.js",
-    "abort.js",
-    "RenderErrorPage.js",
-    "server.js",
-    "__internal.js",
-    "__internal/setup.js"
-  ],
-  "license": "MIT",
-  "keywords": [
-    "vite",
-    "vite-plugin",
-    "ssr"
-  ],
-  "publishConfig": {
-    "access": "public"
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
+    "build:cjs:ts": "tsc --project ./tsconfig.cjs.json",
+    "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
+    "release": "release-me patch",
+    "release:minor": "release-me minor",
+    "release:commit": "release-me commit"
   }
 }
