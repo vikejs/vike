@@ -4,6 +4,8 @@ The `injectFilter()` hook allows you to control where and what tags Vike injects
 
 > If you merely want to change the position of scripts, you can use the <Link href="/injectScriptsAt">`injectScriptsAt` setting</Link> instead.
 
+> Vite also injects preload tags, see [Vite Docs > Config > `build.modulePreload`](https://vitejs.dev/config/build-options#build-modulepreload).
+
 
 ## Examples
 
@@ -70,7 +72,8 @@ async function onRenderHtml(pageContext) {
 type InjectFilterEntry = {
   inject: false | 'HTML_BEGIN' | 'HTML_END' // Whether and where to inject
   src: string // Asset's URL
-  assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" | "fetch" | "track" | "worker" | "embed" | "object" | null
+  assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
+             "fetch" | "track" | "worker" | "embed" | "object" | null
   mediaType: string // MIME type
   isEntry: boolean // true  ⇒ <script> or <link rel="stylesheet" type="text/css">
                    // false ⇒ preload tag, e.g. <link rel="preload" as="font">
@@ -83,3 +86,4 @@ type InjectFilterEntry = {
 - <Link href="/preloading" />
 - <Link href="/streaming" />
 - <Link href="/injectScriptsAt" />
+- [Vite Docs > Config > `build.modulePreload`](https://vitejs.dev/config/build-options#build-modulepreload)
