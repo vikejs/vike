@@ -1,0 +1,85 @@
+{
+  "name": "vike-node",
+  "version": "0.1.16",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./connect": "./dist/connect.js",
+    "./fastify": "./dist/fastify.js",
+    "./h3": "./dist/h3.js",
+    "./hono": "./dist/hono.js",
+    "./elysia": "./dist/elysia.js",
+    "./plugin": "./dist/plugin/index.js",
+    ".": "./dist/index.js",
+    "./__handler": {
+      "vike-node-dev": "./dist/runtime/handler-web-and-node.js",
+      "edge-light": "./dist/runtime/handler-web-only.js",
+      "worker": "./dist/runtime/handler-web-only.js",
+      "workerd": "./dist/runtime/handler-web-only.js",
+      "browser": "./dist/runtime/handler-web-only.js",
+      "default": "./dist/runtime/handler-web-and-node.js",
+      "types": "./dist/runtime/handler-web-only.d.ts"
+    }
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rm -rf dist/ && tsc",
+    "release": "release-me patch",
+    "release:minor": "release-me minor",
+    "release:commit": "release-me commit"
+  },
+  "dependencies": {
+    "@brillout/picocolors": "^1.0.14",
+    "@nitedani/shrink-ray-current": "^4.3.0",
+    "@vercel/nft": "^0.26.5",
+    "esbuild": "^0.19.12",
+    "sirv": "^2.0.4",
+    "vike-node-dev": "^0.1.0"
+  },
+  "peerDependencies": {
+    "vike": "^0.4.193",
+    "vite": "^5.0.10"
+  },
+  "devDependencies": {
+    "@brillout/release-me": "^0.4.0",
+    "@types/node": "^20.14.15",
+    "elysia": "^1.1.6",
+    "fastify": "^4.28.1",
+    "h3": "^1.12.0",
+    "hono": "^4.5.5",
+    "typescript": "^5.5.4",
+    "vike": "^0.4.193",
+    "vite": "^5.4.0"
+  },
+  "typesVersions": {
+    "*": {
+      "connect": [
+        "./dist/connect.d.ts"
+      ],
+      "fastify": [
+        "./dist/fastify.d.ts"
+      ],
+      "h3": [
+        "./dist/h3.d.ts"
+      ],
+      "hono": [
+        "./dist/hono.d.ts"
+      ],
+      "elysia": [
+        "./dist/elysia.d.ts"
+      ],
+      "plugin": [
+        "./dist/plugin/index.d.ts"
+      ],
+      ".": [
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "repository": "github:vikejs/vike-node",
+  "license": "MIT"
+}

@@ -1,0 +1,34 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "prepare": "pnpm prisma generate && pnpm prisma db push",
+    "prod": "pnpm run build && cp ./prisma/test.db ./build/server/node_modules/.prisma/client && cross-env NODE_ENV=production node build/server/index.mjs"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.12.0",
+    "@node-rs/argon2": "^1.8.3",
+    "@prisma/client": "^5.18.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.15",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "cross-env": "^7.0.3",
+    "elysia": "^1.1.6",
+    "express": "^4.19.2",
+    "fastify": "^4.28.1",
+    "h3": "^1.12.0",
+    "hono": "^4.5.5",
+    "prisma": "^5.18.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sharp": "^0.33.4",
+    "telefunc": "^0.1.76",
+    "typescript": "^5.5.4",
+    "vike": "^0.4.193",
+    "vike-node": "link:../../packages/vike-node",
+    "vite": "^5.4.0"
+  },
+  "type": "module"
+}

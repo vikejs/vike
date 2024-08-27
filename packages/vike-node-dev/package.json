@@ -1,0 +1,47 @@
+{
+  "name": "vike-node-dev",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/plugin/index.js",
+  "types": "./dist/plugin/index.d.ts",
+  "exports": {
+    "./plugin": "./dist/plugin/index.js",
+    "./__internal": "./dist/__internal.js"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rm -rf dist/ && tsc",
+    "release": "release-me patch",
+    "release:minor": "release-me minor",
+    "release:commit": "release-me commit"
+  },
+  "dependencies": {
+    "@brillout/picocolors": "^1.0.14"
+  },
+  "peerDependencies": {
+    "vike": "^0.4.193",
+    "vite": "^5.0.10"
+  },
+  "devDependencies": {
+    "@brillout/release-me": "^0.4.0",
+    "@types/node": "^20.14.15",
+    "typescript": "^5.5.4",
+    "vike": "^0.4.193",
+    "vite": "^5.4.0"
+  },
+  "typesVersions": {
+    "*": {
+      "plugin": [
+        "./dist/plugin/index.d.ts"
+      ],
+      "__internal": [
+        "./dist/__internal/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "repository": "github:vikejs/vike",
+  "license": "MIT"
+}
