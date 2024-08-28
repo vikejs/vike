@@ -25,6 +25,7 @@ function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToSh
 
   const exportDefault = pc.code('export default')
   const exportNamed = pc.code(`export { ${configName} }`)
+  assert(exportNamesValid.length <= 2)
   if (exportNamesValid.length === 0) {
     assertUsage(false, `${filePathToShowToUser} should have a ${exportNamed} or ${exportDefault}`)
   }
@@ -33,9 +34,6 @@ function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToSh
       onlyOnce: true
     })
   }
-
-  assert(exportNamesValid.length === 1)
-  assert(exportNamesInvalid.length > 0)
   if (!TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) {
     exportNamesInvalid.forEach((exportInvalid) => {
       assertWarning(false, `${filePathToShowToUser} unexpected ${pc.cyan(`export { ${exportInvalid} }`)}`, {
