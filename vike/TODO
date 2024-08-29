@@ -66,6 +66,9 @@ v0.5 breaking changes:
   - https://github.com/vikejs/vike/issues/1459
 - Remove deprecated API support in getPrefetchSettings.ts
   - Remove all deprecated API, at least in client code?
+- Make some hooks cumulative:
+  - https://github.com/vikejs/vike/issues/1833
+  - https://github.com/vikejs/vike/issues/1834
 
 Docs:
  - Improve /nextjs
