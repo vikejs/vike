@@ -417,6 +417,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Naive UI',
+    url: '/navie-ui'
+  },
+  {
+    level: 2,
     titleInNav: '... more',
     title: 'CSS Tools',
     url: '/css-tools',
