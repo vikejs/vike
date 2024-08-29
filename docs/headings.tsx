@@ -418,7 +418,7 @@ const headings = [
   {
     level: 2,
     title: 'Naive UI',
-    url: '/navie-ui'
+    url: '/naive-ui'
   },
   {
     level: 2,
