@@ -257,7 +257,7 @@ export const Head = () => <link rel="icon" href={favicon}>
 > If you have a need for overriding, then add a comment at: [#1692 - Add `override` and `default` options for cumulative configs](https://github.com/vikejs/vike/issues/1692)
 
 
-## Injecting arbitrary HTML strings
+## How to injecting raw HTML?
 
 You can inject any arbitrary HTML string to the page's `<head>`. For example using:
 
@@ -271,7 +271,7 @@ Be aware and cautious about the security risk called [XSS injections](https://en
 
 ### React
 
-You can use React's `dangerouslySetInnerHTML` to add any arbitrary HTML string, for example:
+You can use React's `dangerouslySetInnerHTML` to add raw HTML, for example:
 
 ```ts
 import React from 'react'
@@ -303,7 +303,7 @@ function Image({ src, author }) {
 
 ### Vue
 
-You can use `innerHTML` to add any arbitrary HTML string, for example:
+You can use `innerHTML` to add raw HTML, for example:
 
 ```vue
 <template>
@@ -335,7 +335,7 @@ config({
 
 ### Solid
 
-You can use `innerHTML` to add any arbitrary HTML string, for example:
+You can use `innerHTML` to add raw HTML, for example:
 
 ```jsx
 import { Head } from "vike-solid/Head"
