@@ -1,6 +1,5 @@
-import { Link } from '@brillout/docpress'
-
 import { UiFrameworkExtension, ImplementedBy } from '../../components'
+import { Link } from '@brillout/docpress'
 
 Kind: cumulative.  
 Environment: server. <ImplementedBy noCustomGuide />
@@ -41,8 +40,12 @@ export function Head() {
 
 You can set `<head>` tags based on <Link href="/data-fetching">fetched data</Link> (or <Link href="/pageContext">`pageContext`</Link>) with:
 
-- `useData()` and `usePageContext()` inside `+Head`.
 - `useConfig()` inside `+data` or components.
+- `useData()` and `usePageContext()` inside `+Head`.
+
+### `useConfig()`
+
+See <Link href="/useConfig"/>.
 
 ### `usePageContext()` and `useData()`
 
@@ -62,10 +65,6 @@ export function Head() {
   </>
 }
 ```
-
-### `useConfig()`
-
-See <Link href="/useConfig"/>.
 
 
 ## Only HTML
