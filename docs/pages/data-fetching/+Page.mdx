@@ -1,16 +1,19 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-The default recommendation is to use `data()` for fetching initial data, and a data tool for data mutations and subsequent data (such as pagination data).
+The usual recommendation is to use Vike's `data()` hook for fetching initial data, and another dedicated tool for data mutations and subsequent data (such as pagination data).
 
 
 ## Initial data
 
-For fetching the initial data of a page, we generally recommend using Vike's `data()` hook but you can also use a tool such as TanStack Query instead.
+For fetching the initial data of a page you can use Vike's `data()` hook, or you can use tools such as TanStack Query instead.
 
-### The `data()` hook
+<Link href="#data-hook" /><br/>
+<Link href="#tools" /><br/>
 
-A simple and straightforward way to fetch the initial data of a page is to use the <Link href="/data">Vike hook `data()`</Link> together with the <Link href="/useData">component hook `useData()`</Link>.
+### `data()` hook
+
+You can fetch the initial data of a page by using the <Link href="/data">Vike hook `data()`</Link> together with the <Link href="/useData">component hook `useData()`</Link>.
 
 ```js
 // /pages/movies/@id/+data.js
@@ -64,13 +67,11 @@ import { useData } from 'vike-solid/useData'
 
 The `data()` hook can only be used for fetching the initial data of the page. For other use cases, such as data mutations and pagination data, use a data tool.
 
-### Data tools
+### Tools
 
-Some tools, such as [TanStack Query](https://tanstack.com/query), can be used to fetch the initial data of a page.
-
-> It's a novel approach, and currently, if you have a preference for stability, we recommend using Vike's `data()` hook instead.
-
-> We are currently working on <Link href="/extensions">Vike extensions</Link>, such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query) and `vike-vue-telefunc`, that enable you to use your favorite data tool also for fetching initial data, in a seamless and zero-config fashion.
+Some data-fetching tools have Vike extensions that enable your components to fetch their initial data:
+ - [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) - [TanStack Query](https://tanstack.com/query) integration for <Link href="/vike-react">`vike-react`</Link>
+ - 🚧 `vike-react-telefunc` - [Telefunc](https://telefunc.com/) integration for <Link href="/vike-react">`vike-react`</Link>
 
 
 ## Data mutation & subsequent data
