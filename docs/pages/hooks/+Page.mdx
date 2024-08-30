@@ -43,13 +43,13 @@ Potentially upcoming hooks:
 
 ## Order
 
-The order in which the hooks are called, see for example:
-- <Link href="#with-default-environment-hooks" />, if you didn't change the environment of `data()` and `onBeforeRender()`.
-- <Link href="#with-client-side-hooks" />, if you <Link href="/data#environment">configured `data()`</Link> and <Link href="/onBeforeRender#environment">also `onBeforeRender()`</Link> to run only the client-side.
+The order in which the hooks are called.
 
 > The following doesn't contain the hooks of the Vike extensions <UiFrameworkExtension name /> such as <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link> or <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link>.
 
-### With default-environment hooks
+### Default
+
+If you didn't change the environment of `data()` nor `onBeforeRender()`:
 
 **First render**
 
@@ -78,7 +78,9 @@ The order in which the hooks are called, see for example:
 1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
 1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
 
-### With client-side hooks
+### Client-side only `data()`
+
+If you <Link href="/data#environment">configured `data()`</Link> and <Link href="/onBeforeRender#environment">`onBeforeRender()` as well</Link> to run *only* on the client-side:
 
 **First render**
 
