@@ -1,14 +1,38 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { ImplementedBy, UiFrameworkExtension, GlobalNote } from '../../components'
 
 Environment: server.
-<ImplementedBy by={<UiFrameworkExtension name list={['vike-vue']}/>} noCustomGuide>`bodyHtmlEnd`</ImplementedBy>
+<ImplementedBy by={<UiFrameworkExtension name list={['vike-vue', 'vike-react']}/>} noCustomGuide>`bodyHtmlEnd`</ImplementedBy>
 
 The settings `bodyHtmlEnd`/<Link href="/bodyHtmlBegin" /> enable you to insert HTML at the beginning/end of the `<body>` tag.
 
-It's usually used for adding the HTML targets of teleports.
+> For use cases, such as adding `<script>` tags, you can also use <Link href="/head-tags">`<Head>`</Link> or <Link href="/client">`+client.js`</Link>.
 
-> For other use cases, such as adding `<script>` tags, you can also use <Link href="/head-tags">`<Head>`</Link> or <Link href="/client">`+client.js`</Link>.
+```js
+// pages/+config.js
+
+export default {
+  bodyHtmlEnd: '<div id="something"></div>'
+}
+```
+
+```js
+// pages/+bodyHtmlEnd.js
+
+export default (pageContext) => {
+  const { something } = pageContext
+  return `<div>${something}</div>`
+}
+```
+
+<Warning>
+Be aware and cautious about the security risk called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
+</Warning>
+
+
+## Vue
+
+When using Vue, it's usually used for adding the HTML targets of teleports.
 
 Teleports work out of the box when using `<Teleport to="teleported">` and you don't have to use `bodyHtml{Begin,End}` then.
 
@@ -29,6 +53,7 @@ Teleports work out of the box when using `<Teleport to="teleported">` and you do
 >   return `<div id="someTeleport">${content}</div>`
 > }
 > ```
+
 
 ## Global
 
