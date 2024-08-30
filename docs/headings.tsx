@@ -412,6 +412,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Ant Design',
+    url: '/antd'
+  },
+  {
+    level: 2,
     title: 'Sass / Less / Stylus',
     url: '/sass'
   },
