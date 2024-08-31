@@ -68,7 +68,7 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
   return pageContextForUserConsumption
 }
 
-// Remove propery descriptor getters because they break Vue's reactivity.
+// Remove property descriptor getters because they break Vue's reactivity.
 // E.g. resolve the `pageContext.urlPathname` getter.
 function resolveGetters(pageContext: Record<string, unknown>) {
   Object.entries(pageContext).forEach(([key, val]) => {

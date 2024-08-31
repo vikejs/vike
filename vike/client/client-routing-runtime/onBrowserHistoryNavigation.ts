@@ -11,7 +11,7 @@ const globalObject = getGlobalObject<{
 }>('onBrowserHistoryNavigation.ts', { previousState: getState() })
 
 function onBrowserHistoryNavigation() {
-  // - The popstate event is trigged upon:
+  // - The popstate event is triggered upon:
   //   - Back-/forward navigation.
   //     - By user clicking on his browser's back-/forward navigation (or using a shortcut)
   //     - By JavaScript: `history.back()` / `history.forward()`

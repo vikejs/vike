@@ -54,7 +54,7 @@ function serializeConfigValues(
     if (!configDef.cumulative) {
       const configValueSource = sources[0]
       assert(configValueSource)
-      assert(sources.slice(1).every((s) => s.isOverriden === true))
+      assert(sources.slice(1).every((s) => s.isOverridden === true))
       if (!isEnvMatch(configValueSource.configEnv)) return
       const { valueData, definedAtFile } = serializeConfigValueSource(configValueSource, configName, importStatements)
       const configValueBase = {
@@ -66,7 +66,7 @@ function serializeConfigValues(
       const valueDataList: ValueData[] = []
       const definedAtData: DefinedAtFile[] = []
       sources
-        .filter((s) => !s.isOverriden)
+        .filter((s) => !s.isOverridden)
         .forEach((configValueSource) => {
           if (!isEnvMatch(configValueSource.configEnv)) return
           const { valueData, definedAtFile } = serializeConfigValueSource(
@@ -94,7 +94,7 @@ function serializeConfigValueSource(
   configName: string,
   importStatements: string[]
 ) {
-  assert(configValueSource.isOverriden === false)
+  assert(configValueSource.isOverridden === false)
   let valueData: ValueData
   if ('value' in configValueSource) {
     valueData = serializeWithJson(

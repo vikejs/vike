@@ -82,8 +82,8 @@ type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   definedAtFilePath: DefinedAtFilePath
   locationId: LocationId
-  isOverriden: boolean
-  /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
+  isOverridden: boolean
+  /** Whether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
   /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true

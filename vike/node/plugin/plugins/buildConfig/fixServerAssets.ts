@@ -59,7 +59,7 @@ async function copyAssets(filesToCopy: string[], config: ResolvedConfig) {
       )
     )
   )
-  /* We cannot do that because, with some edge case Rollup settings (outputing JavaScript chunks and static assets to the same directoy), this removes JavaScript chunks, see https://github.com/vikejs/vike/issues/1154#issuecomment-1975762404
+  /* We cannot do that because, with some edge case Rollup settings (outputting JavaScript chunks and static assets to the same directory), this removes JavaScript chunks, see https://github.com/vikejs/vike/issues/1154#issuecomment-1975762404
   await fs.rm(assetsDirServer, { recursive: true })
   */
 }
@@ -181,7 +181,7 @@ function collectResources(entryRoot: ViteManifestEntry, manifest: ViteManifest) 
 // </head>
 // ```
 function getHash(src: string) {
-  // src is guarenteed to end with `.[hash][extname]`, see distFileNames.ts
+  // src is guaranteed to end with `.[hash][extname]`, see distFileNames.ts
   const hash = src.split('.').at(-2)
   assert(hash)
   return hash

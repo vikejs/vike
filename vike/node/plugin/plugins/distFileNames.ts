@@ -20,7 +20,7 @@ function distFileNames(): Plugin {
     enforce: 'post',
     configResolved(config) {
       const rollupOutputs = getRollupOutputs(config)
-      // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
+      // We need to support multiple outputs: @vite/plugin-legacy adds an output, see https://github.com/vikejs/vike/issues/477#issuecomment-1406434802
       rollupOutputs.forEach((rollupOutput) => {
         if (!('entryFileNames' in rollupOutput)) {
           rollupOutput.entryFileNames = (chunkInfo) => getEntryFileName(chunkInfo, config, true)
@@ -170,7 +170,7 @@ function getEntryFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig, i
   }
 }
 
-function removePathSeperators(name: string) {
+function removePathSeparators(name: string) {
   assertPosixPath(name)
   assert(!name.startsWith('/'))
   const entryDir = 'entries/'
@@ -191,9 +191,9 @@ function clean(name: string, removePathSep?: boolean, fixGlob?: boolean): string
   if (fixGlob) {
     name = workaroundGlob(name)
   }
-  name = replaceNonLatinCharaters(name)
+  name = replaceNonLatinCharacters(name)
   if (removePathSep) {
-    name = removePathSeperators(name)
+    name = removePathSeparators(name)
   }
   name = removeLeadingUnderscoreInFilename(name)
   name = removeUnderscoreDoublets(name)
@@ -215,7 +215,7 @@ function removeUnderscoreDoublets(name: string): string {
   name = name.split(/__+/).join('_')
   return name
 }
-function replaceNonLatinCharaters(name: string): string {
+function replaceNonLatinCharacters(name: string): string {
   name = name.split('+').join('')
   name = name.replace(/[^a-zA-Z0-9\/\._]/g, '-')
   return name

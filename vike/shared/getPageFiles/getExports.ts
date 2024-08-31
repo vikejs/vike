@@ -35,7 +35,7 @@ type ExportsAll = Record<
     _filePath: string | null
   }[]
 >
-/** All the config's values (including overriden ones) and where they come from.
+/** All the config's values (including overridden ones) and where they come from.
  *
  * https://vike.dev/pageContext
  */
@@ -159,7 +159,7 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []
-      // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
+      // Currently each configName has only one entry. Adding an entry for each overridden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
       assert(configEntries[configName]!.length === 0)
       configEntries[configName]!.push({
         configValue: value,

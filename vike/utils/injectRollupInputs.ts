@@ -21,7 +21,7 @@ function normalizeRollupInput(input?: InputOption): InputsMap {
   if (!input) {
     return {}
   }
-  // Usually `input` is an oject, but the user can set it as a `string` or `string[]`
+  // Usually `input` is an object, but the user can set it as a `string` or `string[]`
   if (typeof input === 'string') {
     input = [input]
   }

@@ -62,7 +62,7 @@ function getHtmlTags(
         // We could allow the user to change the position of <script> but we currently don't:
         //  - Because of mergeScriptEntries()
         //  - We would need to add STREAM to to PreloadFilterInject
-        // To suppor this, we should add the JavaScript entry to injectFilterEntries (with an `src` value of `null`)
+        // To support this, we should add the JavaScript entry to injectFilterEntries (with an `src` value of `null`)
         return false
       }
       return true

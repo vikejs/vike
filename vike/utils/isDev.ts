@@ -3,7 +3,7 @@ export { isDev3 }
 
 import { assert } from './assert.js'
 
-// We can propbably remove this file after we implement the Vike CLI
+// We can probably remove this file after we implement the Vike CLI
 
 // There isn't any reliable way to test whether Vite is ran as dev/build/preview/optimizeDep
 //  - Failed attempt to make a PR: https://github.com/vitejs/vite/pull/12298
