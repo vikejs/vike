@@ -3,7 +3,7 @@ export { testRun }
 import { expect, describe, it } from 'vitest'
 import path from 'path'
 import { renderPage } from 'vike/server'
-import { stabilizeHashes } from './utils/stabilizeHashs'
+import { stabilizeHashes } from './utils/stabilizeHashes'
 
 function testRun(isDev: boolean) {
   describe('preload tags', () => {
