@@ -3,7 +3,7 @@ export { testRun }
 import { expect, describe, it } from 'vitest'
 import path from 'path'
 import { renderPage } from 'vike/server'
-import { stabilizeHashes } from './utils/stabilizeHashes'
+import { stabilizeHashs } from './utils/stabilizeHashs'
 
 function testRun(isDev: boolean) {
   describe('preload tags', () => {
@@ -35,7 +35,7 @@ function testRun(isDev: boolean) {
 }
 
 async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-images' | '/preload-eager', isDev: boolean) {
-  const stabilzeReferences = !isDev ? stabilizeHashes : stabilizePaths
+  const stabilzeReferences = !isDev ? stabilizeHashs : stabilizePaths
   const { httpResponse } = await renderPage({ urlOriginal })
   const body = stabilzeReferences(httpResponse!.body)
   const earlyHints = httpResponse!.earlyHints.map((hint) =>

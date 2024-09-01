@@ -60,7 +60,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
     pageConfigs.forEach((pageConfig) => {
       Object.values(pageConfig.configValueSources).forEach((sources) => {
         sources
-          .filter((c) => !c.isOverridden)
+          .filter((c) => !c.isOverriden)
           .forEach((configValueSource) => {
             if (!configValueSource.valueIsImportedAtRuntime) return
             const { definedAtFilePath, configEnv } = configValueSource

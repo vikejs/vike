@@ -152,7 +152,7 @@ function makePublic(globalContext: GlobalContext): GlobalContextPublic {
 
 function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
-  assertIsNotInitializedYet()
+  assertIsNotInitilizedYet()
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
   globalObject.viteDevServerPromiseResolve(viteDevServer)
@@ -160,12 +160,12 @@ function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: string): void {
   if (globalObject.viteConfig) return
-  assertIsNotInitializedYet()
+  assertIsNotInitilizedYet()
   globalObject.viteConfig = viteConfig
   globalObject.outDirRoot = outDirRoot
 }
-function assertIsNotInitializedYet() {
-  // In developments, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
+function assertIsNotInitilizedYet() {
+  // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
   assert(!globalObject.globalContext)
 }
 function setGlobalContext_isDev(isDev: boolean) {
@@ -302,7 +302,7 @@ function getRuntimeManifest(configVike: ConfigVikeResolved): RuntimeManifest {
 
 function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {
   const errMsg = [
-    `You are trying to run`,
+    `You are tyring to run`,
     isPreRendering ? 'pre-rendering' : 'the server for production',
     `but your app isn't built yet. Run ${pc.cyan('$ vite build')} before `,
     isPreRendering ? 'pre-rendering.' : 'running the server.'

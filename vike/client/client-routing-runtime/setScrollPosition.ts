@@ -30,7 +30,7 @@ function scrollToTopOrHash() {
   }
 }
 
-/** Change the browser's scroll position, in a way that works during a repaint. */
+/** Change the browser's scoll position, in a way that works during a repaint. */
 function setScroll(scrollPosition: ScrollPosition) {
   const scroll = () => window.scrollTo(scrollPosition.x, scrollPosition.y)
   const done = () => window.scrollX === scrollPosition.x && window.scrollY === scrollPosition.y
@@ -53,7 +53,7 @@ function setScroll(scrollPosition: ScrollPosition) {
       // In principle, `requestAnimationFrame() -> setTimeout(, 0)` should be enough.
       //  - https://stackoverflow.com/questions/61281139/waiting-for-repaint-in-javascript
       //  - But it's not enough for `Firefox 97.0.1`.
-      //  - The following strategy is very aggressive. It doesn't need to be that aggressive for Firefox. But we do it to be safe.
+      //  - The following strategy is very agressive. It doesn't need to be that aggressive for Firefox. But we do it to be safe.
       const start = new Date().getTime()
       while (true) {
         await sleep(10)

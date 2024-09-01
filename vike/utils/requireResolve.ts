@@ -16,7 +16,7 @@ assertIsNotProductionRuntime()
 function requireResolve(importPath: string, cwd: string): string | null {
   assertPosixPath(cwd)
   const clean = addFileExtensionsToRequireResolve()
-  importPath = removeFileExtension(importPath)
+  importPath = removeFileExtention(importPath)
   let importedFile: string | null
   try {
     importedFile = require_.resolve(importPath, { paths: [cwd] })
@@ -31,7 +31,7 @@ function requireResolve(importPath: string, cwd: string): string | null {
   return importedFile
 }
 
-function removeFileExtension(importPath: string) {
+function removeFileExtention(importPath: string) {
   for (const ext of scriptFileExtensionList) {
     const suffix = `.${ext}`
     if (importPath.endsWith(suffix)) {

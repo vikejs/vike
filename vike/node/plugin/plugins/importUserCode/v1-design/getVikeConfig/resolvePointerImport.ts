@@ -72,7 +72,7 @@ function resolvePointerImport(
     assertImportPath(filePathAbsoluteFilesystem, pointerImportData, importerFilePath)
 
     const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
-    // This assert() is guaranteed, see assertUsage() in the onResolve() esbuild hook in transpileAndExecuteFile.ts
+    // This assert() is guarenteed, see assertUsage() in the onResolve() esbuild hook in transpileAndExecuteFile.ts
     assert(filePathAbsoluteUserRootDir)
 
     // Imports are included in virtual files, thus the relative path of imports need to resolved.

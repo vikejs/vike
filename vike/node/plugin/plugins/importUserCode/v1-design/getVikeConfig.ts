@@ -398,7 +398,7 @@ async function loadVikeConfig(
               interfaceFile.filePath.filePathToShowToUser
             )
             if (!isLoadableAtBuildTime(configDef)) return
-            const isAlreadyLoaded = interfaceFileIsAlreadyLoaded(interfaceFile)
+            const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
             // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
             assert(!(configName in configDefinitionsBuiltIn))
@@ -539,7 +539,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   )
 }
 
-function interfaceFileIsAlreadyLoaded(interfaceFile: InterfaceFile): boolean {
+function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
   const configMapValues = Object.values(interfaceFile.fileExportsByConfigName)
   const isAlreadyLoaded = configMapValues.some((conf) => 'configValue' in conf)
   if (isAlreadyLoaded) {
@@ -703,12 +703,12 @@ async function resolveConfigValueSources(
       //   /pages/some-page/+config.js > `export default { someConfig }`
       const interfaceFileWinner = interfaceValueFile ?? interfaceConfigFile
       if (interfaceFileWinner) {
-        const interfaceFilesOverridden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(
+        const interfaceFilesOverriden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(
           (f) => f !== interfaceFileWinner
         )
         // A user-land conflict of interfaceFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy making things unnecessarily ambiguous
-        warnOverriddenConfigValues(interfaceFileWinner, interfaceFilesOverridden, configName)
-        ;[interfaceFileWinner, ...interfaceFilesOverridden].forEach((interfaceFile) => {
+        warnOverridenConfigValues(interfaceFileWinner, interfaceFilesOverriden, configName)
+        ;[interfaceFileWinner, ...interfaceFilesOverriden].forEach((interfaceFile) => {
           add(interfaceFile)
         })
       }
@@ -752,12 +752,12 @@ function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: I
     return filePathAbsoluteUserRootDir.length
   })(interfaceFile1, interfaceFile2)
 }
-function warnOverriddenConfigValues(
+function warnOverridenConfigValues(
   interfaceFileWinner: InterfaceFile,
-  interfaceFilesOverridden: InterfaceFile[],
+  interfaceFilesOverriden: InterfaceFile[],
   configName: string
 ) {
-  interfaceFilesOverridden.forEach((interfaceFileLoser) => {
+  interfaceFilesOverriden.forEach((interfaceFileLoser) => {
     const loserFilePath = interfaceFileLoser.filePath.filePathToShowToUser
     const winnerFilePath = interfaceFileWinner.filePath.filePathToShowToUser
     const confName = pc.cyan(configName)
@@ -791,7 +791,7 @@ async function getConfigValueSource(
     fileExportPathToShowToUser: ['default', configName]
   }
 
-  const isOverridden = configDef.cumulative ? false : !isHighestInheritancePrecedence
+  const isOverriden = configDef.cumulative ? false : !isHighestInheritancePrecedence
 
   // +client.js
   if (configDef._valueIsFilePath) {
@@ -825,7 +825,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: true,
       valueIsDefinedByPlusFile: false,
-      isOverridden,
+      isOverriden,
       definedAtFilePath
     }
     return configValueSource
@@ -850,7 +850,7 @@ async function getConfigValueSource(
         configEnv,
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
-        isOverridden,
+        isOverriden,
         definedAtFilePath: pointerImport
       }
       // Load pointer import
@@ -878,7 +878,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: false,
       valueIsDefinedByPlusFile: false,
-      isOverridden,
+      isOverriden,
       definedAtFilePath: definedAtFilePath_
     }
     return configValueSource
@@ -893,7 +893,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       valueIsDefinedByPlusFile: true,
-      isOverridden,
+      isOverriden,
       definedAtFilePath: {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser:
@@ -1069,11 +1069,11 @@ function applyEffect(
           assertUsage(keys.includes('env'), notSupported)
           assertUsage(keys.length === 1, notSupported)
         }
-        const envOverridden = configTargetDef.env
+        const envOverriden = configTargetDef.env
         const sources = configValueSources[configTargetName]
         sources?.forEach((configValueSource) => {
           // Apply effect
-          configValueSource.configEnv = envOverridden
+          configValueSource.configEnv = envOverriden
         })
       })
     } else {

@@ -46,7 +46,7 @@ function deduceRouteStringFromFilesystemPath(pageId: string, filesystemRoots: Fi
     .filter((dir) => dir !== 'pages' && dir !== 'src' && dir !== 'index')
     .join('/')
 
-  // Handle `/index.page.*` suffix
+  // Hanlde `/index.page.*` suffix
   assert(!filesystemRoute.includes('.page.'))
   assert(!filesystemRoute.endsWith('.'))
   if (filesystemRoute.endsWith('/index')) {

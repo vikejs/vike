@@ -27,12 +27,12 @@ function isFontFallback(asset: PageAsset, earlyHints: EarlyHint[]): boolean {
   if (asset.assetType !== 'font') {
     return false
   }
-  const fontUrlBase = removeFileExtensionAndHash(asset.src)
+  const fontUrlBase = removeFileExtentionAndHash(asset.src)
   return earlyHints.some((hint) => {
-    return hint.assetType === 'font' && removeFileExtensionAndHash(hint.src) === fontUrlBase
+    return hint.assetType === 'font' && removeFileExtentionAndHash(hint.src) === fontUrlBase
   })
 }
-function removeFileExtensionAndHash(assetUrl: string): string {
+function removeFileExtentionAndHash(assetUrl: string): string {
   assert(!assetUrl.includes('\\'))
 
   // The logic below doesn't work for '/assets/chunk-0e184ced.js'

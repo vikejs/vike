@@ -96,7 +96,7 @@ function replaceHistoryState(state: HistoryState, url?: string) {
   window.history.replaceState(state, '', url_)
 }
 function pushHistoryState(state: HistoryState, url: string) {
-  // Vike should call window.history.pushState() (and not the original `pushStateOriginal()`) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls, see https://github.com/vikejs/vike/issues/1582.
+  // Vike should call window.history.pushState() (and not the orignal `pushStateOriginal()`) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls, see https://github.com/vikejs/vike/issues/1582.
   window.history.pushState(state, '', url)
 }
 
