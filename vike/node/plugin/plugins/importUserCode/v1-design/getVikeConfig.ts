@@ -398,7 +398,7 @@ async function loadVikeConfig(
               interfaceFile.filePath.filePathToShowToUser
             )
             if (!isLoadableAtBuildTime(configDef)) return
-            const isAlreadyLoaded = interfacefileIsAlreadyLoaded(interfaceFile)
+            const isAlreadyLoaded = interfaceFileIsAlreadyLoaded(interfaceFile)
             if (isAlreadyLoaded) return
             // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
             assert(!(configName in configDefinitionsBuiltIn))
@@ -539,7 +539,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   )
 }
 
-function interfacefileIsAlreadyLoaded(interfaceFile: InterfaceFile): boolean {
+function interfaceFileIsAlreadyLoaded(interfaceFile: InterfaceFile): boolean {
   const configMapValues = Object.values(interfaceFile.fileExportsByConfigName)
   const isAlreadyLoaded = configMapValues.some((conf) => 'configValue' in conf)
   if (isAlreadyLoaded) {
