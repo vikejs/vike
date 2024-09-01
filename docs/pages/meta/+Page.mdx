@@ -250,7 +250,7 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> This implementation can be improved: the file `/pages/utils.js` is loaded on both the server- and client-side but `getDescription()` is only used by the server-side. This means `getDescription()` unnecessarily bloats the size of your client-side bundles. It would be cleaner to split `/pages/utils.js` in two seperate files: one for the client-side and another one for the server-side. In general, be extra careful in which environment each file is loaded; consider using <Link href="/file-env">`.server.js` and `.client.js`</Link> to ensure the environment of files.
+> This implementation can be improved: the file `/pages/utils.js` is loaded on both the server- and client-side but `getDescription()` is only used by the server-side. This means `getDescription()` unnecessarily bloats the size of your client-side bundles. It would be cleaner to split `/pages/utils.js` in two separate files: one for the client-side and another one for the server-side. In general, be extra careful in which environment each file is loaded; consider using <Link href="/file-env">`.server.js` and `.client.js`</Link> to ensure the environment of files.
 
 
 ## Example: `Layout`
@@ -419,7 +419,7 @@ export default {
         config: false // default value
       },
 
-      // [Optional] Whether config values should be merged (instead of overriden).
+      // [Optional] Whether config values should be merged (instead of overridden).
       cumulative: false, // default value
 
       // [Optional] Function called when the config value is loaded at config-time.
@@ -469,7 +469,7 @@ declare global {
 }
 
 // The following isn't needed in this example, but if you define Vike.Config
-// in a .d.ts file then make sure there is at least one export/import statment.
+// in a .d.ts file then make sure there is at least one export/import statement.
 // Tell TypeScript this file isn't an ambient module:
 export {}
 ```

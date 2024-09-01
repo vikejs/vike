@@ -32,7 +32,7 @@ function RecommendationRouterLibraries({
       </Warning>
       <blockquote>
         <p>
-          We believe routing should be completely owned by the frontend framework. Trying to seperate concerns in that
+          We believe routing should be completely owned by the frontend framework. Trying to separate concerns in that
           regard leads to inherent DX degradations.
         </p>
       </blockquote>

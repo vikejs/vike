@@ -66,7 +66,7 @@ One fundamental feature missing for releasing Vike `1.0.0` is being able to use 
 
 We released a [new package `vike-node`](https://github.com/vikejs/vike-node) for that purpose.
 
-> It's somewhat experimental so expect issues here and there. We may built it directly into Vike (instead of being a seperate package).
+> It's somewhat experimental so expect issues here and there. We may built it directly into Vike (instead of being a separate package).
 
 <Contribution>
   Author: [`nitedani`](https://github.com/nitedani)
@@ -75,7 +75,7 @@ We released a [new package `vike-node`](https://github.com/vikejs/vike-node) for
 
 ## Improved URL handling
 
-Vike exports a new <Link href="/modifyUrl">`modifyUrl()` utiltiy</Link>, which is convenient for internationalization as shown in the example at <Link href="/i18n" />.
+Vike exports a new <Link href="/modifyUrl">`modifyUrl()` utility</Link>, which is convenient for internationalization as shown in the example at <Link href="/i18n" />.
 
 Also, `pageContext.urlParsed` has new properties:
 
@@ -109,7 +109,7 @@ http://localhost:3000/some-base-url/hello/s%C3%A9bastien
 
 The <Link href="/injectScriptsAt">new `injectScriptsAt` setting</Link> allows you to control where Vike injects scripts.
 
-> It was already possible with <Link href="/injectFilter">`injectFilter()`</Link> but only partially: `injectScriptsAt` allows you to inject scripts at the begining of the <Link href="/streaming">HTML stream</Link>. It's also simpler to use than `injectFilter()` and it can be used by Vike extensions.
+> It was already possible with <Link href="/injectFilter">`injectFilter()`</Link> but only partially: `injectScriptsAt` allows you to inject scripts at the beginning of the <Link href="/streaming">HTML stream</Link>. It's also simpler to use than `injectFilter()` and it can be used by Vike extensions.
 
 <Contribution>
   Author: [`phonzammi`](https://github.com/phonzammi)
@@ -118,7 +118,7 @@ The <Link href="/injectScriptsAt">new `injectScriptsAt` setting</Link> allows yo
 
 ## `clientOnly()`
 
-Not only Vue and Solid users, but now also React users can use the <Link href="/clientOnly">`clientOnly()` helper</Link> which has the same functionality as the `<ClientOnly>` wrapper (now depreacted) but with a much improved DX.
+Not only Vue and Solid users, but now also React users can use the <Link href="/clientOnly">`clientOnly()` helper</Link> which has the same functionality as the `<ClientOnly>` wrapper (now deprecated) but with a much improved DX.
 
 <Contribution>
   Author: [`nitedani`](https://github.com/nitedani)

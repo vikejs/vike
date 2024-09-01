@@ -20,7 +20,7 @@ PUBLIC_ENV__SOME_KEY=123
 > For [files not processed by Vite](https://github.com/vikejs/vike/issues/562), you need to manually install [dotenv](https://github.com/motdotla/dotenv) for your `.env` values to also be available in files that aren't processed by Vite.
 
 ```js
-function somehere() {
+function somewhere() {
   // Environment variables prefixed with PUBLIC_ENV__ can be used anywhere: in server-side code
   // as well as in client-side code.
   import.meta.env.PUBLIC_ENV__SOME_KEY
