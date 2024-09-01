@@ -11,6 +11,7 @@ pages/faq/+Page.js             /faq
 
 > You can use a [Route String](/route-string) or [Route Function](route-function) to override the route of a page determined by Filesystem Routing.
 
+> `+` files are explained at <Link href="/config#files" doNotInferSectionTitle />.
 
 ## Parameterized routes
 
@@ -60,17 +61,16 @@ Instead of `(someDir)` you can also use the <Link href="/filesystemRoutingRoot">
 
 ## Crawl
 
-Vike crawls all files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root).
+Vike crawls files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root). Consequently, all your <Link href="/config#files">`+` files</Link> need to live inside `root`.
 
-In other words: all your <Link href="/config#files">`+` files</Link> need to live inside `root`.
-
-> You can use a soft symlink (`$ ln -s`) to make a directory outside of `root` crawlable.
+> You can use symlinks (e.g. `$ ln -s`) to make a directory outside of `root` crawlable.
 
 If you use Git then Vike skips `.gitignore` files.
 
 
 ## See also
 
+ - <Link href="/config#files" doNotInferSectionTitle />
  - <Link href="/routing" />
  - <Link href="/file-structure" />
  - <Link href="/filesystemRoutingRoot" />
