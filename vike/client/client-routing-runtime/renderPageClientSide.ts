@@ -224,7 +224,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const pageContext = await createPageContext(urlOriginal)
     objectAssign(pageContext, {
       isBackwardNavigation,
-      isClientSideNavigation
+      isClientSideNavigation,
+      _previousPageContext: globalObject.previousPageContext
     })
     {
       const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
