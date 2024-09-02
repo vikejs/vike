@@ -603,6 +603,14 @@ const headingsDetached = [
     url: '/releases/2024-08'
   },
   {
+    title: 'September Releases',
+    url: '/releases/2024-09'
+  },
+  {
+    title: 'October Releases',
+    url: '/releases/2024-10'
+  },
+  {
     title: '`<ClientOnly>`',
     url: '/ClientOnly'
   },
