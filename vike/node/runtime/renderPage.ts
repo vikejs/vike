@@ -28,7 +28,8 @@ import {
   addUrlOrigin,
   createUrlFromComponents,
   isUri,
-  type UrlPublic
+  type UrlPublic,
+  getUrlPretty
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -99,15 +100,15 @@ async function renderPage<
   }
 
   const httpRequestId = getRequestId()
-  const { urlOriginal } = pageContextInit
-  logHttpRequest(urlOriginal, httpRequestId)
+  const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
+  logHttpRequest(urlOriginalPretty, httpRequestId)
   globalObject.pendingRequestsCount++
 
   const { pageContextReturn } = await renderPage_wrapper(httpRequestId, () =>
     renderPageAndPrepare(pageContextInit, httpRequestId)
   )
 
-  logHttpResponse(urlOriginal, httpRequestId, pageContextReturn)
+  logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
   globalObject.pendingRequestsCount--
 
   checkType<PageContextAfterRender>(pageContextReturn)
@@ -320,7 +321,7 @@ function logHttpRequest(urlOriginal: string, httpRequestId: number) {
 function getRequestInfoMessage(urlOriginal: string) {
   return `HTTP request: ${prettyUrl(urlOriginal)}`
 }
-function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
+function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
 
   let msg: `HTTP response ${string}` | `HTTP redirect ${string}`
@@ -332,10 +333,10 @@ function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContext
       // - URL doesn't include Base URL
       //   - Can we abort earlier so that `logHttpResponse()` and `logHttpRequest()` aren't even called?
       // - Error loading a Vike config file
-      //   - We should show `HTTP response ${urlOriginal} ERR` instead.
+      //   - We should show `HTTP response ${urlOriginalPretty} ERR` instead.
       //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
       assert(errorWhileRendering === null || errorWhileRendering === undefined)
-      msg = `HTTP response ${prettyUrl(urlOriginal)} ${pc.dim('null')}`
+      msg = `HTTP response ${prettyUrl(urlOriginalPretty)} ${pc.dim('null')}`
       // Erroneous value (it shoud sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
       isNominal = true
     } else {
@@ -352,9 +353,9 @@ function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContext
           .find((header) => header[0] === 'Location')
         assert(headerRedirect)
         const urlRedirect = headerRedirect[1]
-        urlOriginal = urlRedirect
+        urlOriginalPretty = urlRedirect
       }
-      msg = `HTTP ${type} ${prettyUrl(urlOriginal)} ${color(statusCode ?? 'ERR')}`
+      msg = `HTTP ${type} ${prettyUrl(urlOriginalPretty)} ${color(statusCode ?? 'ERR')}`
     }
   }
   logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')

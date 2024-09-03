@@ -5,6 +5,7 @@ export { removeBaseServer }
 export { modifyUrlPathname }
 export { removeUrlOrigin }
 export { addUrlOrigin }
+export { getUrlPretty }
 
 import { assertUrlComponents, createUrlFromComponents, isBaseServer, parseUrl } from './parseUrl.js'
 import { assert } from './assert.js'
@@ -107,5 +108,10 @@ function addUrlOrigin(url: string, origin: string | null): string {
   assert(originCurrent === null)
   assert(origin === null || origin.startsWith('http'))
   const urlModified = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
+  return urlModified
+}
+
+function getUrlPretty(url: string): string {
+  const { urlModified } = removeUrlOrigin(url)
   return urlModified
 }
