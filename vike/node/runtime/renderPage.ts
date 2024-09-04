@@ -43,7 +43,7 @@ import { getGlobalContext, initGlobalContext_renderPage } from './globalContext.
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
   createHttpResponseFavicon404,
-  createHttpResponseObjectRedirect,
+  createHttpResponseRedirect,
   createHttpResponsePageContextJson,
   HttpResponse
 } from './renderPage/createHttpResponseObject.js'
@@ -512,10 +512,7 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseObjectRedirect(
-    { url: urlNormalized, statusCode: 301 },
-    pageContextInit.urlOriginal
-  )
+  const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContextInit.urlOriginal)
   const pageContextHttpResponse = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
@@ -552,7 +549,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
+  const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
   const pageContextHttpResponse = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
@@ -618,7 +615,7 @@ async function handleAbortError(
   if (pageContextAbort._urlRedirect) {
     const pageContextReturn = createPageContext(pageContextInit)
     objectAssign(pageContextReturn, pageContextAbort)
-    const httpResponse = createHttpResponseObjectRedirect(
+    const httpResponse = createHttpResponseRedirect(
       pageContextAbort._urlRedirect,
       (() => {
         const { pathname, searchOriginal } = pageContextNominalPageInit.urlParsed

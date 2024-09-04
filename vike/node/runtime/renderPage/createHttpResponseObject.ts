@@ -1,6 +1,6 @@
-export { createHttpResponseObject }
+export { createHttpResponse }
 export { createHttpResponsePageContextJson }
-export { createHttpResponseObjectRedirect }
+export { createHttpResponseRedirect }
 export { createHttpResponseFavicon404 }
 export type { HttpResponse }
 
@@ -30,7 +30,7 @@ type StatusCode = HttpResponse['statusCode']
 type ContentType = HttpResponse['contentType']
 type ResponseHeaders = HttpResponse['headers']
 
-async function createHttpResponseObject(
+async function createHttpResponse(
   htmlRender: null | HtmlRender,
   renderHook: null | RenderHook,
   pageContext: {
@@ -88,7 +88,7 @@ async function createHttpResponsePageContextJson(pageContextSerialized: string) 
   return httpResponse
 }
 
-function createHttpResponseObjectRedirect(
+function createHttpResponseRedirect(
   { url, statusCode }: UrlRedirect,
   // The URL we assume the redirect to be logically based on
   urlLogical: string
