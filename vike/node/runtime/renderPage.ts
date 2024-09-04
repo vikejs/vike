@@ -92,7 +92,8 @@ async function renderPage<
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertEnv()
   assertIsUrl(pageContextInit.urlOriginal)
-  assertIsNotViteRequest(pageContextInit.urlOriginal)
+  const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
+  assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
 
   if (isIgnoredUrl(pageContextInit.urlOriginal)) {
     const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
@@ -485,9 +486,9 @@ function assertIsUrl(urlOriginal: string) {
     )} which isn't a valid URL.`
   )
 }
-function assertIsNotViteRequest(urlOriginal: string) {
+function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
   const isViteRequest =
-    urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/') || urlOriginal.endsWith('/__vite_ping')
+    urlPathname.startsWith('/@vite/client') || urlPathname.startsWith('/@fs/') || urlPathname.startsWith('/__vite_ping')
   assertUsage(
     !isViteRequest,
     `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
