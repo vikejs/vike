@@ -62,8 +62,7 @@ import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
-  httpRequestsCount: 0,
-  pendingRequestsCount: 0
+  httpRequestsCount: 0
 })
 let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
   pageContextReturn: await ret()
@@ -102,14 +101,12 @@ async function renderPage<
   const httpRequestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, httpRequestId)
-  globalObject.pendingRequestsCount++
 
   const { pageContextReturn } = await renderPage_wrapper(httpRequestId, () =>
     renderPageAndPrepare(pageContextInit, httpRequestId)
   )
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
-  globalObject.pendingRequestsCount--
 
   checkType<PageContextAfterRender>(pageContextReturn)
   return pageContextReturn as any
@@ -315,8 +312,7 @@ async function renderPageAlreadyPrepared(
 }
 
 function logHttpRequest(urlOriginal: string, httpRequestId: number) {
-  const clearErrors = globalObject.pendingRequestsCount === 0
-  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), httpRequestId, 'info', clearErrors)
+  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), httpRequestId, 'info')
 }
 function getRequestInfoMessage(urlOriginal: string) {
   return `HTTP request: ${prettyUrl(urlOriginal)}`

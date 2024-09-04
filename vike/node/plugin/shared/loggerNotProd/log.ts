@@ -1,9 +1,6 @@
 export { logWithViteTag }
 export { logWithVikeTag }
 export { logDirectly }
-export { isFirstLog }
-export { clearScreen }
-export { screenHasErrors }
 export { applyViteSourceMapToStackTrace }
 
 import { assert, projectInfo, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils.js'
@@ -11,14 +8,10 @@ import pc from '@brillout/picocolors'
 import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { getViteDevServer } from '../../../runtime/globalContext.js'
 import type { LogCategory, LogType } from '../loggerNotProd.js'
-import type { ResolvedConfig } from 'vite'
 
 assertIsNotProductionRuntime()
 
 type ProjectTag = `[vike]` | `[vike@${typeof projectInfo.projectVersion}]`
-
-let isFirstLog = true
-let screenHasErrors = false
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
@@ -45,8 +38,6 @@ function logWithViteTag(msg: string, logType: LogType, category: LogCategory | n
 function logDirectly(thing: unknown, logType: LogType) {
   applyViteSourceMapToStackTrace(thing)
 
-  isFirstLog = false
-
   if (logType === 'info') {
     console.log(thing)
     return
@@ -56,7 +47,6 @@ function logDirectly(thing: unknown, logType: LogType) {
     return
   }
   if (logType === 'error') {
-    screenHasErrors = true
     console.error(thing)
     return
   }
@@ -67,12 +57,6 @@ function logDirectly(thing: unknown, logType: LogType) {
   }
 
   assert(false)
-}
-
-function clearScreen(viteConfig: ResolvedConfig) {
-  // We use Vite's logger in order to respect the user's `clearScreen: false` setting
-  viteConfig.logger.clearScreen('error')
-  screenHasErrors = false
 }
 
 function applyViteSourceMapToStackTrace(thing: unknown) {

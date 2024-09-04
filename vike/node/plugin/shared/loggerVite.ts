@@ -1,7 +1,7 @@
 export { improveViteLogs }
 
 import { assert, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
-import { logViteError, logViteAny, clearLogs } from './loggerNotProd.js'
+import { logViteError, logViteAny } from './loggerNotProd.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
@@ -43,8 +43,6 @@ function intercept(logType: LogType, config: ResolvedConfig) {
       return
     }
 
-    // Only allow Vite to clear for its first log. All other clearing is controlled by vike.
-    if (options.clear) clearLogs({ clearIfFirstLog: true })
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
     logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag)
