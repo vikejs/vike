@@ -91,6 +91,7 @@ async function renderPage<
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertEnv()
+  assertIsUrl(pageContextInit.urlOriginal)
   assertIsNotViteRequest(pageContextInit.urlOriginal)
 
   if (isIgnoredUrl(pageContextInit.urlOriginal)) {
@@ -474,7 +475,15 @@ function getRequestId(): number {
 }
 
 function isIgnoredUrl(urlOriginal: string): boolean {
-  return urlOriginal.endsWith('/favicon.ico') || !isUrl(urlOriginal)
+  return urlOriginal.endsWith('/favicon.ico')
+}
+function assertIsUrl(urlOriginal: string) {
+  assertUsage(
+    isUrl(urlOriginal),
+    `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
+      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
+    )} which isn't a valid URL`
+  )
 }
 function assertIsNotViteRequest(urlOriginal: string) {
   const isViteRequest =
