@@ -45,7 +45,8 @@ import {
   createHttpResponseFavicon404,
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
-  HttpResponse
+  HttpResponse,
+  createHttpResponseError
 } from './renderPage/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
@@ -72,7 +73,7 @@ const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
   renderPage_wrapper = wrapper
 }
 
-type PageContextAfterRender = { httpResponse: HttpResponse | null } & Partial<PageContextBuiltInServerInternal>
+type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextBuiltInServerInternal>
 
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -86,8 +87,9 @@ async function renderPage<
 >(
   pageContextInit: PageContextInit
 ): Promise<
-  // Partial because rendering may fail at any user hook. Also Partial when httpResponse !== null because .pageContext.json requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
-  PageContextInit & { httpResponse: HttpResponse | null } & Partial<PageContextServer & PageContextUserAdded>
+  // Partial because rendering may fail at any user hook.
+  // - `.pageContext.json` requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
+  PageContextInit & { httpResponse: HttpResponse } & Partial<PageContextServer & PageContextUserAdded>
 > {
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
@@ -108,6 +110,7 @@ async function renderPage<
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
 
   checkType<PageContextAfterRender>(pageContextReturn)
+  assert(pageContextReturn.httpResponse)
   return pageContextReturn as any
 }
 async function renderPageAndPrepare(
@@ -115,17 +118,21 @@ async function renderPageAndPrepare(
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
   // Invalid config
-  const handleInvalidConfig = () => {
+  const handleInvalidConfig = (err: unknown) => {
     logRuntimeInfo?.(
       pc.bold(pc.red('Error while loading a Vike config file, see error above.')),
       httpRequestId,
       'error'
     )
-    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
-    return pageContextHttpResponseNull
+    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit)
+    return pageContextWithError
   }
   if (isConfigInvalid) {
-    return handleInvalidConfig()
+    if (
+      1 < 2 // Make TS happy
+    ) {
+      return handleInvalidConfig(isConfigInvalid.err)
+    }
   }
 
   // Prepare context
@@ -138,11 +145,11 @@ async function renderPageAndPrepare(
     // initGlobalContext_renderPage() and getRenderContext() don't call any user hooks => err isn't thrown from user code.
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
-    const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
-    return pageContextHttpResponseNull
+    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit)
+    return pageContextWithError
   }
   if (isConfigInvalid) {
-    return handleInvalidConfig()
+    return handleInvalidConfig(isConfigInvalid.err)
   } else {
     // From now on, renderContext.pageConfigs contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
@@ -291,8 +298,8 @@ async function renderPageAlreadyPrepared(
             )} doesn't occur while the error page is being rendered.`,
             { onlyOnce: false }
           )
-          const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
-          return pageContextHttpResponseNull
+          const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextInit)
+          return pageContextHttpWithError
         }
         // `throw redirect()` / `throw render(url)`
         return handled.pageContextReturn
@@ -300,8 +307,8 @@ async function renderPageAlreadyPrepared(
       if (isNewError(errErrorPage, errNominalPage)) {
         logRuntimeError(errErrorPage, httpRequestId)
       }
-      const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
-      return pageContextHttpResponseNull
+      const pageContextWithError = getPageContextHttpResponseError(errNominalPage, pageContextInit)
+      return pageContextWithError
     }
     return pageContextErrorPage
   }
@@ -353,21 +360,17 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
   logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')
 }
 
-function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
-  const pageContextHttpResponseNull = createPageContext(pageContextInit)
-  objectAssign(pageContextHttpResponseNull, {
-    httpResponse: null,
+function getPageContextHttpResponseError(
+  err: unknown,
+  pageContextInit: Record<string, unknown>
+): PageContextAfterRender {
+  const pageContextWithError = createPageContext(pageContextInit)
+  const httpResponse = createHttpResponseError()
+  objectAssign(pageContextWithError, {
+    httpResponse,
     errorWhileRendering: err
   })
-  return pageContextHttpResponseNull
-}
-function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>): PageContextAfterRender {
-  const pageContextHttpResponseNull = createPageContext(pageContextInit)
-  objectAssign(pageContextHttpResponseNull, {
-    httpResponse: null,
-    errorWhileRendering: null
-  })
-  return pageContextHttpResponseNull
+  return pageContextWithError
 }
 function getPageContextHttpResponseFavicon404(pageContextInit: Record<string, unknown>): PageContextAfterRender {
   const pageContext = createPageContext(pageContextInit)

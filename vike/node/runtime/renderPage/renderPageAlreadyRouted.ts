@@ -33,7 +33,7 @@ import type { Hook } from '../../../shared/hooks/getHook.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 
-type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
+type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
 async function renderPageAlreadyRouted<
   PageContext extends {
