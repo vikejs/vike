@@ -31,7 +31,7 @@ type ContentType = HttpResponse['contentType']
 type ResponseHeaders = HttpResponse['headers']
 
 async function createHttpResponse(
-  htmlRender: null | HtmlRender,
+  htmlRender: HtmlRender,
   renderHook: null | RenderHook,
   pageContext: {
     _pageId: null | string
@@ -41,11 +41,7 @@ async function createHttpResponse(
     _pageConfigs: PageConfigRuntime[]
     abortStatusCode?: AbortStatusCode
   }
-): Promise<HttpResponse | null> {
-  if (htmlRender === null) {
-    return null
-  }
-
+): Promise<HttpResponse> {
   let statusCode: StatusCode | undefined = pageContext.abortStatusCode
   if (!statusCode) {
     const isError = !pageContext._pageId || isErrorPage(pageContext._pageId, pageContext._pageConfigs)

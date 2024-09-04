@@ -85,15 +85,10 @@ async function renderPageAlreadyRouted<
 
   const renderHookResult = await executeOnRenderHtmlHook(pageContext)
 
-  if (renderHookResult.htmlRender === null) {
-    objectAssign(pageContext, { httpResponse: null })
-    return pageContext
-  } else {
-    const { htmlRender, renderHook } = renderHookResult
-    const httpResponse = await createHttpResponse(htmlRender, renderHook, pageContext)
-    objectAssign(pageContext, { httpResponse })
-    return pageContext
-  }
+  const { htmlRender, renderHook } = renderHookResult
+  const httpResponse = await createHttpResponse(htmlRender, renderHook, pageContext)
+  objectAssign(pageContext, { httpResponse })
+  return pageContext
 }
 
 async function prerenderPage(
