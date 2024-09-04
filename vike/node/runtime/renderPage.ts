@@ -89,7 +89,7 @@ async function renderPage<
   PageContextInit & { httpResponse: HttpResponse | null } & Partial<PageContextServer & PageContextUserAdded>
 > {
   assertArguments(...arguments)
-  assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
+  assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertEnv()
   assertIsNotViteRequest(pageContextInit.urlOriginal)
 
