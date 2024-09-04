@@ -656,5 +656,5 @@ function checkBaseUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
 }
 
 function prettyUrl(url: string) {
-  return pc.bold(decodeURI(url))
+  return pc.code(decodeURI(url))
 }
