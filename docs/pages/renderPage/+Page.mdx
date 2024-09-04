@@ -59,7 +59,7 @@ async function startServer() {
 
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
-  app.get('*', async (req, res, next) => {
+  app.get('*', async (req, res) => {
     const pageContextInit = {
       // Required: the URL of the page
       urlOriginal: req.originalUrl
@@ -75,7 +75,6 @@ async function startServer() {
     }
 
     const pageContext = await renderPage(pageContextInit)
-    if (pageContext.httpResponse === null) return next()
 
     const { body, statusCode, headers } = pageContext.httpResponse
     headers.forEach(([name, value]) => res.setHeader(name, value))
@@ -97,11 +96,6 @@ automatically injected by Vike.
 For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/streaming" />.
 
 Optionally, you can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 Early Hint`), see <Link href="/preloading#early-hints" />.
-
-The `pageContext.httpResponse` value is `null` if:
-   - An error occurred while rendering the page and no <Link text="error page" href="/error-page" noBreadcrumb /> is defined.
-   - An error occurred while rendering the error page.
-   - Vike skips certain URLs, such as `/favicon.ico` (because browsers automatically make favicon requests).
 
 The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed Vike) anywhere:
  - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)

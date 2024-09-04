@@ -24,22 +24,10 @@ server.addMiddleware({
 
       // If you use an error tracker (e.g. Sentry):
       myErrorTracker.intercept(pageContext.errorWhileRendering)
-
-      // If you use a server middleware that handles errors:
-      if (!pageContext.httpResponse) {
-        // Don't throw if there is a pageContext.httpResponse, otherwise
-        // the error page won't be rendered.
-        throw pageContext.errorWhileRendering
-      }
-
     }
 
-    // pageContext.httpResponse is missing if:
-    //  - There is an error and you didn't define an error page.
-    //  - Your error page has a bug and, therefore, couldn't be rendered.
-    if (!pageContext.httpResponse) return null
-
-    // The HTTP response of the page. This can be the error page.
+    // The HTTP response of the page.
+    // If pageContext.errorWhileRendering is defined then this is usually the error page.
     return pageContext.httpResponse
   }
 })
