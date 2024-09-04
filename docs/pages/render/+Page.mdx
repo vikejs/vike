@@ -30,9 +30,9 @@ export function someHook() {
   - [`403` Forbidden](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403) - Access denied, the user is logged in but isn't allowed.
   - [`404` Not Found](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404) - Page doesn't exist.
   - [`429` Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) - Purposefully not serving the request, because of rate limiting or to protect from [DDoS attacks](https://en.wikipedia.org/wiki/Denial-of-service_attack).
-  - [`500` Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) - App has a bug.
-  - [`503` Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) - Server is overloaded and/or a third-party API isn't responding.
-- The `abortReason` and `abortStatusCode` arguments are made available at `pageContext.abortReason` and `pageContext.abortStatusCode` which is useful for enabling the error page to show a useful error message to the user, see <Link href="/error-page" />.
+  - [`500` Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) - Your client or server has a bug.
+  - [`503` Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) - Server is overloaded, or a third-party API isn't responding.
+- The `abortReason` and `abortStatusCode` arguments are made available at `pageContext.abortReason` and `pageContext.abortStatusCode` which is usually used by the error page to show a useful error message to the user, see <Link href="/error-page" />.
   > If you use TypeScript, you can define the `abortReason` type by using the global interface `Vike.PageContext`, see <Link href="/error-page" />.
 
 While it's most commonly used with [`guard()`](/guard) or [`data()`](/data) you can use it with any hook.

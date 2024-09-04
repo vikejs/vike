@@ -86,9 +86,9 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
  *   `404` Not Found
  *   `410` Gone (use this instead of `404` if the page existed in the past, see https://github.com/vikejs/vike/issues/1097#issuecomment-1695260887)
  *   `429` Too Many Requests (rate limiting)
- *   `500` Internal Server Error (app has a bug)
- *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
- * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
+ *   `500` Internal Server Error (your client or server has a bug)
+ *   `503` Service Unavailable (server is overloaded, or a third-party API isn't responding)
+ * @param abortReason Sets `pageContext.abortReason` which is usually used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortReason?: AbortReason): Error
 /**
