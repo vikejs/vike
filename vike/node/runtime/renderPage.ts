@@ -42,6 +42,7 @@ import {
 import { getGlobalContext, initGlobalContext_renderPage } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
+  createHttpResponseFavicon404,
   createHttpResponseObjectRedirect,
   createHttpResponsePageContextJson,
   HttpResponse
@@ -94,12 +95,7 @@ async function renderPage<
   assertIsUrl(pageContextInit.urlOriginal)
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
-
-  if (isIgnoredUrl(pageContextInit.urlOriginal)) {
-    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
-    checkType<PageContextAfterRender>(pageContextHttpResponseNull)
-    return pageContextHttpResponseNull as any
-  }
+  if (urlPathnameWithBase.endsWith('/favicon.ico')) return getPageContextHttpResponseFavicon404(pageContextInit) as any
 
   const httpRequestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
@@ -376,6 +372,15 @@ function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>
   })
   return pageContextHttpResponseNull
 }
+function getPageContextHttpResponseFavicon404(pageContextInit: Record<string, unknown>): PageContextAfterRender {
+  const pageContext = createPageContext(pageContextInit)
+  const httpResponse = createHttpResponseFavicon404()
+  objectAssign(pageContext, {
+    httpResponse
+  })
+  checkType<PageContextAfterRender>(pageContext)
+  return pageContext
+}
 
 function createPageContext(pageContextInit: Record<string, unknown>) {
   const pageContext = {
@@ -475,9 +480,6 @@ function getRequestId(): number {
   return httpRequestId
 }
 
-function isIgnoredUrl(urlOriginal: string): boolean {
-  return urlOriginal.endsWith('/favicon.ico')
-}
 function assertIsUrl(urlOriginal: string) {
   assertUsage(
     isUrl(urlOriginal),
