@@ -482,7 +482,7 @@ function assertIsUrl(urlOriginal: string) {
     isUrl(urlOriginal),
     `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
       `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
-    )} which isn't a valid URL`
+    )} which isn't a valid URL.`
   )
 }
 function assertIsNotViteRequest(urlOriginal: string) {
@@ -490,7 +490,9 @@ function assertIsNotViteRequest(urlOriginal: string) {
     urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/') || urlOriginal.endsWith('/__vite_ping')
   assertUsage(
     !isViteRequest,
-    `The vike middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* Vike's middleware, see https://vike.dev/renderPage`
+    `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
+      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
+    )} which is unexpected because this URL should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* Vike's middleware, see https://vike.dev/renderPage`
   )
 }
 
