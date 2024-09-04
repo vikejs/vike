@@ -69,6 +69,7 @@ v0.5 breaking changes:
 - Make some hooks cumulative:
   - https://github.com/vikejs/vike/issues/1833
   - https://github.com/vikejs/vike/issues/1834
+- New Base URL setting: https://github.com/vikejs/vike/issues/1794
 
 Docs:
  - Improve /nextjs
