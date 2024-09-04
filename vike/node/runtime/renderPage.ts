@@ -91,6 +91,7 @@ async function renderPage<
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
   assertEnv()
+  assertIsNotViteRequest(pageContextInit.urlOriginal)
 
   if (isIgnoredUrl(pageContextInit.urlOriginal)) {
     const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
@@ -473,16 +474,17 @@ function getRequestId(): number {
 }
 
 function isIgnoredUrl(urlOriginal: string): boolean {
-  const isViteRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
-  assertWarning(
+  return urlOriginal.endsWith('/favicon.ico') || !isUrl(urlOriginal)
+}
+function assertIsNotViteRequest(urlOriginal: string) {
+  const isViteRequest =
+    urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/') || urlOriginal.endsWith('/__vite_ping')
+  assertUsage(
     !isViteRequest,
-    `The vike middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* Vike's middleware, see https://vike.dev/renderPage`,
-    { onlyOnce: true }
-  )
-  return (
-    urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isUrl(urlOriginal) || isViteRequest
+    `The vike middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* Vike's middleware, see https://vike.dev/renderPage`
   )
 }
+
 function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
   const { trailingSlash, disableUrlNormalization, baseServer } = getGlobalContext()
   if (disableUrlNormalization) return null
