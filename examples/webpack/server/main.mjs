@@ -5,16 +5,12 @@ const app = express()
 
 app.use(express.static(`${process.cwd()}/dist/client/`))
 
-app.get('*', async (req, res, next) => {
+app.get('*', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl })
   const { httpResponse } = pageContext
-  if (!httpResponse) {
-    return next()
-  } else {
-    const { body, statusCode, headers } = httpResponse
-    headers.forEach(([name, value]) => res.setHeader(name, value))
-    res.status(statusCode).send(body)
-  }
+  httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+  res.status(httpResponse.statusCode)
+  httpResponse.pipe(res)
 })
 
 app.listen(3000, () => {

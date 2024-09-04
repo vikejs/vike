@@ -31,37 +31,32 @@ async function startServer() {
     app.use(viteDevMiddleware)
   }
 
-  app.get('*', async (req, res, next) => {
+  app.get('*', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }
     const pageContext = await renderPage(pageContextInit)
-    const { httpResponse } = pageContext
-    if (!httpResponse) {
-      return next()
-    } else {
-      const { statusCode, headers, earlyHints } = httpResponse
+    const { statusCode, headers, earlyHints, pipe } = pageContext.httpResponse
 
-      // No JavaScript early hint <=> HTML-only without +client.js
-      {
-        const hasJavaScriptEarlyHint = earlyHints.some((h) => h.assetType === 'script')
-        const htmlOnlyPage = '/html-only'
-        const { urlPathname } = pageContext
-        assert(
-          !hasJavaScriptEarlyHint === [htmlOnlyPage, '/'].includes(urlPathname),
-          `Unexpected early hints for the page ${urlPathname}`
-        )
-        assert(
-          [htmlOnlyPage, '/', '/html-js', '/spa', '/ssr'].includes(urlPathname),
-          'Assertion at server/index.js needs to be updated'
-        )
-      }
-
-      if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
-      headers.forEach(([name, value]) => res.setHeader(name, value))
-      res.status(statusCode)
-      httpResponse.pipe(res)
+    // No JavaScript early hint <=> HTML-only without +client.js
+    {
+      const hasJavaScriptEarlyHint = earlyHints.some((h) => h.assetType === 'script')
+      const htmlOnlyPage = '/html-only'
+      const { urlPathname } = pageContext
+      assert(
+        !hasJavaScriptEarlyHint === [htmlOnlyPage, '/'].includes(urlPathname),
+        `Unexpected early hints for the page ${urlPathname}`
+      )
+      assert(
+        [htmlOnlyPage, '/', '/html-js', '/spa', '/ssr'].includes(urlPathname),
+        'Assertion at server/index.js needs to be updated'
+      )
     }
+
+    if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+    headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(statusCode)
+    pipe(res)
   })
 
   const port = process.env.PORT || 3000

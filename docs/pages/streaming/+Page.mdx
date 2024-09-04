@@ -60,11 +60,10 @@ Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
 
 import { renderPage } from 'vike/server'
 
-app.get("*", async (req, res, next) => {
+app.get("*", async (req, res) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) return next()
   // httpResponse.pipe() works with Node.js Streams as well as Web Streams
   httpResponse.pipe(res)
 })
@@ -85,14 +84,10 @@ async function handleFetchEvent(event) {
   const pageContextInit = { urlOriginal: event.request.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) {
-    return null
-  } else {
-    // httpResponse.getReadableWebStream() only works with Web Streams
-    const readable = httpResponse.getReadableWebStream()
-    const { statusCode: status, headers } = httpResponse
-    return new Response(readable, { headers, status })
-  }
+  // httpResponse.getReadableWebStream() only works with Web Streams
+  const readable = httpResponse.getReadableWebStream()
+  const { statusCode: status, headers } = httpResponse
+  return new Response(readable, { headers, status })
 }
 ```
 

@@ -125,7 +125,7 @@ function reloadVikeConfig(userRootDir: string, outDirRoot: string) {
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
-  wasConfigInvalid = isConfigInvalid
+  wasConfigInvalid = !!isConfigInvalid
   const vikeConfigPromisePrevious = vikeConfigPromise
   try {
     await vikeConfigPromise
@@ -338,7 +338,7 @@ async function loadVikeConfig_withErrorHandling(
   } else {
     assert(ret === undefined)
     assert(err)
-    isConfigInvalid_set(true)
+    isConfigInvalid_set({ err })
     if (!isDev) {
       assert(getViteDevServer() === null)
       throw err

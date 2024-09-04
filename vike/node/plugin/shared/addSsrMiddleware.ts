@@ -50,13 +50,9 @@ function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig, is
       for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
     }
 
-    if (!pageContext.httpResponse) {
-      return next()
-    } else {
-      const { statusCode, headers } = pageContext.httpResponse
-      headers.forEach(([name, value]) => res.setHeader(name, value))
-      res.statusCode = statusCode
-      pageContext.httpResponse.pipe(res)
-    }
+    const { httpResponse } = pageContext
+    httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.statusCode = httpResponse.statusCode
+    httpResponse.pipe(res)
   })
 }
