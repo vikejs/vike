@@ -3,7 +3,7 @@ export { handleErrorWithoutErrorPage }
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getGlobalContext } from '../globalContext.js'
 import { assert, assertWarning, objectAssign } from '../utils.js'
-import { createHttpResponse } from './createHttpResponseObject.js'
+import { createHttpResponse } from './createHttpResponse.js'
 import pc from '@brillout/picocolors'
 import type { GetPageAssets } from './getPageAssets.js'
 import type { PageContextAfterRender } from './renderPageAlreadyRouted.js'

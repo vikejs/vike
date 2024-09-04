@@ -14,7 +14,7 @@ import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAs
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { getGlobalContext } from '../globalContext.js'
-import { createHttpResponse, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponseObject.js'
+import { createHttpResponse, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadUserFilesServerSide,
   PageContext_loadUserFilesServerSide,

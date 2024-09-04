@@ -46,7 +46,7 @@ import {
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
   HttpResponse
-} from './renderPage/createHttpResponseObject.js'
+} from './renderPage/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
