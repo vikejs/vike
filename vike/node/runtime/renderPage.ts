@@ -148,10 +148,7 @@ async function renderPageAndPrepare(
   }
 
   // Check Base URL
-  {
-    const pageContextHttpResponse = checkBaseUrl(pageContextInit, httpRequestId)
-    if (pageContextHttpResponse) return pageContextHttpResponse
-  }
+  assertBaseUrl(pageContextInit)
 
   // Normalize URL
   {
@@ -636,23 +633,17 @@ async function handleAbortError(
   return { pageContextAbort }
 }
 
-function checkBaseUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+function assertBaseUrl(pageContextInit: { urlOriginal: string }) {
   const { baseServer } = getGlobalContext()
   const { urlOriginal } = pageContextInit
   const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
   const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
-  if (!hasBaseServer) {
-    logRuntimeInfo?.(
-      `${getRequestInfoMessage(urlOriginal)} skipped because URL ${prettyUrl(
-        urlOriginal
-      )} doesn't start with Base URL ${prettyUrl(baseServer)} (https://vike.dev/base-url)`,
-      httpRequestId,
-      'info'
-    )
-    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
-    return pageContextHttpResponseNull
-  }
-  return null
+  assertUsage(
+    hasBaseServer,
+    `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
+      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
+    )} which doesn't start with Base URL ${prettyUrl(baseServer)} (https://vike.dev/base-url)`
+  )
 }
 
 function prettyUrl(url: string) {
