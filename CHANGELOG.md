@@ -1,3 +1,30 @@
+## [0.4.194](https://github.com/vikejs/vike/compare/v0.4.193...v0.4.194) (2024-09-04)
+
+
+### Bug Fixes
+
+* add avif mediatype ([#1832](https://github.com/vikejs/vike/issues/1832)) ([38002cb](https://github.com/vikejs/vike/commit/38002cbcbaeef69b3e5cf52e4b288c98c458ca37))
+* always generate an HTTP response `pageContext.httpResponse` ([#1848](https://github.com/vikejs/vike/issues/1848)) ([b45c154](https://github.com/vikejs/vike/commit/b45c1549d2d0ba965bcc7ba7cc10aba24da2579e))
+* disallow onRenderHtml() to return null/undefined ([57a2eba](https://github.com/vikejs/vike/commit/57a2eba378c5ed3762b079b3eef7497d0e844d91))
+* don't skip invalid URL but throw error instead ([2800dff](https://github.com/vikejs/vike/commit/2800dfff4314fabac8dc245d5ca9e7d3b328f619))
+* enforce Base URL instead of showing warning ([8c7c0f4](https://github.com/vikejs/vike/commit/8c7c0f41d3251e84b1c2c85939fe6de9f5373cb7))
+* gracefully handle favicon.ico 404 requests ([ff39218](https://github.com/vikejs/vike/commit/ff3921892ecfb4d5e6bcdffdfc8bad38d4e6e8af))
+* improve eslint exports workaround (fix [#1838](https://github.com/vikejs/vike/issues/1838)) ([c1d490a](https://github.com/vikejs/vike/commit/c1d490a8291b98f0ebf0cd6ba2dd96dd43fc12ed))
+* improve renderPage() validation error messages ([3f4f218](https://github.com/vikejs/vike/commit/3f4f218819dd39d5cc2ae321056197debcbe4967))
+* improve Vite request URL check ([9bb3c2d](https://github.com/vikejs/vike/commit/9bb3c2d08f13446b330bf91b2d40f3155a0678ce))
+* prettify logged URL ([787bd2d](https://github.com/vikejs/vike/commit/787bd2da80f6cbfb6419ae989f6e4c7361cecf08))
+* remove faulty assert() (fix [#1828](https://github.com/vikejs/vike/issues/1828)) ([408f798](https://github.com/vikejs/vike/commit/408f7985ef03176ab36f481ecf17de8dc928476f))
+* remove log clearing ([bb6a6c2](https://github.com/vikejs/vike/commit/bb6a6c227402221fea8a3039a438ec8f53e3cc9e))
+* throw error upon wrong vite setup ([a8b636d](https://github.com/vikejs/vike/commit/a8b636d3469cced7a1b6ec5b6e2803ee01088ac5))
+* update @brillout/vite-plugin-server-entry ([dd850ef](https://github.com/vikejs/vike/commit/dd850efc9f22e589bd948492ea4dfb93860b4f4a))
+
+
+### Features
+
+* [experimental] pageContext._previousPageContext ([91f6e68](https://github.com/vikejs/vike/commit/91f6e68bc2ba90104287e221fa35a796d4ae968b))
+
+
+
 ## [0.4.193](https://github.com/vikejs/vike/compare/v0.4.192...v0.4.193) (2024-08-23)
 
 
