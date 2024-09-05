@@ -1,6 +1,11 @@
 import { UseVikeExtensionUiFramework } from '../../components'
+import { Link, RepoLink, Warning, Advanced } from '@brillout/docpress'
 
-import { Link, RepoLink, Warning } from '@brillout/docpress'
+<Advanced>
+  This page documents how to manually implement render modes yourself (i.e. <Link href="/new#without-vike-react-vue-solid">without using `vike-{react,vue,solid}`</Link>). It's an advanced task that is far from trivial, and we recommend it only if you have a clear reason for doing so. Instead, we recommend using and reading the following:
+  - <Link href="/ssr" />
+  - <Link href="/pre-rendering" />
+</Advanced>
 
 For each page, we can choose a different render mode:
  - SPA

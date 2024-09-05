@@ -1,9 +1,13 @@
 import { UiFrameworkExtension } from '../../components'
-import { Link, RepoLink } from '@brillout/docpress'
+import { Link, RepoLink, Advanced } from '@brillout/docpress'
 
-> Using `meta` is an advanced and powerful technique which we recommend using only for advanced use cases. Consider using the following instead:
-> - <Link href="/extensions" noBreadcrumb={true} /> (which use `meta` under the hood).
-> - The file extensions <Link href="/file-env" noBreadcrumb={true} />.
+<Advanced>
+  Using `meta` is an advanced and powerful technique that requires brain power.
+  We recommend using it only for advanced use cases. Consider using the following instead:
+  - <Link href="/settings">Settings</Link> (some of them, such as <Link href="/ssr">`ssr`</Link>, will correctly use `meta` on your behalf).
+  - <Link href="/extensions" noBreadcrumb={true} /> (they're based on `meta` under the hood).
+  - The file extensions <Link href="/file-env" noBreadcrumb={true} />.
+</Advanced>
 
 The `meta` settings enables you to create:
  - **New settings**.
