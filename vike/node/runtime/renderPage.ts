@@ -359,6 +359,9 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
   }
   logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')
 }
+function prettyUrl(url: string) {
+  return pc.bold(decodeURI(url))
+}
 
 function getPageContextHttpResponseError(
   err: unknown,
@@ -645,10 +648,6 @@ function assertBaseUrl(pageContextInit: { urlOriginal: string }) {
     hasBaseServer,
     `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
       `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
-    )} which doesn't start with Base URL ${prettyUrl(baseServer)} (https://vike.dev/base-url)`
+    )} which doesn't start with Base URL ${pc.code(baseServer)} (https://vike.dev/base-url)`
   )
-}
-
-function prettyUrl(url: string) {
-  return pc.code(decodeURI(url))
 }
