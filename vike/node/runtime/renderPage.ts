@@ -413,6 +413,7 @@ async function renderPageNominal(
     }
   }
   assert(hasProp(pageContext, '_pageId', 'string'))
+  assert(pageContext.errorWhileRendering === null)
 
   // Render
   const pageContextAfterRender = await renderPageAlreadyRouted(pageContext)
