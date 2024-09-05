@@ -1,4 +1,4 @@
-export { createHttpResponse }
+export { createHttpResponsePage }
 export { createHttpResponsePageContextJson }
 export { createHttpResponseError }
 export { createHttpResponseRedirect }
@@ -31,7 +31,7 @@ type StatusCode = HttpResponse['statusCode']
 type ContentType = HttpResponse['contentType']
 type ResponseHeaders = HttpResponse['headers']
 
-async function createHttpResponse(
+async function createHttpResponsePage(
   htmlRender: HtmlRender,
   renderHook: null | RenderHook,
   pageContext: {
@@ -67,11 +67,11 @@ async function createHttpResponse(
     headers.push(['Cache-Control', cacheControl])
   }
 
-  return getHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
+  return createHttpResponse(statusCode, 'text/html;charset=utf-8', headers, htmlRender, earlyHints, renderHook)
 }
 
 function createHttpResponseFavicon404(): HttpResponse {
-  const httpResponse = getHttpResponse(
+  const httpResponse = createHttpResponse(
     404,
     'text/html;charset=utf-8',
     [],
@@ -81,7 +81,7 @@ function createHttpResponseFavicon404(): HttpResponse {
 }
 
 function createHttpResponseError(): HttpResponse {
-  const httpResponse = getHttpResponse(
+  const httpResponse = createHttpResponse(
     500,
     'text/html;charset=utf-8',
     [],
@@ -91,7 +91,7 @@ function createHttpResponseError(): HttpResponse {
 }
 
 async function createHttpResponsePageContextJson(pageContextSerialized: string) {
-  const httpResponse = getHttpResponse(200, 'application/json', [], pageContextSerialized, [], null)
+  const httpResponse = createHttpResponse(200, 'application/json', [], pageContextSerialized, [], null)
   return httpResponse
 }
 
@@ -105,7 +105,7 @@ function createHttpResponseRedirect(
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)
   const headers: ResponseHeaders = [['Location', url]]
-  return getHttpResponse(
+  return createHttpResponse(
     statusCode,
     'text/html;charset=utf-8',
     headers,
@@ -115,7 +115,7 @@ function createHttpResponseRedirect(
   )
 }
 
-function getHttpResponse(
+function createHttpResponse(
   statusCode: StatusCode,
   contentType: ContentType,
   headers: ResponseHeaders,

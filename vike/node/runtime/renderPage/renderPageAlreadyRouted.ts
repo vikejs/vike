@@ -14,7 +14,7 @@ import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAs
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { getGlobalContext } from '../globalContext.js'
-import { createHttpResponse, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
+import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadUserFilesServerSide,
   PageContext_loadUserFilesServerSide,
@@ -86,7 +86,7 @@ async function renderPageAlreadyRouted<
   const renderHookResult = await executeOnRenderHtmlHook(pageContext)
 
   const { htmlRender, renderHook } = renderHookResult
-  const httpResponse = await createHttpResponse(htmlRender, renderHook, pageContext)
+  const httpResponse = await createHttpResponsePage(htmlRender, renderHook, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
