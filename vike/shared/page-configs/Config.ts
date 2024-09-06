@@ -68,6 +68,7 @@ type ConfigNameBuiltIn =
   | 'dataEnv'
   | 'hooksTimeout'
   | 'clientHooks'
+  | 'middleware'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
