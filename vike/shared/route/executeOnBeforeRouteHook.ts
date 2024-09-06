@@ -127,7 +127,7 @@ async function getPageContextFromHook(
 
   if (hasProp(hookReturn.pageContext, 'urlLogical')) {
     assertUsageUrlPathnameAbsolute(
-      // We type-cast to string instead of assertUsage() in order to save client-side KBs
+      // We skip validation and type-cast instead of assertUsage() in order to save client-side KBs
       hookReturn.pageContext.urlLogical as string,
       `${errPrefix} returned ${pc.cyan('{ pageContext: { urlLogical } }')} but ${pc.cyan('urlLogical')}`
     )
