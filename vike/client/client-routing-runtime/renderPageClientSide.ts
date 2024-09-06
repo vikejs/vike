@@ -553,7 +553,11 @@ function getKeepScrollPositionSetting(pageContext: PageContextExports & Record<s
   const c = pageContext.from.configsStandard.keepScrollPosition
   if (!c) return false
   const val = c.value
-  if (val === true) return c.definedAt
+  if (val === true) {
+    const group = c.definedAt
+    assert(group)
+    return group
+  }
   // We skip validation and type-cast instead of assertUsage() in order to save client-side KBs
   return val as any
 }
