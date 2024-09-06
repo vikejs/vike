@@ -46,8 +46,9 @@ const globalObject = getGlobalObject<{
   onRenderClientPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
-  previousPageContext?: { _pageId: string } & PageContextExports
+  previousPageContext?: PreviousPageContext
 }>('renderPageClientSide.ts', { renderCounter: 0 })
+type PreviousPageContext = { _pageId: string } & PageContextExports
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
@@ -71,6 +72,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isUserLandPushStateNavigation,
     isClientSideNavigation = true
   } = renderArgs
+
+  const { previousPageContext } = globalObject
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
   // Note that pageContext.isHydration isn't equivalent to isFirstRender
@@ -98,7 +101,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // onPageTransitionStart()
     if (globalObject.isFirstRenderDone) {
-      const { previousPageContext } = globalObject
       assert(previousPageContext)
       // We use the hook of the previous page in order to be able to call onPageTransitionStart() before fetching the files of the next page.
       // https://github.com/vikejs/vike/issues/1560
@@ -148,8 +150,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
       const isSamePage =
         pageContextFromRoute._pageId &&
-        globalObject.previousPageContext?._pageId &&
-        pageContextFromRoute._pageId === globalObject.previousPageContext._pageId
+        previousPageContext?._pageId &&
+        pageContextFromRoute._pageId === previousPageContext._pageId
       if (isUserLandPushStateNavigation && isSamePage) {
         // Skip's Vike's rendering; let the user handle the navigation
         return
@@ -225,7 +227,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     objectAssign(pageContext, {
       isBackwardNavigation,
       isClientSideNavigation,
-      _previousPageContext: globalObject.previousPageContext
+      _previousPageContext: previousPageContext
     })
     {
       const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
@@ -428,7 +430,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // onPageTransitionEnd()
     if (globalObject.isTransitioning) {
       globalObject.isTransitioning = undefined
-      const { previousPageContext } = globalObject
       assert(previousPageContext)
       assertHook(previousPageContext, 'onPageTransitionEnd')
       const hook = getHook(previousPageContext, 'onPageTransitionEnd')
