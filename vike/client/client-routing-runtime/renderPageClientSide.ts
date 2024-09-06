@@ -383,7 +383,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (isRenderOutdated()) return
     }
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
-    const { previousPageContext } = globalObject
     globalObject.previousPageContext = pageContext
     assert(globalObject.onRenderClientPromise === undefined)
     globalObject.onRenderClientPromise = (async () => {
