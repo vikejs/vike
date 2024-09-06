@@ -143,6 +143,9 @@ function getHtmlTags(
           { onlyOnce: true }
         )
       }
+      if (injectScriptsAt === 'STREAM' && !isStream) {
+        return 'HTML_END'
+      }
       return injectScriptsAt
     }
     if (pageContext._pageContextPromise) {
