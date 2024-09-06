@@ -28,10 +28,6 @@ async function renderPage<PlatformRequest>({
     options.onError?.(pageContext.errorWhileRendering)
   }
 
-  if (!pageContext.httpResponse) {
-    return null
-  }
-
   return pageContext.httpResponse
 }
 
