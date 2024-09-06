@@ -447,9 +447,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     if (!scrollTarget && previousPageContext) {
-      const scrollPrev = getScrollSetting(previousPageContext)
-      const scroll = getScrollSetting(pageContext)
-      if (scroll !== true && scroll !== undefined && scroll === scrollPrev) {
+      const keepScrollPositionPrev = getKeepScrollPositionSetting(previousPageContext)
+      const keepScrollPositionNext = getKeepScrollPositionSetting(pageContext)
+      if (keepScrollPositionNext === true && keepScrollPositionNext === keepScrollPositionPrev) {
         scrollTarget = { preserveScroll: true }
       }
     }
@@ -549,7 +549,8 @@ function getRenderCount(): number {
   return globalObject.renderCounter
 }
 
-function getScrollSetting(pageContext: PageContextExports & Record<string, unknown>) {
-  const scroll = pageContext.config.scroll as undefined | boolean | string
-  return scroll
+function getKeepScrollPositionSetting(pageContext: PageContextExports & Record<string, unknown>) {
+  // We skip validation and type-cast instead of assertUsage() in order to save client-side KBs
+  const keepScrollPosition = pageContext.config.keepScrollPosition as undefined | boolean | string
+  return keepScrollPosition
 }

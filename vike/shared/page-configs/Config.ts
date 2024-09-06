@@ -441,7 +441,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/scroll
    */
-  scroll?: boolean | string
+  keepScrollPosition?: boolean | string
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`

@@ -210,7 +210,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   require: {
     env: { config: true }
   },
-  scroll: {
+  keepScrollPosition: {
     env: { client: true }
   }
 }

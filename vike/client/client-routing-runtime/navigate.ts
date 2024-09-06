@@ -3,7 +3,7 @@ export { reload }
 
 import { renderPageClientSide } from './renderPageClientSide.js'
 import type { ScrollTarget } from './setScrollPosition.js'
-import { assertClientRouting, assertWarning, assertUsageUrlPathname, getCurrentUrl } from './utils.js'
+import { assertClientRouting, assertUsageUrlPathname, getCurrentUrl } from './utils.js'
 
 assertClientRouting()
 
@@ -18,24 +18,12 @@ assertClientRouting()
 async function navigate(
   url: string,
   {
-    keepScrollPosition,
-    overwriteLastHistoryEntry = false,
-    scroll
-  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean; scroll?: boolean } = {}
+    keepScrollPosition = false,
+    overwriteLastHistoryEntry = false
+  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean } = {}
 ): Promise<void> {
   assertUsageUrlPathname(url, '[navigate(url)] url')
-  // TODO/next-major-release: remove
-  assertWarning(
-    keepScrollPosition,
-    'argument keepScrollPosition of navigate() is deprecated in favor of argument scroll',
-    { onlyOnce: true, showStackTrace: true }
-  )
-  let scrollTarget: ScrollTarget
-  for (const v of [scroll, keepScrollPosition]) {
-    if (v === undefined) continue
-    scrollTarget = { preserveScroll: v }
-    break
-  }
+  const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition }
   await renderPageClientSide({
     scrollTarget,
     urlOriginal: url,
