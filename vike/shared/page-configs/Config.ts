@@ -439,7 +439,7 @@ type ConfigBuiltIn = {
 
   /** Whether the page scrolls to the top when navigating to a new page.
    *
-   * https://vike.dev/scroll
+   * https://vike.dev/keepScrollPosition
    */
   keepScrollPosition?: boolean | string
 }
