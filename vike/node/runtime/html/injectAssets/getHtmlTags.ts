@@ -38,7 +38,7 @@ type InjectFilterEntry = {
   inject: PreloadFilterInject
 }
 
-type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
+type Position = 'HTML_BEGIN' | 'HTML_END' | 'HTML_STREAM'
 type HtmlTag = {
   htmlTag: string | (() => string)
   position: Position
@@ -61,7 +61,7 @@ function getHtmlTags(
       if (asset.isEntry && asset.assetType === 'script') {
         // We could allow the user to change the position of <script> but we currently don't:
         //  - Because of mergeScriptEntries()
-        //  - We would need to add STREAM to to PreloadFilterInject
+        //  - We would need to add HTML_STREAM to to PreloadFilterInject
         // To suppor this, we should add the JavaScript entry to injectFilterEntries (with an `src` value of `null`)
         return false
       }
@@ -145,7 +145,7 @@ function getHtmlTags(
           { onlyOnce: true }
         )
       }
-      if (injectScriptsAt === 'STREAM' && !isStream) {
+      if (injectScriptsAt === 'HTML_STREAM' && !isStream) {
         return positionJavaScriptDefault
       }
       return injectScriptsAt
@@ -158,7 +158,7 @@ function getHtmlTags(
     }
     if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
       // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary.
-      return 'STREAM'
+      return 'HTML_STREAM'
     }
     return positionJavaScriptDefault
   })()
@@ -197,7 +197,7 @@ function getHtmlTags(
       assert(!asset.isEntry) // Users cannot re-order JavaScript entries, see creation of injectFilterEntries
       const htmlTag = inferPreloadTag(asset)
       if (!asset.inject) return
-      // Ideally, instead of this conditional ternary operator, we should add STREAM to PreloadFilterInject (or a better fitting name such as HTML_STREAM)
+      // Ideally, instead of this conditional ternary operator, we should add HTML_STREAM to PreloadFilterInject
       const position = asset.inject === 'HTML_END' ? positionJavaScriptEntry : asset.inject
       htmlTags.push({ htmlTag, position })
     })
@@ -287,7 +287,7 @@ function getInjectScriptsAt(pageId: string, pageConfigs: PageConfigRuntime[]): n
     injectScriptsAt === null ||
       injectScriptsAt === 'HTML_BEGIN' ||
       injectScriptsAt === 'HTML_END' ||
-      injectScriptsAt === 'STREAM',
+      injectScriptsAt === 'HTML_STREAM',
     `${configDefinedAt} has an invalid value`
   )
   return injectScriptsAt
