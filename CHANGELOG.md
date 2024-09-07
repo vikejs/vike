@@ -1,3 +1,16 @@
+## [0.4.195](https://github.com/vikejs/vike/compare/v0.4.194...v0.4.195) (2024-09-07)
+
+
+### Bug Fixes
+
+* correctly use onPageTransition{Start,End} of previous page ([b39160a](https://github.com/vikejs/vike/commit/b39160af6103c77c9894913b8c972864e88e339b))
+* fix URL color regression ([fa12443](https://github.com/vikejs/vike/commit/fa1244309b68f08dadde87da86a961b5d084c7bc))
+* improve `injectScriptsAt` condition handling ([#1857](https://github.com/vikejs/vike/issues/1857)) ([8c85511](https://github.com/vikejs/vike/commit/8c85511c04e3f6e43bac747dcea2cfcfb4c09d24))
+* improve assertion ([#1852](https://github.com/vikejs/vike/issues/1852)) ([0acb855](https://github.com/vikejs/vike/commit/0acb855ea1235ef35164e93e774163d8166528b1))
+* rename STREAM to HTML_STREAM ([#1859](https://github.com/vikejs/vike/issues/1859)) ([483b017](https://github.com/vikejs/vike/commit/483b01731867bcd6ea6a5bc4812ecf10fa7356b5))
+
+
+
 ## [0.4.194](https://github.com/vikejs/vike/compare/v0.4.193...v0.4.194) (2024-09-04)
 
 
