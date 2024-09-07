@@ -437,7 +437,7 @@ type ConfigBuiltIn = {
    */
   require?: Record<string, string>
 
-  /** Whether the page scrolls to the top when navigating to a new page.
+  /** Whether the page scrolls to the top upon page navigation.
    *
    * https://vike.dev/keepScrollPosition
    */

@@ -1,0 +1,35 @@
+import { Link } from '@brillout/docpress'
+
+Type: `boolean`  
+Default value: `false`  
+
+```js
+// pages/product/@id/+config.js
+
+export default {
+  // Don't scroll to top when navigating between the pages defined at pages/product/@id/**
+  keepScrollPosition: true
+}
+```
+
+```bash
+pages/product/@id/+config.js
+# The scroll position is preserverd when navigating between these two pages:
+pages/product/@id/pricing/+Page.js
+pages/product/@id/reviews/+Page.js
+```
+
+By default, the page is scrolled to the top upon page navigation. But if you set `keepScrollPosition` to `true` then the page's scroll position is preserved instead.
+
+It's commonly used for nested layouts such as tabs, see <Link href="/Layout#nested-layouts" />.
+
+You can also control whether the scroll position is preserved on a link-by-link basis, see <Link href="/clientRouting#settings">`<a href="/some-url" keep-scroll-position />`</Link>.
+
+> There is an experimental feature for preserving the scroll position between any arbitrary group of pages, see [#1854 `keepScrollPosition` between any arbitrary group of pages](https://github.com/vikejs/vike/issues/1854).
+
+## See also
+
+
+- <Link href="/Layout#nested-layouts" />
+- <Link href="/clientRouting#settings" />
+- <Link href="/navigate#options" />
