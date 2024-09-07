@@ -45,7 +45,7 @@ async function injectHtmlTagsToString(
   let htmlString = htmlPartsToString(htmlParts, pageAssets)
   htmlString = injectToHtmlBegin(htmlString, htmlTags)
   htmlString = injectToHtmlEnd(htmlString, htmlTags)
-  assert(htmlTags.filter((snippet) => snippet.position === 'STREAM').length === 0)
+  assert(htmlTags.filter((snippet) => snippet.position === 'HTML_STREAM').length === 0)
   return htmlString
 }
 
@@ -81,7 +81,7 @@ function injectHtmlTagsToStream(
     // React has its own stream injection mechanism, see injectHtmlTagsUsingStream()
     if (streamFromReactStreamingPackage) return null
     assert(htmlTags)
-    const tags = htmlTags.filter((h) => h.position === 'STREAM')
+    const tags = htmlTags.filter((h) => h.position === 'HTML_STREAM')
     if (tags.length === 0) return null
     const htmlFragment = joinHtmlTags(tags)
     return htmlFragment
