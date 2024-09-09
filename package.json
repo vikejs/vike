@@ -37,6 +37,7 @@
     "@biomejs/biome": "^1.5.3",
     "@brillout/test-e2e": "^0.5.33",
     "@brillout/test-types": "^0.1.13",
+    "playwright": "^1.45.0",
     "prettier": "^3.2.5",
     "vitest": "^2.0.5"
   },

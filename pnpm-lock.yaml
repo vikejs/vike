@@ -20,6 +20,9 @@ importers:
       '@brillout/test-types':
         specifier: ^0.1.13
         version: 0.1.14(typescript@5.5.4)
+      playwright:
+        specifier: ^1.45.0
+        version: 1.47.0
       prettier:
         specifier: ^3.2.5
         version: 3.3.0
@@ -1668,6 +1671,9 @@ importers:
       '@types/resolve':
         specifier: ^1.20.6
         version: 1.20.6
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
       '@types/source-map-support':
         specifier: ^0.5.10
         version: 0.5.10
@@ -4520,6 +4526,11 @@ packages:
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -5835,6 +5846,16 @@ packages:
 
   playwright-core@1.45.0:
     resolution: {integrity: sha512-lZmHlFQ0VYSpAs43dRq1/nJ9G/6SiTI7VPqidld9TDefL9tX87bTKExWZZUF5PeRyqtXqd8fQi2qmfIedkwsNQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright-core@1.47.0:
+    resolution: {integrity: sha512-1DyHT8OqkcfCkYUD9zzUTfg7EfTd+6a8MkD/NWOvjo0u/SCNd5YmY/lJwFvUZOxJbWNds+ei7ic2+R/cRz/PDg==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.47.0:
+    resolution: {integrity: sha512-jOWiRq2pdNAX/mwLiwFYnPHpEZ4rM+fRSQpRHwEwZlP2PUANvL3+aJOF/bvISMhFD30rqMxUB4RJx9aQbfh4Ww==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -10218,6 +10239,9 @@ snapshots:
 
   fs.realpath@1.0.0: {}
 
+  fsevents@2.3.2:
+    optional: true
+
   fsevents@2.3.3:
     optional: true
 
@@ -12008,6 +12032,14 @@ snapshots:
       playwright-core: 1.45.0
 
   playwright-core@1.45.0: {}
+
+  playwright-core@1.47.0: {}
+
+  playwright@1.47.0:
+    dependencies:
+      playwright-core: 1.47.0
+    optionalDependencies:
+      fsevents: 2.3.2
 
   pngjs@6.0.0: {}
 
