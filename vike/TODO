@@ -70,6 +70,7 @@ v0.5 breaking changes:
   - https://github.com/vikejs/vike/issues/1833
   - https://github.com/vikejs/vike/issues/1834
 - New Base URL setting: https://github.com/vikejs/vike/issues/1794
+- Clean all import paths, e.g. `import { navigate } from 'vike/navigate'`
 
 Docs:
  - Improve /nextjs
