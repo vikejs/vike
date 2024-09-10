@@ -165,7 +165,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   meta: {
     env: { config: true }
   },
-  clientEntryLoaded: {
+  isClientRuntimeLoaded: {
     env: { server: true, client: true },
     eager: true,
     _computed: (configValueSources): boolean => {
