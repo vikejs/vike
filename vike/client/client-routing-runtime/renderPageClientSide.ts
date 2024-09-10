@@ -338,6 +338,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       _pageId: errorPageId
     })
 
+    const isClientRoutable = await isClientSideRoutable(pageContext._pageId, pageContext)
+    if (isRenderOutdated()) return
+    if (!isClientRoutable) {
+      redirectHard(urlOriginal)
+      return
+    }
+
     try {
       objectAssign(
         pageContext,
