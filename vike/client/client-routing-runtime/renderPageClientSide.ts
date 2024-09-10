@@ -136,17 +136,20 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
+
       if (!pageContextFromRoute._pageId) {
         await renderErrorPage({ is404: true })
         return
       }
+      assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
+
       const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
       if (isRenderOutdated()) return
       if (!isClientRoutable) {
         redirectHard(urlOriginal)
         return
       }
-      assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
+
       const isSamePage =
         pageContextFromRoute._pageId &&
         previousPageContext?._pageId &&
@@ -155,6 +158,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // Skip's Vike's rendering; let the user handle the navigation
         return
       }
+
       pageContextRouted = pageContextFromRoute
     }
     assert(!('urlOriginal' in pageContextRouted))
@@ -264,12 +268,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     const pageContext = await getPageContextBegin()
-    if (args.is404) objectAssign(pageContext, { is404: true })
     if (isRenderOutdated()) return
 
-    if (args.pageContextError) {
-      objectAssign(pageContext, args.pageContextError)
-    }
+    if (args.is404) objectAssign(pageContext, { is404: true })
+    if (args.pageContextError) objectAssign(pageContext, args.pageContextError)
 
     if ('err' in args) {
       const { err } = args
