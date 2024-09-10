@@ -165,6 +165,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   meta: {
     env: { config: true }
   },
+  // Whether the page loads:
+  //  - Vike's client runtime
+  //  - User's client hooks
+  // In other words, whether the page is "HTML-only" (https://vike.dev/render-modes). HTML-only pages shouldn't load the client runtime nor client hooks.
   isClientRuntimeLoaded: {
     env: { server: true, client: true },
     eager: true,
