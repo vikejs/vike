@@ -138,7 +138,14 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       if (isRenderOutdated()) return
 
       if (!pageContextFromRoute._pageId) {
+        /*
+        // We don't use the client router to render the 404 page:
+        //  - So that the +redirects setting (https://vike.dev/redirects) can be applied.
+        //  - So that server-side error tracking can track 404 links?
+        // Failed CI: https://github.com/vikejs/vike/pull/1871
         await renderErrorPage({ is404: true })
+        */
+        redirectHard(urlOriginal)
         return
       }
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
