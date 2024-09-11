@@ -1,8 +1,11 @@
-[Cloudflare Workers](https://workers.cloudflare.com/) with:
+Example of using [Cloudflare Workers](https://workers.cloudflare.com/) with:
  - Vite
  - Vike
  - Vue
  - HTML streaming
+
+> [!NOTE]
+> For creating a new Vike app, we recommend using [Bati](https://batijs.dev) instead of copying this example. Because this example uses a custom Vue integration instead of using `vike-vue` which [we generally don't recommend](https://vike.dev/new#without-vike-react-vue-solid).
 
 
 ## Docs
