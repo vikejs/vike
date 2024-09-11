@@ -1650,8 +1650,8 @@ importers:
         specifier: ^0.5.13
         version: 0.5.13
       '@brillout/picocolors':
-        specifier: ^1.0.14
-        version: 1.0.14
+        specifier: ^1.0.15
+        version: 1.0.15
       '@brillout/require-shim':
         specifier: ^0.1.2
         version: 0.1.2
@@ -1930,6 +1930,9 @@ packages:
 
   '@brillout/picocolors@1.0.14':
     resolution: {integrity: sha512-XhyZY3/FUh56mDuLIjv5kN9qy+oQj7A/d2uQ6cJJ4uVv55+velua3abcrM5WIvs2RHZGA3EE7S9FWo+TjF10ew==}
+
+  '@brillout/picocolors@1.0.15':
+    resolution: {integrity: sha512-VrgvPtfnKP/i8kxCAyQVd0DWg6xU8OZJndbLf/lrywd96UdMhnGL/PK42HhHhhwkDSkaiQU+zc+OPWpvqOe4Cg==}
 
   '@brillout/release-me@0.4.0':
     resolution: {integrity: sha512-V4YwITguHK3zOy9B4606lc9PQiFDp3p3Ifeq4KF7V8o9fs7OmcrfTWBE0EWFtiLhG2JeKb2RzM0t6Y4tLgXd6w==}
@@ -7372,9 +7375,11 @@ snapshots:
 
   '@brillout/picocolors@1.0.14': {}
 
+  '@brillout/picocolors@1.0.15': {}
+
   '@brillout/release-me@0.4.0':
     dependencies:
-      '@brillout/picocolors': 1.0.14
+      '@brillout/picocolors': 1.0.15
       commander: 11.1.0
       conventional-changelog: 5.1.0
       execa: 5.1.1
@@ -12282,7 +12287,7 @@ snapshots:
     dependencies:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.13
-      '@brillout/picocolors': 1.0.14
+      '@brillout/picocolors': 1.0.15
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
