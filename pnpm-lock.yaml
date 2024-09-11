@@ -759,39 +759,6 @@ importers:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
 
-  examples/vike-react:
-    dependencies:
-      '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.3
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.0
-      '@vitejs/plugin-react':
-        specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-      typescript:
-        specifier: ^5.5.4
-        version: 5.5.4
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vike-react:
-        specifier: ^0.5.2
-        version: 0.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)
-      vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
-
   examples/vue-full:
     dependencies:
       '@types/node':
@@ -1580,6 +1547,39 @@ importers:
       vue:
         specifier: ^3.2.37
         version: 3.4.27(typescript@5.5.4)
+
+  test/vike-react:
+    dependencies:
+      '@types/react':
+        specifier: ^18.3.3
+        version: 18.3.3
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.0
+      '@vitejs/plugin-react':
+        specifier: ^4.3.1
+        version: 4.3.1(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      typescript:
+        specifier: ^5.5.4
+        version: 5.5.4
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vike-react:
+        specifier: ^0.5.2
+        version: 0.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)
+      vite:
+        specifier: ^5.4.0
+        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
 
   test/webpack:
     dependencies:
