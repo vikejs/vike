@@ -252,8 +252,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.6.19
-        version: 0.6.19(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(typescript@5.5.3)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+        specifier: ^0.6.20
+        version: 0.6.20(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(typescript@5.5.3)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
       '@types/node':
         specifier: ^20.11.16
         version: 20.13.0
@@ -1865,8 +1865,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.6.19':
-    resolution: {integrity: sha512-TfxV818lA0YaoERFPR8YQzRu8MMBqxkYPpcJ7MN5Inrsev674ac5sOqHjWSpeSm+T8xOQD9TB/pA3EorQMgQMA==}
+  '@brillout/docpress@0.6.20':
+    resolution: {integrity: sha512-bdTxBHu7Hap/LDeYArnYA/yIKZ/KkEddTxg5gOflbH9ervObW9yJagxVPiQ1fuNrRmBUCdslaYTPBDroYQ5VyA==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -7248,7 +7248,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.7.3':
     optional: true
 
-  '@brillout/docpress@0.6.19(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(typescript@5.5.3)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
+  '@brillout/docpress@0.6.20(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(typescript@5.5.3)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
     dependencies:
       '@brillout/picocolors': 1.0.14
       '@mdx-js/mdx': 3.0.1
