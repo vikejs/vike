@@ -792,27 +792,6 @@ importers:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
 
-  examples/vike-react-simple:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^4.2.1
-        version: 4.3.0(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vike-react-simple:
-        specifier: ^0.2.0
-        version: 0.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike)
-      vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
-
   examples/vue-full:
     dependencies:
       '@types/node':
@@ -6748,13 +6727,6 @@ packages:
 
   vike-contributors@0.0.9:
     resolution: {integrity: sha512-uOvGIv5XZZ7Gm9BdQty/K2f22641+ZTBH1Ccq7Qh/uvH2gI+SA8npSSS6zwdVlSWFsvecZqSn45AYKrAYSIMNg==}
-
-  vike-react-simple@0.2.0:
-    resolution: {integrity: sha512-A87keGdPDswMqTvB3aGmyiYjh3VjC467t53LiBORiYUtaiKLNXzAQpm36QxlVjyiZrs8/QcVYymcOg84ZGihMg==}
-    peerDependencies:
-      react: 18.x.x
-      react-dom: 18.x.x
-      vike: link:/home/rom/code/vike/vike/
 
   vike-react@0.4.16:
     resolution: {integrity: sha512-lawyL8HHjVgDNwPRp21qsmOLHokGdjElm6zgKaVg0ul5Dcv6JxglaTfqq5P8NU6V8MW4vYd7WqxSpv64iscu4Q==}
@@ -13099,12 +13071,6 @@ snapshots:
       vfile-message: 4.0.2
 
   vike-contributors@0.0.9: {}
-
-  vike-react-simple@0.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike):
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      vike: link:vike
 
   vike-react@0.4.16(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0)):
     dependencies:
