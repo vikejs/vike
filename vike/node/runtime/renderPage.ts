@@ -62,6 +62,8 @@ import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErro
 import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
+import type { PageFile } from '../../shared/getPageFiles.js'
+import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
@@ -124,7 +126,7 @@ async function renderPageAndPrepare(
       httpRequestId,
       'error'
     )
-    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit)
+    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
     return pageContextWithError
   }
   if (isConfigInvalid) {
@@ -145,7 +147,7 @@ async function renderPageAndPrepare(
     // initGlobalContext_renderPage() and getRenderContext() don't call any user hooks => err isn't thrown from user code.
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
-    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit)
+    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
     return pageContextWithError
   }
   if (isConfigInvalid) {
@@ -298,7 +300,11 @@ async function renderPageAlreadyPrepared(
             )} doesn't occur while the error page is being rendered.`,
             { onlyOnce: false }
           )
-          const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextInit)
+          const pageContextHttpWithError = getPageContextHttpResponseError(
+            errNominalPage,
+            pageContextInit,
+            pageContextErrorPageInit
+          )
           return pageContextHttpWithError
         }
         // `throw redirect()` / `throw render(url)`
@@ -307,7 +313,11 @@ async function renderPageAlreadyPrepared(
       if (isNewError(errErrorPage, errNominalPage)) {
         logRuntimeError(errErrorPage, httpRequestId)
       }
-      const pageContextWithError = getPageContextHttpResponseError(errNominalPage, pageContextInit)
+      const pageContextWithError = getPageContextHttpResponseError(
+        errNominalPage,
+        pageContextInit,
+        pageContextErrorPageInit
+      )
       return pageContextWithError
     }
     return pageContextErrorPage
@@ -365,10 +375,14 @@ function prettyUrl(url: string) {
 
 function getPageContextHttpResponseError(
   err: unknown,
-  pageContextInit: Record<string, unknown>
+  pageContextInit: Record<string, unknown>,
+  pageContext: null | {
+    _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfigRuntime[]
+  }
 ): PageContextAfterRender {
   const pageContextWithError = createPageContext(pageContextInit)
-  const httpResponse = createHttpResponseError()
+  const httpResponse = createHttpResponseError(pageContext)
   objectAssign(pageContextWithError, {
     httpResponse,
     errorWhileRendering: err
