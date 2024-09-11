@@ -83,8 +83,8 @@ function Movies() {
 Inside components, you can also use `<Config>` and `<Head>`:
 
 ```jsx
-import { Config } from 'vike-react/Config' // or vike-solid
-import { Head } from 'vike-react/Head' // or vike-solid
+import { Config } from 'vike-react/Config' // or vike-vue / vike-solid
+import { Head } from 'vike-react/Head' // or vike-vue / vike-solid
 
 function Movies() {
   // Fetch data
@@ -104,8 +104,6 @@ function Movies() {
   )
 }
 ```
-
-> It's currently only implemented by `vike-react` and `vike-solid`. Contribution welcome [for `vike-vue`](https://github.com/vikejs/vike-vue/issues/175).
 
 > Both achieve the same:
 > - `<Head><something/></Head>`
