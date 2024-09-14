@@ -38,7 +38,7 @@ function Page() {
                 fontSize: '8.8em',
                 display: 'inline-block',
                 verticalAlign: 'middle',
-                fontWeight: 500,
+                fontWeight: 530,
                 lineHeight: '1.1em'
               }}
             >
