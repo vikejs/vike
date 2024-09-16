@@ -5,6 +5,10 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached = [
   {
+    title: 'HTML Streaming',
+    url: '/streaming'
+  },
+  {
     title: 'Banner',
     url: '/banner'
   },
@@ -99,10 +103,6 @@ const headingsDetached = [
   {
     title: 'HTML Streaming',
     url: '/html-streaming'
-  },
-  {
-    title: '`stream`',
-    url: '/stream'
   },
   {
     title: 'Preloading',

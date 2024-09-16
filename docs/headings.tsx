@@ -148,11 +148,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'HTML Streaming',
-    url: '/streaming'
-  },
-  {
-    level: 2,
     title: 'API Routes',
     url: '/api-routes'
   },
@@ -823,6 +818,11 @@ const headings = [
     level: 2,
     title: '`ssr`',
     url: '/ssr'
+  },
+  {
+    level: 2,
+    title: '`stream`',
+    url: '/stream'
   },
   {
     level: 2,

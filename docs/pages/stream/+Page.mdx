@@ -6,7 +6,9 @@ Default value: `false`. (Or `true` if using a <Link href="/extensions">Vike exte
 Requires: <Link href="/ssr">`ssr: true`</Link>.
 <ImplementedBy>the `stream` setting</ImplementedBy>
 
-Setting to disable/enable <Link href="/streaming">HTML Streaming</Link>.
+Disable/enable HTML Streaming.
+
+> **What is HTML Streaming?** If you're unfamiliar with HTML streaming then check out [Dan Abramov's explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37). Although it explains it in the context of React, we recommend reading it even if you use a UI framework other than React.
 
 Disable for all your pages:
 
@@ -40,16 +42,16 @@ For an improved file and config organization, you can consider using a <Link hre
 
 ## Without `vike-{react,vue,solid}`
 
-In case you don't use a <UiFrameworkExtension />, you can implement the `stream` setting yourself by using <Link href="/meta">meta</Link>.
-
-Examples:
-
- - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
- - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
- - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
+In case you don't use a <UiFrameworkExtension />, you can:
+ - Integrate HTML streaming yourself, see <Link href="/streaming" />.
+ - Implement the `stream` setting yourself by using <Link href="/meta">meta</Link>. Examples:
+   - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
+   - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
+   - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
 
 
 ## See also
 
-- <Link href="/streaming" />
+- [Dan Abramov's explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37)
 - <Link href="/ssr" />
+- <Link href="/streaming" />
