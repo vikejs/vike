@@ -103,6 +103,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   globalObject.firstRenderStartPromiseResolve()
+  if (isRenderOutdated()) return
 
   await renderPageNominal()
 
