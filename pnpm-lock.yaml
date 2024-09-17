@@ -1687,8 +1687,8 @@ importers:
         specifier: ^1.5.3
         version: 1.7.3
       '@brillout/release-me':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.4.2
+        version: 0.4.2
       '@types/estree':
         specifier: ^1.0.5
         version: 1.0.5
@@ -1934,8 +1934,8 @@ packages:
   '@brillout/picocolors@1.0.15':
     resolution: {integrity: sha512-VrgvPtfnKP/i8kxCAyQVd0DWg6xU8OZJndbLf/lrywd96UdMhnGL/PK42HhHhhwkDSkaiQU+zc+OPWpvqOe4Cg==}
 
-  '@brillout/release-me@0.4.0':
-    resolution: {integrity: sha512-V4YwITguHK3zOy9B4606lc9PQiFDp3p3Ifeq4KF7V8o9fs7OmcrfTWBE0EWFtiLhG2JeKb2RzM0t6Y4tLgXd6w==}
+  '@brillout/release-me@0.4.2':
+    resolution: {integrity: sha512-bPXYKz7uLTs9OWoPzi4Jq9gV59RY8JwfaVw8E0o0Wf1lrO5kAxKGzYCi84Oy/NhZ31ytk7M955V3/YijQ2Ijwg==}
     hasBin: true
 
   '@brillout/require-shim@0.1.2':
@@ -7377,7 +7377,7 @@ snapshots:
 
   '@brillout/picocolors@1.0.15': {}
 
-  '@brillout/release-me@0.4.0':
+  '@brillout/release-me@0.4.2':
     dependencies:
       '@brillout/picocolors': 1.0.15
       commander: 11.1.0

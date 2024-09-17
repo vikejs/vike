@@ -225,7 +225,7 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",
-    "@brillout/release-me": "^0.4.0",
+    "@brillout/release-me": "^0.4.2",
     "@types/estree": "^1.0.5",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
