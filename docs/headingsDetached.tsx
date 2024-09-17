@@ -527,15 +527,15 @@ const headingsDetached = [
     url: '/headers'
   },
   {
-    title: '`vike-react`',
+    title: 'vike-react',
     url: '/vike-react'
   },
   {
-    title: '`vike-vue`',
+    title: 'vike-vue',
     url: '/vike-vue'
   },
   {
-    title: '`vike-solid`',
+    title: 'vike-solid',
     url: '/vike-solid'
   },
   {
