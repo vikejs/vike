@@ -1,6 +1,7 @@
 export { renderPageClientSide }
 export { getRenderCount }
 export { disableClientRouting }
+export { firstRenderStartPromise }
 
 import {
   assert,
@@ -11,7 +12,8 @@ import {
   getGlobalObject,
   executeHook,
   hasProp,
-  augmentType
+  augmentType,
+  genPromise
 } from './utils.js'
 import {
   getPageContextFromHooks_isHydration,
@@ -47,7 +49,20 @@ const globalObject = getGlobalObject<{
   isFirstRenderDone?: true
   isTransitioning?: true
   previousPageContext?: PreviousPageContext
-}>('renderPageClientSide.ts', { renderCounter: 0 })
+  firstRenderStartPromise: Promise<void>
+  firstRenderStartPromiseResolve: () => void
+}>(
+  'renderPageClientSide.ts',
+  (() => {
+    const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
+    return {
+      renderCounter: 0,
+      firstRenderStartPromise,
+      firstRenderStartPromiseResolve
+    }
+  })()
+)
+const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { _pageId: string } & PageContextExports
 
 type RenderArgs = {
@@ -86,6 +101,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     redirectHard(urlOriginal)
     return
   }
+
+  globalObject.firstRenderStartPromiseResolve()
 
   await renderPageNominal()
 

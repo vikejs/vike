@@ -29,7 +29,6 @@ async function render() {
     isBackwardNavigation: null,
     isClientSideNavigation: false
   })
-  assert(getRenderCount() === 1)
 }
 
 function initHistoryAndScroll() {

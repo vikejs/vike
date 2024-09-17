@@ -17,6 +17,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testSideExports()
   testPrerenderSettings()
   testRedirectMailto()
+  testNavigateEarly()
   testNestedConfigWorkaround()
   testHistoryPushState()
 }
@@ -82,6 +83,18 @@ function testRedirectMailto() {
   test('Redirect to URI without http protocol (e.g. `mailto:`)', async () => {
     const resp = await fetch(getServerUrl() + '/mail', { redirect: 'manual' })
     expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
+  })
+}
+
+function testNavigateEarly() {
+  test('Calling navigate() early in +client.js', async () => {
+    await page.goto(getServerUrl() + '/navigate-early')
+    await autoRetry(
+      async () => {
+        expectUrl('/markdown')
+      },
+      { timeout: 5000 }
+    )
   })
 }
 
