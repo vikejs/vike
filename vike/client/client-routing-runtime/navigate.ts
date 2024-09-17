@@ -24,7 +24,7 @@ async function navigate(
 ): Promise<void> {
   assertUsageUrlPathname(url, '[navigate(url)] url')
 
-  // If `hydrationCanBeAborted === false` (e.g. Vue), we can apply navigate() only after the hydration is done
+  // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
   await firstRenderStartPromise
 
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition }

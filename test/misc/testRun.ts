@@ -90,7 +90,7 @@ function testNavigateEarly() {
   test('Calling navigate() early in +client.js', async () => {
     await page.goto(getServerUrl() + '/navigate-early')
     await autoRetry(
-      async () => {
+      () => {
         expectUrl('/markdown')
       },
       { timeout: 5000 }
