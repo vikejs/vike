@@ -39,7 +39,7 @@ function isHashUrl(url: string) {
     return true
   }
   const removeHash = (url: string) => url.split('#')[0]
-  if (url.includes('#') && removeHash(url) === removeHash(window.location.href)) {
+  if (url.includes('#') && removeHash(url) === removeHash(window.location.pathname)) {
     return true
   }
   return false
