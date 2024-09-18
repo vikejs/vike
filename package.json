@@ -43,6 +43,7 @@
   },
   "pnpm": {
     "overrides": {
+      "vite": "npm:@brillout/vite@6.0.0-commit-3ca8c6d",
       "vike": "link:./vike/"
     }
   },
