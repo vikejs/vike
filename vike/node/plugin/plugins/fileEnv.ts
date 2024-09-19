@@ -20,8 +20,7 @@ function fileEnv(): Plugin {
   return {
     name: 'vike:fileEnv',
     load(id, options) {
-      // - In build, we don't use load() and instead of showing a warning we throw an error in the generateBundle() hook.
-      // - In dev, we use load() because: using load() also works for dynamic imports in dev (but not in build) thanks to Vite's lazy transpiling.
+      // In build, we use generateBundle() instead of the load() hook. Because using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but doesn't work in build since dynamically imported modules are transpiled even if they are never loaded.
       if (!viteDevServer) return
       if (isIgnored(id)) return
       const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
