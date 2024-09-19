@@ -34,6 +34,7 @@ function fileEnv(): Plugin {
     async transform(code, id, options) {
       // In dev, the warning in load() is enough.
       if (viteDevServer) return
+      if (isIgnored(id)) return
       const isServerSide = !!options?.ssr
       if (!isWrongEnv(id, isServerSide)) return
       const { importers } = this.getModuleInfo(id)!
@@ -121,7 +122,6 @@ function fileEnv(): Plugin {
   }
 
   function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
-    if (isIgnored(moduleId)) return false
     const modulePath = moduleId.split('?')[0]!
     const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
     return modulePath.includes(suffixWrong)
