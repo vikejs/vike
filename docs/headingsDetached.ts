@@ -89,15 +89,11 @@ const headingsDetached = [
     url: '/nextjs-comparison'
   },
   {
-    title: <code>useClientRouter()</code>,
+    title: '`useClientRouter()`',
     url: '/useClientRouter'
   },
   {
-    title: (
-      <>
-        Migration <code>0.4</code>
-      </>
-    ),
+    title: 'Migration `0.4`',
     url: '/migration-0.4'
   },
   {
@@ -141,11 +137,7 @@ const headingsDetached = [
     url: '/v1-design'
   },
   {
-    title: (
-      <>
-        <code>+config.js</code> code splitting
-      </>
-    ),
+    title: '`+config.js` code splitting',
     url: '/config-code-splitting'
   },
   {
@@ -161,27 +153,15 @@ const headingsDetached = [
     url: '/.env-files'
   },
   {
-    title: (
-      <>
-        Migration <code>0.4.23</code>
-      </>
-    ),
+    title: 'Migration `0.4.23`',
     url: '/migration/0.4.23'
   },
   {
-    title: (
-      <>
-        Migration <code>0.4</code>
-      </>
-    ),
+    title: 'Migration `0.4`',
     url: '/migration/0.4'
   },
   {
-    title: (
-      <>
-        Migration from <code>0.4.x</code> to <code>1.0.0</code>
-      </>
-    ),
+    title: 'Migration from `0.4.x` to `1.0.0`',
     url: '/migration/v1'
   },
   {
@@ -206,33 +186,21 @@ const headingsDetached = [
     url: '/server-routing'
   },
   { title: 'What is Hydration?', url: '/hydration' },
-  { title: <code>dist/server/importBuild.js</code>, url: '/importBuild.js' },
-  { title: <code>importBuild.cjs</code>, url: '/importBuild.cjs' },
-  { title: <code>injectAssets()</code>, url: '/injectAssets' },
+  { title: '`dist/server/importBuild.js`', url: '/importBuild.js' },
+  { title: '`importBuild.cjs`', url: '/importBuild.cjs' },
+  { title: '`injectAssets()`', url: '/injectAssets' },
   {
-    title: (
-      <>
-        Multiple <code>onBeforeRender()</code> hooks
-      </>
-    ),
+    title: 'Multiple `onBeforeRender()` hooks',
     url: '/onBeforeRender-multiple'
   },
   {
-    title: (
-      <>
-        Manipulating <code>pageContext</code>
-      </>
-    ),
+    title: 'Manipulating `pageContext`',
     url: '/pageContext-manipulation'
   },
   { title: 'Server-Side Rendering (SSR)', url: '/SSR' },
   { title: 'TypeScript', url: '/typescript' },
   {
-    title: (
-      <>
-        Multiple <code>renderer/</code>
-      </>
-    ),
+    title: 'Multiple `renderer/`',
     url: '/multiple-renderer'
   },
   {
@@ -280,59 +248,43 @@ const headingsDetached = [
     url: '/common-problems'
   },
   {
-    title: <code>doNotPrerender</code>,
+    title: '`doNotPrerender`',
     url: '/doNotPrerender'
   },
   {
-    title: (
-      <>
-        <code>render()</code> hook (server-side)
-      </>
-    ),
+    title: '`render()` hook (server-side)',
     url: '/render-hook'
   },
   {
-    title: (
-      <>
-        <code>render()</code> hook (client-side)
-      </>
-    ),
+    title: '`render()` hook (client-side)',
     url: '/render-client'
   },
   {
-    title: <code>.page.js</code>,
+    title: '`.page.js`',
     url: '/.page.js'
   },
   {
-    title: <code>.page.server.js</code>,
+    title: '`.page.server.js`',
     url: '/.page.server.js'
   },
   {
-    title: <code>.page.client.js</code>,
+    title: '`.page.client.js`',
     url: '/.page.client.js'
   },
   {
-    title: (
-      <>
-        <code>Page</code> (server-side)
-      </>
-    ),
+    title: '`Page` (server-side)',
     url: '/Page-server'
   },
   {
-    title: (
-      <>
-        <code>Page</code> (client-side)
-      </>
-    ),
+    title: '`Page` (client-side)',
     url: '/Page-client'
   },
   {
-    title: <code>.page.route.js</code>,
+    title: '`.page.route.js`',
     url: '/.page.route.js'
   },
   {
-    title: <code>_default.page.route.js</code>,
+    title: '`_default.page.route.js`',
     url: '/_default.page.route.js'
   },
   {
@@ -348,11 +300,11 @@ const headingsDetached = [
     url: '/react-router'
   },
   {
-    title: <code>throw RenderErrorPage()</code>,
+    title: '`throw RenderErrorPage()`',
     url: '/RenderErrorPage'
   },
   {
-    title: <code>process.env.NODE_ENV</code>,
+    title: '`process.env.NODE_ENV`',
     url: '/NODE_ENV'
   },
   {
@@ -360,11 +312,7 @@ const headingsDetached = [
     url: '/header-file'
   },
   {
-    title: (
-      <>
-        Header file (<code>.h.js</code>), import from same file
-      </>
-    ),
+    title: 'Header file (`.h.js`), import from same file',
     url: '/header-file/import-from-same-file'
   },
   {
@@ -380,11 +328,7 @@ const headingsDetached = [
     url: '/includeAssetsImportedByServer'
   },
   {
-    title: (
-      <>
-        Migration <code>0.4.134</code>
-      </>
-    ),
+    title: 'Migration `0.4.134`',
     url: '/migration/0.4.134'
   },
   {
@@ -392,11 +336,7 @@ const headingsDetached = [
     url: '/page-redirection'
   },
   {
-    title: (
-      <>
-        Migration <code>0.5</code>
-      </>
-    ),
+    title: 'Migration `0.5`',
     url: '/migration/0.5'
   },
   {
