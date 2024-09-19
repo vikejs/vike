@@ -49,11 +49,13 @@ async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-images'
   return { body, earlyHints }
 }
 
-const workspaceRoot = path.join(__dirname, '..', '..')
+const workspaceRoot = getWorkspaceRoot()
 function stabilizePaths(str: string): string {
-  console.log('str', str)
-  console.log('workspaceRoot', workspaceRoot)
-  console.log('__dirname', __dirname)
   str = str.replaceAll(workspaceRoot, '/$ROOT')
   return str
+}
+function getWorkspaceRoot() {
+  let workspaceRoot = path.join(__dirname, '..', '..').split('\\').join('/')
+  if (!workspaceRoot.startsWith('/')) workspaceRoot = '/' + workspaceRoot
+  return workspaceRoot
 }
