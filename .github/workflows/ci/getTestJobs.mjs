@@ -35,6 +35,10 @@ async function getTestJobs() {
     os: 'ubuntu-latest',
     node_version: '18'
   }
+  const windows_nodeOld = {
+    os: 'windows-latest',
+    node_version: '18'
+  }
 
   /** @type { Job[] } */
   let jobs = [
@@ -48,7 +52,7 @@ async function getTestJobs() {
       jobName: 'Vitest (E2E tests)',
       jobCmd: 'pnpm exec vitest run --project e2e',
       jobTestFiles: specFiles,
-      jobSetups: [linux_nodeOld]
+      jobSetups: [linux_nodeOld, windows_nodeOld]
     },
     // Check TypeScript types
     {
