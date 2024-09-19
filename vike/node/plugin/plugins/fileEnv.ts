@@ -20,7 +20,7 @@ function fileEnv(): Plugin {
   return {
     name: 'vike:fileEnv',
     load(id, options) {
-      // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build since dynamically imported modules are transpiled even if they are never loaded.
+      // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
       if (!viteDevServer) return
       if (skip(id)) return
       const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
@@ -28,11 +28,17 @@ function fileEnv(): Plugin {
       const importers: string[] = Array.from(moduleInfo.importers)
         .map((m) => m.id)
         .filter((id) => id !== null)
-      assertFileEnv(id, !!options?.ssr, importers, true)
+      assertFileEnv(
+        id,
+        !!options?.ssr,
+        importers,
+        // In dev, we only show a warning because we don't want to disrupt when the user plays with settings such as [ssr](https://vike.dev/ssr).
+        true
+      )
     },
-    // We use transform() to replace modules with a runtime error, because dynamic imports can only be checked at runtime.
+    // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
     async transform(code, id, options) {
-      // In dev, the warning in load() is enough.
+      // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
       if (viteDevServer) return
       if (skip(id)) return
       const isServerSide = !!options?.ssr
@@ -40,7 +46,7 @@ function fileEnv(): Plugin {
       const { importers } = this.getModuleInfo(id)!
       // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code splitted.
       const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
-      // We have to inject empty exports to avoid Rollup complaing about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
+      // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
       const { exportNames } = await getExportNames(code)
       return sourceMapRemove(
         [
