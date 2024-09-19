@@ -1,6 +1,9 @@
 export { fileEnv }
 
 // Implementation for https://vike.dev/file-env
+// Alternative implementations:
+// - Remix: https://github.com/remix-run/remix/blob/0e542779499b13ab9291cf20cd5e6b43e2905151/packages/remix-dev/vite/plugin.ts#L1504-L1594
+// - SvelteKit: https://github.com/sveltejs/kit/blob/6ea7abbc2f66e46cb83ff95cd459a5f548cb7e1e/packages/kit/src/exports/vite/index.js#L383-L401
 
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import { assert, assertUsage, assertWarning, capitalizeFirstLetter, joinEnglish } from '../utils.js'
@@ -18,7 +21,7 @@ function fileEnv(): Plugin {
     name: 'vike:fileEnv',
     load(id, options) {
       // - In build, we don't use load() and instead of showing a warning we throw an error in the generateBundle() hook.
-      // - In dev, we use load() because: using load() also works for dynamic import() in dev (but not in build) thanks to Vite's lazy transpiling.
+      // - In dev, we use load() because: using load() also works for dynamic imports in dev (but not in build) thanks to Vite's lazy transpiling.
       if (!viteDevServer) return
       if (isIgnored(id)) return
       const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
@@ -27,13 +30,14 @@ function fileEnv(): Plugin {
         .filter((id) => id !== null)
       assertFileEnv(id, !!options?.ssr, importers, true)
     },
-    // Dynamic imports can only be checked at runtime
+    // We use transform() to replace modules with a runtime error, because dynamic imports can only be checked at runtime.
     transform(_code, id, options) {
-      // The warning in load() is enough
+      // In dev, the warning in load() is enough.
       if (isDev) return
       const isServerSide = !!options?.ssr
       if (!isWrongEnv(id, isServerSide)) return
       const { importers } = this.getModuleInfo(id)!
+      // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code splitted.
       const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
       return sourceMapRemove(`throw new Error(${JSON.stringify(errMsg)})`)
     },
