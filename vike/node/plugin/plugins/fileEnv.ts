@@ -57,7 +57,7 @@ function fileEnv(): Plugin {
         .forEach((moduleId) => {
           const { importers, dynamicImporters } = this.getModuleInfo(moduleId)!
           if (importers.length === 0) {
-            // Dynamic imports can only be checked at runtime
+            // Dynamic imports can only be verified at runtime
             assert(dynamicImporters.length > 0)
             return
           }
