@@ -51,6 +51,9 @@ async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-images'
 
 const workspaceRoot = path.join(__dirname, '..', '..')
 function stabilizePaths(str: string): string {
+  console.log('str', str)
+  console.log('workspaceRoot', workspaceRoot)
+  console.log('__dirname', __dirname)
   str = str.replaceAll(workspaceRoot, '/$ROOT')
   return str
 }
