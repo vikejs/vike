@@ -17,8 +17,8 @@ function fileEnv(): Plugin {
   return {
     name: 'vike:fileEnv',
     load(id, options) {
-      // - In build, we don't use load() and instead of showing a warning we throw an error in generateBundle()
-      // - load() also works for dynamic import() in dev (but not in build) thanks to Vite's lazy transpiling
+      // - In build, we don't use load() and instead of showing a warning we throw an error in the generateBundle() hook.
+      // - In dev, we use load() because: using load() also works for dynamic import() in dev (but not in build) thanks to Vite's lazy transpiling.
       if (!viteDevServer) return
       if (isIgnored(id)) return
       const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
@@ -38,17 +38,17 @@ function fileEnv(): Plugin {
       return sourceMapRemove(`throw new Error(${JSON.stringify(errMsg)})`)
     },
     generateBundle() {
-      const moduleIdsAll = this.getModuleIds()
-      const moduleIdsUser = Array.from(moduleIdsAll).filter((id) => !isIgnored(id))
-      moduleIdsUser.forEach((moduleId) => {
-        const { importers, dynamicImporters } = this.getModuleInfo(moduleId)!
-        if (importers.length === 0) {
-          // Dynamic imports can only be checked at runtime
-          assert(dynamicImporters.length > 0)
-          return
-        }
-        assertFileEnv(moduleId, !!config.build.ssr, importers, false)
-      })
+      Array.from(this.getModuleIds())
+        .filter((id) => !isIgnored(id))
+        .forEach((moduleId) => {
+          const { importers, dynamicImporters } = this.getModuleInfo(moduleId)!
+          if (importers.length === 0) {
+            // Dynamic imports can only be checked at runtime
+            assert(dynamicImporters.length > 0)
+            return
+          }
+          assertFileEnv(moduleId, !!config.build.ssr, importers, false)
+        })
     },
     configResolved(config_) {
       config = config_
@@ -89,7 +89,7 @@ function fileEnv(): Plugin {
     let errMsg: string
     let modulePathPretty = getModuleFilePathAbsolute(modulePath, config)
     if (!noColor) {
-      const suffix = `.${envExpect}.` as const
+      const suffix = getSuffix(envExpect)
       modulePathPretty = modulePathPretty.replaceAll(suffix, pc.bold(suffix))
     }
     errMsg = `${capitalizeFirstLetter(
@@ -111,18 +111,23 @@ function fileEnv(): Plugin {
   function isWrongEnv(moduleId: string, isServerSide: boolean) {
     if (isIgnored(moduleId)) return
     const modulePath = moduleId.split('?')[0]!
-    const envWrong = isServerSide ? 'client' : 'server'
-    return modulePath.includes(`.${envWrong}.`)
+    const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
+    return modulePath.includes(suffixWrong)
   }
 
   function isIgnored(id: string): boolean {
     // TODO/v1-release: remove
     if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
+    if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
     if (id.split('?')[0]!.endsWith('.css')) return true
     // Apply `.server.js` and `.client.js` only to user files
     if (id.includes('/node_modules/')) return true
     // Only user files
     if (!id.startsWith(config.root)) return true
     return false
+  }
+
+  function getSuffix<T extends 'client' | 'server'>(env: T): `.${T}.` {
+    return `.${env}.`
   }
 }
