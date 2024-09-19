@@ -94,7 +94,7 @@ function fileEnv(): Plugin {
     onlyWarn: boolean,
     noColor: boolean
   ) {
-    const modulePath = moduleId.split('?')[0]!
+    const modulePath = getModulePath(moduleId)
 
     const envActual = isServerSide ? 'server' : 'client'
     const envExpect = isServerSide ? 'client' : 'server'
@@ -122,7 +122,7 @@ function fileEnv(): Plugin {
   }
 
   function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
-    const modulePath = moduleId.split('?')[0]!
+    const modulePath = getModulePath(moduleId)
     const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
     return modulePath.includes(suffixWrong)
   }
@@ -131,7 +131,7 @@ function fileEnv(): Plugin {
     // TODO/v1-release: remove
     if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
     if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
-    if (id.split('?')[0]!.endsWith('.css')) return true
+    if (getModulePath(id).endsWith('.css')) return true
     // Apply `.server.js` and `.client.js` only to user files
     if (id.includes('/node_modules/')) return true
     // Only user files
@@ -141,5 +141,9 @@ function fileEnv(): Plugin {
 
   function getSuffix(env: 'client' | 'server') {
     return `.${env}.` as const
+  }
+
+  function getModulePath(moduleId: string) {
+    return moduleId.split('?')[0]!
   }
 }
