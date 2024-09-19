@@ -10,7 +10,7 @@ if (isBrowser) {
 export function Page() {
   return (
     <>
-      <p>dyanmic import() with .client.js and .server.js</p>
+      <p>Dyanmic import() of .client.js and .server.js</p>
     </>
   )
 }

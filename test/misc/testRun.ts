@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, fetch, fetchHtml, page, getServerUrl, autoRetry, sleep } from '@brillout/test-e2e'
+import { test, expect, fetch, fetchHtml, page, getServerUrl, autoRetry, sleep, expectLog } from '@brillout/test-e2e'
 import { expectUrl, testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react-minimal/.testRun'
 import fs from 'fs'
@@ -18,6 +18,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testPrerenderSettings()
   testRedirectMailto()
   testNavigateEarly()
+  testDynamicImportFileEnv()
   testNestedConfigWorkaround()
   testHistoryPushState()
 }
@@ -92,6 +93,20 @@ function testNavigateEarly() {
     await autoRetry(
       () => {
         expectUrl('/markdown')
+      },
+      { timeout: 5000 }
+    )
+  })
+}
+
+function testDynamicImportFileEnv() {
+  test('Dyanmic import() of .client.js and .server.js', async () => {
+    await page.goto(getServerUrl() + '/dynamic-import-file-env')
+    expect(await page.textContent('body')).toContain('Dyanmic import() of .client.js and .server.js')
+    expectLog('hello from server', (log) => log.logSource === 'stdout')
+    await autoRetry(
+      () => {
+        expectLog('hello from client', (log) => log.logSource === 'Browser Log')
       },
       { timeout: 5000 }
     )
