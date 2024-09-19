@@ -22,7 +22,7 @@ function fileEnv(): Plugin {
     load(id, options) {
       // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build since dynamically imported modules are transpiled even if they are never loaded.
       if (!viteDevServer) return
-      if (isIgnored(id)) return
+      if (skip(id)) return
       const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
       assert(moduleInfo)
       const importers: string[] = Array.from(moduleInfo.importers)
@@ -34,7 +34,7 @@ function fileEnv(): Plugin {
     async transform(code, id, options) {
       // In dev, the warning in load() is enough.
       if (viteDevServer) return
-      if (isIgnored(id)) return
+      if (skip(id)) return
       const isServerSide = !!options?.ssr
       if (!isWrongEnv(id, isServerSide)) return
       const { importers } = this.getModuleInfo(id)!
@@ -53,7 +53,7 @@ function fileEnv(): Plugin {
     },
     generateBundle() {
       Array.from(this.getModuleIds())
-        .filter((id) => !isIgnored(id))
+        .filter((id) => !skip(id))
         .forEach((moduleId) => {
           const { importers, dynamicImporters } = this.getModuleInfo(moduleId)!
           if (importers.length === 0) {
@@ -127,7 +127,7 @@ function fileEnv(): Plugin {
     return modulePath.includes(suffixWrong)
   }
 
-  function isIgnored(id: string): boolean {
+  function skip(id: string): boolean {
     // TODO/v1-release: remove
     if (extractAssetsRE.test(id) || extractExportNamesRE.test(id)) return true
     if (!id.includes(getSuffix('client')) && !id.includes(getSuffix('server'))) return true
