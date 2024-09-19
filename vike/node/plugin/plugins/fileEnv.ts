@@ -44,7 +44,7 @@ function fileEnv(): Plugin {
       const { exportNames } = await getExportNames(code)
       return sourceMapRemove(
         [
-          `throw new Error(${JSON.stringify(errMsg)})`,
+          `throw new Error(${JSON.stringify(errMsg)});`,
           ...exportNames.map((name) =>
             name === 'default' ? 'export default undefined;' : `export const ${name} = undefined;`
           )
