@@ -12,6 +12,7 @@ import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
+import { getExportNames } from '../shared/parseEsModule.js'
 
 function fileEnv(): Plugin {
   let config: ResolvedConfig
@@ -31,7 +32,7 @@ function fileEnv(): Plugin {
       assertFileEnv(id, !!options?.ssr, importers, true)
     },
     // We use transform() to replace modules with a runtime error, because dynamic imports can only be checked at runtime.
-    transform(_code, id, options) {
+    async transform(code, id, options) {
       // In dev, the warning in load() is enough.
       if (isDev) return
       const isServerSide = !!options?.ssr
@@ -39,7 +40,16 @@ function fileEnv(): Plugin {
       const { importers } = this.getModuleInfo(id)!
       // Throwing a verbose error doesn't waste client-side KBs as dynamic imports are code splitted.
       const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
-      return sourceMapRemove(`throw new Error(${JSON.stringify(errMsg)})`)
+      // We have to inject empty exports to avoid Rollup complaing about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
+      const { exportNames } = await getExportNames(code)
+      return sourceMapRemove(
+        [
+          `throw new Error(${JSON.stringify(errMsg)})`,
+          ...exportNames.map((name) =>
+            name === 'default' ? 'export default undefined;' : `export const ${name} = undefined;`
+          )
+        ].join('\n')
+      )
     },
     generateBundle() {
       Array.from(this.getModuleIds())
