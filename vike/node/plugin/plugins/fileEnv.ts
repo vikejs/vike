@@ -16,7 +16,6 @@ import { getExportNames } from '../shared/parseEsModule.js'
 
 function fileEnv(): Plugin {
   let config: ResolvedConfig
-  let isDev = false
   let viteDevServer: ViteDevServer | undefined
   return {
     name: 'vike:fileEnv',
@@ -34,7 +33,7 @@ function fileEnv(): Plugin {
     // We use transform() to replace modules with a runtime error, because dynamic imports can only be checked at runtime.
     async transform(code, id, options) {
       // In dev, the warning in load() is enough.
-      if (isDev) return
+      if (viteDevServer) return
       const isServerSide = !!options?.ssr
       if (!isWrongEnv(id, isServerSide)) return
       const { importers } = this.getModuleInfo(id)!
@@ -68,7 +67,6 @@ function fileEnv(): Plugin {
       config = config_
     },
     configureServer(viteDevServer_) {
-      isDev = true
       viteDevServer = viteDevServer_
     }
   }
