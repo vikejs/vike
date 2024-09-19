@@ -24,7 +24,8 @@ function fileEnv(): Plugin {
       if (!viteDevServer) return
       if (isIgnored(id)) return
       const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
-      const importers: string[] = Array.from(moduleInfo!.importers)
+      assert(moduleInfo)
+      const importers: string[] = Array.from(moduleInfo.importers)
         .map((m) => m.id)
         .filter((id) => id !== null)
       assertFileEnv(id, !!options?.ssr, importers, true)
