@@ -108,8 +108,8 @@ function fileEnv(): Plugin {
     return errMsg
   }
 
-  function isWrongEnv(moduleId: string, isServerSide: boolean) {
-    if (isIgnored(moduleId)) return
+  function isWrongEnv(moduleId: string, isServerSide: boolean): boolean {
+    if (isIgnored(moduleId)) return false
     const modulePath = moduleId.split('?')[0]!
     const suffixWrong = getSuffix(isServerSide ? 'client' : 'server')
     return modulePath.includes(suffixWrong)
@@ -127,7 +127,7 @@ function fileEnv(): Plugin {
     return false
   }
 
-  function getSuffix<T extends 'client' | 'server'>(env: T): `.${T}.` {
-    return `.${env}.`
+  function getSuffix(env: 'client' | 'server') {
+    return `.${env}.` as const
   }
 }
