@@ -235,8 +235,8 @@ async function transpileWithEsbuild(
           if (debug.isActivated)
             debug('onResolved()', { args, resolved, importPathTranspiled, isPointerImport, isExternal })
 
-          pointerImports[importPathTranspiled] = isPointerImport
           if (isExternal) {
+            pointerImports[importPathTranspiled] = isPointerImport
             return { external: true, path: importPathTranspiled }
           } else {
             resolved.path = importPathTranspiled
