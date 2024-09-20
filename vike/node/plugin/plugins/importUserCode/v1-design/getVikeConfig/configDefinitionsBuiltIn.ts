@@ -117,7 +117,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true, client: true }
   },
   passToClient: {
-    env: { server: true },
+    env: { server: true, config: true },
     cumulative: true
   },
   route: {
