@@ -239,7 +239,6 @@ async function transpileWithEsbuild(
             pointerImports[importPathTranspiled] = isPointerImport
             return { external: true, path: importPathTranspiled }
           } else {
-            resolved.path = importPathTranspiled
             return resolved
           }
         })
