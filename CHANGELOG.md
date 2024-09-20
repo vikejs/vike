@@ -1,3 +1,19 @@
+## [0.4.196](https://github.com/vikejs/vike/compare/v0.4.195...v0.4.196) (2024-09-20)
+
+
+### Bug Fixes
+
+* allow navigate() to be called early in +client.js (fix [#1868](https://github.com/vikejs/vike/issues/1868)) ([9168fb3](https://github.com/vikejs/vike/commit/9168fb3f2b9ceb16c317ab9abe477ecf981d59e2))
+* char escape fix ([#1867](https://github.com/vikejs/vike/issues/1867)) ([98f7145](https://github.com/vikejs/vike/commit/98f7145798bb4abe38dbe0786c46d7a51d0ff7cc))
+* fix and improve error HTTP response (fix [#1872](https://github.com/vikejs/vike/issues/1872)) ([0634732](https://github.com/vikejs/vike/commit/0634732b9b749efc3b6a59269bcbf8d3db06a749))
+* fix config import resolving + make passToClient env server-only (fix [#1882](https://github.com/vikejs/vike/issues/1882)) ([#1886](https://github.com/vikejs/vike/issues/1886)) ([a7151a1](https://github.com/vikejs/vike/commit/a7151a19bd61d423e43c9a0624e96755640aca3a))
+* further skip hash links (fix [#1883](https://github.com/vikejs/vike/issues/1883)) ([3f77496](https://github.com/vikejs/vike/commit/3f77496bcdc75295d88137fd1e86b985e3fbc03d))
+* make .client.js and .server.js work for dynamic imports (fix [#1861](https://github.com/vikejs/vike/issues/1861)) ([#1884](https://github.com/vikejs/vike/issues/1884)) ([f7e91ba](https://github.com/vikejs/vike/commit/f7e91ba49823a4b1825ad52a8889d803eded1ca5))
+* update @brillout/picocolors ([f017481](https://github.com/vikejs/vike/commit/f0174812a16d1aff83cbaeb6564dab8d037d4f32))
+* use client router for error page only if possible ([b06195f](https://github.com/vikejs/vike/commit/b06195f8b2da15af171f195480a3f40ebdf7ece5))
+
+
+
 ## [0.4.195](https://github.com/vikejs/vike/compare/v0.4.194...v0.4.195) (2024-09-07)
 
 
