@@ -5,8 +5,7 @@ import type { HeadingDefinition } from '@brillout/docpress'
 const headings = [
   {
     level: 1,
-    title: 'Overview',
-    titleEmoji: 'compass'
+    title: 'Overview'
   },
   {
     level: 2,
@@ -32,8 +31,7 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Get Started',
-    titleEmoji: 'seedling'
+    title: 'Get Started'
   },
   /*
   {
@@ -54,8 +52,7 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Guides',
-    titleEmoji: 'books'
+    title: 'Guides'
   },
   {
     level: 4,
@@ -173,8 +170,7 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Deploy',
-    titleEmoji: 'earth'
+    title: 'Deploy'
   },
   {
     level: 4,
@@ -253,8 +249,7 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Integration',
-    titleEmoji: 'plug'
+    title: 'Integration'
   },
   {
     level: 4,
@@ -565,8 +560,7 @@ const headings = [
   },
   {
     level: 1,
-    title: 'API',
-    titleEmoji: 'gear'
+    title: 'API'
   },
   {
     level: 2,
