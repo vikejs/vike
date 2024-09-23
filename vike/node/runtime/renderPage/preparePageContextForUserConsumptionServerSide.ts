@@ -34,6 +34,7 @@ function preparePageContextForUserConsumptionServerSide(pageContext: PageContext
   assert(isObject(pageContext.exportsAll))
 
   assert(pageContext.pageId)
+  assert((pageContext as any)._pageId === pageContext.pageId)
 
   assert(typeof pageContext.isClientSideNavigation === 'boolean')
 

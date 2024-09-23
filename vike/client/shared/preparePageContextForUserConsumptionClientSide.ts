@@ -45,6 +45,8 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
   }
 
   assert(pageContext.pageId)
+  assert((pageContext as any)._pageId === pageContext.pageId)
+
   assert('config' in pageContext)
   assert('configEntries' in pageContext)
   // TODO/v1-release: remove
