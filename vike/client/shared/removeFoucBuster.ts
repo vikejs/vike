@@ -44,7 +44,10 @@ function clean() {
   injectedByVike.forEach((linkVike) => {
     const href = linkVike.getAttribute('href')
     assert(href && href.endsWith(suffix))
-    const filePathAbsoluteUserRootDir = href.slice(0, -suffix.length)
+    let filePathAbsoluteUserRootDir = href.slice(0, -suffix.length)
+    const prefix = '/@fs/'
+    if (filePathAbsoluteUserRootDir.startsWith(prefix))
+      filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefix.length)
     if (
       injectedByVite.some((filePathAbsoluteFilesystem) =>
         filePathAbsoluteFilesystem.endsWith(filePathAbsoluteUserRootDir)
