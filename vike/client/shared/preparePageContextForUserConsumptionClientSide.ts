@@ -11,6 +11,7 @@ import type {
 import { addIs404ToPageProps } from '../../shared/addIs404ToPageProps.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser.js'
+import { preparePageContextForUserConsumption } from '../../shared/preparePageContextForUserConsumption.js'
 
 type PageContextForUserConsumptionClientSide = PageContextExports &
   PageContextForPassToClientWarning & {
@@ -44,9 +45,6 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
     assert(pageContextTyped.isBackwardNavigation === null)
   }
 
-  assert(pageContext.pageId)
-  assert((pageContext as any)._pageId === pageContext.pageId)
-
   assert('config' in pageContext)
   assert('configEntries' in pageContext)
   // TODO/v1-release: remove
@@ -67,6 +65,8 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
   const pageContextForUserConsumption = getPageContextProxyForUser(pageContext)
 
   addIs404ToPageProps(pageContext)
+
+  preparePageContextForUserConsumption(pageContext)
 
   return pageContextForUserConsumption
 }

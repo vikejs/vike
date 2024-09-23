@@ -12,7 +12,7 @@ if (isBrowser()) {
 }
 
 import type { PageFile } from '../getPageFiles.js'
-import { assert, assertUsage, assertWarning, isPlainObject, objectAssign } from './utils.js'
+import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import {
   assertPageContextUrl,
   type PageContextUrlInternal,
@@ -149,17 +149,6 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
       routeParams: winner.routeParams
     })
   }
-
-  // TODO/next-major-release: remove
-  Object.defineProperty(pageContextFromRoute, '_pageId', {
-    get() {
-      assertWarning(false, 'pageContext._pageId has been renamed to pageContext.pageId', {
-        showStackTrace: true,
-        onlyOnce: true
-      })
-      return pageContextFromRoute.pageId
-    }
-  })
 
   return pageContextFromRoute
 }
