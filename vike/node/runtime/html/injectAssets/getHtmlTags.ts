@@ -54,7 +54,7 @@ function getHtmlTags(
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { isProduction } = getGlobalContext()
-  const injectScriptsAt = getInjectScriptsAt(pageContext._pageId, pageContext._pageConfigs)
+  const injectScriptsAt = getInjectScriptsAt(pageContext.pageId, pageContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {

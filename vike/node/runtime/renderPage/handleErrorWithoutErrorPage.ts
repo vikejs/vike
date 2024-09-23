@@ -16,13 +16,13 @@ async function handleErrorWithoutErrorPage<
     isClientSideNavigation: boolean
     errorWhileRendering: null | Error
     is404: null | boolean
-    _pageId: null
+    pageId: null
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
     urlOriginal: string
   }
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
-  assert(pageContext._pageId === null)
+  assert(pageContext.pageId === null)
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
   {

@@ -266,10 +266,10 @@ async function renderPageAlreadyPrepared(
     {
       const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
       if (!errorPageId) {
-        objectAssign(pageContextErrorPageInit, { _pageId: null })
+        objectAssign(pageContextErrorPageInit, { pageId: null })
         return handleErrorWithoutErrorPage(pageContextErrorPageInit)
       } else {
-        objectAssign(pageContextErrorPageInit, { _pageId: errorPageId })
+        objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
       }
     }
 
@@ -416,17 +416,17 @@ async function renderPageNominal(
   {
     const pageContextFromRoute = await route(pageContext)
     objectAssign(pageContext, pageContextFromRoute)
-    objectAssign(pageContext, { is404: pageContext._pageId ? null : true })
-    if (pageContext._pageId === null) {
+    objectAssign(pageContext, { is404: pageContext.pageId ? null : true })
+    if (pageContext.pageId === null) {
       const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
       if (!errorPageId) {
-        assert(hasProp(pageContext, '_pageId', 'null'))
+        assert(hasProp(pageContext, 'pageId', 'null'))
         return handleErrorWithoutErrorPage(pageContext)
       }
-      objectAssign(pageContext, { _pageId: errorPageId })
+      objectAssign(pageContext, { pageId: errorPageId })
     }
   }
-  assert(hasProp(pageContext, '_pageId', 'string'))
+  assert(hasProp(pageContext, 'pageId', 'string'))
   assert(pageContext.errorWhileRendering === null)
 
   // Render
@@ -607,7 +607,7 @@ async function handleAbortError(
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
       const pageContext = createPageContext({})
-      objectAssign(pageContext, { _pageId: errorPageId })
+      objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit)
       objectAssign(pageContext, renderContext)

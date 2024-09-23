@@ -14,7 +14,7 @@ import { getPageContextProxyForUser, PageContextForPassToClientWarning } from '.
 
 type PageContextForUserConsumptionClientSide = PageContextExports &
   PageContextForPassToClientWarning & {
-    _pageId: string
+    pageId: string
     _pageConfigs: PageConfigRuntime[]
   }
 

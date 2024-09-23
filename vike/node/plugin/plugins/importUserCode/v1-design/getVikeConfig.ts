@@ -377,7 +377,7 @@ async function loadVikeConfig(
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     objectEntries(interfaceFilesByLocationId)
-      .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
+      .filter(([pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
         const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesRelevant).flat(1)

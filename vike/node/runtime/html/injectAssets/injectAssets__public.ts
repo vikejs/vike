@@ -22,7 +22,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(hasProp(pageContext, 'urlPathname', 'string'), errMsg('`pageContext.urlPathname` should be a string'), {
     showStackTrace: true
   })
-  assertUsage(hasProp(pageContext, '_pageId', 'string'), errMsg('`pageContext._pageId` should be a string'), {
+  assertUsage(hasProp(pageContext, 'pageId', 'string'), errMsg('`pageContext.pageId` should be a string'), {
     showStackTrace: true
   })
   assertUsage(hasProp(pageContext, '__getPageAssets'), errMsg('`pageContext.__getPageAssets` is missing'), {

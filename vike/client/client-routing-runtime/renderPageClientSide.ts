@@ -63,7 +63,7 @@ const globalObject = getGlobalObject<{
   })()
 )
 const { firstRenderStartPromise } = globalObject
-type PreviousPageContext = { _pageId: string } & PageContextExports
+type PreviousPageContext = { pageId: string } & PageContextExports
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
@@ -141,7 +141,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     // Route
-    let pageContextRouted: { _pageId: string; routeParams: Record<string, string> }
+    let pageContextRouted: { pageId: string; routeParams: Record<string, string> }
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       pageContextRouted = pageContextSerialized
@@ -155,7 +155,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
       if (isRenderOutdated()) return
 
-      if (!pageContextFromRoute._pageId) {
+      if (!pageContextFromRoute.pageId) {
         /*
         // We don't use the client router to render the 404 page:
         //  - So that the +redirects setting (https://vike.dev/redirects) can be applied.
@@ -168,9 +168,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         redirectHard(urlOriginal)
         return
       }
-      assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
+      assert(hasProp(pageContextFromRoute, 'pageId', 'string')) // Help TS
 
-      const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
+      const isClientRoutable = await isClientSideRoutable(pageContextFromRoute.pageId, pageContext)
       if (isRenderOutdated()) return
       if (!isClientRoutable) {
         redirectHard(urlOriginal)
@@ -178,9 +178,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
 
       const isSamePage =
-        pageContextFromRoute._pageId &&
-        previousPageContext?._pageId &&
-        pageContextFromRoute._pageId === previousPageContext._pageId
+        pageContextFromRoute.pageId &&
+        previousPageContext?.pageId &&
+        pageContextFromRoute.pageId === previousPageContext.pageId
       if (isUserLandPushStateNavigation && isSamePage) {
         // Skip's Vike's rendering; let the user handle the navigation
         return
@@ -194,7 +194,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     try {
       objectAssign(
         pageContext,
-        await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+        await loadUserFilesClientSide(pageContext.pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
       )
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
@@ -355,10 +355,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
     if (!errorPageId) throw new Error('No error page defined.')
     objectAssign(pageContext, {
-      _pageId: errorPageId
+      pageId: errorPageId
     })
 
-    const isClientRoutable = await isClientSideRoutable(pageContext._pageId, pageContext)
+    const isClientRoutable = await isClientSideRoutable(pageContext.pageId, pageContext)
     if (isRenderOutdated()) return
     if (!isClientRoutable) {
       redirectHard(urlOriginal)
@@ -368,7 +368,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     try {
       objectAssign(
         pageContext,
-        await loadUserFilesClientSide(pageContext._pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+        await loadUserFilesClientSide(pageContext.pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
       )
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {

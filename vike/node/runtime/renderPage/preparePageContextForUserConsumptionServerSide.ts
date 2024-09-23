@@ -18,7 +18,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
     urlParsed: PageContextUrlInternal['urlParsed']
     routeParams: Record<string, string>
     Page: unknown
-    _pageId: string
+    pageId: string
     _pageConfigs: PageConfigRuntime[]
     is404: null | boolean
     isClientSideNavigation: boolean

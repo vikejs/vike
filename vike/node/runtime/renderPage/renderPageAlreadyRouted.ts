@@ -37,7 +37,7 @@ type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering:
 
 async function renderPageAlreadyRouted<
   PageContext extends {
-    _pageId: string
+    pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     is404: null | boolean
     routeParams: Record<string, string>
@@ -47,13 +47,13 @@ async function renderPageAlreadyRouted<
     PageContextUrlInternal &
     PageContext_loadUserFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
-  // pageContext._pageId can either be the:
+  // pageContext.pageId can either be the:
   //  - ID of the page matching the routing, or the
   //  - ID of the error page `_error.page.js`.
-  assert(hasProp(pageContext, '_pageId', 'string'))
+  assert(hasProp(pageContext, 'pageId', 'string'))
 
   const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
-  assert(isError === (pageContext._pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
+  assert(isError === (pageContext.pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
 
   objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
@@ -95,7 +95,7 @@ async function prerenderPage(
   pageContext: PageContextInitEnhanced &
     PageFiles & {
       routeParams: Record<string, string>
-      _pageId: string
+      pageId: string
       _urlRewrite: null
       _httpRequestId: number | null
       _usesClientRouter: boolean
@@ -140,7 +140,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   }
 
   const pageContext = {
-    _pageId: errorPageId,
+    pageId: errorPageId,
     _httpRequestId: null,
     _urlRewrite: null,
     is404: true,

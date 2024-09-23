@@ -14,7 +14,7 @@ type PageContextBeforeRenderClient = {
   _pageFilesLoaded: PageFile[]
   urlOriginal?: string
   urlPathname?: string
-  _pageId: string
+  pageId: string
   _pageConfigs: PageConfigRuntime[]
 } & PageContextExports &
   PageContextForUserConsumptionClientSide
