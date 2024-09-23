@@ -3,7 +3,6 @@ export { getUrlFromRouteString }
 export { isStaticRouteString }
 export { analyzeRouteString }
 export { assertRouteString }
-export { parseRouteString }
 
 import { assertWarning, isBrowser, escapeRegex } from '../utils.js'
 import { assert, assertUsage } from './utils.js'

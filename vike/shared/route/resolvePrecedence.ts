@@ -4,7 +4,7 @@ export { resolvePrecendence }
 import { analyzeRouteString } from './resolveRouteString.js'
 import { higherFirst, lowerFirst } from './utils.js'
 import { makeFirst } from './utils.js'
-import { isStaticRouteString, parseRouteString } from './resolveRouteString.js'
+import { isStaticRouteString } from './resolveRouteString.js'
 import type { RouteType } from './loadPageRoutes.js'
 
 type RouteMatch = {
