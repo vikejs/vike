@@ -236,7 +236,7 @@
     "cac": "^6.7.14",
     "es-module-lexer": "^1.4.1",
     "esbuild": "^0.23.0",
-    "fast-glob": "^3.3.2",
+    "tinyglobby": "^0.2.6",
     "react-streaming": "^0.3.43",
     "rimraf": "^5.0.5",
     "semver": "^7.6.3",

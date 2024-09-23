@@ -14,7 +14,7 @@ import {
 import path from 'path'
 import fs from 'fs/promises'
 import type { Stats } from 'fs'
-import glob from 'fast-glob'
+import { glob } from 'tinyglobby'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import pc from '@brillout/picocolors'
@@ -196,7 +196,7 @@ async function gitLsFiles(
 }
 // Same as gitLsFiles() but using fast-glob
 async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[]> {
-  const files = await glob(`**/+*.${scriptFileExtensions}`, {
+  const files = await glob([`**/+*.${scriptFileExtensions}`], {
     ignore: getIgnoreAsPatterns(outDirRelativeFromUserRootDir),
     cwd: userRootDir,
     dot: false
