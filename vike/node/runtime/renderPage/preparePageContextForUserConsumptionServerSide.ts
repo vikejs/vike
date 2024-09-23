@@ -33,6 +33,8 @@ function preparePageContextForUserConsumptionServerSide(pageContext: PageContext
   assert(isObject(pageContext.exports))
   assert(isObject(pageContext.exportsAll))
 
+  assert(pageContext.pageId)
+
   assert(typeof pageContext.isClientSideNavigation === 'boolean')
 
   sortPageContext(pageContext)

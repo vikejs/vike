@@ -44,6 +44,7 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
     assert(pageContextTyped.isBackwardNavigation === null)
   }
 
+  assert(pageContext.pageId)
   assert('config' in pageContext)
   assert('configEntries' in pageContext)
   // TODO/v1-release: remove
