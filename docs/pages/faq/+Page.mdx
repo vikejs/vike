@@ -108,12 +108,12 @@ Contributions in forms of [code](https://github.com/vikejs/vike/issues/1349) or 
 
 Many cryptic errors come from CJS/ESM issues around npm packages that contain invalid JavaScript code, see workaround at <Link href="/broken-npm-package" />.
 
-> We meticulously care about crafting error messages that are helpful, but we don't control the error messages coming from other tools.
+> We meticulously craft Vike's error messages to be clear and helpful, but error messages from other tools aren't under our control. If any Vike error message isn't clear, let us know, and we'll make it clearer.
 
 
 ## Why is CSS leaked to other pages?
 
-With <Link href="/client-routing">Client Routing</Link>, when navigating from one page to another, the CSS of the previous page isn't removed. This means that any CSS loaded by the previous page will also apply to the next page. In other words: CSS cumulates upon page navigation.
+When navigating from one page to another, the CSS of the previous page isn't removed. This means that any CSS loaded by the previous page will also apply to the next page. In other words: the CSS of all previous pages cumulate.
 
 For example:
 
@@ -135,7 +135,7 @@ export const Page = () => (
 ```css
 /* /pages/terms/style.css */
 
-/* ❌ Bad: the CSS selector `section` can apply to any page */
+/* ❌ Bad: the CSS selector `section` applies to all pages. */
 section {
   font-size: 0.8em;
 }
@@ -146,7 +146,7 @@ Narrow down the CSS selector instead:
 ```css
 /* /pages/terms/style.css */
 
-/* ✅ Good: the CSS selector `#terms section` only applies to our terms page */
+/* ✅ Good: the CSS selector `#terms section` only applies to the terms page. */
 #terms section {
   font-size: 0.8em;
 }
@@ -156,7 +156,7 @@ Narrow down the CSS selector instead:
 
 > If you use **React** or **Solid**, then we recommend using inline styles and/or a CSS-in-JS library (or Tailwind), while minimizing CSS files. Inline style aren't global and, therefore, aren't leaky.
 
-> **CSS is injected by Vite** in the form of `<style>` tags. If you're curious why Vite doesn't remove old `<style>` tags, consider that removing CSS is problematic during the transient state upon page navigation. (It would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because there is no transaction primitive for DOM manipulation.) In general, regardless of Vite's behavior, it's a good practice to narrow down CSS selectors.
+> **CSS is injected by Vite** in the form of `<style>` tags. If you wonder why Vite doesn't remove the `<style>` tags of the previous page, consider that removing CSS is problematic during the transient state upon page navigation (as it would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because there isn't any transaction primitive for DOM manipulation).
 
 
 ## Why are there a lot of HTTP requests in dev?
