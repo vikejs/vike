@@ -8,6 +8,7 @@ import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import type { PageContextExports } from '../../../shared/getPageFiles/getExports.js'
 import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
+import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption.js'
 
 type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal &
   PageContextExports & {
@@ -18,7 +19,7 @@ type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal 
     urlParsed: PageContextUrlInternal['urlParsed']
     routeParams: Record<string, string>
     Page: unknown
-    _pageId: string
+    pageId: string
     _pageConfigs: PageConfigRuntime[]
     is404: null | boolean
     isClientSideNavigation: boolean
@@ -38,4 +39,6 @@ function preparePageContextForUserConsumptionServerSide(pageContext: PageContext
   sortPageContext(pageContext)
 
   addIs404ToPageProps(pageContext)
+
+  preparePageContextForUserConsumption(pageContext)
 }

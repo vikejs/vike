@@ -67,7 +67,7 @@ async function prefetch(url: string): Promise<void> {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
-  const pageId = pageContextFromRoute._pageId
+  const pageId = pageContextFromRoute.pageId
 
   if (!pageId) {
     assertWarning(false, `${errPrefix} ${pc.string(url)} ${noRouteMatch}`, {
@@ -135,7 +135,7 @@ async function prefetchIfPossible(url: string): Promise<void> {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
-  if (!pageContextFromRoute?._pageId) return
-  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
+  if (!pageContextFromRoute?.pageId) return
+  if (!(await isClientSideRoutable(pageContextFromRoute.pageId, pageContext))) return
+  await prefetchAssets(pageContextFromRoute.pageId, pageContext)
 }
