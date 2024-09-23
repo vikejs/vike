@@ -121,36 +121,6 @@ export default {
 
 You can use a <Link href="/file-structure#domain-driven">domain-driven file structure</Link> for better organization and for improved configuration inheritance.
 
-### Powerful
-
-You can use multiple completely different rendering strategies for the same app.
-
-For example, some pages can use Vue without SSR while other pages can use React with SSR:
-
-```js
-// pages/admin/+config.js
-
-import vikeVue from 'vike-vue/config'
-
-// Admin pages using Vue without SSR
-export default {
-  ssr: false,
-  extends: [vikeVue]
-}
-```
-
-```js
-// pages/product/@id/+config.js
-
-import vikeReact from 'vike-react/config'
-
-// Product page using React with SSR
-export default {
-  ssr: true,
-  extends: [vikeReact]
-}
-```
-
 
 ## Pointer imports
 

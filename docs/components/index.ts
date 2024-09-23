@@ -15,3 +15,4 @@ export { ViteLazyTranspilingContradiction } from './ViteLazyTranspilingContradic
 export * from './Example'
 export { ImplementedBy } from './ImplementedBy'
 export * from './CustomIntegrationWarning'
+export { default as Advanced } from './Advanced.mdx'

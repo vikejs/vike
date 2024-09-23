@@ -1,6 +1,7 @@
 export { renderPageClientSide }
 export { getRenderCount }
 export { disableClientRouting }
+export { firstRenderStartPromise }
 
 import {
   assert,
@@ -11,7 +12,8 @@ import {
   getGlobalObject,
   executeHook,
   hasProp,
-  augmentType
+  augmentType,
+  genPromise
 } from './utils.js'
 import {
   getPageContextFromHooks_isHydration,
@@ -47,7 +49,20 @@ const globalObject = getGlobalObject<{
   isFirstRenderDone?: true
   isTransitioning?: true
   previousPageContext?: PreviousPageContext
-}>('renderPageClientSide.ts', { renderCounter: 0 })
+  firstRenderStartPromise: Promise<void>
+  firstRenderStartPromiseResolve: () => void
+}>(
+  'renderPageClientSide.ts',
+  (() => {
+    const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
+    return {
+      renderCounter: 0,
+      firstRenderStartPromise,
+      firstRenderStartPromiseResolve
+    }
+  })()
+)
+const { firstRenderStartPromise } = globalObject
 type PreviousPageContext = { _pageId: string } & PageContextExports
 
 type RenderArgs = {
@@ -86,6 +101,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     redirectHard(urlOriginal)
     return
   }
+
+  globalObject.firstRenderStartPromiseResolve()
+  if (isRenderOutdated()) return
 
   await renderPageNominal()
 
@@ -136,18 +154,29 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
-      let isClientRoutable: boolean
+
       if (!pageContextFromRoute._pageId) {
-        isClientRoutable = false
-      } else {
-        isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
-        if (isRenderOutdated()) return
-      }
-      if (!isClientRoutable) {
+        /*
+        // We don't use the client router to render the 404 page:
+        //  - So that the +redirects setting (https://vike.dev/redirects) can be applied.
+        //    - This is the main argument.
+        //    - See also failed CI: https://github.com/vikejs/vike/pull/1871
+        //  - So that server-side error tracking can track 404 links?
+        //    - We do use the client router for rendering the error page, so I don't think this is much of an argument.
+        await renderErrorPage({ is404: true })
+        */
         redirectHard(urlOriginal)
         return
       }
       assert(hasProp(pageContextFromRoute, '_pageId', 'string')) // Help TS
+
+      const isClientRoutable = await isClientSideRoutable(pageContextFromRoute._pageId, pageContext)
+      if (isRenderOutdated()) return
+      if (!isClientRoutable) {
+        redirectHard(urlOriginal)
+        return
+      }
+
       const isSamePage =
         pageContextFromRoute._pageId &&
         previousPageContext?._pageId &&
@@ -156,6 +185,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         // Skip's Vike's rendering; let the user handle the navigation
         return
       }
+
       pageContextRouted = pageContextFromRoute
     }
     assert(!('urlOriginal' in pageContextRouted))
@@ -237,7 +267,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     return pageContext
   }
 
-  async function renderErrorPage(args: { err?: unknown; pageContextError?: Record<string, unknown> }) {
+  async function renderErrorPage(args: { err?: unknown; pageContextError?: Record<string, unknown>; is404?: boolean }) {
     const onError = (err: unknown) => {
       if (!isSameErrorMessage(err, args.err)) {
         /* When we can't render the error page, we prefer showing a blank page over letting the server-side try because otherwise:
@@ -267,9 +297,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     const pageContext = await getPageContextBegin()
     if (isRenderOutdated()) return
 
-    if (args.pageContextError) {
-      objectAssign(pageContext, args.pageContextError)
-    }
+    if (args.is404) objectAssign(pageContext, { is404: true })
+    if (args.pageContextError) objectAssign(pageContext, args.pageContextError)
 
     if ('err' in args) {
       const { err } = args
@@ -328,6 +357,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     objectAssign(pageContext, {
       _pageId: errorPageId
     })
+
+    const isClientRoutable = await isClientSideRoutable(pageContext._pageId, pageContext)
+    if (isRenderOutdated()) return
+    if (!isClientRoutable) {
+      redirectHard(urlOriginal)
+      return
+    }
 
     try {
       objectAssign(

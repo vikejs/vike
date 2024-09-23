@@ -58,7 +58,7 @@ type HookNameOldDesign = 'render' | 'prerender'
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
-  | 'clientEntryLoaded'
+  | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
   | 'dataEnv'
   | 'hooksTimeout'
@@ -423,7 +423,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/injectScriptsAt
    */
-  injectScriptsAt?: 'HTML_BEGIN' | 'HTML_END' | 'STREAM' | null
+  injectScriptsAt?: 'HTML_BEGIN' | 'HTML_END' | 'HTML_STREAM' | null
 
   /** Used by Vike extensions to set their name.
    *

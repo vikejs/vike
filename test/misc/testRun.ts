@@ -1,7 +1,7 @@
 export { testRun }
 
-import { test, expect, fetch, fetchHtml, page, getServerUrl, autoRetry, sleep } from '@brillout/test-e2e'
-import { testCounter } from '../utils'
+import { test, expect, fetch, fetchHtml, page, getServerUrl, autoRetry, sleep, expectLog } from '@brillout/test-e2e'
+import { expectUrl, testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react-minimal/.testRun'
 import fs from 'fs'
 import path from 'path'
@@ -17,6 +17,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testSideExports()
   testPrerenderSettings()
   testRedirectMailto()
+  testNavigateEarly()
+  testDynamicImportFileEnv()
   testNestedConfigWorkaround()
   testHistoryPushState()
 }
@@ -85,6 +87,32 @@ function testRedirectMailto() {
   })
 }
 
+function testNavigateEarly() {
+  test('Calling navigate() early in +client.js', async () => {
+    await page.goto(getServerUrl() + '/navigate-early')
+    await autoRetry(
+      () => {
+        expectUrl('/markdown')
+      },
+      { timeout: 5000 }
+    )
+  })
+}
+
+function testDynamicImportFileEnv() {
+  test('Dyanmic import() of .client.js and .server.js', async () => {
+    await page.goto(getServerUrl() + '/dynamic-import-file-env')
+    expect(await page.textContent('body')).toContain('Dyanmic import() of .client.js and .server.js')
+    expectLog('hello from server', (log) => log.logSource === 'stdout')
+    await autoRetry(
+      () => {
+        expectLog('hello from client', (log) => log.logSource === 'Browser Log')
+      },
+      { timeout: 5000 }
+    )
+  })
+}
+
 function testNestedConfigWorkaround() {
   // See comment in /test/misc/pages/+config.ts
   test('Nested config workaround', async () => {
@@ -107,35 +135,35 @@ function testHistoryPushState() {
     expect(timestamp2 > timestamp1).toBe(true)
 
     // calling history.pushState() doesn't lead to a re-render, thus timestamp doesn't change
-    await expectUrl('/pushState')
+    expectUrl('/pushState')
     {
       const btn = page.locator('button', { hasText: 'Change URL' })
       await btn.click()
     }
-    await expectUrl('/pushState?query')
+    expectUrl('/pushState?query')
     const timestamp3 = await getTimestamp()
     expect(timestamp3).toBe(timestamp2)
 
     // navigating back doesn't lead to a re-render, thus timestamp doesn't change
     await page.goBack()
-    await expectUrl('/pushState')
+    expectUrl('/pushState')
     const timestamp4 = await getTimestamp()
     expect(timestamp4).toBe(timestamp2)
     await page.goForward()
-    await expectUrl('/pushState?query')
+    expectUrl('/pushState?query')
     const timestamp5 = await getTimestamp()
     expect(timestamp5).toBe(timestamp2)
 
     // Navigating outside the page does trigger a re-render
     await page.goBack()
     await page.goBack()
-    await expectUrl('/markdown')
+    expectUrl('/markdown')
     await page.goForward()
-    await expectUrl('/pushState')
+    expectUrl('/pushState')
     const timestamp6 = await getTimestamp()
     expect(timestamp6 > timestamp2).toBe(true)
     await page.goForward()
-    await expectUrl('/pushState?query')
+    expectUrl('/pushState?query')
     const timestamp7 = await getTimestamp()
     expect(timestamp7).toBe(timestamp6)
   })
@@ -153,14 +181,5 @@ function testHistoryPushState() {
     const timestampNow = new Date('2023-11-11').getTime()
     expect(timestamp > timestampNow).toBe(true)
     return timestamp
-  }
-
-  async function expectUrl(endsWith: `/${string}`) {
-    const url = await getUrl()
-    expect(url.endsWith(endsWith)).toBe(true)
-  }
-  async function getUrl() {
-    const url = await page.evaluate(() => location.href)
-    return url
   }
 }

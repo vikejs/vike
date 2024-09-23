@@ -1,5 +1,8 @@
 Example of defining import path aliases for Vike apps.
 
+> [!NOTE]
+> For creating a new Vike app, we recommend using [Bati](https://batijs.dev) instead of copying this example. Because this example uses a custom React integration instead of using `vike-react` which [we generally don't recommend](https://vike.dev/new#without-vike-react-vue-solid).
+
 We use:
  - [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias) for files processed by Vite.
    (All `+` files and their imports)

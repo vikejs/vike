@@ -1,7 +1,7 @@
 import { Link } from '@brillout/docpress'
 import { UseBati, UiFrameworkExtension } from '../../components'
 
-The `vike-react` package is a <Link href="/extensions">Vike extension</Link> that integrates [React](https://react.dev) in a full-fledged manner, providing a DX like a regular frontend framework such as Next.js.
+The `vike-react` package is a <Link href="/extensions">Vike extension</Link> that integrates [React](https://react.dev) in a full-fledged manner, providing a DX like a regular frontend framework like Next.js and Remix.
 
 Version history: [`CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)  
 Examples: [Bati](https://batijs.dev) and [`examples/`](https://github.com/vikejs/vike-react/tree/main/examples)  
@@ -59,7 +59,7 @@ export default {
 
 ## Under the hood
 
-The `vike-react` extension is only `494` lines of code ([as of April 2024](https://gist.github.com/brillout/6267ecb8c996fb4a401985106cc81936)).
+The `vike-react` extension is only [around 1k lines of code](https://gist.github.com/brillout/6267ecb8c996fb4a401985106cc81936).
 It's simple, readable, and highly polished.
 
 Reading the [source code of `vike-react`](https://github.com/vikejs/vike-react) is very much an option for understanding, debugging, and/or contributing.
@@ -70,9 +70,9 @@ Essentially `vike-react` does this:
 - Sets <Link href="/hooks">Vike hooks</Link> and <Link href="/settings">Vike settings</Link> on your behalf.
   > Most notably:
   > - <Link href="/onRenderHtml">`onRenderHtml()`</Link>
-  >   (see [renderer/onRenderHtml.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderHtml.tsx))
+  >   (see [integration/onRenderHtml.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/integration/onRenderHtml.tsx))
   > - <Link href="/onRenderClient">`onRenderClient()`</Link>
-  >   (see [renderer/onRenderClient.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/renderer/onRenderClient.tsx))
+  >   (see [integration/onRenderClient.tsx](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/src/integration/onRenderClient.tsx))
 - Creates new Vike settings and new Vike hooks. (By using <Link href="/meta" />.)
   > For example <Link href="/Layout">`<Layout>`</Link> and <Link href="/ssr">`ssr`</Link>.
 - Implements React component hooks.

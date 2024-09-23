@@ -19,13 +19,22 @@ importers:
         version: 0.5.33
       '@brillout/test-types':
         specifier: ^0.1.13
-        version: 0.1.14(typescript@5.5.4)
+        version: 0.1.14(typescript@5.6.2)
+      playwright:
+        specifier: ^1.47.0
+        version: 1.47.0
       prettier:
         specifier: ^3.2.5
         version: 3.3.0
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@20.13.0)(terser@5.31.0)
+
+  .github/workflows/ci:
+    dependencies:
+      typescript:
+        specifier: ^5.6.2
+        version: 5.6.2
 
   boilerplates:
     dependencies:
@@ -163,13 +172,13 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.4))
+        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.6.2))
       '@vue/compiler-sfc':
         specifier: ^3.3.10
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.3.10
-        version: 3.4.27(vue@3.4.27(typescript@5.5.4))
+        version: 3.4.27(vue@3.4.27(typescript@5.6.2))
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -193,7 +202,7 @@ importers:
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.3.10
-        version: 3.4.27(typescript@5.5.4)
+        version: 3.4.27(typescript@5.6.2)
 
   boilerplates/boilerplate-vue-ts:
     dependencies:
@@ -252,8 +261,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.6.17
-        version: 0.6.17(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(typescript@5.5.3)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+        specifier: ^0.7.2
+        version: 0.7.2(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.5.3)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
       '@types/node':
         specifier: ^20.11.16
         version: 20.13.0
@@ -296,6 +305,9 @@ importers:
       cookie-parser:
         specifier: ^1.4.6
         version: 1.4.6
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       express:
         specifier: ^4.18.2
         version: 4.19.2
@@ -463,13 +475,13 @@ importers:
         version: 0.3.2
       '@vitejs/plugin-vue':
         specifier: ^5.0.5
-        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.4))
+        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.6.2))
       '@vue/compiler-sfc':
         specifier: ^3.4.27
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.4.27
-        version: 3.4.27(vue@3.4.27(typescript@5.5.4))
+        version: 3.4.27(vue@3.4.27(typescript@5.6.2))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -478,7 +490,7 @@ importers:
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.4.27
-        version: 3.4.27(typescript@5.5.4)
+        version: 3.4.27(typescript@5.6.2)
       wrangler:
         specifier: ^3.58.0
         version: 3.58.0
@@ -536,6 +548,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.3.0(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -704,6 +719,9 @@ importers:
       compression:
         specifier: ^1.7.4
         version: 1.7.4
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       express:
         specifier: ^4.18.1
         version: 4.19.2
@@ -713,6 +731,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
+      sirv:
+        specifier: ^2.0.0
+        version: 2.0.4
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -752,72 +773,6 @@ importers:
       vike:
         specifier: link:../../vike
         version: link:../../vike
-      vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
-
-  examples/vanilla:
-    dependencies:
-      typescript:
-        specifier: 4.8.4
-        version: 4.8.4
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
-
-  examples/vike-react:
-    dependencies:
-      '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.3
-      '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.0
-      '@vitejs/plugin-react':
-        specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
-      node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
-      typescript:
-        specifier: ^5.5.4
-        version: 5.5.4
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vike-react:
-        specifier: ^0.5.2
-        version: 0.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)
-      vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
-
-  examples/vike-react-simple:
-    dependencies:
-      '@vitejs/plugin-react':
-        specifier: ^4.2.1
-        version: 4.3.0(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vike-react-simple:
-        specifier: ^0.2.0
-        version: 0.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike)
       vite:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
@@ -868,13 +823,13 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.4))
+        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.6.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.2.47
-        version: 3.4.27(vue@3.4.27(typescript@5.5.4))
+        version: 3.4.27(vue@3.4.27(typescript@5.6.2))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -883,34 +838,7 @@ importers:
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.47
-        version: 3.4.27(typescript@5.5.4)
-
-  examples/webpack:
-    dependencies:
-      express:
-        specifier: ^4.18.2
-        version: 4.19.2
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      rimraf:
-        specifier: ^5.0.0
-        version: 5.0.7
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
-      webpack:
-        specifier: ^5.79.0
-        version: 5.91.0(webpack-cli@5.1.4)
-      webpack-cli:
-        specifier: ^5.0.1
-        version: 5.1.4(webpack@5.91.0)
+        version: 3.4.27(typescript@5.6.2)
 
   test-deprecated-design/base-url:
     dependencies:
@@ -1057,13 +985,13 @@ importers:
         version: 0.2.0
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.4))
+        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.6.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.2.47
-        version: 3.4.27(vue@3.4.27(typescript@5.5.4))
+        version: 3.4.27(vue@3.4.27(typescript@5.6.2))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1072,7 +1000,7 @@ importers:
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.47
-        version: 3.4.27(typescript@5.5.4)
+        version: 3.4.27(typescript@5.6.2)
       wrangler:
         specifier: ^2.9.1
         version: 2.21.1(cron-schedule@3.0.6)
@@ -1333,13 +1261,13 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.4))
+        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.6.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.47
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.2.47
-        version: 3.4.27(vue@3.4.27(typescript@5.5.4))
+        version: 3.4.27(vue@3.4.27(typescript@5.6.2))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1348,7 +1276,7 @@ importers:
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.47
-        version: 3.4.27(typescript@5.5.4)
+        version: 3.4.27(typescript@5.6.2)
 
   test-deprecated-design/vue-full:
     dependencies:
@@ -1403,6 +1331,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.3.0(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+      express:
+        specifier: ^4.20.0
+        version: 4.20.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1451,6 +1382,9 @@ importers:
       compression:
         specifier: ^1.7.4
         version: 1.7.4
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       express:
         specifier: ^4.18.2
         version: 4.19.2
@@ -1544,6 +1478,12 @@ importers:
 
   test/misc:
     dependencies:
+      '@types/react':
+        specifier: ^18.2.45
+        version: 18.3.3
+      '@types/react-dom':
+        specifier: ^18.2.18
+        version: 18.3.0
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.3.0(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
@@ -1565,6 +1505,9 @@ importers:
 
   test/preload:
     dependencies:
+      '@vitejs/plugin-react':
+        specifier: ^4.3.1
+        version: 4.3.1(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1618,16 +1561,16 @@ importers:
     dependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.0
-        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.4))
+        version: 5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.6.2))
       '@vue/compiler-sfc':
         specifier: ^3.2.31
         version: 3.4.27
       '@vue/server-renderer':
         specifier: ^3.2.37
-        version: 3.4.27(vue@3.4.27(typescript@5.5.4))
+        version: 3.4.27(vue@3.4.27(typescript@5.6.2))
       pinia:
         specifier: ^2.0.14
-        version: 2.1.7(typescript@5.5.4)(vue@3.4.27(typescript@5.5.4))
+        version: 2.1.7(typescript@5.6.2)(vue@3.4.27(typescript@5.6.2))
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -1636,7 +1579,67 @@ importers:
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
       vue:
         specifier: ^3.2.37
-        version: 3.4.27(typescript@5.5.4)
+        version: 3.4.27(typescript@5.6.2)
+
+  test/vike-react:
+    dependencies:
+      '@types/react':
+        specifier: ^18.3.3
+        version: 18.3.3
+      '@types/react-dom':
+        specifier: ^18.3.0
+        version: 18.3.0
+      '@vitejs/plugin-react':
+        specifier: ^4.3.1
+        version: 4.3.1(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+      node-fetch:
+        specifier: ^3.3.2
+        version: 3.3.2
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      typescript:
+        specifier: ^5.5.4
+        version: 5.5.4
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vike-react:
+        specifier: ^0.5.2
+        version: 0.5.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)
+      vite:
+        specifier: ^5.4.0
+        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
+
+  test/webpack:
+    dependencies:
+      express:
+        specifier: ^4.18.2
+        version: 4.19.2
+      react:
+        specifier: ^18.2.0
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.3.1(react@18.3.1)
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.7
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^5.4.0
+        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
+      webpack:
+        specifier: ^5.79.0
+        version: 5.91.0(webpack-cli@5.1.4)
+      webpack-cli:
+        specifier: ^5.0.1
+        version: 5.1.4(webpack@5.91.0)
 
   vike:
     dependencies:
@@ -1647,8 +1650,8 @@ importers:
         specifier: ^0.5.13
         version: 0.5.13
       '@brillout/picocolors':
-        specifier: ^1.0.14
-        version: 1.0.14
+        specifier: ^1.0.15
+        version: 1.0.15
       '@brillout/require-shim':
         specifier: ^0.1.2
         version: 0.1.2
@@ -1684,8 +1687,8 @@ importers:
         specifier: ^1.5.3
         version: 1.7.3
       '@brillout/release-me':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.4.2
+        version: 0.4.2
       '@types/estree':
         specifier: ^1.0.5
         version: 1.0.5
@@ -1698,6 +1701,9 @@ importers:
       '@types/resolve':
         specifier: ^1.20.6
         version: 1.20.6
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.5.8
       '@types/source-map-support':
         specifier: ^0.5.10
         version: 0.5.10
@@ -1708,13 +1714,78 @@ importers:
         specifier: ^5.0.5
         version: 5.0.7
       typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
+        specifier: ^5.6.2
+        version: 5.6.2
       vite:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
 
 packages:
+
+  '@algolia/autocomplete-core@1.9.3':
+    resolution: {integrity: sha512-009HdfugtGCdC4JdXUbVJClA0q0zh24yyePn+KUGk3rP7j8FEe/m5Yo/z65gn6nP/cM39PxpzqKrL7A6fP6PPw==}
+
+  '@algolia/autocomplete-plugin-algolia-insights@1.9.3':
+    resolution: {integrity: sha512-a/yTUkcO/Vyy+JffmAnTWbr4/90cLzw+CC3bRbhnULr/EM0fGNvM13oQQ14f2moLMcVDyAx/leczLlAOovhSZg==}
+    peerDependencies:
+      search-insights: '>= 1 < 3'
+
+  '@algolia/autocomplete-preset-algolia@1.9.3':
+    resolution: {integrity: sha512-d4qlt6YmrLMYy95n5TB52wtNDr6EgAIPH81dvvvW8UmuWRgxEtY0NJiPwl/h95JtG2vmRM804M0DSwMCNZlzRA==}
+    peerDependencies:
+      '@algolia/client-search': '>= 4.9.1 < 6'
+      algoliasearch: '>= 4.9.1 < 6'
+
+  '@algolia/autocomplete-shared@1.9.3':
+    resolution: {integrity: sha512-Wnm9E4Ye6Rl6sTTqjoymD+l8DjSTHsHboVRYrKgEt8Q7UHm9nYbqhN/i0fhUYA3OAEH7WA8x3jfpnmJm3rKvaQ==}
+    peerDependencies:
+      '@algolia/client-search': '>= 4.9.1 < 6'
+      algoliasearch: '>= 4.9.1 < 6'
+
+  '@algolia/cache-browser-local-storage@4.24.0':
+    resolution: {integrity: sha512-t63W9BnoXVrGy9iYHBgObNXqYXM3tYXCjDSHeNwnsc324r4o5UiVKUiAB4THQ5z9U5hTj6qUvwg/Ez43ZD85ww==}
+
+  '@algolia/cache-common@4.24.0':
+    resolution: {integrity: sha512-emi+v+DmVLpMGhp0V9q9h5CdkURsNmFC+cOS6uK9ndeJm9J4TiqSvPYVu+THUP8P/S08rxf5x2P+p3CfID0Y4g==}
+
+  '@algolia/cache-in-memory@4.24.0':
+    resolution: {integrity: sha512-gDrt2so19jW26jY3/MkFg5mEypFIPbPoXsQGQWAi6TrCPsNOSEYepBMPlucqWigsmEy/prp5ug2jy/N3PVG/8w==}
+
+  '@algolia/client-account@4.24.0':
+    resolution: {integrity: sha512-adcvyJ3KjPZFDybxlqnf+5KgxJtBjwTPTeyG2aOyoJvx0Y8dUQAEOEVOJ/GBxX0WWNbmaSrhDURMhc+QeevDsA==}
+
+  '@algolia/client-analytics@4.24.0':
+    resolution: {integrity: sha512-y8jOZt1OjwWU4N2qr8G4AxXAzaa8DBvyHTWlHzX/7Me1LX8OayfgHexqrsL4vSBcoMmVw2XnVW9MhL+Y2ZDJXg==}
+
+  '@algolia/client-common@4.24.0':
+    resolution: {integrity: sha512-bc2ROsNL6w6rqpl5jj/UywlIYC21TwSSoFHKl01lYirGMW+9Eek6r02Tocg4gZ8HAw3iBvu6XQiM3BEbmEMoiA==}
+
+  '@algolia/client-personalization@4.24.0':
+    resolution: {integrity: sha512-l5FRFm/yngztweU0HdUzz1rC4yoWCFo3IF+dVIVTfEPg906eZg5BOd1k0K6rZx5JzyyoP4LdmOikfkfGsKVE9w==}
+
+  '@algolia/client-search@4.24.0':
+    resolution: {integrity: sha512-uRW6EpNapmLAD0mW47OXqTP8eiIx5F6qN9/x/7HHO6owL3N1IXqydGwW5nhDFBrV+ldouro2W1VX3XlcUXEFCA==}
+
+  '@algolia/logger-common@4.24.0':
+    resolution: {integrity: sha512-LLUNjkahj9KtKYrQhFKCzMx0BY3RnNP4FEtO+sBybCjJ73E8jNdaKJ/Dd8A/VA4imVHP5tADZ8pn5B8Ga/wTMA==}
+
+  '@algolia/logger-console@4.24.0':
+    resolution: {integrity: sha512-X4C8IoHgHfiUROfoRCV+lzSy+LHMgkoEEU1BbKcsfnV0i0S20zyy0NLww9dwVHUWNfPPxdMU+/wKmLGYf96yTg==}
+
+  '@algolia/recommend@4.24.0':
+    resolution: {integrity: sha512-P9kcgerfVBpfYHDfVZDvvdJv0lEoCvzNlOy2nykyt5bK8TyieYyiD0lguIJdRZZYGre03WIAFf14pgE+V+IBlw==}
+
+  '@algolia/requester-browser-xhr@4.24.0':
+    resolution: {integrity: sha512-Z2NxZMb6+nVXSjF13YpjYTdvV3032YTBSGm2vnYvYPA6mMxzM3v5rsCiSspndn9rzIW4Qp1lPHBvuoKJV6jnAA==}
+
+  '@algolia/requester-common@4.24.0':
+    resolution: {integrity: sha512-k3CXJ2OVnvgE3HMwcojpvY6d9kgKMPRxs/kVohrwF5WMr2fnqojnycZkxPoEg+bXm8fi5BBfFmOqgYztRtHsQA==}
+
+  '@algolia/requester-node-http@4.24.0':
+    resolution: {integrity: sha512-JF18yTjNOVYvU/L3UosRcvbPMGT9B+/GQWNWnenIImglzNVGpyzChkXLnrSf6uxwVNO6ESGu6oN8MqcGQcjQJw==}
+
+  '@algolia/transporter@4.24.0':
+    resolution: {integrity: sha512-86nI7w6NzWxd1Zp9q3413dRshDqAzSbsQjhcDhPIatEFiZrL1/TjnHL8S7jVKFePlIMzDsZWXAXwXzcok9c5oA==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -1895,8 +1966,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.6.17':
-    resolution: {integrity: sha512-CKmaPK0qTdjOhhAP4oIAxn3CThqV0yclKCFetzfg67HyxcUAPV33ThIJRMKInaxPAXsAUD9g8fH86K3ZYNsB7Q==}
+  '@brillout/docpress@0.7.2':
+    resolution: {integrity: sha512-51u5lkrdbU7U3h1oAy51o7pvBak0XtiUCyzN1h1NYFkFvUUSmr+BMAGDexvtROvL3jJP38A+cokr8RkdF+N0FQ==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -1904,7 +1975,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '*'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.2.0'
 
   '@brillout/import@0.2.3':
@@ -1925,8 +1996,11 @@ packages:
   '@brillout/picocolors@1.0.14':
     resolution: {integrity: sha512-XhyZY3/FUh56mDuLIjv5kN9qy+oQj7A/d2uQ6cJJ4uVv55+velua3abcrM5WIvs2RHZGA3EE7S9FWo+TjF10ew==}
 
-  '@brillout/release-me@0.4.0':
-    resolution: {integrity: sha512-V4YwITguHK3zOy9B4606lc9PQiFDp3p3Ifeq4KF7V8o9fs7OmcrfTWBE0EWFtiLhG2JeKb2RzM0t6Y4tLgXd6w==}
+  '@brillout/picocolors@1.0.15':
+    resolution: {integrity: sha512-VrgvPtfnKP/i8kxCAyQVd0DWg6xU8OZJndbLf/lrywd96UdMhnGL/PK42HhHhhwkDSkaiQU+zc+OPWpvqOe4Cg==}
+
+  '@brillout/release-me@0.4.2':
+    resolution: {integrity: sha512-bPXYKz7uLTs9OWoPzi4Jq9gV59RY8JwfaVw8E0o0Wf1lrO5kAxKGzYCi84Oy/NhZ31ytk7M955V3/YijQ2Ijwg==}
     hasBin: true
 
   '@brillout/require-shim@0.1.2':
@@ -1992,6 +2066,26 @@ packages:
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
     engines: {node: '>=10.0.0'}
+
+  '@docsearch/css@3.6.1':
+    resolution: {integrity: sha512-VtVb5DS+0hRIprU2CO6ZQjK2Zg4QU5HrDM1+ix6rT0umsYvFvatMAnf97NHZlVWDaaLlx7GRfR/7FikANiM2Fg==}
+
+  '@docsearch/react@3.6.1':
+    resolution: {integrity: sha512-qXZkEPvybVhSXj0K7U3bXc233tk5e8PfhoZ6MhPOiik/qUQxYC+Dn9DnoS7CxHQQhHfCvTiN0eY9M12oRghEXw==}
+    peerDependencies:
+      '@types/react': '>= 16.8.0 < 19.0.0'
+      react: '>= 16.8.0 < 19.0.0'
+      react-dom: '>= 16.8.0 < 19.0.0'
+      search-insights: '>= 1 < 3'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      search-insights:
+        optional: true
 
   '@esbuild-plugins/node-globals-polyfill@0.1.1':
     resolution: {integrity: sha512-MR0oAA+mlnJWrt1RQVQ+4VYuRJW/P2YmRTv1AsplObyvuBMnPHiizUF95HHYiSsMGLhyGtWufaq2XQg6+iurBg==}
@@ -3593,6 +3687,9 @@ packages:
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
 
+  algoliasearch@4.24.0:
+    resolution: {integrity: sha512-bf0QV/9jVejssFBmz2HQLxUadxk574t4iwjCKp5E7NBzwKkrDEhKPISIIjAU/p6K5qDx3qoeh4+26zWN1jmw3g==}
+
   ansi-align@3.0.1:
     resolution: {integrity: sha512-IOfwwBF5iczOjp/WeY4YxyjqAFMQoZufdQWDd19SEExbVLNXqvpzSJ/M7Za4/sCPmQ0+GRquoA7bGcINcxew6w==}
 
@@ -3726,6 +3823,10 @@ packages:
 
   body-parser@1.20.2:
     resolution: {integrity: sha512-ml9pReCu3M61kGlqoTm2umSXTlRTuGTx0bfYj+uIUKKYycG5NtSbeetV3faSU6R7ajOPw0g/J1PvK4qNy7s5bA==}
+    engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
+
+  body-parser@1.20.3:
+    resolution: {integrity: sha512-7rAxByjUMqQ3/bHJy7D6OGXvx/MMc4IqBn/X0fcM1QUcAItpZrBEYhWGem+tzXH90c+G01ypMcYJBO9Y30203g==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
 
   boxen@5.1.2:
@@ -4201,6 +4302,10 @@ packages:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
     engines: {node: '>= 0.8'}
 
+  encodeurl@2.0.0:
+    resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
+    engines: {node: '>= 0.8'}
+
   end-of-stream@1.4.4:
     resolution: {integrity: sha512-+uw1inIHVPQoaVuHzRyXd21icM+cnt4CzD5rW+NC1wjOUSTOs+Te7FOv7AhN7vS9x/oIyhLP5PR1H+phQAHu5Q==}
 
@@ -4455,6 +4560,10 @@ packages:
     resolution: {integrity: sha512-5T6nhjsT+EOMzuck8JjBHARTHfMht0POzlA60WV2pMD3gyXw2LZnZ+ueGdNxG+0calOJcWKbpFcuzLZ91YWq9Q==}
     engines: {node: '>= 0.10.0'}
 
+  express@4.20.0:
+    resolution: {integrity: sha512-pLdae7I6QqShF5PnNTCVn4hI91Dx0Grkn2+IAsMTgMIKuQVte2dN9PeGSSAME2FR8anOhVA62QDIUaWVfEXVLw==}
+    engines: {node: '>= 0.10.0'}
+
   extend-shallow@2.0.1:
     resolution: {integrity: sha512-zCnTtlxNoAiDc3gqY2aYAWFx7XWWiasuF2K8Me5WbN8otHKTUKBwjPtNpRs/rbUZm7KxWAaNj7P1a/p52GbVug==}
     engines: {node: '>=0.10.0'}
@@ -4549,6 +4658,11 @@ packages:
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
+
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
 
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
@@ -5273,6 +5387,9 @@ packages:
   merge-descriptors@1.0.1:
     resolution: {integrity: sha512-cCi6g3/Zr1iqQi6ySbseM1Xvooa98N0w31jzUYrXPX2xqObmFGHJ0tQ5u74H3mVh7wLouTseZyYIq39g8cNp1w==}
 
+  merge-descriptors@1.0.3:
+    resolution: {integrity: sha512-gaNvAS7TZ897/rVaZ0nMtAyxNyi/pdbjbAwUpFQpN70GqnVfOiXpeUUMKRBmzXaSQ8DdTX4/0ms62r2K+hE6mQ==}
+
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
 
@@ -5805,6 +5922,9 @@ packages:
     resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
     engines: {node: '>=16 || 14 >=14.18'}
 
+  path-to-regexp@0.1.10:
+    resolution: {integrity: sha512-7lf7qcQidTku0Gu3YDPc8DJ1q7OOucfa/BSsIwjuh56VU7katFvuM8hULfkwB3Fns/rsVF7PwPKVw1sl5KQS9w==}
+
   path-to-regexp@0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
 
@@ -5865,6 +5985,16 @@ packages:
 
   playwright-core@1.45.0:
     resolution: {integrity: sha512-lZmHlFQ0VYSpAs43dRq1/nJ9G/6SiTI7VPqidld9TDefL9tX87bTKExWZZUF5PeRyqtXqd8fQi2qmfIedkwsNQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright-core@1.47.0:
+    resolution: {integrity: sha512-1DyHT8OqkcfCkYUD9zzUTfg7EfTd+6a8MkD/NWOvjo0u/SCNd5YmY/lJwFvUZOxJbWNds+ei7ic2+R/cRz/PDg==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.47.0:
+    resolution: {integrity: sha512-jOWiRq2pdNAX/mwLiwFYnPHpEZ4rM+fRSQpRHwEwZlP2PUANvL3+aJOF/bvISMhFD30rqMxUB4RJx9aQbfh4Ww==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -5930,6 +6060,10 @@ packages:
 
   qs@6.11.0:
     resolution: {integrity: sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==}
+    engines: {node: '>=0.6'}
+
+  qs@6.13.0:
+    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
     engines: {node: '>=0.6'}
 
   queue-microtask@1.2.3:
@@ -6161,6 +6295,9 @@ packages:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
     engines: {node: '>= 10.13.0'}
 
+  search-insights@2.17.2:
+    resolution: {integrity: sha512-zFNpOpUO+tY2D85KrxJ+aqwnIfdEGi06UH2+xEb+Bp9Mwznmauqc9djbnBibJO5mpfUPPa8st6Sx65+vbeO45g==}
+
   section-matter@1.0.0:
     resolution: {integrity: sha512-vfD3pmTzGpufjScBh50YHKzEu2lxBWhVEHsNGoEXmCmn2hKGfeNLYMzCJpe8cD7gqX7TJluOVpBkAequ6dgMmA==}
     engines: {node: '>=4'}
@@ -6190,6 +6327,10 @@ packages:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
     engines: {node: '>= 0.8.0'}
 
+  send@0.19.0:
+    resolution: {integrity: sha512-dW41u5VfLXu8SJh5bwRmyYUbAoSB3c9uQh6L8h/KtsFREPWpbX1lrljJo186Jc4nmci/sGUZ9a0a0J2zgfq2hw==}
+    engines: {node: '>= 0.8.0'}
+
   serialize-javascript@6.0.2:
     resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
@@ -6198,6 +6339,10 @@ packages:
 
   serve-static@1.15.0:
     resolution: {integrity: sha512-XGuRDNjXUijsUL0vl6nSD7cwURuzEgglbOaFuZM9g3kwDXOWVTck0jLzjPzGD+TazWbboZYu52/9/XPdUgne9g==}
+    engines: {node: '>= 0.8.0'}
+
+  serve-static@1.16.0:
+    resolution: {integrity: sha512-pDLK8zwl2eKaYrs8mrPZBJua4hMplRWJ1tIFksVC3FtBEBnl8dxgeHtsaMS8DhS9i4fLObaon6ABoc4/hQGdPA==}
     engines: {node: '>= 0.8.0'}
 
   serve@13.0.4:
@@ -6612,6 +6757,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typescript@5.6.2:
+    resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
 
@@ -6758,19 +6908,12 @@ packages:
   vike-contributors@0.0.9:
     resolution: {integrity: sha512-uOvGIv5XZZ7Gm9BdQty/K2f22641+ZTBH1Ccq7Qh/uvH2gI+SA8npSSS6zwdVlSWFsvecZqSn45AYKrAYSIMNg==}
 
-  vike-react-simple@0.2.0:
-    resolution: {integrity: sha512-A87keGdPDswMqTvB3aGmyiYjh3VjC467t53LiBORiYUtaiKLNXzAQpm36QxlVjyiZrs8/QcVYymcOg84ZGihMg==}
-    peerDependencies:
-      react: 18.x.x
-      react-dom: 18.x.x
-      vike: link:/home/rom/tmp/vike/vike/
-
   vike-react@0.4.16:
     resolution: {integrity: sha512-lawyL8HHjVgDNwPRp21qsmOLHokGdjElm6zgKaVg0ul5Dcv6JxglaTfqq5P8NU6V8MW4vYd7WqxSpv64iscu4Q==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=4.3.8'
 
   vike-react@0.5.2:
@@ -6778,7 +6921,7 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
 
   vite-node@2.0.5:
     resolution: {integrity: sha512-LdsW4pxj0Ot69FAoXZ1yTnA9bjGohr2yNBU7QKRxpz8ITSkhuDl6h3zS/tvgz4qrNjeRnvrWeXQ8ZF7Um4W00Q==}
@@ -7088,6 +7231,110 @@ packages:
 
 snapshots:
 
+  '@algolia/autocomplete-core@1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)(search-insights@2.17.2)':
+    dependencies:
+      '@algolia/autocomplete-plugin-algolia-insights': 1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)(search-insights@2.17.2)
+      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)
+    transitivePeerDependencies:
+      - '@algolia/client-search'
+      - algoliasearch
+      - search-insights
+
+  '@algolia/autocomplete-plugin-algolia-insights@1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)(search-insights@2.17.2)':
+    dependencies:
+      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)
+      search-insights: 2.17.2
+    transitivePeerDependencies:
+      - '@algolia/client-search'
+      - algoliasearch
+
+  '@algolia/autocomplete-preset-algolia@1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)':
+    dependencies:
+      '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)
+      '@algolia/client-search': 4.24.0
+      algoliasearch: 4.24.0
+
+  '@algolia/autocomplete-shared@1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)':
+    dependencies:
+      '@algolia/client-search': 4.24.0
+      algoliasearch: 4.24.0
+
+  '@algolia/cache-browser-local-storage@4.24.0':
+    dependencies:
+      '@algolia/cache-common': 4.24.0
+
+  '@algolia/cache-common@4.24.0': {}
+
+  '@algolia/cache-in-memory@4.24.0':
+    dependencies:
+      '@algolia/cache-common': 4.24.0
+
+  '@algolia/client-account@4.24.0':
+    dependencies:
+      '@algolia/client-common': 4.24.0
+      '@algolia/client-search': 4.24.0
+      '@algolia/transporter': 4.24.0
+
+  '@algolia/client-analytics@4.24.0':
+    dependencies:
+      '@algolia/client-common': 4.24.0
+      '@algolia/client-search': 4.24.0
+      '@algolia/requester-common': 4.24.0
+      '@algolia/transporter': 4.24.0
+
+  '@algolia/client-common@4.24.0':
+    dependencies:
+      '@algolia/requester-common': 4.24.0
+      '@algolia/transporter': 4.24.0
+
+  '@algolia/client-personalization@4.24.0':
+    dependencies:
+      '@algolia/client-common': 4.24.0
+      '@algolia/requester-common': 4.24.0
+      '@algolia/transporter': 4.24.0
+
+  '@algolia/client-search@4.24.0':
+    dependencies:
+      '@algolia/client-common': 4.24.0
+      '@algolia/requester-common': 4.24.0
+      '@algolia/transporter': 4.24.0
+
+  '@algolia/logger-common@4.24.0': {}
+
+  '@algolia/logger-console@4.24.0':
+    dependencies:
+      '@algolia/logger-common': 4.24.0
+
+  '@algolia/recommend@4.24.0':
+    dependencies:
+      '@algolia/cache-browser-local-storage': 4.24.0
+      '@algolia/cache-common': 4.24.0
+      '@algolia/cache-in-memory': 4.24.0
+      '@algolia/client-common': 4.24.0
+      '@algolia/client-search': 4.24.0
+      '@algolia/logger-common': 4.24.0
+      '@algolia/logger-console': 4.24.0
+      '@algolia/requester-browser-xhr': 4.24.0
+      '@algolia/requester-common': 4.24.0
+      '@algolia/requester-node-http': 4.24.0
+      '@algolia/transporter': 4.24.0
+
+  '@algolia/requester-browser-xhr@4.24.0':
+    dependencies:
+      '@algolia/requester-common': 4.24.0
+
+  '@algolia/requester-common@4.24.0': {}
+
+  '@algolia/requester-node-http@4.24.0':
+    dependencies:
+      '@algolia/requester-common': 4.24.0
+
+  '@algolia/transporter@4.24.0':
+    dependencies:
+      '@algolia/cache-common': 4.24.0
+      '@algolia/logger-common': 4.24.0
+      '@algolia/requester-common': 4.24.0
+
   '@ampproject/remapping@2.3.0':
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
@@ -7285,9 +7532,11 @@ snapshots:
   '@biomejs/cli-win32-x64@1.7.3':
     optional: true
 
-  '@brillout/docpress@0.6.17(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(typescript@5.5.3)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
+  '@brillout/docpress@0.7.2(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.5.3)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
     dependencies:
-      '@brillout/picocolors': 1.0.14
+      '@brillout/picocolors': 1.0.15
+      '@docsearch/css': 3.6.1
+      '@docsearch/react': 3.6.1(@algolia/client-search@4.24.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(search-insights@2.17.2)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@18.3.3)(react@18.2.0)
       '@mdx-js/rollup': 3.0.1(rollup@4.18.0)
@@ -7307,8 +7556,10 @@ snapshots:
       vike-contributors: 0.0.9
       vite: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
     transitivePeerDependencies:
+      - '@algolia/client-search'
       - '@swc/helpers'
       - rollup
+      - search-insights
       - supports-color
 
   '@brillout/import@0.2.3': {}
@@ -7323,9 +7574,11 @@ snapshots:
 
   '@brillout/picocolors@1.0.14': {}
 
-  '@brillout/release-me@0.4.0':
+  '@brillout/picocolors@1.0.15': {}
+
+  '@brillout/release-me@0.4.2':
     dependencies:
-      '@brillout/picocolors': 1.0.14
+      '@brillout/picocolors': 1.0.15
       commander: 11.1.0
       conventional-changelog: 5.1.0
       execa: 5.1.1
@@ -7349,12 +7602,12 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@brillout/test-types@0.1.14(typescript@5.5.4)':
+  '@brillout/test-types@0.1.14(typescript@5.6.2)':
     dependencies:
       '@brillout/picocolors': 1.0.12
       fast-glob: 3.3.2
       source-map-support: 0.5.21
-      typescript: 5.5.4
+      typescript: 5.6.2
 
   '@brillout/vite-plugin-server-entry@0.4.10':
     dependencies:
@@ -7392,6 +7645,22 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.9
 
   '@discoveryjs/json-ext@0.5.7': {}
+
+  '@docsearch/css@3.6.1': {}
+
+  '@docsearch/react@3.6.1(@algolia/client-search@4.24.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(search-insights@2.17.2)':
+    dependencies:
+      '@algolia/autocomplete-core': 1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)(search-insights@2.17.2)
+      '@algolia/autocomplete-preset-algolia': 1.9.3(@algolia/client-search@4.24.0)(algoliasearch@4.24.0)
+      '@docsearch/css': 3.6.1
+      algoliasearch: 4.24.0
+    optionalDependencies:
+      '@types/react': 18.3.3
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      search-insights: 2.17.2
+    transitivePeerDependencies:
+      - '@algolia/client-search'
 
   '@esbuild-plugins/node-globals-polyfill@0.1.1(esbuild@0.16.3)':
     dependencies:
@@ -8580,10 +8849,10 @@ snapshots:
       vite: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
       vue: 3.4.27(typescript@5.5.3)
 
-  '@vitejs/plugin-vue@5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.5.4))':
+  '@vitejs/plugin-vue@5.0.5(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))(vue@3.4.27(typescript@5.6.2))':
     dependencies:
       vite: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
-      vue: 3.4.27(typescript@5.5.4)
+      vue: 3.4.27(typescript@5.6.2)
 
   '@vitest/expect@2.0.5':
     dependencies:
@@ -8785,11 +9054,11 @@ snapshots:
       '@vue/shared': 3.4.27
       vue: 3.4.27(typescript@5.5.3)
 
-  '@vue/server-renderer@3.4.27(vue@3.4.27(typescript@5.5.4))':
+  '@vue/server-renderer@3.4.27(vue@3.4.27(typescript@5.6.2))':
     dependencies:
       '@vue/compiler-ssr': 3.4.27
       '@vue/shared': 3.4.27
-      vue: 3.4.27(typescript@5.5.4)
+      vue: 3.4.27(typescript@5.6.2)
 
   '@vue/shared@3.2.33': {}
 
@@ -8942,6 +9211,24 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
+
+  algoliasearch@4.24.0:
+    dependencies:
+      '@algolia/cache-browser-local-storage': 4.24.0
+      '@algolia/cache-common': 4.24.0
+      '@algolia/cache-in-memory': 4.24.0
+      '@algolia/client-account': 4.24.0
+      '@algolia/client-analytics': 4.24.0
+      '@algolia/client-common': 4.24.0
+      '@algolia/client-personalization': 4.24.0
+      '@algolia/client-search': 4.24.0
+      '@algolia/logger-common': 4.24.0
+      '@algolia/logger-console': 4.24.0
+      '@algolia/recommend': 4.24.0
+      '@algolia/requester-browser-xhr': 4.24.0
+      '@algolia/requester-common': 4.24.0
+      '@algolia/requester-node-http': 4.24.0
+      '@algolia/transporter': 4.24.0
 
   ansi-align@3.0.1:
     dependencies:
@@ -9105,6 +9392,23 @@ snapshots:
       iconv-lite: 0.4.24
       on-finished: 2.4.1
       qs: 6.11.0
+      raw-body: 2.5.2
+      type-is: 1.6.18
+      unpipe: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
+
+  body-parser@1.20.3:
+    dependencies:
+      bytes: 3.1.2
+      content-type: 1.0.5
+      debug: 2.6.9
+      depd: 2.0.0
+      destroy: 1.2.0
+      http-errors: 2.0.0
+      iconv-lite: 0.4.24
+      on-finished: 2.4.1
+      qs: 6.13.0
       raw-body: 2.5.2
       type-is: 1.6.18
       unpipe: 1.0.0
@@ -9595,6 +9899,8 @@ snapshots:
   emoji-regex@9.2.2: {}
 
   encodeurl@1.0.2: {}
+
+  encodeurl@2.0.0: {}
 
   end-of-stream@1.4.4:
     dependencies:
@@ -10150,6 +10456,42 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  express@4.20.0:
+    dependencies:
+      accepts: 1.3.8
+      array-flatten: 1.1.1
+      body-parser: 1.20.3
+      content-disposition: 0.5.4
+      content-type: 1.0.5
+      cookie: 0.6.0
+      cookie-signature: 1.0.6
+      debug: 2.6.9
+      depd: 2.0.0
+      encodeurl: 2.0.0
+      escape-html: 1.0.3
+      etag: 1.8.1
+      finalhandler: 1.2.0
+      fresh: 0.5.2
+      http-errors: 2.0.0
+      merge-descriptors: 1.0.3
+      methods: 1.1.2
+      on-finished: 2.4.1
+      parseurl: 1.3.3
+      path-to-regexp: 0.1.10
+      proxy-addr: 2.0.7
+      qs: 6.11.0
+      range-parser: 1.2.1
+      safe-buffer: 5.2.1
+      send: 0.19.0
+      serve-static: 1.16.0
+      setprototypeof: 1.2.0
+      statuses: 2.0.1
+      type-is: 1.6.18
+      utils-merge: 1.0.1
+      vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
+
   extend-shallow@2.0.1:
     dependencies:
       is-extendable: 0.1.1
@@ -10254,6 +10596,9 @@ snapshots:
   fresh@0.5.2: {}
 
   fs.realpath@1.0.0: {}
+
+  fsevents@2.3.2:
+    optional: true
 
   fsevents@2.3.3:
     optional: true
@@ -11201,6 +11546,8 @@ snapshots:
 
   merge-descriptors@1.0.1: {}
 
+  merge-descriptors@1.0.3: {}
+
   merge-stream@2.0.0: {}
 
   merge2@1.4.1: {}
@@ -12000,6 +12347,8 @@ snapshots:
       lru-cache: 10.2.2
       minipass: 7.1.2
 
+  path-to-regexp@0.1.10: {}
+
   path-to-regexp@0.1.7: {}
 
   path-to-regexp@2.2.1: {}
@@ -12024,13 +12373,13 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  pinia@2.1.7(typescript@5.5.4)(vue@3.4.27(typescript@5.5.4)):
+  pinia@2.1.7(typescript@5.6.2)(vue@3.4.27(typescript@5.6.2)):
     dependencies:
       '@vue/devtools-api': 6.6.2
-      vue: 3.4.27(typescript@5.5.4)
-      vue-demi: 0.14.8(vue@3.4.27(typescript@5.5.4))
+      vue: 3.4.27(typescript@5.6.2)
+      vue-demi: 0.14.8(vue@3.4.27(typescript@5.6.2))
     optionalDependencies:
-      typescript: 5.5.4
+      typescript: 5.6.2
 
   pixelmatch@5.3.0:
     dependencies:
@@ -12045,6 +12394,14 @@ snapshots:
       playwright-core: 1.45.0
 
   playwright-core@1.45.0: {}
+
+  playwright-core@1.47.0: {}
+
+  playwright@1.47.0:
+    dependencies:
+      playwright-core: 1.47.0
+    optionalDependencies:
+      fsevents: 2.3.2
 
   pngjs@6.0.0: {}
 
@@ -12106,6 +12463,10 @@ snapshots:
     dependencies:
       side-channel: 1.0.6
 
+  qs@6.13.0:
+    dependencies:
+      side-channel: 1.0.6
+
   queue-microtask@1.2.3: {}
 
   randombytes@2.1.0:
@@ -12159,7 +12520,7 @@ snapshots:
     dependencies:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.13
-      '@brillout/picocolors': 1.0.14
+      '@brillout/picocolors': 1.0.15
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -12433,6 +12794,8 @@ snapshots:
       ajv: 6.12.6
       ajv-keywords: 3.5.2(ajv@6.12.6)
 
+  search-insights@2.17.2: {}
+
   section-matter@1.0.0:
     dependencies:
       extend-shallow: 2.0.1
@@ -12469,6 +12832,24 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  send@0.19.0:
+    dependencies:
+      debug: 2.6.9
+      depd: 2.0.0
+      destroy: 1.2.0
+      encodeurl: 1.0.2
+      escape-html: 1.0.3
+      etag: 1.8.1
+      fresh: 0.5.2
+      http-errors: 2.0.0
+      mime: 1.6.0
+      ms: 2.1.3
+      on-finished: 2.4.1
+      range-parser: 1.2.1
+      statuses: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
+
   serialize-javascript@6.0.2:
     dependencies:
       randombytes: 2.1.0
@@ -12485,6 +12866,15 @@ snapshots:
       range-parser: 1.2.0
 
   serve-static@1.15.0:
+    dependencies:
+      encodeurl: 1.0.2
+      escape-html: 1.0.3
+      parseurl: 1.3.3
+      send: 0.18.0
+    transitivePeerDependencies:
+      - supports-color
+
+  serve-static@1.16.0:
     dependencies:
       encodeurl: 1.0.2
       escape-html: 1.0.3
@@ -12899,6 +13289,8 @@ snapshots:
 
   typescript@5.5.4: {}
 
+  typescript@5.6.2: {}
+
   uc.micro@1.0.6: {}
 
   uc.micro@2.1.0: {}
@@ -13109,12 +13501,6 @@ snapshots:
 
   vike-contributors@0.0.9: {}
 
-  vike-react-simple@0.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike):
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      vike: link:vike
-
   vike-react@0.4.16(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0)):
     dependencies:
       react: 18.2.0
@@ -13212,9 +13598,9 @@ snapshots:
       - supports-color
       - terser
 
-  vue-demi@0.14.8(vue@3.4.27(typescript@5.5.4)):
+  vue-demi@0.14.8(vue@3.4.27(typescript@5.6.2)):
     dependencies:
-      vue: 3.4.27(typescript@5.5.4)
+      vue: 3.4.27(typescript@5.6.2)
 
   vue-template-compiler@2.7.16:
     dependencies:
@@ -13270,15 +13656,15 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.3
 
-  vue@3.4.27(typescript@5.5.4):
+  vue@3.4.27(typescript@5.6.2):
     dependencies:
       '@vue/compiler-dom': 3.4.27
       '@vue/compiler-sfc': 3.4.27
       '@vue/runtime-dom': 3.4.27
-      '@vue/server-renderer': 3.4.27(vue@3.4.27(typescript@5.5.4))
+      '@vue/server-renderer': 3.4.27(vue@3.4.27(typescript@5.6.2))
       '@vue/shared': 3.4.27
     optionalDependencies:
-      typescript: 5.5.4
+      typescript: 5.6.2
 
   watchpack@2.4.1:
     dependencies:

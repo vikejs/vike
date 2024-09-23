@@ -38,7 +38,7 @@ type InjectFilterEntry = {
   inject: PreloadFilterInject
 }
 
-type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
+type Position = 'HTML_BEGIN' | 'HTML_END' | 'HTML_STREAM'
 type HtmlTag = {
   htmlTag: string | (() => string)
   position: Position
@@ -61,7 +61,7 @@ function getHtmlTags(
       if (asset.isEntry && asset.assetType === 'script') {
         // We could allow the user to change the position of <script> but we currently don't:
         //  - Because of mergeScriptEntries()
-        //  - We would need to add STREAM to to PreloadFilterInject
+        //  - We would need to add HTML_STREAM to to PreloadFilterInject
         // To suppor this, we should add the JavaScript entry to injectFilterEntries (with an `src` value of `null`)
         return false
       }
@@ -125,13 +125,15 @@ function getHtmlTags(
   // ==========
   // JavaScript
   // ==========
-  // - The pageContext JSON should be fully sent before Vike's client runtime starts executing.
+  // - By default, we place the entry <script> towards the end of the HTML for better performance.
+  //   - Performance-wise, it's more interesting to start showing the page (parse HTML and load CSS) before starting loading scripts.
+  //   - But with HTML streaming, in order to support [Progressive Rendering](https://vike.dev/streaming#progressive-rendering), the entry <script> should be injected earlier instead.
+  // - The entry <script> shouldn't be `<script defer>` upon HTML streaming, otherwise progressive hydration while SSR streaming won't work.
+  // - `<script id="vike_pageContext" type="application/json">` (the `pageContext` JSON) should be fully sent before Vike's client runtime starts executing.
   //   - Otherwise, race condition "SyntaxError: Unterminated string in JSON": https://github.com/vikejs/vike/issues/567
-  //   - <script id="vike_pageContext" type="application/json"> must appear before the entry <script> (which loads Vike's client runtime).
-  //   - <script id="vike_pageContext" type="application/json"> can't be async nor defer.
-  // - The entry <script> can't be defer, otherwise progressive hydration while SSR streaming won't work.
-  // - The entry <script> should be towards the end of the HTML as performance-wise it's more interesting to parse <div id="page-view"> before running the entry <script> which initiates the hydration.
-  //   - But with HTML streaming, in order to support [Progressive Rendering](https://vike.dev/streaming#progressive-rendering), the entry <script> should be injected early instead.
+  //   - `<script id="vike_pageContext" type="application/json">` must appear before the entry <script> (which loads Vike's client runtime).
+  //   - `<script id="vike_pageContext" type="application/json">` can't be async nor defer.
+  const positionJavaScriptDefault = 'HTML_END'
   const positionJavaScriptEntry = (() => {
     if (injectScriptsAt !== null) {
       if (pageContext._pageContextPromise) {
@@ -143,19 +145,22 @@ function getHtmlTags(
           { onlyOnce: true }
         )
       }
+      if (injectScriptsAt === 'HTML_STREAM' && !isStream) {
+        return positionJavaScriptDefault
+      }
       return injectScriptsAt
     }
     if (pageContext._pageContextPromise) {
       // - If there is a pageContext._pageContextPromise then <script id="vike_pageContext" type="application/json"> needs to await for it.
       // - pageContext._pageContextPromise is typically resolved only after the page's components are rendered and the stream ended.
       // - https://vike.dev/streaming#initial-data-after-stream-end
-      return 'HTML_END'
+      return positionJavaScriptDefault
     }
     if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
       // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary.
-      return 'STREAM'
+      return 'HTML_STREAM'
     }
-    return 'HTML_END'
+    return positionJavaScriptDefault
   })()
   if (pageContext._pageContextPromise && streamFromReactStreamingPackage) {
     // - Should we show this warning for Solid as well? Solid seems to also support progressive rendering.
@@ -192,7 +197,7 @@ function getHtmlTags(
       assert(!asset.isEntry) // Users cannot re-order JavaScript entries, see creation of injectFilterEntries
       const htmlTag = inferPreloadTag(asset)
       if (!asset.inject) return
-      // Ideally, instead of this conditional ternary operator, we should add STREAM to PreloadFilterInject (or a better fitting name such as HTML_STREAM)
+      // Ideally, instead of this conditional ternary operator, we should add HTML_STREAM to PreloadFilterInject
       const position = asset.inject === 'HTML_END' ? positionJavaScriptEntry : asset.inject
       htmlTags.push({ htmlTag, position })
     })
@@ -282,7 +287,7 @@ function getInjectScriptsAt(pageId: string, pageConfigs: PageConfigRuntime[]): n
     injectScriptsAt === null ||
       injectScriptsAt === 'HTML_BEGIN' ||
       injectScriptsAt === 'HTML_END' ||
-      injectScriptsAt === 'STREAM',
+      injectScriptsAt === 'HTML_STREAM',
     `${configDefinedAt} has an invalid value`
   )
   return injectScriptsAt

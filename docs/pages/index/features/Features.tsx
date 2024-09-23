@@ -286,7 +286,7 @@ function Features() {
           desc: (
             <>
               <p>
-                Use Vike to <a href="https://vike.land/">Build Your Own Framework</a>. Hundreds of lines of code are
+                Use Vike to <a href="https://land.vike.dev/">Build Your Own Framework</a>. Hundreds of lines of code are
                 enough to build your own Next.js / Nuxt.
               </p>
               <p>

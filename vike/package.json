@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.194",
+  "version": "0.4.196",
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
@@ -123,7 +123,7 @@
   "dependencies": {
     "@brillout/import": "^0.2.3",
     "@brillout/json-serializer": "^0.5.13",
-    "@brillout/picocolors": "^1.0.14",
+    "@brillout/picocolors": "^1.0.15",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.4.11",
     "acorn": "^8.0.0",
@@ -225,11 +225,12 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",
-    "@brillout/release-me": "^0.4.0",
+    "@brillout/release-me": "^0.4.2",
     "@types/estree": "^1.0.5",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
     "@types/resolve": "^1.20.6",
+    "@types/semver": "^7.5.8",
     "@types/source-map-support": "^0.5.10",
     "acorn": "^8.11.2",
     "cac": "^6.7.14",
@@ -241,7 +242,7 @@
     "semver": "^7.6.3",
     "sirv": "^2.0.4",
     "source-map-support": "^0.5.21",
-    "typescript": "^5.4.5",
+    "typescript": "^5.6.2",
     "vite": "^5.4.0"
   },
   "scripts": {

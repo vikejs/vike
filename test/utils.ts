@@ -32,6 +32,10 @@ async function hydrationDone() {
 
 function expectUrl(pathname: string) {
   expect(page.url()).toBe(getServerUrl() + pathname)
+  /* Same?
+  const url = await page.evaluate(() => location.href)
+  expect(url.endsWith(endsWith)).toBe(true)
+  */
 }
 
 /** Ensure page wasn't server-side routed.

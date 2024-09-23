@@ -9,11 +9,19 @@ export { Page }
 
 import React from 'react'
 import '../index/Header.css'
-import iconPlugin from '../../images/icons/vike-vertical.svg'
+import vikeIcon from '../../images/icons/vike-vertical.svg'
 
 function Page() {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        fontSize: 16 // reset
+      }}
+    >
       <div
         style={{
           display: 'flex',
@@ -22,7 +30,7 @@ function Page() {
           scale: '1.2'
         }}
       >
-        <img src={iconPlugin} style={{ marginRight: 50, marginTop: 0, height: '100%' }} />
+        <img src={vikeIcon} style={{ marginRight: 50, marginTop: 0, height: '100%' }} />
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', height: '100%' }}>
           <div>
             <span
@@ -30,7 +38,7 @@ function Page() {
                 fontSize: '8.8em',
                 display: 'inline-block',
                 verticalAlign: 'middle',
-                fontWeight: 500,
+                fontWeight: 530,
                 lineHeight: '1.1em'
               }}
             >

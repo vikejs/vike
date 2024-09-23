@@ -6,7 +6,7 @@ See <Link href="#workaround" />.
 
 > The reason why some npm packages contain invalid code is because the transpilation process of webpack-based frameworks, most notably Next.js, isn't strict and tolerates erroneous code: thus an npm package can work with Next.js while not work with Vite-based frameworks. You can learn more at <Link href="#why" />.
 >
-> The situation is going to improve, and eventually be completely resolved, as Vite-based frameworks gain popularity which is happening quickly: all frameworks other than Next.js are now Vite-based.
+> The situation will improve and eventually be completely resolved as Vite-based frameworks gain popularity, which we can expect to happen quickly since all frameworks, except for Next.js, are using Vite nowadays.
 
 ## Workaround
 
@@ -39,13 +39,10 @@ See [Vite > `ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noe
 
 ### `vite-plugin-cjs-interop`
 
-Upon certain errors, we recommend trying the `vite-plugin-cjs-interop` plugin before trying `ssr.noExternal`.
-
-
 ```js
 // vite.config.js
 
-import { cjsInterop } from "vite-plugin-cjs-interop";
+import { cjsInterop } from "vite-plugin-cjs-interop"
 
 export default {
   plugins: [
@@ -69,7 +66,7 @@ export default {
 
 See [GitHub > `cyco130/vite-plugin-cjs-interop`](https://github.com/cyco130/vite-plugin-cjs-interop).
 
-Errors for which we recommend trying `vite-plugin-cjs-interop` before trying `ssr.noExternal`:
+For the following errors, we recommend trying `vite-plugin-cjs-interop` before trying `ssr.noExternal`:
 
 <Link href="#react-invalid-component">**React invalid component**</Link>
 
@@ -102,7 +99,7 @@ You may ask yourself how it's possible that an npm package can publish invalid J
 
 The main reason is that some frameworks such as Next.js transpile the server-side code of npm packages, whereas Vite transpiles only the client-side code of npm packages. When server-side code contains invalid JavaScript then Node.js crashes and throws one of <Link href="#common-errors">these errors</Link>, while transpilers are more tolerant and transform invalid JavaScript (that Node.js isn't able to execute) into valid JavaScript (that Node.js is able to execute).
 
-By default, Vite doesn't transpile the server-side code of npm packages for a faster development DX, so that Node.js directly executes server-side code without involving a slow transpilition process.
+By default, Vite doesn't transpile the server-side code of npm packages for a much faster DX, so that Node.js directly executes the server-side code without involving a slow transpilition process.
 
 That's why <Link href="#workaround">adding an npm package to `ssr.noExternal`</Link> is usually a workaround when the npm package contains invalid JavaScript.
 By adding an npm package to `ssr.noExternal`, you replicate the behavior of frameworks like Next.js.
