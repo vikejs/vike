@@ -912,6 +912,22 @@ importers:
         specifier: ^5.0.1
         version: 5.1.4(webpack@5.91.0)
 
+  packages/eject:
+    dependencies:
+      cac:
+        specifier: ^6.7.14
+        version: 6.7.14
+      simple-git:
+        specifier: ^3.27.0
+        version: 3.27.0
+    devDependencies:
+      typescript:
+        specifier: ^5.4.5
+        version: 5.5.3
+      vite:
+        specifier: ^5.4.0
+        version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
+
   test-deprecated-design/base-url:
     dependencies:
       '@vitejs/plugin-react':
@@ -1904,7 +1920,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '*'
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/fabio/Desktop/playground/vike-1553/vike/
       vite: '>=5.2.0'
 
   '@brillout/import@0.2.3':
@@ -2771,6 +2787,12 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
+
+  '@kwsites/file-exists@1.1.1':
+    resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
+
+  '@kwsites/promise-deferred@1.1.1':
+    resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
 
   '@mdit-vue/plugin-component@0.12.1':
     resolution: {integrity: sha512-L3elbvuKUufXwPLHrmJGd/ijd/QKxfcHXy3kRy4O+P7UIV7HSWePpfB0k+wWee+by3MviYYxjVAi392z+DGy3Q==}
@@ -6246,6 +6268,9 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
+  simple-git@3.27.0:
+    resolution: {integrity: sha512-ivHoFS9Yi9GY49ogc6/YAi3Fl9ROnF4VyubNylgCkA+RVqLaKWnDSzXOVzya8csELIaWaYNutsEuAhZrtOjozA==}
+
   sirv@2.0.4:
     resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
     engines: {node: '>= 10'}
@@ -6748,14 +6773,14 @@ packages:
     peerDependencies:
       react: 18.x.x
       react-dom: 18.x.x
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/fabio/Desktop/playground/vike-1553/vike/
 
   vike-react@0.4.16:
     resolution: {integrity: sha512-lawyL8HHjVgDNwPRp21qsmOLHokGdjElm6zgKaVg0ul5Dcv6JxglaTfqq5P8NU6V8MW4vYd7WqxSpv64iscu4Q==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/fabio/Desktop/playground/vike-1553/vike/
       vite: '>=4.3.8'
 
   vike-react@0.4.17:
@@ -6763,7 +6788,7 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/fabio/Desktop/playground/vike-1553/vike/
       vite: '>=4.3.8'
 
   vite-node@1.6.0:
@@ -7830,6 +7855,14 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  '@kwsites/file-exists@1.1.1':
+    dependencies:
+      debug: 4.3.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@kwsites/promise-deferred@1.1.1': {}
 
   '@mdit-vue/plugin-component@0.12.1':
     dependencies:
@@ -12532,6 +12565,14 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
+
+  simple-git@3.27.0:
+    dependencies:
+      '@kwsites/file-exists': 1.1.1
+      '@kwsites/promise-deferred': 1.1.1
+      debug: 4.3.5
+    transitivePeerDependencies:
+      - supports-color
 
   sirv@2.0.4:
     dependencies:
