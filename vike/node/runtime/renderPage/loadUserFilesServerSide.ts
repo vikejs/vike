@@ -30,15 +30,15 @@ type PageContext_loadUserFilesServerSide = PageContextGetPageAssets &
     _pageConfigs: PageConfigRuntime[]
   }
 type PageFiles = PromiseType<ReturnType<typeof loadUserFilesServerSide>>
-async function loadUserFilesServerSide(pageContext: { _pageId: string } & PageContext_loadUserFilesServerSide) {
-  const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
+async function loadUserFilesServerSide(pageContext: { pageId: string } & PageContext_loadUserFilesServerSide) {
+  const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
   const [{ pageFilesLoaded, pageContextExports }] = await Promise.all([
-    loadPageUserFiles(pageContext._pageFilesAll, pageConfig, pageContext._pageId, !getGlobalContext().isProduction),
-    analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
+    loadPageUserFiles(pageContext._pageFilesAll, pageConfig, pageContext.pageId, !getGlobalContext().isProduction),
+    analyzePageClientSideInit(pageContext._pageFilesAll, pageContext.pageId, { sharedPageFilesAlreadyLoaded: true })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    analyzePage(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
+    analyzePage(pageContext._pageFilesAll, pageConfig, pageContext.pageId)
   const isV1Design = !!pageConfig
 
   const passToClient: string[] = []

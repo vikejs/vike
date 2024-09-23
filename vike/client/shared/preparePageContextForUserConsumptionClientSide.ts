@@ -11,10 +11,11 @@ import type {
 import { addIs404ToPageProps } from '../../shared/addIs404ToPageProps.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser.js'
+import { preparePageContextForUserConsumption } from '../../shared/preparePageContextForUserConsumption.js'
 
 type PageContextForUserConsumptionClientSide = PageContextExports &
   PageContextForPassToClientWarning & {
-    _pageId: string
+    pageId: string
     _pageConfigs: PageConfigRuntime[]
   }
 
@@ -64,6 +65,8 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
   const pageContextForUserConsumption = getPageContextProxyForUser(pageContext)
 
   addIs404ToPageProps(pageContext)
+
+  preparePageContextForUserConsumption(pageContext)
 
   return pageContextForUserConsumption
 }

@@ -37,7 +37,7 @@ type HookName =
 async function executeOnRenderHtmlHook(
   pageContext: PageContextForUserConsumptionServerSide &
     PageContextSerialization & {
-      _pageId: string
+      pageId: string
       _pageConfigs: PageConfigRuntime[]
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean

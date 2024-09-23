@@ -514,7 +514,7 @@ async function handlePagesWithStaticRoutes(
         objectAssign(pageContext, {
           _providedByHook: null,
           routeParams,
-          _pageId: pageId,
+          pageId: pageId,
           _debugRouteMatches: [
             {
               pageId,
@@ -764,8 +764,8 @@ async function routeAndPrerender(
         const { urlOriginal } = pageContext
         assert(urlOriginal)
         const pageContextFromRoute = await route(pageContext)
-        assert(hasProp(pageContextFromRoute, '_pageId', 'null') || hasProp(pageContextFromRoute, '_pageId', 'string'))
-        if (pageContextFromRoute._pageId === null) {
+        assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string'))
+        if (pageContextFromRoute.pageId === null) {
           let hookName: string | undefined
           let hookFilePath: string | undefined
           if (pageContext._providedByHook) {
@@ -791,9 +791,9 @@ async function routeAndPrerender(
           }
         }
 
-        assert(pageContextFromRoute._pageId)
+        assert(pageContextFromRoute.pageId)
         objectAssign(pageContext, pageContextFromRoute)
-        const { _pageId: pageId } = pageContext
+        const { pageId: pageId } = pageContext
 
         objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 

@@ -22,7 +22,7 @@ import { getViteDevScript } from './injectAssets/getViteDevScript.js'
 type PageContextInjectAssets = {
   urlPathname: string
   __getPageAssets: () => Promise<PageAsset[]>
-  _pageId: string
+  pageId: string
   _isHtmlOnly: boolean
   _pageContextPromise: PageContextPromise
   _renderHook: {
