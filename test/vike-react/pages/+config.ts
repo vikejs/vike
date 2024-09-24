@@ -1,13 +1,18 @@
+export { config }
+
 import type { Config } from 'vike/types'
-import logoUrl from '../assets/logo.svg'
 import vikeReact from 'vike-react/config'
 
 // Default configs (can be overridden by pages)
-export default {
-  ssr: true,
+const config = {
   // <title>
   title: 'My Vike + React App',
-  // <link rel="icon" href="${favicon}" />
-  favicon: logoUrl,
+  // https://vike.dev/stream
+  stream: true,
+  // https://vike.dev/ssr - this line can be removed since `true` is the default
+  ssr: true,
+  bodyAttributes: { class: 'dark' },
+  viewport: 999,
+  // https://vike.dev/extends
   extends: vikeReact
 } satisfies Config

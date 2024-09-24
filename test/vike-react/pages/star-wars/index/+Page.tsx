@@ -1,4 +1,4 @@
-export { Page }
+export default Page
 
 import React from 'react'
 import type { Data } from './+data'
@@ -17,7 +17,7 @@ function Page() {
         ))}
       </ol>
       <p>
-        Source: <a href="https://star-wars.brillout.com">star-wars.brillout.com</a>.
+        Source: <a href="https://brillout.github.io/star-wars">brillout.github.io/star-wars</a>.
       </p>
     </>
   )

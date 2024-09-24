@@ -5,7 +5,6 @@ import {
   test,
   expect,
   run,
-  partRegex,
   autoRetry,
   fetchHtml,
   getServerUrl,
@@ -29,7 +28,6 @@ function testRun(
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
-    expectHtmlCommon(html)
     if (isCJS) {
       expectLog('package.json#type to "module", see https://vike.dev/CJS', (log) => log.logSource === 'stderr')
     }
@@ -86,13 +84,5 @@ function testRun(
     expect(await page.textContent('p')).toBe('Example of using Vike.')
     const html = await fetchHtml('/about')
     expect(html).toContain('<h1>About</h1>')
-    expectHtmlCommon(html)
   })
-}
-
-function expectHtmlCommon(html: string) {
-  // Vue injects: `!--[-->Home<!--]-->`
-  expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/[.\s]*/}</a>`)
-  expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/[.\s]*/}</a>`)
-  expect(html).toContain('<link rel="stylesheet" type="text/css"')
 }

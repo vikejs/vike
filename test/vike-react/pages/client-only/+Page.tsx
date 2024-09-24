@@ -2,16 +2,13 @@ export default Page
 
 import React from 'react'
 import { Counter } from '../../components/Counter'
-import image from '../../assets/logo-new.svg'
-import { Config } from 'vike-react/Config'
+import { clientOnly } from 'vike-react/clientOnly'
+
+const ClientOnlyComponent = clientOnly(() => import('../../components/ClientOnlyComponent'))
 
 function Page() {
-  // Will be printed on the server and in the browser:
-  console.log('Rendering the landing page')
-
   return (
     <>
-      <Config image={image}></Config>
       <h1>My Vike + React app</h1>
       This page is:
       <ul>
@@ -20,6 +17,7 @@ function Page() {
           Interactive. <Counter />
         </li>
       </ul>
+      <ClientOnlyComponent fallback="Loading the ClientOnlyComponent..." />
     </>
   )
 }
