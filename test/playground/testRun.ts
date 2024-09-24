@@ -19,8 +19,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testRedirectMailto()
   testNavigateEarly()
   testDynamicImportFileEnv()
-
-  // Keep it the last test, as it's a bit slow.
+  testNestedLayout()
   testHistoryPushState()
 }
 
@@ -112,6 +111,54 @@ function testDynamicImportFileEnv() {
       { timeout: 5000 }
     )
   })
+}
+
+function testNestedLayout() {
+  test('Nested layout', async () => {
+    await page.goto(getServerUrl() + '/nested-layout/42')
+    expect(await page.textContent('body')).toContain('Nested Layout')
+    await testCounter()
+    await expectIsScrollUp()
+    await scrollDown()
+    await expectIsScrollDown()
+    await testCounter(1)
+    await page.click('a[href="/nested-layout/42/reviews"]')
+    await expectIsScrollDown()
+    await page.click('a[href="/nested-layout/1337/reviews"]')
+    await expectIsScrollUp()
+    await scrollDown()
+    await page.click('a[href="/nested-layout/1337"]')
+    await expectIsScrollDown()
+    await testCounter(2)
+  })
+
+  return
+
+  async function scrollDown() {
+    await page.evaluate(() => {
+      window.document.documentElement.scrollTop = 51
+    })
+  }
+  async function expectIsScrollUp() {
+    await autoRetry(
+      async () => {
+        expect(await getScrollTop()).toBe(0)
+      },
+      { timeout: 5000 }
+    )
+  }
+  async function expectIsScrollDown() {
+    await autoRetry(
+      async () => {
+        expect(await getScrollTop()).toBe(51)
+      },
+      { timeout: 5000 }
+    )
+  }
+  async function getScrollTop() {
+    const scrollTop = await page.evaluate(() => window.document.documentElement.scrollTop)
+    return scrollTop
+  }
 }
 
 function testHistoryPushState() {

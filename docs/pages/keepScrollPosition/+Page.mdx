@@ -3,6 +3,17 @@ import { Link } from '@brillout/docpress'
 Type: `boolean`  
 Default value: `false`  
 
+The `keepScrollPosition` setting enables you to control whether the page scrolls to the top upon page navigation.
+
+It's commonly used for nested layouts such as tabs, see <Link href="/Layout#nested-layouts" />.
+
+You can control whether the scroll position is preserved on a link-by-link basis, see <Link href="/clientRouting#settings">`<a href="/some-url" keep-scroll-position />`</Link>.
+
+
+## Basics
+
+By default, the page is scrolled to the top upon page navigation. But if you set `keepScrollPosition` to `true` then the page's scroll position is preserved instead.
+
 ```js
 // pages/product/@id/+config.js
 
@@ -12,23 +23,82 @@ export default {
 }
 ```
 
-```bash
+```
 pages/product/@id/+config.js
-# The scroll position is preserverd when navigating between these two pages:
 pages/product/@id/pricing/+Page.js
 pages/product/@id/reviews/+Page.js
 ```
 
-By default, the page is scrolled to the top upon page navigation. But if you set `keepScrollPosition` to `true` then the page's scroll position is preserved instead.
+```bash
+# Scroll is preserved when navigating between:
+/product/42
+/product/42/pricing
+/product/42/reviews
 
-It's commonly used for nested layouts such as tabs, see <Link href="/Layout#nested-layouts" />.
+# Scroll is preserved when navigating between:
+/product/1337
+/product/1337/pricing
+/product/1337/reviews
+```
 
-You can also control whether the scroll position is preserved on a link-by-link basis, see <Link href="/clientRouting#settings">`<a href="/some-url" keep-scroll-position />`</Link>.
+Note that the scroll isn't preserved (the page scrolls to the top) when the `@id` parameter differs.
 
-> There is an experimental feature for preserving the scroll position between any arbitrary group of pages, see [#1854 `keepScrollPosition` between any arbitrary group of pages](https://github.com/vikejs/vike/issues/1854).
+```bash
+# Scroll *isn't* preserved when navigating between:
+/product/42/pricing
+/product/1337/pricing
+```
+
+See <Link href="#advanced" /> if this doesn't fit your use case.
+
+
+## Advanced
+
+You can preserve the scroll position between any arbitrary group of pages (the "scroll group").
+
+```js
+// pages/product/@id/+config.js
+
+export default {
+  keepScrollPosition: 'name-of-the-scroll-group'
+}
+```
+
+```bash
+# Scroll is preserved when navigating between:
+/product/42/pricing
+/product/1337/pricing
+```
+
+```js
+// pages/reviews/@id/+config.js
+
+export default {
+  keepScrollPosition: 'name-of-the-scroll-group'
+}
+```
+
+```bash
+# Scroll is preserved when navigating between:
+/product/42
+/reviews/42
+```
+
+If two URLs belong to the same scroll group, then the scroll is preserved.
+
+You can also programmatically set the scroll group:
+
+```js
+// pages/product/@id/+keepScrollPosition.js
+
+export default (pageContext, { configDefinedAt }) => {
+  // This the value Vike sets by default:
+  return [configDefinedAt, pageContext.routeParams['id']]
+}
+```
+
 
 ## See also
-
 
 - <Link href="/Layout#nested-layouts" />
 - <Link href="/clientRouting#settings" />
