@@ -31,6 +31,7 @@ export type { OnRenderHtmlAsync }
 export type { OnRenderHtmlSync }
 export type { RouteAsync }
 export type { RouteSync }
+export type { KeepScrollPosition }
 
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
@@ -262,7 +263,15 @@ type RouteSync = (
   pageContext: PageContextServer | PageContextClient
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
 
-// TODO: write docs of links below
+/** Whether the page scrolls to the top upon page navigation.
+ *
+ * https://vike.dev/keepScrollPosition
+ */
+type KeepScrollPosition =
+  | boolean
+  | string
+  | string[]
+  | ((pageContext: PageContextClient) => boolean | string | string[])
 
 /** Page configuration.
  *
@@ -441,7 +450,7 @@ type ConfigBuiltIn = {
    *
    * https://vike.dev/keepScrollPosition
    */
-  keepScrollPosition?: boolean | string
+  keepScrollPosition?: KeepScrollPosition
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
