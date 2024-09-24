@@ -213,6 +213,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   require: {
     env: { config: true }
+  },
+  keepScrollPosition: {
+    env: { client: true }
   }
 }
 

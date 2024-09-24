@@ -831,6 +831,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`keepScrollPosition`',
+    url: '/keepScrollPosition'
+  },
+  {
+    level: 2,
     title: '`prefetchStaticAssets`',
     url: '/prefetchStaticAssets'
   },

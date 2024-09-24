@@ -68,7 +68,7 @@ pages/admin-panel/users/+Page.js    # URL: /admin-panel/users
 > Setting a default `<Layout>` that is overridable isn't currently supported, see [#1692 - Add `override` and `default` options for cumulative configs](https://github.com/vikejs/vike/issues/1692).
 
 
-## Nested Layouts
+## Nested layouts
 
 You can define layouts that nest into each other:
 
@@ -81,11 +81,9 @@ pages/(marketing)/+Layout.js
 pages/admin-panel/+Layout.js
 ```
 
-Here `pages/+Layout.js` applies to all pages, including all marketing and admin pages.
+Here `pages/+Layout.js` applies to all pages, including the marketing and admin pages.
 
-> The `Layout` setting is cumulative: `pages/(marketing)/+Layout.js` doesn't override `pages/+Layout.js` but nests into it.
->
-> The `<Layout>` components wrap into each other:
+> The `Layout` setting is cumulative: `pages/(marketing)/+Layout.js` doesn't override `pages/+Layout.js`. Instead, the `<Layout>` components nest within each other:
 > ```jsx
 > <Layout>      ⟸ pages/+Layout.js
 >   <Layout>    ⟸ pages/(marketing)/+Layout.js
@@ -94,7 +92,7 @@ Here `pages/+Layout.js` applies to all pages, including all marketing and admin 
 > </Layout>
 > ```
 
-You can also define same-page navigations such as tabs.
+You can also implement same-page navigations such as tabs:
 
 ```
 /product/42/pricing                   /product/42/reviews
@@ -115,18 +113,23 @@ pages/product/@id/pricing/+Page.js    # Inner content ("Pricing" ...)
 pages/product/@id/reviews/+Page.js    # Inner content ("Reviews" ...)
 ```
 
-Make sure to use <Link href="/clientRouting#settings">`<a href="/product/42/reviews" keep-scroll-position />`</Link> to avoid scrolling to the top.
+> If your nested layout isn't associated with a URL (if the pricing and reviews tabs share the same URL `/product/42`) then you can use a stateful component instead of `<Layout>`.
 
-> If your nested layout isn't associated with a URL then you can use a stateful component instead of `<Layout>`. (If the pricing and reviews tabs share the same URL `/product/42`.)
-
-> To fetch data for your layouts see:
-> - <Link href="/data-fetching#tools" />
-> - [#1833 - Make `+data` and `+onBeforeRender` cumulative](https://github.com/vikejs/vike/issues/1833)
+To avoid the page scrolling to the top, make sure to use:
+- <Link href="/keepScrollPosition" /> or
+- <Link href="/clientRouting#settings">`<a href="/product/42/reviews" keep-scroll-position />`</Link>
 
 Examples:
 - [React](https://github.com/vikejs/vike-react/blob/main/examples/full/pages/starship)
 - [Vue](https://github.com/vikejs/vike-vue/blob/main/examples/full/pages/starship)
 - [Solid](https://github.com/vikejs/vike-solid/tree/main/examples/full/pages/starship)
+
+
+## Data fetching
+
+To fetch data for your layouts see:
+- <Link href="/data-fetching#tools" />
+- [#1833 - Make `+data` and `+onBeforeRender` cumulative](https://github.com/vikejs/vike/issues/1833)
 
 
 ## Without `vike-{react,vue,solid}`

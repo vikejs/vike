@@ -14,6 +14,7 @@ function Layout({ children }) {
           <Link href="/pushState" />
           <Link href="/dynamic-import-file-env" />
           <Link href="/navigate-early" />
+          <Link href="/nested-layout/42" />
         </Sidebar>
         <Content>{children}</Content>
       </Frame>

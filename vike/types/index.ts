@@ -37,7 +37,8 @@ export type {
   OnRenderHtmlAsync,
   OnRenderHtmlSync,
   RouteAsync,
-  RouteSync
+  RouteSync,
+  KeepScrollPosition
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

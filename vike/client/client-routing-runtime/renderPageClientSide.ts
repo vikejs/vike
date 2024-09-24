@@ -13,7 +13,8 @@ import {
   executeHook,
   hasProp,
   augmentType,
-  genPromise
+  genPromise,
+  isCallable
 } from './utils.js'
 import {
   getPageContextFromHooks_isHydration,
@@ -41,6 +42,7 @@ import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageContextExports } from '../../shared/getPageFiles.js'
+import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -63,7 +65,8 @@ const globalObject = getGlobalObject<{
   })()
 )
 const { firstRenderStartPromise } = globalObject
-type PreviousPageContext = { pageId: string } & PageContextExports
+type PreviousPageContext = { pageId: string } & PageContextExports & PageContextRouted
+type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
 
 type RenderArgs = {
   scrollTarget: ScrollTarget
@@ -78,7 +81,6 @@ type RenderArgs = {
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const {
-    scrollTarget,
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
     isBackwardNavigation,
@@ -87,6 +89,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isUserLandPushStateNavigation,
     isClientSideNavigation = true
   } = renderArgs
+  let { scrollTarget } = renderArgs
 
   const { previousPageContext } = globalObject
 
@@ -141,7 +144,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     // Route
-    let pageContextRouted: { pageId: string; routeParams: Record<string, string> }
+    let pageContextRouted: PageContextRouted
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
       pageContextRouted = pageContextSerialized
@@ -394,11 +397,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if ('is404ServerSideRouted' in res) return
     augmentType(pageContext, res.pageContextAugmented)
 
+    objectAssign(pageContext, { routeParams: {} })
+
     await renderPageView(pageContext, args)
   }
 
   async function renderPageView(
-    pageContext: PageContextBeforeRenderClient & { urlPathname: string },
+    pageContext: PageContextBeforeRenderClient & { urlPathname: string } & PageContextRouted,
     isErrorPage?: { err?: unknown }
   ) {
     const onError = async (err: unknown) => {
@@ -478,6 +483,18 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           if (!isErrorPage) return
         }
         if (isRenderOutdated(true)) return
+      }
+    }
+
+    if (!scrollTarget && previousPageContext) {
+      const keepScrollPositionPrev = getKeepScrollPositionSetting(previousPageContext)
+      const keepScrollPositionNext = getKeepScrollPositionSetting(pageContext)
+      if (
+        keepScrollPositionNext !== false &&
+        keepScrollPositionPrev !== false &&
+        areKeysEqual(keepScrollPositionNext, keepScrollPositionPrev)
+      ) {
+        scrollTarget = { preserveScroll: true }
       }
     }
 
@@ -572,7 +589,42 @@ function getIsRenderOutdated() {
     isFirstRender: renderNumber === 1
   }
 }
-
 function getRenderCount(): number {
   return globalObject.renderCounter
+}
+
+function getKeepScrollPositionSetting(
+  pageContext: PageContextExports & PageContextRouted & Record<string, unknown>
+): false | string | string[] {
+  const c = pageContext.from.configsStandard.keepScrollPosition
+  if (!c) return false
+  let val = c.value
+  const configDefinedAt = c.definedAt
+  assert(configDefinedAt)
+  const routeParameterList = getRouteStringParameterList(configDefinedAt)
+  if (isCallable(val))
+    val = val(pageContext, {
+      configDefinedAt: c.definedAt
+      /* We don't pass routeParameterList because it's useless: the user knows the parameter list.
+      routeParameterList
+      */
+    })
+  if (val === true) {
+    return [
+      configDefinedAt,
+      ...routeParameterList.map((param) => {
+        const val = pageContext.routeParams[param]
+        assert(val)
+        return val
+      })
+    ]
+  }
+  // We skip validation and type-cast instead of assertUsage() in order to save client-side KBs
+  return val as any
+}
+
+function areKeysEqual(key1: string | string[], key2: string | string[]): boolean {
+  if (key1 === key2) return true
+  if (!Array.isArray(key1) || !Array.isArray(key2)) return false
+  return key1.length === key2.length && key1.every((_, i) => key1[i] === key2[i])
 }
