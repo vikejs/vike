@@ -141,10 +141,20 @@ function testNestedLayout() {
     })
   }
   async function expectIsScrollUp() {
-    expect(await getScrollTop()).toBe(0)
+    await autoRetry(
+      async () => {
+        expect(await getScrollTop()).toBe(0)
+      },
+      { timeout: 5000 }
+    )
   }
   async function expectIsScrollDown() {
-    expect(await getScrollTop()).toBe(51)
+    await autoRetry(
+      async () => {
+        expect(await getScrollTop()).toBe(51)
+      },
+      { timeout: 5000 }
+    )
   }
   async function getScrollTop() {
     const scrollTop = await page.evaluate(() => window.document.documentElement.scrollTop)
