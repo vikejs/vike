@@ -1499,6 +1499,9 @@ importers:
       vike:
         specifier: link:../../vike
         version: link:../../vike
+      vike-react:
+        specifier: ^0.5.7
+        version: 0.5.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike)
       vite:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@22.6.1)(terser@5.31.0)
@@ -13849,6 +13852,13 @@ snapshots:
       react-streaming: 0.3.41(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       vike: link:vike
       vite: 5.4.0(@types/node@22.6.1)(terser@5.31.0)
+
+  vike-react@0.5.7(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(vike@vike):
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-streaming: 0.3.43(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      vike: link:vike
 
   vike-react@0.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike):
     dependencies:

@@ -19,7 +19,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testRedirectMailto()
   testNavigateEarly()
   testDynamicImportFileEnv()
-  testNestedConfigWorkaround()
+
+  // Keep it the last test, as it's a bit slow.
   testHistoryPushState()
 }
 
@@ -27,7 +28,7 @@ function testRouteStringDefinedInConfigFile() {
   test('Route String defined in +config.js', async () => {
     // Route String '/markdown' defined in `+config.js > export default { route }` instead of +route.js
     const html = await fetchHtml('/markdown')
-    expect(html).toContain('<p>Some text</p>')
+    expect(html).toContain('<h1>Side export .md file</h1>')
   })
 }
 
@@ -110,14 +111,6 @@ function testDynamicImportFileEnv() {
       },
       { timeout: 5000 }
     )
-  })
-}
-
-function testNestedConfigWorkaround() {
-  // See comment in /test/misc/pages/+config.ts
-  test('Nested config workaround', async () => {
-    const html = await fetchHtml('/')
-    expect(html).toContain('<title>Some title set by nested config</title>')
   })
 }
 

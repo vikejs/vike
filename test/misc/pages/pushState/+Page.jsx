@@ -1,8 +1,11 @@
 export default Page
 
 import React from 'react'
+import { useData } from 'vike-react/useData'
 
-function Page({ timestamp }) {
+function Page() {
+  const data = useData()
+  const { timestamp } = data
   return (
     <>
       <h1>pushState</h1>

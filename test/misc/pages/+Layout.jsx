@@ -8,22 +8,24 @@ function Layout({ children }) {
     <React.StrictMode>
       <Frame>
         <Sidebar>
-          <a className="navitem" href="/">
-            Home
-          </a>
-          <a className="navitem" href="/about">
-            About
-          </a>
-          <a className="navitem" href="/markdown">
-            Markdown
-          </a>
-          <a className="navitem" href="/pushState">
-            pushState
-          </a>
+          <Link href="/" />
+          <Link href="/about" />
+          <Link href="/markdown" />
+          <Link href="/pushState" />
+          <Link href="/dynamic-import-file-env" />
+          <Link href="/navigate-early" />
         </Sidebar>
         <Content>{children}</Content>
       </Frame>
     </React.StrictMode>
+  )
+}
+
+function Link({ href }) {
+  return (
+    <a className="navitem" href={href} style={{ paddingRight: 20 }}>
+      <code>{href}</code>
+    </a>
   )
 }
 
@@ -45,12 +47,10 @@ function Sidebar({ children }) {
   return (
     <div
       style={{
-        padding: 20,
         paddingTop: 42,
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
         lineHeight: '1.8em'
       }}
     >
