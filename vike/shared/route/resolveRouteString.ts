@@ -127,7 +127,7 @@ function parseRouteString(routeString: string) {
   return segments
 }
 
-function getRouteStringParameterList(routeString: string) {
+function getRouteStringParameterList(routeString: string): string[] {
   const routeParameterList: string[] = []
   const segments = parseRouteString(routeString)
   segments.forEach((segment) => {
