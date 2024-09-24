@@ -130,6 +130,7 @@ function testNestedLayout() {
     await page.click('a[href="/nested-layout/1337"]')
     await expectIsScrollDown()
     await testCounter(2)
+    await expectIsScrollDown()
   })
 
   return
