@@ -34,8 +34,28 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
     pageContext.exports.Page
   objectAssign(pageContext, { Page })
 
+  supportVueReactiviy(pageContext)
+
   preparePageContextForUserConsumption(pageContext)
 
   const pageContextProxy = getPageContextProxyForUser(pageContext)
   return pageContextProxy
+}
+
+// With Vue + Cient Routing, the `pageContext` is made reactive:
+// ```js
+// import { reactive } from 'vue'
+// // See /examples/vue-full/renderer/createVueApp.ts
+// const pageContextReactive = reactive(pageContext)
+// ```
+function supportVueReactiviy(pageContext: Record<string, unknown>) {
+  resolveGetters(pageContext)
+}
+// Remove propery descriptor getters because they break Vue's reactivity.
+// E.g. resolve the `pageContext.urlPathname` getter.
+function resolveGetters(pageContext: Record<string, unknown>) {
+  Object.entries(pageContext).forEach(([key, val]) => {
+    delete pageContext[key]
+    pageContext[key] = val
+  })
 }
