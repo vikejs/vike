@@ -116,7 +116,7 @@ pages/product/@id/reviews/+Page.js    # Inner content ("Reviews" ...)
 > If your nested layout isn't associated with a URL (if the pricing and reviews tabs share the same URL `/product/42`) then you can use a stateful component instead of `<Layout>`.
 
 To avoid the page scrolling to the top, make sure to use:
-- <Link href="/keepScrollPosition" />
+- <Link href="/keepScrollPosition" /> or
 - <Link href="/clientRouting#settings">`<a href="/product/42/reviews" keep-scroll-position />`</Link>
 
 Examples:

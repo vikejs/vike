@@ -263,7 +263,7 @@ type RouteSync = (
   pageContext: PageContextServer | PageContextClient
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
 
-/** Whether the page scrolls to the top upon page navigation.
+/** Whether the page scrolls to the top upon navigation.
  *
  * https://vike.dev/keepScrollPosition
  */
@@ -446,7 +446,7 @@ type ConfigBuiltIn = {
    */
   require?: Record<string, string>
 
-  /** Whether the page scrolls to the top upon page navigation.
+  /** Whether the page scrolls to the top upon navigation.
    *
    * https://vike.dev/keepScrollPosition
    */
