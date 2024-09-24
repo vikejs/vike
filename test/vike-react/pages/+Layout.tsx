@@ -1,11 +1,11 @@
-export default LayoutDefault
+export { Layout }
 
 import './style.css'
 import React from 'react'
 import logoUrl from '../assets/logo.svg'
 import { Link } from '../components/Link'
 
-function LayoutDefault({ children }: { children: React.ReactNode }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -18,6 +18,11 @@ function LayoutDefault({ children }: { children: React.ReactNode }) {
         <Logo />
         <Link href="/">Welcome</Link>
         <Link href="/star-wars">Data Fetching</Link>
+        <Link href="/streaming">HTML Streaming</Link>
+        <Link href="/without-ssr">Without SSR</Link>
+        <Link href="/starship">Nested Layout</Link>
+        <Link href="/client-only">Client Only</Link>
+        <Link href="/images">useConfig()</Link>
       </Sidebar>
       <Content>{children}</Content>
     </div>
