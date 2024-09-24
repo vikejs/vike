@@ -116,7 +116,7 @@ function testDynamicImportFileEnv() {
 function testNestedLayout() {
   test('Nested layout', async () => {
     await page.goto(getServerUrl() + '/nested-layout/42')
-    expect(await page.textContent('body')).toContain('Nested Layout')
+    expect(await page.textContent('h1')).toBe('Nested Layout')
     await testCounter()
     await expectIsScrollUp()
     await scrollDown()
