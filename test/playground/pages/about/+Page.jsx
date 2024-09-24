@@ -1,5 +1,3 @@
-// Test: define `Page` over `+config.js > export default { Page }` instead of +Page.js
-
 export default Page
 
 import React from 'react'

@@ -1,6 +1,6 @@
 import type { Config } from 'vike/types'
 
 export default {
-  // Test: Route String defined over `+config.js > export default { route }` instead of `+route.js`
+  // TEST: Route String defined over `+config.js > export default { route }` instead of `+route.js`
   route: '/markdown'
 } satisfies Config
