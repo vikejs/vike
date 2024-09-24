@@ -34,6 +34,9 @@ function preparePageContextForUserConsumptionClientSide<T extends PageContextFor
     pageContext.exports.Page
   objectAssign(pageContext, { Page })
 
+  // TODO/next-major-release: remove
+  // - Requires https://github.com/vikejs/vike-vue/issues/198
+  // - Last time I tried to remove it (https://github.com/vikejs/vike/commit/705fd23598d9d69bf46a52c8550216cd7117ce71) the tests were failing as expected: only the Vue integrations that used shallowReactive() failed.
   supportVueReactiviy(pageContext)
 
   preparePageContextForUserConsumption(pageContext)
