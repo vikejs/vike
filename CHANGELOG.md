@@ -1,3 +1,18 @@
+## [0.4.197](https://github.com/vikejs/vike/compare/v0.4.196...v0.4.197) (2024-09-25)
+
+
+### Bug Fixes
+
+* improve removing of all FOUC buster <link> ([df033dd](https://github.com/vikejs/vike/commit/df033ddfbf128d5177423f364235b50d714ef3c1))
+
+
+### Features
+
+* `+keepScrollPosition` ([#1853](https://github.com/vikejs/vike/issues/1853)) ([3c5eea2](https://github.com/vikejs/vike/commit/3c5eea2425f6ef38ab6aad7a1820422211ab5a66))
+* `pageContext.pageId` (closes [#553](https://github.com/vikejs/vike/issues/553)) ([#1894](https://github.com/vikejs/vike/issues/1894)) ([44d14c9](https://github.com/vikejs/vike/commit/44d14c9d82a2e6da3e5a529ff313ad00c161a1a8))
+
+
+
 ## [0.4.196](https://github.com/vikejs/vike/compare/v0.4.195...v0.4.196) (2024-09-20)
 
 
