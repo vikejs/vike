@@ -2040,7 +2040,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '*'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:./vike/
       vite: '>=5.2.0'
 
   '@brillout/import@0.2.3':
@@ -7066,7 +7066,7 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:./vike/
       vite: '>=4.3.8'
 
   vike-react@0.5.7:
@@ -7074,12 +7074,12 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:./vike/
 
   vike-vue@0.8.5:
     resolution: {integrity: sha512-reVfEMjE2Me7xPoRfWw3tEMx358qqIGw0vSS1UsasamEL85Mqwi1HC8xtUFxELkXhr/V9awtmRUvZ2fE+nFpMQ==}
     peerDependencies:
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:./vike/
       vue: ^3.0.0
 
   vite-node@2.0.5:
