@@ -1,6 +1,6 @@
 export { testRun }
 
-import { test, expect, fetch, fetchHtml, page, getServerUrl, autoRetry, sleep, expectLog } from '@brillout/test-e2e'
+import { test, expect, fetch, fetchHtml, page, getServerUrl, autoRetry, expectLog, sleep } from '@brillout/test-e2e'
 import { expectUrl, testCounter } from '../utils'
 import { testRun as testRunClassic } from '../../examples/react-minimal/.testRun'
 import fs from 'fs'
@@ -167,13 +167,12 @@ function testHistoryPushState() {
     await testCounter()
     await page.click('a[href="/pushState"]')
     const timestamp1 = await getTimestamp()
-    await sleep(10)
     await page.click('a[href="/markdown"]')
     await page.click('a[href="/pushState"]')
     const timestamp2 = await getTimestamp()
     expect(timestamp2 > timestamp1).toBe(true)
 
-    // calling history.pushState() doesn't lead to a re-render, thus timestamp doesn't change
+    // Calling history.pushState() doesn't trigger a re-render, thus timestamp doesn't change
     expectUrl('/pushState')
     {
       const btn = page.locator('button', { hasText: 'Change URL' })
@@ -183,7 +182,7 @@ function testHistoryPushState() {
     const timestamp3 = await getTimestamp()
     expect(timestamp3).toBe(timestamp2)
 
-    // navigating back doesn't lead to a re-render, thus timestamp doesn't change
+    // Navigating back doesn't trigger a re-render, thus timestamp doesn't change
     await page.goBack()
     expectUrl('/pushState')
     const timestamp4 = await getTimestamp()
@@ -217,8 +216,14 @@ function testHistoryPushState() {
       timestampStr = val!
     })
     const timestamp = parseInt(timestampStr!, 10)
-    const timestampNow = new Date('2023-11-11').getTime()
-    expect(timestamp > timestampNow).toBe(true)
+
+    // Is a valid timestamp
+    expect(timestamp > new Date('2024-01-01').getTime()).toBe(true)
+    expect(timestamp < new Date('2050-01-01').getTime()).toBe(true)
+
+    // Ensure subsequent generated timestamps aren't equal
+    await sleep(10)
+
     return timestamp
   }
 }
