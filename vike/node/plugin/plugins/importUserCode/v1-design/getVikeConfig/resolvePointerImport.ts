@@ -11,6 +11,7 @@ import {
   assertUsage,
   deepEqual,
   isFilePathAbsolute,
+  isNpmPackageImport_unreliable,
   requireResolve
 } from '../../../../utils.js'
 import { type PointerImportData, parsePointerImportData } from './transformFileImports.js'
@@ -21,6 +22,7 @@ import {
   getFilePathUnresolved
 } from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
+import { getErrorMessage_importPathOutsideOfRoot } from './transpileAndExecuteFile.js'
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 
@@ -58,6 +60,10 @@ function resolvePointerImport(
   const { importPath } = pointerImportData
   const filePathAbsoluteFilesystem = resolveImportPathWithNode(pointerImportData, importerFilePath)
 
+  const errInvalidImport = `Invalid import ${pc.code(importPath)} because it should start with ${pc.code(
+    './'
+  )} or ${pc.code('../')}, or be an npm package import.`
+
   let filePath: FilePath
   // - importPath is one of the following. (See `transpileAndExecuteFile()`.)
   //   - A relative import path
@@ -67,13 +73,32 @@ function resolvePointerImport(
   assertPosixPath(importPath)
   if (importPath.startsWith('.') || isFilePathAbsolute(importPath)) {
     if (importPath.startsWith('.')) {
-      assert(importPath.startsWith('./') || importPath.startsWith('../'))
+      assertUsage(importPath.startsWith('./') || importPath.startsWith('../'), errInvalidImport)
     }
     assertImportPath(filePathAbsoluteFilesystem, pointerImportData, importerFilePath)
 
+    // We need filePathAbsoluteUserRootDir because we didn't find a way to have filesystem absolute import paths in virtual files: https://gist.github.com/brillout/2315231c9a8164f950c64b4b4a7bbd39
     const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
-    // This assert() is guarenteed, see assertUsage() in the onResolve() esbuild hook in transpileAndExecuteFile.ts
-    assert(filePathAbsoluteUserRootDir)
+    if (importPath.startsWith('.')) {
+      assertUsage(
+        filePathAbsoluteUserRootDir,
+        getErrorMessage_importPathOutsideOfRoot({
+          importPathOriginal: importPath,
+          importPathResolved: filePathAbsoluteFilesystem,
+          userRootDir
+        })
+      )
+    } else {
+      assertUsage(
+        filePathAbsoluteUserRootDir,
+        `The import path ${importPath} resolves to ${filePathAbsoluteFilesystem} outside of ${userRootDir} which is forbbiden.`
+      )
+    }
+    // Forbid node_modules/ because it's brittle: if node_modules/ lives outside of userRootDir then it crashes.
+    assertUsage(
+      !filePathAbsoluteUserRootDir.includes('/node_modules/'),
+      `The import path ${importPath} resolves to ${filePathAbsoluteFilesystem} inside of /node_modules/ which is forbbiden.`
+    )
 
     // Imports are included in virtual files, thus the relative path of imports need to resolved.
     // ```
@@ -82,7 +107,7 @@ function resolvePointerImport(
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
     const importPathAbsolute = importPath
-    // importPath cannot be a path alias (since esbuild resolves path aliases, see transpileAndExecuteFile.ts)
+    assertUsage(isNpmPackageImport_unreliable(importPathAbsolute), errInvalidImport)
     assertIsNpmPackageImport(importPathAbsolute)
     if (filePathAbsoluteFilesystem) {
       filePath = getFilePathResolved({

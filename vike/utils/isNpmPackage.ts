@@ -1,4 +1,5 @@
 export { isNpmPackageImport }
+export { isNpmPackageImport_unreliable }
 export { assertIsNpmPackageImport }
 export { isValidPathAlias }
 /* Currently not used
@@ -18,6 +19,10 @@ assertIsNotBrowser()
 function isNpmPackageImport(str: string, { cannotBePathAlias }: { cannotBePathAlias: true }): boolean {
   // We cannot distinguish path alises that look like npm package imports
   assert(cannotBePathAlias)
+  return isNpmPackageImport_unreliable(str)
+}
+
+function isNpmPackageImport_unreliable(str: string): boolean {
   const res = parse(str)
   return res !== null
 }

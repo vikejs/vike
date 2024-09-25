@@ -2,6 +2,7 @@ export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
+export { getErrorMessage_importPathOutsideOfRoot }
 
 import { build, type BuildResult, type BuildOptions, formatMessages, type Message } from 'esbuild'
 import fs from 'fs'
@@ -201,21 +202,10 @@ async function transpileWithEsbuild(
           let importPathTranspiled: string
           assertPosixPath(importPathOriginal)
           if (importPathOriginal.startsWith('./') || importPathOriginal.startsWith('../')) {
-            // - We need this assertUsage() because we didn't find a way (yet?) to use filesystem absolute import paths in virtual files.
-            // - Alternatively, we can again try one of the following for generating the imports of virtual files. (Last time we tried none of it worked.)
-            //   - ~~~js
-            //     assert(filePathAbsoluteFilesystem.startsWith('/'))
-            //     filePath = `/@fs${filePathAbsoluteFilesystem}`
-            //     ~~~
-            //   - ~~~js
-            //     assert(filePathAbsoluteUserRootDir.startsWith('../'))
-            //     filePathAbsoluteUserRootDir = '/' + filePathAbsoluteUserRootDir
-            //     ~~~
+            // We need filePathAbsoluteUserRootDir because we didn't find a way to have filesystem absolute import paths in virtual files: https://gist.github.com/brillout/2315231c9a8164f950c64b4b4a7bbd39
             assertUsage(
               filePathAbsoluteUserRootDir,
-              `Import ${pc.cyan(
-                importPathOriginal
-              )} resolves to ${importPathResolved} outside of ${userRootDir} which is forbidden: make sure your relative import paths resolve inside ${userRootDir}, or import from an npm package.`
+              getErrorMessage_importPathOutsideOfRoot({ importPathOriginal, importPathResolved, userRootDir })
             )
             importPathTranspiled = importPathResolved
           } else {
@@ -435,4 +425,14 @@ function cleanEsbuildErrors(errors: Message[]) {
           !note.text.includes('as external to exclude it from the bundle')
       ))
   )
+}
+
+function getErrorMessage_importPathOutsideOfRoot({
+  importPathOriginal,
+  importPathResolved,
+  userRootDir
+}: { importPathOriginal: string; importPathResolved: string; userRootDir: string }): string {
+  return `The relative import ${pc.cyan(
+    importPathOriginal
+  )} resolves to ${importPathResolved} outside of the ${userRootDir} directory which is forbidden: make sure your relative import paths resolve inside the ${userRootDir} directory, or import from an npm package instead of using a relative import.`
 }
