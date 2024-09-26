@@ -22,7 +22,8 @@ import {
   getPageContextFromHooks_isHydration,
   getPageContextFromHooks_serialized,
   type PageContextFromServerHooks,
-  setPageContextInitIsPassedToClient
+  setPageContextInitIsPassedToClient,
+  PageContextFromClientHooks
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
 import { addLinkPrefetchHandlers, getPrefetchedPageContext } from './prefetch.js'
@@ -224,7 +225,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         { onlyOnce: true }
       )
     }
-    // There wasn't any `await` but result may change because we just called setHydrationCanBeAborted()
+    // There wasn't any `await` but isRenderOutdated() return value may change because we just called setHydrationCanBeAborted()
     if (isRenderOutdated()) return
 
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
@@ -251,20 +252,18 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       } else {
         try {
           const result = await getPageContextFromServerHooks(pageContext, false)
-          if ('is404ServerSideRouted' in result) return
-          pageContextFromServerHooks = result.pageContextAugmented
+          if (result.is404ServerSideRouted) return
+          pageContextFromServerHooks = result.pageContextFromServerHooks
         } catch (err) {
           await onError(err)
           return
         }
       }
       if (isRenderOutdated()) return
-      // TODO: create helder assertPageContextFromHook()
-      assert(!('urlOriginal' in pageContextFromServerHooks))
-      objectAssign(pageContext, pageContextFromServerHooks)
+      augmentType(pageContext, pageContextFromServerHooks)
 
       // Get pageContext from client-side hooks
-      let pageContextFromClientHooks: { _hasPageContextFromClient: boolean }
+      let pageContextFromClientHooks: PageContextFromClientHooks
       try {
         pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, false)
       } catch (err) {
@@ -272,11 +271,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
       if (isRenderOutdated()) return
-      assert(pageContextFromClientHooks)
-      assert(!('urlOriginal' in pageContextFromClientHooks))
       augmentType(pageContext, pageContextFromClientHooks)
 
-      // Render page view
       await renderPageView(pageContext)
     }
   }
@@ -410,21 +406,19 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
     if (isRenderOutdated()) return
 
-    let pageContextFromServerHooks: { _hasPageContextFromServer: boolean }
+    let pageContextFromServerHooks: PageContextFromServerHooks
     try {
       const result = await getPageContextFromServerHooks(pageContext, true)
-      if ('is404ServerSideRouted' in result) return
-      pageContextFromServerHooks = result.pageContextAugmented
+      if (result.is404ServerSideRouted) return
+      pageContextFromServerHooks = result.pageContextFromServerHooks
     } catch (err: unknown) {
       onError(err)
       return
     }
     if (isRenderOutdated()) return
-    assert(pageContextFromServerHooks)
-    assert(!('urlOriginal' in pageContextFromServerHooks))
     augmentType(pageContext, pageContextFromServerHooks)
 
-    let pageContextFromClientHooks: Awaited<ReturnType<typeof getPageContextFromClientHooks>>
+    let pageContextFromClientHooks: PageContextFromClientHooks
     try {
       pageContextFromClientHooks = await getPageContextFromClientHooks(pageContext, true)
     } catch (err: unknown) {
@@ -432,9 +426,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
     if (isRenderOutdated()) return
-    assert(pageContextFromClientHooks)
-    assert(!('urlOriginal' in pageContextFromClientHooks))
-    objectAssign(pageContext, pageContextFromClientHooks)
     augmentType(pageContext, pageContextFromClientHooks)
 
     objectAssign(pageContext, { routeParams: {} })

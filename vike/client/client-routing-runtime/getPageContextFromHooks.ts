@@ -4,6 +4,7 @@ export { getPageContextFromServerHooks }
 export { getPageContextFromClientHooks }
 export { setPageContextInitIsPassedToClient }
 export type { PageContextFromServerHooks }
+export type { PageContextFromClientHooks }
 
 import {
   assert,
@@ -46,6 +47,7 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
+// TODO: rename
 function getPageContextFromHooks_serialized(): PageContextSerialized & { routeParams: Record<string, string> } {
   const pageContextSerialized = getPageContextSerializedInHtml()
   assertUsage(!('urlOriginal' in pageContextSerialized), "Adding 'urlOriginal' to passToClient is forbidden")
@@ -55,18 +57,18 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & { routePa
   })
   return pageContextSerialized
 }
+// TODO: rename
 async function getPageContextFromHooks_isHydration(
-  pageContext: PageContextSerialized & PageContext & PageContextExports
+  pageContext: PageContextSerialized & PageContext & PageContextExports & { _hasPageContextFromServer: true }
 ) {
   objectAssign(pageContext, {
     isHydration: true as const,
-    _hasPageContextFromClient: false as const,
-    _hasPageContextFromServer: true as const
+    _hasPageContextFromClient: false
   })
   for (const hookName of ['data', 'onBeforeRender'] as const) {
     if (hookClientOnlyExists(hookName, pageContext)) {
       const pageContextFromHook = await executeHookClientSide(hookName, pageContext)
-      if (pageContextFromHook) assert(!('urlOriginal' in pageContextFromHook))
+      assert(!('urlOriginal' in pageContextFromHook))
       Object.assign(pageContext, pageContextFromHook)
     }
   }
@@ -81,10 +83,7 @@ async function getPageContextFromServerHooks(
   | { is404ServerSideRouted: true }
   | {
       is404ServerSideRouted?: undefined
-      pageContextAugmented: {
-        isHydration: false
-        _hasPageContextFromServer: boolean
-      }
+      pageContextFromServerHooks: PageContextFromServerHooks
     }
 > {
   objectAssign(pageContext, {
@@ -114,14 +113,14 @@ async function getPageContextFromServerHooks(
     objectAssign(pageContext, pageContextFromServer)
   }
 
-  // TODO: rename pageContextFromServerHooks
-  return { pageContextAugmented: pageContext }
+  return { pageContextFromServerHooks: pageContext }
 }
 
+type PageContextFromClientHooks = { _hasPageContextFromClient: boolean }
 async function getPageContextFromClientHooks(
   pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContext & PageContextExports,
   isErrorPage: boolean
-) {
+): Promise<PageContextFromClientHooks> {
   objectAssign(pageContext, {
     _hasPageContextFromClient: false
   })
@@ -149,15 +148,14 @@ async function getPageContextFromClientHooks(
       if (hookClientOnlyExists(hookName, pageContext) || !pageContext._hasPageContextFromServer) {
         // This won't do anything if no hook has been defined or if the hook's env.client is false.
         const pageContextFromHook = await executeHookClientSide(hookName, pageContext)
-        if (pageContextFromHook) assert(!('urlOriginal' in pageContextFromHook))
+        assert(!('urlOriginal' in pageContextFromHook))
         Object.assign(pageContext, pageContextFromHook)
-      } else {
-        assert(pageContext._hasPageContextFromServer)
       }
     }
   }
 
-  return pageContext
+  const pageContextFromClientHooks = pageContext
+  return pageContextFromClientHooks
 }
 
 async function executeHookClientSide(
@@ -172,7 +170,7 @@ async function executeHookClientSide(
   const hook = getHook(pageContext, hookName)
   if (!hook) {
     // No hook defined or hook's env.client is false
-    return null
+    return {}
   }
   const pageContextForUserConsumption = preparePageContextForUserConsumptionClientSide(pageContext, true)
   const hookResult = await executeHook(() => hook.hookFn(pageContextForUserConsumption), hook, pageContext)

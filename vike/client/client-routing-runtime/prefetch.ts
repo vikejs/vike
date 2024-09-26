@@ -64,7 +64,7 @@ function getPrefetchedPageContext(pageContext: {
   const url = pageContext.urlOriginal
   const found = globalObject.prefetchedPageContexts[url]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
-  const prefetchedPageContextFromServerHooks = found.result.pageContextAugmented
+  const prefetchedPageContextFromServerHooks = found.result.pageContextFromServerHooks
   // We discard the prefetched pageContext whenever we use it, so that the user always sees fresh data upon naivgating.
   delete globalObject.prefetchedPageContexts[url]
   return prefetchedPageContextFromServerHooks

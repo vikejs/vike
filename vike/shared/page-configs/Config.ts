@@ -33,7 +33,10 @@ export type { RouteAsync }
 export type { RouteSync }
 export type { KeepScrollPosition }
 
-import { PrefetchSetting, PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/PrefetchSetting.js'
+import type {
+  PrefetchSetting,
+  PrefetchStaticAssets
+} from '../../client/client-routing-runtime/prefetch/PrefetchSetting.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
@@ -410,7 +413,7 @@ type ConfigBuiltIn = {
   meta?: ConfigMeta | ImportString
 
   /**
-   * Prefetch page/links.
+   * Prefetch pages/links.
    *
    * https://vike.dev/prefetch
    */
