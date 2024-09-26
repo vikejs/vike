@@ -17,7 +17,7 @@ import {
   isObject,
   toPosixPath,
   assertUsage,
-  isJavaScriptFile,
+  isPlainJavaScriptFile,
   createDebugger,
   assertFilePathAbsoluteFilesystem,
   assertIsNpmPackageImport
@@ -40,7 +40,7 @@ async function transpileAndExecuteFile(
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
 
   assertUsage(
-    isJavaScriptFile(filePathAbsoluteFilesystem),
+    isPlainJavaScriptFile(filePathAbsoluteFilesystem),
     `${filePathToShowToUserResolved} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`
   )
   const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
@@ -172,7 +172,7 @@ async function transpileWithEsbuild(
           const isPointerImport =
             transformImports === 'all' ||
             // .jsx, .vue, .svg, ... => obviously not config code => pointer import
-            !isJavaScriptFile(importPathResolved) ||
+            !isPlainJavaScriptFile(importPathResolved) ||
             // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a config has been set by the user or by a Vike extension).
             //  - TODO/eventually: stop doing this and, instead, let Node.js directly load vike-{react,vue,solid} while enforcing Vike extensions to set 'name' in their +config.js file.
             //    - vike@0.4.162 already started soft-requiring Vike extensions to set the name config
