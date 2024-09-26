@@ -260,7 +260,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         }
       }
       if (isRenderOutdated()) return
-      augmentType(pageContext, pageContextFromServerHooks)
+      // TODO: create helder assertPageContextFromHook()
+      assert(!('urlOriginal' in pageContextFromServerHooks))
+      objectAssign(pageContext, pageContextFromServerHooks)
 
       // Get pageContext from client-side hooks
       let pageContextFromClientHooks: PageContextFromClientHooks
@@ -416,7 +418,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       return
     }
     if (isRenderOutdated()) return
-    augmentType(pageContext, pageContextFromServerHooks)
+    // TODO: create helder assertPageContextFromHook()
+    assert(!('urlOriginal' in pageContextFromServerHooks))
+    objectAssign(pageContext, pageContextFromServerHooks)
 
     let pageContextFromClientHooks: PageContextFromClientHooks
     try {

@@ -86,11 +86,11 @@ async function getPageContextFromServerHooks(
       pageContextFromServerHooks: PageContextFromServerHooks
     }
 > {
-  objectAssign(pageContext, {
+  const pageContextFromServerHooks = {
     // TODO: move this upstream
     isHydration: false as const,
     _hasPageContextFromServer: false
-  })
+  }
 
   // If pageContextInit has some client data or if one of the hooks guard(), data() or onBeforeRender() is server-side
   // only, then we need to fetch pageContext from the server.
@@ -104,16 +104,16 @@ async function getPageContextFromServerHooks(
     const res = await fetchPageContextFromServer(pageContext)
     if ('is404ServerSideRouted' in res) return { is404ServerSideRouted: true as const }
     const { pageContextFromServer } = res
-    pageContext._hasPageContextFromServer = true
+    pageContextFromServerHooks._hasPageContextFromServer = true
 
     // Already handled
     assert(!(isServerSideError in pageContextFromServer))
     assert(!('serverSideError' in pageContextFromServer))
 
-    objectAssign(pageContext, pageContextFromServer)
+    objectAssign(pageContextFromServerHooks, pageContextFromServer)
   }
 
-  return { pageContextFromServerHooks: pageContext }
+  return { pageContextFromServerHooks }
 }
 
 type PageContextFromClientHooks = { _hasPageContextFromClient: boolean }
