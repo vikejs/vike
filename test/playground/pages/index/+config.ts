@@ -1,7 +1,16 @@
 import type { Config } from 'vike/types'
 
+// TEST: isn't pointer import
+import prerender from './prerender'
+if (!(globalThis as any).setAtBuildTime)
+  throw new Error(
+    'The prerender.ts file should be executed at build-time but it seems to be running at runtime instead.'
+  )
+
+// TEST: is a pointer import
+import Page from './Page'
+
 export default {
-  // TEST: define `Page` over import string at `+config.js > export default { Page }` instead of +Page.js file.
-  // @ts-ignore I ain't sure whether import strings should be part of the official type. Probably so.
-  Page: 'import:./Page.jsx'
+  Page,
+  prerender
 } satisfies Config
