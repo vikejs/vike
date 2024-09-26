@@ -119,13 +119,19 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
   }
   assert(hasProp(pageContextLink, 'pageId', 'string')) // help TypeScript
 
-  if (options?.staticAssets !== false) {
-    await prefetchAssets(pageContextLink)
-  }
-  if (options?.pageContext !== false) {
-    const resultMaxAge = await getResultMaxAge()
-    await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
-  }
+  await Promise.all([
+    (async () => {
+      if (options?.staticAssets !== false) {
+        await prefetchAssets(pageContextLink)
+      }
+    })(),
+    (async () => {
+      if (options?.pageContext !== false) {
+        const resultMaxAge = await getResultMaxAge()
+        await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
+      }
+    })()
+  ])
 
   return
 
@@ -191,18 +197,23 @@ async function prefetchOnEvent(
   assert(hasProp(pageContextLink, 'pageId', 'string')) // help TypeScript
   if (!(await isClientSideRoutable(pageContextLink.pageId, pageContextLink))) return
 
-  if (prefetchSettings.staticAssets === event) {
-    await prefetchAssets(pageContextLink)
-  }
-
-  if (event !== 'viewport' && prefetchSettings.pageContext) {
-    const found = globalObject.prefetchedPageContexts[urlOfLink]
-    if (!found || isExpired(found)) {
-      // TODO: move this logic in getPrefetchSettings()
-      const resultMaxAge = prefetchSettings.pageContext
-      await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
-    }
-  }
+  await Promise.all([
+    (async () => {
+      if (prefetchSettings.staticAssets === event) {
+        await prefetchAssets(pageContextLink)
+      }
+    })(),
+    (async () => {
+      if (event !== 'viewport' && prefetchSettings.pageContext) {
+        const found = globalObject.prefetchedPageContexts[urlOfLink]
+        if (!found || isExpired(found)) {
+          // TODO: move this logic in getPrefetchSettings()
+          const resultMaxAge = prefetchSettings.pageContext
+          await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
+        }
+      }
+    })()
+  ])
 }
 
 function isExpired(found: PrefetchedPageContext) {
