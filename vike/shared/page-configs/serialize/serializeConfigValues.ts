@@ -13,7 +13,7 @@ import type {
 } from '../PageConfig.js'
 import type { ValueSerialized } from './PageConfigSerialized.js'
 import { addImportStatement } from '../../../node/plugin/plugins/importUserCode/addImportStatement.js'
-import { parsePointerImportData } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/transformFileImports.js'
+import { parsePointerImportData } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/transformPointerImports.js'
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'

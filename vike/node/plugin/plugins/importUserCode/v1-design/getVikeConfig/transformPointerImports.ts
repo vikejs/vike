@@ -1,4 +1,4 @@
-export { transformFileImports }
+export { transformPointerImports }
 export { parsePointerImportData }
 export { isPointerImportData }
 export type { PointerImportData }
@@ -25,15 +25,15 @@ import type { Program, Identifier, ImportDeclaration } from 'estree'
 import { assert, assertUsage, assertWarning, styleFileRE } from '../../../../utils.js'
 import pc from '@brillout/picocolors'
 
-// TODO: rename transformFileImports() => transformPointerImports()
-function transformFileImports(
+// TODO: rename transformPointerImports() => transformPointerImports()
+function transformPointerImports(
   code: string,
   filePathToShowToUser2: string,
   pointerImports:
     | Record<string, boolean>
-    // Used by ./transformFileImports.spec.ts
+    // Used by ./transformPointerImports.spec.ts
     | 'all',
-  // For ./transformFileImports.spec.ts
+  // For ./transformPointerImports.spec.ts
   skipWarnings?: true
 ): string | null {
   const spliceOperations: SpliceOperation[] = []

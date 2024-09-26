@@ -13,7 +13,7 @@ import {
   isFilePathAbsolute,
   requireResolve
 } from '../../../../utils.js'
-import { type PointerImportData, parsePointerImportData } from './transformFileImports.js'
+import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import path from 'path'
 import {
   getFilePathAbsoluteUserRootDir,

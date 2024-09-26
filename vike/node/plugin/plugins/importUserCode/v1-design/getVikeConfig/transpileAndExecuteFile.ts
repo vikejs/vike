@@ -22,7 +22,7 @@ import {
   assertFilePathAbsoluteFilesystem,
   assertIsNpmPackageImport
 } from '../../../../utils.js'
-import { transformFileImports } from './transformFileImports.js'
+import { transformPointerImports } from './transformPointerImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
 import 'source-map-support/register.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
@@ -82,7 +82,7 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
 
   let isImportTransformed = false
   if (transformImports) {
-    const codeMod = transformFileImports(code, filePathToShowToUserResolved, pointerImports)
+    const codeMod = transformPointerImports(code, filePathToShowToUserResolved, pointerImports)
     if (codeMod) {
       code = codeMod
       isImportTransformed = true
