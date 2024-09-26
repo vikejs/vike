@@ -113,6 +113,7 @@ async function getPageContextFromServerHooks(
     objectAssign(pageContextFromServerHooks, pageContextFromServer)
   }
 
+  // We cannot return the whole pageContext here because pageContextFromServerHooks is prefetched.
   return { pageContextFromServerHooks }
 }
 

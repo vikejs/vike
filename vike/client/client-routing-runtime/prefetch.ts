@@ -220,6 +220,7 @@ function isExpired(found: PrefetchedPageContext) {
   return Date.now() - found.resultFetchedAt > found.resultMaxAge
 }
 
+// We will be able to make this sync after we remove deprecated APIs.
 async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContext(urlOfLink)
 

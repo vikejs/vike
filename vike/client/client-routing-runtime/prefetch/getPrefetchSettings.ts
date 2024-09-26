@@ -5,7 +5,7 @@ export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }
 
 import { assertUsage, assertInfo, assertWarning } from '../utils.js'
-import { PrefetchSetting } from './PrefetchSetting.js'
+import type { PrefetchSetting } from './PrefetchSetting.js'
 
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 const prefetchSettingTrue = {
