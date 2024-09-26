@@ -86,11 +86,11 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
     if (codeMod) {
       code = codeMod
       isImportTransformed = true
-      if (debug.isActivated) debug(`code, post transformImports() (${filePathToShowToUserResolved})`, code)
+      if (debug.isActivated) debug(`code, post pointer imports transform (${filePathToShowToUserResolved})`, code)
     }
   }
   if (!isImportTransformed) {
-    if (debug.isActivated) debug(`code, no transformImports() (${filePathToShowToUserResolved})`)
+    if (debug.isActivated) debug(`code, no pointer imports (${filePathToShowToUserResolved})`)
   }
   return code
 }

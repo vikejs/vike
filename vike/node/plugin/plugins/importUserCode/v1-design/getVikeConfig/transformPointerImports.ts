@@ -25,7 +25,6 @@ import type { Program, Identifier, ImportDeclaration } from 'estree'
 import { assert, assertUsage, assertWarning, styleFileRE } from '../../../../utils.js'
 import pc from '@brillout/picocolors'
 
-// TODO: rename transformPointerImports() => transformPointerImports()
 function transformPointerImports(
   code: string,
   filePathToShowToUser2: string,
