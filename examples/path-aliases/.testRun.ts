@@ -21,7 +21,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
     expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 0)`)
   })
 
-  test('PageLayout.css loaded', async () => {
+  test('Layout.css loaded', async () => {
     expect(await page.$eval('a', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 255)`)
   })
 

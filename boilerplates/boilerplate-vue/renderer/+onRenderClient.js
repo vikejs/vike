@@ -1,7 +1,7 @@
 // https://vike.dev/onRenderClient
 export { onRenderClient }
 
-import { createApp } from './app'
+import { createVueApp } from './createVueApp'
 import { getPageTitle } from './getPageTitle'
 
 let app
@@ -11,7 +11,7 @@ async function onRenderClient(pageContext) {
   if (!pageContext.Page) throw new Error('My onRenderClient() hook expects pageContext.Page to be defined')
 
   if (!app) {
-    app = createApp(pageContext)
+    app = createVueApp(pageContext)
     app.mount('#app')
   } else {
     app.changePage(pageContext)

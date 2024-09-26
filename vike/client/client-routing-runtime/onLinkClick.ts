@@ -5,6 +5,7 @@ export { onLinkClick }
 import { assert } from './utils.js'
 import { skipLink } from './skipLink.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
+import type { ScrollTarget } from './setScrollPosition.js'
 
 function onLinkClick() {
   document.addEventListener('click', handler)
@@ -22,9 +23,11 @@ async function handler(ev: MouseEvent) {
   assert(url)
   ev.preventDefault()
 
-  const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
-
-  const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+  let scrollTarget: ScrollTarget
+  {
+    const v = linkTag.getAttribute('keep-scroll-position')
+    if (v !== null) scrollTarget = { preserveScroll: v === 'false' ? false : true }
+  }
   await renderPageClientSide({
     scrollTarget,
     urlOriginal: url,

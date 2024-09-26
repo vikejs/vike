@@ -1,9 +1,12 @@
-import { UiFrameworkExtension } from '../../components'
+import { Advanced, UiFrameworkExtension } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
 
-> Using `meta` is an advanced and powerful technique which we recommend using only for advanced use cases. Consider using the following instead:
-> - <Link href="/extensions" noBreadcrumb={true} /> (which use `meta` under the hood).
-> - The file extensions <Link href="/file-env" noBreadcrumb={true} />.
+<Advanced>
+  Using `meta` is an advanced feature. Consider using the following instead:
+  - <Link href="/settings">Settings</Link>. (Some of them, such as <Link href="/ssr">`ssr`</Link>, will set `meta` on your behalf.)
+  - <Link href="/extensions" noBreadcrumb={true} />. (They use `meta` under the hood.)
+  - The file extensions <Link href="/file-env" noBreadcrumb={true} />.
+</Advanced>
 
 The `meta` settings enables you to create:
  - **New settings**.
@@ -12,7 +15,7 @@ The `meta` settings enables you to create:
    - <Link href="#example-title-and-description" doNotInferSectionTitle />
    - <Link href="#example-layout" doNotInferSectionTitle />
  - **New hooks**.
-   - Example: `onInit()` or `onBeforeFetchingData()`.
+   - Example: `onInit()` or `onBeforeFetchingData()`
  - **Modifying the environment of existing hooks**.
    - <Link href="#example-modify-data-env" doNotInferSectionTitle />
 
@@ -250,14 +253,12 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> This implementation can be improved: the file `/pages/utils.js` is loaded on both the server- and client-side but `getDescription()` is only used by the server-side. This means `getDescription()` unnecessarily bloats the size of your client-side bundles. It would be cleaner to split `/pages/utils.js` in two seperate files: one for the client-side and another one for the server-side. In general, be extra careful in which environment each file is loaded; consider using <Link href="/file-env">`.server.js` and `.client.js`</Link> to ensure the environment of files.
+> This implementation can be improved: the file `/pages/utils.js` is loaded on both the server- and client-side but `getDescription()` is only used by the server-side. This means `getDescription()` unnecessarily bloats the size of your client-side bundles. It would be cleaner to split `/pages/utils.js` in two separate files: one for the client-side and another one for the server-side. In general, be extra careful in which environment each file is loaded; consider using <Link href="/file-env">`.server.js` and `.client.js`</Link> to ensure the environment of files.
 
 
 ## Example: `Layout`
 
-> If you use a <UiFrameworkExtension />, then you don't need to create the `Layout` setting as it's already created by <UiFrameworkExtension name noLink />.
-
-Another common use case is to create a component `<Layout>` that defines the layout of a page.
+Another common use case for `meta` is to create a component `<Layout>` that defines the layout of the page.
 
 ```js
 // /pages/product/+Layout.js
@@ -289,7 +290,9 @@ export default {
   meta: {
     Layout: {
       // Load the value of /pages/**/+Layout.js on both the server and client
-      env: { server: true, client: true }
+      env: { server: true, client: true },
+      // Make it cumulative for nested layouts
+      cumulative: true
     }
   }
 }
@@ -335,10 +338,6 @@ async function onRenderClient(pageContext) {
 }
 ```
 
-Examples:
- - <RepoLink path="/examples/layouts-react/" />
- - <RepoLink path="/examples/layouts-vue/" />
-
 
 ## Example: modify `data()` env
 
@@ -361,7 +360,7 @@ export default {
 } satisfies Config
 ```
 
-> Making `data()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/data#client-side" />.
+> Making `data()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/data#environment" />.
 
 If you want to change the `meta.env` on a page-by-page basis, you can use the the <Link href="/file-env">file extension `.shared.js`</Link> (renaming `+data.js` to `+data.shared.js`), or you can create a new `dataIsomorph` config:
 
@@ -423,7 +422,7 @@ export default {
         config: false // default value
       },
 
-      // [Optional] Whether config values should be merged (instead of overwritten).
+      // [Optional] Whether config values should be merged (instead of overridden).
       cumulative: false, // default value
 
       // [Optional] Function called when the config value is loaded at config-time.
@@ -473,7 +472,7 @@ declare global {
 }
 
 // The following isn't needed in this example, but if you define Vike.Config
-// in a .d.ts file then make sure there is at least one export/import statment.
+// in a .d.ts file then make sure there is at least one export/import statement.
 // Tell TypeScript this file isn't an ambient module:
 export {}
 ```
@@ -521,4 +520,4 @@ declare global {
 
 ## See also
 
-- <Link href="/migration/v1-design" />
+- <Link href="/head-tags#custom-settings" />

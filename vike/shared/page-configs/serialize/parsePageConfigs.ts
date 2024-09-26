@@ -166,6 +166,7 @@ function parseValueSerialized(
         })
       }
     })
+    // Already validated by assertPlusFileExport() call above.
     assert(valueWasFound)
     return { value, sideExports }
   }

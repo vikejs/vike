@@ -1,4 +1,4 @@
-import { createApp } from './app'
+import { createVueApp } from './createVueApp'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
 import type {
@@ -17,10 +17,10 @@ export { onHydrationEnd }
 export { onPageTransitionStart }
 export { onPageTransitionEnd }
 
-let app: ReturnType<typeof createApp>
+let app: ReturnType<typeof createVueApp>
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
   if (!app) {
-    app = createApp(pageContext)
+    app = createVueApp(pageContext)
     app.mount('#app')
   } else {
     app.changePage(pageContext)

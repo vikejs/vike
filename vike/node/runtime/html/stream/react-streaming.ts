@@ -1,44 +1,20 @@
 // Zero-config support for https://www.npmjs.com/package/react-streaming
 
-export { isStreamReactStreaming }
-export { streamReactStreamingToString }
-export { getStreamFromReactStreaming }
-export type { StreamReactStreaming }
-export type { InjectToStream }
+export { isStreamFromReactStreamingPackage }
+export { streamFromReactStreamingPackageToString }
+export { getStreamOfReactStreamingPackage }
+export type { StreamFromReactStreamingPackage }
+export type { StreamFromReactStreamingPackagePublic }
 
-import { assert, hasProp } from '../../utils.js'
+import type { renderToStream } from 'react-streaming/server'
+import { assert, assertUsage, hasProp, isVikeReactApp } from '../../utils.js'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream.js'
 
-// Same type than:
-// ```
-// import type { InjectToStream } from 'react-streaming/server'
-// ```
-type InjectToStream = (
-  chunk: unknown,
-  options?: {
-    flush?: boolean
-  }
-) => void
+// We use this simplistic public type to avoid type mismatches (when the user installed another version than Vike's devDependency#react-streaming install).
+type StreamFromReactStreamingPackagePublic = { injectToStream: Function }
+type StreamFromReactStreamingPackage = Awaited<ReturnType<typeof renderToStream>>
 
-// ```js
-// import { renderToStream } from 'react-streaming/server'
-// const { pipe, readable, injectToStream } = await renderToStream()`
-// ```
-type StreamReactStreaming = {
-  injectToStream: InjectToStream
-  // Older `react-streaming` versions don't define `disabled`
-  disabled?: boolean
-} & (
-  | {
-      pipe: (writable: StreamWritableNode) => void
-      readable: null
-    }
-  | {
-      pipe: null
-      readable: StreamReadableWeb
-    }
-)
-function streamReactStreamingToString(stream: StreamReactStreaming) {
+function streamFromReactStreamingPackageToString(stream: StreamFromReactStreamingPackage) {
   if (stream.pipe) {
     return streamPipeNodeToString(stream.pipe)
   }
@@ -48,18 +24,24 @@ function streamReactStreamingToString(stream: StreamReactStreaming) {
   assert(false)
 }
 
-function isStreamReactStreaming(thing: unknown): thing is StreamReactStreaming {
+function isStreamFromReactStreamingPackage(thing: unknown): thing is StreamFromReactStreamingPackage {
   if (hasProp(thing, 'injectToStream', 'function')) {
+    assertUsage(
+      hasProp(thing, 'hasStreamEnded', 'function'),
+      isVikeReactApp()
+        ? //
+          'Update vike-react to its latest version'
+        : 'Update react-streaming to its latest version'
+    )
     return true
   }
-  // TODO
-  //if( isStreamPipeNode
   return false
 }
 
-function getStreamFromReactStreaming(stream: StreamReactStreaming) {
+type Pipe = { __streamPipeNode: (writable: StreamWritableNode) => void }
+type Readable = StreamReadableWeb
+function getStreamOfReactStreamingPackage(stream: StreamFromReactStreamingPackage): Pipe | Readable {
   if (stream.pipe) {
-    // TODO
     return { __streamPipeNode: stream.pipe }
   }
   if (stream.readable) {

@@ -6,7 +6,7 @@ import { determineFsAllowList } from './determineFsAllowList.js'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware.js'
 import { markEnvAsViteDev } from '../../utils.js'
 import { improveViteLogs } from '../../shared/loggerVite.js'
-import { isErrorDebug } from '../../shared/isErrorDebug.js'
+import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore.js'
 
 if (isErrorDebug()) {
@@ -32,7 +32,13 @@ function devConfig(): Plugin[] {
               // We exclude Vike's client runtime to be able to use Vite's import.meta.glob()
               'vike/client',
               'vike/client/router',
+
+              // It seems like client-side/isomorphic imports also need to be excluded, in order to avoid the following:
+              //   ```
+              //   Client runtime loaded twice https://vike.dev/client-runtime-duplicated
+              //   ```
               'vike/routing',
+              'vike/getPageContext',
 
               // We exclude @brillout/json-serializer and @brillout/picocolors to avoid:
               // ```

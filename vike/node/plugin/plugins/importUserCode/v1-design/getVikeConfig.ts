@@ -3,8 +3,10 @@ export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
 export { isV1Design }
+export { getConfigValueInterfaceFile }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
+export type { InterfaceFile }
 
 import {
   assertPosixPath,
@@ -14,7 +16,7 @@ import {
   assertWarning,
   objectEntries,
   hasProp,
-  arrayIncludes,
+  includes,
   assertIsNotProductionRuntime,
   getMostSimilar,
   joinEnglish,
@@ -80,6 +82,7 @@ import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { getConfigVike } from '../../../../shared/getConfigVike.js'
+import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
 
 assertIsNotProductionRuntime()
 
@@ -122,7 +125,7 @@ function reloadVikeConfig(userRootDir: string, outDirRoot: string) {
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
-  wasConfigInvalid = isConfigInvalid
+  wasConfigInvalid = !!isConfigInvalid
   const vikeConfigPromisePrevious = vikeConfigPromise
   try {
     await vikeConfigPromise
@@ -233,28 +236,7 @@ async function loadInterfaceFiles(
         ```
         */
         const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId)
-        {
-          const alreadyMigrated = [
-            'vike-react',
-            'vike-react-query',
-            'vike-react-zustand',
-            'vike-vue',
-            'vike-pinia',
-            'vike-solid'
-          ]
-          assert(extendsConfig.filePath.importPathAbsolute)
-          const extensionName = extendsConfig.filePath.importPathAbsolute.split('/')[0]!
-          const warnMsg = alreadyMigrated.includes(extensionName)
-            ? `You're using a deprecated version of the Vike extension ${extensionName}, update ${extensionName} to its latest version.`
-            : `The config of the Vike extension ${extensionName} should set a ${pc.cyan('name')} value`
-          const isNameDefined = interfaceFile.fileExportsByConfigName.name?.configValue
-          if (alreadyMigrated) {
-            // Eventually always make it a assertUsage()
-            assertWarning(isNameDefined, warnMsg, { onlyOnce: true })
-          } else {
-            assertUsage(isNameDefined, warnMsg)
-          }
-        }
+        assertExtensionsConventions(interfaceFile)
         interfaceFilesByLocationId[locationId]!.push(interfaceFile)
       })
     }),
@@ -356,7 +338,7 @@ async function loadVikeConfig_withErrorHandling(
   } else {
     assert(ret === undefined)
     assert(err)
-    isConfigInvalid_set(true)
+    isConfigInvalid_set({ err })
     if (!isDev) {
       assert(getViteDevServer() === null)
       throw err
@@ -395,15 +377,18 @@ async function loadVikeConfig(
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     objectEntries(interfaceFilesByLocationId)
-      .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
+      .filter(([pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
+        const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesRelevant).flat(1)
+
+        assertExtensionsPeerDependencies(interfaceFilesRelevantList)
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
         // Load value files of custom config-only configs
         await Promise.all(
-          getInterfaceFileList(interfaceFilesRelevant).map(async (interfaceFile) => {
+          interfaceFilesRelevantList.map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
             const { configName } = interfaceFile
             if (isGlobalConfig(configName)) return
@@ -444,6 +429,8 @@ async function loadVikeConfig(
         applyEffectsAll(configValueSources, configDefinitions)
         const configValuesComputed = getComputed(configValueSources, configDefinitions)
 
+        assertUsageGlobalConfigs(interfaceFilesRelevantList, configDefinitions, interfaceFilesByLocationId)
+
         const pageConfig: PageConfigBuildTime = {
           pageId: locationId,
           isErrorPage,
@@ -459,6 +446,63 @@ async function loadVikeConfig(
   assertPageConfigs(pageConfigs)
 
   return { pageConfigs, pageConfigGlobal, globalVikeConfig }
+}
+
+// TODO/soon: refactor
+//  - Dedupe: most of the assertUsageGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
+//    - This assertUsage() message is slightly better: use this one for getGlobalConfigs()
+// Global configs should be defined at global locations
+function assertUsageGlobalConfigs(
+  interfaceFilesRelevantList: InterfaceFile[],
+  configDefinitions: ConfigDefinitions,
+  interfaceFilesByLocationId: InterfaceFilesByLocationId
+) {
+  interfaceFilesRelevantList.forEach((interfaceFile) => {
+    const configNames: string[] = []
+    if (interfaceFile.isValueFile) {
+      configNames.push(interfaceFile.configName)
+    } else {
+      configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
+    }
+    configNames.forEach((configName) => {
+      if (isGlobalConfig(configName)) return
+      const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
+      if (configDef.global) {
+        const locationIds = objectKeys(interfaceFilesByLocationId)
+        if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
+          const interfaceFilesGlobal = objectFromEntries(
+            objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
+              return isGlobalLocation(locationId, locationIds)
+            })
+          )
+          const configFilesGlobal: string[] = []
+          objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
+            assert(isGlobalLocation(locationId, locationIds))
+            interfaceFiles.forEach((interfaceFile) => {
+              if (!interfaceFile.isConfigFile) return
+              const {
+                filePath: { filePathAbsoluteUserRootDir }
+              } = interfaceFile
+              if (filePathAbsoluteUserRootDir) {
+                configFilesGlobal.push(filePathAbsoluteUserRootDir)
+              }
+            })
+          })
+          assertUsage(
+            false,
+            [
+              `${interfaceFile.filePath.filePathToShowToUser} sets the config ${pc.cyan(
+                configName
+              )} but it's a global config:`,
+              configFilesGlobal.length > 0
+                ? `define ${pc.cyan(configName)} at ${joinEnglish(configFilesGlobal, 'or')} instead.`
+                : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead.`
+            ].join(' ')
+          )
+        }
+      }
+    })
+  })
 }
 
 function deriveConfigEnvFromFileName(env: ConfigEnvInternal, fileName: string) {
@@ -516,14 +560,6 @@ function getInterfaceFilesRelevant(
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return interfaceFilesRelevant
-}
-
-function getInterfaceFileList(interfaceFilesByLocationId: InterfaceFilesByLocationId): InterfaceFile[] {
-  const interfaceFiles: InterfaceFile[] = []
-  Object.values(interfaceFilesByLocationId).forEach((interfaceFiles_) => {
-    interfaceFiles.push(...interfaceFiles_)
-  })
-  return interfaceFiles
 }
 
 async function getGlobalConfigs(
@@ -898,7 +934,7 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
         const configMeta = interfaceFile.fileExportsByConfigName['meta']
         if (!configMeta) return
         const meta = configMeta.configValue
-        assertMetaValue(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
+        assertMetaUsage(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
         // Set configDef._userEffectDefinedAtFilePath
         Object.entries(meta).forEach(([configName, configDef]) => {
@@ -924,9 +960,9 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
   return configDefinitions
 }
 
-function assertMetaValue(
+function assertMetaUsage(
   metaVal: unknown,
-  metaConfigDefinedAt: `Config meta${string}` | null
+  metaConfigDefinedAt: `Config meta defined at ${string}` | null
 ): asserts metaVal is ConfigDefinitions {
   if (!isObject(metaVal)) {
     assert(metaConfigDefinedAt) // We expect internal effects to return a valid meta value
@@ -1020,13 +1056,13 @@ function applyEffect(
   const notSupported = `Effects currently only supports modifying the the ${pc.cyan('env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
-      let configDefinedAt: Parameters<typeof assertMetaValue>[1]
+      let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
       if (configDefEffect._userEffectDefinedAtFilePath) {
         configDefinedAt = getConfigDefinedAt('Config', configName, configDefEffect._userEffectDefinedAtFilePath)
       } else {
         configDefinedAt = null
       }
-      assertMetaValue(configValue, configDefinedAt)
+      assertMetaUsage(configValue, configDefinedAt)
       objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
         {
           const keys = Object.keys(configTargetDef)
@@ -1042,8 +1078,13 @@ function applyEffect(
       })
     } else {
       assertUsage(false, notSupported)
-      // If we do end implementing being able to set the value of a config:
-      //  - For setting definedAtFile: we could take the definedAtFile of the effect config while appending '(effect)' to definedAtFile.fileExportPathToShowToUser
+      /* To implement being able to set a config value in an effect:
+       * - Copy and append definedAtFile.fileExportPathToShowToUser with ['meta', configName, 'effect']
+       *   - Copying the definedAtFile of the config that defines the effect
+       * - Same precedence as the config that sets the value triggering the effect (not the config defining the effect)
+       *   - Apply sortConfigValueSources() again?
+      configValueSources.push()
+      */
     }
   })
 }
@@ -1210,7 +1251,12 @@ function isVikeConfigFile(filePath: string): boolean {
   return !!getConfigName(filePath)
 }
 
-function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnvInternal {
+function getConfigEnvValue(
+  val: unknown,
+  errMsgIntro: `Config meta defined at ${string} sets meta.${
+    string // configName
+  }.env to`
+): ConfigEnvInternal {
   const errInvalidValue = `${errMsgIntro} an invalid value ${pc.cyan(JSON.stringify(val))}`
 
   // Legacy outdated values
@@ -1239,7 +1285,10 @@ function getConfigEnvValue(val: unknown, errMsgIntro: `${string} to`): ConfigEnv
   assertUsage(hasProp(val, 'config', 'undefined') || hasProp(val, 'config', 'boolean'), errInvalidValue)
   assertUsage(hasProp(val, 'server', 'undefined') || hasProp(val, 'server', 'boolean'), errInvalidValue)
   assertUsage(hasProp(val, 'client', 'undefined') || hasProp(val, 'client', 'boolean'), errInvalidValue)
-  /* Uncomment to allow users to set an eager config. Same for `{ client: 'if-client-routing' }`.
+  /* To allow users to set an eager config:
+   * - Uncomment line below.
+   * - Add 'eager' to assertKeys() call above.
+   * - Add `eager: boolean` to ConfigEnv type.
   assertUsage(hasProp(val, 'eager', 'undefined') || hasProp(val, 'eager', 'boolean'), errInvalidValue)
   */
 
@@ -1261,7 +1310,7 @@ function isLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   if (configName === 'prerender') return false
   const configNamesGlobal = getConfigNamesGlobal()
-  return arrayIncludes(configNamesGlobal, configName)
+  return includes(configNamesGlobal, configName)
 }
 function getConfigNamesGlobal() {
   return Object.keys(configDefinitionsBuiltInGlobal)
@@ -1301,4 +1350,8 @@ function sortConfigValueSources(
         reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
       )
   )
+}
+
+function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: string): unknown {
+  return interfaceFile.fileExportsByConfigName[configName]?.configValue
 }

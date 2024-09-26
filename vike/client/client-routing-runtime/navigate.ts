@@ -1,8 +1,9 @@
 export { navigate }
 export { reload }
 
-import { renderPageClientSide } from './renderPageClientSide.js'
-import { assertUsage, isBrowser, assertClientRouting, checkIfClientRouting, getCurrentUrl } from './utils.js'
+import { firstRenderStartPromise, renderPageClientSide } from './renderPageClientSide.js'
+import type { ScrollTarget } from './setScrollPosition.js'
+import { assertClientRouting, assertUsageUrlPathname, getCurrentUrl } from './utils.js'
 
 assertClientRouting()
 
@@ -16,28 +17,17 @@ assertClientRouting()
  */
 async function navigate(
   url: string,
-  { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}
+  {
+    keepScrollPosition = false,
+    overwriteLastHistoryEntry = false
+  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean } = {}
 ): Promise<void> {
-  assertUsage(isBrowser(), 'The navigate() function can be called only on the client-side', { showStackTrace: true })
-  const errMsg = 'navigate() works only with Client Routing, see https://vike.dev/navigate'
-  assertUsage(checkIfClientRouting(), errMsg, { showStackTrace: true })
-  assertUsage(url, '[navigate(url)] Missing argument url', { showStackTrace: true })
-  assertUsage(typeof url === 'string', '[navigate(url)] Argument url should be a string', { showStackTrace: true })
-  assertUsage(
-    typeof keepScrollPosition === 'boolean',
-    '[navigate(url, { keepScrollPosition })] Argument keepScrollPosition should be a boolean',
-    { showStackTrace: true }
-  )
-  assertUsage(
-    typeof overwriteLastHistoryEntry === 'boolean',
-    '[navigate(url, { overwriteLastHistoryEntry })] Argument overwriteLastHistoryEntry should be a boolean',
-    { showStackTrace: true }
-  )
-  assertUsage(url.startsWith('/'), '[navigate(url)] Argument url should start with a leading /', {
-    showStackTrace: true
-  })
+  assertUsageUrlPathname(url, '[navigate(url)] url')
 
-  const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+  // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
+  await firstRenderStartPromise
+
+  const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition }
   await renderPageClientSide({
     scrollTarget,
     urlOriginal: url,

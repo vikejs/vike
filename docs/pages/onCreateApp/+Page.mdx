@@ -2,6 +2,7 @@ import { Link } from '@brillout/docpress'
 import { ImplementedBy } from '../../components'
 
 Environment: server, client.
+
 <ImplementedBy by={<code>vike-vue</code>} noCustomGuide={true}>`onCreateApp()`</ImplementedBy>
 
 The `onCreateApp()` hook is called right after the
@@ -9,7 +10,7 @@ The `onCreateApp()` hook is called right after the
 typically for registering a [Vue plugin](https://vuejs.org/guide/reusability/plugins.html).
 
 ```js
-// /pages/+onCreateApp.js
+// pages/+onCreateApp.js
 // Environment: server, client
 
 export { onCreateApp }
@@ -17,14 +18,19 @@ export { onCreateApp }
 import SomeVuePlugin from 'some-vue-plugin'
 
 const onCreateApp = (pageContext) => {
+  if (pageContext.isRenderingHead) return // Don't add the plugin when rendering <head>
   const { app } = pageContext
   app.use(SomeVuePlugin)
 }
 ```
 
+> There are two [app instances](https://vuejs.org/guide/essentials/application): one for rendering the `+Page.vue` component, and a second one for rendering the `+Head.vue` components. You can use `pageContext.isRenderingHead` for applying `onCreateApp()` only for rendering the `+Page.vue` component.
+
+
 ## Examples
 
 See [`vike-vue` > /examples/full/pages/+onCreateApp.ts](https://github.com/vikejs/vike-vue/blob/main/examples/full/pages/%2BonCreateApp.ts)
+
 
 ## TypeScript
 
@@ -42,3 +48,8 @@ const onCreateApp: OnCreateAppSync = (pageContext): ReturnType<OnCreateAppSync> 
   app.use(SomeVuePlugin)
 }
 ```
+
+
+## See also
+
+- [Vue > The application instance](https://vuejs.org/guide/essentials/application)

@@ -5,7 +5,7 @@ export { onBeforePrerender }
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageShell } from './PageShell'
+import { Layout } from './Layout'
 import { locales, localeDefault } from '../locales'
 
 const passToClient = ['pageProps', 'locale']
@@ -13,9 +13,9 @@ const passToClient = ['pageProps', 'locale']
 function render(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
-    <PageShell pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>
+    </Layout>
   )
 
   return escapeInject`<!DOCTYPE html>

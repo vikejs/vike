@@ -3,9 +3,9 @@ import { UiFrameworkExtension } from '../../components'
 
 Environment: client.
 
-The `navigate('/some/url')` function enables you to programmatically switch pages. In other words, you can implement navigations that aren't triggered by the user clicking on an anchor link `<a>`.
+The `navigate('/some/url')` function enables you to programmatically switch pages without requiring the user to click a link.
 
-For example, you can use `navigate()` to redirect the user after a successful form submission:
+For example, to redirect the user after a successful form submission:
 
 ```jsx
 import { navigate } from 'vike/client/router'
@@ -26,30 +26,32 @@ async function onSubmit() {
 }
 ```
 
-> If you want to redirect the user while rendering a page (e.g. redirect non-authenticated users to a login page), then use <Link href='/redirect'>`throw redirect()`</Link> instead. See <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />.
+> If you want to redirect the user while rendering a page then use <Link href='/redirect'>`throw redirect()`</Link> instead. For example, when redirecting a non-authenticated user to a login page. See <Link href="/abort#throw-redirect-vs-throw-render-vs-navigate" doNotInferSectionTitle={true} />.
 
-> If you want to navigate back, then use [`window.history.back()`](https://developer.mozilla.org/en-US/docs/Web/API/History/back) instead.
+> If you want to programmatically navigate back then use [`window.history.back()`](https://developer.mozilla.org/en-US/docs/Web/API/History/back).
 
 
 ## Options
 
- - `navigate('/some-url', { keepScrollPosition: true })`: Don't scroll to the top of the page, preserve the scroll position instead. See also <Link href="/clientRouting#settings">`<a href="/some-url" keep-scroll-position />`</Link>.
- - `navigate('/some-url', { overwriteLastHistoryEntry: true })`: Don't create a new entry in the browser's history, instead let the new URL replace the current URL. (This effectively removes the current URL from the browser history).
+ - `navigate('/some-url', { keepScrollPosition: true })`: Don't scroll to the top of the page, preserve the scroll position instead. See also:
+   - <Link href="/keepScrollPosition" />
+   - <Link href="/clientRouting#settings">`<a href="/some-url" keep-scroll-position />`</Link>.
+ - `navigate('/some-url', { overwriteLastHistoryEntry: true })`: Don't create a new entry in the browser's history, instead let the new URL replace the current URL. This effectively removes the current URL from the browser history.
 
 
 ## `history.pushState()`
 
 If you want to change the URL completely independently of Vike then use [`history.pushState()`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState) instead of `navigate()`.
 
-Make sure you implement your navigation handling by listening to the [`popstate` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event).
+You can then implement your navigation handling by listening to the [`popstate` event](https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event).
 
-<Warning>You need to handle the `popstate` event yourself, otherwise you'll break the browser's back- and forward history button.</Warning>
+<Warning>You need to handle the `popstate` event, otherwise you'll break the browser's back- and forward history button.</Warning>
 
 ```js
 window.addEventListener('popstate', (event) => {
   // Vike sets triggeredBy to 'vike' | 'browser' | 'user'
   const { triggeredBy } = window.history.state
-  /* Equivalent:
+  /* Same as:
   const { triggeredBy } = event.state
   */
 

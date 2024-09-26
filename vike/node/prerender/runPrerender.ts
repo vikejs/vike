@@ -24,7 +24,6 @@ import {
   handleNodeEnv_prerender,
   pLimit,
   PLimit,
-  assertPathFilesystemAbsolute,
   isArray,
   changeEnumerable
 } from './utils.js'
@@ -39,7 +38,11 @@ import {
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
-import { getGlobalContext, initGlobalContext, setGlobalContext_prerender } from '../runtime/globalContext.js'
+import {
+  getGlobalContext,
+  initGlobalContext_runPrerender,
+  setGlobalContext_isPrerendering
+} from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import type { InlineConfig } from 'vite'
@@ -61,7 +64,7 @@ import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
   getHookTimeoutDefault,
-  setIsPrerenderering
+  getHook_setIsPrerenderering
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
@@ -193,8 +196,8 @@ async function runPrerender(
   manuallyTriggered: null | '$ vike prerender' | 'prerender()'
 ): Promise<void> {
   checkOutdatedOptions(options)
-
-  setIsPrerenderering()
+  setGlobalContext_isPrerendering()
+  getHook_setIsPrerenderering()
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
@@ -206,11 +209,10 @@ async function runPrerender(
   await disableReactStreaming()
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'vike pre-rendering' as any, 'production')
-  setGlobalContext_prerender(viteConfig)
   assertLoadedConfig(viteConfig, options)
   const configVike = await getConfigVike(viteConfig)
 
-  const { outDirClient, outDirRoot } = getOutDirs(viteConfig)
+  const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = configVike.prerender
   if (!prerenderConfig) {
@@ -229,8 +231,7 @@ async function runPrerender(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
   )
 
-  assertPathFilesystemAbsolute(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
-  await initGlobalContext(true, outDirRoot)
+  await initGlobalContext_runPrerender()
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
 
@@ -513,7 +514,7 @@ async function handlePagesWithStaticRoutes(
         objectAssign(pageContext, {
           _providedByHook: null,
           routeParams,
-          _pageId: pageId,
+          pageId: pageId,
           _debugRouteMatches: [
             {
               pageId,
@@ -763,8 +764,8 @@ async function routeAndPrerender(
         const { urlOriginal } = pageContext
         assert(urlOriginal)
         const pageContextFromRoute = await route(pageContext)
-        assert(hasProp(pageContextFromRoute, '_pageId', 'null') || hasProp(pageContextFromRoute, '_pageId', 'string'))
-        if (pageContextFromRoute._pageId === null) {
+        assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string'))
+        if (pageContextFromRoute.pageId === null) {
           let hookName: string | undefined
           let hookFilePath: string | undefined
           if (pageContext._providedByHook) {
@@ -790,9 +791,9 @@ async function routeAndPrerender(
           }
         }
 
-        assert(pageContextFromRoute._pageId)
+        assert(pageContextFromRoute.pageId)
         objectAssign(pageContext, pageContextFromRoute)
-        const { _pageId: pageId } = pageContext
+        const { pageId: pageId } = pageContext
 
         objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 

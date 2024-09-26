@@ -1,28 +1,24 @@
 export { skipLink }
 
 import { getBaseServer } from './getBaseServer.js'
-import { assert, parseUrl, isBaseServer, isParsable, isExternalLink } from './utils.js'
+import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
-
-  if (url === null) return true
-  if (url === '') return true
-  if (isExternalLink(url)) return true
-  if (isNewTabLink(linkTag)) return true
-  if (isHashUrl(url)) return true
-  if (!hasBaseServer(url)) {
-    return true
-  }
-  if (!isParsable(url)) {
-    return true
-  }
-  // Purposely last because disableAutomaticLinkInterception will be removed in the major release
-  if (!isVikeLink(linkTag)) return true
-  return false
+  return (
+    url === null ||
+    !isUrl(url) ||
+    url === '' ||
+    isUrlExternal(url) ||
+    isHashUrl(url) ||
+    isNewTabLink(linkTag) ||
+    !hasBaseServer(url) ||
+    // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
+    !isVikeLink(linkTag)
+  )
 }
 
-// TODO/v1-release: remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions will be deprecated)
+// TODO/next-major-release: remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions will be deprecated)
 function isVikeLink(linkTag: HTMLElement) {
   const disableAutomaticLinkInterception = isDisableAutomaticLinkInterception()
   if (!disableAutomaticLinkInterception) {
@@ -43,7 +39,7 @@ function isHashUrl(url: string) {
     return true
   }
   const removeHash = (url: string) => url.split('#')[0]
-  if (url.includes('#') && removeHash(url) === removeHash(window.location.href)) {
+  if (url.includes('#') && removeHash(url) === removeHash(window.location.pathname)) {
     return true
   }
   return false

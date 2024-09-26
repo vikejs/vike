@@ -5,15 +5,15 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@brillout/docpress": "^0.6.11",
+    "@brillout/docpress": "^0.7.3",
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "^5.3.3",
-    "vike": "0.4.172",
-    "vite": "^5.2.10"
+    "typescript": "^5.4.0",
+    "vike": "0.4.197",
+    "vite": "^5.4.0"
   },
   "type": "module"
 }

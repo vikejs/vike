@@ -22,15 +22,13 @@ async function installClientRouter() {
   await renderPromise
 }
 
-function render() {
+async function render() {
   assert(getRenderCount() === 0)
-  const renderPromise = renderPageClientSide({
-    scrollTarget: 'preserve-scroll',
+  await renderPageClientSide({
+    scrollTarget: { preserveScroll: true },
     isBackwardNavigation: null,
     isClientSideNavigation: false
   })
-  assert(getRenderCount() === 1)
-  return renderPromise
 }
 
 function initHistoryAndScroll() {

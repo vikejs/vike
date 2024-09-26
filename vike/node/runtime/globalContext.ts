@@ -3,13 +3,17 @@ export { getGlobalContextSync }
 export { getGlobalContextAsync }
 
 // Internal use
-export { initGlobalContext }
 export { getGlobalContext }
 export { getViteDevServer }
 export { getViteConfig }
-export { setGlobalContext_viteDevServer }
-export { setGlobalContext_prerender }
 export { getRuntimeManifest }
+export { initGlobalContext_renderPage }
+export { initGlobalContext_runPrerender }
+export { initGlobalContext_getGlobalContextAsync }
+export { setGlobalContext_viteDevServer }
+export { setGlobalContext_viteConfig }
+export { setGlobalContext_isDev }
+export { setGlobalContext_isPrerendering }
 
 import {
   assert,
@@ -19,7 +23,8 @@ import {
   getGlobalObject,
   isPlainObject,
   objectAssign,
-  objectKeys
+  objectKeys,
+  genPromise
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -30,15 +35,27 @@ import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
-let resolveGlobalContext: (globalContext: GlobalContext) => void
+import { getPageFilesExports } from './page-files/getPageFilesExports.js'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
-  globalContextPromise: Promise<GlobalContext>
   viteDevServer?: ViteDevServer
+  viteDevServerPromise: Promise<ViteDevServer>
+  viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
+  isDev?: boolean
   viteConfig?: ResolvedConfig
-}>('globalContext.ts', {
-  globalContextPromise: new Promise((r) => (resolveGlobalContext = r))
-})
+  outDirRoot?: string
+  isPrerendering?: true
+  initGlobalContext_runPrerender_alreadyCalled?: true
+}>(
+  'globalContext.ts',
+  (() => {
+    const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
+    return {
+      viteDevServerPromise,
+      viteDevServerPromiseResolve
+    }
+  })()
+)
 
 type GlobalContextPublic = {
   assetsManifest: null | ViteManifest
@@ -90,10 +107,17 @@ function getGlobalContextSync(): GlobalContextPublic {
   return makePublic(globalObject.globalContext)
 }
 /** @experimental https://vike.dev/getGlobalContext */
-async function getGlobalContextAsync(): Promise<GlobalContextPublic> {
-  await globalObject.globalContextPromise
-  assert(globalObject.globalContext)
-  return makePublic(globalObject.globalContext)
+async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
+  assertUsage(
+    typeof isProduction === 'boolean',
+    `[getGlobalContextAsync(isProduction)] Argument ${pc.cyan('isProduction')} ${
+      isProduction === undefined ? 'is missing' : `should be ${pc.cyan('true')} or ${pc.cyan('false')}`
+    }`
+  )
+  await initGlobalContext_getGlobalContextAsync(isProduction)
+  const { globalContext } = globalObject
+  assert(globalContext)
+  return makePublic(globalContext)
 }
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
   const globalContextPublic = {
@@ -128,32 +152,84 @@ function makePublic(globalContext: GlobalContext): GlobalContextPublic {
 
 function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   if (globalObject.viteDevServer) return
-  assert(!globalObject.globalContext)
-  assert(!globalObject.globalContext)
-  globalObject.viteConfig = viteDevServer.config
+  assertIsNotInitilizedYet()
+  assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
+  globalObject.viteDevServerPromiseResolve(viteDevServer)
+  eagerlyLoadUserFiles()
+}
+function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: string): void {
+  if (globalObject.viteConfig) return
+  assertIsNotInitilizedYet()
+  globalObject.viteConfig = viteConfig
+  globalObject.outDirRoot = outDirRoot
+}
+function assertIsNotInitilizedYet() {
+  // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
+  assert(!globalObject.globalContext)
+}
+function setGlobalContext_isDev(isDev: boolean) {
+  globalObject.isDev = isDev
+}
+function setGlobalContext_isPrerendering() {
+  globalObject.isPrerendering = true
 }
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
-}
-function setGlobalContext_prerender(viteConfig: ResolvedConfig): void {
-  if (globalObject.viteConfig) return
-  assert(!globalObject.globalContext)
-  globalObject.viteConfig = viteConfig
 }
 function getViteConfig(): ResolvedConfig | null {
   return globalObject.viteConfig ?? null
 }
 
-async function initGlobalContext(isPrerendering = false, outDir?: string): Promise<void> {
-  if (globalObject.globalContext) return
+async function initGlobalContext_renderPage(): Promise<void> {
+  await initGlobalContext(!globalObject.isDev)
+}
 
-  const { viteDevServer, viteConfig } = globalObject
-  assertNodeEnv_runtime(!!viteDevServer)
-  const isProduction = !viteDevServer
+async function initGlobalContext_runPrerender(): Promise<void> {
+  if (globalObject.initGlobalContext_runPrerender_alreadyCalled) return
+  globalObject.initGlobalContext_runPrerender_alreadyCalled = true
+
+  assert(globalObject.isPrerendering)
+  assert(globalObject.viteConfig)
+  assert(globalObject.outDirRoot)
+
+  // We assume initGlobalContext_runPrerender() to be called before:
+  // - initGlobalContext_renderPage()
+  // - initGlobalContext_getGlobalContextAsync()
+  assert(!globalObject.globalContext)
+
+  await initGlobalContext(true)
+}
+
+async function initGlobalContext_getGlobalContextAsync(isProduction: boolean): Promise<void> {
+  if (!isProduction) {
+    const waitFor = 20
+    const timeout = setTimeout(() => {
+      assertWarning(false, `Vite's development server still not created after ${waitFor} seconds.`, {
+        onlyOnce: false,
+        showStackTrace: true
+      })
+    }, waitFor * 1000)
+    await globalObject.viteDevServerPromise
+    clearTimeout(timeout)
+  }
+  await initGlobalContext(isProduction)
+}
+
+async function initGlobalContext(isProduction: boolean): Promise<void> {
+  if (globalObject.globalContext) {
+    assert(globalObject.globalContext.isProduction === isProduction)
+    // We assume setGlobalContext_isPrerendering() is called before initGlobalContext()
+    assert(globalObject.globalContext.isPrerendering === (globalObject.isPrerendering ?? false))
+    return
+  }
+
+  const { viteDevServer, viteConfig, isDev, isPrerendering } = globalObject
+  assertNodeEnv_runtime(isDev ?? false)
 
   if (!isProduction) {
     assert(viteConfig)
+    assert(viteDevServer)
     assert(!isPrerendering)
     const configVike = await getConfigVike(viteConfig)
     const pluginManifest = getRuntimeManifest(configVike)
@@ -172,7 +248,7 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
   } else {
-    const buildEntries = await loadImportBuild(outDir)
+    const buildEntries = await loadImportBuild(globalObject.outDirRoot)
     assertBuildEntries(buildEntries, isPrerendering ?? false)
     const { pageFiles, assetsManifest, pluginManifest } = buildEntries
     setPageFiles(pageFiles)
@@ -207,8 +283,6 @@ async function initGlobalContext(isPrerendering = false, outDir?: string): Promi
       globalObject.globalContext = globalContext
     }
   }
-
-  resolveGlobalContext(globalObject.globalContext)
 }
 
 function getRuntimeManifest(configVike: ConfigVikeResolved): RuntimeManifest {
@@ -248,4 +322,10 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
       assert(typeof entry.file === 'string')
     })
   */
+}
+
+function eagerlyLoadUserFiles() {
+  // Other than here, the getPageFilesExports() function is only called only upon calling the renderPage() function.
+  // We call it as early as possible here for better performance.
+  getPageFilesExports()
 }

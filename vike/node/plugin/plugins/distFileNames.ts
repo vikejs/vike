@@ -4,10 +4,12 @@ export { distFileNames }
 //  - https://github.com/vikejs/vike/commit/11a4c49e5403aa7c37c8020c462b499425b41854
 //  - Blocker: https://github.com/rollup/rollup/issues/4724
 
-import { assertPosixPath, assert, assertUsage, isArray } from '../utils.js'
+import { assertPosixPath, assert, assertUsage, isArray, isCallable } from '../utils.js'
 import path from 'path'
+import crypto from 'crypto'
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { getAssetsDir } from '../shared/getAssetsDir.js'
+import { assertModuleId, getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
@@ -36,12 +38,75 @@ function distFileNames(): Plugin {
           //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
           assertUsage(
             false,
-            "Setting config.build.rollupOptions.output.assetFileNames is currently forbidden. (It's possible to support, thus contact a maintainer if you need this.)"
+            "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use."
           )
+        }
+        {
+          const manualChunksOriginal = rollupOutput.manualChunks
+          rollupOutput.manualChunks = function (id, ...args) {
+            if (manualChunksOriginal) {
+              if (isCallable(manualChunksOriginal)) {
+                const result = manualChunksOriginal.call(this, id, ...args)
+                if (result !== undefined) return result
+              } else {
+                assertUsage(
+                  false,
+                  "The Vite's configuration build.rollupOptions.output.manualChunks must be a function. Reach out if you need to set it to another value."
+                )
+              }
+            }
+
+            // Disable CSS bundling to workaround https://github.com/vikejs/vike/issues/1815
+            if (id.endsWith('.css')) {
+              const userRootDir = config.root
+              if (id.startsWith(userRootDir)) {
+                assertPosixPath(id)
+                assertModuleId(id)
+
+                let name: string
+                const isNodeModules = id.match(/node_modules\/([^\/]+)\/(?!.*node_modules)/)
+                if (isNodeModules) {
+                  name = isNodeModules[1]!
+                } else {
+                  const filePath = getModuleFilePathAbsolute(id, config)
+                  name = filePath
+                  name = name.split('.').slice(0, -1).join('.') // remove file extension
+                  name = name.split('/').filter(Boolean).join('_')
+                }
+
+                // Make fileHash the same between local development and CI
+                const idStable = path.posix.relative(userRootDir, id)
+                // Don't remove `?` queries because each `id` should belong to a unique bundle.
+                const hash = getIdHash(idStable)
+
+                return `${name}-${hash}`
+              } else {
+                let name: string
+                const isVirtualModule = id.match(/virtual:([^:]+):/)
+                if (isVirtualModule) {
+                  name = isVirtualModule[1]!
+                  assert(name)
+                } else if (
+                  // https://github.com/vikejs/vike/issues/1818#issuecomment-2298478321
+                  id.startsWith('/__uno')
+                ) {
+                  name = 'uno'
+                } else {
+                  name = 'style'
+                }
+                const hash = getIdHash(id)
+                return `${name}-${hash}`
+              }
+            }
+          }
         }
       })
     }
   }
+}
+
+function getIdHash(id: string) {
+  return crypto.createHash('md5').update(id).digest('hex').slice(0, 8)
 }
 
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {

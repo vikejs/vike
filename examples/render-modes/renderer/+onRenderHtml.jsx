@@ -3,7 +3,7 @@ export { onRenderHtml }
 
 import ReactDOMServer from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 function onRenderHtml(pageContext) {
   let pageHtml
@@ -14,9 +14,9 @@ function onRenderHtml(pageContext) {
     // SSR / HTML-only
     const { Page, pageProps } = pageContext
     pageHtml = ReactDOMServer.renderToString(
-      <PageLayout>
+      <Layout>
         <Page {...pageProps} />
-      </PageLayout>
+      </Layout>
     )
   }
 

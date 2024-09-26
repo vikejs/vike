@@ -41,6 +41,23 @@ type ConfigDefinition = {
    * https://vike.dev/meta
    */
   effect?: ConfigEffect
+  /**
+   * Always load the configuration value, and as soon as possible.
+   *
+   * @default false
+   *
+   * https://vike.dev/meta
+   */
+  eager?: boolean
+  // TODO/soon: use `global` internally and remove configDefinitionsBuiltInGlobal
+  /**
+   * Whether the configuration always applies to all pages (no config inheritance).
+   *
+   * @default false
+   *
+   * https://vike.dev/extends#inheritance
+   */
+  global?: boolean
 }
 
 /**
@@ -100,11 +117,12 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true, client: true }
   },
   passToClient: {
-    env: { server: true, config: true },
+    env: { server: true },
     cumulative: true
   },
   route: {
-    env: { server: true, client: 'if-client-routing', eager: true }
+    env: { server: true, client: 'if-client-routing' },
+    eager: true
   },
   guard: {
     env: { server: true, client: 'if-client-routing' }
@@ -113,7 +131,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true }
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: { server: true, client: 'if-client-routing', eager: true }
+    env: { server: true, client: 'if-client-routing' },
+    eager: true
   },
   filesystemRoutingRoot: {
     env: { config: true }
@@ -125,7 +144,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   clientRouting: {
     // We could make it { client: false } but we don't yet because of some legacy V0.4 design code
-    env: { server: true, client: true, config: true, eager: true }
+    env: { server: true, client: true, config: true },
+    eager: true
   },
   clientHooks: {
     env: { config: true }
@@ -137,7 +157,8 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true }
   },
   prefetch: {
-    env: { client: true, eager: true }
+    env: { client: true },
+    eager: true
   },
   // TODO/v1-release: remove
   prefetchStaticAssets: {
@@ -149,8 +170,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   meta: {
     env: { config: true }
   },
-  clientEntryLoaded: {
-    env: { server: true, client: true, eager: true },
+  // Whether the page loads:
+  //  - Vike's client runtime
+  //  - User's client hooks
+  // In other words, whether the page is "HTML-only" (https://vike.dev/render-modes). HTML-only pages shouldn't load the client runtime nor client hooks.
+  isClientRuntimeLoaded: {
+    env: { server: true, client: true },
+    eager: true,
     _computed: (configValueSources): boolean => {
       {
         const source = getConfigValueSource(configValueSources, 'clientHooks')
@@ -169,12 +195,14 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     }
   },
   onBeforeRenderEnv: {
-    env: { client: true, eager: true },
+    env: { client: true },
+    eager: true,
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
   },
   dataEnv: {
-    env: { client: true, eager: true },
+    env: { client: true },
+    eager: true,
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
   },
@@ -184,8 +212,17 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   cacheControl: {
     env: { server: true }
   },
+  injectScriptsAt: {
+    env: { server: true }
+  },
   name: {
     env: { config: true }
+  },
+  require: {
+    env: { config: true }
+  },
+  keepScrollPosition: {
+    env: { client: true }
   }
 }
 
@@ -202,10 +239,12 @@ type ConfigNameGlobal =
   | 'disableUrlNormalization'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
-    env: { server: true, production: true }
+    env: { server: true, production: true },
+    eager: true
   },
   onBeforeRoute: {
-    env: { server: true, client: 'if-client-routing', eager: true }
+    env: { server: true, client: 'if-client-routing' },
+    eager: true
   },
   prerender: {
     env: { config: true }

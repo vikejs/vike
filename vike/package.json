@@ -1,42 +1,8 @@
 {
   "name": "vike",
-  "version": "0.4.172",
-  "scripts": {
-    "dev": "tsc --watch",
-    "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
-    "build:esm": "tsc",
-    "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
-    "build:cjs:ts": "tsc --project ./tsconfig.cjs.json",
-    "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
-    "release": "release-me patch",
-    "release:minor": "release-me minor",
-    "release:commit": "release-me commit"
-  },
-  "dependencies": {
-    "@brillout/import": "^0.2.3",
-    "@brillout/json-serializer": "^0.5.10",
-    "@brillout/picocolors": "^1.0.13",
-    "@brillout/require-shim": "^0.1.2",
-    "@brillout/vite-plugin-server-entry": "^0.4.5",
-    "acorn": "^8.0.0",
-    "cac": "^6.0.0",
-    "es-module-lexer": "^1.0.0",
-    "esbuild": "^0.19.0",
-    "fast-glob": "^3.0.0",
-    "sirv": "^2.0.0",
-    "source-map-support": "^0.5.0"
-  },
-  "type": "module",
+  "version": "0.4.197",
+  "repository": "https://github.com/vikejs/vike",
   "exports": {
-    ".": {
-      "worker": "./dist/esm/node/runtime/index-deprecated.js",
-      "edge-light": "./dist/esm/node/runtime/index-deprecated.js",
-      "require": "./dist/cjs/node/runtime/index-deprecated.js",
-      "node": "./dist/esm/node/runtime/index-deprecated.js",
-      "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
-      "default": "./dist/esm/node/runtime/index-deprecated.js"
-    },
     "./server": {
       "worker": "./dist/esm/node/runtime/index.js",
       "edge-light": "./dist/esm/node/runtime/index.js",
@@ -115,6 +81,15 @@
       "types": "./dist/esm/shared/getPageContext.d.ts",
       "default": "./dist/esm/shared/getPageContext.js"
     },
+    "./modifyUrl": {
+      "worker": "./dist/esm/shared/modifyUrl.js",
+      "edge-light": "./dist/esm/shared/modifyUrl.js",
+      "require": "./dist/cjs/shared/modifyUrl.js",
+      "node": "./dist/esm/shared/modifyUrl.js",
+      "browser": "./dist/esm/shared/modifyUrl.js",
+      "types": "./dist/esm/shared/modifyUrl.d.ts",
+      "default": "./dist/esm/shared/modifyUrl.js"
+    },
     "./__internal": {
       "require": "./dist/cjs/__internal/index.js",
       "node": "./dist/esm/__internal/index.js",
@@ -134,19 +109,54 @@
       "node": "./dist/esm/node/runtime/globalContext/loadImportBuild.js",
       "types": "./dist/esm/node/runtime/globalContext/loadImportBuild.d.ts",
       "default": "./dist/esm/node/runtime/globalContext/loadImportBuild.js"
+    },
+    ".": {
+      "worker": "./dist/esm/node/runtime/index-deprecated.js",
+      "edge-light": "./dist/esm/node/runtime/index-deprecated.js",
+      "require": "./dist/cjs/node/runtime/index-deprecated.js",
+      "node": "./dist/esm/node/runtime/index-deprecated.js",
+      "browser": "./dist/esm/client/node.js",
+      "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
+      "default": "./dist/esm/node/runtime/index-deprecated.js"
     }
   },
+  "dependencies": {
+    "@brillout/import": "^0.2.3",
+    "@brillout/json-serializer": "^0.5.13",
+    "@brillout/picocolors": "^1.0.15",
+    "@brillout/require-shim": "^0.1.2",
+    "@brillout/vite-plugin-server-entry": "^0.4.11",
+    "acorn": "^8.0.0",
+    "cac": "^6.0.0",
+    "es-module-lexer": "^1.0.0",
+    "esbuild": "^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0",
+    "fast-glob": "^3.0.0",
+    "semver": "^7.0.0",
+    "sirv": "^2.0.0",
+    "source-map-support": "^0.5.0"
+  },
   "peerDependencies": {
-    "react-streaming": ">=0.3.5",
-    "vite": ">=4.4.0"
+    "react-streaming": ">=0.3.42",
+    "vite": ">=5.1.0"
   },
   "peerDependenciesMeta": {
     "react-streaming": {
       "optional": true
     }
   },
-  "main": "./dist/esm/node/runtime/index-deprecated.js",
-  "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "description": "Flexible, lean, community-driven, dependable, fast Vite-based frontend framework.",
+  "keywords": [
+    "react",
+    "vue",
+    "solid",
+    "vite",
+    "vite-plugin",
+    "ssr"
+  ],
   "typesVersions": {
     "*": {
       "types": [
@@ -179,6 +189,12 @@
       "abort": [
         "./dist/esm/shared/abort.d.ts"
       ],
+      "getPageContext": [
+        "./dist/esm/shared/getPageContext.d.ts"
+      ],
+      "modifyUrl": [
+        "./dist/esm/shared/modifyUrl.d.ts"
+      ],
       "__internal": [
         "./dist/esm/__internal/index.d.ts"
       ],
@@ -187,39 +203,12 @@
       ]
     }
   },
+  "main": "./dist/esm/node/runtime/index-deprecated.js",
+  "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
+  "type": "module",
   "bin": {
     "vike": "./node/cli/bin-entry.js"
   },
-  "devDependencies": {
-    "@biomejs/biome": "^1.5.3",
-    "@brillout/import": "^0.2.3",
-    "@brillout/json-serializer": "^0.5.8",
-    "@brillout/picocolors": "^1.0.13",
-    "@brillout/release-me": "^0.3.8",
-    "@brillout/require-shim": "^0.1.2",
-    "@brillout/vite-plugin-server-entry": "^0.4.0",
-    "@types/estree": "^1.0.5",
-    "@types/jest": "^29.5.11",
-    "@types/node": "^20.10.5",
-    "@types/resolve": "^1.20.6",
-    "@types/source-map-support": "^0.5.10",
-    "acorn": "^8.11.2",
-    "cac": "^6.7.14",
-    "es-module-lexer": "^1.4.1",
-    "esbuild": "^0.19.10",
-    "fast-glob": "^3.3.2",
-    "react-streaming": "^0.3.24",
-    "rimraf": "^5.0.5",
-    "sirv": "^2.0.4",
-    "source-map-support": "^0.5.21",
-    "typescript": "^5.4.5",
-    "vite": "npm:@brillout/vite@5.1.0-commit-3dc7abd"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "description": "Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.",
-  "repository": "https://github.com/vikejs/vike",
   "files": [
     "dist/",
     "cli.js",
@@ -234,13 +223,37 @@
     "__internal.js",
     "__internal/setup.js"
   ],
-  "license": "MIT",
-  "keywords": [
-    "vite",
-    "vite-plugin",
-    "ssr"
-  ],
-  "publishConfig": {
-    "access": "public"
+  "devDependencies": {
+    "@biomejs/biome": "^1.5.3",
+    "@brillout/release-me": "^0.4.2",
+    "@types/estree": "^1.0.5",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
+    "@types/resolve": "^1.20.6",
+    "@types/semver": "^7.5.8",
+    "@types/source-map-support": "^0.5.10",
+    "acorn": "^8.11.2",
+    "cac": "^6.7.14",
+    "es-module-lexer": "^1.4.1",
+    "esbuild": "^0.23.0",
+    "fast-glob": "^3.3.2",
+    "react-streaming": "^0.3.43",
+    "rimraf": "^5.0.5",
+    "semver": "^7.6.3",
+    "sirv": "^2.0.4",
+    "source-map-support": "^0.5.21",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.0"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "rimraf dist/ && pnpm run build:esm && pnpm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
+    "build:cjs:ts": "tsc --project ./tsconfig.cjs.json",
+    "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
+    "release": "release-me patch",
+    "release:minor": "release-me minor",
+    "release:commit": "release-me commit"
   }
 }

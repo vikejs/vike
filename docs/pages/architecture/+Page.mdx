@@ -1,28 +1,23 @@
 import { Link } from '@brillout/docpress'
 import { JustAMiddleware, UiFrameworkExtension } from '../../components'
 
-Vike provides an frontend architecture that is both flexible and robust.
+In the spirit of do-one-thing-do-it-well, Vike focuses on being an excellent frontend framework while not interfering with the rest of your stack.
+
+With Vike, your application's architecture is composed of independent core constituents with a clear separation of concerns.
+
+> We believe it's paramount for user freedom and fostering innovation resulting in high-quality tools.
 
 
-## Do-one-thing-do-it-well
+## `renderPage()`
 
-Vike's architecture is designed with meticulous care and follows what we call a "do-one-thing-do-it-well architecture": Vike focuses on being an excellent frontend framework while not interfering with the rest of your stack.
+<JustAMiddleware />
 
-With Vike, you can choose:
- - Any UI framework (React/Vue/Solid/...)
- - Any server (Express.js, Deno, HatTip, ...)
- - Any deployment (AWS, Cloudflare Workers, Vercel, ...)
-
-With Vike, your application's architecture is composed of loosely coupled core constituents with a clear separation of concerns.
-
-We believe it's paramount for the web that these core constituents are developed mostly independent of each other. Providing freedom for the user, and fostering a vibrant ecosystem with an innovation-driven competition delivering high-quality tools for the users.
+Vike can easily be embedded into any server architecture and any deployment strategy.
 
 
 ## `onRenderHtml()` & `onRenderClient()`
 
-The <UiFrameworkExtension /> integrate UI frameworks. But, if you want, instead of using <UiFrameworkExtension name noLink /> you can use the hooks `onRenderHtml()` and `onRenderClient()` for complete control over how pages are rendered.
-
-Not only can you manually integrate with any UI framework you want and however you want, you can also deeply integrate with your favorite data fetching tools. For example, you can integrate with Relay in ways that aren't possible with other frameworks.
+The Vike extensions <UiFrameworkExtension name /> integrate UI frameworks. Instead, you can use the hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> for a bespoke integration of your favorite UI framework.
 
 ```js
 // /renderer/+onRenderHtml.js
@@ -30,7 +25,7 @@ Not only can you manually integrate with any UI framework you want and however y
 
 export { onRenderHtml }
 
-import { renderToHtml } from 'some-ui-framework'
+import { renderToHtml } from 'some-ui-framework' // React, Vue, Solid, Preact, Svelte, ...
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 
 async function onRenderHtml(pageContext) {
@@ -62,9 +57,13 @@ async function onRenderClient(pageContext) {
 }
 ```
 
+Not only do you control the UI framework integration, but you also control the integration of data-fetching tools such as RPC and GraphQL.
 
-## `renderPage()`
+> For example, you can integrate Relay in ways that aren't possible with other frameworks.
 
-<JustAMiddleware />
 
-Vike can easily be embedded into any server architecture and any deployment strategy.
+## Configuration
+
+Vike's <Link href="/config#inheritance">config inheritance</Link> and <Link href="/meta">extensibility</Link> enable mighty Vike extensions and user customizations.
+
+You can even use  <Link href="/config#powerful">completely different rendering strategies</Link> (e.g. React + SSR for some pages, and Vue + SPA for other pages) within the same app.

@@ -1,17 +1,17 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
 
-Everything there is to know about config files.
+Everything there is to know about how config files work.
 
-For a list of configs, see:
+For the list of configurations, see instead:
  - <Link href="/settings" />
  - <Link href="/hooks" />
 
 
 ## `+` files
 
-You configure your Vike app by creating files that start with `+` such as `+config.js`.
+You configure your Vike app by creating `+` files such as `+config.js`.
 
-For example, you can define the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> component of a page by creating a `+config.js` file like this:
+For example, you can set the <Link href="/Page">`Page`</Link> and <Link href="/Layout">`Layout`</Link> settings of a page by defining `+config.js`:
 
 ```js
 // /pages/product/@id/+config.js
@@ -24,18 +24,18 @@ export default {
   Layout
 }
 ```
-```js
-// /pages/product/@id/Page.js
+```jsx
+// /pages/product/@id/Page.jsx
 
 export default /* ... */
 ```
-```js
-// /pages/product/@id/Layout.js
+```jsx
+// /pages/product/@id/Layout.jsx
 
 export default /* ... */
 ```
 
-For more convenience, you can also do that instead:
+For more convenience, you can also do this:
 
 <FileRemoved>
 ```js
@@ -51,121 +51,75 @@ export default {
 ```
 </FileRemoved>
 ```js
-// /pages/product/@id/Page.js // [!code --]
-// /pages/product/@id/+Page.js // [!code ++]
+// /pages/product/@id/Page.jsx // [!code --]
+// /pages/product/@id/+Page.jsx // [!code ++]
 
 export default /* ... */
 ```
 ```js
-// /pages/product/@id/Layout.js // [!code --]
-// /pages/product/@id/+Layout.js // [!code ++]
+// /pages/product/@id/Layout.jsx // [!code --]
+// /pages/product/@id/+Layout.jsx // [!code ++]
 
 export default /* ... */
 ```
 
-Both achieve the same and it's just convenience: the latter allows you to skip creating the `+config.js` file.
-
-> Except of `+config.js`, the `+` files corresponds to a <Link href="/settings">Vike setting</Link> or a <Link href="/hooks">Vike hook</Link>.
+> Except of `+config.js`, any `+` file corresponds to a <Link href="/settings">Vike setting</Link> or a <Link href="/hooks">Vike hook</Link>.
 
 
 ## Inheritance
 
-You can apply configurations to all your pages, a subset of pages, or one page only.
+You can apply configurations to all pages, a group of pages, or only one page. For example:
 
+```yaml
+pages/(marketing)/index/+Page.jsx    # URL: /
+pages/(marketing)/about/+Page.jsx    # URL: /about
+# Layout for marketing pages
+pages/(marketing)/+Layout.jsx
 
-For example with the <Link href="/Layout">`Layout`</Link> and <Link href="/ssr">`ssr`</Link> settings:
+pages/admin-panel/index/+Page.jsx    # URL: /admin-panel
+pages/admin-panel/users/+Page.jsx    # URL: /admin-panel/users
+# Layout for admin pages
+pages/admin-panel/+Layout.jsx
 
+pages/product/@id/+Page.jsx
+# Layout for the product page
+pages/product/@id/+Layout.jsx
+```
+
+> The directory `(marketing)` is used for <Link href="/routing#groups">grouping</Link> and is ignored by <Link href="/filesystem-routing">Filesystem Routing</Link>.
+
+- `pages/(marketing)/+Layout.jsx` applies to all pages living at `pages/(marketing)/**`
+- `pages/admin-panel/+Layout.jsx` applies to all pages living at `pages/admin-panel/**`
+- `pages/product/@id/+Layout.jsx` applies to one page `pages/product/@id/+Page.jsx`
+  > Technically `pages/product/@id/+Layout.jsx` applies to all pages at `/pages/product/@id/**` but there is only one page living there.
+
+### Defaults
+
+You can set defaults and override them. For example:
 
 ```js
-// /pages/+config.js
-
-import Layout from '../layouts/LayoutDefault'
-
-// Applies to all pages:
-//   /pages/admin/income/+Page.js
-//   /pages/admin/kpi/+Page.js
-//   /pages/product/@id/+Page.js
+// pages/+config.js
 
 export default {
-  // The <Layout> for all pages (as overridable default)
-  Layout,
-  // Disable SSR for all pages (as overridable default)
+  // Disable SSR by default
   ssr: false
 }
 ```
 
 ```js
-// /pages/admin/+config.js
-
-// Applies only to admin pages:
-//   /pages/admin/income/+Page.js
-//   /pages/admin/kpi/+Page.js
-
-import Layout from '../../layouts/LayoutDashboard.jsx'
+// pages/(marketing)/+config.js
 
 export default {
-  // The <Layout> of all admin pages (overriding the default set by /pages/+config.js)
-  Layout
-}
-```
-
-
-```js
-// /pages/product/@id/+config.js
-
-// Applies only to the product page:
-//   /pages/product/@id/+Page.js
-
-import Layout from './Layout'
-
-export default {
-  // The <Layout> of the product page (overriding the default set by /pages/+config.js)
-  Layout,
-  // Enable SSR (overriding the default set by /pages/+config.js)
+  // Enable SSR for marketing pages
   ssr: true
 }
 ```
 
-> Technically:
-> - `/pages/+config.js` applies to `/pages/**`
-> - `/pages/admin/+config.js` applies to `/pages/admin/**`
-> - `/pages/product/@id/+config.js` applies to `/pages/product/@id/**`
->
-> This means that `/pages/+config.js` doesn't necessarily apply to all pages, for example if a page is defined at `/somewhere-else/+Page.js`. But assuming that all pages are defined under `/pages/**` then `/pages/+config.js` does apply to all pages.
->
-> Likewise `/pages/product/@id/+config.js` may apply to more than one page, but assuming `/pages/product/@id/+Page.js` is the only page defined under `/pages/product/@id/**` then it applies only to that one page.
+> Cumulative configurations, such as <Link href="/Layout">`<Layout>`</Link>, don't get overridden. See [#1692 - [Cumulative configs] New settings `override` and `default`](https://github.com/vikejs/vike/issues/1692).
 
-#### Domain-driven File Structure
+### Domain-driven File Structure
 
-For an improved organization of your pages and their configuration, you can use a <Link href="/file-structure#domain-driven">domain-driven file structure</Link>.
-
-#### Powerful
-
-The config inheritance mechanism is a powerful way to configure your pages. For example, you can use two completely different rendering strategy: some pages can use Vue without SSR while other pages can use React with SSR.
-
-```js
-// /pages/admin/+config.js
-
-import vikeVue from 'vike-vue/config'
-
-// Admin pages using Vue without SSR:
-export default {
-  ssr: false,
-  extends: [vikeVue]
-}
-```
-
-```js
-// /pages/product/@id/+config.js
-
-import vikeReact from 'vike-react/config'
-
-// Product page using React with SSR:
-export default {
-  ssr: true,
-  extends: [vikeReact]
-}
-```
+You can use a <Link href="/file-structure#domain-driven">domain-driven file structure</Link> for better organization and for improved configuration inheritance.
 
 
 ## Pointer imports
@@ -199,7 +153,7 @@ export default {
 
 This enables Vike to load the file `/pages/+config.js` without having to load `LayoutDefault.jsx`. This means that Vike can quickly load all your `+config.js` files without having to load any runtime code.
 
-> These fake imports, which we call *pointer imports*, apply only to `+config.js` files. Imports in other `+` files are normal imports as usual.
+> These fake imports, which we call *pointer imports*, apply only to `+config.js` files. Imports in other `+` files are normal imports.
 
 It's similar to when you import images:
 
@@ -209,7 +163,9 @@ import logo from '../images/logo.svg'
 console.log(logo) // Prints: /assets/logo.svg
 ```
 
-Vike transforms an import inside `+config.js` to be a pointer import if and only if it resolve to a `.jsx` file, a `.vue` file, or any other file that doesn't end with `.js` or `.ts` (or `.mjs`/`.mts`/`.cjs`/`.cts`). For example:
+Vike transforms an import inside `+config.js` to be a pointer import if and only if the import resolves to a file that doesn't end with `.js`/`.ts`/`.mjs`/`.mts`/`.cjs`/`.cts`.
+
+For example, an import that resolves to a `.jsx` or `.vue` file is transformed to be a pointer import:
 
 ```js
 // /pages/ssr.js
@@ -235,7 +191,69 @@ export default {
 }
 ```
 
-> A `.jsx` or `.vue` file is always meant to be client- / server-side runtime code. (I.e. it's never used for config logic.) That's why it makes sense that Vike always treats `.jsx` and `.vue` as pointer imports.
+> A `.jsx` or `.vue` file is meant to be client-/server-side runtime code (it isn't used for defining configuration logic). It therefore makes sense to treat `.jsx` and `.vue` imports as pointer imports.
+
+#### Config code isn't runtime code
+
+The config code itself is never included in runtimes:
+
+```js
+// /pages/some-page/+config.js
+
+// A CSS import in a config file doesn't have any effect. CSS should
+// be imported in runtime files such as +Page.jsx instead.
+import './some.css'
+
+// This log is printed only when Vike loads this +config.js file (at development and when
+// building your app). This log isn't included in the client nor server runtime.
+// Consequently, you won't see this log in production.
+console.log("I will never be logged in production")
+```
+
+#### Forbidden runtime code
+
+If you get this error:
+
+```js
+[Wrong Usage] title defined by /pages/+config.js must be defined over a so-called "pointer import"
+```
+
+Then this means you're trying to define runtime code inside a `+config.js` file which is forbidden.
+
+```js
+// pages/+config.js
+
+export default {
+  // ❌ Forbidden: the function title() is runtime code
+  title: (pageContext) => pageContext.data.title
+}
+```
+
+> The `title()` function is called at runtime (when the page is rendered) and *not* at config time (when Vike loads `+config.js` files).
+
+Instead do this:
+
+```js
+// pages/+title.js
+
+// ✅ Allowed: Vike is able to lazily load this function at runtime
+
+export default (pageContext) => pageContext.data.title
+```
+
+Or this:
+
+```js
+// pages/+config.js
+
+// ✅ Allowed: same as defining +title.js
+
+import title from './title' with { type: 'pointer' }
+
+export default {
+  title
+}
+```
 
 #### Manually mark pointer imports
 
@@ -251,26 +269,8 @@ console.log(ssr) // Prints: import:./ssr:default
 
 <Construction>The `with { type: 'pointer' }` import attribute isn't implement yet, see workaround at [#1500](https://github.com/vikejs/vike/issues/1500).</Construction>
 
-#### Config code isn't runtime code
-
-The config code in itself is never included in runtimes:
-
-```js
-// /pages/some-page/+config.js
-
-// A CSS import in a config file doesn't have any effect. CSS should
-// be imported in runtime files such as +Page.js instead.
-import './some.css'
-
-// This log is printed only when Vike loads this +config.js file (at development, and when
-// building your app). This log isn't included in the client nor server runtime.
-// Consequently, you won't see this log in production.
-console.log("I will never be logged in production")
-```
-
 
 ## See also
 
-- <Link href="/settings" />
-- <Link href="/hooks" />
+- <Link href="/filesystem-routing" />
 - <Link href="/file-structure#domain-driven" />

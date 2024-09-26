@@ -1,32 +1,22 @@
 import { Link, Warning } from '@brillout/docpress'
 
-By design, Vike doesn't have and doesn't plan to include built-in support for [API routes](https://nextjs.org/docs/api-routes/introduction). (We believe API solutions should be developed independently of the frontend framework.)
+By design Vike doesn't include built-in support for [API routes](https://nextjs.org/docs/api-routes/introduction).
+
+> We believe API tools should be developed independently of the frontend framework.
 
 > See <Link href="/data-fetching" /> for a general introduction about fetching data with Vike.
 
-Instead use:
+We generally recommend using [Telefunc](https://telefunc.com) (or another RPC tool) instead of API routes, see <Link href="/RPC" />.
 
-- [Telefunc](https://telefunc.com)
-  > Telefunc is a simple solution providing a much improved DX over API routes. Out of all options, we recommend Telefunc most.
-- [tRPC](https://trpc.io/)
-  > Similar to Telefunc.
-  >  - Con: Telefunc is simpler.
-  >  - Pro: supports real-time endpoints (using websockets).
-- You can use a server, such as [Express.js](https://expressjs.com) or [Hono](https://hono.dev), in order to create new HTTP `GET`/`POST` routes, providing a DX similar to that of API routes.
-  > In general we recommand using Telefunc instead of API routes, but using API routes can make more sense:
-  > - If you only need a handful of endpoints, creating a couple of server routes can be simpler than using Telefunc and thus adding yet another tool to your stack.
-  > - For specific needs where Telefunc doesn't fit (most notably file upload), you can use API routes (in addition to Telefunc).
+That said, creating API routes can make sense:
+- For specific needs where Telefunc doesn't fit, most notably file upload.
+- If you only need a handful of endpoints, creating a couple of API routes can be simpler than using Telefunc and thus adding yet another tool to your stack.
 
-  > If you want to create such API routes then:
-  >   - Make sure Vike's middleware is your last middleware. (<Link href="/renderPage">Vike's middleware is a catch-all middleware</Link> and would therefore override your API routes.)
-  >   - When modifying your server, you may need to manually restart your server for your changes to take effect. (See [#562](https://github.com/vikejs/vike/issues/562).)
-- GraphQL
-  <Warning>
-    If you aren't a very large team, then GraphQL is most likely over-engineering. RPC (such as Telefunc and tRPC) isn't only simpler but
-    actually also more flexible (as long as you aren't a very large team).
+To create API routes, we recommend to simply use your server (such as [Express.js](https://expressjs.com) or [Hono](https://hono.dev)) to create new HTTP `GET`/`POST` endpoints.
 
-    We recommend getting started with RPC and use GraphQL only later if/when the need arises.
-  </Warning>
+>  Make sure Vike's middleware is your last middleware. (Otherwise <Link href="/renderPage">Vike's middleware</Link>, being a catch-all middleware, overrides your API routes.)
+
+>  You may need to manually restart your server for changes to take effect, see [#562](https://github.com/vikejs/vike/issues/562).
 
 
 ## See also

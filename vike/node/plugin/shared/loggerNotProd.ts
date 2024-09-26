@@ -11,7 +11,6 @@ export { logConfigInfo }
 export { logConfigError }
 export { logConfigErrorRecover }
 export { logErrorDebugNote }
-export { clearLogs }
 export type { LogInfo }
 export type { LogInfoArgs }
 export type { LogError }
@@ -32,24 +31,15 @@ import {
   warnIfErrorIsNotObject
 } from '../utils.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
-import { isErrorDebug } from './isErrorDebug.js'
+import { isErrorDebug } from '../../shared/isErrorDebug.js'
 import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
 import {
   getConfigExecutionErrorIntroMsg,
   getConfigBuildErrorFormatted
 } from '../plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile.js'
-import {
-  logWithVikeTag,
-  logWithViteTag,
-  logDirectly,
-  isFirstLog,
-  screenHasErrors,
-  clearScreen,
-  applyViteSourceMapToStackTrace
-} from './loggerNotProd/log.js'
+import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
 import pc from '@brillout/picocolors'
 import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'
-import { isConfigInvalid } from '../../runtime/renderPage/isConfigInvalid.js'
 import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
 import { isUserHookError } from '../../../shared/hooks/executeHook.js'
 
@@ -64,8 +54,7 @@ type LogInfoArgs = Parameters<typeof logRuntimeInfo>
 type LogError = (...args: LogErrorArgs) => void
 type LogErrorArgs = Parameters<typeof logRuntimeError>
 
-function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType, clearErrors?: boolean) {
-  if (clearErrors) clearLogs({ clearErrors: true })
+function logRuntimeInfo(msg: string, httpRequestId: number, logType: LogType) {
   const category = getCategory(httpRequestId)
   assert(category)
   logWithVikeTag(msg, logType, category)
@@ -84,7 +73,6 @@ function logConfigInfo(msg: string, logType: LogType): void {
 }
 function logConfigErrorRecover(): void {
   const msg = pc.bold(pc.green('Configuration successfully loaded'))
-  clearLogs({ clearAlsoIfConfigIsInvalid: true })
   const category = getConfigCategory()
   logWithVikeTag(msg, 'error-recover', category)
 }
@@ -159,8 +147,6 @@ function logErr(err: unknown, httpRequestId: number | null = null, errorComesFro
 }
 
 function logConfigError(err: unknown): void {
-  clearLogs({ clearAlsoIfConfigIsInvalid: true })
-
   warnIfErrorIsNotObject(err)
 
   const category = getConfigCategory()
@@ -223,25 +209,6 @@ function assertLogger(thing: string | Error, logType: LogType): void {
   if (!res) throw new Error('Internal error, reach out to a maintainer')
   const { assertMsg, showVikeVersion } = res
   logWithVikeTag(assertMsg, logType, category, showVikeVersion)
-}
-
-function clearLogs(
-  conditions: { clearErrors?: boolean; clearIfFirstLog?: boolean; clearAlsoIfConfigIsInvalid?: boolean } = {}
-): void {
-  if (!conditions.clearAlsoIfConfigIsInvalid && isConfigInvalid) {
-    // Avoid hiding the config error: the config error is printed only once
-    return
-  }
-  if (conditions.clearErrors && !screenHasErrors) {
-    return
-  }
-  if (conditions.clearIfFirstLog && !isFirstLog) {
-    return
-  }
-  const viteConfig = getViteConfig()
-  if (viteConfig) {
-    clearScreen(viteConfig)
-  }
 }
 
 /** Note shown to user when vike does something risky:

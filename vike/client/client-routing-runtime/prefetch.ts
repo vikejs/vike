@@ -6,11 +6,11 @@ import {
   assert,
   assertClientRouting,
   assertUsage,
+  assertUsageUrlPathname,
   assertWarning,
   checkIfClientRouting,
   getGlobalObject,
   hasProp,
-  isExternalLink,
   objectAssign
 } from './utils.js'
 import {
@@ -33,6 +33,8 @@ import {
   type PrefetchSettingResolved,
   getPrefetchSetting
 } from './prefetch/getPrefetchSettings.js'
+import pc from '@brillout/picocolors'
+
 assertClientRouting()
 const globalObject = getGlobalObject<{
   linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
@@ -50,7 +52,7 @@ type PrefetchedPageContext = {
 }
 type PageContextForPrefetch = {
   urlOriginal: string
-  _pageId: string
+  pageId: string
   _urlRewrite: null
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
@@ -62,15 +64,15 @@ function getPrefetchedPageContext(pageContext: {
   const url = pageContext.urlOriginal
   const found = globalObject.prefetchedPageContexts[url]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
-  const prefetchedPageContextFromServerHooks = found.result.pageContextFromHooks
+  const prefetchedPageContextFromServerHooks = found.result.pageContextAugmented
   // We discard the prefetched pageContext whenever we use it, so that the user always sees fresh data upon naivgating.
   delete globalObject.prefetchedPageContexts[url]
   return prefetchedPageContextFromServerHooks
 }
 
-async function prefetchAssets(pageContextLink: { _pageId: string } & PageContextUserFiles): Promise<void> {
+async function prefetchAssets(pageContextLink: { pageId: string } & PageContextUserFiles): Promise<void> {
   try {
-    await loadUserFilesClientSide(pageContextLink._pageId, pageContextLink._pageFilesAll, pageContextLink._pageConfigs)
+    await loadUserFilesClientSide(pageContextLink.pageId, pageContextLink._pageFilesAll, pageContextLink._pageConfigs)
   } catch (err) {
     if (isErrorFetchingStaticAssets(err)) {
       disableClientRouting(err, true)
@@ -104,18 +106,18 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
   assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
     showStackTrace: true
   })
-  const errPrefix = `Cannot prefetch URL ${url} because it` as const
-  assertUsage(!isExternalLink(url), `${errPrefix} lives on another domain`, { showStackTrace: true })
+  const errPrefix = '[prefetch(url)] url' as const
+  assertUsageUrlPathname(url, errPrefix)
 
   const pageContextLink = await getPageContextLink(url)
-  if (!pageContextLink?._pageId) {
-    assertWarning(false, `${errPrefix} ${noRouteMatch}`, {
+  if (!pageContextLink?.pageId) {
+    assertWarning(false, `${errPrefix} ${pc.string(url)} ${noRouteMatch}`, {
       showStackTrace: true,
       onlyOnce: false
     })
     return
   }
-  assert(hasProp(pageContextLink, '_pageId', 'string')) // help TypeScript
+  assert(hasProp(pageContextLink, 'pageId', 'string')) // help TypeScript
 
   if (options?.staticAssets !== false) {
     await prefetchAssets(pageContextLink)
@@ -185,9 +187,9 @@ async function prefetchOnEvent(
   event: 'hover' | 'viewport'
 ): Promise<void> {
   const pageContextLink = await getPageContextLink(urlOfLink)
-  if (!pageContextLink?._pageId) return
-  assert(hasProp(pageContextLink, '_pageId', 'string')) // help TypeScript
-  if (!(await isClientSideRoutable(pageContextLink._pageId, pageContextLink))) return
+  if (!pageContextLink?.pageId) return
+  assert(hasProp(pageContextLink, 'pageId', 'string')) // help TypeScript
+  if (!(await isClientSideRoutable(pageContextLink.pageId, pageContextLink))) return
 
   if (prefetchSettings.staticAssets === event) {
     await prefetchAssets(pageContextLink)

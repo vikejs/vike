@@ -10,7 +10,9 @@ export type { LocationId }
 // For ./filesystemRouting.spec.ts
 export { getLogicalPath }
 
-import { assert, assertPosixPath, higherFirst } from '../../../../utils.js'
+import pc from '@brillout/picocolors'
+import { assert, assertIsNotProductionRuntime, assertPosixPath, assertWarning, higherFirst } from '../../../../utils.js'
+assertIsNotProductionRuntime()
 
 /**
  * The `locationId` value is used for filesystem inheritance.
@@ -55,7 +57,7 @@ function getLocationId(
 }
 /** Filesystem Routing: get the URL */
 function getFilesystemRouteString(locationId: LocationId): string {
-  return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
+  return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'], true)
 }
 /** Filesystem Inheritance: get the apply root */
 function getInheritanceRoot(locationId: LocationId): string {
@@ -64,8 +66,8 @@ function getInheritanceRoot(locationId: LocationId): string {
 /**
  * getLogicalPath('/pages/some-page', ['pages']) => '/some-page'
  */
-function getLogicalPath(locationId: LocationId, removeDirs: string[]): string {
-  let logicalPath = removeDirectories(locationId, removeDirs)
+function getLogicalPath(locationId: LocationId, ignoredDirs: string[], removeParenthesesDirs?: true): string {
+  let logicalPath = removeIgnoredDirectories(locationId, ignoredDirs, removeParenthesesDirs)
   assertIsPath(logicalPath)
   return logicalPath
 }
@@ -129,14 +131,43 @@ function isInherited(locationId1: LocationId, locationId2: LocationId): boolean 
   return startsWith(inheritanceRoot2, inheritanceRoot1)
 }
 
-function removeDirectories(somePath: string, removeDirs: string[]): string {
+function removeIgnoredDirectories(somePath: string, ignoredDirs: string[], removeParenthesesDirs?: true): string {
   assertPosixPath(somePath)
   somePath = somePath
     .split('/')
-    .filter((p) => !removeDirs.includes(p))
+    .filter((dir) => {
+      if (ignoredDirs.includes(dir)) {
+        return false
+      }
+      if (removeParenthesesDirs && dir.startsWith('(') && dir.endsWith(')')) {
+        assertRedundantParentheses(dir, ignoredDirs, somePath)
+        return false
+      }
+      return true
+    })
     .join('/')
   if (somePath === '') somePath = '/'
   return somePath
+}
+function assertRedundantParentheses(dir: string, ignoredDirs: string[], somePath: string) {
+  const dirWithoutParentheses = dir.slice(1, -1)
+  if (!ignoredDirs.includes(dirWithoutParentheses)) {
+    return
+  }
+  const dirnameActual = dir
+  const dirnameCorect = dirWithoutParentheses
+  const dirpathActual = somePath.slice(0, somePath.indexOf(dirnameActual) + dirnameActual.length)
+  const dirpathCorect = dirpathActual.replaceAll(dirnameActual, dirnameCorect)
+  const logDir = (d: string) => pc.bold(d + '/')
+  assertWarning(
+    false,
+    [
+      `The directories ${logDir(dirnameCorect)} are always ignored by Vike's Filesystem Routing`,
+      '(https://vike.dev/filesystem-routing):',
+      `rename directory ${logDir(dirpathActual)} to ${logDir(dirpathCorect)}`
+    ].join(' '),
+    { onlyOnce: true }
+  )
 }
 
 function removeFilename(filePathAbsoluteUserRootDir: string) {

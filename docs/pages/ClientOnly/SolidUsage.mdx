@@ -1,9 +1,0 @@
-```tsx
-import { clientOnly } from 'vike-solid/ClientOnly'
-
-const ClientOnlyCounter = clientOnly(() => import("./MyComponent.jsx"));
-
-function MyComponent(props) {
-  return <ClientOnlyCounter fallback={<Loading />} />
-}
-```

@@ -53,12 +53,12 @@ If you want to minimize requests made to your server, then you may want Vike to 
 Vike makes a `pageContext.json` request for a page if and only if one of the two following conditions is true:
 - The page has a server-only `data()` or `onBeforeRender()` hook.
   > See:
-  > - <Link href="/data#client-side" />
-  > - <Link href="/onBeforeRender#client-side" />
+  > - <Link href="/data#environment" />
+  > - <Link href="/onBeforeRender#environment" />
 - The `pageContextInit` at <Link href="/renderPage">`renderPage()`</Link> contains a property that is included in <Link href="/passToClient">`passToClient`</Link>.
   ```js
   // Vike server middleware
-  async (req, res, next) => {
+  async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       // If passToClient contains 'user' then Vike makes a pageContext.json request
@@ -75,5 +75,5 @@ If both conditions are false, then Vike won't make any `pageContext.json` reques
 
 ## See also
 
-- <Link href="/data#client-side" />
-- <Link href="/onBeforeRender#client-side" />
+- <Link href="/data#environment" />
+- <Link href="/onBeforeRender#environment" />

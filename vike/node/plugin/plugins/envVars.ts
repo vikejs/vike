@@ -1,13 +1,21 @@
 export { envVarsPlugin }
 
-// For ./envVars.spec.ts
-export { applyEnvVar }
-
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
-import { getModuleFilePath } from '../shared/getFilePath.js'
+import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
+
+// TODO/enventually: (after we implemented vike.config.js)
+// - Make import.meta.env work inside +config.js
+//   - For it to work, we'll probably need the user to define the settings (e.g. `envDir`) for loadEnv() inside vike.config.js instead of vite.config.js
+//   - Or stop using Vite's `mode` implemention and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
+
+const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
+const PUBLIC_ENV_WHITELIST = [
+  // https://github.com/vikejs/vike/issues/1724
+  'STORYBOOK'
+]
 
 function envVarsPlugin(): Plugin {
   let envsAll: Record<string, string>
@@ -39,16 +47,17 @@ function envVarsPlugin(): Plugin {
           return !envPrefix.some((prefix) => key.startsWith(prefix))
         })
         .forEach(([envName, envVal]) => {
+          const envStatement = `import.meta.env.${envName}` as const
+          const envStatementRegEx = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
+
           // Security check
           {
-            const envStatement = getEnvStatement(envName)
-            const publicPrefix = 'PUBLIC_ENV__'
-            const isPrivate = !envName.startsWith(publicPrefix)
+            const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
             if (isPrivate && isClientSide) {
-              if (!code.includes(envStatement)) return
-              const modulePath = getModuleFilePath(id, config)
+              if (!envStatementRegEx.test(code)) return
+              const modulePath = getModuleFilePathAbsolute(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
-              const keyPublic = `${publicPrefix}${envName}` as const
+              const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
               const errMsg =
                 `${envStatement} is used in client-side file ${modulePath} which means that the environment variable ${envName} will be included in client-side bundles and, therefore, ${envName} will be publicly exposed which can be a security leak${errMsgAddendum}. Use ${envStatement} only in server-side files, or rename ${envName} to ${keyPublic}, see https://vike.dev/env` as const
               if (isBuild) {
@@ -64,7 +73,7 @@ function envVarsPlugin(): Plugin {
           }
 
           // Apply
-          code = applyEnvVar(envName, envVal, code)
+          code = applyEnvVar(envStatementRegEx, envVal, code)
         })
 
       // Line numbers didn't change.
@@ -75,13 +84,8 @@ function envVarsPlugin(): Plugin {
     }
   }
 }
-function applyEnvVar(envName: string, envVal: string, code: string) {
-  const envStatement = getEnvStatement(envName)
-  const regex = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
-  return code.replace(regex, JSON.stringify(envVal))
-}
-function getEnvStatement(envName: string) {
-  return `import.meta.env.${envName}` as const
+function applyEnvVar(envStatementRegEx: RegExp, envVal: string, code: string) {
+  return code.replace(envStatementRegEx, JSON.stringify(envVal))
 }
 
 function getIsClientSide(config: ResolvedConfig, options?: { ssr?: boolean }): boolean {

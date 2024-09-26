@@ -4,20 +4,23 @@ import {
   assertPosixPath,
   assert,
   assertWarning,
-  scriptFileExtensionList,
   scriptFileExtensions,
   humanizeTime,
   assertIsSingleModuleInstance,
   assertIsNotProductionRuntime,
-  isVersionOrAbove
+  isVersionOrAbove,
+  isScriptFile
 } from '../../../../utils.js'
 import path from 'path'
+import fs from 'fs/promises'
+import type { Stats } from 'fs'
 import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import pc from '@brillout/picocolors'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 const execA = promisify(exec)
+const TOO_MANY_UNTRACKED_FILES = 5
 
 assertIsNotProductionRuntime()
 assertIsSingleModuleInstance('crawlPlusFiles.ts')
@@ -53,16 +56,18 @@ async function crawlPlusFiles(
   const res = crawlWithGit !== false && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
   if (
     res &&
-    // Fallback to fast-glob for users that dynamically generate plus files. (Assuming all (generetad) plus files to be skipped because users usually included them in `.gitignore`.)
-    res.length > 0
+    // Fallback to fast-glob for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
+    res.files.length > 0
   ) {
-    files = res
+    files = res.files
+    // We cannot find files inside symlink directories with `$ git ls-files` => we use fast-glob
+    files.push(...(await crawlSymlinkDirs(res.symlinkDirs, userRootDir, outDirRelativeFromUserRootDir)))
   } else {
     files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
   }
 
   // Filter build files
-  files = files.filter((file) => !isTemporaryBuildFile(file))
+  files = files.filter((filePath) => !isTemporaryBuildFile(filePath))
 
   // Check performance
   {
@@ -75,9 +80,9 @@ async function crawlPlusFiles(
         timeSpent < 3 * 1000,
         `Crawling your ${pc.cyan('+')} files took an unexpected long time (${humanizeTime(
           timeSpent
-        )}). If you repeatedly get this warning, then consider creating a new issue on Vike's GitHub.`,
+        )}). If you consistently get this warning, then consider reaching out on GitHub.`,
         {
-          onlyOnce: 'slow-page-files-search'
+          onlyOnce: 'slow-crawling'
         }
       )
     }
@@ -96,7 +101,13 @@ async function crawlPlusFiles(
 }
 
 // Same as fastGlob() but using `$ git ls-files`
-async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[] | null> {
+async function gitLsFiles(
+  userRootDir: string,
+  outDirRelativeFromUserRootDir: string | null
+): Promise<{
+  files: string[]
+  symlinkDirs: string[]
+} | null> {
   if (gitIsNotUsable) return null
 
   // Preserve UTF-8 file paths.
@@ -112,20 +123,30 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
     'git',
     preserveUTF8,
     'ls-files',
-    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
+
+    // We don't filter because:
+    //  - It would skip symlink directories
+    //  - Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
+    // ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
+
+    // Performance gain is non-negligible.
+    //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
+    //  - When node_modules/ is untracked the performance gain could be significant?
     ...ignoreAsPatterns.map((pattern) => `--exclude="${pattern}"`),
-    // --others lists untracked files only (but using .gitignore because --exclude-standard)
-    // --cached adds the tracked files to the output
-    '--others --cached --exclude-standard'
+
+    // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
+    // --cached => list tracked files
+    // --stage => get file modes which we use to find symlink directories
+    '--others --exclude-standard --cached --stage'
   ].join(' ')
 
-  let files: string[]
+  let resultLines: string[]
   let filesDeleted: string[]
   try {
-    ;[files, filesDeleted] = await Promise.all([
+    ;[resultLines, filesDeleted] = await Promise.all([
       // Main command
       runCmd1(cmd, userRootDir),
-      // Get tracked by deleted files
+      // Get tracked but deleted files
       runCmd1('git ls-files --deleted', userRootDir)
     ])
   } catch (err) {
@@ -136,12 +157,42 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
     throw err
   }
 
-  files = files
-    // We have to repeat the same exclusion logic here because the `git ls-files` option --exclude only applies to untracked files. (We use --exclude only to speed up the command.)
-    .filter(ignoreAsFilterFn)
-    .filter((file) => !filesDeleted.includes(file))
+  const filePaths = resultLines.map(parseGitLsResultLine)
 
-  return files
+  // If there are too many files without mode we fallback to fast-glob
+  if (filePaths.filter((f) => !f.mode).length > TOO_MANY_UNTRACKED_FILES) return null
+
+  const symlinkDirs: string[] = []
+  const files: string[] = []
+  for (const { filePath, mode } of filePaths) {
+    // Deleted?
+    if (filesDeleted.includes(filePath)) continue
+
+    // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
+    if (!ignoreAsFilterFn(filePath)) continue
+
+    // Symlink directory?
+    {
+      const isSymlinkDir = await isSymlinkDirectory(mode, filePath, userRootDir)
+      if (isSymlinkDir) {
+        symlinkDirs.push(filePath)
+        continue
+      }
+      // Skip deleted files and non-symlink directories
+      if (isSymlinkDir === null) {
+        continue
+      }
+    }
+
+    // + file?
+    if (!path.posix.basename(filePath).startsWith('+')) continue
+    // JavaScript file?
+    if (!isScriptFile(filePath)) continue
+
+    files.push(filePath)
+  }
+
+  return { files, symlinkDirs }
 }
 // Same as gitLsFiles() but using fast-glob
 async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[]> {
@@ -150,10 +201,13 @@ async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: stri
     cwd: userRootDir,
     dot: false
   })
+  // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
+  // https://github.com/vikejs/vike/pull/1750
+  files.sort()
   return files
 }
 
-// Same as getIgnoreFilter() but as glob pattern
+// Same as getIgnoreAsFilterFn() but as glob pattern
 function getIgnoreAsPatterns(outDirRelativeFromUserRootDir: string | null): string[] {
   const ignoreAsPatterns = [
     '**/node_modules/**',
@@ -170,7 +224,7 @@ function getIgnoreAsPatterns(outDirRelativeFromUserRootDir: string | null): stri
   }
   return ignoreAsPatterns
 }
-// Same as getIgnorePatterns() but for Array.filter()
+// Same as getIgnoreAsPatterns() but for Array.filter()
 function getIgnoreAsFilterFn(outDirRelativeFromUserRootDir: string | null): (file: string) => boolean {
   assert(outDirRelativeFromUserRootDir === null || !outDirRelativeFromUserRootDir.startsWith('/'))
   return (file: string) =>
@@ -205,6 +259,87 @@ async function isGitNotUsable(userRootDir: string) {
     assert(stdout === 'true')
     return false
   }
+}
+
+async function crawlSymlinkDirs(
+  symlinkDirs: string[],
+  userRootDir: string,
+  outDirRelativeFromUserRootDir: string | null
+) {
+  const filesInSymlinkDirs = (
+    await Promise.all(
+      symlinkDirs.map(async (symlinkDir) =>
+        (
+          await fastGlob(path.posix.join(userRootDir, symlinkDir), outDirRelativeFromUserRootDir)
+        ).map((filePath) => path.posix.join(symlinkDir, filePath))
+      )
+    )
+  ).flat()
+  return filesInSymlinkDirs
+}
+
+// Parse:
+// ```
+// some/not/tracked/path
+// 100644 f6928073402b241b468b199893ff6f4aed0b7195 0\tpages/index/+Page.tsx
+// ```
+function parseGitLsResultLine(resultLine: string): { filePath: string; mode: string | null } {
+  const [part1, part2, ...rest] = resultLine.split('\t')
+  assert(part1)
+  assert(rest.length === 0)
+
+  // Git doesn't provide the mode for untracked paths.
+  // `resultLine` is:
+  // ```
+  // some/not/tracked/path
+  // ```
+  if (part2 === undefined) {
+    return { filePath: part1, mode: null }
+  }
+  assert(part2)
+
+  // `resultLine` is:
+  // ```
+  // 100644 f6928073402b241b468b199893ff6f4aed0b7195 0\tpages/index/+Page.tsx
+  // ```
+  const [mode, _, __, ...rest2] = part1.split(' ')
+  assert(mode && _ && __ && rest2.length === 0)
+
+  return { filePath: part2, mode }
+}
+
+async function isSymlinkDirectory(mode: string | null, filePath: string, userRootDir: string): Promise<boolean | null> {
+  const filePathAbsolute = path.posix.join(userRootDir, filePath)
+  let stats: Stats | null = null
+  let isSymlink = false
+  if (mode === '120000') {
+    isSymlink = true
+  } else if (mode === null) {
+    // `$ git ls-files` doesn't provide the mode when Git doesn't track the path
+    stats = await getFileStats(filePathAbsolute)
+    if (stats === null) return null
+    isSymlink = stats.isSymbolicLink()
+    if (!isSymlink && stats.isDirectory()) return null
+  } else {
+    assert(mode)
+  }
+  if (!isSymlink) return false
+  if (!stats) stats = await getFileStats(filePathAbsolute)
+  if (stats === null) return null
+  const isDirectory = stats.isDirectory()
+  return isDirectory
+}
+async function getFileStats(filePathAbsolute: string): Promise<Stats | null> {
+  let stats: Stats
+  try {
+    stats = await fs.lstat(filePathAbsolute)
+  } catch (err) {
+    // File was deleted, usually a temporary file such as +config.js.build-j95xb988fpln.mjs
+    // ENOENT: no such file or directory
+    assert((err as any).code === 'ENOENT')
+    return null
+  }
+  return stats
 }
 
 async function runCmd1(cmd: string, cwd: string): Promise<string[]> {

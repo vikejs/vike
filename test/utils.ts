@@ -32,6 +32,10 @@ async function hydrationDone() {
 
 function expectUrl(pathname: string) {
   expect(page.url()).toBe(getServerUrl() + pathname)
+  /* Same?
+  const url = await page.evaluate(() => location.href)
+  expect(url.endsWith(endsWith)).toBe(true)
+  */
 }
 
 /** Ensure page wasn't server-side routed.
@@ -50,9 +54,9 @@ async function ensureWasClientSideRouted(pageIdFirst: `/pages/${string}`) {
 }
 function findFirstPageId(html: string) {
   expect(html).toContain('<script id="vike_pageContext" type="application/json">')
-  expect(html).toContain('_pageId')
-  expect(html.split('_pageId').length).toBe(2)
-  const match = partRegex`"_pageId":"${/([^"]+)/}"`.exec(html)
+  expect(html).toContain('pageId')
+  expect(html.split('pageId').length).toBe(2)
+  const match = partRegex`"pageId":"${/([^"]+)/}"`.exec(html)
   expect(match).toBeTruthy()
   const pageId = match![1]
   expect(pageId).toBeTruthy()

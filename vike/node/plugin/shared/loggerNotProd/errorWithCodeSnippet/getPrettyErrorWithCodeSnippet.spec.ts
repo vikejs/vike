@@ -106,7 +106,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-vue - SFC CSS', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errVueCss, '/home/rom/code/vike/examples/vue-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
-      "Failed to transpile /renderer/PageShell.vue because:
+      "Failed to transpile /renderer/Layout.vue because:
       Unexpected }
       43 |    margin: auto;
       44 |  }}
@@ -120,28 +120,28 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-react - JavaScript esbuild', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errEsbuild, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
-      "Failed to transpile /renderer/PageShell.tsx because:
+      "Failed to transpile /renderer/Layout.tsx because:
       Unexpected "}"
       5  |  import type { PageContext } from './types'
       6  |  
-      7  |  export { PageShell }}
+      7  |  export { Layout }}
          |                      ^
       8  |  
-      9  |  function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {"
+      9  |  function Layout({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {"
     `)
   })
 
   it('real use case - @vitejs/plugin-react - JavaScript Babel', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errBabelReact, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
-      "Failed to transpile /renderer/PageShell.tsx because:
+      "Failed to transpile /renderer/Layout.tsx because:
       Unexpected token 
          5 | import type { PageContext } from './types'
          6 |
-      >  7 | export { PageShell }}
+      >  7 | export { Layout }}
            |                     ^
          8 |
-         9 | function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
+         9 | function Layout({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
         10 |   return ("
     `)
   })

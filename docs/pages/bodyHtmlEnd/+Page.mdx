@@ -1,0 +1,70 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ImplementedBy, UiFrameworkExtension, GlobalNote } from '../../components'
+
+Environment: server.
+
+<ImplementedBy by={<UiFrameworkExtension name list={['vike-vue', 'vike-react']}/>} noCustomGuide>`bodyHtmlEnd`</ImplementedBy>
+
+The settings `bodyHtmlEnd`/<Link href="/bodyHtmlBegin" /> enable you to insert HTML at the beginning/end of the `<body>` tag.
+
+> For use cases, such as adding `<script>` tags, you can also use <Link href="/head-tags">`<Head>`</Link> or <Link href="/client">`+client.js`</Link>.
+
+```js
+// pages/+config.js
+
+export default {
+  bodyHtmlEnd: '<div id="something"></div>'
+}
+```
+
+```js
+// pages/+bodyHtmlEnd.js
+
+export default (pageContext) => {
+  const { something } = pageContext
+  return `<div>${something}</div>`
+}
+```
+
+<Warning>
+Be aware and cautious about the security risk called [XSS injections](https://en.wikipedia.org/wiki/Cross-site_scripting).
+</Warning>
+
+
+## Vue
+
+When using Vue, it's usually used for adding the HTML targets of teleports.
+
+Teleports work out of the box when using `<Teleport to="teleported">` and you don't have to use `bodyHtml{Begin,End}` then.
+
+> `vike-vue` always inserts this at the end of the `<body>` tag:
+> ```js
+> <div id="teleported">${
+>   pageContext.ssrContext.teleports?.['#teleported'] ?? ''
+> }</div>
+> ```
+
+> You can use <Link href="/pageContext">Vike's `pageContext` object</Link> to access [Vue's `ssrContext` object](https://vuejs.org/api/ssr#usessrcontext):
+>
+> ```js
+> // pages/+bodyHtmlEnd.js
+>
+> export default (pageContext) => {
+>   const content = pageContext.ssrContext.teleports?.['#someTeleport'] ?? ''
+>   return `<div id="someTeleport">${content}</div>`
+> }
+> ```
+
+
+## Global
+
+<GlobalNote />
+
+
+## See also
+
+- <Link href="/bodyHtmlBegin" />
+- <Link href="/head-tags"/>
+- <Link href="/client"/>
+- <Link href="/onRenderHtml"/>
+- <Link href="/settings#html" doNotInferSectionTitle />

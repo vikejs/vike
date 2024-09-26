@@ -1,0 +1,81 @@
+import { Link } from '@brillout/docpress'
+
+import { ImplementedBy } from '../../components'
+
+Type: `'responsive' | number | null | ((pageContext) => 'responsive' | number | null | undefined)`  
+Default: `'responsive'`  
+Environment: server.
+
+<ImplementedBy noCustomGuide />
+
+The `viewport` setting sets [the page's shown width on mobile/tablet devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
+
+On mobile/tablet devices, you have the choice between two viewport settings:
+ - Responsive: the page's width corresponds to the device width's (it isn't zoomed out).
+ - [Zoomed out](https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary/14775557#14775557).
+
+By default, Vike assumes your page to be responsive.
+
+> In other words, by default Vike injects the following `<meta name="viewport">` tag:
+>
+> ```html
+> <head>
+>   <meta name="viewport" content="width=device-width,initial-scale=1" />
+> </head>
+> ```
+
+If your page isn't responsive, then we recommend setting the initial page width shown to the user:
+
+```js
+// pages/admin-panel/+config.js
+
+export default {
+  // The admin panel pages start to look good starting from a width of 1200px
+  viewport: 1200
+}
+```
+
+> If your page looks and works well only starting from 1200px then we recommend setting the value to `1200`, so that the width shown to the user is 1200px (the virtual width), even on a mobile device with a real physical width of 600px: the browser will then zoom out the page by a factor of `2x` in order to match 1200px.
+>
+> The user will be able to manually change the viewport size with pinch gestures.
+
+> If `viewport` is a number, for example `1200`, then Vike injects the following:
+>
+> ```html
+> <head>
+>   <meta name="viewport" content="width=1200" />
+> </head>
+> ```
+
+> The `viewport` setting (and the `<meta name="viewport">` tag in general) has an effect only on mobile/tablet devices: it's ignored on desktop devices.
+
+You can also set any arbitrary `<meta name="viewport">` tag:
+
+```js
+// pages/+config.js
+
+export default {
+  // Don't inject any `<meta name="viewport">` tag
+  viewport: null
+}
+```
+```js
+// pages/+Head.js
+
+// Same as Vike's default but adding `user-scalable=no` which makes sense for
+// highly interactive apps such as games.
+export default () => <>
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+</>
+```
+
+> If there isn't any `<meta name="viewport">` tag, then the browser will fallback to its default. We don't recommend this (it's unpredictable) and instead consider always setting a `<meta name="viewport">` tag.
+
+
+## See also
+
+- [MDN > Viewport meta tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag)
+- [StackOverflow > Is the viewport meta tag really necessary? > [Accepted Answer]](https://stackoverflow.com/questions/14775195/is-the-viewport-meta-tag-really-necessary/14775557#14775557)
+  > Elaborate explanation of the `<meta name="viewport">` tag.
+- <Link href="/head-tags" />
+- <Link href="/settings#html" doNotInferSectionTitle />

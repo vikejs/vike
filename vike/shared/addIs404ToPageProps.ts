@@ -9,9 +9,9 @@ function addIs404ToPageProps(pageContext: Record<string, unknown> & PageContextA
   addIs404(pageContext)
 }
 
-type PageContextAssertIs404 = { _pageId: string; _pageConfigs: PageConfigRuntime[] }
+type PageContextAssertIs404 = { pageId: string; _pageConfigs: PageConfigRuntime[] }
 function assertIs404(pageContext: PageContextAssertIs404) {
-  if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
+  if (isErrorPage(pageContext.pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
   }
 }

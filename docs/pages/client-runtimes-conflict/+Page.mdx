@@ -1,13 +1,16 @@
 import { Link } from '@brillout/docpress'
 
-If you get the following warning:
+If you get this warning:
 
 ```
-The client runtime of Server Routing as well as the client runtime of Client Routing are both
-being loaded. Make sure they aren't loaded both at the same time for a given page.
+Client runtime of both Server Routing and Client Routing loaded
 ```
 
-Then the problem is likely due to one the following.
+Then this means that the page loads the client runtime of <Link href="/server-routing">Server Routing</Link> as well as the client runtime of <Link href="/client-routing">Client Routing</Link>.
+
+A given page should *either* use Server Routing *or* Client Routing, never both. Thus only one runtime should be loaded.
+
+The problem is often due to one the following.
  - You configured [Rollup's code splitting](https://vitejs.dev/guide/build.html#chunking-strategy) in a way that includes both runtimes inside a same bundle. For example:
    ```js
    // vite.config.js
@@ -28,7 +31,7 @@ Then the problem is likely due to one the following.
 
    export default { build: { rollupOptions } }
    ```
- - You're importing a utility that is only available to <Link text="Client Routing" href="/client-routing" /> such as `prefetch()` or `navigate()`, for a page that uses <Link text="Server Routing" href="/server-routing" />.
+ - You're importing a utility that is only available to <Link href="/client-routing">Client Routing</Link> such as `prefetch()` or `navigate()`, for a page that uses <Link href="/server-routing">Server Routing</Link>.
    ```js
    // ❌ Don't import these for pages that use Server Routing
    import { prefetch } from 'vike/client/router'

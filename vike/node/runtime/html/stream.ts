@@ -44,10 +44,10 @@ import {
 } from '../utils.js'
 import { HtmlRender } from './renderHtml.js'
 import {
-  getStreamFromReactStreaming,
-  isStreamReactStreaming,
-  StreamReactStreaming,
-  streamReactStreamingToString
+  getStreamOfReactStreamingPackage,
+  isStreamFromReactStreamingPackage,
+  StreamFromReactStreamingPackagePublic,
+  streamFromReactStreamingPackageToString
 } from './stream/react-streaming.js'
 import { import_ } from '@brillout/import'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
@@ -71,7 +71,7 @@ type StreamProviderNormalized =
   | StreamPipeNode
 type StreamProviderAny =
   | StreamProviderNormalized
-  | StreamReactStreaming
+  | StreamFromReactStreamingPackagePublic
   // pipeWebStream()
   | StreamPipeWebWrapped
   // pipeNodeStream()
@@ -115,15 +115,15 @@ async function streamReadableNodeToString(readableNode: StreamReadableNode): Pro
 }
 
 async function streamReadableWebToString(readableWeb: ReadableStream): Promise<string> {
-  let str: string = ''
   const reader = readableWeb.getReader()
+  const { decode, getClosingChunk } = decodeChunks()
+  let str: string = ''
   while (true) {
     const { done, value } = await reader.read()
-    if (done) {
-      break
-    }
-    str += value
+    if (done) break
+    str += decode(value)
   }
+  str += getClosingChunk()
   return str
 }
 async function stringToStreamReadableNode(str: string): Promise<StreamReadableNode> {
@@ -187,15 +187,16 @@ async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<s
   return promise
 }
 function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
+  const { decode, getClosingChunk } = decodeChunks()
   let str: string = ''
   let resolve: (s: string) => void
   const promise = new Promise<string>((r) => (resolve = r))
   const writable = new WritableStream({
     write(chunk) {
-      assert(typeof chunk === 'string')
-      str += chunk
+      str += decode(chunk)
     },
     close() {
+      str += getClosingChunk()
       resolve(str)
     }
   })
@@ -271,11 +272,13 @@ async function processStream(
   streamOriginal: StreamProviderAny,
   {
     injectStringAtBegin,
+    injectStringAfterFirstChunk,
     injectStringAtEnd,
     onErrorWhileStreaming,
     enableEagerStreaming
   }: {
     injectStringAtBegin?: () => Promise<string>
+    injectStringAfterFirstChunk?: () => string | null
     injectStringAtEnd?: () => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
@@ -292,6 +295,7 @@ async function processStream(
   let resolve: (result: StreamProviderNormalized) => void
   let reject: (err: unknown) => void
   let promiseHasResolved = false
+  let injectStringAfterFirstChunk_done = false
   const streamWrapperPromise = new Promise<StreamProviderNormalized>((resolve_, reject_) => {
     resolve = (streamWrapper) => {
       promiseHasResolved = true
@@ -306,8 +310,8 @@ async function processStream(
   const promiseReadyToWrite = new Promise<void>((r) => (resolveReadyToWrite = r))
 
   if (injectStringAtBegin) {
-    const injectionBegin: string = await injectStringAtBegin()
-    writeStream(injectionBegin) // Adds injectionBegin to buffer
+    const injectedChunk: string = await injectStringAtBegin()
+    writeStream(injectedChunk) // Adds injectedChunk to buffer
     flushStream() // Sets shouldFlushStream to true
   }
 
@@ -337,6 +341,11 @@ async function processStream(
     onData(chunk: unknown) {
       onStreamDataOrEnd(() => {
         writeStream(chunk)
+        if (injectStringAfterFirstChunk && !injectStringAfterFirstChunk_done) {
+          const injectedChunk = injectStringAfterFirstChunk()
+          if (injectedChunk !== null) writeStream(injectedChunk)
+          injectStringAfterFirstChunk_done = true
+        }
       })
     },
     async onEnd(
@@ -352,8 +361,8 @@ async function processStream(
           streamOriginalEnded = true
         })
         if (injectStringAtEnd) {
-          const injectEnd = await injectStringAtEnd()
-          writeStream(injectEnd)
+          const injectedChunk = await injectStringAtEnd()
+          writeStream(injectedChunk)
         }
         await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
         assert(isReady())
@@ -463,9 +472,9 @@ async function createStreamWrapper({
   streamWrapper: StreamProviderNormalized
   streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
-  if (isStreamReactStreaming(streamOriginal)) {
+  if (isStreamFromReactStreamingPackage(streamOriginal)) {
     debug(`onRenderHtml() hook returned ${pc.cyan('react-streaming')} result`)
-    const stream = getStreamFromReactStreaming(streamOriginal)
+    const stream = getStreamOfReactStreamingPackage(streamOriginal)
     ;(streamOriginal as StreamProviderAny) = stream
   }
 
@@ -486,9 +495,7 @@ async function createStreamWrapper({
     const writeChunk = (chunk: unknown) => {
       assert(writableOriginal)
       writableOriginal.write(chunk)
-      if (debug.isActivated) {
-        debug('data written (Node.js Writable)', String(chunk))
-      }
+      debugWithChunk('data written (Node.js Writable)', chunk)
     }
     // For libraries such as https://www.npmjs.com/package/compression
     //  - React calls writable.flush() when available
@@ -564,9 +571,7 @@ async function createStreamWrapper({
     const writeChunk = (chunk: unknown) => {
       assert(writerOriginal)
       writerOriginal.write(encodeForWebStream(chunk))
-      if (debug.isActivated) {
-        debug('data written (Web Writable)', String(chunk))
-      }
+      debugWithChunk('data written (Web Writable)', chunk)
     }
     // Web Streams have compression built-in
     //  - https://developer.mozilla.org/en-US/docs/Web/API/Compression_Streams_API
@@ -664,13 +669,9 @@ async function createStreamWrapper({
         !controllerProxyIsClosed
       ) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
-        if (debug.isActivated) {
-          debug('data written (Web Readable)', String(chunk))
-        }
+        debugWithChunk('data written (Web Readable)', chunk)
       } else {
-        if (debug.isActivated) {
-          debug('data emitted but not written (Web Readable)', String(chunk))
-        }
+        debugWithChunk('data emitted but not written (Web Readable)', chunk)
       }
     }
     // Readables don't have the notion of flushing
@@ -695,9 +696,7 @@ async function createStreamWrapper({
 
     const writeChunk = (chunk: unknown) => {
       readableProxy.push(chunk)
-      if (debug.isActivated) {
-        debug('data written (Node.js Readable)', String(chunk))
-      }
+      debugWithChunk('data written (Node.js Readable)', chunk)
     }
     // Readables don't have the notion of flushing
     const flushStream = null
@@ -761,7 +760,7 @@ function isStream(something: unknown): something is StreamProviderAny {
     isStreamReadableNode(something) ||
     isStreamPipeNode(something) ||
     isStreamPipeWeb(something) ||
-    isStreamReactStreaming(something)
+    isStreamFromReactStreamingPackage(something)
   ) {
     checkType<StreamProviderAny>(something)
     return true
@@ -883,8 +882,8 @@ async function streamToString(stream: StreamProviderAny): Promise<string> {
   if (isStreamPipeWeb(stream)) {
     return await streamPipeWebToString(getStreamPipeWeb(stream))
   }
-  if (isStreamReactStreaming(stream)) {
-    return await streamReactStreamingToString(stream)
+  if (isStreamFromReactStreamingPackage(stream)) {
+    return await streamFromReactStreamingPackageToString(stream)
   }
   assert(false)
 }
@@ -952,4 +951,35 @@ function inferStreamName(stream: StreamProviderNormalized) {
     return getStreamName('pipe', 'web')
   }
   assert(false)
+}
+
+function decodeChunks() {
+  const decoder = new TextDecoder()
+  const decode = (chunk: unknown): string => {
+    if (typeof chunk === 'string') {
+      return chunk
+    } else if (chunk instanceof Uint8Array) {
+      return decoder.decode(chunk, { stream: true })
+    } else {
+      assert(false)
+    }
+  }
+  // https://github.com/vikejs/vike/pull/1799#discussion_r1713554096
+  const getClosingChunk = (): string => {
+    return decoder.decode()
+  }
+  return { decode, getClosingChunk }
+}
+
+function debugWithChunk(msg: string, chunk: unknown): void {
+  if (!debug.isActivated) return
+
+  let chunkStr: string
+  try {
+    chunkStr = new TextDecoder().decode(chunk as any)
+  } catch (err) {
+    chunkStr = String(chunk)
+  }
+
+  debug(msg, chunkStr)
 }

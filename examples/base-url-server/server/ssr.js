@@ -4,19 +4,15 @@ import { baseServer } from '../base.js'
 
 const { app, startApp } = createExpressApp({ base: baseServer, port: 3000 })
 
-app.get('*', async (req, res, next) => {
+app.get('*', async (req, res) => {
   const pageContextInit = {
     urlOriginal: req.originalUrl
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) {
-    return next()
-  } else {
-    const { body, statusCode, headers } = httpResponse
-    headers.forEach(([name, value]) => res.setHeader(name, value))
-    res.status(statusCode).send(body)
-  }
+  httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+  res.status(httpResponse.statusCode)
+  httpResponse.pipe(res)
 })
 
 startApp()

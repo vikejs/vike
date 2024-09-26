@@ -7,8 +7,9 @@ export { addOnBeforeLogHook }
 export { getAssertErrMsg }
 export { overwriteAssertProductionLogger }
 export { isBug }
+export { setAlwaysShowStackTrace }
 
-import { onAssertModuleLoad } from './assertSingleInstance.js'
+import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.js'
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { isObject } from './isObject.js'
@@ -19,6 +20,7 @@ const globalObject = getGlobalObject<{
   onBeforeLog?: () => void
   logger: Logger
   showStackTraceList: WeakSet<Error>
+  alwaysShowStackTrace?: true
 }>('utils/assert.ts', {
   alreadyLogged: new Set(),
   // Production logger. Overwritten by loggerNotProd.ts in non-production environments.
@@ -32,7 +34,7 @@ const globalObject = getGlobalObject<{
   showStackTraceList: new WeakSet()
 })
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
-onAssertModuleLoad()
+assertSingleInstance_onAssertModuleLoad()
 
 const projectTag = `[vike]` as const
 const projectTagWithVersion = `[vike@${projectInfo.projectVersion}]` as const
@@ -72,6 +74,7 @@ function assertUsage(
   { showStackTrace }: { showStackTrace?: true } = {}
 ): asserts condition {
   if (condition) return
+  showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   errMsg = addWhitespace(errMsg)
   errMsg = addPrefixAssertType(errMsg, 'Wrong Usage')
   errMsg = addPrefixProjctName(errMsg)
@@ -97,6 +100,7 @@ function assertWarning(
   { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace?: true }
 ): void {
   if (condition) return
+  showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
   msg = addWhitespace(msg)
   msg = addPrefixAssertType(msg, 'Warning')
   msg = addPrefixProjctName(msg)
@@ -207,4 +211,8 @@ function overwriteAssertProductionLogger(logger: Logger): void {
 
 function isBug(err: unknown): boolean {
   return !String(err).includes('[Bug]')
+}
+
+function setAlwaysShowStackTrace() {
+  globalObject.alwaysShowStackTrace = true
 }

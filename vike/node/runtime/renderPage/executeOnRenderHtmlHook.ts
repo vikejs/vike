@@ -37,7 +37,7 @@ type HookName =
 async function executeOnRenderHtmlHook(
   pageContext: PageContextForUserConsumptionServerSide &
     PageContextSerialization & {
-      _pageId: string
+      pageId: string
       _pageConfigs: PageConfigRuntime[]
       __getPageAssets: GetPageAssets
       _isHtmlOnly: boolean
@@ -47,7 +47,7 @@ async function executeOnRenderHtmlHook(
     }
 ): Promise<{
   renderHook: RenderHook
-  htmlRender: null | HtmlRender
+  htmlRender: HtmlRender
 }> {
   const { renderHook, hookFn } = getRenderHook(pageContext)
   objectAssign(pageContext, { _renderHook: renderHook })
@@ -62,14 +62,10 @@ async function executeOnRenderHtmlHook(
   Object.assign(pageContext, pageContextProvidedByRenderHook)
   objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
 
-  if (documentHtml === null || documentHtml === undefined) {
-    return { htmlRender: null, renderHook }
-  }
-
   const onErrorWhileStreaming = (err: unknown) => {
     // Should the stream inject the following?
     // ```
-    // <script>console.error("An error occurred on the server while streaming the app to HTML. Check the server logs for more information.")</script>
+    // <script>console.error("An error occurred on the server side while streaming the page to HTML, see server logs.")</script>
     // ```
     logRuntimeError(err, pageContext._httpRequestId)
     if (!pageContext.errorWhileRendering) {
@@ -131,7 +127,7 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
 }
 
 function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook) {
-  let documentHtml: null | DocumentHtml = null
+  let documentHtml: DocumentHtml
   let pageContextPromise: PageContextPromise = null
   let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
   let injectFilter: PreloadFilter = null
@@ -179,7 +175,11 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
     injectFilter = hookReturnValue.injectFilter
   }
 
-  if (hookReturnValue.documentHtml) {
+  assertUsage(
+    hookReturnValue.documentHtml,
+    `${errPrefix} returned an object that is missing the ${pc.code('documentHtml')} property.`
+  )
+  {
     let val = hookReturnValue.documentHtml
     const errBegin = `${errPrefix} returned ${pc.cyan('{ documentHtml }')}, but ${pc.cyan('documentHtml')}` as const
     if (typeof val === 'string') {

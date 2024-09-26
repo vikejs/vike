@@ -14,11 +14,7 @@ import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAs
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { getGlobalContext } from '../globalContext.js'
-import {
-  createHttpResponseObject,
-  createHttpResponsePageContextJson,
-  HttpResponse
-} from './createHttpResponseObject.js'
+import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadUserFilesServerSide,
   PageContext_loadUserFilesServerSide,
@@ -37,11 +33,11 @@ import type { Hook } from '../../../shared/hooks/getHook.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 
-type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
+type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
 async function renderPageAlreadyRouted<
   PageContext extends {
-    _pageId: string
+    pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
     is404: null | boolean
     routeParams: Record<string, string>
@@ -51,13 +47,13 @@ async function renderPageAlreadyRouted<
     PageContextUrlInternal &
     PageContext_loadUserFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
-  // pageContext._pageId can either be the:
+  // pageContext.pageId can either be the:
   //  - ID of the page matching the routing, or the
   //  - ID of the error page `_error.page.js`.
-  assert(hasProp(pageContext, '_pageId', 'string'))
+  assert(hasProp(pageContext, 'pageId', 'string'))
 
   const isError: boolean = pageContext.is404 || !!pageContext.errorWhileRendering
-  assert(isError === (pageContext._pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
+  assert(isError === (pageContext.pageId === getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)))
 
   objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
@@ -89,22 +85,17 @@ async function renderPageAlreadyRouted<
 
   const renderHookResult = await executeOnRenderHtmlHook(pageContext)
 
-  if (renderHookResult.htmlRender === null) {
-    objectAssign(pageContext, { httpResponse: null })
-    return pageContext
-  } else {
-    const { htmlRender, renderHook } = renderHookResult
-    const httpResponse = await createHttpResponseObject(htmlRender, renderHook, pageContext)
-    objectAssign(pageContext, { httpResponse })
-    return pageContext
-  }
+  const { htmlRender, renderHook } = renderHookResult
+  const httpResponse = await createHttpResponsePage(htmlRender, renderHook, pageContext)
+  objectAssign(pageContext, { httpResponse })
+  return pageContext
 }
 
 async function prerenderPage(
   pageContext: PageContextInitEnhanced &
     PageFiles & {
       routeParams: Record<string, string>
-      _pageId: string
+      pageId: string
       _urlRewrite: null
       _httpRequestId: number | null
       _usesClientRouter: boolean
@@ -149,7 +140,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   }
 
   const pageContext = {
-    _pageId: errorPageId,
+    pageId: errorPageId,
     _httpRequestId: null,
     _urlRewrite: null,
     is404: true,
@@ -267,8 +258,11 @@ async function getRenderContext(): Promise<RenderContext> {
     pageConfigGlobal,
     allPageIds
   )
-  // We assume assertV1Design() was already called at build-time
-  assert(pageFilesAll.length === 0 || pageConfigs.length === 0)
+  assertV1Design(
+    // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
+    pageConfigs.length > 0,
+    pageFilesAll
+  )
   const renderContext = {
     pageFilesAll: pageFilesAll,
     pageConfigs,

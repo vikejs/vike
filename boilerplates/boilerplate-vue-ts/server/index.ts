@@ -50,25 +50,21 @@ async function startServer() {
 
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
-  app.get('*', async (req, res, next) => {
+  app.get('*', async (req, res) => {
     const pageContextInit = {
-      urlOriginal: req.originalUrl
+      urlOriginal: req.originalUrl,
+      headersOriginal: req.headers
     }
     const pageContext = await renderPage(pageContextInit)
     if (pageContext.errorWhileRendering) {
       // Install error tracking here, see https://vike.dev/errors
     }
     const { httpResponse } = pageContext
-    if (!httpResponse) {
-      return next()
-    } else {
-      const { body, statusCode, headers, earlyHints } = httpResponse
-      if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
-      headers.forEach(([name, value]) => res.setHeader(name, value))
-      res.status(statusCode)
-      // For HTTP streams use httpResponse.pipe() instead, see https://vike.dev/streaming
-      res.send(body)
-    }
+    if (res.writeEarlyHints) res.writeEarlyHints({ link: httpResponse.earlyHints.map((e) => e.earlyHintLink) })
+    httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(httpResponse.statusCode)
+    // For HTTP streams use pageContext.httpResponse.pipe() instead, see https://vike.dev/streaming
+    res.send(httpResponse.body)
   })
 
   const port = process.env.PORT || 3000

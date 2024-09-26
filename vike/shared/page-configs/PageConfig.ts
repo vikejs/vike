@@ -73,9 +73,7 @@ type ConfigEnv = {
 /** For Vike internal use */
 type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
   client?: boolean | 'if-client-routing'
-  /** Always load value, not matter what page is loaded. */
-  eager?: boolean
-  /** Load value only in production or only in development. */
+  /** Load value only in production, or only in development. */
   production?: boolean
 }
 

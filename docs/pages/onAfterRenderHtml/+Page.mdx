@@ -1,0 +1,57 @@
+import { Link } from '@brillout/docpress'
+import { ImplementedBy, UiFrameworkExtension } from '../../components'
+
+Environment: server.
+
+<ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>} noCustomGuide={true}>`onAfterRenderHtml()`</ImplementedBy>
+
+Hook called right after rendering <Link href="/Page">the `+Page` component</Link> to HTML.
+
+It's called upon rendering the first page.
+- It's called regardless of whether <Link href="/ssr">SSR</Link> is disabled. (The first page the user visits is always rendered to HTML: when SSR is disabled then the HTML is just an HTML shell that doesn't contain the content of the page.)
+- It isn't called upon page navigation. (Pages aren't rendered to HTML upon page navigation.)
+
+
+## Conditionally
+
+If you want to apply `onAfterRenderHtml()` only for SSR then check whether <Link href="/pageContext#:~:text=pageContext.Page,-%3A">`pageContext.Page`</Link> is set:
+
+```js
+// pages/+onAfterRenderHtml.js
+
+export async function onAfterRenderHtml(pageContext) {
+  const isSSR = !!pageContext.Page
+  if (isSSR) {
+    // ...
+  }
+}
+```
+
+
+## `pageContext`
+
+Commonly used <Link href="/pageContext">`pageContext`</Link> properties inside `onAfterRenderHtml()`:
+
+ ```js
+// pages/+onAfterRenderHtml.js
+
+export function onAfterRenderHtml(pageContext) {
+  // The +Page.vue component rendered to the HTML string
+  pageContext.pageHtmlString
+  // The +Page.vue component rendered to an HTML stream
+  pageContext.pageHtmlStream
+}
+```
+
+
+## Use cases
+
+It's usually used for integrating tools, such as dehydrating state management libraries.
+
+
+## See also
+
+- <Link href="/onBeforeRenderHtml"/>
+- <Link href="/onRenderHtml"/>
+- <Link href="/onRenderClient"/>
+- <Link href="/hooks"/>

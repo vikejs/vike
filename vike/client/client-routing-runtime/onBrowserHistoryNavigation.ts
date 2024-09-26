@@ -4,7 +4,7 @@ export { updateState }
 import { getCurrentUrl, getGlobalObject } from './utils.js'
 import { initHistoryState, getHistoryState } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
-import { setScrollPosition } from './setScrollPosition.js'
+import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 
 const globalObject = getGlobalObject<{
   previousState: ReturnType<typeof getState>
@@ -23,7 +23,7 @@ function onBrowserHistoryNavigation() {
   window.addEventListener('popstate', async (): Promise<undefined> => {
     const currentState = getState()
 
-    const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
+    const scrollTarget: ScrollTarget = currentState.historyState.scrollPosition || undefined
 
     const isUserLandPushStateNavigation = currentState.historyState.triggeredBy === 'user'
 

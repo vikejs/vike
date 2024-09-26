@@ -1,0 +1,16 @@
+If you get this warning:
+
+```
+Client runtime loaded twice
+```
+
+Then this means that the page has loaded more than one copy of Vike's client runtime. In other words, the client-side bundle of the page includes Vike's client runtime twice (or more).
+
+In order to reduce the size of your client, make sure that the client-side JavaScript of a given page includes Vike's client runtime only once.
+
+You can, for example with Unix, inspect where Vike's client runtime is included:
+
+```bash
+cd dist/client/
+grep -r 'loaded twice'
+```

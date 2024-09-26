@@ -1,1 +1,1 @@
-export { getPageContext } from './hooks/executeHook.js'
+export { getPageContext, providePageContext } from './hooks/executeHook.js'

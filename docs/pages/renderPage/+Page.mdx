@@ -59,7 +59,7 @@ async function startServer() {
 
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
-  app.get('*', async (req, res, next) => {
+  app.get('*', async (req, res) => {
     const pageContextInit = {
       // Required: the URL of the page
       urlOriginal: req.originalUrl
@@ -75,7 +75,6 @@ async function startServer() {
     }
 
     const pageContext = await renderPage(pageContextInit)
-    if (pageContext.httpResponse === null) return next()
 
     const { body, statusCode, headers } = pageContext.httpResponse
     headers.forEach(([name, value]) => res.setHeader(name, value))
@@ -92,23 +91,17 @@ The `pageContext.httpResponse.body` value is the HTML string returned by the
 <Link text={<><code>onRenderHtml()</code> hook</>} href="/onRenderHtml" /> with additional `<script>` and `<style>` tags
 automatically injected by Vike.
 
+> You can control where and what Vike injects using <Link href="/injectFilter" />.
+
 For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/streaming" />.
 
-The `pageContext.httpResponse` value is `null` if:
-   - An error occurred while rendering the page and no <Link text="error page" href="/error-page" noBreadcrumb /> is defined.
-   - An error occurred while rendering the error page.
-   - Vike skips certain URLs, such as `/favicon.ico` (because browsers automatically make favicon requests).
+Optionally, you can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 Early Hint`), see <Link href="/preloading#early-hints" />.
 
 The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed Vike) anywhere:
  - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
 > When modifying your server, you may need to manually restart your server for your changes to take effect. See [#562](https://github.com/vikejs/vike/issues/562).
-
-See also:
- - <Link href="/NODE_ENV" />
- - <Link href="/headers" />
- - <Link href="/onRenderHtml" />
 
 
 ## Optional
@@ -122,4 +115,8 @@ But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your 
 ## See also
 
 - <Link href="/headers" />
+- <Link href="/injectFilter" />
+- <Link href="/preloading#early-hints" />
+- <Link href="/onRenderHtml" />
+- <Link href="/NODE_ENV" />
 - <Link href="/pageContext" />

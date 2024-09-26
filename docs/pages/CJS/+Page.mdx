@@ -1,7 +1,7 @@
 import { Warning } from '@brillout/docpress'
 
 <Warning>
-Vike will probably deprecate support for user-land CJS code soon. (Using CJS packages will still be suported for the foreseeable future.)
+Vike will probably deprecate support for user-land CJS code soon. (Using CJS packages will still be supported for the foreseeable future.)
 
 If you have a use case that requires the source code of your Vike app to be written in CJS then let us know and we'll consider not deprecating it. We would then create a new setting `disableCJSWarning` instead.
 </Warning>
@@ -69,6 +69,10 @@ If you aren't using a monorepo, then migrating the source code of your Vike app 
 Even if you use a monorepo that uses a mix of ESM/CJS packages, the migration of your Vike app is still straightforward: usually there aren't any monorepo package that depends on your Vike app. (In other words, your Vike app is a root in your monorepo dependency graph.)
 
 That said, migrating your whole monorepo isn't easy: the issue is that CJS modules cannot (easily) import ESM modules.
+
+> Node.js 22 added support for `require()`'ing ES modules behind a `--experimental-require-module` flag, see [Node.js Blog > Node.js 22 is now available! > Support require()ing synchronous ESM graphs](https://nodejs.org/en/blog/announcements/v22-release-announce#support-requireing-synchronous-esm-graphs).
+>
+> This means you can use Node.js 22 and ignore the following recommendation.
 
 But because ESM modules can import CJS modules (unlike the opposite), a sensible strategy is to migrate your monorepo in a top-down fashion: first migrate CJS modules that aren't required by other CJS modules.
 

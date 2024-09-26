@@ -1,7 +1,7 @@
 import React from 'react'
 import { renderToStream } from 'react-streaming/server'
 import { escapeInject } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 export { render }
 export { passToClient }
@@ -13,9 +13,9 @@ async function render(pageContext: any) {
   const { Page, pageProps } = pageContext
 
   const page = (
-    <PageLayout pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageLayout>
+    </Layout>
   )
 
   // Streaming is optional and we can use renderToString() instead

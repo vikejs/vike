@@ -14,37 +14,31 @@ const EXPORTS_IGNORE = [
 const TOLERATE_SIDE_EXPORTS = ['.md', '.mdx'] as const
 
 function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToShowToUser: string, configName: string) {
-  const exportsAll = Object.keys(fileExports).filter((exportName) => !EXPORTS_IGNORE.includes(exportName))
-  const exportsInvalid = exportsAll.filter((e) => e !== 'default' && e !== configName)
-  if (exportsInvalid.length === 0) {
-    if (exportsAll.length === 1) {
-      return
-    }
-    const exportDefault = pc.cyan('export default')
-    const exportNamed = pc.cyan(`export { ${configName} }`)
-    if (exportsAll.length === 0) {
-      assertUsage(
-        false,
-        `${filePathToShowToUser} doesn't export any value, but it should have a ${exportNamed} or ${exportDefault}`
-      )
-    } else {
-      assert(exportsAll.length === 2) // because `exportsInvalid.length === 0`
-      assertWarning(
-        false,
-        `The exports of ${filePathToShowToUser} are ambiguous: remove ${exportDefault} or ${exportNamed}`,
-        { onlyOnce: true }
-      )
-    }
-  } else {
-    if (TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) return
-    exportsInvalid.forEach((exportInvalid) => {
-      assertWarning(
-        false,
-        `${filePathToShowToUser} should have only one export: move ${pc.cyan(
-          `export { ${exportInvalid} }`
-        )} to its own +${exportsInvalid}.js file`,
-        { onlyOnce: true }
-      )
+  const exportNames = Object.keys(fileExports).filter((exportName) => !EXPORTS_IGNORE.includes(exportName))
+  const isValid = (exportName: string) => exportName === 'default' || exportName === configName
+  const exportNamesValid = exportNames.filter(isValid)
+  const exportNamesInvalid = exportNames.filter((e) => !isValid(e))
+
+  if (exportNamesValid.length === 1 && exportNamesInvalid.length === 0) {
+    return
+  }
+
+  const exportDefault = pc.code('export default')
+  const exportNamed = pc.code(`export { ${configName} }`)
+  assert(exportNamesValid.length <= 2)
+  if (exportNamesValid.length === 0) {
+    assertUsage(false, `${filePathToShowToUser} should have a ${exportNamed} or ${exportDefault}`)
+  }
+  if (exportNamesValid.length === 2) {
+    assertWarning(false, `${filePathToShowToUser} is ambiguous: remove ${exportDefault} or ${exportNamed}`, {
+      onlyOnce: true
+    })
+  }
+  if (!TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) {
+    exportNamesInvalid.forEach((exportInvalid) => {
+      assertWarning(false, `${filePathToShowToUser} unexpected ${pc.cyan(`export { ${exportInvalid} }`)}`, {
+        onlyOnce: true
+      })
     })
   }
 }

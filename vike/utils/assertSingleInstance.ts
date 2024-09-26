@@ -1,6 +1,6 @@
-export { onClientEntry_ServerRouting }
-export { onClientEntry_ClientRouting }
-export { onAssertModuleLoad }
+export { assertSingleInstance_onClientEntryServerRouting }
+export { assertSingleInstance_onClientEntryClientRouting }
+export { assertSingleInstance_onAssertModuleLoad }
 
 //  - Throw error if there are two different versions of vike loaded
 //  - Show warning if entry of Client Routing and entry of Server Routing are both loaded
@@ -9,6 +9,7 @@ export { onAssertModuleLoad }
 import { unique } from './unique.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { projectInfo } from './projectInfo.js'
+import pc from '@brillout/picocolors'
 /* Use original assertUsage() & assertWarning() after all CJS is removed from node_modules/vike/dist/
 import { assertUsage, assertWarning } from './assert.js'
 */
@@ -18,15 +19,14 @@ const globalObject = getGlobalObject<{
   isClientRouting?: boolean
   // For assertWarning() shim
   alreadyLogged: Set<string>
-}>('assertPackageInstances.ts', {
+}>('assertSingleInstance.ts', {
   instances: [],
   alreadyLogged: new Set()
 })
 
 const clientRuntimesClonflict =
-  "The client runtime of Server Routing as well as the client runtime of Client Routing are both being loaded. Make sure they aren't loaded both at the same time for a given page. See https://vike.dev/client-runtimes-conflict"
-const clientNotSingleInstance =
-  "Two vike client runtime instances are being loaded. Make sure your client-side bundles don't include vike twice. (In order to reduce the size of your client-side JavaScript bundles.)"
+  'Client runtime of both Server Routing and Client Routing loaded https://vike.dev/client-runtimes-conflict'
+const clientNotSingleInstance = 'Client runtime loaded twice https://vike.dev/client-runtime-duplicated'
 
 function assertSingleInstance() {
   {
@@ -34,7 +34,7 @@ function assertSingleInstance() {
     assertUsage(
       versions.length <= 1,
       // DO *NOT* patch vike to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/vikejs/vike/issues/1108
-      `Both vike@${versions[0]} and vike@${versions[1]} loaded. Only one version should be loaded.`
+      `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded but only one version should be loaded`
     )
   }
 
@@ -47,7 +47,7 @@ function assertSingleInstance() {
   }
 }
 
-function onClientEntry_ServerRouting(isProduction: boolean) {
+function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) {
   assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
@@ -60,7 +60,7 @@ function onClientEntry_ServerRouting(isProduction: boolean) {
   if (isProduction) globalObject.checkSingleInstance = true
   assertSingleInstance()
 }
-function onClientEntry_ClientRouting(isProduction: boolean) {
+function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) {
   assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
@@ -75,7 +75,7 @@ function onClientEntry_ClientRouting(isProduction: boolean) {
 }
 
 // Called by utils/assert.ts which is (most certainly) loaded by all entries. That way we don't have to call a callback for every entry. (There are a lot of entries: `client/router/`, `client/`, `node/runtime/`, `node/plugin/`, `node/cli`.)
-function onAssertModuleLoad() {
+function assertSingleInstance_onAssertModuleLoad() {
   globalObject.instances.push(projectInfo.projectVersion)
   assertSingleInstance()
 }

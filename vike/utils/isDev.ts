@@ -1,29 +1,35 @@
-export { isDev1 }
-export { isDev1_onConfigureServer }
 export { isDev2 }
 export { isDev3 }
 
-// We can remove this file after we implement the Vike CLI
+import { assert } from './assert.js'
+
+// We can propbably remove this file after we implement the Vike CLI
 
 // There isn't any reliable way to test whether Vite is ran as dev/build/preview/optimizeDep
-//  - Failed attempt to make a PR: https://github.com/brillout/vite/tree/fix/config-operation
+//  - Failed attempt to make a PR: https://github.com/vitejs/vite/pull/12298
+//    - Superseded by https://github.com/vitejs/vite/pull/14855
 
 // ********
 // Method 3 - most reliable, requires newer Vite version
 // ********
 import type { ConfigEnv } from 'vite'
-function isDev3(configEnv: ConfigEnv): null | boolean {
+function isDev3(configEnv: ConfigEnv): boolean {
   const { isPreview, command } = configEnv
   if (command !== 'serve') return false
-  if (typeof isPreview === 'boolean') return !isPreview
-  // isPreview is undefined in older Vite versions, see https://github.com/vitejs/vite/commit/93fce55
-  return null
+
+  // `isPreview` is `undefined` in older Vite versions.
+  // https://github.com/vitejs/vite/pull/14855
+  // https://github.com/vitejs/vite/pull/15695O
+  // - Released at `vite@5.1.0`: https://github.com/vitejs/vite/blob/main/packages/vite/CHANGELOG.md#510-beta4-2024-01-26:~:text=fix(preview)%3A%20set%20isPreview%20true%20(%2315695)%20(93fce55)%2C%20closes%20%2315695
+  assert(typeof isPreview === 'boolean')
+
+  return !isPreview
 }
 
-// ********
-// Method 1 - reliable
-// ********
-import { assert } from './assert.js'
+/* This isn't reliable:
+ * - https://github.com/vikejs/vike/issues/1791
+ * - Calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
+ *
 import { getGlobalObject } from './getGlobalObject.js'
 const globalObject = getGlobalObject('utils/isDev.ts', { isDev: false, isDev_wasCalled: false })
 function isDev1(): boolean {
@@ -36,6 +42,7 @@ function isDev1_onConfigureServer(): void | undefined {
   assert(!globalObject.isDev_wasCalled)
   globalObject.isDev = true
 }
+*/
 
 // ********
 // Method 2

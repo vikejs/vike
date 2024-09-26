@@ -29,6 +29,7 @@ import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
 import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
 import { resolveClientEntriesDev } from './resolveClientEntriesDev.js'
+import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 
 assertNodeEnv_onVikePluginLoad()
 markEnvAsVikePluginLoaded()
@@ -55,7 +56,8 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     ...importBuild(),
     baseUrls(vikeConfig),
     envVarsPlugin(),
-    fileEnv()
+    fileEnv(),
+    workaroundCssModuleHmr()
   ]
   return plugins
 }
@@ -81,7 +83,7 @@ Object.defineProperty(plugin, 'apply', {
   }
 })
 
-// node_modules/vike/package.json#peerDependencies.vite isn't enough as users can ignore it
+// package.json#peerDependencies isn't enough as users can ignore it
 function assertViteVersion() {
-  assertVersion('Vite', version, '4.4.0')
+  assertVersion('Vite', version, '5.1.0')
 }

@@ -1,14 +1,14 @@
 export { CustomIntegrationWarning }
 
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 import React from 'react'
-import { UiFrameworkExtension, type UiFrameworkExtensionList } from './UiFrameworkExtension'
+import { UiFrameworkExtension, type UiFrameworkExtensionList, Advanced } from '../components'
 
 function CustomIntegrationWarning({ list }: { list?: UiFrameworkExtensionList }) {
   return (
-    <Warning>
-      Do this only if you have a clear reason for not using <UiFrameworkExtension name noLink list={list} />. See{' '}
-      <Link href="/extension-vs-custom" />.
-    </Warning>
+    <Advanced>
+      Custom integrations can be complex and we generally recommend using{' '}
+      <UiFrameworkExtension name noLink list={list} /> instead, see <Link href="/extension-vs-custom" />.
+    </Advanced>
   )
 }

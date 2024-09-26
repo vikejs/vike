@@ -43,46 +43,46 @@ You may ask yourself what the purpose of `getPageContext()` is and, indeed, it's
 
 ## Universal Hooks
 
-A *universal hook* is a component hook that also works inside Vike hooks, such as the `useDocument()` hook of <UiFrameworkExtension name noLink />:
+A *universal hook* is a component hook that also works inside Vike hooks such as <Link href="/useConfig" />.
 
 ```js
  // /components/SomeReactComponent.jsx
 
-import { useDocument } from 'vike-react/useDocument' // or vike-{vue,solid}
+import { useConfig } from 'vike-react/useConfig' // or vike-{vue,solid}
 
 function SomeReactComponent() {
-  // Not only can useDocument() be used inside a React component...
-  const document = useDocument()
+  // Not only can useConfig() be used inside a component...
+  const document = useConfig()
 }
 ```
 ```js
  // /pages/some-page/+data.js
 
-import { useDocument } from 'vike-react/useDocument'
+import { useConfig } from 'vike-react/useConfig'
 
 export function data() {
   // ... but it can also be used inside a Vike hook.
-  const document = useDocument()
+  const document = useConfig()
 }
 ```
 
 ## Example
 
-In order to make `useDocument()` a universal hook (see <Link href="#universal-hooks" doNotInferSectionTitle />), the `useDocument()` implementation uses `getPageContext()`:
+In order to make `useConfig()` a universal hook (see <Link href="#universal-hooks" doNotInferSectionTitle />), the `useConfig()` implementation uses `getPageContext()`:
 
 ```js
-// vike-{react,vue,solid}/src/hooks/useDocument.js
+// node_modules/vike-{react,vue,solid}/dist/hooks/useConfig.js
 
 import { usePageContext } from './usePageContext'
 import { getPageContext } from 'vike/getPageContext'
 
-export function useDocument() {
-  // useDocument() needs to access the pageContext object
+export function useConfig() {
+  // useConfig() needs to access the pageContext object
 
-  // In case useDocument() is used inside a Vike hook
+  // In case useConfig() is used inside a Vike hook
   let pageContext = getPageContext()
 
-  // In case useDocument() is used inside a React component
+  // In case useConfig() is used inside a React component
   if (!pageContext) {
     pageContext = usePageContext()
   }

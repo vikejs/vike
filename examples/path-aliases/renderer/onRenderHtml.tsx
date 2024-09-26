@@ -4,15 +4,15 @@ export { onRenderHtml }
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 import type { OnRenderHtmlAsync } from 'vike/types'
 
 const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const { Page } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
-    <PageLayout>
+    <Layout>
       <Page />
-    </PageLayout>
+    </Layout>
   )
   return escapeInject`<!DOCTYPE html>
     <html>

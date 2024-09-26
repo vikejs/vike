@@ -1,4 +1,4 @@
-import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
+import { Link, RepoLink } from '@brillout/docpress'
 import { UseVikeExtensionUiFramework, UiFrameworkExtension } from '../../components'
 
 Environment: client.
@@ -46,7 +46,7 @@ Vue example:
      if (pageContext.isHydration) {
        // We hydrate the first page. (Since we do SSR, the first page is already
        // rendered to HTML and we merely have to hydrate it.)
-       await hydrate(pageContext.Page)
+       await hydrateDom(pageContext.Page)
      } else {
        // We render a new page. (When the user navigates to a new page.)
        await renderToDom(pageContext.Page)
@@ -72,7 +72,7 @@ You can skip the Client Router for individual `<a>` links by adding the `rel="ex
 You can use the following hook to implement initialization after the <Link href="/hydration">hydration</Link> has finished:
  - <Link href="/onHydrationEnd" noBreadcrumb />
 
-And following hooks ot implement page transition animations:
+And following hooks to implement page transition animations:
  - <Link href="/onPageTransitionStart" noBreadcrumb />
  - <Link href="/onPageTransitionEnd" noBreadcrumb />
 
@@ -83,10 +83,12 @@ And following hooks ot implement page transition animations:
 
 Page settings:
 - `prefetchStaticAssets`: Link prefetching settings, see <Link href="/prefetchStaticAssets" />.
-- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-framework" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
+- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-frameworks" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
 
 Anchor link options:
-- `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also <Link href="/navigate#options">`navigate('/some-url', { keepScrollPosition: true })`</Link>.
+- `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also:
+  - <Link href="/keepScrollPosition" />
+  - <Link href="/navigate#options">`navigate('/some-url', { keepScrollPosition: true })`</Link>
 - `<a href="/some/url" rel="external">`: Skip Client Routing, see <Link href="#links-intercepting" />.
 
 
@@ -104,8 +106,6 @@ Usually, when using tools such as Apollo GraphQL, Redux or Vuex, you determine t
 Depending on the tool, you do either one of the following:
  - You initialize the state once.
  - You re-initialize the state on every page navigation.
-
-<ReadingRecommendation tour={true} links={['/data-fetching', '/data-fetching-tools', '/store']} />
 
 To initialize once:
 

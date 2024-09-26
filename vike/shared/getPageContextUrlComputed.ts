@@ -4,8 +4,6 @@ export type { PageContextUrlInternal }
 export type { PageContextUrlClient }
 export type { PageContextUrlServer }
 export type { PageContextUrlSource }
-// Public type (https://github.com/vikejs/vike/issues/1184)
-export type { Url }
 
 // =====================
 // File determining the URL logic.
@@ -20,39 +18,14 @@ import {
   isPlainObject,
   isPropertyGetter,
   isBrowser,
-  changeEnumerable
+  changeEnumerable,
+  type UrlPublic
 } from './utils.js'
-
-// JSDocs copied from https://vike.dev/pageContext
-type Url = {
-  /** The URL origin, e.g. `https://example.com` of `https://example.com/product/42?details=yes#reviews` */
-  origin: null | string
-  /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
-  pathname: string
-  /** URL pathname including the Base URL, e.g. `/some-base-url/product/42` of `https://example.com/some-base-url/product/42` (whereas `pageContext.urlParsed.pathname` is `/product/42`) */
-  pathnameOriginal: string
-  /** The URL search parameters, e.g. `{ details: 'yes' }` for `https://example.com/product/42?details=yes#reviews` */
-  search: Record<string, string>
-  /** The URL search parameters array, e.g. `{ fruit: ['apple', 'orange'] }` for `https://example.com?fruit=apple&fruit=orange` **/
-  searchAll: Record<string, string[]>
-  /** The URL search parameterer string, e.g. `?details=yes` of `https://example.com/product/42?details=yes#reviews` */
-  searchOriginal: null | string
-  /** The URL hash, e.g. `reviews` of `https://example.com/product/42?details=yes#reviews` */
-  hash: string
-  /** The URL hash string, e.g. `#reviews` of `https://example.com/product/42?details=yes#reviews` */
-  hashOriginal: null | string
-
-  // TODO/v1-release: remove
-  /** @deprecated */
-  hashString: null | string
-  /** @deprecated */
-  searchString: null | string
-}
 
 // TODO/v1-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {
   /** Parsed information about the current URL */
-  urlParsed: Url
+  urlParsed: UrlPublic
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
   urlPathname: string
   /** @deprecated */
@@ -111,12 +84,6 @@ type PageContextUrlSource = {
   _urlHandler: null | ((url: string) => string)
 }
 function getUrlParsed(pageContext: PageContextUrlSource) {
-  // We need a url handler function because the onBeforeRoute() hook may set pageContext.urlLogical (typically for i18n)
-  let urlHandler = pageContext._urlHandler
-  if (!urlHandler) {
-    urlHandler = (url: string) => url
-  }
-
   // Example of i18n app using `throw render()`:
   //  1. User goes to '/fr-FR/admin'.
   //  2. The first onBeforeRoute() call accesses pageContext.urlPathname (its value is '/fr-FR/admin': the pathname of pageContext.urlOriginal, since both pageContext.urlLogical and pageContext._urlRewrite are undefined) and sets pageContext.urlLogical to '/admin'.
@@ -125,25 +92,37 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   //  5. The second onBeforeRoute() call accesses pageContext.urlPathname (its value is '/fr-FR/login': the pathname of pageContext._urlRewrite, since pageContext.urlLogical is undefined) and sets pageContext.urlLogical to '/login'.
   //  6. The value of pageContext.urlPathname is now '/login': the pathname of `pageContext.urlLogical`. (While pageContext.urlOriginal is still '/fr-FR/admin'.)
   // Reproduction: https://github.com/vikejs/vike/discussions/1436#discussioncomment-8142023
-  let urlResolved =
+
+  // Determine logical URL
+  let urlResolved: string
+  let baseToBeRemoved: boolean
+  if (pageContext.urlLogical) {
     // Set by onBeforeRoute()
-    pageContext.urlLogical ??
+    urlResolved = pageContext.urlLogical
+    baseToBeRemoved = false
+  } else if (pageContext._urlRewrite) {
     // Set by `throw render()`
-    pageContext._urlRewrite ??
+    urlResolved = pageContext._urlRewrite
+    baseToBeRemoved = false
+  } else {
     // Set by renderPage()
-    pageContext.urlOriginal
-  urlResolved = urlHandler(urlResolved)
-  /*
-  console.log('pageContext.urlLogical', pageContext.urlLogical)
-  console.log('pageContext._urlRewrite', pageContext._urlRewrite)
-  console.log('pageContext.urlOriginal', pageContext.urlOriginal)
-  console.log()
-  //*/
-
-  const baseServer = pageContext._baseServer
-
+    urlResolved = pageContext.urlOriginal
+    baseToBeRemoved = true
+  }
   assert(urlResolved && typeof urlResolved === 'string')
-  assert(baseServer.startsWith('/'))
+
+  // Remove .pageContext.json
+  let urlHandler = pageContext._urlHandler
+  if (!urlHandler) urlHandler = (url: string) => url
+  urlResolved = urlHandler(urlResolved)
+
+  // Remove Base URL.
+  // - We assume there isn't any Base URL to the URLs set by the user at `throw render()` and onBeforeRoute()
+  //   - This makes sense because the Base URL is merely a setting: ideally the user should write code that doesn't know anything about it (so that the user can remove/add/change Base URL without having to modify any code).
+  // - pageContext.urlOriginal is the URL of the HTTP request and thus contains the Base URL.
+  const baseServer = !baseToBeRemoved ? '/' : pageContext._baseServer
+
+  // Parse URL
   return parseUrl(urlResolved, baseServer)
 }
 function urlPathnameGetter(this: PageContextUrlSource) {
@@ -162,9 +141,11 @@ function urlGetter(this: PageContextUrlSource) {
   return urlPathnameGetter.call(this)
 }
 function urlParsedGetter(this: PageContextUrlSource) {
-  const urlParsedOriginal = getUrlParsed(this)
-  const { origin, pathname, pathnameOriginal, search, searchAll, searchOriginal, hash, hashOriginal } =
-    urlParsedOriginal
+  const {
+    // remove hasBaseServer as it isn't part of UrlPublic
+    hasBaseServer: _,
+    ...urlParsed
+  } = getUrlParsed(this)
 
   const hashIsAvailable = isBrowser()
   const warnHashNotAvailable = (prop: HashProps) => {
@@ -175,47 +156,44 @@ function urlParsedGetter(this: PageContextUrlSource) {
     )
   }
 
-  const urlParsed: Url = {
-    origin,
-    pathname,
-    pathnameOriginal,
-    search,
-    searchAll,
-    searchOriginal,
+  const urlParsedEnhanced: UrlPublic = {
+    ...urlParsed,
     get hash() {
       warnHashNotAvailable('hash')
-      return hash
+      return urlParsed.hash
     },
     get hashOriginal() {
       warnHashNotAvailable('hashOriginal')
-      return hashOriginal
+      return urlParsed.hashOriginal
     },
+    // TODO/next-major-release: remove
     get hashString() {
       assertWarning(false, 'pageContext.urlParsed.hashString has been renamed to pageContext.urlParsed.hashOriginal', {
         onlyOnce: true,
         showStackTrace: true
       })
       warnHashNotAvailable('hashString')
-      return hashOriginal
+      return urlParsed.hashOriginal
     },
+    // TODO/next-major-release: remove
     get searchString() {
       assertWarning(
         false,
         'pageContext.urlParsed.searchString has been renamed to pageContext.urlParsed.searchOriginal',
         { onlyOnce: true, showStackTrace: true }
       )
-      return searchOriginal
+      return urlParsed.searchOriginal
     }
   }
 
-  changeEnumerable(urlParsed, 'hashString', false)
-  changeEnumerable(urlParsed, 'searchString', false)
+  changeEnumerable(urlParsedEnhanced, 'hashString', false)
+  changeEnumerable(urlParsedEnhanced, 'searchString', false)
   if (!hashIsAvailable) {
-    changeEnumerable(urlParsed, 'hash', false)
-    changeEnumerable(urlParsed, 'hashOriginal', false)
+    changeEnumerable(urlParsedEnhanced, 'hash', false)
+    changeEnumerable(urlParsedEnhanced, 'hashOriginal', false)
   }
 
-  return urlParsed
+  return urlParsedEnhanced
 }
 
 function assertPageContextUrl(pageContext: { urlOriginal: string } & PageContextUrlClient) {

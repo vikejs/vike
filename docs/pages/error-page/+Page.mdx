@@ -62,7 +62,7 @@ The `pageContext.abortReason` and `pageContext.abortStatusCode` values are set b
 The error page is rendered when:
  1. The URL didn't match the route of any of your pages (`404 Page Not Found`).
  2. Your code has a bug (`500 Internal Error`), technically speaking: one of your hooks threw an error.
- 3. One of your hooks used <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />, for examle: `throw render(401, "You don't have the permission to access this page.")`.
+ 3. One of your hooks used <Link href="/render" text={<code>throw render(abortStatusCode)</code>} />, for example: `throw render(401, "You don't have the permission to access this page.")`.
 
 
 ## Pre-rendering

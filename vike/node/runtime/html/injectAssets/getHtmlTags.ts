@@ -7,13 +7,16 @@ import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../
 import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide.js'
 import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
-import { getViteDevScripts } from './getViteDevScripts.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
 import type { PageContextInjectAssets } from '../injectAssets.js'
-import type { InjectToStream } from '../stream/react-streaming.js'
+import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
+import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
+import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
+import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
+import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
 
 const stamp = '__injectFilterEntry'
 
@@ -35,26 +38,30 @@ type InjectFilterEntry = {
   inject: PreloadFilterInject
 }
 
+type Position = 'HTML_BEGIN' | 'HTML_END' | 'HTML_STREAM'
 type HtmlTag = {
   htmlTag: string | (() => string)
-  position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
+  position: Position
 }
-async function getHtmlTags(
+function getHtmlTags(
   pageContext: { _isStream: boolean } & PageContextInjectAssets,
-  injectToStream: null | InjectToStream,
-  injectFilter: PreloadFilter
+  streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
+  injectFilter: PreloadFilter,
+  pageAssets: PageAsset[],
+  viteDevScript: string,
+  isStream: boolean
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
   const { isProduction } = getGlobalContext()
+  const injectScriptsAt = getInjectScriptsAt(pageContext.pageId, pageContext._pageConfigs)
 
-  const pageAssets = await pageContext.__getPageAssets()
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
       if (asset.isEntry && asset.assetType === 'script') {
         // We could allow the user to change the position of <script> but we currently don't:
         //  - Because of mergeScriptEntries()
-        //  - We would need to add STREAM to to PreloadFilterInject
+        //  - We would need to add HTML_STREAM to to PreloadFilterInject
         // To suppor this, we should add the JavaScript entry to injectFilterEntries (with an `src` value of `null`)
         return false
       }
@@ -118,31 +125,54 @@ async function getHtmlTags(
   // ==========
   // JavaScript
   // ==========
-  // In order to avoid the race-condition depicted in https://github.com/vikejs/vike/issues/567
-  // 1. <script id="vike_pageContext" type="application/json"> must appear before the entry <script> (which loads Vike's client runtime).
-  // 2. <script id="vike_pageContext" type="application/json"> can't be async nor defer.
-  // Additionally:
-  // 3. the entry <script> can't be defer, otherwise progressive hydration while SSR streaming won't work.
-  // 4. the entry <script> should be towards the end of the HTML as performance-wise it's more interesting to parse
-  //    <div id="page-view"> before running the entry <script> which initiates the hydration.
-  // See https://github.com/vikejs/vike/pull/1271
+  // - By default, we place the entry <script> towards the end of the HTML for better performance.
+  //   - Performance-wise, it's more interesting to start showing the page (parse HTML and load CSS) before starting loading scripts.
+  //   - But with HTML streaming, in order to support [Progressive Rendering](https://vike.dev/streaming#progressive-rendering), the entry <script> should be injected earlier instead.
+  // - The entry <script> shouldn't be `<script defer>` upon HTML streaming, otherwise progressive hydration while SSR streaming won't work.
+  // - `<script id="vike_pageContext" type="application/json">` (the `pageContext` JSON) should be fully sent before Vike's client runtime starts executing.
+  //   - Otherwise, race condition "SyntaxError: Unterminated string in JSON": https://github.com/vikejs/vike/issues/567
+  //   - `<script id="vike_pageContext" type="application/json">` must appear before the entry <script> (which loads Vike's client runtime).
+  //   - `<script id="vike_pageContext" type="application/json">` can't be async nor defer.
+  const positionJavaScriptDefault = 'HTML_END'
   const positionJavaScriptEntry = (() => {
+    if (injectScriptsAt !== null) {
+      if (pageContext._pageContextPromise) {
+        assertWarning(
+          injectScriptsAt === 'HTML_END' || !isStream,
+          `You're setting injectScriptsAt to ${pc.code(
+            JSON.stringify(injectScriptsAt)
+          )} while using HTML streaming with a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) which is contradictory: the pageContext promise is skipped.`,
+          { onlyOnce: true }
+        )
+      }
+      if (injectScriptsAt === 'HTML_STREAM' && !isStream) {
+        return positionJavaScriptDefault
+      }
+      return injectScriptsAt
+    }
     if (pageContext._pageContextPromise) {
-      assertWarning(
-        !injectToStream,
-        "[getHtmlTags()] We recommend against using streaming and a pageContext promise at the same time, because progressive hydration won't work.",
-        { onlyOnce: true }
-      )
-      // If there is a pageContext._pageContextPromise (which is resolved after the stream has ended) then the pageContext JSON data needs to await for it: https://vike.dev/streaming#initial-data-after-stream-end
-      return 'HTML_END'
+      // - If there is a pageContext._pageContextPromise then <script id="vike_pageContext" type="application/json"> needs to await for it.
+      // - pageContext._pageContextPromise is typically resolved only after the page's components are rendered and the stream ended.
+      // - https://vike.dev/streaming#initial-data-after-stream-end
+      return positionJavaScriptDefault
     }
-    if (injectToStream) {
-      // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary
-      return 'STREAM'
-    } else {
-      return 'HTML_END'
+    if (streamFromReactStreamingPackage && !streamFromReactStreamingPackage.hasStreamEnded()) {
+      // If there is a stream then, in order to support progressive hydration, inject the JavaScript during the stream after React(/Vue/Solid/...) resolved the first suspense boundary.
+      return 'HTML_STREAM'
     }
+    return positionJavaScriptDefault
   })()
+  if (pageContext._pageContextPromise && streamFromReactStreamingPackage) {
+    // - Should we show this warning for Solid as well? Solid seems to also support progressive rendering.
+    //   - https://github.com/vikejs/vike-solid/issues/95
+    // - Vue doesn't seem to support progressive rendering yet.
+    //   - https://github.com/vikejs/vike-vue/issues/85
+    assertWarning(
+      false,
+      "We recommend against using HTML streaming and a pageContext promise (https://vike.dev/streaming#initial-data-after-stream-end) at the same time, because progressive hydration (https://vike.dev/streaming#progressive-rendering) won't work.",
+      { onlyOnce: true }
+    )
+  }
   // <script id="vike_pageContext" type="application/json">
   if (!isHtmlOnly) {
     htmlTags.push({
@@ -153,7 +183,7 @@ async function getHtmlTags(
     })
   }
   // The JavaScript entry <script> tag
-  const scriptEntry = await mergeScriptEntries(pageAssets)
+  const scriptEntry = mergeScriptEntries(pageAssets, viteDevScript)
   if (scriptEntry) {
     htmlTags.push({
       htmlTag: scriptEntry,
@@ -167,7 +197,7 @@ async function getHtmlTags(
       assert(!asset.isEntry) // Users cannot re-order JavaScript entries, see creation of injectFilterEntries
       const htmlTag = inferPreloadTag(asset)
       if (!asset.inject) return
-      // Ideally, instead of this conditional ternary operator, we should add STREAM to PreloadFilterInject (or a better fitting name such as HTML_STREAM)
+      // Ideally, instead of this conditional ternary operator, we should add HTML_STREAM to PreloadFilterInject
       const position = asset.inject === 'HTML_END' ? positionJavaScriptEntry : asset.inject
       htmlTags.push({ htmlTag, position })
     })
@@ -175,10 +205,9 @@ async function getHtmlTags(
   return htmlTags
 }
 
-async function mergeScriptEntries(pageAssets: PageAsset[]): Promise<null | string> {
+function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): null | string {
   const scriptEntries = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  const viteScripts = await getViteDevScripts()
-  const scriptTagsHtml = `${viteScripts}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
+  const scriptTagsHtml = `${viteDevScript}${scriptEntries.map((asset) => inferAssetTag(asset)).join('')}`
   const scriptTag = mergeScriptTags(scriptTagsHtml)
   return scriptTag
 }
@@ -245,4 +274,21 @@ function checkForWarnings(injectFilterEntries: InjectFilterEntry[]) {
       })
     }
   })
+}
+function getInjectScriptsAt(pageId: string, pageConfigs: PageConfigRuntime[]): null | Position {
+  if (pageConfigs.length === 0) return null // only support V1 design
+  const pageConfig = getPageConfig(pageId, pageConfigs)
+  const configValue = getConfigValueRuntime(pageConfig, 'injectScriptsAt')
+  if (!configValue) return null
+  const injectScriptsAt = configValue.value
+  assert(configValue.definedAtData)
+  const configDefinedAt = getConfigDefinedAt('Config', 'injectScriptsAt', configValue.definedAtData)
+  assertUsage(
+    injectScriptsAt === null ||
+      injectScriptsAt === 'HTML_BEGIN' ||
+      injectScriptsAt === 'HTML_END' ||
+      injectScriptsAt === 'HTML_STREAM',
+    `${configDefinedAt} has an invalid value`
+  )
+  return injectScriptsAt
 }

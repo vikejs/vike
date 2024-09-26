@@ -37,7 +37,7 @@ type PageContextForRoute = PageContextUrlInternal & {
   _onBeforeRouteHook: Hook | null
 } & PageContextUrlSource
 type PageContextFromRoute = {
-  _pageId: string | null
+  pageId: string | null
   routeParams: Record<string, string>
   _routingProvidedByOnBeforeRouteHook?: boolean
   _debugRouteMatches: RouteMatches
@@ -51,25 +51,22 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
-async function route(pageContextForRoute: PageContextForRoute): Promise<PageContextFromRoute> {
-  debug('Pages routes:', pageContextForRoute._pageRoutes)
-  assertPageContextUrl(pageContextForRoute)
+async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
+  debug('Pages routes:', pageContext._pageRoutes)
+  assertPageContextUrl(pageContext)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
-  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContextForRoute)
+  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
   if (pageContextFromOnBeforeRouteHook) {
     if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
-      assert(pageContextFromOnBeforeRouteHook._pageId)
+      assert(pageContextFromOnBeforeRouteHook.pageId)
       return pageContextFromOnBeforeRouteHook
     } else {
       objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
     }
   }
-
   // We take into account pageContext.urlLogical set by onBeforeRoute()
-  const pageContext = {}
-  objectAssign(pageContext, pageContextForRoute)
   objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
 
   // Vike's routing
@@ -138,7 +135,7 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
 
   if (!winner) {
     objectAssign(pageContextFromRoute, {
-      _pageId: null,
+      pageId: null,
       routeParams: {}
     })
     return pageContextFromRoute
@@ -148,7 +145,7 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
     const { routeParams } = winner
     assert(isPlainObject(routeParams))
     objectAssign(pageContextFromRoute, {
-      _pageId: winner.pageId,
+      pageId: winner.pageId,
       routeParams: winner.routeParams
     })
   }

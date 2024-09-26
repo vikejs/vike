@@ -5,6 +5,7 @@ export type { ConfigMeta }
 export type { HookName }
 export type { HookNamePage }
 export type { HookNameGlobal }
+export type { ImportString }
 
 export type { DataAsync }
 export type { DataSync }
@@ -30,6 +31,7 @@ export type { OnRenderHtmlAsync }
 export type { OnRenderHtmlSync }
 export type { RouteAsync }
 export type { RouteSync }
+export type { KeepScrollPosition }
 
 import { PrefetchSetting, PrefetchStaticAssets } from '../../client/client-routing-runtime/prefetch/PrefetchSetting.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
@@ -57,7 +59,7 @@ type HookNameOldDesign = 'render' | 'prerender'
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
-  | 'clientEntryLoaded'
+  | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
   | 'dataEnv'
   | 'hooksTimeout'
@@ -261,7 +263,15 @@ type RouteSync = (
   pageContext: PageContextServer | PageContextClient
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
 
-// TODO: write docs of links below
+/** Whether the page scrolls to the top upon navigation.
+ *
+ * https://vike.dev/keepScrollPosition
+ */
+type KeepScrollPosition =
+  | boolean
+  | string
+  | string[]
+  | ((pageContext: PageContextClient) => boolean | string | string[])
 
 /** Page configuration.
  *
@@ -422,11 +432,29 @@ type ConfigBuiltIn = {
    */
   cacheControl?: string
 
+  /** Where scripts are injected in the HTML.
+   *
+   * https://vike.dev/injectScriptsAt
+   */
+  injectScriptsAt?: 'HTML_BEGIN' | 'HTML_END' | 'HTML_STREAM' | null
+
   /** Used by Vike extensions to set their name.
    *
    * https://vike.dev/extends
    */
   name?: string
+
+  /** Used by Vike extensions to enforce their peer dependencies.
+   *
+   * https://vike.dev/require
+   */
+  require?: Record<string, string>
+
+  /** Whether the page scrolls to the top upon navigation.
+   *
+   * https://vike.dev/keepScrollPosition
+   */
+  keepScrollPosition?: KeepScrollPosition
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`

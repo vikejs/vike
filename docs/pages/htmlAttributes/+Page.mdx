@@ -1,0 +1,34 @@
+import { Link } from '@brillout/docpress'
+
+import { UiFrameworkExtension, ImplementedBy, GlobalNote } from '../../components'
+
+Type: `object | (pageContext) => object`  
+Kind: global.  
+Environment: server.
+
+<ImplementedBy noCustomGuide />
+
+The `htmlAttributes` setting adds attributes to the `<html>` tag.
+
+```js
+// pages/+config.js
+
+export default {
+  // <html class="dark">
+  htmlAttributes: { class: 'dark' }
+}
+```
+
+See <Link href="/lang" /> if you merely want to set the `<html lang>` attribute.
+
+
+## Global
+
+<GlobalNote />
+
+
+## See also
+
+- <Link href="/lang" />
+- <Link href="/head-tags" />
+- <Link href="/settings#html" doNotInferSectionTitle />

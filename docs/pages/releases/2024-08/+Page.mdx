@@ -1,0 +1,75 @@
+import { Link, Contribution, Construction } from '@brillout/docpress'
+
+<Contribution>
+  We are [looking for sponsors](https://github.com/vikejs/vike/issues/1350).
+</Contribution>
+
+**Fixes:** `86`
+
+**Features**
+
+<Link href="#improved-head-management" /><br/>
+<Link href="#new-bati-integrations" /><br/>
+
+**Project**
+
+<Link href="#internal-improvements" /><br/>
+<Link href="#road-to-v1" /><br/>
+
+**See also**
+
+[`vike` > `CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md)  
+[`vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)  
+[`vike-vue` > `CHANGELOG.md`](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/CHANGELOG.md)  
+[`vike-solid` > `CHANGELOG.md`](https://github.com/vikejs/vike-solid/blob/main/CHANGELOG.md)  
+
+
+## Improved head management
+
+Last month, we began <Link href="/head-tags">improving `<head>` management</Link> for `vike-react`.
+
+This month, we finished the work and ported all improvements across `vike-{react,vue,solid}`.
+
+We expect that we will have to fine tune a couple of things here and there, but we're confident the overall head management problem to be solved. It's a major milestone towards releasing `1.0.0`.
+
+<Contribution>
+  Author: [`brillout`](https://github.com/brillout), [`phonzammi`](https://github.com/phonzammi), [`pdanpdan`](https://github.com/pdanpdan)
+</Contribution>
+
+
+## New Bati integrations
+
+New [Bati](https://batijs.dev) integrations:
+ - [Lucia](https://lucia-auth.com)
+ - [Mantine](https://mantine.dev)
+
+<Contribution>
+  Author: [`phonzammi`](https://github.com/phonzammi), [`magne4000`](https://github.com/magne4000)
+</Contribution>
+
+
+## Internal improvements
+
+Many improvements we're working on don't directly impact the user at first sight.
+
+For example, we're continuously making Vike extensions more capable. One area we're working on is enabling Vike extensions to automatically install server middlewares. For example if you use the upcoming extensions `vike-express` or `vike-hono` together with `vike-telefunc`, then [Telefunc](https://telefunc.com)'s server middleware will be automatically installed. For that purpose we've made a couple of improvements, such as being able to access global configurations outside of the `renderPage()` lifecycle and [`universal-middleware`](https://github.com/magne4000/universal-middleware).
+
+<Contribution>
+  Author: [`magne4000`](https://github.com/magne4000), [`nitedani`](https://github.com/nitedani), [`brillout`](https://github.com/brillout)
+</Contribution>
+
+
+## Road to V1
+
+Beyond the usual slew of bug fixes and features, the next major topic we're working on is a new global configuration file, `vike.config.js`, and Vike's CLI fully replacing Vite's CLI. This will introduce new capabilities, such as enabling Vike extensions to add Vite plugins, along with internal and DX improvements.
+
+Together with our upcoming structural improvements to [`vike-node`](https://github.com/vikejs/vike-node), this will mark Vike's readiness for a V1 release. After introducing a couple of minor breaking changes, we will then be able to release `1.0.0`.
+
+
+## See also
+
+- [`vike` > `CHANGELOG.md`](https://github.com/vikejs/vike/blob/main/CHANGELOG.md)
+- [`vike-react` > `CHANGELOG.md`](https://github.com/vikejs/vike-react/blob/main/packages/vike-react/CHANGELOG.md)
+- [`vike-vue` > `CHANGELOG.md`](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue/CHANGELOG.md)
+- [`vike-solid` > `CHANGELOG.md`](https://github.com/vikejs/vike-solid/blob/main/CHANGELOG.md)
+- <Link href="/releases" />

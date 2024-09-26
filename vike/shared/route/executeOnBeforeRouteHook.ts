@@ -7,7 +7,7 @@ import {
   isObjectWithKeys,
   objectAssign,
   assertWarning,
-  assertUsageUrl,
+  assertUsageUrlPathnameAbsolute,
   joinEnglish,
   assert
 } from './utils.js'
@@ -30,8 +30,8 @@ async function executeOnBeforeRouteHook(
   if (pageContextFromHook) {
     objectAssign(pageContextFromOnBeforeRouteHook, pageContextFromHook)
     if (
-      hasProp(pageContextFromOnBeforeRouteHook, '_pageId', 'string') ||
-      hasProp(pageContextFromOnBeforeRouteHook, '_pageId', 'null')
+      hasProp(pageContextFromOnBeforeRouteHook, 'pageId', 'string') ||
+      hasProp(pageContextFromOnBeforeRouteHook, 'pageId', 'null')
     ) {
       // We bypass Vike's routing
       if (!hasProp(pageContextFromOnBeforeRouteHook, 'routeParams')) {
@@ -61,7 +61,7 @@ async function getPageContextFromHook(
 ): Promise<null | {
   urlOriginal?: string
   urlLogical?: string
-  _pageId?: string | null
+  pageId?: string | null
   routeParams?: Record<string, string>
 }> {
   let hookReturn: unknown = onBeforeRouteHook.hookFn(pageContext)
@@ -89,13 +89,13 @@ async function getPageContextFromHook(
     `${errPrefix} returned ${pc.cyan('{ pageContext }')} but pageContext should be a plain JavaScript object.`
   )
 
-  if (hasProp(hookReturn.pageContext, '_pageId') && !hasProp(hookReturn.pageContext, '_pageId', 'null')) {
-    const errPrefix2 = `${errPrefix} returned ${pc.cyan('{ pageContext: { _pageId } }')} but ${pc.cyan(
-      '_pageId'
+  if (hasProp(hookReturn.pageContext, 'pageId') && !hasProp(hookReturn.pageContext, 'pageId', 'null')) {
+    const errPrefix2 = `${errPrefix} returned ${pc.cyan('{ pageContext: { pageId } }')} but ${pc.cyan(
+      'pageId'
     )} should be` as const
-    assertUsage(hasProp(hookReturn.pageContext, '_pageId', 'string'), `${errPrefix2} a string or null`)
+    assertUsage(hasProp(hookReturn.pageContext, 'pageId', 'string'), `${errPrefix2} a string or null`)
     assertUsage(
-      pageContext._allPageIds.includes(hookReturn.pageContext._pageId),
+      pageContext._allPageIds.includes(hookReturn.pageContext.pageId),
       `${errPrefix2} ${joinEnglish(
         pageContext._allPageIds.map((s) => pc.cyan(s)),
         'or'
@@ -126,8 +126,9 @@ async function getPageContextFromHook(
   }
 
   if (hasProp(hookReturn.pageContext, 'urlLogical')) {
-    assertUsageUrl(
-      hookReturn.pageContext.urlLogical,
+    assertUsageUrlPathnameAbsolute(
+      // We skip validation and type-cast instead of assertUsage() in order to save client-side KBs
+      hookReturn.pageContext.urlLogical as string,
       `${errPrefix} returned ${pc.cyan('{ pageContext: { urlLogical } }')} but ${pc.cyan('urlLogical')}`
     )
   }

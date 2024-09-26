@@ -30,8 +30,8 @@ import {
   StreamTypePatch,
   StreamProviderNormalized
 } from './stream.js'
-import { isStreamReactStreaming } from './stream/react-streaming.js'
-import type { InjectToStream } from './stream/react-streaming.js'
+import { isStreamFromReactStreamingPackage } from './stream/react-streaming.js'
+import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -111,26 +111,31 @@ async function renderHtmlStream(
   onErrorWhileStreaming: (err: unknown) => void,
   injectFilter: PreloadFilter
 ) {
-  const opts = {
+  const processStreamOptions: Parameters<typeof processStream>[1] = {
     onErrorWhileStreaming,
     enableEagerStreaming: pageContext.enableEagerStreaming
   }
   if (injectString) {
-    let injectToStream: null | InjectToStream = null
-    if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
-      injectToStream = streamOriginal.injectToStream
+    let streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage = null
+    if (isStreamFromReactStreamingPackage(streamOriginal) && !streamOriginal.disabled) {
+      streamFromReactStreamingPackage = streamOriginal
     }
-    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream, injectFilter)
-    objectAssign(opts, {
-      injectStringAtBegin: async () => {
-        return await injectAtStreamBegin(injectString.htmlPartsBegin)
-      },
-      injectStringAtEnd: async () => {
-        return await injectAtStreamEnd(injectString.htmlPartsEnd)
-      }
-    })
+    const { injectAtStreamBegin, injectAtStreamAfterFirstChunk, injectAtStreamEnd } = injectHtmlTagsToStream(
+      pageContext,
+      streamFromReactStreamingPackage,
+      injectFilter
+    )
+    processStreamOptions.injectStringAtBegin = async () => {
+      return await injectAtStreamBegin(injectString.htmlPartsBegin)
+    }
+    processStreamOptions.injectStringAtEnd = async () => {
+      return await injectAtStreamEnd(injectString.htmlPartsEnd)
+    }
+    processStreamOptions.injectStringAfterFirstChunk = () => {
+      return injectAtStreamAfterFirstChunk()
+    }
   }
-  const streamWrapper = await processStream(streamOriginal, opts)
+  const streamWrapper = await processStream(streamOriginal, processStreamOptions)
   return streamWrapper
 }
 

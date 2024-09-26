@@ -3,15 +3,15 @@ export { render }
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 async function render(pageContext) {
   const { Page } = pageContext
   const viewHtml = dangerouslySkipEscape(
     renderToString(
-      <PageLayout>
+      <Layout>
         <Page />
-      </PageLayout>
+      </Layout>
     )
   )
 

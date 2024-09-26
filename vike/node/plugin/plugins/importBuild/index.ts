@@ -1,8 +1,8 @@
 export { importBuild }
-export { set_constant_ASSETS_MAP }
+export { set_ASSETS_MAP }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import { serverEntryPlugin, findServerEntry } from '@brillout/vite-plugin-server-entry/plugin.js'
+import { serverEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
@@ -61,21 +61,31 @@ function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): s
   return importerCode
 }
 /** Set the value of the ASSETS_MAP constant inside dist/server/entry.js (or dist/server/index.js) */
-async function set_constant_ASSETS_MAP(options: Options, bundle: Bundle) {
+async function set_ASSETS_MAP(options: Options, bundle: Bundle) {
   const { dir } = options
   assert(dir)
-  // This will probably fail with @vitejs/plugin-legacy
-  //  - See `git log -p` for how we used to workaround the @vitejs/plugin-legacy issue.
-  const serverEntry = findServerEntry(bundle)
-  const serverEntryFilePath = path.join(dir, serverEntry.fileName)
+  const chunkPath = find_ASSETS_MAP(bundle)
+  const chunkFilePath = path.join(dir, chunkPath)
   const assetsJsonFilePath = path.join(dir, '..', 'assets.json')
-  const [assetsJsonString, serverEntryFileContent] = await Promise.all([
+  const [assetsJsonString, chunkFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
-    await fs.readFile(serverEntryFilePath, 'utf8')
+    await fs.readFile(chunkFilePath, 'utf8')
   ])
-  const serverEntryFileContentPatched = serverEntryFileContent.replace(ASSETS_MAP, assetsJsonString)
-  assert(serverEntryFileContentPatched !== serverEntryFileContent)
-  await fs.writeFile(serverEntryFilePath, serverEntryFileContentPatched)
+  const serverEntryFileContentPatched = chunkFileContent.replace(ASSETS_MAP, assetsJsonString)
+  assert(serverEntryFileContentPatched !== chunkFileContent)
+  await fs.writeFile(chunkFilePath, serverEntryFileContentPatched)
+}
+function find_ASSETS_MAP(bundle: Bundle): string {
+  let chunkPath: string | undefined
+  for (const filePath in bundle) {
+    const chunk = bundle[filePath]!
+    if ('code' in chunk && chunk.code.includes(ASSETS_MAP)) {
+      assert(!chunkPath)
+      chunkPath = filePath
+    }
+  }
+  assert(chunkPath)
+  return chunkPath
 }
 function getImportPath(config: ResolvedConfig) {
   // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct
