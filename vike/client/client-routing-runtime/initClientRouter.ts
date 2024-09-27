@@ -12,17 +12,17 @@ async function initClientRouter() {
   // Init navigation history and scroll restoration
   initHistoryAndScroll()
 
-  // Render initial page
-  const renderPromise = render()
+  // Render/hydrate
+  const renderFirstPagePromise = renderFirstPage()
 
   // Intercept <a> clicks
   initOnLinkClick()
 
   // Preserve stack track
-  await renderPromise
+  await renderFirstPagePromise
 }
 
-async function render() {
+async function renderFirstPage() {
   assert(getRenderCount() === 0)
   await renderPageClientSide({
     scrollTarget: { preserveScroll: true },
