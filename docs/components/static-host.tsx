@@ -7,10 +7,12 @@ import React from 'react'
 
 function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: JSX.Element }) {
   return (
-    <p>
-      By <a href="/pre-rendering">pre-rendering</a> your pages, you can remove the need for a production server. You can
-      then deploy your app to any static host
-      {staticHostLink}.
+    <>
+      <p>
+        By <a href="/pre-rendering">pre-rendering</a> your pages, you can remove the need for a production server. You
+        can then deploy your app to any static host
+        {staticHostLink}.
+      </p>
       <blockquote>
         <p>
           Static hosts always expect one <code>.html</code> file per URL. This means you need to pre-render <em>all</em>{' '}
@@ -19,7 +21,7 @@ function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: JSX.Element }
           <code>&lt;body&gt;</code>.
         </p>
       </blockquote>
-    </p>
+    </>
   )
 }
 function StaticHostDocStrategies({ name = 'the static host' }: { name?: string }) {
