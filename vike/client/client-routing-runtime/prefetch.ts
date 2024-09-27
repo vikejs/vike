@@ -140,8 +140,8 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
       return options.pageContext
     } else {
       // If user calls prefetch() before hydration finished => await the pageContext to be set
-      const pageContext = await getPageContextCurrentAsync()
-      const prefetchSettings = getPrefetchSetting(pageContext, null)
+      const pageContextCurrent = await getPageContextCurrentAsync()
+      const prefetchSettings = getPrefetchSetting(pageContextCurrent, null)
       const resultMaxAge =
         typeof prefetchSettings.pageContext === 'number' ? prefetchSettings.pageContext : PAGE_CONTEXT_MAX_AGE_DEFAULT
       return resultMaxAge
@@ -150,8 +150,8 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
 }
 
 function addLinkPrefetchHandlers() {
-  const pageContext = getPageContextCurrent()
-  assert(pageContext)
+  const pageContextCurrent = getPageContextCurrent()
+  assert(pageContextCurrent)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
@@ -162,7 +162,7 @@ function addLinkPrefetchHandlers() {
     const urlOfLink = linkTag.getAttribute('href')
     assert(urlOfLink)
 
-    const prefetchSettings = getPrefetchSetting(pageContext, linkTag)
+    const prefetchSettings = getPrefetchSetting(pageContextCurrent, linkTag)
 
     linkTag.addEventListener('mouseover', () => {
       prefetchOnEvent(urlOfLink, prefetchSettings, 'hover')
