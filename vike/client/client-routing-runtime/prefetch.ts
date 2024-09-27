@@ -73,7 +73,7 @@ function getPageContextPrefetched(
   } & PageContextExports
 ): null | PageContextFromServerHooks {
   const prefetchSettings = getPrefetchSettings(pageContext, null)
-  // TODO/pageContext-prefetch: we need linkTag to make this condition work
+  // TODO/pageContext-prefetch: I guess we need linkTag to make this condition work
   if (!prefetchSettings.pageContext) return null
   const key = getCacheKey(pageContext.urlPathname)
   const found = globalObject.prefetchedPageContexts[key]
