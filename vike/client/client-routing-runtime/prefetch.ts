@@ -291,8 +291,9 @@ async function getPageContextLink(urlOfLink: string) {
   return pageContextLink
 }
 
-function getCacheKey(urlPathname: string): string {
-  assert(urlPathname.startsWith('/'), { urlPathname })
-  const key = urlPathname.split('#')[0]!
+function getCacheKey(url: string): string {
+  if (url.startsWith('#')) url = '/'
+  assert(url.startsWith('/'), { urlPathname: url })
+  const key = url.split('#')[0]!
   return key
 }
