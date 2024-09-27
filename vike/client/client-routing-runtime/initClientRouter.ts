@@ -1,4 +1,4 @@
-export { installClientRouter }
+export { initClientRouter }
 
 import { assert } from './utils.js'
 import { initHistoryState, monkeyPatchHistoryPushState } from './history.js'
@@ -8,7 +8,7 @@ import { onLinkClick } from './onLinkClick.js'
 import { setupNativeScrollRestoration } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
 
-async function installClientRouter() {
+async function initClientRouter() {
   // Init navigation history and scroll restoration
   initHistoryAndScroll()
 
