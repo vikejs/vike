@@ -30,7 +30,8 @@ import {
   addLinkPrefetchHandlers,
   addLinkPrefetchHandlers_unwatch,
   addLinkPrefetchHandlers_watch,
-  getPageContextPrefetched
+  getPageContextPrefetched,
+  populatePageContextPrefetchCache
 } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
@@ -220,6 +221,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
     if (isRenderOutdated()) return
+    setPageContextCurrent(pageContext)
 
     // Set global hydrationCanBeAborted
     if (pageContext.exports.hydrationCanBeAborted) {
@@ -260,7 +262,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           const result = await getPageContextFromServerHooks(pageContext, false)
           if (result.is404ServerSideRouted) return
           pageContextFromServerHooks = result.pageContextFromServerHooks
-          // TODO/pageContext-prefetch: populate the pageContext prefetch cache.
+          populatePageContextPrefetchCache(pageContext, result)
         } catch (err) {
           await onError(err)
           return
@@ -414,6 +416,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
     if (isRenderOutdated()) return
+    setPageContextCurrent(pageContext)
 
     let pageContextFromServerHooks: PageContextFromServerHooks
     try {
@@ -488,8 +491,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     /* We don't abort in order to ensure that onHydrationEnd() is called: we abort only after onHydrationEnd() is called.
     if (isRenderOutdated(true)) return
     */
-
-    setPageContextCurrent(pageContext)
 
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {

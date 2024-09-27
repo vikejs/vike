@@ -1,6 +1,7 @@
 export { prefetch }
 export { getPageContextPrefetched }
 export { initLinkPrefetchHandlers }
+export { populatePageContextPrefetchCache }
 export { addLinkPrefetchHandlers }
 export { addLinkPrefetchHandlers_watch }
 export { addLinkPrefetchHandlers_unwatch }
@@ -51,11 +52,11 @@ const globalObject = getGlobalObject('prefetch.ts', {
   >
 })
 
-type Result = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
+type ResultPageContextFromServer = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
 type PrefetchedPageContext = {
   resultFetchedAt: number
   resultMaxAge: number
-  result: Result
+  result: ResultPageContextFromServer
 }
 type PageContextForPrefetch = {
   urlOriginal: string
@@ -94,15 +95,38 @@ async function prefetchAssets(pageContextLink: { pageId: string } & PageContextU
 
 async function prefetchPageContextFromServerHooks(
   pageContextLink: PageContextForPrefetch,
-  resultMaxAge: number
+  resultMaxAge: number | null
 ): Promise<void> {
   const result = await getPageContextFromServerHooks(pageContextLink, false)
-  const key = getCacheKey(pageContextLink.urlPathname)
+  setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
+}
+function populatePageContextPrefetchCache(
+  pageContext: PageContextForPrefetch,
+  result: ResultPageContextFromServer
+): void {
+  setPageContextPrefetchCache(pageContext, result, null)
+}
+function setPageContextPrefetchCache(
+  pageContext: PageContextForPrefetch,
+  result: ResultPageContextFromServer,
+  resultMaxAge: number | null
+) {
+  if (resultMaxAge === null) resultMaxAge = getResultMaxAge()
+  const key = getCacheKey(pageContext.urlPathname)
   globalObject.prefetchedPageContexts[key] = {
     resultFetchedAt: Date.now(),
     resultMaxAge,
     result
   }
+}
+function getResultMaxAge(): number {
+  const pageContextCurrent = getPageContextCurrent()
+  // TODO/pageContext-prefetch: remove this dirty hack used by @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
+  if (!pageContextCurrent) return Infinity
+  const prefetchSettings = getPrefetchSettings(pageContextCurrent, null)
+  const resultMaxAge =
+    typeof prefetchSettings.pageContext === 'number' ? prefetchSettings.pageContext : PAGE_CONTEXT_MAX_AGE_DEFAULT
+  return resultMaxAge
 }
 
 /**
@@ -137,28 +161,11 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     })(),
     (async () => {
       if (options?.pageContext !== false) {
-        const resultMaxAge = getResultMaxAge()
+        const resultMaxAge = typeof options?.pageContext === 'number' ? options.pageContext : null
         await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
       }
     })()
   ])
-
-  return
-
-  function getResultMaxAge(): number {
-    if (typeof options?.pageContext === 'number') {
-      return options.pageContext
-    } else {
-      // If user calls prefetch() before hydration finished => await the pageContext to be set
-      const pageContextCurrent = getPageContextCurrent()
-      // TODO/pageContext-prefetch: remove this dirty hack for @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
-      if (!pageContextCurrent) return Infinity
-      const prefetchSettings = getPrefetchSettings(pageContextCurrent, null)
-      const resultMaxAge =
-        typeof prefetchSettings.pageContext === 'number' ? prefetchSettings.pageContext : PAGE_CONTEXT_MAX_AGE_DEFAULT
-      return resultMaxAge
-    }
-  }
 }
 
 // Lazy execution logic copied from: https://github.com/withastro/astro/blob/2594eb088d53a98181ac820243bcb1a765856ecf/packages/astro/src/runtime/client/dev-toolbar/apps/audit/index.ts#L53-L72
@@ -232,7 +239,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
   if (pageContextCurrent) {
     prefetchSettings = getPrefetchSettings(pageContextCurrent, linkTag)
   } else {
-    // TODO/pageContext-prefetch: remove this dirty hack for @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
+    // TODO/pageContext-prefetch: remove this dirty hack used by @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
     prefetchSettings = { staticAssets: 'hover', pageContext: Infinity }
   }
 
