@@ -262,6 +262,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           const result = await getPageContextFromServerHooks(pageContext, false)
           if (result.is404ServerSideRouted) return
           pageContextFromServerHooks = result.pageContextFromServerHooks
+          // TODO/pageContext-prefetch: remove or change: this only makes sense for a pre-rendered page
           populatePageContextPrefetchCache(pageContext, result)
         } catch (err) {
           await onError(err)
