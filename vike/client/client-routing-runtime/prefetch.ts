@@ -31,7 +31,7 @@ import { type PageContextFromServerHooks, getPageContextFromServerHooks } from '
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextCurrent, getPageContextCurrentAsync } from './getPageContextCurrent.js'
-import { PAGE_CONTEXT_MAX_AGE_DEFAULT, getPrefetchSettingResolved } from './prefetch/getPrefetchSettingResolveds.js'
+import { PAGE_CONTEXT_MAX_AGE_DEFAULT, getPrefetchSettingResolved } from './prefetch/getPrefetchSettingResolved.js'
 import pc from '@brillout/picocolors'
 
 assertClientRouting()
@@ -241,7 +241,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
       if (event !== 'viewport' && prefetchSettings.pageContext) {
         const found = globalObject.prefetchedPageContexts[urlOfLink]
         if (!found || isExpired(found)) {
-          // TODO: move this logic in getPrefetchSettingResolveds()
+          // TODO: move this logic in getPrefetchSettingResolved()
           const resultMaxAge = prefetchSettings.pageContext
           await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
         }
