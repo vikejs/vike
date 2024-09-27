@@ -25,6 +25,7 @@ function getPageContextCurrent(): null | PageContextCurrent {
   const { pageContextCurrent } = globalObject
   return pageContextCurrent
 }
+// TODO/pageContext-prefetch: I think we can remove this? Once we use Vike's default if pageContextCurrent isn't defined yet.
 async function getPageContextCurrentAsync(): Promise<PageContextCurrent> {
   const pageContextCurrent = await globalObject.pageContextCurrentPromise
   return pageContextCurrent

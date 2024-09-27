@@ -30,8 +30,12 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { getPageContextCurrent, getPageContextCurrentAsync } from './getPageContextCurrent.js'
-import { PAGE_CONTEXT_MAX_AGE_DEFAULT, getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
+import { getPageContextCurrent } from './getPageContextCurrent.js'
+import {
+  PAGE_CONTEXT_MAX_AGE_DEFAULT,
+  type PrefetchSettingResolved,
+  getPrefetchSettings
+} from './prefetch/getPrefetchSettings.js'
 import pc from '@brillout/picocolors'
 
 assertClientRouting()
@@ -130,7 +134,7 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     })(),
     (async () => {
       if (options?.pageContext !== false) {
-        const resultMaxAge = await getResultMaxAge()
+        const resultMaxAge = getResultMaxAge()
         await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
       }
     })()
@@ -138,12 +142,14 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
 
   return
 
-  async function getResultMaxAge(): Promise<number> {
+  function getResultMaxAge(): number {
     if (typeof options?.pageContext === 'number') {
       return options.pageContext
     } else {
       // If user calls prefetch() before hydration finished => await the pageContext to be set
-      const pageContextCurrent = await getPageContextCurrentAsync()
+      const pageContextCurrent = getPageContextCurrent()
+      // TODO/pageContext-prefetch: remove this dirty hack for @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
+      if (!pageContextCurrent) return Infinity
       const prefetchSettings = getPrefetchSettings(pageContextCurrent, null)
       const resultMaxAge =
         typeof prefetchSettings.pageContext === 'number' ? prefetchSettings.pageContext : PAGE_CONTEXT_MAX_AGE_DEFAULT
@@ -218,10 +224,14 @@ function addLinkPrefetchHandlers_apply(): void {
 }
 
 async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'viewport'): Promise<void> {
+  let prefetchSettings: PrefetchSettingResolved
   const pageContextCurrent = getPageContextCurrent()
-  // TODO/pageContext-prefetch: use default instead of aborting
-  if (!pageContextCurrent) return
-  const prefetchSettings = getPrefetchSettings(pageContextCurrent, linkTag)
+  if (pageContextCurrent) {
+    prefetchSettings = getPrefetchSettings(pageContextCurrent, linkTag)
+  } else {
+    // TODO/pageContext-prefetch: remove this dirty hack for @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
+    prefetchSettings = { staticAssets: 'hover', pageContext: Infinity }
+  }
 
   const urlOfLink = linkTag.getAttribute('href')
   assert(urlOfLink)
