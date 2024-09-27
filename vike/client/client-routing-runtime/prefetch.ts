@@ -37,12 +37,12 @@ import pc from '@brillout/picocolors'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
-  linkPrefetchHandlerAdded: WeakMap<HTMLElement, true>
+  linkPrefetchHandlerAdded: WeakSet<HTMLElement>
   prefetchedPageContexts: Record<
     string, // URL
     PrefetchedPageContext
   >
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakMap(), prefetchedPageContexts: {} })
+}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakSet(), prefetchedPageContexts: {} })
 
 type Result = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
 type PrefetchedPageContext = {
@@ -156,7 +156,7 @@ function addLinkPrefetchHandlers() {
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
-    globalObject.linkPrefetchHandlerAdded.set(linkTag, true)
+    globalObject.linkPrefetchHandlerAdded.add(linkTag)
     if (skipLink(linkTag)) return
 
     const urlOfLink = linkTag.getAttribute('href')
