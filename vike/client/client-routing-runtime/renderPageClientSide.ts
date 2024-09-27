@@ -26,7 +26,7 @@ import {
   PageContextFromClientHooks
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
-import { addLinkPrefetchHandlers, getPrefetchedPageContext } from './prefetch.js'
+import { addLinkPrefetchHandlers, getPageContextPrefetched } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook, getHook } from '../../shared/hooks/getHook.js'
@@ -246,7 +246,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     } else {
       // Fetch pageContext from server-side hooks
       let pageContextFromServerHooks: PageContextFromServerHooks
-      const prefetchedPageContext = getPrefetchedPageContext(pageContext)
+      const prefetchedPageContext = getPageContextPrefetched(pageContext)
       if (prefetchedPageContext) {
         pageContextFromServerHooks = prefetchedPageContext
       } else {
