@@ -26,7 +26,12 @@ import {
   PageContextFromClientHooks
 } from './getPageContextFromHooks.js'
 import { createPageContext } from './createPageContext.js'
-import { addLinkPrefetchHandlers, getPageContextPrefetched } from './prefetch.js'
+import {
+  addLinkPrefetchHandlers,
+  addLinkPrefetchHandlers_unwatch,
+  addLinkPrefetchHandlers_watch,
+  getPageContextPrefetched
+} from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook, getHook } from '../../shared/hooks/getHook.js'
@@ -95,8 +100,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isClientSideNavigation = true
   } = renderArgs
   let { scrollTarget } = renderArgs
-
   const { previousPageContext } = globalObject
+
+  addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
   // Note that pageContext.isHydration isn't equivalent to isFirstRender
@@ -483,7 +489,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     */
 
     setPageContextCurrent(pageContext)
-    addLinkPrefetchHandlers()
 
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
@@ -539,6 +544,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     browserNativeScrollRestoration_disable()
     setInitialRenderIsDone()
     if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
+
+    // Add link prefetch handlers
+    addLinkPrefetchHandlers_watch()
+    addLinkPrefetchHandlers()
   }
 }
 

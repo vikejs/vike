@@ -2,6 +2,8 @@ export { prefetch }
 export { getPageContextPrefetched }
 export { initLinkPrefetchHandlers }
 export { addLinkPrefetchHandlers }
+export { addLinkPrefetchHandlers_watch }
+export { addLinkPrefetchHandlers_unwatch }
 
 import {
   assert,
@@ -35,6 +37,10 @@ import pc from '@brillout/picocolors'
 assertClientRouting()
 const globalObject = getGlobalObject('prefetch.ts', {
   linkPrefetchHandlerAdded: new WeakSet<HTMLElement>(),
+  addLinkPrefetchHandlers_debounce: null as null | ReturnType<typeof setTimeout>,
+  mutationObserver: new MutationObserver(addLinkPrefetchHandlers),
+  // `linkTags` [is automatically updated](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection#:~:text=An%20HTMLCollection%20in%20the%20HTML%20DOM%20is%20live%3B%20it%20is%20automatically%20updated%20when%20the%20underlying%20document%20is%20changed.)
+  linkTags: document.getElementsByTagName('A') as HTMLCollectionOf<HTMLAnchorElement>,
   prefetchedPageContexts: {} as Record<
     string, // URL
     PrefetchedPageContext
@@ -146,27 +152,51 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
   }
 }
 
-// `linkTags` [is automatically updated](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection#:~:text=An%20HTMLCollection%20in%20the%20HTML%20DOM%20is%20live%3B%20it%20is%20automatically%20updated%20when%20the%20underlying%20document%20is%20changed.)
-const linkTags = document.getElementsByTagName('A') as HTMLCollectionOf<HTMLAnchorElement>
+// Lazy execution logic copied from: https://github.com/withastro/astro/blob/2594eb088d53a98181ac820243bcb1a765856ecf/packages/astro/src/runtime/client/dev-toolbar/apps/audit/index.ts#L53-L72
+function addLinkPrefetchHandlers() {
+  if (globalObject.addLinkPrefetchHandlers_debounce) clearTimeout(globalObject.addLinkPrefetchHandlers_debounce)
+  globalObject.addLinkPrefetchHandlers_debounce = setTimeout(() => {
+    // Wait for the next idle period, as it is less likely to interfere with any other work the browser is doing post-mutation.
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(addLinkPrefetchHandlers_apply, { timeout: 300 })
+    } else {
+      // Fallback for old versions of Safari, we'll assume that things are less likely to be busy after 150ms.
+      setTimeout(addLinkPrefetchHandlers_apply, 150)
+    }
+  }, 250)
+}
 function initLinkPrefetchHandlers() {
   addLinkPrefetchHandlers()
-
-  // TODO: Use MutationObserver
+}
+function addLinkPrefetchHandlers_watch(): void {
   // Notes about performance:
   // - https://stackoverflow.com/questions/31659567/performance-of-mutationobserver-to-detect-nodes-in-entire-dom/39332340#39332340
   // - https://news.ycombinator.com/item?id=15274211
   //   - https://github.com/kubetail-org/sentineljs
+  // - https://stackoverflow.com/questions/55046093/listening-for-changes-in-htmlcollection-or-achieving-a-similar-effect
+  globalObject.mutationObserver.observe(document.body, {
+    childList: true,
+    subtree: true
+  })
 }
-function addLinkPrefetchHandlers() {
-  for (let linkTag of linkTags) {
+function addLinkPrefetchHandlers_unwatch(): void {
+  globalObject.mutationObserver.disconnect()
+}
+function addLinkPrefetchHandlers_apply(): void {
+  for (let linkTag of globalObject.linkTags) {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) continue
-
     globalObject.linkPrefetchHandlerAdded.add(linkTag)
+
     if (skipLink(linkTag)) return
 
-    linkTag.addEventListener('mouseover', () => {
-      prefetchOnEvent(linkTag, 'hover')
-    })
+    linkTag.addEventListener(
+      'mouseover',
+      () => {
+        prefetchOnEvent(linkTag, 'hover')
+      },
+      { passive: true }
+    )
+
     linkTag.addEventListener(
       'touchstart',
       () => {
