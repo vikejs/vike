@@ -113,7 +113,7 @@ async function getPageContextFromServerHooks(
     objectAssign(pageContextFromServerHooks, pageContextFromServer)
   }
 
-  // We cannot return the whole pageContext here because pageContextFromServerHooks is prefetched.
+  // We cannot return the whole pageContext because this function is used for prefetching `pageContext` (which requires a partial pageContext to be merged with the future pageContext created upon rendering the page in the future).
   return { pageContextFromServerHooks }
 }
 

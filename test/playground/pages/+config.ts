@@ -8,8 +8,5 @@ export default {
     frontmatter: {
       env: { server: true }
     }
-  },
-  prefetch: {
-    pageContext: false
   }
 } satisfies Config

@@ -231,7 +231,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         { onlyOnce: true }
       )
     }
-    // There wasn't any `await` but isRenderOutdated() return value may change because we just called setHydrationCanBeAborted()
+    // There wasn't any `await` but the isRenderOutdated() return value may have changed because we called setHydrationCanBeAborted()
     if (isRenderOutdated()) return
 
     // Get pageContext from hooks (fetched from server, and/or directly called on the client-side)
