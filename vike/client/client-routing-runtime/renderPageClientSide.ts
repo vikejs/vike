@@ -129,7 +129,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       await renderErrorPage({ err })
     }
 
-    const pageContext = await getPageContextBegin()
+    const pageContext = await getPageContextBegin(false)
     if (isRenderOutdated()) return
 
     // onPageTransitionStart()
@@ -292,11 +292,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
   }
 
-  async function getPageContextBegin() {
+  async function getPageContextBegin(isForErrorPage: boolean) {
     const pageContext = await createPageContext(urlOriginal)
     objectAssign(pageContext, {
       isBackwardNavigation,
       isClientSideNavigation,
+      isHydration: isFirstRender && !isForErrorPage,
       _previousPageContext: previousPageContext
     })
     {
@@ -334,7 +335,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    const pageContext = await getPageContextBegin()
+    const pageContext = await getPageContextBegin(true)
     if (isRenderOutdated()) return
 
     if (args.is404) objectAssign(pageContext, { is404: true })

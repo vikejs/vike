@@ -65,7 +65,6 @@ async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized & PageContext & PageContextExports & { _hasPageContextFromServer: true }
 ) {
   objectAssign(pageContext, {
-    isHydration: true as const,
     _hasPageContextFromClient: false
   })
   for (const hookName of ['data', 'onBeforeRender'] as const) {
@@ -90,8 +89,6 @@ async function getPageContextFromServerHooks(
     }
 > {
   const pageContextFromServerHooks = {
-    // TODO/eventually: move this upstream
-    isHydration: false as const,
     _hasPageContextFromServer: false
   }
 
