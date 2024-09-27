@@ -28,11 +28,7 @@ import { type PageContextFromServerHooks, getPageContextFromServerHooks } from '
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextCurrent, getPageContextCurrentAsync } from './getPageContextCurrent.js'
-import {
-  PAGE_CONTEXT_MAX_AGE_DEFAULT,
-  type PrefetchSettingResolved,
-  getPrefetchSettingResolved
-} from './prefetch/getPrefetchSettingResolveds.js'
+import { PAGE_CONTEXT_MAX_AGE_DEFAULT, getPrefetchSettingResolved } from './prefetch/getPrefetchSettingResolveds.js'
 import pc from '@brillout/picocolors'
 
 assertClientRouting()
@@ -150,27 +146,19 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
 }
 
 function addLinkPrefetchHandlers() {
-  const pageContextCurrent = getPageContextCurrent()
-  assert(pageContextCurrent)
-
-  const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
+  const linkTags = [...document.getElementsByTagName('A')] as HTMLAnchorElement[]
   linkTags.forEach(async (linkTag) => {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
     globalObject.linkPrefetchHandlerAdded.add(linkTag)
     if (skipLink(linkTag)) return
 
-    const urlOfLink = linkTag.getAttribute('href')
-    assert(urlOfLink)
-
-    const prefetchSettings = getPrefetchSettingResolved(pageContextCurrent, linkTag)
-
     linkTag.addEventListener('mouseover', () => {
-      prefetchOnEvent(urlOfLink, prefetchSettings, 'hover')
+      prefetchOnEvent(linkTag, 'hover')
     })
     linkTag.addEventListener(
       'touchstart',
       () => {
-        prefetchOnEvent(urlOfLink, prefetchSettings, 'hover')
+        prefetchOnEvent(linkTag, 'hover')
       },
       { passive: true }
     )
@@ -178,7 +166,7 @@ function addLinkPrefetchHandlers() {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          prefetchOnEvent(urlOfLink, prefetchSettings, 'viewport')
+          prefetchOnEvent(linkTag, 'viewport')
           observer.disconnect()
         }
       })
@@ -187,11 +175,14 @@ function addLinkPrefetchHandlers() {
   })
 }
 
-async function prefetchOnEvent(
-  urlOfLink: string,
-  prefetchSettings: PrefetchSettingResolved,
-  event: 'hover' | 'viewport'
-): Promise<void> {
+async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'viewport'): Promise<void> {
+  const pageContextCurrent = getPageContextCurrent()
+  assert(pageContextCurrent)
+  const prefetchSettings = getPrefetchSettingResolved(pageContextCurrent, linkTag)
+
+  const urlOfLink = linkTag.getAttribute('href')
+  assert(urlOfLink)
+
   const pageContextLink = await getPageContextLink(urlOfLink)
   if (!pageContextLink?.pageId) return
   assert(hasProp(pageContextLink, 'pageId', 'string')) // help TypeScript
