@@ -1,4 +1,4 @@
-export { setCurrentPageContext }
+export { setPageContextCurrent }
 export { getPageContextCurrent }
 export { getPageContextCurrentAwait }
 
@@ -23,7 +23,7 @@ function getPageContextCurrent(): null | PageContext {
 async function getPageContextCurrentAwait(): Promise<PageContext> {
   return globalObject.pageContextPromise.promise
 }
-function setCurrentPageContext(pageContext: PageContext): void {
+function setPageContextCurrent(pageContext: PageContext): void {
   globalObject.pageContext = pageContext
   globalObject.pageContextPromise.resolve(pageContext)
 }
