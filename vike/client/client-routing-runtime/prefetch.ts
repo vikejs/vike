@@ -31,7 +31,7 @@ import { type PageContextFromServerHooks, getPageContextFromServerHooks } from '
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextCurrent, getPageContextCurrentAsync } from './getPageContextCurrent.js'
-import { PAGE_CONTEXT_MAX_AGE_DEFAULT, getPrefetchSettingResolved } from './prefetch/getPrefetchSettingResolved.js'
+import { PAGE_CONTEXT_MAX_AGE_DEFAULT, getPrefetchSettings } from './prefetch/getPrefetchSettings.js'
 import pc from '@brillout/picocolors'
 
 assertClientRouting()
@@ -144,7 +144,7 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     } else {
       // If user calls prefetch() before hydration finished => await the pageContext to be set
       const pageContextCurrent = await getPageContextCurrentAsync()
-      const prefetchSettings = getPrefetchSettingResolved(pageContextCurrent, null)
+      const prefetchSettings = getPrefetchSettings(pageContextCurrent, null)
       const resultMaxAge =
         typeof prefetchSettings.pageContext === 'number' ? prefetchSettings.pageContext : PAGE_CONTEXT_MAX_AGE_DEFAULT
       return resultMaxAge
@@ -221,7 +221,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
   const pageContextCurrent = getPageContextCurrent()
   // TODO/pageContext-prefetch: use default instead of aborting
   if (!pageContextCurrent) return
-  const prefetchSettings = getPrefetchSettingResolved(pageContextCurrent, linkTag)
+  const prefetchSettings = getPrefetchSettings(pageContextCurrent, linkTag)
 
   const urlOfLink = linkTag.getAttribute('href')
   assert(urlOfLink)
@@ -241,7 +241,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
       if (event !== 'viewport' && prefetchSettings.pageContext) {
         const found = globalObject.prefetchedPageContexts[urlOfLink]
         if (!found || isExpired(found)) {
-          // TODO/pageContext-prefetch: move this logic in getPrefetchSettingResolved()
+          // TODO/pageContext-prefetch: move this logic in getPrefetchSettings()
           const resultMaxAge = prefetchSettings.pageContext
           await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
         }

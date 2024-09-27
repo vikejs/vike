@@ -1,6 +1,6 @@
-// TODO/pageContext-prefetch: rename this file to getPrefetchSettingResolved.ts
+// TODO/pageContext-prefetch: rename this file to getPrefetchSettings.ts
 
-export { getPrefetchSettingResolved }
+export { getPrefetchSettings }
 export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }
 
@@ -25,10 +25,7 @@ type PrefetchSettingResolved = {
   pageContext: false | number
 }
 
-function getPrefetchSettingResolved(
-  pageContext: PageContextExports,
-  linkTag: null | HTMLElement
-): PrefetchSettingResolved {
+function getPrefetchSettings(pageContext: PageContextExports, linkTag: null | HTMLElement): PrefetchSettingResolved {
   let prefetchSetting: PrefetchSettingResolved = prefetchSettingDefault
 
   // TODO/v1-release: remove
