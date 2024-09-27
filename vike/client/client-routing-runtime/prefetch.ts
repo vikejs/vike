@@ -59,6 +59,7 @@ type PrefetchedPageContext = {
 }
 type PageContextForPrefetch = {
   urlOriginal: string
+  urlPathname: string
   pageId: string
   _urlRewrite: null
   _pageFilesAll: PageFile[]
@@ -66,15 +67,15 @@ type PageContextForPrefetch = {
 }
 
 function getPageContextPrefetched(pageContext: {
-  urlOriginal: string
+  urlPathname: string
 }): null | PageContextFromServerHooks {
-  const url = pageContext.urlOriginal
-  const found = globalObject.prefetchedPageContexts[url]
+  const key = getCacheKey(pageContext.urlPathname)
+  const found = globalObject.prefetchedPageContexts[key]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
   const pageContextPrefetched = found.result.pageContextFromServerHooks
   /* TODO/pageContext-prefetch: make it work for when resultMaxAge is Infinity.
   // We discard the prefetched pageContext whenever we use it, so that the user always sees fresh data upon naivgating.
-  delete globalObject.prefetchedPageContexts[url]
+  delete globalObject.prefetchedPageContexts[key]
   */
   return pageContextPrefetched
 }
@@ -96,8 +97,8 @@ async function prefetchPageContextFromServerHooks(
   resultMaxAge: number
 ): Promise<void> {
   const result = await getPageContextFromServerHooks(pageContextLink, false)
-  const urlOfLink = pageContextLink.urlOriginal
-  globalObject.prefetchedPageContexts[urlOfLink] = {
+  const key = getCacheKey(pageContextLink.urlPathname)
+  globalObject.prefetchedPageContexts[key] = {
     resultFetchedAt: Date.now(),
     resultMaxAge,
     result
@@ -251,7 +252,8 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
     })(),
     (async () => {
       if (event !== 'viewport' && prefetchSettings.pageContext) {
-        const found = globalObject.prefetchedPageContexts[urlOfLink]
+        const key = getCacheKey(urlOfLink)
+        const found = globalObject.prefetchedPageContexts[key]
         if (!found || isExpired(found)) {
           // TODO/pageContext-prefetch: move this logic in getPrefetchSettings()
           const resultMaxAge = prefetchSettings.pageContext
@@ -280,4 +282,10 @@ async function getPageContextLink(urlOfLink: string) {
   objectAssign(pageContextLink, pageContextFromRoute)
 
   return pageContextLink
+}
+
+function getCacheKey(urlPathname: string): string {
+  assert(urlPathname.startsWith('/'))
+  const key = urlPathname.split('#')[0]!
+  return key
 }
