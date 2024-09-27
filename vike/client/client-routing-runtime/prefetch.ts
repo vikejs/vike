@@ -64,10 +64,10 @@ function getPageContextPrefetched(pageContext: {
   const url = pageContext.urlOriginal
   const found = globalObject.prefetchedPageContexts[url]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
-  const prefetchedPageContextFromServerHooks = found.result.pageContextFromServerHooks
+  const pageContextPrefetched = found.result.pageContextFromServerHooks
   // We discard the prefetched pageContext whenever we use it, so that the user always sees fresh data upon naivgating.
   delete globalObject.prefetchedPageContexts[url]
-  return prefetchedPageContextFromServerHooks
+  return pageContextPrefetched
 }
 
 async function prefetchAssets(pageContextLink: { pageId: string } & PageContextUserFiles): Promise<void> {
