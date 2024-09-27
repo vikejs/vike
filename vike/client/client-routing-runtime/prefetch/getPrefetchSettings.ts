@@ -5,6 +5,7 @@ export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }
 
 import { assertUsage, assertInfo, assertWarning } from '../utils.js'
+import type { PageContextExports } from '../../../shared/getPageFiles.js'
 import type { PrefetchSetting } from './PrefetchSetting.js'
 
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
@@ -24,11 +25,7 @@ type PrefetchSettingResolved = {
   pageContext: false | number
 }
 
-type PageContextPrefetch = {
-  exports: Record<string, unknown>
-}
-
-function getPrefetchSetting(pageContext: PageContextPrefetch, linkTag: null | HTMLElement): PrefetchSettingResolved {
+function getPrefetchSetting(pageContext: PageContextExports, linkTag: null | HTMLElement): PrefetchSettingResolved {
   let prefetchSetting: PrefetchSettingResolved = prefetchSettingDefault
 
   // TODO/v1-release: remove

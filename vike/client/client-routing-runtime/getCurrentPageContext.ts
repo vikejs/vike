@@ -3,9 +3,9 @@ export { getCurrentPageContext }
 export { getCurrentPageContextAwait }
 
 import { getGlobalObject } from './utils.js'
+import type { PageContextExports } from '../../shared/getPageFiles.js'
 
-type PageContext = {
-  exports: Record<string, unknown>
+type PageContext = PageContextExports & {
   urlPathname: string
 }
 const globalObject = getGlobalObject('getCurrentPageContext.ts', {
