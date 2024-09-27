@@ -1,6 +1,7 @@
 export { prefetch }
-export { addLinkPrefetchHandlers }
 export { getPageContextPrefetched }
+export { initLinkPrefetchHandlers }
+export { addLinkPrefetchHandlers }
 
 import {
   assert,
@@ -145,10 +146,21 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
   }
 }
 
+// `linkTags` [is automatically updated](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection#:~:text=An%20HTMLCollection%20in%20the%20HTML%20DOM%20is%20live%3B%20it%20is%20automatically%20updated%20when%20the%20underlying%20document%20is%20changed.)
+const linkTags = document.getElementsByTagName('A') as HTMLCollectionOf<HTMLAnchorElement>
+function initLinkPrefetchHandlers() {
+  addLinkPrefetchHandlers()
+
+  // TODO: Use MutationObserver
+  // Notes about performance:
+  // - https://stackoverflow.com/questions/31659567/performance-of-mutationobserver-to-detect-nodes-in-entire-dom/39332340#39332340
+  // - https://news.ycombinator.com/item?id=15274211
+  //   - https://github.com/kubetail-org/sentineljs
+}
 function addLinkPrefetchHandlers() {
-  const linkTags = [...document.getElementsByTagName('A')] as HTMLAnchorElement[]
-  linkTags.forEach(async (linkTag) => {
-    if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) return
+  for (let linkTag of linkTags) {
+    if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) continue
+
     globalObject.linkPrefetchHandlerAdded.add(linkTag)
     if (skipLink(linkTag)) return
 
@@ -172,7 +184,7 @@ function addLinkPrefetchHandlers() {
       })
     })
     observer.observe(linkTag)
-  })
+  }
 }
 
 async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'viewport'): Promise<void> {

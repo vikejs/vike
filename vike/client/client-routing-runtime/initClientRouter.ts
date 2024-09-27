@@ -7,6 +7,7 @@ import { onBrowserHistoryNavigation } from './onBrowserHistoryNavigation.js'
 import { initOnLinkClick } from './initOnLinkClick.js'
 import { setupNativeScrollRestoration } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
+import { initLinkPrefetchHandlers } from './prefetch.js'
 
 async function initClientRouter() {
   // Init navigation history and scroll restoration
@@ -17,6 +18,9 @@ async function initClientRouter() {
 
   // Intercept <a> clicks
   initOnLinkClick()
+
+  // Add <a> prefetch handlers
+  initLinkPrefetchHandlers()
 
   // Preserve stack track
   await renderFirstPagePromise
