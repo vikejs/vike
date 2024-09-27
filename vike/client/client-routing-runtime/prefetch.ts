@@ -193,7 +193,7 @@ function addLinkPrefetchHandlers_apply(): void {
     if (globalObject.linkPrefetchHandlerAdded.has(linkTag)) continue
     globalObject.linkPrefetchHandlerAdded.add(linkTag)
 
-    if (skipLink(linkTag)) return
+    if (skipLink(linkTag)) continue
 
     linkTag.addEventListener(
       'mouseover',
