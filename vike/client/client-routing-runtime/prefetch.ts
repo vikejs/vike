@@ -33,13 +33,13 @@ import { PAGE_CONTEXT_MAX_AGE_DEFAULT, getPrefetchSettingResolved } from './pref
 import pc from '@brillout/picocolors'
 
 assertClientRouting()
-const globalObject = getGlobalObject<{
-  linkPrefetchHandlerAdded: WeakSet<HTMLElement>
-  prefetchedPageContexts: Record<
+const globalObject = getGlobalObject('prefetch.ts', {
+  linkPrefetchHandlerAdded: new WeakSet<HTMLElement>(),
+  prefetchedPageContexts: {} as Record<
     string, // URL
     PrefetchedPageContext
   >
-}>('prefetch.ts', { linkPrefetchHandlerAdded: new WeakSet(), prefetchedPageContexts: {} })
+})
 
 type Result = Awaited<ReturnType<typeof getPageContextFromServerHooks>>
 type PrefetchedPageContext = {
