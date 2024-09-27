@@ -8,6 +8,7 @@ import { assertUsage, assertInfo } from '../utils.js'
 import type { PageContextExports } from '../../../shared/getPageFiles.js'
 import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js'
 
+// TODO/pageContext-prefetch: Make it `Infinity` for pre-rendered pages.
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 const prefetchSettingTrue = {
   staticAssets: 'hover',
