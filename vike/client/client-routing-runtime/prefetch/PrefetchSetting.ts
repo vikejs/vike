@@ -11,6 +11,29 @@ type PrefetchSetting =
       pageContext?: boolean | number
     }
 
+// TODO/pageContext-prefetch: use and implement PrefetchSettingFuture
+type PrefetchSettingValue = {
+  staticAssets?:
+    | false
+    | 'hover'
+    | 'viewport'
+    | {
+        when?: 'hover' | 'viewport'
+        precedence?: number
+      }
+  pageContext?:
+    | false
+    | 'hover'
+    | 'viewport'
+    | {
+        when?: 'hover' | 'viewport'
+        maxAge?: number
+        precedence?: number
+      }
+}
+type PrefetchSettingFuture = PrefetchSettingValue & {
+  links?: PrefetchSettingValue
+}
+
 // TODO/v1-release: remove
-/** @deprecated Use `prefetch` setting instead, see https://vike.dev/prefetch */
 type PrefetchStaticAssets = false | 'hover' | 'viewport'

@@ -219,7 +219,7 @@ function addLinkPrefetchHandlers_apply(): void {
 
 async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'viewport'): Promise<void> {
   const pageContextCurrent = getPageContextCurrent()
-  // TODO: use default instead of aborting
+  // TODO/pageContext-prefetch: use default instead of aborting
   if (!pageContextCurrent) return
   const prefetchSettings = getPrefetchSettingResolved(pageContextCurrent, linkTag)
 
@@ -241,7 +241,7 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
       if (event !== 'viewport' && prefetchSettings.pageContext) {
         const found = globalObject.prefetchedPageContexts[urlOfLink]
         if (!found || isExpired(found)) {
-          // TODO: move this logic in getPrefetchSettingResolved()
+          // TODO/pageContext-prefetch: move this logic in getPrefetchSettingResolved()
           const resultMaxAge = prefetchSettings.pageContext
           await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
         }

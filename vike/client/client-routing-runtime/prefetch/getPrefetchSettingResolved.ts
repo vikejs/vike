@@ -2,9 +2,9 @@ export { getPrefetchSettingResolved }
 export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }
 
-import { assertUsage, assertInfo, assertWarning } from '../utils.js'
+import { assertUsage, assertInfo } from '../utils.js'
 import type { PageContextExports } from '../../../shared/getPageFiles.js'
-import type { PrefetchSetting } from './PrefetchSetting.js'
+import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js'
 
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
 const prefetchSettingTrue = {
@@ -36,13 +36,15 @@ function getPrefetchSettingResolved(
 
   // TODO/v1-release: remove
   if ('prefetchStaticAssets' in pageContext.exports) {
-    const { prefetchStaticAssets } = pageContext.exports
+    const prefetchStaticAssets = pageContext.exports.prefetchStaticAssets as PrefetchStaticAssets
+    /* TODO/pageContext-prefetch: uncomment
     const msg = `The 'prefetchStaticAssets' setting is deprecated in favor of the 'prefetch' setting, see https://vike.dev/prefetch`
     assertWarning(false, msg, { onlyOnce: true })
     assertUsage(
       prefetchStaticAssets === false || prefetchStaticAssets === 'hover' || prefetchStaticAssets === 'viewport',
       msg
     )
+    //*/
     prefetchSetting.staticAssets = prefetchStaticAssets
   }
 

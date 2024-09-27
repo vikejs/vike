@@ -412,14 +412,22 @@ type ConfigBuiltIn = {
    */
   meta?: ConfigMeta | ImportString
 
+  // TODO/pageContext-prefetch: remove experimental note
   /**
+   * @experimental: DON'T USE: the API *will* have breaking changes upon any minor version release.
+   *
    * Prefetch pages/links.
    *
    * https://vike.dev/prefetch
    */
   prefetch?: PrefetchSetting | ImportString
 
+  // TODO/pageContext-prefetch: use following JSDoc to deprecate old interface.
   /** @deprecated Use `prefetch` setting (https://vike.dev/prefetch) instead.  */
+  /** Prefetch links.
+   *
+   * https://vike.dev/prefetchStaticAssets
+   */
   prefetchStaticAssets?: PrefetchStaticAssets | ImportString
 
   /** Modify the timeouts of hooks. */

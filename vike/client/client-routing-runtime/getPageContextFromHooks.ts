@@ -35,7 +35,7 @@ import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextIn
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>('router/getPageContext.ts', {})
 
-// TODO: rename
+// TODO/eventually: rename
 type PageContext = {
   urlOriginal: string
   _urlRewrite: string | null
@@ -47,7 +47,7 @@ type PageContextSerialized = {
   pageId: string
   _hasPageContextFromServer: true
 }
-// TODO: rename
+// TODO/eventually: rename
 function getPageContextFromHooks_serialized(): PageContextSerialized & { routeParams: Record<string, string> } {
   const pageContextSerialized = getPageContextSerializedInHtml()
   assertUsage(!('urlOriginal' in pageContextSerialized), "Adding 'urlOriginal' to passToClient is forbidden")
@@ -57,7 +57,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & { routePa
   })
   return pageContextSerialized
 }
-// TODO: rename
+// TODO/eventually: rename
 async function getPageContextFromHooks_isHydration(
   pageContext: PageContextSerialized & PageContext & PageContextExports & { _hasPageContextFromServer: true }
 ) {
@@ -87,7 +87,7 @@ async function getPageContextFromServerHooks(
     }
 > {
   const pageContextFromServerHooks = {
-    // TODO: move this upstream
+    // TODO/eventually: move this upstream
     isHydration: false as const,
     _hasPageContextFromServer: false
   }
