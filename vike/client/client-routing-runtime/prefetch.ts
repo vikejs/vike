@@ -219,7 +219,8 @@ function addLinkPrefetchHandlers_apply(): void {
 
 async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'viewport'): Promise<void> {
   const pageContextCurrent = getPageContextCurrent()
-  assert(pageContextCurrent)
+  // TODO: use default instead of aborting
+  if (!pageContextCurrent) return
   const prefetchSettings = getPrefetchSettingResolved(pageContextCurrent, linkTag)
 
   const urlOfLink = linkTag.getAttribute('href')
@@ -253,7 +254,7 @@ function isExpired(found: PrefetchedPageContext) {
   return Date.now() - found.resultFetchedAt > found.resultMaxAge
 }
 
-// We will be able to make this sync after we remove deprecated APIs.
+// TODO/next-major-release: make it sync
 async function getPageContextLink(urlOfLink: string) {
   const pageContextLink = await createPageContext(urlOfLink)
 
