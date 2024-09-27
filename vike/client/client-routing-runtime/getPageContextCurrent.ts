@@ -1,6 +1,6 @@
 export { setPageContextCurrent }
 export { getPageContextCurrent }
-export { getPageContextCurrentAwait }
+export { getPageContextCurrentAsync }
 
 import { getGlobalObject } from './utils.js'
 import type { PageContextExports } from '../../shared/getPageFiles.js'
@@ -20,7 +20,7 @@ const globalObject = getGlobalObject('getPageContextCurrent.ts', {
 function getPageContextCurrent(): null | PageContext {
   return globalObject.pageContext
 }
-async function getPageContextCurrentAwait(): Promise<PageContext> {
+async function getPageContextCurrentAsync(): Promise<PageContext> {
   return globalObject.pageContextPromise.promise
 }
 function setPageContextCurrent(pageContext: PageContext): void {
