@@ -27,7 +27,7 @@ import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
 import { PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { getCurrentPageContext, getCurrentPageContextAwait } from './getCurrentPageContext.js'
+import { getPageContextCurrent, getPageContextCurrentAwait } from './getPageContextCurrent.js'
 import {
   PAGE_CONTEXT_MAX_AGE_DEFAULT,
   type PrefetchSettingResolved,
@@ -140,7 +140,7 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
       return options.pageContext
     } else {
       // If user calls prefetch() before hydration finished => await the pageContext to be set
-      const pageContext = await getCurrentPageContextAwait()
+      const pageContext = await getPageContextCurrentAwait()
       const prefetchSettings = getPrefetchSetting(pageContext, null)
       const resultMaxAge =
         typeof prefetchSettings.pageContext === 'number' ? prefetchSettings.pageContext : PAGE_CONTEXT_MAX_AGE_DEFAULT
@@ -150,7 +150,7 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
 }
 
 function addLinkPrefetchHandlers() {
-  const pageContext = getCurrentPageContext()
+  const pageContext = getPageContextCurrent()
   assert(pageContext)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]

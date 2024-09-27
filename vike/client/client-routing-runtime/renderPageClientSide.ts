@@ -46,7 +46,7 @@ import { updateState } from './onBrowserHistoryNavigation.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageContextExports } from '../../shared/getPageFiles.js'
-import { setCurrentPageContext } from './getCurrentPageContext.js'
+import { setCurrentPageContext } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 
 const globalObject = getGlobalObject<{
