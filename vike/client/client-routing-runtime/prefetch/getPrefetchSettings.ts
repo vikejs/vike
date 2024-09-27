@@ -1,5 +1,3 @@
-// TODO: rename file
-
 export { getPrefetchSetting }
 export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }

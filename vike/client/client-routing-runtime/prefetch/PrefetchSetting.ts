@@ -11,6 +11,6 @@ type PrefetchSetting =
       pageContext?: boolean | number
     }
 
-// TODO/v1-design: remove
+// TODO/v1-release: remove
 /** @deprecated Use `prefetch` setting instead, see https://vike.dev/prefetch */
 type PrefetchStaticAssets = false | 'hover' | 'viewport'
