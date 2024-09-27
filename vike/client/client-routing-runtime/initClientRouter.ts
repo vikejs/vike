@@ -4,7 +4,7 @@ import { assert } from './utils.js'
 import { initHistoryState, monkeyPatchHistoryPushState } from './history.js'
 import { getRenderCount, renderPageClientSide } from './renderPageClientSide.js'
 import { onBrowserHistoryNavigation } from './onBrowserHistoryNavigation.js'
-import { onLinkClick } from './onLinkClick.js'
+import { initOnLinkClick } from './initOnLinkClick.js'
 import { setupNativeScrollRestoration } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
 
@@ -16,7 +16,7 @@ async function initClientRouter() {
   const renderPromise = render()
 
   // Intercept <a> clicks
-  onLinkClick()
+  initOnLinkClick()
 
   // Preserve stack track
   await renderPromise

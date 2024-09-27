@@ -1,13 +1,13 @@
 // Code adapted from https://github.com/HenrikJoreteg/internal-nav-helper/blob/5199ec5448d0b0db7ec63cf76d88fa6cad878b7d/src/index.js#L11-L29
 
-export { onLinkClick }
+export { initOnLinkClick }
 
 import { assert } from './utils.js'
 import { skipLink } from './skipLink.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 
-function onLinkClick() {
+function initOnLinkClick() {
   document.addEventListener('click', handler)
 }
 
