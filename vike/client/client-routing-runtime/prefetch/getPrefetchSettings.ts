@@ -1,4 +1,4 @@
-// TODO/pageContext-prefetch: rename this file to getPrefetchSettings.ts
+// TODO/pageContext-prefetch: rename this file to getPrefetchSettingResolved.ts
 
 export { getPrefetchSettings }
 export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
