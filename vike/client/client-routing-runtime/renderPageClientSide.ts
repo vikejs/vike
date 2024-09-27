@@ -156,10 +156,13 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     // Route
-    let pageContextRouted: PageContextRouted
     if (isFirstRender) {
       const pageContextSerialized = getPageContextFromHooks_serialized()
-      pageContextRouted = pageContextSerialized
+      // TODO/eventually: create helper assertPageContextFromHook()
+      assert(!('urlOriginal' in pageContextSerialized))
+      objectAssign(pageContext, pageContextSerialized)
+      // TODO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
+      populatePageContextPrefetchCache(pageContext, { pageContextFromServerHooks: pageContextSerialized })
     } else {
       let pageContextFromRoute: Awaited<ReturnType<typeof route>>
       try {
@@ -201,10 +204,10 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         return
       }
 
-      pageContextRouted = pageContextFromRoute
+      // TODO/eventually: create helper assertPageContextFromHook()
+      assert(!('urlOriginal' in pageContextFromRoute))
+      objectAssign(pageContext, pageContextFromRoute)
     }
-    assert(!('urlOriginal' in pageContextRouted))
-    objectAssign(pageContext, pageContextRouted)
 
     try {
       objectAssign(
@@ -262,7 +265,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
           const result = await getPageContextFromServerHooks(pageContext, false)
           if (result.is404ServerSideRouted) return
           pageContextFromServerHooks = result.pageContextFromServerHooks
-          // TODO/pageContext-prefetch: remove or change: this only makes sense for a pre-rendered page
+          // TODO/pageContext-prefetch: remove or change, because this only makes sense for a pre-rendered page
           populatePageContextPrefetchCache(pageContext, result)
         } catch (err) {
           await onError(err)

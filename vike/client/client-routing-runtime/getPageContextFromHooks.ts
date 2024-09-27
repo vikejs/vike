@@ -48,7 +48,10 @@ type PageContextSerialized = {
   _hasPageContextFromServer: true
 }
 // TODO/eventually: rename
-function getPageContextFromHooks_serialized(): PageContextSerialized & { routeParams: Record<string, string> } {
+function getPageContextFromHooks_serialized(): PageContextSerialized & {
+  routeParams: Record<string, string>
+  _hasPageContextFromServer: true
+} {
   const pageContextSerialized = getPageContextSerializedInHtml()
   assertUsage(!('urlOriginal' in pageContextSerialized), "Adding 'urlOriginal' to passToClient is forbidden")
   processPageContextFromServer(pageContextSerialized)
