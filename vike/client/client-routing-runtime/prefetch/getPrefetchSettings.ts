@@ -39,7 +39,7 @@ function getPrefetchSetting(pageContext: PageContextPrefetch, linkTag: null | HT
   // TODO/v1-release: remove
   if ('prefetchStaticAssets' in pageContext.exports) {
     const { prefetchStaticAssets } = pageContext.exports
-    const msg = `Setting 'prefetchStaticAssets' deprecated in favor of setting 'prefetch', see https://vike.dev/prefetch`
+    const msg = `The 'prefetchStaticAssets' setting is deprecated in favor of the 'prefetch' setting, see https://vike.dev/prefetch`
     assertWarning(false, msg, { onlyOnce: true })
     assertUsage(
       prefetchStaticAssets === false || prefetchStaticAssets === 'hover' || prefetchStaticAssets === 'viewport',
