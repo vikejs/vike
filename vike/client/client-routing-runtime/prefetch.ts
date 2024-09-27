@@ -31,8 +31,8 @@ import { getPageContextCurrent, getPageContextCurrentAsync } from './getPageCont
 import {
   PAGE_CONTEXT_MAX_AGE_DEFAULT,
   type PrefetchSettingResolved,
-  getPrefetchSetting
-} from './prefetch/getPrefetchSettings.js'
+  getPrefetchSettingResolved
+} from './prefetch/getPrefetchSettingResolveds.js'
 import pc from '@brillout/picocolors'
 
 assertClientRouting()
@@ -141,7 +141,7 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     } else {
       // If user calls prefetch() before hydration finished => await the pageContext to be set
       const pageContextCurrent = await getPageContextCurrentAsync()
-      const prefetchSettings = getPrefetchSetting(pageContextCurrent, null)
+      const prefetchSettings = getPrefetchSettingResolved(pageContextCurrent, null)
       const resultMaxAge =
         typeof prefetchSettings.pageContext === 'number' ? prefetchSettings.pageContext : PAGE_CONTEXT_MAX_AGE_DEFAULT
       return resultMaxAge
@@ -162,7 +162,7 @@ function addLinkPrefetchHandlers() {
     const urlOfLink = linkTag.getAttribute('href')
     assert(urlOfLink)
 
-    const prefetchSettings = getPrefetchSetting(pageContextCurrent, linkTag)
+    const prefetchSettings = getPrefetchSettingResolved(pageContextCurrent, linkTag)
 
     linkTag.addEventListener('mouseover', () => {
       prefetchOnEvent(urlOfLink, prefetchSettings, 'hover')
@@ -207,7 +207,7 @@ async function prefetchOnEvent(
       if (event !== 'viewport' && prefetchSettings.pageContext) {
         const found = globalObject.prefetchedPageContexts[urlOfLink]
         if (!found || isExpired(found)) {
-          // TODO: move this logic in getPrefetchSettings()
+          // TODO: move this logic in getPrefetchSettingResolveds()
           const resultMaxAge = prefetchSettings.pageContext
           await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
         }
