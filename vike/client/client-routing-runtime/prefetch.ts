@@ -29,7 +29,7 @@ import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
-import { PageFile } from '../../shared/getPageFiles.js'
+import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
 import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextCurrent } from './getPageContextCurrent.js'
 import {
@@ -67,9 +67,14 @@ type PageContextForPrefetch = {
   _pageConfigs: PageConfigRuntime[]
 }
 
-function getPageContextPrefetched(pageContext: {
-  urlPathname: string
-}): null | PageContextFromServerHooks {
+function getPageContextPrefetched(
+  pageContext: {
+    urlPathname: string
+  } & PageContextExports
+): null | PageContextFromServerHooks {
+  const prefetchSettings = getPrefetchSettings(pageContext, null)
+  // TODO/pageContext-prefetch: we need linkTag to make this condition work
+  if (!prefetchSettings.pageContext) return null
   const key = getCacheKey(pageContext.urlPathname)
   const found = globalObject.prefetchedPageContexts[key]
   if (!found || found.result.is404ServerSideRouted || isExpired(found)) return null
