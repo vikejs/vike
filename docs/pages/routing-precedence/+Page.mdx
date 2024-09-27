@@ -1,4 +1,4 @@
-If the route of two pages both match the same URL then we have a routing conflict: Vike has to decide which of the two pages should be rendered for that URL.
+When the route of two pages match the same URL, there is a routing conflict: Vike has to decide which one to render for that URL.
 
 Upon Route String conflicts, Vike chooses the first route from most specific to least specific. For example:
 
@@ -7,16 +7,16 @@ Upon Route String conflicts, Vike chooses the first route from most specific to 
 1. `/about/*` (less specific: it also matches `/about/some/nested/path`)
 1. `/*` (least specific: it matches all URLs)
 
-> More examples at [`resolvePrecedence_route-strings.spec.ts)](https://github.com/vikejs/vike/blob/main/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts).
+> You can find more examples at [`resolvePrecedence_route-strings.spec.ts`](https://github.com/vikejs/vike/blob/main/vike/shared/route/resolvePrecedence/resolvePrecedence_route-strings.spec.ts).
 
 Upon conflicts between Filesystem Routing, Route Strings and Route Functions, Vike chooses the first route in following order:
 
 1. Route Function, returned high positive `precedence` number (e.g. `99`)
 1. Route Function, returned low positive `precedence` number (e.g. `1`)
 1. Filesystem Routing
-1. Route String, static (i.e. without `@param` segment, e.g. `/about/company`)
+1. Route String, static (i.e. without `@`/`*` parameter segment, e.g. `/about/company`)
 1. Route Function, returned no `precedence` number (or `0`)
-1. Route String, parameterized (i.e. with `@param` segment, e.g. `/product/@productId` or `/product/*`)
+1. Route String, parameterized (i.e. with `@`/`*` parameter segment, e.g. `/product/@productId` or `/product/*`)
 1. Route Function, returned low negative `precedence` number (e.g. `-1`)
 1. Route Function, returned high negative `precedence` number (e.g. `-99`)
 

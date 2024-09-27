@@ -21,7 +21,7 @@ type ScrollPosition = { x: number; y: number }
 //  - `history.state` can uninitialized (i.e. `null`):
 //    - The very first render
 //    - The user's code runs `location.hash = '#section'`
-//    - The user clicks on an anchor link `<a href="#section">Section</a>` (Vike's `onLinkClick()` handler skips hash links).
+//    - The user clicks on an anchor link `<a href="#section">Section</a>` (Vike's `initOnLinkClick()` handler skips hash links).
 //  - State information may be incomplete if `history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
 function initHistoryState() {
   // No way found to add TypeScript types to `window.history.state`: https://github.com/microsoft/TypeScript/issues/36178

@@ -39,7 +39,7 @@ function onBrowserHistoryNavigation() {
     if (isHashNavigation && !isUserLandPushStateNavigation) {
       // - `history.state` is uninitialized (`null`) when:
       //   - The user's code runs `window.location.hash = '#section'`.
-      //   - The user clicks on an anchor link `<a href="#section">Section</a>` (because Vike's `onLinkClick()` handler skips hash links).
+      //   - The user clicks on an anchor link `<a href="#section">Section</a>` (because Vike's `initOnLinkClick()` handler skips hash links).
       // - `history.state` is `null` when uninitialized: https://developer.mozilla.org/en-US/docs/Web/API/History/state
       // - Alternatively, we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
       //   - Problem: we cannot intercept `window.location.hash = '#section'`. (Or maybe we can with the `hashchange` event?)
