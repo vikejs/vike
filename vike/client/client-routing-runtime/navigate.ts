@@ -1,9 +1,10 @@
 export { navigate }
 export { reload }
 
+import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import { firstRenderStartPromise, renderPageClientSide } from './renderPageClientSide.js'
 import type { ScrollTarget } from './setScrollPosition.js'
-import { assertClientRouting, assertUsageUrlPathname, getCurrentUrl } from './utils.js'
+import { assertClientRouting, getCurrentUrl } from './utils.js'
 
 assertClientRouting()
 
@@ -22,7 +23,7 @@ async function navigate(
     overwriteLastHistoryEntry = false
   }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean } = {}
 ): Promise<void> {
-  assertUsageUrlPathname(url, '[navigate(url)] url')
+  normalizeUrlArgument(url, 'navigate')
 
   // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
   await firstRenderStartPromise
