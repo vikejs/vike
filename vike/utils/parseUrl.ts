@@ -5,12 +5,12 @@
 // Unit tests at ./parseUrl.spec.ts
 
 export { parseUrl }
-export { assertUsageUrlPathname }
 export { assertUsageUrlPathnameAbsolute }
 export { assertUsageUrlRedirectTarget }
 export { isUrl }
 export { isUri }
 export { isUrlRedirectTarget }
+export { isUrlPathnameRelative }
 export { isUrlExternal }
 export { isBaseServer }
 export { assertUrlComponents }
@@ -365,9 +365,6 @@ function isUri(uri: string): boolean {
   return !!protocol && !isUrlProtocol(uri)
 }
 
-function assertUsageUrlPathname(url: string, errPrefix: string): void {
-  assertUsageUrl(url, errPrefix, { allowRelative: true })
-}
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
   assertUsageUrl(url, errPrefix)
 }
@@ -377,7 +374,7 @@ function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolv
 function assertUsageUrl(
   url: string,
   errPrefix: string,
-  { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true | 'unresolved' } = {}
+  { isRedirectTarget }: { isRedirectTarget?: true | 'unresolved' } = {}
 ) {
   if (url.startsWith('/')) return
   let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
@@ -388,10 +385,6 @@ function assertUsageUrl(
       if (url === '*') return
       errMsg += `, or be ${pc.string('*')}`
     }
-  }
-  if (allowRelative) {
-    if (isUrlPathnameRelative(url)) return
-    errMsg += ', or be a relative URL'
   }
   assertUsage(false, errMsg)
 }

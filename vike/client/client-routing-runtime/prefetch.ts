@@ -10,7 +10,6 @@ import {
   assert,
   assertClientRouting,
   assertUsage,
-  assertUsageUrlPathname,
   assertWarning,
   checkIfClientRouting,
   getGlobalObject,
@@ -38,6 +37,7 @@ import {
   getPrefetchSettings
 } from './prefetch/getPrefetchSettings.js'
 import pc from '@brillout/picocolors'
+import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject('prefetch.ts', {
@@ -148,12 +148,11 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
   assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
     showStackTrace: true
   })
-  const errPrefix = '[prefetch(url)] url' as const
-  assertUsageUrlPathname(url, errPrefix)
+  url = normalizeUrlArgument(url, 'prefetch')
 
   const pageContextLink = await getPageContextLink(url)
   if (!pageContextLink?.pageId) {
-    assertWarning(false, `${errPrefix} ${pc.string(url)} ${noRouteMatch}`, {
+    assertWarning(false, `[prefetch(url)] ${pc.string(url)} ${noRouteMatch}`, {
       showStackTrace: true,
       onlyOnce: false
     })
