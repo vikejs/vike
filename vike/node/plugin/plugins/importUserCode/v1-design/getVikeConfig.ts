@@ -1150,6 +1150,10 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 */
 
 function handleUnknownConfig(configName: string, configNames: string[], filePathToShowToUser: string) {
+  const configNameColored = pc.cyan(configName)
+  let errMsg = `${filePathToShowToUser} sets an unknown config ${configNameColored}.` as const
+
+  // vike-{react,vue,solid} hint
   {
     const ui = ['vike-react', 'vike-vue', 'vike-solid'] as const
     const knownVikeExntensionConfigs = {
@@ -1168,16 +1172,20 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
       assertUsage(
         false,
         [
-          `${filePathToShowToUser} uses the config ${pc.cyan(configName)} (https://vike.dev/${configName})`,
-          `which requires the Vike extension ${requiredVikeExtension.map((e) => pc.bold(e)).join('/')}.`,
-          `Make sure to install the Vike extension,`,
-          `and make sure it applies to ${filePathToShowToUser} as explained at https://vike.dev/extends#inheritance.`
+          errMsg,
+          `If you want to use the configuration documented at https://vike.dev/${configName} then make sure to install the Vike extension ${requiredVikeExtension
+            .map((e) => pc.bold(e))
+            .join('/')}.`,
+          `Also make sure it applies to ${filePathToShowToUser} (see https://vike.dev/extends#inheritance).`,
+          `Alternatively, if you don't want to use the aforementioned Vike extension, define it yourself by using ${pc.cyan(
+            'meta'
+          )} (https://vike.dev/meta).`
         ].join(' ')
       )
     }
   }
 
-  let errMsg = `${filePathToShowToUser} sets an unknown config ${pc.cyan(configName)}`
+  // Similarity hint
   let configNameSimilar: string | null = null
   if (configName === 'page') {
     configNameSimilar = 'Page'
@@ -1186,13 +1194,21 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
   }
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
-    errMsg += `, did you mean to set ${pc.cyan(configNameSimilar)} instead?`
+    errMsg += ` Did you mean to set ${pc.cyan(configNameSimilar)} instead?`
     if (configName === 'page') {
       errMsg += ` (The name of the config ${pc.cyan('Page')} starts with a capital letter ${pc.cyan(
         'P'
-      )} because it usually defines a UI component: a ubiquitous JavaScript convention is to start the name of UI components with a capital letter.)`
+      )} because it defines a UI component: a ubiquitous JavaScript convention is that the name of UI components start with a capital letter.)`
     }
   }
+
+  // `meta` hint
+  if (!configNameSimilar) {
+    errMsg += ` Make sure to define ${configNameColored} by using ${pc.cyan(
+      'meta'
+    )} (https://vike.dev/meta), and also make sure the meta configuration applies to ${filePathToShowToUser} (see https://vike.dev/config#inheritance).`
+  }
+
   assertUsage(false, errMsg)
 }
 
