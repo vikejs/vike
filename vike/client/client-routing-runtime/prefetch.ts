@@ -106,9 +106,11 @@ async function prefetchPageContextFromServerHooks(
   setPageContextPrefetchCache(pageContextLink, result, resultMaxAge)
 }
 function populatePageContextPrefetchCache(
-  pageContext: PageContextForPrefetch,
+  pageContext: PageContextForPrefetch /*& PageContextExports*/,
   result: ResultPageContextFromServer
 ): void {
+  // TODO/pageContext-prefetch: replace with using pageContext.config.prerender instead. (For being able to do that: eager configs need to be accessible without have to use PageContextExports as it isn't available here.)
+  if (!isBrilloutDocpress()) return
   setPageContextPrefetchCache(pageContext, result, null)
 }
 function setPageContextPrefetchCache(
@@ -118,6 +120,7 @@ function setPageContextPrefetchCache(
 ) {
   if (resultMaxAge === null) resultMaxAge = getResultMaxAge()
   const key = getCacheKey(pageContext.urlPathname)
+  assert(isBrilloutDocpress()) // Ensure this API isn't used by anyone else
   globalObject.prefetchedPageContexts[key] = {
     resultFetchedAt: Date.now(),
     resultMaxAge,
@@ -301,4 +304,9 @@ function getCacheKey(url: string): string {
   assert(url.startsWith('/'), { urlPathname: url })
   const key = url.split('#')[0]!
   return key
+}
+
+// TODO/pageContext-prefetch: remove
+function isBrilloutDocpress(): boolean {
+  return '_isBrilloutDocpress' in window
 }
