@@ -1503,6 +1503,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.3.1(vite@5.4.0(@types/node@22.6.1)(terser@5.31.0))
+      eject:
+        specifier: ../../packages/eject/
+        version: link:../../packages/eject
       react:
         specifier: ^18.2.0
         version: 18.3.1
