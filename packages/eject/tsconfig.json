@@ -13,7 +13,6 @@
     "esModuleInterop": true,
     // Libs
     "lib": ["ES2021"],
-    "types": ["node"],
     // Strictness
     "strict": true,
     "noUncheckedIndexedAccess": true,
