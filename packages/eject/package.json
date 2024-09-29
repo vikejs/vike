@@ -26,6 +26,7 @@
     }
   },
   "bin": {
+    "eject": "./bin-entry.js",
     "ejectjs": "./bin-entry.js"
   }
 }
