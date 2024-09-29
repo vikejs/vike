@@ -9,10 +9,10 @@ function addScaffoldCodeClickHandler() {
     }
     const el = document.getElementById('npm-init-code-snippet')!
     const attr = 'aria-label'
-    const orignalText = el.getAttribute(attr)!
+    const originalText = el.getAttribute(attr)!
     el.setAttribute(attr, 'Copied')
     setTimeout(() => {
-      el.setAttribute(attr, orignalText)
+      el.setAttribute(attr, originalText)
     }, 1200)
   }
 }

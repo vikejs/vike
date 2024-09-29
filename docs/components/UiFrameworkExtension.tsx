@@ -9,19 +9,19 @@ type UiFrameworkExtensionList = `vike-${'react' | 'vue' | 'solid'}`[]
 function UiFrameworkExtension({
   name,
   noLink,
-  succint,
+  succinct,
   plural,
   comma,
   list = ['vike-react', 'vike-vue', 'vike-solid']
 }: {
-  succint?: true
+  succinct?: true
   name?: true
   noLink?: true
   plural?: true
   comma?: true
   list?: UiFrameworkExtensionList
 }) {
-  if (succint) return <code>{'vike-{react,vue,solid}'}</code>
+  if (succinct) return <code>{'vike-{react,vue,solid}'}</code>
   let content = (
     <>
       {list.map((name, i) => {

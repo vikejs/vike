@@ -4,7 +4,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
-import { getModuleFilePath } from '../shared/getFilePath.js'
+import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 
 // TODO/enventually: (after we implemented vike.config.js)
 // - Make import.meta.env work inside +config.js
@@ -55,7 +55,7 @@ function envVarsPlugin(): Plugin {
             const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
             if (isPrivate && isClientSide) {
               if (!envStatementRegEx.test(code)) return
-              const modulePath = getModuleFilePath(id, config)
+              const modulePath = getModuleFilePathAbsolute(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
               const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
               const errMsg =

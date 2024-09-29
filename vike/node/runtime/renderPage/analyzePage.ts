@@ -12,15 +12,15 @@ import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigVal
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
   if (pageConfig) {
-    const { clientEntryLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
+    const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
     const clientEntries: string[] = []
     const clientFilePath = getConfigValueRuntime(pageConfig, 'client', 'string')?.value ?? null
     if (clientFilePath) clientEntries.push(clientFilePath)
-    if (clientEntryLoaded) clientEntries.push(getVikeClientEntry(isClientRouting))
+    if (isClientRuntimeLoaded) clientEntries.push(getVikeClientEntry(isClientRouting))
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
       id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, true),
-      onlyAssets: clientEntryLoaded ? false : true,
+      onlyAssets: isClientRuntimeLoaded ? false : true,
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
@@ -56,7 +56,7 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       })
     })
     return {
-      isHtmlOnly: !clientEntryLoaded,
+      isHtmlOnly: !isClientRuntimeLoaded,
       isClientRouting,
       clientEntries,
       clientDependencies,

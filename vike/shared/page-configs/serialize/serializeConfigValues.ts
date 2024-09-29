@@ -13,7 +13,7 @@ import type {
 } from '../PageConfig.js'
 import type { ValueSerialized } from './PageConfigSerialized.js'
 import { addImportStatement } from '../../../node/plugin/plugins/importUserCode/addImportStatement.js'
-import { parsePointerImportData } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/transformFileImports.js'
+import { parsePointerImportData } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/transformPointerImports.js'
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
@@ -29,6 +29,7 @@ function serializeConfigValues(
   pageConfig: PageConfigBuildTime | (PageConfigGlobalBuildTime & { configValuesComputed?: undefined }),
   importStatements: string[],
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
+  { isEager }: { isEager: boolean },
   tabspace: string
 ): string[] {
   const lines: string[] = []
@@ -49,6 +50,7 @@ function serializeConfigValues(
   Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
     const configDef = pageConfig.configDefinitions[configName]
     assert(configDef)
+    if (isEager !== !!configDef.eager) return
     if (!configDef.cumulative) {
       const configValueSource = sources[0]
       assert(configValueSource)

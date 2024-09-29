@@ -8,10 +8,8 @@ async function handleSsr(url) {
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) {
-    return null
-  } else {
-    const { body, statusCode: status, headers } = httpResponse
-    return new Response(body, { headers, status })
-  }
+  return new Response(httpResponse.body, {
+    headers: httpResponse.headers,
+    status: httpResponse.statusCode
+  })
 }

@@ -14,7 +14,6 @@ server.addMiddleware({
   async handler(request) {
     const pageContextInit = { urlOriginal: request.url }
     const pageContext = await renderPage(pageContextInit)
-    if (!pageContext.httpResponse) return null
     // `body` is the HTML of the page with a route matching pageContextInit.urlOriginal
     const { body, statusCode, headers } = pageContext.httpResponse
     const response = { body, statusCode, headers }

@@ -127,6 +127,11 @@ type PageContextBuiltInCommon<Data> = {
    */
   errorWhileRendering?: unknown
 
+  /**
+   * The page's unique identifier.
+   */
+  pageId: string | null
+
   /** @experimental https://github.com/vikejs/vike/issues/1268 */
   from: From
   /** @experimental https://github.com/vikejs/vike/issues/1268 */
@@ -157,6 +162,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
     | 'exportsAll'
     | 'abortReason'
     | 'data'
+    | 'pageId'
     | 'source'
     | 'sources'
     | 'from'
@@ -172,7 +178,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
   } & PageContextUrlClient
 
 type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
-  Pick<PageContextBuiltInCommon<Data>, 'Page' | 'pageExports' | 'exports' | 'abortReason' | 'data'> & {
+  Pick<PageContextBuiltInCommon<Data>, 'Page' | 'pageExports' | 'exports' | 'abortReason' | 'pageId' | 'data'> & {
     /**
      * Whether the current page is already rendered to HTML.
      *

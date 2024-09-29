@@ -146,7 +146,6 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
   fileTypes
     .filter((fileType) => fileType !== '.css')
     .forEach((fileType) => {
-      assert(fileType !== '.css')
       const { includeImport, includeExportNames } = determineInjection({
         fileType,
         isForClientSide,

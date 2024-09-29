@@ -11,7 +11,7 @@ import { executeHook } from '../../../shared/hooks/executeHook.js'
 
 async function executeOnBeforeRenderAndDataHooks(
   pageContext: {
-    _pageId: string
+    pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
   } & PageContextExports &
     PageContextForUserConsumptionServerSide

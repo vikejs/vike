@@ -3,7 +3,7 @@ export { getUrlFromRouteString }
 export { isStaticRouteString }
 export { analyzeRouteString }
 export { assertRouteString }
-export { parseRouteString }
+export { getRouteStringParameterList }
 
 import { assertWarning, isBrowser, escapeRegex } from '../utils.js'
 import { assert, assertUsage } from './utils.js'
@@ -125,6 +125,15 @@ function parseRouteString(routeString: string) {
     }
   })
   return segments
+}
+
+function getRouteStringParameterList(routeString: string): string[] {
+  const routeParameterList: string[] = []
+  const segments = parseRouteString(routeString)
+  segments.forEach((segment) => {
+    if (segment.param) routeParameterList.push(segment.param)
+  })
+  return routeParameterList
 }
 
 function getUrlFromRouteString(routeString: string): null | string {

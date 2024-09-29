@@ -11,6 +11,6 @@ import { Link } from '@brillout/docpress'
 
 For integrating an <Link href="/streaming">HTML stream</Link> into your server <Link href="/streaming#basics:~:text=We%20recommend%20using,pageContext.httpResponse.pipe()">we recommend using `pageContext.httpResponse.pipe()`</Link>.
 
-But Fastify doesn't seem to expose any writable stream (as far as we know). As a workaroud, you can directly use Node.js's writable stream as shown [here](https://github.com/royalswe/vike-fastify-boilerplate/blob/74bf861b98bfc6ab0cdffc5d3483b52c18cf1c14/server/index.ts#L84-L87).
+But Fastify doesn't seem to expose any writable stream (as far as we know). As a workaround, you can directly use Node.js's writable stream as shown [here](https://github.com/royalswe/vike-fastify-boilerplate/blob/74bf861b98bfc6ab0cdffc5d3483b52c18cf1c14/server/index.ts#L84-L87).
 
 If this workaround doesn't work out for you, you can fallback to <Link href="/streaming#basics:~:text=pageContext.httpResponse.getReadableWebStream()-,pageContext.httpResponse.getReadableNodeStream(),-For%20example%2C%20Cloudflare">`pageContext.httpResponse.getReadableNodeStream()`</Link>.

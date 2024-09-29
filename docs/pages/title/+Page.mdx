@@ -2,9 +2,11 @@ import { Link } from '@brillout/docpress'
 
 import { UiFrameworkExtension, ImplementedBy } from '../../components'
 
-Type: `string | (pageContext) => string`  
+Type: `string | null | ((pageContext) => string | null | undefined)`  
 Kind: overridable.  
-Environment: server, client. <ImplementedBy noCustomGuide />
+Environment: server, client.
+
+<ImplementedBy noCustomGuide />
 
 > See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
 

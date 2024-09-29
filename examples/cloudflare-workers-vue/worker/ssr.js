@@ -8,11 +8,7 @@ async function handleSsr(url) {
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) {
-    return null
-  } else {
-    const { readable, writable } = new TransformStream()
-    httpResponse.pipe(writable)
-    return new Response(readable)
-  }
+  const { readable, writable } = new TransformStream()
+  httpResponse.pipe(writable)
+  return new Response(readable)
 }

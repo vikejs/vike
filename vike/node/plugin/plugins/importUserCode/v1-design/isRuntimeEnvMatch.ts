@@ -4,7 +4,7 @@ import type { ConfigEnvInternal } from '../../../../../shared/page-configs/PageC
 
 function isRuntimeEnvMatch(
   configEnv: ConfigEnvInternal,
-  runtime: { isForClientSide: boolean; isClientRouting: boolean; isEager: boolean; isDev: boolean }
+  runtime: { isForClientSide: boolean; isClientRouting: boolean; isDev: boolean }
 ): boolean {
   // Runtime
   if (!runtime.isForClientSide) {
@@ -13,9 +13,6 @@ function isRuntimeEnvMatch(
     if (!configEnv.client) return false
     if (configEnv.client === 'if-client-routing' && !runtime.isClientRouting) return false
   }
-
-  // Eager
-  if (runtime.isEager !== !!configEnv.eager) return false
 
   // Production/development
   if (

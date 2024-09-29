@@ -9,16 +9,16 @@ function analyzeClientSide(
   pageConfig: PageConfigRuntime | null,
   pageFilesAll: PageFile[],
   pageId: string
-): { clientEntryLoaded: boolean; isClientRouting: boolean } {
+): { isClientRuntimeLoaded: boolean; isClientRouting: boolean } {
   // V1 design
   if (pageConfig) {
     const isClientRouting = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
-    const clientEntryLoaded = getConfigValueRuntime(pageConfig, 'clientEntryLoaded', 'boolean')?.value ?? false
-    return { clientEntryLoaded, isClientRouting }
+    const isClientRuntimeLoaded = getConfigValueRuntime(pageConfig, 'isClientRuntimeLoaded', 'boolean')?.value ?? false
+    return { isClientRuntimeLoaded, isClientRouting }
   } else {
     // TODO/v1-release: remove
     // V0.4 design
     const { isHtmlOnly, isClientRouting } = analyzePageClientSide(pageFilesAll, pageId)
-    return { clientEntryLoaded: !isHtmlOnly, isClientRouting }
+    return { isClientRuntimeLoaded: !isHtmlOnly, isClientRouting }
   }
 }

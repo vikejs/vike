@@ -12,7 +12,7 @@ import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
-import { type PointerImportData, parsePointerImportData } from './transformFileImports.js'
+import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
 

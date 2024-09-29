@@ -12,7 +12,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   const isWrangler = cmd === 'npm run preview'
 
   /*
-  // Manually disabled because of exeeded rate limit
+  // Manually disabled because of exceeded rate limit
   if (isWrangler) {
     skip('SKIPPED: temporarily skip wrangler tests.')
     return

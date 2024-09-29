@@ -31,7 +31,7 @@ Unique Vike features:
  - Vike allows the user to use different UI frameworks for the same app
    - For example, a Vike sponsor uses Vike to use Solid for all its pages except for one page that uses React because it needs a React library that doesn't exist for Solid
      - Important for Solid: for React users that are tempted to use Solid, Solid can sell the story "try Solid while being able to fall back to React, e.g. if a page needs some React library".
- - Users can build a custom [Framework-as-a-Product](https://vike.land/#framework-as-a-product). (Vike has been designed so that frameworks can be built on top of it.)
+ - Users can build a custom [Framework-as-a-Product](https://land.vike.dev/#framework-as-a-product). (Vike has been designed so that frameworks can be built on top of it.)
    - [Custom configs](https://vike.dev/meta)
  - Low-level primitives allowing users to deeply integrate with data fetching tools.
    - For example, Vike sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)

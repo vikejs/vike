@@ -1,6 +1,6 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
-A recurring problem when doing SSR are so-called *hydration mismatches*.
+A recurring problem when doing <Link href="/ssr">SSR</Link> are so-called *hydration mismatches*.
 
 ## Hydration mismatch
 
@@ -10,7 +10,7 @@ A hydration mismatch is when the content rendered to HTML on the server isn't th
 
 Hydration mismatches can induce performance degradations and bugs and should therefore be avoided.
 
-**Vue**
+### Vue
 
 Upon a hydration mismatch, Vue throws following errors in the browser:
 
@@ -25,7 +25,7 @@ Upon a hydration mismatch, Vue throws following errors in the browser:
 Hydration completed but contains mismatches.
 ```
 
-**React**
+### React
 
 Upon a hydration mismatch, React throws following errors in the browser:
 
@@ -92,6 +92,36 @@ With React:
 
 ## Suppress Hydration Mismatch
 
-There are situations when mismatches are inevitable. To suppress hydration mismatch warnings:
- - React: [StackOverflow - Is there any way to avoid "Text content did not match" warning in SSR with React?](https://stackoverflow.com/questions/53959948/is-there-any-way-to-avoid-text-content-did-not-match-warning-in-ssr-with-react/68438131)
- - Vue: [StackOverflow - [Vue][SSR] Suppress hydration mismatch warning](https://stackoverflow.com/questions/68438016/vuessr-suppress-hydration-mismatch-warning/68438108)
+For situations where mismatches are inevitable or difficult to avoid, you can silence the hydration mismatch warning.
+
+<Warning>Don’t overuse it: for less potential bugs and for (slightly or significant) better performance, it's best to avoid hydration mismatches if you can.</Warning>
+
+### React
+
+Use the `suppressHydrationWarning` attribute:
+
+```jsx
+function SomeComponent() {
+  return (
+    <span suppressHydrationWarning={true}>
+      Current Date: {new Date().toLocaleDateString()}
+    </span>
+  )
+}
+```
+
+See:
+- [React Docs > hydrate > Suppressing unavoidable hydration mismatch errors](https://react.dev/reference/react-dom/hydrate#suppressing-unavoidable-hydration-mismatch-errors)
+- [StackOverflow > Is there any way to avoid "Text content did not match" warning in SSR with React?](https://stackoverflow.com/questions/53959948/is-there-any-way-to-avoid-text-content-did-not-match-warning-in-ssr-with-react/68438131)
+
+### Vue
+
+Use the `data-allow-mismatch` attribute:
+
+```vue
+<div data-allow-mismatch="text">{{ data.toLocaleString() }}</div>
+```
+
+See:
+- [Vue Docs > Server-Side Rendering API > `data-allow-mismatch`](https://vuejs.org/api/ssr.html#data-allow-mismatch)
+- [StackOverflow > [Vue][SSR] Suppress hydration mismatch warning](https://stackoverflow.com/questions/68438016/vuessr-suppress-hydration-mismatch-warning/68438108)

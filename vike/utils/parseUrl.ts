@@ -5,12 +5,12 @@
 // Unit tests at ./parseUrl.spec.ts
 
 export { parseUrl }
-export { assertUsageUrlPathname }
 export { assertUsageUrlPathnameAbsolute }
 export { assertUsageUrlRedirectTarget }
 export { isUrl }
 export { isUri }
 export { isUrlRedirectTarget }
+export { isUrlPathnameRelative }
 export { isUrlExternal }
 export { isBaseServer }
 export { assertUrlComponents }
@@ -185,18 +185,16 @@ function parseHost(host: string | null, url: string) {
   const ret: { hostname: string | null; port: number | null } = { hostname: null, port: null }
   if (!host) return ret
 
-  // hostname
-  const [hostname, ...rest] = host.split(':')
-  ret.hostname = hostname!
-
   // port
-  if (rest.length > 0) {
-    assert(rest.length === 1, url)
-    const portStr = rest[0]!
-    const port = parseInt(portStr, 10)
+  const parts = host.split(':')
+  if (parts.length > 1) {
+    const port = parseInt(parts.pop()!, 10)
     assert(port || port === 0, url)
     ret.port = port
   }
+
+  // hostname
+  ret.hostname = parts.join(':')
 
   return ret
 }
@@ -367,9 +365,6 @@ function isUri(uri: string): boolean {
   return !!protocol && !isUrlProtocol(uri)
 }
 
-function assertUsageUrlPathname(url: string, errPrefix: string): void {
-  assertUsageUrl(url, errPrefix, { allowRelative: true })
-}
 function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
   assertUsageUrl(url, errPrefix)
 }
@@ -379,7 +374,7 @@ function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolv
 function assertUsageUrl(
   url: string,
   errPrefix: string,
-  { allowRelative, isRedirectTarget }: { allowRelative?: true; isRedirectTarget?: true | 'unresolved' } = {}
+  { isRedirectTarget }: { isRedirectTarget?: true | 'unresolved' } = {}
 ) {
   if (url.startsWith('/')) return
   let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
@@ -390,10 +385,6 @@ function assertUsageUrl(
       if (url === '*') return
       errMsg += `, or be ${pc.string('*')}`
     }
-  }
-  if (allowRelative) {
-    if (isUrlPathnameRelative(url)) return
-    errMsg += ', or be a relative URL'
   }
   assertUsage(false, errMsg)
 }

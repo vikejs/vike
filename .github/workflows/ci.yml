@@ -37,7 +37,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
-          cache: "pnpm"
+          # TODO/eventually: try using the cache again
+          # The cache breaks playwright https://github.com/vikejs/vike-vue/pull/119
+          # cache: "pnpm"
 
       - run: pnpm install
       - run: pnpm exec playwright install chromium

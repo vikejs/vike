@@ -19,8 +19,8 @@ import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-file
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
-import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd.js'
-import { getModuleFilePath } from '../../shared/getFilePath.js'
+import { logConfigInfo } from '../../shared/loggerNotProd.js'
+import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -109,18 +109,14 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       `${msg} — ${pc.cyan('no HMR')}, see https://vike.dev/on-demand-compiler`,
       'info',
       null,
-      true,
-      clear,
-      config
+      true
     )
     return
   }
   //*/
 
-  // HMR can resolve errors => we clear previously shown errors.
   // It can hide an error it shouldn't hide (because the error isn't shown again), but it's ok since users can reload the page and the error will be shown again (Vite transpilation errors are shown again upon a page reload).
   if (!isVikeConfig && isViteModule) {
-    clearLogs({ clearErrors: true })
     return
   }
 
@@ -140,7 +136,7 @@ function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
 
 function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
   {
-    const filePathToShowToUserResolved = getModuleFilePath(filePath, config)
+    const filePathToShowToUserResolved = getModuleFilePathAbsolute(filePath, config)
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }

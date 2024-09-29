@@ -21,7 +21,7 @@ async function startServer() {
     app.use(viteDevMiddleware)
   }
 
-  app.get('*', async (req, res, next) => {
+  app.get('*', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.url,
       user: 'some-fake-data'
@@ -29,13 +29,9 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
 
     const { httpResponse } = pageContext
-    if (!httpResponse) {
-      return next()
-    } else {
-      const { body, statusCode, headers } = httpResponse
-      headers.forEach(([name, value]) => res.setHeader(name, value))
-      res.status(statusCode).send(body)
-    }
+    httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(httpResponse.statusCode)
+    res.send(httpResponse.body)
   })
 
   const port = 3000

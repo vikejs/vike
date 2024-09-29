@@ -10,16 +10,18 @@ import { assert } from './utils.js'
 
 function removeFoucBuster() {
   assert(import.meta.env.DEV)
-
   let sleep = 2
-  const runClean = () => {
-    const isClean = clean()
-    if (!isClean) {
+  setTimeout(runClean, sleep)
+
+  return
+
+  function runClean() {
+    const isCleaned = clean()
+    if (!isCleaned) {
       if (sleep < 1000) sleep = 2 * sleep
       setTimeout(runClean, sleep)
     }
   }
-  setTimeout(runClean, sleep)
 }
 
 function clean() {
@@ -38,18 +40,23 @@ function clean() {
   //  - https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/node/runtime/renderPage/getPageAssets.ts#L68
   const injectedByVike = [...document.querySelectorAll(`link[rel="stylesheet"][type="text/css"][href$="${suffix}"]`)]
 
-  let isClean = true
-  injectedByVike.forEach((link) => {
-    const filePathAbsoluteUserRootDir = link.getAttribute('href')!.slice(0, -suffix.length)
+  let isCleaned = true
+  injectedByVike.forEach((linkVike) => {
+    const href = linkVike.getAttribute('href')
+    assert(href && href.endsWith(suffix))
+    let filePathAbsoluteUserRootDir = href.slice(0, -suffix.length)
+    const prefix = '/@fs/'
+    if (filePathAbsoluteUserRootDir.startsWith(prefix))
+      filePathAbsoluteUserRootDir = filePathAbsoluteUserRootDir.slice(prefix.length)
     if (
       injectedByVite.some((filePathAbsoluteFilesystem) =>
         filePathAbsoluteFilesystem.endsWith(filePathAbsoluteUserRootDir)
       )
     ) {
-      link.remove()
+      linkVike.remove()
     } else {
-      isClean = false
+      isCleaned = false
     }
   })
-  return isClean
+  return isCleaned
 }

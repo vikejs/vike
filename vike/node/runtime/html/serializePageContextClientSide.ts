@@ -23,14 +23,14 @@ const PASS_TO_CLIENT: string[] = [
   '_abortCaller',
   */
   pageContextInitIsPassedToClient,
-  '_pageId',
+  'pageId',
   'routeParams',
   'data' // for data() hook
 ]
 const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', isServerSideError]
 
 type PageContextSerialization = {
-  _pageId: string
+  pageId: string
   routeParams: Record<string, string>
   _passToClient: string[]
   _pageConfigs: PageConfigRuntime[]
@@ -114,13 +114,13 @@ function serialize(value: unknown, varName?: string): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
 }
 function getPassToClient(pageContext: {
-  _pageId: string
+  pageId: string
   _passToClient: string[]
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
 }): string[] {
   let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]
-  if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
+  if (isErrorPage(pageContext.pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
     passToClient.push(...PASS_TO_CLIENT_ERROR_PAGE)

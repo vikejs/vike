@@ -3,7 +3,7 @@ import { hasProp, assert, assertUsage } from '../server-routing-runtime/utils.js
 
 export { getPageContextSerializedInHtml }
 
-function getPageContextSerializedInHtml(): { _pageId: string; routeParams: Record<string, string> } {
+function getPageContextSerializedInHtml(): { pageId: string; routeParams: Record<string, string> } {
   // elem should exist because:
   // 1. <script id="vike_pageContext" type="application/json"> appears before the <script> that loads Vike's client runtime (which includes this file)
   // 2. <script id="vike_pageContext" type="application/json"> is neither async nor defer
@@ -19,7 +19,7 @@ function getPageContextSerializedInHtml(): { _pageId: string; routeParams: Recor
   assert(pageContextJson)
 
   const pageContextSerializedInHtml = parse(pageContextJson)
-  assert(hasProp(pageContextSerializedInHtml, '_pageId', 'string'))
+  assert(hasProp(pageContextSerializedInHtml, 'pageId', 'string'))
   assert(hasProp(pageContextSerializedInHtml, 'routeParams', 'string{}'))
 
   return pageContextSerializedInHtml

@@ -1,5 +1,6 @@
 export { executeHook }
 export { getPageContext }
+export { providePageContext }
 export { isUserHookError }
 
 import { getProjectError, assertWarning } from '../../utils/assert.js'
@@ -13,7 +14,7 @@ const globalObject = getGlobalObject('utils/executeHook.ts', {
   pageContext: null as PageContextUnknown
 })
 
-type PageContextUnknown = null | Record<string, unknown>
+type PageContextUnknown = null | Record<string, any>
 
 function isUserHookError(err: unknown): false | HookLoc {
   if (!isObject(err)) return false
@@ -97,6 +98,11 @@ function isNotDisabled(timeout: false | number): timeout is number {
 function getPageContext<PageContext = PageContextClient | PageContextServer>(): null | PageContext {
   return globalObject.pageContext as any
 }
+/**
+ * Provide `pageContext` for universal hooks.
+ *
+ * https://vike.dev/getPageContext
+ */
 function providePageContext(pageContext: PageContextUnknown) {
   globalObject.pageContext = pageContext
   // Promise.resolve() is quicker than process.nextTick() and setImmediate()

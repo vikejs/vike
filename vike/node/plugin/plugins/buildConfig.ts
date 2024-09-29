@@ -30,7 +30,7 @@ import { createRequire } from 'module'
 import fs from 'fs/promises'
 import path from 'path'
 import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { set_constant_ASSETS_MAP } from './importBuild/index.js'
+import { set_ASSETS_MAP } from './importBuild/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -90,7 +90,7 @@ function buildConfig(): Plugin[] {
       name: 'vike:buildConfig:writeBundle',
       apply: 'build',
       // Make sure other writeBundle() hooks are called after this writeBundle() hook.
-      //  - set_constant_ASSETS_MAP() needs to be called before dist/server/ code is executed.
+      //  - set_ASSETS_MAP() needs to be called before dist/server/ code is executed.
       //    - For example, the writeBundle() hook of vite-plugin-vercel needs to be called after this writeBundle() hook, otherwise: https://github.com/vikejs/vike/issues/1527
       enforce: 'pre',
       writeBundle: {
@@ -112,7 +112,7 @@ function buildConfig(): Plugin[] {
             }
             await fs.rm(clientManifestFilePath)
             await fs.rm(serverManifestFilePath)
-            await set_constant_ASSETS_MAP(options, bundle)
+            await set_ASSETS_MAP(options, bundle)
           }
         }
       }

@@ -1,7 +1,7 @@
 export { getVirtualFilePageConfigValuesAll }
 
 import { assert } from '../../../utils.js'
-import type { ConfigEnvInternal, PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
+import type { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 import {
   getVirtualFileIdPageConfigValuesAll,
   isVirtualFileIdPageConfigValuesAll
@@ -57,7 +57,8 @@ function getLoadConfigValuesAll(
     ...serializeConfigValues(
       pageConfig,
       importStatements,
-      (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isEager: false, isDev }),
+      (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
+      { isEager: false },
       ''
     )
   )

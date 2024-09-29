@@ -7,7 +7,7 @@ function Page() {
     <>
       <h1>HTML-only</h1>
       <p>
-        The React component <code>Page</code> of this page is rendererd to HTML only.
+        The React component <code>Page</code> of this page is rendered to HTML only.
       </p>
       <p>This page has zero browser-side JavaScript. (In development, Vite's HMR client is loaded.)</p>
       <p>
@@ -15,7 +15,7 @@ function Page() {
         files.
       </p>
       <p>
-        If needed, we can add a little bit of browser-side JavaScipt to implement bits of interactivity, see{' '}
+        If needed, we can add a little bit of browser-side JavaScript to implement bits of interactivity, see{' '}
         <a href="/html-js">HTML + JS</a>.
       </p>
     </>

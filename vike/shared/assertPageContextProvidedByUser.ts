@@ -37,9 +37,9 @@ function assertPageContextProvidedByUser(
   // In principle, it's possible to use onBeforeRoute()` to override and define the whole routing.
   // Is that a good idea to allow users to do this? Beyond deep integration with Vue Router or React Router, is there a use case for this?
   assertWarning(
-    !('_pageId' in pageContextProvidedByUser),
+    !('pageId' in pageContextProvidedByUser),
     `${errPrefix} sets ${pc.cyan(
-      'pageContext._pageId'
+      'pageContext.pageId'
     )} which means that Vike's routing is overriden. This is an experimental feature: make sure to contact a vike maintainer before using this.`,
     { onlyOnce: true }
   )

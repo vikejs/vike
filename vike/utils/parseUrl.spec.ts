@@ -1278,6 +1278,43 @@ describe('parseUrl', () => {
     // @ts-ignore
     globalThis.window = undefined
   })
+
+  it('IPV6', () => {
+    expect(parseUrl('http://[::1]:3000/', '/')).toMatchInlineSnapshot(`
+      {
+        "hasBaseServer": true,
+        "hash": "",
+        "hashOriginal": null,
+        "hostname": "[::1]",
+        "href": "http://[::1]:3000/",
+        "origin": "http://[::1]:3000",
+        "pathname": "/",
+        "pathnameOriginal": "/",
+        "port": 3000,
+        "protocol": "http://",
+        "search": {},
+        "searchAll": {},
+        "searchOriginal": null,
+      }
+    `)
+    expect(parseUrl('https://[::1]:3000/bla#:', '/')).toMatchInlineSnapshot(`
+      {
+        "hasBaseServer": true,
+        "hash": ":",
+        "hashOriginal": "#:",
+        "hostname": "[::1]",
+        "href": "https://[::1]:3000/bla#:",
+        "origin": "https://[::1]:3000",
+        "pathname": "/bla",
+        "pathnameOriginal": "/bla",
+        "port": 3000,
+        "protocol": "https://",
+        "search": {},
+        "searchAll": {},
+        "searchOriginal": null,
+      }
+    `)
+  })
 })
 /* Doesn't work
 declare global {

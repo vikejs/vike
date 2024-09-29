@@ -10,11 +10,9 @@ async function handleSsr(url: string, headers: Headers) {
   }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) {
-    return null
-  } else {
-    const { statusCode: status, headers } = httpResponse
-    const stream = httpResponse.getReadableWebStream()
-    return new Response(stream, { headers, status })
-  }
+  const stream = httpResponse.getReadableWebStream()
+  return new Response(stream, {
+    headers: httpResponse.headers,
+    status: httpResponse.statusCode
+  })
 }

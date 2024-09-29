@@ -39,7 +39,7 @@ type PageContext = {
 }
 
 type PageContextSerialized = {
-  _pageId: string
+  pageId: string
   _hasPageContextFromServer: true
 }
 function getPageContextFromHooks_serialized(): PageContextSerialized & { routeParams: Record<string, string> } {
@@ -70,7 +70,7 @@ async function getPageContextFromHooks_isHydration(
 }
 
 async function getPageContextFromHooks_isNotHydration(
-  pageContext: { _pageId: string } & PageContext & PageContextExports,
+  pageContext: { pageId: string } & PageContext & PageContextExports,
   isErrorPage: boolean
 ) {
   objectAssign(pageContext, {
@@ -142,7 +142,7 @@ async function getPageContextFromHooks_isNotHydration(
 async function executeHookClientSide(
   hookName: 'data' | 'onBeforeRender',
   pageContext: {
-    _pageId: string
+    pageId: string
     _hasPageContextFromServer: boolean
     _hasPageContextFromClient: boolean
   } & PageContextExports &
@@ -215,14 +215,14 @@ async function hasPageContextServer(pageContext: Parameters<typeof hookServerOnl
 async function hookServerOnlyExists(
   hookName: 'data' | 'onBeforeRender',
   pageContext: {
-    _pageId: string
+    pageId: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
   }
 ): Promise<boolean> {
   if (pageContext._pageConfigs.length > 0) {
     // V1
-    const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
+    const pageConfig = getPageConfig(pageContext.pageId, pageContext._pageConfigs)
     const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}
     assert(isObject(hookEnv))
     return !!hookEnv.server && !hookEnv.client
@@ -236,7 +236,7 @@ async function hookServerOnlyExists(
     assert(hookName === 'onBeforeRender')
     const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
       pageContext._pageFilesAll,
-      pageContext._pageId
+      pageContext.pageId
     )
     return hasOnBeforeRenderServerSideOnlyHook
   }
@@ -250,13 +250,13 @@ async function hookServerOnlyExists(
 function hookClientOnlyExists(
   hookName: 'data' | 'onBeforeRender',
   pageContext: {
-    _pageId: string
+    pageId: string
     _pageConfigs: PageConfigRuntime[]
   }
 ): boolean {
   if (pageContext._pageConfigs.length > 0) {
     // V1
-    const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
+    const pageConfig = getPageConfig(pageContext.pageId, pageContext._pageConfigs)
     const hookEnv = getConfigValueRuntime(pageConfig, `${hookName}Env`)?.value ?? {}
     assert(isObject(hookEnv))
     return !!hookEnv.client && !hookEnv.server
@@ -301,7 +301,7 @@ async function fetchPageContextFromServer(pageContext: { urlOriginal: string; _u
     throw getProjectError(`pageContext couldn't be fetched because an error occurred on the server-side`)
   }
 
-  assert(hasProp(pageContextFromServer, '_pageId', 'string'))
+  assert(hasProp(pageContextFromServer, 'pageId', 'string'))
   processPageContextFromServer(pageContextFromServer)
 
   return { pageContextFromServer }

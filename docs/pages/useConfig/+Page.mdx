@@ -2,6 +2,7 @@ import { Link, Contribution } from '@brillout/docpress'
 import { ImplementedBy } from '../../components'
 
 Environment: server, client.
+
 <ImplementedBy noCustomGuide={true}>`useConfig()`</ImplementedBy>
 
 The `useConfig()` hook enables you to set configurations inside UI components, as well as inside Vike hooks such as <Link href="/data">`+data`</Link>.
@@ -13,6 +14,11 @@ It currently supports following configs:
 - <Link href="/title" noBreadcrumb />
 - <Link href="/description" noBreadcrumb />
 - <Link href="/image" noBreadcrumb />
+- <Link href="/bodyAttributes" noBreadcrumb />
+- <Link href="/htmlAttributes" noBreadcrumb />
+- <Link href="/lang" noBreadcrumb />
+- <Link href="/viewport" noBreadcrumb />
+- <Link href="/favicon" noBreadcrumb />
 
 
 ## Inside `+data`
@@ -36,7 +42,7 @@ async function data(pageContext) {
 }
 ```
 
-> Make sure to call `useConfig()` before any await statement:
+> Make sure to call `useConfig()` before any `await`:
 > ```js
 > export async function data(pageContext) {
 >   const response = await fetch('https://star-wars.brillout.com/api/films.json')
@@ -78,8 +84,8 @@ function Movies() {
 Inside components, you can also use `<Config>` and `<Head>`:
 
 ```jsx
-import { Config } from 'vike-react/Config' // or vike-solid
-import { Head } from 'vike-react/Head' // or vike-solid
+import { Config } from 'vike-react/Config' // or vike-vue / vike-solid
+import { Head } from 'vike-react/Head' // or vike-vue / vike-solid
 
 function Movies() {
   // Fetch data
@@ -100,8 +106,6 @@ function Movies() {
 }
 ```
 
-> It's currently only implemented by `vike-react` and `vike-solid`. Contribution welcome [for `vike-vue`](https://github.com/vikejs/vike-vue/issues/175).
-
 > Both achieve the same:
 > - `<Head><something/></Head>`
 > - `<Config Head={<something/>}/>`
@@ -120,11 +124,11 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 function Movies() {
   // Fetch data
-  const result = useSuspenseQuery({
+  const query = useSuspenseQuery({
     queryKey: ['movies'],
     queryFn: () => fetch('https://star-wars.brillout.com/api/films.json')
   })
-  const movies = result.data
+  const movies = query.data
 
   // Set <head> tags
   const config = useConfig()
@@ -153,18 +157,18 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 
 function Movies() {
   // Fetch data
-  const result = useSuspenseQuery({
+  const query = useSuspenseQuery({
     queryKey: ['movies'],
     queryFn: () => fetch('https://star-wars.brillout.com/api/films.json')
   })
-  const movies = result.data
+  const movies = query.data
 
   // Render UI and <head> tags
   return (
     <Config title={`${movies.length} Star Wars Movies`} />
     <Head>
       <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
-    <Head>
+    </Head>
     <ul>{
       movies.map(({ title }) => (
         <li>{title}</li>

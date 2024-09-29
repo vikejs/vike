@@ -46,7 +46,7 @@ function DataIntegrationIntro({
   const insteadOfDataHook = (
     <>
       instead of{' '}
-      <Link href="/data-fetching#the-data-hook">
+      <Link href="/data-fetching#data-hook">
         using the page-level Vike hook <code>data()</code>
       </Link>
     </>

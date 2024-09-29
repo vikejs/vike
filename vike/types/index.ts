@@ -3,6 +3,7 @@ export type { PageContextServer } from '../shared/types.js'
 export type { PageContextClient } from '../shared/types.js'
 export type { PageContextWithServerRouting } from '../shared/types.js'
 export type { PageContextClientWithServerRouting } from '../shared/types.js'
+export type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 
 // TODO/v1-release: remove these three exports
 export type { PageContextBuiltInServer } from '../shared/types.js'
@@ -36,7 +37,8 @@ export type {
   OnRenderHtmlAsync,
   OnRenderHtmlSync,
   RouteAsync,
-  RouteSync
+  RouteSync,
+  KeepScrollPosition
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {

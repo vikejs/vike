@@ -9,7 +9,7 @@ const errIntro = 'The guard() hook defined by'
 
 async function executeGuardHook<
   T extends PageContextExports & {
-    _pageId: string
+    pageId: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
   }
@@ -18,7 +18,7 @@ async function executeGuardHook<
   if (pageContext._pageFilesAll.length > 0) {
     // V0.4 design
     assert(pageContext._pageConfigs.length === 0)
-    hook = findPageGuard(pageContext._pageId, pageContext._pageFilesAll)
+    hook = findPageGuard(pageContext.pageId, pageContext._pageFilesAll)
   } else {
     // V1 design
     hook = getHook(pageContext, 'guard')

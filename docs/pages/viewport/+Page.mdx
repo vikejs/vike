@@ -2,9 +2,11 @@ import { Link } from '@brillout/docpress'
 
 import { ImplementedBy } from '../../components'
 
-Type: `'responsive' | number | null`  
+Type: `'responsive' | number | null | ((pageContext) => 'responsive' | number | null | undefined)`  
 Default: `'responsive'`  
-Environment: server. <ImplementedBy noCustomGuide />
+Environment: server.
+
+<ImplementedBy noCustomGuide />
 
 The `viewport` setting sets [the page's shown width on mobile/tablet devices](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag).
 
@@ -47,7 +49,7 @@ export default {
 
 > The `viewport` setting (and the `<meta name="viewport">` tag in general) has an effect only on mobile/tablet devices: it's ignored on desktop devices.
 
-You can also set any aribtrary `<meta name="viewport">` tag:
+You can also set any arbitrary `<meta name="viewport">` tag:
 
 ```js
 // pages/+config.js

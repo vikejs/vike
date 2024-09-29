@@ -40,8 +40,12 @@ function checkConfigVike(configVike: unknown): null | WrongUsage {
   }
   {
     const prop = 'disableAutoFullBuild'
-    if (!hasProp(configVike, prop, 'boolean') && !hasProp(configVike, prop, 'undefined'))
-      return { prop, errMsg: 'should be a boolean' }
+    if (
+      !hasProp(configVike, prop, 'boolean') &&
+      !hasProp(configVike, prop, 'undefined') &&
+      !(configVike[prop] === 'prerender')
+    )
+      return { prop, errMsg: "should be a boolean or 'prerender'" }
   }
   {
     const prop = 'includeAssetsImportedByServer'

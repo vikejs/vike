@@ -37,7 +37,7 @@ type PageContextForRoute = PageContextUrlInternal & {
   _onBeforeRouteHook: Hook | null
 } & PageContextUrlSource
 type PageContextFromRoute = {
-  _pageId: string | null
+  pageId: string | null
   routeParams: Record<string, string>
   _routingProvidedByOnBeforeRouteHook?: boolean
   _debugRouteMatches: RouteMatches
@@ -60,7 +60,7 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
   const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
   if (pageContextFromOnBeforeRouteHook) {
     if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
-      assert(pageContextFromOnBeforeRouteHook._pageId)
+      assert(pageContextFromOnBeforeRouteHook.pageId)
       return pageContextFromOnBeforeRouteHook
     } else {
       objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
@@ -135,7 +135,7 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
 
   if (!winner) {
     objectAssign(pageContextFromRoute, {
-      _pageId: null,
+      pageId: null,
       routeParams: {}
     })
     return pageContextFromRoute
@@ -145,7 +145,7 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
     const { routeParams } = winner
     assert(isPlainObject(routeParams))
     objectAssign(pageContextFromRoute, {
-      _pageId: winner.pageId,
+      pageId: winner.pageId,
       routeParams: winner.routeParams
     })
   }

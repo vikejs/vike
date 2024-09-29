@@ -5,7 +5,6 @@ import {
   assert,
   assertClientRouting,
   assertUsage,
-  assertUsageUrlPathname,
   assertWarning,
   checkIfClientRouting,
   getGlobalObject
@@ -24,6 +23,7 @@ import { createPageContext } from './createPageContext.js'
 import { route, type PageContextFromRoute } from '../../shared/route/index.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import pc from '@brillout/picocolors'
+import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 
 assertClientRouting()
 const globalObject = getGlobalObject<{
@@ -53,8 +53,7 @@ async function prefetch(url: string): Promise<void> {
   assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
     showStackTrace: true
   })
-  const errPrefix = '[prefetch(url)] url' as const
-  assertUsageUrlPathname(url, errPrefix)
+  url = normalizeUrlArgument(url, 'prefetch')
 
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
@@ -67,10 +66,10 @@ async function prefetch(url: string): Promise<void> {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
-  const pageId = pageContextFromRoute._pageId
+  const pageId = pageContextFromRoute.pageId
 
   if (!pageId) {
-    assertWarning(false, `${errPrefix} ${pc.string(url)} ${noRouteMatch}`, {
+    assertWarning(false, `[prefetch(url)] ${pc.string(url)} ${noRouteMatch}`, {
       showStackTrace: true,
       onlyOnce: false
     })
@@ -135,7 +134,7 @@ async function prefetchIfPossible(url: string): Promise<void> {
     // If a route() hook has a bug or `throw render()` / `throw redirect()`
     return
   }
-  if (!pageContextFromRoute?._pageId) return
-  if (!(await isClientSideRoutable(pageContextFromRoute._pageId, pageContext))) return
-  await prefetchAssets(pageContextFromRoute._pageId, pageContext)
+  if (!pageContextFromRoute?.pageId) return
+  if (!(await isClientSideRoutable(pageContextFromRoute.pageId, pageContext))) return
+  await prefetchAssets(pageContextFromRoute.pageId, pageContext)
 }

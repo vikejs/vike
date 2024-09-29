@@ -2,6 +2,7 @@ import { Link } from '@brillout/docpress'
 import { ImplementedBy } from '../../components'
 
 Environment: client.
+
 <ImplementedBy noCustomGuide={true}>`onAfterRenderClient()`</ImplementedBy>
 
 Same as <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link> but called at the end. It's usually used for integrating tools.
@@ -11,5 +12,7 @@ Same as <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link> but c
 - <Link href="/onBeforeRenderClient"/>
 - <Link href="/onRenderClient"/>
 - <Link href="/onHydrationEnd" />
+- <Link href="/onPageTransitionStart" />
+- <Link href="/onPageTransitionEnd" />
 - <Link href="/hooks"/>
 - <Link href="/client" />

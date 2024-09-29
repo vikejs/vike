@@ -23,7 +23,7 @@ function debugPageFiles({
 }: {
   pageContext: {
     urlOriginal: string
-    _pageId: string
+    pageId: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
   } & PageContextDebugRouteMatches
@@ -44,7 +44,7 @@ function debugPageFiles({
     `Routing:`,
     printRouteMatches(pageContext._debugRouteMatches)
   )
-  debug(`pageId:`, pageContext._pageId)
+  debug(`pageId:`, pageContext.pageId)
   debug('Page type:', isHtmlOnly ? 'HTML-only' : 'SSR/SPA')
   debug(`Routing type:`, !isHtmlOnly && isClientRouting ? 'Client Routing' : 'Server Routing')
   debug('Server-side page files:', printPageFiles(pageFilesLoaded))

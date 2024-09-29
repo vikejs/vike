@@ -96,14 +96,14 @@ async function triggerFullBuild(
     process.exit(1)
   }
 
-  if (configVike.prerender && !configVike.prerender.disableAutoRun) {
+  if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
     await runPrerenderFromAutoFullBuild({ viteConfig: configInline })
     forceExit = true
   }
 }
 
 function abortViteBuildSsr(configVike: ConfigVikeResolved) {
-  if (!configVike.disableAutoFullBuild && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+  if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -118,10 +118,14 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
 }
 
 function isDisabled(configVike: ConfigVikeResolved): boolean {
-  if (configVike.disableAutoFullBuild === null) {
-    // TODO/v1-release: also enable autoFullBuild when running Vite's build() API
+  const { disableAutoFullBuild } = configVike
+  if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
+    // TODO/v1-release: remove autoFullBuild for both Vite's build() API and Vite's CLI
+    //  - Tell users to use `$ vike build` instead of `$ vite build`
+    //  - Remove the whole writeBundle() hook logic
+    //  - make `$ vite build` only build the client-side
     return !isViteCliCall()
   } else {
-    return configVike.disableAutoFullBuild
+    return disableAutoFullBuild
   }
 }

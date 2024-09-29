@@ -2,13 +2,13 @@ import { Link } from '@brillout/docpress'
 
 ## Npm packages containing invalid code
 
-Vite purposely doesn't transpile server-side code but lets Node.js directly execute npm packages (for a much faster development DX).
+Some npm packages contain invalid JavaScript code that can crash Node.js.
 
-But some npm packages contain invalid JavaScript code and you need to add them to `vite.config.js > ssr.noExternal`, see <Link href="/broken-npm-package" />.
+The usual workaround is to add the npm package to `vite.config.js > ssr.noExternal`, see <Link href="/broken-npm-package" />.
 
 
 ## Hydration mismatch
 
-A recurring problem when doing SSR are so-called *hydration mismatches*: a hydration mismatch is when the content rendered to HTML on the server isn't the same as the content rendered in the browser.
+If you use <Link href="/ssr">SSR</Link> then a recurring issue are so-called *hydration mismatches*: a hydration mismatch is when the content rendered to HTML on the server isn't the same as the content rendered in the browser.
 
-See deep dive explanation and solution at <Link href="/hydration-mismatch" />.
+See <Link href="/hydration-mismatch" /> for explanations, solutions, and workarounds.

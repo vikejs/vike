@@ -4,7 +4,7 @@ import { assert, assertUsage, assertWarning, hasProp, isObject } from '../utils.
 import pc from '@brillout/picocolors'
 
 function assertArguments(...args: unknown[]): void {
-  const prefix = `[renderPage(${pc.cyan('pageContextInit')})]` as const
+  const prefix = `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage)` as const
 
   const pageContextInit = args[0]
   assertUsage(
@@ -13,15 +13,15 @@ function assertArguments(...args: unknown[]): void {
     { showStackTrace: true }
   )
   const len = args.length
-  assertUsage(len === 1, `${prefix} You passed ${len} arguments but renderPage() accepts only one argument.'`, {
+  assertUsage(len === 1, `${prefix} called with ${len} arguments but renderPage() accepts only one argument.'`, {
     showStackTrace: true
   })
 
   assertUsage(
     isObject(pageContextInit),
-    `${prefix} ${pc.cyan('pageContextInit')} should be an object, but ${pc.cyan(
+    `${prefix} called with ${pc.code(
       `typeof pageContextInit === ${JSON.stringify(typeof pageContextInit)}`
-    )}`,
+    )} but ${pc.code('pageContextInit')} should be an object.`,
     { showStackTrace: true }
   )
 
