@@ -593,13 +593,13 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Config',
+    title: 'Config Files',
     url: '/config',
     sectionTitles: ['`+` files']
   },
   {
     level: 2,
-    title: 'Error page',
+    title: 'Error Page',
     url: '/error-page'
   },
   {
