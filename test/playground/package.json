@@ -14,8 +14,9 @@
     "react-dom": "^18.2.0",
     "typescript": "^5.2.2",
     "vike": "0.4.197",
-    "vike-react": "^0.5.7",
+    "vike-react": "file:./ejected/vike-react",
     "vite": "^5.4.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {}
 }
