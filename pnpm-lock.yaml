@@ -1519,8 +1519,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.5.7
-        version: 0.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)
+        specifier: file:./ejected/vike-react
+        version: file:test/playground/ejected/vike-react(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)
       vite:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@22.6.1)(terser@5.31.0)
@@ -7099,6 +7099,13 @@ packages:
 
   vike-react@0.5.7:
     resolution: {integrity: sha512-loAf5t4QmSLenjpPKzk9P3Q4lhQVltg/ze0r3k3PpF3ehBJJiOfFWvKwpCi9kvt50hNnQcZgleem5itDqN/KsA==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+      vike: link:/home/rom/code/vike/vike/
+
+  vike-react@file:test/playground/ejected/vike-react:
+    resolution: {directory: test/playground/ejected/vike-react, type: directory}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -13898,6 +13905,13 @@ snapshots:
       vite: 5.4.0(@types/node@22.6.1)(terser@5.31.0)
 
   vike-react@0.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-streaming: 0.3.43(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      vike: link:vike
+
+  vike-react@file:test/playground/ejected/vike-react(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
