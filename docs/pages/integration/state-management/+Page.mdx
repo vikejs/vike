@@ -1,0 +1,33 @@
+import { Link } from '@brillout/docpress'
+import { DataIntegrationIntro, DataIntegrationStore } from '../../components'
+
+TODO
+
+> **What is a store?**
+>
+> A store (aka state management tool) is a tool that helps you manage complex UI state.
+>
+> Not properly managing UI state is one of the most (if not the most) common root cause for buggy user interfaces. A store enables you to get under control even the most complex UI state logic.
+>
+> A store usually works by representing state changes as atomic changes to an immutable data structure, enabling a fundamentally more robust state management.
+
+In principle, you can use Vike with any store. For example:
+- <Link href="/redux" />
+- <Link href="/pinia" />
+- <Link href="/vuex">Integration &gt; Vuex</Link>
+- <Link href="/pullstate">Integration &gt; PullState</Link>
+
+
+## Initial state
+
+<DataIntegrationIntro
+  toolType="store"
+/>
+
+Integration example:
+<DataIntegrationStore />
+
+
+## See also
+
+- <Link href="/data-tools" />

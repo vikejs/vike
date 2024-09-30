@@ -252,311 +252,34 @@ const headings = [
     title: 'Integration'
   },
   {
-    level: 4,
-    title: 'Data fetching'
+    level: 2,
+    title: 'Authentication',
+    url: '/integration/authentication'
   },
   {
     level: 2,
-    title: 'Telefunc (RPC)',
-    url: '/telefunc'
+    title: 'Component Libraries',
+    url: '/integration/component-libraries'
   },
   {
     level: 2,
-    title: 'tRPC',
-    url: '/tRPC'
+    title: 'CSS-in-JS',
+    url: '/integration/css-in-js'
   },
   {
     level: 2,
-    title: 'TanStack Query',
-    url: '/tanstack-query'
+    title: 'State Management',
+    url: '/integration/state-management'
   },
   {
     level: 2,
-    title: 'Apollo (GraphQL)',
-    url: '/apollo-graphql'
+    title: 'Server',
+    url: '/integration/server'
   },
   {
     level: 2,
-    title: 'Relay (GraphQL)',
-    url: '/relay'
-  },
-  {
-    level: 2,
-    title: 'urql (GraphQL)',
-    url: '/urql'
-  },
-  {
-    level: 2,
-    title: 'gRPC',
-    url: '/grpc'
-  },
-  {
-    level: 2,
-    title: 'Socket.IO',
-    url: '/socket-io'
-  },
-  {
-    level: 2,
-    titleInNav: '... more',
-    title: 'Data Tools',
-    url: '/data-tools'
-  },
-  {
-    level: 4,
-    title: 'State management'
-  },
-  {
-    level: 2,
-    title: 'Redux',
-    url: '/redux'
-  },
-  {
-    level: 2,
-    title: 'Pinia',
-    url: '/pinia'
-  },
-  {
-    level: 2,
-    title: 'Effector',
-    url: '/effector'
-  },
-  {
-    level: 2,
-    title: 'Stores',
-    titleInNav: '... more',
-    url: '/stores'
-  },
-  {
-    level: 4,
-    title: 'Authentication'
-  },
-  {
-    level: 2,
-    title: 'Auth.js',
-    url: '/Auth.js'
-  },
-  {
-    level: 4,
-    title: 'CSS'
-  },
-  {
-    level: 2,
-    title: 'Tailwind CSS',
-    url: '/tailwind-css'
-  },
-  {
-    level: 2,
-    title: 'daisyUI',
-    url: '/daisyui'
-  },
-  {
-    level: 2,
-    title: 'Compiled',
-    url: '/compiled'
-  },
-  {
-    level: 2,
-    title: 'Vuetify',
-    url: '/vuetify'
-  },
-  {
-    level: 2,
-    title: 'styled-components',
-    url: '/styled-components'
-  },
-  {
-    level: 2,
-    title: '`styled-jsx`',
-    titleInNav: 'styled-jsx',
-    url: '/styled-jsx'
-  },
-  {
-    level: 2,
-    title: 'MUI',
-    url: '/mui'
-  },
-  {
-    level: 2,
-    title: 'PrimeReact',
-    url: '/primereact'
-  },
-  {
-    level: 2,
-    title: 'NextUI',
-    url: '/nextui'
-  },
-  {
-    level: 2,
-    title: 'Bootstrap',
-    url: '/bootstrap'
-  },
-  {
-    level: 2,
-    title: 'Grommet',
-    url: '/grommet'
-  },
-  {
-    level: 2,
-    title: 'Mantine',
-    url: '/mantine'
-  },
-  {
-    level: 2,
-    title: 'Ant Design',
-    url: '/antd'
-  },
-  {
-    level: 2,
-    title: 'Sass / Less / Stylus',
-    url: '/sass'
-  },
-  {
-    level: 2,
-    title: 'Naive UI',
-    url: '/naive-ui'
-  },
-  {
-    level: 2,
-    titleInNav: '... more',
-    title: 'CSS Tools',
-    url: '/css-tools',
-    sectionTitles: ['Collect styles upon SSR']
-  },
-  {
-    level: 4,
-    title: 'UI framework'
-  },
-  {
-    level: 2,
-    title: 'React',
-    url: '/react',
-    sectionTitles: ['React Server Components']
-  },
-  {
-    level: 2,
-    title: 'Vue',
-    url: '/vue'
-  },
-  {
-    level: 2,
-    title: 'Svelte',
-    url: '/svelte'
-  },
-  {
-    level: 2,
-    title: 'Preact',
-    url: '/preact'
-  },
-  {
-    level: 2,
-    title: 'Solid',
-    url: '/solid'
-  },
-  {
-    level: 2,
-    title: 'Angular',
-    url: '/angular'
-  },
-  {
-    level: 2,
-    titleInNav: '... more',
-    title: 'UI Frameworks',
-    url: '/ui-frameworks'
-  },
-  {
-    level: 4,
-    title: 'JavaScript Server'
-  },
-  {
-    level: 2,
-    title: 'HTTPS',
-    url: '/https'
-  },
-  {
-    level: 2,
-    title: 'Express.js',
-    url: '/express'
-  },
-  {
-    level: 2,
-    title: 'Hono',
-    url: '/hono'
-  },
-  {
-    level: 2,
-    title: 'Deno',
-    url: '/deno'
-  },
-  {
-    level: 2,
-    title: 'Fastify',
-    url: '/fastify'
-  },
-  {
-    level: 2,
-    title: 'Nitro',
-    url: '/nitro'
-  },
-  {
-    level: 2,
-    title: 'H3',
-    url: '/h3'
-  },
-  {
-    level: 2,
-    title: 'Servers',
-    titleInNav: '... more',
-    url: '/servers'
-  },
-  {
-    level: 4,
-    title: 'Backend'
-  },
-  {
-    level: 2,
-    title: 'Ruby on Rails',
-    url: '/ruby-on-rails'
-  },
-  {
-    level: 2,
-    title: 'Firebase',
-    url: '/firebase'
-  },
-  {
-    level: 2,
-    title: 'Nginx',
-    url: '/nginx'
-  },
-  {
-    level: 2,
-    title: 'Backends',
-    titleInNav: '... more',
-    url: '/backends'
-  },
-  {
-    level: 4,
-    title: 'Other'
-  },
-  {
-    level: 2,
-    title: 'Markdown',
-    url: '/markdown'
-  },
-  {
-    level: 2,
-    title: 'MDXEditor',
-    url: '/MDXEditor'
-  },
-  {
-    level: 2,
-    title: 'Tauri',
-    url: '/tauri'
-  },
-  {
-    level: 2,
-    title: 'Tool integration',
-    titleInNav: '... more',
-    url: '/integration'
+    title: 'Data Fetching',
+    url: '/integration/data-fetching'
   },
   {
     level: 1,
