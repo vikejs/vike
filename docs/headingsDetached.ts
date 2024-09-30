@@ -798,6 +798,10 @@ function redirects() {
       // TODO
       title: 'Tool integration',
       url: '/integration'
+    },
+    {
+      title: 'Authentication',
+      url: '/auth'
     }
   ] satisfies HeadingDetachedDefinition[]
 }

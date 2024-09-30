@@ -104,11 +104,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Authentication',
-    url: '/auth'
-  },
-  {
-    level: 2,
     title: 'Static Directory (`public/`)',
     url: '/static-directory'
   },
@@ -258,6 +253,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Server',
+    url: '/integration/server'
+  },
+  {
+    level: 2,
     title: 'Markdown',
     url: '/integration/markdown'
   },
@@ -275,11 +275,6 @@ const headings = [
     level: 2,
     title: 'State Management',
     url: '/integration/state-management'
-  },
-  {
-    level: 2,
-    title: 'Server',
-    url: '/integration/server'
   },
   {
     level: 2,
