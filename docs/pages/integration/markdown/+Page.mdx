@@ -1,0 +1,194 @@
+import { RepoLink, Link, Warning } from '@brillout/docpress'
+import { ViteLazyTranspilingContradiction } from '../../../components'
+
+
+## Vue
+
+Markdown plugins compatible with Vue:
+ - [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/)
+ - [`unplugin-vue-markdown`](https://github.com/unplugin/unplugin-vue-markdown)
+ - [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md)
+
+Example:
+ - <RepoLink path='/examples/vue-full/vite.config.ts' />
+ - <RepoLink path='/examples/vue-full/pages/markdown/+Page.md' />
+
+
+## React
+
+Markdown plugins compatible with React:
+ - [`@cyco130/vite-plugin-mdx`](https://github.com/cyco130/vite-plugin-mdx/)
+ - [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/)
+
+Example:
+ - <RepoLink path='/examples/react-full/vite.config.ts' />
+ - <RepoLink path='/examples/react-full/pages/markdown/+Page.mdx' />
+
+
+## Metadata
+
+There are several techniques for defining the metadata (title, publishing date, author, ...) of your markdown pages.
+
+The preferred technique depends on whether the metadata is global or local.
+
+#### Local metadata
+
+ > **What is local metadata?**  For example, if you want to show some detailed information below the blog post, such as the author's name and country. This metadata is only shown and only needed for that page.
+
+For local metadata, we recommend:
+- [With custom settings](#with-custom-settings)
+- [With frontmatter](#with-frontmatter)
+
+#### Global metadata
+
+> **What is global metadata?** For example, if you want to show a list of all your blog posts, and you want to always show that list on the left side of your website.
+> ```
+> 2024-01-01 New Year 2024 Resolution
+> 2023-12-20 Wrapping up 2023
+> 2023-06-15 My summer 2023
+> ```
+> Because this list is shown in the sidebar of every page, the publishing date and the title of all blog posts is always needed regardless of which page is rendered. This metadata is needed for every page.
+
+For global metadata, we recommend:
+- <Link href="#with-a-metadata-js-file" />
+
+<Warning>
+ You may be tempted to use [`import.meta.glob()`](https://vitejs.dev/guide/features.html#glob-import) to retrieve the metadata of all your pages, but we discourage this approach: loading all markdown files at once <ViteLazyTranspilingContradiction />.
+</Warning>
+
+### With a `metadata.js` file
+
+A simple way to define metadata is to define a `metadata.js` file that contains <Link href="#metadata:~:text=global%20or%20local.-,Global%20metadata,-.">global metadata</Link>.
+
+```js
+// /pages/metadata.js
+
+// This metadata is always available for every page
+export const metadata = [
+  {
+    url: '/blog/introducing-vike',
+    title: 'Introducing Vike',
+    date: new Date('2024-01-01')
+  },
+  {
+    url: '/blog/v1',
+    title: 'v1.0.0 release',
+    date: new Date('2024-06-01')
+  }
+]
+```
+
+```jsx
+// /pages/+Layout.jsx
+
+import { metadata } from './metadata'
+
+export function Layout({ children }) {
+  // Current URL
+  const { urlPathname } = usePageContext()
+  // The page's metadata
+  const { title } = metadata.find(({ url }) => url === pageContext.urlPathname)
+
+  return <>
+    {/* Show the list of blog posts */}
+    <LeftSidebar>
+      <p>Blog posts:</p>
+      <ul>{
+        metadata.map(({ title, url, date }) =>
+          <li>
+            <a href={url}>{data + title}</a>
+          </li>
+        )
+      }</ul>
+    </LeftSidebar>
+
+    {/* The page's content */}
+    <Content>
+      <h1>{ title }</h1>
+      /* children is usually pageContext.Page which is the component defined by +Page.md */
+      { children }
+    </Content>
+  </>
+}
+```
+
+```md
+// /pages/blog/introducing-vike/+Page.md
+
+We're thrilled to officially introduce Vike.
+```
+> The `<h1>` of each pages is already defined by `/pages/+Layout.jsx`: you don't have to define it again in `+Page.md`.
+
+```md
+// /pages/blog/v1/+Page.md
+
+The `v1.0.0` release signals that Vike is ready for prime time: it now includes
+all essentials you'd expect from a frontend framework with a robust design.
+```
+
+
+### With custom settings
+
+You can use <Link href="/meta">`meta`</Link> to create custom settings for defining <Link href="#metadata:~:text=for%20every%20page.-,Local%20metadata,-.">local metadata</Link>.
+
+```mdx
+// /pages/2024-new-year/+Page.mdx
+
+export const metadata = {
+  author: {
+    firstName: 'John',
+    lastName: 'Doe',
+    country: 'England'
+  }
+}
+
+## Some Markdown
+
+This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
+```
+
+> [MDX](https://mdxjs.com/) allows you to export JavaScript values in `.mdx` files.
+
+> Usually, Vike forbids `+Page.js` files to have "side exports": the `+Page.js` should only export the value of the `Page` setting.
+> But, for improved DX, Vike allows markdown files such as `+Page.mdx` to export the value of other settings.
+
+```ts
+// /pages/+config.js
+
+// Define the custom settings `metadata`
+export default {
+  meta: {
+    metadata: {
+      env: { server: true, client: true }
+    }
+  }
+}
+```
+
+See <Link href="/meta"/>.
+
+> It's a common practice to use a [`metadata.js` file](#with-a-metadata-js-file) for defining global metadata, as well as creating custom settings for defining local metadata.
+
+
+### With frontmatter
+
+Some markdown processors have support for a so-called *frontmatter* to define the page's metadata.
+
+```
+---
+title: A Markdown Page
+description: Example of using markdown with some frontmatter data
+---
+
+## Some Markdown
+
+This page uses [markdown](https://en.wikipedia.org/wiki/Markdown).
+```
+
+The frontmatter data is usually exposed as an export,
+which you can access by making the export `nameOfTheFrontmatterExport` a custom setting, see <Link href="/meta" />.
+
+
+## See also
+
+- <Link href="/head-tags" />

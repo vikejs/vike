@@ -258,6 +258,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Markdown',
+    url: '/integration/markdown'
+  },
+  {
+    level: 2,
     title: 'Component Libraries',
     url: '/integration/component-libraries'
   },
