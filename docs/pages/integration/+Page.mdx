@@ -12,7 +12,7 @@ To initialize UI vanilla tools (jQuery, tooltips, ...) you can use the <Link hre
 // pages/+onHydrationEnd.js
 
 export default () => {
-  // After hydration we usually initialize vanilla JS component libraries, for example tooltips
+  // Initializing vanilla JS component libraries, for example tooltips, after hydration.
   tooltip.init(document.querySelectorAll('.tooltip'))
   // Or some vanilla JS modal library
   $('.my-modals').modal()
@@ -34,24 +34,22 @@ You can use the <Link href="/client">`+client.js`</Link> file to initialize anal
 someAnalyticsLibrary.init(/* ... */)
 ```
 
-[Google Analytics](https://developers.google.com/analytics), [Plausible](https://plausible.io), [Segment](https://segment.com)
+That way you can install tools such as [Google Analytics](https://developers.google.com/analytics), [Plausible](https://plausible.io), or [Segment](https://segment.com).
 
-If you want to load analytics code, consider using:
-
- - <Link href="/onHydrationEnd" />
+You can also load and/or initialize analytics code only after the hydration ends by using the <Link href="/onHydrationEnd">+onHydrationEnd</Link> hook.
 
 
 ## Component libraries
 
-Some compnent libraries need initilization, most notably vanilla component libraries such as Bootstrap.
+Some compnent libraries need initialization, most notably vanilla component libraries such as Bootstrap.
 
 To initilizae code, you can use
- - <Link href="/onHydrationEnd" />
- - <Link href="/client" />
+ - <Link href="/onHydrationEnd" noBreadcrumb/>
+ - <Link href="/client" noBreadcrumb/>
 
 To inject external scripts, you can use:
- - <Link href="/Head" />
- - <Link href="/bodyHtmlEnd" />
+ - <Link href="/Head" noBreadcrumb/>
+ - <Link href="/bodyHtmlEnd" noBreadcrumb/>
 
 Examples:
 
@@ -82,12 +80,12 @@ See also:
 
 ## Service workers
 
-You can use the <Link href="/client">`+client.js`</Link> file to initialize your [service worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
+You can use the <Link href="/client">`+client.js`</Link> file to initialize [service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
 
 ```js
 // pages/+client.js
 
-// Initializing a Service Worker.
+// Initializing a Service Worker
 navigator.serviceWorker.register(/* ... */)
 ```
 
@@ -157,7 +155,7 @@ See:
 - <Link href="/onRenderHtml" />
 
 Since you control how your pages are rendered, you can use any tool you want without any restrictions.
-- Any UI framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
+- Any UI framework (React 16, React 17, Vue 2, Vue 3, petite-vue, Svelte, Solid, Preact, ...)
 - Any UI library (Vuex, Redux, Pinia, Relay, Apollo GraphQL, Recoil, ...)
 - Any CSS framework (Tailwind CSS, Bulma, Bootstrap, Material Design, ...)
 - Any client-side library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
