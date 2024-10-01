@@ -189,10 +189,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/RPC'
   },
   {
-    title: 'Error Handling',
-    url: '/errors'
-  },
-  {
     title: 'Build Your Own Framework',
     url: '/build-your-own-framework'
   },
@@ -785,7 +781,7 @@ function redirects(): HeadingDetachedDefinition[] {
       url: '/https'
     },
     {
-      title: 'Errors',
+      title: 'Error Handling',
       url: '/errors'
     },
     {
