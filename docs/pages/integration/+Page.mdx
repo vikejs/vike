@@ -1,5 +1,6 @@
 import { Link } from '@brillout/docpress'
-import { JustAMiddleware, IntegrationHelp } from '../../components'
+import { JustAMiddleware, IntegrationHelp, Advanced } from '../../components'
+import { DataIntegrationFetch, DataIntegrationIntroGeneric } from '../../components'
 
 <IntegrationHelp />
 
@@ -60,7 +61,28 @@ Examples:
 - <Link href="/tools#component-libraries">... more</Link>
 
 
-## Service Workers
+## Data fetching
+
+In general we recommend using data-fetching tools only for non-initial data, see <Link href="/data-fetching#initial-data" />.
+
+Some data-fetching tools, such as <Link href="/tanstack-query">TanStack Query</Link>, enable you to <Link href="/data-fetching#tools">use tools for fetching initial data</Link>.
+
+<Advanced>
+The following documents how to manually integrate tools for fetching initial data. We recommend using a Vike extension that already does this for you.
+</Advanced>
+
+<DataIntegrationIntroGeneric />
+
+<DataIntegrationFetch />
+
+See also:
+
+- <Link href="/tools#data-fetching"/>
+- <Link href="/data-fetching" />
+- <Link href="/stores" />
+
+
+## Service workers
 
 You can use the <Link href="/client">`+client.js`</Link> file to initialize your [service worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
 
