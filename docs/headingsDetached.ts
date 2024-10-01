@@ -785,6 +785,10 @@ function redirects(): HeadingDetachedDefinition[] {
       url: '/https'
     },
     {
+      title: 'Errors',
+      url: '/errors'
+    },
+    {
       title: 'Backends',
       url: '/backends'
     }
