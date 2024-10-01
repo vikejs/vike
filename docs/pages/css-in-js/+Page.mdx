@@ -7,10 +7,7 @@ import { IntegrationHelp, UiFrameworkExtension } from '../../components'
 In order to avoid FOUC ([**f**lash **o**f **u**nstyled **c**ontent](https://en.wikipedia.org/wiki/Flash_of_unstyled_content)),
 CSS-in-JS tools usually need to collect the page's styles upon SSR and add the collected styles to the HTML. (So that the browser loads the styles early.)
 
-Depending on the tool, you can achieve this by using:
- - <Link href="/onBeforeRenderHtml" noBreadcrumb />
- - <Link href="/onAfterRenderHtml" noBreadcrumb />
- - <Link href="/useConfig" noBreadcrumb />
+For example:
 
 ```js
 // /pages/+onBeforeRenderHtml.js
@@ -35,7 +32,11 @@ export default pageContext => {
 }
 ```
 
-> See <Link href="/Head#how-to-inject-raw-html" />
+> See:
+>  - <Link href="/onBeforeRenderHtml" noBreadcrumb />
+>  - <Link href="/onAfterRenderHtml" noBreadcrumb />
+>  - <Link href="/useConfig" noBreadcrumb />
+>  - <Link href="/Head#how-to-inject-raw-html" />
 
 
 ## Without `vike-{react,vue,solid}`

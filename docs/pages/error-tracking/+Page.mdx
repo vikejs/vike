@@ -7,12 +7,12 @@ You can install error tracking:
 
 ## Client-side
 
-You can use <Link href="/client">`+client.js`</Link> in order to make sure that your error handling code is initialized before any other code executes.
+You can use <Link href="/client">`+client.js`</Link> in order to make sure that your error tracker is initialized before any other code executes.
 
 ```js
-// /pages/+client.js
+// pages/+client.js
 
-// This is a good place to initialize error tracking such as Sentry or Bugsnag.
+// This is a good place to initialize an error tracker scuh as Sentry
 Sentry.init()
 
 // Custom tracking
@@ -54,7 +54,7 @@ server.addMiddleware({
 })
 ```
 
-> Vike calls `console.error(err)` for any error it encounters. With the upcoming [new hook `onLog()` (#1439)](https://github.com/vikejs/vike/issues/1438) you'll have control over Vike's logging.
+> Vike calls `console.error(err)` for any error it encounters. With the upcoming [new hook `onLog()` (#1439)](https://github.com/vikejs/vike/issues/1438) you'll have full control over Vike's logging.
 
 See also <Link href="/error-page" />.
 
