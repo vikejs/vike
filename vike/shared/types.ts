@@ -123,7 +123,7 @@ type PageContextBuiltInCommon<Data> = {
   /**
    * Error that occured while rendering.
    *
-   * https://vike.dev/integration/error-tracking
+   * https://vike.dev/error-tracking
    */
   errorWhileRendering?: unknown
 

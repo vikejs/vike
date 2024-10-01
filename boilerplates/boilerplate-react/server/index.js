@@ -57,7 +57,7 @@ async function startServer() {
     }
     const pageContext = await renderPage(pageContextInit)
     if (pageContext.errorWhileRendering) {
-      // Install error tracking here, see https://vike.dev/integration/error-tracking
+      // Install error tracking here, see https://vike.dev/error-tracking
     }
     const { httpResponse } = pageContext
     if (res.writeEarlyHints) res.writeEarlyHints({ link: httpResponse.earlyHints.map((e) => e.earlyHintLink) })
