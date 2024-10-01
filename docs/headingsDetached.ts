@@ -182,7 +182,8 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   },
   {
     title: 'Examples & Guides',
-    url: '/examples'
+    url: '/examples',
+    sectionTitles: ['CSS-in-JS']
   },
   {
     title: 'RPC',
