@@ -772,7 +772,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
 
 function redirects(): HeadingDetachedDefinition[] {
   // TODO/eventually: move all redirects here.
-  // TODO: update all links
   return [
     {
       title: 'Data Tools',
