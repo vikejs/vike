@@ -342,10 +342,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/config-code-splitting'
   },
   {
-    title: 'Error Tracking',
-    url: '/error-tracking'
-  },
-  {
     title: 'Dynamic `import()`',
     url: '/dynamic-import'
   },
@@ -791,16 +787,8 @@ function redirects(): HeadingDetachedDefinition[] {
       url: '/https'
     },
     {
-      title: 'Servers',
-      url: '/servers'
-    },
-    {
       title: 'Backends',
       url: '/backends'
-    },
-    {
-      title: 'Authentication',
-      url: '/auth'
     }
   ]
 }

@@ -1,3 +1,81 @@
 import { Link } from '@brillout/docpress'
 
-Page moved to <Link href="/errors" />.
+You can install error tracking:
+ - On the client-side, by using the <Link href="/client">+client.js</Link> file.
+ - On the server-side, at your <Link href="/renderPage">`renderPage()`</Link> integration.
+
+
+## Client-side
+
+You can use <Link href="/client">`+client.js`</Link> in order to make sure that your error handling code is initialized before any other code executes.
+
+```js
+// /pages/+client.js
+
+// This is a good place to initialize error tracking such as Sentry or Bugsnag.
+Sentry.init()
+
+// Custom tracking
+window.addEventListener('error', (err) => {
+   console.error('An error occurred:', err)
+})
+```
+
+
+## Server-side
+
+Server-side errors are exposed over `pageContext.errorWhileRendering` at <Link href="/renderPage">`renderPage()`</Link>:
+
+```js
+// server.js
+
+import { renderPage } from 'vike/server'
+
+// Any server: Express.js, Cloudflare Worker, AWS Lambda Function, Fastify, Hono, Nitro, ...
+server.addMiddleware({
+  method: 'GET',
+  route: '*', // catch-all
+  async handler(request) {
+    const pageContext = await renderPage({ urlOriginal: request.url })
+
+    if (pageContext.errorWhileRendering) {
+      /* Vike already calls console.error() so the following line isn't needed.
+      console.error(pageContext.errorWhileRendering)
+      */
+
+      // If you use an error tracker (e.g. Sentry):
+      myErrorTracker.intercept(pageContext.errorWhileRendering)
+    }
+
+    // The HTTP response of the page.
+    // If pageContext.errorWhileRendering is defined then this is usually the error page.
+    return pageContext.httpResponse
+  }
+})
+```
+
+> Vike calls `console.error(err)` for any error it encounters. With the upcoming [new hook `onLog()` (#1439)](https://github.com/vikejs/vike/issues/1438) you'll have control over Vike's logging.
+
+See also <Link href="/error-page" />.
+
+You can use any error tracker, such as [Sentry](https://sentry.io/), [Bugsnag](https://www.bugsnag.com/), [Rollbar](https://rollbar.com/), or your own custom error tracking. For that, make sure to use the error tracker's server-side interceptor. For example with Sentry:
+
+```js
+import * as Sentry from "@sentry/node";
+
+// ...
+
+    if (pageContext.errorWhileRendering) {
+      Sentry.captureException(e)
+    }
+
+// ...
+```
+
+
+## See also
+
+ - <Link href="/renderPage" />
+ - <Link href="/error-page" />
+ - <Link href="/client" />
+ - <Link href="/pageContext" />

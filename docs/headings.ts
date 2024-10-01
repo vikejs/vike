@@ -150,22 +150,22 @@ const headings = [
   {
     level: 2,
     title: 'Authentication',
-    url: '/integration/authentication'
+    url: '/auth'
   },
   {
     level: 2,
-    title: 'Server',
-    url: '/server'
+    title: 'Servers',
+    url: '/servers'
   },
   {
     level: 2,
     title: 'Error Tracking',
-    url: '/integration/error-tracking'
+    url: '/error-tracking'
   },
   {
     level: 2,
     title: 'CSS-in-JS',
-    url: '/integration/css-in-js'
+    url: '/css-in-js'
   },
   {
     level: 2,

@@ -1,3 +1,94 @@
-import { Link } from '@brillout/docpress'
+import { Link, RepoLink } from '@brillout/docpress'
 
-Page moved to <Link href="/integration/authentication" />.
+To make information about the authenticated user available to your pages and UI components, you usually define `pageContext.user` at [`renderPage()`](/renderPage):
+
+```js
+// Vike server middleware
+app.get('*', async (req, res) => {
+  // Authentication middlewares (e.g. Passport.js and Grant) provide information about the
+  // logged-in user at req.user
+  const user = req.user
+
+  /* Or when using a third-party authentication provider (e.g. Auth0):
+  const user = await authProviderApi.getUser(req.headers)
+  */
+
+  const pageContextInit = {
+    urlOriginal: req.url,
+    // Make the user object available at pageContext.user
+    user
+  }
+  const result = await renderPage(pageContextInit)
+
+  /* ... */
+})
+```
+
+You can then access `pageContext.user` from any UI component using <Link href="/usePageContext" >`usePageContext()`</Link>.
+
+> You can pass any custom `pageContext` property to `renderPage()`, see <Link href="/pageContext#custom" />.
+
+In principle, you can use Vike with any authentication tool such as:
+- <Link text="Auth.js" href="/Auth.js" />
+- [Grant](https://github.com/simov/grant)
+- [Passport.js](https://github.com/jaredhanson/passport)
+- [Auth0](https://auth0.com/)
+
+
+## Login flow
+
+By using [`guard()`](/guard) with [`throw redirect()`](/redirect) or [`throw render()`](/render) you can:
+ - Implement login flows.
+ - Protect private pages from unprivileged access.
+
+```js
+// /pages/admin/+guard.js
+
+import { render, redirect } from 'vike/abort'
+
+export const guard = (pageContext) => {
+  const { user } = pageContext
+  if (user === null) {
+    // Render the login page while preserving the URL. (This is novel technique
+    // which we explain down below.)
+    throw render('/login')
+    /* The more traditional way, redirect the user:
+    throw redirect('/login')
+    */
+  }
+  if (user.role !== 'admin') {
+    // Render the error page and show message to the user
+    throw render(403, 'Only admins are allowed to access this page.')
+  }
+}
+```
+
+> Using `render('/login')` instead of `redirect('/login')` allows the URL to be preserved during the entire login flow:
+>  1. Unauthenticated user goes to URL `/admin` and sees the login page. (URL is `/admin`.)
+>  2. User fills the sign-in form and successfully logs in. (URL is still `/admin`.)
+>  3. <Link text="Reload" href="/reload" /> the page, the user now sees the admin page. (URL is still `/admin`.)
+>
+> See <RepoLink text="example" path="/examples/auth/" />.
+
+You can also define a `guard()` hook that applies to multiple pages:
+
+```js
+// /pages/+guard.js
+
+// This guard() hook applies to all pages: the file is located at /pages/+guard.js
+// and therefore applies to all /pages/**/+Page.js
+
+import { render } from 'vike/abort'
+
+export const guard = (pageContext) => {
+  if (!pageContext.user) {
+    throw render('/login')
+  }
+}
+```
+
+## See also
+
+- <Link href="/guard" />
+- <Link href="/redirect" />
+- <Link href="/render" />
