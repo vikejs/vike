@@ -155,7 +155,7 @@ const headings = [
   {
     level: 2,
     title: 'Server',
-    url: '/integration/server'
+    url: '/server'
   },
   {
     level: 2,
@@ -170,12 +170,12 @@ const headings = [
   {
     level: 2,
     title: 'Markdown',
-    url: '/integration/markdown'
+    url: '/markdown'
   },
   {
     level: 2,
-    title: 'State Management',
-    url: '/integration/state-management'
+    title: 'Stores (State Management)',
+    url: '/stores'
   },
   {
     level: 2,

@@ -141,10 +141,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/nginx'
   },
   {
-    title: 'Markdown',
-    url: '/markdown'
-  },
-  {
     title: 'MDXEditor',
     url: '/MDXEditor'
   },
@@ -785,10 +781,6 @@ function redirects(): HeadingDetachedDefinition[] {
     {
       title: 'Data Tools',
       url: '/data-tools'
-    },
-    {
-      title: 'Stores',
-      url: '/stores'
     },
     {
       title: 'CSS Tools',
