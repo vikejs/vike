@@ -182,12 +182,12 @@ const headings = [
     title: 'Data Fetching',
     url: '/integration/data-fetching'
   },
-    {
+  {
     level: 2,
-      titleInNav: '... more',
-      title: 'Other integration',
-      url: '/integration'
-    },
+    titleInNav: '... more',
+    title: 'Other integration',
+    url: '/integration'
+  },
   {
     level: 1,
     title: 'Deploy'

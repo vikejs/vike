@@ -3,7 +3,6 @@ export { headingsDetached }
 import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached: HeadingDetachedDefinition[] = [
-  ...redirects(),
   {
     title: 'Redux',
     url: '/redux'
@@ -190,7 +189,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/tools'
   },
   {
-    level: 2,
     title: 'RPC',
     url: '/RPC'
   },
@@ -775,10 +773,11 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: '`injectScriptsAt`',
     url: '/injectScriptsAt'
-  }
+  },
+  ...redirects()
 ]
 
-function redirects() {
+function redirects(): HeadingDetachedDefinition[] {
   // TODO/eventually: move all redirects here.
   // TODO: update all links
   return [
@@ -815,5 +814,5 @@ function redirects() {
       title: 'Authentication',
       url: '/auth'
     }
-  ] satisfies HeadingDetachedDefinition[]
+  ]
 }
