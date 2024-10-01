@@ -181,8 +181,8 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/socket-io'
   },
   {
-    title: 'Tool Examples/Guides',
-    url: '/tools',
+    title: 'Examples & Guides',
+    url: '/examples',
     sectionTitles: ['CSS-in-JS']
   },
   {
