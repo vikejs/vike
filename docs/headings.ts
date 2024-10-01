@@ -179,13 +179,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Data Fetching',
-    url: '/integration/data-fetching'
-  },
-  {
-    level: 2,
     titleInNav: '... more',
-    title: 'Other integration',
+    title: 'Tool integration (more)',
     url: '/integration'
   },
   {
