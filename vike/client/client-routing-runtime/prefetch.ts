@@ -250,8 +250,10 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
     prefetchSettings = { staticAssets: 'hover', pageContext: Infinity }
   }
 
-  const urlOfLink = linkTag.getAttribute('href')
-  assert(urlOfLink)
+  // Check again in case DOM was manipulated since last check
+  if (skipLink(linkTag)) return
+
+  const urlOfLink = linkTag.getAttribute('href')!
 
   const pageContextLink = await getPageContextLink(urlOfLink)
   if (!pageContextLink?.pageId) return
