@@ -164,13 +164,13 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Markdown',
-    url: '/integration/markdown'
+    title: 'CSS-in-JS',
+    url: '/integration/css-in-js'
   },
   {
     level: 2,
-    title: 'CSS-in-JS',
-    url: '/integration/css-in-js'
+    title: 'Markdown',
+    url: '/integration/markdown'
   },
   {
     level: 2,
@@ -292,7 +292,7 @@ const headings = [
     titleInNav: '`Head`',
     title: '`Head`',
     url: '/Head',
-    sectionTitles: ['Only HTML']
+    sectionTitles: ['Only HTML', 'How to inject raw HTML?']
   },
   {
     level: 2,

@@ -11,6 +11,9 @@ You can embed Vike into any server, and use any server utilitiy.
 - <Link href="/nginx" />
 - <Link href="/tools#server">... more</Link>
 
+> Instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy them to a <Link href="/static-hosts">static host</Link>.
+
+## Just a middleware
 
 <JustAMiddleware />
 
@@ -21,6 +24,14 @@ You can use:
 - Any virtual private server (AWS EC2, Google Cloud, ...)
 - Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)
 - Any server utility (Docker, Nginx, PM2, ...)
+
+
+## HTTPS
+
+In production, Vike is only a server middleware; there is nothing special to take into consideration.
+
+If you want to use HTTPS in development as well, then make sure to [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
+
 
 ## See also
 

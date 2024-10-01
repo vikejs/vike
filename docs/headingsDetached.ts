@@ -185,8 +185,11 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/socket-io'
   },
   {
-    title: 'Tools',
-    url: '/tools'
+    title: 'Tool Examples/Guides',
+    url: '/tools',
+    sectionTitles: [
+      'CSS-in-JS'
+    ]
   },
   {
     title: 'RPC',
@@ -790,10 +793,9 @@ function redirects(): HeadingDetachedDefinition[] {
       url: '/stores'
     },
     {
+      // TODO
       title: 'CSS Tools',
       url: '/css-tools',
-      // TODO
-      sectionTitles: ['Collect styles upon SSR']
     },
     {
       // TODO
