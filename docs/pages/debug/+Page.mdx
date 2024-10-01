@@ -1,34 +1,59 @@
 import { Link } from '@brillout/docpress'
 
-In general, if you run into an issue with Vike, then we recommend <Link href="/faq#how-can-i-reach-out-for-help">reaching out</Link>.
+In general, if you run into any issues with Vike, we recommend that you <Link href="/faq#how-can-i-reach-out-for-help">reach out to us</Link>.
 
-That said, in some situations, you may want to dig into a problem yourself. For example, we may ask you to provide us a minimal reproduction but, sometimes, digging into Vike's source code can be faster than constructing a minimal reproduction. (And reading high-quality source code written by Open Source developers can be fun.)
+> If you report a Vike bug, then we quickly fix it (usually under 24 hours).
 
-Also, note the debug logs of Vike and Vite to easily gather insights.
+That said, you can also dig into issues yourself.
+
+> In some situations, you may want to dig into a problem yourself. For example, if we ask you to provide a minimal reproduction, it might be quicker to dig into Vike's source code instead.
 
 
-## Dig
+## Verbose errors
 
-The quickest way to dig into Vike is to inject a bunch of `console.log()` inside `node_modules/vike/dist/**/*.js`.
+Vike prettifies transpilation errors, such as errors thrown by [esbuild](https://esbuild.github.io/) and [Babel](https://babeljs.io/).
 
-> It may sound scary to dig into foreign source code, but it's sometimes quicker to find the root cause of your problem than treating Vike as a black box. Also:
-> - It's more interesting. (Vike's source code is usually well-written and pleasurable to read.)
-> - You may end up being able to do a Vike PR solving your problem (while helping the whole community).
->
-> We recommend digging not only into Vike, but also into other tools such as Vite (which is very well-written).
+While Vike is careful about not removing relevant information, it may mistakenly do so. In that case [create a new GitHub issue](https://github.com/vikejs/vike/issues/new). Until a Vike maintainer fixes the issue you can use the debug flag `DEBUG=vike:error`.
 
-> Instead of:
+```shell
+# - Show verbose original errors
+# - Show infinite stack traces (`Error.stackTraceLimit = Infinity`)
+DEBUG=vike:error npm run dev
+```
+
+For even more information:
+
+```shell
+# Usually only used by Vike maintainers
+DEBUG=vike:error,vike:log npm run dev
+```
+
+
+## Digging into `node_modules/`
+
+The quickest way to dig into Vike is by:
+ - Directly modifying the built code at `node_modules/vike/dist/esm/**/*.js`, for example to:
+   - Inject `console.log()` to gather insights.
+   - Try to fix the bug.
+ - Reading the TypeScript source code (`$ git clone git@github.com:vikejs/vike`), to understand how the code works.
+
+The trick here is to directly modify the built code at `node_modules/`, while using the TypeScript source code to navigate and read code.
+
+> We recommend directly manipulating `node_modules/vike/dist/esm/**/*.js` because it's simpler and quicker than building Vike. That said, you can also build and then link Vike:
 > ```bash
 > $ git clone git@github.com:vikejs/vike
 > $ cd vike/vike/
 > $ pnpm install
 > $ pnpm run dev
-> $ cd ../../../my-app/
+> $ cd ../../my-app/
 > $ pnpm link ../vike/vike/
 > ```
-> We recommend to:
-> - Browse the source code of `$ git clone git@github.com:vikejs/vike`.
-> - For an increased feedback loop, inject `console.log()` directly inside `my-app/node_modules/vike/dist/**/*.js`.
+
+> It may sound scary to dig into foreign source code, but it's sometimes quicker to find the root cause of your problem than treating Vike as a black box. Also:
+> - It's more interesting. (Open Source is usually well-written and pleasurable to read.)
+> - You may end up being able to make a PR solving your problem and help the whole community.
+
+> We recommend this practice not only for Vike, but also for other tools such as Vite.
 
 
 ## Vike debug logs
@@ -62,3 +87,7 @@ To enable Vite's debug logs, set the environment variable `DEBUG` to `vite:*`.
 ```shell
 $ DEBUG=vite:* npm run dev
 ```
+
+## See also
+
+- <Link href="/integration/error-tracking" />

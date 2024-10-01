@@ -71,6 +71,11 @@ const headings = [
   },
   {
     level: 2,
+    title: '`<head>` tags',
+    url: '/head-tags'
+  },
+  {
+    level: 2,
     title: 'Common Issues',
     url: '/common-issues'
   },
@@ -96,11 +101,6 @@ const headings = [
   {
     level: 4,
     title: 'More'
-  },
-  {
-    level: 2,
-    title: '`<head>` meta tags',
-    url: '/head-tags'
   },
   {
     level: 2,
@@ -144,24 +144,48 @@ const headings = [
     url: '/api-routes'
   },
   {
-    level: 2,
-    title: 'RPC',
-    url: '/RPC'
+    level: 1,
+    title: 'Tool Integration'
   },
   {
     level: 2,
-    title: 'Error Handling',
-    url: '/errors'
+    title: 'Authentication',
+    url: '/integration/authentication'
   },
   {
     level: 2,
-    title: 'Debug',
-    url: '/debug'
+    title: 'Server',
+    url: '/integration/server'
   },
   {
     level: 2,
-    title: 'Build Your Own Framework',
-    url: '/build-your-own-framework'
+    title: 'Error Tracking',
+    url: '/integration/error-tracking'
+  },
+  {
+    level: 2,
+    title: 'Markdown',
+    url: '/integration/markdown'
+  },
+  {
+    level: 2,
+    title: 'Component Libraries',
+    url: '/integration/component-libraries'
+  },
+  {
+    level: 2,
+    title: 'CSS-in-JS',
+    url: '/integration/css-in-js'
+  },
+  {
+    level: 2,
+    title: 'State Management',
+    url: '/integration/state-management'
+  },
+  {
+    level: 2,
+    title: 'Data Fetching',
+    url: '/integration/data-fetching'
   },
   {
     level: 1,
@@ -241,45 +265,6 @@ const headings = [
     title: 'Deploy',
     titleInNav: 'Other deployment',
     url: '/deploy'
-  },
-  {
-    level: 1,
-    title: 'Integration'
-  },
-  {
-    level: 2,
-    title: 'Authentication',
-    url: '/integration/authentication'
-  },
-  {
-    level: 2,
-    title: 'Server',
-    url: '/integration/server'
-  },
-  {
-    level: 2,
-    title: 'Markdown',
-    url: '/integration/markdown'
-  },
-  {
-    level: 2,
-    title: 'Component Libraries',
-    url: '/integration/component-libraries'
-  },
-  {
-    level: 2,
-    title: 'CSS-in-JS',
-    url: '/integration/css-in-js'
-  },
-  {
-    level: 2,
-    title: 'State Management',
-    url: '/integration/state-management'
-  },
-  {
-    level: 2,
-    title: 'Data Fetching',
-    url: '/integration/data-fetching'
   },
   {
     level: 1,

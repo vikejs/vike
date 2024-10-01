@@ -190,6 +190,23 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/tools'
   },
   {
+    level: 2,
+    title: 'RPC',
+    url: '/RPC'
+  },
+  {
+    title: 'Error Handling',
+    url: '/errors'
+  },
+  {
+    title: 'Build Your Own Framework',
+    url: '/build-your-own-framework'
+  },
+  {
+    title: 'Debug',
+    url: '/debug'
+  },
+  {
     title: 'UI Frameworks',
     url: '/ui-frameworks'
   },

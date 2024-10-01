@@ -222,7 +222,7 @@ function logErrorDebugNote() {
     if (store.errorDebugNoteAlreadyShown) return
     store.errorDebugNoteAlreadyShown = true
   }
-  const msg = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/errors#verbose"))
+  const msg = pc.dim(formatHintLog("Error isn't helpful? See https://vike.dev/debug#verbose-errors"))
   logDirectly(msg, 'error')
 }
 
