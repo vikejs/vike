@@ -812,11 +812,6 @@ function redirects() {
       url: '/backends'
     },
     {
-      // TODO
-      title: 'Tool integration',
-      url: '/integration'
-    },
-    {
       title: 'Authentication',
       url: '/auth'
     }

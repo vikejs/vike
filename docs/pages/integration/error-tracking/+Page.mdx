@@ -1,5 +1,26 @@
 import { Link } from '@brillout/docpress'
 
+You can install error tracking:
+ - On the client-side, by using the <Link href="/client">+client.js</Link> file.
+ - On the server-side, at your <Link href="/renderPage">`renderPage()`</Link> integration.
+
+
+## Client-side
+
+You can use <Link href="/client">`+client.js`</Link> in order to make sure that your error handling code is initialized before any other code executes.
+
+```js
+// /pages/+client.js
+
+// This is a good place to initialize error tracking such as Sentry or Bugsnag.
+Sentry.init()
+
+// Custom tracking
+window.addEventListener('error', (err) => {
+   console.error('An error occurred:', err)
+})
+```
+
 
 ## Server-side
 
@@ -49,21 +70,6 @@ import * as Sentry from "@sentry/node";
     }
 
 // ...
-```
-
-
-## Client-side
-
-Use <Link href="/client">`+client.js`</Link> in order to make sure that your error handling code is initialized before any other code executes.
-
-```js
-// /pages/+client.js
-
-// The first lines of JavaScript executed on the website.
-
-window.addEventListener('error', (err) => {
-   console.error('An error occurred:', err)
-})
 ```
 
 

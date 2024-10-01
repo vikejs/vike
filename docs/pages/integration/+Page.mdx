@@ -1,21 +1,86 @@
 import { Link } from '@brillout/docpress'
-import { JustAMiddleware } from '../../components'
+import { JustAMiddleware, IntegrationHelp } from '../../components'
 
-TODO
+<IntegrationHelp />
 
-## Error trackers
+## Vanilla UI tools
 
-On the client-side, you can install
-<Link href="/client" />
+To initialize UI vanilla tools (jQuery, tooltips, ...) you can use the <Link href="/onHydrationEnd">`onHydrationEnd()` hook</Link>.
 
-On the server side, you can install 
+```js
+// pages/+onHydrationEnd.js
 
-## Browser tools (Service Workers, Google Analytics)
+export default () => {
+  // After hydration we usually initialize vanilla JS component libraries, for example tooltips
+  tooltip.init(document.querySelectorAll('.tooltip'))
+  // Or some vanilla JS modal library
+  $('.my-modals').modal()
+}
+```
+
+
+## Analytics
+
+To inject external `<script>` tags, you can use:
+ - <Link href="/Head" noBreadcrumb />
+ - <Link href="/bodyHtmlEnd" />
+
+You can use the <Link href="/client">`+client.js`</Link> file to initialize analytics code.
+
+```js
+// pages/+client.js
+
+someAnalyticsLibrary.init(/* ... */)
+```
+
+[Google Analytics](https://developers.google.com/analytics), [Plausible](https://plausible.io), [Segment](https://segment.com)
+
+If you want to load analytics code, consider using:
+
+ - <Link href="/onHydrationEnd" />
+
+
+## Component libraries
+
+Some compnent libraries need initilization, most notably vanilla component libraries such as Bootstrap.
+
+To initilizae code, you can use
+ - <Link href="/onHydrationEnd" />
+ - <Link href="/client" />
+
+To inject external scripts, you can use:
+ - <Link href="/Head" />
+ - <Link href="/bodyHtmlEnd" />
+
+Examples:
+
+- <Link href="/vuetify" />
+- <Link href="/mantine" />
+- <Link href="/daisyui" />
+- <Link href="/tools#component-libraries">... more</Link>
+
+
+## Service Workers
+
+You can use the <Link href="/client">`+client.js`</Link> file to initialize your [service worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
+
+```js
+// pages/+client.js
+
+// Initializing a Service Worker.
+navigator.serviceWorker.register(/* ... */)
+```
 
 
 ## Without `vike-{react,vue,solid}`
 
-You have full control over how pages are rendered, which means that you can use any <Link text="UI tool" href="#ui-tool" /> and any <Link text="client-side tool" href="#client-side-tools" />.
+You can manually integrate React/Vue/Solid (<Link href="/ui-frameworks">or any other UI framework</Link>) yourself:
+
+- <Link href="/react#custom-integration" />
+- <Link href="/vue#custom-integration" />
+- <Link href="/solid#custom-integration" />
+
+You gain control not only over how React/Vue/Solid is integrated, but also how React/Vue/Solid tools are integrated.
 
 ```js
 // /renderer/+onRenderHtml.js
@@ -60,53 +125,27 @@ export { onRenderClient }
 import { hydrateDom } from 'some-ui-framework'
 
 async function onRenderClient(pageContext) {
+  // Here we can integrate performance measurement tools, e.g. to measure hydration performance
   const { Page } = pageContext
   // We control how our pages are hydrated
   await hydrateDom(Page)
 }
 ```
 
-Since you control how your pages are rendered, you can use:
+See:
+- <Link href="/onRenderClient" />
+- <Link href="/onRenderHtml" />
+
+Since you control how your pages are rendered, you can use any tool you want without any restrictions.
 - Any UI framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
 - Any UI library (Vuex, Redux, Pinia, Relay, Apollo GraphQL, Recoil, ...)
+- Any CSS framework (Tailwind CSS, Bulma, Bootstrap, Material Design, ...)
+- Any client-side library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
+- Any browser technology (Service Workers, PWA, ...)
+- Etc.
 
-Integrating a UI tool is usually only a matter of following its official installation guide.
+> The Vike extensions `vike-react`/`vike-vue`/`vike-solid` aim to be almost as flexible. If you reach a limitation you believe is caused by `vike-{react,vue,solid}` then <Link href="/extension-vs-custom">reach out before considering going for a manual integration</Link>.
 
+## See also
 
-## Client-side tools
-
-```js
-// /renderer/+onRenderClient.js
-// Environment: browser
-
-export { onRenderClient }
-
-import { hydrateDom } from 'some-ui-framework'
-
-// This is a good place to initialize error tracking such as Sentry or Bugsnag.
-Sentry.init()
-// And also for initializing a Service Worker.
-navigator.serviceWorker.register(/* ... */)
-
-async function onRenderClient(pageContext) {
-  // Here we can integrate performance measurement tools, e.g. to measure hydration performance
-  const { Page } = pageContext
-  await hydrateDom(Page)
-  init()
-}
-
-function init() {
-  // After hydration we usually initialize vanilla JS component libraries, for example tooltips
-  tooltip.init(document.querySelectorAll('.tooltip'))
-  // Or some vanilla JS modal library
-  $('.my-modals').modal()
-}
-```
-
-You can use:
- - Any CSS framework (Tailwind CSS, Bulma, Bootstrap, Material Design, ...)
- - Any client-side library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
- - Any browser technology (Service Workers, PWA, ...)
-
-Integrating a client-side tool is usually only a matter of following its official installation guide.
-
+- <Link href="/tools" />

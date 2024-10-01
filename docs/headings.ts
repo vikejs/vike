@@ -169,11 +169,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Component Libraries',
-    url: '/integration/component-libraries'
-  },
-  {
-    level: 2,
     title: 'CSS-in-JS',
     url: '/integration/css-in-js'
   },
@@ -187,6 +182,12 @@ const headings = [
     title: 'Data Fetching',
     url: '/integration/data-fetching'
   },
+    {
+    level: 2,
+      titleInNav: '... more',
+      title: 'Other integration',
+      url: '/integration'
+    },
   {
     level: 1,
     title: 'Deploy'
