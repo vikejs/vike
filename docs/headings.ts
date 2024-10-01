@@ -155,7 +155,8 @@ const headings = [
   {
     level: 2,
     title: 'Servers',
-    url: '/servers'
+    url: '/servers',
+    sectionTitles: ['Non-JavaScript Backend']
   },
   {
     level: 2,
