@@ -187,9 +187,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Tool Examples/Guides',
     url: '/tools',
-    sectionTitles: [
-      'CSS-in-JS'
-    ]
+    sectionTitles: ['CSS-in-JS']
   },
   {
     title: 'RPC',
@@ -793,22 +791,18 @@ function redirects(): HeadingDetachedDefinition[] {
       url: '/stores'
     },
     {
-      // TODO
       title: 'CSS Tools',
-      url: '/css-tools',
+      url: '/css-tools'
     },
     {
-      // TODO
       title: 'HTTPS',
       url: '/https'
     },
     {
-      // TODO
       title: 'Servers',
       url: '/servers'
     },
     {
-      // TODO
       title: 'Backends',
       url: '/backends'
     },
