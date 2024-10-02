@@ -1,111 +1,98 @@
+// TODO/pageContext-prefetch: rename this file to getPrefetchSettingResolved.ts
+
 export { getPrefetchSettings }
+export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
+export type { PrefetchSettingResolved }
 
-import type { PrefetchStaticAssets } from '../../../shared/types/PrefetchStaticAssets.js'
-import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils.js'
+import { assertUsage, assertInfo } from '../utils.js'
+import type { PageContextExports } from '../../../shared/getPageFiles.js'
+import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js'
 
-type PageContextPrefetch = {
-  exports: Record<string, unknown>
+// TODO/pageContext-prefetch: Make it `Infinity` for pre-rendered pages.
+const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000
+const prefetchSettingTrue = {
+  staticAssets: 'hover',
+  pageContext: PAGE_CONTEXT_MAX_AGE_DEFAULT
+} satisfies PrefetchSettingResolved
+const prefetchSettingFalse = {
+  staticAssets: 'hover',
+  pageContext: false
+} satisfies PrefetchSettingResolved
+// TODO/v1-release: change to `prefetchSettingTrue`?
+const prefetchSettingDefault = prefetchSettingFalse
+
+type PrefetchSettingResolved = {
+  staticAssets: false | 'hover' | 'viewport'
+  pageContext: false | number
 }
 
-type PrefetchSettings = {
-  prefetchStaticAssets: PrefetchStaticAssets
-}
-
-function getPrefetchSettings(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchSettings {
-  let prefetchStaticAssets = getPrefetchStaticAssets(pageContext, linkTag)
-  if (prefetchStaticAssets === 'viewport' && import.meta.env.DEV) {
-    assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
-    prefetchStaticAssets = 'hover'
-  }
-  return {
-    prefetchStaticAssets
-  }
-}
-function getPrefetchStaticAssets(pageContext: PageContextPrefetch, linkTag: HTMLElement): PrefetchStaticAssets {
-  {
-    const prefetchAttribute = getPrefetchAttribute(linkTag)
-    if (prefetchAttribute !== null) return prefetchAttribute
-  }
+function getPrefetchSettings(pageContext: PageContextExports, linkTag: null | HTMLElement): PrefetchSettingResolved {
+  let prefetchSetting: PrefetchSettingResolved = prefetchSettingDefault
 
   // TODO/v1-release: remove
   if ('prefetchLinks' in pageContext.exports) {
     assertUsage(false, '`export { prefetchLinks }` is deprecated, use `export { prefetchStaticAssets }` instead.')
   }
 
+  // TODO/v1-release: remove
   if ('prefetchStaticAssets' in pageContext.exports) {
-    const { prefetchStaticAssets } = pageContext.exports
-    if (prefetchStaticAssets === false) {
-      return false
-    }
-    if (prefetchStaticAssets === 'hover') {
-      return 'hover'
-    }
-    if (prefetchStaticAssets === 'viewport') {
-      return 'viewport'
-    }
-
-    const wrongUsageMsg = "prefetchStaticAssets value should be false, 'hover', or 'viewport'"
-
-    // TODO/v1-release: remove
-    assertUsage(isPlainObject(prefetchStaticAssets), wrongUsageMsg)
-    const keys = Object.keys(prefetchStaticAssets)
-    assertUsage(keys.length === 1 && keys[0] === 'when', wrongUsageMsg)
-    const { when } = prefetchStaticAssets
-    if (when === 'HOVER' || when === 'VIEWPORT') {
-      const correctValue: 'hover' | 'viewport' = when.toLowerCase() as any
-      assertWarning(
-        false,
-        `prefetchStaticAssets value \`{ when: '${when}' }\` is outdated: set prefetchStaticAssets to '${correctValue}' instead`,
-        { onlyOnce: true }
-      )
-      return correctValue
-    }
-
-    assertUsage(false, wrongUsageMsg)
-  }
-
-  return 'hover'
-}
-
-function getPrefetchAttribute(linkTag: HTMLElement): PrefetchStaticAssets | null {
-  const attr = linkTag.getAttribute('data-prefetch-static-assets')
-  const attrOld = linkTag.getAttribute('data-prefetch')
-
-  if (attr === null && attrOld === null) {
-    return null
-  }
-
-  // TODO/v1-release: remove
-  const deprecationNotice = 'The attribute data-prefetch is outdated, use data-prefetch-static-assets instead.'
-
-  if (attr) {
-    assertUsage(attrOld === null, deprecationNotice)
-    if (attr === 'hover' || attr === 'viewport') {
-      return attr
-    }
-    if (attr === 'false') {
-      return false
-    }
+    const prefetchStaticAssets = pageContext.exports.prefetchStaticAssets as PrefetchStaticAssets
+    /* TODO/pageContext-prefetch: uncomment
+    const msg = `The 'prefetchStaticAssets' setting is deprecated in favor of the 'prefetch' setting, see https://vike.dev/prefetch`
+    assertWarning(false, msg, { onlyOnce: true })
     assertUsage(
-      false,
-      `data-prefetch-static-assets has value "${attr}" but it should instead be "false", "hover", or "viewport"`
+      prefetchStaticAssets === false || prefetchStaticAssets === 'hover' || prefetchStaticAssets === 'viewport',
+      msg
     )
+    //*/
+    prefetchSetting.staticAssets = prefetchStaticAssets
   }
 
-  // TODO/v1-release: remove
-  if (attrOld) {
-    assert(!attr)
-    assertWarning(false, deprecationNotice, {
-      onlyOnce: true
-    })
-    if (attrOld === 'true') {
-      return 'viewport'
+  if ('prefetch' in pageContext.exports) {
+    const { prefetch } = pageContext.exports
+    if (prefetch === true) prefetchSetting = prefetchSettingTrue
+    if (prefetch === false) prefetchSetting = prefetchSettingFalse
+    // No validation in order to save client-side KBs
+    Object.assign(prefetchSetting, prefetch)
+    if ((prefetchSetting as Exclude<PrefetchSetting, boolean>).pageContext === true) {
+      prefetchSetting.pageContext = PAGE_CONTEXT_MAX_AGE_DEFAULT
     }
-    if (attrOld === 'false') {
-      return 'hover'
-    }
-    assertUsage(false, `data-prefetch has value "${attrOld}" but it should instead be "true" or "false"`)
   }
 
-  assert(false)
+  if (prefetchSetting.staticAssets === 'viewport' && import.meta.env.DEV) {
+    assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
+    prefetchSetting.staticAssets = 'hover'
+  }
+
+  if (linkTag) {
+    {
+      let attr = linkTag.getAttribute('data-prefetch')
+      if (attr !== null) {
+        if (attr === '') attr = 'true'
+        if (attr === 'true') prefetchSetting = prefetchSettingTrue
+        if (attr === 'false') prefetchSetting = prefetchSettingFalse
+      }
+    }
+    {
+      let attr = linkTag.getAttribute('data-prefetch-static-assets')
+      if (attr !== null) {
+        if (attr === 'false') prefetchSetting.staticAssets = false
+        // No validation in order to save client-side KBs
+        prefetchSetting.staticAssets = attr as 'hover' | 'viewport'
+      }
+    }
+    {
+      let attr = linkTag.getAttribute('data-prefetch-page-context')
+      if (attr !== null) {
+        if (attr === '') attr = 'true'
+        if (attr === 'true') prefetchSetting.pageContext = PAGE_CONTEXT_MAX_AGE_DEFAULT
+        if (attr === 'false') prefetchSetting.pageContext = false
+        const n = parseInt(attr, 10)
+        if (!Number.isNaN(n)) prefetchSetting.pageContext = n
+        // No validation in order to save client-side KBs
+      }
+    }
+  }
+
+  return prefetchSetting
 }

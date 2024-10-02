@@ -73,6 +73,12 @@ v0.5 breaking changes:
 - Clean all import paths, e.g. `import { navigate } from 'vike/navigate'`
 - Simplify pageContext return type?
 
+
+pageContext prefetching
+- Early experimental support: https://github.com/vikejs/vike/pull/1617
+- Implement all TODO/pageContext-prefetch
+- Add cache cleanup interval loop
+
 Docs:
  - Improve /nextjs
  - Add /{react,vue,solid} links under "Overview"
