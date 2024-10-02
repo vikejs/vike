@@ -1,3 +1,20 @@
+## [0.4.198](https://github.com/vikejs/vike/compare/v0.4.197...v0.4.198) (2024-10-02)
+
+
+### Bug Fixes
+
+* allow absolute URLs to be passed to navigate() and prefetch() ([29ab56f](https://github.com/vikejs/vike/commit/29ab56fd49f8be4599a87a039152ca1e1c55bb21))
+* assertUsage() import strings (vikejs/vike-solid[#127](https://github.com/vikejs/vike/issues/127)) ([11810cf](https://github.com/vikejs/vike/commit/11810cf377b3e7bd1d705e9487efd28cbd295c84))
+* improve unknown config error message ([c0b828b](https://github.com/vikejs/vike/commit/c0b828b6485b5b166454f271bcdd2efbc3e5d292))
+* refactor pointer importer / externalization logic ([828238d](https://github.com/vikejs/vike/commit/828238d77e6643dd3c79829deb77b544716204b5))
+
+
+### Features
+
+* [experimental] prefetch page context ([#246](https://github.com/vikejs/vike/issues/246)) ([#1617](https://github.com/vikejs/vike/issues/1617)) ([7971d17](https://github.com/vikejs/vike/commit/7971d17bf9416012167e134c3f6c46c46970d924))
+
+
+
 ## [0.4.197](https://github.com/vikejs/vike/compare/v0.4.196...v0.4.197) (2024-09-25)
 
 
