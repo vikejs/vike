@@ -1,21 +1,104 @@
 import { Link } from '@brillout/docpress'
-import { JustAMiddleware } from '../../components'
-import { projectInfo } from '../../utils'
+import { JustAMiddleware, IntegrationHelp, Advanced } from '../../components'
+import { DataIntegrationFetch, DataIntegrationIntroGeneric } from '../../components'
 
-If the tool you want to use isn't in the list of integration guides, you'll still most likely be able to use it.
+<IntegrationHelp />
 
-Vike is versatile:
- - From an architectural perspective, <Link text="Vike only takes care of the frontend" href="/architecture" />: you keep control over the rest of your stack and architecture.
- - From a server perspective, Vike is <Link text="just a middleware" href="#server-side-tools" />: you can embed Vike into any server.
- - You can <Link text="disable SSR (i.e. use SPA/MPA)" href="/render-modes" /> and/or <Link text="pre-render" href="/pre-rendering" /> your pages to remove the need for a production server and deploy to a <Link text="static host" href="/static-hosts" /> instead.
- - You have full control over how pages are rendered, which means that you can use any <Link text="UI tool" href="#ui-tool" /> and any <Link text="client-side tool" href="#client-side-tools" />.
+## Vanilla UI tools
 
-In principle, you should be able to use Vike with any tool you want.
+To initialize UI vanilla tools (jQuery, tooltips, ...) you can use the <Link href="/onHydrationEnd">`onHydrationEnd()` hook</Link>.
 
-> If you struggle integrating a tool, don't hesitate to <a href={projectInfo.githubDiscussions}>create a new GitHub Discussion</a>.
+```js
+// pages/+onHydrationEnd.js
+
+export default () => {
+  // Initializing vanilla JS component libraries, for example tooltips, after hydration.
+  tooltip.init(document.querySelectorAll('.tooltip'))
+  // Or some vanilla JS modal library
+  $('.my-modals').modal()
+}
+```
 
 
-## UI tools
+## Analytics
+
+To inject external `<script>` tags, you can use:
+ - <Link href="/Head" noBreadcrumb />
+ - <Link href="/bodyHtmlEnd" />
+
+You can use the <Link href="/client">`+client.js`</Link> file to initialize analytics code.
+
+```js
+// pages/+client.js
+
+someAnalyticsLibrary.init(/* ... */)
+```
+
+That way you can install tools such as [Google Analytics](https://developers.google.com/analytics), [Plausible](https://plausible.io), or [Segment](https://segment.com).
+
+You can also load and/or initialize analytics code only after the hydration ends by using the <Link href="/onHydrationEnd">+onHydrationEnd</Link> hook.
+
+
+## Component libraries
+
+Some compnent libraries need initialization, most notably vanilla component libraries such as Bootstrap.
+
+To initialize code, you can use
+ - <Link href="/onHydrationEnd" noBreadcrumb/>
+ - <Link href="/client" noBreadcrumb/>
+
+To inject external scripts, you can use:
+ - <Link href="/Head" noBreadcrumb/>
+ - <Link href="/bodyHtmlEnd" noBreadcrumb/>
+
+Examples:
+
+- <Link href="/vuetify" />
+- <Link href="/mantine" />
+- <Link href="/daisyui" />
+- <Link href="/examples#component-libraries">... more</Link>
+
+
+## Data fetching
+
+Instead of using <Link href="/data">the `+data` hook</Link>, you can use <Link href="/data-fetching#tools">tools to fetch initial data</Link>.
+
+<Advanced>
+The following explains how to manually integrate tools for fetching initial data. We recommend using a Vike extension that already does this for you instead of doing it yourself.
+</Advanced>
+
+<DataIntegrationIntroGeneric />
+
+<DataIntegrationFetch />
+
+See also:
+
+- <Link href="/examples#data-fetching"/>
+- <Link href="/data-fetching" />
+- <Link href="/stores" />
+
+
+## Service workers
+
+You can use the <Link href="/client">`+client.js`</Link> file to initialize [service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API).
+
+```js
+// pages/+client.js
+
+// Initializing a Service Worker
+navigator.serviceWorker.register(/* ... */)
+```
+
+
+## Without `vike-{react,vue,solid}`
+
+You can manually integrate React/Vue/Solid (<Link href="/ui-frameworks">or any other UI framework</Link>) yourself:
+
+- <Link href="/react#custom-integration" />
+- <Link href="/vue#custom-integration" />
+- <Link href="/solid#custom-integration" />
+
+You gain control not only over how React/Vue/Solid is integrated, but also how React/Vue/Solid tools are integrated.
 
 ```js
 // /renderer/+onRenderHtml.js
@@ -60,75 +143,27 @@ export { onRenderClient }
 import { hydrateDom } from 'some-ui-framework'
 
 async function onRenderClient(pageContext) {
+  // Here we can integrate performance measurement tools, e.g. to measure hydration performance
   const { Page } = pageContext
   // We control how our pages are hydrated
   await hydrateDom(Page)
 }
 ```
 
-Since you control how your pages are rendered, you can use:
-- Any UI framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
+See:
+- <Link href="/onRenderClient" />
+- <Link href="/onRenderHtml" />
+
+Since you control how your pages are rendered, you can use any tool you want without any restrictions.
+- Any UI framework (React 16, React 17, Vue 2, Vue 3, petite-vue, Svelte, Solid, Preact, ...)
 - Any UI library (Vuex, Redux, Pinia, Relay, Apollo GraphQL, Recoil, ...)
+- Any CSS framework (Tailwind CSS, Bulma, Bootstrap, Material Design, ...)
+- Any client-side library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
+- Any browser technology (Service Workers, PWA, ...)
+- Etc.
 
-Integrating a UI tool is usually only a matter of following its official installation guide.
+> The Vike extensions `vike-react`/`vike-vue`/`vike-solid` aim to be almost as flexible. If you reach a limitation you believe is caused by `vike-{react,vue,solid}` then <Link href="/extension-vs-custom">reach out before considering going for a manual integration</Link>.
 
+## See also
 
-## Client-side tools
-
-```js
-// /renderer/+onRenderClient.js
-// Environment: browser
-
-export { onRenderClient }
-
-import { hydrateDom } from 'some-ui-framework'
-
-// This is a good place to initialize error tracking such as Sentry or Bugsnag.
-Sentry.init()
-// And also for initializing a Service Worker.
-navigator.serviceWorker.register(/* ... */)
-
-async function onRenderClient(pageContext) {
-  // Here we can integrate performance measurement tools, e.g. to measure hydration performance
-  const { Page } = pageContext
-  await hydrateDom(Page)
-  init()
-}
-
-function init() {
-  // After hydration we usually initialize vanilla JS component libraries, for example tooltips
-  tooltip.init(document.querySelectorAll('.tooltip'))
-  // Or some vanilla JS modal library
-  $('.my-modals').modal()
-}
-```
-
-You can use:
- - Any CSS framework (Tailwind CSS, Bulma, Bootstrap, Material Design, ...)
- - Any client-side library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
- - Any browser technology (Service Workers, PWA, ...)
-
-Integrating a client-side tool is usually only a matter of following its official installation guide.
-
-
-## Server-side tools
-
-<JustAMiddleware />
-
-You can use:
-- Any server framework (Express, Fastify, Hono, Nitro, HatTip, Koa, Hapi, ...)
-- Any authentication strategy/tool (email/password, OAuth, Auth.js, Passport.js, Grant, Keycloak, Auth0, ...).
-- Any serverless/edge environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, Deno Deploy, ...)
-- Any virtual private server (AWS EC2, Google Cloud, ...)
-- Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)
-
-See also: <Link href="/renderPage" />.
-
-
-## Examples
-
-Official examples: [GitHub > `vikejs/vike` > `examples/`](https://github.com/vikejs/vike/tree/main/examples).
-
-Beyond the official examples, many tools have community examples of being used with Vike &ndash; search this website (`CTRL+K`) for the tool you want an example of.
-
-If an example is missing/outdated, contribution welcome to create/improve one.
+- <Link href="/examples" />

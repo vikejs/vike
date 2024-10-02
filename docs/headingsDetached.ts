@@ -1,9 +1,206 @@
 export { headingsDetached }
 
-import React from 'react'
 import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
-const headingsDetached = [
+const headingsDetached: HeadingDetachedDefinition[] = [
+  {
+    title: 'Redux',
+    url: '/redux'
+  },
+  {
+    title: 'Pinia',
+    url: '/pinia'
+  },
+  {
+    title: 'Effector',
+    url: '/effector'
+  },
+  {
+    title: 'Auth.js',
+    url: '/Auth.js'
+  },
+  {
+    title: 'Tailwind CSS',
+    url: '/tailwind-css'
+  },
+  {
+    title: 'daisyUI',
+    url: '/daisyui'
+  },
+  {
+    title: 'Compiled',
+    url: '/compiled'
+  },
+  {
+    title: 'Vuetify',
+    url: '/vuetify'
+  },
+  {
+    title: 'styled-components',
+    url: '/styled-components'
+  },
+  {
+    title: '`styled-jsx`',
+    url: '/styled-jsx'
+  },
+  {
+    title: 'MUI',
+    url: '/mui'
+  },
+  {
+    title: 'PrimeReact',
+    url: '/primereact'
+  },
+  {
+    title: 'NextUI',
+    url: '/nextui'
+  },
+  {
+    title: 'Bootstrap',
+    url: '/bootstrap'
+  },
+  {
+    title: 'Grommet',
+    url: '/grommet'
+  },
+  {
+    title: 'Mantine',
+    url: '/mantine'
+  },
+  {
+    title: 'Ant Design',
+    url: '/antd'
+  },
+  {
+    title: 'Sass / Less / Stylus',
+    url: '/sass'
+  },
+  {
+    title: 'Naive UI',
+    url: '/naive-ui'
+  },
+  {
+    title: 'React',
+    url: '/react',
+    sectionTitles: ['React Server Components']
+  },
+  {
+    title: 'Vue',
+    url: '/vue'
+  },
+  {
+    title: 'Svelte',
+    url: '/svelte'
+  },
+  {
+    title: 'Preact',
+    url: '/preact'
+  },
+  {
+    title: 'Solid',
+    url: '/solid'
+  },
+  {
+    title: 'Angular',
+    url: '/angular'
+  },
+  {
+    title: 'Express.js',
+    url: '/express'
+  },
+  {
+    title: 'Hono',
+    url: '/hono'
+  },
+  {
+    title: 'Deno',
+    url: '/deno'
+  },
+  {
+    title: 'Fastify',
+    url: '/fastify'
+  },
+  {
+    title: 'Nitro',
+    url: '/nitro'
+  },
+  {
+    title: 'H3',
+    url: '/h3'
+  },
+  {
+    title: 'Ruby on Rails',
+    url: '/ruby-on-rails'
+  },
+  {
+    title: 'Firebase',
+    url: '/firebase'
+  },
+  {
+    title: 'Nginx',
+    url: '/nginx'
+  },
+  {
+    title: 'MDXEditor',
+    url: '/MDXEditor'
+  },
+  {
+    title: 'Tauri',
+    url: '/tauri'
+  },
+  {
+    title: 'Telefunc (RPC)',
+    url: '/telefunc'
+  },
+  {
+    title: 'tRPC',
+    url: '/tRPC'
+  },
+  {
+    title: 'TanStack Query',
+    url: '/tanstack-query'
+  },
+  {
+    title: 'Apollo (GraphQL)',
+    url: '/apollo-graphql'
+  },
+  {
+    title: 'Relay (GraphQL)',
+    url: '/relay'
+  },
+  {
+    title: 'urql (GraphQL)',
+    url: '/urql'
+  },
+  {
+    title: 'gRPC',
+    url: '/grpc'
+  },
+  {
+    title: 'Socket.IO',
+    url: '/socket-io'
+  },
+  {
+    title: 'Examples & Guides',
+    url: '/examples',
+    sectionTitles: ['CSS-in-JS']
+  },
+  {
+    title: 'RPC',
+    url: '/RPC'
+  },
+  {
+    title: 'Build Your Own Framework',
+    url: '/build-your-own-framework'
+  },
+  {
+    title: 'Debug',
+    url: '/debug'
+  },
+  {
+    title: 'UI Frameworks',
+    url: '/ui-frameworks'
+  },
   {
     title: 'HTML Streaming',
     url: '/streaming'
@@ -139,10 +336,6 @@ const headingsDetached = [
   {
     title: '`+config.js` code splitting',
     url: '/config-code-splitting'
-  },
-  {
-    title: 'Error Tracking',
-    url: '/error-tracking'
   },
   {
     title: 'Dynamic `import()`',
@@ -569,5 +762,32 @@ const headingsDetached = [
   {
     title: '`injectScriptsAt`',
     url: '/injectScriptsAt'
-  }
-] satisfies HeadingDetachedDefinition[]
+  },
+  ...redirects()
+]
+
+function redirects(): HeadingDetachedDefinition[] {
+  // TODO/eventually: move all redirects here.
+  return [
+    {
+      title: 'Data Tools',
+      url: '/data-tools'
+    },
+    {
+      title: 'CSS Tools',
+      url: '/css-tools'
+    },
+    {
+      title: 'HTTPS',
+      url: '/https'
+    },
+    {
+      title: 'Error Handling',
+      url: '/errors'
+    },
+    {
+      title: 'Backends',
+      url: '/backends'
+    }
+  ]
+}

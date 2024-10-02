@@ -46,7 +46,7 @@ function RecommendationRouterLibraries({
           </a>
         </li>
       </ul>
-      <p>Contribution welcome to explore deep integration using {onBeforeRouteLink}.</p>
+      <p>Contributions welcome to explore deep integration using {onBeforeRouteLink}.</p>
     </>
   )
 }
