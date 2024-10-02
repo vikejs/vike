@@ -232,7 +232,6 @@ function addLinkPrefetchHandlers_apply(): void {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           prefetchOnEvent(linkTag, 'viewport')
-          observer.disconnect()
         }
       })
     })
