@@ -11,7 +11,8 @@ const headings = [
     level: 2,
     title: 'Introduction',
     titleDocument: 'Vike',
-    url: '/'
+    url: '/',
+    noSideNavigation: true
   },
   {
     level: 2,

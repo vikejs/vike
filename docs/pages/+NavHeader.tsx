@@ -8,7 +8,7 @@ import React from 'react'
 import vikeIcon from '../images/icons/vike-square-gradient.svg'
 
 function NavHeaderMobile() {
-  const LOGO_SIZE = 40
+  const LOGO_SIZE = 20
   return (
     <>
       <img src={vikeIcon} height={LOGO_SIZE} width={LOGO_SIZE} />
@@ -18,11 +18,11 @@ function NavHeaderMobile() {
 }
 
 function NavHeader() {
-  const LOGO_SIZE = 80
+  const LOGO_SIZE = 50
   return (
     <>
       <img src={vikeIcon} height={LOGO_SIZE} width={LOGO_SIZE} />
-      <HeaderTitle fontSize={'3.3em'} marginLeft={14} />
+      <HeaderTitle fontSize={'2.3em'} marginLeft={14} />
     </>
   )
 }
