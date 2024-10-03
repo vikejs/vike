@@ -11,10 +11,12 @@ function Page() {
       <Header />
       <Features />
       <Block>
+        <div style={{ height: 26 }} />
         <Sponsors />
       </Block>
       <a id="team"></a>
       <Block>
+        <div style={{ height: 16 }} />
         <Contributors />
         <div style={{ height: 50 }} />
       </Block>
@@ -33,9 +35,7 @@ function Block({ children }: { children: React.ReactNode }) {
         marginTop: 'var(--block-margin)'
       }}
     >
-      <div style={{ maxWidth: 1000 }}>
-        {children}
-      </div>
+      <div style={{ maxWidth: 1000 }}>{children}</div>
     </div>
   )
 }
