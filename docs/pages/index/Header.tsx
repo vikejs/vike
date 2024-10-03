@@ -1,6 +1,7 @@
 import React from 'react'
 import './Header.css'
-import iconVike from '../../images/icons/vike-vertical.svg'
+// import iconVike from '../../images/icons/vike-vertical.svg'
+import iconVike from '../../images/icons/vike-nitedani.png'
 
 export { Header }
 
