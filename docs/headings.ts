@@ -12,7 +12,7 @@ const headings = [
     title: 'Introduction',
     titleDocument: 'Vike',
     url: '/',
-    noSideNavigation: true
+    noSideNavigation: 'no-logo'
   },
   {
     level: 2,
