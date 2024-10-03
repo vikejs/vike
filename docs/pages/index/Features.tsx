@@ -22,25 +22,26 @@ function Flexible() {
       <FlexParent>
         <FlexChild>
           <h3>Any tool</h3>
-          <p>Use any:</p>
-          <ul>
+          <p>You can use any:</p>
+          <ul style={{ paddingLeft: 30, marginTop: -12 }}>
             <li>UI framework (React/Vue/Solid/...)</li>
             <li>Rendering strategy (SPA/SSR/SSG/...)</li>
             <li>Data fetching (RPC/REST/GraphQL/...)</li>
             <li>Server (Express.js/Hono/Fastify/...) </li>
-            <li>Deployment (VPS/Serverless/Static/...)</li>
+            <li>Deployment (VPS/serverless/static/...)</li>
           </ul>
         </FlexChild>
         <FlexChild>
           <h3>Ejectable extensions</h3>
           <p>
-            Vike extensions integrate tools on your behalf. Later, if the need arsies, eject extensions for full control
-            over tool integration.
+            Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full control
+            over how tools are integrated.
           </p>
         </FlexChild>
         <FlexChild>
           <h3>Less blockers</h3>
-          <p>Blockers are treated with high priority, freeing you from building what you want and need.</p>
+          <p>Blockers are treated with high priority, enabling you to build what you want and need.</p>
+          <p>If you create a feature request and explain how it's blocking you then we'll bump its priority.</p>
         </FlexChild>
       </FlexParent>
     </FeatureUnit>
@@ -52,20 +53,28 @@ function Reliable() {
     <FeatureUnit>
       <H2 color="#f900ff">Reliable</H2>
       <FlexParent>
+        <FlexChild style={{ maxWidth: 490 }}>
+          <h3>Batteries included</h3>
+          <p>
+            Includes all features you'd expect from a modern framework: filesystem routing, pre-rendering, data
+            fetching, layouts, i18n, prefetching & preloading, HTML streaming, URL redirects & rewrites, route guards,
+            ...
+          </p>
+        </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
           <h3>Less bugs</h3>
           <p>We quickly fix bugs (usually under 24 hours).</p>
         </FlexChild>
-        <FlexChild style={{ maxWidth: 390 }}>
-          <h3>Responsive</h3>
-          <p>We're responsive, and we provide a clear guideline on how to reach out and get reliable help from us.</p>
+        <FlexChild style={{ maxWidth: 490 }}>
+          <h3>Aligned interests</h3>
+          <p>
+            Vike's revenue comes from companies using Vike which means that the business interests of Vike and its users
+            are aligned.
+          </p>
         </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
-          <h3>Community-driven</h3>
-          <p>
-            The ultimate decision maker is you, our users. Vike's revenue directly coming from users means that the
-            business interesets of Vike and our users align.
-          </p>
+          <h3>Responsive</h3>
+          <p>We are responsive, and we provide a clear guideline on how to reach out and get reliable help from us.</p>
         </FlexChild>
       </FlexParent>
     </FeatureUnit>
@@ -86,11 +95,11 @@ function Fast() {
         </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
           <h3>Next-gen scaffolder</h3>
-          <p>Use our next-generation scafollder to jump start with a fully-functional and up-to-date app.</p>
+          <p>Use our next-generation scaffolder to jump start with a fully-functional and up-to-date app.</p>
         </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
           <h3>Vite</h3>
-          <p>Vike is powered by Vite, for a lightning fast developer experience.</p>
+          <p>Powered by Vite, for a lightning fast developer experience.</p>
         </FlexChild>
       </FlexParent>
     </FeatureUnit>
@@ -103,10 +112,9 @@ function ClutterFree() {
       <H2 color="#c3c3c3">Clutter-free</H2>
       <Center>
         <div style={{ maxWidth: 800, marginTop: -30 }}>
-          <p>Vike follows the do-one-thing-do-it-well philosophy.</p>
           <p>
-            Vike's core is a highly flexible and robust foundation while you can cherry-pick Vike extensions to get
-            powerful features.
+            Vike follows the do-one-thing-do-it-well philosophy: Vike's core is a flexible and robust foundation, and on
+            top of it you cherry-pick Vike extensions to get powerful tailored features.
           </p>
           <p>
             Vike's architecture can accommodate any kind of websites, from simple marketing pages to enterprise
@@ -124,14 +132,14 @@ function CommunityDriven() {
       <H2 color="#1bd91b">Community-driven</H2>
       <FlexParent>
         <FlexChild style={{ maxWidth: 390 }}>
-          <h3>Our users, our priority</h3>
-          <p>We carefully listen to our users and prioritize accordingly.</p>
+          <h3>Community prioritization</h3>
+          <p>We listen to users, engage in conversations, and prioritize accordingly.</p>
         </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
-          <h3>Community-driven innovation</h3>
+          <h3>Community innovation</h3>
           <p>
-            Vike's modular architecture fosters community-driven innovation. We believe community's driving force will
-            always outperform a single given organization.
+            Vike's modular architecture fosters community-driven innovation. An empowered ecosystem is more innovative
+            than any single given organization.
           </p>
         </FlexChild>
       </FlexParent>

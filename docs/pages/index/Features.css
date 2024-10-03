@@ -21,6 +21,7 @@
 #feature-list h3 {
   font-size: 1.4em;
   margin-top: 0px;
+  margin-bottom: -4px;
 }
 
 /* TODO: refactor */
