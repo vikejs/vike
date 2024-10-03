@@ -8,7 +8,7 @@
 }
 #header-logo h1 {
   margin: 0;
-  font-size: 4em;
+  font-size: 3.3em;
   line-height: 1.1em;
   margin-bottom: 8px;
 }
@@ -21,8 +21,9 @@
   --header-max-width: 920px;
 }
 #header-logo img {
-  height: 160px;
-  margin-right: 6px;
+  height: 230px;
+  margin-right: 16px;
+  margin-top: -11px;
 }
 @media screen and (max-width: 719px) {
   #header-logo {
@@ -38,7 +39,8 @@
     --header-padding: 20px;
   }
   #header-logo {
-    padding-top: 30px;
+    padding-top: 70px;
+    padding-bottom: 40px;
   }
   .header-separator-line {
     padding-top: 15px;
@@ -52,7 +54,8 @@
     font-size: 1.5em;
     padding: 0;
     margin: 0;
-    max-width: 400px;
+    margin-top: 14px;
+    max-width: 550px;
   }
 }
 @media screen and (max-width: 1159px) {
