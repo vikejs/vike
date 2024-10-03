@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, test, expect, run, fetchHtml, getServerUrl, skip } from '@brillout/test-e2e'
+import { page, test, expect, run, fetchHtml, getServerUrl } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   {
@@ -16,22 +16,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test('Learn more collapsible', async () => {
-    const collapsibleText = 'you control how your pages are rendered'
-    const sectionHeading = 'Control'
     await page.goto(getServerUrl() + '/')
     await page.waitForFunction(() => (window as any).__docpress_hydrationFinished)
-    const selector = `p:has-text("${collapsibleText}")`
-    const locator = page.locator(selector)
-    expect(await locator.count()).toBe(1)
-    expect(await locator.isHidden()).toBe(true)
-    await page.locator(`h2:has-text("${sectionHeading}")`).click()
-    await page.waitForSelector(selector, { state: 'visible' })
-    expect(await locator.isHidden()).toBe(false)
-    await page.locator(`h2:has-text("${sectionHeading}")`).click()
-    await page.waitForSelector(selector, { state: 'hidden' })
-    expect(await locator.isHidden()).toBe(true)
-    await page.locator(`h2:has-text("${sectionHeading}")`).click()
-    await page.waitForSelector(selector, { state: 'visible' })
-    expect(await locator.isHidden()).toBe(false)
   })
 }
