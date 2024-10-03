@@ -34,8 +34,6 @@ function Block({ children }: { children: React.ReactNode }) {
       }}
     >
       <div style={{ maxWidth: 1000 }}>
-        {/* TODO/refactor: remove this margin buster */}
-        <span>&nbsp;</span>
         {children}
       </div>
     </div>

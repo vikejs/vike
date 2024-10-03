@@ -18,9 +18,6 @@ export default {
     apiKey: '9ac178c1a29ba00e8afb98365015f677',
     indexName: 'vike'
   },
-  topNavigationStyle: {
-    marginTop: 10
-  },
   bannerUrl: 'https://vike.dev/banner.png',
   i18n: true,
   pressKit: true

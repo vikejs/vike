@@ -3,7 +3,6 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  /* TODO: refactor */
   background-color: var(--bg-color);
 }
 #header-logo h1 {
