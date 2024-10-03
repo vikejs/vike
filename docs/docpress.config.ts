@@ -2,7 +2,7 @@ import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
-import vikeIcon from './images/icons/vike-square-gradient.svg'
+import vikeIcon from './images/icons/vike-nitedani_100x100.png'
 
 export default {
   projectInfo,
