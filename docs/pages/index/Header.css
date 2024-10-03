@@ -40,7 +40,7 @@
   }
   #header-logo {
     padding-top: 70px;
-    padding-bottom: 40px;
+    padding-bottom: 45px;
   }
   .header-separator-line {
     padding-top: 15px;
@@ -58,21 +58,16 @@
     max-width: 550px;
   }
 }
-@media screen and (max-width: 1159px) {
+@media screen and (max-width: 1139px) {
   :root {
     --header-padding: 10px;
-  }
-  #header-logo {
-    padding-top: 10px;
-    padding-bottom: 20px;
   }
   .header-separator-line {
     padding-top: 15px;
     padding-bottom: 15px;
   }
   #header-logo {
-    padding-top: 20px;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
+    padding-top: 50px;
+    padding-bottom: 30px;
   }
 }
