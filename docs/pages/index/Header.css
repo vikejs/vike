@@ -4,11 +4,9 @@
   justify-content: center;
   margin: auto;
   max-width: 920px;
-  padding: var(--header-padding) 0px;
 }
 #header-logo h1 {
   margin: 0;
-  font-size: 3.3em;
   line-height: 1.1em;
   margin-bottom: 8px;
 }
@@ -22,20 +20,31 @@
   margin-top: -11px;
 }
 
-/* === Responsive === */
-@media screen and (max-width: 719px) {
-  #header-logo {
-    flex-direction: column;
-    text-align: center;
-  }
-  #header-logo img {
-    display: none;
-  }
+#header-logo {
+  padding-top: 70px;
+  padding-bottom: 45px;
 }
+.header-separator-line {
+  padding-top: 15px;
+  padding-bottom: 25px;
+}
+.header-separator-line.primary {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+#header-logo h1 {
+  font-size: 3.3em;
+}
+#header-tagline {
+  font-size: 1.5em;
+  padding: 0;
+  margin: 0;
+  margin-top: 14px;
+  max-width: 550px;
+}
+
+/* === Responsive === */
 @media screen and (max-width: 1139px) {
-  :root {
-    --header-padding: 10px;
-  }
   .header-separator-line {
     padding-top: 15px;
     padding-bottom: 15px;
@@ -44,28 +53,54 @@
     padding-top: 50px;
     padding-bottom: 30px;
   }
-}
-@media screen and (min-width: 720px) {
-  :root {
-    --header-padding: 20px;
-  }
-  #header-logo {
-    padding-top: 70px;
-    padding-bottom: 45px;
-  }
-  .header-separator-line {
-    padding-top: 15px;
-    padding-bottom: 25px;
-  }
-  .header-separator-line.primary {
-    padding-top: 30px;
-    padding-bottom: 30px;
+  #header-logo h1 {
+    font-size: 3em;
   }
   #header-tagline {
-    font-size: 1.5em;
-    padding: 0;
-    margin: 0;
-    margin-top: 14px;
-    max-width: 550px;
+    font-size: 1.4em;
+  }
+}
+@media screen and (max-width: 719px) {
+  #header-logo {
+    flex-direction: column;
+    text-align: center;
+  }
+  #header-logo img {
+    display: none;
+  }
+  #header-logo h1,
+  #header-logo p {
+    margin-left: 0px;
+  }
+  #header-logo {
+    padding-top: 20px;
+    padding-bottom: 10px;
+  }
+  #header-logo h1 {
+    font-size: 2.5em;
+  }
+  #header-tagline {
+    font-size: 1.3em;
+  }
+}
+@media screen and (max-width: 500px) {
+  #header-logo h1 {
+    font-size: 2.1em;
+  }
+  #header-tagline {
+    font-size: 1.2em;
+  }
+}
+@media screen and (max-width: 400px) {
+  #header-logo h1 {
+    font-size: 1.9em;
+  }
+}
+@media screen and (max-width: 350px) {
+  #header-logo h1 {
+    font-size: 1.7em;
+  }
+  #header-tagline {
+    font-size: 1.14em;
   }
 }
