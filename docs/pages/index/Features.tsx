@@ -35,13 +35,13 @@ function Flexible() {
           <h3>Ejectable extensions</h3>
           <p>
             Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full control
-            over how tools are integrated.
+            over how tools integrate.
           </p>
         </FlexChild>
         <FlexChild>
           <h3>Less blockers</h3>
-          <p>Blockers are treated with high priority, enabling you to build what you want and need.</p>
-          <p>If you create a feature request and explain how it's blocking you then we'll bump its priority.</p>
+          <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
+          <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
         </FlexChild>
       </FlexParent>
     </FeatureUnit>
@@ -68,8 +68,8 @@ function Reliable() {
         <FlexChild style={{ maxWidth: 490 }}>
           <h3>Aligned interests</h3>
           <p>
-            Vike's revenue comes from companies using Vike which means that the business interests of Vike and its users
-            are aligned.
+            Vike's revenue comes from companies that use Vike, which means that the business interests of Vike and its
+            users are aligned.
           </p>
         </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
@@ -89,13 +89,13 @@ function Fast() {
         <FlexChild style={{ maxWidth: 390 }}>
           <h3>Prefetch & cache</h3>
           <p>
-            Vike's existing and upcoming prefetch and opt-in cache utilities enable you to develop blazing fast user
+            Vike's existing and upcoming prefetch and cache utilities enable you to develop blazing fast user
             experiences.
           </p>
         </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
           <h3>Next-gen scaffolder</h3>
-          <p>Use our next-generation scaffolder to jump start with a fully-functional and up-to-date app.</p>
+          <p>Use our next-generation scaffolder to jump start with a fully functional app.</p>
         </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
           <h3>Vite</h3>
@@ -138,8 +138,8 @@ function CommunityDriven() {
         <FlexChild style={{ maxWidth: 390 }}>
           <h3>Community innovation</h3>
           <p>
-            Vike's modular architecture fosters community-driven innovation. An empowered ecosystem is more innovative
-            than any single given organization.
+            Vike's modular architecture enables community-driven innovation, fostering an ecosystem more innovative than
+            any single organization can be.
           </p>
         </FlexChild>
       </FlexParent>
