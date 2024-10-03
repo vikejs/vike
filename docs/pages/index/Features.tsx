@@ -30,10 +30,10 @@ function Flexible() {
           <p>Use any:</p>
           <ul>
             <li>UI framework (React/Vue/Solid/...)</li>
-            <li>Rendering strategy (SPA, SSR, SSG, ...)</li>
-            <li>Data fetching (RPC, REST, GraphQL, ...)</li>
+            <li>Rendering strategy (SPA/SSR/SSG/...)</li>
+            <li>Data fetching (RPC/REST/GraphQL/...)</li>
             <li>Server (Express.js/Hono/Fastify/...) </li>
-            <li>Deployment (VPS, Serverless, Static, ...)</li>
+            <li>Deployment (VPS/Serverless/Static/...)</li>
           </ul>
         </FlexChild>
         <FlexChild>

@@ -9,7 +9,7 @@ export default {
   faviconUrl: vikeIcon,
   headings,
   headingsDetached,
-  tagline: '🔨 Flexible, lean, community-driven, dependable, fast Vite-based frontend framework.',
+  tagline: 'Next.js/Nuxt alternative. Flexible, reliable, clutter-free, fast, community-driven.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
