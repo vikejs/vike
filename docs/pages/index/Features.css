@@ -2,6 +2,16 @@
   font-size: 2.2em;
   text-align: center;
   margin-bottom: 50px;
+  margin-top: var(--block-margin);
+}
+#feature-list {
+  --feature-padding: 40px;
+}
+#feature-list h2 {
+  padding-top: var(--feature-padding);
+}
+#feature-list .feature-unit {
+  padding-bottom: var(--feature-padding);
 }
 /*
 #feature-list h2:after {
@@ -11,4 +21,24 @@
 #feature-list h3 {
   font-size: 1.4em;
   margin-top: 0px;
+}
+
+/* TODO: refactor */
+.noSideNavigation .page-wrapper {
+  max-width: 100% !important;
+}
+.noSideNavigation .page-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+#top-navigation {
+  max-width: 100% !important;
+  margin-top: 0 !important;
+  margin-bottom: var(--block-margin) !important;
+  background-color: var(--bg-color);
+}
+html {
+  --bg-color: #f5f5f7;
+  --block-margin: 5px;
 }

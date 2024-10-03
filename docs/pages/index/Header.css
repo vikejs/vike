@@ -2,8 +2,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: auto;
-  max-width: 920px;
+  width: 100%;
+  /* TODO: refactor */
+  background-color: var(--bg-color);
 }
 #header-logo h1 {
   margin: 0;
@@ -21,8 +22,8 @@
 }
 
 #header-logo {
-  padding-top: 70px;
-  padding-bottom: 45px;
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 .header-separator-line {
   padding-top: 15px;

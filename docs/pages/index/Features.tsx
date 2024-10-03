@@ -2,19 +2,14 @@ export { Features }
 
 import React, { useEffect, useRef } from 'react'
 import './Features.css'
-import { HorizontalLine } from '@brillout/docpress'
 
 function Features() {
   return (
     <div id="feature-list">
       <Flexible />
-      <HorizontalLine />
       <Reliable />
-      <HorizontalLine />
       <Fast />
-      <HorizontalLine />
       <ClutterFree />
-      <HorizontalLine />
       <CommunityDriven />
     </div>
   )
@@ -22,7 +17,7 @@ function Features() {
 
 function Flexible() {
   return (
-    <>
+    <FeatureUnit>
       <H2 color="blue">Flexible</H2>
       <FlexParent>
         <FlexChild>
@@ -48,13 +43,13 @@ function Flexible() {
           <p>Blockers are treated with high priority, freeing you from building what you want and need.</p>
         </FlexChild>
       </FlexParent>
-    </>
+    </FeatureUnit>
   )
 }
 
 function Reliable() {
   return (
-    <>
+    <FeatureUnit>
       <H2 color="#f900ff">Reliable</H2>
       <FlexParent>
         <FlexChild style={{ maxWidth: 390 }}>
@@ -73,13 +68,13 @@ function Reliable() {
           </p>
         </FlexChild>
       </FlexParent>
-    </>
+    </FeatureUnit>
   )
 }
 
 function Fast() {
   return (
-    <>
+    <FeatureUnit>
       <H2 color="#ffed2e">Fast</H2>
       <FlexParent>
         <FlexChild style={{ maxWidth: 390 }}>
@@ -98,13 +93,13 @@ function Fast() {
           <p>Vike is powered by Vite, for a lightning fast developer experience.</p>
         </FlexChild>
       </FlexParent>
-    </>
+    </FeatureUnit>
   )
 }
 
 function ClutterFree() {
   return (
-    <>
+    <FeatureUnit>
       <H2 color="#c3c3c3">Clutter-free</H2>
       <Center>
         <div style={{ maxWidth: 800, marginTop: -30 }}>
@@ -119,13 +114,13 @@ function ClutterFree() {
           </p>
         </div>
       </Center>
-    </>
+    </FeatureUnit>
   )
 }
 
 function CommunityDriven() {
   return (
-    <>
+    <FeatureUnit>
       <H2 color="#1bd91b">Community-driven</H2>
       <FlexParent>
         <FlexChild style={{ maxWidth: 390 }}>
@@ -140,7 +135,7 @@ function CommunityDriven() {
           </p>
         </FlexChild>
       </FlexParent>
-    </>
+    </FeatureUnit>
   )
 }
 
@@ -182,12 +177,20 @@ function isHighlight(elH2: HTMLElement) {
   if (!(document.documentElement.scrollTop > 0)) return false
 }
 
+function FeatureUnit({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="feature-unit" style={{ backgroundColor: 'var(--bg-color)' }}>
+      <div style={{ maxWidth: 1200, margin: 'auto' }}>{children}</div>
+    </div>
+  )
+}
+
 type DivProps = React.HTMLAttributes<HTMLDivElement>
 function FlexParent(props: DivProps) {
   return (
     <div
       {...props}
-      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', columnGap: 20, rowGap: 20, ...props.style }}
+      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', columnGap: 10, rowGap: 10, ...props.style }}
     />
   )
 }
