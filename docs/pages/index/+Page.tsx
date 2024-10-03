@@ -10,19 +10,19 @@ function Page() {
     <>
       <Header />
       <Features />
-      <BlockWrapper>
+      <Block>
         <Sponsors />
-      </BlockWrapper>
+      </Block>
       <a id="team"></a>
-      <BlockWrapper>
+      <Block>
         <Contributors />
         <div style={{ height: 50 }} />
-      </BlockWrapper>
+      </Block>
     </>
   )
 }
 
-function BlockWrapper({ children }: { children: React.ReactNode }) {
+function Block({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
