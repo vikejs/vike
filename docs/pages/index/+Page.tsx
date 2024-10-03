@@ -2,21 +2,40 @@ export { Page }
 
 import React from 'react'
 import { Header } from './Header'
-import { Features } from './features/Features'
-import { Contributors, HorizontalLine, Link, Sponsors } from '@brillout/docpress'
+import { Features } from './Features'
+import { Contributors, Sponsors } from '@brillout/docpress'
 
 function Page() {
   return (
     <>
       <Header />
-      <HorizontalLine primary={true} />
       <Features />
-      <HorizontalLine />
-      <Sponsors />
-      <HorizontalLine />
+      <Block>
+        <div style={{ height: 26 }} />
+        <Sponsors />
+      </Block>
       <a id="team"></a>
-      <Contributors />
-      <div style={{ height: 50 }} />
+      <Block>
+        <div style={{ height: 16 }} />
+        <Contributors />
+        <div style={{ height: 50 }} />
+      </Block>
     </>
+  )
+}
+
+function Block({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        backgroundColor: 'var(--bg-color)',
+        display: 'flex',
+        justifyContent: 'center',
+        paddingBottom: 20,
+        marginTop: 'var(--block-margin)'
+      }}
+    >
+      <div style={{ maxWidth: 1000 }}>{children}</div>
+    </div>
   )
 }

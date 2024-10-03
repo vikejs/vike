@@ -16,7 +16,7 @@ function Header() {
         </h1>
         <p id="header-tagline">
           {/* &#8288; for non-breaking hyphen */}
-          Next.js/Nuxt alternative. Flexible, reliable, clutter&#8288;-&#8288;free, fast,
+          Next.js/Nuxt alternative. Flexible, reliable, fast, clutter&#8288;-&#8288;free,
           community&#8288;-&#8288;driven.
         </p>
       </div>

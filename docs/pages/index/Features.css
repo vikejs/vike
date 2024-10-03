@@ -1,0 +1,25 @@
+#feature-list h2 {
+  font-size: 2.2em;
+  text-align: center;
+  margin-bottom: 50px;
+  margin-top: var(--block-margin);
+}
+#feature-list {
+  --feature-padding: 40px;
+}
+#feature-list h2 {
+  padding-top: var(--feature-padding);
+}
+#feature-list .feature-unit {
+  padding-bottom: var(--feature-padding);
+}
+/*
+#feature-list h2:after {
+  content: '.'
+}
+*/
+#feature-list h3 {
+  font-size: 1.4em;
+  margin-top: 0px;
+  margin-bottom: -4px;
+}

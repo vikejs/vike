@@ -9,7 +9,7 @@ export default {
   faviconUrl: vikeIcon,
   headings,
   headingsDetached,
-  tagline: '🔨 Flexible, lean, community-driven, dependable, fast Vite-based frontend framework.',
+  tagline: 'Next.js/Nuxt alternative. Flexible, reliable, clutter-free, fast, community-driven.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
@@ -17,9 +17,6 @@ export default {
     appId: 'YMV9Y4B58S',
     apiKey: '9ac178c1a29ba00e8afb98365015f677',
     indexName: 'vike'
-  },
-  topNavigationStyle: {
-    marginTop: 10
   },
   bannerUrl: 'https://vike.dev/banner.png',
   i18n: true,

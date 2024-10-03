@@ -1,0 +1,210 @@
+export { Features }
+
+import React, { useEffect, useRef } from 'react'
+import './Features.css'
+
+function Features() {
+  return (
+    <div id="feature-list">
+      <Flexible />
+      <Reliable />
+      <Fast />
+      <ClutterFree />
+      <CommunityDriven />
+    </div>
+  )
+}
+
+function Flexible() {
+  return (
+    <FeatureUnit>
+      <H2 color="blue">Flexible</H2>
+      <FlexParent>
+        <FlexChild>
+          <h3>Any tool</h3>
+          <p>You can use any:</p>
+          <ul style={{ paddingLeft: 30, marginTop: -12 }}>
+            <li>UI framework (React/Vue/Solid/...)</li>
+            <li>Rendering strategy (SPA/SSR/SSG/...)</li>
+            <li>Data fetching (RPC/REST/GraphQL/...)</li>
+            <li>Server (Express.js/Hono/Fastify/...) </li>
+            <li>Deployment (VPS/serverless/static/...)</li>
+          </ul>
+        </FlexChild>
+        <FlexChild>
+          <h3>Ejectable extensions</h3>
+          <p>
+            Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full control
+            over how tools integrate.
+          </p>
+        </FlexChild>
+        <FlexChild>
+          <h3>Less blockers</h3>
+          <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
+          <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
+        </FlexChild>
+      </FlexParent>
+    </FeatureUnit>
+  )
+}
+
+function Reliable() {
+  return (
+    <FeatureUnit>
+      <H2 color="#f900ff">Reliable</H2>
+      <FlexParent>
+        <FlexChild style={{ maxWidth: 490 }}>
+          <h3>Batteries included</h3>
+          <p>
+            Includes all features you'd expect from a modern framework: filesystem routing, pre-rendering, data
+            fetching, layouts, i18n, prefetching & preloading, HTML streaming, URL redirects & rewrites, route guards,
+            ...
+          </p>
+        </FlexChild>
+        <FlexChild style={{ maxWidth: 390 }}>
+          <h3>Less bugs</h3>
+          <p>We quickly fix bugs (usually under 24 hours).</p>
+        </FlexChild>
+        <FlexChild style={{ maxWidth: 490 }}>
+          <h3>Aligned interests</h3>
+          <p>
+            Vike's revenue comes from companies that use Vike, which means that the business interests of Vike and its
+            users are aligned.
+          </p>
+        </FlexChild>
+        <FlexChild style={{ maxWidth: 390 }}>
+          <h3>Responsive</h3>
+          <p>We are responsive, and we provide a clear guideline on how to reach out and get reliable help from us.</p>
+        </FlexChild>
+      </FlexParent>
+    </FeatureUnit>
+  )
+}
+
+function Fast() {
+  return (
+    <FeatureUnit>
+      <H2 color="#ffed2e">Fast</H2>
+      <FlexParent>
+        <FlexChild style={{ maxWidth: 390 }}>
+          <h3>Prefetch & cache</h3>
+          <p>
+            Vike's existing and upcoming prefetch and cache utilities enable you to develop blazing fast user
+            experiences.
+          </p>
+        </FlexChild>
+        <FlexChild style={{ maxWidth: 390 }}>
+          <h3>Next-gen scaffolder</h3>
+          <p>Use our next-generation scaffolder to jump start with a fully functional app.</p>
+        </FlexChild>
+        <FlexChild style={{ maxWidth: 390 }}>
+          <h3>Vite</h3>
+          <p>Powered by Vite, for a lightning fast developer experience.</p>
+        </FlexChild>
+      </FlexParent>
+    </FeatureUnit>
+  )
+}
+
+function ClutterFree() {
+  return (
+    <FeatureUnit>
+      <H2 color="#c3c3c3">Clutter-free</H2>
+      <Center>
+        <div style={{ maxWidth: 800, marginTop: -30 }}>
+          <p>
+            Vike follows the do-one-thing-do-it-well philosophy: Vike's core is a flexible and robust foundation, and on
+            top of it you cherry-pick Vike extensions to get powerful tailored features.
+          </p>
+          <p>
+            Vike's architecture can accommodate any kind of websites, from simple marketing pages to enterprise
+            applications with complex requirements.
+          </p>
+        </div>
+      </Center>
+    </FeatureUnit>
+  )
+}
+
+function CommunityDriven() {
+  return (
+    <FeatureUnit>
+      <H2 color="#1bd91b">Community-driven</H2>
+      <FlexParent>
+        <FlexChild style={{ maxWidth: 390 }}>
+          <h3>Community prioritization</h3>
+          <p>We listen to users, engage in conversations, and prioritize accordingly.</p>
+        </FlexChild>
+        <FlexChild style={{ maxWidth: 390 }}>
+          <h3>Community innovation</h3>
+          <p>
+            Vike's modular architecture enables community-driven innovation, fostering an ecosystem more innovative than
+            any single organization can be.
+          </p>
+        </FlexChild>
+      </FlexParent>
+    </FeatureUnit>
+  )
+}
+
+function H2({ children, color }: { children: string; color: string }) {
+  const ref = useRef<HTMLHeadingElement>(null)
+  /*
+  useEffect(() => {
+    const listener =
+      () => {
+        console.log(children)
+        const elH2 = ref.current!
+        var viewportOffset = elH2.getBoundingClientRect();
+        console.log(window.innerHeight);
+        var top = viewportOffset.top;
+        console.log(top)
+        isHighlight(elH2)
+      }
+    document.addEventListener('scroll', listener, {passive: true})
+    document.removeEventListener('scroll', listener)
+  })
+  */
+  const textDecoration: React.CSSProperties = {
+    textDecoration: 'underline',
+    textUnderlineOffset: '0.1em',
+    textDecorationThickness: '0.1em',
+    textDecorationColor: color
+    //color: 'transparent'
+  }
+  return (
+    <h2 ref={ref} style={{ position: 'relative', ...textDecoration }}>
+      {/* 
+    <span style={{position: 'absolute', ...textDecoration}}>{children}</span>
+    */}
+      {children}
+    </h2>
+  )
+}
+function isHighlight(elH2: HTMLElement) {
+  if (!(document.documentElement.scrollTop > 0)) return false
+}
+
+function FeatureUnit({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="feature-unit" style={{ backgroundColor: 'var(--bg-color)' }}>
+      <div style={{ maxWidth: 1200, margin: 'auto' }}>{children}</div>
+    </div>
+  )
+}
+
+type DivProps = React.HTMLAttributes<HTMLDivElement>
+function FlexParent(props: DivProps) {
+  return (
+    <div
+      {...props}
+      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', columnGap: 10, rowGap: 10, ...props.style }}
+    />
+  )
+}
+function FlexChild(props: DivProps) {
+  return <div {...props} style={{ flexGrow: 1, minWidth: 300, maxWidth: 500, ...props.style }} />
+}
+function Center(props: DivProps) {
+  return <div {...props} style={{ display: 'flex', justifyContent: 'center', ...props.style }} />
+}
