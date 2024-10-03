@@ -2,7 +2,7 @@ export { Page }
 
 import React from 'react'
 import { Header } from './Header'
-import { Features } from './features/Features'
+import { Features } from './Features'
 import { Contributors, HorizontalLine, Link, Sponsors } from '@brillout/docpress'
 
 function Page() {

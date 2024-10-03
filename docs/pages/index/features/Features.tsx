@@ -1,3 +1,5 @@
+// TODO: remove while features/ dir
+
 import React from 'react'
 import { Emoji } from '@brillout/docpress'
 import { FeatureList } from '@brillout/docpress/FeatureList/FeatureList'
