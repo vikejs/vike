@@ -132,11 +132,11 @@ function CommunityDriven() {
       <H2 color="#1bd91b">Community-driven</H2>
       <FlexParent>
         <FlexChild style={{ maxWidth: 390 }}>
-          <h3>Community prioritization</h3>
+          <h3>Prioritization</h3>
           <p>We listen to users, engage in conversations, and prioritize accordingly.</p>
         </FlexChild>
         <FlexChild style={{ maxWidth: 390 }}>
-          <h3>Community innovation</h3>
+          <h3>Innovation</h3>
           <p>
             Vike's modular architecture enables community-driven innovation, fostering an ecosystem more innovative than
             any single organization can be.
