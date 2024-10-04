@@ -113,8 +113,8 @@ function ClutterFree() {
       <Center>
         <div style={{ maxWidth: 800, marginTop: -30 }}>
           <p>
-            Vike follows the do-one-thing-do-it-well philosophy: Vike's core is a flexible and robust foundation, and on
-            top of it you cherry-pick Vike extensions to get powerful tailored features.
+            Vike follows the do-one-thing-do-it-well philosophy: Vike is a flexible and robust foundation, while users
+            cherry-pick Vike extensions to get powerful tailored features.
           </p>
           <p>
             Vike's architecture can accommodate any kind of websites, from simple marketing pages to enterprise
