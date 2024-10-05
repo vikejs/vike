@@ -208,7 +208,7 @@ function FlexParent(props: DivProps) {
         {...props}
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, auto))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, auto))',
           flexWrap: 'wrap',
           columnGap: 10,
           rowGap: 10,
@@ -219,7 +219,18 @@ function FlexParent(props: DivProps) {
   )
 }
 function FlexChild(props: DivProps) {
-  return <div {...props} style={{ ...props.style }} />
+  return (
+    <div
+      {...props}
+      style={{
+        /*
+        justifySelf: 'center',
+        alignSelf: 'center',
+        */
+        ...props.style
+      }}
+    />
+  )
 }
 function Center(props: DivProps) {
   return <div {...props} style={{ display: 'flex', justifyContent: 'center', ...props.style }} />
