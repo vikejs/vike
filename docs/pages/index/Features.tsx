@@ -203,14 +203,23 @@ function FeatureUnit({ children }: { children: React.ReactNode }) {
 type DivProps = React.HTMLAttributes<HTMLDivElement>
 function FlexParent(props: DivProps) {
   return (
-    <div
-      {...props}
-      style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', columnGap: 10, rowGap: 10, ...props.style }}
-    />
+    <Center>
+      <div
+        {...props}
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          //justifyContent: 'center',
+          columnGap: 10,
+          rowGap: 10,
+          ...props.style
+        }}
+      />
+    </Center>
   )
 }
 function FlexChild(props: DivProps) {
-  return <div {...props} style={{ flexGrow: 1, minWidth: 300, maxWidth: 500, ...props.style }} />
+  return <div {...props} style={{ flexGrow: 0, minWidth: 300, maxWidth: 500, ...props.style }} />
 }
 function Center(props: DivProps) {
   return <div {...props} style={{ display: 'flex', justifyContent: 'center', ...props.style }} />
