@@ -111,7 +111,7 @@ function ClutterFree() {
     <FeatureUnit>
       <H2 color="#c3c3c3">Clutter-free</H2>
       <Center>
-        <div style={{ maxWidth: 800, marginTop: -30 }}>
+        <div className="feature-unit_no-heading" style={{ maxWidth: 800 }}>
           <p>
             Vike follows the do-one-thing-do-it-well philosophy: Vike is a flexible and robust foundation, while users
             cherry-pick Vike extensions to get powerful tailored features.
@@ -187,7 +187,14 @@ function isHighlight(elH2: HTMLElement) {
 
 function FeatureUnit({ children }: { children: React.ReactNode }) {
   return (
-    <div className="feature-unit" style={{ backgroundColor: 'var(--bg-color)' }}>
+    <div
+      className="feature-unit"
+      style={{
+        backgroundColor: 'var(--bg-color)',
+        paddingLeft: 'var(--main-view-padding)',
+        paddingRight: 'var(--main-view-padding)'
+      }}
+    >
       <div style={{ maxWidth: 1200, margin: 'auto' }}>{children}</div>
     </div>
   )
