@@ -31,17 +31,17 @@ function Flexible() {
             <li>Deployment (VPS/serverless/static/...)</li>
           </ul>
         </GridChild>
-        <GridChild className='sep-both'>
-            <h3>Less blockers</h3>
-            <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
-            <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
+        <GridChild className="sep-both">
+          <h3>Less blockers</h3>
+          <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
+          <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
         </GridChild>
         <GridChild>
-            <h3>Ejectable extensions</h3>
-            <p>
-              Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full
-              control over how tools integrate.
-            </p>
+          <h3>Ejectable extensions</h3>
+          <p>
+            Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full control
+            over how tools integrate.
+          </p>
         </GridChild>
       </GridParent>
     </FeatureUnit>
@@ -195,12 +195,16 @@ function FeatureUnit({ children }: { children: React.ReactNode }) {
         paddingRight: 'var(--main-view-padding)'
       }}
     >
-      <div style={{
-        /*
-        maxWidth: 1200,
-        margin: 'auto'
-        */
-      }}>{children}</div>
+      <div
+        style={
+          {
+            // maxWidth: 1200,
+            // margin: 'auto'
+          }
+        }
+      >
+        {children}
+      </div>
     </div>
   )
 }
@@ -211,7 +215,7 @@ function FlexParent(props: DivProps) {
     <Center>
       <div
         {...props}
-        className='flex-parent'
+        className="flex-parent"
         style={{
           display: 'flex',
           ...props.style
