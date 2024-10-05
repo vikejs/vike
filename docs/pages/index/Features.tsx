@@ -19,7 +19,7 @@ function Flexible() {
   return (
     <FeatureUnit>
       <H2 color="blue">Flexible</H2>
-      <FlexParent>
+      <FlexParent style={{ maxWidth: 1200 }}>
         <FlexChild>
           <h3>Any tool</h3>
           <p>You can use any:</p>
@@ -52,31 +52,31 @@ function Reliable() {
   return (
     <FeatureUnit>
       <H2 color="#f900ff">Reliable</H2>
-      <FlexParent>
-        <FlexChild>
+      <GridParent>
+        <GridChild>
           <h3>Batteries included</h3>
           <p>
             Includes all features you'd expect from a modern framework: filesystem routing, pre-rendering, data
             fetching, layouts, i18n, prefetching & preloading, HTML streaming, URL redirects & rewrites, route guards,
             ...
           </p>
-        </FlexChild>
-        <FlexChild>
+        </GridChild>
+        <GridChild>
           <h3>Less bugs</h3>
           <p>We quickly fix bugs (usually under 24 hours).</p>
-        </FlexChild>
-        <FlexChild>
+        </GridChild>
+        <GridChild>
           <h3>Aligned interests</h3>
           <p>
             Vike's revenue comes from companies that use Vike, which means that the business interests of Vike and its
             users are aligned.
           </p>
-        </FlexChild>
-        <FlexChild>
+        </GridChild>
+        <GridChild>
           <h3>Responsive</h3>
           <p>We are responsive, and we provide a clear guideline on how to reach out and get reliable help from us.</p>
-        </FlexChild>
-      </FlexParent>
+        </GridChild>
+      </GridParent>
     </FeatureUnit>
   )
 }
@@ -85,23 +85,23 @@ function Fast() {
   return (
     <FeatureUnit>
       <H2 color="#ffed2e">Fast</H2>
-      <FlexParent>
-        <FlexChild>
+      <GridParent>
+        <GridChild>
           <h3>Prefetch & cache</h3>
           <p>
             Vike's existing and upcoming prefetch and cache utilities enable you to develop blazing fast user
             experiences.
           </p>
-        </FlexChild>
-        <FlexChild>
+        </GridChild>
+        <GridChild>
           <h3>Next-gen scaffolder</h3>
           <p>Use our next-generation scaffolder to jump start with a fully functional app.</p>
-        </FlexChild>
-        <FlexChild>
+        </GridChild>
+        <GridChild>
           <h3>Vite</h3>
           <p>Powered by Vite, for a lightning fast developer experience.</p>
-        </FlexChild>
-      </FlexParent>
+        </GridChild>
+      </GridParent>
     </FeatureUnit>
   )
 }
@@ -130,19 +130,19 @@ function CommunityDriven() {
   return (
     <FeatureUnit>
       <H2 color="#1bd91b">Community-driven</H2>
-      <FlexParent>
-        <FlexChild>
+      <GridParent>
+        <GridChild>
           <h3>Prioritization</h3>
           <p>We listen to users, engage in conversations, and prioritize accordingly.</p>
-        </FlexChild>
-        <FlexChild>
+        </GridChild>
+        <GridChild>
           <h3>Innovation</h3>
           <p>
             Vike's modular architecture enables community-driven innovation, fostering an ecosystem more innovative than
             any single organization can be.
           </p>
-        </FlexChild>
-      </FlexParent>
+        </GridChild>
+      </GridParent>
     </FeatureUnit>
   )
 }
@@ -207,6 +207,36 @@ function FlexParent(props: DivProps) {
       <div
         {...props}
         style={{
+          display: 'flex',
+          columnGap: 10,
+          rowGap: 10,
+          ...props.style
+        }}
+      />
+    </Center>
+  )
+}
+function FlexChild(props: DivProps) {
+  return (
+    <div
+      {...props}
+      style={{
+        /*
+        justifySelf: 'center',
+        alignSelf: 'center',
+        */
+        minWidth: 350,
+        ...props.style
+      }}
+    />
+  )
+}
+function GridParent(props: DivProps) {
+  return (
+    <Center>
+      <div
+        {...props}
+        style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, auto))',
           flexWrap: 'wrap',
@@ -218,7 +248,7 @@ function FlexParent(props: DivProps) {
     </Center>
   )
 }
-function FlexChild(props: DivProps) {
+function GridChild(props: DivProps) {
   return (
     <div
       {...props}
