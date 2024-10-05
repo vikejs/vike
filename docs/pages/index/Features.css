@@ -21,6 +21,10 @@
 .feature-unit_no-heading {
   margin-top: -20px;
 }
+.flex-parent {
+  column-gap: 30px;
+  row-gap: 30px;
+}
 
 @media screen and (max-width: 719px) {
   #feature-list h2 {
@@ -37,5 +41,9 @@
   }
   .feature-unit_no-heading {
     margin-top: -16px;
+  }
+  .flex-parent {
+    column-gap: 10px;
+    row-gap: 10px;
   }
 }

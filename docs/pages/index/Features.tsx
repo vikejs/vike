@@ -19,8 +19,8 @@ function Flexible() {
   return (
     <FeatureUnit>
       <H2 color="blue">Flexible</H2>
-      <FlexParent style={{ maxWidth: 1200 }}>
-        <FlexChild>
+      <GridParent style={{ maxWidth: 1200 }}>
+        <GridChild>
           <h3>Any tool</h3>
           <p>You can use any:</p>
           <ul style={{ paddingLeft: 30, marginTop: -12 }}>
@@ -30,20 +30,20 @@ function Flexible() {
             <li>Server (Express.js/Hono/Fastify/...) </li>
             <li>Deployment (VPS/serverless/static/...)</li>
           </ul>
-        </FlexChild>
-        <FlexChild>
-          <div>
+        </GridChild>
+        <GridChild>
+            <h3>Less blockers</h3>
+            <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
+            <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
+        </GridChild>
+        <GridChild>
             <h3>Ejectable extensions</h3>
             <p>
               Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full
               control over how tools integrate.
             </p>
-            <h3 style={{ marginTop: 30 }}>Less blockers</h3>
-            <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
-            <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
-          </div>
-        </FlexChild>
-      </FlexParent>
+        </GridChild>
+      </GridParent>
     </FeatureUnit>
   )
 }
@@ -206,10 +206,9 @@ function FlexParent(props: DivProps) {
     <Center>
       <div
         {...props}
+        className='flex-parent'
         style={{
           display: 'flex',
-          columnGap: 10,
-          rowGap: 10,
           ...props.style
         }}
       />
@@ -236,12 +235,11 @@ function GridParent(props: DivProps) {
     <Center>
       <div
         {...props}
+        className="flex-parent"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(300px, auto))',
           flexWrap: 'wrap',
-          columnGap: 10,
-          rowGap: 10,
           ...props.style
         }}
       />
