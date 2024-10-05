@@ -32,16 +32,16 @@ function Flexible() {
           </ul>
         </FlexChild>
         <FlexChild>
-          <h3>Ejectable extensions</h3>
-          <p>
-            Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full control
-            over how tools integrate.
-          </p>
-        </FlexChild>
-        <FlexChild>
-          <h3>Less blockers</h3>
-          <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
-          <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
+          <div>
+            <h3>Ejectable extensions</h3>
+            <p>
+              Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full
+              control over how tools integrate.
+            </p>
+            <h3 style={{ marginTop: 30 }}>Less blockers</h3>
+            <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
+            <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
+          </div>
         </FlexChild>
       </FlexParent>
     </FeatureUnit>
