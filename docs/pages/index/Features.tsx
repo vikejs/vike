@@ -53,7 +53,7 @@ function Reliable() {
     <FeatureUnit>
       <H2 color="#f900ff">Reliable</H2>
       <FlexParent>
-        <FlexChild style={{ maxWidth: 490 }}>
+        <FlexChild>
           <h3>Batteries included</h3>
           <p>
             Includes all features you'd expect from a modern framework: filesystem routing, pre-rendering, data
@@ -61,18 +61,18 @@ function Reliable() {
             ...
           </p>
         </FlexChild>
-        <FlexChild style={{ maxWidth: 390 }}>
+        <FlexChild>
           <h3>Less bugs</h3>
           <p>We quickly fix bugs (usually under 24 hours).</p>
         </FlexChild>
-        <FlexChild style={{ maxWidth: 490 }}>
+        <FlexChild>
           <h3>Aligned interests</h3>
           <p>
             Vike's revenue comes from companies that use Vike, which means that the business interests of Vike and its
             users are aligned.
           </p>
         </FlexChild>
-        <FlexChild style={{ maxWidth: 390 }}>
+        <FlexChild>
           <h3>Responsive</h3>
           <p>We are responsive, and we provide a clear guideline on how to reach out and get reliable help from us.</p>
         </FlexChild>
@@ -86,18 +86,18 @@ function Fast() {
     <FeatureUnit>
       <H2 color="#ffed2e">Fast</H2>
       <FlexParent>
-        <FlexChild style={{ maxWidth: 390 }}>
+        <FlexChild>
           <h3>Prefetch & cache</h3>
           <p>
             Vike's existing and upcoming prefetch and cache utilities enable you to develop blazing fast user
             experiences.
           </p>
         </FlexChild>
-        <FlexChild style={{ maxWidth: 390 }}>
+        <FlexChild>
           <h3>Next-gen scaffolder</h3>
           <p>Use our next-generation scaffolder to jump start with a fully functional app.</p>
         </FlexChild>
-        <FlexChild style={{ maxWidth: 390 }}>
+        <FlexChild>
           <h3>Vite</h3>
           <p>Powered by Vite, for a lightning fast developer experience.</p>
         </FlexChild>
@@ -131,11 +131,11 @@ function CommunityDriven() {
     <FeatureUnit>
       <H2 color="#1bd91b">Community-driven</H2>
       <FlexParent>
-        <FlexChild style={{ maxWidth: 390 }}>
+        <FlexChild>
           <h3>Prioritization</h3>
           <p>We listen to users, engage in conversations, and prioritize accordingly.</p>
         </FlexChild>
-        <FlexChild style={{ maxWidth: 390 }}>
+        <FlexChild>
           <h3>Innovation</h3>
           <p>
             Vike's modular architecture enables community-driven innovation, fostering an ecosystem more innovative than
@@ -208,9 +208,8 @@ function FlexParent(props: DivProps) {
         {...props}
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
           flexWrap: 'wrap',
-            width: '100%',
           columnGap: 10,
           rowGap: 10,
           ...props.style
@@ -220,7 +219,7 @@ function FlexParent(props: DivProps) {
   )
 }
 function FlexChild(props: DivProps) {
-  return <div {...props} style={{ flexGrow: 0, minWidth: 300, maxWidth: 500, ...props.style }} />
+  return <div {...props} style={{ ...props.style }} />
 }
 function Center(props: DivProps) {
   return <div {...props} style={{ display: 'flex', justifyContent: 'center', ...props.style }} />
