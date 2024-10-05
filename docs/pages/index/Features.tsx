@@ -196,14 +196,12 @@ function FeatureUnit({ children }: { children: React.ReactNode }) {
       }}
     >
       <div
-        style={
-          {
-            //*
-            maxWidth: 1200,
-            margin: 'auto'
-            //*/
-          }
-        }
+        style={{
+          //*
+          maxWidth: 1200,
+          margin: 'auto'
+          //*/
+        }}
       >
         {children}
       </div>
