@@ -19,7 +19,7 @@ function Flexible() {
   return (
     <FeatureUnit>
       <H2 color="blue">Flexible</H2>
-      <GridParent style={{ maxWidth: 1200 }}>
+      <GridParent>
         <GridChild>
           <h3>Any tool</h3>
           <p>You can use any:</p>
@@ -31,7 +31,7 @@ function Flexible() {
             <li>Deployment (VPS/serverless/static/...)</li>
           </ul>
         </GridChild>
-        <GridChild>
+        <GridChild className='sep-both'>
             <h3>Less blockers</h3>
             <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
             <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
@@ -195,7 +195,12 @@ function FeatureUnit({ children }: { children: React.ReactNode }) {
         paddingRight: 'var(--main-view-padding)'
       }}
     >
-      <div style={{ maxWidth: 1200, margin: 'auto' }}>{children}</div>
+      <div style={{
+        /*
+        maxWidth: 1200,
+        margin: 'auto'
+        */
+      }}>{children}</div>
     </div>
   )
 }
