@@ -23,6 +23,8 @@ function fileEnv(): Plugin {
       // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
       if (!viteDevServer) return
       if (skip(id)) return
+      // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
+      if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
       const moduleInfo = viteDevServer.moduleGraph.getModuleById(id)
       assert(moduleInfo)
       const importers: string[] = Array.from(moduleInfo.importers)
