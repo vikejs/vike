@@ -207,9 +207,10 @@ function FlexParent(props: DivProps) {
       <div
         {...props}
         style={{
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(500px, 1fr))',
           flexWrap: 'wrap',
-          //justifyContent: 'center',
+            width: '100%',
           columnGap: 10,
           rowGap: 10,
           ...props.style
