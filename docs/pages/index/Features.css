@@ -21,6 +21,33 @@
 .feature-unit_no-heading {
   margin-top: -20px;
 }
+.flex-parent {
+  column-gap: 50px;
+  row-gap: 30px;
+}
+
+/*
+.sep-both {
+  position: relative;
+}
+.sep-both::before,
+.sep-both::after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  display: block;
+  --height: 100px;
+  height: var(--height);
+  top: calc((100% - var(--height)) / 2);
+  background-color: #aaa;
+}
+.sep-both::before {
+  left: -13px;
+}
+.sep-both::after {
+  right: -3px;
+}
+*/
 
 @media screen and (max-width: 719px) {
   #feature-list h2 {
@@ -37,5 +64,9 @@
   }
   .feature-unit_no-heading {
     margin-top: -16px;
+  }
+  .flex-parent {
+    column-gap: 10px;
+    row-gap: 10px;
   }
 }
