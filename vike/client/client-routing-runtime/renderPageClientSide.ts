@@ -106,10 +106,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   addLinkPrefetchHandlers_unwatch()
 
   const { isRenderOutdated, setHydrationCanBeAborted, isFirstRender } = getIsRenderOutdated()
-  // Note that pageContext.isHydration isn't equivalent to isFirstRender
-  // - Thus pageContext.isHydration isn't equivalent to !pageContext.isClientSideNavigation
-  // - `pageContext.isHydration === !isFirstRender && !isErrorPage`
-  assert(isClientSideNavigation === !isFirstRender)
   assertNoInfiniteAbortLoop(pageContextsFromRewrite.length, redirectCount)
 
   if (globalObject.clientRoutingIsDisabled) {
