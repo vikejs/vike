@@ -208,7 +208,7 @@ function FlexParent(props: DivProps) {
         {...props}
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, auto))',
           flexWrap: 'wrap',
           columnGap: 10,
           rowGap: 10,
