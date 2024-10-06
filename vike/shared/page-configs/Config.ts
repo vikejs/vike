@@ -234,8 +234,8 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) => OnRenderHtmlReturn
 type OnRenderHtmlReturn =
   | DocumentHtml
   | {
-      documentHtml: DocumentHtml
-      pageContext:
+      documentHtml?: DocumentHtml
+      pageContext?:
         | OnRenderHtmlPageContextReturn
         // See https://vike.dev/streaming#initial-data-after-stream-end
         | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
