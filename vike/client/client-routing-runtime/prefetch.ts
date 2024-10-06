@@ -144,7 +144,23 @@ function getResultMaxAge(): number {
  *
  * @param url - The URL of the page you want to prefetch.
  */
-async function prefetch(url: string, options?: { pageContext?: boolean; staticAssets?: boolean }): Promise<void> {
+async function prefetch(
+  url: string,
+  /* TODO/pageContext-prefetch
+  options?: {
+    pageContext?: boolean
+    staticAssets?: boolean
+  }
+  */
+  options_?: {
+    pageContext?: boolean
+  }
+): Promise<void> {
+  const options = {
+    staticAssets: true,
+    pageContext: options_?.pageContext ?? false
+  }
+
   assertUsage(checkIfClientRouting(), 'prefetch() only works with Client Routing, see https://vike.dev/prefetch', {
     showStackTrace: true
   })
@@ -168,6 +184,7 @@ async function prefetch(url: string, options?: { pageContext?: boolean; staticAs
     })(),
     (async () => {
       if (options?.pageContext !== false) {
+        assertUsage(isBrilloutDocpress(), "prefetching pageContext isn't supported yet")
         const resultMaxAge = typeof options?.pageContext === 'number' ? options.pageContext : null
         await prefetchPageContextFromServerHooks(pageContextLink, resultMaxAge)
       }
