@@ -39,6 +39,7 @@ import type {
 } from '../../client/client-routing-runtime/prefetch/PrefetchSetting.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
+import type { InjectFilterEntry } from '../../types/index.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
@@ -234,6 +235,7 @@ type OnRenderHtmlSync = (pageContext: PageContextServer) => OnRenderHtmlReturn
 type OnRenderHtmlReturn =
   | DocumentHtml
   | {
+      injectFilter?: (assets: InjectFilterEntry[]) => void
       documentHtml?: DocumentHtml
       pageContext?:
         | OnRenderHtmlPageContextReturn
