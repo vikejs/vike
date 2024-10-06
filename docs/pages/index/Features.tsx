@@ -1,6 +1,6 @@
 export { Features }
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Features.css'
 
 function Features() {
@@ -16,6 +16,8 @@ function Features() {
 }
 
 function Flexible() {
+  // const isWidthAbove719 = useMedia('max-width: 719px')
+  // console.log('isWidthAbove719', isWidthAbove719)
   return (
     <FeatureUnit>
       <H2 color="blue">Flexible</H2>
@@ -271,4 +273,20 @@ function GridChild(props: DivProps) {
 }
 function Center(props: DivProps) {
   return <div {...props} style={{ display: 'flex', justifyContent: 'center', ...props.style }} />
+}
+
+function useMedia(query: `max-width: ${number}px`): boolean {
+  const getMediaQuery = () => window.matchMedia(`(${query})`)
+    const [isMatch, setIsMatch] = useState(
+    getMediaQuery().matches
+  )
+  useEffect(() => {
+    const mediaQuery = getMediaQuery()
+    const listener = (e: MediaQueryListEvent) => setIsMatch( e.matches );
+    mediaQuery.addEventListener('change', listener)
+    return () => {
+      mediaQuery.removeEventListener('change', listener)
+    }
+  }, []);
+  return isMatch
 }
