@@ -225,21 +225,13 @@ type OnRenderClientSync = (pageContext: PageContextClient) => void
  *
  * https://vike.dev/onRenderHtml
  */
-type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<
-  | DocumentHtml
-  | {
-      documentHtml: DocumentHtml
-      pageContext:
-        | OnRenderHtmlPageContextReturn
-        // See https://vike.dev/streaming#initial-data-after-stream-end
-        | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
-    }
->
+type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<OnRenderHtmlReturn>
 /** Hook called when page is rendered to HTML on the server-side.
  *
  * https://vike.dev/onRenderHtml
  */
-type OnRenderHtmlSync = (pageContext: PageContextServer) =>
+type OnRenderHtmlSync = (pageContext: PageContextServer) => OnRenderHtmlReturn
+type OnRenderHtmlReturn =
   | DocumentHtml
   | {
       documentHtml: DocumentHtml
