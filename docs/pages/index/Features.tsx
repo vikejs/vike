@@ -259,7 +259,14 @@ function useHeadingUnderlineAnimation() {
       })
     }
     onScroll()
-    document.addEventListener('scroll', onScroll, { passive: true })
-    return () => document.removeEventListener('scroll', onScroll)
+    const events = ['scroll', 'resize']
+    events.forEach((eventName) => {
+      window.addEventListener(eventName, onScroll, { passive: true })
+    })
+    return () => {
+      events.forEach((eventName) => {
+        window.removeEventListener(eventName, onScroll)
+      })
+    }
   })
 }
