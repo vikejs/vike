@@ -12,6 +12,6 @@
   white-space: nowrap;
   transition: max-width var(--animation-duration) ease-out;
 }
-#feature-list h2.highlight:before {
+#feature-list h2.heading-highlight:before {
   max-width: var(--heading-width);
 }
