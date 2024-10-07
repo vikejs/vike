@@ -5,7 +5,6 @@ import './FeaturesLayout.css'
 import './FeaturesColors.css'
 import './HeadingUnderlineAnimation.css'
 import { getFeatureId } from './getFeatureId'
-import { isBrowser } from '@brillout/docpress'
 
 function Features() {
   useHeadingUnderlineAnimation()
@@ -16,12 +15,6 @@ function Features() {
       <Fast />
       <ClutterFree />
       <CommunityDriven />
-      {/* Workaround the fact that the HTML cannot know window.location.hash */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `setHash();${setHash.toString()};${getFeatureIdFromHash.toString()};window.__isHydration=true`
-        }}
-      ></script>
     </div>
   )
 }
@@ -170,9 +163,6 @@ function CommunityDriven() {
 
 function H2({ children }: { children: string }) {
   const featureId = getFeatureId(children)
-  useEffect(() => {
-    window.__isHydration = false
-  })
   return (
     <div style={{ textAlign: 'center' }}>
       <h2
@@ -184,21 +174,11 @@ function H2({ children }: { children: string }) {
           textDecorationColor: `var(--color-${featureId})`
         }}
         data-text={children}
-        className={
-          isBrowser() && window.__isHydration && getFeatureIdFromHash() === featureId
-            ? 'heading-highlight-init'
-            : undefined
-        }
       >
         {children}
       </h2>
     </div>
   )
-}
-declare global {
-  interface Window {
-    __isHydration: boolean
-  }
 }
 
 function FeatureUnit({ children }: { children: React.ReactNode }) {
@@ -264,17 +244,7 @@ function Center(props: DivProps) {
 function useHeadingUnderlineAnimation() {
   useEffect(() => {
     const headings = Array.from(document.getElementById('feature-list')!.querySelectorAll('h2'))
-    const updateHeadingHighlight = (isScroll: boolean) => {
-      const headingHighlightInit = document.querySelector('.heading-highlight-init')
-      if (headingHighlightInit) {
-        if (!isScroll) {
-          return
-        } else {
-          headingHighlightInit.classList.remove('heading-highlight-init')
-        }
-      }
-      if (!isScroll && headingHighlightInit) return
-
+    const onScroll = () => {
       const isTop = document.documentElement.scrollTop === 0
       const winner = headings
         .map((h) => {
@@ -298,14 +268,14 @@ function useHeadingUnderlineAnimation() {
         h.classList[h === winner ? 'add' : 'remove']('heading-highlight')
       })
     }
-    onAfterPaint(() => updateHeadingHighlight(false))
+    onAfterPaint(onScroll)
     const events = ['scroll', 'resize']
     events.forEach((eventName) => {
-      window.addEventListener(eventName, () => updateHeadingHighlight(true), { passive: true })
+      window.addEventListener(eventName, onScroll, { passive: true })
     })
     return () => {
       events.forEach((eventName) => {
-        window.removeEventListener(eventName, () => updateHeadingHighlight(true))
+        window.removeEventListener(eventName, onScroll)
       })
     }
   })
@@ -318,16 +288,4 @@ function onAfterPaint(callback: () => void) {
     // Fallback for old versions of Safari, we'll assume that things are less likely to be busy after 150ms.
     setTimeout(callback, 150)
   }
-}
-
-// DON'T use TypeScript syntax for this function because it's serialized using dangerouslySetInnerHTML
-function setHash() {
-  const featureId = getFeatureIdFromHash()
-  const featureEl = document.getElementById(featureId)
-  if (!featureEl) return
-  featureEl.classList.add('heading-highlight-init')
-}
-// DON'T use TypeScript syntax for this function because it's serialized using dangerouslySetInnerHTML
-function getFeatureIdFromHash() {
-  return location.hash.slice(1)
 }
