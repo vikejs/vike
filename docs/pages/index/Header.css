@@ -1,49 +1,18 @@
-#header-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  background-color: var(--bg-color);
-}
-#header-logo h1 {
-  margin: 0;
-  line-height: 1.1em;
-  margin-bottom: 8px;
-}
 #header-logo h1,
 #header-logo p {
   margin-left: 20px;
 }
-
 #header-logo {
   padding-top: 80px;
   padding-bottom: 80px;
-}
-.header-separator-line {
-  padding-top: 15px;
-  padding-bottom: 25px;
-}
-.header-separator-line.primary {
-  padding-top: 30px;
-  padding-bottom: 30px;
 }
 #header-logo h1 {
   font-size: 3.3em;
 }
 #header-tagline {
   font-size: 1.5em;
-  padding: 0;
-  margin: 0;
-  margin-top: 14px;
-  max-width: 550px;
 }
-
-/* === Responsive === */
 @media screen and (max-width: 1139px) {
-  .header-separator-line {
-    padding-top: 15px;
-    padding-bottom: 15px;
-  }
   #header-logo {
     padding-top: 50px;
     padding-bottom: 50px;

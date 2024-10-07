@@ -18,7 +18,6 @@
   column-gap: 50px;
   row-gap: 30px;
 }
-
 @media screen and (max-width: 719px) {
   #feature-list h2 {
     font-size: 1.9em;

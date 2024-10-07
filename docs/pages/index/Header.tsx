@@ -8,7 +8,16 @@ export { Header }
 
 function Header() {
   return (
-    <div id="header-logo">
+    <div
+      id="header-logo"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        backgroundColor: 'var(--bg-color)'
+      }}
+    >
       <a
         href="/"
         style={{
@@ -26,12 +35,26 @@ function Header() {
         />
       </a>
       <div>
-        <h1>
+        <h1
+          style={{
+            margin: 0,
+            lineHeight: '1.1em',
+            marginBottom: 8
+          }}
+        >
           Next Generation
           <br />
           Frontend Framework
         </h1>
-        <p id="header-tagline">
+        <p
+          id="header-tagline"
+          style={{
+            padding: 0,
+            margin: 0,
+            marginTop: 14,
+            maxWidth: 550
+          }}
+        >
           {/* &#8288; for non-breaking hyphen */}
           Next.js/Nuxt alternative. <FeatureName>Flexible</FeatureName>, <FeatureName>reliable</FeatureName>,{' '}
           <FeatureName>fast</FeatureName>, <FeatureName>clutter&#8288;-&#8288;free</FeatureName>,{' '}
