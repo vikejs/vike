@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import './FeaturesLayout.css'
 import './FeaturesColors.css'
 import './HeadingUnderlineAnimation.css'
+import { getFeatureId } from './getFeatureId'
 
 function Features() {
   useHeadingUnderlineAnimation()
@@ -161,14 +162,16 @@ function CommunityDriven() {
 }
 
 function H2({ children }: { children: string }) {
+  const featureId = getFeatureId(children)
   return (
     <div style={{ textAlign: 'center' }}>
       <h2
+        id={featureId}
         style={{
           display: 'inline-block',
           marginTop: 0,
           position: 'relative',
-          textDecorationColor: `var(--color-${children.toLowerCase()}`
+          textDecorationColor: `var(--color-${featureId}`
         }}
         data-text={children}
       >
@@ -243,7 +246,7 @@ function useHeadingUnderlineAnimation() {
     const headings = Array.from(document.getElementById('feature-list')!.querySelectorAll('h2'))
     const onScroll = () => {
       const isTop = document.documentElement.scrollTop === 0
-      headings.map((h) => {
+      headings.forEach((h) => {
         const { top } = h.getBoundingClientRect()
         const isHighlighted = !isTop && top < window.innerHeight / 2
         const widthStr = getComputedStyle(h).width
@@ -256,10 +259,9 @@ function useHeadingUnderlineAnimation() {
         const duration_compromise = compromise * duration_adjusted + (1 - compromise) * duration_agnostic
         h.style.setProperty('--animation-duration', `${duration_compromise}s`)
         h.classList[isHighlighted ? 'add' : 'remove']('highlight')
-        return h
       })
     }
-    onScroll()
+    onAfterPaint(onScroll)
     const events = ['scroll', 'resize']
     events.forEach((eventName) => {
       window.addEventListener(eventName, onScroll, { passive: true })
@@ -270,4 +272,13 @@ function useHeadingUnderlineAnimation() {
       })
     }
   })
+}
+
+function onAfterPaint(callback: () => void) {
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(callback, { timeout: 300 })
+  } else {
+    // Fallback for old versions of Safari, we'll assume that things are less likely to be busy after 150ms.
+    setTimeout(callback, 150)
+  }
 }

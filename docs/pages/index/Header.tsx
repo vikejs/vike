@@ -1,13 +1,30 @@
 import React from 'react'
 import './Header.css'
 import iconVike from '../../images/icons/vike-nitedani_169x230.png'
+import { navigate } from 'vike/client/router'
+import { getFeatureId } from './getFeatureId'
 
 export { Header }
 
 function Header() {
   return (
     <div id="header-logo">
-      <img src={iconVike} />
+      <a
+        href="/"
+        style={{
+          height: 230,
+          marginRight: 16,
+          marginTop: -11
+        }}
+      >
+        <img
+          src={iconVike}
+          onContextMenu={(ev) => {
+            navigate('/press#logo')
+            ev.preventDefault()
+          }}
+        />
+      </a>
       <div>
         <h1>
           Next Generation
@@ -16,10 +33,33 @@ function Header() {
         </h1>
         <p id="header-tagline">
           {/* &#8288; for non-breaking hyphen */}
-          Next.js/Nuxt alternative. Flexible, reliable, fast, clutter&#8288;-&#8288;free,
-          community&#8288;-&#8288;driven.
+          Next.js/Nuxt alternative. <FeatureName>Flexible</FeatureName>, <FeatureName>reliable</FeatureName>,{' '}
+          <FeatureName>fast</FeatureName>, <FeatureName>clutter&#8288;-&#8288;free</FeatureName>,{' '}
+          <FeatureName>community&#8288;-&#8288;driven</FeatureName>.
         </p>
       </div>
     </div>
+  )
+}
+
+function FeatureName({ children }: { children: string }) {
+  const featureId = getFeatureId(
+    children
+      // Remove &#8288;
+      .replace(/\u2060/g, '')
+  )
+  return (
+    <a
+      style={{
+        color: 'inherit',
+        textDecoration: 'underline',
+        textUnderlineOffset: '0.14em',
+        textDecorationThickness: 2,
+        textDecorationColor: `var(--color-${featureId}`
+      }}
+      href={`#${featureId}`}
+    >
+      {children}
+    </a>
   )
 }
