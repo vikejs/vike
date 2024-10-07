@@ -47,7 +47,7 @@ function Flexible() {
             over how tools integrate.
           </p>
         </GridChild>
-        <GridChild className="sep-both">
+        <GridChild>
           <h3>Less blockers</h3>
           <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
           <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>

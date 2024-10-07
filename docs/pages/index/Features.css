@@ -8,11 +8,6 @@
 #feature-list .feature-unit {
   padding-bottom: 50px;
 }
-/*
-#feature-list h2:after {
-  content: '.'
-}
-*/
 #feature-list h3 {
   font-size: 1.4em;
   margin-top: 0px;
@@ -25,29 +20,6 @@
   column-gap: 50px;
   row-gap: 30px;
 }
-
-/*
-.sep-both {
-  position: relative;
-}
-.sep-both::before,
-.sep-both::after {
-  content: "";
-  position: absolute;
-  width: 1px;
-  display: block;
-  --height: 100px;
-  height: var(--height);
-  top: calc((100% - var(--height)) / 2);
-  background-color: #aaa;
-}
-.sep-both::before {
-  left: -13px;
-}
-.sep-both::after {
-  right: -3px;
-}
-*/
 
 @media screen and (max-width: 719px) {
   #feature-list h2 {
