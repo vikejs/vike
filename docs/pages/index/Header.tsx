@@ -19,6 +19,7 @@ function Header() {
       }}
     >
       <a
+        id="header-logo"
         href="/"
         style={{
           height: 230,

@@ -29,7 +29,7 @@
     flex-direction: column;
     text-align: center;
   }
-  #header-container img {
+  #header-logo {
     display: none;
   }
   #header-container h1,
