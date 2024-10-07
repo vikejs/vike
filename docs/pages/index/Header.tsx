@@ -1,5 +1,5 @@
 import React from 'react'
-import './Header.css'
+import './HeaderLayout.css'
 import iconVike from '../../images/icons/vike-nitedani_169x230.png'
 import { navigate } from 'vike/client/router'
 import { getFeatureId } from './getFeatureId'
