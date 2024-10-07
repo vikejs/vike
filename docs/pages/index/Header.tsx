@@ -9,7 +9,7 @@ export { Header }
 function Header() {
   return (
     <div
-      id="header-logo"
+      id="header-container"
       style={{
         display: 'flex',
         alignItems: 'center',

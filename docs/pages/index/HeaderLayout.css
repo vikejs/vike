@@ -1,23 +1,23 @@
-#header-logo h1,
-#header-logo p {
+#header-container h1,
+#header-container p {
   margin-left: 20px;
 }
-#header-logo {
+#header-container {
   padding-top: 80px;
   padding-bottom: 80px;
 }
-#header-logo h1 {
+#header-container h1 {
   font-size: 3.3em;
 }
 #header-tagline {
   font-size: 1.5em;
 }
 @media screen and (max-width: 1139px) {
-  #header-logo {
+  #header-container {
     padding-top: 50px;
     padding-bottom: 50px;
   }
-  #header-logo h1 {
+  #header-container h1 {
     font-size: 3em;
   }
   #header-tagline {
@@ -25,22 +25,22 @@
   }
 }
 @media screen and (max-width: 719px) {
-  #header-logo {
+  #header-container {
     flex-direction: column;
     text-align: center;
   }
-  #header-logo img {
+  #header-container img {
     display: none;
   }
-  #header-logo h1,
-  #header-logo p {
+  #header-container h1,
+  #header-container p {
     margin-left: 0px;
   }
-  #header-logo {
+  #header-container {
     padding-top: 20px;
     padding-bottom: 20px;
   }
-  #header-logo h1 {
+  #header-container h1 {
     font-size: 2.5em;
   }
   #header-tagline {
@@ -49,7 +49,7 @@
   }
 }
 @media screen and (max-width: 500px) {
-  #header-logo h1 {
+  #header-container h1 {
     font-size: 2.1em;
   }
   #header-tagline {
@@ -57,12 +57,12 @@
   }
 }
 @media screen and (max-width: 400px) {
-  #header-logo h1 {
+  #header-container h1 {
     font-size: 1.9em;
   }
 }
 @media screen and (max-width: 350px) {
-  #header-logo h1 {
+  #header-container h1 {
     font-size: 1.7em;
   }
   #header-tagline {
