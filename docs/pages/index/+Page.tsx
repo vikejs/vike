@@ -1,11 +1,17 @@
 export { Page }
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Header } from './Header'
 import { Features } from './Features'
 import { Contributors, Sponsors } from '@brillout/docpress'
 
 function Page() {
+  useEffect(() => {
+    const cl = document.documentElement.classList
+    const cls = 'scroll-behavior-smooth'
+    cl.add(cls)
+    return () => cl.remove(cls)
+  })
   return (
     <>
       <Header />
