@@ -1,9 +1,10 @@
 export { Features }
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import './Features.css'
 
 function Features() {
+  useHeadingUnderlineAnimation()
   return (
     <div id="feature-list">
       <Flexible />
@@ -34,10 +35,11 @@ function Flexible() {
         <GridChild>
           <h3>Modular architecture</h3>
           <p>
-    Vike focuses on being a high-quality frontend framework without interfering with the rest of your stack.
+            Vike focuses on being a high-quality frontend framework without interfering with the rest of your stack.
           </p>
           <p>
-    With Vike, your application's architecture is composed of independent core constituents with a clear separation of concerns.
+            With Vike, your application's architecture is composed of independent core constituents with a clear
+            separation of concerns.
           </p>
         </GridChild>
         <GridChild>
@@ -77,7 +79,9 @@ function Reliable() {
         <GridChild>
           <h3>Aligned interests</h3>
           <p>
-            Since Vike's revenue comes from companies using it, the business interests of Vike and its users are aligned.</p>
+            Since Vike's revenue comes from companies using it, the business interests of Vike and its users are
+            aligned.
+          </p>
         </GridChild>
         <GridChild>
           <h3>Responsive</h3>
@@ -120,8 +124,8 @@ function ClutterFree() {
       <Center>
         <div className="feature-unit_no-heading" style={{ maxWidth: 800 }}>
           <p>
-            Vike follows the do-one-thing-do-it-well philosophy: Vike is the common foundation while users
-            cherry-pick Vike extensions to get powerful tailored features.
+            Vike follows the do-one-thing-do-it-well philosophy: Vike is the common foundation while users cherry-pick
+            Vike extensions to get powerful tailored features.
           </p>
           <p>
             Vike's architecture can accommodate any kind of websites, from simple marketing pages to enterprise
@@ -155,41 +159,19 @@ function CommunityDriven() {
 }
 
 function H2({ children, color }: { children: string; color: string }) {
-  const ref = useRef<HTMLHeadingElement>(null)
-  /*
-  useEffect(() => {
-    const listener =
-      () => {
-        console.log(children)
-        const elH2 = ref.current!
-        var viewportOffset = elH2.getBoundingClientRect();
-        console.log(window.innerHeight);
-        var top = viewportOffset.top;
-        console.log(top)
-        isHighlight(elH2)
-      }
-    document.addEventListener('scroll', listener, {passive: true})
-    document.removeEventListener('scroll', listener)
-  })
-  */
-  const textDecoration: React.CSSProperties = {
-    textDecoration: 'underline',
-    textUnderlineOffset: '0.1em',
-    textDecorationThickness: '0.1em',
-    textDecorationColor: color
-    //color: 'transparent'
-  }
   return (
-    <h2 ref={ref} style={{ position: 'relative', ...textDecoration }}>
-      {/* 
-    <span style={{position: 'absolute', ...textDecoration}}>{children}</span>
-    */}
-      {children}
-    </h2>
+    <div style={{ textAlign: 'center' }}>
+      <h2
+        style={{
+          position: 'relative',
+          textDecorationColor: color
+        }}
+        data-text={children}
+      >
+        {children}
+      </h2>
+    </div>
   )
-}
-function isHighlight(elH2: HTMLElement) {
-  if (!(document.documentElement.scrollTop > 0)) return false
 }
 
 function FeatureUnit({ children }: { children: React.ReactNode }) {
@@ -249,4 +231,31 @@ function GridChild(props: DivProps) {
 }
 function Center(props: DivProps) {
   return <div {...props} style={{ display: 'flex', justifyContent: 'center', ...props.style }} />
+}
+
+function useHeadingUnderlineAnimation() {
+  useEffect(() => {
+    const headings = Array.from(document.getElementById('feature-list')!.querySelectorAll('h2'))
+    const onScroll = () => {
+      const isTop = document.documentElement.scrollTop === 0
+      headings.map((h) => {
+        const { top } = h.getBoundingClientRect()
+        const isHighlighted = !isTop && top < window.innerHeight / 2
+        const widthStr = getComputedStyle(h).width
+        h.style.setProperty('--heading-width', widthStr)
+        const width = parseInt(widthStr, 10)
+        const width_reference = 205.516
+        const duration_agnostic = 0.7
+        const duration_adjusted = (0.7 * width) / width_reference
+        const compromise = width_reference > width ? 0.7 : 0.3
+        const duration_compromise = compromise * duration_adjusted + (1 - compromise) * duration_agnostic
+        h.style.setProperty('--animation-duration', `${duration_compromise}s`)
+        h.classList[isHighlighted ? 'add' : 'remove']('highlight')
+        return h
+      })
+    }
+    onScroll()
+    document.addEventListener('scroll', onScroll, { passive: true })
+    return () => document.removeEventListener('scroll', onScroll)
+  })
 }
