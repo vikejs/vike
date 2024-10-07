@@ -171,7 +171,7 @@ function H2({ children }: { children: string }) {
           display: 'inline-block',
           marginTop: 0,
           position: 'relative',
-          textDecorationColor: `var(--color-${featureId}`
+          textDecorationColor: `var(--color-${featureId})`
         }}
         data-text={children}
       >
