@@ -217,35 +217,6 @@ function FeatureUnit({ children }: { children: React.ReactNode }) {
 }
 
 type DivProps = React.HTMLAttributes<HTMLDivElement>
-function FlexParent(props: DivProps) {
-  return (
-    <Center>
-      <div
-        {...props}
-        className="flex-parent"
-        style={{
-          display: 'flex',
-          ...props.style
-        }}
-      />
-    </Center>
-  )
-}
-function FlexChild(props: DivProps) {
-  return (
-    <div
-      {...props}
-      style={{
-        /*
-        justifySelf: 'center',
-        alignSelf: 'center',
-        */
-        minWidth: 350,
-        ...props.style
-      }}
-    />
-  )
-}
 function GridParent(props: DivProps) {
   return (
     <Center>
