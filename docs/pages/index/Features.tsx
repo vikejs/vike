@@ -31,10 +31,14 @@ function Flexible() {
             <li>Deployment (VPS/serverless/static/...)</li>
           </ul>
         </GridChild>
-        <GridChild className="sep-both">
-          <h3>Less blockers</h3>
-          <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
-          <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
+        <GridChild>
+          <h3>Modular architecture</h3>
+          <p>
+    Vike focuses on being a high-quality frontend framework without interfering with the rest of your stack.
+          </p>
+          <p>
+    With Vike, your application's architecture is composed of independent core constituents with a clear separation of concerns.
+          </p>
         </GridChild>
         <GridChild>
           <h3>Ejectable extensions</h3>
@@ -42,6 +46,11 @@ function Flexible() {
             Vike extensions integrate tools on your behalf. Later, if the need arises, eject extensions for full control
             over how tools integrate.
           </p>
+        </GridChild>
+        <GridChild className="sep-both">
+          <h3>Less blockers</h3>
+          <p>Blockers are treated with high priority, empowering you to build what you want and need.</p>
+          <p>If you create a feature request and explain how it's blocking you then we bump its priority.</p>
         </GridChild>
       </GridParent>
     </FeatureUnit>
@@ -68,9 +77,7 @@ function Reliable() {
         <GridChild>
           <h3>Aligned interests</h3>
           <p>
-            Vike's revenue comes from companies that use Vike, which means that the business interests of Vike and its
-            users are aligned.
-          </p>
+            Since Vike's revenue comes from companies using it, the business interests of Vike and its users are aligned.</p>
         </GridChild>
         <GridChild>
           <h3>Responsive</h3>
@@ -113,7 +120,7 @@ function ClutterFree() {
       <Center>
         <div className="feature-unit_no-heading" style={{ maxWidth: 800 }}>
           <p>
-            Vike follows the do-one-thing-do-it-well philosophy: Vike is a flexible and robust foundation, while users
+            Vike follows the do-one-thing-do-it-well philosophy: Vike is the common foundation while users
             cherry-pick Vike extensions to get powerful tailored features.
           </p>
           <p>
