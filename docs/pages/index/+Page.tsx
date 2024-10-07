@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { Header } from './Header'
 import { Features } from './Features'
 import { Contributors, Sponsors } from '@brillout/docpress'
+import './smooth-scroll.css'
 
 function Page() {
   useEffect(() => {
