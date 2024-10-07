@@ -7,10 +7,12 @@
   color: transparent;
   position: absolute;
   display: inline-block;
-  max-width: 0px;
   overflow: hidden;
   white-space: nowrap;
   transition: max-width var(--animation-duration) ease-out;
+}
+#feature-list h2:not(.heading-highlight-init):before {
+  max-width: 0px;
 }
 #feature-list h2.heading-highlight:before {
   max-width: var(--heading-width);
