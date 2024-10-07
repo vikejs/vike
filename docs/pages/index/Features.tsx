@@ -2,6 +2,7 @@ export { Features }
 
 import React, { useEffect } from 'react'
 import './Features.css'
+import './HeadingUnderlineAnimation.css'
 
 function Features() {
   useHeadingUnderlineAnimation()
@@ -122,7 +123,7 @@ function ClutterFree() {
     <FeatureUnit>
       <H2 color="#c3c3c3">Clutter-free</H2>
       <Center>
-        <div className="feature-unit_no-heading" style={{ maxWidth: 800 }}>
+        <div className="no-subheading-padding" style={{ maxWidth: 800 }}>
           <p>
             Vike follows the do-one-thing-do-it-well philosophy: Vike is the common foundation while users cherry-pick
             Vike extensions to get powerful tailored features.
@@ -163,6 +164,8 @@ function H2({ children, color }: { children: string; color: string }) {
     <div style={{ textAlign: 'center' }}>
       <h2
         style={{
+          display: 'inline-block',
+          marginTop: 0,
           position: 'relative',
           textDecorationColor: color
         }}
@@ -181,7 +184,8 @@ function FeatureUnit({ children }: { children: React.ReactNode }) {
       style={{
         backgroundColor: 'var(--bg-color)',
         paddingLeft: 'var(--main-view-padding)',
-        paddingRight: 'var(--main-view-padding)'
+        paddingRight: 'var(--main-view-padding)',
+        marginTop: 'var(--block-margin)'
       }}
     >
       <div
