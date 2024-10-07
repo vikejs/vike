@@ -1,7 +1,7 @@
 export { Features }
 
 import React, { useEffect } from 'react'
-import './Features.css'
+import './FeaturesLayout.css'
 import './HeadingUnderlineAnimation.css'
 
 function Features() {
