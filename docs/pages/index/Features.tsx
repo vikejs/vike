@@ -246,9 +246,16 @@ function useHeadingUnderlineAnimation() {
     const headings = Array.from(document.getElementById('feature-list')!.querySelectorAll('h2'))
     const onScroll = () => {
       const isTop = document.documentElement.scrollTop === 0
+      const winner = headings
+        .map((h) => {
+          const { top } = h.getBoundingClientRect()
+          if (isTop || top > window.innerHeight / 2) return { heading: h, distance: null }
+          const distance = window.innerHeight - top
+          return { heading: h, distance }
+        })
+        .filter(({ distance }) => distance !== null)
+        .sort((h1, h2) => h1.distance! - h2.distance!)[0]?.heading
       headings.forEach((h) => {
-        const { top } = h.getBoundingClientRect()
-        const isHighlighted = !isTop && top < window.innerHeight / 2
         const widthStr = getComputedStyle(h).width
         h.style.setProperty('--heading-width', widthStr)
         const width = parseInt(widthStr, 10)
@@ -258,7 +265,7 @@ function useHeadingUnderlineAnimation() {
         const compromise = width_reference > width ? 0.7 : 0.3
         const duration_compromise = compromise * duration_adjusted + (1 - compromise) * duration_agnostic
         h.style.setProperty('--animation-duration', `${duration_compromise}s`)
-        h.classList[isHighlighted ? 'add' : 'remove']('highlight')
+        h.classList[h === winner ? 'add' : 'remove']('highlight')
       })
     }
     onAfterPaint(onScroll)
