@@ -2,6 +2,7 @@ export { Features }
 
 import React, { useEffect } from 'react'
 import './FeaturesLayout.css'
+import './FeaturesColors.css'
 import './HeadingUnderlineAnimation.css'
 
 function Features() {
@@ -20,7 +21,7 @@ function Features() {
 function Flexible() {
   return (
     <FeatureUnit>
-      <H2 color="blue">Flexible</H2>
+      <H2>Flexible</H2>
       <GridParent>
         <GridChild>
           <h3>Any tool</h3>
@@ -63,7 +64,7 @@ function Flexible() {
 function Reliable() {
   return (
     <FeatureUnit>
-      <H2 color="#f900ff">Reliable</H2>
+      <H2>Reliable</H2>
       <GridParent>
         <GridChild>
           <h3>Batteries included</h3>
@@ -96,7 +97,7 @@ function Reliable() {
 function Fast() {
   return (
     <FeatureUnit>
-      <H2 color="#ffed2e">Fast</H2>
+      <H2>Fast</H2>
       <GridParent>
         <GridChild>
           <h3>Prefetch & cache</h3>
@@ -121,7 +122,7 @@ function Fast() {
 function ClutterFree() {
   return (
     <FeatureUnit>
-      <H2 color="#c3c3c3">Clutter-free</H2>
+      <H2>Clutter-free</H2>
       <Center>
         <div className="no-subheading-padding" style={{ maxWidth: 800 }}>
           <p>
@@ -141,7 +142,7 @@ function ClutterFree() {
 function CommunityDriven() {
   return (
     <FeatureUnit>
-      <H2 color="#1bd91b">Community-driven</H2>
+      <H2>Community-driven</H2>
       <GridParent>
         <GridChild>
           <h3>Prioritization</h3>
@@ -159,7 +160,7 @@ function CommunityDriven() {
   )
 }
 
-function H2({ children, color }: { children: string; color: string }) {
+function H2({ children }: { children: string }) {
   return (
     <div style={{ textAlign: 'center' }}>
       <h2
@@ -167,7 +168,7 @@ function H2({ children, color }: { children: string; color: string }) {
           display: 'inline-block',
           marginTop: 0,
           position: 'relative',
-          textDecorationColor: color
+          textDecorationColor: `var(--color-${children.toLowerCase()}`
         }}
         data-text={children}
       >
