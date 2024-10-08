@@ -261,7 +261,7 @@ function useHeadingUnderlineAnimation() {
         // It's complex to only highlight only one heading at a time. We tried but failed:
         // - https://github.com/vikejs/vike/commit/9ce5fd1ecc2413242fc5ee0669f272c31e2599c5
         // - https://github.com/vikejs/vike/commit/e3a0e6457690782868405523ebca92524b1b48d7
-        h.classList[isHighlighted ? 'add' : 'remove']('heading-highlight')
+        if (isHighlighted) h.classList.add('heading-highlight')
       })
     }
     onAfterPaint(onScroll)
