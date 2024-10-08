@@ -181,9 +181,10 @@ function H2({ children }: { children: string }) {
   )
 }
 
-function FeatureUnit({ children }: { children: React.ReactNode }) {
+function FeatureUnit({ children, ...props }: DivProps) {
   return (
     <div
+      {...props}
       className="feature-unit"
       style={{
         backgroundColor: 'var(--bg-color)',
