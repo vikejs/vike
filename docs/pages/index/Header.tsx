@@ -1,6 +1,6 @@
 import React from 'react'
 import './HeaderLayout.css'
-import iconVike from '../../images/icons/vike-nitedani_169x230.png'
+import iconVikeAnimatedCover from '../../images/icons/vike-nitedani-animated-cover.jpg'
 import { navigate } from 'vike/client/router'
 import { getFeatureId } from './getFeatureId'
 
@@ -23,17 +23,11 @@ function Header() {
         href="/"
         style={{
           height: 230,
-          marginRight: 16,
-          marginTop: -11
+          marginRight: 45,
+          marginTop: -30
         }}
       >
-        <img
-          src={iconVike}
-          onContextMenu={(ev) => {
-            navigate('/press#logo')
-            ev.preventDefault()
-          }}
-        />
+        <VikeNitedaniAnimated />
       </a>
       <div>
         <h1
@@ -63,6 +57,35 @@ function Header() {
         </p>
       </div>
     </div>
+  )
+}
+
+function VikeNitedaniAnimated() {
+  // - Source: https://github.com/brillout/vike-hammer-nitedani#animated
+  // - Spline Video export: https://www.youtube.com/watch?v=OgN8TZElx6M&t=130s
+  // - If exporting as .webm => cut first frames with:
+  //   ```
+  //   # Cut first frames:
+  //   ffmpeg -ss 00:00:00.050 -i input.webm -c copy output.webm
+  //   # Check first frame:
+  //   ffmpeg -vframes 1 first-frame.png -i input.webm
+  //   ```
+  //   https://stackoverflow.com/questions/23295278/looping-html5-video-flashes-a-black-screen-on-loop/49881222#49881222
+  //   https://stackoverflow.com/questions/4425413/how-to-extract-the-1st-frame-and-restore-as-an-image-with-ffmpeg/67482024#67482024
+  return (
+    <video
+      src="https://github.com/brillout/vike-hammer-nitedani/raw/refs/heads/main/vike-nitedani-animated.webm"
+      poster={iconVikeAnimatedCover}
+      height="250"
+      width="182"
+      muted
+      autoPlay
+      loop
+      onContextMenu={(ev) => {
+        navigate('/press#logo')
+        ev.preventDefault()
+      }}
+    />
   )
 }
 
