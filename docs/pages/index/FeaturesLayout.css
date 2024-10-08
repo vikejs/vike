@@ -14,7 +14,7 @@
 .no-subheading-padding {
   margin-top: -20px;
 }
-.flex-parent {
+.grid-parent {
   column-gap: 50px;
   row-gap: 30px;
 }
@@ -34,7 +34,7 @@
   .no-subheading-padding {
     margin-top: -16px;
   }
-  .flex-parent {
+  .grid-parent {
     column-gap: 30px;
     row-gap: 10px;
   }

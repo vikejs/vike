@@ -1,4 +1,4 @@
-.flex-parent {
+.grid-parent {
   grid-template-columns: repeat(auto-fit, minmax(300px, auto));
 }
 

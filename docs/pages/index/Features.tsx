@@ -212,7 +212,7 @@ function GridParent(props: DivProps) {
     <Center>
       <div
         {...props}
-        className="flex-parent"
+        className="grid-parent"
         style={{
           display: 'grid',
           flexWrap: 'wrap',
