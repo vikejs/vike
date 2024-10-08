@@ -1,9 +1,9 @@
 export { testRun }
 
-import { page, test, expect, run, fetchHtml, getServerUrl } from '@brillout/test-e2e'
+import { page, test, expect, run, fetchHtml, getServerUrl, partRegex } from '@brillout/test-e2e'
 
 const textDOM = 'Next GenerationFrontend Framework'
-const textHTML = '<h1>Next Generation<br/>Frontend Framework</h1>'
+const textHTML = partRegex`<h1 ${/[^\>]+/}>Next Generation<br/>Frontend Framework</h1>`
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   {
@@ -15,7 +15,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test('HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain(textHTML)
+    expect(html).toMatch(textHTML)
   })
 
   test('DOM', async () => {
