@@ -196,10 +196,8 @@ function FeatureUnit({ children, ...props }: DivProps) {
     >
       <div
         style={{
-          //*
           maxWidth: 1000,
           margin: 'auto'
-          //*/
         }}
       >
         {children}
@@ -225,18 +223,7 @@ function GridParent(props: DivProps) {
   )
 }
 function GridChild(props: DivProps) {
-  return (
-    <div
-      {...props}
-      style={{
-        /*
-        justifySelf: 'center',
-        alignSelf: 'center',
-        */
-        ...props.style
-      }}
-    />
-  )
+  return <div {...props} />
 }
 function Center(props: DivProps) {
   return <div {...props} style={{ display: 'flex', justifyContent: 'center', ...props.style }} />
@@ -277,7 +264,6 @@ function useHeadingUnderlineAnimation() {
     }
   })
 }
-
 function onAfterPaint(callback: () => void) {
   if ('requestIdleCallback' in window) {
     requestIdleCallback(callback, { timeout: 300 })
