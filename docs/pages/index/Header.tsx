@@ -45,7 +45,6 @@ function Header() {
           id="header-tagline"
           style={{
             padding: 0,
-            margin: 0,
             marginTop: 14,
             maxWidth: 550
           }}

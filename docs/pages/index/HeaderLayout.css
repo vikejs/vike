@@ -1,7 +1,3 @@
-#header-container h1,
-#header-container p {
-  margin-left: 20px;
-}
 #header-container {
   padding-top: 110px;
   padding-bottom: 110px;
@@ -10,12 +6,13 @@
   font-size: 3.3em;
 }
 #header-tagline {
-  font-size: 1.5em;
+  font-size: 1.6em;
+  margin-bottom: 0;
 }
 @media screen and (max-width: 1139px) {
   #header-container {
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 80px;
+    padding-bottom: 87px;
   }
   #header-container h1 {
     font-size: 3em;
@@ -41,31 +38,18 @@
     padding-bottom: 20px;
   }
   #header-container h1 {
-    font-size: 2.5em;
+    font-size: 2.7em;
   }
   #header-tagline {
-    font-size: 1.3em;
+    font-size: 1.4em;
     margin-bottom: 10px;
   }
 }
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 450px) {
   #header-container h1 {
-    font-size: 2.1em;
+    font-size: 2.4em;
   }
   #header-tagline {
-    font-size: 1.2em;
-  }
-}
-@media screen and (max-width: 400px) {
-  #header-container h1 {
-    font-size: 1.9em;
-  }
-}
-@media screen and (max-width: 350px) {
-  #header-container h1 {
-    font-size: 1.7em;
-  }
-  #header-tagline {
-    font-size: 1.14em;
+    font-size: 1.3em;
   }
 }
