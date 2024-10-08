@@ -18,12 +18,13 @@ function Page() {
       <Header />
       <Features />
       <Block>
-        <div style={{ height: 26 }} />
+        <div style={{ height: 60 }} />
         <Sponsors />
+        <div style={{ height: 20 }} />
       </Block>
       <a id="team"></a>
       <Block>
-        <div style={{ height: 16 }} />
+        <div style={{ height: 40 }} />
         <Contributors />
         <div style={{ height: 50 }} />
       </Block>
