@@ -35,7 +35,7 @@
     margin-top: -16px;
   }
   .flex-parent {
-    column-gap: 10px;
+    column-gap: 30px;
     row-gap: 10px;
   }
 }

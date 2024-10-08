@@ -2,6 +2,7 @@ export { Features }
 
 import React, { useEffect } from 'react'
 import './FeaturesLayout.css'
+import './FeatureUnitsLayout.css'
 import './FeaturesColors.css'
 import './HeadingUnderlineAnimation.css'
 import { getFeatureId } from './getFeatureId'
@@ -66,7 +67,7 @@ function Reliable() {
   return (
     <FeatureUnit>
       <H2>Reliable</H2>
-      <GridParent>
+      <GridParent id="feature-grid_flexible">
         <GridChild>
           <h3>Batteries included</h3>
           <p>
@@ -99,7 +100,7 @@ function Fast() {
   return (
     <FeatureUnit>
       <H2>Fast</H2>
-      <GridParent>
+      <GridParent id="feature-grid_fast">
         <GridChild>
           <h3>Prefetch & cache</h3>
           <p>
@@ -196,7 +197,7 @@ function FeatureUnit({ children, ...props }: DivProps) {
       <div
         style={{
           //*
-          maxWidth: 1200,
+          maxWidth: 1000,
           margin: 'auto'
           //*/
         }}
@@ -216,7 +217,6 @@ function GridParent(props: DivProps) {
         className="flex-parent"
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, auto))',
           flexWrap: 'wrap',
           ...props.style
         }}

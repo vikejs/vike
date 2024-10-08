@@ -1,0 +1,21 @@
+.flex-parent {
+  grid-template-columns: repeat(auto-fit, minmax(300px, auto));
+}
+
+#feature-grid_flexible {
+  grid-template-columns: repeat(2, auto);
+}
+@media screen and (max-width: 629px) {
+#feature-grid_flexible {
+  grid-template-columns: repeat(1, auto);
+}
+}
+
+#feature-grid_fast {
+  grid-template-columns: repeat(3, auto);
+}
+@media screen and (max-width: 629px) {
+#feature-grid_fast {
+  grid-template-columns: repeat(1, auto);
+}
+}
