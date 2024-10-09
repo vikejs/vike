@@ -1,0 +1,8 @@
+#header-tagline a {
+  text-decoration-thickness: 2px;
+  /* Doesn't work: browsers don't support animating text-decoration-thickness */
+  transition: text-decoration-thickness 0.3s ease-out;
+}
+#header-tagline a:hover {
+  text-decoration-thickness: 3px !important;
+}

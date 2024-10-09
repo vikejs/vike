@@ -1,4 +1,5 @@
 import React from 'react'
+import './Header.css'
 import './HeaderLayout.css'
 import iconVikeAnimatedCover from '../../images/icons/vike-nitedani-animated-cover.jpg'
 import { navigate } from 'vike/client/router'
@@ -100,7 +101,6 @@ function FeatureName({ children }: { children: string }) {
         color: 'inherit',
         textDecoration: 'underline',
         textUnderlineOffset: '0.14em',
-        textDecorationThickness: 2,
         textDecorationColor: `var(--color-${featureId}`
       }}
       href={`#${featureId}`}
