@@ -74,7 +74,7 @@ function VikeNitedaniAnimated() {
   //   https://stackoverflow.com/questions/4425413/how-to-extract-the-1st-frame-and-restore-as-an-image-with-ffmpeg/67482024#67482024
   return (
     <video
-      src="https://github.com/brillout/vike-hammer-nitedani/raw/refs/heads/main/vike-nitedani-animated.webm"
+      src="https://i.imgur.com/ypIM9mm.mp4"
       poster={iconVikeAnimatedCover}
       height="250"
       width="182"
