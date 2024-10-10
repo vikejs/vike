@@ -63,15 +63,10 @@ function Header() {
 function VikeNitedaniAnimated() {
   // - Source: https://github.com/brillout/vike-hammer-nitedani#animated
   // - Spline Video export: https://www.youtube.com/watch?v=OgN8TZElx6M&t=130s
-  // - If exporting as .webm => cut first frames with:
+  // - Export as image sequence, then convert to video:
+  //   ```bash
+  //   ffmpeg -framerate 30 -pattern_type glob -i '*.png' -vf scale="-1:250" -crf 15 -preset veryslow -c:v libx264 -pix_fmt yuv420p out.mp4
   //   ```
-  //   # Cut first frames:
-  //   ffmpeg -ss 00:00:00.050 -i input.webm -c copy output.webm
-  //   # Check first frame:
-  //   ffmpeg -vframes 1 first-frame.png -i input.webm
-  //   ```
-  //   https://stackoverflow.com/questions/23295278/looping-html5-video-flashes-a-black-screen-on-loop/49881222#49881222
-  //   https://stackoverflow.com/questions/4425413/how-to-extract-the-1st-frame-and-restore-as-an-image-with-ffmpeg/67482024#67482024
   return (
     <video
       src="https://github.com/brillout/vike-hammer-nitedani/raw/refs/heads/main/vike-nitedani-animated.mp4"
