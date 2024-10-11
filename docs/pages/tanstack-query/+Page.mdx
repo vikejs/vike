@@ -1,20 +1,16 @@
 import { Link } from '@brillout/docpress'
-import { Example, ExampleTimestamp } from '../../components'
+import { Example, UiFrameworkExtension } from '../../components'
 
 You can use Vike with [TanStack Query](https://tanstack.com/query).
-
-This page documents how to manually integrate TanStack Query.
 
 > Instead of manually integrating TanStack Query yourself, you can use:
 > - [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query)
 > - [`vike-vue-query`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query)
 
+To manually integrate TanStack Query, see:
+ - <Link href="/integration#data-fetching" />
 
-## Examples
-
-Examples of integrating TanStack Query:
- - <ExampleTimestamp>2024.06</ExampleTimestamp> [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query)
- - <ExampleTimestamp>2024.06</ExampleTimestamp> [`vike-vue-query`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query)
+Examples of integrating TanStack Query without using <UiFrameworkExtension name />:
  - <Example timestamp="2024.04" repo="Blankeos/hono-trpc" /> - Hono + tRPC + Solid + Tanstack Query + Nprogress
  - <Example timestamp="2023.11" repo="nabi-chan/vike-trpc-ssr" /> (using Vike)
  - <Example timestamp="2023.11" repo="phonzammi/vike-react-tanstack-query" /> (using Vike)
@@ -23,6 +19,10 @@ Examples of integrating TanStack Query:
  - <Example timestamp="2023.04" repo="YannBirba/vps-react-query" /> (using Vike)
 
 > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+
+> You can als have a look at the source code of:
+> - [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query)
+> - [`vike-vue-query`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query)
 
 
 ## See also

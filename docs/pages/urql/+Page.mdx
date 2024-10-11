@@ -1,30 +1,15 @@
-import { RepoLink, Link } from '@brillout/docpress'
-import { DataIntegrationFetch, DataIntegrationIntro, Example } from '../../components'
+import { RepoLink, Link, Contribution } from '@brillout/docpress'
+import { Example, UiFrameworkExtension } from '../../components'
 
 You can use Vike with [urql](https://formidable.com/open-source/urql/).
 
-This page documents how to manually integrate urql.
+<Contribution>
+There isn't a <Link href="/extensions">Vike extension</Link> for urql yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
+</Contribution>
 
-> There isn't a <Link href="/extensions">Vike extension</Link> for urql yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
-
-
-## Initial data
-
-<DataIntegrationIntro toolType="graphql" toolName="urql" />
-
-Integration example:
-<DataIntegrationFetch toolName="urql" />
-
-See also:
-- [urql > Server-side rendering](https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/)
+To manually integrate urql, see:
 - <Link href="/integration#data-fetching" />
+- [urql > Server-side rendering](https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/)
 
-
-## Example
+Examples of integrating urql without using <UiFrameworkExtension name />:
  - <Example timestamp="2024.10" repo="brillout/vike-with-urql" />
-
-
-## See also
-
-- [urql > Server-side rendering](https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/)
-- <Link href="/integration#data-fetching" />

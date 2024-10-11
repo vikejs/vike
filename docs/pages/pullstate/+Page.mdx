@@ -1,27 +1,11 @@
-import { Link } from '@brillout/docpress'
-import { DataIntegrationIntro, DataIntegrationStore } from '../../components'
+import { Link, Contribution } from '@brillout/docpress'
 
 You can use Vike with [PullState](https://github.com/lostpebble/pullstate).
 
-This page documents how to manually integrate PullState.
+<Contribution>
+There isn't a <Link href="/extensions">Vike extension</Link> for PullState yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
+</Contribution>
 
-> There isn't a <Link href="/extensions">Vike extension</Link> for PullState yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
-
-
-## Initial state
-
-<DataIntegrationIntro
-  toolName="PullState"
-  toolType="store"
-/>
-
-Integration example:
-<DataIntegrationStore toolName="PullState" />
-
-See also:
-- [PullState > SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)
-
-
-## See also
-
+To manually integrate PullState, see:
+- <Link href="/stores#ssr" doNotInferSectionTitle />
 - [PullState > SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)
