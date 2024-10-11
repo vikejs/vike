@@ -1,4 +1,3 @@
-export { DataIntegrationIntroGeneric }
 export { DataIntegrationIntro }
 export { DataIntegrationFetch }
 export { DataIntegrationStore }
@@ -7,32 +6,6 @@ import React from 'react'
 import { assert } from '@brillout/docpress'
 import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from './UiFrameworkExtension'
-
-function DataIntegrationIntroGeneric() {
-  return (
-    <>
-      <DataIntegrationIntro>
-        Some data tools allow you to fetch the initial data of the page on a component-level
-      </DataIntegrationIntro>
-      <p>Generally, on a high-level, the integration works in two steps:</p>
-      <ol>
-        <li>The initial data of a component is fetched while server-side rendering the component.</li>
-        <li>
-          The initial data is serialized and passed to the client. (So that the client uses the exact same data,
-          avoiding double-fetching and hydration mismatches.)
-        </li>
-      </ol>
-      <blockquote>
-        <p>
-          If <Link href="/ssr">SSR is disabled</Link>, then the data is only fetched on the client-side. (The data of a
-          component is fetched where the component is loaded and executed.)
-        </p>
-      </blockquote>
-      Depending on the tool, this integration is done (semi-)automatically. A fully manual integration can be done using
-      Vike primitives:
-    </>
-  )
-}
 
 function DataIntegrationIntro({
   children,
