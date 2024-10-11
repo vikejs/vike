@@ -1,32 +1,17 @@
-import { RepoLink, Link } from '@brillout/docpress'
+import { RepoLink, Link, Contribution } from '@brillout/docpress'
 import { DataIntegrationIntro, DataIntegrationStore, Example } from '../../components'
 
 You can use Vike with [Redux](https://redux.js.org).
 
-This page documents how to manually integrate Redux.
+<Contribution>
+There isn't a <Link href="/extensions">Vike extension</Link> for Redux yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
+</Contribution>
 
-> There isn't a <Link href="/extensions">Vike extension</Link> for Redux yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
-
-
-## Initial state
-
-<DataIntegrationIntro
-  toolName="Redux"
-  toolType="store"
-/>
-
-Integration example:
-<DataIntegrationStore toolName="Redux" />
-
-See also:
+To manually integrate Redux, see:
+- <Link href="/stores#ssr" doNotInferSectionTitle />
 - [Redux > SSR Recipe](https://redux.js.org/recipes/server-rendering)
 
-
-## Examples
+Examples of integrating Redux without using <Link href="/vike-react">`vike-react`</Link>:
 
 - <Example timestamp="2023.12" repo="brillout/vike-with-redux" /> - Example using <Link href="/client-routing">Client Routing</Link>.
 - <Example timestamp="2023.10" repo="brillout/vike-with-redux_minimal-example" /> - Minimal example using <Link href="/server-routing">Server Routing</Link>.
-
-
-## See also
-- [Redux > SSR Recipe](https://redux.js.org/recipes/server-rendering)

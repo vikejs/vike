@@ -178,7 +178,8 @@ const headings = [
   {
     level: 2,
     title: 'Stores (State Management)',
-    url: '/stores'
+    url: '/stores',
+    sectionTitles: ['SSR']
   },
   {
     level: 2,
