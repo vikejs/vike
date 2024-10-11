@@ -5,40 +5,35 @@ Environment: server.
 
 <ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>} noCustomGuide={true}>`onAfterRenderHtml()`</ImplementedBy>
 
-Hook called right after rendering <Link href="/Page">the `+Page` component</Link> to HTML.
-
-It's called upon rendering the first page.
-- It's called regardless of whether <Link href="/ssr">SSR</Link> is disabled. (The first page the user visits is always rendered to HTML: when SSR is disabled then the HTML is just an HTML shell that doesn't contain the content of the page.)
-- It isn't called upon page navigation. (Pages aren't rendered to HTML upon page navigation.)
+Hook called right after the <Link href="/Page">the `+Page` component</Link> is rendered to HTML.
 
 
-## Conditionally
+## Lifecycle
 
-If you want to apply `onAfterRenderHtml()` only for SSR then check whether <Link href="/pageContext#:~:text=pageContext.Page,-%3A">`pageContext.Page`</Link> is set:
+It's called upon rendering the first page the user visits. It isn't called upon page navigation (since pages aren't rendered to HTML upon page navigation).
+
+It's called regardless of whether <Link href="/ssr">SSR</Link> is disabled. (The first page the user visits is always rendered to HTML: when SSR is disabled it's just an HTML shell that doesn't contain the content of the page.)
+
+For <Link href="/pre-rendering">pre-rendered pages</Link> it's called at build-time. (Since the HTML of pre-rendered pages are generated at build-time.)
+
+
+
+## Conditional
+
+You can apply `onAfterRenderHtml()` only upon certain conditions, for example you can <Link href="/pageContext#can-i-check-whether-ssr-is-enabled">apply it only if SSR is enabled</Link>.
+
+
+## `pageContext.pageHtml{String,Stream}`
+
+To access the page's HTML string/stream:
 
 ```js
-// pages/+onAfterRenderHtml.js
-
-export async function onAfterRenderHtml(pageContext) {
-  const isSSR = !!pageContext.Page
-  if (isSSR) {
-    // ...
-  }
-}
-```
-
-
-## `pageContext`
-
-Commonly used <Link href="/pageContext">`pageContext`</Link> properties inside `onAfterRenderHtml()`:
-
- ```js
-// pages/+onAfterRenderHtml.js
+// +onAfterRenderHtml.js
 
 export function onAfterRenderHtml(pageContext) {
-  // The +Page.vue component rendered to the HTML string
+  // The +Page.js component rendered to an HTML string
   pageContext.pageHtmlString
-  // The +Page.vue component rendered to an HTML stream
+  // The +Page.js component rendered to an HTML stream
   pageContext.pageHtmlStream
 }
 ```
@@ -46,7 +41,9 @@ export function onAfterRenderHtml(pageContext) {
 
 ## Use cases
 
-It's usually used for integrating tools, such as dehydrating state management libraries.
+The `onAfterRenderHtml()` and <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link> hooks are typically used for integrating tools.
+
+For example, `onAfterRenderHtml()` is often used for dehydrating state management libraries, and `onBeforeRenderHtml()` can be used for collecting the page's CSS defined by a CSS-in-JS library ([#141 - CSS-in-JS with SSR](https://github.com/vikejs/vike-vue/issues/141)).
 
 
 ## See also
