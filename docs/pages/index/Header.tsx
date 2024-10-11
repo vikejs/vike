@@ -67,6 +67,7 @@ function VikeNitedaniAnimated() {
   //   ```bash
   //   ffmpeg -framerate 30 -pattern_type glob -i '*.png' -vf scale="-1:250" -crf 15 -preset veryslow -c:v libx264 -pix_fmt yuv420p out.mp4
   //   ```
+  //   For .webm see https://stackoverflow.com/questions/34974258/convert-pngs-to-webm-video-with-transparency
   return (
     <video
       src="https://github.com/brillout/vike-hammer-nitedani/raw/refs/heads/main/vike-nitedani-animated.mp4"
