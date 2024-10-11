@@ -6,11 +6,11 @@ The `pageContext` object provides contextual information about the current page.
 // /pages/product/@id/+data.js
 
 export async function data(pageContext) {
-  // Common built-in properties
+  // Commonly used built-in properties
   pageContext.urlParsed.pathname // /product/42
   pageContext.routeParams.id // 42
   pageContext.headers // { cookie: 'user-id=1337', ... }
-  // Common custom properties
+  // Commonly added custom properties
   pageContext.user // { name: 'John', id: 1337 }
   pageContext.initialStoreState // { time: 1718872184291 }
 }
@@ -23,10 +23,10 @@ It includes:
  - <Link href="#custom">Custom properties</Link> that you can add, for example `pagecontext.user`.
 
 It's accessible to all:
- - <Link href="/hooks">Vike hooks</Link>, such as <Link href="/data">`data()`</Link>.
+ - <Link href="/hooks">Vike hooks</Link>, such as <Link href="/data">`+data`</Link>.
  - UI components, by using <Link href="/usePageContext">`usePageContext()`</Link>.
 
-You can also access `pageContext` from the client-side by using <Link href="/passToClient">`passToClient`</Link>.
+You can access `pageContext` from the client-side by using <Link href="/passToClient">`passToClient`</Link>.
 
 
 ## Built-in
@@ -111,8 +111,9 @@ Built-in properties:
 
 You can define custom `pageContext` properties. (See <Link href="#typescript" /> for how to define their types.)
 
- - At your <Link href="/renderPage">Vike server middleware `renderPage()`</Link>:
+ - At <Link href="/renderPage">`renderPage()`</Link>:
     ```js
+    // Your Vike server middleware integration
     app.get('*', async (req) => {
       const pageContextInit = {
         urlOriginal: req.url,
@@ -126,8 +127,8 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
         user: req.user,
 
         // Or any other value:
-        // pageContext.anyCustomProp
-        anyCustomProp: 'some-value'
+        // pageContext.someCustomProp
+        someCustomProp: 'some-value'
       }
       const pageContext = await renderPage(pageContextInit)
       // ...
@@ -135,44 +136,50 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
     ```
     > Setting `pageContext.user` is a common use case for integrating authentication tools, see <Link href="/auth#integration" />.
 
- - Using the upcoming [hook `onBoot()` (#962)](https://github.com/vikejs/vike/issues/962). It isn't implement yet, add a comment to the GitHub issue if you need it. (We expect `onBoot()` to be particularly useful for <Link href="/pre-rendering" >pre-rendered</Link> apps.)
+ - At any <Link href="/">Vike hook</Link>.
+   ```js
+   // +someHook.js
+   export function someHook(pageContext) {
+     pageContext.someCustomProp = 'some-value' // Add or modify custom property
+   }
+   ```
+ - At any UI component, by using <Link href="/usePageContext">`usePageContext()`</Link>.
+   ```js
+   // Inside a UI component
+   const pageContext = usePageContext()
+   pageContext.someCustomProp = 'some-value' // Add or modify custom property
+   ```
 
- - Using the [`onBeforeRender()`](/onBeforeRender) hook:
-    ```js
-    export async function onBeforeRender() {
-      return {
-        pageContext: {
-          // ***************************************
-          // **** Custom pageContext properties ****
-          // ***************************************
 
-          // Common use case: make the state management's initial state available.
-          // pageContext.initialStoreState – initial store state
-          initialStoreState: pageRendered.store.state,
+## FAQ
 
-          // pageContext.anyCustomProp
-          anyCustomProp: 'some-value'
-        }
-      }
-    }
-    ```
-    > Setting `pageContext.initialStoreState` is a common use case for integrating state management tools, see <Link href="/stores" />.
+### Can I mutate `pageContext`?
 
- - Using the <Link href="/onRenderHtml">`onRenderHtml()`</Link> hook:
-    ```js
-    function onRenderHtml() {
-      return {
-        documentHtml: escapeInject`<html><!--...--></html>`,
-        pageContext: {
-          // ***************************************
-          // **** Custom pageContext properties ****
-          // ***************************************
-          // pageContext.anyCustomProp
-          anyCustomProp: 'some-value'
-        }
-      }
-    }
-    ```
+Yes, it's a common practice to change/add `pageContext` properties at any time.
+
+```js
+// Anywhere
+pageContext.someProp = someValue
+```
+
+### Can I use `pageContext` to store UI state?
+
+No, see <Link href="#lifecycle" />.
+
+### Can I check whether SSR is enabled?
+
+On the server-side, you can tell <Link href="/ssr">whether SSR is enabled</Link> by checking whether <Link href="#:~:text=pageContext.Page,-%3A">`pageContext.Page`</Link> is set:
+
+```js
+// +onAfterRenderHtml.js
+
+export function onAfterRenderHtml(pageContext) {
+  const isSSR = !!pageContext.Page
+  if (isSSR) {
+    // ...
+  }
+}
+```
 
 
 ## TypeScript
@@ -227,17 +234,21 @@ import type {
 
 ## Lifecycle
 
-The main purpose of `pageContext` is to hold the information that is needed for rendering the page.
+**Server-side**
 
-On the server-side, upon a new incoming HTTP request, a new `pageContext` object is created and used for rendering the HTML that is included in the HTTP response. The `pageContext` object is discarded after the HTML response is sent.
+On the server-side, upon an HTTP request, a new `pageContext` object is created. It's used for rendering the HTML included in the HTTP response. The `pageContext` object is discarded after the HTTP response is sent.
+
+**Client-side**
 
 On the client-side, upon <Link text="client-side page navigation" href="/client-routing" />, the `pageContext` object of the previous page is discarded and a new `pageContext` object is created.
 
-At build-time, upon <Link text="pre-rendering" href="/pre-rendering" />, a `pageContext` object is created for each URL and saved at `dist/client/${url}/index.pageContext.json`.
+> Vike adds information to `pageContext` only while rendering the page. We recommend to treat `pageContext` as immutable after the page rendering has finished. For example, don't use `pageContext` as a UI store (use a proper <Link href="/stores">state management tool</Link> instead).
 
-Vike adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as immutable after the rendering of the page has finished. Consequently:
- - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/stores" /> instead.)
- - If you use <Link text="pre-rendering" href="/pre-rendering" />, then the `pageContext` object of each URL is set in stone already at build-time.
+**Pre-rendering**
+
+If a page is <Link href="/pre-rendering">pre-rendered</Link>, its <Link href="/pageContext.json">initial `pageContext` value</Link> is determined at build-time and saved at `dist/client/${url}/index.pageContext.json`.
+
+> Consequently, the initial `pageContext` value of a pre-rendered page is set in stone at build-time.
 
 
 ## See also
