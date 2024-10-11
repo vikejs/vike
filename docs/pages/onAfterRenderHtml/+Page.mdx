@@ -3,7 +3,7 @@ import { ImplementedBy, UiFrameworkExtension } from '../../components'
 
 Environment: server.
 
-<ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>} noCustomGuide={true}>`onAfterRenderHtml()`</ImplementedBy>
+<ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>}>`onAfterRenderHtml()`</ImplementedBy>
 
 Hook called right after the <Link href="/Page">the `+Page` component</Link> is rendered to HTML.
 
@@ -46,9 +46,15 @@ The `onAfterRenderHtml()` and <Link href="/onBeforeRenderHtml">`onBeforeRenderHt
 For example, `onAfterRenderHtml()` is often used for dehydrating state management libraries, and `onBeforeRenderHtml()` can be used for collecting the page's CSS defined by a CSS-in-JS library ([#141 - CSS-in-JS with SSR](https://github.com/vikejs/vike-vue/issues/141)).
 
 
+## Without `vike-{react,vue,solid}`
+
+If you don't use a <UiFrameworkExtension />, then you don't need `onAfterRenderHtml()` nor <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link> since you already have full control over HTML rendering at your <Link href="/onRenderHtml">`onRenderHtml()`</Link> hook.
+
+
 ## See also
 
 - <Link href="/onBeforeRenderHtml"/>
 - <Link href="/onRenderHtml"/>
-- <Link href="/onRenderClient"/>
+- <Link href="/onBeforeRenderClient"/>
+- <Link href="/onAfterRenderClient"/>
 - <Link href="/hooks"/>

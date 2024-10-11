@@ -4,7 +4,7 @@ import { UiFrameworkExtension } from '../../components'
 
 Environment: client.
 
-<ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>} noCustomGuide={true}>`onBeforeRenderClient()`</ImplementedBy>
+<ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>}>`onBeforeRenderClient()`</ImplementedBy>
 
 Hook called at the beginning of rendering the page on the client-side. It's usually used for integrating tools, such as state management tools.
 
@@ -24,6 +24,12 @@ It's called upon rendering the first page (e.g. <Link href="/hydration">hydratio
 
 It's called by `vike-{react,vue}` at the beginning of its <Link href="/onRenderClient">`onRenderClient()`</Link> implementation.
 
+
+## Without `vike-{react,vue,solid}`
+
+If you don't use a <UiFrameworkExtension />, then you don't need `onBeforeRenderClient()` nor <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link> since you already have full control over the client-side rendering at your <Link href="/onRenderClient">`onRenderClient()`</Link> hook.
+
+
 ## See also
 
 - <Link href="/onAfterRenderClient"/>
@@ -31,5 +37,7 @@ It's called by `vike-{react,vue}` at the beginning of its <Link href="/onRenderC
 - <Link href="/onHydrationEnd" />
 - <Link href="/onPageTransitionStart" />
 - <Link href="/onPageTransitionEnd" />
+- <Link href="/onBeforeRenderHtml"/>
+- <Link href="/onAfterRenderHtml"/>
 - <Link href="/hooks"/>
 - <Link href="/client" />
