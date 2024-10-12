@@ -1,3 +1,3 @@
-Big playground for E2E testing a *lot* of things.
+Big playground for E2E testing.
 
-Most tests should (eventually) live here.
+Most E2E tests should (eventually) live here.
