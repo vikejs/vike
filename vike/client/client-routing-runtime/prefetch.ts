@@ -262,8 +262,13 @@ async function prefetchOnEvent(linkTag: HTMLAnchorElement, event: 'hover' | 'vie
   if (pageContextCurrent) {
     prefetchSettings = getPrefetchSettings(pageContextCurrent, linkTag)
   } else {
-    // TODO/pageContext-prefetch: remove this dirty hack used by @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
-    prefetchSettings = { staticAssets: 'hover', pageContext: Infinity }
+    if (isBrilloutDocpress()) {
+      // TODO/pageContext-prefetch: remove this dirty hack used by @brillout/docpress and, instead, use Vike's default if pageContextCurrent isn't defined yet.
+      prefetchSettings = { staticAssets: 'hover', pageContext: Infinity }
+    } else {
+      // TODO/pageContext-prefetch: consider pageContextLink
+      return
+    }
   }
 
   // Check again in case DOM was manipulated since last check
