@@ -1,3 +1,17 @@
+## [0.4.199](https://github.com/vikejs/vike/compare/v0.4.198...v0.4.199) (2024-10-13)
+
+
+### Bug Fixes
+
+* add injectFilter to OnRenderHtml{Async,Sync} ([92f3cf6](https://github.com/vikejs/vike/commit/92f3cf6cf142a67868c0f22d452b9a5d67fad8ed))
+* fix early prefetch bug (fix [#1920](https://github.com/vikejs/vike/issues/1920)) ([77f6a27](https://github.com/vikejs/vike/commit/77f6a27f58fa46821e7a0aa0ea8a0f7cd04b38c3))
+* fix somefile.client.vue (fix [#1912](https://github.com/vikejs/vike/issues/1912)) ([081c85f](https://github.com/vikejs/vike/commit/081c85f28905d1a94168addb6cbb8e51be1cd7b1))
+* forbid using experimental pageContext prefetching (fix [#1915](https://github.com/vikejs/vike/issues/1915)) ([58e216f](https://github.com/vikejs/vike/commit/58e216f2692ce6b1bd6e7083cf06ea9663f82e9d))
+* improve type OnRenderHtml{Sync,Async} ([8b9f6ac](https://github.com/vikejs/vike/commit/8b9f6ac481947719949cbd1d118721fad87c8d4b))
+* remove isClientSideNavigation assertion (fix [#1910](https://github.com/vikejs/vike/issues/1910)) ([05a4973](https://github.com/vikejs/vike/commit/05a4973e6142c0abd8e4129653acc44d8cda4f90))
+
+
+
 ## [0.4.198](https://github.com/vikejs/vike/compare/v0.4.197...v0.4.198) (2024-10-02)
 
 
