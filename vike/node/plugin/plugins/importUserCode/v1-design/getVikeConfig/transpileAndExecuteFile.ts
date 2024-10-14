@@ -125,7 +125,7 @@ async function transpileWithEsbuild(
     bundle: true
   }
 
-  let pointerImports: Record<string, boolean> = {}
+  const pointerImports: Record<string, boolean> = {}
   options.plugins = [
     // Determine whether an import should be:
     //  - A pointer import
