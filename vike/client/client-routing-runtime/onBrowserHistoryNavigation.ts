@@ -19,20 +19,20 @@ function onBrowserHistoryNavigation() {
   //     - By JavaScript: `location.hash = 'some-hash'`
   // - The `event` argument of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
   window.addEventListener('popstate', async (): Promise<undefined> => {
+    const { previousState } = globalObject
     const currentState = getState()
+    globalObject.previousState = currentState
 
     const scrollTarget: ScrollTarget = currentState.historyState?.scrollPosition || undefined
 
     const isUserLandPushStateNavigation = currentState.historyState?.triggeredBy === 'user'
 
-    const isHashNavigation = currentState.urlWithoutHash === globalObject.previousState.urlWithoutHash
+    const isHashNavigation = currentState.urlWithoutHash === previousState.urlWithoutHash
 
     const isBackwardNavigation =
-      !currentState.historyState?.timestamp || !globalObject.previousState.historyState?.timestamp
+      !currentState.historyState?.timestamp || !previousState.historyState?.timestamp
         ? null
-        : currentState.historyState.timestamp < globalObject.previousState.historyState.timestamp
-
-    globalObject.previousState = currentState
+        : currentState.historyState.timestamp < previousState.historyState.timestamp
 
     if (isHashNavigation && !isUserLandPushStateNavigation) {
       // - `history.state` is uninitialized (`null`) when:
