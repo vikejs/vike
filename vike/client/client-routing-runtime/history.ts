@@ -1,5 +1,5 @@
 export {
-  initHistoryState,
+  enhanceHistoryState,
   getHistoryState,
   pushHistory,
   type ScrollPosition,
@@ -31,7 +31,7 @@ type StateNotInitialized =
 // - The very first render
 // - The user's code runs `location.hash = '#section'`
 // - The user clicks on an anchor link `<a href="#section">Section</a>` (Vike's `initOnLinkClick()` handler skips hash links).
-function initHistoryState() {
+function enhanceHistoryState() {
   const stateNotInitialized: StateNotInitialized = window.history.state
 
   const stateVikeEnhanced = enhanceState(stateNotInitialized)

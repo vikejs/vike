@@ -2,7 +2,7 @@ export { onBrowserHistoryNavigation }
 export { updateState }
 
 import { getCurrentUrl, getGlobalObject } from './utils.js'
-import { initHistoryState, getHistoryState } from './history.js'
+import { enhanceHistoryState, getHistoryState } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 
@@ -47,8 +47,8 @@ function onBrowserHistoryNavigation() {
       //     - Specification: https://html.spec.whatwg.org/multipage/history.html#the-history-interface
       //     - https://stackoverflow.com/questions/70188241/history-scrollrestoration-manual-doesnt-prevent-safari-from-restoring-scrol
       if (window.history.state === null) {
-        // The browser already scrolled to `#${hash}` => the current scroll position is the right one => we save it with `initHistoryState()`.
-        initHistoryState()
+        // The browser already scrolled to `#${hash}` => the current scroll position is the right one => we save it with `enhanceHistoryState()`.
+        enhanceHistoryState()
         globalObject.previousState = getState()
       } else {
         // If `history.state !== null` then it means that `popstate` was triggered by the user clicking on his browser's forward/backward history button.
