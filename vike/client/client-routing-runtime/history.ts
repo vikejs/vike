@@ -7,9 +7,7 @@ export {
   monkeyPatchHistoryPushState
 }
 
-import { assert, assertUsage, getGlobalObject, hasProp, isObject } from './utils.js'
-
-const globalObject = getGlobalObject('history.ts', { currenState: getState_enhance() })
+import { assert, assertUsage, hasProp, isObject } from './utils.js'
 
 type StateVikeEnhanced = {
   timestamp: number
@@ -74,18 +72,9 @@ function enhanceState(stateNotInitialized: StateNotInitialized): StateVikeEnhanc
 }
 
 function getState_alreadyEnhanced(): StateVikeEnhanced {
-  const { currenState } = globalObject
-  assert(isVikeEnhanced(currenState))
-  return currenState
-}
-
-function getState_enhance(): StateVikeEnhanced {
   const state = getHistoryState()
-  if (isVikeEnhanced(state)) {
-    return state
-  } else {
-    return enhanceState(state)
-  }
+  assert(isVikeEnhanced(state))
+  return state
 }
 
 function getHistoryState(): StateNotInitialized {
