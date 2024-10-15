@@ -1,12 +1,13 @@
 export { initOnPopState }
 export { updateState }
+export { onPopState }
 
 import { getCurrentUrl, getGlobalObject } from './utils.js'
 import { enhanceHistoryState, getHistoryState } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 
-const globalObject = getGlobalObject('initOnPopState.ts', { previous: getInfo() })
+const globalObject = getGlobalObject('initOnPopState.ts', { previous: getInfo(), listeners: [] as Listener[] })
 
 function initOnPopState() {
   // - The popstate event is trigged upon:
@@ -28,7 +29,7 @@ function initOnPopState() {
 
     const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
 
-    const isUserLandPushStateNavigation = current.state?.triggeredBy === 'user'
+    const isUserPushStateNavigation = current.state.triggeredBy === 'user' || previous.state.triggeredBy === 'user'
 
     const isHashNavigation = removeHash(current.url) === removeHash(previous.url)
     // - `history.state === null` when:
@@ -49,7 +50,7 @@ function initOnPopState() {
     // - Alternative: we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
     //   - By using the `hashchange` event.
     //   - Problem: conflict if user wants to override the browser's default behavior? E.g. for smooth scrolling, or when using hashes for saving states of some fancy animations.
-    if (isHashNavigation && !isUserLandPushStateNavigation) {
+    if (isHashNavigation) {
       if (!isHashNavigationNew) {
         setScrollPosition(scrollTarget)
       } else {
@@ -58,8 +59,31 @@ function initOnPopState() {
       return
     }
 
-    await renderPageClientSide({ scrollTarget, isBackwardNavigation, isUserLandPushStateNavigation })
+    let doNotRenderIfSamePage = isUserPushStateNavigation
+    let abort: boolean | undefined | void
+    globalObject.listeners.forEach((listener) => {
+      abort ||= listener({ previous })
+    })
+    if (abort) {
+      return
+    }
+    if (abort === false) {
+      doNotRenderIfSamePage = false
+    }
+
+    await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage })
   })
+}
+
+type Listener = (arg: {
+  previous: ReturnType<typeof getInfo>
+}) => void | boolean
+/** Control back-/forward navigation.
+ *
+ * https://vike.dev/onPopState
+ */
+function onPopState(listener: Listener) {
+  globalObject.listeners.push(listener)
 }
 
 function getInfo() {

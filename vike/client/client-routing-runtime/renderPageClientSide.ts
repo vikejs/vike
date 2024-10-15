@@ -86,8 +86,7 @@ type RenderArgs = {
   overwriteLastHistoryEntry?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   redirectCount?: number
-  /** Whether the navigation was triggered by the user land calling `history.pushState()` */
-  isUserLandPushStateNavigation?: boolean
+  doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
@@ -97,7 +96,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isBackwardNavigation,
     pageContextsFromRewrite = [],
     redirectCount = 0,
-    isUserLandPushStateNavigation,
+    doNotRenderIfSamePage,
     isClientSideNavigation = true
   } = renderArgs
   let { scrollTarget } = renderArgs
@@ -195,7 +194,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         pageContextFromRoute.pageId &&
         previousPageContext?.pageId &&
         pageContextFromRoute.pageId === previousPageContext.pageId
-      if (isUserLandPushStateNavigation && isSamePage) {
+      if (doNotRenderIfSamePage && isSamePage) {
         // Skip's Vike's rendering; let the user handle the navigation
         return
       }
