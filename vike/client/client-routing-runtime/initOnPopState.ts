@@ -1,4 +1,4 @@
-export { onBrowserHistoryNavigation }
+export { initOnPopState }
 export { updateState }
 
 import { assert, getCurrentUrl, getGlobalObject } from './utils.js'
@@ -6,9 +6,9 @@ import { enhanceHistoryState, getHistoryState } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 
-const globalObject = getGlobalObject('onBrowserHistoryNavigation.ts', { previousState: getState() })
+const globalObject = getGlobalObject('initOnPopState.ts', { previousState: getState() })
 
-function onBrowserHistoryNavigation() {
+function initOnPopState() {
   // - The popstate event is trigged upon:
   //   - Back-/forward navigation.
   //     - By user clicking on his browser's back-/forward navigation (or using a shortcut)
