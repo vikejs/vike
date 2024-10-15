@@ -32,7 +32,7 @@ type StateNotEnhanced =
 // - Click on `<a href="#some-hash" />`
 // - `location.hash = 'some-hash'`
 function enhanceHistoryState() {
-  const stateNotEnhanced: StateNotEnhanced = window.history.state
+  const stateNotEnhanced = getStateNotEnhanced()
   if (isVikeEnhanced(stateNotEnhanced)) return
   const stateVikeEnhanced = enhance(stateNotEnhanced)
   replaceHistoryState(stateVikeEnhanced)
@@ -62,15 +62,18 @@ function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
   return stateVikeEnhanced
 }
 
-function getState_alreadyEnhanced(): StateEnhanced {
-  const state = getHistoryState()
+function getStateEnhanced(): StateEnhanced {
+  const state = getStateNotEnhanced()
   assert(isVikeEnhanced(state))
+  return state
+}
+function getStateNotEnhanced(): StateNotEnhanced {
+  const state: StateNotEnhanced = window.history.state
   return state
 }
 
 function getHistoryState(): StateNotEnhanced {
-  const state: StateNotEnhanced = window.history.state
-  return state
+  return getStateNotEnhanced()
 }
 
 function getScrollPosition(): ScrollPosition {
@@ -83,7 +86,7 @@ function getTimestamp() {
 
 function saveScrollPosition() {
   const scrollPosition = getScrollPosition()
-  const state = getState_alreadyEnhanced()
+  const state = getStateEnhanced()
   replaceHistoryState({ ...state, scrollPosition })
 }
 
@@ -101,7 +104,7 @@ function pushHistory(url: string, overwriteLastHistoryEntry: boolean) {
       url
     )
   } else {
-    replaceHistoryState(getState_alreadyEnhanced(), url)
+    replaceHistoryState(getStateEnhanced(), url)
   }
 }
 
