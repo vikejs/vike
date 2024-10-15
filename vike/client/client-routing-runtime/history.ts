@@ -1,5 +1,5 @@
 export {
-  initHistoryState,
+  enhanceHistoryState,
   getHistoryState,
   pushHistory,
   type ScrollPosition,
@@ -27,28 +27,20 @@ type StateNotInitialized =
   // Already enhanced
   | StateVikeEnhanced
 
-// `window.history.state` can be uninitialized (i.e. `null`):
+// `window.history.state === null` when:
 // - The very first render
-// - The user's code runs `location.hash = '#section'`
-// - The user clicks on an anchor link `<a href="#section">Section</a>` (Vike's `initOnLinkClick()` handler skips hash links).
-function initHistoryState() {
+// - Click on `<a href="#some-hash" />`
+// - `location.hash = 'some-hash'`
+function enhanceHistoryState() {
   const stateNotInitialized: StateNotInitialized = window.history.state
-
-  const stateVikeEnhanced = enhanceState(stateNotInitialized)
-
+  if (isVikeEnhanced(stateNotInitialized)) return
+  const stateVikeEnhanced = enhance(stateNotInitialized)
   replaceHistoryState(stateVikeEnhanced)
 }
-
-function enhanceState(stateNotInitialized: StateNotInitialized): StateVikeEnhanced {
-  // Already enhanced
-  if (isVikeEnhanced(stateNotInitialized)) {
-    return stateNotInitialized
-  }
-
+function enhance(stateNotInitialized: StateNotInitialized): StateVikeEnhanced {
   const timestamp = getTimestamp()
   const scrollPosition = getScrollPosition()
   const triggeredBy = 'browser'
-
   let stateVikeEnhanced: StateVikeEnhanced
   if (!stateNotInitialized) {
     stateVikeEnhanced = {
@@ -66,7 +58,6 @@ function enhanceState(stateNotInitialized: StateNotInitialized): StateVikeEnhanc
       _isVikeEnhanced: true
     }
   }
-
   assert(isVikeEnhanced(stateVikeEnhanced))
   return stateVikeEnhanced
 }
