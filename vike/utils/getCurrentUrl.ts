@@ -3,7 +3,7 @@ export { getCurrentUrl }
 import { parseUrl } from './parseUrl.js'
 import { assert } from './assert.js'
 
-function getCurrentUrl(options?: { withoutHash: true }): string {
+function getCurrentUrl(options?: { withoutHash: true }): `/${string}` {
   const url = window.location.href
   const { searchOriginal, hashOriginal, pathname } = parseUrl(url, '/')
   let urlCurrent: string
@@ -13,5 +13,5 @@ function getCurrentUrl(options?: { withoutHash: true }): string {
     urlCurrent = `${pathname}${searchOriginal || ''}${hashOriginal || ''}`
   }
   assert(urlCurrent.startsWith('/'))
-  return urlCurrent
+  return urlCurrent as `/${string}`
 }

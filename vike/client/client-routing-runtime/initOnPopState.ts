@@ -19,20 +19,20 @@ function initOnPopState() {
   //     - `location.hash = 'some-hash'`
   // - The `event` argument of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
   window.addEventListener('popstate', async (): Promise<undefined> => {
-    const { previousState } = globalObject
-    const currentState = getState()
-    globalObject.previousState = currentState
+    const previous = globalObject.previousState
+    const current = getState()
+    globalObject.previousState = current
 
-    const scrollTarget: ScrollTarget = currentState.historyState?.scrollPosition || undefined
+    const scrollTarget: ScrollTarget = current.state?.scrollPosition || undefined
 
-    const isUserLandPushStateNavigation = currentState.historyState?.triggeredBy === 'user'
+    const isUserLandPushStateNavigation = current.state?.triggeredBy === 'user'
 
-    const isHashNavigation = currentState.urlWithoutHash === previousState.urlWithoutHash
+    const isHashNavigation = removeHash(current.url) === removeHash(previous.url)
 
     const isBackwardNavigation =
-      !currentState.historyState?.timestamp || !previousState.historyState?.timestamp
+      !current.state?.timestamp || !previous.state?.timestamp
         ? null
-        : currentState.historyState.timestamp < previousState.historyState.timestamp
+        : current.state.timestamp < previous.state.timestamp
 
     // - `history.state === null` when:
     //   - Click on `<a href="#some-hash" />` (note that Vike's `initOnLinkClick()` handler skips hash links)
@@ -68,9 +68,13 @@ function initOnPopState() {
 
 function getState() {
   return {
-    urlWithoutHash: getCurrentUrl({ withoutHash: true }),
-    historyState: getHistoryState()
+    url: getCurrentUrl(),
+    state: getHistoryState()
   }
+}
+
+function removeHash(url: `/${string}`) {
+  return url.split('#')[0]!
 }
 
 function updateState() {
