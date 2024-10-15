@@ -6,7 +6,7 @@ import { enhanceHistoryState, getHistoryState } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 
-const globalObject = getGlobalObject('initOnPopState.ts', { previousState: getState() })
+const globalObject = getGlobalObject('initOnPopState.ts', { previous: getInfo() })
 
 function initOnPopState() {
   // - The popstate event is trigged upon:
@@ -19,9 +19,9 @@ function initOnPopState() {
   //     - `location.hash = 'some-hash'`
   // - The `event` argument of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
   window.addEventListener('popstate', async (): Promise<undefined> => {
-    const previous = globalObject.previousState
-    const current = getState()
-    globalObject.previousState = current
+    const { previous } = globalObject
+    const current = getInfo()
+    globalObject.previous = current
 
     const scrollTarget: ScrollTarget = current.state?.scrollPosition || undefined
 
@@ -43,7 +43,7 @@ function initOnPopState() {
       assert(isHashNavigation)
       // The browser already scrolled to `#${hash}` => the current scroll position is the right one => we save it with `enhanceHistoryState()`.
       enhanceHistoryState()
-      globalObject.previousState = getState()
+      globalObject.previous = getInfo()
     }
 
     // We have to scroll ourselves because we use `window.history.scrollRestoration = 'manual'`. So far this seems to work. Alternatives in case it doesn't work:
@@ -66,7 +66,7 @@ function initOnPopState() {
   })
 }
 
-function getState() {
+function getInfo() {
   return {
     url: getCurrentUrl(),
     state: getHistoryState()
@@ -78,5 +78,5 @@ function removeHash(url: `/${string}`) {
 }
 
 function updateState() {
-  globalObject.previousState = getState()
+  globalObject.previous = getInfo()
 }
