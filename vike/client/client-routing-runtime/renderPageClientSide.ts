@@ -48,7 +48,6 @@ import {
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
-import { updateState } from './initOnPopState.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageContextExports } from '../../shared/getPageFiles.js'
@@ -557,7 +556,6 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   browserNativeScrollRestoration_disable()
   pushHistoryState(url, overwriteLastHistoryEntry)
-  updateState()
 }
 
 function handleErrorFetchingStaticAssets(
