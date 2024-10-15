@@ -25,7 +25,7 @@ function initOnPopState() {
 
     const isUserPushStateNavigation = current.state.triggeredBy === 'user' || previous.state.triggeredBy === 'user'
 
-    const isHashNavigation = removeHash(current.url) === removeHash(previous.url)
+    const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
     // - `isNewState === true` when:
     //   - Click on `<a href="#some-hash" />` (note that Vike's `initOnLinkClick()` handler skips hash links)
     //   - `location.hash = 'some-hash'`
