@@ -27,10 +27,10 @@ type StateNotInitialized =
   // Already enhanced
   | StateVikeEnhanced
 
-// `window.history.state` can be uninitialized (i.e. `null`):
+// `window.history.state === null` when:
 // - The very first render
-// - The user's code runs `location.hash = '#section'`
-// - The user clicks on an anchor link `<a href="#section">Section</a>` (Vike's `initOnLinkClick()` handler skips hash links).
+// - Click on `<a href="#some-hash" />`
+// - `location.hash = 'some-hash'`
 function enhanceHistoryState() {
   const stateNotInitialized: StateNotInitialized = window.history.state
   if (isVikeEnhanced(stateNotInitialized)) return
