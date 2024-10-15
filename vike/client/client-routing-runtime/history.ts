@@ -1,7 +1,7 @@
 export {
-  enhanceHistoryState,
   getHistoryState,
-  pushHistory,
+  enhanceHistoryState,
+  pushHistoryState,
   type ScrollPosition,
   saveScrollPosition,
   monkeyPatchHistoryPushState
@@ -90,10 +90,10 @@ function saveScrollPosition() {
   replaceHistoryState({ ...state, scrollPosition })
 }
 
-function pushHistory(url: string, overwriteLastHistoryEntry: boolean) {
+function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
   if (!overwriteLastHistoryEntry) {
     const timestamp = getTimestamp()
-    pushHistoryState(
+    pushState(
       {
         timestamp,
         // I don't remember why I set it to `null`, maybe because setting it now would be too early? (Maybe there is a delay between renderPageClientSide() is finished and the browser updating the scroll position.) Anyways, it seems like autoSaveScrollPosition() is enough.
@@ -112,7 +112,7 @@ function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
 }
-function pushHistoryState(state: StateEnhanced, url: string) {
+function pushState(state: StateEnhanced, url: string) {
   // Vike should call window.history.pushState() (and not the orignal `pushStateOriginal()`) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls, see https://github.com/vikejs/vike/issues/1582.
   window.history.pushState(state, '', url)
 }

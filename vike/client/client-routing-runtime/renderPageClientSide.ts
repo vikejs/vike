@@ -37,7 +37,7 @@ import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook, getHook } from '../../shared/hooks/getHook.js'
 import { isErrorFetchingStaticAssets, loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
-import { pushHistory } from './history.js'
+import { pushHistoryState } from './history.js'
 import {
   assertNoInfiniteAbortLoop,
   getPageContextFromAllRewrites,
@@ -557,7 +557,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   browserNativeScrollRestoration_disable()
-  pushHistory(url, overwriteLastHistoryEntry)
+  pushHistoryState(url, overwriteLastHistoryEntry)
   updateState()
 }
 
