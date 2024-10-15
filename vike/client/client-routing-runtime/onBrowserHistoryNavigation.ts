@@ -46,15 +46,15 @@ function onBrowserHistoryNavigation() {
       globalObject.previousState = getState()
     }
 
-    // So far this seems to work. Alternatives in case it doesn't work:
-    // - Alternatively, we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
-    //   - I think we can intercept `window.location.hash = '#section'` with the `hashchange` event.
-    //   - Problem: conflict if user wants to override the browser's default behavior. E.g. for smooth scrolling, or when using hashes for saving states of some fancy animations.
-    // - Another alternative: we use the browser's scroll restoration mechanism (see `browserNativeScrollRestoration_enable()`).
-    //   - Problem: not clear when to call `browserNativeScrollRestoration_disable()`/`browserNativeScrollRestoration_enable()`
-    //   - Other potential problem are inconsistencies between browsers: specification says that setting `window.history.scrollRestoration` only affects the current entry in the session history but this contradicts what people are experiencing in practice.
+    // We have to scroll ourselves because we use `window.history.scrollRestoration = 'manual'`. So far this seems to work. Alternatives in case it doesn't work:
+    // - Alternative: we use `window.history.scrollRestoration = 'auto'`
+    //   - Problem: I don't think it's possbible to set `window.history.scrollRestoration = 'auto'` only for hash navigation and not for non-hash navigations?
+    //   - Problem: inconsistencies between browsers? For example specification says that setting `window.history.scrollRestoration` only affects the current entry in the session history but this contradicts what people are experiencing in practice.
     //     - Specification: https://html.spec.whatwg.org/multipage/history.html#the-history-interface
     //     - Practice: https://stackoverflow.com/questions/70188241/history-scrollrestoration-manual-doesnt-prevent-safari-from-restoring-scrol
+    // - Alternative: we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
+    //   - By using the `hashchange` event.
+    //   - Problem: conflict if user wants to override the browser's default behavior? E.g. for smooth scrolling, or when using hashes for saving states of some fancy animations.
     if (isHashNavigation && !isUserLandPushStateNavigation) {
       if (!isHashNavigationNew) {
         setScrollPosition(scrollTarget)
