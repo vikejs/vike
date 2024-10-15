@@ -1,13 +1,9 @@
-export {
-  getHistoryState,
-  enhanceHistoryState,
-  pushHistoryState,
-  type ScrollPosition,
-  saveScrollPosition,
-  monkeyPatchHistoryPushState
-}
+export { getHistoryState, enhanceHistoryState, pushHistoryState, type ScrollPosition, saveScrollPosition }
 
 import { assert, assertUsage, hasProp, isObject } from './utils.js'
+
+let initStateEnhanced: true | undefined
+init()
 
 type StateEnhanced = {
   timestamp: number
@@ -16,7 +12,6 @@ type StateEnhanced = {
   _isVikeEnhanced: true
 }
 type ScrollPosition = { x: number; y: number }
-
 type StateNotEnhanced =
   // Default value: `null` (https://developer.mozilla.org/en-US/docs/Web/API/History/state#value)
   | null
@@ -24,8 +19,6 @@ type StateNotEnhanced =
   | undefined
   // State may be incomplete if `window.history.state` is set by an old Vike version. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
   | Partial<StateEnhanced>
-  // Already enhanced
-  | StateEnhanced
 
 // `window.history.state === null` when:
 // - The very first render
@@ -64,6 +57,9 @@ function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
 
 function getStateEnhanced(): StateEnhanced {
   const state = getStateNotEnhanced()
+  // This assert() will most likely eventually cause issues. Let's then:
+  // - Replace the assert() call with enhanceHistoryState()
+  // - Remove the race condition buster `initStateEnhanced` as it won't be needed anymore
   assert(isVikeEnhanced(state))
   return state
 }
@@ -72,8 +68,9 @@ function getStateNotEnhanced(): StateNotEnhanced {
   return state
 }
 
-function getHistoryState(): StateNotEnhanced {
-  return getStateNotEnhanced()
+function getHistoryState(): StateEnhanced {
+  if (!initStateEnhanced) enhanceHistoryState() // avoid race condition
+  return getStateEnhanced()
 }
 
 function getScrollPosition(): ScrollPosition {
@@ -153,4 +150,10 @@ function assertStateVikeEnhanced(state: unknown): asserts state is StateEnhanced
     assert(hasProp(state, 'scrollPosition', 'object'))
     assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
   }
+}
+
+function init() {
+  enhanceHistoryState()
+  initStateEnhanced = true
+  monkeyPatchHistoryPushState()
 }

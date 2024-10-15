@@ -1,7 +1,6 @@
 export { initClientRouter }
 
 import { assert } from './utils.js'
-import { enhanceHistoryState, monkeyPatchHistoryPushState } from './history.js'
 import { getRenderCount, renderPageClientSide } from './renderPageClientSide.js'
 import { initOnPopState } from './initOnPopState.js'
 import { initOnLinkClick } from './initOnLinkClick.js'
@@ -37,9 +36,7 @@ async function renderFirstPage() {
 
 function initHistoryAndScroll() {
   setupNativeScrollRestoration()
-  enhanceHistoryState()
   autoSaveScrollPosition()
-  monkeyPatchHistoryPushState()
   // Handle back-/forward navigation
   initOnPopState()
 }

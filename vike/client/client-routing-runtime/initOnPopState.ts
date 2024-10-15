@@ -1,7 +1,7 @@
 export { initOnPopState }
 export { updateState }
 
-import { assert, getCurrentUrl, getGlobalObject } from './utils.js'
+import { getCurrentUrl, getGlobalObject } from './utils.js'
 import { enhanceHistoryState, getHistoryState } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
@@ -19,32 +19,26 @@ function initOnPopState() {
   //     - `location.hash = 'some-hash'`
   // - The `event` argument of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
   window.addEventListener('popstate', async (): Promise<undefined> => {
+    const isNewState = window.history.state === null
+    if (isNewState) enhanceHistoryState()
+
     const { previous } = globalObject
     const current = getInfo()
     globalObject.previous = current
 
-    const scrollTarget: ScrollTarget = current.state?.scrollPosition || undefined
+    const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
 
     const isUserLandPushStateNavigation = current.state?.triggeredBy === 'user'
 
     const isHashNavigation = removeHash(current.url) === removeHash(previous.url)
-
-    const isBackwardNavigation =
-      !current.state?.timestamp || !previous.state?.timestamp
-        ? null
-        : current.state.timestamp < previous.state.timestamp
-
     // - `history.state === null` when:
     //   - Click on `<a href="#some-hash" />` (note that Vike's `initOnLinkClick()` handler skips hash links)
     //   - `location.hash = 'some-hash'`
     // - `history.state !== null` when `popstate` was triggered by the user clicking on his browser's forward/backward history button.
-    let isHashNavigationNew = isHashNavigation && window.history.state === null
-    if (window.history.state === null) {
-      assert(isHashNavigation)
-      // The browser already scrolled to `#${hash}` => the current scroll position is the right one => we save it with `enhanceHistoryState()`.
-      enhanceHistoryState()
-      globalObject.previous = getInfo()
-    }
+    const isHashNavigationNew = isHashNavigation && isNewState
+
+    const isBackwardNavigation =
+      !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
 
     // We have to scroll ourselves because we use `window.history.scrollRestoration = 'manual'`. So far this seems to work. Alternatives in case it doesn't work:
     // - Alternative: we use `window.history.scrollRestoration = 'auto'`
@@ -58,6 +52,8 @@ function initOnPopState() {
     if (isHashNavigation && !isUserLandPushStateNavigation) {
       if (!isHashNavigationNew) {
         setScrollPosition(scrollTarget)
+      } else {
+        // The browser already scrolled to `#${hash}` => the current scroll position is the right one => we saved it with `enhanceHistoryState()`.
       }
       return
     }
