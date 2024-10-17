@@ -977,7 +977,11 @@ async function write(
   assertPosixPath(fileUrl)
   assert(fileUrl.startsWith('/'))
   const filePathRelative = fileUrl.slice(1)
-  assert(!filePathRelative.startsWith('/'))
+  assert(
+    !filePathRelative.startsWith('/'),
+    // Let's remove this debug info after we add a assertUsage() avoiding https://github.com/vikejs/vike/issues/1929
+    { urlOriginal, fileUrl }
+  )
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
