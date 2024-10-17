@@ -9,7 +9,8 @@ import {
   fetchHtml,
   getServerUrl,
   testScreenshotFixture,
-  expectLog
+  expectLog,
+  pc
 } from '@brillout/test-e2e'
 import path from 'path'
 import url from 'url'
@@ -50,8 +51,16 @@ function testRun(
       {
         const { platform } = process
         if (!['linux', 'win32', 'darwin'].includes(platform))
-          throw new Error(`Unexpted platform operating system '${platform}'`)
+          throw new Error(`Unexpected operating system platform name ${pc.bold(platform)}`)
         if (platform !== 'linux') return
+        /*
+        if (process.env.VITE_ECOSYSTEM_CI) {
+          console.log(
+            `\n${pc.blue('INFO')} test screenshot fixture ${pc.bold('skipped')} because running in Vite Ecosystem CI.`
+          )
+          return
+        }
+        */
       }
       {
         const dirname = path.dirname(url.fileURLToPath(import.meta.url))
