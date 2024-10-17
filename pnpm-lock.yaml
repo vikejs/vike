@@ -15,8 +15,8 @@ importers:
         specifier: ^1.5.3
         version: 1.7.3
       '@brillout/test-e2e':
-        specifier: ^0.5.35
-        version: 0.5.35
+        specifier: ^0.5.36
+        version: 0.5.36
       '@brillout/test-types':
         specifier: ^0.1.13
         version: 0.1.14(typescript@5.6.2)
@@ -2071,8 +2071,8 @@ packages:
   '@brillout/require-shim@0.1.2':
     resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
-  '@brillout/test-e2e@0.5.35':
-    resolution: {integrity: sha512-x6wc1wT0afATaqCn6XMzSiqzBHSOF9fttpOdZlWkFvPofeITSy/uQ0bYlLlhGdfRgkWkXVS58EO8x6cv1+BVaQ==}
+  '@brillout/test-e2e@0.5.36':
+    resolution: {integrity: sha512-9iPeBOSbhh7jNFNLUcnzKsdDOwsYW71rw2atB/FRU8j6u8bsvyVJkcSKz6jp54jFefXyUzvgah1xZsDqqSA8IA==}
     hasBin: true
 
   '@brillout/test-types@0.1.14':
@@ -7785,7 +7785,7 @@ snapshots:
 
   '@brillout/require-shim@0.1.2': {}
 
-  '@brillout/test-e2e@0.5.35':
+  '@brillout/test-e2e@0.5.36':
     dependencies:
       '@brillout/part-regex': 0.1.4
       '@brillout/picocolors': 1.0.15
