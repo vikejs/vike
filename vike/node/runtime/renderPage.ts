@@ -156,6 +156,14 @@ async function renderPageAndPrepare(
     // From now on, renderContext.pageConfigs contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
 
+  if (renderContext.onBootHook) {
+    const onBootResult = await renderContext.onBootHook?.hookFn(pageContextInit) as Record<string, unknown>
+    pageContextInit = {
+      ...pageContextInit,
+      ...onBootResult
+    };
+  }
+
   // Check Base URL
   assertBaseUrl(pageContextInit)
 
