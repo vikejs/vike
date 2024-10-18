@@ -1,12 +1,12 @@
 export { initOnPopState }
-export { updateState }
+export { onPopState }
 
-import { getCurrentUrl, getGlobalObject } from './utils.js'
-import { enhanceHistoryState, getHistoryState } from './history.js'
+import { getGlobalObject } from './utils.js'
+import { onPopStateBegin, type HistoryInfo } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 
-const globalObject = getGlobalObject('initOnPopState.ts', { previous: getInfo() })
+const globalObject = getGlobalObject('initOnPopState.ts', { listeners: [] as Listener[] })
 
 function initOnPopState() {
   // - The popstate event is trigged upon:
@@ -19,22 +19,17 @@ function initOnPopState() {
   //     - `location.hash = 'some-hash'`
   // - The `event` argument of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
   window.addEventListener('popstate', async (): Promise<undefined> => {
-    const isNewState = window.history.state === null
-    if (isNewState) enhanceHistoryState()
-
-    const { previous } = globalObject
-    const current = getInfo()
-    globalObject.previous = current
+    const { isNewState, previous, current } = onPopStateBegin()
 
     const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
 
-    const isUserLandPushStateNavigation = current.state?.triggeredBy === 'user'
+    const isUserPushStateNavigation = current.state.triggeredBy === 'user' || previous.state.triggeredBy === 'user'
 
-    const isHashNavigation = removeHash(current.url) === removeHash(previous.url)
-    // - `history.state === null` when:
+    const isHashNavigation = current.url !== previous.url && removeHash(current.url) === removeHash(previous.url)
+    // - `isNewState === true` when:
     //   - Click on `<a href="#some-hash" />` (note that Vike's `initOnLinkClick()` handler skips hash links)
     //   - `location.hash = 'some-hash'`
-    // - `history.state !== null` when `popstate` was triggered by the user clicking on his browser's forward/backward history button.
+    // - `isNewState === false` when `popstate` was triggered by the user clicking on his browser's forward/backward history button.
     const isHashNavigationNew = isHashNavigation && isNewState
 
     const isBackwardNavigation =
@@ -49,7 +44,7 @@ function initOnPopState() {
     // - Alternative: we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
     //   - By using the `hashchange` event.
     //   - Problem: conflict if user wants to override the browser's default behavior? E.g. for smooth scrolling, or when using hashes for saving states of some fancy animations.
-    if (isHashNavigation && !isUserLandPushStateNavigation) {
+    if (isHashNavigation) {
       if (!isHashNavigationNew) {
         setScrollPosition(scrollTarget)
       } else {
@@ -58,21 +53,31 @@ function initOnPopState() {
       return
     }
 
-    await renderPageClientSide({ scrollTarget, isBackwardNavigation, isUserLandPushStateNavigation })
+    let doNotRenderIfSamePage = isUserPushStateNavigation
+    let abort: boolean | undefined | void
+    globalObject.listeners.forEach((listener) => {
+      abort ||= listener({ previous })
+    })
+    if (abort) {
+      return
+    }
+    if (abort === false) {
+      doNotRenderIfSamePage = false
+    }
+
+    await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage })
   })
 }
 
-function getInfo() {
-  return {
-    url: getCurrentUrl(),
-    state: getHistoryState()
-  }
+type Listener = (arg: { previous: HistoryInfo }) => void | boolean
+/** Control back-/forward navigation.
+ *
+ * https://vike.dev/onPopState
+ */
+function onPopState(listener: Listener) {
+  globalObject.listeners.push(listener)
 }
 
 function removeHash(url: `/${string}`) {
   return url.split('#')[0]!
-}
-
-function updateState() {
-  globalObject.previous = getInfo()
 }

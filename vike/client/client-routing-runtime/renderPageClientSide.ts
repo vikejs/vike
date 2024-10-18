@@ -48,7 +48,6 @@ import {
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
-import { updateState } from './initOnPopState.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageContextExports } from '../../shared/getPageFiles.js'
@@ -86,8 +85,7 @@ type RenderArgs = {
   overwriteLastHistoryEntry?: boolean
   pageContextsFromRewrite?: PageContextFromRewrite[]
   redirectCount?: number
-  /** Whether the navigation was triggered by the user land calling `history.pushState()` */
-  isUserLandPushStateNavigation?: boolean
+  doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
@@ -97,7 +95,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     isBackwardNavigation,
     pageContextsFromRewrite = [],
     redirectCount = 0,
-    isUserLandPushStateNavigation,
+    doNotRenderIfSamePage,
     isClientSideNavigation = true
   } = renderArgs
   let { scrollTarget } = renderArgs
@@ -195,7 +193,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
         pageContextFromRoute.pageId &&
         previousPageContext?.pageId &&
         pageContextFromRoute.pageId === previousPageContext.pageId
-      if (isUserLandPushStateNavigation && isSamePage) {
+      if (doNotRenderIfSamePage && isSamePage) {
         // Skip's Vike's rendering; let the user handle the navigation
         return
       }
@@ -558,7 +556,6 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   browserNativeScrollRestoration_disable()
   pushHistoryState(url, overwriteLastHistoryEntry)
-  updateState()
 }
 
 function handleErrorFetchingStaticAssets(
