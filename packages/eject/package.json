@@ -1,0 +1,33 @@
+{
+  "name": "eject",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "A CLI tool to eject dependencies from node_modules into your project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "cac": "^6.7.14",
+    "simple-git": "^3.27.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.4.0"
+  },
+  "author": "snake-py",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "node": "./dist/esm/index.js",
+      "types": "./dist/esm/index.d.ts",
+      "default": "./dist/esm/index.js"
+    }
+  },
+  "bin": {
+    "eject": "./bin-entry.js",
+    "ejectjs": "./bin-entry.js"
+  }
+}
