@@ -18,7 +18,7 @@ function RecommendationRouterLibraries({
       <Warning>
         <p>
           While it's possible to use Vike with <a href={link}>{libraryName}</a> we recommend against it: Vike's built-in
-          router has many features that {libraryName} doesn't (and cannot) offer.
+          router has features that {libraryName} doesn't offer.
         </p>
         <p>
           That said, if you have an existing app using {libraryName} that you want to migrate to Vike, then it can makes
