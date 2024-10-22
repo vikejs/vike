@@ -7,7 +7,7 @@
   box-shadow: -7px 0px 30px 5px white;
   box-shadow: -2px 0px 15px 2px white;
 }
-@media screen and (max-width: 759px) {
+@container(max-width: 759px) {
   #tour-call-to-action {
     display: none !important;
   }

@@ -5,7 +5,7 @@
 #feature-grid_flexible {
   grid-template-columns: repeat(2, auto);
 }
-@media screen and (max-width: 629px) {
+@container(max-width: 629px) {
 #feature-grid_flexible {
   grid-template-columns: repeat(1, auto);
 }
@@ -14,7 +14,7 @@
 #feature-grid_fast {
   grid-template-columns: repeat(3, auto);
 }
-@media screen and (max-width: 629px) {
+@container(max-width: 629px) {
 #feature-grid_fast {
   grid-template-columns: repeat(1, auto);
 }

@@ -9,7 +9,7 @@
   font-size: 1.6em;
   margin-bottom: 0;
 }
-@media screen and (max-width: 1139px) {
+@container(max-width: 1139px) {
   #header-container {
     padding-top: 80px;
     padding-bottom: 87px;
@@ -21,7 +21,7 @@
     font-size: 1.4em;
   }
 }
-@media screen and (max-width: 719px) {
+@container(max-width: 719px) {
   #header-container {
     flex-direction: column;
     text-align: center;
@@ -45,7 +45,7 @@
     margin-bottom: 10px;
   }
 }
-@media screen and (max-width: 450px) {
+@container(max-width: 450px) {
   #header-container h1 {
     font-size: 2.4em;
   }
