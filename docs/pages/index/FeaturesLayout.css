@@ -39,3 +39,8 @@
     row-gap: 10px;
   }
 }
+@container(max-width: 339px) {
+  #feature-list h2 {
+    font-size: 1.8em;
+  }
+}
