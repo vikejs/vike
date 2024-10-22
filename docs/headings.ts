@@ -11,8 +11,7 @@ const headings = [
     level: 2,
     title: 'Introduction',
     titleDocument: 'Vike',
-    url: '/',
-    noSideNavigation: 'no-logo'
+    url: '/'
   },
   {
     level: 2,
@@ -268,7 +267,12 @@ const headings = [
   },
   {
     level: 1,
-    title: 'API'
+    title: 'API',
+    menuModalFullWidth: true
+  },
+  {
+    level: 4,
+    title: 'Basics'
   },
   {
     level: 2,
