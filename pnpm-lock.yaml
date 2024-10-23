@@ -261,8 +261,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.8.2
-        version: 0.8.2(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+        specifier: ^0.8.3
+        version: 0.8.3(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
       '@types/node':
         specifier: ^20.11.16
         version: 20.13.0
@@ -2031,8 +2031,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.8.2':
-    resolution: {integrity: sha512-sMJ3PfUDd3EPdyDr04LuNhOy0Gfl2/mkIibF8PE8T0d6KO55Vl7bv56NGstkiw9k8qx1S6+wuyhXUVxuo7ABNA==}
+  '@brillout/docpress@0.8.3':
+    resolution: {integrity: sha512-LgIvaXQjGRXzeqwHwmmQfkrUFQjyiShGUpfjq7h8cHpuX0uIrCYXkI7kC9NL+crhU5OKke4dzAFNn8QNIqfhIQ==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -3938,9 +3938,6 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
-
-  balloon-css@1.2.0:
-    resolution: {integrity: sha512-urXwkHgwp6GsXVF+it01485Z2Cj4pnW02ICnM0TemOlkKmCNnDLmyy+ZZiRXBpwldUXO+aRNr7Hdia4CBvXJ5A==}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -7731,7 +7728,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.7.3':
     optional: true
 
-  '@brillout/docpress@0.8.2(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
+  '@brillout/docpress@0.8.3(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
     dependencies:
       '@brillout/picocolors': 1.0.15
       '@docsearch/css': 3.6.1
@@ -7744,7 +7741,6 @@ snapshots:
       '@types/react': 18.3.3
       '@types/react-dom': 18.3.0
       '@vitejs/plugin-react-swc': 3.7.0(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
-      balloon-css: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       rehype-pretty-code: 0.13.0(shiki@1.2.0)
@@ -9668,8 +9664,6 @@ snapshots:
   bail@2.0.2: {}
 
   balanced-match@1.0.2: {}
-
-  balloon-css@1.2.0: {}
 
   binary-extensions@2.3.0: {}
 
