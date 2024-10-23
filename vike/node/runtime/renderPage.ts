@@ -563,7 +563,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
     assert(urlTarget !== pageContextInit.urlOriginal)
   }
   logRuntimeInfo?.(
-    `Permanent redirect defined by your config.redirects (https://vike.dev/redirects)`,
+    `Permanent redirection defined by config.redirects (https://vike.dev/redirects)`,
     httpRequestId,
     'info'
   )
