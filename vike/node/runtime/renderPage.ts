@@ -25,7 +25,7 @@ import {
   modifyUrlPathname,
   prependBase,
   removeUrlOrigin,
-  addUrlOrigin,
+  setUrlOrigin,
   createUrlFromComponents,
   isUri,
   type UrlPublic,
@@ -557,9 +557,16 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   if (urlTargetExternal) {
     urlTarget = urlTargetExternal
   } else {
-    if (origin) urlTarget = addUrlOrigin(urlTarget, origin)
-    if (urlTarget === urlWithoutBase) return null
-    urlTarget = prependBase(urlTarget, baseServer)
+    let originChanged = false
+    if (origin) {
+      const urlModified = setUrlOrigin(urlTarget, origin)
+      if (urlModified !== false) {
+        originChanged = true
+        urlTarget = urlModified
+      }
+    }
+    if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
+    if (!originChanged) urlTarget = prependBase(urlTarget, baseServer)
     assert(urlTarget !== pageContextInit.urlOriginal)
   }
   logRuntimeInfo?.(
@@ -571,6 +578,9 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   const pageContextHttpResponse = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
+}
+function normalize(url: string) {
+  return url || '/'
 }
 
 async function handleAbortError(
