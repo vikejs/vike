@@ -16,7 +16,9 @@ function Header() {
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        backgroundColor: 'var(--bg-color)'
+        backgroundColor: 'var(--bg-color)',
+        paddingLeft: 'var(--main-view-padding)',
+        paddingRight: 'var(--main-view-padding)'
       }}
     >
       <a

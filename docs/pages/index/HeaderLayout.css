@@ -21,7 +21,7 @@
     font-size: 1.4em;
   }
 }
-@container(max-width: 719px) {
+@container(max-width: 759px) {
   #header-container {
     flex-direction: column;
     text-align: center;
@@ -45,7 +45,7 @@
     margin-bottom: 10px;
   }
 }
-@container(max-width: 450px) {
+@container(max-width: 479px) {
   #header-container h1 {
     font-size: 2.4em;
   }
