@@ -10,7 +10,10 @@ function Page() {
   useEffect(() => {
     const cl = document.documentElement.classList
     const cls = 'scroll-behavior-smooth'
-    cl.add(cls)
+    // We use setTimeout() to avoid smooth scrolling when navigating from another page to the landing page
+    setTimeout(() => {
+      cl.add(cls)
+    }, 0)
     return () => cl.remove(cls)
   })
   return (
