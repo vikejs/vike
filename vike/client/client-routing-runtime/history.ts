@@ -1,9 +1,13 @@
-export { getHistoryState, enhanceHistoryState, pushHistoryState, type ScrollPosition, saveScrollPosition }
+export { pushHistoryState }
+export { onPopStateBegin }
+export { saveScrollPosition }
+export type { HistoryInfo }
+export type { ScrollPosition }
 
-import { assert, assertUsage, hasProp, isObject } from './utils.js'
+import { assert, assertUsage, getCurrentUrl, getGlobalObject, hasProp, isObject } from './utils.js'
 
-let initStateEnhanced: true | undefined
 init()
+const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })
 
 type StateEnhanced = {
   timestamp: number
@@ -55,22 +59,19 @@ function enhance(stateNotEnhanced: StateNotEnhanced): StateEnhanced {
   return stateVikeEnhanced
 }
 
-function getStateEnhanced(): StateEnhanced {
+function getState(): StateEnhanced {
   const state = getStateNotEnhanced()
-  // This assert() will most likely eventually cause issues. Let's then:
-  // - Replace the assert() call with enhanceHistoryState()
-  // - Remove the race condition buster `initStateEnhanced` as it won't be needed anymore
+  // *Every* state added to the history needs to go through Vike.
+  // - Otherwise Vike's `popstate` listener won't work. (Because, for example, if globalObject.previous is outdated => isHashNavigation faulty => client-side navigation wrongfully skipped.)
+  // - Therefore, we monkey patch history.pushState() and history.replaceState()
+  // - Therefore, we assert() below that history.state has been enhanced by Vike
+  // - If users stumble upon this assert() then make it a assertUsage()
   assert(isVikeEnhanced(state))
   return state
 }
 function getStateNotEnhanced(): StateNotEnhanced {
   const state: StateNotEnhanced = window.history.state
   return state
-}
-
-function getHistoryState(): StateEnhanced {
-  if (!initStateEnhanced) enhanceHistoryState() // avoid race condition
-  return getStateEnhanced()
 }
 
 function getScrollPosition(): ScrollPosition {
@@ -83,25 +84,24 @@ function getTimestamp() {
 
 function saveScrollPosition() {
   const scrollPosition = getScrollPosition()
-  const state = getStateEnhanced()
+  const state = getState()
   replaceHistoryState({ ...state, scrollPosition })
 }
 
 function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
   if (!overwriteLastHistoryEntry) {
-    const timestamp = getTimestamp()
-    pushState(
-      {
-        timestamp,
-        // I don't remember why I set it to `null`, maybe because setting it now would be too early? (Maybe there is a delay between renderPageClientSide() is finished and the browser updating the scroll position.) Anyways, it seems like autoSaveScrollPosition() is enough.
-        scrollPosition: null,
-        triggeredBy: 'vike',
-        _isVikeEnhanced: true
-      },
-      url
-    )
+    const state: StateEnhanced = {
+      timestamp: getTimestamp(),
+      // I don't remember why I set it to `null`, maybe because setting it now would be too early? (Maybe there is a delay between renderPageClientSide() is finished and the browser updating the scroll position.) Anyways, it seems like autoSaveScrollPosition() is enough.
+      scrollPosition: null,
+      triggeredBy: 'vike',
+      _isVikeEnhanced: true
+    }
+    // Calling the monkey patched history.pushState() (and not the orignal) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls
+    // https://github.com/vikejs/vike/issues/1582
+    window.history.pushState(state, '', url)
   } else {
-    replaceHistoryState(getStateEnhanced(), url)
+    replaceHistoryState(getState(), url)
   }
 }
 
@@ -109,30 +109,33 @@ function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
 }
-function pushState(state: StateEnhanced, url: string) {
-  // Vike should call window.history.pushState() (and not the orignal `pushStateOriginal()`) so that other tools (e.g. user tracking) can listen to Vike's pushState() calls, see https://github.com/vikejs/vike/issues/1582.
-  window.history.pushState(state, '', url)
-}
 
-function monkeyPatchHistoryPushState() {
-  const pushStateOriginal = window.history.pushState.bind(window.history)
-  window.history.pushState = (stateOriginal: unknown = {}, ...rest) => {
-    assertUsage(
-      stateOriginal === undefined || stateOriginal === null || isObject(stateOriginal),
-      'history.pushState(state) argument state must be an object'
-    )
-    const stateEnhanced: StateEnhanced = isVikeEnhanced(stateOriginal)
-      ? stateOriginal
-      : {
-          _isVikeEnhanced: true,
-          scrollPosition: getScrollPosition(),
-          timestamp: getTimestamp(),
-          triggeredBy: 'user',
-          ...stateOriginal
-        }
-    assert(isVikeEnhanced(stateEnhanced))
-    return pushStateOriginal!(stateEnhanced, ...rest)
-  }
+// Monkey patch:
+// - history.pushState()
+// - history.replaceState()
+function monkeyPatchHistoryAPI() {
+  ;(['pushState', 'replaceState'] as const).forEach((funcName) => {
+    const funcOriginal = window.history[funcName].bind(window.history)
+    window.history[funcName] = (stateOriginal: unknown = {}, ...rest) => {
+      assertUsage(
+        stateOriginal === undefined || stateOriginal === null || isObject(stateOriginal),
+        `history.${funcName}(state) argument state must be an object`
+      )
+      const stateEnhanced: StateEnhanced = isVikeEnhanced(stateOriginal)
+        ? stateOriginal
+        : {
+            _isVikeEnhanced: true,
+            scrollPosition: getScrollPosition(),
+            timestamp: getTimestamp(),
+            triggeredBy: 'user',
+            ...stateOriginal
+          }
+      assert(isVikeEnhanced(stateEnhanced))
+      const ret = funcOriginal(stateEnhanced, ...rest)
+      globalObject.previous = getHistoryInfo()
+      return ret
+    }
+  })
 }
 
 function isVikeEnhanced(state: unknown): state is StateEnhanced {
@@ -154,6 +157,27 @@ function assertStateVikeEnhanced(state: unknown): asserts state is StateEnhanced
 
 function init() {
   enhanceHistoryState()
-  initStateEnhanced = true
-  monkeyPatchHistoryPushState()
+  monkeyPatchHistoryAPI()
+}
+
+type HistoryInfo = {
+  url: `/${string}`
+  state: StateEnhanced
+}
+function getHistoryInfo(): HistoryInfo {
+  return {
+    url: getCurrentUrl(),
+    state: getState()
+  }
+}
+function onPopStateBegin() {
+  const { previous } = globalObject
+
+  const isNewState = window.history.state === null
+  if (isNewState) enhanceHistoryState()
+
+  const current = getHistoryInfo()
+  globalObject.previous = current
+
+  return { isNewState, previous, current }
 }
