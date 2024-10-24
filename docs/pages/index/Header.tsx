@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import './Header.css'
 import './HeaderLayout.css'
 import iconVikeAnimatedCover from '../../images/icons/vike-nitedani-animated-cover.jpg'
@@ -63,6 +63,10 @@ function Header() {
 }
 
 function VikeNitedaniAnimated() {
+  const ref = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    if (window.screen.width > 759) ref.current!.play()
+  })
   // - Source: https://github.com/brillout/vike-hammer-nitedani#animated
   // - Spline Video export: https://www.youtube.com/watch?v=OgN8TZElx6M&t=130s
   // - Export as image sequence, then convert to video:
@@ -72,13 +76,14 @@ function VikeNitedaniAnimated() {
   //   For .webm see https://stackoverflow.com/questions/34974258/convert-pngs-to-webm-video-with-transparency
   return (
     <video
+      ref={ref}
       src="https://github.com/brillout/vike-hammer-nitedani/raw/refs/heads/main/vike-nitedani-animated.mp4"
       poster={iconVikeAnimatedCover}
       height="250"
       width="182"
       muted
-      autoPlay
       loop
+      preload="none"
       onContextMenu={(ev) => {
         navigate('/press#logo')
         ev.preventDefault()
