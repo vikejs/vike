@@ -19,7 +19,7 @@ function Page() {
 
   // Fallback error message
   if (!msg) {
-    msg = pageContext.is404 ? "This page doesn't exist." : 'Something went wrong. Sincere apologies. Try again (later).'
+    msg = pageContext.is404 ? "This page doesn't exist." : 'Something went wrong. Try again (later).'
     title = pageContext.is404 ? "Doesn't exist" : 'Error'
   }
 
