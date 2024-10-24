@@ -33,6 +33,7 @@ import pc from '@brillout/picocolors'
 import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
+import { normalizeId } from '../shared/normalizeId.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -55,6 +56,7 @@ function extractAssetsPlugin(): Plugin[] {
       apply: 'build',
       enforce: 'post',
       async transform(src, id, options) {
+        id = normalizeId(id)
         if (!extractAssetsRE.test(id)) {
           return
         }

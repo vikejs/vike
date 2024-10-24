@@ -5,6 +5,7 @@ import { loadEnv } from 'vite'
 import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
+import { normalizeId } from '../shared/normalizeId.js'
 
 // TODO/enventually: (after we implemented vike.config.js)
 // - Make import.meta.env work inside +config.js
@@ -32,8 +33,10 @@ function envVarsPlugin(): Plugin {
       ;(config.plugins as Plugin[]).sort(lowerFirst<Plugin>((plugin) => (plugin.name === 'vite:define' ? 1 : 0)))
     },
     transform(code, id, options) {
+      id = normalizeId(id)
       assertPosixPath(id)
       if (id.includes('/node_modules/')) return
+      assertPosixPath(config.root)
       if (!id.startsWith(config.root)) return
       if (!code.includes('import.meta.env.')) return
 

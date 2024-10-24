@@ -13,6 +13,7 @@ import pc from '@brillout/picocolors'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import { getExportNames } from '../shared/parseEsModule.js'
+import { normalizeId } from '../shared/normalizeId.js'
 
 function fileEnv(): Plugin {
   let config: ResolvedConfig
@@ -40,6 +41,7 @@ function fileEnv(): Plugin {
     },
     // In production, we have to use transform() to replace modules with a runtime error because generateBundle() doesn't work for dynamic imports. In production, dynamic imports can only be verified at runtime.
     async transform(code, id, options) {
+      id = normalizeId(id)
       // In dev, only using load() is enough as it also works for dynamic imports (see sibling comment).
       if (viteDevServer) return
       if (skip(id)) return
