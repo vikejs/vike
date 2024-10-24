@@ -6,3 +6,60 @@
 #header-tagline a:hover {
   text-decoration-thickness: 3px !important;
 }
+
+#header-container {
+  padding-top: 110px;
+  padding-bottom: 110px;
+}
+#header-container h1 {
+  font-size: 3.3em;
+}
+#header-tagline {
+  font-size: 1.6em;
+  margin-bottom: 0;
+}
+@container(max-width: 1139px) {
+  #header-container {
+    padding-top: 80px;
+    padding-bottom: 87px;
+  }
+  #header-container h1 {
+    font-size: 3em;
+  }
+  #header-tagline {
+    font-size: 1.4em;
+  }
+}
+/* 759 => same as https://github.com/vikejs/vike/blob/2c6325615390ae3be3afc6aa37ede6914b935702/docs/pages/index/Header.tsx#L68 */
+@container(max-width: 759px) {
+  #header-container {
+    flex-direction: column;
+    text-align: center;
+  }
+  #header-logo {
+    display: none;
+  }
+  #header-container h1,
+  #header-container p {
+    margin-left: 0px;
+  }
+  #header-container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  #header-container h1 {
+    font-size: 2.7em;
+  }
+  #header-tagline {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+  }
+}
+@container(max-width: 479px) {
+  #header-container h1 {
+    font-size: 2.4em;
+  }
+  #header-tagline {
+    font-size: 1.3em;
+  }
+}

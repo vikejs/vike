@@ -1,64 +1,65 @@
 import React, { useEffect, useRef } from 'react'
-import './Header.css'
-import './HeaderLayout.css'
 import iconVikeAnimatedCover from '../../images/icons/vike-nitedani-animated-cover.jpg'
 import { navigate } from 'vike/client/router'
 import { getFeatureId } from './getFeatureId'
+import './Header.css'
 
 export { Header }
 
 function Header() {
   return (
-    <div
-      id="header-container"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        backgroundColor: 'var(--bg-color)',
-        paddingLeft: 'var(--main-view-padding)',
-        paddingRight: 'var(--main-view-padding)'
-      }}
-    >
-      <a
-        id="header-logo"
-        href="/"
+    <>
+      <div
+        id="header-container"
         style={{
-          height: 230,
-          marginRight: 45,
-          marginTop: -30
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          backgroundColor: 'var(--bg-color)',
+          paddingLeft: 'var(--main-view-padding)',
+          paddingRight: 'var(--main-view-padding)'
         }}
       >
-        <VikeNitedaniAnimated />
-      </a>
-      <div>
-        <h1
+        <a
+          id="header-logo"
+          href="/"
           style={{
-            margin: 0,
-            lineHeight: '1.1em',
-            marginBottom: 8
+            height: 230,
+            marginRight: 45,
+            marginTop: -30
           }}
         >
-          Next Generation
-          <br />
-          Frontend Framework
-        </h1>
-        <p
-          id="header-tagline"
-          style={{
-            padding: 0,
-            marginTop: 14,
-            maxWidth: 550
-          }}
-        >
-          {/* &#8288; for non-breaking hyphen */}
-          Next.js/Nuxt alternative. <FeatureName>Flexible</FeatureName>, <FeatureName>reliable</FeatureName>,{' '}
-          <FeatureName>fast</FeatureName>, <FeatureName>clutter&#8288;-&#8288;free</FeatureName>,{' '}
-          <FeatureName>community&#8288;-&#8288;driven</FeatureName>.
-        </p>
+          <VikeNitedaniAnimated />
+        </a>
+        <div>
+          <h1
+            style={{
+              margin: 0,
+              lineHeight: '1.1em',
+              marginBottom: 8
+            }}
+          >
+            Next Generation
+            <br />
+            Frontend Framework
+          </h1>
+          <p
+            id="header-tagline"
+            style={{
+              padding: 0,
+              marginTop: 14,
+              maxWidth: 550
+            }}
+          >
+            {/* &#8288; for non-breaking hyphen */}
+            Next.js/Nuxt alternative. <FeatureName>Flexible</FeatureName>, <FeatureName>reliable</FeatureName>,{' '}
+            <FeatureName>fast</FeatureName>, <FeatureName>clutter&#8288;-&#8288;free</FeatureName>,{' '}
+            <FeatureName>community&#8288;-&#8288;driven</FeatureName>.
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
