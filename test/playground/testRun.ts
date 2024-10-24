@@ -198,6 +198,7 @@ function testHistoryPushState() {
     expectUrl('/markdown')
     await page.goForward()
     expectUrl('/pushState')
+    await sleep(100)
     const timestamp6 = await getTimestamp()
     expect(timestamp6 > timestamp2).toBe(true)
     await page.goForward()
