@@ -3,6 +3,8 @@ import { getRoutesInfo } from '../log404/index.js'
 import { stripAnsi } from '../../utils.js'
 import type { PageRoutes } from '../../../../shared/route/index.js'
 
+process.stdout.columns = 134
+
 describe('getRoutesInfo()', () => {
   it('table layout - basic', () => {
     const table = getRoutesInfo(pageRoutes1)
