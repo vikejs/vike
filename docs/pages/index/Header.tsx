@@ -65,7 +65,8 @@ function Header() {
 function VikeNitedaniAnimated() {
   const ref = useRef<HTMLVideoElement>(null)
   useEffect(() => {
-    if (window.screen.width > 759) ref.current!.play()
+    // 759 => same as https://github.com/vikejs/vike/blob/2c6325615390ae3be3afc6aa37ede6914b935702/docs/pages/index/HeaderLayout.css#L24
+    if (screen.width > 759) ref.current!.play()
   })
   // - Source: https://github.com/brillout/vike-hammer-nitedani#animated
   // - Spline Video export: https://www.youtube.com/watch?v=OgN8TZElx6M&t=130s

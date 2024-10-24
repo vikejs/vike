@@ -21,6 +21,7 @@
     font-size: 1.4em;
   }
 }
+/* 759 => same as https://github.com/vikejs/vike/blob/2c6325615390ae3be3afc6aa37ede6914b935702/docs/pages/index/Header.tsx#L68 */
 @container(max-width: 759px) {
   #header-container {
     flex-direction: column;
