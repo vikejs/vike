@@ -43,8 +43,7 @@ const headings = [
   {
     level: 2,
     title: 'Scaffold new Vike app',
-    url: '/new',
-    topNavigation: 'Get Started'
+    url: '/new'
   },
   {
     level: 2,
