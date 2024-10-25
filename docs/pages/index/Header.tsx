@@ -8,11 +8,7 @@ export { Header }
 
 function Header() {
   return (
-    <div
-      style={{
-        backgroundColor: 'var(--bg-color)'
-      }}
-    >
+    <>
       <div
         id="header-container"
         style={{
@@ -20,6 +16,7 @@ function Header() {
           alignItems: 'center',
           justifyContent: 'center',
           width: '100%',
+          backgroundColor: 'var(--bg-color)',
           paddingLeft: 'var(--main-view-padding)',
           paddingRight: 'var(--main-view-padding)'
         }}
@@ -62,29 +59,7 @@ function Header() {
           </p>
         </div>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <a
-          href="/new"
-          style={{
-            border: '1px solid rgb(215 215 215)',
-            color: 'inherit',
-            padding: '10px 15px',
-            fontSize: '1.1em',
-            borderRadius: 8,
-            background:
-              'radial-gradient(141.42% 141.42% at 100% 0%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0)), radial-gradient(140.35% 140.35% at 100% 94.74%, rgb(209 209 209), rgb(253 249 255 / 53%)), radial-gradient(89.94% 89.94% at 18.42% 15.79%, rgb(237 237 237), rgb(239 239 239))'
-          }}
-        >
-          Get started
-        </a>
-      </div>
-    </div>
+    </>
   )
 }
 
