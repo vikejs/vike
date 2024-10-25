@@ -8,7 +8,7 @@
 export { Page }
 
 import React from 'react'
-import '../index/HeaderLayout.css'
+import '../index/Header.css'
 import vikeIcon from '../../images/icons/vike-vertical.svg'
 
 function Page() {
