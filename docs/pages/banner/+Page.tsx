@@ -8,8 +8,6 @@
 export { Page }
 
 import React from 'react'
-import '../index/Header.css'
-import vikeIcon from '../../images/icons/vike-vertical.svg'
 
 function Page() {
   return (
@@ -30,7 +28,11 @@ function Page() {
           scale: '1.2'
         }}
       >
-        <img src={vikeIcon} style={{ marginRight: 50, marginTop: 0, height: '100%' }} />
+        <img
+          // https://github.com/brillout/vike-hammer-nitedani
+          src="https://raw.githubusercontent.com/brillout/vike-hammer-nitedani/main/vike-nitedani_rom-mod.png"
+          style={{ marginRight: 50, marginTop: 0, height: '100%' }}
+        />
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', height: '100%' }}>
           <div>
             <span
