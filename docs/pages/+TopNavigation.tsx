@@ -15,7 +15,7 @@ function TopNavigation() {
         alignItems: 'center',
         justifyContent: 'center',
         cursor: 'pointer',
-        padding: '0 var(--padding-side)',
+        padding: '0 var(--padding-side)'
       }}
     >
       <img className="decolorize-7" src={iconSeedling} style={{ height: 23, marginRight: 10 }} /> Get Started
