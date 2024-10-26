@@ -261,8 +261,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.8.5
-        version: 0.8.5(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+        specifier: ^0.8.6
+        version: 0.8.6(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
       '@types/node':
         specifier: ^20.11.16
         version: 20.13.0
@@ -2031,8 +2031,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.8.5':
-    resolution: {integrity: sha512-iqLg9Iqog4DjFeLcS/UmNiSQVx8MBIcvpsT/4egx4gAsIuFbcdW+zgr9H8N29crjmjYKIiCKD4hODazej7Dx5A==}
+  '@brillout/docpress@0.8.6':
+    resolution: {integrity: sha512-DxnXJsh+X+A61Z9rdyhx8hzJm4KFXyyHWxKRVyuXc+BvFcSuCGSxpDOkjzOwGHPLhkdkLgmWcXvIqtH2x4DYGA==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -7740,7 +7740,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.7.3':
     optional: true
 
-  '@brillout/docpress@0.8.5(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
+  '@brillout/docpress@0.8.6(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
     dependencies:
       '@brillout/picocolors': 1.0.15
       '@docsearch/css': 3.6.1
