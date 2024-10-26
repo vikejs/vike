@@ -65,7 +65,10 @@ function Header() {
 
 function VikeNitedaniAnimated() {
   const ref = useRef<HTMLVideoElement>(null)
+  const is_firefox = isFirefox()
+
   useEffect(() => {
+    if (is_firefox) return
     // 759 => same as https://github.com/vikejs/vike/blob/2c6325615390ae3be3afc6aa37ede6914b935702/docs/pages/index/HeaderLayout.css#L24
     if (screen.width > 759) {
       // try-catch to suppress the following in the CI:
@@ -94,7 +97,7 @@ function VikeNitedaniAnimated() {
       width="182"
       muted
       loop
-      preload="none"
+      autoPlay={is_firefox}
       onContextMenu={(ev) => {
         navigate('/press#logo')
         ev.preventDefault()
@@ -122,4 +125,10 @@ function FeatureName({ children }: { children: string }) {
       {children}
     </a>
   )
+}
+
+function isFirefox() {
+  // https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers/9851769#9851769
+  // @ts-expect-error
+  return typeof InstallTrigger !== 'undefined'
 }
