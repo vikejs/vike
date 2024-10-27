@@ -17,7 +17,7 @@ import {
 } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig.js'
+import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile, isV1Design } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
@@ -30,16 +30,16 @@ function importUserCode(): Plugin {
     name: 'vike:importUserCode',
     config(_, env) {
       isDev = isDev3(env)
-      return {
-        experimental: {
-          // TODO/v1-release: remove
-          importGlobRestoreExtension: true
-        }
-      }
     },
     async configResolved(config_) {
       configVike = await getConfigVike(config_)
       config = config_
+      // TODO/v1-release: remove
+      {
+        assert(isDev !== undefined)
+        const isV1 = await isV1Design(config, isDev)
+        if (!isV1) config.experimental.importGlobRestoreExtension = true
+      }
     },
     resolveId(id) {
       if (isVirtualFileId(id)) {
