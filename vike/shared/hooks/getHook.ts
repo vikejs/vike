@@ -24,7 +24,19 @@ import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('getHook.ts', {})
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
-type HookLoc = { hookName: HookName; hookFilePath: string }
+type HookLoc = {
+  hookName: HookName
+  /* Once we remove the old design, we'll be able to use the full path information.
+   * Le'ts then do this:
+   * ```diff
+   * - Following error was thrown by the onRenderHtml() hook defined at vike-react/__internal/integration/onRenderHtml
+   * + Following error was thrown by the onRenderHtml() hook defined by vike-react
+   * ```
+import type {FilePath} from '../page-configs/FilePath.js'
+  hookFilePath: FilePath
+  */
+  hookFilePath: string
+}
 type HookFn = (arg: unknown) => unknown
 type HookTimeout = {
   error: number | false
