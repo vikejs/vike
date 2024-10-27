@@ -5,7 +5,7 @@ contact_links:
     about: "[GitHub Discussions] Get official help from Vike maintainers."
   - name: "🗨️ Other"
     url: https://github.com/vikejs/vike/discussions/new?category=other
-    about: "[GitHub Discussions] Share ideas, feedback, complaints, appreciation, ..."
+    about: "[GitHub Discussions] Anything else: ideas, feedback, complaints, appreciation, ..."
   - name: "💬 Chit-chat"
     url: https://discord.com/invite/hfHhnJyVg8
     about: "[Discord] casual conversation with the community."
