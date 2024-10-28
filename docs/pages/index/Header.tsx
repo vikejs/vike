@@ -65,11 +65,19 @@ function Header() {
 
 // - Video source: https://github.com/brillout/vike-hammer-nitedani
 // - Spline Video export: https://www.youtube.com/watch?v=OgN8TZElx6M&t=130s
-// - Export as image sequence, then convert to video:
+//   - Export as image sequence
+//   - Trick: set 15 fps with 0.5x speed then create video with 30 fps
+// - Convert to video:
 //   ```bash
-//   ffmpeg -framerate 30 -pattern_type glob -i '*.png' -vf scale="-1:250" -crf 15 -preset veryslow -c:v libx264 -pix_fmt yuv420p out.mp4
+//   # resize
+//   for f in *.png; do ffmpeg -i "$f" -vf scale=-1:250 "resized/$f"; done
+//   # mp4
+//   ffmpeg -framerate 30 -pattern_type glob -i '*.png' -crf 20 -preset veryslow -pix_fmt yuv420p -c:v libx264 out.mp4
+//   # webm
+//   ffmpeg -framerate 30 -pattern_type glob -i '*.png' -crf 30 -preset veryslow -pix_fmt yuva420p -c:v libvpx-vp9 out.webm
 //   ```
-//   For .webm see https://stackoverflow.com/questions/34974258/convert-pngs-to-webm-video-with-transparency
+//   Change `-crf 30` to increase/decrease quality/size.
+//   https://stackoverflow.com/questions/34974258/convert-pngs-to-webm-video-with-transparency
 function VikeNitedaniAnimated() {
   const ref = useRef<HTMLVideoElement>(null)
 
@@ -83,7 +91,7 @@ function VikeNitedaniAnimated() {
       videoEl.setAttribute('autoPlay', '')
       videoEl.setAttribute(
         'src',
-        'https://github.com/brillout/vike-hammer-nitedani/raw/refs/heads/main/vike-nitedani-animated.mp4'
+        'https://github.com/brillout/vike-hammer-nitedani/raw/refs/heads/main/vike-nitedani-animated.webm'
       )
       /* We don't use play() because in Firefox it flickers
       // try-catch to suppress the following in the CI:
