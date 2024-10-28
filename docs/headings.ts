@@ -5,7 +5,8 @@ import type { HeadingDefinition } from '@brillout/docpress'
 const headings = [
   {
     level: 1,
-    title: 'Overview'
+    title: 'Overview',
+    color: '#d00' // red
   },
   {
     level: 2,
@@ -31,7 +32,8 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Get Started'
+    title: 'Get Started',
+    color: '#0d0' // green
   },
   /*
   {
@@ -52,7 +54,8 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Guides'
+    title: 'Guides',
+    color: '#00d' // blue
   },
   {
     level: 4,
@@ -145,7 +148,8 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Tool Integration'
+    title: 'Tool Integration',
+    color: '#f7f756' // yellow
   },
   {
     level: 2,
@@ -187,7 +191,8 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Deploy'
+    title: 'Deploy',
+    color: '#ff50ff' // purple
   },
   {
     level: 4,
@@ -267,6 +272,7 @@ const headings = [
   {
     level: 1,
     title: 'API',
+    color: '#49d5ed', // cyan
     menuModalFullWidth: true
   },
   {
