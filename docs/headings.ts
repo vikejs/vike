@@ -148,49 +148,6 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Tool Integration',
-    color: '#f7f756' // yellow
-  },
-  {
-    level: 2,
-    title: 'Authentication',
-    url: '/auth'
-  },
-  {
-    level: 2,
-    title: 'Servers',
-    url: '/servers',
-    sectionTitles: ['Non-JavaScript Backend']
-  },
-  {
-    level: 2,
-    title: 'Error Tracking',
-    url: '/error-tracking'
-  },
-  {
-    level: 2,
-    title: 'CSS-in-JS',
-    url: '/css-in-js'
-  },
-  {
-    level: 2,
-    title: 'Markdown',
-    url: '/markdown'
-  },
-  {
-    level: 2,
-    title: 'Stores (State Management)',
-    url: '/stores',
-    sectionTitles: ['SSR']
-  },
-  {
-    level: 2,
-    titleInNav: '... more',
-    title: 'Tool integration (more)',
-    url: '/integration'
-  },
-  {
-    level: 1,
     title: 'Deploy',
     color: '#ff50ff' // purple
   },
@@ -268,6 +225,49 @@ const headings = [
     title: 'Deploy',
     titleInNav: 'Other deployment',
     url: '/deploy'
+  },
+  {
+    level: 1,
+    title: 'Tool Integration',
+    color: '#f7f756' // yellow
+  },
+  {
+    level: 2,
+    title: 'Authentication',
+    url: '/auth'
+  },
+  {
+    level: 2,
+    title: 'Servers',
+    url: '/servers',
+    sectionTitles: ['Non-JavaScript Backend']
+  },
+  {
+    level: 2,
+    title: 'Error Tracking',
+    url: '/error-tracking'
+  },
+  {
+    level: 2,
+    title: 'CSS-in-JS',
+    url: '/css-in-js'
+  },
+  {
+    level: 2,
+    title: 'Markdown',
+    url: '/markdown'
+  },
+  {
+    level: 2,
+    title: 'Stores (State Management)',
+    url: '/stores',
+    sectionTitles: ['SSR']
+  },
+  {
+    level: 2,
+    titleInNav: '... more',
+    title: 'Tool integration (more)',
+    url: '/integration'
   },
   {
     level: 1,
