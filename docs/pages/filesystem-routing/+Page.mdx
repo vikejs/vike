@@ -23,9 +23,12 @@ contact/+Page.js                                               /contact
 pages/pages/src/(some-dir)/src/index/pages/about/+Page.js      /about
 ```
 
-This enables you to set up a <Link href='#domain-driven'>domain-driven file structure</Link>.
-
-Instead of `(someDir)` you can also use the <Link href="/filesystemRoutingRoot">`filesystemRoutingRoot` setting</Link>.
+But they aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
+```yaml
+pages/about/+Page.js
+# This +config.js file doesn't apply to pages/about/+Page.js
+src/pages/+config.js
+```
 
 
 
