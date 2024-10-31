@@ -28,7 +28,7 @@ async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, con
   const { pageId, isForClientSide } = result
   const { pageConfigs } = await getVikeConfig(config, isDev, { tolerateInvalidConfig: true })
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
-  assert(pageConfig)
+  assert(pageConfig, { id, pageId })
   const configVike = await getConfigVike(config)
   const code = getLoadConfigValuesAll(
     pageConfig,
