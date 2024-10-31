@@ -9,9 +9,10 @@ pages/about/+Page.js           /about
 pages/faq/+Page.js             /faq
 ```
 
-> You can use a [Route String](/route-string) or [Route Function](route-function) to override the route of a page determined by Filesystem Routing.
+> Alternatively, you can use a [Route String](/route-string) or a [Route Function](route-function) instead of Filesystem Routing.
 
 > `+` files are explained at <Link href="/config#files" doNotInferSectionTitle />.
+
 
 ## Parameterized routes
 
@@ -25,16 +26,6 @@ pages/movie/@id/+Page.js       /movie/123, /movie/abc, ...
 
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
-
-## Case sensitive
-
-Filesystem Routing is case sensitive:
-
-```bash
-FILESYSTEM                     URL
-========================       ======
-pages/HELLO/+Page.js           /HELLO
-```
 
 ## Ignored directories
 
@@ -57,6 +48,17 @@ pages/pages/src/(some-dir)/src/index/pages/about/+Page.js      /about
 This enables you to set up a domain-driven file structure: <Link href='/file-structure#domain-driven' />.
 
 Instead of `(someDir)` you can also use the <Link href="/filesystemRoutingRoot">`filesystemRoutingRoot` setting</Link>.
+
+
+## Case sensitive
+
+Filesystem Routing is case sensitive:
+
+```bash
+FILESYSTEM                     URL
+========================       ======
+pages/HELLO/+Page.js           /HELLO
+```
 
 
 ## Crawl
