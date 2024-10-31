@@ -1,39 +1,17 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
+import { UiFrameworkExtension } from '../../components'
 
-Vike supports *Filesystem Routing*: the URL of a page is determined by where the page is located on your filesystem.
+Detailed information about Vike's Filesystem Routing.
 
-```bash
-FILESYSTEM                     URL
-====================           ======
-pages/about/+Page.js           /about
-pages/faq/+Page.js             /faq
-```
-
-> Alternatively, you can use a [Route String](/route-string) or a [Route Function](route-function) instead of Filesystem Routing.
-
-> `+` files are explained at <Link href="/config#files" doNotInferSectionTitle />.
-
-
-## Parameterized routes
-
-You can define parameterized routes:
-
-```bash
-FILESYSTEM                     URL
-========================       ===========================
-pages/movie/@id/+Page.js       /movie/123, /movie/abc, ...
-```
-
-> The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
-
+For an overview, see instead: <Link href="/routing#filesystem-routing" doNotInferSectionTitle />.
 
 ## Ignored directories
 
-Following directories are ignored:
+Following directories are ignored by Filesystem Routing:
  - `index/`
  - `pages/`
  - `src/`
- - `(someDir)/` (any directory wrapped with parentheses)
+ - `(someDir)/` (any directory inside parentheses)
 
 ```
 FILESYSTEM                                                     URL
@@ -45,9 +23,11 @@ contact/+Page.js                                               /contact
 pages/pages/src/(some-dir)/src/index/pages/about/+Page.js      /about
 ```
 
-This enables you to set up a domain-driven file structure: <Link href='/file-structure#domain-driven' />.
+This enables you to set up a <Link href='#domain-driven'>domain-driven file structure</Link>.
 
 Instead of `(someDir)` you can also use the <Link href="/filesystemRoutingRoot">`filesystemRoutingRoot` setting</Link>.
+
+
 
 
 ## Case sensitive
@@ -61,7 +41,7 @@ pages/HELLO/+Page.js           /HELLO
 ```
 
 
-## Crawl
+## Crawl space
 
 Vike crawls files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root). Consequently, all your <Link href="/config#files">`+` files</Link> need to live inside `root`.
 
@@ -70,9 +50,39 @@ Vike crawls files inside [Vite's `root` directory](https://vitejs.dev/config/sha
 If you use Git then Vike skips `.gitignore` files.
 
 
+## `renderer/`
+
+If you don't use a <UiFrameworkExtension /> then we recommend placing your UI framework integration in a `renderer/` directory.
+
+```yaml
+# Usual Vike file structure
+/pages/
+/components/
+/server/
+
+# Code that specifies how pages are rendered
+/renderer/+onRenderHtml.js
+/renderer/+onRenderClient.js
+/renderer/Layout.{jsx,vue}  # React/Vue/... component that wraps the `Page` component
+/renderer/Layout.css
+/renderer/Header.{jsx,vue} # Website header used for every page
+/renderer/Footer.{jsx,vue} # Website footer used for every page
+/renderer/logo.svg # Website logo (favicon and used by <Header>)
+```
+
+The hooks `/renderer/+onRender{Html,Client}.js` apply as default to all pages `/pages/**/+Page.js`.
+
+The `renderer/` directory doesn't add any functionality: defining the hooks `+onRender{Html,Client}.js` at `/renderer/` is equivalent to defining them at `/pages/` or `/`. It's just an optional convenience for moving rendering logic outside of `pages/`: in order to avoid cluttering the `pages/` directory and to organize and put all rendering code in one place.
+
+> The `renderer/` directory isn't like the <Link href="#ignored-directories">list of ignored directories</Link> because not only is it ignored by Filesystem Routing but it's also ignored by <Link href="/config#inheritance">config inheritance</Link>.
+
+<Warning>
+We recommend defining a `renderer/` directory only if you are implementing a custom UI framework (React/Vue/Solid/...) integration.
+</Warning>
+
+
 ## See also
 
- - <Link href="/config#files" doNotInferSectionTitle />
- - <Link href="/routing" />
+ - <Link href="/routing#filesystem-routing" />
  - <Link href="/file-structure" />
  - <Link href="/filesystemRoutingRoot" />

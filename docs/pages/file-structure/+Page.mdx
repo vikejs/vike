@@ -1,9 +1,8 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension } from '../../components'
 
-For advanced apps we recommend a domain-driven file structure using multiple `pages/` directories.
+For simple apps, you can define a basic file structure with a single `pages/` directory.
 
-For basic apps we recommend using a single `pages/` directory.
+For advanced apps, you may want to define several `pages/` directories for what we call a *domain-driven file structure*.
 
 
 ## Basic
@@ -11,11 +10,11 @@ For basic apps we recommend using a single `pages/` directory.
 ```yaml
 # Landing page
 /pages/index/+Page.js
-/pages/index/SomeComponentForLandingPage.js
+/pages/index/components/SomeComponentForLandingPage.js
 /pages/index/**/* # More files specific to the landing page
 # About page
 /pages/about/+Page.js
-/pages/about/SomeComponentForAboutPage.js
+/pages/about/components/SomeComponentForAboutPage.js
 /pages/about/**/* # More files specific to the about page
 # Other pages
 /pages/**/+Page.js
@@ -32,8 +31,6 @@ For basic apps we recommend using a single `pages/` directory.
 
 
 ## Domain-driven
-
-You can have what we call a *domain-driven file structure*.
 
 ```yaml
 # ===========================
@@ -75,8 +72,12 @@ products/pages/+ssr.js
 products/database/fetchProduct.js
 products/database/fetchProductList.js
 
-# Shared across all domains
+# =============================
+# ======= Shared/Misc =========
+# =============================
+# Components shared across all domains
 components/
+# Server code
 server/
 ```
 
@@ -86,51 +87,8 @@ server/
 export default '/product/@id'
 ```
 
-> The directory `(marketing)/` is used for <Link href="/routing#groups">grouping</Link> and is ignored by <Link href="/filesystem-routing">Filesystem Routing</Link>.
->
-> Alternatively, you can have `marketing/` (without parentheses) and <Link href="/filesystemRoutingRoot">set `marketing/+filesystemRoutingRoot.js`</Link> to change the Filesystem Routing URL from `/marketing` to `/`.
-
-> See <Link href="/config#inheritance" />.
-
-Example: <Link href='/examples/file-structure-domain-driven/' />.
-
-
-## `src/pages/`
-
-You can embed `pages/` in `src/`:
-
-```yaml
-/src/pages/index/+Page.js # => URL /
-/src/pages/about/+Page.js # => URL /about
-```
-
-
-## `renderer/`
-
-If you don't use a <UiFrameworkExtension /> then we recommend placing your UI framework integration in a `renderer/` directory.
-
-```yaml
-# Same as above
-/pages/
-/components/
-/server/
-
-# Code that specifies how pages are rendered
-/renderer/+onRenderHtml.js
-/renderer/+onRenderClient.js
-/renderer/Layout.{jsx,vue}  # React/Vue/... component that wraps the `Page` component
-/renderer/Layout.css
-/renderer/Header.{jsx,vue} # Website header used for every page
-/renderer/Footer.{jsx,vue} # Website footer used for every page
-/renderer/logo.svg # Website logo (favicon and used by <Header>)
-```
-
-The hooks `/renderer/+onRender{Html,Client}.js` apply as default to all pages `/pages/**/+Page.js`.
-
-The `renderer/` directory doesn't add any functionality: defining the hooks `+onRender{Html,Client}.js` at `/renderer/` is equivalent to defining them at `/pages/` or `/`. It's just an optional convenience for moving rendering logic outside of `pages/`: in order to avoid cluttering the `pages/` directory and to organize and put all rendering code in one place.
-
 
 ## See also
- - <Link href="/routing" />
+
+ - <Link href="/routing#filesystem-routing" />
  - <Link href="/filesystem-routing" />
- - <Link href="/config#inheritance" />

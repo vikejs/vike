@@ -1,6 +1,7 @@
 import { Link } from '@brillout/docpress'
 
-Overview of how to define the route of your pages.
+Overview of how to define the URL of your pages.
+
 
 ## Filesystem Routing
 
@@ -14,11 +15,13 @@ pages/about/+Page.js           /about
 pages/jobs/+Page.js            /jobs
 ```
 
-> The directories `pages/`, `index/` and `src/` are ignored.
+> The directories `pages/` and `index/` are ignored by Filesystem Routing.
+
+> `+` files are explained at <Link href="/config#files" doNotInferSectionTitle />.
+
+> For detailed information about Filesystem Routing, see <Link href="/filesystem-routing" />.
 
 ### Parameterized routes
-
-You can define parameterized routes:
 
 ```bash
 FILESYSTEM                     URL
@@ -40,9 +43,9 @@ pages/(marketing)/about/+Page.js       /about
 pages/admin-panel/index/+Page.js       /admin-panel
 pages/admin-panel/users/+Page.js       /admin-panel/users
 ```
-> The directory `(marketing)` is ignored because it's wrapped by parentheses.
+> Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing.
 
-Beyond improved organization, it allows you to apply different configurations to different pages:
+It also enables you to easily set different configurations for different pages:
 
 ```yaml
 # Define a layout for all marketing pages
@@ -58,7 +61,24 @@ pages/admin-panel/users/+Page.js
 
 > See <Link href="/config#inheritance" />.
 
-You can also have a *domain-driven file structure*:
+
+### `src/`
+
+If you prefer, you can define your files within a `src/` directory:
+
+```yaml
+FILESYSTEM                     URL
+========================       ======
+src/pages/index/+Page.js       /
+src/pages/about/+Page.js       /about
+```
+
+> The directory `src/` is ignored by Filesystem Routing.
+
+
+### Domain-driven file structure
+
+For advanced apps, you may want to consider a *domain-driven file structure*.
 
 ```yaml
 # Domain: marketing
@@ -75,12 +95,7 @@ admin-panel/components/Charts.js
 admin-panel/database/fetchUsers.js
 ```
 
-> See <Link href='/file-structure#domain-driven' />.
-
-
-### More information
-
- - <Link href="/filesystem-routing" />
+> If you aren't familiar with file structures, see <Link href='/file-structure' />.
 
 
 ## Route String
@@ -159,13 +174,12 @@ Although we usually don't recommend it, you can use Vike with React Router and V
 
 ## See also
 
- - <Link href="/file-structure" />
- - <Link href="/base-url" />
  - <Link href="/filesystem-routing" />
  - <Link href="/route-string" />
  - <Link href="/route-function" />
  - <Link href="/routing-precedence" />
  - <Link href="/guard" />
+ - <Link href="/base-url" />
  - <Link href="/vue-router" />
  - <Link href="/react-router" />
  - <Link href="/server-routing-vs-client-routing" />

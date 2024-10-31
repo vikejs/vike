@@ -89,7 +89,8 @@ const headings = [
   {
     level: 2,
     title: 'Routing',
-    url: '/routing'
+    url: '/routing',
+    sectionTitles: ['Filesystem Routing']
   },
   {
     level: 2,
@@ -125,11 +126,6 @@ const headings = [
     level: 2,
     title: 'Internationalization (i18n)',
     url: '/i18n'
-  },
-  {
-    level: 2,
-    title: 'File Structure',
-    url: '/file-structure'
   },
   {
     level: 2,
