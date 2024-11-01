@@ -72,6 +72,8 @@ v0.5 breaking changes:
 - New Base URL setting: https://github.com/vikejs/vike/issues/1794
 - Clean all import paths, e.g. `import { navigate } from 'vike/navigate'`
 - Simplify pageContext return type?
+- Deprecate returning `pageContext` from `onBeforeRender()`
+  - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
 
 
 pageContext prefetching
