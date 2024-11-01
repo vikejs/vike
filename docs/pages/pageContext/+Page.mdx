@@ -140,14 +140,14 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
    ```js
    // +someHook.js
    export function someHook(pageContext) {
-     pageContext.someCustomProp = 'some-value' // Add or modify custom property
+     pageContext.someCustomProp = 'some-value' // Add or modify property
    }
    ```
  - At any UI component, by using <Link href="/usePageContext">`usePageContext()`</Link>.
    ```js
    // Inside a UI component
    const pageContext = usePageContext()
-   pageContext.someCustomProp = 'some-value' // Add or modify custom property
+   pageContext.someCustomProp = 'some-value' // Add or modify property
    ```
 
 
