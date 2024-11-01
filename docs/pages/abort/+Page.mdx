@@ -19,7 +19,7 @@ Difference between `throw redirect()` and <Link href="/navigate">`navigate()`</L
  - `navigate()` only works on the client-side and shouldn't be called during the rendering of a page.
  - `throw redirect()` works on both client- and server-side but only works during the rendering a page.
 
-In a nuthsell: if you want to abort the rendering of a page then use `throw redirect()`, otherwise use `navigate()`.
+In a nutshell: if you want to abort the rendering of a page then use `throw redirect()`, otherwise use `navigate()`.
 
 For example:
  - For redirecting the user upon a form submit action, use `navigate()`. (Since the page is already rendered and thus `throw redirect()` doesn't make sense as there is no pending page rendering to abort.)
