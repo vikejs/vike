@@ -32,14 +32,14 @@ function importBuild(): Plugin[] {
     },
     ...serverProductionEntryPlugin({
       getServerProductionEntry: () => {
-        return getEntryCode(config, configVike)
+        return getServerProductionEntryCode(config, configVike)
       },
       libraryName: 'Vike'
     })
   ]
 }
 
-function getEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): string {
+function getServerProductionEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): string {
   const importPath = getImportPath(config)
   const vikeManifest = getVikeManifest(configVike)
   const importerCode = [
