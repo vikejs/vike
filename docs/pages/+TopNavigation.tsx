@@ -1,7 +1,6 @@
 export { TopNavigation }
 
 import React from 'react'
-import iconSeedling from '../images/icons/seedling.svg'
 
 function TopNavigation() {
   return (
@@ -18,7 +17,13 @@ function TopNavigation() {
         padding: '0 var(--padding-side)'
       }}
     >
-      <img className="decolorize-7" src={iconSeedling} style={{ height: 23, marginRight: 10 }} /> Get Started
+      <span
+        className="decolorize-7"
+        style={{ height: 23, marginRight: 8, fontFamily: 'emoji', position: 'relative', top: -2 }}
+      >
+        🌱
+      </span>{' '}
+      Get Started
     </a>
   )
 }

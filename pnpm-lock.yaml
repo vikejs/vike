@@ -261,8 +261,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.8.13
-        version: 0.8.13(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
+        specifier: 0.8.13-commit-8740149
+        version: 0.8.13-commit-8740149(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))
       '@types/node':
         specifier: ^20.11.16
         version: 20.13.0
@@ -2028,8 +2028,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.8.13':
-    resolution: {integrity: sha512-449KoQL3yUa1dMF08P/p0lnSs5OtvVeVLEywhueB/g7Oo0Dzk2cFPBYy0QMVcRSsCG2EGuwsD/XShszp4Chxpg==}
+  '@brillout/docpress@0.8.13-commit-8740149':
+    resolution: {integrity: sha512-OMVhvx1bg+VDnQqJpcSGHr/alTC7pa9icsJxEPjO7P2zjZyPAh9snEIT1ZDm4nxty9GgNz9OGYXRPut6dO+hiQ==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -7737,7 +7737,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.7.3':
     optional: true
 
-  '@brillout/docpress@0.8.13(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
+  '@brillout/docpress@0.8.13-commit-8740149(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.18.0)(search-insights@2.17.2)(typescript@5.6.2)(vike@vike)(vite@5.4.0(@types/node@20.13.0)(terser@5.31.0))':
     dependencies:
       '@brillout/picocolors': 1.0.15
       '@docsearch/css': 3.6.1
