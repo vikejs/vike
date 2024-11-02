@@ -2,7 +2,7 @@ export { importBuild }
 export { set_ASSETS_MAP }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import { serverEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
+import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
@@ -30,8 +30,8 @@ function importBuild(): Plugin[] {
         configVike = await getConfigVike(config)
       }
     },
-    ...serverEntryPlugin({
-      getImporterCode: () => {
+    ...serverProductionEntryPlugin({
+      getServerProductionEntry: () => {
         return getEntryCode(config, configVike)
       },
       libraryName: 'Vike'

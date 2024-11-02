@@ -1,7 +1,7 @@
 export { loadImportBuild }
 export { setImportBuildGetters }
 
-import { importServerEntry } from '@brillout/vite-plugin-server-entry/runtime'
+import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { assert } from '../utils.js'
 
 const buildGetters = (globalThis.__vike_buildGetters = globalThis.__vike_buildGetters || {
@@ -20,7 +20,7 @@ function setImportBuildGetters(getters: BuildGetters) {
 
 async function loadImportBuild(outDir?: string) {
   if (!buildGetters.getters) {
-    await importServerEntry(outDir)
+    await importServerProductionEntry({ outDir })
     assert(buildGetters.getters)
   }
 
