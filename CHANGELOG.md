@@ -1,3 +1,24 @@
+## [0.4.200](https://github.com/vikejs/vike/compare/v0.4.199...v0.4.200) (2024-11-03)
+
+
+### Bug Fixes
+
+* add debug logs ([#1929](https://github.com/vikejs/vike/issues/1929)) ([60ea36a](https://github.com/vikejs/vike/commit/60ea36a79100a745e28c223fd180f2010d115154))
+* fix cross-origin redirect (fix [#1865](https://github.com/vikejs/vike/issues/1865)) ([29f9afc](https://github.com/vikejs/vike/commit/29f9afc1223b173546ed011c038db79e89d069c2))
+* fix history.pushState usage ([10966dc](https://github.com/vikejs/vike/commit/10966dc4c48868ec7a499fa04f74e481ebfae718))
+* improve log ([c90748a](https://github.com/vikejs/vike/commit/c90748a4dd2b2b85df98a6c51c4aa28bcea8c994))
+* re-render same URL upon forward/backward navigation ([6620e1c](https://github.com/vikejs/vike/commit/6620e1cf178e76ebdf7f43c8d40d44da5b594232))
+* remove `sirv` dependency ([#1939](https://github.com/vikejs/vike/issues/1939)) ([87d5c46](https://github.com/vikejs/vike/commit/87d5c460144c6480fda5269a86b68ef21994fd01))
+* tolerate non-normalized id (fix [#1935](https://github.com/vikejs/vike/issues/1935)) ([749c7bd](https://github.com/vikejs/vike/commit/749c7bd00a0c0404a2658fc0fdc0f0816dda76ce))
+* workaround vite-plugin-svgr issue (fix [#1933](https://github.com/vikejs/vike/issues/1933)) ([ed4f15e](https://github.com/vikejs/vike/commit/ed4f15e950156747f47dc13dd9d88aefabace454))
+
+
+### Features
+
+* onPopstate() ([d7daa00](https://github.com/vikejs/vike/commit/d7daa00db5b8810a36846ed0be0136f0d904d2a1))
+
+
+
 ## [0.4.199](https://github.com/vikejs/vike/compare/v0.4.198...v0.4.199) (2024-10-13)
 
 
