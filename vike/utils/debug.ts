@@ -28,7 +28,8 @@ const flags = [
   'vike:routing',
   'vike:setup',
   'vike:stream',
-  'vike:virtual-files'
+  'vike:virtual-files',
+  'vike:esbuild-resolve'
 ] as const
 const flagRegex = /\bvike:[a-zA-Z-]+/g
 

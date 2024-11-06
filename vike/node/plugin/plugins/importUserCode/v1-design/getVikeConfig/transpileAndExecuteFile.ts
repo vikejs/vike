@@ -3,7 +3,16 @@ export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
 
-import { build, type BuildResult, type BuildOptions, formatMessages, type Message } from 'esbuild'
+import {
+  build,
+  type BuildResult,
+  type BuildOptions,
+  formatMessages,
+  type Message,
+  version,
+  type ResolveResult,
+  type OnResolveResult
+} from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import pc from '@brillout/picocolors'
@@ -27,9 +36,15 @@ import { vikeConfigDependencies } from '../getVikeConfig.js'
 import 'source-map-support/register.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'
+import { createRequire } from 'module'
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
 const debug = createDebugger('vike:pointer-imports')
+const debugEsbuildResolve = createDebugger('vike:esbuild-resolve')
+if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
 
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
@@ -136,6 +151,7 @@ async function transpileWithEsbuild(
         // https://github.com/brillout/esbuild-playground
         build.onResolve({ filter: /.*/ }, async (args) => {
           if (args.kind !== 'import-statement') return
+          if (debugEsbuildResolve.isActivated) debugEsbuildResolve('args', args)
 
           // Avoid infinite loop: https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
           const useEsbuildResolver = 'useEsbuildResolver'
@@ -143,15 +159,28 @@ async function transpileWithEsbuild(
           const { path, ...opts } = args
           opts.pluginData = { [useEsbuildResolver]: true }
 
-          const resolved = await build.resolve(path, opts)
+          let resolved: ResolveResult | (OnResolveResult & { errors?: undefined }) = await build.resolve(path, opts)
+          if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolved', resolved)
 
+          // Temporary workaround for https://github.com/vikejs/vike/issues/1729
+          // - Required for esbuild@0.24.0 (November 2024).
+          // - Let's try to remove this workaround after some time.
           if (resolved.errors.length > 0) {
+            let resolvedWithNode: string | undefined
+            try {
+              resolvedWithNode = require_.resolve(path, { paths: [args.resolveDir] })
+            } catch {}
+            if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolvedWithNode', resolvedWithNode)
+            if (resolvedWithNode) resolved = { path: resolvedWithNode }
+          }
+
+          if (resolved.errors && resolved.errors.length > 0) {
             /* We could do the following to let Node.js throw the error, but we don't because the error shown by esbuild is prettier: the Node.js error refers to the transpiled [build-f7i251e0iwnw]+config.ts.mjs whereas esbuild refers to the source +config.ts file.
             pointerImports[args.path] = false
             return { external: true }
             */
-            cleanEsbuildErrors(resolved.errors)
             // Let esbuild throw the error
+            cleanEsbuildErrors(resolved.errors)
             return resolved
           }
 
