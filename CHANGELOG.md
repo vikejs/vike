@@ -1,3 +1,13 @@
+## [0.4.201](https://github.com/vikejs/vike/compare/v0.4.200...v0.4.201) (2024-11-06)
+
+
+### Bug Fixes
+
+* escape url in HTML (fix [#1949](https://github.com/vikejs/vike/issues/1949)) ([ac84558](https://github.com/vikejs/vike/commit/ac84558b1409a4e33c3fdbe54bc36cf493feb224))
+* workaround esbuild bug macos resolve (fix [#1729](https://github.com/vikejs/vike/issues/1729)) ([6e76e5e](https://github.com/vikejs/vike/commit/6e76e5ebd9dcd2ca34cbf9809bd77a24515d6500))
+
+
+
 ## [0.4.200](https://github.com/vikejs/vike/compare/v0.4.199...v0.4.200) (2024-11-03)
 
 
