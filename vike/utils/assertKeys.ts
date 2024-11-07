@@ -1,8 +1,8 @@
 export { assertKeys }
 
 import pc from '@brillout/picocolors'
-import { assertUsage } from './assert.js'
-import { joinEnglish } from './joinEnglish.js'
+import { assertUsage } from './assert'
+import { joinEnglish } from './joinEnglish'
 
 function assertKeys<Keys extends readonly string[]>(
   obj: Record<string, unknown>,

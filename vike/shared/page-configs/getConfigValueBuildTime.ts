@@ -1,10 +1,10 @@
 export { getConfigValueBuildTime }
 
-import { assert, type ResolveTypeAsString } from '../utils.js'
-import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile } from './PageConfig.js'
-import type { ConfigNameBuiltIn } from './Config.js'
-import { getConfigValueTyped, type TypeAsString } from './getConfigValue.js'
-import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime.js'
+import { assert, type ResolveTypeAsString } from '../utils'
+import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile } from './PageConfig'
+import type { ConfigNameBuiltIn } from './Config'
+import { getConfigValueTyped, type TypeAsString } from './getConfigValue'
+import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime'
 assertIsNotProductionRuntime()
 type ConfigName = ConfigNameBuiltIn
 

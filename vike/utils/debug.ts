@@ -2,16 +2,16 @@ export { createDebugger }
 export { isDebugActivated }
 export type { Debug }
 
-import { isBrowser } from './isBrowser.js'
-import { isCallable } from './isCallable.js'
-import { objectAssign } from './objectAssign.js'
-import { assert, assertUsage } from './assert.js'
-import { checkType } from './checkType.js'
-import { getTerminalWidth } from './getTerminWidth.js'
+import { isBrowser } from './isBrowser'
+import { isCallable } from './isCallable'
+import { objectAssign } from './objectAssign'
+import { assert, assertUsage } from './assert'
+import { checkType } from './checkType'
+import { getTerminalWidth } from './getTerminWidth'
 import pc from '@brillout/picocolors'
-import { isArray } from './isArray.js'
+import { isArray } from './isArray'
 
-// Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils.js'`, use `globalThis.createDebugger()`.
+// Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 

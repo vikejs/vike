@@ -1,7 +1,7 @@
 export { mergeScriptTags }
 
-import { assert } from '../../utils.js'
-import { scriptAttrs } from './inferHtmlTags.js'
+import { assert } from '../../utils'
+import { scriptAttrs } from './inferHtmlTags'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im

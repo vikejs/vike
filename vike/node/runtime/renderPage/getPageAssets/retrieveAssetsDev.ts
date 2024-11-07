@@ -1,8 +1,8 @@
 export { retrieveAssetsDev }
 
-import { assert, styleFileRE } from '../../utils.js'
+import { assert, styleFileRE } from '../../utils'
 import type { ModuleNode, ViteDevServer } from 'vite'
-import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
+import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const visitedModules = new Set<string>()

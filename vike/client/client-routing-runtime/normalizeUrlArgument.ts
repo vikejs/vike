@@ -1,6 +1,6 @@
 export { normalizeUrlArgument }
 
-import { assertUsage, isUrl, isUrlPathnameRelative } from './utils.js'
+import { assertUsage, isUrl, isUrlPathnameRelative } from './utils'
 
 function normalizeUrlArgument(url: string, fnName: 'prefetch' | 'navigate'): string {
   // Succinct error message to save client-side KBs

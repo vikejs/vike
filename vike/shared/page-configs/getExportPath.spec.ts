@@ -1,4 +1,4 @@
-import { getExportPath } from './getExportPath.js'
+import { getExportPath } from './getExportPath'
 import { expect, describe, it } from 'vitest'
 
 describe('getExportPath()', () => {

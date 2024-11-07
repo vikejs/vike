@@ -7,24 +7,24 @@ import {
   renderDocumentHtml,
   DocumentHtml,
   dangerouslySkipEscape
-} from '../html/renderHtml.js'
-import { getHook, type Hook } from '../../../shared/hooks/getHook.js'
-import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../utils.js'
-import type { PageAsset } from './getPageAssets.js'
-import { isStream } from '../html/stream.js'
-import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
-import type { PreloadFilter } from '../html/injectAssets/getHtmlTags.js'
+} from '../html/renderHtml'
+import { getHook, type Hook } from '../../../shared/hooks/getHook'
+import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../utils'
+import type { PageAsset } from './getPageAssets'
+import { isStream } from '../html/stream'
+import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
+import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
 import {
   preparePageContextForUserConsumptionServerSide,
   type PageContextForUserConsumptionServerSide
-} from './preparePageContextForUserConsumptionServerSide.js'
-import type { PageContextPromise } from '../html/injectAssets.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
-import { logRuntimeError } from './loggerRuntime.js'
-import type { PageContextSerialization } from '../html/serializePageContextClientSide.js'
+} from './preparePageContextForUserConsumptionServerSide'
+import type { PageContextPromise } from '../html/injectAssets'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig'
+import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject'
+import { logRuntimeError } from './loggerRuntime'
+import type { PageContextSerialization } from '../html/serializePageContextClientSide'
 import pc from '@brillout/picocolors'
-import { executeHook } from '../../../shared/hooks/executeHook.js'
+import { executeHook } from '../../../shared/hooks/executeHook'
 
 type GetPageAssets = () => Promise<PageAsset[]>
 

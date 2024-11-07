@@ -1,8 +1,8 @@
 export { getConfigVike }
 
 import { ResolvedConfig } from 'vite'
-import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
-import { assert } from './utils.js'
+import type { ConfigVikeResolved } from '../../shared/ConfigVike'
+import { assert } from './utils'
 
 async function getConfigVike(config: ResolvedConfig): Promise<ConfigVikeResolved> {
   const { configVikePromise } = config as any

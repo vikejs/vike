@@ -1,10 +1,10 @@
 export { initOnPopState }
 export { onPopState }
 
-import { assertWarning, getGlobalObject } from './utils.js'
-import { onPopStateBegin, type HistoryInfo } from './history.js'
-import { renderPageClientSide } from './renderPageClientSide.js'
-import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
+import { assertWarning, getGlobalObject } from './utils'
+import { onPopStateBegin, type HistoryInfo } from './history'
+import { renderPageClientSide } from './renderPageClientSide'
+import { type ScrollTarget, setScrollPosition } from './setScrollPosition'
 
 const globalObject = getGlobalObject('initOnPopState.ts', { listeners: [] as Listener[] })
 

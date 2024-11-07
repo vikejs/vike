@@ -6,15 +6,15 @@ export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
-import { assert, assertUsage, hasProp, assertIsNotProductionRuntime } from '../../../../utils.js'
-import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import type { InterfaceValueFile } from '../getVikeConfig.js'
-import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
+import { assert, assertUsage, hasProp, assertIsNotProductionRuntime } from '../../../../utils'
+import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath'
+import { transpileAndExecuteFile } from './transpileAndExecuteFile'
+import type { InterfaceValueFile } from '../getVikeConfig'
+import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport'
 import pc from '@brillout/picocolors'
-import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
-import { getConfigFileExport } from '../getConfigFileExport.js'
-import { resolvePointerImport } from './resolvePointerImport.js'
+import { type PointerImportData, parsePointerImportData } from './transformPointerImports'
+import { getConfigFileExport } from '../getConfigFileExport'
+import { resolvePointerImport } from './resolvePointerImport'
 
 assertIsNotProductionRuntime()
 

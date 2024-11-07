@@ -1,8 +1,8 @@
 export type { PageContextConfig }
 
-import type { VikePackages } from '../../VikeNamespace.js'
-import type { ConfigBuiltIn, ImportString } from '../Config.js'
-import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
+import type { VikePackages } from '../../VikeNamespace'
+import type { ConfigBuiltIn, ImportString } from '../Config'
+import type { Combine, IsNotEmpty, XOR5 } from './helpers'
 
 type WithoutImportString<T> = { [K in keyof T]: Exclude<T[K], ImportString> }
 

@@ -1,10 +1,10 @@
 export { createPageContext }
 
-import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
-import { getPageFilesAll } from '../../shared/getPageFiles.js'
-import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
-import { getBaseServer } from './getBaseServer.js'
-import { assert, isBaseServer, PromiseType, getGlobalObject, objectAssign } from './utils.js'
+import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed'
+import { getPageFilesAll } from '../../shared/getPageFiles'
+import { loadPageRoutes } from '../../shared/route/loadPageRoutes'
+import { getBaseServer } from './getBaseServer'
+import { assert, isBaseServer, PromiseType, getGlobalObject, objectAssign } from './utils'
 const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>
 }>('createPageContext.ts', {})

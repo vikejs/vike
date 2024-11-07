@@ -2,11 +2,11 @@ export { getConfigValueRuntime }
 export { getConfigValueTyped }
 export type { TypeAsString }
 
-import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils.js'
-import type { PageConfigRuntime, ConfigValue, DefinedAtData } from './PageConfig.js'
-import type { ConfigNameBuiltIn } from './Config.js'
+import { type ResolveTypeAsString, assert, assertUsage, getValuePrintable } from '../utils'
+import type { PageConfigRuntime, ConfigValue, DefinedAtData } from './PageConfig'
+import type { ConfigNameBuiltIn } from './Config'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAtOptional } from './getConfigDefinedAt.js'
+import { getConfigDefinedAtOptional } from './getConfigDefinedAt'
 type ConfigName = ConfigNameBuiltIn
 type TypeAsString = 'string' | 'boolean' | undefined
 

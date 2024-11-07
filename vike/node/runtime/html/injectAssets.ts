@@ -3,21 +3,21 @@ export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }
 export type { PageContextPromise }
 
-import { assert, isCallable, isPromise } from '../utils.js'
-import type { PageAsset } from '../renderPage/getPageAssets.js'
-import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
+import { assert, isCallable, isPromise } from '../utils'
+import type { PageAsset } from '../renderPage/getPageAssets'
+import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import {
   joinHtmlTags,
   injectHtmlTags,
   createHtmlHeadIfMissing,
   injectHtmlTagsUsingStream
-} from './injectAssets/injectHtmlTags.js'
-import type { HtmlPart } from './renderHtml.js'
-import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
-import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import type { PageContextSerialization } from './serializePageContextClientSide.js'
-import { getViteDevScript } from './injectAssets/getViteDevScript.js'
+} from './injectAssets/injectHtmlTags'
+import type { HtmlPart } from './renderHtml'
+import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags'
+import type { StreamFromReactStreamingPackage } from './stream/react-streaming'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig'
+import type { PageContextSerialization } from './serializePageContextClientSide'
+import { getViteDevScript } from './injectAssets/getViteDevScript'
 
 type PageContextInjectAssets = {
   urlPathname: string

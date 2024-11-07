@@ -2,7 +2,7 @@ export { logErrorHint }
 // For ./logErrorHint/getErrorHint.spec.ts
 export { getErrorHint }
 
-import { assert, formatHintLog, isObject } from '../utils.js'
+import { assert, formatHintLog, isObject } from '../utils'
 import pc from '@brillout/picocolors'
 
 const hintDefault = 'The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package'

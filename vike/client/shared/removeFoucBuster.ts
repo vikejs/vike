@@ -1,6 +1,6 @@
 export { removeFoucBuster }
 
-import { assert } from './utils.js'
+import { assert } from './utils'
 
 // See also:
 // - Alternative approach of exactly injecting what Vite injects:

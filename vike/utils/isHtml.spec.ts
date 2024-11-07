@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { isHtml } from './isHtml.js'
+import { isHtml } from './isHtml'
 
 describe('isHtml()', () => {
   it('works', () => {

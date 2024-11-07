@@ -1,6 +1,6 @@
 export { modifyUrl }
 
-import { createUrlFromComponents, parseUrl } from './utils.js'
+import { createUrlFromComponents, parseUrl } from './utils'
 
 /**
  * Modify a URL.

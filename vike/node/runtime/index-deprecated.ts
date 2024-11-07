@@ -1,21 +1,21 @@
 // TODO/v1-release: replace this with:
 // assertUsage(false, "`import { something } from 'vike'` doesn't exist: instead import from 'vike/server', 'vike/client', 'vike/plugin', ...")
 
-import { isBrowser } from '../../utils/isBrowser.js'
-import { assertUsage } from '../../utils/assert.js'
+import { isBrowser } from '../../utils/isBrowser'
+import { assertUsage } from '../../utils/assert'
 assertUsage(
   !isBrowser(),
   "It's forbidden to `import { something } from 'vike'` on the client-side: the module 'vike' is a server-only module.",
   { showStackTrace: true }
 )
 
-export * from './index-common.js'
-export * from '../../types/index-dreprecated.js'
+export * from './index-common'
+export * from '../../types/index-dreprecated'
 
-import { assertWarning } from './utils.js'
+import { assertWarning } from './utils'
 import pc from '@brillout/picocolors'
 
-import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort.js'
+import { RenderErrorPage as RenderErrorPage_ } from '../../shared/route/abort'
 /** @deprecated
  * Replace:
  *   ```

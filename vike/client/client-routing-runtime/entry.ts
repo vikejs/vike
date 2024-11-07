@@ -1,10 +1,10 @@
-import { assertClientRouting } from '../../utils/assertRoutingType.js'
+import { assertClientRouting } from '../../utils/assertRoutingType'
 assertClientRouting()
 
 import './pageFiles'
-import { initClientRouter } from './initClientRouter.js'
-import { assertSingleInstance_onClientEntryClientRouting } from './utils.js'
-import { removeFoucBuster } from '../shared/removeFoucBuster.js'
+import { initClientRouter } from './initClientRouter'
+import { assertSingleInstance_onClientEntryClientRouting } from './utils'
+import { removeFoucBuster } from '../shared/removeFoucBuster'
 // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.
 const isProd: boolean = import.meta.env.PROD
 assertSingleInstance_onClientEntryClientRouting(isProd)

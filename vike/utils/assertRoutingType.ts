@@ -2,9 +2,9 @@ export { assertClientRouting }
 export { assertServerRouting }
 export { checkIfClientRouting }
 
-import { assertUsage, assertWarning } from './assert.js'
-import { getGlobalObject } from './getGlobalObject.js'
-import { isBrowser } from './isBrowser.js'
+import { assertUsage, assertWarning } from './assert'
+import { getGlobalObject } from './getGlobalObject'
+import { isBrowser } from './isBrowser'
 import pc from '@brillout/picocolors'
 
 const state = getGlobalObject<{ isClientRouting?: boolean }>('utils/assertRouterType.ts', {})

@@ -1,7 +1,7 @@
 export { resolveUrlPathname }
 
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
-import { assert, assertUsage } from '../utils.js'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser'
+import { assert, assertUsage } from '../utils'
 assertIsNotBrowser() // Don't bloat the client
 
 type Part =

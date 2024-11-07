@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { getValuePrintable } from './getValuePrintable.js'
+import { getValuePrintable } from './getValuePrintable'
 
 describe('getValuePrintable()', () => {
   it('works', () => {

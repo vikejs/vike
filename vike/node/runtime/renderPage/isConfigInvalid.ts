@@ -1,7 +1,7 @@
 export { isConfigInvalid }
 export { isConfigInvalid_set }
 
-import { assert } from '../utils.js'
+import { assert } from '../utils'
 
 let isConfigInvalid: false | { err: unknown }
 

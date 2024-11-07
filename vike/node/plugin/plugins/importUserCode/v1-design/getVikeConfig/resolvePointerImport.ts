@@ -3,7 +3,7 @@ export { resolvePointerImport }
 export { clearFilesEnvMap }
 
 import pc from '@brillout/picocolors'
-import type { ConfigEnvInternal, DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
+import type { ConfigEnvInternal, DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig'
 import {
   assert,
   assertIsNpmPackageImport,
@@ -12,15 +12,15 @@ import {
   deepEqual,
   isFilePathAbsolute,
   requireResolve
-} from '../../../../utils.js'
-import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
+} from '../../../../utils'
+import { type PointerImportData, parsePointerImportData } from './transformPointerImports'
 import path from 'path'
 import {
   getFilePathAbsoluteUserRootDir,
   getFilePathResolved,
   getFilePathUnresolved
-} from '../../../../shared/getFilePath.js'
-import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
+} from '../../../../shared/getFilePath'
+import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath'
 
 const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
 

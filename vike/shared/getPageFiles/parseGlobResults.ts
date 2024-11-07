@@ -2,16 +2,16 @@ export { parseGlobResults }
 
 // TODO/v1-release: remove old design code, and remove all assertions.
 
-import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils.js'
-import { assertExportValues } from './assert_exports_old_design.js'
-import { getPageFileObject, type PageFile } from './getPageFileObject.js'
-import { fileTypes, type FileType } from './fileTypes.js'
-import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import { parsePageConfigs } from '../page-configs/serialize/parsePageConfigs.js'
+import { assert, hasProp, isCallable, isObject, cast, isArray } from '../utils'
+import { assertExportValues } from './assert_exports_old_design'
+import { getPageFileObject, type PageFile } from './getPageFileObject'
+import { fileTypes, type FileType } from './fileTypes'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig'
+import { parsePageConfigs } from '../page-configs/serialize/parsePageConfigs'
 import type {
   PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized
-} from '../page-configs/serialize/PageConfigSerialized.js'
+} from '../page-configs/serialize/PageConfigSerialized'
 
 function parseGlobResults(pageFilesExports: unknown): {
   pageFiles: PageFile[]

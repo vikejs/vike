@@ -1,11 +1,11 @@
 export { hasProp }
 export type { ResolveTypeAsString }
 
-import { isCallable } from './isCallable.js'
-import { isObject } from './isObject.js'
-import { isArrayOfStrings } from './isArrayOfStrings.js'
-import { isObjectOfStrings } from './isObjectOfStrings.js'
-import { isArray } from './isArray.js'
+import { isCallable } from './isCallable'
+import { isObject } from './isObject'
+import { isArrayOfStrings } from './isArrayOfStrings'
+import { isObjectOfStrings } from './isObjectOfStrings'
+import { isArray } from './isArray'
 
 type TypeAsString =
   | 'object'

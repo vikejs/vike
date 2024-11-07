@@ -7,11 +7,11 @@ import {
   getPageContextExports,
   type PageFile,
   type PageContextExports
-} from '../../shared/getPageFiles.js'
-import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
-import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
-import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../shared/page-configs/PageConfig.js'
-import { objectAssign } from '../server-routing-runtime/utils.js'
+} from '../../shared/getPageFiles'
+import { findPageConfig } from '../../shared/page-configs/findPageConfig'
+import { loadConfigValues } from '../../shared/page-configs/loadConfigValues'
+import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../shared/page-configs/PageConfig'
+import { objectAssign } from '../server-routing-runtime/utils'
 
 const stamp = '__whileFetchingAssets'
 

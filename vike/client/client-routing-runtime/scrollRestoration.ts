@@ -4,7 +4,7 @@ export { browserNativeScrollRestoration_disable }
 export { setupNativeScrollRestoration }
 export { setInitialRenderIsDone }
 
-import { getGlobalObject, onPageHide, onPageShow } from './utils.js'
+import { getGlobalObject, onPageHide, onPageShow } from './utils'
 const globalObject = getGlobalObject<{
   initialRenderIsDone?: true
 }>('scrollRestoration.ts', {})

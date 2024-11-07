@@ -12,8 +12,8 @@ export { getNpmPackageImportPath }
 export { parse }
 export { isDistinguishable }
 
-import { assert } from './assert.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { assert } from './assert'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
 assertIsNotBrowser()
 
 function isNpmPackageImport(str: string, { cannotBePathAlias }: { cannotBePathAlias: true }): boolean {

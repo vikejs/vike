@@ -19,7 +19,7 @@ import type {
   Config as Config_,
   Env as Env_,
   ConfigEntries as ConfigEntries_
-} from './index.js'
+} from './index'
 
 /** @deprecated All types have been moved to `vike/types`.
  * Replace:

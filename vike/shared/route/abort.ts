@@ -13,7 +13,7 @@ export type { ErrorAbort }
 export type { PageContextFromRewrite }
 export type { UrlRedirect }
 
-import { isUserHookError } from '../hooks/executeHook.js'
+import { isUserHookError } from '../hooks/executeHook'
 import {
   assert,
   assertInfo,
@@ -26,7 +26,7 @@ import {
   joinEnglish,
   objectAssign,
   truncateString
-} from './utils.js'
+} from './utils'
 import pc from '@brillout/picocolors'
 
 type RedirectStatusCode = number &

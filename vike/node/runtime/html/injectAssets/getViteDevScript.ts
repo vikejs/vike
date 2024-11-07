@@ -1,7 +1,7 @@
 export { getViteDevScript }
 
-import { getGlobalContext } from '../../globalContext.js'
-import { assert, assertUsage, assertWarning } from '../../utils.js'
+import { getGlobalContext } from '../../globalContext'
+import { assert, assertUsage, assertWarning } from '../../utils'
 import pc from '@brillout/picocolors'
 
 async function getViteDevScript(): Promise<string> {

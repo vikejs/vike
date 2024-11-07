@@ -1,10 +1,10 @@
 export { isClientSideRoutable }
 
-import { analyzePageClientSideInit } from '../../shared/getPageFiles/analyzePageClientSide.js'
-import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
-import { analyzeClientSide } from '../../shared/getPageFiles/analyzeClientSide.js'
-import type { PageFile } from '../../shared/getPageFiles.js'
-import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import { analyzePageClientSideInit } from '../../shared/getPageFiles/analyzePageClientSide'
+import { findPageConfig } from '../../shared/page-configs/findPageConfig'
+import { analyzeClientSide } from '../../shared/getPageFiles/analyzeClientSide'
+import type { PageFile } from '../../shared/getPageFiles'
+import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig'
 
 type PageContextPageFiles = {
   _pageFilesAll: PageFile[]

@@ -4,11 +4,11 @@
 export { logErrorProd }
 export { onRuntimeError }
 
-import { isAbortError } from '../../../shared/route/abort.js'
-import { setAlreadyLogged } from './isNewError.js'
-import { isObject, warnIfErrorIsNotObject } from '../utils.js'
+import { isAbortError } from '../../../shared/route/abort'
+import { setAlreadyLogged } from './isNewError'
+import { isObject, warnIfErrorIsNotObject } from '../utils'
 import pc from '@brillout/picocolors'
-import { logErrorHint } from './logErrorHint.js'
+import { logErrorHint } from './logErrorHint'
 
 function logErrorProd(err: unknown, _httpRquestId: null | number): void {
   warnIfErrorIsNotObject(err)

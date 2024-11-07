@@ -1,8 +1,8 @@
 export { loadConfigValues }
 
-import { objectAssign } from '../utils.js'
-import type { PageConfigRuntime, PageConfigRuntimeLoaded } from './PageConfig.js'
-import { parseConfigValuesSerialized } from './serialize/parsePageConfigs.js'
+import { objectAssign } from '../utils'
+import type { PageConfigRuntime, PageConfigRuntimeLoaded } from './PageConfig'
+import { parseConfigValuesSerialized } from './serialize/parsePageConfigs'
 
 async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): Promise<PageConfigRuntimeLoaded> {
   if (

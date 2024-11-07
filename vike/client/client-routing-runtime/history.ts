@@ -4,7 +4,7 @@ export { saveScrollPosition }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
-import { assert, assertUsage, getCurrentUrl, getGlobalObject, hasProp, isObject } from './utils.js'
+import { assert, assertUsage, getCurrentUrl, getGlobalObject, hasProp, isObject } from './utils'
 
 init()
 const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })

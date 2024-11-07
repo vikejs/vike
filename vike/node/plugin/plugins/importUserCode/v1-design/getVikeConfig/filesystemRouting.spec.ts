@@ -3,7 +3,7 @@ import {
   isInherited as isInherited_,
   getLogicalPath as getLogicalPath_,
   type LocationId
-} from './filesystemRouting.js'
+} from './filesystemRouting'
 import { expect, describe, it } from 'vitest'
 
 describe('getLocationId()', () => {

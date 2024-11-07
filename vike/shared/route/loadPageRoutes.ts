@@ -2,16 +2,16 @@ export { loadPageRoutes }
 export type { PageRoutes }
 export type { RouteType }
 
-import type { PageFile } from '../getPageFiles.js'
-import { isErrorPageId } from '../error-page.js'
-import { assert, assertUsage, hasProp, slice } from './utils.js'
-import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
-import { isCallable } from '../utils.js'
-import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
-import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'
-import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
-import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
+import type { PageFile } from '../getPageFiles'
+import { isErrorPageId } from '../error-page'
+import { assert, assertUsage, hasProp, slice } from './utils'
+import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
+import { isCallable } from '../utils'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig'
+import { getConfigValueRuntime } from '../page-configs/getConfigValue'
+import { getDefinedAtString } from '../page-configs/getConfigDefinedAt'
+import { warnDeprecatedAllowKey } from './resolveRouteFunction'
+import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook'
 
 type PageRoute = {
   pageId: string

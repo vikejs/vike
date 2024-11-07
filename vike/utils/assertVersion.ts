@@ -1,7 +1,7 @@
 export { assertVersion }
 export { isVersionOrAbove }
 
-import { assert, assertUsage } from './assert.js'
+import { assert, assertUsage } from './assert'
 
 function assertVersion(
   dependencyName: 'Vite' | 'Node.js',

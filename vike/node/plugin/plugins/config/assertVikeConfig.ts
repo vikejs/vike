@@ -1,7 +1,7 @@
 export { assertVikeConfig }
 
-import { assert, assertUsage, hasProp, isObject } from '../../utils.js'
-import type { ConfigVikeUserProvided } from '../../../../shared/ConfigVike.js'
+import { assert, assertUsage, hasProp, isObject } from '../../utils'
+import type { ConfigVikeUserProvided } from '../../../../shared/ConfigVike'
 
 type WrongUsage = { prop: string; errMsg: `should be a${string}` }
 

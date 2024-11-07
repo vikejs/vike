@@ -15,7 +15,7 @@ import {
   augmentType,
   genPromise,
   isCallable
-} from './utils.js'
+} from './utils'
 import {
   getPageContextFromClientHooks,
   getPageContextFromServerHooks,
@@ -24,35 +24,35 @@ import {
   type PageContextFromServerHooks,
   setPageContextInitIsPassedToClient,
   PageContextFromClientHooks
-} from './getPageContextFromHooks.js'
-import { createPageContext } from './createPageContext.js'
+} from './getPageContextFromHooks'
+import { createPageContext } from './createPageContext'
 import {
   addLinkPrefetchHandlers,
   addLinkPrefetchHandlers_unwatch,
   addLinkPrefetchHandlers_watch,
   getPageContextPrefetched,
   populatePageContextPrefetchCache
-} from './prefetch.js'
-import { assertInfo, assertWarning, isReact } from './utils.js'
-import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
-import { assertHook, getHook } from '../../shared/hooks/getHook.js'
-import { isErrorFetchingStaticAssets, loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
-import { pushHistoryState } from './history.js'
+} from './prefetch'
+import { assertInfo, assertWarning, isReact } from './utils'
+import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook'
+import { assertHook, getHook } from '../../shared/hooks/getHook'
+import { isErrorFetchingStaticAssets, loadUserFilesClientSide } from '../shared/loadUserFilesClientSide'
+import { pushHistoryState } from './history'
 import {
   assertNoInfiniteAbortLoop,
   getPageContextFromAllRewrites,
   isAbortError,
   logAbortErrorHandled,
   type PageContextFromRewrite
-} from '../../shared/route/abort.js'
-import { route } from '../../shared/route/index.js'
-import { isClientSideRoutable } from './isClientSideRoutable.js'
-import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
-import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
-import { getErrorPageId } from '../../shared/error-page.js'
-import type { PageContextExports } from '../../shared/getPageFiles.js'
-import { setPageContextCurrent } from './getPageContextCurrent.js'
-import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
+} from '../../shared/route/abort'
+import { route } from '../../shared/route/index'
+import { isClientSideRoutable } from './isClientSideRoutable'
+import { setScrollPosition, type ScrollTarget } from './setScrollPosition'
+import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration'
+import { getErrorPageId } from '../../shared/error-page'
+import type { PageContextExports } from '../../shared/getPageFiles'
+import { setPageContextCurrent } from './getPageContextCurrent'
+import { getRouteStringParameterList } from '../../shared/route/resolveRouteString'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true

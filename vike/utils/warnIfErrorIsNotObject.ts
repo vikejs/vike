@@ -1,8 +1,8 @@
 export { warnIfErrorIsNotObject }
 
-import { assertWarning } from './assert.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-import { isObject } from './isObject.js'
+import { assertWarning } from './assert'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
+import { isObject } from './isObject'
 import pc from '@brillout/picocolors'
 
 assertIsNotBrowser()

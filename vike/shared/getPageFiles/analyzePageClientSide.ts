@@ -2,14 +2,14 @@ export { analyzePageClientSide }
 export { analyzePageClientSideInit }
 export type { AnalysisResult }
 
-import { analyzeExports } from './analyzePageClientSide/analyzeExports.js'
-import { determineClientEntry } from './analyzePageClientSide/determineClientEntry.js'
-import { getPageFilesClientSide } from './getAllPageIdFiles.js'
-import { getPageFilesServerSide } from './getAllPageIdFiles.js'
-import { assert } from '../utils.js'
-import { getExportNames } from './analyzePageClientSide/getExportNames.js'
-import type { PageFile } from './getPageFileObject.js'
-import type { ClientDependency } from './analyzePageClientSide/ClientDependency.js'
+import { analyzeExports } from './analyzePageClientSide/analyzeExports'
+import { determineClientEntry } from './analyzePageClientSide/determineClientEntry'
+import { getPageFilesClientSide } from './getAllPageIdFiles'
+import { getPageFilesServerSide } from './getAllPageIdFiles'
+import { assert } from '../utils'
+import { getExportNames } from './analyzePageClientSide/getExportNames'
+import type { PageFile } from './getPageFileObject'
+import type { ClientDependency } from './analyzePageClientSide/ClientDependency'
 
 type AnalysisResult = {
   isHtmlOnly: boolean

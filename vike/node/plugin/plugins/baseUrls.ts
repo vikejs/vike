@@ -1,10 +1,10 @@
 export { baseUrls }
 
 import type { Plugin } from 'vite'
-import { resolveBaseFromUserConfig } from '../plugins/config/resolveBase.js'
-import { assert } from '../utils.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
-import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
+import { resolveBaseFromUserConfig } from '../plugins/config/resolveBase'
+import { assert } from '../utils'
+import { getConfigVike } from '../../shared/getConfigVike'
+import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike'
 
 function baseUrls(configVike?: ConfigVikeUserProvided): Plugin {
   let baseServer: string

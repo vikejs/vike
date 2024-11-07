@@ -1,14 +1,14 @@
 export { analyzePage }
 
-import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
-import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry.js'
-import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide.js'
-import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
-import { getGlobalContext } from '../globalContext.js'
-import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValue.js'
+import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
+import { getVikeClientEntry } from '../../../shared/getPageFiles/analyzePageClientSide/determineClientEntry'
+import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig'
+import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getPageFiles/analyzePageClientSide'
+import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll'
+import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide'
+import { getGlobalContext } from '../globalContext'
+import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValue'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
   if (pageConfig) {

@@ -1,10 +1,10 @@
 export { getVikeManifest }
 
-import { projectInfo } from '../../utils.js'
-import { type PluginManifest, assertPluginManifest } from '../../../shared/assertPluginManifest.js'
-import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
-import { getRuntimeManifest } from '../../../runtime/globalContext.js'
+import { projectInfo } from '../../utils'
+import { type PluginManifest, assertPluginManifest } from '../../../shared/assertPluginManifest'
+import { isUsingClientRouter } from '../extractExportNamesPlugin'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike'
+import { getRuntimeManifest } from '../../../runtime/globalContext'
 
 function getVikeManifest(configVike: ConfigVikeResolved): PluginManifest {
   const runtimeManifest = getRuntimeManifest(configVike)

@@ -1,7 +1,7 @@
 export { debug }
 
 // Note how we only import `type`: we don't actually import/load the debug code.
-import type { createDebugger, Debug } from '../../utils/debug.js'
+import type { createDebugger, Debug } from '../../utils/debug'
 
 var _debug: undefined | typeof debug
 function debug(...args: Parameters<Debug>) {

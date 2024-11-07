@@ -1,6 +1,6 @@
 export { objectAssign }
 
-import { assert } from './assert.js'
+import { assert } from './assert'
 
 // Same as Object.assign() but:
 //  - With type inference

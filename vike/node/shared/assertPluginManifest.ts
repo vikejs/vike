@@ -1,8 +1,8 @@
 export { assertPluginManifest }
 export type { PluginManifest }
 
-import { assertRuntimeManifest } from './assertRuntimeManifest.js'
-import { assert, assertUsage, isPlainObject, projectInfo, checkType, hasProp } from './utils.js'
+import { assertRuntimeManifest } from './assertRuntimeManifest'
+import { assert, assertUsage, isPlainObject, projectInfo, checkType, hasProp } from './utils'
 
 type PluginManifest = {
   version: string

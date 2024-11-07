@@ -1,7 +1,7 @@
 export { truncateString }
 
 import pc from '@brillout/picocolors'
-import { assert } from './assert.js'
+import { assert } from './assert'
 
 function truncateString(str: string, lenMax: number) {
   const lenMaxReal = lenMax - 3

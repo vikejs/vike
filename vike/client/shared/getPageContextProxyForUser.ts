@@ -7,8 +7,8 @@ import {
   assertWarning,
   getGlobalObject,
   getPropAccessNotation
-} from '../server-routing-runtime/utils.js'
-import { notSerializable } from '../../shared/notSerializable.js'
+} from '../server-routing-runtime/utils'
+import { notSerializable } from '../../shared/notSerializable'
 const globalObject = getGlobalObject<{ prev?: string }>('getPageContextProxyForUser.ts', {})
 
 type PageContextForPassToClientWarning = {

@@ -1,8 +1,8 @@
 export { isVirtualFileIdPageConfigValuesAll }
 export { getVirtualFileIdPageConfigValuesAll }
 
-import { extractAssetsRemoveQuery } from '../extractAssetsQuery.js'
-import { assert, getVirtualFileId } from '../utils.js'
+import { extractAssetsRemoveQuery } from '../extractAssetsQuery'
+import { assert, getVirtualFileId } from '../utils'
 
 const idBase = 'virtual:vike:pageConfigValuesAll:'
 const idBaseClient = `${idBase}client:` as const

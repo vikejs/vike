@@ -14,7 +14,7 @@
 import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vike/server'
-import { root } from './root.js'
+import { root } from './root'
 const isProduction = process.env.NODE_ENV === 'production'
 
 startServer()

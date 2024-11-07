@@ -1,7 +1,7 @@
 export { onLoad }
 
-import { assertIsBrowser } from '../../utils/assertIsBrowser.js'
-import { assertClientRouting } from '../../utils/assertRoutingType.js'
+import { assertIsBrowser } from '../../utils/assertIsBrowser'
+import { assertClientRouting } from '../../utils/assertRoutingType'
 
 function onLoad() {
   assertIsBrowser()

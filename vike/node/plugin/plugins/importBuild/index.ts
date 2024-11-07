@@ -3,14 +3,14 @@ export { set_ASSETS_MAP }
 
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
-import { assert, getOutDirs, toPosixPath } from '../../utils.js'
+import { assert, getOutDirs, toPosixPath } from '../../utils'
 import path from 'path'
 import { createRequire } from 'module'
-import { getConfigVike } from '../../../shared/getConfigVike.js'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
-import { getVikeManifest } from './getVikeManifest.js'
+import { getConfigVike } from '../../../shared/getConfigVike'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike'
+import { getVikeManifest } from './getVikeManifest'
 import fs from 'fs/promises'
-import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)

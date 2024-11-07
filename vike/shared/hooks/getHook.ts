@@ -13,13 +13,13 @@ export type { HooksTimeoutProvidedByUser }
 // We export for old V0.4 design which doesn't support configooksTimeout
 export { getHookTimeoutDefault }
 
-import { getGlobalObject } from '../../utils/getGlobalObject.js'
-import type { PageContextExports } from '../getPageFiles.js'
-import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
-import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
-import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
-import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
-import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
+import { getGlobalObject } from '../../utils/getGlobalObject'
+import type { PageContextExports } from '../getPageFiles'
+import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config'
+import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig'
+import { getHookFilePathToShowToUser } from '../page-configs/helpers'
+import { getConfigValueRuntime } from '../page-configs/getConfigValue'
+import { assert, assertUsage, checkType, isCallable, isObject } from '../utils'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('getHook.ts', {})
 

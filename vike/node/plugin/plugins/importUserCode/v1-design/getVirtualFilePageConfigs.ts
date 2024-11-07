@@ -1,11 +1,11 @@
 export { getVirtualFilePageConfigs }
 
-import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
-import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { debug } from './debug.js'
-import { getVikeConfig } from './getVikeConfig.js'
-import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
+import type { PageConfigBuildTime, PageConfigGlobalBuildTime } from '../../../../../shared/page-configs/PageConfig'
+import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll'
+import { debug } from './debug'
+import { getVikeConfig } from './getVikeConfig'
+import { isRuntimeEnvMatch } from './isRuntimeEnvMatch'
+import { serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues'
 import type { ResolvedConfig } from 'vite'
 
 async function getVirtualFilePageConfigs(

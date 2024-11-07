@@ -1,6 +1,6 @@
 export { normalizeHeaders }
 
-import { isObject } from './isObject.js'
+import { isObject } from './isObject'
 
 function normalizeHeaders(
   /* This type is precise, too precise which can be annoying: e.g. cannot pass a string[][] argument because it doesn't match the more precise [string,string][] type.

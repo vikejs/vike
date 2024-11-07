@@ -7,11 +7,11 @@ export { markEnvAsVikePluginLoaded }
 export { assertEnv }
 export { vikeVitePluginLoadedInProductionError }
 
-import { assert, assertUsage } from './assert.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-import { createDebugger } from './debug.js'
-import { getGlobalObject } from './getGlobalObject.js'
-import { isVitest } from './isVitest.js'
+import { assert, assertUsage } from './assert'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
+import { createDebugger } from './debug'
+import { getGlobalObject } from './getGlobalObject'
+import { isVitest } from './isVitest'
 assertIsNotBrowser()
 const debug = createDebugger('vike:setup')
 const vikeVitePluginLoadedInProductionError = `Loading Vike's Vite plugin (the vike/plugin module) is prohibited in production.`

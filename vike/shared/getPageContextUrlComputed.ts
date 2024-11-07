@@ -10,7 +10,7 @@ export type { PageContextUrlSource }
 // URLs need to be computed, because the user can modify the URL e.g. with onBeforeRoute() for i18n.
 // =====================
 
-import { objectDefineProperty } from '../utils/objectDefineProperty.js'
+import { objectDefineProperty } from '../utils/objectDefineProperty'
 import {
   assert,
   parseUrl,
@@ -20,7 +20,7 @@ import {
   isBrowser,
   changeEnumerable,
   type UrlPublic
-} from './utils.js'
+} from './utils'
 
 // TODO/v1-release: move pageContext.urlParsed to pageContext.url
 type PageContextUrlComputed = {

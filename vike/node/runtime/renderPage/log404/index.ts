@@ -3,9 +3,9 @@ export { log404 }
 // Exported for ./index.spec.ts
 export { getRoutesInfo }
 
-import type { PageRoutes } from '../../../../shared/route/index.js'
-import { noRouteMatch } from '../../../../shared/route/noRouteMatch.js'
-import { getGlobalContext } from '../../globalContext.js'
+import type { PageRoutes } from '../../../../shared/route/index'
+import { noRouteMatch } from '../../../../shared/route/noRouteMatch'
+import { getGlobalContext } from '../../globalContext'
 import {
   assert,
   assertUsage,
@@ -14,7 +14,7 @@ import {
   stripAnsi,
   getTerminalWidth,
   truncateString
-} from '../../utils.js'
+} from '../../utils'
 import pc from '@brillout/picocolors'
 
 async function log404(pageContext: {

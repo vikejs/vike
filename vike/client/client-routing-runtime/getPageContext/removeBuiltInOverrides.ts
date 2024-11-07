@@ -1,6 +1,6 @@
 export { removeBuiltInOverrides }
 
-import { assert, assertWarning } from '../utils.js'
+import { assert, assertWarning } from '../utils'
 
 const BUILT_IN_CLIENT_ROUTER = ['urlPathname', 'urlParsed'] as const
 const BUILT_IN_CLIENT = ['Page', 'pageExports', 'exports'] as const

@@ -1,7 +1,7 @@
 export { isNewError }
 export { setAlreadyLogged }
 
-import { getGlobalObject, isObject, isSameErrorMessage, warnIfErrorIsNotObject } from '../utils.js'
+import { getGlobalObject, isObject, isSameErrorMessage, warnIfErrorIsNotObject } from '../utils'
 
 const globalObject = getGlobalObject('runtime/renderPage/isNewError.ts', {
   wasAlreadyLogged: new WeakSet<object>()

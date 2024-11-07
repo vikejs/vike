@@ -1,6 +1,6 @@
-import { isDebugActivated } from './debug.js'
+import { isDebugActivated } from './debug'
 import pc from '@brillout/picocolors'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
 
 assertIsNotBrowser()
 

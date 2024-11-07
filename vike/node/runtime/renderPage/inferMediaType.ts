@@ -1,7 +1,7 @@
 export { inferMediaType }
 export type { MediaType }
 
-import { styleFileRE, isScriptFile } from '../utils.js'
+import { styleFileRE, isScriptFile } from '../utils'
 
 type MediaType = null | {
   // List of `as` values: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#attr-as

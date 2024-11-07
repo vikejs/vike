@@ -1,7 +1,7 @@
 export { serializeConfigValues }
 
-import { assertIsNotProductionRuntime } from '../../../utils/assertIsNotProductionRuntime.js'
-import { assert, assertUsage, getPropAccessNotation } from '../../../node/plugin/utils.js'
+import { assertIsNotProductionRuntime } from '../../../utils/assertIsNotProductionRuntime'
+import { assert, assertUsage, getPropAccessNotation } from '../../../node/plugin/utils'
 import type {
   ConfigEnvInternal,
   ConfigValue,
@@ -10,11 +10,11 @@ import type {
   DefinedAtFile,
   PageConfigBuildTime,
   PageConfigGlobalBuildTime
-} from '../PageConfig.js'
-import type { ValueSerialized } from './PageConfigSerialized.js'
-import { addImportStatement } from '../../../node/plugin/plugins/importUserCode/addImportStatement.js'
-import { parsePointerImportData } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/transformPointerImports.js'
-import { getConfigValueFilePathToShowToUser } from '../helpers.js'
+} from '../PageConfig'
+import type { ValueSerialized } from './PageConfigSerialized'
+import { addImportStatement } from '../../../node/plugin/plugins/importUserCode/addImportStatement'
+import { parsePointerImportData } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/transformPointerImports'
+import { getConfigValueFilePathToShowToUser } from '../helpers'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'

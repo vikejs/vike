@@ -6,18 +6,18 @@ export type { From }
 export type { Sources }
 export type { Source }
 
-import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
-import { assert, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
-import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_old_design.js'
-import type { FileType } from './fileTypes.js'
-import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
-import type { PageFile } from './getPageFileObject.js'
+import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
+import { assert, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
+import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_old_design'
+import type { FileType } from './fileTypes'
+import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig'
+import type { PageFile } from './getPageFileObject'
 import {
   type ConfigDefinedAtOptional,
   getConfigDefinedAtOptional,
   getDefinedAtString
-} from '../page-configs/getConfigDefinedAt.js'
-import { getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
+} from '../page-configs/getConfigDefinedAt'
+import { getConfigValueFilePathToShowToUser } from '../page-configs/helpers'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove

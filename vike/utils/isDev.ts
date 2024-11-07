@@ -1,7 +1,7 @@
 export { isDev2 }
 export { isDev3 }
 
-import { assert } from './assert.js'
+import { assert } from './assert'
 
 // We can propbably remove this file after we implement the Vike CLI
 
@@ -30,7 +30,7 @@ function isDev3(configEnv: ConfigEnv): boolean {
  * - https://github.com/vikejs/vike/issues/1791
  * - Calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
  *
-import { getGlobalObject } from './getGlobalObject.js'
+import { getGlobalObject } from './getGlobalObject'
 const globalObject = getGlobalObject('utils/isDev.ts', { isDev: false, isDev_wasCalled: false })
 function isDev1(): boolean {
   globalObject.isDev_wasCalled = true

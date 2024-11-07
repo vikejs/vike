@@ -1,6 +1,6 @@
 export { getExportPath }
 
-import { assert } from '../utils.js'
+import { assert } from '../utils'
 
 function getExportPath(fileExportPathToShowToUser: null | string[], configName: string): null | string {
   if (!fileExportPathToShowToUser) return null

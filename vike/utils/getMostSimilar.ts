@@ -1,8 +1,8 @@
 export { getMostSimilar }
 
-import { assert } from './assert.js'
-import { higherFirst } from './sorter.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { assert } from './assert'
+import { higherFirst } from './sorter'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
 
 assertIsNotBrowser()
 

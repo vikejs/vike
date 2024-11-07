@@ -1,7 +1,7 @@
 export { assertResolveAlias }
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, isArray, isValidPathAlias } from '../../utils.js'
+import { assert, assertUsage, assertWarning, isArray, isValidPathAlias } from '../../utils'
 import pc from '@brillout/picocolors'
 
 // Recommend users to avoid un-distinguishable path aliases.

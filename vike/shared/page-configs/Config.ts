@@ -36,14 +36,14 @@ export type { KeepScrollPosition }
 import type {
   PrefetchSetting,
   PrefetchStaticAssets
-} from '../../client/client-routing-runtime/prefetch/PrefetchSetting.js'
-import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
-import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
-import type { InjectFilterEntry } from '../../types/index.js'
-import type { ConfigVikeUserProvided } from '../ConfigVike.js'
-import type { Vike, VikePackages } from '../VikeNamespace.js'
-import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
-import type { PageContextClient, PageContextServer } from '../types.js'
+} from '../../client/client-routing-runtime/prefetch/PrefetchSetting'
+import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn'
+import type { DocumentHtml } from '../../node/runtime/html/renderHtml'
+import type { InjectFilterEntry } from '../../types/index'
+import type { ConfigVikeUserProvided } from '../ConfigVike'
+import type { Vike, VikePackages } from '../VikeNamespace'
+import type { HooksTimeoutProvidedByUser } from '../hooks/getHook'
+import type { PageContextClient, PageContextServer } from '../types'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
 type HookNamePage =

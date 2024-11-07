@@ -2,7 +2,7 @@ export { loadImportBuild }
 export { setImportBuildGetters }
 
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
-import { assert } from '../utils.js'
+import { assert } from '../utils'
 
 const buildGetters = (globalThis.__vike_buildGetters = globalThis.__vike_buildGetters || {
   getters: null

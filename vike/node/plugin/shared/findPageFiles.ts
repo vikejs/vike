@@ -2,8 +2,8 @@ export { findPageFiles }
 
 import glob from 'fast-glob'
 import type { ResolvedConfig } from 'vite'
-import { assertWarning, toPosixPath, scriptFileExtensions, getOutDirs } from '../utils.js'
-import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
+import { assertWarning, toPosixPath, scriptFileExtensions, getOutDirs } from '../utils'
+import type { FileType } from '../../../shared/getPageFiles/fileTypes'
 import pc from '@brillout/picocolors'
 
 async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDev: boolean): Promise<string[]> {

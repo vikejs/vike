@@ -1,10 +1,10 @@
 export { resolveBase }
 export { resolveBaseFromUserConfig }
 
-import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils.js'
+import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import type { ConfigVikeUserProvided } from '../../../../shared/ConfigVike.js'
-import { pickFirst } from './pickFirst.js'
+import type { ConfigVikeUserProvided } from '../../../../shared/ConfigVike'
+import { pickFirst } from './pickFirst'
 import pc from '@brillout/picocolors'
 
 type BaseServers = {
