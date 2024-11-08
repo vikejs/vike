@@ -43,7 +43,8 @@
   },
   "pnpm": {
     "overrides": {
-      "vike": "link:./vike/"
+      "vike": "link:./vike/",
+      "eject": "link:./packages/eject/"
     }
   },
   "packageManager": "pnpm@9.2.0"
