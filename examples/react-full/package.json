@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite build && vite preview"
+    "preview": "vite build && vite preview",
+    "eject": "ejectjs"
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.0.0",
