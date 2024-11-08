@@ -1,6 +1,6 @@
 {
   "name": "eject",
-  "version": "0.0.1",
+  "version": "0.4.0",
   "type": "module",
   "description": "A CLI tool to eject dependencies from node_modules into your project.",
   "main": "index.js",
