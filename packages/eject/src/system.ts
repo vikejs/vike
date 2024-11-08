@@ -37,7 +37,8 @@ export function copyDependency(dependency: string) {
 
   fs.cpSync(dependencyPath, resolve('./ejected', dependency), {
     recursive: true,
-    force: true
+    force: true,
+    dereference: true
   })
 }
 
