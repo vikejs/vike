@@ -16,7 +16,7 @@
     "@vitejs/plugin-react-swc": "^3.6.0",
     "cross-fetch": "^4.0.0",
     "eject": "0.4.0",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "file:./ejected/node-fetch",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-streaming": "^0.3.43",
@@ -24,5 +24,6 @@
     "vike": "0.4.201",
     "vite": "^5.4.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {}
 }
