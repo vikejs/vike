@@ -8,6 +8,7 @@ const cli = cac('eject')
 cli
   .command('[...dependencies]', 'Ejects a dependency from node_modules', { allowUnknownOptions: true })
   .option('-f, --force', 'Bypass git history check')
+  .option('-v, --verbose', 'Verbose output')
   .action(eject)
 
 cli.help()

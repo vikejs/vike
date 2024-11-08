@@ -44,7 +44,7 @@ export function copyDependency(dependency: string) {
 
 export function install() {
   const packageManager = detectPackageManager()
-  execSync(`${packageManager} install`)
+  execSync(`${packageManager} install`, { stdio: 'inherit' })
 }
 
 function detectPackageManager() {
