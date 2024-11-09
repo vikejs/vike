@@ -640,8 +640,8 @@ importers:
         specifier: link:../../packages/eject
         version: link:../../packages/eject
       node-fetch:
-        specifier: ^3.3.2
-        version: 3.3.2
+        specifier: file:./ejected/node-fetch
+        version: file:examples/react-full/ejected/node-fetch
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -5955,6 +5955,10 @@ packages:
 
   node-fetch@3.3.2:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  node-fetch@file:examples/react-full/ejected/node-fetch:
+    resolution: {directory: examples/react-full/ejected/node-fetch, type: directory}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   node-forge@1.3.1:
@@ -12634,6 +12638,12 @@ snapshots:
       whatwg-url: 5.0.0
 
   node-fetch@3.3.2:
+    dependencies:
+      data-uri-to-buffer: 4.0.1
+      fetch-blob: 3.2.0
+      formdata-polyfill: 4.0.10
+
+  node-fetch@file:examples/react-full/ejected/node-fetch:
     dependencies:
       data-uri-to-buffer: 4.0.1
       fetch-blob: 3.2.0
