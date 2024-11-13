@@ -1,10 +1,10 @@
+export { Header }
+
 import React, { useEffect, useRef } from 'react'
 import iconVikeAnimatedCover from '../../images/icons/vike-nitedani-animated-cover.jpg'
 import { navigate } from 'vike/client/router'
 import { getFeatureId } from './getFeatureId'
 import './Header.css'
-
-export { Header }
 
 function Header() {
   return (
