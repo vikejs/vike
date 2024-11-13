@@ -1,6 +1,6 @@
 // supporters = sponsors + contributors
 
-export { Supporter, SupporterSection, SectionDescription, Individuals, SupporterImg, CallToAction }
+export { Supporter, SupporterSection, SectionDescription, Individuals, SupporterImg }
 
 import React from 'react'
 
@@ -114,23 +114,5 @@ function SupporterImg({
       src={imgSrc}
       alt={imgAlt}
     />
-  )
-}
-
-function CallToAction({ iconUrl, text, href }: { iconUrl: string; text: string; href: string }) {
-  return (
-    <a
-      className="button"
-      style={{
-        color: 'inherit',
-        display: 'inline-flex',
-        alignItems: 'center',
-        padding: '5px 10px',
-        marginBottom: 10
-      }}
-      href={href}
-    >
-      <img src={iconUrl} height={22} /> <span style={{ marginLeft: 7, fontSize: '1.07em' }}>{text}</span>
-    </a>
   )
 }

@@ -3,7 +3,7 @@ export { Page }
 import React, { useEffect } from 'react'
 import { Header } from './Header'
 import { Features } from './Features'
-import { Sponsors } from '@brillout/docpress'
+import { Sponsors } from './Sponsors'
 import { Contributors } from './Contributors'
 import './smooth-scroll.css'
 
