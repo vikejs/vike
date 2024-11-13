@@ -1,14 +1,14 @@
 export { sponsorsList }
 
 import type { Sponsor } from './Sponsors'
-import contraLogo from './sponsorsList/companyLogos/contra.svg'
-import optimizersLogo from './sponsorsList/companyLogos/optimizers.svg'
-import sourcegraphLogo from './sponsorsList/companyLogos/sourcegraph.svg'
-import burdaforwardLogo from './sponsorsList/companyLogos/burdaforward.png'
-import ecosiaLogo from './sponsorsList/companyLogos/ecosia.svg'
-import inlangLogo from './sponsorsList/companyLogos/inlang.png'
-import bluefinLogo from './sponsorsList/companyLogos/bluefin.svg'
-import alignableLogo from './sponsorsList/companyLogos/alignable.svg'
+import contraLogo from './sponsorsLogo/contra.svg'
+import optimizersLogo from './sponsorsLogo/optimizers.svg'
+import sourcegraphLogo from './sponsorsLogo/sourcegraph.svg'
+import burdaforwardLogo from './sponsorsLogo/burdaforward.png'
+import ecosiaLogo from './sponsorsLogo/ecosia.svg'
+import inlangLogo from './sponsorsLogo/inlang.png'
+import bluefinLogo from './sponsorsLogo/bluefin.svg'
+import alignableLogo from './sponsorsLogo/alignable.svg'
 
 const sponsorsList: Sponsor[] = [
   {
