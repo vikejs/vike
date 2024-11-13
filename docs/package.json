@@ -2,7 +2,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite build && vite preview"
+    "preview": "vite build && vite preview",
+    "typecheck": "tsc --noEmit --watch"
   },
   "dependencies": {
     "@brillout/docpress": "^0.9.1",
