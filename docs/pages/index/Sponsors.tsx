@@ -3,7 +3,6 @@ export type { Sponsor }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
-import { SupporterImg } from './Supporters'
 import { sponsorsList } from './sponsorsList'
 
 type Plan = 'indie' | 'bronze' | 'silver' | 'gold' | 'platinum'
@@ -74,8 +73,6 @@ function SponsorDiv({ sponsor }: { sponsor: Sponsor }) {
 }
 
 function CompanyDiv({ sponsor }: { sponsor: Sponsor }) {
-  const imgSrc = sponsor.companyLogo
-  const imgAlt = sponsor.companyName
   const { width, height, padding } = getSize(sponsor)
   const marginHeight = 20
   const marginWidth = 10
@@ -100,7 +97,11 @@ function CompanyDiv({ sponsor }: { sponsor: Sponsor }) {
           justifyContent: 'center'
         }}
       >
-        <SupporterImg {...{ imgSrc, imgAlt, width, height, padding }} />
+        <img
+          style={{ width: `calc(100% - ${padding}px)`, height: height - padding, objectFit: 'contain' }}
+          src={sponsor.companyLogo}
+          alt={sponsor.companyName}
+        />
       </div>
     </a>
   )

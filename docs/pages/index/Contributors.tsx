@@ -1,7 +1,6 @@
 export { Contributors, Maintainer }
 
 import React from 'react'
-import { SupporterImg } from './Supporters'
 import { maintainers } from './maintainersList'
 
 function Contributors() {
@@ -54,7 +53,11 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainers)[0] }) {
     >
       <a href={githubUrl}>
         <div style={{ width: imgSize, height: imgSize, borderRadius: imgSize / 2, overflow: 'hidden' }}>
-          <SupporterImg username={maintainer.username} imgAlt={maintainer.firstName} width={imgSize} height={imgSize} />
+          <img
+            style={{ width: imgSize, height: imgSize }}
+            src={`https://github.com/${maintainer.username}.png?size=${imgSize}`}
+            alt={maintainer.username}
+          />
         </div>
       </a>
       <div>
