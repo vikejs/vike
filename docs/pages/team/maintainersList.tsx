@@ -1,4 +1,4 @@
-export { maintainerList }
+export { maintainersList }
 
 import React from 'react'
 
@@ -9,7 +9,7 @@ type Maintainer = {
   consultingUrl?: string
 }
 
-const maintainerList: Maintainer[] = [
+const maintainersList: Maintainer[] = [
   {
     username: 'brillout',
     firstName: 'Rom',
