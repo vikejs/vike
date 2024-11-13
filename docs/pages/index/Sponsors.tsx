@@ -32,16 +32,16 @@ function Sponsors() {
   return (
     <SupporterSection>
       <SponsorButton />
-    <div
-      style={{
-        marginTop: 12,
-        marginBottom: 12,
-        fontSize: '1.05em',
-        textAlign: 'center'
-      }}
-    >
-      Sponsor Vike for a tight-knit partnership 🤝
-    </div>
+      <div
+        style={{
+          marginTop: 12,
+          marginBottom: 12,
+          fontSize: '1.05em',
+          textAlign: 'center'
+        }}
+      >
+        Sponsor Vike for a tight-knit partnership 🤝
+      </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'end' }}>
         {sponsorsCompanies.map((sponsor, i) => (
           <SponsorDiv sponsor={sponsor} key={i} />
