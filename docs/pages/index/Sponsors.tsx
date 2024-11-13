@@ -3,7 +3,7 @@ export type { Sponsor }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
-import { Supporter, SupporterSection, SectionDescription, Individuals, SupporterImg } from './Supporters'
+import { Supporter, SupporterSection, SupporterImg } from './Supporters'
 import { sponsorsList } from './sponsorsList'
 
 type Plan = 'indie' | 'bronze' | 'silver' | 'gold' | 'platinum'
@@ -29,22 +29,24 @@ type DivSize = {
 
 function Sponsors() {
   const sponsorsCompanies = sponsorsList.filter(isCompany)
-  const sponsorsIndividuals = sponsorsList.filter(isIndividual)
   return (
     <SupporterSection>
       <SponsorButton />
-      <div></div>
-      <SectionDescription>Vike is free and open source, made possible by wonderful sponsors.</SectionDescription>
+    <div
+      style={{
+        marginTop: 12,
+        marginBottom: 12,
+        fontSize: '1.05em',
+        textAlign: 'center'
+      }}
+    >
+      Sponsor Vike for a tight-knit partnership 🤝
+    </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'end' }}>
         {sponsorsCompanies.map((sponsor, i) => (
           <SponsorDiv sponsor={sponsor} key={i} />
         ))}
       </div>
-      <Individuals>
-        {sponsorsIndividuals.map((sponsor, i) => (
-          <SponsorDiv sponsor={sponsor} key={i} />
-        ))}
-      </Individuals>
     </SupporterSection>
   )
 }
