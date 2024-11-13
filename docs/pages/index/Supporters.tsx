@@ -1,6 +1,6 @@
 // supporters = sponsors + contributors
 
-export { Supporter, SupporterSection, Individuals, SupporterImg }
+export { Supporter, SupporterSection, SupporterImg }
 
 import React from 'react'
 
@@ -11,23 +11,6 @@ function SupporterSection({ children }: { children?: Children }) {
     <div
       style={{
         textAlign: 'center'
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-function Individuals({ children }: { children?: Children }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'end',
-        margin: '17px auto',
-        maxWidth: 700
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 export { Contributors, Maintainer }
 
 import React from 'react'
-import { Supporter, SupporterSection, Individuals, SupporterImg } from './Supporters'
+import { SupporterSection, SupporterImg } from './Supporters'
 import { maintainers } from './maintainersList'
 import { contributors } from 'vike-contributors' // sorted by number of contributions
 
@@ -22,17 +22,6 @@ function Contributors() {
           <Maintainer maintainer={maintainer} key={i} />
         ))}
       </div>
-      <Individuals>
-        {contributors
-          .filter((contributor) => {
-            return (
-              !contributor.login.includes('[bot]') && !maintainers.map((m) => m.username).includes(contributor.login)
-            )
-          })
-          .map((contributor, i) => (
-            <Supporter username={contributor.login} avatarUrl={contributor.avatarUrl} key={i} />
-          ))}
-      </Individuals>
     </SupporterSection>
   )
 }
