@@ -284,6 +284,9 @@ importers:
       vike:
         specifier: link:../vike
         version: link:../vike
+      vike-contributors:
+        specifier: ^0.0.10
+        version: 0.0.10
       vite:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@20.13.0)(terser@5.31.0)
@@ -7064,6 +7067,9 @@ packages:
   vfile@6.0.1:
     resolution: {integrity: sha512-1bYqc7pt6NIADBJ98UiG0Bn/CHIVOoZ/IyEkqIruLg0mE1BKzkOXY2D6CSqQIcKqgadppE5lrxgWXJmXd7zZJw==}
 
+  vike-contributors@0.0.10:
+    resolution: {integrity: sha512-JQJSbI2Q25u+pnkBGmXaPP9PdiznqlgAJjHMCjNyIvcwNctF644VTN35Erw5GkPiohu2JYRbuKk9yqHd7KhT2Q==}
+
   vike-contributors@0.0.9:
     resolution: {integrity: sha512-uOvGIv5XZZ7Gm9BdQty/K2f22641+ZTBH1Ccq7Qh/uvH2gI+SA8npSSS6zwdVlSWFsvecZqSn45AYKrAYSIMNg==}
 
@@ -13842,6 +13848,8 @@ snapshots:
       '@types/unist': 3.0.2
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
+
+  vike-contributors@0.0.10: {}
 
   vike-contributors@0.0.9: {}
 
