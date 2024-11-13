@@ -1,4 +1,4 @@
-export { maintainers }
+export { maintainerList }
 
 import React from 'react'
 
@@ -9,7 +9,7 @@ type Maintainer = {
   consultingUrl?: string
 }
 
-const maintainers: Maintainer[] = [
+const maintainerList: Maintainer[] = [
   {
     username: 'brillout',
     firstName: 'Rom',
@@ -94,7 +94,7 @@ const maintainers: Maintainer[] = [
       </>,
       <>
         <code>vike-vue-query</code> (Creator)
-      </>,
+      </>
     ]
   }
 ]

@@ -1,7 +1,7 @@
 export { Page }
 
 import React from 'react'
-import { maintainers } from './maintainersList'
+import { maintainerList } from './maintainersList'
 
 function Page() {
   return <Contributors />
@@ -12,7 +12,7 @@ function Contributors() {
     <>
       <p>Vike is built by passionate maintainers.</p>
       <div>
-        {maintainers.map((maintainer, i) => (
+        {maintainerList.map((maintainer, i) => (
           <Maintainer maintainer={maintainer} key={i} />
         ))}
       </div>
@@ -20,7 +20,7 @@ function Contributors() {
   )
 }
 
-function Maintainer({ maintainer }: { maintainer: (typeof maintainers)[0] }) {
+function Maintainer({ maintainer }: { maintainer: (typeof maintainerList)[0] }) {
   const marginHeight = 20
   const imgSize = 50
   const githubUrl = `https://github.com/${maintainer.username}`
