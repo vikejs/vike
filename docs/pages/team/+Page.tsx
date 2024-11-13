@@ -2,6 +2,7 @@ export { Page }
 
 import React from 'react'
 import { maintainerList } from './maintainersList'
+import './team.css'
 
 function Page() {
   return <Contributors />
@@ -26,6 +27,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainerList)[0] }) 
   const githubUrl = `https://github.com/${maintainer.username}`
   return (
     <div
+      id="team"
       style={{
         borderRadius: 7,
         borderWidth: 1,
