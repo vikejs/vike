@@ -12,12 +12,11 @@ function Contributors() {
     >
       <p
         style={{
-          maxWidth: 400,
-          display: 'inline-block',
-          fontSize: '1.2em'
+          fontSize: '1.2em',
+          padding: '0 var(--main-view-padding)'
         }}
       >
-        Vike is built and maintained by passionate contributors.
+        Vike is built and maintained by a passionate team.
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'end' }}>
         {maintainers.map((maintainer, i) => (

@@ -31,16 +31,16 @@ function Sponsors() {
       }}
     >
       <SponsorButton />
-      <div
+      <p
         style={{
           marginTop: 12,
           marginBottom: 12,
           fontSize: '1.05em',
-          textAlign: 'center'
+          padding: '0 var(--main-view-padding)'
         }}
       >
         Sponsor Vike for a tight-knit partnership 🤝
-      </div>
+      </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'end' }}>
         {sponsorsList.map((sponsor, i) => (
           <SponsorDiv sponsor={sponsor} key={i} />
