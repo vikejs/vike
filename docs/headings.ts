@@ -16,13 +16,13 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Why Vike',
-    url: '/why'
+    title: 'FAQ',
+    url: '/faq'
   },
   {
     level: 2,
-    title: 'FAQ',
-    url: '/faq'
+    title: 'Why Vike',
+    url: '/why'
   },
   {
     level: 2,
