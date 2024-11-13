@@ -7,7 +7,7 @@ import { sponsorsList } from './sponsorsList'
 
 type Plan = 'indie' | 'bronze' | 'silver' | 'gold' | 'platinum'
 
-type SponsorCompany = {
+type Sponsor = {
   companyName: string
   companyLogo: string
   website: string
@@ -15,7 +15,6 @@ type SponsorCompany = {
   divSize?: Partial<DivSize>
   github: string
 }
-type Sponsor = SponsorCompany
 
 type DivSize = {
   width: number
@@ -107,7 +106,7 @@ function CompanyDiv({ sponsor }: { sponsor: Sponsor }) {
   )
 }
 
-function getSize(sponsor: SponsorCompany): DivSize {
+function getSize(sponsor: Sponsor): DivSize {
   const { plan } = sponsor
   let divSize: DivSize | undefined
   if (plan === 'platinum') {
