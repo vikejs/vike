@@ -29,6 +29,9 @@ const maintainers: Maintainer[] = [
     roles: [
       <>Bati (Lead Maintainer, Creator)</>,
       <>
+        <code>universal-middleware</code> (Lead Maintainer, Creator)
+      </>,
+      <>
         <code>vike-solid</code> (Lead Maintainer, Creator)
       </>,
       <>Vike Core (Contributor)</>
@@ -42,7 +45,10 @@ const maintainers: Maintainer[] = [
         <code>vike-react-query</code> (Lead Maintainer, Creator)
       </>,
       <>
-        <code>vike-angular</code> (Lead Maintainer, Creator)
+        <code>vike-react-apollo</code> (Lead Maintainer, Creator)
+      </>,
+      <>
+        <code>vike-node</code> (Lead Maintainer, Creator)
       </>,
       <>Vike Core (Contributor)</>
     ]
@@ -59,20 +65,8 @@ const maintainers: Maintainer[] = [
       </>,
       <>
         <code>vike-react</code> (Contributor)
-      </>
-    ]
-  },
-  {
-    username: '4350pChris',
-    firstName: 'Chris',
-    roles: [
-      <>
-        <code>vike-pinia</code> (Lead Maintainer, Creator)
       </>,
-      <>
-        <code>vike-vue</code> (Contributor)
-      </>,
-      <>Vike Core (Contributor)</>
+      <>Bati (Contributor)</>
     ]
   },
   {
@@ -87,6 +81,20 @@ const maintainers: Maintainer[] = [
       </>,
       <>Vike Core (Contributor)</>
     ]
-    // consultingUrl: 'https://lourot.dev/'
+  },
+  {
+    username: '4350pChris',
+    firstName: 'Chris',
+    roles: [
+      <>
+        <code>vike-vue</code> (Creator)
+      </>,
+      <>
+        <code>vike-pinia</code> (Creator)
+      </>,
+      <>
+        <code>vike-vue-query</code> (Creator)
+      </>,
+    ]
   }
 ]

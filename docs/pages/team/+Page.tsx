@@ -10,7 +10,7 @@ function Page() {
 function Contributors() {
   return (
     <>
-      <p>Vike is built and maintained by a passionate team.</p>
+      <p>Vike is built by passionate maintainers.</p>
       <div>
         {maintainers.map((maintainer, i) => (
           <Maintainer maintainer={maintainer} key={i} />
@@ -32,7 +32,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainers)[0] }) {
         borderStyle: 'solid',
         borderColor: '#e0e0e0',
         overflow: 'hidden',
-        width: 430,
+        width: 500,
         margin: `${marginHeight}px 0`,
         display: 'flex',
         flexWrap: 'wrap',
