@@ -1,13 +1,16 @@
 export { Contributors, Maintainer }
 
 import React from 'react'
-import { SupporterSection, SupporterImg } from './Supporters'
+import { SupporterImg } from './Supporters'
 import { maintainers } from './maintainersList'
-import { contributors } from 'vike-contributors' // sorted by number of contributions
 
 function Contributors() {
   return (
-    <SupporterSection>
+    <div
+      style={{
+        textAlign: 'center'
+      }}
+    >
       <p
         style={{
           maxWidth: 400,
@@ -22,7 +25,7 @@ function Contributors() {
           <Maintainer maintainer={maintainer} key={i} />
         ))}
       </div>
-    </SupporterSection>
+    </div>
   )
 }
 
@@ -51,13 +54,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainers)[0] }) {
     >
       <a href={githubUrl}>
         <div style={{ width: imgSize, height: imgSize, borderRadius: imgSize / 2, overflow: 'hidden' }}>
-          <SupporterImg
-            username={maintainer.username}
-            avatarUrl={getAvatarUrl(maintainer)}
-            imgAlt={maintainer.firstName}
-            width={imgSize}
-            height={imgSize}
-          />
+          <SupporterImg username={maintainer.username} imgAlt={maintainer.firstName} width={imgSize} height={imgSize} />
         </div>
       </a>
       <div>
@@ -93,13 +90,4 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainers)[0] }) {
       </div>
     </div>
   )
-}
-
-function getAvatarUrl(maintainer: (typeof maintainers)[0]) {
-  for (const contributor of contributors) {
-    if (maintainer.username === contributor.login) {
-      return contributor.avatarUrl
-    }
-  }
-  throw new Error(`Maintainer ${maintainer.username} not found in contributors' list.`)
 }

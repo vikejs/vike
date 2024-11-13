@@ -1,54 +1,6 @@
-// supporters = sponsors + contributors
-
-export { Supporter, SupporterSection, SupporterImg }
+export { SupporterImg }
 
 import React from 'react'
-
-type Children = (string | JSX.Element) | (string | JSX.Element)[]
-
-function SupporterSection({ children }: { children?: Children }) {
-  return (
-    <div
-      style={{
-        textAlign: 'center'
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-// Individual sponsor or small contributor
-function Supporter({ username, avatarUrl }: { username: string; avatarUrl?: string }) {
-  const website = `https://github.com/${username}`
-  const width = 30
-  const height = 30
-  const marginWidth = 5
-  const marginHeight = 5
-  return (
-    <a
-      href={website}
-      style={{
-        margin: `${marginHeight}px ${marginWidth}px`
-      }}
-    >
-      <div
-        style={{
-          borderRadius: 7,
-          overflow: 'hidden',
-          width,
-          height,
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-          justifyContent: 'center'
-        }}
-      >
-        <SupporterImg {...{ username, avatarUrl, width, height }} />
-      </div>
-    </a>
-  )
-}
 
 function SupporterImg({
   imgSrc, // has precedence over avatarUrl

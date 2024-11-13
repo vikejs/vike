@@ -10,79 +10,7 @@ import inlangLogo from './sponsorsList/companyLogos/inlang.png'
 import bluefinLogo from './sponsorsList/companyLogos/bluefin.svg'
 import alignableLogo from './sponsorsList/companyLogos/alignable.svg'
 
-const individuals: Sponsor[] = [
-  { username: 'arp' },
-  { username: 'tlancina' },
-  { username: 'shishkin17' },
-  { username: 'royalswe' },
-  { username: 'lebretont' },
-  { username: 'xar' },
-  { username: 'NicoZweifel' },
-  { username: 'mariuslian' },
-  { username: 'shortpoet' },
-  { username: 'sqs' },
-  { username: 'dylmye' },
-  { username: 'isakura313' },
-  { username: 'rivatove' },
-  { username: 'SMKJALLAD' },
-  { username: 'routinghub' },
-  { username: 'LostCrew' }, // Ecosia
-  { username: 'jakubfiala' }, // Ecosia
-  { username: 'HarshwardhanSingh' },
-  { username: 'd3x7r0' },
-  { username: 'ChristophP' }, // BurdaForward
-  { username: 'msiegenthaler' },
-  { username: 'linkyard' },
-  { username: 'AnukarOP' },
-  { username: 'RoyMcCrain' },
-  { username: 'chrisvander' }, // Bluefin
-  { username: 'EralChen' },
-  { username: '3dyuval' },
-  { username: 'talzion12' },
-  { username: 'felixhaeberle' },
-  { username: 'apappas1129' },
-  /* 404
-  { username: 'agalbenus' },
-  */
-  { username: 'phiberber' },
-  { username: 'cookieplace' },
-  { username: 'JiangWeixian' },
-  { username: 'harrytran998' },
-  { username: 'alexturpin' },
-  { username: 'gu-stav' },
-  { username: 'YannBirba' },
-  { username: 'fi3ework' },
-  { username: 'EJM-Company' },
-  { username: 'Nelie-Taylor' },
-  { username: 'fortezhuo' },
-  { username: 'nshelia' },
-  { username: 'marcusway' },
-  { username: 'edikdeisling' },
-  { username: 'AurelienLourot' },
-  { username: 'jahredhope' },
-  { username: 'charlieforward9' },
-  { username: 'leonmondria' },
-  { username: 'jscottsf' },
-  { username: 'micah-redwood' },
-  { username: 'nicka-redwood' },
-  { username: 'ser1us' },
-  { username: 'nikitavoloboev' },
-  { username: 'samuelstroschein' },
-  { username: 'npacucci' },
-  { username: 'szarapka' },
-  { username: 'techniath' },
-  { username: 'DannyZB' },
-  { username: 'pieperz' },
-  { username: 'hemengke1997' },
-  { username: 'spacedawwwg' },
-  { username: 'arthurgailes' },
-  { username: 'stackblitz' },
-  { username: 'codthing' },
-  { username: 'Junaidhkn' },
-  { username: 'zgfdev' }
-]
-
-const companies: Sponsor[] = [
+const sponsorsList: Sponsor[] = [
   {
     companyName: 'Contra',
     companyLogo: contraLogo,
@@ -143,5 +71,3 @@ const companies: Sponsor[] = [
     github: 'bluefin-clinical'
   }
 ]
-
-const sponsorsList: Sponsor[] = [...companies, ...individuals]

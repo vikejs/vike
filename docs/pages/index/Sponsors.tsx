@@ -3,7 +3,7 @@ export type { Sponsor }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
-import { Supporter, SupporterSection, SupporterImg } from './Supporters'
+import { SupporterImg } from './Supporters'
 import { sponsorsList } from './sponsorsList'
 
 type Plan = 'indie' | 'bronze' | 'silver' | 'gold' | 'platinum'
@@ -16,10 +16,7 @@ type SponsorCompany = {
   divSize?: Partial<DivSize>
   github: string
 }
-type SponsorIndividual = {
-  username: string
-}
-type Sponsor = SponsorCompany | SponsorIndividual
+type Sponsor = SponsorCompany
 
 type DivSize = {
   width: number
@@ -28,9 +25,12 @@ type DivSize = {
 }
 
 function Sponsors() {
-  const sponsorsCompanies = sponsorsList.filter(isCompany)
   return (
-    <SupporterSection>
+    <div
+      style={{
+        textAlign: 'center'
+      }}
+    >
       <SponsorButton />
       <div
         style={{
@@ -43,11 +43,11 @@ function Sponsors() {
         Sponsor Vike for a tight-knit partnership 🤝
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'end' }}>
-        {sponsorsCompanies.map((sponsor, i) => (
+        {sponsorsList.map((sponsor, i) => (
           <SponsorDiv sponsor={sponsor} key={i} />
         ))}
       </div>
-    </SupporterSection>
+    </div>
   )
 }
 
@@ -70,14 +70,10 @@ function SponsorButton() {
 }
 
 function SponsorDiv({ sponsor }: { sponsor: Sponsor }) {
-  if (isIndividual(sponsor)) {
-    return <Supporter username={sponsor.username} />
-  }
   return <CompanyDiv sponsor={sponsor} />
 }
 
 function CompanyDiv({ sponsor }: { sponsor: Sponsor }) {
-  assert(isCompany(sponsor))
   const imgSrc = sponsor.companyLogo
   const imgAlt = sponsor.companyName
   const { width, height, padding } = getSize(sponsor)
@@ -133,11 +129,4 @@ function getSize(sponsor: SponsorCompany): DivSize {
     Object.assign(divSize, sponsor.divSize)
   }
   return divSize
-}
-
-function isCompany(sponsor: Sponsor): sponsor is SponsorCompany {
-  return !isIndividual(sponsor)
-}
-function isIndividual(sponsor: Sponsor): sponsor is SponsorIndividual {
-  return 'username' in sponsor
 }
