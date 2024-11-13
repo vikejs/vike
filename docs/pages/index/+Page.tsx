@@ -4,7 +4,6 @@ import React, { useEffect } from 'react'
 import { Header } from './Header'
 import { Features } from './Features'
 import { Sponsors } from './Sponsors'
-import { Contributors } from './Contributors'
 import './smooth-scroll.css'
 
 function Page() {
@@ -24,12 +23,6 @@ function Page() {
       <Block>
         <div style={{ height: 60 }} />
         <Sponsors />
-        <div style={{ height: 20 }} />
-      </Block>
-      <a id="team"></a>
-      <Block>
-        <div style={{ height: 40 }} />
-        <Contributors />
         <div style={{ height: 50 }} />
       </Block>
     </>

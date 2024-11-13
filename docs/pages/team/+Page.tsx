@@ -1,35 +1,27 @@
-export { Contributors, Maintainer }
+export { Page }
 
 import React from 'react'
 import { maintainers } from './maintainersList'
 
+function Page() {
+  return <Contributors />
+}
+
 function Contributors() {
   return (
-    <div
-      style={{
-        textAlign: 'center'
-      }}
-    >
-      <p
-        style={{
-          fontSize: '1.2em',
-          padding: '0 var(--main-view-padding)'
-        }}
-      >
-        Vike is built and maintained by a passionate team.
-      </p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'end' }}>
+    <>
+      <p>Vike is built and maintained by a passionate team.</p>
+      <div>
         {maintainers.map((maintainer, i) => (
           <Maintainer maintainer={maintainer} key={i} />
         ))}
       </div>
-    </div>
+    </>
   )
 }
 
 function Maintainer({ maintainer }: { maintainer: (typeof maintainers)[0] }) {
   const marginHeight = 20
-  const marginWidth = 10
   const imgSize = 50
   const githubUrl = `https://github.com/${maintainer.username}`
   return (
@@ -41,8 +33,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainers)[0] }) {
         borderColor: '#e0e0e0',
         overflow: 'hidden',
         width: 430,
-        maxWidth: `calc(100vw - 2 * var(--main-view-padding) - 2 * ${marginWidth}px)`,
-        margin: `${marginHeight}px ${marginWidth}px`,
+        margin: `${marginHeight}px 0`,
         display: 'flex',
         flexWrap: 'wrap',
         padding: 20,
