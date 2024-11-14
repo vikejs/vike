@@ -162,9 +162,9 @@ async function transpileWithEsbuild(
           let resolved: ResolveResult | (OnResolveResult & { errors?: undefined }) = await build.resolve(path, opts)
           if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolved', resolved)
 
-          // Temporary workaround for https://github.com/vikejs/vike/issues/1729
-          // - Required for esbuild@0.24.0 (November 2024).
-          // - Let's try to remove this workaround after some time.
+          // Temporary workaround for https://github.com/evanw/esbuild/issues/3973
+          // - Sitll required for esbuild@0.24.0 (November 2024).
+          // - Let's try to remove this workaround again later.
           if (resolved.errors.length > 0) {
             let resolvedWithNode: string | undefined
             try {
