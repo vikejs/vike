@@ -1,10 +1,9 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
+import { UiFrameworkExtension } from '../../components'
 
 Environment: browser.
 
 By using `prefetch('/some/url')` you can programmatically prefetch pages.
-
-<Warning>`prefetch()` works only with <Link text="Client Routing" href="/client-routing" />. Prefetching isn't possible with <Link text="Server Routing" href="/server-routing" />.</Warning>
 
 Using `prefetch()` enables you to speed up page navigation when you can predict what the next page will (most likely) be.
 
@@ -31,3 +30,8 @@ async function onSubmit() {
   await navigate('/form/success')
 }
 ```
+
+
+## Without `vike-{react,vue,solid}`
+
+If you don't use a <UiFrameworkExtension />, then you need to use <Link text="Client Routing" href="/client-routing" /> to be able to use `prefetch()`. Prefetching doesn't work with <Link text="Server Routing" href="/server-routing" />.
