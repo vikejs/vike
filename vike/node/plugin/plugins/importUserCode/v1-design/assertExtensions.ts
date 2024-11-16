@@ -38,7 +38,7 @@ function assertExtensionName(interfaceFile: InterfaceFile): void {
   const name = getConfigNameValue(interfaceFile)
   assertUsage(
     name,
-    `Vike extension name missing: the config ${filePathToShowToUser} must define the seting ${pc.cyan('name')}`
+    `Vike extension name missing: the config ${filePathToShowToUser} must define the setting ${pc.cyan('name')}`
   )
 }
 
