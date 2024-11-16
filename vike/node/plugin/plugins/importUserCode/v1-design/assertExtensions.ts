@@ -3,14 +3,7 @@ export { assertExtensionsPeerDependencies }
 
 import pc from '@brillout/picocolors'
 import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
-import {
-  PROJECT_VERSION,
-  assert,
-  assertPosixPath,
-  assertUsage,
-  assertWarning,
-  findPackageJson
-} from '../../../utils.js'
+import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../utils.js'
 import { getConfigValueInterfaceFile, type InterfaceFile } from './getVikeConfig.js'
 import path from 'path'
 import semver from 'semver'
@@ -25,7 +18,6 @@ function assertConfigExportPath(interfaceFile: InterfaceFile): void {
   // Ejected Vike extension
   if (!importPathAbsolute) {
     const p = filePathAbsoluteFilesystem
-    assertPosixPath(p)
     assert(!p.includes('node_modules'))
     return
   }
