@@ -211,6 +211,7 @@ async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: stri
 function getIgnoreAsPatterns(outDirRelativeFromUserRootDir: string | null): string[] {
   const ignoreAsPatterns = [
     '**/node_modules/**',
+    '**/ejected/**',
     // Allow:
     // ```
     // +Page.js
@@ -229,6 +230,7 @@ function getIgnoreAsFilterFn(outDirRelativeFromUserRootDir: string | null): (fil
   assert(outDirRelativeFromUserRootDir === null || !outDirRelativeFromUserRootDir.startsWith('/'))
   return (file: string) =>
     !file.includes('node_modules/') &&
+    !file.includes('ejected/') &&
     !file.includes('.telefunc.') &&
     (outDirRelativeFromUserRootDir === null || !file.startsWith(`${outDirRelativeFromUserRootDir}/`))
 }
