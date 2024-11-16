@@ -1,3 +1,15 @@
+## [0.4.202](https://github.com/vikejs/vike/compare/v0.4.201...v0.4.202) (2024-11-16)
+
+
+### Bug Fixes
+
+* ignore + files in ejected/ ([1a64227](https://github.com/vikejs/vike/commit/1a642275757d010d9e46dd0779094a8d0bf914d4))
+* polish error message ([2ce82b8](https://github.com/vikejs/vike/commit/2ce82b8f96dee75e5b3e3591aee2e4a3b126ab57))
+* remove outdated extension name assertion ([efe809b](https://github.com/vikejs/vike/commit/efe809b90f540f0dbaeea0779851b85207ae62e2))
+* skip convention for ejected Vike extension ([5584b7d](https://github.com/vikejs/vike/commit/5584b7de4d998b5b1a6ddeaa0b5f661b604d4ee0))
+
+
+
 ## [0.4.201](https://github.com/vikejs/vike/compare/v0.4.200...v0.4.201) (2024-11-06)
 
 
