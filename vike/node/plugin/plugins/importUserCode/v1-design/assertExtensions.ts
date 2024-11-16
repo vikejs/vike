@@ -27,50 +27,12 @@ function assertConfigExportPath(interfaceFile: InterfaceFile): void {
   )
 }
 function assertExtensionName(interfaceFile: InterfaceFile): void {
-  let nameDeduced: string
-  {
-    const { importPathAbsolute } = interfaceFile.filePath
-    assert(importPathAbsolute)
-    nameDeduced = importPathAbsolute
-      .split('/')
-      .slice(0, importPathAbsolute.startsWith('@') ? 2 : 1)
-      .join('/')
-  }
-
-  const name = getConfigNameValue(interfaceFile)
   const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)
-  if (name) {
-    assertWarning(
-      name === nameDeduced,
-      `The setting ${pc.bold('name')} defined at ${filePathToShowToUser} is ${pc.bold(
-        name
-      )}, but it should be ${pc.bold(nameDeduced)} instead (the name of the npm package).`,
-      { onlyOnce: true }
-    )
-  } else {
-    if (
-      // Let's eventually remove this
-      [
-        'vike-react',
-        'vike-react-query',
-        'vike-react-zustand',
-        'vike-vue',
-        'vike-vue-query',
-        'vike-vue-pinia',
-        'vike-pinia',
-        'vike-solid'
-      ].includes(nameDeduced)
-    ) {
-      assertUsage(false, `Update ${nameDeduced} to its latest version.`)
-    } else {
-      assertUsage(
-        false,
-        `The setting ${pc.bold('name')} is missing: it should be set by the config ${filePathToShowToUser} of ${pc.bold(
-          nameDeduced
-        )}.`
-      )
-    }
-  }
+  const name = getConfigNameValue(interfaceFile)
+  assertUsage(
+    name,
+    `Vike extension name missing: the config ${filePathToShowToUser} must define the seting ${pc.cyan('name')}`
+  )
 }
 
 function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceFile[]): void {
