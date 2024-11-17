@@ -1,13 +1,14 @@
 export { pushHistoryState }
 export { onPopStateBegin }
 export { saveScrollPosition }
-export { enhanceHistoryState }
+export { initHistoryState }
 export { monkeyPatchHistoryAPI }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { assert, assertUsage, getCurrentUrl, getGlobalObject, hasProp, isObject } from './utils.js'
 
+initHistoryState()
 const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })
 
 type StateEnhanced = {
@@ -176,4 +177,8 @@ function onPopStateBegin() {
   globalObject.previous = current
 
   return { isNewState, previous, current }
+}
+
+function initHistoryState() {
+  enhanceHistoryState()
 }
