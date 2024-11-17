@@ -10,8 +10,8 @@
 export { packageJsonFile }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { rollupIsEsm } from '../shared/rollupIsEsm.js'
-import { viteIsSSR } from '../utils.js'
+import { rollupIsEsm } from '../shared/rollupIsEsm'
+import { viteIsSSR } from '../utils'
 
 function packageJsonFile(): Plugin {
   let config: ResolvedConfig

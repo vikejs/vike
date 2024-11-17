@@ -41,14 +41,14 @@ import {
   isCallable,
   createDebugger,
   isBug
-} from '../utils.js'
-import { HtmlRender } from './renderHtml.js'
+} from '../utils'
+import { HtmlRender } from './renderHtml'
 import {
   getStreamOfReactStreamingPackage,
   isStreamFromReactStreamingPackage,
   StreamFromReactStreamingPackagePublic,
   streamFromReactStreamingPackageToString
-} from './stream/react-streaming.js'
+} from './stream/react-streaming'
 import { import_ } from '@brillout/import'
 import type { Readable as Readable_, Writable as Writable_ } from 'node:stream'
 import pc from '@brillout/picocolors'

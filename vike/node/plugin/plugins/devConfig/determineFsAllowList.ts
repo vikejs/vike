@@ -3,7 +3,7 @@ export { determineFsAllowList }
 import { searchForWorkspaceRoot } from 'vite'
 import type { ResolvedConfig } from 'vite'
 import path from 'path'
-import { assert } from '../../utils.js'
+import { assert } from '../../utils'
 import { createRequire } from 'module'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'

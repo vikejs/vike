@@ -1,6 +1,6 @@
 export { executeOnBeforeRouteHook }
 
-import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser.js'
+import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import {
   assertUsage,
   hasProp,
@@ -10,12 +10,12 @@ import {
   assertUsageUrlPathnameAbsolute,
   joinEnglish,
   assert
-} from './utils.js'
-import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction.js'
+} from './utils'
+import { assertRouteParams, assertSyncRouting } from './resolveRouteFunction'
 import pc from '@brillout/picocolors'
-import type { PageContextForRoute, PageContextFromRoute } from './index.js'
-import type { Hook } from '../hooks/getHook.js'
-import { executeHook } from '../hooks/executeHook.js'
+import type { PageContextForRoute, PageContextFromRoute } from './index'
+import type { Hook } from '../hooks/getHook'
+import { executeHook } from '../hooks/executeHook'
 
 async function executeOnBeforeRouteHook(
   pageContext: PageContextForRoute

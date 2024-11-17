@@ -4,16 +4,16 @@ export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
 
-import { assert, prependBase, toPosixPath, unique, getGlobalObject } from '../utils.js'
-import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev.js'
-import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd.js'
-import { inferMediaType, type MediaType } from './inferMediaType.js'
-import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
-import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
-import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
-import { getGlobalContext } from '../globalContext.js'
-import type { ViteManifest } from '../../shared/ViteManifest.js'
-import type { ResolveClientEntriesDev } from '../../plugin/resolveClientEntriesDev.js'
+import { assert, prependBase, toPosixPath, unique, getGlobalObject } from '../utils'
+import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev'
+import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd'
+import { inferMediaType, type MediaType } from './inferMediaType'
+import { getManifestEntry } from './getPageAssets/getManifestEntry'
+import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
+import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
+import { getGlobalContext } from '../globalContext'
+import type { ViteManifest } from '../../shared/ViteManifest'
+import type { ResolveClientEntriesDev } from '../../plugin/resolveClientEntriesDev'
 
 const globalObject = getGlobalObject('getPageAssets.ts', {
   resolveClientEntriesDev: null as null | ResolveClientEntriesDev

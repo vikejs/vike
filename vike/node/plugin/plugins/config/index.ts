@@ -1,12 +1,12 @@
 export { resolveVikeConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
-import { assertVikeConfig } from './assertVikeConfig.js'
-import { isDev2 } from '../../utils.js'
-import { pickFirst } from './pickFirst.js'
-import { resolveBase } from './resolveBase.js'
-import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
+import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike'
+import { assertVikeConfig } from './assertVikeConfig'
+import { isDev2 } from '../../utils'
+import { pickFirst } from './pickFirst'
+import { resolveBase } from './resolveBase'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig'
 import pc from '@brillout/picocolors'
 
 function resolveVikeConfig(vikeConfig: unknown): Plugin {

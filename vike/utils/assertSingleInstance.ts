@@ -6,12 +6,12 @@ export { assertSingleInstance_onAssertModuleLoad }
 //  - Show warning if entry of Client Routing and entry of Server Routing are both loaded
 //  - Show warning if vike is loaded twice
 
-import { unique } from './unique.js'
-import { getGlobalObject } from './getGlobalObject.js'
-import { projectInfo } from './projectInfo.js'
+import { unique } from './unique'
+import { getGlobalObject } from './getGlobalObject'
+import { projectInfo } from './projectInfo'
 import pc from '@brillout/picocolors'
 /* Use original assertUsage() & assertWarning() after all CJS is removed from node_modules/vike/dist/
-import { assertUsage, assertWarning } from './assert.js'
+import { assertUsage, assertWarning } from './assert'
 */
 const globalObject = getGlobalObject<{
   instances: string[]

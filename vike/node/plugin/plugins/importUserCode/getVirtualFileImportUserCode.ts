@@ -16,14 +16,14 @@ import {
   getOutDirs,
   isVersionOrAbove,
   assertWarning
-} from '../../utils.js'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
-import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+} from '../../utils'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike'
+import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
 import { version as viteVersion } from 'vite'
-import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
+import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
-import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
+import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs'
+import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig'
 
 type GlobRoot = {
   includeDir: string // slash-terminated

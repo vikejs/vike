@@ -1,6 +1,6 @@
 export { assertArguments }
 
-import { assert, assertUsage, assertWarning, hasProp, isObject } from '../utils.js'
+import { assert, assertUsage, assertWarning, hasProp, isObject } from '../utils'
 import pc from '@brillout/picocolors'
 
 function assertArguments(...args: unknown[]): void {

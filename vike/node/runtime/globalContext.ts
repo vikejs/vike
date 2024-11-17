@@ -25,17 +25,17 @@ import {
   objectAssign,
   objectKeys,
   genPromise
-} from './utils.js'
-import type { ViteManifest } from '../shared/ViteManifest.js'
+} from './utils'
+import type { ViteManifest } from '../shared/ViteManifest'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import { loadImportBuild } from './globalContext/loadImportBuild.js'
-import { setPageFiles } from '../../shared/getPageFiles.js'
-import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
-import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
-import { getConfigVike } from '../shared/getConfigVike.js'
-import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
+import { loadImportBuild } from './globalContext/loadImportBuild'
+import { setPageFiles } from '../../shared/getPageFiles'
+import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest'
+import type { ConfigVikeResolved } from '../../shared/ConfigVike'
+import { getConfigVike } from '../shared/getConfigVike'
+import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest'
 import pc from '@brillout/picocolors'
-import { getPageFilesExports } from './page-files/getPageFilesExports.js'
+import { getPageFilesExports } from './page-files/getPageFilesExports'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer

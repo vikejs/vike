@@ -1,12 +1,12 @@
 export { initClientRouter }
 
-import { assert } from './utils.js'
-import { getRenderCount, renderPageClientSide } from './renderPageClientSide.js'
-import { initOnPopState } from './initOnPopState.js'
-import { initOnLinkClick } from './initOnLinkClick.js'
-import { setupNativeScrollRestoration } from './scrollRestoration.js'
-import { autoSaveScrollPosition } from './setScrollPosition.js'
-import { initLinkPrefetchHandlers } from './prefetch.js'
+import { assert } from './utils'
+import { getRenderCount, renderPageClientSide } from './renderPageClientSide'
+import { initOnPopState } from './initOnPopState'
+import { initOnLinkClick } from './initOnLinkClick'
+import { setupNativeScrollRestoration } from './scrollRestoration'
+import { autoSaveScrollPosition } from './setScrollPosition'
+import { initLinkPrefetchHandlers } from './prefetch'
 
 async function initClientRouter() {
   // Init navigation history and scroll restoration

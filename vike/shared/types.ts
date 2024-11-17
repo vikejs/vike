@@ -14,11 +14,11 @@ export { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
 export { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
 export { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
-import type { PageContextUrlInternal, PageContextUrlClient, PageContextUrlServer } from './getPageContextUrlComputed.js'
-import type { ConfigEntries, ExportsAll, From, Source, Sources } from './getPageFiles/getExports.js'
-import type { Config } from './page-configs/Config.js'
-import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
-import type { AbortStatusCode } from './route/abort.js'
+import type { PageContextUrlInternal, PageContextUrlClient, PageContextUrlServer } from './getPageContextUrlComputed'
+import type { ConfigEntries, ExportsAll, From, Source, Sources } from './getPageFiles/getExports'
+import type { Config } from './page-configs/Config'
+import type { PageContextConfig } from './page-configs/Config/PageContextConfig'
+import type { AbortStatusCode } from './route/abort'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext
 

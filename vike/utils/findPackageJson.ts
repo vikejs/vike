@@ -1,6 +1,6 @@
 export { findPackageJson }
 
-import { findFile } from './findFile.js'
+import { findFile } from './findFile'
 import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url

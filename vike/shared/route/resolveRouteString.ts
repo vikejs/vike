@@ -5,8 +5,8 @@ export { analyzeRouteString }
 export { assertRouteString }
 export { getRouteStringParameterList }
 
-import { assertWarning, isBrowser, escapeRegex } from '../utils.js'
-import { assert, assertUsage } from './utils.js'
+import { assertWarning, isBrowser, escapeRegex } from '../utils'
+import { assert, assertUsage } from './utils'
 import pc from '@brillout/picocolors'
 
 const PARAM_TOKEN_NEW = '@'

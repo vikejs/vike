@@ -1,6 +1,6 @@
 export { assertPageContextProvidedByUser }
 
-import { assert, assertUsage, assertWarning, isObject } from './utils.js'
+import { assert, assertUsage, assertWarning, isObject } from './utils'
 import pc from '@brillout/picocolors'
 
 function assertPageContextProvidedByUser(

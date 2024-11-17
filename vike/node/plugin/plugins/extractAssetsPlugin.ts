@@ -21,19 +21,19 @@ import {
   isVirtualFileId,
   getVirtualFileId,
   assertUsage
-} from '../utils.js'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
-import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
-import { isAsset } from '../shared/isAsset.js'
-import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
-import { sourceMapRemove } from '../shared/rollupSourceMap.js'
+} from '../utils'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery'
+import { getConfigVike } from '../../shared/getConfigVike'
+import type { ConfigVikeResolved } from '../../../shared/ConfigVike'
+import { isAsset } from '../shared/isAsset'
+import { getImportStatements, type ImportStatement } from '../shared/parseEsModule'
+import { sourceMapRemove } from '../shared/rollupSourceMap'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
-import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
-import { assertV1Design } from '../../shared/assertV1Design.js'
-import { normalizeId } from '../shared/normalizeId.js'
+import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets'
+import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig'
+import { assertV1Design } from '../../shared/assertV1Design'
+import { normalizeId } from '../shared/normalizeId'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/

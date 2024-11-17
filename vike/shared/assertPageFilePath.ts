@@ -2,7 +2,7 @@
 
 export { assertPageFilePath }
 
-import { assertPosixPath } from './utils.js'
+import { assertPosixPath } from './utils'
 
 function assertPageFilePath(filePath: string): void {
   assertPosixPath(filePath)

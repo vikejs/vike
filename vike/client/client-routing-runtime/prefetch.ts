@@ -15,29 +15,29 @@ import {
   getGlobalObject,
   hasProp,
   objectAssign
-} from './utils.js'
+} from './utils'
 import {
   type PageContextUserFiles,
   isErrorFetchingStaticAssets,
   loadUserFilesClientSide
-} from '../shared/loadUserFilesClientSide.js'
-import { skipLink } from './skipLink.js'
-import { disableClientRouting } from './renderPageClientSide.js'
-import { isClientSideRoutable } from './isClientSideRoutable.js'
-import { createPageContext } from './createPageContext.js'
-import { route, type PageContextFromRoute } from '../../shared/route/index.js'
-import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks.js'
-import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
-import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { getPageContextCurrent } from './getPageContextCurrent.js'
+} from '../shared/loadUserFilesClientSide'
+import { skipLink } from './skipLink'
+import { disableClientRouting } from './renderPageClientSide'
+import { isClientSideRoutable } from './isClientSideRoutable'
+import { createPageContext } from './createPageContext'
+import { route, type PageContextFromRoute } from '../../shared/route/index'
+import { noRouteMatch } from '../../shared/route/noRouteMatch'
+import { type PageContextFromServerHooks, getPageContextFromServerHooks } from './getPageContextFromHooks'
+import type { PageContextExports, PageFile } from '../../shared/getPageFiles'
+import { type PageConfigRuntime } from '../../shared/page-configs/PageConfig'
+import { getPageContextCurrent } from './getPageContextCurrent'
 import {
   PAGE_CONTEXT_MAX_AGE_DEFAULT,
   type PrefetchSettingResolved,
   getPrefetchSettings
-} from './prefetch/getPrefetchSettings.js'
+} from './prefetch/getPrefetchSettings'
 import pc from '@brillout/picocolors'
-import { normalizeUrlArgument } from './normalizeUrlArgument.js'
+import { normalizeUrlArgument } from './normalizeUrlArgument'
 
 assertClientRouting()
 const globalObject = getGlobalObject('prefetch.ts', {

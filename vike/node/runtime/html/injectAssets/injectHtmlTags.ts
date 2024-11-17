@@ -9,9 +9,9 @@ export { joinHtmlTags }
 export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
-import { assert, assertUsage, slice } from '../../utils.js'
-import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
-import type { HtmlTag } from './getHtmlTags.js'
+import { assert, assertUsage, slice } from '../../utils'
+import type { StreamFromReactStreamingPackage } from '../stream/react-streaming'
+import type { HtmlTag } from './getHtmlTags'
 
 type Position = 'HTML_BEGIN' | 'HTML_END'
 function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], position: Position): string {

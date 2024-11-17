@@ -4,13 +4,13 @@
 //   import { navigate, prefetch } from 'vike'
 // Use package.json#exports to make the imports isomorphic.
 
-export { navigate, reload } from './navigate.js'
-export { prefetch } from './prefetch.js'
-export { onPopState } from './initOnPopState.js'
-export { PROJECT_VERSION as version } from './utils.js'
+export { navigate, reload } from './navigate'
+export { prefetch } from './prefetch'
+export { onPopState } from './initOnPopState'
+export { PROJECT_VERSION as version } from './utils'
 
 // TODO/v1-release: remove this
-import type { PageContextBuiltInClientWithClientRouting } from '../../shared/types.js'
+import type { PageContextBuiltInClientWithClientRouting } from '../../shared/types'
 /** @deprecated
  * Replace:
  *   ```

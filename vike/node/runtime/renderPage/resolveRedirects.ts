@@ -3,10 +3,10 @@ export { resolveRedirects }
 // For ./resolveRedirects.spec.ts
 export { resolveRouteStringRedirect }
 
-import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser.js'
-import { assert, assertUsage, assertUsageUrlRedirectTarget, isUrlRedirectTarget } from '../../../shared/utils.js'
-import { resolveUrlPathname } from '../../../shared/route/resolveUrlPathname.js'
-import { assertRouteString, resolveRouteString } from '../../../shared/route/resolveRouteString.js'
+import { assertIsNotBrowser } from '../../../utils/assertIsNotBrowser'
+import { assert, assertUsage, assertUsageUrlRedirectTarget, isUrlRedirectTarget } from '../../../shared/utils'
+import { resolveUrlPathname } from '../../../shared/route/resolveUrlPathname'
+import { assertRouteString, resolveRouteString } from '../../../shared/route/resolveRouteString'
 import pc from '@brillout/picocolors'
 assertIsNotBrowser() // Don't bloat the client
 

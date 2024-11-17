@@ -18,8 +18,8 @@ export { createUrlFromComponents }
 export type { UrlPublic }
 export type { UrlPrivate }
 
-import { slice } from './slice.js'
-import { assert, assertUsage } from './assert.js'
+import { slice } from './slice'
+import { assert, assertUsage } from './assert'
 import pc from '@brillout/picocolors'
 
 type UrlPublic = {

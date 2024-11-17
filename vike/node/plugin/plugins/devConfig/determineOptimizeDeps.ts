@@ -1,16 +1,16 @@
 export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
-import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, assertIsNpmPackageImport, createDebugger, isArray, unique } from '../../utils.js'
-import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
-import { analyzeClientEntries } from '../buildConfig.js'
-import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
+import { findPageFiles } from '../../shared/findPageFiles'
+import { assert, assertIsNpmPackageImport, createDebugger, isArray, unique } from '../../utils'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig'
+import { analyzeClientEntries } from '../buildConfig'
+import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig'
 import {
   virtualFileIdImportUserCodeClientCR,
   virtualFileIdImportUserCodeClientSR
-} from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { getFilePathResolved } from '../../shared/getFilePath.js'
+} from '../../../shared/virtual-files/virtualFileImportUserCode'
+import { getFilePathResolved } from '../../shared/getFilePath'
 
 const debug = createDebugger('vike:optimizeDeps')
 

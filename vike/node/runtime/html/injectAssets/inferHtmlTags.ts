@@ -3,8 +3,8 @@ export { inferPreloadTag }
 export { inferEarlyHintLink }
 export { scriptAttrs }
 
-import { assert } from '../../utils.js'
-import type { PageAsset } from '../../renderPage/getPageAssets.js'
+import { assert } from '../../utils'
+import type { PageAsset } from '../../renderPage/getPageAssets'
 
 // We can't use `defer` here. With `defer`, the entry script won't start before `</body>` has been parsed, preventing progressive hydration during SSR streaming, see https://github.com/vikejs/vike/pull/1271
 const scriptAttrs = 'type="module" async'

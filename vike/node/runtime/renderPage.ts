@@ -7,8 +7,8 @@ import {
   RenderContext,
   renderPageAlreadyRouted,
   PageContextInitEnhanced
-} from './renderPage/renderPageAlreadyRouted.js'
-import { route } from '../../shared/route/index.js'
+} from './renderPage/renderPageAlreadyRouted'
+import { route } from '../../shared/route/index'
 import {
   assert,
   hasProp,
@@ -30,7 +30,7 @@ import {
   isUri,
   type UrlPublic,
   getUrlPretty
-} from './utils.js'
+} from './utils'
 import {
   assertNoInfiniteAbortLoop,
   ErrorAbort,
@@ -38,32 +38,32 @@ import {
   isAbortError,
   logAbortErrorHandled,
   PageContextFromRewrite
-} from '../../shared/route/abort.js'
-import { getGlobalContext, initGlobalContext_renderPage } from './globalContext.js'
-import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
+} from '../../shared/route/abort'
+import { getGlobalContext, initGlobalContext_renderPage } from './globalContext'
+import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import {
   createHttpResponseFavicon404,
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
   HttpResponse,
   createHttpResponseError
-} from './renderPage/createHttpResponse.js'
-import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
-import { isNewError } from './renderPage/isNewError.js'
-import { assertArguments } from './renderPage/assertArguments.js'
-import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
-import { log404 } from './renderPage/log404/index.js'
-import { isConfigInvalid } from './renderPage/isConfigInvalid.js'
+} from './renderPage/createHttpResponse'
+import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime'
+import { isNewError } from './renderPage/isNewError'
+import { assertArguments } from './renderPage/assertArguments'
+import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles'
+import { log404 } from './renderPage/log404/index'
+import { isConfigInvalid } from './renderPage/isConfigInvalid'
 import pc from '@brillout/picocolors'
-import type { PageContextServer } from '../../types/index.js'
-import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.js'
-import { getErrorPageId } from '../../shared/error-page.js'
-import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
-import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
-import { resolveRedirects } from './renderPage/resolveRedirects.js'
-import { PageContextBuiltInServerInternal } from '../../shared/types.js'
-import type { PageFile } from '../../shared/getPageFiles.js'
-import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import type { PageContextServer } from '../../types/index'
+import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide'
+import { getErrorPageId } from '../../shared/error-page'
+import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage'
+import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide'
+import { resolveRedirects } from './renderPage/resolveRedirects'
+import { PageContextBuiltInServerInternal } from '../../shared/types'
+import type { PageFile } from '../../shared/getPageFiles'
+import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0

@@ -2,8 +2,8 @@ export { setScrollPosition }
 export { autoSaveScrollPosition }
 export type { ScrollTarget }
 
-import { assert, onPageHide, sleep, throttle } from './utils.js'
-import { saveScrollPosition, type ScrollPosition } from './history.js'
+import { assert, onPageHide, sleep, throttle } from './utils'
+import { saveScrollPosition, type ScrollPosition } from './history'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 function setScrollPosition(scrollTarget: ScrollTarget): void {

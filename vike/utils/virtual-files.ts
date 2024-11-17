@@ -2,7 +2,7 @@ export { isVirtualFileId }
 export { getVirtualFileId }
 export { resolveVirtualFileId }
 
-import { assert } from './assert.js'
+import { assert } from './assert'
 
 const idBase = 'virtual:vike:'
 // https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention

@@ -1,4 +1,4 @@
-import { resolvePrecendence } from '../resolvePrecedence.js'
+import { resolvePrecendence } from '../resolvePrecedence'
 import { expect, describe, it } from 'vitest'
 
 const routeFilesystemStatic = {

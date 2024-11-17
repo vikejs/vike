@@ -1,4 +1,4 @@
-import { deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
+import { deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
 import { expect, describe, it } from 'vitest'
 
 describe('deduceRouteStringFromFilesystemPath', () => {

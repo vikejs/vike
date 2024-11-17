@@ -1,8 +1,8 @@
 export { getPageFilesExports }
 
-import { assert, debugGlob, isObject } from '../utils.js'
-import { getViteDevServer } from '../globalContext.js'
-import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode.js'
+import { assert, debugGlob, isObject } from '../utils'
+import { getViteDevServer } from '../globalContext'
+import { virtualFileIdImportUserCodeServer } from '../../shared/virtual-files/virtualFileImportUserCode'
 
 async function getPageFilesExports(): Promise<Record<string, unknown>> {
   const viteDevServer = getViteDevServer()

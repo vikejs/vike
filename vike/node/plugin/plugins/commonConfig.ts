@@ -1,12 +1,12 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, findPackageJson } from '../utils.js'
-import { assertRollupInput } from './buildConfig.js'
+import { assert, assertUsage, assertWarning, findPackageJson } from '../utils'
+import { assertRollupInput } from './buildConfig'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
-import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
+import { assertResolveAlias } from './commonConfig/assertResolveAlias'
 const pluginName = 'vike:commonConfig-1'
 
 function commonConfig(): Plugin[] {

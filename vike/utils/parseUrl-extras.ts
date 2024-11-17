@@ -7,10 +7,10 @@ export { removeUrlOrigin }
 export { setUrlOrigin }
 export { getUrlPretty }
 
-import { assertUrlComponents, createUrlFromComponents, isBaseServer, parseUrl } from './parseUrl.js'
-import { assert } from './assert.js'
-import { slice } from './slice.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { assertUrlComponents, createUrlFromComponents, isBaseServer, parseUrl } from './parseUrl'
+import { assert } from './assert'
+import { slice } from './slice'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
 assertIsNotBrowser()
 
 function prependBase(url: string, baseServer: string): string {

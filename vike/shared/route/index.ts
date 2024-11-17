@@ -5,28 +5,28 @@ export type { PageRoutes }
 export type { RouteMatches }
 
 // Ensure we don't bloat runtime of Server Routing
-import { assertClientRouting } from '../../utils/assertRoutingType.js'
-import { isBrowser } from '../../utils/isBrowser.js'
+import { assertClientRouting } from '../../utils/assertRoutingType'
+import { isBrowser } from '../../utils/isBrowser'
 if (isBrowser()) {
   assertClientRouting()
 }
 
-import type { PageFile } from '../getPageFiles.js'
-import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
+import type { PageFile } from '../getPageFiles'
+import { assert, assertUsage, isPlainObject, objectAssign } from './utils'
 import {
   assertPageContextUrl,
   type PageContextUrlInternal,
   type PageContextUrlSource
-} from '../getPageContextUrlComputed.js'
-import { resolvePrecendence } from './resolvePrecedence.js'
-import { resolveRouteString } from './resolveRouteString.js'
-import { resolveRouteFunction } from './resolveRouteFunction.js'
-import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook.js'
-import type { PageRoutes, RouteType } from './loadPageRoutes.js'
-import { debug } from './debug.js'
-import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
+} from '../getPageContextUrlComputed'
+import { resolvePrecendence } from './resolvePrecedence'
+import { resolveRouteString } from './resolveRouteString'
+import { resolveRouteFunction } from './resolveRouteFunction'
+import { executeOnBeforeRouteHook } from './executeOnBeforeRouteHook'
+import type { PageRoutes, RouteType } from './loadPageRoutes'
+import { debug } from './debug'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig'
 import pc from '@brillout/picocolors'
-import type { Hook } from '../hooks/getHook.js'
+import type { Hook } from '../hooks/getHook'
 
 type PageContextForRoute = PageContextUrlInternal & {
   _pageFilesAll: PageFile[]

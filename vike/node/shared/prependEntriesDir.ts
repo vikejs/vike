@@ -1,6 +1,6 @@
 export { prependEntriesDir }
 
-import { assert } from './utils.js'
+import { assert } from './utils'
 
 function prependEntriesDir(entryName: string): string {
   if (entryName.startsWith('/')) {

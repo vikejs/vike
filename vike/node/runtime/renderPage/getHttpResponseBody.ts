@@ -22,10 +22,10 @@ import {
   getStreamReadableWeb,
   pipeToStreamWritableWeb,
   pipeToStreamWritableNode
-} from '../html/stream.js'
-import { assert, assertUsage, assertWarning } from '../utils.js'
-import { getHtmlString, type HtmlRender } from '../html/renderHtml.js'
-import type { RenderHook } from './executeOnRenderHtmlHook.js'
+} from '../html/stream'
+import { assert, assertUsage, assertWarning } from '../utils'
+import { getHtmlString, type HtmlRender } from '../html/renderHtml'
+import type { RenderHook } from './executeOnRenderHtmlHook'
 import pc from '@brillout/picocolors'
 
 const streamDocs = 'See https://vike.dev/streaming for more information.'

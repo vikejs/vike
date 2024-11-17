@@ -19,9 +19,9 @@ import {
   isHtml,
   isPromise,
   objectAssign
-} from '../utils.js'
-import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
-import type { PageContextInjectAssets } from './injectAssets.js'
+} from '../utils'
+import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
+import type { PageContextInjectAssets } from './injectAssets'
 import {
   processStream,
   isStream,
@@ -29,12 +29,12 @@ import {
   streamToString,
   StreamTypePatch,
   StreamProviderNormalized
-} from './stream.js'
-import { isStreamFromReactStreamingPackage } from './stream/react-streaming.js'
-import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
-import type { PageAsset } from '../renderPage/getPageAssets.js'
-import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
-import { getGlobalContext } from '../globalContext.js'
+} from './stream'
+import { isStreamFromReactStreamingPackage } from './stream/react-streaming'
+import type { StreamFromReactStreamingPackage } from './stream/react-streaming'
+import type { PageAsset } from '../renderPage/getPageAssets'
+import type { PreloadFilter } from './injectAssets/getHtmlTags'
+import { getGlobalContext } from '../globalContext'
 import pc from '@brillout/picocolors'
 
 type DocumentHtml = TemplateWrapped | EscapedString | StreamProviderAny

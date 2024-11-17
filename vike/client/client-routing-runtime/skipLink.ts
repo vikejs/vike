@@ -1,7 +1,7 @@
 export { skipLink }
 
-import { getBaseServer } from './getBaseServer.js'
-import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils.js'
+import { getBaseServer } from './getBaseServer'
+import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')

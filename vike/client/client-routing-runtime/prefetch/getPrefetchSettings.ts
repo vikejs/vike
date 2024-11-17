@@ -4,9 +4,9 @@ export { getPrefetchSettings }
 export { PAGE_CONTEXT_MAX_AGE_DEFAULT }
 export type { PrefetchSettingResolved }
 
-import { assertUsage, assertInfo } from '../utils.js'
-import type { PageContextExports } from '../../../shared/getPageFiles.js'
-import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting.js'
+import { assertUsage, assertInfo } from '../utils'
+import type { PageContextExports } from '../../../shared/getPageFiles'
+import type { PrefetchSetting, PrefetchStaticAssets } from './PrefetchSetting'
 
 // TODO/pageContext-prefetch: Make it `Infinity` for pre-rendered pages.
 const PAGE_CONTEXT_MAX_AGE_DEFAULT = 5000

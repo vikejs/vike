@@ -1,6 +1,6 @@
 export { assertPlusFileExport }
 
-import { assert, assertUsage, assertWarning } from '../utils.js'
+import { assert, assertUsage, assertWarning } from '../utils'
 import pc from '@brillout/picocolors'
 
 const EXPORTS_IGNORE = [

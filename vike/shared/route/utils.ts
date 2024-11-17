@@ -3,24 +3,24 @@
 //  - runtime of client (Client Routing)
 
 // Ensure we don't bloat runtime of Server Routing with the utils down below
-import { assertClientRouting } from '../../utils/assertRoutingType.js'
-import { isBrowser } from '../../utils/isBrowser.js'
+import { assertClientRouting } from '../../utils/assertRoutingType'
+import { isBrowser } from '../../utils/isBrowser'
 if (isBrowser()) {
   assertClientRouting()
 }
 
-export * from '../../utils/assert.js'
-export * from '../../utils/hasProp.js'
-export * from '../../utils/isObjectWithKeys.js'
-export * from '../../utils/sorter.js'
-export * from '../../utils/isPromise.js'
-export * from '../../utils/isPlainObject.js'
-export * from '../../utils/objectAssign.js'
-export * from '../../utils/slice.js'
-export * from '../../utils/unique.js'
-export * from '../../utils/isBrowser.js'
-export * from '../../utils/parseUrl.js'
-export * from '../../utils/checkType.js'
-export * from '../../utils/joinEnglish.js'
-export * from '../../utils/truncateString.js'
-export * from '../../utils/isCallable.js'
+export * from '../../utils/assert'
+export * from '../../utils/hasProp'
+export * from '../../utils/isObjectWithKeys'
+export * from '../../utils/sorter'
+export * from '../../utils/isPromise'
+export * from '../../utils/isPlainObject'
+export * from '../../utils/objectAssign'
+export * from '../../utils/slice'
+export * from '../../utils/unique'
+export * from '../../utils/isBrowser'
+export * from '../../utils/parseUrl'
+export * from '../../utils/checkType'
+export * from '../../utils/joinEnglish'
+export * from '../../utils/truncateString'
+export * from '../../utils/isCallable'

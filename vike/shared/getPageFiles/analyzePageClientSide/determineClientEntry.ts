@@ -3,8 +3,8 @@
 export { determineClientEntry }
 export { getVikeClientEntry }
 
-import type { ClientDependency } from './ClientDependency.js'
-import type { PageFile } from '../../../shared/getPageFiles.js'
+import type { ClientDependency } from './ClientDependency'
+import type { PageFile } from '../../../shared/getPageFiles'
 
 function determineClientEntry({
   pageFilesClientSide,

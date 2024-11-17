@@ -1,8 +1,8 @@
 export { getGlobalObject }
 export { assertIsSingleModuleInstance }
 
-import { assert } from './assert.js'
-import { projectInfo } from './projectInfo.js'
+import { assert } from './assert'
+import { projectInfo } from './projectInfo'
 const projectKey = `_${projectInfo.projectName.toLowerCase()}` as const
 
 /** Share information across module instances. */

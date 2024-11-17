@@ -1,5 +1,5 @@
-import { resolveRouteString } from './resolveRouteString.js'
-import { stripAnsi } from '../../utils/stripAnsi.js'
+import { resolveRouteString } from './resolveRouteString'
+import { stripAnsi } from '../../utils/stripAnsi'
 import { expect, describe, it } from 'vitest'
 
 const r: typeof resolveRouteString = (a, b) => resolveRouteString(a, b)

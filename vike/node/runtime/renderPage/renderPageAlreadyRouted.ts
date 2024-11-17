@@ -7,31 +7,31 @@ export type { RenderContext }
 export type { PageContextAfterRender }
 export type { PageContextInitEnhanced }
 
-import { getErrorPageId } from '../../../shared/error-page.js'
-import { getHtmlString } from '../html/renderHtml.js'
-import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
-import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
-import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
-import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import { getGlobalContext } from '../globalContext.js'
-import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
+import { getErrorPageId } from '../../../shared/error-page'
+import { getHtmlString } from '../html/renderHtml'
+import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles'
+import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils'
+import { serializePageContextClientSide } from '../html/serializePageContextClientSide'
+import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed'
+import { getGlobalContext } from '../globalContext'
+import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse'
 import {
   loadUserFilesServerSide,
   PageContext_loadUserFilesServerSide,
   type PageFiles
-} from './loadUserFilesServerSide.js'
-import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../../shared/page-configs/PageConfig.js'
-import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
-import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
-import { logRuntimeError } from './loggerRuntime.js'
-import { isNewError } from './isNewError.js'
-import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide.js'
-import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
-import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
+} from './loadUserFilesServerSide'
+import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../../shared/page-configs/PageConfig'
+import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook'
+import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks'
+import { logRuntimeError } from './loggerRuntime'
+import { isNewError } from './isNewError'
+import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide'
+import { executeGuardHook } from '../../../shared/route/executeGuardHook'
+import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes'
 import pc from '@brillout/picocolors'
-import type { Hook } from '../../../shared/hooks/getHook.js'
-import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
-import { assertV1Design } from '../../shared/assertV1Design.js'
+import type { Hook } from '../../../shared/hooks/getHook'
+import { isServerSideError } from '../../../shared/misc/isServerSideError'
+import { assertV1Design } from '../../shared/assertV1Design'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 

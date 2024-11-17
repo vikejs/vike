@@ -1,7 +1,7 @@
 export { getAssetsDir }
 
 import type { ResolvedConfig } from 'vite'
-import { assertUsage } from '../utils.js'
+import { assertUsage } from '../utils'
 
 function getAssetsDir(config: ResolvedConfig) {
   let { assetsDir } = config.build

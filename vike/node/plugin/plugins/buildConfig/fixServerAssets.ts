@@ -4,12 +4,12 @@ export { fixServerAssets_isEnabled }
 import fs from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
-import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
-import { assert, getOutDirs, pLimit, unique } from '../../utils.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { manifestTempFile } from '../buildConfig.js'
+import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest'
+import { assert, getOutDirs, pLimit, unique } from '../../utils'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll'
+import { manifestTempFile } from '../buildConfig'
 import { ResolvedConfig } from 'vite'
-import { getAssetsDir } from '../../shared/getAssetsDir.js'
+import { getAssetsDir } from '../../shared/getAssetsDir'
 
 /**
  * true  => use workaround config.build.ssrEmitAssets

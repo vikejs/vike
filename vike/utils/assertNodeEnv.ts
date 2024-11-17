@@ -20,9 +20,9 @@ export { handleNodeEnv_prerender }
 export { handleNodeEnv_vitePluginVercel }
 
 import pc from '@brillout/picocolors'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-import { assertWarning } from './assert.js'
-import { vikeVitePluginLoadedInProductionError } from './assertIsNotProductionRuntime.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
+import { assertWarning } from './assert'
+import { vikeVitePluginLoadedInProductionError } from './assertIsNotProductionRuntime'
 assertIsNotBrowser()
 
 function assertNodeEnv_build() {

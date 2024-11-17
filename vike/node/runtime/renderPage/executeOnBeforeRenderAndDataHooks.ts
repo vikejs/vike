@@ -1,13 +1,13 @@
 export { executeOnBeforeRenderAndDataHooks }
 
-import { type PageContextExports } from '../../../shared/getPageFiles.js'
-import { getHook } from '../../../shared/hooks/getHook.js'
+import { type PageContextExports } from '../../../shared/getPageFiles'
+import { getHook } from '../../../shared/hooks/getHook'
 import {
   preparePageContextForUserConsumptionServerSide,
   type PageContextForUserConsumptionServerSide
-} from './preparePageContextForUserConsumptionServerSide.js'
-import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
-import { executeHook } from '../../../shared/hooks/executeHook.js'
+} from './preparePageContextForUserConsumptionServerSide'
+import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn'
+import { executeHook } from '../../../shared/hooks/executeHook'
 
 async function executeOnBeforeRenderAndDataHooks(
   pageContext: {

@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { freezePartial } from './freezePartial.js'
+import { freezePartial } from './freezePartial'
 import pc from '@brillout/picocolors'
 
 describe('freezePartial', () => {

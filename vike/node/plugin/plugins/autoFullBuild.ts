@@ -2,14 +2,14 @@ export { autoFullBuild }
 
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
-import { assertWarning } from '../utils.js'
-import { runPrerenderFromAutoFullBuild, runPrerender_forceExit } from '../../prerender/runPrerender.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
-import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
-import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
+import { assertWarning } from '../utils'
+import { runPrerenderFromAutoFullBuild, runPrerender_forceExit } from '../../prerender/runPrerender'
+import { getConfigVike } from '../../shared/getConfigVike'
+import type { ConfigVikeResolved } from '../../../shared/ConfigVike'
+import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall'
 import pc from '@brillout/picocolors'
-import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
-import { manifestTempFile } from './buildConfig.js'
+import { logErrorHint } from '../../runtime/renderPage/logErrorHint'
+import { manifestTempFile } from './buildConfig'
 
 let forceExit = false
 

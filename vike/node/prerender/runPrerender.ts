@@ -4,9 +4,9 @@ export { runPrerenderFromAutoFullBuild }
 export { runPrerender_forceExit }
 export type { PrerenderOptions }
 
-import '../runtime/page-files/setup.js'
+import '../runtime/page-files/setup'
 import path from 'path'
-import { route } from '../../shared/route/index.js'
+import { route } from '../../shared/route/index'
 import {
   assert,
   assertUsage,
@@ -26,7 +26,7 @@ import {
   PLimit,
   isArray,
   changeEnumerable
-} from './utils.js'
+} from './utils'
 import {
   prerenderPage,
   prerender404Page,
@@ -34,45 +34,45 @@ import {
   type RenderContext,
   getPageContextInitEnhanced,
   PageContextInitEnhanced
-} from '../runtime/renderPage/renderPageAlreadyRouted.js'
+} from '../runtime/renderPage/renderPageAlreadyRouted'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
-import type { PageFile } from '../../shared/getPageFiles.js'
+import type { PageFile } from '../../shared/getPageFiles'
 import {
   getGlobalContext,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
-} from '../runtime/globalContext.js'
+} from '../runtime/globalContext'
 import { resolveConfig } from 'vite'
-import { getConfigVike } from '../shared/getConfigVike.js'
+import { getConfigVike } from '../shared/getConfigVike'
 import type { InlineConfig } from 'vite'
-import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
-import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
-import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
-import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValue.js'
-import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
-import { isErrorPage } from '../../shared/error-page.js'
+import { getPageFilesServerSide } from '../../shared/getPageFiles'
+import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
+import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
+import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers'
+import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValue'
+import { loadConfigValues } from '../../shared/page-configs/loadConfigValues'
+import { isErrorPage } from '../../shared/error-page'
 import {
   getPageContextUrlComputed,
   PageContextUrlInternal,
   PageContextUrlSource
-} from '../../shared/getPageContextUrlComputed.js'
-import { isAbortError } from '../../shared/route/abort.js'
-import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
+} from '../../shared/getPageContextUrlComputed'
+import { isAbortError } from '../../shared/route/abort'
+import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
   getHookTimeoutDefault,
   getHook_setIsPrerenderering
-} from '../../shared/hooks/getHook.js'
-import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
-import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-import type { HookTimeout } from '../../shared/hooks/getHook.js'
-import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
-import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
-import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
+} from '../../shared/hooks/getHook'
+import { noRouteMatch } from '../../shared/route/noRouteMatch'
+import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig'
+import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig'
+import type { HookTimeout } from '../../shared/hooks/getHook'
+import { logErrorHint } from '../runtime/renderPage/logErrorHint'
+import { executeHook, isUserHookError } from '../../shared/hooks/executeHook'
+import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime'
 
 type HtmlFile = {
   urlOriginal: string

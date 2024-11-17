@@ -1,6 +1,6 @@
 export { getBaseServer }
 
-import { assert } from '../server-routing-runtime/utils.js'
+import { assert } from '../server-routing-runtime/utils'
 
 function getBaseServer(): string {
   // @ts-ignore Since dist/cjs/client/ is never used, we can ignore this error.

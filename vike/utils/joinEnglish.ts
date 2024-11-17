@@ -1,6 +1,6 @@
 export { joinEnglish }
 
-import { assert } from './assert.js'
+import { assert } from './assert'
 
 // https://stackoverflow.com/questions/53879088/join-an-array-by-commas-and-and/53879103#53879103
 function joinEnglish(

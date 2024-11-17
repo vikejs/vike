@@ -3,7 +3,7 @@ export { freezePartial }
 import pc from '@brillout/picocolors'
 // Unit tests at ./freezePartial.spec.ts
 
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
 assertIsNotBrowser()
 
 function freezePartial(obj: Record<string, unknown>, allowList: Record<string, (val: unknown) => boolean>) {

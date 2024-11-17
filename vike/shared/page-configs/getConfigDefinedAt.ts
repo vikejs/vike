@@ -4,10 +4,10 @@ export { getDefinedAtString }
 export type { ConfigDefinedAt }
 export type { ConfigDefinedAtOptional }
 
-import { assert, isArray } from '../utils.js'
-import type { DefinedAtData, DefinedAtFile } from './PageConfig.js'
+import { assert, isArray } from '../utils'
+import type { DefinedAtData, DefinedAtFile } from './PageConfig'
 import pc from '@brillout/picocolors'
-import { getExportPath } from './getExportPath.js'
+import { getExportPath } from './getExportPath'
 
 type ConfigDefinedAtOptional = ConfigDefinedAt | `Config ${string} defined internally`
 type ConfigDefinedAt = `Config ${string} defined at ${string}`

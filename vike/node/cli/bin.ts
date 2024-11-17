@@ -1,7 +1,7 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
-import { runPrerenderFromCLI, runPrerender_forceExit } from '../prerender/runPrerender.js'
-import { projectInfo, assertUsage, assertWarning } from './utils.js'
+import { runPrerenderFromCLI, runPrerender_forceExit } from '../prerender/runPrerender'
+import { projectInfo, assertUsage, assertWarning } from './utils'
 import pc from '@brillout/picocolors'
 
 const cli = cac(projectInfo.projectName)

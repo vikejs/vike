@@ -1,13 +1,13 @@
 export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertUsage, getOutDirs, resolveOutDir, markEnvAsVitePreview } from '../utils.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
+import { assertUsage, getOutDirs, resolveOutDir, markEnvAsVitePreview } from '../utils'
+import { getConfigVike } from '../../shared/getConfigVike'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'
-import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
-import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
+import type { ConfigVikeResolved } from '../../../shared/ConfigVike'
+import { addSsrMiddleware } from '../shared/addSsrMiddleware'
 import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 

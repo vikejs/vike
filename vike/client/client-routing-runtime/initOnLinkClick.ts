@@ -2,10 +2,10 @@
 
 export { initOnLinkClick }
 
-import { assert } from './utils.js'
-import { skipLink } from './skipLink.js'
-import { renderPageClientSide } from './renderPageClientSide.js'
-import type { ScrollTarget } from './setScrollPosition.js'
+import { assert } from './utils'
+import { skipLink } from './skipLink'
+import { renderPageClientSide } from './renderPageClientSide'
+import type { ScrollTarget } from './setScrollPosition'
 
 function initOnLinkClick() {
   document.addEventListener('click', handler)

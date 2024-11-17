@@ -28,7 +28,7 @@ import {
   makeFirst,
   isNpmPackageImport,
   reverse
-} from '../../../utils.js'
+} from '../../../utils'
 import path from 'path'
 import type {
   PageConfigGlobalBuildTime,
@@ -38,15 +38,15 @@ import type {
   PageConfigBuildTime,
   DefinedAtFilePath,
   ConfigValuesComputed
-} from '../../../../../shared/page-configs/PageConfig.js'
-import type { Config } from '../../../../../shared/page-configs/Config.js'
+} from '../../../../../shared/page-configs/PageConfig'
+import type { Config } from '../../../../../shared/page-configs/Config'
 import {
   configDefinitionsBuiltIn,
   configDefinitionsBuiltInGlobal,
   type ConfigDefinitions,
   type ConfigDefinitionInternal,
   type ConfigNameGlobal
-} from './getVikeConfig/configDefinitionsBuiltIn.js'
+} from './getVikeConfig/configDefinitionsBuiltIn'
 import {
   type LocationId,
   getLocationId,
@@ -56,33 +56,33 @@ import {
   sortAfterInheritanceOrder,
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
-} from './getVikeConfig/filesystemRouting.js'
-import { isTemporaryBuildFile } from './getVikeConfig/transpileAndExecuteFile.js'
-import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.js'
-import { getViteDevServer } from '../../../../runtime/globalContext.js'
-import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
+} from './getVikeConfig/filesystemRouting'
+import { isTemporaryBuildFile } from './getVikeConfig/transpileAndExecuteFile'
+import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid'
+import { getViteDevServer } from '../../../../runtime/globalContext'
+import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd'
 import {
   removeSuperfluousViteLog_enable,
   removeSuperfluousViteLog_disable
-} from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
+} from '../../../shared/loggerVite/removeSuperfluousViteLog'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAt } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
+import { getConfigDefinedAt } from '../../../../../shared/page-configs/getConfigDefinedAt'
 import type { ResolvedConfig } from 'vite'
-import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
-import { getConfigFileExport } from './getConfigFileExport.js'
+import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles'
+import { getConfigFileExport } from './getConfigFileExport'
 import {
   type ConfigFile,
   ImportedFilesLoaded,
   loadConfigFile,
   loadImportedFile,
   loadValueFile
-} from './getVikeConfig/loadFileAtConfigTime.js'
-import { clearFilesEnvMap, resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
-import { getFilePathResolved } from '../../../shared/getFilePath.js'
-import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
-import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { getConfigVike } from '../../../../shared/getConfigVike.js'
-import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
+} from './getVikeConfig/loadFileAtConfigTime'
+import { clearFilesEnvMap, resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport'
+import { getFilePathResolved } from '../../../shared/getFilePath'
+import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath'
+import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime'
+import { getConfigVike } from '../../../../shared/getConfigVike'
+import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions'
 
 assertIsNotProductionRuntime()
 

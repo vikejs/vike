@@ -10,7 +10,7 @@ import {
   assertIsNotProductionRuntime,
   isVersionOrAbove,
   isScriptFile
-} from '../../../../utils.js'
+} from '../../../../utils'
 import path from 'path'
 import fs from 'fs/promises'
 import type { Stats } from 'fs'
@@ -18,7 +18,7 @@ import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import pc from '@brillout/picocolors'
-import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
+import { isTemporaryBuildFile } from './transpileAndExecuteFile'
 const execA = promisify(exec)
 const TOO_MANY_UNTRACKED_FILES = 5
 

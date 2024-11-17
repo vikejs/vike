@@ -1,9 +1,9 @@
 export { getManifestEntry }
 
-import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
-import { assert, slice, assertIsNpmPackageImport } from '../../utils.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
+import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest'
+import { assert, slice, assertIsNpmPackageImport } from '../../utils'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll'
+import { prependEntriesDir } from '../../../shared/prependEntriesDir'
 
 function getManifestEntry(
   id: string,

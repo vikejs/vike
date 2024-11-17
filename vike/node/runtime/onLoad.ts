@@ -1,10 +1,10 @@
 export { onLoad }
 
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
-import { assertNodeVersion } from '../../utils/assertNodeVersion.js'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser'
+import { assertNodeVersion } from '../../utils/assertNodeVersion'
 import { installRequireShim } from '@brillout/require-shim'
-import { setAlwaysShowStackTrace } from './utils.js'
-import { isErrorDebug } from '../shared/isErrorDebug.js'
+import { setAlwaysShowStackTrace } from './utils'
+import { isErrorDebug } from '../shared/isErrorDebug'
 
 function onLoad() {
   assertIsNotBrowser()

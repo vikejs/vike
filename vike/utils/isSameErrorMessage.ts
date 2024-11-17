@@ -1,4 +1,4 @@
-import { isObject } from './isObject.js'
+import { isObject } from './isObject'
 
 export { isSameErrorMessage }
 

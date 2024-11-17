@@ -1,13 +1,13 @@
 export { devConfig }
 
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
-import { determineOptimizeDeps } from './determineOptimizeDeps.js'
-import { determineFsAllowList } from './determineFsAllowList.js'
-import { addSsrMiddleware } from '../../shared/addSsrMiddleware.js'
-import { markEnvAsViteDev } from '../../utils.js'
-import { improveViteLogs } from '../../shared/loggerVite.js'
-import { isErrorDebug } from '../../../shared/isErrorDebug.js'
-import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore.js'
+import { determineOptimizeDeps } from './determineOptimizeDeps'
+import { determineFsAllowList } from './determineFsAllowList'
+import { addSsrMiddleware } from '../../shared/addSsrMiddleware'
+import { markEnvAsViteDev } from '../../utils'
+import { improveViteLogs } from '../../shared/loggerVite'
+import { isErrorDebug } from '../../../shared/isErrorDebug'
+import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore'
 
 if (isErrorDebug()) {
   Error.stackTraceLimit = Infinity

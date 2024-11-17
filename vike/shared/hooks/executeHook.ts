@@ -3,12 +3,12 @@ export { getPageContext }
 export { providePageContext }
 export { isUserHookError }
 
-import { getProjectError, assertWarning } from '../../utils/assert.js'
-import { getGlobalObject } from '../../utils/getGlobalObject.js'
-import { humanizeTime } from '../../utils/humanizeTime.js'
-import { isObject } from '../../utils/isObject.js'
-import type { PageContextClient, PageContextServer } from '../types.js'
-import type { Hook, HookLoc } from './getHook.js'
+import { getProjectError, assertWarning } from '../../utils/assert'
+import { getGlobalObject } from '../../utils/getGlobalObject'
+import { humanizeTime } from '../../utils/humanizeTime'
+import { isObject } from '../../utils/isObject'
+import type { PageContextClient, PageContextServer } from '../types'
+import type { Hook, HookLoc } from './getHook'
 const globalObject = getGlobalObject('utils/executeHook.ts', {
   userHookErrors: new WeakMap<object, HookLoc>(),
   pageContext: null as PageContextUnknown

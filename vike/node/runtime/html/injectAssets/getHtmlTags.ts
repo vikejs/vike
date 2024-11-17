@@ -3,20 +3,20 @@ export type { HtmlTag }
 export type { PreloadFilter }
 export type { InjectFilterEntry }
 
-import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils.js'
-import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide.js'
-import { sanitizeJson } from './sanitizeJson.js'
-import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
-import { mergeScriptTags } from './mergeScriptTags.js'
-import type { PageContextInjectAssets } from '../injectAssets.js'
-import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.js'
-import type { PageAsset } from '../../renderPage/getPageAssets.js'
-import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
-import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
-import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue.js'
-import { getGlobalContext } from '../../globalContext.js'
+import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils'
+import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide'
+import { sanitizeJson } from './sanitizeJson'
+import { inferAssetTag, inferPreloadTag } from './inferHtmlTags'
+import { mergeScriptTags } from './mergeScriptTags'
+import type { PageContextInjectAssets } from '../injectAssets'
+import type { StreamFromReactStreamingPackage } from '../stream/react-streaming'
+import type { PageAsset } from '../../renderPage/getPageAssets'
+import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig'
+import { getPageConfig } from '../../../../shared/page-configs/helpers'
+import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue'
+import { getGlobalContext } from '../../globalContext'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
+import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt'
 
 const stamp = '__injectFilterEntry'
 

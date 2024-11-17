@@ -5,12 +5,12 @@ export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 // Internals needed by nitedani's experimental implementation of vike-telefunc
 export { getPageFilesAllSafe }
 
-import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
-import { getPageFilesAll, type PageFile } from '../shared/getPageFiles.js'
-import { getGlobalContext, initGlobalContext_getGlobalContextAsync } from '../node/runtime/globalContext.js'
-import { handleNodeEnv_vitePluginVercel } from '../utils/assertNodeEnv.js'
-import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'
-import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
+import { route as routeInternal, type PageRoutes } from '../shared/route/index'
+import { getPageFilesAll, type PageFile } from '../shared/getPageFiles'
+import { getGlobalContext, initGlobalContext_getGlobalContextAsync } from '../node/runtime/globalContext'
+import { handleNodeEnv_vitePluginVercel } from '../utils/assertNodeEnv'
+import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted'
+import { PageConfigRuntime } from '../shared/page-configs/PageConfig'
 
 /**
  * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel}

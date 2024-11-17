@@ -9,11 +9,11 @@ export { overwriteAssertProductionLogger }
 export { isBug }
 export { setAlwaysShowStackTrace }
 
-import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.js'
-import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
-import { getGlobalObject } from './getGlobalObject.js'
-import { isObject } from './isObject.js'
-import { projectInfo } from './projectInfo.js'
+import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance'
+import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
+import { getGlobalObject } from './getGlobalObject'
+import { isObject } from './isObject'
+import { projectInfo } from './projectInfo'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>

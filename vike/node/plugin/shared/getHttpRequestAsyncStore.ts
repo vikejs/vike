@@ -14,12 +14,12 @@
 export { getHttpRequestAsyncStore }
 export { installHttpRequestAsyncStore }
 
-import { renderPage_addWrapper } from '../../runtime/renderPage.js'
-import { assert, assertIsNotProductionRuntime, isObject, unique } from '../utils.js'
+import { renderPage_addWrapper } from '../../runtime/renderPage'
+import { assert, assertIsNotProductionRuntime, isObject, unique } from '../utils'
 import type { AsyncLocalStorage as AsyncLocalStorageType } from 'node:async_hooks'
-import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile.js'
-import { logErrorDebugNote } from './loggerNotProd.js'
-import { isEquivalentErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
+import { getConfigBuildErrorFormatted } from '../plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile'
+import { logErrorDebugNote } from './loggerNotProd'
+import { isEquivalentErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
 import { isDeepStrictEqual } from 'node:util'
 
 assertIsNotProductionRuntime()

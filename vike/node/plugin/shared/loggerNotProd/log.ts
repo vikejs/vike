@@ -3,11 +3,11 @@ export { logWithVikeTag }
 export { logDirectly }
 export { applyViteSourceMapToStackTrace }
 
-import { assert, projectInfo, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils.js'
+import { assert, projectInfo, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils'
 import pc from '@brillout/picocolors'
-import { isErrorDebug } from '../../../shared/isErrorDebug.js'
-import { getViteDevServer } from '../../../runtime/globalContext.js'
-import type { LogCategory, LogType } from '../loggerNotProd.js'
+import { isErrorDebug } from '../../../shared/isErrorDebug'
+import { getViteDevServer } from '../../../runtime/globalContext'
+import type { LogCategory, LogType } from '../loggerNotProd'
 
 assertIsNotProductionRuntime()
 

@@ -2,10 +2,10 @@ export { importUserCode }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
 import { normalizePath } from 'vite'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
-import { getConfigVike } from '../../../shared/getConfigVike.js'
-import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
-import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
+import type { ConfigVikeResolved } from '../../../../shared/ConfigVike'
+import { getConfigVike } from '../../../shared/getConfigVike'
+import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll'
+import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode'
 import {
   assert,
   assertPosixPath,
@@ -14,13 +14,13 @@ import {
   isDev3,
   isVirtualFileId,
   resolveVirtualFileId
-} from '../../utils.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile, isV1Design } from './v1-design/getVikeConfig.js'
+} from '../../utils'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll'
+import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode'
+import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile, isV1Design } from './v1-design/getVikeConfig'
 import pc from '@brillout/picocolors'
-import { logConfigInfo } from '../../shared/loggerNotProd.js'
-import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
+import { logConfigInfo } from '../../shared/loggerNotProd'
+import { getModuleFilePathAbsolute } from '../../shared/getFilePath'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig

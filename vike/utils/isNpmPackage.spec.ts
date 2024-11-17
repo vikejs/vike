@@ -1,5 +1,5 @@
 import { expect, describe, it, assert } from 'vitest'
-import { isDistinguishable, isValidPathAlias, parse } from './isNpmPackage.js'
+import { isDistinguishable, isValidPathAlias, parse } from './isNpmPackage'
 
 describe('parse()', () => {
   it('basics', () => {

@@ -1,14 +1,14 @@
-export type { PageContext } from '../shared/types.js'
-export type { PageContextServer } from '../shared/types.js'
-export type { PageContextClient } from '../shared/types.js'
-export type { PageContextWithServerRouting } from '../shared/types.js'
-export type { PageContextClientWithServerRouting } from '../shared/types.js'
+export type { PageContext } from '../shared/types'
+export type { PageContextServer } from '../shared/types'
+export type { PageContextClient } from '../shared/types'
+export type { PageContextWithServerRouting } from '../shared/types'
+export type { PageContextClientWithServerRouting } from '../shared/types'
 export type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 
 // TODO/v1-release: remove these three exports
-export type { PageContextBuiltInServer } from '../shared/types.js'
-export type { PageContextBuiltInClientWithClientRouting } from '../shared/types.js'
-export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.js'
+export type { PageContextBuiltInServer } from '../shared/types'
+export type { PageContextBuiltInClientWithClientRouting } from '../shared/types'
+export type { PageContextBuiltInClientWithServerRouting } from '../shared/types'
 
 export type {
   Config,

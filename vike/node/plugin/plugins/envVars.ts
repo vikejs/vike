@@ -2,10 +2,10 @@ export { envVarsPlugin }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
-import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
-import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
-import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
-import { normalizeId } from '../shared/normalizeId.js'
+import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils'
+import { sourceMapPassthrough } from '../shared/rollupSourceMap'
+import { getModuleFilePathAbsolute } from '../shared/getFilePath'
+import { normalizeId } from '../shared/normalizeId'
 
 // TODO/enventually: (after we implemented vike.config.js)
 // - Make import.meta.env work inside +config.js

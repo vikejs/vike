@@ -8,7 +8,7 @@ import {
   pathJoin,
   assertIsNpmPackageImport,
   assertIsNotProductionRuntime
-} from './utils.js'
+} from './utils'
 import type { ViteDevServer } from 'vite'
 import { createRequire } from 'module'
 import { dirname } from 'path'

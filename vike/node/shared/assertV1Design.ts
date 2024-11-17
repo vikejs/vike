@@ -2,9 +2,9 @@ export { assertV1Design }
 
 // TODO/next-major-release: remove
 
-import { PageFile } from '../../shared/getPageFiles.js'
-import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import { assert, assertUsage, assertWarning, isNotNullish, unique } from './utils.js'
+import { PageFile } from '../../shared/getPageFiles'
+import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig'
+import { assert, assertUsage, assertWarning, isNotNullish, unique } from './utils'
 
 function assertV1Design(pageConfigs: PageConfigBuildTime[] | boolean, pageFilesAll: PageFile[] | boolean): void {
   const isOldDesign = pageFilesAll === true || (pageFilesAll !== false && pageFilesAll.length > 0)

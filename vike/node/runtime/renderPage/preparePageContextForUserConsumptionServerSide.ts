@@ -1,12 +1,12 @@
 export { preparePageContextForUserConsumptionServerSide }
 export type { PageContextForUserConsumptionServerSide }
 
-import { assert, isPlainObject } from '../utils.js'
-import { assertPageContextUrl, PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import type { PageContextExports } from '../../../shared/getPageFiles/getExports.js'
-import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
-import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption.js'
+import { assert, isPlainObject } from '../utils'
+import { assertPageContextUrl, PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig'
+import type { PageContextExports } from '../../../shared/getPageFiles/getExports'
+import { PageContextBuiltInServerInternal } from '../../../shared/types'
+import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption'
 
 type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal &
   PageContextExports & {

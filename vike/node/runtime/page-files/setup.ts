@@ -1,4 +1,4 @@
-import { setPageFilesAsync } from '../../../shared/getPageFiles.js'
-import { getPageFilesExports } from './getPageFilesExports.js'
+import { setPageFilesAsync } from '../../../shared/getPageFiles'
+import { getPageFilesExports } from './getPageFilesExports'
 
 setPageFilesAsync(getPageFilesExports)

@@ -7,17 +7,17 @@ import type {
   PageConfigGlobalRuntime,
   ConfigValue,
   DefinedAtFile
-} from '../PageConfig.js'
+} from '../PageConfig'
 import type {
   PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized,
   ValueSerialized
-} from './PageConfigSerialized.js'
-import { assert, assertUsage, isCallable } from '../../utils.js'
-import { getConfigDefinedAt } from '../getConfigDefinedAt.js'
-import type { ConfigValueSerialized } from './PageConfigSerialized.js'
+} from './PageConfigSerialized'
+import { assert, assertUsage, isCallable } from '../../utils'
+import { getConfigDefinedAt } from '../getConfigDefinedAt'
+import type { ConfigValueSerialized } from './PageConfigSerialized'
 import { parseTransform } from '@brillout/json-serializer/parse'
-import { assertPlusFileExport } from '../assertPlusFileExport.js'
+import { assertPlusFileExport } from '../assertPlusFileExport'
 
 function parseConfigValuesSerialized(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
   const configValues = parseConfigValuesSerialized_tmp(configValuesSerialized)

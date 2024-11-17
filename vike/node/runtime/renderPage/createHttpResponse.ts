@@ -5,18 +5,18 @@ export { createHttpResponseRedirect }
 export { createHttpResponseFavicon404 }
 export type { HttpResponse }
 
-import type { GetPageAssets } from './getPageAssets.js'
-import { assert, assertWarning, escapeHtml } from '../utils.js'
-import type { HtmlRender } from '../html/renderHtml.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import { getErrorPageId, isErrorPage } from '../../../shared/error-page.js'
-import type { RenderHook } from './executeOnRenderHtmlHook.js'
-import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared/route/abort.js'
-import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody.js'
-import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
-import { getCacheControl } from './createHttpResponse/getCacheControl.js'
-import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
-import type { PageFile } from '../../../shared/getPageFiles.js'
+import type { GetPageAssets } from './getPageAssets'
+import { assert, assertWarning, escapeHtml } from '../utils'
+import type { HtmlRender } from '../html/renderHtml'
+import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig'
+import { getErrorPageId, isErrorPage } from '../../../shared/error-page'
+import type { RenderHook } from './executeOnRenderHtmlHook'
+import type { RedirectStatusCode, AbortStatusCode, UrlRedirect } from '../../../shared/route/abort'
+import { getHttpResponseBody, getHttpResponseBodyStreamHandlers, HttpResponseBody } from './getHttpResponseBody'
+import { getEarlyHints, type EarlyHint } from './getEarlyHints'
+import { getCacheControl } from './createHttpResponse/getCacheControl'
+import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect'
+import type { PageFile } from '../../../shared/getPageFiles'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode

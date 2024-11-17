@@ -30,12 +30,12 @@ import {
   createDebugger,
   assertFilePathAbsoluteFilesystem,
   assertIsNpmPackageImport
-} from '../../../../utils.js'
-import { transformPointerImports } from './transformPointerImports.js'
-import { vikeConfigDependencies } from '../getVikeConfig.js'
-import 'source-map-support/register.js'
-import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'
+} from '../../../../utils'
+import { transformPointerImports } from './transformPointerImports'
+import { vikeConfigDependencies } from '../getVikeConfig'
+import 'source-map-support/register'
+import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath'
+import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath'
 import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url

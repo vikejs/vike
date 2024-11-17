@@ -1,7 +1,7 @@
 export { isViteCliCall }
 export { getViteConfigFromCli }
 
-import { assert, isObject, toPosixPath } from '../utils.js'
+import { assert, isObject, toPosixPath } from '../utils'
 import { cac } from 'cac'
 
 function isViteCliCall(): boolean {

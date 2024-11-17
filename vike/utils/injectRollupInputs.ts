@@ -2,9 +2,9 @@ export { injectRollupInputs }
 export { normalizeRollupInput }
 
 import type { ResolvedConfig, Rollup } from 'vite'
-import { assert } from './assert.js'
-import { isObject } from './isObject.js'
-import { isArray } from './isArray.js'
+import { assert } from './assert'
+import { isObject } from './isObject'
+import { isArray } from './isArray'
 type InputOption = Rollup.InputOption
 type InputsMap = Record<string, string>
 

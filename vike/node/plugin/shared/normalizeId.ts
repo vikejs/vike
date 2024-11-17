@@ -1,6 +1,6 @@
 export { normalizeId }
 
-import { toPosixPath } from '../utils.js'
+import { toPosixPath } from '../utils'
 
 // In principle Vite/Rollup should always normalize the `id` in `transform(code, id)` but it seems to not always do it.
 // https://github.com/vikejs/vike/issues/1935

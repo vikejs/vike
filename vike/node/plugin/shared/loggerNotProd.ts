@@ -18,9 +18,9 @@ export type { LogErrorArgs }
 export type { LogType }
 export type { LogCategory }
 
-import { isAbortError } from '../../../shared/route/abort.js'
-import { getViteConfig } from '../../runtime/globalContext.js'
-import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime.js'
+import { isAbortError } from '../../../shared/route/abort'
+import { getViteConfig } from '../../runtime/globalContext'
+import { overwriteRuntimeProductionLogger } from '../../runtime/renderPage/loggerRuntime'
 import {
   assert,
   assertIsNotProductionRuntime,
@@ -29,19 +29,19 @@ import {
   overwriteAssertProductionLogger,
   stripAnsi,
   warnIfErrorIsNotObject
-} from '../utils.js'
-import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
-import { isErrorDebug } from '../../shared/isErrorDebug.js'
-import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
+} from '../utils'
+import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore'
+import { isErrorDebug } from '../../shared/isErrorDebug'
+import { isErrorWithCodeSnippet, getPrettyErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet'
 import {
   getConfigExecutionErrorIntroMsg,
   getConfigBuildErrorFormatted
-} from '../plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile.js'
-import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log.js'
+} from '../plugins/importUserCode/v1-design/getVikeConfig/transpileAndExecuteFile'
+import { logWithVikeTag, logWithViteTag, logDirectly, applyViteSourceMapToStackTrace } from './loggerNotProd/log'
 import pc from '@brillout/picocolors'
-import { setAlreadyLogged } from '../../runtime/renderPage/isNewError.js'
-import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
-import { isUserHookError } from '../../../shared/hooks/executeHook.js'
+import { setAlreadyLogged } from '../../runtime/renderPage/isNewError'
+import { onRuntimeError } from '../../runtime/renderPage/loggerProd'
+import { isUserHookError } from '../../../shared/hooks/executeHook'
 
 assertIsNotProductionRuntime()
 overwriteRuntimeProductionLogger(logRuntimeError, logRuntimeInfo)

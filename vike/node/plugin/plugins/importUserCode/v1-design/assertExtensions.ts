@@ -2,9 +2,9 @@ export { assertExtensionsConventions }
 export { assertExtensionsPeerDependencies }
 
 import pc from '@brillout/picocolors'
-import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
-import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../utils.js'
-import { getConfigValueInterfaceFile, type InterfaceFile } from './getVikeConfig.js'
+import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings'
+import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../utils'
+import { getConfigValueInterfaceFile, type InterfaceFile } from './getVikeConfig'
 import path from 'path'
 import semver from 'semver'
 

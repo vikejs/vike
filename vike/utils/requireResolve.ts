@@ -1,10 +1,10 @@
 export { requireResolve }
 
-import { assert } from './assert.js'
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.js'
-import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
-import { scriptFileExtensionList } from './isScriptFile.js'
+import { assert } from './assert'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
+import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime'
+import { assertPosixPath, toPosixPath } from './filesystemPathHandling'
+import { scriptFileExtensionList } from './isScriptFile'
 import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url

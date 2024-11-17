@@ -1,6 +1,6 @@
 export { onLoad }
 
-import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser.js'
+import { assertIsNotBrowser } from '../../utils/assertIsNotBrowser'
 
 function onLoad() {
   assertIsNotBrowser()

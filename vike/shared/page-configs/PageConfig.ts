@@ -17,10 +17,10 @@ export type { DefinedAtData }
 export type { DefinedAtFile }
 export type { DefinedAtFilePath }
 
-import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
-import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
-import type { FilePath } from './FilePath.js'
-import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+import type { ConfigValueSerialized } from './serialize/PageConfigSerialized'
+import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting'
+import type { FilePath } from './FilePath'
+import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn'
 
 type PageConfigBase = {
   pageId: string

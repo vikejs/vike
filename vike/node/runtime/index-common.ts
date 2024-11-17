@@ -1,17 +1,17 @@
-export { renderPage } from './renderPage.js'
-export { escapeInject, dangerouslySkipEscape } from './html/renderHtml.js'
-export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream.js'
-export { PROJECT_VERSION as version } from './utils.js'
-export { getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
+export { renderPage } from './renderPage'
+export { escapeInject, dangerouslySkipEscape } from './html/renderHtml'
+export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream'
+export { PROJECT_VERSION as version } from './utils'
+export { getGlobalContextSync, getGlobalContextAsync } from './globalContext'
 
 // TODO/v1-release: remove
-export { injectAssets__public as _injectAssets } from './html/injectAssets/injectAssets__public.js'
+export { injectAssets__public as _injectAssets } from './html/injectAssets/injectAssets__public'
 // TODO/v1-release: remove
-export { createPageRenderer } from '../createPageRenderer.js'
+export { createPageRenderer } from '../createPageRenderer'
 
 addEcosystemStamp()
 
-import './page-files/setup.js'
+import './page-files/setup'
 
 // Used by:
 // - Telefunc (to detect the user's stack https://github.com/brillout/telefunc/blob/8288310e88e06a42b710d39c39fb502364ca6d30/telefunc/utils/isVikeApp.ts#L4)

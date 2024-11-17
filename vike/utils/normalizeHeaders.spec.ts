@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { normalizeHeaders } from './normalizeHeaders.js'
+import { normalizeHeaders } from './normalizeHeaders'
 
 describe('normalizeHeaders()', () => {
   it('works', () => {

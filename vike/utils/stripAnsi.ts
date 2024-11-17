@@ -1,6 +1,6 @@
 export { stripAnsi }
 
-import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser'
 assertIsNotBrowser()
 
 const ansiRegex = getAnsiRegex()

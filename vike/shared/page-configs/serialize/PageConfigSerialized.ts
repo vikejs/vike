@@ -8,7 +8,7 @@ import type {
   ConfigValueComputed,
   ConfigValueCumulative,
   PageConfigRuntime
-} from '../PageConfig.js'
+} from '../PageConfig'
 
 /** Page config data structure serialized in virtual files: parsing it results in PageConfigRuntime */
 type PageConfigRuntimeSerialized = Omit<PageConfigRuntime, 'configValues'> & {

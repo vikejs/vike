@@ -17,23 +17,23 @@ import {
   type OutDirs,
   assertNodeEnv_build,
   assertIsNpmPackageImport
-} from '../utils.js'
-import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
-import { findPageFiles } from '../shared/findPageFiles.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
+} from '../utils'
+import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig'
+import { findPageFiles } from '../shared/findPageFiles'
+import { getConfigVike } from '../../shared/getConfigVike'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
-import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
-import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll'
+import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig'
+import type { FileType } from '../../../shared/getPageFiles/fileTypes'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery'
 import { createRequire } from 'module'
 import fs from 'fs/promises'
 import path from 'path'
-import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { set_ASSETS_MAP } from './importBuild/index.js'
-import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
-import { getFilePathResolved } from '../shared/getFilePath.js'
-import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
+import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets'
+import { set_ASSETS_MAP } from './importBuild/index'
+import { prependEntriesDir } from '../../shared/prependEntriesDir'
+import { getFilePathResolved } from '../shared/getFilePath'
+import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
