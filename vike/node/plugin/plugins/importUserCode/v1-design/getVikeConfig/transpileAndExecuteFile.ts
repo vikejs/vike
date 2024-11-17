@@ -194,17 +194,19 @@ async function transpileWithEsbuild(
           //   - isNpmPackageImport(str, { cannotBePathAlias: true })
           assertFilePathAbsoluteFilesystem(importPathResolved)
 
-          // vike-{react,vue,solid} follow the convention that their config export resolves to a file named +config.js
-          //  - This is temporary, see comment below.
-          const isVikeExtensionImport = importPathResolved.endsWith('+config.js')
+          //  Should be remove this? See comment below.
+          const isVikeExtensionImport =
+            (path.startsWith('vike-') && path.endsWith('/config')) || importPathResolved.endsWith('+config.js')
 
           const isPointerImport =
             transformImports === 'all' ||
             // .jsx, .vue, .svg, ... => obviously not config code => pointer import
             !isPlainJavaScriptFile(importPathResolved) ||
             // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a config has been set by the user or by a Vike extension).
-            //  - TODO/eventually: stop doing this and, instead, let Node.js directly load vike-{react,vue,solid} while enforcing Vike extensions to set 'name' in their +config.js file.
-            //    - vike@0.4.162 already started soft-requiring Vike extensions to set the name config
+            //  - Should we stop doing this? (And instead let Node.js directly load Vike extensions.)
+            //    - In principle, we can use the setting 'name' value of Vike extensions.
+            //      - vike@0.4.162 started soft-requiring Vike extensions to set the name config.
+            //    - In practice, it seems like it requires some (non-trivial?) refactoring.
             isVikeExtensionImport
 
           assertPosixPath(importPathResolved)

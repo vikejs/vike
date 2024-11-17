@@ -6,7 +6,14 @@ export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
-import { assert, assertUsage, hasProp, assertIsNotProductionRuntime } from '../../../../utils.js'
+import {
+  assert,
+  assertUsage,
+  hasProp,
+  assertIsNotProductionRuntime,
+  isArrayOfStrings,
+  isObject
+} from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
@@ -90,7 +97,7 @@ async function loadExtendsConfigs(
   userRootDir: string,
   visited: string[]
 ) {
-  const extendsPointerImportData = getExtendsPointerImportData(configFileExports, configFilePath)
+  const { extendsPointerImportData, extendsConfigs } = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
   extendsPointerImportData.map((pointerImportData) => {
     const filePath = resolvePointerImport(pointerImportData, configFilePath, userRootDir)
@@ -98,7 +105,6 @@ async function loadExtendsConfigs(
     extendsConfigFiles.push(filePath)
   })
 
-  const extendsConfigs: ConfigFile[] = []
   await Promise.all(
     extendsConfigFiles.map(async (configFilePath) => {
       const result = await loadConfigFile(configFilePath, userRootDir, visited, true)
@@ -111,29 +117,39 @@ async function loadExtendsConfigs(
 
   return { extendsConfigs, extendsFilePaths }
 }
-function getExtendsPointerImportData(
-  configFileExports: Record<string, unknown>,
-  configFilePath: FilePathResolved
-): PointerImportData[] {
+function getExtendsPointerImportData(configFileExports: Record<string, unknown>, configFilePath: FilePathResolved) {
   const { filePathToShowToUser } = configFilePath
   const configFileExport = getConfigFileExport(configFileExports, filePathToShowToUser)
-  const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
-    'extends'
-  )} to an invalid value, see https://vike.dev/extends`
-  let extendList: string[]
-  if (!('extends' in configFileExport)) {
-    return []
-  } else if (hasProp(configFileExport, 'extends', 'string')) {
-    extendList = [configFileExport.extends]
-  } else if (hasProp(configFileExport, 'extends', 'string[]')) {
-    extendList = configFileExport.extends
-  } else {
-    assertUsage(false, wrongUsage)
+  const extendsConfigs: ConfigFile[] = []
+  const extendsPointerImportData: PointerImportData[] = []
+  if ('extends' in configFileExport) {
+    const extendsValue = configFileExport.extends
+    const extendList: string[] = []
+    const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
+      'extends'
+    )} to an invalid value, see https://vike.dev/extends`
+    if (typeof extendsValue === 'string') {
+      extendList.push(extendsValue)
+    } else if (isArrayOfStrings(extendsValue)) {
+      extendList.push(...extendsValue)
+    } else if (isObject(extendsValue)) {
+      /* If we want to implement this then we need to make filePath optional
+      extendsConfigs.push({
+        fileExports: extendsValue,
+        filePath: null,
+      })
+      */
+      assertUsage(false, wrongUsage)
+    } else {
+      assertUsage(false, wrongUsage)
+    }
+    extendsPointerImportData.push(
+      ...extendList.map((importString) => {
+        const pointerImportData = parsePointerImportData(importString)
+        assertUsage(pointerImportData, wrongUsage)
+        return pointerImportData
+      })
+    )
   }
-  const extendsPointerImportData = extendList.map((importString) => {
-    const pointerImportData = parsePointerImportData(importString)
-    assertUsage(pointerImportData, wrongUsage)
-    return pointerImportData
-  })
-  return extendsPointerImportData
+  return { extendsPointerImportData, extendsConfigs }
 }
