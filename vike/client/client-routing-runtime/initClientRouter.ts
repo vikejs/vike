@@ -7,6 +7,7 @@ import { initOnLinkClick } from './initOnLinkClick.js'
 import { setupNativeScrollRestoration } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
 import { initLinkPrefetchHandlers } from './prefetch.js'
+import { initHistoryState, monkeyPatchHistoryAPI } from './history.js'
 
 async function initClientRouter() {
   // Init navigation history and scroll restoration
@@ -35,6 +36,8 @@ async function renderFirstPage() {
 }
 
 function initHistoryAndScroll() {
+  monkeyPatchHistoryAPI()
+  initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
   setupNativeScrollRestoration()
   autoSaveScrollPosition()
   // Handle back-/forward navigation
