@@ -1,12 +1,13 @@
 export { pushHistoryState }
 export { onPopStateBegin }
 export { saveScrollPosition }
+export { enhanceHistoryState }
+export { monkeyPatchHistoryAPI }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { assert, assertUsage, getCurrentUrl, getGlobalObject, hasProp, isObject } from './utils.js'
 
-init()
 const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })
 
 type StateEnhanced = {
@@ -153,11 +154,6 @@ function assertStateVikeEnhanced(state: unknown): asserts state is StateEnhanced
     assert(hasProp(state, 'scrollPosition', 'object'))
     assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
   }
-}
-
-function init() {
-  enhanceHistoryState()
-  monkeyPatchHistoryAPI()
 }
 
 type HistoryInfo = {
