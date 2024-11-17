@@ -8,7 +8,7 @@ export type { ScrollPosition }
 
 import { assert, assertUsage, getCurrentUrl, getGlobalObject, hasProp, isObject } from './utils.js'
 
-initHistoryState()
+initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
 const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })
 
 type StateEnhanced = {

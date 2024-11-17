@@ -37,7 +37,7 @@ async function renderFirstPage() {
 
 function initHistoryAndScroll() {
   monkeyPatchHistoryAPI()
-  initHistoryState()
+  initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
   setupNativeScrollRestoration()
   autoSaveScrollPosition()
   // Handle back-/forward navigation
