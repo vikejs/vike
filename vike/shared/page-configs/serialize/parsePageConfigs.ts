@@ -150,6 +150,7 @@ function parseValueSerialized(
       const isSideExport = exportName !== 'default' && exportName !== configName
       if (!isSideExport) {
         value = exportValue
+        // Already asserted by assertPlusFileExport() call above.
         assert(!valueWasFound)
         valueWasFound = true
       } else {
@@ -166,7 +167,7 @@ function parseValueSerialized(
         })
       }
     })
-    // Already validated by assertPlusFileExport() call above.
+    // Already asserted by assertPlusFileExport() call above.
     assert(valueWasFound)
     return { value, sideExports }
   }

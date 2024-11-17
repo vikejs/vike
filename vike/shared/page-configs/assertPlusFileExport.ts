@@ -30,9 +30,7 @@ function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToSh
     assertUsage(false, `${filePathToShowToUser} should have ${exportNamed} or ${exportDefault}`)
   }
   if (exportNamesValid.length === 2) {
-    assertWarning(false, `${filePathToShowToUser} is ambiguous: remove ${exportDefault} or ${exportNamed}`, {
-      onlyOnce: true
-    })
+    assertUsage(false, `${filePathToShowToUser} is ambiguous: remove ${exportDefault} or ${exportNamed}`)
   }
   if (!TOLERATE_SIDE_EXPORTS.some((ext) => filePathToShowToUser.endsWith(ext))) {
     exportNamesInvalid.forEach((exportInvalid) => {
