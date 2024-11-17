@@ -1,3 +1,12 @@
+## [0.4.203](https://github.com/vikejs/vike/compare/v0.4.202...v0.4.203) (2024-11-17)
+
+
+### Bug Fixes
+
+* allow Vike extensions to omit + in file names (vikejs/vike-react[#151](https://github.com/vikejs/vike/issues/151)) ([#1963](https://github.com/vikejs/vike/issues/1963)) ([f9f0c5a](https://github.com/vikejs/vike/commit/f9f0c5a308ee18cac86a02aef34c610abdf310b0))
+
+
+
 ## [0.4.202](https://github.com/vikejs/vike/compare/v0.4.201...v0.4.202) (2024-11-16)
 
 
