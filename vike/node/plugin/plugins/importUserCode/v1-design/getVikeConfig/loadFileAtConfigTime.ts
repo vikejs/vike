@@ -6,7 +6,14 @@ export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
-import { assert, assertUsage, hasProp, assertIsNotProductionRuntime, isArrayOfStrings } from '../../../../utils.js'
+import {
+  assert,
+  assertUsage,
+  hasProp,
+  assertIsNotProductionRuntime,
+  isArrayOfStrings,
+  isObject
+} from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
@@ -125,6 +132,14 @@ function getExtendsPointerImportData(configFileExports: Record<string, unknown>,
       extendList.push(extendsValue)
     } else if (isArrayOfStrings(extendsValue)) {
       extendList.push(...extendsValue)
+    } else if (isObject(extendsValue)) {
+      /* If we want to implement this then we need to make filePath optional
+      extendsConfigs.push({
+        fileExports: extendsValue,
+        filePath: null,
+      })
+      */
+      assertUsage(false, wrongUsage)
     } else {
       assertUsage(false, wrongUsage)
     }
