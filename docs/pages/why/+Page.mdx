@@ -1,17 +1,19 @@
-import { Link, Construction } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
 <Link href="#flexible" /><br/>
-<Link href="#dependable" /><br/>
+<Link href="#reliable" /><br/>
 
-<Construction>This page is work-in-progress and part of our <Link href="/releases/2024-06#new-marketing">ongoing work to overhaul Vike's marketing</Link>.</Construction>
+Rationale for using Vike. This page is technical, see the <Link href="/">landing page</Link> for a less technical introduction to Vike.
 
 
 ## Flexible
 
-Vike is designed to be flexible, so that it can fit your needs.
+Vike is designed from the ground up to be flexible, so that it can adopt your company requirements.
 
-### Architectural freedom
+> With other frameworks, it's often the other way around: you have to adapt your company requirements to the framework. With Vike, this is a rare outcome.
+
+## Your stack, your choice
 
 With Vike you have architectural freedom and you can choose any deployment strategy, any backend, any data-fetching tool, any UI library, and any render mode.
 
@@ -42,7 +44,19 @@ Architectural freedom also enables you to continuously adapt your stack to needs
 > - Start with <Link href="/RPC">RPC</Link>, then progressively switch to GraphQL if/when the need arises.
 > - Start a JavaScript backend then, if the need arises, progressively switch to a highly-scalable backend such as Elixir.
 
-### Eject, for fully custom integrations
+## Cutting edge, at your own pace
+
+Stop using a framework that forces you to use the bleeding edge. Use new technologies at your own pace, and only if you see fit.
+
+Vike's dual approach of having stable as well as cutting-edge extensions gives you choice:
+- Go without a conservative stack &mdash; if your company prefers stability.
+- G
+
+> While some are early adopters, most companies prefer stability. Not every company has the capacity to risk experimenting with new and unstable technology.
+>
+> For companies exploring the technological frontier, Vike's do-one-thing-do-it-well architecture and <Link href="/optional-control">Optional Control</Link> and cutting-edge extensions provide unprecedented opportunities to push the envelope.
+
+## Eject, for fully custom integrations
 
 Use <Link href="/extensions">Vike extensions</Link> for a quick start and, later, if an extension doesn't integrate a tool exactly as you need, you can eject it and fully customize the integration.
 
@@ -52,7 +66,9 @@ You get the best of both worlds: a quick start without compromising on flexibili
 
 > For example, you can use <UiFrameworkExtension name /> to get a quick start like a regular framework (Next.js/Nuxt/...) while, later, you can eject and fully customize the React/Vue/Solid integration.
 
-### Less blockers, by caring and prioritization
+## Build Your Own Framework
+
+## Less blockers, by caring and prioritization
 
 Vike is flexible not only by design but also by prioritization: we focus on the long tail of details and features that unblock users. It's often the small details that decide whether you can achieve your goal.
 
@@ -65,11 +81,11 @@ Vike is flexible not only by design but also by prioritization: we focus on the 
 A common source of blockers are bugs, and that's why we [systematically and quickly fix bugs](https://github.com/vikejs/vike/issues?q=label%3A%22bug+%3Aboom%3A%22+) &mdash; usually under 24 hours.
 
 
-## Dependable
+## Reliable
 
-Vike's architecture provides a uniquely robust foundation.
+Vike's architecture provides a robust foundation.
 
-### Stable core, for maximum stability (and innovation)
+## Stable core, for stability and innovation
 
 Vike, essentially, is a core that is extensible, robust, and stable.
 
@@ -83,20 +99,27 @@ Only carefully selected and battle-tested new techniques make it to stable exten
 >
 > After (and only if) we're confident about RSC, we will release it as `vike-react` and rename the current extension to `vike-react-classic` while maintaining both extensions for the foreseeable future.
 
-### Use new technology at your own pace
 
-Stop using a framework that forces you to use the bleeding edge. Use new technologies at your own pace, and only if you see fit.
+## Philosophy
 
-Vike's dual approach of having stable as well as cutting-edge extensions gives you choice.
+Everything we do is driven by our core principles. These are the fundamental reasons why we believe you can trust Vike.
 
-> While some are early adopters, many prefer stability: not every company has the capacity to experiment with new and unstable technology.
->
-> For companies that like exploring the technological frontier, Vike's <Link href="/optional-control">Optional Control</Link> and cutting-edge extensions are a treasure trove.
+## Do-one-thing-do-it-well architecture
 
-### By engineers, for engineers
+Vike is meticulously designed with a clean separation of concerns. , enabling:
+ - You have the architectural freedom.
+ - Architectural components can be developed independently of each other.
 
-Vike is a community-driven and independent project 100% led by engineers.
+for unprecedented flexibility and robustness.
 
-We don't serve the interests of any unrelated business, we serve the interests of our users. This makes a profound and fundamental difference.
+## Optional Control
+
+## Led by engineers
+
+Vike is an independent project 100% led by engineers: we don't serve the interests of an unrelated business &mdash; we only serve the interests of our users.
+
+> This makes a profound and fundamental difference.
 
 > For example, we also care about the "old-school" setup of having a Java/PHP/Ruby backend with a decoupled statically deployed frontend. Other frameworks that make money from JavaScript server deployments are naturally inclined to prioritize differently.
+
+
