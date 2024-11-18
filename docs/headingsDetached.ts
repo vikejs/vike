@@ -84,6 +84,10 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/naive-ui'
   },
   {
+    title: 'Chakra UI',
+    url: '/chakra'
+  },
+  {
     title: 'React',
     url: '/react',
     sectionTitles: ['React Server Components']
