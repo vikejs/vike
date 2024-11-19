@@ -4,45 +4,36 @@ import { UiFrameworkExtension } from '../../components'
 <Link href="#flexible" /><br/>
 <Link href="#reliable" /><br/>
 
-Rationale for using Vike. This page is technical, see the <Link href="/">landing page</Link> for a less technical introduction to Vike.
-
-
-## Flexible
-
-Vike is designed from the ground up to be flexible, so that it can adopt your company requirements.
-
-> With other frameworks, it's often the other way around: you have to adapt your company requirements to the framework. With Vike, this is a rare outcome.
+Rationale for using Vike.
 
 ## Your stack, your choice
 
-With Vike you have architectural freedom and you can choose any deployment strategy, any backend, any data-fetching tool, any UI library, and any render mode.
+You can use any:
+- UI framework (React, Vue, Solid, ...)
+- Renderering strategy (SSR, SSG, SPA, MPA, islands, ...)
+- Data fetching (RPC, GraphQL, REST, ...)
+- Deployment strategy (static, server, edge, ...)
+- Server (Express.js, Hono, Fastify, ...)
 
-> For example, you can choose any:
-> - UI framework: **React**, **Vue**, **Solid**, ...
-> - Render mode: **SSR**, **SSG**, **SPA**, **MPA**, ...
-> - Data fetching.
->   - <Link href="/RPC">**RPC**</Link>: tRPC, Telefunc, ...
->   - **GraphQL**: Apollo, Relay, ...
->   - **REST**: TanStack Query, `fetch()`, ...
-> - Deployment strategy.
->   - **Static host**, using <Link href="/pre-rendering">pre-rendering (aka SSG)</Link> with Netlify, GitHub Pages, ...
->   - **Server**: AWS EC2, DigitalOcean, ...
->   - **Serverless**: Vercel, AWS Lambda, ...
->   - **Edge**: Cloudflare Workers, Deno Deploy, ...
-> - Backend.
->   - **Zero backend**: SSG, Firebase, Cloudflare, ...
->   - **JavaScript server**: Express.js, Hono, Deno, Bun, Fastify, ...
->   - **Non-JavaScript server**: Java, Ruby on Rails, Laravel, ...
+This flexibility is powered by **low-level APIs**.
 
-> If you are curious, see <Link href="/architecture" /> for an explanation on why Vike's design is flexible.
+For example, by using Vike's lowel-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> you can integrate an UI framework (React, Vue, ...) you want.
 
-Architectural freedom also enables you to continuously adapt your stack to needs that evolve as you grow.
+> When getting started with Vike you usually don't use these low-level APIs and you use Vike extensions instead. (Vike extensions essentially implement such low-level hooks on your behalf.)
+>
+> For example, most users start with `vike-react` or `vike-vue` for a quick start similar Next.js or Nuxt.
+>
+> Later, if you need more control, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` and go with a custom React/Vue integration.
 
-> For example:
-> - You don't know whether to use SSR, SPA, or SSG? Start with your best guess and progressively switch as it becomes clearer which fits better.
-> - You aren't sure whether to use React, Vue, or Solid? Start with your intuition and reasses your choice as you gain experience. You can switch and migrate <Link href="/config#powerful:~:text=different%20rendering%20strategies%20for%20the%20same%20app">in a progressive fashion</Link>.
-> - Start with <Link href="/RPC">RPC</Link>, then progressively switch to GraphQL if/when the need arises.
-> - Start a JavaScript backend then, if the need arises, progressively switch to a highly-scalable backend such as Elixir.
+Another example is Vike's server middleware <Link href="/renderPage"><code>renderPage()</code></Link> which enables you to embed Vike into:
+- Any server (Express.js, Hono, Fastify, ...)
+- Any deployement environment (AWS, Cloudflare, Vecel, ...)
+
+Vike's architectural freedom is also important in the sense that it enables you to continuously and progressively adapt your stack the your evolving needs with need to costly framework migration.
+
+> For example, you may start with an SPA and later realize that you need SSR; Vike enables you to easily add SSR to an exsiting SPA.
+
+
 
 ## Cutting edge, at your own pace
 
@@ -112,6 +103,18 @@ Vike is meticulously designed with a clean separation of concerns. , enabling:
 
 for unprecedented flexibility and robustness.
 
+- Do-one-thing-do-it-well architecture
+  > Designed with a **clean separation of concerns**, for unprecedented flexibility and robustness.
+
+- Community-driven
+  > Led by a team of engineers that is responsive and **driven by the success of its users**. Your success is our success.
+
+- JavaScript unleashed
+  > Vike's do-one-thing-do-it-well architecture creates a **wide surface for innovation** — the secret sauce to JavaScript's vibrant ecosystem.
+
+
+
+
 ## Optional Control
 
 ## Led by engineers
@@ -123,3 +126,7 @@ Vike is an independent project 100% led by engineers: we don't serve the interes
 > For example, we also care about the "old-school" setup of having a Java/PHP/Ruby backend with a decoupled statically deployed frontend. Other frameworks that make money from JavaScript server deployments are naturally inclined to prioritize differently.
 
 
+
+## Reponsive
+
+> We are 
