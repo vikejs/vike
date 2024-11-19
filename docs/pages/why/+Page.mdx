@@ -1,9 +1,6 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
-<Link href="#flexible" /><br/>
-<Link href="#reliable" /><br/>
-
 Rationale for using Vike.
 
 ## Your stack, your choice
@@ -15,7 +12,13 @@ You can use any:
 - Deployment strategy (static, server, edge, ...)
 - Server (Express.js, Hono, Fastify, ...)
 
-This flexibility is powered by **low-level APIs**.
+From high-level design to the smallest details, Vike is built with flexibility in mind. So that Vike can adopt your company requirements.
+
+> With other frameworks, it's often the other way around: you have to adapt your company requirements to the framework. With Vike, this is a rare outcome.
+
+**Flexible by design**
+
+Vike's flexible design is powered by **low-level APIs**.
 
 For example, by using Vike's lowel-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> you can integrate an UI framework (React, Vue, ...) you want.
 
@@ -29,15 +32,21 @@ Another example is Vike's server middleware <Link href="/renderPage"><code>rende
 - Any server (Express.js, Hono, Fastify, ...)
 - Any deployement environment (AWS, Cloudflare, Vecel, ...)
 
-Vike's architectural freedom is also important in the sense that it enables you to continuously and progressively adapt your stack the your evolving needs with need to costly framework migration.
+Vike's architectural freedom is also important so that you can continuously and progressively adapt your stack to your evolving needs without having a costly framework migration.
 
-> For example, you may start with an SPA and later realize that you need SSR; Vike enables you to easily add SSR to an exsiting SPA.
+> Other frameworks tightly couple architectural components with their framework which we believe is fundamental and structural mistake. For example, Next.js tightly couples RPC (Server Actions) while it's notoriously hard to integrate GraphQL with Next.js. Gatsby, on the other hand, tightly couples GraphQL. It's Vike's core believe to separate the data fetching tools from the frontend framework; that way you can choose any data fething strategy and progressively migrate from one to another.
+
+> For example, Vike enables you to start with an SPA and later, if end up needing SSR, <Link href="/ssr">you can easily add SSR</Link> to your existing app.
+
+**Flexible by prioritization**
+
+Not only is Vike flexible by design, but it's also flexible by prioritization: if you create a feature requests and you explain why not having this feature is blocking then we'll treat your request with higher priority.
+
+We also quickly fix bugs (usually under 24 hours) also because bugs are often blockers.
 
 
 
 ## Cutting edge, at your own pace
-
-Stop using a framework that forces you to use the bleeding edge. Use new technologies at your own pace, and only if you see fit.
 
 Vike's dual approach of having stable as well as cutting-edge extensions gives you choice:
 - Go without a conservative stack &mdash; if your company prefers stability.
@@ -56,6 +65,7 @@ If you were to eject all extensions, then you would have complete control over h
 You get the best of both worlds: a quick start without compromising on flexibility.
 
 > For example, you can use <UiFrameworkExtension name /> to get a quick start like a regular framework (Next.js/Nuxt/...) while, later, you can eject and fully customize the React/Vue/Solid integration.
+
 
 ## Build Your Own Framework
 
