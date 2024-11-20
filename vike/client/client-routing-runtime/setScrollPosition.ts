@@ -20,14 +20,22 @@ function setScrollPosition(scrollTarget: ScrollTarget): void {
 // Replicates the browser's native behavior
 function scrollToTopOrHash() {
   const hash = getUrlHash()
-  if (!hash || hash === 'top') {
-    setScroll({ x: 0, y: 0 })
+  if (!hash) {
+    scrollToTop()
   } else {
-    const hashTarget = document.getElementById(hash) || document.getElementsByName(hash)[0]
+    const id = decodeURIComponent(hash)
+    const hashTarget = document.getElementById(id) || document.getElementsByName(id)[0]
     if (hashTarget) {
       hashTarget.scrollIntoView()
+      // Is this standard? We just copied SvelteKit: https://github.com/sveltejs/kit/blob/94c45b9372a9ed2b80e21cdca3f235c45edaa5b0/packages/kit/src/runtime/client/client.js#L2132
+      hashTarget.focus()
+    } else if (hash === 'top') {
+      scrollToTop()
     }
   }
+}
+function scrollToTop() {
+  setScroll({ x: 0, y: 0 })
 }
 
 /** Change the browser's scoll position, in a way that works during a repaint. */
