@@ -4,15 +4,15 @@ import { getBaseServer } from './getBaseServer.js'
 import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
-  const url = linkTag.getAttribute('href')
+  const href = linkTag.getAttribute('href')
   return (
-    url === null ||
-    !isUrl(url) ||
-    url === '' ||
-    isUrlExternal(url) ||
-    isHashUrl(url) ||
+    href === null ||
+    !isUrl(href) ||
+    href === '' ||
+    isUrlExternal(href) ||
+    isHashUrl(href) ||
     isNewTabLink(linkTag) ||
-    !hasBaseServer(url) ||
+    !hasBaseServer(href) ||
     // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
     !isVikeLink(linkTag)
   )
@@ -34,20 +34,20 @@ function isNewTabLink(linkTag: HTMLElement) {
   const rel = linkTag.getAttribute('rel')
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
 }
-function isHashUrl(url: string) {
-  if (url.startsWith('#')) {
+function isHashUrl(href: string) {
+  if (href.startsWith('#')) {
     return true
   }
   const removeHash = (url: string) => url.split('#')[0]
-  if (url.includes('#') && removeHash(url) === removeHash(window.location.pathname)) {
+  if (href.includes('#') && removeHash(href) === removeHash(window.location.pathname)) {
     return true
   }
   return false
 }
-function hasBaseServer(url: string): boolean {
+function hasBaseServer(href: string): boolean {
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
-  const { hasBaseServer } = parseUrl(url, baseServer)
+  const { hasBaseServer } = parseUrl(href, baseServer)
   return hasBaseServer
 }
 
