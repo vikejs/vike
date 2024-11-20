@@ -8,10 +8,9 @@ import { renderPageClientSide } from './renderPageClientSide.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 
 function initOnLinkClick() {
-  document.addEventListener('click', handler)
+  document.addEventListener('click', onClick)
 }
-
-async function handler(ev: MouseEvent) {
+async function onClick(ev: MouseEvent) {
   if (!isNormalLeftClick(ev)) return
 
   const linkTag = findLinkTag(ev.target as HTMLElement)
