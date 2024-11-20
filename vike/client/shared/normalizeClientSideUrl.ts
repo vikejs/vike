@@ -2,6 +2,7 @@ export { normalizeClientSideUrl }
 
 import { assert, parseUrl } from './utils.js'
 
+/** Resolves relative URLs */
 function normalizeClientSideUrl(url: string, options?: { withoutHash: true }): `/${string}` {
   const { searchOriginal, hashOriginal, pathname } = parseUrl(url, '/')
   let urlCurrent: string
