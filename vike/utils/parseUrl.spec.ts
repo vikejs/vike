@@ -1102,7 +1102,7 @@ describe('parseUrl', () => {
     `)
   })
 
-  it('relative paths', () => {
+  it('relative paths - server-side', () => {
     // Shouldn't this resolve to `{ pathname: '/b1/b2' }`? I don't remember why I used to be fine with following test.
     expect(parseUrl('.', '/b1/b2/')).toMatchInlineSnapshot(`
       {
@@ -1173,7 +1173,8 @@ describe('parseUrl', () => {
       }
     `)
   })
-  it('relative paths - browser-side', () => {
+
+  it('relative paths - client-side', () => {
     // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://100.115.92.194:3000/?q=any' } }
     expect(parseUrl('?q=any', '/')).toMatchInlineSnapshot(`
@@ -1268,6 +1269,42 @@ describe('parseUrl', () => {
         "origin": null,
         "pathname": "/bla",
         "pathnameOriginal": "../../../../bla",
+        "port": null,
+        "protocol": null,
+        "search": {},
+        "searchAll": {},
+        "searchOriginal": null,
+      }
+    `)
+    // @ts-ignore
+    globalThis.window = { document: { baseURI: 'http://localhost:3000/some/dir' } }
+    expect(parseUrl('', '/')).toMatchInlineSnapshot(`
+      {
+        "hasBaseServer": true,
+        "hash": "",
+        "hashOriginal": null,
+        "hostname": null,
+        "href": "/some/dir",
+        "origin": null,
+        "pathname": "/some/dir",
+        "pathnameOriginal": "",
+        "port": null,
+        "protocol": null,
+        "search": {},
+        "searchAll": {},
+        "searchOriginal": null,
+      }
+    `)
+    expect(parseUrl('#', '/')).toMatchInlineSnapshot(`
+      {
+        "hasBaseServer": true,
+        "hash": "",
+        "hashOriginal": "#",
+        "hostname": null,
+        "href": "/some/dir#",
+        "origin": null,
+        "pathname": "/some/dir",
+        "pathnameOriginal": "",
         "port": null,
         "protocol": null,
         "search": {},
