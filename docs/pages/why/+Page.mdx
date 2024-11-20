@@ -14,14 +14,12 @@ You can use any:
 - UI framework (React, Vue, Solid, ...)
 - Renderering strategy (SSR, SSG, SPA, MPA, islands, ...)
 - Data fetching (RPC, GraphQL, REST, ...)
-- Deployment strategy (static, server, edge, ...)
-- Server (Express.js, Hono, Fastify, ...)
 
 From high-level design to the smallest details, Vike is built with flexibility in mind. So that Vike can adopt your company requirements.
 
 **Flexible by design**
 
-Vike's flexible design is powered by **low-level APIs**.
+Vike's flexibility is powered by **low-level APIs**.
 
 For example, by using Vike's lowel-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> you can integrate an UI framework (React, Vue, ...) you want.
 
@@ -31,11 +29,14 @@ For example, by using Vike's lowel-level hooks <Link href="/onRenderHtml">`onRen
 >
 > Later, if you need more control, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` and go with a custom React/Vue integration.
 
-Another example is Vike's server middleware <Link href="/renderPage"><code>renderPage()</code></Link> which enables you to embed Vike into:
-- Any server (Express.js, Hono, Fastify, ...)
-- Any deployement environment (AWS, Cloudflare, Vecel, ...)
+Another example is Vike's server middleware <Link href="/renderPage"><code>renderPage()</code></Link> which enables you to embed Vike into any:
+- Server (Express.js, Hono, Fastify, ...)
+- Deployement (AWS, Cloudflare, Vercel, ...)
 
-Vike's architectural freedom is also important so that you can continuously and progressively adapt your stack to your evolving needs without having a costly framework migration.
+Instead of using `renderPage()` with a server, you can pre-render your pages and deploy your app to any static host.
+
+
+> Vike's architectural freedom is also important so that you can continuously and progressively adapt your stack to your evolving needs without having a costly framework migration.
 
 > Other frameworks tightly couple architectural components with their framework which we believe is fundamental and structural mistake. For example, Next.js tightly couples RPC (Server Actions) while it's notoriously hard to integrate GraphQL with Next.js. Gatsby, on the other hand, tightly couples GraphQL. It's Vike's core believe to separate the data fetching tools from the frontend framework; that way you can choose any data fething strategy and progressively migrate from one to another.
 
@@ -91,21 +92,25 @@ Vike enables you to stay on a conservative stack as long you need to while migra
 
 Say goodbye to big never-ending migrations.
 
-**Reliable, by care**
 
-**We are responsive** with a clear guideline on how to receive guaranteed assistance.
 
-**Bugs are quickly fixed** (usually under 24 hours).
+**Strong leadership**
 
-**Transparent business model**
+Vike's team is responsive <Link href="/faq#how-can-i-reach-out-for-help">with a clear guideline</Link> on how to receive assistance.
 
-Vike's *Open Source Pricing* keeps code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount, for a **transparent and sustainable relationship**.
+Bugs are quickly fixed (usually under 24 hours).
+
+We designed Vike's *Open Source Pricing* to keep code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.
+
+See the next section <Link href="#philosophy" /> to learn more.
 
 
 
 ## Philosophy
 
 Everything we do is guided by our core beliefs &mdash; the essence of Vike.
+
+**User-driven**
 
 **Do-one-thing-do-it-well architecture**
 
