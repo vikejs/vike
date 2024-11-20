@@ -1,5 +1,6 @@
 export { setScrollPosition }
 export { autoSaveScrollPosition }
+export { scrollToHashOrTop }
 export type { ScrollTarget }
 
 import { assert, onPageHide, sleep, throttle } from './utils.js'

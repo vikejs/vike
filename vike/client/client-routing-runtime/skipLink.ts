@@ -1,4 +1,5 @@
 export { skipLink }
+export { isSameAsCurrentUrl }
 
 import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'
@@ -45,6 +46,9 @@ function isSamePageHashLink(href: string) {
   }
   assert(!href.startsWith('#'))
   return false
+}
+function isSameAsCurrentUrl(href: string) {
+  return normalizeClientSideUrl(href) === normalizeClientSideUrl(window.location.href)
 }
 function hasBaseServer(href: string): boolean {
   const baseServer = getBaseServer()
