@@ -166,7 +166,7 @@ function getPathnameAbsoluteWithBase(
     }
 
     const pathnameAbsoluteWithBase = resolveUrlPathnameRelative(url, base)
-    return { protocol: null, origin: null, pathnameAbsoluteWithBase: pathnameAbsoluteWithBase }
+    return { protocol: null, origin: null, pathnameAbsoluteWithBase }
   }
 }
 function parseOrigin(url: string): { pathname: string; origin: null | string; protocol: null | string } {
