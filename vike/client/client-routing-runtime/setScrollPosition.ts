@@ -14,12 +14,12 @@ function setScrollPosition(scrollTarget: ScrollTarget): void {
   if (scrollTarget?.preserveScroll) {
     return
   }
-  scrollToTopOrHash()
+  const hash = getUrlHash()
+  scrollToHashOrTop(hash)
 }
 
 // Replicates the browser's native behavior
-function scrollToTopOrHash() {
-  const hash = getUrlHash()
+function scrollToHashOrTop(hash: null | string) {
   if (!hash) {
     scrollToTop()
   } else {
