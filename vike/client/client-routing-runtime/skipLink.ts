@@ -11,7 +11,7 @@ function skipLink(linkTag: HTMLElement): boolean {
     !isUrl(href) ||
     href === '' ||
     isUrlExternal(href) ||
-    isHashLink(href) ||
+    isSamePageHashLink(href) ||
     isNewTabLink(linkTag) ||
     !hasBaseServer(href) ||
     // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
@@ -35,7 +35,7 @@ function isNewTabLink(linkTag: HTMLElement) {
   const rel = linkTag.getAttribute('rel')
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
 }
-function isHashLink(href: string) {
+function isSamePageHashLink(href: string) {
   if (
     href.includes('#') &&
     normalizeClientSideUrl(href, { withoutHash: true }) ===
