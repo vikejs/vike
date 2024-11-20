@@ -61,9 +61,9 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   assert(baseServer.startsWith('/'))
 
   // Hash
-  const [urlWithoutHash, ...hashList] = url.split('#')
+  const [urlWithoutHash, ...h] = url.split('#')
   assert(urlWithoutHash !== undefined)
-  const hashOriginal = (['', ...hashList].join('#') as undefined | `#${string}`) || null
+  const hashOriginal = (['', ...h].join('#') as undefined | `#${string}`) || null
   assert(hashOriginal === null || hashOriginal.startsWith('#'))
   const hash = hashOriginal === null ? '' : decodeSafe(hashOriginal.slice(1))
 
