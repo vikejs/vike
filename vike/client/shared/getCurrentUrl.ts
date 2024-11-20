@@ -1,16 +1,7 @@
 export { getCurrentUrl }
 
-import { assert, parseUrl } from './utils.js'
+import { normalizeClientSideUrl } from './normalizeClientSideUrl.js'
 
 function getCurrentUrl(options?: { withoutHash: true }): `/${string}` {
-  const url = window.location.href
-  const { searchOriginal, hashOriginal, pathname } = parseUrl(url, '/')
-  let urlCurrent: string
-  if (options?.withoutHash) {
-    urlCurrent = `${pathname}${searchOriginal || ''}`
-  } else {
-    urlCurrent = `${pathname}${searchOriginal || ''}${hashOriginal || ''}`
-  }
-  assert(urlCurrent.startsWith('/'))
-  return urlCurrent as `/${string}`
+  return normalizeClientSideUrl(window.location.href, options)
 }
