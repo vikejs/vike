@@ -1,5 +1,6 @@
 export { skipLink }
 
+import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'
 import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils.js'
 
@@ -10,7 +11,7 @@ function skipLink(linkTag: HTMLElement): boolean {
     !isUrl(href) ||
     href === '' ||
     isUrlExternal(href) ||
-    isHashUrl(href) ||
+    isHashLink(href) ||
     isNewTabLink(linkTag) ||
     !hasBaseServer(href) ||
     // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
@@ -34,14 +35,15 @@ function isNewTabLink(linkTag: HTMLElement) {
   const rel = linkTag.getAttribute('rel')
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
 }
-function isHashUrl(href: string) {
-  if (href.startsWith('#')) {
+function isHashLink(href: string) {
+  if (
+    href.includes('#') &&
+    normalizeClientSideUrl(href, { withoutHash: true }) ===
+      normalizeClientSideUrl(window.location.href, { withoutHash: true })
+  ) {
     return true
   }
-  const removeHash = (url: string) => url.split('#')[0]
-  if (href.includes('#') && removeHash(href) === removeHash(window.location.pathname)) {
-    return true
-  }
+  assert(!href.startsWith('#'))
   return false
 }
 function hasBaseServer(href: string): boolean {
