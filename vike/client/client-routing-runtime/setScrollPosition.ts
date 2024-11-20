@@ -38,7 +38,15 @@ function scrollToTop() {
   setScroll({ x: 0, y: 0 })
 }
 
-/** Change the browser's scoll position, in a way that works during a repaint. */
+/**
+ * Change the browser's scroll position, in a way that works during a repaint.
+ *
+ * I don't remember exactly why I implemented this and what I meant with "repaint"
+ * - https://github.com/vikejs/vike/commit/fd70fadb0bcea8d922f961f1c88713994e0aaf34
+ * - I guess scrolling doesn't work during a page rendering? So we have to re-scroll until the scroll position is correct?
+ * - Do other frameworks implement this? SvelteKit doesn't seem to.
+ * - Let's remove it and see if users complain?
+ */
 function setScroll(scrollPosition: ScrollPosition) {
   const scroll = () => window.scrollTo(scrollPosition.x, scrollPosition.y)
   const done = () => window.scrollX === scrollPosition.x && window.scrollY === scrollPosition.y
