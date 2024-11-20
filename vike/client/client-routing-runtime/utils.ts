@@ -4,10 +4,6 @@
 import { onLoad } from './onLoad.js'
 onLoad()
 
-// We load the Server Routing utils: we tolerate the tiny amount of code that is only needed by Server Routing (only 1-2 lines).
-// We re-export some of the utils down below only to list the utils needed by Client Routing.
-export * from '../server-routing-runtime/utils.js'
-
 export * from '../../utils/assert.js'
 export * from '../../utils/assertSingleInstance.js'
 export * from '../../shared/hooks/executeHook.js'
