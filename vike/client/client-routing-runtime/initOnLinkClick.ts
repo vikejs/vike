@@ -16,10 +16,10 @@ async function onClick(ev: MouseEvent) {
   const linkTag = findLinkTag(ev.target as HTMLElement)
   if (!linkTag) return
 
-  const url = linkTag.getAttribute('href')
+  const href = linkTag.getAttribute('href')
 
   if (skipLink(linkTag)) return
-  assert(url)
+  assert(href)
   ev.preventDefault()
 
   let scrollTarget: ScrollTarget
@@ -29,7 +29,7 @@ async function onClick(ev: MouseEvent) {
   }
   await renderPageClientSide({
     scrollTarget,
-    urlOriginal: url,
+    urlOriginal: href,
     isBackwardNavigation: false
   })
 }
