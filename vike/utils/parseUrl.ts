@@ -42,11 +42,11 @@ type UrlPublic = {
   /** The URL search parameters array, e.g. `{ fruit: ['apple', 'orange'] }` for `https://example.com?fruit=apple&fruit=orange` **/
   searchAll: Record<string, string[]>
   /** The URL search parameterer string, e.g. `?details=yes` in `https://example.com/product/42?details=yes#reviews` */
-  searchOriginal: null | string
+  searchOriginal: null | `?${string}`
   /** The URL hash, e.g. `reviews` in `https://example.com/product/42?details=yes#reviews` */
   hash: string
   /** The URL hash string, e.g. `#reviews` in `https://example.com/product/42?details=yes#reviews` */
-  hashOriginal: null | string
+  hashOriginal: null | `#${string}`
 
   // TODO/v1-release: remove
   /** @deprecated */
@@ -63,14 +63,14 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
   assert(urlWithoutHash !== undefined)
-  const hashOriginal = ['', ...hashList].join('#') || null
+  const hashOriginal = (['', ...hashList].join('#') as undefined | `#${string}`) || null
   assert(hashOriginal === null || hashOriginal.startsWith('#'))
   const hash = hashOriginal === null ? '' : decodeSafe(hashOriginal.slice(1))
 
   // Search
   const [urlWithoutHashNorSearch, ...searchList] = urlWithoutHash.split('?')
   assert(urlWithoutHashNorSearch !== undefined)
-  const searchOriginal = ['', ...searchList].join('?') || null
+  const searchOriginal = (['', ...searchList].join('?') as undefined | `?${string}`) || null
   assert(searchOriginal === null || searchOriginal.startsWith('?'))
   const search: Record<string, string> = {}
   const searchAll: Record<string, string[]> = {}
