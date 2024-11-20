@@ -5,7 +5,6 @@ export { firstRenderStartPromise }
 
 import {
   assert,
-  getCurrentUrl,
   isSameErrorMessage,
   objectAssign,
   redirectHard,
@@ -53,6 +52,7 @@ import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageContextExports } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
+import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true

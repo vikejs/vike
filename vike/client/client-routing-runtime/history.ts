@@ -6,7 +6,8 @@ export { monkeyPatchHistoryAPI }
 export type { HistoryInfo }
 export type { ScrollPosition }
 
-import { assert, assertUsage, getCurrentUrl, getGlobalObject, hasProp, isObject } from './utils.js'
+import { getCurrentUrl } from '../shared/getCurrentUrl.js'
+import { assert, assertUsage, getGlobalObject, hasProp, isObject } from './utils.js'
 
 initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
 const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })
