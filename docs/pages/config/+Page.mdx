@@ -86,12 +86,14 @@ pages/product/@id/+Page.jsx
 pages/product/@id/+Layout.jsx
 ```
 
-> The directory `(marketing)` is used for <Link href="/routing#groups">grouping</Link> and is ignored by <Link href="/filesystem-routing">Filesystem Routing</Link>.
+> The directory `(marketing)` is ignored by <Link href="/filesystem-routing">Filesystem Routing</Link>: it's used for <Link href="/routing#groups">grouping</Link>.
+
+Where:
 
 - `pages/(marketing)/+Layout.jsx` applies to all pages living at `pages/(marketing)/**`
 - `pages/admin-panel/+Layout.jsx` applies to all pages living at `pages/admin-panel/**`
 - `pages/product/@id/+Layout.jsx` applies to one page `pages/product/@id/+Page.jsx`
-  > Technically `pages/product/@id/+Layout.jsx` applies to all pages at `/pages/product/@id/**` but there is only one page living there.
+   > Technically, `pages/product/@id/+Layout.jsx` applies to all pages at `/pages/product/@id/**` but there is only one page living there.
 
 ### Defaults
 
