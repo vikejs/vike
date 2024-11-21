@@ -10,43 +10,30 @@ Deep dive into what makes Vike special.
 
 ## Your stack, your choice
 
-You can use any:
-- UI framework (React, Vue, Solid, ...)
-- Renderering strategy (SSR, SSG, SPA, MPA, islands, ...)
-- Data fetching (RPC, GraphQL, REST, ...)
-
-From high-level design to the smallest details, Vike is built with flexibility in mind. So that Vike can adopt your company requirements.
+From high-level design to the smallest details, Vike is built with flexibility in mind.
 
 **Flexible by design**
 
-Vike's flexibility is powered by **low-level APIs**.
+Vike's flexibility is powered by low-level APIs.
 
-For example, by using Vike's lowel-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> you can integrate an UI framework (React, Vue, ...) you want.
+For example, Vike's lowel-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> give you full control over integration so that you can use any:
+ - UI framework (React, Vue, ...)
+ - Rendering strategy (SSR, SSG, SPA, islands, ...)
 
-> When getting started with Vike you usually don't use these low-level APIs and you use Vike extensions instead. (Vike extensions essentially implement such low-level hooks on your behalf.)
+> For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using these low-level APIs. For example, use `vike-react` or `vike-vue` for a quick start similar Next.js or Nuxt.
 >
-> For example, most users start with `vike-react` or `vike-vue` for a quick start similar Next.js or Nuxt.
->
-> Later, if you need more control, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` and go with a custom React/Vue integration.
+> Later, if the need arises for more control, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` for a custom React/Vue integration.
 
-Another example is Vike's server middleware <Link href="/renderPage"><code>renderPage()</code></Link> which enables you to embed Vike into any:
+
+Another example is Vike's server middleware <Link href="/renderPage"><code>renderPage()</code></Link> enabling you to embed Vike into any:
 - Server (Express.js, Hono, Fastify, ...)
 - Deployement (AWS, Cloudflare, Vercel, ...)
 
-Instead of using `renderPage()` with a server, you can pre-render your pages and deploy your app to any static host.
-
-
-> Vike's architectural freedom is also important so that you can continuously and progressively adapt your stack to your evolving needs without having a costly framework migration.
-
-> Other frameworks tightly couple architectural components with their framework which we believe is fundamental and structural mistake. For example, Next.js tightly couples RPC (Server Actions) while it's notoriously hard to integrate GraphQL with Next.js. Gatsby, on the other hand, tightly couples GraphQL. It's Vike's core believe to separate the data fetching tools from the frontend framework; that way you can choose any data fething strategy and progressively migrate from one to another.
-
-> For example, Vike enables you to start with an SPA and later, if end up needing SSR, <Link href="/ssr">you can easily add SSR</Link> to your existing app.
-
-> Vike's flexibility enables you to replicate any framework, or better yet, <Link href="/build-your-own-framework">build your own framework</Link> tailored to your company requirements and that integrates all your tools: frontend, backend, data fetching, authentication, deployement, etc. This enables your junior developers to focus on building user interfaces while giving your senior developers the power of fully owning the architecture. It's a powerful way to scale your teams and have a cohesive stack throughout your company.
+> Alternatively, you can <Link href="/pre-rending">pre-render your pages</Link> and deploy your app to any static host.
 
 **Flexible by prioritization**
 
-Not only is Vike flexible by design, but it's also flexible by prioritization.For example, if you create a feature request and explain why not having this feature is blocking you then we'll treat it with higher priority.
+For example, if you create a feature request and explain why not having this feature is blocking you then we'll treat it with higher priority.
 
 **Cutting-edge or conservative stack, your choice**
 
@@ -134,3 +121,23 @@ Vike is an independent project 100% led by engineers: we don't serve the interes
 > This makes a profound and fundamental difference.
 
 > For example, we also care about the "old-school" setup of having a Java/PHP/Ruby backend with a decoupled statically deployed frontend. Other frameworks that make money from JavaScript server deployments are naturally inclined to prioritize differently.
+
+
+
+## Trash
+
+
+So that Vike can adopt your company requirements.
+> With other frameworks, it's often the other way around: you have to adapt your company requirements to the framework. With Vike, this is a rare outcome.
+
+- Data fetching (RPC, GraphQL, REST, ...)
+
+
+> Vike's architectural freedom is also important so that you can continuously and progressively adapt your stack to your evolving needs without having a costly framework migration.
+
+> Other frameworks tightly couple architectural components with their framework which we believe is fundamental and structural mistake. For example, Next.js tightly couples RPC (Server Actions) while it's notoriously hard to integrate GraphQL with Next.js. Gatsby, on the other hand, tightly couples GraphQL. It's Vike's core believe to separate the data fetching tools from the frontend framework; that way you can choose any data fething strategy and progressively migrate from one to another.
+
+> For example, Vike enables you to start with an SPA and later, if end up needing SSR, <Link href="/ssr">you can easily add SSR</Link> to your existing app.
+
+> Vike's flexibility enables you to replicate any framework, or better yet, <Link href="/build-your-own-framework">build your own framework</Link> tailored to your company requirements and that integrates all your tools: frontend, backend, data fetching, authentication, deployement, etc. This enables your junior developers to focus on building user interfaces while giving your senior developers the power of fully owning the architecture. It's a powerful way to scale your teams and have a cohesive stack throughout your company.
+
