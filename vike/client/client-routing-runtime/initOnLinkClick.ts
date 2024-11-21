@@ -22,7 +22,9 @@ async function onClick(ev: MouseEvent) {
   // - https://github.com/vikejs/vike/issues/1962
   // - https://github.com/sveltejs/kit/issues/8725
   if (href?.includes('#') && isSameAsCurrentUrl(href)) {
+    // Prevent Firefox from setting `window.history.state` to `null`
     ev.preventDefault()
+    // Replicate the browser's native behavior
     scrollToHashOrTop(href.split('#')[1]!)
     return
   }
