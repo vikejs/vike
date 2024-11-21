@@ -69,7 +69,7 @@ function getState(): StateEnhanced {
   // - Therefore, we have to monkey patch history.pushState() and history.replaceState()
   // - Therefore, we need the assert() below to ensure history.state has been enhanced by Vike
   //   - If users stumble upon this assert() then let's make it a assertUsage()
-  assert(isVikeEnhanced(state))
+  assert(isVikeEnhanced(state), { state })
   return state
 }
 function getStateNotEnhanced(): StateNotEnhanced {
