@@ -1,10 +1,11 @@
 export { navigate }
 export { reload }
 
+import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import { firstRenderStartPromise, renderPageClientSide } from './renderPageClientSide.js'
 import type { ScrollTarget } from './setScrollPosition.js'
-import { assertClientRouting, getCurrentUrl } from './utils.js'
+import { assertClientRouting } from './utils.js'
 
 assertClientRouting()
 

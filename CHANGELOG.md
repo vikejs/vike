@@ -1,3 +1,18 @@
+## [0.4.204](https://github.com/vikejs/vike/compare/v0.4.203...v0.4.204) (2024-11-20)
+
+
+### Bug Fixes
+
+* fix export assertion (fix [#1964](https://github.com/vikejs/vike/issues/1964)) ([162a660](https://github.com/vikejs/vike/commit/162a660d3b896ed195c09c9a8b8dc89be350bce3))
+* fix resolving of relative URL with hash ([9f54397](https://github.com/vikejs/vike/commit/9f54397eb75a809d6a3f54887290cbea783908f9))
+* improve client-side init execution order (fix [#1962](https://github.com/vikejs/vike/issues/1962)) ([#1965](https://github.com/vikejs/vike/issues/1965)) ([1b14559](https://github.com/vikejs/vike/commit/1b145596768fb6151ebe40e0e2b1c6b28898e353))
+* improve detection of hash navigation link ([953f625](https://github.com/vikejs/vike/commit/953f625e7f0dd8e0d0b3c08264236ffad3fbcc90))
+* improve type of hashOriginal and searchOriginal ([6c69cb5](https://github.com/vikejs/vike/commit/6c69cb5ad550e5a3a6a9a9beed8f77eade15121e))
+* minor hash scrolling fix ([b4c0f11](https://github.com/vikejs/vike/commit/b4c0f1168cb32e6ebda9053bb54370a6f0c35caa))
+* workaround Firefox bug upon clicking hash link that doesn't change URL (fix [#1962](https://github.com/vikejs/vike/issues/1962)) ([cb7f3ff](https://github.com/vikejs/vike/commit/cb7f3ffdd32f85d6af24d431cf24df7bcce5c61b))
+
+
+
 ## [0.4.203](https://github.com/vikejs/vike/compare/v0.4.202...v0.4.203) (2024-11-17)
 
 

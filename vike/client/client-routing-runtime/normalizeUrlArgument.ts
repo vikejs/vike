@@ -7,6 +7,7 @@ function normalizeUrlArgument(url: string, fnName: 'prefetch' | 'navigate'): str
   const errMsg = `[${fnName}(url)] Invalid URL ${url}`
   assertUsage(isUrl(url), errMsg)
   if (url.startsWith(location.origin)) {
+    // Use normalizeClientSideUrl() instead?
     url = url.slice(location.origin.length)
   }
   assertUsage(

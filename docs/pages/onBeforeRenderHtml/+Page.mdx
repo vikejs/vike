@@ -1,8 +1,8 @@
 import { Link } from '@brillout/docpress'
-import { ImplementedBy } from '../../components'
+import { ImplementedBy, UiFrameworkExtension } from '../../components'
 
 Environment: server.
 
-<ImplementedBy by={<Link href="/vike-vue"><code>vike-vue</code></Link>} noCustomGuide={true}>`onBeforeRenderHtml()`</ImplementedBy>
+<ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>} noCustomGuide={true}>`onBeforeRenderHtml()`</ImplementedBy>
 
 Same as <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link> but called right before the `+Page` component is rendered to HTML.
