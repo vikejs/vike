@@ -3,12 +3,11 @@ import { UiFrameworkExtension } from '../../components'
 
 Deep dive into what makes Vike special.
 
-<Link href="#your-stack-your-choice" /><br/>
-<Link href="#reliable-future-proof" /><br/>
+<Link href="#flexible-and-reliable" /><br/>
 <Link href="#philosophy" /><br/>
 
 
-## Your stack, your choice
+## Flexible and reliable
 
 From high-level design to the smallest details, Vike is built with flexibility in mind.
 
@@ -16,14 +15,13 @@ From high-level design to the smallest details, Vike is built with flexibility i
 
 Vike's flexibility is powered by low-level APIs.
 
-For example, Vike's lowel-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> give you full control over integration so that you can use any:
+For example, Vike's lowel-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> give you full control over integrating any:
  - UI framework (React, Vue, ...)
  - Rendering strategy (SSR, SSG, SPA, islands, ...)
 
 > For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using these low-level APIs. For example, use `vike-react` or `vike-vue` for a quick start similar Next.js or Nuxt.
 >
 > Later, if the need arises for more control, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` for a custom React/Vue integration.
-
 
 Another example is Vike's server middleware <Link href="/renderPage"><code>renderPage()</code></Link> enabling you to embed Vike into any:
 - Server (Express.js, Hono, Fastify, ...)
@@ -33,7 +31,9 @@ Another example is Vike's server middleware <Link href="/renderPage"><code>rende
 
 **Flexible by prioritization**
 
-For example, if you create a feature request and explain why not having this feature is blocking you then we'll treat it with higher priority.
+If you create a feature request and explain why not having this feature is blocking you then we'll treat it with higher priority.
+
+We quickly fix bugs (usually under 24 hours) as bugs are often blockers.
 
 **Cutting-edge or conservative stack, your choice**
 
@@ -60,9 +60,7 @@ Vike's dual approach of having stable as well as cutting-edge extensions gives y
 > For companies exploring the technological frontier, Vike's do-one-thing-do-it-well architecture and <Link href="/optional-control">Optional Control</Link> and cutting-edge extensions provide unprecedented opportunities to push the envelope.
 
 
-## Reliable & future-proof
-
-**A resilient foundation you can lean on**
+**Future-proof**
 
 Vike's flexible core is unopinionated and **open to JavaScript's rapidly evolving ecosystem** &mdash; place your bets on a framework that embraces the future.
 
@@ -73,23 +71,11 @@ Vike's core, 90% of Vike's source code takes a couple of bets that  thin layers 
 
 In other words: Vike is resilient.
 
-**Progressively adopt the future**
+**Adopt the future, progressively**
 
 Vike enables you to stay on a conservative stack as long you need to while migrating towards new tools and apporaches one page and one architectural component at a time.
 
 Say goodbye to big never-ending migrations.
-
-
-
-**Strong leadership**
-
-Vike's team is responsive <Link href="/faq#how-can-i-reach-out-for-help">with a clear guideline</Link> on how to receive assistance.
-
-Bugs are quickly fixed (usually under 24 hours).
-
-We designed Vike's *Open Source Pricing* to keep code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.
-
-See the next section <Link href="#philosophy" /> to learn more.
 
 
 
@@ -116,11 +102,22 @@ Vike is carefully designed with a clean separation of concerns in mind, for unpr
 
 **Led by engineers**
 
-Vike is an independent project 100% led by engineers: we don't serve the interests of an unrelated business &mdash; we only serve the interests of our users.
+Vike is an independent project 100% led by a strong leadership of engineers: we don't serve the interests of an unrelated business &mdash; we only serve the interests of our users.
+
+Building a framework is complex and it's paramount for a framework to be led by a strong engineering leadership that deeply cares about design.
 
 > This makes a profound and fundamental difference.
 
 > For example, we also care about the "old-school" setup of having a Java/PHP/Ruby backend with a decoupled statically deployed frontend. Other frameworks that make money from JavaScript server deployments are naturally inclined to prioritize differently.
+
+**Strong leadership**
+
+Vike's team is responsive <Link href="/faq#how-can-i-reach-out-for-help">with a clear guideline</Link> on how to receive assistance.
+
+We designed Vike's *Open Source Pricing* to keep code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.
+
+See the next section <Link href="#philosophy" /> to learn more.
+
 
 
 
@@ -141,3 +138,5 @@ So that Vike can adopt your company requirements.
 
 > Vike's flexibility enables you to replicate any framework, or better yet, <Link href="/build-your-own-framework">build your own framework</Link> tailored to your company requirements and that integrates all your tools: frontend, backend, data fetching, authentication, deployement, etc. This enables your junior developers to focus on building user interfaces while giving your senior developers the power of fully owning the architecture. It's a powerful way to scale your teams and have a cohesive stack throughout your company.
 
+
+Bugs are quickly fixed (usually under 24 hours).
