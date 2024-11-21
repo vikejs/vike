@@ -282,10 +282,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/hattip'
   },
   {
-    title: 'Architecture',
-    url: '/architecture'
-  },
-  {
     title: 'Optional Control',
     url: '/optional-control'
   },

@@ -6,19 +6,21 @@ Deep dive into what makes Vike special.
 - Vike's <Link href="#philosophy">philosophy</Link>.
 
 
+
 ## Architecture
 
-From high-level design to the smallest details, Vike is built with flexibility in mind.
+From high-level design to the smallest details, Vike is built with flexibility and reliability in mind.
+
 
 **Flexible by design**
 
 Vike's flexibility is powered by low-level APIs.
 
-For example, Vike's lowel-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> give you full control over integrating any:
+For example, Vike's low-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> give you full control over integrating any:
  - UI framework (React, Vue, ...)
  - Rendering strategy (SSR, SSG, SPA, islands, ...)
 
-> For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using these low-level APIs. For example, use `vike-react` or `vike-vue` for a quick start similar Next.js or Nuxt.
+> For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using these low-level APIs. For example, you can use `vike-react` or `vike-vue` for a quick start similar to Next.js or Nuxt.
 >
 > Later, if the need arises for more control, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` for a custom React/Vue integration.
 
@@ -28,9 +30,13 @@ Another example is Vike's server middleware <Link href="/renderPage"><code>rende
 
 > Alternatively, you can <Link href="/pre-rending">pre-render your pages</Link> and deploy your app to any static host.
 
+
 **Flexible by prioritization**
 
 If you create a feature request and explain why not having this feature is blocking you then we'll treat it with higher priority.
+
+We quickly fix bugs (usually under 24 hours) as bugs are often blockers.
+
 
 **Conservative or cutting-edge, your choice**
 
@@ -48,21 +54,22 @@ So that:
 
 If you choose a conservative stack, you'll still benefit from other companies push the envelope of peformance and DX. Progressively migrate...
 
-
-**Choose your stack, as you go**
-
-Vike's architectural freedom is also important so that you can continuously and progressively adapt your stack to your evolving needs without having a costly framework migration.
-
-> For example, Vike enables you to start with an SPA and later, if end up needing SSR, <Link href="/ssr">you can easily add SSR</Link> to your existing app.
+Vike enables you to keep your stack as long you want, while progressively migrating towards new tools and apporaches at your own pace.
 
 
-**Adopt the future, progressively**
+**Choose as you go**
 
-Vike enables you to stay on a conservative stack as long you want while migrating towards new tools and apporaches one step at a time:
- - One architectural component at a time.
-   > TODO
+You can continuously and progressively adapt your stack to your evolving needs.
+
+You can do so one step at a time:
  - One page at a time.
-   > TODO
+   > Vike enables you to <Link href="/config#powerful">progressively change your stack on a page-by-page basis</Link>.
+ - One architectural component at a time.
+   > With Vike, you can to switch architectural components independently of each other.
+
+> Examples:
+> - You can start with an SPA and, later if you end up needing SSR, <Link href="/ssr">you can progressively add SSR</Link> one page at a time.
+> - You can start with RPC and, later if the need arises, progressively switch to GraphQL.
 
 Say goodbye to big never-ending migrations.
 
@@ -71,39 +78,48 @@ Say goodbye to big never-ending migrations.
 
 Vike's flexible core is unopinionated and open to JavaScript's rapidly evolving ecosystem.
 
-Vike is a robust foundation with a thin flexible layer (Vike extensions) quickly adapting to the tools and approaches of tomorrow.
+In other words, Vike is a robust foundation (Vike itself) with a thin and flexible layer (Vike extensions) quickly adapting to the tools and approaches of tomorrow.
+
 
 
 ## Philosophy
 
 Vike is driven by our core principles.
 
+
 **Seperation of concerns**
 
-Vike is carefully designed with a clean separation of concerns in mind, for unprecedented flexibility and robustness.
+Vike is carefully designed with a clean separation of concerns, for unprecedented flexibility and robustness.
 
-The enables core architectural components to be developed independently of each other, such as data fetching (RPC, REST, GraphQL)
+You can choose any core architectural components, and progressively switch them as you grow.
 
-> Other frameworks tightly couple architectural components with their framework which we believe is fundamental and structural mistake. For example, Next.js tightly couples RPC (Server Actions) while it's notoriously hard to integrate GraphQL with Next.js. Gatsby, on the other hand, tightly couples GraphQL. It's Vike's core believe to separate the data fetching tools from the frontend framework; that way you can choose any data fething strategy and progressively migrate from one to another.
 
 **Flourishing do-one-thing-do-it-well ecosystem**
 
-Vike's flexible core provides a **wide surface for innovation** — the secret sauce to JavaScript's vibrant ecosystem.
+Vike's seperation of concerns enables architectural components to be developed independently of each other.
+
+A vibrant ecosystem of do-one-thing-do-it-well tools competing with each other is one of the strongest driving force behind JavaScript's success.
+
+> Other frameworks tightly couple architectural components together, which is a structural hindrance that prevents innovation.
+>
+> For example, Vike doesn't have built-in <Link href="/https://telefunc.com/RPC">RPC</Link> (aka Server Actions), enabling RPC approaches to be developed and innovated independently of Vike.
+>
+> Another example is the seamlessly integration of GraphQL tools &mdash; something that is notoriously hard (sometimes not even feasible) with other frameworks.
 
 
 **Strong leadership**
 
-Vike is an independent project 100% led by engineers and we don't serve the interests of any unrelated business: we only serve your interests.
+Vike is an independent project 100% led by engineers that don't serve the interests of any unrelated business: we only serve your interests.
 
-We meticulously care about each aspect of Vike and our passion is at the heart of makes Vike unique, for example:
+We meticulously care about each aspect of Vike; our passion is at the heart of makes Vike unique. For example:
 - Vike's team is responsive and we provide <Link href="/faq#how-can-i-reach-out-for-help">a clear guideline</Link> on how to receive reliable assistance.
-- We carefully designed Vike's *Open Source Pricing* to keep code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount. We believe it's paramount for a transparent and sustainable relationship, while keeping Vike accessible to everyone.
+- We carefully designed Vike's *Open Source Pricing* to keep code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount. For a transparent and sustainable relationship, while keeping Vike accessible to everyone.
 
 
 **User-driven**
 
-We listen to users and engage in constructive conversations. We aren't driven by implementing fancy features, we are driven by implementing features that solves real user problems.
+We listen to users and engage in constructive conversations. We aren't driven by implementing fancy features, we are driven by implementing features that solve real user problems.
 
-Thanks to our Open Source Pricing your success also translates in (financial) success for us.
+Thanks to our Open Source Pricing your success directly translates in (financial) success for us.
 
-> Other frameworks that make money from JavaScript server deployments are naturally inclined to prioritize SSR over other use cases.
+> Other frameworks that make money from JavaScript server deployments are naturally inclined to have skewed prioritization.
