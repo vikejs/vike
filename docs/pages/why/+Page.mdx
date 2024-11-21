@@ -2,9 +2,8 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
 Deep dive into what makes Vike special.
-
-<Link href="#architecture" /><br/>
-<Link href="#philosophy" /><br/>
+- Vike's <Link href="#architecture">architecture</Link>, enabling unprecedented flexibility and reliability.
+- Vike's <Link href="#philosophy">philosophy</Link>.
 
 
 ## Architecture
@@ -33,40 +32,47 @@ Another example is Vike's server middleware <Link href="/renderPage"><code>rende
 
 If you create a feature request and explain why not having this feature is blocking you then we'll treat it with higher priority.
 
-We quickly fix bugs (usually under 24 hours) as bugs are often blockers.
-
 **Conservative or cutting-edge, your choice**
 
-Vike in itself is a flexible and reliable core with, on top of it, extensions integrating tools.
-
-It's a robust foundation fostering a diverse ecosystem of <Link href="/extensions">Vike extensions</Link>:
+Vike in itself is a flexible and reliable core with, on top of it, extensions that integrate tools. It's a robust foundation fostering a diverse ecosystem of <Link href="/extensions">Vike extensions</Link>:
  - Stable extensions focus on supporting businesses in a stable and long-term fashion
  - Cutting-edge extensions focus on experimenting and adopting new and latest approaches.
 
+> For example, we're experimenting with RSC (React Server Components) in a separate extension `vike-react-rsc`. This allows us to quickly iterate without disrupting `vike-react` users. We'll maintain both extensions for the foreseeable future. Enabling you to adopt new techonology only if you see fit at your own pace.
+
 So that:
- - If your company prefers stability, go with a conservative stack by stable extensions for unprecedented stability.
- > Unprecendent
- - If your company has special requirements or wants to explore the technological frontier, choose cutting-edge or write your own extensions, or build your own framework.
- > Flexible Unprecendent flexibility and cutting-edge.
+ - If you prefer stability, choose stable extensions go with a conservative stack by stable extensions for unprecedented stability.
+   > You can unprecedented stability: Vike's core is stable in itself and Vike extensions are thin layers of glue that can be maintained for a very long time.
+ - If you have special requirements or wants to explore new techniques: choose cutting-edge extensions, <Link href="/eject">eject extensions</Link>, write your own extensions, or <Link href="/build-your-own-framework">build your own framework</Link>.
+   > Vike's do-one-thing-do-it-well architecture and <Link href="/optional-control">Optional Control</Link> and cutting-edge extensions provide unprecedented opportunities to push the envelope.
 
 If you choose a conservative stack, you'll still benefit from other companies push the envelope of peformance and DX. Progressively migrate...
 
-> For companies exploring the technological frontier, Vike's do-one-thing-do-it-well architecture and <Link href="/optional-control">Optional Control</Link> and cutting-edge extensions provide unprecedented opportunities to push the envelope.
+
+**Choose your stack, as you go**
+
+Vike's architectural freedom is also important so that you can continuously and progressively adapt your stack to your evolving needs without having a costly framework migration.
+
+> For example, Vike enables you to start with an SPA and later, if end up needing SSR, <Link href="/ssr">you can easily add SSR</Link> to your existing app.
+
 
 **Adopt the future, progressively**
 
-Vike enables you to stay on a conservative stack as long you need to while migrating towards new tools and apporaches one page and one architectural component at a time.
+Vike enables you to stay on a conservative stack as long you want while migrating towards new tools and apporaches one step at a time:
+ - One architectural component at a time.
+   > TODO
+ - One page at a time.
+   > TODO
 
 Say goodbye to big never-ending migrations.
-
-> For example, we're experimenting with RSC (React Server Components) in a separate extension `vike-react-rsc`. This allows us to quickly iterate without disrupting `vike-react` users. We'll maintain both extensions for the foreseeable future. Enabling you to adopt new techonology only if you see fit at your own pace.
 
 
 **Future-proof**
 
 Vike's flexible core is unopinionated and open to JavaScript's rapidly evolving ecosystem.
 
-You can think of it as a robust foundation with a thin flexible layer (Vike extensions) that can quickly adopt and invent the tools and approaches of tomorrow.
+Vike is a robust foundation with a thin flexible layer (Vike extensions) quickly adapting to the tools and approaches of tomorrow.
+
 
 ## Philosophy
 
@@ -118,19 +124,9 @@ See the next section <Link href="#philosophy" /> to learn more.
 ## Trash
 
 
-So that Vike can adopt your company requirements.
-> With other frameworks, it's often the other way around: you have to adapt your company requirements to the framework. With Vike, this is a rare outcome.
-
-- Data fetching (RPC, GraphQL, REST, ...)
-
-
-> Vike's architectural freedom is also important so that you can continuously and progressively adapt your stack to your evolving needs without having a costly framework migration.
-
 > Other frameworks tightly couple architectural components with their framework which we believe is fundamental and structural mistake. For example, Next.js tightly couples RPC (Server Actions) while it's notoriously hard to integrate GraphQL with Next.js. Gatsby, on the other hand, tightly couples GraphQL. It's Vike's core believe to separate the data fetching tools from the frontend framework; that way you can choose any data fething strategy and progressively migrate from one to another.
-
-> For example, Vike enables you to start with an SPA and later, if end up needing SSR, <Link href="/ssr">you can easily add SSR</Link> to your existing app.
-
-> Vike's flexibility enables you to replicate any framework, or better yet, <Link href="/build-your-own-framework">build your own framework</Link> tailored to your company requirements and that integrates all your tools: frontend, backend, data fetching, authentication, deployement, etc. This enables your junior developers to focus on building user interfaces while giving your senior developers the power of fully owning the architecture. It's a powerful way to scale your teams and have a cohesive stack throughout your company.
 
 
 Bugs are quickly fixed (usually under 24 hours).
+We quickly fix bugs (usually under 24 hours) as bugs are often blockers.
+
