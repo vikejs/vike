@@ -123,6 +123,60 @@ export default {
 
 You can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link> for better organization and for improved configuration inheritance.
 
+### Powerful
+
+You can use config inheritance to have multiple and completely different stacks within the same app.
+
+For example:
+
+```js
+// pages/admin/+config.js
+
+// Configuration that applies to all admin pages.
+
+import vue from 'vike-vue/config'
+import telefunc from 'vike-telefunc/config'
+
+// Vue + SPA + RPC
+export default {
+  ssr: false,
+  extends: [vue, telefunc]
+}
+```
+
+```js
+// pages/product/@id/+config.js
+
+// Configuration that applies to the product page.
+
+import react from 'vike-react/config'
+import graphql from 'vike-react-apollo/config'
+
+// React + SSR + GraphQL
+export default {
+  ssr: true,
+  extends: [react, graphql]
+}
+```
+
+```js
+// pages/(marketing)/+config.js
+
+// Configuration that applies to all marketing pages.
+
+import vue from 'vike-vue/config'
+
+// Vue + SSR
+export default {
+  ssr: true,
+  extends: [vue]
+}
+```
+
+> While it's in principle possible, [there is currently a small blocker](https://github.com/vikejs/vike/issues/1813) for being able to use `vike-vue` and `vike-react` within the same app.
+
+> `vike-telefunc` doesn't exist yet: it's the upcoming integration enabling using RPC for fetching initial data (instead of <Link href="/data"><code>+data</code></Link>).
+
 
 ## Pointer imports
 
