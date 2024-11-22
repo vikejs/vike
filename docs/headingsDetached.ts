@@ -4,6 +4,10 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached: HeadingDetachedDefinition[] = [
   {
+    title: 'Open Source Pricing',
+    url: '/pricing'
+  },
+  {
     title: 'Eject',
     url: '/eject'
   },

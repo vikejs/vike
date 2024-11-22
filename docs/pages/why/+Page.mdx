@@ -28,31 +28,31 @@ Another example is Vike's server middleware <Link href="/renderPage"><code>rende
 - Server (Express.js, Hono, Fastify, ...)
 - Deployement (AWS, Cloudflare, Vercel, ...)
 
-> Alternatively, you can <Link href="/pre-rending">pre-render your pages</Link> and deploy your app to any static host.
+> Alternatively, you can <Link href="/pre-rendering">pre-render your pages</Link> and deploy your app to any static host.
 
 
 ### Flexible and reliable, by prioritization
 
-If you create a feature request and explain why it's blocking you then we'll treat it with higher priority.
+If you create a feature request and explain why it's blocking then we treat it with higher priority.
 
 We quickly fix bugs (usually under 24 hours).
 
 
 ### Conservative or cutting-edge, your choice
 
-Vike in itself is a flexible and reliable core with, on top of it, extensions that integrate tools. It's a robust foundation fostering a diverse ecosystem of <Link href="/extensions">Vike extensions</Link>:
+Vike is a core with, on top of it, <Link href="/extensions">extensions</Link> that integrate tools. It fosters a diverse ecosystem of Vike extensions:
  - Stable extensions, focusing on supporting conservative stacks in a long-term fashion.
  - Cutting-edge extensions, focusing on experimenting and adopting new approaches.
 
-> For example, we are experimenting with RSC (React Server Components) in a separate extension `vike-react-rsc`. This allows us to quickly iterate without disrupting `vike-react` users. We will be able to maintain both extensions for the foreseeable future, enabling you to adopt RSC only if and when you want.
+> For example, we are experimenting with RSC (React Server Components) in a separate extension `vike-react-rsc`. This allows us to quickly iterate without disrupting `vike-react` users. We can maintain both extensions for the foreseeable future, enabling you to adopt RSC only if you want and whenever you want.
 
 This gives you choice:
  - If you prefer stability, choose stable extensions.
-   > You get unparalleled stability: Vike it itself is stable and Vike extensions are a thin layer of glue code that can be maintained for a long time.
- - If you have special requirements or want to explore new approaches: choose cutting-edge extensions, <Link href="/eject">eject extensions</Link>, write your own extensions, or <Link href="/build-your-own-framework">build your own framework</Link>.
+   > You get unparalleled stability: Vike in itself is stable and Vike extensions are a thin layer of glue code that can be maintained for a long time.
+ - If you have special requirements, or want to explore new approaches: choose cutting-edge extensions, <Link href="/eject">eject extensions</Link>, write your own extensions, or <Link href="/build-your-own-framework">build your own framework</Link>.
    > Vike's do-one-thing-do-it-well architecture provides unparalleled opportunities to experiment and push the envelope.
 
-Vike enables you to keep your current stack while progressively migrating towards new tools and approaches at your own pace.
+Vike enables you to keep your current stack for as long as you want, while progressively migrating towards new tools and approaches at your own pace.
 
 
 ### Choose as you grow
@@ -61,15 +61,15 @@ You can continuously and progressively adapt your stack to your evolving needs.
 
 You can do so:
  - One page at a time.
-   > Vike enables you to <Link href="/config#powerful">progressively change your stack on a page-by-page basis</Link>.
+   > You can <Link href="/config#powerful">progressively change your stack on a page-by-page basis</Link>.
  - One architectural component at a time.
-   > With Vike, you can switch architectural components independently of each other.
+   > Given Vike's do-one-thing-do-it-well architecture, you can switch architectural components independently of each other.
 
 Say goodbye to big never-ending migrations.
 
 > For example:
 > - You can start with SPA and, later if you end up needing SSR, <Link href="/ssr">you can progressively add SSR</Link> one page at a time.
-> - You can start with RPC and, later if the need arises, you can progressively switch to GraphQL.
+> - You can start with <Link href="/https://telefunc.com/RPC">RPC</Link> and, later if the need arises, you can progressively switch to GraphQL.
 
 
 ### Future-proof
@@ -81,9 +81,9 @@ Vike is a robust foundation (Vike itself) with a thin and flexible layer (Vike e
 
 ### Build your own framework
 
-Vike enables you to <Link href="/build-your-own-framework">build company internal frameworks</Link>, empowering your Software Architects to fully own the architecture while providing your Product Developers with a company framework to quickly experiment, test, iterate and ship production-grade apps.
+Vike enables you to <Link href="/build-your-own-framework">build company internal frameworks</Link>, empowering your Software Architects to fully own the architecture while providing your Product Developers with a company framework to quickly experiment, iterate, and ship production-grade apps.
 
-Your framework can include everything (frontend, backend, data fetching, authentication, deployement, ...) so that your Product Developers can focus on what they do best: building user interfaces.
+Your framework can include everything (frontend, backend, data fetching, authentication, deployement, error tracking, analytics, ...) so that your Product Developers can focus on what they do best: building user interfaces.
 
 Vike enables you to build your own internal ecosystem of tools. It's a powerful way to scale your teams, and to ensure a cohesive stack throughout your company.
 
@@ -92,42 +92,42 @@ Vike enables you to build your own internal ecosystem of tools. It's a powerful 
 
 ## Philosophy
 
-Vike is driven by our core principles.
+Vike is driven by core principles.
 
 
 ### Seperation of concerns
 
 Vike is carefully designed with a clean separation of concerns, for unprecedented flexibility and robustness.
 
-You can choose any core architectural components, and progressively switch them as you grow.
+Enabling you to choose architectural components independently of each other, and progressively switch them as you grow.
 
 
 ### Flourishing do-one-thing-do-it-well ecosystem
 
 Vike's seperation of concerns enables architectural components to be developed independently of each other.
 
-A vibrant ecosystem of do-one-thing-do-it-well tools competing with each other is one of the strongest driving force behind JavaScript's success.
+A vibrant ecosystem of do-one-thing-do-it-well tools that compete with each other is one of the strongest driving force behind JavaScript's success.
 
 > Other frameworks tightly couple architectural components together, which is a structural hindrance that prevents innovation.
 >
-> For example, Vike doesn't have built-in <Link href="/https://telefunc.com/RPC">RPC</Link> (aka Server Actions), enabling RPC approaches to be developed and innovated independently of Vike.
+> For example, Vike doesn't have built-in <Link href="/https://telefunc.com/RPC">RPC</Link> (aka Server Actions). This flexibility enables RPC approaches to be developed and innovated independently of Vike.
 >
-> Another example is the seamlessly integration of GraphQL tools &mdash; something that is notoriously hard (sometimes not even feasible) with other frameworks.
+> Another example is GraphQL tools, which are notoriously hard (sometimes not even feasible) to integrate with other frameworks.
 
 
 ### Strong leadership
 
-Vike is an independent project 100% led by engineers that don't serve the interests of any unrelated business: we only serve your interests.
+Vike is an independent project 100% led by engineers that don't serve the interests of any unrelated business: we only serve the interests of our users.
 
 We meticulously care about each aspect of Vike; our passion is at the heart of makes Vike unique. For example:
 - Vike's team is responsive and we provide <Link href="/faq#how-can-i-reach-out-for-help">a clear guideline</Link> on how to receive reliable assistance.
-- We carefully designed Vike's *Open Source Pricing* to keep code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount. For a transparent and sustainable relationship, while keeping Vike accessible to everyone.
+- We carefully designed Vike's <Link href="/pricing">Open Source Pricing</Link> to keep code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount. For a transparent and sustainable relationship while keeping Vike accessible to everyone.
 
 
 ### User-driven
 
-We listen to users and engage in constructive conversations. We aren't driven by implementing fancy features, we are driven by implementing features that solve real user problems.
+We listen to users and engage in constructive conversations. We aren't driven by implementing fancy features. We are driven by implementing features that solve real user problems.
 
-Thanks to our Open Source Pricing your success directly translates in (financial) success for us.
+Thanks to our Open Source Pricing your success directly translates into (financial) success for us.
 
-> Other frameworks that make money from JavaScript server deployments are naturally inclined to have skewed prioritization.
+> Other frameworks that make money from JavaScript server deployments are naturally inclined to skewed prioritization.
