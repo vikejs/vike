@@ -1,45 +1,74 @@
 import { Warning, Link } from '@brillout/docpress'
 
+Vike enables you to create your own framework tailored to your company's requirements.
 
-A powerful technique to scale your teams is to build an internal company framework.
-> Vike's flexibility enables you to replicate any framework, or better yet, <Link href="/build-your-own-framework">build your own framework</Link> tailored to your company requirements and that integrates all your tools: frontend, backend, data fetching, authentication, deployement, etc. This enables your junior developers to focus on building user interfaces while giving your senior developers the power of fully owning the architecture. It's a powerful way to scale your teams and have a cohesive stack throughout your company.
+> It's a powerful way to scale your teams, and to ensure a cohesive stack throughout your company. See <Link href="/why#build-your-own-framework" />.
 
-
-<Warning>This documentation is a draft. Directly reach out to Vike maintainers if you're interested in this.</Warning>
-
-With Vike, you can create your own Next.js / Nuxt with only hundreds of lines of code.
-
-Vike frameworks use the same interface as regular Vike apps: the only difference is that some code (e.g. <Link href="/onRenderHtml" >onRenderHtml()</Link>) lives in `app/node_modules/framework/` instead of `app/`.
-
-Your framework can include more functionality beyond Vike, such as a custom server, custom deployment integration, custom data fetching integration, etc.
+Your framework can include everything (frontend, backend, data fetching, authentication, deployement, error tracking, analytics, ...) so that your Product Developers can focus on what they do best: building user interfaces.
 
 
-## Basic framework
+## Getting started
 
-A basic Vike framework provides a renderer so that the user of your framework doesn't have to implement it:
+### First step
 
-```bash
-# Renderer implemented by the framework
-node_modules/framework/renderer/+onRenderHtml.js
-node_modules/framework/renderer/+onRenderClient.js
+We recommend getting started by creating a regular Vike app. Once you are satisfied with your stack then progressively move code from the user-land (code inside the app's Git repository) to your framework (code inside `node_modules/my-framework/`).
 
-# User page files
-pages/index/+Page.js
-pages/about/+Page.js
-```
+### Progressively create your framework
 
-In other words, the framework takes care of the UI framework integration (React, Vue, ...) so that all the framework's users have left to do is to define UI components and pages using `/pages/**/+*.js` files.
+Once you are satisfied wit the stack of your regular Vike app, progressively create your framework.
 
-> **Progressively build your framework**. We recommend to build your framework progressively by first implementing a normal Vike app without building any framework. Once you're satisfied with the architecture of your Vike app, you can start creating your own framework by moving `renderer/` from `my-app/renderer/` to `my-app/node_modules/my-own-framework/renderer/`.
+You can achieve that by progressively applying one or more of the following steps:
+- Create your own Vike extension that contains all your configuration.
+  ```js
+  // pages/+config.js
 
+  import react from 'vike-react/config' // [!code --]
+  import apollo from 'vike-react-apollo/config' // [!code --]
+  import myFramework from 'my-framework/config' // [!code ++]
 
-## All-included framework
+  export default {
+    ssr: false, // [!code --]
+    extends: [react, apollo] // [!code --]
+    extends: [myFramework] // [!code ++]
+  }
+  ```
+- <Link href="/meta">Create custom settings</Link>, so that your Product Developers can easily configure your framework.
+  ```js
+  // pages/+config.js
 
-Beyond integrating Vike with a UI framework, you can include anything you want to your framework, such as a custom server (e.g. Express.js), a database and ORM (e.g. SQLite + Prisma), deployment (e.g. Cloudflare Workers), error tracking (e.g. Sentry), a CLI, etc.
+  import myFramework from 'my-framework/config'
 
-You can implement an [all-included framework](https://land.vike.dev/#all-included) so that all your framework's users have left to do is: define UI components, and define data models (if your framework has a database).
+  export default {
+    myCustomSetting: true,
+    extends: [myFramework]
+  }
+  ```
+- Create your own CLI.
+  ```json
+  // package.json
 
+  {
+    "scripts": {
+      "dev": "my-framework",
+      "build": "my-framework build",
+      "preview": "my-framework preview"
+    }
+  }
+  ```
+- Move your server code to be built into your framework.
+- Move deployment logic to be built into your framework.
+  ```json
+  // package.json
 
-## More tools
+  {
+    "scripts": {
+      "dev": "my-framework",
+      "build": "my-framework build",
+      "preview": "my-framework preview",
+      "deploy": "my-framework deploy" // [!code ++]
+    }
+  }
+  ```
+- Add utilities to your framework, such as error tracking or analytics.
 
-See [Vike > Getting Started](https://land.vike.dev/#getting-started) for more tools to build your own framework.
+Feel free to reach out to the Vike team if you have any questions, and sponsorship is welcome for a tight-knit collaboration.
