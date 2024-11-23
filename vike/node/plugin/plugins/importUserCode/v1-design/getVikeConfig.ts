@@ -1156,7 +1156,7 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
   // vike-{react,vue,solid} hint
   {
     const ui = ['vike-react', 'vike-vue', 'vike-solid'] as const
-    const knownVikeExntensionConfigs = {
+    const knownVikeExtensionConfigs = {
       description: ui,
       favicon: ui,
       Head: ui,
@@ -1167,8 +1167,8 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
       stream: ui,
       Wrapper: ui
     } as const
-    if (configName in knownVikeExntensionConfigs) {
-      const requiredVikeExtension = knownVikeExntensionConfigs[configName as keyof typeof knownVikeExntensionConfigs]
+    if (configName in knownVikeExtensionConfigs) {
+      const requiredVikeExtension = knownVikeExtensionConfigs[configName as keyof typeof knownVikeExtensionConfigs]
       assertUsage(
         false,
         [
