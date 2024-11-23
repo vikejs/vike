@@ -84,7 +84,7 @@ function VikeNitedaniAnimated() {
   useEffect(() => {
     // Avoid loading the video on mobile:
     // - To save KBs.
-    // - To avoid weird mobile iOS Chrome bug(?): the video is automatically shown fullscren when client-side navigating from another page to the landing page.
+    // - To avoid weird mobile iOS Chrome bug(?): the video is automatically shown fullscreen when client-side navigating from another page to the landing page.
     // 759 => same as https://github.com/vikejs/vike/blob/2c6325615390ae3be3afc6aa37ede6914b935702/docs/pages/index/HeaderLayout.css#L24
     if (screen.width > 759) {
       const videoEl = ref.current!

@@ -50,7 +50,7 @@ const sponsorsList: Sponsor[] = [
     github: 'OptimizersGroup'
   },
   {
-    companyName: 'BurdaFoward',
+    companyName: 'BurdaForward',
     companyLogo: burdaforwardLogo,
     plan: 'bronze',
     website: 'https://www.burda-forward.de',

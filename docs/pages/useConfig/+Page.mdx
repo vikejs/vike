@@ -7,7 +7,7 @@ Environment: server, client.
 
 The `useConfig()` hook enables you to set configurations inside UI components, as well as inside Vike hooks such as <Link href="/data">`+data`</Link>.
 
-> This hook is unusual because it can also be used inside Vike hooks. We call it a *universal hook*. So far `useConfig()` is the only unviversal hook.
+> This hook is unusual because it can also be used inside Vike hooks. We call it a *universal hook*. So far `useConfig()` is the only universal hook.
 
 It currently supports following configs:
 - <Link href="/Head" noBreadcrumb />
@@ -109,7 +109,7 @@ function Movies() {
 > Both achieve the same:
 > - `<Head><something/></Head>`
 > - `<Config Head={<something/>}/>`
-> 
+>
 > There in't a `<Title>` component because it's expected to be a string: e.g. `<Title><span>hello</span></Title>` doesn't make sense.
 
 
