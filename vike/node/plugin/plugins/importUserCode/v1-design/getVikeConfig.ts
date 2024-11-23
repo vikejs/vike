@@ -791,7 +791,7 @@ async function getConfigValueSource(
     fileExportPathToShowToUser: ['default', configName]
   }
 
-  const isOverriden = configDef.cumulative ? false : !isHighestInheritancePrecedence
+  const isOverridden = configDef.cumulative ? false : !isHighestInheritancePrecedence
 
   // +client.js
   if (configDef._valueIsFilePath) {
@@ -825,7 +825,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: true,
       valueIsDefinedByPlusFile: false,
-      isOverriden,
+      isOverriden: isOverridden,
       definedAtFilePath
     }
     return configValueSource
@@ -850,7 +850,7 @@ async function getConfigValueSource(
         configEnv,
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
-        isOverriden,
+        isOverriden: isOverridden,
         definedAtFilePath: pointerImport
       }
       // Load pointer import
@@ -878,7 +878,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: false,
       valueIsDefinedByPlusFile: false,
-      isOverriden,
+      isOverriden: isOverridden,
       definedAtFilePath: definedAtFilePath_
     }
     return configValueSource
@@ -893,7 +893,7 @@ async function getConfigValueSource(
       configEnv,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       valueIsDefinedByPlusFile: true,
-      isOverriden,
+      isOverriden: isOverridden,
       definedAtFilePath: {
         ...interfaceFile.filePath,
         fileExportPathToShowToUser:
