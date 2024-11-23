@@ -116,9 +116,9 @@ function isKnownError(error: unknown) {
     ...errorsReact,
     ...errorsCjsEsm_withPreciseLink,
     ...errorsCjsEsm
-  ].find((knownErorr) => {
-    if (!includesLowercase(anywhere, knownErorr.errMsg)) return false
-    if (knownErorr.shouldMentionNodeModules !== false && !includesLowercase(anywhere, 'node_modules')) return false
+  ].find((knownError) => {
+    if (!includesLowercase(anywhere, knownError.errMsg)) return false
+    if (knownError.shouldMentionNodeModules !== false && !includesLowercase(anywhere, 'node_modules')) return false
     return true
   })
   if (!knownErr) return false
