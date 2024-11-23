@@ -224,7 +224,7 @@ function getGlobs(
         const isNewViteInterface = isVersionOrAbove(viteVersion, '5.1.0')
         if (
           isNewViteInterface &&
-          // When used for the old design, the new syntax breaks Vike's CI (surprinsigly so). I couldn't reproduce locally (I didn't dig much).
+          // When used for the old design, the new syntax breaks Vike's CI (surprisingly so). I couldn't reproduce locally (I didn't dig much).
           isV1Design
         ) {
           globOptions.query = `?${query}`

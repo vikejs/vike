@@ -4,7 +4,7 @@ export { trimWithAnsiTrailOnly }
 import { assert } from './assert.js'
 import { stripAnsi } from './stripAnsi.js'
 
-const whitespaceRegex = /(\s+)/ // Capturing parathesis so that split preserves seperator
+const whitespaceRegex = /(\s+)/ // Capturing parentheses so that split preserves the separators
 
 /* Same as trim() but works with ANSI escape codes */
 function trimWithAnsi(str: string): string {

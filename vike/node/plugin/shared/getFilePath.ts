@@ -183,7 +183,7 @@ function assertModuleId(moduleId: string) {
 }
 
 function getFilePathToShowToUserFromUnkown(
-  // We don't have any guarentee about filePath, e.g. about whether is filePathAbsoluteFilesystem or filePathAbsoluteUserRootDir
+  // We don't have any guarantee about filePath, e.g. about whether is filePathAbsoluteFilesystem or filePathAbsoluteUserRootDir
   filePathUnkown: string,
   userRootDir: string
 ): string {

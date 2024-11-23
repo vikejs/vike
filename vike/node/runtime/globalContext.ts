@@ -165,7 +165,7 @@ function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: str
   globalObject.outDirRoot = outDirRoot
 }
 function assertIsNotInitilizedYet() {
-  // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
+  // In development, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
   assert(!globalObject.globalContext)
 }
 function setGlobalContext_isDev(isDev: boolean) {

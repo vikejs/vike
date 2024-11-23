@@ -2,7 +2,7 @@ export { getPageContextRequestUrl }
 export { pageContextJsonFileExtension }
 export { doNotCreateExtraDirectory }
 
-// This module isn't loaded by the client-side of Server Routing => we don't inlcude `urlToFile` to `./utils.ts`
+// This module isn't loaded by the client-side of Server Routing => we don't include `urlToFile` to `./utils.ts`
 import { urlToFile } from '../utils/urlToFile.js'
 
 const pageContextJsonFileExtension = '.pageContext.json'

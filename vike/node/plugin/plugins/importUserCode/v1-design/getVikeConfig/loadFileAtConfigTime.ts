@@ -1,4 +1,4 @@
-// Files loadded at config time:
+// Files loaded at config time:
 
 export { loadImportedFile }
 export { loadValueFile }

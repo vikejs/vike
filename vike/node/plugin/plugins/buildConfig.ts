@@ -99,7 +99,7 @@ function buildConfig(): Plugin[] {
         async handler(options, bundle) {
           if (isSsrBuild) {
             // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
-            //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
+            //  - But we can't because there is no guarantee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
             //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
             const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
             const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)

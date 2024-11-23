@@ -346,7 +346,7 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
       //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
       assert(errorWhileRendering === null || errorWhileRendering === undefined)
       msg = `HTTP response ${prettyUrl(urlOriginalPretty)} ${pc.dim('null')}`
-      // Erroneous value (it shoud sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
+      // Erroneous value (it should sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
       isNominal = true
     } else {
       const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
