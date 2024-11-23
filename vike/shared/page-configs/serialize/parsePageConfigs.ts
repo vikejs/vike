@@ -80,13 +80,13 @@ function assertRouteConfigValue(configValues: ConfigValues) {
 function parseConfigValuesSerialized_tmp(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
   const configValues: ConfigValues = {}
 
-  Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
+  Object.entries(configValuesSerialized).forEach(([configName, configValueSerialized]) => {
     let configValue: ConfigValue
-    if (configValueSeriliazed.type === 'cumulative') {
-      const { valueSerialized, ...common } = configValueSeriliazed
+    if (configValueSerialized.type === 'cumulative') {
+      const { valueSerialized, ...common } = configValueSerialized
       const value = valueSerialized.map((valueSerializedElement, i) => {
         const { value, sideExports } = parseValueSerialized(valueSerializedElement, configName, () => {
-          const definedAtFile = configValueSeriliazed.definedAtData[i]
+          const definedAtFile = configValueSerialized.definedAtData[i]
           assert(definedAtFile)
           return definedAtFile
         })
@@ -95,10 +95,10 @@ function parseConfigValuesSerialized_tmp(configValuesSerialized: Record<string, 
       })
       configValue = { value, ...common }
     } else {
-      const { valueSerialized, ...common } = configValueSeriliazed
+      const { valueSerialized, ...common } = configValueSerialized
       const { value, sideExports } = parseValueSerialized(valueSerialized, configName, () => {
-        assert(configValueSeriliazed.type !== 'computed')
-        return configValueSeriliazed.definedAtData
+        assert(configValueSerialized.type !== 'computed')
+        return configValueSerialized.definedAtData
       })
       addSideExports(sideExports)
       configValue = { value, ...common }
