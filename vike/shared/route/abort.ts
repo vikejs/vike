@@ -249,7 +249,7 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   )
   assertWarning(
     expected.includes(statusCode),
-    `Unepexected status code ${statusCode} passed to ${caller}(), we recommend ${expectedEnglish} instead. (Or reach out at https://github.com/vikejs/vike/issues/1008 if you believe ${statusCode} should be added.)`,
+    `Unexpected status code ${statusCode} passed to ${caller}(), we recommend ${expectedEnglish} instead. (Or reach out at https://github.com/vikejs/vike/issues/1008 if you believe ${statusCode} should be added.)`,
     { onlyOnce: true }
   )
 }
