@@ -107,12 +107,12 @@ function assertHookFn(
 }
 
 function getHookTimeout(hooksTimeoutProvidedByUser: unknown, hookName: HookName): HookTimeout {
-  const hooksTimeoutProvidedbyUserNormalized = getHooksTimeoutProvidedByUserNormalized(hooksTimeoutProvidedByUser)
-  if (hooksTimeoutProvidedbyUserNormalized === false) return { error: false, warning: false }
-  const providedbyUser = hooksTimeoutProvidedbyUserNormalized[hookName]
+  const hooksTimeoutProvidedByUserNormalized = getHooksTimeoutProvidedByUserNormalized(hooksTimeoutProvidedByUser)
+  if (hooksTimeoutProvidedByUserNormalized === false) return { error: false, warning: false }
+  const providedByUser = hooksTimeoutProvidedByUserNormalized[hookName]
   const hookTimeout = getHookTimeoutDefault(hookName)
-  if (providedbyUser?.error !== undefined) hookTimeout.error = providedbyUser.error
-  if (providedbyUser?.warning !== undefined) hookTimeout.warning = providedbyUser.warning
+  if (providedByUser?.error !== undefined) hookTimeout.error = providedByUser.error
+  if (providedByUser?.warning !== undefined) hookTimeout.warning = providedByUser.warning
   return hookTimeout
 }
 
@@ -128,17 +128,17 @@ function getHooksTimeoutProvidedByUserNormalized(
   )
 
   const hooksTimeoutProvidedByUserNormalized: HooksTimeoutProvidedByUserNormalized = {}
-  Object.entries(hooksTimeoutProvidedByUser).forEach(([hookName, hookTimeoutProvidedbyUser]) => {
-    if (hookTimeoutProvidedbyUser === false) {
+  Object.entries(hooksTimeoutProvidedByUser).forEach(([hookName, hookTimeoutProvidedByUser]) => {
+    if (hookTimeoutProvidedByUser === false) {
       hooksTimeoutProvidedByUserNormalized[hookName as HookName] = { error: false, warning: false }
       return
     }
     assertUsage(
-      isObject(hookTimeoutProvidedbyUser),
+      isObject(hookTimeoutProvidedByUser),
       `Setting ${pc.cyan(`hooksTimeout.${hookName}`)} should be ${pc.cyan('false')} or an object`
     )
     const [error, warning] = ['error', 'warning'].map((timeoutName) => {
-      const timeoutVal = hookTimeoutProvidedbyUser[timeoutName]
+      const timeoutVal = hookTimeoutProvidedByUser[timeoutName]
       if (timeoutVal === undefined || timeoutVal === false) return timeoutVal
       const errPrefix = `Setting ${pc.cyan(`hooksTimeout.${hookName}.${timeoutName}`)} should be` as const
       assertUsage(typeof timeoutVal === 'number', `${errPrefix} ${pc.cyan('false')} or a number`)
