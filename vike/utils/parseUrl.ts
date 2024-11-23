@@ -159,8 +159,8 @@ function getPathnameAbsoluteWithBase(
 
     let base: string
     if (baseURI) {
-      const baseURIPathaname = parseOrigin(baseURI.split('?')[0]!.split('#')[0]!).pathname
-      base = baseURIPathaname
+      const baseURIPathname = parseOrigin(baseURI.split('?')[0]!.split('#')[0]!).pathname
+      base = baseURIPathname
     } else {
       base = baseServer
     }
