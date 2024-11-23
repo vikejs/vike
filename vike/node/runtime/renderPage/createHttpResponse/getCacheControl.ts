@@ -1,14 +1,19 @@
 export { getCacheControl }
 
 import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
+import type { HttpResponse } from '../createHttpResponse.js'
 import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue.js'
 
+type StatusCode = HttpResponse['statusCode']
+
 const defaultValue = 'no-store, max-age=0'
 
-function getCacheControl(pageId: string, pageConfigs: PageConfigRuntime[]): string {
+function getCacheControl(pageId: string, pageConfigs: PageConfigRuntime[], statusCode: StatusCode): string {
   // TODO/v1-release: remove
   if (pageConfigs.length === 0) return defaultValue
+
+  if (statusCode > 499) return defaultValue
 
   const pageConfig = getPageConfig(pageId, pageConfigs)
   const configValue = getConfigValueRuntime(pageConfig, 'cacheControl', 'string')
