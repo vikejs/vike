@@ -11,7 +11,7 @@ function isNewError(errErrorPage: unknown, errNominalPage: unknown): boolean {
   warnIfErrorIsNotObject(errErrorPage)
   return (
     !isSameErrorMessage(errNominalPage, errErrorPage) ||
-    // Isn't this redundant/superfluous? I think we can remove this entire file and only use isSameErrorMessage() instead.
+    // Isn't this redudant/superfluous? I think we can remove this entire file and only use isSameErrorMessage() instead.
     !hasAlreadyLogged(errNominalPage)
   )
 }

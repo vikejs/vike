@@ -31,7 +31,7 @@ type GetPageAssets = () => Promise<PageAsset[]>
 type RenderHook = Hook & { hookName: HookName }
 type HookName =
   | 'onRenderHtml'
-  // TODO/v1-release: remove this line + remove all occurrences of string literal 'render' in source code
+  // TODO/v1-release: remove this line + remove all occurences of string literal 'render' in source code
   | 'render'
 
 async function executeOnRenderHtmlHook(

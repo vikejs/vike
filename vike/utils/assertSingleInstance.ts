@@ -24,7 +24,7 @@ const globalObject = getGlobalObject<{
   alreadyLogged: new Set()
 })
 
-const clientRuntimesConflict =
+const clientRuntimesClonflict =
   'Client runtime of both Server Routing and Client Routing loaded https://vike.dev/client-runtimes-conflict'
 const clientNotSingleInstance = 'Client runtime loaded twice https://vike.dev/client-runtime-duplicated'
 
@@ -48,7 +48,7 @@ function assertSingleInstance() {
 }
 
 function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) {
-  assertWarning(globalObject.isClientRouting !== true, clientRuntimesConflict, {
+  assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
   })
@@ -61,7 +61,7 @@ function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) 
   assertSingleInstance()
 }
 function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) {
-  assertWarning(globalObject.isClientRouting !== false, clientRuntimesConflict, {
+  assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
   })

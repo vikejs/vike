@@ -38,7 +38,7 @@ function previewConfig(): Plugin {
       return () => {
         assertDist()
 
-        /* We don't use this condition (we wrongfully always use the SSR middleware) because of the regression introduced by https://github.com/vitejs/vite/pull/14756 which stops serving .html files when `appType: 'custom'`.
+        /* We don't use this condition (we wrongfully always use the SSR middleware) because of the regression introduced by https://github.com/vitejs/vite/pull/14756 which stops servering .html files when `appType: 'custom'`.
         if (!configVike.prerender || configVike.prerender.partial) {
           addSsrMiddleware(server.middlewares, config, true)
         }

@@ -63,7 +63,7 @@ async function createHttpResponsePage(
 
   const headers: ResponseHeaders = []
   assert(pageContext.pageId)
-  const cacheControl = getCacheControl(pageContext.pageId, pageContext._pageConfigs)
+  const cacheControl = getCacheControl(pageContext.pageId, pageContext._pageConfigs, statusCode)
   if (cacheControl) {
     headers.push(['Cache-Control', cacheControl])
   }
@@ -128,7 +128,7 @@ function createHttpResponseRedirect(
     statusCode,
     'text/html;charset=utf-8',
     headers,
-    // For bots / programmatic crawling: show what's going on.
+    // For bots / programmatic crawlig: show what's going on.
     // For users: showing a blank page is probably better than a flickering text.
     `<p style="display: none">Redirecting to ${escapeHtml(
       url

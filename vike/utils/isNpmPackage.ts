@@ -17,7 +17,7 @@ import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 
 function isNpmPackageImport(str: string, { cannotBePathAlias }: { cannotBePathAlias: true }): boolean {
-  // We cannot distinguish path aliases that look like npm package imports
+  // We cannot distinguish path alises that look like npm package imports
   assert(cannotBePathAlias)
   return isNpmPackageImport_unreliable(str)
 }

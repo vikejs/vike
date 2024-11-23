@@ -41,7 +41,7 @@ type UrlPublic = {
   search: Record<string, string>
   /** The URL search parameters array, e.g. `{ fruit: ['apple', 'orange'] }` for `https://example.com?fruit=apple&fruit=orange` **/
   searchAll: Record<string, string[]>
-  /** The URL search parameter string, e.g. `?details=yes` in `https://example.com/product/42?details=yes#reviews` */
+  /** The URL search parameterer string, e.g. `?details=yes` in `https://example.com/product/42?details=yes#reviews` */
   searchOriginal: null | `?${string}`
   /** The URL hash, e.g. `reviews` in `https://example.com/product/42?details=yes#reviews` */
   hash: string
@@ -159,8 +159,8 @@ function getPathnameAbsoluteWithBase(
 
     let base: string
     if (baseURI) {
-      const baseURIPathname = parseOrigin(baseURI.split('?')[0]!.split('#')[0]!).pathname
-      base = baseURIPathname
+      const baseURIPathaname = parseOrigin(baseURI.split('?')[0]!.split('#')[0]!).pathname
+      base = baseURIPathaname
     } else {
       base = baseServer
     }
@@ -220,7 +220,7 @@ function parseProtocol(uri: string) {
   return { protocol, uriWithoutProtocol }
 }
 function isUrlProtocol(protocol: string) {
-  // Is there an alternative to having a blacklist?
+  // Is there an altenrative to having a blacklist?
   // - If the blacklist becomes too big, maybe use a whitelist instead ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
   const blacklist = [
     // https://docs.ipfs.tech/how-to/address-ipfs-on-web

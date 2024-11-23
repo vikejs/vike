@@ -55,7 +55,7 @@ function assertEnv(): void | undefined {
     // This assert() is the main goal of this file: it ensures assertIsNotProductionRuntime()
     assert(!env.shouldNotBeProduction)
   } else {
-    // This assert() is obvious and boring
+    // This assert() is obious and boring
     assert(env.shouldNotBeProduction)
     assert(env.isVikePluginLoaded)
   }

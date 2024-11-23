@@ -13,7 +13,7 @@ function retrieveAssetsProd(
 ): string[] {
   let assetUrls = new Set<string>()
   assert(assetsManifest)
-  const visitedAssets = new Set<string>()
+  const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets, eagerlyImported }) => {
     if (eagerlyImported) return // Eagerly imported assets aren't imported with import() and therefore don't create a new Rollup entry and aren't listed in the manifest file
 
@@ -32,7 +32,7 @@ function retrieveAssetsProd(
     }
 
     const { manifestKey } = getManifestEntry(id, assetsManifest)
-    collectAssets(manifestKey, assetUrls, visitedAssets, assetsManifest, onlyAssets)
+    collectAssets(manifestKey, assetUrls, visistedAssets, assetsManifest, onlyAssets)
   })
 
   collectSingleStyle(assetUrls, assetsManifest)
@@ -43,12 +43,12 @@ function retrieveAssetsProd(
 function collectAssets(
   manifestKey: string,
   assetUrls: Set<string>,
-  visitedAssets: Set<string>,
+  visistedAssets: Set<string>,
   assetsManifest: ViteManifest,
   onlyCollectStaticAssets: boolean
 ): void {
-  if (visitedAssets.has(manifestKey)) return
-  visitedAssets.add(manifestKey)
+  if (visistedAssets.has(manifestKey)) return
+  visistedAssets.add(manifestKey)
 
   const manifestEntry = assetsManifest[manifestKey]
   assert(manifestEntry, { manifestKey })
@@ -62,7 +62,7 @@ function collectAssets(
   for (const manifestKey of imports) {
     const importManifestEntry = assetsManifest[manifestKey]
     assert(importManifestEntry)
-    collectAssets(manifestKey, assetUrls, visitedAssets, assetsManifest, onlyCollectStaticAssets)
+    collectAssets(manifestKey, assetUrls, visistedAssets, assetsManifest, onlyCollectStaticAssets)
   }
 
   for (const cssAsset of css) {

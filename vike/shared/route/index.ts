@@ -81,7 +81,7 @@ async function route(pageContext: PageContextForRoute): Promise<PageContextFromR
     pageContext._pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, routeType } = pageRoute
 
-      // Filesystem Routing
+      // Filesytem Routing
       if (pageRoute.routeType === 'FILESYSTEM') {
         const { routeString } = pageRoute
         const match = resolveRouteString(routeString, urlPathname)

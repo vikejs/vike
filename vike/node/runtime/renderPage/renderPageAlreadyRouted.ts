@@ -193,7 +193,7 @@ function getPageContextInitEnhanced(
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer,
-    // TODO: use GlobalContext instead
+    // TODO: use GloablContext instead
     _pageFilesAll: renderContext.pageFilesAll,
     _pageConfigs: renderContext.pageConfigs,
     _pageConfigGlobal: renderContext.pageConfigGlobal,
@@ -245,7 +245,7 @@ type RenderContext = {
   onBeforeRouteHook: Hook | null
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
-// TODO: impl GlobalNodeContext + GlobalClientContext + GlobalContext, and use GlobalContext instead of RenderContext
+// TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = await getPageFilesAll(

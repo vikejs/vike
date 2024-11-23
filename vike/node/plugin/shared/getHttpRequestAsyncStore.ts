@@ -102,7 +102,7 @@ function isEquivalent(err1: unknown, err2: unknown) {
       ...Object.keys(err1),
       ...Object.keys(err2)
     ]).every((k) => {
-      // isDeepStrictEqual() need to compare error.position which is an object.
+      // isDeepStrictEqual() need to compare error.position wich is an object.
       if (isDeepStrictEqual(err1[k], err2[k])) return true
       // console.log('diff', k)
       return false
