@@ -703,12 +703,12 @@ async function resolveConfigValueSources(
       //   /pages/some-page/+config.js > `export default { someConfig }`
       const interfaceFileWinner = interfaceValueFile ?? interfaceConfigFile
       if (interfaceFileWinner) {
-        const interfaceFilesOverriden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(
+        const interfaceFilesOverridden = [...interfaceValueFiles, ...interfaceConfigFiles].filter(
           (f) => f !== interfaceFileWinner
         )
         // A user-land conflict of interfaceFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy making things unnecessarily ambiguous
-        warnOverridenConfigValues(interfaceFileWinner, interfaceFilesOverriden, configName)
-        ;[interfaceFileWinner, ...interfaceFilesOverriden].forEach((interfaceFile) => {
+        warnOverriddenConfigValues(interfaceFileWinner, interfaceFilesOverridden, configName)
+        ;[interfaceFileWinner, ...interfaceFilesOverridden].forEach((interfaceFile) => {
           add(interfaceFile)
         })
       }
@@ -752,12 +752,12 @@ function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: I
     return filePathAbsoluteUserRootDir.length
   })(interfaceFile1, interfaceFile2)
 }
-function warnOverridenConfigValues(
+function warnOverriddenConfigValues(
   interfaceFileWinner: InterfaceFile,
-  interfaceFilesOverriden: InterfaceFile[],
+  interfaceFilesOverridden: InterfaceFile[],
   configName: string
 ) {
-  interfaceFilesOverriden.forEach((interfaceFileLoser) => {
+  interfaceFilesOverridden.forEach((interfaceFileLoser) => {
     const loserFilePath = interfaceFileLoser.filePath.filePathToShowToUser
     const winnerFilePath = interfaceFileWinner.filePath.filePathToShowToUser
     const confName = pc.cyan(configName)
@@ -1069,11 +1069,11 @@ function applyEffect(
           assertUsage(keys.includes('env'), notSupported)
           assertUsage(keys.length === 1, notSupported)
         }
-        const envOverriden = configTargetDef.env
+        const envOverridden = configTargetDef.env
         const sources = configValueSources[configTargetName]
         sources?.forEach((configValueSource) => {
           // Apply effect
-          configValueSource.configEnv = envOverriden
+          configValueSource.configEnv = envOverridden
         })
       })
     } else {
