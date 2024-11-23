@@ -184,18 +184,18 @@ function assertModuleId(moduleId: string) {
 
 function getFilePathToShowToUserFromUnkown(
   // We don't have any guarantee about filePath, e.g. about whether is filePathAbsoluteFilesystem or filePathAbsoluteUserRootDir
-  filePathUnkown: string,
+  filePathUnknown: string,
   userRootDir: string
 ): string {
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
-  filePathUnkown = cleanFilePathUnkown(filePathUnkown)
+  filePathUnknown = cleanFilePathUnkown(filePathUnknown)
 
-  if (!filePathUnkown.startsWith(userRootDir)) {
-    return filePathUnkown
+  if (!filePathUnknown.startsWith(userRootDir)) {
+    return filePathUnknown
   } else {
-    return getFilePathAbsoluteUserRootDir2(filePathUnkown, userRootDir)
+    return getFilePathAbsoluteUserRootDir2(filePathUnknown, userRootDir)
   }
 }
 
