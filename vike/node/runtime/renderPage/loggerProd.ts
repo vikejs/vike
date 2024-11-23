@@ -10,7 +10,7 @@ import { isObject, warnIfErrorIsNotObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from './logErrorHint.js'
 
-function logErrorProd(err: unknown, _httpRquestId: null | number): void {
+function logErrorProd(err: unknown, _httpRequestId: null | number): void {
   warnIfErrorIsNotObject(err)
   setAlreadyLogged(err)
 
