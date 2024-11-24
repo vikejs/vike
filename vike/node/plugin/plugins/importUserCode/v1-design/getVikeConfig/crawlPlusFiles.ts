@@ -345,7 +345,11 @@ async function getFileStats(filePathAbsolute: string): Promise<Stats | null> {
 }
 
 async function runCmd1(cmd: string, cwd: string): Promise<string[]> {
-  const { stdout } = await execA(cmd, { cwd })
+  const { stdout } = await execA(cmd, {
+    cwd,
+    // https://github.com/vikejs/vike/issues/1982
+    maxBuffer: Infinity
+  })
   /* Not always true: https://github.com/vikejs/vike/issues/1440#issuecomment-1892831303
   assert(res.stderr === '')
   */
