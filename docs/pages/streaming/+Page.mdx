@@ -51,7 +51,7 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
+Node.js(-like) environments (Node.js/Bun/Deno server, Vercel, AWS EC2, AWS Lambda, ...):
 
 ```js
 // server.js
@@ -62,10 +62,17 @@ app.get("*", async (req, res) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  // httpResponse.pipe() works with Node.js Streams as well as Web Streams
   httpResponse.pipe(res)
 })
 ```
+
+> For Node.js(-like) environments we recommend using a Node.js Writable Stream with `pageContext.httpResponse.pipe()` because it allows the stream to be flushed. In other words: the stream provided by your UI framework can say "now is a good time to flush the stream buffer and send it to the user".
+>
+> Web Streams (both Writables and Readables) and Node.js Readable Streams don't have this flushing capability.
+>
+> As far as we know, only React leverages the flush capability. Thus, this recommendation may be irrelevant if you use a UI framework other than React.
+>
+> If you don't follow this recommendation, then you can use `pageContext.httpResponse.getReadableNodeStream()` instead of `pageContext.httpResponse.pipe()`
 
 Edge platforms (e.g. Cloudflare Workers):
 
@@ -82,28 +89,20 @@ async function handleFetchEvent(event) {
   const pageContextInit = { urlOriginal: event.request.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  // httpResponse.getReadableWebStream() only works with Web Streams
   const readable = httpResponse.getReadableWebStream()
   const { statusCode: status, headers } = httpResponse
   return new Response(readable, { headers, status })
 }
 ```
 
-In general, we recommend using `pageContext.httpResponse.pipe()` because `pipe()` is able to flush streams. In other words: the stream provided by your UI framework can say "now is a good time to flush the buffer and send it to the user".
+> If you have a Web Writbale Stream then use `httpResponse.pipe()` (it also works with Web Streams).
 
-> As far as we know, only React leverages the flush capability. Thus, the recommendation may be irrelevant if you use a UI framework other than React.
-
-If your server doesn't expose a writable stream then you cannot use `pipe()`. In that case you can fallback to:
- - `pageContext.httpResponse.getReadableWebStream()`
- - `pageContext.httpResponse.getReadableNodeStream()`
-
-For example, Cloudflare Workers doesn't expose any writable stream and the only option is to use `getReadableWebStream()`.
 
 ## API
 
-- <Link href="#basics" >**`pageContext.httpResponse.pipe()`**</Link>: The recommended way of integrating the stream into your server.
-- <Link href="#basics" >**`pageContext.httpResponse.getReadableWebStream()`**</Link>: Only use if you cannot use `pipe()`.
-- <Link href="#basics" >**`pageContext.httpResponse.getReadableNodeStream()`**</Link>: Only use if you cannot use `pipe()`.
+- <Link href="#basics" >**`pageContext.httpResponse.pipe()`**</Link>
+- <Link href="#basics" >**`pageContext.httpResponse.getReadableWebStream()`**</Link>
+- <Link href="#basics" >**`pageContext.httpResponse.getReadableNodeStream()`**</Link>
 - <Link href="#enableeagerstreaming">**`enableEagerStreaming`**</Link>: Start the stream as soon as possible.
 - <Link href="#stamppipe">**`stampPipe()`**</Link>: Only needed if your UI framework provides a stream pipe.
 - <Link href="#pagecontext-httpresponse-getbody" >**`pageContext.httpResponse.getBody()`**</Link>: Convert the stream into a string.
