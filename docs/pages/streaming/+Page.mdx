@@ -66,13 +66,13 @@ app.get("*", async (req, res) => {
 })
 ```
 
-> For Node.js(-like) environments we recommend using a Node.js Writable Stream with `pageContext.httpResponse.pipe()` because it allows the stream to be flushed. In other words: the stream provided by your UI framework can say "now is a good time to flush the stream buffer and send it to the user".
+> For Node.js(-like) environments we recommend using a Node.js Writable Stream with `pageContext.httpResponse.pipe()` because it allows the stream to be flushed. In other words: your UI framework can say "now is a good time to flush the stream buffer and send it to the user".
 >
 > Web Streams (both Writables and Readables) and Node.js Readable Streams don't have this flushing capability.
 >
-> As far as we know, only React leverages the flush capability. Thus, this recommendation may be irrelevant if you use a UI framework other than React.
+> As far as we know, only React leverages the flushing capability. Thus, this recommendation may be irrelevant if you use a UI framework other than React.
 >
-> If you don't follow this recommendation, then you can use `pageContext.httpResponse.getReadableNodeStream()` instead of `pageContext.httpResponse.pipe()`
+> If you don't follow this recommendation, then you can use `pageContext.httpResponse.getReadableNodeStream()` instead.
 
 Edge platforms (e.g. Cloudflare Workers):
 
@@ -95,7 +95,7 @@ async function handleFetchEvent(event) {
 }
 ```
 
-> If you have a Web Writbale Stream then use `httpResponse.pipe()` (it also works with Web Streams).
+> If you have a Web Writable Stream then use `httpResponse.pipe()` (it also works with Web Streams).
 
 
 ## API
