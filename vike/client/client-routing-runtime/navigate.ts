@@ -21,8 +21,9 @@ async function navigate(
   url: string,
   {
     keepScrollPosition = false,
-    overwriteLastHistoryEntry = false
-  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean } = {}
+    overwriteLastHistoryEntry = false,
+    pageContext
+  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean; pageContext?: Record<string, unknown> } = {}
 ): Promise<void> {
   normalizeUrlArgument(url, 'navigate')
 
@@ -34,7 +35,8 @@ async function navigate(
     scrollTarget,
     urlOriginal: url,
     overwriteLastHistoryEntry,
-    isBackwardNavigation: false
+    isBackwardNavigation: false,
+    pageContextInitClient: pageContext
   })
 }
 

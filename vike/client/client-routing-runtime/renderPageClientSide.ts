@@ -87,6 +87,7 @@ type RenderArgs = {
   redirectCount?: number
   doNotRenderIfSamePage?: boolean
   isClientSideNavigation?: boolean
+  pageContextInitClient?: Record<string, unknown>
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   const {
@@ -96,7 +97,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     pageContextsFromRewrite = [],
     redirectCount = 0,
     doNotRenderIfSamePage,
-    isClientSideNavigation = true
+    isClientSideNavigation = true,
+    pageContextInitClient
   } = renderArgs
   let { scrollTarget } = renderArgs
   const { previousPageContext } = globalObject
@@ -292,7 +294,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       isBackwardNavigation,
       isClientSideNavigation,
       isHydration: isFirstRender && !isForErrorPage,
-      _previousPageContext: previousPageContext
+      _previousPageContext: previousPageContext,
+      ...pageContextInitClient
     })
     {
       const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
