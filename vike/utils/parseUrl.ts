@@ -68,9 +68,16 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   // Search
   const { searchString: searchOriginal, withoutSearch: urlWithoutHashNorSearch } = extractSearch(urlWithoutHash)
   assert(searchOriginal === null || searchOriginal.startsWith('?'))
+  let searchString = ''
+  if (searchOriginal !== null) {
+    searchString = searchOriginal
+  } else if (url.startsWith('#')) {
+    const baseURI = getBaseURI()
+    searchString = (baseURI && extractSearch(baseURI).searchString) || ''
+  }
   const search: Record<string, string> = {}
   const searchAll: Record<string, string[]> = {}
-  Array.from(new URLSearchParams(searchOriginal || '')).forEach(([key, val]) => {
+  Array.from(new URLSearchParams(searchString)).forEach(([key, val]) => {
     search[key] = val
     searchAll[key] = [...(searchAll.hasOwnProperty(key) ? searchAll[key]! : []), val]
   })

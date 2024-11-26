@@ -1313,6 +1313,31 @@ describe('parseUrl', () => {
       }
     `)
     // @ts-ignore
+    globalThis.window = { document: { baseURI: 'http://localhost:3000/some/dir?some=param' } }
+    expect(parseUrl('#', '/')).toMatchInlineSnapshot(`
+      {
+        "hasBaseServer": true,
+        "hash": "",
+        "hashOriginal": "#",
+        "hostname": null,
+        "href": "/some/dir#",
+        "origin": null,
+        "pathname": "/some/dir",
+        "pathnameOriginal": "",
+        "port": null,
+        "protocol": null,
+        "search": {
+          "some": "param",
+        },
+        "searchAll": {
+          "some": [
+            "param",
+          ],
+        },
+        "searchOriginal": null,
+      }
+    `)
+    // @ts-ignore
     globalThis.window = undefined
   })
 
