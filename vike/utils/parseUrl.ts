@@ -153,14 +153,10 @@ function getPathnameAbsoluteWithBase(
   } else {
     // url is a relative path
 
-    // In the browser, this is the Base URL of the current URL.
-    // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
-    const baseURI: string | undefined = typeof window !== 'undefined' ? window?.document?.baseURI : undefined
-
+    const baseURI = getBaseURI()
     let base: string
     if (baseURI) {
-      const baseURIPathaname = parseOrigin(baseURI.split('?')[0]!.split('#')[0]!).pathname
-      base = baseURIPathaname
+      base = parseOrigin(baseURI.split('?')[0]!.split('#')[0]!).pathname
     } else {
       base = baseServer
     }
@@ -168,6 +164,12 @@ function getPathnameAbsoluteWithBase(
     const pathnameAbsoluteWithBase = resolveUrlPathnameRelative(url, base)
     return { protocol: null, origin: null, pathnameAbsoluteWithBase }
   }
+}
+function getBaseURI() {
+  // In the browser, this is the Base URL of the current URL.
+  // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
+  const baseURI: string | undefined = typeof window !== 'undefined' ? window?.document?.baseURI : undefined
+  return baseURI
 }
 function parseOrigin(url: string): { pathname: string; origin: null | string; protocol: null | string } {
   if (!isUrlWithProtocol(url)) {
