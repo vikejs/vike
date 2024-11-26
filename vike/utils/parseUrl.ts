@@ -61,16 +61,12 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
   assert(baseServer.startsWith('/'))
 
   // Hash
-  const [urlWithoutHash, ...h] = url.split('#')
-  assert(urlWithoutHash !== undefined)
-  const hashOriginal = (['', ...h].join('#') as undefined | `#${string}`) || null
+  const { hashString: hashOriginal, withoutHash: urlWithoutHash } = extractHash(url)
   assert(hashOriginal === null || hashOriginal.startsWith('#'))
   const hash = hashOriginal === null ? '' : decodeSafe(hashOriginal.slice(1))
 
   // Search
-  const [urlWithoutHashNorSearch, ...searchList] = urlWithoutHash.split('?')
-  assert(urlWithoutHashNorSearch !== undefined)
-  const searchOriginal = (['', ...searchList].join('?') as undefined | `?${string}`) || null
+  const { searchString: searchOriginal, withoutSearch: urlWithoutHashNorSearch } = extractSearch(urlWithoutHash)
   assert(searchOriginal === null || searchOriginal.startsWith('?'))
   const search: Record<string, string> = {}
   const searchAll: Record<string, string[]> = {}
@@ -114,6 +110,18 @@ function parseUrl(url: string, baseServer: string): UrlPrivate {
     hashOriginal
   }
 }
+
+function extractHash(url: string) {
+  const [withoutHash, ...parts] = url.split('#')
+  const hashString = (['', ...parts].join('#') as undefined | `#${string}`) || null
+  return { hashString, withoutHash: withoutHash as string }
+}
+function extractSearch(url: string) {
+  const [withoutSearch, ...parts] = url.split('?')
+  const searchString = (['', ...parts].join('?') as undefined | `?${string}`) || null
+  return { searchString, withoutSearch: withoutSearch as string }
+}
+
 function decodeSafe(urlComponent: string): string {
   try {
     return decodeURIComponent(urlComponent)
@@ -131,6 +139,7 @@ function decodePathname(urlPathname: string) {
     .join('/')
   return urlPathname
 }
+
 function getPathnameAbsoluteWithBase(
   url: string,
   baseServer: string
