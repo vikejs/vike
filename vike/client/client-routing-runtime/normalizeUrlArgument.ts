@@ -1,6 +1,6 @@
 export { normalizeUrlArgument }
 
-import { assertUsage, isUrl, isUrlPathnameRelative } from './utils.js'
+import { assertUsage, isUrl, isUrlRelative } from './utils.js'
 
 function normalizeUrlArgument(url: string, fnName: 'prefetch' | 'navigate'): string {
   // Succinct error message to save client-side KBs
@@ -11,7 +11,7 @@ function normalizeUrlArgument(url: string, fnName: 'prefetch' | 'navigate'): str
     url = url.slice(location.origin.length)
   }
   assertUsage(
-    url.startsWith('/') || isUrlPathnameRelative(url),
+    url.startsWith('/') || isUrlRelative(url),
     // `errMsg` used the original `url` value
     errMsg
   )

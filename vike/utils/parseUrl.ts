@@ -10,7 +10,7 @@ export { assertUsageUrlRedirectTarget }
 export { isUrl }
 export { isUri }
 export { isUrlRedirectTarget }
-export { isUrlPathnameRelative }
+export { isUrlRelative }
 export { isUrlExternal }
 export { isBaseServer }
 export { assertUrlComponents }
@@ -320,16 +320,16 @@ function createUrlFromComponents(
 
 function isUrl(url: string): boolean {
   // parseUrl() works with these URLs
-  return isUrlWithProtocol(url) || url.startsWith('/') || isUrlPathnameRelative(url)
+  return isUrlWithProtocol(url) || url.startsWith('/') || isUrlRelative(url)
 }
 function isUrlRedirectTarget(url: string): boolean {
   return url.startsWith('/') || isUri(url) || isUrlWithProtocol(url)
 }
-function isUrlPathnameRelative(url: string) {
+function isUrlRelative(url: string) {
   return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
 }
 function isUrlExternal(url: string): boolean {
-  return !url.startsWith('/') && !isUrlPathnameRelative(url)
+  return !url.startsWith('/') && !isUrlRelative(url)
 }
 /*
 URL with protocol.
