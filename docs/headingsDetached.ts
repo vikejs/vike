@@ -4,7 +4,7 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached: HeadingDetachedDefinition[] = [
   {
-    title: 'Vite 6 - A groundbreaking release',
+    title: 'Vite 6, a groundbreaking release',
     url: '/blog/vite-6'
   },
   {
