@@ -1,0 +1,32 @@
+import { Link } from '@brillout/docpress'
+
+Vite 6 introduces a groundbreaking new API: the [Environment API](https://vite.dev/guide/api-environment.html).
+
+It's a low-level API that you'll most likely never directly interact with as a user, but its impact is profound for users.
+
+
+## What does it mean for users?
+
+The most notable benefit is that you'll be able to develop directly against edge environments. For example, you'll be able to develop your [workerd](https://github.com/cloudflare/workerd) code (your Cloudflare Worker) while getting the full Vite experience such as HMR.
+
+In other words, you'll develop code that works equally well between dev and prod. You'll get a unified stack between dev and prod.
+
+This is major milestone for edge deployment, as you'll be able to develop for the edge as conveniently as for a Node.js/Bun/Deno server.
+
+
+## What does it mean for Vike users?
+
+Concretely, as a Vike user, you'll simply install `vike-cloudflare` with `vike-hono` and then develop your Hono code directly against Cloudflare Workers. Everything is automatically integrated, so there isn't any glue code for you to write.
+
+We're currently working on these extensions as we speak (and many more such as `vike-vercel`, `vike-express`, `vike-fastify`, ...).
+
+Staying true to Vike's flexible architecture, you'll be able to <Link href="/eject">eject</Link> glue code if you have specific requirements that need it.
+
+We already implemented the groundwork and we're currently working on bringing everything together. For example, we've implemented [`universal-middleware`](https://github.com/magne4000/universal-middleware) which is essentially the glue code between tools (Vike/Telefunc/...), the deployment environment (Node.js/Cloudflare/Vercel/...), and the server framework (Hono/Express.js/Fastify/...). We're making a lot of progress and we'll probably release something this year.
+
+
+## Closing words
+
+The Environment API is also a fundamental structural improvement to Vite (it now has multiple module graphs), enabling not only what we just discussed but also enabling Vite-based frameworks to implement new techniques such as React Server Components (it requires a separate module graph).
+
+The future looks bright.
