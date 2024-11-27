@@ -1,3 +1,22 @@
+## [0.4.205](https://github.com/vikejs/vike/compare/v0.4.204...v0.4.205) (2024-11-27)
+
+
+### Bug Fixes
+
+* accept esbuild 0.24 ([ed633d8](https://github.com/vikejs/vike/commit/ed633d864c29d81b84c818c3e038fd62aa8d1c9d))
+* add debug logs for firefox history null bug ([#1962](https://github.com/vikejs/vike/issues/1962)) ([29a621a](https://github.com/vikejs/vike/commit/29a621a87d3e4bf454d16bcf8f76b0b4b247287c))
+* fix hash URL parsing ([7c752c4](https://github.com/vikejs/vike/commit/7c752c4e90ded8a53120655884667371a0c8342a))
+* fix regression of resolving hash URLs (fix [#1987](https://github.com/vikejs/vike/issues/1987)) ([13b4e50](https://github.com/vikejs/vike/commit/13b4e5030950053fc762605e31cf9f0b053518e6))
+* make getCacheControl return defaultValue on 5xx server errors ([#1981](https://github.com/vikejs/vike/issues/1981)) ([7f41ba2](https://github.com/vikejs/vike/commit/7f41ba223a7ae03570c0c0d4fa78dc2afb998a2c))
+* support large `$ git ls-files` outputs (fix [#1982](https://github.com/vikejs/vike/issues/1982)) ([386d2d8](https://github.com/vikejs/vike/commit/386d2d89aba2e2682de7a81f0b09fe9383fec2f0))
+
+
+### Features
+
+* add `pageContext` argument to `navigate()` (fix [#1976](https://github.com/vikejs/vike/issues/1976)) ([9a97c22](https://github.com/vikejs/vike/commit/9a97c22f50d4250e3fa7a9ce48459c1e76328101))
+
+
+
 ## [0.4.204](https://github.com/vikejs/vike/compare/v0.4.203...v0.4.204) (2024-11-20)
 
 
