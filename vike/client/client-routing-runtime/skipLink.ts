@@ -37,6 +37,7 @@ function isNewTabLink(linkTag: HTMLElement) {
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
 }
 function isSamePageHashLink(href: string) {
+  if (href.startsWith('#')) return true
   if (
     href.includes('#') &&
     normalizeClientSideUrl(href, { withoutHash: true }) ===
@@ -44,10 +45,10 @@ function isSamePageHashLink(href: string) {
   ) {
     return true
   }
-  assert(!href.startsWith('#'))
   return false
 }
 function isSameAsCurrentUrl(href: string) {
+  if (href.startsWith('#')) return href === window.location.hash
   return normalizeClientSideUrl(href) === normalizeClientSideUrl(window.location.href)
 }
 function hasBaseServer(href: string): boolean {
