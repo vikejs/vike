@@ -1,0 +1,41 @@
+/* base */
+.landingpage-button {
+    height: 36px;
+    display: 'flex';
+    align-items: 'center';
+    cursor: 'pointer';
+    width: 'fit-content';
+    font-size: 14px;  
+    padding: 0 12px;
+}
+
+/* default */
+.landingpage-button-default {
+    background-color: #000000D0;
+    color: #fff;
+    transition: background-color 0.2s;
+}
+.landingpage-button-default:hover {
+    background-color: #000000;
+}
+
+/* secondary */
+.landingpage-button-secondary {
+    background-color: #E5E5EB;
+    color: #000000E0;
+    transition: background-color 0.2s;
+}
+.landingpage-button-secondary:hover {
+    background-color: #D8D8DF;
+}
+
+/* ghost */
+.landingpage-button-ghost {
+    background-color: transparent;
+    color: #000000A0;
+    transition: all 0.2s;
+}
+.landingpage-button-ghost:hover {
+    background-color: #E5E5EB;
+    color: #000;
+}

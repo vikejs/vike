@@ -1,17 +1,21 @@
 export { Page }
 
 import React, { useEffect, useRef } from 'react'
-import { Sponsors } from './Sponsors'
+import { Hero } from './sections/Hero'
+import { Sponsors } from './sections/Sponsors'
 import iconVikeAnimatedCover from '../../images/icons/vike-nitedani-animated-cover.jpg'
+import { Flexible } from './sections/Flexible'
+
+export const primaryColor = '#1810FF'
 
 function Page() {
   return (
     <>
       <Block style={{ marginTop: 0 }}>
-        <p>Hello World</p>
+        <Hero />
       </Block>
       <Block>
-        <p>Some other block.</p>
+        <Flexible />
       </Block>
       <Block>
         <Philosophy />
@@ -37,7 +41,7 @@ function Block({ children, style }: { children?: React.ReactNode; style?: React.
         ...style
       }}
     >
-      <div style={{ maxWidth: 1000 }}>{children}</div>
+      <div style={{ maxWidth: 1000, width: '100%' }}>{children}</div>
     </div>
   )
 }
