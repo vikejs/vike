@@ -5,6 +5,7 @@ import { Hero } from './sections/Hero'
 import { Sponsors } from './sections/Sponsors'
 import iconVikeAnimatedCover from '../../images/icons/vike-nitedani-animated-cover.jpg'
 import { Flexible } from './sections/Flexible'
+import { Reliable } from './sections/Reliable'
 
 export const primaryColor = '#1810FF'
 
@@ -17,10 +18,19 @@ function Page() {
       <Block
         noGrid
         style={{
-          padding: 0
+          padding: 0,
+          backgroundColor: '#FAFAFA'
         }}
       >
         <Flexible />
+      </Block>
+      <Block
+        noGrid
+        style={{
+          padding: 0
+        }}
+      >
+        <Reliable />
       </Block>
       <Block>
         <Philosophy />

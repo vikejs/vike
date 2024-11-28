@@ -78,7 +78,7 @@ export const Flexible = () => {
   return (
     <div
       style={{
-        marginTop: '52px',
+        marginTop: '80px',
         marginBottom: '-3px',
         width: '100%'
       }}

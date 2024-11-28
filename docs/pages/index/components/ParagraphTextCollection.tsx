@@ -10,11 +10,11 @@ export const ParagraphTextCollection = ({
   icon: JSX.Element
 }) => {
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <div
         style={{
           color: '#000000',
-          paddingBottom: '16px'
+          paddingBottom: '32px'
         }}
       >
         {icon}
@@ -27,7 +27,7 @@ export const ParagraphTextCollection = ({
           width: '100%',
           margin: 0,
           lineHeight: 1.5,
-          maxWidth: '240px'
+          minWidth: '240px'
         }}
       >
         {title}
@@ -40,7 +40,7 @@ export const ParagraphTextCollection = ({
           width: '100%',
           margin: 0,
           lineHeight: 1.5,
-          maxWidth: '240px',
+          minWidth: '240px',
           paddingTop: '8px',
           paddingBottom: '4px'
         }}
