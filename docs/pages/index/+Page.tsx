@@ -6,6 +6,7 @@ import { Sponsors } from './sections/Sponsors'
 import iconVikeAnimatedCover from '../../images/icons/vike-nitedani-animated-cover.jpg'
 import { Flexible } from './sections/Flexible'
 import { Reliable } from './sections/Reliable'
+import { Features } from './sections/Features'
 
 export const primaryColor = '#1810FF'
 
@@ -31,6 +32,13 @@ function Page() {
         }}
       >
         <Reliable />
+      </Block>
+      <Block
+        style={{
+          backgroundColor: '#EEEEF2'
+        }}
+      >
+        <Features />
       </Block>
       <Block>
         <Philosophy />

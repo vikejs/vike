@@ -6,7 +6,7 @@ import { ParagraphTextCollection } from '../components/ParagraphTextCollection'
 
 const data = {
   caption: 'Flexible',
-  title: 'Your Stack\n Your Choice',
+  title: 'Your Stack, Your Choice',
   description: [
     'Enjoy architectural freedom, use any tool, and choose any rendering and deployment strategy.',
     'Use Vike extensions to quickly integrate tools and later, if the need arises, eject for full control over tool integration.'
@@ -97,7 +97,12 @@ export const Flexible = () => {
             }}
           >
             <TextBox>
-              <SectionTextCollection caption={data.caption} title={data.title} descriptions={data.description} />
+              <SectionTextCollection
+                style={{ maxWidth: '400px' }}
+                caption={data.caption}
+                title={data.title}
+                descriptions={data.description}
+              />
             </TextBox>
           </div>
           <div

@@ -5,17 +5,19 @@ export const SectionTextCollection = ({
   caption,
   title,
   descriptions,
-  actions
+  actions,
+  style
 }: {
   caption: string
   title: string
   descriptions?: string[]
   actions?: JSX.Element[]
+  style?: React.CSSProperties
 }) => {
   return (
     <div
       style={{
-        maxWidth: '400px'
+        ...style
       }}
     >
       <p
@@ -28,13 +30,12 @@ export const SectionTextCollection = ({
       </p>
       <h2
         style={{
-          fontSize: '38px',
+          fontSize: '36px',
           color: '#000000',
           fontWeight: '400',
           width: '100%',
           margin: 0,
           lineHeight: 1.3,
-          maxWidth: '240px',
           paddingBottom: '16px'
         }}
       >
@@ -45,7 +46,8 @@ export const SectionTextCollection = ({
           <p
             key={i}
             style={{
-              fontSize: '16px'
+              fontSize: '16px',
+              lineHeight: 1.5
             }}
           >
             {text}

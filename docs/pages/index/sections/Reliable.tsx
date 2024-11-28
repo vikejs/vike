@@ -65,7 +65,12 @@ export const Reliable = () => {
             }}
           >
             <TextBox>
-              <SectionTextCollection caption={data.caption} title={data.title} descriptions={data.description} />
+              <SectionTextCollection
+                style={{ maxWidth: '400px' }}
+                caption={data.caption}
+                title={data.title}
+                descriptions={data.description}
+              />
             </TextBox>
           </div>
           <div
