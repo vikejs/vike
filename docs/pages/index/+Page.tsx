@@ -14,7 +14,12 @@ function Page() {
       <Block style={{ marginTop: 0 }}>
         <Hero />
       </Block>
-      <Block>
+      <Block
+        noGrid
+        style={{
+          padding: 0
+        }}
+      >
         <Flexible />
       </Block>
       <Block>
@@ -29,7 +34,15 @@ function Page() {
   )
 }
 
-function Block({ children, style }: { children?: React.ReactNode; style?: React.CSSProperties }) {
+export function Block({
+  children,
+  style,
+  noGrid
+}: {
+  children?: React.ReactNode
+  style?: React.CSSProperties
+  noGrid?: boolean
+}) {
   return (
     <div
       style={{
@@ -41,7 +54,21 @@ function Block({ children, style }: { children?: React.ReactNode; style?: React.
         ...style
       }}
     >
-      <div style={{ maxWidth: 1000, width: '100%' }}>{children}</div>
+      {noGrid ? children : <Grid>{children}</Grid>}
+    </div>
+  )
+}
+
+export function Grid({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  return (
+    <div
+      style={{
+        width: '100%',
+        padding: '0 20px',
+        ...style
+      }}
+    >
+      <div style={{ maxWidth: 1100, width: '100%', margin: '0 auto' }}>{children}</div>
     </div>
   )
 }
