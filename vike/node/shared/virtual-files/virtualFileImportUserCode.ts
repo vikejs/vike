@@ -3,7 +3,8 @@ export { virtualFileIdImportUserCodeClientSR }
 export { virtualFileIdImportUserCodeClientCR }
 export { isVirtualFileIdImportUserCode }
 
-import { assert, getVirtualFileId } from '../utils.js'
+import { assert } from '../utils.js'
+import { getVirtualFileId } from '../virtual-files.js'
 
 const idBase = 'virtual:vike:importUserCode'
 const virtualFileIdImportUserCodeServer = `${idBase}:server`

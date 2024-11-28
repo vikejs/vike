@@ -17,11 +17,9 @@ import {
   styleFileRE,
   createDebugger,
   isScriptFile,
-  resolveVirtualFileId,
-  isVirtualFileId,
-  getVirtualFileId,
   assertUsage
 } from '../utils.js'
+import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
