@@ -12,7 +12,7 @@ const data = {
   caption: 'Philosophy',
   title: 'How Vike is Built.',
   buttonLabel: 'Read more',
-  buttonLink: '/docs'
+  buttonLink: '/why#philosophy'
 }
 
 const principles = [
@@ -26,7 +26,7 @@ const principles = [
       </svg>
     ),
     title: 'Separation of concerns',
-    href: '/'
+    href: '/why#separation-of-concerns'
   },
   {
     icon: (
@@ -48,7 +48,7 @@ const principles = [
       </svg>
     ),
     title: 'Flourishing do-one-thing-do-it-well ecosystem',
-    href: '/'
+    href: '/why#flourishing-do-one-thing-do-it-well-ecosystem'
   },
   {
     icon: (
@@ -60,7 +60,7 @@ const principles = [
       </svg>
     ),
     title: 'User-driven',
-    href: '/'
+    href: '/why#user-driven'
   },
   {
     icon: (
@@ -79,7 +79,7 @@ const principles = [
       </svg>
     ),
     title: 'Strong leadership',
-    href: '/'
+    href: '/why#strong-leadership'
   }
 ]
 
@@ -106,7 +106,9 @@ export const Philosophy = () => {
                 margin: '20px 0'
               }}
             >
-              <Button type="secondary">{data.buttonLabel}</Button>
+              <a href={data.buttonLink}>
+                <Button type="secondary">{data.buttonLabel}</Button>
+              </a>
             </div>
           </div>
         </TextBox>

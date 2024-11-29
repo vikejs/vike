@@ -7,62 +7,62 @@ type coreDataType = {
 
 export const coreData: coreDataType[] = [
   {
-    title: 'prefetching',
-    href: '/',
+    title: 'Prefetching',
+    href: '/prefetch',
     posColLg: '1 / span 3',
     posRowLg: '1 / span 1'
   },
   {
-    title: 'preloading',
-    href: '/',
+    title: 'Preloading',
+    href: '/preloading',
     posColLg: '1 / span 3',
     posRowLg: '2 / span 1'
   },
   {
-    title: 'url rewrites',
-    href: '/',
+    title: 'URL Rewrites',
+    href: '/render',
     posColLg: '4 / span 3',
     posRowLg: '1 / span 2'
   },
   {
-    title: 'url redirects',
-    href: '/',
+    title: 'URL Redirects',
+    href: '/redirect',
     posColLg: '7 / span 3',
     posRowLg: '1 / span 2'
   },
   {
-    title: 'filesystem routing',
-    href: '/',
+    title: 'Filesystem Routing',
+    href: '/routing#filesystem-routing',
     posColLg: '3 / span 5',
     posRowLg: '3 / span 1'
   },
   {
-    title: 'pre-rendering',
-    href: '/',
+    title: 'Pre-rendering',
+    href: '/pre-rendering',
     posColLg: '1 / span 4',
     posRowLg: '7 / span 2'
   },
   {
-    title: 'data fetching',
-    href: '/',
+    title: 'Data Fetching',
+    href: '/data-fetching',
     posColLg: '1 / span 4',
     posRowLg: '9 / span 1'
   },
   {
-    title: 'route guard',
-    href: '/',
+    title: 'Route Guard',
+    href: '/guard',
     posColLg: '5 / span 2',
     posRowLg: '7 / span 2'
   },
   {
-    title: 'layouts',
-    href: '/',
+    title: 'Layouts',
+    href: '/Layout',
     posColLg: '7 / span 3',
     posRowLg: '7 / span 1'
   },
   {
-    title: 'html streaming',
-    href: '/',
+    title: 'HTML Streaming',
+    href: '/streaming',
     posColLg: '7 / span 3',
     posRowLg: '8 / span 2'
   }
