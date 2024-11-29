@@ -1,0 +1,29 @@
+.landingpage-chip {
+    grid-column: 4 / span 6;
+    position: relative;
+}
+.landingpage-chip-right {
+    grid-column: 2 / span 2;
+}
+.landingpage-chip-left {
+    grid-column: 10 / span 2;
+}
+.landingpage-chip-feature {
+    color: #A8AFB9;
+    font-size: 12px;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 2px;
+    background-color: #2A3346A0;
+    width: 100%;
+    height: calc(100% - 4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.landingpage-chip-feature:hover {
+    background-color: rgba(0,0,0,1);
+}
