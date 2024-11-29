@@ -6,15 +6,8 @@ import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
-import {
-  assert,
-  assertPosixPath,
-  getOutDirs,
-  getVirtualFileId,
-  isDev3,
-  isVirtualFileId,
-  resolveVirtualFileId
-} from '../../utils.js'
+import { assert, assertPosixPath, getOutDirs, isDev3 } from '../../utils.js'
+import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile, isV1Design } from './v1-design/getVikeConfig.js'
