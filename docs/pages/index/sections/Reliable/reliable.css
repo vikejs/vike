@@ -1,0 +1,8 @@
+.landingpage-reliable-benefit {
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.landingpage-reliable-benefit:hover {
+    background-color: #EEEEF2;
+}

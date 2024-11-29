@@ -1,8 +1,11 @@
 import React from 'react'
-import { TextBox } from '../components/TextBox'
-import { Grid, primaryColor } from '../+Page'
-import { SectionTextCollection } from '../components/SectionTextCollection'
-import { ParagraphTextCollection } from '../components/ParagraphTextCollection'
+import { TextBox } from '../../components/TextBox'
+import { Grid, primaryColor } from '../../+Page'
+import { SectionTextCollection } from '../../components/SectionTextCollection'
+import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
+import SlotMachineSVG from '../../components/SlotMachineSVG'
+import { Button } from '../../components/Button/Button'
+import './flexible.css'
 
 const data = {
   caption: 'Flexible',
@@ -12,6 +15,8 @@ const data = {
     'Use Vike extensions to quickly integrate tools and later, if the need arises, eject for full control over tool integration.'
   ]
 }
+
+const stylePrefix = 'landingpage-flexible'
 
 const benefits = [
   {
@@ -24,6 +29,7 @@ const benefits = [
       </svg>
     ),
     title: 'Cutting edge, at your own pace',
+    href: '/',
     description:
       'Choose between production-grade extensions or cutting-edge extensions — go with a conservative stack, or live on the edge in unprecedented ways.'
   },
@@ -47,6 +53,7 @@ const benefits = [
       </svg>
     ),
     title: 'Build Your Own Framework',
+    href: '/',
     description:
       'Create an internal company framework that empowers your senior developers to fully own the architecture, ensuring a cohesive stack across your company.'
   },
@@ -70,6 +77,7 @@ const benefits = [
       </svg>
     ),
     title: 'Flexible, by design and priority',
+    href: '/',
     description: 'From high-level design to the smallest details, Vike is built with flexibility in mind.'
   }
 ]
@@ -78,7 +86,7 @@ export const Flexible = () => {
   return (
     <div
       style={{
-        marginTop: '80px',
+        marginTop: '120px',
         marginBottom: '-3px',
         width: '100%'
       }}
@@ -108,10 +116,41 @@ export const Flexible = () => {
           <div
             style={{
               flex: 1,
-              minWidth: '400px',
-              backgroundColor: '#EBEBEF'
+              minWidth: '400px'
             }}
-          />
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <div
+                style={{
+                  margin: '0 -24px'
+                }}
+              >
+                <SlotMachineSVG />
+              </div>
+
+              <div
+                style={{
+                  height: '1px',
+                  width: '30px',
+                  backgroundColor: 'rgba(0,0,0,0.3)',
+                  transform: 'translateY(-3px)'
+                }}
+              />
+              <div
+                style={{
+                  transform: 'translateY(-3px)',
+                  marginLeft: '8px'
+                }}
+              >
+                <Button type="secondary">Spin</Button>
+              </div>
+            </div>
+          </div>
         </div>
       </Grid>
 
@@ -132,14 +171,17 @@ export const Flexible = () => {
             }}
           >
             {benefits.map((benefit, i) => (
-              <div
+              <a
                 key={i}
+                className={`${stylePrefix}-benefit`}
+                href={benefit.href}
                 style={{
                   flex: 1,
                   minWidth: '240px',
                   padding: '20px 0',
                   borderRight: `3px solid #FFFFFF`,
-                  borderLeft: i === 0 ? `3px solid #FFFFFF` : `0px solid transparent`
+                  borderLeft: i === 0 ? `3px solid #FFFFFF` : `0px solid transparent`,
+                  cursor: 'pointer'
                 }}
               >
                 <TextBox>
@@ -149,7 +191,7 @@ export const Flexible = () => {
                     description={benefit.description}
                   />
                 </TextBox>
-              </div>
+              </a>
             ))}
           </div>
         </Grid>

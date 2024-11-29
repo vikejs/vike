@@ -1,8 +1,14 @@
 import React from 'react'
-import { TextBox } from '../components/TextBox'
-import { Grid, primaryColor } from '../+Page'
-import { SectionTextCollection } from '../components/SectionTextCollection'
-import { ParagraphTextCollection } from '../components/ParagraphTextCollection'
+import { TextBox } from '../../components/TextBox'
+import { Grid, primaryColor } from '../../+Page'
+import { SectionTextCollection } from '../../components/SectionTextCollection'
+import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
+import OpenSourceSVG from '../../components/OpenSourceSVG'
+import BugFixSVG from '../../components/BugFixSVG'
+import TrendingPackagesSVG from '../../components/trendingPackageSVG'
+import './reliable.css'
+
+const stylePrefix = 'landingpage-reliable'
 
 const data = {
   caption: 'Reliable',
@@ -25,7 +31,8 @@ const benefits = [
     ),
     title: 'Transparent business model.',
     description:
-      "Vike's Open Source Pricing keeps code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship."
+      "Vike's Open Source Pricing keeps code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.",
+    image: <OpenSourceSVG />
   },
   {
     icon: (
@@ -38,7 +45,8 @@ const benefits = [
     ),
     title: 'Reliable, by care',
     description:
-      'We are responsive with a clear guideline on how to receive guaranteed assistance. Bugs are quickly fixed (usually under 24 hours).'
+      'We are responsive with a clear guideline on how to receive guaranteed assistance. Bugs are quickly fixed (usually under 24 hours).',
+    image: <BugFixSVG />
   }
 ]
 
@@ -46,7 +54,7 @@ export const Reliable = () => {
   return (
     <div
       style={{
-        marginTop: '80px',
+        marginTop: '120px',
         marginBottom: '-3px',
         width: '100%'
       }}
@@ -77,9 +85,13 @@ export const Reliable = () => {
             style={{
               flex: 1,
               minWidth: '400px',
-              backgroundColor: '#EBEBEF'
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
             }}
-          />
+          >
+            <TrendingPackagesSVG />
+          </div>
         </div>
       </Grid>
 
@@ -109,6 +121,7 @@ export const Reliable = () => {
                 }}
               >
                 <div
+                  className={`${stylePrefix}-benefit`}
                   style={{
                     width: '41.6%', // 5/12
                     padding: '32px 0',
@@ -127,9 +140,15 @@ export const Reliable = () => {
                 <div
                   style={{
                     width: '58.4%', // 7/12
-                    backgroundColor: '#EBEBEF'
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRight: i % 2 ? '0px' : '3px solid #FFF',
+                    borderLeft: i % 2 ? '3px solid #FFF' : '0px'
                   }}
-                />
+                >
+                  {benefit.image}
+                </div>
               </div>
             </Grid>
           </div>

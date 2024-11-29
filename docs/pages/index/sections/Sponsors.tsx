@@ -3,7 +3,15 @@ export type { Sponsor }
 
 import React from 'react'
 import { assert } from '@brillout/docpress'
-import { sponsorsList } from './sponsorsList'
+import { sponsorLevels, sponsorsList } from './sponsorsList'
+import { SectionTextCollection } from '../components/SectionTextCollection'
+import { TextBox } from '../components/TextBox'
+import { Button } from '../components/Button/Button'
+
+const data = {
+  caption: 'Sponsoring',
+  title: 'Sponsor Vike and get a tight-knit partnership 🤝'
+}
 
 type Plan = 'indie' | 'bronze' | 'silver' | 'gold' | 'platinum'
 
@@ -26,107 +34,76 @@ function Sponsors() {
   return (
     <div
       style={{
+        marginTop: '120px',
+        marginBottom: '120px',
         textAlign: 'center'
-      }}
-    >
-      <SponsorButton />
-      <p
-        style={{
-          marginTop: 12,
-          marginBottom: 12,
-          fontSize: '1.05em',
-          padding: '0 var(--main-view-padding)'
-        }}
-      >
-        Sponsor Vike for a tight-knit partnership 🤝
-      </p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly', alignItems: 'end' }}>
-        {sponsorsList.map((sponsor, i) => (
-          <SponsorDiv sponsor={sponsor} key={i} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function SponsorButton() {
-  return (
-    <a
-      className="button"
-      style={{
-        color: 'inherit',
-        display: 'inline-flex',
-        alignItems: 'center',
-        padding: '5px 10px',
-        marginBottom: 10
-      }}
-      href="https://github.com/sponsors/vikejs"
-    >
-      Become a sponsor
-    </a>
-  )
-}
-
-function SponsorDiv({ sponsor }: { sponsor: Sponsor }) {
-  return <CompanyDiv sponsor={sponsor} />
-}
-
-function CompanyDiv({ sponsor }: { sponsor: Sponsor }) {
-  const { width, height, padding } = getSize(sponsor)
-  const marginHeight = 20
-  const marginWidth = 10
-  return (
-    <a
-      href={sponsor.website}
-      style={{
-        margin: `${marginHeight}px ${marginWidth}px`
       }}
     >
       <div
         style={{
-          backgroundColor: '#ebebeb',
-          borderRadius: 7,
-          overflow: 'hidden',
-          width,
-          maxWidth: `calc(100vw - 2 * var(--main-view-padding) - 2 * ${marginWidth}px)`,
-          height,
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-          justifyContent: 'center'
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)'
         }}
       >
-        <img
-          style={{ width: `calc(100% - ${padding}px)`, height: height - padding, objectFit: 'contain' }}
-          src={sponsor.companyLogo}
-          alt={sponsor.companyName}
-        />
+        <div
+          style={{
+            gridColumn: '3 / span 8'
+          }}
+        >
+          <TextBox>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <SectionTextCollection caption={data.caption} title={data.title} />
+              <a href="https://github.com/sponsors/vikejs">
+                <Button type="secondary">Become a sponsor</Button>
+              </a>
+            </div>
+          </TextBox>
+        </div>
       </div>
-    </a>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+          marginTop: '24px'
+        }}
+      >
+        {sponsorLevels.map((level) => (
+          <div
+            key={level.name}
+            style={{
+              display: 'flex',
+              gap: 4,
+              justifyContent: 'space-between',
+              height: sponsorsList.filter((s) => s.plan === level.name).length > 0 ? level.height : 0
+            }}
+          >
+            {sponsorsList
+              .filter((s) => s.plan === level.name)
+              .map((sponsor) => (
+                <a
+                  key={sponsor.companyName}
+                  href={sponsor.website}
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#FFFFFF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <img
+                    src={sponsor.companyLogo}
+                    alt={sponsor.companyName}
+                    style={{
+                      height: '40%'
+                    }}
+                  />
+                </a>
+              ))}
+          </div>
+        ))}
+      </div>
+    </div>
   )
-}
-
-function getSize(sponsor: Sponsor): DivSize {
-  const { plan } = sponsor
-  let divSize: DivSize | undefined
-  if (plan === 'platinum') {
-    divSize = { width: 500, height: 180, padding: 100 }
-  }
-  if (plan === 'gold') {
-    divSize = { width: 400, height: 150, padding: 95 }
-  }
-  if (plan === 'silver') {
-    divSize = { width: 300, height: 100, padding: 45 }
-  }
-  if (plan === 'bronze') {
-    divSize = { width: 200, height: 70, padding: 30 }
-  }
-  if (plan === 'indie') {
-    divSize = { width: 140, height: 50, padding: 20 }
-  }
-  assert(divSize)
-  if (sponsor.divSize) {
-    Object.assign(divSize, sponsor.divSize)
-  }
-  return divSize
 }

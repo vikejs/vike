@@ -13,7 +13,7 @@ export const Features = () => {
     <div
       style={{
         width: '100%',
-        margin: '80px 0'
+        margin: '120px 0'
       }}
     >
       <div

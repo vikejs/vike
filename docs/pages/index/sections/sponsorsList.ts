@@ -10,6 +10,32 @@ import inlangLogo from './sponsorsLogo/inlang.png'
 import bluefinLogo from './sponsorsLogo/bluefin.svg'
 import alignableLogo from './sponsorsLogo/alignable.svg'
 
+export const sponsorLevels: {
+  name: string,
+  height: number
+}[] = [
+  {
+    name: 'platinum',
+    height: 240
+  },
+  {
+    name: 'gold',
+    height: 200
+  },
+  {
+    name: 'silver',
+    height: 120
+  },
+  {
+    name: 'bronze',
+    height: 80
+  },
+  {
+    name: 'indie',
+    height: 60
+  },
+]
+
 const sponsorsList: Sponsor[] = [
   {
     companyName: 'Contra',

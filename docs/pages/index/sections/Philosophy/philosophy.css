@@ -1,0 +1,8 @@
+.landingpage-philosophy-principle {
+    background-color: transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.landingpage-philosophy-principle:hover {
+    background-color: #EEEEF2;
+}

@@ -1,9 +1,12 @@
 import React, { useEffect, useRef } from 'react'
-import iconVikeAnimatedCover from '../../../images/icons/vike-nitedani-animated-cover.jpg'
-import { SectionTextCollection } from '../components/SectionTextCollection'
-import { Button } from '../components/Button/Button'
-import { TextBox } from '../components/TextBox'
-import { Grid } from '../+Page'
+import iconVikeAnimatedCover from '../../../../images/icons/vike-nitedani-animated-cover.jpg'
+import { SectionTextCollection } from '../../components/SectionTextCollection'
+import { Button } from '../../components/Button/Button'
+import { TextBox } from '../../components/TextBox'
+import { Grid } from '../../+Page'
+import './philosophy.css'
+
+const stylePrefix = 'landingpage-philosophy'
 
 const data = {
   caption: 'Philosophy',
@@ -81,7 +84,7 @@ export const Philosophy = () => {
     <div
       style={{
         width: '100%',
-        marginTop: '80px'
+        marginTop: '120px'
       }}
     >
       <Grid>
@@ -139,6 +142,7 @@ export const Philosophy = () => {
               {principles.map((principle, i) => (
                 <div
                   key={i}
+                  className={`${stylePrefix}-principle`}
                   style={{
                     display: 'flex',
                     alignItems: 'center',

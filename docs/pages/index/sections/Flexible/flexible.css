@@ -1,0 +1,7 @@
+.landingpage-flexible-benefit {
+    background-color: transparent;
+    transition: all 0.2s;
+}
+.landingpage-flexible-benefit:hover {
+    background-color: #EEEEF2;
+}

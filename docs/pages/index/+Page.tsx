@@ -3,10 +3,11 @@ export { Page }
 import React, { useEffect, useRef } from 'react'
 import { Hero } from './sections/Hero'
 import { Sponsors } from './sections/Sponsors'
-import { Flexible } from './sections/Flexible'
-import { Reliable } from './sections/Reliable'
+import { Flexible } from './sections/Flexible/Flexible'
+import { Reliable } from './sections/Reliable/Reliable'
 import { Features } from './sections/Features'
-import { Philosophy } from './sections/Philosophy'
+import { Philosophy } from './sections/Philosophy/Philosophy'
+import { CTA } from './sections/CTA'
 
 export const primaryColor = '#1810FF'
 
@@ -49,10 +50,9 @@ function Page() {
         <Philosophy />
       </Block>
       <Block>
-        <div style={{ height: 60 }} />
         <Sponsors />
-        <div style={{ height: 50 }} />
       </Block>
+      <CTA />
     </>
   )
 }
