@@ -39,16 +39,16 @@ const benefits = [
         <path
           d="M6.37584 21.867H12.4009M9.38839 21.867V3.79169M9.38839 3.79169L3.36328 9.8168H21.4386M9.38839 3.79169L19.4302 9.8168"
           stroke="currentColor"
-          stroke-width="2.00837"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2.00837"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M17.4224 9.8168V13.8335C17.8197 13.8335 18.2079 13.9513 18.5382 14.172C18.8685 14.3927 19.1259 14.7064 19.2779 15.0733C19.4299 15.4403 19.4697 15.8441 19.3922 16.2337C19.3147 16.6233 19.1234 16.9812 18.8426 17.262C18.5617 17.5429 18.2038 17.7342 17.8142 17.8117C17.4247 17.8892 17.0208 17.8494 16.6539 17.6974C16.2869 17.5454 15.9732 17.288 15.7525 16.9577C15.5319 16.6274 15.4141 16.2391 15.4141 15.8419"
           stroke="currentColor"
-          stroke-width="2.00837"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2.00837"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     ),
@@ -63,16 +63,16 @@ const benefits = [
         <path
           d="M12.9074 12.8293V12.8394M20.008 5.72874C18.4395 4.16021 13.9829 6.06715 10.0666 9.9895C6.14526 13.9108 4.23831 18.3614 5.80685 19.9309C7.37539 21.4985 11.832 19.5915 15.7483 15.6692C19.6696 11.7478 21.5766 7.29828 20.008 5.72874Z"
           stroke="currentColor"
-          stroke-width="2.00837"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2.00837"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M5.80684 5.72876C4.2383 7.29729 6.14525 11.7539 10.0676 15.6702C13.9889 19.5915 18.4395 21.4985 20.009 19.9299C21.5766 18.3614 19.6696 13.9048 15.7473 9.98851C11.8259 6.06717 7.37638 4.16022 5.80684 5.72876Z"
           stroke="currentColor"
-          stroke-width="2.00837"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2.00837"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     ),
@@ -189,6 +189,7 @@ export const Flexible = () => {
                     icon={benefit.icon}
                     title={benefit.title}
                     description={benefit.description}
+                    buttonLable="Learn More"
                   />
                 </TextBox>
               </a>

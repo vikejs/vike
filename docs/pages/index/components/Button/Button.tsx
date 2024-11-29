@@ -1,8 +1,16 @@
 import React from 'react'
 import './button.css'
 
-export const Button = ({ children, type }: { children: React.ReactNode; type: 'default' | 'secondary' | 'ghost' }) => {
-  const getStyles = (type: 'default' | 'secondary' | 'ghost'): string => {
+export const Button = ({
+  children,
+  type,
+  chevron
+}: {
+  children: React.ReactNode
+  type: 'default' | 'secondary' | 'ghost' | 'text'
+  chevron?: boolean
+}) => {
+  const getStyles = (type: 'default' | 'secondary' | 'ghost' | 'text'): string => {
     return ' ' + 'landingpage-button-' + type
   }
 
@@ -13,11 +21,17 @@ export const Button = ({ children, type }: { children: React.ReactNode; type: 'd
         display: 'flex',
         alignItems: 'center',
         cursor: 'pointer',
-        width: 'fit-content'
+        width: 'fit-content',
+        gap: '8px'
       }}
       className={'landingpage-button' + getStyles(type)}
     >
       {children}
+      {chevron && (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M10 6L8.59 7.41L13.17 12l-4.58 4.59L10 18l6-6z" />
+        </svg>
+      )}
     </div>
   )
 }

@@ -1,12 +1,15 @@
 import React from 'react'
+import { Button } from './Button/Button'
 
 export const ParagraphTextCollection = ({
   title,
   description,
-  icon
+  icon,
+  buttonLable
 }: {
   title: string
   description: string
+  buttonLable?: string
   icon: JSX.Element
 }) => {
   return (
@@ -47,6 +50,17 @@ export const ParagraphTextCollection = ({
       >
         {description}
       </p>
+      {buttonLable && (
+        <div
+          style={{
+            paddingTop: '18px'
+          }}
+        >
+          <Button type="text" chevron>
+            {buttonLable}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

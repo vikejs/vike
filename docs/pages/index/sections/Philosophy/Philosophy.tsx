@@ -25,7 +25,8 @@ const principles = [
         ></path>
       </svg>
     ),
-    title: 'Separation of concerns'
+    title: 'Separation of concerns',
+    href: '/'
   },
   {
     icon: (
@@ -46,18 +47,20 @@ const principles = [
         ></path>
       </svg>
     ),
-    title: 'Flourishing do-one-thing-do-it-well ecosystem'
+    title: 'Flourishing do-one-thing-do-it-well ecosystem',
+    href: '/'
   },
   {
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
-        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+        <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
           <circle cx="12" cy="8" r="5" />
           <path d="M20 21a8 8 0 1 0-16 0m16 0a8 8 0 1 0-16 0" />
         </g>
       </svg>
     ),
-    title: 'User-driven'
+    title: 'User-driven',
+    href: '/'
   },
   {
     icon: (
@@ -66,16 +69,17 @@ const principles = [
           <path d="M21.37 36c1.45-5.25 6.52-9 12.36-8.38c5.56.59 9.98 5.28 10.26 10.86c.07 1.47-.13 2.88-.56 4.19c-.26.8-1.04 1.33-1.89 1.33H11.758c-5.048 0-8.834-4.619-7.844-9.569L10 4h12l4 7l-8.57 6.13L15 14" />
           <path
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-miterlimit="2"
-            stroke-width="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeMiterlimit="2"
+            strokeWidth="4"
             d="M21.37 36c1.45-5.25 6.52-9 12.36-8.38c5.56.59 9.98 5.28 10.26 10.86c.07 1.47-.13 2.88-.56 4.19c-.26.8-1.04 1.33-1.89 1.33H11.758c-5.048 0-8.834-4.619-7.844-9.569L10 4h12l4 7l-8.57 6.13L15 14m2.44 3.13L22 34"
           />
         </g>
       </svg>
     ),
-    title: 'Strong leadership'
+    title: 'Strong leadership',
+    href: '/'
   }
 ]
 
@@ -140,8 +144,9 @@ export const Philosophy = () => {
               }}
             >
               {principles.map((principle, i) => (
-                <div
+                <a
                   key={i}
+                  href={principle.href}
                   className={`${stylePrefix}-principle`}
                   style={{
                     display: 'flex',
@@ -171,7 +176,7 @@ export const Philosophy = () => {
                   >
                     {principle.title}
                   </h3>
-                </div>
+                </a>
               ))}
             </div>
           </div>

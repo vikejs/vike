@@ -53,7 +53,12 @@ function Sponsors() {
           <TextBox>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <SectionTextCollection caption={data.caption} title={data.title} />
-              <a href="https://github.com/sponsors/vikejs">
+              <a
+                style={{
+                  marginTop: '12px'
+                }}
+                href="https://github.com/sponsors/vikejs"
+              >
                 <Button type="secondary">Become a sponsor</Button>
               </a>
             </div>
