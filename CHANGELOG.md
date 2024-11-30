@@ -1,3 +1,14 @@
+## [0.4.206](https://github.com/vikejs/vike/compare/v0.4.205...v0.4.206) (2024-11-30)
+
+
+### Bug Fixes
+
+* fix error message handling ([558b60d](https://github.com/vikejs/vike/commit/558b60defef512bc2c20cc6dcaac2488b494651d))
+* improve error message upon unexpected module ID ([#1985](https://github.com/vikejs/vike/issues/1985)) ([796c72f](https://github.com/vikejs/vike/commit/796c72f44e4ad6a21a78f0ba5fc75311bf52bb4f))
+* show warning upon CSS duplication ([#1815](https://github.com/vikejs/vike/issues/1815)) ([5ef458c](https://github.com/vikejs/vike/commit/5ef458ceeae1d13d2e2e2a0f3a398b9135da7ffe))
+
+
+
 ## [0.4.205](https://github.com/vikejs/vike/compare/v0.4.204...v0.4.205) (2024-11-27)
 
 

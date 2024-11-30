@@ -13,7 +13,7 @@
     "react-dom": "^18.3.1",
     "react-streaming": "^0.3.43",
     "typescript": "^5.5.4",
-    "vike": "0.4.205",
+    "vike": "0.4.206",
     "vike-react": "^0.5.7",
     "vite": "^5.4.0"
   },
