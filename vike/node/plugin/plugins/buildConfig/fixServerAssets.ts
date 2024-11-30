@@ -1,15 +1,19 @@
 export { fixServerAssets }
 export { fixServerAssets_isEnabled }
+export { fixServerAssets_assertCssTarget }
+export { fixServerAssets_assertCssTarget_populate }
 
 import fs from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
-import { assert, getOutDirs, pLimit, unique } from '../../utils.js'
+import { assert, assertWarning, getOutDirs, isEqualStringList, pLimit, unique, viteIsSSR } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { manifestTempFile } from '../buildConfig.js'
 import { ResolvedConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
+import pc from '@brillout/picocolors'
+import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
 
 /**
  * true  => use workaround config.build.ssrEmitAssets
@@ -185,4 +189,43 @@ function getHash(src: string) {
   const hash = src.split('.').at(-2)
   assert(hash)
   return hash
+}
+
+// https://github.com/vikejs/vike/issues/1815
+type Target = undefined | false | string | string[]
+type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
+const targets: TargetConfig[] = []
+function fixServerAssets_assertCssTarget_populate(config: ResolvedConfig) {
+  const isServerSide = viteIsSSR(config)
+  assert(typeof isServerSide === 'boolean')
+  assert(config.build.target !== undefined)
+  targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
+}
+async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
+  if (!fixServerAssets_isEnabled()) return
+  if (!(await isV1Design(config, false))) return
+  const targetsServer = targets.filter((t) => t.isServerSide)
+  const targetsClient = targets.filter((t) => !t.isServerSide)
+  targetsClient.forEach((targetClient) => {
+    const targetCssResolvedClient = resolveCssTarget(targetClient)
+    targetsServer.forEach((targetServer) => {
+      const targetCssResolvedServer = resolveCssTarget(targetServer)
+      assertWarning(
+        isEqualStringList(targetCssResolvedClient, targetCssResolvedServer),
+        [
+          'The CSS browser target must be the same for both client-side and server-side, but we got:',
+          `Client-side: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
+          `Server-side: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`,
+          'See https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979 if you want to know why.'
+        ].join('\n'),
+        {
+          showStackTrace: true,
+          onlyOnce: 'different-css-target'
+        }
+      )
+    })
+  })
+}
+function resolveCssTarget(target: TargetConfig) {
+  return target.css ?? target.global
 }

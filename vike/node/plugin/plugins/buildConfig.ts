@@ -29,7 +29,12 @@ import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
 import fs from 'fs/promises'
 import path from 'path'
-import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
+import {
+  fixServerAssets,
+  fixServerAssets_assertCssTarget,
+  fixServerAssets_assertCssTarget_populate,
+  fixServerAssets_isEnabled
+} from './buildConfig/fixServerAssets.js'
 import { set_ASSETS_MAP } from './importBuild/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
@@ -67,6 +72,7 @@ function buildConfig(): Plugin[] {
               config.build.ssrEmitAssets = true
               // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
               config.build.cssMinify = 'esbuild'
+              fixServerAssets_assertCssTarget_populate(config)
             }
           }
         }
@@ -84,6 +90,9 @@ function buildConfig(): Plugin[] {
       },
       buildStart() {
         assertNodeEnv_build()
+      },
+      async closeBundle() {
+        await fixServerAssets_assertCssTarget(config)
       }
     },
     {
