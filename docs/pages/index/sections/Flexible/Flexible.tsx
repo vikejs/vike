@@ -6,6 +6,7 @@ import { ParagraphTextCollection } from '../../components/ParagraphTextCollectio
 import SlotMachineSVG from '../../components/SlotMachineSVG'
 import { Button } from '../../components/Button/Button'
 import './flexible.css'
+import { Slotmachine } from '../../components/Slotmachine/Slotmachine'
 
 const data = {
   caption: 'Flexible',
@@ -110,7 +111,7 @@ export const Flexible = () => {
           >
             <div className={`${stylePrefix}-slotMachine`}>
               <div className={`${stylePrefix}-slotMachineImageContainer`}>
-                <SlotMachineSVG />
+                <Slotmachine />
               </div>
 
               <div className={`${stylePrefix}-slotMachineSeparator`} />
