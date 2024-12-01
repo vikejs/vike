@@ -213,10 +213,9 @@ async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
       assertWarning(
         isEqualStringList(targetCssResolvedClient, targetCssResolvedServer),
         [
-          'The CSS browser target must be the same for both client-side and server-side, but we got:',
+          'The CSS browser target should be the same for both client-side and server-side (https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979) but we got:',
           `Client-side: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
-          `Server-side: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`,
-          'See https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979 if you want to know why.'
+          `Server-side: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`
         ].join('\n'),
         {
           showStackTrace: true,
