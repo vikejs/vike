@@ -1,0 +1,7 @@
+[files]
+extend-exclude = [".git/", "**/node_modules/"]
+ignore-hidden = false
+
+
+[default]
+extend-ignore-re = ["\\[[0-9a-f]{7}\\]", "scss\\|styl\\|stylus\\|css"]

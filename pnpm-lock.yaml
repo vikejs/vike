@@ -26,6 +26,9 @@ importers:
       prettier:
         specifier: ^3.2.5
         version: 3.3.0
+      typos-rs-npm:
+        specifier: github:dalisoft/typos-rs-npm
+        version: https://codeload.github.com/dalisoft/typos-rs-npm/tar.gz/f30f4cf60c2697da45d0858d17e238f873a55ccc
       vitest:
         specifier: ^2.1.3
         version: 2.1.3(@types/node@22.6.1)(terser@5.31.0)
@@ -2037,7 +2040,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '*'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/Users/ianworley/code/vike/vike/
       vite: '>=5.2.0'
 
   '@brillout/import@0.2.3':
@@ -4189,6 +4192,11 @@ packages:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
 
+  binary2npm@https://codeload.github.com/dalisoft/binary2npm/tar.gz/ee4e0c76854e80728b4112a86d05cf742e03f8d3:
+    resolution: {tarball: https://codeload.github.com/dalisoft/binary2npm/tar.gz/ee4e0c76854e80728b4112a86d05cf742e03f8d3}
+    version: 0.4.3
+    engines: {node: '>=18.19.1'}
+
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
 
@@ -4631,6 +4639,10 @@ packages:
   destroy@1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
+
+  detect-libc@2.0.3:
+    resolution: {integrity: sha512-bwy0MGW55bG41VqxxypOsdSdGqLwXPI/focwgTYCFMbdUiBAxLg9CFzG08sz2aqzknwiX7Hkl0bQENjg8iLByw==}
+    engines: {node: '>=8'}
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
@@ -7165,6 +7177,12 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typos-rs-npm@https://codeload.github.com/dalisoft/typos-rs-npm/tar.gz/f30f4cf60c2697da45d0858d17e238f873a55ccc:
+    resolution: {tarball: https://codeload.github.com/dalisoft/typos-rs-npm/tar.gz/f30f4cf60c2697da45d0858d17e238f873a55ccc}
+    version: 1.28.1
+    engines: {node: '>=18.19.1'}
+    hasBin: true
+
   uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
 
@@ -7316,7 +7334,7 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/Users/ianworley/code/vike/vike/
       vite: '>=4.3.8'
 
   vike-react@0.5.7:
@@ -7324,12 +7342,12 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/Users/ianworley/code/vike/vike/
 
   vike-vue@0.8.5:
     resolution: {integrity: sha512-reVfEMjE2Me7xPoRfWw3tEMx358qqIGw0vSS1UsasamEL85Mqwi1HC8xtUFxELkXhr/V9awtmRUvZ2fE+nFpMQ==}
     peerDependencies:
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/Users/ianworley/code/vike/vike/
       vue: ^3.0.0
 
   vite-node@2.1.3:
@@ -9866,17 +9884,17 @@ snapshots:
       '@webassemblyjs/ast': 1.12.1
       '@xtuc/long': 4.2.2
 
-  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))':
+  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.91.0)':
     dependencies:
       webpack: 5.91.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.91.0)
 
-  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))':
+  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.91.0)':
     dependencies:
       webpack: 5.91.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.91.0)
 
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))':
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack@5.91.0)':
     dependencies:
       webpack: 5.91.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.91.0)
@@ -10091,6 +10109,10 @@ snapshots:
   balanced-match@1.0.2: {}
 
   binary-extensions@2.3.0: {}
+
+  binary2npm@https://codeload.github.com/dalisoft/binary2npm/tar.gz/ee4e0c76854e80728b4112a86d05cf742e03f8d3:
+    dependencies:
+      detect-libc: 2.0.3
 
   blake3-wasm@2.1.5: {}
 
@@ -10593,6 +10615,8 @@ snapshots:
   dequal@2.0.3: {}
 
   destroy@1.2.0: {}
+
+  detect-libc@2.0.3: {}
 
   devlop@1.1.0:
     dependencies:
@@ -13916,7 +13940,7 @@ snapshots:
       react: 18.2.0
       react-streaming: 0.3.43(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
-  terser-webpack-plugin@5.3.10(webpack@5.91.0(webpack-cli@5.1.4)):
+  terser-webpack-plugin@5.3.10(webpack@5.91.0):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
@@ -14079,6 +14103,10 @@ snapshots:
   typescript@5.5.4: {}
 
   typescript@5.6.2: {}
+
+  typos-rs-npm@https://codeload.github.com/dalisoft/typos-rs-npm/tar.gz/f30f4cf60c2697da45d0858d17e238f873a55ccc:
+    dependencies:
+      binary2npm: https://codeload.github.com/dalisoft/binary2npm/tar.gz/ee4e0c76854e80728b4112a86d05cf742e03f8d3
 
   uc.micro@1.0.6: {}
 
@@ -14548,9 +14576,9 @@ snapshots:
   webpack-cli@5.1.4(webpack@5.91.0):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))
-      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))
+      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.91.0)
+      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.91.0)
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack@5.91.0)
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.3
@@ -14595,7 +14623,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.91.0(webpack-cli@5.1.4))
+      terser-webpack-plugin: 5.3.10(webpack@5.91.0)
       watchpack: 2.4.1
       webpack-sources: 3.2.3
     optionalDependencies:
