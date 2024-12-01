@@ -31,6 +31,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import {
   fixServerAssets,
+  fixServerAssets_assertCssCodeSplit,
   fixServerAssets_assertCssTarget,
   fixServerAssets_assertCssTarget_populate,
   fixServerAssets_isEnabled
@@ -73,6 +74,7 @@ function buildConfig(): Plugin[] {
               // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
               config.build.cssMinify = 'esbuild'
               fixServerAssets_assertCssTarget_populate(config)
+              fixServerAssets_assertCssCodeSplit(config)
             }
           }
         }

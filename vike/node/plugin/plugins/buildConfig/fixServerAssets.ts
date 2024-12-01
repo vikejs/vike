@@ -1,5 +1,6 @@
 export { fixServerAssets }
 export { fixServerAssets_isEnabled }
+export { fixServerAssets_assertCssCodeSplit }
 export { fixServerAssets_assertCssTarget }
 export { fixServerAssets_assertCssTarget_populate }
 
@@ -189,6 +190,17 @@ function getHash(src: string) {
   const hash = src.split('.').at(-2)
   assert(hash)
   return hash
+}
+
+// https://github.com/vikejs/vike/issues/1993
+function fixServerAssets_assertCssCodeSplit(config: ResolvedConfig) {
+  assertWarning(
+    config.build.cssCodeSplit,
+    `${pc.cyan('build.cssCodeSplit')} shouldn't be set to ${pc.cyan(
+      'false'
+    )} (https://github.com/vikejs/vike/issues/1993)`,
+    { onlyOnce: true }
+  )
 }
 
 // https://github.com/vikejs/vike/issues/1815
