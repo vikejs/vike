@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 const BugFixSVG = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="406" height="155" fill="none" viewBox="0 0 406 155">
+  <svg xmlns="http://www.w3.org/2000/svg" width="406" fill="none" viewBox="0 0 406 155">
     <g filter="url(#filter0_d_342_3893)">
       <rect width="380.586" height="45.376" x="12" y="9" fill="#fff" rx="5.844" shapeRendering="crispEdges"></rect>
       <rect

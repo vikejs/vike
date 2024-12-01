@@ -30,9 +30,7 @@ export const SectionTextCollection = ({
       </p>
       <h2
         style={{
-          fontSize: '36px',
           color: '#000000',
-          fontWeight: '400',
           width: '100%',
           margin: 0,
           lineHeight: 1.3,

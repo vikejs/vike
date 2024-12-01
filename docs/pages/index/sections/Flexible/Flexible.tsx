@@ -84,29 +84,19 @@ const benefits = [
 
 export const Flexible = () => {
   return (
-    <div
-      style={{
-        marginTop: '120px',
-        marginBottom: '-3px',
-        width: '100%'
-      }}
-    >
+    <div className={`${stylePrefix}-container`}>
       <Grid>
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap'
-          }}
-        >
+        <div className={`${stylePrefix}-flexbox`}>
           <div
             style={{
-              flex: 1,
-              minWidth: '400px'
+              flex: 1
             }}
           >
-            <TextBox>
+            <TextBox className={`${stylePrefix}-customTextBox`}>
               <SectionTextCollection
-                style={{ maxWidth: '400px' }}
+                style={{
+                  maxWidth: '400px'
+                }}
                 caption={data.caption}
                 title={data.title}
                 descriptions={data.description}
@@ -115,75 +105,30 @@ export const Flexible = () => {
           </div>
           <div
             style={{
-              flex: 1,
-              minWidth: '400px'
+              flex: 1
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <div
-                style={{
-                  margin: '0 -24px'
-                }}
-              >
+            <div className={`${stylePrefix}-slotMachine`}>
+              <div className={`${stylePrefix}-slotMachineImageContainer`}>
                 <SlotMachineSVG />
               </div>
 
-              <div
-                style={{
-                  height: '1px',
-                  width: '30px',
-                  backgroundColor: 'rgba(0,0,0,0.3)',
-                  transform: 'translateY(-3px)'
-                }}
-              />
-              <div
-                style={{
-                  transform: 'translateY(-3px)',
-                  marginLeft: '8px'
-                }}
-              >
-                <Button type="secondary">Spin</Button>
+              <div className={`${stylePrefix}-slotMachineSeparator`} />
+              <div className={`${stylePrefix}-buttonWrapper`}>
+                <Button type="secondary" fullWidth>
+                  Spin
+                </Button>
               </div>
             </div>
           </div>
         </div>
       </Grid>
 
-      <div
-        style={{
-          width: '100%',
-          borderTop: `3px solid #FFFFFF`,
-          borderBottom: `3px solid #FFFFFF`,
-          marginTop: '64px',
-          padding: '0 20px'
-        }}
-      >
+      <div className={`${stylePrefix}-benefitWrapper`}>
         <Grid>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap'
-            }}
-          >
+          <div className={`${stylePrefix}-benefitFlexbox`}>
             {benefits.map((benefit, i) => (
-              <a
-                key={i}
-                className={`${stylePrefix}-benefit`}
-                href={benefit.href}
-                style={{
-                  flex: 1,
-                  minWidth: '240px',
-                  padding: '20px 0',
-                  borderRight: `3px solid #FFFFFF`,
-                  borderLeft: i === 0 ? `3px solid #FFFFFF` : `0px solid transparent`,
-                  cursor: 'pointer'
-                }}
-              >
+              <a key={i} className={`${stylePrefix}-benefit`} href={benefit.href}>
                 <TextBox>
                   <ParagraphTextCollection
                     icon={benefit.icon}

@@ -85,25 +85,14 @@ const principles = [
 
 export const Philosophy = () => {
   return (
-    <div
-      style={{
-        width: '100%',
-        marginTop: '120px'
-      }}
-    >
+    <div className={`${stylePrefix}-container`}>
       <Grid>
         <TextBox>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'end'
-            }}
-          >
+          <div className={`${stylePrefix}-headerFlexbox`}>
             <SectionTextCollection caption={data.caption} title={data.title} />
             <div
               style={{
-                margin: '20px 0'
+                marginBottom: '20px'
               }}
             >
               <a href={data.buttonLink}>
@@ -120,42 +109,18 @@ export const Philosophy = () => {
         }}
       >
         <Grid>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(12, 1fr)'
-            }}
-          >
-            <div
-              style={{
-                borderRight: '3px solid #FFFFFF',
-                borderLeft: '3px solid #FFFFFF',
-                gridColumn: '1 / span 7',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#EBEBEF'
-              }}
-            >
+          <div className={`${stylePrefix}-principlesContainer`}>
+            <div className={`${stylePrefix}-hammer`}>
               <VikeNitedaniAnimated />
             </div>
-            <div
-              style={{
-                gridColumn: '8 / span 5',
-                borderRight: '3px solid #FFFFFF'
-              }}
-            >
+            <div className={`${stylePrefix}-principleBorders`}>
               {principles.map((principle, i) => (
                 <a
                   key={i}
                   href={principle.href}
                   className={`${stylePrefix}-principle`}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    borderTop: i === 0 ? '' : `3px solid #FFF`,
-                    padding: '20px',
-                    color: 'rgba(0,0,0,0.7)'
+                    borderTop: i === 0 ? '' : `3px solid #FFF`
                   }}
                 >
                   <div

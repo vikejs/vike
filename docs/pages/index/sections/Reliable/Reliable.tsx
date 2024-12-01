@@ -5,7 +5,7 @@ import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
 import OpenSourceSVG from '../../components/OpenSourceSVG'
 import BugFixSVG from '../../components/BugFixSVG'
-import TrendingPackagesSVG from '../../components/trendingPackageSVG'
+import TrendingPackageSVG from './../../components/TrendingPackageSVG'
 import './reliable.css'
 
 const stylePrefix = 'landingpage-reliable'
@@ -55,27 +55,15 @@ const benefits = [
 
 export const Reliable = () => {
   return (
-    <div
-      style={{
-        marginTop: '120px',
-        marginBottom: '-3px',
-        width: '100%'
-      }}
-    >
+    <div className={`${stylePrefix}-container`}>
       <Grid>
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap'
-          }}
-        >
+        <div className={`${stylePrefix}-flexbox`}>
           <div
             style={{
-              flex: 1,
-              minWidth: '400px'
+              flex: 1
             }}
           >
-            <TextBox>
+            <TextBox className={`${stylePrefix}-customTextBox`}>
               <SectionTextCollection
                 style={{ maxWidth: '400px' }}
                 caption={data.caption}
@@ -84,16 +72,8 @@ export const Reliable = () => {
               />
             </TextBox>
           </div>
-          <div
-            style={{
-              flex: 1,
-              minWidth: '400px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <TrendingPackagesSVG />
+          <div className={`${stylePrefix}-imageWrapper`}>
+            <TrendingPackageSVG />
           </div>
         </div>
       </Grid>
@@ -116,23 +96,12 @@ export const Reliable = () => {
           >
             <Grid>
               <div
+                className={`${stylePrefix}-benefitWrapper`}
                 style={{
-                  borderRight: '3px solid #FFF',
-                  borderLeft: '3px solid #FFF',
-                  display: 'flex',
                   flexDirection: i % 2 ? 'row' : 'row-reverse'
                 }}
               >
-                <a
-                  href={benefit.href}
-                  className={`${stylePrefix}-benefit`}
-                  style={{
-                    width: '41.6%', // 5/12
-                    padding: '32px 0',
-                    paddingRight: '48px',
-                    minHeight: '240px'
-                  }}
-                >
+                <a href={benefit.href} className={`${stylePrefix}-benefit`}>
                   <TextBox>
                     <ParagraphTextCollection
                       icon={benefit.icon}
@@ -143,11 +112,8 @@ export const Reliable = () => {
                   </TextBox>
                 </a>
                 <div
+                  className={`${stylePrefix}-benefitImageWrapper`}
                   style={{
-                    width: '58.4%', // 7/12
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
                     borderRight: i % 2 ? '0px' : '3px solid #FFF',
                     borderLeft: i % 2 ? '3px solid #FFF' : '0px'
                   }}

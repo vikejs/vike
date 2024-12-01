@@ -1,6 +1,9 @@
 import React from 'react'
-import { primaryColor } from '../+Page'
-import { Button } from '../components/Button/Button'
+import { primaryColor } from '../../+Page'
+import { Button } from '../../components/Button/Button'
+import './hero.css'
+
+const stylePrefix = 'landingpage-hero'
 
 export const Hero = () => {
   return (
@@ -56,10 +59,8 @@ export const Hero = () => {
         }}
       >
         <div
-          className="vike-hero-headline-grid"
+          className={`${stylePrefix}-headline`}
           style={{
-            gridColumn: '1 / 11',
-            gridColumnStart: 3,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -69,28 +70,25 @@ export const Hero = () => {
         >
           <h1
             style={{
-              fontSize: '48px',
               color: '#000000',
-              fontWeight: '400',
               textAlign: 'center',
               width: '100%',
               margin: 0
             }}
           >
             Framework without Magic
+            <br />
+            <span
+              style={{
+                color: '#00000070',
+                textAlign: 'center',
+                width: '100%',
+                margin: 0
+              }}
+            >
+              Like NextJS & Nuxt but without loosing control
+            </span>
           </h1>
-          <h2
-            style={{
-              fontSize: '48px',
-              color: '#00000070',
-              fontWeight: '400',
-              textAlign: 'center',
-              width: '100%',
-              margin: 0
-            }}
-          >
-            Like NextJS & Nuxt but without loosing control
-          </h2>
         </div>
       </div>
       <div

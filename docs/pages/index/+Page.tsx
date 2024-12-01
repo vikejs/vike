@@ -1,13 +1,14 @@
 export { Page }
 
 import React, { useEffect, useRef } from 'react'
-import { Hero } from './sections/Hero'
-import { Sponsors } from './sections/Sponsors'
+import { Hero } from './sections/Hero/Hero'
+import { Sponsors } from './sections/Sponsors/Sponsors'
 import { Flexible } from './sections/Flexible/Flexible'
 import { Reliable } from './sections/Reliable/Reliable'
-import { Features } from './sections/Features'
+import { Features } from './sections/Features/Features'
 import { Philosophy } from './sections/Philosophy/Philosophy'
-import { CTA } from './sections/CTA'
+import { CTA } from './sections/CTA/CTA'
+import './page.css'
 
 export const primaryColor = '#1810FF'
 
@@ -72,7 +73,6 @@ export function Block({
         backgroundColor: 'var(--bg-color)',
         display: 'flex',
         justifyContent: 'center',
-        padding: 20,
         marginTop: 'var(--block-margin)',
         ...style
       }}
@@ -82,9 +82,18 @@ export function Block({
   )
 }
 
-export function Grid({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+export function Grid({
+  children,
+  style,
+  className
+}: {
+  children: React.ReactNode
+  style?: React.CSSProperties
+  className?: string
+}) {
   return (
     <div
+      className={className}
       style={{
         width: '100%',
         padding: '0 20px',

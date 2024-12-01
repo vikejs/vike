@@ -1,8 +1,11 @@
 import React from 'react'
-import { Grid } from '../+Page'
-import { SectionTextCollection } from '../components/SectionTextCollection'
-import { Button } from '../components/Button/Button'
-import { TextBox } from '../components/TextBox'
+import { Grid } from '../../+Page'
+import { SectionTextCollection } from '../../components/SectionTextCollection'
+import { Button } from '../../components/Button/Button'
+import { TextBox } from '../../components/TextBox'
+import './cta.css'
+
+const stylePrefix = 'landingpage-cta'
 
 export const CTA = () => {
   return (
@@ -13,15 +16,7 @@ export const CTA = () => {
     >
       <Grid>
         <TextBox>
-          <div
-            style={{
-              paddingTop: '80px',
-              paddingBottom: '80px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'end'
-            }}
-          >
+          <div className={`${stylePrefix}-textContainer`}>
             <SectionTextCollection caption="Get ready" title="Start building" />
             <div
               style={{

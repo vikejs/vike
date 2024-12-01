@@ -27,3 +27,52 @@
 .landingpage-chip-feature:hover {
     background-color: rgba(0,0,0,1);
 }
+.landingpage-chip-info {
+    margin-bottom: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: rgba(0,0,0,0.5);
+}
+
+@media screen and (max-width: 1200px) {
+    .landingpage-chip {
+        grid-column: 3 / span 8;
+    }
+    .landingpage-chip-right {
+        grid-column: 1 / span 2;
+        font-size: 14px;
+    }
+    .landingpage-chip-left {
+        grid-column: 11 / span 2;
+        font-size: 14px;
+    }
+    .landingpage-chip-feature {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .landingpage-chip {
+        margin-top: 32px;
+        margin-bottom: 48px;
+        grid-column: 1 / span 12;
+        transform: scale(1.35);
+    }
+    .landingpage-chip-right {
+        display: none;
+    }
+    .landingpage-chip-left {
+        display: none;
+    }   
+    .landingpage-chip-feature {
+        font-size: 8px;
+        color: rgba(255,255,255,0.8);
+        padding: 0 3px;
+        line-height: 100%;
+    }
+    .landingpage-chip-info {
+        margin-bottom: 32px;
+    }
+}

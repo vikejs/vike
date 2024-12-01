@@ -1,8 +1,9 @@
 import React from 'react'
 
-export const TextBox = ({ children }: { children: React.ReactNode }) => {
+export const TextBox = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   return (
     <div
+      className={className}
       style={{
         padding: '0 20px',
         width: '100%'

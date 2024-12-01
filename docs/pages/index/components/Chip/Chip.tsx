@@ -48,7 +48,8 @@ export const Chip = () => {
                       style={{
                         width: 'fit-content',
                         textTransform: 'uppercase',
-                        color: 'rgba(0,0,0,0.5)'
+                        color: 'rgba(0,0,0,0.5)',
+                        textAlign: 'end'
                       }}
                     >
                       {item.title}
@@ -235,7 +236,8 @@ export const Chip = () => {
                       style={{
                         width: 'fit-content',
                         textTransform: 'uppercase',
-                        color: 'rgba(0,0,0,0.5)'
+                        color: 'rgba(0,0,0,0.5)',
+                        textAlign: 'start'
                       }}
                     >
                       {item.title}
@@ -246,16 +248,7 @@ export const Chip = () => {
           ))}
         </div>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: '80px',
-          gap: '8px',
-          color: 'rgba(0,0,0,0.5)'
-        }}
-      >
+      <div className={`${stylePrefix}-info`}>
         <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
           <path
             fill="none"

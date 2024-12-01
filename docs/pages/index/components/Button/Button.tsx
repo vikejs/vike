@@ -4,28 +4,20 @@ import './button.css'
 export const Button = ({
   children,
   type,
-  chevron
+  chevron,
+  fullWidth
 }: {
   children: React.ReactNode
   type: 'default' | 'secondary' | 'ghost' | 'text'
   chevron?: boolean
+  fullWidth?: boolean
 }) => {
   const getStyles = (type: 'default' | 'secondary' | 'ghost' | 'text'): string => {
     return ' ' + 'landingpage-button-' + type
   }
 
   return (
-    <div
-      style={{
-        height: '36px',
-        display: 'flex',
-        alignItems: 'center',
-        cursor: 'pointer',
-        width: 'fit-content',
-        gap: '8px'
-      }}
-      className={'landingpage-button' + getStyles(type)}
-    >
+    <div className={'landingpage-button' + getStyles(type) + (fullWidth ? ' landingpage-button-fullWidth' : '')}>
       {children}
       {chevron && (
         <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">

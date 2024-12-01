@@ -4,9 +4,12 @@ export type { Sponsor }
 import React from 'react'
 import { assert } from '@brillout/docpress'
 import { sponsorLevels, sponsorsList } from './sponsorsList'
-import { SectionTextCollection } from '../components/SectionTextCollection'
-import { TextBox } from '../components/TextBox'
-import { Button } from '../components/Button/Button'
+import { SectionTextCollection } from '../../components/SectionTextCollection'
+import { TextBox } from '../../components/TextBox'
+import { Button } from '../../components/Button/Button'
+import './sponsors.css'
+
+const stylePrefix = 'landingpage-sponsors'
 
 const data = {
   caption: 'Sponsoring',
@@ -32,26 +35,15 @@ type DivSize = {
 
 function Sponsors() {
   return (
-    <div
-      style={{
-        marginTop: '120px',
-        marginBottom: '120px',
-        textAlign: 'center'
-      }}
-    >
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)'
-        }}
-      >
+    <div className={`${stylePrefix}-container`}>
+      <div className={`${stylePrefix}-textContainer`}>
         <div
           style={{
             gridColumn: '3 / span 8'
           }}
         >
           <TextBox>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div className={`${stylePrefix}-innerTextContainer`}>
               <SectionTextCollection caption={data.caption} title={data.title} />
               <a
                 style={{
@@ -74,36 +66,19 @@ function Sponsors() {
         }}
       >
         {sponsorLevels.map((level) => (
-          <div
-            key={level.name}
-            style={{
-              display: 'flex',
-              gap: 4,
-              justifyContent: 'space-between',
-              height: sponsorsList.filter((s) => s.plan === level.name).length > 0 ? level.height : 0
-            }}
-          >
+          <div key={level.name} className={`${stylePrefix}-sponsorList`}>
             {sponsorsList
               .filter((s) => s.plan === level.name)
               .map((sponsor) => (
                 <a
                   key={sponsor.companyName}
                   href={sponsor.website}
+                  className={`${stylePrefix}-sponsor ${level.name}`}
                   style={{
-                    flex: 1,
-                    backgroundColor: '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
+                    height: sponsorsList.filter((s) => s.plan === level.name).length > 0 ? level.height : 0
                   }}
                 >
-                  <img
-                    src={sponsor.companyLogo}
-                    alt={sponsor.companyName}
-                    style={{
-                      height: '40%'
-                    }}
-                  />
+                  <img className={`${stylePrefix}-sponsorLogo`} src={sponsor.companyLogo} alt={sponsor.companyName} />
                 </a>
               ))}
           </div>
