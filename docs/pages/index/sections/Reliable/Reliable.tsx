@@ -1,6 +1,6 @@
 import React from 'react'
 import { TextBox } from '../../components/TextBox'
-import { Grid, primaryColor } from '../../+Page'
+import { Grid } from '../../+Page'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
 import OpenSourceSVG from '../../components/OpenSourceSVG'
