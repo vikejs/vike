@@ -16,7 +16,7 @@ export const Hero = () => {
       }}
     >
       <a
-        href="https://www.youtube.com/watch?v=jzjtDC31ZnI"
+        href="https://www.youtube.com/watch?v=jzjtDC31ZnI&t=13s"
         target="_blank"
         style={{
           border: `1px solid ${primaryColor}30`,
