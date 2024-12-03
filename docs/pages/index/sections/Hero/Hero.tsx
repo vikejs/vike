@@ -12,7 +12,8 @@ export const Hero = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        margin: '52px 0'
+        marginTop: 70,
+        marginBottom: 80
       }}
     >
       <a
@@ -48,14 +49,13 @@ export const Hero = () => {
             </clipPath>
           </defs>
         </svg>
-        Watch talk at ViteConf 24
+        Watch ViteConf 24 talk
       </a>
       <div
         style={{
           width: '100%',
           display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          lineHeight: 1.2
+          gridTemplateColumns: 'repeat(12, 1fr)'
         }}
       >
         <div
@@ -64,7 +64,7 @@ export const Hero = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginBottom: '32px',
+            marginBottom: '48px',
             marginTop: '32px'
           }}
         >
@@ -77,17 +77,18 @@ export const Hero = () => {
             }}
           >
             Framework without Magic
-            <br />
-            <span
+            <div
               style={{
                 color: '#00000070',
                 textAlign: 'center',
                 width: '100%',
-                margin: 0
+                margin: 0,
+                fontSize: '0.7em',
+                lineHeight: 1.3
               }}
             >
-              Like NextJS & Nuxt but without loosing control
-            </span>
+              Like Next.js & Nuxt but with unprecedented flexibility, reliability, and control.
+            </div>
           </h1>
         </div>
       </div>
