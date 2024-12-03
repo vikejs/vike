@@ -369,7 +369,7 @@ If you want to change the `meta.env` on a page-by-page basis, you can use the th
 
 export { config }
 
-import type { Config, Effect } from 'vike/types'
+import type { Config, ConfigEffect } from 'vike/types'
 
 const config = {
   meta: {
@@ -380,7 +380,7 @@ const config = {
   }
 } satisfies Config
 
-const effect: Effect = ({ configDefinedAt, configValue }) => {
+const effect: ConfigEffect = ({ configDefinedAt, configValue }) => {
   if (typeof configValue !== 'boolean') {
     throw new Error(`${configDefinedAt} should be a boolean`)
   }
