@@ -62,13 +62,6 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
   return plugins
 }
 
-// Enable `const vike = require('vike/plugin')`.
-//  - This lives at the end of the file to ensure it happens after all assignments to `exports`.
-//  - This is only used for the CJS build; we wrap it in a try-catch for the ESM build.
-try {
-  module.exports = Object.assign(exports.default, exports)
-} catch {}
-
 // Error upon wrong usage
 Object.defineProperty(plugin, 'apply', {
   enumerable: true,
@@ -87,3 +80,9 @@ Object.defineProperty(plugin, 'apply', {
 function assertViteVersion() {
   assertVersion('Vite', version, '5.1.0')
 }
+
+// Ensures following works: `const vike = require('vike/plugin')` / `import vike from 'vike/plugin'`
+//  - It needs to live at the end of this file, in order to ensure we do it after all assignments to `exports`.
+try {
+  module.exports = Object.assign(exports.default, exports)
+} catch {}
