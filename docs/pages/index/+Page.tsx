@@ -1,6 +1,6 @@
 export { Page }
 
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import { Hero } from './sections/Hero/Hero'
 import { Sponsors } from './sections/Sponsors/Sponsors'
 import { Flexible } from './sections/Flexible/Flexible'
