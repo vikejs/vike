@@ -1,13 +1,11 @@
-
 type ioDataType = {
-  title: string,
-  side: 'left' | 'right',
-  group: typeof ioGroups[number]["name"]
+  title: string
+  side: 'left' | 'right'
+  group: (typeof ioGroups)[number]['name']
 }
 
-
 type ioDataGroupType = {
-  name: "ui" | "rendering" | "data" | "server" | "deployment" | "backend", 
+  name: 'ui' | 'rendering' | 'data' | 'server' | 'deployment' | 'backend'
   color: string
 }
 
@@ -35,7 +33,7 @@ export const ioGroups: ioDataGroupType[] = [
   {
     name: 'backend',
     color: '#359DBE'
-  },
+  }
 ]
 
 export const ioData: ioDataType[] = [
@@ -47,7 +45,7 @@ export const ioData: ioDataType[] = [
   {
     title: 'vue',
     side: 'left',
-    group: 'ui' 
+    group: 'ui'
   },
   {
     title: 'solid',
@@ -178,5 +176,5 @@ export const ioData: ioDataType[] = [
     title: 'laravel',
     side: 'right',
     group: 'server'
-  },
+  }
 ]

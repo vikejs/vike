@@ -11,7 +11,7 @@ import bluefinLogo from './sponsorsLogo/bluefin.svg'
 import alignableLogo from './sponsorsLogo/alignable.svg'
 
 export const sponsorLevels: {
-  name: string,
+  name: string
   height: number
 }[] = [
   {
@@ -33,7 +33,7 @@ export const sponsorLevels: {
   {
     name: 'indie',
     height: 60
-  },
+  }
 ]
 
 const sponsorsList: Sponsor[] = [
