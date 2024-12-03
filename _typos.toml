@@ -1,5 +1,5 @@
 [files]
-extend-exclude = [".git/", "**/node_modules/"]
+extend-exclude = [".git/", "**/node_modules/", "**/dist/"]
 ignore-hidden = false
 
 
