@@ -84,7 +84,7 @@ export const Hero = () => {
                 fontSize: 50
               }}
             >
-              Framework without Magic
+              The Framework You Control
             </div>
             <div
               style={{
