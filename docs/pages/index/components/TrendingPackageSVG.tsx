@@ -1,7 +1,14 @@
 import * as React from 'react'
 
 const TrendingPackagesSVG = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="5 5 380 179" fill="none">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    style={{
+      width: 'min(370px, 100%)'
+    }}
+    viewBox="5 5 380 179"
+    fill="none"
+  >
     <g filter="url(#t_a)">
       <rect width={137.706} height={37.426} x={239.809} y={9.235} fill="#fff" rx={5.713} shapeRendering="crispEdges" />
       <rect
