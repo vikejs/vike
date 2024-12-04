@@ -8,7 +8,7 @@ export const ParagraphTextCollection = ({
   buttonLable
 }: {
   title: string
-  description: string
+  description: string | JSX.Element
   buttonLable?: string
   icon: JSX.Element
 }) => {

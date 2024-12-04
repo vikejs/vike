@@ -54,8 +54,12 @@ const benefits = [
     ),
     title: 'Reliable, by care',
     href: '/',
-    description:
-      'We are responsive with a clear guideline on how to receive guaranteed assistance. Bugs are quickly fixed (usually under 24 hours).',
+    description: (
+      <>
+        <b>We are responsive</b> with a clear guideline on how to receive guaranteed assistance. Bugs are quickly fixed
+        (usually under 24 hours).
+      </>
+    ),
     image: <BugFixSVG />
   }
 ]
