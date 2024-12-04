@@ -1,11 +1,11 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import { Example, CommunityNote } from '../../components'
 
-<CommunityNote />
+<CommunityNote url="https://pinia.vuejs.org" />
 
-You can use Vike with [Pinia](https://pinia.vuejs.org).
+If you are using <Link href="/vike-vue">vike-vue</Link>, you can install [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme) for a seamless integration.
 
-> You can use [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia) instead of manually integrating Pinia yourself.
+## Manual integration
 
 To manually integrate Pinia, see:
 - <Link href="/stores#ssr" doNotInferSectionTitle />
@@ -17,3 +17,8 @@ Examples of integrating Pinia without using <Link href="/vike-vue">`vike-vue`</L
  - <Example timestamp="2023.10" repo="brillout/vike-with-pinia" />
 
 > You can also have a look at [the source code of `vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia).
+
+## See also
+
+- <Link href="/stores#ssr" doNotInferSectionTitle />
+- [Pinia > Server Side Rendering (SSR)](https://pinia.vuejs.org/ssr/)
