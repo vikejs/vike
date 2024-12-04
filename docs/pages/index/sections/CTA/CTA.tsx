@@ -19,7 +19,7 @@ export const CTA = () => {
       <Grid>
         <TextBox>
           <div className={`${stylePrefix}-textContainer`}>
-            <SectionTextCollection caption="A new fresh start" title="Start Building" />
+            <SectionTextCollection caption="A fresh new start" title="Start Building" />
             <div
               style={{
                 display: 'flex',
