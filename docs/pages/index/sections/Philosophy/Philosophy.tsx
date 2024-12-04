@@ -120,7 +120,7 @@ export const Philosophy = () => {
                   href={principle.href}
                   className={`${stylePrefix}-principle`}
                   style={{
-                    borderTop: i === 0 ? '' : `3px solid #FFF`
+                    borderTop: i === 0 ? undefined : `3px solid #FFF`
                   }}
                 >
                   <div

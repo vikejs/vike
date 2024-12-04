@@ -93,7 +93,7 @@ function Reliable() {
             key={i}
             style={{
               width: '100%',
-              borderTop: i === 0 ? '' : `3px solid #FFF`
+              borderTop: i === 0 ? undefined : `3px solid #FFF`
             }}
           >
             <Grid>
