@@ -29,11 +29,6 @@
 }
 .landingpage-chip-info {
     margin-bottom: 80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    color: rgba(0,0,0,0.5);
 }
 
 @media screen and (max-width: 1200px) {
@@ -65,7 +60,7 @@
     }
     .landingpage-chip-left {
         display: none;
-    }   
+    }
     .landingpage-chip-feature {
         font-size: 8px;
         color: rgba(255,255,255,0.8);

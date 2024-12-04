@@ -3,10 +3,9 @@ import './chip.css'
 import { Lightning } from '../Lightning'
 import { coreData } from './coreData'
 import { ioData, ioGroups } from './ioData'
+import { IllustrationNote } from '../IllustrationNote'
 
 export const Chip = () => {
-  const stylePrefix = ' ' + 'landingpage-chip'
-
   return (
     <div
       style={{
@@ -21,7 +20,7 @@ export const Chip = () => {
           marginTop: '32px'
         }}
       >
-        <div className={`${stylePrefix}-right`}>
+        <div className="landingpage-chip-right">
           {ioGroups.map((group, parentIndex) => (
             <div
               key={group.name}
@@ -68,7 +67,7 @@ export const Chip = () => {
             </div>
           ))}
         </div>
-        <div className={`${stylePrefix}`}>
+        <div className="landingpage-chip">
           <ChipSvg />
           <div
             style={{
@@ -106,7 +105,7 @@ export const Chip = () => {
                     borderRadius: '6px'
                   }}
                 >
-                  <div className={`${stylePrefix}-feature`}>
+                  <div className="landingpage-chip-feature">
                     <div
                       style={{
                         width: 'fit-content',
@@ -199,7 +198,7 @@ export const Chip = () => {
             </div>
           </div>
         </div>
-        <div className={`${stylePrefix}-left`}>
+        <div className="landingpage-chip-left">
           {ioGroups.map((group, parentIndex) => (
             <div
               key={group.name}
@@ -248,25 +247,18 @@ export const Chip = () => {
           ))}
         </div>
       </div>
-      <div className={`${stylePrefix}-info`}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24">
-          <path
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.5"
-            d="M11 21L4 4l17 7l-6.265 2.685a2 2 0 0 0-1.05 1.05z"
-          />
-        </svg>
-        <p
-          style={{
-            fontSize: '14px'
-          }}
-        >
-          Click on a core component to learn more.
-        </p>
-      </div>
+      <IllustrationNote
+        className="landingpage-chip-info"
+        click
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 8
+        }}
+      >
+        Click on a core component to learn more.
+      </IllustrationNote>
     </div>
   )
 }
