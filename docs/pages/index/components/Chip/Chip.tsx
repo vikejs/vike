@@ -1,6 +1,6 @@
 import React from 'react'
 import './chip.css'
-import { Lightning } from '../Lightning'
+import viteLogo from './vite.svg'
 import { coreData } from './coreData'
 import { ioData, ioGroups } from './ioData'
 import { IllustrationNote } from '../IllustrationNote'
@@ -142,13 +142,7 @@ export const Chip = () => {
                     borderRadius: '28px'
                   }}
                 >
-                  <div
-                    style={{
-                      width: '20px'
-                    }}
-                  >
-                    <Lightning />
-                  </div>
+                  <img src={viteLogo} width={20} />
                 </div>
                 <div
                   style={{

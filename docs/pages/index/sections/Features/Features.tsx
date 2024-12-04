@@ -6,7 +6,7 @@ import './features.css'
 
 const data = {
   caption: 'Features',
-  title: 'Core, all-included.'
+  title: 'Core. All-included.'
 }
 
 const stylePrefix = 'landingpage-features'
@@ -16,7 +16,13 @@ export const Features = () => {
     <div className={`${stylePrefix}-container`}>
       <div className={`${stylePrefix}-textContainer`}>
         <TextBox>
-          <SectionTextCollection caption={data.caption} title={data.title} />
+          <SectionTextCollection
+            caption={data.caption}
+            title={data.title}
+            descriptions={[
+              "Vike, essentially, is a general-purpose core that includes everything you'd expect from a modern framework and more."
+            ]}
+          />
         </TextBox>
       </div>
       <Chip />
