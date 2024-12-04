@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid } from '../../+Page'
+import { Grid } from '../../Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { Button } from '../../components/Button/Button'
 import { TextBox } from '../../components/TextBox'

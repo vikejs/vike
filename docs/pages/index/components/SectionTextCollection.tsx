@@ -1,5 +1,5 @@
 import React from 'react'
-import { primaryColor } from '../+Page'
+import { primaryColor } from '../primaryColor'
 
 export const SectionTextCollection = ({
   caption,

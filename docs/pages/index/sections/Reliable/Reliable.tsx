@@ -2,7 +2,7 @@ export { Reliable }
 
 import React from 'react'
 import { TextBox } from '../../components/TextBox'
-import { Grid } from '../../+Page'
+import { Grid } from '../../Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
 import OpenSourceSVG from '../../components/OpenSourceSVG'

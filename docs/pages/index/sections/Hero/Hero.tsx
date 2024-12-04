@@ -1,5 +1,5 @@
 import React from 'react'
-import { primaryColor } from '../../+Page'
+import { primaryColor } from '../../primaryColor'
 import { Button } from '../../components/Button/Button'
 import './hero.css'
 

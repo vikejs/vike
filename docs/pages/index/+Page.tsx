@@ -8,9 +8,8 @@ import { Reliable } from './sections/Reliable/Reliable'
 import { Features } from './sections/Features/Features'
 import { Philosophy } from './sections/Philosophy/Philosophy'
 import { CTA } from './sections/CTA/CTA'
+import { Grid } from './Grid'
 import './page.css'
-
-export const primaryColor = '#1810FF'
 
 function Page() {
   return (
@@ -58,7 +57,7 @@ function Page() {
   )
 }
 
-export function Block({
+function Block({
   children,
   style,
   noGrid
@@ -82,25 +81,3 @@ export function Block({
   )
 }
 
-export function Grid({
-  children,
-  style,
-  className
-}: {
-  children: React.ReactNode
-  style?: React.CSSProperties
-  className?: string
-}) {
-  return (
-    <div
-      className={className}
-      style={{
-        width: '100%',
-        padding: '0 20px',
-        ...style
-      }}
-    >
-      <div style={{ maxWidth: 1100, width: '100%', margin: '0 auto' }}>{children}</div>
-    </div>
-  )
-}

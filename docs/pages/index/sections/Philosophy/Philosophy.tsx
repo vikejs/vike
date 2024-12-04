@@ -3,7 +3,7 @@ import iconVikeAnimatedCover from '../../../../images/icons/vike-nitedani-animat
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { Button } from '../../components/Button/Button'
 import { TextBox } from '../../components/TextBox'
-import { Grid } from '../../+Page'
+import { Grid } from '../../Grid'
 import './philosophy.css'
 
 const stylePrefix = 'landingpage-philosophy'
