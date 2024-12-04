@@ -78,7 +78,14 @@ function Sponsors() {
                     height: sponsorsList.filter((s) => s.plan === level.name).length > 0 ? level.height : 0
                   }}
                 >
-                  <img className={`${stylePrefix}-sponsorLogo`} src={sponsor.companyLogo} alt={sponsor.companyName} />
+                  <img
+                    className={`${stylePrefix}-sponsorLogo`}
+                    style={{
+                      maxWidth: '90%'
+                    }}
+                    src={sponsor.companyLogo}
+                    alt={sponsor.companyName}
+                  />
                 </a>
               ))}
           </div>
