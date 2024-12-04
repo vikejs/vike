@@ -92,9 +92,8 @@ export const Hero = () => {
                   // Copied from https://vuejs.org/
                   background: '-webkit-linear-gradient(315deg, #42d392 25%, #647eff)',
                   backgroundClip: 'text',
-                  // @ts-ignore
-                  ['-webkit-background-clip']: 'text',
-                  ['-webkit-text-fill-color']: 'transparent'
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
                 }}
               >
                 You
