@@ -169,11 +169,11 @@ export const Philosophy = () => {
 //   Change `-crf 30` to increase/decrease quality/size.
 //   https://stackoverflow.com/questions/34974258/convert-pngs-to-webm-video-with-transparency
 // - Create cover by converting last frame to webp:
-//   ```
+//   ```bash
 //   # Lossless
-//   convert -format webp -quality 100% 483.png 483.webp
-//   # Compressed (changing 99% to 0% doesn't make any difference)
-//   convert -format webp -quality 99% 483.png 483.webp
+//   convert -format webp -quality 100% 483.png 483.webp # sudo apt-get install imagemagick
+//   # Compressed
+//   convert -format webp -quality 99% 483.png 483.webp # Changing 99% to 0% doesn't make any difference
 //   ```
 function VikeNitedaniAnimated() {
   const ref = useRef<HTMLVideoElement>(null)
