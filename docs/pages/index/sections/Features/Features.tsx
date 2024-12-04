@@ -20,7 +20,7 @@ export const Features = () => {
             caption={data.caption}
             title={data.title}
             descriptions={[
-              'Vike is a general-purpose core that includes everything you expect from a modern framework and more.'
+              "Vike is a general-purpose core that includes everything you'd expect from a modern framework and more."
             ]}
           />
         </TextBox>

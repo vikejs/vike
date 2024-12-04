@@ -14,8 +14,8 @@ const data = {
   description: [
     //<>Enjoy <b>architectural freedom</b> and use <b>any tool</b>, <b>any rendering strategy</b> (SPA/SSR/SSG), and <b>any deployment strategy</b> (static/server/edge).</>,
     <>
-      Enjoy <b>architectural freedom</b> and choose any tool, any rendering strategy (SPA/SSR/SSG), and any deployment
-      strategy (static/server/edge).
+      Enjoy <b>architectural freedom</b> and choose any tool, rendering strategy (SPA/SSR/SSG), and deployment strategy
+      (static/server/edge).
     </>,
     <>
       Use <b>Vike extensions</b> to quickly integrate tools and later, if the need arises, <b>eject for full control</b>{' '}

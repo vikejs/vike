@@ -20,7 +20,13 @@ export const Chip = () => {
           marginTop: '32px'
         }}
       >
-        <div className="landingpage-chip-right">
+        <div
+          className="landingpage-chip-right"
+          style={{
+            position: 'relative',
+            top: 55
+          }}
+        >
           {ioGroups.map((group, parentIndex) => (
             <div
               key={group.name}
@@ -193,7 +199,13 @@ export const Chip = () => {
             </div>
           </div>
         </div>
-        <div className="landingpage-chip-left">
+        <div
+          className="landingpage-chip-left"
+          style={{
+            position: 'relative',
+            top: 6
+          }}
+        >
           {ioGroups.map((group, parentIndex) => (
             <div
               key={group.name}

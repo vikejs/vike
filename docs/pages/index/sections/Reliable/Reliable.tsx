@@ -14,7 +14,7 @@ const stylePrefix = 'landingpage-reliable'
 
 const data = {
   caption: 'Dependable',
-  title: 'Adopt the future',
+  title: 'Adopt the Future',
   description: [
     <>
       Vike's flexible core is unopinionated and <b>open to JavaScript's rapidly evolving ecosystem</b>. Place your bets
@@ -39,7 +39,7 @@ const benefits = [
     title: 'Transparent business model.',
     href: '/why#next-generation-business-model',
     description:
-      "Vike's pricing keeps code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.",
+      "Vike's pricing keeps code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount. For a transparent and sustainable relationship.",
     image: <OpenSourceSVG />
   },
   {

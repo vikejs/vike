@@ -14,14 +14,18 @@ import './page.css'
 function Page() {
   return (
     <div id="landing-page">
-      <Block style={{ marginTop: 0 }}>
+      <Block
+        style={{
+          marginTop: 0,
+          backgroundColor: '#f1f1f1'
+        }}
+      >
         <Hero />
       </Block>
       <Block
         noGrid
         style={{
-          padding: 0,
-          backgroundColor: '#FAFAFA'
+          padding: 0
         }}
       >
         <Flexible />
@@ -29,7 +33,8 @@ function Page() {
       <Block
         noGrid
         style={{
-          padding: 0
+          padding: 0,
+          backgroundColor: '#FAFAFA'
         }}
       >
         <Reliable />

@@ -51,7 +51,7 @@ export const Hero = () => {
             </clipPath>
           </defs>
         </svg>
-        Watch ViteConf 24 talk
+        Watch talk at ViteConf 2024
       </a>
       <div
         style={{
