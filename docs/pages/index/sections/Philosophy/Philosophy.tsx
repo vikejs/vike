@@ -11,7 +11,7 @@ const stylePrefix = 'landingpage-philosophy'
 const data = {
   caption: 'Philosophy',
   title: 'How Vike is Built.',
-  buttonLabel: 'Read more',
+  buttonLabel: 'Read Philosophy',
   buttonLink: '/why#philosophy'
 }
 

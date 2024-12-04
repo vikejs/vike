@@ -111,7 +111,7 @@ export const Flexible = () => {
               />
               <br />
               <Link href={'/why#architecture'}>
-                <Button type="secondary">Read architecture</Button>
+                <Button type="secondary">Read Architecture</Button>
               </Link>
               <br />
             </TextBox>

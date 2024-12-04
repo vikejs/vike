@@ -13,7 +13,7 @@ import './page.css'
 
 function Page() {
   return (
-    <>
+    <div id="landing-page">
       <Block style={{ marginTop: 0 }}>
         <Hero />
       </Block>
@@ -53,7 +53,7 @@ function Page() {
         <Sponsors />
       </Block>
       <CTA />
-    </>
+    </div>
   )
 }
 

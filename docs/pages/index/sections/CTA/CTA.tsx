@@ -28,7 +28,7 @@ export const CTA = () => {
               }}
             >
               <Link href="/faq">
-                <Button type="ghost">Read FAQs</Button>
+                <Button type="ghost">Read FAQ</Button>
               </Link>
               <Link href={linkGetStarted}>
                 <Button type="default">Get started</Button>

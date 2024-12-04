@@ -1,21 +1,21 @@
-h2 {
+#landing-page h2 {
     font-size: 36px;
     font-weight: 500;
 }
 
-h3 {
+#landing-page h3 {
     font-size: 18px;
     font-weight: 500;
 }
 
 @media screen and (max-width: 768px) {
-    h1 {
+    #landing-page h1 {
         font-size: 48px;
     }
-    h2 {
+    #landing-page h2 {
         font-size: 36px;
     }
-    h3 {
+    #landing-page h3 {
         font-size: 20px;
     }
 }
