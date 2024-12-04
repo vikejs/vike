@@ -1,3 +1,5 @@
+export { Reliable }
+
 import React from 'react'
 import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../+Page'
@@ -53,7 +55,7 @@ const benefits = [
   }
 ]
 
-export const Reliable = () => {
+function Reliable() {
   return (
     <div className={`${stylePrefix}-container`}>
       <Grid>
