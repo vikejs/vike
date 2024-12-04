@@ -50,10 +50,11 @@
 
 @media screen and (max-width: 768px) {
     .landingpage-chip {
-        margin-top: 32px;
-        margin-bottom: 48px;
+        margin-top: 0;
+        margin-bottom: 0;
         grid-column: 1 / span 12;
-        transform: scale(1.35);
+        margin-left: -20px;
+        margin-right: -20px;
     }
     .landingpage-chip-right {
         display: none;

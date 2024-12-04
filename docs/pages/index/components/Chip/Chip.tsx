@@ -149,7 +149,7 @@ export const Chip = () => {
                     borderRadius: '28px'
                   }}
                 >
-                  <img src={viteLogo} width={48} />
+                  <img src={viteLogo} style={{ width: 'min(48px, 8vw)' }} />
                 </a>
                 <div
                   style={{
