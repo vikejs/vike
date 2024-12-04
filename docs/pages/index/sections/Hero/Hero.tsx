@@ -2,7 +2,7 @@ import React from 'react'
 import { primaryColor } from '../../primaryColor'
 import { Button } from '../../components/Button/Button'
 import './hero.css'
-import { linkGetStarted, linkSponsor } from '../../links'
+import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
 
 const stylePrefix = 'landingpage-hero'
@@ -14,7 +14,7 @@ export const Hero = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 70,
+        marginTop: 60,
         marginBottom: 80
       }}
     >
@@ -66,8 +66,8 @@ export const Hero = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginBottom: '48px',
-            marginTop: '32px'
+            marginBottom: 34,
+            marginTop: 26
           }}
         >
           <h1
@@ -92,11 +92,11 @@ export const Hero = () => {
                 textAlign: 'center',
                 width: '100%',
                 margin: 0,
-                fontSize: 29,
+                fontSize: 27,
                 lineHeight: 1.35
               }}
             >
-              <SpanAvoidBreakIfPossible>Like Next.js & Nuxt with unprecedented</SpanAvoidBreakIfPossible>{' '}
+              <SpanAvoidBreakIfPossible>Like Next.js & Nuxt but with unprecedented</SpanAvoidBreakIfPossible>{' '}
               <SpanAvoidBreakIfPossible>flexibility, reliability, and control</SpanAvoidBreakIfPossible>.
             </div>
           </h1>
@@ -109,11 +109,15 @@ export const Hero = () => {
         }}
       >
         <Link href={linkGetStarted}>
-          <Button type="default">Get started</Button>
+          <Button type="default" big>
+            Get Started
+          </Button>
         </Link>
+        {/*
         <a href={linkSponsor}>
           <Button type="ghost">Become a sponsor</Button>
         </a>
+        */}
       </div>
     </div>
   )
