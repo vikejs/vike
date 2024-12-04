@@ -5,6 +5,7 @@ import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
 import './flexible.css'
 import { Slotmachine } from '../../components/Slotmachine/Slotmachine'
+import { Button } from '../../components/Button/Button'
 
 const data = {
   caption: 'Flexible',
@@ -107,6 +108,9 @@ export const Flexible = () => {
                 title={data.title}
                 descriptions={data.description}
               />
+              <a href={'/why#architecture'}>
+                <Button type="secondary">Read architecture</Button>
+              </a>
             </TextBox>
           </div>
           <div

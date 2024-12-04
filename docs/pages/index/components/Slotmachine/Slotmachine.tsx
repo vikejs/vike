@@ -18,6 +18,7 @@ import TelefuncLogo from './logos/telefunc'
 import ServerLogo from './logos/server'
 import StaticLogo from './logos/static'
 import FastifyLogo from './logos/fastify'
+import { IllustrationNote } from '../IllustrationNote'
 
 type slotMachineGroupType = 'ui' | 'rendering' | 'deployment' | 'backend' | 'data'
 
@@ -33,6 +34,7 @@ export const Slotmachine = () => {
   return (
     <div>
       <SlotMachineSVG />
+      <IllustrationNote>Plug & Play your stack.</IllustrationNote>
     </div>
   )
 }
