@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import iconVikeAnimatedCover from '../../../../images/icons/vike-nitedani-animated-cover.jpg'
+import iconVikeAnimatedCover from '../../../../images/icons/vike-nitedani-animated-cover.webp'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { Button } from '../../components/Button/Button'
 import { TextBox } from '../../components/TextBox'
