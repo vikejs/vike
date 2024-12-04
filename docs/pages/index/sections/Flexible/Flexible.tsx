@@ -3,7 +3,6 @@ import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
-import { Button } from '../../components/Button/Button'
 import './flexible.css'
 import { Slotmachine } from '../../components/Slotmachine/Slotmachine'
 
@@ -11,8 +10,15 @@ const data = {
   caption: 'Flexible',
   title: 'Your Stack, Your Choice',
   description: [
-    'Enjoy architectural freedom, use any tool, and choose any rendering and deployment strategy.',
-    'Use Vike extensions to quickly integrate tools and later, if the need arises, eject for full control over tool integration.'
+    //<>Enjoy <b>architectural freedom</b> and use <b>any tool</b>, <b>any rendering strategy</b> (SPA/SSR/SSG), and <b>any deployment strategy</b> (static/server/edge).</>,
+    <>
+      Enjoy <b>architectural freedom</b> and use any tool, any rendering strategy (SPA/SSR/SSG), and any deployment
+      strategy (static/server/edge).
+    </>,
+    <>
+      Use <b>Vike extensions</b> to quickly integrate tools and later, if the need arises, <b>eject for full control</b>{' '}
+      over tool integration.
+    </>
   ]
 }
 
@@ -108,17 +114,23 @@ export const Flexible = () => {
               flex: 1
             }}
           >
-            <div className={`${stylePrefix}-slotMachine`}>
+            <div
+              className={`${stylePrefix}-slotMachine`}
+              style={{
+                justifyContent: 'center'
+              }}
+            >
               <div className={`${stylePrefix}-slotMachineImageContainer`}>
                 <Slotmachine />
               </div>
-
+              {/*
               <div className={`${stylePrefix}-slotMachineSeparator`} />
               <div className={`${stylePrefix}-buttonWrapper`}>
                 <Button type="secondary" fullWidth>
                   Spin
                 </Button>
               </div>
+              */}
             </div>
           </div>
         </div>

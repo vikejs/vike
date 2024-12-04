@@ -264,7 +264,7 @@ export const Chip = () => {
             fontSize: '14px'
           }}
         >
-          Click on a core component to learn more
+          Click on a core component to learn more.
         </p>
       </div>
     </div>
