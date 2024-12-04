@@ -4,8 +4,8 @@ const SlotMachineSVG = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
-    width={483}
-    height={315}
+    width="100%"
+    viewBox="0 0 483 315"
     fill="none"
   >
     <rect
