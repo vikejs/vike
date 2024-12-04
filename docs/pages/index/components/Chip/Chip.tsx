@@ -131,19 +131,20 @@ export const Chip = () => {
                   position: 'relative'
                 }}
               >
-                <div
+                <a
+                  href="https://vite.dev"
                   style={{
                     width: '100%',
                     height: '100%',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'rgba(0, 0, 0, 1)',
+                    backgroundColor: '#222',
                     borderRadius: '28px'
                   }}
                 >
-                  <img src={viteLogo} width={20} />
-                </div>
+                  <img src={viteLogo} width={48} />
+                </a>
                 <div
                   style={{
                     height: '5px',
