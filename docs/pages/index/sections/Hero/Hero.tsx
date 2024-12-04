@@ -73,21 +73,29 @@ export const Hero = () => {
               color: '#000000',
               textAlign: 'center',
               width: '100%',
-              margin: 0
+              margin: 0,
+              fontWeight: 500
             }}
           >
-            Framework without Magic
+            <div
+              style={{
+                fontSize: 50
+              }}
+            >
+              Framework without Magic
+            </div>
             <div
               style={{
                 color: '#00000070',
                 textAlign: 'center',
                 width: '100%',
                 margin: 0,
-                fontSize: '0.7em',
-                lineHeight: 1.3
+                fontSize: 29,
+                lineHeight: 1.35
               }}
             >
-              Like Next.js & Nuxt but with unprecedented flexibility, reliability, and control.
+              <SpanAvoidBreakIfPossible>Like Next.js & Nuxt with unprecedented</SpanAvoidBreakIfPossible>{' '}
+              <SpanAvoidBreakIfPossible>flexibility, reliability, and control</SpanAvoidBreakIfPossible>.
             </div>
           </h1>
         </div>
@@ -103,4 +111,8 @@ export const Hero = () => {
       </div>
     </div>
   )
+}
+
+function SpanAvoidBreakIfPossible({ children }: any) {
+  return <span style={{ display: 'inline-block' }}>{children}</span>
 }
