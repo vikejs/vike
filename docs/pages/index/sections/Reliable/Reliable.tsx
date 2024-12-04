@@ -37,7 +37,7 @@ const benefits = [
       </svg>
     ),
     title: 'Transparent business model.',
-    href: '/',
+    href: '/why#next-generation-business-model',
     description:
       "Vike's Open Source Pricing keeps code 100% open source (MIT license) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.",
     image: <OpenSourceSVG />
@@ -53,7 +53,7 @@ const benefits = [
       </svg>
     ),
     title: 'Reliable, by care',
-    href: '/',
+    href: '/why#flexible-and-reliable-by-prioritization',
     description: (
       <>
         <b>We are responsive</b> with a clear guideline on how to receive guaranteed assistance. Bugs are quickly fixed

@@ -2,6 +2,8 @@ import React from 'react'
 import { primaryColor } from '../../primaryColor'
 import { Button } from '../../components/Button/Button'
 import './hero.css'
+import { linkGetStarted, linkSponsor } from '../../links'
+import { Link } from '@brillout/docpress'
 
 const stylePrefix = 'landingpage-hero'
 
@@ -106,8 +108,12 @@ export const Hero = () => {
           gap: 8
         }}
       >
-        <Button type="default">Get started</Button>
-        <Button type="ghost">Become a sponsor</Button>
+        <Link href={linkGetStarted}>
+          <Button type="default">Get started</Button>
+        </Link>
+        <a href={linkSponsor}>
+          <Button type="ghost">Become a sponsor</Button>
+        </a>
       </div>
     </div>
   )

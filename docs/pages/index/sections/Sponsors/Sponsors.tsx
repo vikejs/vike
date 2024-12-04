@@ -2,12 +2,12 @@ export { Sponsors }
 export type { Sponsor }
 
 import React from 'react'
-import { assert } from '@brillout/docpress'
 import { sponsorLevels, sponsorsList } from './sponsorsList'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { TextBox } from '../../components/TextBox'
 import { Button } from '../../components/Button/Button'
 import './sponsors.css'
+import { linkSponsor } from '../../links'
 
 const stylePrefix = 'landingpage-sponsors'
 
@@ -49,7 +49,7 @@ function Sponsors() {
                 style={{
                   marginTop: '12px'
                 }}
-                href="https://github.com/sponsors/vikejs"
+                href={linkSponsor}
               >
                 <Button type="secondary">Become a sponsor</Button>
               </a>

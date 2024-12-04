@@ -29,7 +29,7 @@ const benefits = [
       </svg>
     ),
     title: 'Cutting edge, at your own pace',
-    href: '/',
+    href: '/why#conservative-or-cutting-edge-your-choice',
     description:
       'Choose between production-grade extensions or cutting-edge extensions — go with a conservative stack, or live on the edge in unprecedented ways.'
   },
@@ -53,7 +53,7 @@ const benefits = [
       </svg>
     ),
     title: 'Build Your Own Framework',
-    href: '/',
+    href: '/why#build-your-own-framework',
     description:
       'Create an internal company framework that empowers your senior developers to fully own the architecture, ensuring a cohesive stack across your company.'
   },
@@ -77,7 +77,7 @@ const benefits = [
       </svg>
     ),
     title: 'Flexible, by design and priority',
-    href: '/',
+    href: '/why#flexible-by-design',
     description: 'From high-level design to the smallest details, Vike is built with flexibility in mind.'
   }
 ]

@@ -4,6 +4,8 @@ import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { Button } from '../../components/Button/Button'
 import { TextBox } from '../../components/TextBox'
 import './cta.css'
+import { linkGetStarted } from '../../links'
+import { Link } from '@brillout/docpress'
 
 const stylePrefix = 'landingpage-cta'
 
@@ -25,8 +27,12 @@ export const CTA = () => {
                 margin: '20px 0'
               }}
             >
-              <Button type="ghost">Read FAQs</Button>
-              <Button type="default">Get started</Button>
+              <Link href="/faq">
+                <Button type="ghost">Read FAQs</Button>
+              </Link>
+              <Link href={linkGetStarted}>
+                <Button type="default">Get started</Button>
+              </Link>
             </div>
           </div>
         </TextBox>
