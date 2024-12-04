@@ -9,7 +9,7 @@ const BugFixSVG = () => (
         height={44.645}
         x={12.365}
         y={9.365}
-        stroke="url(#b)"
+        stroke="url(#b_b)"
         strokeWidth={0.73}
         rx={5.479}
         shapeRendering="crispEdges"
@@ -45,7 +45,7 @@ const BugFixSVG = () => (
     </g>
     <g opacity={0.8}>
       <rect width={363.816} height={42.689} x={20.385} y={61.44} fill="#fff" rx={5.247} />
-      <rect width={363.816} height={42.689} x={20.385} y={61.44} stroke="url(#d)" strokeWidth={0.7} rx={5.247} />
+      <rect width={363.816} height={42.689} x={20.385} y={61.44} stroke="url(#b_d)" strokeWidth={0.7} rx={5.247} />
       <path
         fill="#000"
         fillOpacity={0.7}
@@ -60,7 +60,7 @@ const BugFixSVG = () => (
     </g>
     <g opacity={0.3}>
       <rect width={363.816} height={42.689} x={19.651} y={111.619} fill="#fff" rx={5.247} />
-      <rect width={363.816} height={42.689} x={19.651} y={111.619} stroke="url(#e)" strokeWidth={0.7} rx={5.247} />
+      <rect width={363.816} height={42.689} x={19.651} y={111.619} stroke="url(#b_e)" strokeWidth={0.7} rx={5.247} />
       <path
         fill="#000"
         fillOpacity={0.7}
@@ -74,15 +74,15 @@ const BugFixSVG = () => (
       />
     </g>
     <defs>
-      <linearGradient id="b" x1={202.293} x2={202.293} y1={9} y2={54.376} gradientUnits="userSpaceOnUse">
+      <linearGradient id="b_b" x1={202.293} x2={202.293} y1={9} y2={54.376} gradientUnits="userSpaceOnUse">
         <stop stopColor="#D3D3DA" stopOpacity={0.5} />
         <stop offset={1} stopColor="#D0D0D7" />
       </linearGradient>
-      <linearGradient id="d" x1={202.293} x2={202.293} y1={61.09} y2={104.479} gradientUnits="userSpaceOnUse">
+      <linearGradient id="b_d" x1={202.293} x2={202.293} y1={61.09} y2={104.479} gradientUnits="userSpaceOnUse">
         <stop stopColor="#D3D3DA" stopOpacity={0.5} />
         <stop offset={1} stopColor="#D0D0D7" />
       </linearGradient>
-      <linearGradient id="e" x1={201.558} x2={201.558} y1={111.269} y2={154.657} gradientUnits="userSpaceOnUse">
+      <linearGradient id="b_e" x1={201.558} x2={201.558} y1={111.269} y2={154.657} gradientUnits="userSpaceOnUse">
         <stop stopColor="#D3D3DA" stopOpacity={0.5} />
         <stop offset={1} stopColor="#D0D0D7" />
       </linearGradient>
