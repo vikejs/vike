@@ -10,7 +10,7 @@ export const SectionTextCollection = ({
 }: {
   caption: string
   title: string
-  descriptions?: string[]
+  descriptions?: (string | JSX.Element)[]
   actions?: JSX.Element[]
   style?: React.CSSProperties
 }) => {

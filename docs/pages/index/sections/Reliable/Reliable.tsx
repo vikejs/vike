@@ -14,10 +14,15 @@ const stylePrefix = 'landingpage-reliable'
 
 const data = {
   caption: 'Reliable',
-  title: 'Future-proof',
+  title: 'Adopt the future',
   description: [
-    "Vike's flexible core is unopinionated and open to JavaScript's rapidly evolving ecosystem. Place your bets on a framework that embraces the future.",
-    'Progressively migrate one stack component and one page at a time, instead of big never-ending migrations.'
+    <>
+      Vike's flexible core is unopinionated and <b>open to JavaScript's rapidly evolving ecosystem</b>. Place your bets
+      on a framework that embraces the future.
+    </>,
+    <>
+      <b>Progressively migrate</b> one stack component and one page at a time, instead of big never-ending migrations.
+    </>
   ]
 }
 
