@@ -52,7 +52,14 @@ function Page() {
       <Block>
         <Sponsors />
       </Block>
-      <CTA />
+      <Block
+        style={{
+          padding: 0,
+          backgroundColor: '#fbfbfb'
+        }}
+      >
+        <CTA />
+      </Block>
     </div>
   )
 }

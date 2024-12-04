@@ -12,7 +12,7 @@ import { linkSponsor } from '../../links'
 const stylePrefix = 'landingpage-sponsors'
 
 const data = {
-  caption: 'Sponsoring',
+  caption: 'Partners',
   title: 'Sponsor Vike and get a tight-knit partnership 🤝'
 }
 
@@ -51,7 +51,7 @@ function Sponsors() {
                 }}
                 href={linkSponsor}
               >
-                <Button type="secondary">Become a sponsor</Button>
+                <Button type="secondary">Become a Partner</Button>
               </a>
             </div>
           </TextBox>

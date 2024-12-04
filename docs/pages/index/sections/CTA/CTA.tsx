@@ -13,13 +13,13 @@ export const CTA = () => {
   return (
     <div
       style={{
-        backgroundColor: '#F5F5F7'
+        paddingBottom: 30
       }}
     >
       <Grid>
         <TextBox>
           <div className={`${stylePrefix}-textContainer`}>
-            <SectionTextCollection caption="Get ready" title="Start building" />
+            <SectionTextCollection caption="A new fresh start" title="Start building" />
             <div
               style={{
                 display: 'flex',
@@ -31,7 +31,7 @@ export const CTA = () => {
                 <Button type="ghost">Read FAQ</Button>
               </Link>
               <Link href={linkGetStarted}>
-                <Button type="default">Get started</Button>
+                <Button type="default">Get Started</Button>
               </Link>
             </div>
           </div>

@@ -14,8 +14,8 @@ export const Hero = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 60,
-        marginBottom: 80
+        marginTop: 80,
+        marginBottom: 90
       }}
     >
       <a
@@ -84,7 +84,22 @@ export const Hero = () => {
                 fontSize: 50
               }}
             >
-              The Framework You Control
+              The Framework{' '}
+              <span
+                style={{
+                  fontWeight: 600,
+                  color: '#42d392',
+                  // Copied from https://vuejs.org/
+                  background: '-webkit-linear-gradient(315deg, #42d392 25%, #647eff)',
+                  backgroundClip: 'text',
+                  // @ts-ignore
+                  ['-webkit-background-clip']: 'text',
+                  ['-webkit-text-fill-color']: 'transparent'
+                }}
+              >
+                You
+              </span>{' '}
+              Control
             </div>
             <div
               style={{
@@ -97,7 +112,7 @@ export const Hero = () => {
               }}
             >
               <SpanAvoidBreakIfPossible>Like Next.js & Nuxt but with unprecedented</SpanAvoidBreakIfPossible>{' '}
-              <SpanAvoidBreakIfPossible>flexibility, reliability, and control</SpanAvoidBreakIfPossible>.
+              <SpanAvoidBreakIfPossible>flexibility, dependability, and control</SpanAvoidBreakIfPossible>.
             </div>
           </h1>
         </div>

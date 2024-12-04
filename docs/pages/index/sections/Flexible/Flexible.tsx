@@ -14,7 +14,7 @@ const data = {
   description: [
     //<>Enjoy <b>architectural freedom</b> and use <b>any tool</b>, <b>any rendering strategy</b> (SPA/SSR/SSG), and <b>any deployment strategy</b> (static/server/edge).</>,
     <>
-      Enjoy <b>architectural freedom</b> and use any tool, any rendering strategy (SPA/SSR/SSG), and any deployment
+      Enjoy <b>architectural freedom</b> and choose any tool, any rendering strategy (SPA/SSR/SSG), and any deployment
       strategy (static/server/edge).
     </>,
     <>
@@ -63,7 +63,7 @@ const benefits = [
     title: 'Build Your Own Framework',
     href: '/why#build-your-own-framework',
     description:
-      'Create an internal company framework that empowers your senior developers to fully own the architecture, ensuring a cohesive stack across your company.'
+      'Create an internal company framework that empowers your Software Architects to fully own the architecture, while enabling your Product Developers to quickly iterate.'
   },
   {
     icon: (
