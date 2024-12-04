@@ -34,7 +34,7 @@ export const Slotmachine = () => {
   return (
     <div>
       <SlotMachineSVG />
-      <IllustrationNote>Plug & Play your stack.</IllustrationNote>
+      <IllustrationNote>Plug & Play your stack</IllustrationNote>
     </div>
   )
 }
