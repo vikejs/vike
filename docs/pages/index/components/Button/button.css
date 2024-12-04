@@ -1,13 +1,10 @@
-/* base */
 .landingpage-button {
-    height: 36px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    width: fit-content;
-    font-size: 14px;  
-    padding: 0 12px;
-    gap: 8px;
+  width: fit-content;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px 12px;
+  letter-spacing: 0.02em;
+  border-radius: 2px;
 }
 
 @media screen and (max-width: 768px) {
@@ -33,9 +30,9 @@
 }
 .landingpage-button-big {
   font-size: 1.08em;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
   font-weight: 500;
-  padding: 24px 19px;
+  padding: 11px 19px;
 }
 
 /* secondary */
@@ -61,10 +58,15 @@
 
 /* text */
 .landingpage-button-text {
+    height: 36px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
     background-color: transparent;
     color: rgba(0,0,0,0.5);
     font-weight: 500;
     /* color: #1810FF; */
     opacity: 0.8;
-    padding: 0
+    padding: 0;
+    gap: 8px;
 }

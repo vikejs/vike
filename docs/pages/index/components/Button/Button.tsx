@@ -17,7 +17,7 @@ export const Button = ({
   return (
     <div
       className={[
-        'landingpage-button',
+        type !== 'text' && 'landingpage-button',
         'landingpage-button-' + type,
         fullWidth && 'landingpage-button-fullWidth',
         big && 'landingpage-button-big'

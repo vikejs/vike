@@ -6,6 +6,7 @@ import { ParagraphTextCollection } from '../../components/ParagraphTextCollectio
 import './flexible.css'
 import { Slotmachine } from '../../components/Slotmachine/Slotmachine'
 import { Button } from '../../components/Button/Button'
+import { Link } from '@brillout/docpress'
 
 const data = {
   caption: 'Flexible',
@@ -108,9 +109,11 @@ export const Flexible = () => {
                 title={data.title}
                 descriptions={data.description}
               />
-              <a href={'/why#architecture'}>
+              <br />
+              <Link href={'/why#architecture'}>
                 <Button type="secondary">Read architecture</Button>
-              </a>
+              </Link>
+              <br />
             </TextBox>
           </div>
           <div
