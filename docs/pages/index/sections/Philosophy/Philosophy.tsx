@@ -196,5 +196,5 @@ function VikeNitedaniAnimated() {
     }
   })
 
-  return <video ref={ref} poster={iconVikeAnimatedCover} width="120" muted loop />
+  return <video ref={ref} poster={iconVikeAnimatedCover} width="150" muted loop />
 }
