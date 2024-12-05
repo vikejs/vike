@@ -18,7 +18,7 @@ function TopNavigation() {
       }}
     >
       <span
-        className="decolorize-7"
+        className="decolorize-7 desktop-fade"
         style={{ height: 23, marginRight: 8, fontFamily: 'emoji', position: 'relative', top: -2 }}
       >
         🌱

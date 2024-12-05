@@ -20,5 +20,6 @@ export default {
   },
   bannerUrl: 'https://vike.dev/banner.png',
   // i18n: true,
-  pressKit: true
+  pressKit: true,
+  navMaxWidth: 1100
 } satisfies Config
