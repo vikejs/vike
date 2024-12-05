@@ -32,7 +32,9 @@ function Taglines() {
       style={{
         width: '100%',
         display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)'
+        gridTemplateColumns: 'repeat(12, 1fr)',
+        marginBottom: 34,
+        marginTop: 26
       }}
     >
       <div
@@ -40,9 +42,7 @@ function Taglines() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          marginBottom: 34,
-          marginTop: 26
+          alignItems: 'center'
         }}
       >
         <h1
