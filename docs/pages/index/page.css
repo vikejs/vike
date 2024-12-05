@@ -29,3 +29,7 @@ h1 #tagline-secondary {
         font-size: 18px;
     }
 }
+
+#landing-page a:has(> .landingpage-button) {
+  display: inline-block;
+}
