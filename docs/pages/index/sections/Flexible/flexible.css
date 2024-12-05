@@ -26,10 +26,6 @@
     align-items: center;
     width: 100%;
 }
-.landingpage-flexible-slotMachineImageContainer {
-    margin: 0 -24px;
-    width: 500px;
-}
 .landingpage-flexible-slotMachineSeparator {
     height: 1px;
     width: 30px;
@@ -50,10 +46,26 @@
 .landingpage-flexible-benefitFlexbox {
     display: flex;
 }
-    
+.landingpage-flexible-slotMachineImageContainer {
+    width: 500px;
+}
+
 @media screen and (max-width: 992px) {
     .landingpage-flexible-benefitFlexbox {
         flex-direction: column;
+    }
+    .landingpage-flexible-benefitWrapper {
+        margin-top: 14px !important;
+    }
+    .landingpage-flexible-benefit {
+        border-left: 3px solid #FFF;
+        border-top: 3px solid #FFF;
+    }
+    .landingpage-flexible-benefit:first-child {
+        border-top: 0px;
+    }
+    .landingpage-flexible-slotMachineImageContainer {
+        width: 400px;
     }
 }
 
@@ -82,12 +94,5 @@
     .landingpage-flexible-benefitWrapper {
         margin-top: 48px;
         padding: 0;
-    }
-    .landingpage-flexible-benefit {
-        border-left: 3px solid #FFF;
-        border-top: 3px solid #FFF;
-    }
-    .landingpage-flexible-benefit:first-child {
-        border-top: 0px;
     }
 }

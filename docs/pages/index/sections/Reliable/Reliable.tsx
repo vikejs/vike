@@ -97,11 +97,11 @@ function Reliable() {
       </Grid>
 
       <div
+        className={`${stylePrefix}-benefitList`}
         style={{
           width: '100%',
           borderTop: `3px solid #FFFFFF`,
-          borderBottom: `3px solid #FFFFFF`,
-          marginTop: '64px'
+          borderBottom: `3px solid #FFFFFF`
         }}
       >
         {benefits.map((benefit, i) => (

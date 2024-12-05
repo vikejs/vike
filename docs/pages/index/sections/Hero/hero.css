@@ -1,11 +1,13 @@
 .landingpage-hero-headline {
     grid-column: 3 / span 8;
-    font-size: 48;
 }
-
 @media screen and (max-width: 768px) {
     .landingpage-hero-headline {
+        margin-top: 0 !important;
         grid-column: 1 / span 12;
-        font-size: 40;
-    }   
+    }
+    #hero-content {
+      margin-top: 37px !important;
+      margin-bottom: 60px !important;
+    }
 }

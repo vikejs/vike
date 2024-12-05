@@ -38,6 +38,9 @@
     align-items: center;
     max-width: 470px;
 }
+.landingpage-reliable-benefitList {
+    margin-top: 64px;
+}
 
 
 @media screen and (max-width: 768px) {
@@ -61,5 +64,8 @@
         border: 0px !important; 
         width: 100%;
         margin-bottom: 32px;
+    }
+    .landingpage-reliable-benefitList {
+        margin-top: 35px;
     }
 }

@@ -24,7 +24,6 @@ export const ParagraphTextCollection = ({
       </div>
       <h3
         style={{
-          fontSize: '16px',
           color: '#000000',
           fontWeight: '500',
           width: '100%',

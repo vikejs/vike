@@ -10,6 +10,7 @@ const stylePrefix = 'landingpage-hero'
 export const Hero = () => {
   return (
     <div
+      id="hero-content"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -75,15 +76,12 @@ export const Hero = () => {
               color: '#000000',
               textAlign: 'center',
               width: '100%',
-              margin: 0,
-              fontWeight: 500
+              marginBottom: 0,
+              fontWeight: 500,
+              lineHeight: 1.1
             }}
           >
-            <div
-              style={{
-                fontSize: 50
-              }}
-            >
+            <div id="tagline-main">
               The Framework{' '}
               <span
                 style={{
@@ -101,18 +99,18 @@ export const Hero = () => {
               Control
             </div>
             <div
+              id="tagline-secondary"
               style={{
                 color: '#00000070',
                 textAlign: 'center',
                 width: '100%',
-                margin: 0,
-                fontSize: 27,
+                marginTop: 10,
                 lineHeight: 1.35,
                 fontWeight: 400
               }}
             >
               <SpanAvoidBreakIfPossible>Like Next.js & Nuxt but with unprecedented</SpanAvoidBreakIfPossible>{' '}
-              <SpanAvoidBreakIfPossible>flexibility, dependability, and control</SpanAvoidBreakIfPossible>.
+              <SpanAvoidBreakIfPossible>flexibility, dependability, and control.</SpanAvoidBreakIfPossible>
             </div>
           </h1>
         </div>
