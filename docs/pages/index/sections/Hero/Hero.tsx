@@ -15,8 +15,8 @@ function Hero() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 80,
-        marginBottom: 90
+        marginTop: 90,
+        marginBottom: 110
       }}
     >
       <TalkLink />
@@ -29,12 +29,13 @@ function Hero() {
 function Taglines() {
   return (
     <div
+      id="hero-taglines"
       style={{
         width: '100%',
         display: 'grid',
         gridTemplateColumns: 'repeat(12, 1fr)',
-        marginBottom: 34,
-        marginTop: 26
+        marginBottom: 46,
+        marginTop: 16
       }}
     >
       <div
