@@ -107,7 +107,8 @@ export const Hero = () => {
                 width: '100%',
                 margin: 0,
                 fontSize: 27,
-                lineHeight: 1.35
+                lineHeight: 1.35,
+                fontWeight: 400
               }}
             >
               <SpanAvoidBreakIfPossible>Like Next.js & Nuxt but with unprecedented</SpanAvoidBreakIfPossible>{' '}

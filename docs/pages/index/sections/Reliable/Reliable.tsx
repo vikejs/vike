@@ -9,6 +9,8 @@ import OpenSourceSVG from '../../components/OpenSourceSVG'
 import BugFixSVG from '../../components/BugFixSVG'
 import TrendingPackageSVG from './../../components/TrendingPackageSVG'
 import './reliable.css'
+import { Link } from '@brillout/docpress'
+import { Button } from '../../components/Button/Button'
 
 const stylePrefix = 'landingpage-reliable'
 
@@ -17,8 +19,8 @@ const data = {
   title: 'Adopt the Future',
   description: [
     <>
-      Vike's flexible core is unopinionated and <b>open to JavaScript's rapidly evolving ecosystem</b>. Place your bets
-      on a framework that embraces the future.
+      Vike is a flexible and unopinionated core that is <b>open to JavaScript's rapidly evolving ecosystem</b>. Place
+      your bets on a framework that embraces the future.
     </>,
     <>
       <b>Progressively migrate</b> one stack component and one page at a time, instead of big never-ending migrations.
@@ -81,6 +83,11 @@ function Reliable() {
                 title={data.title}
                 descriptions={data.description}
               />
+              <div style={{ paddingTop: 8, marginBottom: -18 }}>
+                <Link href={'/why#grow-progressively'}>
+                  <Button type="secondary">Read Grow Progressively</Button>
+                </Link>
+              </div>
             </TextBox>
           </div>
           <div className={`${stylePrefix}-imageWrapper`}>

@@ -264,7 +264,7 @@ export const Chip = () => {
           gap: 8
         }}
       >
-        Click on a core component to learn more
+        Click on a component to learn more
       </IllustrationNote>
     </div>
   )
