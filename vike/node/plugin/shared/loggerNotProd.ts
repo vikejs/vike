@@ -206,7 +206,7 @@ function assertLogger(thing: string | Error, logType: LogType): void {
   /* Risk of infinite loop
   assert(res)
   */
-  if (!res) throw new Error('Internal error, reach out to a maintainer')
+  if (!res) throw new Error('Internal Vike error, reach out to a maintainer')
   const { assertMsg, showVikeVersion } = res
   logWithVikeTag(assertMsg, logType, category, showVikeVersion)
 }

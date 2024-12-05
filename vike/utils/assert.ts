@@ -167,7 +167,7 @@ function addPrefixProjctName(msg: string, showProjectVersion = false): string {
 
 function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: boolean } | null {
   let errMsg: string
-  let errStack: null | string = null
+  let errStack: string | undefined
   if (typeof thing === 'string') {
     errMsg = thing
   } else if (isObject(thing) && typeof thing.message === 'string' && typeof thing.stack === 'string') {
@@ -177,32 +177,23 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
     return null
   }
 
-  let assertMsg: string
-  let isBug: boolean
-  if (errMsg.startsWith(projectTag)) {
-    assertMsg = errMsg.slice(projectTag.length)
-    isBug = false
-  } else if (errMsg.startsWith(projectTagWithVersion)) {
-    assertMsg = errMsg.slice(projectTagWithVersion.length)
-    isBug = true
-  } else {
-    return null
+  for (const tag of [projectTagWithVersion, projectTag]) {
+    const showVikeVersion = tag === projectTagWithVersion
+    const errStackPrefix = `Error: ${tag}`
+    if (errStack?.startsWith(errStackPrefix)) {
+      if (globalObject.showStackTraceList.has(thing as any)) {
+        const assertMsg = errStack.slice(errStackPrefix.length)
+        return { assertMsg, showVikeVersion }
+      }
+    } else if (errStack?.includes(tag)) {
+      throw new Error('Internal Vike error')
+    }
+    if (errMsg?.startsWith(tag)) {
+      const assertMsg = errMsg.slice(tag.length)
+      return { assertMsg, showVikeVersion }
+    }
   }
-
-  // Append stack trace
-  if (errStack && (isBug || globalObject.showStackTraceList.has(thing as any))) {
-    assertMsg = `${assertMsg}\n${removeErrMsg(errStack)}`
-  }
-
-  const showVikeVersion = isBug
-  return { assertMsg, showVikeVersion }
-}
-
-function removeErrMsg(stack: unknown): string {
-  if (typeof stack !== 'string') return String(stack)
-  const [firstLine, ...stackLines] = stack.split('\n')
-  if (!firstLine!.startsWith('Error: ')) return stack
-  return stackLines.join('\n')
+  return null
 }
 
 function overwriteAssertProductionLogger(logger: Logger): void {
