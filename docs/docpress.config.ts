@@ -21,5 +21,9 @@ export default {
   bannerUrl: 'https://vike.dev/banner.png',
   // i18n: true,
   pressKit: true,
-  navMaxWidth: 1100
+  navMaxWidth: 1100,
+  navLogoSize: 45,
+  navLogoTextStyle: {
+    letterSpacing: '0.01em'
+  }
 } satisfies Config
