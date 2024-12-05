@@ -1,6 +1,6 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 
-To install <Link href="/extensions">Vike extensions</Link> you use `extends`:
+You can install <Link href="/extensions">Vike extensions</Link> by using `extends`:
 
 ```js
 // /pages/+config.js
@@ -8,45 +8,11 @@ To install <Link href="/extensions">Vike extensions</Link> you use `extends`:
 import vikeReact from 'vike-react/config'
 
 export default {
-  // Install vike-react. (Technically: inherit the configuration `vike-react/config`.)
+  // Install `vike-react`. (Technically speaking: inherit the configuration `vikeReact`.)
   extends: vikeReact
 }
 ```
 
-## Inheritance
-
-Note that <Link href="/config#inheritance">config inheritance</Link> also applies to `extends`.
-
-For example, you can use two completely different rendering strategy: some pages can use Vue without SSR while other pages can use React with SSR.
-
-```js
-// /pages/admin/+config.js
-
-import vikeVue from 'vike-vue/config'
-
-// Applies only to Admin Panel pages:
-//   /pages/admin/income/+Page.js
-//   /pages/admin/kpi/+Page.js
-//   ...
-
-// Make all Admin Panel pages use Vue without SSR:
-export default {
-  ssr: false,
-  extends: [vikeVue]
-}
-```
-
-```js
-// /pages/product/@id/+config.js
-
-import vikeReact from 'vike-react/config'
-
-// Applies only to the product page:
-//   /pages/product/@id/+Page.js
-
-// Make the product page use React with SSR:
-export default {
-  ssr: true,
-  extends: [vikeReact]
-}
-```
+> <Link href="/config#inheritance">Config inheritance</Link> also applies to `extends`.
+>
+> For example, you can use <Link href="/config#powerful">completely different rendering strategies within the same app</Link>.
