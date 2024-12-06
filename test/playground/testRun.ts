@@ -13,6 +13,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   isDev = cmd === 'npm run dev'
   testRunClassic(cmd, { skipScreenshotTest: true })
   testCumulativeSetting()
+  testSettingInheritedByDescendants()
   testRouteStringDefinedInConfigFile()
   testSideExports()
   testPrerenderSettings()
@@ -21,6 +22,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testDynamicImportFileEnv()
   testNestedLayout()
   testHistoryPushState()
+}
+
+async function fetchConfigJson(pathname: string) {
+  const html = await fetchHtml(pathname)
+  const jsonText = html.match(/===CONFIG:START===(.*)===CONFIG:END===/)?.[1].replace(/&quot;/g, '"')
+  return JSON.parse(jsonText!)
 }
 
 function testRouteStringDefinedInConfigFile() {
@@ -32,7 +39,7 @@ function testRouteStringDefinedInConfigFile() {
 }
 
 function testCumulativeSetting() {
-  test('Cumulative setting (not serialiazed but imported)', async () => {
+  test('Cumulative setting (not serialized but imported)', async () => {
     let html: string
     const expectGlobalMetaTags = () => {
       expect(html).toContain('<meta charSet="UTF-8"/>')
@@ -48,6 +55,38 @@ function testCumulativeSetting() {
     html = await fetchHtml('/about')
     expectAboutMetaTags()
     expectGlobalMetaTags()
+  })
+}
+
+function testSettingInheritedByDescendants() {
+  test('Standard and cumulative settings are inherited correctly', async () => {
+    expect(await fetchConfigJson('/config-meta/cumulative')).to.deep.equal({
+      isBrowser: false,
+      standard: { nested: 'default for standard @ /cumulative' },
+      cumulative: [{ nested: 'default for cumulative @ /cumulative' }]
+    })
+
+    expect(await fetchConfigJson('/config-meta/cumulative/nested')).to.deep.equal({
+      isBrowser: false,
+      standard: { nested: 'override for standard @ /nested' },
+      cumulative: [{ nested: 'override for cumulative @ /nested' }, { nested: 'default for cumulative @ /cumulative' }]
+    })
+
+    expect(await fetchConfigJson('/config-meta/cumulative/nested/no-overrides')).to.deep.equal({
+      isBrowser: false,
+      standard: { nested: 'override for standard @ /nested' },
+      cumulative: [{ nested: 'override for cumulative @ /nested' }, { nested: 'default for cumulative @ /cumulative' }]
+    })
+
+    expect(await fetchConfigJson('/config-meta/cumulative/nested/deeply-nested')).to.deep.equal({
+      isBrowser: false,
+      standard: { nested: 'override for standard @ /deeply-nested' },
+      cumulative: [
+        { nested: 'override for cumulative @ /deeply-nested' },
+        { nested: 'override for cumulative @ /nested' },
+        { nested: 'default for cumulative @ /cumulative' }
+      ]
+    })
   })
 }
 
