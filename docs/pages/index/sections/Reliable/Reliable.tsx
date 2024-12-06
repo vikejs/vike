@@ -12,8 +12,6 @@ import './reliable.css'
 import { Link } from '@brillout/docpress'
 import { Button } from '../../components/Button/Button'
 
-const stylePrefix = 'landingpage-reliable'
-
 const data = {
   caption: 'Dependable',
   title: 'Adopt the Future',
@@ -68,15 +66,15 @@ const benefits = [
 
 function Reliable() {
   return (
-    <div className={`${stylePrefix}-container`}>
+    <div className={`landingpage-reliable-container`}>
       <Grid>
-        <div className={`${stylePrefix}-flexbox`}>
+        <div className={`landingpage-reliable-flexbox`}>
           <div
             style={{
               flex: 1
             }}
           >
-            <TextBox className={`${stylePrefix}-customTextBox`}>
+            <TextBox className={`landingpage-reliable-customTextBox`}>
               <SectionTextCollection
                 style={{ maxWidth: '400px' }}
                 caption={data.caption}
@@ -90,14 +88,14 @@ function Reliable() {
               </div>
             </TextBox>
           </div>
-          <div className={`${stylePrefix}-imageWrapper`}>
+          <div className={`landingpage-reliable-imageWrapper`}>
             <TrendingPackageSVG />
           </div>
         </div>
       </Grid>
 
       <div
-        className={`${stylePrefix}-benefitList`}
+        className={`landingpage-reliable-benefitList`}
         style={{
           width: '100%',
           borderTop: `3px solid #FFFFFF`,
@@ -114,12 +112,12 @@ function Reliable() {
           >
             <Grid>
               <div
-                className={`${stylePrefix}-benefitWrapper`}
+                className={`landingpage-reliable-benefitWrapper`}
                 style={{
                   flexDirection: i % 2 ? 'row' : 'row-reverse'
                 }}
               >
-                <a href={benefit.href} className={`${stylePrefix}-benefit`}>
+                <a href={benefit.href} className={`landingpage-reliable-benefit`}>
                   <TextBox>
                     <ParagraphTextCollection
                       icon={benefit.icon}
@@ -130,7 +128,7 @@ function Reliable() {
                   </TextBox>
                 </a>
                 <div
-                  className={`${stylePrefix}-benefitImageWrapper`}
+                  className={`landingpage-reliable-benefitImageWrapper`}
                   style={{
                     borderRight: i % 2 ? '0px' : '3px solid #FFF',
                     borderLeft: i % 2 ? '3px solid #FFF' : '0px'
