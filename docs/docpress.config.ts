@@ -24,6 +24,7 @@ export default {
   navMaxWidth: 1140,
   navLogoSize: 45,
   navLogoTextStyle: {
-    letterSpacing: '0.01em'
+    letterSpacing: '0.01em',
+    fontWeight: 420
   }
 } satisfies Config
