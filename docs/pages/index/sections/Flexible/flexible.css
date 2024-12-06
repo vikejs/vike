@@ -9,8 +9,10 @@
 .landingpage-flexible-benefit:first-child {
   border-left: 3px solid #fff;
 }
-.landingpage-flexible-benefit:hover {
-  background-color: #eeeef2;
+@media (hover: hover) and (pointer: fine) {
+  .landingpage-flexible-benefit:hover {
+    background-color: #eeeef2;
+  }
 }
 .landingpage-flexible-container {
   margin-top: 100px;

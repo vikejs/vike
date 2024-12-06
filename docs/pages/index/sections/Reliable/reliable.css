@@ -7,8 +7,10 @@
   padding-right: 48px;
   min-height: 240px;
 }
-.landingpage-reliable-benefit:hover {
-  background-color: #eeeef2;
+@media (hover: hover) and (pointer: fine) {
+  .landingpage-reliable-benefit:hover {
+    background-color: #eeeef2;
+  }
 }
 .landingpage-reliable-benefitImageWrapper {
   width: 58.4%;

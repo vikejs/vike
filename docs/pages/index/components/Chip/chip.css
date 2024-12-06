@@ -24,8 +24,10 @@
   transition: all 0.2s;
   cursor: pointer;
 }
-.landingpage-chip-feature:hover {
-  background-color: #222;
+@media (hover: hover) and (pointer: fine) {
+  .landingpage-chip-feature:hover {
+    background-color: #222;
+  }
 }
 .landingpage-chip-info {
   margin-bottom: 80px;

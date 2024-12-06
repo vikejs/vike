@@ -7,8 +7,10 @@
   padding: 20px;
   color: rgba(0, 0, 0, 0.7) !important;
 }
-.landingpage-philosophy-principle:hover {
-  background-color: #eeeef2;
+@media (hover: hover) and (pointer: fine) {
+  .landingpage-philosophy-principle:hover {
+    background-color: #eeeef2;
+  }
 }
 .landingpage-philosophy-container {
   width: 100%;
