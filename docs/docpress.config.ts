@@ -2,7 +2,7 @@ import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
-import vikeIcon from './images/icons/vike-nitedani_100x100.png'
+import vikeIcon from './images/icons/baby-mjolnir.svg'
 
 export default {
   projectInfo,
@@ -20,5 +20,10 @@ export default {
   },
   bannerUrl: 'https://vike.dev/banner.png',
   // i18n: true,
-  pressKit: true
+  pressKit: true,
+  navMaxWidth: 1100,
+  navLogoSize: 45,
+  navLogoTextStyle: {
+    letterSpacing: '0.01em'
+  }
 } satisfies Config

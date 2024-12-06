@@ -1,0 +1,71 @@
+.landingpage-reliable-benefit {
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 41.6%;
+    padding: 32px 0;
+    padding-right: 48px;
+    min-height: 240px;
+}
+.landingpage-reliable-benefit:hover {
+    background-color: #EEEEF2;
+}
+.landingpage-reliable-benefitImageWrapper {
+    width: 58.4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.landingpage-reliable-benefitWrapper {
+    display: flex;
+    flex-direction: row;
+    border-right: 3px solid #FFF;
+    border-left: 3px solid #FFF;
+}
+.landingpage-reliable-container {
+    margin-top: 120px;
+    margin-bottom: -3px;
+    width: 100%;
+}
+.landingpage-reliable-flexbox {
+    display: flex;
+    flex-wrap: wrap;
+}
+.landingpage-reliable-imageWrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 470px;
+}
+.landingpage-reliable-benefitList {
+    margin-top: 64px;
+}
+
+
+@media screen and (max-width: 768px) {
+    .landingpage-reliable-container {
+        margin-top: 32px;
+    }
+    .landingpage-reliable-flexbox {
+        display: block;
+    }
+    .landingpage-reliable-imageWrapper {
+        max-width: unset;
+        margin-top: 64px;
+    }
+    .landingpage-reliable-benefitWrapper {
+        flex-direction: column !important;
+    }
+    .landingpage-reliable-benefit {
+        width: 100%;
+    }
+    .landingpage-reliable-benefitImageWrapper {
+        border: 0px !important; 
+        width: 100%;
+        margin-bottom: 32px;
+    }
+    .landingpage-reliable-benefitList {
+        margin-top: 35px;
+    }
+}

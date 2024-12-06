@@ -49,10 +49,6 @@ function getCiJobs() {
     {
       name: 'Cloudflare',
       setups: [linux_nodeNew]
-    },
-    {
-      name: 'https://vike.dev',
-      setups: [linux_nodeNew]
     }
   ]
 }
