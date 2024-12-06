@@ -17,7 +17,8 @@ export const Chip = () => {
           width: '100%',
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
-          marginTop: '32px'
+          marginTop: '32px',
+          position: 'relative'
         }}
       >
         <div
