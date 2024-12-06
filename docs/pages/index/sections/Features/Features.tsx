@@ -9,12 +9,10 @@ const data = {
   title: 'Core. All-included.'
 }
 
-const stylePrefix = 'landingpage-features'
-
 export const Features = () => {
   return (
-    <div className={`${stylePrefix}-container`}>
-      <div className={`${stylePrefix}-textContainer`}>
+    <div className="landingpage-features-container">
+      <div className="landingpage-features-textContainer">
         <TextBox>
           <SectionTextCollection
             caption={data.caption}
