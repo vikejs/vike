@@ -9,7 +9,7 @@ export default {
   faviconUrl: vikeIcon,
   headings,
   headingsDetached,
-  tagline: 'Next.js/Nuxt alternative. Flexible, reliable, clutter-free, fast, community-driven.',
+  tagline: 'Like Next.js & Nuxt but with unprecedented flexibility, dependability, and control.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
@@ -21,7 +21,7 @@ export default {
   bannerUrl: 'https://vike.dev/banner.png',
   // i18n: true,
   pressKit: true,
-  navMaxWidth: 1100,
+  navMaxWidth: 1140,
   navLogoSize: 45,
   navLogoTextStyle: {
     letterSpacing: '0.01em'

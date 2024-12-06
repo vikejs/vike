@@ -11,8 +11,7 @@ import TrendingPackageSVG from './../../components/TrendingPackageSVG'
 import './reliable.css'
 import { Link } from '@brillout/docpress'
 import { Button } from '../../components/Button/Button'
-
-const stylePrefix = 'landingpage-reliable'
+import { IllustrationNote } from '../../components/IllustrationNote'
 
 const data = {
   caption: 'Dependable',
@@ -68,36 +67,39 @@ const benefits = [
 
 function Reliable() {
   return (
-    <div className={`${stylePrefix}-container`}>
+    <div className={`landingpage-reliable-container`}>
       <Grid>
-        <div className={`${stylePrefix}-flexbox`}>
+        <div className={`landingpage-reliable-flexbox`}>
           <div
             style={{
               flex: 1
             }}
           >
-            <TextBox className={`${stylePrefix}-customTextBox`}>
+            <TextBox className={`landingpage-reliable-customTextBox`}>
               <SectionTextCollection
                 style={{ maxWidth: '400px' }}
                 caption={data.caption}
                 title={data.title}
                 descriptions={data.description}
               />
-              <div style={{ paddingTop: 8, marginBottom: -18 }}>
+              <div style={{ paddingTop: 8 }}>
                 <Link href={'/why#grow-progressively'}>
                   <Button type="secondary">Read Grow Progressively</Button>
                 </Link>
               </div>
             </TextBox>
           </div>
-          <div className={`${stylePrefix}-imageWrapper`}>
+          <div className={`landingpage-reliable-imageWrapper`}>
             <TrendingPackageSVG />
+            <IllustrationNote style={{ maxWidth: 300, margin: 'auto' }}>
+              Vike extensions are a thin layer of glue code that can easily be forked.
+            </IllustrationNote>
           </div>
         </div>
       </Grid>
 
       <div
-        className={`${stylePrefix}-benefitList`}
+        className={`landingpage-reliable-benefitList`}
         style={{
           width: '100%',
           borderTop: `3px solid #FFFFFF`,
@@ -114,12 +116,12 @@ function Reliable() {
           >
             <Grid>
               <div
-                className={`${stylePrefix}-benefitWrapper`}
+                className={`landingpage-reliable-benefitWrapper`}
                 style={{
                   flexDirection: i % 2 ? 'row' : 'row-reverse'
                 }}
               >
-                <a href={benefit.href} className={`${stylePrefix}-benefit`}>
+                <a href={benefit.href} className={`landingpage-reliable-benefit`}>
                   <TextBox>
                     <ParagraphTextCollection
                       icon={benefit.icon}
@@ -130,7 +132,7 @@ function Reliable() {
                   </TextBox>
                 </a>
                 <div
-                  className={`${stylePrefix}-benefitImageWrapper`}
+                  className={`landingpage-reliable-benefitImageWrapper`}
                   style={{
                     borderRight: i % 2 ? '0px' : '3px solid #FFF',
                     borderLeft: i % 2 ? '3px solid #FFF' : '0px'

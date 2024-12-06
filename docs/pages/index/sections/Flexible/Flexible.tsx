@@ -24,8 +24,6 @@ const data = {
   ]
 }
 
-const stylePrefix = 'landingpage-flexible'
-
 const benefits = [
   {
     icon: (
@@ -92,15 +90,15 @@ const benefits = [
 
 export const Flexible = () => {
   return (
-    <div className={`${stylePrefix}-container`}>
+    <div className={`landingpage-flexible-container`}>
       <Grid>
-        <div className={`${stylePrefix}-flexbox`}>
+        <div className={`landingpage-flexible-flexbox`}>
           <div
             style={{
               flex: 1
             }}
           >
-            <TextBox className={`${stylePrefix}-customTextBox`}>
+            <TextBox className={`landingpage-flexible-customTextBox`}>
               <SectionTextCollection
                 style={{
                   maxWidth: '400px'
@@ -122,17 +120,17 @@ export const Flexible = () => {
             }}
           >
             <div
-              className={`${stylePrefix}-slotMachine`}
+              className={`landingpage-flexible-slotMachine`}
               style={{
                 justifyContent: 'center'
               }}
             >
-              <div className={`${stylePrefix}-slotMachineImageContainer`}>
+              <div className={`landingpage-flexible-slotMachineImageContainer`}>
                 <Slotmachine />
               </div>
               {/*
-              <div className={`${stylePrefix}-slotMachineSeparator`} />
-              <div className={`${stylePrefix}-buttonWrapper`}>
+              <div className={`landingpage-flexible-slotMachineSeparator`} />
+              <div className={`landingpage-flexible-buttonWrapper`}>
                 <Button type="secondary" fullWidth>
                   Spin
                 </Button>
@@ -143,11 +141,11 @@ export const Flexible = () => {
         </div>
       </Grid>
 
-      <div className={`${stylePrefix}-benefitWrapper`}>
+      <div className={`landingpage-flexible-benefitWrapper`}>
         <Grid>
-          <div className={`${stylePrefix}-benefitFlexbox`}>
+          <div className={`landingpage-flexible-benefitFlexbox`}>
             {benefits.map((benefit, i) => (
-              <a key={i} className={`${stylePrefix}-benefit`} href={benefit.href}>
+              <a key={i} className={`landingpage-flexible-benefit`} href={benefit.href}>
                 <TextBox>
                   <ParagraphTextCollection
                     icon={benefit.icon}

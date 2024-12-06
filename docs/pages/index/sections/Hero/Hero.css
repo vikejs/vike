@@ -1,16 +1,16 @@
 .landingpage-hero-headline {
-    grid-column: 3 / span 8;
+  grid-column: 3 / span 8;
 }
 @media screen and (max-width: 768px) {
-    .landingpage-hero-headline {
-        margin-top: 0 !important;
-        grid-column: 1 / span 12;
-    }
-    #hero-content {
-      margin-top: 47px !important;
-      margin-bottom: 60px !important;
-    }
-    #hero-taglines {
-      margin-top: 0px !important;
-    }
+  .landingpage-hero-headline {
+    margin-top: 0 !important;
+    grid-column: 1 / span 12;
+  }
+  #hero-content {
+    margin-top: 47px !important;
+    margin-bottom: 60px !important;
+  }
+  #hero-taglines {
+    margin-top: 0px !important;
+  }
 }

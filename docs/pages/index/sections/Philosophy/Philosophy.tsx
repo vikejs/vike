@@ -6,8 +6,6 @@ import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../Grid'
 import './philosophy.css'
 
-const stylePrefix = 'landingpage-philosophy'
-
 const data = {
   caption: 'Philosophy',
   title: 'How Vike is Built',
@@ -85,10 +83,10 @@ const principles = [
 
 export const Philosophy = () => {
   return (
-    <div className={`${stylePrefix}-container`}>
+    <div className="landingpage-philosophy-container">
       <Grid>
         <TextBox>
-          <div className={`${stylePrefix}-headerFlexbox`}>
+          <div className="landingpage-philosophy-headerFlexbox">
             <SectionTextCollection caption={data.caption} title={data.title} />
             <div
               style={{
@@ -109,16 +107,16 @@ export const Philosophy = () => {
         }}
       >
         <Grid>
-          <div className={`${stylePrefix}-principlesContainer`}>
-            <div className={`${stylePrefix}-hammer`}>
+          <div className="landingpage-philosophy-principlesContainer">
+            <div className="landingpage-philosophy-hammer">
               <VikeNitedaniAnimated />
             </div>
-            <div className={`${stylePrefix}-principleBorders`}>
+            <div className="landingpage-philosophy-principleBorders">
               {principles.map((principle, i) => (
                 <a
                   key={i}
                   href={principle.href}
-                  className={`${stylePrefix}-principle`}
+                  className="landingpage-philosophy-principle"
                   style={{
                     borderTop: i === 0 ? undefined : `3px solid #FFF`
                   }}
