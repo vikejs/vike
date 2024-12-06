@@ -81,7 +81,7 @@ function Reliable() {
                 title={data.title}
                 descriptions={data.description}
               />
-              <div style={{ paddingTop: 8, marginBottom: -18 }}>
+              <div style={{ paddingTop: 8 }}>
                 <Link href={'/why#grow-progressively'}>
                   <Button type="secondary">Read Grow Progressively</Button>
                 </Link>

@@ -6,7 +6,7 @@ const TrendingPackagesSVG = () => (
     style={{
       width: 'min(500px, 100%)'
     }}
-    viewBox="0 0 608 487"
+    viewBox="0 0 608 400"
     fill="none"
   >
     <path

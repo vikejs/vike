@@ -38,10 +38,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 470px;
+  max-width: 520px;
 }
 .landingpage-reliable-benefitList {
-  margin-top: 64px;
+  margin-top: 46px;
 }
 
 @media screen and (max-width: 768px) {
@@ -53,7 +53,7 @@
   }
   .landingpage-reliable-imageWrapper {
     max-width: unset;
-    margin-top: 64px;
+    margin-top: 40px;
   }
   .landingpage-reliable-benefitWrapper {
     flex-direction: column !important;
@@ -67,6 +67,6 @@
     margin-bottom: 32px;
   }
   .landingpage-reliable-benefitList {
-    margin-top: 35px;
+    margin-top: 50px;
   }
 }
