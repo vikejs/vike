@@ -9,7 +9,7 @@ export default {
   faviconUrl: vikeIcon,
   headings,
   headingsDetached,
-  tagline: 'Next.js/Nuxt alternative. Flexible, reliable, clutter-free, fast, community-driven.',
+  tagline: 'Like Next.js & Nuxt but with unprecedented flexibility, dependability, and control.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
