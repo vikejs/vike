@@ -199,7 +199,7 @@ function testNavigateEarly() {
 }
 
 function testDynamicImportFileEnv() {
-  test('Dyanmic import() of .client.js and .server.js', async () => {
+  test('Dynamic import() of .client.js and .server.js', async () => {
     await page.goto(getServerUrl() + '/dynamic-import-file-env')
     expect(await page.textContent('body')).toContain('Dyanmic import() of .client.js and .server.js')
     expectLog('hello from server', (log) => log.logSource === 'stdout')
