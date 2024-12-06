@@ -17,7 +17,7 @@ function Page() {
       <Block
         style={{
           marginTop: 0,
-          backgroundColor: '#f1f1f1'
+          backgroundColor: '#e9e9e9'
         }}
       >
         <Hero />
