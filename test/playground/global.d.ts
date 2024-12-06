@@ -8,6 +8,8 @@ declare global {
       settingConfigOnly?: { nested: string }
       settingStandard?: { nested: string }
       settingCumulative?: { nested: string }
+      settingWithEffect?: boolean
+      dependentSetting?: string
     }
     interface ConfigResolved {
       settingCumulative?: { nested: string }[]

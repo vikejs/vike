@@ -15,6 +15,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testCumulativeSetting()
   testSettingOnlyAvailableInCorrectEnv()
   testSettingInheritedByDescendants()
+  testSettingEffect()
   testRouteStringDefinedInConfigFile()
   testSideExports()
   testPrerenderSettings()
@@ -123,6 +124,28 @@ function testSettingInheritedByDescendants() {
         { nested: 'override for cumulative @ /nested' },
         { nested: 'default for cumulative @ /cumulative' }
       ]
+    })
+  })
+}
+
+function testSettingEffect() {
+  test('Setting Effect - Not applied', async () => {
+    let json = await fetchConfigJson('/config-meta/effect/without-effect')
+
+    expect(json).to.deep.equal({
+      isBrowser: false,
+      withEffect: 'undefined',
+      dependent: 'undefined'
+    })
+  })
+
+  test('Setting Effect - Applied', async () => {
+    let json = await fetchConfigJson('/config-meta/effect/with-effect')
+
+    expect(json).to.deep.equal({
+      isBrowser: false,
+      withEffect: 'undefined',
+      dependent: 'default @ /effect'
     })
   })
 }
