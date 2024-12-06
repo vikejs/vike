@@ -18,7 +18,7 @@ const data = {
       (static/server/edge).
     </>,
     <>
-      Use <b>Vike extensions</b> for automatic tool integration. Later, if the need arises,{' '}
+      Use <b>Vike extensions</b> for automatic tool integration and later, if the need arises,{' '}
       <b>eject for full control</b> over tool integration.
     </>
   ]
@@ -39,7 +39,7 @@ const benefits = [
     title: 'Cutting edge, at your own pace',
     href: '/why#conservative-or-cutting-edge-your-choice',
     description:
-      'Choose between production-grade extensions or cutting-edge extensions — go with a conservative stack, or live on the edge in unprecedented ways.'
+      'Choose between production-grade extensions or cutting-edge extensions; go with a conservative stack or live on the edge in unprecedented ways.'
   },
   {
     icon: (
@@ -63,7 +63,7 @@ const benefits = [
     title: 'Build Your Own Framework',
     href: '/why#build-your-own-framework',
     description:
-      'Create an internal company framework empowering your Software Architects to fully own the architecture, while providing your Product Developers an easy black box for them to quickly iterate.'
+      'Create an internal company framework that empowers your Software Architects to own the architecture and your Product Developers to quickly iterate.'
   },
   {
     icon: (
