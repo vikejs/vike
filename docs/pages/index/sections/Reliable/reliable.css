@@ -25,7 +25,7 @@
   border-left: 3px solid #fff;
 }
 .landingpage-reliable-container {
-  margin-top: 120px;
+  margin-top: 100px;
   margin-bottom: -3px;
   width: 100%;
 }
@@ -35,13 +35,10 @@
 }
 .landingpage-reliable-imageWrapper {
   flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   max-width: 520px;
 }
 .landingpage-reliable-benefitList {
-  margin-top: 46px;
+  margin-top: 30px;
 }
 
 @media screen and (max-width: 768px) {
@@ -53,7 +50,7 @@
   }
   .landingpage-reliable-imageWrapper {
     max-width: unset;
-    margin-top: 40px;
+    margin-top: 30px;
   }
   .landingpage-reliable-benefitWrapper {
     flex-direction: column !important;
@@ -67,6 +64,6 @@
     margin-bottom: 32px;
   }
   .landingpage-reliable-benefitList {
-    margin-top: 50px;
+    margin-top: 44px;
   }
 }

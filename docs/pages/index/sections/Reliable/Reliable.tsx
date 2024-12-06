@@ -11,6 +11,7 @@ import TrendingPackageSVG from './../../components/TrendingPackageSVG'
 import './reliable.css'
 import { Link } from '@brillout/docpress'
 import { Button } from '../../components/Button/Button'
+import { IllustrationNote } from '../../components/IllustrationNote'
 
 const data = {
   caption: 'Dependable',
@@ -90,6 +91,9 @@ function Reliable() {
           </div>
           <div className={`landingpage-reliable-imageWrapper`}>
             <TrendingPackageSVG />
+            <IllustrationNote style={{ maxWidth: 300, margin: 'auto' }}>
+              Vike extensions are a thin layer of glue code that can easily be forked.
+            </IllustrationNote>
           </div>
         </div>
       </Grid>
