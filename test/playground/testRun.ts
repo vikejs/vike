@@ -13,6 +13,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   isDev = cmd === 'npm run dev'
   testRunClassic(cmd, { skipScreenshotTest: true })
   testCumulativeSetting()
+  testSettingOnlyAvailableInCorrectEnv()
   testSettingInheritedByDescendants()
   testRouteStringDefinedInConfigFile()
   testSideExports()
@@ -24,9 +25,21 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testHistoryPushState()
 }
 
-async function fetchConfigJson(pathname: string) {
-  const html = await fetchHtml(pathname)
-  const jsonText = html.match(/===CONFIG:START===(.*)===CONFIG:END===/)?.[1].replace(/&quot;/g, '"')
+async function fetchConfigJson(pathname: string, options?: { clientSide?: boolean }) {
+  let jsonText: string | undefined | null = null
+  if (options?.clientSide) {
+    await page.goto(getServerUrl() + pathname)
+    // `autoRetry` because browser-side code may not be loaded yet
+    await autoRetry(async () => {
+      const text = await page.textContent('#serialized-settings')
+      expect(text).to.not.be.null
+      jsonText = text!.match(/===CONFIG:START===(.*)===CONFIG:END===/)?.[1].replace(/&quot;/g, '"')
+      expect(jsonText).toContain(`"isBrowser":true`)
+    })
+  } else {
+    const html = await fetchHtml(pathname)
+    jsonText = html.match(/===CONFIG:START===(.*)===CONFIG:END===/)?.[1].replace(/&quot;/g, '"')
+  }
   return JSON.parse(jsonText!)
 }
 
@@ -55,6 +68,30 @@ function testCumulativeSetting() {
     html = await fetchHtml('/about')
     expectAboutMetaTags()
     expectGlobalMetaTags()
+  })
+}
+
+function testSettingOnlyAvailableInCorrectEnv() {
+  test('Custom Setting Env - Client-only', async () => {
+    let json = await fetchConfigJson('/config-meta/env/client', { clientSide: true })
+
+    expect(json).to.deep.equal({
+      isBrowser: true,
+      serverOnly: 'undefined',
+      clientOnly: { nested: 'clientOnly @ /env' },
+      configOnly: 'undefined'
+    })
+  })
+
+  test('Custom Setting Env - Server-only', async () => {
+    let json = await fetchConfigJson('/config-meta/env/server', { clientSide: false })
+
+    expect(json).to.deep.equal({
+      isBrowser: false,
+      serverOnly: { nested: 'serverOnly @ /env' },
+      clientOnly: 'undefined',
+      configOnly: 'undefined'
+    })
   })
 }
 
