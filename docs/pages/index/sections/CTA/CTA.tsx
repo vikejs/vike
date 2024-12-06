@@ -7,8 +7,6 @@ import './cta.css'
 import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
 
-const stylePrefix = 'landingpage-cta'
-
 export const CTA = () => {
   return (
     <div
@@ -18,7 +16,7 @@ export const CTA = () => {
     >
       <Grid>
         <TextBox>
-          <div className={`${stylePrefix}-textContainer`}>
+          <div className="landingpage-cta-textContainer">
             <SectionTextCollection caption="A fresh new start" title="Start Building" />
             <div
               style={{
