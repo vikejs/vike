@@ -1,73 +1,73 @@
 .landingpage-chip {
-    grid-column: 4 / span 6;
-    position: relative;
+  grid-column: 4 / span 6;
+  position: relative;
 }
 .landingpage-chip-right {
-    grid-column: 2 / span 2;
+  grid-column: 2 / span 2;
 }
 .landingpage-chip-left {
-    grid-column: 10 / span 2;
+  grid-column: 10 / span 2;
 }
 .landingpage-chip-feature {
-    color: #A8AFB9;
-    font-size: 12px;
-    text-align: center;
-    text-transform: uppercase;
-    margin: 2px;
-    background-color: #2A3346A0;
-    width: 100%;
-    height: calc(100% - 4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-    transition: all 0.2s;
-    cursor: pointer;
+  color: #a8afb9;
+  font-size: 12px;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 2px;
+  background-color: #2a3346a0;
+  width: 100%;
+  height: calc(100% - 4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  transition: all 0.2s;
+  cursor: pointer;
 }
 .landingpage-chip-feature:hover {
-    background-color: #222;
+  background-color: #222;
 }
 .landingpage-chip-info {
-    margin-bottom: 80px;
+  margin-bottom: 80px;
 }
 
 @media screen and (max-width: 1200px) {
-    .landingpage-chip {
-        grid-column: 3 / span 8;
-    }
-    .landingpage-chip-right {
-        grid-column: 1 / span 2;
-        font-size: 14px;
-    }
-    .landingpage-chip-left {
-        grid-column: 11 / span 2;
-        font-size: 14px;
-    }
-    .landingpage-chip-feature {
-        font-size: 15px;
-    }
+  .landingpage-chip {
+    grid-column: 3 / span 8;
+  }
+  .landingpage-chip-right {
+    grid-column: 1 / span 2;
+    font-size: 14px;
+  }
+  .landingpage-chip-left {
+    grid-column: 11 / span 2;
+    font-size: 14px;
+  }
+  .landingpage-chip-feature {
+    font-size: 15px;
+  }
 }
 
 @media screen and (max-width: 768px) {
-    .landingpage-chip {
-        margin-top: 0;
-        margin-bottom: 0;
-        grid-column: 1 / span 12;
-        margin-left: -20px;
-        margin-right: -20px;
-    }
-    .landingpage-chip-right {
-        display: none;
-    }
-    .landingpage-chip-left {
-        display: none;
-    }
-    .landingpage-chip-feature {
-        font-size: 8px;
-        color: rgba(255,255,255,0.8);
-        padding: 0 3px;
-    }
-    .landingpage-chip-info {
-        margin-bottom: 32px;
-    }
+  .landingpage-chip {
+    margin-top: 0;
+    margin-bottom: 0;
+    grid-column: 1 / span 12;
+    margin-left: -20px;
+    margin-right: -20px;
+  }
+  .landingpage-chip-right {
+    display: none;
+  }
+  .landingpage-chip-left {
+    display: none;
+  }
+  .landingpage-chip-feature {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0 3px;
+  }
+  .landingpage-chip-info {
+    margin-bottom: 32px;
+  }
 }

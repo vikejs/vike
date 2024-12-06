@@ -1,67 +1,66 @@
 .landingpage-philosophy-principle {
-    background-color: transparent;
-    transition: all 0.2s;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    color: rgba(0,0,0,0.7) !important;
+  background-color: transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  color: rgba(0, 0, 0, 0.7) !important;
 }
 .landingpage-philosophy-principle:hover {
-    background-color: #EEEEF2;
+  background-color: #eeeef2;
 }
 .landingpage-philosophy-container {
-    width: 100%;
-    margin-top: 120px;
+  width: 100%;
+  margin-top: 120px;
 }
 .landingpage-philosophy-headerFlexbox {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
 }
 .landingpage-philosophy-principlesContainer {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
 }
 .landingpage-philosophy-principleBorders {
-    grid-column: 8 / span 5;
-    border-right: 3px solid #FFF;
+  grid-column: 8 / span 5;
+  border-right: 3px solid #fff;
 }
 .landingpage-philosophy-hammer {
-    border-right: 3px solid #FFF;
-    border-left: 3px solid #FFF;
-    grid-column: 1 / span 7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #EBEBEF;
-    padding: 24px;
+  border-right: 3px solid #fff;
+  border-left: 3px solid #fff;
+  grid-column: 1 / span 7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ebebef;
+  padding: 24px;
 }
 
-
 @media screen and (max-width: 768px) {
-    .landingpage-philosophy-container {
-        margin-top: 48px;
-    }
-    .landingpage-philosophy-headerFlexbox {
-        display: flex;
-        justify-content: start;
-        flex-direction: column;
-        align-items: start;
-    }
-    .landingpage-philosophy-principlesContainer {
-        display: flex;
-        flex-direction: column;
-        border-right: 3px solid #FFF;
-        border-left: 3px solid #FFF;
-    }
-    .landingpage-philosophy-hammer {
-        border: 0px;
-    }
-    .landingpage-philosophy-principleBorders {
-        border-right: 0px;
-    }
-    .landingpage-philosophy-principle {
-        border-top: 3px solid #FFF !important;
-    }
+  .landingpage-philosophy-container {
+    margin-top: 48px;
+  }
+  .landingpage-philosophy-headerFlexbox {
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+    align-items: start;
+  }
+  .landingpage-philosophy-principlesContainer {
+    display: flex;
+    flex-direction: column;
+    border-right: 3px solid #fff;
+    border-left: 3px solid #fff;
+  }
+  .landingpage-philosophy-hammer {
+    border: 0px;
+  }
+  .landingpage-philosophy-principleBorders {
+    border-right: 0px;
+  }
+  .landingpage-philosophy-principle {
+    border-top: 3px solid #fff !important;
+  }
 }

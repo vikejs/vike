@@ -1,98 +1,98 @@
 .landingpage-flexible-benefit {
-    background-color: transparent;
-    transition: all 0.2s;
-    flex: 1;
-    padding: 20px 0;
-    border-right: 3px solid #FFF;
-    cursor: pointer;
+  background-color: transparent;
+  transition: all 0.2s;
+  flex: 1;
+  padding: 20px 0;
+  border-right: 3px solid #fff;
+  cursor: pointer;
 }
 .landingpage-flexible-benefit:first-child {
-    border-left: 3px solid #FFF;
+  border-left: 3px solid #fff;
 }
 .landingpage-flexible-benefit:hover {
-    background-color: #EEEEF2;
+  background-color: #eeeef2;
 }
 .landingpage-flexible-container {
-    margin-top: 100px;
-    margin-bottom: -3px;
-    width: 100%;
+  margin-top: 100px;
+  margin-bottom: -3px;
+  width: 100%;
 }
 .landingpage-flexible-flexbox {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 .landingpage-flexible-slotMachine {
-    display: flex;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 .landingpage-flexible-slotMachineSeparator {
-    height: 1px;
-    width: 30px;
-    background-color: rgba(0,0,0,0.3);
-    transform: translateY(-3px);
-    margin-right: 8px;
+  height: 1px;
+  width: 30px;
+  background-color: rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  margin-right: 8px;
 }
 .landingpage-flexible-buttonWrapper {
-    transform: translateY(-3px);
+  transform: translateY(-3px);
 }
 .landingpage-flexible-benefitWrapper {
-    width: 100%;
-    border-top: 3px solid #FFF;
-    border-bottom: 3px solid #FFF;
-    margin-top: 24px;
-    padding: 0 20px;
+  width: 100%;
+  border-top: 3px solid #fff;
+  border-bottom: 3px solid #fff;
+  margin-top: 24px;
+  padding: 0 20px;
 }
 .landingpage-flexible-benefitFlexbox {
-    display: flex;
+  display: flex;
 }
 .landingpage-flexible-slotMachineImageContainer {
-    width: 500px;
+  width: 500px;
 }
 
 @media screen and (max-width: 992px) {
-    .landingpage-flexible-benefitFlexbox {
-        flex-direction: column;
-    }
-    .landingpage-flexible-benefitWrapper {
-        margin-top: 14px !important;
-    }
-    .landingpage-flexible-benefit {
-        border-left: 3px solid #FFF;
-        border-top: 3px solid #FFF;
-    }
-    .landingpage-flexible-benefit:first-child {
-        border-top: 0px;
-    }
-    .landingpage-flexible-slotMachineImageContainer {
-        width: 400px;
-    }
+  .landingpage-flexible-benefitFlexbox {
+    flex-direction: column;
+  }
+  .landingpage-flexible-benefitWrapper {
+    margin-top: 14px !important;
+  }
+  .landingpage-flexible-benefit {
+    border-left: 3px solid #fff;
+    border-top: 3px solid #fff;
+  }
+  .landingpage-flexible-benefit:first-child {
+    border-top: 0px;
+  }
+  .landingpage-flexible-slotMachineImageContainer {
+    width: 400px;
+  }
 }
 
 @media screen and (max-width: 768px) {
-    .landingpage-flexible-container {
-        margin-top: 32px;
-    }
-    .landingpage-flexible-flexbox {
-        display: block;
-    } 
-    .landingpage-flexible-slotMachine {
-        flex-direction: column;
-        width: 100%;
-    }
-    .landingpage-flexible-slotMachineImageContainer {
-        width: 100%;
-        margin: 0;
-    }
-    .landingpage-flexible-slotMachineSeparator {
-        display: none;
-    }
-    .landingpage-flexible-buttonWrapper {
-        width: calc(100% - 20px);
-        margin: 0 auto;
-    }
-    .landingpage-flexible-benefitWrapper {
-        margin-top: 48px;
-        padding: 0;
-    }
+  .landingpage-flexible-container {
+    margin-top: 32px;
+  }
+  .landingpage-flexible-flexbox {
+    display: block;
+  }
+  .landingpage-flexible-slotMachine {
+    flex-direction: column;
+    width: 100%;
+  }
+  .landingpage-flexible-slotMachineImageContainer {
+    width: 100%;
+    margin: 0;
+  }
+  .landingpage-flexible-slotMachineSeparator {
+    display: none;
+  }
+  .landingpage-flexible-buttonWrapper {
+    width: calc(100% - 20px);
+    margin: 0 auto;
+  }
+  .landingpage-flexible-benefitWrapper {
+    margin-top: 48px;
+    padding: 0;
+  }
 }
