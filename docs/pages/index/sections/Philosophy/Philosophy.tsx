@@ -36,8 +36,8 @@ const principles = [
         ></path>
       </svg>
     ),
-    title: 'Do-one-thing-do-it-well ecosystem',
-    href: '/why#do-one-thing-do-it-well-ecosystem'
+    title: 'Flourishing do-one-thing-do-it-well ecosystem',
+    href: '/why#flourishing-do-one-thing-do-it-well-ecosystem'
   },
   {
     icon: (
