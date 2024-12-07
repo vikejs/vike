@@ -30,14 +30,27 @@ const data = {
 const benefits = [
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" width="24" height="24" viewBox="0 0 47.99 47.99">
         <path
-          fill="currentColor"
-          d="M10 16v-1H3.01L3 19c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-4h-7v1zm10-9h-4.01V5l-2-2h-4l-2 2v2H4c-1.1 0-2 .9-2 2v3c0 1.11.89 2 2 2h6v-2h4v2h6c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2m-6 0h-4V5h4z"
-        />
+          opacity="0.5"
+          stroke="#000"
+          strokeWidth="0.1"
+          d="M9.048 25.117 25.117 9.049l1.046 1.046-16.068 16.068zM15.774 26.058l11.402-11.402 1.046 1.046L16.82 27.105z"
+        ></path>
+        <rect
+          width="44.99"
+          height="44.99"
+          x="1.5"
+          y="1.5"
+          fill="none"
+          stroke="#000"
+          strokeWidth="3"
+          rx="5"
+          ry="5"
+        ></rect>
       </svg>
     ),
-    title: 'Transparent business model.',
+    title: 'Transparent business model',
     href: '/why#next-generation-business-model',
     description:
       "Vike's pricing keeps code 100% open source (MIT licence) and 100% gratis for software engineers while asking companies to pay a small amount. For a transparent and sustainable relationship.",
@@ -45,12 +58,8 @@ const benefits = [
   },
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M7 5.998a5 5 0 0 1 10 0z" />
-        <path
-          fill="currentColor"
-          d="M6.414 8L5 6.586V4H3v3.414l3 3V12H3v2h3v1.586l-3 3V22h2v-2.586l1.36-1.36c.729 2 2.49 3.503 4.64 3.863V8zM13 8v13.917a6.01 6.01 0 0 0 4.64-3.863l1.36 1.36V22h2v-3.414l-3-3V14h3v-2h-3v-1.586l3-3V4h-2v2.586L17.586 8z"
-        />
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="-5 -10 79.88 79.88">
+        <path d="M74.021 15.936 61.15-1.189a4.14 4.14 0 0 0-3.379-1.684H12.103c-1.36 0-2.559.598-3.379 1.684L-4.143 15.932a4.185 4.185 0 0 0 .227 5.348l35.699 40.059.008.007a4.2 4.2 0 0 0 3.152 1.407c1.219 0 2.332-.5 3.152-1.414l35.707-40.062a4.19 4.19 0 0 0 .219-5.348zM58.064 1.135l11.672 15.531H51.353L46.794.994h10.977c.141 0 .211.035.29.14zM18.607 20.53l11.902 33.578L.583 20.53zm28.562 0-12.23 34.512-12.23-34.512zm-24.621-3.863L27.107.995H42.77l4.558 15.672zm28.723 3.863h18.027L39.376 54.1zM11.81 1.135c.082-.11.152-.145.293-.145H23.08l-4.559 15.672-18.379.004L11.814 1.14z"></path>
       </svg>
     ),
     title: 'Reliable by care',
