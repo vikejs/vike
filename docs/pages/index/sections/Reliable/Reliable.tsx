@@ -30,11 +30,24 @@ const data = {
 const benefits = [
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" width="24" height="24" viewBox="0 0 47.99 47.99">
         <path
-          fill="currentColor"
-          d="M10 16v-1H3.01L3 19c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-4h-7v1zm10-9h-4.01V5l-2-2h-4l-2 2v2H4c-1.1 0-2 .9-2 2v3c0 1.11.89 2 2 2h6v-2h4v2h6c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2m-6 0h-4V5h4z"
-        />
+          opacity="0.5"
+          stroke="#000"
+          strokeWidth="0.1"
+          d="M9.048 25.117 25.117 9.049l1.046 1.046-16.068 16.068zM15.774 26.058l11.402-11.402 1.046 1.046L16.82 27.105z"
+        ></path>
+        <rect
+          width="44.99"
+          height="44.99"
+          x="1.5"
+          y="1.5"
+          fill="none"
+          stroke="#000"
+          strokeWidth="3"
+          rx="5"
+          ry="5"
+        ></rect>
       </svg>
     ),
     title: 'Transparent business model',
