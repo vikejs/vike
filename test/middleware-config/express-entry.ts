@@ -1,10 +1,10 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { vikeHandler } from './server/vike-handler'
-import { telefuncHandler } from './server/telefunc-handler'
-import { createHandler } from '@universal-middleware/express'
+import { createMiddleware } from '@universal-middleware/express'
 import express from 'express'
+import { getMiddlewares } from 'vike/__internal'
+import type { Middleware } from './pages/Middleware'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -33,18 +33,22 @@ async function startServer() {
     app.use(viteDevMiddleware)
   }
 
-  app.post('/_telefunc', createHandler(telefuncHandler)())
-
-  /**
-   * Vike route
-   *
-   * @link {@see https://vike.dev}
-   **/
-  app.all('*', createHandler(vikeHandler)())
+  const middlewares = (await getMiddlewares()) as Middleware[]
+  middlewares.sort((m1, m2) => getOrder(m1.order) - getOrder(m2.order))
+  middlewares.forEach((middlewareSpec) => {
+    const middleware = middlewareSpec.value
+    app.all('*', createMiddleware(() => middleware)())
+  })
 
   app.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`)
   })
 
   return app
+}
+
+function getOrder(order: Middleware['order']): number {
+  if (order === 'post') return 100
+  if (order === 'pre') return -100
+  return order
 }
