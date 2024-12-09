@@ -1,3 +1,12 @@
+## [0.4.208](https://github.com/vikejs/vike/compare/v0.4.207...v0.4.208) (2024-12-09)
+
+
+### Bug Fixes
+
+* update @brillout/json-serializer ([#2016](https://github.com/vikejs/vike/issues/2016)) ([b4214a8](https://github.com/vikejs/vike/commit/b4214a85188e8e8e83672bb73407657e032697f6))
+
+
+
 ## [0.4.207](https://github.com/vikejs/vike/compare/v0.4.206...v0.4.207) (2024-12-09)
 
 
