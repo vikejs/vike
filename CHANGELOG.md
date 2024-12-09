@@ -1,3 +1,19 @@
+## [0.4.207](https://github.com/vikejs/vike/compare/v0.4.206...v0.4.207) (2024-12-09)
+
+
+### Bug Fixes
+
+* improve warning ([ba322c0](https://github.com/vikejs/vike/commit/ba322c00c9a2fe19032ffa5f43fde9f8345ab5df))
+* show warning upon `cssCodeSplit: false` ([#1993](https://github.com/vikejs/vike/issues/1993)) ([bc2d5a8](https://github.com/vikejs/vike/commit/bc2d5a8dd1e75eed3d9daf5e86f7c21ad63afb1a))
+
+
+### Features
+
+* [experimental] getMiddlewares() ([0d8ef7e](https://github.com/vikejs/vike/commit/0d8ef7e6f644606fb47f33cb7ce73b97a6811c5c))
+* [experimental] new config +middleware ([d19051a](https://github.com/vikejs/vike/commit/d19051a20d786ed1703bc6fa61a55a0f956f55d6))
+
+
+
 ## [0.4.206](https://github.com/vikejs/vike/compare/v0.4.205...v0.4.206) (2024-11-30)
 
 
