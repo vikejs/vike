@@ -83,7 +83,7 @@ const benefits = [
         ></path>
       </svg>
     ),
-    title: 'Flexible, by design and priority',
+    title: 'Flexible by design',
     href: '/why#flexible-by-design',
     description: 'From high-level design to the smallest details, Vike is built with flexibility in mind.'
   }

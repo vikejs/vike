@@ -51,7 +51,7 @@ const benefits = [
       </svg>
     ),
     title: 'Transparent business model',
-    href: '/why#next-generation-business-model',
+    href: '/pricing',
     description:
       "Vike's pricing keeps code 100% open source (MIT licence) and 100% gratis for software engineers while asking companies to pay a small amount. For a transparent and sustainable relationship.",
     image: <OpenSourceSVG />
@@ -62,11 +62,11 @@ const benefits = [
         <path d="M74.021 15.936 61.15-1.189a4.14 4.14 0 0 0-3.379-1.684H12.103c-1.36 0-2.559.598-3.379 1.684L-4.143 15.932a4.185 4.185 0 0 0 .227 5.348l35.699 40.059.008.007a4.2 4.2 0 0 0 3.152 1.407c1.219 0 2.332-.5 3.152-1.414l35.707-40.062a4.19 4.19 0 0 0 .219-5.348zM58.064 1.135l11.672 15.531H51.353L46.794.994h10.977c.141 0 .211.035.29.14zM18.607 20.53l11.902 33.578L.583 20.53zm28.562 0-12.23 34.512-12.23-34.512zm-24.621-3.863L27.107.995H42.77l4.558 15.672zm28.723 3.863h18.027L39.376 54.1zM11.81 1.135c.082-.11.152-.145.293-.145H23.08l-4.559 15.672-18.379.004L11.814 1.14z"></path>
       </svg>
     ),
-    title: 'Reliable by care',
+    title: 'Reliable',
     href: '/why#flexible-and-reliable-by-prioritization',
     description: (
       <>
-        We are responsive with a clear guideline on how to receive guaranteed assistance. Bugs are quickly fixed
+        We are responsive with a clear guideline on how to receive assistance. Bugs are quickly fixed
         (usually under 24 hours).
       </>
     ),
