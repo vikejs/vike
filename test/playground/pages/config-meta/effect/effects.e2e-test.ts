@@ -7,8 +7,8 @@ function testSettingEffect() {
 
     expect(json).to.deep.equal({
       isBrowser: false,
-      withEffect: 'undefined',
-      dependent: 'undefined'
+      settingWithEffect: 'undefined',
+      dependentSetting: 'undefined'
     })
   })
 
@@ -17,8 +17,8 @@ function testSettingEffect() {
 
     expect(json).to.deep.equal({
       isBrowser: false,
-      withEffect: 'undefined',
-      dependent: 'default @ /effect'
+      settingWithEffect: 'undefined',
+      dependentSetting: 'default @ /effect'
     })
   })
 }

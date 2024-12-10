@@ -7,9 +7,9 @@ function testSettingOnlyAvailableInCorrectEnv() {
 
     expect(json).to.deep.equal({
       isBrowser: true,
-      serverOnly: 'undefined',
-      clientOnly: { nested: 'clientOnly @ /env' },
-      configOnly: 'undefined'
+      settingServerOnly: 'undefined',
+      settingClientOnly: { nested: 'clientOnly @ /env' },
+      settingConfigOnly: 'undefined'
     })
   })
 
@@ -18,9 +18,9 @@ function testSettingOnlyAvailableInCorrectEnv() {
 
     expect(json).to.deep.equal({
       isBrowser: false,
-      serverOnly: { nested: 'serverOnly @ /env' },
-      clientOnly: 'undefined',
-      configOnly: 'undefined'
+      settingServerOnly: { nested: 'serverOnly @ /env' },
+      settingClientOnly: 'undefined',
+      settingConfigOnly: 'undefined'
     })
   })
 }
