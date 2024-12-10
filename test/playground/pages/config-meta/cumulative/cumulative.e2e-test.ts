@@ -12,13 +12,19 @@ function testSettingInheritedByDescendants() {
     expect(await fetchConfigJson('/config-meta/cumulative/nested')).to.deep.equal({
       isBrowser: false,
       settingStandard: { nested: 'override for standard @ /nested' },
-      settingCumulative: [{ nested: 'override for cumulative @ /nested' }, { nested: 'default for cumulative @ /cumulative' }]
+      settingCumulative: [
+        { nested: 'override for cumulative @ /nested' },
+        { nested: 'default for cumulative @ /cumulative' }
+      ]
     })
 
     expect(await fetchConfigJson('/config-meta/cumulative/nested/no-overrides')).to.deep.equal({
       isBrowser: false,
       settingStandard: { nested: 'override for standard @ /nested' },
-      settingCumulative: [{ nested: 'override for cumulative @ /nested' }, { nested: 'default for cumulative @ /cumulative' }]
+      settingCumulative: [
+        { nested: 'override for cumulative @ /nested' },
+        { nested: 'default for cumulative @ /cumulative' }
+      ]
     })
 
     expect(await fetchConfigJson('/config-meta/cumulative/nested/deeply-nested')).to.deep.equal({
