@@ -1,5 +1,5 @@
 import React from 'react'
-import { isBrowser } from '../isBrowser'
+import { isBrowser } from '../../utils/isBrowser'
 
 if (isBrowser) {
   import('./hello.client')

@@ -1,5 +1,5 @@
 import { PageContext } from 'vike/types'
-import { isBrowser } from '../../isBrowser'
+import { isBrowser } from '../../../utils/isBrowser'
 
 export function serializeSettings(pageContext: PageContext) {
   return (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
 import { serializeSettings } from '../serializeSettings'
-import { isBrowser } from '../../../isBrowser'
+import { isBrowser } from '../../../../utils/isBrowser'
 
 export function Page() {
   const pageContext = usePageContext()
