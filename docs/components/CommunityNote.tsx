@@ -5,8 +5,11 @@ import { assert, Contribution, usePageContext, Link } from '@brillout/docpress'
 
 type UIFramework = 'react' | 'solid' | 'vue' | false
 
-function CommunityNote({ tool, url, hasExtension }: { tool: string; url: string; hasExtension?: UIFramework }) {
-  assert(tool && url, 'Both the `tool` & `url` props are required')
+function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string; hasExtension?: UIFramework }) {
+  assert(url, 'The `url` prop is required')
+  if (hasExtension !== undefined) {
+    assert(tool, 'The `tool` prop is required when the `hasExtension` prop is provided')
+  }
   const pageContext = usePageContext()
   return (
     <>
@@ -31,7 +34,7 @@ function HasExtension({
   toolName,
   toolTitle,
   hasExtension
-}: { toolName: string; toolTitle: string; hasExtension: UIFramework }) {
+}: { toolName?: string; toolTitle: string; hasExtension: UIFramework }) {
   if (hasExtension === false) {
     return (
       <Contribution>
