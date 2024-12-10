@@ -20,7 +20,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool: string; url: string;
         </a>{' '}
         to update or improve this page.
       </Contribution>
-      {hasExtension && <HasExtension toolName={tool} toolTitle={pageContext.pageTitle!} hasExtension={hasExtension} />}
+      {hasExtension !== undefined && <HasExtension toolName={tool} toolTitle={pageContext.pageTitle!} hasExtension={hasExtension} />}
     </>
   )
 }
