@@ -1,9 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 import { expect, test } from '@brillout/test-e2e'
-import { EndToEndTestOptions } from '../utils/EndToEndTestOptions'
 
-function testPrerenderSettings({ isDev, rootDir }: EndToEndTestOptions) {
+function testPrerenderSettings({
+  isDev,
+  rootDir
+}: {
+  isDev: boolean
+  rootDir: string
+}) {
   if (!isDev) {
     test('pre-render settings', async () => {
       ;[

@@ -14,13 +14,15 @@ import nestedLayoutTest from './pages/nested-layout/nestedLayout.e2e-test'
 import prerenderTests from './pages/prerender.e2e-test'
 import historyTests from './pages/pushState/history.e2e-test'
 import redirectTests from './pages/redirects.e2e-tests'
-import { EndToEndTestOptions } from './utils/EndToEndTestOptions'
-const dir = path.dirname(fileURLToPath(import.meta.url))
+const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   const isDev = cmd === 'npm run dev'
   testRunClassic(cmd, { skipScreenshotTest: true })
-  const tests: ((options: EndToEndTestOptions) => void)[] = [
+  const tests: ((args: {
+    isDev: boolean
+    rootDir: string
+  }) => void)[] = [
     ...aboutTests,
     ...envTests,
     ...inheritanceTests,
@@ -33,6 +35,5 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     ...nestedLayoutTest,
     ...historyTests
   ]
-  const options: EndToEndTestOptions = { isDev, rootDir: dir }
-  tests.forEach((t) => t(options))
+  tests.forEach((t) => t({ isDev, rootDir }))
 }
