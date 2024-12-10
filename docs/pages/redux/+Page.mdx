@@ -1,11 +1,7 @@
 import { RepoLink, Link, Contribution } from '@brillout/docpress'
 import { Example, CommunityNote } from '../../components'
 
-<CommunityNote url="https://redux.js.org" />
-
-<Contribution>
-There isn't a <Link href="/extensions">Vike extension</Link> for Redux yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
-</Contribution>
+<CommunityNote tool="redux" url="https://redux.js.org" hasExtension={false} />
 
 To manually integrate Redux, see:
 - <Link href="/stores#ssr" doNotInferSectionTitle />

@@ -56,7 +56,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/styled-components'
   },
   {
-    title: '`styled-jsx`',
+    title: 'styled-jsx',
     url: '/styled-jsx'
   },
   {
