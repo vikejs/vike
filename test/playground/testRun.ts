@@ -6,7 +6,9 @@ import { testRun as testRunClassic } from '../../examples/react-minimal/.testRun
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { fetchConfigJson } from './utils/fetchConfigJson'
+import envTests from './pages/config-meta/env/env.e2e-test'
+import effectTests from './pages/config-meta/effect/effects.e2e-test'
+import inheritanceTests from './pages/config-meta/env/env.e2e-test'
 const dir = path.dirname(fileURLToPath(import.meta.url))
 
 let isDev: boolean
@@ -14,9 +16,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   isDev = cmd === 'npm run dev'
   testRunClassic(cmd, { skipScreenshotTest: true })
   testCumulativeSetting()
-  testSettingOnlyAvailableInCorrectEnv()
-  testSettingInheritedByDescendants()
-  testSettingEffect()
+  envTests.forEach((t) => t())
+  inheritanceTests.forEach((t) => t())
+  effectTests.forEach((t) => t())
   testRouteStringDefinedInConfigFile()
   testSideExports()
   testPrerenderSettings()
@@ -52,84 +54,6 @@ function testCumulativeSetting() {
     html = await fetchHtml('/about')
     expectAboutMetaTags()
     expectGlobalMetaTags()
-  })
-}
-
-function testSettingOnlyAvailableInCorrectEnv() {
-  test('Custom Setting Env - Client-only', async () => {
-    let json = await fetchConfigJson('/config-meta/env/client', { clientSide: true })
-
-    expect(json).to.deep.equal({
-      isBrowser: true,
-      serverOnly: 'undefined',
-      clientOnly: { nested: 'clientOnly @ /env' },
-      configOnly: 'undefined'
-    })
-  })
-
-  test('Custom Setting Env - Server-only', async () => {
-    let json = await fetchConfigJson('/config-meta/env/server', { clientSide: false })
-
-    expect(json).to.deep.equal({
-      isBrowser: false,
-      serverOnly: { nested: 'serverOnly @ /env' },
-      clientOnly: 'undefined',
-      configOnly: 'undefined'
-    })
-  })
-}
-
-function testSettingInheritedByDescendants() {
-  test('Standard and cumulative settings are inherited correctly', async () => {
-    expect(await fetchConfigJson('/config-meta/cumulative')).to.deep.equal({
-      isBrowser: false,
-      standard: { nested: 'default for standard @ /cumulative' },
-      cumulative: [{ nested: 'default for cumulative @ /cumulative' }]
-    })
-
-    expect(await fetchConfigJson('/config-meta/cumulative/nested')).to.deep.equal({
-      isBrowser: false,
-      standard: { nested: 'override for standard @ /nested' },
-      cumulative: [{ nested: 'override for cumulative @ /nested' }, { nested: 'default for cumulative @ /cumulative' }]
-    })
-
-    expect(await fetchConfigJson('/config-meta/cumulative/nested/no-overrides')).to.deep.equal({
-      isBrowser: false,
-      standard: { nested: 'override for standard @ /nested' },
-      cumulative: [{ nested: 'override for cumulative @ /nested' }, { nested: 'default for cumulative @ /cumulative' }]
-    })
-
-    expect(await fetchConfigJson('/config-meta/cumulative/nested/deeply-nested')).to.deep.equal({
-      isBrowser: false,
-      standard: { nested: 'override for standard @ /deeply-nested' },
-      cumulative: [
-        { nested: 'override for cumulative @ /deeply-nested' },
-        { nested: 'override for cumulative @ /nested' },
-        { nested: 'default for cumulative @ /cumulative' }
-      ]
-    })
-  })
-}
-
-function testSettingEffect() {
-  test('Setting Effect - Not applied', async () => {
-    let json = await fetchConfigJson('/config-meta/effect/without-effect')
-
-    expect(json).to.deep.equal({
-      isBrowser: false,
-      withEffect: 'undefined',
-      dependent: 'undefined'
-    })
-  })
-
-  test('Setting Effect - Applied', async () => {
-    let json = await fetchConfigJson('/config-meta/effect/with-effect')
-
-    expect(json).to.deep.equal({
-      isBrowser: false,
-      withEffect: 'undefined',
-      dependent: 'default @ /effect'
-    })
   })
 }
 
