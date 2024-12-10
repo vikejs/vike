@@ -1,11 +1,7 @@
 import { Link, Contribution } from '@brillout/docpress'
 import { Example, CommunityNote } from '../../components'
 
-<CommunityNote url="https://relay.dev" />
-
-<Contribution>
-There isn't a <Link href="/extensions">Vike extension</Link> for Relay yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
-</Contribution>
+<CommunityNote tool="relay" url="https://relay.dev" hasExtension={false} />
 
 To manually integrate Relay, see:
 - <Link href="/integration#data-fetching" />
