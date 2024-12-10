@@ -15,8 +15,8 @@ importers:
         specifier: ^1.5.3
         version: 1.7.3
       '@brillout/test-e2e':
-        specifier: ^0.5.36
-        version: 0.5.36
+        specifier: ^0.5.37
+        version: 0.5.37
       '@brillout/test-types':
         specifier: ^0.1.13
         version: 0.1.14(typescript@5.6.2)
@@ -2065,8 +2065,8 @@ packages:
   '@brillout/require-shim@0.1.2':
     resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
-  '@brillout/test-e2e@0.5.36':
-    resolution: {integrity: sha512-9iPeBOSbhh7jNFNLUcnzKsdDOwsYW71rw2atB/FRU8j6u8bsvyVJkcSKz6jp54jFefXyUzvgah1xZsDqqSA8IA==}
+  '@brillout/test-e2e@0.5.37':
+    resolution: {integrity: sha512-ZnZ6M9fAk0NsWaAngow2LwlHLcxQFi9qs1Blq9i92ZE9qTOVRtPpxYb6IhSDiBqWUKEspZOkq3ozOxLmB6mhFQ==}
     hasBin: true
 
   '@brillout/test-types@0.1.14':
