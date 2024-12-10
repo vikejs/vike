@@ -20,7 +20,9 @@ function CommunityNote({ tool, url, hasExtension }: { tool: string; url: string;
         </a>{' '}
         to update or improve this page.
       </Contribution>
-      {hasExtension !== undefined && <HasExtension toolName={tool} toolTitle={pageContext.pageTitle!} hasExtension={hasExtension} />}
+      {hasExtension !== undefined && (
+        <HasExtension toolName={tool} toolTitle={pageContext.pageTitle!} hasExtension={hasExtension} />
+      )}
     </>
   )
 }
@@ -54,7 +56,11 @@ function HasExtension({
       </p>
       <blockquote>
         <p>
-          The <code>vike-{hasExtension}-{toolName}</code> extension requires{' '}
+          The{' '}
+          <code>
+            vike-{hasExtension}-{toolName}
+          </code>{' '}
+          extension requires{' '}
           <code>
             <Link href={`/vike-${hasExtension}`}>vike-{hasExtension}</Link>
           </code>
