@@ -6,6 +6,7 @@ import { testRun as testRunClassic } from '../../examples/react-minimal/.testRun
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { extractSerializedSettings } from './utils/serializeSettings'
 const dir = path.dirname(fileURLToPath(import.meta.url))
 
 let isDev: boolean
@@ -31,17 +32,16 @@ async function fetchConfigJson(pathname: string, options?: { clientSide?: boolea
   if (options?.clientSide) {
     await page.goto(getServerUrl() + pathname)
     // `autoRetry` because browser-side code may not be loaded yet
+    let result = null
     await autoRetry(async () => {
       const text = await page.textContent('#serialized-settings')
-      expect(text).to.not.be.null
-      jsonText = text!.match(/===CONFIG:START===(.*)===CONFIG:END===/)?.[1].replace(/&quot;/g, '"')
-      expect(jsonText).toContain(`"isBrowser":true`)
+      result = extractSerializedSettings(text, { expect: { isBrowser: true } })
     })
+    return result
   } else {
     const html = await fetchHtml(pathname)
-    jsonText = html.match(/===CONFIG:START===(.*)===CONFIG:END===/)?.[1].replace(/&quot;/g, '"')
+    return extractSerializedSettings(html)
   }
-  return JSON.parse(jsonText!)
 }
 
 function testRouteStringDefinedInConfigFile() {
