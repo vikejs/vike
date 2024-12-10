@@ -53,7 +53,7 @@ const benefits = [
     title: 'Transparent business model',
     href: '/pricing',
     description:
-      "Vike's pricing keeps code 100% open source (MIT licence) and 100% gratis for software engineers while asking companies to pay a small amount. For a transparent and sustainable relationship.",
+      "Vike's pricing keeps code 100% open source (MIT licence) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.",
     image: <OpenSourceSVG />
   },
   {
