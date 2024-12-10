@@ -7,11 +7,28 @@ Requires: <Link href="/ssr">`ssr: true`</Link>.
 
 <ImplementedBy>the `stream` setting</ImplementedBy>
 
-Disable/enable HTML Streaming.
+The `stream` setting allows you to:
+- Enable or disable HTML Streaming.
+- Specify the stream type (either a [Node.js Stream](https://nodejs.org/api/stream.html) or a [Web Stream](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)).
 
-> **What is HTML Streaming?** If you're unfamiliar with HTML streaming then check out [Dan Abramov's explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37). Although it explains it in the context of React, we also recommend reading it if you use a UI framework other than React.
+> **What is HTML Streaming?** If you're unfamiliar with HTML streaming then check out [this explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37). Although it explains it in the context of React, we also recommend reading it if you use a UI framework other than React.
 
-Disable for all your pages:
+```js
+// /pages/+config.js
+
+export default {
+  // Enable HTML Streaming. Let Vike extensions decide whether to use a Node.js or Web stream.
+  stream: true,
+  // Enable HTML Streaming. Force the stream to be a Web Stream.
+  stream: 'web',
+  // Enable HTML Streaming. Force the stream to be a Node.js Stream.
+  stream: 'node'
+}
+```
+
+## Inheritance
+
+Enable for all your pages:
 
 ```js
 // /pages/+config.js
@@ -22,7 +39,7 @@ export default {
 }
 ```
 
-Disable only for some pages:
+Enable only for some pages:
 
 ```js
 // /pages/admin/+config.js
@@ -53,6 +70,8 @@ In case you don't use a <UiFrameworkExtension />, you can:
 
 ## See also
 
-- [Dan Abramov's explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37)
-- <Link href="/ssr" />
 - <Link href="/streaming" />
+- <Link href="/ssr" />
+- [Explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37)
+- [Node.js Streams](https://nodejs.org/api/stream.html) (Node.js documentation)
+- [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) (MDN documentation)
