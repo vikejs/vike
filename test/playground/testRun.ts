@@ -9,24 +9,28 @@ import { fileURLToPath } from 'url'
 import envTests from './pages/config-meta/env/env.e2e-test'
 import effectTests from './pages/config-meta/effect/effects.e2e-test'
 import inheritanceTests from './pages/config-meta/env/env.e2e-test'
+import { EndToEndTestOptions } from './utils/EndToEndTestOptions'
 const dir = path.dirname(fileURLToPath(import.meta.url))
 
-let isDev: boolean
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
-  isDev = cmd === 'npm run dev'
+  const isDev = cmd === 'npm run dev'
   testRunClassic(cmd, { skipScreenshotTest: true })
-  testCumulativeSetting()
-  envTests.forEach((t) => t())
-  inheritanceTests.forEach((t) => t())
-  effectTests.forEach((t) => t())
-  testRouteStringDefinedInConfigFile()
-  testSideExports()
-  testPrerenderSettings()
-  testRedirectMailto()
-  testNavigateEarly()
-  testDynamicImportFileEnv()
-  testNestedLayout()
-  testHistoryPushState()
+  const tests: ((options: EndToEndTestOptions) => void)[] = [
+    testCumulativeSetting,
+    ...envTests,
+    ...inheritanceTests,
+    ...effectTests,
+    testRouteStringDefinedInConfigFile,
+    testSideExports,
+    testPrerenderSettings,
+    testRedirectMailto,
+    testNavigateEarly,
+    testDynamicImportFileEnv,
+    testNestedLayout,
+    testHistoryPushState
+  ]
+  const options: EndToEndTestOptions = { isDev, rootDir: dir }
+  tests.forEach((t) => t(options))
 }
 
 function testRouteStringDefinedInConfigFile() {
@@ -70,7 +74,7 @@ function testSideExports() {
   })
 }
 
-function testPrerenderSettings() {
+function testPrerenderSettings({ isDev, rootDir: dir }: EndToEndTestOptions) {
   if (!isDev) {
     test('pre-render settings', async () => {
       ;[
