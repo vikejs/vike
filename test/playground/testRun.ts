@@ -6,7 +6,7 @@ import { testRun as testRunClassic } from '../../examples/react-minimal/.testRun
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { extractSerializedSettings } from './utils/serializeSettings'
+import { fetchConfigJson } from './utils/fetchConfigJson'
 const dir = path.dirname(fileURLToPath(import.meta.url))
 
 let isDev: boolean
@@ -25,23 +25,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testDynamicImportFileEnv()
   testNestedLayout()
   testHistoryPushState()
-}
-
-async function fetchConfigJson(pathname: string, options?: { clientSide?: boolean }) {
-  let jsonText: string | undefined | null = null
-  if (options?.clientSide) {
-    await page.goto(getServerUrl() + pathname)
-    // `autoRetry` because browser-side code may not be loaded yet
-    let result = null
-    await autoRetry(async () => {
-      const text = await page.textContent('#serialized-settings')
-      result = extractSerializedSettings(text, { expect: { isBrowser: true } })
-    })
-    return result
-  } else {
-    const html = await fetchHtml(pathname)
-    return extractSerializedSettings(html)
-  }
 }
 
 function testRouteStringDefinedInConfigFile() {
