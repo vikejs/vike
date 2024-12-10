@@ -6,12 +6,10 @@ export async function fetchConfigJson(pathname: string, options?: { clientSide?:
   if (options?.clientSide) {
     await page.goto(getServerUrl() + pathname)
     // `autoRetry` because browser-side code may not be loaded yet
-    let result = null
-    await autoRetry(async () => {
+    return await autoRetry(async () => {
       const text = await page.textContent('#serialized-settings')
-      result = extractSerializedSettings(text, { expect: { isBrowser: true } })
+      return extractSerializedSettings(text, { expect: { isBrowser: true } })
     })
-    return result
   } else {
     const html = await fetchHtml(pathname)
     return extractSerializedSettings(html)
