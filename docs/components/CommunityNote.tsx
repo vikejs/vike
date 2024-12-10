@@ -54,7 +54,7 @@ function HasExtension({
       </p>
       <blockquote>
         <p>
-          The <code>vike-{hasExtension}-antd</code> extension requires{' '}
+          The <code>vike-{hasExtension}-{toolName}</code> extension requires{' '}
           <code>
             <Link href={`/vike-${hasExtension}`}>vike-{hasExtension}</Link>
           </code>
