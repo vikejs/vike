@@ -9,8 +9,6 @@ import { Button } from '../../components/Button/Button'
 import './sponsors.css'
 import { linkSponsor } from '../../links'
 
-const stylePrefix = 'landingpage-sponsors'
-
 const data = {
   caption: 'Partners',
   title: 'Sponsor Vike and get a tight-knit partnership 🤝'
@@ -35,15 +33,15 @@ type DivSize = {
 
 function Sponsors() {
   return (
-    <div className={`${stylePrefix}-container`}>
-      <div className={`${stylePrefix}-textContainer`}>
+    <div className="landingpage-sponsors-container">
+      <div className="landingpage-sponsors-textContainer">
         <div
           style={{
             gridColumn: '3 / span 8'
           }}
         >
           <TextBox>
-            <div className={`${stylePrefix}-innerTextContainer`}>
+            <div className="landingpage-sponsors-innerTextContainer">
               <SectionTextCollection caption={data.caption} title={data.title} />
               <a
                 style={{
@@ -66,20 +64,20 @@ function Sponsors() {
         }}
       >
         {sponsorLevels.map((level) => (
-          <div key={level.name} className={`${stylePrefix}-sponsorList`}>
+          <div key={level.name} className="landingpage-sponsors-sponsorList">
             {sponsorsList
               .filter((s) => s.plan === level.name)
               .map((sponsor) => (
                 <a
                   key={sponsor.companyName}
                   href={sponsor.website}
-                  className={`${stylePrefix}-sponsor ${level.name}`}
+                  className={`landingpage-sponsors-sponsor ${level.name}`}
                   style={{
                     height: sponsorsList.filter((s) => s.plan === level.name).length > 0 ? level.height : 0
                   }}
                 >
                   <img
-                    className={`${stylePrefix}-sponsorLogo`}
+                    className="landingpage-sponsors-sponsorLogo"
                     style={{
                       maxWidth: '90%'
                     }}

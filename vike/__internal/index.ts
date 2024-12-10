@@ -2,8 +2,8 @@
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
-// Internals needed by nitedani's experimental implementation of vike-telefunc
-export { getPageFilesAllSafe }
+// Internals needed by experimental implementation of vike-telefunc
+export { getMiddlewares }
 
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
 import { getPageFilesAll, type PageFile } from '../shared/getPageFiles.js'
@@ -36,7 +36,18 @@ async function getPagesAndRoutes() {
   }
 }
 
-// TODO: make it cleaner once the internal refactoring about global configs is done.
+// TODO/eventually:
+//  - Remove the need for `isProduction` after Vike's CLI is implemented
+//  - Remove it in favor of https://vike.dev/getGlobalContext
+async function getMiddlewares(): Promise<unknown[]> {
+  const isProduction = process.env.NODE_ENV === 'production'
+  const { pageConfigs } = await getPageFilesAllSafe(isProduction)
+  const middlewares: unknown[] = (pageConfigs[0]!.configValues.middleware!.value as any).flat(Infinity)
+  return middlewares
+}
+// TODO/eventually:
+//  - Make it cleaner once the internal refactoring about global configs is done.
+//  - Remove it in favor of https://vike.dev/getGlobalContext
 // Demo usage: https://github.com/vikejs/vike/pull/1823
 async function getPageFilesAllSafe(isProduction: boolean) {
   await initGlobalContext_getGlobalContextAsync(isProduction)

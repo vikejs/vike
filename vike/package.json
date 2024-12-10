@@ -1,6 +1,6 @@
 {
   "name": "vike",
-  "version": "0.4.206",
+  "version": "0.4.208",
   "repository": "https://github.com/vikejs/vike",
   "exports": {
     "./server": {
@@ -122,7 +122,7 @@
   },
   "dependencies": {
     "@brillout/import": "^0.2.3",
-    "@brillout/json-serializer": "^0.5.13",
+    "@brillout/json-serializer": "^0.5.15",
     "@brillout/picocolors": "^1.0.15",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.5.0",

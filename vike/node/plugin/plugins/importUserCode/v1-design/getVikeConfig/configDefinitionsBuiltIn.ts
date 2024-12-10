@@ -223,7 +223,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   keepScrollPosition: {
     env: { client: true }
-  }
+  },
+  // TODO/eventually: define it as a global config.
+  middleware: { env: { server: true }, cumulative: true, eager: true }
 }
 
 type ConfigNameGlobal =
