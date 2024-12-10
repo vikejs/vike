@@ -66,8 +66,8 @@ const benefits = [
     href: '/why#flexible-and-reliable-by-prioritization',
     description: (
       <>
-        We are responsive with a clear guideline on how to receive assistance. Bugs are quickly fixed (usually under 24
-        hours).
+        We are responsive and provide clear guidelines on how to receive reliable assistance. Bugs are quickly fixed
+        (usually within 24 hours).
       </>
     ),
     image: <BugFixSVG />
