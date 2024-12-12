@@ -1,3 +1,16 @@
+## [0.4.209](https://github.com/vikejs/vike/compare/v0.4.208...v0.4.209) (2024-12-12)
+
+
+### Bug Fixes
+
+* error message typo ([a4576ad](https://github.com/vikejs/vike/commit/a4576ad727fec566029097703cd8b2c220950128))
+* improve warning upon side exports ([8d0a7ba](https://github.com/vikejs/vike/commit/8d0a7ba576fb52268c2c6e28dac2a22bd01355db))
+* show proper error message upon wrong onRenderHtml usage ([c3e6b54](https://github.com/vikejs/vike/commit/c3e6b5427710f24cc4f4b850948ce6bf1628815b))
+* tolerate side exports in + files ([2e1d6de](https://github.com/vikejs/vike/commit/2e1d6decd88543f7c12834fc91720fd6cee8cfc2))
+* update @brillout/vite-plugin-server-entry ([bcc7ba6](https://github.com/vikejs/vike/commit/bcc7ba6a75d4dd6962aefe682e228e54e826b4ce))
+
+
+
 ## [0.4.208](https://github.com/vikejs/vike/compare/v0.4.207...v0.4.208) (2024-12-09)
 
 
