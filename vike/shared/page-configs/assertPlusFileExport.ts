@@ -34,9 +34,13 @@ function assertPlusFileExport(fileExports: Record<string, unknown>, filePathToSh
     .filter((exportName) => !SIDE_EXPORTS_TOLERATE.includes(exportName))
   if (!SIDE_EXPORTS_DO_NOT_CHECK.some((ext) => filePathToShowToUser.endsWith(ext))) {
     exportNamesInvalid.forEach((exportInvalid) => {
-      assertWarning(false, `${filePathToShowToUser} unexpected ${pc.cyan(`export { ${exportInvalid} }`)}`, {
-        onlyOnce: true
-      })
+      assertWarning(
+        false,
+        `${filePathToShowToUser} unexpected ${pc.cyan(`export { ${exportInvalid} }`)}, see https://vike.dev/no-side-exports`,
+        {
+          onlyOnce: true
+        }
+      )
     })
   }
 }
