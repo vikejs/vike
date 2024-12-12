@@ -126,18 +126,27 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
   return hookFound
 }
 
-function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook) {
+function processHookReturnValue(
+  hookReturnValue: unknown,
+  renderHook: RenderHook
+): {
+  documentHtml: DocumentHtml
+  pageContextPromise: PageContextPromise
+  pageContextProvidedByRenderHook: null | Record<string, unknown>
+  injectFilter: PreloadFilter
+} {
   let documentHtml: DocumentHtml
   let pageContextPromise: PageContextPromise = null
   let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
   let injectFilter: PreloadFilter = null
-  const ret = () => ({ documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter })
 
-  if (hookReturnValue === null) return ret()
+  if (hookReturnValue === null)
+    // @ts-ignore
+    return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
 
   if (isDocumentHtml(hookReturnValue)) {
     documentHtml = hookReturnValue
-    return ret()
+    return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
   }
 
   const errPrefix = `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath}` as const
@@ -218,5 +227,5 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
     }
   }
 
-  return ret()
+  return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
 }
