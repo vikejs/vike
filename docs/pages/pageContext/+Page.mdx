@@ -164,9 +164,13 @@ Yes, it's a common practice to change/add `pageContext` properties at any time.
 pageContext.someProp = someValue
 ```
 
-### Can I use `pageContext` to store UI state?
+### Can I use `pageContext` as a UI store?
 
-No, see <Link href="#lifecycle" />.
+Instead of using `pageContext`, we generally recommend using a proper UI state management tool such as React's `useState()`, Redux, Vue's `ref()`, Pinia, etc.
+
+That said, there are use cases for using `pageContext` to store client-side state. For example to pass information from the previous page to the next during navigation.
+
+See <Link href="#lifecycle" /> to understand whether using `pageContext` can make sense for your use case.
 
 ### Can I check whether SSR is enabled?
 
@@ -238,13 +242,13 @@ import type {
 
 **Server-side**
 
-On the server-side, upon an HTTP request, a new `pageContext` object is created. It's used for rendering the HTML included in the HTTP response. The `pageContext` object is discarded after the HTTP response is sent.
+On the server-side, upon an HTTP request, a new `pageContext` object is created. It's used for rendering the page to HTML. The `pageContext` object is discarded after the HTTP response is sent.
 
 **Client-side**
 
-On the client-side, upon <Link text="client-side page navigation" href="/client-routing" />, the `pageContext` object of the previous page is discarded and a new `pageContext` object is created.
+Upon <Link text="client-side page navigation" href="/client-routing" />, a new `pageContext` object is created.
 
-> Vike adds information to `pageContext` only while rendering the page. We recommend to treat `pageContext` as immutable after the page rendering has finished. For example, don't use `pageContext` as a UI store (use a proper <Link href="/stores">state management tool</Link> instead).
+> You can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
 
 **Pre-rendering**
 
