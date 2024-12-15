@@ -294,7 +294,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       isBackwardNavigation,
       isClientSideNavigation,
       isHydration: isFirstRender && !isForErrorPage,
-      // Make it public as `pageContext.previous`? Maybe after https://github.com/vikejs/vike/issues/1268
+      // Make it public as `pageContext.previousPageContext`/`pageContext.previous`? Maybe after https://github.com/vikejs/vike/issues/1268
       _previousPageContext: previousPageContext,
       ...pageContextInitClient
     })
