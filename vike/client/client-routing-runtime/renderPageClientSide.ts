@@ -60,7 +60,7 @@ const globalObject = getGlobalObject<{
   onRenderClientPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
-  previousPageContext?: PreviousPageContext
+  previousPageContext: PreviousPageContext | null
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
@@ -68,6 +68,7 @@ const globalObject = getGlobalObject<{
   (() => {
     const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
     return {
+      previousPageContext: null,
       renderCounter: 0,
       firstRenderStartPromise,
       firstRenderStartPromiseResolve
@@ -294,10 +295,22 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       isBackwardNavigation,
       isClientSideNavigation,
       isHydration: isFirstRender && !isForErrorPage,
-      // Make it public as `pageContext.previousPageContext`/`pageContext.previous`? Maybe after https://github.com/vikejs/vike/issues/1268
-      _previousPageContext: previousPageContext,
+      previousPageContext,
       ...pageContextInitClient
     })
+
+    // TODO/next-major-release: remove
+    Object.defineProperty(pageContext, '_previousPageContext', {
+      get() {
+        assertWarning(false, 'pageContext._previousPageContext has been renamed pageContext.previousPageContext', {
+          showStackTrace: true,
+          onlyOnce: true
+        })
+        return previousPageContext
+      },
+      enumerable: false
+    })
+
     {
       const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
       assert(!('urlOriginal' in pageContextFromAllRewrites))
