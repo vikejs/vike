@@ -1,12 +1,21 @@
 export { headings }
 
-import type { HeadingDefinition } from '@brillout/docpress'
+import {
+  iconScroll,
+  iconCompass,
+  iconGear,
+  type HeadingDefinition,
+  iconSeedling,
+  iconGlobe,
+  iconPlug
+} from '@brillout/docpress'
 
 const headings = [
   {
     level: 1,
     title: 'Overview',
-    color: '#d00' // red
+    titleIcon: iconCompass,
+    color: '#e1a524'
   },
   {
     level: 2,
@@ -43,7 +52,8 @@ const headings = [
   {
     level: 1,
     title: 'Get Started',
-    color: '#0d0' // green
+    titleIcon: iconSeedling,
+    color: '#74d717'
   },
   /*
   {
@@ -65,7 +75,8 @@ const headings = [
   {
     level: 1,
     title: 'Guides',
-    color: '#00d' // blue
+    titleIcon: iconScroll,
+    color: '#ffd511'
   },
   {
     level: 4,
@@ -155,7 +166,8 @@ const headings = [
   {
     level: 1,
     title: 'Deploy',
-    color: '#ff50ff' // purple
+    titleIcon: iconGlobe,
+    color: '#2d81f1'
   },
   {
     level: 4,
@@ -234,8 +246,9 @@ const headings = [
   },
   {
     level: 1,
-    title: 'Tool Integration',
-    color: '#f7f756' // yellow
+    title: 'Integration',
+    titleIcon: iconPlug,
+    color: '#616161'
   },
   {
     level: 2,
@@ -278,7 +291,8 @@ const headings = [
   {
     level: 1,
     title: 'API',
-    color: '#49d5ed', // cyan
+    titleIcon: iconGear,
+    color: '#80c1db',
     menuModalFullWidth: true
   },
   {
