@@ -22,6 +22,7 @@ startServer()
 async function startServer() {
   const app = express()
 
+  // @ts-expect-error Express.js buggy types
   app.use(compression())
 
   // Vite integration
