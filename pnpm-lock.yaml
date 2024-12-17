@@ -51,8 +51,8 @@ importers:
   boilerplates/boilerplate-react:
     dependencies:
       '@vitejs/plugin-react':
-        specifier: ^4.2.1
-        version: 4.3.0(vite@5.4.0(@types/node@22.6.1)(terser@5.31.0))
+        specifier: ^4.3.4
+        version: 4.3.4(vite@6.0.3(@types/node@22.6.1)(terser@5.31.0)(tsx@4.19.2))
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -93,8 +93,8 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@22.6.1)(terser@5.31.0)
+        specifier: ^6.0.3
+        version: 6.0.3(@types/node@22.6.1)(terser@5.31.0)(tsx@4.19.2)
 
   boilerplates/boilerplate-react-ts:
     dependencies:
@@ -6613,6 +6613,9 @@ packages:
   picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
+  picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
@@ -6675,6 +6678,10 @@ packages:
 
   postcss@8.4.47:
     resolution: {integrity: sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.4.49:
+    resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -7763,6 +7770,46 @@ packages:
       sugarss:
         optional: true
       terser:
+        optional: true
+
+  vite@6.0.3:
+    resolution: {integrity: sha512-Cmuo5P0ENTN6HxLSo6IHsjCLn/81Vgrp81oaiFFMRa8gGDj5xEjIcEpf2ZymZtZR8oU0P2JX5WuUp/rlXcHkAw==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
+      jiti: '>=1.21.0'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
         optional: true
 
   vitest@2.1.3:
@@ -9988,6 +10035,17 @@ snapshots:
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
       vite: 5.4.11(@types/node@22.6.1)(terser@5.31.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vitejs/plugin-react@4.3.4(vite@6.0.3(@types/node@22.6.1)(terser@5.31.0)(tsx@4.19.2))':
+    dependencies:
+      '@babel/core': 7.26.0
+      '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.0)
+      '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.0)
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.14.2
+      vite: 6.0.3(@types/node@22.6.1)(terser@5.31.0)(tsx@4.19.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -13726,6 +13784,8 @@ snapshots:
 
   picocolors@1.1.0: {}
 
+  picocolors@1.1.1: {}
+
   picomatch@2.3.1: {}
 
   pinia@2.1.7(typescript@5.7.2)(vue@3.4.27(typescript@5.7.2)):
@@ -13778,6 +13838,12 @@ snapshots:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.1.0
+      source-map-js: 1.2.1
+
+  postcss@8.4.49:
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.1.1
       source-map-js: 1.2.1
 
   prelude-ls@1.2.1: {}
@@ -15068,6 +15134,17 @@ snapshots:
       '@types/node': 22.6.1
       fsevents: 2.3.3
       terser: 5.31.0
+
+  vite@6.0.3(@types/node@22.6.1)(terser@5.31.0)(tsx@4.19.2):
+    dependencies:
+      esbuild: 0.24.0
+      postcss: 8.4.49
+      rollup: 4.27.3
+    optionalDependencies:
+      '@types/node': 22.6.1
+      fsevents: 2.3.3
+      terser: 5.31.0
+      tsx: 4.19.2
 
   vitest@2.1.3(@types/node@22.6.1)(terser@5.31.0):
     dependencies:
