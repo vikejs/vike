@@ -1,12 +1,11 @@
 {
   "scripts": {
     "dev": "npm run server:dev",
-    "prod": "npm run lint && npm run build && npm run server:prod",
+    "prod": "npm run build && npm run server:prod",
     "build": "vite build",
     "server": "node --loader ts-node/esm ./server/index.ts",
     "server:dev": "npm run server",
-    "server:prod": "cross-env NODE_ENV=production npm run server",
-    "lint": "eslint . --max-warnings 0"
+    "server:prod": "cross-env NODE_ENV=production npm run server"
   },
   "dependencies": {
     "@types/compression": "^1.7.5",
@@ -14,15 +13,9 @@
     "@types/node": "^20.10.4",
     "@types/react": "^18.2.42",
     "@types/react-dom": "^18.2.17",
-    "@typescript-eslint/eslint-plugin": "^6.13.2",
-    "@typescript-eslint/parser": "^6.13.2",
     "@vitejs/plugin-react": "^4.2.1",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
-    "eslint": "^8.55.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
     "express": "^4.18.2",
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
