@@ -1609,38 +1609,38 @@ importers:
   test/vike-react:
     dependencies:
       '@types/react':
-        specifier: ^18.3.3
-        version: 18.3.3
+        specifier: ^19.0.1
+        version: 19.0.1
       '@types/react-dom':
-        specifier: ^18.3.0
-        version: 18.3.0
+        specifier: ^19.0.2
+        version: 19.0.2(@types/react@19.0.1)
       '@vitejs/plugin-react':
-        specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.0(@types/node@22.10.2)(terser@5.31.0))
+        specifier: ^4.3.4
+        version: 4.3.4(vite@6.0.3(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.0
+        version: 19.0.0
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        specifier: ^19.0.0
+        version: 19.0.0(react@19.0.0)
       react-streaming:
         specifier: ^0.3.44
-        version: 0.3.44(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 0.3.44(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       typescript:
-        specifier: ^5.5.4
-        version: 5.5.4
+        specifier: ^5.7.2
+        version: 5.7.2
       vike:
         specifier: link:../../vike
         version: link:../../vike
       vike-react:
-        specifier: ^0.5.7
-        version: 0.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike)
+        specifier: ^0.5.10
+        version: 0.5.10(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(vike@vike)
       vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@22.10.2)(terser@5.31.0)
+        specifier: ^6.0.3
+        version: 6.0.3(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2)
 
   test/vike-vue:
     dependencies:
@@ -6971,11 +6971,6 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.5.4:
-    resolution: {integrity: sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
   typescript@5.6.2:
     resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
     engines: {node: '>=14.17'}
@@ -7145,6 +7140,13 @@ packages:
       react-dom: '>=18.0.0'
       vike: link:/home/rom/tmp/vike/vike/
       vite: '>=4.3.8'
+
+  vike-react@0.5.10:
+    resolution: {integrity: sha512-c2rmEhM/tn8pCdZ6H9fK94g25mbvthI53xyX7gbdw6kdDRgxa7lv44A/8ipQk8ZcGsWBMl1rhIHQzoXxYizSpA==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+      vike: link:/home/rom/tmp/vike/vike/
 
   vike-react@0.5.7:
     resolution: {integrity: sha512-loAf5t4QmSLenjpPKzk9P3Q4lhQVltg/ze0r3k3PpF3ehBJJiOfFWvKwpCi9kvt50hNnQcZgleem5itDqN/KsA==}
@@ -13556,8 +13558,6 @@ snapshots:
 
   typescript@5.5.3: {}
 
-  typescript@5.5.4: {}
-
   typescript@5.6.2: {}
 
   typescript@5.7.2: {}
@@ -13793,6 +13793,13 @@ snapshots:
       react-streaming: 0.3.41(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       vike: link:vike
       vite: 5.4.0(@types/node@22.10.2)(terser@5.31.0)
+
+  vike-react@0.5.10(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(vike@vike):
+    dependencies:
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      react-streaming: 0.3.44(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      vike: link:vike
 
   vike-react@0.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vike@vike):
     dependencies:
