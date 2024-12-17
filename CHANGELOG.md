@@ -1,3 +1,17 @@
+## [0.4.210](https://github.com/vikejs/vike/compare/v0.4.209...v0.4.210) (2024-12-17)
+
+
+### Bug Fixes
+
+* change Vite 6 default port from `5731` to `3000` ([9d68312](https://github.com/vikejs/vike/commit/9d6831246019dc6032c91521de1e948dbf228ea1))
+
+
+### Features
+
+* `pageContext.pageContextNavigation` ([#2002](https://github.com/vikejs/vike/issues/2002)) ([5e317ec](https://github.com/vikejs/vike/commit/5e317ec4cc5228860ad5a943c231aa4e61a5a084))
+
+
+
 ## [0.4.209](https://github.com/vikejs/vike/compare/v0.4.208...v0.4.209) (2024-12-12)
 
 
