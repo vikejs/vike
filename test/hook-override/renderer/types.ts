@@ -1,6 +1,6 @@
 export type { GlobalData, PerPageData }
 
-type Page = (pageProps: PageProps) => React.ReactElement
+type Page = (pageProps: PageProps) => JSX.Element
 type PageProps = Record<string, unknown>
 
 // https://vike.dev/pageContext#typescript

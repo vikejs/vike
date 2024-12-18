@@ -4,4 +4,4 @@ import type { UserConfig } from 'vite'
 
 export default {
   plugins: [react(), vike()]
-} as UserConfig
+} satisfies UserConfig

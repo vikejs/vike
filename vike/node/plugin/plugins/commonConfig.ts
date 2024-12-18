@@ -1,6 +1,6 @@
 export { commonConfig }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { assert, assertUsage, assertWarning, findPackageJson } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
@@ -24,7 +24,6 @@ function commonConfig(): Plugin[] {
       configResolved: {
         order: 'post',
         handler(config) {
-          overrideViteDefaultPort(config)
           /* TODO: do this after implementing vike.config.js and new setting transformLinkedDependencies (or probably a better name like transpileLinkedDependencies/bundleLinkedDependencies or something else)
           overrideViteDefaultSsrExternal(config)
           //*/
@@ -33,19 +32,21 @@ function commonConfig(): Plugin[] {
           assertResolveAlias(config)
           assertEsm(config.root)
         }
+      },
+      // Override Vite's default port without overriding the user
+      config: {
+        order: 'post',
+        handler(config) {
+          const configMod: UserConfig = {}
+          if (config.server?.port === undefined) configMod.server = { port: 3000 }
+          if (config.preview?.port === undefined) configMod.preview = { port: 3000 }
+          return configMod
+        }
       }
     }
   ]
 }
 
-function overrideViteDefaultPort(config: ResolvedConfig) {
-  // @ts-ignore
-  config.server ??= {}
-  config.server.port ??= 3000
-  // @ts-ignore
-  config.preview ??= {}
-  config.preview.port ??= 3000
-}
 /*
 import { version } from 'vite'
 function overrideViteDefaultSsrExternal(config: ResolvedConfig) {
