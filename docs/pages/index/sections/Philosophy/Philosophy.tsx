@@ -6,10 +6,12 @@ import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../Grid'
 import './philosophy.css'
 
+const iconSize = 26
+
 const principles = [
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 25 25">
+      <svg xmlns="http://www.w3.org/2000/svg" width={iconSize} height={iconSize} fill="none" viewBox="0 0 25 25">
         <path
           fill="currentColor"
           d="M13.554 1.999v20.083h-2.008V2zM2.508 5.01h7.03V19.07h-7.03zM4.516 7.02v10.042H7.53V7.02zm11.046-2.008h7.03V19.07h-7.03zm2.009 2.008v10.042h3.012V7.02z"
@@ -21,7 +23,7 @@ const principles = [
   },
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="-5 -10 90.613 90.625">
+      <svg xmlns="http://www.w3.org/2000/svg" height={iconSize} viewBox="-5 -10 90.613 90.625">
         <path
           stroke="#000"
           strokeWidth="0.4"
@@ -34,7 +36,7 @@ const principles = [
   },
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+      <svg xmlns="http://www.w3.org/2000/svg" width={iconSize} height={iconSize} viewBox="0 0 24 24">
         <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
           <circle cx="12" cy="8" r="5" />
           <path d="M20 21a8 8 0 1 0-16 0m16 0a8 8 0 1 0-16 0" />
@@ -46,7 +48,7 @@ const principles = [
   },
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="-3.2 -6.4 64 64">
+      <svg xmlns="http://www.w3.org/2000/svg" width={iconSize} height={iconSize} viewBox="-3.2 -6.4 64 64">
         <path d="M28.8-6.4c-17.6 0-32 14.4-32 32s14.4 32 32 32 32-14.4 32-32-14.4-32-32-32m0 61.1c-16.1 0-29.1-13-29.1-29.1s13-29.1 29.1-29.1 29.1 13 29.1 29.1-13 29.1-29.1 29.1"></path>
         <path d="M46.9 7.5C42.2 2.8 35.8 0 28.8 0S15.4 2.9 10.7 7.5h-.1c-.1 0 0 0 0 .1-4.6 4.6-7.4 11-7.4 18S6.1 39 10.7 43.7v.1c0 .1 0 0 .1 0 4.6 4.6 11 7.5 18.1 7.5 7 0 13.4-2.9 18.1-7.5h.1v-.1c4.6-4.6 7.5-11 7.5-18.1-.2-7-3-13.4-7.7-18.1M49.4 27h2.1c-.3 5.2-2.4 9.9-5.6 13.6l-1.5-1.5c-.6-.6-1.5-.6-2 0-.6.6-.6 1.5 0 2l1.5 1.5c-3.7 3.2-8.4 5.3-13.6 5.6v-2.1c0-.8-.6-1.4-1.4-1.4s-1.4.6-1.4 1.4v2.1c-5.2-.3-9.9-2.4-13.6-5.6l1.5-1.5c.6-.6.6-1.5 0-2-.6-.6-1.5-.6-2 0l-1.7 1.5C8.5 36.9 6.4 32.2 6.1 27h2.1c.8 0 1.4-.6 1.4-1.4s-.6-1.4-1.4-1.4H6.1c.3-5.2 2.4-9.9 5.6-13.6l1.5 1.5c.3.3.6.4 1 .4s.7-.1 1-.4c.6-.6.6-1.5 0-2l-1.4-1.6c3.7-3.2 8.4-5.3 13.6-5.6V5c0 .8.6 1.4 1.4 1.4s1.4-.6 1.4-1.4V2.9c5.2.3 9.9 2.4 13.6 5.6L42.3 10c-.6.6-.6 1.5 0 2 .3.3.6.4 1 .4s.7-.1 1-.4l1.5-1.5c3.2 3.7 5.3 8.4 5.6 13.6h-2.1c-.8 0-1.4.6-1.4 1.4s.7 1.5 1.5 1.5"></path>
         <path d="m39.2 13.2-14 8.6c-.2.1-.3.3-.5.5L16.3 36c-.3.6-.3 1.3.2 1.8.3.3.6.4 1 .4.3 0 .5-.1.8-.2l14-8.6c.2-.1.3-.3.5-.5l8.4-13.7c.3-.6.3-1.3-.2-1.8s-1.2-.6-1.8-.2m-8.7 13.9L22 32.4l5.1-8.3 8.5-5.3z"></path>
@@ -71,7 +73,9 @@ export const Philosophy = () => {
               }}
             >
               <a href="/why#philosophy">
-                <Button type="secondary">Read Philosophy</Button>
+                <Button type="secondary" readingRecommendation>
+                  Philosophy
+                </Button>
               </a>
             </div>
           </div>

@@ -62,9 +62,8 @@
   }
 }
 
-/* text */
-.landingpage-button-text {
-  height: 36px;
+.landingpage-button-learnmore {
+  margin: 8px 0;
   font-size: 14px;
   display: flex;
   align-items: center;

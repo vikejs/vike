@@ -7,6 +7,7 @@ import './flexible.css'
 import { Slotmachine } from '../../components/Slotmachine/Slotmachine'
 import { Button } from '../../components/Button/Button'
 import { Link } from '@brillout/docpress'
+import { iconSize } from '../../iconSize'
 
 const data = {
   caption: 'Flexible',
@@ -14,8 +15,8 @@ const data = {
   description: [
     //<>Enjoy <b>architectural freedom</b> and use <b>any tool</b>, <b>any rendering strategy</b> (SPA/SSR/SSG), and <b>any deployment strategy</b> (static/server/edge).</>,
     <>
-      Enjoy <b>architectural freedom</b> and choose any tool, rendering strategy (SPA/SSR/SSG), and deployment strategy
-      (static/server/edge).
+      Enjoy <b>architectural freedom</b> and choose any tool (React/Vue/GraphQL/RPC/...), any rendering strategy
+      (SPA/SSR/SSG), and any deployment strategy (static/server/edge).
     </>,
     <>
       Use <b>Vike extensions</b> for automatic tool integration and later, if the need arises,{' '}
@@ -27,7 +28,7 @@ const data = {
 const benefits = [
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width={iconSize} height={iconSize} viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M22.6212 14.6541L20.6212 12.1541C20.5275 12.0371 20.4086 11.9426 20.2734 11.8777C20.1382 11.8128 19.9902 11.7791 19.8402 11.7791H13.8402V9.77914H19.8402C20.9432 9.77914 21.8402 8.88214 21.8402 7.77914V4.77914C21.8402 3.67614 20.9432 2.77914 19.8402 2.77914H5.84022C5.69025 2.77909 5.54219 2.81276 5.407 2.87768C5.27181 2.94259 5.15295 3.03708 5.05922 3.15414L3.05922 5.65414C2.91722 5.83151 2.83984 6.05194 2.83984 6.27914C2.83984 6.50635 2.91722 6.72678 3.05922 6.90414L5.05922 9.40414C5.15295 9.52121 5.27181 9.6157 5.407 9.68061C5.54219 9.74553 5.69025 9.7792 5.84022 9.77914H11.8402V11.7791H5.84022C4.73722 11.7791 3.84022 12.6761 3.84022 13.7791V16.7791C3.84022 17.8821 4.73722 18.7791 5.84022 18.7791H11.8402V22.7791H13.8402V18.7791H19.8402C19.9902 18.7792 20.1382 18.7455 20.2734 18.6806C20.4086 18.6157 20.5275 18.5212 20.6212 18.4041L22.6212 15.9041C22.7632 15.7268 22.8406 15.5063 22.8406 15.2791C22.8406 15.0519 22.7632 14.8315 22.6212 14.6541ZM5.12122 6.27914L6.32022 4.77914H19.8402L19.8422 7.77914H6.32022L5.12122 6.27914ZM19.3602 16.7791H5.84022V13.7791H19.3602L20.5602 15.2791L19.3602 16.7791Z"
           fill="currentColor"
@@ -37,11 +38,11 @@ const benefits = [
     title: 'Cutting edge, at your own pace',
     href: '/why#conservative-or-cutting-edge-your-choice',
     description:
-      'Choose between production-grade extensions or cutting-edge extensions; go with a conservative stack or live on the edge in unprecedented ways.'
+      'Choose between stable and cutting-edge extensions; go with a conservative stack or live on the edge in unprecedented ways.'
   },
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg width={iconSize} height={iconSize} viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M6.37584 21.867H12.4009M9.38839 21.867V3.79169M9.38839 3.79169L3.36328 9.8168H21.4386M9.38839 3.79169L19.4302 9.8168"
           stroke="currentColor"
@@ -68,8 +69,8 @@ const benefits = [
       <svg
         xmlns="http://www.w3.org/2000/svg"
         xmlSpace="preserve"
-        width="24"
-        height="24"
+        width={iconSize}
+        height={iconSize}
         fillRule="evenodd"
         clipRule="evenodd"
         imageRendering="optimizeQuality"
@@ -110,7 +111,9 @@ export const Flexible = () => {
               />
               <div style={{ paddingTop: 8, marginBottom: 23 }}>
                 <Link href={'/why#architecture'}>
-                  <Button type="secondary">Read Architecture</Button>
+                  <Button type="secondary" readingRecommendation>
+                    Architecture
+                  </Button>
                 </Link>
               </div>
             </TextBox>
