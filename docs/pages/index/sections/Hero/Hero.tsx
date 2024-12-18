@@ -84,7 +84,7 @@ function Taglines() {
               fontWeight: 400
             }}
           >
-            <SpanAvoidBreakIfPossible>Like Next.js & Nuxt but with unprecedented</SpanAvoidBreakIfPossible>{' '}
+            <SpanAvoidBreakIfPossible>Next.js & Nuxt alternative for unprecedented</SpanAvoidBreakIfPossible>{' '}
             <SpanAvoidBreakIfPossible>flexibility, dependability, and control.</SpanAvoidBreakIfPossible>
           </div>
         </h1>

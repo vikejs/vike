@@ -19,7 +19,7 @@ const data = {
   description: [
     <>
       Vike is a flexible and unopinionated core that is <b>open to JavaScript's rapidly evolving ecosystem</b>. Place
-      your bets on a framework that embraces the future.
+      your bets on a robust foundation that embraces the future.
     </>,
     <>
       <b>Progressively migrate</b> one stack component and one page at a time, instead of big never-ending migrations.
