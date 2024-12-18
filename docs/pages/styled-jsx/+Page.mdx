@@ -13,9 +13,9 @@ If you use <Link href="/vike-react">`vike-react`</Link>, you can manually integr
 Example:
  - <Example timestamp="2024.12" repo="phonzammi/vike-react-styled-jsx-example" />
 
-## Without `vike-{react,vue,solid}`
+## Without `vike-react`
 
-To use Vike with `styled-jsx` without <UiFrameworkExtension />:
+To use Vike with `styled-jsx` without <UiFrameworkExtension name list={['vike-react']} />:
 
 1. Install:
 
@@ -38,8 +38,6 @@ To use Vike with `styled-jsx` without <UiFrameworkExtension />:
 
 3. Collect and inject styles.
    > When using a CSS-in-JS tool, like `styled-jsx`, you always need to collect the page's styles upon SSR in order <Link href="/css-in-js">to avoid FOUC</Link>.
-
-   > If you use <UiFrameworkExtension name />, then see <Link href="/css-in-js" doNotInferSectionTitle />.
 
    ```js
    // /renderer/+onRenderHtml.js
