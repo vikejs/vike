@@ -47,7 +47,7 @@ function HasExtension({
   return (
     <>
       <p>
-        If you are using <Link href={`/vike-${hasExtension}`}>vike-{hasExtension}</Link>, you can install{' '}
+        If you are using <Link href={`/vike-${hasExtension}`}>vike-{hasExtension}</Link> you can use{' '}
         <code>
           <a
             href={`https://github.com/vikejs/vike-${hasExtension}/tree/main/packages/vike-${hasExtension}-${toolName}#readme`}
