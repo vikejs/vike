@@ -1,7 +1,7 @@
 export { CommunityNote }
 
 import React from 'react'
-import { assert, Contribution, usePageContext, Link, parseMarkdownMini } from '@brillout/docpress'
+import { Contribution, Link, assert, parseMarkdownMini, usePageContext } from '@brillout/docpress'
 
 type UIFramework = 'react' | 'solid' | 'vue' | false
 
