@@ -14,14 +14,18 @@ function Hero() {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        marginTop: 90,
-        marginBottom: 110
+        alignItems: 'center'
       }}
     >
-      <TalkLink />
+      <div style={{ height: 90 }} id="hero-margin-top-1"></div>
+      <VideoTalkLink />
+      <div style={{ height: 16 }} id="hero-margin-top-2"></div>
       <Taglines />
+      <div style={{ height: 46 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
+      <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
+      <Quote />
+      <div style={{ height: 95 }} id="hero-margin-bot"></div>
     </div>
   )
 }
@@ -33,9 +37,7 @@ function Taglines() {
       style={{
         width: '100%',
         display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        marginBottom: 46,
-        marginTop: 16
+        gridTemplateColumns: 'repeat(12, 1fr)'
       }}
     >
       <div
@@ -84,8 +86,8 @@ function Taglines() {
               fontWeight: 400
             }}
           >
-            <SpanAvoidBreakIfPossible>Next.js & Nuxt alternative for unprecedented</SpanAvoidBreakIfPossible>{' '}
-            <SpanAvoidBreakIfPossible>flexibility, dependability, and control.</SpanAvoidBreakIfPossible>
+            Next.js & Nuxt alternative for unprecedented <br id="hero-br-tagline" />
+            flexibility, dependability, and control.
           </div>
         </h1>
       </div>
@@ -93,7 +95,57 @@ function Taglines() {
   )
 }
 
-function TalkLink() {
+function Quote() {
+  return (
+    <div id="hero-quote" style={{ display: 'flex', alignItems: 'center' }}>
+      <span style={{ display: 'flex', alignItems: 'center' }}>
+        <span
+          style={{
+            alignSelf: 'flex-start',
+            fontSize: '4em',
+            height: 0,
+            position: 'relative',
+            top: -12,
+            lineHeight: 1,
+            opacity: 0.2,
+            marginRight: 10
+          }}
+        >
+          ❝
+        </span>
+        Vike embodies the next generation of framework architecture, <br id="hero-br-quote" />
+        providing a new foundation that is both open and robust.
+      </span>
+      <a
+        id="hero-quote-author"
+        href="/team"
+        style={{
+          display: 'flex',
+          flexShrink: 0,
+          lineHeight: 1.2,
+          color: 'inherit'
+        }}
+      >
+        <img
+          style={{
+            ...((s: number) => ({ width: s, height: s }))(35),
+            verticalAlign: 'middle',
+            borderRadius: '50%',
+            marginRight: 8
+          }}
+          src={`https://avatars.githubusercontent.com/u/1005638?s=50&v=4`}
+        />
+        <div>
+          <div style={{ opacity: 0.8 }}>Rom Brillout</div>
+          <div style={{ opacity: 0.45, fontSize: '0.97em' }}>Vike Creator</div>
+        </div>
+      </a>
+      <span style={{}}></span>
+    </div>
+  )
+}
+
+function VideoTalkLink() {
   return (
     <a
       href="https://www.youtube.com/watch?v=jzjtDC31ZnI&t=13s"
@@ -148,8 +200,4 @@ function GetStartedBtn() {
       </Link>
     </div>
   )
-}
-
-function SpanAvoidBreakIfPossible({ children }: any) {
-  return <span style={{ display: 'inline-block' }}>{children}</span>
 }
