@@ -1,7 +1,7 @@
 export { CommunityNote }
 
 import React from 'react'
-import { assert, Contribution, usePageContext, Link } from '@brillout/docpress'
+import { assert, Contribution, usePageContext, Link, parseMarkdownMini } from '@brillout/docpress'
 
 type UIFramework = 'react' | 'solid' | 'vue' | false
 
@@ -14,7 +14,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
   return (
     <>
       <p>
-        Community-led documentation about using <a href={url}>{pageContext.pageTitle}</a> with Vike.
+        Community-led documentation about using <a href={url}>{parseMarkdownMini(pageContext.pageTitle!)}</a> with Vike.
       </p>
       <Contribution>
         This page may contain outdated information,{' '}
