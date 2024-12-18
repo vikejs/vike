@@ -110,8 +110,8 @@ function Quote() {
             flexShrink: 0
           }}
         />
-        Vike embodies the next generation of framework architecture, <br id="hero-br-quote" />
-        providing a new foundation that is open and dependable.
+        Vike represents the next generation of framework architecture, <br id="hero-br-quote" />
+        for a new foundation that is open and dependable.
       </span>
       <a
         id="hero-quote-author"
