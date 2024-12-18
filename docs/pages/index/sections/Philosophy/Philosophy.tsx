@@ -6,13 +6,6 @@ import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../Grid'
 import './philosophy.css'
 
-const data = {
-  caption: 'Philosophy',
-  title: 'How Vike is Built',
-  buttonLabel: 'Read Philosophy',
-  buttonLink: '/why#philosophy'
-}
-
 const principles = [
   {
     icon: (
@@ -71,14 +64,14 @@ export const Philosophy = () => {
       <Grid>
         <TextBox>
           <div className="landingpage-philosophy-headerFlexbox">
-            <SectionTextCollection caption={data.caption} title={data.title} />
+            <SectionTextCollection caption="Philosophy" title="How Vike is Built" />
             <div
               style={{
                 marginBottom: '20px'
               }}
             >
-              <a href={data.buttonLink}>
-                <Button type="secondary">{data.buttonLabel}</Button>
+              <a href="/why#philosophy">
+                <Button type="secondary">Read Philosophy</Button>
               </a>
             </div>
           </div>
