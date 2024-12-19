@@ -9,7 +9,8 @@ export default {
   faviconUrl: vikeIcon,
   headings,
   headingsDetached,
-  tagline: 'The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility, dependability, and control.',
+  tagline:
+    'The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility, dependability, and control.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
