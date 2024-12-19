@@ -38,7 +38,7 @@ const benefits = [
     title: 'Cutting edge, at your own pace',
     href: '/why#conservative-or-cutting-edge-your-choice',
     description:
-      'Choose between stable and cutting-edge extensions; go with a conservative stack or live on the edge in unprecedented ways.'
+      'Choose stable or cutting-edge extensions; go with a conservative stack or live on the edge in unprecedented ways.'
   },
   {
     icon: (
