@@ -11,7 +11,7 @@ const dir = path.dirname(fileURLToPath(import.meta.url))
 let isDev: boolean
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   isDev = cmd === 'npm run dev'
-  testRunClassic(cmd, { skipScreenshotTest: true })
+  testRunClassic(cmd)
   testCumulativeSetting()
   testRouteStringDefinedInConfigFile()
   testSideExports()
