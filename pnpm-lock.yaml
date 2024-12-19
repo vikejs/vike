@@ -231,8 +231,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.10.7
-        version: 0.10.7(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.6.2)(vike@vike)(vite@5.4.11(@types/node@20.13.0)(terser@5.31.0))
+        specifier: ^0.10.8
+        version: 0.10.8(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(acorn@8.12.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.6.2)(vike@vike)(vite@5.4.11(@types/node@20.13.0)(terser@5.31.0))
       '@types/node':
         specifier: ^20.11.16
         version: 20.13.0
@@ -2131,8 +2131,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.10.7':
-    resolution: {integrity: sha512-Uf0KwSYJzJutwxC9YFD4Wd6I6GIywUGz50WJM1D8ZqGkE269PkmPNVopWc5qI8Zf5lHDX08gj2oB32A30w2xyA==}
+  '@brillout/docpress@0.10.8':
+    resolution: {integrity: sha512-KbxFANQfcOlzizN9FVZr+asAjbUZBVVWy0LerSwVC/GG5N2I9ic0z/Sa5nOo/f09qKMpQKrnmNE1h+lFT3cbPg==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -2140,7 +2140,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '*'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.2.0'
 
   '@brillout/import@0.2.3':
@@ -3490,20 +3490,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@swc/core-darwin-arm64@1.5.24':
-    resolution: {integrity: sha512-M7oLOcC0sw+UTyAuL/9uyB9GeO4ZpaBbH76JSH6g1m0/yg7LYJZGRmplhDmwVSDAR5Fq4Sjoi1CksmmGkgihGA==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@swc/core-darwin-x64@1.10.1':
     resolution: {integrity: sha512-L4BNt1fdQ5ZZhAk5qoDfUnXRabDOXKnXBxMDJ+PWLSxOGBbWE6aJTnu4zbGjJvtot0KM46m2LPAPY8ttknqaZA==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@swc/core-darwin-x64@1.5.24':
-    resolution: {integrity: sha512-MfcFjGGYognpSBSos2pYUNYJSmqEhuw5ceGr6qAdME7ddbjGXliza4W6FggsM+JnWwpqa31+e7/R+GetW4WkaQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [darwin]
@@ -3514,20 +3502,8 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@swc/core-linux-arm-gnueabihf@1.5.24':
-    resolution: {integrity: sha512-amI2pwtcWV3E/m/nf+AQtn1LWDzKLZyjCmWd3ms7QjEueWYrY8cU1Y4Wp7wNNsxIoPOi8zek1Uj2wwFD/pttNQ==}
-    engines: {node: '>=10'}
-    cpu: [arm]
-    os: [linux]
-
   '@swc/core-linux-arm64-gnu@1.10.1':
     resolution: {integrity: sha512-tNQHO/UKdtnqjc7o04iRXng1wTUXPgVd8Y6LI4qIbHVoVPwksZydISjMcilKNLKIwOoUQAkxyJ16SlOAeADzhQ==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@swc/core-linux-arm64-gnu@1.5.24':
-    resolution: {integrity: sha512-sTSvmqMmgT1ynH/nP75Pc51s+iT4crZagHBiDOf5cq+kudUYjda9lWMs7xkXB/TUKFHPCRK0HGunl8bkwiIbuw==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
@@ -3538,20 +3514,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@swc/core-linux-arm64-musl@1.5.24':
-    resolution: {integrity: sha512-vd2/hfOBGbrX21FxsFdXCUaffjkHvlZkeE2UMRajdXifwv79jqOHIJg3jXG1F3ZrhCghCzirFts4tAZgcG8XWg==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux]
-
   '@swc/core-linux-x64-gnu@1.10.1':
     resolution: {integrity: sha512-yyYEwQcObV3AUsC79rSzN9z6kiWxKAVJ6Ntwq2N9YoZqSPYph+4/Am5fM1xEQYf/kb99csj0FgOelomJSobxQA==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux]
-
-  '@swc/core-linux-x64-gnu@1.5.24':
-    resolution: {integrity: sha512-Zrdzi7NqzQxm2BvAG5KyOSBEggQ7ayrxh599AqqevJmsUXJ8o2nMiWQOBvgCGp7ye+Biz3pvZn1EnRzAp+TpUg==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -3562,20 +3526,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@swc/core-linux-x64-musl@1.5.24':
-    resolution: {integrity: sha512-1F8z9NRi52jdZQCGc5sflwYSctL6omxiVmIFVp8TC9nngjQKc00TtX/JC2Eo2HwvgupkFVl5YQJidAck9YtmJw==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux]
-
   '@swc/core-win32-arm64-msvc@1.10.1':
     resolution: {integrity: sha512-D3Qo1voA7AkbOzQ2UGuKNHfYGKL6eejN8VWOoQYtGHHQi1p5KK/Q7V1ku55oxXBsj79Ny5FRMqiRJpVGad7bjQ==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@swc/core-win32-arm64-msvc@1.5.24':
-    resolution: {integrity: sha512-cKpP7KvS6Xr0jFSTBXY53HZX/YfomK5EMQYpCVDOvfsZeYHN20sQSKXfpVLvA/q2igVt1zzy1XJcOhpJcgiKLg==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [win32]
@@ -3586,20 +3538,8 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@swc/core-win32-ia32-msvc@1.5.24':
-    resolution: {integrity: sha512-IoPWfi0iwqjZuf7gE223+B97/ZwkKbu7qL5KzGP7g3hJrGSKAvv7eC5Y9r2iKKtLKyv5R/T6Ho0kFR/usi7rHw==}
-    engines: {node: '>=10'}
-    cpu: [ia32]
-    os: [win32]
-
   '@swc/core-win32-x64-msvc@1.10.1':
     resolution: {integrity: sha512-JWobfQDbTnoqaIwPKQ3DVSywihVXlQMbDuwik/dDWlj33A8oEHcjPOGs4OqcA3RHv24i+lfCQpM3Mn4FAMfacA==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [win32]
-
-  '@swc/core-win32-x64-msvc@1.5.24':
-    resolution: {integrity: sha512-zHgF2k1uVJL8KIW+PnVz1To4a3Cz9THbh2z2lbehaF/gKHugH4c3djBozU4das1v35KOqf5jWIEviBLql2wDLQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
@@ -3613,23 +3553,11 @@ packages:
       '@swc/helpers':
         optional: true
 
-  '@swc/core@1.5.24':
-    resolution: {integrity: sha512-Eph9zvO4xvqWZGVzTdtdEJ0Vqf0VIML/o/e4Qd2RLOqtfgnlRi7avmMu5C0oqciJ0tk+hqdUKVUZ4JPoPaiGvQ==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      '@swc/helpers': '*'
-    peerDependenciesMeta:
-      '@swc/helpers':
-        optional: true
-
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
 
   '@swc/types@0.1.17':
     resolution: {integrity: sha512-V5gRru+aD8YVyCOMAjMpWR1Ui577DD5KSJsHP8RAxopAH22jFz6GZd/qxqjO6MJHQhcsjvjOFXyDhyLQUnMveQ==}
-
-  '@swc/types@0.1.7':
-    resolution: {integrity: sha512-scHWahbHF0eyj3JsxG9CFJgFdFNaVQCNAimBlT6PzS3n/HptxqREjsm4OH6AN3lYcffZYSPxXW8ua2BEHp0lJQ==}
 
   '@ts-morph/common@0.20.0':
     resolution: {integrity: sha512-7uKjByfbPpwuzkstL3L5MQyuXPSKdoNG93Fmi2JoDcTf3pEP731JdRFAduRVkOs8oqxPsXKA+ScrWkdQ8t/I+Q==}
@@ -3871,11 +3799,6 @@ packages:
 
   '@universal-middleware/express@0.3.2':
     resolution: {integrity: sha512-65xWOpPHJKdN+t2/45S+WGwLjXz+6o3q6wZ2vMf5IUpYJVIDqU4uP4uEteyheU+/VPjfBmbjDZndUTnu05rGFA==}
-
-  '@vitejs/plugin-react-swc@3.7.0':
-    resolution: {integrity: sha512-yrknSb3Dci6svCd/qhHqhFPDSw0QtjumcqdKMoNNzmOl5lMXTTiqzjWtG4Qask2HdvvzaNgSunbQGet8/GrKdA==}
-    peerDependencies:
-      vite: ^4 || ^5
 
   '@vitejs/plugin-react-swc@3.7.2':
     resolution: {integrity: sha512-y0byko2b2tSVVf5Gpng1eEhX1OvPC7x8yns1Fx8jDzlJp4LS6CMkCPfLw47cjyoMrshQDoQw4qcgjsU9VvlCew==}
@@ -6984,7 +6907,7 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=4.3.8'
 
   vike-react@0.5.10:
@@ -6992,26 +6915,26 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
 
   vike-react@0.5.7:
     resolution: {integrity: sha512-loAf5t4QmSLenjpPKzk9P3Q4lhQVltg/ze0r3k3PpF3ehBJJiOfFWvKwpCi9kvt50hNnQcZgleem5itDqN/KsA==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
 
   vike-react@0.5.9:
     resolution: {integrity: sha512-2Vw4xwIGXpkVFKl7sSusZLvL/tTjk4UDHAz/HTVlcamZoDkZt2hWxwWnfNlWmm49ieypwoCezhCDSvdWQzyyKA==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
 
   vike-vue@0.8.5:
     resolution: {integrity: sha512-reVfEMjE2Me7xPoRfWw3tEMx358qqIGw0vSS1UsasamEL85Mqwi1HC8xtUFxELkXhr/V9awtmRUvZ2fE+nFpMQ==}
     peerDependencies:
-      vike: link:/home/rom/tmp/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vue: ^3.0.0
 
   vite-node@2.1.3:
@@ -7870,19 +7793,19 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.10.7(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.6.2)(vike@vike)(vite@5.4.11(@types/node@20.13.0)(terser@5.31.0))':
+  '@brillout/docpress@0.10.8(@algolia/client-search@4.24.0)(@types/node@20.13.0)(@types/react-dom@18.3.0)(@types/react@18.3.3)(acorn@8.12.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.6.2)(vike@vike)(vite@5.4.11(@types/node@20.13.0)(terser@5.31.0))':
     dependencies:
       '@brillout/picocolors': 1.0.15
       '@docsearch/css': 3.8.0
       '@docsearch/react': 3.6.1(@algolia/client-search@4.24.0)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@18.3.3)(react@18.2.0)
-      '@mdx-js/rollup': 3.0.1(rollup@4.27.3)
+      '@mdx-js/rollup': 3.0.1(acorn@8.12.1)(rollup@4.27.3)
       '@shikijs/transformers': 1.2.0
       '@types/node': 20.13.0
       '@types/react': 18.3.3
       '@types/react-dom': 18.3.0
-      '@vitejs/plugin-react-swc': 3.7.0(vite@5.4.11(@types/node@20.13.0)(terser@5.31.0))
+      '@vitejs/plugin-react-swc': 3.7.2(vite@5.4.11(@types/node@20.13.0)(terser@5.31.0))
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       rehype-pretty-code: 0.13.0(shiki@1.2.0)
@@ -8532,7 +8455,7 @@ snapshots:
 
   '@mdx-js/mdx@3.0.1':
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
       '@types/estree-jsx': 1.0.5
       '@types/hast': 3.0.4
       '@types/mdx': 2.0.13
@@ -8588,6 +8511,36 @@ snapshots:
       - acorn
       - supports-color
 
+  '@mdx-js/mdx@3.1.0(acorn@8.12.1)':
+    dependencies:
+      '@types/estree': 1.0.6
+      '@types/estree-jsx': 1.0.5
+      '@types/hast': 3.0.4
+      '@types/mdx': 2.0.13
+      collapse-white-space: 2.1.0
+      devlop: 1.1.0
+      estree-util-is-identifier-name: 3.0.0
+      estree-util-scope: 1.0.0
+      estree-walker: 3.0.3
+      hast-util-to-jsx-runtime: 2.3.0
+      markdown-extensions: 2.0.0
+      recma-build-jsx: 1.0.0
+      recma-jsx: 1.0.0(acorn@8.12.1)
+      recma-stringify: 1.0.0
+      rehype-recma: 1.0.0
+      remark-mdx: 3.0.1
+      remark-parse: 11.0.0
+      remark-rehype: 11.1.0
+      source-map: 0.7.4
+      unified: 11.0.4
+      unist-util-position-from-estree: 2.0.0
+      unist-util-stringify-position: 4.0.0
+      unist-util-visit: 5.0.0
+      vfile: 6.0.1
+    transitivePeerDependencies:
+      - acorn
+      - supports-color
+
   '@mdx-js/react@3.0.1(@types/react@18.3.3)(react@18.2.0)':
     dependencies:
       '@types/mdx': 2.0.13
@@ -8600,9 +8553,9 @@ snapshots:
       '@types/react': 19.0.1
       react: 19.0.0
 
-  '@mdx-js/rollup@3.0.1(rollup@4.27.3)':
+  '@mdx-js/rollup@3.0.1(acorn@8.12.1)(rollup@4.27.3)':
     dependencies:
-      '@mdx-js/mdx': 3.1.0(acorn@8.11.3)
+      '@mdx-js/mdx': 3.1.0(acorn@8.12.1)
       '@rollup/pluginutils': 5.1.0(rollup@4.27.3)
       rollup: 4.27.3
       source-map: 0.7.4
@@ -8878,61 +8831,31 @@ snapshots:
   '@swc/core-darwin-arm64@1.10.1':
     optional: true
 
-  '@swc/core-darwin-arm64@1.5.24':
-    optional: true
-
   '@swc/core-darwin-x64@1.10.1':
-    optional: true
-
-  '@swc/core-darwin-x64@1.5.24':
     optional: true
 
   '@swc/core-linux-arm-gnueabihf@1.10.1':
     optional: true
 
-  '@swc/core-linux-arm-gnueabihf@1.5.24':
-    optional: true
-
   '@swc/core-linux-arm64-gnu@1.10.1':
-    optional: true
-
-  '@swc/core-linux-arm64-gnu@1.5.24':
     optional: true
 
   '@swc/core-linux-arm64-musl@1.10.1':
     optional: true
 
-  '@swc/core-linux-arm64-musl@1.5.24':
-    optional: true
-
   '@swc/core-linux-x64-gnu@1.10.1':
-    optional: true
-
-  '@swc/core-linux-x64-gnu@1.5.24':
     optional: true
 
   '@swc/core-linux-x64-musl@1.10.1':
     optional: true
 
-  '@swc/core-linux-x64-musl@1.5.24':
-    optional: true
-
   '@swc/core-win32-arm64-msvc@1.10.1':
-    optional: true
-
-  '@swc/core-win32-arm64-msvc@1.5.24':
     optional: true
 
   '@swc/core-win32-ia32-msvc@1.10.1':
     optional: true
 
-  '@swc/core-win32-ia32-msvc@1.5.24':
-    optional: true
-
   '@swc/core-win32-x64-msvc@1.10.1':
-    optional: true
-
-  '@swc/core-win32-x64-msvc@1.5.24':
     optional: true
 
   '@swc/core@1.10.1':
@@ -8951,29 +8874,9 @@ snapshots:
       '@swc/core-win32-ia32-msvc': 1.10.1
       '@swc/core-win32-x64-msvc': 1.10.1
 
-  '@swc/core@1.5.24':
-    dependencies:
-      '@swc/counter': 0.1.3
-      '@swc/types': 0.1.7
-    optionalDependencies:
-      '@swc/core-darwin-arm64': 1.5.24
-      '@swc/core-darwin-x64': 1.5.24
-      '@swc/core-linux-arm-gnueabihf': 1.5.24
-      '@swc/core-linux-arm64-gnu': 1.5.24
-      '@swc/core-linux-arm64-musl': 1.5.24
-      '@swc/core-linux-x64-gnu': 1.5.24
-      '@swc/core-linux-x64-musl': 1.5.24
-      '@swc/core-win32-arm64-msvc': 1.5.24
-      '@swc/core-win32-ia32-msvc': 1.5.24
-      '@swc/core-win32-x64-msvc': 1.5.24
-
   '@swc/counter@0.1.3': {}
 
   '@swc/types@0.1.17':
-    dependencies:
-      '@swc/counter': 0.1.3
-
-  '@swc/types@0.1.7':
     dependencies:
       '@swc/counter': 0.1.3
 
@@ -9249,9 +9152,9 @@ snapshots:
       - h3
       - hono
 
-  '@vitejs/plugin-react-swc@3.7.0(vite@5.4.11(@types/node@20.13.0)(terser@5.31.0))':
+  '@vitejs/plugin-react-swc@3.7.2(vite@5.4.11(@types/node@20.13.0)(terser@5.31.0))':
     dependencies:
-      '@swc/core': 1.5.24
+      '@swc/core': 1.10.1
       vite: 5.4.11(@types/node@20.13.0)(terser@5.31.0)
     transitivePeerDependencies:
       - '@swc/helpers'
@@ -9850,6 +9753,10 @@ snapshots:
   acorn-jsx@5.3.2(acorn@8.11.3):
     dependencies:
       acorn: 8.11.3
+
+  acorn-jsx@5.3.2(acorn@8.12.1):
+    dependencies:
+      acorn: 8.12.1
 
   acorn-walk@8.3.2: {}
 
@@ -11313,7 +11220,7 @@ snapshots:
 
   is-reference@3.0.2:
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
 
   is-stream@1.1.0: {}
 
@@ -12217,7 +12124,7 @@ snapshots:
 
   periscopic@3.1.0:
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
       estree-walker: 3.0.3
       is-reference: 3.0.2
 
@@ -12461,6 +12368,16 @@ snapshots:
   recma-jsx@1.0.0(acorn@8.11.3):
     dependencies:
       acorn-jsx: 5.3.2(acorn@8.11.3)
+      estree-util-to-js: 2.0.0
+      recma-parse: 1.0.0
+      recma-stringify: 1.0.0
+      unified: 11.0.4
+    transitivePeerDependencies:
+      - acorn
+
+  recma-jsx@1.0.0(acorn@8.12.1):
+    dependencies:
+      acorn-jsx: 5.3.2(acorn@8.12.1)
       estree-util-to-js: 2.0.0
       recma-parse: 1.0.0
       recma-stringify: 1.0.0
