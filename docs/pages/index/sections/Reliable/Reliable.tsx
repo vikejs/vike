@@ -12,7 +12,9 @@ import './reliable.css'
 import { Link } from '@brillout/docpress'
 import { Button } from '../../components/Button/Button'
 import { IllustrationNote } from '../../components/IllustrationNote'
-import { iconSize } from '../../iconSize'
+import { windowIcon } from '../../icons'
+
+const iconSize = 31
 
 const data = {
   caption: 'Dependable',
@@ -30,33 +32,7 @@ const data = {
 
 const benefits = [
   {
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xmlSpace="preserve"
-        width={iconSize}
-        height={iconSize}
-        viewBox="0 0 47.99 47.99"
-      >
-        <path
-          opacity="0.5"
-          stroke="#000"
-          strokeWidth="0.1"
-          d="M9.048 25.117 25.117 9.049l1.046 1.046-16.068 16.068zM15.774 26.058l11.402-11.402 1.046 1.046L16.82 27.105z"
-        ></path>
-        <rect
-          width="44.99"
-          height="44.99"
-          x="1.5"
-          y="1.5"
-          fill="none"
-          stroke="#000"
-          strokeWidth="3"
-          rx="5"
-          ry="5"
-        ></rect>
-      </svg>
-    ),
+    icon: <img src={windowIcon} width={iconSize + 5} />,
     title: 'Transparent business model',
     href: '/pricing',
     description:

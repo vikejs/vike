@@ -8,11 +8,7 @@ import { TextBox } from '../../components/TextBox'
 import { Button } from '../../components/Button/Button'
 import './sponsors.css'
 import { linkSponsor } from '../../links'
-
-const data = {
-  caption: 'Partners',
-  title: 'Sponsor Vike and get a tight-knit partnership 🤝'
-}
+import { handshakeIcon } from '../../icons'
 
 type Plan = 'indie' | 'bronze' | 'silver' | 'gold' | 'platinum'
 
@@ -42,7 +38,18 @@ function Sponsors() {
         >
           <TextBox>
             <div className="landingpage-sponsors-innerTextContainer">
-              <SectionTextCollection caption={data.caption} title={data.title} />
+              <SectionTextCollection
+                caption="Partners"
+                title={
+                  <>
+                    Sponsor Vike and get a tight-knit partnership&nbsp;
+                    <img
+                      src={handshakeIcon}
+                      style={{ width: 39, verticalAlign: 'middle', position: 'relative', top: -1 }}
+                    />
+                  </>
+                }
+              />
               <a
                 style={{
                   marginTop: '12px'

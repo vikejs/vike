@@ -5,13 +5,11 @@ export const SectionTextCollection = ({
   caption,
   title,
   descriptions,
-  actions,
   style
 }: {
   caption: string
-  title: string
+  title: string | JSX.Element
   descriptions?: (string | JSX.Element)[]
-  actions?: JSX.Element[]
   style?: React.CSSProperties
 }) => {
   return (

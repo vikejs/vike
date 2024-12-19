@@ -5,17 +5,26 @@ import { Button } from '../../components/Button/Button'
 import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../Grid'
 import './philosophy.css'
+import { earIcon } from '../../icons'
 
-const iconSize = 26
+const iconSize = 28
 
 const principles = [
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width={iconSize} height={iconSize} fill="none" viewBox="0 0 25 25">
+      <svg
+        style={{ width: iconSize - 3 }}
+        fill="none"
+        version="1.1"
+        viewBox="0 0 20.084 20.084"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
+          d="m11.046 0v20.083h-2.008v-20.082zm-11.046 3.011h7.03v14.06h-7.03zm2.008 2.01v10.042h3.014v-10.042zm11.046-2.008h7.03v14.058h-7.03zm2.009 2.008v10.042h3.012v-10.042z"
           fill="currentColor"
-          d="M13.554 1.999v20.083h-2.008V2zM2.508 5.01h7.03V19.07h-7.03zM4.516 7.02v10.042H7.53V7.02zm11.046-2.008h7.03V19.07h-7.03zm2.009 2.008v10.042h3.012V7.02z"
-        ></path>
+          stroke="#f5f5f5"
+          stroke-width=".4"
+        />
       </svg>
     ),
     title: 'Separation of concerns',
@@ -35,16 +44,9 @@ const principles = [
     href: '/why#flourishing-do-one-thing-do-it-well-ecosystem'
   },
   {
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width={iconSize} height={iconSize} viewBox="0 0 24 24">
-        <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
-          <circle cx="12" cy="8" r="5" />
-          <path d="M20 21a8 8 0 1 0-16 0m16 0a8 8 0 1 0-16 0" />
-        </g>
-      </svg>
-    ),
-    title: 'User-driven',
-    href: '/why#user-driven'
+    icon: <img src={earIcon} style={{ width: iconSize + 8, marginLeft: -4, marginRight: -4 }} />,
+    title: 'Listening to users',
+    href: '/why#listening-to-users'
   },
   {
     icon: (
