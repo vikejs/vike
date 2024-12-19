@@ -18,7 +18,7 @@ export default {
     apiKey: '9ac178c1a29ba00e8afb98365015f677',
     indexName: 'vike'
   },
-  bannerUrl: 'https://vike.dev/banner.png',
+  bannerUrl: 'https://vike.dev/banner.jpg',
   // i18n: true,
   pressKit: true,
   navMaxWidth: 1140,

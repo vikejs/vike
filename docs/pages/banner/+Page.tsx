@@ -1,13 +1,10 @@
-// HOW-TO generate a 2600x1300 banner.png
-//  - Go to https://vike.dev/banner
-//  - Use responsive design preview of Chrome's dev console
-//  - Set it to 1300x650 (half of 2600x1300)
-//  - Select "Capture Screenshot" in dropdown of the responsive design preview toolbar
-//  - Chrome will generate a 2600x1300 PNG
-
 export { Page }
 
+// For generating a 600x315 banner.png from this page see: https://gist.github.com/brillout/e7d0a5585471c4ea40d43d2caaadafad
+
 import React from 'react'
+import { heroBgColor, HeroTagline } from '../index/sections/Hero/Hero'
+import vikeLogo from '../../assets/logo/vike.svg'
 
 function Page() {
   return (
@@ -17,42 +14,39 @@ function Page() {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        fontSize: 16 // reset
+        background: heroBgColor
       }}
     >
       <div
         style={{
           display: 'flex',
-          height: 320,
-          // Needs to have the right size upon 1300x650 (that's the viewport we use to generate banner.png as explained in the HOW-TO above)
-          scale: '1.2'
+          flexDirection: 'column',
+          alignItems: 'center',
+          // Needs to have the right size upon 600x315 (that's the viewport we use to generate banner.png as explained in the HOW-TO above)
+          scale: '1.3'
         }}
       >
-        <img
-          // https://github.com/brillout/vike-hammer-nitedani
-          src="https://raw.githubusercontent.com/brillout/vike-hammer-nitedani/main/vike-nitedani_rom-mod.png"
-          style={{ marginRight: 50, marginTop: 0, height: '100%' }}
-        />
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', height: '100%' }}>
-          <div>
-            <span
-              style={{
-                fontSize: '8.8em',
-                display: 'inline-block',
-                verticalAlign: 'middle',
-                fontWeight: 530,
-                lineHeight: '1.1em'
-              }}
-            >
-              Vike
-            </span>
-          </div>
-          <div style={{ fontSize: '4.2em', paddingLeft: 4, paddingTop: 0, paddingBottom: 0, lineHeight: '1.2em' }}>
-            Next Generation
-            <br />
-            Frontend Framework
-          </div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: -14
+          }}
+        >
+          <img src={vikeLogo} style={{ marginRight: 12, height: 48, objectFit: 'contain' }} />
+          <span
+            style={{
+              fontSize: '2.7em',
+              fontWeight: 450,
+              color: 'black',
+              opacity: 0.75,
+              lineHeight: '1em'
+            }}
+          >
+            Vike
+          </span>
         </div>
+        <HeroTagline />
       </div>
     </div>
   )

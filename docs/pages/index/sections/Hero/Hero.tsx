@@ -1,4 +1,6 @@
 export { Hero }
+export { HeroTagline }
+export const heroBgColor = '#e9e9e9'
 
 import React from 'react'
 import { primaryColor } from '../../primaryColor'
@@ -6,6 +8,7 @@ import { Button } from '../../components/Button/Button'
 import './Hero.css'
 import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
+import '../../page.css'
 
 function Hero() {
   return (
@@ -20,7 +23,7 @@ function Hero() {
       <div style={{ height: 90 }} id="hero-margin-top-1"></div>
       <VideoTalkLink />
       <div style={{ height: 16 }} id="hero-margin-top-2"></div>
-      <Taglines />
+      <HeroTagline />
       <div style={{ height: 46 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
@@ -30,16 +33,9 @@ function Hero() {
   )
 }
 
-function Taglines() {
+function HeroTagline() {
   return (
-    <div
-      id="hero-taglines"
-      style={{
-        width: '100%',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)'
-      }}
-    >
+    <div id="hero-taglines">
       <div
         className="landingpage-hero-headline"
         style={{
