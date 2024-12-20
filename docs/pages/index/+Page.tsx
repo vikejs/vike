@@ -34,7 +34,7 @@ function Page() {
         noGrid
         style={{
           padding: 0,
-          backgroundColor: '#FAFAFA'
+          backgroundColor: '#f9f9f9'
         }}
       >
         <Reliable />

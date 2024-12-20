@@ -1,6 +1,6 @@
 export { Hero }
 export { HeroTagline }
-export const heroBgColor = '#e9e9e9'
+export const heroBgColor = '#f0f0f0'
 
 import React from 'react'
 import { primaryColor } from '../../primaryColor'
