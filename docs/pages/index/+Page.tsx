@@ -10,8 +10,10 @@ import { Philosophy } from './sections/Philosophy/Philosophy'
 import { CTA } from './sections/CTA/CTA'
 import { Grid } from './Grid'
 import './page.css'
+import { useHeadingUnderlineAnimation } from './useHeadingUnderlineAnimation'
 
 function Page() {
+  useHeadingUnderlineAnimation()
   return (
     <div id="landing-page">
       <Block

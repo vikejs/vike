@@ -1,0 +1,30 @@
+[data-underline-animated] {
+  /*
+  opacity: 0;
+  &.heading-highlight {
+    opacity: 1;
+  }
+  transition: opacity var(--animation-duration) ease-out;
+  */
+  &:before {
+    content: attr(data-underline-animated);
+    text-decoration: underline;
+    text-underline-offset: 0.1em;
+    text-decoration-thickness: 0.13em;
+    /* Doens't seem to work anymore?
+    text-decoration-color: inherit;
+    */
+    text-decoration-color: var(--text-color);
+    opacity: 0.6;
+    color: transparent;
+    position: absolute;
+    display: inline-block;
+    max-width: 0px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width var(--animation-duration) ease-out;
+  }
+  &.heading-highlight:before {
+    max-width: var(--heading-width);
+  }
+}

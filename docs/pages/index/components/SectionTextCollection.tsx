@@ -21,8 +21,11 @@ export const SectionTextCollection = ({
       <p
         style={{
           color: primaryColor,
-          fontSize: '18px'
+          ['--text-color']: primaryColor,
+          fontSize: '18px',
+          display: 'inline-block'
         }}
+        data-underline-animated={caption}
       >
         {caption}
       </p>
