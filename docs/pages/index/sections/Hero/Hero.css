@@ -8,7 +8,6 @@
 #hero-quote-author {
   padding: 7px;
   margin-right: -7px;
-  margin-left: 18px;
 }
 @media screen and (max-width: 768px) {
   .landingpage-hero-headline {
@@ -37,14 +36,7 @@
     margin: 0;
     margin-top: 19px;
   }
-}
-@media screen and (max-width: 620px) {
-  #hero-br-quote {
-    display: none;
-  }
-}
-@media screen and (max-width: 900px) {
-  #hero-br-tagline {
-    display: none;
+  #tagline-secondary {
+    max-width: 450px !important;
   }
 }

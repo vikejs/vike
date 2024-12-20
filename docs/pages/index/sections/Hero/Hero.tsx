@@ -76,14 +76,15 @@ function HeroTagline() {
             style={{
               textAlign: 'center',
               width: '100%',
+              margin: 'auto',
               marginTop: 10,
               lineHeight: 1.35,
               fontWeight: 400,
-              opacity: 0.45
+              opacity: 0.45,
+              maxWidth: 550
             }}
           >
-            Next.js & Nuxt alternative for unprecedented <br id="hero-br-tagline" />
-            flexibility, dependability, and control.
+            Next.js & Nuxt alternative for unprecedented flexibility and dependability.
           </div>
         </h1>
       </div>
@@ -106,9 +107,10 @@ function Quote() {
             flexShrink: 0
           }}
         />
-        Vike is the next generation of framework architecture, for an open and
-        <br id="hero-br-quote" />
-        dependable foundation that companies can build upon with confidence.
+        <span style={{ maxWidth: 620 }}>
+          We believe Vike to be the next generation of framework architecture, for an open and dependable foundation
+          that companies can build upon with confidence.
+        </span>
       </span>
       <a
         id="hero-quote-author"

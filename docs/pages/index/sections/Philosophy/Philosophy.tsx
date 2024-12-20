@@ -23,7 +23,7 @@ const principles = [
           d="m11.046 0v20.083h-2.008v-20.082zm-11.046 3.011h7.03v14.06h-7.03zm2.008 2.01v10.042h3.014v-10.042zm11.046-2.008h7.03v14.058h-7.03zm2.009 2.008v10.042h3.012v-10.042z"
           fill="currentColor"
           stroke="#f5f5f5"
-          stroke-width=".4"
+          strokeWidth=".4"
         />
       </svg>
     ),
