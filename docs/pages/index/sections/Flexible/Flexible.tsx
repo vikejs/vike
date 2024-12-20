@@ -121,7 +121,7 @@ export const Flexible = () => {
                 title={data.title}
                 descriptions={data.description}
               />
-              <div style={{ paddingTop: 8, marginBottom: 23 }}>
+              <div style={{ paddingTop: 22, marginBottom: 23 }}>
                 <Link href={'/why#architecture'}>
                   <Button type="secondary" readingRecommendation>
                     Architecture

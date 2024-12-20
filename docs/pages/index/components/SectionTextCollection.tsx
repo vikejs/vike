@@ -32,7 +32,7 @@ export const SectionTextCollection = ({
           width: '100%',
           margin: 0,
           lineHeight: 1.3,
-          paddingBottom: '16px'
+          paddingBottom: 16
         }}
       >
         {title}
