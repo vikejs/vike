@@ -12,7 +12,7 @@ export default {
   headings,
   headingsDetached,
   tagline:
-    'The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility, dependability, and control.',
+    'The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility and dependability.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
