@@ -1,0 +1,68 @@
+import {Seperator, TableRef, ValueTable} from './value-components';
+import {ValueList} from './ValueList';
+import './StateOfTheArt.css';
+
+<ValueTable
+  entries={[
+    {
+      modelName: <>Open Source Pricing</>,
+      transparent: 1,
+      forkable: 1,
+      accessible: 1,
+      independent: 1,
+      sustainable: 1,
+    },
+    {
+      modelName: <>Open Source<Seperator/> Donations</>,
+      transparent: 1,
+      forkable: 1,
+      accessible: 1,
+      independent: 1,
+      sustainable: 0.3,
+    },
+    {
+      modelName: <>Open Source<Seperator/> Company Backed</>,
+      transparent: 1,
+      forkable: 1,
+      accessible: 1,
+      independent: 0,
+      sustainable: 1,
+    },
+    {
+      modelName: <>Open Source<Seperator/> Open Core</>,
+      transparent: 0.7,
+      forkable: 0.7,
+      accessible: 0.7,
+      independent: 1,
+      sustainable: 1,
+    },
+    {
+      modelName: <>Proprietary Software<Seperator/> Public Source</>,
+      transparent: 1,
+      forkable: 0,
+      accessible: 0.45,
+      independent: 1,
+      sustainable: 1,
+    },
+    {
+      modelName: <>Proprietary Software<Seperator/> Closed Source</>,
+      transparent: 0,
+      forkable: 0,
+      accessible: 0.45,
+      independent: 1,
+      sustainable: 1,
+    },
+  ]}
+  skip_links={true}
+/>
+
+Values:
+
+<ValueList />
+
+Business Models:
+- <TableRef name="Open Source | Donations">some projects, due to their very high number of users and low developing cost, can sustain solely on donations.</TableRef>
+- <TableRef name="Open Source | Company Backed">a company open sourcing some of its internal tool.</TableRef>
+- <TableRef name="Open Source | Open Core">the code is open source but some extensions/features are proprietary.</TableRef>
+- <TableRef name="Proprietary | Public Source">proprietary but the code is publicly available to be read.</TableRef>
+- <TableRef name="Proprietary | Closed Source">closed sourced, not forkable, usually expensive.</TableRef>

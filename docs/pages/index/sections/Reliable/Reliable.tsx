@@ -5,7 +5,6 @@ import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
-import OpenSourceSVG from '../../components/OpenSourceSVG'
 import BugFixSVG from '../../components/BugFixSVG'
 import TrendingPackageSVG from './../../components/TrendingPackageSVG'
 import './reliable.css'
@@ -13,6 +12,7 @@ import { Link } from '@brillout/docpress'
 import { Button } from '../../components/Button/Button'
 import { IllustrationNote } from '../../components/IllustrationNote'
 import { windowIcon } from '../../icons'
+import OpenSourcePricingIllustration from './open-source-pricing.svg'
 
 const iconSize = 31
 
@@ -37,7 +37,7 @@ const benefits = [
     href: '/pricing',
     description:
       "Vike's pricing keeps code 100% open source (MIT licence) and 100% gratis for software engineers while asking companies to pay a small amount, for a transparent and sustainable relationship.",
-    image: <OpenSourceSVG />
+    image: <img src={OpenSourcePricingIllustration} style={{ maxWidth: '100%' }} />
   },
   {
     icon: (
