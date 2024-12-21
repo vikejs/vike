@@ -15,6 +15,8 @@ export type { OnBeforePrerenderStartAsync }
 export type { OnBeforePrerenderStartSync }
 export type { OnBeforeRenderAsync }
 export type { OnBeforeRenderSync }
+export type { OnBoot }
+export type { OnBootSync }
 export type { OnBeforeRouteAsync }
 export type { OnBeforeRouteSync }
 export type { OnHydrationEndAsync }
@@ -56,12 +58,12 @@ type HookNamePage =
   | 'onRenderClient'
   | 'guard'
   | 'data'
-type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
+type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart' | 'onBoot'
 // v0.4 design TODO/v1-release: remove
 type HookNameOldDesign = 'render' | 'prerender'
 
 type ConfigNameBuiltIn =
-  | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
+  | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart' | 'onBoot'>
   | 'prerender'
   | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
@@ -137,6 +139,18 @@ type OnBeforeRenderAsync = (
  *  https://vike.dev/onBeforeRender
  */
 type OnBeforeRenderSync = (pageContext: PageContextServer) => { pageContext: Partial<Vike.PageContext> } | void
+/** Hook called when Vike is first initialized.
+ *
+ *  https://vike.dev/onBoot
+ */
+type OnBoot = (
+  pageContext: PageContextServer
+) => Promise<{ pageContext: Partial<Vike.PageContext> } | void>
+/** Hook called when Vike is first initialized.
+ *
+ *  https://vike.dev/onBoot
+ */
+type OnBootSync = (pageContext: PageContextServer) => { pageContext: Partial<Vike.PageContext> } | void
 /** Hook called before the URL is routed to a page.
  *
  * https://vike.dev/onBeforeRoute
@@ -355,6 +369,12 @@ type ConfigBuiltIn = {
    * https://vike.dev/onBeforePrerenderStart
    */
   onBeforePrerenderStart?: OnBeforePrerenderStartAsync | OnBeforePrerenderStartSync | ImportString
+
+  /** Hook called when Vike is first initialized.
+   *
+   * https://vike.dev/onBoot
+   */
+  onBoot?: OnBoot | OnBootSync | ImportString
 
   /** Hook called before the URL is routed to a page.
    *
