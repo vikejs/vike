@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import logoVikeAnimatedCover from '../../../../assets/logo/vike-animated-cover.webp'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { Button } from '../../components/Button/Button'
 import { TextBox } from '../../components/TextBox'
@@ -147,10 +146,7 @@ function VikeNitedaniAnimated() {
     if (screen.width > 759) {
       const videoEl = ref.current!
       videoEl.setAttribute('autoPlay', '')
-      videoEl.setAttribute(
-        'src',
-        'https://github.com/vikejs/vike-logo-3d/raw/refs/heads/main/vike-nitedani-animated.webm'
-      )
+      videoEl.setAttribute('src', 'https://github.com/vikejs/vike-logo-3d/raw/refs/heads/main/vike-logo-animdated.webm')
       /* We don't use play() because in Firefox it flickers
         // try-catch to suppress the following in the CI:
         // ```bash
@@ -164,5 +160,13 @@ function VikeNitedaniAnimated() {
     }
   })
 
-  return <video ref={ref} poster={logoVikeAnimatedCover} width="150" muted loop />
+  return (
+    <video
+      poster="https://github.com/vikejs/vike-logo-3d/raw/refs/heads/main/vike-logo-animdated-cover.webp"
+      ref={ref}
+      width="150"
+      muted
+      loop
+    />
+  )
 }
