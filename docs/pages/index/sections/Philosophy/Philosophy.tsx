@@ -57,8 +57,8 @@ const principles = [
         <path d="M28.6 27.3c.4 0 .7-.1 1-.4l.5-.5c.6-.6.6-1.5 0-2-.6-.6-1.5-.6-2 0l-.5.5c-.6.6-.6 1.5 0 2 .2.2.6.4 1 .4"></path>
       </svg>
     ),
-    title: 'Strong leadership',
-    href: '/why#strong-leadership'
+    title: 'Passionate leadership',
+    href: '/why#passionate-leadership'
   }
 ]
 
