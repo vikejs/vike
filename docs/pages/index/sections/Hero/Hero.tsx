@@ -144,7 +144,7 @@ function Quote() {
               />
             ))}
         </div>
-        <div style={{ opacity: 0.6, fontSize: '0.95em', marginTop: 4, marginBottom: -4 }}>Vike Team</div>
+        <div style={{ opacity: 0.6, fontSize: '0.95em', marginTop: 4, marginBottom: -7 }}>Vike Team</div>
       </a>
     </div>
   )
