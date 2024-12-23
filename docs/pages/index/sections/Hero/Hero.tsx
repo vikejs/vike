@@ -141,6 +141,7 @@ function Quote() {
                   zIndex: Math.abs(8 - i)
                 }}
                 src={getMaintainerAvatar(maintainer, avatarSize)}
+                key={i}
               />
             ))}
         </div>
