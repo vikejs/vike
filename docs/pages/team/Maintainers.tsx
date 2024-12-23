@@ -1,23 +1,30 @@
-export { Page }
+export { Maintainers }
+export { Contributors }
 
-import React from 'react'
 import { getMaintainerAvatar, maintainersList } from './maintainersList'
-import './team.css'
+import React from 'react'
 
-function Page() {
-  return <Contributors />
+function Maintainers() {
+  return (
+    <div>
+      {maintainersList
+        .filter((m) => m.isCoreTeam)
+        .map((maintainer, i) => (
+          <Maintainer maintainer={maintainer} key={i} />
+        ))}
+    </div>
+  )
 }
 
 function Contributors() {
   return (
-    <>
-      <p>Vike is built by passionate maintainers.</p>
-      <div>
-        {maintainersList.map((maintainer, i) => (
+    <div>
+      {maintainersList
+        .filter((m) => !m.isCoreTeam)
+        .map((maintainer, i) => (
           <Maintainer maintainer={maintainer} key={i} />
         ))}
-      </div>
-    </>
+    </div>
   )
 }
 

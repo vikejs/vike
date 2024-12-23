@@ -47,13 +47,13 @@ const maintainersList: Maintainer[] = [
     isCoreTeam: true,
     roles: [
       <>
-        <code>vike-react-query</code> (Lead Maintainer, Creator)
+        <code>vike-react-query</code> (Creator)
       </>,
       <>
-        <code>vike-react-apollo</code> (Lead Maintainer, Creator)
+        <code>vike-react-apollo</code> (Creator)
       </>,
       <>
-        <code>vike-node</code> (Lead Maintainer, Creator)
+        <code>vike-node</code> (Creator)
       </>,
       <>Vike Core (Contributor)</>
     ]
@@ -100,6 +100,15 @@ const maintainersList: Maintainer[] = [
       </>,
       <>
         <code>vike-vue-query</code> (Creator)
+      </>
+    ]
+  },
+  {
+    username: 'Blankeos',
+    firstName: 'Carlo',
+    roles: [
+      <>
+        <code>vike-solid</code> (Contributor)
       </>
     ]
   }
