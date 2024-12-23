@@ -14,12 +14,13 @@
   align-items: center;
 }
 .landingpage-sponsors-sponsorList {
-  display: flex;
+  margin-top: 17px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 4px;
-  justify-content: space-between;
 }
 .landingpage-sponsors-sponsor {
-  flex: 1;
+  height: 100px;
   background-color: #fff;
   display: flex;
   justify-content: center;
@@ -42,24 +43,10 @@
     align-items: start;
   }
   .landingpage-sponsors-sponsorList {
-    flex-direction: column;
+    margin-top: -10px;
+    grid-template-columns: repeat(1, 1fr);
   }
   .landingpage-sponsors-sponsor {
     flex: unset;
-  }
-  .landingpage-sponsors-sponsor.platinum {
-    border-left: 6px solid #7c9fab;
-  }
-  .landingpage-sponsors-sponsor.gold {
-    border-left: 6px solid #f5d300;
-  }
-  .landingpage-sponsors-sponsor.silver {
-    border-left: 6px solid #e3e3e3;
-  }
-  .landingpage-sponsors-sponsor.bronze {
-    border-left: 6px solid #f5c08c;
-  }
-  .landingpage-sponsors-sponsor.indie {
-    border-left: 6px solid rgb(194, 194, 251);
   }
 }

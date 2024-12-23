@@ -10,65 +10,34 @@ import inlangLogo from './sponsorsLogo/inlang.png'
 import bluefinLogo from './sponsorsLogo/bluefin.svg'
 import alignableLogo from './sponsorsLogo/alignable.svg'
 
-export const sponsorLevels: {
-  name: string
-  height: number
-}[] = [
-  {
-    name: 'platinum',
-    height: 240
-  },
-  {
-    name: 'gold',
-    height: 200
-  },
-  {
-    name: 'silver',
-    height: 120
-  },
-  {
-    name: 'bronze',
-    height: 80
-  },
-  {
-    name: 'indie',
-    height: 60
-  }
-]
-
 const sponsorsList: Sponsor[] = [
   {
     companyName: 'Contra',
     companyLogo: contraLogo,
-    plan: 'silver',
     website: 'https://contra.com',
     github: 'contra'
   },
   {
     companyName: 'Inlang',
     companyLogo: inlangLogo,
-    plan: 'silver',
     website: 'https://inlang.com/',
     github: 'opral'
   },
   {
     companyName: 'Alignable',
     companyLogo: alignableLogo,
-    plan: 'silver',
     website: 'https://www.alignable.com/',
     github: 'AlignableUser'
   },
   {
     companyName: 'Sourcegraph',
     companyLogo: sourcegraphLogo,
-    plan: 'bronze',
     website: 'https://sourcegraph.com',
     github: 'sourcegraph'
   },
   {
     companyName: 'Optimizers',
     companyLogo: optimizersLogo,
-    plan: 'bronze',
     website: 'https://www.optimizers.nl/',
     divSize: {
       padding: 20
@@ -78,21 +47,18 @@ const sponsorsList: Sponsor[] = [
   {
     companyName: 'BurdaForward',
     companyLogo: burdaforwardLogo,
-    plan: 'bronze',
     website: 'https://www.burda-forward.de',
     github: 'BurdaForward'
   },
   {
     companyName: 'Ecosia',
     companyLogo: ecosiaLogo,
-    plan: 'bronze',
     website: 'https://ecosia.org',
     github: 'ecosia'
   },
   {
     companyName: 'Bluefin',
     companyLogo: bluefinLogo,
-    plan: 'indie',
     website: 'https://www.bluefin.one',
     github: 'bluefin-clinical'
   }
