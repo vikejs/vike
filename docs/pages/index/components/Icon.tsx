@@ -4,9 +4,8 @@ export { iconSizeDefault }
 import React from 'react'
 
 const iconSizeDefault = 28
-const iconColor = 'black'
 
-function Icon({ icon, size, color = iconColor }: { icon: JSX.Element; size: number; color: string }) {
+function Icon({ icon, size, color }: { icon: JSX.Element; size: number; color: string }) {
   const margin = (iconSizeDefault - size) / 2
   return (
     <div

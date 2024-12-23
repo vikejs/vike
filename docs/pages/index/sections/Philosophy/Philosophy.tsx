@@ -10,24 +10,26 @@ import CompassIcon from './compass.svg?react'
 import SeparationIcon from './separation.svg?react'
 import { Icon, iconSizeDefault } from '../../components/Icon'
 
+const iconColor = '#333'
+
 const principles = [
   {
-    icon: <Icon icon={<SeparationIcon />} size={iconSizeDefault} />,
+    icon: <Icon icon={<SeparationIcon />} size={iconSizeDefault} color="#444" />,
     title: 'Separation of concerns',
     href: '/why#separation-of-concerns'
   },
   {
-    icon: <Icon icon={<ForestIcon />} size={iconSizeDefault + 5} />,
+    icon: <Icon icon={<ForestIcon />} size={iconSizeDefault + 5} color={iconColor} />,
     title: 'Flourishing do-one-thing-do-it-well ecosystem',
     href: '/why#flourishing-do-one-thing-do-it-well-ecosystem'
   },
   {
-    icon: <Icon icon={<EarIcon />} size={iconSizeDefault + 8} />,
+    icon: <Icon icon={<EarIcon />} size={iconSizeDefault + 8} color="#222" />,
     title: 'Listening to users',
     href: '/why#listening-to-users'
   },
   {
-    icon: <Icon icon={<CompassIcon />} size={iconSizeDefault + 2} />,
+    icon: <Icon icon={<CompassIcon />} size={iconSizeDefault + 2} color={iconColor} />,
     title: 'Passionate leadership',
     href: '/why#passionate-leadership'
   }

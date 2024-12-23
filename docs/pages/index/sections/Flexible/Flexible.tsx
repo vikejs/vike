@@ -24,10 +24,14 @@ const data = {
   ]
 }
 
+const iconColor = '#333'
+
 const benefits = [
   {
     icon: (
       <Icon
+        size={iconSizeDefault + 6}
+        color={iconColor}
         icon={
           <svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -38,7 +42,6 @@ const benefits = [
             />
           </svg>
         }
-        size={iconSizeDefault + 4}
       ></Icon>
     ),
     title: 'Cutting edge, at your own pace',
@@ -49,6 +52,8 @@ const benefits = [
   {
     icon: (
       <Icon
+        size={iconSizeDefault + 6}
+        color="#444"
         icon={
           <svg viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -67,7 +72,6 @@ const benefits = [
             />
           </svg>
         }
-        size={iconSizeDefault + 4}
       ></Icon>
     ),
     title: 'Build Your Own Framework',
@@ -78,6 +82,8 @@ const benefits = [
   {
     icon: (
       <Icon
+        size={iconSizeDefault + 2}
+        color={iconColor}
         icon={
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +102,6 @@ const benefits = [
             ></path>
           </svg>
         }
-        size={iconSizeDefault}
       ></Icon>
     ),
     title: 'Flexible by design',
