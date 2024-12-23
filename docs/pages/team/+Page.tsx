@@ -1,7 +1,7 @@
 export { Page }
 
 import React from 'react'
-import { maintainersList } from './maintainersList'
+import { getMaintainerAvatar, maintainersList } from './maintainersList'
 import './team.css'
 
 function Page() {
@@ -47,7 +47,7 @@ function Maintainer({ maintainer }: { maintainer: (typeof maintainersList)[0] })
         <div style={{ width: imgSize, height: imgSize, borderRadius: imgSize / 2, overflow: 'hidden' }}>
           <img
             style={{ width: imgSize, height: imgSize }}
-            src={`https://github.com/${maintainer.username}.png?size=${imgSize}`}
+            src={getMaintainerAvatar(maintainer, imgSize)}
             alt={maintainer.username}
           />
         </div>

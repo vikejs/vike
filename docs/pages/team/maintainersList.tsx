@@ -1,4 +1,5 @@
 export { maintainersList }
+export { getMaintainerAvatar }
 
 import React from 'react'
 
@@ -7,12 +8,14 @@ type Maintainer = {
   firstName: string
   roles: React.ReactNode[]
   consultingUrl?: string
+  isCoreTeam?: true
 }
 
 const maintainersList: Maintainer[] = [
   {
     username: 'brillout',
     firstName: 'Rom',
+    isCoreTeam: true,
     roles: [
       <>Vike Core (Lead Maintainer, Creator)</>,
       <>
@@ -26,6 +29,7 @@ const maintainersList: Maintainer[] = [
   {
     username: 'magne4000',
     firstName: 'Joël',
+    isCoreTeam: true,
     roles: [
       <>Bati (Lead Maintainer, Creator)</>,
       <>
@@ -40,6 +44,7 @@ const maintainersList: Maintainer[] = [
   {
     username: 'nitedani',
     firstName: 'Dániel',
+    isCoreTeam: true,
     roles: [
       <>
         <code>vike-react-query</code> (Lead Maintainer, Creator)
@@ -56,6 +61,7 @@ const maintainersList: Maintainer[] = [
   {
     username: 'phonzammi',
     firstName: 'Muhammad',
+    isCoreTeam: true,
     roles: [
       <>
         <code>vike-vue</code> (Contributor)
@@ -98,3 +104,7 @@ const maintainersList: Maintainer[] = [
     ]
   }
 ]
+
+function getMaintainerAvatar(maintainer: Maintainer, imgSize: number) {
+  return `https://github.com/${maintainer.username}.png?size=${imgSize}`
+}

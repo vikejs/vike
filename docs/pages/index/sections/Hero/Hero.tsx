@@ -9,6 +9,7 @@ import './Hero.css'
 import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
 import '../../page.css'
+import { getMaintainerAvatar, maintainersList } from '../../../team/maintainersList'
 
 function Hero() {
   return (
@@ -93,6 +94,7 @@ function HeroTagline() {
 }
 
 function Quote() {
+  const avatarSize = 25
   return (
     <div id="hero-quote" style={{ display: 'flex', alignItems: 'center' }}>
       <span style={{ display: 'flex', alignItems: 'center' }}>
@@ -117,24 +119,32 @@ function Quote() {
         href="/team"
         style={{
           display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
           flexShrink: 0,
           lineHeight: 1.2,
           color: 'inherit'
         }}
       >
-        <img
-          style={{
-            ...((s: number) => ({ width: s, height: s }))(35),
-            verticalAlign: 'middle',
-            borderRadius: '50%',
-            marginRight: 8
-          }}
-          src={`https://avatars.githubusercontent.com/u/1005638?s=50&v=4`}
-        />
         <div>
-          <div style={{ opacity: 0.8 }}>Rom Brillout</div>
-          <div style={{ opacity: 0.45, fontSize: '0.97em' }}>Vike Creator</div>
+          {maintainersList
+            .filter((m) => m.isCoreTeam)
+            .map((maintainer, i) => (
+              <img
+                style={{
+                  width: avatarSize,
+                  height: avatarSize,
+                  verticalAlign: 'middle',
+                  borderRadius: '50%',
+                  marginLeft: i !== 0 ? -7 : 0,
+                  position: 'relative',
+                  zIndex: Math.abs(8 - i)
+                }}
+                src={getMaintainerAvatar(maintainer, avatarSize)}
+              />
+            ))}
         </div>
+        <div style={{ opacity: 0.6, fontSize: '0.95em', marginTop: 4, marginBottom: -4 }}>Vike Team</div>
       </a>
     </div>
   )
