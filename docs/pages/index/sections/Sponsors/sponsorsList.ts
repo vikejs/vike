@@ -12,18 +12,6 @@ import alignableLogo from './sponsorsLogo/alignable.svg'
 
 const sponsorsList: Sponsor[] = [
   {
-    companyName: 'Contra',
-    companyLogo: contraLogo,
-    website: 'https://contra.com',
-    github: 'contra'
-  },
-  {
-    companyName: 'Inlang',
-    companyLogo: inlangLogo,
-    website: 'https://inlang.com/',
-    github: 'opral'
-  },
-  {
     companyName: 'Alignable',
     companyLogo: alignableLogo,
     website: 'https://www.alignable.com/',
@@ -36,6 +24,12 @@ const sponsorsList: Sponsor[] = [
     github: 'sourcegraph'
   },
   {
+    companyName: 'BurdaForward',
+    companyLogo: burdaforwardLogo,
+    website: 'https://www.burda-forward.de',
+    github: 'BurdaForward'
+  },
+  {
     companyName: 'Optimizers',
     companyLogo: optimizersLogo,
     website: 'https://www.optimizers.nl/',
@@ -43,12 +37,6 @@ const sponsorsList: Sponsor[] = [
       padding: 20
     },
     github: 'OptimizersGroup'
-  },
-  {
-    companyName: 'BurdaForward',
-    companyLogo: burdaforwardLogo,
-    website: 'https://www.burda-forward.de',
-    github: 'BurdaForward'
   },
   {
     companyName: 'Ecosia',
@@ -61,5 +49,17 @@ const sponsorsList: Sponsor[] = [
     companyLogo: bluefinLogo,
     website: 'https://www.bluefin.one',
     github: 'bluefin-clinical'
-  }
+  },
+  {
+    companyName: 'Contra',
+    companyLogo: contraLogo,
+    website: 'https://contra.com',
+    github: 'contra'
+  },
+  {
+    companyName: 'Inlang',
+    companyLogo: inlangLogo,
+    website: 'https://inlang.com/',
+    github: 'opral'
+  },
 ]
