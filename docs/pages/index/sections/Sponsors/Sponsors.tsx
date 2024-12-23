@@ -14,14 +14,9 @@ type Sponsor = {
   companyName: string
   companyLogo: string
   website: string
-  divSize?: Partial<DivSize>
+  isPast?: true
+  landpageStyle?: React.CSSProperties
   github: string
-}
-
-type DivSize = {
-  width: number
-  height: number
-  padding: number
 }
 
 function Sponsors() {
@@ -60,28 +55,44 @@ function Sponsors() {
         </div>
       </div>
       <div
+        className="landingpage-sponsors-wrapper"
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 4,
-          marginTop: '24px'
+          gap: 4
         }}
       >
         <div className="landingpage-sponsors-sponsorList">
-          {sponsorsList.map((sponsor, i) => (
-            <a href={sponsor.website} className={`landingpage-sponsors-sponsor`} key={i}>
-              <img
-                className="landingpage-sponsors-sponsorLogo"
-                style={{
-                  maxWidth: '90%'
-                }}
-                src={sponsor.companyLogo}
-                alt={sponsor.companyName}
-              />
-            </a>
-          ))}
+          {sponsorsList
+            .filter((s) => !s.isPast)
+            .map((sponsor, i) => (
+              <SponsorLink sponsor={sponsor} key={i} />
+            ))}
+        </div>
+        <div className="landingpage-sponsors-sponsorList past-sponsors">
+          {sponsorsList
+            .filter((s) => s.isPast)
+            .map((sponsor, i) => (
+              <SponsorLink sponsor={sponsor} key={i} />
+            ))}
         </div>
       </div>
     </div>
+  )
+}
+
+function SponsorLink({ sponsor }: { sponsor: Sponsor }) {
+  return (
+    <a href={sponsor.website} className={`landingpage-sponsors-sponsor`}>
+      <img
+        style={{
+          maxWidth: '90%',
+          height: '40%',
+          ...sponsor.landpageStyle
+        }}
+        src={sponsor.companyLogo}
+        alt={sponsor.companyName}
+      />
+    </a>
   )
 }

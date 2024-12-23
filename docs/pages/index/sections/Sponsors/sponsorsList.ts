@@ -9,12 +9,15 @@ import ecosiaLogo from './sponsorsLogo/ecosia.svg'
 import inlangLogo from './sponsorsLogo/inlang.png'
 import bluefinLogo from './sponsorsLogo/bluefin.svg'
 import alignableLogo from './sponsorsLogo/alignable.svg'
+import crepeLogo from './sponsorsLogo/crepe.svg'
+import reporaLogo from './sponsorsLogo/repora.svg'
+import mfqsLogo from './sponsorsLogo/mfqs.svg'
 
 const sponsorsList: Sponsor[] = [
   {
     companyName: 'Alignable',
     companyLogo: alignableLogo,
-    website: 'https://www.alignable.com/',
+    website: 'https://www.alignable.com',
     github: 'AlignableUser'
   },
   {
@@ -32,10 +35,10 @@ const sponsorsList: Sponsor[] = [
   {
     companyName: 'Optimizers',
     companyLogo: optimizersLogo,
-    website: 'https://www.optimizers.nl/',
-    divSize: {
-      padding: 20
+    landpageStyle: {
+      height: '60%'
     },
+    website: 'https://www.optimizers.nl',
     github: 'OptimizersGroup'
   },
   {
@@ -51,15 +54,38 @@ const sponsorsList: Sponsor[] = [
     github: 'bluefin-clinical'
   },
   {
+    isPast: true,
+    companyName: 'CREPE',
+    companyLogo: crepeLogo,
+    website: 'https://crepe.cm',
+    github: 'cookieplace'
+  },
+  {
+    isPast: true,
     companyName: 'Contra',
     companyLogo: contraLogo,
     website: 'https://contra.com',
     github: 'contra'
   },
   {
+    isPast: true,
     companyName: 'Inlang',
     companyLogo: inlangLogo,
-    website: 'https://inlang.com/',
+    website: 'https://inlang.com',
     github: 'opral'
   },
+  {
+    isPast: true,
+    companyName: 'Repora',
+    companyLogo: reporaLogo,
+    website: 'https://www.repora.com',
+    github: 'DannyZB'
+  },
+  {
+    isPast: true,
+    companyName: 'My Favorite Quilt Store',
+    companyLogo: mfqsLogo,
+    website: 'https://myfavoritequiltstore.com',
+    github: 'pieperz'
+  }
 ]

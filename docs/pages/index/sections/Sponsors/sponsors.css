@@ -13,11 +13,19 @@
   flex-direction: column;
   align-items: center;
 }
+.landingpage-sponsors-wrapper {
+  margin-top: 41px;
+}
 .landingpage-sponsors-sponsorList {
-  margin-top: 17px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4px;
+}
+.landingpage-sponsors-sponsorList.past-sponsors {
+  grid-template-columns: repeat(5, 1fr);
+  & .landingpage-sponsors-sponsor {
+    height: 70px;
+  }
 }
 .landingpage-sponsors-sponsor {
   height: 100px;
@@ -25,9 +33,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.landingpage-sponsors-sponsorLogo {
-  height: 40%;
 }
 
 @media screen and (max-width: 768px) {
@@ -42,9 +47,11 @@
   .landingpage-sponsors-innerTextContainer {
     align-items: start;
   }
+  .landingpage-sponsors-wrapper {
+    margin-top: 31px;
+  }
   .landingpage-sponsors-sponsorList {
-    margin-top: -10px;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(1, 1fr) !important;
   }
   .landingpage-sponsors-sponsor {
     flex: unset;
