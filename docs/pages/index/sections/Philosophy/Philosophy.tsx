@@ -4,49 +4,34 @@ import { Button } from '../../components/Button/Button'
 import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../Grid'
 import './philosophy.css'
-import { compassIcon, earIcon, forestIcon, separationIcon } from '../../icons'
-
-const iconSizeDefault = 28
-const iconColor = '#aaa'
+import EarIcon from './ear.svg?react'
+import ForestIcon from './forest.svg?react'
+import CompassIcon from './compass.svg?react'
+import SeparationIcon from './separation.svg?react'
+import { Icon, iconSizeDefault } from '../../components/Icon'
 
 const principles = [
   {
-    icon: <Img src={separationIcon} size={iconSizeDefault} />,
+    icon: <Icon icon={<SeparationIcon />} size={iconSizeDefault} />,
     title: 'Separation of concerns',
     href: '/why#separation-of-concerns'
   },
   {
-    icon: <Img src={forestIcon} size={iconSizeDefault + 5} />,
+    icon: <Icon icon={<ForestIcon />} size={iconSizeDefault + 5} />,
     title: 'Flourishing do-one-thing-do-it-well ecosystem',
     href: '/why#flourishing-do-one-thing-do-it-well-ecosystem'
   },
   {
-    icon: <Img src={earIcon} size={iconSizeDefault + 8} />,
+    icon: <Icon icon={<EarIcon />} size={iconSizeDefault + 8} />,
     title: 'Listening to users',
     href: '/why#listening-to-users'
   },
   {
-    icon: <Img src={compassIcon} size={iconSizeDefault + 2} />,
+    icon: <Icon icon={<CompassIcon />} size={iconSizeDefault + 2} />,
     title: 'Passionate leadership',
     href: '/why#passionate-leadership'
   }
 ]
-
-function Img({ src, size }: { src: string; size: number }) {
-  const margin = (iconSizeDefault - size) / 2
-  return (
-    <img
-      src={src}
-      style={{
-        color: 'red',
-        width: size,
-        height: size,
-        marginLeft: margin,
-        marginRight: margin
-      }}
-    />
-  )
-}
 
 export const Philosophy = () => {
   return (

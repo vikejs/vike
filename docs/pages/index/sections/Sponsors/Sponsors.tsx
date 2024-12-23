@@ -8,7 +8,7 @@ import { TextBox } from '../../components/TextBox'
 import { Button } from '../../components/Button/Button'
 import './sponsors.css'
 import { linkSponsor } from '../../links'
-import { handshakeIcon } from '../../icons'
+import handshakeIcon from './handshake.svg'
 
 type Plan = 'indie' | 'bronze' | 'silver' | 'gold' | 'platinum'
 

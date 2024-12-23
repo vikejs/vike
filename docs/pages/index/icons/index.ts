@@ -1,6 +1,0 @@
-export { default as earIcon } from './ear.svg'
-export { default as handshakeIcon } from './handshake.svg'
-export { default as windowIcon } from './window.svg'
-export { default as forestIcon } from './forest.svg'
-export { default as compassIcon } from './compass.svg'
-export { default as separationIcon } from './separation.svg'
