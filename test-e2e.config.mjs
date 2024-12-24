@@ -80,7 +80,9 @@ function tolerateError({ logSource, logText }) {
       'Cannot optimize dependency: @brillout/docpress/Layout',
       'The glob option "as" has been deprecated in favour of "query"',
       // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
-      "is slow: it's taking more than"
+      "is slow: it's taking more than",
+      // (node:4188) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+      'The `punycode` module is deprecated. Please use a userland alternative instead.'
     ].some((t) => logText.includes(t))
   )
 
