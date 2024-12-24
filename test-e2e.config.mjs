@@ -55,6 +55,18 @@ function getCiJobs() {
 
 function tolerateError({ logSource, logText }) {
   return (
+    // TODO/eventually: move everything to this array
+    [
+      // [15:31:51.518][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient, present in 'optimizeDeps.include'
+      'Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient',
+      // [21:29:57.330][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/Layout, present in 'optimizeDeps.include'
+      'Cannot optimize dependency: @brillout/docpress/Layout',
+      'The glob option "as" has been deprecated in favour of "query"',
+      // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
+      "is slow: it's taking more than",
+      // (node:4188) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+      'The `punycode` module is deprecated. Please use a userland alternative instead.'
+    ].some((t) => logText.includes(t)) ||
     isViteCjsWarning() ||
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
@@ -71,19 +83,7 @@ function tolerateError({ logSource, logText }) {
     isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader() ||
     isNodeExperimentalLoader() ||
-    isNotV1Design() ||
-    // TODO: move everything to this array
-    [
-      // [15:31:51.518][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient, present in 'optimizeDeps.include'
-      'Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient',
-      // [21:29:57.330][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/Layout, present in 'optimizeDeps.include'
-      'Cannot optimize dependency: @brillout/docpress/Layout',
-      'The glob option "as" has been deprecated in favour of "query"',
-      // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
-      "is slow: it's taking more than",
-      // (node:4188) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
-      'The `punycode` module is deprecated. Please use a userland alternative instead.'
-    ].some((t) => logText.includes(t))
+    isNotV1Design()
   )
 
   function isViteCjsWarning() {
