@@ -55,7 +55,12 @@ function HeroTagline() {
             lineHeight: 1.1
           }}
         >
-          <div id="tagline-main">
+          <div
+            id="tagline-main"
+            style={{
+              opacity: 0.9
+            }}
+          >
             The Framework{' '}
             <span
               style={{

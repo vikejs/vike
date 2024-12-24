@@ -24,9 +24,14 @@ export default {
   // i18n: true,
   pressKit: true,
   navMaxWidth: 1140,
-  navLogoSize: 45,
+  navLogoSize: 41,
+  navLogoStyle: {
+    position: 'relative',
+    top: -1
+  },
   navLogoTextStyle: {
     letterSpacing: '0.01em',
-    fontWeight: 420
+    fontWeight: 420,
+    color: '#444'
   }
 } satisfies Config
