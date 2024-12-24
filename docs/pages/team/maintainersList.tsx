@@ -76,6 +76,11 @@ const maintainersList: Maintainer[] = [
     ]
   },
   {
+    username: 'NilsJacobsen',
+    firstName: 'Nils',
+    roles: [<>Vike's landing page</>]
+  },
+  {
     username: 'AurelienLourot',
     firstName: 'Aurélien',
     roles: [
