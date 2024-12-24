@@ -12,7 +12,7 @@ function getCiJobs() {
   }
   const linux_nodeNew = {
     os: 'ubuntu-latest',
-    node_version: '20'
+    node_version: '22'
   }
   const windows_nodeOld = {
     os: 'windows-latest',
