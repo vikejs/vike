@@ -2,80 +2,74 @@ import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 
 Deep dive into what makes Vike special.
-- Vike's <Link href="#architecture">architecture</Link>, enabling unprecedented flexibility and reliability.
+- Vike's <Link href="#architecture">architecture</Link>, enabling unprecedented flexibility and dependability.
 - Vike's <Link href="#philosophy">philosophy</Link>.
 
 
 
 ## Architecture
 
-From high-level design to the smallest details, Vike is built with flexibility and reliability in mind.
-
-
 ### Flexible by design
 
-Vike's flexibility is powered by low-level APIs.
+Vike is powered by low-level hooks. For example, the hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> give you full control over integrating:
+ - Any UI framework (React, Vue, ...)
+ - Any Data connection (REST, GraphQL, RPC, ...)
+ - Any Rendering strategy (SSR, SSG, SPA, islands, ...)
 
-For example, Vike's low-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> give you full control over integrating any:
- - UI framework (React, Vue, ...)
- - Data connection (REST, GraphQL, RPC, ...)
- - Rendering strategy (SSR, SSG, SPA, islands, ...)
+> For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using such low-level hooks. For example, if you use `vike-react` or `vike-vue` then you get a quick start like Next.js and Nuxt. Later, if the need arises, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` for a custom React/Vue integration.
 
-> For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using these low-level APIs. For example, you can use `vike-react` or `vike-vue` for a quick start similar to Next.js or Nuxt.
->
-> Later, if the need arises for more control, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` for a custom React/Vue integration.
-
-Another example is Vike's server middleware <Link href="/renderPage"><code>renderPage()</code></Link> enabling you to embed Vike into any:
-- Server (Express.js, Hono, Fastify, ...)
-- Deployment (AWS, Cloudflare, Vercel, ...)
+Another example is Vike's server middleware <Link href="/renderPage"><code>renderPage()</code></Link> enabling you to embed Vike into:
+- Any server (Express.js, Hono, Fastify, ...)
+- Any deployment (AWS, Cloudflare, Vercel, ...)
 
 > Alternatively, you can <Link href="/pre-rendering">pre-render your pages</Link> and deploy your app to any static host.
-
-
-### Flexible and reliable, by prioritization
-
-If you create a feature request and explain why it's blocking then we treat it with higher priority.
-
-We quickly fix bugs (usually within 24 hours).
-
-Vike's team is responsive and we provide <Link href="/faq#how-can-i-reach-out-for-help">a clear guideline</Link> on how to receive reliable assistance.
 
 
 ### Conservative or cutting-edge, your choice
 
 Vike is a core with, on top of it, <Link href="/extensions">extensions</Link> that integrate tools. It fosters a diverse ecosystem of Vike extensions:
  - Stable extensions, focusing on supporting conservative stacks in a long-term fashion.
- - Cutting-edge extensions, focusing on experimenting and adopting new approaches.
+ - Cutting-edge extensions, focusing on experimenting new approaches.
 
-> For example, we are experimenting with RSC (React Server Components) in a separate extension `vike-react-rsc`. This allows us to quickly iterate without disrupting `vike-react` users. We can maintain both extensions for the foreseeable future, enabling you to adopt RSC only if you want and whenever you want.
+> For example, we are experimenting with RSC (React Server Components) in a separate extension `vike-react-rsc`. This allows us to quickly iterate without disrupting `vike-react` users. Both extensions can be maintained for the foreseeable future, enabling you to adopt RSC only if you want and whenever you want.
 
 This gives you choice:
  - If you prefer stability, choose stable extensions.
-   > You get unparalleled stability: Vike in itself is stable and Vike extensions are a thin layer of glue code that can be maintained for a long time.
- - If you have special requirements, or want to explore new approaches: choose cutting-edge extensions, <Link href="/eject">eject extensions</Link>, write your own extensions, or <Link href="/build-your-own-framework">build your own framework</Link>.
-   > Vike's do-one-thing-do-it-well architecture provides unparalleled opportunities to experiment and push the envelope.
+   > You get unparalleled stability: Vike in itself is stable and Vike extensions are a thin layer of glue code that can be maintained for a very long time.
+ - If you have special requirements or if you want to explore new approaches you can: choose cutting-edge extensions, <Link href="/eject">eject extensions</Link>, write your own extensions, and/or <Link href="/build-your-own-framework">build your own framework</Link>.
+   > You get unparalleled flexibility to build what you need.
 
-Vike enables you to keep your current stack for as long as you want, while progressively migrating towards new tools and approaches at your own pace.
+In a nutshell: Vike enables unprecedented flexibility and dependability.
 
 
 ### Grow progressively
 
-Not only can you <Link href="#conservative-or-cutting-edge-your-choice">adopt new technology at your pace</Link>, but you can also progressively adapt your stack to your evolving needs:
+You can progressively adapt your stack to evolving needs.
  - **One page at a time**: you can <Link href="/config#powerful">change your stack progressively on a page-by-page basis</Link>.
+   > For example, you can start with SPA and later, if the need arises, <Link href="/ssr">you can progressively add SSR</Link> one page at a time.
+
+   > Configs can be set on page-by-page basis thanks to <Link href="/config#inheritance">Vike's powerful config inheritance</Link>.
  - **One architectural component at a time**: you can switch architectural components independently of each other.
+   > For example, you can start with <Link href="/https://telefunc.com/RPC">RPC</Link> and later, if the need arises, you can progressively switch to GraphQL.
 
-Progressive migrations enable you to migrate faster and in parralel to iterating on your product.
+   > You can swap every major architectural component thanks to Vike's <Link href="#separation-of-concerns">separation of concerns</Link>.
 
-> For example:
-> - You can start with SPA and, later if you end up needing SSR, <Link href="/ssr">you can progressively add SSR</Link> one page at a time.
-> - You can start with <Link href="/https://telefunc.com/RPC">RPC</Link> and, later if the need arises, you can progressively switch to GraphQL.
+
+Progressive migrations enable you to migrate much faster, iteratively, and in parallel to building your product.
 
 
 ### Future-proof
 
-Vike's flexible core is unopinionated and open to JavaScript's rapidly evolving ecosystem.
+Vike's flexible core is unopinionated and open to JavaScript's rapidly evolving ecosystem. It's a stable foundation with lightweight and flexible Vike extensions quickly adapting to the tools and approaches of tomorrow.
 
-Vike is a stable foundation with a thin and flexible layer (Vike extensions) quickly adapting to the tools and approaches of tomorrow.
+
+### Flexible and reliable, by prioritization
+
+If you create a feature request and explain why it's blocking you then we treat it with higher priority.
+
+We quickly fix bugs (usually within 24 hours).
+
+Vike's team is responsive and we provide <Link href="/faq#how-can-i-reach-out-for-help">a guideline</Link> on how to receive assistance from us.
 
 
 ### Build your own framework
