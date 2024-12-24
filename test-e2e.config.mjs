@@ -65,7 +65,9 @@ function tolerateError({ logSource, logText }) {
       // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
       "is slow: it's taking more than",
       // (node:4188) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
-      'The `punycode` module is deprecated. Please use a userland alternative instead.'
+      'The `punycode` module is deprecated.',
+      // (node:4117) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+      'fs.Stats constructor is deprecated.'
     ].some((t) => logText.includes(t)) ||
     isViteCjsWarning() ||
     isRenderErrorPageDeprecationWarning() ||
