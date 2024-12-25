@@ -8,6 +8,8 @@ function assertVersion(
   versionActual: string,
   versionExpected: `${number}.${number}.${number}`
 ) {
+  assert(versionActual)
+  assert(versionExpected)
   assertUsage(
     isVersionOrAbove(versionActual, versionExpected),
     `${dependencyName} ${versionActual} isn't supported, use ${dependencyName} >= ${versionExpected} instead.`
