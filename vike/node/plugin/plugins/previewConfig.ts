@@ -2,18 +2,16 @@ export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, getOutDirs, resolveOutDir, markEnvAsVitePreview } from '../utils.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'
-import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
   let config: ResolvedConfig
-  let configVike: ConfigVikeResolved
+  // let configVike: ConfigVikeResolved
   return {
     name: 'vike:previewConfig',
     apply: 'serve',
@@ -27,7 +25,7 @@ function previewConfig(): Plugin {
     },
     async configResolved(config_) {
       config = config_
-      configVike = await getConfigVike(config)
+      // configVike = await getConfigVike(config)
     },
     configurePreviewServer(server) {
       /* - Couldn't make `appType: 'mpa'` work as of npm:@brillout/vite@5.0.0-beta.14.0426910c
