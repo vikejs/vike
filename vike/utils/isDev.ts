@@ -1,4 +1,5 @@
 export { isDevCheck }
+export { applyDev }
 
 import { assert } from './assert.js'
 
@@ -9,4 +10,8 @@ function isDevCheck(configEnv: ConfigEnv): boolean {
   // Released at vite@5.1.0 which is guaranteed with `assertVersion('Vite', version, '5.1.0')`
   assert(typeof isPreview === 'boolean')
   return !isPreview
+}
+
+function applyDev(_: unknown, env: ConfigEnv): boolean {
+  return isDevCheck(env)
 }
