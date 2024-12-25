@@ -1,7 +1,7 @@
 export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertUsage, getOutDirs, resolveOutDir, markEnvAsVitePreview } from '../utils.js'
+import { assertUsage, getOutDirs, resolveOutDir, markEnvAsVitePreview, applyPreview } from '../utils.js'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'
@@ -14,7 +14,7 @@ function previewConfig(): Plugin {
   // let configVike: ConfigVikeResolved
   return {
     name: 'vike:previewConfig',
-    apply: 'serve',
+    apply: applyPreview,
     config(config) {
       return {
         appType: 'custom',
