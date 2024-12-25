@@ -3,25 +3,31 @@ export { resolveVikeConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { assertVikeConfig } from './assertVikeConfig.js'
-import { isDev2 } from '../../utils.js'
+import { assert, isDev3 } from '../../utils.js'
 import { pickFirst } from './pickFirst.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 
 function resolveVikeConfig(vikeConfig: unknown): Plugin {
+  let isDev: undefined | boolean
   return {
     name: 'vike:resolveVikeConfig',
     enforce: 'pre',
+    apply(_config,env ) {
+      isDev = isDev3(env)
+      return true
+    },
     async configResolved(config) {
-      const promise = getConfigVikPromise(vikeConfig, config)
+      assert(typeof isDev==='boolean')
+      const promise = getConfigVikPromise(vikeConfig, config, isDev)
       ;(config as Record<string, unknown>).configVikePromise = promise
       await promise
     }
   }
 }
 
-async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig): Promise<ConfigVikeResolved> {
+async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig, isDev: boolean): Promise<ConfigVikeResolved> {
   const fromPluginOptions = (vikeConfig ?? {}) as ConfigVikeUserProvided
   const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVikeUserProvided
 
@@ -31,7 +37,7 @@ async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig):
   assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
   const crawlWithGit = fromPluginOptions.crawl?.git ?? null
-  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev2(config), { crawlWithGit })
+  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev, { crawlWithGit })
   configs.push(fromPlusConfigFile)
   assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
     // TODO: add config file path ?
