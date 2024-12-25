@@ -57,6 +57,9 @@ function tolerateError({ logSource, logText }) {
   return (
     // TODO/eventually: move everything to this array
     [
+      // [11:00:51.986][/test/cjs/test-dev.test.ts][npm run dev][stderr] (node:3061) ExperimentalWarning: CommonJS module /home/runner/work/vike/vike/vike/dist/cjs/node/plugin/index.js is loading ES Module /home/runner/work/vike/vike/node_modules/.pnpm/vite@6.0.5_@types+node@20.13.0_terser@5.31.0_tsx@4.19.2/node_modules/vite/dist/node/index.js using require().
+      // Support for loading ES Module in require() is an experimental feature and might change at any time
+      'loading ES Module in require() is an experimental feature',
       // [15:31:51.518][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient, present in 'optimizeDeps.include'
       'Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient',
       // [21:29:57.330][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/Layout, present in 'optimizeDeps.include'
