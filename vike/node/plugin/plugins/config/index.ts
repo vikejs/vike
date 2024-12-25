@@ -3,7 +3,7 @@ export { resolveVikeConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { assertVikeConfig } from './assertVikeConfig.js'
-import { assert, isDev3 } from '../../utils.js'
+import { assert, isDevCheck } from '../../utils.js'
 import { pickFirst } from './pickFirst.js'
 import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
@@ -14,12 +14,12 @@ function resolveVikeConfig(vikeConfig: unknown): Plugin {
   return {
     name: 'vike:resolveVikeConfig',
     enforce: 'pre',
-    apply(_config,env ) {
-      isDev = isDev3(env)
+    apply(_config, env) {
+      isDev = isDevCheck(env)
       return true
     },
     async configResolved(config) {
-      assert(typeof isDev==='boolean')
+      assert(typeof isDev === 'boolean')
       const promise = getConfigVikPromise(vikeConfig, config, isDev)
       ;(config as Record<string, unknown>).configVikePromise = promise
       await promise
@@ -27,7 +27,11 @@ function resolveVikeConfig(vikeConfig: unknown): Plugin {
   }
 }
 
-async function getConfigVikPromise(vikeConfig: unknown, config: ResolvedConfig, isDev: boolean): Promise<ConfigVikeResolved> {
+async function getConfigVikPromise(
+  vikeConfig: unknown,
+  config: ResolvedConfig,
+  isDev: boolean
+): Promise<ConfigVikeResolved> {
   const fromPluginOptions = (vikeConfig ?? {}) as ConfigVikeUserProvided
   const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVikeUserProvided
 
