@@ -57,6 +57,8 @@ function tolerateError({ logSource, logText }) {
   return (
     // TODO/eventually: move everything to this array
     [
+      // Error: [DocPress][Warning] prop `text` is deprecated
+      'prop `text` is deprecated',
       // [11:00:51.986][/test/cjs/test-dev.test.ts][npm run dev][stderr] (node:3061) ExperimentalWarning: CommonJS module /home/runner/work/vike/vike/vike/dist/cjs/node/plugin/index.js is loading ES Module /home/runner/work/vike/vike/node_modules/.pnpm/vite@6.0.5_@types+node@20.13.0_terser@5.31.0_tsx@4.19.2/node_modules/vite/dist/node/index.js using require().
       // Support for loading ES Module in require() is an experimental feature and might change at any time
       'loading ES Module in require() is an experimental feature',
