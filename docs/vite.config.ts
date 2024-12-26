@@ -5,8 +5,8 @@ import type { UserConfig } from 'vite'
 export default {
   ...docpressConfig,
   plugins: [
-    //
     ...docpressConfig.plugins!,
+    // Used by the landing page, see `.svg?react` imports
     svgr()
   ]
 } satisfies UserConfig
