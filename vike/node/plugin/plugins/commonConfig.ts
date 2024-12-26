@@ -36,15 +36,24 @@ function commonConfig(): Plugin[] {
       // Override Vite's default port without overriding the user
       config: {
         order: 'post',
-        handler(config) {
-          const configMod: UserConfig = {}
-          if (config.server?.port === undefined) configMod.server = { port: 3000 }
-          if (config.preview?.port === undefined) configMod.preview = { port: 3000 }
-          return configMod
+        handler(configFromUser) {
+          const configFromVike: UserConfig = { server: {}, preview: {} }
+          setDefault('port', 3000, configFromUser, configFromVike)
+          return configFromVike
         }
       }
     }
   ]
+}
+
+function setDefault<Setting extends 'port' | 'host'>(
+  setting: Setting,
+  value: NonNullable<UserConfig['server'] | UserConfig['preview']>[Setting],
+  configFromUser: UserConfig,
+  configFromVike: UserConfig
+) {
+  if (configFromUser.server?.[setting] === undefined) configFromVike.server![setting] = value
+  if (configFromUser.preview?.[setting] === undefined) configFromVike.preview![setting] = value
 }
 
 /*
