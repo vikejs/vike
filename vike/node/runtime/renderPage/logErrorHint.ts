@@ -11,18 +11,18 @@ const hintLinkPrefix = 'To fix this error, see '
 type Errors = {
   errMsg: string | RegExp
   link?: string
-  shouldMentionNodeModules?: false
+  mustMentionNodeModules?: false
 }
 const errorsMisc: Errors[] = [
   {
     errMsg: 'window is not defined',
     link: 'https://vike.dev/hints#window-is-not-defined',
-    shouldMentionNodeModules: false
+    mustMentionNodeModules: false
   },
   {
     errMsg: 'jsxDEV is not a function',
     link: 'https://github.com/vikejs/vike/issues/1469#issuecomment-1919518096',
-    shouldMentionNodeModules: false
+    mustMentionNodeModules: false
   },
   {
     // ```
@@ -30,7 +30,7 @@ const errorsMisc: Errors[] = [
     // ```
     errMsg: 'assets.json',
     link: 'https://vike.dev/getGlobalContext',
-    shouldMentionNodeModules: false
+    mustMentionNodeModules: false
   }
 ]
 const errorsReact: Errors[] = [
@@ -39,7 +39,7 @@ const errorsReact: Errors[] = [
       'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)',
     link: 'https://vike.dev/broken-npm-package#react-invalid-component',
     // The stack trace can be user-land while the import is coming from node_modules
-    shouldMentionNodeModules: false
+    mustMentionNodeModules: false
   },
   {
     // React's "Invalid hook call.", see https://github.com/vikejs/vike/discussions/1637#discussioncomment-9424712
@@ -52,7 +52,7 @@ const errorsCjsEsm_withPreciseLink: Errors[] = [
     errMsg: /Named export.*not found/i,
     link: 'https://vike.dev/broken-npm-package#named-export-not-found',
     // It seems that this always points to an npm package import.
-    shouldMentionNodeModules: false
+    mustMentionNodeModules: false
   }
 ]
 const errorsCjsEsm: Errors[] = [
@@ -69,7 +69,7 @@ const errorsCjsEsm: Errors[] = [
   {
     errMsg: 'Cannot use import statement',
     // Since user code is always ESM, this error must always originate from an npm package.
-    shouldMentionNodeModules: false
+    mustMentionNodeModules: false
   },
 
   { errMsg: 'is not exported' },
@@ -122,7 +122,7 @@ function isKnownError(error: unknown) {
     ...errorsCjsEsm
   ].find((knownErorr) => {
     if (!includesLowercase(anywhere, knownErorr.errMsg)) return false
-    if (knownErorr.shouldMentionNodeModules !== false && !includesLowercase(anywhere, 'node_modules')) return false
+    if (knownErorr.mustMentionNodeModules !== false && !includesLowercase(anywhere, 'node_modules')) return false
     return true
   })
   if (!knownErr) return false
