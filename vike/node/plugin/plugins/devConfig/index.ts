@@ -1,13 +1,15 @@
 export { devConfig }
+export { logDockerHint }
 
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { determineOptimizeDeps } from './determineOptimizeDeps.js'
 import { determineFsAllowList } from './determineFsAllowList.js'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware.js'
-import { applyDev, markEnvAsViteDev } from '../../utils.js'
+import { applyDev, assertWarning, isDocker, markEnvAsViteDev } from '../../utils.js'
 import { improveViteLogs } from '../../shared/loggerVite.js'
 import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore.js'
+import pc from '@brillout/picocolors'
 
 if (isErrorDebug()) {
   Error.stackTraceLimit = Infinity
@@ -69,6 +71,7 @@ function devConfig(): Plugin[] {
           await installHttpRequestAsyncStore()
           improveViteLogs(config)
         }
+        logDockerHint(config.server.host)
       },
       configureServer() {
         markEnvAsViteDev()
@@ -100,4 +103,14 @@ function devConfig(): Plugin[] {
       }
     }
   ]
+}
+
+function logDockerHint(configHost: ResolvedConfig['server']['host']) {
+  if (isDocker()) {
+    assertWarning(
+      configHost,
+      `Your app seems to be running inside a Docker or Podman container but ${pc.cyan('--host')} isn't set which means that your Vike app won't be accessible from outside the container, see https://vike.dev/docker`,
+      { onlyOnce: true }
+    )
+  }
 }

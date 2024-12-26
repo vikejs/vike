@@ -1,7 +1,7 @@
 export { commonConfig }
 
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
-import { assert, assertUsage, assertWarning, findPackageJson } from '../utils.js'
+import { assert, assertUsage, assertWarning, findPackageJson, isDocker } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
@@ -39,6 +39,9 @@ function commonConfig(): Plugin[] {
         handler(configFromUser) {
           const configFromVike: UserConfig = { server: {}, preview: {} }
           setDefault('port', 3000, configFromUser, configFromVike)
+          if (isDocker()) {
+            setDefault('host', true, configFromUser, configFromVike)
+          }
           return configFromVike
         }
       }

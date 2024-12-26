@@ -7,6 +7,7 @@ import path from 'path'
 import type { ViteDevServer } from 'vite'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
+import { logDockerHint } from './devConfig/index.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
@@ -25,6 +26,7 @@ function previewConfig(): Plugin {
     },
     async configResolved(config_) {
       config = config_
+      logDockerHint(config.preview.host)
       // configVike = await getConfigVike(config)
     },
     configurePreviewServer(server) {
