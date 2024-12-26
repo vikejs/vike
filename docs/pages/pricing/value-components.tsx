@@ -65,7 +65,7 @@ function compute_color(value: number) {
   return COLOR_ORANGE
 }
 
-function TableRef({ name, children }: { name: string; children: JSX.Element[] }) {
+function TableRef({ name, children }: { name: string; children: React.JSX.Element[] }) {
   return (
     <>
       <em>{name}</em>: {children}

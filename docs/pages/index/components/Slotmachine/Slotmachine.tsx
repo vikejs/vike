@@ -27,7 +27,7 @@ type slotMachineRegistryType = {
   name: string
   group: slotMachineGroupType
   bgColor: string
-  logo: JSX.Element
+  logo: React.JSX.Element
 }
 
 export const Slotmachine = () => {

@@ -8,9 +8,9 @@ export const ParagraphTextCollection = ({
   buttonLable
 }: {
   title: string
-  description: string | JSX.Element
+  description: string | React.JSX.Element
   buttonLable?: string
-  icon: JSX.Element
+  icon: React.JSX.Element
 }) => {
   return (
     <div style={{ width: '100%' }}>

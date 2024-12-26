@@ -8,8 +8,8 @@ export const SectionTextCollection = ({
   style
 }: {
   caption: string
-  title: string | JSX.Element
-  descriptions?: (string | JSX.Element)[]
+  title: string | React.JSX.Element
+  descriptions?: (string | React.JSX.Element)[]
   style?: React.CSSProperties
 }) => {
   return (
