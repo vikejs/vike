@@ -14,7 +14,7 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
   return (
     <>
       <p>
-        Community-led documentation about using <a href={url}>{parseMarkdownMini(pageContext.pageTitle!)}</a> with Vike.
+        Community-led documentation about using Vike with <a href={url}>{parseMarkdownMini(pageContext.pageTitle!)}</a>.
       </p>
       <Contribution>
         This page may contain outdated information;{' '}
