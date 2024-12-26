@@ -441,6 +441,14 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/hydration-mismatch'
   },
   {
+    title: 'Glossary',
+    url: '/glossary'
+  },
+  {
+    title: 'Hints',
+    url: '/hints'
+  },
+  {
     title: 'Broken npm package',
     url: '/broken-npm-package'
   },

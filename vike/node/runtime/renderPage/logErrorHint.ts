@@ -15,6 +15,11 @@ type Errors = {
 }
 const errorsMisc: Errors[] = [
   {
+    errMsg: 'window is not defined',
+    link: 'https://vike.dev/hints#window-is-not-defined',
+    shouldMentionNodeModules: false
+  },
+  {
     errMsg: 'jsxDEV is not a function',
     link: 'https://github.com/vikejs/vike/issues/1469#issuecomment-1919518096',
     shouldMentionNodeModules: false
@@ -76,7 +81,6 @@ const errorsCjsEsm: Errors[] = [
   { errMsg: 'require is not a function' },
   { errMsg: 'exports is not defined' },
   { errMsg: 'module is not defined' },
-  { errMsg: 'window is not defined' },
   { errMsg: 'not defined in ES' },
   { errMsg: "Unexpected token 'export'" }
 ]
