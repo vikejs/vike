@@ -17,11 +17,11 @@ function CommunityNote({ tool, url, hasExtension }: { tool?: string; url: string
         Community-led documentation about using <a href={url}>{parseMarkdownMini(pageContext.pageTitle!)}</a> with Vike.
       </p>
       <Contribution>
-        This page may contain outdated information,{' '}
+        This page may contain outdated information;{' '}
         <a href={getEditLink(pageContext.urlPathname)} target="_blank">
           PR welcome
         </a>{' '}
-        to update or improve this page.
+        to update or improve it.
       </Contribution>
       {hasExtension !== undefined && (
         <HasExtension toolName={tool} toolTitle={pageContext.pageTitle!} hasExtension={hasExtension} />
