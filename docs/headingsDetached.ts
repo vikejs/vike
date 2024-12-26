@@ -4,6 +4,10 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached: HeadingDetachedDefinition[] = [
   {
+    title: 'Windows Subsystem for Linux (WSL)',
+    url: '/wsl'
+  },
+  {
     title: 'Rule: `no-side-exports`',
     url: '/no-side-exports'
   },
