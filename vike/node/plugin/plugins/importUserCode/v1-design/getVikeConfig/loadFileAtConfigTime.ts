@@ -6,14 +6,7 @@ export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
-import {
-  assert,
-  assertUsage,
-  hasProp,
-  assertIsNotProductionRuntime,
-  isArrayOfStrings,
-  isObject
-} from '../../../../utils.js'
+import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
@@ -105,13 +98,13 @@ async function loadExtendsConfigs(
     extendsConfigFiles.push(filePath)
   })
 
-  await Promise.all(
-    extendsConfigFiles.map(async (configFilePath) => {
-      const result = await loadConfigFile(configFilePath, userRootDir, visited, true)
-      extendsConfigs.push(result.configFile)
-      extendsConfigs.push(...result.extendsConfigs)
-    })
+  const results = await Promise.all(
+    extendsConfigFiles.map(async (configFilePath) => await loadConfigFile(configFilePath, userRootDir, visited, true))
   )
+  results.forEach((result) => {
+    extendsConfigs.push(result.configFile)
+    extendsConfigs.push(...result.extendsConfigs)
+  })
 
   const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsoluteFilesystem)
 
