@@ -91,7 +91,7 @@ function Reliable() {
           <div className={`landingpage-reliable-imageWrapper`}>
             <TrendingPackageSVG />
             <IllustrationNote style={{ maxWidth: 300, margin: 'auto' }}>
-              Vike extensions are a thin layer of glue code that can easily be forked
+              Vike extensions are a thin layer of glue code that can be easily forked
             </IllustrationNote>
           </div>
         </div>

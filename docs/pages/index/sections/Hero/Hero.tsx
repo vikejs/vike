@@ -114,9 +114,9 @@ function Quote() {
             flexShrink: 0
           }}
         />
-        <span style={{ maxWidth: 620 }}>
-          We believe Vike to be the next generation of framework architecture, for an open and dependable foundation
-          that companies can build upon with confidence.
+        <span style={{ maxWidth: 540 }}>
+          Vike is the next generation of framework architecture, for an open and dependable foundation companies can
+          build upon with confidence.
         </span>
       </span>
       <a
