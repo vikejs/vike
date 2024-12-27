@@ -5,6 +5,7 @@ export { fixServerAssets_assertCssTarget }
 export { fixServerAssets_assertCssTarget_populate }
 
 import fs from 'fs/promises'
+import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
@@ -56,17 +57,18 @@ async function copyAssets(filesToCopy: string[], config: ResolvedConfig) {
   const concurrencyLimit = pLimit(10)
   await Promise.all(
     filesToCopy.map((file) =>
-      concurrencyLimit(() =>
-        // TODO: move instead of copying
-        fs.cp(path.posix.join(outDirServer, file), path.posix.join(outDirClient, file), {
-          recursive: true
-        })
-      )
+      concurrencyLimit(async () => {
+        const source = path.posix.join(outDirServer, file)
+        const target = path.posix.join(outDirClient, file)
+        await fs.mkdir(path.posix.dirname(target), { recursive: true })
+        await fs.rename(source, target)
+      })
     )
   )
   /* We cannot do that because, with some edge case Rollup settings (outputing JavaScript chunks and static assets to the same directoy), this removes JavaScript chunks, see https://github.com/vikejs/vike/issues/1154#issuecomment-1975762404
   await fs.rm(assetsDirServer, { recursive: true })
   */
+  removeEmptyDirectories(assetsDirServer)
 }
 
 type Resource = { src: string; hash: string }
@@ -239,4 +241,28 @@ async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
 }
 function resolveCssTarget(target: TargetConfig) {
   return target.css ?? target.global
+}
+
+/**
+ * Recursively remove all empty directories in a given directory.
+ */
+function removeEmptyDirectories(dirPath: string): void {
+  // Read the directory contents
+  const files = fs_sync.readdirSync(dirPath)
+
+  // Iterate through the files and subdirectories
+  for (const file of files) {
+    const fullPath = path.join(dirPath, file)
+
+    // Check if it's a directory
+    if (fs_sync.statSync(fullPath).isDirectory()) {
+      // Recursively clean up the subdirectory
+      removeEmptyDirectories(fullPath)
+    }
+  }
+
+  // Re-check the directory; remove it if it's now empty
+  if (fs_sync.readdirSync(dirPath).length === 0) {
+    fs_sync.rmdirSync(dirPath)
+  }
 }
