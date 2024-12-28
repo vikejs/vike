@@ -7,7 +7,6 @@ import pc from '@brillout/picocolors'
 import type { ConfigEnvInternal, DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
 import {
   assert,
-  assertIsNpmPackageImport,
   assertPosixPath,
   assertUsage,
   deepEqual,
@@ -169,8 +168,8 @@ function assertUsageFileEnv(
   if (filePath.filePathAbsoluteFilesystem) {
     key = filePath.filePathAbsoluteFilesystem
   } else {
-    importPath
-    assertIsNpmPackageImport(importPath)
+    // Path alias
+    assert(!isRelativeImportPath(importPath))
     key = importPath
   }
   assertPosixPath(key)
