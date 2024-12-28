@@ -1,5 +1,5 @@
 import { autoRetry, fetchHtml, getServerUrl, page } from '@brillout/test-e2e'
-import { extractSerializedSettings } from './serializeSettings'
+import { extractSerializedSettings } from './serializePageContext'
 
 export async function fetchConfigJson(pathname: string, options?: { clientSide?: boolean }) {
   let jsonText: string | undefined | null = null

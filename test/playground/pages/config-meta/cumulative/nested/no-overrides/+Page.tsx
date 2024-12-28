@@ -1,9 +1,9 @@
 import React from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
-import { serializeSettings } from '../../serializeSettings'
+import { serializePageContext } from '../../serializePageContext'
 
 export function Page() {
   const pageContext = usePageContext()
-  const json = serializeSettings(pageContext)
+  const json = serializePageContext(pageContext)
   return <p id="serialized-settings">{json}</p>
 }

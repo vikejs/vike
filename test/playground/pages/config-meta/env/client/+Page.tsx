@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
-import { serializeSettings } from '../serializeSettings'
+import { serializePageContext } from '../serializePageContext'
 import { isBrowser } from '../../../../utils/isBrowser'
 
 export function Page() {
@@ -12,6 +12,6 @@ export function Page() {
   if (!mounted || !isBrowser) {
     return <></>
   }
-  const json = serializeSettings(pageContext)
+  const json = serializePageContext(pageContext)
   return <p id="serialized-settings">{json}</p>
 }
