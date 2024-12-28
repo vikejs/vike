@@ -1,7 +1,7 @@
 export { testSettingOnlyAvailableInCorrectEnv }
 
 import { expect, test } from '@brillout/test-e2e'
-import { retrievePageContext } from '../../../utils/retrievePageContext'
+import { retrievePageContext } from '../retrievePageContext'
 
 function testSettingOnlyAvailableInCorrectEnv() {
   test('Custom Setting Env - Client-only', async () => {

@@ -2,7 +2,7 @@ export { serializePageContext }
 export { extractPageContext }
 
 import { Config, PageContext } from 'vike/types'
-import { isBrowser } from './isBrowser'
+import { isBrowser } from '../../utils/isBrowser'
 
 const START_MARKER = '===CONFIG:START==='
 const END_MARKER = '===CONFIG:END==='

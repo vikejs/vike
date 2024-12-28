@@ -1,7 +1,7 @@
 export { testSettingInheritedByDescendants }
 
 import { expect, test } from '@brillout/test-e2e'
-import { retrievePageContext } from '../../../utils/retrievePageContext'
+import { retrievePageContext } from '../retrievePageContext'
 
 function testSettingInheritedByDescendants() {
   test('Standard and cumulative settings are inherited correctly', async () => {
