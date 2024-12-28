@@ -6,7 +6,6 @@ function testSettingEffect() {
     let json = await retrievePageContext('/config-meta/effect/without-effect')
 
     expect(json).to.deep.equal({
-      isBrowser: false,
       settingWithEffect: 'undefined',
       dependentSetting: 'undefined'
     })
@@ -16,7 +15,6 @@ function testSettingEffect() {
     let json = await retrievePageContext('/config-meta/effect/with-effect')
 
     expect(json).to.deep.equal({
-      isBrowser: false,
       settingWithEffect: 'undefined',
       dependentSetting: 'default @ /effect'
     })

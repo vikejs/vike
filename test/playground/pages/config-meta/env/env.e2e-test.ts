@@ -6,7 +6,6 @@ function testSettingOnlyAvailableInCorrectEnv() {
     let json = await retrievePageContext('/config-meta/env/client', { clientSide: true })
 
     expect(json).to.deep.equal({
-      isBrowser: true,
       settingServerOnly: 'undefined',
       settingClientOnly: { nested: 'clientOnly @ /env' },
       settingConfigOnly: 'undefined'
@@ -14,10 +13,9 @@ function testSettingOnlyAvailableInCorrectEnv() {
   })
 
   test('Custom Setting Env - Server-only', async () => {
-    let json = await retrievePageContext('/config-meta/env/server', { clientSide: false })
+    let json = await retrievePageContext('/config-meta/env/server')
 
     expect(json).to.deep.equal({
-      isBrowser: false,
       settingServerOnly: { nested: 'serverOnly @ /env' },
       settingClientOnly: 'undefined',
       settingConfigOnly: 'undefined'
