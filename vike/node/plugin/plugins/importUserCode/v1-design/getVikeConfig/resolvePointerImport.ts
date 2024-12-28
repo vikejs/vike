@@ -32,7 +32,7 @@ function resolvePointerImportOfConfig(
   userRootDir: string,
   configEnv: ConfigEnvInternal,
   configName: string
-): null | PointerImportResolved {
+): null | { pointerImport: PointerImportResolved; configEnv: ConfigEnvInternal } {
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
   if (!pointerImportData) return null
@@ -41,14 +41,16 @@ function resolvePointerImportOfConfig(
   const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
-  assertUsageFileEnv(filePath, importPath, configEnv, configName)
+  let configEnvResolved = configEnv
+  if (filePath.filePathAbsoluteFilesystem) configEnvResolved = determineConfigEnvFromFileName(configEnv, filePath)
+  assertUsageFileEnv(filePath, importPath, configEnvResolved, configName)
 
   const pointerImport = {
     ...filePath,
     fileExportName: exportName,
     fileExportPathToShowToUser
   }
-  return pointerImport
+  return { pointerImport, configEnv: configEnvResolved }
 }
 
 function resolvePointerImport(
@@ -158,12 +160,7 @@ function assertUsageResolutionSuccess(
   }
 }
 
-function assertUsageFileEnv(
-  filePath: FilePath,
-  importPath: string,
-  configEnv: ConfigEnvInternal,
-  configName: string
-) {
+function assertUsageFileEnv(filePath: FilePath, importPath: string, configEnv: ConfigEnvInternal, configName: string) {
   let key: string
   if (filePath.filePathAbsoluteFilesystem) {
     key = filePath.filePathAbsoluteFilesystem
@@ -199,7 +196,8 @@ function clearFilesEnvMap() {
   filesEnvMap.clear()
 }
 
-function determineConfigEnvFromFileName(env: ConfigEnvInternal, fileName: string) {
+function determineConfigEnvFromFileName(env: ConfigEnvInternal, filePath: FilePathResolved) {
+  const { fileName } = filePath
   env = { ...env }
   if (fileName.includes('.server.')) {
     env.server = true
