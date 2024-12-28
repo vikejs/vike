@@ -77,7 +77,7 @@ import {
   loadImportedFile,
   loadValueFile
 } from './getVikeConfig/loadFileAtConfigTime.js'
-import { clearFilesEnvMap, resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
+import { clearFilesEnvMap, determineConfigEnvFromFileName, resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -505,21 +505,6 @@ function assertUsageGlobalConfigs(
   })
 }
 
-function deriveConfigEnvFromFileName(env: ConfigEnvInternal, fileName: string) {
-  env = { ...env }
-  if (fileName.includes('.server.')) {
-    env.server = true
-    env.client = false
-  } else if (fileName.includes('.client.')) {
-    env.client = true
-    env.server = false
-  } else if (fileName.includes('.shared.')) {
-    env.server = true
-    env.client = true
-  }
-  return env
-}
-
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
   pageConfigs.forEach((pageConfig) => {
     assertOnBeforeRenderEnv(pageConfig)
@@ -783,7 +768,7 @@ async function getConfigValueSource(
 ): Promise<ConfigValueSource> {
   const conf = interfaceFile.fileExportsByConfigName[configName]
   assert(conf)
-  const configEnv = deriveConfigEnvFromFileName(configDef.env, interfaceFile.filePath.fileName)
+  const configEnv = determineConfigEnvFromFileName(configDef.env, interfaceFile.filePath.fileName)
   const { locationId } = interfaceFile
 
   const definedAtFilePath_: DefinedAtFilePath = {

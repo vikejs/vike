@@ -1,6 +1,7 @@
 export { resolvePointerImportOfConfig }
 export { resolvePointerImport }
 export { clearFilesEnvMap }
+export { determineConfigEnvFromFileName }
 
 import pc from '@brillout/picocolors'
 import type { ConfigEnvInternal, DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
@@ -41,13 +42,14 @@ function resolvePointerImportOfConfig(
   const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
-  assertUsageFileEnv(filePath.filePathAbsoluteFilesystem, importPath, configEnv, configName)
+  assertUsageFileEnv(filePath, importPath, configEnv, configName)
 
-  return {
+  const pointerImport = {
     ...filePath,
     fileExportName: exportName,
     fileExportPathToShowToUser
   }
+  return pointerImport
 }
 
 function resolvePointerImport(
@@ -67,7 +69,7 @@ function resolvePointerImport(
   if (importPath.startsWith('.') || isFilePathAbsolute(importPath)) {
     if (importPath.startsWith('.')) {
       assertUsage(
-        importPath.startsWith('./') || importPath.startsWith('../'),
+        isRelativeImportPath(importPath),
         `Invalid relative import path ${pc.code(importPath)} defined by ${
           importerFilePath.filePathToShowToUser
         } because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
@@ -110,6 +112,7 @@ function resolvePointerImport(
         importPathAbsolute
       })
     } else {
+      // We cannot resolve path aliases defined only in Vite
       filePath = getFilePathUnresolved({
         importPathAbsolute
       })
@@ -148,7 +151,7 @@ function assertUsageResolutionSuccess(
       : (`The import ${pc.code(importString)} defined by ${filePathToShowToUser}` as const)
     const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
     if (importPath.startsWith('.')) {
-      assert(importPath.startsWith('./') || importPath.startsWith('../'))
+      assert(isRelativeImportPath(importPath))
       assertUsage(false, `${errIntro2} point to an existing file?`)
     } else {
       assertUsage(false, `${errIntro2} exist?`)
@@ -157,15 +160,16 @@ function assertUsageResolutionSuccess(
 }
 
 function assertUsageFileEnv(
-  filePathAbsoluteFilesystem: string | null,
+  filePath: FilePath,
   importPath: string,
   configEnv: ConfigEnvInternal,
   configName: string
 ) {
   let key: string
-  if (filePathAbsoluteFilesystem) {
-    key = filePathAbsoluteFilesystem
+  if (filePath.filePathAbsoluteFilesystem) {
+    key = filePath.filePathAbsoluteFilesystem
   } else {
+    importPath
     assertIsNpmPackageImport(importPath)
     key = importPath
   }
@@ -194,4 +198,23 @@ function assertUsageFileEnv(
 }
 function clearFilesEnvMap() {
   filesEnvMap.clear()
+}
+
+function determineConfigEnvFromFileName(env: ConfigEnvInternal, fileName: string) {
+  env = { ...env }
+  if (fileName.includes('.server.')) {
+    env.server = true
+    env.client = false
+  } else if (fileName.includes('.client.')) {
+    env.client = true
+    env.server = false
+  } else if (fileName.includes('.shared.')) {
+    env.server = true
+    env.client = true
+  }
+  return env
+}
+
+function isRelativeImportPath(importPath: string) {
+  return importPath.startsWith('./') || importPath.startsWith('../')
 }
