@@ -1,3 +1,5 @@
+export { testPrerenderSettings }
+
 import fs from 'fs'
 import path from 'path'
 import { expect, test } from '@brillout/test-e2e'
@@ -23,5 +25,3 @@ function testPrerenderSettings({
     })
   }
 }
-
-export default [testPrerenderSettings]

@@ -1,3 +1,5 @@
+export { testNestedLayout }
+
 import { test, page, getServerUrl, expect, autoRetry } from '@brillout/test-e2e'
 import { testCounter } from '../../../utils'
 
@@ -47,5 +49,3 @@ function testNestedLayout() {
     return scrollTop
   }
 }
-
-export default [testNestedLayout]

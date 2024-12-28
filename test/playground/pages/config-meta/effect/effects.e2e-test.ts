@@ -1,3 +1,5 @@
+export { testSettingEffect }
+
 import { expect, test } from '@brillout/test-e2e'
 import { retrievePageContext } from '../../../utils/retrievePageContext'
 
@@ -20,5 +22,3 @@ function testSettingEffect() {
     })
   })
 }
-
-export default [testSettingEffect]

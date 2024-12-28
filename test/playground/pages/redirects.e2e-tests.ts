@@ -1,3 +1,5 @@
+export { testRedirectMailto }
+
 import { test, getServerUrl, expect } from '@brillout/test-e2e'
 
 function testRedirectMailto() {
@@ -6,5 +8,3 @@ function testRedirectMailto() {
     expect(resp.headers.get('Location')).toBe('mailto:some@example.com')
   })
 }
-
-export default [testRedirectMailto]

@@ -1,3 +1,5 @@
+export { testDynamicImportFileEnv }
+
 import { test, page, getServerUrl, expect, expectLog, autoRetry } from '@brillout/test-e2e'
 
 function testDynamicImportFileEnv() {
@@ -13,5 +15,3 @@ function testDynamicImportFileEnv() {
     )
   })
 }
-
-export default [testDynamicImportFileEnv]

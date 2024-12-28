@@ -1,3 +1,5 @@
+export { testHistoryPushState }
+
 import { test, page, getServerUrl, expect, sleep, autoRetry } from '@brillout/test-e2e'
 import { testCounter, expectUrl } from '../../../utils'
 
@@ -69,5 +71,3 @@ function testHistoryPushState() {
     return timestamp
   }
 }
-
-export default [testHistoryPushState]

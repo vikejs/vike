@@ -1,3 +1,6 @@
+export { testSideExports }
+export { testRouteStringDefinedInConfigFile }
+
 import { test, fetchHtml, expect, getServerUrl, page } from '@brillout/test-e2e'
 import { testCounter } from '../../../utils'
 
@@ -21,5 +24,3 @@ function testSideExports() {
     await testCounter()
   })
 }
-
-export default [testRouteStringDefinedInConfigFile, testSideExports]

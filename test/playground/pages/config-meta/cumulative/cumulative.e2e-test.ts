@@ -1,3 +1,5 @@
+export { testSettingInheritedByDescendants }
+
 import { expect, test } from '@brillout/test-e2e'
 import { retrievePageContext } from '../../../utils/retrievePageContext'
 
@@ -34,5 +36,3 @@ function testSettingInheritedByDescendants() {
     })
   })
 }
-
-export default [testSettingInheritedByDescendants]

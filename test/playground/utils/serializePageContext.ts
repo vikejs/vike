@@ -43,7 +43,7 @@ function valueOrType(value: any) {
  * @param text The text that contains the serialized settings.
  * @returns
  */
-function extractPageContext(text: string | null | undefined): Record<string, any> {
+function extractPageContext(text: string | null): Record<string, any> {
   if (!text) {
     throw Error('Text must not be null or undefined.')
   }

@@ -1,3 +1,5 @@
+export { testSettingOnlyAvailableInCorrectEnv }
+
 import { expect, test } from '@brillout/test-e2e'
 import { retrievePageContext } from '../../../utils/retrievePageContext'
 
@@ -22,5 +24,3 @@ function testSettingOnlyAvailableInCorrectEnv() {
     })
   })
 }
-
-export default [testSettingOnlyAvailableInCorrectEnv]

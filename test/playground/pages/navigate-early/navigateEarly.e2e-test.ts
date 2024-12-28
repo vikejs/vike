@@ -1,3 +1,5 @@
+export { testNavigateEarly }
+
 import { autoRetry, getServerUrl, page, test } from '@brillout/test-e2e'
 import { expectUrl } from '../../../utils'
 
@@ -12,5 +14,3 @@ function testNavigateEarly() {
     )
   })
 }
-
-export default [testNavigateEarly]

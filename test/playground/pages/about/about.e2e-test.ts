@@ -1,3 +1,5 @@
+export { testCumulativeSetting }
+
 import { expect, fetchHtml, test } from '@brillout/test-e2e'
 
 function testCumulativeSetting() {
@@ -19,5 +21,3 @@ function testCumulativeSetting() {
     expectGlobalMetaTags()
   })
 }
-
-export default [testCumulativeSetting]
