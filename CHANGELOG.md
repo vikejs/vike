@@ -1,3 +1,17 @@
+## [0.4.211](https://github.com/vikejs/vike/compare/v0.4.210...v0.4.211) (2024-12-28)
+
+
+### Bug Fixes
+
+* add hint for `window is not defined` ([7e270e9](https://github.com/vikejs/vike/commit/7e270e9f0c1af403fb39b2277fc7aaa86cdc0c11))
+* fix wrong alias assertion ([07fd3f1](https://github.com/vikejs/vike/commit/07fd3f183a29a57370ea56e7af3d83dfae23200f))
+* remove assets from dist/server/ (fix [#2034](https://github.com/vikejs/vike/issues/2034)) ([c1cd2d9](https://github.com/vikejs/vike/commit/c1cd2d978b9b811c159551927d0f843d7709066e))
+* set `host: true` if inside docker container ([cac186d](https://github.com/vikejs/vike/commit/cac186d45f6a6505256f3e670088f6aaf32962e8))
+* stabilize extends order (fix [#2037](https://github.com/vikejs/vike/issues/2037)) ([d93dfe1](https://github.com/vikejs/vike/commit/d93dfe1fe4b16a8c253032906449d75c1560fd68))
+* support .{client,server.shared}.js for pointer imports ([285fedb](https://github.com/vikejs/vike/commit/285fedbe561f376aa897caabf5d35b7f907792f6))
+
+
+
 ## [0.4.210](https://github.com/vikejs/vike/compare/v0.4.209...v0.4.210) (2024-12-17)
 
 
