@@ -1,3 +1,6 @@
+export { serializePageContext }
+export { extractPageContext }
+
 import { Config, PageContext } from 'vike/types'
 import { isBrowser } from './isBrowser'
 
@@ -5,20 +8,26 @@ const START_MARKER = '===CONFIG:START==='
 const END_MARKER = '===CONFIG:END==='
 const EXTRACT_REGEX = RegExp(START_MARKER + '(.*)' + END_MARKER)
 
+type SerializedData = {
+  isBrowser: boolean
+  pageContextSubset: Record<string, unknown>
+}
+
 /**
  * Serializes the specified keys of {@link PageContext#config} and wraps the resulting JSON
  * in known start and end markers so that it can be later extracted from the resulting HTML
  * via {@link extractPageContext} without knowing its exact position on the page.
  */
-export function serializePageContext(pageContext: PageContext, keys: (string & keyof Config)[]) {
-  let obj: Record<string, any> = { isBrowser }
+function serializePageContext(pageContext: PageContext, keys: (string & keyof Config)[]) {
+  const pageContextSubset: Record<string, unknown> = {}
   for (const key of keys) {
-    obj[key] = valueOrType(pageContext.config[key])
+    pageContextSubset[key] = valueOrType(pageContext.config[key])
   }
-  return START_MARKER + JSON.stringify(obj) + END_MARKER
+  let serializedData: SerializedData = { isBrowser, pageContextSubset }
+  return START_MARKER + JSON.stringify(serializedData) + END_MARKER
 }
 
-export function valueOrType(value: any) {
+function valueOrType(value: any) {
   if (value === undefined) {
     return 'undefined'
   }
@@ -35,7 +44,7 @@ export function valueOrType(value: any) {
  * @param decodeHtmlEntities Whether to decode any HTML entities like `&quot;` before deserializing the JSON.
  * @returns
  */
-export function extractPageContext(
+function extractPageContext(
   text: string | null | undefined,
   options?: { expect?: { isBrowser?: boolean }; decodeHtmlEntities?: boolean }
 ): Record<string, any> {
@@ -57,11 +66,11 @@ export function extractPageContext(
       .replace(/&gt;/g, '>')
       .replace(/&amp;/g, '&')
   }
-  let parsed = JSON.parse(jsonText!)
+  const { isBrowser, pageContextSubset } = JSON.parse(jsonText!) as SerializedData
   if (typeof options?.expect?.isBrowser !== 'undefined') {
-    if ((parsed as Partial<Record<string, any>>).isBrowser !== options.expect.isBrowser) {
+    if (isBrowser !== options.expect.isBrowser) {
       throw new Error('isBrowser did not have the expected value')
     }
   }
-  return parsed
+  return pageContextSubset
 }
