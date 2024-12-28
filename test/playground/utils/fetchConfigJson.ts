@@ -1,5 +1,5 @@
 import { autoRetry, fetchHtml, getServerUrl, page } from '@brillout/test-e2e'
-import { extractSerializedSettings } from './serializePageContext'
+import { extractPageContext } from './serializePageContext'
 
 export async function fetchConfigJson(pathname: string, options?: { clientSide?: boolean }) {
   let jsonText: string | undefined | null = null
@@ -8,10 +8,10 @@ export async function fetchConfigJson(pathname: string, options?: { clientSide?:
     // `autoRetry` because browser-side code may not be loaded yet
     return await autoRetry(async () => {
       const text = await page.textContent('#serialized-settings')
-      return extractSerializedSettings(text, { expect: { isBrowser: true } })
+      return extractPageContext(text, { expect: { isBrowser: true } })
     })
   } else {
     const html = await fetchHtml(pathname)
-    return extractSerializedSettings(html)
+    return extractPageContext(html)
   }
 }

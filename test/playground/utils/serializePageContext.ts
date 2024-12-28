@@ -8,7 +8,7 @@ const EXTRACT_REGEX = RegExp(START_MARKER + '(.*)' + END_MARKER)
 /**
  * Serializes the specified keys of {@link PageContext#config} and wraps the resulting JSON
  * in known start and end markers so that it can be later extracted from the resulting HTML
- * via {@link extractSerializedSettings} without knowing its exact position on the page.
+ * via {@link extractPageContext} without knowing its exact position on the page.
  */
 export function serializePageContext(pageContext: PageContext, keys: (string & keyof Config)[]) {
   let obj: Record<string, any> = { isBrowser }
@@ -35,7 +35,7 @@ export function valueOrType(value: any) {
  * @param decodeHtmlEntities Whether to decode any HTML entities like `&quot;` before deserializing the JSON.
  * @returns
  */
-export function extractSerializedSettings(
+export function extractPageContext(
   text: string | null | undefined,
   options?: { expect?: { isBrowser?: boolean }; decodeHtmlEntities?: boolean }
 ): Record<string, any> {
