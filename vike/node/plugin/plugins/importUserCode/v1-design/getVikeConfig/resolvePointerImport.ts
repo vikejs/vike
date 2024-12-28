@@ -22,7 +22,7 @@ import {
 } from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 
-const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
+const filesEnvMap: Map<string, { configEnvResolved: ConfigEnvInternal; configName: string }[]> = new Map()
 
 type PointerImportResolved = DefinedAtFilePath & { fileExportName: string }
 
@@ -32,7 +32,7 @@ function resolvePointerImportOfConfig(
   userRootDir: string,
   configEnv: ConfigEnvInternal,
   configName: string
-): null | { pointerImport: PointerImportResolved; configEnv: ConfigEnvInternal } {
+): null | { pointerImport: PointerImportResolved; configEnvResolved: ConfigEnvInternal } {
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
   if (!pointerImportData) return null
@@ -50,7 +50,7 @@ function resolvePointerImportOfConfig(
     fileExportName: exportName,
     fileExportPathToShowToUser
   }
-  return { pointerImport, configEnv: configEnvResolved }
+  return { pointerImport, configEnvResolved }
 }
 
 function resolvePointerImport(
@@ -160,7 +160,12 @@ function assertUsageResolutionSuccess(
   }
 }
 
-function assertUsageFileEnv(filePath: FilePath, importPath: string, configEnv: ConfigEnvInternal, configName: string) {
+function assertUsageFileEnv(
+  filePath: FilePath,
+  importPath: string,
+  configEnvResolved: ConfigEnvInternal,
+  configName: string
+) {
   let key: string
   if (filePath.filePathAbsoluteFilesystem) {
     key = filePath.filePathAbsoluteFilesystem
@@ -174,17 +179,17 @@ function assertUsageFileEnv(filePath: FilePath, importPath: string, configEnv: C
     filesEnvMap.set(key, [])
   }
   const fileEnv = filesEnvMap.get(key)!
-  fileEnv.push({ configEnv, configName })
-  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
+  fileEnv.push({ configEnvResolved, configName })
+  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnvResolved, configEnvResolved))[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
       [
         `${key} defines the value of configs living in different environments:`,
-        ...[configDifferentEnv, { configName, configEnv }].map(
+        ...[configDifferentEnv, { configName, configEnvResolved }].map(
           (c) =>
             `  - config ${pc.code(c.configName)} which value lives in environment ${pc.code(
-              JSON.stringify(c.configEnv)
+              JSON.stringify(c.configEnvResolved)
             )}`
         ),
         'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/config#pointer-imports'
@@ -196,20 +201,20 @@ function clearFilesEnvMap() {
   filesEnvMap.clear()
 }
 
-function determineConfigEnvFromFileName(env: ConfigEnvInternal, filePath: FilePathResolved) {
+function determineConfigEnvFromFileName(configEnv: ConfigEnvInternal, filePath: FilePathResolved) {
   const { fileName } = filePath
-  env = { ...env }
+  const configEnvResolved = { ...configEnv }
   if (fileName.includes('.server.')) {
-    env.server = true
-    env.client = false
+    configEnvResolved.server = true
+    configEnvResolved.client = false
   } else if (fileName.includes('.client.')) {
-    env.client = true
-    env.server = false
+    configEnvResolved.client = true
+    configEnvResolved.server = false
   } else if (fileName.includes('.shared.')) {
-    env.server = true
-    env.client = true
+    configEnvResolved.server = true
+    configEnvResolved.client = true
   }
-  return env
+  return configEnvResolved
 }
 
 function isRelativeImportPath(importPath: string) {

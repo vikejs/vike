@@ -836,7 +836,7 @@ async function getConfigValueSource(
     if (resolved) {
       const configValueSource: ConfigValueSource = {
         locationId,
-        configEnv: resolved.configEnv,
+        configEnv: resolved.configEnvResolved,
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
         isOverriden,
@@ -875,12 +875,12 @@ async function getConfigValueSource(
 
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
-    const configEnv = determineConfigEnvFromFileName(configDef.env, interfaceFile.filePath)
+    const configEnvResolved = determineConfigEnvFromFileName(configDef.env, interfaceFile.filePath)
     const valueAlreadyLoaded = 'configValue' in conf
-    assert(valueAlreadyLoaded === !!configEnv.config)
+    assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
       locationId,
-      configEnv,
+      configEnv: configEnvResolved,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       valueIsDefinedByPlusFile: true,
       isOverriden,
