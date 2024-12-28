@@ -79,7 +79,7 @@ import {
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import {
   clearFilesEnvMap,
-  determineConfigEnvFromFileName,
+  resolveConfigEnvWithFileName,
   resolvePointerImportOfConfig
 } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
@@ -875,7 +875,7 @@ async function getConfigValueSource(
 
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
-    const configEnvResolved = determineConfigEnvFromFileName(configDef.env, interfaceFile.filePath)
+    const configEnvResolved = resolveConfigEnvWithFileName(configDef.env, interfaceFile.filePath)
     const valueAlreadyLoaded = 'configValue' in conf
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {

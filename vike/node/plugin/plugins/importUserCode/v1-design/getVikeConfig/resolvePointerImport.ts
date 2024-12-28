@@ -1,7 +1,7 @@
 export { resolvePointerImportOfConfig }
 export { resolvePointerImport }
 export { clearFilesEnvMap }
-export { determineConfigEnvFromFileName }
+export { resolveConfigEnvWithFileName }
 
 import pc from '@brillout/picocolors'
 import type { ConfigEnvInternal, DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
@@ -42,7 +42,7 @@ function resolvePointerImportOfConfig(
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
   let configEnvResolved = configEnv
-  if (filePath.filePathAbsoluteFilesystem) configEnvResolved = determineConfigEnvFromFileName(configEnv, filePath)
+  if (filePath.filePathAbsoluteFilesystem) configEnvResolved = resolveConfigEnvWithFileName(configEnv, filePath)
   assertUsageFileEnv(filePath, importPath, configEnvResolved, configName)
 
   const pointerImport = {
@@ -201,7 +201,7 @@ function clearFilesEnvMap() {
   filesEnvMap.clear()
 }
 
-function determineConfigEnvFromFileName(configEnv: ConfigEnvInternal, filePath: FilePathResolved) {
+function resolveConfigEnvWithFileName(configEnv: ConfigEnvInternal, filePath: FilePathResolved) {
   const { fileName } = filePath
   const configEnvResolved = { ...configEnv }
   if (fileName.includes('.server.')) {
