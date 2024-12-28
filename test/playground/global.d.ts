@@ -1,5 +1,3 @@
-import { Config } from 'vike/types'
-
 declare global {
   namespace Vike {
     interface Config {
@@ -16,3 +14,5 @@ declare global {
     }
   }
 }
+
+export {}
