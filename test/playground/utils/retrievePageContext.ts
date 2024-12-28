@@ -1,7 +1,7 @@
 import { autoRetry, fetchHtml, getServerUrl, page } from '@brillout/test-e2e'
 import { extractPageContext } from './serializePageContext'
 
-export async function fetchConfigJson(pathname: string, options?: { clientSide?: boolean }) {
+export async function retrievePageContext(pathname: string, options?: { clientSide?: boolean }) {
   let jsonText: string | undefined | null = null
   if (options?.clientSide) {
     await page.goto(getServerUrl() + pathname)

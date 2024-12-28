@@ -1,9 +1,9 @@
 import { expect, test } from '@brillout/test-e2e'
-import { fetchConfigJson } from '../../../utils/fetchConfigJson'
+import { retrievePageContext } from '../../../utils/retrievePageContext'
 
 function testSettingOnlyAvailableInCorrectEnv() {
   test('Custom Setting Env - Client-only', async () => {
-    let json = await fetchConfigJson('/config-meta/env/client', { clientSide: true })
+    let json = await retrievePageContext('/config-meta/env/client', { clientSide: true })
 
     expect(json).to.deep.equal({
       isBrowser: true,
@@ -14,7 +14,7 @@ function testSettingOnlyAvailableInCorrectEnv() {
   })
 
   test('Custom Setting Env - Server-only', async () => {
-    let json = await fetchConfigJson('/config-meta/env/server', { clientSide: false })
+    let json = await retrievePageContext('/config-meta/env/server', { clientSide: false })
 
     expect(json).to.deep.equal({
       isBrowser: false,
