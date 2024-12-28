@@ -6,15 +6,16 @@
     "typecheck": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@brillout/docpress": "^0.9.8",
-    "@types/node": "^20.11.16",
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.19",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^5.6.2",
-    "vike": "0.4.208",
-    "vite": "^5.4.11"
+    "@brillout/docpress": "^0.10.12",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2",
+    "vike": "0.4.211",
+    "vite": "^6.0.6",
+    "vite-plugin-svgr": "^4.3.0"
   },
   "type": "module"
 }

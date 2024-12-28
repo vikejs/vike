@@ -27,14 +27,14 @@ type slotMachineRegistryType = {
   name: string
   group: slotMachineGroupType
   bgColor: string
-  logo: JSX.Element
+  logo: React.JSX.Element
 }
 
 export const Slotmachine = () => {
   return (
     <>
       <SlotMachineSVG />
-      <IllustrationNote>Plug & Play Vike extensions for a quick start</IllustrationNote>
+      <IllustrationNote>Plug & Play &mdash; powered by Vike extensions</IllustrationNote>
     </>
   )
 }

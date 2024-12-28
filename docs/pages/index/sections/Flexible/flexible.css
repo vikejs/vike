@@ -15,18 +15,20 @@
   }
 }
 .landingpage-flexible-container {
-  margin-top: 100px;
+  margin-top: 110px;
   margin-bottom: -3px;
   width: 100%;
 }
 .landingpage-flexible-flexbox {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
 }
 .landingpage-flexible-slotMachine {
   display: flex;
   align-items: center;
   width: 100%;
+  margin-top: 10px;
 }
 .landingpage-flexible-slotMachineSeparator {
   height: 1px;
@@ -81,6 +83,7 @@
   .landingpage-flexible-slotMachine {
     flex-direction: column;
     width: 100%;
+    margin: 0;
   }
   .landingpage-flexible-slotMachineImageContainer {
     width: 100%;

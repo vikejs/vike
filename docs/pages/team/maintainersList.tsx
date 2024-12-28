@@ -1,4 +1,5 @@
 export { maintainersList }
+export { getMaintainerAvatar }
 
 import React from 'react'
 
@@ -7,12 +8,14 @@ type Maintainer = {
   firstName: string
   roles: React.ReactNode[]
   consultingUrl?: string
+  isCoreTeam?: true
 }
 
 const maintainersList: Maintainer[] = [
   {
     username: 'brillout',
     firstName: 'Rom',
+    isCoreTeam: true,
     roles: [
       <>Vike Core (Lead Maintainer, Creator)</>,
       <>
@@ -26,6 +29,7 @@ const maintainersList: Maintainer[] = [
   {
     username: 'magne4000',
     firstName: 'Joël',
+    isCoreTeam: true,
     roles: [
       <>Bati (Lead Maintainer, Creator)</>,
       <>
@@ -40,15 +44,16 @@ const maintainersList: Maintainer[] = [
   {
     username: 'nitedani',
     firstName: 'Dániel',
+    isCoreTeam: true,
     roles: [
       <>
-        <code>vike-react-query</code> (Lead Maintainer, Creator)
+        <code>vike-react-query</code> (Creator)
       </>,
       <>
-        <code>vike-react-apollo</code> (Lead Maintainer, Creator)
+        <code>vike-react-apollo</code> (Creator)
       </>,
       <>
-        <code>vike-node</code> (Lead Maintainer, Creator)
+        <code>vike-node</code> (Creator)
       </>,
       <>Vike Core (Contributor)</>
     ]
@@ -56,6 +61,7 @@ const maintainersList: Maintainer[] = [
   {
     username: 'phonzammi',
     firstName: 'Muhammad',
+    isCoreTeam: true,
     roles: [
       <>
         <code>vike-vue</code> (Contributor)
@@ -68,6 +74,11 @@ const maintainersList: Maintainer[] = [
       </>,
       <>Bati (Contributor)</>
     ]
+  },
+  {
+    username: 'NilsJacobsen',
+    firstName: 'Nils',
+    roles: [<>Vike's landing page</>]
   },
   {
     username: 'AurelienLourot',
@@ -96,5 +107,18 @@ const maintainersList: Maintainer[] = [
         <code>vike-vue-query</code> (Creator)
       </>
     ]
+  },
+  {
+    username: 'Blankeos',
+    firstName: 'Carlo',
+    roles: [
+      <>
+        <code>vike-solid</code> (Contributor)
+      </>
+    ]
   }
 ]
+
+function getMaintainerAvatar(maintainer: Maintainer, imgSize: number) {
+  return `https://github.com/${maintainer.username}.png?size=${imgSize}`
+}

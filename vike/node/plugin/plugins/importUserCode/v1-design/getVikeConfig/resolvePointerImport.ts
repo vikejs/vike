@@ -1,12 +1,12 @@
 export { resolvePointerImportOfConfig }
 export { resolvePointerImport }
 export { clearFilesEnvMap }
+export { resolveConfigEnvWithFileName }
 
 import pc from '@brillout/picocolors'
 import type { ConfigEnvInternal, DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
 import {
   assert,
-  assertIsNpmPackageImport,
   assertPosixPath,
   assertUsage,
   deepEqual,
@@ -22,7 +22,7 @@ import {
 } from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 
-const filesEnvMap: Map<string, { configEnv: ConfigEnvInternal; configName: string }[]> = new Map()
+const filesEnvMap: Map<string, { configEnvResolved: ConfigEnvInternal; configName: string }[]> = new Map()
 
 type PointerImportResolved = DefinedAtFilePath & { fileExportName: string }
 
@@ -32,7 +32,7 @@ function resolvePointerImportOfConfig(
   userRootDir: string,
   configEnv: ConfigEnvInternal,
   configName: string
-): null | PointerImportResolved {
+): null | { pointerImport: PointerImportResolved; configEnvResolved: ConfigEnvInternal } {
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
   if (!pointerImportData) return null
@@ -41,13 +41,16 @@ function resolvePointerImportOfConfig(
   const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
-  assertUsageFileEnv(filePath.filePathAbsoluteFilesystem, importPath, configEnv, configName)
+  let configEnvResolved = configEnv
+  if (filePath.filePathAbsoluteFilesystem) configEnvResolved = resolveConfigEnvWithFileName(configEnv, filePath)
+  assertUsageFileEnv(filePath, importPath, configEnvResolved, configName)
 
-  return {
+  const pointerImport = {
     ...filePath,
     fileExportName: exportName,
     fileExportPathToShowToUser
   }
+  return { pointerImport, configEnvResolved }
 }
 
 function resolvePointerImport(
@@ -67,7 +70,7 @@ function resolvePointerImport(
   if (importPath.startsWith('.') || isFilePathAbsolute(importPath)) {
     if (importPath.startsWith('.')) {
       assertUsage(
-        importPath.startsWith('./') || importPath.startsWith('../'),
+        isRelativeImportPath(importPath),
         `Invalid relative import path ${pc.code(importPath)} defined by ${
           importerFilePath.filePathToShowToUser
         } because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
@@ -110,6 +113,7 @@ function resolvePointerImport(
         importPathAbsolute
       })
     } else {
+      // We cannot resolve path aliases defined only in Vite
       filePath = getFilePathUnresolved({
         importPathAbsolute
       })
@@ -148,7 +152,7 @@ function assertUsageResolutionSuccess(
       : (`The import ${pc.code(importString)} defined by ${filePathToShowToUser}` as const)
     const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
     if (importPath.startsWith('.')) {
-      assert(importPath.startsWith('./') || importPath.startsWith('../'))
+      assert(isRelativeImportPath(importPath))
       assertUsage(false, `${errIntro2} point to an existing file?`)
     } else {
       assertUsage(false, `${errIntro2} exist?`)
@@ -157,16 +161,17 @@ function assertUsageResolutionSuccess(
 }
 
 function assertUsageFileEnv(
-  filePathAbsoluteFilesystem: string | null,
+  filePath: FilePath,
   importPath: string,
-  configEnv: ConfigEnvInternal,
+  configEnvResolved: ConfigEnvInternal,
   configName: string
 ) {
   let key: string
-  if (filePathAbsoluteFilesystem) {
-    key = filePathAbsoluteFilesystem
+  if (filePath.filePathAbsoluteFilesystem) {
+    key = filePath.filePathAbsoluteFilesystem
   } else {
-    assertIsNpmPackageImport(importPath)
+    // Path alias
+    assert(!isRelativeImportPath(importPath))
     key = importPath
   }
   assertPosixPath(key)
@@ -174,17 +179,17 @@ function assertUsageFileEnv(
     filesEnvMap.set(key, [])
   }
   const fileEnv = filesEnvMap.get(key)!
-  fileEnv.push({ configEnv, configName })
-  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
+  fileEnv.push({ configEnvResolved, configName })
+  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnvResolved, configEnvResolved))[0]
   if (configDifferentEnv) {
     assertUsage(
       false,
       [
         `${key} defines the value of configs living in different environments:`,
-        ...[configDifferentEnv, { configName, configEnv }].map(
+        ...[configDifferentEnv, { configName, configEnvResolved }].map(
           (c) =>
             `  - config ${pc.code(c.configName)} which value lives in environment ${pc.code(
-              JSON.stringify(c.configEnv)
+              JSON.stringify(c.configEnvResolved)
             )}`
         ),
         'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/config#pointer-imports'
@@ -194,4 +199,24 @@ function assertUsageFileEnv(
 }
 function clearFilesEnvMap() {
   filesEnvMap.clear()
+}
+
+function resolveConfigEnvWithFileName(configEnv: ConfigEnvInternal, filePath: FilePathResolved) {
+  const { fileName } = filePath
+  const configEnvResolved = { ...configEnv }
+  if (fileName.includes('.server.')) {
+    configEnvResolved.server = true
+    configEnvResolved.client = false
+  } else if (fileName.includes('.client.')) {
+    configEnvResolved.client = true
+    configEnvResolved.server = false
+  } else if (fileName.includes('.shared.')) {
+    configEnvResolved.server = true
+    configEnvResolved.client = true
+  }
+  return configEnvResolved
+}
+
+function isRelativeImportPath(importPath: string) {
+  return importPath.startsWith('./') || importPath.startsWith('../')
 }

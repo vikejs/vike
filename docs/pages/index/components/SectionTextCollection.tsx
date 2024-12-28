@@ -5,13 +5,11 @@ export const SectionTextCollection = ({
   caption,
   title,
   descriptions,
-  actions,
   style
 }: {
   caption: string
-  title: string
-  descriptions?: (string | JSX.Element)[]
-  actions?: JSX.Element[]
+  title: string | React.JSX.Element
+  descriptions?: (string | React.JSX.Element)[]
   style?: React.CSSProperties
 }) => {
   return (
@@ -34,7 +32,7 @@ export const SectionTextCollection = ({
           width: '100%',
           margin: 0,
           lineHeight: 1.3,
-          paddingBottom: '16px'
+          paddingBottom: 16
         }}
       >
         {title}

@@ -1,16 +1,11 @@
 import { RepoLink, Link, Contribution } from '@brillout/docpress'
 import { Example, CommunityNote } from '../../components'
 
-<CommunityNote url="https://vuex.vuejs.org" />
-
-<Contribution>
-There isn't a <Link href="/extensions">Vike extension</Link> for Vuex yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
-</Contribution>
+<CommunityNote tool="vuex" url="https://vuex.vuejs.org" hasExtension={false} />
 
 To manually integrate Vuex, see:
 - <Link href="/stores#ssr" doNotInferSectionTitle />
 - [Vue > SSR > Cross-Request State Pollution](https://vuejs.org/guide/scaling-up/ssr.html#cross-request-state-pollution)
-
 
 Examples of integrating Vuex without using <Link href="/vike-vue">`vike-vue`</Link>:
  - <Example timestamp="2023.10" repo="brillout/vike-with-vuex" />

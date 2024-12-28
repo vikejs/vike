@@ -118,7 +118,7 @@ function buildConfig(): Plugin[] {
             if (!isServerAssetsFixEnabled) {
               await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
             } else {
-              const clientManifestMod = await fixServerAssets(config)
+              const { clientManifestMod } = await fixServerAssets(config)
               await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
             }
             await fs.rm(clientManifestFilePath)

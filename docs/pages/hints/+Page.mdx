@@ -1,0 +1,92 @@
+import { CodeBlockTransformer, Link, Warning } from '@brillout/docpress'
+
+Hints for how to resolve common issues.
+
+
+## `window is not defined`
+
+The following error usually means that client-side code is wrongfully executed on the server-side.
+
+<CodeBlockTransformer lineBreak="white-space">
+```
+ReferenceError: window is not defined
+    at someFunction (~/my-app/some/file.js:5:3)
+    at someCallerFn (~/my-app/some/other-file.js:7:3)
+```
+</CodeBlockTransformer>
+
+```js
+// ~/my-app/some/file.js
+
+// This file should be loaded only on the client-side
+
+export function someFunction() {
+  window.alert('hello')
+}
+```
+
+```js
+// ~/my-app/some/other-file.js
+
+// This file is loaded on both client- and server-side
+
+import { someFunction } from './file.js'
+
+function someCallerFn() {
+  someFunction()
+}
+```
+
+The error, which is thrown by Node.js(/Bun/Deno), is that [the `window` object](https://developer.mozilla.org/en-US/docs/Web/API/Window) is defined on the client-side only: Node.js doesn't know about `window` and therefore throws an error.
+
+The solution is typically one of the following:
+1. Make sure `someFunction()` is called only on the client-side:
+   ```js
+   // ~/my-app/some/other-file.js
+
+   // This file is loaded on both client- and server-side
+
+   import { someFunction } from './file.js'
+
+   function someCallerFn() {
+     someFunction() // [!code --]
+   }
+   ```
+   ```js
+   // ~/my-app/somewhere/else.js
+
+   // This file is loaded on the client-side only.
+
+   function someThirdFn() {
+     // We can call someFunction() here. // [!code ++]
+     someFunction() // [!code ++]
+   }
+   ```
+1. Or make `someFunction()` <Link href="/glossary#isomorphic">isomorphic</Link>:
+   ```js
+   // ~/my-app/some/file.js
+
+   // This file should be loaded only on the client-side // [!code --]
+   // This file can be loaded on both client- and server-side // [!code ++]
+
+   function someFunction() {
+     window.alert('hello') // [!code --]
+     if (isBrowser()) window.alert('hello') // [!code ++]
+   }
+   function isBrowser() { // [!code ++]
+     return typeof window !== 'undefined' // [!code ++]
+   } // [!code ++]
+   ```
+
+> We recommend the first approach whenever possible, because it's best to minimize isomorphic code to a strict minimum, for cleaner code and to avoid client-side bloat (loading server-side code on the client-side increases client bundle sizes and therefore slows down your app).
+
+<Warning>
+Another common technique is to define the `window` object on the server-side, for example with [`ssr-window`](https://www.npmjs.com/package/ssr-window), but we recommend against this approach because it may break a library that relies on `typeof window !== 'undefined'` to test whether the code is running on the client or server-side.
+</Warning>
+
+> You can use <Link href="/file-env">`.client.js`</Link> to structure and clarify where your files are loaded.
+
+
+## See also
+
+- <Link href="/broken-npm-package" />

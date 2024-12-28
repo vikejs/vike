@@ -1,28 +1,26 @@
 export { devConfig }
+export { logDockerHint }
 
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { determineOptimizeDeps } from './determineOptimizeDeps.js'
 import { determineFsAllowList } from './determineFsAllowList.js'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware.js'
-import { markEnvAsViteDev } from '../../utils.js'
+import { applyDev, assertWarning, isDocker, markEnvAsViteDev } from '../../utils.js'
 import { improveViteLogs } from '../../shared/loggerVite.js'
 import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore.js'
+import pc from '@brillout/picocolors'
 
 if (isErrorDebug()) {
   Error.stackTraceLimit = Infinity
 }
-
-// There doesn't seem to be a straightforward way to discriminate between `$ vite preview` and `$ vite dev`
-const apply = 'serve'
-const isDev = true
 
 function devConfig(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
       name: 'vike:devConfig',
-      apply,
+      apply: applyDev,
       config() {
         return {
           appType: 'custom',
@@ -67,12 +65,13 @@ function devConfig(): Plugin[] {
       },
       async configResolved(config_) {
         config = config_
-        await determineOptimizeDeps(config, isDev)
+        await determineOptimizeDeps(config, true)
         await determineFsAllowList(config)
         if (!isErrorDebug()) {
           await installHttpRequestAsyncStore()
           improveViteLogs(config)
         }
+        logDockerHint(config.server.host)
       },
       configureServer() {
         markEnvAsViteDev()
@@ -80,14 +79,13 @@ function devConfig(): Plugin[] {
     },
     {
       name: 'vike:devConfig:addSsrMiddleware',
-      apply,
+      apply: applyDev,
       // The SSR middleware should be last middleware
       enforce: 'post',
       configureServer: {
         order: 'post',
         handler(server) {
           const hasHonoViteDevServer = !!config.plugins.find((p) => p.name === '@hono/vite-dev-server')
-
           if (config.server.middlewareMode || hasHonoViteDevServer) return
           return () => {
             addSsrMiddleware(server.middlewares, config, false)
@@ -105,4 +103,14 @@ function devConfig(): Plugin[] {
       }
     }
   ]
+}
+
+function logDockerHint(configHost: ResolvedConfig['server']['host']) {
+  if (isDocker()) {
+    assertWarning(
+      configHost,
+      `Your app seems to be running inside a Docker or Podman container but ${pc.cyan('--host')} isn't set which means that your Vike app won't be accessible from outside the container, see https://vike.dev/docker`,
+      { onlyOnce: true }
+    )
+  }
 }

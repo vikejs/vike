@@ -1,7 +1,7 @@
 export { commonConfig }
 
-import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, findPackageJson } from '../utils.js'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import { assert, assertUsage, assertWarning, findPackageJson, isDocker } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
@@ -24,7 +24,6 @@ function commonConfig(): Plugin[] {
       configResolved: {
         order: 'post',
         handler(config) {
-          overrideViteDefaultPort(config)
           /* TODO: do this after implementing vike.config.js and new setting transformLinkedDependencies (or probably a better name like transpileLinkedDependencies/bundleLinkedDependencies or something else)
           overrideViteDefaultSsrExternal(config)
           //*/
@@ -33,19 +32,33 @@ function commonConfig(): Plugin[] {
           assertResolveAlias(config)
           assertEsm(config.root)
         }
+      },
+      // Override Vite's default port without overriding the user
+      config: {
+        order: 'post',
+        handler(configFromUser) {
+          const configFromVike: UserConfig = { server: {}, preview: {} }
+          setDefault('port', 3000, configFromUser, configFromVike)
+          if (isDocker()) {
+            setDefault('host', true, configFromUser, configFromVike)
+          }
+          return configFromVike
+        }
       }
     }
   ]
 }
 
-function overrideViteDefaultPort(config: ResolvedConfig) {
-  // @ts-ignore
-  config.server ??= {}
-  config.server.port ??= 3000
-  // @ts-ignore
-  config.preview ??= {}
-  config.preview.port ??= 3000
+function setDefault<Setting extends 'port' | 'host'>(
+  setting: Setting,
+  value: NonNullable<UserConfig['server'] | UserConfig['preview']>[Setting],
+  configFromUser: UserConfig,
+  configFromVike: UserConfig
+) {
+  if (configFromUser.server?.[setting] === undefined) configFromVike.server![setting] = value
+  if (configFromUser.preview?.[setting] === undefined) configFromVike.preview![setting] = value
 }
+
 /*
 import { version } from 'vite'
 function overrideViteDefaultSsrExternal(config: ResolvedConfig) {

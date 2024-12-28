@@ -798,7 +798,24 @@ ReferenceError: window is not defined
 `
         }
       )
-    ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/hints#window-is-not-defined"`)
+    expect(
+      getErrorHint(
+        createErr(`
+ReferenceError: window is not defined
+    at isDevMode (/home/rom/code/docpress/src/utils/assert.ts:57:3)
+    at assertWarning (/home/rom/code/docpress/src/utils/assert.ts:80:7)
+    at findLinkData (/home/rom/code/docpress/src/components/Link.tsx:134:5)
+    at getLinkTextData (/home/rom/code/docpress/src/components/Link.tsx:98:35)
+    at Link (/home/rom/code/docpress/src/components/Link.tsx:37:26)
+    at renderWithHooks (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5662:16)
+    at renderIndeterminateComponent (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5736:15)
+    at renderElement (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5961:7)
+    at renderNodeDestructiveImpl (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6119:11)
+    at renderNodeDestructive (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)
+      `)
+      )
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/hints#window-is-not-defined"`)
   })
 
   // The issue here is the other way around: the library shouldn't be ssr.noExternal, see https://github.com/vikejs/vike/issues/621#issuecomment-1781661083

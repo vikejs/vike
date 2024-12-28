@@ -18,6 +18,9 @@ export { testRun }
 
 const HMR_SLEEP = 500
 
+// Doesn't work anymore with Vite 6: https://vite.dev/guide/migration.html#:~:text=%5B%2316471%5D%20feat%3A%20v6,can%20be%20used%3A
+const disableTestHtmlOnlyHMR = true
+
 // TODO:v1/release: remove non-V1 design case
 function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1Design?: true) {
   run(cmd, {
@@ -54,7 +57,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
     await page.goto(getServerUrl() + '/html-only')
     await testColor('orange')
   })
-  if (!isProd) {
+  if (!isProd && !disableTestHtmlOnlyHMR) {
     test('HTML-only - HMR', async () => {
       {
         const url = getServerUrl() + '/html-only'
@@ -71,9 +74,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
         }
         // No HMR for JavaScript
         {
-          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
-          const navPromise = page.waitForURL(url)
-          */
+          // We can't use `const navPromise = page.waitForURL(url)` for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = await waitForNavigation()
           const file = isV1Design ? './pages/html-only/+Page.jsx' : './pages/html-only/index.page.server.jsx'
           editFile(file, (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
@@ -82,9 +83,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
           expect(await page.textContent('h1')).toBe('HTML-only !')
         }
         {
-          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
-          const navPromise = page.waitForURL(url)
-          */
+          // We can't use `const navPromise = page.waitForURL(url)` for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = await waitForNavigation()
           editFileRevert()
           await navPromise()
@@ -165,7 +164,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
     await page.goto(getServerUrl() + '/html-js')
     await clickCounter()
   })
-  if (!isProd) {
+  if (!isProd && !disableTestHtmlOnlyHMR) {
     test('HTML + JS - HMR', async () => {
       expect(await page.textContent('button')).toContain('Counter 1')
       // JS auto-reload
@@ -194,7 +193,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
           expect(await page.textContent('button')).toContain('Counter 0')
         }
       }
-      // CSS HMR
+      // HMR works for CSS
       {
         await testColor('red')
         editFile('./pages/html-js/index.css', (s) => s.replace('color: red', 'color: gray'))

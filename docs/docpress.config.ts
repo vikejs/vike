@@ -2,14 +2,16 @@ import type { Config } from '@brillout/docpress'
 import { headings } from './headings'
 import { headingsDetached } from './headingsDetached'
 import { projectInfo } from './utils'
-import vikeIcon from './images/icons/baby-mjolnir.svg'
+import logoUrl from './assets/logo/vike.svg'
+import faviconUrl from './assets/logo/vike-favicon.svg'
 
 export default {
   projectInfo,
-  faviconUrl: vikeIcon,
+  logoUrl,
+  faviconUrl,
   headings,
   headingsDetached,
-  tagline: 'Like Next.js & Nuxt but with unprecedented flexibility, dependability, and control.',
+  tagline: 'The Framework *You* Control - Next.js & Nuxt alternative for unprecedented flexibility and dependability.',
   twitterHandle: '@vike_js',
   websiteUrl: 'https://vike.dev',
   sponsorGithubAccount: 'vikejs',
@@ -18,13 +20,18 @@ export default {
     apiKey: '9ac178c1a29ba00e8afb98365015f677',
     indexName: 'vike'
   },
-  bannerUrl: 'https://vike.dev/banner.png',
+  bannerUrl: 'https://vike.dev/banner.jpg',
   // i18n: true,
   pressKit: true,
   navMaxWidth: 1140,
-  navLogoSize: 45,
+  navLogoSize: 41,
+  navLogoStyle: {
+    position: 'relative',
+    top: -1
+  },
   navLogoTextStyle: {
     letterSpacing: '0.01em',
-    fontWeight: 420
+    fontWeight: 420,
+    color: '#444'
   }
 } satisfies Config

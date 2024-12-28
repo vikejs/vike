@@ -4,6 +4,14 @@ import type { HeadingDetachedDefinition } from '@brillout/docpress'
 
 const headingsDetached: HeadingDetachedDefinition[] = [
   {
+    title: 'Windows Subsystem for Linux (WSL)',
+    url: '/wsl'
+  },
+  {
+    title: 'Rule: `no-side-exports`',
+    url: '/no-side-exports'
+  },
+  {
     title: 'Vite 6, a groundbreaking release',
     url: '/blog/vite-6'
   },
@@ -435,6 +443,14 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   {
     title: 'Hydration Mismatch',
     url: '/hydration-mismatch'
+  },
+  {
+    title: 'Glossary',
+    url: '/glossary'
+  },
+  {
+    title: 'Hints',
+    url: '/hints'
   },
   {
     title: 'Broken npm package',

@@ -1,7 +1,7 @@
 export { Page }
 
 import React from 'react'
-import { Hero } from './sections/Hero/Hero'
+import { Hero, heroBgColor } from './sections/Hero/Hero'
 import { Sponsors } from './sections/Sponsors/Sponsors'
 import { Flexible } from './sections/Flexible/Flexible'
 import { Reliable } from './sections/Reliable/Reliable'
@@ -17,7 +17,7 @@ function Page() {
       <Block
         style={{
           marginTop: 0,
-          backgroundColor: '#e9e9e9'
+          backgroundColor: heroBgColor
         }}
       >
         <Hero />
@@ -34,7 +34,7 @@ function Page() {
         noGrid
         style={{
           padding: 0,
-          backgroundColor: '#FAFAFA'
+          backgroundColor: '#f9f9f9'
         }}
       >
         <Reliable />

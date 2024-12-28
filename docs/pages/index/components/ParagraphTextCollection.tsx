@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from './Button/Button'
+import { ButtonLearnMore } from './Button/Button'
 
 export const ParagraphTextCollection = ({
   title,
@@ -8,16 +8,16 @@ export const ParagraphTextCollection = ({
   buttonLable
 }: {
   title: string
-  description: string | JSX.Element
+  description: string | React.JSX.Element
   buttonLable?: string
-  icon: JSX.Element
+  icon: React.JSX.Element
 }) => {
   return (
     <div style={{ width: '100%' }}>
       <div
         style={{
           color: '#000000',
-          paddingBottom: '32px'
+          paddingBottom: 22
         }}
       >
         {icon}
@@ -55,9 +55,7 @@ export const ParagraphTextCollection = ({
             paddingTop: '18px'
           }}
         >
-          <Button type="text" chevron>
-            {buttonLable}
-          </Button>
+          <ButtonLearnMore />
         </div>
       )}
     </div>

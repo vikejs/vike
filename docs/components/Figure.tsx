@@ -2,7 +2,11 @@ export { Figure }
 
 import React from 'react'
 
-function Figure({ width, text, children }: { width: number; text: string | JSX.Element; children: React.ReactNode }) {
+function Figure({
+  width,
+  text,
+  children
+}: { width: number; text: string | React.JSX.Element; children: React.ReactNode }) {
   return (
     <>
       <div

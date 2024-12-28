@@ -6,7 +6,7 @@ import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig
 } from '../../runtime/globalContext.js'
-import { assertFilePathAbsoluteFilesystem, getOutDirs, isDev3 } from '../utils.js'
+import { assertFilePathAbsoluteFilesystem, getOutDirs, isDevCheck } from '../utils.js'
 
 function setGlobalContext(): Plugin {
   return {
@@ -20,7 +20,7 @@ function setGlobalContext(): Plugin {
     },
     config: {
       handler(_, env) {
-        const isDev = isDev3(env)
+        const isDev = isDevCheck(env)
         setGlobalContext_isDev(isDev)
       }
     },

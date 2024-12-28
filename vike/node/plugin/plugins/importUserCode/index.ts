@@ -6,7 +6,7 @@ import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
-import { assert, assertPosixPath, getOutDirs, isDev3 } from '../../utils.js'
+import { assert, assertPosixPath, getOutDirs, isDevCheck } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -22,7 +22,7 @@ function importUserCode(): Plugin {
   return {
     name: 'vike:importUserCode',
     config(_, env) {
-      isDev = isDev3(env)
+      isDev = isDevCheck(env)
     },
     async configResolved(config_) {
       configVike = await getConfigVike(config_)

@@ -1,4 +1,6 @@
 export { Hero }
+export { HeroTagline }
+export const heroBgColor = '#f0f0f0'
 
 import React from 'react'
 import { primaryColor } from '../../primaryColor'
@@ -6,6 +8,8 @@ import { Button } from '../../components/Button/Button'
 import './Hero.css'
 import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
+import '../../page.css'
+import { getMaintainerAvatar, maintainersList } from '../../../team/maintainersList'
 
 function Hero() {
   return (
@@ -14,30 +18,25 @@ function Hero() {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        marginTop: 90,
-        marginBottom: 110
+        alignItems: 'center'
       }}
     >
-      <TalkLink />
-      <Taglines />
+      <div style={{ height: 90 }} id="hero-margin-top-1"></div>
+      <VideoTalkLink />
+      <div style={{ height: 16 }} id="hero-margin-top-2"></div>
+      <HeroTagline />
+      <div style={{ height: 46 }} id="hero-margin-mid-1"></div>
       <GetStartedBtn />
+      <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
+      <Quote />
+      <div style={{ height: 120 }} id="hero-margin-bot"></div>
     </div>
   )
 }
 
-function Taglines() {
+function HeroTagline() {
   return (
-    <div
-      id="hero-taglines"
-      style={{
-        width: '100%',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        marginBottom: 46,
-        marginTop: 16
-      }}
-    >
+    <div id="hero-taglines">
       <div
         className="landingpage-hero-headline"
         style={{
@@ -56,7 +55,12 @@ function Taglines() {
             lineHeight: 1.1
           }}
         >
-          <div id="tagline-main">
+          <div
+            id="tagline-main"
+            style={{
+              opacity: 0.9
+            }}
+          >
             The Framework{' '}
             <span
               style={{
@@ -76,16 +80,17 @@ function Taglines() {
           <div
             id="tagline-secondary"
             style={{
-              color: '#00000070',
               textAlign: 'center',
               width: '100%',
+              margin: 'auto',
               marginTop: 10,
               lineHeight: 1.35,
-              fontWeight: 400
+              fontWeight: 400,
+              opacity: 0.45,
+              maxWidth: 550
             }}
           >
-            <SpanAvoidBreakIfPossible>Like Next.js & Nuxt but with unprecedented</SpanAvoidBreakIfPossible>{' '}
-            <SpanAvoidBreakIfPossible>flexibility, dependability, and control.</SpanAvoidBreakIfPossible>
+            Next.js & Nuxt alternative for unprecedented flexibility and dependability.
           </div>
         </h1>
       </div>
@@ -93,7 +98,74 @@ function Taglines() {
   )
 }
 
-function TalkLink() {
+function Quote() {
+  const avatarSize = 25
+  return (
+    <div id="hero-quote" style={{ display: 'flex', alignItems: 'center' }}>
+      <span style={{ display: 'flex', alignItems: 'center' }}>
+        <QuoteIcon
+          style={{
+            width: 26,
+            alignSelf: 'flex-start',
+            position: 'relative',
+            top: -6,
+            opacity: 0.2,
+            marginRight: 12,
+            flexShrink: 0
+          }}
+        />
+        <span style={{ maxWidth: 540 }}>
+          Vike is the next generation of framework architecture, for an open and dependable foundation companies can
+          build upon with confidence.
+        </span>
+      </span>
+      <a
+        id="hero-quote-author"
+        href="/team"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          flexShrink: 0,
+          lineHeight: 1.2,
+          color: 'inherit'
+        }}
+      >
+        <div>
+          {maintainersList
+            .filter((m) => m.isCoreTeam)
+            .map((maintainer, i) => (
+              <img
+                style={{
+                  width: avatarSize,
+                  height: avatarSize,
+                  verticalAlign: 'middle',
+                  borderRadius: '50%',
+                  marginLeft: i !== 0 ? -7 : 0,
+                  position: 'relative',
+                  zIndex: Math.abs(8 - i)
+                }}
+                src={getMaintainerAvatar(maintainer, avatarSize)}
+                key={i}
+              />
+            ))}
+        </div>
+        <div style={{ opacity: 0.6, fontSize: '0.95em', marginTop: 4, marginBottom: -7 }}>Vike Team</div>
+      </a>
+    </div>
+  )
+}
+function QuoteIcon(props: { style: React.CSSProperties }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58.092 51" {...props}>
+      <g fill="currentColor">
+        <path d="M16.488 1.941A27.8 27.8 0 0 1 26.709 0v13.717c-1.62 0-3.226.305-4.723.897a12.4 12.4 0 0 0-4.004 2.554c-1.146 1.094-2.055 2.393-2.676 3.823s-.94 2.962-.94 4.51h2.122c3.13-.016 9.388 2.003 9.388 10.205V51H0V25.5c0-3.348.69-6.664 2.033-9.758s3.31-5.905 5.79-8.273a26.8 26.8 0 0 1 8.665-5.528zM47.87 1.941A27.8 27.8 0 0 1 58.091 0v13.717c-1.62 0-3.225.305-4.723.897a12.4 12.4 0 0 0-4.004 2.554c-1.146 1.094-2.055 2.393-2.675 3.823s-.94 2.962-.94 4.51h2.121c3.13-.016 9.388 2.003 9.388 10.205V51H31.382V25.5c0-3.348.691-6.664 2.033-9.758a25.5 25.5 0 0 1 5.79-8.273 26.8 26.8 0 0 1 8.665-5.528z"></path>
+      </g>
+    </svg>
+  )
+}
+
+function VideoTalkLink() {
   return (
     <a
       href="https://www.youtube.com/watch?v=jzjtDC31ZnI&t=13s"
@@ -148,8 +220,4 @@ function GetStartedBtn() {
       </Link>
     </div>
   )
-}
-
-function SpanAvoidBreakIfPossible({ children }: any) {
-  return <span style={{ display: 'inline-block' }}>{children}</span>
 }

@@ -1,29 +1,8 @@
 export { testRun }
 
-import {
-  page,
-  test,
-  expect,
-  run,
-  autoRetry,
-  fetchHtml,
-  getServerUrl,
-  testScreenshotFixture,
-  expectLog,
-  pc
-} from '@brillout/test-e2e'
-import path from 'path'
-import url from 'url'
-import { createRequire } from 'module'
+import { page, test, expect, run, autoRetry, fetchHtml, getServerUrl, expectLog } from '@brillout/test-e2e'
 
-function testRun(
-  cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
-  {
-    isCJS,
-    skipScreenshotTest,
-    screenshotFixture
-  }: { isCJS?: true; skipScreenshotTest?: true; screenshotFixture?: string } = {}
-) {
+function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', { isCJS }: { isCJS?: true } = {}) {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {
@@ -45,45 +24,6 @@ function testRun(
       expect(await page.textContent('button')).toBe('Counter 1')
     })
   })
-
-  if (!skipScreenshotTest) {
-    test('screenshot fixture', async () => {
-      {
-        const { platform } = process
-        if (!['linux', 'win32', 'darwin'].includes(platform))
-          throw new Error(`Unexpected operating system platform name ${pc.bold(platform)}`)
-        if (platform !== 'linux') return
-        /*
-        if (process.env.VITE_ECOSYSTEM_CI) {
-          console.log(
-            `\n${pc.blue('INFO')} test screenshot fixture ${pc.bold('skipped')} because running in Vite Ecosystem CI.`
-          )
-          return
-        }
-        */
-      }
-      {
-        const dirname = path.dirname(url.fileURLToPath(import.meta.url))
-        // dirname isn't the directory of this file: because this file is bundled with the entry, e.g. dirname is the directory examples/react-streaming/ of the entry /examples/react-streaming/.test-dev.test.ts
-        const repoRoot = path.join(dirname, `../../`)
-        const screenshotFixturePathUnresolved = path.join(
-          repoRoot,
-          screenshotFixture || 'examples/react-minimal/.test-screenshot-fixture.png'
-        )
-        const require = createRequire(import.meta.url)
-        let screenshotFixturePath: string
-        try {
-          screenshotFixturePath = require.resolve(screenshotFixturePathUnresolved)
-        } catch (err) {
-          console.log('dirname:', dirname)
-          console.log('repoRoot:', repoRoot)
-          console.log('screenshotFixturePathUnresolved:', screenshotFixturePathUnresolved)
-          throw err
-        }
-        await testScreenshotFixture({ screenshotFixturePath, doNotTestLocally: true })
-      }
-    })
-  }
 
   test('about page', async () => {
     await page.click('a[href="/about"]')

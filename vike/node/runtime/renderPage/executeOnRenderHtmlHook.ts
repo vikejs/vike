@@ -126,59 +126,56 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
   return hookFound
 }
 
-function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook) {
+function processHookReturnValue(
+  hookReturnValue: unknown,
+  renderHook: RenderHook
+): {
+  documentHtml: DocumentHtml
+  pageContextPromise: PageContextPromise
+  pageContextProvidedByRenderHook: null | Record<string, unknown>
+  injectFilter: PreloadFilter
+} {
   let documentHtml: DocumentHtml
   let pageContextPromise: PageContextPromise = null
   let pageContextProvidedByRenderHook: null | Record<string, unknown> = null
   let injectFilter: PreloadFilter = null
-  const ret = () => ({ documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter })
-
-  if (hookReturnValue === null) return ret()
 
   if (isDocumentHtml(hookReturnValue)) {
     documentHtml = hookReturnValue
-    return ret()
+    return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
   }
 
   const errPrefix = `The ${renderHook.hookName as string}() hook defined at ${renderHook.hookFilePath}` as const
-  const errSuffix = `a string generated with the ${pc.cyan(
+  const errSuffix = `a string generated with ${pc.cyan(
     'escapeInject`<html>...</html>`'
-  )} template tag or a string returned by ${pc.cyan(
-    'dangerouslySkipEscape()'
-  )}, see https://vike.dev/escapeInject` as const
+  )} or the value returned by ${pc.cyan('dangerouslySkipEscape()')}, see https://vike.dev/escapeInject` as const
   if (typeof hookReturnValue === 'string') {
     assertWarning(
       false,
-      [errPrefix, 'returned a plain JavaScript string which is dangerous: it should instead return', errSuffix].join(
-        ' '
-      ),
+      [
+        errPrefix,
+        `returned a plain JavaScript string which is ${pc.red(pc.bold('dangerous'))}: it should instead return`,
+        errSuffix
+      ].join(' '),
       { onlyOnce: true }
     )
     hookReturnValue = dangerouslySkipEscape(hookReturnValue)
   }
-  assertUsage(
-    isObject(hookReturnValue),
-    [
-      errPrefix,
-      `should return ${pc.cyan('null')}, the value ${pc.cyan('documentHtml')}, or an object ${pc.cyan(
-        '{ documentHtml, pageContext }'
-      )} where ${pc.cyan('pageContext')} is ${pc.cyan(
-        'undefined'
-      )} or an object holding additional pageContext values, and where ${pc.cyan('documentHtml')} is`,
-      errSuffix
-    ].join(' ')
-  )
+  const wrongReturnValue = `should return the value ${pc.cyan('documentHtml')} or an object ${pc.cyan(
+    '{ documentHtml }'
+  )} where ${pc.cyan('documentHtml')} is ${errSuffix}` as const
+  assertUsage(isObject(hookReturnValue), `${errPrefix} ${wrongReturnValue}`)
   assertHookReturnedObject(hookReturnValue, ['documentHtml', 'pageContext', 'injectFilter'] as const, errPrefix)
+  assertUsage(
+    hookReturnValue.documentHtml,
+    `${errPrefix} returned an object that is missing the ${pc.code('documentHtml')} property: it ${wrongReturnValue}`
+  )
 
   if (hookReturnValue.injectFilter) {
     assertUsage(isCallable(hookReturnValue.injectFilter), 'injectFilter should be a function')
     injectFilter = hookReturnValue.injectFilter
   }
 
-  assertUsage(
-    hookReturnValue.documentHtml,
-    `${errPrefix} returned an object that is missing the ${pc.code('documentHtml')} property.`
-  )
   {
     let val = hookReturnValue.documentHtml
     const errBegin = `${errPrefix} returned ${pc.cyan('{ documentHtml }')}, but ${pc.cyan('documentHtml')}` as const
@@ -187,7 +184,7 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
         false,
         [
           errBegin,
-          `is a plain JavaScript string which is dangerous: ${pc.cyan('documentHtml')} should be`,
+          `is a plain JavaScript string which is ${pc.bold(pc.red('dangerous'))}: ${pc.cyan('documentHtml')} should be`,
           errSuffix
         ].join(' '),
         { onlyOnce: true }
@@ -218,5 +215,5 @@ function processHookReturnValue(hookReturnValue: unknown, renderHook: RenderHook
     }
   }
 
-  return ret()
+  return { documentHtml, pageContextProvidedByRenderHook, pageContextPromise, injectFilter }
 }

@@ -175,6 +175,12 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`.
      */
     isBackwardNavigation: boolean | null
+    /**
+     * Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
+     *
+     * https://vike.dev/pageContext
+     */
+    previousPageContext: PageContextClient<Data> | null
   } & PageContextUrlClient
 
 type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &

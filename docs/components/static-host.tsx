@@ -5,7 +5,7 @@ export { StaticHostDocOutro }
 import { Link } from '@brillout/docpress'
 import React from 'react'
 
-function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: JSX.Element }) {
+function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: React.JSX.Element }) {
   return (
     <>
       <p>
@@ -46,7 +46,7 @@ function StaticHostDocStrategies({ name = 'the static host' }: { name?: string }
     </>
   )
 }
-function StaticHostDocOutro({ baseUrlAddendum }: { baseUrlAddendum?: JSX.Element }) {
+function StaticHostDocOutro({ baseUrlAddendum }: { baseUrlAddendum?: React.JSX.Element }) {
   return (
     <>
       <p>

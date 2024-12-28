@@ -1,3 +1,44 @@
+## [0.4.211](https://github.com/vikejs/vike/compare/v0.4.210...v0.4.211) (2024-12-28)
+
+
+### Bug Fixes
+
+* add hint for `window is not defined` ([7e270e9](https://github.com/vikejs/vike/commit/7e270e9f0c1af403fb39b2277fc7aaa86cdc0c11))
+* fix wrong alias assertion ([07fd3f1](https://github.com/vikejs/vike/commit/07fd3f183a29a57370ea56e7af3d83dfae23200f))
+* remove assets from dist/server/ (fix [#2034](https://github.com/vikejs/vike/issues/2034)) ([c1cd2d9](https://github.com/vikejs/vike/commit/c1cd2d978b9b811c159551927d0f843d7709066e))
+* set `host: true` if inside docker container ([cac186d](https://github.com/vikejs/vike/commit/cac186d45f6a6505256f3e670088f6aaf32962e8))
+* stabilize extends order (fix [#2037](https://github.com/vikejs/vike/issues/2037)) ([d93dfe1](https://github.com/vikejs/vike/commit/d93dfe1fe4b16a8c253032906449d75c1560fd68))
+* support .{client,server.shared}.js for pointer imports ([285fedb](https://github.com/vikejs/vike/commit/285fedbe561f376aa897caabf5d35b7f907792f6))
+
+
+
+## [0.4.210](https://github.com/vikejs/vike/compare/v0.4.209...v0.4.210) (2024-12-17)
+
+
+### Bug Fixes
+
+* change Vite 6 default port from `5731` to `3000` ([9d68312](https://github.com/vikejs/vike/commit/9d6831246019dc6032c91521de1e948dbf228ea1))
+
+
+### Features
+
+* `pageContext.pageContextNavigation` ([#2002](https://github.com/vikejs/vike/issues/2002)) ([5e317ec](https://github.com/vikejs/vike/commit/5e317ec4cc5228860ad5a943c231aa4e61a5a084))
+
+
+
+## [0.4.209](https://github.com/vikejs/vike/compare/v0.4.208...v0.4.209) (2024-12-12)
+
+
+### Bug Fixes
+
+* error message typo ([a4576ad](https://github.com/vikejs/vike/commit/a4576ad727fec566029097703cd8b2c220950128))
+* improve warning upon side exports ([8d0a7ba](https://github.com/vikejs/vike/commit/8d0a7ba576fb52268c2c6e28dac2a22bd01355db))
+* show proper error message upon wrong onRenderHtml usage ([c3e6b54](https://github.com/vikejs/vike/commit/c3e6b5427710f24cc4f4b850948ce6bf1628815b))
+* tolerate side exports in + files ([2e1d6de](https://github.com/vikejs/vike/commit/2e1d6decd88543f7c12834fc91720fd6cee8cfc2))
+* update @brillout/vite-plugin-server-entry ([bcc7ba6](https://github.com/vikejs/vike/commit/bcc7ba6a75d4dd6962aefe682e228e54e826b4ce))
+
+
+
 ## [0.4.208](https://github.com/vikejs/vike/compare/v0.4.207...v0.4.208) (2024-12-09)
 
 
