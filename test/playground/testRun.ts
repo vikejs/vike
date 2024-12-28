@@ -14,27 +14,22 @@ import { testNestedLayout } from './pages/nested-layout/nestedLayout.e2e-test'
 import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/history.e2e-test'
 import { testRedirectMailto } from './pages/redirects.e2e-tests'
+
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   const isDev = cmd === 'npm run dev'
   testRunClassic(cmd)
-  const tests: ((args: {
-    isDev: boolean
-    rootDir: string
-  }) => void)[] = [
-    testCumulativeSetting,
-    testSettingOnlyAvailableInCorrectEnv,
-    testSettingInheritedByDescendants,
-    testSettingEffect,
-    testSideExports,
-    testRouteStringDefinedInConfigFile,
-    testPrerenderSettings,
-    testRedirectMailto,
-    testNavigateEarly,
-    testDynamicImportFileEnv,
-    testNestedLayout,
-    testHistoryPushState
-  ]
-  tests.forEach((t) => t({ isDev, rootDir }))
+  testCumulativeSetting()
+  testSettingOnlyAvailableInCorrectEnv()
+  testSettingInheritedByDescendants()
+  testSettingEffect()
+  testSideExports()
+  testRouteStringDefinedInConfigFile()
+  testPrerenderSettings({ isDev, rootDir })
+  testRedirectMailto()
+  testNavigateEarly()
+  testDynamicImportFileEnv()
+  testNestedLayout()
+  testHistoryPushState()
 }
