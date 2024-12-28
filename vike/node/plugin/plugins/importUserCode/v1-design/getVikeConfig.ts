@@ -786,9 +786,9 @@ async function getConfigValueSource(
     let definedAtFilePath: DefinedAtFilePath
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
-      const { configValue } = conf
+      // Defined over pointer import
       const resolved = resolvePointerImportOfConfig(
-        configValue,
+        conf.configValue,
         interfaceFile.filePath,
         userRootDir,
         configDef.env,
@@ -799,6 +799,7 @@ async function getConfigValueSource(
       valueFilePath = resolved.pointerImport.filePathAbsoluteVite
       definedAtFilePath = resolved.pointerImport
     } else {
+      // Defined by value file, i.e. +{configName}.js
       assert(interfaceFile.isValueFile)
       valueFilePath = interfaceFile.filePath.filePathAbsoluteVite
       definedAtFilePath = {
