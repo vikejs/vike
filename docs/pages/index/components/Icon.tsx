@@ -13,8 +13,7 @@ function Icon({ icon, size, color }: { icon: React.JSX.Element; size: number; co
         color,
         width: size,
         height: size,
-        marginLeft: margin,
-        marginRight: margin
+        margin
       }}
     >
       {icon}
