@@ -62,13 +62,14 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
 }
 
 function isStyle(mod: ModuleNode) {
-  if (styleFileRE.test(mod.url) || (mod.id && /\?vue&type=style/.test(mod.id))) {
-    // `mod.type` seems broken
-    assert(mod.type === 'js')
-    // logModule(mod)
-    return true
-  }
-  return false
+  return (
+    // CSS-in-JS libraries such as [wyw-in-js](https://github.com/vikejs/vike/issues/2039)
+    mod.type === 'css' ||
+    // .css, .less, ...
+    styleFileRE.test(mod.url) ||
+    // CSS of .vue files
+    (mod.id && /\?vue&type=style/.test(mod.id))
+  )
 }
 
 /*
