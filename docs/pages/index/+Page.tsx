@@ -7,7 +7,7 @@ import { Flexible } from './sections/flexible/Flexible'
 import { Reliable } from './sections/reliable/Reliable'
 import { Features } from './sections/features/Features'
 import { Philosophy } from './sections/philosophy/Philosophy'
-import { CTA } from './sections/end/End'
+import { End } from './sections/end/End'
 import { Grid } from './components/Grid'
 import './Page.css'
 
@@ -63,7 +63,7 @@ function Page() {
           backgroundColor: '#fbfbfb'
         }}
       >
-        <CTA />
+        <End />
       </Block>
     </div>
   )

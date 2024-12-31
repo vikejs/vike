@@ -1,3 +1,5 @@
+export { End }
+
 import React from 'react'
 import { Grid } from '../../components/Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
@@ -7,7 +9,7 @@ import './End.css'
 import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
 
-export const CTA = () => {
+const End = () => {
   return (
     <div
       style={{
