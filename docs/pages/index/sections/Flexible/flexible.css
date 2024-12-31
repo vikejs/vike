@@ -2,7 +2,8 @@
   background-color: transparent;
   transition: all 0.2s;
   flex: 1;
-  padding: 20px 0;
+  padding-top: 25px;
+  padding-bottom: 20px;
   border-right: 3px solid #fff;
   cursor: pointer;
 }
