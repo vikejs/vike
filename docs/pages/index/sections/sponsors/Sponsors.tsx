@@ -6,7 +6,7 @@ import { sponsorsList } from './sponsorsList'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { TextBox } from '../../components/TextBox'
 import { Button } from '../../components/Button/Button'
-import './sponsors.css'
+import './Sponsors.css'
 import { linkSponsor } from '../../links'
 import handshakeIcon from './handshake.svg'
 

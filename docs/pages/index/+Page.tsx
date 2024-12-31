@@ -9,7 +9,7 @@ import { Features } from './sections/features/Features'
 import { Philosophy } from './sections/philosophy/Philosophy'
 import { CTA } from './sections/end/End'
 import { Grid } from './Grid'
-import './page.css'
+import './Page.css'
 
 function Page() {
   return (

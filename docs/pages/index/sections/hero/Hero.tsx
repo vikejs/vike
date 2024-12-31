@@ -8,7 +8,7 @@ import { Button } from '../../components/Button/Button'
 import './Hero.css'
 import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
-import '../../page.css'
+import '../../Page.css'
 import { getMaintainerAvatar, maintainersList } from '../../../team/maintainersList'
 
 function Hero() {
