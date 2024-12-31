@@ -1,7 +1,9 @@
+export { SectionTextCollection }
+
 import React from 'react'
 import { primaryColor } from '../primaryColor'
 
-export const SectionTextCollection = ({
+const SectionTextCollection = ({
   caption,
   title,
   descriptions,

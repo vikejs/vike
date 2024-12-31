@@ -3,7 +3,7 @@ export { Page }
 // For generating a 600x315 banner.png from this page see: https://gist.github.com/brillout/e7d0a5585471c4ea40d43d2caaadafad
 
 import React from 'react'
-import { heroBgColor, HeroTagline } from '../index/sections/Hero/Hero'
+import { heroBgColor, HeroTagline } from '../index/sections/hero/Hero'
 import vikeLogo from '../../assets/logo/vike.svg'
 
 function Page() {

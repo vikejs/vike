@@ -1,6 +1,8 @@
+export { TextBox }
+
 import React from 'react'
 
-export const TextBox = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+const TextBox = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   return (
     <div
       className={className}

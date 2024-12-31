@@ -1,7 +1,9 @@
-import React from 'react'
-import { ButtonLearnMore } from './Button/Button'
+export { ParagraphTextCollection }
 
-export const ParagraphTextCollection = ({
+import React from 'react'
+import { ButtonLearnMore } from './button/Button'
+
+const ParagraphTextCollection = ({
   title,
   description,
   icon,

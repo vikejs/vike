@@ -4,11 +4,11 @@ export const heroBgColor = '#f0f0f0'
 
 import React from 'react'
 import { primaryColor } from '../../primaryColor'
-import { Button } from '../../components/Button/Button'
+import { Button } from '../../components/button/Button'
 import './Hero.css'
 import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
-import '../../page.css'
+import '../../Page.css'
 import { getMaintainerAvatar, maintainersList } from '../../../team/maintainersList'
 
 function Hero() {

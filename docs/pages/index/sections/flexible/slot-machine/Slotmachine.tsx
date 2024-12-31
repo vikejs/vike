@@ -1,5 +1,5 @@
 import React from 'react'
-import SlotMachineSVG from '../SlotMachineSVG'
+import SlotMachineSVG from './SlotMachineSVG'
 import ReactLogo from './logos/react'
 import GraphqlLogo from './logos/graphql'
 import ElysiaLogo from './logos/elysia'
@@ -18,7 +18,7 @@ import TelefuncLogo from './logos/telefunc'
 import ServerLogo from './logos/server'
 import StaticLogo from './logos/static'
 import FastifyLogo from './logos/fastify'
-import { IllustrationNote } from '../IllustrationNote'
+import { IllustrationNote } from '../../../components/IllustrationNote'
 
 type slotMachineGroupType = 'ui' | 'rendering' | 'deployment' | 'backend' | 'data'
 
