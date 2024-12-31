@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid } from '../../Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
-import { Button } from '../../components/Button/Button'
+import { Button } from '../../components/button/Button'
 import { TextBox } from '../../components/TextBox'
 import './End.css'
 import { linkGetStarted } from '../../links'

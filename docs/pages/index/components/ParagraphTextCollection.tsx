@@ -1,5 +1,5 @@
 import React from 'react'
-import { ButtonLearnMore } from './Button/Button'
+import { ButtonLearnMore } from './button/Button'
 
 export const ParagraphTextCollection = ({
   title,

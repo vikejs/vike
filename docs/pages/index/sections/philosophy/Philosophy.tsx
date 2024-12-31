@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
-import { Button } from '../../components/Button/Button'
+import { Button } from '../../components/button/Button'
 import { TextBox } from '../../components/TextBox'
 import { Grid } from '../../Grid'
 import './Philosophy.css'
