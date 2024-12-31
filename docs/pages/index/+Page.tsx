@@ -1,13 +1,13 @@
 export { Page }
 
 import React from 'react'
-import { Hero, heroBgColor } from './sections/Hero/Hero'
-import { Sponsors } from './sections/Sponsors/Sponsors'
-import { Flexible } from './sections/Flexible/Flexible'
-import { Reliable } from './sections/Reliable/Reliable'
-import { Features } from './sections/Features/Features'
-import { Philosophy } from './sections/Philosophy/Philosophy'
-import { CTA } from './sections/CTA/CTA'
+import { Hero, heroBgColor } from './sections/hero/Hero'
+import { Sponsors } from './sections/sponsors/Sponsors'
+import { Flexible } from './sections/flexible/Flexible'
+import { Reliable } from './sections/reliable/Reliable'
+import { Features } from './sections/features/Features'
+import { Philosophy } from './sections/philosophy/Philosophy'
+import { CTA } from './sections/end/End'
 import { Grid } from './Grid'
 import './page.css'
 

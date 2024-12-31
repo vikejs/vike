@@ -3,7 +3,7 @@ import { Grid } from '../../Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { Button } from '../../components/Button/Button'
 import { TextBox } from '../../components/TextBox'
-import './cta.css'
+import './End.css'
 import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
 
