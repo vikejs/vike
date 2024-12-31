@@ -1,7 +1,7 @@
 import React from 'react'
 import { TextBox } from '../../components/TextBox'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
-import { Chip } from '../../components/chip/Chip'
+import { Chip } from './chip/Chip'
 import './Features.css'
 
 export const Features = () => {
