@@ -3,7 +3,7 @@ import './Chip.css'
 import viteLogo from './vite.svg'
 import { coreData } from './coreData'
 import { ioData, ioGroups } from './ioData'
-import { IllustrationNote } from '../IllustrationNote'
+import { IllustrationNote } from '../../../components/IllustrationNote'
 
 export const Chip = () => {
   return (
