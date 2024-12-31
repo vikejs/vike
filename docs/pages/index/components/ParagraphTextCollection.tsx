@@ -1,7 +1,9 @@
+export { ParagraphTextCollection }
+
 import React from 'react'
 import { ButtonLearnMore } from './button/Button'
 
-export const ParagraphTextCollection = ({
+const ParagraphTextCollection = ({
   title,
   description,
   icon,
