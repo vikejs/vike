@@ -1,7 +1,7 @@
-<svg version="1.1" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-<g transform="translate(-.7735 -.75)" fill="none" stroke-dashoffset="60.8" stroke-width="1.4">
-<rect x="2.4042" y="5.0107" width="5.0486" height="11.479"/>
-<rect x="14.094" y="5.0107" width="5.0486" height="11.479"/>
+<svg fill="none" version="1.1" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+<g fill="none" stroke-dashoffset="60.8" stroke-width="1.4">
+<rect x="1.2" y="4.7607" width="5.0486" height="11.479"/>
+<rect x="14.751" y="4.7607" width="5.0486" height="11.479"/>
 </g>
-<path d="m10 1.2469v17.506" fill="none" stroke-dashoffset="60.8" stroke-width="1.2"/>
+<path d="m10.5 1.7469v17.506" stroke-width="1.6" opacity="0.8"/>
 </svg>
