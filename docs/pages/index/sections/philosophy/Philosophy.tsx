@@ -14,7 +14,7 @@ const iconColor = '#333'
 
 const principles = [
   {
-    icon: <Icon icon={<SeparationIcon />} size={iconSizeDefault} color="#444" />,
+    icon: <Icon icon={<SeparationIcon />} size={iconSizeDefault + 0} color="#444" />,
     title: 'Separation of concerns',
     href: '/why#separation-of-concerns'
   },
