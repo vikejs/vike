@@ -5,7 +5,12 @@ import React from 'react'
 
 const iconSizeDefault = 28
 
-function Icon({ icon, size, color }: { icon: React.JSX.Element; size: number; color: string }) {
+function Icon({
+  icon,
+  size,
+  color,
+  style
+}: { icon: React.JSX.Element; size: number; color: string; style?: React.CSSProperties }) {
   const margin = (iconSizeDefault - size) / 2
   return (
     <div
@@ -13,7 +18,8 @@ function Icon({ icon, size, color }: { icon: React.JSX.Element; size: number; co
         color,
         width: size,
         height: size,
-        margin
+        margin,
+        ...style
       }}
     >
       {icon}

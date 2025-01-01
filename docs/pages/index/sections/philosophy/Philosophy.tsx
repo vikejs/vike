@@ -24,7 +24,9 @@ const principles = [
     href: '/why#flourishing-do-one-thing-do-it-well-ecosystem'
   },
   {
-    icon: <Icon icon={<EarIcon />} size={iconSizeDefault + 8} color="#222" />,
+    icon: (
+      <Icon icon={<EarIcon />} size={iconSizeDefault + 8} color="#222" style={{ position: 'relative', left: -1 }} />
+    ),
     title: 'Listening to users',
     href: '/why#listening-to-users'
   },

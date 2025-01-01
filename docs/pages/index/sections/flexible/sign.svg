@@ -17,7 +17,8 @@
 <rect x="-.7953" y="10.017" width="62.946" height="27.103" rx="0"/>
 </clipPath>
 </defs>
-<g transform="translate(5.6762 .75264)" fill="none" stroke="currentColor" stroke-dashoffset="60.8" stroke-width="2.17">
+<g transform="translate(5.6762 .75264)" fill="none" stroke="currentColor" stroke-dashoffset="60.8">
+<g stroke-width="2.3">
 <g transform="translate(-26.676 -26.211)">
 <rect transform="rotate(-45 -7.2179 17.426)" x="31.792" y="65.123" width="9.7199" height="9.7199" rx="1.4312" clip-path="url(#clipPath5349)" stroke-linecap="round" stroke-linejoin="round"/>
 <rect transform="translate(-1.1357)" x="23.9" y="17.299" width="51.75" height="12.539" rx="1.8794" clip-path="url(#clipPath16228)" stroke-linecap="square"/>
@@ -26,6 +27,7 @@
 <rect transform="rotate(-45 -7.2179 17.426)" x="31.792" y="65.123" width="9.7199" height="9.7199" rx="1.4312" clip-path="url(#clipPath5349-9)" stroke-linecap="round" stroke-linejoin="round"/>
 <rect transform="translate(-1.1357)" x="23.9" y="17.299" width="51.75" height="12.539" rx="1.8794" clip-path="url(#clipPath16228-2)" stroke-linecap="square"/>
 </g>
-<rect transform="translate(-31.676 -26.211)" x="47" y="16.834" width="6" height="54.787" rx="2.511" clip-path="url(#clipPath15337)" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<rect transform="translate(-31.676 -26.211)" x="47" y="16.834" width="6" height="54.787" rx="2.511" clip-path="url(#clipPath15337)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"/>
 </g>
 </svg>
