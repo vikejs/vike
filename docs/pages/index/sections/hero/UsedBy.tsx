@@ -39,7 +39,7 @@ const data: { website: `https://${string}`; logo: string; shrink?: number; offse
   {
     website: 'https://chip.de',
     logo: usedByChip,
-    shrink: 10
+    shrink: 60
   }
 ]
 

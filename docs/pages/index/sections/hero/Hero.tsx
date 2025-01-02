@@ -30,7 +30,7 @@ function Hero() {
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
       <Quote />
-      <div style={{ height: 100 }} id="hero-margin-mid-2"></div>
+      <div style={{ height: 100 }} id="hero-margin-mid-3"></div>
       <UsedBy />
       <div style={{ height: 120 }} id="hero-margin-bot"></div>
     </div>
