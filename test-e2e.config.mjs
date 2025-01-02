@@ -18,10 +18,6 @@ function getCiJobs() {
     os: 'windows-latest',
     node_version: '18'
   }
-  const macos_nodeOld = {
-    os: 'macos-latest',
-    node_version: '18'
-  }
 
   const setupsExamples = [linux_nodeNew, windows_nodeOld]
 
@@ -40,7 +36,7 @@ function getCiJobs() {
     },
     {
       name: 'Examples Misc',
-      setups: [linux_nodeOld, macos_nodeOld, windows_nodeOld]
+      setups: [linux_nodeOld, windows_nodeOld]
     },
     {
       name: 'Unit Tests E2E',
