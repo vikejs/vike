@@ -29,6 +29,12 @@
   #hero-margin-mid-2 {
     height: 30px !important;
   }
+  #hero-margin-mid-3 {
+    height: 40px !important;
+  }
+  .hero-usedby {
+    zoom: 0.7;
+  }
   #hero-quote {
     flex-direction: column;
   }

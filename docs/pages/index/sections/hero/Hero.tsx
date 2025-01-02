@@ -10,6 +10,7 @@ import { linkGetStarted } from '../../links'
 import { Link } from '@brillout/docpress'
 import '../../Page.css'
 import { getMaintainerAvatar, maintainersList } from '../../../team/maintainersList'
+import { UsedBy } from './UsedBy'
 
 function Hero() {
   return (
@@ -29,6 +30,8 @@ function Hero() {
       <GetStartedBtn />
       <div style={{ height: 52 }} id="hero-margin-mid-2"></div>
       <Quote />
+      <div style={{ height: 100 }} id="hero-margin-mid-2"></div>
+      <UsedBy />
       <div style={{ height: 120 }} id="hero-margin-bot"></div>
     </div>
   )
