@@ -35,7 +35,7 @@ const data: {
     desc: 'Disruptive Upwork alternative',
     note: (
       <>
-        Contra doesn't use Vike for their landing page but for its main app, see for example{' '}
+        Contra doesn't use Vike for its landing page but for its main app, see for example{' '}
         <a href="https://contra.com/brillout">contra.com/brillout</a>.
       </>
     ),
@@ -50,7 +50,7 @@ const data: {
     desc: 'Most advanced 3D design web app',
     note: (
       <>
-        Spline doesn't use Vike for their landing page but for its main app, see{' '}
+        Spline doesn't use Vike for its landing page but for its main app, see{' '}
         <a href="https://app.spline.design">app.spline.design</a>.
       </>
     ),
