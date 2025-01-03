@@ -129,6 +129,7 @@ function UsedByList() {
   return (
     <ul>
       {data
+        .slice()
         .sort((e1, e2) => e1.order - e2.order)
         .map((e, i) => (
           <li>
