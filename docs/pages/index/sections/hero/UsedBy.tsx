@@ -75,10 +75,12 @@ function UsedBy() {
           </a>
         ))}
       </div>
-      <IllustrationNote>
-        Used by large companies to build advanced applications.
+      <IllustrationNote style={{ marginTop: -2 }}>
+        Used by large companies to build mission-critical applications.
         <br />
-        (Proof: search for <code style={{ fontSize: '0.85em' }}>vike_pageContext</code> in HTML.)
+        <span style={{ opacity: 0.5 }}>
+          (Proof: search for <code style={{ fontSize: '0.85em' }}>vike_pageContext</code> in HTML.)
+        </span>
       </IllustrationNote>
     </div>
   )

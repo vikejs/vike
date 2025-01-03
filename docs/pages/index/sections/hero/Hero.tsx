@@ -146,6 +146,7 @@ function Quote() {
                   borderRadius: '50%',
                   marginLeft: i !== 0 ? -7 : 0,
                   position: 'relative',
+                  top: -2,
                   zIndex: Math.abs(8 - i)
                 }}
                 src={getMaintainerAvatar(maintainer, avatarSize)}
