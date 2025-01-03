@@ -238,6 +238,10 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/banner'
   },
   {
+    title: 'Cover',
+    url: '/banner/cover'
+  },
+  {
     title: 'vue-i18n',
     url: '/vue-i18n'
   },
