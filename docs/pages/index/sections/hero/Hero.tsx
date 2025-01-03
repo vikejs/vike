@@ -131,7 +131,9 @@ function Quote() {
           alignItems: 'center',
           flexShrink: 0,
           lineHeight: 1.2,
-          color: 'inherit'
+          color: 'inherit',
+          position: 'relative',
+          top: -1
         }}
       >
         <div>
@@ -146,7 +148,6 @@ function Quote() {
                   borderRadius: '50%',
                   marginLeft: i !== 0 ? -7 : 0,
                   position: 'relative',
-                  top: -2,
                   zIndex: Math.abs(8 - i)
                 }}
                 src={getMaintainerAvatar(maintainer, avatarSize)}
@@ -154,7 +155,7 @@ function Quote() {
               />
             ))}
         </div>
-        <div style={{ opacity: 0.6, fontSize: '0.95em', marginTop: 4, marginBottom: -7 }}>Vike Team</div>
+        <div style={{ opacity: 0.6, fontSize: '0.94em', marginTop: 4, marginBottom: -7 }}>Vike Team</div>
       </a>
     </div>
   )
