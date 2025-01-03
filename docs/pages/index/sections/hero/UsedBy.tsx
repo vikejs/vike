@@ -12,14 +12,14 @@ import { IllustrationNote } from '../../components/IllustrationNote'
 
 const data: { website: `https://${string}`; logo: string; shrink?: number; offset?: number }[] = [
   {
+    website: 'https://name.com',
+    logo: usedByName,
+    offset: 5
+  },
+  {
     website: 'https://contra.com',
     logo: usedByContra,
     shrink: 40,
-    offset: 4
-  },
-  {
-    website: 'https://name.com',
-    logo: usedByName,
     offset: 4
   },
   {
