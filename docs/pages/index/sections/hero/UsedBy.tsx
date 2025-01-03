@@ -60,7 +60,7 @@ const data: {
   },
   {
     website: 'https://ecosia.org',
-    desc: 'Popular Google aternative',
+    desc: 'Popular Google alternative',
     name: 'Ecosia',
     logo: usedByEcosia,
     shrink: 55,
