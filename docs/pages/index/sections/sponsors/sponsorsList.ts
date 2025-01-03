@@ -81,7 +81,10 @@ const sponsorsList: Sponsor[] = [
     isPast: true,
     companyName: 'Repora',
     companyLogo: reporaLogo,
+    /* 404
     website: 'https://www.repora.com',
+    */
+    website: 'https://github.com/DannyZB?tab=sponsoring',
     github: 'DannyZB'
   },
   {

@@ -9,11 +9,12 @@ import { Button } from '../../components/button/Button'
 import './Sponsors.css'
 import { linkSponsor } from '../../links'
 import handshakeIcon from './handshake.svg'
+import { IllustrationNote } from '../../components/IllustrationNote'
 
 type Sponsor = {
   companyName: string
   companyLogo: string
-  website: string
+  website: string | null
   isPast?: true
   companyLogoStyle?: React.CSSProperties
   github: string
@@ -77,13 +78,14 @@ function Sponsors() {
             ))}
         </div>
       </div>
+      <IllustrationNote style={{ paddingTop: 6 }}>Company sponsors, current and past (last line)</IllustrationNote>
     </div>
   )
 }
 
 function SponsorLink({ sponsor }: { sponsor: Sponsor }) {
   return (
-    <a href={sponsor.website} className={`landingpage-sponsors-sponsor`}>
+    <a href={sponsor.website ?? undefined} className={`landingpage-sponsors-sponsor`}>
       <img
         style={{
           maxWidth: '90%',
