@@ -31,6 +31,12 @@ const iconColor = '#333'
 
 const benefits = [
   {
+    icon: <Icon icon={<OrigamiIcon />} size={iconSizeDefault + 12} color={iconColor}></Icon>,
+    title: 'Flexible by design',
+    href: '/why#flexible-by-design',
+    description: 'From high-level design to the smallest details, Vike is built with flexibility in mind.'
+  },
+  {
     icon: <Icon icon={<SignIcon />} size={iconSizeDefault + 10} color={iconColor}></Icon>,
     title: 'Cutting edge, at your own pace',
     href: '/why#conservative-or-cutting-edge-your-choice',
@@ -44,12 +50,6 @@ const benefits = [
     description:
       'Create an internal company framework that empowers your Software Architects to own the architecture and your Product Developers to quickly iterate.'
   },
-  {
-    icon: <Icon icon={<OrigamiIcon />} size={iconSizeDefault + 12} color={iconColor}></Icon>,
-    title: 'Flexible by design',
-    href: '/why#flexible-by-design',
-    description: 'From high-level design to the smallest details, Vike is built with flexibility in mind.'
-  }
 ]
 
 export const Flexible = () => {
