@@ -93,7 +93,7 @@ function HeroTagline() {
               maxWidth: 550
             }}
           >
-            Next.js & Nuxt alternative for unprecedented flexibility and dependability.
+            Next.js & Nuxt alternative for unprecedented flexibility and dependability
           </div>
         </h1>
       </div>
