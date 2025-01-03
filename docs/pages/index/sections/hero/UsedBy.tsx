@@ -1,4 +1,5 @@
 export { UsedBy }
+export { UsedByList }
 
 import React from 'react'
 
@@ -9,43 +10,77 @@ import usedByContra from './UsedBy/usedby-contra.svg'
 import usedByName from './UsedBy/usedby-name.svg'
 import usedByChip from './UsedBy/usedby-chip.svg'
 import { IllustrationNote } from '../../components/IllustrationNote'
+import { Link } from '@brillout/docpress'
 
-const data: { website: `https://${string}`; logo: string; shrink?: number; offset?: number; desc: string }[] = [
+const data: {
+  website: `https://${string}`
+  logo: string
+  shrink?: number
+  offset?: number
+  desc: string
+  name: string
+  note?: React.JSX.Element
+  order: number
+}[] = [
   {
     website: 'https://name.com',
+    name: 'Name.com',
     desc: 'One of the leading domain registrar',
     logo: usedByName,
-    offset: 5
+    offset: 5,
+    order: 0
   },
   {
     website: 'https://contra.com',
     desc: 'Disruptive Upwork alternative',
+    note: (
+      <>
+        Contra doesn't use Vike for their landing page but for its main app, see for example{' '}
+        <a href="https://contra.com/brillout">contra.com/brillout</a>.
+      </>
+    ),
+    name: 'Contra',
     logo: usedByContra,
     shrink: 40,
-    offset: 4
+    offset: 4,
+    order: 200
   },
   {
     website: 'https://app.spline.design',
     desc: 'Most advanced 3D design web app',
-    logo: usedBySpline
+    note: (
+      <>
+        Spline doesn't use Vike for their landing page but for its main app, see{' '}
+        <a href="https://app.spline.design">app.spline.design</a>.
+      </>
+    ),
+    name: 'Spline',
+    logo: usedBySpline,
+    order: -200
   },
   {
     website: 'https://ecosia.org',
     desc: 'Popular Google aternative',
+    name: 'Ecosia',
     logo: usedByEcosia,
     shrink: 55,
-    offset: -1
+    offset: -1,
+    order: 50
   },
   {
     website: 'https://bild.de',
     desc: "Germany's most read news",
-    logo: usedByBild
+    name: 'Bild.de',
+    logo: usedByBild,
+    order: -100
   },
   {
     website: 'https://chip.de',
     desc: "Germany's most read consumer news",
+    name: 'Chip.de',
     logo: usedByChip,
-    shrink: 60
+    shrink: 60,
+    order: -99
   }
 ]
 
@@ -82,13 +117,32 @@ function UsedBy() {
           </a>
         ))}
       </div>
-      <IllustrationNote style={{ marginTop: -2 }}>
-        Used by large companies to build mission-critical applications.
+      <IllustrationNote style={{ marginTop: 1 }}>
+        Used by large companies to build mission-critical applications, see <Link href="/use-cases">Use Cases</Link>
         <br />
-        <span style={{ opacity: 0.5 }}>
-          (Proof: search for <code style={{ fontSize: '0.85em' }}>vike_pageContext</code> in HTML.)
-        </span>
       </IllustrationNote>
     </div>
+  )
+}
+
+function UsedByList() {
+  return (
+    <ul>
+      {data
+        .sort((e1, e2) => e1.order - e2.order)
+        .map((e, i) => (
+          <li>
+            <a href={e.website} target="_blank" key={i}>
+              {e.name}
+            </a>{' '}
+            - {e.desc}.
+            {e.note && (
+              <blockquote>
+                <p>{e.note}</p>
+              </blockquote>
+            )}
+          </li>
+        ))}
+    </ul>
   )
 }

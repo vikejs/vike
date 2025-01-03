@@ -24,7 +24,7 @@ function IllustrationNote({
     <div
       className={className}
       style={{
-        color: 'rgba(0,0,0,0.5)',
+        opacity: 0.6,
         textAlign: 'center',
         ...style
       }}
