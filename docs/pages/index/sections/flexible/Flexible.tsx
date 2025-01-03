@@ -49,7 +49,7 @@ const benefits = [
     href: '/why#build-your-own-framework',
     description:
       'Create an internal company framework that empowers your Software Architects to own the architecture and your Product Developers to quickly iterate.'
-  },
+  }
 ]
 
 export const Flexible = () => {
