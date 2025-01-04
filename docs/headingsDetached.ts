@@ -334,10 +334,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/layouts'
   },
   {
-    title: 'SPA vs SSR vs HTML',
-    url: '/SPA-vs-SSR-vs-HTML'
-  },
-  {
     title: 'NextAuth.js',
     url: '/nextauth'
   },
@@ -820,6 +816,10 @@ function redirects(): HeadingDetachedDefinition[] {
     {
       title: 'Backends',
       url: '/backends'
+    },
+    {
+      title: 'SPA vs SSR vs HTML',
+      url: '/SPA-vs-SSR-vs-HTML'
     }
   ]
 }
