@@ -18,12 +18,12 @@ const data = {
   title: 'Your Stack, Your Choice',
   description: [
     <>
-      Enjoy <b>architectural freedom</b> and choose any tool (React, Vue, REST, GraphQL, ...), any rendering strategy
-      (SPA, SSR, SSG) and any deployment strategy (static, server, edge).
+      Enjoy <b>architectural freedom</b> and choose any tool (React/Vue/...), any data connection (RPC/REST/GraphQL),
+      any rendering (SPA/SSR/SSG), and any deployment (static/server/edge).
     </>,
     <>
-      Use <b>Vike extensions</b> for automatic tool integration and later, if the need arises,{' '}
-      <b>eject for full control</b> over tool integration.
+      Use <b>Vike extensions</b> for automatic integration and later, if the need arises, <b>eject for full control</b>{' '}
+      over integration.
     </>
   ]
 }
