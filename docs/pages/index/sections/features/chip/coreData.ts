@@ -30,38 +30,38 @@ const top: CoreDataType[] = [
 
 const bot: CoreDataType[] = [
   {
-    title: 'Layouts',
-    href: '/Layout',
-    posColLg: '1 / span 2',
-    posRowLg: '7 / span 1'
-  },
-  {
-    title: 'Nested layouts',
-    href: '/Layout#nested-layouts',
-    posColLg: '3 / span 4',
-    posRowLg: '7 / span 1'
-  },
-  {
-    title: 'Streaming',
-    href: '/streaming',
-    posColLg: '7 / span 3',
-    posRowLg: '7 / span 1'
-  },
-  {
     title: 'Routing',
     href: '/routing',
     posColLg: '1 / span 2',
-    posRowLg: '8 / span 1'
+    posRowLg: '7 / span 1'
   },
   {
     title: 'Type-safe routes',
     href: '/routing#typescript',
     posColLg: '3 / span 4',
-    posRowLg: '8 / span 1'
+    posRowLg: '7 / span 1'
   },
   {
     title: 'Route Guards',
     href: '/guard',
+    posColLg: '7 / span 3',
+    posRowLg: '7 / span 1'
+  },
+  {
+    title: 'Layouts',
+    href: '/Layout',
+    posColLg: '1 / span 2',
+    posRowLg: '8 / span 1'
+  },
+  {
+    title: 'Nested layouts',
+    href: '/Layout#nested-layouts',
+    posColLg: '3 / span 4',
+    posRowLg: '8 / span 1'
+  },
+  {
+    title: 'Streaming',
+    href: '/streaming',
     posColLg: '7 / span 3',
     posRowLg: '8 / span 1'
   },
