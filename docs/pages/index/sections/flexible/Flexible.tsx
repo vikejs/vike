@@ -4,13 +4,14 @@ import { Grid } from '../../components/Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
 import './Flexible.css'
-import { Slotmachine } from './slot-machine/Slotmachine'
 import { Button } from '../../components/button/Button'
 import { Link } from '@brillout/docpress'
 import { Icon, iconSizeDefault } from '../../components/Icon'
 import OrigamiIcon from './origami.svg?react'
 import CraneIcon from './crane.svg?react'
 import SignIcon from './sign.svg?react'
+import { IllustrationNote } from '../../components/IllustrationNote'
+import slotMachine from './slot-machine/slotMachine.svg'
 
 const data = {
   caption: 'Flexible',
@@ -92,7 +93,8 @@ export const Flexible = () => {
               }}
             >
               <div className={`landingpage-flexible-slotMachineImageContainer`}>
-                <Slotmachine />
+                <img src={slotMachine} />
+                <IllustrationNote>Plug & Play &mdash; powered by Vike extensions</IllustrationNote>
               </div>
               {/*
               <div className={`landingpage-flexible-slotMachineSeparator`} />
