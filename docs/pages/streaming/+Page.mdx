@@ -1,14 +1,15 @@
-import { RepoLink, Link, Warning } from '@brillout/docpress'
+import { RepoLink, Link } from '@brillout/docpress'
 import progressiveRenderingDemo from './progressive-rendering-demo.webm'
-import { UseVikeExtensionUiFramework, UiFrameworkExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
-Vike not only has first-class support for <Link href="/stream">HTML streaming (aka SSR streaming)</Link>, but also provides you with extensive control over the HTML stream.
+Vike has first-class support for [HTML streaming (aka SSR streaming)](/stream#what-is-streaming) and gives you full control over it.
 
-> If you merely want to enable/disable HTML streaming, see the <Link href="/stream" /> setting instead.
+> See <Link href="/stream" /> if you merely want to enable/disable HTML streaming.
 
-<UseVikeExtensionUiFramework featureName="HTML Streaming" />
+This page documents how to manually integrate HTML streaming.
 
-<Warning>The documentation on this page is meant for users who want to manually integrate HTML Streaming. If you use <UiFrameworkExtension name noLink /> then HTML Streaming is already built-in and you can skip reading this page.</Warning>
+> If you use <UiFrameworkExtension name noLink /> then HTML streaming is already integrated and you can skip reading this page.
+
 
 ## Examples
 
