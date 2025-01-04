@@ -1,69 +1,88 @@
-type coreDataType = {
+export { coreData }
+
+type CoreDataType = {
   title: string
   href: string
   posColLg: string
   posRowLg: string
 }
 
-export const coreData: coreDataType[] = [
+const top: CoreDataType[] = [
   {
-    title: 'Prefetching',
-    href: '/prefetch',
+    title: 'Client-side pages (SPA)',
+    href: '/spa',
     posColLg: '1 / span 3',
-    posRowLg: '1 / span 1'
+    posRowLg: '1 / span 3'
   },
   {
-    title: 'Preloading',
-    href: '/preloading',
-    posColLg: '1 / span 3',
-    posRowLg: '2 / span 1'
-  },
-  {
-    title: 'URL Rewrites',
-    href: '/render',
+    title: 'Server-side pages (SSR)',
+    href: '/ssr',
     posColLg: '4 / span 3',
-    posRowLg: '1 / span 2'
+    posRowLg: '1 / span 3'
   },
   {
-    title: 'URL Redirects',
-    href: '/redirect',
-    posColLg: '7 / span 3',
-    posRowLg: '1 / span 2'
-  },
-  {
-    title: 'Filesystem Routing',
-    href: '/routing#filesystem-routing',
-    posColLg: '3 / span 5',
-    posRowLg: '3 / span 1'
-  },
-  {
-    title: 'Pre-rendering',
+    title: 'Pre-rendered pages (SSG)',
     href: '/pre-rendering',
-    posColLg: '1 / span 4',
-    posRowLg: '7 / span 2'
-  },
-  {
-    title: 'Data Fetching',
-    href: '/data-fetching',
-    posColLg: '1 / span 4',
-    posRowLg: '9 / span 1'
-  },
-  {
-    title: 'Route Guard',
-    href: '/guard',
-    posColLg: '5 / span 2',
-    posRowLg: '7 / span 2'
-  },
+    posColLg: '7 / span 3',
+    posRowLg: '1 / span 3'
+  }
+]
+
+const bot: CoreDataType[] = [
   {
     title: 'Layouts',
     href: '/Layout',
+    posColLg: '1 / span 2',
+    posRowLg: '7 / span 1'
+  },
+  {
+    title: 'Nested layouts',
+    href: '/Layout#nested-layouts',
+    posColLg: '3 / span 4',
+    posRowLg: '7 / span 1'
+  },
+  {
+    title: 'Streaming',
+    href: '/streaming',
     posColLg: '7 / span 3',
     posRowLg: '7 / span 1'
   },
   {
-    title: 'HTML Streaming',
-    href: '/streaming',
+    title: 'Routing',
+    href: '/routing',
+    posColLg: '1 / span 2',
+    posRowLg: '8 / span 1'
+  },
+  {
+    title: 'Type-safe routes',
+    href: '/routing#typescript',
+    posColLg: '3 / span 4',
+    posRowLg: '8 / span 1'
+  },
+  {
+    title: 'Route Guards',
+    href: '/guard',
     posColLg: '7 / span 3',
-    posRowLg: '8 / span 2'
+    posRowLg: '8 / span 1'
+  },
+  {
+    title: 'Data Fetching',
+    href: '/data-fetching',
+    posColLg: '1 / span 3',
+    posRowLg: '9 / span 1'
+  },
+  {
+    title: 'Pre-fetching',
+    href: '/prefetch',
+    posColLg: '4 / span 3',
+    posRowLg: '9 / span 1'
+  },
+  {
+    title: 'Pre-loading',
+    href: '/preloading',
+    posColLg: '7 / span 3',
+    posRowLg: '9 / span 1'
   }
 ]
+
+const coreData: CoreDataType[] = [...top, ...bot]
