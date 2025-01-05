@@ -257,8 +257,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Servers',
-    url: '/servers',
+    title: 'Server',
+    url: '/server',
     sectionTitles: ['Non-JavaScript Backend']
   },
   {
@@ -278,8 +278,8 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Stores (State Management)',
-    url: '/stores',
+    title: 'Store (State Management)',
+    url: '/store',
     sectionTitles: ['SSR']
   },
   {

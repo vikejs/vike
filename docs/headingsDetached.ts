@@ -818,10 +818,6 @@ function redirects(): HeadingDetachedDefinition[] {
       url: '/errors'
     },
     {
-      title: 'Backends',
-      url: '/backends'
-    },
-    {
       title: 'SPA vs SSR vs HTML',
       url: '/SPA-vs-SSR-vs-HTML'
     }
