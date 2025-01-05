@@ -231,8 +231,8 @@ importers:
   docs:
     dependencies:
       '@brillout/docpress':
-        specifier: ^0.10.14
-        version: 0.10.14(@algolia/client-search@4.24.0)(@types/node@22.10.2)(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.7.2)(vike@vike)(vite@6.0.6(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))
+        specifier: ^0.10.15
+        version: 0.10.15(@algolia/client-search@4.24.0)(@types/node@22.10.2)(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(acorn@8.12.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.7.2)(vike@vike)(vite@6.0.6(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))
       '@types/node':
         specifier: ^22.10.2
         version: 22.10.2
@@ -2134,8 +2134,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.10.14':
-    resolution: {integrity: sha512-+P1h12g9XZXu+mTf55K5W0K2gk4R9j/v3W3D+z1yTn1f67PeE0ReRqvuNobanEQOJ3oaITxxkWvkPuWMTIWnyQ==}
+  '@brillout/docpress@0.10.15':
+    resolution: {integrity: sha512-RlyltzoJRNo7kBTpE9OQR674kiT2tOGAvwh71BwjiTTyYb2vGM4JXyjhzl1+YKxwH8zz8e+Hv9eh1MOZVLxh5g==}
     peerDependencies:
       '@types/node': '*'
       '@types/react': '*'
@@ -7938,14 +7938,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.10.14(@algolia/client-search@4.24.0)(@types/node@22.10.2)(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.7.2)(vike@vike)(vite@6.0.6(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))':
+  '@brillout/docpress@0.10.15(@algolia/client-search@4.24.0)(@types/node@22.10.2)(@types/react-dom@19.0.2(@types/react@19.0.2))(@types/react@19.0.2)(acorn@8.12.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.7.2)(vike@vike)(vite@6.0.6(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))':
     dependencies:
       '@brillout/picocolors': 1.0.15
       '@docsearch/css': 3.8.0
       '@docsearch/react': 3.6.1(@algolia/client-search@4.24.0)(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.0.2)(react@19.0.0)
-      '@mdx-js/rollup': 3.0.1(rollup@4.27.3)
+      '@mdx-js/rollup': 3.0.1(acorn@8.12.1)(rollup@4.27.3)
       '@shikijs/transformers': 1.2.0
       '@types/node': 22.10.2
       '@types/react': 19.0.2
@@ -8665,6 +8665,36 @@ snapshots:
       - acorn
       - supports-color
 
+  '@mdx-js/mdx@3.1.0(acorn@8.12.1)':
+    dependencies:
+      '@types/estree': 1.0.6
+      '@types/estree-jsx': 1.0.5
+      '@types/hast': 3.0.4
+      '@types/mdx': 2.0.13
+      collapse-white-space: 2.1.0
+      devlop: 1.1.0
+      estree-util-is-identifier-name: 3.0.0
+      estree-util-scope: 1.0.0
+      estree-walker: 3.0.3
+      hast-util-to-jsx-runtime: 2.3.0
+      markdown-extensions: 2.0.0
+      recma-build-jsx: 1.0.0
+      recma-jsx: 1.0.0(acorn@8.12.1)
+      recma-stringify: 1.0.0
+      rehype-recma: 1.0.0
+      remark-mdx: 3.0.1
+      remark-parse: 11.0.0
+      remark-rehype: 11.1.0
+      source-map: 0.7.4
+      unified: 11.0.4
+      unist-util-position-from-estree: 2.0.0
+      unist-util-stringify-position: 4.0.0
+      unist-util-visit: 5.0.0
+      vfile: 6.0.1
+    transitivePeerDependencies:
+      - acorn
+      - supports-color
+
   '@mdx-js/react@3.0.1(@types/react@19.0.2)(react@19.0.0)':
     dependencies:
       '@types/mdx': 2.0.13
@@ -8677,9 +8707,9 @@ snapshots:
       '@types/react': 19.0.1
       react: 19.0.0
 
-  '@mdx-js/rollup@3.0.1(rollup@4.27.3)':
+  '@mdx-js/rollup@3.0.1(acorn@8.12.1)(rollup@4.27.3)':
     dependencies:
-      '@mdx-js/mdx': 3.1.0(acorn@8.11.3)
+      '@mdx-js/mdx': 3.1.0(acorn@8.12.1)
       '@rollup/pluginutils': 5.1.4(rollup@4.27.3)
       rollup: 4.27.3
       source-map: 0.7.4
@@ -9941,6 +9971,10 @@ snapshots:
   acorn-jsx@5.3.2(acorn@8.11.3):
     dependencies:
       acorn: 8.11.3
+
+  acorn-jsx@5.3.2(acorn@8.12.1):
+    dependencies:
+      acorn: 8.12.1
 
   acorn-walk@8.3.2: {}
 
@@ -12602,6 +12636,16 @@ snapshots:
   recma-jsx@1.0.0(acorn@8.11.3):
     dependencies:
       acorn-jsx: 5.3.2(acorn@8.11.3)
+      estree-util-to-js: 2.0.0
+      recma-parse: 1.0.0
+      recma-stringify: 1.0.0
+      unified: 11.0.4
+    transitivePeerDependencies:
+      - acorn
+
+  recma-jsx@1.0.0(acorn@8.12.1):
+    dependencies:
+      acorn-jsx: 5.3.2(acorn@8.12.1)
       estree-util-to-js: 2.0.0
       recma-parse: 1.0.0
       recma-stringify: 1.0.0
