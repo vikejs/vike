@@ -24,7 +24,7 @@ The component defined by the `Layout` setting wraps the <Link href="/Page">`<Pag
 > For integrating tools, we generally recommend using <Link href="/Wrapper">`<Wrapper>`</Link> instead.
 
 
-## Global layout
+## Global
 
 You can define a layout that applies to all your pages:
 
@@ -46,7 +46,7 @@ function Content() { /* ... */ }
 
 > Why `/pages/+Layout.jsx` applies to all pages is explained at <Link href="/config#inheritance" />.
 
-## Multiple layouts
+## Multiple
 
 You can define several layouts that apply to different groups of pages.
 
@@ -68,7 +68,7 @@ pages/admin-panel/users/+Page.js    # URL: /admin-panel/users
 > Setting a default `<Layout>` that is overridable isn't currently supported, see [#1692 - Add `override` and `default` options for cumulative configs](https://github.com/vikejs/vike/issues/1692).
 
 
-## Nested layouts
+## Nested
 
 You can define layouts that nest into each other:
 
