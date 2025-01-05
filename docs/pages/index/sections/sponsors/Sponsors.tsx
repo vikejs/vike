@@ -15,7 +15,7 @@ type Sponsor = {
   companyLogo: string
   website: string
   isPast?: true
-  landpageStyle?: React.CSSProperties
+  companyLogoStyle?: React.CSSProperties
   github: string
 }
 
@@ -88,7 +88,7 @@ function SponsorLink({ sponsor }: { sponsor: Sponsor }) {
         style={{
           maxWidth: '90%',
           height: '40%',
-          ...sponsor.landpageStyle
+          ...sponsor.companyLogoStyle
         }}
         src={sponsor.companyLogo}
         alt={sponsor.companyName}

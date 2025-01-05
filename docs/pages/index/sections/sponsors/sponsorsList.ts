@@ -29,7 +29,7 @@ const sponsorsList: Sponsor[] = [
   {
     companyName: 'Axel Springer',
     companyLogo: axelspringerLogo,
-    landpageStyle: {
+    companyLogoStyle: {
       height: '32%'
     },
     website: 'https://www.axelspringer.com',
@@ -38,7 +38,7 @@ const sponsorsList: Sponsor[] = [
   {
     companyName: 'Optimizers',
     companyLogo: optimizersLogo,
-    landpageStyle: {
+    companyLogoStyle: {
       height: '60%'
     },
     website: 'https://www.optimizers.nl',
