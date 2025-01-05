@@ -55,7 +55,7 @@ const bot: CoreDataType[] = [
   },
   {
     title: 'Nested layouts',
-    href: '/Layout#nested-layouts',
+    href: '/Layout#nested',
     posColLg: '3 / span 4',
     posRowLg: '8 / span 1'
   },
