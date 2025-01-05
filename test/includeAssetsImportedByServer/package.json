@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "vite": "^6.0.5",
-    "vike": "0.4.211"
+    "vike": "0.4.212"
   },
   "type": "module"
 }

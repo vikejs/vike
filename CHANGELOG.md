@@ -1,3 +1,13 @@
+## [0.4.212](https://github.com/vikejs/vike/compare/v0.4.211...v0.4.212) (2025-01-05)
+
+
+### Bug Fixes
+
+* fix module style/script distinction (fix [#2039](https://github.com/vikejs/vike/issues/2039)) ([be2fe23](https://github.com/vikejs/vike/commit/be2fe23158b297922a3af0f57147d5c88128fc12))
+* further remove duplicated dist/ assets (fix [#2034](https://github.com/vikejs/vike/issues/2034)) ([87669c5](https://github.com/vikejs/vike/commit/87669c5c05584e77dc783b2aa9104b3e0f47e5bf))
+
+
+
 ## [0.4.211](https://github.com/vikejs/vike/compare/v0.4.210...v0.4.211) (2024-12-28)
 
 
