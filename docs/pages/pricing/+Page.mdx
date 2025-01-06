@@ -33,7 +33,20 @@ For new or small projects nothing changes: you can use Vike just like any other 
 
 For larger projects, Vike shows a pesky toaster in production `Get your license key at ...` which you can remove by purchasing a license key and installing it with `$ vike add-key 4f7DK1q29X5WJ6G3b9t1`.
 
-In theory, since Vike is 100% open source, you can fork Vike and remove the pesky toaster. But we will make the pesky toaster difficult to find &mdash; more difficult than applying for a free license key.
+In theory, since Vike is 100% open source, you can fork Vike and remove the pesky toaster's code. But we will obfuscate the pesky toaster's code so that it's difficult to find &mdash; more difficult than applying for a free license key. (We'll also prevent tricks such as `.pesky-toaster { display: none }`.)
+
+
+### What is considered a "small app" vs a "larger app"?
+
+Vike will use multiple heuristics to reliably determine whether your app is:
+ - A small-ish or new-ish project
+ - A large project implementing a big and ambitious app
+
+There isn't any clear cut, and the heuristic is subject to be changed.
+
+You can think of it like this: as long as Vike considers your app "small", you are within the free trial and you don't need any license key (you can use Vike just like any other open source tool). If you see the pesky toaster then you need a license key to remove it: you can either purchase or apply for a free one.
+
+We will be generous as to what we consider small enough to be part of the free trial.
 
 
 ### Do sponsors have to pay?
