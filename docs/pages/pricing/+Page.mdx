@@ -37,17 +37,19 @@ For larger projects, Vike shows a pesky toaster in production `Get your license 
 In theory, since Vike is 100% open source, you can fork Vike and remove the pesky toaster's code. But we will obfuscate the pesky toaster's code so that it's difficult to find &mdash; more difficult than applying for a free license key. (We'll also prevent tricks such as `.pesky-toaster { display: none }`.)
 
 
-### What is considered a "small app" vs a "larger app"?
+### When is an app considered "small" or "large"?
 
-Vike will use multiple heuristics to reliably determine whether your app is:
- - A small-ish or new-ish project
- - A large project implementing a big and ambitious app
+The pesky toaster includes an heuristic to determine whether your app is:
+ - A small-ish or new project, such as a single-person project or a startup getting started.
+ - A larger project developed by a team implementing an enterprise-grade app.
 
-There isn't any clear cut, and the heuristic is subject to be changed.
+If the heuristic considers your app small then the pesky toaster isn't shown and you don't need any license key: you can use Vike just like any other open source tool.
 
-You can think of it like this: as long as Vike considers your app "small", you are within the free trial and you don't need any license key (you can use Vike just like any other open source tool). If you see the pesky toaster then you need a license key to remove it: you can either purchase or apply for a free one.
+If your app is considered large, the pesky toaster starts to be shown during development and you'll need a license key to remove it: you can then either purchase or apply for a free one.
 
-We will be generous as to what we consider small enough to be part of the free trial.
+> There isn't a clear-cut definition, and the heuristic is subject to change. You can think of it as a "gracious free-tier heuristic".
+
+> The heuristic will be generous when determining whether your app qualifies for the free tier. If you believe it mistakenly classifies your app as a larger project, then please reach out and we will give you a free license key until we fix the heuristic.
 
 
 ### Do sponsors have to pay?
