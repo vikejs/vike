@@ -19,7 +19,6 @@ const data: {
   offset?: number
   desc: string
   name: string
-  note?: React.JSX.Element
   order: number
 }[] = [
   {
@@ -33,12 +32,6 @@ const data: {
   {
     website: 'https://contra.com',
     desc: 'Disruptive Upwork alternative',
-    note: (
-      <>
-        Contra doesn't use Vike for its landing page but for its main app, see for example{' '}
-        <a href="https://contra.com/brillout">contra.com/brillout</a>.
-      </>
-    ),
     name: 'Contra',
     logo: usedByContra,
     shrink: 40,
@@ -48,12 +41,6 @@ const data: {
   {
     website: 'https://app.spline.design',
     desc: 'Most advanced 3D design web app',
-    note: (
-      <>
-        Spline doesn't use Vike for its landing page but for its main app, see{' '}
-        <a href="https://app.spline.design">app.spline.design</a>.
-      </>
-    ),
     name: 'Spline',
     logo: usedBySpline,
     order: -200
@@ -65,7 +52,7 @@ const data: {
     logo: usedByEcosia,
     shrink: 55,
     offset: -1,
-    order: 50
+    order: -50
   },
   {
     website: 'https://bild.de',
@@ -137,11 +124,6 @@ function UsedByList() {
               {e.name}
             </a>{' '}
             - {e.desc}.
-            {e.note && (
-              <blockquote>
-                <p>{e.note}</p>
-              </blockquote>
-            )}
           </li>
         ))}
     </ul>

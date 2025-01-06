@@ -7,7 +7,6 @@ import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { TextBox } from '../../components/TextBox'
 import { Button } from '../../components/button/Button'
 import './Sponsors.css'
-import { linkSponsor } from '../../links'
 import handshakeIcon from './handshake.svg'
 import { IllustrationNote } from '../../components/IllustrationNote'
 
@@ -47,7 +46,7 @@ function Sponsors() {
                 style={{
                   marginTop: '12px'
                 }}
-                href={linkSponsor}
+                href="https://github.com/vikejs/vike/issues/1350"
               >
                 <Button type="secondary">Become a Partner</Button>
               </a>
