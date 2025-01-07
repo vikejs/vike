@@ -35,7 +35,9 @@
 }
 .landingpage-reliable-imageWrapper {
   flex: 1;
+  width: 100%;
   max-width: 520px;
+  margin: auto;
   margin-top: 25px;
 }
 .landingpage-reliable-benefitList {
@@ -50,7 +52,6 @@
     display: block;
   }
   .landingpage-reliable-imageWrapper {
-    max-width: unset;
     margin-top: 30px;
   }
   .landingpage-reliable-benefitWrapper {
