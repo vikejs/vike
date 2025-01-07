@@ -50,10 +50,10 @@ For more control on where and when your guarding logic is executed, consider usi
 ```ts
 export { guard }
 
-import type { GuardAsync, PageContext } from 'vike/types'
+import type { GuardAsync } from 'vike/types'
 import { render } from 'vike/abort'
 
-const guard: GuardAsync = async (pageContext: PageContext): ReturnType<GuardAsync> => {
+const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
   // ...
 }
 ```
