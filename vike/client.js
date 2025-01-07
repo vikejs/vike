@@ -1,3 +1,3 @@
-// eslint doesn't seem to support `package.json#exports`.
-export * from './dist/esm/client/server-routing-runtime'
-export { default } from './dist/esm/client/server-routing-runtime'
+// Some tools still need this as of January 2025
+export * from './dist/esm/client/server-routing-runtime/index.js'
+export { default } from './dist/esm/client/server-routing-runtime/index.js'

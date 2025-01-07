@@ -1,3 +1,3 @@
-// eslint doesn't seem to support `package.json#exports`.
-export * from './dist/shared/route/routing.mjs'
-export { default } from './dist/shared/route/routing.mjs'
+// Some tools still need this as of January 2025
+export * from './dist/esm/shared/route/routing.js'
+export { default } from './dist/esm/shared/route/routing.js'

@@ -1,3 +1,3 @@
-// eslint doesn't seem to support `package.json#exports`.
-export * from './dist/esm/node/cli/index.mjs'
-export { default } from './dist/esm/node/cli/index.mjs'
+// Some tools still need this as of January 2025
+export * from './dist/esm/node/cli/index.js'
+export { default } from './dist/esm/node/cli/index.js'
