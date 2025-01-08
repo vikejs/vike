@@ -6,14 +6,7 @@ import { getConfigVike } from '../shared/getConfigVike.js'
 import { pluginName } from '../plugin/plugins/commonConfig/pluginName.js'
 
 async function enhanceViteConfig(viteConfig: InlineConfig, command: 'build' | 'dev' | 'preview') {
-  const viteConfigResolved = await resolveConfig(
-    viteConfig,
-    command === 'build' ? 'build' : 'serve',
-    'custom',
-    command === 'dev' ? 'development' : 'production',
-    command === 'preview'
-  )
-
+  let viteConfigResolved = await resolveViteConfig(viteConfig, command)
   let viteConfigEnhanced = viteConfig
 
   // Add vike to plugins if not present
@@ -24,6 +17,8 @@ async function enhanceViteConfig(viteConfig: InlineConfig, command: 'build' | 'd
       ...viteConfig,
       plugins: [...(viteConfig.plugins ?? []), vikePlugin()]
     }
+    await enhanceViteConfig(viteConfigEnhanced, command)
+    viteConfigResolved = await resolveViteConfig(viteConfigEnhanced, command)
   }
 
   const configVike = await getConfigVike(viteConfigResolved)
@@ -34,4 +29,14 @@ async function enhanceViteConfig(viteConfig: InlineConfig, command: 'build' | 'd
     viteConfigEnhanced,
     configVike
   }
+}
+
+async function resolveViteConfig(viteConfig: InlineConfig, command: 'build' | 'dev' | 'preview') {
+  return await resolveConfig(
+    viteConfig,
+    command === 'build' ? 'build' : 'serve',
+    'custom',
+    command === 'dev' ? 'development' : 'production',
+    command === 'preview'
+  )
 }
