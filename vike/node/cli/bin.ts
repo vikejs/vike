@@ -1,46 +1,56 @@
-import { cac } from 'cac'
-import { projectInfo, assertUsage } from './utils.js'
+import { projectInfo } from './utils.js'
 import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
+import { parseCli } from './parseCli.js'
+import type { Config } from '../../types/index.js'
 
-const cli = cac(projectInfo.projectName.toLowerCase())
-const startTime = performance.now()
+cli()
 
-cli.command('prerender', 'Pre-render the HTML of your pages').action(async () => {
-  const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
-  await runPrerenderFromCLIPrerenderCommand()
-})
+async function cli() {
+  const {
+    command,
+    options: { configDefinedByCli }
+  } = parseCli()
+  if (command === 'dev') {
+    await commandDev(configDefinedByCli)
+  } else if (command === 'build') {
+    await commandBuild(configDefinedByCli)
+  } else if (command === 'preview') {
+    await commandPreview(configDefinedByCli)
+  } else if (command === 'prerender') {
+    await commandPrerender(configDefinedByCli)
+  }
+}
 
-cli
-  .command('dev', 'Start the development server')
-  .action(async () => {
-    try {
-      const server = await dev()
+async function commandDev(configDefinedByCli: Config) {
+  const startTime = performance.now()
+  try {
+    const server = await dev()
 
-      await server.listen()
-      const info = server.config.logger.info
-      const startupDurationString = pc.dim(
-        `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
-      )
-      const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
-      info(
-        `\n  ${pc.cyan(`${pc.bold(projectInfo.projectName)} v${projectInfo.projectVersion}`)}  ${startupDurationString}\n`,
-        {
-          clear: !hasExistingLogs
-        }
-      )
+    await server.listen()
+    const info = server.config.logger.info
+    const startupDurationString = pc.dim(
+      `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
+    )
+    const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+    info(
+      `\n  ${pc.cyan(`${pc.bold(projectInfo.projectName)} v${projectInfo.projectVersion}`)}  ${startupDurationString}\n`,
+      {
+        clear: !hasExistingLogs
+      }
+    )
 
-      server.printUrls()
-      server.bindCLIShortcuts({ print: true })
-      return server
-    } catch (err) {
-      console.error(pc.red(`Error while starting dev server:`))
-      console.error(err)
-      process.exit(1)
-    }
-  })
+    server.printUrls()
+    server.bindCLIShortcuts({ print: true })
+    return server
+  } catch (err) {
+    console.error(pc.red(`Error while starting dev server:`))
+    console.error(err)
+    process.exit(1)
+  }
+}
 
-cli.command('build', 'Build for production').action(async () => {
+async function commandBuild(configDefinedByCli: Config) {
   try {
     await build()
   } catch (err) {
@@ -48,9 +58,9 @@ cli.command('build', 'Build for production').action(async () => {
     console.error(err)
     process.exit(1)
   }
-})
+}
 
-cli.command('preview', 'Start a preview server using production build').action(async () => {
+async function commandPreview(configDefinedByCli: Config) {
   try {
     const server = await preview()
     server.printUrls()
@@ -60,17 +70,13 @@ cli.command('preview', 'Start a preview server using production build').action(a
     console.error(err)
     process.exit(1)
   }
-})
+}
 
-// Listen to unknown commands
-cli.on('command:*', () => {
-  assertUsage(false, 'Unknown command: ' + cli.args.join(' '))
-})
-
-cli.help()
-cli.version(projectInfo.projectVersion)
-
-cli.parse()
+async function commandPrerender(configDefinedByCli: Config) {
+  const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
+  await runPrerenderFromCLIPrerenderCommand()
+  return
+}
 
 process.on('unhandledRejection', (rejectValue) => {
   throw rejectValue
