@@ -7,17 +7,11 @@ import { getConfigVike } from '../shared/getConfigVike.js'
 import { isVikeCli } from './isVikeCli.js'
 
 async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve' | 'preview') {
-  //TODO: do we need this?
-  let nodeEnv = 'development'
-  if (['build', 'preview'].includes(command)) {
-    nodeEnv = 'production'
-  }
-
   const viteConfigResolved = await resolveViteConfig(
     viteConfig,
     command === 'preview' ? 'serve' : command,
     'custom',
-    nodeEnv,
+    command === 'serve' ? 'development' : 'production',
     command === 'preview'
   ).catch((error) => {
     if (!isVikeCli) {
