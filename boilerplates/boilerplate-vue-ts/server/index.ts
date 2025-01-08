@@ -5,6 +5,7 @@
 //  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vike.dev/path-aliases
 
 // If you want Vite to process your server code then use one of these:
+//  - vike-node (https://github.com/vikejs/vike-node)
 //  - vavite (https://github.com/cyco130/vavite)
 //     - See vavite + Vike examples at https://github.com/cyco130/vavite/tree/main/examples
 //  - vite-node (https://github.com/antfu/vite-node)
