@@ -1,17 +1,39 @@
 import { Link } from '@brillout/docpress'
 
-import { UiFrameworkVikeExtension } from '../../components'
+import { UiFrameworkExtension, ImplementedBy } from '../../components'
 
 Default value: `false`. (Or `true` if using a <Link href="/extensions">Vike extension</Link> that requires streaming.)  
-Requires: <Link href="/ssr">`ssr: true`</Link>.  
-Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
+Requires: <Link href="/ssr">`ssr: true`</Link>.
 
-Setting to disable/enable <Link href="/streaming">HTML Streaming</Link>.
+<ImplementedBy>the `stream` setting</ImplementedBy>
 
-Disable for all your pages:
+The `stream` setting allows you to:
+- Enable or disable HTML Streaming.
+- Specify the stream type (either a [Node.js Stream](https://nodejs.org/api/stream.html) or a [Web Stream](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)).
+
+<span id="what-is-streaming"></span>
+
+> **What is HTML Streaming?** If you're unfamiliar with HTML streaming then check out [this explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37). Although it explains it in the context of React, we also recommend reading it if you use a UI framework other than React.
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
+
+export default {
+  // Enable HTML Streaming. Let Vike extensions decide whether to use a Node.js or Web stream.
+  stream: true,
+  // Enable HTML Streaming. Force the stream to be a Web Stream.
+  stream: 'web',
+  // Enable HTML Streaming. Force the stream to be a Node.js Stream.
+  stream: 'node'
+}
+```
+
+## Inheritance
+
+Enable for all your pages:
+
+```js
+// /pages/+config.js
 
 // This config applies to all pages (/pages/**).
 export default {
@@ -19,10 +41,10 @@ export default {
 }
 ```
 
-Disable only for some pages:
+Enable only for some pages:
 
 ```js
-// /pages/admin/+config.h.js
+// /pages/admin/+config.js
 
 /* This config applies only to admin pages (/pages/admin/**) such as:
    FILESYSTEM                            URL
@@ -35,21 +57,23 @@ export default {
 }
 ```
 
-For an improved file and config organization, you can consider using a <Link href="/file-structure#domain-driven">domain-driven file structure</Link>.
+For an improved file and config organization, you can consider using a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link>.
 
 
-## Without Vike extension
+## Without `vike-{react,vue,solid}`
 
-In case you don't use a <UiFrameworkVikeExtension />, you can implement the `stream` setting yourself by using <Link href="/meta">meta</Link>.
-
-Examples:
-
- - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
- - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
- - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
+In case you don't use a <UiFrameworkExtension />, you can:
+ - Integrate HTML streaming yourself, see <Link href="/streaming" />.
+ - Implement the `stream` setting yourself by using <Link href="/meta">meta</Link>. Examples:
+   - [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
+   - [`vike-vue` source code](https://github.com/vikejs/vike-vue/blob/main/packages/vike-vue)
+   - [`vike-solid` source code](https://github.com/vikejs/vike-solid/blob/main/vike-solid)
 
 
 ## See also
 
 - <Link href="/streaming" />
 - <Link href="/ssr" />
+- [Explanation of SSR, HTML streaming, and Progressive Rendering](https://github.com/reactwg/react-18/discussions/37)
+- [Node.js Streams](https://nodejs.org/api/stream.html) (Node.js documentation)
+- [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) (MDN documentation)

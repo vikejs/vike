@@ -1,22 +1,38 @@
 import { Link, RepoLink, Construction } from '@brillout/docpress'
+import { UiFrameworkExtension } from '../../components'
 
-<Construction>This is currently being implemented. [ETA very soon](https://github.com/vikejs/vike/issues/1468).</Construction>
+You can define a `+client.js` file to add client-side JavaScript.
 
-The `+client.js` file adds client-side JavaScript. It's usually used for initializing client-side code, such as <Link href="/errors">error tracking</Link>.
-
-> For executing code upon page lifecycle changes, see following hooks instead:
-> - <Link href="/onHydrationEnd" />
-> - <Link href="/onPageTransitionStart" />
-> - <Link href="/onPageTransitionEnd" />
+It's usually used for initializing <Link href="/error-tracking">error tracking</Link>, user tracking, cookie consent, CSS frameworks, etc.
 
 ```js
 // /pages/+client.js
 // Environment: client
 
-console.log("I'm the first line of executed client-side JavaScript.")
+console.log("I'm the first line of client-side JavaScript.")
 ```
+
+> In production, it's the very first JavaScript code to be executed. In development, it's run first after Vite's HMR preamble.
+
+> The code of `+client.js` isn't re-executed upon client-side page navigation. For executing code upon the lifecycle of page rendering, see following hooks instead:
+> - <Link href="/onHydrationEnd" />
+> - <Link href="/onAfterRenderClient" />
+> - <Link href="/onBeforeRenderClient" />
+> - <Link href="/onPageTransitionStart" />
+> - <Link href="/onPageTransitionEnd" />
+
+> Currently, `+client.js` isn't cumulative but it's work-in-progress, see [1834 - Make `+client.js` cumulative](https://github.com/vikejs/vike/issues/1834).
 
 ## Examples
 
 * <RepoLink path="/examples/render-modes/pages/html-js/+client.js" />
 * <Link href="/render-modes#html-only" />
+
+
+## See also
+
+- <Link href="/onHydrationEnd" />
+- <Link href="/onAfterRenderClient" />
+- <Link href="/onBeforeRenderClient" />
+- <Link href="/onPageTransitionStart" />
+- <Link href="/onPageTransitionEnd" />

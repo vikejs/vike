@@ -1,10 +1,10 @@
 export { createPageContext }
 
-import { addUrlComputedProps } from '../../shared/addUrlComputedProps.js'
+import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
 import { getPageFilesAll } from '../../shared/getPageFiles.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
-import { assert, isBaseServer, PromiseType, getGlobalObject } from './utils.js'
+import { assert, isBaseServer, PromiseType, getGlobalObject, objectAssign } from './utils.js'
 const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>
 }>('createPageContext.ts', {})
@@ -33,8 +33,10 @@ async function createPageContext(urlOriginal: string) {
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds,
     _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook
+    _onBeforeRouteHook: onBeforeRouteHook,
+    _isPageContextObject: true
   }
-  addUrlComputedProps(pageContext)
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
+  objectAssign(pageContext, pageContextUrlComputed)
   return pageContext
 }

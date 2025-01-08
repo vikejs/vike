@@ -1,22 +1,21 @@
 export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertUsage, getOutDirs, resolveOutDir, markEnvAsVitePreview } from '../utils.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
+import { assertUsage, getOutDirs, resolveOutDir, markEnvAsVitePreview, applyPreview } from '../utils.js'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'
-import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
+import { logDockerHint } from './devConfig/index.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
   let config: ResolvedConfig
-  let configVike: ConfigVikeResolved
+  // let configVike: ConfigVikeResolved
   return {
     name: 'vike:previewConfig',
-    apply: 'serve',
+    apply: applyPreview,
     config(config) {
       return {
         appType: 'custom',
@@ -27,7 +26,8 @@ function previewConfig(): Plugin {
     },
     async configResolved(config_) {
       config = config_
-      configVike = await getConfigVike(config)
+      logDockerHint(config.preview.host)
+      // configVike = await getConfigVike(config)
     },
     configurePreviewServer(server) {
       /* - Couldn't make `appType: 'mpa'` work as of npm:@brillout/vite@5.0.0-beta.14.0426910c
@@ -40,10 +40,10 @@ function previewConfig(): Plugin {
 
         /* We don't use this condition (we wrongfully always use the SSR middleware) because of the regression introduced by https://github.com/vitejs/vite/pull/14756 which stops servering .html files when `appType: 'custom'`.
         if (!configVike.prerender || configVike.prerender.partial) {
-          addSsrMiddleware(server.middlewares)
+          addSsrMiddleware(server.middlewares, config, true)
         }
         /*/
-        addSsrMiddleware(server.middlewares)
+        addSsrMiddleware(server.middlewares, config, true)
         //*/
 
         addStatic404Middleware(server.middlewares)

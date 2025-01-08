@@ -2,7 +2,7 @@
 export { onRenderHtml }
 
 import ReactDOMServer from 'react-dom/server'
-import { PageShell } from './PageShell'
+import { Layout } from './Layout'
 import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import logoUrl from './logo.svg'
 import { getPageTitle } from './getPageTitle'
@@ -14,14 +14,13 @@ function onRenderHtml(pageContext) {
   // onRenderHtml() to support SPA
   if (!Page) throw new Error('My onRenderHtml() hook expects pageContext.Page to be defined')
 
-  // Alternativly, we can use an HTML stream, see https://vike.dev/streaming
+  // Alternatively, we can use an HTML stream, see https://vike.dev/streaming
   const pageHtml = ReactDOMServer.renderToString(
-    <PageShell pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page />
-    </PageShell>
+    </Layout>
   )
 
-  // See https://vike.dev/head
   const title = getPageTitle(pageContext)
   const desc = pageContext.data?.description || pageContext.config.description || 'Demo of using Vike'
 

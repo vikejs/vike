@@ -8,17 +8,19 @@ import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getP
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
 import { getGlobalContext } from '../globalContext.js'
-import { getClientEntry } from '../../shared/getClientEntry.js'
+import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValue.js'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
   if (pageConfig) {
-    const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
-    const clientFilePath = getClientEntry(pageConfig)
-    const clientEntry = !isClientSideRenderable ? clientFilePath : getVikeClientEntry(isClientRouting)
+    const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
+    const clientEntries: string[] = []
+    const clientFilePath = getConfigValueRuntime(pageConfig, 'client', 'string')?.value ?? null
+    if (clientFilePath) clientEntries.push(clientFilePath)
+    if (isClientRuntimeLoaded) clientEntries.push(getVikeClientEntry(isClientRouting))
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
       id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, true),
-      onlyAssets: false,
+      onlyAssets: isClientRuntimeLoaded ? false : true,
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
@@ -46,17 +48,15 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       }
     })
     */
-    const clientEntries: string[] = []
-    if (clientEntry) {
+    clientEntries.forEach((clientEntry) => {
       clientDependencies.push({
         id: clientEntry,
         onlyAssets: false,
         eagerlyImported: false
       })
-      clientEntries.push(clientEntry)
-    }
+    })
     return {
-      isHtmlOnly: !isClientSideRenderable,
+      isHtmlOnly: !isClientRuntimeLoaded,
       isClientRouting,
       clientEntries,
       clientDependencies,

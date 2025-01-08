@@ -14,10 +14,10 @@ if (isBrowser()) {
 import type { PageFile } from '../getPageFiles.js'
 import { assert, assertUsage, isPlainObject, objectAssign } from './utils.js'
 import {
-  addUrlComputedProps,
-  PageContextUrlComputedPropsInternal,
-  PageContextUrlSources
-} from '../addUrlComputedProps.js'
+  assertPageContextUrl,
+  type PageContextUrlInternal,
+  type PageContextUrlSource
+} from '../getPageContextUrlComputed.js'
 import { resolvePrecendence } from './resolvePrecedence.js'
 import { resolveRouteString } from './resolveRouteString.js'
 import { resolveRouteFunction } from './resolveRouteFunction.js'
@@ -28,16 +28,16 @@ import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs
 import pc from '@brillout/picocolors'
 import type { Hook } from '../hooks/getHook.js'
 
-type PageContextForRoute = PageContextUrlComputedPropsInternal & {
+type PageContextForRoute = PageContextUrlInternal & {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
   _allPageIds: string[]
   _pageConfigGlobal: PageConfigGlobalRuntime
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: Hook | null
-} & PageContextUrlSources
+} & PageContextUrlSource
 type PageContextFromRoute = {
-  _pageId: string | null
+  pageId: string | null
   routeParams: Record<string, string>
   _routingProvidedByOnBeforeRouteHook?: boolean
   _debugRouteMatches: RouteMatches
@@ -51,35 +51,28 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
-async function route(pageContextForRoute: PageContextForRoute): Promise<PageContextFromRoute> {
-  debug('Pages routes:', pageContextForRoute._pageRoutes)
-  addUrlComputedProps(pageContextForRoute)
+async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
+  debug('Pages routes:', pageContext._pageRoutes)
+  assertPageContextUrl(pageContext)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
-  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContextForRoute)
+  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
   if (pageContextFromOnBeforeRouteHook) {
     if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
-      assert(pageContextFromOnBeforeRouteHook._pageId)
+      assert(pageContextFromOnBeforeRouteHook.pageId)
       return pageContextFromOnBeforeRouteHook
     } else {
       objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
     }
   }
-
   // We take into account pageContext.urlLogical set by onBeforeRoute()
-  const pageContext = {}
-  objectAssign(pageContext, pageContextForRoute)
   objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
 
   // Vike's routing
   const allPageIds = pageContext._allPageIds
-  assert(allPageIds.length >= 0)
-  assertUsage(
-    pageContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0,
-    'No *.page.js file found. You must create at least one *.page.js file.'
-  )
-  assertUsage(allPageIds.length > 0, "You must create at least one *.page.js file that isn't _default.page.*")
+  assertUsage(allPageIds.length > 0, 'No page found. You must create at least one page.')
+  assert(pageContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0)
   const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
 
@@ -118,8 +111,8 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
 
       // Route Function defined in `.page.route.js`
       if (pageRoute.routeType === 'FUNCTION') {
-        const { routeFunction, routeDefinedAt } = pageRoute
-        const match = await resolveRouteFunction(routeFunction, pageContext, routeDefinedAt)
+        const { routeFunction, routeDefinedAtString } = pageRoute
+        const match = await resolveRouteFunction(routeFunction, pageContext, routeDefinedAtString)
         if (match) {
           const { routeParams, precedence } = match
           routeMatches.push({ pageId, precedence, routeParams, routeType })
@@ -142,7 +135,7 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
 
   if (!winner) {
     objectAssign(pageContextFromRoute, {
-      _pageId: null,
+      pageId: null,
       routeParams: {}
     })
     return pageContextFromRoute
@@ -152,7 +145,7 @@ async function route(pageContextForRoute: PageContextForRoute): Promise<PageCont
     const { routeParams } = winner
     assert(isPlainObject(routeParams))
     objectAssign(pageContextFromRoute, {
-      _pageId: winner.pageId,
+      pageId: winner.pageId,
       routeParams: winner.routeParams
     })
   }

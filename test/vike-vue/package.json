@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite build && vite preview"
+  },
+  "dependencies": {
+    "@types/node": "^22.1.0",
+    "@types/node-fetch": "^2.6.11",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "node-fetch": "^3.3.2",
+    "typescript": "^5.5.4",
+    "unplugin-vue-markdown": "^0.26.2",
+    "vike": "0.4.212",
+    "vike-vue": "^0.8.5",
+    "vite": "^6.0.5",
+    "vite-plugin-cjs-interop": "^2.1.1",
+    "vue": "^3.4.36",
+    "vue-toast-notification": "^3.1.2",
+    "vue-tsc": "^2.0.29"
+  },
+  "type": "module"
+}

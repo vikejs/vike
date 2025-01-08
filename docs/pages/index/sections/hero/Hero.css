@@ -1,0 +1,48 @@
+.landingpage-hero-headline {
+  grid-column: 3 / span 8;
+}
+#hero-quote {
+  display: flex;
+  align-items: center;
+}
+#hero-quote-author {
+  padding: 7px;
+  margin-right: -7px;
+}
+@media screen and (max-width: 768px) {
+  .landingpage-hero-headline {
+    grid-column: 1 / span 12;
+  }
+  #hero-margin-top-1 {
+    height: 35px !important;
+  }
+  #hero-margin-top-2 {
+    height: 0px !important;
+    margin-top: -2px;
+  }
+  #hero-margin-mid-1 {
+    height: 37px !important;
+  }
+  #hero-margin-mid-2 {
+    height: 43px !important;
+  }
+  #hero-margin-mid-3 {
+    height: 40px !important;
+  }
+  #hero-margin-bot {
+    height: 40px !important;
+  }
+  .hero-usedby {
+    zoom: 0.7;
+  }
+  #hero-quote {
+    flex-direction: column;
+  }
+  #hero-quote-author {
+    margin: 0;
+    margin-top: 19px;
+  }
+  #tagline-secondary {
+    max-width: 450px !important;
+  }
+}

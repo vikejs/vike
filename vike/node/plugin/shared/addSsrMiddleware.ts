@@ -1,20 +1,38 @@
 export { addSsrMiddleware }
 
 import { renderPage } from '../../runtime/renderPage.js'
-import type { ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
+import { assertWarning } from '../utils.js'
+import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
-function addSsrMiddleware(middlewares: ConnectServer) {
+function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig, isPreview: boolean) {
   middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
     if (!url) return next()
     const { headers } = req
-    const userAgent = headers['user-agent']
     const pageContextInit = {
       urlOriginal: url,
-      userAgent
+      headersOriginal: headers
     }
+    Object.defineProperty(pageContextInit, 'userAgent', {
+      get() {
+        // TODO/next-major-release: assertUsage() instead of assertWarning()
+        assertWarning(
+          false,
+          `${pc.cyan('pageContext.userAgent')} is deprecated: use ${pc.cyan(
+            "pageContext.headers['user-agent']"
+          )} instead.`,
+          {
+            showStackTrace: true,
+            onlyOnce: true
+          }
+        )
+        return headers['user-agent']
+      },
+      enumerable: false
+    })
     let pageContext: Awaited<ReturnType<typeof renderPage>>
     try {
       pageContext = await renderPage(pageContextInit)
@@ -27,13 +45,14 @@ function addSsrMiddleware(middlewares: ConnectServer) {
       return next()
     }
 
-    if (!pageContext.httpResponse) {
-      return next()
-    } else {
-      const { statusCode, headers } = pageContext.httpResponse
-      headers.forEach(([name, value]) => res.setHeader(name, value))
-      res.statusCode = statusCode
-      pageContext.httpResponse.pipe(res)
+    const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
+    if (configHeaders) {
+      for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)
     }
+
+    const { httpResponse } = pageContext
+    httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.statusCode = httpResponse.statusCode
+    httpResponse.pipe(res)
   })
 }

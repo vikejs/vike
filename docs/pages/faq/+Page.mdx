@@ -1,83 +1,101 @@
 import { Link, Construction } from '@brillout/docpress'
 import { projectInfo } from '../../utils'
 
+**Help & Business Inquiries**
+
+- <Link href="#how-can-i-reach-out-for-help" doNotInferSectionTitle />
+- <Link href="#how-can-i-reach-out-for-business-inquiries" doNotInferSectionTitle />
+- <Link href="#i-can-t-achieve-what-i-want-can-i-get-help" doNotInferSectionTitle />
+
 **Project**
 
-- <Link href="#can-i-use-vike-in-production" doNotInferSectionTitle />
-- <Link href="#will-vike-survive" doNotInferSectionTitle />
 - <Link href="#can-i-use-vike-to-achieve-what-i-want" doNotInferSectionTitle />
-- <Link href="#how-can-i-contribute-and-or-support" doNotInferSectionTitle />
+- <Link href="#how-can-i-contribute-support-vike" doNotInferSectionTitle />
 
 **Technical**
 
-- <Link href="#can-i-reach-out-for-help" doNotInferSectionTitle />
 - <Link href="#what-are-these-cryptic-javascript-errors" doNotInferSectionTitle />
 - <Link href="#why-is-css-leaked-to-other-pages" doNotInferSectionTitle />
 - <Link href="#why-are-there-a-lot-of-http-requests-in-dev" doNotInferSectionTitle />
 
 
-## Can I use Vike in production?
+## How can I reach out for help?
 
-Yes. Many companies, from small startups to large corporations, are using Vike in production in a wide range of diverse scenarios.
+### Discord
 
-Consider, for example, some of Vike sponsors:
- - Alignable (professional social network), with a custom React integration with their Ruby on Rails backend.
-   ([Substantially sponsoring `brillout`, the creator of Vike's creator.](https://github.com/AlignableUser#:~:text=www.alignable.com-,Sponsoring,-Achievements))
- - Contra (freelance market), large codebase (>150 routes) with a custom React rendering strategy and a deep GraphQL integration with Relay.
-   ([Substantially sponsoring `brillout`, the creator of Vike's creator.](https://github.com/contra#:~:text=of%20this%20organization.-,Sponsoring,-Top%20languages))
- - Ecosia (search engine), migrating their entire frontend from Nuxt to Vike with Vue 2.
-   (Substantial sponsorship is coming in the next weeks.)
- - Burda (large publishing house), migrating all their online newspapers to a tailored Solid framework built on top of Vike.
-   ([Substantially sponsoring `brillout`, the creator of Vike's creator.](https://github.com/BurdaForward#:~:text=People-,Sponsoring,-Top%20languages))
+Use <a href={projectInfo.discordInvite}>Discord</a> to get help from the community. (The Vike team is less active on Discord.)
+
+> There aren't any rules and you can post whatever you want. That said, questions sometime don't get any answers on Discord, so we recommend reading the `#help-guide` channel to increase your chance of receiving valuable assistance. Also, consider giving back by helping others!
+
+### GitHub
+
+Use <a href={projectInfo.githubDiscussions}>GitHub Discussions</a> to get help from the Vike team. (The community is less active on GitHub.)
+
+> Only asks questions related to Vike and follow [these rules](https://brillout.github.io/rules/). If you do then you'll most likely get a response from the Vike team.
+
+### Sponsorship
+
+For extra help and a tight-knit collaboration, [consider sponsoring Vike](https://github.com/vikejs/vike/issues/1350).
 
 
-## Will Vike survive?
+## How can I reach out for business inquiries?
 
-Yes. While predicting the future is difficult, we are confident Vike will stand the test of time. We are a group of passionate developers: for us, working on Vike is the thrill of a liftime and there is no reason for us to stop.
+Contact `brillout`:
+ - Per email. (See email address at [github.com/brillout](https://github.com/brillout).)
+ - Per PM on Discord. ([Join Vike's Discord](https://discord.com/invite/hfHhnJyVg8) => right-click on the picture of `brillout` => `Message`.)
 
-We're making significant progress on being able to financially sustain ourselfes. (Through sponsorships and upcoming innovative open-source business models, without relying on investor money, making Vike financially independent which is paramount in the long-term.) As a company, you can secure Vike's future by [sponsoring](https://github.com/vikejs/vike/issues/1350).
+> Don't reach out on Twitter as it has shown to be unreliable.
+
+> Don't privately contact `brillout` for getting help unless you're a sponsor, see <Link href="#how-can-i-reach-out-for-help" doNotInferSectionTitle />
+
+
+## I can't achieve what I want, can I get help?
+
+Yes, and you can use GitHub Discussions to get help from the Vike team, see <Link href="#how-can-i-reach-out-for-help" doNotInferSectionTitle />
+
+If it turns out that your issue is caused by a Vike flaw, we will consider it a blocker on Vike's side and prioritize resolving it accordingly.
+
+In general, Vike <Link href="#can-i-use-vike-to-achieve-what-i-want">aims to be highly flexible</Link> and resolving blockers is important to us, ideally by design and at the very least by providing help.
+
 
 
 ## Can I use Vike to achieve what I want?
 
-Vike prides itself on being a highly, if not the most, adaptable frontend framework. See for example <Link href="#can-i-use-vike-in-production">the use case of these companies</Link>.
+Vike prides itself on being a highly adaptable frontend framework. See for example the <Link href="/use-cases">use case of some of Vike sponsors</Link>.
 
 Vike supports all common use cases:
+ - <Link href="/ui-frameworks">Any UI framework</Link> (React, Vue, Solid, etc.), <Link href="/integration">any UI tool</Link> (state management, data fetching, CSS framework, etc.).
+ - <Link href="/pre-rendering#should-i-pre-render">Without backend</Link>, with <Link href="/server">any JavaScript backend</Link> (Express.js, Hono, Fastify, Adonis, Nest, Deno, Bun, etc.), or <Link href="/server#non-javascript-backend" doNotInferSectionTitle>with other backends</Link> (Java, Ruby on Rails, PHP, etc.).
+ - <Link href="/examples#data-fetching">Any data fetching tool</Link> (REST, RPC, GraphQL, etc.).
+ - Optional <Link href="/ssr">Server-Side Rendering (SSR)</Link>, optional <Link href="/pre-rendering">pre-rendering (SSG)</Link>, and optional <Link href="/vercel#vite-plugin-vercel">Incremental Static Regeneration (ISR)</Link>.
+ - Optional <Link href="/stream">HTML streaming</Link> (with <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>).
  - <Link href="/deploy">Deploy anywhere</Link> (VPS, AWS, GCP, Cloudflare, Vercel, etc.).
- - <Link href="/ui-framework">Any UI framework</Link> (React, Vue, Solid, etc.), <Link href="/integration">any UI tool</Link> (state management, data fetching, CSS framework, etc.).
- - <Link href="/pre-rendering#should-i-pre-render">Without backend</Link>, with <Link href="/server">any JavaScript backend</Link> (Express.js, Hono, Fastify, Adonis, Nest, Deno, Bun, etc.), with other backends (Java, Ruby on Rails, etc.).
- - <Link href="/data-fetching-tools">Any data fetching tool</Link> (REST, RPC, GraphQL, etc.).
- - <Link href="/pre-rendering#ssg-vs-ssr">Server-side rendered HTML (SSR)</Link>, <Link href="/pre-rendering">pre-rendered HTML (SSG)</Link>, <Link href="/vercel#vite-plugin-vercel">incremental pre-rendering (ISR)</Link>.
- - <Link href="/streaming">HTML streaming</Link> (with <Link href="/streaming#progressive-rendering">Progressive Rendering</Link>).
 
-A common source of blockers with other frontend frameworks are bugs. Vike is unique in that regard because we quickly fix bugs. We highly value clean abstractions and correctness and we believe that's why, to this date, [we have been able to fix all bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22bug+%3Aboom%3A%22).
+A common source of blockers are bugs; Vike is also unique because we quickly fix bugs and, to this date, [we have been able to fix all bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue+is%3Aopen+label%3A%22bug+%3Aboom%3A%22). We value clean abstractions and correctness, which significantly reduces potential bugs.
 
-Vike has been designed from the ground up to be extensible, so that you can <Link href="/build-your-own-framework">Build Your Own Framework</Link>.
+Beyond common use cases, Vike has been designed from the ground up to be flexible, so that it can fit special needs. You can use Vike to <Link href="/build-your-own-framework">Build Your Own Framework</Link>.
 
-If you have a use case you believe you cannot achieve with Vike, then <a href={projectInfo.githubDiscussions}>let us know</a>.
+If you have a use case you aren't sure you can implement with Vike then <Link href="#how-can-i-reach-out-for-help">feel free to reach out</Link>.
+
+> In general, Vike aims to be as less blocking as possible. If you run into a blocker then <Link href="#i-can-t-achieve-what-i-want-can-i-get-help">don't hesitate to reach out</Link>.
 
 
-## How can I contribute and/or support?
 
-Contributions in forms of [code](https://github.com/vikejs/vike/issues/1349) and/or [sponsoring](https://github.com/vikejs/vike/issues/1350) are much welcome.
+## How can I contribute/support Vike?
 
-
-## Can I reach out for help?
-
-Yes, you can reach out on <a href={projectInfo.discordInvite}>Discord</a> and GitHub. If you use
-<a href={projectInfo.githubDiscussions}>GitHub Discussions</a>, then you'll always get an answer from a Vike team member.
+Contributions in forms of [code](https://github.com/vikejs/vike/issues/1349) or [sponsoring](https://github.com/vikejs/vike/issues/1350) are much welcome.
 
 
 ## What are these cryptic JavaScript errors?
 
-Many cryptic errors come from CJS/ESM issues around npm packages that distribute invalid code, for a solution see <Link href="/broken-npm-package" />.
+Many cryptic errors come from CJS/ESM issues around npm packages that contain invalid JavaScript code, see workaround at <Link href="/broken-npm-package" />.
 
-> There is, unfortunately, not much we can do beyond pushing tools to address CJS/ESM issues which we repeatedly do.
+> We meticulously craft Vike's error messages to be clear and helpful, but error messages from other tools aren't under our control. If any Vike error message isn't clear, let us know, and we'll make it clearer.
 
 
 ## Why is CSS leaked to other pages?
 
-With <Link href="/client-routing">Client Routing</Link>, when navigating from one page to another, the CSS of the previous page isn't removed. This means that any CSS loaded by the previous page will also apply to the next page. In other words: CSS cumulates upon page navigation.
+When navigating from one page to another, the CSS of the previous page isn't removed. This means that any CSS loaded by the previous page will also apply to the next page. In other words: the CSS of all previous pages cumulate.
 
 For example:
 
@@ -99,7 +117,7 @@ export const Page = () => (
 ```css
 /* /pages/terms/style.css */
 
-/* ❌ Bad: the CSS selector `section` can apply to any page */
+/* ❌ Bad: the CSS selector `section` applies to all pages. */
 section {
   font-size: 0.8em;
 }
@@ -110,7 +128,7 @@ Narrow down the CSS selector instead:
 ```css
 /* /pages/terms/style.css */
 
-/* ✅ Good: the CSS selector `#terms section` only applies to our terms page */
+/* ✅ Good: the CSS selector `#terms section` only applies to the terms page. */
 #terms section {
   font-size: 0.8em;
 }
@@ -120,12 +138,12 @@ Narrow down the CSS selector instead:
 
 > If you use **React** or **Solid**, then we recommend using inline styles and/or a CSS-in-JS library (or Tailwind), while minimizing CSS files. Inline style aren't global and, therefore, aren't leaky.
 
-> **CSS is injected by Vite** in the form of `<style>` tags. If you're curious why Vite doesn't remove old `<style>` tags, consider that removing CSS is problematic during the transient state upon page navigation. (It would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because there is no transaction primitive for DOM manipulation.) In general, regardless of Vite's behavior, it's a good practice to narrow down CSS selectors.
+> **CSS is injected by Vite** in the form of `<style>` tags. If you wonder why Vite doesn't remove the `<style>` tags of the previous page, consider that removing CSS is problematic during the transient state upon page navigation (as it would lead to [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) because there isn't any transaction primitive for DOM manipulation).
 
 
 ## Why are there a lot of HTTP requests in dev?
 
-In development, you may observe a lot of HTTP requests fetching a lot JavaScript files.
+In development, you may observe a lot of HTTP requests fetching many JavaScript files.
 That's because <Link href="/lazy-transpiling">Vite does lazy transpiling</Link>.
 
 While it's true that doing a lot of HTTP requests slows down page load (and optimizing that aspect is on Vite's radar), Vite's lazy transpiling approach enables unparalleled development speed.

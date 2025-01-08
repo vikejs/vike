@@ -1,26 +1,60 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
-Environment: server.  
+Type: `string | null | ((pageContext) => string | null | undefined)`  
 Default value: `'en'`.  
-Provided by: <UiFrameworkVikeExtension />.
+Environment: server.  
+Implemented by: <UiFrameworkExtension />.
 
-To set the [`<html lang>` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax):
+You can set the value of the [`<html lang>` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax) by using Vike's `lang` setting.
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 
 export default {
   lang: 'fr'
 }
 ```
 
-> The `lang` setting is provided by the <UiFrameworkVikeExtension />. If you don't use such extension, then you have direct control over the `<html lang>` value in your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
+You can also dynamically set the value of `lang`. For example, if you want to internationalize your app:
+
+```js
+// /pages/+lang.js
+
+export default (pageContext) => {
+  return pageContext.locale
+}
+```
+
+> The `pageContext.locale` value is usually set by your `onBeforeRoute()` hook, see <Link href="/i18n" />.
+
+
+## Without `vike-{react,vue,solid}`
+
+The `lang` setting is implemented by the <UiFrameworkExtension />. If you don't use such extension, then you usually don't need to implement a setting like `lang` as you can directly set the value of the `<html lang>` attribute at your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
+
+```js
+// /renderer/+onRenderHtml.js
+
+import { escapeInject } from 'vike/server'
+
+export function onRenderHtml(pageContext) {
+  const lang = "fr"
+  return escapeInject`<!DOCTYPE html>
+    <html lang=${lang}>
+      ...
+    </html>`
+}
+
+```
+
+That said, you can also implement and replicate the `lang` setting described in this page, see the source code of <UiFrameworkExtension name noLink />.
 
 
 ## See also
 
+- <Link href="/i18n" />
 - [MDN > `lang`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang#language_tag_syntax)
-- <Link href="/head" />
-- <Link href="/markdown#metadata" />
+- <Link href="/head-tags" />
+- <Link href="/settings" />
 

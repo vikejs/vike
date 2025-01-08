@@ -6,36 +6,25 @@ export default {
 }
 
 function getCiJobs() {
-  const ubuntu16 = {
+  const linux_nodeOld = {
     os: 'ubuntu-latest',
-    node_version: '16'
+    node_version: '18'
   }
-  const ubuntu20 = {
+  const linux_nodeNew = {
     os: 'ubuntu-latest',
-    // Pin until fix for the following is released
-    //   - https://github.com/nodejs/node/issues/49497
-    //   - https://github.com/vitejs/vite/issues/14299
-    node_version: '20'
+    node_version: '22'
   }
-  const win16 = {
-    os: 'windows-latest',
-    node_version: '16'
-  }
-  const win18 = {
+  const windows_nodeOld = {
     os: 'windows-latest',
     node_version: '18'
   }
-  const mac17 = {
-    os: 'macos-latest',
-    node_version: '16'
-  }
 
-  const setupsExamples = [ubuntu20, win16]
+  const setupsExamples = [linux_nodeNew, windows_nodeOld]
 
   return [
     {
       name: 'Boilerplates',
-      setups: [ubuntu16]
+      setups: [linux_nodeOld]
     },
     {
       name: 'Examples React',
@@ -47,25 +36,47 @@ function getCiJobs() {
     },
     {
       name: 'Examples Misc',
-      setups: [ubuntu16, mac17, win16]
+      setups: [linux_nodeOld, windows_nodeOld]
     },
     {
       name: 'Unit Tests E2E',
-      setups: [ubuntu20, win18]
+      setups: [linux_nodeNew, windows_nodeOld]
     },
     {
       name: 'Cloudflare',
-      setups: [ubuntu16]
-    },
-    {
-      name: 'https://vike.dev',
-      setups: [ubuntu20]
+      setups: [linux_nodeNew]
     }
   ]
 }
 
 function tolerateError({ logSource, logText }) {
   return (
+    // TODO/eventually: move everything to this array
+    [
+      // Error: [DocPress][Warning] prop `text` is deprecated
+      'prop `text` is deprecated',
+
+      // [11:00:51.986][/test/cjs/test-dev.test.ts][npm run dev][stderr] (node:3061) ExperimentalWarning: CommonJS module /home/runner/work/vike/vike/vike/dist/cjs/node/plugin/index.js is loading ES Module /home/runner/work/vike/vike/node_modules/.pnpm/vite@6.0.5_@types+node@20.13.0_terser@5.31.0_tsx@4.19.2/node_modules/vite/dist/node/index.js using require().
+      // Support for loading ES Module in require() is an experimental feature and might change at any time
+      'loading ES Module in require() is an experimental feature',
+
+      // (node:4188) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+      'The `punycode` module is deprecated.',
+
+      // (node:4117) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+      'fs.Stats constructor is deprecated.',
+
+      // [15:31:51.518][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient, present in 'optimizeDeps.include'
+      'Cannot optimize dependency: @brillout/docpress/renderer/onRenderClient',
+
+      // [21:29:57.330][/docs/.test-dev.test.ts][pnpm run dev][stderr] Cannot optimize dependency: @brillout/docpress/Layout, present in 'optimizeDeps.include'
+      'Cannot optimize dependency: @brillout/docpress/Layout',
+
+      'The glob option "as" has been deprecated in favour of "query"',
+
+      // [vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
+      "is slow: it's taking more than"
+    ].some((t) => logText.includes(t)) ||
     isViteCjsWarning() ||
     isRenderErrorPageDeprecationWarning() ||
     isSlowHookWarning() ||
@@ -82,11 +93,7 @@ function tolerateError({ logSource, logText }) {
     isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader() ||
     isNodeExperimentalLoader() ||
-    isNotV1Design() ||
-    [
-      // TODO: move everything to this array
-      'The glob option "as" has been deprecated in favour of "query"'
-    ].some((t) => logText.includes(t))
+    isNotV1Design()
   )
 
   function isViteCjsWarning() {

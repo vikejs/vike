@@ -7,21 +7,18 @@ import {
   assert,
   resolveOutDir,
   viteIsSSR,
-  getFilePathAbsolute,
   addOnBeforeLogHook,
   removeFileExtention,
   unique,
-  assertPosixPath,
   assertUsage,
   injectRollupInputs,
   normalizeRollupInput,
-  assertNodeEnvIsNotDev,
   getOutDirs,
   type OutDirs,
-  isNpmPackageImport
+  assertNodeEnv_build,
+  assertIsNpmPackageImport
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
-import { getConfigValue } from '../../../shared/page-configs/helpers.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
@@ -30,80 +27,108 @@ import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfi
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
-import { getClientEntry } from '../../shared/getClientEntry.js'
 import fs from 'fs/promises'
 import path from 'path'
-import { fixServerAssets, fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { set_constant_ASSETS_MAP } from './importBuild/index.js'
+import {
+  fixServerAssets,
+  fixServerAssets_assertCssCodeSplit,
+  fixServerAssets_assertCssTarget,
+  fixServerAssets_assertCssTarget_populate,
+  fixServerAssets_isEnabled
+} from './buildConfig/fixServerAssets.js'
+import { set_ASSETS_MAP } from './importBuild/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
+import { getFilePathResolved } from '../shared/getFilePath.js'
+import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
 
-function buildConfig(): Plugin {
+function buildConfig(): Plugin[] {
   let isServerAssetsFixEnabled: boolean
   let isSsrBuild: boolean
   let outDirs: OutDirs
-  return {
-    name: 'vike:buildConfig',
-    apply: 'build',
-    enforce: 'post',
-    configResolved: {
-      order: 'post',
-      async handler(config) {
-        assertNodeEnv()
-        assertRollupInput(config)
-        const entries = await getEntries(config)
-        assert(Object.keys(entries).length > 0)
-        config.build.rollupOptions.input = injectRollupInputs(entries, config)
-        addLogHook()
-        outDirs = getOutDirs(config)
-        {
-          isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
-          if (isServerAssetsFixEnabled) {
-            // https://github.com/vikejs/vike/issues/1339
-            config.build.ssrEmitAssets = true
-            // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
-            config.build.cssMinify = 'esbuild'
+  let config: ResolvedConfig
+  return [
+    {
+      name: 'vike:buildConfig:configResolved',
+      apply: 'build',
+      enforce: 'post',
+      configResolved: {
+        order: 'post',
+        async handler(config_) {
+          config = config_
+          assertNodeEnv_build()
+          assertRollupInput(config)
+          const entries = await getEntries(config)
+          assert(Object.keys(entries).length > 0)
+          config.build.rollupOptions.input = injectRollupInputs(entries, config)
+          addLogHook()
+          outDirs = getOutDirs(config)
+          {
+            isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
+            if (isServerAssetsFixEnabled) {
+              // https://github.com/vikejs/vike/issues/1339
+              config.build.ssrEmitAssets = true
+              // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
+              config.build.cssMinify = 'esbuild'
+              fixServerAssets_assertCssTarget_populate(config)
+              fixServerAssets_assertCssCodeSplit(config)
+            }
+          }
+        }
+      },
+      config(config) {
+        assertNodeEnv_build()
+        isSsrBuild = viteIsSSR(config)
+        return {
+          build: {
+            outDir: resolveOutDir(config),
+            manifest: manifestTempFile,
+            copyPublicDir: !isSsrBuild
+          }
+        } satisfies UserConfig
+      },
+      buildStart() {
+        assertNodeEnv_build()
+      },
+      async closeBundle() {
+        await fixServerAssets_assertCssTarget(config)
+      }
+    },
+    {
+      name: 'vike:buildConfig:writeBundle',
+      apply: 'build',
+      // Make sure other writeBundle() hooks are called after this writeBundle() hook.
+      //  - set_ASSETS_MAP() needs to be called before dist/server/ code is executed.
+      //    - For example, the writeBundle() hook of vite-plugin-vercel needs to be called after this writeBundle() hook, otherwise: https://github.com/vikejs/vike/issues/1527
+      enforce: 'pre',
+      writeBundle: {
+        order: 'pre',
+        sequential: true,
+        async handler(options, bundle) {
+          if (isSsrBuild) {
+            // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
+            //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
+            //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
+            const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
+            const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
+            const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
+            if (!isServerAssetsFixEnabled) {
+              await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
+            } else {
+              const { clientManifestMod } = await fixServerAssets(config)
+              await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
+            }
+            await fs.rm(clientManifestFilePath)
+            await fs.rm(serverManifestFilePath)
+            await set_ASSETS_MAP(options, bundle)
           }
         }
       }
-    },
-    config(config) {
-      assertNodeEnv()
-      isSsrBuild = viteIsSSR(config)
-      return {
-        build: {
-          outDir: resolveOutDir(config),
-          manifest: manifestTempFile,
-          copyPublicDir: !isSsrBuild
-        }
-      } satisfies UserConfig
-    },
-    buildStart() {
-      assertNodeEnv()
-    },
-    async writeBundle(options, bundle) {
-      if (isSsrBuild) {
-        // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
-        //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
-        //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
-        const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
-        const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
-        const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
-        if (!isServerAssetsFixEnabled) {
-          await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
-        } else {
-          const clientManifestMod = await fixServerAssets(outDirs)
-          await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
-        }
-        await fs.rm(clientManifestFilePath)
-        await fs.rm(serverManifestFilePath)
-        await set_constant_ASSETS_MAP(options, bundle)
-      }
     }
-  }
+  ]
 }
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
@@ -158,7 +183,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
   let clientEntries: Record<string, string> = {}
   let clientEntryList: string[] = []
   pageConfigs.forEach((pageConfig) => {
-    const configValue = getConfigValue(pageConfig, 'clientRouting', 'boolean')
+    const configValue = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')
     if (configValue?.value) {
       hasClientRouting = true
     } else {
@@ -170,7 +195,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
       clientEntries[entryName] = entryTarget
     }
     {
-      const clientEntry = getClientEntry(pageConfig)
+      const clientEntry = getConfigValueBuildTime(pageConfig, 'client', 'string')?.value ?? null
       if (clientEntry) {
         clientEntryList.push(clientEntry)
       }
@@ -209,20 +234,24 @@ async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedB
 }
 
 function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
-  if (isNpmPackageImport(clientEntry)) {
+  if (!clientEntry.startsWith('/')) {
+    assertIsNpmPackageImport(clientEntry)
     const entryTarget = clientEntry
     const entryName = prependEntriesDir(clientEntry)
     return { entryName, entryTarget }
   }
 
-  const filePath = clientEntry
-  assertPosixPath(filePath)
-  assert(filePath.startsWith('/'))
+  const filePathAbsoluteUserRootDir = clientEntry
+  assert(filePathAbsoluteUserRootDir.startsWith('/'))
 
-  let entryTarget = getFilePathAbsolute(filePath, config)
+  const filePath = getFilePathResolved({
+    filePathAbsoluteUserRootDir,
+    userRootDir: config.root
+  })
+  let entryTarget = filePath.filePathAbsoluteFilesystem
   if (addExtractAssetsQuery) entryTarget = extractAssetsAddQuery(entryTarget)
 
-  let entryName = filePath
+  let entryName = filePathAbsoluteUserRootDir
   if (addExtractAssetsQuery) entryName = extractAssetsAddQuery(entryName)
   entryName = removeFileExtention(entryName)
   entryName = prependEntriesDir(entryName)
@@ -233,7 +262,14 @@ function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide
   let { pageId } = pageConfig
   const entryTarget = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
   let entryName = pageId
+  // Avoid:
+  // ```
+  // dist/client/assets/entries/.Dp9wM6PK.js
+  // dist/server/entries/.mjs
+  // ```
+  if (entryName === '/') entryName = 'root'
   entryName = prependEntriesDir(entryName)
+  assert(!entryName.endsWith('/'))
   return { entryName, entryTarget }
 }
 
@@ -279,8 +315,4 @@ function assertRollupInput(config: ResolvedConfig): void {
     htmlInput === undefined,
     `The entry ${htmlInput} of config build.rollupOptions.input is an HTML entry which is forbidden when using Vike, instead follow https://vike.dev/add`
   )
-}
-
-function assertNodeEnv() {
-  assertNodeEnvIsNotDev('building')
 }

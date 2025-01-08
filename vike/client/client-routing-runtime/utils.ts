@@ -1,17 +1,12 @@
-// Utils needed by Client Routing.
+// Utils needed by Vike's client runtime (with Client Routing)
 
-// We assume all runtime entries will load this utils.ts file
+// We call onLoad() here so that it's called even when only a subset of the runtime is loaded. (Making the assert() calls inside onLoad() a lot stronger.)
 import { onLoad } from './onLoad.js'
 onLoad()
-
-// We load the Server Routing utils: we tolerate the tiny amount of code that is only needed by Server Routing (only 1-2 lines).
-// We re-export some of the utils down below only to list the utils needed by Client Routing.
-export * from '../server-routing-runtime/utils.js'
 
 export * from '../../utils/assert.js'
 export * from '../../utils/assertSingleInstance.js'
 export * from '../../shared/hooks/executeHook.js'
-export * from '../../utils/getCurrentUrl.js'
 export * from '../../utils/getGlobalObject.js'
 export * from '../../utils/hasProp.js'
 export * from '../../utils/isBrowser.js'
@@ -22,12 +17,13 @@ export * from '../../utils/isReact.js'
 export * from '../../utils/isSameErrorMessage.js'
 export * from '../../utils/objectAssign.js'
 export * from '../../utils/parseUrl.js'
-export * from '../../utils/projectInfo.js'
 export * from '../../utils/PromiseType.js'
-export * from '../../utils/serverSideRouteTo.js'
+export * from '../../utils/redirectHard.js'
 export * from '../../utils/sleep.js'
 export * from '../../utils/slice.js'
 export * from '../../utils/throttle.js'
 export * from '../../utils/assertRoutingType.js'
 export * from '../../utils/onPageVisibilityChange.js'
-export * from '../../utils/isExternalLink.js'
+export * from '../../utils/augmentType.js'
+export * from '../../utils/PROJECT_VERSION.js'
+export * from '../../utils/genPromise.js'

@@ -1,15 +1,21 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run server:dev",
+    "prod": "npm run build && npm run server:prod",
     "build": "vite build",
-    "preview": "vite build && vite preview"
+    "server:dev": "node ./server",
+    "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
+    "express": "^4.18.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vite": "^5.0.10",
-    "vike": "0.4.161"
+    "sirv": "^2.0.0",
+    "vike": "0.4.212",
+    "vite": "^6.0.5"
   },
   "type": "module"
 }

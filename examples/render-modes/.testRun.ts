@@ -18,11 +18,17 @@ export { testRun }
 
 const HMR_SLEEP = 500
 
-// TODO:v1/release: remove non-V1 design case
-function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
-  run(cmd, { isFlaky: true })
+// Doesn't work anymore with Vite 6: https://vite.dev/guide/migration.html#:~:text=%5B%2316471%5D%20feat%3A%20v6,can%20be%20used%3A
+const disableTestHtmlOnlyHMR = true
 
-  const isPreview = cmd === 'npm run preview'
+// TODO:v1/release: remove non-V1 design case
+function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1Design?: true) {
+  run(cmd, {
+    // HMR tests are flaky (I couldn't make them reliable)
+    isFlaky: true
+  })
+
+  const isProd = cmd !== 'npm run dev'
 
   const hash = /[a-zA-Z0-9_-]+/
   const path = /[^\>]+/
@@ -31,43 +37,27 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     const html = await fetchHtml('/html-only')
     expect(html).toContain('<h1>HTML-only</h1>')
     expect(html).toContain('This page has zero browser-side JavaScript.')
-    if (isPreview) {
+    if (isProd) {
       expect(html).not.toContain('<script')
       expect(html).not.toContain('as="rel="modulepreload""')
       expect(html).not.toContain('as="script"')
-      if (isV1Design) {
-        const cssImport = isV1Design
-          ? partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/onRenderClient.${hash}.css">`
-          : partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/html-only.${hash}.css">`
-        expect(html).toMatch(cssImport)
-      } else {
-        // Different test depending on Rollup version, see https://github.com/vitejs/vite/pull/13608#issuecomment-1606133506
-        try {
-          // rollup@3.21.0
-          expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/PageLayout.${hash}.css">`
-          )
-        } catch {
-          // rollup@3.25.2
-          expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/default.page.server.${hash}.css">`
-          )
-        }
-        expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/index.page.server.${hash}.css">`
-        )
-      }
+      expect(html).toMatch(
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/pages_html-only_index-bda8e411.${hash}.css">`
+      )
+      expect(html).toMatch(
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/static/renderer_Layout-031b266d.${hash}.css">`
+      )
     } else {
       expect(html).toContain('<script')
       expect(html).toContain('@vite/client')
       expect(html).toContain('import RefreshRuntime from "/@react-refresh"')
-      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css?direct">')
+      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css?direct">')
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
     }
     await page.goto(getServerUrl() + '/html-only')
     await testColor('orange')
   })
-  if (!isPreview) {
+  if (!isProd && !disableTestHtmlOnlyHMR) {
     test('HTML-only - HMR', async () => {
       {
         const url = getServerUrl() + '/html-only'
@@ -84,9 +74,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
         }
         // No HMR for JavaScript
         {
-          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
-          const navPromise = page.waitForURL(url)
-          */
+          // We can't use `const navPromise = page.waitForURL(url)` for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = await waitForNavigation()
           const file = isV1Design ? './pages/html-only/+Page.jsx' : './pages/html-only/index.page.server.jsx'
           editFile(file, (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
@@ -95,9 +83,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           expect(await page.textContent('h1')).toBe('HTML-only !')
         }
         {
-          /* We can't use this for page reloads, see https://github.com/microsoft/playwright/issues/20853
-          const navPromise = page.waitForURL(url)
-          */
+          // We can't use `const navPromise = page.waitForURL(url)` for page reloads, see https://github.com/microsoft/playwright/issues/20853
           const navPromise = await waitForNavigation()
           editFileRevert()
           await navPromise()
@@ -127,7 +113,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     await clickCounter()
 
     expect(await page.textContent('button')).toContain('Counter 1')
-    if (!isPreview) {
+    if (!isProd) {
       {
         expect(await page.textContent('h1')).toBe('SPA')
         await sleep(HMR_SLEEP)
@@ -162,15 +148,15 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     {
       const html = await fetchHtml('/html-js')
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
-      if (isPreview) {
+      if (isProd) {
         const jsImport = isV1Design
           ? partRegex`<script src="/assets/entries/pages_html-js_client.${hash}.js" type="module" async></script>`
           : partRegex`<script src="/assets/entries/pages_html-js_default.page.client.${hash}.js" type="module" async>`
         expect(html).toMatch(jsImport)
       } else {
         const jsImport = isV1Design
-          ? partRegex`import("/@fs/${path}/pages/html-js/+client.js");`
-          : partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`
+          ? partRegex`import "/@fs/${path}/pages/html-js/+client.js";`
+          : partRegex`import "/@fs/${path}/pages/html-js/_default.page.client.js";`
         expect(html).toMatch(jsImport)
       }
     }
@@ -178,7 +164,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     await page.goto(getServerUrl() + '/html-js')
     await clickCounter()
   })
-  if (!isPreview) {
+  if (!isProd && !disableTestHtmlOnlyHMR) {
     test('HTML + JS - HMR', async () => {
       expect(await page.textContent('button')).toContain('Counter 1')
       // JS auto-reload
@@ -207,7 +193,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
           expect(await page.textContent('button')).toContain('Counter 0')
         }
       }
-      // CSS HMR
+      // HMR works for CSS
       {
         await testColor('red')
         editFile('./pages/html-js/index.css', (s) => s.replace('color: red', 'color: gray'))
@@ -229,7 +215,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     await clickCounter()
     expect(await page.textContent('button')).toContain('Counter 1')
 
-    if (!isPreview) {
+    if (!isProd) {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
@@ -264,16 +250,16 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
   test("CSS of other pages isn't loaded", async () => {
     {
       const html = await fetchHtml('/')
-      expect(html.split('text/css').length).toBe(2)
-      if (!isPreview) {
-        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css')
+      expect(html.split('text/css').length).toBe(!isV1Design && isProd ? 4 : 2)
+      if (!isProd) {
+        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css')
       }
     }
     for (const page of ['html-only', 'html-js', 'spa', 'ssr']) {
       const html = await fetchHtml(`/${page}`)
       expect(html.split('text/css').length).toBe(3)
-      if (!isPreview) {
-        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css')
+      if (!isProd) {
+        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css')
         expect(html).toContain(`<link rel="stylesheet" type="text/css" href="/pages/${page}/index.css`)
       }
     }
@@ -303,12 +289,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', isV1Design?: true) {
     })
   }
   function testClientRouting(html: string) {
-    if (isPreview) {
+    if (isProd) {
       expect(html).toMatch(
         partRegex`<script src="/assets/entries/entry-client-routing.${hash}.js" type="module" async>`
       )
     } else {
-      expect(html).toMatch(partRegex`import("/@fs/${path}/vike/${path}/client-routing-runtime/${path}");`)
+      expect(html).toMatch(partRegex`import "/@fs/${path}/vike/${path}/client-routing-runtime/${path}";`)
     }
   }
 }

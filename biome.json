@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": ["dist/"]
+    "ignore": ["dist/", "package.json"]
   },
   "formatter": {
     "indentWidth": 2,
@@ -12,7 +12,12 @@
       "semicolons": "asNeeded",
       "lineWidth": 120,
       "quoteStyle": "single",
-      "trailingComma": "none"
+      "trailingCommas": "none"
+    }
+  },
+  "css": {
+    "formatter": {
+      "quoteStyle": "single"
     }
   },
   "linter": {

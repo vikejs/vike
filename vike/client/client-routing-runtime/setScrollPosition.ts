@@ -1,35 +1,53 @@
 export { setScrollPosition }
 export { autoSaveScrollPosition }
+export { scrollToHashOrTop }
 export type { ScrollTarget }
 
 import { assert, onPageHide, sleep, throttle } from './utils.js'
 import { saveScrollPosition, type ScrollPosition } from './history.js'
 
-type ScrollTarget = ScrollPosition | 'scroll-to-top-or-hash' | 'preserve-scroll'
+type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
 function setScrollPosition(scrollTarget: ScrollTarget): void {
-  if (scrollTarget === 'preserve-scroll') {
+  if (scrollTarget && 'x' in scrollTarget) {
+    setScroll(scrollTarget)
     return
   }
-  let scrollPosition: ScrollPosition
-  if (scrollTarget === 'scroll-to-top-or-hash') {
-    const hash = getUrlHash()
-    // We replicate the browser's native behavior
-    if (hash && hash !== 'top') {
-      const hashTarget = document.getElementById(hash) || document.getElementsByName(hash)[0]
-      if (hashTarget) {
-        hashTarget.scrollIntoView()
-        return
-      }
-    }
-    scrollPosition = { x: 0, y: 0 }
-  } else {
-    assert('x' in scrollTarget && 'y' in scrollTarget)
-    scrollPosition = scrollTarget
+  if (scrollTarget?.preserveScroll) {
+    return
   }
-  setScroll(scrollPosition)
+  const hash = getUrlHash()
+  scrollToHashOrTop(hash)
 }
 
-/** Change the browser's scoll position, in a way that works during a repaint. */
+// Replicates the browser's native behavior
+function scrollToHashOrTop(hash: null | string) {
+  if (!hash) {
+    scrollToTop()
+  } else {
+    const id = decodeURIComponent(hash)
+    const hashTarget = document.getElementById(id) || document.getElementsByName(id)[0]
+    if (hashTarget) {
+      hashTarget.scrollIntoView()
+      // Is this standard? We just copied SvelteKit: https://github.com/sveltejs/kit/blob/94c45b9372a9ed2b80e21cdca3f235c45edaa5b0/packages/kit/src/runtime/client/client.js#L2132
+      hashTarget.focus()
+    } else if (hash === 'top') {
+      scrollToTop()
+    }
+  }
+}
+function scrollToTop() {
+  setScroll({ x: 0, y: 0 })
+}
+
+/**
+ * Change the browser's scroll position, in a way that works during a repaint.
+ *
+ * I don't remember exactly why I implemented this and what I meant with "repaint"
+ * - https://github.com/vikejs/vike/commit/fd70fadb0bcea8d922f961f1c88713994e0aaf34
+ * - I guess scrolling doesn't work during a page rendering? So we have to re-scroll until the scroll position is correct?
+ * - Do other frameworks implement this? SvelteKit doesn't seem to.
+ * - Let's remove it and see if users complain?
+ */
 function setScroll(scrollPosition: ScrollPosition) {
   const scroll = () => window.scrollTo(scrollPosition.x, scrollPosition.y)
   const done = () => window.scrollX === scrollPosition.x && window.scrollY === scrollPosition.y

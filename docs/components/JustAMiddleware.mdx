@@ -14,7 +14,6 @@ server.addMiddleware({
   async handler(request) {
     const pageContextInit = { urlOriginal: request.url }
     const pageContext = await renderPage(pageContextInit)
-    if (!pageContext.httpResponse) return null
     // `body` is the HTML of the page with a route matching pageContextInit.urlOriginal
     const { body, statusCode, headers } = pageContext.httpResponse
     const response = { body, statusCode, headers }
@@ -23,6 +22,6 @@ server.addMiddleware({
 })
 ```
 
-You can embed `renderPage()` into any server.
+You can embed {(() => {const content = <code>renderPage()</code>; return props.noLink ? content : <Link href="/renderPage">{content}</Link> })()} into any server and any deployment environment.
 
-Alternatively, instead of using `renderPage()`, you can <Link text="pre-render" href="/pre-rendering" /> your pages and remove the need for a production server (and deploy to a <Link text="static host" href="/static-hosts" /> instead).
+> Alternatively, instead of using `renderPage()`, you can <Link text="pre-render" href="/pre-rendering" /> your pages and remove the need for a production server (and deploy to a <Link text="static host" href="/static-hosts" /> instead).

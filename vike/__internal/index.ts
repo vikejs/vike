@@ -2,11 +2,13 @@
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
+// Internals needed by experimental implementation of vike-telefunc
+export { getMiddlewares }
+
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
-import { type PageFile } from '../shared/getPageFiles.js'
-import { getGlobalContext, initGlobalContext } from '../node/runtime/globalContext.js'
-import { setNodeEnvToProduction } from '../utils/assertNodeEnv.js'
-import { assert } from '../utils/assert.js'
+import { getPageFilesAll, type PageFile } from '../shared/getPageFiles.js'
+import { getGlobalContext, initGlobalContext_getGlobalContextAsync } from '../node/runtime/globalContext.js'
+import { handleNodeEnv_vitePluginVercel } from '../utils/assertNodeEnv.js'
 import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 
@@ -17,21 +19,41 @@ import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
  * @param config
  */
 async function getPagesAndRoutes() {
-  setNodeEnvToProduction()
-
-  await initGlobalContext(true)
-  const globalContext = getGlobalContext()
-  assert(globalContext.isProduction === true)
-
+  handleNodeEnv_vitePluginVercel()
   const renderContext = await getRenderContext()
-  const { pageFilesAll, pageConfigs, allPageIds, pageRoutes } = renderContext
-
+  const {
+    //
+    pageRoutes,
+    pageFilesAll,
+    pageConfigs,
+    allPageIds
+  } = renderContext
   return {
     pageRoutes,
     pageFilesAll,
     pageConfigs,
     allPageIds
   }
+}
+
+// TODO/eventually:
+//  - Remove the need for `isProduction` after Vike's CLI is implemented
+//  - Remove it in favor of https://vike.dev/getGlobalContext
+async function getMiddlewares(): Promise<unknown[]> {
+  const isProduction = process.env.NODE_ENV === 'production'
+  const { pageConfigs } = await getPageFilesAllSafe(isProduction)
+  const middlewares: unknown[] = (pageConfigs[0]!.configValues.middleware!.value as any).flat(Infinity)
+  return middlewares
+}
+// TODO/eventually:
+//  - Make it cleaner once the internal refactoring about global configs is done.
+//  - Remove it in favor of https://vike.dev/getGlobalContext
+// Demo usage: https://github.com/vikejs/vike/pull/1823
+async function getPageFilesAllSafe(isProduction: boolean) {
+  await initGlobalContext_getGlobalContextAsync(isProduction)
+  const globalContext = getGlobalContext()
+  const pageFilesAll = await getPageFilesAll(false, globalContext.isProduction)
+  return pageFilesAll
 }
 
 async function route(pageContext: Parameters<typeof routeInternal>[0]) {

@@ -6,17 +6,23 @@ export type { PageContextPromise }
 import { assert, isCallable, isPromise } from '../utils.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser.js'
-import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHtmlTags.js'
+import {
+  joinHtmlTags,
+  injectHtmlTags,
+  createHtmlHeadIfMissing,
+  injectHtmlTagsUsingStream
+} from './injectAssets/injectHtmlTags.js'
 import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
-import type { InjectToStream } from './stream/react-streaming.js'
+import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import type { PageContextSerialization } from './serializePageContextClientSide.js'
+import { getViteDevScript } from './injectAssets/getViteDevScript.js'
 
 type PageContextInjectAssets = {
   urlPathname: string
   __getPageAssets: () => Promise<PageAsset[]>
-  _pageId: string
+  pageId: string
   _isHtmlOnly: boolean
   _pageContextPromise: PageContextPromise
   _renderHook: {
@@ -33,34 +39,52 @@ async function injectHtmlTagsToString(
   pageContext: PageContextInjectAssets & { _isStream: false },
   injectFilter: PreloadFilter
 ): Promise<string> {
-  const htmlTags = await getHtmlTags(pageContext, null, injectFilter)
   const pageAssets = await pageContext.__getPageAssets()
+  const viteDevScript = await getViteDevScript()
+  const htmlTags = getHtmlTags(pageContext, null, injectFilter, pageAssets, viteDevScript, false)
   let htmlString = htmlPartsToString(htmlParts, pageAssets)
-  htmlString = injectToHtmlBegin(htmlString, htmlTags, null)
+  htmlString = injectToHtmlBegin(htmlString, htmlTags)
   htmlString = injectToHtmlEnd(htmlString, htmlTags)
+  assert(htmlTags.filter((snippet) => snippet.position === 'HTML_STREAM').length === 0)
   return htmlString
 }
 
 function injectHtmlTagsToStream(
   pageContext: PageContextInjectAssets & { _isStream: true },
-  injectToStream: null | InjectToStream,
+  streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
   injectFilter: PreloadFilter
 ) {
   let htmlTags: HtmlTag[] | undefined
 
   return {
     injectAtStreamBegin,
+    injectAtStreamAfterFirstChunk,
     injectAtStreamEnd
   }
 
   async function injectAtStreamBegin(htmlPartsBegin: HtmlPart[]): Promise<string> {
-    htmlTags = await getHtmlTags(pageContext, injectToStream, injectFilter)
-
     const pageAssets = await pageContext.__getPageAssets()
-    let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
+    const viteDevScript = await getViteDevScript()
+    htmlTags = getHtmlTags(pageContext, streamFromReactStreamingPackage, injectFilter, pageAssets, viteDevScript, true)
 
-    htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags, injectToStream)
+    let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
+    htmlBegin = injectToHtmlBegin(htmlBegin, htmlTags)
+    if (streamFromReactStreamingPackage) {
+      injectHtmlTagsUsingStream(htmlTags, streamFromReactStreamingPackage)
+    }
+
     return htmlBegin
+  }
+
+  // Is it worth it? Should we remove this? https://github.com/vikejs/vike/pull/1740#issuecomment-2230540892
+  function injectAtStreamAfterFirstChunk(): null | string {
+    // React has its own stream injection mechanism, see injectHtmlTagsUsingStream()
+    if (streamFromReactStreamingPackage) return null
+    assert(htmlTags)
+    const tags = htmlTags.filter((h) => h.position === 'HTML_STREAM')
+    if (tags.length === 0) return null
+    const htmlFragment = joinHtmlTags(tags)
+    return htmlFragment
   }
 
   async function injectAtStreamEnd(htmlPartsEnd: HtmlPart[]): Promise<string> {
@@ -73,20 +97,15 @@ function injectHtmlTagsToStream(
   }
 }
 
-function injectToHtmlBegin(htmlBegin: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
-  const htmlTagsAtBegin = htmlTags.filter((snippet) => snippet.position !== 'HTML_END')
-
+function injectToHtmlBegin(htmlBegin: string, htmlTags: HtmlTag[]): string {
   // Ensure existence of `<head>`
   htmlBegin = createHtmlHeadIfMissing(htmlBegin)
-
-  htmlBegin = injectHtmlTags(htmlBegin, htmlTagsAtBegin, injectToStream)
-
+  htmlBegin = injectHtmlTags(htmlBegin, htmlTags, 'HTML_BEGIN')
   return htmlBegin
 }
 
 function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): string {
-  const htmlTagsAtEnd = htmlTags.filter((snippet) => snippet.position === 'HTML_END')
-  htmlEnd = injectHtmlTags(htmlEnd, htmlTagsAtEnd, null)
+  htmlEnd = injectHtmlTags(htmlEnd, htmlTags, 'HTML_END')
   return htmlEnd
 }
 

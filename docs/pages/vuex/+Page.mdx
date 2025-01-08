@@ -1,15 +1,11 @@
-import { RepoLink } from '@brillout/docpress'
-import { DataArchitecture, Github } from '../../components'
+import { RepoLink, Link, Contribution } from '@brillout/docpress'
+import { Example, CommunityNote } from '../../components'
 
-<DataArchitecture
-  toolName={'Vuex'}
-  toolLink={'https://vuex.vuejs.org/'}
-  isGeneric={false}
-  toolType="data-store"
-  toolDocs={
-<a href="https://ssr.vuejs.org/guide/data.html#data-store">Vue &gt; SSR &gt; Data Store (Vuex)</a>  }
-/>
+<CommunityNote tool="vuex" url="https://vuex.vuejs.org" hasExtension={false} />
 
-## Example
+To manually integrate Vuex, see:
+- <Link href="/store#ssr" doNotInferSectionTitle />
+- [Vue > SSR > Cross-Request State Pollution](https://vuejs.org/guide/scaling-up/ssr.html#cross-request-state-pollution)
 
-See <Github>brillout/vike-with-vuex</Github>.
+Examples of integrating Vuex without using <Link href="/vike-vue">`vike-vue`</Link>:
+ - <Example timestamp="2023.10" repo="brillout/vike-with-vuex" />

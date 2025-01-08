@@ -1,17 +1,30 @@
+import { Example, CommunityNote } from '../../components'
 import { Link } from '@brillout/docpress'
-import { CSSinJSTool } from '../../components'
 
-<CSSinJSTool prefix={<>As explained in the <a href="https://styled-components.com/docs/advanced#server-side-rendering"><code>styled-components</code> SSR docs</a> we can</>}/>
+<CommunityNote tool="styled-components" url="https://styled-components.com" hasExtension="react" />
 
-You can follow along on <a href="https://www.alexrabin.com/blog/vite-ssr-styled-components">this tutorial</a> (vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike)) on how to add styled-components into your Vike app.
+## Manual integration
+
+When using styled-components, you need to collect the page's styles upon SSR:
+- [styled-components > Server Side Rendering](https://styled-components.com/docs/advanced#server-side-rendering)
+- <Link href="/css-in-js" doNotInferSectionTitle />
+
+You can follow along on <a href="https://www.alexrabin.com/blog/vite-ssr-styled-components">this tutorial</a> (vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike)) on how to add styled-components to your Vike app.
+
+If you use <Link href="/vike-react">`vike-react`</Link>, you can manually integrate styled-components by using:
+- <Link href="/onBeforeRenderHtml" doNotInferSectionTitle />
+- <Link href="/Wrapper" doNotInferSectionTitle />
+- <Link href="/onAfterRenderHtml" doNotInferSectionTitle />
 
 Examples:
- - Generic example at <Link href="/css-in-js" />.
- - [GitHub > alexrabin/vite-ssr-styled-components](https://github.com/alexrabin/vite-ssr-styled-components)
- - [GitHub > AurelienLourot/vike-react-styled-components-grommet](https://github.com/AurelienLourot/vike-react-styled-components-grommet)
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+- <Example timestamp="2024.12" repo="phonzammi/vike-react-styled-components-example" /> - Using <Link href="/vike-react">`vike-react`</Link>
+- <Example timestamp="2024.04" repo="lourot/vike-react-styled-components-grommet" />
+- <Example timestamp="2024.04" repo="Pixelatex/vike-styled-ts" />
+- <Example timestamp="2023.10" repo="alexrabin/vite-ssr-styled-components" />
+  > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
 
 ## See also
 
-- <Link href="/css-in-js" />
+- [styled-components > Server Side Rendering](https://styled-components.com/docs/advanced#server-side-rendering)
+- <Link href="/css-in-js" doNotInferSectionTitle />
 - <Link href="/grommet" />

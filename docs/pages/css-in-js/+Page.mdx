@@ -1,28 +1,68 @@
 import { Link } from '@brillout/docpress'
-import { CSSinJSTool } from '../../components'
+import { IntegrationHelp, UiFrameworkExtension } from '../../components'
 
-<CSSinJSTool prefix="Some CSS-in-JS tools allows us to" />
+
+## Collect styles
+
+In order to avoid FOUC ([**f**lash **o**f **u**nstyled **c**ontent](https://en.wikipedia.org/wiki/Flash_of_unstyled_content)),
+CSS-in-JS tools usually need to collect the page's styles upon SSR and add the collected styles to the HTML. (So that the browser loads the styles early.)
+
+For example:
+
+```js
+// /pages/+onBeforeRenderHtml.js
+
+import { collect } from 'my-css-in-js-tool'
+
+export default pageContext => {
+  pageContext.collectedStyles = collect()
+}
+```
+
+```js
+// /pages/+onAfterRenderHtml.js
+
+import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
+import { generateCSS } from 'my-css-in-js-tool'
+
+export default pageContext => {
+  const config = useConfig()
+  const css = generateCSS(pageContext.collectedStyles)
+  config({ Head: css })
+}
+```
+
+> See:
+>  - <Link href="/onBeforeRenderHtml" noBreadcrumb />
+>  - <Link href="/onAfterRenderHtml" noBreadcrumb />
+>  - <Link href="/useConfig" noBreadcrumb />
+>  - <Link href="/Head#how-to-inject-raw-html" />
+
+
+## Without `vike-{react,vue,solid}`
+
+You can collect and inject the page's styles inside your <Link href="/onRenderHtml">`onRenderHtml()` hook</Link>.
+
+React example:
 
 ```jsx
 // /renderer/+onRenderHtml.jsx
 
-import ReactDOMServer from "react-dom/server";
-import React from "react";
-import { escapeInject, dangerouslySkipEscape } from "vike/server";
+import ReactDOMServer from 'react-dom/server'
+import React from 'react'
+import { escapeInject, dangerouslySkipEscape } from 'vike/server'
 import { CssCollector } from 'some-css-in-js-tool'
 
-export { onRenderHtml };
+export { onRenderHtml }
 
 async function onRenderHtml(pageContext) {
-  const { Page } = pageContext;
-  const page = <Page />;
+  const { Page } = pageContext
+  const page = <Page />
 
   const collect = new CssCollector()
 
-  const pageHtml = ReactDOMServer.renderToString(collect(page));
+  const pageHtml = ReactDOMServer.renderToString(collect(page))
 
-  // Vike inserts the `<script>` tags at the end of the HTML; the
-  // browser will load the `<style>` tag first.
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>
@@ -31,10 +71,17 @@ async function onRenderHtml(pageContext) {
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
-    </html>`;
+    </html>`
 }
 ```
 
+Examples:
+- <Link href="/styled-components" />
+- <Link href="/grommet" />
+- <Link href="/styled-jsx" />
+
+
 ## See also
 
-- <Link href="/styled-components" />
+
+- <Link href="/examples#css-in-js" doNotInferSectionTitle />

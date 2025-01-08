@@ -1,16 +1,22 @@
 import { HookTypeScriptHints } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
+import PreRenderDynamicRoutes from '../pre-rendering/PreRenderDynamicRoutes.mdx'
 
 
-The `onBeforePrerenderStart()` hook is executed during <Link text="pre-rendering" href="/pre-rendering" />
-(and only during pre-rendering) and has two purposes:
- - For providing a list of URLs for parameterized routes (e.g. `/movie/1` and `/movie/2` for a route `/movie/@id`).
- - For fetching data in bulk in order to make pre-rendering faster.
+The `onBeforePrerenderStart()` hook is executed upon <Link text="pre-rendering" href="/pre-rendering" /> your app.
+
+> It's *only* executed while pre-rendering and, consequently, never executed during development.
+
+It's usually used for:
+ - Providing the list of URLs of parameterized routes.
+   > If you have a <Link href="/pre-rendering">pre-rendered page</Link> that has a parameterized route such as `/movie/@id`, then you need to provide a list of URLs such as `/movie/1`, `/movie/2`, `/movie/3`, ...
+   <PreRenderDynamicRoutes />
+ - Fetching data in bulk, in order to make pre-rendering execute faster.
 
 
 ## For providing URLs
 
-Most of the time, we use the `onBeforePrerenderStart()` hook in order to provide the URLs of parameterized routes.
+Most of the time, the `onBeforePrerenderStart()` hook is used for providing the URLs of parameterized routes.
 
 ```js
 // /pages/movie/+route.js
@@ -32,18 +38,17 @@ async function onBeforePrerenderStart() {
 }
 ```
 
-> If we don't have any parameterized route,
-> then we can pre-render our app without defining any `onBeforePrerenderStart()` hook.
+> If you don't have any parameterized route,
+> then you can pre-render your app without defining any `onBeforePrerenderStart()` hook.
 
-> The `onBeforePrerenderStart()` hooks are called when we run <code>$ vite build</code>.
-> (The `onBeforePrerenderStart()` hooks are never called in development.)
+> The `onBeforePrerenderStart()` hooks are called when you run <code>$ vite build</code> and, consequently, are never called in development.
 
 
 ## For bulk data fetching
 
-If we have a high number of pages that are to be pre-rendered, then running the command <code>$ vite build</code> may become slow.
+If you have a high number of pages that are to be pre-rendered, then running the command <code>$ vite build</code> may become slow.
 
-We can make it significantly faster by providing the `pageContext` of pages in `onBeforePrerenderStart()` hooks.
+You can make pre-rendering significantly faster by providing the <Link href="/pageContext">`pageContext`</Link> of pages in `onBeforePrerenderStart()` hooks.
 
 ```js
 // /pages/movie/+route.js
@@ -104,15 +109,12 @@ async function onBeforePrerenderStart() {
 }
 ```
 
-Essentially, the `onBeforePrerenderStart()` hook allows us to prefetch data for multiple pages at once.
+Essentially, the `onBeforePrerenderStart()` hook allows you to prefetch data for multiple pages at once.
 
-> <p><b>Providing <code>pageContext</code> in <code>onBeforePrerenderStart()</code> hooks should only be used for making the pre-rendering build step faster</b> and
+> <p><b>Providing <code>pageContext</code> in <code>onBeforePrerenderStart()</code> hooks should only be used for making pre-rendering faster</b> and
 > we recommend against using <code>onBeforePrerenderStart()</code> hooks for other purposes.</p>
 >
-> For example, we should avoid providing additional `pageContext` in `onBeforePrerenderStart()` hooks that wouldn't otherwise exist.
-> Instead, we should make sure that our `data()` and `onBeforeRender()` hooks provide all the `pageContext` we need.
->
-> The reason being that `onBeforePrerenderStart()` hooks are never called in development and we should keep our app consistent between development and production.
+> For example, avoid providing additional `pageContext` values in `onBeforePrerenderStart()` hooks that wouldn't otherwise exist. Because `onBeforePrerenderStart()` hooks are never called in development and it's best to keep your app consistent between development and production.
 
 
 ## Examples
@@ -140,3 +142,9 @@ const onBeforePrerenderStart: OnBeforePrerenderStartAsync = async (
 ```
 
 <HookTypeScriptHints hookTypeName="OnBeforePrerenderStartAsync" />
+
+
+## See also
+
+- <Link href="/pre-rendering" />
+- <Link href="/onPrerenderStart" />

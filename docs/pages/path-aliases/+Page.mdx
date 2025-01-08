@@ -5,9 +5,9 @@ Instead of using relative import paths,
 which can be cumbersome,
 you can use path aliases:
 
-```diff
-- import { Counter } from '../../../../components/Counter'
-+ import { Counter } from `#root/components/Counter`
+```js
+import { Counter } from '../../../../components/Counter' // [!code --]
+import { Counter } from '#root/components/Counter' // [!code ++]
 ```
 
 Where `#root/` denotes your project's root directory.
@@ -41,12 +41,8 @@ export default {
 
 We recommend following the [Node.js convention](https://nodejs.org/api/packages.html#subpath-imports:~:text=must%20always%20start%20with%20%23%20to%20ensure%20they%20are%20disambiguated%20from%20external%20package%20specifiers) to prefix path aliases with the special character `#`.
 
-> While your path aliases don't need to follow the `#` convention, they do need to start with a special character (`!root`, `/root`, `$root`, ...).
->
-> Path aliases must start with a special character so that Vike can distinguish between path alias imports and npm package imports. If it's an issue for you then elaborate your use case in a new <a href={projectInfo.githubDiscussions}>GitHub Discussion</a>.
-
 See also:
- - [Vite Docs > `resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
+ - [Vite > `resolve.alias`](https://vitejs.dev/config/shared-options.html#resolve-alias)
  - <RepoLink path='/examples/path-aliases/vite.config.ts' />
 
 

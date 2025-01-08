@@ -1,75 +1,93 @@
+import { Example, UiFrameworkExtension, CommunityNote } from '../../components'
 import { Link } from '@brillout/docpress'
 
-<a href="https://github.com/vercel/styled-jsx">`styled-jsx`</a> is a <Link href="/css-in-js" text="CSS in JS" /> tool that is supported by default in Next.js.
-Next.js manages server side hydration of styles as well as transpilation, so to work with Vite we'll need to do this manually.
+<CommunityNote tool="styled-jsx" url="https://github.com/vercel/styled-jsx" hasExtension="react" />
+
+## Manual integration
+
+If you use <Link href="/vike-react">`vike-react`</Link>, you can manually integrate `styled-jsx` by using:
+- <Link href="/onBeforeRenderHtml" doNotInferSectionTitle />
+- <Link href="/Wrapper" doNotInferSectionTitle />
+- <Link href="/onAfterRenderHtml" doNotInferSectionTitle />
 
 Example:
- - [GitHub > jeremypress/vite-ssr-styled-jsx](https://github.com/jeremypress/vite-ssr-styled-jsx)
-   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+ - <Example timestamp="2024.12" repo="phonzammi/vike-react-styled-jsx-example" />
 
-To use Vike with `styled-jsx`:
+## Without `vike-react`
+
+To use Vike with `styled-jsx` without <UiFrameworkExtension name list={['vike-react']} />:
 
 1. Install:
 
-```shell
-npm install styled-jsx
-```
+   ```shell
+   npm install styled-jsx
+   ```
 
 2. Add `styled-jsx` to `vite.config.js`:
 
-```js
-// vite.config.js
+   ```js
+   // vite.config.js
 
-import react from '@vitejs/plugin-react'
-import vike from 'vike/plugin'
+   import react from '@vitejs/plugin-react'
+   import vike from 'vike/plugin'
 
-export default {
-  plugins: [react({ babel: { plugins: ['styled-jsx/babel'] } }), vike()]
-}
-```
+   export default {
+     plugins: [react({ babel: { plugins: ['styled-jsx/babel'] } }), vike()]
+   }
+   ```
 
-3. Collect the styles during server-side rendering and attach to the DOM as `<head>` tags.
+3. Collect and inject styles.
+   > When using a CSS-in-JS tool, like `styled-jsx`, you always need to collect the page's styles upon SSR in order <Link href="/css-in-js">to avoid FOUC</Link>.
 
-```js
-// /renderer/+onRenderHtml.js
+   ```js
+   // /renderer/+onRenderHtml.js
 
-export { onRenderHtml }
+   export { onRenderHtml }
 
-import React from 'react'
-import { renderToString, renderToStaticMarkup } from 'react-dom/server'
-import { escapeInject, dangerouslySkipEscape } from 'vike/server'
-import { PageLayout } from './PageLayout'
-import { createStyleRegistry, StyleRegistry } from 'styled-jsx'
+   import React from 'react'
+   import { renderToString, renderToStaticMarkup } from 'react-dom/server'
+   import { escapeInject, dangerouslySkipEscape } from 'vike/server'
+   import { Layout } from './Layout'
+   import { createStyleRegistry, StyleRegistry } from 'styled-jsx'
 
-const registry = createStyleRegistry()
+   const registry = createStyleRegistry()
 
-async function onRenderHtml(pageContext) {
-  // flush styles to support the possibility of concurrent rendering
-  registry.flush()
+   async function onRenderHtml(pageContext) {
+     // flush styles to support the possibility of concurrent rendering
+     registry.flush()
 
-  const { Page } = pageContext
-  // include the styleregistry in the app render to inject the styles
-  const viewHtml = dangerouslySkipEscape(
-    renderToString(
-      <StyleRegistry registry={registry}>
-        <PageLayout>
-          <Page />
-        </PageLayout>
-      </StyleRegistry>
-    )
-  )
+     const { Page } = pageContext
+     // include the styleregistry in the app render to inject the styles
+     const viewHtml = dangerouslySkipEscape(
+       renderToString(
+         <StyleRegistry registry={registry}>
+           <Layout>
+             <Page />
+           </Layout>
+         </StyleRegistry>
+       )
+     )
 
-  // extract the styles to add as head tags to the server markup
-  const headTags = renderToStaticMarkup(<>{registry.styles()}</>)
+     // extract the styles to add as head tags to the server markup
+     const headTags = renderToStaticMarkup(<>{registry.styles()}</>)
 
-  return escapeInject`<!DOCTYPE html>
-    <html>
-      <head>
-        ${dangerouslySkipEscape(headTags)}
-      </head>
-      <body>
-        <div id="page-view">${viewHtml}</div>
-      </body>
-    </html>`
-}
-```
+     return escapeInject`<!DOCTYPE html>
+       <html>
+         <head>
+           ${dangerouslySkipEscape(headTags)}
+         </head>
+         <body>
+           <div id="page-view">${viewHtml}</div>
+         </body>
+       </html>`
+   }
+   ```
+
+Example:
+ - <Example timestamp="2023.07" repo="jeremypress/vite-ssr-styled-jsx" />
+   > vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike).
+
+## See also
+
+- <Link href="/css-in-js" doNotInferSectionTitle />
+- [styled-jsx README > Server Side Rendering](https://github.com/vercel/styled-jsx#server-side-rendering)

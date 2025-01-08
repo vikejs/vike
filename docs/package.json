@@ -2,18 +2,20 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite build && vite preview"
+    "preview": "vite build && vite preview",
+    "typecheck": "tsc --noEmit --watch"
   },
   "dependencies": {
-    "@brillout/docpress": "^0.6.0",
-    "@types/node": "^20.11.16",
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.19",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^5.3.3",
-    "vike": "0.4.161",
-    "vite": "npm:@brillout/vite@5.1.0-commit-3dc7abd"
+    "@brillout/docpress": "^0.10.17",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.2",
+    "vike": "0.4.212",
+    "vite": "^6.0.6",
+    "vite-plugin-svgr": "^4.3.0"
   },
   "type": "module"
 }

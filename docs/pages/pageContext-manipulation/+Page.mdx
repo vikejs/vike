@@ -27,21 +27,21 @@ async function getStarWarsMovies() {
 
 In general, we should try to avoid mutating `pageContext`:
 
-```diff
-  // +onBeforeRender.js
+```js
+// +onBeforeRender.js
 
-  export { onBeforeRender }
+export { onBeforeRender }
 
-  function onBeforeRender(pageContext) {
-    const starWarsMovies = await getStarWarsMovies()
--   pageContext.starWarsMovies = starWarsMovies
-+   // We should do this instead
-+   return {
-+     pageContext: {
-+       starWarsMovies
-+     }
-+   }
-  }
+function onBeforeRender(pageContext) {
+  const starWarsMovies = await getStarWarsMovies()
+  pageContext.starWarsMovies = starWarsMovies // [!code --]
+  // We should do this instead // [!code ++]
+  return { // [!code ++]
+    pageContext: { // [!code ++]
+      starWarsMovies // [!code ++]
+    } // [!code ++]
+  } // [!code ++]
+}
 ```
 
 > **Why?** Mutations make reasoning harder; it is easier to think in terms of extending an immutable object.
@@ -52,24 +52,24 @@ In general, we should try to avoid mutating `pageContext`:
 
 We also shouldn't do this:
 
-```diff
-  // +onBeforeRender.js
+```js
+// +onBeforeRender.js
 
-  export { onBeforeRender }
+export { onBeforeRender }
 
-  function onBeforeRender(pageContext) {
-    const starWarsMovies = await getStarWarsMovies()
-    return {
--     pageContext: {
--       ...pageContext,
--       starWarsMovies
--     }
-+     // Do this instead
-+     pageContext: {
-+       starWarsMovies
-+     }
-    }
+function onBeforeRender(pageContext) {
+  const starWarsMovies = await getStarWarsMovies()
+  return {
+    pageContext: { // [!code --]
+      ...pageContext, // [!code --]
+      starWarsMovies // [!code --]
+    } // [!code --]
+    // Do this instead // [!code ++]
+    pageContext: { // [!code ++]
+      starWarsMovies // [!code ++]
+    } // [!code ++]
   }
+}
 ```
 
 > **Why?** See argument above about mutations.

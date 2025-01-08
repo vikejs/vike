@@ -1,12 +1,18 @@
+import { Example, CommunityNote } from '../../components'
 import { Link } from '@brillout/docpress'
-import { CSSinJSTool } from '../../components'
 
-<CSSinJSTool prefix={<><a href="https://v2.grommet.io/">Grommet</a> is based on <Link href="/styled-components" noBreadcrumb /> and requires us to</>}/>
+<CommunityNote url="https://grommet.io" />
 
-Example of using Vike with Grommet:
- - [GitHub > `AurelienLourot/vike-react-styled-components-grommet`](https://github.com/AurelienLourot/vike-react-styled-components-grommet)
+When using Grommet, which is based on [styled-components](https://styled-components.com), you need to collect the page's styles upon SSR:
+- <a href="https://styled-components.com/docs/advanced#server-side-rendering">styled-components docs &gt; Server Side Rendering</a>
+- <Link href="/css-in-js" doNotInferSectionTitle />
+
+See also: <Link href="/styled-components" />.
+
+Example:
+ - <Example timestamp="2024.04" repo="AurelienLourot/vike-react-styled-components-grommet" />
 
 ## See also
 
-- <Link href="/css-in-js" />
+- <Link href="/css-in-js" doNotInferSectionTitle />
 - <Link href="/styled-components" />

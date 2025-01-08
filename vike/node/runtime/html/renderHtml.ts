@@ -9,7 +9,17 @@ export type { DocumentHtml }
 // This export is needed even though it's not used anywhere, see https://github.com/vikejs/vike/issues/511
 export type { TemplateWrapped }
 
-import { assert, assertUsage, assertWarning, checkType, hasProp, isHtml, isPromise, objectAssign } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  checkType,
+  escapeHtml,
+  hasProp,
+  isHtml,
+  isPromise,
+  objectAssign
+} from '../utils.js'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets.js'
 import type { PageContextInjectAssets } from './injectAssets.js'
 import {
@@ -20,8 +30,8 @@ import {
   StreamTypePatch,
   StreamProviderNormalized
 } from './stream.js'
-import { isStreamReactStreaming } from './stream/react-streaming.js'
-import type { InjectToStream } from './stream/react-streaming.js'
+import { isStreamFromReactStreamingPackage } from './stream/react-streaming.js'
+import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
 import { getGlobalContext } from '../globalContext.js'
@@ -101,26 +111,31 @@ async function renderHtmlStream(
   onErrorWhileStreaming: (err: unknown) => void,
   injectFilter: PreloadFilter
 ) {
-  const opts = {
+  const processStreamOptions: Parameters<typeof processStream>[1] = {
     onErrorWhileStreaming,
     enableEagerStreaming: pageContext.enableEagerStreaming
   }
   if (injectString) {
-    let injectToStream: null | InjectToStream = null
-    if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
-      injectToStream = streamOriginal.injectToStream
+    let streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage = null
+    if (isStreamFromReactStreamingPackage(streamOriginal) && !streamOriginal.disabled) {
+      streamFromReactStreamingPackage = streamOriginal
     }
-    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream, injectFilter)
-    objectAssign(opts, {
-      injectStringAtBegin: async () => {
-        return await injectAtStreamBegin(injectString.htmlPartsBegin)
-      },
-      injectStringAtEnd: async () => {
-        return await injectAtStreamEnd(injectString.htmlPartsEnd)
-      }
-    })
+    const { injectAtStreamBegin, injectAtStreamAfterFirstChunk, injectAtStreamEnd } = injectHtmlTagsToStream(
+      pageContext,
+      streamFromReactStreamingPackage,
+      injectFilter
+    )
+    processStreamOptions.injectStringAtBegin = async () => {
+      return await injectAtStreamBegin(injectString.htmlPartsBegin)
+    }
+    processStreamOptions.injectStringAtEnd = async () => {
+      return await injectAtStreamEnd(injectString.htmlPartsEnd)
+    }
+    processStreamOptions.injectStringAfterFirstChunk = () => {
+      return injectAtStreamAfterFirstChunk()
+    }
   }
-  const streamWrapper = await processStream(streamOriginal, opts)
+  const streamWrapper = await processStream(streamOriginal, processStreamOptions)
   return streamWrapper
 }
 
@@ -258,34 +273,35 @@ async function renderTemplate(
       continue
     }
 
-    const getErrMsg = (typeText: string, end: null | string) => {
+    const getErrMsg = (msg: `${string}.` | `${string}?`) => {
       const { hookName, hookFilePath } = pageContext._renderHook
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
-      return [`The ${nth} HTML variable is ${typeText}, see ${hookName}() hook defined by ${hookFilePath}.`, end]
+      return [
+        `The ${nth} HTML variable is ${msg}`,
+        `The HTML was provided by the ${hookName}() hook at ${hookFilePath}.`
+      ]
         .filter(Boolean)
         .join(' ')
     }
 
-    assertUsage(!isPromise(templateVar), getErrMsg('a promise', `Did you forget to ${pc.cyan('await')} the promise?`))
+    assertUsage(!isPromise(templateVar), getErrMsg(`a promise, did you forget to ${pc.cyan('await')} the promise?`))
 
     if (templateVar === undefined || templateVar === null) {
-      assertWarning(
-        false,
-        getErrMsg(
-          `${pc.cyan(String(templateVar))} which will be converted to an empty string`,
-          `Pass the empty string ${pc.cyan("''")} instead of ${pc.cyan(String(templateVar))} to remove this warning.`
-        ),
-        { onlyOnce: false }
-      )
+      const msgVal = pc.cyan(String(templateVar))
+      const msgEmptyString = pc.cyan("''")
+      const msg =
+        `${msgVal} which will be converted to an empty string. Pass the empty string ${msgEmptyString} instead of ${msgVal} to remove this warning.` as const
+      assertWarning(false, getErrMsg(msg), { onlyOnce: false })
       templateVar = ''
     }
 
     {
       const varType = typeof templateVar
-      const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
-        ? null
-        : '(See https://vike.dev/streaming for HTML streaming.)'
-      assertUsage(varType === 'string', getErrMsg(pc.cyan(`typeof htmlVar === "${varType}"`), streamNote))
+      if (varType !== 'string') {
+        const msgType = pc.cyan(`typeof htmlVariable === "${varType as string}"`)
+        const msg = `${msgType} but a string or stream (https://vike.dev/streaming) is expected instead.` as const
+        assertUsage(false, getErrMsg(msg))
+      }
     }
 
     {
@@ -295,14 +311,10 @@ async function renderTemplate(
         // We don't show this warning in production because it's expected that some users may (un)willingly do some XSS injection: we avoid flooding the production logs.
         !isProduction
       ) {
-        assertWarning(
-          false,
-          getErrMsg(
-            `${pc.cyan(templateVar)} which seems to be HTML code`,
-            'Did you forget to wrap the value with dangerouslySkipEscape()?'
-          ),
-          { onlyOnce: false }
-        )
+        const msgVal = pc.cyan(String(templateVar))
+        const msg =
+          `${msgVal} which seems to be HTML code. Did you forget to wrap the value with dangerouslySkipEscape()?` as const
+        assertWarning(false, getErrMsg(msg), { onlyOnce: false })
       }
     }
 
@@ -325,17 +337,6 @@ async function renderTemplate(
     htmlPartsBegin,
     htmlPartsEnd
   }
-}
-
-function escapeHtml(unsafeString: string): string {
-  // Source: https://stackoverflow.com/questions/6234773/can-i-escape-html-special-chars-in-javascript/6234804#6234804
-  const safe = unsafeString
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-  return safe
 }
 
 async function getHtmlString(htmlRender: HtmlRender): Promise<string> {

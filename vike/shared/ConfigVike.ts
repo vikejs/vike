@@ -10,13 +10,16 @@ type ConfigVikeResolved = {
         partial: boolean
         disableAutoRun: boolean
       }
-  disableAutoFullBuild: boolean | null
+  disableAutoFullBuild: boolean | 'prerender' | null
   includeAssetsImportedByServer: boolean
   baseAssets: string
   baseServer: string
   redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
+  crawl: {
+    git: null | boolean
+  }
 }
 
 type ConfigVikeUserProvided = {
@@ -67,13 +70,13 @@ type ConfigVikeUserProvided = {
       }
 
   /**
-   * Set to `true` to disable the automatic chaining of all the build steps.
+   * Disable the automatic chaining of build steps.
    *
    * https://vike.dev/disableAutoFullBuild
    *
    * @default false
    */
-  disableAutoFullBuild?: boolean
+  disableAutoFullBuild?: boolean | 'prerender'
 
   /** The Base URL of your server.
    *
@@ -111,4 +114,9 @@ type ConfigVikeUserProvided = {
    * @default false
    */
   disableUrlNormalization?: boolean
+
+  /** @experimental https://github.com/vikejs/vike/issues/1655 */
+  crawl?: {
+    git?: boolean
+  }
 }

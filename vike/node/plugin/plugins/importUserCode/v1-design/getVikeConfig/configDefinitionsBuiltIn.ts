@@ -10,11 +10,12 @@ import type {
   ConfigEnvInternal,
   ConfigEnv,
   ConfigValueSources,
-  DefinedAtFileFullInfo,
+  DefinedAtFilePath,
   ConfigValueSource
 } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
-import { assert } from '../../../../utils.js'
+import { assert, assertUsage } from '../../../../utils.js'
+import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
 // For users
 /** The meta definition of a config.
@@ -40,6 +41,23 @@ type ConfigDefinition = {
    * https://vike.dev/meta
    */
   effect?: ConfigEffect
+  /**
+   * Always load the configuration value, and as soon as possible.
+   *
+   * @default false
+   *
+   * https://vike.dev/meta
+   */
+  eager?: boolean
+  // TODO/soon: use `global` internally and remove configDefinitionsBuiltInGlobal
+  /**
+   * Whether the configuration always applies to all pages (no config inheritance).
+   *
+   * @default false
+   *
+   * https://vike.dev/extends#inheritance
+   */
+  global?: boolean
 }
 
 /**
@@ -57,18 +75,21 @@ type ConfigEffect = (config: {
    *
    * https://vike.dev/meta
    */
-  configDefinedAt: `Config ${string}`
+  configDefinedAt: ConfigDefinedAt
 }) => Config | undefined
 
 /** For Vike internal use */
 type ConfigDefinitionInternal = Omit<ConfigDefinition, 'env'> & {
   _computed?: (configValueSources: ConfigValueSources) => unknown
   _valueIsFilePath?: true
-  _userEffectDefinedAt?: DefinedAtFileFullInfo
+  _userEffectDefinedAtFilePath?: DefinedAtFilePath
   env: ConfigEnvInternal
 }
 
-type ConfigDefinitions = Record<string, ConfigDefinitionInternal>
+type ConfigDefinitions = Record<
+  string, // configName
+  ConfigDefinitionInternal
+>
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
 const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
@@ -90,17 +111,18 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true }
   },
   onBeforePrerenderStart: {
-    env: { server: true }
+    env: { server: true, production: true }
   },
   Page: {
     env: { server: true, client: true }
   },
   passToClient: {
-    env: { server: true, config: true },
+    env: { server: true },
     cumulative: true
   },
   route: {
-    env: { server: true, client: 'if-client-routing', eager: true }
+    env: { server: true, client: 'if-client-routing' },
+    eager: true
   },
   guard: {
     env: { server: true, client: 'if-client-routing' }
@@ -109,19 +131,24 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { server: true }
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    env: { server: true, client: 'if-client-routing', eager: true }
+    env: { server: true, client: 'if-client-routing' },
+    eager: true
   },
   filesystemRoutingRoot: {
     env: { config: true }
   },
   client: {
     // The value of the client config is merely the file path to the client entry file, which is only needed on the sever-side
-    env: { server: true },
+    env: { server: true, config: true },
     _valueIsFilePath: true
   },
   clientRouting: {
     // We could make it { client: false } but we don't yet because of some legacy V0.4 design code
-    env: { server: true, client: true, config: true, eager: true }
+    env: { server: true, client: true, config: true },
+    eager: true
+  },
+  clientHooks: {
+    env: { config: true }
   },
   prerender: {
     env: { config: true }
@@ -129,6 +156,11 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   hydrationCanBeAborted: {
     env: { client: true }
   },
+  prefetch: {
+    env: { client: true },
+    eager: true
+  },
+  // TODO/v1-release: remove
   prefetchStaticAssets: {
     env: { client: true }
   },
@@ -138,20 +170,39 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   meta: {
     env: { config: true }
   },
-  isClientSideRenderable: {
-    env: { server: true, client: true, eager: true },
-    _computed: (configValueSources): boolean =>
-      isConfigSet(configValueSources, 'onRenderClient') &&
-      isConfigSet(configValueSources, 'Page') &&
-      !!getConfigEnv(configValueSources, 'Page')?.client
+  // Whether the page loads:
+  //  - Vike's client runtime
+  //  - User's client hooks
+  // In other words, whether the page is "HTML-only" (https://vike.dev/render-modes). HTML-only pages shouldn't load the client runtime nor client hooks.
+  isClientRuntimeLoaded: {
+    env: { server: true, client: true },
+    eager: true,
+    _computed: (configValueSources): boolean => {
+      {
+        const source = getConfigValueSource(configValueSources, 'clientHooks')
+        if (source && source.value !== null) {
+          const { value } = source
+          const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAtFilePath)
+          assertUsage(typeof value === 'boolean', `${definedAt} should be a boolean`)
+          return value
+        }
+      }
+      return (
+        isConfigSet(configValueSources, 'onRenderClient') &&
+        isConfigSet(configValueSources, 'Page') &&
+        !!getConfigEnv(configValueSources, 'Page')?.client
+      )
+    }
   },
   onBeforeRenderEnv: {
     env: { client: true },
+    eager: true,
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'onBeforeRender') ? null : getConfigEnv(configValueSources, 'onBeforeRender')
   },
   dataEnv: {
     env: { client: true },
+    eager: true,
     _computed: (configValueSources): null | ConfigEnvInternal =>
       !isConfigSet(configValueSources, 'data') ? null : getConfigEnv(configValueSources, 'data')
   },
@@ -160,14 +211,27 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   cacheControl: {
     env: { server: true }
-  }
+  },
+  injectScriptsAt: {
+    env: { server: true }
+  },
+  name: {
+    env: { config: true }
+  },
+  require: {
+    env: { config: true }
+  },
+  keepScrollPosition: {
+    env: { client: true }
+  },
+  // TODO/eventually: define it as a global config.
+  middleware: { env: { server: true }, cumulative: true, eager: true }
 }
 
 type ConfigNameGlobal =
   | 'onPrerenderStart'
   | 'onBeforeRoute'
   | 'prerender'
-  | 'extensions'
   | 'disableAutoFullBuild'
   | 'includeAssetsImportedByServer'
   | 'baseAssets'
@@ -177,15 +241,16 @@ type ConfigNameGlobal =
   | 'disableUrlNormalization'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
-    env: { server: true }
+    env: { server: true, production: true },
+    eager: true
   },
   onBeforeRoute: {
-    env: { server: true, client: 'if-client-routing', eager: true }
+    env: { server: true, client: 'if-client-routing' },
+    eager: true
   },
   prerender: {
     env: { config: true }
   },
-  extensions: { env: { config: true } },
   disableAutoFullBuild: { env: { config: true } },
   includeAssetsImportedByServer: { env: { config: true } },
   baseAssets: { env: { config: true } },
@@ -198,7 +263,11 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionI
 function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {
   const configValueSource = getConfigValueSource(configValueSources, configName)
   if (!configValueSource) return null
-  return configValueSource.configEnv
+  const { configEnv } = configValueSource
+  const env: { client?: true; server?: true } = {}
+  if (configEnv.client) env.client = true
+  if (configEnv.server) env.server = true
+  return env
 }
 function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
   const configValueSource = getConfigValueSource(configValueSources, configName)

@@ -1,14 +1,11 @@
-import { RepoLink } from '@brillout/docpress'
-import { DataArchitecture, Github } from '../../components'
+import { RepoLink, Link, Contribution } from '@brillout/docpress'
+import { Example, UiFrameworkExtension, CommunityNote } from '../../components'
 
-<DataArchitecture
-  toolName="urql"
-  toolLink="https://formidable.com/open-source/urql/"
-  isGeneric={false}
-  toolType="graphql"
-  toolDocs={<a href="https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/">urql &gt; Server-side rendering</a>}
-/>
+<CommunityNote tool="urql" url="https://formidable.com/open-source/urql" hasExtension={false} />
 
-## Example
+To manually integrate urql, see:
+- <Link href="/integration#data-fetching" />
+- [urql > Server-side rendering](https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/)
 
-See <Github>brillout/vike-with-urql</Github>.
+Examples of integrating urql without using <UiFrameworkExtension name />:
+ - <Example timestamp="2024.10" repo="brillout/vike-with-urql" />

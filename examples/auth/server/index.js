@@ -61,24 +61,17 @@ async function assets(app) {
 }
 
 function vike(app) {
-  app.get('*', async (req, res, next) => {
-    const userAgent = req.headers['user-agent']
+  app.get('*', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      userAgent,
+      headersOriginal: req.headers,
       user: req.user,
       userFullName: req.user?.fullName
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
-    if (!httpResponse) {
-      return next()
-    } else {
-      const { statusCode, headers, earlyHints } = httpResponse
-      if (res.writeEarlyHints) res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
-      headers.forEach(([name, value]) => res.setHeader(name, value))
-      res.status(statusCode)
-      httpResponse.pipe(res)
-    }
+    httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(httpResponse.statusCode)
+    httpResponse.pipe(res)
   })
 }

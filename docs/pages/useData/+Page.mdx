@@ -1,22 +1,26 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtension } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
 Environment: server, client.  
-Provided by: <UiFrameworkVikeExtension /> (or <Link href="#without-vike-extension">yourself</Link>).
+Implemented by: <UiFrameworkExtension /> (or <Link href="#without-vike-react-vue-solid">yourself</Link>).
 
-The `useData()` component hook allows you to access the data that is returned by a <Link href="/data">`data()` hook</Link>.
+The `useData()` component hook allows you to access the value returned by the <Link href="/data">`data()` hook</Link>.
+
+> See <Link href="/data-fetching" /> for an introduction about `useData()` and fetching data in general.
+
+> You can also access the data over <Link href="/pageContext#:~:text=pageContext.data,-%3A">`pageContext.data`</Link>. In fact <Link href="/usePageContext">`const { data } = usePageContext()`</Link> returns the same value as `useData()`.
+>
+> Using `pageContext.data` instead of `useData()` makes sense if you want to access the data in <Link href="/hooks">Vike hooks</Link> since `useData()` only works inside UI components (not inside Vike hooks).
+
+For example:
 
 ```js
 // SomeComponent.js
 // Environment: server, client
 
-import { useData } from 'vike-react/useData'
-/* Or:
-import { useData } from 'vike-vue/useData'
-import { useData } from 'vike-solid/useData'
-*/
+import { useData } from 'vike-react/useData' // or vike-vue / vike-solid
 
-  // Inside a UI component
+  // Inside a React/Vue/Solid component
   const data = useData()
   const { name, price } = data
 ```
@@ -41,11 +45,6 @@ async function data(pageContext) {
 See <Link href="/data-fetching" /> for more information about data fetching.
 
 
-## Examples
-
-See <Link href="/data#examples" />.
-
-
 ## TypeScript
 
 ```ts
@@ -54,7 +53,7 @@ See <Link href="/data#examples" />.
 
 import type { Data } from './+data'
 
-  // Inside a UI component
+  // Inside a React/Vue/Solid component
   const data = useData<Data>()
 ```
 
@@ -89,11 +88,11 @@ const data: DataAsync = async (pageContext): Promise<Data> => {
 }
 ```
 
-## Without Vike extension
+## Without `vike-{react,vue,solid}`
 
-In case you don't use a <UiFrameworkVikeExtension />, you can implement `useData()` yourself.
+In case you don't use a <UiFrameworkExtension />, you can implement `useData()` yourself.
 
-> In general, for improved DX, we recommend using a `useData()` implementation. But you don't have to as shown at <Link href="/data#without-usedata" doNotInferSectionTitle />.
+> In general, for improved DX, we recommend using a `useData()` implementation. But you don't have to as shown at <Link href="/data#without-vike-react-vue-solid" doNotInferSectionTitle />.
 
 Examples:
  - <Link href='/boilerplates/boilerplate-react/renderer/useData.js' /> (React + JavaScript)
@@ -110,3 +109,4 @@ Examples:
 - <Link href="/data-fetching" />
 - <Link href="/data" />
 - <Link href="/usePageContext" />
+- <Link href="/pageContext#:~:text=pageContext.data,-%3A">API > `pageContext.data`</Link>

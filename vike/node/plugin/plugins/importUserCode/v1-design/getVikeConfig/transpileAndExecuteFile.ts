@@ -1,9 +1,18 @@
 export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
-export { isTmpFile }
+export { isTemporaryBuildFile }
 
-import { build, type BuildResult, type BuildOptions, formatMessages } from 'esbuild'
+import {
+  build,
+  type BuildResult,
+  type BuildOptions,
+  formatMessages,
+  type Message,
+  version,
+  type ResolveResult,
+  type OnResolveResult
+} from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import pc from '@brillout/picocolors'
@@ -13,93 +22,99 @@ import {
   getRandomId,
   assertIsNotProductionRuntime,
   assert,
-  unique,
   assertWarning,
   isObject,
-  toPosixPath
+  toPosixPath,
+  assertUsage,
+  isPlainJavaScriptFile,
+  createDebugger,
+  assertFilePathAbsoluteFilesystem,
+  assertIsNpmPackageImport
 } from '../../../../utils.js'
-import { isImportData, transformFileImports, type FileImport } from './transformFileImports.js'
+import { transformPointerImports } from './transformPointerImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
 import 'source-map-support/register.js'
-import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
-import { getConfigFileExport } from '../getConfigFileExport.js'
+import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
+import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'
+import { createRequire } from 'module'
+// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+const importMetaUrl: string = import.meta.url
+const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
+const debug = createDebugger('vike:pointer-imports')
+const debugEsbuildResolve = createDebugger('vike:esbuild-resolve')
+if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
 
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
-  transformImports: boolean,
   userRootDir: string,
-  doNotTranspile = false
+  isConfigFile: boolean | 'is-extension-config'
 ): Promise<{ fileExports: Record<string, unknown> }> {
-  if (doNotTranspile) {
-    assert(!transformImports)
-    const fileExports = await executeFile(filePath.filePathAbsoluteFilesystem, filePath)
-    if (isHeaderFile(filePath.filePathAbsoluteFilesystem)) {
-      const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
-      assertWarning(
-        false,
-        `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files don't apply to the config files of extensions`,
-        { onlyOnce: true }
-      )
-    }
+  const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
+  const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
+
+  assertUsage(
+    isPlainJavaScriptFile(filePathAbsoluteFilesystem),
+    `${filePathToShowToUserResolved} has file extension .${fileExtension} but a config file can only be a JavaScript/TypeScript file`
+  )
+  const isHeader = isHeaderFile(filePathAbsoluteFilesystem)
+  if (isHeader) {
+    assertWarning(
+      false,
+      `${pc.cyan(
+        '.h.js'
+      )} files are deprecated: simply renaming ${filePathToShowToUserResolved} to ${removeHeaderFileExtension(
+        filePathToShowToUserResolved
+      )} is usually enough, although you may occasionally need to use ${pc.cyan(
+        "with { type: 'pointer' }"
+      )} as explained at https://vike.dev/config#pointer-imports`,
+      { onlyOnce: true }
+    )
+  }
+
+  if (isConfigFile === 'is-extension-config' && !isHeader && fileExtension.endsWith('js')) {
+    // This doesn't track dependencies => we should never use this for user land configs
+    const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
     return { fileExports }
   } else {
-    const { code, fileImportsTransformed } = await transpileFile(filePath, transformImports, userRootDir)
-    const fileExports = await executeTranspiledFile(filePath, code, fileImportsTransformed)
+    const transformImports = isConfigFile && (isHeader ? 'all' : true)
+    const code = await transpileFile(filePath, transformImports, userRootDir)
+    const fileExports = await executeTranspiledFile(filePath, code)
     return { fileExports }
   }
 }
 
-async function transpileFile(filePath: FilePathResolved, transformImports: boolean, userRootDir: string) {
-  const { filePathAbsoluteFilesystem } = filePath
-  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
+async function transpileFile(filePath: FilePathResolved, transformImports: boolean | 'all', userRootDir: string) {
+  const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
+
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
-  let code = await transpileWithEsbuild(filePath, userRootDir, transformImports)
+  if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
+  let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports)
+  if (debug.isActivated) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
 
-  let fileImportsTransformed: FileImport[] | null = null
+  let isImportTransformed = false
   if (transformImports) {
-    const res = transformFileImports_(code, filePath)
-    if (res) {
-      code = res.code
-      fileImportsTransformed = res.fileImportsTransformed
-    }
-  } else {
-    if (isHeaderFile(filePathAbsoluteFilesystem)) {
-      assertWarning(
-        false,
-        `${filePathToShowToUser2} is a JavaScript header file (.h.js), but JavaScript header files only apply to +config.h.js, see https://vike.dev/header-file`,
-        { onlyOnce: true }
-      )
+    const codeMod = transformPointerImports(code, filePathToShowToUserResolved, pointerImports)
+    if (codeMod) {
+      code = codeMod
+      isImportTransformed = true
+      if (debug.isActivated) debug(`code, post pointer imports transform (${filePathToShowToUserResolved})`, code)
     }
   }
-  return { code, fileImportsTransformed }
+  if (!isImportTransformed) {
+    if (debug.isActivated) debug(`code, no pointer imports (${filePathToShowToUserResolved})`)
+  }
+  return code
 }
 
-function transformFileImports_(codeOriginal: string, filePath: FilePathResolved) {
-  const { filePathAbsoluteFilesystem } = filePath
-  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
-
-  // Replace import statements with import strings
-  const res = transformFileImports(codeOriginal, filePathToShowToUser2)
-  if (res.noTransformation) {
-    return null
-  }
-  const { code, fileImportsTransformed } = res
-
-  if (!isHeaderFile(filePathAbsoluteFilesystem)) {
-    const filePathCorrect = appendHeaderFileExtension(filePathToShowToUser2)
-    assertWarning(false, `Rename ${filePathToShowToUser2} to ${filePathCorrect}, see https://vike.dev/header-file`, {
-      onlyOnce: true
-    })
-  }
-
-  return { code, fileImportsTransformed }
-}
-
-async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: string, transformImports: boolean) {
+async function transpileWithEsbuild(
+  filePath: FilePathResolved,
+  userRootDir: string,
+  transformImports: boolean | 'all'
+) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
   const options: BuildOptions = {
@@ -111,7 +126,7 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
     outfile: path.posix.join(
       // Needed for correct inline source map
       entryFileDir,
-      // `write: false` => no file is actually be emitted
+      // `write: false` => no file is actually emitted
       'NEVER_EMITTED.js'
     ),
     logLevel: 'silent',
@@ -121,38 +136,159 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
     // Esbuild still sometimes removes unused imports because of TypeScript: https://github.com/evanw/esbuild/issues/3034
     treeShaking: false,
     minify: false,
-    metafile: !transformImports,
-    // We cannot bundle imports that are meant to be transformed
-    bundle: !transformImports
+    metafile: true,
+    bundle: true
   }
 
-  // Track dependencies
-  if (!transformImports) {
-    options.packages = 'external'
-    options.plugins = [
-      {
-        name: 'vike:dependency-tracker',
-        setup(b) {
-          b.onLoad({ filter: /./ }, (args) => {
-            // We collect the dependency `args.path` in case the bulid fails (upon build error => error is thrown => no metafile)
-            let { path } = args
-            path = toPosixPath(path)
-            vikeConfigDependencies.add(path)
-            return undefined
-          })
-          /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
-           *  - Because onLoad() isn't call if the config dependency can't be resolved.
-           *  - For example, the following breaks auto-reload (the config is stuck in its error state and the user needs to touch the importer for the config to reload):
-           *    ```bash
-           *    mv ./some-config-dependency.js /tmp/ && mv /tmp/some-config-dependency.js .
-           *    ```
-           *  - But implementing a fix is complex and isn't worth it.
-          b.onResolve(...)
-          */
-        }
+  const pointerImports: Record<string, boolean> = {}
+  options.plugins = [
+    // Determine whether an import should be:
+    //  - A pointer import
+    //  - Externalized
+    {
+      name: 'vike-esbuild',
+      setup(build) {
+        // https://github.com/brillout/esbuild-playground
+        build.onResolve({ filter: /.*/ }, async (args) => {
+          if (args.kind !== 'import-statement') return
+          if (debugEsbuildResolve.isActivated) debugEsbuildResolve('args', args)
+
+          // Avoid infinite loop: https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
+          const useEsbuildResolver = 'useEsbuildResolver'
+          if (args.pluginData?.[useEsbuildResolver]) return
+          const { path, ...opts } = args
+          opts.pluginData = { [useEsbuildResolver]: true }
+
+          let resolved: ResolveResult | (OnResolveResult & { errors?: undefined }) = await build.resolve(path, opts)
+          if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolved', resolved)
+
+          // Temporary workaround for https://github.com/evanw/esbuild/issues/3973
+          // - Sitll required for esbuild@0.24.0 (November 2024).
+          // - Let's try to remove this workaround again later.
+          if (resolved.errors.length > 0) {
+            let resolvedWithNode: string | undefined
+            try {
+              resolvedWithNode = require_.resolve(path, { paths: [args.resolveDir] })
+            } catch {}
+            if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolvedWithNode', resolvedWithNode)
+            if (resolvedWithNode) resolved = { path: resolvedWithNode }
+          }
+
+          if (resolved.errors && resolved.errors.length > 0) {
+            /* We could do the following to let Node.js throw the error, but we don't because the error shown by esbuild is prettier: the Node.js error refers to the transpiled [build-f7i251e0iwnw]+config.ts.mjs whereas esbuild refers to the source +config.ts file.
+            pointerImports[args.path] = false
+            return { external: true }
+            */
+            // Let esbuild throw the error
+            cleanEsbuildErrors(resolved.errors)
+            return resolved
+          }
+
+          assert(resolved.path)
+          const importPathResolved = toPosixPath(resolved.path)
+          const importPathOriginal = args.path
+
+          // Esbuild resolves path aliases.
+          // - Enabling us to use:
+          //   - assertIsNpmPackageImport()
+          //   - isNpmPackageImport(str, { cannotBePathAlias: true })
+          assertFilePathAbsoluteFilesystem(importPathResolved)
+
+          //  Should be remove this? See comment below.
+          const isVikeExtensionImport =
+            (path.startsWith('vike-') && path.endsWith('/config')) || importPathResolved.endsWith('+config.js')
+
+          const isPointerImport =
+            transformImports === 'all' ||
+            // .jsx, .vue, .svg, ... => obviously not config code => pointer import
+            !isPlainJavaScriptFile(importPathResolved) ||
+            // Import of a Vike extension config => make it a pointer import because we want to show nice error messages (that can display whether a config has been set by the user or by a Vike extension).
+            //  - Should we stop doing this? (And instead let Node.js directly load Vike extensions.)
+            //    - In principle, we can use the setting 'name' value of Vike extensions.
+            //      - vike@0.4.162 started soft-requiring Vike extensions to set the name config.
+            //    - In practice, it seems like it requires some (non-trivial?) refactoring.
+            isVikeExtensionImport
+
+          assertPosixPath(importPathResolved)
+          const isNodeModules = importPathResolved.includes('/node_modules/')
+
+          const isExternal =
+            isPointerImport ||
+            // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
+            isNodeModules
+
+          if (!isExternal) {
+            // User-land config code (i.e. not runtime code) => let esbuild transpile it
+            assert(!isPointerImport && !isNodeModules)
+            if (debug.isActivated) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
+            return resolved
+          }
+
+          let importPathTranspiled: string
+          assertPosixPath(importPathOriginal)
+          if (importPathOriginal.startsWith('./') || importPathOriginal.startsWith('../')) {
+            importPathTranspiled = importPathResolved
+          } else {
+            // `importPathOriginal` is either:
+            //  - Npm package import
+            //  - Path alias
+            const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({
+              filePathAbsoluteFilesystem: importPathResolved,
+              userRootDir
+            })
+            // We assuming that path aliases always resolve inside `userRootDir`.
+            if (filePathAbsoluteUserRootDir && !isNodeModules) {
+              // `importPathOriginal` is a path alias.
+              // - We have to use esbuild's path alias resolution, because:
+              //   - Vike doesn't resolve path aliases at all.
+              //   - Node.js doesn't support `tsconfig.js#compilerOptions.paths`.
+              // - Esbuild path alias resolution seems to be reliable, e.g. it supports `tsconfig.js#compilerOptions.paths`.
+              importPathTranspiled = importPathResolved
+            } else {
+              // `importPathOriginal` is an npm package import.
+              assertIsNpmPackageImport(importPathOriginal)
+              // For less confusing error messages, let the resolution be handled by Vike or Node.js.
+              importPathTranspiled = importPathOriginal
+            }
+          }
+
+          if (debug.isActivated)
+            debug('onResolved()', { args, resolved, importPathTranspiled, isPointerImport, isExternal })
+          assert(isExternal)
+          assert(
+            // Import of runtime code => handled by Vike
+            isPointerImport ||
+              // Import of config code => loaded by Node.js at build-time
+              isNodeModules
+          )
+          pointerImports[importPathTranspiled] = isPointerImport
+          return { external: true, path: importPathTranspiled }
+        })
       }
-    ]
-  }
+    },
+    // Track dependencies
+    {
+      name: 'vike:dependency-tracker',
+      setup(b) {
+        b.onLoad({ filter: /./ }, (args) => {
+          // We collect the dependency `args.path` in case the bulid fails (upon build error => error is thrown => no metafile)
+          let { path } = args
+          path = toPosixPath(path)
+          vikeConfigDependencies.add(path)
+          return undefined
+        })
+        /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
+         *  - Because onLoad() isn't call if the config dependency can't be resolved.
+         *  - For example, the following breaks auto-reload (the config is stuck in its error state and the user needs to touch the importer for the config to reload):
+         *    ```bash
+         *    mv ./some-config-dependency.js /tmp/ && mv /tmp/some-config-dependency.js .
+         *    ```
+         *  - But implementing a fix is complex and isn't worth it.
+        b.onResolve(...)
+        */
+      }
+    }
+  ]
 
   let result: BuildResult
   try {
@@ -163,30 +299,24 @@ async function transpileWithEsbuild(filePath: FilePathResolved, userRootDir: str
   }
 
   // Track dependencies
-  if (!transformImports) {
-    assert(result.metafile)
-    Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
-      filePathRelative = toPosixPath(filePathRelative)
-      assertPosixPath(userRootDir)
-      const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
-      vikeConfigDependencies.add(filePathAbsoluteFilesystem)
-    })
-  }
+  assert(result.metafile)
+  Object.keys(result.metafile.inputs).forEach((filePathRelative) => {
+    filePathRelative = toPosixPath(filePathRelative)
+    assertPosixPath(userRootDir)
+    const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
+    vikeConfigDependencies.add(filePathAbsoluteFilesystem)
+  })
 
   const code = result.outputFiles![0]!.text
   assert(typeof code === 'string')
-  return code
+  return { code, pointerImports }
 }
 
-async function executeTranspiledFile(
-  filePath: FilePathResolved,
-  code: string,
-  fileImportsTransformed: FileImport[] | null
-) {
-  const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
+async function executeTranspiledFile(filePath: FilePathResolved, code: string) {
+  const { filePathAbsoluteFilesystem } = filePath
   // Alternative to using a temporary file: https://github.com/vitejs/vite/pull/13269
   //  - But seems to break source maps, so I don't think it's worth it
-  const filePathTmp = getFilePathTmp(filePathAbsoluteFilesystem)
+  const filePathTmp = getTemporaryBuildFilePath(filePathAbsoluteFilesystem)
   fs.writeFileSync(filePathTmp, code)
   const clean = () => fs.unlinkSync(filePathTmp)
   let fileExports: Record<string, unknown> = {}
@@ -194,11 +324,6 @@ async function executeTranspiledFile(
     fileExports = await executeFile(filePathTmp, filePath)
   } finally {
     clean()
-  }
-  if (fileImportsTransformed) {
-    assert(filePathRelativeToUserRootDir !== undefined)
-    const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
-    assertImportsAreReExported(fileImportsTransformed, fileExports, filePathToShowToUser2)
   }
   return fileExports
 }
@@ -249,87 +374,42 @@ function getConfigExecutionErrorIntroMsg(err: unknown): string | null {
   return errIntroMsg ?? null
 }
 
-const tmpPrefix = `[build-`
-function getFilePathTmp(filePathAbsoluteFilesystem: string): string {
+function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string): string {
   assertPosixPath(filePathAbsoluteFilesystem)
   const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
-  // Syntax with semicolon `[build:${/*...*/}]` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
-  const tag = `${tmpPrefix}${getRandomId(12)}]`
-  const filePathTmp = path.posix.join(dirname, `${tag}${filename}.mjs`)
+  // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
+  const filePathTmp = path.posix.join(dirname, `${filename}.build-${getRandomId(12)}.mjs`)
+  assert(isTemporaryBuildFile(filePathTmp))
   return filePathTmp
 }
-function isTmpFile(filePath: string): boolean {
+function isTemporaryBuildFile(filePath: string): boolean {
   assertPosixPath(filePath)
   const fileName = path.posix.basename(filePath)
-  return fileName.startsWith(tmpPrefix)
-}
-
-function assertImportsAreReExported(
-  fileImportsTransformed: (FileImport & { isReExported?: true })[],
-  fileExports: Record<string, unknown>,
-  filePathToShowToUser2: string
-) {
-  const fileExport = getConfigFileExport(fileExports, filePathToShowToUser2)
-  const exportedStrings = getExportedStrings(fileExport)
-  Object.values(exportedStrings).forEach((exportVal) => {
-    if (typeof exportVal !== 'string') return
-    if (!isImportData(exportVal)) return
-    const importString = exportVal
-    fileImportsTransformed.forEach((fileImport) => {
-      if (fileImport.importString === importString) {
-        fileImport.isReExported = true
-      }
-    })
-  })
-
-  const fileImportsTransformedUnused = fileImportsTransformed.filter((fi) => !fi.isReExported)
-  if (fileImportsTransformedUnused.length === 0) return
-
-  const importStatements = unique(fileImportsTransformedUnused.map((fi) => fi.importStatementCode))
-  const importNamesUnused: string = fileImportsTransformedUnused.map((fi) => pc.cyan(fi.importLocalName)).join(', ')
-  const singular = fileImportsTransformedUnused.length === 1
-  assertWarning(
-    fileImportsTransformedUnused.length === 0,
-    [
-      `${filePathToShowToUser2} imports the following:`,
-      ...importStatements.map((s) => pc.cyan(`  ${s}`)),
-      `But the import${singular ? '' : 's'} ${importNamesUnused} ${
-        singular ? "isn't" : "aren't"
-      } re-exported at ${pc.cyan('export default { ... }')} and therefore ${
-        singular ? 'has' : 'have'
-      } no effect, see explanation at https://vike.dev/header-file`
-    ].join('\n'),
-    { onlyOnce: true }
-  )
-}
-
-function getExportedStrings(obj: Record<string, unknown>): string[] {
-  const exportedStrings: string[] = []
-  Object.values(obj).forEach((val) => {
-    if (typeof val === 'string') {
-      exportedStrings.push(val)
-    } else if (Array.isArray(val)) {
-      val.forEach((v) => {
-        if (typeof v === 'string') {
-          exportedStrings.push(v)
-        }
-      })
-    }
-  })
-  return exportedStrings
+  return /\.build-[a-z0-9]{12}\.mjs$/.test(fileName)
 }
 
 function isHeaderFile(filePath: string) {
   assertPosixPath(filePath)
-  const basenameParts = path.posix.basename(filePath).split('.')
-  return basenameParts.includes('h')
+  const fileExtensions = getFileExtensions(filePath)
+  return fileExtensions.includes('h')
 }
-function appendHeaderFileExtension(filePath: string) {
-  const basenameParts = path.posix.basename(filePath).split('.')
-  basenameParts.splice(-1, 0, 'h')
-  const basenameCorrect = basenameParts.join('.')
-  return path.posix.join(path.posix.dirname(filePath), basenameCorrect)
+function getFileExtensions(filePath: string) {
+  const fileExtensions = path.posix.basename(filePath).split('.').slice(1)
+  return fileExtensions
+}
+function getFileExtension(filePath: string): string {
+  const fileExtensions = path.posix.basename(filePath).split('.').slice(1)
+  return fileExtensions.pop()!
+}
+function removeHeaderFileExtension(filePath: string) {
+  assertPosixPath(filePath)
+  const fileName = path.posix.basename(filePath)
+  const fileNameParts = fileName.split('.')
+  const fileNamePartsMod = fileNameParts.filter((p) => p !== 'h')
+  assert(fileNamePartsMod.length < fileNameParts.length)
+  const fileNameMod = fileNamePartsMod.join('.')
+  return path.posix.join(path.posix.dirname(filePath), fileNameMod)
 }
 
 // Needed for the npm package 'source-map-support'. The Error.prepareStackTrace() hook of 'source-map-support' needs to be called before the file containing the source map is removed. The clean() call above removes the transpiled file from disk but it contains the inline source map.
@@ -343,20 +423,38 @@ function triggerPrepareStackTrace(err: unknown) {
 }
 
 function getErrIntroMsg(operation: 'transpile' | 'execute', filePath: FilePathResolved) {
-  const filePathToShowToUser2 = getFilePathToShowToUser2(filePath)
+  const { filePathToShowToUserResolved } = filePath
   const msg = [
     // prettier ignore
     pc.red(`Failed to ${operation}`),
-    pc.bold(pc.red(filePathToShowToUser2)),
+    pc.bold(pc.red(filePathToShowToUserResolved)),
     pc.red(`because:`)
   ].join(' ')
   return msg
 }
 
-/** `filePath.filePathToShowToUser` may show the import path of a package, use `filePathToShowToUser2` instead always show a file path instead. */
-function getFilePathToShowToUser2(filePath: FilePathResolved): string {
-  const { filePathAbsoluteFilesystem, filePathRelativeToUserRootDir } = filePath
-  const filePathToShowToUser2 = filePathRelativeToUserRootDir || filePathAbsoluteFilesystem
-  assert(filePathToShowToUser2)
-  return filePathToShowToUser2
+function cleanEsbuildErrors(errors: Message[]) {
+  errors.forEach(
+    (e) =>
+      (e.notes = e.notes.filter(
+        (note) =>
+          // Remove note:
+          // ```shell
+          // You can mark the path "#root/renderer/onRenderHtml_typo" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+          // ```
+          //
+          // From error:
+          // ```shell
+          // ✘ [ERROR] Could not resolve "#root/renderer/onRenderHtml_typo" [plugin vike-esbuild]
+          //
+          //    renderer/+config.h.js:1:29:
+          //      1 │ import { onRenderHtml } from "#root/renderer/onRenderHtml_typo"
+          //        ╵                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          //
+          //  You can mark the path "#root/renderer/onRenderHtml_typo" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+          //
+          // ```
+          !note.text.includes('as external to exclude it from the bundle')
+      ))
+  )
 }

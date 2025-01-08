@@ -2,7 +2,7 @@
   "compilerOptions": {
     "jsx": "react",
     "module": "ES2020",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["@brillout/docpress/types"],
     "esModuleInterop": true,

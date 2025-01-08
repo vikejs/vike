@@ -1,7 +1,4 @@
-import { Integration } from '../../components/Integration'
 import { Link, RepoLink } from '@brillout/docpress'
-
-## Integration
 
 To make information about the authenticated user available to your pages and UI components, you usually define `pageContext.user` at [`renderPage()`](/renderPage):
 
@@ -30,6 +27,12 @@ app.get('*', async (req, res) => {
 You can then access `pageContext.user` from any UI component using <Link href="/usePageContext" >`usePageContext()`</Link>.
 
 > You can pass any custom `pageContext` property to `renderPage()`, see <Link href="/pageContext#custom" />.
+
+In principle, you can use Vike with any authentication tool such as:
+- <Link text="Auth.js" href="/Auth.js" />
+- [Grant](https://github.com/simov/grant)
+- [Passport.js](https://github.com/jaredhanson/passport)
+- [Auth0](https://auth0.com/)
 
 
 ## Login flow
@@ -84,18 +87,8 @@ export const guard = (pageContext) => {
 }
 ```
 
+## See also
 
-## Example
-
-- <RepoLink path="/examples/auth/" />
-
-
-## Tools
-
-Common auth tools:
-- <Link text="Auth.js" href="/Auth.js" />
-- [Grant](https://github.com/simov/grant)
-- [Passport.js](https://github.com/jaredhanson/passport)
-- [Auth0](https://auth0.com/)
-
-<Integration toolTypeName="authentication tool" />
+- <Link href="/guard" />
+- <Link href="/redirect" />
+- <Link href="/render" />

@@ -25,28 +25,28 @@ const env = getGlobalObject<{
 
 // Called by Vike modules that want to ensure that they aren't loaded by the server runtime in production
 function assertIsNotProductionRuntime(): void | undefined {
-  if (debug.isEnabled) debug('assertIsNotProductionRuntime()', new Error().stack)
+  if (debug.isActivated) debug('assertIsNotProductionRuntime()', new Error().stack)
   env.shouldNotBeProduction = true
 }
 
 // Called by Vite hook configureServer()
 function markEnvAsViteDev(): void | undefined {
-  if (debug.isEnabled) debug('markEnvAsViteDev()', new Error().stack)
+  if (debug.isActivated) debug('markEnvAsViteDev()', new Error().stack)
   env.isViteDev = true
 }
 // Called by Vite hook configurePreviewServer()
 function markEnvAsVitePreview(): void | undefined {
-  if (debug.isEnabled) debug('markEnvAsVitePreview()', new Error().stack)
+  if (debug.isActivated) debug('markEnvAsVitePreview()', new Error().stack)
   env.isVitePreview = true
 }
 // Called by ../node/plugin/index.ts
 function markEnvAsVikePluginLoaded() {
-  if (debug.isEnabled) debug('markEnvAsVikePluginLoaded()', new Error().stack)
+  if (debug.isActivated) debug('markEnvAsVikePluginLoaded()', new Error().stack)
   env.isVikePluginLoaded = true
 }
 // Called by ../node/runtime/index.ts
 function assertEnv(): void | undefined {
-  if (debug.isEnabled) debug('assertEnv()', new Error().stack)
+  if (debug.isActivated) debug('assertEnv()', new Error().stack)
   if (isVitest()) return
   const isProduction = !env.isViteDev && !env.isVitePreview
   if (isProduction) {

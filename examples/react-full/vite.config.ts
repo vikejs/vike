@@ -11,4 +11,4 @@ export default {
     mdx(),
     react()
   ]
-} as UserConfig
+} satisfies UserConfig

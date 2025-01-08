@@ -6,19 +6,21 @@ export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
 export type { PageConfigGlobalBuildTime }
 export type { ConfigValue }
+export type { ConfigValueStandard }
+export type { ConfigValueCumulative }
+export type { ConfigValueComputed }
 export type { ConfigValues }
 export type { ConfigValueSource }
 export type { ConfigValueSources }
-export type { ConfigValueComputed }
 export type { ConfigValuesComputed }
-export type { DefinedAt }
+export type { DefinedAtData }
 export type { DefinedAtFile }
-export type { DefinedAtFileFullInfo }
-export type { FilePathResolved }
-export type { FilePath }
+export type { DefinedAtFilePath }
 
-import type { ConfigValueImported, ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
+import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
+import type { FilePath } from './FilePath.js'
+import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 
 type PageConfigBase = {
   pageId: string
@@ -27,14 +29,13 @@ type PageConfigBase = {
     routeString: string
     definedBy: string
   }
-  configValues: ConfigValues
 }
 
 /** Page config data structure available at runtime */
 type PageConfigRuntime = PageConfigBase & {
+  configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
   loadConfigValuesAll: () => Promise<{
-    configValuesImported: ConfigValueImported[]
     configValuesSerialized: Record<string, ConfigValueSerialized>
   }>
 }
@@ -46,6 +47,7 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
 
 /** Page config data structure available at build-time */
 type PageConfigBuildTime = PageConfigBase & {
+  configDefinitions: ConfigDefinitions
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
 }
@@ -56,6 +58,7 @@ type PageConfigGlobalRuntime = {
 }
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
+  configDefinitions: ConfigDefinitions
 }
 
 /** In what environment(s) the config value is loaded.
@@ -70,95 +73,66 @@ type ConfigEnv = {
 /** For Vike internal use */
 type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
   client?: boolean | 'if-client-routing'
-  eager?: boolean
+  /** Load value only in production, or only in development. */
+  production?: boolean
 }
 
 type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
-  definedAt: DefinedAtFileFullInfo
+  definedAtFilePath: DefinedAtFilePath
   locationId: LocationId
+  isOverriden: boolean
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsImportedAtRuntime: boolean
   /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true
+  valueIsDefinedByPlusFile: boolean
 }
-type DefinedAtFileFullInfo = DefinedAtFile & FilePath & { fileExportName?: string }
+type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 type ConfigValueSources = Record<
   // configName
   string,
   ConfigValueSource[]
 >
 
-type ConfigValueComputed = {
-  configEnv: ConfigEnvInternal
-  value: unknown
-}
 type ConfigValuesComputed = Record<
   // configName
   string,
-  ConfigValueComputed
+  {
+    configEnv: ConfigEnvInternal
+    value: unknown
+  }
 >
 
-type ConfigValue = {
+type ConfigValue = ConfigValueStandard | ConfigValueCumulative | ConfigValueComputed
+/** Defined by a unique source (thus unique file path). */
+type ConfigValueStandard = {
+  type: 'standard'
   value: unknown
-  definedAt: DefinedAt
+  definedAtData: DefinedAtFile
 }
-type DefinedAt =
-  // Normal config values => defined by a unique source / file path
-  | DefinedAtFile
-  // Cumulative config values => defined at multiple sources / file paths
-  | { files: DefinedAtFile[] }
-  // Computed config values => defined internally by Vike (currently, Vike doesn't support computed configs craeted by users)
-  | { isComputed: true }
-type DefinedAtFile = {
-  filePathToShowToUser: string
-  fileExportPathToShowToUser: null | string[]
+/** Defined by multiple sources (thus multiple file paths). */
+type ConfigValueCumulative = {
+  type: 'cumulative'
+  value: unknown[]
+  definedAtData: DefinedAtFile[]
 }
+/** Defined internally by Vike (currently, Vike doesn't support computed configs created by users). */
+type ConfigValueComputed = {
+  type: 'computed'
+  value: unknown
+  definedAtData: null
+}
+
 type ConfigValues = Record<
   // configName
   string,
   ConfigValue
 >
 
-type FilePathResolved = FilePath & { filePathAbsoluteFilesystem: string }
-type FilePath = {
-  /** The file's path, absolute from Vite's perspective.
-   *
-   * We use this to generate import paths in virtual modules. (Virtual modules cannot have relative import paths.)
-   *
-   * Its value is equivalent to `filePath.filePathRelativeToUserRootDir ?? filePath.importPathAbsolute`, for example:
-   *   - `vike-react/config`, or
-   *   - `/pages/+config.h.js`.
-   */
-  filePathAbsoluteVite: string
-  /** The file's path, absolute from the filesystem root.
-   *
-   * Example: `/home/rom/code/my-app/pages/some-page/Page.js`
-   *
-   * The value is `null` upon aliased import paths which we cannot resolve (we'd need to re-implement https://www.npmjs.com/package/@rollup/plugin-alias).
-   */
-  filePathAbsoluteFilesystem: string | null
-  /** The file's path, shown to user upon logging.
-   *
-   * Currently, its value is equivalent to `FilePath['filePathAbsoluteVite']`.
-   */
+type DefinedAtData = DefinedAtFile | DefinedAtFile[] | null
+type DefinedAtFile = {
   filePathToShowToUser: string
-} & (
-  | {
-      filePathRelativeToUserRootDir: null
-      /** The file's path, as absolute import path. It's either:
-       *  - an npm package import (e.g. `vike-react/config`), or
-       *  - an alias (`#components/Counter').
-       */
-      importPathAbsolute: string
-    }
-  | {
-      /** The file's path, relative to Vite's root (i.e. the user project's root directory).
-       *
-       * Example: `/pages/some-page/Page.js`
-       */
-      filePathRelativeToUserRootDir: string
-      importPathAbsolute: null | string
-    }
-)
+  fileExportPathToShowToUser: null | string[]
+}

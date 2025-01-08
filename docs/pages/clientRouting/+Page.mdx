@@ -1,23 +1,13 @@
-import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
-import { UseUiFrameworkVikeExtensionAnyHint, UiFrameworkVikeExtension } from '../../components'
+import { Link, RepoLink } from '@brillout/docpress'
+import { UseVikeExtensionUiFramework, UiFrameworkExtension } from '../../components'
 
 Environment: client.
 
-If you don't use a <UiFrameworkVikeExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
+If you don't use a <UiFrameworkExtension /> then Vike does <Link text="Server Routing" href="/server-routing" /> by default.
 
-You can opt into <Link text="Client Routing" href="/client-routing" /> by:
- 1. Setting `clientRouting: true`.
-    ```js
-    // +config.h.js
-    export default {
-      // Enable Client Routing
-      clientRouting: true
-    }
-    ```
- 2. Adapting your <Link text={<><code>onRenderClient()</code> hook</>} href="/onRenderClient" /> to
-    hydrate the DOM only when rendering the first page.
+You can opt into <Link text="Client Routing" href="/client-routing" /> by using the `clientRouting` setting, see <Link href="#getting-started" />.
 
-<UseUiFrameworkVikeExtensionAnyHint featureName="Client Routing" />
+<UseVikeExtensionUiFramework featureName="Client Routing" />
 
 
 ## Examples
@@ -30,11 +20,11 @@ Vue example:
  - <RepoLink path='/boilerplates/boilerplate-vue-ts/renderer/app.ts' />
 
 
-## Usage
+## Getting started
 
 1. Set `clientRouting` to `true`:
    ```js
-   // /pages/+config.h.js
+   // /pages/+config.js
    export default {
      clientRouting: true
    }
@@ -56,7 +46,7 @@ Vue example:
      if (pageContext.isHydration) {
        // We hydrate the first page. (Since we do SSR, the first page is already
        // rendered to HTML and we merely have to hydrate it.)
-       await hydrate(pageContext.Page)
+       await hydrateDom(pageContext.Page)
      } else {
        // We render a new page. (When the user navigates to a new page.)
        await renderToDom(pageContext.Page)
@@ -82,7 +72,7 @@ You can skip the Client Router for individual `<a>` links by adding the `rel="ex
 You can use the following hook to implement initialization after the <Link href="/hydration">hydration</Link> has finished:
  - <Link href="/onHydrationEnd" noBreadcrumb />
 
-And following hooks ot implement page transition animations:
+And following hooks to implement page transition animations:
  - <Link href="/onPageTransitionStart" noBreadcrumb />
  - <Link href="/onPageTransitionEnd" noBreadcrumb />
 
@@ -93,10 +83,12 @@ And following hooks ot implement page transition animations:
 
 Page settings:
 - `prefetchStaticAssets`: Link prefetching settings, see <Link href="/prefetchStaticAssets" />.
-- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-framework" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
+- `hydrationCanBeAborted`: Whether the <Link text="UI framework" href="/ui-frameworks" /> allows the <Link href="/hydration">hydration</Link> to be aborted, see <Link href="/hydrationCanBeAborted" />.
 
 Anchor link options:
-- `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also <Link href="/navigate#options">`navigate('/some-url', { keepScrollPosition: true })`</Link>.
+- `<a href="/some/url" keep-scroll-position>`: Don't scroll to the top of the page, preserve the scroll position instead. See also:
+  - <Link href="/keepScrollPosition" />
+  - <Link href="/navigate#options">`navigate('/some-url', { keepScrollPosition: true })`</Link>
 - `<a href="/some/url" rel="external">`: Skip Client Routing, see <Link href="#links-intercepting" />.
 
 
@@ -114,8 +106,6 @@ Usually, when using tools such as Apollo GraphQL, Redux or Vuex, you determine t
 Depending on the tool, you do either one of the following:
  - You initialize the state once.
  - You re-initialize the state on every page navigation.
-
-<ReadingRecommendation tour={true} links={['/data-fetching', '/data-fetching-tools', '/store']} />
 
 To initialize once:
 
@@ -155,7 +145,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 // Environment: config
 
 export default {

@@ -20,14 +20,13 @@ import {
   isPropertyGetter,
   assertPosixPath,
   urlToFile,
-  executeHook,
   isPlainObject,
-  setNodeEnvToProduction,
-  isUserHookError,
-  assertNodeEnvIsNotDev,
-  getNodeEnv
+  handleNodeEnv_prerender,
+  pLimit,
+  PLimit,
+  isArray,
+  changeEnumerable
 } from './utils.js'
-import { pLimit, PLimit } from '../../utils/pLimit.js'
 import {
   prerenderPage,
   prerender404Page,
@@ -39,31 +38,41 @@ import {
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
-import { getGlobalContext, initGlobalContext, setGlobalContext_prerender } from '../runtime/globalContext.js'
+import {
+  getGlobalContext,
+  initGlobalContext_runPrerender,
+  setGlobalContext_isPrerendering
+} from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import type { InlineConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
-import { getConfigValue, getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
+import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
+import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValue.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
-import { addUrlComputedProps, PageContextUrlComputedPropsInternal } from '../../shared/addUrlComputedProps.js'
-import { assertPathIsFilesystemAbsolute } from '../../utils/assertPathIsFilesystemAbsolute.js'
+import {
+  getPageContextUrlComputed,
+  PageContextUrlInternal,
+  PageContextUrlSource
+} from '../../shared/getPageContextUrlComputed.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
   getHookFromPageConfig,
   getHookFromPageConfigGlobal,
   getHookTimeoutDefault,
-  setIsPrerenderering
+  getHook_setIsPrerenderering
 } from '../../shared/hooks/getHook.js'
 import { noRouteMatch } from '../../shared/route/noRouteMatch.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
+import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
+import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -109,7 +118,7 @@ type PageContext = PageContextInitEnhanced & {
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-} & PageContextUrlComputedPropsInternal
+} & PageContextUrlInternal
 
 type PrerenderOptions = {
   /** Initial `pageContext` values */
@@ -188,24 +197,23 @@ async function runPrerender(
   standaloneTrigger?: '$ vike prerender' | 'prerender()'
 ): Promise<void> {
   checkOutdatedOptions(options)
-
-  setIsPrerenderering()
+  setGlobalContext_isPrerendering()
+  getHook_setIsPrerenderering()
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
     console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
-  handleNodeEnv()
+  handleNodeEnv_prerender()
 
   await disableReactStreaming()
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'vike pre-rendering' as any, 'production')
-  setGlobalContext_prerender(viteConfig)
   assertLoadedConfig(viteConfig, options)
   const configVike = await getConfigVike(viteConfig)
 
-  const { outDirClient, outDirRoot } = getOutDirs(viteConfig)
+  const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = configVike.prerender
   if (!prerenderConfig) {
@@ -224,8 +232,7 @@ async function runPrerender(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
   )
 
-  assertPathIsFilesystemAbsolute(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
-  await initGlobalContext(true, outDirRoot)
+  await initGlobalContext_runPrerender()
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
 
@@ -279,9 +286,9 @@ async function collectDoNoPrerenderList(
   // V1 design
   pageConfigs.forEach((pageConfig) => {
     const configName = 'prerender'
-    const configValue = getConfigValue(pageConfig, configName, 'boolean')
+    const configValue = getConfigValueBuildTime(pageConfig, configName, 'boolean')
     if (configValue?.value === false) {
-      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue)
+      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
       assert(configValueFilePathToShowToUser)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,
@@ -424,7 +431,11 @@ async function callOnBeforePrerenderStartHooks(
           return
         }
 
-        const prerenderResult: unknown = await executeHook(() => hookFn(), { hookName, hookFilePath, hookTimeout })
+        const prerenderResult: unknown = await executeHook(
+          () => hookFn(),
+          { hookName, hookFilePath, hookTimeout },
+          null
+        )
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         result.forEach(({ url, pageContext }) => {
           {
@@ -453,9 +464,9 @@ async function callOnBeforePrerenderStartHooks(
           prerenderContext.pageContexts.push(pageContextNew)
           if (pageContext) {
             objectAssign(pageContextNew, {
-              _pageContextAlreadyProvidedByOnPrerenderHook: true,
-              ...pageContext
+              _pageContextAlreadyProvidedByOnPrerenderHook: true
             })
+            objectAssign(pageContextNew, pageContext)
           }
         })
       })
@@ -504,7 +515,7 @@ async function handlePagesWithStaticRoutes(
         objectAssign(pageContext, {
           _providedByHook: null,
           routeParams,
-          _pageId: pageId,
+          pageId: pageId,
           _debugRouteMatches: [
             {
               pageId,
@@ -530,14 +541,11 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
     _prerenderContext: prerenderContext
   }
   const pageContextInit = {
-    urlOriginal,
-    ...prerenderContext.pageContextInit
+    urlOriginal
   }
+  objectAssign(pageContextInit, prerenderContext.pageContextInit)
   {
-    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext, {
-      // We set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in a onPrerenderStart() hook, e.g. /examples/i18n/
-      urlComputedPropsNonEnumerable: true
-    })
+    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
   return pageContext
@@ -653,6 +661,11 @@ async function callOnPrerenderStartHook(
 
   const docLink = 'https://vike.dev/i18n#pre-rendering'
 
+  // Set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in onPrerenderStart() hook, e.g. /examples/i18n/
+  const { restoreEnumerable, addPageContextComputedUrl } = makePageContextComputedUrlNonEnumerable(
+    prerenderContext.pageContexts
+  )
+
   let result: unknown = await executeHook(
     () =>
       hookFn({
@@ -666,8 +679,12 @@ async function callOnPrerenderStartHook(
           return prerenderContext.pageContexts
         }
       }),
-    onPrerenderStartHook
+    onPrerenderStartHook,
+    null
   )
+
+  restoreEnumerable()
+
   if (result === null || result === undefined) {
     return
   }
@@ -728,10 +745,9 @@ async function callOnPrerenderStartHook(
         hookName
       }
     }
-
-    // Restore as URL computed props are lost when user makes a pageContext copy
-    addUrlComputedProps(pageContext)
   })
+
+  addPageContextComputedUrl(prerenderContext.pageContexts)
 }
 
 async function routeAndPrerender(
@@ -749,8 +765,8 @@ async function routeAndPrerender(
         const { urlOriginal } = pageContext
         assert(urlOriginal)
         const pageContextFromRoute = await route(pageContext)
-        assert(hasProp(pageContextFromRoute, '_pageId', 'null') || hasProp(pageContextFromRoute, '_pageId', 'string'))
-        if (pageContextFromRoute._pageId === null) {
+        assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string'))
+        if (pageContextFromRoute.pageId === null) {
           let hookName: string | undefined
           let hookFilePath: string | undefined
           if (pageContext._providedByHook) {
@@ -776,9 +792,9 @@ async function routeAndPrerender(
           }
         }
 
-        assert(pageContextFromRoute._pageId)
+        assert(pageContextFromRoute.pageId)
         objectAssign(pageContext, pageContextFromRoute)
-        const { _pageId: pageId } = pageContext
+        const { pageId: pageId } = pageContext
 
         objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
@@ -787,7 +803,7 @@ async function routeAndPrerender(
           if (pageContext._pageConfigs.length > 0) {
             const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
             assert(pageConfig)
-            usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+            usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
             usesClientRouter = globalContext.pluginManifest.usesClientRouter
           }
@@ -962,7 +978,11 @@ async function write(
   assertPosixPath(fileUrl)
   assert(fileUrl.startsWith('/'))
   const filePathRelative = fileUrl.slice(1)
-  assert(!filePathRelative.startsWith('/'))
+  assert(
+    !filePathRelative.startsWith('/'),
+    // Let's remove this debug info after we add a assertUsage() avoiding https://github.com/vikejs/vike/issues/1929
+    { urlOriginal, fileUrl }
+  )
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
@@ -998,7 +1018,7 @@ function normalizeOnPrerenderHookResult(
   prerenderHookFile: string,
   hookName: 'prerender' | 'onBeforePrerenderStart'
 ): { url: string; pageContext: null | Record<string, unknown> }[] {
-  if (Array.isArray(prerenderResult)) {
+  if (isArray(prerenderResult)) {
     return prerenderResult.map(normalize)
   } else {
     return [normalize(prerenderResult)]
@@ -1179,9 +1199,23 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
   )
 }
 
-function handleNodeEnv() {
-  const assertNodeEnv = () => assertNodeEnvIsNotDev('pre-rendering')
-  if (getNodeEnv()) assertNodeEnv()
-  setNodeEnvToProduction()
-  assertNodeEnv()
+function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlInternal[]) {
+  change(false)
+  return { restoreEnumerable, addPageContextComputedUrl }
+  function restoreEnumerable() {
+    change(true)
+  }
+  function addPageContextComputedUrl(pageContexts: PageContextUrlSource[]) {
+    // Add URL computed props to the user-generated pageContext copies
+    pageContexts.forEach((pageContext) => {
+      const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
+      objectAssign(pageContext, pageContextUrlComputed)
+    })
+  }
+  function change(enumerable: boolean) {
+    pageContexts.forEach((pageContext) => {
+      changeEnumerable(pageContext, 'urlPathname', enumerable)
+      changeEnumerable(pageContext, 'urlParsed', enumerable)
+    })
+  }
 }

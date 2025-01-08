@@ -1,27 +1,51 @@
 import { Link } from '@brillout/docpress'
 
-The `pageContext` object holds contextual information about the current page.
+The `pageContext` object provides contextual information about the current page.
 
-> Once the page is rendered we recommend treating `pageContext` as immutable, see <Link href="#lifecycle" />.
+```js
+// /pages/product/@id/+data.js
+
+export async function data(pageContext) {
+  // Commonly used built-in properties
+  pageContext.urlParsed.pathname // /product/42
+  pageContext.routeParams.id // 42
+  pageContext.headers // { cookie: 'user-id=1337', ... }
+  // Commonly added custom properties
+  pageContext.user // { name: 'John', id: 1337 }
+  pageContext.initialStoreState // { time: 1718872184291 }
+}
+```
+
+> The `+data` hook is explained at <Link href="/data-fetching" />.
+
+It includes:
+ - <Link href="#built-in">Built-in properties</Link> such as `pageContext.urlParsed` and `pageContext.routeParams`.
+ - <Link href="#custom">Custom properties</Link> that you can add, for example `pagecontext.user`.
+
+It's accessible to all:
+ - <Link href="/hooks">Vike hooks</Link>, such as <Link href="/data">`+data`</Link>.
+ - UI components, by using <Link href="/usePageContext">`usePageContext()`</Link>.
+
+You can access `pageContext` from the client-side by using <Link href="/passToClient">`passToClient`</Link>.
 
 
 ## Built-in
 
 Built-in properties:
 
- - **`pageContext.Page`**: the `export { Page }` or `export default` of the `+Page.js` file.
- - **`pageContext.data`**: the value returned by the `data()` hook, see <Link href="/data#pagecontext-data" doNotInferSectionTitle/>.
+ - **`pageContext.Page`**: the `export { Page }` or `export default` of the <Link href="/Page">`+Page.js` file</Link>.
+ - **`pageContext.data`**: the value returned by the <Link href="/data">`data()` hook</Link>, see also <Link href="/useData" />.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.urlOriginal`**: the current URL.
 
    On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
     ```js
     // Server middleware
-    app.get('*', async (req, res, next) => {
+    app.get('*', async (req) => {
       const pageContextInit = {}
       // `pageContext.urlOriginal` is defined here
       pageContextInit.urlOriginal = req.url
-      const result = await renderPage(pageContextInit)
+      const pageContext = await renderPage(pageContextInit)
       /* ... */
     })
     ```
@@ -29,68 +53,83 @@ Built-in properties:
     On the client-side:
      - When using <Link href="/client-routing">Client Routing</Link>, the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
      - When using <Link href="/server-routing">Server Routing</Link>, the value of `pageContext.urlOriginal` is `undefined` (unless you use [`passToClient`](/passToClient)).
- - **`pageContext.urlPathname`**: alias of `pageContext.urlParsed.pathname`.
+ - **`pageContext.urlPathname`**: alias for `pageContext.urlParsed.pathname`.
  - **`pageContext.urlParsed`**: URL information:
    ```ts
    {
-     origin: null | string
      pathname: string
      pathnameOriginal: string
-     search: Record<string, string> // (AKA query parameters)
+     search: Record<string, string> // AKA query parameters
      searchAll: Record<string, string[]>
      searchOriginal: null | string
      hash: string
      hashOriginal: null | string
+     href: string
+     origin: null | string
+     protocol: null | string
+     hostname: null | string
+     port: null | string
    }
    ```
 
    For example:
+   ```
+   https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
+   ```
    ```js
-   // https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
    {
-     origin: 'https://example.com',
-     pathname: '/hello/sébastien', // Without Base URL
+     // Without Base URL, decodes escaped characters
+     pathname: '/hello/sébastien',
+     // With Base URL, doesn't decode escaped characters
      pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',
-     search: { fruit: 'orânge' }, // (AKA query params)
+     search: { fruit: 'orânge' },
      searchAll: { fruit: ['âpple', 'orânge'] },
      searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
      hash: 'âge',
      hashOriginal: '#%C3%A2ge'
+     // Without Base URL, doesn't decode escaped characters
+     href: 'https://example.com/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
+     origin: 'https://example.com',
+     protocol: 'https://',
+     hostname: 'example.com', // 'localhost' for http://localhost:3000
+     port: null // 3000 for http://localhost:3000
    }
    ```
+ - **`pageContext.headers`**: The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.
+ - **`pageContext.headersOriginal`**: The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
  - **`pageContext.config`**: See <Link href="/meta" />.
- - **`pageContext.isHydration`**: Whether the current page is already rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is usually `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.)
+ - **`pageContext.isHydration`**: Whether the page is rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.) (If the page doesn't throw an error then it's equivalent to `!pageContext.isClientSideNavigation`, otherwise the error page is rendered and thus `pageContext.isHydration` is `false` whereas `!pageContext.isClientSideNavigation` is `true`.)
  - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
+ - **`pageContext.previousPageContext`**: Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
  - **`pageContext.isClientSideNavigation`**: Whether the page was navigated by the client-side router. In other words, when using <Link href="/client-routing" noBreadcrumb={true} />, the value is `false` for the first page the user visits, and `true` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `false`.)
  - **`pageContext.abortReason`**: Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
  - **`pageContext.abortStatusCode`**: Set by <Link href="/render" text={<code>throw render()</code>} /> and used by the <Link text="error page" href="/error-page" />.
- - **`pageContext.errorWhileRendering`**: The first error (if there is any) that occured while rendering the page, see <Link href="/errors" />.
+ - **`pageContext.errorWhileRendering`**: The first error (if there is any) that occurred while rendering the page, see <Link href="/error-tracking" />.
 
 
 ## Custom
 
 You can define custom `pageContext` properties. (See <Link href="#typescript" /> for how to define their types.)
 
- - At your <Link href="/renderPage">Vike server middleware `renderPage()`</Link>:
+ - At <Link href="/renderPage">`renderPage()`</Link>:
     ```js
-    app.get('*', async (req, res, next) => {
+    // Your Vike server middleware integration
+    app.get('*', async (req) => {
       const pageContextInit = {
         urlOriginal: req.url,
+        headersOriginal: req.headers,
 
         // ***************************************
         // **** Custom pageContext properties ****
         // ***************************************
 
-        // Common use cases:
-        // pageContext.user – information about logged-in user
+        // Common use case: make information about logged-in user available at pageContext.user
         user: req.user,
-        // pageContext.headers – e.g. make cookies available over pageContext.headers.cookies
-        headers: req.headers,
 
         // Or any other value:
-        // pageContext.anyCustomProp
-        anyCustomProp: 'some-value'
+        // pageContext.someCustomProp
+        someCustomProp: 'some-value'
       }
       const pageContext = await renderPage(pageContextInit)
       // ...
@@ -98,49 +137,55 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
     ```
     > Setting `pageContext.user` is a common use case for integrating authentication tools, see <Link href="/auth#integration" />.
 
- - Using the upcoming [hook `onBoot()` (#962)](https://github.com/vikejs/vike/issues/962). It isn't implement yet, add a comment to the GitHub issue if you need it. (We expect `onBoot()` to be particularly useful for <Link href="/pre-rendering" >pre-rendered</Link> apps.)
-
- - Using the [`onBeforeRender()`](/onBeforeRender) hook:
-    ```js
-    export async function onBeforeRender() {
-      return {
-        pageContext: {
-          // ***************************************
-          // **** Custom pageContext properties ****
-          // ***************************************
-
-          // Common use case: make the state management's initial state available.
-          // pageContext.initialStoreState – initial store state
-          initialStoreState: pageRendered.store.state,
-
-          // pageContext.anyCustomProp
-          anyCustomProp: 'some-value'
-        }
-      }
-    }
-    ```
-    > Setting `pageContext.initialStoreState` is a common use case for integrating state management tools, see <Link href="/store" />.
-
- - Using the <Link href="/onRenderHtml">`onRenderHtml()`</Link> hook:
-    ```js
-    function onRenderHtml() {
-      return {
-        documentHtml: escapeInject`<html><!--...--></html>`,
-        pageContext: {
-          // ***************************************
-          // **** Custom pageContext properties ****
-          // ***************************************
-          // pageContext.anyCustomProp
-          anyCustomProp: 'some-value'
-        }
-      }
-    }
-    ```
+ - At any <Link href="/">Vike hook</Link>.
+   ```js
+   // +someHook.js
+   export function someHook(pageContext) {
+     pageContext.someCustomProp = 'some-value' // Add or modify property
+   }
+   ```
+ - At any UI component, by using <Link href="/usePageContext">`usePageContext()`</Link>.
+   ```js
+   // Inside a UI component
+   const pageContext = usePageContext()
+   pageContext.someCustomProp = 'some-value' // Add or modify property
+   ```
+ - At <Link href="/navigate#options">`navigate({ pageContext: { someExtra: 'value' } })`</Link>.
 
 
-## Access anywhere
+## FAQ
 
-By using <Link href="/usePageContext">`usePageContext()`</Link> and <Link href="/passToClient">`passToClient`</Link>, you can access `pageContext` from anywhere.
+### Can I mutate `pageContext`?
+
+Yes, it's a common practice to change/add `pageContext` properties at any time.
+
+```js
+// Anywhere
+pageContext.someProp = someValue
+```
+
+### Can I use `pageContext` as a UI store?
+
+Instead of using `pageContext`, we generally recommend using a proper UI state management tool such as React's `useState()`, Redux, Vue's `ref()`, Pinia, etc.
+
+That said, there are use cases for using `pageContext` to store client-side state. For example to pass information from the previous page to the next during navigation.
+
+See <Link href="#lifecycle" /> to understand whether using `pageContext` can make sense for your use case.
+
+### Can I check whether SSR is enabled?
+
+On the server-side, you can tell <Link href="/ssr">whether SSR is enabled</Link> by checking whether <Link href="#:~:text=pageContext.Page,-%3A">`pageContext.Page`</Link> is set:
+
+```js
+// +onAfterRenderHtml.js
+
+export function onAfterRenderHtml(pageContext) {
+  const isSSR = !!pageContext.Page
+  if (isSSR) {
+    // ...
+  }
+}
+```
 
 
 ## TypeScript
@@ -169,13 +214,13 @@ declare global {
         isAdmin: boolean
       }
       // Refine type of pageContext.Page (it's `unknown` by default)
-      Page: () => JSX.Element
+      Page: () => React.JSX.Element
     }
   }
 }
 
 // If you define Vike.PageContext in a .d.ts file then
-// make sure there is at least one export/import statment.
+// make sure there is at least one export/import statement.
 // Tell TypeScript this file isn't an ambient module:
 export {}
 ```
@@ -195,14 +240,25 @@ import type {
 
 ## Lifecycle
 
-The main purpose of `pageContext` is to hold the information that is needed for rendering the page.
+**Server-side**
 
-On the server-side, upon a new incoming HTTP request, a new `pageContext` object is created and used for rendering the HTML that is included in the HTTP response. The `pageContext` object is discarded after the HTML response is sent.
+On the server-side, upon an HTTP request, a new `pageContext` object is created. It's used for rendering the page to HTML. The `pageContext` object is discarded after the HTTP response is sent.
 
-On the client-side, upon <Link text="client-side page navigation" href="/client-routing" />, the `pageContext` object of the previous page is discarded and a new `pageContext` object is created.
+**Client-side**
 
-At build-time, upon <Link text="pre-rendering" href="/pre-rendering" />, a `pageContext` object is created for each URL and saved at `dist/client/${url}/index.pageContext.json`.
+Upon <Link text="client-side page navigation" href="/client-routing" />, a new `pageContext` object is created.
 
-Vike adds information to `pageContext` only while rendering the page, and we recommend to treat `pageContext` as immutable after the rendering of the page has finished. Consequently:
- - We recommend against using `pageContext` to store UI state. (Use a proper <Link text="state management tool" href="/store" /> instead.)
- - If you use <Link text="pre-rendering" href="/pre-rendering" />, then the `pageContext` object of each URL is set in stone already at build-time.
+> You can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
+
+**Pre-rendering**
+
+If a page is <Link href="/pre-rendering">pre-rendered</Link>, its <Link href="/pageContext.json">initial `pageContext` value</Link> is determined at build-time and saved at `dist/client/${url}/index.pageContext.json`.
+
+> Consequently, the initial `pageContext` value of a pre-rendered page is set in stone at build-time.
+
+
+## See also
+
+- <Link href="/usePageContext" />
+- <Link href="/useData" />
+- <Link href="/renderPage" />

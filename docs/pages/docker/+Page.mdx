@@ -1,42 +1,54 @@
 import { Link } from '@brillout/docpress'
+import { CommunityNote } from '../../components'
 
-In general, a Vike app is just a Node.js server, so we can use any Node.js Docker container.
+<CommunityNote url="https://www.docker.com/" />
 
-## Build
+From the server's perspective, a Vike app is just a Node.js server, which means you can use any Node.js container image to run your Vike app.
 
-If we build our app in Docker, we may stumble upon out-of-memory errors.
+If you want to use Docker also for development, then you shouldn't set `host` to `false` and you may need to configure Docker for HMR, see <Link href="#development" />.
 
-If we do, we check whether our Docker container has enough memory, and we may also need to set [Node.js' `--max-old-space-size`](https://nodejs.org/api/cli.html#--max-old-space-sizesize-in-megabytes).
+If you build your app inside your Docker container and run into out-of-memory errors, then see <Link href="#increase-memory" />.
+
+
+## Development
+
+### `host`
+
+If you want to use Docker also for development, then [Vite's `server.host` setting](https://vite.dev/config/server-options.html#server-host) should be truthy so that your app can be accessed from outside your Docker container, such as from the browser.
+
+```js
+// vite.config.js
+
+export default {
+  server: {
+    host: true
+  }
+}
+```
+
+> Vike sets the default value of `host` to `true` if it detects a Docker or Podman container environment.
+
+### HMR
+
+If [HMR](https://vite.dev/guide/why.html#:~:text=some%20bundlers%20support-,Hot%20Module%20Replacement%20(HMR),-%3A%20allowing%20a%20module) doesn't work, then make sure you configure Docker for [Vite's HMR websocket connection](https://vite.dev/config/server-options.html#server-hmr).
+
+If you run Docker with a WSL2 backend, then have a look at <Link href="/wsl" /> for how to enable HMR.
+
+
+## Increase memory
+
+If you build your app inside your Docker container, you may stumble upon out-of-memory errors.
+
+Check whether your Docker container has enough memory, and you may also need to set [Node.js' `--max-old-space-size`](https://nodejs.org/api/cli.html#--max-old-space-sizesize-in-megabytes).
 
 ```json
 // package.json
 {
   "scripts": {
-    "// We use Node.js' environment variable `NODE_OPTIONS` to increase memory size to 3GB": "",
-    "build": "NODE_OPTIONS=--max-old-space-size=3072 npm run build:run",
-    "build:run": "vite build"
+    "build": "vite build" // [!code --]
+    "// Increase Node.js memory size to 3GB": "", // [!code ++]
+    "build": "NODE_OPTIONS=--max-old-space-size=3072 npm run build:vite", // [!code ++]
+    "build:vite": "vite build" // [!code ++]
   }
 }
 ```
-See also:
-   - <Link href="/debug" />
-
-## Dev
-
-If we want to use Docker for development as well, we need to properly configure Docker for Vite's HMR port.
-
-If we use Windows with [WSL](https://docs.microsoft.com/en-us/windows/wsl/), we need to configure [`chokidar`](https://github.com/paulmillr/chokidar) to use polling. (Vite uses `chokidar`.)
-
-```json
-// package.json
-{
-  "scripts": {
-    "dev": "CHOKIDAR_USEPOLLING=true npm run server"
-  }
-}
-```
-
-Note that [it has been reported](https://discord.com/channels/815937377888632913/815937377888632916/910110118375489567) that [vite.config.js#server.watch.usePolling](https://vitejs.dev/config/#server-watch) doesn't work.
-
-See also:
-   - [StackOverflow - Chokidar isn't picking up file changes inside docker container](https://stackoverflow.com/questions/38318188/chokidar-isnt-picking-up-file-changes-inside-docker-container/69166925#69166925)

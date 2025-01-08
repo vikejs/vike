@@ -1,9 +1,8 @@
-import { DataArchitecture } from '../../components'
+import { Link, Contribution } from '@brillout/docpress'
+import { CommunityNote } from '../../components'
 
-<DataArchitecture
-  toolName={'PullState'}
-  toolLink={'https://github.com/lostpebble/pullstate'}
-  isGeneric={false}
-  toolType="data-store"
-  toolDocs={<a href="https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered">PullState &gt; SSR Example</a>}
-/>
+<CommunityNote tool="pullstate" url="https://lostpebble.github.io/pullstate/" hasExtension={false} />
+
+To manually integrate PullState, see:
+- <Link href="/store#ssr" doNotInferSectionTitle />
+- [PullState > SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)

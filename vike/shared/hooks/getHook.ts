@@ -2,7 +2,7 @@ export { getHook }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { assertHook }
-export { setIsPrerenderering }
+export { getHook_setIsPrerenderering }
 export type { Hook }
 export type { HookName }
 export type { HookLoc }
@@ -10,22 +10,33 @@ export type { HookTimeout }
 export type { HooksTimeoutProvidedByUser }
 
 // TODO/v1-release: remove
-// We export for old V0.4 design which doesn't support config.hooksTimeout
+// We export for old V0.4 design which doesn't support configooksTimeout
 export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageContextExports } from '../getPageFiles.js'
 import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
-import type { PageConfigBuildTime, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
-import { getConfigValue, getHookFilePathToShowToUser } from '../page-configs/helpers.js'
+import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
+import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
+import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
-const globalObject = getGlobalObject('getHook.ts', {
-  isPrerendering: false
-})
+const globalObject = getGlobalObject<{ isPrerendering?: true }>('getHook.ts', {})
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
-type HookLoc = { hookName: HookName; hookFilePath: string }
+type HookLoc = {
+  hookName: HookName
+  /* Once we remove the old design, we'll be able to use the full path information.
+   * Le'ts then do this:
+   * ```diff
+   * - Following error was thrown by the onRenderHtml() hook defined at vike-react/__internal/integration/onRenderHtml
+   * + Following error was thrown by the onRenderHtml() hook defined by vike-react
+   * ```
+import type {FilePath} from '../page-configs/FilePath.js'
+  hookFilePath: FilePath
+  */
+  hookFilePath: string
+}
 type HookFn = (arg: unknown) => unknown
 type HookTimeout = {
   error: number | false
@@ -51,17 +62,14 @@ function getHook(pageContext: PageContextExports, hookName: HookName): null | Ho
   assertHookFn(hookFn, { hookName, hookFilePath })
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
-function getHookFromPageConfig(
-  pageConfig: PageConfigRuntime | PageConfigBuildTime,
-  hookName: HookNamePage
-): null | Hook {
-  const configValue = getConfigValue(pageConfig, hookName)
-  const hooksTimeout = getConfigValue(pageConfig, 'hooksTimeout')?.value
+function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
+  const configValue = getConfigValueRuntime(pageConfig, hookName)
+  const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
   if (!configValue) return null
   const hookFn = configValue.value
   if (!hookFn) return null
-  const hookFilePath = getHookFilePathToShowToUser(configValue)
-  // hook isn't a computed nor a cumulative config => definedAt should always be defined
+  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
+  // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
@@ -72,11 +80,11 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   if (!configValue) return null
   const hookFn = configValue.value
   if (!hookFn) return null
-  const hookFilePath = getHookFilePathToShowToUser(configValue)
-  // hook isn't a computed nor a cumulative config => definedAt should always be defined
+  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
+  // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
-  // We could use the global value of config.hooksTimeout but it requires some non-trivial refactoring
+  // We could use the global value of configooksTimeout but it requires some non-trivial refactoring
   const hookTimeout = getHookTimeoutDefault(hookName)
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
@@ -164,6 +172,6 @@ function getHookTimeoutDefault(hookName: HookName): HookTimeout {
     warning: 4 * 1000
   }
 }
-function setIsPrerenderering() {
+function getHook_setIsPrerenderering() {
   globalObject.isPrerendering = true
 }

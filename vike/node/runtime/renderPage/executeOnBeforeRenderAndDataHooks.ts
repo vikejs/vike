@@ -6,12 +6,12 @@ import {
   preparePageContextForUserConsumptionServerSide,
   type PageContextForUserConsumptionServerSide
 } from './preparePageContextForUserConsumptionServerSide.js'
-import { executeHook } from '../utils.js'
 import { assertOnBeforeRenderHookReturn } from '../../../shared/assertOnBeforeRenderHookReturn.js'
+import { executeHook } from '../../../shared/hooks/executeHook.js'
 
 async function executeOnBeforeRenderAndDataHooks(
   pageContext: {
-    _pageId: string
+    pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
   } & PageContextExports &
     PageContextForUserConsumptionServerSide
@@ -28,7 +28,7 @@ async function executeOnBeforeRenderAndDataHooks(
   preparePageContextForUserConsumptionServerSide(pageContext)
 
   if (dataHook) {
-    const hookResult = await executeHook(() => dataHook.hookFn(pageContext), dataHook)
+    const hookResult = await executeHook(() => dataHook.hookFn(pageContext), dataHook, pageContext)
     // Note: hookResult can be anything (e.g. an object) and is to be assigned to pageContext.data
     const pageContextFromHook = {
       data: hookResult
@@ -37,7 +37,7 @@ async function executeOnBeforeRenderAndDataHooks(
   }
 
   if (onBeforeRenderHook) {
-    const hookResult = await executeHook(() => onBeforeRenderHook.hookFn(pageContext), onBeforeRenderHook)
+    const hookResult = await executeHook(() => onBeforeRenderHook.hookFn(pageContext), onBeforeRenderHook, pageContext)
     assertOnBeforeRenderHookReturn(hookResult, onBeforeRenderHook.hookFilePath)
     const pageContextFromHook = hookResult?.pageContext
     Object.assign(pageContext, pageContextFromHook)

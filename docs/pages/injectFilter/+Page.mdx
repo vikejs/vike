@@ -1,13 +1,17 @@
 import { Link, Warning } from '@brillout/docpress'
 
-The `injectFilter()` hook allows you to control which and where preload and asset tags are injected in the HTML.
+The `injectFilter()` hook allows you to control where and what tags Vike injects in the HTML, most notably <Link href="/preloading">preload</Link> tags.
 
-See <Link href="/preloading" />.
+> If you merely want to change the position of scripts, you can use the <Link href="/injectScriptsAt">`injectScriptsAt` setting</Link> instead.
+
+> Vite also injects preload tags, see [Vite > Config > `build.modulePreload`](https://vitejs.dev/config/build-options#build-modulepreload).
+
 
 ## Examples
 
  - <Link href="/examples/custom-preload/renderer/+onRenderHtml.tsx" />
  - <Link href="/test/preload/renderer/+onRenderHtml.tsx" />
+
 
 ## Usage
 
@@ -68,7 +72,8 @@ async function onRenderHtml(pageContext) {
 type InjectFilterEntry = {
   inject: false | 'HTML_BEGIN' | 'HTML_END' // Whether and where to inject
   src: string // Asset's URL
-  assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" | "fetch" | "track" | "worker" | "embed" | "object" | null
+  assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
+             "fetch" | "track" | "worker" | "embed" | "object" | null
   mediaType: string // MIME type
   isEntry: boolean // true  ⇒ <script> or <link rel="stylesheet" type="text/css">
                    // false ⇒ preload tag, e.g. <link rel="preload" as="font">
@@ -80,3 +85,5 @@ type InjectFilterEntry = {
 
 - <Link href="/preloading" />
 - <Link href="/streaming" />
+- <Link href="/injectScriptsAt" />
+- [Vite > Config > `build.modulePreload`](https://vitejs.dev/config/build-options#build-modulepreload)

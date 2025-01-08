@@ -18,8 +18,9 @@ function Page() {
       <p>
         <button
           onClick={() => {
-            const randomIndex = Math.floor(Math.random() * 3)
-            navigate(['/markdown', '/star-wars', '/hello/alice'][randomIndex])
+            const target = ['/markdown', '/star-wars', '/hello/alice']
+            const randomIndex = Math.floor(Math.random() * target.length)
+            navigate(target[randomIndex])
           }}
         >
           Random Page

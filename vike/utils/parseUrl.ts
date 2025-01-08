@@ -5,99 +5,107 @@
 // Unit tests at ./parseUrl.spec.ts
 
 export { parseUrl }
-export { isParsable }
-export { assertUsageUrl }
+export { assertUsageUrlPathnameAbsolute }
+export { assertUsageUrlRedirectTarget }
+export { isUrl }
+export { isUri }
+export { isUrlRedirectTarget }
+export { isUrlRelative }
+export { isUrlExternal }
 export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
-export { isUriWithProtocol }
+export type { UrlPublic }
+export type { UrlPrivate }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
 import pc from '@brillout/picocolors'
 
-const PROTOCOLS = ['http://', 'https://', 'tauri://']
-
-function isParsable(url: string): boolean {
-  // `parseUrl()` works with these URLs
-  return (
-    PROTOCOLS.some((p) => url.startsWith(p)) ||
-    url.startsWith('/') ||
-    url.startsWith('.') ||
-    url.startsWith('?') ||
-    url.startsWith('#') ||
-    url === ''
-  )
-}
-function assertUsageUrl(url: unknown, errPrefix: string): asserts url is string {
-  assert(errPrefix.includes(' but '))
-  assertUsage(typeof url === 'string', `${errPrefix} should be a string`)
-  if (isParsable(url)) return
-  if (!url.startsWith('/') && !url.includes(':')) {
-    assertUsage(
-      false,
-      `${errPrefix} is ${pc.cyan(url)} and it should be /${pc.cyan(
-        url
-      )} instead (URL pathnames should start with a leading slash)`
-    )
-  } else {
-    assertUsage(false, `${errPrefix} isn't a valid URL`)
-  }
-}
-
-function parseUrl(
-  url: string,
-  baseServer: string
-): {
+type UrlPublic = {
+  /** The full URL. */
+  href: string
+  /** The URL protocol, e.g. `https://` in `https://example.com` */
+  protocol: null | string
+  /** The URL hostname, e.g. `example.com` in `https://example.com/product` and `localhost` in `http://localhost:3000/product` */
+  hostname: null | string
+  /** The URL host port, e.g. `3000` in `http://localhost:3000/product` */
+  port: null | number
+  /** The URL origin, e.g. `https://example.com` in `https://example.com/product/42` */
   origin: null | string
+  /** The URL pathname, e.g. `/product/42` in `https://example.com/product/42?details=yes#reviews` */
   pathname: string
+  /** URL pathname including the Base URL, e.g. `/some-base-url/product/42` in `https://example.com/some-base-url/product/42` (whereas `pageContext.urlParsed.pathname` is `/product/42`) */
   pathnameOriginal: string
-  hasBaseServer: boolean
+  /** The URL search parameters, e.g. `{ details: 'yes' }` for `https://example.com/product/42?details=yes#reviews` */
   search: Record<string, string>
+  /** The URL search parameters array, e.g. `{ fruit: ['apple', 'orange'] }` for `https://example.com?fruit=apple&fruit=orange` **/
   searchAll: Record<string, string[]>
-  searchOriginal: null | string
+  /** The URL search parameterer string, e.g. `?details=yes` in `https://example.com/product/42?details=yes#reviews` */
+  searchOriginal: null | `?${string}`
+  /** The URL hash, e.g. `reviews` in `https://example.com/product/42?details=yes#reviews` */
   hash: string
-  hashOriginal: null | string
-} {
-  assert(isParsable(url))
+  /** The URL hash string, e.g. `#reviews` in `https://example.com/product/42?details=yes#reviews` */
+  hashOriginal: null | `#${string}`
+
+  // TODO/v1-release: remove
+  /** @deprecated */
+  hashString: null | string
+  /** @deprecated */
+  searchString: null | string
+}
+type UrlPrivate = Omit<UrlPublic, 'hashString' | 'searchString'> & { hasBaseServer: boolean }
+
+function parseUrl(url: string, baseServer: string): UrlPrivate {
+  assert(isUrl(url), url)
   assert(baseServer.startsWith('/'))
 
   // Hash
-  const [urlWithoutHash, ...hashList] = url.split('#')
-  assert(urlWithoutHash !== undefined)
-  const hashOriginal = ['', ...hashList].join('#') || null
+  const { hashString: hashOriginal, withoutHash: urlWithoutHash } = extractHash(url)
   assert(hashOriginal === null || hashOriginal.startsWith('#'))
   const hash = hashOriginal === null ? '' : decodeSafe(hashOriginal.slice(1))
 
   // Search
-  const [urlWithoutHashNorSearch, ...searchList] = urlWithoutHash.split('?')
-  assert(urlWithoutHashNorSearch !== undefined)
-  const searchOriginal = ['', ...searchList].join('?') || null
+  const { searchString: searchOriginal, withoutSearch: urlWithoutHashNorSearch } = extractSearch(urlWithoutHash)
   assert(searchOriginal === null || searchOriginal.startsWith('?'))
+  let searchString = ''
+  if (searchOriginal !== null) {
+    searchString = searchOriginal
+  } else if (url.startsWith('#')) {
+    const baseURI = getBaseURI()
+    searchString = (baseURI && extractSearch(baseURI).searchString) || ''
+  }
   const search: Record<string, string> = {}
   const searchAll: Record<string, string[]> = {}
-  Array.from(new URLSearchParams(searchOriginal || '')).forEach(([key, val]) => {
+  Array.from(new URLSearchParams(searchString)).forEach(([key, val]) => {
     search[key] = val
     searchAll[key] = [...(searchAll.hasOwnProperty(key) ? searchAll[key]! : []), val]
   })
 
   // Origin + pathname
-  const { origin, pathname: pathnameResolved } = getPathname(urlWithoutHashNorSearch, baseServer)
-  assert(origin === null || origin === decodeSafe(origin)) // AFAICT decoding the origin is useless
-  assert(pathnameResolved.startsWith('/'))
-  assert(origin === null || url.startsWith(origin))
-
-  // `pathnameOriginal`
+  let { protocol, origin, pathnameAbsoluteWithBase } = getPathnameAbsoluteWithBase(urlWithoutHashNorSearch, baseServer)
   const pathnameOriginal = urlWithoutHashNorSearch.slice((origin || '').length)
-
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
 
   // Base URL
-  let { pathname, hasBaseServer } = analyzeBaseServer(pathnameResolved, baseServer)
+  let { pathname, hasBaseServer } = removeBaseServer(pathnameAbsoluteWithBase, baseServer)
+
+  // pageContext.urlParsed.href
+  const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
+
+  // pageContext.urlParsed.{hostname, port}
+  const host = !origin ? null : origin.slice(protocol!.length)
+  const { hostname, port } = parseHost(host, url)
+
+  // decode after setting href
   pathname = decodePathname(pathname)
 
   assert(pathname.startsWith('/'))
   return {
+    href,
+    protocol,
+    hostname,
+    port,
     origin,
     pathname,
     pathnameOriginal: pathnameOriginal,
@@ -109,6 +117,18 @@ function parseUrl(
     hashOriginal
   }
 }
+
+function extractHash(url: string) {
+  const [withoutHash, ...parts] = url.split('#')
+  const hashString = (['', ...parts].join('#') as undefined | `#${string}`) || null
+  return { hashString, withoutHash: withoutHash as string }
+}
+function extractSearch(url: string) {
+  const [withoutSearch, ...parts] = url.split('?')
+  const searchString = (['', ...parts].join('?') as undefined | `?${string}`) || null
+  return { searchString, withoutSearch: withoutSearch as string }
+}
+
 function decodeSafe(urlComponent: string): string {
   try {
     return decodeURIComponent(urlComponent)
@@ -126,53 +146,108 @@ function decodePathname(urlPathname: string) {
     .join('/')
   return urlPathname
 }
-function getPathname(url: string, baseServer: string): { origin: null | string; pathname: string } {
+
+function getPathnameAbsoluteWithBase(
+  url: string,
+  baseServer: string
+): { origin: null | string; pathnameAbsoluteWithBase: string; protocol: null | string } {
   // Search and hash already extracted
   assert(!url.includes('?') && !url.includes('#'))
 
   // url has origin
   {
-    const { origin, pathname } = parseOrigin(url)
+    const { protocol, origin, pathname } = parseOrigin(url)
     if (origin) {
-      return { origin, pathname }
+      return { protocol, origin, pathnameAbsoluteWithBase: pathname }
     }
     assert(pathname === url)
   }
 
   // url doesn't have origin
   if (url.startsWith('/')) {
-    return { origin: null, pathname: url }
+    return { protocol: null, origin: null, pathnameAbsoluteWithBase: url }
   } else {
     // url is a relative path
 
-    // In the browser, this is the Base URL of the current URL.
-    // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
-    const baseURI: string | undefined = typeof window !== 'undefined' ? window?.document?.baseURI : undefined
-
+    const baseURI = getBaseURI()
     let base: string
     if (baseURI) {
-      const baseURIPathaname = parseOrigin(baseURI.split('?')[0]!).pathname
-      base = baseURIPathaname
+      base = parseOrigin(baseURI.split('?')[0]!.split('#')[0]!).pathname
     } else {
       base = baseServer
     }
 
-    const pathname = resolveUrlPathnameRelative(url, base)
-    return { origin: null, pathname }
+    const pathnameAbsoluteWithBase = resolveUrlPathnameRelative(url, base)
+    return { protocol: null, origin: null, pathnameAbsoluteWithBase }
   }
 }
-
-function parseOrigin(url: string): { pathname: string; origin: null | string } {
-  if (!PROTOCOLS.some((protocol) => url.startsWith(protocol))) {
-    return { pathname: url, origin: null }
+function getBaseURI() {
+  // In the browser, this is the Base URL of the current URL.
+  // Safe access `window?.document?.baseURI` for users who shim `window` in Node.js
+  const baseURI: string | undefined = typeof window !== 'undefined' ? window?.document?.baseURI : undefined
+  return baseURI
+}
+function parseOrigin(url: string): { pathname: string; origin: null | string; protocol: null | string } {
+  if (!isUrlWithProtocol(url)) {
+    return { pathname: url, origin: null, protocol: null }
   } else {
-    const [originPart1, originPart2, originPart3, ...pathnameParts] = url.split('/')
-    const origin = [originPart1, originPart2, originPart3].join('/')
-    const pathname = ['', ...pathnameParts].join('/') || '/'
-    return { origin, pathname }
+    const { protocol, uriWithoutProtocol } = parseProtocol(url)
+    assert(protocol)
+    const [host, ...rest] = uriWithoutProtocol.split('/')
+    const origin = protocol + host!
+    const pathname = '/' + rest.join('/')
+    return { pathname, origin, protocol }
   }
 }
+function parseHost(host: string | null, url: string) {
+  const ret: { hostname: string | null; port: number | null } = { hostname: null, port: null }
+  if (!host) return ret
 
+  // port
+  const parts = host.split(':')
+  if (parts.length > 1) {
+    const port = parseInt(parts.pop()!, 10)
+    assert(port || port === 0, url)
+    ret.port = port
+  }
+
+  // hostname
+  ret.hostname = parts.join(':')
+
+  return ret
+}
+function parseProtocol(uri: string) {
+  const SEP = ':'
+  const [before, ...after] = uri.split(SEP)
+  if (
+    after.length === 0 ||
+    // https://github.com/vikejs/vike/commit/886a99ff21e86a8ca699a25cee7edc184aa058e4#r143308934
+    // https://en.wikipedia.org/wiki/List_of_URI_schemes
+    // https://www.rfc-editor.org/rfc/rfc7595
+    !/^[a-z][a-z0-9\+\-]*$/i.test(before!)
+  ) {
+    return { protocol: null, uriWithoutProtocol: uri }
+  }
+  let protocol = before! + SEP
+  let uriWithoutProtocol = after.join(SEP)
+  const SEP2 = '//'
+  if (uriWithoutProtocol.startsWith(SEP2)) {
+    protocol = protocol + SEP2
+    uriWithoutProtocol = uriWithoutProtocol.slice(SEP2.length)
+  }
+  return { protocol, uriWithoutProtocol }
+}
+function isUrlProtocol(protocol: string) {
+  // Is there an altenrative to having a blacklist?
+  // - If the blacklist becomes too big, maybe use a whitelist instead ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
+  const blacklist = [
+    // https://docs.ipfs.tech/how-to/address-ipfs-on-web
+    'ipfs://',
+    'ipns://'
+  ]
+  if (blacklist.includes(protocol)) return false
+  return protocol.endsWith('://')
+}
 // Adapted from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript/14780463#14780463
 function resolveUrlPathnameRelative(pathnameRelative: string, base: string) {
   const stack = base.split('/')
@@ -198,42 +273,21 @@ function resolveUrlPathnameRelative(pathnameRelative: string, base: string) {
   return pathnameAbsolute
 }
 
-/* Not needed anymore?
-function assertUsageBaseServer(baseServer: string, usageErrorMessagePrefix: string = '') {
-  assertUsage(
-    !baseServer.startsWith('http'),
-    usageErrorMessagePrefix +
-      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vike.dev/base-url'
-  )
-  assertUsage(
-    baseServer.startsWith('/'),
-    usageErrorMessagePrefix + 'Wrong `base` value `' + baseServer + '`; `base` should start with `/`.'
-  )
-  assert(isBaseServer(baseServer))
-}
-*/
-
-function assertPathname(urlPathname: string) {
-  assert(urlPathname.startsWith('/'))
-  assert(!urlPathname.includes('?'))
-  assert(!urlPathname.includes('#'))
-}
-
-function analyzeBaseServer(
-  urlPathnameWithBase: string,
+function removeBaseServer(
+  pathnameAbsoluteWithBase: string,
   baseServer: string
 ): { pathname: string; hasBaseServer: boolean } {
-  assertPathname(urlPathnameWithBase)
+  assert(pathnameAbsoluteWithBase.startsWith('/'))
   assert(isBaseServer(baseServer))
 
   // Mutable
-  let urlPathname = urlPathnameWithBase
+  let urlPathname = pathnameAbsoluteWithBase
 
   assert(urlPathname.startsWith('/'))
   assert(baseServer.startsWith('/'))
 
   if (baseServer === '/') {
-    const pathname = urlPathnameWithBase
+    const pathname = pathnameAbsoluteWithBase
     return { pathname, hasBaseServer: true }
   }
 
@@ -245,7 +299,7 @@ function analyzeBaseServer(
   }
 
   if (!urlPathname.startsWith(baseServerNormalized)) {
-    const pathname = urlPathnameWithBase
+    const pathname = pathnameAbsoluteWithBase
     return { pathname, hasBaseServer: false }
   }
   assert(urlPathname.startsWith('/') || urlPathname.startsWith('http'))
@@ -256,7 +310,6 @@ function analyzeBaseServer(
   assert(urlPathname.startsWith('/'))
   return { pathname: urlPathname, hasBaseServer: true }
 }
-
 function isBaseServer(baseServer: string): boolean {
   return baseServer.startsWith('/')
 }
@@ -264,24 +317,92 @@ function isBaseServer(baseServer: string): boolean {
 function assertUrlComponents(
   url: string,
   origin: string | null,
-  pathname: string,
+  pathnameOriginal: string,
   searchOriginal: string | null,
   hashOriginal: string | null
-) {
-  const urlRecreated = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
+): void {
+  const urlRecreated = createUrlFromComponents(origin, pathnameOriginal, searchOriginal, hashOriginal)
   assert(url === urlRecreated)
 }
 function createUrlFromComponents(
   origin: string | null,
   pathname: string,
-  searchOriginal: string | null,
-  hashOriginal: string | null
-) {
-  const urlRecreated = `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`
+  search: string | null,
+  hash: string | null
+): string {
+  const urlRecreated = `${origin || ''}${pathname}${search || ''}${hash || ''}`
   return urlRecreated
 }
 
-function isUriWithProtocol(uri: string): boolean {
-  // https://en.wikipedia.org/wiki/List_of_URI_schemes
-  return /^[a-z0-9][a-z0-9\.\+\-]*:/i.test(uri)
+function isUrl(url: string): boolean {
+  // parseUrl() works with these URLs
+  return isUrlWithProtocol(url) || url.startsWith('/') || isUrlRelative(url)
+}
+function isUrlRedirectTarget(url: string): boolean {
+  return url.startsWith('/') || isUri(url) || isUrlWithProtocol(url)
+}
+function isUrlRelative(url: string) {
+  return ['.', '?', '#'].some((c) => url.startsWith(c)) || url === ''
+}
+function isUrlExternal(url: string): boolean {
+  return !url.startsWith('/') && !isUrlRelative(url)
+}
+/*
+URL with protocol.
+
+  http://example.com
+  https://exmaple.com
+  tauri://localhost
+  file://example.com
+  capacitor://localhost/assets/chunks/chunk-DJBYDrsP.js
+
+[Tauri](https://github.com/vikejs/vike/issues/808)
+[Electron (`file://`)](https://github.com/vikejs/vike/issues/1557)
+[Capacitor](https://github.com/vikejs/vike/issues/1706)
+ */
+function isUrlWithProtocol(url: string): boolean {
+  const { protocol } = parseProtocol(url)
+  return !!protocol && isUrlProtocol(protocol)
+}
+/*
+URIs that aren't URLs.
+
+  mailto:john@example.com
+
+  ipfs://bafybeiemxf5abjwjbikoz4mc3a3dla6ual3jsgpdr4cjr3oz3evfyavhwq/wiki/Vincent_van_Gogh.html
+
+  magnet:?xt=urn:btih:3a15e1ac49683d91b20c2ffc252ea612a6c01bd7&dn=The.Empire.Strikes.Back.1980.Remastered.1080p.BluRay.DDP.7.1.x265-EDGE2020.mkv&xl=3225443573&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://tracker.torrent.eu.org:451&tr=udp://open.stealth.si:80/announce&tr=udp://tracker.openbittorrent.com:6969&tr=udp://tracker.tiny-vps.com:6969/announce&tr=udp://open.demonii.com:1337
+
+We need to treat URIs differently than URLs.
+ - For example, we cannot parse URIs (their structure is unknown e.g. a `magnet:` URI is completely different than a `http://` URL).
+   - The protocols tauri:// file:// capacitor:// follow the same structure as http:// and https:// URLs.
+     - Thus we can parse them like http:// and https:// URLs.
+*/
+function isUri(uri: string): boolean {
+  const { protocol } = parseProtocol(uri)
+  return !!protocol && !isUrlProtocol(uri)
+}
+
+function assertUsageUrlPathnameAbsolute(url: string, errPrefix: string): void {
+  assertUsageUrl(url, errPrefix)
+}
+function assertUsageUrlRedirectTarget(url: string, errPrefix: string, isUnresolved?: true): void {
+  assertUsageUrl(url, errPrefix, { isRedirectTarget: isUnresolved ? 'unresolved' : true })
+}
+function assertUsageUrl(
+  url: string,
+  errPrefix: string,
+  { isRedirectTarget }: { isRedirectTarget?: true | 'unresolved' } = {}
+) {
+  if (url.startsWith('/')) return
+  let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
+  if (isRedirectTarget) {
+    if (isUrlRedirectTarget(url)) return
+    errMsg += ` or a protocol (${pc.string('http://')}, ${pc.string('mailto:')}, ...)`
+    if (isRedirectTarget === 'unresolved') {
+      if (url === '*') return
+      errMsg += `, or be ${pc.string('*')}`
+    }
+  }
+  assertUsage(false, errMsg)
 }

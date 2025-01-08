@@ -3,7 +3,7 @@ export { onBeforePrerenderStart }
 
 import type { OnBeforePrerenderStartAsync } from 'vike/types'
 import type { Data as DataMovies } from './+data'
-import type { Data as DataMovie } from '../movie/+data'
+import type { Data as DataMovie } from '../@id/+data.shared'
 import { filterMovieData } from '../filterMovieData'
 import { fetchStarWarsMovies, filterMoviesData, getTitle } from './data'
 

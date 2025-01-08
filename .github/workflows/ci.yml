@@ -1,19 +1,14 @@
 name: CI
-
-env:
-  # 7 GiB by default on GitHub, setting to 6 GiB
-  # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-  NODE_OPTIONS: --max-old-space-size=6144
-
-on:
-  push:
+on: [ push, pull_request ]
 
 jobs:
   prepare:
+    # Prevent workflow being run twice, https://github.com/orgs/community/discussions/57827#discussioncomment-6579237
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
       with:
         node-version: 20
     - id: getMatrix
@@ -36,17 +31,15 @@ jobs:
     name: '${{ matrix.jobName }}'
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - name: Set node version to ${{ matrix.node_version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
-          cache: "pnpm"
+          # TODO/eventually: try using the cache again
+          # The cache breaks playwright https://github.com/vikejs/vike-vue/pull/119
+          # cache: "pnpm"
 
       - run: pnpm install
       - run: pnpm exec playwright install chromium

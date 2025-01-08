@@ -11,20 +11,12 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-
-      - name: Install
-        run: pnpm install
-
-      - name: Build Vike
-        run: pnpm run build
-
-      - name: Build docs
-        run: pnpm run docs:build
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpm run docs:build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4

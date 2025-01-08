@@ -1,40 +1,38 @@
 import { Link } from '@brillout/docpress'
-import RouteDomainDriven from '../../components/RouteDomainDriven.mdx'
 
-Route Functions give you full programmatic flexibility to define routes.
+Route Functions provide full programmatic flexibility to define routes.
 
 ```js
 // /pages/product/edit/+route.js
 
-export { route }
+// This file defines the route of /pages/product/edit/+Page.js
 
+// We use a RegExp, but we could as well use a routing library.
 import partRegex from 'part-regex'
+const routeRegex = partRegex`/product/${/([0-9]+)/}/edit`
 
-const route = (pageContext) => {
-  // Route guard (we can also use a guard() hook instead)
-  if (!pageContext.user.isAdmin) {
-    return false
-  }
+export function route(pageContext) {
+  if (!pageContext.user.isAdmin) return false
 
-  // We can use RegExp / any library we want
-  if (!partRegex`/product/${/[0-9]+/}/edit`.test(pageContext.urlPathname)) {
-    return false
-  }
-  const id = pageContext.urlPathname.split('/')[2]
+  const match = pageContext.urlPathname.match(routeRegex)
+  if (!match) return false
+  const [, id] = match
 
   return {
-    // Make `id` available as pageContext.routeParams.id
     routeParams: { id }
   }
 }
 ```
 
-If you merely want to guard your page, then you can use a <Link text="Route String" href="/route-string" /> with a <Link text={<code>guard()</code>} href="/guard" /> hook instead of a Route Function, which is usually a better approach.
+> The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
+
+If you merely want to guard your page, then you can use a <Link text="Route String" href="/route-string" /> with a <Link text={<code>guard()</code>} href="/guard" /> hook instead of a Route Function.
 
 You can use any routing tool you want, such as:
  - Vike's <Link text="Route String" href="/route-string" /> resolver [`resolveRoute()`](#resolveroute)
  - [partRegex](https://github.com/brillout/part-regex)
  - [path-to-regexp](https://www.npmjs.com/package/path-to-regexp) (the router used by Express.js)
+ - etc.
 
 
 ## Precedence
@@ -149,7 +147,7 @@ Route Functions should be lightweight and fast.
 
 ## Async
 
-Async Route Functions are forbidden.
+Asynchronous Route Functions are forbidden.
 
 ```js
 // +route.js
@@ -158,21 +156,17 @@ Async Route Functions are forbidden.
 export default async () => { /* ... */ }
 ```
 
-The motivation for having an asynchronous Route Function is usually to implement redirection and/or protecting a private
-page. Instead, use <Link href="/render" text={<code>throw render()</code>} /> or<Link href="/redirect" text={<code>throw redirect()</code>} />
-with an async <Link text={<code>guard()</code>} href="/guard" />, <Link text={<code>data()</code>} href="/data" /> or
-<Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> hook.
+The motivation for having an asynchronous Route Function is usually to redirect/protect a private
+page. You can achieve that by using <Link href="/render" text={<code>throw render()</code>} /> / <Link href="/redirect" text={<code>throw redirect()</code>} />
+with an async <Link text={<code>guard()</code>} href="/guard" />, async <Link text={<code>data()</code>} href="/data" />, or
+async <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" /> hook.
 
-> An asynchronous Route Function would slow down your entire app: as explained in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* Route Functions are called. This means that a slow Route Function slows down *all* pages.
+> An asynchronous Route Function would slow down your entire app: as explained in [Lightweight & fast](#lightweight-fast), every time the user navigates to a new page *all* your Route Functions are called. This means that a single slow Route Function slows down *all* your pages.
 
 
 ## Redirection
 
 See <Link href="/redirect" />.
-
-## Domain-driven file structure
-
-<RouteDomainDriven />
 
 ## Cannot provide `pageContext`
 
@@ -210,7 +204,11 @@ export default () => {
 }
 ```
 
-But this isn't recommended: `pageContext.routeParams` is supposed to hold only a minimal amount of information. Instead,
+But it isn't recommended: `pageContext.routeParams` is supposed to hold only a minimal amount of information. Instead,
 we recommend to implement complex logic in <Link text={<code>data()</code>} href="/data" />,
 <Link text={<code>onBeforeRender()</code>} href="/onBeforeRender" />, <Link text={<code>guard()</code>} href="/guard" />,
 or in a <Link text="custom hook" href="/meta" />.
+
+## See also
+
+ - <Link href="/routing" />

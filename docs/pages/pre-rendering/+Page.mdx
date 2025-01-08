@@ -1,4 +1,5 @@
 import { RepoLink, Link } from '@brillout/docpress'
+import PreRenderDynamicRoutes from './PreRenderDynamicRoutes.mdx'
 
 
 ## What is pre-rendering?
@@ -7,7 +8,7 @@ Pre-rendering means to render the HTML of pages at build-time (when running `$ v
 
 Without pre-rendering, the HTML of a page is rendered at request-time (when the user goes to that page).
 
-If you pre-render all yours pages, then this removes the need for a production server: your app consists only of static assets (HTML, JS, CSS, images, ...)
+If you pre-render all of your pages, then you no longer need a production server: your app will consist only of static assets (HTML, JS, CSS, images, ...)
 that you can deploy to so-called "static hosts" such as <Link href="/github-pages" text="GitHub Pages" />, [Cloudflare Pages](/cloudflare-pages), or [Netlify](/netlify).
 
 If you don't pre-render, then you need a production server in order to be able to dynamically render the HTML of your pages at request-time. (A Node.js production server, or a Node.js-like production environment such as <Link href="/cloudflare-workers" text="Cloudflare Workers" /> or <Link href="/vercel" text="Vercel" />.)
@@ -48,7 +49,9 @@ List of options: <Link href="/prerender" />.
 
 Your pages' HTML will be rendered when you run `$ vite build` and the generated HTML files are available at `dist/client/`.
 
-For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the [`onBeforePrerenderStart()` hook](/onBeforePrerenderStart) in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
+For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link> in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
+
+<PreRenderDynamicRoutes />
 
 By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender#toggle" text={<code>prerender: false</code>} />.
 
@@ -80,7 +83,16 @@ The only difference between SSG and SSR is *when* the HTML is rendered:
 
 ## See also
 
-- <Link href="/prerender" />
-- <Link href="/command-prerender" />
-- <Link href="/prerender-programmatic" />
+Related docs:
+
+- <Link href="/data-fetching#pre-rendering-ssg" doNotInferSectionTitle />
+- <Link href="/static-hosts" />
 - <Link href="/ssr" />
+
+Pre-rendering options:
+
+- <Link href="/prerender" />
+- <Link href="/prerender-programmatic" />
+- <Link href="/onBeforePrerenderStart" />
+- <Link href="/onPrerenderStart" />
+- <Link href="/command-prerender" />

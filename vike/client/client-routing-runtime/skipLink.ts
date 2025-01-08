@@ -1,28 +1,26 @@
 export { skipLink }
+export { isSameAsCurrentUrl }
 
+import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'
-import { assert, parseUrl, isBaseServer, isParsable, isExternalLink } from './utils.js'
+import { assert, parseUrl, isBaseServer, isUrl, isUrlExternal } from './utils.js'
 
 function skipLink(linkTag: HTMLElement): boolean {
-  const url = linkTag.getAttribute('href')
-
-  if (url === null) return true
-  if (url === '') return true
-  if (isExternalLink(url)) return true
-  if (isNewTabLink(linkTag)) return true
-  if (isHashUrl(url)) return true
-  if (!hasBaseServer(url)) {
-    return true
-  }
-  if (!isParsable(url)) {
-    return true
-  }
-  // Purposely last because disableAutomaticLinkInterception will be removed in the major release
-  if (!isVikeLink(linkTag)) return true
-  return false
+  const href = linkTag.getAttribute('href')
+  return (
+    href === null ||
+    !isUrl(href) ||
+    href === '' ||
+    isUrlExternal(href) ||
+    isSamePageHashLink(href) ||
+    isNewTabLink(linkTag) ||
+    !hasBaseServer(href) ||
+    // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
+    !isVikeLink(linkTag)
+  )
 }
 
-// TODO/v1-release: remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions will be deprecated)
+// TODO/next-major-release: remove this in favor of synchronously checking whether URL matches the route of a page (possible since Async Route Functions will be deprecated)
 function isVikeLink(linkTag: HTMLElement) {
   const disableAutomaticLinkInterception = isDisableAutomaticLinkInterception()
   if (!disableAutomaticLinkInterception) {
@@ -38,20 +36,25 @@ function isNewTabLink(linkTag: HTMLElement) {
   const rel = linkTag.getAttribute('rel')
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
 }
-function isHashUrl(url: string) {
-  if (url.startsWith('#')) {
-    return true
-  }
-  const removeHash = (url: string) => url.split('#')[0]
-  if (url.includes('#') && removeHash(url) === removeHash(window.location.href)) {
+function isSamePageHashLink(href: string) {
+  if (href.startsWith('#')) return true
+  if (
+    href.includes('#') &&
+    normalizeClientSideUrl(href, { withoutHash: true }) ===
+      normalizeClientSideUrl(window.location.href, { withoutHash: true })
+  ) {
     return true
   }
   return false
 }
-function hasBaseServer(url: string): boolean {
+function isSameAsCurrentUrl(href: string) {
+  if (href.startsWith('#')) return href === window.location.hash
+  return normalizeClientSideUrl(href) === normalizeClientSideUrl(window.location.href)
+}
+function hasBaseServer(href: string): boolean {
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
-  const { hasBaseServer } = parseUrl(url, baseServer)
+  const { hasBaseServer } = parseUrl(href, baseServer)
   return hasBaseServer
 }
 

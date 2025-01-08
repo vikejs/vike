@@ -31,7 +31,7 @@ Unique Vike features:
  - Vike allows the user to use different UI frameworks for the same app
    - For example, a Vike sponsor uses Vike to use Solid for all its pages except for one page that uses React because it needs a React library that doesn't exist for Solid
      - Important for Solid: for React users that are tempted to use Solid, Solid can sell the story "try Solid while being able to fall back to React, e.g. if a page needs some React library".
- - Users can build a custom [Framework-as-a-Product](https://vike.land/#framework-as-a-product). (Vike has been designed so that frameworks can be built on top of it.)
+ - Users can build a custom [Framework-as-a-Product](https://land.vike.dev/#framework-as-a-product). (Vike has been designed so that frameworks can be built on top of it.)
    - [Custom configs](https://vike.dev/meta)
  - Low-level primitives allowing users to deeply integrate with data fetching tools.
    - For example, Vike sponsors use it to deeply integrate Relay. (Facebook's internal framework deeply integrates with Relay in ways that aren't possible with Next.js.)
@@ -60,6 +60,7 @@ Minor features that can be life changing for some users:
 - `pageContext.isBackwardsNavigation` (https://vike.dev/pageContext) for backwards/forward page transition animations
 - Vike can be loaded twice (or more) on the server-side, (some deployment architectures need this)
 - Catches and interrupts infinite loops of URL redirections and URL rewrites
+- Supports [`@vitejs/plugin-legacy`](https://github.com/vitejs/vite/tree/main/packages/plugin-legacy).
 
 And lots of details:
 - [Automatic frontend deployment synchronization](https://vike.dev/deploy-sync)
@@ -75,4 +76,7 @@ And lots of details:
 - User can use `history.pushState()`: Vike's router detects that and gets out of the user's way
 
 Misc:
-- `throw Render()`
+- `throw render()`
+- Powerful Routing (Route Functions, powerful globing)
+- First-class SSG support
+  - https://github.com/vikejs/vike-react/issues/105#issuecomment-2061601329

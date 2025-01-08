@@ -4,15 +4,15 @@ export const hydrationCanBeAborted = true
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 let root: ReactDOM.Root
 async function render(pageContext: any) {
   const { Page, pageProps } = pageContext
   const page = (
-    <PageLayout>
+    <Layout>
       <Page {...pageProps} />
-    </PageLayout>
+    </Layout>
   )
   const container = document.getElementById('page-view')!
   if (pageContext.isHydration) {

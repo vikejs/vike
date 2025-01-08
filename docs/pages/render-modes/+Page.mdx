@@ -1,20 +1,23 @@
-import { UseUiFrameworkVikeExtensionAnyHint } from '../../components'
-
+import { Advanced, UseVikeExtensionUiFramework } from '../../components'
 import { Link, RepoLink, Warning } from '@brillout/docpress'
 
-For each page, we can choose a different render mode:
+<Advanced>
+  This page documents how to implement render modes yourself. It's an advanced task and we generally recommend simply using the <Link href="/ssr">`ssr`</Link> and <Link href="/pre-rendering#how-to-pre-render">`prerender`</Link> settings instead.
+</Advanced>
+
+For each page, you can choose a different render mode:
  - SPA
  - SSR
  - HTML-only
  - Pre-rendering (SSG)
 
-For example, we can render an admin panel as SPA while rendering marketing pages with SSR.
+For example, you can render an admin panel as SPA while rendering marketing pages with SSR.
 
 > What "SPA", "SSR", "HTML-only" and "SSG" mean, and which one should be used, is explained at <Link href="/SPA-vs-SSR" />.
 
 > The Vike boilerplates do SSR by default, which is a sensible default that works for most apps.
 
-<UseUiFrameworkVikeExtensionAnyHint featureName="Render Modes" />
+<UseVikeExtensionUiFramework featureName="Render Modes" />
 
 ## SPA
 
@@ -30,7 +33,7 @@ To achieve that:
 By setting `Page`'s meta config `env` to `{ client: true, server: false }` we tell Vike to load `+Page.js` only in the browser.
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 // Environment: config
 
 export default {
@@ -43,7 +46,7 @@ export default {
 ```
 
 React example (SPA + SSR):
- - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.h.ts" />
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.ts" />
  - SPA page: <RepoLink path="/examples/render-modes/pages/spa/+Page.jsx" />
  - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/spa/+renderMode.js" />
  - SSR page: <RepoLink path="/examples/render-modes/pages/ssr/+Page.jsx" />
@@ -51,7 +54,7 @@ React example (SPA + SSR):
 
 Vue example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/spa.page.client.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
 
-> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contributions welcome to fork and update the Vue example.
 
 
 **2. Render hooks (SPA only)**
@@ -144,7 +147,7 @@ export const description = 'My App is ...'
 ```
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 export default {
   meta: {
     Page: {
@@ -192,7 +195,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 > If we set the `Page` meta config `env` to `{ server: false, client: true }` instead of
-> `{ server: true, client: true }` in `config.h.js`, then `pageContext.Page` is
+> `{ server: true, client: true }` in `config.js`, then `pageContext.Page` is
 > only defined in the browser.
 
 ```js
@@ -226,7 +229,7 @@ async function onRenderClient(pageContext) {
 React example: <Link href="/examples/render-modes/" />.
  - Server-side hook: <RepoLink path="/examples/render-modes/renderer/+onRenderHtml.jsx" />
  - Client-side hook: <RepoLink path="/examples/render-modes/renderer/+onRenderClient.jsx" />
- - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.h.ts" />
+ - Custom `renderMode` config: <RepoLink path="/examples/render-modes/renderer/+config.ts" />
  - SPA page: <RepoLink path="/examples/render-modes/pages/spa/+Page.jsx" />
  - SPA page's `renderMode` config value: <RepoLink path="/examples/render-modes/pages/spa/+renderMode.js" />
  - SSR page: <RepoLink path="/examples/render-modes/pages/ssr/+Page.jsx" />
@@ -238,7 +241,7 @@ Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example`](https://github.c
  - SPA page: [/pages/spa.page.client.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
  - SSR page: [/pages/ssr.page.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/ssr.page.vue)
 
-> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contributions welcome to fork and update the Vue example.
 
 
 ## SSR
@@ -266,7 +269,7 @@ To render a page to HTML-only:
 
 
 ```js
-// /renderer/+config.h.js
+// /renderer/+config.js
 // Environment: config
 
 export default {
@@ -310,4 +313,9 @@ React example:
 
 Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/html.page.server.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/html.page.server.vue)
 
-> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contribution welcome to fork and update the Vue example.
+> vite-plugin-ssr was the [previous name of Vike](https://vite-plugin-ssr.com/vike). Contributions welcome to fork and update the Vue example.
+
+
+## See also
+
+- <Link href="/clientHooks" />

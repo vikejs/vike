@@ -13,7 +13,7 @@ import {
   assert,
   hasProp,
   objectAssign,
-  isParsable,
+  isUrl,
   parseUrl,
   assertEnv,
   assertWarning,
@@ -25,9 +25,11 @@ import {
   modifyUrlPathname,
   prependBase,
   removeUrlOrigin,
-  addUrlOrigin,
+  setUrlOrigin,
   createUrlFromComponents,
-  isUriWithProtocol
+  isUri,
+  type UrlPublic,
+  getUrlPretty
 } from './utils.js'
 import {
   assertNoInfiniteAbortLoop,
@@ -37,13 +39,15 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
-import { getGlobalContext, initGlobalContext } from './globalContext.js'
+import { getGlobalContext, initGlobalContext_renderPage } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
-  createHttpResponseObjectRedirect,
+  createHttpResponseFavicon404,
+  createHttpResponseRedirect,
   createHttpResponsePageContextJson,
-  HttpResponse
-} from './renderPage/createHttpResponseObject.js'
+  HttpResponse,
+  createHttpResponseError
+} from './renderPage/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
@@ -51,27 +55,27 @@ import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.j
 import { log404 } from './renderPage/log404/index.js'
 import { isConfigInvalid } from './renderPage/isConfigInvalid.js'
 import pc from '@brillout/picocolors'
-import type { PageContextBuiltInServer, Url } from '../../types/index.js'
+import type { PageContextServer } from '../../types/index.js'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
 import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
-import { resolveRedirects } from '../../shared/route/resolveRedirects.js'
+import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
+import type { PageFile } from '../../shared/getPageFiles.js'
+import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
-  httpRequestsCount: 0,
-  pendingRequestsCount: 0
+  httpRequestsCount: 0
 })
 let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
-  pageContextReturn: await ret(),
-  onRequestDone: () => {}
+  pageContextReturn: await ret()
 })
 const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
   renderPage_wrapper = wrapper
 }
 
-type PageContextAfterRender = { httpResponse: HttpResponse | null } & Partial<PageContextBuiltInServerInternal>
+type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextBuiltInServerInternal>
 
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -85,33 +89,30 @@ async function renderPage<
 >(
   pageContextInit: PageContextInit
 ): Promise<
-  // Partial because rendering may fail at any user hook. Also Partial when httpResponse !== null because .pageContext.json requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
-  PageContextInit & { httpResponse: HttpResponse | null } & Partial<PageContextBuiltInServer & PageContextUserAdded>
+  // Partial because rendering may fail at any user hook.
+  // - `.pageContext.json` requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
+  PageContextInit & { httpResponse: HttpResponse } & Partial<PageContextServer & PageContextUserAdded>
 > {
   assertArguments(...arguments)
-  assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
+  assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertEnv()
-
-  if (isIgnoredUrl(pageContextInit.urlOriginal)) {
-    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
-    checkType<PageContextAfterRender>(pageContextHttpResponseNull)
-    return pageContextHttpResponseNull as any
-  }
+  assertIsUrl(pageContextInit.urlOriginal)
+  const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
+  assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
+  if (urlPathnameWithBase.endsWith('/favicon.ico')) return getPageContextHttpResponseFavicon404(pageContextInit) as any
 
   const httpRequestId = getRequestId()
-  const { urlOriginal } = pageContextInit
-  logHttpRequest(urlOriginal, httpRequestId)
-  globalObject.pendingRequestsCount++
+  const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
+  logHttpRequest(urlOriginalPretty, httpRequestId)
 
-  const { pageContextReturn, onRequestDone } = await renderPage_wrapper(httpRequestId, () =>
+  const { pageContextReturn } = await renderPage_wrapper(httpRequestId, () =>
     renderPageAndPrepare(pageContextInit, httpRequestId)
   )
 
-  logHttpResponse(urlOriginal, httpRequestId, pageContextReturn)
-  globalObject.pendingRequestsCount--
-  onRequestDone()
+  logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
 
   checkType<PageContextAfterRender>(pageContextReturn)
+  assert(pageContextReturn.httpResponse)
   return pageContextReturn as any
 }
 async function renderPageAndPrepare(
@@ -119,39 +120,44 @@ async function renderPageAndPrepare(
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
   // Invalid config
-  const handleInvalidConfig = () => {
-    logRuntimeInfo?.(pc.bold(pc.red("Couldn't load configuration: see error above.")), httpRequestId, 'error')
-    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
-    return pageContextHttpResponseNull
+  const handleInvalidConfig = (err: unknown) => {
+    logRuntimeInfo?.(
+      pc.bold(pc.red('Error while loading a Vike config file, see error above.')),
+      httpRequestId,
+      'error'
+    )
+    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
+    return pageContextWithError
   }
   if (isConfigInvalid) {
-    return handleInvalidConfig()
+    if (
+      1 < 2 // Make TS happy
+    ) {
+      return handleInvalidConfig(isConfigInvalid.err)
+    }
   }
 
   // Prepare context
   let renderContext: RenderContext
   try {
-    await initGlobalContext()
+    await initGlobalContext_renderPage()
     renderContext = await getRenderContext()
   } catch (err) {
-    // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
-    // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code
+    // Errors are expected since assertUsage() is used in both initGlobalContext_renderPage() and getRenderContext().
+    // initGlobalContext_renderPage() and getRenderContext() don't call any user hooks => err isn't thrown from user code.
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
-    const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(err, pageContextInit)
-    return pageContextHttpResponseNull
+    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
+    return pageContextWithError
   }
   if (isConfigInvalid) {
-    return handleInvalidConfig()
+    return handleInvalidConfig(isConfigInvalid.err)
   } else {
     // From now on, renderContext.pageConfigs contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
 
   // Check Base URL
-  {
-    const pageContextHttpResponse = checkBaseUrl(pageContextInit, httpRequestId)
-    if (pageContextHttpResponse) return pageContextHttpResponse
-  }
+  assertBaseUrl(pageContextInit)
 
   // Normalize URL
   {
@@ -260,10 +266,10 @@ async function renderPageAlreadyPrepared(
     {
       const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
       if (!errorPageId) {
-        objectAssign(pageContextErrorPageInit, { _pageId: null })
+        objectAssign(pageContextErrorPageInit, { pageId: null })
         return handleErrorWithoutErrorPage(pageContextErrorPageInit)
       } else {
-        objectAssign(pageContextErrorPageInit, { _pageId: errorPageId })
+        objectAssign(pageContextErrorPageInit, { pageId: errorPageId })
       }
     }
 
@@ -294,8 +300,12 @@ async function renderPageAlreadyPrepared(
             )} doesn't occur while the error page is being rendered.`,
             { onlyOnce: false }
           )
-          const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
-          return pageContextHttpResponseNull
+          const pageContextHttpWithError = getPageContextHttpResponseError(
+            errNominalPage,
+            pageContextInit,
+            pageContextErrorPageInit
+          )
+          return pageContextHttpWithError
         }
         // `throw redirect()` / `throw render(url)`
         return handled.pageContextReturn
@@ -303,67 +313,98 @@ async function renderPageAlreadyPrepared(
       if (isNewError(errErrorPage, errNominalPage)) {
         logRuntimeError(errErrorPage, httpRequestId)
       }
-      const pageContextHttpResponseNull = getPageContextHttpResponseNullWithError(errNominalPage, pageContextInit)
-      return pageContextHttpResponseNull
+      const pageContextWithError = getPageContextHttpResponseError(
+        errNominalPage,
+        pageContextInit,
+        pageContextErrorPageInit
+      )
+      return pageContextWithError
     }
     return pageContextErrorPage
   }
 }
 
 function logHttpRequest(urlOriginal: string, httpRequestId: number) {
-  const clearErrors = globalObject.pendingRequestsCount === 0
-  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), httpRequestId, 'info', clearErrors)
+  logRuntimeInfo?.(getRequestInfoMessage(urlOriginal), httpRequestId, 'info')
 }
 function getRequestInfoMessage(urlOriginal: string) {
-  return `HTTP request: ${pc.bold(urlOriginal)}`
+  return `HTTP request: ${prettyUrl(urlOriginal)}`
 }
-function logHttpResponse(urlOriginal: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
+function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageContextReturn: PageContextAfterRender) {
   const statusCode = pageContextReturn.httpResponse?.statusCode ?? null
+
+  let msg: `HTTP response ${string}` | `HTTP redirect ${string}`
+  let isNominal: boolean
   {
-    // If URL doesn't include Base URL
     const { errorWhileRendering } = pageContextReturn
-    const isSkipped = statusCode === null && (errorWhileRendering === null || errorWhileRendering === undefined)
-    if (isSkipped) return
+    const isSkipped = statusCode === null && !errorWhileRendering
+    if (isSkipped) {
+      // - URL doesn't include Base URL
+      //   - Can we abort earlier so that `logHttpResponse()` and `logHttpRequest()` aren't even called?
+      // - Error loading a Vike config file
+      //   - We should show `HTTP response ${urlOriginalPretty} ERR` instead.
+      //   - Maybe we can/should make the error available at pageContext.errorWhileRendering
+      assert(errorWhileRendering === null || errorWhileRendering === undefined)
+      msg = `HTTP response ${prettyUrl(urlOriginalPretty)} ${pc.dim('null')}`
+      // Erroneous value (it shoud sometimes be `false`) but it's fine as it doesn't seem to have much of an impact.
+      isNominal = true
+    } else {
+      const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
+      isNominal = isSuccess || statusCode === 404
+      const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
+      const isRedirect = statusCode && 300 <= statusCode && statusCode <= 399
+      const type = isRedirect ? 'redirect' : 'response'
+      if (isRedirect) {
+        assert(pageContextReturn.httpResponse)
+        const headerRedirect = pageContextReturn.httpResponse.headers
+          .slice()
+          .reverse()
+          .find((header) => header[0] === 'Location')
+        assert(headerRedirect)
+        const urlRedirect = headerRedirect[1]
+        urlOriginalPretty = urlRedirect
+      }
+      msg = `HTTP ${type} ${prettyUrl(urlOriginalPretty)} ${color(statusCode ?? 'ERR')}`
+    }
   }
-  const isSuccess = statusCode !== null && statusCode >= 200 && statusCode <= 399
-  const isNominal = isSuccess || statusCode === 404
-  const color = (s: number | string) => pc.bold(isSuccess ? pc.green(String(s)) : pc.red(String(s)))
-  const isRedirect = statusCode && 300 <= statusCode && statusCode <= 399
-  const type = isRedirect ? 'redirect' : 'response'
-  if (isRedirect) {
-    assert(pageContextReturn.httpResponse)
-    const headerRedirect = pageContextReturn.httpResponse.headers
-      .slice()
-      .reverse()
-      .find((header) => header[0] === 'Location')
-    assert(headerRedirect)
-    const urlRedirect = headerRedirect[1]
-    urlOriginal = urlRedirect
-  }
-  logRuntimeInfo?.(
-    `HTTP ${type} ${pc.bold(urlOriginal)} ${color(statusCode ?? 'ERR')}`,
-    httpRequestId,
-    isNominal ? 'info' : 'error'
-  )
+  logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')
+}
+function prettyUrl(url: string) {
+  return pc.bold(decodeURI(url))
 }
 
-function getPageContextHttpResponseNullWithError(err: unknown, pageContextInit: Record<string, unknown>) {
-  const pageContextHttpResponseNull = {}
-  objectAssign(pageContextHttpResponseNull, pageContextInit)
-  objectAssign(pageContextHttpResponseNull, {
-    httpResponse: null,
+function getPageContextHttpResponseError(
+  err: unknown,
+  pageContextInit: Record<string, unknown>,
+  pageContext: null | {
+    _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfigRuntime[]
+  }
+): PageContextAfterRender {
+  const pageContextWithError = createPageContext(pageContextInit)
+  const httpResponse = createHttpResponseError(pageContext)
+  objectAssign(pageContextWithError, {
+    httpResponse,
     errorWhileRendering: err
   })
-  return pageContextHttpResponseNull
+  return pageContextWithError
 }
-function getPageContextHttpResponseNull(pageContextInit: Record<string, unknown>): PageContextAfterRender {
-  const pageContextHttpResponseNull = {}
-  objectAssign(pageContextHttpResponseNull, pageContextInit)
-  objectAssign(pageContextHttpResponseNull, {
-    httpResponse: null,
-    errorWhileRendering: null
+function getPageContextHttpResponseFavicon404(pageContextInit: Record<string, unknown>): PageContextAfterRender {
+  const pageContext = createPageContext(pageContextInit)
+  const httpResponse = createHttpResponseFavicon404()
+  objectAssign(pageContext, {
+    httpResponse
   })
-  return pageContextHttpResponseNull
+  checkType<PageContextAfterRender>(pageContext)
+  return pageContext
+}
+
+function createPageContext(pageContextInit: Record<string, unknown>) {
+  const pageContext = {
+    _isPageContextObject: true
+  }
+  Object.assign(pageContext, pageContextInit)
+  return pageContext
 }
 
 async function renderPageNominal(
@@ -375,17 +416,18 @@ async function renderPageNominal(
   {
     const pageContextFromRoute = await route(pageContext)
     objectAssign(pageContext, pageContextFromRoute)
-    objectAssign(pageContext, { is404: pageContext._pageId ? null : true })
-    if (pageContext._pageId === null) {
+    objectAssign(pageContext, { is404: pageContext.pageId ? null : true })
+    if (pageContext.pageId === null) {
       const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
       if (!errorPageId) {
-        assert(hasProp(pageContext, '_pageId', 'null'))
+        assert(hasProp(pageContext, 'pageId', 'null'))
         return handleErrorWithoutErrorPage(pageContext)
       }
-      objectAssign(pageContext, { _pageId: errorPageId })
+      objectAssign(pageContext, { pageId: errorPageId })
     }
   }
-  assert(hasProp(pageContext, '_pageId', 'string'))
+  assert(hasProp(pageContext, 'pageId', 'string'))
+  assert(pageContext.errorWhileRendering === null)
 
   // Render
   const pageContextAfterRender = await renderPageAlreadyRouted(pageContext)
@@ -404,12 +446,13 @@ async function getPageContextErrorPageInit(
   const pageContextInitEnhanced = getPageContextInitEnhancedSSR(pageContextInit, renderContext, null, httpRequestId)
 
   assert(errNominalPage)
-  const pageContext = {
-    ...pageContextInitEnhanced,
+  const pageContext = {}
+  objectAssign(pageContext, pageContextInitEnhanced)
+  objectAssign(pageContext, {
     is404: false,
     errorWhileRendering: errNominalPage as Error,
     routeParams: {} as Record<string, string>
-  }
+  })
 
   objectAssign(pageContext, {
     _debugRouteMatches:
@@ -455,24 +498,31 @@ function getRequestId(): number {
   return httpRequestId
 }
 
-function isIgnoredUrl(urlOriginal: string): boolean {
-  const isViteClientRequest = urlOriginal.endsWith('/@vite/client') || urlOriginal.startsWith('/@fs/')
-  assertWarning(
-    !isViteClientRequest,
-    `The vike middleware renderPage() was called with the URL ${urlOriginal} which is unexpected because the HTTP request should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* Vike's middleware, see https://vike.dev/renderPage`,
-    { onlyOnce: true }
-  )
-  return (
-    urlOriginal.endsWith('/__vite_ping') ||
-    urlOriginal.endsWith('/favicon.ico') ||
-    !isParsable(urlOriginal) ||
-    isViteClientRequest
+function assertIsUrl(urlOriginal: string) {
+  assertUsage(
+    isUrl(urlOriginal),
+    `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
+      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
+    )} which isn't a valid URL.`
   )
 }
+function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
+  const isViteRequest =
+    urlPathname.startsWith('/@vite/client') || urlPathname.startsWith('/@fs/') || urlPathname.startsWith('/__vite_ping')
+  assertUsage(
+    !isViteRequest,
+    `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
+      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
+    )} which is unexpected because this URL should have already been handled by Vite's development middleware. Make sure to 1. install Vite's development middleware and 2. add Vite's middleware *before* Vike's middleware, see https://vike.dev/renderPage`
+  )
+}
+
 function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
   const { trailingSlash, disableUrlNormalization, baseServer } = getGlobalContext()
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
+  const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
+  if (isPageContextRequest) return null
   const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash, baseServer)
   if (!urlNormalized) return null
   logRuntimeInfo?.(
@@ -480,11 +530,9 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseObjectRedirect(
-    { url: urlNormalized, statusCode: 301 },
-    pageContextInit.urlOriginal
-  )
-  const pageContextHttpResponse = { ...pageContextInit, httpResponse }
+  const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContextInit.urlOriginal)
+  const pageContextHttpResponse = createPageContext(pageContextInit)
+  objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
 }
 
@@ -496,9 +544,9 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
     const urlTarget = resolveRedirects(redirects, urlPathname)
     if (urlTarget === null) return null
-    if (!isParsable(urlTarget)) {
+    if (!isUrl(urlTarget)) {
       // E.g. `urlTarget === 'mailto:some@example.com'`
-      assert(isUriWithProtocol(urlTarget) && !urlTarget.startsWith('http'))
+      assert(isUri(urlTarget))
       urlTargetExternal = urlTarget
       return null
     }
@@ -509,19 +557,30 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   if (urlTargetExternal) {
     urlTarget = urlTargetExternal
   } else {
-    if (origin) urlTarget = addUrlOrigin(urlTarget, origin)
-    if (urlTarget === urlWithoutBase) return null
-    urlTarget = prependBase(urlTarget, baseServer)
+    let originChanged = false
+    if (origin) {
+      const urlModified = setUrlOrigin(urlTarget, origin)
+      if (urlModified !== false) {
+        originChanged = true
+        urlTarget = urlModified
+      }
+    }
+    if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
+    if (!originChanged) urlTarget = prependBase(urlTarget, baseServer)
     assert(urlTarget !== pageContextInit.urlOriginal)
   }
   logRuntimeInfo?.(
-    `Permanent redirect defined by your config.redirects (https://vike.dev/redirects)`,
+    `Permanent redirection defined by config.redirects (https://vike.dev/redirects)`,
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseObjectRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
-  const pageContextHttpResponse = { ...pageContextInit, httpResponse }
+  const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
+  const pageContextHttpResponse = createPageContext(pageContextInit)
+  objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
+}
+function normalize(url: string) {
+  return url || '/'
 }
 
 async function handleAbortError(
@@ -531,7 +590,7 @@ async function handleAbortError(
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageInit to it: we only use some pageContextNominalPageInit information.
   pageContextNominalPageInit: {
     urlOriginal: string
-    urlParsed: Url
+    urlParsed: UrlPublic
     _urlRewrite: null | string
     isClientSideNavigation: boolean
   },
@@ -557,12 +616,11 @@ async function handleAbortError(
           abortCall
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
-      const pageContext = {
-        _pageId: errorPageId,
-        ...pageContextAbort,
-        ...pageContextErrorPageInit,
-        ...renderContext
-      }
+      const pageContext = createPageContext({})
+      objectAssign(pageContext, { pageId: errorPageId })
+      objectAssign(pageContext, pageContextAbort)
+      objectAssign(pageContext, pageContextErrorPageInit)
+      objectAssign(pageContext, renderContext)
       objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = serializePageContextClientSide(pageContext)
@@ -583,11 +641,9 @@ async function handleAbortError(
     return { pageContextReturn }
   }
   if (pageContextAbort._urlRedirect) {
-    const pageContextReturn = {
-      ...pageContextInit,
-      ...pageContextAbort
-    }
-    const httpResponse = createHttpResponseObjectRedirect(
+    const pageContextReturn = createPageContext(pageContextInit)
+    objectAssign(pageContextReturn, pageContextAbort)
+    const httpResponse = createHttpResponseRedirect(
       pageContextAbort._urlRedirect,
       (() => {
         const { pathname, searchOriginal } = pageContextNominalPageInit.urlParsed
@@ -608,21 +664,15 @@ async function handleAbortError(
   return { pageContextAbort }
 }
 
-function checkBaseUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+function assertBaseUrl(pageContextInit: { urlOriginal: string }) {
   const { baseServer } = getGlobalContext()
   const { urlOriginal } = pageContextInit
   const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
   const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
-  if (!hasBaseServer) {
-    logRuntimeInfo?.(
-      `${getRequestInfoMessage(urlOriginal)} skipped because URL ${pc.bold(
-        urlOriginal
-      )} doesn't start with Base URL ${pc.bold(baseServer)} (https://vike.dev/base-url)`,
-      httpRequestId,
-      'info'
-    )
-    const pageContextHttpResponseNull = getPageContextHttpResponseNull(pageContextInit)
-    return pageContextHttpResponseNull
-  }
-  return null
+  assertUsage(
+    hasBaseServer,
+    `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
+      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
+    )} which doesn't start with Base URL ${pc.code(baseServer)} (https://vike.dev/base-url)`
+  )
 }

@@ -31,20 +31,34 @@ async function getTestJobs() {
   const specFiles = projectFiles.filter((file) => file.includes('.spec.'))
   const testFiles = projectFiles.filter((file) => file.includes('.test.'))
 
+  const linux_nodeOld = {
+    os: 'ubuntu-latest',
+    node_version: '18'
+  }
+  const windows_nodeOld = {
+    os: 'windows-latest',
+    node_version: '18'
+  }
+
   /** @type { Job[] } */
   let jobs = [
-    // Unit tests
     {
-      jobName: 'Unit Tests',
-      jobCmd: 'pnpm run test:units',
+      jobName: 'Vitest (unit tests)',
+      jobCmd: 'pnpm exec vitest run --project unit',
       jobTestFiles: specFiles,
-      jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
+      jobSetups: [linux_nodeOld]
     },
-    // Typecheck `.ts` files
+    {
+      jobName: 'Vitest (E2E tests)',
+      jobCmd: 'pnpm exec vitest run --project e2e',
+      jobTestFiles: specFiles,
+      jobSetups: [linux_nodeOld, windows_nodeOld]
+    },
+    // Check TypeScript types
     {
       jobName: 'TypeScript',
-      jobCmd: 'pnpm run test:types',
-      jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
+      jobCmd: 'pnpm exec test-types',
+      jobSetups: [linux_nodeOld]
     },
     // E2e tests
     ...(await crawlE2eJobs(testFiles))
@@ -99,7 +113,7 @@ async function crawlE2eJobs(testFiles) {
         jobName,
         jobTestFiles: [],
         jobSetups,
-        jobCmd: 'pnpm run test:e2e'
+        jobCmd: 'pnpm exec test-e2e'
       })
     })
   }
@@ -144,7 +158,7 @@ async function crawlE2eJobs(testFiles) {
         if (!job) {
           job = {
             jobName: 'E2E Tests',
-            jobCmd: 'pnpm run test:e2e',
+            jobCmd: 'pnpm exec test-e2e',
             jobTestFiles: [],
             jobSetups: [{ os: 'ubuntu-latest', node_version: '20' }]
           }

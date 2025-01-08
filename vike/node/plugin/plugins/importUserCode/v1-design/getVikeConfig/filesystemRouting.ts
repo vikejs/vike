@@ -10,26 +10,28 @@ export type { LocationId }
 // For ./filesystemRouting.spec.ts
 export { getLogicalPath }
 
-import { assert, assertPosixPath, higherFirst } from '../../../../utils.js'
+import pc from '@brillout/picocolors'
+import { assert, assertIsNotProductionRuntime, assertPosixPath, assertWarning, higherFirst } from '../../../../utils.js'
+assertIsNotProductionRuntime()
 
 /**
  * The `locationId` value is used for filesystem inheritance.
  *
  * Each config value is assigned with a `locationId` value. That's the source-of-truth for determining inheritance between config values.
  *
- * For Vike extensions, `locationId` is different than the config value's `definedAt`, for example the `onRenderHtml()` hook of `vike-react`:
- *  - `locationId === '/pages'` (the directory of `/pages/+config.h.js` which extends `vike-react`)
- *  - `definedAt.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
+ * For Vike extensions, `locationId` is different than the config value's `definedAtFilePath`, for example the `onRenderHtml()` hook of `vike-react`:
+ *  - `locationId === '/pages'` (the directory of `/pages/+config.js` which extends `vike-react`)
+ *  - `definedAtFilePath.filePathAbsoluteFilesystem === '/home/rom/code/my-vike-app/node_modules/vike-react/dist/renderer/onRenderHtml.js'` (the file where the value is defined)
  *
  *  This is an important distinction because the Vike extension's config should only apply to where it's being extended from, for example:
  *  ```js
- *  // /pages/admin/+config.h.js
+ *  // /pages/admin/+config.js
  *  import vikeVue from 'vike-vue/config'
  *  // Should only apply to /pages/admin/**
  *  export default { extends: [vikeVue] }
  *  ```
  *  ```js
- *  // /pages/marketing/+config.h.js
+ *  // /pages/marketing/+config.js
  *  import vikeReact from 'vike-react/config'
  *  // Should only apply to /pages/marketing/**
  *  export default { extends: [vikeReact] }
@@ -44,18 +46,18 @@ type LocationId = string & { __brand: 'LocationId' }
  * The value `locationId` is always a user-land path, because Filesystem Routing/Inheritance only applies to the user-land (Vike never uses Filesystem Routing/Inheritance for `node_modules/**`).
  */
 function getLocationId(
-  // We always determine `locationId` from a real user-land file: the `locationId` for Vike extensions is the `locationId` of the the user's `+config.h.js` that extends the Vike extension.
-  filePathRelativeToUserRootDir: string
+  // We always determine `locationId` from a real user-land file: the `locationId` for Vike extensions is the `locationId` of the the user's `+config.js` that extends the Vike extension.
+  filePathAbsoluteUserRootDir: string
 ): LocationId {
-  assertPosixPath(filePathRelativeToUserRootDir)
-  assert(filePathRelativeToUserRootDir.startsWith('/'))
-  const locationId = removeFilename(filePathRelativeToUserRootDir)
+  assertPosixPath(filePathAbsoluteUserRootDir)
+  assert(filePathAbsoluteUserRootDir.startsWith('/'))
+  const locationId = removeFilename(filePathAbsoluteUserRootDir)
   assertLocationId(locationId)
   return locationId as LocationId
 }
 /** Filesystem Routing: get the URL */
 function getFilesystemRouteString(locationId: LocationId): string {
-  return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'])
+  return getLogicalPath(locationId, ['renderer', 'pages', 'src', 'index'], true)
 }
 /** Filesystem Inheritance: get the apply root */
 function getInheritanceRoot(locationId: LocationId): string {
@@ -64,8 +66,8 @@ function getInheritanceRoot(locationId: LocationId): string {
 /**
  * getLogicalPath('/pages/some-page', ['pages']) => '/some-page'
  */
-function getLogicalPath(locationId: LocationId, removeDirs: string[]): string {
-  let logicalPath = removeDirectories(locationId, removeDirs)
+function getLogicalPath(locationId: LocationId, ignoredDirs: string[], removeParenthesesDirs?: true): string {
+  let logicalPath = removeIgnoredDirectories(locationId, ignoredDirs, removeParenthesesDirs)
   assertIsPath(logicalPath)
   return logicalPath
 }
@@ -129,18 +131,47 @@ function isInherited(locationId1: LocationId, locationId2: LocationId): boolean 
   return startsWith(inheritanceRoot2, inheritanceRoot1)
 }
 
-function removeDirectories(somePath: string, removeDirs: string[]): string {
+function removeIgnoredDirectories(somePath: string, ignoredDirs: string[], removeParenthesesDirs?: true): string {
   assertPosixPath(somePath)
   somePath = somePath
     .split('/')
-    .filter((p) => !removeDirs.includes(p))
+    .filter((dir) => {
+      if (ignoredDirs.includes(dir)) {
+        return false
+      }
+      if (removeParenthesesDirs && dir.startsWith('(') && dir.endsWith(')')) {
+        assertRedundantParentheses(dir, ignoredDirs, somePath)
+        return false
+      }
+      return true
+    })
     .join('/')
   if (somePath === '') somePath = '/'
   return somePath
 }
+function assertRedundantParentheses(dir: string, ignoredDirs: string[], somePath: string) {
+  const dirWithoutParentheses = dir.slice(1, -1)
+  if (!ignoredDirs.includes(dirWithoutParentheses)) {
+    return
+  }
+  const dirnameActual = dir
+  const dirnameCorect = dirWithoutParentheses
+  const dirpathActual = somePath.slice(0, somePath.indexOf(dirnameActual) + dirnameActual.length)
+  const dirpathCorect = dirpathActual.replaceAll(dirnameActual, dirnameCorect)
+  const logDir = (d: string) => pc.bold(d + '/')
+  assertWarning(
+    false,
+    [
+      `The directories ${logDir(dirnameCorect)} are always ignored by Vike's Filesystem Routing`,
+      '(https://vike.dev/filesystem-routing):',
+      `rename directory ${logDir(dirpathActual)} to ${logDir(dirpathCorect)}`
+    ].join(' '),
+    { onlyOnce: true }
+  )
+}
 
-function removeFilename(filePathRelativeToUserRootDir: string) {
-  const filePathParts = filePathRelativeToUserRootDir.split('/')
+function removeFilename(filePathAbsoluteUserRootDir: string) {
+  const filePathParts = filePathAbsoluteUserRootDir.split('/')
   {
     const filename = filePathParts.slice(-1)[0]!
     assert(filename.includes('.'))

@@ -1,0 +1,31 @@
+import { Link, Warning } from '@brillout/docpress'
+import { ImplementedBy } from '../../components'
+
+Environment: server, client.
+
+<ImplementedBy by={<Link href="/vike-react"><code>vike-react</code></Link>} noCustomGuide={true}>the `reactStrictMode` setting</ImplementedBy>
+
+By default `vike-react` wraps your <Link href="/Page">`Page` component</Link> with [`<StrictMode>`](https://react.dev/reference/react/StrictMode) but you can opt-out:
+
+```js
+// /pages/+config.js
+
+import vikeReact from 'vike-react/config'
+
+export default {
+  // Don't use <StrictMode> // [!code ++]
+  reactStrictMode: false, // [!code ++]
+  extends: [vikeReact]
+}
+```
+
+<Warning>
+  We recommend against opting-out of `<StrictMode>`: it ensures your app behaves as React expects which means much less potential bugs. (See [React > `<StrictMode>`](https://react.dev/reference/react/StrictMode).)
+</Warning>
+
+
+## See also
+
+- [React > `<StrictMode>`](https://react.dev/reference/react/StrictMode)
+- <Link href="/vike-react"/>
+- <Link href="/settings"/>

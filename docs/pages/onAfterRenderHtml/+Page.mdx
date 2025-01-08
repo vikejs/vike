@@ -1,0 +1,60 @@
+import { Link } from '@brillout/docpress'
+import { ImplementedBy, UiFrameworkExtension } from '../../components'
+
+Environment: server.
+
+<ImplementedBy by={<UiFrameworkExtension name list={['vike-react', 'vike-vue']}/>}>`onAfterRenderHtml()`</ImplementedBy>
+
+Hook called right after the <Link href="/Page">the `+Page` component</Link> is rendered to HTML.
+
+
+## Lifecycle
+
+It's called upon rendering the first page the user visits. It isn't called upon page navigation (since pages aren't rendered to HTML upon page navigation).
+
+It's called regardless of whether <Link href="/ssr">SSR</Link> is disabled. (The first page the user visits is always rendered to HTML: when SSR is disabled it's just an HTML shell that doesn't contain the content of the page.)
+
+For <Link href="/pre-rendering">pre-rendered pages</Link> it's called at build-time. (Since the HTML of pre-rendered pages are generated at build-time.)
+
+
+
+## Conditional
+
+You can apply `onAfterRenderHtml()` only upon certain conditions, for example you can <Link href="/pageContext#can-i-check-whether-ssr-is-enabled">apply it only if SSR is enabled</Link>.
+
+
+## `pageContext.pageHtml{String,Stream}`
+
+To access the page's HTML string/stream:
+
+```js
+// +onAfterRenderHtml.js
+
+export function onAfterRenderHtml(pageContext) {
+  // The +Page.js component rendered to an HTML string
+  pageContext.pageHtmlString
+  // The +Page.js component rendered to an HTML stream
+  pageContext.pageHtmlStream
+}
+```
+
+
+## Use cases
+
+The `onAfterRenderHtml()` and <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link> hooks are typically used for integrating tools.
+
+For example, `onAfterRenderHtml()` is often used for dehydrating state management libraries, and `onBeforeRenderHtml()` can be used for collecting the page's CSS defined by a CSS-in-JS library ([#141 - CSS-in-JS with SSR](https://github.com/vikejs/vike-vue/issues/141)).
+
+
+## Without `vike-{react,vue,solid}`
+
+If you don't use a <UiFrameworkExtension />, then you don't need `onAfterRenderHtml()` nor <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link> since you already have full control over HTML rendering at your <Link href="/onRenderHtml">`onRenderHtml()`</Link> hook.
+
+
+## See also
+
+- <Link href="/onBeforeRenderHtml"/>
+- <Link href="/onRenderHtml"/>
+- <Link href="/onBeforeRenderClient"/>
+- <Link href="/onAfterRenderClient"/>
+- <Link href="/hooks"/>

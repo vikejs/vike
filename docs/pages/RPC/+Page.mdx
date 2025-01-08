@@ -1,18 +1,26 @@
 import { Link } from '@brillout/docpress'
 
-[Remote Procedure Call](https://en.wikipedia.org/wiki/Remote_procedure_call) (RPC aka "Server Actions") is a simple but powerful technique to fetch data.
+We generally recommend using Vike with an RPC tool. See <Link href="/data-fetching" />.
 
-<>{/* I guess pointing to https://telefunc.com/RPC is enough, no need to explain here.
-In a nutshell, the idea consists of calling an asnyc function (a procedure) as if it was a normal function, but that function actually isn't a "normal" function but it's a "remove function" instead: the function ,  as if it was defined locally but, behind the curtains, an HTTP request is means
-*/}</>
+> **What is RPC?**
+>
+> [**R**emote **P**rocedure **C**all](https://en.wikipedia.org/wiki/Remote_procedure_call) (RPC, aka Server Actions) enables the frontend to seamlessly call backend functions, see in-depth explanation [here](https://telefunc.com/RPC).
+>
+> It's an increasingly popular data-fetching technique used instead of GraphQL and REST. (You can also use multiple data-fetching techniques, although the use case for it is seldom.)
 
-> An explanation of what RPC is and how it works can be found [here](https://telefunc.com/RPC).
+Common RPC tools:
 
-The most notable RPC tools are [Telefunc](https://telefunc.com) and [tPRC](https://trpc.io).
+- [Telefunc](https://telefunc.com)
+  > Telefunc was created by the Vike team.
 
-> We recommend Telefunc over tRPC as we believe its design to be simpler.
+  > You'll soon be able to use Telefunc also to fetch initial data (instead of using the `data()` hook), see [Telefunc > #102](https://github.com/brillout/telefunc/issues/102).
+- [tRPC](https://trpc.io/)
+  > Similar to Telefunc:
+  >  - Con: Telefunc is simpler.
+  >  - Pro: supports real-time data using websockets.
+
 
 ## See also
 
+- <Link href="/data-fetching" />
 - <Link href="/api-routes" />
-- <Link href="/react#react-server-components" doNotInferSectionTitle />

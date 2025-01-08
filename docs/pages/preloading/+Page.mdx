@@ -1,15 +1,24 @@
 import { Link } from '@brillout/docpress'
 
-> **What is preloading?** Preloading denotes the practice of loading assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/CSS/JavaScript code. That way we reduce the network round trips required before the browser starts discovering and loading all dependencies.
+> **What is preloading?** Preloading denotes the practice of loading assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/CSS/JavaScript code. That way you can reduce the network round trips required before the browser starts discovering and loading all dependencies.
 
-By default, Vike automatically inject tags to our HTML, such as `<script type="module" src="script.js">`, `<link rel="stylesheet" type="text/css" href="style.css">`, and `<link rel="preload" href="font.ttf" as="font" type="font/ttf">`. It does so using a preload strategy that works for most users, but we can use `injectFilter()` to implement a custom preload strategy.
+By default, Vike automatically inject tags to your HTML such as:
+- `<script type="module" src="script.js">`
+- `<link rel="stylesheet" type="text/css" href="style.css">`
+- `<link rel="preload" href="font.ttf" as="font" type="font/ttf">`
 
-To improve preloading performance, we can use [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) which Vike automatically generates.
+It does so using a preload strategy that works for most users, but you can use <Link href="#injectfilter" /> to implement a custom preload strategy.
+
+To improve preloading performance, you can use <Link href="#early-hints" /> which Vike automatically generates.
+
+> See also <Link href="/prefetchStaticAssets" />.
 
 
-## Early Hints
+## Early hints
 
-> The [Early Hints Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the official successor of the now deprecated HTTP2/Push.
+You can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 Early Hint`).
+
+> [`103 Early Hint`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the official successor of the now deprecated HTTP2/Push.
 
 ```js
 // server.js
@@ -28,8 +37,9 @@ app.get('*', async (req, res) => {
 type PageContext = {
   httpResponse: {
     earlyHints: {
-      earlyHintLink: string, // Header Line for the Early Hint Header
-      assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" | "fetch" | "track" | "worker" | "embed" | "object" | null
+      earlyHintLink: string // Early hint value
+      assetType: "image" | "script" | "font" | "style" | "audio" | "video" | "document" |
+                 "fetch" | "track" | "worker" | "embed" | "object" | null
       mediaType: string // MIME type
       src: string // Asset's URL
       isEntry: boolean // true  ⇒ asset is an entry
@@ -39,8 +49,6 @@ type PageContext = {
 }
 ```
 
-Examples: `$ npm init vike@latest`.
-
 See also:
  - [developer.chrome.com > Early Hints](https://developer.chrome.com/blog/early-hints/)
  - [Node.js 18 Support](https://nodejs.org/dist/latest-v19.x/docs/api/http.html#responsewriteearlyhintshints-callback)
@@ -49,7 +57,7 @@ See also:
 
 ## `injectFilter()`
 
-If Vike's default preload strategy doesn't work for us, we can customize which and where preload/asset tags are injected.
+If Vike's default preload strategy doesn't work for you, you can customize which and where preload/asset tags are injected.
 
 ```ts
 // /renderer/+onRenderHtml.js
@@ -82,7 +90,17 @@ async function onRenderHtml(pageContext) {
 See <Link href="/injectFilter" />.
 
 
+## Assets Manifest
+
+By using <Link href="/getGlobalContext">`getGlobalContextSync()` or `getGlobalContextAsync()`</Link>, you can access the so-called "assets manifest": the dependency graph of your app's static assets.
+
+> The assets manifest is only available in production.
+
+
 ## See also
 
 - <Link href="/injectFilter" />
+- <Link href="/prefetch" />
+- <Link href="/prefetchStaticAssets" />
 - <Link href="/streaming" />
+- <Link href="/getGlobalContext" />

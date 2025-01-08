@@ -3,15 +3,15 @@ export { onRenderClient }
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { PageShell } from './PageShell'
+import { Layout } from './Layout'
 
 let root
 async function onRenderClient(pageContext) {
   const { Page, pageProps } = pageContext
   const page = (
-    <PageShell pageContext={pageContext}>
+    <Layout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>
+    </Layout>
   )
   const container = document.getElementById('page-view')
   if (pageContext.isHydration) {

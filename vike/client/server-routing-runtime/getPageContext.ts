@@ -1,7 +1,8 @@
-import { assertUsage, assertWarning, getCurrentUrl, objectAssign } from './utils.js'
+import { assertUsage, assertWarning, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import { getPageFilesAll } from '../../shared/getPageFiles.js'
 import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
+import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 export { getPageContext }
 
@@ -15,7 +16,7 @@ async function getPageContext() {
     _hasPageContextFromServer: true as const,
     _hasPageContextFromClient: false as const
   })
-  objectAssign(pageContext, await loadPageUserFiles(pageContext._pageId))
+  objectAssign(pageContext, await loadPageUserFiles(pageContext.pageId))
   assertPristineUrl()
   return pageContext
 }

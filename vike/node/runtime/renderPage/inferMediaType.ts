@@ -21,6 +21,7 @@ type MediaType = null | {
   mediaType:
     | 'text/javascript'
     | 'text/css'
+    | 'image/avif'
     | 'image/jpeg'
     | 'image/png'
     | 'image/webp'
@@ -67,6 +68,9 @@ function inferMediaType(href: string): MediaType {
   }
   if (href.endsWith('.svg')) {
     return { assetType: 'image', mediaType: 'image/svg+xml' }
+  }
+  if (href.endsWith('.avif')) {
+    return { assetType: 'image', mediaType: 'image/avif' }
   }
 
   // Fonts

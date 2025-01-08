@@ -5,16 +5,17 @@ Environment: server.
 
 The `renderPage()` function enables you to embed Vike into any server.
 
-You only need `renderPage()` if you use SSR, see [Optional](#optional).
+> You only need `renderPage()` if you use SSR, see [Optional](#optional).
 
-<JustAMiddleware />
+<JustAMiddleware noLink />
 
 ## Examples
 
- - <RepoLink text='Express.js' path='/boilerplates/boilerplate-vue/server/index.js' />
+ - <RepoLink text='Express.js' path='/boilerplates/boilerplate-react/server/index.js' />
  - <RepoLink text='Express.js + TypeScript' path='/boilerplates/boilerplate-vue-ts/server/index.ts' />
- - <Link text="Cloudflare Workers" href="/cloudflare-workers#example" />
+ - <Link text="Cloudflare Workers" href="/cloudflare-workers#examples" />
  - <Link text="Vercel" href="/vercel#api-route" />
+ - [Bati](https://batijs.dev) (make sure to select a server like Express.js, H3, ...)
 
 
 ## Usage
@@ -58,10 +59,23 @@ async function startServer() {
 
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
-  app.get('*', async (req, res, next) => {
-    const pageContextInit = { urlOriginal: req.originalUrl }
+  app.get('*', async (req, res) => {
+    const pageContextInit = {
+      // Required: the URL of the page
+      urlOriginal: req.originalUrl
+
+      // Optional: the HTTP Headers
+      headersOriginal: req.headers,
+
+      // Optional: information about the logged-in user (when using an
+      // Express.js authentication middleware that defines `req.user`).
+      user: req.user
+
+      // ... we can provide any additional information about the request here ...
+    }
+
     const pageContext = await renderPage(pageContextInit)
-    if (pageContext.httpResponse === null) return next()
+
     const { body, statusCode, headers } = pageContext.httpResponse
     headers.forEach(([name, value]) => res.setHeader(name, value))
     res.status(statusCode).send(body)
@@ -77,22 +91,17 @@ The `pageContext.httpResponse.body` value is the HTML string returned by the
 <Link text={<><code>onRenderHtml()</code> hook</>} href="/onRenderHtml" /> with additional `<script>` and `<style>` tags
 automatically injected by Vike.
 
+> You can control where and what Vike injects using <Link href="/injectFilter" />.
+
 For HTML streams use `httpResponse.pipe()` instead of `pageContext.httpResponse.body`, see <Link href="/streaming" />.
 
-The `pageContext.httpResponse` value is `null` if:
-   - An error occurred while rendering the page and no <Link text="error page" href="/error-page" noBreadcrumb /> is defined.
-   - An error occurred while rendering the error page.
-   - Vike skips certain URLs, such as `/favicon.ico` (because browsers automatically make favicon requests).
+Optionally, you can use `pageContext.httpResponse.earlyHints` for adding early hints (`103 Early Hint`), see <Link href="/preloading#early-hints" />.
 
 The `renderPage()` function doesn't depend on Node.js and you can use `renderPage()` (and therefore embed Vike) anywhere:
  - Any server environment (Express.js, HatTip, Deno, Fastify, Vite's development server, Node.js's HTTP server, ...)
  - Any deployment provider (AWS, Cloudflare Workers, Vercel, ...)
 
 > When modifying your server, you may need to manually restart your server for your changes to take effect. See [#562](https://github.com/vikejs/vike/issues/562).
-
-See also:
- - <Link href="/NODE_ENV" />
- - <Link href="/onRenderHtml" />
 
 
 ## Optional
@@ -102,3 +111,12 @@ If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you 
  - Upon pre-rendering (`$ vite build`/`$ vike prerender`) Vike renders all your pages.
 
 But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your pages, then you need a production server and you need to use `renderPage()` in order to embed Vike into your server. See <Link href="/pre-rendering"/>.
+
+## See also
+
+- <Link href="/headers" />
+- <Link href="/injectFilter" />
+- <Link href="/preloading#early-hints" />
+- <Link href="/onRenderHtml" />
+- <Link href="/NODE_ENV" />
+- <Link href="/pageContext" />

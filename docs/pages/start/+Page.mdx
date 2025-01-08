@@ -1,0 +1,61 @@
+import { Link } from '@brillout/docpress'
+import { BatiCmd } from './BatiCmd.tsx'
+import { UiFrameworkExtension } from '../../components'
+import './style.css'
+
+Welcome to Vike 🔨
+
+This guide will walk your through your first steps using Vike.
+
+> If you feel confident, you can skip this guide and directly go to:
+> - <Link href="/routing" />
+> - <Link href="/data-fetching" />
+> - <Link href="/pre-rendering" />
+> - <Link href="/common-issues" />
+
+
+## Scaffold your first Vike app
+
+Use [Bati](https://batijs.dev) to scaffold a new Vike app.
+
+You can skip exploring Bati's UI for now and directly run the following command instead:
+
+<BatiCmd />
+
+> This scaffolds a Vike app that uses <UiFrameworkExtension name /> which are the official React, Vue, and Solid integrations maintained by the Vike team.
+>
+> While we recommend using <UiFrameworkExtension name noLink /> you can also <Link href="/new#without-vike-react-vue-solid">manually integrate React/Vue/Solid yourself</Link>.
+
+Then:
+
+```bash
+# Install dependencies:
+pnpm install
+# Start your app:
+pnpm run dev
+```
+
+You can now go to [localhost:3000](http://localhost:3000) <span class="gray">(or [localhost:3001](http://localhost:3001) if `localhost:3000` is busy)</span>.
+
+You created your first Vike app 🎉
+
+Your app is:
+- A rich interactive client-side app.
+  - TODO: add screenshot of interactive counter.
+- Server-side rendered (SSR) for optimized SEO (the page's content is rendered to HTML).
+  - TODO: add screenshot of HTML
+
+## Routing
+
+TODO
+
+## Data
+
+TODO
+
+- Data Fetching
+- Data Mutation
+
+## Pre-rendering
+
+TODO

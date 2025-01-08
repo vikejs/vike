@@ -1,0 +1,108 @@
+import { Link } from '@brillout/docpress'
+
+Environment: client  
+Type: `boolean | string | string[] | ((pageContext: PageContextClient) => boolean | string | string[])`  
+Default value: `false`  
+
+The `keepScrollPosition` setting enables you to control whether the page scrolls to the top upon navigation.
+
+It's commonly used for nested layouts such as tabs, see <Link href="/Layout#nested" />.
+
+For a control on a link-by-link basis, see <Link href="/clientRouting#settings">`<a href="/some-url" keep-scroll-position />`</Link>.
+
+
+## Basics
+
+By default, the page is scrolled to the top upon navigation. But if you set `keepScrollPosition` to `true` then the page's scroll position is preserved instead.
+
+```js
+// pages/product/@id/+config.js
+
+export default {
+  // Don't scroll to top when navigating between the pages defined at pages/product/@id/**
+  keepScrollPosition: true
+}
+```
+
+```
+pages/product/@id/+config.js
+pages/product/@id/pricing/+Page.js
+pages/product/@id/reviews/+Page.js
+```
+
+```bash
+# Scroll is preserved when navigating between:
+/product/42
+/product/42/pricing
+/product/42/reviews
+
+# Scroll is preserved when navigating between:
+/product/1337
+/product/1337/pricing
+/product/1337/reviews
+```
+
+Note that the scroll isn't preserved (the page scrolls to the top) if the `@id` parameter differs.
+
+```bash
+# Scroll *isn't* preserved when navigating between:
+/product/42/pricing
+/product/1337/pricing
+```
+
+See <Link href="#advanced" /> if this behavior doesn't fit your use case.
+
+
+## Advanced
+
+You can preserve the scroll position between any arbitrary group of pages (the "scroll group").
+
+```js
+// /pages/product/@id/+config.js
+
+export default {
+  keepScrollPosition: 'name-of-the-scroll-group'
+}
+```
+
+```bash
+# Scroll is preserved when navigating between:
+/product/42/pricing
+/product/1337/pricing
+```
+
+```js
+// /pages/reviews/@id/+config.js
+
+export default {
+  keepScrollPosition: 'name-of-the-scroll-group'
+}
+```
+
+```bash
+# Scroll is preserved when navigating between:
+/product/42
+/reviews/1337
+```
+
+If two URLs belong to the same scroll group, then the scroll position is preserved.
+
+You can also programmatically set the scroll group:
+
+```js
+// /pages/product/@id/+keepScrollPosition.js
+// Environment: client
+
+export default (pageContext, { configDefinedAt }) => {
+  console.log(configDefinedAt) // Prints '/pages/product/@id/+keepScrollPosition.js'
+  // This is the value Vike sets by default:
+  return [configDefinedAt, pageContext.routeParams['id']]
+}
+```
+
+
+## See also
+
+- <Link href="/Layout#nested" />
+- <Link href="/clientRouting#settings" />
+- <Link href="/navigate#options" />

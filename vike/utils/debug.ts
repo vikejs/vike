@@ -1,30 +1,41 @@
 export { createDebugger }
-export { isDebugEnabled }
+export { isDebugActivated }
 export type { Debug }
 
 import { isBrowser } from './isBrowser.js'
 import { isCallable } from './isCallable.js'
 import { objectAssign } from './objectAssign.js'
-import { assert } from './assert.js'
+import { assert, assertUsage } from './assert.js'
 import { checkType } from './checkType.js'
 import { getTerminalWidth } from './getTerminWidth.js'
+import pc from '@brillout/picocolors'
+import { isArray } from './isArray.js'
 
 // Avoid this to be loaded in the browser. For isomorphic code: instead of `import { createDebugger } from './utils.js'`, use `globalThis.createDebugger()`.
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
-type Flag =
-  | 'vike:routing'
-  | 'vike:error'
-  | 'vike:stream'
-  | 'vike:log'
-  | 'vike:virtual-files'
-  | 'vike:outDir'
-  | 'vike:extractExportNames'
-  | 'vike:extractAssets'
-  | 'vike:glob'
-  | 'vike:pageFiles'
-  | 'vike:setup'
+const flags = [
+  'vike:error',
+  'vike:extractAssets',
+  'vike:extractExportNames',
+  'vike:glob',
+  'vike:log',
+  'vike:optimizeDeps',
+  'vike:outDir',
+  'vike:pageFiles',
+  'vike:pointer-imports',
+  'vike:routing',
+  'vike:setup',
+  'vike:stream',
+  'vike:virtual-files',
+  'vike:esbuild-resolve'
+] as const
+const flagRegex = /\bvike:[a-zA-Z-]+/g
+
+assertDEBUG()
+
+type Flag = (typeof flags)[number]
 type Debug = ReturnType<typeof createDebugger>
 type Options = {
   serialization?: {
@@ -34,6 +45,7 @@ type Options = {
 
 function createDebugger(flag: Flag, optionsGlobal?: Options) {
   checkType<`vike:${string}`>(flag)
+  assert(flags.includes(flag))
 
   const debugWithOptions = (optionsLocal: Options) => {
     return (...msgs: unknown[]) => {
@@ -42,12 +54,12 @@ function createDebugger(flag: Flag, optionsGlobal?: Options) {
     }
   }
   const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
-  objectAssign(debug, { options: debugWithOptions, isEnabled: isDebugEnabled(flag) })
+  objectAssign(debug, { options: debugWithOptions, isActivated: isDebugActivated(flag) })
   return debug
 }
 
 function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
-  if (!isDebugEnabled(flag)) return
+  if (!isDebugActivated(flag)) return
   let [msgFirst, ...msgsRest] = msgs
   const padding = ' '.repeat(flag.length + 1)
   msgFirst = formatMsg(msgFirst, options, padding, 'FIRST')
@@ -72,17 +84,12 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
   })
 }
 
-function isDebugEnabled(flag: Flag): boolean {
+function isDebugActivated(flag: Flag): boolean {
   checkType<`vike:${string}`>(flag)
-
-  let DEBUG: undefined | string
-  // - `process` can be undefined in edge workers
-  // - We want bundlers to be able to statically replace `process.env.*`
-  try {
-    DEBUG = process.env.DEBUG
-  } catch {}
-  const isEnabled = DEBUG?.includes(flag) ?? false
-  return isEnabled
+  assert(flags.includes(flag))
+  const DEBUG = getDEBUG()
+  const isActivated = DEBUG?.includes(flag) ?? false
+  return isActivated
 }
 
 function formatMsg(
@@ -99,7 +106,7 @@ function formatMsg(
 
   if (typeof info === 'string') {
     str += info
-  } else if (Array.isArray(info)) {
+  } else if (isArray(info)) {
     if (info.length === 0) {
       str += options.serialization?.emptyArray ?? '[]'
     } else {
@@ -152,4 +159,25 @@ function replaceFunctionSerializer(this: Record<string, unknown>, _key: string, 
     return value.toString().split(/\s+/).join(' ')
   }
   return value
+}
+
+function assertDEBUG() {
+  const DEBUG = getDEBUG() ?? ''
+  const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
+  flagsActivated.forEach((flag) => {
+    assertUsage(
+      (flags as readonly string[]).includes(flag),
+      `Unknown DEBUG flag ${pc.cyan(flag)}. Valid flags:\n${flags.map((f) => `  ${pc.cyan(f)}`).join('\n')}`
+    )
+  })
+}
+
+function getDEBUG() {
+  let DEBUG: undefined | string
+  // - `process` can be undefined in edge workers
+  // - We want bundlers to be able to statically replace `process.env.*`
+  try {
+    DEBUG = process.env.DEBUG
+  } catch {}
+  return DEBUG
 }

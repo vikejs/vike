@@ -1,20 +1,23 @@
 export { getPageAssets }
+export { setResolveClientEntriesDev }
 export type { PageAsset }
 export type { GetPageAssets }
 export type { PageContextGetPageAssets }
 
-import { assert, prependBase, assertPosixPath, toPosixPath, isNpmPackageImport, unique, pathJoin } from '../utils.js'
+import { assert, prependBase, toPosixPath, unique, getGlobalObject } from '../utils.js'
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev.js'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd.js'
 import { inferMediaType, type MediaType } from './inferMediaType.js'
 import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
-import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
 import { getGlobalContext } from '../globalContext.js'
-import { assertClientEntryId } from './getPageAssets/assertClientEntryId.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
-import { import_ } from '@brillout/import'
+import type { ResolveClientEntriesDev } from '../../plugin/resolveClientEntriesDev.js'
+
+const globalObject = getGlobalObject('getPageAssets.ts', {
+  resolveClientEntriesDev: null as null | ResolveClientEntriesDev
+})
 
 type PageAsset = {
   src: string
@@ -43,13 +46,13 @@ async function getPageAssets(
   if (isDev) {
     const { viteDevServer } = globalContext
     clientEntriesSrc = await Promise.all(
-      clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
+      clientEntries.map((clientEntry) => globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer))
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
-    const { clientManifest } = globalContext
-    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, clientManifest))
-    assetUrls = retrieveAssetsProd(clientDependencies, clientManifest, pageContext._includeAssetsImportedByServer)
+    const { assetsManifest } = globalContext
+    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, assetsManifest))
+    assetUrls = retrieveAssetsProd(clientDependencies, assetsManifest, pageContext._includeAssetsImportedByServer)
   }
 
   let pageAssets: PageAsset[] = []
@@ -62,6 +65,7 @@ async function getPageAssets(
         return
       }
       // https://github.com/vikejs/vike/issues/401
+      // WARNING: if changing following line, then also update https://github.com/vikejs/vike/blob/fae90a15d88e5e87ca9fcbb54cf2dc8773d2f229/vike/client/shared/removeFoucBuster.ts#L28
       src = src + '?direct'
     }
 
@@ -93,78 +97,14 @@ async function getPageAssets(
   return pageAssets
 }
 
-async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): Promise<string> {
-  assertClientEntryId(clientEntry)
-
-  let root = viteDevServer.config.root
-  assert(root)
-  root = toPosixPath(root)
-
-  // The `?import` suffix is needed for MDX to be transpiled:
-  //   - Not transpiled: `/pages/markdown.page.mdx`
-  //   - Transpiled: `/pages/markdown.page.mdx?import`
-  // But `?import` doesn't work with `/@fs/`:
-  //   - Not transpiled: /@fs/home/runner/work/vike/vike/examples/react-full/pages/markdown.page.mdx
-  //   - Not transpiled: /@fs/home/runner/work/vike/vike/examples/react-full/pages/markdown.page.mdx?import
-  if (clientEntry.endsWith('?import')) {
-    assert(clientEntry.startsWith('/'))
-    return clientEntry
-  }
-
-  assertPosixPath(clientEntry)
-  let filePath: string
-  if (clientEntry.startsWith('/')) {
-    // User files
-    filePath = pathJoin(root, clientEntry)
-  } else if (clientEntry.startsWith('@@vike/') || isNpmPackageImport(clientEntry)) {
-    // Vike client entry
-
-    const { createRequire } = (await import_('module')).default as Awaited<typeof import('module')>
-    const { dirname } = (await import_('path')).default as Awaited<typeof import('path')>
-    const { fileURLToPath } = (await import_('url')).default as Awaited<typeof import('url')>
-    // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
-    const importMetaUrl: string = import.meta.url
-    const require_ = createRequire(importMetaUrl)
-    const __dirname_ = dirname(fileURLToPath(importMetaUrl))
-
-    // @ts-expect-error
-    // Bun workaround https://github.com/vikejs/vike/pull/1048
-    const res = typeof Bun !== 'undefined' ? (toPath: string) => Bun.resolveSync(toPath, __dirname_) : require_.resolve
-
-    if (isNpmPackageImport(clientEntry)) {
-      filePath = res(clientEntry)
-    } else {
-      assert(clientEntry.endsWith('.js'))
-      try {
-        // For Vitest (which doesn't resolve vike to its dist but to its source files)
-        // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/runtime/renderPage/getPageAssets.js
-        filePath = toPosixPath(
-          res(clientEntry.replace('@@vike/dist/esm/client/', '../../../client/').replace('.js', '.ts'))
-        )
-      } catch {
-        // For users
-        // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/runtime/renderPage/getPageAssets.js
-        filePath = toPosixPath(res(clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/')))
-      }
-    }
-  } else {
-    assert(false)
-  }
-
-  if (!filePath.startsWith('/')) {
-    assert(process.platform === 'win32')
-    filePath = '/' + filePath
-  }
-
-  filePath = '/@fs' + filePath
-  assertPosixPath(filePath)
-
-  return filePath
-}
-function resolveClientEntriesProd(clientEntry: string, clientManifest: ViteManifest): string {
-  const { manifestEntry } = getManifestEntry(clientEntry, clientManifest)
+function resolveClientEntriesProd(clientEntry: string, assetsManifest: ViteManifest): string {
+  const { manifestEntry } = getManifestEntry(clientEntry, assetsManifest)
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
   let { file } = manifestEntry
   assert(!file.startsWith('/'))
   return '/' + file
+}
+
+function setResolveClientEntriesDev(resolveClientEntriesDev: ResolveClientEntriesDev) {
+  globalObject.resolveClientEntriesDev = resolveClientEntriesDev
 }

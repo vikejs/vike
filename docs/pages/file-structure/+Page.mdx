@@ -1,19 +1,20 @@
 import { Link } from '@brillout/docpress'
-import { UiFrameworkVikeExtension } from '../../components'
 
-For advanced apps we recommend a domain-driven file structure using multiple `pages/` directories,
-while for basic apps we recommend using a single `pages/` directory.
+For simple apps, you can define a basic file structure with a single `pages/` directory.
 
-## Basic Apps
+For advanced apps, you may want to define several `pages/` directories for what we call a *domain-driven file structure*.
 
-```bash
+
+## Basic
+
+```yaml
 # Landing page
 /pages/index/+Page.js
-/pages/index/SomeComponentForLandingPage.js
+/pages/index/components/SomeComponentForLandingPage.js
 /pages/index/**/* # More files specific to the landing page
 # About page
 /pages/about/+Page.js
-/pages/about/SomeComponentForAboutPage.js
+/pages/about/components/SomeComponentForAboutPage.js
 /pages/about/**/* # More files specific to the about page
 # Other pages
 /pages/**/+Page.js
@@ -31,42 +32,54 @@ while for basic apps we recommend using a single `pages/` directory.
 
 ## Domain-driven
 
-```bash
-# Marketing pages
-/marketing/pages/index/+Page.js # URL: /
-/marketing/pages/about/+Page.js # URL: /about
-/marketing/pages/jobs/+Page.js # URL: /jobs
-/marketing/+config.h.js # Configures the URL of the pages aboves, see below
+```yaml
+# ===========================
+# ======= Marketing =========
+# ===========================
+# Pages
+(marketing)/pages/index/+Page.js      # URL: /
+(marketing)/pages/about/+Page.js      # URL: /about
+# Configs
+(marketing)/pages/+Layout.js
+(marketing)/pages/+prerender.js
+# Components
+(marketing)/components/ContactUs.js
 
-# Auth related code & pages
-/auth/pages/signup/+Page.js
-/auth/pages/login/+Page.js
-/auth/components/UserInfo.js
-/auth/db/fetchUser.js
+# ===========================
+# ===== Authentication ======
+# ===========================
+# Pages
+auth/pages/signup/+Page.js            # URL: /auth/signup
+auth/pages/login/+Page.js             # URL: /auth/login
+# Configs
+auth/pages/+Layout.js
+# Components
+auth/components/UserInfo.js
+# Database
+auth/database/fetchUser.js
 
-# All code related to products
-/products/pages/index/+Page.js
-/products/pages/product/+Page.js
-/products/pages/product/+route.js
-/products/db/fetchProduct.js
-/products/db/fetchProductList.js
+# ===========================
+# ===== Product pages =======
+# ===========================
+# Pages
+products/pages/index/+Page.js         # URL: /products
+products/pages/product/+Page.js       # URL: /product/@id
+products/pages/product/+route.js
+# Configs
+products/pages/+Layout.js
+products/pages/+ssr.js
+# Database
+products/database/fetchProduct.js
+products/database/fetchProductList.js
 
-# Components shared accross domains
-/components/
-# Server code (Express.js/Fastify/...)
-/server/
+# =============================
+# ======= Shared/Misc =========
+# =============================
+# Components shared across all domains
+components/
+# Server code
+server/
 ```
-
-```js
-// /marketing/+config.h.js
-
-// Route to /* instead of /marketing/*
-export default {
-  filesystemRoutingRoot: '/'
-}
-```
-
-> See <Link href="/filesystemRoutingRoot" />.
 
 ```js
 // /products/pages/product/+route.js
@@ -74,60 +87,8 @@ export default {
 export default '/product/@id'
 ```
 
-Resulting route table:
-
-```
-PROJECT FILES                               ROUTE
-================================            ============
-/marketing/pages/index/+Page.js             /
-/marketing/pages/about/+Page.js             /about
-/marketing/pages/jobs/+Page.js              /jobs
-
-/auth/pages/signup/+Page.js                 /auth/signup
-/auth/pages/login/+Page.js                  /auth/login
-
-/products/pages/index/+Page.js              /products
-/products/pages/product/+Page.js            /product/@id
-```
-
-Example:
- - <Link href='/examples/file-structure-domain-driven/' />
-
-
-## `src/pages/`
-
-You can embed `pages/` in `src/`:
-
-```bash
-/src/pages/index/+Page.js # => URL /
-/src/pages/about/+Page.js # => URL /about
-```
-
-See <Link href="/filesystem-routing" /> for more information.
-
-
-## Without Vike extensions
-
-In case you don't use a <UiFrameworkVikeExtension />, we recommend placing your UI framework integration code in a `renderer/` directory.
-
-```bash
-# Same as above
-/pages/
-/components/
-/server/
-
-# Code that specifies how pages are rendered
-/renderer/+onRenderHtml.js
-/renderer/+onRenderClient.js
-/renderer/PageShell.{jsx,vue}  # React/Vue/... component that wraps the `Page` component
-/renderer/PageShell.css
-/renderer/Header.{jsx,vue} # Website header used for every page
-/renderer/Footer.{jsx,vue} # Website footer used for every page
-/renderer/logo.svg # Website logo (favicon and used by <Header>)
-```
-
 
 ## See also
- - <Link href="/routing" />
+
+ - <Link href="/routing#filesystem-routing" />
  - <Link href="/filesystem-routing" />
- - <Link href="/filesystemRoutingRoot" />

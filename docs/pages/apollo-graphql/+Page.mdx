@@ -1,15 +1,26 @@
-import { RepoLink } from '@brillout/docpress'
-import { DataArchitecture } from '../../components'
+import { RepoLink, Link, Contribution } from '@brillout/docpress'
+import { Example, UiFrameworkExtension, CommunityNote } from '../../components'
 
-<DataArchitecture
- toolName={'Apollo GraphQL'}
- toolLink={'https://www.apollographql.com/'}
- isGeneric={false}
- toolType="graphql"
- toolDocs={<a href="https://www.apollographql.com/docs/react/performance/server-side-rendering/">Apollo GraphQL &gt; Server-side rendering</a>}
-/>
+<CommunityNote tool="apollo" url="https://www.apollographql.com" hasExtension="react" />
 
-## Examples
+<Contribution>
+There isn't a <Link href="/extensions">Vike extension</Link> for Apollo with `vike-vue` yet, but [contributions welcome to create one](https://github.com/vikejs/vike/issues/1715).
+</Contribution>
 
-- React: <RepoLink path="/examples/graphql-apollo-react/" />.
-- Vue: <RepoLink path="/examples/graphql-apollo-vue/" />.
+## Manual integration
+
+To manually integrate Apollo, see:
+- <Link href="/integration#data-fetching" />
+- [Apollo > Server-side rendering](https://www.apollographql.com/docs/react/performance/server-side-rendering/)
+
+Examples of integrating Apollo without using <UiFrameworkExtension name />:
+
+- <Example timestamp="2024.07" repo="brillout/vike-apollo-react" /> - With React
+- <Example timestamp="2024.07" repo="brillout/vike-apollo-vue" /> - With Vue
+
+> You can also have a look at [the source code of `vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo).
+
+## See also
+
+- <Link href="/integration#data-fetching" />
+- [Apollo > Server-side rendering](https://www.apollographql.com/docs/react/performance/server-side-rendering/)

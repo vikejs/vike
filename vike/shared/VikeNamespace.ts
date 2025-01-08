@@ -14,6 +14,7 @@ declare global {
      *  - You can refine the type of `Config['Page']`.
      *  - You can define the type of custom configurations created with `config.meta` (https://vike.dev/meta)
      *
+     *  https://vike.dev/meta#typescript
      */
     interface Config {}
 
@@ -26,6 +27,14 @@ declare global {
      *  https://vike.dev/pageContext#typescript
      */
     interface PageContext {}
+
+    /** Refine the `pageContext.config` type.
+     *
+     *  It's used for cumulative configs: the `pageContext.config[configName]` type is an `array` whereas `Config[configName]` isn't.
+     *
+     *  https://vike.dev/meta#typescript
+     */
+    interface ConfigResolved {}
   }
 
   /** This namespace is only used by:

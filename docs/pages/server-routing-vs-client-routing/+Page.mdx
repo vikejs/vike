@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { DefaultRouting, UiFrameworkVikeExtension } from '../../components'
+import { DefaultRouting, UiFrameworkExtension } from '../../components'
 
 Vike has first-class support for both:
  - <Link href="/server-routing">Server(-side) Routing</Link>, and
@@ -9,7 +9,7 @@ Vike has first-class support for both:
 
 ## Which one to choose?
 
-If you don't use a <UiFrameworkVikeExtension />, then we recommend to use Server Routing by default as it leads to a simpler architecture.
+If you don't use a <UiFrameworkExtension />, then we recommend to use Server Routing by default as it leads to a simpler architecture.
 
 In general, there are two things to consider:
  - There is a trade-off between simplicity (Server Routing) and performance (Client Routing).
@@ -44,7 +44,7 @@ For example, on music players such as Spotify, the currently listened song shoul
 
 ### Nested Layouts
 
-Similarly to the previous section, when using <Link text="Nested Layouts" href="/Layout#nested-layouts" />, the state of the outer page is preserved, which means Nested Layouts cannot be implemented using Server Routing.
+Similarly to the previous section, when using <Link text="Nested Layouts" href="/Layout#nested" />, the state of the outer page is preserved, which means Nested Layouts cannot be implemented using Server Routing.
 
 *Requirement: Client-side Routing.*
 

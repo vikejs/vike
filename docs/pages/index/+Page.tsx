@@ -1,40 +1,94 @@
 export { Page }
 
 import React from 'react'
-import { Header } from './Header'
-import { Features } from './features/Features'
-import { Contributors, HorizontalLine, Link, Sponsors } from '@brillout/docpress'
+import { Hero, heroBgColor } from './sections/hero/Hero'
+import { Sponsors } from './sections/sponsors/Sponsors'
+import { Flexible } from './sections/flexible/Flexible'
+import { Reliable } from './sections/reliable/Reliable'
+import { Features } from './sections/features/Features'
+import { Philosophy } from './sections/philosophy/Philosophy'
+import { End } from './sections/end/End'
+import { Grid } from './components/Grid'
+import './Page.css'
 
 function Page() {
   return (
-    <>
-      <GlobalNote>
-        The <i>V1 design</i> is released, see <Link text="migration guide" href="/migration/v1-design" />.
-      </GlobalNote>
-      <GlobalNote>
-        Vite-plugin-ssr has been renamed Vike, see <a href="https://vite-plugin-ssr.com/vike">migration guide</a>.
-      </GlobalNote>
-      <Header />
-      <HorizontalLine primary={true} />
-      <Features />
-      <HorizontalLine />
-      <Sponsors />
-      <HorizontalLine />
-      <a id="team"></a>
-      <Contributors />
-      <div style={{ height: 50 }} />
-    </>
+    <div id="landing-page">
+      <Block
+        style={{
+          marginTop: 0,
+          backgroundColor: heroBgColor
+        }}
+      >
+        <Hero />
+      </Block>
+      <Block
+        noGrid
+        style={{
+          padding: 0
+        }}
+      >
+        <Flexible />
+      </Block>
+      <Block
+        noGrid
+        style={{
+          padding: 0,
+          backgroundColor: '#f9f9f9'
+        }}
+      >
+        <Reliable />
+      </Block>
+      <Block
+        style={{
+          backgroundColor: '#EEEEF2'
+        }}
+      >
+        <Features />
+      </Block>
+      <Block
+        style={{
+          padding: 0
+        }}
+        noGrid
+      >
+        <Philosophy />
+      </Block>
+      <Block>
+        <Sponsors />
+      </Block>
+      <Block
+        style={{
+          padding: 0,
+          backgroundColor: '#fbfbfb'
+        }}
+      >
+        <End />
+      </Block>
+    </div>
   )
 }
 
-function GlobalNote({ children }: { children: React.ReactNode }) {
+function Block({
+  children,
+  style,
+  noGrid
+}: {
+  children?: React.ReactNode
+  style?: React.CSSProperties
+  noGrid?: boolean
+}) {
   return (
-    <>
-      <div style={{ display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
-        <blockquote style={{ marginTop: 0 }}>
-          <p style={{ margin: 0 }}>{children}</p>
-        </blockquote>
-      </div>
-    </>
+    <div
+      style={{
+        backgroundColor: 'var(--bg-color)',
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: 'var(--block-margin)',
+        ...style
+      }}
+    >
+      {noGrid ? children : <Grid>{children}</Grid>}
+    </div>
   )
 }

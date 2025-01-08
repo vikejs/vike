@@ -11,7 +11,8 @@ import { errVueJavascript } from './fixture-errors/errVueJavascript.js'
 import { errVueHtml } from './fixture-errors/errVueHtml.js'
 import { errSwc } from './fixture-errors/errSwc.js'
 import { errSwcBig } from './fixture-errors/errSwcBig.js'
-import { errMdx } from './fixture-errors/errMdx.js'
+import { errMdx1 } from './fixture-errors/errMdx1.js'
+import { errMdx2 } from './fixture-errors/errMdx2.js'
 import { errPostcss } from './fixture-errors/errPostcss.js'
 
 // To generate new test cases:
@@ -105,7 +106,7 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-vue - SFC CSS', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errVueCss, '/home/rom/code/vike/examples/vue-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
-      "Failed to transpile /renderer/PageShell.vue because:
+      "Failed to transpile /renderer/Layout.vue because:
       Unexpected }
       43 |    margin: auto;
       44 |  }}
@@ -119,28 +120,28 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
   it('real use case - @vitejs/plugin-react - JavaScript esbuild', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errEsbuild, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
-      "Failed to transpile /renderer/PageShell.tsx because:
+      "Failed to transpile /renderer/Layout.tsx because:
       Unexpected "}"
       5  |  import type { PageContext } from './types'
       6  |  
-      7  |  export { PageShell }}
+      7  |  export { Layout }}
          |                      ^
       8  |  
-      9  |  function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {"
+      9  |  function Layout({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {"
     `)
   })
 
   it('real use case - @vitejs/plugin-react - JavaScript Babel', () => {
     const formatted = getPrettyErrorWithCodeSnippet(errBabelReact, '/home/rom/code/vike/examples/react-full')
     expect(stripAnsi(formatted)).toMatchInlineSnapshot(`
-      "Failed to transpile /renderer/PageShell.tsx because:
+      "Failed to transpile /renderer/Layout.tsx because:
       Unexpected token 
          5 | import type { PageContext } from './types'
          6 |
-      >  7 | export { PageShell }}
+      >  7 | export { Layout }}
            |                     ^
          8 |
-         9 | function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
+         9 | function Layout({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
         10 |   return ("
     `)
   })
@@ -162,10 +163,13 @@ describe('getPrettyErrorWithCodeSnippet() - success', () => {
 })
 
 describe('getPrettyErrorWithCodeSnippet() - failure', () => {
+  // We can't prettify these errors because there isn't any code snippet (error.pluginCode contains the whole file without any code position).
+  // That said, we could generate the code snippet ourselves since we have error.position and `error.pluginCode`.
   it('real use case - @mdx-js/rollup', () => {
-    // We can't prettify this error because there isn't any code snippet (errMdx.pluginCode contains the whole file without any code position)
-    // That said, we could generate the code snippet ourselves since we have errMdx.position and errMdx.pluginCode
-    expect(isErrorWithCodeSnippet(errMdx)).toBe(false)
+    expect(isErrorWithCodeSnippet(errMdx1)).toBe(false)
+  })
+  it('real use case - @mdx-js/rollup', () => {
+    expect(isErrorWithCodeSnippet(errMdx2)).toBe(false)
   })
 
   it('real use case - @vitejs/plugin-react - CSS with PostCSS', () => {

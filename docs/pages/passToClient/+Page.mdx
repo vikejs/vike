@@ -1,9 +1,9 @@
 import { Link } from '@brillout/docpress'
 
-Most <Link href="/pageContext">`pageContext`</Link> values are available only on the server-side, but you can use `passToClient` to make them available on the client-side.
+Most <Link href="/pageContext">`pageContext`</Link> values are available only on the server-side, but you can use `passToClient` to make values available on the client-side.
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
@@ -30,6 +30,31 @@ async function onHydrationEnd(pageContext) {
 Some values, such as `pageContext.data`, are already passed to the client-side by <Link href="#default">default</Link>.
 
 
+## Error
+
+If you try to access a `pageContext` value that isn't defined on the client-side then Vike throws an error:
+
+```
+[Vike][Wrong Usage] pageContext.someProp isn't defined on the client-side
+```
+
+> You can look at the stack trace to find the `pageContext.someProp` occurrence in your code that triggers the error.
+
+To avoid the error:
+1. add `'someProp'` to `passToClient` (see above), or
+2. replace `pageContext.someProp` with `'someProp' in pageContext && pageContext.someProp`.
+   ```js
+   // ❌ Vike throws an error if pageContext.someProp isn't defined // [!code --]
+   const val = pageContext.someProp // [!code --]
+
+   // ✅ Vike doesn't throw an error if pageContext.someProp isn't defined // [!code ++]
+   const val = 'someProp' in pageContext && pageContext.someProp // [!code ++]
+
+   // ✅ Alternative // [!code ++]
+   const val = 'someProp' in pageContext ? pageContext.someProp : someDefaultValue // [!code ++]
+   ```
+
+
 ## Default
 
 When using <Link href="/client-routing" noBreadcrumb={true} />, the following are also available on the client-side by default:
@@ -47,6 +72,7 @@ When using <Link href="/server-routing" noBreadcrumb={true} />, the following ar
  - `pageContext.Page`
  - `pageContext.data`
  - `pageContext.config`
+ - `pageContext.routeParams`
 
 
 ## Serialization

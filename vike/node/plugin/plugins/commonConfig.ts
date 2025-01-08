@@ -1,32 +1,29 @@
 export { commonConfig }
 
-import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, findFile } from '../utils.js'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import { assert, assertUsage, assertWarning, findPackageJson, isDocker } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
-import { createRequire } from 'module'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
-// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
-const importMetaUrl: string = import.meta.url
-const require_ = createRequire(importMetaUrl)
+const pluginName = 'vike:commonConfig-1'
 
 function commonConfig(): Plugin[] {
   return [
     {
-      name: 'vike-commonConfig-1',
+      name: pluginName,
       configResolved(config) {
+        assertSingleInstance(config)
         installRequireShim_setUserRootDir(config.root)
       }
     },
     {
-      name: 'vike-.commonConfig-2',
+      name: 'vike:commonConfig-2',
       enforce: 'post',
       configResolved: {
         order: 'post',
         handler(config) {
-          overrideViteDefaultPort(config)
           /* TODO: do this after implementing vike.config.js and new setting transformLinkedDependencies (or probably a better name like transpileLinkedDependencies/bundleLinkedDependencies or something else)
           overrideViteDefaultSsrExternal(config)
           //*/
@@ -35,19 +32,33 @@ function commonConfig(): Plugin[] {
           assertResolveAlias(config)
           assertEsm(config.root)
         }
+      },
+      // Override Vite's default port without overriding the user
+      config: {
+        order: 'post',
+        handler(configFromUser) {
+          const configFromVike: UserConfig = { server: {}, preview: {} }
+          setDefault('port', 3000, configFromUser, configFromVike)
+          if (isDocker()) {
+            setDefault('host', true, configFromUser, configFromVike)
+          }
+          return configFromVike
+        }
       }
     }
   ]
 }
 
-function overrideViteDefaultPort(config: ResolvedConfig) {
-  // @ts-ignore
-  config.server ??= {}
-  config.server.port ??= 3000
-  // @ts-ignore
-  config.preview ??= {}
-  config.preview.port ??= 3000
+function setDefault<Setting extends 'port' | 'host'>(
+  setting: Setting,
+  value: NonNullable<UserConfig['server'] | UserConfig['preview']>[Setting],
+  configFromUser: UserConfig,
+  configFromVike: UserConfig
+) {
+  if (configFromUser.server?.[setting] === undefined) configFromVike.server![setting] = value
+  if (configFromUser.preview?.[setting] === undefined) configFromVike.preview![setting] = value
 }
+
 /*
 import { version } from 'vite'
 function overrideViteDefaultSsrExternal(config: ResolvedConfig) {
@@ -66,10 +77,10 @@ function workaroundCI(config: ResolvedConfig) {
 }
 
 function assertEsm(userViteRoot: string) {
-  const packageJsonPath = findFile('package.json', userViteRoot)
-  if (!packageJsonPath) return
-  const packageJson = require_(packageJsonPath)
-  let dir = path.dirname(packageJsonPath)
+  const found = findPackageJson(userViteRoot)
+  if (!found) return
+  const { packageJson, packageJsonPath } = found
+  let dir = path.posix.dirname(packageJsonPath)
   if (dir !== '/') {
     assert(!dir.endsWith('/'))
     dir = dir + '/'
@@ -80,5 +91,15 @@ function assertEsm(userViteRoot: string) {
     packageJson.type === 'module',
     `We recommend setting ${dir}package.json#type to "module", see https://vike.dev/CJS`,
     { onlyOnce: true }
+  )
+}
+
+function assertSingleInstance(config: ResolvedConfig) {
+  const numberOfInstances = config.plugins.filter((o) => o.name === pluginName).length
+  assertUsage(
+    numberOfInstances === 1,
+    `Vike's Vite plugin (${pc.cyan(
+      "import vike from 'vike/plugin'"
+    )}) is being added ${numberOfInstances} times to the list of Vite plugins. Make sure to add it only once instead.`
   )
 }

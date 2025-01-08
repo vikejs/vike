@@ -1,7 +1,7 @@
 export { loadImportBuild }
 export { setImportBuildGetters }
 
-import { importServerEntry } from '@brillout/vite-plugin-server-entry/importServerEntry.js'
+import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { assert } from '../utils.js'
 
 const buildGetters = (globalThis.__vike_buildGetters = globalThis.__vike_buildGetters || {
@@ -10,7 +10,7 @@ const buildGetters = (globalThis.__vike_buildGetters = globalThis.__vike_buildGe
 
 type BuildGetters = null | {
   pageFiles: () => Promise<Record<string, unknown>>
-  clientManifest: () => Promise<Record<string, unknown>>
+  getAssetsManifest: () => Promise<Record<string, unknown>>
   pluginManifest: () => Promise<Record<string, unknown>>
 }
 
@@ -20,17 +20,17 @@ function setImportBuildGetters(getters: BuildGetters) {
 
 async function loadImportBuild(outDir?: string) {
   if (!buildGetters.getters) {
-    await importServerEntry(outDir)
+    await importServerProductionEntry({ outDir })
     assert(buildGetters.getters)
   }
 
-  const [pageFiles, clientManifest, pluginManifest] = await Promise.all([
+  const [pageFiles, assetsManifest, pluginManifest] = await Promise.all([
     buildGetters.getters.pageFiles(),
-    buildGetters.getters.clientManifest(),
+    buildGetters.getters.getAssetsManifest(),
     buildGetters.getters.pluginManifest()
   ])
 
-  const buildEntries = { pageFiles, clientManifest, pluginManifest }
+  const buildEntries = { pageFiles, assetsManifest, pluginManifest }
   return buildEntries
 }
 

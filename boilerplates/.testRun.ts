@@ -31,7 +31,10 @@ function testRun(
   const isDev = !isProd
   const testHMR = isDev && (uiFramewok === 'react' || uiFramewok === 'vue')
 
-  run(cmd, { isFlaky: testHMR })
+  run(cmd, {
+    // HMR tests are flaky (I couldn't make them reliable)
+    isFlaky: testHMR
+  })
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')

@@ -22,23 +22,17 @@ async function startServer() {
   ).middlewares
   app.use(viteDevMiddleware)
 
-  app.get('*', async (req, res, next) => {
-    const userAgent = req.headers['user-agent']
+  app.get('*', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      fetch,
-      userAgent
+      headersOriginal: req.headers,
+      fetch
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
-    if (!httpResponse) {
-      return next()
-    } else {
-      const { statusCode, headers } = httpResponse
-      headers.forEach(([name, value]) => res.setHeader(name, value))
-      res.status(statusCode)
-      httpResponse.pipe(res)
-    }
+    httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(httpResponse.statusCode)
+    httpResponse.pipe(res)
   })
 
   const port = 3000

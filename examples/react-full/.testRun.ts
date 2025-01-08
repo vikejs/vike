@@ -94,17 +94,31 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
     const html = await fetchHtml('/markdown')
     expect(html).toContain('<title>Some Markdown Page</title>')
     expect(html).toContain('This page is written in <em>Markdown</em>')
+
     if (uiFramework === 'react') {
       expect(html).toContain('<button>Counter <!-- -->0</button>')
     } else {
       expect(html).toContain('<button>Counter 0</button>')
+    }
+
+    // See also expectLog() test below
+    if (isV1Design) {
+      if (isDev) expect(html).toContain('/pages/markdown/+client.ts')
     }
   })
 
   test('markdown page DOM', async () => {
     await page.goto(getServerUrl() + '/markdown')
     expect(await page.textContent('body')).toContain('This page is written in Markdown')
+
     await testCounter()
+
+    // See also expect(html) test above
+    if (isV1Design) {
+      await autoRetry(() => {
+        expectLog('Hello from +client.ts with viewport height', (logEntry) => logEntry.logSource === 'Browser Log')
+      })
+    }
   })
 
   test('test 404 page', async () => {

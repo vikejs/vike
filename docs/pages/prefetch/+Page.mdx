@@ -1,12 +1,11 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
+import { UiFrameworkExtension } from '../../components'
 
 Environment: browser.
 
-We can use `prefetch('/some/url')` to programmatically prefetch pages.
+By using `prefetch('/some/url')` you can programmatically prefetch pages.
 
-<Warning>`prefetch()` works only with <Link text="Client Routing" href="/client-routing" />. Prefetching isn't possible with <Link text="Server Routing" href="/server-routing" />.</Warning>
-
-We usually use `prefetch()` to speed up page navigation when we can predict what the next page will (most likely) be.
+Using `prefetch()` enables you to speed up page navigation when you can predict what the next page will (most likely) be.
 
 For example:
 
@@ -22,12 +21,23 @@ function Form() {
 }
 
 async function onSubmit() {
-  // We fetch the next page
+  // Fetch the next page
   prefetch('/form/success')
-  // In parallel we make a request to our server
+  // In parallel, make a request to the server
   await someRequestToServer()
   // The assets of the next page may already be fetched at
   // this point, before even calling navigate()
   await navigate('/form/success')
 }
 ```
+
+
+## Without `vike-{react,vue,solid}`
+
+If you don't use a <UiFrameworkExtension />, then you need to use <Link text="Client Routing" href="/client-routing" /> to be able to use `prefetch()`. Prefetching doesn't work with <Link text="Server Routing" href="/server-routing" />.
+
+
+## See also
+
+- <Link href="/prefetchStaticAssets" />
+- <Link href="/preloading" />

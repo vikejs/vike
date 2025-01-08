@@ -5,6 +5,7 @@ export type { ConfigMeta }
 export type { HookName }
 export type { HookNamePage }
 export type { HookNameGlobal }
+export type { ImportString }
 
 export type { DataAsync }
 export type { DataSync }
@@ -30,14 +31,19 @@ export type { OnRenderHtmlAsync }
 export type { OnRenderHtmlSync }
 export type { RouteAsync }
 export type { RouteSync }
+export type { KeepScrollPosition }
 
+import type {
+  PrefetchSetting,
+  PrefetchStaticAssets
+} from '../../client/client-routing-runtime/prefetch/PrefetchSetting.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
+import type { InjectFilterEntry } from '../../types/index.js'
 import type { ConfigVikeUserProvided } from '../ConfigVike.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
-import type { PrefetchStaticAssets } from '../types/PrefetchStaticAssets.js'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
 type HookNamePage =
@@ -57,10 +63,12 @@ type HookNameOldDesign = 'render' | 'prerender'
 type ConfigNameBuiltIn =
   | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
-  | 'isClientSideRenderable'
+  | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
   | 'dataEnv'
   | 'hooksTimeout'
+  | 'clientHooks'
+  | 'middleware'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -219,25 +227,18 @@ type OnRenderClientSync = (pageContext: PageContextClient) => void
  *
  * https://vike.dev/onRenderHtml
  */
-type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<
-  | DocumentHtml
-  | {
-      documentHtml: DocumentHtml
-      pageContext:
-        | OnRenderHtmlPageContextReturn
-        // See https://vike.dev/streaming#initial-data-after-stream-end
-        | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
-    }
->
+type OnRenderHtmlAsync = (pageContext: PageContextServer) => Promise<OnRenderHtmlReturn>
 /** Hook called when page is rendered to HTML on the server-side.
  *
  * https://vike.dev/onRenderHtml
  */
-type OnRenderHtmlSync = (pageContext: PageContextServer) =>
+type OnRenderHtmlSync = (pageContext: PageContextServer) => OnRenderHtmlReturn
+type OnRenderHtmlReturn =
   | DocumentHtml
   | {
-      documentHtml: DocumentHtml
-      pageContext:
+      injectFilter?: (assets: InjectFilterEntry[]) => void
+      documentHtml?: DocumentHtml
+      pageContext?:
         | OnRenderHtmlPageContextReturn
         // See https://vike.dev/streaming#initial-data-after-stream-end
         | (() => Promise<OnRenderHtmlPageContextReturn> | OnRenderHtmlPageContextReturn)
@@ -260,7 +261,15 @@ type RouteSync = (
   pageContext: PageContextServer | PageContextClient
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
 
-// TODO: write docs of links below
+/** Whether the page scrolls to the top upon navigation.
+ *
+ * https://vike.dev/keepScrollPosition
+ */
+type KeepScrollPosition =
+  | boolean
+  | string
+  | string[]
+  | ((pageContext: PageContextClient) => boolean | string | string[])
 
 /** Page configuration.
  *
@@ -289,7 +298,7 @@ type ConfigBuiltIn = {
   prerender?: boolean | ImportString
 
   /**
-   * Inherit from other configurations.
+   * Install Vike extensions.
    *
    * https://vike.dev/extends
    */
@@ -374,7 +383,7 @@ type ConfigBuiltIn = {
    * https://vike.dev/hydrationCanBeAborted
    */
   hydrationCanBeAborted?: boolean | ImportString
-  /** Additional client code.
+  /** Add client code.
    *
    * https://vike.dev/client
    */
@@ -385,12 +394,31 @@ type ConfigBuiltIn = {
    */
   clientRouting?: boolean | ImportString
 
+  /**
+   * Whether hooks are loaded on the client-side.
+   *
+   * https://vike.dev/clientHooks
+   */
+  clientHooks?: boolean | null | ImportString
+
   /** Create new or modify existing configurations.
    *
    * https://vike.dev/meta
    */
   meta?: ConfigMeta | ImportString
 
+  // TODO/pageContext-prefetch: remove experimental note
+  /**
+   * @experimental: DON'T USE: the API *will* have breaking changes upon any minor version release.
+   *
+   * Prefetch pages/links.
+   *
+   * https://vike.dev/prefetch
+   */
+  prefetch?: PrefetchSetting | ImportString
+
+  // TODO/pageContext-prefetch: use following JSDoc to deprecate old interface.
+  /** @deprecated Use `prefetch` setting (https://vike.dev/prefetch) instead.  */
   /** Prefetch links.
    *
    * https://vike.dev/prefetchStaticAssets
@@ -409,6 +437,30 @@ type ConfigBuiltIn = {
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
    */
   cacheControl?: string
+
+  /** Where scripts are injected in the HTML.
+   *
+   * https://vike.dev/injectScriptsAt
+   */
+  injectScriptsAt?: 'HTML_BEGIN' | 'HTML_END' | 'HTML_STREAM' | null
+
+  /** Used by Vike extensions to set their name.
+   *
+   * https://vike.dev/extends
+   */
+  name?: string
+
+  /** Used by Vike extensions to enforce their peer dependencies.
+   *
+   * https://vike.dev/require
+   */
+  require?: Record<string, string>
+
+  /** Whether the page scrolls to the top upon navigation.
+   *
+   * https://vike.dev/keepScrollPosition
+   */
+  keepScrollPosition?: KeepScrollPosition
 }
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`

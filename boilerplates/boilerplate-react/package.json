@@ -1,28 +1,23 @@
 {
   "scripts": {
     "dev": "npm run server:dev",
-    "prod": "npm run lint && npm run build && npm run server:prod",
+    "prod": "npm run build && npm run server:prod",
     "build": "vite build",
     "server:dev": "node ./server",
-    "server:prod": "cross-env NODE_ENV=production node ./server",
-    "lint": "eslint . --max-warnings 0"
+    "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
-    "compression": "^1.7.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "compression": "^1.7.5",
     "cross-env": "^7.0.3",
-    "eslint": "^8.55.0",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "express": "^4.18.2",
+    "express": "^4.21.2",
     "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sirv": "^2.0.3",
-    "vike": "^0.4.161",
-    "vite": "^5.0.10"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sirv": "^3.0.0",
+    "vike": "^0.4.212",
+    "vite": "^6.0.5"
   },
   "type": "module"
 }

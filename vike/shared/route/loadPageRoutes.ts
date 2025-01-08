@@ -8,7 +8,8 @@ import { assert, assertUsage, hasProp, slice } from './utils.js'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath.js'
 import { isCallable } from '../utils.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
-import { getConfigValue, getDefinedAtString } from '../page-configs/helpers.js'
+import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
+import { getDefinedAtString } from '../page-configs/getConfigDefinedAt.js'
 import { warnDeprecatedAllowKey } from './resolveRouteFunction.js'
 import { getHookFromPageConfigGlobal, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 
@@ -16,9 +17,9 @@ type PageRoute = {
   pageId: string
   comesFromV1PageConfig: boolean
 } & (
-  | { routeString: string; routeDefinedAt: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
-  | { routeString: string; routeDefinedAt: string; routeType: 'STRING' }
-  | { routeFunction: Function; routeDefinedAt: string; routeType: 'FUNCTION' }
+  | { routeString: string; routeDefinedAtString: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
+  | { routeString: string; routeDefinedAtString: string; routeType: 'STRING' }
+  | { routeFunction: Function; routeDefinedAtString: string; routeType: 'FUNCTION' }
 )
 type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
@@ -56,27 +57,28 @@ function getPageRoutes(
         let pageRoute: null | PageRoute = null
         {
           const configName = 'route'
-          const configValue = getConfigValue(pageConfig, configName)
+          const configValue = getConfigValueRuntime(pageConfig, configName)
           if (configValue) {
             const route = configValue.value
-            const definedAt = getDefinedAtString(configValue.definedAt, configName)
+            assert(configValue.definedAtData)
+            const definedAtString = getDefinedAtString(configValue.definedAtData, configName)
             if (typeof route === 'string') {
               pageRoute = {
                 pageId,
                 comesFromV1PageConfig,
                 routeString: route,
-                routeDefinedAt: definedAt,
+                routeDefinedAtString: definedAtString,
                 routeType: 'STRING'
               }
             } else {
               assert(isCallable(route))
-              if (getConfigValue(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
+              if (getConfigValueRuntime(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
                 warnDeprecatedAllowKey()
               pageRoute = {
                 pageId,
                 comesFromV1PageConfig,
                 routeFunction: route,
-                routeDefinedAt: definedAt,
+                routeDefinedAtString: definedAtString,
                 routeType: 'FUNCTION'
               }
             }
@@ -93,7 +95,7 @@ function getPageRoutes(
             routeFilesystemDefinedBy: definedBy,
             comesFromV1PageConfig,
             routeString,
-            routeDefinedAt: null,
+            routeDefinedAtString: null,
             routeType: 'FILESYSTEM'
           }
         }
@@ -120,7 +122,7 @@ function getPageRoutes(
             pageId,
             comesFromV1PageConfig,
             routeString,
-            routeDefinedAt: null,
+            routeDefinedAtString: null,
             routeFilesystemDefinedBy: `${pageId}.page.*`,
             routeType: 'FILESYSTEM'
           })
@@ -137,7 +139,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeString,
-              routeDefinedAt: filePath,
+              routeDefinedAtString: filePath,
               routeType: 'STRING'
             })
             return
@@ -154,7 +156,7 @@ function getPageRoutes(
               pageId,
               comesFromV1PageConfig,
               routeFunction,
-              routeDefinedAt: filePath,
+              routeDefinedAtString: filePath,
               routeType: 'FUNCTION'
             })
             return

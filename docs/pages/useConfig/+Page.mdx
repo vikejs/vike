@@ -1,0 +1,206 @@
+import { Link, Contribution } from '@brillout/docpress'
+import { ImplementedBy } from '../../components'
+
+Environment: server, client.
+
+<ImplementedBy noCustomGuide={true}>`useConfig()`</ImplementedBy>
+
+The `useConfig()` hook enables you to set configurations inside UI components, as well as inside Vike hooks such as <Link href="/data">`+data`</Link>.
+
+> We call it a *universal hook*: a hook that can be used in both UI components and Vike hooks. (Currently, `useConfig()` is the only universal hook.)
+
+It currently supports following configs:
+- <Link href="/Head" noBreadcrumb />
+- <Link href="/title" noBreadcrumb />
+- <Link href="/description" noBreadcrumb />
+- <Link href="/image" noBreadcrumb />
+- <Link href="/bodyAttributes" noBreadcrumb />
+- <Link href="/htmlAttributes" noBreadcrumb />
+- <Link href="/lang" noBreadcrumb />
+- <Link href="/viewport" noBreadcrumb />
+- <Link href="/favicon" noBreadcrumb />
+
+
+## Inside `+data`
+
+```jsx
+// pages/movies/+data.jsx
+
+export { data }
+
+import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
+
+async function data(pageContext) {
+  const config = useConfig()
+  const response = await fetch('https://star-wars.brillout.com/api/films.json')
+  let { movies } = await response.json()
+  config({
+    title: `${movies.length} Star Wars Movies`
+    Head: <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
+  })
+  return { movies }
+}
+```
+
+> Make sure to call `useConfig()` before any `await`:
+> ```js
+> export async function data(pageContext) {
+>   const response = await fetch('https://star-wars.brillout.com/api/films.json')
+>   // ❌ Doesn't work: useConfig() has to be called before `await fetch()`
+>   const config = useConfig()
+> }
+> ```
+
+
+## Inside components
+
+```jsx
+import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
+
+function Movies() {
+  // Fetch data
+  const data = useSomeDataFetchingTool()
+
+  // Set <head> tags
+  const config = useConfig()
+  config({
+    title: data.title,
+    Head: <meta property="og:image" content={data.previewImage} />
+  })
+
+  // Render UI
+  return (
+    <ul>
+      { data.movies.map(({ title }) => (
+        <li>{title}</li>
+      )) }
+    </ul>
+  )
+}
+```
+
+## `<Config>` & `<Head>`
+
+Inside components, you can also use `<Config>` and `<Head>`:
+
+```jsx
+import { Config } from 'vike-react/Config' // or vike-vue / vike-solid
+import { Head } from 'vike-react/Head' // or vike-vue / vike-solid
+
+function Movies() {
+  // Fetch data
+  const data = useSomeDataFetchingTool()
+
+  // Render UI and <head> tags
+  return (
+    <Config title={data.title} />
+    <Head>
+      <meta property="og:image" content={data.previewImage} />
+    </Head>
+    <ul>{
+      data.movies.map(({ title }) => (
+        <li>{title}</li>
+      ))
+    }</ul>
+  )
+}
+```
+
+> Both achieve the same:
+> - `<Head><something/></Head>`
+> - `<Config Head={<something/>}/>`
+>
+> There in't a `<Title>` component because it's expected to be a string: e.g. `<Title><span>hello</span></Title>` doesn't make sense.
+
+
+## Example: React Query
+
+The `useConfig()` hook is particularly relevant when using integrations that enables components to fetch data
+such as [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme) and [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme). Your components can then use the data they fetch to set `<head>` tags.
+
+```jsx
+import { useConfig } from 'vike-react/useConfig'
+import { useSuspenseQuery } from '@tanstack/react-query'
+
+function Movies() {
+  // Fetch data
+  const query = useSuspenseQuery({
+    queryKey: ['movies'],
+    queryFn: () => fetch('https://star-wars.brillout.com/api/films.json')
+  })
+  const movies = query.data
+
+  // Set <head> tags
+  const config = useConfig()
+  config({
+    title: `${movies.length} Star Wars Movies` // <title>
+    Head: <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
+  })
+
+  // Render UI
+  return (
+    <ul>{
+      movies.map(({ title }) => (
+        <li>{title}</li>
+      ))
+    }</ul>
+  )
+}
+```
+
+Or with `<Config>` and `<Head>`:
+
+```jsx
+import { Config } from 'vike-react/Config'
+import { Head } from 'vike-react/Head'
+import { useSuspenseQuery } from '@tanstack/react-query'
+
+function Movies() {
+  // Fetch data
+  const query = useSuspenseQuery({
+    queryKey: ['movies'],
+    queryFn: () => fetch('https://star-wars.brillout.com/api/films.json')
+  })
+  const movies = query.data
+
+  // Render UI and <head> tags
+  return (
+    <Config title={`${movies.length} Star Wars Movies`} />
+    <Head>
+      <meta name="description" content={`List of all ${movies.length} Star Wars movies.`} />
+    </Head>
+    <ul>{
+      movies.map(({ title }) => (
+        <li>{title}</li>
+      ))
+    }</ul>
+  )
+}
+```
+
+
+## Serialization Error
+
+You may get a serialization error while using `useConfig()`.
+
+```
+Cannot serialize config set by useConfig()
+```
+
+The most common reason is because you're using `useConfig()` in a `+data.js` to modify a non-serializable config.
+
+The workaround is to define <Link href="/data#environment">`+data.shared.js` instead of `+data.js`</Link>.
+
+```js
+// pages/some-page/+data.js // [!code --]
+// pages/some-page/+data.shared.js // [!code ++]
+
+import { useConfig } from 'vike-react/useConfig' // or vike-vue / vike-solid
+
+export async function data (pageContext) {
+  const config = useConfig()
+  // ...
+}
+```
+
+> The issue here is that defining the <Link href="/data">`data()` hook</Link> inside a `+data.js` file means that it's always called on the server-side, even upon client-side page navigation. Consequently, upon client-side page navigation, the data fetched on the server-side needs to be serialized and passed to the client-side.

@@ -6,23 +6,15 @@ export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
-import {
-  assertPosixPath,
-  assert,
-  assertUsage,
-  assertWarning,
-  hasProp,
-  assertIsNotProductionRuntime,
-  isNpmPackageImport
-} from '../../../../utils.js'
-import type { FilePathResolved } from '../../../../../../shared/page-configs/PageConfig.js'
+import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../../../utils.js'
+import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
-import { type ImportData, parseImportData } from './transformFileImports.js'
+import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
-import { assertImportPath, resolveImportPath } from './resolveImportPath.js'
+import { resolvePointerImport } from './resolvePointerImport.js'
 
 assertIsNotProductionRuntime()
 
@@ -33,7 +25,7 @@ type ConfigFile = {
   extendsFilePaths: string[]
 }
 
-// Load fake import
+// Load pointer import
 async function loadImportedFile(
   import_: FilePathResolved & { fileExportName: string },
   userRootDir: string,
@@ -41,7 +33,7 @@ async function loadImportedFile(
 ): Promise<unknown> {
   const f = import_.filePathAbsoluteFilesystem
   if (!importedFilesLoaded[f]) {
-    importedFilesLoaded[f] = transpileAndExecuteFile(import_, false, userRootDir).then((r) => r.fileExports)
+    importedFilesLoaded[f] = transpileAndExecuteFile(import_, userRootDir, false).then((r) => r.fileExports)
   }
   const fileExports = await importedFilesLoaded[f]!
   const fileExport = fileExports[import_.fileExportName]
@@ -50,7 +42,7 @@ async function loadImportedFile(
 
 // Load +{configName}.js
 async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
-  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, false, userRootDir)
+  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
@@ -59,20 +51,19 @@ async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName:
   })
 }
 
-// Load +config.js, including all its extends fake imports
+// Load +config.js, including all its extends pointer imports
 async function loadConfigFile(
   configFilePath: FilePathResolved,
   userRootDir: string,
   visited: string[],
-  isConfigOfExtension: boolean
+  isExtensionConfig: boolean
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsoluteFilesystem } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
   const { fileExports } = await transpileAndExecuteFile(
     configFilePath,
-    !isConfigOfExtension,
     userRootDir,
-    isConfigOfExtension
+    isExtensionConfig ? 'is-extension-config' : true
   )
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
     ...visited,
@@ -99,82 +90,59 @@ async function loadExtendsConfigs(
   userRootDir: string,
   visited: string[]
 ) {
-  const extendsImportData = getExtendsImportData(configFileExports, configFilePath)
+  const { extendsPointerImportData, extendsConfigs } = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
-  extendsImportData.map((importData) => {
-    const { importPath: importPath } = importData
-    const filePathAbsoluteFilesystem = resolveImportPath(importData, configFilePath)
-    assertImportPath(filePathAbsoluteFilesystem, importData, configFilePath)
-    warnUserLandExtension(importPath, configFilePath)
-    // - filePathRelativeToUserRootDir has no functionality beyond nicer error messages for user
-    // - Using importPath would be visually nicer but it's ambigous => we rather pick filePathAbsoluteFilesystem for added clarity
-    const filePathRelativeToUserRootDir = determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem, userRootDir)
-    const filePathAbsoluteVite = filePathRelativeToUserRootDir ?? importPath
-    extendsConfigFiles.push({
-      filePathAbsoluteFilesystem,
-      filePathAbsoluteVite,
-      filePathRelativeToUserRootDir,
-      filePathToShowToUser: filePathAbsoluteVite,
-      importPathAbsolute: importPath
-    })
+  extendsPointerImportData.map((pointerImportData) => {
+    const filePath = resolvePointerImport(pointerImportData, configFilePath, userRootDir)
+    assert(filePath.filePathAbsoluteFilesystem)
+    extendsConfigFiles.push(filePath)
   })
 
-  const extendsConfigs: ConfigFile[] = []
-  await Promise.all(
-    extendsConfigFiles.map(async (configFilePath) => {
-      const result = await loadConfigFile(configFilePath, userRootDir, visited, true)
-      extendsConfigs.push(result.configFile)
-      extendsConfigs.push(...result.extendsConfigs)
-    })
+  const results = await Promise.all(
+    extendsConfigFiles.map(async (configFilePath) => await loadConfigFile(configFilePath, userRootDir, visited, true))
   )
+  results.forEach((result) => {
+    extendsConfigs.push(result.configFile)
+    extendsConfigs.push(...result.extendsConfigs)
+  })
 
   const extendsFilePaths = extendsConfigFiles.map((f) => f.filePathAbsoluteFilesystem)
 
   return { extendsConfigs, extendsFilePaths }
 }
-function determineFilePathRelativeToUserDir(filePathAbsoluteFilesystem: string, userRootDir: string): null | string {
-  assertPosixPath(filePathAbsoluteFilesystem)
-  assertPosixPath(userRootDir)
-  if (!filePathAbsoluteFilesystem.startsWith(userRootDir)) {
-    return null
-  }
-  let filePathRelativeToUserRootDir = filePathAbsoluteFilesystem.slice(userRootDir.length)
-  if (!filePathRelativeToUserRootDir.startsWith('/'))
-    filePathRelativeToUserRootDir = '/' + filePathRelativeToUserRootDir
-  return filePathRelativeToUserRootDir
-}
-function warnUserLandExtension(importPath: string, configFilePath: FilePathResolved) {
-  assertWarning(
-    isNpmPackageImport(importPath),
-    `${configFilePath.filePathToShowToUser} uses ${pc.cyan('extends')} to inherit from ${pc.cyan(
-      importPath
-    )} which is a user-land file: this is experimental and may be remove at any time. Reach out to a maintainer if you need this.`,
-    { onlyOnce: true }
-  )
-}
-function getExtendsImportData(
-  configFileExports: Record<string, unknown>,
-  configFilePath: FilePathResolved
-): ImportData[] {
+function getExtendsPointerImportData(configFileExports: Record<string, unknown>, configFilePath: FilePathResolved) {
   const { filePathToShowToUser } = configFilePath
   const configFileExport = getConfigFileExport(configFileExports, filePathToShowToUser)
-  const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
-    'extends'
-  )} to an invalid value, see https://vike.dev/extends`
-  let extendList: string[]
-  if (!('extends' in configFileExport)) {
-    return []
-  } else if (hasProp(configFileExport, 'extends', 'string')) {
-    extendList = [configFileExport.extends]
-  } else if (hasProp(configFileExport, 'extends', 'string[]')) {
-    extendList = configFileExport.extends
-  } else {
-    assertUsage(false, wrongUsage)
+  const extendsConfigs: ConfigFile[] = []
+  const extendsPointerImportData: PointerImportData[] = []
+  if ('extends' in configFileExport) {
+    const extendsValue = configFileExport.extends
+    const extendList: string[] = []
+    const wrongUsage = `${filePathToShowToUser} sets the config ${pc.cyan(
+      'extends'
+    )} to an invalid value, see https://vike.dev/extends`
+    if (typeof extendsValue === 'string') {
+      extendList.push(extendsValue)
+    } else if (isArrayOfStrings(extendsValue)) {
+      extendList.push(...extendsValue)
+    } else if (isObject(extendsValue)) {
+      /* If we want to implement this then we need to make filePath optional
+      extendsConfigs.push({
+        fileExports: extendsValue,
+        filePath: null,
+      })
+      */
+      assertUsage(false, wrongUsage)
+    } else {
+      assertUsage(false, wrongUsage)
+    }
+    extendsPointerImportData.push(
+      ...extendList.map((importString) => {
+        const pointerImportData = parsePointerImportData(importString)
+        assertUsage(pointerImportData, wrongUsage)
+        return pointerImportData
+      })
+    )
   }
-  const extendsImportData = extendList.map((importDataSerialized) => {
-    const importData = parseImportData(importDataSerialized)
-    assertUsage(importData, wrongUsage)
-    return importData
-  })
-  return extendsImportData
+  return { extendsPointerImportData, extendsConfigs }
 }

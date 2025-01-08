@@ -9,6 +9,7 @@ import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
+import { manifestTempFile } from './buildConfig.js'
 
 let forceExit = false
 
@@ -65,10 +66,11 @@ async function triggerFullBuild(
 ) {
   if (config.build.ssr) return // already triggered
   if (isDisabled(configVike)) return
-  /* Is this @vitejs/plugin-legacy workaround still needed? Should we re-implement it?
-  // vike.json missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's build() API) => skip
-  if (!bundle['vike.json']) return
-  */
+  // Workaround for @vitejs/plugin-legacy
+  //  - The legacy plugin triggers its own Rollup build for the client-side.
+  //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
+  //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
+  if (!bundle[manifestTempFile]) return
 
   const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
   const configInline = {
@@ -94,14 +96,14 @@ async function triggerFullBuild(
     process.exit(1)
   }
 
-  if (configVike.prerender && !configVike.prerender.disableAutoRun) {
+  if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
     await runPrerenderFromAutoRun(configInline)
     forceExit = true
   }
 }
 
 function abortViteBuildSsr(configVike: ConfigVikeResolved) {
-  if (!configVike.disableAutoFullBuild && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+  if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -116,10 +118,14 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
 }
 
 function isDisabled(configVike: ConfigVikeResolved): boolean {
-  if (configVike.disableAutoFullBuild === null) {
-    // TODO/v1-release: also enable autoFullBuild when running Vite's build() API
+  const { disableAutoFullBuild } = configVike
+  if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
+    // TODO/v1-release: remove autoFullBuild for both Vite's build() API and Vite's CLI
+    //  - Tell users to use `$ vike build` instead of `$ vite build`
+    //  - Remove the whole writeBundle() hook logic
+    //  - make `$ vite build` only build the client-side
     return !isViteCliCall()
   } else {
-    return configVike.disableAutoFullBuild
+    return disableAutoFullBuild
   }
 }

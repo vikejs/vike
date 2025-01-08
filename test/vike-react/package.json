@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite build && vite preview"
+  },
+  "dependencies": {
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "node-fetch": "^3.3.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-streaming": "^0.3.44",
+    "typescript": "^5.7.2",
+    "vike": "0.4.212",
+    "vike-react": "^0.5.10",
+    "vite": "^6.0.5"
+  },
+  "type": "module"
+}

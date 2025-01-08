@@ -5,15 +5,15 @@ import { renderToString } from 'react-dom/server'
 import { escapeInject, dangerouslySkipEscape } from '../../../vike/node/runtime'
 import type { InjectFilterEntry } from '../../../vike/types'
 // @ts-ignore
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 async function onRenderHtml(pageContext: any) {
   const { Page, pageProps } = pageContext
   const { preloadStrategy } = pageContext.exports
   const pageHtml = renderToString(
-    <PageLayout>
+    <Layout>
       <Page {...pageProps} />
-    </PageLayout>
+    </Layout>
   )
 
   const documentHtml = escapeInject`<!DOCTYPE html>

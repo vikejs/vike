@@ -1,27 +1,33 @@
 import { Link } from '@brillout/docpress'
-import RouteDomainDriven from '../../components/RouteDomainDriven.mdx'
 
-For a page `/pages/film/+Page.js`, a Route String can be defined in an adjacent file `/pages/film/+route.js` .
+For a page `/pages/movie/+Page.js`, you can define its Route String in an adjacent file `/pages/movie/+route.js`.
 
 ```js
-// /pages/film/+route.js
+// /pages/movie/+route.js
 
-// Matches the URLs:
-//  /film/1
-//  /film/2
-//  /film/a
-//  /film/b
-//  ...
-export default '/film/@filmId'
+// Match URLs such as /movie/123 or /movie/abc
+export default '/movie/@id'
 ```
 
-The value of `filmId` is available at `pageContext.routeParams.filmId`.
+> Route Strings and <Link href="/route-function">Route Functions</Link> override <Link href="/filesystem-routing">Filesystem Routing</Link>. If you always use Route Strings and Route Functions then you effectively opt-out of Filesystem Routing.
+
+The value `@id` is available at `pageContext.routeParams.id`.
+
+```
+URL                   MATCH    pageContext.routeParams.id
+==================    =====    ==========================
+/movie/123            ✅       123
+/movie/abc            ✅       abc
+/movie/9Ab(@29!c      ✅       9Ab(@29!c
+/movie/123/reviews    ❌
+/movie                ❌
+```
 
 You can define:
- - Multiple parameters, for example `/film/@category/@name`.
- - <Link href="#globs">Globs</Link>, for example `/product/*`.
+ - Multiple parameters, for example `/movie/@category/@name`.
+ - <Link href="#globs">Globs</Link>, for example `/movie/*` to also match `/movie/123/reviews`.
 
-For more advanced routing logic, consider using a [Route Function](/route-function) instead of Route String.
+For more advanced routing logic, consider using a <Link href="/route-function">Route Function</Link> instead of a Route String.
 
 
 ## Globs
@@ -29,20 +35,34 @@ For more advanced routing logic, consider using a [Route Function](/route-functi
 ```js
 // /pages/product/+route.js
 
-// Match URLs that start with /product/* such as:
-//   /product/42
-//   /product/1337/details
-//   /product/2048/some/deeply/nested/path
-//   ...
 export default '/product/*'
 ```
 
-The value of the glob is available at `pageContext.routeParams['*']`.
+```
+URL                         MATCH /product/@id    MATCH /product/*    MATCH /product*
+========================    ==================    ================    ===============
+/product/123                ✅                    ✅                  ✅
+/product/123/nested         ❌                    ✅                  ✅
+/product/123/nested/path    ❌                    ✅                  ✅
+/product                    ❌                    ❌                  ✅
+```
 
-> The difference between `/product/*` and `/product/@productId` is that the former includes nested paths whereas the latter doesn't.
-> For example `/product/42/details` matches `/product/*` but doesn't match `/product/@productId`.
 
-If you define multiple globs, then the glob values are available at `pageContext.routeParams['*1']`, `pageContext.routeParams['*2']`, etc.
+The value of the glob is available at `pageContext.routeParams['*']`, for example for the Route String `/product/*`:
+
+```
+URL                          pageContext.routeParams['*']
+=========================    ============================
+/product/123                 123
+/product/123/nested          123/nested
+/product/123/nested/path/    123/nested/path/
+```
+
+If you define multiple globs (e.g. `/*/movie/@id/*`), their values are available at:
+ - `pageContext.routeParams['*1']`
+ - `pageContext.routeParams['*2']`
+ - `pageContext.routeParams['*3']`
+ - ...
 
 
 ## Catch-All
@@ -59,7 +79,7 @@ export default '*'
 ```js
 // /pages/catch-all/+Page.js
 
-// The only page of our app.
+// The single page of our app.
 export { Page }
 
 // ...
@@ -77,6 +97,6 @@ See <Link href="/routing-precedence" />.
 
 The special character `@` cannot be escaped, use a [Route Function](/route-function) instead.
 
-## Domain-driven file structure
+## See also
 
-<RouteDomainDriven />
+ - <Link href="/routing" />

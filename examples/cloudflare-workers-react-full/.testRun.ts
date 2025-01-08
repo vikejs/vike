@@ -11,8 +11,9 @@ import { testCounter } from '../../test/utils'
 function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
   const isWrangler = cmd === 'npm run preview'
 
-  //* TODO: revert me
-  // Manually disabled because of exeeded rate limit
+  //*
+  // Update(13.12.2024): permanently disabling wrangler tests, because wrangler requests to Cloudflare are painfully flaky. Let's eventually enable wrangler tests again, at some point later.
+  // Manually disabled because of exceeded rate limit
   if (isWrangler) {
     skip('SKIPPED: temporarily skip wrangler tests.')
     return
@@ -41,12 +42,17 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
     const additionalTimeout = !isWrangler ? 0 : (isCI() ? 2 : 1) * 10 * 1000
     const serverIsReadyMessage = (() => {
       if (isWrangler) {
-        return 'Listening at'
+        return (log: string) => log.includes('Listening at') || log.includes('Ready on')
       }
       // Vite/Express.js dev server
       return undefined
     })()
-    run(cmd, { additionalTimeout, serverIsReadyMessage, isFlaky: true })
+    run(cmd, {
+      additionalTimeout,
+      serverIsReadyMessage,
+      // Randomly fails because of Cloudflare: it seems like uploading assets to Cloudflare sometimes fails.
+      isFlaky: true
+    })
   }
 
   test('page content is rendered to HTML', async () => {

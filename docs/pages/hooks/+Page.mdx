@@ -1,26 +1,111 @@
 import { Link } from '@brillout/docpress'
-import { TextEnv } from './TextEnv'
+import { TextEnv, TextEnv2 } from './TextEnv'
+import { UiFrameworkExtension } from '../../components'
 
-List of built-in hooks. (You can <Link href="/meta">create your own hooks</Link>.)
+List of built-in hooks. (You can <Link href="/meta">create your own</Link>.)
+
 
 ## Basic
 
-- [**`data()`**](/data): <TextEnv>server-side (configurable)</TextEnv> Called before the page is rendered, for fetching data.
-- [**`guard()`**](/guard): <TextEnv>server-side (configurable)</TextEnv> Protect pages from unprivileged access.
-- [**`onHydrationEnd()`**](/onHydrationEnd): <TextEnv>client-side</TextEnv> Called after the page is <Link href="/hydration">hydrated</Link>.
-- [**`onPageTransitionStart()`**](/onPageTransitionStart): <TextEnv>client-side</TextEnv> Called upon page navigation, before the new page starts rendering.
-- [**`onPageTransitionEnd()`**](/onPageTransitionEnd): <TextEnv>client-side</TextEnv> Called upon page navigation, after the new page has finished rendering.
-- [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server-side</TextEnv> Called before the whole pre-rendering process starts.
-- [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server-side</TextEnv> Global hook called when pre-rendering starts.
+- [**`data()`**](/data): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, for fetching data.
+- [**`guard()`**](/guard): <TextEnv>server (configurable)</TextEnv> Protect pages from unprivileged access.
+- [**`onHydrationEnd()`**](/onHydrationEnd): <TextEnv>client</TextEnv> Called after the page is <Link href="/hydration">hydrated</Link>.
+- [**`onPageTransitionStart()`**](/onPageTransitionStart): <TextEnv>client</TextEnv> Called upon page navigation, before the new page starts rendering.
+- [**`onPageTransitionEnd()`**](/onPageTransitionEnd): <TextEnv>client</TextEnv> Called upon page navigation, after the new page has finished rendering.
+- [**`onBeforePrerenderStart()`**](/onBeforePrerenderStart): <TextEnv>server</TextEnv> Called before the whole pre-rendering process starts.
+- [**`onPrerenderStart()`**](/onPrerenderStart): <TextEnv>server</TextEnv> Global hook called when pre-rendering starts.
+- [**`onCreateApp()`**](/onCreateApp): <TextEnv>server & client</TextEnv> `vike-vue` Called after creating Vue's `app` instance.
+
 
 ## Advanced
 
 > Most users don't need to know about these hooks.
 
-- [**`onBeforeRender()`**](/onBeforeRender): <TextEnv>server-side (configurable)</TextEnv> Called before the page is rendered, lower-level and usually for advanced integrations with data fetching tools.
-- [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server-side</TextEnv> Called when a page is rendered to HTML on the server-side.
-- [**`onRenderClient()`**](/onRenderClient): <TextEnv>client-side</TextEnv> Called when a page is rendered on the client-side.
-- [**`onBeforeRoute()`**](/onBeforeRoute): <TextEnv>server (and potentially client-side)</TextEnv> Called before the URL is routed to a page.
+- [**`onBeforeRender()`**](/onBeforeRender): <TextEnv>server (configurable)</TextEnv> Called before the page is rendered, lower-level and usually for advanced integrations with data fetching tools.
+- [**`onRenderHtml()`**](/onRenderHtml): <TextEnv>server</TextEnv> Called when a page is rendered to HTML on the server-side.
+- [**`onRenderClient()`**](/onRenderClient): <TextEnv>client</TextEnv> Called when a page is rendered on the client-side.
+- [**`onBeforeRoute()`**](/onBeforeRoute): <TextEnv>server & client</TextEnv> Called before the URL is routed to a page.
+- [**`onBeforeRenderClient()`**](/onBeforeRenderClient): <TextEnv>client</TextEnv> Called at the beginning of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+- [**`onAfterRenderClient()`**](/onAfterRenderClient): <TextEnv>client</TextEnv> Called at the end of <Link href="/onRenderClient">`onRenderClient()`</Link>.
+- [**`onBeforeRenderHtml()`**](/onBeforeRenderHtml): <TextEnv>server</TextEnv> Called at the beginning of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
+- [**`onAfterRenderHtml()`**](/onAfterRenderHtml): <TextEnv>server</TextEnv> Called at the end of <Link href="/onRenderHtml">`onRenderHtml()`</Link>.
+
+
+
+## Upcoming
+
+Potentially upcoming hooks:
+- [New hook `onBoot()`](https://github.com/vikejs/vike/issues/962)
+- [New hook `onRequestBegin()`](https://github.com/vikejs/vike/issues/1613)
+- [New hook `onLog()`](https://github.com/vikejs/vike/issues/1438)
+- [New hook `onRenderContent()`: generate non-HTML files with arbitrary content](https://github.com/vikejs/vike/issues/1525)
+
+
+## Order
+
+The order in which the hooks are called.
+
+> The following doesn't contain the hooks of the Vike extensions <UiFrameworkExtension name /> such as <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link> or <Link href="/onAfterRenderClient">`onAfterRenderClient()`</Link>.
+
+### Default
+
+If you didn't change the environment of `data()` nor `onBeforeRender()`:
+
+**First render**
+
+1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
+   > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
+1. <TextEnv2>server</TextEnv2> <Link href="/guard">`guard()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onRenderHtml">`onRenderHtml()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
+
+**Page navigation**
+
+1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/routing">Routing</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
+   > The routing is executed twice: once for the client and once for the server.
+1. <TextEnv2>server</TextEnv2> <Link href="/guard">`guard()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
+
+### Client-side only `data()`
+
+If you <Link href="/data#environment">configured `data()`</Link> and <Link href="/onBeforeRender#environment">`onBeforeRender()` as well</Link> to run *only* on the client-side:
+
+**First render**
+
+1. <TextEnv2>server</TextEnv2> <Link href="/renderPage">`renderPage()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
+1. <TextEnv2>server</TextEnv2> <Link href="/routing">Routing</Link>
+   > The routing executes your <Link href="/route-function">Route Functions</Link> (of all your pages).
+1. <TextEnv2>server</TextEnv2> <Link href="/onRenderHtml">`onRenderHtml()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/guard">`guard()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>
+
+**Page navigation**
+
+1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionStart">`onPageTransitionStart()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRoute">`onBeforeRoute()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/routing">Routing</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/guard">`guard()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/data">`data()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onBeforeRender">`onBeforeRender()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onRenderClient">`onRenderClient()`</Link>
+1. <TextEnv2>client</TextEnv2> <Link href="/onPageTransitionEnd">`onPageTransitionEnd()`</Link>
+
 
 ## See also
 

@@ -1,14 +1,18 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link } from '@brillout/docpress'
 
-You use `extends` to install <Link href="/extensions" noBreadcrumb />.
+You can install <Link href="/extensions">Vike extensions</Link> by using `extends`:
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 
-import vikeReact from 'vike-react'
+import vikeReact from 'vike-react/config'
 
 export default {
-  // Inherit the configuration set by vike-react
+  // Install `vike-react`. (Technically speaking: inherit the configuration `vikeReact`.)
   extends: vikeReact
 }
 ```
+
+> <Link href="/config#inheritance">Config inheritance</Link> also applies to `extends`.
+>
+> For example, you can use <Link href="/config#powerful">completely different rendering strategies within the same app</Link>.

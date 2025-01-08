@@ -1,0 +1,26 @@
+import { Link } from '@brillout/docpress'
+
+The `require` setting enable a <Link href="/extensions">Vike extension</Link> to declare its dependency on other Vike extensions and enforce users to install these.
+
+```js
+// /node_modules/vike-react-query/dist/+config.js
+
+export default {
+  name: 'vike-react-query'
+  require: {
+    'vike': '>=1.0.0'
+    'vike-react': '>=1.0.0'
+  }
+}
+```
+
+> The [version ranges](https://semver.npmjs.com) use the same syntax as the `dependencies` property of `package.json`. (Vike uses the Node.js built-in package [`semver`](https://www.npmjs.com/package/semver).)
+
+We recommend to use both the `peerDependencies` property of `package.json` as well as this `require` setting.
+
+> The `peerDependencies` list isn't a reliable way to enforce dependencies: it [usually](https://pnpm.io/npmrc#strict-peer-dependencies) only shows a warning that many users ignore.
+
+## See also
+
+- <Link href="/extensions" />
+- <Link href="/extends" />

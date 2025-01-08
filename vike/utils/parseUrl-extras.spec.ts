@@ -1,4 +1,4 @@
-import { normalizeUrlPathname, removeUrlOrigin, addUrlOrigin } from './parseUrl-extras.js'
+import { normalizeUrlPathname, removeUrlOrigin, setUrlOrigin } from './parseUrl-extras.js'
 import { expect, describe, it } from 'vitest'
 
 describe('normalizeUrlPathname()', () => {
@@ -31,10 +31,10 @@ describe('normalizeUrlPathname()', () => {
   }
 })
 
-describe('removeUrlOrigin() / addUrlOrigin()', () => {
+describe('removeUrlOrigin() / setUrlOrigin()', () => {
   it('works', () => {
     expect(removeUrlOrigin('https://a.com/b')).toEqual({ urlModified: '/b', origin: 'https://a.com' })
-    expect(addUrlOrigin('/b', 'https://a.com')).toBe('https://a.com/b')
+    expect(setUrlOrigin('/b', 'https://a.com')).toBe('https://a.com/b')
     ;[
       'https://a.com/b',
       '/a',
@@ -45,7 +45,11 @@ describe('removeUrlOrigin() / addUrlOrigin()', () => {
     ].forEach((url) => {
       const { urlModified, origin } = removeUrlOrigin(url)
       expect(urlModified[0]).toBe('/')
-      expect(addUrlOrigin(urlModified, origin)).toEqual(url)
+      if (urlModified === url) {
+        expect(url[0]).toBe('/')
+      } else {
+        expect(setUrlOrigin(urlModified, origin)).toEqual(url)
+      }
     })
   })
 })

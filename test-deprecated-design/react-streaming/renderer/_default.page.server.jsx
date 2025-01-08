@@ -1,7 +1,7 @@
 import React from 'react'
 import { renderToStream } from 'react-streaming/server'
 import { escapeInject } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 export { render }
 export { passToClient }
@@ -12,9 +12,9 @@ const passToClient = ['pageProps']
 async function render(pageContext) {
   const { Page, pageProps, userAgent } = pageContext
   const stream = await renderToStream(
-    <PageLayout>
+    <Layout>
       <Page {...pageProps} />
-    </PageLayout>,
+    </Layout>,
     { userAgent }
   )
 

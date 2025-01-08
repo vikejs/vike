@@ -7,17 +7,17 @@
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "cross-fetch": "^4.0.0",
     "express": "^4.18.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-streaming": "^0.3.22",
+    "react-streaming": "^0.3.44",
     "sirv": "^2.0.2",
-    "vite": "^5.0.10",
-    "vike": "0.4.161"
+    "vite": "^6.0.5",
+    "vike": "0.4.212"
   },
   "type": "module"
 }

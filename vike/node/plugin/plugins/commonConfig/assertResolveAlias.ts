@@ -1,11 +1,26 @@
 export { assertResolveAlias }
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, isValidPathAlias } from '../../utils.js'
+import { assert, assertUsage, assertWarning, isArray, isValidPathAlias } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
-// TODO/v1-release: replace assertWarning() with assertUsage()
+// Recommend users to avoid un-distinguishable path aliases.
+
+// There are a lot of libraries that don't or cannot follow that recommendation, for example:
+// - Nx
+//   - Not sure why, but Nx seems to add a path alias for each monorepo package
+//   - https://github.com/vikejs/vike/discussions/1134
+// - MUI
+//   - https://mui.com/material-ui/guides/minimizing-bundle-size/#how-to-use-custom-bundles
+//   - https://github.com/vikejs/vike/discussions/1549#discussioncomment-8789002
+// - @preact/preset-vite
+//   - Aliases react imports
+// - @vitejs/plugin-vue2
+//   - https://github.com/vikejs/vike/issues/1329
+
 function assertResolveAlias(config: ResolvedConfig) {
+  // TODO: re-implement warning https://github.com/vikejs/vike/issues/1567
+  return
   const aliases = getAliases(config)
   const errPrefix = config.configFile || 'Your Vite configuration'
   const errSuffix1 = 'see https://vike.dev/path-aliases#vite'
@@ -67,7 +82,7 @@ function assertResolveAlias(config: ResolvedConfig) {
 }
 function getAliases(config: ResolvedConfig) {
   const { alias } = config.resolve
-  if (!Array.isArray(alias)) {
+  if (!isArray(alias)) {
     return [alias]
   } else {
     return alias

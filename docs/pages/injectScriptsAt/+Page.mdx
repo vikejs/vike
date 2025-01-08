@@ -1,0 +1,33 @@
+import { Link } from '@brillout/docpress'
+
+Vike injects scripts at three possible positions:
+- At the end of the HTML.
+- At the beginning of the HTML.
+- At the beginning of the <Link href="/streaming">HTML stream</Link>.
+
+Depending on heuristics, Vike makes a sensible choice about where to inject scripts.
+
+You can use the `injectScriptsAt` setting to override Vike's heuristics and control where Vike injects scripts.
+
+> Alternatively, for a more fine-grained control of where and what assets Vike injects, use <Link href="/injectFilter">`injectFilter()`</Link>.
+
+```js
+// +config.js
+
+export default {
+  // Inject scripts at the beginning of the HTML
+  injectScriptsAt: 'HTML_BEGIN',
+  // Inject scripts at the end of the HTML
+  injectScriptsAt: 'HTML_END',
+  // Inject scripts at the beginning of the HTML stream
+  injectScriptsAt: 'STREAM',
+  // Let Vike decide
+  injectScriptsAt: null
+}
+```
+
+> Setting `injectAssetsAt` to `null` can be useful in the context of <Link href="/config#inheritance">config inheritance</Link>.
+
+## See also
+
+- <Link href="/injectFilter" />

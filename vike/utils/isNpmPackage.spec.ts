@@ -43,7 +43,7 @@ describe('parse()', () => {
 
 describe('isValidPathAlias()', () => {
   it('basics', () => {
-    // Distinguishable from npm package names
+    // Un-distinguishable from npm package names
     expect(isValidPathAlias('a')).toBe(false)
     expect(isValidPathAlias('a/b')).toBe(false)
     expect(isValidPathAlias('a/b/c')).toBe(false)

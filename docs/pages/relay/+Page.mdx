@@ -1,21 +1,16 @@
-import { Link } from '@brillout/docpress'
-import { DataArchitecture } from '../../components'
+import { Link, Contribution } from '@brillout/docpress'
+import { Example, CommunityNote } from '../../components'
 
-<DataArchitecture
-  toolName={'Relay'}
-  toolLink={'https://relay.dev/'}
-  isGeneric={false}
-  toolType="graphql"
-  toolDocs={<a href="https://github.com/facebook/relay/issues/3468#issuecomment-824872147">Relay &gt; #3468 - SSR docs (comment)</a>}
-/>
+<CommunityNote tool="relay" url="https://relay.dev" hasExtension={false} />
 
-## React Streaming
+To manually integrate Relay, see:
+- <Link href="/integration#data-fetching" />
+- [GitHub> facebook/relay > #3468 - SSR docs (comment)](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
+- [nextjs-relay-streaming-ssr](https://github.com/tobias-tengler/nextjs-relay-streaming-ssr), which has an explanation in its Readme on how it works.
 
 For using Relay with React Streaming, see:
  - <Link href="/streaming#initial-data-after-stream-end" />
  - [Relay - #3762 React 18 docs](https://github.com/facebook/relay/issues/3762)
 
-## Example
-
 Example of a deep Relay integration with React 18's new SSR Suspense Render-as-you-Fetch architecture:
- - [Vilay](https://github.com/XiNiHa/vilay)
+ - <Example timestamp="2022.08" repo="XiNiHa/vilay" />

@@ -3,7 +3,11 @@ export { RecommendationRouterLibraries }
 import React from 'react'
 import { Link, Warning } from '@brillout/docpress'
 
-function RecommendationRouterLibraries({ libraryName, githubRepo }: { libraryName: string; githubRepo: string }) {
+function RecommendationRouterLibraries({
+  libraryName,
+  githubRepo,
+  link
+}: { libraryName: string; githubRepo: string; link: string }) {
   const onBeforeRouteLink = (
     <Link href="/onBeforeRoute">
       <code>onBeforeRoute()</code>
@@ -13,20 +17,23 @@ function RecommendationRouterLibraries({ libraryName, githubRepo }: { libraryNam
     <>
       <Warning>
         <p>
-          While it's possible to use {libraryName} we recommend against it: Vike's built-in router has many features
-          that {libraryName} doesn't (and cannot) offer.
+          While it's possible to use Vike with <a href={link}>{libraryName}</a> we recommend against it: Vike's built-in
+          router has features that {libraryName} doesn't offer.
         </p>
         <p>
-          That said, if you have an existing app using {libraryName} that you want to migrate to Vike, then it makes
-          sense to start using Vike with {libraryName} and, after your migration is done, to progressively migrate from{' '}
-          {libraryName} to Vike's router.
+          That said, if you have an existing app using {libraryName} that you want to migrate to Vike, then it can makes
+          sense to start using Vike with {libraryName}. After your migration is done you can later/progressively migrate
+          from {libraryName} to Vike's built-in router.
         </p>
-        <p>Create a new feature request if you need a {libraryName} feature that Vike's router is missing.</p>
+        <p>
+          Vike's router aims to be as feature-rich as {libraryName}: if you need a {libraryName} feature that is missing
+          then create a new feature request.
+        </p>
       </Warning>
       <blockquote>
         <p>
-          We believe that the frontend routing should be completely owned by the frontend framework. Trying to seperate
-          concerns in that regard leads to a frankenstein architecture.
+          We believe routing should be completely owned by the frontend framework. Trying to separate concerns in that
+          regard leads to inherent DX degradations.
         </p>
       </blockquote>
       <p>
@@ -39,7 +46,7 @@ function RecommendationRouterLibraries({ libraryName, githubRepo }: { libraryNam
           </a>
         </li>
       </ul>
-      <p>Contribution welcome to explore deep integration using {onBeforeRouteLink}.</p>
+      <p>Contributions welcome to explore deep integration using {onBeforeRouteLink}.</p>
     </>
   )
 }

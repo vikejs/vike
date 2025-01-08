@@ -1,13 +1,11 @@
 export { improveViteLogs }
 
 import { assert, removeEmptyLines, trimWithAnsi, trimWithAnsiTrailOnly } from '../utils.js'
-import { logViteErrorContainingCodeSnippet, logViteAny, clearLogs } from './loggerNotProd.js'
-import { isErrorWithCodeSnippet } from './loggerNotProd/errorWithCodeSnippet.js'
+import { logViteError, logViteAny } from './loggerNotProd.js'
 import { getHttpRequestAsyncStore } from './getHttpRequestAsyncStore.js'
 import { removeSuperfluousViteLog } from './loggerVite/removeSuperfluousViteLog.js'
 import type { LogType, ResolvedConfig, LogErrorOptions } from 'vite'
-import { isErrorDebug } from './isErrorDebug.js'
-import { onRuntimeError } from '../../runtime/renderPage/loggerProd.js'
+import { isErrorDebug } from '../../shared/isErrorDebug.js'
 
 function improveViteLogs(config: ResolvedConfig) {
   intercept('info', config)
@@ -31,28 +29,23 @@ function intercept(logType: LogType, config: ResolvedConfig) {
 
     const store = getHttpRequestAsyncStore()
 
-    // Dedupe Vite error messages
-    if (options.error && store?.shouldErrorBeSwallowed(options.error)) {
-      return
-    }
-    // Remove this once https://github.com/vitejs/vite/pull/13495 is released and widely used
-    if (msg.startsWith('Transform failed with ') && store && logType === 'error') {
-      store.markErrorMessageAsLogged(msg)
+    if (options.error) {
+      // Vite does a poor job of handling errors.
+      //  - It doesn't format error code snippets.
+      //  - It only shows error.message which means that crucial information such as error.id isn't shown to the user.
+      logViteError(options.error, store?.httpRequestId)
+      // We swallow Vite's message: we didn't see it add any value so far.
+      //  - It can even be confusing, such as the following:
+      //    ```
+      //    Error when evaluating SSR module virtual:vike:pageConfigValuesAll:server:/pages/abort: failed to import "/pages/abort/+Page.mdx"
+      //    ```
+      assert(!isErrorDebug())
       return
     }
 
-    if (options.error && isErrorWithCodeSnippet(options.error)) {
-      logViteErrorContainingCodeSnippet(options.error)
-      return
-    }
-
-    // Only allow Vite to clear its first log. All other clearing is controlled by vike.
-    if (options.clear) clearLogs({ clearIfFirstLog: true })
-    if (options.error) store?.markErrorAsLogged(options.error)
     // Vite's default logger preprends the "[vite]" tag if and only if options.timestamp is true
     const prependViteTag = options.timestamp || !!store?.httpRequestId
     logViteAny(msg, logType, store?.httpRequestId ?? null, prependViteTag)
-    if (options.error) onRuntimeError(options.error)
   }
 }
 

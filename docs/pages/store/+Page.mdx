@@ -1,13 +1,93 @@
-import { Link } from '@brillout/docpress'
-import { DataArchitecture } from '../../components'
+import { Link, Contribution } from '@brillout/docpress'
+import { UiFrameworkExtension, Advanced } from '../../components'
 
-<DataArchitecture
-  toolName={'any data store tool'}
-  isGeneric={true}
-  toolType="data-store"
-/>
+> **What is a store?**
+>
+> A store (aka state management) is a tool that helps you manage complex UI state.
+>
+> Not properly managing UI state is one of the most common cause for buggy user interfaces. A store enables you to get under control even the most complex UI state logic.
+>
+> A store works by representing state changes as atomic changes to an immutable data structure, enabling a fundamentally more robust state management.
 
-## Examples
-
-- <Link href="/vuex" />
+In principle, you can use Vike with any store.
 - <Link href="/redux" />
+- <Link href="/pinia" />
+- <Link href="/vuex" />
+- <Link href="/examples#stores">... more</Link>
+
+The documentation on this page is about manually integrating stores.
+
+<Advanced>
+  Instead of manually integrating stores, we generally recommend using <Link href="/extensions">Vike extensions</Link> such as [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme).
+</Advanced>
+
+<Contribution>
+Contribution welcome to [create Vike extensions](https://github.com/vikejs/vike/issues/1715) integrating stores.
+</Contribution>
+
+## SSR
+
+{/* Similar text at https://vike.dev/integration#data-fetching */ }
+
+When using <Link href="/ssr">SSR</Link>, the initial state of the store is determined on the server side (during SSR) and then passed to the client side.
+
+### Initial state
+
+If you're using SSR, you need to ensure that the store's initial state is exactly the same between the client- and server-side (otherwise you may get a <Link href="/hydration-mismatch">hydration mismatch</Link>). Here's how you typically achieve this:
+
+1. Determine the store's initial state on the server-side (during SSR) and <Link href="/pageContext#custom">make it available as `pageContext.storeInitialState`</Link>.
+   > You typically create the store at <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link>  and then retrieve its initial sate at <Link href="/onAfterRenderHtml">`onAfterRenderHtml()`</Link>:
+   > ```js
+   > // pages/+onBeforeRenderHtml.js
+   >
+   > import { createStore } from 'awesome-store'
+   >
+   > export function onBeforeRenderHtml(pageContext) {
+   >   pageContext.store = createStore()
+   > }
+   > ```
+   > ```js
+   > // pages/+onAfterRenderHtml.js
+   >
+   > export function onAfterRenderHtml(pageContext) {
+   >   pageContext.storeInitialState = pageContext.store.getState()
+   > }
+   > ```
+   > If you use React then you may also need to use <Link href="/Wrapper">`+Wrapper`</Link>:
+   > ```js
+   > // pages/+Wrapper.jsx
+   >
+   > import { Provider } from 'awesome-store/react'
+   > import { usePageContext } from 'vike-react/usePageContext'
+   >
+   > export default function StoreProvider({ children }) {
+   >   const pageContext = usePageContext()
+   >   return <Provider store={pageContext.store}>{children}</Provider>
+   > }
+   > ```
+1. Make `pageContext.storeInitialState` available to the client-side by using <Link href="/passToClient">`passToClient`</Link>.
+   > At `pages/+config.js`:
+   > ```js
+   > // pages/+config.js
+   >
+   > export default {
+   >   passToClient: ['storeInitialState']
+   > }
+   > ```
+1. On the client-side, initialize the store with `pageContext.storeInitialState`.
+   > Typically at <Link href="/onBeforeRenderClient">`onBeforeRenderClient()`</Link>:
+   > ```js
+   > // pages/+onBeforeRenderClient.js
+   >
+   > import { createStore } from 'awesome-store'
+   >
+   > export function onBeforeRenderClient(pageContext) {
+   >   pageContext.store = createStore(pageContext.storeInitialState)
+   > }
+   > ```
+
+### Data fetching
+
+Typically, when using a store, your components never directly access fetched data: instead they only interact with the store and access data over the store.
+
+If you're using SSR, you typically populate the store with <Link href="/data-fetching#initial-data">initial data fetched on the server-side</Link>. You can achieve this by using `pageContext.storeInitialState` as shown <Link href="#initial-state">above</Link>.

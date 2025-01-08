@@ -12,3 +12,9 @@ function pathJoin(path1: string, path2: string): string {
   if (path1.startsWith('/')) joined = '/' + joined
   return joined
 }
+
+/* https://github.com/brillout/telefunc/blob/0fd44322acbd07857ae29361ba7c998607f17dd5/telefunc/utils/path-shim.ts#L17-L21
+function isAbsolute(filePath: string) {
+  // ...
+}
+*/

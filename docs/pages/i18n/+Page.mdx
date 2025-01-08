@@ -2,13 +2,19 @@ import { RepoLink, Link } from '@brillout/docpress'
 
 You can internationalize (i18n) your app by using the <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
 
-```js
+For example:
+
+```ts
 // /renderer/+onBeforeRoute.js
 
 export { onBeforeRoute }
 
+import { modifyUrl } from 'vike/modifyUrl'
+import type { Url } from 'vike/types'
+
 function onBeforeRoute(pageContext) {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlPathname)
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlParsed)
+
   return {
     pageContext: {
       // Make `locale` available as `pageContext.locale`
@@ -19,22 +25,27 @@ function onBeforeRoute(pageContext) {
   }
 }
 
-// You can also use a library instead of implementing your own locale retrieval mechanism
-function extractLocale(url) {
+function extractLocale(url: Url) {
+  const { pathname } = url
+
   // Determine the locale, for example:
-  //  extractLocale('/en-US/film/42').locale === 'en-US'
-  //  extractLocale('/de-DE/film/42').locale === 'de-DE'
+  //  /en-US/film/42 => en-US
+  //  /de-DE/film/42 => de-DE
   const locale = /* ... */
 
   // Remove the locale, for example:
-  //  extractLocale('/en-US/film/42').urlWithoutLocale === '/film/42'
-  //  extractLocale('/de-DE/film/42').urlWithoutLocale === '/film/42'
-  //  ...
-  urlWithoutLocale = /* ... */
+  //  /en-US/film/42 => /film/42
+  //  /de-DE/film/42 => /film/42
+  const pathnameWithoutLocale = /* ... */
+
+  // Reconstruct full URL
+  const urlWithoutLocale = modifyUrl(url.href, { pathname: pathnameWithoutLocale })
 
   return { locale, urlWithoutLocale }
 }
 ```
+
+> See also: <Link href="/modifyUrl" />
 
 Upon rendering a page, `onBeforeRoute()` is the first hook that Vike calls, which means that the rest of your app doesn't have to deal with localized URLs anymore and you can simply use `pageContext.locale` instead.
 
@@ -119,7 +130,7 @@ manipulate localized URLs and set `pageContext.locale`.
 > `onPrerenderStart()` is a global hook you can define only once, while `onBeforePrerenderStart()` is a per-page hook you can define multiple times.
 
 Alternatively, if you need to load data that depends on localization, instead of `onPrerenderStart()` you can use
-`onBeforePrerenderStart()` to localize <Link href="/data#pagecontext-data" doNotInferSectionTitle>`pageContext.data`</Link>:
+`onBeforePrerenderStart()` to localize <Link href="/pageContext#:~:text=pageContext.data,-%3A">`pageContext.data`</Link>:
 
 ```js
 // /pages/product/+onBeforePrerenderStart.js
@@ -204,6 +215,7 @@ You can use the `lang` setting to define the value of the `<html lang>` attribut
 
 ## See also
 
-- <Link href="/head#internationalization" />
+- <Link href="/head-tags#internationalization" />
 - <Link href="/lang" />
 - <Link href="/onBeforeRoute" />
+- <Link href="/modifyUrl" />

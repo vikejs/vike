@@ -6,39 +6,33 @@ import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
-import {
-  assert,
-  assertPosixPath,
-  getFilePathRelativeToUserRootDir,
-  getOutDirs,
-  getVirtualFileId,
-  isDev1,
-  isDev1_onConfigureServer,
-  isVirtualFileId,
-  resolveVirtualFileId
-} from '../../utils.js'
+import { assert, assertPosixPath, getOutDirs, isDevCheck } from '../../utils.js'
+import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile } from './v1-design/getVikeConfig.js'
+import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile, isV1Design } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
-import { logConfigInfo, clearLogs } from '../../shared/loggerNotProd.js'
+import { logConfigInfo } from '../../shared/loggerNotProd.js'
+import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
+  let isDev: boolean | undefined
   return {
     name: 'vike:importUserCode',
-    config() {
-      return {
-        experimental: {
-          // TODO/v1-release: remove
-          importGlobRestoreExtension: true
-        }
-      }
+    config(_, env) {
+      isDev = isDevCheck(env)
     },
     async configResolved(config_) {
       configVike = await getConfigVike(config_)
       config = config_
+      // TODO/v1-release: remove
+      {
+        assert(isDev !== undefined)
+        const isV1 = await isV1Design(config, isDev)
+        if (!isV1) config.experimental.importGlobRestoreExtension = true
+      }
     },
     resolveId(id) {
       if (isVirtualFileId(id)) {
@@ -55,10 +49,9 @@ function importUserCode(): Plugin {
       }
     },
     async load(id, options) {
-      const isDev = isDev1()
-
       if (!isVirtualFileId(id)) return undefined
       id = getVirtualFileId(id)
+      assert(typeof isDev === 'boolean')
 
       if (isVirtualFileIdPageConfigValuesAll(id)) {
         const code = await getVirtualFilePageConfigValuesAll(id, isDev, config)
@@ -71,7 +64,6 @@ function importUserCode(): Plugin {
       }
     },
     configureServer(server) {
-      isDev1_onConfigureServer()
       handleFileAddRemove(server, config)
     }
   }
@@ -110,18 +102,14 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       `${msg} — ${pc.cyan('no HMR')}, see https://vike.dev/on-demand-compiler`,
       'info',
       null,
-      true,
-      clear,
-      config
+      true
     )
     return
   }
   //*/
 
-  // HMR can resolve errors => we clear previously shown errors.
   // It can hide an error it shouldn't hide (because the error isn't shown again), but it's ok since users can reload the page and the error will be shown again (Vite transpilation errors are shown again upon a page reload).
   if (!isVikeConfig && isViteModule) {
-    clearLogs({ clearErrors: true })
     return
   }
 
@@ -141,8 +129,8 @@ function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
 
 function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
   {
-    const filePathToShowToUser = pc.dim(getFilePathRelativeToUserRootDir(filePath, config.root, true))
-    const msg = `${op} ${filePathToShowToUser}`
+    const filePathToShowToUserResolved = getModuleFilePathAbsolute(filePath, config)
+    const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
   reloadVikeConfig(config.root, getOutDirs(config).outDirRoot)

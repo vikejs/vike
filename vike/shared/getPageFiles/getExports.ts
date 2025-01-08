@@ -1,16 +1,23 @@
-export { getExportUnion }
-export { getExports }
+export { getPageContextExports }
 export type { ExportsAll }
 export type { PageContextExports }
 export type { ConfigEntries }
+export type { From }
+export type { Sources }
+export type { Source }
 
 import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
-import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
+import { assert, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
 import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_old_design.js'
 import type { FileType } from './fileTypes.js'
 import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
-import { getConfigDefinedAtString, getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
+import {
+  type ConfigDefinedAtOptional,
+  getConfigDefinedAtOptional,
+  getDefinedAtString
+} from '../page-configs/getConfigDefinedAt.js'
+import { getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
@@ -36,11 +43,16 @@ type ConfigEntries = Record<
   string,
   {
     configValue: unknown
-    configDefinedAt: string
+    configDefinedAt: ConfigDefinedAtOptional
     configDefinedByFile: string | null
   }[]
 >
 type PageContextExports = {
+  source: Source
+  sources: Sources
+  from: From
+
+  // TODO/eventually: deprecate/remove every prop below
   config: Record<string, unknown>
   configEntries: ConfigEntries
   exports: Record<string, unknown>
@@ -49,7 +61,59 @@ type PageContextExports = {
   pageExports: Record<string, unknown>
 }
 
-function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded | null): PageContextExports {
+type From = {
+  configsStandard: Record<
+    string, // configName
+    SourceConfigsStandard
+  >
+  configsCumulative: Record<
+    string, // configName
+    SourceConfigsCumulative
+  >
+  configsComputed: Record<
+    string, // configName
+    SourceConfigsComputed
+  >
+}
+
+type Source = Record<
+  string, // configName
+  SourceAny
+>
+type Sources = Record<
+  string, // configName
+  SourceAny[]
+>
+type SourceAny = SourceConfigs
+/* TODO/eventually: https://github.com/vikejs/vike/issues/1268
+  | SourceHooks
+  | SourceRenderFailure
+  | SourceVikeInternal
+  */
+
+type SourceConfigs = SourceConfigsStandard | SourceConfigsCumulative | SourceConfigsComputed
+/* Potential upcoming feature: resolve cumulative values at config-time instead of runtime,
+   in order to save KBs on the client-side.
+ | SourceConfigsResolved
+ */
+type SourceConfigsStandard = {
+  type: 'configsStandard'
+  value: unknown
+  definedAt: string
+}
+type SourceConfigsCumulative = {
+  type: 'configsCumulative'
+  values: {
+    value: unknown
+    definedAt: string
+  }[]
+}
+type SourceConfigsComputed = {
+  type: 'configsComputed'
+  value: unknown
+}
+
+function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded | null): PageContextExports {
   const configEntries: ConfigEntries = {}
   const config: Record<string, unknown> = {}
   const exportsAll: ExportsAll = {}
@@ -75,11 +139,23 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
   })
 
   // V1 design
+  const source: Source = {}
+  const sources: Sources = {}
+  const addSrc = (src: SourceAny, configName: string) => {
+    source[configName] = src
+    sources[configName] ??= []
+    sources[configName]!.push(src)
+  }
+  const from: From = {
+    configsStandard: {},
+    configsCumulative: {},
+    configsComputed: {}
+  }
   if (pageConfig) {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
-      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue)
-      const configDefinedAt = getConfigDefinedAtString('Config', configName, configValue)
+      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
+      const configDefinedAt = getConfigDefinedAtOptional('Config', configName, configValue.definedAtData)
 
       config[configName] = config[configName] ?? value
       configEntries[configName] = configEntries[configName] ?? []
@@ -90,6 +166,40 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
         configDefinedAt,
         configDefinedByFile: configValueFilePathToShowToUser
       })
+
+      if (configValue.type === 'standard') {
+        const src: SourceConfigsStandard = {
+          type: 'configsStandard',
+          value: configValue.value,
+          definedAt: getDefinedAtString(configValue.definedAtData, configName)
+        }
+        addSrc(src, configName)
+        from.configsStandard[configName] = src
+      }
+      if (configValue.type === 'cumulative') {
+        const src: SourceConfigsCumulative = {
+          type: 'configsCumulative',
+          values: configValue.value.map((value, i) => {
+            const definedAtFile = configValue.definedAtData[i]
+            assert(definedAtFile)
+            const definedAt = getDefinedAtString(definedAtFile, configName)
+            return {
+              value,
+              definedAt
+            }
+          })
+        }
+        addSrc(src, configName)
+        from.configsCumulative[configName] = src
+      }
+      if (configValue.type === 'computed') {
+        const src: SourceConfigsComputed = {
+          type: 'configsComputed',
+          value: configValue.value
+        }
+        addSrc(src, configName)
+        from.configsComputed[configName] = src
+      }
 
       // TODO/v1-release: remove
       const exportName = configName
@@ -123,14 +233,19 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded |
   assert(!('default' in exports))
   assert(!('default' in exportsAll))
 
-  return {
+  const pageContextExports = {
+    from,
+    source,
+    sources,
+
+    // TODO/eventually: deprecate/remove every prop below
     config,
     configEntries,
-    // TODO/v1-release: remove
     exports,
     exportsAll,
     pageExports
   }
+  return pageContextExports
 }
 
 function getExportValues(pageFile: PageFile) {
@@ -197,16 +312,5 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
         return Reflect.get(...args)
       }
     }
-  )
-}
-
-function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
-  return (
-    exportsAll[propName]
-      ?.map((e) => {
-        assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource} should be an array of strings.`)
-        return e.exportValue
-      })
-      .flat() ?? []
   )
 }

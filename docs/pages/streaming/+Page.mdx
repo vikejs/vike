@@ -1,18 +1,24 @@
 import { RepoLink, Link } from '@brillout/docpress'
 import progressiveRenderingDemo from './progressive-rendering-demo.webm'
-import { UseUiFrameworkVikeExtensionAnyHint } from '../../components'
+import { UiFrameworkExtension } from '../../components'
 
-Vike not only has first-class support for HTML streaming (aka SSR streaming), but also provides you with extensive control over the stream.
+Vike has first-class support for [HTML streaming (aka SSR streaming)](/stream#what-is-streaming) and gives you full control over it.
 
-<UseUiFrameworkVikeExtensionAnyHint featureName="HTML streaming" />
+> See <Link href="/stream" /> if you merely want to enable/disable HTML streaming.
+
+This page documents how to manually integrate HTML streaming.
+
+> If you use <UiFrameworkExtension name noLink /> then HTML streaming is already integrated and you can skip reading this page.
+
 
 ## Examples
+
+Examples of manually integrating HTML streaming (without using a <Link href="/extensions">Vike extension</Link>).
 
 **React**
  - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
  - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-react-full/' />
  - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + server agnostic: [`vike-react` source code](https://github.com/vikejs/vike-react/blob/main/packages/vike-react)
- - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + [Telefunc](https://telefunc.com/) + [TigrisDB](https://www.tigrisdata.com/) + [Blueprint](https://blueprintjs.com/): [GitHub > `pyrossh/react-streaming-tigris`](https://github.com/pyrossh/react-streaming-tigris)
  - React 18 + Relay: [Vilay](https://github.com/XiNiHa/vilay)
 
 **Vue**
@@ -46,22 +52,28 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
+Node.js(-like) environments (Node.js/Bun/Deno server, Vercel, AWS EC2, AWS Lambda, ...):
 
 ```js
 // server.js
 
 import { renderPage } from 'vike/server'
 
-app.get("*", async (req, res, next) => {
+app.get("*", async (req, res) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) return next()
-  // httpResponse.pipe() works with Node.js Streams as well as Web Streams
   httpResponse.pipe(res)
 })
 ```
+
+> For Node.js(-like) environments we recommend using a Node.js Writable Stream with `pageContext.httpResponse.pipe()` because it allows the stream to be flushed. In other words: your UI framework can say "now is a good time to flush the stream buffer and send it to the user".
+>
+> Web Streams (both Writables and Readables) and Node.js Readable Streams don't have this flushing capability.
+>
+> As far as we know, only React leverages the flushing capability. Thus, this recommendation may be irrelevant if you use a UI framework other than React.
+>
+> If you don't follow this recommendation, then you can use `pageContext.httpResponse.getReadableNodeStream()` instead.
 
 Edge platforms (e.g. Cloudflare Workers):
 
@@ -78,32 +90,20 @@ async function handleFetchEvent(event) {
   const pageContextInit = { urlOriginal: event.request.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
-  if (!httpResponse) {
-    return null
-  } else {
-    // httpResponse.getReadableWebStream() only works with Web Streams
-    const readable = httpResponse.getReadableWebStream()
-    const { statusCode: status, headers } = httpResponse
-    return new Response(readable, { headers, status })
-  }
+  const readable = httpResponse.getReadableWebStream()
+  const { statusCode: status, headers } = httpResponse
+  return new Response(readable, { headers, status })
 }
 ```
 
-In general, we recommend using `pageContext.httpResponse.pipe()` because `pipe()` is able to flush streams. In other words: the stream provided by your UI framework can say "now is a good time to flush the buffer and send it to the user".
+> If you have a Web Writable Stream then use `httpResponse.pipe()` (it also works with Web Streams).
 
-> As far as we know, only React leverages the flush capability. Thus, the recommendation may be irrelevant if you use a UI framework other than React.
-
-If your server doesn't expose a writable stream then you cannot use `pipe()`. In that case you can fallback to:
- - `pageContext.httpResponse.getReadableWebStream()`
- - `pageContext.httpResponse.getReadableNodeStream()`
-
-For example, Cloudflare Workers doesn't expose any writable stream and the only option is to use `getReadableWebStream()`.
 
 ## API
 
-- <Link href="#basics" >**`pageContext.httpResponse.pipe()`**</Link>: The recommended way of integrating the stream into your server.
-- <Link href="#basics" >**`pageContext.httpResponse.getReadableWebStream()`**</Link>: Only use if you cannot use `pipe()`.
-- <Link href="#basics" >**`pageContext.httpResponse.getReadableNodeStream()`**</Link>: Only use if you cannot use `pipe()`.
+- <Link href="#basics" >**`pageContext.httpResponse.pipe()`**</Link>
+- <Link href="#basics" >**`pageContext.httpResponse.getReadableWebStream()`**</Link>
+- <Link href="#basics" >**`pageContext.httpResponse.getReadableNodeStream()`**</Link>
 - <Link href="#enableeagerstreaming">**`enableEagerStreaming`**</Link>: Start the stream as soon as possible.
 - <Link href="#stamppipe">**`stampPipe()`**</Link>: Only needed if your UI framework provides a stream pipe.
 - <Link href="#pagecontext-httpresponse-getbody" >**`pageContext.httpResponse.getBody()`**</Link>: Convert the stream into a string.
@@ -309,19 +309,25 @@ async function onRenderHtml(pageContext) {
 
 ## Progressive Rendering
 
-Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered (as well as <Link href="/hydration">hydrated</Link>).
-
-Demo:
+Some UI frameworks, such as React, support *progressive rendering*: while some parts of the UI are being loaded, other parts are already rendered (and already <Link href="/hydration">hydrated</Link>).
 
 <video src={progressiveRenderingDemo} width="500" controls muted autoPlay loop></video>
 
-Vike has first-class support for progressive rendering. (Make sure your UI framework supports progressive rendering.)
+> Instead of using HTML streaming, an easy alternative is to use a stateful component. But the issue with that approach is that the content isn't rendered to HTML. For example, a product page fetching its content from a database won't get the <Link href="/SPA-vs-SSR#ssr">SEO and performance advantages of SSR</Link>.
+>
+> With HTML streaming, all content is rendered to HTML.
+
+
+Vike has first-class support for HTML streaming and progressive rendering.
+
+Example: [`vike-react` > `examples/full/`](https://github.com/vikejs/vike-react/tree/main/examples/full#readme).
 
 See also: <Link href="/react#react-server-components" doNotInferSectionTitle />.
 
 
 ## See also
 
+- <Link href="/stream" />
+- <Link href="/preloading" />
 - [Node.js Streams](https://nodejs.org/api/stream.html) (Node.js documentation)
 - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) (MDN documentation)
-- <Link href="/preloading" />

@@ -1,4 +1,5 @@
 export { isScriptFile }
+export { isPlainJavaScriptFile }
 export { isTemplateFile }
 export { scriptFileExtensions }
 export { scriptFileExtensionList }
@@ -24,6 +25,10 @@ const extJavaScript = [
   'cts',
   'mjs',
   'mts',
+]
+// prettier-ignore
+// biome-ignore format:
+const extJsx = [
   'jsx',
   'tsx',
   'cjsx',
@@ -40,17 +45,20 @@ const extTemplates = [
   'md',
   'mdx'
 ] as const
-const scriptFileExtensionList = [...extJavaScript, ...extTemplates] as const
+const scriptFileExtensionList = [...extJavaScript, ...extJsx, ...extTemplates] as const
 const scriptFileExtensions: string = '(' + scriptFileExtensionList.join('|') + ')'
 
 function isScriptFile(filePath: string): boolean {
   const yes = scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))
-  assert(!isJavaScriptFile(filePath) || yes)
+  if (isPlainJavaScriptFile(filePath)) assert(yes)
   return yes
 }
 
-function isJavaScriptFile(filePath: string) {
-  return /\.(c|m)?(j|t)sx?$/.test(filePath)
+function isPlainJavaScriptFile(filePath: string) {
+  const yes1 = /\.(c|m)?(j|t)s$/.test(filePath)
+  const yes2 = extJavaScript.some((ext) => filePath.endsWith('.' + ext))
+  assert(yes1 === yes2)
+  return yes1
 }
 
 function isTemplateFile(filePath: string) {

@@ -1,0 +1,122 @@
+import { Link } from '@brillout/docpress'
+
+TODO: write a new guided tour.
+ - The content down below was copy-pasted as-is from old removed /config content.
+
+
+## `+config.js`
+
+The `+config.js` files is the interface between Vike and your code.
+
+You can use `+config.js` to define a new page:
+
+```js
+// /pages/about/+config.js
+
+// The file defines a new page with URL /about
+
+import { AboutPage } from './AboutPage'
+
+export default {
+  Page: AboutPage
+}
+```
+
+> The URL `/about` is determined by the filesystem location of `/pages/about/+config.js`, see <Link href="/filesystem-routing" />.
+
+```jsx
+// /pages/about/AboutPage.jsx
+
+export const AboutPage = () => <>Vike Demo</>
+```
+
+Another example:
+
+```js
+// /pages/product/+config.js
+
+// This file defines a new page with URL '/product/@id'
+
+import { ProductPage } from './ProductPage'
+
+export default {
+   Page: ProductPage,
+   // Parameterized route that matches URLs such as /product/1337 and /product/macbook
+   route: '/product/@id'
+}
+```
+
+> Setting the `route` value overrides Filesystem Routing.
+
+```js
+// /pages/product/ProductPage.jsx
+
+export { ProductPage }
+
+function ProductPage() {
+  return (
+    <>
+      <h1>Product Information</h1>
+      ...
+    </>
+  )
+}
+```
+
+> You can also create a file `/pages/product/+Page.js` instead of setting `/pages/product/+config.js > export default { Page }`, see <Link href="#other-files" doNotInferSectionTitle />.
+
+
+## Other `+` files
+
+For convenience, instead of defining <Link href="#config-js">`+config.js`</Link>, you can define `+Page.js` and `+route.js`:
+
+```js
+// /pages/product/+route.js
+
+export default '/product/@id'
+```
+```js
+// /pages/product/+Page.jsx
+
+export { ProductPage as Page }
+
+function ProductPage() {
+  return (
+    <>
+      <h1>Product Information</h1>
+      ...
+    </>
+  )
+}
+```
+
+Which is equivalent to:
+
+
+```js
+// /pages/product/+config.js
+
+import { ProductPage } from './ProductPage'
+
+export default {
+   Page: ProductPage,
+   route: '/product/@id'
+}
+```
+
+```js
+// /pages/product/ProductPage.jsx
+
+export { ProductPage }
+
+function ProductPage() {
+  return (
+    <>
+      <h1>Product Information</h1>
+      ...
+    </>
+  )
+}
+```
+
+It doesn't make a difference whether you define the `Page` value by creating a plus file `+Page.js` or by setting `+config.js > export default { Page }`.

@@ -2,16 +2,16 @@
 export { onRenderClient }
 
 import ReactDOM from 'react-dom/client'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 let root
 async function onRenderClient(pageContext) {
   const { Page, pageProps } = pageContext
 
   const page = (
-    <PageLayout>
+    <Layout>
       <Page {...pageProps} />
-    </PageLayout>
+    </Layout>
   )
 
   const container = document.getElementById('react-container')

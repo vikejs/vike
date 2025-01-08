@@ -2,10 +2,10 @@
 export default onBeforeRender
 
 import { renderToNodeStream } from '@vue/server-renderer'
-import { createApp } from './app'
+import { createVueApp } from './createVueApp'
 
 async function onBeforeRender(pageContext) {
-  const { app, store } = createApp(pageContext)
+  const { app, store } = createVueApp(pageContext)
 
   const stream = renderToNodeStream(app)
 

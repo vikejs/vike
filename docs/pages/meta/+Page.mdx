@@ -1,16 +1,18 @@
-import { UiFrameworkVikeExtension, UiFrameworkVikeExtensionNames } from '../../components'
+import { Advanced, UiFrameworkExtension } from '../../components'
 import { Link, RepoLink } from '@brillout/docpress'
 
-> Using `meta` is a powerful and advanced technique: generally, we recommend using <Link href="/extensions">Vike extensions</Link> instead.
+<Advanced>
+  The `meta` setting is an advanced feature. Instead of directly using `meta` yourself, consider using <Link href="/file-env" noBreadcrumb={true} /> or <Link href="/extensions">Vike Extensions</Link> (which use `meta` under the hood).
+</Advanced>
 
-`meta` enables:
+The `meta` settings enables you to create:
  - **New settings**.
    - <Link href="#example-dataendpointurl" doNotInferSectionTitle />
    - <Link href="#example-sql" doNotInferSectionTitle />
    - <Link href="#example-title-and-description" doNotInferSectionTitle />
    - <Link href="#example-layout" doNotInferSectionTitle />
  - **New hooks**.
-   - Example: `onInit()` or `onBeforeFetchingData()`.
+   - Example: `onInit()` or `onBeforeFetchingData()`
  - **Modifying the environment of existing hooks**.
    - <Link href="#example-modify-data-env" doNotInferSectionTitle />
 
@@ -27,7 +29,7 @@ export default 'https://restcountries.com/v3.1/all'
 ```
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
@@ -78,7 +80,7 @@ export const sql = { modelName: 'User', select: ['firstName', 'lastName'], where
 ```
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
@@ -117,7 +119,7 @@ async function onBeforeRender(pageContext) {
 
 In order to define the tags `<title>` and `<meta name="description">` of a page's HTML, you can create new settings `title` and `description`.
 
-> If you use a <UiFrameworkVikeExtension/>, then you don't need to create the `title` and `description` settings as they are already created by <UiFrameworkVikeExtensionNames />. You can still read this section as it's a good example for showcasing `meta`.
+> If you use a <UiFrameworkExtension />, then you don't need to create the `title` and `description` settings as they are already created by <UiFrameworkExtension name noLink />. You can still read this section as it's a good example for showcasing `meta`.
 
 We first show how the settings `title` and `description` are used and then their implementation.
 
@@ -135,10 +137,10 @@ export default 'About Us'
 export default 'Who we are, our values, and what we stand for.'
 ```
 
-> You can also use `+config.h.js` instead of creating the files `+title.js` and `+description.js`:
+> You can also use `+config.js` instead of creating the files `+title.js` and `+description.js`:
 >
 > ```js
-> // /pages/about/+config.h.js
+> // /pages/about/+config.js
 >
 > export default {
 >   title: 'About Us',
@@ -167,7 +169,7 @@ export default pageContext => {
 #### Implementation
 
 ```ts
-// /pages/+config.h.ts
+// /pages/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -248,14 +250,12 @@ async function onRenderHtml(pageContext) {
 }
 ```
 
-> This implementation can be improved: the file `/pages/utils.js` is loaded on both the server- and client-side but `getDescription()` is only used by the server-side. This means `getDescription()` unnecessarily bloats the size of your client-side bundles. It would be cleaner to split `/pages/utils.js` in two seperate files: one for the client-side and another one for the server-side. In general, be extra careful in which environment each file is loaded; consider using <Link href="/file-env">`.server.js` and `.client.js`</Link> to ensure the environment of files.
+> This implementation can be improved: the file `/pages/utils.js` is loaded on both the server- and client-side but `getDescription()` is only used by the server-side. This means `getDescription()` unnecessarily bloats the size of your client-side bundles. It would be cleaner to split `/pages/utils.js` in two separate files: one for the client-side and another one for the server-side. In general, be extra careful in which environment each file is loaded; consider using <Link href="/file-env">`.server.js` and `.client.js`</Link> to ensure the environment of files.
 
 
 ## Example: `Layout`
 
-> If you use a <UiFrameworkVikeExtension/>, then you don't need to create the `Layout` setting as it's already created by <UiFrameworkVikeExtensionNames />.
-
-Another common use case is to create a component `<Layout>` that defines the layout of a page.
+Another common use case for `meta` is to create a component `<Layout>` that defines the layout of the page.
 
 ```js
 // /pages/product/+Layout.js
@@ -280,14 +280,16 @@ export { Layout } from '../layouts/LayoutDefault'
 ```
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
   meta: {
     Layout: {
       // Load the value of /pages/**/+Layout.js on both the server and client
-      env: { server: true, client: true }
+      env: { server: true, client: true },
+      // Make it cumulative for nested layouts
+      cumulative: true
     }
   }
 }
@@ -333,17 +335,13 @@ async function onRenderClient(pageContext) {
 }
 ```
 
-Examples:
- - <RepoLink path="/examples/layouts-react/" />
- - <RepoLink path="/examples/layouts-vue/" />
-
 
 ## Example: modify `data()` env
 
-You can use `meta` to change the environment in which built-in hooks are loaded. For example you can change the environment of `data()` from `{ server: true, client: false }` to `{ server: true, client: true }`.
+You can use `meta` to change the environment in which built-in hooks are loaded. For example, you can change the environment of the <Link href="/data">`data()` hook</Link> from `{ server: true, client: false }` to `{ server: true, client: true }`.
 
 ```ts
-// /pages/some-page/+config.h.ts
+// /pages/some-page/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -359,16 +357,27 @@ export default {
 } satisfies Config
 ```
 
-> Making `data()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/data#client-side" />.
+> Making `data()` isomorphic allows you to fetch data directly between the user's browser and the data source (without involving your server), see <Link href="/data#environment" />.
 
-For more convenience, you can create a `dataIsomorph` toggle:
+If you want to change the `meta.env` on a page-by-page basis, you can use the the <Link href="/file-env">file extension `.shared.js`</Link> (renaming `+data.js` to `+data.shared.js`), or you can create a new `dataIsomorph` config:
 
 ```ts
-// /pages/+config.h.ts
+// /pages/+config.ts
 
-import type { Config, Effect } from 'vike/types'
+export { config }
 
-const effect: Effect = ({ configDefinedAt, configValue }) => {
+import type { Config, ConfigEffect } from 'vike/types'
+
+const config = {
+  meta: {
+    dataIsomorph: {
+      env: { config: true },
+      effect
+    }
+  }
+} satisfies Config
+
+const effect: ConfigEffect = ({ configDefinedAt, configValue }) => {
   if (typeof configValue !== 'boolean') {
     throw new Error(`${configDefinedAt} should be a boolean`)
   }
@@ -382,47 +391,38 @@ const effect: Effect = ({ configDefinedAt, configValue }) => {
     }
   }
 }
-
-export default {
-  meta: {
-    dataIsomorph: {
-      env: { config: true },
-      effect
-    }
-  }
-} satisfies Config
 ```
 
 Example:
- - [/examples/react-full/](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/)
-   - Toggle definition: [/renderer/+config.h.ts > `meta.dataIsomorph`](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/renderer/+config.h.ts#L14-L33)
-   - Toggle usage: [/pages/star-wars/@id/+dataIsomorph.ts](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/pages/star-wars/@id/+dataIsomorph.ts)
-   - Hook: [/pages/star-wars/@id/+data.tsx](https://github.com/vikejs/vike/blob/6c6831865f00ff8d718bce7a1a083733a68faa65/examples/react-full/pages/star-wars/@id/+data.tsx)
+ - [/examples/react-full/](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/)
+   - Toggle definition: [/renderer/+config.ts > `meta.dataIsomorph`](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/renderer/%2Bconfig.ts#L15-L33)
+   - Toggle usage: [/pages/star-wars/@id/+dataIsomorph.ts](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/pages/star-wars/@id/+dataIsomorph.ts)
+   - Hook: [/pages/star-wars/@id/+data.tsx](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/pages/star-wars/@id/+data.tsx)
 
 
 ## API
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
   meta: {
     someSettingOrHook: {
-      // Required. Defines the environment in which the config value is loaded.
+      // [Required] Defines the environment in which the config value is loaded.
       env: {
-        //  Load the config value on the server.
+        // Load the config value on the server. [Required]
         server: true,
-        //  Load the config value on the client.
+        // Load the config value on the client. [Required]
         client: true,
-        // Load the config value at config time. Required for `effect`. Optional.
+        // Load the config value at config-time (when Vike loads +config.js files). [Optional]
         config: false // default value
       },
 
-      // Optional. Whether config values should be merged instead of overwritten.
+      // [Optional] Whether config values should be merged (instead of overridden).
       cumulative: false, // default value
 
-      // Optional. Function called when the config value is defined.
+      // [Optional] Function called when the config value is loaded at config-time.
       // Requires `env.config` to be `true`.
       effect({ configDefinedAt, configValue }) {
         if (someCondition) {
@@ -448,7 +448,7 @@ export default {
 Similar to <Link href="/pageContext#typescript">`Vike.PageContext`</Link>, you can extend (or refine) Vike's `Config` type by using the global interface `Vike.Config`.
 
 ```ts
-// /pages/+config.h.ts
+// /pages/+config.ts
 // Environment: config
 
 export default {
@@ -469,13 +469,13 @@ declare global {
 }
 
 // The following isn't needed in this example, but if you define Vike.Config
-// in a .d.ts file then make sure there is at least one export/import statment.
+// in a .d.ts file then make sure there is at least one export/import statement.
 // Tell TypeScript this file isn't an ambient module:
 export {}
 ```
 
 ```ts
-// /pages/product/@id/+config.h.ts
+// /pages/product/@id/+config.ts
 
 import { Config } from 'vike/types'
 
@@ -487,6 +487,34 @@ export default {
 
 > `sqlQuery` is a custom setting, see <Link href="#example-sql" doNotInferSectionTitle />.
 
+If you define a <Link href="#api">`cumulative` config</Link>, then also make sure to use the global interface `Vike.ConfigResolved`.
+
+```ts
+// /pages/+config.ts
+// Environment: config
+
+export default {
+  meta: {
+    viewport: {
+      env: { server: true }
+    }
+  }
+}
+
+declare global {
+  namespace Vike {
+    interface Config {
+      viewport?: number
+    }
+    interface ConfigResolved {
+      // Set the pageContext.config.viewport type
+      viewport?: number[]
+    }
+  }
+}
+```
+
+
 ## See also
 
-- <Link href="/migration/v1-design" />
+- <Link href="/head-tags#custom-settings" />

@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, FileAdded, FileRemoved } from '@brillout/docpress'
 
 Despite being a simple change, the V1 design introduces new foundational capabilities. If you're curious: <Link href="/why-the-v1-design" />
 
@@ -23,56 +23,60 @@ Most of the migration boils down to the following two steps.
 
 Move your `renderer/` hooks to `+` files:
 
-```diff
-- // /renderer/_default.page.client.js
-+ // /renderer/+onRenderClient.js
+```js
+// /renderer/_default.page.client.js // [!code --]
+// /renderer/+onRenderClient.js // [!code ++]
 
-- export { render }
-+ export { render as onRenderClient }
+export { render } // [!code --]
+export { render as onRenderClient } // [!code ++]
 ```
 
-```diff
-- // /renderer/_default.page.server.js
-+ // /renderer/+onRenderHtml.js
+```js
+// /renderer/_default.page.server.js // [!code --]
+// /renderer/+onRenderHtml.js // [!code ++]
 
-- export { render }
-+ export { render as onRenderHtml }
+export { render } // [!code --]
+export { render as onRenderHtml } // [!code ++]
 ```
 
 If you've defined a global `onBeforeRender()` hook and/or `passToClient`:
 
-```diff
-- // /renderer/_default.page.server.js
-+ // /renderer/+onBeforeRender.js
+```js
+// /renderer/_default.page.server.js // [!code --]
+// /renderer/+onBeforeRender.js // [!code ++]
 
-  export { onBeforeRender }
-- export const passToClient = ['pageProps']
+export { onBeforeRender }
+export const passToClient = ['pageProps'] // [!code --]
 ```
 
-```diff
-+ // /renderer/+config.h.js
-+ 
-+ export default {
-+   passToClient: ['pageProps']
-+ }
+<FileAdded>
+```js
+// /renderer/+config.js
+
+export default {
+  passToClient: ['pageProps']
+}
 ```
+</FileAdded>
 
 
 > See <Link href="/config" /> for more information about what `+` and `.h.js` means.
 
 > The suffixes such as `.page.server.js` and `.page.client.js` don't exist anymore. After the feature request [#744](https://github.com/vikejs/vike/issues/744) is implemented, you'll be able to use `.server.js` and `.client.js` suffixes again but note that they'll serve another purpose.
 
-Move `/renderer/` configurations to `/renderer/+config.h.ts`:
+Move `/renderer/` configurations to `/renderer/+config.ts`:
 
-```diff
-- // /renderer/_default.page.client.ts
-
-- export { clientRouting }
-- export { hydrationCanBeAborted }
-```
-
+<FileRemoved>
 ```ts
-// /renderer/+config.h.ts
+// /renderer/_default.page.client.ts
+
+export { clientRouting }
+export { hydrationCanBeAborted }
+```
+</FileRemoved>
+<FileAdded>
+```ts
+// /renderer/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -81,37 +85,38 @@ export default {
   hydrationCanBeAborted: true
 } satisfies Config
 ```
+</FileAdded>
 
 Move your error page (if you defined one):
 
-```diff
-- // /renderer/_error.page.js
-+ // /pages/_error/+Page.js
+```js
+/renderer/_error.page.js // [!code --]
+/pages/_error/+Page.js // [!code ++]
 
-  export { Page }
+export { Page }
 ```
 
 
 **2. Migrate `/pages/**/*.page.*`**
 
-```diff
-- // /pages/some-page/index.page.ts
-+ // /pages/some-page/+Page.ts
+```js
+// /pages/some-page/index.page.js // [!code --]
+// /pages/some-page/+Page.js // [!code ++]
 
-  export { Page }
+export { Page }
 ```
-```diff
-- // /pages/some-page/index.page.server.ts
-+ // /pages/some-page/+onBeforeRender.ts
+```js
+// /pages/some-page/index.page.server.js // [!code --]
+// /pages/some-page/+onBeforeRender.js // [!code ++]
 
-  export { onBeforeRender }
+export { onBeforeRender }
 ```
 
-```diff
-- // /pages/some-page/index.page.route.ts
-+ // /pages/some-page/+route.ts
+```js
+// /pages/some-page/index.page.route.js // [!code --]
+// /pages/some-page/+route.js // [!code ++]
 
-  export default route
+export default route
 ```
 
 > Each page now lives in its own directory.
@@ -198,17 +203,19 @@ Old name | New name
 -|-
 `doNotPrerender: true` | `prerender: false`
 
-```diff
+<FileRemoved>
+```js
 // /pages/news.page.server.js
 
-- export const doNotPrerender = true
+export const doNotPrerender = true
 ```
-```diff
-// /pages/news/+config.h.js
+</FileRemoved>
+```js
+// /pages/news/+config.js
 
-  export default {
-+   prerender: false
-  }
+export default {
+  prerender: false // [!code ++]
+}
 ```
 
 
@@ -219,7 +226,7 @@ If you use [custom hooks/exports](https://vite-plugin-ssr.com/exports), then rep
 You can create your own hooks and settings by using `meta`:
 
 ```ts
-// /renderer/+config.h.ts
+// /renderer/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -252,7 +259,7 @@ async function onRenderHtml(pageContext) {
 ```
 
 ```js
-// /pages/about/+config.h.js
+// /pages/about/+config.js
 
 export default {
   title: 'Demo showcasing the V1 design'
@@ -261,7 +268,7 @@ export default {
 
 See:
  - <Link href="#examples" />
- - [Advanced example of implementing `config.renderMode`](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/render-modes/renderer/+config.h.ts#L10-L24)
+ - [Advanced example of implementing `config.renderMode`](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/render-modes/renderer/+config.ts#L10-L24)
 
 
 ## `onBeforeRender` in `.page.js`
@@ -269,7 +276,7 @@ See:
 If you've defined `onBeforeRender()` hooks in `.page.js` (instead of `.page.server.js`):
 
 ```ts
-// /renderer/+config.h.ts
+// /renderer/+config.ts
 
 import type { Config } from 'vike/types'
 
@@ -284,7 +291,9 @@ export default {
 } satisfies Config
 ```
 
-For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to [create a new config `onBeforeRenderIsomorph: boolean`](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/renderer/+config.h.ts#L14-L33) for a [page-per-page toggle](https://github.com/vikejs/vike/blob/0f2e5f088fec4f6381ab97e0d3c43022f31e8740/examples/react-full/pages/star-wars/@id/+onBeforeRenderIsomorph.ts).
+For convenience, you can use <Link text={<code>meta</code>} href="/meta" /> in order to
+[create a new config `dataIsomorph: boolean`](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/renderer/+config.ts#L14-L33) for a
+[page-per-page toggle](https://github.com/vikejs/vike/blob/43503a4829e4bb0171785bc8fa501c7ca096a150/examples/react-full/pages/star-wars/@id/+dataIsomorph.ts).
 
 
 ## Client init code
@@ -294,7 +303,7 @@ The new config <Link text={<code>client</code>} href="/client" /> allows you to 
 > You can also keep using <Link text={<code>onHydrationEnd()</code>} href="/onHydrationEnd" />.
 
 ```js
-// +config.h.js
+// +config.js
 export default {
   client: './some-client-code.js'
 }
@@ -307,7 +316,6 @@ console.log("I'm run when the client-side JavaScript is loaded.")
 
 ## See also
 
- - <Link href="/header-file" />
  - <Link href="/config" />
  - <Link href="/meta" />
  - <Link href="/client" />

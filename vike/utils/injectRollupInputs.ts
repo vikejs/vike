@@ -4,6 +4,7 @@ export { normalizeRollupInput }
 import type { ResolvedConfig, Rollup } from 'vite'
 import { assert } from './assert.js'
 import { isObject } from './isObject.js'
+import { isArray } from './isArray.js'
 type InputOption = Rollup.InputOption
 type InputsMap = Record<string, string>
 
@@ -24,7 +25,7 @@ function normalizeRollupInput(input?: InputOption): InputsMap {
   if (typeof input === 'string') {
     input = [input]
   }
-  if (Array.isArray(input)) {
+  if (isArray(input)) {
     return Object.fromEntries(input.map((input) => [input, input]))
   }
   assert(isObject(input))

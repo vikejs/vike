@@ -10,11 +10,12 @@ type PageContextPageFiles = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
 }
+// TODO/next-major-release: make it sync
 async function isClientSideRoutable(pageId: string, pageContext: PageContextPageFiles): Promise<boolean> {
   await analyzePageClientSideInit(pageContext._pageFilesAll, pageId, {
     sharedPageFilesAlreadyLoaded: false
   })
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageId)
-  const { isClientSideRenderable, isClientRouting } = analyzeClientSide(pageConfig, pageContext._pageFilesAll, pageId)
-  return isClientSideRenderable && isClientRouting
+  const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageContext._pageFilesAll, pageId)
+  return isClientRuntimeLoaded && isClientRouting
 }

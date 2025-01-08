@@ -1,42 +1,91 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
+import { UiFrameworkExtension } from '../../components'
 
-By default, Vike does Filesystem Routing: the URL of a page is determined based on where its <Link href="/Page">`+Page.js`</Link> (or <Link href="/config">`+config.h.js`</Link>) file is located on the filesystem.
+Detailed information about Vike's Filesystem Routing.
 
-```bash
-FILESYSTEM                   URL
-pages/about/+Page.js         /about
-# `index` is mapped to the empty string
-pages/index/+Page.js         /
-# Case sensitive
-pages/HELLO/+Page.js         /HELLO
-# Parameterized
-pages/movie/@id/+Page.js     /movie/1, /movie/2, /movie/3, ...
-```
+For an overview, see instead: <Link href="/routing#filesystem-routing" doNotInferSectionTitle />.
 
-Filesystem Routing ignores all the following directories:
+## Ignored directories
+
+Following directories are ignored by Filesystem Routing:
  - `index/`
  - `pages/`
  - `src/`
-
-For example:
-
-```
-FILESYSTEM                                          URL
-src/pages/jobs/+Page.js                             /jobs
-pages/pages/src/src/index/pages/about/+Page.js      /about
-contact/+Page.js                                    /contact
-```
-
-This enables you to implement a <Link text="domain-driven file structure" href='/file-structure#domain-driven' /> such as:
+ - `(someDir)/` (any directory inside parentheses)
 
 ```
-FILESYSTEM                         URL
-user/pages/list/+Page.js           /user/list
-user/pages/create/+Page.js         /user/create
-todo/pages/list/+Page.js           /todo/list
-todo/pages/create/+Page.js         /todo/create
+FILESYSTEM                                                     URL
+=========================================================      ========
+pages/index/+Page.js                                           /
+(marketing)/src/pages/jobs/+Page.js                            /jobs
+(some)/(path)/src/pages/jobs/+Page.js                          /jobs
+contact/+Page.js                                               /contact
+pages/pages/src/(some-dir)/src/index/pages/about/+Page.js      /about
 ```
 
-You can change the URL root of Filesystem Routing by using <Link href="/filesystemRoutingRoot" noBreadcrumb />.
+But they aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
+```yaml
+pages/about/+Page.js
+# This +config.js file doesn't apply to pages/about/+Page.js
+src/pages/+config.js
+```
 
-For more advanced routing, use [Route Strings](/route-string) and [Route Functions](route-function).
+
+
+
+## Case sensitive
+
+Filesystem Routing is case sensitive:
+
+```bash
+FILESYSTEM                     URL
+========================       ======
+pages/HELLO/+Page.js           /HELLO
+```
+
+
+## Crawl space
+
+Vike crawls files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root). Consequently, all your <Link href="/config#files">`+` files</Link> need to live inside `root`.
+
+> You can use symlinks (e.g. `$ ln -s`) to make a directory outside of `root` crawlable.
+
+If you use Git then Vike skips `.gitignore` files.
+
+
+## `renderer/`
+
+If you don't use a <UiFrameworkExtension /> then we recommend placing your UI framework integration in a `renderer/` directory.
+
+```yaml
+# Usual Vike file structure
+/pages/
+/components/
+/server/
+
+# Code that specifies how pages are rendered
+/renderer/+onRenderHtml.js
+/renderer/+onRenderClient.js
+/renderer/Layout.{jsx,vue}  # React/Vue/... component that wraps the `Page` component
+/renderer/Layout.css
+/renderer/Header.{jsx,vue} # Website header used for every page
+/renderer/Footer.{jsx,vue} # Website footer used for every page
+/renderer/logo.svg # Website logo (favicon and used by <Header>)
+```
+
+The hooks `/renderer/+onRender{Html,Client}.js` apply as default to all pages `/pages/**/+Page.js`.
+
+The `renderer/` directory doesn't add any functionality: defining the hooks `+onRender{Html,Client}.js` at `/renderer/` is equivalent to defining them at `/pages/` or `/`. It's just an optional convenience for moving rendering logic outside of `pages/`: in order to avoid cluttering the `pages/` directory and to organize and put all rendering code in one place.
+
+> The `renderer/` directory isn't like the <Link href="#ignored-directories">list of ignored directories</Link> because not only is it ignored by Filesystem Routing but it's also ignored by <Link href="/config#inheritance">config inheritance</Link>.
+
+<Warning>
+We recommend defining a `renderer/` directory only if you are implementing a custom UI framework (React/Vue/Solid/...) integration.
+</Warning>
+
+
+## See also
+
+ - <Link href="/routing#filesystem-routing" />
+ - <Link href="/file-structure" />
+ - <Link href="/filesystemRoutingRoot" />

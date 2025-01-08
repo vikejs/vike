@@ -1,40 +1,50 @@
-import { Link } from '@brillout/docpress'
+import { Link, Contribution } from '@brillout/docpress'
 
-Vike extensions integrate tools, so that you don't have to manually integrate them yourself.
+Vike extensions integrate tools on your behalf.
 
-They are all optional: you can use Vike without any Vike extension and have complete control over integration code, see <Link href="/why#optional-control" />.
-
-## UI framework
-
-<Link text="UI framework" href="/ui-framework" /> integrations.
-
- - [`vike-react`](https://github.com/vikejs/vike-react)
- - [`vike-vue`](https://github.com/vikejs/vike-vue)
- - [`vike-solid`](https://github.com/vikejs/vike-solid)
-
-> You can use [Bati](https://batijs.github.io/) to easily scaffold a Vike app using one of these extensions.
-
-There are also drafts of Vike extensions for other UI frameworks. Contribution welcome to take over and finish them.
-
- - :construction: [`vike-svelte`](https://github.com/brandonxiang/vike-svelte)
- - :construction: [`vike-angular`](https://github.com/vikejs/vike-angular)
-
+> While extensions are optional, we recommend using extensions unless you have a clear reason not to. See <Link href="/extension-vs-custom" />.
 
 ## React
 
- - [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query)
- - :construction: [`vike-react-zustand`](https://github.com/vikejs/vike-react/pull/57)
+ - <Link href="/vike-react">`vike-react`</Link>
+ - [`vike-react-query`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-query#readme)
+ - [`vike-react-apollo`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-apollo#readme)
+ - [`vike-react-chakra`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-chakra#readme)
+ - [`vike-react-antd`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-antd#readme)
+ - [`vike-react-styled-components`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-styled-components#readme)
+ - [`vike-react-styled-jsx`](https://github.com/vikejs/vike-react/tree/main/packages/vike-react-styled-jsx#readme)
+ - 🚧 [`vike-react-zustand`](https://github.com/vikejs/vike-react/pull/57)
 
-Contribution welcome to write extensions. Feel free to reach out at [#1373 - Vike Extensions: GraphQL](https://github.com/vikejs/vike/issues/1373) and [#1374 - Vike Extensions: Data Management Stores (Redux, Vuex, ...)](https://github.com/vikejs/vike/issues/1374).
+<Contribution>[Contributions welcome](https://github.com/vikejs/vike/issues/1715) to create extensions.</Contribution> 
 
 
 ## Vue
 
- - :construction: [`vike-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-pinia)
+ - <Link href="/vike-vue">`vike-vue`</Link>
+ - [`vike-vue-query`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-query#readme)
+ - [`vike-vue-pinia`](https://github.com/vikejs/vike-vue/tree/main/packages/vike-vue-pinia#readme)
+ - [`vike-vue-naive-ui`](https://github.com/Jearce/vike-vue-naive-ui)
 
-Contribution welcome to write extensions. Feel free to reach out at [#1373 - Vike Extensions: GraphQL](https://github.com/vikejs/vike/issues/1373) and [#1374 - Vike Extensions: Data Management Stores (Redux, Vuex, ...)](https://github.com/vikejs/vike/issues/1374).
+<Contribution>[Contributions welcome](https://github.com/vikejs/vike/issues/1715) to create extensions.</Contribution> 
 
 
 ## Solid
 
-Contribution welcome to write extensions. Feel free to reach out at [#1373 - Vike Extensions: GraphQL](https://github.com/vikejs/vike/issues/1373) and [#1374 - Vike Extensions: Data Management Stores (Redux, Vuex, ...)](https://github.com/vikejs/vike/issues/1374).
+ - <Link href="/vike-solid">`vike-solid`</Link>
+ - [`vike-solid-query`](https://github.com/vikejs/vike-solid/tree/main/packages/vike-solid-query#readme)
+
+<Contribution>[Contributions welcome](https://github.com/vikejs/vike/issues/1715) to create extensions.</Contribution> 
+
+
+## Svelte
+
+ - 🚧 [`vike-svelte`](https://github.com/brandonxiang/vike-svelte)
+
+<Contribution>Rough proof-of-concept: contributions welcome to take over and finish it.</Contribution>
+
+
+## Angular
+
+ - 🚧 [`vike-angular`](https://github.com/vikejs/vike-angular)
+
+<Contribution>Rough proof-of-concept: contributions welcome to take over and finish it.</Contribution>

@@ -4,15 +4,15 @@ export { onRenderHtml }
 import React from 'react'
 import { renderToStream } from 'react-streaming/server'
 import { escapeInject } from 'vike/server'
-import { PageLayout } from './PageLayout'
+import { Layout } from './Layout'
 
 async function onRenderHtml(pageContext) {
-  const { Page, pageProps, userAgent } = pageContext
+  const { Page, pageProps, headers } = pageContext
   const stream = await renderToStream(
-    <PageLayout>
+    <Layout>
       <Page {...pageProps} />
-    </PageLayout>,
-    { userAgent }
+    </Layout>,
+    { userAgent: headers['user-agent'] }
   )
 
   return escapeInject`<!DOCTYPE html>

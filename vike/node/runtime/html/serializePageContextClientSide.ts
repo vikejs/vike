@@ -3,7 +3,7 @@ export { serializePageContextAbort }
 export type { PageContextSerialization }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
-import { assert, assertWarning, hasProp, unique } from '../utils.js'
+import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
@@ -23,13 +23,15 @@ const PASS_TO_CLIENT: string[] = [
   '_abortCaller',
   */
   pageContextInitIsPassedToClient,
-  '_pageId',
+  'pageId',
+  'routeParams',
   'data' // for data() hook
 ]
 const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', isServerSideError]
 
 type PageContextSerialization = {
-  _pageId: string
+  pageId: string
+  routeParams: Record<string, string>
   _passToClient: string[]
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
@@ -44,7 +46,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
   })
   if (Object.keys(pageContext._pageContextInit).some((p) => passToClient.includes(p))) {
-    pageContextClient._pageContextInitIsPassedToClient = true
+    pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
   let pageContextSerialized: string
@@ -55,16 +57,33 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const propName = JSON.stringify(prop)
-      const varName = h(`pageContext[${propName}]`)
+      const propName1 = getPropAccessNotation(prop)
+      const propName2 = JSON.stringify(prop)
+      const varName = `pageContext${propName1}`
       try {
         serialize((pageContext as Record<string, unknown>)[prop], varName)
       } catch (err) {
         hasWarned = true
         propsNonSerializable.push(prop)
+
+        // useConfig() wrong usage
+        if (prop === '_configFromHook') {
+          let pathString = ''
+          if (isJsonSerializerError(err)) {
+            pathString = err.pathString
+          }
+          assertUsage(
+            false,
+            `Cannot serialize config ${h(
+              pathString
+            )} set by useConfig(), see https://vike.dev/useConfig#serialization-error`
+          )
+        }
+
+        // Non-serializable pageContext set by the user
         let msg = [
-          `${varName} cannot be serialized and, therefore, cannot be passed to the client.`,
-          `Make sure that ${varName} is serializable, or remove ${h(propName)} from ${h('passToClient')}.`
+          `${h(varName)} can't be serialized and, therefore, can't be passed to the client side.`,
+          `Make sure ${h(varName)} is serializable, or remove ${h(propName2)} from ${h('passToClient')}.`
         ].join(' ')
         if (isJsonSerializerError(err)) {
           msg = `${msg} Serialization error: ${err.messageCore}.`
@@ -95,13 +114,13 @@ function serialize(value: unknown, varName?: string): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
 }
 function getPassToClient(pageContext: {
-  _pageId: string
+  pageId: string
   _passToClient: string[]
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
 }): string[] {
   let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]
-  if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
+  if (isErrorPage(pageContext.pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
     passToClient.push(...PASS_TO_CLIENT_ERROR_PAGE)

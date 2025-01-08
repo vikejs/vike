@@ -11,13 +11,28 @@ List of built-in settings. (You can <Link href="/meta">create your own settings<
 - [**`Wrapper`**](/Wrapper): Component(s) that wrap the page's root component.
 - [**`route`**](/routing): <TextType>string | Function</TextType> The page's route.
 - [**`prerender`**](/prerender): Whether to <Link href="/pre-rendering">pre-render</Link> the page, and pre-rendering settings.
-- [**`client`**](/client): <TextType>string</TextType> Additional client entry.
+- [**`client`**](/client): <TextType>string</TextType> Add client code.
 - [**`redirects`**](/redirects): Permanent redirections (HTTP status code `301`).
+- [**`keepScrollPosition`**](/keepScrollPosition): Whether the page scrolls to the top upon navigation.
 - [**`prefetchStaticAssets`**](/prefetchStaticAssets): Link prefetching settings.
-- [**`filesystemRoutingRoot`**](/filesystemRoutingRoot): URL root for <Link href="/filesystem-routing">Filesystem Routing</Link> (usually for <Link href="/file-structure#domain-driven">domain-driven file structure</Link>).
 - [**`baseAssets`**](/base-url): Base URL of server.
 - [**`baseServer`**](/base-url): Base URL of static assets.
-- [**`extends`**](/extends): Add <Link href="/extensions">Vike extensions</Link>.
+- [**`extends`**](/extends): Install <Link href="/extensions" />.
+
+### HTML
+
+- [**`Head`**](/Head): Add arbitrary `<head>` tags.
+- [**`title`**](/title): Set the page's title.
+- [**`description`**](/description): Set the page's description.
+- [**`image`**](/image): Set the page's preview image upon URL sharing.
+- [**`viewport`**](/viewport): Set the page's viewport size on mobile devices.
+- [**`lang`**](/lang): Set the page's language (`<html lang>`).
+- [**`htmlAttributes`**](/htmlAttributes): Add tag attributes such as `<html class="dark">`.
+- [**`bodyAttributes`**](/bodyAttributes): Add tag attributes such as `<body class="dark">`.
+- [**`bodyHtmlBegin`**](/bodyHtmlBegin): Insert HTML at the beginning of `<body>`.
+- [**`bodyHtmlEnd`**](/bodyHtmlEnd): Insert HTML at the end of `<body>`.
+
+> You create your own custom HTML settings, see <Link href="/head-tags#custom-settings" />.
 
 
 ## Advanced
@@ -27,10 +42,14 @@ List of built-in settings. (You can <Link href="/meta">create your own settings<
 - [**`meta`**](/meta): Create new hooks or settings, or modify existing ones.
 - [**`passToClient`**](/passToClient): <TextType>string[]</TextType> Determines what `pageContext` values are sent to the client-side.
 - [**`clientRouting`**](/clientRouting): <TextType>boolean</TextType> Enable <Link href="/client-routing">Client Routing</Link>.
-- [**`hydrationCanBeAborted`**](/hydrationCanBeAborted): <TextType>boolean</TextType>  Whether your <Link text="UI framework" href="/ui-framework" /> allows the <Link href="/hydration">hydration</Link> to be aborted.
+- [**`hydrationCanBeAborted`**](/hydrationCanBeAborted): <TextType>boolean</TextType>  Whether your <Link text="UI framework" href="/ui-frameworks" /> allows the <Link href="/hydration">hydration</Link> to be aborted.
 - [**`disableAutoFullBuild`**](/disableAutoFullBuild): Disable automatic chaining of build steps.
 - [**`trailingSlash`**](/url-normalization): Whether URLs should end with a trailing slash.
 - [**`disableUrlNormalization`**](/url-normalization): Disable automatic URL normalization.
+- [**`reactStrictMode`**](/reactStrictMode): `vike-react` Whether to use React's `<StrictMode>`.
+- [**`clientHooks`**](/clientHooks): <TextType>boolean</TextType> Whether hooks are loaded on the client-side.
+- [**`filesystemRoutingRoot`**](/filesystemRoutingRoot): URL root for <Link href="/filesystem-routing">Filesystem Routing</Link>.
+- [**`injectScriptsAt`**](/injectScriptsAt): Where scripts are injected in the HTML.
 
 
 ## See also

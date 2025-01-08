@@ -1,0 +1,61 @@
+import { Link } from '@brillout/docpress'
+
+import { UiFrameworkExtension, ImplementedBy, OnlyHtmlNote } from '../../components'
+
+Type: `string | null | ((pageContext) => string | null | undefined)`  
+Kind: overridable.  
+Environment: server.
+
+<ImplementedBy noCustomGuide />
+
+> See <Link href="/head-tags" /> for a general introduction about `<head>` tags.
+
+The `description` setting sets the [SEO description tags](https://moz.com/learn/seo/meta-description).
+
+```js
+// pages/+config.js
+
+export default {
+  description: 'This website is a Vike demo.'
+}
+```
+
+> It adds the following tags to `<head>`:
+>
+> ```html
+> <head>
+>   <meta name="description" content="This website is a Vike demo.">
+>   <meta property="og:description" content="This website is a Vike demo.">
+> </head>
+> ```
+
+As shown at:
+ - <Link href="/head-tags#page-specific" /> you can override it.
+ - <Link href="/head-tags#data" /> you can set it based on fetched data.
+
+
+## TypeScript
+
+```tsx
+// pages/some-page/+description.js
+// Environment: server, client
+
+import type { Data } from './+data'
+import type { PageContextServer } from 'vike/types'
+
+export function description(pageContext: PageContextServer<Data>) {
+  return pageContext.data.product.description
+}
+```
+
+
+## Under the hood
+
+<OnlyHtmlNote />
+
+
+## See also
+
+- [Moz > Learn SEO > What Are Meta Descriptions and How to Write Them](https://moz.com/learn/seo/meta-description)
+- <Link href="/head-tags" />
+- <Link href="/settings#html" doNotInferSectionTitle />

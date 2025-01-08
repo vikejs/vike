@@ -21,7 +21,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
     expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 0)`)
   })
 
-  test('PageLayout.css loaded', async () => {
+  test('Layout.css loaded', async () => {
     expect(await page.$eval('a', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 255)`)
   })
 
@@ -39,18 +39,20 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
     {
       const html = await fetchHtml('/about')
       if (isProd) {
+        // About page is an HTML-only page, i.e. `path-aliases/pages/about/+config.js > meta.Page.env` is `{ server: true }`.
         expect(html).not.toContain(script)
       }
     }
   })
 
   // This tests the `vike:extractAssets` plugin.
-  // (Retrieving the CSS from aliased import paths is not trivial.)
+  // (Retrieving the CSS from aliased import paths isn't trivial.)
   test('CSS loaded also for HTML-only pages', async () => {
     page.goto(`${getServerUrl()}/about`)
     await autoRetry(async () => {
       expect(await page.$eval('a', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 255)`)
     })
+    // color defined by styles/magenta-text.css
     expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(`rgb(255, 0, 255)`)
   })
 }

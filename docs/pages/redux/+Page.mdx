@@ -1,15 +1,13 @@
-import { Link } from '@brillout/docpress'
-import { DataArchitecture, Example } from '../../components'
+import { RepoLink, Link, Contribution } from '@brillout/docpress'
+import { Example, CommunityNote } from '../../components'
 
-<DataArchitecture
-  toolName={'Redux'}
-  toolLink={'https://redux.js.org/'}
-  isGeneric={false}
-  toolDocs={<a href="https://redux.js.org/recipes/server-rendering">Redux &gt; SSR Recipe</a>}
-  toolType="data-store"
-/>
+<CommunityNote tool="redux" url="https://redux.js.org" hasExtension={false} />
 
-## Examples
+To manually integrate Redux, see:
+- <Link href="/store#ssr" doNotInferSectionTitle />
+- [Redux > SSR Recipe](https://redux.js.org/recipes/server-rendering)
+
+Examples of integrating Redux without using <Link href="/vike-react">`vike-react`</Link>:
 
 - <Example timestamp="2023.12" repo="brillout/vike-with-redux" /> - Example using <Link href="/client-routing">Client Routing</Link>.
 - <Example timestamp="2023.10" repo="brillout/vike-with-redux_minimal-example" /> - Minimal example using <Link href="/server-routing">Server Routing</Link>.

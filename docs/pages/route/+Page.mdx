@@ -4,7 +4,7 @@ import { Link } from '@brillout/docpress'
 The `route` config determines the page's <Link text="routing" href="/routing" />.
 
 ```js
-// /pages/product/+config.h.js
+// /pages/product/+config.js
 
 export default {
   route: '/product/@id'
@@ -56,9 +56,9 @@ function route(pageContext) {
 ```ts
 export { route }
 
-import type { Route } from 'vike/types'
+import type { RouteSync } from 'vike/types'
 
-const route: Route = (pageContext): ReturnType<Route> => {
+const route: RouteSync = (pageContext): ReturnType<RouteSync> => {
   // ...
 }
 ```

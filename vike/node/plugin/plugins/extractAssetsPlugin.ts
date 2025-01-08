@@ -16,13 +16,10 @@ import {
   assertPosixPath,
   styleFileRE,
   createDebugger,
-  isDebugEnabled,
   isScriptFile,
-  resolveVirtualFileId,
-  isVirtualFileId,
-  getVirtualFileId,
   assertUsage
 } from '../utils.js'
+import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
@@ -32,8 +29,9 @@ import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { getVikeConfig, isV1Design, type VikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
+import { normalizeId } from '../shared/normalizeId.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -41,14 +39,12 @@ const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
 const EMPTY_MODULE_ID = 'virtual:vike:empty-module'
 
-const debugNamespace = 'vike:extractAssets'
-const debug = createDebugger(debugNamespace)
-const debugEnabled = isDebugEnabled(debugNamespace)
+const debug = createDebugger('vike:extractAssets')
 
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
-  let vikeConfig: VikeConfig
+  let vikeConfig: VikeConfigObject
   let isServerAssetsFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
@@ -58,12 +54,13 @@ function extractAssetsPlugin(): Plugin[] {
       apply: 'build',
       enforce: 'post',
       async transform(src, id, options) {
+        id = normalizeId(id)
         if (!extractAssetsRE.test(id)) {
           return
         }
         if (isServerAssetsFixEnabled) {
           // I'm guessing isServerAssetsFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
-          assertV1Design(true, vikeConfig.pageConfigs)
+          assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
         assert(configVike.includeAssetsImportedByServer)
@@ -132,7 +129,7 @@ function extractAssetsPlugin(): Plugin[] {
 
         // If the import path resolves to a file in `node_modules/`, we ignore that file:
         //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
-        //  - Loading CSS from a library (living in `node_modules/`) in a non-direct way is non-standard; we can safely not support this case. (I'm not aware of any library that does this.)
+        //  - Loading CSS from a library (living in `node_modules/`) in a non-direct way is unconventional; we can safely not support this case. (I'm not aware of any library that does this.)
         assertPosixPath(file)
         if (file.includes('/node_modules/')) {
           return emptyModule(file, importer)
@@ -149,12 +146,6 @@ function extractAssetsPlugin(): Plugin[] {
     {
       name: 'vike:extractAssets-3',
       apply: 'build',
-      async configResolved(config_) {
-        configVike = await getConfigVike(config_)
-        config = config_
-        vikeConfig = await getVikeConfig(config, false)
-        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
-      },
       load(id) {
         if (!isVirtualFileId(id)) return undefined
         id = getVirtualFileId(id)
@@ -164,19 +155,25 @@ function extractAssetsPlugin(): Plugin[] {
         }
       },
       config() {
-        if (debugEnabled) {
+        if (debug.isActivated) {
           return { logLevel: 'silent' }
         }
       }
     },
     {
       name: 'vike:extractAssets-4',
-      configResolved(config) {
-        // https://github.com/vikejs/vike/issues/1060
-        assertUsage(
-          !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
-          'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'
-        )
+      async configResolved(config_) {
+        configVike = await getConfigVike(config_)
+        config = config_
+        vikeConfig = await getVikeConfig(config, false)
+        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
+        if (!isServerAssetsFixEnabled) {
+          // https://github.com/vikejs/vike/issues/1060
+          assertUsage(
+            !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
+            'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'
+          )
+        }
       }
     }
   ]
@@ -229,7 +226,7 @@ function analyzeImport(importStatement: ImportStatement): { moduleName: string |
     return { moduleName, skip: true }
   }
 
-  /* We should not do this because of aliased imports
+  /* We shouldn't do this because of aliased imports
   if (!moduleName.startsWith('.')) {
     return { moduleName, skip: true }
   }

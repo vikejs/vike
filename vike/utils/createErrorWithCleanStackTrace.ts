@@ -3,18 +3,10 @@ export { createErrorWithCleanStackTrace }
 import { isNodeJS } from './isNodeJS.js'
 
 function createErrorWithCleanStackTrace(errorMessage: string, numberOfStackTraceLinesToRemove: number) {
-  let err
-  {
-    var stackTraceLimit__original = Error.stackTraceLimit
-    Error.stackTraceLimit = Infinity
-    err = new Error(errorMessage)
-    Error.stackTraceLimit = stackTraceLimit__original
-  }
-
+  const err = new Error(errorMessage)
   if (isNodeJS()) {
     err.stack = clean(err.stack, numberOfStackTraceLinesToRemove)
   }
-
   return err
 }
 

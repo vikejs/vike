@@ -1,11 +1,87 @@
-- userAgent for vike-{vue,solid}
-- improve vike.dev/head
+- head settings
+  - name setting?
+    - Appends `| ${name}` to title
+      - No setting to opt-out, instead user should manually use config.head if all he wants is to inject the OG tag.
+    - Sets OG tag
+  - image setting?
+    ```html
+    <meta property="og:image" content="https://www.mywebsite.com/image.jpg">
+    <meta property="og:image:alt" content="Image description">
+    <meta name="twitter:card" content="summary_large_image">
+    ```
+  - Use escapeInject for bodyHtmlStart
+    - Soft deprecate not using it
+  - locale
+    - Instead of lang?
+    - ```html
+      <html lang="en">
+      <meta property="og:locale" content="en_GB">
+      ```
+  - Remove lang setting (soft deprecation) in favor of using htmlAttributes?
+    - I don't see a use case for lang yet, maybe for i18n?
+  - More document settings?
+    - https://github.com/vikejs/vike-react/pull/113/files#diff-43f0478bd822a071df19f8756e0833b975665ce5d118edde04ce1b7187cd63e2
+  - Rename on{After}RenderClient to onRenderClient{Start,End}
+    - Soft deprecate it (instead of adding a breaking change note)
+
 - Remove `pageContext.data.title` from boilerplates
-- cumulative
-  - Make `<Head>` cumulative
-  - passToClient.dev/cumulative => point to it from vike.dev/passToClient
 - +client https://github.com/vikejs/vike/commit/732568999c11bd2904d0e2aec19a370c40594315
-- Review & merge Dani's PRs
+- New setting `cjsInterop` https://github.com/vikejs/vike/issues/1512
+- Add x-powered-by header and add warning if missing (likely means that pageContext.httpResponse.headers isn't used)
+
+v0.5 breaking changes:
+- pageContext.url
+- Forbid async Route Functions
+- Deprecate old design
+=== Prio
+- Improve/clean import paths.
+  - Either move all isomorphic exports to `import * from 'vike'` or create individual export path for each export e.g. `import { render } from 'vike/render'`
+    - E.g. remove `import * from 'vike/abort'` and `import * from 'vike/client'`
+      ```diff
+      - import * from 'vike/client/router'
+      + import * from 'vike'
+      // Or:
+      + import { navigate } from 'vike/navigate'
+      + import { prefetch } from 'vike/prefetch'
+      ```
+    - How about `vike/server`?
+      - This one can probably stay bundled as loaded superfluous code on the server-side is probably ok, but let's double check how big the loaded superfluous code can be.
+  - How about 'vike/types'? I guess move it to 'vike' iff. moving all isomorphics to 'vike'.
+  - `import { navigate } from 'vike/navigate'`
+- See & categorize/prioritize all TODOs in source code
+=== Maybe
+- Forbid content-type
+  - Maybe use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
+- Remove dist/server/importBuild.{cjs,mjs,js}
+- See vike.dev/migration/v0.5
+  - See also vike.dev/migration/v1
+  - Shall all breaking changes be listed or is it enough to say "first update to latest 0.4.x then follow all warnings then update to 0.5"?
+- Set `cjsInterop: true` by default?
+- Communicate that v0.5 essentially is the v1.0.0 in disguise: the plan is to eventually rename the latest `v0.5.x` to `v1.0.0`.
+  - The plan for releasing the v1.0.0 being:
+    - Implement feature requests considered essential, most notably: [#562 - Transpile server code](https://github.com/vikejs/vike/issues/562)
+    - Make a big release announcement and blog post with a completely rehauled landing page.
+      - Blog post: my personal journey towards building Vike (for rationle why Vike exists, see landing page instead of reading blog bost).
+- Make CJS warning an error.
+  - Keep the CJS build for a little while and if no one complains then remove the CJS build.
+- Make guard() hook server-side only by default?
+- Presrve scroll for route parameters other than the first one?
+  - https://github.com/vikejs/vike/issues/1459
+- Remove deprecated API support in getPrefetchSettings.ts
+  - Remove all deprecated API, at least in client code?
+- Make some hooks cumulative:
+  - https://github.com/vikejs/vike/issues/1833
+  - https://github.com/vikejs/vike/issues/1834
+- New Base URL setting: https://github.com/vikejs/vike/issues/1794
+- Simplify pageContext return type?
+- Deprecate returning `pageContext` from `onBeforeRender()`
+  - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
+
+
+pageContext prefetching
+- Early experimental support: https://github.com/vikejs/vike/pull/1617
+- Implement all TODO/pageContext-prefetch
+- Add cache cleanup interval loop
 
 Docs:
  - Improve /nextjs
@@ -76,7 +152,6 @@ After V1 design release:
 
 Features:
  - multiple error pages
- - nested layouts
 
 - refactor logging
   - New hook onLog(): https://github.com/vikejs/vike/issues/1438
@@ -93,11 +168,6 @@ Sometime:
  - Make `.server.js` and `.client.js` change env?
  - Replace "isomorphic"/"isomorph" to "universal"
  - remove documentProps from examples and boilerplates
-
-Release 1.0.0 breaking changes:
-  - `import * from 'vike'`
-  - pageContext.url
-  - Forbid async Route Functions
 
 Contact:
  - Bun

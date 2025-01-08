@@ -1,5 +1,7 @@
-import { HookTypeScriptHints, UiFrameworkVikeExtensionNames } from '../../components'
+import { HookTypeScriptHints, UiFrameworkExtension } from '../../components'
 import { Link } from '@brillout/docpress'
+
+Environment: server (<Link href="#environment">configurable</Link>).
 
 > The `onBeforeRender()` hook is for expert Vike users. If you're new to Vike, we recommend using the
 > <Link href="/data">`data()` hook</Link> instead, and/or <Link href="/extensions">Vike extensions</Link> for
@@ -52,6 +54,11 @@ Another difference is that the entire `pageContext.data` value is always sent to
 In a nutshell: while `onBeforeRender()` requires more manual work, it also gives you more control.
 
 
+## Environment
+
+Like `data()`, the `onBeforeRender()` hook always runs on the server-side by default. By using <Link href="/file-env">`.shared.js` or `.client.js`</Link> you can tell Vike to run `onBeforeRender()` on the client-side instead, see <Link href="/data#environment" />.
+
+
 ## `onBeforeRender()` + `meta`
 
 Using `onBeforeRender()` together with custom hooks and settings (see <Link href="/meta">`meta`</Link>) is a powerful technique enabling you to implement your own tailored DX.
@@ -70,7 +77,7 @@ export default { modelName: 'User', select: ['firstName', 'lastName'] }
 export default { modelName: 'Product', select: ['name', 'price'] }
 ```
 
-A single global `onBeforeRender()` hook orchestrating the customm setting:
+A single global `onBeforeRender()` hook orchestrating the custom setting:
 
 ```js
 // /pages/+onBeforeRender.js
@@ -90,7 +97,7 @@ See full implementation at <Link href="/meta#example-sql" doNotInferSectionTitle
 
 ## Override
 
-There can be only one `onBeforeRender()` hook per page. For example, if you define a global `onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one.
+There can be only one `onBeforeRender()` hook per page. For example, if you define a global `onBeforeRender()` hook at `/pages/+onBeforeRender.js` as well as a page-specific one at `/pages/star-wars/+onBeforeRender.js` then the page-specific one overrides the global one. See <Link href="/config#inheritance" />.
 
 > If you want multiple `onBeforeRender()` hooks, then consider:
 > - <Link href="/meta">Creating custom hooks</Link> instead: you can then use one global `onBeforeRender()` hook that orchestrates many custom hooks.
@@ -106,7 +113,7 @@ export default () => {
 }
 ```
 ```js
-// /pages/some-page/+config.h.js
+// /pages/some-page/+config.js
 
 export default {
   // Suppress the global onBeforeRender() hook
@@ -119,10 +126,10 @@ export default {
 
 The following is an advanced example of using `onBeforeRender()` with `meta` in order to integrate data fetching tools. In particular, this approach can be used for advanced integration with GraphQL tools.
 
-> If you use a custom renderer instead of <UiFrameworkVikeExtensionNames />, then you can modify your `onRenderHtml()`/`onRenderClient()` hooks instead of doing the following.
+> If you use a custom renderer instead of <UiFrameworkExtension name noLink />, then you can modify your `onRenderHtml()`/`onRenderClient()` hooks instead of doing the following.
 
 ```js
-// /pages/+config.h.js
+// /pages/+config.js
 // Environment: config
 
 export default {
@@ -212,7 +219,7 @@ export { onBeforeRender }
 
 import type { OnBeforeRenderAsync } from 'vike/types'
 
-const onBeforeRender: OnBeforeRenderAsync = async (
+export const onBeforeRender: OnBeforeRenderAsync = async (
   pageContext
 ): ReturnType<OnBeforeRenderAsync> => {
   // ...
@@ -226,3 +233,4 @@ const onBeforeRender: OnBeforeRenderAsync = async (
 
 - <Link href="/data" />
 - <Link href="/pageContext" />
+- <Link href="/pageContext.json" />

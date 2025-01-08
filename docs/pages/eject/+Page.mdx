@@ -1,0 +1,16 @@
+import { Link } from '@brillout/docpress'
+import { UiFrameworkExtension } from '../../components'
+
+The [eject package](https://github.com/snake-py/eject) enables you to take control of Vike extensions.
+
+It moves the code of the extension from `/node_modules/vike-some-extension/` to your Git repository at `/ejected/vike-some-extension/`. This means you can then fully modify the code of `vike-some-extension`.
+
+> The ejected code at `/ejected/vike-some-extension` is its built JavaScript, but there is [work-in-progress](https://github.com/snake-py/eject/issues/4) for copying its original source code (e.g. TypeScript) from its Git repository (instead of copying `/node_modules/vike-some-extension/`).
+
+## When to eject?
+
+We recommend ejecting only as a last resort: only when it becomes clear that ejecting is the only option left for resolving your issue.
+
+In particular, before considering ejecting, create a new issue on GitHub. The maintainer of the Vike extension will most likely be able to help you, so that you don't have to eject. You can also create a Pull Request (which is still better than ejecting because you'll keep using a well-maintained integration, and also because you'll help the community).
+
+See also: <Link href="/extension-vs-custom" />.

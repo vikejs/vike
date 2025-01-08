@@ -13,18 +13,18 @@ export type { ErrorAbort }
 export type { PageContextFromRewrite }
 export type { UrlRedirect }
 
+import { isUserHookError } from '../hooks/executeHook.js'
 import {
   assert,
   assertInfo,
   assertUsage,
+  assertUsageUrlPathnameAbsolute,
+  assertUsageUrlRedirectTarget,
   assertWarning,
   checkType,
   hasProp,
-  isUriWithProtocol,
-  isUserHookError,
   joinEnglish,
   objectAssign,
-  projectInfo,
   truncateString
 } from './utils.js'
 import pc from '@brillout/picocolors'
@@ -54,7 +54,7 @@ type AbortReason = Required<({ abortReason?: unknown } & Vike.PageContext)['abor
  */
 function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
   const abortCaller = 'throw redirect()' as const
-  assertUrl(url, abortCaller, true)
+  assertUsageUrlRedirectTarget(url, getErrPrefix(abortCaller))
   const args = [JSON.stringify(url)]
   if (!statusCode) {
     statusCode = 302
@@ -86,9 +86,9 @@ function redirect(url: string, statusCode?: 301 | 302): AbortRedirect {
  *   `404` Not Found
  *   `410` Gone (use this instead of `404` if the page existed in the past, see https://github.com/vikejs/vike/issues/1097#issuecomment-1695260887)
  *   `429` Too Many Requests (rate limiting)
- *   `500` Internal Server Error (app has a bug)
- *   `503` Service Unavailable (server is overloaded, a third-party API isn't responding)
- * @param abortReason Sets `pageContext.abortReason` which is used by the error page to show a message to the user, see https://vike.dev/error-page
+ *   `500` Internal Server Error (your client or server has a bug)
+ *   `503` Service Unavailable (server is overloaded, or a third-party API isn't responding)
+ * @param abortReason Sets `pageContext.abortReason` which is usually used by the error page to show a message to the user, see https://vike.dev/error-page
  */
 function render(abortStatusCode: 401 | 403 | 404 | 410 | 429 | 500 | 503, abortReason?: AbortReason): Error
 /**
@@ -126,7 +126,7 @@ function render_(
   }
   if (typeof urlOrStatusCode === 'string') {
     const url = urlOrStatusCode
-    assertUrl(url, abortCaller)
+    assertUsageUrlPathnameAbsolute(url, getErrPrefix(abortCaller))
     objectAssign(pageContextAbort, {
       _urlRewrite: url
     })
@@ -294,15 +294,6 @@ function assertNoInfiniteAbortLoop(rewriteCount: number, redirectCount: number) 
   )
 }
 
-function assertUrl(url: string, abortCaller: AbortCaller, allowAbsoluteUrl?: true) {
-  assertUsage(
-    url.startsWith('/') || (allowAbsoluteUrl && isUriWithProtocol(url)),
-    [
-      `Invalid URL ${pc.cyan(url)} passed to ${pc.cyan(abortCaller)}:`,
-      `the URL should start with ${pc.cyan('/')}`,
-      allowAbsoluteUrl && `or a valid protocol (${pc.cyan('https:')}, ${pc.cyan('ipfs:')}, ...)`
-    ]
-      .filter(Boolean)
-      .join(' ')
-  )
+function getErrPrefix(abortCaller: AbortCaller): string {
+  return `URL passed to ${pc.code(abortCaller)}`
 }

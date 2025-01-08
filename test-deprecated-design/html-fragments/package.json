@@ -4,8 +4,8 @@
   },
   "dependencies": {
     "typescript": "^4.6.4",
-    "vite": "^5.0.10",
-    "vike": "0.4.161"
+    "vite": "^6.0.5",
+    "vike": "0.4.212"
   },
   "type": "module"
 }

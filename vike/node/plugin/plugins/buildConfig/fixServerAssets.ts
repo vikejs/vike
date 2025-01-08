@@ -1,13 +1,21 @@
 export { fixServerAssets }
 export { fixServerAssets_isEnabled }
+export { fixServerAssets_assertCssCodeSplit }
+export { fixServerAssets_assertCssTarget }
+export { fixServerAssets_assertCssTarget_populate }
 
 import fs from 'fs/promises'
+import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
-import { OutDirs, assert, pLimit, unique } from '../../utils.js'
+import { assert, assertWarning, getOutDirs, isEqualStringList, pLimit, unique, viteIsSSR } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { manifestTempFile } from '../buildConfig.js'
+import { ResolvedConfig } from 'vite'
+import { getAssetsDir } from '../../shared/getAssetsDir.js'
+import pc from '@brillout/picocolors'
+import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
 
 /**
  * true  => use workaround config.build.ssrEmitAssets
@@ -22,14 +30,20 @@ function fixServerAssets_isEnabled(): boolean {
 }
 
 /** https://github.com/vikejs/vike/issues/1339 */
-async function fixServerAssets(outDirs: OutDirs): Promise<ViteManifest> {
+async function fixServerAssets(
+  config: ResolvedConfig
+): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
+  const outDirs = getOutDirs(config)
   const clientManifest = await loadManifest(outDirs.outDirClient)
   const serverManifest = await loadManifest(outDirs.outDirServer)
 
-  const { clientManifestMod, filesToCopy } = addServerAssets(clientManifest, serverManifest)
-  await copyAssets(filesToCopy, outDirs)
+  const { clientManifestMod, serverManifestMod, filesToCopy, filesToRemove } = addServerAssets(
+    clientManifest,
+    serverManifest
+  )
+  await copyAssets(filesToCopy, filesToRemove, config)
 
-  return clientManifestMod
+  return { clientManifestMod, serverManifestMod }
 }
 async function loadManifest(outDir: string) {
   const manifestFilePath = path.posix.join(outDir, manifestTempFile)
@@ -39,21 +53,31 @@ async function loadManifest(outDir: string) {
   assert(manifest)
   return manifest
 }
-async function copyAssets(filesToCopy: string[], { outDirClient, outDirServer }: OutDirs) {
-  const assetsDirServer = path.posix.join(outDirServer, 'assets')
-  if (!filesToCopy.length) return
+async function copyAssets(filesToCopy: string[], filesToRemove: string[], config: ResolvedConfig) {
+  const { outDirClient, outDirServer } = getOutDirs(config)
+  const assetsDir = getAssetsDir(config)
+  const assetsDirServer = path.posix.join(outDirServer, assetsDir)
+  if (!filesToCopy.length && !filesToRemove.length && !existsSync(assetsDirServer)) return
   assert(existsSync(assetsDirServer))
   const concurrencyLimit = pLimit(10)
   await Promise.all(
     filesToCopy.map((file) =>
-      concurrencyLimit(() =>
-        fs.cp(path.posix.join(outDirServer, file), path.posix.join(outDirClient, file), {
-          recursive: true
-        })
-      )
+      concurrencyLimit(async () => {
+        const source = path.posix.join(outDirServer, file)
+        const target = path.posix.join(outDirClient, file)
+        await fs.mkdir(path.posix.dirname(target), { recursive: true })
+        await fs.rename(source, target)
+      })
     )
   )
+  filesToRemove.forEach((file) => {
+    const filePath = path.posix.join(outDirServer, file)
+    fs_sync.unlinkSync(filePath)
+  })
+  /* We cannot do that because, with some edge case Rollup settings (outputing JavaScript chunks and static assets to the same directoy), this removes JavaScript chunks, see https://github.com/vikejs/vike/issues/1154#issuecomment-1975762404
   await fs.rm(assetsDirServer, { recursive: true })
+  */
+  removeEmptyDirectories(assetsDirServer)
 }
 
 type Resource = { src: string; hash: string }
@@ -70,6 +94,7 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
   const entriesServer = new Map<
     string, // pageId
     {
+      key: string
       css: Resource[]
       assets: Resource[]
     }
@@ -87,45 +112,67 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
     if (!pageId) continue
     const resources = collectResources(entry, serverManifest)
     assert(!entriesServer.has(pageId))
-    entriesServer.set(pageId, resources)
+    entriesServer.set(pageId, { key, ...resources })
   }
 
   let filesToCopy: string[] = []
+  let filesToRemove: string[] = []
   for (const [pageId, entryClient] of entriesClient.entries()) {
-    const cssToAdd: string[] = []
-    const assetsToAdd: string[] = []
-
     const entryServer = entriesServer.get(pageId)
-    if (entryServer) {
-      cssToAdd.push(
-        ...entryServer.css
-          .filter((cssServer) => !entryClient.css.some((cssClient) => cssServer.hash === cssClient.hash))
-          .map((css) => css.src)
-      )
-      assetsToAdd.push(
-        ...entryServer.assets
-          .filter((assertServer) => !entryClient.assets.some((assetClient) => assertServer.hash === assetClient.hash))
-          .map((asset) => asset.src)
-      )
-    }
+    if (!entryServer) continue
 
-    const { key } = entryClient
+    const cssToAdd: string[] = []
+    const cssToRemove: string[] = []
+    const assetsToAdd: string[] = []
+    const assetsToRemove: string[] = []
+
+    entryServer.css.forEach((cssServer) => {
+      if (!entryClient.css.some((cssClient) => cssServer.hash === cssClient.hash)) {
+        cssToAdd.push(cssServer.src)
+      } else {
+        cssToRemove.push(cssServer.src)
+      }
+    })
+    entryServer.assets.forEach((assetServer) => {
+      if (!entryClient.assets.some((assetClient) => assetServer.hash === assetClient.hash)) {
+        assetsToAdd.push(assetServer.src)
+      } else {
+        assetsToRemove.push(assetServer.src)
+      }
+    })
+
     if (cssToAdd.length) {
+      const { key } = entryClient
       filesToCopy.push(...cssToAdd)
       clientManifest[key]!.css ??= []
       clientManifest[key]!.css?.push(...cssToAdd)
     }
+    if (cssToRemove.length) {
+      const { key } = entryServer
+      filesToRemove.push(...cssToRemove)
+      serverManifest[key]!.css ??= []
+      serverManifest[key]!.css = serverManifest[key]!.css!.filter((entry) => !cssToRemove.includes(entry))
+    }
 
     if (assetsToAdd.length) {
+      const { key } = entryClient
       filesToCopy.push(...assetsToAdd)
       clientManifest[key]!.assets ??= []
       clientManifest[key]!.assets?.push(...assetsToAdd)
     }
+    if (assetsToRemove.length) {
+      const { key } = entryServer
+      filesToRemove.push(...assetsToRemove)
+      serverManifest[key]!.assets ??= []
+      serverManifest[key]!.assets = serverManifest[key]!.assets!.filter((entry) => !assetsToRemove.includes(entry))
+    }
   }
 
   const clientManifestMod = clientManifest
+  const serverManifestMod = serverManifest
   filesToCopy = unique(filesToCopy)
-  return { clientManifestMod, filesToCopy }
+  filesToRemove = unique(filesToRemove).filter((file) => !filesToCopy.includes(file))
+  return { clientManifestMod, serverManifestMod, filesToCopy, filesToRemove }
 }
 
 function getPageId(key: string) {
@@ -177,4 +224,77 @@ function getHash(src: string) {
   const hash = src.split('.').at(-2)
   assert(hash)
   return hash
+}
+
+// https://github.com/vikejs/vike/issues/1993
+function fixServerAssets_assertCssCodeSplit(config: ResolvedConfig) {
+  assertWarning(
+    config.build.cssCodeSplit,
+    `${pc.cyan('build.cssCodeSplit')} shouldn't be set to ${pc.cyan(
+      'false'
+    )} (https://github.com/vikejs/vike/issues/1993)`,
+    { onlyOnce: true }
+  )
+}
+
+// https://github.com/vikejs/vike/issues/1815
+type Target = undefined | false | string | string[]
+type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
+const targets: TargetConfig[] = []
+function fixServerAssets_assertCssTarget_populate(config: ResolvedConfig) {
+  const isServerSide = viteIsSSR(config)
+  assert(typeof isServerSide === 'boolean')
+  assert(config.build.target !== undefined)
+  targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
+}
+async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
+  if (!fixServerAssets_isEnabled()) return
+  if (!(await isV1Design(config, false))) return
+  const targetsServer = targets.filter((t) => t.isServerSide)
+  const targetsClient = targets.filter((t) => !t.isServerSide)
+  targetsClient.forEach((targetClient) => {
+    const targetCssResolvedClient = resolveCssTarget(targetClient)
+    targetsServer.forEach((targetServer) => {
+      const targetCssResolvedServer = resolveCssTarget(targetServer)
+      assertWarning(
+        isEqualStringList(targetCssResolvedClient, targetCssResolvedServer),
+        [
+          'The CSS browser target should be the same for both client-side and server-side (https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979) but we got:',
+          `Client-side: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
+          `Server-side: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`
+        ].join('\n'),
+        {
+          showStackTrace: true,
+          onlyOnce: 'different-css-target'
+        }
+      )
+    })
+  })
+}
+function resolveCssTarget(target: TargetConfig) {
+  return target.css ?? target.global
+}
+
+/**
+ * Recursively remove all empty directories in a given directory.
+ */
+function removeEmptyDirectories(dirPath: string): void {
+  // Read the directory contents
+  const files = fs_sync.readdirSync(dirPath)
+
+  // Iterate through the files and subdirectories
+  for (const file of files) {
+    const fullPath = path.join(dirPath, file)
+
+    // Check if it's a directory
+    if (fs_sync.statSync(fullPath).isDirectory()) {
+      // Recursively clean up the subdirectory
+      removeEmptyDirectories(fullPath)
+    }
+  }
+
+  // Re-check the directory; remove it if it's now empty
+  if (fs_sync.readdirSync(dirPath).length === 0) {
+    fs_sync.rmdirSync(dirPath)
+  }
 }

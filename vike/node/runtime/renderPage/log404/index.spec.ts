@@ -3,6 +3,8 @@ import { getRoutesInfo } from '../log404/index.js'
 import { stripAnsi } from '../../utils.js'
 import type { PageRoutes } from '../../../../shared/route/index.js'
 
+process.stdout.columns = 134
+
 describe('getRoutesInfo()', () => {
   it('table layout - basic', () => {
     const table = getRoutesInfo(pageRoutes1)
@@ -27,7 +29,7 @@ describe('getRoutesInfo()', () => {
 const routeFunction = {
   pageId: '/pages/hello',
   comesFromV1PageConfig: true,
-  routeDefinedAt: '/pages/hello/+route.ts > export default',
+  routeDefinedAtString: '/pages/hello/+route.ts > export default',
   routeType: 'FUNCTION',
   routeFunction: function route(pageContext: { urlPathname: string }) {
     if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {
@@ -43,7 +45,7 @@ const pageRoutes1 = [
     routeFilesystemDefinedBy: '/pages/index/',
     comesFromV1PageConfig: true,
     routeString: '/',
-    routeDefinedAt: null,
+    routeDefinedAtString: null,
     routeType: 'FILESYSTEM'
   },
   {
@@ -51,7 +53,7 @@ const pageRoutes1 = [
     routeFilesystemDefinedBy: '/pages/markdown/',
     comesFromV1PageConfig: true,
     routeString: '/markdown',
-    routeDefinedAt: null,
+    routeDefinedAtString: null,
     routeType: 'FILESYSTEM'
   },
   {
@@ -59,7 +61,7 @@ const pageRoutes1 = [
     routeFilesystemDefinedBy: '/pages/star-wars/@id/',
     comesFromV1PageConfig: true,
     routeString: '/star-wars/@id',
-    routeDefinedAt: null,
+    routeDefinedAtString: null,
     routeType: 'FILESYSTEM'
   },
   {
@@ -67,7 +69,7 @@ const pageRoutes1 = [
     routeFilesystemDefinedBy: '/pages/star-wars/index/',
     comesFromV1PageConfig: true,
     routeString: '/star-wars',
-    routeDefinedAt: null,
+    routeDefinedAtString: null,
     routeType: 'FILESYSTEM'
   }
 ] satisfies PageRoutes

@@ -1,0 +1,64 @@
+import { Link, Warning } from '@brillout/docpress'
+import { UiFrameworkExtension, CustomIntegrationWarning } from '../../components'
+
+
+## Bati
+
+We recommend using [Bati](https://batijs.dev) for creating new Vike apps.
+
+> **Requirement**: you'll need [Node.js](https://nodejs.org) installed (or Deno/Bun). Note that Node.js includes the package manager `npm` (but you can also use any other package manager).
+
+> Apps scaffolded by Bati use <UiFrameworkExtension name />.
+
+## Without `vike-{react,vue,solid}`
+
+You can also create a new Vike app that doesn't use <UiFrameworkExtension name />.
+
+The following command scaffolds a Vike app with a fully custom React/Vue integration instead.
+
+<CustomIntegrationWarning />
+
+With [npm](https://www.npmjs.com):
+
+```shell
+npm create vike@latest
+```
+
+With [pnpm](https://pnpm.io):
+
+```shell
+pnpm create vike
+```
+
+With [Bun](https://bun.sh):
+
+```shell
+bun create vike
+```
+
+With [Yarn](https://yarnpkg.com):
+
+```shell
+yarn create vike
+```
+
+Options:
+- `--skip-git`: don't initialize a new Git repository
+
+A prompt will let you choose between:
+- `react`: React + JavaScript
+- `react-ts`: React + TypeScript
+- `vue`: Vue + JavaScript
+- `vue-ts`: Vue + TypeScript
+
+See also:
+- [GitHub > `vikejs/vike` > `boilerplates/`](https://github.com/vikejs/vike/tree/main/boilerplates)
+- [GitHub > `vikejs/vike` > `examples/react-minimal`](https://github.com/vikejs/vike/tree/main/examples/react-minimal)
+- [GitHub > `vikejs/vike` > `examples/react-full`](https://github.com/vikejs/vike/tree/main/examples/react-full)
+- [GitHub > `vikejs/vike` > `examples/vue-minimal`](https://github.com/vikejs/vike/tree/main/examples/react-minimal)
+- [GitHub > `vikejs/vike` > `examples/vue-full`](https://github.com/vikejs/vike/tree/main/examples/vue-full)
+
+
+## See also
+
+- <Link href="/add" />

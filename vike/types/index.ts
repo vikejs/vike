@@ -3,6 +3,7 @@ export type { PageContextServer } from '../shared/types.js'
 export type { PageContextClient } from '../shared/types.js'
 export type { PageContextWithServerRouting } from '../shared/types.js'
 export type { PageContextClientWithServerRouting } from '../shared/types.js'
+export type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 
 // TODO/v1-release: remove these three exports
 export type { PageContextBuiltInServer } from '../shared/types.js'
@@ -12,6 +13,7 @@ export type { PageContextBuiltInClientWithServerRouting } from '../shared/types.
 export type {
   Config,
   ConfigMeta as Meta,
+  ImportString,
   DataAsync,
   DataSync,
   GuardAsync,
@@ -35,7 +37,8 @@ export type {
   OnRenderHtmlAsync,
   OnRenderHtmlSync,
   RouteAsync,
-  RouteSync
+  RouteSync,
+  KeepScrollPosition
 } from '../shared/page-configs/Config.js'
 export type { ConfigEnv } from '../shared/page-configs/PageConfig.js'
 export type {
@@ -44,7 +47,7 @@ export type {
 } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 export type { ConfigEntries } from '../shared/getPageFiles/getExports.js'
 
-export type { Url } from '../shared/addUrlComputedProps.js'
+export type { UrlPublic as Url } from '../utils/parseUrl.js'
 
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'
 

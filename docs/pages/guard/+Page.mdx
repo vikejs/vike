@@ -1,24 +1,48 @@
 import { Link } from '@brillout/docpress'
 
-The `guard()` hook enables you to protect pages from unauthorized access, see <Link href="/auth#login-flow" />.
+Environment: server (<Link href="#environment">configurable</Link>).
 
-Note that:
-
-- It's always used together with <Link href="/render" text={<code>throw render()</code>} /> or <Link href="/redirect" text={<code>throw redirect()</code>} />. (The `guard()` hook doesn't accept any return value.)
-- It can be asynchronous. (Unlike Route Functions which are synchronous.)
-- A single `guard()` hook can <Link href="/config#different-defaults">apply to multiple pages</Link>.
+The `guard()` hook enables you to protect pages from unauthorized and unexpected access.
 
 ```js
-export { guard }
+// /pages/admin/+guard.js
 
 import { render } from 'vike/abort'
 
-async function guard(pageContext) {
-  if (pageContext.urlPathname === '/hello/forbidden') {
-    throw render(401, 'This page is forbidden.')
+// This guard() hook protects all pages /pages/admin/**/+Page.js
+
+export async function guard(pageContext) {
+  if (!pageContext.user.isAdmin) {
+    throw render(401, "You aren't allowed to access this page.")
   }
 }
 ```
+
+Note that:
+
+- It can be asynchronous. (Unlike <Link href="/route-function">Route Functions</Link> which are always synchronous.)
+- A single `guard()` hook <Link href="/config#inheritance">can apply to one or multiple pages</Link>.
+- It's always used together with <Link href="/render">`throw render()`</Link> or <Link href="/redirect">`throw redirect()`</Link>. (The `guard()` hook doesn't accept any return value.)
+
+
+## Execution order
+
+The `guard()` hook is the first hook called after the routing is evaluated. Most notably, it's always called before the <Link href="/data">`data()` hook</Link>. See <Link href="/hooks#order" />.
+
+> We recommend using `throw render()` / `throw redirect()` before fetching data, whenever possible. (Unauthorized/unexpected data fetching can be problematic.)
+
+If you want to guard your pages after or during fetching data, then use <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside your `data()` hook instead (or any another <Link href="/hooks">Vike hook</Link>).
+
+> For being able to use `throw render()` / `throw redirect()` inside UI components, see [#1707: Use `throw render()` / `throw redirect()` inside React/Vue/Solid components](https://github.com/vikejs/vike/issues/1707).
+
+
+## Environment
+
+The `guard()` hook is called in the same environment as <Link href="/data">`data()`</Link>. In other words, it's always called on the server-side unless you <Link href="/data#environment">configure `data()` to run on the client-side</Link>.
+
+If the page doesn't have any `data()` hook, then `guard()` executes in the environment where the routing is evaluated. See <Link href="/hooks#order" />.
+
+For more control on where and when your guarding logic is executed, consider using <Link href="/render">`throw render()`</Link> / <Link href="/redirect">`throw redirect()`</Link> inside another hook than `guard()`.
 
 
 ## TypeScript
@@ -33,3 +57,11 @@ const guard: GuardAsync = async (pageContext): ReturnType<GuardAsync> => {
   // ...
 }
 ```
+
+
+## See also
+
+- <Link href="/auth#login-flow" />
+- <Link href="/render" />
+- <Link href="/redirect" />
+- <Link href="/data" />
