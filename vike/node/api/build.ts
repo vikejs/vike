@@ -16,7 +16,7 @@ async function build() {
     }
   })
 
-  if (configVike.prerender) {
+  if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
     const { runPrerenderFromAutoRun } = await import('../prerender/runPrerender.js')
     await runPrerenderFromAutoRun(viteConfig)
   }
