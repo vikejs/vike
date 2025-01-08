@@ -6,9 +6,9 @@ import { build as buildVite } from 'vite'
 async function build() {
   const { viteConfig, vikeConfigResolved } = await resolveConfig({}, 'build')
 
-  const clientOutput = await buildVite(viteConfig)
+  const outputClient = await buildVite(viteConfig)
 
-  const serverOutput = await buildVite({
+  const outputServer = await buildVite({
     ...viteConfig,
     build: {
       ...viteConfig.build,
@@ -21,5 +21,5 @@ async function build() {
     await runPrerenderFromAutoRun(viteConfig)
   }
 
-  return { clientOutput, serverOutput }
+  return { outputClient, outputServer }
 }
