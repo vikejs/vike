@@ -4,9 +4,9 @@ import pc from '@brillout/picocolors'
 import { projectInfo, includes } from './utils.js'
 
 const commands = [
-  { name: 'dev', desc: 'Start the development server' },
+  { name: 'dev', desc: 'Start development server' },
   { name: 'build', desc: 'Build for production' },
-  { name: 'preview', desc: 'Start a preview server using production build' },
+  { name: 'preview', desc: 'Start preview server using production build' },
   { name: 'prerender', desc: 'Pre-render the HTML of your pages' }
 ] as const
 
@@ -60,7 +60,7 @@ function showHelp(): never {
       'Usage:',
       ...commands.map(
         (c) =>
-          `  $ ${pc.bold(`vike ${c.name}`)}${' '.repeat(nameMaxLength - c.name.length)}${TAB}${pc.dim(`# ${c.desc}`)}`
+          `  ${pc.dim('$')} ${pc.bold(`vike ${c.name}`)}${' '.repeat(nameMaxLength - c.name.length)}${TAB}${pc.dim(`# ${c.desc}`)}`
       ),
       '',
       'Options:',
