@@ -4,7 +4,7 @@ import { resolveConfig } from './resolveConfig.js'
 import { build as buildVite } from 'vite'
 
 async function build() {
-  const { viteConfig, vikeConfigResolved } = await resolveConfig({}, 'build')
+  const { viteConfig, configVike } = await resolveConfig({}, 'build')
 
   const outputClient = await buildVite(viteConfig)
 
@@ -16,7 +16,7 @@ async function build() {
     }
   })
 
-  if (vikeConfigResolved.prerender) {
+  if (configVike.prerender) {
     const { runPrerenderFromAutoRun } = await import('../prerender/runPrerender.js')
     await runPrerenderFromAutoRun(viteConfig)
   }

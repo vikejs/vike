@@ -41,12 +41,12 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve
     return resolveConfig(viteConfig, command)
   }
 
-  const vikeConfigResolved = await getConfigVike(viteConfigResolved)
+  const configVike = await getConfigVike(viteConfigResolved)
 
   //TODO: add vite plugins from extension to viteConfig.plugins
 
   return {
     viteConfig,
-    vikeConfigResolved
+    configVike
   }
 }
