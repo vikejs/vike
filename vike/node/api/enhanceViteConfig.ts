@@ -1,10 +1,10 @@
-export { resolveConfig }
+export { enhanceViteConfig }
 
 import type { InlineConfig } from 'vite'
-import { resolveConfig as resolveViteConfig } from 'vite'
+import { enhanceViteConfig as resolveViteConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 
-async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'dev' | 'preview') {
+async function enhanceViteConfig(viteConfig: InlineConfig, command: 'build' | 'dev' | 'preview') {
   const viteConfigResolved = await resolveViteConfig(
     viteConfig,
     command === 'build' ? 'build' : 'serve',
@@ -22,7 +22,7 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'dev' 
     viteConfig.plugins ??= []
     viteConfig.plugins.push(plugin())
 
-    return resolveConfig(viteConfig, command)
+    return enhanceViteConfig(viteConfig, command)
   }
 
   const configVike = await getConfigVike(viteConfigResolved)

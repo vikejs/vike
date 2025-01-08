@@ -1,10 +1,10 @@
 export { build }
 
-import { resolveConfig } from './resolveConfig.js'
+import { enhanceViteConfig } from './enhanceViteConfig.js'
 import { build as buildVite } from 'vite'
 
 async function build() {
-  const { viteConfig, configVike } = await resolveConfig({}, 'build')
+  const { viteConfig, configVike } = await enhanceViteConfig({}, 'build')
 
   const outputClient = await buildVite(viteConfig)
 
