@@ -1,8 +1,7 @@
 import { cac } from 'cac'
-import { projectInfo, assertUsage, assertIsNotBrowser } from './utils.js'
+import { projectInfo, assertUsage } from './utils.js'
 import { setIsVikeCli } from '../api/isVikeCli.js'
 import { serve, build, preview } from '../api/index.js'
-assertIsNotBrowser()
 
 setIsVikeCli()
 
