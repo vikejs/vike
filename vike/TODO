@@ -1,5 +1,3 @@
-- node/cli/{bin.ts,bin-entry.js} => node/cli/{entry.ts,bin.js}
-
 - userAgent for vike-{vue,solid}
 - improve vike.dev/head
 - Remove `pageContext.data.title` from boilerplates
