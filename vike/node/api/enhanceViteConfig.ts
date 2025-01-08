@@ -1,11 +1,11 @@
 export { enhanceViteConfig }
 
 import type { InlineConfig } from 'vite'
-import { enhanceViteConfig as resolveViteConfig } from 'vite'
+import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 
 async function enhanceViteConfig(viteConfig: InlineConfig, command: 'build' | 'dev' | 'preview') {
-  const viteConfigResolved = await resolveViteConfig(
+  const viteConfigResolved = await resolveConfig(
     viteConfig,
     command === 'build' ? 'build' : 'serve',
     'custom',
