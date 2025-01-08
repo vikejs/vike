@@ -5,37 +5,29 @@ import { CommunityNote } from '../../components'
 
 From the server's perspective, a Vike app is just a Node.js server, which means you can use any Node.js container image to run your Vike app.
 
-If you want to use Docker also for development, then you shouldn't set `host` to `false` and you may need to configure Docker for HMR, see <Link href="#development" />.
+If you use Docker also for development, and HMR doesn't work or you can't access your Vike app, then see <Link href="#development" />.
 
-If you build your app inside your Docker container and run into out-of-memory errors, then see <Link href="#increase-memory" />.
+If you build your app inside your Docker container and run into out-of-memory errors, then see <Link href="#out-of-memory-errors" />.
 
 
 ## Development
 
-### `host`
+You can use Docker also for development, see workarounds if you run into following issues:
 
-If you want to use Docker also for development, then [Vite's `server.host` setting](https://vite.dev/config/server-options.html#server-host) should be truthy so that your app can be accessed from outside your Docker container, such as from the browser.
+### HMR doesn't work
 
-```js
-// vite.config.js
+If you are using Docker and <Link href="/glossary#hmr">HMR</Link> doesn't work:
+- If you are under Windows and using [Docker with WSL](https://docs.docker.com/desktop/setup/install/windows-install/), then have a look at <Link href="/wsl" /> for how to enable HMR.
+- You may need to configure Docker for [Vite's HMR websocket connection](https://vite.dev/config/server-options.html#server-hmr).
 
-export default {
-  server: {
-    host: true
-  }
-}
-```
+### Cannot access app
 
-> Vike sets the default value of `host` to `true` if it detects a Docker or Podman container environment.
+Vite's [`server.host` setting](https://vite.dev/config/server-options.html#server-host) should be truthy so that your app can be accessed from outside your Docker container, such as from the browser.
 
-### HMR
-
-If [HMR](https://vite.dev/guide/why.html#:~:text=some%20bundlers%20support-,Hot%20Module%20Replacement%20(HMR),-%3A%20allowing%20a%20module) doesn't work, then make sure you configure Docker for [Vite's HMR websocket connection](https://vite.dev/config/server-options.html#server-hmr).
-
-If you run Docker with a WSL2 backend, then have a look at <Link href="/wsl" /> for how to enable HMR.
+> Vike automatically changes the default value of `server.host` from `false` to `true` if it detects a Docker or Podman container environment.
 
 
-## Increase memory
+## Out-of-memory errors
 
 If you build your app inside your Docker container, you may stumble upon out-of-memory errors.
 
