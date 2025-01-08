@@ -1,10 +1,8 @@
 export { resolveConfig }
 
-import pc from '@brillout/picocolors'
 import type { InlineConfig } from 'vite'
 import { resolveConfig as resolveViteConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
-import { isVikeCli } from './isVikeCli.js'
 
 async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve' | 'preview') {
   const viteConfigResolved = await resolveViteConfig(
@@ -13,15 +11,7 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve
     'custom',
     command === 'serve' ? 'development' : 'production',
     command === 'preview'
-  ).catch((error) => {
-    if (!isVikeCli) {
-      throw error
-    }
-    console.error(pc.red(`error resolving config:\n${error.stack}`), {
-      error
-    })
-    process.exit(1)
-  })
+  )
 
   // Add vike to plugins if not present
   if (!viteConfigResolved.plugins.some((p) => p.name.startsWith('vike:'))) {

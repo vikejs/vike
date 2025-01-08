@@ -1,13 +1,10 @@
 import { cac } from 'cac'
 import { projectInfo, assertUsage } from './utils.js'
-import { setIsVikeCli } from '../api/isVikeCli.js'
 import { serve, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 
-setIsVikeCli()
-
 const cli = cac(projectInfo.projectName)
-export const startTime = performance.now()
+const startTime = performance.now()
 
 cli.command('prerender', 'Pre-render the HTML of your pages').action(async () => {
   const { runPrerenderFromCLIStandalone } = await import('../prerender/runPrerender.js')
@@ -20,7 +17,24 @@ cli
   .alias('dev')
   .action(async () => {
     try {
-      await serve()
+      const server = await serve()
+
+      await server.listen()
+      const info = server.config.logger.info
+      const startupDurationString = pc.dim(
+        `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
+      )
+      const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+      info(
+        `\n  ${pc.cyan(`${pc.bold(projectInfo.projectName)} v${projectInfo.projectVersion}`)}  ${startupDurationString}\n`,
+        {
+          clear: !hasExistingLogs
+        }
+      )
+
+      server.printUrls()
+      server.bindCLIShortcuts({ print: true })
+      return server
     } catch (err) {
       console.error(pc.red(`Error while starting dev server:`))
       console.error(err)
@@ -40,7 +54,9 @@ cli.command('build', 'Build for production').action(async () => {
 
 cli.command('preview', 'Start a preview server using production build').action(async () => {
   try {
-    await preview()
+    const server = await preview()
+    server.printUrls()
+    server.bindCLIShortcuts({ print: true })
   } catch (err) {
     console.error(pc.red(`Error while starting preview server:`))
     console.error(err)
