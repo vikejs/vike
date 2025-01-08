@@ -1,6 +1,6 @@
 import { cac } from 'cac'
 import { projectInfo, assertUsage } from './utils.js'
-import { serve, build, preview } from '../api/index.js'
+import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 
 const cli = cac(projectInfo.projectName)
@@ -13,11 +13,10 @@ cli.command('prerender', 'Pre-render the HTML of your pages').action(async () =>
 
 cli
   .command('', 'Start the development server')
-  .alias('serve')
   .alias('dev')
   .action(async () => {
     try {
-      const server = await serve()
+      const server = await dev()
 
       await server.listen()
       const info = server.config.logger.info

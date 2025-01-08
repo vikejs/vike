@@ -4,12 +4,12 @@ import type { InlineConfig } from 'vite'
 import { resolveConfig as resolveViteConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 
-async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve' | 'preview') {
+async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'dev' | 'preview') {
   const viteConfigResolved = await resolveViteConfig(
     viteConfig,
-    command === 'preview' ? 'serve' : command,
+    command === 'build' ? 'build' : 'serve',
     'custom',
-    command === 'serve' ? 'development' : 'production',
+    command === 'dev' ? 'development' : 'production',
     command === 'preview'
   )
 
