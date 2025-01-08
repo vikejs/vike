@@ -1,6 +1,6 @@
-// Utils needed by Vike's Vite plugin.
+// Utils needed by Vike's Vite plugin
 
-// We assume all runtime entries will load this utils.ts file
+// We call onLoad() here so that it's called even when only a subset of the plugin is loaded. (Making the assert() calls inside onLoad() a lot stronger.)
 import { onLoad } from './onLoad.js'
 onLoad()
 

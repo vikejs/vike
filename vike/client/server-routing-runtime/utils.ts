@@ -1,6 +1,6 @@
-// Utils needed by Server Routing.
+// Utils needed by Vike's client runtime (with Server Routing)
 
-// We assume all runtime entries will load this utils.ts file
+// We call onLoad() here so that it's called even when only a subset of the runtime is loaded. (Making the assert() calls inside onLoad() a lot stronger.)
 import { onLoad } from './onLoad.js'
 onLoad()
 
