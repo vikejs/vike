@@ -14,16 +14,16 @@ async function enhanceViteConfig(viteConfig: InlineConfig, command: 'build' | 'd
     command === 'preview'
   )
 
+  let viteConfigEnhanced = viteConfig
+
   // Add vike to plugins if not present
   if (!viteConfigResolved.plugins.some((p) => p.name === pluginName)) {
-    // We using a dynamic import because the script calling the VIke API may not live in the same place as vite.config.js, thus have vike/plugin may resolved to two different node_modules/vike directories
-    const { plugin } = await import('../plugin/index.js')
-
-    viteConfig ??= {}
-    viteConfig.plugins ??= []
-    viteConfig.plugins.push(plugin())
-
-    return enhanceViteConfig(viteConfig, command)
+    // Using a dynamic import because the script calling the Vike API may not live in the same place as vite.config.js, thus have vike/plugin may resolved to two different node_modules/vike directories
+    const { plugin: vikePlugin } = await import('../plugin/index.js')
+    viteConfigEnhanced = {
+      ...viteConfig,
+      plugins: [...(viteConfig.plugins ?? []), vikePlugin()]
+    }
   }
 
   const configVike = await getConfigVike(viteConfigResolved)
@@ -31,7 +31,7 @@ async function enhanceViteConfig(viteConfig: InlineConfig, command: 'build' | 'd
   //TODO: add vite plugins from extension to viteConfig.plugins
 
   return {
-    viteConfig,
+    viteConfigEnhanced,
     configVike
   }
 }
