@@ -12,8 +12,7 @@ cli.command('prerender', 'Pre-render the HTML of your pages').action(async () =>
 })
 
 cli
-  .command('', 'Start the development server')
-  .alias('dev')
+  .command('dev', 'Start the development server')
   .action(async () => {
     try {
       const server = await dev()
