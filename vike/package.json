@@ -45,7 +45,8 @@
     "./api": {
       "require": "./dist/cjs/node/api/index.js",
       "node": "./dist/esm/node/api/index.js",
-      "types": "./dist/esm/node/api/index.d.ts"
+      "types": "./dist/esm/node/api/index.d.ts",
+      "default": "./dist/esm/node/api/index.js"
     },
     "./prerender": {
       "require": "./dist/cjs/node/prerender/index.js",
