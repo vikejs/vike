@@ -7,7 +7,7 @@ import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
-const pluginName = 'vike:commonConfig-1'
+import { pluginName } from './commonConfig/pluginName.js'
 
 function commonConfig(): Plugin[] {
   return [
