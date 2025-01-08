@@ -11,10 +11,9 @@ const { projectName, projectVersion } = projectInfo
 
 async function serve() {
   // Adds vike to viteConfig if not present
-  const { viteConfig, viteConfigResolved: resolvedConfig } = await resolveConfig({}, 'serve')
+  const { viteConfig } = await resolveConfig({}, 'serve')
   if (!isVikeCli) return createServer(viteConfig)
 
-  try {
     const server = await createServer(viteConfig)
     await server.listen()
     const info = server.config.logger.info
@@ -29,10 +28,4 @@ async function serve() {
     server.printUrls()
     server.bindCLIShortcuts({ print: true })
     return server
-  } catch (e: any) {
-    resolvedConfig.logger.error(pc.red(`error when starting dev server:\n${e.stack}`), {
-      error: e
-    })
-    process.exit(1)
-  }
 }

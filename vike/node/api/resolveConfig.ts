@@ -47,7 +47,6 @@ async function resolveConfig(viteConfig: InlineConfig, command: 'build' | 'serve
 
   return {
     viteConfig,
-    vikeConfigResolved,
-    viteConfigResolved
+    vikeConfigResolved
   }
 }
