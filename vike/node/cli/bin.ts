@@ -7,8 +7,8 @@ const cli = cac(projectInfo.projectName)
 const startTime = performance.now()
 
 cli.command('prerender', 'Pre-render the HTML of your pages').action(async () => {
-  const { runPrerenderFromCLIStandalone } = await import('../prerender/runPrerender.js')
-  await runPrerenderFromCLIStandalone()
+  const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
+  await runPrerenderFromCLIPrerenderCommand()
 })
 
 cli
