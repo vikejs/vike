@@ -3,7 +3,7 @@ import { projectInfo, assertUsage } from './utils.js'
 import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 
-const cli = cac(projectInfo.projectName)
+const cli = cac(projectInfo.projectName.toLowerCase())
 const startTime = performance.now()
 
 cli.command('prerender', 'Pre-render the HTML of your pages').action(async () => {
