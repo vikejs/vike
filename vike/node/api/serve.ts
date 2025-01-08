@@ -14,18 +14,18 @@ async function serve() {
   const { viteConfig } = await resolveConfig({}, 'serve')
   if (!isVikeCli) return createServer(viteConfig)
 
-    const server = await createServer(viteConfig)
-    await server.listen()
-    const info = server.config.logger.info
-    const startupDurationString = pc.dim(
-      `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
-    )
-    const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
-    info(`\n  ${pc.cyan(`${pc.bold(projectName)} v${projectVersion}`)}  ${startupDurationString}\n`, {
-      clear: !hasExistingLogs
-    })
+  const server = await createServer(viteConfig)
+  await server.listen()
+  const info = server.config.logger.info
+  const startupDurationString = pc.dim(
+    `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
+  )
+  const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+  info(`\n  ${pc.cyan(`${pc.bold(projectName)} v${projectVersion}`)}  ${startupDurationString}\n`, {
+    clear: !hasExistingLogs
+  })
 
-    server.printUrls()
-    server.bindCLIShortcuts({ print: true })
-    return server
+  server.printUrls()
+  server.bindCLIShortcuts({ print: true })
+  return server
 }

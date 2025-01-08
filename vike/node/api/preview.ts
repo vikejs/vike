@@ -9,8 +9,8 @@ async function preview() {
   const { viteConfig } = await resolveConfig({}, 'preview')
   if (!isVikeCli) return previewVite(viteConfig)
 
-    const server = await previewVite(viteConfig)
-    server.printUrls()
-    server.bindCLIShortcuts({ print: true })
-    return server
+  const server = await previewVite(viteConfig)
+  server.printUrls()
+  server.bindCLIShortcuts({ print: true })
+  return server
 }
