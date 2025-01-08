@@ -1,6 +1,6 @@
 // Utils needed by Server Routing.
 
-// We call onLoad() here in order to make sure it's always called, even if only a subset of client/server-routing-runtime/** is loaded.
+// We assume all runtime entries will load this utils.ts file
 import { onLoad } from './onLoad.js'
 onLoad()
 

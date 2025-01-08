@@ -1,8 +1,6 @@
 import '../../utils/trackLogs.js'
 
-// We call onLoad() here in order to make sure it's always called, even if only a subset of node/runtime/** is loaded.
-//  - (Calling onLoad() in node/runtime/index.ts wouldn't be enough: for example node/plugin/** loads /node/runtime/** modules whithout ever loading node/runtime/index.ts)
-//  - (It isn't 100% guaranteed that onLoad() is called: it isn't called when the loaded module doesn't use utils.ts but it's very unlikely.)
+// We assume all runtime entries will load this utils.ts file
 import { onLoad } from './onLoad.js'
 onLoad()
 
