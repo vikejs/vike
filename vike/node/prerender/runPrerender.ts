@@ -142,10 +142,7 @@ type PrerenderOptions = {
    *
    */
   viteConfig?: InlineConfig
-  /**
-   * @internal
-   * Don't use without having talked to a vike maintainer.
-   */
+  /** @experimental Don't use without having talked to a vike maintainer. */
   onPagePrerender?: Function
 
   // TODO/v1-release: remove
