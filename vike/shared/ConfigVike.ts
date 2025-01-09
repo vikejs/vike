@@ -58,7 +58,7 @@ type ConfigVikeUserProvided = {
          */
         partial?: boolean
         /**
-         * Disable the automatic initiation of the pre-rendering process when running `$ vite build`.
+         * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
          *
          * Use this if you want to programmatically initiate the pre-rendering process instead.
          *

@@ -40,7 +40,7 @@ function StaticHostDocStrategies({ name = 'the static host' }: { name?: string }
       </ul>
       <blockquote>
         <p>
-          The <code>$ vite build</code> command generates <code>dist/client/</code> containing all static assets.
+          The <code>$ vike build</code> command generates <code>dist/client/</code> containing all static assets.
         </p>
       </blockquote>
     </>
@@ -53,7 +53,7 @@ function StaticHostDocOutro({ baseUrlAddendum }: { baseUrlAddendum?: React.JSX.E
         {' '}
         You can try out your production build locally with{' '}
         <a href="https://vitejs.dev/guide/cli.html#vite-preview">
-          <code>$ vite preview</code>
+          <code>$ vike preview</code>
         </a>
         , or any other tool such as{' '}
         <a href="https://www.npmjs.com/package/serve">
