@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run build:vite && npm run build:webpack",
-    "build:vite": "vite build",
+    "build:vite": "vike build",
     "build:webpack": "cp server/main.mjs dist/server/main.mjs && webpack -c ./webpack.config.js && rimraf dist/server",
     "server:prod": "node dist/main.mjs",
     "preview": "npm run build && npm run server:prod"

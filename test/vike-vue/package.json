@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "vite build && vite preview"
+    "dev": "vike dev",
+    "build": "vike build",
+    "preview": "vike build && vite preview"
   },
   "dependencies": {
     "@types/node": "^22.1.0",

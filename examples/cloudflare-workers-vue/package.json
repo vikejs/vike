@@ -1,8 +1,8 @@
 {
   "scripts": {
     "dev": "vite",
-    "preview": "vite build && wrangler dev",
-    "deploy": "vite build && wrangler publish"
+    "preview": "vike build && wrangler dev",
+    "deploy": "vike build && wrangler publish"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.2",
