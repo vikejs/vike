@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "vike",
     "build": "npm run build:vite && npm run build:webpack",
     "build:vite": "vike build",
     "build:webpack": "cp server/main.mjs dist/server/main.mjs && webpack -c ./webpack.config.js && rimraf dist/server",

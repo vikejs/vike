@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "vike",
     "preview": "vike build && vite preview"
   },
   "dependencies": {

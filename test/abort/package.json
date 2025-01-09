@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "vike",
     "dev:server": "node server/",
     "build": "vike build",
     "preview": "vike build && vite preview",
