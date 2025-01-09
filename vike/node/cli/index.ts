@@ -1,6 +1,6 @@
 // TODO/v1-release: remove this file
 
-export { runPrerenderFromAPI as prerender } from '../prerender/runPrerender.js'
+export { prerender } from '../api/prerender.js'
 
 import { assertWarning } from '../../utils/assert.js'
 import pc from '@brillout/picocolors'
