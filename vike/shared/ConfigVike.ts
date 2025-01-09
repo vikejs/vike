@@ -58,7 +58,7 @@ type ConfigVikeUserProvided = {
          */
         partial?: boolean
         /**
-         * Disable the automatic initiation of the pre-rendering process when running `$ vite build`.
+         * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
          *
          * Use this if you want to programmatically initiate the pre-rendering process instead.
          *
@@ -69,13 +69,8 @@ type ConfigVikeUserProvided = {
         disableAutoRun?: boolean
       }
 
-  /**
-   * Disable the automatic chaining of build steps.
-   *
-   * https://vike.dev/disableAutoFullBuild
-   *
-   * @default false
-   */
+  // TODO/v1-release: remove
+  /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
   /** The Base URL of your server.

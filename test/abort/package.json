@@ -1,10 +1,10 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "vike dev",
     "dev:server": "node server/",
-    "build": "vite build",
-    "preview": "vite build && vite preview",
-    "preview:server": "vite build && node server/"
+    "build": "vike build",
+    "preview": "vike build && vike preview",
+    "preview:server": "vike build && node server/"
   },
   "dependencies": {
     "@types/react": "^18.2.15",

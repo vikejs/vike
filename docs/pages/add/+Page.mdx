@@ -21,13 +21,28 @@ On a high-level, this is how you add Vike to your existing Vite app:
 
    - Example: <RepoLink path="/boilerplates/boilerplate-react/vite.config.js" />
 
-2. Either:
+1. Use Vike's CLI instead of Vite's CLI.
+   ```json5
+   // package.json
+   {
+     "scripts": {
+       "dev": "vite", // [!code --]
+       "dev": "vike dev", // [!code ++]
+       "build": "vite build", // [!code --]
+       "build": "vike build", // [!code ++]
+       "preview": "vite preview", // [!code --]
+       "preview": "vike preview", // [!code ++]
+     }
+   }
+   ```
+
+1. Either:
    - Enable pre-rendering, or
      > See <Link href="/pre-rendering" />
    - add a <Link href="/express">Express.js</Link>/<Link href="/hono">Hono</Link>/<Link href="/fastify">Fastify</Link>/<Link href="/server">...</Link> server (or add <Link href="/renderPage">Vike's server middleware</Link> if you already have one).
      > Example: <RepoLink path="/boilerplates/boilerplate-react/server/index.js" />
 
-3. Either:
+1. Either:
    - Use <UiFrameworkExtension name />, or
    - define <Link href="/onAfterRenderClient">`+onRenderClient.js`</Link> and <Link href="/onRenderHtml">`+onRenderHtml.js`</Link>.
      > Examples:
@@ -36,7 +51,7 @@ On a high-level, this is how you add Vike to your existing Vite app:
      > - <RepoLink text="React" path="/boilerplates/boilerplate-react/renderer/" />
      > - <RepoLink text="React + TypeScript" path="/boilerplates/boilerplate-react-ts/renderer/" />
 
-4. Create your first <Link href="/Page">`+Page.js`</Link> file.
+1. Create your first <Link href="/Page">`+Page.js`</Link> file.
    > Examples:
    > - <RepoLink text="Vue" path="/boilerplates/boilerplate-vue/pages/index/+Page.vue" />
    > - <RepoLink text="Vue + TypeScript" path="/boilerplates/boilerplate-vue-ts/pages/index/+Page.vue" />

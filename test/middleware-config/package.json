@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "tsx ./express-entry.ts",
-    "build": "vite build",
+    "build": "vike build",
     "preview": "cross-env NODE_ENV=production tsx ./express-entry.ts"
   },
   "dependencies": {

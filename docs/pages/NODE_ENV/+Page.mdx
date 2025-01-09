@@ -14,7 +14,7 @@ In production (and staging):
 - Make sure `process.env.NODE_ENV` is a value different than `[undefined, 'development', 'dev', '']`.
   > Note that:
   > - Upon starting your server in production, make sure to set `process.env.NODE_ENV`. (E.g. `$ NODE_ENV='production' node server/index.js`.)
-  > - Upon building (`$ vite build`), Vite automatically sets `process.env.NODE_ENV` to `'production'`.
+  > - Upon building (`$ vike build`), Vite automatically sets `process.env.NODE_ENV` to `'production'`.
   > - Upon manually triggering pre-rendering (<Link href="/command-prerender">`$ vike prerender`</Link>), Vike automatically sets `process.env.NODE_ENV` to `'production'`.
 - If you use a server, make sure you don't add Vite's server middleware: it isn't needed in production and would unnecessarily bloat your production server.
 

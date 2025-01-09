@@ -322,6 +322,10 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/useClientRouter'
   },
   {
+    title: 'CLI Migration',
+    url: '/migration/cli'
+  },
+  {
     title: 'Migration `0.4`',
     url: '/migration-0.4'
   },

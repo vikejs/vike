@@ -1,12 +1,13 @@
 // TODO/v1-release: remove this file
 
-import { prerender as prerenderOriginal } from '../prerender/index.js'
-import { assertWarning } from './utils.js'
-export const prerender: typeof prerenderOriginal = (options) => {
-  assertWarning(
-    false,
-    "`import { prerender } from 'vike/cli'` is deprecated in favor of `import { prerender } from 'vike/prerender'``",
-    { onlyOnce: true, showStackTrace: true }
-  )
-  return prerenderOriginal(options)
-}
+export { prerender } from '../api/prerender.js'
+
+import { assertWarning } from '../../utils/assert.js'
+import pc from '@brillout/picocolors'
+assertWarning(
+  false,
+  `${pc.cyan("import { prerender } from 'vike/cli'")} is deprecated in favor of ${pc.cyan(
+    "import { prerender } from 'vike/api'"
+  )}`,
+  { onlyOnce: true }
+)

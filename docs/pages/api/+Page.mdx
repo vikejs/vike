@@ -1,0 +1,70 @@
+import { Link } from '@brillout/docpress'
+
+```js
+import { dev, build, preview, prerender } from 'vike/api'
+
+// Same as CLI `$ vike dev`
+await dev()
+console.log('Dev server is ready')
+
+// Same as CLI `$ vike build`
+await build()
+console.log('Build is done')
+
+// Same as CLI `$ vike preview`
+await preview()
+console.log('Preview server is ready')
+
+// Same as CLI `$ vike prerender`
+await prerender()
+console.log('Pre-rendering is done')
+```
+
+## Options
+
+All API functions have the option `{ viteConfig: { /*...*/ }}`. (It's the only option.)
+
+> We generally recommend to define your Vite settings in your `vite.config.js` file instead of using the `viteConfig` option. The API automatically loads your `vite.config.js` file (just like the CLI).
+
+If you want to define Vite settings outside of your app (typically when <Link href="/build-your-own-framework">building your own framework</Link>) you can do this:
+
+```js
+import { dev } from 'vike/api'
+
+await dev({
+  viteConfig: {
+    // vite.config.js can live in node_modules/my-framework/src/vite.config.ts
+    configFile: './path/to/vite.config.js',
+    // The app's root can be somewhere completely else than vite.config.js
+    root: './path/to/app/'
+    // Some Vite settings overriding vite.config.js
+    /* ... */
+  }
+})
+console.log('Dev server is ready')
+```
+
+If you want to define your entire Vite config programmatically:
+
+```js
+import { build } from 'vike/api'
+
+await build({
+  viteConfig: {
+    // Don't load any vite.config.js
+    configFile: false,
+    // All Vite settings
+    /* ... */
+  }
+})
+console.log('Build is done')
+```
+
+See also: [Vite > JavaScript API > `InlineConfig`](https://vitejs.dev/guide/api-javascript.html#inlineconfig)
+
+
+## See also
+
+- [Vite > JavaScript API](https://vite.dev/guide/api-javascript)
+- <Link href="/cli" />
+- <Link href="/build-your-own-framework" />

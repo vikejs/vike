@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "vite dev",
     "preview": "vite build && wrangler dev",
     "deploy": "vite build && wrangler publish"
   },

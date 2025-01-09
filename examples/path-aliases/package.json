@@ -6,7 +6,7 @@
     "dev": "npm run server:dev",
     "prod": "npm run build && npm run server:prod",
     "prod:static": "npm run build && npm run server:static",
-    "build": "vite build",
+    "build": "vike build",
     "server": "node ./server/index.js",
     "server:dev": "npm run server",
     "server:prod": "cross-env NODE_ENV=production npm run server",

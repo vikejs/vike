@@ -79,16 +79,19 @@ function buildConfig(): Plugin[] {
           }
         }
       },
-      config(config) {
-        assertNodeEnv_build()
-        isSsrBuild = viteIsSSR(config)
-        return {
-          build: {
-            outDir: resolveOutDir(config),
-            manifest: manifestTempFile,
-            copyPublicDir: !isSsrBuild
-          }
-        } satisfies UserConfig
+      config: {
+        order: 'post',
+        handler(config) {
+          assertNodeEnv_build()
+          isSsrBuild = viteIsSSR(config)
+          return {
+            build: {
+              outDir: resolveOutDir(config),
+              manifest: manifestTempFile,
+              copyPublicDir: !isSsrBuild
+            }
+          } satisfies UserConfig
+        }
       },
       buildStart() {
         assertNodeEnv_build()

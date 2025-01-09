@@ -1,6 +1,6 @@
 export { runPrerenderFromAPI }
-export { runPrerenderFromCLI }
-export { runPrerenderFromAutoFullBuild }
+export { runPrerenderFromCLIPrerenderCommand }
+export { runPrerenderFromAutoRun }
 export { runPrerender_forceExit }
 export type { PrerenderOptions }
 
@@ -73,6 +73,8 @@ import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
+import type { APIOptions } from '../api/APIOptions.js'
+import { enhanceViteConfig } from '../api/enhanceViteConfig.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -120,28 +122,9 @@ type PageContext = PageContextInitEnhanced & {
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
 } & PageContextUrlInternal
 
-type PrerenderOptions = {
+type PrerenderOptions = APIOptions & {
   /** Initial `pageContext` values */
   pageContextInit?: Record<string, unknown>
-  /**
-   * The Vite config.
-   *
-   * This is optional and, if omitted, then Vite will automatically load your `vite.config.js`.
-   *
-   * We recommend to either omit this option or set it to `prerender({ viteConfig: { root }})`: the `vite.config.js` file living at `root` will be loaded.
-   *
-   * Alternatively you can:
-   *  - Set `prerender({ viteConfig: { configFile: './path/to/vite.config.js' }})`.
-   *  - Not load any `vite.config.js` file and, instead, use `prerender({ viteConfig: { configFile: false, ...myViteConfig }})` to programmatically define the entire Vite config.
-   *
-   * You can also load a `vite.config.js` file while overriding parts of the Vite config.
-   *
-   * See https://vitejs.dev/guide/api-javascript.html#inlineconfig for more information.
-   *
-   * @default { root: process.cwd() }
-   *
-   */
-  viteConfig?: InlineConfig
   /** @experimental Don't use without having talked to a vike maintainer. */
   onPagePrerender?: Function
 
@@ -170,27 +153,31 @@ async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<void
   // - We purposely propagate the error to the user land, so that the error interrupts the user land. It's also, I guess, a nice-to-have that the user has control over the error.
   // - We don't use logErrorHint() because we don't have control over what happens with the error. For example, if the user land purposely swallows the error then the hint shouldn't be logged. Also, it's best if the hint is shown to the user *after* the error, but we cannot do/guarentee that.
 }
-async function runPrerenderFromCLI(options: PrerenderOptions): Promise<void> {
+async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   try {
-    await runPrerender(options, '$ vike prerender')
+    const { viteConfigEnhanced } = await enhanceViteConfig(undefined, 'prerender')
+    await runPrerender({ viteConfig: viteConfigEnhanced }, '$ vike prerender')
   } catch (err) {
     console.error(err)
+    // Error may come from user-land; we need to use logErrorHint()
     logErrorHint(err)
     process.exit(1)
   }
+  runPrerender_forceExit()
 }
-async function runPrerenderFromAutoFullBuild(options: PrerenderOptions): Promise<void> {
+async function runPrerenderFromAutoRun(viteConfig: InlineConfig, forceExit: boolean): Promise<void> {
   try {
-    await runPrerender(options, null)
+    await runPrerender({ viteConfig })
   } catch (err) {
     console.error(err)
     logErrorHint(err)
     process.exit(1)
   }
+  if (forceExit) runPrerender_forceExit()
 }
 async function runPrerender(
-  options: PrerenderOptions,
-  manuallyTriggered: null | '$ vike prerender' | 'prerender()'
+  options: PrerenderOptions = {},
+  standaloneTrigger?: '$ vike prerender' | 'prerender()'
 ): Promise<void> {
   checkOutdatedOptions(options)
   setGlobalContext_isPrerendering()
@@ -213,10 +200,10 @@ async function runPrerender(
   const { root } = viteConfig
   const prerenderConfig = configVike.prerender
   if (!prerenderConfig) {
-    assert(manuallyTriggered)
+    assert(standaloneTrigger)
     assertWarning(
       prerenderConfig,
-      `You're executing ${pc.cyan(manuallyTriggered)} but the config ${pc.cyan('prerender')} isn't set to true`,
+      `You're executing ${pc.cyan(standaloneTrigger)} but the config ${pc.cyan('prerender')} isn't set to true`,
       {
         onlyOnce: true
       }

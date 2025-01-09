@@ -42,6 +42,12 @@
       "types": "./dist/esm/node/cli/index.d.ts",
       "default": "./dist/esm/node/cli/index.js"
     },
+    "./api": {
+      "require": "./dist/cjs/node/api/index.js",
+      "node": "./dist/esm/node/api/index.js",
+      "types": "./dist/esm/node/api/index.d.ts",
+      "default": "./dist/esm/node/api/index.js"
+    },
     "./prerender": {
       "require": "./dist/cjs/node/prerender/index.js",
       "node": "./dist/esm/node/prerender/index.js",
@@ -131,6 +137,7 @@
     "es-module-lexer": "^1.0.0",
     "esbuild": "^0.19.0 || ^0.20.0 || ^0.21.0 || ^0.22.0 || ^0.23.0 || ^0.24.0",
     "fast-glob": "^3.0.0",
+    "json5": "^2.0.0",
     "semver": "^7.0.0",
     "source-map-support": "^0.5.0"
   },
@@ -176,6 +183,9 @@
       "cli": [
         "./dist/esm/node/cli/index.d.ts"
       ],
+      "api": [
+        "./dist/esm/node/api/index.d.ts"
+      ],
       "prerender": [
         "./dist/esm/node/prerender/index.d.ts"
       ],
@@ -206,11 +216,13 @@
   "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
   "type": "module",
   "bin": {
-    "vike": "./node/cli/bin-entry.js"
+    "vike": "./node/cli/bin.js"
   },
   "files": [
+    "./node/cli/bin.js",
     "./dist/",
     "./abort.js",
+    "./api.js",
     "./client.js",
     "./client/router.js",
     "./cli.js",
@@ -220,7 +232,6 @@
     "./__internal/loadImportBuild.js",
     "./__internal/setup.js",
     "./modifyUrl.js",
-    "./node/cli/bin-entry.js",
     "./plugin.js",
     "./prerender.js",
     "./RenderErrorPage.js",

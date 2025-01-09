@@ -1,9 +1,11 @@
+// TODO/v1-release: remove this file
+
 export { autoFullBuild }
 
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
-import { runPrerenderFromAutoFullBuild, runPrerender_forceExit } from '../../prerender/runPrerender.js'
+import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
@@ -12,6 +14,10 @@ import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './buildConfig.js'
 
 let forceExit = false
+
+assertWarning(!isViteCliCall(), `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
+  onlyOnce: true
+})
 
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
@@ -97,7 +103,7 @@ async function triggerFullBuild(
   }
 
   if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
-    await runPrerenderFromAutoFullBuild({ viteConfig: configInline })
+    await runPrerenderFromAutoRun(configInline, false)
     forceExit = true
   }
 }
@@ -120,10 +126,6 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
 function isDisabled(configVike: ConfigVikeResolved): boolean {
   const { disableAutoFullBuild } = configVike
   if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
-    // TODO/v1-release: remove autoFullBuild for both Vite's build() API and Vite's CLI
-    //  - Tell users to use `$ vike build` instead of `$ vite build`
-    //  - Remove the whole writeBundle() hook logic
-    //  - make `$ vite build` only build the client-side
     return !isViteCliCall()
   } else {
     return disableAutoFullBuild
