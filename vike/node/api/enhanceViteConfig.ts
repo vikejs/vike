@@ -22,7 +22,7 @@ async function enhanceViteConfig(viteConfig: InlineConfig = {}, command: 'build'
 
   const configVike = await getConfigVike(viteConfigResolved)
 
-  //TODO: add vite plugins from extension to viteConfig.plugins
+  // TODO: enable Vike extensions to add Vite plugins
 
   return {
     viteConfigEnhanced,
