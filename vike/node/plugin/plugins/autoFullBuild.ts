@@ -112,8 +112,8 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
   if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
-      `The CLI call ${pc.cyan('$ vike build --ssr')} is superfluous since ${pc.cyan(
-        '$ vike build'
+      `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
+        '$ vite build'
       )} also builds the server-side. If you want two separate build steps then use https://vike.dev/disableAutoFullBuild or use Vite's ${pc.cyan(
         'build()'
       )} API.`,
