@@ -339,6 +339,16 @@ const headings = [
   },
   {
     level: 2,
+    title: 'API',
+    url: '/api'
+  },
+  {
+    level: 2,
+    title: 'CLI',
+    url: '/cli'
+  },
+  {
+    level: 2,
     title: 'Error Page',
     url: '/error-page'
   },
