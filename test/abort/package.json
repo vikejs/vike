@@ -3,7 +3,7 @@
     "dev": "vike",
     "dev:server": "node server/",
     "build": "vike build",
-    "preview": "vike build && vite preview",
+    "preview": "vike build && vike preview",
     "preview:server": "vike build && node server/"
   },
   "dependencies": {

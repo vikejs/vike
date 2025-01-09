@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vike",
     "build": "vike build",
-    "preview": "vike build && vite preview"
+    "preview": "vike build && vike preview"
   },
   "dependencies": {
     "@types/react": "^18.2.45",

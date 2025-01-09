@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vike dev",
     "build": "vike build",
-    "preview": "vike build && vite preview"
+    "preview": "vike build && vike preview"
   },
   "dependencies": {
     "@types/node": "^22.1.0",
