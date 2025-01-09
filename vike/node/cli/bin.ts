@@ -44,6 +44,7 @@ async function cmdDev(configDefinedByCli: Config) {
     server.bindCLIShortcuts({ print: true })
   } catch (err) {
     console.error(pc.red(`Error while starting dev server:`))
+    // Error comes from Vite; no need to use logErrorHint()
     console.error(err)
     process.exit(1)
   }
@@ -54,6 +55,7 @@ async function cmdBuild(configDefinedByCli: Config) {
     await build()
   } catch (err) {
     console.error(pc.red(`Error during build:`))
+    // Error comes from Vite; no need to use logErrorHint()
     console.error(err)
     process.exit(1)
   }
@@ -66,12 +68,13 @@ async function cmdPreview(configDefinedByCli: Config) {
     server.bindCLIShortcuts({ print: true })
   } catch (err) {
     console.error(pc.red(`Error while starting preview server:`))
+    // Error comes from Vite; no need to use logErrorHint()
     console.error(err)
     process.exit(1)
   }
 }
 
-async function cmdPrerender(configDefinedByCli: Config) {
+async function cmdPrerender(onfigDefinedByCli: Config) {
   const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
   await runPrerenderFromCLIPrerenderCommand()
 }

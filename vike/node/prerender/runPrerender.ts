@@ -159,6 +159,7 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
     await runPrerender({ viteConfig: viteConfigEnhanced }, '$ vike prerender')
   } catch (err) {
     console.error(err)
+    // Error may come from user-land; we need to use logErrorHint()
     logErrorHint(err)
     process.exit(1)
   }
