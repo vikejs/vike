@@ -107,8 +107,8 @@ The `renderPage()` function doesn't depend on Node.js and you can use `renderPag
 ## Optional
 
 If you <Link text="pre-render" href="/pre-rendering" /> all your pages then you don't need to use `renderPage()`, because:
- - Upon development, Vike automatically embeds itself into Vite's development server (`$ vike`/`$ vike dev`).
- - Upon pre-rendering (`$ vike build`/`$ vike prerender`) Vike renders all your pages.
+ - Upon development (`$ vike dev`), Vike automatically embeds itself into Vite's development server.
+ - Upon pre-rendering (`$ vike build`/`$ vike prerender`), Vike automatically renders all your pages.
 
 But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your pages, then you need a production server and you need to use `renderPage()` in order to embed Vike into your server. See <Link href="/pre-rendering"/>.
 
