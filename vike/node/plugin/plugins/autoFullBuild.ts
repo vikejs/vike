@@ -1,3 +1,5 @@
+// TODO/v1-release: remove this file
+
 export { autoFullBuild }
 
 import { build } from 'vite'
@@ -12,6 +14,10 @@ import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './buildConfig.js'
 
 let forceExit = false
+
+assertWarning(!isViteCliCall(), `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
+  onlyOnce: true
+})
 
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig

@@ -1,0 +1,33 @@
+import { Link } from '@brillout/docpress'
+
+Using the Vite CLI is deprecated starting from `vike@0.4.213`.
+
+> You can still use it, but you'll see following warning and support for Vite's CLI will be completely removed in the next major release.
+> ```
+> 1:18:05 PM [vike][Warning] The Vite CLI is deprecated
+> ```
+
+Use the Vike CLI instead:
+
+```json5
+// package.json
+{
+  "scripts": {
+    "dev": "vite", // [!code --]
+    "dev": "vike dev", // [!code ++]
+    "build": "vite build", // [!code --]
+    "build": "vike build", // [!code ++]
+    "preview": "vite preview", // [!code --]
+    "preview": "vike preview", // [!code ++]
+  }
+}
+```
+
+Vike's CLI doesn't have any option: use the `VITE_CONFIG` and `VIKE_CONFIG` environment variables instead, see <Link href="/cli" />.
+
+We also recommend using <Link href="/api">Vike's JavaScript API</Link> instead of [Vite's JavaScript API](https://vite.dev/guide/api-javascript), as some features in the near future will only be available when using Vike's JavaScript API.
+
+## See also
+
+- <Link href="/cli" />
+- <Link href="/api" />

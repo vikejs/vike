@@ -339,13 +339,13 @@ const headings = [
   },
   {
     level: 2,
-    title: 'API',
-    url: '/api'
+    title: 'CLI',
+    url: '/cli'
   },
   {
     level: 2,
-    title: 'CLI',
-    url: '/cli'
+    title: 'JavaScript API',
+    url: '/api'
   },
   {
     level: 2,
