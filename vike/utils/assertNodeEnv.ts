@@ -38,7 +38,7 @@ function assertNodeEnv_runtime(isViteDev: boolean) {
   const nodeEnvDesc = getNodeEnvDesc()
   // TODO: make it assertUsage() again once #1528 is implemented.
   const errMsg = `Running ${
-    isViteDev ? pc.cyan('$ vite dev') : 'app in production'
+    isViteDev ? pc.cyan('$ vike dev') : 'app in production'
   } while the ${nodeEnvDesc} which is contradictory, see https://vike.dev/NODE_ENV` as const
   assertWarning(false, errMsg, { onlyOnce: true })
 }

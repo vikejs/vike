@@ -2224,7 +2224,7 @@
 
 ### Bug Fixes
 
-* stop showing warning upon `$ vite-plugin-ssr prerender` ([659f28b](https://github.com/brillout/vite-plugin-ssr/commit/659f28beb116ec3c777ec922ddae751d3e6b2844))
+* stop showing warning upon `$ vike-plugin-ssr prerender` ([659f28b](https://github.com/brillout/vite-plugin-ssr/commit/659f28beb116ec3c777ec922ddae751d3e6b2844))
 * tolerate hook file path to be a npm package module (fix [#550](https://github.com/brillout/vite-plugin-ssr/issues/550)) ([2215db7](https://github.com/brillout/vite-plugin-ssr/commit/2215db7120d5398c67303ffadbce7d0d6645ea5c))
 
 
@@ -2745,7 +2745,7 @@
 * show second error if it's not the same as first one ([859678d](https://github.com/brillout/vite-plugin-ssr/commit/859678da0eaf026210380bdab9803efe1f7375c8))
 * stop erasing previous `optimizeDeps.entries` (fix [#386](https://github.com/brillout/vite-plugin-ssr/issues/386)) ([255e788](https://github.com/brillout/vite-plugin-ssr/commit/255e788f1f27a5c91e632337524acc2e8e734dcb))
 * stop executing `onBeforeRender()` hook upon rendering the error page ([f992343](https://github.com/brillout/vite-plugin-ssr/commit/f992343cdbaebb313ba852a125db3acb2f2e49e0))
-* support 404 for `$ vite preview` + SSG ([28f8e02](https://github.com/brillout/vite-plugin-ssr/commit/28f8e02e8425f3b30efa53da99a058a320d09b1f))
+* support 404 for `$ vike preview` + SSG ([28f8e02](https://github.com/brillout/vite-plugin-ssr/commit/28f8e02e8425f3b30efa53da99a058a320d09b1f))
 
 
 
@@ -2935,7 +2935,7 @@ Minor features:
 ### Bug Fixes
 
 * add routing debug logs ([dfdb208](https://github.com/brillout/vite-plugin-ssr/commit/dfdb2081187d5e5f8a4872ad07fea67a693ce49d))
-* add support for `$ vite preview` command ([c8ca4b8](https://github.com/brillout/vite-plugin-ssr/commit/c8ca4b8ed09eeba2becb7b0bb6b815a9800974cc))
+* add support for `$ vike preview` command ([c8ca4b8](https://github.com/brillout/vite-plugin-ssr/commit/c8ca4b8ed09eeba2becb7b0bb6b815a9800974cc))
 * add support for ReScript ([a040fe7](https://github.com/brillout/vite-plugin-ssr/commit/a040fe7e56ea34ab2aee2951d91e626abd870bcf))
 * add worker exports to `package.json#exports` for Cloudflare Workers ([954fe02](https://github.com/brillout/vite-plugin-ssr/commit/954fe02c13e103210499508e1736bef3044615ec))
 * assert HTML variables ([254cf54](https://github.com/brillout/vite-plugin-ssr/commit/254cf549292a7b523dbad4f4f66c92e195c5b8d2))
@@ -2958,13 +2958,13 @@ Minor features:
 * improve wrong usage error message ([2d3132d](https://github.com/brillout/vite-plugin-ssr/commit/2d3132db0ed1e8f4d17e4d7b079c17f7d5dc84c8))
 * increase scroll listener throttle timeout ([#46](https://github.com/brillout/vite-plugin-ssr/issues/46)) ([ab36ac3](https://github.com/brillout/vite-plugin-ssr/commit/ab36ac3d44569bb3bf77d5115f28c8ece891c9b5))
 * isolate framework pageFiles symlink directory ([6e2d6f1](https://github.com/brillout/vite-plugin-ssr/commit/6e2d6f18e91dc7efd16a185588d91ad45b44c837))
-* make `$ vite dev` and `$ vite preview` support HTML streaming ([9a59360](https://github.com/brillout/vite-plugin-ssr/commit/9a593608be34c0e7323751f484c4c2815ef29634))
+* make `$ vike dev` and `$ vike preview` support HTML streaming ([9a59360](https://github.com/brillout/vite-plugin-ssr/commit/9a593608be34c0e7323751f484c4c2815ef29634))
 * make `httpResponse.pipe()` work with Readable Streams ([558f87a](https://github.com/brillout/vite-plugin-ssr/commit/558f87a72548576d3def017ad3bee3c13f69b35d))
 * make `navigate()` cross-bundle safe ([68a9e7a](https://github.com/brillout/vite-plugin-ssr/commit/68a9e7a6cc28936c29ef1ed1cb6997d63f107244))
 * make vps resilient against array prototype extensions ([2d09e75](https://github.com/brillout/vite-plugin-ssr/commit/2d09e75b0ce992c3342de6f9b4969771389b73b2))
 * only add vps dev middleware for Vite's CLI ([b0c3974](https://github.com/brillout/vite-plugin-ssr/commit/b0c3974f15a4508f99e6d22dedbf4e1b8f6c6d5e))
 * route precedence ([e2bfd5d](https://github.com/brillout/vite-plugin-ssr/commit/e2bfd5d13aa1846c5e6fd68a574ab4c43c5f47b9))
-* support `$ vite dev` command ([4ca3e39](https://github.com/brillout/vite-plugin-ssr/commit/4ca3e39f75da0482f2050f3ab73e7f649d1752dd))
+* support `$ vike dev` command ([4ca3e39](https://github.com/brillout/vite-plugin-ssr/commit/4ca3e39f75da0482f2050f3ab73e7f649d1752dd))
 * support `vite preview` command for SSG ([a7c602a](https://github.com/brillout/vite-plugin-ssr/commit/a7c602a84d263dd9db84afc6bb59310f6cbf9cc3))
 * support rollup format synonyms ([1a7d4f7](https://github.com/brillout/vite-plugin-ssr/commit/1a7d4f7d65a5ec3aec354b1411a2f8cdc09f9e6b))
 * swallow expected errors upon new frontend deploy ([34d800f](https://github.com/brillout/vite-plugin-ssr/commit/34d800f12aed3411c40ca5c1f9f744a206b5a0d2))
@@ -3368,8 +3368,8 @@ More infos at https://vite-plugin-ssr.com/stream
 
 ### BREAKING CHANGES
 
-* CLI option `$ vite-plugin-ssr prerender --no-extra-dir`
-renamed to `$ vite-plugin-ssr prerender --noExtraDir`.
+* CLI option `$ vike-plugin-ssr prerender --no-extra-dir`
+renamed to `$ vike-plugin-ssr prerender --noExtraDir`.
 
 
 
@@ -3838,7 +3838,7 @@ see https://vite-plugin-ssr.com/catch-all
 
 ### DX
 
-* dx: improve error message when user forgot to run `$ vite build` for production.
+* dx: improve error message when user forgot to run `$ vike build` for production.
 
 
 
@@ -3940,7 +3940,7 @@ see https://vite-plugin-ssr.com/catch-all
 
 ### Features
 
-* add option `$ vite-plugin-ssr prerender --noExtraDir` ([c88e030](https://github.com/brillout/vite-plugin-ssr/commit/c88e030aaee42a3d269247257657c3b4a0a935c9))
+* add option `$ vike-plugin-ssr prerender --noExtraDir` ([c88e030](https://github.com/brillout/vite-plugin-ssr/commit/c88e030aaee42a3d269247257657c3b4a0a935c9))
 * provide TypeScript types for `pageContext` (fix [#110](https://github.com/brillout/vite-plugin-ssr/issues/110)) ([ceb6ebd](https://github.com/brillout/vite-plugin-ssr/commit/ceb6ebdc5caaf84fe87f958f1094906164dde8c4))
 
 

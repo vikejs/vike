@@ -112,8 +112,8 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
   if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
-      `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
-        '$ vite build'
+      `The CLI call ${pc.cyan('$ vike build --ssr')} is superfluous since ${pc.cyan(
+        '$ vike build'
       )} also builds the server-side. If you want two separate build steps then use https://vike.dev/disableAutoFullBuild or use Vite's ${pc.cyan(
         'build()'
       )} API.`,
@@ -127,9 +127,9 @@ function isDisabled(configVike: ConfigVikeResolved): boolean {
   const { disableAutoFullBuild } = configVike
   if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
     // TODO/v1-release: remove autoFullBuild for both Vite's build() API and Vite's CLI
-    //  - Tell users to use `$ vike build` instead of `$ vite build`
+    //  - Tell users to use `$ vike build` instead of `$ vike build`
     //  - Remove the whole writeBundle() hook logic
-    //  - make `$ vite build` only build the client-side
+    //  - make `$ vike build` only build the client-side
     return !isViteCliCall()
   } else {
     return disableAutoFullBuild

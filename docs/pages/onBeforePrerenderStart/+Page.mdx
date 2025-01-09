@@ -41,12 +41,12 @@ async function onBeforePrerenderStart() {
 > If you don't have any parameterized route,
 > then you can pre-render your app without defining any `onBeforePrerenderStart()` hook.
 
-> The `onBeforePrerenderStart()` hooks are called when you run <code>$ vite build</code> and, consequently, are never called in development.
+> The `onBeforePrerenderStart()` hooks are called when you run <code>$ vike build</code> and, consequently, are never called in development.
 
 
 ## For bulk data fetching
 
-If you have a high number of pages that are to be pre-rendered, then running the command <code>$ vite build</code> may become slow.
+If you have a high number of pages that are to be pre-rendered, then running the command <code>$ vike build</code> may become slow.
 
 You can make pre-rendering significantly faster by providing the <Link href="/pageContext">`pageContext`</Link> of pages in `onBeforePrerenderStart()` hooks.
 

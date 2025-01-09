@@ -4,7 +4,7 @@ import PreRenderDynamicRoutes from './PreRenderDynamicRoutes.mdx'
 
 ## What is pre-rendering?
 
-Pre-rendering means to render the HTML of pages at build-time (when running `$ vite build`).
+Pre-rendering means to render the HTML of pages at build-time (when running `$ vike build`).
 
 Without pre-rendering, the HTML of a page is rendered at request-time (when the user goes to that page).
 
@@ -47,7 +47,7 @@ export default {
 
 List of options: <Link href="/prerender" />.
 
-Your pages' HTML will be rendered when you run `$ vite build` and the generated HTML files are available at `dist/client/`.
+Your pages' HTML will be rendered when you run `$ vike build` and the generated HTML files are available at `dist/client/`.
 
 For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use the <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()` hook</Link> in order to provide the list of URLs that are to be pre-rendered. The `onBeforePrerenderStart()` hook can also be used to accelerate the pre-rendering process.
 
@@ -55,7 +55,7 @@ For a page with a parameterized route (e.g. `/movie/@movieId`), you have to use 
 
 By default, all pages are pre-rendered. To pre-render only some pages, use the <Link href="/prerender#partial" text={<><code>partial</code> option</>} /> with <Link href="/prerender#toggle" text={<code>prerender: false</code>} />.
 
-If you pre-render all your pages, then you can use Vite's CLI instead of a server (`$ vite dev` and `$ vite preview`). See linked examples below.
+If you pre-render all your pages, then you can use Vite's CLI instead of a server (`$ vike dev` and `$ vike preview`). See linked examples below.
 
 You can programmatically invoke the pre-rendering process, see <Link href="/prerender-programmatic" />.
 
@@ -75,7 +75,7 @@ Vue Example:
 ## SSG vs SSR
 
 The only difference between SSG and SSR is *when* the HTML is rendered:
-- SSG: the HTML of pages is rendered at build-time (when calling `$ vite build`)
+- SSG: the HTML of pages is rendered at build-time (when calling `$ vike build`)
 - SSR: the HTML of pages is rendered at request-time (when the user goes to that page)
 
 > The client-side code of pages is loaded and executed in the user's browser and is therefore always executed at request-time.

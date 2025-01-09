@@ -70,8 +70,8 @@ export const prefetchStaticAssets = { when: 'VIEWPORT' } // (instead of `prefetc
 The pre-render CLI `$ vike prerender` is deprecated in favor of setting the `prerender` option to `true` in `vite.config.js`.
 
 ```diff
-- $ vite build && vike prerender
-+ $ vite build
+- $ vike build && vike prerender
++ $ vike build
 ```
 ```diff
   // vite.config.js
@@ -85,7 +85,7 @@ The pre-render CLI `$ vike prerender` is deprecated in favor of setting the `pre
   }
 ```
 
-> The CLI command `$ vite build` will then automatically run the pre-rendering process.
+> The CLI command `$ vike build` will then automatically run the pre-rendering process.
 
 All pre-render options are now defined in `vite.config.js`:
 
