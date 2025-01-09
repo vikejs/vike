@@ -3,7 +3,6 @@ import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 import { parseCli } from './parseCli.js'
 import type { Config } from '../../types/index.js'
-import { runPrerender_forceExit } from '../prerender/runPrerender.js'
 
 cli()
 
@@ -75,7 +74,6 @@ async function cmdPreview(configDefinedByCli: Config) {
 async function cmdPrerender(configDefinedByCli: Config) {
   const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
   await runPrerenderFromCLIPrerenderCommand()
-  runPrerender_forceExit()
 }
 
 process.on('unhandledRejection', (rejectValue) => {
