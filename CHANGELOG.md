@@ -1,3 +1,20 @@
+## [0.4.213](https://github.com/vikejs/vike/compare/v0.4.212...v0.4.213) (2025-01-09)
+
+
+### Bug Fixes
+
+* add missing files to npm package ([96df2b1](https://github.com/vikejs/vike/commit/96df2b1b95cd09e0e02ccb37f59fe882149f7895))
+* fix resolve fallbacks (fix [#2040](https://github.com/vikejs/vike/issues/2040)) ([962127b](https://github.com/vikejs/vike/commit/962127b7cc2fe5849eb1f9373f92d1bbeb7cb308))
+* improve [@experimental](https://github.com/experimental) JSDocs ([557bad2](https://github.com/vikejs/vike/commit/557bad2f8f3e44616196b7a6ef9af83eb8cd532c))
+* remove outdated import path resolve mechanism (fix [#2040](https://github.com/vikejs/vike/issues/2040)) ([1c62ff2](https://github.com/vikejs/vike/commit/1c62ff2c2c82a6b9c191fb7a0659f08e7d576dea))
+
+
+### Features
+
+* Vike CLI ([#1434](https://github.com/vikejs/vike/issues/1434)) ([1494e70](https://github.com/vikejs/vike/commit/1494e70838c2b6feb243f9311d816ac905644532))
+
+
+
 ## [0.4.212](https://github.com/vikejs/vike/compare/v0.4.211...v0.4.212) (2025-01-05)
 
 
