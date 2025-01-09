@@ -1,6 +1,6 @@
 export { commonConfig }
 
-import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import { mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import { assert, assertUsage, assertWarning, findPackageJson, isDocker } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
@@ -8,6 +8,7 @@ import pc from '@brillout/picocolors'
 import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { pluginName } from './commonConfig/pluginName.js'
+import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 
 function commonConfig(): Plugin[] {
   return [
@@ -33,15 +34,22 @@ function commonConfig(): Plugin[] {
           assertEsm(config.root)
         }
       },
-      // Override Vite's default port without overriding the user
       config: {
         order: 'post',
         handler(configFromUser) {
-          const configFromVike: UserConfig = { server: {}, preview: {} }
+          // Change default port
+          let configFromVike: UserConfig = { server: {}, preview: {} }
           setDefault('port', 3000, configFromUser, configFromVike)
+
+          // Set `--host` for Docker/Podman
           if (isDocker()) {
             setDefault('host', true, configFromUser, configFromVike)
           }
+
+          // VITE_CONFIG
+          const configFromEnvVar = getEnvVarObject('VITE_CONFIG')
+          if (configFromEnvVar) configFromVike = mergeConfig(configFromEnvVar, configFromVike)
+
           return configFromVike
         }
       }
@@ -49,6 +57,7 @@ function commonConfig(): Plugin[] {
   ]
 }
 
+// Override Vite's default value without overriding user settings
 function setDefault<Setting extends 'port' | 'host'>(
   setting: Setting,
   value: NonNullable<UserConfig['server'] | UserConfig['preview']>[Setting],

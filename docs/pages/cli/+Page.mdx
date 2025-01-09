@@ -5,8 +5,23 @@ Usage:
 - `$ vike build` Build for production.
 - `$ vike preview` Start preview server using production build.
 - `$ vike prerender` Pre-render the HTML of your pages.
+- `$ vike -v` Show Vike's installed version.
 
-Vike's CLI doesn't have any options.
+Vike's CLI doesn't have any options, instead:
+ - change your `vite.config.js` file, or
+ - use the `VITE_CONFIG` environment variable.
+
+For example:
+
+```bash
+# Set Vite's server.host setting to true
+$ VITE_CONFIG="{server:{host:true}}" vike dev
+
+# When running Vike's CLI over a package.json script
+$ VITE_CONFIG="{build:{outDir:'build'}}" npm run build
+```
+
+> You can define `VITE_CONFIG` using JavaScript-like syntax, [JSON syntax](https://json.org/example.html), or [JSON5 syntax](https://json5.org/#example). (Vike uses [JSON5](https://json5.org) to parse `VITE_CONFIG`.)
 
 ## See also
 
