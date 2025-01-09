@@ -103,7 +103,7 @@ async function triggerFullBuild(
   }
 
   if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
-    await runPrerenderFromAutoRun(configInline)
+    await runPrerenderFromAutoRun(configInline, false)
     forceExit = true
   }
 }
