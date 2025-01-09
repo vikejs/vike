@@ -34,7 +34,7 @@ async function cmdDev(configDefinedByCli: Config) {
     )
     const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
     info(
-      `\n  ${pc.cyan(`${pc.bold(projectInfo.projectName)} v${projectInfo.projectVersion}`)}  ${startupDurationString}\n`,
+      `  ${pc.yellow(`${pc.bold(projectInfo.projectName)} v${projectInfo.projectVersion}`)}  ${startupDurationString}\n`,
       {
         clear: !hasExistingLogs
       }
