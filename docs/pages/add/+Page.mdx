@@ -21,6 +21,21 @@ On a high-level, this is how you add Vike to your existing Vite app:
 
    - Example: <RepoLink path="/boilerplates/boilerplate-react/vite.config.js" />
 
+1. Use Vike's CLI instead of Vite's CLI.
+   ```json5
+   // package.json
+   {
+     "scripts": {
+       "dev": "vite", // [!code --]
+       "dev": "vike dev", // [!code ++]
+       "build": "vite build", // [!code --]
+       "build": "vike build", // [!code ++]
+       "preview": "vite preview", // [!code --]
+       "preview": "vike preview", // [!code ++]
+     }
+   }
+   ```
+
 1. Either:
    - Enable pre-rendering, or
      > See <Link href="/pre-rendering" />
