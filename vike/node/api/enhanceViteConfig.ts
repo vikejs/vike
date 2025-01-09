@@ -17,7 +17,6 @@ async function enhanceViteConfig(viteConfig: InlineConfig = {}, command: 'build'
       ...viteConfig,
       plugins: [...(viteConfig.plugins ?? []), vikePlugin()]
     }
-    await enhanceViteConfig(viteConfigEnhanced, command)
     viteConfigResolved = await resolveViteConfig(viteConfigEnhanced, command)
   }
 
