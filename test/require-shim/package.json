@@ -1,7 +1,7 @@
 {
   "scripts": {
     "prod": "pnpm run build && pnpm run server",
-    "build": "vite build",
+    "build": "vike build",
     "server": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {

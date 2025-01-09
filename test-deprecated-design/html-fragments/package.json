@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vite dev"
+    "dev": "vike dev"
   },
   "dependencies": {
     "typescript": "^4.6.4",

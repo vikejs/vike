@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "vite dev",
-    "preview": "vite build && vite preview"
+    "dev": "vike dev",
+    "preview": "vike build && vike preview"
   },
   "dependencies": {
     "typescript": "^4.6.4",

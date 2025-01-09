@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "vite",
-    "preview": "vite build && vite preview"
+    "dev": "vike dev",
+    "preview": "vike build && vike preview"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^5.2.1",

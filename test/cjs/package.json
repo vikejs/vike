@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "pnpm run server:dev",
     "prod": "pnpm run build && pnpm run server:prod",
-    "build": "vite build",
+    "build": "vike build",
     "server:dev": "node ./server",
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
