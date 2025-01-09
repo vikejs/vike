@@ -215,9 +215,10 @@
   "types": "./dist/esm/node/runtime/index-deprecated.d.ts",
   "type": "module",
   "bin": {
-    "vike": "./node/cli/bin-entry.js"
+    "vike": "./node/cli/bin.js"
   },
   "files": [
+    "./node/cli/bin.js",
     "./dist/",
     "./abort.js",
     "./api.js",
@@ -230,7 +231,6 @@
     "./__internal/loadImportBuild.js",
     "./__internal/setup.js",
     "./modifyUrl.js",
-    "./node/cli/bin-entry.js",
     "./plugin.js",
     "./prerender.js",
     "./RenderErrorPage.js",
