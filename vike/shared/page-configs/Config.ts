@@ -409,7 +409,7 @@ type ConfigBuiltIn = {
 
   // TODO/pageContext-prefetch: remove experimental note
   /**
-   * @experimental: DON'T USE: the API *will* have breaking changes upon any minor version release.
+   * @experimental DON'T USE: the API *will* have breaking changes upon any minor version release.
    *
    * Prefetch pages/links.
    *
