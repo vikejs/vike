@@ -7,7 +7,7 @@ const commands = [
   { name: 'dev', desc: 'Start development server' },
   { name: 'build', desc: 'Build for production' },
   { name: 'preview', desc: 'Start preview server using production build' },
-  { name: 'prerender', desc: 'Pre-render the HTML of your pages' }
+  { name: 'prerender', desc: 'Pre-render pages' }
 ] as const
 
 function parseCli() {
@@ -58,7 +58,7 @@ function showHelp(): never {
       `vike@${projectInfo.projectVersion}`,
       '',
       'Usage:',
-      ...commands.map(
+      ...[...commands, { name: '-v', desc: "Print Vike's installed version" }].map(
         (c) =>
           `  ${pc.dim('$')} ${pc.bold(`vike ${c.name}`)}${' '.repeat(nameMaxLength - c.name.length)}${TAB}${pc.dim(`# ${c.desc}`)}`
       ),
