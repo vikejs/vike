@@ -12,17 +12,17 @@ async function cli() {
     options: { configDefinedByCli }
   } = parseCli()
   if (command === 'dev') {
-    await commandDev(configDefinedByCli)
+    await cmdDev(configDefinedByCli)
   } else if (command === 'build') {
-    await commandBuild(configDefinedByCli)
+    await cmdBuild(configDefinedByCli)
   } else if (command === 'preview') {
-    await commandPreview(configDefinedByCli)
+    await cmdPreview(configDefinedByCli)
   } else if (command === 'prerender') {
-    await commandPrerender(configDefinedByCli)
+    await cmdPrerender(configDefinedByCli)
   }
 }
 
-async function commandDev(configDefinedByCli: Config) {
+async function cmdDev(configDefinedByCli: Config) {
   const startTime = performance.now()
   try {
     const server = await dev()
@@ -42,7 +42,6 @@ async function commandDev(configDefinedByCli: Config) {
 
     server.printUrls()
     server.bindCLIShortcuts({ print: true })
-    return server
   } catch (err) {
     console.error(pc.red(`Error while starting dev server:`))
     console.error(err)
@@ -50,7 +49,7 @@ async function commandDev(configDefinedByCli: Config) {
   }
 }
 
-async function commandBuild(configDefinedByCli: Config) {
+async function cmdBuild(configDefinedByCli: Config) {
   try {
     await build()
   } catch (err) {
@@ -60,7 +59,7 @@ async function commandBuild(configDefinedByCli: Config) {
   }
 }
 
-async function commandPreview(configDefinedByCli: Config) {
+async function cmdPreview(configDefinedByCli: Config) {
   try {
     const server = await preview()
     server.printUrls()
@@ -72,10 +71,9 @@ async function commandPreview(configDefinedByCli: Config) {
   }
 }
 
-async function commandPrerender(configDefinedByCli: Config) {
+async function cmdPrerender(configDefinedByCli: Config) {
   const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
   await runPrerenderFromCLIPrerenderCommand()
-  return
 }
 
 process.on('unhandledRejection', (rejectValue) => {
