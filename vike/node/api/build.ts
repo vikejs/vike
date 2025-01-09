@@ -10,7 +10,7 @@ async function build() {
   const outputClient = await buildVite(viteConfigEnhanced)
 
   // Build server-side
-  const outputServer = await buildVite(addSSR(viteConfigEnhanced))
+  const outputServer = await buildVite(setSSR(viteConfigEnhanced))
 
   // Pre-render
   if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
@@ -21,11 +21,11 @@ async function build() {
   return { outputClient, outputServer }
 }
 
-function addSSR(viteConfigEnhanced: InlineConfig): InlineConfig {
+function setSSR(viteConfig: InlineConfig): InlineConfig {
   return {
-    ...viteConfigEnhanced,
+    ...viteConfig,
     build: {
-      ...viteConfigEnhanced.build,
+      ...viteConfig.build,
       ssr: true
     }
   }
