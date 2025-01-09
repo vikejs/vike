@@ -27,27 +27,12 @@ function parseCli() {
     wrongUsage(`Unknown command ${pc.bold(firstArg)}`)
   })()
 
-  const configDefinedByCli: Record<string, unknown> = {}
-  let isConfigArg = false
   for (const arg of process.argv.slice(3)) {
-    if (isConfigArg) {
-      try {
-        Object.assign(configDefinedByCli, JSON.parse(arg))
-      } catch (err) {
-        console.error(err)
-        wrongUsage(`Couldn't parse (see error above) JSON ${pc.bold(arg)}`)
-      }
-      continue
-    }
     showHelpOrVersion(arg)
-    if (arg === '--config') {
-      isConfigArg = true
-      continue
-    }
     wrongUsage(`Unknown option ${pc.bold(arg)}`)
   }
 
-  return { command, options: { configDefinedByCli } }
+  return { command }
 }
 
 function showHelp(): never {
@@ -62,9 +47,6 @@ function showHelp(): never {
         (c) =>
           `  ${pc.dim('$')} ${pc.bold(`vike ${c.name}`)}${' '.repeat(nameMaxLength - c.name.length)}${TAB}${pc.dim(`# ${c.desc}`)}`
       ),
-      '',
-      'Options:',
-      ` ${pc.bold('--config')} <JSON>${TAB}${pc.dim('# Set Vike and/or Vite configurations')}`,
       '',
       `More infos at ${pc.underline('https://vike.dev/cli')}`
     ].join('\n')

@@ -2,27 +2,23 @@ import { projectInfo } from './utils.js'
 import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 import { parseCli } from './parseCli.js'
-import type { Config } from '../../types/index.js'
 
 cli()
 
 async function cli() {
-  const {
-    command,
-    options: { configDefinedByCli }
-  } = parseCli()
+  const { command } = parseCli()
   if (command === 'dev') {
-    await cmdDev(configDefinedByCli)
+    await cmdDev()
   } else if (command === 'build') {
-    await cmdBuild(configDefinedByCli)
+    await cmdBuild()
   } else if (command === 'preview') {
-    await cmdPreview(configDefinedByCli)
+    await cmdPreview()
   } else if (command === 'prerender') {
-    await cmdPrerender(configDefinedByCli)
+    await cmdPrerender()
   }
 }
 
-async function cmdDev(configDefinedByCli: Config) {
+async function cmdDev() {
   const startTime = performance.now()
   try {
     const server = await dev()
@@ -50,7 +46,7 @@ async function cmdDev(configDefinedByCli: Config) {
   }
 }
 
-async function cmdBuild(configDefinedByCli: Config) {
+async function cmdBuild() {
   try {
     await build()
   } catch (err) {
@@ -61,7 +57,7 @@ async function cmdBuild(configDefinedByCli: Config) {
   }
 }
 
-async function cmdPreview(configDefinedByCli: Config) {
+async function cmdPreview() {
   try {
     const server = await preview()
     server.printUrls()
@@ -74,7 +70,7 @@ async function cmdPreview(configDefinedByCli: Config) {
   }
 }
 
-async function cmdPrerender(onfigDefinedByCli: Config) {
+async function cmdPrerender() {
   const { runPrerenderFromCLIPrerenderCommand } = await import('../prerender/runPrerender.js')
   await runPrerenderFromCLIPrerenderCommand()
 }
