@@ -53,7 +53,6 @@ function tolerateError({ logSource, logText }) {
   return (
     // TODO/eventually: move everything to this array
     [
-      "Vite's CLI is deprecated", // TODO: remove
       // Error: [DocPress][Warning] prop `text` is deprecated
       'prop `text` is deprecated',
 
