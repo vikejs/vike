@@ -1,6 +1,12 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
 Disable the automatic chaining of build steps.
+
+<Warning>
+  This setting is deprecated and will soon be removed. (Because Vite will soon use one Rolldown build in replacement of two Rollup builds.)
+
+  Consider <Link href="/prerender#disableautorun" /> instead.
+</Warning>
 
 ```js
 // vite.config.js
