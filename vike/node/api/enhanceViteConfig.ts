@@ -5,7 +5,7 @@ import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { pluginName } from '../plugin/plugins/commonConfig/pluginName.js'
 
-async function enhanceViteConfig(viteConfig: InlineConfig, command: 'build' | 'dev' | 'preview') {
+async function enhanceViteConfig(viteConfig: InlineConfig = {}, command: 'build' | 'dev' | 'preview') {
   let viteConfigResolved = await resolveViteConfig(viteConfig, command)
   let viteConfigEnhanced = viteConfig
 
