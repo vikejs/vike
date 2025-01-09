@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vike",
+    "dev": "vike dev",
     "preview": "vike build && wrangler dev",
     "deploy": "vike build && wrangler publish"
   },
