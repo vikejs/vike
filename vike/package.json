@@ -158,7 +158,7 @@
     "react",
     "vue",
     "solid",
-    "vike",
+    "vite",
     "vite-plugin",
     "ssr"
   ],
