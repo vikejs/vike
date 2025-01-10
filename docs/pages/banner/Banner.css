@@ -1,0 +1,15 @@
+/*
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
+.logo-font {
+  font-family: 'Roboto Slab', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&display=swap');
+.logo-font {
+  font-family: 'Bruno Ace SC', serif;
+}
+*/
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@320&display=swap');
+.logo-font {
+  font-family: 'Unbounded', serif;
+}

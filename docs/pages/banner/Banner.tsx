@@ -3,6 +3,7 @@ export { Banner }
 import React from 'react'
 import { heroBgColor, HeroTagline } from '../index/sections/hero/Hero'
 import vikeLogo from '../../assets/logo/vike.svg'
+import './Banner.css'
 
 function Banner({ showLogo }: { showLogo: boolean }) {
   return (
@@ -29,17 +30,36 @@ function Banner({ showLogo }: { showLogo: boolean }) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              marginBottom: -14
+              marginBottom: -4,
+              marginLeft: -21
             }}
           >
-            <img src={vikeLogo} style={{ marginRight: 12, height: 48, objectFit: 'contain' }} />
+            <img
+              src={vikeLogo}
+              style={{
+                height: 64,
+                objectFit: 'contain',
+                marginRight: 14,
+                position: 'relative',
+                top: -4
+              }}
+            />
             <span
+              className="logo-font"
               style={{
                 fontSize: '2.7em',
-                fontWeight: 450,
-                color: 'black',
-                opacity: 0.75,
-                lineHeight: '1em'
+                letterSpacing: 2,
+                color: '#707070',
+                lineHeight: '1em',
+                //*
+                fontWeight: 410
+                /*/
+                fontWeight: 510,
+                background: '-webkit-linear-gradient(300deg, hsl(50.37deg 100% 37.8%) 30%, hsl(347deg 100% 27.56%))',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+                //*/
               }}
             >
               Vike
