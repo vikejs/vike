@@ -30,6 +30,7 @@ import { fileEnv } from './plugins/fileEnv.js'
 import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
 import { resolveClientEntriesDev } from './resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
+import { vite6HmrRegressionWorkaround } from './plugins/vite6HmrRegressionWorkaround.js'
 
 assertNodeEnv_onVikePluginLoad()
 markEnvAsVikePluginLoaded()
@@ -57,7 +58,8 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     baseUrls(vikeConfig),
     envVarsPlugin(),
     fileEnv(),
-    workaroundCssModuleHmr()
+    workaroundCssModuleHmr(),
+    vite6HmrRegressionWorkaround()
   ]
   return plugins
 }
