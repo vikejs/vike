@@ -644,9 +644,6 @@ importers:
       vike:
         specifier: link:../../vike
         version: link:../../vike
-      vite:
-        specifier: ^6.0.5
-        version: 6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2)
 
   examples/react-streaming:
     dependencies:
