@@ -433,10 +433,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/createPageRenderer'
   },
   {
-    title: 'Command `prerender`',
-    url: '/command-prerender'
-  },
-  {
     title: 'Vite Plugin',
     url: '/vite-plugin'
   },

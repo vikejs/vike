@@ -345,7 +345,8 @@ const headings = [
   {
     level: 2,
     title: 'JavaScript API',
-    url: '/api'
+    url: '/api',
+    sectionTitles: ['`prerender()`']
   },
   {
     level: 2,
@@ -518,11 +519,6 @@ const headings = [
     level: 2,
     title: '`injectFilter()`',
     url: '/injectFilter'
-  },
-  {
-    level: 2,
-    title: '`prerender()`',
-    url: '/prerender-programmatic'
   },
   {
     level: 4,

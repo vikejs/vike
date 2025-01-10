@@ -1,30 +1,132 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
+
+Programmatically trigger <Link href="/cli">CLI commands</Link>.
 
 ```js
 import { dev, build, preview, prerender } from 'vike/api'
 
-// Same as CLI `$ vike dev`
+// Same as `$ vike dev`
 await dev()
-console.log('Dev server is ready')
+console.log('Development server is ready')
 
-// Same as CLI `$ vike build`
+// Same as `$ vike build`
 await build()
 console.log('Build is done')
 
-// Same as CLI `$ vike preview`
+// Same as `$ vike preview`
 await preview()
 console.log('Preview server is ready')
 
-// Same as CLI `$ vike prerender`
+// Same as `$ vike prerender`
 await prerender()
 console.log('Pre-rendering is done')
 ```
 
-## Options
+Common use cases:
+ - Building your own CLI in the context of <Link href="/build-your-own-framework" noBreadcrumb />.
+ - Writing a custom build script, for example to add a post-processing build step.
 
-All API functions have the option `{ viteConfig: { /*...*/ }}`. (It's the only option.)
 
-> We generally recommend to define your Vite settings in your `vite.config.js` file instead of using the `viteConfig` option. The API automatically loads your `vite.config.js` file (just like the CLI).
+## `dev()`
+
+Start the development server.
+
+```js
+import { dev } from 'vike/api'
+await dev({
+  viteConfig // Vite settings (optional)
+})
+console.log('Development server is ready')
+```
+
+See <Link href='#viteconfig' />.
+
+
+## `build()`
+
+Build for production.
+
+```js
+import { build } from 'vike/api'
+await build({
+  viteConfig // Vite settings (optional)
+})
+console.log('Build is done')
+```
+
+See <Link href='#viteconfig' />.
+
+
+## `preview()`
+
+Start preview server using production build (only works for <Link href="/glossary#ssg">SSG apps</Link>).
+
+```js
+import { preview } from 'vike/api'
+await preview({
+  viteConfig // Vite settings (optional)
+})
+console.log('Preview server is ready')
+```
+
+See <Link href='#viteconfig' />.
+
+
+## `prerender()`
+
+<Link href="/pre-rendering">Pre-render</Link> pages (only needed when <Link href="/prerender#disableautorun">`partial.disableAutoRun`</Link> is `true`).
+
+```js
+import { prerender } from 'vike/api'
+await prerender({
+  viteConfig, // Vite settings (optional)
+  pageContextInit, // Initial pageContext (optional)
+  onPagePrerender // Called before writing an HTML file (optional)
+})
+console.log('Pre-rendering is done')
+```
+
+See <Link href='#viteconfig' />.
+
+For more settings, see <Link href="/prerender" />.
+
+### `pageContextInit`
+
+Initial <Link href="/pageContext">`pageContext`</Link> values.
+
+```js
+prerender({
+  pageContextInit: {
+    someData: 42,
+    // ...
+  }
+})
+```
+
+See also: <Link href="/pageContext#lifecycle" />.
+
+### `onPagePrerender()`
+
+<Warning>Don't use this option without having contacted a Vike maintainer: this functionality may be changed/removed at any time.</Warning>
+
+The `onPagePrerender` option allows you to control where/how HTML files are written.
+
+```js
+prerender({
+  // If onPagePrerender() is set, then Vike won't create HTML files
+  onPagePrerender(pageContext) {
+    // Cusotm logic for writing HTML files to the filesystem
+    // ...
+  }
+})
+```
+
+
+## `viteConfig`
+
+All API functions accept the option `viteConfig` (with type [`InlineConfig`](https://vitejs.dev/guide/api-javascript.html#inlineconfig)).
+
+> We generally recommend to define your [Vite settings](https://vite.dev/config/) in your `vite.config.js` file instead of using the `viteConfig` option. The API automatically loads your `vite.config.js` file (just like the CLI).
 
 If you want to define Vite settings outside of your app (typically when <Link href="/build-your-own-framework">building your own framework</Link>) you can do this:
 
@@ -41,7 +143,7 @@ await dev({
     /* ... */
   }
 })
-console.log('Dev server is ready')
+console.log('Development server is ready')
 ```
 
 If you want to define your entire Vite config programmatically:
@@ -59,8 +161,6 @@ await build({
 })
 console.log('Build is done')
 ```
-
-See also: [Vite > JavaScript API > `InlineConfig`](https://vitejs.dev/guide/api-javascript.html#inlineconfig)
 
 
 ## See also

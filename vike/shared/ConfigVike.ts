@@ -62,7 +62,7 @@ type ConfigVikeUserProvided = {
          *
          * Use this if you want to programmatically initiate the pre-rendering process instead.
          *
-         * https://vike.dev/prerender-programmatic
+         * https://vike.dev/api#prerender
          *
          * @default false
          */
