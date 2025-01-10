@@ -644,9 +644,6 @@ importers:
       vike:
         specifier: link:../../vike
         version: link:../../vike
-      vite:
-        specifier: ^6.0.5
-        version: 6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2)
 
   examples/react-streaming:
     dependencies:
@@ -1704,6 +1701,9 @@ importers:
       source-map-support:
         specifier: ^0.5.0
         version: 0.5.21
+      vite:
+        specifier: '>=5.1.0'
+        version: 6.0.7(@types/node@20.13.0)(terser@5.31.0)(tsx@4.19.2)
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.5.3
@@ -1738,9 +1738,6 @@ importers:
       typescript:
         specifier: ^5.6.2
         version: 5.6.2
-      vite:
-        specifier: ^6.0.5
-        version: 6.0.7(@types/node@20.13.0)(terser@5.31.0)(tsx@4.19.2)
 
 packages:
 
