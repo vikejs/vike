@@ -18,7 +18,9 @@ export { testRun }
 
 const HMR_SLEEP = 500
 
-// Doesn't work anymore with Vite 6: https://vite.dev/guide/migration.html#:~:text=%5B%2316471%5D%20feat%3A%20v6,can%20be%20used%3A
+// Doesn't work anymore with Vite 6.
+// Vite 6 Breaking change: https://vite.dev/guide/migration.html#:~:text=%5B%2316471%5D%20feat%3A%20v6,can%20be%20used%3A
+// Workaround doesn't seem to work: see https://github.com/vikejs/vike/pull/2069 commit `renable HMR test for HTML-only`
 const disableTestHtmlOnlyHMR = true
 
 // TODO:v1/release: remove non-V1 design case
