@@ -18,6 +18,9 @@ export { testRun }
 
 const HMR_SLEEP = 500
 
+// Doesn't work anymore with Vite 6: https://vite.dev/guide/migration.html#:~:text=%5B%2316471%5D%20feat%3A%20v6,can%20be%20used%3A
+const disableTestHtmlOnlyHMR = true
+
 // TODO:v1/release: remove non-V1 design case
 function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1Design?: true) {
   run(cmd, {
@@ -54,7 +57,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
     await page.goto(getServerUrl() + '/html-only')
     await testColor('orange')
   })
-  if (!isProd) {
+  if (!isProd && !disableTestHtmlOnlyHMR) {
     test('HTML-only - HMR', async () => {
       {
         const url = getServerUrl() + '/html-only'
@@ -161,7 +164,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
     await page.goto(getServerUrl() + '/html-js')
     await clickCounter()
   })
-  if (!isProd) {
+  if (!isProd && !disableTestHtmlOnlyHMR) {
     test('HTML + JS - HMR', async () => {
       expect(await page.textContent('button')).toContain('Counter 1')
       // JS auto-reload
