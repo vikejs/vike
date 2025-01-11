@@ -1,11 +1,7 @@
-<svg data-name="Layer 1" version="1.1" viewBox="-5 -10 58 58" xmlns="http://www.w3.org/2000/svg">
+<svg data-name="Layer 1" version="1.1" viewBox="-5 -10 63 63" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <clipPath id="clipPath5349">
 <rect transform="rotate(45)" x="75.402" y="13.026" width="14.687" height="22.444" rx="0" ry=".11294"/>
-</clipPath>
-<clipPath id="clipPath15337">
-<path d="m37.572 52.516v24.797h24.855v-24.797z" stroke-dashoffset="60.8" stroke-linecap="square" stroke-width="1.97"/>
-<path d="m38.934 29.838v9.6425h24.854v-9.6425z" stroke-dashoffset="60.8" stroke-linecap="square" stroke-width="1.97"/>
 </clipPath>
 <clipPath id="clipPath16228">
 <rect x="-.7953" y="10.017" width="62.946" height="27.103" rx="0"/>
@@ -16,18 +12,21 @@
 <clipPath id="clipPath16228-2">
 <rect x="-.7953" y="10.017" width="62.946" height="27.103" rx="0"/>
 </clipPath>
+<clipPath id="clipPath934">
+<path d="m11.572 31.811v31.662h24.855v-31.662z" stroke-dashoffset="60.8" stroke-linecap="square" stroke-width="1.97"/>
+<path d="m12.934 13.579v6.4429h24.854v-6.4429z" stroke-dashoffset="60.8" stroke-linecap="square" stroke-width="1.97"/>
+<path d="m12.934-10.949v12.293h24.854v-12.293z" stroke-dashoffset="60.8" stroke-linecap="square" stroke-width="1.97"/>
+</clipPath>
 </defs>
-<g transform="translate(5.6762 .75264)" fill="none" stroke="currentColor" stroke-dashoffset="60.8">
-<g stroke-width="2.3">
-<g transform="translate(-26.676 -26.211)">
-<rect transform="rotate(-45 -7.2179 17.426)" x="31.792" y="65.123" width="9.7199" height="9.7199" rx="1.4312" clip-path="url(#clipPath5349)" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="translate(6.1119 .8565)" fill="none" stroke="currentColor" stroke-dashoffset="60.8">
+<g transform="translate(-22.612 -21.285)" stroke-width="2.3">
+<rect transform="rotate(-45,-7.2179,17.426)" x="31.792" y="65.123" width="9.7199" height="9.7199" rx="1.4312" clip-path="url(#clipPath5349)" stroke-linecap="round" stroke-linejoin="round"/>
 <rect transform="translate(-1.1357)" x="23.9" y="17.299" width="51.75" height="12.539" rx="1.8794" clip-path="url(#clipPath16228)" stroke-linecap="square"/>
 </g>
-<g transform="matrix(-1 0 0 1 63.324 -4.7795)">
-<rect transform="rotate(-45 -7.2179 17.426)" x="31.792" y="65.123" width="9.7199" height="9.7199" rx="1.4312" clip-path="url(#clipPath5349-9)" stroke-linecap="round" stroke-linejoin="round"/>
+<g transform="matrix(-1 0 0 1 63.388 -3.0529)" stroke-width="2.3">
+<rect transform="rotate(-45,-7.2179,17.426)" x="31.792" y="65.123" width="9.7199" height="9.7199" rx="1.4312" clip-path="url(#clipPath5349-9)" stroke-linecap="round" stroke-linejoin="round"/>
 <rect transform="translate(-1.1357)" x="23.9" y="17.299" width="51.75" height="12.539" rx="1.8794" clip-path="url(#clipPath16228-2)" stroke-linecap="square"/>
 </g>
-</g>
-<rect transform="translate(-31.676 -26.211)" x="47" y="16.834" width="6" height="54.787" rx="2.511" clip-path="url(#clipPath15337)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"/>
+<rect transform="translate(-3.6121 -5.026)" x="21" y="-4.024" width="6" height="59.387" rx="2.511" clip-path="url(#clipPath934)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9"/>
 </g>
 </svg>

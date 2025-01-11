@@ -134,7 +134,7 @@ function Quote() {
           lineHeight: 1.2,
           color: 'inherit',
           position: 'relative',
-          top: -1
+          top: -3
         }}
       >
         <div>
