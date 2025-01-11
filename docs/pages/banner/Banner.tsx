@@ -34,7 +34,7 @@ function Banner({ showLogo }: { showLogo: boolean }) {
               display: 'flex',
               alignItems: 'center',
               marginBottom: -14,
-              marginLeft: -23
+              marginLeft: -25
             }}
           >
             <img
@@ -51,7 +51,7 @@ function Banner({ showLogo }: { showLogo: boolean }) {
               className="logo-font"
               style={{
                 fontSize: '2.7em',
-                letterSpacing: 1,
+                // letterSpacing: 1,
                 color: '#707070',
                 lineHeight: '1em',
                 //*
