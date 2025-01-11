@@ -8,8 +8,16 @@
 .logo-font {
   font-family: 'Bruno Ace SC', serif;
 }
-*/
+
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@320&display=swap');
 .logo-font {
   font-family: 'Unbounded', serif;
+}
+*/
+@import url('https://api.fontshare.com/v2/css?f[]=supreme@1,2&display=swap');
+.logo-font {
+  font-family: 'Supreme', sans-serif;
+  font-style: italic;
+  font-weight: 440;
+  font-size: 2.85em !important;
 }

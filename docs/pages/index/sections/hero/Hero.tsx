@@ -37,7 +37,7 @@ function Hero() {
   )
 }
 
-function HeroTagline() {
+function HeroTagline({ taglineSecondaryStyle }: { taglineSecondaryStyle?: React.CSSProperties } = {}) {
   return (
     <div id="hero-taglines">
       <div
@@ -90,7 +90,8 @@ function HeroTagline() {
               lineHeight: 1.35,
               fontWeight: 400,
               opacity: 0.45,
-              maxWidth: 550
+              maxWidth: 550,
+              ...taglineSecondaryStyle
             }}
           >
             Next.js & Nuxt alternative for unprecedented flexibility and dependability

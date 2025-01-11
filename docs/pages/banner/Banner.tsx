@@ -21,6 +21,9 @@ function Banner({ showLogo }: { showLogo: boolean }) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          // Don't center completely
+          position: 'relative',
+          top: -4,
           // Needs to have the right size upon 600x315 (that's the viewport we use to generate banner.png as explained in the HOW-TO above)
           scale: '1.3'
         }}
@@ -30,16 +33,16 @@ function Banner({ showLogo }: { showLogo: boolean }) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              marginBottom: -4,
-              marginLeft: -21
+              marginBottom: -14,
+              marginLeft: -23
             }}
           >
             <img
               src={vikeLogo}
               style={{
-                height: 64,
+                height: 60,
                 objectFit: 'contain',
-                marginRight: 14,
+                marginRight: 11,
                 position: 'relative',
                 top: -4
               }}
@@ -48,7 +51,7 @@ function Banner({ showLogo }: { showLogo: boolean }) {
               className="logo-font"
               style={{
                 fontSize: '2.7em',
-                letterSpacing: 2,
+                letterSpacing: 1,
                 color: '#707070',
                 lineHeight: '1em',
                 //*
@@ -66,7 +69,7 @@ function Banner({ showLogo }: { showLogo: boolean }) {
             </span>
           </div>
         )}
-        <HeroTagline />
+        <HeroTagline taglineSecondaryStyle={!showLogo ? undefined : { marginTop: 19 }} />
       </div>
     </div>
   )
