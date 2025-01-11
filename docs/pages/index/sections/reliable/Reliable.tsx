@@ -6,13 +6,13 @@ import { Grid } from '../../components/Grid'
 import { SectionTextCollection } from '../../components/SectionTextCollection'
 import { ParagraphTextCollection } from '../../components/ParagraphTextCollection'
 import BugFixSVG from './BugFixSVG'
-import TrendingPackageSVG from './TrendingPackageSVG'
 import './Reliable.css'
 import { Link } from '@brillout/docpress'
 import { Button } from '../../components/button/Button'
 import { IllustrationNote } from '../../components/IllustrationNote'
 import WindowIcon from './window.svg?react'
 import OpenSourcePricingIllustration from './open-source-pricing.svg'
+import forkableExtensions from './forkable-extensions.svg'
 import { Icon, iconSizeDefault } from '../../components/Icon'
 
 const data = {
@@ -89,7 +89,7 @@ function Reliable() {
             </TextBox>
           </div>
           <div className={`landingpage-reliable-imageWrapper`}>
-            <TrendingPackageSVG />
+            <img src={forkableExtensions} style={{ maxWidth: '100%' }} />
             <IllustrationNote style={{ maxWidth: 300, margin: 'auto' }}>
               Vike extensions are a thin layer of glue code that can be easily forked
             </IllustrationNote>
