@@ -7,6 +7,10 @@ Overview of how to define the URL of your pages.
 
 Vike supports *Filesystem Routing*: the URL of a page is determined by where the page is located on your filesystem.
 
+> For detailed information see <Link href="/filesystem-routing" /> instead.
+
+For example:
+
 ```bash
 FILESYSTEM                     URL
 ====================           ======
@@ -18,8 +22,6 @@ pages/jobs/+Page.js            /jobs
 > The directories `pages/` and `index/` are ignored by Filesystem Routing.
 
 > `+` files are explained at <Link href="/config#files" doNotInferSectionTitle />.
-
-> For detailed information about Filesystem Routing, see <Link href="/filesystem-routing" />.
 
 ### Parameterized routes
 
@@ -115,8 +117,7 @@ export default '/product/@id'
 
 > The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
 
-More information at:
- - <Link href="/route-string" />
+More information at <Link href="/route-string" />.
 
 
 ## Route Function
@@ -141,8 +142,7 @@ export function route(pageContext) {
 }
 ```
 
-More information at:
- - <Link href="/route-function" />
+More information at <Link href="/route-function" />.
 
 ## Route Guards
 
@@ -164,8 +164,7 @@ export async function guard(pageContext) {
 
 > This `guard()` hook applies to all pages living at `/pages/admin/**/*`, see <Link href="/config#inheritance" />.
 
-More information at:
- - <Link href="/guard" />
+More information at <Link href="/guard" />.
 
 
 ## TypeScript
