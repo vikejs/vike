@@ -24,6 +24,7 @@ The Open Source Pricing is a major milestone for Vike's growth. It preserves wha
 
 <Link doNotInferSectionTitle href="#when-is-an-app-considered-small-or-large" /><br/>
 <Link doNotInferSectionTitle href="#do-sponsors-have-to-pay" /><br/>
+<Link doNotInferSectionTitle href="#how-does-it-apply-to-monorepos" /><br/>
 
 #### Open Source Pricing
 
@@ -51,11 +52,29 @@ You can apply for a free license key if your app is considered large but your co
 No, Vike stays 100% gratis for companies sponsoring Vike (Bronze, Silver, Gold, and Platinum). Reach out and we will give you a free license key.
 
 
+## How does it apply to monorepos?
+
+It only applies to apps.
+
+For example, in the following, it only applies to `my-app/` and `my-other-app/`.
+
+```bash
+/packages/my-own-framework/
+/packages/my-app/
+/packages/my-other-app/
+/packages/some-vike-component-wrapper/
+```
+
+> Technically, it applies to domain names. A license key contains a list of domain names `['example.org', 'example.com', ...]` for which the pesky toaster won't be shown. You specify that list of domain names when you purchase a license key.
+
+> See also: <Link href="/build-your-own-framework" />.
+
+
 ## How does it work?
 
 For new or small projects, you can use Vike just like any other open-source tool: 100% gratis and without any license key.
 
-For larger projects, Vike shows a pesky toaster `Get your license key at ...` that you can remove by purchasing a license key. (You can apply for a free license key if you have limited resources.) You install the key by running `$ vike add-key 4f7D-K1q2-9X5W-J6G3-b9t1`.
+For larger projects, Vike shows a pesky toaster `Get your license key at ...` that you can remove by purchasing a license key. (You can apply for a free license key if you have limited resources.) You install the key by adding it to your `+config.js` file, or by setting the `VIKE_KEY` environment variable.
 
 > See also: <Link doNotInferSectionTitle href="#when-is-an-app-considered-small-or-large" />
 
