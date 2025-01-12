@@ -13,9 +13,9 @@ import vike from 'vike/plugin'
 export default {
   plugins: [
     vike({
-      // Use default settings:
+      // Enable pre-rendering
       prerender: true,
-      // Or set settings:
+      // Settings
       prerender: {
         partial: false,
         noExtraDir: false,
@@ -30,7 +30,7 @@ export default {
 ## Toggle
 
 In some situations, a page shouldn't be pre-rendered.
-For example a news page that displays the latest news fetched from a database should be rendered at request-time and certainly not at build-time.
+For example a news page that displays the latest news fetched from a database should be rendered at request-time (not at build-time).
 
 > <Link href="/pre-rendering" /> explains in depth whether a page should be pre-rendered or not.
 
