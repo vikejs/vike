@@ -25,6 +25,11 @@ const headings = [
   },
   {
     level: 2,
+    title: 'Open Source Pricing',
+    url: '/pricing'
+  },
+  {
+    level: 2,
     title: 'FAQ',
     url: '/faq'
   },

@@ -32,10 +32,6 @@ const headingsDetached: HeadingDetachedDefinition[] = [
     url: '/blog/vite-6'
   },
   {
-    title: 'Open Source Pricing',
-    url: '/pricing'
-  },
-  {
     title: 'Eject',
     url: '/eject'
   },
