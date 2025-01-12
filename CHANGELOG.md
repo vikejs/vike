@@ -1,3 +1,14 @@
+## [0.4.214](https://github.com/vikejs/vike/compare/v0.4.213...v0.4.214) (2025-01-12)
+
+
+### Bug Fixes
+
+* add Vite 6 HMR regression workaround ([#2069](https://github.com/vikejs/vike/issues/2069)) ([a389dea](https://github.com/vikejs/vike/commit/a389dea020c04193ad25cdfcf3d95b224efdacb6))
+* clarify Vike CLI usage (fix [#2057](https://github.com/vikejs/vike/issues/2057)) ([609dc8a](https://github.com/vikejs/vike/commit/609dc8af3616f3d197cdbaee3f2068055b6dadb1))
+* make vite peer dependency optional ([#2070](https://github.com/vikejs/vike/issues/2070)) ([457c88e](https://github.com/vikejs/vike/commit/457c88ebf30504f086803dd82c47b1ae2ccfda24))
+
+
+
 ## [0.4.213](https://github.com/vikejs/vike/compare/v0.4.212...v0.4.213) (2025-01-09)
 
 
