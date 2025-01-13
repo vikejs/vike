@@ -3,14 +3,13 @@ export { getConfigValueBuildTime }
 import { assert, type ResolveTypeAsString } from '../utils.js'
 import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
-import { getConfigValueTyped, type TypeAsString } from './getConfigValue.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertIsNotProductionRuntime.js'
+import { getConfigValueTyped, type TypeAsString } from './getConfigValueTyped.js'
 assertIsNotProductionRuntime()
-type ConfigName = ConfigNameBuiltIn
 
 function getConfigValueBuildTime<Type extends TypeAsString = undefined>(
   pageConfig: PageConfigBuildTime,
-  configName: ConfigName,
+  configName: ConfigNameBuiltIn,
   type?: Type
 ): null | (ConfigValue & { value: ResolveTypeAsString<Type> }) {
   const configValue = getConfigValue(pageConfig, configName)
@@ -18,7 +17,7 @@ function getConfigValueBuildTime<Type extends TypeAsString = undefined>(
   return getConfigValueTyped(configValue, configName, type)
 }
 
-function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigName): null | ConfigValue {
+function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigNameBuiltIn): null | ConfigValue {
   const { configValueSources, configValuesComputed, configDefinitions } = pageConfig
 
   const configValueComputed = configValuesComputed[configName]
