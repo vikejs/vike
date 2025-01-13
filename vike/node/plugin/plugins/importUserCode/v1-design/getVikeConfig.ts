@@ -194,10 +194,9 @@ async function isV1Design(config: ResolvedConfig, isDev: boolean): Promise<boole
 async function loadInterfaceFiles(
   userRootDir: string,
   outDirRoot: string,
-  isDev: boolean,
   crawlWithGit: null | boolean
 ): Promise<InterfaceFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, outDirRoot, isDev, crawlWithGit)
+  const plusFiles = await findPlusFiles(userRootDir, outDirRoot, crawlWithGit)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
@@ -329,7 +328,7 @@ async function loadVikeConfig_withErrorHandling(
   let ret: VikeConfigObject | undefined
   let err: unknown
   try {
-    ret = await loadVikeConfig(userRootDir, outDirRoot, isDev, crawlWithGit)
+    ret = await loadVikeConfig(userRootDir, outDirRoot, crawlWithGit)
   } catch (err_) {
     hasError = true
     err = err_
@@ -366,10 +365,9 @@ async function loadVikeConfig_withErrorHandling(
 async function loadVikeConfig(
   userRootDir: string,
   outDirRoot: string,
-  isDev: boolean,
   crawlWithGit: null | boolean
 ): Promise<VikeConfigObject> {
-  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, isDev, crawlWithGit)
+  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, crawlWithGit)
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
 
@@ -1096,10 +1094,9 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 async function findPlusFiles(
   userRootDir: string,
   outDirRoot: string,
-  isDev: boolean,
   crawlWithGit: null | boolean
 ): Promise<FilePathResolved[]> {
-  const files = await crawlPlusFiles(userRootDir, outDirRoot, isDev, crawlWithGit)
+  const files = await crawlPlusFiles(userRootDir, outDirRoot, crawlWithGit)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
     getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })

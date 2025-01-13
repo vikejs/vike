@@ -3,9 +3,7 @@ export { crawlPlusFiles }
 import {
   assertPosixPath,
   assert,
-  assertWarning,
   scriptFileExtensions,
-  humanizeTime,
   assertIsSingleModuleInstance,
   assertIsNotProductionRuntime,
   isVersionOrAbove,
@@ -17,7 +15,6 @@ import type { Stats } from 'fs'
 import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
-import pc from '@brillout/picocolors'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 const execA = promisify(exec)
 const TOO_MANY_UNTRACKED_FILES = 5
@@ -29,7 +26,6 @@ let gitIsNotUsable = false
 async function crawlPlusFiles(
   userRootDir: string,
   outDirAbsoluteFilesystem: string,
-  isDev: boolean,
   crawlWithGit: null | boolean
 ): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
@@ -49,8 +45,6 @@ async function crawlPlusFiles(
         !outDirRelativeFromUserRootDir.startsWith('../'))
   )
 
-  const timeBefore = new Date().getTime()
-
   // Crawl
   let files: string[] = []
   const res = crawlWithGit !== false && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
@@ -68,25 +62,6 @@ async function crawlPlusFiles(
 
   // Filter build files
   files = files.filter((filePath) => !isTemporaryBuildFile(filePath))
-
-  // Check performance
-  {
-    const timeAfter = new Date().getTime()
-    const timeSpent = timeAfter - timeBefore
-    if (isDev) {
-      // We only warn in dev, because while building it's expected to take a long time as crawling is competing for resources with other tasks.
-      // Although, in dev, it's also competing for resources e.g. with Vite's `optimizeDeps`.
-      assertWarning(
-        timeSpent < 3 * 1000,
-        `Crawling your ${pc.cyan('+')} files took an unexpected long time (${humanizeTime(
-          timeSpent
-        )}). If you consistently get this warning, then consider reaching out on GitHub.`,
-        {
-          onlyOnce: 'slow-crawling'
-        }
-      )
-    }
-  }
 
   // Normalize
   const plusFiles = files.map((filePath) => {
