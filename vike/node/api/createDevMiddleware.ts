@@ -4,6 +4,11 @@ import { prepareApiCall } from './prepareApiCall.js'
 import { createServer, type ResolvedConfig, type Connect, type ViteDevServer } from 'vite'
 import type { APIOptions } from './types.js'
 
+/*
+ * Create server middleware for development with HMR and lazy transpiling.
+ *
+ * https://vike.dev/renderPage
+ */
 async function createDevMiddleware(
   options: { root?: string } & APIOptions = {}
 ): Promise<{ devMiddleware: Connect.Server; viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
