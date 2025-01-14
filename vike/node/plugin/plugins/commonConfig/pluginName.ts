@@ -1,1 +1,1 @@
-export const pluginName = 'vike:commonConfig-1'
+export const pluginName = 'vike:commonConfig'

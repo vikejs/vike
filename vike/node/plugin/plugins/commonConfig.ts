@@ -20,7 +20,7 @@ function commonConfig(): Plugin[] {
       }
     },
     {
-      name: 'vike:commonConfig-2',
+      name: `${pluginName}:post`,
       enforce: 'post',
       configResolved: {
         order: 'post',
