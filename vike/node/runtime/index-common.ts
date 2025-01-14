@@ -13,6 +13,7 @@ export { createPageRenderer } from '../createPageRenderer.js'
 import type { createDevMiddleware } from '../api/createDevMiddleware.js'
 const createDevMiddleware_: typeof createDevMiddleware = async (...args) => {
   // Avoid bundlers from bundling createDevMiddleware()
+  // Copied from https://github.com/brillout/import/blob/ba848455442484eb258aaa2d9864d4848e4ed0fb/index.ts#L11-L12
   const p = '../api/createDevMiddleware.js'
   return (await import(/*webpackIgnore: true*/ /* @vite-ignore */ p)).createDevMiddleware(...args)
 }
