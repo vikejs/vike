@@ -5,3 +5,4 @@ import { onLoad } from './onLoad.js'
 onLoad()
 
 export * from '../../utils/assert.js'
+export * from '../../utils/getGlobalObject.js'
