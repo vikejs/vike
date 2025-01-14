@@ -6,7 +6,7 @@
 
 const express = require('express')
 const compression = require('compression')
-const { renderPage } = require('vike/server')
+const { renderPage, createDevMiddleware } = require('vike/server')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -25,17 +25,8 @@ async function startServer() {
     const sirv = require('sirv')
     app.use(sirv(`${root}/dist/client`))
   } else {
-    // We instantiate Vite's development server and integrate its middleware to our server.
-    // ⚠️ We instantiate it only in development. (It isn't needed in production and it
-    // would unnecessarily bloat our production server.)
-    const vite = require('vite')
-    const viteDevMiddleware = (
-      await vite.createServer({
-        root,
-        server: { middlewareMode: true }
-      })
-    ).middlewares
-    app.use(viteDevMiddleware)
+    const { devMiddleware } = await createDevMiddleware({ root })
+    app.use(devMiddleware)
   }
 
   // ...
