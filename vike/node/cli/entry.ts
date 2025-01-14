@@ -21,10 +21,10 @@ async function cli() {
 async function cmdDev() {
   const startTime = performance.now()
   try {
-    const server = await dev()
+    const { viteServer } = await dev()
 
-    await server.listen()
-    const info = server.config.logger.info
+    await viteServer.listen()
+    const info = viteServer.config.logger.info
     const startupDurationString = pc.dim(
       `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
     )
@@ -36,8 +36,8 @@ async function cmdDev() {
       }
     )
 
-    server.printUrls()
-    server.bindCLIShortcuts({ print: true })
+    viteServer.printUrls()
+    viteServer.bindCLIShortcuts({ print: true })
   } catch (err) {
     console.error(pc.red(`Error while starting dev server:`))
     // Error comes from Vite; no need to use logErrorHint()
@@ -59,9 +59,9 @@ async function cmdBuild() {
 
 async function cmdPreview() {
   try {
-    const server = await preview()
-    server.printUrls()
-    server.bindCLIShortcuts({ print: true })
+    const { viteServer } = await preview()
+    viteServer.printUrls()
+    viteServer.bindCLIShortcuts({ print: true })
   } catch (err) {
     console.error(pc.red(`Error while starting preview server:`))
     // Error comes from Vite; no need to use logErrorHint()

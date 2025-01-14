@@ -45,7 +45,7 @@ import {
 } from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
-import type { InlineConfig } from 'vite'
+import type { InlineConfig, ResolvedConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
@@ -148,8 +148,8 @@ type PrerenderOptions = APIOptions & {
   base?: string
 }
 
-async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<void> {
-  await runPrerender(options, 'prerender()')
+async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ viteConfig: ResolvedConfig }> {
+  return await runPrerender(options, 'prerender()')
   // - We purposely propagate the error to the user land, so that the error interrupts the user land. It's also, I guess, a nice-to-have that the user has control over the error.
   // - We don't use logErrorHint() because we don't have control over what happens with the error. For example, if the user land purposely swallows the error then the hint shouldn't be logged. Also, it's best if the hint is shown to the user *after* the error, but we cannot do/guarentee that.
 }
@@ -175,10 +175,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig, forceExit: bool
   }
   if (forceExit) runPrerender_forceExit()
 }
-async function runPrerender(
-  options: PrerenderOptions = {},
-  standaloneTrigger?: '$ vike prerender' | 'prerender()'
-): Promise<void> {
+async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
   checkOutdatedOptions(options)
   setGlobalContext_isPrerendering()
   getHook_setIsPrerenderering()
@@ -258,6 +255,8 @@ async function runPrerender(
   }
 
   warnMissingPages(prerenderedPageContexts, doNotPrerenderList, renderContext, partial)
+
+  return { viteConfig }
 }
 
 async function collectDoNoPrerenderList(

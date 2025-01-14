@@ -1,10 +1,15 @@
 export { build }
 
 import { prepareApiCall } from './prepareApiCall.js'
-import { build as buildVite, type InlineConfig } from 'vite'
+import { build as buildVite, type Rollup, type InlineConfig } from 'vite'
 import type { APIOptions } from './types.js'
 
-async function build(options: APIOptions = {}) {
+type RollupOutput = Rollup.RollupOutput | Rollup.RollupOutput[] | Rollup.RollupWatcher
+
+async function build(options: APIOptions = {}): Promise<{
+  rollupOutputClient: RollupOutput
+  rollupOutputServer: RollupOutput
+}> {
   const { viteConfigEnhanced, configVike } = await prepareApiCall(options.viteConfig, 'build')
 
   // Build client-side
@@ -19,7 +24,13 @@ async function build(options: APIOptions = {}) {
     await runPrerenderFromAutoRun(viteConfigEnhanced, true)
   }
 
-  return { outputClient, outputServer }
+  return {
+    /* We don't return `viteConfig` because `viteConfigEnhanced` is `InlineConfig` not `ResolvedConfig`
+    viteConfig: viteConfigEnhanced,
+    */
+    rollupOutputClient: outputClient,
+    rollupOutputServer: outputServer
+  }
 }
 
 function setSSR(viteConfig: InlineConfig): InlineConfig {
