@@ -1,5 +1,5 @@
 import { beforeAll } from 'vitest'
-import { createServer } from 'vite'
+import { createDevMiddleware } from 'vike/server'
 import { testRun } from './testRun'
 
 beforeAll(async () => {
@@ -9,19 +9,20 @@ beforeAll(async () => {
 testRun(true)
 
 async function devApp() {
-  await createServer({
+  await createDevMiddleware({
     root: __dirname,
-    server: {
-      middlewareMode: true,
-      /* Doesn't seem to work
-      hmr: false
-      */
-      hmr: {
-        // Avoid:
-        // ```
-        // Error: listen EADDRINUSE: address already in use :::24678
-        // ```
-        port: 11323
+    viteConf: {
+      server: {
+        /* Doesn't seem to work
+        hmr: false
+        */
+        hmr: {
+          // Avoid:
+          // ```
+          // Error: listen EADDRINUSE: address already in use :::24678
+          // ```
+          port: 11323
+        }
       }
     }
   })
