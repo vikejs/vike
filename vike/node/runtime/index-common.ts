@@ -3,11 +3,16 @@ export { escapeInject, dangerouslySkipEscape } from './html/renderHtml.js'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream.js'
 export { PROJECT_VERSION as version } from './utils.js'
 export { getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
+export { createDevMiddleware_ as createDevMiddleware }
 
 // TODO/v1-release: remove
 export { injectAssets__public as _injectAssets } from './html/injectAssets/injectAssets__public.js'
 // TODO/v1-release: remove
 export { createPageRenderer } from '../createPageRenderer.js'
+
+import type { createDevMiddleware } from '../api/createDevMiddleware.js'
+const createDevMiddleware_: typeof createDevMiddleware = async (...args) =>
+  (await import('../api/createDevMiddleware.js')).createDevMiddleware(...args)
 
 addEcosystemStamp()
 
