@@ -36,7 +36,7 @@ const globalObject = getGlobalObject<{
 type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
 assertSingleInstance_onAssertModuleLoad()
 
-const projectTag = `[vike]` as const
+const projectTag = `[Vike]` as const
 const projectTagWithVersion = `[vike@${projectInfo.projectVersion}]` as const
 
 const numberOfStackTraceLinesToRemove = 2
