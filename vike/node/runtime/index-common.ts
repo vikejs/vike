@@ -10,9 +10,10 @@ export { injectAssets__public as _injectAssets } from './html/injectAssets/injec
 // TODO/v1-release: remove
 export { createPageRenderer } from '../createPageRenderer.js'
 
+import { import_ } from '@brillout/import'
 import type { createDevMiddleware } from '../api/createDevMiddleware.js'
 const createDevMiddleware_: typeof createDevMiddleware = async (...args) =>
-  (await import('../api/createDevMiddleware.js')).createDevMiddleware(...args)
+  (await import_('../api/createDevMiddleware.js')).createDevMiddleware(...args)
 
 addEcosystemStamp()
 
