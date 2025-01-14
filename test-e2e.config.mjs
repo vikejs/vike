@@ -53,7 +53,7 @@ function tolerateError({ logSource, logText }) {
   return (
     // TODO/eventually: move everything to this array
     [
-      // TODO: remove
+      // Required for test-deprecated-design/*
       'vite.createServer() is deprecated',
 
       // Required for /test/cjs

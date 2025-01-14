@@ -5,7 +5,7 @@
 //  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vike.dev/path-aliases
 
 import express from 'express'
-import { renderPage } from 'vike/server'
+import { renderPage, createDevMiddleware } from 'vike/server'
 import { telefunc } from 'telefunc'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -18,14 +18,8 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    const vite = await import('vite')
-    const viteDevMiddleware = (
-      await vite.createServer({
-        root,
-        server: { middlewareMode: true }
-      })
-    ).middlewares
-    app.use(viteDevMiddleware)
+    const { devMiddleware } = await createDevMiddleware({ root })
+    app.use(devMiddleware)
   }
 
   app.use(express.text()) // Parse & make HTTP request body available at `req.body`
