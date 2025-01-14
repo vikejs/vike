@@ -1,3 +1,13 @@
+## [0.4.215](https://github.com/vikejs/vike/compare/v0.4.214...v0.4.215) (2025-01-14)
+
+
+### Bug Fixes
+
+* improve API return values ([b71cd5c](https://github.com/vikejs/vike/commit/b71cd5c452cd76d65e24402bdc4e69ea5eda4032))
+* remove slow crawl warning ([52d9899](https://github.com/vikejs/vike/commit/52d98993523725f6389d820eccdd8803920cf539))
+
+
+
 ## [0.4.214](https://github.com/vikejs/vike/compare/v0.4.213...v0.4.214) (2025-01-12)
 
 

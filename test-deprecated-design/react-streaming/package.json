@@ -16,7 +16,7 @@
     "react-streaming": "^0.3.44",
     "sirv": "^2.0.2",
     "vite": "^6.0.5",
-    "vike": "0.4.214"
+    "vike": "0.4.215"
   },
   "type": "module"
 }

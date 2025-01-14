@@ -1,6 +1,6 @@
 {
   "name": "create-vike",
-  "version": "0.0.382",
+  "version": "0.0.383",
   "license": "MIT",
   "bin": {
     "create-vike": "index.js"
