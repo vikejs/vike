@@ -1,6 +1,6 @@
 // Purpose of this file:
 //  - Swallow redundant error messages (Vite is buggy and emits the same error multiple times)
-//  - Prepend "[request(n)]" tag to Vite logs
+//  - Prepend "[Request(n)]" tag to Vite logs
 
 // The mechanism is skipped if the runtime doesn't support Async Hooks:
 //  - Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832

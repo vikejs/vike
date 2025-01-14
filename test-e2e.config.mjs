@@ -75,7 +75,7 @@ function tolerateError({ logSource, logText }) {
 
       'The glob option "as" has been deprecated in favour of "query"',
 
-      // [Vike][request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
+      // [Vike][Request(1)][Warning] The onBeforeRender() hook defined by /renderer/+onBeforeRender.js is slow: it's taking more than 4 seconds (https://vike.dev/hooksTimeout)
       "is slow: it's taking more than"
     ].some((t) => logText.includes(t)) ||
     isViteCjsWarning() ||
