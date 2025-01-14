@@ -25,7 +25,7 @@ The `renderPage()` function enables you to embed Vike into any server.
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
-import { renderPage } from 'vike/server'
+import { renderPage, createDevMiddleware } from 'vike/server'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -38,15 +38,8 @@ async function startServer() {
 
   // Vite integration
   if (!isProduction) {
-    // We instantiate Vite's development server and integrate its middleware to our server.
-    // ⚠️ We instantiate it only in development. (It isn't needed in production and it
-    // would unnecessarily bloat our production server.)
-    const vite = await import('vite')
-    const viteDevMiddleware = (await vite.createServer({
-      root,
-      server: { middlewareMode: true }
-    })).middlewares
-    app.use(viteDevMiddleware)
+    const { devMiddleware } = await createDevMiddleware({ root })
+    app.use(devMiddleware)
   } else {
     // In production, we need to serve our static assets ourselves.
     // (In dev, Vite's middleware serves our static assets.)
@@ -114,6 +107,7 @@ But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your 
 
 ## See also
 
+- <Link href="/createDevMiddleware" />
 - <Link href="/headers" />
 - <Link href="/injectFilter" />
 - <Link href="/preloading#early-hints" />

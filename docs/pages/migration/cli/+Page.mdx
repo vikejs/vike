@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 Vite's CLI and Vite's API are deprecated starting from `vike@0.4.213`.
 
-> You can still use them but and support for Vite's CLI and API will be completely removed in the next major release.
+> You can still use them but support will be completely removed in the next major release.
 
 > It's a major milestone towards the `1.0` release and unlocks new fundamental capabilities.
 
@@ -28,9 +28,11 @@ Vike's CLI doesn't have any option: use the `VITE_CONFIG` environment variable i
 
 ## API
 
-[Vite's JavaScript API](https://vite.dev/guide/api-javascript) is also deprecated: use <Link href="/api">Vike's JavaScript API</Link> instead.
+[Vite's JavaScript API](https://vite.dev/guide/api-javascript) is also deprecated, instead use:
+ - <Link href="/api">Vike's JavaScript API</Link>
+ - <Link href="/createDevMiddleware" />
 
-Also, if you use `import { createDevMiddleware } from 'vike/api'`, then use `import { createServer } from 'vite/server'` instead.
+Most notably, if you use Vite's `createServer()`, then use `createDevMiddleware()` instead:
 
 ```js
 // server/index.js
@@ -69,14 +71,13 @@ async function startServer() {
     headers.forEach(([name, value]) => res.setHeader(name, value))
     res.status(statusCode).send(body)
   })
-
-  const port = 3000
-  app.listen(port)
-  console.log(`Server running at http://localhost:${port}`)
 }
 ```
+
+> You can also <Link href="/createDevMiddleware">pass Vite configurations `createDevMiddleware({ viteConfig })`</Link>.
 
 ## See also
 
 - <Link href="/cli" />
 - <Link href="/api" />
+- <Link href="/createDevMiddleware" />

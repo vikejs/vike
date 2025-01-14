@@ -7,7 +7,7 @@ import type { APIOptions } from './types.js'
 /*
  * Create server middleware for development with HMR and lazy transpiling.
  *
- * https://vike.dev/renderPage
+ * https://vike.dev/createDevMiddleware
  */
 async function createDevMiddleware(
   options: { root?: string } & APIOptions = {}

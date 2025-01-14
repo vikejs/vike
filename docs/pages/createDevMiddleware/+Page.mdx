@@ -1,0 +1,33 @@
+import { Link } from '@brillout/docpress'
+
+Create server middleware for development with <Link href="/glossary#hmr">HMR</Link> and <Link href="/lazy-transpiling">lazy transpiling</Link>.
+
+```js
+import { createDevMiddleware } from 'vike/server'
+
+const {
+  // The development middleware
+  devMiddleware,
+  // The resolved Vite configuration
+  viteConfig,
+  // Vite's development server
+  viteServer
+} = await createDevMiddleware({
+  root: './path/to/app', // (optional, but recommended)
+  viteConfig: {
+    // Some Vite configuration (optional)
+  }
+})
+```
+
+See <Link href="/renderPage#usage">usage example</Link> for how to use it.
+
+See also Vite's corresponding types:
+- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) for the `viteConfig` option `createDevMiddleware({ viteConfig })`.
+- [InlineConfig](https://vite.dev/guide/api-javascript.html#inlineconfig) for the `viteConfig` return value `const { viteConfig } = await createDevMiddleware()`.
+- The `createDevMiddleware()` function is a wrapper around [Vite's `createServer()`](https://vite.dev/guide/api-javascript.html#createserver).
+
+
+## See also
+
+- <Link href="/renderPage" />
