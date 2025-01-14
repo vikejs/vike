@@ -1,11 +1,11 @@
 export { preview }
 
-import { enhanceViteConfig } from './enhanceViteConfig.js'
+import { prepareApiCall } from './prepareApiCall.js'
 import { preview as previewVite } from 'vite'
-import type { APIOptions } from './APIOptions.js'
+import type { APIOptions } from './types.js'
 
 async function preview(options: APIOptions = {}) {
-  const { viteConfigEnhanced } = await enhanceViteConfig(options.viteConfig, 'preview')
+  const { viteConfigEnhanced } = await prepareApiCall(options.viteConfig, 'preview')
   const server = await previewVite(viteConfigEnhanced)
   return server
 }

@@ -1,4 +1,5 @@
-export { APIOptions }
+export type { APIOptions }
+export type { Command }
 
 import type { InlineConfig } from 'vite'
 
@@ -10,3 +11,5 @@ type APIOptions = {
    */
   viteConfig?: InlineConfig
 }
+
+type Command = 'build' | 'dev' | 'preview' | 'prerender'

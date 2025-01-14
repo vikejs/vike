@@ -1,11 +1,11 @@
 export { build }
 
-import { enhanceViteConfig } from './enhanceViteConfig.js'
+import { prepareApiCall } from './prepareApiCall.js'
 import { build as buildVite, type InlineConfig } from 'vite'
-import type { APIOptions } from './APIOptions.js'
+import type { APIOptions } from './types.js'
 
 async function build(options: APIOptions = {}) {
-  const { viteConfigEnhanced, configVike } = await enhanceViteConfig(options.viteConfig, 'build')
+  const { viteConfigEnhanced, configVike } = await prepareApiCall(options.viteConfig, 'build')
 
   // Build client-side
   const outputClient = await buildVite(viteConfigEnhanced)

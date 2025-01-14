@@ -1,11 +1,18 @@
-export { enhanceViteConfig }
+export { prepareApiCall }
 
 import type { InlineConfig } from 'vite'
 import { resolveConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { pluginName } from '../plugin/plugins/commonConfig/pluginName.js'
+import type { Command } from './types.js'
+import { setVikeCommand } from './context.js'
 
-async function enhanceViteConfig(viteConfig: InlineConfig = {}, command: 'build' | 'dev' | 'preview' | 'prerender') {
+async function prepareApiCall(viteConfig: InlineConfig = {}, command: Command) {
+  setVikeCommand(command)
+  return enhanceViteConfig(viteConfig, command)
+}
+
+async function enhanceViteConfig(viteConfig: InlineConfig = {}, command: Command) {
   let viteConfigResolved = await resolveViteConfig(viteConfig, command)
   let viteConfigEnhanced = viteConfig
 
