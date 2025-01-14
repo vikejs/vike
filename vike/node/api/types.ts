@@ -1,5 +1,5 @@
 export type { APIOptions }
-export type { Command }
+export type { Operation }
 
 import type { InlineConfig } from 'vite'
 
@@ -12,4 +12,4 @@ type APIOptions = {
   viteConfig?: InlineConfig
 }
 
-type Command = 'build' | 'dev' | 'preview' | 'prerender'
+type Operation = 'build' | 'dev' | 'preview' | 'prerender'

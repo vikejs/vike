@@ -1,16 +1,21 @@
-export { getVikeCommand }
-export { setVikeCommand }
+export { isVikeCliOrApi }
+// export { getOperation }
+export { setOperation as setOperation }
 
-import type { Command } from './types.js'
+import type { Operation } from './types.js'
 import { assert } from './utils.js'
 
-let vikeCommand: Command | undefined
+let apiOperation: Operation | undefined
 
-function getVikeCommand() {
-  assert(vikeCommand)
-  return vikeCommand
+function getOperation(): Operation {
+  assert(apiOperation)
+  return apiOperation
 }
-function setVikeCommand(command: Command) {
-  assert(!vikeCommand)
-  vikeCommand = command
+function isVikeCliOrApi(): boolean {
+  // The CLI uses the API
+  return !!apiOperation
+}
+function setOperation(operation: Operation): void {
+  assert(!apiOperation)
+  apiOperation = operation
 }
