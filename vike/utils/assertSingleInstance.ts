@@ -84,7 +84,7 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
   if (condition) {
     return
   }
-  const errMsg = `[vike][Wrong Usage] ${errorMessage}`
+  const errMsg = `[Vike][Wrong Usage] ${errorMessage}`
   throw new Error(errMsg)
 }
 function assertWarning(
@@ -95,7 +95,7 @@ function assertWarning(
   if (condition) {
     return
   }
-  const msg = `[vike][Warning] ${errorMessage}`
+  const msg = `[Vike][Warning] ${errorMessage}`
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce

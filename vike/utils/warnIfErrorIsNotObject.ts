@@ -14,7 +14,7 @@ assertIsNotBrowser()
 //  - Use assertErrorIsObject() throughout Vike's source code
 function warnIfErrorIsNotObject(err: unknown): void {
   if (!isObject(err)) {
-    console.warn('[vike] The thrown value is:')
+    console.warn('[Vike] The thrown value is:')
     console.warn(err)
     assertWarning(
       false,

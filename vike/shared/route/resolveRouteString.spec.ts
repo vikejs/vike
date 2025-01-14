@@ -137,9 +137,9 @@ describe('resolveRouteString', () => {
   })
 
   it('invalid route string', () => {
-    expectErr(() => r('', '/a/b/c'), `[vike][Wrong Usage] Invalid Route String '' (empty string): set it to / instead`)
-    expectErr(() => r('a', '/a/b/c'), `[vike][Wrong Usage] Invalid Route String a: it should start with / or *`)
-    expectErr(() => r('/a**b', '/a/b/c'), `[vike][Wrong Usage] Invalid Route String /a**b: set it to /a*b instead`)
+    expectErr(() => r('', '/a/b/c'), `[Vike][Wrong Usage] Invalid Route String '' (empty string): set it to / instead`)
+    expectErr(() => r('a', '/a/b/c'), `[Vike][Wrong Usage] Invalid Route String a: it should start with / or *`)
+    expectErr(() => r('/a**b', '/a/b/c'), `[Vike][Wrong Usage] Invalid Route String /a**b: set it to /a*b instead`)
   })
 })
 

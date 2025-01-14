@@ -11,7 +11,7 @@ import type { LogCategory, LogType } from '../loggerNotProd.js'
 
 assertIsNotProductionRuntime()
 
-type ProjectTag = `[vike]` | `[vike@${typeof projectInfo.projectVersion}]`
+type ProjectTag = `[Vike]` | `[vike@${typeof projectInfo.projectVersion}]`
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
@@ -23,7 +23,7 @@ function getProjectTag(showVikeVersion: boolean) {
   if (showVikeVersion) {
     projectTag = `[vike@${projectInfo.projectVersion}]`
   } else {
-    projectTag = `[vike]`
+    projectTag = `[Vike]`
   }
   return projectTag
 }

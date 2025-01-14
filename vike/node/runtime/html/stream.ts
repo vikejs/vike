@@ -372,7 +372,7 @@ async function processStream(
       } catch (err) {
         // Ideally, we should catch and gracefully handle user land errors, as any error thrown here kills the server. (I assume that the fact it kills the server is a Node.js bug?)
 
-        // Show "[vike][Bug] You stumbled upon a bug in Vike's source code" to user while printing original error
+        // Show "[Vike][Bug] You stumbled upon a bug in Vike's source code" to user while printing original error
         if (!isBug(err)) {
           console.error(err)
           assert(false)
