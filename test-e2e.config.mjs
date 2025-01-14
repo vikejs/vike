@@ -53,7 +53,16 @@ function tolerateError({ logSource, logText }) {
   return (
     // TODO/eventually: move everything to this array
     [
+      // TODO: remove
+      'vite.createServer() is deprecated',
+
+      // Required for /test/cjs
+      // [12:06:03.520][/test/cjs/test-prod.test.ts][npm run prod][stderr] 12:06:03 PM [vike][Warning] Vite's JavaScript API is deprecated, use Vike's JavaScript API instead https://vike.dev/migration/cli#api
+      "Vite's JavaScript API is deprecated",
+
+      // Required for test-deprecated-design/*
       "Vite's CLI is deprecated",
+
       // Error: [DocPress][Warning] prop `text` is deprecated
       'prop `text` is deprecated',
 

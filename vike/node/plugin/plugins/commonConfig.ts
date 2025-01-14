@@ -10,10 +10,7 @@ import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { pluginName } from './commonConfig/pluginName.js'
 import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
-
-assertWarning(!isViteCliCall(), `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
-  onlyOnce: true
-})
+import { isVikeCliOrApi } from '../../api/context.js'
 
 function commonConfig(): Plugin[] {
   return [
@@ -37,6 +34,7 @@ function commonConfig(): Plugin[] {
           assertRollupInput(config)
           assertResolveAlias(config)
           assertEsm(config.root)
+          assertVikeCliOrApi(config)
         }
       },
       config: {
@@ -115,5 +113,32 @@ function assertSingleInstance(config: ResolvedConfig) {
     `Vike's Vite plugin (${pc.cyan(
       "import vike from 'vike/plugin'"
     )}) is being added ${numberOfInstances} times to the list of Vite plugins. Make sure to add it only once instead.`
+  )
+}
+
+function assertVikeCliOrApi(config: ResolvedConfig) {
+  if (isVikeCliOrApi()) return
+  if (isViteCliCall()) {
+    assertWarning(false, `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
+      onlyOnce: true
+    })
+    return
+  }
+  if (config.server.middlewareMode) {
+    assertWarning(
+      false,
+      `${pc.cyan('vite.createServer()')} is deprecated ${pc.underline('https://vike.dev/migration/cli#api')}`,
+      {
+        onlyOnce: true
+      }
+    )
+    return
+  }
+  assertWarning(
+    false,
+    `Vite's JavaScript API is deprecated, use Vike's JavaScript API instead ${pc.underline('https://vike.dev/migration/cli#api')}`,
+    {
+      onlyOnce: true
+    }
   )
 }
