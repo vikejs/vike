@@ -4,6 +4,7 @@ import express from 'express'
 import { renderPage, createDevMiddleware } from 'vike/server'
 import fetch from 'node-fetch'
 import compression from 'compression'
+import { root } from './root.js'
 
 startServer()
 
