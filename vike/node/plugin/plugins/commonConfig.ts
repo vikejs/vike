@@ -9,6 +9,11 @@ import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { pluginName } from './commonConfig/pluginName.js'
 import { getEnvVarObject } from '../shared/getEnvVarObject.js'
+import { isViteCliCall } from '../shared/isViteCliCall.js'
+
+assertWarning(!isViteCliCall(), `Vite's CLI is deprecated ${pc.underline('https://vike.dev/migration/cli')}`, {
+  onlyOnce: true
+})
 
 function commonConfig(): Plugin[] {
   return [
