@@ -1,3 +1,8 @@
+- Move createDevMiddleware.ts ?
+- add docs category
+- add JSDocs to API functions
+- rename_full prepareApiCall prepareViteApiCall
+
 - head settings
   - name setting?
     - Appends `| ${name}` to title
