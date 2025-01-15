@@ -36,7 +36,7 @@ function assertNodeEnv_runtime(isViteDev: boolean) {
   // Calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
   if (isViteDev === isNodeDev) return
   const nodeEnvDesc = getNodeEnvDesc()
-  // TODO: make it assertUsage() again once #1528 is implemented.
+  // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
   const errMsg = `Running ${
     isViteDev ? pc.cyan('$ vike dev') : 'app in production'
   } while the ${nodeEnvDesc} which is contradictory, see https://vike.dev/NODE_ENV` as const
@@ -46,7 +46,7 @@ function assertNodeEnv_runtime(isViteDev: boolean) {
 function assertNodeEnv_onVikePluginLoad() {
   const nodeEnv = getNodeEnv()
   if (nodeEnv === 'test') return
-  // TODO: make it assertUsage() again once #1528 is implemented.
+  // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
   assertWarning(
     /* We can enable this assertion after Vike's CLI is implemented and using Vite's CLI is deprecated (we can then check whether the context is a `$ vike build`).
     isNodeEnvDev() || isVikeCliBuild(),
@@ -107,7 +107,7 @@ function assertNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
   const isDev = isNodeEnvDev()
   if (!isDev) return
   const nodeEnvDesc = getNodeEnvDesc()
-  // TODO: make it assertUsage() again once #1528 is implemented.
+  // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
   assertWarning(false, `The ${nodeEnvDesc} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`, {
     onlyOnce: true
   })
