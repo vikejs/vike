@@ -68,7 +68,6 @@ function assertNodeEnv_onVikePluginLoad() {
 function handleNodeEnv_prerender() {
   if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
   setNodeEnvProduction()
-  assert(getNodeEnvValue() === 'production')
 }
 
 function handleNodeEnv_vitePluginVercel() {
@@ -85,6 +84,7 @@ function setNodeEnvProduction(): void | undefined {
   const proc = process
   const { env } = proc
   env.NODE_ENV = 'production'
+  assert(getNodeEnvValue() === 'production')
 }
 
 function isNodeEnvDev(): boolean {
