@@ -1,17 +1,3 @@
-// This file serves the following three purposes:
-//   1. Upon building the app, we ensure the right NODE_ENV value is set.
-//      - Both Vue and React use NODE_ENV for enabling production-specific features:
-//        - Vue: https://github.com/vuejs/core/blob/f66a75ea75c8aece065b61e2126b4c5b2338aa6e/packages/vue/index.js
-//        - React: https://github.com/facebook/react/blob/01ab35a9a731dec69995fbd28f3ac7eaad11e183/packages/react/npm/index.js
-//      - Setting NODE_ENV to 'production' doesn't seem to make any sense in development.
-//      - With React upon building the app, setting NODE_ENV to a value other than 'production' triggers an error: https://github.com/vikejs/vike/issues/1469#issuecomment-1969301797
-//      - With Vue upon building the app, NODE_ENV can be set to a value other than 'production', e.g. 'development'.
-//   2. Ensure Vite isn't loaded in production.
-//      - We currently only check whether Vite's development middleware is instantiated (i.e. whether Vite's `createServer()` was called). Is there a way to detect whether Vite's code is loaded?
-//   3. Ensure NODE_ENV isn't mistakenly set to a wrong value.
-
-// TODO: to fully implement the aforementioned points we need to implement a [new setting `allowNodeEnv`](https://github.com/vikejs/vike/issues/1528)
-
 export { assertNodeEnv_build }
 export { assertNodeEnv_runtime }
 export { assertNodeEnv_onVikePluginLoad }
@@ -27,6 +13,12 @@ import { assert, assertWarning } from './assert.js'
 import { vikeVitePluginLoadedInProductionError } from './assertIsNotProductionRuntime.js'
 assertIsNotBrowser()
 
+// Ensure NODE_ENV is 'production' when building.
+// - Used by both Vue and React for bundling minified version:
+//   - Vue: https://github.com/vuejs/core/blob/f66a75ea75c8aece065b61e2126b4c5b2338aa6e/packages/vue/index.js
+//   - React: https://github.com/facebook/react/blob/01ab35a9a731dec69995fbd28f3ac7eaad11e183/packages/react/npm/index.js
+// - Required for React: setting NODE_ENV to a value other than 'production' triggers an error: https://github.com/vikejs/vike/issues/1469#issuecomment-1969301797
+// - Not required for Vue: when building the app, NODE_ENV can be set to a value other than 'production', e.g. 'development'.
 function assertNodeEnv_build() {
   assertUsageNodeEnvIsNotDev('building')
 }
