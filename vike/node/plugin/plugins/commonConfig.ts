@@ -134,11 +134,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
     )
     return
   }
-  assertWarning(
-    false,
-    `Vite's JavaScript API is deprecated, use Vike's JavaScript API instead ${pc.underline('https://vike.dev/migration/cli#api')}`,
-    {
-      onlyOnce: true
-    }
-  )
+  assertWarning(false, `Vite's JavaScript API is deprecated ${pc.underline('https://vike.dev/migration/cli#api')}`, {
+    onlyOnce: true
+  })
 }
