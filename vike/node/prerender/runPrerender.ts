@@ -21,7 +21,7 @@ import {
   assertPosixPath,
   urlToFile,
   isPlainObject,
-  handleNodeEnv_prerender,
+  setNodeEnv_prerender,
   pLimit,
   PLimit,
   isArray,
@@ -185,7 +185,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
-  handleNodeEnv_prerender()
+  setNodeEnv_prerender()
 
   await disableReactStreaming()
 

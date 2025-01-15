@@ -1,6 +1,6 @@
 export { serializeConfigValues }
 
-import { assertIsNotProductionRuntime } from '../../../utils/assertIsNotProductionRuntime.js'
+import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { assert, assertUsage, getPropAccessNotation } from '../../../node/plugin/utils.js'
 import type {
   ConfigEnvInternal,

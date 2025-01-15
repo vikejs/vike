@@ -1,7 +1,7 @@
 export { isDocker }
 
 import fs from 'node:fs'
-import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.js'
+import { assertIsNotProductionRuntime } from './assertSetup.js'
 assertIsNotProductionRuntime()
 
 function isDocker() {

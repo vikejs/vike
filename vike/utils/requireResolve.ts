@@ -2,7 +2,7 @@ export { requireResolve }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
-import { assertIsNotProductionRuntime } from './assertIsNotProductionRuntime.js'
+import { assertIsNotProductionRuntime } from './assertSetup.js'
 import { assertPosixPath, toPosixPath } from './filesystemPathHandling.js'
 import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'module'
