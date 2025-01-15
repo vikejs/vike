@@ -6,12 +6,9 @@ Create server middleware for development with <Link href="/glossary#hmr">HMR</Li
 import { createDevMiddleware } from 'vike/server'
 
 const {
-  // The development middleware
-  devMiddleware,
-  // The resolved Vite configuration
-  viteConfig,
-  // Vite's development server
-  viteServer
+  devMiddleware, // The development middleware
+  viteConfig, // Resolved Vite configuration
+  viteServer, // Vite's development server
 } = await createDevMiddleware({
   root: './path/to/app', // (optional, but recommended)
   viteConfig: {
@@ -22,12 +19,13 @@ const {
 
 See <Link href="/renderPage#usage">usage example</Link> for how to use it.
 
-See also Vite's corresponding types:
-- [InlineConfig](https://vite.dev/guide/api-javascript.html#inlineconfig) for the `viteConfig` option `createDevMiddleware({ viteConfig })`.
-- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) for the `viteConfig` return value `const { viteConfig } = await createDevMiddleware()`.
+Vite types:
+- [InlineConfig](https://vite.dev/guide/api-javascript.html#inlineconfig) types the `viteConfig` option.
+- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
 - `createDevMiddleware()` wraps [Vite's `createServer()`](https://vite.dev/guide/api-javascript.html#createserver).
 
 
 ## See also
 
 - <Link href="/renderPage" />
+- <Link href="/api" />

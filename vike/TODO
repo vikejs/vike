@@ -1,9 +1,3 @@
-- document API return values
-- add docs category
-
-- outDir crawling
-- avoid resolveConfig()
-
 - head settings
   - name setting?
     - Appends `| ${name}` to title

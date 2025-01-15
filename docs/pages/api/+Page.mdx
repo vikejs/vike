@@ -33,14 +33,20 @@ Start the development server.
 
 ```js
 import { dev } from 'vike/api'
-await dev({
-  viteConfig // Vite settings (optional)
+const {
+  viteConfig, // Resolved Vite configuration
+  viteServer, // Vite's development server
+} = await dev({
+  viteConfig // Vite configuration (optional)
 })
 console.log('Development server is ready')
 ```
 
-See <Link href='#viteconfig' />.
+See: <Link href='#viteconfig'>`viteConfig` option</Link>.
 
+Vite types:
+- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
+- Vite's development server: [`const viteServer = createServer()`](https://vite.dev/guide/api-javascript.html#createserver).
 
 ## `build()`
 
@@ -48,13 +54,16 @@ Build for production.
 
 ```js
 import { build } from 'vike/api'
-await build({
-  viteConfig // Vite settings (optional)
+const {
+  rollupOutputClient, // Generated dist/client/ files for the client-side
+  rollupOutputServer, // Generated dist/server/ files for the server-side
+} = await build({
+  viteConfig // Vite configuration (optional)
 })
 console.log('Build is done')
 ```
 
-See <Link href='#viteconfig' />.
+See: <Link href='#viteconfig'>`viteConfig` option</Link>.
 
 
 ## `preview()`
@@ -63,13 +72,20 @@ Start preview server using production build (only works for <Link href="/glossar
 
 ```js
 import { preview } from 'vike/api'
-await preview({
-  viteConfig // Vite settings (optional)
+const {
+  viteConfig, // Resolved Vite configuration
+  viteServer, // Vite's development server
+} = await preview({
+  viteConfig // Vite configuration (optional)
 })
 console.log('Preview server is ready')
 ```
 
-See <Link href='#viteconfig' />.
+See: <Link href='#viteconfig'>`viteConfig` option</Link>.
+
+Vite types:
+- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
+- Vite's preview server: [`const viteServer = preview()`](https://vite.dev/guide/api-javascript.html#preview).
 
 
 ## `prerender()`
@@ -78,48 +94,44 @@ See <Link href='#viteconfig' />.
 
 ```js
 import { prerender } from 'vike/api'
-await prerender({
-  viteConfig, // Vite settings (optional)
+const {
+  viteConfig // Resolved Vite configuration
+} = await prerender({
+  viteConfig, // Vite configuration (optional)
   pageContextInit, // Initial pageContext (optional)
   onPagePrerender // Called before writing an HTML file (optional)
 })
 console.log('Pre-rendering is done')
 ```
 
-See <Link href='#viteconfig' />.
-
 For more settings, see <Link href="/prerender" />.
 
-### `pageContextInit`
+Vite types:
+- [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
 
-Initial <Link href="/pageContext">`pageContext`</Link> values.
-
-```js
-prerender({
-  pageContextInit: {
-    someData: 42,
-    // ...
-  }
-})
-```
-
-See also: <Link href="/pageContext#lifecycle" />.
-
-### `onPagePrerender()`
-
-<Warning>Don't use this option without having contacted a Vike maintainer: this functionality may be changed/removed at any time.</Warning>
-
-The `onPagePrerender` option allows you to control where/how HTML files are written.
-
-```js
-prerender({
-  // If onPagePrerender() is set, then Vike won't create HTML files
-  onPagePrerender(pageContext) {
-    // Cusotm logic for writing HTML files to the filesystem
-    // ...
-  }
-})
-```
+Options:
+- **`viteConfig`**: See <Link href='#viteconfig'>`viteConfig` option</Link>.
+- **`pageContextInit`**: Initial <Link href="/pageContext">`pageContext`</Link> values.
+  ```js
+  prerender({
+    pageContextInit: {
+      someData: 42,
+      // ...
+    }
+  })
+  ```
+  See also: <Link href="/pageContext#lifecycle" />.
+- **`onPagePrerender()`**: control where/how HTML files are written.
+  <Warning>Don't use this option without having contacted a Vike maintainer: this functionality may be changed/removed at any time.</Warning>
+  ```js
+  prerender({
+    // If onPagePrerender() is set, then Vike won't create HTML files
+    onPagePrerender(pageContext) {
+      // Cusotm logic for writing HTML files to the filesystem
+      // ...
+    }
+  })
+  ```
 
 
 ## `viteConfig`
@@ -168,3 +180,4 @@ console.log('Build is done')
 - [Vite > JavaScript API](https://vite.dev/guide/api-javascript)
 - <Link href="/cli" />
 - <Link href="/build-your-own-framework" />
+- <Link href="/createDevMiddleware" />
