@@ -107,7 +107,9 @@ function onSetupBuild() {
   assertUsageNodeEnvIsNotDev('building')
 }
 function onSetupPrerender() {
+  markSetup_isPrerendering()
   if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
+  setNodeEnvProduction()
 }
 
 function getNodeEnvValue(): null | undefined | string {
