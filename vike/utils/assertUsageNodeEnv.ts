@@ -10,7 +10,7 @@ export { setNodeEnv_build }
 import pc from '@brillout/picocolors'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { assert, assertWarning } from './assert.js'
-import { vikeVitePluginLoadedInProductionError } from './assertIsNotProductionRuntime.js'
+import { vikeVitePluginLoadedInProductionError } from './assertSetup.js'
 assertIsNotBrowser()
 
 // Ensure NODE_ENV is 'production' when building.
