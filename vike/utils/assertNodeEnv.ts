@@ -15,10 +15,10 @@
 export { assertNodeEnv_build }
 export { assertNodeEnv_runtime }
 export { assertNodeEnv_onVikePluginLoad }
-export { handleNodeEnv_prerender }
-export { handleNodeEnv_vitePluginVercel }
+export { setNodeEnv_prerender }
+export { setNodeEnv_vitePluginVercel }
 /* Vite already sets `process.env.NODE_ENV = 'production'`
-export { handleNodeEnv_build }
+export { setNodeEnv_build }
 */
 
 import pc from '@brillout/picocolors'
@@ -65,12 +65,12 @@ function assertNodeEnv_onVikePluginLoad() {
   )
 }
 
-function handleNodeEnv_prerender() {
+function setNodeEnv_prerender() {
   if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
   setNodeEnvProduction()
 }
 
-function handleNodeEnv_vitePluginVercel() {
+function setNodeEnv_vitePluginVercel() {
   setNodeEnvProduction()
 }
 
