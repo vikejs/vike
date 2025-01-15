@@ -5,7 +5,7 @@ import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import { determineOptimizeDeps } from './determineOptimizeDeps.js'
 import { determineFsAllowList } from './determineFsAllowList.js'
 import { addSsrMiddleware } from '../../shared/addSsrMiddleware.js'
-import { applyDev, assertWarning, isDocker, markEnv_viteDevServer } from '../../utils.js'
+import { applyDev, assertWarning, isDocker, markSetup_viteDevServer } from '../../utils.js'
 import { improveViteLogs } from '../../shared/loggerVite.js'
 import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { installHttpRequestAsyncStore } from '../../shared/getHttpRequestAsyncStore.js'
@@ -74,7 +74,7 @@ function devConfig(): Plugin[] {
         logDockerHint(config.server.host)
       },
       configureServer() {
-        markEnv_viteDevServer()
+        markSetup_viteDevServer()
       }
     },
     {

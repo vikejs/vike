@@ -2,9 +2,9 @@
 
 export { assertIsNotProductionRuntime }
 export { assertEnv }
-export { markEnv_viteDevServer }
-export { markEnv_vitePreviewServer }
-export { markEnv_vikeVitePlugin }
+export { markSetup_viteDevServer }
+export { markSetup_vitePreviewServer }
+export { markSetup_vikeVitePlugin }
 export { vikeVitePluginLoadedInProductionError }
 
 import { assert, assertUsage } from './assert.js'
@@ -46,17 +46,17 @@ function assertIsNotProductionRuntime(): void | undefined {
 }
 
 // Called by Vite hook configureServer()
-function markEnv_viteDevServer(): void | undefined {
-  if (debug.isActivated) debug('markEnv_viteDevServer()', new Error().stack)
+function markSetup_viteDevServer(): void | undefined {
+  if (debug.isActivated) debug('markSetup_viteDevServer()', new Error().stack)
   env.viteDevServer = true
 }
 // Called by Vite hook configurePreviewServer()
-function markEnv_vitePreviewServer(): void | undefined {
-  if (debug.isActivated) debug('markEnv_vitePreviewServer()', new Error().stack)
+function markSetup_vitePreviewServer(): void | undefined {
+  if (debug.isActivated) debug('markSetup_vitePreviewServer()', new Error().stack)
   env.vitePreviewServer = true
 }
 // Called by ../node/plugin/index.ts
-function markEnv_vikeVitePlugin() {
-  if (debug.isActivated) debug('markEnv_vikeVitePlugin()', new Error().stack)
+function markSetup_vikeVitePlugin() {
+  if (debug.isActivated) debug('markSetup_vikeVitePlugin()', new Error().stack)
   env.vikeVitePlugin = true
 }
