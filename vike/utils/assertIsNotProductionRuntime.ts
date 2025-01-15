@@ -23,6 +23,22 @@ const env = getGlobalObject<{
   vikeVitePlugin?: true
 }>('utils/assertIsNotProductionRuntime.ts', {})
 
+// Called by ../node/runtime/index.ts
+function assertEnv(): void | undefined {
+  if (debug.isActivated) debug('assertEnv()', new Error().stack)
+  if (isVitest()) return
+  if (!env.viteDevServer && !env.vitePreviewServer) {
+    // Seems to be the only reliable way to assert that the user doesn't load Vike's Vite plugin in production. (The other assert() that uses process.env.NODE_ENV doesn't work if the user sets the process.env.NODE_ENV value later.)
+    assertUsage(!env.vikeVitePlugin, vikeVitePluginLoadedInProductionError)
+    // This assert() is the main goal of this file: it ensures assertIsNotProductionRuntime()
+    assert(!env.shouldNotBeProduction)
+  } else {
+    // This assert() is obvious and boring
+    assert(env.shouldNotBeProduction)
+    assert(env.vikeVitePlugin)
+  }
+}
+
 // Called by Vike modules that want to ensure that they aren't loaded by the server runtime in production
 function assertIsNotProductionRuntime(): void | undefined {
   if (debug.isActivated) debug('assertIsNotProductionRuntime()', new Error().stack)
@@ -43,19 +59,4 @@ function markEnv_vitePreviewServer(): void | undefined {
 function markEnv_vikeVitePlugin() {
   if (debug.isActivated) debug('markEnv_vikeVitePlugin()', new Error().stack)
   env.vikeVitePlugin = true
-}
-// Called by ../node/runtime/index.ts
-function assertEnv(): void | undefined {
-  if (debug.isActivated) debug('assertEnv()', new Error().stack)
-  if (isVitest()) return
-  if (!env.viteDevServer && !env.vitePreviewServer) {
-    // Seems to be the only reliable way to assert that the user doesn't load Vike's Vite plugin in production. (The other assert() that uses process.env.NODE_ENV doesn't work if the user sets the process.env.NODE_ENV value later.)
-    assertUsage(!env.vikeVitePlugin, vikeVitePluginLoadedInProductionError)
-    // This assert() is the main goal of this file: it ensures assertIsNotProductionRuntime()
-    assert(!env.shouldNotBeProduction)
-  } else {
-    // This assert() is obvious and boring
-    assert(env.shouldNotBeProduction)
-    assert(env.vikeVitePlugin)
-  }
 }
