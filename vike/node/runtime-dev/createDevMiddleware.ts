@@ -1,7 +1,7 @@
 export { createDevMiddleware }
 
 import { createServer } from 'vite'
-import { prepareApiCall } from '../api/prepareApiCall.js'
+import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import type { ResolvedConfig, Connect, ViteDevServer } from 'vite'
 import type { APIOptions } from '../api/types.js'
 
@@ -21,7 +21,7 @@ async function createDevMiddleware(
     }
   }
   if (options.root) viteConfig.root = options.root
-  const { viteConfigEnhanced } = await prepareApiCall(viteConfig, 'dev')
+  const { viteConfigEnhanced } = await prepareViteApiCall(viteConfig, 'dev')
   const server = await createServer(viteConfigEnhanced)
   const devMiddleware = server.middlewares
   return { devMiddleware, viteServer: server, viteConfig: server.config }

@@ -74,7 +74,7 @@ import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { APIOptions } from '../api/types.js'
-import { prepareApiCall } from '../api/prepareApiCall.js'
+import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -155,7 +155,7 @@ async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ vi
 }
 async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   try {
-    const { viteConfigEnhanced } = await prepareApiCall(undefined, 'prerender')
+    const { viteConfigEnhanced } = await prepareViteApiCall(undefined, 'prerender')
     await runPrerender({ viteConfig: viteConfigEnhanced }, '$ vike prerender')
   } catch (err) {
     console.error(err)

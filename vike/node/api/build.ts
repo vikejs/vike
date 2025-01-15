@@ -1,6 +1,6 @@
 export { build }
 
-import { prepareApiCall } from './prepareApiCall.js'
+import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { build as buildVite, type Rollup, type InlineConfig } from 'vite'
 import type { APIOptions } from './types.js'
 
@@ -10,7 +10,7 @@ async function build(options: APIOptions = {}): Promise<{
   rollupOutputClient: RollupOutput
   rollupOutputServer: RollupOutput
 }> {
-  const { viteConfigEnhanced, configVike } = await prepareApiCall(options.viteConfig, 'build')
+  const { viteConfigEnhanced, configVike } = await prepareViteApiCall(options.viteConfig, 'build')
 
   // Build client-side
   const outputClient = await buildVite(viteConfigEnhanced)

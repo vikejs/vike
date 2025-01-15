@@ -1,4 +1,4 @@
-export { prepareApiCall }
+export { prepareViteApiCall }
 
 import type { InlineConfig } from 'vite'
 import { resolveConfig } from 'vite'
@@ -7,7 +7,7 @@ import { pluginName } from '../plugin/plugins/commonConfig/pluginName.js'
 import type { Operation } from './types.js'
 import { setOperation } from './context.js'
 
-async function prepareApiCall(viteConfig: InlineConfig = {}, operation: Operation) {
+async function prepareViteApiCall(viteConfig: InlineConfig = {}, operation: Operation) {
   setOperation(operation)
   return enhanceViteConfig(viteConfig, operation)
 }
