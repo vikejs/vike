@@ -26,7 +26,7 @@ import {
   isArray,
   changeEnumerable,
   setNodeEnvProduction,
-  assertSetupPrerender,
+  onSetupPrerender,
   markSetup_isPrerendering
 } from './utils.js'
 import {
@@ -180,7 +180,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig, forceExit: bool
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
   checkOutdatedOptions(options)
   markSetup_isPrerendering()
-  assertSetupPrerender()
+  onSetupPrerender()
   setNodeEnvProduction()
   setGlobalContext_isPrerendering()
   getHook_setIsPrerenderering()

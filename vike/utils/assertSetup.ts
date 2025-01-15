@@ -1,6 +1,6 @@
 export { assertSetupRuntime }
 export { assertSetupBuild }
-export { assertSetupPrerender }
+export { onSetupPrerender }
 export { assertIsNotProductionRuntime }
 
 export { setNodeEnvProduction }
@@ -108,7 +108,7 @@ function markSetup_isPrerendering() {
 function assertSetupBuild() {
   assertUsageNodeEnvIsNotDev('building')
 }
-function assertSetupPrerender() {
+function onSetupPrerender() {
   if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
 }
 
