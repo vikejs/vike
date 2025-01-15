@@ -21,11 +21,11 @@ import {
   assertPosixPath,
   urlToFile,
   isPlainObject,
-  setNodeEnv_prerender,
   pLimit,
   PLimit,
   isArray,
-  changeEnumerable
+  changeEnumerable,
+  onSetupPrerender
 } from './utils.js'
 import {
   prerenderPage,
@@ -177,6 +177,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig, forceExit: bool
 }
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
   checkOutdatedOptions(options)
+  onSetupPrerender()
   setGlobalContext_isPrerendering()
   getHook_setIsPrerenderering()
 
@@ -184,8 +185,6 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   if (logLevel === 'info') {
     console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
-
-  setNodeEnv_prerender()
 
   await disableReactStreaming()
 

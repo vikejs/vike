@@ -15,7 +15,7 @@ import {
   normalizeRollupInput,
   getOutDirs,
   type OutDirs,
-  assertUsageNodeEnv_build,
+  onSetupBuild,
   assertIsNpmPackageImport
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
@@ -59,7 +59,7 @@ function buildConfig(): Plugin[] {
         order: 'post',
         async handler(config_) {
           config = config_
-          assertUsageNodeEnv_build()
+          onSetupBuild()
           assertRollupInput(config)
           const entries = await getEntries(config)
           assert(Object.keys(entries).length > 0)
@@ -82,7 +82,7 @@ function buildConfig(): Plugin[] {
       config: {
         order: 'post',
         handler(config) {
-          assertUsageNodeEnv_build()
+          onSetupBuild()
           isSsrBuild = viteIsSSR(config)
           return {
             build: {
@@ -94,10 +94,10 @@ function buildConfig(): Plugin[] {
         }
       },
       buildStart() {
-        assertUsageNodeEnv_build()
+        onSetupBuild()
       },
       async closeBundle() {
-        assertUsageNodeEnv_build()
+        onSetupBuild()
         await fixServerAssets_assertCssTarget(config)
       }
     },

@@ -8,7 +8,7 @@ export { getMiddlewares }
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
 import { getPageFilesAll, type PageFile } from '../shared/getPageFiles.js'
 import { getGlobalContext, initGlobalContext_getGlobalContextAsync } from '../node/runtime/globalContext.js'
-import { setNodeEnv_vitePluginVercel } from '../utils/assertSetup.js'
+import { setNodeEnvProduction } from '../utils/assertSetup.js'
 import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 
@@ -19,7 +19,7 @@ import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
  * @param config
  */
 async function getPagesAndRoutes() {
-  setNodeEnv_vitePluginVercel()
+  setNodeEnvProduction()
   const renderContext = await getRenderContext()
   const {
     //
