@@ -133,9 +133,9 @@ function isNodeEnvDev(): boolean {
 function getEnvDescription(): `environment is set to be a ${string} environment by process.env.NODE_ENV===${string}` {
   const nodeEnv = getNodeEnvValue()
   const isDev = isNodeEnvDev()
-  const nodeEnvDesc = `environment is set to be a ${
-    (isDev ? 'development' : 'production') as string
-  } environment by ${pc.cyan(`process.env.NODE_ENV===${JSON.stringify(nodeEnv)}`)}` as const
+  const envType = `${(isDev ? 'development' : 'production') as string} environment` as const
+  const nodeEnvDesc =
+    `environment is set to be a ${pc.bold(envType)} by ${pc.cyan(`process.env.NODE_ENV===${JSON.stringify(nodeEnv)}`)}` as const
   return nodeEnvDesc
 }
 function assertUsageNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {

@@ -514,7 +514,7 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
     false,
     `${pc.code('renderPage(pageContextInit)')} called with ${pc.code(
       `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
-    )} which is unexpected because the URL ${pc.bold(urlOriginal)} should have already been handled by the development middleware: make sure to add the ${pc.cyan('createDevMiddleware()')} middleware before the ${pc.cyan('renderPage()')} middleware as documented at ${pc.underline('https://vike.dev/renderPage')}`
+    )} which is unexpected because the URL ${pc.bold(urlOriginal)} should have already been handled by the development middleware: make sure the ${pc.cyan('createDevMiddleware()')} middleware is executed *before* the ${pc.cyan('renderPage()')} middleware, see ${pc.underline('https://vike.dev/renderPage')}`
   )
 }
 
