@@ -1,12 +1,9 @@
 export { assertSetupRuntime }
 export { assertSetupBuild }
+export { assertSetupPrerender }
 export { assertIsNotProductionRuntime }
 
-export { setNodeEnv_prerender }
-export { setNodeEnv_vitePluginVercel }
-/* Vite already sets `process.env.NODE_ENV = 'production'`
-export { setNodeEnv_build }
-*/
+export { setNodeEnvProduction }
 
 export { markSetup_viteDevServer }
 export { markSetup_vitePreviewServer }
@@ -104,19 +101,16 @@ function markSetup_isViteDev(isViteDev: boolean) {
 function assertSetupBuild() {
   assertUsageNodeEnvIsNotDev('building')
 }
-
-function setNodeEnv_prerender() {
+function assertSetupPrerender() {
   if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
-  setNodeEnvProduction()
-}
-function setNodeEnv_vitePluginVercel() {
-  setNodeEnvProduction()
 }
 
 function getNodeEnvValue(): null | undefined | string {
   if (typeof process === 'undefined') return null
   return process.env.NODE_ENV?.toLowerCase()
 }
+
+// Not needed for build: Vite already sets `process.env.NODE_ENV = 'production'`
 function setNodeEnvProduction(): void | undefined {
   // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4
   const proc = process

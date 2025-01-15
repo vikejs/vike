@@ -21,11 +21,12 @@ import {
   assertPosixPath,
   urlToFile,
   isPlainObject,
-  setNodeEnv_prerender,
   pLimit,
   PLimit,
   isArray,
-  changeEnumerable
+  changeEnumerable,
+  setNodeEnvProduction,
+  assertSetupPrerender
 } from './utils.js'
 import {
   prerenderPage,
@@ -185,7 +186,8 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
-  setNodeEnv_prerender()
+  assertSetupPrerender()
+  setNodeEnvProduction()
 
   await disableReactStreaming()
 
