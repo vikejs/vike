@@ -1,3 +1,16 @@
+## [0.4.216](https://github.com/vikejs/vike/compare/v0.4.215...v0.4.216) (2025-01-15)
+
+
+### Bug Fixes
+
+* add JSDocs to API functions ([70a6dac](https://github.com/vikejs/vike/commit/70a6dac49c7a75e60ef4ff388c4fa300d8ce74f5))
+* also crawl outDir ([d1fee1d](https://github.com/vikejs/vike/commit/d1fee1d61a688d8104fbed57d8d311c96452dc93))
+* deprecate Vite's JavaScript API ([#2078](https://github.com/vikejs/vike/issues/2078)) ([26fd9ac](https://github.com/vikejs/vike/commit/26fd9ac77acbb3e100ca5d37a42dfe7b74e11305))
+* improve setup checks ([#2080](https://github.com/vikejs/vike/issues/2080)) ([24959ea](https://github.com/vikejs/vike/commit/24959ea3ba05d09b5973740a2abd0d95664a95f8))
+* improve wrong middleware order error ([0429bdc](https://github.com/vikejs/vike/commit/0429bdc7979b1a08e3a64b4b1318c135ce036ae9))
+
+
+
 ## [0.4.215](https://github.com/vikejs/vike/compare/v0.4.214...v0.4.215) (2025-01-14)
 
 
