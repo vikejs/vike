@@ -105,6 +105,9 @@ function markSetup_isPrerendering() {
 // - Not required for Vue: when building the app, NODE_ENV can be set to a value other than 'production', e.g. 'development'.
 function onSetupBuild() {
   assertUsageNodeEnvIsNotDev('building')
+  /* Not needed: Vite already sets `process.env.NODE_ENV = 'production'`
+  setNodeEnvProduction()
+  */
 }
 function onSetupPrerender() {
   markSetup_isPrerendering()
@@ -117,7 +120,6 @@ function getNodeEnvValue(): null | undefined | string {
   return process.env.NODE_ENV?.toLowerCase()
 }
 
-// Not needed for build: Vite already sets `process.env.NODE_ENV = 'production'`
 function setNodeEnvProduction(): void | undefined {
   // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4
   const proc = process
