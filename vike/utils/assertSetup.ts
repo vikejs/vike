@@ -1,5 +1,5 @@
 export { assertSetupRuntime }
-export { assertSetupBuild }
+export { onSetupBuild }
 export { onSetupPrerender }
 export { assertIsNotProductionRuntime }
 
@@ -105,7 +105,7 @@ function markSetup_isPrerendering() {
 //   - React: https://github.com/facebook/react/blob/01ab35a9a731dec69995fbd28f3ac7eaad11e183/packages/react/npm/index.js
 // - Required for React: setting NODE_ENV to a value other than 'production' triggers an error: https://github.com/vikejs/vike/issues/1469#issuecomment-1969301797
 // - Not required for Vue: when building the app, NODE_ENV can be set to a value other than 'production', e.g. 'development'.
-function assertSetupBuild() {
+function onSetupBuild() {
   assertUsageNodeEnvIsNotDev('building')
 }
 function onSetupPrerender() {
