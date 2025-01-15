@@ -1,6 +1,6 @@
-export { assertNodeEnv_build }
-export { assertNodeEnv_runtime }
-export { assertNodeEnv_onVikeVitePlugin }
+export { assertUsageNodeEnv_build }
+export { assertUsageNodeEnv_runtime }
+export { assertUsageNodeEnv_onVikeVitePlugin }
 export { setNodeEnv_prerender }
 export { setNodeEnv_vitePluginVercel }
 /* Vite already sets `process.env.NODE_ENV = 'production'`
@@ -19,11 +19,11 @@ assertIsNotBrowser()
 //   - React: https://github.com/facebook/react/blob/01ab35a9a731dec69995fbd28f3ac7eaad11e183/packages/react/npm/index.js
 // - Required for React: setting NODE_ENV to a value other than 'production' triggers an error: https://github.com/vikejs/vike/issues/1469#issuecomment-1969301797
 // - Not required for Vue: when building the app, NODE_ENV can be set to a value other than 'production', e.g. 'development'.
-function assertNodeEnv_build() {
+function assertUsageNodeEnv_build() {
   assertUsageNodeEnvIsNotDev('building')
 }
 
-function assertNodeEnv_runtime(isViteDev: boolean) {
+function assertUsageNodeEnv_runtime(isViteDev: boolean) {
   const nodeEnv = getNodeEnvValue()
   if (nodeEnv === null || nodeEnv === 'test') return
   // Calling Vite's createServer() is enough for `isViteDev` to be `true`, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
@@ -36,7 +36,7 @@ function assertNodeEnv_runtime(isViteDev: boolean) {
   assertWarning(false, errMsg, { onlyOnce: true })
 }
 
-function assertNodeEnv_onVikeVitePlugin() {
+function assertUsageNodeEnv_onVikeVitePlugin() {
   const nodeEnv = getNodeEnvValue()
   if (nodeEnv === 'test') return
   //* Let's enable this function after support for Vite's CLI is removed. (We can then abort this function if the context is `$ vike build` or `import { build } from 'vike/api';build()`.)

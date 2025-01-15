@@ -17,7 +17,7 @@ export { setGlobalContext_isPrerendering }
 
 import {
   assert,
-  assertNodeEnv_runtime,
+  assertUsageNodeEnv_runtime,
   assertUsage,
   assertWarning,
   getGlobalObject,
@@ -225,7 +225,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   }
 
   const { viteDevServer, viteConfig, isViteDev, isPrerendering } = globalObject
-  assertNodeEnv_runtime(isViteDev ?? false)
+  assertUsageNodeEnv_runtime(isViteDev ?? false)
 
   if (!isProduction) {
     assert(viteConfig)
