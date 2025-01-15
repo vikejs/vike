@@ -12,7 +12,7 @@ export { initGlobalContext_runPrerender }
 export { initGlobalContext_getGlobalContextAsync }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
-export { setGlobalContext_isDev }
+export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
 
 import {
@@ -168,7 +168,7 @@ function assertIsNotInitilizedYet() {
   // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
   assert(!globalObject.globalContext)
 }
-function setGlobalContext_isDev(isViteDev: boolean) {
+function setGlobalContext_isViteDev(isViteDev: boolean) {
   globalObject.isViteDev = isViteDev
 }
 function setGlobalContext_isPrerendering() {

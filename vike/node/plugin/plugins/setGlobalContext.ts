@@ -2,7 +2,7 @@ export { setGlobalContext }
 
 import type { Plugin } from 'vite'
 import {
-  setGlobalContext_isDev,
+  setGlobalContext_isViteDev,
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig
 } from '../../runtime/globalContext.js'
@@ -21,7 +21,7 @@ function setGlobalContext(): Plugin {
     config: {
       handler(_, env) {
         const isDev = isDevCheck(env)
-        setGlobalContext_isDev(isDev)
+        setGlobalContext_isViteDev(isDev)
       }
     },
     configResolved(config) {
