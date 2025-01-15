@@ -29,12 +29,17 @@ async function crawlPlusFiles(
   crawlWithGit: null | boolean
 ): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
+
+  //*/
+  const outDirRelativeFromUserRootDir = null as string | null
+  /*/
   assertPosixPath(outDirAbsoluteFilesystem)
   let outDirRelativeFromUserRootDir: string | null = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
   if (outDirRelativeFromUserRootDir.startsWith('../')) {
     // config.outDir is outside of config.root => it's going to be ignored anyways
     outDirRelativeFromUserRootDir = null
   }
+  //*/
   assert(
     outDirRelativeFromUserRootDir === null ||
       /* Not true if outDirRelativeFromUserRootDir starts with a hidden directory (i.e. a directory with a name that starts with `.`)
