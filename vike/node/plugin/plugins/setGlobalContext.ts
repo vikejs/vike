@@ -20,8 +20,8 @@ function setGlobalContext(): Plugin {
     },
     config: {
       handler(_, env) {
-        const isDev = isDevCheck(env)
-        setGlobalContext_isViteDev(isDev)
+        const isViteDev = isDevCheck(env)
+        setGlobalContext_isViteDev(isViteDev)
       }
     },
     configResolved(config) {
