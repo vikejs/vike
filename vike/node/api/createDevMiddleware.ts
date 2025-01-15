@@ -5,7 +5,7 @@ import { createServer, type ResolvedConfig, type Connect, type ViteDevServer } f
 import type { APIOptions } from './types.js'
 
 /*
- * Create server middleware for development with HMR and lazy transpiling.
+ * Create server middleware for development with HMR and lazy-transpiling.
  *
  * https://vike.dev/createDevMiddleware
  */
