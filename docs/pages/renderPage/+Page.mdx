@@ -36,7 +36,7 @@ async function startServer() {
   // Create an Express.js server
   const app = express()
 
-  // Vite integration
+  // Dev/prod middleware
   if (!isProduction) {
     const { devMiddleware } = await createDevMiddleware({ root })
     app.use(devMiddleware)
@@ -47,11 +47,11 @@ async function startServer() {
   }
 
   // ...
-  // Other middlewares (e.g. some RPC middleware such as Telefunc)
+  // Other middlewares (authentication, REST/GraphQL/RPC middleware, ...)
   // ...
 
   // Vike middleware. It should always be our last middleware (because it's a
-  // catch-all middleware superseding any middleware placed after it).
+  // catch-all middleware that supersedes any middleware placed after it).
   app.get('*', async (req, res) => {
     const pageContextInit = {
       // Required: the URL of the page
