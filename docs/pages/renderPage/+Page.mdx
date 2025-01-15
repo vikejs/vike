@@ -25,7 +25,7 @@ The `renderPage()` function enables you to embed Vike into any server.
 
 // In this example we use Express.js but we could use any other server framework
 import express from 'express'
-import { renderPage } from 'vike/server'
+import { renderPage, createDevMiddleware } from 'vike/server'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -36,17 +36,10 @@ async function startServer() {
   // Create an Express.js server
   const app = express()
 
-  // Vite integration
+  // Dev/prod middleware
   if (!isProduction) {
-    // We instantiate Vite's development server and integrate its middleware to our server.
-    // ⚠️ We instantiate it only in development. (It isn't needed in production and it
-    // would unnecessarily bloat our production server.)
-    const vite = await import('vite')
-    const viteDevMiddleware = (await vite.createServer({
-      root,
-      server: { middlewareMode: true }
-    })).middlewares
-    app.use(viteDevMiddleware)
+    const { devMiddleware } = await createDevMiddleware({ root })
+    app.use(devMiddleware)
   } else {
     // In production, we need to serve our static assets ourselves.
     // (In dev, Vite's middleware serves our static assets.)
@@ -54,11 +47,12 @@ async function startServer() {
   }
 
   // ...
-  // Other middlewares (e.g. some RPC middleware such as Telefunc)
+  // Other middlewares (authentication, REST/GraphQL/RPC middleware, ...)
   // ...
 
-  // Vike middleware. It should always be our last middleware (because it's a
-  // catch-all middleware superseding any middleware placed after it).
+  // SSR middleware.
+  // Note: it should always be the last middleware, because it's a catch-all
+  // middleware that supersedes any middleware placed after it.
   app.get('*', async (req, res) => {
     const pageContextInit = {
       // Required: the URL of the page
@@ -114,6 +108,7 @@ But, if you use Server-Side Rendering (SSR) and you don't pre-render *all* your 
 
 ## See also
 
+- <Link href="/createDevMiddleware" />
 - <Link href="/headers" />
 - <Link href="/injectFilter" />
 - <Link href="/preloading#early-hints" />

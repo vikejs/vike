@@ -1,13 +1,14 @@
 import { Link } from '@brillout/docpress'
 
-Using the Vite CLI is deprecated starting from `vike@0.4.213`.
+Vite's CLI and Vite's API are deprecated starting from `vike@0.4.213`.
 
-> You can still use it, but you'll see following warning and support for Vite's CLI will be completely removed in the next major release.
-> ```
-> 1:18:05 PM [vike][Warning] The Vite CLI is deprecated
-> ```
+> You can still use them but support will be completely removed in the next major release.
 
-Use the Vike CLI instead:
+> It's a major milestone towards the `1.0` release and unlocks new fundamental capabilities.
+
+> Reach out if you have a use case that isn't covered by the replacement below.
+
+## CLI
 
 ```json5
 // package.json
@@ -23,13 +24,60 @@ Use the Vike CLI instead:
 }
 ```
 
-> The Vike CLI is a major milestone towards the `1.0` release and unlocks new fundamental capabilities.
-
 Vike's CLI doesn't have any option: use the `VITE_CONFIG` environment variable instead, see <Link href="/cli" />.
 
-We also recommend using <Link href="/api">Vike's JavaScript API</Link> instead of [Vite's JavaScript API](https://vite.dev/guide/api-javascript), as some features in the near future will only be available when using Vike's JavaScript API.
+## API
+
+[Vite's JavaScript API](https://vite.dev/guide/api-javascript) is also deprecated, instead use:
+ - <Link href="/api">Vike's JavaScript API</Link>
+ - <Link href="/createDevMiddleware" />
+
+Most notably, if you use Vite's `createServer()`, then use `createDevMiddleware()` instead:
+
+```js
+// server/index.js
+
+import express from 'express'
+import { renderPage } from 'vike/server' // [!code --]
+import { renderPage, createDevMiddleware } from 'vike/server' // [!code ++]
+
+const isProduction = process.env.NODE_ENV === 'production'
+const root = `${__dirname}/..`
+
+startServer()
+
+async function startServer() {
+  // Create an Express.js server
+  const app = express()
+
+  // Dev/prod middleware
+  if (!isProduction) {
+    const vite = await import('vite') // [!code --]
+    const viteDevMiddleware = (await vite.createServer({ // [!code --]
+      root, // [!code --]
+      server: { middlewareMode: true } // [!code --]
+    })).middlewares // [!code --]
+    app.use(viteDevMiddleware) // [!code --]
+    const { devMiddleware } = await createDevMiddleware({ root }) // [!code ++]
+    app.use(devMiddleware) // [!code ++]
+  } else {
+    app.use(express.static(`${root}/${outDir}/client`))
+  }
+
+  // SSR middleware
+  app.get('*', async (req, res) => {
+    const pageContext = await renderPage({ urlOriginal: req.originalUrl })
+    const { body, statusCode, headers } = pageContext.httpResponse
+    headers.forEach(([name, value]) => res.setHeader(name, value))
+    res.status(statusCode).send(body)
+  })
+}
+```
+
+> You can also <Link href="/createDevMiddleware">pass Vite configurations: `createDevMiddleware({ viteConfig })`</Link>.
 
 ## See also
 
 - <Link href="/cli" />
 - <Link href="/api" />
+- <Link href="/createDevMiddleware" />

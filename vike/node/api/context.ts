@@ -3,19 +3,21 @@ export { isVikeCliOrApi }
 export { setOperation as setOperation }
 
 import type { Operation } from './types.js'
-import { assert } from './utils.js'
+import { assert, getGlobalObject } from './utils.js'
 
-let apiOperation: Operation | undefined
+const globalObject = getGlobalObject('context.ts', {
+  apiOperation: undefined as Operation | undefined
+})
 
 function getOperation(): Operation {
-  assert(apiOperation)
-  return apiOperation
+  assert(globalObject.apiOperation)
+  return globalObject.apiOperation
 }
 function isVikeCliOrApi(): boolean {
   // The CLI uses the API
-  return !!apiOperation
+  return !!globalObject.apiOperation
 }
 function setOperation(operation: Operation): void {
-  assert(!apiOperation)
-  apiOperation = operation
+  assert(!globalObject.apiOperation)
+  globalObject.apiOperation = operation
 }

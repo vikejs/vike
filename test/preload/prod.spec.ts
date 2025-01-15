@@ -1,5 +1,5 @@
 import { beforeAll } from 'vitest'
-import { build } from 'vite'
+import { build } from 'vike/api'
 import { testRun } from './testRun'
 
 beforeAll(async () => {
@@ -9,14 +9,11 @@ beforeAll(async () => {
 testRun(false)
 
 async function buildApp() {
-  const inlineConfig = {
-    logLevel: 'warn' as const,
-    root: __dirname,
-    configFile: __dirname + '/vite.config.js'
-  }
-  await build(inlineConfig)
   await build({
-    build: { ssr: true },
-    ...inlineConfig
+    viteConfig: {
+      logLevel: 'warn' as const,
+      root: __dirname,
+      configFile: __dirname + '/vite.config.js'
+    }
   })
 }

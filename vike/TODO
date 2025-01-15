@@ -1,3 +1,8 @@
+- rename_full prepareApiCall prepareViteApiCall
+- add JSDocs to API functions
+- document API return values
+- add docs category
+
 - head settings
   - name setting?
     - Appends `| ${name}` to title

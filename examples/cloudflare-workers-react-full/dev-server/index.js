@@ -1,10 +1,10 @@
 // We use a Express.js server for development
 
 import express from 'express'
-import { renderPage } from 'vike/server'
-import { createServer } from 'vite'
+import { renderPage, createDevMiddleware } from 'vike/server'
 import fetch from 'node-fetch'
 import compression from 'compression'
+import { root } from './root.js'
 
 startServer()
 
@@ -15,12 +15,8 @@ async function startServer() {
   // that it's properly handled by Vike and react-streaming.
   app.use(compression())
 
-  const viteDevMiddleware = (
-    await createServer({
-      server: { middlewareMode: true }
-    })
-  ).middlewares
-  app.use(viteDevMiddleware)
+  const { devMiddleware } = await createDevMiddleware({ root })
+  app.use(devMiddleware)
 
   app.get('*', async (req, res) => {
     const pageContextInit = {
