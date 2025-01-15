@@ -28,7 +28,12 @@ const setup = getGlobalObject<{
   isViteDev?: boolean
 }>('utils/assertIsNotProductionRuntime.ts', {})
 
-// Called by ../node/runtime/index.ts
+// Called by Vike modules that want to ensure that they aren't loaded by the server runtime in production
+function assertIsNotProductionRuntime(): void | undefined {
+  if (debug.isActivated) debug('assertIsNotProductionRuntime()', new Error().stack)
+  setup.shouldNotBeProduction = true
+}
+
 function onSetupRuntime(): void | undefined {
   if (debug.isActivated) debug('assertSetup()', new Error().stack)
   if (isTest()) return
@@ -57,6 +62,23 @@ function onSetupRuntime(): void | undefined {
     assert(setup.shouldNotBeProduction)
   }
 }
+// Ensure NODE_ENV is 'production' when building.
+// - Used by both Vue and React for bundling minified version:
+//   - Vue: https://github.com/vuejs/core/blob/f66a75ea75c8aece065b61e2126b4c5b2338aa6e/packages/vue/index.js
+//   - React: https://github.com/facebook/react/blob/01ab35a9a731dec69995fbd28f3ac7eaad11e183/packages/react/npm/index.js
+// - Required for React: setting NODE_ENV to a value other than 'production' triggers an error: https://github.com/vikejs/vike/issues/1469#issuecomment-1969301797
+// - Not required for Vue: when building the app, NODE_ENV can be set to a value other than 'production', e.g. 'development'.
+function onSetupBuild() {
+  assertUsageNodeEnvIsNotDev('building')
+  /* Not needed: Vite already sets `process.env.NODE_ENV = 'production'`
+  setNodeEnvProduction()
+  */
+}
+function onSetupPrerender() {
+  markSetup_isPrerendering()
+  if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
+  setNodeEnvProduction()
+}
 
 function isViteLoaded() {
   // Do we need setup.viteDevServer or setup.vitePreviewServer ?
@@ -66,11 +88,6 @@ function isTest() {
   return isVitest() || getNodeEnvValue() === 'test'
 }
 
-// Called by Vike modules that want to ensure that they aren't loaded by the server runtime in production
-function assertIsNotProductionRuntime(): void | undefined {
-  if (debug.isActivated) debug('assertIsNotProductionRuntime()', new Error().stack)
-  setup.shouldNotBeProduction = true
-}
 // Called by Vite hook configureServer()
 function markSetup_viteDevServer(): void | undefined {
   if (debug.isActivated) debug('markSetup_viteDevServer()', new Error().stack)
@@ -97,40 +114,14 @@ function markSetup_isPrerendering() {
   setup.isPrerendering = true
 }
 
-// Ensure NODE_ENV is 'production' when building.
-// - Used by both Vue and React for bundling minified version:
-//   - Vue: https://github.com/vuejs/core/blob/f66a75ea75c8aece065b61e2126b4c5b2338aa6e/packages/vue/index.js
-//   - React: https://github.com/facebook/react/blob/01ab35a9a731dec69995fbd28f3ac7eaad11e183/packages/react/npm/index.js
-// - Required for React: setting NODE_ENV to a value other than 'production' triggers an error: https://github.com/vikejs/vike/issues/1469#issuecomment-1969301797
-// - Not required for Vue: when building the app, NODE_ENV can be set to a value other than 'production', e.g. 'development'.
-function onSetupBuild() {
-  assertUsageNodeEnvIsNotDev('building')
-  /* Not needed: Vite already sets `process.env.NODE_ENV = 'production'`
-  setNodeEnvProduction()
-  */
-}
-function onSetupPrerender() {
-  markSetup_isPrerendering()
-  if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
-  setNodeEnvProduction()
-}
-
-function getNodeEnvValue(): null | undefined | string {
-  if (typeof process === 'undefined') return null
-  return process.env.NODE_ENV?.toLowerCase()
-}
-
-function setNodeEnvProduction(): void | undefined {
-  // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4
-  const proc = process
-  const { env } = proc
-  env.NODE_ENV = 'production'
-  assert(getNodeEnvValue() === 'production')
-}
-function isNodeEnvDev(): boolean {
-  const nodeEnv = getNodeEnvValue()
-  // That's quite strict, let's see if some user complains
-  return !nodeEnv || ['development', 'dev'].includes(nodeEnv)
+function assertUsageNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
+  if (!isNodeEnvDev()) return
+  // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
+  assertWarning(
+    false,
+    `The ${getEnvDescription()} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`,
+    { onlyOnce: true }
+  )
 }
 function getEnvDescription(): `environment is set to be a ${string} environment by process.env.NODE_ENV===${string}` {
   const nodeEnv = getNodeEnvValue()
@@ -140,12 +131,19 @@ function getEnvDescription(): `environment is set to be a ${string} environment 
     `environment is set to be a ${pc.bold(envType)} by ${pc.cyan(`process.env.NODE_ENV===${JSON.stringify(nodeEnv)}`)}` as const
   return nodeEnvDesc
 }
-function assertUsageNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
-  if (!isNodeEnvDev()) return
-  // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
-  assertWarning(
-    false,
-    `The ${getEnvDescription()} which is forbidden upon ${operation}, see https://vike.dev/NODE_ENV`,
-    { onlyOnce: true }
-  )
+function isNodeEnvDev(): boolean {
+  const nodeEnv = getNodeEnvValue()
+  // That's quite strict, let's see if some user complains
+  return !nodeEnv || ['development', 'dev'].includes(nodeEnv)
+}
+function getNodeEnvValue(): null | undefined | string {
+  if (typeof process === 'undefined') return null
+  return process.env.NODE_ENV?.toLowerCase()
+}
+function setNodeEnvProduction(): void | undefined {
+  // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4
+  const proc = process
+  const { env } = proc
+  env.NODE_ENV = 'production'
+  assert(getNodeEnvValue() === 'production')
 }
