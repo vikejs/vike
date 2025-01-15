@@ -11,7 +11,7 @@ import { testCounter } from '../../test/utils'
 function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
   const isWrangler = cmd === 'npm run preview'
 
-  //*
+  /*
   // Update(13.12.2024): permanently disabling wrangler tests, because wrangler requests to Cloudflare are painfully flaky. Let's eventually enable wrangler tests again, at some point later.
   // Manually disabled because of exceeded rate limit
   if (isWrangler) {
