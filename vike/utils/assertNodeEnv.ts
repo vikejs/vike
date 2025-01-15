@@ -1,6 +1,6 @@
 export { assertNodeEnv_build }
 export { assertNodeEnv_runtime }
-export { assertNodeEnv_onVikePluginLoad }
+export { assertNodeEnv_onVikeVitePlugin }
 export { setNodeEnv_prerender }
 export { setNodeEnv_vitePluginVercel }
 /* Vite already sets `process.env.NODE_ENV = 'production'`
@@ -36,7 +36,7 @@ function assertNodeEnv_runtime(isViteDev: boolean) {
   assertWarning(false, errMsg, { onlyOnce: true })
 }
 
-function assertNodeEnv_onVikePluginLoad() {
+function assertNodeEnv_onVikeVitePlugin() {
   const nodeEnv = getNodeEnvValue()
   if (nodeEnv === 'test') return
   //* Let's enable this function after support for Vite's CLI is removed. (We can then abort this function if the context is `$ vike build` or `import { build } from 'vike/api';build()`.)
