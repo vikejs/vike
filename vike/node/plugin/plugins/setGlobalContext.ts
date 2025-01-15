@@ -8,26 +8,36 @@ import {
 } from '../../runtime/globalContext.js'
 import { assertFilePathAbsoluteFilesystem, getOutDirs, isDevCheck } from '../utils.js'
 
-function setGlobalContext(): Plugin {
-  return {
-    name: 'vike:setGlobalContext',
-    enforce: 'pre',
-    configureServer: {
-      order: 'pre',
-      handler(viteDevServer) {
-        setGlobalContext_viteDevServer(viteDevServer)
+function setGlobalContext(): Plugin[] {
+  return [
+    {
+      name: 'vike:setGlobalContext:pre',
+      enforce: 'pre',
+      configureServer: {
+        order: 'pre',
+        handler(viteDevServer) {
+          setGlobalContext_viteDevServer(viteDevServer)
+        }
+      },
+      config: {
+        order: 'pre',
+        handler(_, env) {
+          const isViteDev = isDevCheck(env)
+          setGlobalContext_isViteDev(isViteDev)
+        }
       }
     },
-    config: {
-      handler(_, env) {
-        const isViteDev = isDevCheck(env)
-        setGlobalContext_isViteDev(isViteDev)
+    {
+      name: 'vike:setGlobalContext:post',
+      enforce: 'post',
+      configResolved: {
+        order: 'post',
+        handler(config) {
+          const { outDirRoot } = getOutDirs(config)
+          assertFilePathAbsoluteFilesystem(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
+          setGlobalContext_viteConfig(config, outDirRoot)
+        }
       }
-    },
-    configResolved(config) {
-      const { outDirRoot } = getOutDirs(config)
-      assertFilePathAbsoluteFilesystem(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
-      setGlobalContext_viteConfig(config, outDirRoot)
     }
-  }
+  ]
 }

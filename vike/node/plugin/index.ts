@@ -53,7 +53,7 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
     suppressRollupWarning(),
-    setGlobalContext(),
+    ...setGlobalContext(),
     ...importBuild(),
     baseUrls(vikeConfig),
     envVarsPlugin(),
