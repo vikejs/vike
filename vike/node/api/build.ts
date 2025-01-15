@@ -6,6 +6,11 @@ import type { APIOptions } from './types.js'
 
 type RollupOutput = Rollup.RollupOutput | Rollup.RollupOutput[] | Rollup.RollupWatcher
 
+/**
+ * Programmatically trigger `$ vike build`
+ *
+ * https://vike.dev/api#build
+ */
 async function build(options: APIOptions = {}): Promise<{
   rollupOutputClient: RollupOutput
   rollupOutputServer: RollupOutput
