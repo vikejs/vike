@@ -1,11 +1,5 @@
-// Mechanism to ensure code isn't loaded by production runtime
-
-export { assertIsNotProductionRuntime }
 export { assertSetup }
-
-export { markSetup_viteDevServer }
-export { markSetup_vitePreviewServer }
-export { markSetup_vikeVitePlugin }
+export { assertIsNotProductionRuntime }
 
 export { assertUsageNodeEnv_build }
 export { assertUsageNodeEnv_runtime }
@@ -16,6 +10,10 @@ export { setNodeEnv_vitePluginVercel }
 /* Vite already sets `process.env.NODE_ENV = 'production'`
 export { setNodeEnv_build }
 */
+
+export { markSetup_viteDevServer }
+export { markSetup_vitePreviewServer }
+export { markSetup_vikeVitePlugin }
 
 import { assert, assertUsage, assertWarning } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -55,7 +53,6 @@ function assertIsNotProductionRuntime(): void | undefined {
   if (debug.isActivated) debug('assertIsNotProductionRuntime()', new Error().stack)
   setup.shouldNotBeProduction = true
 }
-
 // Called by Vite hook configureServer()
 function markSetup_viteDevServer(): void | undefined {
   if (debug.isActivated) debug('markSetup_viteDevServer()', new Error().stack)
@@ -81,7 +78,6 @@ function markSetup_vikeVitePlugin() {
 function assertUsageNodeEnv_build() {
   assertUsageNodeEnvIsNotDev('building')
 }
-
 function assertUsageNodeEnv_runtime(isViteDev: boolean) {
   const nodeEnv = getNodeEnvValue()
   if (nodeEnv === null || nodeEnv === 'test') return
@@ -94,7 +90,6 @@ function assertUsageNodeEnv_runtime(isViteDev: boolean) {
   } while the ${nodeEnvDesc} which is contradictory, see https://vike.dev/NODE_ENV` as const
   assertWarning(false, errMsg, { onlyOnce: true })
 }
-
 function assertUsageNodeEnv_onVikeVitePlugin() {
   const nodeEnv = getNodeEnvValue()
   if (nodeEnv === 'test') return
@@ -120,7 +115,6 @@ function setNodeEnv_prerender() {
   if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
   setNodeEnvProduction()
 }
-
 function setNodeEnv_vitePluginVercel() {
   setNodeEnvProduction()
 }
