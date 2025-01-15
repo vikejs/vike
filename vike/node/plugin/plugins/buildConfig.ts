@@ -97,6 +97,7 @@ function buildConfig(): Plugin[] {
         assertNodeEnv_build()
       },
       async closeBundle() {
+        assertNodeEnv_build()
         await fixServerAssets_assertCssTarget(config)
       }
     },
