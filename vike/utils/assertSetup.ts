@@ -1,4 +1,4 @@
-export { assertSetupRuntime }
+export { onSetupRuntime }
 export { onSetupBuild }
 export { onSetupPrerender }
 export { assertIsNotProductionRuntime }
@@ -31,7 +31,7 @@ const setup = getGlobalObject<{
 }>('utils/assertIsNotProductionRuntime.ts', {})
 
 // Called by ../node/runtime/index.ts
-function assertSetupRuntime(): void | undefined {
+function onSetupRuntime(): void | undefined {
   if (debug.isActivated) debug('assertSetup()', new Error().stack)
   if (isTest()) return
   if (!isViteLoaded()) {

@@ -15,7 +15,7 @@ import {
   objectAssign,
   isUrl,
   parseUrl,
-  assertSetupRuntime,
+  onSetupRuntime,
   assertWarning,
   getGlobalObject,
   checkType,
@@ -95,7 +95,7 @@ async function renderPage<
 > {
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
-  assertSetupRuntime()
+  onSetupRuntime()
   assertIsUrl(pageContextInit.urlOriginal)
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
