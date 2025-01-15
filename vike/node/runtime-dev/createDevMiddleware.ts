@@ -1,8 +1,9 @@
 export { createDevMiddleware }
 
-import { prepareApiCall } from './prepareApiCall.js'
-import { createServer, type ResolvedConfig, type Connect, type ViteDevServer } from 'vite'
-import type { APIOptions } from './types.js'
+import { createServer } from 'vite'
+import { prepareApiCall } from '../api/prepareApiCall.js'
+import type { ResolvedConfig, Connect, ViteDevServer } from 'vite'
+import type { APIOptions } from '../api/types.js'
 
 /*
  * Create server middleware for development with HMR and lazy-transpiling.

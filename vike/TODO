@@ -1,7 +1,6 @@
-- Move createDevMiddleware.ts ?
-- add docs category
-- add JSDocs to API functions
 - rename_full prepareApiCall prepareViteApiCall
+- add JSDocs to API functions
+- add docs category
 
 - head settings
   - name setting?

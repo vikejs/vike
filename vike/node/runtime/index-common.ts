@@ -3,20 +3,12 @@ export { escapeInject, dangerouslySkipEscape } from './html/renderHtml.js'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream.js'
 export { PROJECT_VERSION as version } from './utils.js'
 export { getGlobalContextSync, getGlobalContextAsync } from './globalContext.js'
-export { createDevMiddleware_ as createDevMiddleware }
+export { createDevMiddleware } from '../runtime-dev/index.js'
 
 // TODO/v1-release: remove
 export { injectAssets__public as _injectAssets } from './html/injectAssets/injectAssets__public.js'
 // TODO/v1-release: remove
 export { createPageRenderer } from '../createPageRenderer.js'
-
-import type { createDevMiddleware } from '../api/createDevMiddleware.js'
-const createDevMiddleware_: typeof createDevMiddleware = async (...args) => {
-  // Avoid bundlers from bundling createDevMiddleware()
-  // Copied from https://github.com/brillout/import/blob/ba848455442484eb258aaa2d9864d4848e4ed0fb/index.ts#L11-L12
-  const p = '../api/createDevMiddleware.js'
-  return (await import(/*webpackIgnore: true*/ /* @vite-ignore */ p)).createDevMiddleware(...args)
-}
 
 addEcosystemStamp()
 
