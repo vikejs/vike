@@ -6,7 +6,7 @@ export type { ConfigVikeUserProvided as UserConfig }
 export { PROJECT_VERSION as version } from './utils.js'
 
 import { version, type Plugin } from 'vite'
-import { assertUsageNodeEnv_onVikeVitePlugin, assertUsage, assertVersion, markSetup_vikeVitePlugin } from './utils.js'
+import { assertUsage, assertVersion, markSetup_vikeVitePlugin } from './utils.js'
 import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
@@ -33,7 +33,6 @@ import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { vite6HmrRegressionWorkaround } from './plugins/vite6HmrRegressionWorkaround.js'
 
 markSetup_vikeVitePlugin()
-assertUsageNodeEnv_onVikeVitePlugin()
 assertViteVersion()
 setResolveClientEntriesDev(resolveClientEntriesDev)
 
