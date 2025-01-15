@@ -50,7 +50,7 @@ async function startServer() {
   // Create an Express.js server
   const app = express()
 
-  // Dev middleware
+  // Dev/prod middleware
   if (!isProduction) {
     const vite = await import('vite') // [!code --]
     const viteDevMiddleware = (await vite.createServer({ // [!code --]
@@ -74,7 +74,7 @@ async function startServer() {
 }
 ```
 
-> You can also <Link href="/createDevMiddleware">pass Vite configurations `createDevMiddleware({ viteConfig })`</Link>.
+> You can also <Link href="/createDevMiddleware">pass Vite configurations: `createDevMiddleware({ viteConfig })`</Link>.
 
 ## See also
 

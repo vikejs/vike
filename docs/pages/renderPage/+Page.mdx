@@ -50,8 +50,9 @@ async function startServer() {
   // Other middlewares (authentication, REST/GraphQL/RPC middleware, ...)
   // ...
 
-  // Vike middleware. It should always be our last middleware (because it's a
-  // catch-all middleware that supersedes any middleware placed after it).
+  // SSR middleware.
+  // Note: it should always be the last middleware, because it's a catch-all
+  // middleware that supersedes any middleware placed after it.
   app.get('*', async (req, res) => {
     const pageContextInit = {
       // Required: the URL of the page
