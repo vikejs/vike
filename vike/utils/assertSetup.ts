@@ -1,10 +1,8 @@
+export { assertIsNotProductionRuntime }
 export { onSetupRuntime }
 export { onSetupBuild }
 export { onSetupPrerender }
-export { assertIsNotProductionRuntime }
-
 export { setNodeEnvProduction }
-
 export { markSetup_viteDevServer }
 export { markSetup_vitePreviewServer }
 export { markSetup_vikeVitePlugin }
