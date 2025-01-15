@@ -224,8 +224,8 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     return
   }
 
-  const { viteDevServer, viteConfig, isViteDev, isPrerendering } = globalObject
-  assertUsageNodeEnv_runtime(isViteDev ?? false)
+  const { viteDevServer, viteConfig, isPrerendering } = globalObject
+  assertUsageNodeEnv_runtime()
 
   if (!isProduction) {
     assert(viteConfig)

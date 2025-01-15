@@ -14,6 +14,7 @@ export { setNodeEnv_build }
 export { markSetup_viteDevServer }
 export { markSetup_vitePreviewServer }
 export { markSetup_vikeVitePlugin }
+export { markSetup_isViteDev }
 
 import { assert, assertUsage, assertWarning } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -30,6 +31,7 @@ const setup = getGlobalObject<{
   viteDevServer?: true
   vitePreviewServer?: true
   vikeVitePlugin?: true
+  isViteDev?: boolean
 }>('utils/assertIsNotProductionRuntime.ts', {})
 
 // Called by ../node/runtime/index.ts
@@ -68,6 +70,11 @@ function markSetup_vikeVitePlugin() {
   if (debug.isActivated) debug('markSetup_vikeVitePlugin()', new Error().stack)
   setup.vikeVitePlugin = true
 }
+// Whether Vite is loaded and whether it's in dev mode (the value returned by `isDevCheck()`)
+function markSetup_isViteDev(isViteDev: boolean) {
+  if (debug.isActivated) debug('markSetup_isViteDev()', new Error().stack)
+  setup.isViteDev = isViteDev
+}
 
 // Ensure NODE_ENV is 'production' when building.
 // - Used by both Vue and React for bundling minified version:
@@ -78,15 +85,15 @@ function markSetup_vikeVitePlugin() {
 function assertUsageNodeEnv_build() {
   assertUsageNodeEnvIsNotDev('building')
 }
-function assertUsageNodeEnv_runtime(isViteDev: boolean) {
+function assertUsageNodeEnv_runtime() {
   const nodeEnv = getNodeEnvValue()
   if (nodeEnv === null || nodeEnv === 'test') return
-  // Calling Vite's createServer() is enough for `isViteDev` to be `true`, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
-  if (isViteDev === isNodeEnvDev()) return
+  // Calling Vite's createServer() is enough for `setup.isViteDev` to be `true`, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
+  if (setup.isViteDev === isNodeEnvDev()) return
   const nodeEnvDesc = getEnvDescription()
   // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
   const errMsg = `Running ${
-    isViteDev ? pc.cyan('$ vike dev') : 'app in production'
+    setup.isViteDev ? pc.cyan('$ vike dev') : 'app in production'
   } while the ${nodeEnvDesc} which is contradictory, see https://vike.dev/NODE_ENV` as const
   assertWarning(false, errMsg, { onlyOnce: true })
 }

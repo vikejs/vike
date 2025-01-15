@@ -10,6 +10,7 @@ import {
   assertFilePathAbsoluteFilesystem,
   getOutDirs,
   isDevCheck,
+  markSetup_isViteDev,
   markSetup_viteDevServer,
   markSetup_vitePreviewServer
 } from '../utils.js'
@@ -34,6 +35,7 @@ function setGlobalContext(): Plugin[] {
         handler(_, env) {
           const isViteDev = isDevCheck(env)
           setGlobalContext_isViteDev(isViteDev)
+          markSetup_isViteDev(isViteDev)
         }
       }
     },
