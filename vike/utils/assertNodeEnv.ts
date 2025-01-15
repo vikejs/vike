@@ -34,9 +34,8 @@ function assertNodeEnv_build() {
 function assertNodeEnv_runtime(isViteDev: boolean) {
   const nodeEnv = getNodeEnvValue()
   if (nodeEnv === null || nodeEnv === 'test') return
-  const isNodeDev = isNodeEnvDev()
-  // Calling Vite's createServer() is enough for hasViteDevServer to be true, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
-  if (isViteDev === isNodeDev) return
+  // Calling Vite's createServer() is enough for `isViteDev` to be `true`, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
+  if (isViteDev === isNodeEnvDev()) return
   const nodeEnvDesc = getEnvDescription()
   // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
   const errMsg = `Running ${
@@ -90,10 +89,8 @@ function setNodeEnvProduction(): void | undefined {
 
 function isNodeEnvDev(): boolean {
   const nodeEnv = getNodeEnvValue()
-  if (!nodeEnv) return true
-  if (['development', 'dev'].includes(nodeEnv)) return true
-  // That's quite aggressive, let's see if some user complains
-  return false
+  // That's quite strict, let's see if some user complains
+  return !nodeEnv || ['development', 'dev'].includes(nodeEnv)
 }
 
 function getEnvDescription(): `environment is set to be a ${string} environment by process.env.NODE_ENV === ${string}` {

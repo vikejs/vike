@@ -41,7 +41,7 @@ const globalObject = getGlobalObject<{
   viteDevServer?: ViteDevServer
   viteDevServerPromise: Promise<ViteDevServer>
   viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
-  isDev?: boolean
+  isViteDev?: boolean
   viteConfig?: ResolvedConfig
   outDirRoot?: string
   isPrerendering?: true
@@ -168,8 +168,8 @@ function assertIsNotInitilizedYet() {
   // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
   assert(!globalObject.globalContext)
 }
-function setGlobalContext_isDev(isDev: boolean) {
-  globalObject.isDev = isDev
+function setGlobalContext_isDev(isViteDev: boolean) {
+  globalObject.isViteDev = isViteDev
 }
 function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
@@ -182,7 +182,7 @@ function getViteConfig(): ResolvedConfig | null {
 }
 
 async function initGlobalContext_renderPage(): Promise<void> {
-  await initGlobalContext(!globalObject.isDev)
+  await initGlobalContext(!globalObject.isViteDev)
 }
 
 async function initGlobalContext_runPrerender(): Promise<void> {
@@ -224,8 +224,8 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     return
   }
 
-  const { viteDevServer, viteConfig, isDev, isPrerendering } = globalObject
-  assertNodeEnv_runtime(isDev ?? false)
+  const { viteDevServer, viteConfig, isViteDev, isPrerendering } = globalObject
+  assertNodeEnv_runtime(isViteDev ?? false)
 
   if (!isProduction) {
     assert(viteConfig)
