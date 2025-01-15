@@ -32,8 +32,8 @@ import { resolveClientEntriesDev } from './resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { vite6HmrRegressionWorkaround } from './plugins/vite6HmrRegressionWorkaround.js'
 
-assertUsageNodeEnv_onVikeVitePlugin()
 markSetup_vikeVitePlugin()
+assertUsageNodeEnv_onVikeVitePlugin()
 assertViteVersion()
 setResolveClientEntriesDev(resolveClientEntriesDev)
 

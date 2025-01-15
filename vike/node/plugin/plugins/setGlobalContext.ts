@@ -6,7 +6,13 @@ import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig
 } from '../../runtime/globalContext.js'
-import { assertFilePathAbsoluteFilesystem, getOutDirs, isDevCheck } from '../utils.js'
+import {
+  assertFilePathAbsoluteFilesystem,
+  getOutDirs,
+  isDevCheck,
+  markSetup_viteDevServer,
+  markSetup_vitePreviewServer
+} from '../utils.js'
 
 function setGlobalContext(): Plugin[] {
   return [
@@ -17,7 +23,11 @@ function setGlobalContext(): Plugin[] {
         order: 'pre',
         handler(viteDevServer) {
           setGlobalContext_viteDevServer(viteDevServer)
+          markSetup_viteDevServer()
         }
+      },
+      configurePreviewServer() {
+        markSetup_vitePreviewServer()
       },
       config: {
         order: 'pre',
