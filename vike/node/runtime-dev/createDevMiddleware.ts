@@ -17,7 +17,7 @@ async function createDevMiddleware(
     ...options.viteConfig,
     server: {
       ...options.viteConfig?.server,
-      middlewareMode: true
+      middlewareMode: options.viteConfig?.server?.middlewareMode ?? true
     }
   }
   if (options.root) viteConfig.root = options.root
