@@ -52,7 +52,7 @@ function buildConfig(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:buildConfig:configResolved',
+      name: 'vike:buildConfig:post',
       apply: 'build',
       enforce: 'post',
       configResolved: {
@@ -102,7 +102,7 @@ function buildConfig(): Plugin[] {
       }
     },
     {
-      name: 'vike:buildConfig:writeBundle',
+      name: 'vike:buildConfig:pre',
       apply: 'build',
       // Make sure other writeBundle() hooks are called after this writeBundle() hook.
       //  - set_ASSETS_MAP() needs to be called before dist/server/ code is executed.
