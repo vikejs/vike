@@ -9,6 +9,7 @@ export { markSetup_viteDevServer }
 export { markSetup_vitePreviewServer }
 export { markSetup_vikeVitePlugin }
 export { markSetup_isViteDev }
+export { markSetup_isPrerendering }
 
 import { assert, assertUsage, assertWarning } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -24,6 +25,7 @@ const setup = getGlobalObject<{
   viteDevServer?: true
   vitePreviewServer?: true
   vikeVitePlugin?: true
+  isPrerendering?: true
   // Calling Vite's `createServer()` (i.e. `createDevMiddleware()`) is enough for `setup.isViteDev` to be `true`, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
   isViteDev?: boolean
 }>('utils/assertIsNotProductionRuntime.ts', {})
@@ -48,7 +50,7 @@ function assertSetupRuntime(): void | undefined {
   } else {
     // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
     assertWarning(
-      isNodeEnvDev() || setup.vitePreviewServer,
+      isNodeEnvDev() || setup.vitePreviewServer || setup.isPrerendering,
       `The ${getEnvDescription()}, but Vite is loaded which is prohibited in production, see https://vike.dev/NODE_ENV`,
       { onlyOnce: true }
     )
@@ -90,6 +92,11 @@ function markSetup_vikeVitePlugin() {
 function markSetup_isViteDev(isViteDev: boolean) {
   if (debug.isActivated) debug('markSetup_isViteDev()', new Error().stack)
   setup.isViteDev = isViteDev
+}
+// Called by ../node/prerender/runPrerender.ts
+function markSetup_isPrerendering() {
+  if (debug.isActivated) debug('markSetup_isPrerendering()', new Error().stack)
+  setup.isPrerendering = true
 }
 
 // Ensure NODE_ENV is 'production' when building.
