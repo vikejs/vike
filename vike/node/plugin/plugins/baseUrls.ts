@@ -14,6 +14,7 @@ function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
     enforce: 'post',
     async config(config, env) {
       isDev = isDevCheck(env)
+      // TODO: fix bug: also consider + files
       bases = resolveBaseFromUserConfig(config, vikeVitePluginOptions)
       const { baseServer, baseAssets } = bases
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
