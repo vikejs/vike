@@ -6,7 +6,6 @@ import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../sha
 import { assertVikeConfig } from './assertVikeConfig.js'
 import { assert, isDevCheck } from '../../utils.js'
 import { pickFirst } from './pickFirst.js'
-import { resolveBaseFromResolvedConfig } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 
@@ -58,19 +57,12 @@ function resolveVikeConfigGlobal(
   })
   configs.push(pageConfigGlobalValues)
 
-  /* TODO
-  const { baseServer, baseAssets } = resolveBase(configs)
-  /*/
-  const baseServer = '/'
-  const baseAssets = '/'
-  //*/
-
   const configVike: ConfigVikeResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
     prerender: resolvePrerenderOptions(configs),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
-    baseServer,
-    baseAssets,
+    baseServer: pickFirst(configs.map((c) => c.baseServer)) ?? null,
+    baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null,
     redirects: merge(configs.map((c) => c.redirects)) ?? {},
     disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
     trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false,

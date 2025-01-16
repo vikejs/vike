@@ -12,8 +12,8 @@ type ConfigVikeResolved = {
       }
   disableAutoFullBuild: boolean | 'prerender' | null
   includeAssetsImportedByServer: boolean
-  baseAssets: string
-  baseServer: string
+  baseAssets: string | null
+  baseServer: string | null
   redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean

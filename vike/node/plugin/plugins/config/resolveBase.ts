@@ -4,7 +4,6 @@ export { resolveBaseFromUserConfig }
 import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import type { ConfigVikeUserProvided } from '../../../../shared/ConfigVike.js'
-import { pickFirst } from './pickFirst.js'
 import pc from '@brillout/picocolors'
 
 type BaseServers = {
@@ -12,9 +11,11 @@ type BaseServers = {
   baseAssets: string
 }
 
-function resolveBaseFromResolvedConfig(configs: ConfigVikeUserProvided[], config: ResolvedConfig): BaseServers {
-  const baseServer = pickFirst(configs.map((c) => c.baseServer)) ?? null
-  const baseAssets = pickFirst(configs.map((c) => c.baseAssets)) ?? null
+function resolveBaseFromResolvedConfig(
+  baseServer: string | null,
+  baseAssets: string | null,
+  config: ResolvedConfig
+): BaseServers {
   let baseOriginal: unknown = (config as Record<string, unknown>)._baseOriginal
   if (baseOriginal === '/__UNSET__') baseOriginal = null
   assert(baseOriginal === null || typeof baseOriginal == 'string')
@@ -32,6 +33,7 @@ function resolveBaseFromUserConfig(
   )
 }
 
+// TODO: rename base to baseViteOriginal and baseServer_ => baseServerUnresolved
 function resolve(base: string | null, baseServer_: string | null, baseAssets_: string | null): BaseServers {
   {
     const wrongBase = (val: string) =>
