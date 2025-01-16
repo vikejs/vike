@@ -154,6 +154,7 @@ function checkConfigVike(configVike: unknown): null | WrongUsage {
 
   return null
 }
+
 // TODO: rename & move?
 type ConfigVikeResolved = {
   prerender:
@@ -174,7 +175,9 @@ type ConfigVikeResolved = {
   crawl: {
     git: null | boolean
   }
-} // TODO: deprecate
+}
+
+// TODO: deprecate
 type ConfigVikeUserProvided = {
   /**
    * Enable pre-rendering.
