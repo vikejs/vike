@@ -4,7 +4,8 @@ import type { Plugin } from 'vite'
 import {
   setGlobalContext_isViteDev,
   setGlobalContext_viteDevServer,
-  setGlobalContext_viteConfig
+  setGlobalContext_viteConfig,
+  setGlobalContext_vikeConfig
 } from '../../runtime/globalContext.js'
 import {
   assertFilePathAbsoluteFilesystem,
@@ -14,6 +15,7 @@ import {
   markSetup_viteDevServer,
   markSetup_vitePreviewServer
 } from '../utils.js'
+import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
 function setGlobalContext(): Plugin[] {
   return [
@@ -44,10 +46,12 @@ function setGlobalContext(): Plugin[] {
       enforce: 'post',
       configResolved: {
         order: 'post',
-        handler(config) {
+        async handler(config) {
           const { outDirRoot } = getOutDirs(config)
           assertFilePathAbsoluteFilesystem(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
           setGlobalContext_viteConfig(config, outDirRoot)
+          const vikeConfig = await getVikeConfig(config)
+          setGlobalContext_vikeConfig(vikeConfig)
         }
       }
     }
