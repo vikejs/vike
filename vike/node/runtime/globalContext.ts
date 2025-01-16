@@ -269,8 +269,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     }
     if (isPrerendering) {
       assert(viteConfig)
-      const configVike = await getConfigVike(viteConfig)
-      assert(configVike)
       objectAssign(globalContext, {
         isPrerendering: true as const,
         viteConfig
