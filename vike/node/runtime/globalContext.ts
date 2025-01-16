@@ -36,7 +36,7 @@ import { getConfigVike } from '../shared/getConfigVike.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 import { getPageFilesExports } from './page-files/getPageFilesExports.js'
-import { resolveBase, resolveBaseFromResolvedConfig } from '../plugin/plugins/config/resolveBase.js'
+import { resolveBaseFromResolvedConfig } from '../plugin/plugins/config/resolveBase.js'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
@@ -234,14 +234,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(!isPrerendering)
     const configVike = await getConfigVike(viteConfig)
     const pluginManifest = getRuntimeManifest(configVike, viteConfig)
-    /*
-    const { baseServer, baseAssets } = resolveBase(
-      pluginManifest.baseViteOriginal,
-      pluginManifest.baseServer,
-      pluginManifest.baseAssets
-    )
-    */
-    const { baseServer, baseAssets } = pluginManifest
     globalObject.globalContext = {
       isProduction: false,
       isPrerendering: false,
@@ -249,8 +241,8 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       pluginManifest: null,
       viteDevServer,
       viteConfig,
-      baseServer,
-      baseAssets,
+      baseServer: pluginManifest.baseServer,
+      baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
       redirects: pluginManifest.redirects,
       trailingSlash: pluginManifest.trailingSlash,
@@ -263,21 +255,13 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     setPageFiles(pageFiles)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
-    /*
-    const { baseServer, baseAssets } = resolveBase(
-      pluginManifest.baseViteOriginal,
-      pluginManifest.baseServer,
-      pluginManifest.baseAssets
-    )
-    */
-    const { baseServer, baseAssets } = pluginManifest
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
       pluginManifest,
       viteDevServer: null,
-      baseServer,
-      baseAssets,
+      baseServer: pluginManifest.baseServer,
+      baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
       redirects: pluginManifest.redirects,
       trailingSlash: pluginManifest.trailingSlash,

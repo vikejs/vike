@@ -1,4 +1,3 @@
-export { resolveBase }
 export { resolveBaseFromResolvedConfig }
 export { resolveBaseFromUserConfig }
 
