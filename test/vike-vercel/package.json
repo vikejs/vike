@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx ./express-entry.ts",
-    "build": "vite build",
+    "build": "vike build",
+    "prod": "vike build && vike preview",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "keywords": [],
