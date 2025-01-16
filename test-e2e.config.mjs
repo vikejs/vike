@@ -84,7 +84,8 @@ function tolerateError({ logSource, logText }) {
       "is slow: it's taking more than",
 
       // [20:32:06.446][/.test-prod.test.ts][npm run prod][stderr] .vercel/output/functions/ssr_.func/index.mjs  2.4mb ⚠️
-      '.vercel/output/functions'
+      '.vercel/output/functions',
+      '.vercel\\output\\functions'
     ].some((t) => logText.includes(t)) ||
     isViteCjsWarning() ||
     isRenderErrorPageDeprecationWarning() ||
