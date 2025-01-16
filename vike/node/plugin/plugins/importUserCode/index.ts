@@ -6,7 +6,7 @@ import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
-import { assert, assertPosixPath, getOutDirs, isDevCheck } from '../../utils.js'
+import { assert, assertPosixPath, isDevCheck } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -132,7 +132,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config.root, getOutDirs(config).outDirRoot)
+  reloadVikeConfig(config.root)
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {
