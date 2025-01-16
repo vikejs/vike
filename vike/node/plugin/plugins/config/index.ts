@@ -38,8 +38,9 @@ async function getConfigVikPromise(
   // TODO/v1-release: deprecate this
   assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
-  const crawlWithGit = fromPluginOptions.crawl?.git ?? null
-  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev, { crawlWithGit })
+  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev, {
+    vikeVitePluginOptions: fromPluginOptions
+  })
   configs.push(fromPlusConfigFile)
   assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
     // TODO: add config file path ?
@@ -58,7 +59,7 @@ async function getConfigVikPromise(
     disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
     trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false,
     crawl: {
-      git: crawlWithGit
+      git: fromPluginOptions.crawl?.git ?? null
     }
   }
 

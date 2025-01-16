@@ -85,8 +85,8 @@ import {
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
+import type { ConfigVikeUserProvided } from '../../../../../shared/ConfigVike.js'
 
 assertIsNotProductionRuntime()
 
@@ -162,17 +162,17 @@ async function getVikeConfig(
   config: ResolvedConfig,
   isDev: boolean,
   {
-    crawlWithGit,
-    tolerateInvalidConfig
+    tolerateInvalidConfig,
+    vikeVitePluginOptions
   }: {
-    crawlWithGit?: null | boolean
     tolerateInvalidConfig?: true
+    vikeVitePluginOptions?: ConfigVikeUserProvided
   } = {}
 ): Promise<VikeConfigObject> {
   const { outDirRoot } = getOutDirs(config)
   const userRootDir = config.root
   if (!vikeConfigPromise) {
-    const crawlWithGit_ = crawlWithGit !== undefined ? crawlWithGit : (await getConfigVike(config)).crawl.git
+    const crawlWithGit_ = vikeVitePluginOptions?.crawl?.git ?? null
     vikeConfigPromise = loadVikeConfig_withErrorHandling(
       userRootDir,
       outDirRoot,
