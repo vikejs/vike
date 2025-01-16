@@ -164,12 +164,15 @@ async function handleReloadSideEffects() {
 }
 async function getVikeConfig(
   config: ResolvedConfig,
-  isDev: boolean,
+  isDev_: boolean,
   { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
 ): Promise<VikeConfigObject> {
   const userRootDir = config.root
-  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions
+  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as unknown
   assert(vikeVitePluginOptions)
+  const isDev = (config as any)._isDev as unknown
+  assert(typeof isDev === 'boolean')
+  assert(isDev_ === isDev)
   return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
 }
 async function getVikeConfig2(userRootDir: string, isDev: boolean, vikeVitePluginOptions: unknown) {
