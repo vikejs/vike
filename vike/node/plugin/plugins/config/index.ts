@@ -22,20 +22,14 @@ function resolveVikeConfig(vikeVitePluginOptions: unknown = {}): Plugin {
     },
     async configResolved(config) {
       assert(typeof isDev === 'boolean')
-      const promise = getConfigVikPromise(vikeVitePluginOptions, config, isDev)
+      const promise = getConfigVikPromise(config, isDev)
       ;(config as Record<string, unknown>).configVikePromise = promise
       await promise
     }
   }
 }
 
-async function getConfigVikPromise(
-  vikeVitePluginOptions: unknown,
-  config: ResolvedConfig,
-  isDev: boolean
-): Promise<ConfigVikeResolved> {
-  const { vikeConfigGlobal } = await getVikeConfig(config, isDev, {
-    vikeVitePluginOptions
-  })
+async function getConfigVikPromise(config: ResolvedConfig, isDev: boolean): Promise<ConfigVikeResolved> {
+  const { vikeConfigGlobal } = await getVikeConfig(config, isDev)
   return vikeConfigGlobal
 }
