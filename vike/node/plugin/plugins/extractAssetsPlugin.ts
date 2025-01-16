@@ -21,7 +21,6 @@ import {
 } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
@@ -163,9 +162,9 @@ function extractAssetsPlugin(): Plugin[] {
     {
       name: 'vike:extractAssets-4',
       async configResolved(config_) {
-        configVike = await getConfigVike(config_)
         config = config_
         vikeConfig = await getVikeConfig(config)
+        configVike = vikeConfig.vikeConfigGlobal
         isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
         if (!isServerAssetsFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060

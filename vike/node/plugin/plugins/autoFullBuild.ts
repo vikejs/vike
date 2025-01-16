@@ -6,12 +6,12 @@ import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './buildConfig.js'
+import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
 let forceExit = false
 
@@ -24,7 +24,8 @@ function autoFullBuild(): Plugin[] {
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
-        configVike = await getConfigVike(config_)
+        const vikeConfig = await getVikeConfig(config_)
+        configVike = vikeConfig.vikeConfigGlobal
         config = config_
         abortViteBuildSsr(configVike)
       },

@@ -12,7 +12,6 @@ import { debug } from './debug.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import { serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
-import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { fixServerAssets_isEnabled } from '../../buildConfig/fixServerAssets.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 
@@ -26,15 +25,15 @@ async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, con
   }
   */
   const { pageId, isForClientSide } = result
-  const { pageConfigs } = await getVikeConfig(config, { doNotRestartViteOnError: true })
+  const vikeConfig = await getVikeConfig(config, { doNotRestartViteOnError: true })
+  const { pageConfigs } = vikeConfig
   const pageConfig = pageConfigs.find((pageConfig) => pageConfig.pageId === pageId)
   assert(pageConfig, { id, pageId })
-  const configVike = await getConfigVike(config)
   const code = getLoadConfigValuesAll(
     pageConfig,
     isForClientSide,
     pageId,
-    configVike.includeAssetsImportedByServer,
+    vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer,
     isDev
   )
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)

@@ -6,11 +6,11 @@ import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
-import { getConfigVike } from '../../../shared/getConfigVike.js'
 import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getVikeManifest } from './getVikeManifest.js'
 import fs from 'fs/promises'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -28,7 +28,8 @@ function importBuild(): Plugin[] {
       enforce: 'post',
       async configResolved(config_) {
         config = config_
-        configVike = await getConfigVike(config)
+        const vikeConfig = await getVikeConfig(config)
+        configVike = vikeConfig.vikeConfigGlobal
       }
     },
     ...serverProductionEntryPlugin({
