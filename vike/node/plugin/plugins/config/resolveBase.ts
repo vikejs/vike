@@ -18,10 +18,10 @@ function resolveBaseFromResolvedConfig(
   baseAssets: string | null,
   config: ResolvedConfig
 ): BaseServers {
-  let baseOriginal: unknown = (config as Record<string, unknown>)._baseOriginal
-  if (baseOriginal === '/__UNSET__') baseOriginal = null
-  assert(baseOriginal === null || typeof baseOriginal == 'string')
-  return resolveBase(baseOriginal, baseServer, baseAssets)
+  let baseViteOriginal: unknown = (config as Record<string, unknown>)._baseViteOriginal
+  if (baseViteOriginal === '/__UNSET__') baseViteOriginal = null
+  assert(baseViteOriginal === null || typeof baseViteOriginal == 'string')
+  return resolveBase(baseViteOriginal, baseServer, baseAssets)
 }
 
 function resolveBaseFromUserConfig(

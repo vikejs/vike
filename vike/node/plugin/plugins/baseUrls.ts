@@ -27,7 +27,7 @@ function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
           'BASE_ASSETS'
         ],
         base: baseAssets, // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg.js'`
-        _baseOriginal: config.base ?? '/__UNSET__' // Vite resolves `_baseOriginal: null` to `undefined`
+        _baseViteOriginal: config.base ?? '/__UNSET__' // Vite resolves `_baseViteOriginal: null` to `undefined`
       }
     },
     // TODO: remove check
