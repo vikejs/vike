@@ -6,7 +6,7 @@ import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
-import type { ConfigVikeResolved } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { ConfigVikeGlobal } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
@@ -17,7 +17,7 @@ let forceExit = false
 
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
-  let configVike: ConfigVikeResolved
+  let configVike: ConfigVikeGlobal
   return [
     {
       name: 'vike:autoFullBuild',
@@ -62,11 +62,7 @@ function autoFullBuild(): Plugin[] {
   ]
 }
 
-async function triggerFullBuild(
-  config: ResolvedConfig,
-  configVike: ConfigVikeResolved,
-  bundle: Record<string, unknown>
-) {
+async function triggerFullBuild(config: ResolvedConfig, configVike: ConfigVikeGlobal, bundle: Record<string, unknown>) {
   if (config.build.ssr) return // already triggered
   if (isDisabled(configVike)) return
   // Workaround for @vitejs/plugin-legacy
@@ -105,7 +101,7 @@ async function triggerFullBuild(
   }
 }
 
-function abortViteBuildSsr(configVike: ConfigVikeResolved) {
+function abortViteBuildSsr(configVike: ConfigVikeGlobal) {
   if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
@@ -120,7 +116,7 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
   }
 }
 
-function isDisabled(configVike: ConfigVikeResolved): boolean {
+function isDisabled(configVike: ConfigVikeGlobal): boolean {
   const { disableAutoFullBuild } = configVike
   if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
     return !isViteCliCall()

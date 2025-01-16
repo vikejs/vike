@@ -17,7 +17,7 @@ import {
   isVersionOrAbove,
   assertWarning
 } from '../../utils.js'
-import type { ConfigVikeResolved } from './v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { ConfigVikeGlobal } from './v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
@@ -33,7 +33,7 @@ type GlobRoot = {
 async function getVirtualFileImportUserCode(
   id: string,
   options: { ssr?: boolean } | undefined,
-  configVike: ConfigVikeResolved,
+  configVike: ConfigVikeGlobal,
   config: ResolvedConfig,
   isDev: boolean
 ) {
@@ -48,7 +48,7 @@ async function getVirtualFileImportUserCode(
 
 async function getCode(
   config: ResolvedConfig,
-  configVike: ConfigVikeResolved,
+  configVike: ConfigVikeGlobal,
   isForClientSide: boolean,
   isClientRouting: boolean,
   isPrerendering: boolean,
@@ -121,7 +121,7 @@ async function generateGlobImports(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  configVike: ConfigVikeResolved,
+  configVike: ConfigVikeGlobal,
   isPrerendering: boolean,
   config: ResolvedConfig,
   isDev: boolean,

@@ -21,7 +21,7 @@ import {
 } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-import type { ConfigVikeResolved } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { ConfigVikeGlobal } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
@@ -42,7 +42,7 @@ const debug = createDebugger('vike:extractAssets')
 
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
-  let configVike: ConfigVikeResolved
+  let configVike: ConfigVikeGlobal
   let vikeConfig: VikeConfigObject
   let isServerAssetsFixEnabled: boolean
   return [
