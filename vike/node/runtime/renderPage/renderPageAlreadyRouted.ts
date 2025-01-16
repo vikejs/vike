@@ -189,7 +189,7 @@ function getPageContextInitEnhanced(
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {
     _objectCreatedByVike: true,
-    // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
+    // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer,
