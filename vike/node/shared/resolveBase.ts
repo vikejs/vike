@@ -3,9 +3,9 @@ export { resolveBaseFromUserConfig }
 
 // TODO: move to runtime/ and move config helpers to base plugin
 
-import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../../runtime/utils.js'
+import { assert, assertUsage, isBaseServer, isBaseAssets } from '../runtime/utils.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
-import type { ConfigVikeUserProvided } from '../../../../shared/ConfigVike.js'
+import type { ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
 import pc from '@brillout/picocolors'
 
 type BaseServers = {

@@ -36,7 +36,7 @@ import { getConfigVike } from '../shared/getConfigVike.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 import { getPageFilesExports } from './page-files/getPageFilesExports.js'
-import { resolveBaseFromResolvedConfig } from '../plugin/plugins/config/resolveBase.js'
+import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
