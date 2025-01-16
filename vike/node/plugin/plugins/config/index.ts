@@ -52,7 +52,7 @@ function resolveVikeConfigGlobal(
   const configs = [vikeVitePluginOptions]
 
   assertVikeConfig(pageConfigGlobalValues, ({ prop, errMsg }) => {
-    // TODO: add config file path ?
+    // Can we add the config file path ?
     return `config ${pc.cyan(prop)} ${errMsg}`
   })
   configs.push(pageConfigGlobalValues)

@@ -19,7 +19,6 @@ function resolveBaseFromResolvedConfig(
   return resolveBase(baseViteOriginal, baseServer, baseAssets)
 }
 
-// TODO: rename return values
 function resolveBase(
   baseViteOriginal: string | null,
   baseServerUnresolved: string | null,
