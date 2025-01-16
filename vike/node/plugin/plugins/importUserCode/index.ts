@@ -6,7 +6,7 @@ import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getConfigVike } from '../../../shared/getConfigVike.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
-import { assert, assertPosixPath, isDevCheck } from '../../utils.js'
+import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -18,18 +18,13 @@ import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 function importUserCode(): Plugin {
   let config: ResolvedConfig
   let configVike: ConfigVikeResolved
-  let isDev: boolean | undefined
   return {
     name: 'vike:importUserCode',
-    config(_, env) {
-      isDev = isDevCheck(env)
-    },
     async configResolved(config_) {
       configVike = await getConfigVike(config_)
       config = config_
       // TODO/v1-release: remove
       {
-        assert(isDev !== undefined)
         const isV1 = await isV1Design(config)
         if (!isV1) config.experimental.importGlobRestoreExtension = true
       }
@@ -51,6 +46,7 @@ function importUserCode(): Plugin {
     async load(id, options) {
       if (!isVirtualFileId(id)) return undefined
       id = getVirtualFileId(id)
+      const isDev = (config as any)._isDev as unknown
       assert(typeof isDev === 'boolean')
 
       if (isVirtualFileIdPageConfigValuesAll(id)) {
