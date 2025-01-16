@@ -165,10 +165,10 @@ async function getVikeConfig(
   config: ResolvedConfig,
   isDev: boolean,
   {
-    tolerateInvalidConfig,
+    doNotRestartViteOnError,
     vikeVitePluginOptions
   }: {
-    tolerateInvalidConfig?: true
+    doNotRestartViteOnError?: true
     vikeVitePluginOptions?: unknown
   } = {}
 ): Promise<VikeConfigObject> {
@@ -180,7 +180,7 @@ async function getVikeConfig(
       userRootDir,
       isDev,
       vikeVitePluginOptions,
-      tolerateInvalidConfig
+      doNotRestartViteOnError
     )
   }
   return await vikeConfigPromise
@@ -322,7 +322,7 @@ async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
   vikeVitePluginOptions: unknown,
-  tolerateInvalidConfig?: boolean
+  doNotRestartViteOnError?: boolean
 ): Promise<VikeConfigObject> {
   let hasError = false
   let ret: VikeConfigObject | undefined
@@ -347,7 +347,7 @@ async function loadVikeConfig_withErrorHandling(
       throw err
     } else {
       logConfigError(err)
-      if (!tolerateInvalidConfig) {
+      if (!doNotRestartViteOnError) {
         viteDevServerIsCorrupt = true
       }
       const dummyData: VikeConfigObject = {
