@@ -114,7 +114,7 @@ type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  globalVikeConfig: Record<string, unknown>
+  vikeConfigGlobal: Record<string, unknown>
 }
 
 let devServerIsCorrupt = false
@@ -355,7 +355,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        globalVikeConfig: {}
+        vikeConfigGlobal: {}
       }
       return dummyData
     }
@@ -370,7 +370,7 @@ async function loadVikeConfig(
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
 
-  const { globalVikeConfig, pageConfigGlobal } = await getGlobalConfigs(
+  const { vikeConfigGlobal, pageConfigGlobal } = await getGlobalConfigs(
     interfaceFilesByLocationId,
     userRootDir,
     importedFilesLoaded
@@ -446,7 +446,7 @@ async function loadVikeConfig(
 
   assertPageConfigs(pageConfigs)
 
-  return { pageConfigs, pageConfigGlobal, globalVikeConfig }
+  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal }
 }
 
 // TODO/soon: refactor
@@ -593,7 +593,7 @@ async function getGlobalConfigs(
     })
   }
 
-  const globalVikeConfig: Record<string, unknown> = {}
+  const vikeConfigGlobal: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsBuiltInGlobal,
     configValueSources: {}
@@ -625,12 +625,12 @@ async function getGlobalConfigs(
           )} in Vike's Vite plugin options instead.`,
           { onlyOnce: true }
         )
-        globalVikeConfig[configName] = configValueSource.value
+        vikeConfigGlobal[configName] = configValueSource.value
       }
     })
   )
 
-  return { pageConfigGlobal, globalVikeConfig }
+  return { pageConfigGlobal, vikeConfigGlobal }
 }
 
 async function resolveConfigValueSources(
