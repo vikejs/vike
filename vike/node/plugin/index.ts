@@ -37,9 +37,9 @@ assertViteVersion()
 setResolveClientEntriesDev(resolveClientEntriesDev)
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vikeConfig?: ConfigVikeUserProvided): any {
+function plugin(vikeVitePluginOptions?: ConfigVikeUserProvided): any {
   const plugins: Plugin[] = [
-    resolveVikeConfig(vikeConfig), // The configResolved() hook of resolveVikeConfig() should be the first called
+    resolveVikeConfig(vikeVitePluginOptions), // The configResolved() hook of resolveVikeConfig() should be the first called
     ...commonConfig(),
     importUserCode(),
     ...devConfig(),
@@ -54,7 +54,7 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     suppressRollupWarning(),
     ...setGlobalContext(),
     ...importBuild(),
-    baseUrls(vikeConfig),
+    baseUrls(vikeVitePluginOptions),
     envVarsPlugin(),
     fileEnv(),
     workaroundCssModuleHmr(),

@@ -6,7 +6,7 @@ import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../sha
 import { assertVikeConfig } from './assertVikeConfig.js'
 import { assert, isDevCheck } from '../../utils.js'
 import { pickFirst } from './pickFirst.js'
-import { resolveBase } from './resolveBase.js'
+import { resolveBaseFromResolvedConfig } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 

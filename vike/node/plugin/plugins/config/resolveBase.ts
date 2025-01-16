@@ -1,4 +1,4 @@
-export { resolveBase }
+export { resolveBaseFromResolvedConfig }
 export { resolveBaseFromUserConfig }
 
 import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils.js'
@@ -12,7 +12,7 @@ type BaseServers = {
   baseAssets: string
 }
 
-function resolveBase(configs: ConfigVikeUserProvided[], config: ResolvedConfig): BaseServers {
+function resolveBaseFromResolvedConfig(configs: ConfigVikeUserProvided[], config: ResolvedConfig): BaseServers {
   const baseServer = pickFirst(configs.map((c) => c.baseServer)) ?? null
   const baseAssets = pickFirst(configs.map((c) => c.baseAssets)) ?? null
   let baseOriginal: unknown = (config as Record<string, unknown>)._baseOriginal
@@ -21,8 +21,15 @@ function resolveBase(configs: ConfigVikeUserProvided[], config: ResolvedConfig):
   return resolve(baseOriginal, baseServer, baseAssets)
 }
 
-function resolveBaseFromUserConfig(config: UserConfig, configVike: undefined | ConfigVikeUserProvided): BaseServers {
-  return resolve(config.base ?? null, configVike?.baseServer ?? null, configVike?.baseAssets ?? null)
+function resolveBaseFromUserConfig(
+  config: UserConfig,
+  vikeVitePluginOptions: undefined | ConfigVikeUserProvided
+): BaseServers {
+  return resolve(
+    config.base ?? null,
+    vikeVitePluginOptions?.baseServer ?? null,
+    vikeVitePluginOptions?.baseAssets ?? null
+  )
 }
 
 function resolve(base: string | null, baseServer_: string | null, baseAssets_: string | null): BaseServers {

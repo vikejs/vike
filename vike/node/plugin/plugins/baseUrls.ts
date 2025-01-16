@@ -6,14 +6,14 @@ import { assert } from '../utils.js'
 import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
 
-function baseUrls(configVike?: ConfigVikeUserProvided): Plugin {
+function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
   let baseServer: string
   let baseAssets: string
   return {
     name: 'vike:baseUrls',
     enforce: 'post',
     async config(config) {
-      const bases = resolveBaseFromUserConfig(config, configVike)
+      const bases = resolveBaseFromUserConfig(config, vikeVitePluginOptions)
       baseServer = bases.baseServer
       baseAssets = bases.baseAssets
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called

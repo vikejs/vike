@@ -373,7 +373,6 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
     userRootDir,
     importedFilesLoaded
   )
-
   const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
