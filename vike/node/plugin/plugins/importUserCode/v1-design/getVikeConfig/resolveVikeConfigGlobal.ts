@@ -155,7 +155,6 @@ function checkConfigVike(configVike: unknown): null | WrongUsage {
   return null
 }
 
-// TODO: rename & move?
 type ConfigVikeGlobal = {
   prerender:
     | false
