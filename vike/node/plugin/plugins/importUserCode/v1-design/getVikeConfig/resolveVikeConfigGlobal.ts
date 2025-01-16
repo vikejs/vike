@@ -1,53 +1,14 @@
-export { resolveVikeConfig }
-export { resolveVikeConfigGlobal } // TODO: move?
+export { resolveVikeConfigGlobal }
 
-import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../../../shared/ConfigVike.js'
-import { assertVikeConfig } from '../../../config/assertVikeConfig.js'
-import { assert, isDevCheck } from '../../../../utils.js'
-import { pickFirst } from '../../../config/pickFirst.js'
-import { getVikeConfig } from '../getVikeConfig.js'
 import pc from '@brillout/picocolors'
-
-function resolveVikeConfig(vikeVitePluginOptions: unknown = {}): Plugin {
-  let isDev: undefined | boolean
-  return {
-    name: 'vike:resolveVikeConfig',
-    enforce: 'pre',
-    apply(_config, env) {
-      isDev = isDevCheck(env)
-      return true
-    },
-    config() {
-      return {
-        _vikeVitePluginOptions: vikeVitePluginOptions
-      } as UserConfig
-    },
-    async configResolved(config) {
-      assert(typeof isDev === 'boolean')
-      const promise = getConfigVikPromise(vikeVitePluginOptions, config, isDev)
-      ;(config as Record<string, unknown>).configVikePromise = promise
-      await promise
-    }
-  }
-}
-
-async function getConfigVikPromise(
-  vikeVitePluginOptions: unknown,
-  config: ResolvedConfig,
-  isDev: boolean
-): Promise<ConfigVikeResolved> {
-  const { vikeConfigGlobal } = await getVikeConfig(config, isDev, {
-    vikeVitePluginOptions
-  })
-  return vikeConfigGlobal
-}
+import { assert, assertUsage, hasProp, isObject } from '../../../../utils.js'
 
 function resolveVikeConfigGlobal(
   vikeVitePluginOptions: unknown,
   pageConfigGlobalValues: Record<string, unknown>
 ): ConfigVikeResolved {
-  // TODO/v1-release: deprecate this
+  // TODO/v1-release: remove
   assertVikeConfig(vikeVitePluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
   const configs = [vikeVitePluginOptions]
 
@@ -78,7 +39,7 @@ function resolvePrerenderOptions(configs: ConfigVikeUserProvided[]): ConfigVikeR
   if (!configs.some((c) => c.prerender)) {
     return false
   }
-  const configsPrerender = configs.map((c) => c.prerender).filter(isObject)
+  const configsPrerender = configs.map((c) => c.prerender).filter(isObject2)
   return {
     partial: pickFirst(configsPrerender.map((c) => c.partial)) ?? false,
     noExtraDir: pickFirst(configsPrerender.map((c) => c.noExtraDir)) ?? false,
@@ -87,7 +48,7 @@ function resolvePrerenderOptions(configs: ConfigVikeUserProvided[]): ConfigVikeR
   }
 }
 
-function isObject<T>(p: T | boolean | undefined): p is T {
+function isObject2<T>(p: T | boolean | undefined): p is T {
   return typeof p === 'object'
 }
 
@@ -98,4 +59,97 @@ function merge(objs: (Obj | undefined)[]): Obj {
     Object.assign(obj, e)
   })
   return obj
+}
+
+function pickFirst<T>(arr: T[]): T | undefined {
+  return arr.filter((v) => v !== undefined)[0]
+}
+
+type WrongUsage = { prop: string; errMsg: `should be a${string}` }
+function assertVikeConfig(
+  vikeConfig: unknown,
+  wrongUsageMsg: (wrongUsage: WrongUsage) => string
+): asserts vikeConfig is ConfigVikeUserProvided {
+  const wrongUsageError = checkConfigVike(vikeConfig)
+  if (wrongUsageError) {
+    assertUsage(false, wrongUsageMsg(wrongUsageError))
+  }
+}
+
+function checkConfigVike(configVike: unknown): null | WrongUsage {
+  assert(isObject(configVike))
+  {
+    const prop = 'disableUrlNormalization'
+    if (!hasProp(configVike, prop, 'boolean') && !hasProp(configVike, prop, 'undefined'))
+      return { prop, errMsg: 'should be a boolean' }
+  }
+  {
+    const prop = 'trailingSlash'
+    if (!hasProp(configVike, prop, 'boolean') && !hasProp(configVike, prop, 'undefined'))
+      return { prop, errMsg: 'should be a boolean' }
+  }
+  {
+    const prop = 'redirects'
+    const { redirects } = configVike
+    if (
+      !(
+        redirects === undefined ||
+        (isObject(redirects) && Object.values(redirects).every((v) => typeof v === 'string'))
+      )
+    )
+      return { prop, errMsg: 'should be an object of strings' }
+  }
+  {
+    const prop = 'disableAutoFullBuild'
+    if (
+      !hasProp(configVike, prop, 'boolean') &&
+      !hasProp(configVike, prop, 'undefined') &&
+      !(configVike[prop] === 'prerender')
+    )
+      return { prop, errMsg: "should be a boolean or 'prerender'" }
+  }
+  {
+    const prop = 'includeAssetsImportedByServer'
+    if (!hasProp(configVike, prop, 'boolean') && !hasProp(configVike, prop, 'undefined'))
+      return { prop, errMsg: 'should be a boolean' }
+  }
+  {
+    const prop = 'prerender'
+    if (
+      !hasProp(configVike, prop, 'object') &&
+      !hasProp(configVike, prop, 'boolean') &&
+      !hasProp(configVike, prop, 'undefined')
+    )
+      return { prop, errMsg: 'should be an object or a boolean' }
+  }
+
+  const configVikePrerender = configVike.prerender
+  if (typeof configVikePrerender === 'object') {
+    {
+      const p = 'partial'
+      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+    }
+    {
+      const p = 'noExtraDir'
+      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+    }
+    {
+      const p = 'disableAutoRun'
+      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+    }
+    {
+      const p = 'parallel'
+      if (
+        !hasProp(configVikePrerender, p, 'boolean') &&
+        !hasProp(configVikePrerender, p, 'number') &&
+        !hasProp(configVikePrerender, p, 'undefined')
+      )
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean or a number' }
+    }
+  }
+
+  return null
 }

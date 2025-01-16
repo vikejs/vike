@@ -14,7 +14,6 @@ import { devConfig } from './plugins/devConfig/index.js'
 import { packageJsonFile } from './plugins/packageJsonFile.js'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
-import { resolveVikeConfig } from './plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import type { ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
 import { distFileNames } from './plugins/distFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
@@ -31,6 +30,7 @@ import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.
 import { resolveClientEntriesDev } from './resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { vite6HmrRegressionWorkaround } from './plugins/vite6HmrRegressionWorkaround.js'
+import { resolveVikeConfig } from './plugins/config/index.js'
 
 markSetup_vikeVitePlugin()
 assertViteVersion()
