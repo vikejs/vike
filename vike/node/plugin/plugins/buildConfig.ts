@@ -67,7 +67,7 @@ function buildConfig(): Plugin[] {
           addLogHook()
           outDirs = getOutDirs(config)
           {
-            isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
+            isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
             if (isServerAssetsFixEnabled) {
               // https://github.com/vikejs/vike/issues/1339
               config.build.ssrEmitAssets = true
@@ -138,7 +138,7 @@ function buildConfig(): Plugin[] {
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const configVike = await getConfigVike(config)
   const pageFileEntries = await getPageFileEntries(config, configVike.includeAssetsImportedByServer) // TODO/v1-release: remove
-  const { pageConfigs } = await getVikeConfig(config, false)
+  const { pageConfigs } = await getVikeConfig(config)
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add'

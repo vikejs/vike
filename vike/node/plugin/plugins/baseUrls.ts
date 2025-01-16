@@ -2,18 +2,16 @@ export { baseUrls }
 
 import type { Plugin, UserConfig } from 'vite'
 import { resolveBase, resolveBaseFromResolvedConfig } from '../../shared/resolveBase.js'
-import { assert, isDevCheck } from '../utils.js'
+import { assert } from '../utils.js'
 import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
 function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
   let bases: ReturnType<typeof resolveBaseFromUserConfig>
-  let isDev: boolean
   return {
     name: 'vike:baseUrls',
     enforce: 'post',
-    async config(config, env) {
-      isDev = isDevCheck(env)
+    async config(config) {
       // TODO: fix bug: use getVikeConfig2() and udpate check below
       bases = resolveBaseFromUserConfig(config, vikeVitePluginOptions)
       const { baseServer, baseAssets } = bases
@@ -31,7 +29,7 @@ function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
       }
     },
     async configResolved(config) {
-      const vikeConfig = await getVikeConfig(config, isDev)
+      const vikeConfig = await getVikeConfig(config)
       const { baseServer, baseAssets } = vikeConfig.vikeConfigGlobal
       const basesResolved = resolveBaseFromResolvedConfig(baseServer, baseAssets, config)
       // Ensure that the premature base URL resolving we did in config() isn't erroneous

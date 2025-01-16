@@ -30,7 +30,7 @@ function importUserCode(): Plugin {
       // TODO/v1-release: remove
       {
         assert(isDev !== undefined)
-        const isV1 = await isV1Design(config, isDev)
+        const isV1 = await isV1Design(config)
         if (!isV1) config.experimental.importGlobRestoreExtension = true
       }
     },

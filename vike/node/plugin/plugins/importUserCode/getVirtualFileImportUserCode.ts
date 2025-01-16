@@ -141,7 +141,7 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
 `
 
   // We still use import.meta.glob() when using th V1 design in order to not break the V1 design deprecation warning
-  const isV1Design = await isV1Design_(config, isDev)
+  const isV1Design = await isV1Design_(config)
 
   fileTypes
     .filter((fileType) => fileType !== '.css')

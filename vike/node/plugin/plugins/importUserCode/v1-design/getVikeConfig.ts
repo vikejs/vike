@@ -164,7 +164,6 @@ async function handleReloadSideEffects() {
 }
 async function getVikeConfig(
   config: ResolvedConfig,
-  isDev_: boolean,
   { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
 ): Promise<VikeConfigObject> {
   const userRootDir = config.root
@@ -172,8 +171,6 @@ async function getVikeConfig(
   assert(vikeVitePluginOptions)
   const isDev = (config as any)._isDev as unknown
   assert(typeof isDev === 'boolean')
-  assert(typeof isDev_ === 'boolean')
-  assert(isDev_ === isDev, { isDev, isDev_ })
   return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
 }
 async function getVikeConfig2(userRootDir: string, isDev: boolean, vikeVitePluginOptions: unknown) {
@@ -196,8 +193,8 @@ async function getVikeConfigEntry(
   return await vikeConfigPromise
 }
 
-async function isV1Design(config: ResolvedConfig, isDev: boolean): Promise<boolean> {
-  const vikeConfig = await getVikeConfig(config, isDev)
+async function isV1Design(config: ResolvedConfig): Promise<boolean> {
+  const vikeConfig = await getVikeConfig(config)
   const { pageConfigs } = vikeConfig
   const isV1Design = pageConfigs.length > 0
   return isV1Design

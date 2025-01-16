@@ -249,7 +249,7 @@ function fixServerAssets_assertCssTarget_populate(config: ResolvedConfig) {
 }
 async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
   if (!fixServerAssets_isEnabled()) return
-  if (!(await isV1Design(config, false))) return
+  if (!(await isV1Design(config))) return
   const targetsServer = targets.filter((t) => t.isServerSide)
   const targetsClient = targets.filter((t) => !t.isServerSide)
   targetsClient.forEach((targetClient) => {

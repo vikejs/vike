@@ -224,7 +224,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   })
 
   const doNotPrerenderList: DoNotPrerenderList = []
-  const vikeConfig = await getVikeConfig(viteConfig, false)
+  const vikeConfig = await getVikeConfig(viteConfig)
   await collectDoNoPrerenderList(renderContext, vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit)
 
   await callOnBeforePrerenderStartHooks(prerenderContext, renderContext, concurrencyLimit, doNotPrerenderList)

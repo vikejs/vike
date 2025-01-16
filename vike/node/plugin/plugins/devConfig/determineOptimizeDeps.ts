@@ -15,7 +15,7 @@ import { getFilePathResolved } from '../../shared/getFilePath.js'
 const debug = createDebugger('vike:optimizeDeps')
 
 async function determineOptimizeDeps(config: ResolvedConfig, isDev: true) {
-  const { pageConfigs } = await getVikeConfig(config, isDev)
+  const { pageConfigs } = await getVikeConfig(config)
 
   const { entries, include } = await getPageDeps(config, pageConfigs, isDev)
   {
