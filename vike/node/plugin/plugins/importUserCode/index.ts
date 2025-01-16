@@ -88,10 +88,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  assertPosixPath(file)
-  vikeConfigDependencies.forEach((f) => assertPosixPath(f))
   const isVikeConfig = isVikeConfigModule(file)
-
   const isViteModule = ctx.modules.length > 0
 
   /* Should we show this?
@@ -124,6 +121,8 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 }
 
 function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
+  assertPosixPath(filePathAbsoluteFilesystem)
+  vikeConfigDependencies.forEach((f) => assertPosixPath(f))
   return vikeConfigDependencies.has(filePathAbsoluteFilesystem)
 }
 
