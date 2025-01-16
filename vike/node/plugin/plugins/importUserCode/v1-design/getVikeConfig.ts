@@ -86,7 +86,7 @@ import type { FilePathResolved } from '../../../../../shared/page-configs/FilePa
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
 import type { ConfigVikeResolved, ConfigVikeUserProvided } from '../../../../../shared/ConfigVike.js'
-import { resolveVikeConfigGlobal } from '../../config/index.js'
+import { resolveVikeConfigGlobal } from './getVikeConfig/resolveVikeConfigGlobal.js'
 
 assertIsNotProductionRuntime()
 
