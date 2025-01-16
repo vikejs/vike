@@ -14,7 +14,7 @@ function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
     enforce: 'post',
     async config(config, env) {
       isDev = isDevCheck(env)
-      // TODO: fix bug: also consider + files
+      // TODO: fix bug: use getVikeConfig2() and udpate check below
       bases = resolveBaseFromUserConfig(config, vikeVitePluginOptions)
       const { baseServer, baseAssets } = bases
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
@@ -30,7 +30,6 @@ function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
         _baseViteOriginal: config.base ?? '/__UNSET__' // Vite resolves `_baseViteOriginal: null` to `undefined`
       }
     },
-    // TODO: remove check
     async configResolved(config) {
       const vikeConfig = await getVikeConfig(config, isDev)
       const { baseServer, baseAssets } = vikeConfig.vikeConfigGlobal

@@ -27,6 +27,7 @@ async function enhanceViteConfig(viteConfig: InlineConfig = {}, operation: Opera
     viteConfigResolved = await resolveViteConfig(viteConfigEnhanced, operation)
   }
 
+  // TODO: use loadConfigFromFile() instead of viteConfigResolved
   const { vikeConfigGlobal } = await getVikeConfig2(
     viteConfigResolved.root,
     operation === 'dev',
