@@ -132,7 +132,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config.root)
+  reloadVikeConfig(config)
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {

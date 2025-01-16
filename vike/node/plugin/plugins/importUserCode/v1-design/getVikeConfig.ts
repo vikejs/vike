@@ -121,10 +121,13 @@ let devServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
-function reloadVikeConfig(userRootDir: string) {
+function reloadVikeConfig(config: ResolvedConfig) {
+  const userRootDir = config.root
+  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as ConfigVikeUserProvided
+  assert(vikeVitePluginOptions)
   vikeConfigDependencies.clear()
   clearFilesEnvMap()
-  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, true)
+  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
@@ -169,9 +172,15 @@ async function getVikeConfig(
   } = {}
 ): Promise<VikeConfigObject> {
   const userRootDir = config.root
+  vikeVitePluginOptions ??= (config as any)._vikeVitePluginOptions as ConfigVikeUserProvided
+  assert(vikeVitePluginOptions)
   if (!vikeConfigPromise) {
-    const crawlWithGit_ = vikeVitePluginOptions?.crawl?.git ?? null
-    vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, isDev, crawlWithGit_, tolerateInvalidConfig)
+    vikeConfigPromise = loadVikeConfig_withErrorHandling(
+      userRootDir,
+      isDev,
+      vikeVitePluginOptions,
+      tolerateInvalidConfig
+    )
   }
   return await vikeConfigPromise
 }
@@ -311,14 +320,14 @@ function assertAllConfigsAreKnown(interfaceFilesByLocationId: InterfaceFilesByLo
 async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
-  crawlWithGit: null | boolean,
+  vikeVitePluginOptions: ConfigVikeUserProvided,
   tolerateInvalidConfig?: boolean
 ): Promise<VikeConfigObject> {
   let hasError = false
   let ret: VikeConfigObject | undefined
   let err: unknown
   try {
-    ret = await loadVikeConfig(userRootDir, crawlWithGit)
+    ret = await loadVikeConfig(userRootDir, vikeVitePluginOptions)
   } catch (err_) {
     hasError = true
     err = err_
@@ -352,7 +361,11 @@ async function loadVikeConfig_withErrorHandling(
     }
   }
 }
-async function loadVikeConfig(userRootDir: string, crawlWithGit: null | boolean): Promise<VikeConfigObject> {
+async function loadVikeConfig(
+  userRootDir: string,
+  vikeVitePluginOptions: ConfigVikeUserProvided
+): Promise<VikeConfigObject> {
+  const crawlWithGit = vikeVitePluginOptions?.crawl?.git ?? null
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, crawlWithGit)
 
   const importedFilesLoaded: ImportedFilesLoaded = {}

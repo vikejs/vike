@@ -1,6 +1,6 @@
 export { resolveVikeConfig }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { assertVikeConfig } from './assertVikeConfig.js'
 import { assert, isDevCheck } from '../../utils.js'
@@ -17,6 +17,11 @@ function resolveVikeConfig(vikeConfig: unknown): Plugin {
     apply(_config, env) {
       isDev = isDevCheck(env)
       return true
+    },
+    config() {
+      return {
+        _vikeVitePluginOptions: vikeConfig ?? {}
+      } as UserConfig
     },
     async configResolved(config) {
       assert(typeof isDev === 'boolean')
