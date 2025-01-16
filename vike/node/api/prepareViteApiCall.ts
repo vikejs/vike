@@ -44,8 +44,8 @@ async function resolveViteConfig(viteConfig: InlineConfig, operation: 'build' | 
 function getResolveConfigArgs(viteConfig: InlineConfig, operation: 'build' | 'dev' | 'preview' | 'prerender') {
   const inlineConfig = viteConfig
   const command = operation === 'build' || operation === 'prerender' ? 'build' : 'serve'
-  const defaultMode = 'custom'
-  const defaultNodeEnv = operation === 'dev' ? 'development' : 'production'
+  const defaultMode = operation === 'dev' ? 'development' : 'production'
+  const defaultNodeEnv = defaultMode
   const isPreview = operation === 'preview'
   return [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
 }
