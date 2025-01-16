@@ -1,7 +1,7 @@
 export { baseUrls }
 
-import type { Plugin } from 'vite'
-import { resolveBaseFromResolvedConfig, resolveBaseFromUserConfig } from '../../shared/resolveBase.js'
+import type { Plugin, UserConfig } from 'vite'
+import { resolveBase, resolveBaseFromResolvedConfig } from '../../shared/resolveBase.js'
 import { assert, isDevCheck } from '../utils.js'
 import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
@@ -45,4 +45,13 @@ function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
       */
     }
   }
+}
+
+function resolveBaseFromUserConfig(config: UserConfig, vikeVitePluginOptions: undefined | ConfigVikeUserProvided) {
+  const baseViteOriginal = config.base ?? null
+  return resolveBase(
+    baseViteOriginal,
+    vikeVitePluginOptions?.baseServer ?? null,
+    vikeVitePluginOptions?.baseAssets ?? null
+  )
 }

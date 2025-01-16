@@ -1,39 +1,22 @@
+export { resolveBase }
 export { resolveBaseFromResolvedConfig }
-export { resolveBaseFromUserConfig }
 
-// TODO: move to runtime/ and move config helpers to base plugin
-
-import { assert, assertUsage, isBaseServer, isBaseAssets } from '../runtime/utils.js'
-import type { ResolvedConfig, UserConfig } from 'vite'
-import type { ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
+import { assert, assertUsage, isBaseServer, isBaseAssets } from './utils.js'
 import pc from '@brillout/picocolors'
-
-type BaseServers = {
-  baseServer: string
-  baseAssets: string
-}
+import type { ResolvedConfig } from 'vite'
 
 function resolveBaseFromResolvedConfig(
   baseServer: string | null,
   baseAssets: string | null,
   config: ResolvedConfig
-): BaseServers {
+): {
+  baseServer: string
+  baseAssets: string
+} {
   let baseViteOriginal: unknown = (config as Record<string, unknown>)._baseViteOriginal
   if (baseViteOriginal === '/__UNSET__') baseViteOriginal = null
   assert(baseViteOriginal === null || typeof baseViteOriginal == 'string')
   return resolveBase(baseViteOriginal, baseServer, baseAssets)
-}
-
-function resolveBaseFromUserConfig(
-  config: UserConfig,
-  vikeVitePluginOptions: undefined | ConfigVikeUserProvided
-): BaseServers {
-  const baseViteOriginal = config.base ?? null
-  return resolveBase(
-    baseViteOriginal,
-    vikeVitePluginOptions?.baseServer ?? null,
-    vikeVitePluginOptions?.baseAssets ?? null
-  )
 }
 
 // TODO: rename return values
@@ -41,7 +24,10 @@ function resolveBase(
   baseViteOriginal: string | null,
   baseServerUnresolved: string | null,
   baseAssetsUnresolved: string | null
-): BaseServers {
+): {
+  baseServer: string
+  baseAssets: string
+} {
   {
     const wrongBase = (val: string) =>
       `should start with ${pc.cyan('/')}, ${pc.cyan('http://')}, or ${pc.cyan('https://')} (it's ${pc.cyan(
