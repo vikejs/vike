@@ -2,7 +2,6 @@ export { prepareViteApiCall }
 
 import { resolveConfig } from 'vite'
 import type { InlineConfig } from 'vite'
-import { getConfigVike } from '../shared/getConfigVike.js'
 import { pluginName } from '../plugin/plugins/commonConfig/pluginName.js'
 import type { Operation } from './types.js'
 import { setOperation } from './context.js'
