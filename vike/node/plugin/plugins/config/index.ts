@@ -1,4 +1,5 @@
 export { resolveVikeConfig }
+export { resolveVikeConfigGlobal } // TODO: move?
 
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import type { ConfigVikeUserProvided, ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
@@ -9,7 +10,7 @@ import { resolveBase } from './resolveBase.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 
-function resolveVikeConfig(vikeConfig: unknown): Plugin {
+function resolveVikeConfig(vikeVitePluginOptions: unknown = {}): Plugin {
   let isDev: undefined | boolean
   return {
     name: 'vike:resolveVikeConfig',
@@ -20,12 +21,12 @@ function resolveVikeConfig(vikeConfig: unknown): Plugin {
     },
     config() {
       return {
-        _vikeVitePluginOptions: vikeConfig ?? {}
+        _vikeVitePluginOptions: vikeVitePluginOptions
       } as UserConfig
     },
     async configResolved(config) {
       assert(typeof isDev === 'boolean')
-      const promise = getConfigVikPromise(vikeConfig, config, isDev)
+      const promise = getConfigVikPromise(vikeVitePluginOptions, config, isDev)
       ;(config as Record<string, unknown>).configVikePromise = promise
       await promise
     }
@@ -33,26 +34,36 @@ function resolveVikeConfig(vikeConfig: unknown): Plugin {
 }
 
 async function getConfigVikPromise(
-  vikeConfig: unknown,
+  vikeVitePluginOptions: unknown,
   config: ResolvedConfig,
   isDev: boolean
 ): Promise<ConfigVikeResolved> {
-  const fromPluginOptions = (vikeConfig ?? {}) as ConfigVikeUserProvided
-
-  const configs = [fromPluginOptions]
-  // TODO/v1-release: deprecate this
-  assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
-
-  const { vikeConfigGlobal: fromPlusConfigFile } = await getVikeConfig(config, isDev, {
-    vikeVitePluginOptions: fromPluginOptions
+  const { vikeConfigGlobal } = await getVikeConfig(config, isDev, {
+    vikeVitePluginOptions
   })
-  configs.push(fromPlusConfigFile)
-  assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
+  return vikeConfigGlobal
+}
+
+function resolveVikeConfigGlobal(
+  vikeVitePluginOptions: unknown,
+  pageConfigGlobalValues: Record<string, unknown>
+): ConfigVikeResolved {
+  // TODO/v1-release: deprecate this
+  assertVikeConfig(vikeVitePluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
+  const configs = [vikeVitePluginOptions]
+
+  assertVikeConfig(pageConfigGlobalValues, ({ prop, errMsg }) => {
     // TODO: add config file path ?
     return `config ${pc.cyan(prop)} ${errMsg}`
   })
+  configs.push(pageConfigGlobalValues)
 
-  const { baseServer, baseAssets } = resolveBase(configs, config)
+  /* TODO
+  const { baseServer, baseAssets } = resolveBase(configs)
+  /*/
+  const baseServer = '/'
+  const baseAssets = '/'
+  //*/
 
   const configVike: ConfigVikeResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
@@ -64,7 +75,7 @@ async function getConfigVikPromise(
     disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
     trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false,
     crawl: {
-      git: fromPluginOptions.crawl?.git ?? null
+      git: vikeVitePluginOptions.crawl?.git ?? null
     }
   }
 

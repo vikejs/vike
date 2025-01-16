@@ -85,7 +85,8 @@ import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
-import type { ConfigVikeUserProvided } from '../../../../../shared/ConfigVike.js'
+import type { ConfigVikeResolved, ConfigVikeUserProvided } from '../../../../../shared/ConfigVike.js'
+import { resolveVikeConfigGlobal } from '../../config/index.js'
 
 assertIsNotProductionRuntime()
 
@@ -114,7 +115,7 @@ type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  vikeConfigGlobal: Record<string, unknown>
+  vikeConfigGlobal: ConfigVikeResolved
 }
 
 let devServerIsCorrupt = false
@@ -123,7 +124,7 @@ let vikeConfigPromise: Promise<VikeConfigObject> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
 function reloadVikeConfig(config: ResolvedConfig) {
   const userRootDir = config.root
-  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as ConfigVikeUserProvided
+  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as unknown
   assert(vikeVitePluginOptions)
   vikeConfigDependencies.clear()
   clearFilesEnvMap()
@@ -168,11 +169,11 @@ async function getVikeConfig(
     vikeVitePluginOptions
   }: {
     tolerateInvalidConfig?: true
-    vikeVitePluginOptions?: ConfigVikeUserProvided
+    vikeVitePluginOptions?: unknown
   } = {}
 ): Promise<VikeConfigObject> {
   const userRootDir = config.root
-  vikeVitePluginOptions ??= (config as any)._vikeVitePluginOptions as ConfigVikeUserProvided
+  vikeVitePluginOptions ??= (config as any)._vikeVitePluginOptions
   assert(vikeVitePluginOptions)
   if (!vikeConfigPromise) {
     vikeConfigPromise = loadVikeConfig_withErrorHandling(
@@ -320,7 +321,7 @@ function assertAllConfigsAreKnown(interfaceFilesByLocationId: InterfaceFilesByLo
 async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
-  vikeVitePluginOptions: ConfigVikeUserProvided,
+  vikeVitePluginOptions: unknown,
   tolerateInvalidConfig?: boolean
 ): Promise<VikeConfigObject> {
   let hasError = false
@@ -355,26 +356,25 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        vikeConfigGlobal: {}
+        vikeConfigGlobal: resolveVikeConfigGlobal({}, {})
       }
       return dummyData
     }
   }
 }
-async function loadVikeConfig(
-  userRootDir: string,
-  vikeVitePluginOptions: ConfigVikeUserProvided
-): Promise<VikeConfigObject> {
-  const crawlWithGit = vikeVitePluginOptions?.crawl?.git ?? null
+async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
+  const crawlWithGit = resolveVikeConfigGlobal(vikeVitePluginOptions, {}).crawl.git ?? null
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, crawlWithGit)
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
 
-  const { vikeConfigGlobal, pageConfigGlobal } = await getGlobalConfigs(
+  const { pageConfigGlobal, pageConfigGlobalValues } = await getGlobalConfigs(
     interfaceFilesByLocationId,
     userRootDir,
     importedFilesLoaded
   )
+
+  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     objectEntries(interfaceFilesByLocationId)
@@ -593,7 +593,7 @@ async function getGlobalConfigs(
     })
   }
 
-  const vikeConfigGlobal: Record<string, unknown> = {}
+  const pageConfigGlobalValues: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsBuiltInGlobal,
     configValueSources: {}
@@ -625,12 +625,12 @@ async function getGlobalConfigs(
           )} in Vike's Vite plugin options instead.`,
           { onlyOnce: true }
         )
-        vikeConfigGlobal[configName] = configValueSource.value
+        pageConfigGlobalValues[configName] = configValueSource.value
       }
     })
   )
 
-  return { pageConfigGlobal, vikeConfigGlobal }
+  return { pageConfigGlobal, pageConfigGlobalValues }
 }
 
 async function resolveConfigValueSources(
