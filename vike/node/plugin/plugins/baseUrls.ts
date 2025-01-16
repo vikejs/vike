@@ -3,7 +3,7 @@ export { baseUrls }
 import type { Plugin, UserConfig } from 'vite'
 import { resolveBase, resolveBaseFromResolvedConfig } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
-import type { ConfigVikeUserProvided } from '../../../shared/ConfigVike.js'
+import type { ConfigVikeUserProvided } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
 function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
