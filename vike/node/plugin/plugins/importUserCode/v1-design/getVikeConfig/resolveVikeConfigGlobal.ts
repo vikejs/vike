@@ -10,10 +10,10 @@ function resolveVikeConfigGlobal(
   pageConfigGlobalValues: Record<string, unknown>
 ): ConfigVikeResolved {
   // TODO/v1-release: remove
-  assertVikeConfig(vikeVitePluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
+  assertVikeConfigGlobal(vikeVitePluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
   const configs = [vikeVitePluginOptions]
 
-  assertVikeConfig(pageConfigGlobalValues, ({ prop, errMsg }) => {
+  assertVikeConfigGlobal(pageConfigGlobalValues, ({ prop, errMsg }) => {
     // Can we add the config file path ?
     return `config ${pc.cyan(prop)} ${errMsg}`
   })
@@ -67,11 +67,11 @@ function pickFirst<T>(arr: T[]): T | undefined {
 }
 
 type WrongUsage = { prop: string; errMsg: `should be a${string}` }
-function assertVikeConfig(
-  vikeConfig: unknown,
+function assertVikeConfigGlobal(
+  vikeConfigGlobal: unknown,
   wrongUsageMsg: (wrongUsage: WrongUsage) => string
-): asserts vikeConfig is VikeVitePluginOptions {
-  const wrongUsageError = checkConfigVike(vikeConfig)
+): asserts vikeConfigGlobal is VikeVitePluginOptions {
+  const wrongUsageError = checkConfigVike(vikeConfigGlobal)
   if (wrongUsageError) {
     assertUsage(false, wrongUsageMsg(wrongUsageError))
   }
