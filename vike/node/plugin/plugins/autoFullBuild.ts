@@ -17,7 +17,7 @@ let forceExit = false
 
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
-  let configVike: VikeConfigGlobal
+  let vikeConfigGlobal: VikeConfigGlobal
   return [
     {
       name: 'vike:autoFullBuild',
@@ -25,9 +25,9 @@ function autoFullBuild(): Plugin[] {
       enforce: 'pre',
       async configResolved(config_) {
         const vikeConfig = await getVikeConfig(config_)
-        configVike = vikeConfig.vikeConfigGlobal
+        vikeConfigGlobal = vikeConfig.vikeConfigGlobal
         config = config_
-        abortViteBuildSsr(configVike)
+        abortViteBuildSsr(vikeConfigGlobal)
       },
       writeBundle: {
         /* We can't use this because it breaks Vite's logging. TODO: try again with latest Vite version.
@@ -36,7 +36,7 @@ function autoFullBuild(): Plugin[] {
         */
         async handler(_options, bundle) {
           try {
-            await triggerFullBuild(config, configVike, bundle)
+            await triggerFullBuild(config, vikeConfigGlobal, bundle)
           } catch (err) {
             // Avoid Rollup prefixing the error with [vike:autoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
             console.error(err)
@@ -62,9 +62,13 @@ function autoFullBuild(): Plugin[] {
   ]
 }
 
-async function triggerFullBuild(config: ResolvedConfig, configVike: VikeConfigGlobal, bundle: Record<string, unknown>) {
+async function triggerFullBuild(
+  config: ResolvedConfig,
+  vikeConfigGlobal: VikeConfigGlobal,
+  bundle: Record<string, unknown>
+) {
   if (config.build.ssr) return // already triggered
-  if (isDisabled(configVike)) return
+  if (isDisabled(vikeConfigGlobal)) return
   // Workaround for @vitejs/plugin-legacy
   //  - The legacy plugin triggers its own Rollup build for the client-side.
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
@@ -95,14 +99,18 @@ async function triggerFullBuild(config: ResolvedConfig, configVike: VikeConfigGl
     process.exit(1)
   }
 
-  if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
+  if (
+    vikeConfigGlobal.prerender &&
+    !vikeConfigGlobal.prerender.disableAutoRun &&
+    vikeConfigGlobal.disableAutoFullBuild !== 'prerender'
+  ) {
     await runPrerenderFromAutoRun(configInline, false)
     forceExit = true
   }
 }
 
-function abortViteBuildSsr(configVike: VikeConfigGlobal) {
-  if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+function abortViteBuildSsr(vikeConfigGlobal: VikeConfigGlobal) {
+  if (vikeConfigGlobal.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -116,8 +124,8 @@ function abortViteBuildSsr(configVike: VikeConfigGlobal) {
   }
 }
 
-function isDisabled(configVike: VikeConfigGlobal): boolean {
-  const { disableAutoFullBuild } = configVike
+function isDisabled(vikeConfigGlobal: VikeConfigGlobal): boolean {
+  const { disableAutoFullBuild } = vikeConfigGlobal
   if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
     return !isViteCliCall()
   } else {

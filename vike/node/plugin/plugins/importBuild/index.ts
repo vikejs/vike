@@ -20,8 +20,7 @@ const ASSETS_MAP = '__VITE_ASSETS_MAP__'
 
 function importBuild(): Plugin[] {
   let config: ResolvedConfig
-  // TODO: rename
-  let configVike: VikeConfigGlobal
+  let vikeConfigGlobal: VikeConfigGlobal
   return [
     {
       name: 'vike:importBuild:config',
@@ -29,22 +28,22 @@ function importBuild(): Plugin[] {
       async configResolved(config_) {
         config = config_
         const vikeConfig = await getVikeConfig(config)
-        configVike = vikeConfig.vikeConfigGlobal
+        vikeConfigGlobal = vikeConfig.vikeConfigGlobal
       }
     },
     ...serverProductionEntryPlugin({
       getServerProductionEntry: () => {
-        return getServerProductionEntryCode(config, configVike)
+        return getServerProductionEntryCode(config, vikeConfigGlobal)
       },
       libraryName: 'Vike'
     })
   ]
 }
 
-function getServerProductionEntryCode(config: ResolvedConfig, configVike: VikeConfigGlobal): string {
+function getServerProductionEntryCode(config: ResolvedConfig, vikeConfigGlobal: VikeConfigGlobal): string {
   const importPath = getImportPath(config)
   // TODO: remove this?
-  const vikeManifest = getVikeManifest(configVike, config)
+  const vikeManifest = getVikeManifest(vikeConfigGlobal, config)
   const importerCode = [
     `  import { setImportBuildGetters } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,

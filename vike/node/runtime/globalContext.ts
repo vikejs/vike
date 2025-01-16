@@ -241,8 +241,8 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
-    const configVike = vikeConfig.vikeConfigGlobal
-    const pluginManifest = getRuntimeManifest(configVike, viteConfig)
+    const vikeConfigGlobal = vikeConfig.vikeConfigGlobal
+    const pluginManifest = getRuntimeManifest(vikeConfigGlobal, viteConfig)
     globalObject.globalContext = {
       isProduction: false,
       isPrerendering: false,
@@ -294,11 +294,11 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   }
 }
 
-function getRuntimeManifest(configVike: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
-  const { includeAssetsImportedByServer, redirects, trailingSlash, disableUrlNormalization } = configVike
+function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
+  const { includeAssetsImportedByServer, redirects, trailingSlash, disableUrlNormalization } = vikeConfigGlobal
   const { baseServer, baseAssets } = resolveBaseFromResolvedConfig(
-    configVike.baseServer,
-    configVike.baseAssets,
+    vikeConfigGlobal.baseServer,
+    vikeConfigGlobal.baseAssets,
     viteConfig
   )
   const manifest = {

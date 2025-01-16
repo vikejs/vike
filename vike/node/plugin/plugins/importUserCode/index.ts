@@ -22,12 +22,12 @@ import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
-  let configVike: VikeConfigGlobal
+  let vikeConfigGlobal: VikeConfigGlobal
   return {
     name: 'vike:importUserCode',
     async configResolved(config_) {
       const vikeConfig = await getVikeConfig(config_)
-      configVike = vikeConfig.vikeConfigGlobal
+      vikeConfigGlobal = vikeConfig.vikeConfigGlobal
       config = config_
       // TODO/v1-release: remove
       {
@@ -61,7 +61,7 @@ function importUserCode(): Plugin {
       }
 
       if (isVirtualFileIdImportUserCode(id)) {
-        const code = await getVirtualFileImportUserCode(id, options, configVike, config, isDev)
+        const code = await getVirtualFileImportUserCode(id, options, vikeConfigGlobal, config, isDev)
         return code
       }
     },

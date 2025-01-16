@@ -42,7 +42,7 @@ const debug = createDebugger('vike:extractAssets')
 
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
-  let configVike: VikeConfigGlobal
+  let vikeConfigGlobal: VikeConfigGlobal
   let vikeConfig: VikeConfigObject
   let isServerAssetsFixEnabled: boolean
   return [
@@ -62,7 +62,7 @@ function extractAssetsPlugin(): Plugin[] {
           assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
-        assert(configVike.includeAssetsImportedByServer)
+        assert(vikeConfigGlobal.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
@@ -97,7 +97,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        assert(configVike.includeAssetsImportedByServer)
+        assert(vikeConfigGlobal.includeAssetsImportedByServer)
 
         let resolution: null | ResolvedId = null
         try {
@@ -164,7 +164,7 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfig(config)
-        configVike = vikeConfig.vikeConfigGlobal
+        vikeConfigGlobal = vikeConfig.vikeConfigGlobal
         isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
         if (!isServerAssetsFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060

@@ -19,7 +19,7 @@ function resolveVikeConfigGlobal(
   })
   configs.push(pageConfigGlobalValues)
 
-  const configVike: VikeConfigGlobal = {
+  const vikeConfigGlobal: VikeConfigGlobal = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
     prerender: resolvePrerenderOptions(configs),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
@@ -33,7 +33,7 @@ function resolveVikeConfigGlobal(
     }
   }
 
-  return configVike
+  return vikeConfigGlobal
 }
 
 function resolvePrerenderOptions(configs: VikeVitePluginOptions[]): VikeConfigGlobal['prerender'] {
@@ -71,27 +71,27 @@ function assertVikeConfigGlobal(
   vikeConfigGlobal: unknown,
   wrongUsageMsg: (wrongUsage: WrongUsage) => string
 ): asserts vikeConfigGlobal is VikeVitePluginOptions {
-  const wrongUsageError = checkConfigVike(vikeConfigGlobal)
+  const wrongUsageError = check(vikeConfigGlobal)
   if (wrongUsageError) {
     assertUsage(false, wrongUsageMsg(wrongUsageError))
   }
 }
 
-function checkConfigVike(configVike: unknown): null | WrongUsage {
-  assert(isObject(configVike))
+function check(vikeConfigGlobal: unknown): null | WrongUsage {
+  assert(isObject(vikeConfigGlobal))
   {
     const prop = 'disableUrlNormalization'
-    if (!hasProp(configVike, prop, 'boolean') && !hasProp(configVike, prop, 'undefined'))
+    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
       return { prop, errMsg: 'should be a boolean' }
   }
   {
     const prop = 'trailingSlash'
-    if (!hasProp(configVike, prop, 'boolean') && !hasProp(configVike, prop, 'undefined'))
+    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
       return { prop, errMsg: 'should be a boolean' }
   }
   {
     const prop = 'redirects'
-    const { redirects } = configVike
+    const { redirects } = vikeConfigGlobal
     if (
       !(
         redirects === undefined ||
@@ -103,28 +103,28 @@ function checkConfigVike(configVike: unknown): null | WrongUsage {
   {
     const prop = 'disableAutoFullBuild'
     if (
-      !hasProp(configVike, prop, 'boolean') &&
-      !hasProp(configVike, prop, 'undefined') &&
-      !(configVike[prop] === 'prerender')
+      !hasProp(vikeConfigGlobal, prop, 'boolean') &&
+      !hasProp(vikeConfigGlobal, prop, 'undefined') &&
+      !(vikeConfigGlobal[prop] === 'prerender')
     )
       return { prop, errMsg: "should be a boolean or 'prerender'" }
   }
   {
     const prop = 'includeAssetsImportedByServer'
-    if (!hasProp(configVike, prop, 'boolean') && !hasProp(configVike, prop, 'undefined'))
+    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
       return { prop, errMsg: 'should be a boolean' }
   }
   {
     const prop = 'prerender'
     if (
-      !hasProp(configVike, prop, 'object') &&
-      !hasProp(configVike, prop, 'boolean') &&
-      !hasProp(configVike, prop, 'undefined')
+      !hasProp(vikeConfigGlobal, prop, 'object') &&
+      !hasProp(vikeConfigGlobal, prop, 'boolean') &&
+      !hasProp(vikeConfigGlobal, prop, 'undefined')
     )
       return { prop, errMsg: 'should be an object or a boolean' }
   }
 
-  const configVikePrerender = configVike.prerender
+  const configVikePrerender = vikeConfigGlobal.prerender
   if (typeof configVikePrerender === 'object') {
     {
       const p = 'partial'

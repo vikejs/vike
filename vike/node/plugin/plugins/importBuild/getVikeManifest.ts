@@ -7,8 +7,8 @@ import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig
 import { getRuntimeManifest } from '../../../runtime/globalContext.js'
 import type { ResolvedConfig } from 'vite'
 
-function getVikeManifest(configVike: VikeConfigGlobal, viteConfig: ResolvedConfig): PluginManifest {
-  const runtimeManifest = getRuntimeManifest(configVike, viteConfig)
+function getVikeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: ResolvedConfig): PluginManifest {
+  const runtimeManifest = getRuntimeManifest(vikeConfigGlobal, viteConfig)
   const manifest = {
     version: projectInfo.projectVersion,
     usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
