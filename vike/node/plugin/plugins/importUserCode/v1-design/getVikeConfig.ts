@@ -1,4 +1,5 @@
 export { getVikeConfig }
+export { getVikeConfig2 }
 export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
@@ -175,6 +176,17 @@ async function getVikeConfig(
   const userRootDir = config.root
   vikeVitePluginOptions ??= (config as any)._vikeVitePluginOptions
   assert(vikeVitePluginOptions)
+  return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
+}
+async function getVikeConfig2(userRootDir: string, isDev: boolean, vikeVitePluginOptions: unknown) {
+  return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, false)
+}
+async function getVikeConfigEntry(
+  userRootDir: string,
+  isDev: boolean,
+  vikeVitePluginOptions: unknown,
+  doNotRestartViteOnError: boolean
+) {
   if (!vikeConfigPromise) {
     vikeConfigPromise = loadVikeConfig_withErrorHandling(
       userRootDir,
