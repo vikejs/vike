@@ -12,7 +12,7 @@ import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 
-function commonConfig(): Plugin[] {
+function commonConfig(vikeVitePluginOptions: unknown = {}): Plugin[] {
   return [
     {
       name: `${pluginName}:pre`,
@@ -21,7 +21,8 @@ function commonConfig(): Plugin[] {
         order: 'pre',
         handler(_config, env) {
           return {
-            _isDev: isDevCheck(env)
+            _isDev: isDevCheck(env),
+            _vikeVitePluginOptions: vikeVitePluginOptions
           } as UserConfig
         }
       }
