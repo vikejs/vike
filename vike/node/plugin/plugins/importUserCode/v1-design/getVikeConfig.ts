@@ -172,7 +172,8 @@ async function getVikeConfig(
   assert(vikeVitePluginOptions)
   const isDev = (config as any)._isDev as unknown
   assert(typeof isDev === 'boolean')
-  assert(isDev_ === isDev)
+  assert(typeof isDev_ === 'boolean')
+  assert(isDev_ === isDev, { isDev, isDev_ })
   return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
 }
 async function getVikeConfig2(userRootDir: string, isDev: boolean, vikeVitePluginOptions: unknown) {
