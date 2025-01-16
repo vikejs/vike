@@ -164,15 +164,13 @@ async function getVikeConfig(
   config: ResolvedConfig,
   isDev: boolean,
   {
-    tolerateInvalidConfig,
-    vikeVitePluginOptions
+    tolerateInvalidConfig
   }: {
     tolerateInvalidConfig?: true
-    vikeVitePluginOptions?: ConfigVikeUserProvided
   } = {}
 ): Promise<VikeConfigObject> {
   const userRootDir = config.root
-  vikeVitePluginOptions ??= (config as any)._vikeVitePluginOptions as ConfigVikeUserProvided
+  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as ConfigVikeUserProvided
   assert(vikeVitePluginOptions)
   if (!vikeConfigPromise) {
     vikeConfigPromise = loadVikeConfig_withErrorHandling(

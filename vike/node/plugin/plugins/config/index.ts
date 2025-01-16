@@ -43,9 +43,7 @@ async function getConfigVikPromise(
   // TODO/v1-release: deprecate this
   assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
-  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev, {
-    vikeVitePluginOptions: fromPluginOptions
-  })
+  const { globalVikeConfig: fromPlusConfigFile } = await getVikeConfig(config, isDev)
   configs.push(fromPlusConfigFile)
   assertVikeConfig(fromPlusConfigFile, ({ prop, errMsg }) => {
     // TODO: add config file path ?
