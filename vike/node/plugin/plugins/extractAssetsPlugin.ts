@@ -21,8 +21,6 @@ import {
 } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
-import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
@@ -43,7 +41,6 @@ const debug = createDebugger('vike:extractAssets')
 
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
-  let configVike: ConfigVikeResolved
   let vikeConfig: VikeConfigObject
   let isServerAssetsFixEnabled: boolean
   return [
@@ -63,7 +60,7 @@ function extractAssetsPlugin(): Plugin[] {
           assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
-        assert(configVike.includeAssetsImportedByServer)
+        assert(vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
@@ -98,7 +95,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        assert(configVike.includeAssetsImportedByServer)
+        assert(vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer)
 
         let resolution: null | ResolvedId = null
         try {
@@ -163,10 +160,9 @@ function extractAssetsPlugin(): Plugin[] {
     {
       name: 'vike:extractAssets-4',
       async configResolved(config_) {
-        configVike = await getConfigVike(config_)
         config = config_
-        vikeConfig = await getVikeConfig(config, false)
-        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
+        vikeConfig = await getVikeConfig(config)
+        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
         if (!isServerAssetsFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060
           assertUsage(

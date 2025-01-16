@@ -1,4 +1,5 @@
 export { getVikeConfig }
+export { getVikeConfig2 }
 export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
@@ -21,7 +22,6 @@ import {
   getMostSimilar,
   joinEnglish,
   lowerFirst,
-  getOutDirs,
   assertKeys,
   objectKeys,
   objectFromEntries,
@@ -85,8 +85,9 @@ import {
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { getConfigVike } from '../../../../shared/getConfigVike.js'
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
+import type { VikeConfigGlobal } from './getVikeConfig/resolveVikeConfigGlobal.js'
+import { resolveVikeConfigGlobal } from './getVikeConfig/resolveVikeConfigGlobal.js'
 
 assertIsNotProductionRuntime()
 
@@ -115,17 +116,20 @@ type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  globalVikeConfig: Record<string, unknown>
+  vikeConfigGlobal: VikeConfigGlobal
 }
 
-let devServerIsCorrupt = false
+let restartVite = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
-function reloadVikeConfig(userRootDir: string, outDirRoot: string) {
+function reloadVikeConfig(config: ResolvedConfig) {
+  const userRootDir = config.root
+  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as unknown
+  assert(vikeVitePluginOptions)
   vikeConfigDependencies.clear()
   clearFilesEnvMap()
-  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, outDirRoot, true, true)
+  vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
@@ -148,8 +152,8 @@ async function handleReloadSideEffects() {
       wasConfigInvalid = false
       logConfigErrorRecover()
     }
-    if (devServerIsCorrupt) {
-      devServerIsCorrupt = false
+    if (restartVite) {
+      restartVite = false
       const viteDevServer = getViteDevServer()
       assert(viteDevServer)
       removeSuperfluousViteLog_enable()
@@ -160,32 +164,37 @@ async function handleReloadSideEffects() {
 }
 async function getVikeConfig(
   config: ResolvedConfig,
-  isDev: boolean,
-  {
-    crawlWithGit,
-    tolerateInvalidConfig
-  }: {
-    crawlWithGit?: null | boolean
-    tolerateInvalidConfig?: true
-  } = {}
+  { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
 ): Promise<VikeConfigObject> {
-  const { outDirRoot } = getOutDirs(config)
   const userRootDir = config.root
+  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as unknown
+  assert(vikeVitePluginOptions)
+  const isDev = (config as any)._isDev as unknown
+  assert(typeof isDev === 'boolean')
+  return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
+}
+async function getVikeConfig2(userRootDir: string, isDev: boolean, vikeVitePluginOptions: unknown) {
+  return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, false)
+}
+async function getVikeConfigEntry(
+  userRootDir: string,
+  isDev: boolean,
+  vikeVitePluginOptions: unknown,
+  doNotRestartViteOnError: boolean
+) {
   if (!vikeConfigPromise) {
-    const crawlWithGit_ = crawlWithGit !== undefined ? crawlWithGit : (await getConfigVike(config)).crawl.git
     vikeConfigPromise = loadVikeConfig_withErrorHandling(
       userRootDir,
-      outDirRoot,
       isDev,
-      crawlWithGit_,
-      tolerateInvalidConfig
+      vikeVitePluginOptions,
+      doNotRestartViteOnError
     )
   }
   return await vikeConfigPromise
 }
 
-async function isV1Design(config: ResolvedConfig, isDev: boolean): Promise<boolean> {
-  const vikeConfig = await getVikeConfig(config, isDev)
+async function isV1Design(config: ResolvedConfig): Promise<boolean> {
+  const vikeConfig = await getVikeConfig(config)
   const { pageConfigs } = vikeConfig
   const isV1Design = pageConfigs.length > 0
   return isV1Design
@@ -193,10 +202,9 @@ async function isV1Design(config: ResolvedConfig, isDev: boolean): Promise<boole
 
 async function loadInterfaceFiles(
   userRootDir: string,
-  outDirRoot: string,
   crawlWithGit: null | boolean
 ): Promise<InterfaceFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, outDirRoot, crawlWithGit)
+  const plusFiles = await findPlusFiles(userRootDir, null, crawlWithGit)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
@@ -319,16 +327,15 @@ function assertAllConfigsAreKnown(interfaceFilesByLocationId: InterfaceFilesByLo
 
 async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
-  outDirRoot: string,
   isDev: boolean,
-  crawlWithGit: null | boolean,
-  tolerateInvalidConfig?: boolean
+  vikeVitePluginOptions: unknown,
+  doNotRestartViteOnError?: boolean
 ): Promise<VikeConfigObject> {
   let hasError = false
   let ret: VikeConfigObject | undefined
   let err: unknown
   try {
-    ret = await loadVikeConfig(userRootDir, outDirRoot, crawlWithGit)
+    ret = await loadVikeConfig(userRootDir, vikeVitePluginOptions)
   } catch (err_) {
     hasError = true
     err = err_
@@ -347,8 +354,8 @@ async function loadVikeConfig_withErrorHandling(
       throw err
     } else {
       logConfigError(err)
-      if (!tolerateInvalidConfig) {
-        devServerIsCorrupt = true
+      if (!doNotRestartViteOnError) {
+        restartVite = true
       }
       const dummyData: VikeConfigObject = {
         pageConfigs: [],
@@ -356,26 +363,24 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        globalVikeConfig: {}
+        vikeConfigGlobal: resolveVikeConfigGlobal({}, {})
       }
       return dummyData
     }
   }
 }
-async function loadVikeConfig(
-  userRootDir: string,
-  outDirRoot: string,
-  crawlWithGit: null | boolean
-): Promise<VikeConfigObject> {
-  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, outDirRoot, crawlWithGit)
+async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
+  const crawlWithGit = resolveVikeConfigGlobal(vikeVitePluginOptions, {}).crawl.git ?? null
+  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir, crawlWithGit)
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
 
-  const { globalVikeConfig, pageConfigGlobal } = await getGlobalConfigs(
+  const { pageConfigGlobal, pageConfigGlobalValues } = await getGlobalConfigs(
     interfaceFilesByLocationId,
     userRootDir,
     importedFilesLoaded
   )
+  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     objectEntries(interfaceFilesByLocationId)
@@ -447,7 +452,7 @@ async function loadVikeConfig(
 
   assertPageConfigs(pageConfigs)
 
-  return { pageConfigs, pageConfigGlobal, globalVikeConfig }
+  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal }
 }
 
 // TODO/soon: refactor
@@ -594,7 +599,7 @@ async function getGlobalConfigs(
     })
   }
 
-  const globalVikeConfig: Record<string, unknown> = {}
+  const pageConfigGlobalValues: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsBuiltInGlobal,
     configValueSources: {}
@@ -626,12 +631,12 @@ async function getGlobalConfigs(
           )} in Vike's Vite plugin options instead.`,
           { onlyOnce: true }
         )
-        globalVikeConfig[configName] = configValueSource.value
+        pageConfigGlobalValues[configName] = configValueSource.value
       }
     })
   )
 
-  return { pageConfigGlobal, globalVikeConfig }
+  return { pageConfigGlobal, pageConfigGlobalValues }
 }
 
 async function resolveConfigValueSources(
@@ -1093,7 +1098,7 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 
 async function findPlusFiles(
   userRootDir: string,
-  outDirRoot: string,
+  outDirRoot: null | string,
   crawlWithGit: null | boolean
 ): Promise<FilePathResolved[]> {
   const files = await crawlPlusFiles(userRootDir, outDirRoot, crawlWithGit)

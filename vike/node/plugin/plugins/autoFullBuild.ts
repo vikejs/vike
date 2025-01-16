@@ -6,27 +6,28 @@ import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
-import type { ConfigVikeResolved } from '../../../shared/ConfigVike.js'
+import type { VikeConfigGlobal } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './buildConfig.js'
+import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
 let forceExit = false
 
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
-  let configVike: ConfigVikeResolved
+  let vikeConfigGlobal: VikeConfigGlobal
   return [
     {
       name: 'vike:autoFullBuild',
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
-        configVike = await getConfigVike(config_)
+        const vikeConfig = await getVikeConfig(config_)
+        vikeConfigGlobal = vikeConfig.vikeConfigGlobal
         config = config_
-        abortViteBuildSsr(configVike)
+        abortViteBuildSsr(vikeConfigGlobal)
       },
       writeBundle: {
         /* We can't use this because it breaks Vite's logging. TODO: try again with latest Vite version.
@@ -35,7 +36,7 @@ function autoFullBuild(): Plugin[] {
         */
         async handler(_options, bundle) {
           try {
-            await triggerFullBuild(config, configVike, bundle)
+            await triggerFullBuild(config, vikeConfigGlobal, bundle)
           } catch (err) {
             // Avoid Rollup prefixing the error with [vike:autoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
             console.error(err)
@@ -63,11 +64,11 @@ function autoFullBuild(): Plugin[] {
 
 async function triggerFullBuild(
   config: ResolvedConfig,
-  configVike: ConfigVikeResolved,
+  vikeConfigGlobal: VikeConfigGlobal,
   bundle: Record<string, unknown>
 ) {
   if (config.build.ssr) return // already triggered
-  if (isDisabled(configVike)) return
+  if (isDisabled(vikeConfigGlobal)) return
   // Workaround for @vitejs/plugin-legacy
   //  - The legacy plugin triggers its own Rollup build for the client-side.
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
@@ -98,14 +99,18 @@ async function triggerFullBuild(
     process.exit(1)
   }
 
-  if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
+  if (
+    vikeConfigGlobal.prerender &&
+    !vikeConfigGlobal.prerender.disableAutoRun &&
+    vikeConfigGlobal.disableAutoFullBuild !== 'prerender'
+  ) {
     await runPrerenderFromAutoRun(configInline, false)
     forceExit = true
   }
 }
 
-function abortViteBuildSsr(configVike: ConfigVikeResolved) {
-  if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+function abortViteBuildSsr(vikeConfigGlobal: VikeConfigGlobal) {
+  if (vikeConfigGlobal.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -119,8 +124,8 @@ function abortViteBuildSsr(configVike: ConfigVikeResolved) {
   }
 }
 
-function isDisabled(configVike: ConfigVikeResolved): boolean {
-  const { disableAutoFullBuild } = configVike
+function isDisabled(vikeConfigGlobal: VikeConfigGlobal): boolean {
+  const { disableAutoFullBuild } = vikeConfigGlobal
   if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
     return !isViteCliCall()
   } else {

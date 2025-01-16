@@ -2,35 +2,36 @@ export { importUserCode }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
 import { normalizePath } from 'vite'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
-import { getConfigVike } from '../../../shared/getConfigVike.js'
+import type { VikeConfigGlobal } from './v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
-import { assert, assertPosixPath, getOutDirs, isDevCheck } from '../../utils.js'
+import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { vikeConfigDependencies, reloadVikeConfig, isVikeConfigFile, isV1Design } from './v1-design/getVikeConfig.js'
+import {
+  vikeConfigDependencies,
+  reloadVikeConfig,
+  isVikeConfigFile,
+  isV1Design,
+  getVikeConfig
+} from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
-  let configVike: ConfigVikeResolved
-  let isDev: boolean | undefined
+  let vikeConfigGlobal: VikeConfigGlobal
   return {
     name: 'vike:importUserCode',
-    config(_, env) {
-      isDev = isDevCheck(env)
-    },
     async configResolved(config_) {
-      configVike = await getConfigVike(config_)
+      const vikeConfig = await getVikeConfig(config_)
+      vikeConfigGlobal = vikeConfig.vikeConfigGlobal
       config = config_
       // TODO/v1-release: remove
       {
-        assert(isDev !== undefined)
-        const isV1 = await isV1Design(config, isDev)
+        const isV1 = await isV1Design(config)
         if (!isV1) config.experimental.importGlobRestoreExtension = true
       }
     },
@@ -51,6 +52,7 @@ function importUserCode(): Plugin {
     async load(id, options) {
       if (!isVirtualFileId(id)) return undefined
       id = getVirtualFileId(id)
+      const isDev = (config as any)._isDev as unknown
       assert(typeof isDev === 'boolean')
 
       if (isVirtualFileIdPageConfigValuesAll(id)) {
@@ -59,7 +61,7 @@ function importUserCode(): Plugin {
       }
 
       if (isVirtualFileIdImportUserCode(id)) {
-        const code = await getVirtualFileImportUserCode(id, options, configVike, config, isDev)
+        const code = await getVirtualFileImportUserCode(id, options, vikeConfigGlobal, config, isDev)
         return code
       }
     },
@@ -88,10 +90,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  assertPosixPath(file)
-  vikeConfigDependencies.forEach((f) => assertPosixPath(f))
   const isVikeConfig = isVikeConfigModule(file)
-
   const isViteModule = ctx.modules.length > 0
 
   /* Should we show this?
@@ -124,6 +123,8 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 }
 
 function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
+  assertPosixPath(filePathAbsoluteFilesystem)
+  vikeConfigDependencies.forEach((f) => assertPosixPath(f))
   return vikeConfigDependencies.has(filePathAbsoluteFilesystem)
 }
 
@@ -133,7 +134,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
     const msg = `${op} ${pc.dim(filePathToShowToUserResolved)}`
     logConfigInfo(msg, 'info')
   }
-  reloadVikeConfig(config.root, getOutDirs(config).outDirRoot)
+  reloadVikeConfig(config)
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {

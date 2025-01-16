@@ -2,7 +2,7 @@ export default plugin
 export { plugin }
 // TODO/v1-release: remove
 export { plugin as ssr }
-export type { ConfigVikeUserProvided as UserConfig }
+export type { VikeVitePluginOptions as UserConfig }
 export { PROJECT_VERSION as version } from './utils.js'
 
 import { version, type Plugin } from 'vite'
@@ -14,8 +14,7 @@ import { devConfig } from './plugins/devConfig/index.js'
 import { packageJsonFile } from './plugins/packageJsonFile.js'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
-import { resolveVikeConfig } from './plugins/config/index.js'
-import type { ConfigVikeUserProvided } from '../../shared/ConfigVike.js'
+import type { VikeVitePluginOptions } from './plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { distFileNames } from './plugins/distFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
@@ -37,10 +36,9 @@ assertViteVersion()
 setResolveClientEntriesDev(resolveClientEntriesDev)
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vikeConfig?: ConfigVikeUserProvided): any {
+function plugin(vikeVitePluginOptions?: VikeVitePluginOptions): any {
   const plugins: Plugin[] = [
-    resolveVikeConfig(vikeConfig), // The configResolved() hook of resolveVikeConfig() should be the first called
-    ...commonConfig(),
+    ...commonConfig(vikeVitePluginOptions),
     importUserCode(),
     ...devConfig(),
     ...buildConfig(),
@@ -54,7 +52,7 @@ function plugin(vikeConfig?: ConfigVikeUserProvided): any {
     suppressRollupWarning(),
     ...setGlobalContext(),
     ...importBuild(),
-    baseUrls(vikeConfig),
+    baseUrls(vikeVitePluginOptions),
     envVarsPlugin(),
     fileEnv(),
     workaroundCssModuleHmr(),

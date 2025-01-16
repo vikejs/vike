@@ -233,7 +233,9 @@ function tolerateError({ logSource, logText, testInfo }) {
   function isVitePluginVercelWarning() {
     return (
       logText.replaceAll('\\', '/').includes('.vercel/output/functions') ||
-      (testInfo?.testFile?.includes('vike-vercel') && logText.includes('Done in'))
+      (testInfo?.testFile?.includes('vike-vercel') && logText.includes('Done in')) ||
+      // Let's skip all test/vike-vercel/ warnings for now: https://github.com/magne4000/vite-plugin-vercel/issues/134#issuecomment-2596842125
+      testInfo?.testFile?.includes('vike-vercel')
     )
   }
 }

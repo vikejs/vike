@@ -65,7 +65,7 @@ function devConfig(): Plugin[] {
       },
       async configResolved(config_) {
         config = config_
-        await determineOptimizeDeps(config, true)
+        await determineOptimizeDeps(config)
         await determineFsAllowList(config)
         if (!isErrorDebug()) {
           await installHttpRequestAsyncStore()

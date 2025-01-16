@@ -20,7 +20,6 @@ import {
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
-import { getConfigVike } from '../../shared/getConfigVike.js'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
@@ -67,7 +66,7 @@ function buildConfig(): Plugin[] {
           addLogHook()
           outDirs = getOutDirs(config)
           {
-            isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config, false))
+            isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
             if (isServerAssetsFixEnabled) {
               // https://github.com/vikejs/vike/issues/1339
               config.build.ssrEmitAssets = true
@@ -136,9 +135,9 @@ function buildConfig(): Plugin[] {
 }
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
-  const configVike = await getConfigVike(config)
-  const pageFileEntries = await getPageFileEntries(config, configVike.includeAssetsImportedByServer) // TODO/v1-release: remove
-  const { pageConfigs } = await getVikeConfig(config, false)
+  const vikeConfig = await getVikeConfig(config)
+  const { pageConfigs } = vikeConfig
+  const pageFileEntries = await getPageFileEntries(config, vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer) // TODO/v1-release: remove
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add'

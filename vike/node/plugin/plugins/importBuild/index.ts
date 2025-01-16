@@ -6,11 +6,11 @@ import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
-import { getConfigVike } from '../../../shared/getConfigVike.js'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getVikeManifest } from './getVikeManifest.js'
 import fs from 'fs/promises'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -20,28 +20,30 @@ const ASSETS_MAP = '__VITE_ASSETS_MAP__'
 
 function importBuild(): Plugin[] {
   let config: ResolvedConfig
-  let configVike: ConfigVikeResolved
+  let vikeConfigGlobal: VikeConfigGlobal
   return [
     {
       name: 'vike:importBuild:config',
       enforce: 'post',
       async configResolved(config_) {
         config = config_
-        configVike = await getConfigVike(config)
+        const vikeConfig = await getVikeConfig(config)
+        vikeConfigGlobal = vikeConfig.vikeConfigGlobal
       }
     },
     ...serverProductionEntryPlugin({
       getServerProductionEntry: () => {
-        return getServerProductionEntryCode(config, configVike)
+        return getServerProductionEntryCode(config, vikeConfigGlobal)
       },
       libraryName: 'Vike'
     })
   ]
 }
 
-function getServerProductionEntryCode(config: ResolvedConfig, configVike: ConfigVikeResolved): string {
+function getServerProductionEntryCode(config: ResolvedConfig, vikeConfigGlobal: VikeConfigGlobal): string {
   const importPath = getImportPath(config)
-  const vikeManifest = getVikeManifest(configVike)
+  const vikeManifest = getVikeManifest(vikeConfigGlobal, config)
+  // Let's eventually simplify and move everything to a single virtual module
   const importerCode = [
     `  import { setImportBuildGetters } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,

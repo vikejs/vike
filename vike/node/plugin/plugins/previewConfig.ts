@@ -12,7 +12,7 @@ type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
   let config: ResolvedConfig
-  // let configVike: ConfigVikeResolved
+  // let vikeConfigGlobal: VikeConfigGlobal
   return {
     name: 'vike:previewConfig',
     apply: applyPreview,
@@ -27,7 +27,8 @@ function previewConfig(): Plugin {
     async configResolved(config_) {
       config = config_
       logDockerHint(config.preview.host)
-      // configVike = await getConfigVike(config)
+      // const vikeConfig = await getVikeConfig(config)
+      // vikeConfigGlobal = vikeConfig.vikeConfigGlobal
     },
     configurePreviewServer(server) {
       /* - Couldn't make `appType: 'mpa'` work as of npm:@brillout/vite@5.0.0-beta.14.0426910c
@@ -38,7 +39,7 @@ function previewConfig(): Plugin {
         assertDist()
 
         /* We don't use this condition (we wrongfully always use the SSR middleware) because of the regression introduced by https://github.com/vitejs/vite/pull/14756 which stops servering .html files when `appType: 'custom'`.
-        if (!configVike.prerender || configVike.prerender.partial) {
+        if (!vikeConfigGlobal.prerender || vikeConfigGlobal.prerender.partial) {
           addSsrMiddleware(server.middlewares, config, true)
         }
         /*/

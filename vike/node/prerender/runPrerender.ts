@@ -44,7 +44,6 @@ import {
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
-import { getConfigVike } from '../shared/getConfigVike.js'
 import type { InlineConfig, ResolvedConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
@@ -190,11 +189,11 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'vike pre-rendering' as any, 'production')
   assertLoadedConfig(viteConfig, options)
-  const configVike = await getConfigVike(viteConfig)
+  const vikeConfig = await getVikeConfig(viteConfig)
 
   const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
-  const prerenderConfig = configVike.prerender
+  const prerenderConfig = vikeConfig.vikeConfigGlobal.prerender
   if (!prerenderConfig) {
     assert(standaloneTrigger)
     assertWarning(
@@ -224,7 +223,6 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   })
 
   const doNotPrerenderList: DoNotPrerenderList = []
-  const vikeConfig = await getVikeConfig(viteConfig, false)
   await collectDoNoPrerenderList(renderContext, vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit)
 
   await callOnBeforePrerenderStartHooks(prerenderContext, renderContext, concurrencyLimit, doNotPrerenderList)

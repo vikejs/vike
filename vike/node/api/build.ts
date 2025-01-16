@@ -15,7 +15,7 @@ async function build(options: APIOptions = {}): Promise<{
   rollupOutputClient: RollupOutput
   rollupOutputServer: RollupOutput
 }> {
-  const { viteConfigEnhanced, configVike } = await prepareViteApiCall(options.viteConfig, 'build')
+  const { viteConfigEnhanced, vikeConfigGlobal } = await prepareViteApiCall(options.viteConfig, 'build')
 
   // Build client-side
   const outputClient = await buildVite(viteConfigEnhanced)
@@ -24,7 +24,11 @@ async function build(options: APIOptions = {}): Promise<{
   const outputServer = await buildVite(setSSR(viteConfigEnhanced))
 
   // Pre-render
-  if (configVike.prerender && !configVike.prerender.disableAutoRun && configVike.disableAutoFullBuild !== 'prerender') {
+  if (
+    vikeConfigGlobal.prerender &&
+    !vikeConfigGlobal.prerender.disableAutoRun &&
+    vikeConfigGlobal.disableAutoFullBuild !== 'prerender'
+  ) {
     const { runPrerenderFromAutoRun } = await import('../prerender/runPrerender.js')
     await runPrerenderFromAutoRun(viteConfigEnhanced, true)
   }

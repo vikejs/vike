@@ -12,6 +12,7 @@ export { initGlobalContext_runPrerender }
 export { initGlobalContext_getGlobalContextAsync }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
+export { setGlobalContext_vikeConfig }
 export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
 
@@ -31,11 +32,12 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild.js'
 import { setPageFiles } from '../../shared/getPageFiles.js'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
-import type { ConfigVikeResolved } from '../../shared/ConfigVike.js'
-import { getConfigVike } from '../shared/getConfigVike.js'
+import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 import { getPageFilesExports } from './page-files/getPageFilesExports.js'
+import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
+import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
@@ -43,6 +45,7 @@ const globalObject = getGlobalObject<{
   viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
   isViteDev?: boolean
   viteConfig?: ResolvedConfig
+  vikeConfig?: VikeConfigObject
   outDirRoot?: string
   isPrerendering?: true
   initGlobalContext_runPrerender_alreadyCalled?: true
@@ -72,6 +75,7 @@ type GlobalContext = {
       isProduction: false
       isPrerendering: false
       viteConfig: ResolvedConfig
+      vikeConfig: VikeConfigObject
       viteDevServer: ViteDevServer
       assetsManifest: null
       pluginManifest: null
@@ -164,6 +168,11 @@ function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: str
   globalObject.viteConfig = viteConfig
   globalObject.outDirRoot = outDirRoot
 }
+function setGlobalContext_vikeConfig(vikeConfig: VikeConfigObject): void {
+  if (globalObject.vikeConfig) return
+  assertIsNotInitilizedYet()
+  globalObject.vikeConfig = vikeConfig
+}
 function assertIsNotInitilizedYet() {
   // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
   assert(!globalObject.globalContext)
@@ -224,15 +233,16 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     return
   }
 
-  const { viteDevServer, viteConfig, isPrerendering } = globalObject
+  const { viteDevServer, viteConfig, vikeConfig, isPrerendering } = globalObject
   onSetupRuntime()
 
   if (!isProduction) {
     assert(viteConfig)
+    assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
-    const configVike = await getConfigVike(viteConfig)
-    const pluginManifest = getRuntimeManifest(configVike)
+    const vikeConfigGlobal = vikeConfig.vikeConfigGlobal
+    const pluginManifest = getRuntimeManifest(vikeConfigGlobal, viteConfig)
     globalObject.globalContext = {
       isProduction: false,
       isPrerendering: false,
@@ -240,6 +250,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       pluginManifest: null,
       viteDevServer,
       viteConfig,
+      vikeConfig,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
@@ -268,8 +279,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     }
     if (isPrerendering) {
       assert(viteConfig)
-      const configVike = await getConfigVike(viteConfig)
-      assert(configVike)
       objectAssign(globalContext, {
         isPrerendering: true as const,
         viteConfig
@@ -285,9 +294,13 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   }
 }
 
-function getRuntimeManifest(configVike: ConfigVikeResolved): RuntimeManifest {
-  const { includeAssetsImportedByServer, baseServer, baseAssets, redirects, trailingSlash, disableUrlNormalization } =
-    configVike
+function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
+  const { includeAssetsImportedByServer, redirects, trailingSlash, disableUrlNormalization } = vikeConfigGlobal
+  const { baseServer, baseAssets } = resolveBaseFromResolvedConfig(
+    vikeConfigGlobal.baseServer,
+    vikeConfigGlobal.baseAssets,
+    viteConfig
+  )
   const manifest = {
     baseServer,
     baseAssets,

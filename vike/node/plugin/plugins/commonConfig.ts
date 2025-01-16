@@ -1,7 +1,7 @@
 export { commonConfig }
 
 import { mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import { assert, assertUsage, assertWarning, findPackageJson, isDocker } from '../utils.js'
+import { assert, assertUsage, assertWarning, findPackageJson, isDevCheck, isDocker } from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
@@ -12,8 +12,21 @@ import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 
-function commonConfig(): Plugin[] {
+function commonConfig(vikeVitePluginOptions: unknown = {}): Plugin[] {
   return [
+    {
+      name: `${pluginName}:pre`,
+      enforce: 'pre',
+      config: {
+        order: 'pre',
+        handler(_config, env) {
+          return {
+            _isDev: isDevCheck(env),
+            _vikeVitePluginOptions: vikeVitePluginOptions
+          } as UserConfig
+        }
+      }
+    },
     {
       name: pluginName,
       configResolved(config) {
