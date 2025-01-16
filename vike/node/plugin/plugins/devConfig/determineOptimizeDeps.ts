@@ -14,10 +14,10 @@ import { getFilePathResolved } from '../../shared/getFilePath.js'
 
 const debug = createDebugger('vike:optimizeDeps')
 
-async function determineOptimizeDeps(config: ResolvedConfig, isDev: true) {
+async function determineOptimizeDeps(config: ResolvedConfig) {
   const { pageConfigs } = await getVikeConfig(config)
 
-  const { entries, include } = await getPageDeps(config, pageConfigs, isDev)
+  const { entries, include } = await getPageDeps(config, pageConfigs)
   {
     // This actually doesn't work: Vite's dep optimizer doesn't seem to be able to crawl virtual files.
     //  - Should we make it work? E.g. by creating a temporary file at node_modules/.vike/virtualFiles.js
@@ -40,7 +40,7 @@ async function determineOptimizeDeps(config: ResolvedConfig, isDev: true) {
     })
 }
 
-async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[], isDev: true) {
+async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildTime[]) {
   let entries: string[] = []
   let include: string[] = []
 
@@ -81,7 +81,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
 
   // V0.4 design
   {
-    const pageFiles = await findPageFiles(config, ['.page', '.page.client'], isDev)
+    const pageFiles = await findPageFiles(config, ['.page', '.page.client'], true)
     const userRootDir = config.root
     pageFiles.forEach((filePathAbsoluteUserRootDir) => {
       const entry = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
