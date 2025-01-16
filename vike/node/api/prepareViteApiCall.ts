@@ -6,6 +6,7 @@ import { getConfigVike } from '../shared/getConfigVike.js'
 import { pluginName } from '../plugin/plugins/commonConfig/pluginName.js'
 import type { Operation } from './types.js'
 import { setOperation } from './context.js'
+import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
 async function prepareViteApiCall(viteConfig: InlineConfig = {}, operation: Operation) {
   setOperation(operation)
@@ -27,13 +28,13 @@ async function enhanceViteConfig(viteConfig: InlineConfig = {}, operation: Opera
     viteConfigResolved = await resolveViteConfig(viteConfigEnhanced, operation)
   }
 
-  const configVike = await getConfigVike(viteConfigResolved)
+  const { vikeConfigGlobal } = await getVikeConfig(viteConfigResolved, operation === 'dev')
 
   // TODO: enable Vike extensions to add Vite plugins
 
   return {
     viteConfigEnhanced,
-    configVike
+    vikeConfigGlobal
   }
 }
 
