@@ -5,9 +5,10 @@ import { type PluginManifest, assertPluginManifest } from '../../../shared/asser
 import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
 import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
 import { getRuntimeManifest } from '../../../runtime/globalContext.js'
+import type { ResolvedConfig } from 'vite'
 
-function getVikeManifest(configVike: ConfigVikeResolved): PluginManifest {
-  const runtimeManifest = getRuntimeManifest(configVike)
+function getVikeManifest(configVike: ConfigVikeResolved, viteConfig: ResolvedConfig): PluginManifest {
+  const runtimeManifest = getRuntimeManifest(configVike, viteConfig)
   const manifest = {
     version: projectInfo.projectVersion,
     usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
