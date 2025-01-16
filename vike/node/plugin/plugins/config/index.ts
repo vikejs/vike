@@ -33,10 +33,8 @@ async function getConfigVikPromise(
   isDev: boolean
 ): Promise<ConfigVikeResolved> {
   const fromPluginOptions = (vikeConfig ?? {}) as ConfigVikeUserProvided
-  const fromViteConfig = ((config as Record<string, unknown>).vike ?? {}) as ConfigVikeUserProvided
 
-  const configs = [fromPluginOptions, fromViteConfig]
-  assertVikeConfig(fromViteConfig, ({ prop, errMsg }) => `vite.config.js#vike.${prop} ${errMsg}`)
+  const configs = [fromPluginOptions]
   // TODO/v1-release: deprecate this
   assertVikeConfig(fromPluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
 
