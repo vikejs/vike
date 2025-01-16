@@ -49,7 +49,7 @@ function getCiJobs() {
   ]
 }
 
-function tolerateError({ logSource, logText }) {
+function tolerateError({ logSource, logText, testInfo }) {
   return (
     // TODO/eventually: move everything to this array
     [
@@ -99,7 +99,8 @@ function tolerateError({ logSource, logText }) {
     isSlowCrawlWarning() ||
     isNodeExperimentalEsmLoader() ||
     isNodeExperimentalLoader() ||
-    isNotV1Design()
+    isNotV1Design() ||
+    isVitePluginVercelWarning()
   )
 
   function isViteCjsWarning() {
@@ -224,6 +225,15 @@ function tolerateError({ logSource, logText }) {
       logText.includes(
         "You are using Vike's deprecated design. Update to the new V1 design, see https://vike.dev/migration/v1-design for how to migrate."
       )
+    )
+  }
+
+  // [19:47:42.746][\test\vike-vercel\.test-prod.test.ts][npm run prod][stderr] .vercel\output\functions\ssr_.func\index.mjs  2.4mb
+  // [19:47:42.746][\test\vike-vercel\.test-prod.test.ts][npm run prod][stderr] Done in 181ms
+  function isVitePluginVercelWarning() {
+    return (
+      logText.replaceAll('\\', '/').includes('.vercel/output/functions') ||
+      (testInfo?.testFile?.includes('vike-vercel') && logText.includes('Done in'))
     )
   }
 }
