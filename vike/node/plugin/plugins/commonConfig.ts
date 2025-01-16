@@ -16,6 +16,7 @@ function commonConfig(): Plugin[] {
   return [
     {
       name: `${pluginName}:pre`,
+      enforce: 'pre',
       config: {
         order: 'pre',
         handler(_config, env) {
