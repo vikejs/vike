@@ -118,7 +118,7 @@ type VikeConfigObject = {
   vikeConfigGlobal: ConfigVikeResolved
 }
 
-let devServerIsCorrupt = false
+let viteDevServerIsCorrupt = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
@@ -151,8 +151,8 @@ async function handleReloadSideEffects() {
       wasConfigInvalid = false
       logConfigErrorRecover()
     }
-    if (devServerIsCorrupt) {
-      devServerIsCorrupt = false
+    if (viteDevServerIsCorrupt) {
+      viteDevServerIsCorrupt = false
       const viteDevServer = getViteDevServer()
       assert(viteDevServer)
       removeSuperfluousViteLog_enable()
@@ -348,7 +348,7 @@ async function loadVikeConfig_withErrorHandling(
     } else {
       logConfigError(err)
       if (!tolerateInvalidConfig) {
-        devServerIsCorrupt = true
+        viteDevServerIsCorrupt = true
       }
       const dummyData: VikeConfigObject = {
         pageConfigs: [],
