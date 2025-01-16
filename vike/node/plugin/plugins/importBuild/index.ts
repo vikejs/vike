@@ -6,7 +6,7 @@ import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import type { ConfigVikeResolved } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getVikeManifest } from './getVikeManifest.js'
 import fs from 'fs/promises'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'

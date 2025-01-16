@@ -17,7 +17,7 @@ import {
   isVersionOrAbove,
   assertWarning
 } from '../../utils.js'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import type { ConfigVikeResolved } from './v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'

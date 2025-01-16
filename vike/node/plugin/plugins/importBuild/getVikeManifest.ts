@@ -3,7 +3,7 @@ export { getVikeManifest }
 import { projectInfo } from '../../utils.js'
 import { type PluginManifest, assertPluginManifest } from '../../../shared/assertPluginManifest.js'
 import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import type { ConfigVikeResolved } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getRuntimeManifest } from '../../../runtime/globalContext.js'
 import type { ResolvedConfig } from 'vite'
 

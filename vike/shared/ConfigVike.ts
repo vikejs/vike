@@ -1,28 +1,4 @@
 export type { ConfigVikeUserProvided }
-export type { ConfigVikeResolved }
-
-// TODO: rename & move?
-
-type ConfigVikeResolved = {
-  prerender:
-    | false
-    | {
-        noExtraDir: boolean
-        parallel: boolean | number
-        partial: boolean
-        disableAutoRun: boolean
-      }
-  disableAutoFullBuild: boolean | 'prerender' | null
-  includeAssetsImportedByServer: boolean
-  baseAssets: string | null
-  baseServer: string | null
-  redirects: Record<string, string>
-  trailingSlash: boolean
-  disableUrlNormalization: boolean
-  crawl: {
-    git: null | boolean
-  }
-}
 
 // TODO: deprecate
 type ConfigVikeUserProvided = {

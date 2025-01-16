@@ -2,7 +2,7 @@ export { importUserCode }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
 import { normalizePath } from 'vite'
-import type { ConfigVikeResolved } from '../../../../shared/ConfigVike.js'
+import type { ConfigVikeResolved } from './v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import { assert, assertPosixPath } from '../../utils.js'
