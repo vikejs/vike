@@ -20,6 +20,7 @@ const ASSETS_MAP = '__VITE_ASSETS_MAP__'
 
 function importBuild(): Plugin[] {
   let config: ResolvedConfig
+  // TODO: rename
   let configVike: ConfigVikeResolved
   return [
     {

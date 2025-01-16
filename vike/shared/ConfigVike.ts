@@ -1,6 +1,8 @@
 export type { ConfigVikeUserProvided }
 export type { ConfigVikeResolved }
 
+// TODO: rename & move?
+
 type ConfigVikeResolved = {
   prerender:
     | false
