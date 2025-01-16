@@ -28,42 +28,50 @@ function resolveBaseFromUserConfig(
   config: UserConfig,
   vikeVitePluginOptions: undefined | ConfigVikeUserProvided
 ): BaseServers {
+  const baseViteOriginal = config.base ?? null
   return resolveBase(
-    config.base ?? null,
+    baseViteOriginal,
     vikeVitePluginOptions?.baseServer ?? null,
     vikeVitePluginOptions?.baseAssets ?? null
   )
 }
 
-// TODO: rename base to baseViteOriginal and baseServer_ => baseServerUnresolved
-function resolveBase(base: string | null, baseServer_: string | null, baseAssets_: string | null): BaseServers {
+// TODO: rename return values
+function resolveBase(
+  baseViteOriginal: string | null,
+  baseServerUnresolved: string | null,
+  baseAssetsUnresolved: string | null
+): BaseServers {
   {
     const wrongBase = (val: string) =>
       `should start with ${pc.cyan('/')}, ${pc.cyan('http://')}, or ${pc.cyan('https://')} (it's ${pc.cyan(
         val
       )} instead)`
-    assertUsage(base === null || isBaseAssets(base), `vite.config.js#base ${wrongBase(base!)}`)
     assertUsage(
-      baseAssets_ === null || isBaseAssets(baseAssets_),
-      `Config ${pc.cyan('baseAssets')} ${wrongBase(baseAssets_!)}`
+      baseViteOriginal === null || isBaseAssets(baseViteOriginal),
+      `vite.config.js#base ${wrongBase(baseViteOriginal!)}`
     )
     assertUsage(
-      baseServer_ === null || baseServer_.startsWith('/'),
+      baseAssetsUnresolved === null || isBaseAssets(baseAssetsUnresolved),
+      `Config ${pc.cyan('baseAssets')} ${wrongBase(baseAssetsUnresolved!)}`
+    )
+    assertUsage(
+      baseServerUnresolved === null || baseServerUnresolved.startsWith('/'),
       `Config ${pc.cyan('baseServer')} should start with a leading slash ${pc.cyan('/')} (it's ${pc.cyan(
-        String(baseServer_)
+        String(baseServerUnresolved)
       )} instead)`
     )
   }
-  if (base) {
-    if (base.startsWith('http')) {
-      baseAssets_ = baseAssets_ ?? base
+  if (baseViteOriginal) {
+    if (baseViteOriginal.startsWith('http')) {
+      baseAssetsUnresolved = baseAssetsUnresolved ?? baseViteOriginal
     } else {
-      baseAssets_ = baseAssets_ ?? base
-      baseServer_ = baseServer_ ?? base
+      baseAssetsUnresolved = baseAssetsUnresolved ?? baseViteOriginal
+      baseServerUnresolved = baseServerUnresolved ?? baseViteOriginal
     }
   }
-  const baseServer = baseServer_ ?? '/'
-  const baseAssets = baseAssets_ ?? '/'
+  const baseServer = baseServerUnresolved ?? '/'
+  const baseAssets = baseAssetsUnresolved ?? '/'
   assert(isBaseAssets(baseAssets))
   assert(isBaseServer(baseServer))
   return {
