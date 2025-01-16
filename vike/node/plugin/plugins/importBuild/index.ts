@@ -42,8 +42,8 @@ function importBuild(): Plugin[] {
 
 function getServerProductionEntryCode(config: ResolvedConfig, vikeConfigGlobal: VikeConfigGlobal): string {
   const importPath = getImportPath(config)
-  // TODO: remove this?
   const vikeManifest = getVikeManifest(vikeConfigGlobal, config)
+  // Let's eventually simplify and move everything to a single virtual module
   const importerCode = [
     `  import { setImportBuildGetters } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
