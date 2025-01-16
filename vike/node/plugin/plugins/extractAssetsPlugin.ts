@@ -21,7 +21,6 @@ import {
 } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-import type { VikeConfigGlobal } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
@@ -42,7 +41,6 @@ const debug = createDebugger('vike:extractAssets')
 
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
-  let vikeConfigGlobal: VikeConfigGlobal
   let vikeConfig: VikeConfigObject
   let isServerAssetsFixEnabled: boolean
   return [
@@ -62,7 +60,7 @@ function extractAssetsPlugin(): Plugin[] {
           assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
-        assert(vikeConfigGlobal.includeAssetsImportedByServer)
+        assert(vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
@@ -97,7 +95,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        assert(vikeConfigGlobal.includeAssetsImportedByServer)
+        assert(vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer)
 
         let resolution: null | ResolvedId = null
         try {
@@ -164,7 +162,6 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfig(config)
-        vikeConfigGlobal = vikeConfig.vikeConfigGlobal
         isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
         if (!isServerAssetsFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060
