@@ -24,6 +24,7 @@ type ConfigVikeResolved = {
   }
 }
 
+// TODO: deprecate
 type ConfigVikeUserProvided = {
   /**
    * Enable pre-rendering.
