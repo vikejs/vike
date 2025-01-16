@@ -40,7 +40,7 @@ import type {
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { InjectFilterEntry } from '../../types/index.js'
-import type { ConfigVikeUserProvided } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeVitePluginOptions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
@@ -61,7 +61,7 @@ type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
 type HookNameOldDesign = 'render' | 'prerender'
 
 type ConfigNameBuiltIn =
-  | Exclude<keyof Config, keyof ConfigVikeUserProvided | 'onBeforeRoute' | 'onPrerenderStart'>
+  | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart'>
   | 'prerender'
   | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'

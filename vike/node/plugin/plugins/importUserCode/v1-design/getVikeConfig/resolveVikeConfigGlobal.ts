@@ -1,6 +1,6 @@
 export { resolveVikeConfigGlobal }
 export type { ConfigVikeResolved }
-export type { ConfigVikeUserProvided }
+export type { VikeVitePluginOptions }
 
 import pc from '@brillout/picocolors'
 import { assert, assertUsage, hasProp, isObject } from '../../../../utils.js'
@@ -36,7 +36,7 @@ function resolveVikeConfigGlobal(
   return configVike
 }
 
-function resolvePrerenderOptions(configs: ConfigVikeUserProvided[]): ConfigVikeResolved['prerender'] {
+function resolvePrerenderOptions(configs: VikeVitePluginOptions[]): ConfigVikeResolved['prerender'] {
   if (!configs.some((c) => c.prerender)) {
     return false
   }
@@ -70,7 +70,7 @@ type WrongUsage = { prop: string; errMsg: `should be a${string}` }
 function assertVikeConfig(
   vikeConfig: unknown,
   wrongUsageMsg: (wrongUsage: WrongUsage) => string
-): asserts vikeConfig is ConfigVikeUserProvided {
+): asserts vikeConfig is VikeVitePluginOptions {
   const wrongUsageError = checkConfigVike(vikeConfig)
   if (wrongUsageError) {
     assertUsage(false, wrongUsageMsg(wrongUsageError))
@@ -178,7 +178,7 @@ type ConfigVikeResolved = {
 }
 
 // TODO: deprecate
-type ConfigVikeUserProvided = {
+type VikeVitePluginOptions = {
   /**
    * Enable pre-rendering.
    *

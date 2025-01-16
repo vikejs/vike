@@ -3,10 +3,10 @@ export { baseUrls }
 import type { Plugin, UserConfig } from 'vite'
 import { resolveBase, resolveBaseFromResolvedConfig } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
-import type { ConfigVikeUserProvided } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeVitePluginOptions } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
-function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
+function baseUrls(vikeVitePluginOptions?: VikeVitePluginOptions): Plugin {
   let bases: ReturnType<typeof resolveBaseFromUserConfig>
   return {
     name: 'vike:baseUrls',
@@ -44,7 +44,7 @@ function baseUrls(vikeVitePluginOptions?: ConfigVikeUserProvided): Plugin {
   }
 }
 
-function resolveBaseFromUserConfig(config: UserConfig, vikeVitePluginOptions: undefined | ConfigVikeUserProvided) {
+function resolveBaseFromUserConfig(config: UserConfig, vikeVitePluginOptions: undefined | VikeVitePluginOptions) {
   const baseViteOriginal = config.base ?? null
   return resolveBase(
     baseViteOriginal,
