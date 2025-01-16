@@ -1,3 +1,12 @@
+## [0.4.217](https://github.com/vikejs/vike/compare/v0.4.216...v0.4.217) (2025-01-16)
+
+
+### Bug Fixes
+
+* pass correct default mode to resolveConfig() ([949d82d](https://github.com/vikejs/vike/commit/949d82d33e358b367614767bc002a7af6e52cdf1))
+
+
+
 ## [0.4.216](https://github.com/vikejs/vike/compare/v0.4.215...v0.4.216) (2025-01-15)
 
 
