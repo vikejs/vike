@@ -3,11 +3,11 @@ export { getVikeManifest }
 import { projectInfo } from '../../utils.js'
 import { type PluginManifest, assertPluginManifest } from '../../../shared/assertPluginManifest.js'
 import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
-import type { ConfigVikeGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getRuntimeManifest } from '../../../runtime/globalContext.js'
 import type { ResolvedConfig } from 'vite'
 
-function getVikeManifest(configVike: ConfigVikeGlobal, viteConfig: ResolvedConfig): PluginManifest {
+function getVikeManifest(configVike: VikeConfigGlobal, viteConfig: ResolvedConfig): PluginManifest {
   const runtimeManifest = getRuntimeManifest(configVike, viteConfig)
   const manifest = {
     version: projectInfo.projectVersion,

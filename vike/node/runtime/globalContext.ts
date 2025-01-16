@@ -32,7 +32,7 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadImportBuild } from './globalContext/loadImportBuild.js'
 import { setPageFiles } from '../../shared/getPageFiles.js'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
-import type { ConfigVikeGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 import { getPageFilesExports } from './page-files/getPageFilesExports.js'
@@ -294,7 +294,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   }
 }
 
-function getRuntimeManifest(configVike: ConfigVikeGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
+function getRuntimeManifest(configVike: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
   const { includeAssetsImportedByServer, redirects, trailingSlash, disableUrlNormalization } = configVike
   const { baseServer, baseAssets } = resolveBaseFromResolvedConfig(
     configVike.baseServer,

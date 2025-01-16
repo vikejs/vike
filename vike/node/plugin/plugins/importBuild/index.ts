@@ -6,7 +6,7 @@ import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import path from 'path'
 import { createRequire } from 'module'
-import type { ConfigVikeGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { getVikeManifest } from './getVikeManifest.js'
 import fs from 'fs/promises'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -21,7 +21,7 @@ const ASSETS_MAP = '__VITE_ASSETS_MAP__'
 function importBuild(): Plugin[] {
   let config: ResolvedConfig
   // TODO: rename
-  let configVike: ConfigVikeGlobal
+  let configVike: VikeConfigGlobal
   return [
     {
       name: 'vike:importBuild:config',
@@ -41,7 +41,7 @@ function importBuild(): Plugin[] {
   ]
 }
 
-function getServerProductionEntryCode(config: ResolvedConfig, configVike: ConfigVikeGlobal): string {
+function getServerProductionEntryCode(config: ResolvedConfig, configVike: VikeConfigGlobal): string {
   const importPath = getImportPath(config)
   // TODO: remove this?
   const vikeManifest = getVikeManifest(configVike, config)

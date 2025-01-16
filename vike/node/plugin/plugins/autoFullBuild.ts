@@ -6,7 +6,7 @@ import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
-import type { ConfigVikeGlobal } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeConfigGlobal } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
@@ -17,7 +17,7 @@ let forceExit = false
 
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
-  let configVike: ConfigVikeGlobal
+  let configVike: VikeConfigGlobal
   return [
     {
       name: 'vike:autoFullBuild',
@@ -62,7 +62,7 @@ function autoFullBuild(): Plugin[] {
   ]
 }
 
-async function triggerFullBuild(config: ResolvedConfig, configVike: ConfigVikeGlobal, bundle: Record<string, unknown>) {
+async function triggerFullBuild(config: ResolvedConfig, configVike: VikeConfigGlobal, bundle: Record<string, unknown>) {
   if (config.build.ssr) return // already triggered
   if (isDisabled(configVike)) return
   // Workaround for @vitejs/plugin-legacy
@@ -101,7 +101,7 @@ async function triggerFullBuild(config: ResolvedConfig, configVike: ConfigVikeGl
   }
 }
 
-function abortViteBuildSsr(configVike: ConfigVikeGlobal) {
+function abortViteBuildSsr(configVike: VikeConfigGlobal) {
   if (configVike.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
@@ -116,7 +116,7 @@ function abortViteBuildSsr(configVike: ConfigVikeGlobal) {
   }
 }
 
-function isDisabled(configVike: ConfigVikeGlobal): boolean {
+function isDisabled(configVike: VikeConfigGlobal): boolean {
   const { disableAutoFullBuild } = configVike
   if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
     return !isViteCliCall()

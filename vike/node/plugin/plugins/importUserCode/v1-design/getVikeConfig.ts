@@ -86,7 +86,7 @@ import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
-import type { ConfigVikeGlobal } from './getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeConfigGlobal } from './getVikeConfig/resolveVikeConfigGlobal.js'
 import { resolveVikeConfigGlobal } from './getVikeConfig/resolveVikeConfigGlobal.js'
 
 assertIsNotProductionRuntime()
@@ -116,7 +116,7 @@ type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  vikeConfigGlobal: ConfigVikeGlobal
+  vikeConfigGlobal: VikeConfigGlobal
 }
 
 let restartVite = false

@@ -12,7 +12,7 @@ type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
   let config: ResolvedConfig
-  // let configVike: ConfigVikeGlobal
+  // let configVike: VikeConfigGlobal
   return {
     name: 'vike:previewConfig',
     apply: applyPreview,

@@ -1,5 +1,5 @@
 export { resolveVikeConfigGlobal }
-export type { ConfigVikeGlobal }
+export type { VikeConfigGlobal }
 export type { VikeVitePluginOptions }
 
 import pc from '@brillout/picocolors'
@@ -8,7 +8,7 @@ import { assert, assertUsage, hasProp, isObject } from '../../../../utils.js'
 function resolveVikeConfigGlobal(
   vikeVitePluginOptions: unknown,
   pageConfigGlobalValues: Record<string, unknown>
-): ConfigVikeGlobal {
+): VikeConfigGlobal {
   // TODO/v1-release: remove
   assertVikeConfigGlobal(vikeVitePluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
   const configs = [vikeVitePluginOptions]
@@ -19,7 +19,7 @@ function resolveVikeConfigGlobal(
   })
   configs.push(pageConfigGlobalValues)
 
-  const configVike: ConfigVikeGlobal = {
+  const configVike: VikeConfigGlobal = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
     prerender: resolvePrerenderOptions(configs),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
@@ -36,7 +36,7 @@ function resolveVikeConfigGlobal(
   return configVike
 }
 
-function resolvePrerenderOptions(configs: VikeVitePluginOptions[]): ConfigVikeGlobal['prerender'] {
+function resolvePrerenderOptions(configs: VikeVitePluginOptions[]): VikeConfigGlobal['prerender'] {
   if (!configs.some((c) => c.prerender)) {
     return false
   }
@@ -155,7 +155,7 @@ function checkConfigVike(configVike: unknown): null | WrongUsage {
   return null
 }
 
-type ConfigVikeGlobal = {
+type VikeConfigGlobal = {
   prerender:
     | false
     | {
