@@ -1,7 +1,7 @@
 export { prepareViteApiCall }
 
-import type { InlineConfig } from 'vite'
 import { resolveConfig } from 'vite'
+import type { InlineConfig } from 'vite'
 import { getConfigVike } from '../shared/getConfigVike.js'
 import { pluginName } from '../plugin/plugins/commonConfig/pluginName.js'
 import type { Operation } from './types.js'
@@ -38,11 +38,14 @@ async function enhanceViteConfig(viteConfig: InlineConfig = {}, operation: Opera
 }
 
 async function resolveViteConfig(viteConfig: InlineConfig, operation: 'build' | 'dev' | 'preview' | 'prerender') {
-  return await resolveConfig(
-    viteConfig,
-    operation === 'build' || operation === 'prerender' ? 'build' : 'serve',
-    'custom',
-    operation === 'dev' ? 'development' : 'production',
-    operation === 'preview'
-  )
+  const args = getResolveConfigArgs(viteConfig, operation)
+  return await resolveConfig(...args)
+}
+function getResolveConfigArgs(viteConfig: InlineConfig, operation: 'build' | 'dev' | 'preview' | 'prerender') {
+  const inlineConfig = viteConfig
+  const command = operation === 'build' || operation === 'prerender' ? 'build' : 'serve'
+  const defaultMode = 'custom'
+  const defaultNodeEnv = operation === 'dev' ? 'development' : 'production'
+  const isPreview = operation === 'preview'
+  return [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
 }
