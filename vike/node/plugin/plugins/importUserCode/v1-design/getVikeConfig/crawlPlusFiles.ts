@@ -308,8 +308,11 @@ async function isSymlinkDirectory(mode: string | null, filePath: string, userRoo
   if (!isSymlink) return false
   if (!stats) stats = await getFileStats(filePathAbsolute)
   if (stats === null) return null // deleted file
+  /* A symlink itself cannot be directory
   const isDirectory = stats.isDirectory()
   return isDirectory
+  */
+  return true
 }
 async function getFileStats(filePathAbsolute: string): Promise<Stats | null> {
   let stats: Stats
