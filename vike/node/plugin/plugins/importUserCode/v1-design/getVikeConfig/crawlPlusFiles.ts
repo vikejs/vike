@@ -153,13 +153,13 @@ async function gitLsFiles(
 
     // Symlink directory?
     {
-      const isSymlinkDir = await isSymlinkDirectory(mode, filePath, userRootDir)
-      if (isSymlinkDir) {
+      const isLink = await isSymlink(mode, filePath, userRootDir)
+      if (isLink) {
         symlinkDirs.push(filePath)
         continue
       }
       // Skip deleted files and non-symlink directories
-      if (isSymlinkDir === null) {
+      if (isLink === null) {
         continue
       }
     }
@@ -290,7 +290,7 @@ function parseGitLsResultLine(resultLine: string): { filePath: string; mode: str
   return { filePath: part2, mode }
 }
 
-async function isSymlinkDirectory(mode: string | null, filePath: string, userRootDir: string): Promise<boolean | null> {
+async function isSymlink(mode: string | null, filePath: string, userRootDir: string): Promise<boolean | null> {
   const filePathAbsolute = path.posix.join(userRootDir, filePath)
   let stats: Stats | null = null
   let isSymlink = false
@@ -299,17 +299,16 @@ async function isSymlinkDirectory(mode: string | null, filePath: string, userRoo
   } else if (mode === null) {
     // `$ git ls-files` doesn't provide the mode when Git doesn't track the path
     stats = await getFileStats(filePathAbsolute)
-    if (stats === null) return null
+    if (stats === null) return null // deleted file
     isSymlink = stats.isSymbolicLink()
-    if (!isSymlink && stats.isDirectory()) return null
+    if (!isSymlink && stats.isDirectory()) return null // non-symlink directory
   } else {
     assert(mode)
   }
   if (!isSymlink) return false
   if (!stats) stats = await getFileStats(filePathAbsolute)
-  if (stats === null) return null
-  const isDirectory = stats.isDirectory()
-  return isDirectory
+  if (stats === null) return null // deleted file
+  return true
 }
 async function getFileStats(filePathAbsolute: string): Promise<Stats | null> {
   let stats: Stats
