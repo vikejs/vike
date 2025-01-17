@@ -31,7 +31,7 @@ async function enhanceViteConfig(viteConfig: InlineConfig = {}, operation: Opera
   const { vikeConfigGlobal } = await getVikeConfig2(
     viteConfigResolved.root,
     operation === 'dev',
-    (viteConfigResolved as any)._vikeVitePluginOptions as unknown
+    viteConfigResolved._vikeVitePluginOptions
   )
 
   // TODO: enable Vike extensions to add Vite plugins

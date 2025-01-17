@@ -125,7 +125,7 @@ let vikeConfigPromise: Promise<VikeConfigObject> | null = null
 const vikeConfigDependencies: Set<string> = new Set()
 function reloadVikeConfig(config: ResolvedConfig) {
   const userRootDir = config.root
-  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as unknown
+  const vikeVitePluginOptions = config._vikeVitePluginOptions
   assert(vikeVitePluginOptions)
   vikeConfigDependencies.clear()
   clearFilesEnvMap()
@@ -167,13 +167,14 @@ async function getVikeConfig(
   { doNotRestartViteOnError }: { doNotRestartViteOnError?: true } = {}
 ): Promise<VikeConfigObject> {
   const userRootDir = config.root
-  const vikeVitePluginOptions = (config as any)._vikeVitePluginOptions as unknown
+  const vikeVitePluginOptions = config._vikeVitePluginOptions
   assert(vikeVitePluginOptions)
-  const isDev = (config as any)._isDev as unknown
+  const isDev = config._isDev
   assert(typeof isDev === 'boolean')
   return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
 }
 async function getVikeConfig2(userRootDir: string, isDev: boolean, vikeVitePluginOptions: unknown) {
+  assert(vikeVitePluginOptions)
   return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, false)
 }
 async function getVikeConfigEntry(

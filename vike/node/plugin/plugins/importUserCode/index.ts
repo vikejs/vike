@@ -52,7 +52,7 @@ function importUserCode(): Plugin {
     async load(id, options) {
       if (!isVirtualFileId(id)) return undefined
       id = getVirtualFileId(id)
-      const isDev = (config as any)._isDev as unknown
+      const isDev = config._isDev
       assert(typeof isDev === 'boolean')
 
       if (isVirtualFileIdPageConfigValuesAll(id)) {

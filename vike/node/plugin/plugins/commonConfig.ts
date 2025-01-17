@@ -12,6 +12,13 @@ import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 
+declare module 'vite' {
+  interface UserConfig {
+    _isDev?: boolean
+    _vikeVitePluginOptions?: unknown
+  }
+}
+
 function commonConfig(vikeVitePluginOptions: unknown = {}): Plugin[] {
   return [
     {
@@ -23,7 +30,7 @@ function commonConfig(vikeVitePluginOptions: unknown = {}): Plugin[] {
           return {
             _isDev: isDevCheck(env),
             _vikeVitePluginOptions: vikeVitePluginOptions
-          } as UserConfig
+          }
         }
       }
     },
