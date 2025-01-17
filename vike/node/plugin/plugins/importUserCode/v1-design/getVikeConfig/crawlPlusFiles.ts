@@ -299,15 +299,15 @@ async function isSymlinkDirectory(mode: string | null, filePath: string, userRoo
   } else if (mode === null) {
     // `$ git ls-files` doesn't provide the mode when Git doesn't track the path
     stats = await getFileStats(filePathAbsolute)
-    if (stats === null) return null
+    if (stats === null) return null // deleted file
     isSymlink = stats.isSymbolicLink()
-    if (!isSymlink && stats.isDirectory()) return null
+    if (!isSymlink && stats.isDirectory()) return null // non-symlink directory
   } else {
     assert(mode)
   }
   if (!isSymlink) return false
   if (!stats) stats = await getFileStats(filePathAbsolute)
-  if (stats === null) return null
+  if (stats === null) return null // deleted file
   const isDirectory = stats.isDirectory()
   return isDirectory
 }
