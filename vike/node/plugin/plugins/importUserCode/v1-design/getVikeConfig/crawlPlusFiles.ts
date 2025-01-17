@@ -23,8 +23,7 @@ let gitIsNotUsable = false
 
 async function crawlPlusFiles(
   userRootDir: string,
-  outDirAbsoluteFilesystem: null | string,
-  crawlWithGit: null | boolean
+  outDirAbsoluteFilesystem: null | string
 ): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
 
