@@ -1,5 +1,7 @@
+- prepareViteApiCall() => use loadConfigFromFile() instead of viteConfigResolved?
+- Base URL plugin
 - Refator runtime config
-- prepareViteApiCall()
+- deprecate VikeVitePluginOptions
 - https://github.com/vikejs/vike-node/pull/44
 
 - head settings
