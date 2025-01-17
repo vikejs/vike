@@ -14,6 +14,7 @@ import glob from 'fast-glob'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
+import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
 const execA = promisify(exec)
 
 assertIsNotProductionRuntime()
@@ -22,8 +23,7 @@ let gitIsNotUsable = false
 
 async function crawlPlusFiles(
   userRootDir: string,
-  outDirAbsoluteFilesystem: null | string,
-  crawlWithGit: null | boolean
+  outDirAbsoluteFilesystem: null | string
 ): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
 
@@ -49,7 +49,7 @@ async function crawlPlusFiles(
 
   // Crawl
   let files: string[]
-  const res = crawlWithGit !== false && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
+  const res = !isGitCrawlDisabled() && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
   if (
     res &&
     // Fallback to fast-glob for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
@@ -235,4 +235,9 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
   stdout = stdout.toString().trim()
   stderr = stderr.toString().trim()
   return { stdout, stderr }
+}
+
+function isGitCrawlDisabled() {
+  const crawSettings = getEnvVarObject('VIKE_CRAWL')
+  return crawSettings?.git === false
 }
