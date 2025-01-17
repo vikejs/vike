@@ -7,7 +7,8 @@ import {
   assertIsSingleModuleInstance,
   assertIsNotProductionRuntime,
   isVersionOrAbove,
-  isScriptFile
+  isScriptFile,
+  scriptFileExtensionList
 } from '../../../../utils.js'
 import path from 'path'
 import glob from 'fast-glob'
@@ -94,10 +95,8 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
     preserveUTF8,
     'ls-files',
 
-    // We don't filter because:
-    //  - It would skip symlink directories
-    //  - Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    // ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
+    // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
+    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
@@ -128,16 +127,17 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
 
   const files = []
   for (const filePath of filesAll) {
-    // Deleted?
-    if (filesDeleted.includes(filePath)) continue
+    // + file?
+    if (!path.posix.basename(filePath).startsWith('+')) continue
 
     // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
     if (!ignoreAsFilterFn(filePath)) continue
 
-    // + file?
-    if (!path.posix.basename(filePath).startsWith('+')) continue
     // JavaScript file?
     if (!isScriptFile(filePath)) continue
+
+    // Deleted?
+    if (filesDeleted.includes(filePath)) continue
 
     files.push(filePath)
   }
