@@ -5,7 +5,7 @@ import { assertUsage, isObject } from '../utils.js'
 import JSON5 from 'json5'
 
 function getEnvVarObject(
-  envVarName: 'VITE_CONFIG'
+  envVarName: 'VITE_CONFIG' | 'VIKE_CRAWL'
   /* Let's eventually implement this for Vike's config as well
   | 'VIKE_CONFIG'
   */
