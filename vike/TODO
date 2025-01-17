@@ -1,3 +1,6 @@
+- Refator runtime config
+- https://github.com/vikejs/vike-node/pull/44
+
 - head settings
   - name setting?
     - Appends `| ${name}` to title
