@@ -1,4 +1,5 @@
 - Refator runtime config
+- prepareViteApiCall()
 - https://github.com/vikejs/vike-node/pull/44
 
 - head settings
