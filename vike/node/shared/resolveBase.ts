@@ -14,7 +14,6 @@ function resolveBaseFromResolvedConfig(
   baseAssets: string
 } {
   let baseViteOriginal: unknown = (config as Record<string, unknown>)._baseViteOriginal
-  if (baseViteOriginal === '/__UNSET__') baseViteOriginal = null
   assert(baseViteOriginal === null || typeof baseViteOriginal == 'string')
   return resolveBase(baseViteOriginal, baseServer, baseAssets)
 }
@@ -27,6 +26,7 @@ function resolveBase(
   baseServer: string
   baseAssets: string
 } {
+  if (baseViteOriginal === '/__UNSET__') baseViteOriginal = null
   {
     const wrongBase = (val: string) =>
       `should start with ${pc.cyan('/')}, ${pc.cyan('http://')}, or ${pc.cyan('https://')} (it's ${pc.cyan(

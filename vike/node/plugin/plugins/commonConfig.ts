@@ -19,7 +19,7 @@ declare module 'vite' {
   }
 }
 
-function commonConfig(vikeVitePluginOptions: unknown = {}): Plugin[] {
+function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
   return [
     {
       name: `${pluginName}:pre`,
