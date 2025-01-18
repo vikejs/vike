@@ -6,3 +6,5 @@ onLoad()
 
 export * from '../../utils/assert.js'
 export * from '../../utils/getGlobalObject.js'
+export * from '../../utils/filesystemPathHandling.js'
+export * from '../../utils/isObject.js'

@@ -7,10 +7,10 @@ import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
-import { pluginName } from './commonConfig/pluginName.js'
 import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
+const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
   interface UserConfig {

@@ -58,6 +58,7 @@ function plugin(vikeVitePluginOptions?: VikeVitePluginOptions): any {
     workaroundCssModuleHmr(),
     vite6HmrRegressionWorkaround()
   ]
+  Object.assign(plugins, { __vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins
 }
 
