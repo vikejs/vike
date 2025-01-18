@@ -1,6 +1,7 @@
 export { prepareViteApiCall }
 export { getViteRoot }
 export { assertViteRoot }
+export { normalizeViteRoot }
 
 // TODO: enable Vike extensions to add Vite plugins
 
