@@ -16,7 +16,7 @@ function baseUrls(vikeVitePluginOptions: unknown): Plugin {
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
       const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
-      root = await getViteRoot(operation)
+      root = config.root ?? await getViteRoot(operation)
       assert(root)
       const baseViteOriginal = config.base ?? '/__UNSET__' // '/__UNSET__' because Vite resolves `_baseViteOriginal: null` to `undefined`
       const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
