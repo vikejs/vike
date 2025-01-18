@@ -42,7 +42,7 @@ async function getInfoFromVite(
 ) {
   const viteConfigFromFile = await loadViteConfigFile(viteConfig, operation)
 
-  const root = normalizeRoot(viteConfigFromFile?.root ?? viteConfig?.root ?? process.cwd())
+  const root = normalizeViteRoot(viteConfigFromFile?.root ?? viteConfig?.root ?? process.cwd())
   globalObject.root = root
 
   let vikeVitePluginOptions: Record<string, unknown> | undefined
@@ -122,7 +122,7 @@ function getResolveConfigArgs(viteConfig: InlineConfig = {}, operation: 'build' 
   return [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
 }
 
-function normalizeRoot(root: string) {
+function normalizeViteRoot(root: string) {
   return toPosixPath(path.resolve(root))
 }
 
@@ -131,9 +131,9 @@ async function assertViteRoot2(root: string, viteConfigEnhanced: InlineConfig | 
   const args = getResolveConfigArgs(viteConfigEnhanced, operation)
   // We can eventually this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
   const viteConfigResolved = await resolveConfig(...args)
-  assertUsage(normalizeRoot(viteConfigResolved.root) === normalizeRoot(root), errMsg)
+  assertUsage(normalizeViteRoot(viteConfigResolved.root) === normalizeViteRoot(root), errMsg)
 }
 function assertViteRoot(root: string, config: ResolvedConfig) {
-  if (globalObject.root) assert(normalizeRoot(globalObject.root) === normalizeRoot(root))
-  assertUsage(normalizeRoot(root) === normalizeRoot(config.root), errMsg)
+  if (globalObject.root) assert(normalizeViteRoot(globalObject.root) === normalizeViteRoot(root))
+  assertUsage(normalizeViteRoot(root) === normalizeViteRoot(config.root), errMsg)
 }
