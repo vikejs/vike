@@ -129,6 +129,7 @@ function normalizeRoot(root: string) {
 const errMsg = `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} which is forbidden`
 async function assertViteRoot2(root: string, viteConfigEnhanced: InlineConfig | undefined, operation: Operation) {
   const args = getResolveConfigArgs(viteConfigEnhanced, operation)
+  // We can eventually this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
   const viteConfigResolved = await resolveConfig(...args)
   assertUsage(normalizeRoot(viteConfigResolved.root) === normalizeRoot(root), errMsg)
 }
