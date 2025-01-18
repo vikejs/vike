@@ -49,7 +49,7 @@ pages/HELLO/+Page.js           /HELLO
 Vike crawls:
 - Files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root).
   > Consequently, all your <Link href="/config#files">`+` files</Link> need to live inside `root`.
-  > You can use a symlink (e.g. `$ ln -s`) and set `VIKE_CRAWL="{git:false}"` to make a directory outside of `root` crawlable.
+  > To make a directory outside of `root` crawlable, you can use a symlink (e.g. `$ ln -s`) and set `VIKE_CRAWL="{git:false}"`.
 - Skips `node_modules/`
 - Skips `.gitignore` files (if you use Git).
   > If you want to also crawl these then set `VIKE_CRAWL="{git:false}"`.
