@@ -1,3 +1,17 @@
+## [0.4.218](https://github.com/vikejs/vike/compare/v0.4.217...v0.4.218) (2025-01-18)
+
+
+### Bug Fixes
+
+* enable Base URL to be set in + files ([#2090](https://github.com/vikejs/vike/issues/2090)) ([1113bb0](https://github.com/vikejs/vike/commit/1113bb0dc7a8197a31644dad631ca0283b6a0bbe))
+* fix crawling of symlinked directories ([#2086](https://github.com/vikejs/vike/issues/2086)) ([cc7cb18](https://github.com/vikejs/vike/commit/cc7cb1822c681366d86f23023a3f6b4b02a1afff))
+* pass correct command value 'build' to `resolveConfig()` upon pre-rendering ([ec0904a](https://github.com/vikejs/vike/commit/ec0904ac21a8e30dc27945db2157cae2cf9c0973))
+* reduce redundant `resolveConfig()` calls ([950e4cc](https://github.com/vikejs/vike/commit/950e4cc7da16a42ed1efecba4723f506c974df2f))
+* remove `vike({ crawl: { git: false } })` in favor of `VIKE_CRAWL={git:false}` ([#2088](https://github.com/vikejs/vike/issues/2088)) ([99ea561](https://github.com/vikejs/vike/commit/99ea561081a8a8661398905e1d3ccd9ca1bcd4d0))
+* remove symlink directory crawling ([#2087](https://github.com/vikejs/vike/issues/2087)) ([e15d78e](https://github.com/vikejs/vike/commit/e15d78e9d4e64a35c085368a1045ad8f92bc7cdd))
+
+
+
 ## [0.4.217](https://github.com/vikejs/vike/compare/v0.4.216...v0.4.217) (2025-01-16)
 
 
