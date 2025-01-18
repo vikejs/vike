@@ -1,40 +1,53 @@
 export { baseUrls }
 
-import type { Plugin, UserConfig } from 'vite'
+import type { Plugin } from 'vite'
 import { resolveBase, resolveBaseFromResolvedConfig } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
-import type { VikeVitePluginOptions } from './importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig, getVikeConfig2 } from './importUserCode/v1-design/getVikeConfig.js'
+import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 
-function baseUrls(vikeVitePluginOptions?: VikeVitePluginOptions): Plugin {
-  let bases: ReturnType<typeof resolveBaseFromUserConfig>
+function baseUrls(vikeVitePluginOptions: unknown): Plugin {
+  let basesResolved: ReturnType<typeof resolveBase>
+  let root: string
   return {
     name: 'vike:baseUrls',
     enforce: 'post',
-    async config(config) {
-      // TODO: fix bug: use getVikeConfig2() and udpate check below
-      bases = resolveBaseFromUserConfig(config, vikeVitePluginOptions)
-      const { baseServer, baseAssets } = bases
+    async config(config, env) {
+      const isDev = config._isDev
+      assert(typeof isDev === 'boolean')
+      const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
+      root = config.root ? normalizeViteRoot(config.root) : await getViteRoot(operation)
+      assert(root)
+      const baseViteOriginal = config.base ?? '/__UNSET__' // '/__UNSET__' because Vite resolves `_baseViteOriginal: null` to `undefined`
+      const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
+      basesResolved = resolveBase(
+        baseViteOriginal,
+        vikeConfig.vikeConfigGlobal.baseServer,
+        vikeConfig.vikeConfigGlobal.baseAssets
+      )
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
-      process.env.BASE_SERVER = baseServer
-      process.env.BASE_ASSETS = baseAssets
+      process.env.BASE_SERVER = basesResolved.baseServer
+      process.env.BASE_ASSETS = basesResolved.baseAssets
       return {
         envPrefix: [
           'VITE_', // Vite doesn't seem to merge in its default, see https://github.com/vikejs/vike/issues/554
           'BASE_SERVER',
           'BASE_ASSETS'
         ],
-        base: baseAssets, // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg.js'`
-        _baseViteOriginal: config.base ?? '/__UNSET__' // Vite resolves `_baseViteOriginal: null` to `undefined`
+        base: basesResolved.baseAssets, // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg.js'`
+        _baseViteOriginal: baseViteOriginal
       }
     },
     async configResolved(config) {
+      assertViteRoot(root, config)
       const vikeConfig = await getVikeConfig(config)
-      const { baseServer, baseAssets } = vikeConfig.vikeConfigGlobal
-      const basesResolved = resolveBaseFromResolvedConfig(baseServer, baseAssets, config)
-      // Ensure that the premature base URL resolving we did in config() isn't erroneous
-      assert(basesResolved.baseServer === bases.baseServer)
-      assert(basesResolved.baseAssets === bases.baseAssets)
+      const basesResolved2 = resolveBaseFromResolvedConfig(
+        vikeConfig.vikeConfigGlobal.baseServer,
+        vikeConfig.vikeConfigGlobal.baseAssets,
+        config
+      )
+      assert(basesResolved2.baseServer === basesResolved.baseServer)
+      assert(basesResolved2.baseAssets === basesResolved.baseAssets)
       /* In dev, Vite seems buggy around setting vite.config.js#base to an absolute URL (e.g. http://localhost:8080/cdn/)
        *  - In dev, Vite removes the URL origin. (I.e. it resolves the user config `vite.config.js#base: 'http://localhost:8080/cdn/'` to resolved config `config.base === '/cdn/'`.)
        *  - Instead of having an internal Vike assertion fail, we let the user discover Vite's buggy behavior.
@@ -42,13 +55,4 @@ function baseUrls(vikeVitePluginOptions?: VikeVitePluginOptions): Plugin {
       */
     }
   }
-}
-
-function resolveBaseFromUserConfig(config: UserConfig, vikeVitePluginOptions: undefined | VikeVitePluginOptions) {
-  const baseViteOriginal = config.base ?? null
-  return resolveBase(
-    baseViteOriginal,
-    vikeVitePluginOptions?.baseServer ?? null,
-    vikeVitePluginOptions?.baseAssets ?? null
-  )
 }

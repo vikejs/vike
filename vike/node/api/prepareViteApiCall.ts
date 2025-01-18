@@ -1,24 +1,29 @@
 export { prepareViteApiCall }
+export { getViteRoot }
+export { assertViteRoot }
+export { normalizeViteRoot }
 
 // TODO: enable Vike extensions to add Vite plugins
 
 import { loadConfigFromFile, resolveConfig } from 'vite'
-import type { InlineConfig, PluginOption } from 'vite'
+import type { InlineConfig, PluginOption, ResolvedConfig } from 'vite'
 import type { Operation } from './types.js'
 import { setOperation } from './context.js'
 import { getVikeConfig2 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
-import { assert, assertUsage, toPosixPath } from './utils.js'
+import { assert, assertUsage, getGlobalObject, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 
-async function prepareViteApiCall(viteConfig: InlineConfig = {}, operation: Operation) {
+const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts', {})
+
+async function prepareViteApiCall(viteConfig: InlineConfig | undefined, operation: Operation) {
   setOperation(operation)
   return enhanceViteConfig(viteConfig, operation)
 }
 
-async function enhanceViteConfig(viteConfig: InlineConfig = {}, operation: Operation) {
+async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation: Operation) {
   const { root, vikeVitePluginOptions, viteConfigEnhanced } = await getInfoFromVite(viteConfig, operation)
-  await assertRoot(root, viteConfigEnhanced, operation)
+  await assertViteRoot2(root, viteConfigEnhanced, operation)
   const { vikeConfigGlobal } = await getVikeConfig2(root, operation === 'dev', vikeVitePluginOptions)
   return {
     viteConfigEnhanced,
@@ -26,14 +31,24 @@ async function enhanceViteConfig(viteConfig: InlineConfig = {}, operation: Opera
   }
 }
 
-async function getInfoFromVite(viteConfig: InlineConfig, operation: 'build' | 'dev' | 'preview' | 'prerender') {
+async function getViteRoot(operation: 'build' | 'dev' | 'preview' | 'prerender') {
+  if (!globalObject.root) await getInfoFromVite(undefined, operation)
+  assert(globalObject.root)
+  return globalObject.root
+}
+
+async function getInfoFromVite(
+  viteConfig: InlineConfig | undefined,
+  operation: 'build' | 'dev' | 'preview' | 'prerender'
+) {
   const viteConfigFromFile = await loadViteConfigFile(viteConfig, operation)
 
-  const root = normalizeRoot(viteConfigFromFile?.root ?? viteConfig.root ?? process.cwd())
+  const root = normalizeViteRoot(viteConfigFromFile?.root ?? viteConfig?.root ?? process.cwd())
+  globalObject.root = root
 
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let viteConfigEnhanced = viteConfig
-  const found = findVikeVitePlugin([...(viteConfig.plugins ?? []), ...(viteConfigFromFile?.plugins ?? [])])
+  const found = findVikeVitePlugin([...(viteConfig?.plugins ?? []), ...(viteConfigFromFile?.plugins ?? [])])
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
@@ -42,7 +57,7 @@ async function getInfoFromVite(viteConfig: InlineConfig, operation: 'build' | 'd
     const { plugin: vikePlugin } = await import('../plugin/index.js')
     viteConfigEnhanced = {
       ...viteConfig,
-      plugins: [...(viteConfig.plugins ?? []), vikePlugin()]
+      plugins: [...(viteConfig?.plugins ?? []), vikePlugin()]
     }
     const res = findVikeVitePlugin(viteConfigEnhanced.plugins!)
     assert(res)
@@ -69,7 +84,10 @@ function findVikeVitePlugin(plugins: PluginOption[]) {
 }
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
-async function loadViteConfigFile(viteConfig: InlineConfig, operation: 'build' | 'dev' | 'preview' | 'prerender') {
+async function loadViteConfigFile(
+  viteConfig: InlineConfig | undefined,
+  operation: 'build' | 'dev' | 'preview' | 'prerender'
+) {
   const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getResolveConfigArgs(viteConfig, operation)
 
   let config = inlineConfig
@@ -96,11 +114,7 @@ async function loadViteConfigFile(viteConfig: InlineConfig, operation: 'build' |
   return null
 }
 
-async function resolveViteConfig(viteConfig: InlineConfig, operation: 'build' | 'dev' | 'preview' | 'prerender') {
-  const args = getResolveConfigArgs(viteConfig, operation)
-  return await resolveConfig(...args)
-}
-function getResolveConfigArgs(viteConfig: InlineConfig, operation: 'build' | 'dev' | 'preview' | 'prerender') {
+function getResolveConfigArgs(viteConfig: InlineConfig = {}, operation: 'build' | 'dev' | 'preview' | 'prerender') {
   const inlineConfig = viteConfig
   const command = operation === 'build' || operation === 'prerender' ? 'build' : 'serve'
   const defaultMode = operation === 'dev' ? 'development' : 'production'
@@ -109,14 +123,18 @@ function getResolveConfigArgs(viteConfig: InlineConfig, operation: 'build' | 'de
   return [inlineConfig, command, defaultMode, defaultNodeEnv, isPreview] as const
 }
 
-function normalizeRoot(root: string) {
+function normalizeViteRoot(root: string) {
   return toPosixPath(path.resolve(root))
 }
 
-async function assertRoot(root: string, viteConfigEnhanced: InlineConfig = {}, operation: Operation) {
-  const viteConfigResolved = await resolveViteConfig(viteConfigEnhanced, operation)
-  assertUsage(
-    normalizeRoot(viteConfigResolved.root) === normalizeRoot(root),
-    `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} which is forbidden`
-  )
+const errMsg = `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} which is forbidden`
+async function assertViteRoot2(root: string, viteConfigEnhanced: InlineConfig | undefined, operation: Operation) {
+  const args = getResolveConfigArgs(viteConfigEnhanced, operation)
+  // We can eventually this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
+  const viteConfigResolved = await resolveConfig(...args)
+  assertUsage(normalizeViteRoot(viteConfigResolved.root) === normalizeViteRoot(root), errMsg)
+}
+function assertViteRoot(root: string, config: ResolvedConfig) {
+  if (globalObject.root) assert(normalizeViteRoot(globalObject.root) === normalizeViteRoot(root))
+  assertUsage(normalizeViteRoot(root) === normalizeViteRoot(config.root), errMsg)
 }

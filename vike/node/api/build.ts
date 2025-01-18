@@ -42,11 +42,11 @@ async function build(options: APIOptions = {}): Promise<{
   }
 }
 
-function setSSR(viteConfig: InlineConfig): InlineConfig {
+function setSSR(viteConfig: InlineConfig | undefined): InlineConfig {
   return {
     ...viteConfig,
     build: {
-      ...viteConfig.build,
+      ...viteConfig?.build,
       ssr: true
     }
   }

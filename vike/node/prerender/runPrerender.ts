@@ -164,7 +164,7 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   }
   runPrerender_forceExit()
 }
-async function runPrerenderFromAutoRun(viteConfig: InlineConfig, forceExit: boolean): Promise<void> {
+async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined, forceExit: boolean): Promise<void> {
   try {
     await runPrerender({ viteConfig })
   } catch (err) {
