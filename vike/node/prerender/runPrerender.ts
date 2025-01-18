@@ -187,7 +187,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await disableReactStreaming()
 
-  const viteConfig = await resolveConfig(options.viteConfig || {}, 'vike pre-rendering' as any, 'production')
+  const viteConfig = await resolveConfig(options.viteConfig || {}, 'build', 'production')
   assertLoadedConfig(viteConfig, options)
   const vikeConfig = await getVikeConfig(viteConfig)
 
