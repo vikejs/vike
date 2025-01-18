@@ -1,10 +1,11 @@
 export { prepareViteApiCall }
 export { getViteRoot }
+export { assertViteRoot }
 
 // TODO: enable Vike extensions to add Vite plugins
 
 import { loadConfigFromFile, resolveConfig } from 'vite'
-import type { InlineConfig, PluginOption } from 'vite'
+import type { InlineConfig, PluginOption, ResolvedConfig } from 'vite'
 import type { Operation } from './types.js'
 import { setOperation } from './context.js'
 import { getVikeConfig2 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
@@ -21,7 +22,7 @@ async function prepareViteApiCall(viteConfig: InlineConfig | undefined, operatio
 
 async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation: Operation) {
   const { root, vikeVitePluginOptions, viteConfigEnhanced } = await getInfoFromVite(viteConfig, operation)
-  await assertRoot(root, viteConfigEnhanced, operation)
+  await assertViteRoot2(root, viteConfigEnhanced, operation)
   const { vikeConfigGlobal } = await getVikeConfig2(root, operation === 'dev', vikeVitePluginOptions)
   return {
     viteConfigEnhanced,
@@ -125,11 +126,14 @@ function normalizeRoot(root: string) {
   return toPosixPath(path.resolve(root))
 }
 
-async function assertRoot(root: string, viteConfigEnhanced: InlineConfig | undefined, operation: Operation) {
+const errMsg = `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} which is forbidden`
+async function assertViteRoot2(root: string, viteConfigEnhanced: InlineConfig | undefined, operation: Operation) {
   const args = getResolveConfigArgs(viteConfigEnhanced, operation)
   const viteConfigResolved = await resolveConfig(...args)
-  assertUsage(
-    normalizeRoot(viteConfigResolved.root) === normalizeRoot(root),
-    `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} which is forbidden`
-  )
+  assertUsage(normalizeRoot(viteConfigResolved.root) === normalizeRoot(root), errMsg)
+}
+function assertViteRoot(root: string, config: ResolvedConfig) {
+  assert(globalObject.root)
+  assert(normalizeRoot(globalObject.root) === normalizeRoot(root))
+  assertUsage(normalizeRoot(root) === normalizeRoot(config.root), errMsg)
 }

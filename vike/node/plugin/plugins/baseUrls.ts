@@ -4,7 +4,7 @@ import type { Plugin } from 'vite'
 import { resolveBase, resolveBaseFromResolvedConfig } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
 import { getVikeConfig, getVikeConfig2 } from './importUserCode/v1-design/getVikeConfig.js'
-import { getViteRoot } from '../../api/prepareViteApiCall.js'
+import { assertViteRoot, getViteRoot } from '../../api/prepareViteApiCall.js'
 
 function baseUrls(vikeVitePluginOptions: unknown): Plugin {
   let basesResolved: ReturnType<typeof resolveBase>
@@ -16,7 +16,7 @@ function baseUrls(vikeVitePluginOptions: unknown): Plugin {
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
       const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
-      root = config.root ?? await getViteRoot(operation)
+      root = config.root ?? (await getViteRoot(operation))
       assert(root)
       const baseViteOriginal = config.base ?? '/__UNSET__' // '/__UNSET__' because Vite resolves `_baseViteOriginal: null` to `undefined`
       const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
@@ -39,7 +39,7 @@ function baseUrls(vikeVitePluginOptions: unknown): Plugin {
       }
     },
     async configResolved(config) {
-      assert(root === config.root)
+      assertViteRoot(root, config)
       const vikeConfig = await getVikeConfig(config)
       const basesResolved2 = resolveBaseFromResolvedConfig(
         vikeConfig.vikeConfigGlobal.baseServer,
