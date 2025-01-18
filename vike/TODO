@@ -1,4 +1,3 @@
-- Base URL plugin
 - Refator runtime config
 - deprecate VikeVitePluginOptions
 - https://github.com/vikejs/vike-node/pull/44
