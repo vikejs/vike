@@ -133,7 +133,6 @@ async function assertViteRoot2(root: string, viteConfigEnhanced: InlineConfig | 
   assertUsage(normalizeRoot(viteConfigResolved.root) === normalizeRoot(root), errMsg)
 }
 function assertViteRoot(root: string, config: ResolvedConfig) {
-  assert(globalObject.root)
-  assert(normalizeRoot(globalObject.root) === normalizeRoot(root))
+  if (globalObject.root) assert(normalizeRoot(globalObject.root) === normalizeRoot(root))
   assertUsage(normalizeRoot(root) === normalizeRoot(config.root), errMsg)
 }
