@@ -25,11 +25,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Open Source Pricing',
-    url: '/pricing'
-  },
-  {
-    level: 2,
     title: 'FAQ',
     url: '/faq'
   },
@@ -37,6 +32,11 @@ const headings = [
     level: 2,
     title: 'Why Vike',
     url: '/why'
+  },
+  {
+    level: 2,
+    title: 'Open Source Pricing',
+    url: '/pricing'
   },
   {
     level: 2,
