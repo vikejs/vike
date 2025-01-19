@@ -72,18 +72,20 @@ const data: {
 ]
 
 function UsedBy() {
+  const height = 70
+  const padding = 10
   return (
     <div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div style={{ textAlign: 'center' }}>
         {data.map((e, i) => (
           <a
             href={e.website}
             target="_blank"
             key={i}
             style={{
-              height: 70,
-              boxSizing: 'border-box',
-              padding: 10,
+              display: 'inline-block',
+              height,
+              padding,
               marginLeft: i === 0 ? 0 : 30
             }}
             aria-label={e.desc}
@@ -94,8 +96,7 @@ function UsedBy() {
               src={e.logo}
               style={{
                 maxWidth: 180 - (e.shrink ?? 0),
-                height: '100%',
-                display: 'block',
+                height: height - 2 * padding,
                 position: 'relative',
                 top: e.offset,
                 objectFit: 'contain'
