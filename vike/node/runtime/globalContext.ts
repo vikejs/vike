@@ -241,8 +241,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
-    const vikeConfigGlobal = vikeConfig.vikeConfigGlobal
-    const pluginManifest = getRuntimeManifest(vikeConfigGlobal, viteConfig)
+    const pluginManifest = getRuntimeManifest(vikeConfig.vikeConfigGlobal, viteConfig)
     globalObject.globalContext = {
       isProduction: false,
       isPrerendering: false,
