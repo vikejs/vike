@@ -1,12 +1,15 @@
-import { assertUsage, assertWarning, objectAssign } from './utils.js'
-import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
-import { getPageFilesAll } from '../../shared/getPageFiles/setPageFiles.js'
-import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
-import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-
 export { getPageContext }
 
+import { assertUsage, assertWarning, objectAssign } from './utils.js'
+import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
+import { getPageFilesAll, setPageFiles } from '../../shared/getPageFiles/setPageFiles.js'
+import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
+import { getCurrentUrl } from '../shared/getCurrentUrl.js'
+// @ts-ignore
+import * as pageFilesExports from 'virtual:vike:importUserCode:client:server-routing'
+
 const urlFirst = getCurrentUrl({ withoutHash: true })
+initDevEntry()
 
 async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
@@ -53,4 +56,8 @@ async function loadPageUserFiles(pageId: string) {
     })
 
   return pageContextAddendum
+}
+
+function initDevEntry() {
+  setPageFiles(pageFilesExports)
 }

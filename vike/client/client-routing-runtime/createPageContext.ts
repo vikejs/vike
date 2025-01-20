@@ -1,13 +1,17 @@
 export { createPageContext }
 
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
-import { getPageFilesAll } from '../../shared/getPageFiles/setPageFiles.js'
+import { getPageFilesAll, setPageFiles } from '../../shared/getPageFiles/setPageFiles.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
 import { assert, isBaseServer, PromiseType, getGlobalObject, objectAssign } from './utils.js'
+// @ts-ignore
+import * as pageFilesExports from 'virtual:vike:importUserCode:client:client-routing'
 const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>
 }>('createPageContext.ts', {})
+
+initDevEntry()
 
 async function createPageContext(urlOriginal: string) {
   if (!globalObject.pageFilesData) {
@@ -39,4 +43,8 @@ async function createPageContext(urlOriginal: string) {
   const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
   objectAssign(pageContext, pageContextUrlComputed)
   return pageContext
+}
+
+function initDevEntry() {
+  setPageFiles(pageFilesExports)
 }
