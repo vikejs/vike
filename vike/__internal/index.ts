@@ -9,7 +9,8 @@ export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 export { getMiddlewares }
 
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
-import { getPageFilesAll, type PageFile } from '../shared/getPageFiles.js'
+import { getPageFilesAll } from '../shared/getPageFiles/setPageFiles.js'
+import type { PageFile } from '../shared/getPageFiles/getPageFileObject.js'
 import { getGlobalContext, initGlobalContext_getGlobalContextAsync } from '../node/runtime/globalContext.js'
 import { setNodeEnvProduction } from '../utils/assertSetup.js'
 import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'

@@ -1,7 +1,7 @@
 export { createPageContext }
 
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
-import { getPageFilesAll } from '../../shared/getPageFiles.js'
+import { getPageFilesAll } from '../../shared/getPageFiles/setPageFiles.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
 import { assert, isBaseServer, PromiseType, getGlobalObject, objectAssign } from './utils.js'

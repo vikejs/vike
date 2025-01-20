@@ -1,4 +1,4 @@
-import { setPageFiles } from '../../shared/getPageFiles.js'
+import { setPageFiles } from '../../shared/getPageFiles/setPageFiles.js'
 // @ts-ignore
 import * as pageFilesExports from 'virtual:vike:importUserCode:client:server-routing'
 setPageFiles(pageFilesExports)

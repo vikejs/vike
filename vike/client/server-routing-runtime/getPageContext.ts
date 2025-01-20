@@ -1,6 +1,6 @@
 import { assertUsage, assertWarning, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
-import { getPageFilesAll } from '../../shared/getPageFiles.js'
+import { getPageFilesAll } from '../../shared/getPageFiles/setPageFiles.js'
 import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
