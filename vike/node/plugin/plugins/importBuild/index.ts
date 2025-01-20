@@ -52,10 +52,9 @@ function getServerProductionEntryCode(config: ResolvedConfig, vikeConfigGlobal: 
     `    const assetsManifest = ${ASSETS_MAP};`,
     `    const pluginManifest = ${JSON.stringify(vikeManifest, null, 2)};`,
     '    setImportBuildGetters({',
-    `      pageFiles: () => pageFiles,`,
-    `      getAssetsManifest: () => assetsManifest,`,
-    // TODO: rename pluginManifest -> vikeManifest
-    `      pluginManifest: () => pluginManifest,`,
+    `      pageFiles,`,
+    `      assetsManifest,`,
+    `      pluginManifest,`,
     '    });',
     `  }`,
     ''
