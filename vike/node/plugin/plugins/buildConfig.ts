@@ -161,13 +161,11 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       ...clientEntries,
       ...pageFileEntries
     }
-    const clientRoutingEntry = resolve(`dist/esm/client/client-routing-runtime/entry.js`)
-    const serverRoutingEntry = resolve(`dist/esm/client/server-routing-runtime/entry.js`)
     if (hasClientRouting) {
-      entries['entries/entry-client-routing'] = clientRoutingEntry
+      entries['entries/entry-client-routing'] = resolve(`dist/esm/client/client-routing-runtime/entry.js`)
     }
     if (hasServerRouting) {
-      entries['entries/entry-server-routing'] = serverRoutingEntry
+      entries['entries/entry-server-routing'] = resolve(`dist/esm/client/server-routing-runtime/entry.js`)
     }
     return entries
   }
