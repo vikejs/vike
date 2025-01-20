@@ -5,8 +5,6 @@ import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeManifest } from './getVikeManifest.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
-import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import fs from 'fs/promises'
 import path from 'path'
@@ -14,6 +12,8 @@ import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
+import type { Plugin, ResolvedConfig, Rollup } from 'vite'
+import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MAP = '__VITE_ASSETS_MAP__'
@@ -23,7 +23,7 @@ function buildEntry(): Plugin[] {
   let vikeConfigGlobal: VikeConfigGlobal
   return [
     {
-      name: 'vike:buildEntry:config',
+      name: 'vike:buildEntry',
       enforce: 'post',
       async configResolved(config_) {
         config = config_

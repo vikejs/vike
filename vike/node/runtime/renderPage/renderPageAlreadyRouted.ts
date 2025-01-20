@@ -264,10 +264,10 @@ async function getRenderContext(): Promise<RenderContext> {
     pageFilesAll
   )
   const renderContext = {
-    pageFilesAll: pageFilesAll,
+    pageFilesAll,
     pageConfigs,
     pageConfigGlobal,
-    allPageIds: allPageIds,
+    allPageIds,
     pageRoutes,
     onBeforeRouteHook
   }

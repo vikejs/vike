@@ -59,8 +59,6 @@ async function getPageFilesAll(
 function getAllPageIds(allPageFiles: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
   const fileIds = allPageFiles.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
   const allPageIds = unique(fileIds)
-
   const allPageIds2 = pageConfigs.map((p) => p.pageId)
-
   return [...allPageIds, ...allPageIds2]
 }

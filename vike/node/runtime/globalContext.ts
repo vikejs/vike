@@ -266,8 +266,8 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
   } else {
-    const buildEntries = await loadImportBuild(globalObject.outDirRoot)
-    const { pageFiles, assetsManifest, pluginManifest } = buildEntries
+    const buildEntry = await getBuildEntry(globalObject.outDirRoot)
+    const { pageFiles, assetsManifest, pluginManifest } = buildEntry
     setPageFiles(pageFiles)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
@@ -339,7 +339,7 @@ function eagerlyLoadUserFiles() {
   getPageFilesExports()
 }
 
-async function loadImportBuild(outDir?: string) {
+async function getBuildEntry(outDir?: string) {
   if (!globalObject.buildEntry) {
     await importServerProductionEntry({ outDir })
     assert(globalObject.buildEntry)
