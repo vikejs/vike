@@ -1,4 +1,4 @@
-export { importBuild }
+export { buildEntry }
 export { set_ASSETS_MAP }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
@@ -18,12 +18,12 @@ type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MAP = '__VITE_ASSETS_MAP__'
 
-function importBuild(): Plugin[] {
+function buildEntry(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfigGlobal: VikeConfigGlobal
   return [
     {
-      name: 'vike:importBuild:config',
+      name: 'vike:buildEntry:config',
       enforce: 'post',
       async configResolved(config_) {
         config = config_
@@ -91,7 +91,7 @@ function find_ASSETS_MAP(bundle: Bundle): string {
 function getImportPath(config: ResolvedConfig) {
   // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct
   const filePathAbsolute = toPosixPath(
-    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/importBuild/index.js
+    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/buildEntry/index.js
     require_.resolve(`../../../../../../dist/esm/__internal/index.js`)
   )
   if (
