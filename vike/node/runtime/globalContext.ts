@@ -26,21 +26,20 @@ import {
   objectAssign,
   objectKeys,
   isObject,
-  hasProp
+  hasProp,
+  debugGlob,
+  getGlobalObject,
+  genPromise
 } from './utils.js'
-// Not importing from ./utils.js to avoid cyclic dependency
-import { getGlobalObject } from '../../utils/getGlobalObject.js'
-// Not importing from ./utils.js to avoid cyclic dependency
-import { genPromise } from '../../utils/genPromise.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
-import { setPageFiles } from '../../shared/getPageFiles.js'
+import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
+import { setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles.js'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
 import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
-import { getPageFilesExports } from './page-files/getPageFilesExports.js'
 import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 const globalObject = getGlobalObject<{
@@ -69,6 +68,8 @@ const globalObject = getGlobalObject<{
     }
   })()
 )
+
+initDevEntry()
 
 type GlobalContextPublic = {
   assetsManifest: null | ViteManifest
@@ -354,4 +355,23 @@ function setBuildEntry(buildEntry: unknown) {
   assert(hasProp(buildEntry, 'assetsManifest', 'object'))
   assert(hasProp(buildEntry, 'pluginManifest', 'object'))
   globalObject.buildEntry = buildEntry
+}
+
+function initDevEntry() {
+  setPageFilesAsync(getPageFilesExports)
+}
+async function getPageFilesExports(): Promise<Record<string, unknown>> {
+  const viteDevServer = getViteDevServer()
+  assert(viteDevServer)
+  let moduleExports: Record<string, unknown>
+  try {
+    moduleExports = await viteDevServer.ssrLoadModule(virtualFileIdImportUserCodeServer)
+  } catch (err) {
+    debugGlob(`Glob error: ${virtualFileIdImportUserCodeServer} transpile error: `, err)
+    throw err
+  }
+  moduleExports = (moduleExports as any).default || moduleExports
+  debugGlob('Glob result: ', moduleExports)
+  assert(isObject(moduleExports))
+  return moduleExports
 }

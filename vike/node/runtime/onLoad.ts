@@ -5,7 +5,6 @@ import { assertNodeVersion } from '../../utils/assertNodeVersion.js'
 import { setAlwaysShowStackTrace } from '../../utils/assert.js'
 import { installRequireShim } from '@brillout/require-shim'
 import { isErrorDebug } from '../shared/isErrorDebug.js'
-import { initDevEntry } from './page-files/setup.js'
 
 function onLoad() {
   assertIsNotBrowser()
@@ -13,7 +12,6 @@ function onLoad() {
   if (isErrorDebug()) setAlwaysShowStackTrace()
   addEcosystemStamp()
   installRequireShim()
-  initDevEntry()
 }
 
 // Used by:
