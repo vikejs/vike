@@ -270,8 +270,8 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     }
   } else {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot)
-    const { pageFiles, assetsManifest, pluginManifest } = buildEntry
-    setPageFiles(pageFiles)
+    const { assetsManifest, pluginManifest } = buildEntry
+    setPageFiles(buildEntry.pageFiles)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
     const globalContext = {
