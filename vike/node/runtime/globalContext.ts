@@ -15,7 +15,7 @@ export { setGlobalContext_viteConfig }
 export { setGlobalContext_vikeConfig }
 export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
-export { setImportBuildGetters }
+export { setBuildEntry }
 
 import {
   assert,
@@ -346,7 +346,7 @@ async function loadImportBuild(outDir?: string) {
   }
   return globalObject.buildEntry
 }
-function setImportBuildGetters(buildEntry: unknown) {
+function setBuildEntry(buildEntry: unknown) {
   assert(isObject(buildEntry))
   assert(hasProp(buildEntry, 'pageFiles', 'object'))
   assert(hasProp(buildEntry, 'assetsManifest', 'object'))
