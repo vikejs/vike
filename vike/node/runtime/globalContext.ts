@@ -267,7 +267,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     }
   } else {
     const buildEntries = await loadImportBuild(globalObject.outDirRoot)
-    assertBuildEntries(buildEntries, isPrerendering ?? false)
     const { pageFiles, assetsManifest, pluginManifest } = buildEntries
     setPageFiles(pageFiles)
     assertViteManifest(assetsManifest)
@@ -318,16 +317,6 @@ function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: Reso
   }
   assertRuntimeManifest(manifest)
   return manifest
-}
-
-function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {
-  const errMsg = [
-    `You are tyring to run`,
-    isPreRendering ? 'pre-rendering' : 'the server for production',
-    `but your app isn't built yet. Run ${pc.cyan('$ vike build')} before `,
-    isPreRendering ? 'pre-rendering.' : 'running the server.'
-  ].join(' ')
-  assertUsage(buildEntries, errMsg)
 }
 
 function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
