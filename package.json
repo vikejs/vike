@@ -45,5 +45,13 @@
     "playwright-chromium": "1.57.0",
     "vitest": "^3.2.4"
   },
-  "packageManager": "pnpm@9.15.9"
+  "packageManager": "pnpm@9.15.9",
+  "pnpm": {
+    "overrides": {
+      "@vitejs/plugin-react": "5.1.2",
+      "@vitejs/plugin-react-swc": "4.2.2",
+      "@vitejs/plugin-vue": "6.0.3",
+      "vite": "7.3.1"
+    }
+  }
 }
