@@ -9,7 +9,7 @@ export type { PageContextInitEnhanced }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
-import { getPageFilesAll } from '../../../shared/getPageFiles/setPageFiles.js'
+import { getPageFilesAll } from '../../../shared/getPageFiles/getPageFiles.js'
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
 import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'

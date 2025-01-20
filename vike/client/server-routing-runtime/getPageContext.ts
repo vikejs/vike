@@ -2,7 +2,7 @@ export { getPageContext }
 
 import { assertUsage, assertWarning, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
-import { getPageFilesAll, setPageFiles } from '../../shared/getPageFiles/setPageFiles.js'
+import { getPageFilesAll, setPageFiles } from '../../shared/getPageFiles/getPageFiles.js'
 import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 // @ts-ignore
