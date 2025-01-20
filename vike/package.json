@@ -228,7 +228,6 @@
     "./dist-cjs-fixup.mjs",
     "./getPageContext.js",
     "./__internal.js",
-    "./__internal/loadImportBuild.js",
     "./__internal/setup.js",
     "./modifyUrl.js",
     "./plugin.js",
