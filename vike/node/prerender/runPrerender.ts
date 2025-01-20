@@ -783,7 +783,7 @@ async function routeAndPrerender(
             assert(pageConfig)
             usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
-            usesClientRouter = globalContext.pluginManifest.usesClientRouter
+            usesClientRouter = globalContext.usesClientRouter
           }
         }
 

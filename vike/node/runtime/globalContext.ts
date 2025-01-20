@@ -89,12 +89,10 @@ type GlobalContext = {
       vikeConfig: VikeConfigObject
       viteDevServer: ViteDevServer
       assetsManifest: null
-      pluginManifest: null
     }
   | ({
       isProduction: true
       assetsManifest: ViteManifest
-      pluginManifest: PluginManifest
       viteDevServer: null
     } & (
       | {
@@ -103,6 +101,7 @@ type GlobalContext = {
         }
       | {
           isPrerendering: true
+          usesClientRouter: boolean
           viteConfig: ResolvedConfig
         }
     ))
@@ -257,7 +256,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       isProduction: false,
       isPrerendering: false,
       assetsManifest: null,
-      pluginManifest: null,
       viteDevServer,
       viteConfig,
       vikeConfig,
@@ -277,13 +275,13 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
-      pluginManifest,
       viteDevServer: null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
       redirects: pluginManifest.redirects,
       trailingSlash: pluginManifest.trailingSlash,
+      usesClientRouter: pluginManifest.usesClientRouter,
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
     if (isPrerendering) {
