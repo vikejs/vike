@@ -22,14 +22,16 @@ import {
   onSetupRuntime,
   assertUsage,
   assertWarning,
-  getGlobalObject,
   isPlainObject,
   objectAssign,
   objectKeys,
-  genPromise,
   isObject,
   hasProp
 } from './utils.js'
+// Not importing from ./utils.js to avoid cyclic dependency
+import { getGlobalObject } from '../../utils/getGlobalObject.js'
+// Not importing from ./utils.js to avoid cyclic dependency
+import { genPromise } from '../../utils/genPromise.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'

@@ -16,10 +16,7 @@ import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRo
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 
 /**
- * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel}
- * to compute some rewrite rules and extract { isr } configs.
- * Needs `import 'vike/__internal/setup'`
- * @param config
+ * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel} to compute some rewrite rules and extract { isr } configs.
  */
 async function getPagesAndRoutes() {
   setNodeEnvProduction()
