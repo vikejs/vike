@@ -29,7 +29,7 @@ import { fileEnv } from './plugins/fileEnv.js'
 import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
 import { resolveClientEntriesDev } from './resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
-import { vite6HmrRegressionWorkaround } from './plugins/vite6HmrRegressionWorkaround.js'
+import { workaroundVite6HmrRegression } from './plugins/workaroundVite6HmrRegression.js'
 
 markSetup_vikeVitePlugin()
 assertViteVersion()
@@ -56,7 +56,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): any {
     envVarsPlugin(),
     fileEnv(),
     workaroundCssModuleHmr(),
-    vite6HmrRegressionWorkaround()
+    workaroundVite6HmrRegression()
   ]
   Object.assign(plugins, { __vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins
