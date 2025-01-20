@@ -18,7 +18,7 @@ import {
   onSetupBuild,
   assertIsNpmPackageImport
 } from '../utils.js'
-import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
@@ -28,13 +28,6 @@ import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
 import fs from 'fs/promises'
 import path from 'path'
-import {
-  fixServerAssets,
-  fixServerAssets_assertCssCodeSplit,
-  fixServerAssets_assertCssTarget,
-  fixServerAssets_assertCssTarget_populate,
-  fixServerAssets_isEnabled
-} from './buildConfig/fixServerAssets.js'
 import { set_ASSETS_MAP } from './buildEntry/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
@@ -65,17 +58,6 @@ function buildConfig(): Plugin[] {
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
           outDirs = getOutDirs(config)
-          {
-            isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
-            if (isServerAssetsFixEnabled) {
-              // https://github.com/vikejs/vike/issues/1339
-              config.build.ssrEmitAssets = true
-              // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
-              config.build.cssMinify = 'esbuild'
-              fixServerAssets_assertCssTarget_populate(config)
-              fixServerAssets_assertCssCodeSplit(config)
-            }
-          }
         }
       },
       config: {
@@ -97,7 +79,6 @@ function buildConfig(): Plugin[] {
       },
       async closeBundle() {
         onSetupBuild()
-        await fixServerAssets_assertCssTarget(config)
       }
     },
     {
@@ -118,12 +99,7 @@ function buildConfig(): Plugin[] {
             const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
             const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
             const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
-            if (!isServerAssetsFixEnabled) {
-              await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
-            } else {
-              const { clientManifestMod } = await fixServerAssets(config)
-              await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
-            }
+            await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
             await fs.rm(clientManifestFilePath)
             await fs.rm(serverManifestFilePath)
             await set_ASSETS_MAP(options, bundle)

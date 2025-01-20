@@ -16,8 +16,7 @@ import {
   assertPosixPath,
   styleFileRE,
   createDebugger,
-  isScriptFile,
-  assertUsage
+  isScriptFile
 } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
@@ -26,9 +25,7 @@ import { getImportStatements, type ImportStatement } from '../shared/parseEsModu
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
-import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
-import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
-import { assertV1Design } from '../../shared/assertV1Design.js'
+import { getVikeConfig, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { normalizeId } from '../shared/normalizeId.js'
 type ResolvedId = Rollup.ResolvedId
 
@@ -42,7 +39,6 @@ const debug = createDebugger('vike:extractAssets')
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigObject
-  let isServerAssetsFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
@@ -54,11 +50,6 @@ function extractAssetsPlugin(): Plugin[] {
         id = normalizeId(id)
         if (!extractAssetsRE.test(id)) {
           return
-        }
-        if (isServerAssetsFixEnabled) {
-          // I'm guessing isServerAssetsFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
-          assertV1Design(vikeConfig.pageConfigs, true)
-          assert(false)
         }
         assert(vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
@@ -162,14 +153,6 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfig(config)
-        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
-        if (!isServerAssetsFixEnabled) {
-          // https://github.com/vikejs/vike/issues/1060
-          assertUsage(
-            !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
-            'vite-tsconfig-paths not supported, remove it and use vite.config.js#resolve.alias instead'
-          )
-        }
       }
     }
   ]
