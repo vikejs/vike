@@ -27,10 +27,7 @@ function resolveVikeConfigGlobal(
     baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null,
     redirects: merge(configs.map((c) => c.redirects)) ?? {},
     disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
-    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false,
-    crawl: {
-      git: vikeVitePluginOptions.crawl?.git ?? null
-    }
+    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
   }
 
   return vikeConfigGlobal
@@ -171,9 +168,6 @@ type VikeConfigGlobal = {
   redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
-  crawl: {
-    git: null | boolean
-  }
 }
 
 // TODO: deprecate
@@ -264,9 +258,4 @@ type VikeVitePluginOptions = {
    * @default false
    */
   disableUrlNormalization?: boolean
-
-  /** @experimental https://github.com/vikejs/vike/issues/1655 */
-  crawl?: {
-    git?: boolean
-  }
 }
