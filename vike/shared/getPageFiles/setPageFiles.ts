@@ -1,6 +1,6 @@
+export { getPageFilesAll }
 export { setPageFiles }
 export { setPageFilesAsync }
-export { getPageFilesAll }
 
 import { assert, unique } from '../utils.js'
 import type { PageFile } from './getPageFileObject.js'
