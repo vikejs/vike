@@ -15,6 +15,7 @@ export { setGlobalContext_viteConfig }
 export { setGlobalContext_vikeConfig }
 export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
+export { setImportBuildGetters }
 
 import {
   assert,
@@ -29,7 +30,7 @@ import {
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import { loadImportBuild } from './globalContext/loadImportBuild.js'
+import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { setPageFiles } from '../../shared/getPageFiles.js'
 import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
 import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
@@ -340,4 +341,38 @@ function eagerlyLoadUserFiles() {
   // Other than here, the getPageFilesExports() function is only called only upon calling the renderPage() function.
   // We call it as early as possible here for better performance.
   getPageFilesExports()
+}
+
+const buildGetters = (globalThis.__vike_buildGetters = globalThis.__vike_buildGetters || {
+  getters: null
+})
+
+type BuildGetters = null | {
+  pageFiles: Record<string, unknown>
+  assetsManifest: Record<string, unknown>
+  pluginManifest: Record<string, unknown>
+}
+
+function setImportBuildGetters(getters: BuildGetters) {
+  buildGetters.getters = getters
+}
+
+async function loadImportBuild(outDir?: string) {
+  if (!buildGetters.getters) {
+    await importServerProductionEntry({ outDir })
+    assert(buildGetters.getters)
+  }
+
+  const { pageFiles, assetsManifest, pluginManifest } = buildGetters.getters
+
+  const buildEntries = { pageFiles, assetsManifest, pluginManifest }
+  return buildEntries
+}
+
+declare global {
+  var __vike_buildGetters:
+    | undefined
+    | {
+        getters: BuildGetters
+      }
 }
