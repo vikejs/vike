@@ -26,7 +26,9 @@ import {
   isPlainObject,
   objectAssign,
   objectKeys,
-  genPromise
+  genPromise,
+  isObject,
+  hasProp
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -50,6 +52,11 @@ const globalObject = getGlobalObject<{
   outDirRoot?: string
   isPrerendering?: true
   initGlobalContext_runPrerender_alreadyCalled?: true
+  buildEntry?: {
+    pageFiles: Record<string, unknown>
+    assetsManifest: Record<string, unknown>
+    pluginManifest: Record<string, unknown>
+  }
 }>(
   'globalContext.ts',
   (() => {
@@ -343,36 +350,17 @@ function eagerlyLoadUserFiles() {
   getPageFilesExports()
 }
 
-const buildGetters = (globalThis.__vike_buildGetters = globalThis.__vike_buildGetters || {
-  getters: null
-})
-
-type BuildGetters = null | {
-  pageFiles: Record<string, unknown>
-  assetsManifest: Record<string, unknown>
-  pluginManifest: Record<string, unknown>
-}
-
-function setImportBuildGetters(getters: BuildGetters) {
-  buildGetters.getters = getters
-}
-
 async function loadImportBuild(outDir?: string) {
-  if (!buildGetters.getters) {
+  if (!globalObject.buildEntry) {
     await importServerProductionEntry({ outDir })
-    assert(buildGetters.getters)
+    assert(globalObject.buildEntry)
   }
-
-  const { pageFiles, assetsManifest, pluginManifest } = buildGetters.getters
-
-  const buildEntries = { pageFiles, assetsManifest, pluginManifest }
-  return buildEntries
+  return globalObject.buildEntry
 }
-
-declare global {
-  var __vike_buildGetters:
-    | undefined
-    | {
-        getters: BuildGetters
-      }
+function setImportBuildGetters(buildEntry: unknown) {
+  assert(isObject(buildEntry))
+  assert(hasProp(buildEntry, 'pageFiles', 'object'))
+  assert(hasProp(buildEntry, 'assetsManifest', 'object'))
+  assert(hasProp(buildEntry, 'pluginManifest', 'object'))
+  globalObject.buildEntry = buildEntry
 }
