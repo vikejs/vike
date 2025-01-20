@@ -8,7 +8,7 @@ import { type AnalysisResult, analyzePageClientSide } from '../../../shared/getP
 import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSide.js'
 import { getGlobalContext } from '../globalContext.js'
-import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
   if (pageConfig) {
