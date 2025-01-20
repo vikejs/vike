@@ -108,14 +108,6 @@
       "types": "./dist/esm/node/runtime/page-files/setup.d.ts",
       "default": "./dist/esm/node/runtime/page-files/setup.js"
     },
-    "./__internal/loadImportBuild": {
-      "worker": "./dist/esm/node/runtime/globalContext.js",
-      "edge-light": "./dist/esm/node/runtime/globalContext.js",
-      "require": "./dist/cjs/node/runtime/globalContext.js",
-      "node": "./dist/esm/node/runtime/globalContext.js",
-      "types": "./dist/esm/node/runtime/globalContext.d.ts",
-      "default": "./dist/esm/node/runtime/globalContext.js"
-    },
     ".": {
       "worker": "./dist/esm/node/runtime/index-deprecated.js",
       "edge-light": "./dist/esm/node/runtime/index-deprecated.js",
