@@ -1,6 +1,6 @@
 export { workaroundVite6HmrRegression }
 
-import type { Plugin, EnvironmentModuleNode } from 'vite'
+import type { Plugin } from 'vite'
 
 // https://vite.dev/guide/migration (will be 404 after vite@7 release) > search for `hmrReload()`
 // https://v6.vite.dev/guide/migration (will exist after vite@7 release) > search for `hmrReload()`
@@ -17,7 +17,7 @@ function workaroundVite6HmrRegression(): Plugin {
 
         let hasSsrOnlyModules = false
 
-        const invalidatedModules = new Set<EnvironmentModuleNode>()
+        const invalidatedModules = new Set<any>()
         for (const mod of modules) {
           if (mod.id == null) continue
           const clientModule = server.environments.client.moduleGraph.getModuleById(mod.id)
