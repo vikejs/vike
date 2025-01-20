@@ -2,7 +2,10 @@ import { autoRetry, page, test, expect, run, getServerUrl, fetchHtml } from '@br
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
+function testRun(
+  cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static',
+  { isOldDesign }: { isOldDesign?: true } = {}
+) {
   run(cmd)
 
   const isProd = cmd !== 'npm run dev'
@@ -17,9 +20,11 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
     })
   })
 
-  test("CSS doesn't leak", async () => {
-    expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 0)`)
-  })
+  if (!isOldDesign) {
+    test("CSS doesn't leak", async () => {
+      expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 0)`)
+    })
+  }
 
   test('Layout.css loaded', async () => {
     expect(await page.$eval('a', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 255)`)

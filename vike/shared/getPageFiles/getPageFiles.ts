@@ -1,6 +1,6 @@
+export { getPageFilesAll }
 export { setPageFiles }
 export { setPageFilesAsync }
-export { getPageFilesAll }
 
 import { assert, unique } from '../utils.js'
 import type { PageFile } from './getPageFileObject.js'
@@ -15,7 +15,6 @@ const globalObject = getGlobalObject<{
   pageFilesGetter?: () => Promise<void> | undefined
 }>('setPageFiles.ts', {})
 
-// TODO:v1-design-release: rename setPageFiles() getPageFilesAll() parseGlobResult()
 function setPageFiles(pageFilesExports: unknown) {
   const { pageFiles, pageConfigs, pageConfigGlobal } = parseGlobResults(pageFilesExports)
   globalObject.pageFilesAll = pageFiles
@@ -41,13 +40,13 @@ async function getPageFilesAll(
     assert(!globalObject.pageFilesGetter)
     assert(isProduction === undefined)
   } else {
-    assert(globalObject.pageFilesGetter)
     assert(typeof isProduction === 'boolean')
     if (
       !globalObject.pageFilesAll ||
       // We reload all glob imports in dev to make auto-reload work
       !isProduction
     ) {
+      assert(globalObject.pageFilesGetter)
       await globalObject.pageFilesGetter()
     }
   }
@@ -60,8 +59,6 @@ async function getPageFilesAll(
 function getAllPageIds(allPageFiles: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
   const fileIds = allPageFiles.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
   const allPageIds = unique(fileIds)
-
   const allPageIds2 = pageConfigs.map((p) => p.pageId)
-
   return [...allPageIds, ...allPageIds2]
 }

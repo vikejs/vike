@@ -15,27 +15,31 @@ export { setGlobalContext_viteConfig }
 export { setGlobalContext_vikeConfig }
 export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
+export { setBuildEntry }
 
 import {
   assert,
   onSetupRuntime,
   assertUsage,
   assertWarning,
-  getGlobalObject,
   isPlainObject,
   objectAssign,
   objectKeys,
+  isObject,
+  hasProp,
+  debugGlob,
+  getGlobalObject,
   genPromise
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import { loadImportBuild } from './globalContext/loadImportBuild.js'
-import { setPageFiles } from '../../shared/getPageFiles.js'
-import { assertPluginManifest, PluginManifest } from '../shared/assertPluginManifest.js'
-import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
+import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
+import { setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
+import { assertPluginManifest } from '../shared/assertPluginManifest.js'
+import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
-import { getPageFilesExports } from './page-files/getPageFilesExports.js'
 import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 const globalObject = getGlobalObject<{
@@ -49,6 +53,11 @@ const globalObject = getGlobalObject<{
   outDirRoot?: string
   isPrerendering?: true
   initGlobalContext_runPrerender_alreadyCalled?: true
+  buildEntry?: {
+    pageFiles: Record<string, unknown>
+    assetsManifest: Record<string, unknown>
+    pluginManifest: Record<string, unknown>
+  }
 }>(
   'globalContext.ts',
   (() => {
@@ -59,6 +68,8 @@ const globalObject = getGlobalObject<{
     }
   })()
 )
+
+initDevEntry()
 
 type GlobalContextPublic = {
   assetsManifest: null | ViteManifest
@@ -78,12 +89,10 @@ type GlobalContext = {
       vikeConfig: VikeConfigObject
       viteDevServer: ViteDevServer
       assetsManifest: null
-      pluginManifest: null
     }
   | ({
       isProduction: true
       assetsManifest: ViteManifest
-      pluginManifest: PluginManifest
       viteDevServer: null
     } & (
       | {
@@ -92,6 +101,7 @@ type GlobalContext = {
         }
       | {
           isPrerendering: true
+          usesClientRouter: boolean
           viteConfig: ResolvedConfig
         }
     ))
@@ -246,7 +256,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       isProduction: false,
       isPrerendering: false,
       assetsManifest: null,
-      pluginManifest: null,
       viteDevServer,
       viteConfig,
       vikeConfig,
@@ -258,22 +267,21 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
   } else {
-    const buildEntries = await loadImportBuild(globalObject.outDirRoot)
-    assertBuildEntries(buildEntries, isPrerendering ?? false)
-    const { pageFiles, assetsManifest, pluginManifest } = buildEntries
-    setPageFiles(pageFiles)
+    const buildEntry = await getBuildEntry(globalObject.outDirRoot)
+    const { assetsManifest, pluginManifest } = buildEntry
+    setPageFiles(buildEntry.pageFiles)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
-      pluginManifest,
       viteDevServer: null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
       redirects: pluginManifest.redirects,
       trailingSlash: pluginManifest.trailingSlash,
+      usesClientRouter: pluginManifest.usesClientRouter,
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
     if (isPrerendering) {
@@ -312,16 +320,6 @@ function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: Reso
   return manifest
 }
 
-function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {
-  const errMsg = [
-    `You are tyring to run`,
-    isPreRendering ? 'pre-rendering' : 'the server for production',
-    `but your app isn't built yet. Run ${pc.cyan('$ vike build')} before `,
-    isPreRendering ? 'pre-rendering.' : 'running the server.'
-  ].join(' ')
-  assertUsage(buildEntries, errMsg)
-}
-
 function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
   assert(isPlainObject(manifest))
   /* We should include these assertions but we don't as a workaround for PWA manifests: https://github.com/vikejs/vike/issues/769
@@ -340,4 +338,38 @@ function eagerlyLoadUserFiles() {
   // Other than here, the getPageFilesExports() function is only called only upon calling the renderPage() function.
   // We call it as early as possible here for better performance.
   getPageFilesExports()
+}
+
+async function getBuildEntry(outDir?: string) {
+  if (!globalObject.buildEntry) {
+    await importServerProductionEntry({ outDir })
+    assert(globalObject.buildEntry)
+  }
+  return globalObject.buildEntry
+}
+function setBuildEntry(buildEntry: unknown) {
+  assert(isObject(buildEntry))
+  assert(hasProp(buildEntry, 'pageFiles', 'object'))
+  assert(hasProp(buildEntry, 'assetsManifest', 'object'))
+  assert(hasProp(buildEntry, 'pluginManifest', 'object'))
+  globalObject.buildEntry = buildEntry
+}
+
+function initDevEntry() {
+  setPageFilesAsync(getPageFilesExports)
+}
+async function getPageFilesExports(): Promise<Record<string, unknown>> {
+  const viteDevServer = getViteDevServer()
+  assert(viteDevServer)
+  let moduleExports: Record<string, unknown>
+  try {
+    moduleExports = await viteDevServer.ssrLoadModule(virtualFileIdImportUserCodeServer)
+  } catch (err) {
+    debugGlob(`Glob error: ${virtualFileIdImportUserCodeServer} transpile error: `, err)
+    throw err
+  }
+  moduleExports = (moduleExports as any).default || moduleExports
+  debugGlob('Glob result: ', moduleExports)
+  assert(isObject(moduleExports))
+  return moduleExports
 }

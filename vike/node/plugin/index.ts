@@ -14,13 +14,13 @@ import { devConfig } from './plugins/devConfig/index.js'
 import { packageJsonFile } from './plugins/packageJsonFile.js'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
-import type { VikeVitePluginOptions } from './plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeVitePluginOptions } from './plugins/importUserCode/v1-design/getVikeConfig.js'
 import { distFileNames } from './plugins/distFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
-import { importBuild } from './plugins/importBuild/index.js'
+import { buildEntry } from './plugins/buildEntry/index.js'
 import { commonConfig } from './plugins/commonConfig.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
@@ -51,7 +51,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): any {
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     ...setGlobalContext(),
-    ...importBuild(),
+    ...buildEntry(),
     baseUrls(vikeVitePluginOptions),
     envVarsPlugin(),
     fileEnv(),

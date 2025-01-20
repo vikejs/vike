@@ -1,7 +1,6 @@
 import { assertServerRouting } from '../../utils/assertRoutingType.js'
 assertServerRouting()
 
-import './pageFiles'
 import { getPageContext } from './getPageContext.js'
 import { executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
 import { assertHook } from '../../shared/hooks/getHook.js'

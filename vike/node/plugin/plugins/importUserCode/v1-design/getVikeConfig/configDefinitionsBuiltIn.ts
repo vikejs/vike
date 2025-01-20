@@ -248,9 +248,7 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionI
     env: { server: true, client: 'if-client-routing' },
     eager: true
   },
-  prerender: {
-    env: { config: true }
-  },
+  prerender: { env: { config: true } },
   disableAutoFullBuild: { env: { config: true } },
   includeAssetsImportedByServer: { env: { config: true } },
   baseAssets: { env: { config: true } },

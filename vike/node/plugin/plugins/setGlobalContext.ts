@@ -48,7 +48,7 @@ function setGlobalContext(): Plugin[] {
         order: 'post',
         async handler(config) {
           const { outDirRoot } = getOutDirs(config)
-          assertFilePathAbsoluteFilesystem(outDirRoot) // Needed for loadImportBuild(outDir) of @brillout/vite-plugin-server-entry
+          assertFilePathAbsoluteFilesystem(outDirRoot) // Needed for `importServerProductionEntry({ outDir })` of @brillout/vite-plugin-server-entry
           setGlobalContext_viteConfig(config, outDirRoot)
           const vikeConfig = await getVikeConfig(config)
           setGlobalContext_vikeConfig(vikeConfig)

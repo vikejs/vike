@@ -13,7 +13,7 @@ import type { StreamFromReactStreamingPackage } from '../stream/react-streaming.
 import type { PageAsset } from '../../renderPage/getPageAssets.js'
 import type { PageConfigRuntime } from '../../../../shared/page-configs/PageConfig.js'
 import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
-import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValueRuntime.js'
 import { getGlobalContext } from '../../globalContext.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'

@@ -1,3 +1,6 @@
+// Internals needed by Vike
+export { setBuildEntry } from '../node/runtime/globalContext.js'
+
 // Internals needed by vite-plugin-vercel
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
@@ -6,17 +9,15 @@ export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 export { getMiddlewares }
 
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
-import { getPageFilesAll, type PageFile } from '../shared/getPageFiles.js'
+import { getPageFilesAll } from '../shared/getPageFiles/getPageFiles.js'
+import type { PageFile } from '../shared/getPageFiles/getPageFileObject.js'
 import { getGlobalContext, initGlobalContext_getGlobalContextAsync } from '../node/runtime/globalContext.js'
 import { setNodeEnvProduction } from '../utils/assertSetup.js'
 import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 
 /**
- * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel}
- * to compute some rewrite rules and extract { isr } configs.
- * Needs `import 'vike/__internal/setup'`
- * @param config
+ * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel} to compute some rewrite rules and extract { isr } configs.
  */
 async function getPagesAndRoutes() {
   setNodeEnvProduction()

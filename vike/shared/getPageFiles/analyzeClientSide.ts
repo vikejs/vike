@@ -1,6 +1,6 @@
 export { analyzeClientSide }
 
-import { getConfigValueRuntime } from '../page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import type { PageFile } from './getPageFileObject.js'
 import { analyzePageClientSide } from './analyzePageClientSide.js'

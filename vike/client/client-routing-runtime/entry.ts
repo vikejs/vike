@@ -1,7 +1,6 @@
 import { assertClientRouting } from '../../utils/assertRoutingType.js'
 assertClientRouting()
 
-import './pageFiles'
 import { initClientRouter } from './initClientRouter.js'
 import { assertSingleInstance_onClientEntryClientRouting } from './utils.js'
 import { removeFoucBuster } from '../shared/removeFoucBuster.js'

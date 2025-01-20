@@ -4,7 +4,6 @@ export { runPrerenderFromAutoRun }
 export { runPrerender_forceExit }
 export type { PrerenderOptions }
 
-import '../runtime/page-files/setup.js'
 import path from 'path'
 import { route } from '../../shared/route/index.js'
 import {
@@ -49,7 +48,7 @@ import { getPageFilesServerSide } from '../../shared/getPageFiles.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
-import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValue.js'
+import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { isErrorPage } from '../../shared/error-page.js'
 import {
@@ -784,7 +783,7 @@ async function routeAndPrerender(
             assert(pageConfig)
             usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
-            usesClientRouter = globalContext.pluginManifest.usesClientRouter
+            usesClientRouter = globalContext.usesClientRouter
           }
         }
 

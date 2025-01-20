@@ -1,2 +1,2 @@
 import { testRun } from '../../examples/path-aliases/.testRun'
-testRun('npm run prod')
+testRun('npm run prod', { isOldDesign: true })

@@ -1,29 +1,29 @@
-export { importBuild }
+export { buildEntry }
 export { set_ASSETS_MAP }
 
-import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
+import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
+import { getVikeManifest } from './getVikeManifest.js'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
+import fs from 'fs/promises'
 import path from 'path'
 import { createRequire } from 'module'
-import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
-import { getVikeManifest } from './getVikeManifest.js'
-import fs from 'fs/promises'
-import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
+import type { Plugin, ResolvedConfig, Rollup } from 'vite'
+import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MAP = '__VITE_ASSETS_MAP__'
 
-function importBuild(): Plugin[] {
+function buildEntry(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfigGlobal: VikeConfigGlobal
   return [
     {
-      name: 'vike:importBuild:config',
+      name: 'vike:buildEntry',
       enforce: 'post',
       async configResolved(config_) {
         config = config_
@@ -45,17 +45,16 @@ function getServerProductionEntryCode(config: ResolvedConfig, vikeConfigGlobal: 
   const vikeManifest = getVikeManifest(vikeConfigGlobal, config)
   // Let's eventually simplify and move everything to a single virtual module
   const importerCode = [
-    `  import { setImportBuildGetters } from '${importPath}';`,
+    `  import { setBuildEntry } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
     `  {`,
     // We first set the values to a variable because of a Rollup bug, and this workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
     `    const assetsManifest = ${ASSETS_MAP};`,
     `    const pluginManifest = ${JSON.stringify(vikeManifest, null, 2)};`,
-    '    setImportBuildGetters({',
-    `      pageFiles: () => pageFiles,`,
-    `      getAssetsManifest: () => assetsManifest,`,
-    // TODO: rename pluginManifest -> vikeManifest
-    `      pluginManifest: () => pluginManifest,`,
+    '    setBuildEntry({',
+    `      pageFiles,`,
+    `      assetsManifest,`,
+    `      pluginManifest,`,
     '    });',
     `  }`,
     ''
@@ -92,14 +91,14 @@ function find_ASSETS_MAP(bundle: Bundle): string {
 function getImportPath(config: ResolvedConfig) {
   // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct
   const filePathAbsolute = toPosixPath(
-    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/importBuild/index.js
-    require_.resolve(`../../../../../../dist/esm/node/runtime/globalContext/loadImportBuild.js`)
+    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/buildEntry/index.js
+    require_.resolve(`../../../../../../dist/esm/__internal/index.js`)
   )
   if (
-    // Let's implement a new config if a user needs the import to be a relative path instead of 'vike/__internal/loadImportBuild' (AFAIK a relative path is needed only if a framework has npm package 'vike' as direct dependency instead of a peer dependency and if the user of that framework uses pnpm)
+    // Let's implement a new config if a user needs the import to be a relative path instead of 'vike/__internal' (AFAIK a relative path is needed only if a framework has npm package 'vike' as direct dependency instead of a peer dependency and if the user of that framework uses pnpm)
     true as boolean
   ) {
-    return 'vike/__internal/loadImportBuild'
+    return 'vike/__internal'
   } else {
     const { outDirServer } = getOutDirs(config)
     const filePathRelative = path.posix.relative(outDirServer, filePathAbsolute)

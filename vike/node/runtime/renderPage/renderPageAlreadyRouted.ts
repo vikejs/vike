@@ -9,7 +9,8 @@ export type { PageContextInitEnhanced }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
-import { type PageFile, getPageFilesAll } from '../../../shared/getPageFiles.js'
+import { getPageFilesAll } from '../../../shared/getPageFiles/getPageFiles.js'
+import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
 import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
@@ -264,10 +265,10 @@ async function getRenderContext(): Promise<RenderContext> {
     pageFilesAll
   )
   const renderContext = {
-    pageFilesAll: pageFilesAll,
+    pageFilesAll,
     pageConfigs,
     pageConfigGlobal,
-    allPageIds: allPageIds,
+    allPageIds,
     pageRoutes,
     onBeforeRouteHook
   }

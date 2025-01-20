@@ -1,6 +1,5 @@
-- Refator runtime config
-- deprecate VikeVitePluginOptions
 - https://github.com/vikejs/vike-node/pull/44
+- deprecate VikeVitePluginOptions
 
 - head settings
   - name setting?
