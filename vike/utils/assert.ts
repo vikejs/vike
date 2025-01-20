@@ -38,6 +38,8 @@ assertSingleInstance_onAssertModuleLoad()
 
 const projectTag = `[vike]` as const
 const projectTagWithVersion = `[vike@${projectInfo.projectVersion}]` as const
+const bugTag = 'Bug'
+type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
 const numberOfStackTraceLinesToRemove = 2
 
@@ -60,7 +62,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     .filter(Boolean)
     .join(' ')
   errMsg = addWhitespace(errMsg)
-  errMsg = addPrefixAssertType(errMsg, 'Bug')
+  errMsg = addPrefixAssertType(errMsg, bugTag)
   errMsg = addPrefixProjctName(errMsg, true)
   const internalError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
 
@@ -146,7 +148,6 @@ function addOnBeforeLogHook(onBeforeLog: () => void) {
   globalObject.onBeforeLog = onBeforeLog
 }
 
-type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 function addPrefixAssertType(msg: string, tag: Tag): string {
   let prefix = `[${tag}]`
   const color = tag === 'Warning' ? 'yellow' : 'red'
@@ -181,7 +182,7 @@ function getAssertErrMsg(thing: unknown): { assertMsg: string; showVikeVersion: 
     const showVikeVersion = tag === projectTagWithVersion
     const errStackPrefix = `Error: ${tag}`
     if (errStack?.startsWith(errStackPrefix)) {
-      if (globalObject.showStackTraceList.has(thing as any)) {
+      if (globalObject.showStackTraceList.has(thing as any) || isBug(thing)) {
         const assertMsg = errStack.slice(errStackPrefix.length)
         return { assertMsg, showVikeVersion }
       }
@@ -201,7 +202,7 @@ function overwriteAssertProductionLogger(logger: Logger): void {
 }
 
 function isBug(err: unknown): boolean {
-  return !String(err).includes('[Bug]')
+  return String(err).includes(`[${bugTag}]`)
 }
 
 function setAlwaysShowStackTrace() {
