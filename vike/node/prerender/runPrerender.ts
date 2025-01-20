@@ -4,7 +4,6 @@ export { runPrerenderFromAutoRun }
 export { runPrerender_forceExit }
 export type { PrerenderOptions }
 
-import '../runtime/page-files/setup.js'
 import path from 'path'
 import { route } from '../../shared/route/index.js'
 import {

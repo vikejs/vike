@@ -40,13 +40,13 @@ async function getPageFilesAll(
     assert(!globalObject.pageFilesGetter)
     assert(isProduction === undefined)
   } else {
-    assert(globalObject.pageFilesGetter)
     assert(typeof isProduction === 'boolean')
     if (
       !globalObject.pageFilesAll ||
       // We reload all glob imports in dev to make auto-reload work
       !isProduction
     ) {
+      assert(globalObject.pageFilesGetter)
       await globalObject.pageFilesGetter()
     }
   }
