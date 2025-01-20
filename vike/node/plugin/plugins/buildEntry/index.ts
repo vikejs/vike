@@ -13,7 +13,7 @@ import { createRequire } from 'module'
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MAP = '__VITE_ASSETS_MAP__'

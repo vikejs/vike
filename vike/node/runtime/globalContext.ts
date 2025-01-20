@@ -37,7 +37,7 @@ import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
 import { setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
 import { assertPluginManifest } from '../shared/assertPluginManifest.js'
-import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'

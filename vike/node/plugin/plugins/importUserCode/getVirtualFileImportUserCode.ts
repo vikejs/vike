@@ -17,7 +17,7 @@ import {
   isVersionOrAbove,
   assertWarning
 } from '../../utils.js'
-import type { VikeConfigGlobal } from './v1-design/getVikeConfig/resolveVikeConfigGlobal.js'
+import type { VikeConfigGlobal } from './v1-design/getVikeConfig.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
