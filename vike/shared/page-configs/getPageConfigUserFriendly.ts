@@ -9,7 +9,7 @@ export type { ConfigEntries }
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
 import type { PageFile } from '../getPageFiles/getPageFileObject.js'
-import type { PageConfigRuntimeLoaded } from './PageConfig.js'
+import type { ConfigValues, PageConfigRuntimeLoaded } from './PageConfig.js'
 import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from './helpers.js'
 import {
@@ -145,11 +145,26 @@ function getPageConfigUserFriendly(
     })
   })
 
-  const res = getPageConfigUserFriendlyNew(pageConfig)
-  const { from, source, sources } = res
-  Object.assign(config, res.config)
-  Object.assign(configEntries, res.configEntries)
-  Object.assign(exportsAll, res.exportsAll)
+  let source: Source
+  let sources: Sources
+  let from: From
+  if (pageConfig) {
+    const res = getPageConfigUserFriendlyNew(pageConfig)
+    source = res.source
+    sources = res.sources
+    from = res.from
+    Object.assign(config, res.config)
+    Object.assign(configEntries, res.configEntries)
+    Object.assign(exportsAll, res.exportsAll)
+  } else {
+    source = {}
+    sources = {}
+    from = {
+      configsStandard: {},
+      configsCumulative: {},
+      configsComputed: {}
+    }
+  }
 
   const pageExports = createObjectWithDeprecationWarning()
   const exports: Record<string, unknown> = {}
@@ -185,7 +200,7 @@ function getPageConfigUserFriendly(
 }
 
 // V1 design
-function getPageConfigUserFriendlyNew(pageConfig: PageConfigRuntimeLoaded | null) {
+function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TODO/v1-release: remove
   const exportsAll: ExportsAll = {} // TODO/v1-release: remove
@@ -203,7 +218,6 @@ function getPageConfigUserFriendlyNew(pageConfig: PageConfigRuntimeLoaded | null
     sources[configName]!.push(src)
   }
 
-  if (pageConfig) {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
       const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
@@ -265,7 +279,6 @@ function getPageConfigUserFriendlyNew(pageConfig: PageConfigRuntimeLoaded | null
         _isFromDefaultExport: null
       })
     })
-  }
 
   return {
     config,
