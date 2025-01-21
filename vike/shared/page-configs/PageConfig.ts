@@ -103,7 +103,6 @@ type ConfigValuesComputed = Record<
   }
 >
 
-
 type ConfigValues = Record<
   string, // configName
   ConfigValue
