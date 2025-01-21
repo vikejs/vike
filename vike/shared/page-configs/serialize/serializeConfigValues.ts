@@ -247,36 +247,36 @@ function getConfigValuesBase(
     } as const
     return { configValueBase, value: valueInfo.value, configName } as const
   })
-    const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
-      const configDef = pageConfig.configDefinitions[configName]
-      assert(configDef)
-      if (isEager !== !!configDef.eager) return 'SKIP'
-      if (!configDef.cumulative) {
-        const source = sources[0]
-        assert(source)
-        assert(sources.slice(1).every((s) => s.isOverriden === true))
-        if (!isEnvMatch(source.configEnv)) return 'SKIP'
+  const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
+    const configDef = pageConfig.configDefinitions[configName]
+    assert(configDef)
+    if (isEager !== !!configDef.eager) return 'SKIP'
+    if (!configDef.cumulative) {
+      const source = sources[0]
+      assert(source)
+      assert(sources.slice(1).every((s) => s.isOverriden === true))
+      if (!isEnvMatch(source.configEnv)) return 'SKIP'
+      const definedAtFile = getDefinedAtFileSource(source)
+      const configValueBase = {
+        type: 'standard',
+        definedAtData: definedAtFile
+      } as const
+      return { configValueBase, sourceRelevant: source, configName }
+    } else {
+      const sourcesRelevant = sources.filter((source) => !source.isOverriden && isEnvMatch(source.configEnv))
+      if (sourcesRelevant.length === 0) return 'SKIP'
+      const definedAtData: DefinedAtFile[] = []
+      sourcesRelevant.forEach((source) => {
         const definedAtFile = getDefinedAtFileSource(source)
-        const configValueBase = {
-          type: 'standard',
-          definedAtData: definedAtFile
-        } as const
-        return { configValueBase, sourceRelevant: source, configName }
-      } else {
-        const sourcesRelevant = sources.filter((source) => !source.isOverriden && isEnvMatch(source.configEnv))
-        if (sourcesRelevant.length === 0) return 'SKIP'
-        const definedAtData: DefinedAtFile[] = []
-        sourcesRelevant.forEach((source) => {
-          const definedAtFile = getDefinedAtFileSource(source)
-          definedAtData.push(definedAtFile)
-        })
-        const configValueBase = {
-          type: 'cumulative',
-          definedAtData
-        } as const
-        return { configValueBase, sourcesRelevant, configName }
-      }
-    })
+        definedAtData.push(definedAtFile)
+      })
+      const configValueBase = {
+        type: 'cumulative',
+        definedAtData
+      } as const
+      return { configValueBase, sourcesRelevant, configName }
+    }
+  })
 
   return [...fromComputed, ...fromSources].filter((r) => r !== 'SKIP')
 }
