@@ -381,12 +381,12 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
 
-  const { pageConfigGlobal, pageConfigGlobalValues } = await getGlobalConfigs(
+  const { pageConfigGlobal, vikeConfigGlobal } = await getGlobalConfigs(
     interfaceFilesByLocationId,
     userRootDir,
-    importedFilesLoaded
+    importedFilesLoaded,
+    vikeVitePluginOptions
   )
-  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     objectEntries(interfaceFilesByLocationId)
@@ -595,7 +595,8 @@ function getInterfaceFilesRelevant(
 async function getGlobalConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: ImportedFilesLoaded,
+  vikeVitePluginOptions: unknown
 ) {
   const locationIds = objectKeys(interfaceFilesByLocationId)
   const interfaceFilesGlobal = objectFromEntries(
@@ -674,7 +675,9 @@ async function getGlobalConfigs(
     })
   )
 
-  return { pageConfigGlobal, pageConfigGlobalValues }
+  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
+
+  return { pageConfigGlobal, pageConfigGlobalValues, vikeConfigGlobal }
 }
 
 async function resolveConfigValueSources(
