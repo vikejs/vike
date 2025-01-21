@@ -1,4 +1,5 @@
 export { serializeConfigValues }
+export { getConfigValuesBase }
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { assert, assertUsage, getPropAccessNotation } from '../../../node/plugin/utils.js'
@@ -35,53 +36,27 @@ function serializeConfigValues(
   const lines: string[] = []
   tabspace += '  '
 
-  Object.entries(pageConfig.configValuesComputed ?? {}).forEach(([configName, valueInfo]) => {
-    if (!isEnvMatch(valueInfo.configEnv)) return
-    // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
-    if (pageConfig.configValueSources[configName]) return
-    const valueData = getValueSerializedWithJson(valueInfo.value, configName, null, importStatements)
-    const configValueBase = {
-      type: 'computed',
-      definedAtData: null
-    } as const
-    serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
-  })
-
-  Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-    const configDef = pageConfig.configDefinitions[configName]
-    assert(configDef)
-    if (isEager !== !!configDef.eager) return
-    if (!configDef.cumulative) {
-      const configValueSource = sources[0]
-      assert(configValueSource)
-      assert(sources.slice(1).every((s) => s.isOverriden === true))
-      if (!isEnvMatch(configValueSource.configEnv)) return
-      const { valueData, definedAtFile } = getValueSerializedFromSource(configValueSource, configName, importStatements)
-      const configValueBase = {
-        type: 'standard',
-        definedAtData: definedAtFile
-      } as const
+  getConfigValuesBase(pageConfig, isEnvMatch, { isEager }).forEach((entry) => {
+    if (entry.configValueBase.type === 'computed') {
+      assert('value' in entry) // Help TS
+      const { configValueBase, value, configName } = entry
+      const valueData = getValueSerializedWithJson(value, configName, configValueBase.definedAtData, importStatements)
       serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
-    } else {
+    }
+    if (entry.configValueBase.type === 'standard') {
+      assert('sourceRelevant' in entry) // Help TS
+      const { configValueBase, sourceRelevant, configName } = entry
+      const valueData = getValueSerializedFromSource(sourceRelevant, configName, importStatements)
+      serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
+    }
+    if (entry.configValueBase.type === 'cumulative') {
+      assert('sourcesRelevant' in entry) // Help TS
+      const { configValueBase, sourcesRelevant, configName } = entry
       const valueDataList: ValueData[] = []
-      const definedAtData: DefinedAtFile[] = []
-      sources
-        .filter((s) => !s.isOverriden)
-        .forEach((configValueSource) => {
-          if (!isEnvMatch(configValueSource.configEnv)) return
-          const { valueData, definedAtFile } = getValueSerializedFromSource(
-            configValueSource,
-            configName,
-            importStatements
-          )
-          valueDataList.push(valueData)
-          definedAtData.push(definedAtFile)
-        })
-      if (valueDataList.length === 0) return
-      const configValueBase = {
-        type: 'cumulative',
-        definedAtData
-      } as const
+      sourcesRelevant.forEach((source) => {
+        const valueData = getValueSerializedFromSource(source, configName, importStatements)
+        valueDataList.push(valueData)
+      })
       serializeConfigValue(configValueBase, valueDataList, configName, lines, tabspace)
     }
   })
@@ -106,11 +81,7 @@ function getValueSerializedFromSource(
   } else {
     valueData = getValueSerializedWithImport(configValueSource, importStatements)
   }
-  const definedAtFile: DefinedAtFile = {
-    filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
-    fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
-  }
-  return { valueData, definedAtFile }
+  return valueData
 }
 
 type ValueData = {
@@ -260,4 +231,87 @@ function logJsonSerializeError(err: unknown, configName: string, definedAtData: 
       configName
     )} defined by ${configValueFilePathToShowToUser} must be defined over a so-called "pointer import", see https://vike.dev/config#pointer-imports`
   )
+}
+
+function getConfigValuesBase(
+  pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
+  isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
+  { isEager }: { isEager?: boolean } = {}
+): ConfigValuesBase {
+  const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
+    if (!isEnvMatch(valueInfo.configEnv)) return 'SKIP'
+    // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
+    if (pageConfig.configValueSources[configName]) return 'SKIP'
+    const configValueBase = {
+      type: 'computed',
+      definedAtData: null
+    } as const
+    return { configValueBase, value: valueInfo.value, configName } as const
+  })
+  const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
+    const configDef = pageConfig.configDefinitions[configName]
+    assert(configDef)
+    if (isEager !== undefined && isEager !== !!configDef.eager) return 'SKIP'
+    if (!configDef.cumulative) {
+      const source = sources[0]
+      assert(source)
+      assert(sources.slice(1).every((s) => s.isOverriden === true))
+      if (!isEnvMatch(source.configEnv)) return 'SKIP'
+      const definedAtFile = getDefinedAtFileSource(source)
+      const configValueBase = {
+        type: 'standard',
+        definedAtData: definedAtFile
+      } as const
+      return { configValueBase, sourceRelevant: source, configName }
+    } else {
+      const sourcesRelevant = sources.filter((source) => !source.isOverriden && isEnvMatch(source.configEnv))
+      if (sourcesRelevant.length === 0) return 'SKIP'
+      const definedAtData: DefinedAtFile[] = []
+      sourcesRelevant.forEach((source) => {
+        const definedAtFile = getDefinedAtFileSource(source)
+        definedAtData.push(definedAtFile)
+      })
+      const configValueBase = {
+        type: 'cumulative',
+        definedAtData
+      } as const
+      return { configValueBase, sourcesRelevant, configName }
+    }
+  })
+
+  return [...fromComputed, ...fromSources].filter((r) => r !== 'SKIP')
+}
+type ConfigValuesBase = (
+  | {
+      configValueBase: {
+        type: 'computed'
+        definedAtData: null
+      }
+      value: unknown
+      configName: string
+    }
+  | {
+      configValueBase: {
+        type: 'standard'
+        definedAtData: DefinedAtFile
+      }
+      sourceRelevant: ConfigValueSource
+      configName: string
+    }
+  | {
+      configValueBase: {
+        type: 'cumulative'
+        definedAtData: DefinedAtFile[]
+      }
+      sourcesRelevant: ConfigValueSource[]
+      configName: string
+    }
+)[]
+
+function getDefinedAtFileSource(source: ConfigValueSource) {
+  const definedAtFile: DefinedAtFile = {
+    filePathToShowToUser: source.definedAtFilePath.filePathToShowToUser,
+    fileExportPathToShowToUser: source.definedAtFilePath.fileExportPathToShowToUser
+  }
+  return definedAtFile
 }

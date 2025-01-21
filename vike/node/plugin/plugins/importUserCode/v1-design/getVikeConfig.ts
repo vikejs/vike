@@ -39,7 +39,10 @@ import type {
   ConfigValueSources,
   PageConfigBuildTime,
   DefinedAtFilePath,
-  ConfigValuesComputed
+  ConfigValuesComputed,
+  ConfigValue,
+  ConfigValues,
+  DefinedAtFile
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -88,6 +91,8 @@ import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
+import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
+import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 
 assertIsNotProductionRuntime()
 
@@ -117,6 +122,7 @@ type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   vikeConfigGlobal: VikeConfigGlobal
+  vikeConfigNew: { global: ReturnType<typeof getPageConfigUserFriendlyNew> }
 }
 
 let restartVite = false
@@ -361,7 +367,10 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        vikeConfigGlobal: resolveVikeConfigGlobal({}, {})
+        vikeConfigGlobal: resolveVikeConfigGlobal({}, {}),
+        vikeConfigNew: {
+          global: getPageConfigUserFriendlyNew({ configValues: {} })
+        }
       }
       return dummyData
     }
@@ -372,12 +381,12 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   const importedFilesLoaded: ImportedFilesLoaded = {}
 
-  const { pageConfigGlobal, pageConfigGlobalValues } = await getGlobalConfigs(
+  const { pageConfigGlobal, vikeConfigGlobal } = await getGlobalConfigs(
     interfaceFilesByLocationId,
     userRootDir,
-    importedFilesLoaded
+    importedFilesLoaded,
+    vikeVitePluginOptions
   )
-  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
 
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     objectEntries(interfaceFilesByLocationId)
@@ -449,7 +458,39 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   assertPageConfigs(pageConfigs)
 
-  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal }
+  const configValues = getConfigValues(pageConfigGlobal)
+  const global = getPageConfigUserFriendlyNew({ configValues })
+
+  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal, vikeConfigNew: { global } }
+}
+
+function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
+  const configValues: ConfigValues = {}
+  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config).forEach((entry) => {
+    if (entry.configValueBase.type === 'computed') {
+      assert('value' in entry) // Help TS
+      const { configValueBase, value, configName } = entry
+      configValues[configName] = { ...configValueBase, value }
+    }
+    if (entry.configValueBase.type === 'standard') {
+      assert('sourceRelevant' in entry) // Help TS
+      const { configValueBase, sourceRelevant, configName } = entry
+      assert('value' in sourceRelevant)
+      const { value } = sourceRelevant
+      configValues[configName] = { ...configValueBase, value }
+    }
+    if (entry.configValueBase.type === 'cumulative') {
+      assert('sourcesRelevant' in entry) // Help TS
+      const { configValueBase, sourcesRelevant, configName } = entry
+      const values: unknown[] = []
+      sourcesRelevant.forEach((source) => {
+        assert('value' in source)
+        values.push(source.value)
+      })
+      configValues[configName] = { ...configValueBase, value: values }
+    }
+  })
+  return configValues
 }
 
 // TODO/soon: refactor
@@ -554,7 +595,8 @@ function getInterfaceFilesRelevant(
 async function getGlobalConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: ImportedFilesLoaded,
+  vikeVitePluginOptions: unknown
 ) {
   const locationIds = objectKeys(interfaceFilesByLocationId)
   const interfaceFilesGlobal = objectFromEntries(
@@ -633,7 +675,31 @@ async function getGlobalConfigs(
     })
   )
 
-  return { pageConfigGlobal, pageConfigGlobalValues }
+  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
+  {
+    assert(isObject(vikeVitePluginOptions))
+    Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
+      if (pageConfigGlobal.configValueSources[configName]) return
+      pageConfigGlobal.configValueSources[configName] = []
+      pageConfigGlobal.configValueSources[configName].push({
+        value,
+        configEnv: { config: true },
+        definedAtFilePath: {
+          ...getFilePathResolved({
+            userRootDir,
+            filePathAbsoluteUserRootDir: '/vite.config.js'
+          }),
+          fileExportPathToShowToUser: null
+        },
+        locationId: '/' as LocationId,
+        isOverriden: false,
+        valueIsImportedAtRuntime: false,
+        valueIsDefinedByPlusFile: false
+      })
+    })
+  }
+
+  return { pageConfigGlobal, pageConfigGlobalValues, vikeConfigGlobal }
 }
 
 async function resolveConfigValueSources(
