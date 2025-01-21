@@ -1,10 +1,10 @@
 export { getPageConfigUserFriendly }
-export type { ExportsAll }
 export type { PageConfigUserFriendly }
-export type { ConfigEntries }
-export type { From }
-export type { Sources }
 export type { Source }
+export type { Sources }
+export type { From }
+export type { ExportsAll }
+export type { ConfigEntries }
 
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
