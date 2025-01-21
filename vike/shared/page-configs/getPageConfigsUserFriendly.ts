@@ -8,16 +8,12 @@ export type { Source }
 
 import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
 import { assert, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
-import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_old_design.js'
-import type { FileType } from './fileTypes.js'
-import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
-import type { PageFile } from './getPageFileObject.js'
-import {
-  type ConfigDefinedAtOptional,
-  getConfigDefinedAtOptional,
-  getDefinedAtString
-} from '../page-configs/getConfigDefinedAt.js'
-import { getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
+import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
+import type { FileType } from '../getPageFiles/fileTypes.js'
+import type { PageConfigRuntimeLoaded } from './PageConfig.js'
+import type { PageFile } from '../getPageFiles/getPageFileObject.js'
+import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
+import { getConfigValueFilePathToShowToUser } from './helpers.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
