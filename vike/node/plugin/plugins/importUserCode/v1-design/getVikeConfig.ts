@@ -122,6 +122,7 @@ type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   vikeConfigGlobal: VikeConfigGlobal
+  vikeConfigNew: { global: ReturnType<typeof getPageConfigUserFriendlyNew> }
 }
 
 let restartVite = false
@@ -366,7 +367,10 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        vikeConfigGlobal: resolveVikeConfigGlobal({}, {})
+        vikeConfigGlobal: resolveVikeConfigGlobal({}, {}),
+        vikeConfigNew: {
+          global: getPageConfigUserFriendlyNew({ configValues: {} })
+        }
       }
       return dummyData
     }
@@ -454,9 +458,10 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   assertPageConfigs(pageConfigs)
 
-  const global = getPageConfigUserFriendlyNew({ configValues: getConfigValues(pageConfigGlobal) })
+  const configValues = getConfigValues(pageConfigGlobal)
+  const global = getPageConfigUserFriendlyNew({ configValues })
 
-  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal }
+  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal, vikeConfigNew: { global } }
 }
 
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
