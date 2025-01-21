@@ -218,67 +218,67 @@ function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }
     sources[configName]!.push(src)
   }
 
-    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-      const { value } = configValue
-      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
-      const configDefinedAt = getConfigDefinedAtOptional('Config', configName, configValue.definedAtData)
+  Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
+    const { value } = configValue
+    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
+    const configDefinedAt = getConfigDefinedAtOptional('Config', configName, configValue.definedAtData)
 
-      config[configName] = config[configName] ?? value
-      configEntries[configName] = configEntries[configName] ?? []
-      // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
-      assert(configEntries[configName]!.length === 0)
-      configEntries[configName]!.push({
-        configValue: value,
-        configDefinedAt,
-        configDefinedByFile: configValueFilePathToShowToUser
-      })
-
-      if (configValue.type === 'standard') {
-        const src: SourceConfigsStandard = {
-          type: 'configsStandard',
-          value: configValue.value,
-          definedAt: getDefinedAtString(configValue.definedAtData, configName)
-        }
-        addSrc(src, configName)
-        from.configsStandard[configName] = src
-      }
-      if (configValue.type === 'cumulative') {
-        const src: SourceConfigsCumulative = {
-          type: 'configsCumulative',
-          values: configValue.value.map((value, i) => {
-            const definedAtFile = configValue.definedAtData[i]
-            assert(definedAtFile)
-            const definedAt = getDefinedAtString(definedAtFile, configName)
-            return {
-              value,
-              definedAt
-            }
-          })
-        }
-        addSrc(src, configName)
-        from.configsCumulative[configName] = src
-      }
-      if (configValue.type === 'computed') {
-        const src: SourceConfigsComputed = {
-          type: 'configsComputed',
-          value: configValue.value
-        }
-        addSrc(src, configName)
-        from.configsComputed[configName] = src
-      }
-
-      // TODO/v1-release: remove
-      const exportName = configName
-      exportsAll[exportName] = exportsAll[exportName] ?? []
-      exportsAll[exportName]!.push({
-        exportValue: value,
-        exportSource: configDefinedAt,
-        filePath: configValueFilePathToShowToUser,
-        _filePath: configValueFilePathToShowToUser,
-        _fileType: null,
-        _isFromDefaultExport: null
-      })
+    config[configName] = config[configName] ?? value
+    configEntries[configName] = configEntries[configName] ?? []
+    // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
+    assert(configEntries[configName]!.length === 0)
+    configEntries[configName]!.push({
+      configValue: value,
+      configDefinedAt,
+      configDefinedByFile: configValueFilePathToShowToUser
     })
+
+    if (configValue.type === 'standard') {
+      const src: SourceConfigsStandard = {
+        type: 'configsStandard',
+        value: configValue.value,
+        definedAt: getDefinedAtString(configValue.definedAtData, configName)
+      }
+      addSrc(src, configName)
+      from.configsStandard[configName] = src
+    }
+    if (configValue.type === 'cumulative') {
+      const src: SourceConfigsCumulative = {
+        type: 'configsCumulative',
+        values: configValue.value.map((value, i) => {
+          const definedAtFile = configValue.definedAtData[i]
+          assert(definedAtFile)
+          const definedAt = getDefinedAtString(definedAtFile, configName)
+          return {
+            value,
+            definedAt
+          }
+        })
+      }
+      addSrc(src, configName)
+      from.configsCumulative[configName] = src
+    }
+    if (configValue.type === 'computed') {
+      const src: SourceConfigsComputed = {
+        type: 'configsComputed',
+        value: configValue.value
+      }
+      addSrc(src, configName)
+      from.configsComputed[configName] = src
+    }
+
+    // TODO/v1-release: remove
+    const exportName = configName
+    exportsAll[exportName] = exportsAll[exportName] ?? []
+    exportsAll[exportName]!.push({
+      exportValue: value,
+      exportSource: configDefinedAt,
+      filePath: configValueFilePathToShowToUser,
+      _filePath: configValueFilePathToShowToUser,
+      _fileType: null,
+      _isFromDefaultExport: null
+    })
+  })
 
   return {
     config,
