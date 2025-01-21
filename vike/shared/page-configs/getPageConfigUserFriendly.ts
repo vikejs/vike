@@ -121,9 +121,9 @@ function getPageConfigUserFriendly(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null
 ): PageConfigUserFriendly {
-  const configEntries: ConfigEntries = {}
   const config: Record<string, unknown> = {}
-  const exportsAll: ExportsAll = {}
+  const configEntries: ConfigEntries = {} // TODO/v1-release: remove
+  const exportsAll: ExportsAll = {} // TODO/v1-release: remove
 
   // V0.4 design
   // TODO/v1-release: remove
@@ -145,19 +145,64 @@ function getPageConfigUserFriendly(
     })
   })
 
-  // V1 design
+  const res = getPageConfigUserFriendlyNew(pageConfig)
+  const { from, source, sources } = res
+  Object.assign(config, res.config)
+  Object.assign(configEntries, res.configEntries)
+  Object.assign(exportsAll, res.exportsAll)
+
+  const pageExports = createObjectWithDeprecationWarning()
+  const exports: Record<string, unknown> = {}
+  Object.entries(exportsAll).forEach(([exportName, values]) => {
+    values.forEach(({ exportValue, _fileType, _isFromDefaultExport }) => {
+      exports[exportName] = exports[exportName] ?? exportValue
+
+      // Legacy pageContext.pageExports
+      if (_fileType === '.page' && !_isFromDefaultExport) {
+        if (!(exportName in pageExports)) {
+          pageExports[exportName] = exportValue
+        }
+      }
+    })
+  })
+
+  assert(!('default' in exports))
+  assert(!('default' in exportsAll))
+
+  const pageContextExports = {
+    from,
+    source,
+    sources,
+
+    // TODO/eventually: deprecate/remove every prop below
+    config,
+    configEntries,
+    exports,
+    exportsAll,
+    pageExports
+  }
+  return pageContextExports
+}
+
+// V1 design
+function getPageConfigUserFriendlyNew(pageConfig: PageConfigRuntimeLoaded | null) {
+  const config: Record<string, unknown> = {}
+  const configEntries: ConfigEntries = {} // TODO/v1-release: remove
+  const exportsAll: ExportsAll = {} // TODO/v1-release: remove
   const source: Source = {}
   const sources: Sources = {}
-  const addSrc = (src: SourceAny, configName: string) => {
-    source[configName] = src
-    sources[configName] ??= []
-    sources[configName]!.push(src)
-  }
   const from: From = {
     configsStandard: {},
     configsCumulative: {},
     configsComputed: {}
   }
+
+  const addSrc = (src: SourceAny, configName: string) => {
+    source[configName] = src
+    sources[configName] ??= []
+    sources[configName]!.push(src)
+  }
+
   if (pageConfig) {
     Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
       const { value } = configValue
@@ -222,37 +267,14 @@ function getPageConfigUserFriendly(
     })
   }
 
-  const pageExports = createObjectWithDeprecationWarning()
-  const exports: Record<string, unknown> = {}
-  Object.entries(exportsAll).forEach(([exportName, values]) => {
-    values.forEach(({ exportValue, _fileType, _isFromDefaultExport }) => {
-      exports[exportName] = exports[exportName] ?? exportValue
-
-      // Legacy pageContext.pageExports
-      if (_fileType === '.page' && !_isFromDefaultExport) {
-        if (!(exportName in pageExports)) {
-          pageExports[exportName] = exportValue
-        }
-      }
-    })
-  })
-
-  assert(!('default' in exports))
-  assert(!('default' in exportsAll))
-
-  const pageContextExports = {
-    from,
-    source,
-    sources,
-
-    // TODO/eventually: deprecate/remove every prop below
+  return {
     config,
     configEntries,
-    exports,
     exportsAll,
-    pageExports
+    source,
+    sources,
+    from
   }
-  return pageContextExports
 }
 
 function getExportValues(pageFile: PageFile) {
