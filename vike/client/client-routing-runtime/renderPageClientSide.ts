@@ -49,7 +49,7 @@ import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
 import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
-import type { PageConfigsUserFriendly } from '../../shared/getPageFiles.js'
+import type { PageConfigUserFriendly } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
@@ -76,7 +76,7 @@ const globalObject = getGlobalObject<{
   })()
 )
 const { firstRenderStartPromise } = globalObject
-type PreviousPageContext = { pageId: string } & PageConfigsUserFriendly & PageContextRouted
+type PreviousPageContext = { pageId: string } & PageConfigUserFriendly & PageContextRouted
 type PageContextRouted = { pageId: string; routeParams: Record<string, string> }
 
 type RenderArgs = {
@@ -657,7 +657,7 @@ function getRenderCount(): number {
 }
 
 function getKeepScrollPositionSetting(
-  pageContext: PageConfigsUserFriendly & PageContextRouted & Record<string, unknown>
+  pageContext: PageConfigUserFriendly & PageContextRouted & Record<string, unknown>
 ): false | string | string[] {
   const c = pageContext.from.configsStandard.keepScrollPosition
   if (!c) return false

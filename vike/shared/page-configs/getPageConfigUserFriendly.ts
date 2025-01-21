@@ -1,6 +1,6 @@
-export { getPageConfigsUserFriendly }
+export { getPageConfigUserFriendly }
 export type { ExportsAll }
-export type { PageConfigsUserFriendly }
+export type { PageConfigUserFriendly }
 export type { ConfigEntries }
 export type { From }
 export type { Sources }
@@ -51,7 +51,7 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type PageConfigsUserFriendly = {
+type PageConfigUserFriendly = {
   config: Record<string, unknown>
   source: Source
   sources: Sources
@@ -117,10 +117,10 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-function getPageConfigsUserFriendly(
+function getPageConfigUserFriendly(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null
-): PageConfigsUserFriendly {
+): PageConfigUserFriendly {
   const configEntries: ConfigEntries = {}
   const config: Record<string, unknown> = {}
   const exportsAll: ExportsAll = {}

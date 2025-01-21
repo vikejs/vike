@@ -2,9 +2,9 @@ export { setPageContextCurrent }
 export { getPageContextCurrent }
 
 import { getGlobalObject } from './utils.js'
-import type { PageConfigsUserFriendly } from '../../shared/getPageFiles.js'
+import type { PageConfigUserFriendly } from '../../shared/getPageFiles.js'
 
-type PageContextCurrent = PageConfigsUserFriendly & {
+type PageContextCurrent = PageConfigUserFriendly & {
   urlPathname: string
 }
 const globalObject = getGlobalObject('getPageContextCurrent.ts', {

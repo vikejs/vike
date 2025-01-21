@@ -45,7 +45,7 @@ export type {
   ConfigDefinition,
   ConfigEffect
 } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
-export type { ConfigEntries } from '../shared/page-configs/getPageConfigsUserFriendly.js'
+export type { ConfigEntries } from '../shared/page-configs/getPageConfigUserFriendly.js'
 
 export type { UrlPublic as Url } from '../utils/parseUrl.js'
 
