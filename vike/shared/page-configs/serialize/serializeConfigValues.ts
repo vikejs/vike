@@ -35,11 +35,11 @@ function serializeConfigValues(
   const lines: string[] = []
   tabspace += '  '
 
-  Object.entries(pageConfig.configValuesComputed ?? {}).forEach(([configName, configValuesComputed]) => {
-    if (!isEnvMatch(configValuesComputed.configEnv)) return
+  Object.entries(pageConfig.configValuesComputed ?? {}).forEach(([configName, { configEnv, value }]) => {
+    if (!isEnvMatch(configEnv)) return
     // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
     if (pageConfig.configValueSources[configName]) return
-    const valueData = serializeWithJson(configValuesComputed.value, configName, null, importStatements)
+    const valueData = serializeWithJson(value, configName, null, importStatements)
     const configValueBase = {
       type: 'computed',
       definedAtData: null
