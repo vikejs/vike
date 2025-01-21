@@ -39,7 +39,7 @@ function serializeConfigValues(
     if (!isEnvMatch(configEnv)) return
     // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
     if (pageConfig.configValueSources[configName]) return
-    const valueData = serializeWithJson(value, configName, null, importStatements)
+    const valueData = getValueSerializedWithJson(value, configName, null, importStatements)
     const configValueBase = {
       type: 'computed',
       definedAtData: null
@@ -56,7 +56,7 @@ function serializeConfigValues(
       assert(configValueSource)
       assert(sources.slice(1).every((s) => s.isOverriden === true))
       if (!isEnvMatch(configValueSource.configEnv)) return
-      const { valueData, definedAtFile } = serializeConfigValueSource(configValueSource, configName, importStatements)
+      const { valueData, definedAtFile } = getValueSerializedFromSource(configValueSource, configName, importStatements)
       const configValueBase = {
         type: 'standard',
         definedAtData: definedAtFile
@@ -69,7 +69,7 @@ function serializeConfigValues(
         .filter((s) => !s.isOverriden)
         .forEach((configValueSource) => {
           if (!isEnvMatch(configValueSource.configEnv)) return
-          const { valueData, definedAtFile } = serializeConfigValueSource(
+          const { valueData, definedAtFile } = getValueSerializedFromSource(
             configValueSource,
             configName,
             importStatements
@@ -89,7 +89,7 @@ function serializeConfigValues(
   return lines
 }
 
-function serializeConfigValueSource(
+function getValueSerializedFromSource(
   configValueSource: ConfigValueSource,
   configName: string,
   importStatements: string[]
@@ -97,14 +97,14 @@ function serializeConfigValueSource(
   assert(configValueSource.isOverriden === false)
   let valueData: ValueData
   if ('value' in configValueSource) {
-    valueData = serializeWithJson(
+    valueData = getValueSerializedWithJson(
       configValueSource.value,
       configName,
       configValueSource.definedAtFilePath,
       importStatements
     )
   } else {
-    valueData = serializeWithImport(configValueSource, importStatements)
+    valueData = getValueSerializedWithImport(configValueSource, importStatements)
   }
   const definedAtFile: DefinedAtFile = {
     filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
@@ -171,7 +171,7 @@ function serializeConfigValue(
   }
 }
 
-function serializeWithImport(configValueSource: ConfigValueSource, importStatements: string[]): ValueData {
+function getValueSerializedWithImport(configValueSource: ConfigValueSource, importStatements: string[]): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
   const { valueIsImportedAtRuntime, valueIsDefinedByPlusFile, definedAtFilePath } = configValueSource
@@ -187,7 +187,7 @@ function serializeWithImport(configValueSource: ConfigValueSource, importStateme
   }
 }
 
-function serializeWithJson(
+function getValueSerializedWithJson(
   value: unknown,
   configName: string,
   definedAtData: DefinedAtData,
