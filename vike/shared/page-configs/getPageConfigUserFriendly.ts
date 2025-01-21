@@ -1,23 +1,27 @@
-export { getPageContextExports }
-export type { ExportsAll }
-export type { PageContextExports }
-export type { ConfigEntries }
-export type { From }
-export type { Sources }
+export { getPageConfigUserFriendly }
+export type { PageConfigUserFriendly }
 export type { Source }
+export type { Sources }
+export type { From }
+export type { ExportsAll }
+export type { ConfigEntries }
 
-import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile.js'
-import { assert, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils.js'
-import { assertDefaultExports, forbiddenDefaultExports } from './assert_exports_old_design.js'
-import type { FileType } from './fileTypes.js'
-import type { PageConfigRuntimeLoaded } from './../page-configs/PageConfig.js'
-import type { PageFile } from './getPageFileObject.js'
+import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
+import type { FileType } from '../getPageFiles/fileTypes.js'
+import type { PageFile } from '../getPageFiles/getPageFileObject.js'
+import type { ConfigValues, PageConfigRuntimeLoaded } from './PageConfig.js'
+import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
+import { getConfigValueFilePathToShowToUser } from './helpers.js'
 import {
-  type ConfigDefinedAtOptional,
-  getConfigDefinedAtOptional,
-  getDefinedAtString
-} from '../page-configs/getConfigDefinedAt.js'
-import { getConfigValueFilePathToShowToUser } from '../page-configs/helpers.js'
+  assert,
+  isObject,
+  assertWarning,
+  assertUsage,
+  makeLast,
+  isBrowser,
+  isScriptFile,
+  isTemplateFile
+} from '../utils.js'
 import pc from '@brillout/picocolors'
 
 // TODO/v1-release: remove
@@ -47,13 +51,13 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type PageContextExports = {
+type PageConfigUserFriendly = {
+  config: Record<string, unknown>
   source: Source
   sources: Sources
   from: From
 
-  // TODO/eventually: deprecate/remove every prop below
-  config: Record<string, unknown>
+  // TODO/eventually: deprecate every prop below
   configEntries: ConfigEntries
   exports: Record<string, unknown>
   exportsAll: ExportsAll
@@ -113,10 +117,13 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded | null): PageContextExports {
-  const configEntries: ConfigEntries = {}
+function getPageConfigUserFriendly(
+  pageFiles: PageFile[],
+  pageConfig: PageConfigRuntimeLoaded | null
+): PageConfigUserFriendly {
   const config: Record<string, unknown> = {}
-  const exportsAll: ExportsAll = {}
+  const configEntries: ConfigEntries = {} // TODO/v1-release: remove
+  const exportsAll: ExportsAll = {} // TODO/v1-release: remove
 
   // V0.4 design
   // TODO/v1-release: remove
@@ -138,81 +145,25 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
     })
   })
 
-  // V1 design
-  const source: Source = {}
-  const sources: Sources = {}
-  const addSrc = (src: SourceAny, configName: string) => {
-    source[configName] = src
-    sources[configName] ??= []
-    sources[configName]!.push(src)
-  }
-  const from: From = {
-    configsStandard: {},
-    configsCumulative: {},
-    configsComputed: {}
-  }
+  let source: Source
+  let sources: Sources
+  let from: From
   if (pageConfig) {
-    Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
-      const { value } = configValue
-      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
-      const configDefinedAt = getConfigDefinedAtOptional('Config', configName, configValue.definedAtData)
-
-      config[configName] = config[configName] ?? value
-      configEntries[configName] = configEntries[configName] ?? []
-      // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
-      assert(configEntries[configName]!.length === 0)
-      configEntries[configName]!.push({
-        configValue: value,
-        configDefinedAt,
-        configDefinedByFile: configValueFilePathToShowToUser
-      })
-
-      if (configValue.type === 'standard') {
-        const src: SourceConfigsStandard = {
-          type: 'configsStandard',
-          value: configValue.value,
-          definedAt: getDefinedAtString(configValue.definedAtData, configName)
-        }
-        addSrc(src, configName)
-        from.configsStandard[configName] = src
-      }
-      if (configValue.type === 'cumulative') {
-        const src: SourceConfigsCumulative = {
-          type: 'configsCumulative',
-          values: configValue.value.map((value, i) => {
-            const definedAtFile = configValue.definedAtData[i]
-            assert(definedAtFile)
-            const definedAt = getDefinedAtString(definedAtFile, configName)
-            return {
-              value,
-              definedAt
-            }
-          })
-        }
-        addSrc(src, configName)
-        from.configsCumulative[configName] = src
-      }
-      if (configValue.type === 'computed') {
-        const src: SourceConfigsComputed = {
-          type: 'configsComputed',
-          value: configValue.value
-        }
-        addSrc(src, configName)
-        from.configsComputed[configName] = src
-      }
-
-      // TODO/v1-release: remove
-      const exportName = configName
-      exportsAll[exportName] = exportsAll[exportName] ?? []
-      exportsAll[exportName]!.push({
-        exportValue: value,
-        exportSource: configDefinedAt,
-        filePath: configValueFilePathToShowToUser,
-        _filePath: configValueFilePathToShowToUser,
-        _fileType: null,
-        _isFromDefaultExport: null
-      })
-    })
+    const res = getPageConfigUserFriendlyNew(pageConfig)
+    source = res.source
+    sources = res.sources
+    from = res.from
+    Object.assign(config, res.config)
+    Object.assign(configEntries, res.configEntries)
+    Object.assign(exportsAll, res.exportsAll)
+  } else {
+    source = {}
+    sources = {}
+    from = {
+      configsStandard: {},
+      configsCumulative: {},
+      configsComputed: {}
+    }
   }
 
   const pageExports = createObjectWithDeprecationWarning()
@@ -246,6 +197,97 @@ function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRunt
     pageExports
   }
   return pageContextExports
+}
+
+// V1 design
+function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }) {
+  const config: Record<string, unknown> = {}
+  const configEntries: ConfigEntries = {} // TODO/v1-release: remove
+  const exportsAll: ExportsAll = {} // TODO/v1-release: remove
+  const source: Source = {}
+  const sources: Sources = {}
+  const from: From = {
+    configsStandard: {},
+    configsCumulative: {},
+    configsComputed: {}
+  }
+
+  const addSrc = (src: SourceAny, configName: string) => {
+    source[configName] = src
+    sources[configName] ??= []
+    sources[configName]!.push(src)
+  }
+
+  Object.entries(pageConfig.configValues).forEach(([configName, configValue]) => {
+    const { value } = configValue
+    const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
+    const configDefinedAt = getConfigDefinedAtOptional('Config', configName, configValue.definedAtData)
+
+    config[configName] = config[configName] ?? value
+    configEntries[configName] = configEntries[configName] ?? []
+    // Currently each configName has only one entry. Adding an entry for each overriden config value isn't implemented yet. (This is an isomorphic file and it isn't clear whether this can/should be implemented on the client-side. We should load a minimum amount of code on the client-side.)
+    assert(configEntries[configName]!.length === 0)
+    configEntries[configName]!.push({
+      configValue: value,
+      configDefinedAt,
+      configDefinedByFile: configValueFilePathToShowToUser
+    })
+
+    if (configValue.type === 'standard') {
+      const src: SourceConfigsStandard = {
+        type: 'configsStandard',
+        value: configValue.value,
+        definedAt: getDefinedAtString(configValue.definedAtData, configName)
+      }
+      addSrc(src, configName)
+      from.configsStandard[configName] = src
+    }
+    if (configValue.type === 'cumulative') {
+      const src: SourceConfigsCumulative = {
+        type: 'configsCumulative',
+        values: configValue.value.map((value, i) => {
+          const definedAtFile = configValue.definedAtData[i]
+          assert(definedAtFile)
+          const definedAt = getDefinedAtString(definedAtFile, configName)
+          return {
+            value,
+            definedAt
+          }
+        })
+      }
+      addSrc(src, configName)
+      from.configsCumulative[configName] = src
+    }
+    if (configValue.type === 'computed') {
+      const src: SourceConfigsComputed = {
+        type: 'configsComputed',
+        value: configValue.value
+      }
+      addSrc(src, configName)
+      from.configsComputed[configName] = src
+    }
+
+    // TODO/v1-release: remove
+    const exportName = configName
+    exportsAll[exportName] = exportsAll[exportName] ?? []
+    exportsAll[exportName]!.push({
+      exportValue: value,
+      exportSource: configDefinedAt,
+      filePath: configValueFilePathToShowToUser,
+      _filePath: configValueFilePathToShowToUser,
+      _fileType: null,
+      _isFromDefaultExport: null
+    })
+  })
+
+  return {
+    config,
+    configEntries,
+    exportsAll,
+    source,
+    sources,
+    from
+  }
 }
 
 function getExportValues(pageFile: PageFile) {

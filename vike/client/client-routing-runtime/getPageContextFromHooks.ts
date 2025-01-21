@@ -19,7 +19,7 @@ import {
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
-import type { PageContextExports, PageFile } from '../../shared/getPageFiles.js'
+import type { PageConfigUserFriendly, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { getHook } from '../../shared/hooks/getHook.js'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
@@ -62,7 +62,7 @@ function getPageContextFromHooks_serialized(): PageContextSerialized & {
 }
 // TODO/eventually: rename
 async function getPageContextFromHooks_isHydration(
-  pageContext: PageContextSerialized & PageContext & PageContextExports & { _hasPageContextFromServer: true }
+  pageContext: PageContextSerialized & PageContext & PageConfigUserFriendly & { _hasPageContextFromServer: true }
 ) {
   objectAssign(pageContext, {
     _hasPageContextFromClient: false
@@ -119,7 +119,7 @@ async function getPageContextFromServerHooks(
 
 type PageContextFromClientHooks = { _hasPageContextFromClient: boolean }
 async function getPageContextFromClientHooks(
-  pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContext & PageContextExports,
+  pageContext: { pageId: string; _hasPageContextFromServer: boolean } & PageContext & PageConfigUserFriendly,
   isErrorPage: boolean
 ): Promise<PageContextFromClientHooks> {
   objectAssign(pageContext, {
@@ -165,7 +165,7 @@ async function executeHookClientSide(
     pageId: string
     _hasPageContextFromServer: boolean
     _hasPageContextFromClient: boolean
-  } & PageContextExports &
+  } & PageConfigUserFriendly &
     PageContext
 ) {
   const hook = getHook(pageContext, hookName)

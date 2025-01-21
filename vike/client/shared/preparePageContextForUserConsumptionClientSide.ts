@@ -2,13 +2,13 @@ export { preparePageContextForUserConsumptionClientSide }
 export type { PageContextForUserConsumptionClientSide }
 
 import { assert, objectAssign } from '../server-routing-runtime/utils.js'
-import type { PageContextExports } from '../../shared/getPageFiles.js'
+import type { PageConfigUserFriendly } from '../../shared/getPageFiles.js'
 import type { PageContextClient, PageContextClientWithServerRouting } from '../../shared/types.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 import { getPageContextProxyForUser, PageContextForPassToClientWarning } from './getPageContextProxyForUser.js'
 import { preparePageContextForUserConsumption } from '../../shared/preparePageContextForUserConsumption.js'
 
-type PageContextForUserConsumptionClientSide = PageContextExports &
+type PageContextForUserConsumptionClientSide = PageConfigUserFriendly &
   PageContextForPassToClientWarning & {
     pageId: string
     _pageConfigs: PageConfigRuntime[]

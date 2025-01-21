@@ -59,6 +59,7 @@ type PageConfigGlobalRuntime = {
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
   configDefinitions: ConfigDefinitions
+  configValuesComputed?: undefined
 }
 
 /** In what environment(s) the config value is loaded.
@@ -77,6 +78,10 @@ type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
   production?: boolean
 }
 
+type ConfigValueSources = Record<
+  string, // configName
+  ConfigValueSource[]
+>
 type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
@@ -90,21 +95,19 @@ type ConfigValueSource = {
   valueIsDefinedByPlusFile: boolean
 }
 type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
-type ConfigValueSources = Record<
-  // configName
-  string,
-  ConfigValueSource[]
->
 
 type ConfigValuesComputed = Record<
-  // configName
-  string,
+  string, // configName
   {
     configEnv: ConfigEnvInternal
     value: unknown
   }
 >
 
+type ConfigValues = Record<
+  string, // configName
+  ConfigValue
+>
 type ConfigValue = ConfigValueStandard | ConfigValueCumulative | ConfigValueComputed
 /** Defined by a unique source (thus unique file path). */
 type ConfigValueStandard = {
@@ -124,12 +127,6 @@ type ConfigValueComputed = {
   value: unknown
   definedAtData: null
 }
-
-type ConfigValues = Record<
-  // configName
-  string,
-  ConfigValue
->
 
 type DefinedAtData = DefinedAtFile | DefinedAtFile[] | null
 type DefinedAtFile = {
