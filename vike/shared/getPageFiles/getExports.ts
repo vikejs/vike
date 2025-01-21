@@ -1,4 +1,4 @@
-export { getPageContextExports }
+export { getPageConfigsUserFriendly }
 export type { ExportsAll }
 export type { PageContextExports }
 export type { ConfigEntries }
@@ -113,7 +113,10 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-function getPageContextExports(pageFiles: PageFile[], pageConfig: PageConfigRuntimeLoaded | null): PageContextExports {
+function getPageConfigsUserFriendly(
+  pageFiles: PageFile[],
+  pageConfig: PageConfigRuntimeLoaded | null
+): PageContextExports {
   const configEntries: ConfigEntries = {}
   const config: Record<string, unknown> = {}
   const exportsAll: ExportsAll = {}
