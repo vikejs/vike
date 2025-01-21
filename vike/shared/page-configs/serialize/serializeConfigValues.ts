@@ -39,20 +39,20 @@ function serializeConfigValues(
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName } = entry
-      const valueData = getValueSerializedWithJson(value, configName, null, importStatements)
+      const valueData = getValueSerializedWithJson(value, configName, configValueBase.definedAtData, importStatements)
       serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
     }
     if (entry.configValueBase.type === 'standard') {
       assert('sourceRelevant' in entry) // Help TS
       const { configValueBase, sourceRelevant, configName } = entry
-      const valueData = getValueSerializedFromSource(sourceRelevant!, configName, importStatements)
+      const valueData = getValueSerializedFromSource(sourceRelevant, configName, importStatements)
       serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
     }
     if (entry.configValueBase.type === 'cumulative') {
       assert('sourcesRelevant' in entry) // Help TS
       const { configValueBase, sourcesRelevant, configName } = entry
       const valueDataList: ValueData[] = []
-      sourcesRelevant!.forEach((source) => {
+      sourcesRelevant.forEach((source) => {
         const valueData = getValueSerializedFromSource(source, configName, importStatements)
         valueDataList.push(valueData)
       })
