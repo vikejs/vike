@@ -4,12 +4,12 @@ export type { PageContextForUserConsumptionServerSide }
 import { assert, isPlainObject } from '../utils.js'
 import { assertPageContextUrl, PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import type { PageContextExports } from '../../../shared/page-configs/getPageConfigsUserFriendly.js'
+import type { PageConfigsUserFriendly } from '../../../shared/page-configs/getPageConfigsUserFriendly.js'
 import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
 import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption.js'
 
 type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal &
-  PageContextExports & {
+  PageConfigsUserFriendly & {
     urlOriginal: string
     /** @deprecated */
     url: string

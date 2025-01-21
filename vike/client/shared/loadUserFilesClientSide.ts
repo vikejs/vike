@@ -6,7 +6,7 @@ import {
   getPageFilesClientSide,
   getPageConfigsUserFriendly,
   type PageFile,
-  type PageContextExports
+  type PageConfigsUserFriendly
 } from '../../shared/getPageFiles.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
@@ -15,7 +15,7 @@ import { objectAssign } from '../server-routing-runtime/utils.js'
 
 const stamp = '__whileFetchingAssets'
 
-type PageContextUserFilesLoaded = PageContextExports & { _pageFilesLoaded: PageFile[] }
+type PageContextUserFilesLoaded = PageConfigsUserFriendly & { _pageFilesLoaded: PageFile[] }
 type PageContextUserFiles = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]

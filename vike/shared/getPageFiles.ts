@@ -1,5 +1,5 @@
 export type { PageFile } from './getPageFiles/getPageFileObject.js'
-export type { ExportsAll, PageContextExports } from './page-configs/getPageConfigsUserFriendly.js'
+export type { ExportsAll, PageConfigsUserFriendly } from './page-configs/getPageConfigsUserFriendly.js'
 export { getPageFilesClientSide } from './getPageFiles/getAllPageIdFiles.js'
 export { getPageFilesServerSide } from './getPageFiles/getAllPageIdFiles.js'
 export { getPageConfigsUserFriendly } from './page-configs/getPageConfigsUserFriendly.js'
