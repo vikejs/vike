@@ -91,14 +91,12 @@ type ConfigValueSource = {
 }
 type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 type ConfigValueSources = Record<
-  // configName
-  string,
+  string, // configName
   ConfigValueSource[]
 >
 
 type ConfigValuesComputed = Record<
-  // configName
-  string,
+  string, // configName
   {
     configEnv: ConfigEnvInternal
     value: unknown
@@ -126,8 +124,7 @@ type ConfigValueComputed = {
 }
 
 type ConfigValues = Record<
-  // configName
-  string,
+  string, // configName
   ConfigValue
 >
 
