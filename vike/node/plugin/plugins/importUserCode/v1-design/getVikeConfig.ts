@@ -676,6 +676,28 @@ async function getGlobalConfigs(
   )
 
   const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
+  {
+    assert(isObject(vikeVitePluginOptions))
+    Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
+      if (pageConfigGlobal.configValueSources[configName]) return
+      pageConfigGlobal.configValueSources[configName] = []
+      pageConfigGlobal.configValueSources[configName].push({
+        value,
+        configEnv: { config: true },
+        definedAtFilePath: {
+          ...getFilePathResolved({
+            userRootDir,
+            filePathAbsoluteUserRootDir: '/vite.config.js'
+          }),
+          fileExportPathToShowToUser: null
+        },
+        locationId: '/' as LocationId,
+        isOverriden: false,
+        valueIsImportedAtRuntime: false,
+        valueIsDefinedByPlusFile: false
+      })
+    })
+  }
 
   return { pageConfigGlobal, pageConfigGlobalValues, vikeConfigGlobal }
 }
