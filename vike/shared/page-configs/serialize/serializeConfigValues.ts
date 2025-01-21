@@ -26,7 +26,7 @@ const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
 assertIsNotProductionRuntime()
 
 function serializeConfigValues(
-  pageConfig: PageConfigBuildTime | (PageConfigGlobalBuildTime & { configValuesComputed?: undefined }),
+  pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   importStatements: string[],
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
   { isEager }: { isEager: boolean },

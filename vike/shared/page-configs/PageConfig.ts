@@ -59,6 +59,7 @@ type PageConfigGlobalRuntime = {
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
   configDefinitions: ConfigDefinitions
+  configValuesComputed?: undefined
 }
 
 /** In what environment(s) the config value is loaded.
