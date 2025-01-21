@@ -77,6 +77,10 @@ type ConfigEnvInternal = Omit<ConfigEnv, 'client'> & {
   production?: boolean
 }
 
+type ConfigValueSources = Record<
+  string, // configName
+  ConfigValueSource[]
+>
 type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
@@ -90,10 +94,6 @@ type ConfigValueSource = {
   valueIsDefinedByPlusFile: boolean
 }
 type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
-type ConfigValueSources = Record<
-  string, // configName
-  ConfigValueSource[]
->
 
 type ConfigValuesComputed = Record<
   string, // configName
@@ -103,6 +103,11 @@ type ConfigValuesComputed = Record<
   }
 >
 
+
+type ConfigValues = Record<
+  string, // configName
+  ConfigValue
+>
 type ConfigValue = ConfigValueStandard | ConfigValueCumulative | ConfigValueComputed
 /** Defined by a unique source (thus unique file path). */
 type ConfigValueStandard = {
@@ -122,11 +127,6 @@ type ConfigValueComputed = {
   value: unknown
   definedAtData: null
 }
-
-type ConfigValues = Record<
-  string, // configName
-  ConfigValue
->
 
 type DefinedAtData = DefinedAtFile | DefinedAtFile[] | null
 type DefinedAtFile = {
