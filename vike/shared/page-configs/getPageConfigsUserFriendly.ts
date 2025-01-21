@@ -52,12 +52,12 @@ type ConfigEntries = Record<
   }[]
 >
 type PageContextExports = {
+  config: Record<string, unknown>
   source: Source
   sources: Sources
   from: From
 
-  // TODO/eventually: deprecate/remove every prop below
-  config: Record<string, unknown>
+  // TODO/eventually: deprecate every prop below
   configEntries: ConfigEntries
   exports: Record<string, unknown>
   exportsAll: ExportsAll
