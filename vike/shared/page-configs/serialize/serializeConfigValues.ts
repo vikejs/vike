@@ -35,25 +35,21 @@ function serializeConfigValues(
   const lines: string[] = []
   tabspace += '  '
 
-  Object.entries(pageConfig.configValuesComputed ?? {}).forEach(([configName, valueInfo]) => {
-    if (!isEnvMatch(valueInfo.configEnv)) return
-    // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
-    if (pageConfig.configValueSources[configName]) return
-    const valueData = getValueSerializedWithJson(valueInfo.value, configName, null, importStatements)
-    const configValueBase = {
-      type: 'computed',
-      definedAtData: null
-    } as const
-    serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
-  })
-
   getConfigValuesBase(pageConfig, isEnvMatch, { isEager }).forEach((entry) => {
+    if (entry.configValueBase.type === 'computed') {
+      assert('value' in entry) // Help TS
+      const { configValueBase, value, configName } = entry
+      const valueData = getValueSerializedWithJson(value, configName, null, importStatements)
+      serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
+    }
     if (entry.configValueBase.type === 'standard') {
+      assert('sourceRelevant' in entry) // Help TS
       const { configValueBase, sourceRelevant, configName } = entry
       const valueData = getValueSerializedFromSource(sourceRelevant!, configName, importStatements)
       serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
     }
     if (entry.configValueBase.type === 'cumulative') {
+      assert('sourcesRelevant' in entry) // Help TS
       const { configValueBase, sourcesRelevant, configName } = entry
       const valueDataList: ValueData[] = []
       sourcesRelevant!.forEach((source) => {
@@ -240,9 +236,18 @@ function getConfigValuesBase(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
   { isEager }: { isEager: boolean }
-) {
-  return Object.entries(pageConfig.configValueSources)
-    .map(([configName, sources]) => {
+): ConfigValuesBase {
+  const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
+    if (!isEnvMatch(valueInfo.configEnv)) return 'SKIP'
+    // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
+    if (pageConfig.configValueSources[configName]) return 'SKIP'
+    const configValueBase = {
+      type: 'computed',
+      definedAtData: null
+    } as const
+    return { configValueBase, value: valueInfo.value, configName } as const
+  })
+    const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
       const configDef = pageConfig.configDefinitions[configName]
       assert(configDef)
       if (isEager !== !!configDef.eager) return 'SKIP'
@@ -256,7 +261,7 @@ function getConfigValuesBase(
           type: 'standard',
           definedAtData: definedAtFile
         } as const
-        return { configValueBase, sourceRelevant: source, configName } as const
+        return { configValueBase, sourceRelevant: source, configName }
       } else {
         const sourcesRelevant = sources.filter((source) => !source.isOverriden && isEnvMatch(source.configEnv))
         if (sourcesRelevant.length === 0) return 'SKIP'
@@ -269,11 +274,38 @@ function getConfigValuesBase(
           type: 'cumulative',
           definedAtData
         } as const
-        return { configValueBase, sourcesRelevant, configName } as const
+        return { configValueBase, sourcesRelevant, configName }
       }
     })
-    .filter((r) => r !== 'SKIP')
+
+  return [...fromComputed, ...fromSources].filter((r) => r !== 'SKIP')
 }
+type ConfigValuesBase = (
+  | {
+      configValueBase: {
+        type: 'computed'
+        definedAtData: null
+      }
+      value: unknown
+      configName: string
+    }
+  | {
+      configValueBase: {
+        type: 'standard'
+        definedAtData: DefinedAtFile
+      }
+      sourceRelevant: ConfigValueSource
+      configName: string
+    }
+  | {
+      configValueBase: {
+        type: 'cumulative'
+        definedAtData: DefinedAtFile[]
+      }
+      sourcesRelevant: ConfigValueSource[]
+      configName: string
+    }
+)[]
 
 function getDefinedAtFileSource(source: ConfigValueSource) {
   const definedAtFile: DefinedAtFile = {
