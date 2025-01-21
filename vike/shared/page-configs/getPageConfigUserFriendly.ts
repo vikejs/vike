@@ -1,4 +1,5 @@
 export { getPageConfigUserFriendly }
+export { getPageConfigUserFriendlyNew }
 export type { PageConfigUserFriendly }
 export type { Source }
 export type { Sources }

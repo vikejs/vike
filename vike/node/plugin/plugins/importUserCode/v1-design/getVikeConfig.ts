@@ -39,7 +39,10 @@ import type {
   ConfigValueSources,
   PageConfigBuildTime,
   DefinedAtFilePath,
-  ConfigValuesComputed
+  ConfigValuesComputed,
+  ConfigValue,
+  ConfigValues,
+  DefinedAtFile
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -88,6 +91,7 @@ import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
+import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 
 assertIsNotProductionRuntime()
 
@@ -449,7 +453,74 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   assertPageConfigs(pageConfigs)
 
+  const global = getPageConfigUserFriendlyNew({ configValues: getConfigValues(pageConfigGlobal) })
+
   return { pageConfigs, pageConfigGlobal, vikeConfigGlobal }
+}
+
+function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
+  const isEnvMatch = (configEnv: ConfigEnvInternal) => !!configEnv.config
+  const configValues: ConfigValues = {}
+  Object.entries(pageConfig.configValuesComputed ?? {}).forEach(([configName, valueInfo]) => {
+    const configValueBase = {
+      type: 'computed',
+      definedAtData: null
+    } as const
+    const configValue: ConfigValue = {
+      ...configValueBase,
+      value: valueInfo.value
+    }
+    configValues[configName] = configValue
+  })
+  Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
+    const configDef = pageConfig.configDefinitions[configName]
+    assert(configDef)
+    if (!configDef.cumulative) {
+      const configValueSource = sources[0]
+      assert(configValueSource)
+      assert(sources.slice(1).every((s) => s.isOverriden === true))
+      if (!isEnvMatch(configValueSource.configEnv)) return
+      const definedAtFile: DefinedAtFile = {
+        filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
+        fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
+      }
+      const configValueBase = {
+        type: 'standard',
+        definedAtData: definedAtFile
+      } as const
+      assert('value' in configValueSource)
+      const configValue = {
+        ...configValueBase,
+        value: configValueSource.value
+      }
+      configValues[configName] = configValue
+    } else {
+      const values: unknown[] = []
+      const definedAtData: DefinedAtFile[] = []
+      sources
+        .filter((s) => !s.isOverriden)
+        .forEach((configValueSource) => {
+          if (!isEnvMatch(configValueSource.configEnv)) return
+          assert('value' in configValueSource)
+          values.push(configValueSource.value)
+          const definedAtFile: DefinedAtFile = {
+            filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
+            fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
+          }
+          definedAtData.push(definedAtFile)
+        })
+      const configValueBase = {
+        type: 'cumulative',
+        definedAtData
+      } as const
+      const configValue = {
+        ...configValueBase,
+        value: values
+      }
+      configValues[configName] = configValue
+    }
+  })
+  return configValues
 }
 
 // TODO/soon: refactor
