@@ -92,6 +92,7 @@ import type { FilePathResolved } from '../../../../../shared/page-configs/FilePa
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
+import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 
 assertIsNotProductionRuntime()
 
@@ -459,65 +460,29 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 }
 
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
-  const isEnvMatch = (configEnv: ConfigEnvInternal) => !!configEnv.config
   const configValues: ConfigValues = {}
-  Object.entries(pageConfig.configValuesComputed ?? {}).forEach(([configName, valueInfo]) => {
-    const configValueBase = {
-      type: 'computed',
-      definedAtData: null
-    } as const
-    const configValue: ConfigValue = {
-      ...configValueBase,
-      value: valueInfo.value
+  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config).forEach((entry) => {
+    if (entry.configValueBase.type === 'computed') {
+      assert('value' in entry) // Help TS
+      const { configValueBase, value, configName } = entry
+      configValues[configName] = { ...configValueBase, value }
     }
-    configValues[configName] = configValue
-  })
-  Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
-    const configDef = pageConfig.configDefinitions[configName]
-    assert(configDef)
-    if (!configDef.cumulative) {
-      const configValueSource = sources[0]
-      assert(configValueSource)
-      assert(sources.slice(1).every((s) => s.isOverriden === true))
-      if (!isEnvMatch(configValueSource.configEnv)) return
-      const definedAtFile: DefinedAtFile = {
-        filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
-        fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
-      }
-      const configValueBase = {
-        type: 'standard',
-        definedAtData: definedAtFile
-      } as const
-      assert('value' in configValueSource)
-      const configValue = {
-        ...configValueBase,
-        value: configValueSource.value
-      }
-      configValues[configName] = configValue
-    } else {
+    if (entry.configValueBase.type === 'standard') {
+      assert('sourceRelevant' in entry) // Help TS
+      const { configValueBase, sourceRelevant, configName } = entry
+      assert('value' in sourceRelevant)
+      const { value } = sourceRelevant
+      configValues[configName] = { ...configValueBase, value }
+    }
+    if (entry.configValueBase.type === 'cumulative') {
+      assert('sourcesRelevant' in entry) // Help TS
+      const { configValueBase, sourcesRelevant, configName } = entry
       const values: unknown[] = []
-      const definedAtData: DefinedAtFile[] = []
-      sources
-        .filter((s) => !s.isOverriden)
-        .forEach((configValueSource) => {
-          if (!isEnvMatch(configValueSource.configEnv)) return
-          assert('value' in configValueSource)
-          values.push(configValueSource.value)
-          const definedAtFile: DefinedAtFile = {
-            filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
-            fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
-          }
-          definedAtData.push(definedAtFile)
-        })
-      const configValueBase = {
-        type: 'cumulative',
-        definedAtData
-      } as const
-      const configValue = {
-        ...configValueBase,
-        value: values
-      }
-      configValues[configName] = configValue
+      sourcesRelevant.forEach((source) => {
+        assert('value' in source)
+        values.push(source.value)
+      })
+      configValues[configName] = { ...configValueBase, value: values }
     }
   })
   return configValues

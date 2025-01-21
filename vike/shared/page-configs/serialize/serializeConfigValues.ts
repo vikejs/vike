@@ -1,4 +1,5 @@
 export { serializeConfigValues }
+export { getConfigValuesBase }
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
 import { assert, assertUsage, getPropAccessNotation } from '../../../node/plugin/utils.js'
@@ -235,7 +236,7 @@ function logJsonSerializeError(err: unknown, configName: string, definedAtData: 
 function getConfigValuesBase(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
-  { isEager }: { isEager: boolean }
+  { isEager }: { isEager?: boolean } = {}
 ): ConfigValuesBase {
   const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
     if (!isEnvMatch(valueInfo.configEnv)) return 'SKIP'
@@ -250,7 +251,7 @@ function getConfigValuesBase(
   const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
     const configDef = pageConfig.configDefinitions[configName]
     assert(configDef)
-    if (isEager !== !!configDef.eager) return 'SKIP'
+    if (isEager !== undefined && isEager !== !!configDef.eager) return 'SKIP'
     if (!configDef.cumulative) {
       const source = sources[0]
       assert(source)
