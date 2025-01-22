@@ -11,10 +11,9 @@ import type { Operation } from './types.js'
 import { clearOperation, setOperation } from './context.js'
 import { getVikeConfig2, type VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
-import { assert, assertUsage, getGlobalObject, isArray, isObject, toPosixPath } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { clearGlobalContext } from '../runtime/globalContext.js'
-import { getConfigDefinedAt } from '../../shared/page-configs/getConfigDefinedAt.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts', {})
 
@@ -45,7 +44,7 @@ function addViteSettingsSetByUser(viteConfigEnhanced: InlineConfig | undefined, 
   const { global } = vikeConfig.vikeConfigNew
   const viteConfigs = global.from.configsCumulative.vite
   if (!viteConfigs) return viteConfigEnhanced
-  viteConfigs.values.forEach((v, i) => {
+  viteConfigs.values.forEach((v) => {
     assertUsage(isObject(v.value), `${v.definedAt} should be an object`)
     viteConfigEnhanced = mergeConfig(v.value, viteConfigEnhanced ?? {})
   })
