@@ -16,6 +16,7 @@ export { setGlobalContext_vikeConfig }
 export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
 export { setGlobalContext_buildEntry }
+export { clearGlobalContext }
 
 import {
   assert,
@@ -42,7 +43,7 @@ import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRun
 import pc from '@brillout/picocolors'
 import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-const globalObject = getGlobalObject<{
+let globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
   viteDevServerPromise: Promise<ViteDevServer>
@@ -58,16 +59,7 @@ const globalObject = getGlobalObject<{
     assetsManifest: Record<string, unknown>
     pluginManifest: Record<string, unknown>
   }
-}>(
-  'globalContext.ts',
-  (() => {
-    const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
-    return {
-      viteDevServerPromise,
-      viteDevServerPromiseResolve
-    }
-  })()
-)
+}>('globalContext.ts', getGlobalContextInit())
 
 initDevEntry()
 
@@ -372,4 +364,19 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
   debugGlob('Glob result: ', moduleExports)
   assert(isObject(moduleExports))
   return moduleExports
+}
+
+function clearGlobalContext() {
+  objectKeys(globalObject).forEach((key) => {
+    delete globalObject[key]
+  })
+  objectAssign(globalObject, getGlobalContextInit())
+}
+
+function getGlobalContextInit() {
+  const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
+  return {
+    viteDevServerPromise,
+    viteDevServerPromiseResolve
+  }
 }

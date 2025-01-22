@@ -13,10 +13,12 @@ import { getVikeConfig2 } from '../plugin/plugins/importUserCode/v1-design/getVi
 import path from 'path'
 import { assert, assertUsage, getGlobalObject, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
+import { clearGlobalContext } from '../runtime/globalContext.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts', {})
 
 async function prepareViteApiCall(viteConfig: InlineConfig | undefined, operation: Operation) {
+  clearGlobalContext()
   setOperation(operation)
   return enhanceViteConfig(viteConfig, operation)
 }
