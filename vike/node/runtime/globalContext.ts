@@ -57,11 +57,7 @@ const globalObject = getGlobalObject<{
   outDirRoot?: string
   isPrerendering?: true
   initGlobalContext_runPrerender_alreadyCalled?: true
-  buildEntry?: {
-    pageFiles: Record<string, unknown>
-    assetsManifest: Record<string, unknown>
-    pluginManifest: Record<string, unknown>
-  }
+  buildEntry?: unknown
 }>('globalContext.ts', getInitialGlobalContext())
 
 initDevEntry()
@@ -348,14 +344,15 @@ async function getBuildEntry(outDir?: string) {
     await importServerProductionEntry({ outDir })
     assert(globalObject.buildEntry)
   }
-  return globalObject.buildEntry
-}
-function setGlobalContext_buildEntry(buildEntry: unknown) {
-  debug('setGlobalContext_buildEntry()')
+  const { buildEntry } = globalObject
   assert(isObject(buildEntry))
   assert(hasProp(buildEntry, 'pageFiles', 'object'))
   assert(hasProp(buildEntry, 'assetsManifest', 'object'))
   assert(hasProp(buildEntry, 'pluginManifest', 'object'))
+  return buildEntry
+}
+function setGlobalContext_buildEntry(buildEntry: unknown) {
+  debug('setGlobalContext_buildEntry()')
   globalObject.buildEntry = buildEntry
 }
 
