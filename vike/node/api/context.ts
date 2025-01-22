@@ -18,6 +18,8 @@ function isVikeCliOrApi(): boolean {
   return !!globalObject.apiOperation
 }
 function setOperation(operation: Operation): void {
+  /* Not true, e.g. when calling prerender() after build()
   assert(!globalObject.apiOperation)
+  */
   globalObject.apiOperation = operation
 }
