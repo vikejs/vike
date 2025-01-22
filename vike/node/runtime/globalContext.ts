@@ -59,7 +59,7 @@ let globalObject = getGlobalObject<{
     assetsManifest: Record<string, unknown>
     pluginManifest: Record<string, unknown>
   }
-}>('globalContext.ts', getGlobalContextInit())
+}>('globalContext.ts', getInitialGlobalContext())
 
 initDevEntry()
 
@@ -370,10 +370,10 @@ function clearGlobalContext() {
   objectKeys(globalObject).forEach((key) => {
     delete globalObject[key]
   })
-  objectAssign(globalObject, getGlobalContextInit())
+  objectAssign(globalObject, getInitialGlobalContext())
 }
 
-function getGlobalContextInit() {
+function getInitialGlobalContext() {
   const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
   return {
     viteDevServerPromise,
