@@ -44,6 +44,7 @@ import type { VikeVitePluginOptions } from '../../node/plugin/plugins/importUser
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
+import type { InlineConfig } from 'vite'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
 type HookNamePage =
@@ -61,7 +62,7 @@ type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
 type HookNameOldDesign = 'render' | 'prerender'
 
 type ConfigNameBuiltIn =
-  | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart'>
+  | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite'>
   | 'prerender'
   | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
@@ -406,6 +407,12 @@ type ConfigBuiltIn = {
    * https://vike.dev/meta
    */
   meta?: ConfigMeta | ImportString
+
+  /** Vite configuration.
+   *
+   * https://vite.dev/config/
+   */
+  vite?: InlineConfig
 
   // TODO/pageContext-prefetch: remove experimental note
   /**
