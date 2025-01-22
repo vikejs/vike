@@ -68,13 +68,13 @@ function testRun(cmd: string, pageContextInitIsPassedToClient = false) {
 
   {
     const url = getServerUrl() + '/show-error-page'
-    const expectErrServer = () => expectLog('HTTP response /show-error-page 503', (log) => log.logSource === 'stderr')
+    const expectErrServer = () =>
+      expectLog('HTTP response /show-error-page 503', { filter: (log) => log.logSource === 'stderr' })
     const expectErrClient = () =>
-      expectLog(
-        'Failed to load resource: the server responded with a status of 503 (Service Unavailable)',
-        (log) =>
+      expectLog('Failed to load resource: the server responded with a status of 503 (Service Unavailable)', {
+        filter: (log) =>
           log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/show-error-page`.test(log.logText)
-      )
+      })
     test('render error page - HTML', async () => {
       const response = await fetch(url)
       expectErrServer()

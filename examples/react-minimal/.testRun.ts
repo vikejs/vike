@@ -9,7 +9,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', { isCJ
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
     if (isCJS) {
-      expectLog('package.json#type to "module", see https://vike.dev/CJS', (log) => log.logSource === 'stderr')
+      expectLog('package.json#type to "module", see https://vike.dev/CJS', {
+        filter: (log) => log.logSource === 'stderr'
+      })
     }
   })
 

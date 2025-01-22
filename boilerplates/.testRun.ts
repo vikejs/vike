@@ -111,10 +111,10 @@ function testRun(
   test('error page', async () => {
     await page.goto(getServerUrl() + '/does-not-exist')
     expect(await page.textContent('#page-content')).toBe('Page not found.')
-    expectLog(
-      'Failed to load resource: the server responded with a status of 404 (Not Found)',
-      (log) => log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logText)
-    )
+    expectLog('Failed to load resource: the server responded with a status of 404 (Not Found)', {
+      filter: (log) =>
+        log.logSource === 'Browser Error' && partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logText)
+    })
   })
 
   test('data fetching page, HTML', async () => {

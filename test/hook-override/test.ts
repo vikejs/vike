@@ -107,14 +107,14 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     await autoRetry(() => {
       expectLog(
         '[Wrong Usage] Set onBeforeRender to null in a +config.js file instead of /pages/page-2/+onBeforeRender.tsx',
-        (log) => log.logSource === 'stderr'
+        { filter: (log) => log.logSource === 'stderr' }
       )
     })
     await autoRetry(() => {
-      expectLog('HTTP response', (log) => log.logSource === 'stderr')
+      expectLog('HTTP response', { filter: (log) => log.logSource === 'stderr' })
     })
     if (isDev) {
-      expectLog('No error page found', (log) => log.logSource === 'stderr')
+      expectLog('No error page found', { filter: (log) => log.logSource === 'stderr' })
     }
   })
   */

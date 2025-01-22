@@ -6,10 +6,10 @@ function testDynamicImportFileEnv() {
   test('Dynamic import() of .client.js and .server.js', async () => {
     await page.goto(getServerUrl() + '/dynamic-import-file-env')
     expect(await page.textContent('body')).toContain('Dyanmic import() of .client.js and .server.js')
-    expectLog('hello from server', (log) => log.logSource === 'stdout')
+    expectLog('hello from server', { filter: (log) => log.logSource === 'stdout' })
     await autoRetry(
       () => {
-        expectLog('hello from client', (log) => log.logSource === 'Browser Log')
+        expectLog('hello from client', { filter: (log) => log.logSource === 'Browser Log' })
       },
       { timeout: 5000 }
     )

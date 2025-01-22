@@ -116,7 +116,9 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
     // See also expect(html) test above
     if (isV1Design) {
       await autoRetry(() => {
-        expectLog('Hello from +client.ts with viewport height', (logEntry) => logEntry.logSource === 'Browser Log')
+        expectLog('Hello from +client.ts with viewport height', {
+          filter: (logEntry) => logEntry.logSource === 'Browser Log'
+        })
       })
     }
   })
@@ -145,14 +147,13 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
       if (!isV1Design) {
         expect(await page.textContent('h1')).toBe('404 Page Not Found')
       }
-      expectLog(
-        'Failed to load resource: the server responded with a status of 404 (Not Found)',
-        (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/bob')
-      )
+      expectLog('Failed to load resource: the server responded with a status of 404 (Not Found)', {
+        filter: (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/bob')
+      })
       if (!isV1Design) {
         expectLog(
           '[Warning] throw RenderErrorPage() is deprecated and will be removed in the next major release. Use throw render() or throw redirect() instead, see https://vike.dev/render',
-          (log) => log.logSource === 'stderr'
+          { filter: (log) => log.logSource === 'stderr' }
         )
       }
       const txt = 'Unknown name: bob.'
@@ -165,23 +166,23 @@ function testRun(uiFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run pre
         await page.goto(getServerUrl() + '/hello/forbidden')
         if (!isV1Design) {
           expect(await page.textContent('h1')).toBe('Forbidden')
-          expectLog(
-            'Failed to load resource: the server responded with a status of 404 (Not Found)',
-            (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
-          )
+          expectLog('Failed to load resource: the server responded with a status of 404 (Not Found)', {
+            filter: (log) =>
+              log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
+          })
         } else {
-          expectLog('HTTP response /hello/forbidden 401', (log) => log.logSource === 'stderr')
-          expectLog(
-            'Failed to load resource: the server responded with a status of 401 (Unauthorized)',
-            (log) => log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
-          )
+          expectLog('HTTP response /hello/forbidden 401', { filter: (log) => log.logSource === 'stderr' })
+          expectLog('Failed to load resource: the server responded with a status of 401 (Unauthorized)', {
+            filter: (log) =>
+              log.logSource === 'Browser Error' && log.logText.includes('http://localhost:3000/hello/forbidden')
+          })
         }
         const txt = 'This page is forbidden.'
         expect(await page.textContent('body')).toContain(txt)
         const html = await fetchHtml('/hello/forbidden')
         expect(html).toContain(txt)
         if (isV1Design) {
-          expectLog('HTTP response /hello/forbidden 401', (log) => log.logSource === 'stderr')
+          expectLog('HTTP response /hello/forbidden 401', { filter: (log) => log.logSource === 'stderr' })
         }
       })
     }
