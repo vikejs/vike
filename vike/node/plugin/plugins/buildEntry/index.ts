@@ -45,13 +45,13 @@ function getServerProductionEntryCode(config: ResolvedConfig, vikeConfigGlobal: 
   const vikeManifest = getVikeManifest(vikeConfigGlobal, config)
   // Let's eventually simplify and move everything to a single virtual module
   const importerCode = [
-    `  import { setBuildEntry } from '${importPath}';`,
+    `  import { setGlobalContext_buildEntry } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
     `  {`,
     // We first set the values to a variable because of a Rollup bug, and this workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
     `    const assetsManifest = ${ASSETS_MAP};`,
     `    const pluginManifest = ${JSON.stringify(vikeManifest, null, 2)};`,
-    '    setBuildEntry({',
+    '    setGlobalContext_buildEntry({',
     `      pageFiles,`,
     `      assetsManifest,`,
     `      pluginManifest,`,
