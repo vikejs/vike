@@ -187,7 +187,6 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await disableReactStreaming()
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'build', 'production')
-  assertLoadedConfig(viteConfig, options)
   const vikeConfig = await getVikeConfig(viteConfig)
 
   const { outDirClient } = getOutDirs(viteConfig)
@@ -1103,37 +1102,6 @@ async function disableReactStreaming() {
   }
   const { disable } = mod
   disable()
-}
-
-function assertLoadedConfig(
-  viteConfig: { plugins: readonly { name: string }[]; configFile?: string },
-  options: { viteConfig?: InlineConfig }
-) {
-  if (viteConfig.plugins.some((p) => p.name.startsWith('vike'))) {
-    return
-  }
-  const { configFile } = viteConfig
-  if (configFile) {
-    assertUsage(false, `${configFile} doesn't install the vike plugin`)
-  } else {
-    if (!options.viteConfig) {
-      assertUsage(
-        false,
-        `[prerender()] No vite.config.js file found at ${process.cwd()}. Use the option ${pc.cyan(
-          'prerender({ viteConfig })'
-        )}.`,
-        { showStackTrace: true }
-      )
-    } else {
-      assertUsage(
-        false,
-        `[prerender()] The Vite config ${pc.cyan('prerender({ viteConfig })')} is missing the vike plugin.`,
-        {
-          showStackTrace: true
-        }
-      )
-    }
-  }
 }
 
 function isSameUrl(url1: string, url2: string) {
