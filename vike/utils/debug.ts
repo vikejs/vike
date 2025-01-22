@@ -33,7 +33,7 @@ const flags = [
 ] as const
 const flagRegex = /\bvike:[a-zA-Z-]+/g
 
-assertDEBUG()
+assertFlagsActivated()
 
 type Flag = (typeof flags)[number]
 type Debug = ReturnType<typeof createDebugger>
@@ -87,8 +87,8 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
 function isDebugActivated(flag: Flag): boolean {
   checkType<`vike:${string}`>(flag)
   assert(flags.includes(flag))
-  const DEBUG = getDEBUG()
-  const isActivated = DEBUG?.includes(flag) ?? false
+  const flagsActivated = getFlagsActivated()
+  const isActivated = flagsActivated.includes(flag)
   return isActivated
 }
 
@@ -161,15 +161,20 @@ function replaceFunctionSerializer(this: Record<string, unknown>, _key: string, 
   return value
 }
 
-function assertDEBUG() {
-  const DEBUG = getDEBUG() ?? ''
-  const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
+function assertFlagsActivated() {
+  const flagsActivated = getFlagsActivated()
   flagsActivated.forEach((flag) => {
     assertUsage(
       (flags as readonly string[]).includes(flag),
       `Unknown DEBUG flag ${pc.cyan(flag)}. Valid flags:\n${flags.map((f) => `  ${pc.cyan(f)}`).join('\n')}`
     )
   })
+}
+
+function getFlagsActivated() {
+  const DEBUG = getDEBUG() ?? ''
+  const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
+  return flagsActivated
 }
 
 function getDEBUG() {
