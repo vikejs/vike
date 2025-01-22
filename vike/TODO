@@ -1,3 +1,4 @@
+- make scripts/dev.js work
 - https://github.com/vikejs/vike-node/pull/44
 - deprecate VikeVitePluginOptions
 
