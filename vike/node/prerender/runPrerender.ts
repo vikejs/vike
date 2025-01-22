@@ -163,7 +163,7 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   }
   runPrerender_forceExit()
 }
-async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined, forceExit: boolean): Promise<void> {
+async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<void> {
   try {
     await runPrerender({ viteConfig })
   } catch (err) {
@@ -171,7 +171,6 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined, for
     logErrorHint(err)
     process.exit(1)
   }
-  if (forceExit) runPrerender_forceExit()
 }
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
   checkOutdatedOptions(options)

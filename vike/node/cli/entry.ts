@@ -55,6 +55,8 @@ async function cmdBuild() {
     console.error(err)
     process.exit(1)
   }
+  // See comments at runPrerender_forceExit()
+  process.exit(0)
 }
 
 async function cmdPreview() {

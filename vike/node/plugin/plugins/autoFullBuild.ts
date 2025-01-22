@@ -101,7 +101,7 @@ async function triggerFullBuild(
   }
 
   if (isPrerenderEnabled(vikeConfigGlobal)) {
-    await runPrerenderFromAutoRun(configInline, false)
+    await runPrerenderFromAutoRun(configInline)
     forceExit = true
   }
 }

@@ -27,7 +27,7 @@ async function build(options: APIOptions = {}): Promise<{
   // Pre-render
   if (isPrerenderEnabled(vikeConfigGlobal)) {
     const { runPrerenderFromAutoRun } = await import('../prerender/runPrerender.js')
-    await runPrerenderFromAutoRun(viteConfigEnhanced, true)
+    await runPrerenderFromAutoRun(viteConfigEnhanced)
   }
 
   return {
