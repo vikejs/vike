@@ -23,7 +23,7 @@ async function prepareViteApiCall(viteConfig: InlineConfig | undefined, operatio
   return enhanceViteConfig(viteConfig, operation)
 }
 
-// Allow subsequent API calls, e.g. calling prerender() after build()
+// For subsequent API calls, e.g. calling prerender() after build()
 function clear() {
   clearOperation()
   clearGlobalContext()
