@@ -20,6 +20,7 @@ const flags = [
   'vike:extractAssets',
   'vike:extractExportNames',
   'vike:glob',
+  'vike:globalContext',
   'vike:log',
   'vike:optimizeDeps',
   'vike:outDir',
