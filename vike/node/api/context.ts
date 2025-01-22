@@ -1,6 +1,6 @@
-export { isVikeCliOrApi }
 // export { getOperation }
-export { setOperation as setOperation }
+export { setOperation }
+export { isVikeCliOrApi }
 
 import type { Operation } from './types.js'
 import { assert, getGlobalObject } from './utils.js'
