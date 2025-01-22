@@ -1,8 +1,9 @@
 {
   "scripts": {
     "dev": "vike dev",
-    "build": "vike build",
-    "preview": "vike build && vike preview"
+    "build": "node scripts/build.js",
+    "prerender": "node scripts/prerender.js",
+    "preview": "node scripts/preview.js"
   },
   "dependencies": {
     "@types/react": "^18.2.45",

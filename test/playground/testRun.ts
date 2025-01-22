@@ -29,7 +29,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testPrerenderSettings({ isDev, rootDir })
   testRedirectMailto()
   testNavigateEarly()
-  testDynamicImportFileEnv()
+  testDynamicImportFileEnv({ isDev })
   testNestedLayout()
   testHistoryPushState()
 }
