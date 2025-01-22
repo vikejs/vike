@@ -1,6 +1,5 @@
 // export { getOperation }
 export { setOperation }
-export { clearOperation }
 export { isVikeCliOrApi }
 
 import type { Operation } from './types.js'
@@ -21,7 +20,4 @@ function isVikeCliOrApi(): boolean {
 function setOperation(operation: Operation): void {
   assert(!globalObject.apiOperation)
   globalObject.apiOperation = operation
-}
-function clearOperation(): void {
-  globalObject.apiOperation = undefined
 }
