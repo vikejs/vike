@@ -25,6 +25,7 @@ import {
   assertWarning,
   isPlainObject,
   objectAssign,
+  objectReplace,
   objectKeys,
   isObject,
   hasProp,
@@ -367,10 +368,7 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
 }
 
 function clearGlobalContext() {
-  objectKeys(globalObject).forEach((key) => {
-    delete globalObject[key]
-  })
-  objectAssign(globalObject, getInitialGlobalContext())
+  objectReplace(globalObject, getInitialGlobalContext())
 }
 
 function getInitialGlobalContext() {
