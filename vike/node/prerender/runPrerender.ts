@@ -183,7 +183,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
-  await disableReactStreaming()
+  // await disableReactStreaming()
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfig(viteConfig)
