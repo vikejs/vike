@@ -8,17 +8,25 @@ export { normalizeViteRoot }
 import { loadConfigFromFile, resolveConfig } from 'vite'
 import type { InlineConfig, PluginOption, ResolvedConfig } from 'vite'
 import type { Operation } from './types.js'
-import { setOperation } from './context.js'
+import { clearOperation, setOperation } from './context.js'
 import { getVikeConfig2 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
 import { assert, assertUsage, getGlobalObject, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
+import { clearGlobalContext } from '../runtime/globalContext.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts', {})
 
 async function prepareViteApiCall(viteConfig: InlineConfig | undefined, operation: Operation) {
+  clear()
   setOperation(operation)
   return enhanceViteConfig(viteConfig, operation)
+}
+
+// Allow subsequent API calls, e.g. calling prerender() after build()
+function clear() {
+  clearOperation()
+  clearGlobalContext()
 }
 
 async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation: Operation) {

@@ -16,6 +16,7 @@ export { setGlobalContext_vikeConfig }
 export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
 export { setGlobalContext_buildEntry }
+export { clearGlobalContext }
 
 import {
   assert,
@@ -24,6 +25,7 @@ import {
   assertWarning,
   isPlainObject,
   objectAssign,
+  objectReplace,
   objectKeys,
   isObject,
   hasProp,
@@ -58,16 +60,7 @@ const globalObject = getGlobalObject<{
     assetsManifest: Record<string, unknown>
     pluginManifest: Record<string, unknown>
   }
-}>(
-  'globalContext.ts',
-  (() => {
-    const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
-    return {
-      viteDevServerPromise,
-      viteDevServerPromiseResolve
-    }
-  })()
-)
+}>('globalContext.ts', getInitialGlobalContext())
 
 initDevEntry()
 
@@ -372,4 +365,16 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
   debugGlob('Glob result: ', moduleExports)
   assert(isObject(moduleExports))
   return moduleExports
+}
+
+function clearGlobalContext() {
+  objectReplace(globalObject, getInitialGlobalContext())
+}
+
+function getInitialGlobalContext() {
+  const { promise: viteDevServerPromise, resolve: viteDevServerPromiseResolve } = genPromise<ViteDevServer>()
+  return {
+    viteDevServerPromise,
+    viteDevServerPromiseResolve
+  }
 }
