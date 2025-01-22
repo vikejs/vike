@@ -40,9 +40,7 @@ import type {
   PageConfigBuildTime,
   DefinedAtFilePath,
   ConfigValuesComputed,
-  ConfigValue,
-  ConfigValues,
-  DefinedAtFile
+  ConfigValues
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
