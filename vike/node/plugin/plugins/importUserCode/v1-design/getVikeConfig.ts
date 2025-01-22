@@ -658,16 +658,6 @@ async function getGlobalConfigs(
       } else {
         assert('value' in configValueSource)
         if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-        const { filePathToShowToUser } = configValueSource.definedAtFilePath
-        assertWarning(
-          false,
-          `Being able to define config ${pc.cyan(
-            configName
-          )} in ${filePathToShowToUser} is experimental and will likely be removed. Define the config ${pc.cyan(
-            configName
-          )} in Vike's Vite plugin options instead.`,
-          { onlyOnce: true }
-        )
         pageConfigGlobalValues[configName] = configValueSource.value
       }
     })
