@@ -212,10 +212,10 @@ async function initGlobalContext_runPrerender(): Promise<void> {
   assert(globalObject.viteConfig)
   assert(globalObject.outDirRoot)
 
-  /* Not true, e.g. when making susequent API calls such as build() then prerender()
+  // We assume initGlobalContext_runPrerender() to be called before:
+  // - initGlobalContext_renderPage()
+  // - initGlobalContext_getGlobalContextAsync()
   assert(!globalObject.globalContext)
-  */
-  globalObject.globalContext = undefined
 
   await initGlobalContext(true)
 }
