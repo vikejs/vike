@@ -62,7 +62,7 @@ type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
 type HookNameOldDesign = 'render' | 'prerender'
 
 type ConfigNameBuiltIn =
-  | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart'>
+  | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite'>
   | 'prerender'
   | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
@@ -412,8 +412,7 @@ type ConfigBuiltIn = {
    *
    * https://vite.dev/config/
    */
-  // TODO
-  // vite?: InlineConfig
+  vite?: InlineConfig
 
   // TODO/pageContext-prefetch: remove experimental note
   /**
