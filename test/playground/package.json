@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "vike dev",
     "build": "node scripts/build.js",
+    "prerender": "node scripts/prerender.js",
     "preview": "node scripts/preview.js"
   },
   "dependencies": {
