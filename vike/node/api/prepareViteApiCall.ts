@@ -5,13 +5,13 @@ export { normalizeViteRoot }
 
 // TODO: enable Vike extensions to add Vite plugins
 
-import { loadConfigFromFile, resolveConfig } from 'vite'
+import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
 import type { InlineConfig, PluginOption, ResolvedConfig } from 'vite'
 import type { Operation } from './types.js'
 import { clearOperation, setOperation } from './context.js'
-import { getVikeConfig2 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig2, VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
-import { assert, assertUsage, getGlobalObject, toPosixPath } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isArray, isObject, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { clearGlobalContext } from '../runtime/globalContext.js'
 
@@ -30,13 +30,25 @@ function clear() {
 }
 
 async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation: Operation) {
-  const { root, vikeVitePluginOptions, viteConfigEnhanced } = await getInfoFromVite(viteConfig, operation)
-  await assertViteRoot2(root, viteConfigEnhanced, operation)
-  const { vikeConfigGlobal } = await getVikeConfig2(root, operation === 'dev', vikeVitePluginOptions)
+  const viteInfo = await getInfoFromVite(viteConfig, operation)
+  await assertViteRoot2(viteInfo.root, viteInfo.viteConfigEnhanced, operation)
+  const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
+  const { vikeConfigGlobal } = vikeConfig
+  const viteConfigEnhanced = addViteSettingsSetByUser(viteInfo.viteConfigEnhanced, vikeConfig)
   return {
     viteConfigEnhanced,
     vikeConfigGlobal
   }
+}
+
+function addViteSettingsSetByUser(viteConfigEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
+  const viteConfigs = vikeConfig.vikeConfigNew.global.config.vite
+  assert(isArray(viteConfigs)) // TODO: assertUsage()
+  viteConfigs.forEach((viteConfigAddendum) => {
+    assert(isObject(viteConfigAddendum)) // TODO: assertUsage()
+    viteConfigEnhanced = mergeConfig(viteConfigAddendum, viteConfigEnhanced ?? {})
+  })
+  return viteConfigEnhanced
 }
 
 async function getViteRoot(operation: 'build' | 'dev' | 'preview' | 'prerender') {

@@ -44,6 +44,7 @@ import type { VikeVitePluginOptions } from '../../node/plugin/plugins/importUser
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
+import type { InlineConfig } from 'vite'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
 type HookNamePage =
@@ -406,6 +407,13 @@ type ConfigBuiltIn = {
    * https://vike.dev/meta
    */
   meta?: ConfigMeta | ImportString
+
+  /** Vite configuration.
+   *
+   * https://vite.dev/config/
+   */
+  // TODO
+  // vite?: InlineConfig
 
   // TODO/pageContext-prefetch: remove experimental note
   /**

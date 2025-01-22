@@ -239,6 +239,7 @@ type ConfigNameGlobal =
   | 'redirects'
   | 'trailingSlash'
   | 'disableUrlNormalization'
+  | 'vite'
 const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
   onPrerenderStart: {
     env: { server: true, production: true },
@@ -249,6 +250,7 @@ const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionI
     eager: true
   },
   prerender: { env: { config: true } },
+  vite: { env: { config: true }, cumulative: true },
   disableAutoFullBuild: { env: { config: true } },
   includeAssetsImportedByServer: { env: { config: true } },
   baseAssets: { env: { config: true } },
