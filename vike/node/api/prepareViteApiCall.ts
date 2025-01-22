@@ -42,6 +42,7 @@ async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation
 
 function addViteSettingsSetByUser(viteConfigEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
   const viteConfigs = vikeConfig.vikeConfigNew.global.config.vite
+  if (!viteConfigs) return viteConfigEnhanced
   assert(isArray(viteConfigs))
   viteConfigs.forEach((viteConfigAddendum) => {
     assert(isObject(viteConfigAddendum)) // TODO: assertUsage()
