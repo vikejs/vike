@@ -10,12 +10,18 @@ import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
+import { getVikeConfig2, type VikeConfigObject, type VikeConfigNew } from './importUserCode/v1-design/getVikeConfig.js'
+import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
   interface UserConfig {
     _isDev?: boolean
     _vikeVitePluginOptions?: unknown
+    _root?: string
+    vike?: VikeConfigNew
+    /** @deprecated */
+    vikeTmp?: VikeConfigObject // TODO: remove
   }
 }
 
@@ -26,10 +32,18 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
       enforce: 'pre',
       config: {
         order: 'pre',
-        handler(_config, env) {
+        async handler(configFromUser, env) {
+          const isDev = isDevCheck(env)
+          const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
+          const root = configFromUser.root ? normalizeViteRoot(configFromUser.root) : await getViteRoot(operation)
+          assert(root)
+          const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
           return {
-            _isDev: isDevCheck(env),
-            _vikeVitePluginOptions: vikeVitePluginOptions
+            _isDev: isDev,
+            _root: root,
+            _vikeVitePluginOptions: vikeVitePluginOptions,
+            vike: vikeConfig.vikeConfigNew,
+            vikeTmp: vikeConfig
           }
         }
       }
@@ -37,6 +51,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
     {
       name: pluginName,
       configResolved(config) {
+        assertViteRoot(config._root!, config)
         assertSingleInstance(config)
         installRequireShim_setUserRootDir(config.root)
       }

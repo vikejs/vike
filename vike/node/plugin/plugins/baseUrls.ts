@@ -3,27 +3,21 @@ export { baseUrls }
 import type { Plugin } from 'vite'
 import { resolveBase, resolveBaseFromResolvedConfig } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
-import { getVikeConfig, getVikeConfig2 } from './importUserCode/v1-design/getVikeConfig.js'
-import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
+import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
-function baseUrls(vikeVitePluginOptions: unknown): Plugin {
+function baseUrls(): Plugin {
   let basesResolved: ReturnType<typeof resolveBase>
-  let root: string
   return {
     name: 'vike:baseUrls',
     enforce: 'post',
-    async config(config, env) {
+    async config(config) {
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
-      const operation = env.command === 'build' ? 'build' : env.isPreview ? 'preview' : 'dev'
-      root = config.root ? normalizeViteRoot(config.root) : await getViteRoot(operation)
-      assert(root)
       const baseViteOriginal = config.base ?? '/__UNSET__' // '/__UNSET__' because Vite resolves `_baseViteOriginal: null` to `undefined`
-      const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
       basesResolved = resolveBase(
         baseViteOriginal,
-        vikeConfig.vikeConfigGlobal.baseServer,
-        vikeConfig.vikeConfigGlobal.baseAssets
+        config.vikeTmp!.vikeConfigGlobal.baseServer,
+        config.vikeTmp!.vikeConfigGlobal.baseAssets
       )
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
       process.env.BASE_SERVER = basesResolved.baseServer
@@ -39,7 +33,6 @@ function baseUrls(vikeVitePluginOptions: unknown): Plugin {
       }
     },
     async configResolved(config) {
-      assertViteRoot(root, config)
       const vikeConfig = await getVikeConfig(config)
       const basesResolved2 = resolveBaseFromResolvedConfig(
         vikeConfig.vikeConfigGlobal.baseServer,

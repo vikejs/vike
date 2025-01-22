@@ -9,6 +9,7 @@ export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
 export type { VikeConfigGlobal }
+export type { VikeConfigNew }
 export type { VikeVitePluginOptions }
 
 import {
@@ -116,11 +117,12 @@ type InterfaceValueFile = InterfaceFileCommons & {
 type ConfigName = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
+type VikeConfigNew = { global: ReturnType<typeof getPageConfigUserFriendlyNew> }
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   vikeConfigGlobal: VikeConfigGlobal
-  vikeConfigNew: { global: ReturnType<typeof getPageConfigUserFriendlyNew> }
+  vikeConfigNew: VikeConfigNew
 }
 
 let restartVite = false

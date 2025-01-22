@@ -52,7 +52,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): any {
     suppressRollupWarning(),
     ...setGlobalContext(),
     ...buildEntry(),
-    baseUrls(vikeVitePluginOptions),
+    baseUrls(),
     envVarsPlugin(),
     fileEnv(),
     workaroundCssModuleHmr(),
