@@ -58,6 +58,7 @@ const globalObject = getGlobalObject<{
   isPrerendering?: true
   initGlobalContext_runPrerender_alreadyCalled?: true
   buildEntry?: unknown
+  buildEntryPrevious?: unknown
 }>('globalContext.ts', getInitialGlobalContext())
 
 initDevEntry()
@@ -342,6 +343,11 @@ async function getBuildEntry(outDir?: string) {
   if (!globalObject.buildEntry) {
     debug('importServerProductionEntry()')
     await importServerProductionEntry({ outDir })
+    if (!globalObject.buildEntry) {
+      debug('globalObject.buildEntryPrevious')
+      // Needed, for example, when calling the API prerender() then preview() because both trigger a importServerProductionEntry() call but only the first only is applied because of the import() cache. (A proper implementation would be to clear the import() cache, but it probably isn't possible on platforms such as Cloudflare Workers.)
+      globalObject.buildEntry = globalObject.buildEntryPrevious
+    }
     assert(globalObject.buildEntry)
   }
   const { buildEntry } = globalObject
@@ -354,6 +360,7 @@ async function getBuildEntry(outDir?: string) {
 function setGlobalContext_buildEntry(buildEntry: unknown) {
   debug('setGlobalContext_buildEntry()')
   globalObject.buildEntry = buildEntry
+  globalObject.buildEntryPrevious = buildEntry
 }
 
 function initDevEntry() {
@@ -377,7 +384,7 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
 
 function clearGlobalContext() {
   debug('clearGlobalContext()')
-  objectReplace(globalObject, getInitialGlobalContext())
+  objectReplace(globalObject, getInitialGlobalContext(), ['buildEntryPrevious'])
 }
 
 function getInitialGlobalContext() {
