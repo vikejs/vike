@@ -44,7 +44,7 @@ import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRun
 import pc from '@brillout/picocolors'
 import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-let globalObject = getGlobalObject<{
+const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
   viteDevServerPromise: Promise<ViteDevServer>
