@@ -1,7 +1,6 @@
 export { prerender }
 
 import { runPrerenderFromAPI, type PrerenderOptions } from '../prerender/runPrerender.js'
-import { clearOperation } from './context.js'
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import type { ResolvedConfig } from 'vite'
 
@@ -13,7 +12,6 @@ import type { ResolvedConfig } from 'vite'
 async function prerender(options: PrerenderOptions = {}): Promise<{
   viteConfig: ResolvedConfig
 }> {
-  clearOperation() // E.g. when prerender() is called after build()
   const { viteConfigEnhanced } = await prepareViteApiCall(options.viteConfig, 'prerender')
   options.viteConfig = viteConfigEnhanced
   const { viteConfig } = await runPrerenderFromAPI(options)
