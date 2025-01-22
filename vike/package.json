@@ -8,7 +8,7 @@
       "edge-light": "./dist/esm/node/runtime/index.js",
       "require": "./dist/cjs/node/runtime/index.js",
       "node": "./dist/esm/node/runtime/index.js",
-      "browser": "./dist/esm/client/node.js",
+      "// browser": "./dist/esm/client/node.js",
       "types": "./dist/esm/node/runtime/index.d.ts",
       "default": "./dist/esm/node/runtime/index.js"
     },
