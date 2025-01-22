@@ -1410,14 +1410,14 @@ importers:
         specifier: ^19.0.0
         version: 19.0.0
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@19.0.0)
+        specifier: ^19.0.0
+        version: 19.0.0(react@19.0.0)
       telefunc:
         specifier: ^0.1.82
-        version: 0.1.82(@babel/core@7.26.0)(@babel/parser@7.26.3)(@babel/types@7.26.3)(react-streaming@0.3.47(react-dom@18.3.1(react@19.0.0))(react@19.0.0))(react@19.0.0)
+        version: 0.1.82(@babel/core@7.26.0)(@babel/parser@7.26.3)(@babel/types@7.26.3)(react-streaming@0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       vike-react:
         specifier: ^0.5.12
-        version: 0.5.12(react-dom@18.3.1(react@19.0.0))(react@19.0.0)(vike@vike)
+        version: 0.5.12(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(vike@vike)
     devDependencies:
       '@types/express':
         specifier: ^4.17.21
@@ -13505,12 +13505,6 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-dom@18.3.1(react@19.0.0):
-    dependencies:
-      loose-envify: 1.4.0
-      react: 19.0.0
-      scheduler: 0.23.2
-
   react-dom@19.0.0(react@19.0.0):
     dependencies:
       react: 19.0.0
@@ -13539,15 +13533,6 @@ snapshots:
       isbot-fast: 1.2.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  react-streaming@0.3.47(react-dom@18.3.1(react@19.0.0))(react@19.0.0):
-    dependencies:
-      '@brillout/import': 0.2.3
-      '@brillout/json-serializer': 0.5.15
-      '@brillout/picocolors': 1.0.15
-      isbot-fast: 1.2.0
-      react: 19.0.0
-      react-dom: 18.3.1(react@19.0.0)
 
   react-streaming@0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -14157,7 +14142,7 @@ snapshots:
       react: 18.2.0
       react-streaming: 0.3.47(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
-  telefunc@0.1.82(@babel/core@7.26.0)(@babel/parser@7.26.3)(@babel/types@7.26.3)(react-streaming@0.3.47(react-dom@18.3.1(react@19.0.0))(react@19.0.0))(react@19.0.0):
+  telefunc@0.1.82(@babel/core@7.26.0)(@babel/parser@7.26.3)(@babel/types@7.26.3)(react-streaming@0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
     dependencies:
       '@brillout/import': 0.2.3
       '@brillout/json-serializer': 0.5.13
@@ -14170,7 +14155,7 @@ snapshots:
       '@babel/parser': 7.26.3
       '@babel/types': 7.26.3
       react: 19.0.0
-      react-streaming: 0.3.47(react-dom@18.3.1(react@19.0.0))(react@19.0.0)
+      react-streaming: 0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
   terser-webpack-plugin@5.3.10(webpack@5.91.0(webpack-cli@5.1.4)):
     dependencies:
@@ -14558,13 +14543,6 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-streaming: 0.3.47(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      vike: link:vike
-
-  vike-react@0.5.12(react-dom@18.3.1(react@19.0.0))(react@19.0.0)(vike@vike):
-    dependencies:
-      react: 19.0.0
-      react-dom: 18.3.1(react@19.0.0)
-      react-streaming: 0.3.47(react-dom@18.3.1(react@19.0.0))(react@19.0.0)
       vike: link:vike
 
   vike-react@0.5.12(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(vike@vike):
