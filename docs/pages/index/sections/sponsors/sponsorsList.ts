@@ -4,7 +4,7 @@ import type { Sponsor } from './Sponsors'
 import contraLogo from './sponsorsLogo/contra.svg'
 import optimizersLogo from './sponsorsLogo/optimizers.svg'
 import sourcegraphLogo from './sponsorsLogo/sourcegraph.svg'
-import axelspringerLogo from './sponsorsLogo/axelspringer.svg'
+import burdaforwardLogo from './sponsorsLogo/burdaforward.png'
 import ecosiaLogo from './sponsorsLogo/ecosia.svg'
 import inlangLogo from './sponsorsLogo/inlang.png'
 import bluefinLogo from './sponsorsLogo/bluefin.svg'
@@ -27,12 +27,9 @@ const sponsorsList: Sponsor[] = [
     github: 'sourcegraph'
   },
   {
-    companyName: 'Axel Springer',
-    companyLogo: axelspringerLogo,
-    companyLogoStyle: {
-      height: '32%'
-    },
-    website: 'https://www.axelspringer.com',
+    companyName: 'BurdaForward',
+    companyLogo: burdaforwardLogo,
+    website: 'https://www.burda-forward.de',
     github: 'BurdaForward'
   },
   {
