@@ -7,7 +7,6 @@ export type { PageContextInitEnhanced }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
-import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
 import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
@@ -18,16 +17,13 @@ import {
   PageContext_loadUserFilesServerSide,
   type PageFiles
 } from './loadUserFilesServerSide.js'
-import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { executeOnRenderHtmlHook } from './executeOnRenderHtmlHook.js'
 import { executeOnBeforeRenderAndDataHooks } from './executeOnBeforeRenderAndDataHooks.js'
 import { logRuntimeError } from './loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide.js'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
-import { type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
 import pc from '@brillout/picocolors'
-import type { Hook } from '../../../shared/hooks/getHook.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }

@@ -2,7 +2,6 @@
 - `TODO/soon: refactor` in `getVikeConfig.ts`
 - make scripts/dev.js work
 - https://github.com/vikejs/vike-node/pull/44
-
 - Add CLI option `--host`
 
 - head settings

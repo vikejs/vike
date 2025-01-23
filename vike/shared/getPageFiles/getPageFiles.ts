@@ -22,7 +22,7 @@ function setPageFiles(pageFilesExports: unknown) {
   globalObject.pageFilesAll = pageFiles
   globalObject.pageConfigs = pageConfigs
   globalObject.pageConfigGlobal = pageConfigGlobal
-  // TODO/now: re-used this call, instead of calling it twice
+  // TODO/now: re-use this call, instead of calling it twice
   globalObject.globalConfig = getPageConfigUserFriendlyNew(pageConfigGlobal)
 }
 function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
