@@ -871,9 +871,8 @@ async function prerender404(
 ) {
   if (!Object.values(prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
-    const globalContext = getGlobalContext()
     try {
-      result = await prerender404Page(globalContext, prerenderContext.pageContextInit)
+      result = await prerender404Page(prerenderContext.pageContextInit)
     } catch (err) {
       assertIsNotAbort(err, 'the 404 page')
       throw err

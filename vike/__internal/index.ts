@@ -20,14 +20,14 @@ import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
  */
 async function getPagesAndRoutes() {
   setNodeEnvProduction()
-  const renderContext = getGlobalContext()
+  const globalContext = getGlobalContext()
   const {
     //
     pageRoutes,
     pageFilesAll,
     pageConfigs,
     allPageIds
-  } = renderContext
+  } = globalContext
   return {
     pageRoutes,
     pageFilesAll,

@@ -2,7 +2,6 @@ export { renderPageAlreadyRouted }
 export { prerenderPage }
 export { prerender404Page }
 export { getPageContextInitEnhanced }
-export type { RenderContext }
 export type { PageContextAfterRender }
 export type { PageContextInitEnhanced }
 
@@ -131,8 +130,9 @@ async function prerenderPage(
   }
 }
 
-async function prerender404Page(renderContext: RenderContext, pageContextInit_: Record<string, unknown> | null) {
-  const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
+async function prerender404Page(pageContextInit_: Record<string, unknown> | null) {
+  const globalContext = getGlobalContext()
+  const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
   if (!errorPageId) {
     return null
   }
@@ -231,13 +231,4 @@ function getPageContextInitEnhanced(
   }
 
   return pageContextInitEnhanced
-}
-
-type RenderContext = {
-  pageFilesAll: PageFile[]
-  pageConfigs: PageConfigRuntime[]
-  pageConfigGlobal: PageConfigGlobalRuntime
-  allPageIds: string[]
-  pageRoutes: PageRoutes
-  onBeforeRouteHook: Hook | null
 }
