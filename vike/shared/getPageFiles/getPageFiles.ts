@@ -7,6 +7,7 @@ import type { PageFile } from './getPageFileObject.js'
 import { parseGlobResults } from './parseGlobResults.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
+import { getPageConfigUserFriendlyNew } from '../page-configs/getPageConfigUserFriendly.js'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined
@@ -20,6 +21,8 @@ function setPageFiles(pageFilesExports: unknown) {
   globalObject.pageFilesAll = pageFiles
   globalObject.pageConfigs = pageConfigs
   globalObject.pageConfigGlobal = pageConfigGlobal
+  const globalConfig = getPageConfigUserFriendlyNew(pageConfigGlobal)
+  return { globalConfig }
 }
 function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
   globalObject.pageFilesGetter = async () => {

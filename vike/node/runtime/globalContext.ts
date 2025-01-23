@@ -45,6 +45,7 @@ import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRun
 import pc from '@brillout/picocolors'
 import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
@@ -53,6 +54,7 @@ const globalObject = getGlobalObject<{
   viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
   isViteDev?: boolean
   viteConfig?: ResolvedConfig
+  // TODO/now rename to vikeConfigObject
   vikeConfig?: VikeConfigObject
   outDirRoot?: string
   isPrerendering?: true
@@ -73,12 +75,14 @@ type GlobalContext = {
   redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
+  vikeConfig: {
+    global: ConfigUserFriendly
+  }
 } & (
   | {
       isProduction: false
       isPrerendering: false
       viteConfig: ResolvedConfig
-      vikeConfig: VikeConfigObject
       viteDevServer: ViteDevServer
       assetsManifest: null
     }
@@ -256,7 +260,9 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       assetsManifest: null,
       viteDevServer,
       viteConfig,
-      vikeConfig,
+      vikeConfig: {
+        global: vikeConfig.global
+      },
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
@@ -267,12 +273,15 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   } else {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot)
     const { assetsManifest, pluginManifest } = buildEntry
-    setPageFiles(buildEntry.pageFiles)
+    const { globalConfig } = setPageFiles(buildEntry.pageFiles)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
+      vikeConfig: {
+        global: globalConfig
+      },
       viteDevServer: null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,

@@ -1,5 +1,6 @@
 export { getPageConfigUserFriendly }
 export { getPageConfigUserFriendlyNew }
+export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
 export type { Source }
 export type { Sources }
@@ -200,11 +201,19 @@ function getPageConfigUserFriendly(
   return pageContextExports
 }
 
+type ConfigUserFriendly = {
+  config: Record<string, unknown>
+  configEntries: ConfigEntries // TODO/v1-release: remove
+  exportsAll: ExportsAll // TODO/v1-release: remove
+  source: Source
+  sources: Sources
+  from: From
+}
 // V1 design
-function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }) {
+function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
   const config: Record<string, unknown> = {}
-  const configEntries: ConfigEntries = {} // TODO/v1-release: remove
-  const exportsAll: ExportsAll = {} // TODO/v1-release: remove
+  const configEntries: ConfigEntries = {}
+  const exportsAll: ExportsAll = {}
   const source: Source = {}
   const sources: Sources = {}
   const from: From = {
