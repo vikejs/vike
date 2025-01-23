@@ -8,7 +8,6 @@ export type { PageContextInitEnhanced }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
-import { getPageFilesAll } from '../../../shared/getPageFiles/getPageFiles.js'
 import type { PageFile } from '../../../shared/getPageFiles/getPageFileObject.js'
 import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
@@ -27,11 +26,10 @@ import { logRuntimeError } from './loggerRuntime.js'
 import { isNewError } from './isNewError.js'
 import { preparePageContextForUserConsumptionServerSide } from './preparePageContextForUserConsumptionServerSide.js'
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
-import { loadPageRoutes, type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
+import { type PageRoutes } from '../../../shared/route/loadPageRoutes.js'
 import pc from '@brillout/picocolors'
 import type { Hook } from '../../../shared/hooks/getHook.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
-import { assertV1Design } from '../../shared/assertV1Design.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -155,7 +153,7 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
   }
   objectAssign(pageContextInit, pageContextInit_)
   {
-    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext)
+    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
 
@@ -167,7 +165,6 @@ async function prerender404Page(renderContext: RenderContext, pageContextInit_: 
 type PageContextInitEnhanced = ReturnType<typeof getPageContextInitEnhanced>
 function getPageContextInitEnhanced(
   pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
-  renderContext: RenderContext,
   {
     ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
       urlRewrite: null,
@@ -194,12 +191,12 @@ function getPageContextInitEnhanced(
     _baseAssets: globalContext.baseAssets,
     _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer,
     // TODO: use GloablContext instead
-    _pageFilesAll: renderContext.pageFilesAll,
-    _pageConfigs: renderContext.pageConfigs,
-    _pageConfigGlobal: renderContext.pageConfigGlobal,
-    _allPageIds: renderContext.allPageIds,
-    _pageRoutes: renderContext.pageRoutes,
-    _onBeforeRouteHook: renderContext.onBeforeRouteHook,
+    _pageFilesAll: globalContext.pageFilesAll,
+    _pageConfigs: globalContext.pageConfigs,
+    _pageConfigGlobal: globalContext.pageConfigGlobal,
+    _allPageIds: globalContext.allPageIds,
+    _pageRoutes: globalContext.pageRoutes,
+    _onBeforeRouteHook: globalContext.onBeforeRouteHook,
     _pageContextInit: pageContextInit,
     _urlRewrite: urlRewrite,
     _urlHandler: urlHandler,

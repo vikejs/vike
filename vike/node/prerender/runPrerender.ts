@@ -431,7 +431,7 @@ async function callOnBeforePrerenderStartHooks(
               )
             }
           }
-          const pageContextNew = createPageContext(url, renderContext, prerenderContext)
+          const pageContextNew = createPageContext(url, prerenderContext)
           objectAssign(pageContextNew, {
             _providedByHook: {
               hookFilePath,
@@ -488,7 +488,7 @@ async function handlePagesWithStaticRoutes(
         }
 
         const routeParams = {}
-        const pageContext = createPageContext(urlOriginal, renderContext, prerenderContext)
+        const pageContext = createPageContext(urlOriginal, prerenderContext)
         objectAssign(pageContext, {
           _providedByHook: null,
           routeParams,
@@ -510,7 +510,7 @@ async function handlePagesWithStaticRoutes(
   )
 }
 
-function createPageContext(urlOriginal: string, renderContext: RenderContext, prerenderContext: PrerenderContext) {
+function createPageContext(urlOriginal: string, prerenderContext: PrerenderContext) {
   const pageContext = {
     _urlHandler: null,
     _urlRewrite: null,
@@ -522,7 +522,7 @@ function createPageContext(urlOriginal: string, renderContext: RenderContext, pr
   }
   objectAssign(pageContextInit, prerenderContext.pageContextInit)
   {
-    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, renderContext)
+    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
   return pageContext
