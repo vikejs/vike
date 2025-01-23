@@ -263,7 +263,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       viteDevServer,
       viteConfig,
       vikeConfig: {
-        global: vikeConfig.global
+        global: userFiles.globalConfig
       },
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
