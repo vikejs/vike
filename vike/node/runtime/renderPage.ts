@@ -2,7 +2,6 @@ export { renderPage }
 export { renderPage_addWrapper }
 
 import {
-  getRenderContext,
   getPageContextInitEnhanced,
   RenderContext,
   renderPageAlreadyRouted,
@@ -141,7 +140,7 @@ async function renderPageAndPrepare(
   let renderContext: RenderContext
   try {
     await initGlobalContext_renderPage()
-    renderContext = await getRenderContext()
+    renderContext = getGlobalContext()
   } catch (err) {
     // Errors are expected since assertUsage() is used in both initGlobalContext_renderPage() and getRenderContext().
     // initGlobalContext_renderPage() and getRenderContext() don't call any user hooks => err isn't thrown from user code.

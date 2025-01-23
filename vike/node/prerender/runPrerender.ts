@@ -30,7 +30,6 @@ import {
 import {
   prerenderPage,
   prerender404Page,
-  getRenderContext,
   type RenderContext,
   getPageContextInitEnhanced,
   PageContextInitEnhanced
@@ -210,7 +209,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   )
 
   await initGlobalContext_runPrerender()
-  const renderContext = await getRenderContext()
+  const renderContext = getGlobalContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext = {}

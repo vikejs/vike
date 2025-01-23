@@ -2,7 +2,6 @@ export { renderPageAlreadyRouted }
 export { prerenderPage }
 export { prerender404Page }
 export { getPageContextInitEnhanced }
-export { getRenderContext }
 export type { RenderContext }
 export type { PageContextAfterRender }
 export type { PageContextInitEnhanced }
@@ -244,18 +243,4 @@ type RenderContext = {
   allPageIds: string[]
   pageRoutes: PageRoutes
   onBeforeRouteHook: Hook | null
-}
-// TODO/now: remove getRenderContext()
-async function getRenderContext(): Promise<RenderContext> {
-  const globalContext = getGlobalContext()
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, pageRoutes, onBeforeRouteHook } = globalContext
-  const renderContext = {
-    pageFilesAll,
-    pageConfigs,
-    pageConfigGlobal,
-    allPageIds,
-    pageRoutes,
-    onBeforeRouteHook
-  }
-  return renderContext
 }

@@ -13,7 +13,6 @@ import { getPageFilesAll } from '../shared/getPageFiles/getPageFiles.js'
 import type { PageFile } from '../shared/getPageFiles/getPageFileObject.js'
 import { getGlobalContext, initGlobalContext_getGlobalContextAsync } from '../node/runtime/globalContext.js'
 import { setNodeEnvProduction } from '../utils/assertSetup.js'
-import { getRenderContext } from '../node/runtime/renderPage/renderPageAlreadyRouted.js'
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 
 /**
@@ -21,7 +20,7 @@ import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
  */
 async function getPagesAndRoutes() {
   setNodeEnvProduction()
-  const renderContext = await getRenderContext()
+  const renderContext = getGlobalContext()
   const {
     //
     pageRoutes,
