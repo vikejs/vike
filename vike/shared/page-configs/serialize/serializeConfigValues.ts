@@ -251,7 +251,7 @@ function getConfigValuesBase(
   const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
     const configDef = pageConfig.configDefinitions[configName]
     assert(configDef)
-    if (isEager !== undefined && isEager !== !!configDef.eager) return 'SKIP'
+    if (isEager !== null && isEager !== !!configDef.eager) return 'SKIP'
     if (!configDef.cumulative) {
       const source = sources[0]
       assert(source)
