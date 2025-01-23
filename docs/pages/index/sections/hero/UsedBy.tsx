@@ -61,6 +61,7 @@ const data: {
     logo: usedByBild,
     order: -100
   },
+  /*
   {
     website: 'https://chip.de',
     desc: "Germany's most read consumer news",
@@ -69,6 +70,7 @@ const data: {
     shrink: 60,
     order: -99
   }
+  */
 ]
 
 function UsedBy() {
