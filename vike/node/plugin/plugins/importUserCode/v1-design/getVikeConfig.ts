@@ -375,14 +375,11 @@ async function loadVikeConfig_withErrorHandling(
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir)
   const importedFilesLoaded: ImportedFilesLoaded = {}
-  const { pageConfigGlobal, vikeConfigGlobal, global } = await getGlobalConfigs(
-    interfaceFilesByLocationId,
-    userRootDir,
-    importedFilesLoaded,
-    vikeVitePluginOptions
-  )
-  const pageConfigs = await getPageConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded)
-  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal, global }
+  const [globalConfigs, pageConfigs] = await Promise.all([
+    getGlobalConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded, vikeVitePluginOptions),
+    getPageConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded)
+  ])
+  return { pageConfigs, ...globalConfigs }
 }
 async function getGlobalConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
