@@ -46,6 +46,8 @@ import pc from '@brillout/picocolors'
 import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
+import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
+import { assertV1Design } from '../shared/assertV1Design.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
@@ -68,7 +70,7 @@ initDevEntry()
 type GlobalContextPublic = {
   assetsManifest: null | ViteManifest
 }
-type UserFiles = Omit<Awaited<ReturnType<typeof getPageFilesAll>>, 'globalConfig'>
+type PageRuntimeInfo = Awaited<ReturnType<typeof getPageRuntimeInfo>>['userFiles']
 type GlobalContext = {
   baseServer: string
   baseAssets: null | string
@@ -78,7 +80,7 @@ type GlobalContext = {
   vikeConfig: {
     global: ConfigUserFriendly
   }
-} & UserFiles &
+} & PageRuntimeInfo &
   (
     | {
         isProduction: false
@@ -256,7 +258,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
-    const { globalConfig, ...userFiles } = await getPageFilesAll(false, isProduction)
+    const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
     const pluginManifest = getRuntimeManifest(vikeConfig.vikeConfigGlobal, viteConfig)
     globalObject.globalContext = {
       isProduction: false,
@@ -278,7 +280,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot)
     const { assetsManifest, pluginManifest } = buildEntry
     setPageFiles(buildEntry.pageFiles)
-    const { globalConfig, ...userFiles } = await getPageFilesAll(false, isProduction)
+    const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
     const globalContext = {
@@ -311,6 +313,33 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       globalObject.globalContext = globalContext
     }
   }
+}
+
+async function getPageRuntimeInfo(isProduction: boolean) {
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig } = await getPageFilesAll(
+    false,
+    isProduction
+  )
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
+    pageFilesAll,
+    pageConfigs,
+    pageConfigGlobal,
+    allPageIds
+  )
+  const userFiles = {
+    pageFilesAll,
+    pageConfigs,
+    pageConfigGlobal,
+    allPageIds,
+    pageRoutes,
+    onBeforeRouteHook
+  }
+  assertV1Design(
+    // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
+    pageConfigs.length > 0,
+    pageFilesAll
+  )
+  return { userFiles, globalConfig }
 }
 
 function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {

@@ -245,22 +245,10 @@ type RenderContext = {
   pageRoutes: PageRoutes
   onBeforeRouteHook: Hook | null
 }
-// TODO/now: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
-// TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext
+// TODO/now: remove getRenderContext()
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = globalContext
-  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
-    pageFilesAll,
-    pageConfigs,
-    pageConfigGlobal,
-    allPageIds
-  )
-  assertV1Design(
-    // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
-    pageConfigs.length > 0,
-    pageFilesAll
-  )
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, pageRoutes, onBeforeRouteHook } = globalContext
   const renderContext = {
     pageFilesAll,
     pageConfigs,
