@@ -481,7 +481,7 @@ async function getGlobalConfigs(
   const configValues = getConfigValues(pageConfigGlobal)
   const global = getPageConfigUserFriendlyNew({ configValues })
 
-  return { pageConfigGlobal, pageConfigGlobalValues, vikeConfigGlobal, global }
+  return { pageConfigGlobal, vikeConfigGlobal, global }
 }
 async function getPageConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
