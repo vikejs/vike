@@ -30,13 +30,13 @@ function serializeConfigValues(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   importStatements: string[],
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
-  { isEager }: { isEager: boolean },
-  tabspace: string
+  tabspace: string,
+  isEager: boolean | null
 ): string[] {
   const lines: string[] = []
   tabspace += '  '
 
-  getConfigValuesBase(pageConfig, isEnvMatch, { isEager }).forEach((entry) => {
+  getConfigValuesBase(pageConfig, isEnvMatch, isEager).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName } = entry
@@ -236,7 +236,7 @@ function logJsonSerializeError(err: unknown, configName: string, definedAtData: 
 function getConfigValuesBase(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
-  { isEager }: { isEager?: boolean } = {}
+  isEager: boolean | null
 ): ConfigValuesBase {
   const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
     if (!isEnvMatch(valueInfo.configEnv)) return 'SKIP'

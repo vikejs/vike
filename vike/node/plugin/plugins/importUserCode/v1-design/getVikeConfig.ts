@@ -564,7 +564,7 @@ async function getPageConfigs(
 
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
   const configValues: ConfigValues = {}
-  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config).forEach((entry) => {
+  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config, null).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName } = entry
