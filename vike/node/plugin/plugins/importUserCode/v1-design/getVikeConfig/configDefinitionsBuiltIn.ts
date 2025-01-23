@@ -55,6 +55,8 @@ type ConfigDefinition = {
    * https://vike.dev/extends#inheritance
    */
   global?: boolean | ((value: unknown) => boolean)
+  // TODO/now implement
+  type?: string | string[]
 }
 
 /**
@@ -230,15 +232,23 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true
   },
-  prerender: { env: { config: true }, global: (value) => typeof value !== 'object' },
-  vite: { env: { config: true }, global: true, cumulative: true },
-  disableAutoFullBuild: { env: { config: true }, global: true },
-  includeAssetsImportedByServer: { env: { config: true }, global: true },
-  baseAssets: { env: { config: true }, global: true },
-  baseServer: { env: { config: true }, global: true },
-  redirects: { env: { server: true }, global: true },
-  trailingSlash: { env: { server: true }, global: true },
-  disableUrlNormalization: { env: { server: true }, global: true }
+  prerender: { env: { config: true }, global: (value) => typeof value !== 'object', type: ['boolean', 'object'] },
+  vite: { env: { config: true }, global: true, cumulative: true, type: 'object' },
+  disableAutoFullBuild: {
+    env: { config: true },
+    global: true,
+    type: [
+      'boolean',
+      // Can be 'prerender'
+      'string'
+    ]
+  },
+  includeAssetsImportedByServer: { env: { config: true }, global: true, type: 'boolean' },
+  baseAssets: { env: { config: true }, global: true, type: 'string' },
+  baseServer: { env: { config: true }, global: true, type: 'string' },
+  redirects: { env: { server: true }, global: true, type: 'string{}' },
+  trailingSlash: { env: { server: true }, global: true, type: 'boolean' },
+  disableUrlNormalization: { env: { server: true }, global: true, type: 'boolean' }
 }
 
 function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {

@@ -24,7 +24,8 @@ import {
   PLimit,
   isArray,
   changeEnumerable,
-  onSetupPrerender
+  onSetupPrerender,
+  isObject
 } from './utils.js'
 import {
   prerenderPage,
@@ -191,6 +192,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = vikeConfig.vikeConfigGlobal.prerender
+  validatePrerenderConfig(prerenderConfig)
   if (!prerenderConfig) {
     assert(standaloneTrigger)
     assertWarning(
@@ -1162,5 +1164,43 @@ function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlInt
       changeEnumerable(pageContext, 'urlPathname', enumerable)
       changeEnumerable(pageContext, 'urlParsed', enumerable)
     })
+  }
+}
+
+function validatePrerenderConfig(
+  // Guaranteed by configDef.type to be either an object or boolean
+  configVikePrerender?: boolean | Record<string, unknown>
+) {
+  if (!configVikePrerender || typeof configVikePrerender === 'boolean') return
+  assert(isObject(configVikePrerender))
+  const wrongValue = (() => {
+    {
+      const p = 'partial'
+      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+    }
+    {
+      const p = 'noExtraDir'
+      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+    }
+    {
+      const p = 'disableAutoRun'
+      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+    }
+    {
+      const p = 'parallel'
+      if (
+        !hasProp(configVikePrerender, p, 'boolean') &&
+        !hasProp(configVikePrerender, p, 'number') &&
+        !hasProp(configVikePrerender, p, 'undefined')
+      )
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean or a number' }
+    }
+  })()
+  if (wrongValue) {
+    const { prop, errMsg } = wrongValue
+    assertUsage(false, `Setting ${pc.cyan(prop)} ${errMsg}`)
   }
 }

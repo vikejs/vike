@@ -1428,15 +1428,7 @@ function resolveVikeConfigGlobal(
   vikeVitePluginOptions: unknown,
   pageConfigGlobalValues: Record<string, unknown>
 ): VikeConfigGlobal {
-  // TODO/v1-release: remove
-  assertVikeConfigGlobal(vikeVitePluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
-  const configs = [vikeVitePluginOptions]
-
-  assertVikeConfigGlobal(pageConfigGlobalValues, ({ prop, errMsg }) => {
-    // Can we add the config file path ?
-    return `config ${pc.cyan(prop)} ${errMsg}`
-  })
-  configs.push(pageConfigGlobalValues)
+  const configs: VikeVitePluginOptions[] = [vikeVitePluginOptions as any, pageConfigGlobalValues]
 
   const vikeConfigGlobal: VikeConfigGlobal = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
@@ -1477,93 +1469,6 @@ function merge(objs: (Obj | undefined)[]): Obj {
 }
 function pickFirst<T>(arr: T[]): T | undefined {
   return arr.filter((v) => v !== undefined)[0]
-}
-type WrongUsage = { prop: string; errMsg: `should be a${string}` }
-function assertVikeConfigGlobal(
-  vikeConfigGlobal: unknown,
-  wrongUsageMsg: (wrongUsage: WrongUsage) => string
-): asserts vikeConfigGlobal is VikeVitePluginOptions {
-  const wrongUsageError = check(vikeConfigGlobal)
-  if (wrongUsageError) {
-    assertUsage(false, wrongUsageMsg(wrongUsageError))
-  }
-}
-function check(vikeConfigGlobal: unknown): null | WrongUsage {
-  assert(isObject(vikeConfigGlobal))
-  {
-    const prop = 'disableUrlNormalization'
-    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
-      return { prop, errMsg: 'should be a boolean' }
-  }
-  {
-    const prop = 'trailingSlash'
-    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
-      return { prop, errMsg: 'should be a boolean' }
-  }
-  {
-    const prop = 'redirects'
-    const { redirects } = vikeConfigGlobal
-    if (
-      !(
-        redirects === undefined ||
-        (isObject(redirects) && Object.values(redirects).every((v) => typeof v === 'string'))
-      )
-    )
-      return { prop, errMsg: 'should be an object of strings' }
-  }
-  {
-    const prop = 'disableAutoFullBuild'
-    if (
-      !hasProp(vikeConfigGlobal, prop, 'boolean') &&
-      !hasProp(vikeConfigGlobal, prop, 'undefined') &&
-      !(vikeConfigGlobal[prop] === 'prerender')
-    )
-      return { prop, errMsg: "should be a boolean or 'prerender'" }
-  }
-  {
-    const prop = 'includeAssetsImportedByServer'
-    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
-      return { prop, errMsg: 'should be a boolean' }
-  }
-  {
-    const prop = 'prerender'
-    if (
-      !hasProp(vikeConfigGlobal, prop, 'object') &&
-      !hasProp(vikeConfigGlobal, prop, 'boolean') &&
-      !hasProp(vikeConfigGlobal, prop, 'undefined')
-    )
-      return { prop, errMsg: 'should be an object or a boolean' }
-  }
-
-  const configVikePrerender = vikeConfigGlobal.prerender
-  if (typeof configVikePrerender === 'object') {
-    {
-      const p = 'partial'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
-    }
-    {
-      const p = 'noExtraDir'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
-    }
-    {
-      const p = 'disableAutoRun'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
-    }
-    {
-      const p = 'parallel'
-      if (
-        !hasProp(configVikePrerender, p, 'boolean') &&
-        !hasProp(configVikePrerender, p, 'number') &&
-        !hasProp(configVikePrerender, p, 'undefined')
-      )
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean or a number' }
-    }
-  }
-
-  return null
 }
 type VikeConfigGlobal = {
   prerender:
