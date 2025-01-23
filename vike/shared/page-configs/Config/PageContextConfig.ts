@@ -10,7 +10,7 @@ type PageContextConfig = ConfigResolved &
   (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
 
 // https://vike.dev/meta#typescript
-type ConfigUnresolved = WithoutImportString<ConfigBuiltIn> & Vike.Config
+type ConfigUnresolved = WithoutImportString<ConfigBuiltIn & Vike.Config>
 type ConfigResolvedOnly = ConfigBuiltInResolved & Vike.ConfigResolved
 type ConfigResolved = ConfigResolvedOnly & Omit<ConfigUnresolved, keyof ConfigResolvedOnly>
 
