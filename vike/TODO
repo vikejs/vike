@@ -1,6 +1,5 @@
 - deprecate VikeVitePluginOptions
 - `TODO/soon: refactor` in `getVikeConfig.ts`
-- remove config.vikeTmp
 - make scripts/dev.js work
 - https://github.com/vikejs/vike-node/pull/44
 

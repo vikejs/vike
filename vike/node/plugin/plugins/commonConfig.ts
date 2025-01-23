@@ -10,7 +10,7 @@ import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
 import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { getVikeConfig2, type VikeConfigObject, type VikeConfigNew } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 const pluginName = 'vike:commonConfig'
 
@@ -19,9 +19,7 @@ declare module 'vite' {
     _isDev?: boolean
     _vikeVitePluginOptions?: unknown
     _root?: string
-    vike?: VikeConfigNew
-    /** @deprecated */
-    vikeTmp?: VikeConfigObject // TODO: remove
+    vike?: VikeConfigObject
   }
 }
 
@@ -42,7 +40,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _isDev: isDev,
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
-            vike: vikeConfig.vikeConfigNew,
+            vike: vikeConfig,
             vikeTmp: vikeConfig
           }
         }

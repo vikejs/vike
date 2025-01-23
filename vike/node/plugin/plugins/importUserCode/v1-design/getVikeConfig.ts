@@ -9,7 +9,6 @@ export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
 export type { VikeConfigGlobal }
-export type { VikeConfigNew }
 export type { VikeVitePluginOptions }
 
 import {
@@ -117,12 +116,11 @@ type InterfaceValueFile = InterfaceFileCommons & {
 type ConfigName = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
-type VikeConfigNew = { global: ReturnType<typeof getPageConfigUserFriendlyNew> }
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   vikeConfigGlobal: VikeConfigGlobal
-  vikeConfigNew: VikeConfigNew
+  global: ReturnType<typeof getPageConfigUserFriendlyNew>
 }
 
 let restartVite = false
@@ -368,9 +366,7 @@ async function loadVikeConfig_withErrorHandling(
           configValueSources: {}
         },
         vikeConfigGlobal: resolveVikeConfigGlobal({}, {}),
-        vikeConfigNew: {
-          global: getPageConfigUserFriendlyNew({ configValues: {} })
-        }
+        global: getPageConfigUserFriendlyNew({ configValues: {} })
       }
       return dummyData
     }
@@ -461,7 +457,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const configValues = getConfigValues(pageConfigGlobal)
   const global = getPageConfigUserFriendlyNew({ configValues })
 
-  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal, vikeConfigNew: { global } }
+  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal, global }
 }
 
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
