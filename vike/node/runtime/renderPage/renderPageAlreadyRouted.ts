@@ -249,10 +249,7 @@ type RenderContext = {
 // TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = await getPageFilesAll(
-    false,
-    globalContext.isProduction
-  )
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = globalContext
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageFilesAll,
     pageConfigs,

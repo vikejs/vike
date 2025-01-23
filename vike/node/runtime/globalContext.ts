@@ -68,6 +68,7 @@ initDevEntry()
 type GlobalContextPublic = {
   assetsManifest: null | ViteManifest
 }
+type UserFiles = Omit<Awaited<ReturnType<typeof getPageFilesAll>>, 'globalConfig'>
 type GlobalContext = {
   baseServer: string
   baseAssets: null | string
@@ -77,7 +78,7 @@ type GlobalContext = {
   vikeConfig: {
     global: ConfigUserFriendly
   }
-} & (
+} & UserFiles & (
   | {
       isProduction: false
       isPrerendering: false
@@ -254,7 +255,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
-    const userFiles = await getPageFilesAll(false, isProduction)
+    const { globalConfig, ...userFiles } = await getPageFilesAll(false, isProduction)
     const pluginManifest = getRuntimeManifest(vikeConfig.vikeConfigGlobal, viteConfig)
     globalObject.globalContext = {
       isProduction: false,
@@ -263,8 +264,9 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       viteDevServer,
       viteConfig,
       vikeConfig: {
-        global: userFiles.globalConfig
+        global: globalConfig
       },
+      ...userFiles,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
@@ -275,15 +277,16 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot)
     const { assetsManifest, pluginManifest } = buildEntry
     setPageFiles(buildEntry.pageFiles)
-    const userFiles = await getPageFilesAll(false, isProduction)
+    const { globalConfig, ...userFiles } = await getPageFilesAll(false, isProduction)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
       vikeConfig: {
-        global: userFiles.globalConfig
+        global: globalConfig
       },
+      ...userFiles,
       viteDevServer: null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
