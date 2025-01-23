@@ -1169,38 +1169,38 @@ function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlInt
 
 function validatePrerenderConfig(
   // Guaranteed by configDef.type to be either an object or boolean
-  configVikePrerender?: boolean | Record<string, unknown>
+  prerenderConfig?: boolean | Record<string, unknown>
 ) {
-  if (!configVikePrerender || typeof configVikePrerender === 'boolean') return
-  assert(isObject(configVikePrerender))
+  if (!prerenderConfig || typeof prerenderConfig === 'boolean') return
+  assert(isObject(prerenderConfig))
   const wrongValue = (() => {
     {
       const p = 'partial'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+      if (!hasProp(prerenderConfig, p, 'boolean') && !hasProp(prerenderConfig, p, 'undefined'))
+        return { prop: p, errMsg: 'should be a boolean' } as const
     }
     {
       const p = 'noExtraDir'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+      if (!hasProp(prerenderConfig, p, 'boolean') && !hasProp(prerenderConfig, p, 'undefined'))
+        return { prop: p, errMsg: 'should be a boolean' } as const
     }
     {
       const p = 'disableAutoRun'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+      if (!hasProp(prerenderConfig, p, 'boolean') && !hasProp(prerenderConfig, p, 'undefined'))
+        return { prop: p, errMsg: 'should be a boolean' } as const
     }
     {
       const p = 'parallel'
       if (
-        !hasProp(configVikePrerender, p, 'boolean') &&
-        !hasProp(configVikePrerender, p, 'number') &&
-        !hasProp(configVikePrerender, p, 'undefined')
+        !hasProp(prerenderConfig, p, 'boolean') &&
+        !hasProp(prerenderConfig, p, 'number') &&
+        !hasProp(prerenderConfig, p, 'undefined')
       )
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean or a number' }
+        return { prop: p, errMsg: 'should be a boolean or a number' } as const
     }
   })()
   if (wrongValue) {
     const { prop, errMsg } = wrongValue
-    assertUsage(false, `Setting ${pc.cyan(prop)} ${errMsg}`)
+    assertUsage(false, `Setting ${pc.cyan(`prerender.${prop}`)} ${errMsg}`)
   }
 }
