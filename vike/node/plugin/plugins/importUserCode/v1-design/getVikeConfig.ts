@@ -444,10 +444,12 @@ async function getGlobalConfigs(
       const configValueSource = sources[0]
       if (!configValueSource) return
       pageConfigGlobal.configValueSources[configName] = sources
+      // TODO/now
       if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
         assert(!('value' in configValueSource))
       } else {
         assert('value' in configValueSource)
+        // TODO/now
         if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
         pageConfigGlobalValues[configName] = configValueSource.value
       }
@@ -590,7 +592,7 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
   return configValues
 }
 
-// TODO/soon: refactor
+// TODO/now: refactor
 //  - Dedupe: most of the assertUsageGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
 //    - This assertUsage() message is slightly better: use this one for getGlobalConfigs()
 // Global configs should be defined at global locations
@@ -1362,6 +1364,7 @@ function isLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
   return !!configDef.env.config && !configDef._valueIsFilePath
 }
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
+  // TODO/now
   if (configName === 'prerender') return false
   const configNamesGlobal = getConfigNamesGlobal()
   return includes(configNamesGlobal, configName)
@@ -1420,7 +1423,7 @@ function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: s
   return interfaceFile.fileExportsByConfigName[configName]?.configValue
 }
 
-// TODO: refactor code below
+// TODO/now: refactor code below
 
 function resolveVikeConfigGlobal(
   vikeVitePluginOptions: unknown,
@@ -1580,7 +1583,7 @@ type VikeConfigGlobal = {
   trailingSlash: boolean
   disableUrlNormalization: boolean
 }
-// TODO: deprecate
+// TODO/now: deprecate
 type VikeVitePluginOptions = {
   /**
    * Enable pre-rendering.
