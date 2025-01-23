@@ -9,7 +9,7 @@ import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import * as pageFilesExports from 'virtual:vike:importUserCode:client:server-routing'
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
-initDevEntry()
+setPageFiles(pageFilesExports)
 
 async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
@@ -56,8 +56,4 @@ async function loadPageUserFiles(pageId: string) {
     })
 
   return pageContextAddendum
-}
-
-function initDevEntry() {
-  setPageFiles(pageFilesExports)
 }

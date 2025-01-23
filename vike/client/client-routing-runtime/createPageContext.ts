@@ -11,7 +11,7 @@ const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>
 }>('createPageContext.ts', {})
 
-initDevEntry()
+setPageFiles(pageFilesExports)
 
 async function createPageContext(urlOriginal: string) {
   if (!globalObject.pageFilesData) {
@@ -43,8 +43,4 @@ async function createPageContext(urlOriginal: string) {
   const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
   objectAssign(pageContext, pageContextUrlComputed)
   return pageContext
-}
-
-function initDevEntry() {
-  setPageFiles(pageFilesExports)
 }
