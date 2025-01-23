@@ -10,7 +10,6 @@ type PluginManifest = {
   baseAssets: string | null
   usesClientRouter: boolean
   includeAssetsImportedByServer: boolean
-  redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
 }

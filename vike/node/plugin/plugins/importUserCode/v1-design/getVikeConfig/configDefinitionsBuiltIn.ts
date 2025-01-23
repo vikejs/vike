@@ -246,7 +246,7 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
   includeAssetsImportedByServer: { env: { config: true }, global: true, type: 'boolean' },
   baseAssets: { env: { config: true }, global: true, type: 'string' },
   baseServer: { env: { config: true }, global: true, type: 'string' },
-  redirects: { env: { server: true }, global: true, type: 'string{}' },
+  redirects: { env: { server: true }, global: true, type: 'string{}', cumulative: true },
   trailingSlash: { env: { server: true }, global: true, type: 'boolean' },
   disableUrlNormalization: { env: { server: true }, global: true, type: 'boolean' }
 }

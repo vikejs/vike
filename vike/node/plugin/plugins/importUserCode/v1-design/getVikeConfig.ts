@@ -1438,7 +1438,6 @@ function resolveVikeConfigGlobal(
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
     baseServer: pickFirst(configs.map((c) => c.baseServer)) ?? null,
     baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null,
-    redirects: merge(configs.map((c) => c.redirects)) ?? {},
     disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
     trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
   }
@@ -1461,14 +1460,6 @@ function resolvePrerenderOptions(configs: VikeVitePluginOptions[]): VikeConfigGl
 function isObject2<T>(p: T | boolean | undefined): p is T {
   return typeof p === 'object'
 }
-type Obj = Record<string, string>
-function merge(objs: (Obj | undefined)[]): Obj {
-  const obj: Record<string, string> = {}
-  objs.forEach((e) => {
-    Object.assign(obj, e)
-  })
-  return obj
-}
 function pickFirst<T>(arr: T[]): T | undefined {
   return arr.filter((v) => v !== undefined)[0]
 }
@@ -1485,7 +1476,6 @@ type VikeConfigGlobal = {
   includeAssetsImportedByServer: boolean
   baseAssets: string | null
   baseServer: string | null
-  redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
 }

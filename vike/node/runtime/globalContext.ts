@@ -72,7 +72,6 @@ type GlobalContext = {
   baseServer: string
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
-  redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
   vikeConfig: {
@@ -266,7 +265,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
-      redirects: pluginManifest.redirects,
       trailingSlash: pluginManifest.trailingSlash,
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
@@ -286,7 +284,6 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
-      redirects: pluginManifest.redirects,
       trailingSlash: pluginManifest.trailingSlash,
       usesClientRouter: pluginManifest.usesClientRouter,
       disableUrlNormalization: pluginManifest.disableUrlNormalization
@@ -309,7 +306,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
 }
 
 function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
-  const { includeAssetsImportedByServer, redirects, trailingSlash, disableUrlNormalization } = vikeConfigGlobal
+  const { includeAssetsImportedByServer, trailingSlash, disableUrlNormalization } = vikeConfigGlobal
   const { baseServer, baseAssets } = resolveBaseFromResolvedConfig(
     vikeConfigGlobal.baseServer,
     vikeConfigGlobal.baseAssets,
@@ -319,7 +316,6 @@ function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: Reso
     baseServer,
     baseAssets,
     includeAssetsImportedByServer,
-    redirects,
     trailingSlash,
     disableUrlNormalization
   }
