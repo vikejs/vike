@@ -78,30 +78,31 @@ type GlobalContext = {
   vikeConfig: {
     global: ConfigUserFriendly
   }
-} & UserFiles & (
-  | {
-      isProduction: false
-      isPrerendering: false
-      viteConfig: ResolvedConfig
-      viteDevServer: ViteDevServer
-      assetsManifest: null
-    }
-  | ({
-      isProduction: true
-      assetsManifest: ViteManifest
-      viteDevServer: null
-    } & (
-      | {
-          isPrerendering: false
-          viteConfig: null
-        }
-      | {
-          isPrerendering: true
-          usesClientRouter: boolean
-          viteConfig: ResolvedConfig
-        }
-    ))
-)
+} & UserFiles &
+  (
+    | {
+        isProduction: false
+        isPrerendering: false
+        viteConfig: ResolvedConfig
+        viteDevServer: ViteDevServer
+        assetsManifest: null
+      }
+    | ({
+        isProduction: true
+        assetsManifest: ViteManifest
+        viteDevServer: null
+      } & (
+        | {
+            isPrerendering: false
+            viteConfig: null
+          }
+        | {
+            isPrerendering: true
+            usesClientRouter: boolean
+            viteConfig: ResolvedConfig
+          }
+      ))
+  )
 
 function getGlobalContext(): GlobalContext {
   if (!globalObject.globalContext) {
