@@ -460,8 +460,7 @@ async function getGlobalConfigs(
   {
     assert(isObject(vikeVitePluginOptions))
     Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
-      if (pageConfigGlobal.configValueSources[configName]) return
-      pageConfigGlobal.configValueSources[configName] = []
+      pageConfigGlobal.configValueSources[configName] ??= []
       pageConfigGlobal.configValueSources[configName].push({
         value,
         configEnv: { config: true },
