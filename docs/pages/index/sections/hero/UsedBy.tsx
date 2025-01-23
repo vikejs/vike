@@ -60,7 +60,7 @@ const data: {
     name: 'Bild.de',
     logo: usedByBild,
     order: -100
-  },
+  }
   /*
   {
     website: 'https://chip.de',
@@ -126,7 +126,7 @@ function UsedByList() {
             <a href={e.website} target="_blank" key={i}>
               {e.name}
             </a>{' '}
-            - {e.desc}.
+            - {e.desc}
           </li>
         ))}
     </ul>
