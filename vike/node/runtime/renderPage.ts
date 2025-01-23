@@ -528,20 +528,12 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
 }
 
 function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
-  const {
-    vikeConfig: {
-      global: {
-        config: { redirects }
-      }
-    },
-    baseServer
-  } = getGlobalContext()
-  const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
+  const globalContext = getGlobalContext()
+  const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, globalContext.baseServer)
   let origin: null | string = null
   let urlTargetExternal: null | string = null
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
-    // TODO/now don't use `any`
-    const urlTarget = resolveRedirects((redirects as any) ?? [], urlPathname)
+    const urlTarget = resolveRedirects(globalContext.vikeConfig.global.config.redirects ?? [], urlPathname)
     if (urlTarget === null) return null
     if (!isUrl(urlTarget)) {
       // E.g. `urlTarget === 'mailto:some@example.com'`
@@ -565,7 +557,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
       }
     }
     if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
-    if (!originChanged) urlTarget = prependBase(urlTarget, baseServer)
+    if (!originChanged) urlTarget = prependBase(urlTarget, globalContext.baseServer)
     assert(urlTarget !== pageContextInit.urlOriginal)
   }
   logRuntimeInfo?.(

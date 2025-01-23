@@ -25,6 +25,7 @@ import {
   isTemplateFile
 } from '../utils.js'
 import pc from '@brillout/picocolors'
+import type { ConfigResolved } from './Config/PageContextConfig.js'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<
@@ -202,7 +203,7 @@ function getPageConfigUserFriendly(
 }
 
 type ConfigUserFriendly = {
-  config: Record<string, unknown>
+  config: ConfigResolved
   configEntries: ConfigEntries // TODO/v1-release: remove
   exportsAll: ExportsAll // TODO/v1-release: remove
   source: Source
