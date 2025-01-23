@@ -245,7 +245,7 @@ type RenderContext = {
   pageRoutes: PageRoutes
   onBeforeRouteHook: Hook | null
 }
-// TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
+// TODO/now: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
 // TODO: impl GlobalNodeContext + GlobalClientContext + GloablContext, and use GlobalContext instead of RenderContext
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()

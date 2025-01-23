@@ -38,7 +38,7 @@ import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
-import { setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
+import { getPageFilesAll, setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
 import { assertPluginManifest } from '../shared/assertPluginManifest.js'
 import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
@@ -254,6 +254,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
+    const userFiles = await getPageFilesAll(false, isProduction)
     const pluginManifest = getRuntimeManifest(vikeConfig.vikeConfigGlobal, viteConfig)
     globalObject.globalContext = {
       isProduction: false,
@@ -273,14 +274,15 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   } else {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot)
     const { assetsManifest, pluginManifest } = buildEntry
-    const { globalConfig } = setPageFiles(buildEntry.pageFiles)
+    setPageFiles(buildEntry.pageFiles)
+    const userFiles = await getPageFilesAll(false, isProduction)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
       vikeConfig: {
-        global: globalConfig
+        global: userFiles.globalConfig
       },
       viteDevServer: null,
       baseServer: pluginManifest.baseServer,
