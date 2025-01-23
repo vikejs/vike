@@ -97,7 +97,7 @@ function getCodePageConfigGlobalSerialized(
       importStatements,
       (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
       '    ',
-      true
+      null
     )
   )
   lines.push(`  },`)
