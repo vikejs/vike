@@ -460,10 +460,12 @@ async function getGlobalConfigs(
   {
     assert(isObject(vikeVitePluginOptions))
     Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
-      pageConfigGlobal.configValueSources[configName] ??= []
-      pageConfigGlobal.configValueSources[configName].push({
+      assert(includes(objectKeys(configDefinitionsBuiltInGlobal), configName))
+      const configDef = configDefinitionsBuiltInGlobal[configName]
+      const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+      sources.push({
         value,
-        configEnv: { config: true },
+        configEnv: configDef.env,
         definedAtFilePath: {
           ...getFilePathResolved({
             userRootDir,
@@ -472,7 +474,7 @@ async function getGlobalConfigs(
           fileExportPathToShowToUser: null
         },
         locationId: '/' as LocationId,
-        isOverriden: false,
+        isOverriden: configDef.cumulative ? false : sources.length > 0,
         valueIsImportedAtRuntime: false,
         valueIsDefinedByPlusFile: false
       })
