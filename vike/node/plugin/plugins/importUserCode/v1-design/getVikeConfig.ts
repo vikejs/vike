@@ -42,13 +42,11 @@ import type {
   ConfigValuesComputed,
   ConfigValues
 } from '../../../../../shared/page-configs/PageConfig.js'
-import type { Config } from '../../../../../shared/page-configs/Config.js'
+import type { Config, ConfigNameGlobal } from '../../../../../shared/page-configs/Config.js'
 import {
-  configDefinitionsBuiltIn,
-  configDefinitionsBuiltInGlobal,
+  configDefinitionsBuiltInAll,
   type ConfigDefinitions,
-  type ConfigDefinitionInternal,
-  type ConfigNameGlobal
+  type ConfigDefinitionInternal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
@@ -91,6 +89,8 @@ import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getC
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
+const configDefinitionsBuiltIn = getConfigDefinitionsBuiltIn()
+const configDefinitionsBuiltInGlobal = getConfigDefinitionsBuiltInGlobal()
 
 assertIsNotProductionRuntime()
 
@@ -609,7 +609,7 @@ function assertUsageGlobalConfigs(
     configNames.forEach((configName) => {
       if (isGlobalConfig(configName)) return
       const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
-      if (configDef.global) {
+      if (configDef.global === true) {
         const locationIds = objectKeys(interfaceFilesByLocationId)
         if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
           const interfaceFilesGlobal = objectFromEntries(
@@ -1368,6 +1368,16 @@ function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
 }
 function getConfigNamesGlobal() {
   return Object.keys(configDefinitionsBuiltInGlobal)
+}
+function getConfigDefinitionsBuiltInGlobal() {
+  return objectFromEntries(
+    objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== undefined)
+  )
+}
+function getConfigDefinitionsBuiltIn() {
+  return objectFromEntries(
+    objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== true)
+  )
 }
 function assertConfigExists(configName: string, configNamesRelevant: string[], filePathToShowToUser: string) {
   const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]

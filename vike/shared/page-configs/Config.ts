@@ -1,6 +1,7 @@
 export type { Config }
 export type { ConfigBuiltIn }
 export type { ConfigNameBuiltIn }
+export type { ConfigNameGlobal }
 export type { ConfigMeta }
 export type { HookName }
 export type { HookNamePage }
@@ -70,6 +71,19 @@ type ConfigNameBuiltIn =
   | 'hooksTimeout'
   | 'clientHooks'
   | 'middleware'
+
+type ConfigNameGlobal =
+  | 'onPrerenderStart'
+  | 'onBeforeRoute'
+  | 'prerender'
+  | 'disableAutoFullBuild'
+  | 'includeAssetsImportedByServer'
+  | 'baseAssets'
+  | 'baseServer'
+  | 'redirects'
+  | 'trailingSlash'
+  | 'disableUrlNormalization'
+  | 'vite'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
