@@ -5,15 +5,14 @@ import type { VikePackages } from '../../VikeNamespace.js'
 import type { ConfigBuiltIn, ConfigBuiltInResolved, ImportString } from '../Config.js'
 import type { Combine, IsNotEmpty, XOR5 } from './helpers.js'
 
-type WithoutImportString<T> = { [K in keyof T]: Exclude<T[K], ImportString> }
-
-// https://vike.dev/meta#typescript
-type ConfigResolvedOnly = ConfigBuiltInResolved & Vike.ConfigResolved
-type ConfigUnresolved = WithoutImportString<ConfigBuiltIn> & Vike.Config
-type ConfigResolved = ConfigResolvedOnly & Omit<ConfigUnresolved, keyof ConfigResolvedOnly>
 type PageContextConfig = ConfigResolved &
   // TODO/eventually: remove the whole XOR logic
   (ConfigVikePackagesNotEmptyXor extends true ? ConfigVikePackagesIntersection : ConfigVikePackagesCombined)
+
+// https://vike.dev/meta#typescript
+type ConfigUnresolved = WithoutImportString<ConfigBuiltIn> & Vike.Config
+type ConfigResolvedOnly = ConfigBuiltInResolved & Vike.ConfigResolved
+type ConfigResolved = ConfigResolvedOnly & Omit<ConfigUnresolved, keyof ConfigResolvedOnly>
 
 // Preserves JSDocs, such as the the JSDoc pageContext.config.title defined by vike-react
 type ConfigVikePackagesIntersection = VikePackages.ConfigVikeReact &
@@ -37,3 +36,5 @@ type ConfigVikePackagesNotEmptyXor = XOR5<
   IsNotEmpty<VikePackages.ConfigVikeSvelte>,
   IsNotEmpty<VikePackages.ConfigVikeAngular>
 >
+
+type WithoutImportString<T> = { [K in keyof T]: Exclude<T[K], ImportString> }
