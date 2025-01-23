@@ -9,7 +9,10 @@ import {
   expectPageContextJsonRequest
 } from '../utils'
 
-function testRun(cmd: string, pageContextInitIsPassedToClient = false) {
+function testRun(
+  cmd: 'npm run dev:server' | 'npm run dev' | 'npm run preview' | 'npm run prod',
+  pageContextInitIsPassedToClient = false
+) {
   run(cmd)
 
   test('HTML', async () => {
@@ -68,8 +71,11 @@ function testRun(cmd: string, pageContextInitIsPassedToClient = false) {
 
   {
     const url = getServerUrl() + '/show-error-page'
-    const expectErrServer = () =>
+    const expectErrServer = () => {
+      // Maybe we should also show a log in production?
+      if (cmd === 'npm run prod') return
       expectLog('HTTP response /show-error-page 503', { filter: (log) => log.logSource === 'stderr' })
+    }
     const expectErrClient = () =>
       expectLog('Failed to load resource: the server responded with a status of 503 (Service Unavailable)', {
         filter: (log) =>
@@ -77,8 +83,8 @@ function testRun(cmd: string, pageContextInitIsPassedToClient = false) {
       })
     test('render error page - HTML', async () => {
       const response = await fetch(url)
-      expectErrServer()
       expect(response.status).toBe(503)
+      expectErrServer()
       const html = await response.text()
       expect(html).toContain('Testing throw render error page.')
       expect(html).toContain('<p style="font-size:1.3em">Testing throw render error page.</p>')
