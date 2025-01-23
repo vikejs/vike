@@ -30,7 +30,6 @@ import {
 import {
   prerenderPage,
   prerender404Page,
-  type RenderContext,
   getPageContextInitEnhanced,
   PageContextInitEnhanced
 } from '../runtime/renderPage/renderPageAlreadyRouted.js'
@@ -209,8 +208,8 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   )
 
   await initGlobalContext_runPrerender()
-  const renderContext = getGlobalContext()
-  renderContext.pageFilesAll.forEach(assertExportNames)
+  const globalContext = getGlobalContext()
+  globalContext.pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext = {}
   objectAssign(prerenderContext, {
@@ -221,13 +220,13 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   })
 
   const doNotPrerenderList: DoNotPrerenderList = []
-  await collectDoNoPrerenderList(renderContext, vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit)
+  await collectDoNoPrerenderList(vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit)
 
-  await callOnBeforePrerenderStartHooks(prerenderContext, renderContext, concurrencyLimit, doNotPrerenderList)
+  await callOnBeforePrerenderStartHooks(prerenderContext, concurrencyLimit, doNotPrerenderList)
 
-  await handlePagesWithStaticRoutes(prerenderContext, renderContext, doNotPrerenderList, concurrencyLimit)
+  await handlePagesWithStaticRoutes(prerenderContext, doNotPrerenderList, concurrencyLimit)
 
-  await callOnPrerenderStartHook(prerenderContext, renderContext)
+  await callOnPrerenderStartHook(prerenderContext)
 
   const prerenderedPageContexts: PrerenderedPageContexts = {}
   let prerenderedCount = 0
@@ -243,19 +242,18 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   warnContradictoryNoPrerenderList(prerenderedPageContexts, doNotPrerenderList)
 
-  await prerender404(prerenderedPageContexts, renderContext, prerenderContext, onComplete)
+  await prerender404(prerenderedPageContexts, prerenderContext, onComplete)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
 
-  warnMissingPages(prerenderedPageContexts, doNotPrerenderList, renderContext, partial)
+  warnMissingPages(prerenderedPageContexts, doNotPrerenderList, partial)
 
   return { viteConfig }
 }
 
 async function collectDoNoPrerenderList(
-  renderContext: RenderContext,
   pageConfigs: PageConfigBuildTime[],
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit
@@ -278,8 +276,9 @@ async function collectDoNoPrerenderList(
 
   // Old design
   // TODO/v1-release: remove
+  const globalContext = getGlobalContext()
   await Promise.all(
-    renderContext.pageFilesAll
+    globalContext.pageFilesAll
       .filter((p) => {
         assertExportNames(p)
         if (!p.exportNames?.includes('doNotPrerender')) return false
@@ -296,8 +295,8 @@ async function collectDoNoPrerenderList(
         })
       )
   )
-  renderContext.allPageIds.forEach((pageId) => {
-    const pageFilesServerSide = getPageFilesServerSide(renderContext.pageFilesAll, pageId)
+  globalContext.allPageIds.forEach((pageId) => {
+    const pageFilesServerSide = getPageFilesServerSide(globalContext.pageFilesAll, pageId)
     for (const p of pageFilesServerSide) {
       if (!p.exportNames?.includes('doNotPrerender')) continue
       const { fileExports } = p
@@ -331,7 +330,6 @@ function assertExportNames(pageFile: PageFile) {
 
 async function callOnBeforePrerenderStartHooks(
   prerenderContext: PrerenderContext,
-  renderContext: RenderContext,
   concurrencyLimit: PLimit,
   doNotPrerenderList: DoNotPrerenderList
 ) {
@@ -349,9 +347,11 @@ async function callOnBeforePrerenderStartHooks(
     hookTimeout: HookTimeout
   }[] = []
 
+  const globalContext = getGlobalContext()
+
   // V1 design
   await Promise.all(
-    renderContext.pageConfigs.map((pageConfig) =>
+    globalContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
@@ -371,7 +371,7 @@ async function callOnBeforePrerenderStartHooks(
 
   // 0.4 design
   await Promise.all(
-    renderContext.pageFilesAll
+    globalContext.pageFilesAll
       .filter((p) => {
         assertExportNames(p)
         if (!p.exportNames?.includes('prerender')) return false
@@ -453,13 +453,13 @@ async function callOnBeforePrerenderStartHooks(
 
 async function handlePagesWithStaticRoutes(
   prerenderContext: PrerenderContext,
-  renderContext: RenderContext,
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit
 ) {
   // Pre-render pages with a static route
+  const globalContext = getGlobalContext()
   await Promise.all(
-    renderContext.pageRoutes.map((pageRoute) =>
+    globalContext.pageRoutes.map((pageRoute) =>
       concurrencyLimit(async () => {
         const { pageId } = pageRoute
 
@@ -528,12 +528,11 @@ function createPageContext(urlOriginal: string, prerenderContext: PrerenderConte
   return pageContext
 }
 
-async function callOnPrerenderStartHook(
-  prerenderContext: {
-    pageContexts: PageContext[]
-  },
-  renderContext: RenderContext
-) {
+async function callOnPrerenderStartHook(prerenderContext: {
+  pageContexts: PageContext[]
+}) {
+  const globalContext = getGlobalContext()
+
   let onPrerenderStartHook:
     | undefined
     | {
@@ -550,9 +549,9 @@ async function callOnPrerenderStartHook(
       }
 
   // V1 design
-  if (renderContext.pageConfigs.length > 0) {
+  if (globalContext.pageConfigs.length > 0) {
     const hookName = 'onPrerenderStart'
-    const hook = getHookFromPageConfigGlobal(renderContext.pageConfigGlobal, hookName)
+    const hook = getHookFromPageConfigGlobal(globalContext.pageConfigGlobal, hookName)
     if (hook) {
       assert(hook.hookName === 'onPrerenderStart')
       onPrerenderStartHook = {
@@ -565,10 +564,10 @@ async function callOnPrerenderStartHook(
 
   // Old design
   // TODO/v1-release: remove
-  if (renderContext.pageConfigs.length === 0) {
+  if (globalContext.pageConfigs.length === 0) {
     const hookTimeout = getHookTimeoutDefault('onBeforePrerender')
 
-    const pageFilesWithOnBeforePrerenderHook = renderContext.pageFilesAll.filter((p) => {
+    const pageFilesWithOnBeforePrerenderHook = globalContext.pageFilesAll.filter((p) => {
       assertExportNames(p)
       if (!p.exportNames?.includes('onBeforePrerender')) return false
       assertUsage(
@@ -842,19 +841,19 @@ function warnContradictoryNoPrerenderList(
 function warnMissingPages(
   prerenderedPageContexts: Record<string, unknown>,
   doNotPrerenderList: DoNotPrerenderList,
-  renderContext: RenderContext,
   partial: boolean
 ) {
-  const isV1 = renderContext.pageConfigs.length > 0
+  const globalContext = getGlobalContext()
+  const isV1 = globalContext.pageConfigs.length > 0
   const hookName = isV1 ? 'onBeforePrerenderStart' : 'prerender'
   /* TODO/after-v1-design-release: document setting `prerender: false` as an alternative to using prerender.partial (both in the warnings and the docs)
   const optOutName = isV1 ? 'prerender' : 'doNotPrerender'
   const msgAddendum = `Explicitly opt-out by setting the config ${optOutName} to ${isV1 ? 'false' : 'true'} or use the option prerender.partial`
   */
-  renderContext.allPageIds
+  globalContext.allPageIds
     .filter((pageId) => !prerenderedPageContexts[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
-    .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
+    .filter((pageId) => !isErrorPage(pageId, globalContext.pageConfigs))
     .forEach((pageId) => {
       const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``
       assertWarning(
@@ -867,14 +866,14 @@ function warnMissingPages(
 
 async function prerender404(
   prerenderedPageContexts: Record<string, { urlOriginal: string }>,
-  renderContext: RenderContext,
   prerenderContext: PrerenderContext,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
   if (!Object.values(prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
+    const globalContext = getGlobalContext()
     try {
-      result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
+      result = await prerender404Page(globalContext, prerenderContext.pageContextInit)
     } catch (err) {
       assertIsNotAbort(err, 'the 404 page')
       throw err
