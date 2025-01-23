@@ -21,6 +21,7 @@ function setPageFiles(pageFilesExports: unknown) {
   globalObject.pageFilesAll = pageFiles
   globalObject.pageConfigs = pageConfigs
   globalObject.pageConfigGlobal = pageConfigGlobal
+  // TODO/now: re-used this call, instead of calling it twice
   const globalConfig = getPageConfigUserFriendlyNew(pageConfigGlobal)
   return { globalConfig }
 }

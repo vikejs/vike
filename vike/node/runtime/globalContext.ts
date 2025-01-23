@@ -54,7 +54,7 @@ const globalObject = getGlobalObject<{
   viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
   isViteDev?: boolean
   viteConfig?: ResolvedConfig
-  // TODO/now rename to vikeConfigObject
+  // TODO/now remove
   vikeConfig?: VikeConfigObject
   outDirRoot?: string
   isPrerendering?: true
@@ -133,6 +133,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
 }
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
   const globalContextPublic = {
+    // TODO/now: add viteConfig and vikeConfig
     assetsManifest: globalContext.assetsManifest
   }
 
@@ -236,6 +237,7 @@ async function initGlobalContext_getGlobalContextAsync(isProduction: boolean): P
   await initGlobalContext(isProduction)
 }
 
+// TODO/now: refactor: move this to the top of the file
 async function initGlobalContext(isProduction: boolean): Promise<void> {
   if (globalObject.globalContext) {
     assert(globalObject.globalContext.isProduction === isProduction)
