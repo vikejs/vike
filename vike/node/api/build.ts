@@ -2,7 +2,7 @@ export { build }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { build as buildVite, type Rollup, type InlineConfig } from 'vite'
-import { isPrerenderEnabled } from '../prerender/isPrerenderEnabled.js'
+import { isPrerenderAutoRunEnabled } from '../prerender/isPrerenderAutoRunEnabled.js'
 import type { APIOptions } from './types.js'
 
 type RollupOutput = Rollup.RollupOutput | Rollup.RollupOutput[] | Rollup.RollupWatcher
@@ -25,7 +25,7 @@ async function build(options: APIOptions = {}): Promise<{
   const outputServer = await buildVite(setSSR(viteConfigEnhanced))
 
   // Pre-render
-  if (isPrerenderEnabled(vikeConfigGlobal)) {
+  if (isPrerenderAutoRunEnabled(vikeConfigGlobal)) {
     const { runPrerenderFromAutoRun } = await import('../prerender/runPrerender.js')
     await runPrerenderFromAutoRun(viteConfigEnhanced)
   }
