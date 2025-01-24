@@ -1,7 +1,16 @@
 export { commonConfig }
 
 import { mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
-import { assert, assertUsage, assertWarning, findPackageJson, isDevCheck, isDocker } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  findPackageJson,
+  hasProp,
+  isDevCheck,
+  isDocker,
+  isObject
+} from '../utils.js'
 import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
@@ -12,6 +21,7 @@ import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
+import { temp_disablePrerenderAutoRun } from '../../prerender/isPrerenderAutoRunEnabled.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
@@ -69,6 +79,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           assertResolveAlias(config)
           assertEsm(config.root)
           assertVikeCliOrApi(config)
+          temp_supportOldInterface(config)
         }
       },
       config: {
@@ -171,4 +182,24 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
   assertWarning(false, `Vite's JavaScript API is deprecated ${pc.underline('https://vike.dev/migration/cli#api')}`, {
     onlyOnce: true
   })
+}
+
+function temp_supportOldInterface(config: ResolvedConfig) {
+  if (!('vitePluginSsr' in config)) return
+  assert(isObject(config.vitePluginSsr))
+  if (hasProp(config.vitePluginSsr, 'prerender', 'object')) {
+    assert(hasProp(config.vitePluginSsr.prerender, 'disableAutoRun', 'boolean'))
+    if (config.vitePluginSsr.prerender.disableAutoRun) {
+      temp_disablePrerenderAutoRun()
+    }
+    return
+  }
+  if (hasProp(config.vitePluginSsr, 'disableAutoFullBuild')) {
+    if (config.vitePluginSsr.disableAutoFullBuild) {
+      assert(config.vitePluginSsr.disableAutoFullBuild === 'prerender')
+      temp_disablePrerenderAutoRun()
+    }
+    return
+  }
+  assert(false)
 }
