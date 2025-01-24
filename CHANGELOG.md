@@ -1,3 +1,31 @@
+## [0.4.219](https://github.com/vikejs/vike/compare/v0.4.218...v0.4.219) (2025-01-24)
+
+
+### Bug Fixes
+
+* allow subsequent same-process API calls ([#2100](https://github.com/vikejs/vike/issues/2100)) ([ea3a842](https://github.com/vikejs/vike/commit/ea3a84264222768b9869e5f87ce4429e0685f3ae))
+* avoid hoisting race condition ([da1f60b](https://github.com/vikejs/vike/commit/da1f60b36a8c137f874cbaa8f5533acf4ffc8df6))
+* don't force exit build() API ([84ef85b](https://github.com/vikejs/vike/commit/84ef85bb0ea91e1b9b8f76d198b6672266e3def1))
+* fix bug handling ([30f5a91](https://github.com/vikejs/vike/commit/30f5a91fb4df9a23941e154f104f03d460b1d148))
+* fix Vike extensions regression with __internal/setup ([5d388ee](https://github.com/vikejs/vike/commit/5d388ee21a93c976bc1eaf2c780aa3ddaae5b4fe))
+* fix Vike extensions regression with configVikePromise ([81f6f32](https://github.com/vikejs/vike/commit/81f6f32edda4b73d5f87debcb5d0126188f89f95))
+* fix Vike extensions regression with vitePluginSsr config ([0a599fa](https://github.com/vikejs/vike/commit/0a599fa0dc0092b2e74b82780597b7b8f4d5282f))
+* improve NODE_ENV check ([52e3f12](https://github.com/vikejs/vike/commit/52e3f123a94542f98dd386895a90590f9c3b3904))
+* minor fix debug flag detection ([dbd2d00](https://github.com/vikejs/vike/commit/dbd2d0024a33bec80da02a9054bbfdbee18a8eb5))
+* new debug flag vike:globalContext ([ceba41c](https://github.com/vikejs/vike/commit/ceba41c2565efefe4c23d7c1d7657b14608daee3))
+* polish error message ([18258fa](https://github.com/vikejs/vike/commit/18258fa91234a03804b3a64eef7d6ab108a29fbb))
+* support dist/ inject + pre-rendering ([221ee54](https://github.com/vikejs/vike/commit/221ee5449062a3a47fef8b67b825d5ed2b3c8a06))
+* warn when `NODE_ENV` is string `"undefined"` (cloudflare/workers-sdk[#7886](https://github.com/vikejs/vike/issues/7886)) ([127e85e](https://github.com/vikejs/vike/commit/127e85e530ee744172e34d1315b38554e9fee327))
+* workaround import() cache upon subsequent API calls ([15baeca](https://github.com/vikejs/vike/commit/15baeca803775c1f2a47ced39ced279f93337ebb))
+
+
+### Features
+
+* [experimental] Vite resolved config.vike ([85af52a](https://github.com/vikejs/vike/commit/85af52a40e2a89e597fe8f928600770fddd8a2d9))
+* new setting `vite` ([#2103](https://github.com/vikejs/vike/issues/2103)) ([ed9b3d4](https://github.com/vikejs/vike/commit/ed9b3d45efbf477930fd81dba225313c359a58e7))
+
+
+
 ## [0.4.218](https://github.com/vikejs/vike/compare/v0.4.217...v0.4.218) (2025-01-18)
 
 
