@@ -184,6 +184,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
   })
 }
 
+// TODO/v1-release: remove
 function temp_supportOldInterface(config: ResolvedConfig) {
   if (!('vitePluginSsr' in config)) return
   assert(isObject(config.vitePluginSsr))
