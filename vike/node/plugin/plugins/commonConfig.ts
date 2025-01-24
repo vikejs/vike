@@ -41,7 +41,6 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
             vike: vikeConfig,
-            vikeTmp: vikeConfig
           }
         }
       }
