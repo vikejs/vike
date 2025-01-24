@@ -13,7 +13,8 @@ assertIsNotBrowser() // Don't bloat the client
 // TODO/next-major-release: update
 const configSrc = '[vite.config.js > vike({ redirects })]'
 
-function resolveRedirects(redirects: Record<string, string>, urlPathname: string): null | string {
+function resolveRedirects(redirectsAll: Record<string, string>[], urlPathname: string): null | string {
+  const redirects = merge(redirectsAll)
   for (const [urlSource, urlTarget] of Object.entries(redirects)) {
     const urlResolved = resolveRouteStringRedirect(urlSource, urlTarget, urlPathname)
     if (urlResolved) return urlResolved
@@ -47,4 +48,13 @@ function assertParams(urlSource: string, urlTarget: string) {
       )
     }
   })
+}
+
+type Obj = Record<string, string>
+function merge(objs: (Obj | undefined)[]): Obj {
+  const obj: Record<string, string> = {}
+  objs.forEach((e) => {
+    Object.assign(obj, e)
+  })
+  return obj
 }

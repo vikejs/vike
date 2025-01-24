@@ -1,13 +1,12 @@
 export { assertRuntimeManifest }
 export type { RuntimeManifest }
 
-import { assert, castType, checkType, hasProp, isBaseAssets, isBaseServer, isObject } from './utils.js'
+import { assert, checkType, hasProp, isBaseAssets, isBaseServer, isObject } from './utils.js'
 
 type RuntimeManifest = {
   baseServer: string
   baseAssets: string
   includeAssetsImportedByServer: boolean
-  redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
 }
@@ -20,8 +19,6 @@ function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & R
   assert(isBaseServer(obj.baseServer))
   assert(isBaseAssets(obj.baseAssets))
   assert(hasProp(obj, 'includeAssetsImportedByServer', 'boolean'))
-  assert(hasProp(obj, 'redirects', 'object'))
-  castType<{ redirects: Record<string, string> }>(obj)
   assert(hasProp(obj, 'trailingSlash', 'boolean'))
   assert(hasProp(obj, 'disableUrlNormalization', 'boolean'))
   checkType<RuntimeManifest>(obj)

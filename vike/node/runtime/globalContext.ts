@@ -38,13 +38,16 @@ import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
-import { setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
+import { getPageFilesAll, setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
 import { assertPluginManifest } from '../shared/assertPluginManifest.js'
 import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
+import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
+import { assertV1Design } from '../shared/assertV1Design.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
@@ -53,6 +56,7 @@ const globalObject = getGlobalObject<{
   viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
   isViteDev?: boolean
   viteConfig?: ResolvedConfig
+  // TODO/now remove
   vikeConfig?: VikeConfigObject
   outDirRoot?: string
   isPrerendering?: true
@@ -66,38 +70,41 @@ initDevEntry()
 type GlobalContextPublic = {
   assetsManifest: null | ViteManifest
 }
+type PageRuntimeInfo = Awaited<ReturnType<typeof getPageRuntimeInfo>>['userFiles']
 type GlobalContext = {
   baseServer: string
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
-  redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
-} & (
-  | {
-      isProduction: false
-      isPrerendering: false
-      viteConfig: ResolvedConfig
-      vikeConfig: VikeConfigObject
-      viteDevServer: ViteDevServer
-      assetsManifest: null
-    }
-  | ({
-      isProduction: true
-      assetsManifest: ViteManifest
-      viteDevServer: null
-    } & (
-      | {
-          isPrerendering: false
-          viteConfig: null
-        }
-      | {
-          isPrerendering: true
-          usesClientRouter: boolean
-          viteConfig: ResolvedConfig
-        }
-    ))
-)
+  vikeConfig: {
+    global: ConfigUserFriendly
+  }
+} & PageRuntimeInfo &
+  (
+    | {
+        isProduction: false
+        isPrerendering: false
+        viteConfig: ResolvedConfig
+        viteDevServer: ViteDevServer
+        assetsManifest: null
+      }
+    | ({
+        isProduction: true
+        assetsManifest: ViteManifest
+        viteDevServer: null
+      } & (
+        | {
+            isPrerendering: false
+            viteConfig: null
+          }
+        | {
+            isPrerendering: true
+            usesClientRouter: boolean
+            viteConfig: ResolvedConfig
+          }
+      ))
+  )
 
 function getGlobalContext(): GlobalContext {
   if (!globalObject.globalContext) {
@@ -130,6 +137,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
 }
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
   const globalContextPublic = {
+    // TODO/now: add viteConfig and vikeConfig
     assetsManifest: globalContext.assetsManifest
   }
 
@@ -233,6 +241,7 @@ async function initGlobalContext_getGlobalContextAsync(isProduction: boolean): P
   await initGlobalContext(isProduction)
 }
 
+// TODO/now: refactor: move this to the top of the file
 async function initGlobalContext(isProduction: boolean): Promise<void> {
   if (globalObject.globalContext) {
     assert(globalObject.globalContext.isProduction === isProduction)
@@ -249,6 +258,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
+    const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
     const pluginManifest = getRuntimeManifest(vikeConfig.vikeConfigGlobal, viteConfig)
     globalObject.globalContext = {
       isProduction: false,
@@ -256,11 +266,13 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       assetsManifest: null,
       viteDevServer,
       viteConfig,
-      vikeConfig,
+      vikeConfig: {
+        global: globalConfig
+      },
+      ...userFiles,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
-      redirects: pluginManifest.redirects,
       trailingSlash: pluginManifest.trailingSlash,
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
@@ -268,16 +280,20 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot)
     const { assetsManifest, pluginManifest } = buildEntry
     setPageFiles(buildEntry.pageFiles)
+    const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
     assertViteManifest(assetsManifest)
     assertPluginManifest(pluginManifest)
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
+      vikeConfig: {
+        global: globalConfig
+      },
+      ...userFiles,
       viteDevServer: null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
-      redirects: pluginManifest.redirects,
       trailingSlash: pluginManifest.trailingSlash,
       usesClientRouter: pluginManifest.usesClientRouter,
       disableUrlNormalization: pluginManifest.disableUrlNormalization
@@ -299,8 +315,35 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   }
 }
 
+async function getPageRuntimeInfo(isProduction: boolean) {
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig } = await getPageFilesAll(
+    false,
+    isProduction
+  )
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
+    pageFilesAll,
+    pageConfigs,
+    pageConfigGlobal,
+    allPageIds
+  )
+  const userFiles = {
+    pageFilesAll,
+    pageConfigs,
+    pageConfigGlobal,
+    allPageIds,
+    pageRoutes,
+    onBeforeRouteHook
+  }
+  assertV1Design(
+    // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
+    pageConfigs.length > 0,
+    pageFilesAll
+  )
+  return { userFiles, globalConfig }
+}
+
 function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
-  const { includeAssetsImportedByServer, redirects, trailingSlash, disableUrlNormalization } = vikeConfigGlobal
+  const { includeAssetsImportedByServer, trailingSlash, disableUrlNormalization } = vikeConfigGlobal
   const { baseServer, baseAssets } = resolveBaseFromResolvedConfig(
     vikeConfigGlobal.baseServer,
     vikeConfigGlobal.baseAssets,
@@ -310,7 +353,6 @@ function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: Reso
     baseServer,
     baseAssets,
     includeAssetsImportedByServer,
-    redirects,
     trailingSlash,
     disableUrlNormalization
   }

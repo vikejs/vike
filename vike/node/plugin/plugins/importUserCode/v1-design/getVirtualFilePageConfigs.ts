@@ -69,8 +69,8 @@ function getCodePageConfigsSerialized(
         pageConfig,
         importStatements,
         (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
-        { isEager: true },
-        '    '
+        '    ',
+        true
       )
     )
     lines.push(`    },`)
@@ -96,8 +96,8 @@ function getCodePageConfigGlobalSerialized(
       pageConfigGlobal,
       importStatements,
       (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
-      { isEager: true },
-      '    '
+      '    ',
+      null
     )
   )
   lines.push(`  },`)

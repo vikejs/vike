@@ -57,8 +57,8 @@ function getLoadConfigValuesAll(
       pageConfig,
       importStatements,
       (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
-      { isEager: false },
-      ''
+      '',
+      false
     )
   )
   lines.push('};')

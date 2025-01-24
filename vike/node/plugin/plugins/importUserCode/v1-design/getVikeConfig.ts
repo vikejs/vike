@@ -9,7 +9,6 @@ export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
 export type { VikeConfigGlobal }
-export type { VikeConfigNew }
 export type { VikeVitePluginOptions }
 
 import {
@@ -43,13 +42,11 @@ import type {
   ConfigValuesComputed,
   ConfigValues
 } from '../../../../../shared/page-configs/PageConfig.js'
-import type { Config } from '../../../../../shared/page-configs/Config.js'
+import type { Config, ConfigNameGlobal } from '../../../../../shared/page-configs/Config.js'
 import {
-  configDefinitionsBuiltIn,
-  configDefinitionsBuiltInGlobal,
+  configDefinitionsBuiltInAll,
   type ConfigDefinitions,
-  type ConfigDefinitionInternal,
-  type ConfigNameGlobal
+  type ConfigDefinitionInternal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
@@ -92,6 +89,8 @@ import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getC
 import { assertExtensionsPeerDependencies, assertExtensionsConventions } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
+const configDefinitionsBuiltIn = getConfigDefinitionsBuiltIn()
+const configDefinitionsBuiltInGlobal = getConfigDefinitionsBuiltInGlobal()
 
 assertIsNotProductionRuntime()
 
@@ -117,12 +116,11 @@ type InterfaceValueFile = InterfaceFileCommons & {
 type ConfigName = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
-type VikeConfigNew = { global: ReturnType<typeof getPageConfigUserFriendlyNew> }
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   vikeConfigGlobal: VikeConfigGlobal
-  vikeConfigNew: VikeConfigNew
+  global: ReturnType<typeof getPageConfigUserFriendlyNew>
 }
 
 let restartVite = false
@@ -368,9 +366,7 @@ async function loadVikeConfig_withErrorHandling(
           configValueSources: {}
         },
         vikeConfigGlobal: resolveVikeConfigGlobal({}, {}),
-        vikeConfigNew: {
-          global: getPageConfigUserFriendlyNew({ configValues: {} })
-        }
+        global: getPageConfigUserFriendlyNew({ configValues: {} })
       }
       return dummyData
     }
@@ -378,16 +374,123 @@ async function loadVikeConfig_withErrorHandling(
 }
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir)
-
   const importedFilesLoaded: ImportedFilesLoaded = {}
-
-  const { pageConfigGlobal, vikeConfigGlobal } = await getGlobalConfigs(
-    interfaceFilesByLocationId,
-    userRootDir,
-    importedFilesLoaded,
-    vikeVitePluginOptions
+  const [globalConfigs, pageConfigs] = await Promise.all([
+    getGlobalConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded, vikeVitePluginOptions),
+    getPageConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded)
+  ])
+  return { pageConfigs, ...globalConfigs }
+}
+async function getGlobalConfigs(
+  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  userRootDir: string,
+  importedFilesLoaded: ImportedFilesLoaded,
+  vikeVitePluginOptions: unknown
+) {
+  const locationIds = objectKeys(interfaceFilesByLocationId)
+  const interfaceFilesGlobal = objectFromEntries(
+    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
+      return isGlobalLocation(locationId, locationIds)
+    })
   )
 
+  // Validate that global configs live in global interface files
+  {
+    const interfaceFilesGlobalPaths: string[] = []
+    objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
+      assert(isGlobalLocation(locationId, locationIds))
+      interfaceFiles.forEach(({ filePath: { filePathAbsoluteUserRootDir } }) => {
+        if (filePathAbsoluteUserRootDir) {
+          interfaceFilesGlobalPaths.push(filePathAbsoluteUserRootDir)
+        }
+      })
+    })
+    const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
+    objectEntries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
+      interfaceFiles.forEach((interfaceFile) => {
+        Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
+          if (!isGlobalLocation(locationId, locationIds) && isGlobalConfig(configName)) {
+            assertUsage(
+              false,
+              [
+                `${interfaceFile.filePath.filePathToShowToUser} defines the config ${pc.cyan(
+                  configName
+                )} which is global:`,
+                globalPaths.length
+                  ? `define ${pc.cyan(configName)} in ${joinEnglish(globalPaths, 'or')} instead`
+                  : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead`
+              ].join(' ')
+            )
+          }
+        })
+      })
+    })
+  }
+
+  const pageConfigGlobalValues: Record<string, unknown> = {}
+  const pageConfigGlobal: PageConfigGlobalBuildTime = {
+    configDefinitions: configDefinitionsBuiltInGlobal,
+    configValueSources: {}
+  }
+  await Promise.all(
+    objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
+      const sources = await resolveConfigValueSources(
+        configName,
+        configDef,
+        interfaceFilesGlobal,
+        userRootDir,
+        importedFilesLoaded
+      )
+      const configValueSource = sources[0]
+      if (!configValueSource) return
+      pageConfigGlobal.configValueSources[configName] = sources
+      // TODO/now
+      if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
+        assert(!('value' in configValueSource))
+      } else {
+        assert('value' in configValueSource)
+        // TODO/now
+        if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
+        pageConfigGlobalValues[configName] = configValueSource.value
+      }
+    })
+  )
+
+  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
+  {
+    assert(isObject(vikeVitePluginOptions))
+    Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
+      assert(includes(objectKeys(configDefinitionsBuiltInGlobal), configName))
+      const configDef = configDefinitionsBuiltInGlobal[configName]
+      const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+      sources.push({
+        value,
+        configEnv: configDef.env,
+        definedAtFilePath: {
+          ...getFilePathResolved({
+            userRootDir,
+            filePathAbsoluteUserRootDir: '/vite.config.js'
+          }),
+          fileExportPathToShowToUser: null
+        },
+        locationId: '/' as LocationId,
+        isOverriden: configDef.cumulative ? false : sources.length > 0,
+        valueIsImportedAtRuntime: false,
+        valueIsDefinedByPlusFile: false
+      })
+    })
+  }
+
+  const configValues = getConfigValues(pageConfigGlobal)
+  const global = getPageConfigUserFriendlyNew({ configValues })
+
+  return { pageConfigGlobal, vikeConfigGlobal, global }
+}
+async function getPageConfigs(
+  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  userRootDir: string,
+  importedFilesLoaded: ImportedFilesLoaded
+) {
   const pageConfigs: PageConfigBuildTime[] = await Promise.all(
     objectEntries(interfaceFilesByLocationId)
       .filter(([_pageId, interfaceFiles]) => isDefiningPage(interfaceFiles))
@@ -458,15 +561,12 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   assertPageConfigs(pageConfigs)
 
-  const configValues = getConfigValues(pageConfigGlobal)
-  const global = getPageConfigUserFriendlyNew({ configValues })
-
-  return { pageConfigs, pageConfigGlobal, vikeConfigGlobal, vikeConfigNew: { global } }
+  return pageConfigs
 }
 
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
   const configValues: ConfigValues = {}
-  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config).forEach((entry) => {
+  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config, null).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
       const { configValueBase, value, configName } = entry
@@ -493,7 +593,7 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
   return configValues
 }
 
-// TODO/soon: refactor
+// TODO/now: refactor
 //  - Dedupe: most of the assertUsageGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
 //    - This assertUsage() message is slightly better: use this one for getGlobalConfigs()
 // Global configs should be defined at global locations
@@ -512,7 +612,7 @@ function assertUsageGlobalConfigs(
     configNames.forEach((configName) => {
       if (isGlobalConfig(configName)) return
       const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
-      if (configDef.global) {
+      if (configDef.global === true) {
         const locationIds = objectKeys(interfaceFilesByLocationId)
         if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
           const interfaceFilesGlobal = objectFromEntries(
@@ -590,106 +690,6 @@ function getInterfaceFilesRelevant(
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return interfaceFilesRelevant
-}
-
-async function getGlobalConfigs(
-  interfaceFilesByLocationId: InterfaceFilesByLocationId,
-  userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded,
-  vikeVitePluginOptions: unknown
-) {
-  const locationIds = objectKeys(interfaceFilesByLocationId)
-  const interfaceFilesGlobal = objectFromEntries(
-    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
-      return isGlobalLocation(locationId, locationIds)
-    })
-  )
-
-  // Validate that global configs live in global interface files
-  {
-    const interfaceFilesGlobalPaths: string[] = []
-    objectEntries(interfaceFilesGlobal).forEach(([locationId, interfaceFiles]) => {
-      assert(isGlobalLocation(locationId, locationIds))
-      interfaceFiles.forEach(({ filePath: { filePathAbsoluteUserRootDir } }) => {
-        if (filePathAbsoluteUserRootDir) {
-          interfaceFilesGlobalPaths.push(filePathAbsoluteUserRootDir)
-        }
-      })
-    })
-    const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
-    objectEntries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
-      interfaceFiles.forEach((interfaceFile) => {
-        Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
-          if (!isGlobalLocation(locationId, locationIds) && isGlobalConfig(configName)) {
-            assertUsage(
-              false,
-              [
-                `${interfaceFile.filePath.filePathToShowToUser} defines the config ${pc.cyan(
-                  configName
-                )} which is global:`,
-                globalPaths.length
-                  ? `define ${pc.cyan(configName)} in ${joinEnglish(globalPaths, 'or')} instead`
-                  : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead`
-              ].join(' ')
-            )
-          }
-        })
-      })
-    })
-  }
-
-  const pageConfigGlobalValues: Record<string, unknown> = {}
-  const pageConfigGlobal: PageConfigGlobalBuildTime = {
-    configDefinitions: configDefinitionsBuiltInGlobal,
-    configValueSources: {}
-  }
-  await Promise.all(
-    objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
-      const sources = await resolveConfigValueSources(
-        configName,
-        configDef,
-        interfaceFilesGlobal,
-        userRootDir,
-        importedFilesLoaded
-      )
-      const configValueSource = sources[0]
-      if (!configValueSource) return
-      pageConfigGlobal.configValueSources[configName] = sources
-      if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
-        assert(!('value' in configValueSource))
-      } else {
-        assert('value' in configValueSource)
-        if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-        pageConfigGlobalValues[configName] = configValueSource.value
-      }
-    })
-  )
-
-  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
-  {
-    assert(isObject(vikeVitePluginOptions))
-    Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
-      if (pageConfigGlobal.configValueSources[configName]) return
-      pageConfigGlobal.configValueSources[configName] = []
-      pageConfigGlobal.configValueSources[configName].push({
-        value,
-        configEnv: { config: true },
-        definedAtFilePath: {
-          ...getFilePathResolved({
-            userRootDir,
-            filePathAbsoluteUserRootDir: '/vite.config.js'
-          }),
-          fileExportPathToShowToUser: null
-        },
-        locationId: '/' as LocationId,
-        isOverriden: false,
-        valueIsImportedAtRuntime: false,
-        valueIsDefinedByPlusFile: false
-      })
-    })
-  }
-
-  return { pageConfigGlobal, pageConfigGlobalValues, vikeConfigGlobal }
 }
 
 async function resolveConfigValueSources(
@@ -1365,12 +1365,23 @@ function isLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
   return !!configDef.env.config && !configDef._valueIsFilePath
 }
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
+  // TODO/now
   if (configName === 'prerender') return false
   const configNamesGlobal = getConfigNamesGlobal()
   return includes(configNamesGlobal, configName)
 }
 function getConfigNamesGlobal() {
   return Object.keys(configDefinitionsBuiltInGlobal)
+}
+function getConfigDefinitionsBuiltInGlobal() {
+  return objectFromEntries(
+    objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== undefined)
+  )
+}
+function getConfigDefinitionsBuiltIn() {
+  return objectFromEntries(
+    objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== true)
+  )
 }
 function assertConfigExists(configName: string, configNamesRelevant: string[], filePathToShowToUser: string) {
   const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]
@@ -1413,21 +1424,13 @@ function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: s
   return interfaceFile.fileExportsByConfigName[configName]?.configValue
 }
 
-// TODO: refactor code below
+// TODO/now: refactor code below
 
 function resolveVikeConfigGlobal(
   vikeVitePluginOptions: unknown,
   pageConfigGlobalValues: Record<string, unknown>
 ): VikeConfigGlobal {
-  // TODO/v1-release: remove
-  assertVikeConfigGlobal(vikeVitePluginOptions, ({ prop, errMsg }) => `vite.config.js > vike option ${prop} ${errMsg}`)
-  const configs = [vikeVitePluginOptions]
-
-  assertVikeConfigGlobal(pageConfigGlobalValues, ({ prop, errMsg }) => {
-    // Can we add the config file path ?
-    return `config ${pc.cyan(prop)} ${errMsg}`
-  })
-  configs.push(pageConfigGlobalValues)
+  const configs: VikeVitePluginOptions[] = [vikeVitePluginOptions as any, pageConfigGlobalValues]
 
   const vikeConfigGlobal: VikeConfigGlobal = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
@@ -1435,7 +1438,6 @@ function resolveVikeConfigGlobal(
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
     baseServer: pickFirst(configs.map((c) => c.baseServer)) ?? null,
     baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null,
-    redirects: merge(configs.map((c) => c.redirects)) ?? {},
     disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
     trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
   }
@@ -1458,103 +1460,8 @@ function resolvePrerenderOptions(configs: VikeVitePluginOptions[]): VikeConfigGl
 function isObject2<T>(p: T | boolean | undefined): p is T {
   return typeof p === 'object'
 }
-type Obj = Record<string, string>
-function merge(objs: (Obj | undefined)[]): Obj {
-  const obj: Record<string, string> = {}
-  objs.forEach((e) => {
-    Object.assign(obj, e)
-  })
-  return obj
-}
 function pickFirst<T>(arr: T[]): T | undefined {
   return arr.filter((v) => v !== undefined)[0]
-}
-type WrongUsage = { prop: string; errMsg: `should be a${string}` }
-function assertVikeConfigGlobal(
-  vikeConfigGlobal: unknown,
-  wrongUsageMsg: (wrongUsage: WrongUsage) => string
-): asserts vikeConfigGlobal is VikeVitePluginOptions {
-  const wrongUsageError = check(vikeConfigGlobal)
-  if (wrongUsageError) {
-    assertUsage(false, wrongUsageMsg(wrongUsageError))
-  }
-}
-function check(vikeConfigGlobal: unknown): null | WrongUsage {
-  assert(isObject(vikeConfigGlobal))
-  {
-    const prop = 'disableUrlNormalization'
-    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
-      return { prop, errMsg: 'should be a boolean' }
-  }
-  {
-    const prop = 'trailingSlash'
-    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
-      return { prop, errMsg: 'should be a boolean' }
-  }
-  {
-    const prop = 'redirects'
-    const { redirects } = vikeConfigGlobal
-    if (
-      !(
-        redirects === undefined ||
-        (isObject(redirects) && Object.values(redirects).every((v) => typeof v === 'string'))
-      )
-    )
-      return { prop, errMsg: 'should be an object of strings' }
-  }
-  {
-    const prop = 'disableAutoFullBuild'
-    if (
-      !hasProp(vikeConfigGlobal, prop, 'boolean') &&
-      !hasProp(vikeConfigGlobal, prop, 'undefined') &&
-      !(vikeConfigGlobal[prop] === 'prerender')
-    )
-      return { prop, errMsg: "should be a boolean or 'prerender'" }
-  }
-  {
-    const prop = 'includeAssetsImportedByServer'
-    if (!hasProp(vikeConfigGlobal, prop, 'boolean') && !hasProp(vikeConfigGlobal, prop, 'undefined'))
-      return { prop, errMsg: 'should be a boolean' }
-  }
-  {
-    const prop = 'prerender'
-    if (
-      !hasProp(vikeConfigGlobal, prop, 'object') &&
-      !hasProp(vikeConfigGlobal, prop, 'boolean') &&
-      !hasProp(vikeConfigGlobal, prop, 'undefined')
-    )
-      return { prop, errMsg: 'should be an object or a boolean' }
-  }
-
-  const configVikePrerender = vikeConfigGlobal.prerender
-  if (typeof configVikePrerender === 'object') {
-    {
-      const p = 'partial'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
-    }
-    {
-      const p = 'noExtraDir'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
-    }
-    {
-      const p = 'disableAutoRun'
-      if (!hasProp(configVikePrerender, p, 'boolean') && !hasProp(configVikePrerender, p, 'undefined'))
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
-    }
-    {
-      const p = 'parallel'
-      if (
-        !hasProp(configVikePrerender, p, 'boolean') &&
-        !hasProp(configVikePrerender, p, 'number') &&
-        !hasProp(configVikePrerender, p, 'undefined')
-      )
-        return { prop: `prerender.${p}`, errMsg: 'should be a boolean or a number' }
-    }
-  }
-
-  return null
 }
 type VikeConfigGlobal = {
   prerender:
@@ -1569,11 +1476,10 @@ type VikeConfigGlobal = {
   includeAssetsImportedByServer: boolean
   baseAssets: string | null
   baseServer: string | null
-  redirects: Record<string, string>
   trailingSlash: boolean
   disableUrlNormalization: boolean
 }
-// TODO: deprecate
+// TODO/now: deprecate
 type VikeVitePluginOptions = {
   /**
    * Enable pre-rendering.

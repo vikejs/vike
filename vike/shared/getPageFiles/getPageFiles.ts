@@ -7,12 +7,14 @@ import type { PageFile } from './getPageFileObject.js'
 import { parseGlobResults } from './parseGlobResults.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
+import { type ConfigUserFriendly, getPageConfigUserFriendlyNew } from '../page-configs/getPageConfigUserFriendly.js'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined
   pageConfigs?: PageConfigRuntime[] | undefined
   pageConfigGlobal?: PageConfigGlobalRuntime | undefined
   pageFilesGetter?: () => Promise<void> | undefined
+  globalConfig?: ConfigUserFriendly
 }>('setPageFiles.ts', {})
 
 function setPageFiles(pageFilesExports: unknown) {
@@ -20,6 +22,8 @@ function setPageFiles(pageFilesExports: unknown) {
   globalObject.pageFilesAll = pageFiles
   globalObject.pageConfigs = pageConfigs
   globalObject.pageConfigGlobal = pageConfigGlobal
+  // TODO/now: re-use this call, instead of calling it twice
+  globalObject.globalConfig = getPageConfigUserFriendlyNew(pageConfigGlobal)
 }
 function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
   globalObject.pageFilesGetter = async () => {
@@ -35,6 +39,7 @@ async function getPageFilesAll(
   allPageIds: string[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
+  globalConfig: ConfigUserFriendly
 }> {
   if (isClientSide) {
     assert(!globalObject.pageFilesGetter)
@@ -50,10 +55,10 @@ async function getPageFilesAll(
       await globalObject.pageFilesGetter()
     }
   }
-  const { pageFilesAll, pageConfigs, pageConfigGlobal } = globalObject
-  assert(pageFilesAll && pageConfigs && pageConfigGlobal)
+  const { pageFilesAll, pageConfigs, pageConfigGlobal, globalConfig } = globalObject
+  assert(pageFilesAll && pageConfigs && pageConfigGlobal && globalConfig)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
-  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal }
+  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig }
 }
 
 function getAllPageIds(allPageFiles: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {

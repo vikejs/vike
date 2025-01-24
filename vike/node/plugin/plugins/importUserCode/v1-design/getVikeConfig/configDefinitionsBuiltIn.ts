@@ -1,9 +1,7 @@
-export { configDefinitionsBuiltIn }
-export { configDefinitionsBuiltInGlobal }
+export { configDefinitionsBuiltInAll }
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
 export type { ConfigDefinitionInternal }
-export type { ConfigNameGlobal }
 export type { ConfigEffect }
 
 import type {
@@ -13,7 +11,7 @@ import type {
   DefinedAtFilePath,
   ConfigValueSource
 } from '../../../../../../shared/page-configs/PageConfig.js'
-import type { Config, ConfigNameBuiltIn } from '../../../../../../shared/page-configs/Config.js'
+import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../../../shared/page-configs/Config.js'
 import { assert, assertUsage } from '../../../../utils.js'
 import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
@@ -49,7 +47,6 @@ type ConfigDefinition = {
    * https://vike.dev/meta
    */
   eager?: boolean
-  // TODO/soon: use `global` internally and remove configDefinitionsBuiltInGlobal
   /**
    * Whether the configuration always applies to all pages (no config inheritance).
    *
@@ -57,7 +54,9 @@ type ConfigDefinition = {
    *
    * https://vike.dev/extends#inheritance
    */
-  global?: boolean
+  global?: boolean | ((value: unknown) => boolean)
+  // TODO/now implement
+  type?: string | string[]
 }
 
 /**
@@ -90,8 +89,8 @@ type ConfigDefinitions = Record<
   string, // configName
   ConfigDefinitionInternal
 >
-type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn, ConfigDefinitionInternal>
-const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
+type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
+const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true }
   },
@@ -148,9 +147,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     eager: true
   },
   clientHooks: {
-    env: { config: true }
-  },
-  prerender: {
     env: { config: true }
   },
   hydrationCanBeAborted: {
@@ -225,39 +221,34 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { client: true }
   },
   // TODO/eventually: define it as a global config.
-  middleware: { env: { server: true }, cumulative: true, eager: true }
-}
-
-type ConfigNameGlobal =
-  | 'onPrerenderStart'
-  | 'onBeforeRoute'
-  | 'prerender'
-  | 'disableAutoFullBuild'
-  | 'includeAssetsImportedByServer'
-  | 'baseAssets'
-  | 'baseServer'
-  | 'redirects'
-  | 'trailingSlash'
-  | 'disableUrlNormalization'
-  | 'vite'
-const configDefinitionsBuiltInGlobal: Record<ConfigNameGlobal, ConfigDefinitionInternal> = {
+  middleware: { env: { server: true }, cumulative: true, eager: true },
   onPrerenderStart: {
     env: { server: true, production: true },
-    eager: true
+    eager: true,
+    global: true
   },
   onBeforeRoute: {
     env: { server: true, client: 'if-client-routing' },
-    eager: true
+    eager: true,
+    global: true
   },
-  prerender: { env: { config: true } },
-  vite: { env: { config: true }, cumulative: true },
-  disableAutoFullBuild: { env: { config: true } },
-  includeAssetsImportedByServer: { env: { config: true } },
-  baseAssets: { env: { config: true } },
-  baseServer: { env: { config: true } },
-  redirects: { env: { server: true } },
-  trailingSlash: { env: { server: true } },
-  disableUrlNormalization: { env: { server: true } }
+  prerender: { env: { config: true }, global: (value) => typeof value !== 'object', type: ['boolean', 'object'] },
+  vite: { env: { config: true }, global: true, cumulative: true, type: 'object' },
+  disableAutoFullBuild: {
+    env: { config: true },
+    global: true,
+    type: [
+      'boolean',
+      // Can be 'prerender'
+      'string'
+    ]
+  },
+  includeAssetsImportedByServer: { env: { config: true }, global: true, type: 'boolean' },
+  baseAssets: { env: { config: true }, global: true, type: 'string' },
+  baseServer: { env: { config: true }, global: true, type: 'string' },
+  redirects: { env: { server: true }, global: true, type: 'string{}', cumulative: true },
+  trailingSlash: { env: { server: true }, global: true, type: 'boolean' },
+  disableUrlNormalization: { env: { server: true }, global: true, type: 'boolean' }
 }
 
 function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {

@@ -1,6 +1,8 @@
 export type { Config }
 export type { ConfigBuiltIn }
+export type { ConfigBuiltInResolved }
 export type { ConfigNameBuiltIn }
+export type { ConfigNameGlobal }
 export type { ConfigMeta }
 export type { HookName }
 export type { HookNamePage }
@@ -62,7 +64,7 @@ type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
 type HookNameOldDesign = 'render' | 'prerender'
 
 type ConfigNameBuiltIn =
-  | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite'>
+  | Exclude<keyof Config, keyof VikeVitePluginOptions | 'onBeforeRoute' | 'onPrerenderStart' | 'vite' | 'redirects'>
   | 'prerender'
   | 'isClientRuntimeLoaded'
   | 'onBeforeRenderEnv'
@@ -70,6 +72,19 @@ type ConfigNameBuiltIn =
   | 'hooksTimeout'
   | 'clientHooks'
   | 'middleware'
+
+type ConfigNameGlobal =
+  | 'onPrerenderStart'
+  | 'onBeforeRoute'
+  | 'prerender'
+  | 'disableAutoFullBuild'
+  | 'includeAssetsImportedByServer'
+  | 'baseAssets'
+  | 'baseServer'
+  | 'redirects'
+  | 'trailingSlash'
+  | 'disableUrlNormalization'
+  | 'vite'
 
 type Config = ConfigBuiltIn &
   Vike.Config &
@@ -414,6 +429,12 @@ type ConfigBuiltIn = {
    */
   vite?: InlineConfig
 
+  /** Permanent redirections (HTTP status code 301)
+   *
+   * https://vike.dev/redirects
+   */
+  redirects?: Record<string, string>
+
   // TODO/pageContext-prefetch: remove experimental note
   /**
    * @experimental DON'T USE: the API *will* have breaking changes upon any minor version release.
@@ -469,5 +490,11 @@ type ConfigBuiltIn = {
    */
   keepScrollPosition?: KeepScrollPosition
 }
+
+type ConfigBuiltInResolved = {
+  passToClient?: string[][]
+  redirects?: Record<string, string>[]
+}
+
 type ConfigMeta = Record<string, ConfigDefinition>
 type ImportString = `import:${string}`
