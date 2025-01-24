@@ -37,6 +37,7 @@ function assertIsNotProductionRuntime(): void | undefined {
 function onSetupRuntime(): void | undefined {
   if (debug.isActivated) debug('assertSetup()', new Error().stack)
   if (isTest()) return
+  assertNodeEnvIsNotUndefinedString()
   if (!isViteLoaded()) {
     // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
     assertWarning(
@@ -131,6 +132,18 @@ function getEnvDescription(): `environment is set to be a ${string} environment 
     `environment is set to be a ${pc.bold(envType)} by ${pc.cyan(`process.env.NODE_ENV===${JSON.stringify(getNodeEnv())}`)}` as const
   return nodeEnvDesc
 }
+
+// For example, Wrangler bug replaces `process.env.NODE_ENV` with `"undefined"`
+// https://github.com/cloudflare/workers-sdk/issues/7886
+function assertNodeEnvIsNotUndefinedString() {
+  const nodeEnv = getNodeEnv()
+  assertWarning(
+    nodeEnv !== 'undefined',
+    `${pc.cyan('process.env.NODE_ENV==="undefined"')} which is unexpected: ${pc.cyan('process.env.NODE_ENV')} can be set to the *value* ${pc.cyan('undefined')} (i.e. ${pc.cyan('process.env.NODE_ENV===undefined')}) but it shouldn't be set to the *string* ${pc.cyan('"undefined"')} ${pc.underline('https://vike.dev/NODE_ENV')}`,
+    { onlyOnce: true }
+  )
+}
+
 function isNodeEnvDev(): boolean {
   const nodeEnv = getNodeEnv()
   // That's quite strict, let's see if some user complains
