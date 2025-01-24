@@ -277,7 +277,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       disableUrlNormalization: pluginManifest.disableUrlNormalization
     }
   } else {
-    const buildEntry = await getBuildEntry(globalObject.outDirRoot)
+    const buildEntry = await getBuildEntry(globalObject.outDirRoot, isPrerendering)
     const { assetsManifest, pluginManifest } = buildEntry
     setPageFiles(buildEntry.pageFiles)
     const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
@@ -380,12 +380,12 @@ function eagerlyLoadUserFiles() {
   getPageFilesExports()
 }
 
-async function getBuildEntry(outDir?: string) {
+async function getBuildEntry(outDir?: string, isPrerendering?: true) {
   debug('getBuildEntry()')
   if (!globalObject.buildEntry) {
     debug('importServerProductionEntry()')
     // importServerProductionEntry() loads dist/server/entry.mjs which calls setGlobalContext_buildEntry()
-    await importServerProductionEntry({ outDir })
+    await importServerProductionEntry({ outDir, doNotLoadServer: isPrerendering })
     if (!globalObject.buildEntry) {
       debug('globalObject.buildEntryPrevious')
       // Needed, for example, when calling the API prerender() then preview() because both trigger a importServerProductionEntry() call but only the first only is applied because of the import() cache. (A proper implementation would be to clear the import() cache, but it probably isn't possible on platforms such as Cloudflare Workers.)
