@@ -384,6 +384,7 @@ async function getBuildEntry(outDir?: string) {
   debug('getBuildEntry()')
   if (!globalObject.buildEntry) {
     debug('importServerProductionEntry()')
+    // importServerProductionEntry() loads dist/server/entry.mjs which calls setGlobalContext_buildEntry()
     await importServerProductionEntry({ outDir })
     if (!globalObject.buildEntry) {
       debug('globalObject.buildEntryPrevious')
