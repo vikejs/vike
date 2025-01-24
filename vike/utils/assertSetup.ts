@@ -41,7 +41,7 @@ function onSetupRuntime(): void | undefined {
     // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
     assertWarning(
       !isNodeEnvDev(),
-      `The ${getEnvDescription()}, which is contradictory because the environment seems to be a production environment (Vite isn't loaded), see https://vike.dev/NODE_ENV`,
+      `The ${getEnvDescription()}, which seems contradictory because the environment seems to be a production environment (Vite isn't loaded), see https://vike.dev/NODE_ENV`,
       { onlyOnce: true }
     )
     assertUsage(
