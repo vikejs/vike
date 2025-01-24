@@ -41,6 +41,8 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
             vike: vikeConfig,
+            // TODO/v1-release: remove
+            configVikePromise: Promise.resolve(vikeConfig.vikeConfigGlobal)
           }
         }
       }
