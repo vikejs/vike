@@ -51,12 +51,14 @@ function onSetupRuntime(): void | undefined {
     // This assert() one of the main goal of this file: it ensures assertIsNotProductionRuntime()
     assert(!setup.shouldNotBeProduction)
   } else {
-    // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
-    assertWarning(
-      isNodeEnvDev() || setup.vitePreviewServer || setup.isPrerendering,
-      `The ${getEnvDescription()}, but Vite is loaded which is prohibited in production, see https://vike.dev/NODE_ENV`,
-      { onlyOnce: true }
-    )
+    if (!setup.vitePreviewServer && !setup.isPrerendering) {
+      // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
+      assertWarning(
+        isNodeEnvDev(),
+        `The ${getEnvDescription()}, but Vite is loaded which is prohibited in production, see https://vike.dev/NODE_ENV`,
+        { onlyOnce: true }
+      )
+    }
     // These two assert() calls aren't that interesting
     assert(setup.vikeVitePlugin)
     assert(setup.shouldNotBeProduction)
@@ -132,7 +134,7 @@ function getEnvDescription(): `environment is set to be a ${string} environment 
 function isNodeEnvDev(): boolean {
   const nodeEnv = getNodeEnv()
   // That's quite strict, let's see if some user complains
-  return !nodeEnv || isNodeEnv(['development', 'dev'])
+  return nodeEnv === undefined || isNodeEnv(['development', 'dev', ''])
 }
 function isNodeEnv(value: string | string[]) {
   const values = Array.isArray(value) ? value : [value]
