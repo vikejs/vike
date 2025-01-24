@@ -1,6 +1,23 @@
 export { headingsDetached }
+export { categories }
 
-import type { HeadingDetachedDefinition } from '@brillout/docpress'
+import type { Config, HeadingDetachedDefinition } from '@brillout/docpress'
+
+const categories: Config['categories'] = [
+  'Guides',
+  'Deploy',
+  'Tool Integration',
+  'Integration',
+  'API',
+  'Glossary',
+  'Get Started',
+  'Overview',
+  'Blog',
+  { name: 'Migration', hide: true },
+  { name: 'Work-in-progress', hide: true },
+  { name: 'Deprecated', hide: true },
+  { name: 'Page Redirection', hide: true }
+]
 
 const headingsDetached: HeadingDetachedDefinition[] = [
   ...api(),
@@ -283,12 +300,12 @@ function misc(): HeadingDetachedDefinition[] {
     {
       title: 'Get a free license key',
       url: '/free',
-      category: 'Pricing'
+      category: 'Overview'
     },
     {
       title: 'Buying a license key',
       url: '/buy',
-      category: 'Pricing'
+      category: 'Overview'
     },
     {
       title: 'SPA',
@@ -298,7 +315,7 @@ function misc(): HeadingDetachedDefinition[] {
     {
       title: 'Use Cases',
       url: '/use-cases',
-      category: 'Why Vike'
+      category: 'Overview'
     },
     {
       title: 'Glossary',
@@ -324,17 +341,17 @@ function misc(): HeadingDetachedDefinition[] {
     {
       title: 'vike-react',
       url: '/vike-react',
-      category: 'Extensions'
+      category: 'Overview'
     },
     {
       title: 'vike-vue',
       url: '/vike-vue',
-      category: 'Extensions'
+      category: 'Overview'
     },
     {
       title: 'vike-solid',
       url: '/vike-solid',
-      category: 'Extensions'
+      category: 'Overview'
     }
   ]
 }
