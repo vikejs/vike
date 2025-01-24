@@ -2,8 +2,6 @@ export { getGlobalObject }
 export { assertIsSingleModuleInstance }
 
 import { assert } from './assert.js'
-import { projectInfo } from './projectInfo.js'
-const projectKey = `_${projectInfo.projectName.toLowerCase()}` as const
 
 /** Share information across module instances. */
 function getGlobalObject<T extends Record<string, unknown> = never>(
@@ -26,6 +24,7 @@ function assertIsSingleModuleInstance(
 }
 
 function getGlobalObjects() {
+  const projectKey = '_vike'
   // @ts-ignore
   const globalObjects = (globalThis[projectKey] = globalThis[projectKey] || {})
   return globalObjects
