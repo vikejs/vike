@@ -76,7 +76,7 @@ function onSetupBuild() {
 }
 function onSetupPrerender() {
   markSetup_isPrerendering()
-  if (getNodeEnvValue()) assertUsageNodeEnvIsNotDev('pre-rendering')
+  if (getNodeEnv()) assertUsageNodeEnvIsNotDev('pre-rendering')
   setNodeEnvProduction()
 }
 
@@ -85,7 +85,7 @@ function isViteLoaded() {
   return setup.viteDevServer || setup.vitePreviewServer || setup.isViteDev !== undefined
 }
 function isTest() {
-  return isVitest() || getNodeEnvValue() === 'test'
+  return isVitest() || isNodeEnv('test')
 }
 
 // Called by Vite hook configureServer()
@@ -124,26 +124,34 @@ function assertUsageNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
   )
 }
 function getEnvDescription(): `environment is set to be a ${string} environment by process.env.NODE_ENV===${string}` {
-  const nodeEnv = getNodeEnvValue()
-  const isDev = isNodeEnvDev()
-  const envType = `${(isDev ? 'development' : 'production') as string} environment` as const
+  const envType = `${(isNodeEnvDev() ? 'development' : 'production') as string} environment` as const
   const nodeEnvDesc =
-    `environment is set to be a ${pc.bold(envType)} by ${pc.cyan(`process.env.NODE_ENV===${JSON.stringify(nodeEnv)}`)}` as const
+    `environment is set to be a ${pc.bold(envType)} by ${pc.cyan(`process.env.NODE_ENV===${JSON.stringify(getNodeEnv())}`)}` as const
   return nodeEnvDesc
 }
 function isNodeEnvDev(): boolean {
-  const nodeEnv = getNodeEnvValue()
+  const nodeEnv = getNodeEnv()
   // That's quite strict, let's see if some user complains
-  return !nodeEnv || ['development', 'dev'].includes(nodeEnv)
+  return !nodeEnv || isNodeEnv(['development', 'dev'])
 }
-function getNodeEnvValue(): null | undefined | string {
-  if (typeof process === 'undefined') return null
-  return process.env.NODE_ENV?.toLowerCase()
+function isNodeEnv(value: string | string[]) {
+  const values = Array.isArray(value) ? value : [value]
+  const nodeEnv = getNodeEnv()
+  return nodeEnv !== undefined && values.includes(nodeEnv.toLowerCase())
+}
+function getNodeEnv(): undefined | string {
+  let val: string | undefined
+  try {
+    val = process.env.NODE_ENV
+  } catch {
+    return undefined
+  }
+  return val
 }
 function setNodeEnvProduction(): void | undefined {
   // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4
   const proc = process
   const { env } = proc
   env.NODE_ENV = 'production'
-  assert(getNodeEnvValue() === 'production')
+  assert(isNodeEnv('production'))
 }
