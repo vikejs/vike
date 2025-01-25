@@ -161,6 +161,20 @@ function getNodeEnv(): undefined | string {
   } catch {
     return undefined
   }
+  /*
+  // Should we show the following warning? So far I don't think so because of the following. Maybe we can show it once we enable users to disable warnings.
+  // - The warning isn't always actionable, e.g. if it's a tool that dynamically sets `process.env.NODE_ENV`.
+  // - We assume that tools use `process.env.NODE_ENV` and not someting like `const { env } = process; env.NODE_ENV`. Thus, in practice, `val` overrides `val2` so having `val!==val2` isn't an issue.
+  {
+    const val2 = process.env['NODE' + '_ENV']
+    if (val2)
+      assertWarning(
+        val === val2,
+        `Dynamically setting process.env.NODE_ENV to ${val2} hasn't any effect because process.env.NODE_ENV is being statically replaced to ${val}.`,
+        { onlyOnce: true }
+      )
+  }
+  //*/
   return val
 }
 function setNodeEnvProduction(): void | undefined {
