@@ -139,7 +139,7 @@ function assertNodeEnvIsNotUndefinedString() {
   const nodeEnv = getNodeEnv()
   assertWarning(
     nodeEnv !== 'undefined',
-    `${pc.cyan('process.env.NODE_ENV==="undefined"')} which is unexpected: ${pc.cyan('process.env.NODE_ENV')} can be set to the *value* ${pc.cyan('undefined')} (i.e. ${pc.cyan('process.env.NODE_ENV===undefined')}) but it shouldn't be set to the *string* ${pc.cyan('"undefined"')} ${pc.underline('https://vike.dev/NODE_ENV')}`,
+    `${pc.cyan('process.env.NODE_ENV==="undefined"')} which is unexpected: ${pc.cyan('process.env.NODE_ENV')} is allowed to be the *value* ${pc.cyan('undefined')} (i.e. ${pc.cyan('process.env.NODE_ENV===undefined')}) but it shouldn't be the *string* ${pc.cyan('"undefined"')} ${pc.underline('https://vike.dev/NODE_ENV')}`,
     { onlyOnce: true }
   )
 }
