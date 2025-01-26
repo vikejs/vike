@@ -1,11 +1,13 @@
 // Code adapted from https://github.com/HenrikJoreteg/internal-nav-helper/blob/5199ec5448d0b0db7ec63cf76d88fa6cad878b7d/src/index.js#L11-L29
 
 export { initOnLinkClick }
+export { getCurrentLinkClick }
 
-import { assert } from './utils.js'
+import { getGlobalObject } from './utils.js'
 import { isSameAsCurrentUrl, skipLink } from './skipLink.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { scrollToHashOrTop, type ScrollTarget } from './setScrollPosition.js'
+const globalObject = getGlobalObject<{ currentLinkClick?: { href: string } }>('initOnLinkClick.ts', {})
 
 function initOnLinkClick() {
   document.addEventListener('click', onClick)
@@ -17,11 +19,17 @@ async function onClick(ev: MouseEvent) {
   if (!linkTag) return
 
   const href = linkTag.getAttribute('href')
+  if (href === null) return
+
+  globalObject.currentLinkClick = { href }
+  setTimeout(() => {
+    delete globalObject.currentLinkClick
+  }, 0)
 
   // Workaround for Firefox bug: clicking on a hash link that doesn't change the current URL causes Firefox to erroneously set `window.history.state = null` without firing any signal that we can detect.
   // - https://github.com/vikejs/vike/issues/1962
   // - https://github.com/sveltejs/kit/issues/8725
-  if (href?.includes('#') && isSameAsCurrentUrl(href)) {
+  if (href.includes('#') && isSameAsCurrentUrl(href)) {
     // Prevent Firefox from setting `window.history.state` to `null`
     ev.preventDefault()
     // Replicate the browser's native behavior
@@ -30,7 +38,6 @@ async function onClick(ev: MouseEvent) {
   }
 
   if (skipLink(linkTag)) return
-  assert(href)
   ev.preventDefault()
 
   let scrollTarget: ScrollTarget
@@ -58,4 +65,8 @@ function findLinkTag(target: HTMLElement): null | HTMLElement {
     target = parentNode as HTMLElement
   }
   return target
+}
+
+function getCurrentLinkClick() {
+  return globalObject.currentLinkClick
 }

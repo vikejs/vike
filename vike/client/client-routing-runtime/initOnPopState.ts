@@ -5,6 +5,8 @@ import { assertWarning, getGlobalObject } from './utils.js'
 import { onPopStateBegin, type HistoryInfo } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
+import { getCurrentLinkClick } from './initOnLinkClick.js'
+import { isSamePageHashLink } from './skipLink.js'
 
 const globalObject = getGlobalObject('initOnPopState.ts', { listeners: [] as Listener[] })
 
@@ -19,7 +21,14 @@ function initOnPopState() {
   //     - `location.hash = 'some-hash'`
   // - The `event` argument of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
   window.addEventListener('popstate', async (): Promise<undefined> => {
+    const currentLinkClick = getCurrentLinkClick()
     const { isNewState, previous, current } = onPopStateBegin()
+
+    // We use currentLinkClick.href instead of current.url because current.url missing text links such as #:~:text=With%20frontmatter-,Global%20metadata,-What%20is%20global (e.g. Chrome strips the `#:~:text=` part from the URL before the popstate event).
+    if (currentLinkClick && isSamePageHashLink(currentLinkClick.href)) {
+      // Let the browser handle hash links
+      return
+    }
 
     const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
 

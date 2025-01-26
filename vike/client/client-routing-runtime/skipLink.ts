@@ -1,5 +1,6 @@
 export { skipLink }
 export { isSameAsCurrentUrl }
+export { isSamePageHashLink }
 
 import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'
@@ -36,7 +37,7 @@ function isNewTabLink(linkTag: HTMLElement) {
   const rel = linkTag.getAttribute('rel')
   return target === '_blank' || target === '_external' || rel === 'external' || linkTag.hasAttribute('download')
 }
-function isSamePageHashLink(href: string) {
+function isSamePageHashLink(href: string): boolean {
   if (href.startsWith('#')) return true
   if (
     href.includes('#') &&
