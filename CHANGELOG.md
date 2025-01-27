@@ -1,3 +1,14 @@
+## [0.4.220](https://github.com/vikejs/vike/compare/v0.4.219...v0.4.220) (2025-01-27)
+
+
+### Bug Fixes
+
+* always let browsers handle hash links ([74befa8](https://github.com/vikejs/vike/commit/74befa88ba405a7e849f92f078cd941754b34471))
+* fix config overriding precedence ([8833925](https://github.com/vikejs/vike/commit/8833925fd4a3b585b8d6f4b04f5185041ff5dc0d))
+* improve warning message ([a2846c4](https://github.com/vikejs/vike/commit/a2846c4fa6f0db567df018a18beccdeb58ffd1ab))
+
+
+
 ## [0.4.219](https://github.com/vikejs/vike/compare/v0.4.218...v0.4.219) (2025-01-24)
 
 
