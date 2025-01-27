@@ -10,8 +10,8 @@ import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 //   - By the app using `history.back()` / `history.forward()` / `history.go()`
 // - URL hash changes:
 //   - By the user clicking on `<a href="#some-hash">`
-//     - The popstate event is *only* triggered if `href` starts with '#' (if `href==='/some-path#some-hash'` and the current URL has the same pathname '/some-path' then popstate isn't triggered)
-//     - Vike skips hash links (see `skipLink()`) and let's the browser handle them.
+//     - The popstate event is *only* triggered if `href` starts with '#' (even if `href==='/some-path#some-hash'` and the current URL has the same pathname '/some-path' then popstate isn't triggered)
+//     - Vike doesn't intercept hash links (see `skipLink()`) and let's the browser handle them.
 //   - By the app using a `location` API such as `location.hash = 'some-hash'`
 //     - Even upon `location.href='/some-path#some-hash'` while the current URL is '/some-path' (unlike <a> clicks).
 //     - Only upon hash navigation: setting `location.href='/some-other-path'` triggers a full page reload and no popstate event is fired.
@@ -19,12 +19,11 @@ import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 // Notes:
 // - The 'hashchange' event is fired after popstate, so we cannot use it to distinguish between hash and non-hash navigations.
 // - It isn't possible to monkey patch the `location` APIs. (Chrome throws `TypeError: Cannot redefine property` when attempt to overwrite any `location` property.)
-// - Text links: https://github.com/vikejs/vike/issues/2114
+// - Text links aren't supported: https://github.com/vikejs/vike/issues/2114
 
 function initOnPopState() {
   window.addEventListener('popstate', onPopstate)
 }
-
 async function onPopstate() {
   const { isNewHistoryEntry, previous, current } = onPopStateBegin()
   // - `isNewHistoryEntry === false` <=> back-/forward navigation
@@ -39,22 +38,22 @@ async function onPopstate() {
     await handleBackForwardNavigation(previous, current)
   }
 }
-
 async function handleBackForwardNavigation(previous: HistoryInfo, current: HistoryInfo) {
   const scrollTarget: ScrollTarget = current.state.scrollPosition || undefined
 
   const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
   if (isHashNavigation) {
-    // We have to scroll ourselves because we use `window.history.scrollRestoration = 'manual'`
+    // We have to scroll ourselves because we have set `window.history.scrollRestoration = 'manual'`
     setScrollPosition(scrollTarget)
     return
   }
 
   const isUserPushStateNavigation = current.state.triggeredBy === 'user' || previous.state.triggeredBy === 'user'
-  let doNotRenderIfSamePage = isUserPushStateNavigation
+  const doNotRenderIfSamePage = isUserPushStateNavigation
 
   const isBackwardNavigation =
     !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
+
   await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage })
 }
 
