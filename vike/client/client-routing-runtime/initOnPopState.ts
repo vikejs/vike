@@ -7,24 +7,41 @@ import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 import { getCurrentLinkClick } from './initOnLinkClick.js'
 import { isSamePageHashLink } from './skipLink.js'
-
 const globalObject = getGlobalObject('initOnPopState.ts', { listeners: [] as Listener[] })
 
-function initOnPopState() {
-  // - The popstate event is trigged upon:
-  //   - Back-/forward navigation.
-  //     - By user clicking on his browser's back-/forward navigation (or using a shortcut)
-  //     - By JavaScript: `history.back()` / `history.forward()`
-  //   - URL hash change.
-  //     - Click on `<a href="#some-hash" />`
-  //       - The popstate event is *only* triggered if `href` starts with '#' (even if `href` is '/#some-hash' while the current URL's pathname is '/' then the popstate still isn't triggered)
-  //     - `location.hash = 'some-hash'`
-  // - The `event` argument of `window.addEventListener('popstate', (event) => /*...*/)` is useless: the History API doesn't provide the previous state (the popped state), see https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
-  window.addEventListener('popstate', async (): Promise<undefined> => {
-    const currentLinkClick = getCurrentLinkClick()
-    const { isNewHistoryEntry, previous, current } = onPopStateBegin()
+// The 'popstate' event is trigged only upon:
+// - Back-/forward navigation:
+//   - By the user using the browser's back-/forward navigation
+//   - By the app using `history.back()` / `history.forward()` / `history.go()`
+// - URL hash changes:
+//   - By the user clicking on `<a href="#some-hash" />`
+//     - The popstate event is *only* triggered if `href` starts with '#' (if `href==='/some-path#some-hash'` and the current URL has the same pathname '/some-path' then popstate isn't triggered)
+//     - Vike skips hash links (see `skipLink()`) and let's the browser handle them.
+//   - By the app using a `location` API such as `location.hash = 'some-hash'`
+//     - Even upon `location.href='/some-path#some-hash'` while the current URL is '/some-path' (unlike <a> clicks).
+//     - Only upon hash navigation: setting `location.href='/some-other-path'` triggers a full page reload and no popstate event is fired.
 
-    // We use currentLinkClick.href instead of current.url because current.url missing text links such as #:~:text=With%20frontmatter-,Global%20metadata,-What%20is%20global (e.g. Chrome strips the `#:~:text=` part from the URL before the popstate event).
+// Ideally, we should let the browser handle hash changes.
+// - A motivation being to support text links (`#:~:text=somePrefix-,someText,-someSuffix`)
+//   - https://github.com/vikejs/vike/issues/2114
+// - The 'hashchange' event is fired after popstate, so we cannot use it to distinguish between hash and non-hash navigations.
+// - It isn't possible to monkey patch the `location` APIs. (Chrome throws `TypeError: Cannot redefine property` when attempt to overwrite any `location` property.)
+
+function initOnPopState() {
+  window.addEventListener('popstate', async (): Promise<undefined> => {
+    console.log('popstate()')
+    const currentLinkClick = getCurrentLinkClick()
+    const {
+      // - `isNewHistoryEntry === false` <=> back-/forward navigation
+      // - `isNewHistoryEntry === true` when:
+      //   - Click on `<a href="#some-hash" />`
+      //   - Using the `location` API
+      isNewHistoryEntry,
+      previous,
+      current
+    } = onPopStateBegin()
+
+    // We use currentLinkClick.href instead of current.url because current.url is missing the text fragment `#:~:text=` (Chrome strips it before the popstate event is fired).
     if (currentLinkClick && isSamePageHashLink(currentLinkClick.href)) {
       // Let the browser handle hash links
       return
@@ -35,10 +52,6 @@ function initOnPopState() {
     const isUserPushStateNavigation = current.state.triggeredBy === 'user' || previous.state.triggeredBy === 'user'
 
     const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
-    // - `isNewHistoryEntry === true` when:
-    //   - Click on `<a href="#some-hash" />` (note that Vike's `initOnLinkClick()` handler skips hash links)
-    //   - `location.hash = 'some-hash'`
-    // - `isNewHistoryEntry === false` when `popstate` was triggered by the user clicking on his browser's forward/backward history button.
     const isHashNavigationNew = isHashNavigation && isNewHistoryEntry
 
     const isBackwardNavigation =
@@ -82,7 +95,7 @@ type Listener = (arg: { previous: HistoryInfo }) => void | boolean
 // TODO/eventually: deprecate this onPopState(listener) function and let the user define +onPopState.js instead?
 /** Control back-/forward navigation.
  *
- * https://vike.dev/onPopState
+ * @experimental
  */
 function onPopState(listener: Listener) {
   assertWarning(false, 'onPopState() is experimental', { onlyOnce: true })
