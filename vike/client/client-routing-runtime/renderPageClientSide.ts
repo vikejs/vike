@@ -487,7 +487,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
     assert(globalObject.onRenderClientPreviousPromise === undefined)
-    globalObject.onRenderClientPreviousPromise = (async () => {
+    const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
         await executeOnRenderClientHook(pageContext, true)
@@ -498,7 +498,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       globalObject.isFirstRenderDone = true
       return onRenderClientError
     })()
-    const onRenderClientError = await globalObject.onRenderClientPreviousPromise
+    globalObject.onRenderClientPreviousPromise = onRenderClientPromise
+    const onRenderClientError = await onRenderClientPromise
     assert(globalObject.onRenderClientPreviousPromise === undefined)
     if (onRenderClientError) {
       await onError(onRenderClientError)
