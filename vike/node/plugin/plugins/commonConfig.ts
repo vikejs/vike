@@ -96,7 +96,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
 
           // VITE_CONFIG
           const configFromEnvVar = getEnvVarObject('VITE_CONFIG')
-          if (configFromEnvVar) configFromVike = mergeConfig(configFromEnvVar, configFromVike)
+          if (configFromEnvVar) configFromVike = mergeConfig(configFromVike, configFromEnvVar)
 
           return configFromVike
         }

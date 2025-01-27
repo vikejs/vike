@@ -45,7 +45,7 @@ function addViteSettingsSetByUser(viteConfigEnhanced: InlineConfig | undefined, 
   if (!viteConfigs) return viteConfigEnhanced
   viteConfigs.values.forEach((v) => {
     assertUsage(isObject(v.value), `${v.definedAt} should be an object`)
-    viteConfigEnhanced = mergeConfig(v.value, viteConfigEnhanced ?? {})
+    viteConfigEnhanced = mergeConfig(viteConfigEnhanced ?? {}, v.value)
   })
   return viteConfigEnhanced
 }
