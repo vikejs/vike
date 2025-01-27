@@ -29,7 +29,6 @@ const globalObject = getGlobalObject('initOnPopState.ts', { listeners: [] as Lis
 
 function initOnPopState() {
   window.addEventListener('popstate', async (): Promise<undefined> => {
-    console.log('popstate()')
     const currentLinkClick = getCurrentLinkClick()
     const {
       // - `isNewHistoryEntry === false` <=> back-/forward navigation
