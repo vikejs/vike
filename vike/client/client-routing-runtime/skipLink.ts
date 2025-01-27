@@ -1,6 +1,5 @@
 export { skipLink }
 export { isSameAsCurrentUrl }
-export { isSamePageHashLink }
 
 import { normalizeClientSideUrl } from '../shared/normalizeClientSideUrl.js'
 import { getBaseServer } from './getBaseServer.js'

@@ -1,13 +1,8 @@
-// Code adapted from https://github.com/HenrikJoreteg/internal-nav-helper/blob/5199ec5448d0b0db7ec63cf76d88fa6cad878b7d/src/index.js#L11-L29
-
 export { initOnLinkClick }
-export { getCurrentLinkClick }
 
-import { getGlobalObject } from './utils.js'
 import { isSameAsCurrentUrl, skipLink } from './skipLink.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { scrollToHashOrTop, type ScrollTarget } from './setScrollPosition.js'
-const globalObject = getGlobalObject<{ currentLinkClick?: { href: string } }>('initOnLinkClick.ts', {})
 
 function initOnLinkClick() {
   document.addEventListener('click', onClick)
@@ -20,11 +15,6 @@ async function onClick(ev: MouseEvent) {
 
   const href = linkTag.getAttribute('href')
   if (href === null) return
-
-  globalObject.currentLinkClick = { href }
-  setTimeout(() => {
-    delete globalObject.currentLinkClick
-  }, 0)
 
   // Workaround for Firefox bug: clicking on a hash link that doesn't change the current URL causes Firefox to erroneously set `window.history.state = null` without firing any signal that we can detect.
   // - https://github.com/vikejs/vike/issues/1962
@@ -65,8 +55,4 @@ function findLinkTag(target: HTMLElement): null | HTMLElement {
     target = parentNode as HTMLElement
   }
   return target
-}
-
-function getCurrentLinkClick() {
-  return globalObject.currentLinkClick
 }
