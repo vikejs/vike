@@ -33,14 +33,14 @@ async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation
   const viteInfo = await getInfoFromVite(viteConfig, operation)
   await assertViteRoot2(viteInfo.root, viteInfo.viteConfigEnhanced, operation)
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
-  const viteConfigEnhanced = addViteSettingsSetByUser(viteInfo.viteConfigEnhanced, vikeConfig)
+  const viteConfigEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigEnhanced, vikeConfig)
   return {
     viteConfigEnhanced,
     vikeConfigGlobal: vikeConfig.vikeConfigGlobal
   }
 }
 
-function addViteSettingsSetByUser(viteConfigEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
+function addViteSettingsSetByVikeConfig(viteConfigEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
   const viteConfigs = vikeConfig.global.from.configsCumulative.vite
   if (!viteConfigs) return viteConfigEnhanced
   viteConfigs.values.forEach((v) => {
