@@ -53,9 +53,6 @@ function initOnPopState() {
 
     const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
 
-    const isBackwardNavigation =
-      !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
-
     if (isHashNavigation) {
       if (!isNewHistoryEntry) {
         // We have to scroll ourselves because we use `window.history.scrollRestoration = 'manual'`
@@ -81,6 +78,8 @@ function initOnPopState() {
       doNotRenderIfSamePage = false
     }
 
+    const isBackwardNavigation =
+      !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
     await renderPageClientSide({ scrollTarget, isBackwardNavigation, doNotRenderIfSamePage })
   })
 }
