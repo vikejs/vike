@@ -162,7 +162,8 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfig(config)
-        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
+        // https://github.com/vikejs/vike/issues/2093
+        isServerAssetsFixEnabled = config.build.ssrEmitAssets && fixServerAssets_isEnabled() && (await isV1Design(config))
         if (!isServerAssetsFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060
           assertUsage(

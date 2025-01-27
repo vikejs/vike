@@ -66,10 +66,10 @@ function buildConfig(): Plugin[] {
           addLogHook()
           outDirs = getOutDirs(config)
           {
-            isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
+            // https://github.com/vikejs/vike/issues/1339
+            // https://github.com/vikejs/vike/issues/2093
+            isServerAssetsFixEnabled = config.build.ssrEmitAssets && fixServerAssets_isEnabled() && (await isV1Design(config))
             if (isServerAssetsFixEnabled) {
-              // https://github.com/vikejs/vike/issues/1339
-              config.build.ssrEmitAssets = true
               // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
               config.build.cssMinify = 'esbuild'
               fixServerAssets_assertCssTarget_populate(config)
