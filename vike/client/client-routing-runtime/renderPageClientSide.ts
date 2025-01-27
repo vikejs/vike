@@ -57,7 +57,7 @@ import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
   renderCounter: number
-  onRenderClientPromise?: Promise<unknown>
+  onRenderClientPreviousPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
   previousPageContext: PreviousPageContext | null
@@ -477,29 +477,30 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       }
     }
 
-    // We use globalObject.onRenderClientPromise in order to ensure that there is never two concurrent onRenderClient() calls
-    if (globalObject.onRenderClientPromise) {
+    // We use globalObject.onRenderClientPreviousPromise in order to ensure that there is never two concurrent onRenderClient() calls
+    if (globalObject.onRenderClientPreviousPromise) {
       // Make sure that the previous render has finished
-      await globalObject.onRenderClientPromise
-      assert(globalObject.onRenderClientPromise === undefined)
+      await globalObject.onRenderClientPreviousPromise
+      assert(globalObject.onRenderClientPreviousPromise === undefined)
       if (isRenderOutdated()) return
     }
     changeUrl(urlOriginal, overwriteLastHistoryEntry)
     globalObject.previousPageContext = pageContext
-    assert(globalObject.onRenderClientPromise === undefined)
-    globalObject.onRenderClientPromise = (async () => {
+    assert(globalObject.onRenderClientPreviousPromise === undefined)
+    const onRenderClientPromise = (async () => {
       let onRenderClientError: unknown
       try {
         await executeOnRenderClientHook(pageContext, true)
       } catch (err) {
         onRenderClientError = err
       }
-      globalObject.onRenderClientPromise = undefined
+      globalObject.onRenderClientPreviousPromise = undefined
       globalObject.isFirstRenderDone = true
       return onRenderClientError
     })()
-    const onRenderClientError = await globalObject.onRenderClientPromise
-    assert(globalObject.onRenderClientPromise === undefined)
+    globalObject.onRenderClientPreviousPromise = onRenderClientPromise
+    const onRenderClientError = await onRenderClientPromise
+    assert(globalObject.onRenderClientPreviousPromise === undefined)
     if (onRenderClientError) {
       await onError(onRenderClientError)
       if (!isErrorPage) return

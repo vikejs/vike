@@ -171,13 +171,13 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isNewState = window.history.state === null
-  if (isNewState) enhanceHistoryState()
+  const isNewHistoryEntry = window.history.state === null
+  if (isNewHistoryEntry) enhanceHistoryState()
 
   const current = getHistoryInfo()
   globalObject.previous = current
 
-  return { isNewState, previous, current }
+  return { isNewHistoryEntry, previous, current }
 }
 
 function initHistoryState() {
