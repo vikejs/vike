@@ -52,7 +52,6 @@ function initOnPopState() {
     const isUserPushStateNavigation = current.state.triggeredBy === 'user' || previous.state.triggeredBy === 'user'
 
     const isHashNavigation = removeHash(current.url) === removeHash(previous.url) && current.url !== previous.url
-    const isHashNavigationNew = isHashNavigation && isNewHistoryEntry
 
     const isBackwardNavigation =
       !current.state.timestamp || !previous.state.timestamp ? null : current.state.timestamp < previous.state.timestamp
@@ -67,7 +66,7 @@ function initOnPopState() {
     //   - By using the `hashchange` event.
     //   - Problem: conflict if user wants to override the browser's default behavior? E.g. for smooth scrolling, or when using hashes for saving states of some fancy animations.
     if (isHashNavigation) {
-      if (!isHashNavigationNew) {
+      if (!isNewHistoryEntry) {
         setScrollPosition(scrollTarget)
       } else {
         // The browser already scrolled to `#${hash}` => the current scroll position is the right one => we saved it with `enhanceHistoryState()`.
