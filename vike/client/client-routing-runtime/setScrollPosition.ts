@@ -29,6 +29,10 @@ function hasTextFragment(url: string) {
 function scrollToTextFragment(url: string) {
   const stateOriginal = window.history.state
   replaceHistoryStateOriginal(null, url)
+  // We need `history.state===null` before location.replace() so that our 'popstate' handling is correct
+  assert(window.history.state === null)
+  // - Chrome's location.replace() keeps the current state (`history.state===stateOriginal`)
+  // - Firefox's location.replace() replaces the current state with `null` (`history.state===null`)
   window.location.replace(url)
   replaceHistoryStateOriginal(stateOriginal, url)
 }

@@ -113,6 +113,8 @@ function replaceHistoryState(state: StateEnhanced, url?: string) {
   window.history.replaceState(state, '', url_)
 }
 function replaceHistoryStateOriginal(state: unknown, url: string) {
+  // Bypass all monkey patches.
+  // - Useful, for example, to avoid other tools listening to history.replaceState() calls
   History.prototype.replaceState.bind(window.history)(state, '', url)
 }
 
