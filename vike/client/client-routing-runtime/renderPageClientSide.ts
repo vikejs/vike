@@ -560,7 +560,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // Page scrolling
     setScrollPosition(scrollTarget)
-    scrollRestoration_disable()
     scrollRestoration_setInitialRenderIsDone()
     if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
 
