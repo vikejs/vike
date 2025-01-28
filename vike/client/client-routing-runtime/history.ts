@@ -173,6 +173,7 @@ function onPopStateBegin() {
 
   const isHistoryStateEnhanced = window.history.state !== null
   if (!isHistoryStateEnhanced) enhanceHistoryState()
+  assertStateVikeEnhanced(window.history.state)
 
   const current = getHistoryInfo()
   globalObject.previous = current
