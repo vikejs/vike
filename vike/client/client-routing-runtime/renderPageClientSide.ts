@@ -561,6 +561,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // Page scrolling
     setScrollPosition(scrollTarget)
     scrollRestoration_initialRenderIsDone()
+
     if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
 
     // Add link prefetch handlers

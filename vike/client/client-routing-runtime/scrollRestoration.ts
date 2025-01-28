@@ -5,6 +5,7 @@ export { scrollRestoration_initialRenderIsDone }
 
 // We let the browser do it because it's fast.
 // - Alternatively we could inject an inline script `<script>scrollTo(history.state.scrollPosition)</script>` early, which seems to be equally fast. (See for example https://vike.dev/usePageContext which sets the main scroll position and the navigation scroll position equally fast.)
+// - Firefox doesn't restore the scroll position upon page reload but does upon Cmd-Shift-T
 
 // See also: https://github.com/cyco130/knave/blob/e9e1bc7687848504293197f1b314b7d12ad0d228/design.md#scroll-restoration
 
