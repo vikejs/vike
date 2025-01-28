@@ -1,5 +1,5 @@
 export { scrollRestoration_init }
-export { scrollRestoration_setInitialRenderIsDone }
+export { scrollRestoration_initialRenderIsDone }
 
 // Using `window.history.scrollRestoration` to recover scroll position when user reloads the page or Cmd-Shift-T back to it.
 
@@ -17,7 +17,7 @@ function scrollRestoration_init() {
   onPageHide(scrollRestoration_enable)
   onPageShow(() => globalObject.initialRenderIsDone && scrollRestoration_disable())
 }
-function scrollRestoration_setInitialRenderIsDone() {
+function scrollRestoration_initialRenderIsDone() {
   globalObject.initialRenderIsDone = true
   scrollRestoration_disable()
 }
