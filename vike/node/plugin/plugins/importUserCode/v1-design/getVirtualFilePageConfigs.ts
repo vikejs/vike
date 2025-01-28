@@ -57,12 +57,13 @@ function getCodePageConfigsSerialized(
 
   pageConfigs.forEach((pageConfig) => {
     const { pageId, routeFilesystem, isErrorPage } = pageConfig
-    const virtualFileIdPageConfigValuesAll = getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide)
     lines.push(`  {`)
     lines.push(`    pageId: ${JSON.stringify(pageId)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
-    lines.push(`    loadConfigValuesAll: () => import(${JSON.stringify(virtualFileIdPageConfigValuesAll)}),`)
+    const virtualFileId = JSON.stringify(getVirtualFileIdPageConfigValuesAll(pageId, isForClientSide))
+    const load = `() => ({ moduleId: ${virtualFileId}, moduleExports: import(${virtualFileId}) })`
+    lines.push(`    loadConfigValuesAll: ${load},`)
     lines.push(`    configValuesSerialized: {`)
     lines.push(
       ...serializeConfigValues(

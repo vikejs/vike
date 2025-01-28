@@ -1,6 +1,6 @@
 export { loadConfigValues }
 
-import { objectAssign } from '../utils.js'
+import { assert, objectAssign } from '../utils.js'
 import type { PageConfigRuntime, PageConfigRuntimeLoaded } from './PageConfig.js'
 import { parseConfigValuesSerialized } from './serialize/parsePageConfigs.js'
 
@@ -12,7 +12,10 @@ async function loadConfigValues(pageConfig: PageConfigRuntime, isDev: boolean): 
   ) {
     return pageConfig as PageConfigRuntimeLoaded
   }
-  const configValuesLoaded = await pageConfig.loadConfigValuesAll()
+  const { moduleId, moduleExports } = pageConfig.loadConfigValuesAll()
+  const configValuesLoaded = await moduleExports
+  // `configValuesLoaded` is sometimes `undefined` https://github.com/vikejs/vike/discussions/2092
+  assert(configValuesLoaded, { moduleId })
   const configValues = parseConfigValuesSerialized(configValuesLoaded.configValuesSerialized)
   Object.assign(pageConfig.configValues, configValues)
   objectAssign(pageConfig, { isAllLoaded: true as const })

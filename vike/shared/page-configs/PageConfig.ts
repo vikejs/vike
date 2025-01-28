@@ -35,9 +35,12 @@ type PageConfigBase = {
 type PageConfigRuntime = PageConfigBase & {
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: () => Promise<{
-    configValuesSerialized: Record<string, ConfigValueSerialized>
-  }>
+  loadConfigValuesAll: () => {
+    moduleId: string
+    moduleExports: Promise<{
+      configValuesSerialized: Record<string, ConfigValueSerialized>
+    }>
+  }
 }
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
