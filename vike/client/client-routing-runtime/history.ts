@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage, getGlobalObject, hasProp, isObject } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject } from './utils.js'
 
 initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
 const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })
@@ -142,20 +142,19 @@ function monkeyPatchHistoryAPI() {
 }
 
 function isVikeEnhanced(state: unknown): state is StateEnhanced {
-  const yes = isObject(state) && '_isVikeEnhanced' in state
-  if (yes) assertStateVikeEnhanced(state)
-  return yes
-}
-function assertStateVikeEnhanced(state: unknown): asserts state is StateEnhanced {
-  assert(isObject(state))
-  assert(hasProp(state, '_isVikeEnhanced', 'true'))
-  // TODO/eventually: remove assert() below to save client-side KBs
-  assert(hasProp(state, 'timestamp', 'number'))
-  assert(hasProp(state, 'scrollPosition'))
-  if (state.scrollPosition !== null) {
-    assert(hasProp(state, 'scrollPosition', 'object'))
-    assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
+  if (isObject(state) && '_isVikeEnhanced' in state) {
+    /* We don't use the assert() below to save client-side KBs.
+    assert(hasProp(state, '_isVikeEnhanced', 'true'))
+    assert(hasProp(state, 'timestamp', 'number'))
+    assert(hasProp(state, 'scrollPosition'))
+    if (state.scrollPosition !== null) {
+      assert(hasProp(state, 'scrollPosition', 'object'))
+      assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
+    }
+    //*/
+    return true
   }
+  return false
 }
 
 type HistoryInfo = {
@@ -171,13 +170,14 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isNewHistoryEntry = window.history.state === null
-  if (isNewHistoryEntry) enhanceHistoryState()
+  const isHistoryStateEnhanced = window.history.state !== null
+  if (!isHistoryStateEnhanced) enhanceHistoryState()
+  assert(isVikeEnhanced(window.history.state))
 
   const current = getHistoryInfo()
   globalObject.previous = current
 
-  return { isNewHistoryEntry, previous, current }
+  return { isHistoryStateEnhanced, previous, current }
 }
 
 function initHistoryState() {

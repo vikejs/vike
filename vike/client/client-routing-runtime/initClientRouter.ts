@@ -4,7 +4,7 @@ import { assert } from './utils.js'
 import { getRenderCount, renderPageClientSide } from './renderPageClientSide.js'
 import { initOnPopState } from './initOnPopState.js'
 import { initOnLinkClick } from './initOnLinkClick.js'
-import { setupNativeScrollRestoration } from './scrollRestoration.js'
+import { scrollRestoration_init } from './scrollRestoration.js'
 import { autoSaveScrollPosition } from './setScrollPosition.js'
 import { initLinkPrefetchHandlers } from './prefetch.js'
 import { initHistoryState, monkeyPatchHistoryAPI } from './history.js'
@@ -36,9 +36,9 @@ async function renderFirstPage() {
 }
 
 function initHistoryAndScroll() {
+  scrollRestoration_init()
   monkeyPatchHistoryAPI()
   initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
-  setupNativeScrollRestoration()
   autoSaveScrollPosition()
   // Handle back-/forward navigation
   initOnPopState()
