@@ -31,12 +31,12 @@ function initOnPopState() {
 }
 async function onPopState() {
   const { isHistoryStateEnhanced, previous, current } = onPopStateBegin()
-  // - `isHistoryStateEnhanced === true` when:
+  // - `isHistoryStateEnhanced === false` when:
   //   - Click on `<a href="#some-hash">`
   //   - Using the `location` API (only hash navigation, see comments above)
-  // - `isHistoryStateEnhanced === false` <=> back-/forward navigation
+  // - `isHistoryStateEnhanced === true` <=> back-/forward navigation
   // - No popstate even is fired upon Server Routing (the user clicks on a link before the page's JavaScript was loaded), see comments above.
-  if (isHistoryStateEnhanced) {
+  if (!isHistoryStateEnhanced) {
     // Let the browser handle it
     return
   } else {

@@ -171,8 +171,8 @@ function getHistoryInfo(): HistoryInfo {
 function onPopStateBegin() {
   const { previous } = globalObject
 
-  const isHistoryStateEnhanced = window.history.state === null
-  if (isHistoryStateEnhanced) enhanceHistoryState()
+  const isHistoryStateEnhanced = window.history.state !== null
+  if (!isHistoryStateEnhanced) enhanceHistoryState()
 
   const current = getHistoryInfo()
   globalObject.previous = current
