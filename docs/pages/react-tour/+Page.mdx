@@ -70,7 +70,7 @@ async function onRenderHtml(pageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(viewHtml)}</div>
+        <div id="root">${dangerouslySkipEscape(viewHtml)}</div>
       </body>
     </html>`;
 }
@@ -88,7 +88,7 @@ export { onRenderClient };
 async function onRenderClient(pageContext) {
   const { Page, data } = pageContext
   ReactDOM.hydrateRoot(
-    document.getElementById("page-view"),
+    document.getElementById("root"),
     <Page {...data} />
   );
 }

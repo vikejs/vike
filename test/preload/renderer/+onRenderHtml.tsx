@@ -19,7 +19,7 @@ async function onRenderHtml(pageContext: any) {
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 

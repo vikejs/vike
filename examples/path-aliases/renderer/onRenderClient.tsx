@@ -9,7 +9,7 @@ import type { OnRenderClientAsync } from 'vike/types'
 const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
   const { Page } = pageContext
   hydrateRoot(
-    document.getElementById('page-view')!,
+    document.getElementById('root')!,
     <Layout>
       <Page />
     </Layout>

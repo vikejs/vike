@@ -14,7 +14,7 @@ async function render(pageContext: any) {
       <Page {...pageProps} />
     </Layout>
   )
-  const container = document.getElementById('page-view')!
+  const container = document.getElementById('root')!
   if (pageContext.isHydration) {
     root = ReactDOM.hydrateRoot(container, page)
   } else {

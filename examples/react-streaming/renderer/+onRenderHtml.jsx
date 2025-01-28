@@ -18,7 +18,7 @@ async function onRenderHtml(pageContext) {
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${stream}</div>
+        <div id="root">${stream}</div>
       </body>
     </html>`
 }

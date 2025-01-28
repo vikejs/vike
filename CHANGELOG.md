@@ -3804,8 +3804,8 @@ see https://vite-plugin-ssr.com/catch-all
        return html`<!DOCTYPE html>
          <html>
            <body>
-   -         <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>
-   +         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+   -         <div id="root">${html.dangerouslySkipEscape(pageHtml)}</div>
+   +         <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
            </body>
          </html>`
      }
@@ -3823,7 +3823,7 @@ see https://vite-plugin-ssr.com/catch-all
    +   return escapeInject`<!DOCTYPE html>
          <html>
            <body>
-             <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+             <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
            </body>
          </html>`
      }

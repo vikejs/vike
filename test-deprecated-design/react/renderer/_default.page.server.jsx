@@ -18,7 +18,7 @@ async function render(pageContext) {
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${viewHtml}</div>
+        <div id="root">${viewHtml}</div>
       </body>
     </html>`
 }

@@ -34,7 +34,7 @@ function render(pageContext) {
         <title>Vite App</title>
       </head>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }

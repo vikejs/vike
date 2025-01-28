@@ -7,7 +7,7 @@ import { Layout } from './Layout'
 async function render(pageContext) {
   const { Page } = pageContext
   hydrateRoot(
-    document.getElementById('page-view'),
+    document.getElementById('root'),
     <Layout>
       <Page />
     </Layout>

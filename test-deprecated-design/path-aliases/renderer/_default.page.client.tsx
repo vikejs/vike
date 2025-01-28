@@ -8,7 +8,7 @@ import type { PageContext } from '#root/types'
 async function render(pageContext: PageContext) {
   const { Page } = pageContext
   hydrateRoot(
-    document.getElementById('page-view')!,
+    document.getElementById('root')!,
     <Layout>
       <Page />
     </Layout>

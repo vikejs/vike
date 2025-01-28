@@ -22,7 +22,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${stream}</div>
+        <div id="root">${stream}</div>
       </body>
     </html>`
 }

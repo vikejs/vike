@@ -22,7 +22,7 @@ async function render(pageContext) {
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }
