@@ -7,7 +7,7 @@ export type { HistoryInfo }
 export type { ScrollPosition }
 
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { assert, assertUsage, getGlobalObject, hasProp, isObject } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject } from './utils.js'
 
 initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
 const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })
@@ -148,14 +148,16 @@ function isVikeEnhanced(state: unknown): state is StateEnhanced {
 }
 function assertStateVikeEnhanced(state: unknown): asserts state is StateEnhanced {
   assert(isObject(state))
+  assert('_isVikeEnhanced' in state)
+  /* We don't use the assert() below to save client-side KBs.
   assert(hasProp(state, '_isVikeEnhanced', 'true'))
-  // TODO/eventually: remove assert() below to save client-side KBs
   assert(hasProp(state, 'timestamp', 'number'))
   assert(hasProp(state, 'scrollPosition'))
   if (state.scrollPosition !== null) {
     assert(hasProp(state, 'scrollPosition', 'object'))
     assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
   }
+  //*/
 }
 
 type HistoryInfo = {
