@@ -1,4 +1,5 @@
 export { pushHistoryState }
+export { replaceHistoryStateOriginal }
 export { onPopStateBegin }
 export { saveScrollPosition }
 export { initHistoryState }
@@ -107,10 +108,14 @@ function pushHistoryState(url: string, overwriteLastHistoryEntry: boolean) {
     replaceHistoryState(getState(), url)
   }
 }
-
 function replaceHistoryState(state: StateEnhanced, url?: string) {
   const url_ = url ?? null // Passing `undefined` chokes older Edge versions.
   window.history.replaceState(state, '', url_)
+}
+function replaceHistoryStateOriginal(state: unknown, url: string) {
+  // Bypass all monkey patches.
+  // - Useful, for example, to avoid other tools listening to history.replaceState() calls
+  History.prototype.replaceState.bind(window.history)(state, '', url)
 }
 
 // Monkey patch:

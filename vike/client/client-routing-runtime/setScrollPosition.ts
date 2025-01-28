@@ -4,10 +4,14 @@ export { scrollToHashOrTop }
 export type { ScrollTarget }
 
 import { assert, onPageHide, sleep, throttle } from './utils.js'
-import { saveScrollPosition, type ScrollPosition } from './history.js'
+import { replaceHistoryStateOriginal, saveScrollPosition, type ScrollPosition } from './history.js'
 
 type ScrollTarget = undefined | { preserveScroll: boolean } | ScrollPosition
-function setScrollPosition(scrollTarget: ScrollTarget): void {
+function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
+  if (!scrollTarget && url && hasTextFragment(url)) {
+    scrollToTextFragment(url)
+    return
+  }
   if (scrollTarget && 'x' in scrollTarget) {
     setScroll(scrollTarget)
     return
@@ -17,6 +21,20 @@ function setScrollPosition(scrollTarget: ScrollTarget): void {
   }
   const hash = getUrlHash()
   scrollToHashOrTop(hash)
+}
+
+function hasTextFragment(url: string) {
+  return url.includes('#') && url.includes(':~:text')
+}
+function scrollToTextFragment(url: string) {
+  const stateOriginal = window.history.state
+  replaceHistoryStateOriginal(null, url)
+  // We need `history.state===null` before location.replace() so that our 'popstate' handling is correct
+  assert(window.history.state === null)
+  // - Chrome's location.replace() keeps the current state (`history.state===stateOriginal`)
+  // - Firefox's location.replace() replaces the current state with `null` (`history.state===null`)
+  window.location.replace(url)
+  replaceHistoryStateOriginal(stateOriginal, url)
 }
 
 // Replicates the browser's native behavior

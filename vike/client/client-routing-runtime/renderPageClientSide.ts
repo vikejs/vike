@@ -13,7 +13,8 @@ import {
   hasProp,
   augmentType,
   genPromise,
-  isCallable
+  isCallable,
+  catchInfiniteLoop
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
@@ -91,6 +92,8 @@ type RenderArgs = {
   pageContextInitClient?: Record<string, unknown>
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
+  catchInfiniteLoop('renderPageClientSide()')
+
   const {
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
@@ -559,7 +562,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     }
 
     // Page scrolling
-    setScrollPosition(scrollTarget)
+    setScrollPosition(scrollTarget, urlOriginal)
     scrollRestoration_initialRenderIsDone()
 
     if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
