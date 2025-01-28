@@ -13,8 +13,8 @@ function onRenderClient(pageContext) {
   // to support SPA
   if (!Page) throw new Error('My onRenderClient() hook expects pageContext.Page to be defined')
 
-  const container = document.getElementById('react-root')
-  if (!container) throw new Error('DOM element #react-root not found')
+  const container = document.getElementById('root')
+  if (!container) throw new Error('DOM element #root not found')
 
   const page = (
     <Layout pageContext={pageContext}>

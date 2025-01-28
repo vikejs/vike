@@ -27,7 +27,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
         <title>${title}</title>
       </head>
       <body>
-        <div id="react-root">${stream}</div>
+        <div id="root">${stream}</div>
       </body>
     </html>`
 

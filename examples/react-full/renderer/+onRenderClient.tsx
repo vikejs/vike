@@ -15,7 +15,7 @@ const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRe
       <Page />
     </Layout>
   )
-  const container = document.getElementById('react-root')!
+  const container = document.getElementById('root')!
   if (pageContext.isHydration) {
     root = ReactDOM.hydrateRoot(container, page)
   } else {
