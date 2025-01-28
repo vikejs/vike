@@ -29,13 +29,13 @@ function initOnPopState() {
   window.addEventListener('popstate', onPopState)
 }
 async function onPopState() {
-  const { isHistoryEntryNotEnhanced, previous, current } = onPopStateBegin()
-  // - `isHistoryEntryNotEnhanced === false` <=> back-/forward navigation
-  // - `isHistoryEntryNotEnhanced === true` when:
+  const { isHistoryStateEmpty, previous, current } = onPopStateBegin()
+  // - `isHistoryStateEmpty === false` <=> back-/forward navigation
+  // - `isHistoryStateEmpty === true` when:
   //   - Click on `<a href="#some-hash">`
   //   - Using the `location` API (only hash navigation, see comment above)
   //   - Server Routing
-  if (isHistoryEntryNotEnhanced) {
+  if (isHistoryStateEmpty) {
     // Let the browser handle it
     return
   } else {
