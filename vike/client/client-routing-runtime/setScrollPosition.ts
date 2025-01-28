@@ -50,15 +50,15 @@ function scrollToTop() {
  */
 function setScroll(scrollPosition: ScrollPosition) {
   const scroll = () => {
+    // `window.scrollTo()` respects the CSS `scroll-behavior: smooth` property
     window.scrollTo(scrollPosition.x, scrollPosition.y)
   }
   const done = () => {
     return window.scrollX === scrollPosition.x && window.scrollY === scrollPosition.y
   }
 
-  // In principle, this `done()` call should force the repaint to be finished. But that doesn't seem to be the case with `Firefox 97.0.1`.
+  // In principle, this `done()` call should force the repaint to be finished, but that doesn't seem to be the case with `Firefox 97.0.1`.
   if (done()) return
-
   scroll()
 
   // Because `done()` doesn't seem to always force the repaint to be finished, we potentially need to retry again.
