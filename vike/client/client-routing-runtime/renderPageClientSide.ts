@@ -47,7 +47,7 @@ import {
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
-import { scrollRestoration_disable, scrollRestoration_setInitialRenderIsDone } from './scrollRestoration.js'
+import { scrollRestoration_setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageConfigUserFriendly } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
@@ -571,7 +571,6 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
-  scrollRestoration_disable()
   pushHistoryState(url, overwriteLastHistoryEntry)
 }
 

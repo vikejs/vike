@@ -1,5 +1,4 @@
 export { scrollRestoration_init }
-export { scrollRestoration_disable }
 export { scrollRestoration_setInitialRenderIsDone }
 
 // Handle `window.history.scrollRestoration`
