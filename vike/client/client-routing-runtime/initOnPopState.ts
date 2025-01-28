@@ -3,6 +3,7 @@ export { initOnPopState }
 import { onPopStateBegin, type HistoryInfo } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
+import { catchInfiniteLoop } from './utils.js'
 
 // The 'popstate' event is trigged when the browser doesn't fully load the new URL, for example:
 // - `location.hash='#foo'` triggers the popstate event while `location.href='/foo'` doesn't.
@@ -31,6 +32,7 @@ function initOnPopState() {
   window.addEventListener('popstate', onPopState)
 }
 async function onPopState() {
+  catchInfiniteLoop('onPopState()')
   const { isHistoryStateEnhanced, previous, current } = onPopStateBegin()
   // - `isHistoryStateEnhanced===false` <=> new hash navigation:
   //   - Click on `<a href="#some-hash">`

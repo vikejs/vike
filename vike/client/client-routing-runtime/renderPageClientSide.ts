@@ -13,7 +13,8 @@ import {
   hasProp,
   augmentType,
   genPromise,
-  isCallable
+  isCallable,
+  catchInfiniteLoop
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
@@ -91,6 +92,8 @@ type RenderArgs = {
   pageContextInitClient?: Record<string, unknown>
 }
 async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
+  catchInfiniteLoop('renderPageClientSide()')
+
   const {
     urlOriginal = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
