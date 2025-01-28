@@ -1,7 +1,7 @@
 // Handle the browser's native scroll restoration mechanism
 
 export { browserNativeScrollRestoration_disable }
-export { setupNativeScrollRestoration }
+export { browserNativeScrollRestoration_init }
 export { setInitialRenderIsDone }
 
 import { getGlobalObject, onPageHide, onPageShow } from './utils.js'
@@ -10,7 +10,7 @@ const globalObject = getGlobalObject<{
 }>('scrollRestoration.ts', {})
 
 // We use the browser's native scroll restoration mechanism only for the first render
-function setupNativeScrollRestoration() {
+function browserNativeScrollRestoration_init() {
   browserNativeScrollRestoration_enable()
   onPageHide(browserNativeScrollRestoration_enable)
   onPageShow(() => globalObject.initialRenderIsDone && browserNativeScrollRestoration_disable())
