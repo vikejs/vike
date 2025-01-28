@@ -142,22 +142,19 @@ function monkeyPatchHistoryAPI() {
 }
 
 function isVikeEnhanced(state: unknown): state is StateEnhanced {
-  const yes = isObject(state) && '_isVikeEnhanced' in state
-  if (yes) assertStateVikeEnhanced(state)
-  return yes
-}
-function assertStateVikeEnhanced(state: unknown): asserts state is StateEnhanced {
-  assert(isObject(state))
-  assert('_isVikeEnhanced' in state)
-  /* We don't use the assert() below to save client-side KBs.
-  assert(hasProp(state, '_isVikeEnhanced', 'true'))
-  assert(hasProp(state, 'timestamp', 'number'))
-  assert(hasProp(state, 'scrollPosition'))
-  if (state.scrollPosition !== null) {
-    assert(hasProp(state, 'scrollPosition', 'object'))
-    assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
+  if (isObject(state) && '_isVikeEnhanced' in state) {
+    /* We don't use the assert() below to save client-side KBs.
+    assert(hasProp(state, '_isVikeEnhanced', 'true'))
+    assert(hasProp(state, 'timestamp', 'number'))
+    assert(hasProp(state, 'scrollPosition'))
+    if (state.scrollPosition !== null) {
+      assert(hasProp(state, 'scrollPosition', 'object'))
+      assert(hasProp(state.scrollPosition, 'x', 'number') && hasProp(state.scrollPosition, 'y', 'number'))
+    }
+    //*/
+    return true
   }
-  //*/
+  return false
 }
 
 type HistoryInfo = {
@@ -175,7 +172,7 @@ function onPopStateBegin() {
 
   const isHistoryStateEnhanced = window.history.state !== null
   if (!isHistoryStateEnhanced) enhanceHistoryState()
-  assertStateVikeEnhanced(window.history.state)
+  assert(isVikeEnhanced(window.history.state))
 
   const current = getHistoryInfo()
   globalObject.previous = current
