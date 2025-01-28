@@ -2,7 +2,7 @@
 
 export { browserNativeScrollRestoration_disable }
 export { browserNativeScrollRestoration_init }
-export { setInitialRenderIsDone }
+export { browserNativeScrollRestoration_setInitialRenderIsDone }
 
 import { getGlobalObject, onPageHide, onPageShow } from './utils.js'
 const globalObject = getGlobalObject<{
@@ -15,7 +15,7 @@ function browserNativeScrollRestoration_init() {
   onPageHide(browserNativeScrollRestoration_enable)
   onPageShow(() => globalObject.initialRenderIsDone && browserNativeScrollRestoration_disable())
 }
-function setInitialRenderIsDone() {
+function browserNativeScrollRestoration_setInitialRenderIsDone() {
   globalObject.initialRenderIsDone = true
 }
 

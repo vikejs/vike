@@ -47,7 +47,10 @@ import {
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
-import { browserNativeScrollRestoration_disable, setInitialRenderIsDone } from './scrollRestoration.js'
+import {
+  browserNativeScrollRestoration_disable,
+  browserNativeScrollRestoration_setInitialRenderIsDone
+} from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageConfigUserFriendly } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
@@ -561,7 +564,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // Page scrolling
     setScrollPosition(scrollTarget)
     browserNativeScrollRestoration_disable()
-    setInitialRenderIsDone()
+    browserNativeScrollRestoration_setInitialRenderIsDone()
     if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
 
     // Add link prefetch handlers
