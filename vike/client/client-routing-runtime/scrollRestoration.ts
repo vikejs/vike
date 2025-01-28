@@ -1,8 +1,8 @@
 // Handle the browser's native scroll restoration mechanism
 
-export { browserNativeScrollRestoration_disable }
-export { browserNativeScrollRestoration_init }
-export { browserNativeScrollRestoration_setInitialRenderIsDone }
+export { scrollRestoration_disable }
+export { scrollRestoration_init }
+export { scrollRestoration_setInitialRenderIsDone }
 
 import { getGlobalObject, onPageHide, onPageShow } from './utils.js'
 const globalObject = getGlobalObject<{
@@ -10,21 +10,21 @@ const globalObject = getGlobalObject<{
 }>('scrollRestoration.ts', {})
 
 // We use the browser's native scroll restoration mechanism only for the first render
-function browserNativeScrollRestoration_init() {
-  browserNativeScrollRestoration_enable()
-  onPageHide(browserNativeScrollRestoration_enable)
-  onPageShow(() => globalObject.initialRenderIsDone && browserNativeScrollRestoration_disable())
+function scrollRestoration_init() {
+  scrollRestoration_enable()
+  onPageHide(scrollRestoration_enable)
+  onPageShow(() => globalObject.initialRenderIsDone && scrollRestoration_disable())
 }
-function browserNativeScrollRestoration_setInitialRenderIsDone() {
+function scrollRestoration_setInitialRenderIsDone() {
   globalObject.initialRenderIsDone = true
 }
 
-function browserNativeScrollRestoration_disable() {
+function scrollRestoration_disable() {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual'
   }
 }
-function browserNativeScrollRestoration_enable() {
+function scrollRestoration_enable() {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'auto'
   }

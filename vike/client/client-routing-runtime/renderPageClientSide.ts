@@ -47,10 +47,7 @@ import {
 import { route } from '../../shared/route/index.js'
 import { isClientSideRoutable } from './isClientSideRoutable.js'
 import { setScrollPosition, type ScrollTarget } from './setScrollPosition.js'
-import {
-  browserNativeScrollRestoration_disable,
-  browserNativeScrollRestoration_setInitialRenderIsDone
-} from './scrollRestoration.js'
+import { scrollRestoration_disable, scrollRestoration_setInitialRenderIsDone } from './scrollRestoration.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import type { PageConfigUserFriendly } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
@@ -563,8 +560,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
     // Page scrolling
     setScrollPosition(scrollTarget)
-    browserNativeScrollRestoration_disable()
-    browserNativeScrollRestoration_setInitialRenderIsDone()
+    scrollRestoration_disable()
+    scrollRestoration_setInitialRenderIsDone()
     if (pageContext._hasPageContextFromServer) setPageContextInitIsPassedToClient(pageContext)
 
     // Add link prefetch handlers
@@ -575,7 +572,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
-  browserNativeScrollRestoration_disable()
+  scrollRestoration_disable()
   pushHistoryState(url, overwriteLastHistoryEntry)
 }
 
