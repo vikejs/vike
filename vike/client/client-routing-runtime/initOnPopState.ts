@@ -4,17 +4,21 @@ import { onPopStateBegin, type HistoryInfo } from './history.js'
 import { renderPageClientSide } from './renderPageClientSide.js'
 import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 
-// The 'popstate' event is trigged only upon:
-// - Back-/forward navigation:
-//   - By the user using the browser's back-/forward navigation
-//   - By the app using `history.back()` / `history.forward()` / `history.go()`
-// - URL hash changes:
-//   - By the user clicking on `<a href="#some-hash">`
-//     - The popstate event is *only* triggered if `href` starts with '#' (even if `href==='/some-path#some-hash'` and the current URL has the same pathname '/some-path' then popstate isn't triggered)
-//     - Vike doesn't intercept hash links (see `skipLink()`) and let's the browser handle them.
-//   - By the app using a `location` API such as `location.hash = 'some-hash'`
-//     - Even upon `location.href='/some-path#some-hash'` while the current URL is '/some-path' (unlike <a> clicks).
-//     - Only upon hash navigation: setting `location.href='/some-other-path'` triggers a full page reload and no popstate event is fired.
+// The 'popstate' event is trigged when the browser doesn't fully load the new URL: for example, `location.hash='#foo'` triggers the popstate event while `location.href='/foo'` doesn't.
+
+// Concretely, 'popstate' is fired when:
+// 1. Back-/forward navigation:
+//    - By the user using the browser's back-/forward navigation
+//    - By the app using `history.back()` / `history.forward()` / `history.go()`
+// 2. URL hash changes:
+//    - By the user clicking on `<a href="#some-hash">`
+//      - The popstate event is *only* triggered if `href` starts with '#' (even if `href==='/foo#bar'` and the current URL has the same pathname '/foo' then popstate isn't triggered)
+//      - Vike doesn't intercept hash links (see `skipLink()`) and let's the browser handle them.
+//    - By the app using a `location` API such as `location.hash = 'some-hash'`
+//      - Even upon `location.href='/foo#bar'` while the current URL is '/foo' (unlike <a> clicks).
+//      - Only upon hash navigation: setting `location.href='/foo'` triggers a full page reload and no popstate event is fired.
+// 3. Server Routing
+//    - When the user clicks on a link before the page's JavaScript was loaded
 
 // Notes:
 // - The 'hashchange' event is fired after popstate, so we cannot use it to distinguish between hash and non-hash navigations.
@@ -30,8 +34,9 @@ async function onPopState() {
   // - `isHistoryEntryNotEnhanced === true` when:
   //   - Click on `<a href="#some-hash">`
   //   - Using the `location` API (only hash navigation, see comment above)
+  //   - Server Routing
   if (isHistoryEntryNotEnhanced) {
-    // New hash navigation, let the browser handle it
+    // Let the browser handle it
     return
   } else {
     // Back-/forward navigation (including back-/forward hash navigation)
