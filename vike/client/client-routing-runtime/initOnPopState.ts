@@ -22,9 +22,9 @@ import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 // - Text links aren't supported: https://github.com/vikejs/vike/issues/2114
 
 function initOnPopState() {
-  window.addEventListener('popstate', onPopstate)
+  window.addEventListener('popstate', onPopState)
 }
-async function onPopstate() {
+async function onPopState() {
   const { isNewHistoryEntry, previous, current } = onPopStateBegin()
   // - `isNewHistoryEntry === false` <=> back-/forward navigation
   // - `isNewHistoryEntry === true` when:
