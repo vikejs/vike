@@ -18,29 +18,29 @@ import { type ScrollTarget, setScrollPosition } from './setScrollPosition.js'
 //      - The popstate event is *only* triggered if `href` starts with '#' (even if `href==='/foo#bar'` and the current URL has the same pathname '/foo' then popstate isn't triggered)
 //      - Vike doesn't intercept hash links (see `skipLink()`) and let's the browser handle them.
 //    - By the app using a `location` API such as `location.hash = 'some-hash'`
-//      - Even upon `location.href='/foo#bar'` while the current URL is '/foo' (unlike <a> clicks).
 //      - Only upon hash navigation: setting `location.href='/foo'` triggers a full page reload and no popstate event is fired.
+//      - Also upon `location.href='/foo#bar'` while the current URL is '/foo' (unlike <a> clicks).
 
 // Notes:
 // - The 'hashchange' event is fired after popstate, so we cannot use it to distinguish between hash and non-hash navigations.
 // - It isn't possible to monkey patch the `location` APIs. (Chrome throws `TypeError: Cannot redefine property` when attempt to overwrite any `location` property.)
 // - Text links aren't supported: https://github.com/vikejs/vike/issues/2114
+// - docs/ is a good playground to test all this.
 
 function initOnPopState() {
   window.addEventListener('popstate', onPopState)
 }
 async function onPopState() {
   const { isHistoryStateEnhanced, previous, current } = onPopStateBegin()
-  // - `isHistoryStateEnhanced === false` when:
+  // - `isHistoryStateEnhanced===false` <=> new hash navigation:
   //   - Click on `<a href="#some-hash">`
-  //   - Using the `location` API (only hash navigation, see comments above)
-  // - `isHistoryStateEnhanced === true` <=> back-/forward navigation
-  // - No popstate even is fired upon Server Routing (the user clicks on a link before the page's JavaScript was loaded), see comments above.
+  //   - Using the `location` API (only hash navigation, see comments above).
+  // - `isHistoryStateEnhanced===true` <=> back-/forward navigation (including back-/forward hash navigation).
+  //   > Only back-/forward client-side navigation: no 'popstate' event is fired upon Server Routing (when the user clicks on a link before the page's JavaScript loaded), see comments above.
   if (!isHistoryStateEnhanced) {
     // Let the browser handle it
     return
   } else {
-    // Back-/forward navigation (including back-/forward hash navigation)
     await handleBackForwardNavigation(previous, current)
   }
 }
