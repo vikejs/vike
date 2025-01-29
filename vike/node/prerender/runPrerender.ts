@@ -110,6 +110,9 @@ type PrerenderContext = {
   pageContextInit: Record<string, unknown> | null
   _noExtraDir: boolean
 }
+type PrerenderContextPublic = {
+  pageContexts: PrerenderContext['pageContexts']
+}
 
 type PageContext = PageContextInitEnhanced & {
   _urlRewrite: null
@@ -645,10 +648,11 @@ async function callOnPrerenderStartHook(prerenderContext: {
   )
 
   let result: unknown = await executeHook(
-    () =>
-      hookFn({
+    () => {
+      const prerenderContextPublic: PrerenderContextPublic = {
         pageContexts: prerenderContext.pageContexts,
         // TODO/v1-release: remove warning
+        // @ts-expect-error
         get prerenderPageContexts() {
           assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${docLink}`, {
             showStackTrace: true,
@@ -656,7 +660,9 @@ async function callOnPrerenderStartHook(prerenderContext: {
           })
           return prerenderContext.pageContexts
         }
-      }),
+      }
+      return hookFn(prerenderContextPublic)
+    },
     onPrerenderStartHook,
     null
   )
