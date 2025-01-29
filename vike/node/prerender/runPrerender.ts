@@ -111,9 +111,7 @@ type PrerenderContext = {
   pageContextInit: Record<string, unknown> | null
   noExtraDir: boolean
 }
-type PrerenderContextPublic = {
-  pageContexts: PrerenderContext['pageContexts']
-}
+type PrerenderContextPublic = Pick<PrerenderContext, 'pageContexts'>
 
 type PageContext = PageContextInitEnhanced & {
   _urlRewrite: null
