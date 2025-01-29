@@ -109,7 +109,7 @@ type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 type PrerenderContext = {
   pageContexts: PageContext[]
   pageContextInit: Record<string, unknown> | null
-  _noExtraDir: boolean
+  noExtraDir: boolean
 }
 type PrerenderContextPublic = {
   pageContexts: PrerenderContext['pageContexts']
@@ -219,8 +219,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const prerenderContext = {}
   objectAssign(prerenderContext, {
-    _urlHandler: null,
-    _noExtraDir: noExtraDir ?? false,
+    noExtraDir: noExtraDir ?? false,
     pageContexts: [] as PageContext[],
     pageContextInit: options.pageContextInit ?? null
   })
@@ -520,7 +519,7 @@ function createPageContext(urlOriginal: string, prerenderContext: PrerenderConte
   const pageContext = {
     _urlHandler: null,
     _urlRewrite: null,
-    _noExtraDir: prerenderContext._noExtraDir,
+    _noExtraDir: prerenderContext.noExtraDir,
     _prerenderContext: prerenderContext
   }
   const pageContextInit = {
@@ -814,7 +813,7 @@ async function routeAndPrerender(
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          doNotCreateExtraDirectory: prerenderContext._noExtraDir,
+          doNotCreateExtraDirectory: prerenderContext.noExtraDir,
           pageId
         })
       })
