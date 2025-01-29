@@ -25,7 +25,8 @@ import {
   isArray,
   changeEnumerable,
   onSetupPrerender,
-  isObject
+  isObject,
+  makePublicCopy
 } from './utils.js'
 import {
   prerenderPage,
@@ -649,18 +650,19 @@ async function callOnPrerenderStartHook(prerenderContext: {
 
   let result: unknown = await executeHook(
     () => {
-      const prerenderContextPublic: PrerenderContextPublic = {
-        pageContexts: prerenderContext.pageContexts,
-        // TODO/v1-release: remove warning
-        // @ts-expect-error
-        get prerenderPageContexts() {
+      const prerenderContextPublic: PrerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
+        'pageContexts'
+      ])
+      // TODO/v1-release: remove warning
+      Object.defineProperty(prerenderContextPublic, 'prerenderPageContexts', {
+        get() {
           assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${docLink}`, {
             showStackTrace: true,
             onlyOnce: true
           })
           return prerenderContext.pageContexts
         }
-      }
+      })
       return hookFn(prerenderContextPublic)
     },
     onPrerenderStartHook,

@@ -31,7 +31,8 @@ import {
   debugGlob,
   getGlobalObject,
   genPromise,
-  createDebugger
+  createDebugger,
+  makePublicCopy
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -47,7 +48,6 @@ import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-desig
 import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
-import { makePublicCopy } from '../../utils/makePublicCopy.js'
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
