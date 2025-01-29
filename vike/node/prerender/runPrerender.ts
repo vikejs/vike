@@ -233,6 +233,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await callOnPrerenderStartHook(prerenderContext)
 
   let prerenderedCount = 0
+  // Write files as soon as pages finish rendering (instead of writing all files at once only after all pages have rendered).
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     if (htmlFile.pageId) {
