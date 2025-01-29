@@ -23,9 +23,8 @@ function setScrollPosition(scrollTarget: ScrollTarget, url?: string): void {
   scrollToHashOrTop(hash)
 }
 
-function hasTextFragment(url: string) {
-  return url.includes('#') && url.includes(':~:text')
-}
+// https://github.com/vikejs/vike/issues/2114
+// https://github.com/WICG/scroll-to-text-fragment/issues/261
 function scrollToTextFragment(url: string) {
   const stateOriginal = window.history.state
   replaceHistoryStateOriginal(null, url)
@@ -35,6 +34,9 @@ function scrollToTextFragment(url: string) {
   // - Firefox's location.replace() replaces the current state with `null` (`history.state===null`)
   window.location.replace(url)
   replaceHistoryStateOriginal(stateOriginal, url)
+}
+function hasTextFragment(url: string) {
+  return url.includes('#') && url.includes(':~:text')
 }
 
 // Replicates the browser's native behavior
