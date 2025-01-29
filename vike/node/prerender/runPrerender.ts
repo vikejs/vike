@@ -232,20 +232,26 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await callOnPrerenderStartHook(prerenderContext)
 
-  let prerenderedCount = 0
-  const onComplete = async (htmlFile: HtmlFile) => {
-    prerenderedCount++
-    if (htmlFile.pageId) {
-      prerenderContext.prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
-    }
-    await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
-  }
+  const filesToWrite: HtmlFile[] = []
 
-  await routeAndPrerender(prerenderContext, concurrencyLimit, onComplete)
+  await routeAndPrerender(prerenderContext, concurrencyLimit, filesToWrite)
 
   warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
 
-  await prerender404(prerenderContext, onComplete)
+  await prerender404(prerenderContext, filesToWrite)
+
+  let prerenderedCount = 0
+  await Promise.all(
+    filesToWrite.map((htmlFile) =>
+      concurrencyLimit(async () => {
+        prerenderedCount++
+        if (htmlFile.pageId) {
+          prerenderContext.prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
+        }
+        await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
+      })
+    )
+  )
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
@@ -736,7 +742,7 @@ async function callOnPrerenderStartHook(prerenderContext: {
 async function routeAndPrerender(
   prerenderContext: PrerenderContext,
   concurrencyLimit: PLimit,
-  onComplete: (htmlFile: HtmlFile) => Promise<void>
+  filesToWrite: HtmlFile[]
 ) {
   const globalContext = getGlobalContext()
   assert(globalContext.isPrerendering)
@@ -806,7 +812,7 @@ async function routeAndPrerender(
           throw err
         }
         const { documentHtml, pageContextSerialized } = res
-        await onComplete({
+        filesToWrite.push({
           urlOriginal,
           pageContext,
           htmlString: documentHtml,
@@ -871,7 +877,7 @@ function warnMissingPages(
     })
 }
 
-async function prerender404(prerenderContext: PrerenderContext, onComplete: (htmlFile: HtmlFile) => Promise<void>) {
+async function prerender404(prerenderContext: PrerenderContext, filesToWrite: HtmlFile[]) {
   if (!Object.values(prerenderContext.prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
     try {
@@ -883,7 +889,7 @@ async function prerender404(prerenderContext: PrerenderContext, onComplete: (htm
     if (result) {
       const urlOriginal = '/404'
       const { documentHtml, pageContext } = result
-      await onComplete({
+      filesToWrite.push({
         urlOriginal,
         pageContext,
         htmlString: documentHtml,
