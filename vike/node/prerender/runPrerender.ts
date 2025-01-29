@@ -215,12 +215,11 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const globalContext = getGlobalContext()
   globalContext.pageFilesAll.forEach(assertExportNames)
 
-  const prerenderContext = {}
-  objectAssign(prerenderContext, {
+  const prerenderContext = {
     noExtraDir: noExtraDir ?? false,
     pageContexts: [] as PageContext[],
     pageContextInit: options.pageContextInit ?? null
-  })
+  }
 
   const doNotPrerenderList: DoNotPrerenderList = []
   await collectDoNoPrerenderList(vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit)
