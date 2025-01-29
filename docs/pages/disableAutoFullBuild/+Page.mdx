@@ -25,15 +25,15 @@ export default {
 }
 ```
 
-Running `$ vike build` executes three build steps:
+Running `$ vite build` executes three build steps:
  1. Client-side build (`dist/client/`).
  1. Server-side build (`dist/server/`).
  1. Pre-rendering (if <Link text="pre-rendering is enabled" href="/pre-rendering" />).
 
 When setting `disableAutoFullBuild` to `true` then only step `1` is executed. To run the full build, you then have to:
 
- - Run `$ vike build`, to build the client-side (`dist/client/`).
- - Run `$ vike build --ssr`, to build the server-side (`dist/server/`).
+ - Run `$ vite build`, to build the client-side (`dist/client/`).
+ - Run `$ vite build --ssr`, to build the server-side (`dist/server/`).
  - Run the pre-rendering programmatically, see <Link href="/api#prerender" doNotInferSectionTitle />.
 
 > If your goal is only to <Link href="/api#prerender">programmatically run pre-rendering</Link> then consider using <Link href="/prerender#disableautorun"><code>prerender.disableAutoRun</code></Link> instead.
