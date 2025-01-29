@@ -1,6 +1,6 @@
 export { commonConfig }
 
-import { mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
+import { type InlineConfig, mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
   assert,
   assertUsage,
@@ -29,6 +29,8 @@ declare module 'vite' {
     _isDev?: boolean
     _vikeVitePluginOptions?: unknown
     _root?: string
+    // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
+    _viteConfigEnhanced?: InlineConfig
     vike?: { global: VikeConfigObject['global'] }
     // TODO/now remove
     _vikeConfigGlobal?: VikeConfigObject['vikeConfigGlobal']

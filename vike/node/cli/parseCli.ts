@@ -1,8 +1,10 @@
 export { parseCli }
+export type { Command }
 
 import pc from '@brillout/picocolors'
 import { projectInfo, includes } from './utils.js'
 
+type Command = 'dev' | 'build' | 'preview' | 'prerender'
 const commands = [
   { name: 'dev', desc: 'Start development server' },
   { name: 'build', desc: 'Build for production' },
@@ -10,7 +12,7 @@ const commands = [
   { name: 'prerender', desc: 'Pre-render pages (only needed when partial.disableAutoRun is true)' }
 ] as const
 
-function parseCli() {
+function parseCli(): { command: Command } {
   const command = (() => {
     const firstArg = process.argv[2]
     if (!firstArg) {

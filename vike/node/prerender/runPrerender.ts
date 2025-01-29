@@ -72,6 +72,7 @@ import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
+import { setContextIsPrerendering } from './context.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -172,6 +173,7 @@ async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Pr
   }
 }
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
+  setContextIsPrerendering()
   checkOutdatedOptions(options)
   onSetupPrerender()
   setGlobalContext_isPrerendering()

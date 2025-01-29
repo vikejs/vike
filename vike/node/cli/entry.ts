@@ -2,11 +2,13 @@ import { projectInfo } from './utils.js'
 import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 import { parseCli } from './parseCli.js'
+import { setContextCliCommand } from './context.js'
 
 cli()
 
 async function cli() {
   const { command } = parseCli()
+  setContextCliCommand(command)
   if (command === 'dev') {
     await cmdDev()
   } else if (command === 'build') {
