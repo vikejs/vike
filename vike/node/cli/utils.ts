@@ -7,3 +7,4 @@ onLoad()
 export * from '../../utils/assert.js'
 export * from '../../utils/projectInfo.js'
 export * from '../../utils/includes.js'
+export * from '../../utils/getGlobalObject.js'

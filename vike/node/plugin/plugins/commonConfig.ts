@@ -1,6 +1,6 @@
 export { commonConfig }
 
-import { mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
+import { type InlineConfig, mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
   assert,
   assertUsage,
@@ -21,7 +21,7 @@ import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
-import { temp_disablePrerenderAutoRun } from '../../prerender/isPrerenderAutoRunEnabled.js'
+import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
@@ -29,6 +29,8 @@ declare module 'vite' {
     _isDev?: boolean
     _vikeVitePluginOptions?: unknown
     _root?: string
+    // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
+    _viteConfigEnhanced?: InlineConfig
     vike?: { global: VikeConfigObject['global'] }
     // TODO/now remove
     _vikeConfigGlobal?: VikeConfigObject['vikeConfigGlobal']
