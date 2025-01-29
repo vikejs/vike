@@ -56,7 +56,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             // TODO/now: remove
             _vikeConfigGlobal: vikeConfig.vikeConfigGlobal,
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
-            configVikePromise: Promise.resolve(vikeConfig.vikeConfigGlobal)
+            configVikePromise: Promise.resolve({ prerender: !!vikeConfig.vikeConfigGlobal.prerender })
           }
         }
       }
