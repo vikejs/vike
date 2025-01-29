@@ -232,7 +232,7 @@ importers:
     dependencies:
       '@brillout/docpress':
         specifier: ^0.10.23
-        version: 0.10.23(@algolia/client-search@4.24.0)(@types/react@19.0.2)(@vitejs/plugin-react-swc@3.7.2(vite@6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2)))(acorn@8.12.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.7.2)(vike@vike)(vite@6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))
+        version: 0.10.23(@algolia/client-search@4.24.0)(@types/react@19.0.2)(@vitejs/plugin-react-swc@3.7.2(vite@6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.7.2)(vike@vike)(vite@6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))
       '@types/react':
         specifier: ^19.0.2
         version: 19.0.2
@@ -1398,11 +1398,11 @@ importers:
   test/middleware-config:
     dependencies:
       '@universal-middleware/core':
-        specifier: ^0.3.1
-        version: 0.3.2
+        specifier: ^0.4.0
+        version: 0.4.0
       '@universal-middleware/express':
-        specifier: ^0.3.1
-        version: 0.3.2
+        specifier: ^0.4.0
+        version: 0.4.0
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.3.4(vite@5.4.11(@types/node@22.10.2)(terser@5.31.0))
@@ -1439,7 +1439,7 @@ importers:
         version: 4.19.2
       typescript:
         specifier: ^5.7.2
-        version: 5.7.2
+        version: 5.7.3
       vike:
         specifier: link:../../vike
         version: link:../../vike
@@ -2220,7 +2220,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '>=5.0.0'
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/magne/workspace/vike/vike/
       vite: '>=5.2.0'
     peerDependenciesMeta:
       '@vitejs/plugin-react-swc':
@@ -3949,32 +3949,6 @@ packages:
   '@universal-middleware/core@0.2.14':
     resolution: {integrity: sha512-HrbFL8vafL3WK1EHOAWjaqCXW4bfsvx2mbouSwenLjA2rGmgLcxspBCYzIuDDHdqSCU9vJdqMyswcB3l935RcA==}
 
-  '@universal-middleware/core@0.3.2':
-    resolution: {integrity: sha512-f2iMeagmyluwUXRl9g8g7O6BvaPKtC5TFC+XijrE26U96M5sfYmrvvfUJ+25/UR9f9saPshzxTKaQDrSyf4+Qw==}
-    peerDependencies:
-      '@cloudflare/workers-types': ^4.20241202.0
-      '@hattip/core': ^0.0.49
-      '@webroute/route': ^0.8.0
-      elysia: ^1.1.25
-      fastify: ^5.1.0
-      h3: ^1.13.0
-      hono: ^4.6.12
-    peerDependenciesMeta:
-      '@cloudflare/workers-types':
-        optional: true
-      '@hattip/core':
-        optional: true
-      '@webroute/route':
-        optional: true
-      elysia:
-        optional: true
-      fastify:
-        optional: true
-      h3:
-        optional: true
-      hono:
-        optional: true
-
   '@universal-middleware/core@0.3.3':
     resolution: {integrity: sha512-wh4qRSeRHp3ZvyDJQjSY9z42DUObAHfhhVdegR0YaUxPJpUXyJtCwz58M0+2q802p0Ad+lRmjplzqIP8PdHmag==}
     peerDependencies:
@@ -4001,11 +3975,37 @@ packages:
       hono:
         optional: true
 
+  '@universal-middleware/core@0.4.0':
+    resolution: {integrity: sha512-13ViD0KI5ELDrPqFTxBdX3wcySYJn/fJRTgtMI8HGNquvaD9Q47iJF4UDPL91pZP6niv8zXiV+eWUfR/RKJA/Q==}
+    peerDependencies:
+      '@cloudflare/workers-types': ^4.20250109.0
+      '@hattip/core': ^0.0.49
+      '@webroute/route': ^0.8.0
+      elysia: ^1.2.10
+      fastify: ^5.2.1
+      h3: ^1.13.1
+      hono: ^4.6.16
+    peerDependenciesMeta:
+      '@cloudflare/workers-types':
+        optional: true
+      '@hattip/core':
+        optional: true
+      '@webroute/route':
+        optional: true
+      elysia:
+        optional: true
+      fastify:
+        optional: true
+      h3:
+        optional: true
+      hono:
+        optional: true
+
   '@universal-middleware/express@0.2.10':
     resolution: {integrity: sha512-jRPY2o40ikpznHGUo0GxeSej6NU4XhjOvTgKMqLB98SpZ5hP+kTDvwv15JqeUFRiMsyN0Vu73RyE4IjzU79tQQ==}
 
-  '@universal-middleware/express@0.3.2':
-    resolution: {integrity: sha512-65xWOpPHJKdN+t2/45S+WGwLjXz+6o3q6wZ2vMf5IUpYJVIDqU4uP4uEteyheU+/VPjfBmbjDZndUTnu05rGFA==}
+  '@universal-middleware/express@0.4.0':
+    resolution: {integrity: sha512-KdcinQgMePyu66hHW55tCSr/H8i5bygHJpLpmeuTPab7/FhlUi9mXVgZ/YcTQuQHSfXQJX/jq/LNRYYne3Y89g==}
 
   '@vercel/build-utils@8.7.0':
     resolution: {integrity: sha512-ofZX+ABiW76u5khIyYyH5xK5KSuiAteqRu5hz2k1a2WHLwF7VpeBg8gdFR+HwbVnNkHtkMA64ya5Dd/lNoABkw==}
@@ -7365,6 +7365,10 @@ packages:
     resolution: {integrity: sha512-FRKsF7cz96xIIeMZ82ehjC3xW2E+O2+v11udrDYewUbszngYhsGa8z6YUMMzO9QJZzzyd0nGGXnML/TReX6W8Q==}
     engines: {node: '>=16'}
 
+  tough-cookie@5.1.0:
+    resolution: {integrity: sha512-rvZUv+7MoBYTiDmFPBrhL7Ujx9Sk+q9wwm22x8c8T5IJaR+Wsyc7TNxbVxo84kZoRJZZMazowFLqpankBEQrGg==}
+    engines: {node: '>=16'}
+
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
@@ -7612,7 +7616,7 @@ packages:
   vike-node@0.3.0:
     resolution: {integrity: sha512-Zmoq6dX8Sc2LE3LcfAr/aeXHaeJYSFY1TAQ54A4KvMrW3LWklfNh9XLXJe2L94wRFkmf8QwAAIU3qnUgUOLzbg==}
     peerDependencies:
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/magne/workspace/vike/vike/
       vite: '>=5.0.10'
 
   vike-react@0.5.12:
@@ -7620,12 +7624,12 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/magne/workspace/vike/vike/
 
   vike-vue@0.8.5:
     resolution: {integrity: sha512-reVfEMjE2Me7xPoRfWw3tEMx358qqIGw0vSS1UsasamEL85Mqwi1HC8xtUFxELkXhr/V9awtmRUvZ2fE+nFpMQ==}
     peerDependencies:
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/magne/workspace/vike/vike/
       vue: ^3.0.0
 
   vite-node@2.1.3:
@@ -7645,7 +7649,7 @@ packages:
     resolution: {integrity: sha512-tNLg5fuMCF6nVfMlttstKt54VQ7KhqHh7/xahZdjGsbP8Z5ANCwy2WlIdrgkrwB752HMPyJnBXGSdg/O3UT3gg==}
     peerDependencies:
       '@vite-plugin-vercel/vike': 9.0.3
-      vike: link:/home/rom/code/vike/vike/
+      vike: link:/home/magne/workspace/vike/vike/
       vite: ^4.4 || ^5.0.2 || ^6
     peerDependenciesMeta:
       '@vite-plugin-vercel/vike':
@@ -8455,14 +8459,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.10.23(@algolia/client-search@4.24.0)(@types/react@19.0.2)(@vitejs/plugin-react-swc@3.7.2(vite@6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2)))(acorn@8.12.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.7.2)(vike@vike)(vite@6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))':
+  '@brillout/docpress@0.10.23(@algolia/client-search@4.24.0)(@types/react@19.0.2)(@vitejs/plugin-react-swc@3.7.2(vite@6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.27.3)(search-insights@2.17.3)(typescript@5.7.2)(vike@vike)(vite@6.0.7(@types/node@22.10.2)(terser@5.31.0)(tsx@4.19.2))':
     dependencies:
       '@brillout/picocolors': 1.0.15
       '@docsearch/css': 3.8.0
       '@docsearch/react': 3.6.1(@algolia/client-search@4.24.0)(@types/react@19.0.2)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.0.2)(react@19.0.0)
-      '@mdx-js/rollup': 3.0.1(acorn@8.12.1)(rollup@4.27.3)
+      '@mdx-js/rollup': 3.0.1(rollup@4.27.3)
       '@shikijs/transformers': 1.2.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
@@ -9248,7 +9252,7 @@ snapshots:
       '@types/react': 19.0.1
       react: 19.0.0
 
-  '@mdx-js/rollup@3.0.1(acorn@8.12.1)(rollup@4.27.3)':
+  '@mdx-js/rollup@3.0.1(rollup@4.27.3)':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.12.1)
       '@rollup/pluginutils': 5.1.4(rollup@4.27.3)
@@ -9915,23 +9919,23 @@ snapshots:
       regexparam: 3.0.0
       tough-cookie: 5.0.0
 
-  '@universal-middleware/core@0.3.2':
-    dependencies:
-      regexparam: 3.0.0
-      tough-cookie: 5.0.0
-
   '@universal-middleware/core@0.3.3':
     dependencies:
       regexparam: 3.0.0
       tough-cookie: 5.0.0
 
+  '@universal-middleware/core@0.4.0':
+    dependencies:
+      regexparam: 3.0.0
+      tough-cookie: 5.1.0
+
   '@universal-middleware/express@0.2.10':
     dependencies:
       '@universal-middleware/core': 0.2.14
 
-  '@universal-middleware/express@0.3.2':
+  '@universal-middleware/express@0.4.0':
     dependencies:
-      '@universal-middleware/core': 0.3.2
+      '@universal-middleware/core': 0.4.0
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - '@hattip/core'
@@ -10574,17 +10578,17 @@ snapshots:
       '@webassemblyjs/ast': 1.12.1
       '@xtuc/long': 4.2.2
 
-  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))':
+  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.91.0)':
     dependencies:
       webpack: 5.91.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.91.0)
 
-  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))':
+  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.91.0)':
     dependencies:
       webpack: 5.91.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.91.0)
 
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))':
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack@5.91.0)':
     dependencies:
       webpack: 5.91.0(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.91.0)
@@ -14160,7 +14164,7 @@ snapshots:
       react: 19.0.0
       react-streaming: 0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
-  terser-webpack-plugin@5.3.10(webpack@5.91.0(webpack-cli@5.1.4)):
+  terser-webpack-plugin@5.3.10(webpack@5.91.0):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
@@ -14211,6 +14215,10 @@ snapshots:
   totalist@3.0.1: {}
 
   tough-cookie@5.0.0:
+    dependencies:
+      tldts: 6.1.66
+
+  tough-cookie@5.1.0:
     dependencies:
       tldts: 6.1.66
 
@@ -14829,9 +14837,9 @@ snapshots:
   webpack-cli@5.1.4(webpack@5.91.0):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))
-      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack@5.91.0))(webpack@5.91.0(webpack-cli@5.1.4))
+      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.91.0)
+      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.91.0)
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack@5.91.0)
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.3
@@ -14876,7 +14884,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.91.0(webpack-cli@5.1.4))
+      terser-webpack-plugin: 5.3.10(webpack@5.91.0)
       watchpack: 2.4.1
       webpack-sources: 3.2.3
     optionalDependencies:
