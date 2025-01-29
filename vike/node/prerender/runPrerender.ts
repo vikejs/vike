@@ -114,8 +114,8 @@ type PrerenderContext = {
   output: Output
 }
 type Output = {
-  fileType: FileType
   filePath: string
+  fileType: FileType
   fileContent: string
   pageContext: PageContextPrerendered
 }[]
@@ -980,8 +980,8 @@ async function write(
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
   output.push({
-    fileType,
     filePath,
+    fileType,
     fileContent,
     pageContext
   })
