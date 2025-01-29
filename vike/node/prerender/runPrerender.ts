@@ -111,7 +111,15 @@ type PrerenderContext = {
   pageContextInit: Record<string, unknown> | null
   noExtraDir: boolean
   prerenderedPageContexts: PrerenderedPageContexts
+  output: Output
 }
+type Output = {
+  fileType: FileType
+  filePath: string
+  fileContent: string
+  pageContext: PageContextPrerendered
+}[]
+type FileType = 'HTML' | 'JSON'
 type PrerenderContextPublic = Pick<PrerenderContext, 'pageContexts'>
 
 type PageContext = PageContextInitEnhanced & {
@@ -220,7 +228,8 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     noExtraDir: noExtraDir ?? false,
     pageContexts: [] as PageContext[],
     pageContextInit: options.pageContextInit ?? null,
-    prerenderedPageContexts: {}
+    prerenderedPageContexts: {},
+    output: []
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -239,7 +248,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     if (htmlFile.pageId) {
       prerenderContext.prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
     }
-    await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
+    await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, prerenderContext.output, logLevel)
   }
 
   await routeAndPrerender(prerenderContext, concurrencyLimit, onComplete)
@@ -901,6 +910,7 @@ async function writeFiles(
   root: string,
   outDirClient: string,
   onPagePrerender: Function | undefined,
+  output: Output,
   logLevel: 'warn' | 'info'
 ) {
   assert(urlOriginal.startsWith('/'))
@@ -909,12 +919,13 @@ async function writeFiles(
     write(
       urlOriginal,
       pageContext,
-      '.html',
+      'HTML',
       htmlString,
       root,
       outDirClient,
       doNotCreateExtraDirectory,
       onPagePrerender,
+      output,
       logLevel
     )
   ]
@@ -923,12 +934,13 @@ async function writeFiles(
       write(
         urlOriginal,
         pageContext,
-        '.pageContext.json',
+        'JSON',
         pageContextSerialized,
         root,
         outDirClient,
         doNotCreateExtraDirectory,
         onPagePrerender,
+        output,
         logLevel
       )
     )
@@ -938,19 +950,21 @@ async function writeFiles(
 
 async function write(
   urlOriginal: string,
-  pageContext: Record<string, unknown>,
-  fileExtension: '.html' | '.pageContext.json',
+  pageContext: PageContextPrerendered,
+  fileType: FileType,
   fileContent: string,
   root: string,
   outDirClient: string,
   doNotCreateExtraDirectory: boolean,
   onPagePrerender: Function | undefined,
+  output: Output,
   logLevel: 'info' | 'warn'
 ) {
   let fileUrl: string
-  if (fileExtension === '.html') {
+  if (fileType === 'HTML') {
     fileUrl = urlToFile(urlOriginal, '.html', doNotCreateExtraDirectory)
   } else {
+    assert(fileType === 'JSON')
     fileUrl = getPageContextRequestUrl(urlOriginal)
   }
 
@@ -965,6 +979,12 @@ async function write(
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
+  output.push({
+    fileType,
+    filePath,
+    fileContent,
+    pageContext
+  })
   if (onPagePrerender) {
     const prerenderPageContext = {}
     objectAssign(prerenderPageContext, pageContext)
