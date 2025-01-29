@@ -96,6 +96,8 @@ function buildConfig(): Plugin[] {
         onSetupBuild()
       },
       async closeBundle() {
+        // @ts-ignore
+        console.log(config.vike?.prerenderContext?._output)
         onSetupBuild()
         await fixServerAssets_assertCssTarget(config)
       }
