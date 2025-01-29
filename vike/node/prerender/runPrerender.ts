@@ -3,6 +3,7 @@ export { runPrerenderFromCLIPrerenderCommand }
 export { runPrerenderFromAutoRun }
 export { runPrerender_forceExit }
 export type { PrerenderOptions }
+export type { PrerenderContextPublic }
 
 import path from 'path'
 import { route } from '../../shared/route/index.js'
@@ -25,7 +26,8 @@ import {
   isArray,
   changeEnumerable,
   onSetupPrerender,
-  isObject
+  isObject,
+  makePublicCopy
 } from './utils.js'
 import {
   prerenderPage,
@@ -108,8 +110,18 @@ type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 type PrerenderContext = {
   pageContexts: PageContext[]
   pageContextInit: Record<string, unknown> | null
-  _noExtraDir: boolean
+  noExtraDir: boolean
+  prerenderedPageContexts: PrerenderedPageContexts
+  output: Output
 }
+type Output = {
+  filePath: string
+  fileType: FileType
+  fileContent: string
+  pageContext: PageContextPrerendered
+}[]
+type FileType = 'HTML' | 'JSON'
+type PrerenderContextPublic = Pick<PrerenderContext, 'pageContexts'>
 
 type PageContext = PageContextInitEnhanced & {
   _urlRewrite: null
@@ -163,14 +175,19 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   }
   runPrerender_forceExit()
 }
-async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<void> {
+async function runPrerenderFromAutoRun(
+  viteConfig: InlineConfig | undefined
+): Promise<{ prerenderContextPublic: PrerenderContextPublic }> {
+  let prerenderContextPublic: PrerenderContextPublic
   try {
-    await runPrerender({ viteConfig })
+    const ret = await runPrerender({ viteConfig })
+    prerenderContextPublic = ret.prerenderContextPublic
   } catch (err) {
     console.error(err)
     logErrorHint(err)
     process.exit(1)
   }
+  return { prerenderContextPublic }
 }
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
   setContextIsPrerendering()
@@ -213,13 +230,13 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const globalContext = getGlobalContext()
   globalContext.pageFilesAll.forEach(assertExportNames)
 
-  const prerenderContext = {}
-  objectAssign(prerenderContext, {
-    _urlHandler: null,
-    _noExtraDir: noExtraDir ?? false,
+  const prerenderContext: PrerenderContext = {
+    noExtraDir: noExtraDir ?? false,
     pageContexts: [] as PageContext[],
-    pageContextInit: options.pageContextInit ?? null
-  })
+    pageContextInit: options.pageContextInit ?? null,
+    prerenderedPageContexts: {},
+    output: []
+  }
 
   const doNotPrerenderList: DoNotPrerenderList = []
   await collectDoNoPrerenderList(vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit)
@@ -230,29 +247,31 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await callOnPrerenderStartHook(prerenderContext)
 
-  const prerenderedPageContexts: PrerenderedPageContexts = {}
   let prerenderedCount = 0
+  // Write files as soon as pages finish rendering (instead of writing all files at once only after all pages have rendered).
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     if (htmlFile.pageId) {
-      prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
+      prerenderContext.prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
     }
-    await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
+    await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, prerenderContext.output, logLevel)
   }
 
   await routeAndPrerender(prerenderContext, concurrencyLimit, onComplete)
 
-  warnContradictoryNoPrerenderList(prerenderedPageContexts, doNotPrerenderList)
+  warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
 
-  await prerender404(prerenderedPageContexts, prerenderContext, onComplete)
+  await prerender404(prerenderContext, onComplete)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
 
-  warnMissingPages(prerenderedPageContexts, doNotPrerenderList, partial)
+  warnMissingPages(prerenderContext.prerenderedPageContexts, doNotPrerenderList, partial)
 
-  return { viteConfig }
+  const prerenderContextPublic = makePublic(prerenderContext)
+
+  return { viteConfig, prerenderContextPublic }
 }
 
 async function collectDoNoPrerenderList(
@@ -516,7 +535,7 @@ function createPageContext(urlOriginal: string, prerenderContext: PrerenderConte
   const pageContext = {
     _urlHandler: null,
     _urlRewrite: null,
-    _noExtraDir: prerenderContext._noExtraDir,
+    _noExtraDir: prerenderContext.noExtraDir,
     _prerenderContext: prerenderContext
   }
   const pageContextInit = {
@@ -530,9 +549,7 @@ function createPageContext(urlOriginal: string, prerenderContext: PrerenderConte
   return pageContext
 }
 
-async function callOnPrerenderStartHook(prerenderContext: {
-  pageContexts: PageContext[]
-}) {
+async function callOnPrerenderStartHook(prerenderContext: PrerenderContext) {
   const globalContext = getGlobalContext()
 
   let onPrerenderStartHook:
@@ -645,18 +662,20 @@ async function callOnPrerenderStartHook(prerenderContext: {
   )
 
   let result: unknown = await executeHook(
-    () =>
-      hookFn({
-        pageContexts: prerenderContext.pageContexts,
-        // TODO/v1-release: remove warning
-        get prerenderPageContexts() {
+    () => {
+      const prerenderContextPublic = makePublic(prerenderContext)
+      // TODO/v1-release: remove warning
+      Object.defineProperty(prerenderContextPublic, 'prerenderPageContexts', {
+        get() {
           assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${docLink}`, {
             showStackTrace: true,
             onlyOnce: true
           })
           return prerenderContext.pageContexts
         }
-      }),
+      })
+      return hookFn(prerenderContextPublic)
+    },
     onPrerenderStartHook,
     null
   )
@@ -806,7 +825,7 @@ async function routeAndPrerender(
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          doNotCreateExtraDirectory: prerenderContext._noExtraDir,
+          doNotCreateExtraDirectory: prerenderContext.noExtraDir,
           pageId
         })
       })
@@ -866,12 +885,8 @@ function warnMissingPages(
     })
 }
 
-async function prerender404(
-  prerenderedPageContexts: Record<string, { urlOriginal: string }>,
-  prerenderContext: PrerenderContext,
-  onComplete: (htmlFile: HtmlFile) => Promise<void>
-) {
-  if (!Object.values(prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
+async function prerender404(prerenderContext: PrerenderContext, onComplete: (htmlFile: HtmlFile) => Promise<void>) {
+  if (!Object.values(prerenderContext.prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
     try {
       result = await prerender404Page(prerenderContext.pageContextInit)
@@ -899,6 +914,7 @@ async function writeFiles(
   root: string,
   outDirClient: string,
   onPagePrerender: Function | undefined,
+  output: Output,
   logLevel: 'warn' | 'info'
 ) {
   assert(urlOriginal.startsWith('/'))
@@ -907,12 +923,13 @@ async function writeFiles(
     write(
       urlOriginal,
       pageContext,
-      '.html',
+      'HTML',
       htmlString,
       root,
       outDirClient,
       doNotCreateExtraDirectory,
       onPagePrerender,
+      output,
       logLevel
     )
   ]
@@ -921,12 +938,13 @@ async function writeFiles(
       write(
         urlOriginal,
         pageContext,
-        '.pageContext.json',
+        'JSON',
         pageContextSerialized,
         root,
         outDirClient,
         doNotCreateExtraDirectory,
         onPagePrerender,
+        output,
         logLevel
       )
     )
@@ -936,19 +954,21 @@ async function writeFiles(
 
 async function write(
   urlOriginal: string,
-  pageContext: Record<string, unknown>,
-  fileExtension: '.html' | '.pageContext.json',
+  pageContext: PageContextPrerendered,
+  fileType: FileType,
   fileContent: string,
   root: string,
   outDirClient: string,
   doNotCreateExtraDirectory: boolean,
   onPagePrerender: Function | undefined,
+  output: Output,
   logLevel: 'info' | 'warn'
 ) {
   let fileUrl: string
-  if (fileExtension === '.html') {
+  if (fileType === 'HTML') {
     fileUrl = urlToFile(urlOriginal, '.html', doNotCreateExtraDirectory)
   } else {
+    assert(fileType === 'JSON')
     fileUrl = getPageContextRequestUrl(urlOriginal)
   }
 
@@ -963,6 +983,12 @@ async function write(
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
+  output.push({
+    filePath,
+    fileType,
+    fileContent,
+    pageContext
+  })
   if (onPagePrerender) {
     const prerenderPageContext = {}
     objectAssign(prerenderPageContext, pageContext)
@@ -1202,4 +1228,11 @@ function validatePrerenderConfig(
     const { prop, errMsg } = wrongValue
     assertUsage(false, `Setting ${pc.cyan(`prerender.${prop}`)} ${errMsg}`)
   }
+}
+
+function makePublic(prerenderContext: PrerenderContext) {
+  const prerenderContextPublic: PrerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
+    'pageContexts'
+  ])
+  return prerenderContextPublic
 }

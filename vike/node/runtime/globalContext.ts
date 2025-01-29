@@ -26,13 +26,13 @@ import {
   isPlainObject,
   objectAssign,
   objectReplace,
-  objectKeys,
   isObject,
   hasProp,
   debugGlob,
   getGlobalObject,
   genPromise,
-  createDebugger
+  createDebugger,
+  makePublicCopy
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -136,34 +136,8 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   return makePublic(globalContext)
 }
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
-  const globalContextPublic = {
-    // TODO/now: add viteConfig and vikeConfig
-    assetsManifest: globalContext.assetsManifest
-  }
-
-  // Add internals (and prepended _ prefix to their keys)
-  {
-    const publicKeys = Object.keys(globalContextPublic)
-    objectKeys(globalContext)
-      .filter((key) => !publicKeys.includes(key))
-      .forEach((key) => {
-        const keyPublic = `_${key}`
-        Object.defineProperty(globalContextPublic, keyPublic, {
-          enumerable: true,
-          get() {
-            assertWarning(
-              false,
-              `Using internal globalContext.${keyPublic} which is discouraged: it may break in any minor version update. Instead, reach out on GitHub and elaborate your use case.`,
-              {
-                onlyOnce: true
-              }
-            )
-            return globalContext[key]
-          }
-        })
-      })
-  }
-
+  // TODO/now: add viteConfig and vikeConfig
+  const globalContextPublic = makePublicCopy(globalContext, 'globalContext', ['assetsManifest'])
   return globalContextPublic
 }
 

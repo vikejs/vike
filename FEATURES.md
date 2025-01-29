@@ -82,3 +82,4 @@ Misc:
   - https://github.com/vikejs/vike-react/issues/105#issuecomment-2061601329
 - Text fragments https://github.com/vikejs/vike/issues/2114
 - Inifinte loop guards, e.g. for infinite redirections
+- "Open Internals"

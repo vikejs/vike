@@ -22,6 +22,7 @@ import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
+import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
@@ -31,7 +32,7 @@ declare module 'vite' {
     _root?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
-    vike?: { global: VikeConfigObject['global'] }
+    vike?: { global: VikeConfigObject['global']; prerenderContext?: PrerenderContextPublic }
     // TODO/now remove
     _vikeConfigGlobal?: VikeConfigObject['vikeConfigGlobal']
   }
