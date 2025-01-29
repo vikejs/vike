@@ -68,8 +68,10 @@ function buildConfig(): Plugin[] {
           {
             isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
             if (isServerAssetsFixEnabled) {
+              // https://github.com/vikejs/vike/issues/2093
+              // `ssrEmitAssets: true` not needed because it dupe the server assets
+              // if needed, the user can set `ssrEmitAssets: true` in vite.config.js
               // https://github.com/vikejs/vike/issues/1339
-              config.build.ssrEmitAssets = true
               // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
               config.build.cssMinify = 'esbuild'
               fixServerAssets_assertCssTarget_populate(config)

@@ -5,7 +5,6 @@ export { fixServerAssets_assertCssTarget }
 export { fixServerAssets_assertCssTarget_populate }
 
 import fs from 'fs/promises'
-import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
@@ -37,11 +36,11 @@ async function fixServerAssets(
   const clientManifest = await loadManifest(outDirs.outDirClient)
   const serverManifest = await loadManifest(outDirs.outDirServer)
 
-  const { clientManifestMod, serverManifestMod, filesToCopy, filesToRemove } = addServerAssets(
+  const { clientManifestMod, serverManifestMod, filesToCopy } = addServerAssets(
     clientManifest,
     serverManifest
   )
-  await copyAssets(filesToCopy, filesToRemove, config)
+  await copyAssets(filesToCopy, config)
 
   return { clientManifestMod, serverManifestMod }
 }
@@ -53,11 +52,11 @@ async function loadManifest(outDir: string) {
   assert(manifest)
   return manifest
 }
-async function copyAssets(filesToCopy: string[], filesToRemove: string[], config: ResolvedConfig) {
+async function copyAssets(filesToCopy: string[], config: ResolvedConfig) {
   const { outDirClient, outDirServer } = getOutDirs(config)
   const assetsDir = getAssetsDir(config)
   const assetsDirServer = path.posix.join(outDirServer, assetsDir)
-  if (!filesToCopy.length && !filesToRemove.length && !existsSync(assetsDirServer)) return
+  if (!filesToCopy.length && !existsSync(assetsDirServer)) return
   assert(existsSync(assetsDirServer))
   const concurrencyLimit = pLimit(10)
   await Promise.all(
@@ -70,14 +69,6 @@ async function copyAssets(filesToCopy: string[], filesToRemove: string[], config
       })
     )
   )
-  filesToRemove.forEach((file) => {
-    const filePath = path.posix.join(outDirServer, file)
-    fs_sync.unlinkSync(filePath)
-  })
-  /* We cannot do that because, with some edge case Rollup settings (outputing JavaScript chunks and static assets to the same directoy), this removes JavaScript chunks, see https://github.com/vikejs/vike/issues/1154#issuecomment-1975762404
-  await fs.rm(assetsDirServer, { recursive: true })
-  */
-  removeEmptyDirectories(assetsDirServer)
 }
 
 type Resource = { src: string; hash: string }
@@ -116,28 +107,21 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
   }
 
   let filesToCopy: string[] = []
-  let filesToRemove: string[] = []
   for (const [pageId, entryClient] of entriesClient.entries()) {
     const entryServer = entriesServer.get(pageId)
     if (!entryServer) continue
 
     const cssToAdd: string[] = []
-    const cssToRemove: string[] = []
     const assetsToAdd: string[] = []
-    const assetsToRemove: string[] = []
 
     entryServer.css.forEach((cssServer) => {
       if (!entryClient.css.some((cssClient) => cssServer.hash === cssClient.hash)) {
         cssToAdd.push(cssServer.src)
-      } else {
-        cssToRemove.push(cssServer.src)
       }
     })
     entryServer.assets.forEach((assetServer) => {
       if (!entryClient.assets.some((assetClient) => assetServer.hash === assetClient.hash)) {
         assetsToAdd.push(assetServer.src)
-      } else {
-        assetsToRemove.push(assetServer.src)
       }
     })
 
@@ -147,12 +131,6 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
       clientManifest[key]!.css ??= []
       clientManifest[key]!.css?.push(...cssToAdd)
     }
-    if (cssToRemove.length) {
-      const { key } = entryServer
-      filesToRemove.push(...cssToRemove)
-      serverManifest[key]!.css ??= []
-      serverManifest[key]!.css = serverManifest[key]!.css!.filter((entry) => !cssToRemove.includes(entry))
-    }
 
     if (assetsToAdd.length) {
       const { key } = entryClient
@@ -160,19 +138,12 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
       clientManifest[key]!.assets ??= []
       clientManifest[key]!.assets?.push(...assetsToAdd)
     }
-    if (assetsToRemove.length) {
-      const { key } = entryServer
-      filesToRemove.push(...assetsToRemove)
-      serverManifest[key]!.assets ??= []
-      serverManifest[key]!.assets = serverManifest[key]!.assets!.filter((entry) => !assetsToRemove.includes(entry))
-    }
   }
 
   const clientManifestMod = clientManifest
   const serverManifestMod = serverManifest
   filesToCopy = unique(filesToCopy)
-  filesToRemove = unique(filesToRemove).filter((file) => !filesToCopy.includes(file))
-  return { clientManifestMod, serverManifestMod, filesToCopy, filesToRemove }
+  return { clientManifestMod, serverManifestMod, filesToCopy }
 }
 
 function getPageId(key: string) {
@@ -273,28 +244,4 @@ async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
 }
 function resolveCssTarget(target: TargetConfig) {
   return target.css ?? target.global
-}
-
-/**
- * Recursively remove all empty directories in a given directory.
- */
-function removeEmptyDirectories(dirPath: string): void {
-  // Read the directory contents
-  const files = fs_sync.readdirSync(dirPath)
-
-  // Iterate through the files and subdirectories
-  for (const file of files) {
-    const fullPath = path.join(dirPath, file)
-
-    // Check if it's a directory
-    if (fs_sync.statSync(fullPath).isDirectory()) {
-      // Recursively clean up the subdirectory
-      removeEmptyDirectories(fullPath)
-    }
-  }
-
-  // Re-check the directory; remove it if it's now empty
-  if (fs_sync.readdirSync(dirPath).length === 0) {
-    fs_sync.rmdirSync(dirPath)
-  }
 }
