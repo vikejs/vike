@@ -51,7 +51,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
             vike: vikeConfig,
-            // TODO/v1-release: remove
+            // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve(vikeConfig.vikeConfigGlobal)
           }
         }
@@ -184,7 +184,7 @@ function assertVikeCliOrApi(config: ResolvedConfig) {
   })
 }
 
-// TODO/v1-release: remove
+// TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
 function temp_supportOldInterface(config: ResolvedConfig) {
   if (!('vitePluginSsr' in config)) return
   assert(isObject(config.vitePluginSsr))
