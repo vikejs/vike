@@ -110,6 +110,7 @@ type PrerenderContext = {
   pageContexts: PageContext[]
   pageContextInit: Record<string, unknown> | null
   noExtraDir: boolean
+  prerenderedPageContexts: PrerenderedPageContexts
 }
 type PrerenderContextPublic = Pick<PrerenderContext, 'pageContexts'>
 
@@ -215,10 +216,11 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const globalContext = getGlobalContext()
   globalContext.pageFilesAll.forEach(assertExportNames)
 
-  const prerenderContext = {
+  const prerenderContext: PrerenderContext = {
     noExtraDir: noExtraDir ?? false,
     pageContexts: [] as PageContext[],
-    pageContextInit: options.pageContextInit ?? null
+    pageContextInit: options.pageContextInit ?? null,
+    prerenderedPageContexts: {}
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -230,27 +232,26 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await callOnPrerenderStartHook(prerenderContext)
 
-  const prerenderedPageContexts: PrerenderedPageContexts = {}
   let prerenderedCount = 0
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
     if (htmlFile.pageId) {
-      prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
+      prerenderContext.prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
     }
     await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, logLevel)
   }
 
   await routeAndPrerender(prerenderContext, concurrencyLimit, onComplete)
 
-  warnContradictoryNoPrerenderList(prerenderedPageContexts, doNotPrerenderList)
+  warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
 
-  await prerender404(prerenderedPageContexts, prerenderContext, onComplete)
+  await prerender404(prerenderContext, onComplete)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
 
-  warnMissingPages(prerenderedPageContexts, doNotPrerenderList, partial)
+  warnMissingPages(prerenderContext.prerenderedPageContexts, doNotPrerenderList, partial)
 
   return { viteConfig }
 }
@@ -870,12 +871,8 @@ function warnMissingPages(
     })
 }
 
-async function prerender404(
-  prerenderedPageContexts: Record<string, { urlOriginal: string }>,
-  prerenderContext: PrerenderContext,
-  onComplete: (htmlFile: HtmlFile) => Promise<void>
-) {
-  if (!Object.values(prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
+async function prerender404(prerenderContext: PrerenderContext, onComplete: (htmlFile: HtmlFile) => Promise<void>) {
+  if (!Object.values(prerenderContext.prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
     try {
       result = await prerender404Page(prerenderContext.pageContextInit)
