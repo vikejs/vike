@@ -102,7 +102,8 @@ async function triggerFullBuild(
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfigGlobal)) {
-    await runPrerenderFromAutoRun(configInline)
+    const { prerenderContextPublic } = await runPrerenderFromAutoRun(configInline)
+    config.vike!.prerenderContext = prerenderContextPublic
     forceExit = isVikeCli() || isViteCliCall()
   }
 }

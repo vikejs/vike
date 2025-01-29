@@ -3,6 +3,7 @@ export { runPrerenderFromCLIPrerenderCommand }
 export { runPrerenderFromAutoRun }
 export { runPrerender_forceExit }
 export type { PrerenderOptions }
+export type { PrerenderContextPublic }
 
 import path from 'path'
 import { route } from '../../shared/route/index.js'
@@ -174,14 +175,19 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   }
   runPrerender_forceExit()
 }
-async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<void> {
+async function runPrerenderFromAutoRun(
+  viteConfig: InlineConfig | undefined
+): Promise<{ prerenderContextPublic: PrerenderContextPublic }> {
+  let prerenderContextPublic: PrerenderContextPublic
   try {
-    await runPrerender({ viteConfig })
+    const ret = await runPrerender({ viteConfig })
+    prerenderContextPublic = ret.prerenderContextPublic
   } catch (err) {
     console.error(err)
     logErrorHint(err)
     process.exit(1)
   }
+  return { prerenderContextPublic }
 }
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
   setContextIsPrerendering()
@@ -263,7 +269,9 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   warnMissingPages(prerenderContext.prerenderedPageContexts, doNotPrerenderList, partial)
 
-  return { viteConfig }
+  const prerenderContextPublic = makePublic(prerenderContext)
+
+  return { viteConfig, prerenderContextPublic }
 }
 
 async function collectDoNoPrerenderList(
@@ -541,9 +549,7 @@ function createPageContext(urlOriginal: string, prerenderContext: PrerenderConte
   return pageContext
 }
 
-async function callOnPrerenderStartHook(prerenderContext: {
-  pageContexts: PageContext[]
-}) {
+async function callOnPrerenderStartHook(prerenderContext: PrerenderContext) {
   const globalContext = getGlobalContext()
 
   let onPrerenderStartHook:
@@ -657,9 +663,7 @@ async function callOnPrerenderStartHook(prerenderContext: {
 
   let result: unknown = await executeHook(
     () => {
-      const prerenderContextPublic: PrerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
-        'pageContexts'
-      ])
+      const prerenderContextPublic = makePublic(prerenderContext)
       // TODO/v1-release: remove warning
       Object.defineProperty(prerenderContextPublic, 'prerenderPageContexts', {
         get() {
@@ -1224,4 +1228,11 @@ function validatePrerenderConfig(
     const { prop, errMsg } = wrongValue
     assertUsage(false, `Setting ${pc.cyan(`prerender.${prop}`)} ${errMsg}`)
   }
+}
+
+function makePublic(prerenderContext: PrerenderContext) {
+  const prerenderContextPublic: PrerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
+    'pageContexts'
+  ])
+  return prerenderContextPublic
 }
