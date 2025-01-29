@@ -8,7 +8,7 @@ export { normalizeViteRoot }
 import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
 import type { InlineConfig, PluginOption, ResolvedConfig } from 'vite'
 import type { Operation } from './types.js'
-import { clearOperation, setOperation } from './context.js'
+import { clearContextApiOperation, setContextApiOperation } from './context.js'
 import { getVikeConfig2, type VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
 import { assert, assertUsage, getGlobalObject, isObject, toPosixPath } from './utils.js'
@@ -19,13 +19,13 @@ const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts',
 
 async function prepareViteApiCall(viteConfig: InlineConfig | undefined, operation: Operation) {
   clear()
-  setOperation(operation)
+  setContextApiOperation(operation)
   return enhanceViteConfig(viteConfig, operation)
 }
 
 // For subsequent API calls, e.g. calling prerender() after build()
 function clear() {
-  clearOperation()
+  clearContextApiOperation()
   clearGlobalContext()
 }
 

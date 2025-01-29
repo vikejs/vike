@@ -21,7 +21,7 @@ import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
-import { temp_disablePrerenderAutoRun } from '../../prerender/isPrerenderAutoRunEnabled.js'
+import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
