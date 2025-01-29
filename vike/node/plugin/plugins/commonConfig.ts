@@ -29,7 +29,9 @@ declare module 'vite' {
     _isDev?: boolean
     _vikeVitePluginOptions?: unknown
     _root?: string
-    vike?: VikeConfigObject
+    vike?: { global: VikeConfigObject['global'] }
+    // TODO/now remove
+    _vikeConfigGlobal?: VikeConfigObject['vikeConfigGlobal']
   }
 }
 
@@ -50,7 +52,9 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _isDev: isDev,
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
-            vike: vikeConfig,
+            vike: { global: vikeConfig.global },
+            // TODO/now: remove
+            _vikeConfigGlobal: vikeConfig.vikeConfigGlobal,
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve(vikeConfig.vikeConfigGlobal)
           }
