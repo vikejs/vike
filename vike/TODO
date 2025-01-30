@@ -1,4 +1,3 @@
-- deprecate VikeVitePluginOptions
 - `TODO/soon: refactor` in `getVikeConfig.ts`
 - make scripts/dev.js work
 - `TODO/now`
