@@ -458,6 +458,11 @@ async function getGlobalConfigs(
   const vikeConfigGlobal = {}
   {
     assert(isObject(vikeVitePluginOptions))
+    assertWarning(
+      Object.keys(vikeVitePluginOptions).length === 0,
+      `Define Vike settings in +config.js instead of vite.config.js ${pc.underline('https://vike.dev/migration/settings')}`,
+      { onlyOnce: true }
+    )
     Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
       assert(includes(objectKeys(configDefinitionsBuiltInGlobal), configName))
       const configDef = configDefinitionsBuiltInGlobal[configName]
