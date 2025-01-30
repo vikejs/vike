@@ -33,7 +33,8 @@ async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, con
     pageConfig,
     isForClientSide,
     pageId,
-    vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer,
+    // TODO/now: add meta.default
+    vikeConfig.global.config.includeAssetsImportedByServer ?? true,
     isDev
   )
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)

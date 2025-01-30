@@ -435,6 +435,30 @@ type ConfigBuiltIn = {
    */
   redirects?: Record<string, string>
 
+  /** Whether URLs should end with a trailing slash.
+   *
+   * https://vike.dev/url-normalization
+   *
+   * @default false
+   */
+  trailingSlash?: boolean
+
+  /** Disable automatic URL normalization.
+   *
+   * https://vike.dev/url-normalization
+   *
+   * @default false
+   */
+  disableUrlNormalization?: boolean
+
+  // TODO/v1-release: remove
+  /** @deprecated It's now `true` by default. You can remove this option. */
+  includeAssetsImportedByServer?: boolean
+
+  // TODO/v1-release: remove
+  /** @deprecated See https://vike.dev/disableAutoFullBuild */
+  disableAutoFullBuild?: boolean | 'prerender'
+
   // TODO/pageContext-prefetch: remove experimental note
   /**
    * @experimental DON'T USE: the API *will* have breaking changes upon any minor version release.

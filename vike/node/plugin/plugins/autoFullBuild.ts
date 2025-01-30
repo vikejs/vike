@@ -7,7 +7,7 @@ import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
 import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
-import type { VikeConfigGlobal } from './importUserCode/v1-design/getVikeConfig.js'
+import type { VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
@@ -20,17 +20,16 @@ let forceExit = false
 
 function autoFullBuild(): Plugin[] {
   let config: ResolvedConfig
-  let vikeConfigGlobal: VikeConfigGlobal
+  let vikeConfig: VikeConfigObject
   return [
     {
       name: 'vike:autoFullBuild',
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
-        const vikeConfig = await getVikeConfig(config_)
-        vikeConfigGlobal = vikeConfig.vikeConfigGlobal
+        vikeConfig = await getVikeConfig(config_)
         config = config_
-        abortViteBuildSsr(vikeConfigGlobal)
+        abortViteBuildSsr(vikeConfig)
       },
       writeBundle: {
         /* We can't use this because it breaks Vite's logging. TODO: try again with latest Vite version.
@@ -39,7 +38,7 @@ function autoFullBuild(): Plugin[] {
         */
         async handler(_options, bundle) {
           try {
-            await triggerFullBuild(config, vikeConfigGlobal, bundle)
+            await triggerFullBuild(config, vikeConfig, bundle)
           } catch (err) {
             // Avoid Rollup prefixing the error with [vike:autoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
             console.error(err)
@@ -65,13 +64,9 @@ function autoFullBuild(): Plugin[] {
   ]
 }
 
-async function triggerFullBuild(
-  config: ResolvedConfig,
-  vikeConfigGlobal: VikeConfigGlobal,
-  bundle: Record<string, unknown>
-) {
+async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigObject, bundle: Record<string, unknown>) {
   if (config.build.ssr) return // already triggered
-  if (isDisabled(vikeConfigGlobal)) return
+  if (isDisabled(vikeConfig)) return
   // Workaround for @vitejs/plugin-legacy
   //  - The legacy plugin triggers its own Rollup build for the client-side.
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
@@ -101,7 +96,7 @@ async function triggerFullBuild(
     process.exit(1)
   }
 
-  if (isPrerenderAutoRunEnabled(vikeConfigGlobal)) {
+  if (isPrerenderAutoRunEnabled(vikeConfig)) {
     const { prerenderContextPublic } = await runPrerenderFromAutoRun(configInline)
     config.vike!.prerenderContext = prerenderContextPublic
     forceExit = isVikeCli() || isViteCliCall()
@@ -118,8 +113,8 @@ function setSSR(configInline: InlineConfig): InlineConfig {
   }
 }
 
-function abortViteBuildSsr(vikeConfigGlobal: VikeConfigGlobal) {
-  if (vikeConfigGlobal.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
+function abortViteBuildSsr(vikeConfig: VikeConfigObject) {
+  if (vikeConfig.global.config.disableAutoFullBuild !== true && isViteCliCall() && getViteConfigFromCli()?.build.ssr) {
     assertWarning(
       false,
       `The CLI call ${pc.cyan('$ vite build --ssr')} is superfluous since ${pc.cyan(
@@ -133,9 +128,9 @@ function abortViteBuildSsr(vikeConfigGlobal: VikeConfigGlobal) {
   }
 }
 
-function isDisabled(vikeConfigGlobal: VikeConfigGlobal): boolean {
-  const { disableAutoFullBuild } = vikeConfigGlobal
-  if (disableAutoFullBuild === null || disableAutoFullBuild === 'prerender') {
+function isDisabled(vikeConfig: VikeConfigObject): boolean {
+  const { disableAutoFullBuild } = vikeConfig.global.config
+  if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
     const isViteApi = !isViteCliCall() && !isVikeCliOrApi()
     return isViteApi
   } else {

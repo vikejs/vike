@@ -185,7 +185,8 @@ function getPageContextInitEnhanced(
     // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
-    _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer,
+    // TODO/now: add meta.default
+    _includeAssetsImportedByServer: globalContext.vikeConfig.global.config.includeAssetsImportedByServer ?? true,
     // TODO: use GloablContext instead
     _pageFilesAll: globalContext.pageFilesAll,
     _pageConfigs: globalContext.pageConfigs,

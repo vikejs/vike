@@ -6,9 +6,6 @@ import { assert, checkType, hasProp, isBaseAssets, isBaseServer, isObject } from
 type RuntimeManifest = {
   baseServer: string
   baseAssets: string
-  includeAssetsImportedByServer: boolean
-  trailingSlash: boolean
-  disableUrlNormalization: boolean
 }
 
 function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & Record<string, unknown> {
@@ -18,8 +15,5 @@ function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & R
   assert(hasProp(obj, 'baseAssets', 'string'))
   assert(isBaseServer(obj.baseServer))
   assert(isBaseAssets(obj.baseAssets))
-  assert(hasProp(obj, 'includeAssetsImportedByServer', 'boolean'))
-  assert(hasProp(obj, 'trailingSlash', 'boolean'))
-  assert(hasProp(obj, 'disableUrlNormalization', 'boolean'))
   checkType<RuntimeManifest>(obj)
 }

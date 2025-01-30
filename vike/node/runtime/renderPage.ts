@@ -509,12 +509,14 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 }
 
 function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
-  const { trailingSlash, disableUrlNormalization, baseServer } = getGlobalContext()
+  const globalContext = getGlobalContext()
+  const { baseServer } = globalContext
+  const { trailingSlash, disableUrlNormalization } = globalContext.vikeConfig.global.config
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
   if (isPageContextRequest) return null
-  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash, baseServer)
+  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash ?? false, baseServer)
   if (!urlNormalized) return null
   logRuntimeInfo?.(
     `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(urlNormalized)} (https://vike.dev/url-normalization)`,

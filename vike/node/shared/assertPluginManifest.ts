@@ -9,9 +9,6 @@ type PluginManifest = {
   baseServer: string
   baseAssets: string | null
   usesClientRouter: boolean
-  includeAssetsImportedByServer: boolean
-  trailingSlash: boolean
-  disableUrlNormalization: boolean
 }
 function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest is PluginManifest {
   assert(isPlainObject(pluginManifest))

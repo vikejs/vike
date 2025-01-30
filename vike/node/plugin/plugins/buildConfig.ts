@@ -137,7 +137,12 @@ function buildConfig(): Plugin[] {
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const vikeConfig = await getVikeConfig(config)
   const { pageConfigs } = vikeConfig
-  const pageFileEntries = await getPageFileEntries(config, vikeConfig.vikeConfigGlobal.includeAssetsImportedByServer) // TODO/v1-release: remove
+  // TODO/v1-release: remove
+  const pageFileEntries = await getPageFileEntries(
+    config,
+    // TODO/now: add meta.default
+    vikeConfig.global.config.includeAssetsImportedByServer ?? true
+  )
   assertUsage(
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add'

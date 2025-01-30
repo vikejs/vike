@@ -3,16 +3,17 @@ export { temp_disablePrerenderAutoRun }
 export { isPrerendering }
 export { setContextIsPrerendering }
 
-import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 const globalObject = getGlobalObject<{ isDisabled?: true; isPrerendering?: true }>('prerender/context.ts', {})
 
-function isPrerenderAutoRunEnabled(vikeConfigGlobal: VikeConfigGlobal) {
+function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigObject) {
+  const { vikeConfigGlobal } = vikeConfig
   return (
     vikeConfigGlobal.prerender &&
     !vikeConfigGlobal.prerender.disableAutoRun &&
     !globalObject.isDisabled &&
-    vikeConfigGlobal.disableAutoFullBuild !== 'prerender'
+    vikeConfig.global.config.disableAutoFullBuild !== 'prerender'
   )
 }
 

@@ -1433,13 +1433,9 @@ function resolveVikeConfigGlobal(
   const configs: VikeVitePluginOptions[] = [vikeVitePluginOptions as any, pageConfigGlobalValues]
 
   const vikeConfigGlobal: VikeConfigGlobal = {
-    disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
     prerender: resolvePrerenderOptions(configs),
-    includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
     baseServer: pickFirst(configs.map((c) => c.baseServer)) ?? null,
-    baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null,
-    disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
-    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
+    baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null
   }
 
   return vikeConfigGlobal
@@ -1472,12 +1468,8 @@ type VikeConfigGlobal = {
         partial: boolean
         disableAutoRun: boolean
       }
-  disableAutoFullBuild: boolean | 'prerender' | null
-  includeAssetsImportedByServer: boolean
   baseAssets: string | null
   baseServer: string | null
-  trailingSlash: boolean
-  disableUrlNormalization: boolean
 }
 // TODO/now: deprecate
 type VikeVitePluginOptions = {
@@ -1527,7 +1519,6 @@ type VikeVitePluginOptions = {
         disableAutoRun?: boolean
       }
 
-  // TODO/v1-release: remove
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
@@ -1542,29 +1533,15 @@ type VikeVitePluginOptions = {
    */
   baseAssets?: string
 
-  // We don't remove this option in case there is a bug with includeAssetsImportedByServer and the user needs to disable it.
   /** @deprecated It's now `true` by default. You can remove this option. */
   includeAssetsImportedByServer?: boolean
 
-  /** Permanent redirections (HTTP status code 301)
-   *
-   * https://vike.dev/redirects
-   */
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
   redirects?: Record<string, string>
 
-  /** Whether URLs should end with a trailing slash.
-   *
-   * https://vike.dev/url-normalization
-   *
-   * @default false
-   */
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
   trailingSlash?: boolean
 
-  /** Disable automatic URL normalization.
-   *
-   * https://vike.dev/url-normalization
-   *
-   * @default false
-   */
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
   disableUrlNormalization?: boolean
 }

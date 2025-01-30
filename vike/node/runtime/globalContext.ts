@@ -74,9 +74,6 @@ type PageRuntimeInfo = Awaited<ReturnType<typeof getPageRuntimeInfo>>['userFiles
 type GlobalContext = {
   baseServer: string
   baseAssets: null | string
-  includeAssetsImportedByServer: boolean
-  trailingSlash: boolean
-  disableUrlNormalization: boolean
   vikeConfig: {
     global: ConfigUserFriendly
   }
@@ -245,10 +242,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       },
       ...userFiles,
       baseServer: pluginManifest.baseServer,
-      baseAssets: pluginManifest.baseAssets,
-      includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
-      trailingSlash: pluginManifest.trailingSlash,
-      disableUrlNormalization: pluginManifest.disableUrlNormalization
+      baseAssets: pluginManifest.baseAssets
     }
   } else {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot, isPrerendering)
@@ -267,10 +261,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       viteDevServer: null,
       baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
-      includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer,
-      trailingSlash: pluginManifest.trailingSlash,
-      usesClientRouter: pluginManifest.usesClientRouter,
-      disableUrlNormalization: pluginManifest.disableUrlNormalization
+      usesClientRouter: pluginManifest.usesClientRouter
     }
     if (isPrerendering) {
       assert(viteConfig)
@@ -317,7 +308,6 @@ async function getPageRuntimeInfo(isProduction: boolean) {
 }
 
 function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
-  const { includeAssetsImportedByServer, trailingSlash, disableUrlNormalization } = vikeConfigGlobal
   const { baseServer, baseAssets } = resolveBaseFromResolvedConfig(
     vikeConfigGlobal.baseServer,
     vikeConfigGlobal.baseAssets,
@@ -325,10 +315,7 @@ function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: Reso
   )
   const manifest = {
     baseServer,
-    baseAssets,
-    includeAssetsImportedByServer,
-    trailingSlash,
-    disableUrlNormalization
+    baseAssets
   }
   assertRuntimeManifest(manifest)
   return manifest
