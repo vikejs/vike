@@ -725,6 +725,10 @@ function deprecated(): HeadingDetachedDefinition[] {
 function migrations(): HeadingDetachedDefinition[] {
   return [
     {
+      title: 'Migrate `vite.config.js` settings',
+      url: '/migration/settings'
+    },
+    {
       title: 'Migration `0.4.23`',
       url: '/migration/0.4.23'
     },
