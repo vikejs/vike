@@ -1,4 +1,4 @@
-import { resolveRouteStringRedirect } from './resolveRedirects.js'
+import { redirectsErrPrefix, resolveRouteStringRedirect } from './resolveRedirects.js'
 import { stripAnsi } from '../../../utils/stripAnsi.js'
 import { expect, describe, it } from 'vitest'
 
@@ -27,27 +27,27 @@ describe('resolveRouteStringRedirect', () => {
   it('handles invalid redirects', () => {
     expectErr(
       () => resolveRouteStringRedirect('a', 'b', '/'),
-      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] Invalid Route String a: it should start with / or *'
+      `[vike][Wrong Usage]${redirectsErrPrefix} Invalid Route String a: it should start with / or *`
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', 'b', '/'),
-      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] The URL redirection target is b but it should start with / or a protocol (http://, mailto:, ...), or be *'
+      `[vike][Wrong Usage]${redirectsErrPrefix} The URL redirection target is b but it should start with / or a protocol (http://, mailto:, ...), or be *`
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', '/@i', '/'),
-      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] The redirection source URL /a is missing the URL parameter @i used by the redirection target URL /@i'
+      `[vike][Wrong Usage]${redirectsErrPrefix} The redirection source URL /a is missing the URL parameter @i used by the redirection target URL /@i`
     )
     expectErr(
       () => resolveRouteStringRedirect('/a', '/b/*', '/'),
-      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] The redirection source URL /a is missing the URL parameter * used by the redirection target URL /b/*'
+      `[vike][Wrong Usage]${redirectsErrPrefix} The redirection source URL /a is missing the URL parameter * used by the redirection target URL /b/*`
     )
     expectErr(
       () => resolveRouteStringRedirect('/', '/*', '/'),
-      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] The redirection source URL / is missing the URL parameter * used by the redirection target URL /*'
+      `[vike][Wrong Usage]${redirectsErrPrefix} The redirection source URL / is missing the URL parameter * used by the redirection target URL /*`
     )
     expectErr(
       () => resolveRouteStringRedirect('/', '*', '/'),
-      '[vike][Wrong Usage][vite.config.js > vike({ redirects })] The redirection source URL / is missing the URL parameter * used by the redirection target URL *'
+      `[vike][Wrong Usage]${redirectsErrPrefix} The redirection source URL / is missing the URL parameter * used by the redirection target URL *`
     )
   })
   it('globs', () => {
