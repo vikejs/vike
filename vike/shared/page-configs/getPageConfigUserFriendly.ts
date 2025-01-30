@@ -188,12 +188,12 @@ function getPageConfigUserFriendly(
   assert(!('default' in exportsAll))
 
   const pageContextExports = {
+    config,
     from,
     source,
     sources,
 
     // TODO/eventually: deprecate/remove every prop below
-    config,
     configEntries,
     exports,
     exportsAll,
