@@ -1,5 +1,11 @@
+export { config }
+
+import { baseServer, baseAssets } from '../base.js'
+
 // https://vike.dev/config
-export default {
+const config = {
+  baseAssets,
+  baseServer,
   clientRouting: true,
   hydrationCanBeAborted: true,
   passToClient: ['pageProps']

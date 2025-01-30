@@ -1,9 +1,11 @@
 export { resolveBase }
+export { resolveBaseRuntime }
 export { resolveBaseFromResolvedConfig }
 
 import { assert, assertUsage, isBaseServer, isBaseAssets } from './utils.js'
 import pc from '@brillout/picocolors'
 import type { ResolvedConfig } from 'vite'
+import { getGlobalContext } from '../runtime/globalContext.js'
 
 function resolveBaseFromResolvedConfig(
   baseServer: string | null,
@@ -18,14 +20,24 @@ function resolveBaseFromResolvedConfig(
   return resolveBase(baseViteOriginal, baseServer, baseAssets)
 }
 
+type BaseUrlsResolved = {
+  baseServer: string
+  baseAssets: string
+}
+
+function resolveBaseRuntime() {
+  const globalContext = getGlobalContext()
+  const baseViteOriginal = globalContext.viteConfigRuntime._baseViteOriginal
+  const baseServerUnresolved = globalContext.vikeConfig.global.config.baseServer ?? null
+  const baseAssetsUnresolved = globalContext.vikeConfig.global.config.baseAssets ?? null
+  return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
+}
+
 function resolveBase(
   baseViteOriginal: string | null,
   baseServerUnresolved: string | null,
   baseAssetsUnresolved: string | null
-): {
-  baseServer: string
-  baseAssets: string
-} {
+): BaseUrlsResolved {
   if (baseViteOriginal === '/__UNSET__') baseViteOriginal = null
   {
     const wrongBase = (val: string) =>

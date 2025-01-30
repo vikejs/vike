@@ -42,7 +42,7 @@ import type {
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { InjectFilterEntry } from '../../types/index.js'
-import type { VikeVitePluginOptions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import type { VikeVitePluginOptions } from '../../node/plugin/index.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
@@ -307,11 +307,58 @@ type ConfigBuiltIn = {
    */
   guard?: GuardAsync | GuardSync | ImportString
   /**
-   * Whether to pre-render the page(s).
+   * Pre-render page(s).
    *
    * https://vike.dev/pre-rendering
+   * https://vike.dev/prerender
+   *
+   * @default false
    */
-  prerender?: boolean | ImportString
+  prerender?:
+    | boolean
+    | ImportString
+    | {
+        /**
+         * Allow only some of your pages to be pre-rendered.
+         *
+         * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
+         *
+         * https://vike.dev/prerender#partial
+         *
+         * @default false
+         */
+        partial?: boolean
+        /**
+         * Don't create a new directory for each HTML file.
+         *
+         * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
+         *
+         * https://vike.dev/prerender#noextradir
+         *
+         * @default false
+         */
+        noExtraDir?: boolean
+        /**
+         * Number of concurrent pre-render jobs.
+         *
+         * Set to `false` to disable concurrency.
+         *
+         * https://vike.dev/prerender#parallel
+         *
+         * @default os.cpus().length
+         */
+        parallel?: boolean | number
+        /**
+         * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
+         *
+         * Use this if you want to programmatically initiate the pre-rendering process instead.
+         *
+         * https://vike.dev/prerender#disableautorun
+         *
+         * @default false
+         */
+        disableAutoRun?: boolean
+      }
 
   /**
    * Install Vike extensions.
@@ -435,6 +482,41 @@ type ConfigBuiltIn = {
    */
   redirects?: Record<string, string>
 
+  /** Whether URLs should end with a trailing slash.
+   *
+   * https://vike.dev/url-normalization
+   *
+   * @default false
+   */
+  trailingSlash?: boolean
+
+  /** Disable automatic URL normalization.
+   *
+   * https://vike.dev/url-normalization
+   *
+   * @default false
+   */
+  disableUrlNormalization?: boolean
+
+  // TODO/v1-release: remove
+  /** @deprecated It's now `true` by default. You can remove this option. */
+  includeAssetsImportedByServer?: boolean
+
+  // TODO/v1-release: remove
+  /** @deprecated See https://vike.dev/disableAutoFullBuild */
+  disableAutoFullBuild?: boolean | 'prerender'
+
+  /** The Base URL of your server.
+   *
+   * https://vike.dev/base-url
+   */
+  baseServer?: string
+  /** The Base URL of your static assets.
+   *
+   * https://vike.dev/base-url
+   */
+  baseAssets?: string
+
   // TODO/pageContext-prefetch: remove experimental note
   /**
    * @experimental DON'T USE: the API *will* have breaking changes upon any minor version release.
@@ -494,6 +576,7 @@ type ConfigBuiltIn = {
 type ConfigBuiltInResolved = {
   passToClient?: string[][]
   redirects?: Record<string, string>[]
+  prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>

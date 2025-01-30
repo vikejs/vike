@@ -2,7 +2,7 @@ export { importUserCode }
 
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
 import { normalizePath } from 'vite'
-import type { VikeConfigGlobal } from './v1-design/getVikeConfig.js'
+import type { VikeConfigObject } from './v1-design/getVikeConfig.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import { assert, assertPosixPath } from '../../utils.js'
@@ -22,12 +22,11 @@ import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
-  let vikeConfigGlobal: VikeConfigGlobal
+  let vikeConfig: VikeConfigObject
   return {
     name: 'vike:importUserCode',
     async configResolved(config_) {
-      const vikeConfig = await getVikeConfig(config_)
-      vikeConfigGlobal = vikeConfig.vikeConfigGlobal
+      vikeConfig = await getVikeConfig(config_)
       config = config_
       // TODO/v1-release: remove
       {
@@ -61,7 +60,7 @@ function importUserCode(): Plugin {
       }
 
       if (isVirtualFileIdImportUserCode(id)) {
-        const code = await getVirtualFileImportUserCode(id, options, vikeConfigGlobal, config, isDev)
+        const code = await getVirtualFileImportUserCode(id, options, vikeConfig, config, isDev)
         return code
       }
     },

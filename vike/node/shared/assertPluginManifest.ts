@@ -1,17 +1,12 @@
 export { assertPluginManifest }
 export type { PluginManifest }
 
-import { assertRuntimeManifest } from './assertRuntimeManifest.js'
+import { assertRuntimeManifest, type RuntimeManifest } from './assertRuntimeManifest.js'
 import { assert, assertUsage, isPlainObject, projectInfo, checkType, hasProp } from './utils.js'
 
-type PluginManifest = {
+type PluginManifest = RuntimeManifest & {
   version: string
-  baseServer: string
-  baseAssets: string | null
   usesClientRouter: boolean
-  includeAssetsImportedByServer: boolean
-  trailingSlash: boolean
-  disableUrlNormalization: boolean
 }
 function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest is PluginManifest {
   assert(isPlainObject(pluginManifest))

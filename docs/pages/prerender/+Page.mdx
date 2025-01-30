@@ -6,24 +6,18 @@ import { TextType } from '../settings/TextType'
 By default, pre-rendering is disabled. To enable it:
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// pages/+config.js
 
 export default {
-  plugins: [
-    vike({
-      // Enable pre-rendering
-      prerender: true,
-      // Settings
-      prerender: {
-        partial: false,
-        noExtraDir: false,
-        parallel: 4,
-        disableAutoRun: false
-      }
-    })
-  ]
+  // Enable pre-rendering
+  prerender: true,
+  // Or enable with settings
+  prerender: {
+    partial: false,
+    noExtraDir: false,
+    parallel: 4,
+    disableAutoRun: false
+  }
 }
 ```
 
@@ -174,19 +168,13 @@ When running `$ vike build`, Vike automatically triggers <Link href="/pre-render
 You can disable the automatic triggering:
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// pages/+config.js
 
 export default {
-  plugins: [
-    vike({
-      prerender: {
-        // Stop `$ vike build` from initiating pre-rendering
-        disableAutoRun: true
-      }
-    })
-  ]
+  prerender: {
+    // Stop `$ vike build` from initiating pre-rendering
+    disableAutoRun: true
+  }
 }
 ```
 

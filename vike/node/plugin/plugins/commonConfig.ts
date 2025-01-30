@@ -23,6 +23,7 @@ import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-desig
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
+import { resolvePrerenderConfig } from '../../prerender/resolvePrerenderConfig.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
@@ -30,11 +31,10 @@ declare module 'vite' {
     _isDev?: boolean
     _vikeVitePluginOptions?: unknown
     _root?: string
+    _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
     vike?: { global: VikeConfigObject['global']; prerenderContext?: PrerenderContextPublic }
-    // TODO/now remove
-    _vikeConfigGlobal?: VikeConfigObject['vikeConfigGlobal']
   }
 }
 
@@ -56,10 +56,10 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
             vike: { global: vikeConfig.global },
-            // TODO/now: remove
-            _vikeConfigGlobal: vikeConfig.vikeConfigGlobal,
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
-            configVikePromise: Promise.resolve({ prerender: !!vikeConfig.vikeConfigGlobal.prerender })
+            configVikePromise: Promise.resolve({
+              prerender: !!resolvePrerenderConfig(vikeConfig.global.config.prerender)
+            })
           }
         }
       }

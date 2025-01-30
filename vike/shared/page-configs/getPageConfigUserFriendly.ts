@@ -55,7 +55,7 @@ type ConfigEntries = Record<
   }[]
 >
 type PageConfigUserFriendly = {
-  config: Record<string, unknown>
+  config: ConfigResolved
   source: Source
   sources: Sources
   from: From
@@ -188,12 +188,12 @@ function getPageConfigUserFriendly(
   assert(!('default' in exportsAll))
 
   const pageContextExports = {
+    config: config as any as ConfigResolved,
     from,
     source,
     sources,
 
     // TODO/eventually: deprecate/remove every prop below
-    config,
     configEntries,
     exports,
     exportsAll,
@@ -292,7 +292,7 @@ function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }
   })
 
   return {
-    config,
+    config: config as any as ConfigResolved,
     configEntries,
     exportsAll,
     source,

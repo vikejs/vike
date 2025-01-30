@@ -8,8 +8,6 @@ export { getConfigValueInterfaceFile }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
-export type { VikeConfigGlobal }
-export type { VikeVitePluginOptions }
 
 import {
   assertPosixPath,
@@ -119,7 +117,6 @@ type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  vikeConfigGlobal: VikeConfigGlobal
   global: ReturnType<typeof getPageConfigUserFriendlyNew>
 }
 
@@ -365,7 +362,6 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        vikeConfigGlobal: resolveVikeConfigGlobal({}, {}),
         global: getPageConfigUserFriendlyNew({ configValues: {} })
       }
       return dummyData
@@ -456,9 +452,13 @@ async function getGlobalConfigs(
     })
   )
 
-  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
   {
     assert(isObject(vikeVitePluginOptions))
+    assertWarning(
+      Object.keys(vikeVitePluginOptions).length === 0,
+      `Define Vike settings in +config.js instead of vite.config.js ${pc.underline('https://vike.dev/migration/settings')}`,
+      { onlyOnce: true }
+    )
     Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
       assert(includes(objectKeys(configDefinitionsBuiltInGlobal), configName))
       const configDef = configDefinitionsBuiltInGlobal[configName]
@@ -484,7 +484,7 @@ async function getGlobalConfigs(
   const configValues = getConfigValues(pageConfigGlobal)
   const global = getPageConfigUserFriendlyNew({ configValues })
 
-  return { pageConfigGlobal, vikeConfigGlobal, global }
+  return { pageConfigGlobal, global }
 }
 async function getPageConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
@@ -1422,149 +1422,4 @@ function sortConfigValueSources(
 
 function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: string): unknown {
   return interfaceFile.fileExportsByConfigName[configName]?.configValue
-}
-
-// TODO/now: refactor code below
-
-function resolveVikeConfigGlobal(
-  vikeVitePluginOptions: unknown,
-  pageConfigGlobalValues: Record<string, unknown>
-): VikeConfigGlobal {
-  const configs: VikeVitePluginOptions[] = [vikeVitePluginOptions as any, pageConfigGlobalValues]
-
-  const vikeConfigGlobal: VikeConfigGlobal = {
-    disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? null,
-    prerender: resolvePrerenderOptions(configs),
-    includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? true,
-    baseServer: pickFirst(configs.map((c) => c.baseServer)) ?? null,
-    baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null,
-    disableUrlNormalization: pickFirst(configs.map((c) => c.disableUrlNormalization)) ?? false,
-    trailingSlash: pickFirst(configs.map((c) => c.trailingSlash)) ?? false
-  }
-
-  return vikeConfigGlobal
-}
-function resolvePrerenderOptions(configs: VikeVitePluginOptions[]): VikeConfigGlobal['prerender'] {
-  if (!configs.some((c) => c.prerender)) {
-    return false
-  }
-  const configsPrerender = configs.map((c) => c.prerender).filter(isObject2)
-  return {
-    partial: pickFirst(configsPrerender.map((c) => c.partial)) ?? false,
-    noExtraDir: pickFirst(configsPrerender.map((c) => c.noExtraDir)) ?? false,
-    parallel: pickFirst(configsPrerender.map((c) => c.parallel)) ?? true,
-    disableAutoRun: pickFirst(configsPrerender.map((c) => c.disableAutoRun)) ?? false
-  }
-}
-
-function isObject2<T>(p: T | boolean | undefined): p is T {
-  return typeof p === 'object'
-}
-function pickFirst<T>(arr: T[]): T | undefined {
-  return arr.filter((v) => v !== undefined)[0]
-}
-type VikeConfigGlobal = {
-  prerender:
-    | false
-    | {
-        noExtraDir: boolean
-        parallel: boolean | number
-        partial: boolean
-        disableAutoRun: boolean
-      }
-  disableAutoFullBuild: boolean | 'prerender' | null
-  includeAssetsImportedByServer: boolean
-  baseAssets: string | null
-  baseServer: string | null
-  trailingSlash: boolean
-  disableUrlNormalization: boolean
-}
-// TODO/now: deprecate
-type VikeVitePluginOptions = {
-  /**
-   * Enable pre-rendering.
-   *
-   * https://vike.dev/pre-rendering
-   *
-   * @default false
-   */
-  prerender?:
-    | boolean
-    | {
-        /**
-         * Don't create a new directory for each HTML file.
-         *
-         * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
-         *
-         * @default false
-         */
-        noExtraDir?: boolean
-        /**
-         * Number of concurrent pre-render jobs.
-         *
-         * Set to `false` to disable concurrency.
-         *
-         * @default os.cpus().length
-         */
-        parallel?: boolean | number
-        /**
-     * Allow only some of your pages to be pre-rendered.
-     *
-     * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
- 
-     * @default false
-     */
-        partial?: boolean
-        /**
-         * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
-         *
-         * Use this if you want to programmatically initiate the pre-rendering process instead.
-         *
-         * https://vike.dev/api#prerender
-         *
-         * @default false
-         */
-        disableAutoRun?: boolean
-      }
-
-  // TODO/v1-release: remove
-  /** @deprecated See https://vike.dev/disableAutoFullBuild */
-  disableAutoFullBuild?: boolean | 'prerender'
-
-  /** The Base URL of your server.
-   *
-   * https://vike.dev/base-url
-   */
-  baseServer?: string
-  /** The Base URL of your static assets.
-   *
-   * https://vike.dev/base-url
-   */
-  baseAssets?: string
-
-  // We don't remove this option in case there is a bug with includeAssetsImportedByServer and the user needs to disable it.
-  /** @deprecated It's now `true` by default. You can remove this option. */
-  includeAssetsImportedByServer?: boolean
-
-  /** Permanent redirections (HTTP status code 301)
-   *
-   * https://vike.dev/redirects
-   */
-  redirects?: Record<string, string>
-
-  /** Whether URLs should end with a trailing slash.
-   *
-   * https://vike.dev/url-normalization
-   *
-   * @default false
-   */
-  trailingSlash?: boolean
-
-  /** Disable automatic URL normalization.
-   *
-   * https://vike.dev/url-normalization
-   *
-   * @default false
-   */
-  disableUrlNormalization?: boolean
 }

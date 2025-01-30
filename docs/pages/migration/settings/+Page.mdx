@@ -1,0 +1,39 @@
+import { Link } from '@brillout/docpress'
+
+Move settings from `vite.config.js` to `pages/+config.js` (or `renderer/+config.js`):
+
+```js
+// vite.config.js
+
+import vike from 'vike/plugin'
+
+export default {
+  plugins: [
+    vike({
+      prerender, // [!code --]
+      redirects, // [!code --]
+      baseAssets, // [!code --]
+      baseServer, // [!code --]
+      trailingSlash, // [!code --]
+      disableUrlNormalization // [!code --]
+    })
+  ]
+}
+```
+
+```js
+// pages/+config.js
+
+export default {
+  prerender, // [!code ++]
+  redirects, // [!code ++]
+  baseAssets, // [!code ++]
+  baseServer, // [!code ++]
+  trailingSlash, // [!code ++]
+  disableUrlNormalization // [!code ++]
+}
+```
+
+> Support for defining Vike settings in `vite.config.js` will be removed in the next major release.
+
+> All Vike settings are now defined by `+` files. This is an important change that unlocks new capabilities for Vike extensions.

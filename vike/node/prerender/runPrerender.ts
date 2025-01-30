@@ -75,6 +75,7 @@ import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValu
 import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { setContextIsPrerendering } from './context.js'
+import { resolvePrerenderConfig } from './resolvePrerenderConfig.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -208,7 +209,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
-  const prerenderConfig = vikeConfig.vikeConfigGlobal.prerender
+  const prerenderConfig = resolvePrerenderConfig(vikeConfig.global.config.prerender)
   validatePrerenderConfig(prerenderConfig)
   if (!prerenderConfig) {
     assert(standaloneTrigger)
@@ -282,9 +283,12 @@ async function collectDoNoPrerenderList(
   // V1 design
   pageConfigs.forEach((pageConfig) => {
     const configName = 'prerender'
-    const configValue = getConfigValueBuildTime(pageConfig, configName, 'boolean')
-    if (configValue?.value === false) {
-      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData)
+    const configValue = getConfigValueBuildTime(pageConfig, configName)
+    if (!configValue) return
+    assert(hasProp(configValue, 'value', 'array'))
+    if (configValue.value[0] === false) {
+      assert(isArray(configValue.definedAtData))
+      const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData[0]!)
       assert(configValueFilePathToShowToUser)
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,

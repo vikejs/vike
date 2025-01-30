@@ -232,7 +232,12 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true
   },
-  prerender: { env: { config: true }, global: (value) => typeof value !== 'object', type: ['boolean', 'object'] },
+  prerender: {
+    env: { config: true },
+    global: (value) => typeof value === 'object',
+    type: ['boolean', 'object'],
+    cumulative: true
+  },
   vite: { env: { config: true }, global: true, cumulative: true, type: 'object' },
   disableAutoFullBuild: {
     env: { config: true },
@@ -244,8 +249,8 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
     ]
   },
   includeAssetsImportedByServer: { env: { config: true }, global: true, type: 'boolean' },
-  baseAssets: { env: { config: true }, global: true, type: 'string' },
-  baseServer: { env: { config: true }, global: true, type: 'string' },
+  baseAssets: { env: { config: true, server: true }, global: true, type: 'string' },
+  baseServer: { env: { config: true, server: true }, global: true, type: 'string' },
   redirects: { env: { server: true }, global: true, type: 'string{}', cumulative: true },
   trailingSlash: { env: { server: true }, global: true, type: 'boolean' },
   disableUrlNormalization: { env: { server: true }, global: true, type: 'boolean' }

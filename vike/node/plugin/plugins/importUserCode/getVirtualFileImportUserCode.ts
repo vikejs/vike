@@ -17,13 +17,14 @@ import {
   isVersionOrAbove,
   assertWarning
 } from '../../utils.js'
-import type { VikeConfigGlobal } from './v1-design/getVikeConfig.js'
+import type { VikeConfigObject } from './v1-design/getVikeConfig.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
 import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
+import { resolvePrerenderConfig } from '../../../prerender/resolvePrerenderConfig.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -33,7 +34,7 @@ type GlobRoot = {
 async function getVirtualFileImportUserCode(
   id: string,
   options: { ssr?: boolean } | undefined,
-  vikeConfigGlobal: VikeConfigGlobal,
+  vikeConfig: VikeConfigObject,
   config: ResolvedConfig,
   isDev: boolean
 ) {
@@ -41,14 +42,14 @@ async function getVirtualFileImportUserCode(
   assert(idParsed)
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !viteIsSSR_options(options))
-  const isPrerendering = !!vikeConfigGlobal.prerender
-  const code = await getCode(config, vikeConfigGlobal, isForClientSide, isClientRouting, isPrerendering, isDev, id)
+  const isPrerendering = !!resolvePrerenderConfig(vikeConfig.global.config.prerender)
+  const code = await getCode(config, vikeConfig, isForClientSide, isClientRouting, isPrerendering, isDev, id)
   return code
 }
 
 async function getCode(
   config: ResolvedConfig,
-  vikeConfigGlobal: VikeConfigGlobal,
+  vikeConfig: VikeConfigObject,
   isForClientSide: boolean,
   isClientRouting: boolean,
   isPrerendering: boolean,
@@ -68,7 +69,7 @@ async function getCode(
       isBuild,
       isForClientSide,
       isClientRouting,
-      vikeConfigGlobal,
+      vikeConfig,
       isPrerendering,
       config,
       isDev,
@@ -121,7 +122,7 @@ async function generateGlobImports(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  vikeConfigGlobal: VikeConfigGlobal,
+  vikeConfig: VikeConfigObject,
   isPrerendering: boolean,
   config: ResolvedConfig,
   isDev: boolean,
@@ -160,7 +161,9 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
         fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames', isV1Design)
       }
     })
-  if (vikeConfigGlobal.includeAssetsImportedByServer && isForClientSide) {
+  // TODO/now: add meta.default
+  const includeAssetsImportedByServer = vikeConfig.global.config.includeAssetsImportedByServer ?? true
+  if (includeAssetsImportedByServer && isForClientSide) {
     fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets', isV1Design)
   }
 

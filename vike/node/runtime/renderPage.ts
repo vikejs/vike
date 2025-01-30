@@ -62,6 +62,7 @@ import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import { resolveBaseRuntime } from '../shared/resolveBase.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
@@ -509,12 +510,14 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 }
 
 function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
-  const { trailingSlash, disableUrlNormalization, baseServer } = getGlobalContext()
+  const globalContext = getGlobalContext()
+  const { baseServer } = resolveBaseRuntime()
+  const { trailingSlash, disableUrlNormalization } = globalContext.vikeConfig.global.config
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
   if (isPageContextRequest) return null
-  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash, baseServer)
+  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash ?? false, baseServer)
   if (!urlNormalized) return null
   logRuntimeInfo?.(
     `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(urlNormalized)} (https://vike.dev/url-normalization)`,
@@ -529,7 +532,8 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
 
 function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
   const globalContext = getGlobalContext()
-  const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, globalContext.baseServer)
+  const { baseServer } = resolveBaseRuntime()
+  const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
   let origin: null | string = null
   let urlTargetExternal: null | string = null
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
@@ -557,7 +561,8 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
       }
     }
     if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
-    if (!originChanged) urlTarget = prependBase(urlTarget, globalContext.baseServer)
+    const { baseServer } = resolveBaseRuntime()
+    if (!originChanged) urlTarget = prependBase(urlTarget, baseServer)
     assert(urlTarget !== pageContextInit.urlOriginal)
   }
   logRuntimeInfo?.(
@@ -655,7 +660,7 @@ async function handleAbortError(
 }
 
 function assertBaseUrl(pageContextInit: { urlOriginal: string }) {
-  const { baseServer } = getGlobalContext()
+  const { baseServer } = resolveBaseRuntime()
   const { urlOriginal } = pageContextInit
   const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
   const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
