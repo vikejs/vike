@@ -54,6 +54,9 @@ function tolerateError({ logSource, logText, testInfo }) {
     // TODO/eventually: move everything to this array
     [
       // Required for test-deprecated-design/*
+      'Define Vike settings in +config.js instead of vite.config.js',
+
+      // Required for test-deprecated-design/*
       'vite.createServer() is deprecated',
 
       // Required for test-deprecated-design/*
