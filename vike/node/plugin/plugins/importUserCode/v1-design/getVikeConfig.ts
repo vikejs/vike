@@ -8,7 +8,6 @@ export { getConfigValueInterfaceFile }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
-export type { VikeConfigGlobal }
 
 import {
   assertPosixPath,
@@ -118,7 +117,6 @@ type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  vikeConfigGlobal: VikeConfigGlobal
   global: ReturnType<typeof getPageConfigUserFriendlyNew>
 }
 
@@ -364,7 +362,6 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        vikeConfigGlobal: {},
         global: getPageConfigUserFriendlyNew({ configValues: {} })
       }
       return dummyData
@@ -455,7 +452,6 @@ async function getGlobalConfigs(
     })
   )
 
-  const vikeConfigGlobal = {}
   {
     assert(isObject(vikeVitePluginOptions))
     assertWarning(
@@ -488,7 +484,7 @@ async function getGlobalConfigs(
   const configValues = getConfigValues(pageConfigGlobal)
   const global = getPageConfigUserFriendlyNew({ configValues })
 
-  return { pageConfigGlobal, vikeConfigGlobal, global }
+  return { pageConfigGlobal, global }
 }
 async function getPageConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
@@ -1427,6 +1423,3 @@ function sortConfigValueSources(
 function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: string): unknown {
   return interfaceFile.fileExportsByConfigName[configName]?.configValue
 }
-
-// TODO/now: remove
-type VikeConfigGlobal = {}
