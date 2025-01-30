@@ -307,11 +307,58 @@ type ConfigBuiltIn = {
    */
   guard?: GuardAsync | GuardSync | ImportString
   /**
-   * Whether to pre-render the page(s).
+   * Pre-render page(s).
    *
    * https://vike.dev/pre-rendering
+   * https://vike.dev/prerender
+   *
+   * @default false
    */
-  prerender?: boolean | ImportString
+  prerender?:
+    | boolean
+    | ImportString
+    | {
+        /**
+         * Allow only some of your pages to be pre-rendered.
+         *
+         * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
+         *
+         * https://vike.dev/prerender#partial
+         *
+         * @default false
+         */
+        partial?: boolean
+        /**
+         * Don't create a new directory for each HTML file.
+         *
+         * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
+         *
+         * https://vike.dev/prerender#noextradir
+         *
+         * @default false
+         */
+        noExtraDir?: boolean
+        /**
+         * Number of concurrent pre-render jobs.
+         *
+         * Set to `false` to disable concurrency.
+         *
+         * https://vike.dev/prerender#parallel
+         *
+         * @default os.cpus().length
+         */
+        parallel?: boolean | number
+        /**
+         * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
+         *
+         * Use this if you want to programmatically initiate the pre-rendering process instead.
+         *
+         * https://vike.dev/prerender#disableautorun
+         *
+         * @default false
+         */
+        disableAutoRun?: boolean
+      }
 
   /**
    * Install Vike extensions.
@@ -518,6 +565,7 @@ type ConfigBuiltIn = {
 type ConfigBuiltInResolved = {
   passToClient?: string[][]
   redirects?: Record<string, string>[]
+  prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>

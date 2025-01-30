@@ -23,6 +23,7 @@ import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-desig
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
+import { resolvePrerenderConfig } from '../../prerender/resolvePrerenderConfig.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
@@ -59,7 +60,9 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             // TODO/now: remove
             _vikeConfigGlobal: vikeConfig.vikeConfigGlobal,
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
-            configVikePromise: Promise.resolve({ prerender: !!vikeConfig.vikeConfigGlobal.prerender })
+            configVikePromise: Promise.resolve({
+              prerender: !!resolvePrerenderConfig(vikeConfig.global.config.prerender)
+            })
           }
         }
       }

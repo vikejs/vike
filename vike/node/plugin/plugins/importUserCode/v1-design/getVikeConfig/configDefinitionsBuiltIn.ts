@@ -232,7 +232,12 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
     eager: true,
     global: true
   },
-  prerender: { env: { config: true }, global: (value) => typeof value === 'object', type: ['boolean', 'object'] },
+  prerender: {
+    env: { config: true },
+    global: (value) => typeof value === 'object',
+    type: ['boolean', 'object'],
+    cumulative: true
+  },
   vite: { env: { config: true }, global: true, cumulative: true, type: 'object' },
   disableAutoFullBuild: {
     env: { config: true },

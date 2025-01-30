@@ -1433,89 +1433,32 @@ function resolveVikeConfigGlobal(
   const configs: VikeVitePluginOptions[] = [vikeVitePluginOptions as any, pageConfigGlobalValues]
 
   const vikeConfigGlobal: VikeConfigGlobal = {
-    prerender: resolvePrerenderOptions(configs),
     baseServer: pickFirst(configs.map((c) => c.baseServer)) ?? null,
     baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null
   }
 
   return vikeConfigGlobal
 }
-function resolvePrerenderOptions(configs: VikeVitePluginOptions[]): VikeConfigGlobal['prerender'] {
-  if (!configs.some((c) => c.prerender)) {
-    return false
-  }
-  const configsPrerender = configs.map((c) => c.prerender).filter(isObject2)
-  return {
-    partial: pickFirst(configsPrerender.map((c) => c.partial)) ?? false,
-    noExtraDir: pickFirst(configsPrerender.map((c) => c.noExtraDir)) ?? false,
-    parallel: pickFirst(configsPrerender.map((c) => c.parallel)) ?? true,
-    disableAutoRun: pickFirst(configsPrerender.map((c) => c.disableAutoRun)) ?? false
-  }
-}
-
-function isObject2<T>(p: T | boolean | undefined): p is T {
-  return typeof p === 'object'
-}
 function pickFirst<T>(arr: T[]): T | undefined {
   return arr.filter((v) => v !== undefined)[0]
 }
 type VikeConfigGlobal = {
-  prerender:
-    | false
-    | {
-        noExtraDir: boolean
-        parallel: boolean | number
-        partial: boolean
-        disableAutoRun: boolean
-      }
   baseAssets: string | null
   baseServer: string | null
 }
 // TODO/now: deprecate
 type VikeVitePluginOptions = {
-  /**
-   * Enable pre-rendering.
-   *
-   * https://vike.dev/pre-rendering
-   *
-   * @default false
-   */
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
   prerender?:
     | boolean
     | {
-        /**
-         * Don't create a new directory for each HTML file.
-         *
-         * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
-         *
-         * @default false
-         */
+        /** @deprecated Define this setting in +config.js instead of vite.config.js */
         noExtraDir?: boolean
-        /**
-         * Number of concurrent pre-render jobs.
-         *
-         * Set to `false` to disable concurrency.
-         *
-         * @default os.cpus().length
-         */
+        /** @deprecated Define this setting in +config.js instead of vite.config.js */
         parallel?: boolean | number
-        /**
-     * Allow only some of your pages to be pre-rendered.
-     *
-     * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
- 
-     * @default false
-     */
+        /** @deprecated Define this setting in +config.js instead of vite.config.js */
         partial?: boolean
-        /**
-         * Disable the automatic initiation of the pre-rendering process when running `$ vike build`.
-         *
-         * Use this if you want to programmatically initiate the pre-rendering process instead.
-         *
-         * https://vike.dev/api#prerender
-         *
-         * @default false
-         */
+        /** @deprecated Define this setting in +config.js instead of vite.config.js */
         disableAutoRun?: boolean
       }
 

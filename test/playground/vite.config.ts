@@ -10,10 +10,6 @@ export default {
   plugins: [
     react(),
     vike({
-      prerender: {
-        // TEST: prerender.noExtraDir
-        noExtraDir: true
-      },
       redirects: {
         // TEST: redirect to email
         '/mail': 'mailto:some@example.com'

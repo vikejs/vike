@@ -24,6 +24,7 @@ import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTy
 import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
 import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
+import { resolvePrerenderConfig } from '../../../prerender/resolvePrerenderConfig.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -41,7 +42,7 @@ async function getVirtualFileImportUserCode(
   assert(idParsed)
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !viteIsSSR_options(options))
-  const isPrerendering = !!vikeConfig.vikeConfigGlobal.prerender
+  const isPrerendering = !!resolvePrerenderConfig(vikeConfig.global.config.prerender)
   const code = await getCode(config, vikeConfig, isForClientSide, isClientRouting, isPrerendering, isDev, id)
   return code
 }
