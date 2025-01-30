@@ -9,19 +9,13 @@ Disable the automatic chaining of build steps.
 </Danger>
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// pages/+config.js
 
 export default {
-  plugins: [
-    vike({
-      // Disable all chaining
-      disableAutoFullBuild: true,
-      // Only disable the automatic pre-render triggering
-      disableAutoFullBuild: 'prerender',
-    })
-  ]
+  // Disable all chaining
+  disableAutoFullBuild: true,
+  // Or only disable the automatic pre-render triggering
+  disableAutoFullBuild: 'prerender'
 }
 ```
 

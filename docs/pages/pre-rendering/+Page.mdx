@@ -34,14 +34,10 @@ Pre-rendering can be used for websites with content that changes only occasional
 To opt into pre-rendering:
 
 ```js
-// vite.config.js
-
-import vike from 'vike/plugin'
+// pages/+config.js
 
 export default {
-  plugins: [
-    vike({ prerender: true })
-  ]
+  prerender: true
 }
 ```
 
