@@ -7,6 +7,10 @@ export default {
     // TEST: prerender.noExtraDir
     noExtraDir: true
   },
+  redirects: {
+    // TEST: redirect to email
+    '/mail': 'mailto:some@example.com'
+  },
   extends: [vikeReact],
   meta: {
     frontmatter: {

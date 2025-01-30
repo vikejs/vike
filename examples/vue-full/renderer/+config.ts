@@ -4,6 +4,7 @@ import type { Config } from 'vike/types'
 
 // https://vike.dev/config
 const config = {
+  prerender: true,
   clientRouting: true,
   prefetchStaticAssets: 'viewport',
   // https://vike.dev/meta
