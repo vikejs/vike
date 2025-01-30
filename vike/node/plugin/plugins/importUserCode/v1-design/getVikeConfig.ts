@@ -9,7 +9,6 @@ export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
 export type { VikeConfigGlobal }
-export type { VikeVitePluginOptions }
 
 import {
   assertPosixPath,
@@ -1426,39 +1425,3 @@ function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: s
 
 // TODO/now: remove
 type VikeConfigGlobal = {}
-// TODO/now: move
-type VikeVitePluginOptions = {
-  /** @deprecated Define this setting in +config.js instead of vite.config.js */
-  prerender?:
-    | boolean
-    | {
-        /** @deprecated Define this setting in +config.js instead of vite.config.js */
-        noExtraDir?: boolean
-        /** @deprecated Define this setting in +config.js instead of vite.config.js */
-        parallel?: boolean | number
-        /** @deprecated Define this setting in +config.js instead of vite.config.js */
-        partial?: boolean
-        /** @deprecated Define this setting in +config.js instead of vite.config.js */
-        disableAutoRun?: boolean
-      }
-
-  /** @deprecated See https://vike.dev/disableAutoFullBuild */
-  disableAutoFullBuild?: boolean | 'prerender'
-
-  /** @deprecated Define this setting in +config.js instead of vite.config.js */
-  baseServer?: string
-  /** @deprecated Define this setting in +config.js instead of vite.config.js */
-  baseAssets?: string
-
-  /** @deprecated It's now `true` by default. You can remove this option. */
-  includeAssetsImportedByServer?: boolean
-
-  /** @deprecated Define this setting in +config.js instead of vite.config.js */
-  redirects?: Record<string, string>
-
-  /** @deprecated Define this setting in +config.js instead of vite.config.js */
-  trailingSlash?: boolean
-
-  /** @deprecated Define this setting in +config.js instead of vite.config.js */
-  disableUrlNormalization?: boolean
-}

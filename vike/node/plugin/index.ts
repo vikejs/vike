@@ -3,6 +3,7 @@ export { plugin }
 // TODO/v1-release: remove
 export { plugin as ssr }
 export type { VikeVitePluginOptions as UserConfig }
+export type { VikeVitePluginOptions }
 export { PROJECT_VERSION as version } from './utils.js'
 
 import { version, type Plugin } from 'vite'
@@ -14,7 +15,6 @@ import { devConfig } from './plugins/devConfig/index.js'
 import { packageJsonFile } from './plugins/packageJsonFile.js'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
-import type { VikeVitePluginOptions } from './plugins/importUserCode/v1-design/getVikeConfig.js'
 import { distFileNames } from './plugins/distFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
@@ -79,6 +79,42 @@ Object.defineProperty(plugin, 'apply', {
 // package.json#peerDependencies isn't enough as users can ignore it
 function assertViteVersion() {
   assertVersion('Vite', version, '5.1.0')
+}
+
+type VikeVitePluginOptions = {
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
+  prerender?:
+    | boolean
+    | {
+        /** @deprecated Define this setting in +config.js instead of vite.config.js */
+        noExtraDir?: boolean
+        /** @deprecated Define this setting in +config.js instead of vite.config.js */
+        parallel?: boolean | number
+        /** @deprecated Define this setting in +config.js instead of vite.config.js */
+        partial?: boolean
+        /** @deprecated Define this setting in +config.js instead of vite.config.js */
+        disableAutoRun?: boolean
+      }
+
+  /** @deprecated See https://vike.dev/disableAutoFullBuild */
+  disableAutoFullBuild?: boolean | 'prerender'
+
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
+  baseServer?: string
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
+  baseAssets?: string
+
+  /** @deprecated It's now `true` by default. You can remove this option. */
+  includeAssetsImportedByServer?: boolean
+
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
+  redirects?: Record<string, string>
+
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
+  trailingSlash?: boolean
+
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
+  disableUrlNormalization?: boolean
 }
 
 // Ensures following works: `const vike = require('vike/plugin')` / `import vike from 'vike/plugin'`
