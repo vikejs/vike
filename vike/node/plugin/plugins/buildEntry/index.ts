@@ -4,7 +4,6 @@ export { set_ASSETS_MAP }
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
 import { getVikeManifest } from './getVikeManifest.js'
-import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { assert, getOutDirs, toPosixPath } from '../../utils.js'
 import fs from 'fs/promises'
 import path from 'path'
@@ -13,36 +12,32 @@ import { createRequire } from 'module'
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
-import type { VikeConfigGlobal } from '../importUserCode/v1-design/getVikeConfig.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MAP = '__VITE_ASSETS_MAP__'
 
 function buildEntry(): Plugin[] {
   let config: ResolvedConfig
-  let vikeConfigGlobal: VikeConfigGlobal
   return [
     {
       name: 'vike:buildEntry',
       enforce: 'post',
       async configResolved(config_) {
         config = config_
-        const vikeConfig = await getVikeConfig(config)
-        vikeConfigGlobal = vikeConfig.vikeConfigGlobal
       }
     },
     ...serverProductionEntryPlugin({
       getServerProductionEntry: () => {
-        return getServerProductionEntryCode(config, vikeConfigGlobal)
+        return getServerProductionEntryCode(config)
       },
       libraryName: 'Vike'
     })
   ]
 }
 
-function getServerProductionEntryCode(config: ResolvedConfig, vikeConfigGlobal: VikeConfigGlobal): string {
+function getServerProductionEntryCode(config: ResolvedConfig): string {
   const importPath = getImportPath(config)
-  const vikeManifest = getVikeManifest(vikeConfigGlobal, config)
+  const vikeManifest = getVikeManifest(config)
   // Let's eventually simplify and move everything to a single virtual module
   const importerCode = [
     `  import { setGlobalContext_buildEntry } from '${importPath}';`,

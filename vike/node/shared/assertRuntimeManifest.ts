@@ -1,19 +1,17 @@
 export { assertRuntimeManifest }
 export type { RuntimeManifest }
 
-import { assert, checkType, hasProp, isBaseAssets, isBaseServer, isObject } from './utils.js'
+import { assert, hasProp, isObject } from './utils.js'
 
 type RuntimeManifest = {
-  baseServer: string
-  baseAssets: string
+  viteConfigRuntime: {
+    _baseViteOriginal: string
+  }
 }
 
 function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & Record<string, unknown> {
   assert(obj)
   assert(isObject(obj))
-  assert(hasProp(obj, 'baseServer', 'string'))
-  assert(hasProp(obj, 'baseAssets', 'string'))
-  assert(isBaseServer(obj.baseServer))
-  assert(isBaseAssets(obj.baseAssets))
-  checkType<RuntimeManifest>(obj)
+  assert(hasProp(obj, 'viteConfigRuntime', 'object'))
+  assert(hasProp(obj.viteConfigRuntime, '_baseViteOriginal', 'string'))
 }

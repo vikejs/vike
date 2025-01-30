@@ -25,6 +25,7 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
+import { resolveBaseRuntime } from '../../shared/resolveBase.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -178,13 +179,14 @@ function getPageContextInitEnhanced(
   assert(pageContextInit.urlOriginal)
 
   const globalContext = getGlobalContext()
+  const { baseServer, baseAssets } = resolveBaseRuntime()
   const pageContextInitEnhanced = {}
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {
     _objectCreatedByVike: true,
     // The following is defined on `pageContext` because we can eventually make these non-global
-    _baseServer: globalContext.baseServer,
-    _baseAssets: globalContext.baseAssets,
+    _baseServer: baseServer,
+    _baseAssets: baseAssets,
     // TODO/now: add meta.default
     _includeAssetsImportedByServer: globalContext.vikeConfig.global.config.includeAssetsImportedByServer ?? true,
     // TODO: use GloablContext instead

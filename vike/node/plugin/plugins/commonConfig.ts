@@ -31,6 +31,7 @@ declare module 'vite' {
     _isDev?: boolean
     _vikeVitePluginOptions?: unknown
     _root?: string
+    _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
     vike?: { global: VikeConfigObject['global']; prerenderContext?: PrerenderContextPublic }

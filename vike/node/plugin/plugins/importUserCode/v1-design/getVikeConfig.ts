@@ -365,7 +365,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        vikeConfigGlobal: resolveVikeConfigGlobal({}, {}),
+        vikeConfigGlobal: {},
         global: getPageConfigUserFriendlyNew({ configValues: {} })
       }
       return dummyData
@@ -456,7 +456,7 @@ async function getGlobalConfigs(
     })
   )
 
-  const vikeConfigGlobal = resolveVikeConfigGlobal(vikeVitePluginOptions, pageConfigGlobalValues)
+  const vikeConfigGlobal = {}
   {
     assert(isObject(vikeVitePluginOptions))
     Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
@@ -1424,29 +1424,9 @@ function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: s
   return interfaceFile.fileExportsByConfigName[configName]?.configValue
 }
 
-// TODO/now: refactor code below
-
-function resolveVikeConfigGlobal(
-  vikeVitePluginOptions: unknown,
-  pageConfigGlobalValues: Record<string, unknown>
-): VikeConfigGlobal {
-  const configs: VikeVitePluginOptions[] = [vikeVitePluginOptions as any, pageConfigGlobalValues]
-
-  const vikeConfigGlobal: VikeConfigGlobal = {
-    baseServer: pickFirst(configs.map((c) => c.baseServer)) ?? null,
-    baseAssets: pickFirst(configs.map((c) => c.baseAssets)) ?? null
-  }
-
-  return vikeConfigGlobal
-}
-function pickFirst<T>(arr: T[]): T | undefined {
-  return arr.filter((v) => v !== undefined)[0]
-}
-type VikeConfigGlobal = {
-  baseAssets: string | null
-  baseServer: string | null
-}
-// TODO/now: deprecate
+// TODO/now: remove
+type VikeConfigGlobal = {}
+// TODO/now: move
 type VikeVitePluginOptions = {
   /** @deprecated Define this setting in +config.js instead of vite.config.js */
   prerender?:
@@ -1465,15 +1445,9 @@ type VikeVitePluginOptions = {
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
-  /** The Base URL of your server.
-   *
-   * https://vike.dev/base-url
-   */
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
   baseServer?: string
-  /** The Base URL of your static assets.
-   *
-   * https://vike.dev/base-url
-   */
+  /** @deprecated Define this setting in +config.js instead of vite.config.js */
   baseAssets?: string
 
   /** @deprecated It's now `true` by default. You can remove this option. */

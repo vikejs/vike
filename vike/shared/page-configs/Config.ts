@@ -506,6 +506,17 @@ type ConfigBuiltIn = {
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
+  /** The Base URL of your server.
+   *
+   * https://vike.dev/base-url
+   */
+  baseServer?: string
+  /** The Base URL of your static assets.
+   *
+   * https://vike.dev/base-url
+   */
+  baseAssets?: string
+
   // TODO/pageContext-prefetch: remove experimental note
   /**
    * @experimental DON'T USE: the API *will* have breaking changes upon any minor version release.

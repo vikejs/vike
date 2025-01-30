@@ -40,10 +40,8 @@ import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
 import { getPageFilesAll, setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
 import { assertPluginManifest } from '../shared/assertPluginManifest.js'
-import type { VikeConfigGlobal } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
-import { resolveBaseFromResolvedConfig } from '../shared/resolveBase.js'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
@@ -72,8 +70,9 @@ type GlobalContextPublic = {
 }
 type PageRuntimeInfo = Awaited<ReturnType<typeof getPageRuntimeInfo>>['userFiles']
 type GlobalContext = {
-  baseServer: string
-  baseAssets: null | string
+  viteConfigRuntime: {
+    _baseViteOriginal: null | string
+  }
   vikeConfig: {
     global: ConfigUserFriendly
   }
@@ -230,7 +229,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(viteDevServer)
     assert(!isPrerendering)
     const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
-    const pluginManifest = getRuntimeManifest(vikeConfig.vikeConfigGlobal, viteConfig)
+    const pluginManifest = getRuntimeManifest(viteConfig)
     globalObject.globalContext = {
       isProduction: false,
       isPrerendering: false,
@@ -241,8 +240,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
         global: globalConfig
       },
       ...userFiles,
-      baseServer: pluginManifest.baseServer,
-      baseAssets: pluginManifest.baseAssets
+      viteConfigRuntime: pluginManifest.viteConfigRuntime
     }
   } else {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot, isPrerendering)
@@ -259,8 +257,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       },
       ...userFiles,
       viteDevServer: null,
-      baseServer: pluginManifest.baseServer,
-      baseAssets: pluginManifest.baseAssets,
+      viteConfigRuntime: pluginManifest.viteConfigRuntime,
       usesClientRouter: pluginManifest.usesClientRouter
     }
     if (isPrerendering) {
@@ -307,15 +304,11 @@ async function getPageRuntimeInfo(isProduction: boolean) {
   return { userFiles, globalConfig }
 }
 
-function getRuntimeManifest(vikeConfigGlobal: VikeConfigGlobal, viteConfig: ResolvedConfig): RuntimeManifest {
-  const { baseServer, baseAssets } = resolveBaseFromResolvedConfig(
-    vikeConfigGlobal.baseServer,
-    vikeConfigGlobal.baseAssets,
-    viteConfig
-  )
+function getRuntimeManifest(viteConfig: ResolvedConfig): RuntimeManifest {
   const manifest = {
-    baseServer,
-    baseAssets
+    viteConfigRuntime: {
+      _baseViteOriginal: viteConfig._baseViteOriginal
+    }
   }
   assertRuntimeManifest(manifest)
   return manifest
