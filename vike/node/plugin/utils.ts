@@ -4,7 +4,7 @@
 import { onLoad } from './onLoad.js'
 onLoad()
 
-// We tolerate the fact that we load all of the runtime utils even though some of it isn't needed
+// It's common practice for Vike's Vite plugin to import from Vike's sever runtime
 export * from '../runtime/utils.js'
 
 // Utils only needed by `plugin/*`

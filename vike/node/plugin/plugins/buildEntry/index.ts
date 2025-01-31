@@ -3,15 +3,16 @@ export { set_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { getVikeManifest } from './getVikeManifest.js'
-import { assert, getOutDirs, toPosixPath } from '../../utils.js'
+import { assert, getOutDirs, projectInfo, toPosixPath } from '../../utils.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
-import type { Plugin, ResolvedConfig, Rollup } from 'vite'
+import { type Plugin, type ResolvedConfig, type Rollup } from 'vite'
+import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
+import { assertBuildInfo, type BuildInfo, getViteConfigRuntime } from '../../../runtime/globalContext.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
@@ -37,8 +38,13 @@ function buildEntry(): Plugin[] {
 
 function getServerProductionEntryCode(config: ResolvedConfig): string {
   const importPath = getImportPath(config)
-  const vikeManifest = getVikeManifest(config)
-  // Let's eventually simplify and move everything to a single virtual module
+  const buildInfo: BuildInfo = {
+    versionAtBuildTime: projectInfo.projectVersion,
+    usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
+    viteConfigRuntime: getViteConfigRuntime(config)
+  }
+  assertBuildInfo(buildInfo)
+  // After the old design is removed, let's maybe simplify and move everything into a single virtual module
   const importerCode = [
     `  import { setGlobalContext_buildEntry } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
@@ -46,11 +52,11 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
     // Because of a Rollup bug, we have to assign ASSETS_MANIFEST to a variable before passing it to setGlobalContext_buildEntry()
     // - This workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
     `    const assetsManifest = ${ASSETS_MANIFEST};`,
-    `    const pluginManifest = ${JSON.stringify(vikeManifest, null, 2)};`,
+    `    const buildInfo = ${JSON.stringify(buildInfo, null, 2)};`,
     '    setGlobalContext_buildEntry({',
     `      pageFiles,`,
     `      assetsManifest,`,
-    `      pluginManifest,`,
+    `      buildInfo,`,
     '    });',
     `  }`,
     ''
