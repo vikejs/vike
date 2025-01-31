@@ -474,7 +474,7 @@ async function getPageConfigs(
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
-        // Load value files of custom config-only configs
+        // Load value files of `env.config===true` custom configs
         await Promise.all(
           interfaceFilesRelevantList.map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
