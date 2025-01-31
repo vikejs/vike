@@ -43,7 +43,8 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
     `  import { setGlobalContext_buildEntry } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
     `  {`,
-    // We first set the values to a variable because of a Rollup bug, and this workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
+    // Because of a Rollup bug, we have to assign ASSETS_MAP to a variable before passing it to setGlobalContext_buildEntry()
+    // - This workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
     `    const assetsManifest = ${ASSETS_MAP};`,
     `    const pluginManifest = ${JSON.stringify(vikeManifest, null, 2)};`,
     '    setGlobalContext_buildEntry({',
