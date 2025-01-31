@@ -347,17 +347,22 @@ async function getBuildEntry(outDir?: string, isPrerendering?: true) {
     }
     assert(globalObject.buildEntry)
   }
-  const { buildEntry } = globalObject
+  const buildEntry = assertBuildEntry(globalObject.buildEntry)
+  return buildEntry
+}
+function setGlobalContext_buildEntry(buildEntry: unknown) {
+  debug('setGlobalContext_buildEntry()')
+  assertBuildEntry(buildEntry)
+  globalObject.buildEntry = buildEntry
+  globalObject.buildEntryPrevious = buildEntry
+}
+
+function assertBuildEntry(buildEntry: unknown) {
   assert(isObject(buildEntry))
   assert(hasProp(buildEntry, 'pageFiles', 'object'))
   assert(hasProp(buildEntry, 'assetsManifest', 'object'))
   assert(hasProp(buildEntry, 'pluginManifest', 'object'))
   return buildEntry
-}
-function setGlobalContext_buildEntry(buildEntry: unknown) {
-  debug('setGlobalContext_buildEntry()')
-  globalObject.buildEntry = buildEntry
-  globalObject.buildEntryPrevious = buildEntry
 }
 
 function initDevEntry() {
