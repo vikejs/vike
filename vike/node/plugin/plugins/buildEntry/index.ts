@@ -1,5 +1,5 @@
 export { buildEntry }
-export { set_ASSETS_MAP }
+export { set_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -14,7 +14,7 @@ const require_ = createRequire(importMetaUrl)
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
-const ASSETS_MAP = '__VITE_ASSETS_MAP__'
+const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
 
 function buildEntry(): Plugin[] {
   let config: ResolvedConfig
@@ -43,9 +43,9 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
     `  import { setGlobalContext_buildEntry } from '${importPath}';`,
     `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
     `  {`,
-    // Because of a Rollup bug, we have to assign ASSETS_MAP to a variable before passing it to setGlobalContext_buildEntry()
+    // Because of a Rollup bug, we have to assign ASSETS_MANIFEST to a variable before passing it to setGlobalContext_buildEntry()
     // - This workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
-    `    const assetsManifest = ${ASSETS_MAP};`,
+    `    const assetsManifest = ${ASSETS_MANIFEST};`,
     `    const pluginManifest = ${JSON.stringify(vikeManifest, null, 2)};`,
     '    setGlobalContext_buildEntry({',
     `      pageFiles,`,
@@ -57,26 +57,26 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   ].join('\n')
   return importerCode
 }
-/** Set the value of the ASSETS_MAP constant inside dist/server/entry.js (or dist/server/index.js) */
-async function set_ASSETS_MAP(options: Options, bundle: Bundle) {
+/** Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js) */
+async function set_ASSETS_MANIFEST(options: Options, bundle: Bundle) {
   const { dir } = options
   assert(dir)
-  const chunkPath = find_ASSETS_MAP(bundle)
+  const chunkPath = find_ASSETS_MANIFEST(bundle)
   const chunkFilePath = path.join(dir, chunkPath)
   const assetsJsonFilePath = path.join(dir, '..', 'assets.json')
   const [assetsJsonString, chunkFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
     await fs.readFile(chunkFilePath, 'utf8')
   ])
-  const serverEntryFileContentPatched = chunkFileContent.replace(ASSETS_MAP, assetsJsonString)
+  const serverEntryFileContentPatched = chunkFileContent.replace(ASSETS_MANIFEST, assetsJsonString)
   assert(serverEntryFileContentPatched !== chunkFileContent)
   await fs.writeFile(chunkFilePath, serverEntryFileContentPatched)
 }
-function find_ASSETS_MAP(bundle: Bundle): string {
+function find_ASSETS_MANIFEST(bundle: Bundle): string {
   let chunkPath: string | undefined
   for (const filePath in bundle) {
     const chunk = bundle[filePath]!
-    if ('code' in chunk && chunk.code.includes(ASSETS_MAP)) {
+    if ('code' in chunk && chunk.code.includes(ASSETS_MANIFEST)) {
       assert(!chunkPath)
       chunkPath = filePath
     }
