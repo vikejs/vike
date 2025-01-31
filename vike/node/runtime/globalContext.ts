@@ -382,9 +382,11 @@ function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   checkType<BuildInfo>({ ...buildInfo, viteConfigRuntime: buildInfo.viteConfigRuntime })
 }
 function assertVersionAtBuildTime(versionAtBuildTime: string) {
+  const versionAtRuntime = projectInfo.projectVersion
+  const pretty = (version: string) => pc.bold(`vike@${version}`)
   assertUsage(
-    versionAtBuildTime === projectInfo.projectVersion,
-    `Re-build your app (you're using vike@${projectInfo.projectVersion} but your app was built with vike@${versionAtBuildTime})`
+    versionAtBuildTime === versionAtRuntime,
+    `Re-build your app (you're using ${pretty(versionAtRuntime)} but your app was built with ${pretty(versionAtBuildTime)})`
   )
 }
 function getViteConfigRuntime(viteConfig: ResolvedConfig): BuildInfo['viteConfigRuntime'] {
