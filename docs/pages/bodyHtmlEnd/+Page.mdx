@@ -7,7 +7,7 @@ Environment: server.
 
 The settings `bodyHtmlEnd`/<Link href="/bodyHtmlBegin" /> enable you to insert HTML at the beginning/end of the `<body>` tag.
 
-> For use cases, such as adding `<script>` tags, you can also use <Link href="/head-tags">`<Head>`</Link> or <Link href="/client">`+client.js`</Link>.
+Inserting static HTML:
 
 ```js
 // pages/+config.js
@@ -16,6 +16,10 @@ export default {
   bodyHtmlEnd: '<div id="something"></div>'
 }
 ```
+
+> For adding `<script>` tags consider <Link href="/head">`<Head>`</Link> or <Link href="/client">`+client.js`</Link> instead.
+
+Inserting dynamically generated HTML:
 
 ```js
 // pages/+bodyHtmlEnd.js
@@ -31,9 +35,33 @@ Be cautious about the security risk called [XSS injections](https://en.wikipedia
 </Warning>
 
 
-## Vue
+## Use cases
 
-When using Vue, it's usually used for adding the HTML targets of teleports.
+### React
+
+When using React, it's often used for portals.
+
+```js
+// pages/+config.js
+
+export default {
+  bodyHtmlEnd: '<div id="portal-root"></div>'
+}
+```
+
+You'll then get the following HTML:
+
+```jsx
+<body>
+  <!-- ... -->
+  <div id="root">{reactHtml}</div>
+  <div id="portal-root"></div> // [!code ++]
+</body>
+```
+
+### Vue
+
+When using Vue, it's often used for adding the HTML targets of teleports.
 
 Teleports work out of the box when using `<Teleport to="teleported">` and you don't have to use `bodyHtml{Begin,End}` then.
 
