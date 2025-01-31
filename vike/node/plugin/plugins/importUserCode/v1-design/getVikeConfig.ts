@@ -376,12 +376,12 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
     getPageConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded)
   ])
 
+  // interop vike(options) in vite.config.js
+  temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
+
   // global
   const configValues = getConfigValues(pageConfigGlobal)
   const global = getPageConfigUserFriendlyNew({ configValues })
-
-  // interop vike(options) in vite.config.js
-  temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
   return { pageConfigs, pageConfigGlobal, global }
 }
