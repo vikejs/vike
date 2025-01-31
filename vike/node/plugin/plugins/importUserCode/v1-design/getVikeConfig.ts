@@ -372,18 +372,23 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir)
   const importedFilesLoaded: ImportedFilesLoaded = {}
   const [pageConfigGlobal, pageConfigs] = await Promise.all([
-    getGlobalConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded, vikeVitePluginOptions),
+    getGlobalConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded),
     getPageConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded)
   ])
+
+  // global
   const configValues = getConfigValues(pageConfigGlobal)
   const global = getPageConfigUserFriendlyNew({ configValues })
+
+  // interop vike(options) in vite.config.js
+  temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
+
   return { pageConfigs, pageConfigGlobal, global }
 }
 async function getGlobalConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded,
-  vikeVitePluginOptions: unknown
+  importedFilesLoaded: ImportedFilesLoaded
 ) {
   const locationIds = objectKeys(interfaceFilesByLocationId)
   const interfaceFilesGlobal = objectFromEntries(
@@ -446,36 +451,39 @@ async function getGlobalConfigs(
     })
   )
 
-  {
-    assert(isObject(vikeVitePluginOptions))
-    assertWarning(
-      Object.keys(vikeVitePluginOptions).length === 0,
-      `Define Vike settings in +config.js instead of vite.config.js ${pc.underline('https://vike.dev/migration/settings')}`,
-      { onlyOnce: true }
-    )
-    Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
-      assert(includes(objectKeys(configDefinitionsBuiltInGlobal), configName))
-      const configDef = configDefinitionsBuiltInGlobal[configName]
-      const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
-      sources.push({
-        value,
-        configEnv: configDef.env,
-        definedAtFilePath: {
-          ...getFilePathResolved({
-            userRootDir,
-            filePathAbsoluteUserRootDir: '/vite.config.js'
-          }),
-          fileExportPathToShowToUser: null
-        },
-        locationId: '/' as LocationId,
-        isOverriden: configDef.cumulative ? false : sources.length > 0,
-        valueIsImportedAtRuntime: false,
-        valueIsDefinedByPlusFile: false
-      })
-    })
-  }
-
   return pageConfigGlobal
+}
+function temp_interopVikeVitePlugin(
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+  vikeVitePluginOptions: unknown,
+  userRootDir: string
+) {
+  assert(isObject(vikeVitePluginOptions))
+  assertWarning(
+    Object.keys(vikeVitePluginOptions).length === 0,
+    `Define Vike settings in +config.js instead of vite.config.js ${pc.underline('https://vike.dev/migration/settings')}`,
+    { onlyOnce: true }
+  )
+  Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
+    assert(includes(objectKeys(configDefinitionsBuiltInGlobal), configName))
+    const configDef = configDefinitionsBuiltInGlobal[configName]
+    const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+    sources.push({
+      value,
+      configEnv: configDef.env,
+      definedAtFilePath: {
+        ...getFilePathResolved({
+          userRootDir,
+          filePathAbsoluteUserRootDir: '/vite.config.js'
+        }),
+        fileExportPathToShowToUser: null
+      },
+      locationId: '/' as LocationId,
+      isOverriden: configDef.cumulative ? false : sources.length > 0,
+      valueIsImportedAtRuntime: false,
+      valueIsDefinedByPlusFile: false
+    })
+  })
 }
 async function getPageConfigs(
   interfaceFilesByLocationId: InterfaceFilesByLocationId,
