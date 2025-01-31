@@ -10,7 +10,7 @@ import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
-import { type Plugin, type ResolvedConfig, type Rollup } from 'vite'
+import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
 import { assertBuildInfo, type BuildInfo, getViteConfigRuntime } from '../../../runtime/globalContext.js'
 type Bundle = Rollup.OutputBundle

@@ -349,7 +349,7 @@ function setGlobalContext_buildEntry(buildEntry: unknown) {
 }
 
 type BuildEntry = {
-  pageFiles: unknown
+  pageFiles: Record<string, unknown>
   assetsManifest: ViteManifest
   buildInfo: BuildInfo
 }
@@ -363,20 +363,14 @@ type BuildInfo = {
 function assertBuildEntry(buildEntry: unknown): asserts buildEntry is BuildEntry {
   assert(isObject(buildEntry))
   assert(hasProp(buildEntry, 'pageFiles', 'object'))
-
+  const { pageFiles } = buildEntry
   assert(hasProp(buildEntry, 'assetsManifest', 'object'))
   const { assetsManifest } = buildEntry
   assertViteManifest(assetsManifest)
-
   assert(hasProp(buildEntry, 'buildInfo', 'object'))
   const { buildInfo } = buildEntry
   assertBuildInfo(buildInfo)
-
-  checkType<BuildEntry>({
-    pageFiles: buildEntry.pageFiles,
-    assetsManifest,
-    buildInfo
-  })
+  checkType<BuildEntry>({ pageFiles, assetsManifest, buildInfo })
 }
 function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   assert(isObject(buildInfo))
@@ -385,10 +379,7 @@ function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   assert(hasProp(buildInfo, 'viteConfigRuntime', 'object'))
   assert(hasProp(buildInfo.viteConfigRuntime, '_baseViteOriginal', 'string'))
   assert(hasProp(buildInfo, 'usesClientRouter', 'boolean'))
-  checkType<BuildInfo>({
-    ...buildInfo,
-    viteConfigRuntime: buildInfo.viteConfigRuntime
-  })
+  checkType<BuildInfo>({ ...buildInfo, viteConfigRuntime: buildInfo.viteConfigRuntime })
 }
 function assertVersionAtBuildTime(versionAtBuildTime: string) {
   assertUsage(
