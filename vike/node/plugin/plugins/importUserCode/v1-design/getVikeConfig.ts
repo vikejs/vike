@@ -425,7 +425,6 @@ async function getGlobalConfigs(
     })
   }
 
-  const pageConfigGlobalValues: Record<string, unknown> = {}
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsBuiltInGlobal,
     configValueSources: {}
@@ -442,15 +441,6 @@ async function getGlobalConfigs(
       const configValueSource = sources[0]
       if (!configValueSource) return
       pageConfigGlobal.configValueSources[configName] = sources
-      // TODO/now
-      if (configName === 'onBeforeRoute' || configName === 'onPrerenderStart') {
-        assert(!('value' in configValueSource))
-      } else {
-        assert('value' in configValueSource)
-        // TODO/now
-        if (configName === 'prerender' && typeof configValueSource.value === 'boolean') return
-        pageConfigGlobalValues[configName] = configValueSource.value
-      }
     })
   )
 
