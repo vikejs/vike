@@ -56,20 +56,22 @@ The trick here is to directly modify the built code at `node_modules/`, while us
 > We recommend this practice not only for Vike, but also for other tools such as Vite.
 
 
-## Vike debug logs
+## Debug flags
+
+### Vike flags
 
 You can use Vike's debug logs to gather insights.
 
 ```shell
 # Inspect Vike's routing
 DEBUG=vike:routing npm run dev
-# Inspect HTTP Streaming
-DEBUG=vike:stream npm run dev
 # Inspect errors
 DEBUG=vike:error npm run dev
 # Inspect logs
 DEBUG=vike:log npm run dev
 # Combination
+# Inspect HTTP Streaming
+DEBUG=vike:stream npm run dev
 DEBUG=vike:log,vike:error,vike:stream npm run dev
 ```
 
@@ -79,14 +81,14 @@ There are more debug logs but these aren't user-friendly as they are meant for V
 
 > For more debug logs, add a comment at [#249](https://github.com/vikejs/vike/issues/249).
 
-
-## Vite debug logs
+### Vite flags
 
 To enable Vite's debug logs, set the environment variable `DEBUG` to `vite:*`.
 
 ```shell
 $ DEBUG=vite:* npm run dev
 ```
+
 
 ## See also
 
