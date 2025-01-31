@@ -464,7 +464,12 @@ function guides(): HeadingDetachedDefinition[] {
     {
       title: 'Vike extension VS custom integration',
       url: '/extension-vs-custom'
-    }
+    },
+    {
+      title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
+      url: '/render-modes',
+      sectionTitles: ['HTML-only', 'SPA', 'SSR']
+    },
   ].map((h) => ({ ...h, category: 'Guides' }))
 }
 
@@ -542,11 +547,6 @@ function api(): HeadingDetachedDefinition[] {
     {
       title: '`extends`',
       url: '/extends'
-    },
-    {
-      title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
-      url: '/render-modes',
-      sectionTitles: ['HTML-only', 'SPA', 'SSR']
     },
     {
       title: '`lang`',
