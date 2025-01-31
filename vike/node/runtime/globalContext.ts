@@ -6,7 +6,6 @@ export { getGlobalContextAsync }
 export { getGlobalContext }
 export { getViteDevServer }
 export { getViteConfig }
-export { getRuntimeManifest }
 export { initGlobalContext_renderPage }
 export { initGlobalContext_runPrerender }
 export { initGlobalContext_getGlobalContextAsync }
@@ -17,6 +16,9 @@ export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
 export { setGlobalContext_buildEntry }
 export { clearGlobalContext }
+export { assertBuildInfo }
+export { getViteConfigRuntime }
+export type { BuildInfo }
 
 import {
   assert,
@@ -32,15 +34,15 @@ import {
   getGlobalObject,
   genPromise,
   createDebugger,
-  makePublicCopy
+  makePublicCopy,
+  projectInfo,
+  checkType
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
 import { getPageFilesAll, setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
-import { assertPluginManifest } from '../shared/assertPluginManifest.js'
-import { assertRuntimeManifest, type RuntimeManifest } from '../shared/assertRuntimeManifest.js'
 import pc from '@brillout/picocolors'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
@@ -229,7 +231,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(viteDevServer)
     assert(!isPrerendering)
     const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
-    const pluginManifest = getRuntimeManifest(viteConfig)
+    const viteConfigRuntime = getViteConfigRuntime(viteConfig)
     globalObject.globalContext = {
       isProduction: false,
       isPrerendering: false,
@@ -240,15 +242,13 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
         global: globalConfig
       },
       ...userFiles,
-      viteConfigRuntime: pluginManifest.viteConfigRuntime
+      viteConfigRuntime
     }
   } else {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot, isPrerendering)
-    const { assetsManifest, pluginManifest } = buildEntry
+    const { assetsManifest, buildInfo } = buildEntry
     setPageFiles(buildEntry.pageFiles)
     const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
-    assertViteManifest(assetsManifest)
-    assertPluginManifest(pluginManifest)
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
@@ -257,8 +257,8 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       },
       ...userFiles,
       viteDevServer: null,
-      viteConfigRuntime: pluginManifest.viteConfigRuntime,
-      usesClientRouter: pluginManifest.usesClientRouter
+      viteConfigRuntime: buildInfo.viteConfigRuntime,
+      usesClientRouter: buildInfo.usesClientRouter
     }
     if (isPrerendering) {
       assert(viteConfig)
@@ -304,16 +304,6 @@ async function getPageRuntimeInfo(isProduction: boolean) {
   return { userFiles, globalConfig }
 }
 
-function getRuntimeManifest(viteConfig: ResolvedConfig): RuntimeManifest {
-  const manifest = {
-    viteConfigRuntime: {
-      _baseViteOriginal: viteConfig._baseViteOriginal
-    }
-  }
-  assertRuntimeManifest(manifest)
-  return manifest
-}
-
 function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
   assert(isPlainObject(manifest))
   /* We should include these assertions but we don't as a workaround for PWA manifests: https://github.com/vikejs/vike/issues/769
@@ -348,16 +338,63 @@ async function getBuildEntry(outDir?: string, isPrerendering?: true) {
     assert(globalObject.buildEntry)
   }
   const { buildEntry } = globalObject
-  assert(isObject(buildEntry))
-  assert(hasProp(buildEntry, 'pageFiles', 'object'))
-  assert(hasProp(buildEntry, 'assetsManifest', 'object'))
-  assert(hasProp(buildEntry, 'pluginManifest', 'object'))
+  assertBuildEntry(buildEntry)
   return buildEntry
 }
 function setGlobalContext_buildEntry(buildEntry: unknown) {
   debug('setGlobalContext_buildEntry()')
+  assertBuildEntry(buildEntry)
   globalObject.buildEntry = buildEntry
   globalObject.buildEntryPrevious = buildEntry
+}
+
+type BuildEntry = {
+  pageFiles: Record<string, unknown>
+  assetsManifest: ViteManifest
+  buildInfo: BuildInfo
+}
+type BuildInfo = {
+  versionAtBuildTime: string
+  usesClientRouter: boolean // TODO/v1-release: remove
+  viteConfigRuntime: {
+    _baseViteOriginal: string
+  }
+}
+function assertBuildEntry(buildEntry: unknown): asserts buildEntry is BuildEntry {
+  assert(isObject(buildEntry))
+  assert(hasProp(buildEntry, 'pageFiles', 'object'))
+  const { pageFiles } = buildEntry
+  assert(hasProp(buildEntry, 'assetsManifest', 'object'))
+  const { assetsManifest } = buildEntry
+  assertViteManifest(assetsManifest)
+  assert(hasProp(buildEntry, 'buildInfo', 'object'))
+  const { buildInfo } = buildEntry
+  assertBuildInfo(buildInfo)
+  checkType<BuildEntry>({ pageFiles, assetsManifest, buildInfo })
+}
+function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
+  assert(isObject(buildInfo))
+  assert(hasProp(buildInfo, 'versionAtBuildTime', 'string'))
+  assertVersionAtBuildTime(buildInfo.versionAtBuildTime)
+  assert(hasProp(buildInfo, 'viteConfigRuntime', 'object'))
+  assert(hasProp(buildInfo.viteConfigRuntime, '_baseViteOriginal', 'string'))
+  assert(hasProp(buildInfo, 'usesClientRouter', 'boolean'))
+  checkType<BuildInfo>({ ...buildInfo, viteConfigRuntime: buildInfo.viteConfigRuntime })
+}
+function assertVersionAtBuildTime(versionAtBuildTime: string) {
+  const versionAtRuntime = projectInfo.projectVersion
+  const pretty = (version: string) => pc.bold(`vike@${version}`)
+  assertUsage(
+    versionAtBuildTime === versionAtRuntime,
+    `Re-build your app (you're using ${pretty(versionAtRuntime)} but your app was built with ${pretty(versionAtBuildTime)})`
+  )
+}
+function getViteConfigRuntime(viteConfig: ResolvedConfig): BuildInfo['viteConfigRuntime'] {
+  assert(hasProp(viteConfig, '_baseViteOriginal', 'string'))
+  const viteConfigRuntime = {
+    _baseViteOriginal: viteConfig._baseViteOriginal
+  }
+  return viteConfigRuntime
 }
 
 function initDevEntry() {
