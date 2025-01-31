@@ -371,10 +371,11 @@ async function loadVikeConfig_withErrorHandling(
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir)
   const importedFilesLoaded: ImportedFilesLoaded = {}
-  const [pageConfigGlobal, pageConfigs] = await Promise.all([
-    getGlobalConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded),
-    getPageConfigs(interfaceFilesByLocationId, userRootDir, importedFilesLoaded)
-  ])
+  const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
+    interfaceFilesByLocationId,
+    userRootDir,
+    importedFilesLoaded
+  )
 
   // interop vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
@@ -390,13 +391,6 @@ async function getGlobalConfigs(
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ) {
-  const locationIds = objectKeys(interfaceFilesByLocationId)
-  const interfaceFilesGlobal = objectFromEntries(
-    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
-      return isGlobalLocation(locationId, locationIds)
-    })
-  )
-
   /* TODO/now: dedupe
   // Validate that global configs live in global interface files
   {
@@ -430,28 +424,7 @@ async function getGlobalConfigs(
       })
     })
   }
-  */
-
-  const pageConfigGlobal: PageConfigGlobalBuildTime = {
-    configDefinitions: configDefinitionsBuiltInGlobal,
-    configValueSources: {}
-  }
-  await Promise.all(
-    objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
-      const sources = await resolveConfigValueSources(
-        configName,
-        configDef,
-        interfaceFilesGlobal,
-        userRootDir,
-        importedFilesLoaded
-      )
-      const configValueSource = sources[0]
-      if (!configValueSource) return
-      pageConfigGlobal.configValueSources[configName] = sources
-    })
-  )
-
-  return pageConfigGlobal
+  //*/
 }
 function temp_interopVikeVitePlugin(
   pageConfigGlobal: PageConfigGlobalBuildTime,
@@ -557,10 +530,34 @@ async function getPageConfigs(
         return pageConfig
       })
   )
-
   assertPageConfigs(pageConfigs)
 
-  return pageConfigs
+  const pageConfigGlobal: PageConfigGlobalBuildTime = {
+    configDefinitions: configDefinitionsBuiltInGlobal,
+    configValueSources: {}
+  }
+  const locationIds = objectKeys(interfaceFilesByLocationId)
+  const interfaceFilesGlobal = objectFromEntries(
+    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
+      return isGlobalLocation(locationId, locationIds)
+    })
+  )
+  await Promise.all(
+    objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
+      const sources = await resolveConfigValueSources(
+        configName,
+        configDef,
+        interfaceFilesGlobal,
+        userRootDir,
+        importedFilesLoaded
+      )
+      const configValueSource = sources[0]
+      if (!configValueSource) return
+      pageConfigGlobal.configValueSources[configName] = sources
+    })
+  )
+
+  return { pageConfigs, pageConfigGlobal }
 }
 
 function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
