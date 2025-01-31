@@ -1370,6 +1370,17 @@ function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
   const configNamesGlobal = getConfigNamesGlobal()
   return includes(configNamesGlobal, configName)
 }
+/*
+// TODO/now
+function isGlobalConfig(configName: string, configDefinitions: ConfigDefinitions): configName is ConfigNameGlobal {
+  const configSpec = configDefinitions[configName]
+  assert(configSpec)
+  const globalValue = configSpec.global
+  if (!globalValue) return false
+  if (globalValue === true ) return true
+  return globalValue(value)
+}
+*/
 function getConfigNamesGlobal() {
   return Object.keys(configDefinitionsBuiltInGlobal)
 }
