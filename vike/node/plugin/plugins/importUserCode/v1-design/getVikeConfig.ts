@@ -275,7 +275,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
         //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
         const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
-        if (configDef && isLoadableAtBuildTime(configDef)) {
+        if (configDef && shouldBeLoadableAtBuildTime(configDef)) {
           await loadValueFile(interfaceFile, configName, userRootDir)
         }
       }
@@ -512,7 +512,7 @@ async function getPageConfigs(
               configName,
               interfaceFile.filePath.filePathToShowToUser
             )
-            if (!isLoadableAtBuildTime(configDef)) return
+            if (!shouldBeLoadableAtBuildTime(configDef)) return
             const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
             if (isAlreadyLoaded) return
             // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
@@ -899,7 +899,7 @@ async function getConfigValueSource(
       }
       // Load pointer import
       if (
-        isLoadableAtBuildTime(configDef) &&
+        shouldBeLoadableAtBuildTime(configDef) &&
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
         configName !== 'extends'
       ) {
@@ -1360,7 +1360,7 @@ function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: s
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
   return configDefinitions[configName] ?? null
 }
-function isLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
+function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
   return !!configDef.env.config && !configDef._valueIsFilePath
 }
 function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
