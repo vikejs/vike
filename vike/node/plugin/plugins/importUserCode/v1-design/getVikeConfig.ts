@@ -392,6 +392,7 @@ async function getGlobalConfigs(
     })
   )
 
+  /* TODO/now: dedupe
   // Validate that global configs live in global interface files
   {
     const interfaceFilesGlobalPaths: string[] = []
@@ -424,6 +425,7 @@ async function getGlobalConfigs(
       })
     })
   }
+  */
 
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsBuiltInGlobal,
