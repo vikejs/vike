@@ -3,7 +3,7 @@ export { findFile }
 import path from 'path'
 import fs from 'fs'
 import { isArray } from './isArray.js'
-import { assertPosixPath } from './filesystemPathHandling.js'
+import { assertPosixPath } from './toPosixPath.js'
 
 type Filename = 'package.json' | 'vike.config.js' | 'vike.config.ts'
 
