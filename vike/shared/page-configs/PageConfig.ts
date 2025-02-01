@@ -55,7 +55,7 @@ type PageConfigBuildTime = PageConfigBase & {
   configValuesComputed: ConfigValuesComputed
 }
 
-/** Page config that applies to all pages */
+/** Global config that applies to all pages */
 type PageConfigGlobalRuntime = {
   configValues: ConfigValues
 }
