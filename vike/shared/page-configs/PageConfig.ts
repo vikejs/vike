@@ -26,7 +26,7 @@ import type {
   InterfaceFilesByLocationId
 } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
-type PageConfigBase = {
+type PageConfigCommon = {
   pageId: string
   isErrorPage?: true
   routeFilesystem?: {
@@ -35,40 +35,46 @@ type PageConfigBase = {
   }
 }
 
-/** Page config data structure available at runtime */
-type PageConfigRuntime = PageConfigBase & {
+// `*Runtime` VS `*BuildTime`:
+// - `*BuildTime` data structures aim to collect as much information as possible.
+// - `*Runtime` data structures aim to be as minimal and lightweight as possible,  in order to save client-side KBs.
+
+/** Page config, runtime data structure */
+type PageConfigRuntime = PageConfigCommon & {
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: () => {
-    moduleId: string
-    moduleExports: Promise<{
-      configValuesSerialized: Record<string, ConfigValueSerialized>
-    }>
-  }
+  loadConfigValuesAll: LoadConfigValuesAll
 }
-/** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
-type PageConfigRuntimeLoaded = PageConfigRuntime & {
-  /** Whether loadConfigValuesAll() was called */
-  isAllLoaded: true
+/** Global config that applies to all pages, runtime data structure */
+type PageConfigGlobalRuntime = {
+  configValues: ConfigValues
 }
 
-/** Page config data structure available at build-time */
-type PageConfigBuildTime = PageConfigBase & {
+/** Page config, build-time data structure */
+type PageConfigBuildTime = PageConfigCommon & {
   configDefinitions: ConfigDefinitions
   interfaceFiles: InterfaceFilesByLocationId
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
 }
-
-/** Global config that applies to all pages */
-type PageConfigGlobalRuntime = {
-  configValues: ConfigValues
-}
+/** Global config that applies to all pages, build-time data structure */
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
   interfaceFiles: InterfaceFilesByLocationId
   configDefinitions: ConfigDefinitions
   configValuesComputed?: undefined
+}
+
+/** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
+type PageConfigRuntimeLoaded = PageConfigRuntime & {
+  /** Whether loadConfigValuesAll() was called */
+  isAllLoaded: true
+}
+type LoadConfigValuesAll = () => {
+  moduleId: string
+  moduleExports: Promise<{
+    configValuesSerialized: Record<string, ConfigValueSerialized>
+  }>
 }
 
 /** In what environment(s) the config value is loaded.
