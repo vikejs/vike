@@ -373,11 +373,7 @@ async function loadVikeConfig_withErrorHandling(
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const interfaceFilesAll = await loadInterfaceFiles(userRootDir)
   const importedFilesLoaded: ImportedFilesLoaded = {}
-  const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
-    interfaceFilesAll,
-    userRootDir,
-    importedFilesLoaded
-  )
+  const { pageConfigGlobal, pageConfigs } = await getPageConfigs(interfaceFilesAll, userRootDir, importedFilesLoaded)
 
   // interop vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
@@ -573,10 +569,7 @@ function assertPageConfigs(pageConfigs: PageConfigBuildTime[], interfaceFilesAll
 //  - Dedupe: most of the assertUsageGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
 //    - This assertUsage() message is slightly better: use this one for getGlobalConfigs()
 // Global configs should be defined at global locations
-function assertUsageGlobalConfigs(
-  pageConfig: PageConfigBuildTime,
-  interfaceFilesAll: InterfaceFilesByLocationId
-) {
+function assertUsageGlobalConfigs(pageConfig: PageConfigBuildTime, interfaceFilesAll: InterfaceFilesByLocationId) {
   const interfaceFilesRelevantList = Object.values(pageConfig.interfaceFiles).flat(1)
   const { configDefinitions } = pageConfig
   interfaceFilesRelevantList.forEach((interfaceFile) => {
