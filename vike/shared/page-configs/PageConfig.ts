@@ -89,8 +89,6 @@ type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
   definedAtFilePath: DefinedAtFilePath
-  interfaceFile: InterfaceFile
-  // TODO/now: Maybe remove in favor of interfaceFile.locationId
   locationId: LocationId
   isOverriden: boolean
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
