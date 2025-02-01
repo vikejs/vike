@@ -452,6 +452,7 @@ function temp_interopVikeVitePlugin(
         fileExportPathToShowToUser: null
       },
       locationId: '/' as LocationId,
+      interfaceFile: null,
       isOverriden: configDef.cumulative ? false : sources.length > 0,
       valueIsImportedAtRuntime: false,
       valueIsDefinedByPlusFile: false
@@ -824,7 +825,11 @@ async function getConfigValueSource(
 ): Promise<ConfigValueSource> {
   const conf = interfaceFile.fileExportsByConfigName[configName]
   assert(conf)
-  const { locationId } = interfaceFile
+
+  const configValueSourceCommon = {
+    locationId: interfaceFile.locationId,
+    interfaceFile
+  }
 
   const definedAtFilePath_: DefinedAtFilePath = {
     ...interfaceFile.filePath,
@@ -860,7 +865,7 @@ async function getConfigValueSource(
       }
     }
     const configValueSource: ConfigValueSource = {
-      locationId,
+      ...configValueSourceCommon,
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv: configDef.env,
@@ -887,7 +892,7 @@ async function getConfigValueSource(
     )
     if (resolved) {
       const configValueSource: ConfigValueSource = {
-        locationId,
+        ...configValueSourceCommon,
         configEnv: resolved.configEnvResolved,
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
@@ -914,7 +919,7 @@ async function getConfigValueSource(
 
     // Defined inside +config.js
     const configValueSource: ConfigValueSource = {
-      locationId,
+      ...configValueSourceCommon,
       value: configValue,
       configEnv: configDef.env,
       valueIsImportedAtRuntime: false,
@@ -931,7 +936,7 @@ async function getConfigValueSource(
     const valueAlreadyLoaded = 'configValue' in conf
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
-      locationId,
+      ...configValueSourceCommon,
       configEnv: configEnvResolved,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       valueIsDefinedByPlusFile: true,

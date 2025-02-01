@@ -21,6 +21,7 @@ import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+import type { InterfaceFile } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
 type PageConfigBase = {
   pageId: string
@@ -89,6 +90,12 @@ type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
   definedAtFilePath: DefinedAtFilePath
+  interfaceFile:
+    | InterfaceFile
+    // It's `null` when the config is defined by `vike(options)` in vite.config.js
+    // TODO/v1-release: remove `null`
+    | null
+  // TODO/v1-release: remove `locationId` in favor of `interfaceFile.locationId`
   locationId: LocationId
   isOverriden: boolean
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
