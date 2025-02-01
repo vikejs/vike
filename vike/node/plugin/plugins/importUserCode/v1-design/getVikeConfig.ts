@@ -560,16 +560,16 @@ async function getPageConfigs(
 
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[], interfaceFilesAll: InterfaceFilesByLocationId) {
   pageConfigs.forEach((pageConfig) => {
-    assertUsageGlobalConfigs(pageConfig, interfaceFilesAll)
+    assertGlobalConfigs(pageConfig, interfaceFilesAll)
     assertExtensionsRequire(pageConfig)
     assertOnBeforeRenderEnv(pageConfig)
   })
 }
 // TODO/now: refactor
-//  - Dedupe: most of the assertUsageGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
+//  - Dedupe: most of the assertGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
 //    - This assertUsage() message is slightly better: use this one for getGlobalConfigs()
 // Global configs should be defined at global locations
-function assertUsageGlobalConfigs(pageConfig: PageConfigBuildTime, interfaceFilesAll: InterfaceFilesByLocationId) {
+function assertGlobalConfigs(pageConfig: PageConfigBuildTime, interfaceFilesAll: InterfaceFilesByLocationId) {
   const interfaceFilesRelevantList = Object.values(pageConfig.interfaceFiles).flat(1)
   const { configDefinitions } = pageConfig
   interfaceFilesRelevantList.forEach((interfaceFile) => {
