@@ -215,7 +215,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
     }
   })
 
-  let interfaceFilesByLocationId: InterfaceFilesByLocationId = {}
+  let interfaceFilesAll: InterfaceFilesByLocationId = {}
 
   await Promise.all([
     // Config files
@@ -227,8 +227,8 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
       const locationId = getLocationId(filePathAbsoluteUserRootDir)
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId)
 
-      interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
-      interfaceFilesByLocationId[locationId]!.push(interfaceFile)
+      interfaceFilesAll[locationId] = interfaceFilesAll[locationId] ?? []
+      interfaceFilesAll[locationId]!.push(interfaceFile)
       extendsConfigs.forEach((extendsConfig) => {
         /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
         ```js
@@ -248,7 +248,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         */
         const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId)
         assertExtensionsConventions(interfaceFile)
-        interfaceFilesByLocationId[locationId]!.push(interfaceFile)
+        interfaceFilesAll[locationId]!.push(interfaceFile)
       })
     }),
     // Value files
@@ -281,15 +281,15 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         }
       }
       {
-        interfaceFilesByLocationId[locationId] = interfaceFilesByLocationId[locationId] ?? []
-        interfaceFilesByLocationId[locationId]!.push(interfaceFile)
+        interfaceFilesAll[locationId] = interfaceFilesAll[locationId] ?? []
+        interfaceFilesAll[locationId]!.push(interfaceFile)
       }
     })
   ])
 
-  assertAllConfigsAreKnown(interfaceFilesByLocationId)
+  assertAllConfigsAreKnown(interfaceFilesAll)
 
-  return interfaceFilesByLocationId
+  return interfaceFilesAll
 }
 function getInterfaceFileFromConfigFile(
   configFile: ConfigFile,
@@ -313,9 +313,9 @@ function getInterfaceFileFromConfigFile(
   return interfaceFile
 }
 /** Show error message upon unknown config */
-function assertAllConfigsAreKnown(interfaceFilesByLocationId: InterfaceFilesByLocationId) {
-  objectEntries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
-    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
+function assertAllConfigsAreKnown(interfaceFilesAll: InterfaceFilesByLocationId) {
+  objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
+    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
     const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
     interfaceFiles.forEach((interfaceFile) => {
       Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
@@ -371,10 +371,10 @@ async function loadVikeConfig_withErrorHandling(
   }
 }
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
-  const interfaceFilesByLocationId = await loadInterfaceFiles(userRootDir)
+  const interfaceFilesAll = await loadInterfaceFiles(userRootDir)
   const importedFilesLoaded: ImportedFilesLoaded = {}
   const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
-    interfaceFilesByLocationId,
+    interfaceFilesAll,
     userRootDir,
     importedFilesLoaded
   )
@@ -389,7 +389,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   return { pageConfigs, pageConfigGlobal, global }
 }
 async function getGlobalConfigs(
-  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  interfaceFilesAll: InterfaceFilesByLocationId,
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ) {
@@ -406,7 +406,7 @@ async function getGlobalConfigs(
       })
     })
     const globalPaths = Array.from(new Set(interfaceFilesGlobalPaths.map((p) => path.posix.dirname(p))))
-    objectEntries(interfaceFilesByLocationId).forEach(([locationId, interfaceFiles]) => {
+    objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
         Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
           if (!isGlobalLocation(locationId, locationIds) && isGlobalConfig(configName)) {
@@ -462,13 +462,13 @@ function temp_interopVikeVitePlugin(
   })
 }
 async function getPageConfigs(
-  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  interfaceFilesAll: InterfaceFilesByLocationId,
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ) {
-  const locationIds = objectKeys(interfaceFilesByLocationId)
+  const locationIds = objectKeys(interfaceFilesAll)
   const interfaceFilesGlobal = objectFromEntries(
-    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
+    objectEntries(interfaceFilesAll).filter(([locationId]) => {
       return isGlobalLocation(locationId, locationIds)
     })
   )
@@ -494,10 +494,10 @@ async function getPageConfigs(
 
   const pageConfigs: PageConfigBuildTime[] = []
   await Promise.all(
-    objectEntries(interfaceFilesByLocationId)
+    objectEntries(interfaceFilesAll)
       .filter(([_locationId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
-        const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
+        const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
         const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesRelevant).flat(1)
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
@@ -557,7 +557,7 @@ async function getPageConfigs(
         pageConfigs.push(pageConfig)
       })
   )
-  assertPageConfigs(pageConfigs, interfaceFilesByLocationId)
+  assertPageConfigs(pageConfigs, interfaceFilesAll)
 
   return { pageConfigs, pageConfigGlobal }
 }
@@ -575,7 +575,7 @@ function assertPageConfigs(pageConfigs: PageConfigBuildTime[], interfaceFilesAll
 // Global configs should be defined at global locations
 function assertUsageGlobalConfigs(
   pageConfig: PageConfigBuildTime,
-  interfaceFilesByLocationId: InterfaceFilesByLocationId
+  interfaceFilesAll: InterfaceFilesByLocationId
 ) {
   const interfaceFilesRelevantList = Object.values(pageConfig.interfaceFiles).flat(1)
   const { configDefinitions } = pageConfig
@@ -590,10 +590,10 @@ function assertUsageGlobalConfigs(
       if (isGlobalConfig(configName)) return
       const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
       if (configDef.global === true) {
-        const locationIds = objectKeys(interfaceFilesByLocationId)
+        const locationIds = objectKeys(interfaceFilesAll)
         if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
           const interfaceFilesGlobal = objectFromEntries(
-            objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
+            objectEntries(interfaceFilesAll).filter(([locationId]) => {
               return isGlobalLocation(locationId, locationIds)
             })
           )
@@ -679,11 +679,11 @@ function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
 }
 
 function getInterfaceFilesRelevant(
-  interfaceFilesByLocationId: InterfaceFilesByLocationId,
+  interfaceFilesAll: InterfaceFilesByLocationId,
   locationIdPage: LocationId
 ): InterfaceFilesByLocationId {
   const interfaceFilesRelevant = Object.fromEntries(
-    objectEntries(interfaceFilesByLocationId)
+    objectEntries(interfaceFilesAll)
       .filter(([locationId]) => {
         return isInherited(locationId, locationIdPage)
       })
