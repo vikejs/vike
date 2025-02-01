@@ -564,35 +564,12 @@ async function getPageConfigs(
   return { pageConfigs, pageConfigGlobal }
 }
 
-function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
-  const configValues: ConfigValues = {}
-  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config, null).forEach((entry) => {
-    if (entry.configValueBase.type === 'computed') {
-      assert('value' in entry) // Help TS
-      const { configValueBase, value, configName } = entry
-      configValues[configName] = { ...configValueBase, value }
-    }
-    if (entry.configValueBase.type === 'standard') {
-      assert('sourceRelevant' in entry) // Help TS
-      const { configValueBase, sourceRelevant, configName } = entry
-      assert('value' in sourceRelevant)
-      const { value } = sourceRelevant
-      configValues[configName] = { ...configValueBase, value }
-    }
-    if (entry.configValueBase.type === 'cumulative') {
-      assert('sourcesRelevant' in entry) // Help TS
-      const { configValueBase, sourcesRelevant, configName } = entry
-      const values: unknown[] = []
-      sourcesRelevant.forEach((source) => {
-        assert('value' in source)
-        values.push(source.value)
-      })
-      configValues[configName] = { ...configValueBase, value: values }
-    }
+function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
+  pageConfigs.forEach((pageConfig) => {
+    assertExtensionsRequire(pageConfig)
+    assertOnBeforeRenderEnv(pageConfig)
   })
-  return configValues
 }
-
 // TODO/now: refactor
 //  - Dedupe: most of the assertUsageGlobalConfigs() code below is a copy-paste of the assertUsage() logic inside getGlobalConfigs()
 //    - This assertUsage() message is slightly better: use this one for getGlobalConfigs()
@@ -649,13 +626,6 @@ function assertUsageGlobalConfigs(
     })
   })
 }
-
-function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
-  pageConfigs.forEach((pageConfig) => {
-    assertExtensionsRequire(pageConfig)
-    assertOnBeforeRenderEnv(pageConfig)
-  })
-}
 function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   const onBeforeRenderConfig = pageConfig.configValueSources.onBeforeRender?.[0]
   if (!onBeforeRenderConfig) return
@@ -668,6 +638,35 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
       JSON.stringify(onBeforeRenderEnv)
     )} which doesn't make sense because the page is using Server Routing: onBeforeRender() can be run in the client only when using Client Routing.`
   )
+}
+
+function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
+  const configValues: ConfigValues = {}
+  getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config, null).forEach((entry) => {
+    if (entry.configValueBase.type === 'computed') {
+      assert('value' in entry) // Help TS
+      const { configValueBase, value, configName } = entry
+      configValues[configName] = { ...configValueBase, value }
+    }
+    if (entry.configValueBase.type === 'standard') {
+      assert('sourceRelevant' in entry) // Help TS
+      const { configValueBase, sourceRelevant, configName } = entry
+      assert('value' in sourceRelevant)
+      const { value } = sourceRelevant
+      configValues[configName] = { ...configValueBase, value }
+    }
+    if (entry.configValueBase.type === 'cumulative') {
+      assert('sourcesRelevant' in entry) // Help TS
+      const { configValueBase, sourcesRelevant, configName } = entry
+      const values: unknown[] = []
+      sourcesRelevant.forEach((source) => {
+        assert('value' in source)
+        values.push(source.value)
+      })
+      configValues[configName] = { ...configValueBase, value: values }
+    }
+  })
+  return configValues
 }
 
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
