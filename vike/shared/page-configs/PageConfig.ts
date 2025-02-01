@@ -21,7 +21,10 @@ import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
-import type { InterfaceFile } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import type {
+  InterfaceFile,
+  InterfaceFilesByLocationId
+} from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
 type PageConfigBase = {
   pageId: string
@@ -52,6 +55,7 @@ type PageConfigRuntimeLoaded = PageConfigRuntime & {
 /** Page config data structure available at build-time */
 type PageConfigBuildTime = PageConfigBase & {
   configDefinitions: ConfigDefinitions
+  interfaceFiles: InterfaceFilesByLocationId
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
 }
@@ -62,6 +66,7 @@ type PageConfigGlobalRuntime = {
 }
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
+  interfaceFiles: InterfaceFilesByLocationId
   configDefinitions: ConfigDefinitions
   configValuesComputed?: undefined
 }

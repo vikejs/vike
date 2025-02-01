@@ -8,6 +8,7 @@ export { getConfigValueInterfaceFile }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
+export type { InterfaceFilesByLocationId }
 
 import {
   assertPosixPath,
@@ -360,6 +361,7 @@ async function loadVikeConfig_withErrorHandling(
         pageConfigs: [],
         pageConfigGlobal: {
           configDefinitions: {},
+          interfaceFiles: {},
           configValueSources: {}
         },
         global: getPageConfigUserFriendlyNew({ configValues: {} })
@@ -525,6 +527,7 @@ async function getPageConfigs(
           isErrorPage,
           routeFilesystem,
           configDefinitions,
+          interfaceFiles: interfaceFilesRelevant,
           configValueSources,
           configValuesComputed
         }
@@ -533,16 +536,17 @@ async function getPageConfigs(
   )
   assertPageConfigs(pageConfigs)
 
-  const pageConfigGlobal: PageConfigGlobalBuildTime = {
-    configDefinitions: configDefinitionsBuiltInGlobal,
-    configValueSources: {}
-  }
   const locationIds = objectKeys(interfaceFilesByLocationId)
   const interfaceFilesGlobal = objectFromEntries(
     objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
       return isGlobalLocation(locationId, locationIds)
     })
   )
+  const pageConfigGlobal: PageConfigGlobalBuildTime = {
+    configDefinitions: configDefinitionsBuiltInGlobal,
+    interfaceFiles: interfaceFilesGlobal,
+    configValueSources: {}
+  }
   await Promise.all(
     objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
       const sources = await resolveConfigValueSources(
