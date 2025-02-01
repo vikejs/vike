@@ -405,7 +405,7 @@ async function getGlobalConfigs(
     objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
         Object.keys(interfaceFile.fileExportsByConfigName).forEach((configName) => {
-          if (!isGlobalLocation(locationId, locationIds) && isGlobalConfig(configName)) {
+          if (!isGlobalLocation(locationId, locationIds) && isGlobalConfigOld(configName)) {
             assertUsage(
               false,
               [
@@ -503,7 +503,7 @@ async function getPageConfigs(
           interfaceFilesRelevantList.map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
             const { configName } = interfaceFile
-            if (isGlobalConfig(configName)) return
+            if (isGlobalConfigOld(configName)) return
             const configDef = getConfigDefinition(
               configDefinitions,
               configName,
@@ -521,7 +521,7 @@ async function getPageConfigs(
         let configValueSources: ConfigValueSources = {}
         await Promise.all(
           objectEntries(configDefinitions)
-            .filter(([configName]) => !isGlobalConfig(configName))
+            .filter(([configName]) => !isGlobalConfigOld(configName))
             .map(async ([configName, configDef]) => {
               const sources = await resolveConfigValueSources(
                 configName,
@@ -580,7 +580,7 @@ function assertGlobalConfigs(pageConfig: PageConfigBuildTime, interfaceFilesAll:
       configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
     }
     configNames.forEach((configName) => {
-      if (isGlobalConfig(configName)) return
+      if (isGlobalConfigOld(configName)) return
       const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
       if (configDef.global === true) {
         const locationIds = objectKeys(interfaceFilesAll)
@@ -1361,7 +1361,7 @@ function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, confi
 function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
   return !!configDef.env.config && !configDef._valueIsFilePath
 }
-function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
+function isGlobalConfigOld(configName: string): configName is ConfigNameGlobal {
   // TODO/now
   if (configName === 'prerender') return false
   const configNamesGlobal = getConfigNamesGlobal()
@@ -1369,7 +1369,7 @@ function isGlobalConfig(configName: string): configName is ConfigNameGlobal {
 }
 /*
 // TODO/now
-function isGlobalConfig(configName: string, configDefinitions: ConfigDefinitions): configName is ConfigNameGlobal {
+function isGlobalConfigOld(configName: string, configDefinitions: ConfigDefinitions): configName is ConfigNameGlobal {
   const configSpec = configDefinitions[configName]
   assert(configSpec)
   const globalValue = configSpec.global
