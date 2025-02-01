@@ -466,8 +466,33 @@ async function getPageConfigs(
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ) {
-  const pageConfigs: PageConfigBuildTime[] = []
+  const locationIds = objectKeys(interfaceFilesByLocationId)
+  const interfaceFilesGlobal = objectFromEntries(
+    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
+      return isGlobalLocation(locationId, locationIds)
+    })
+  )
+  const pageConfigGlobal: PageConfigGlobalBuildTime = {
+    configDefinitions: configDefinitionsBuiltInGlobal,
+    interfaceFiles: interfaceFilesGlobal,
+    configValueSources: {}
+  }
+  await Promise.all(
+    objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
+      const sources = await resolveConfigValueSources(
+        configName,
+        configDef,
+        interfaceFilesGlobal,
+        userRootDir,
+        importedFilesLoaded
+      )
+      const configValueSource = sources[0]
+      if (!configValueSource) return
+      pageConfigGlobal.configValueSources[configName] = sources
+    })
+  )
 
+  const pageConfigs: PageConfigBuildTime[] = []
   await Promise.all(
     objectEntries(interfaceFilesByLocationId)
       .filter(([_locationId, interfaceFiles]) => isDefiningPage(interfaceFiles))
@@ -535,32 +560,6 @@ async function getPageConfigs(
       })
   )
   assertPageConfigs(pageConfigs)
-
-  const locationIds = objectKeys(interfaceFilesByLocationId)
-  const interfaceFilesGlobal = objectFromEntries(
-    objectEntries(interfaceFilesByLocationId).filter(([locationId]) => {
-      return isGlobalLocation(locationId, locationIds)
-    })
-  )
-  const pageConfigGlobal: PageConfigGlobalBuildTime = {
-    configDefinitions: configDefinitionsBuiltInGlobal,
-    interfaceFiles: interfaceFilesGlobal,
-    configValueSources: {}
-  }
-  await Promise.all(
-    objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
-      const sources = await resolveConfigValueSources(
-        configName,
-        configDef,
-        interfaceFilesGlobal,
-        userRootDir,
-        importedFilesLoaded
-      )
-      const configValueSource = sources[0]
-      if (!configValueSource) return
-      pageConfigGlobal.configValueSources[configName] = sources
-    })
-  )
 
   return { pageConfigs, pageConfigGlobal }
 }
