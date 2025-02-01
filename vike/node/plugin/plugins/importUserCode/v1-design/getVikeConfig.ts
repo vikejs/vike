@@ -84,7 +84,7 @@ import {
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { assertRequire, assertExtensionsConventions } from './assertExtensions.js'
+import { assertExtensionsRequire, assertExtensionsConventions } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 const configDefinitionsBuiltIn = getConfigDefinitionsBuiltIn()
@@ -471,7 +471,7 @@ async function getPageConfigs(
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
         const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesRelevant).flat(1)
 
-        assertRequire(interfaceFilesRelevantList)
+        assertExtensionsRequire(interfaceFilesRelevantList)
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 

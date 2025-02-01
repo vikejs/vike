@@ -1,5 +1,5 @@
 export { assertExtensionsConventions }
-export { assertRequire }
+export { assertExtensionsRequire }
 
 import pc from '@brillout/picocolors'
 import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
@@ -42,7 +42,7 @@ function assertExtensionName(interfaceFile: InterfaceFile): void {
   )
 }
 
-function assertRequire(interfaceFilesRelevantList: InterfaceFile[]): void {
+function assertExtensionsRequire(interfaceFilesRelevantList: InterfaceFile[]): void {
   // Collect extensions
   const extensions: Record<string, string> = {}
   interfaceFilesRelevantList.forEach((interfaceFile) => {
