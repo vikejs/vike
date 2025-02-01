@@ -466,7 +466,9 @@ async function getPageConfigs(
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ) {
-  const pageConfigs: PageConfigBuildTime[] = await Promise.all(
+  const pageConfigs: PageConfigBuildTime[] = []
+
+  await Promise.all(
     objectEntries(interfaceFilesByLocationId)
       .filter(([_locationId, interfaceFiles]) => isDefiningPage(interfaceFiles))
       .map(async ([locationId]) => {
@@ -529,7 +531,7 @@ async function getPageConfigs(
           configValueSources,
           configValuesComputed
         }
-        return pageConfig
+        pageConfigs.push(pageConfig)
       })
   )
   assertPageConfigs(pageConfigs)
