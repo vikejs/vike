@@ -43,7 +43,7 @@ function assertExtensionName(interfaceFile: InterfaceFile): void {
 }
 
 function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceFile[]): void {
-  // Get installed extensions
+  // Collect extensions
   const extensions: Record<string, string> = {}
   interfaceFilesRelevantList.forEach((interfaceFile) => {
     const name = getNameValue(interfaceFile)
@@ -53,7 +53,7 @@ function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceF
     }
   })
 
-  // Enforce peer dependencies
+  // Enforce `require`
   interfaceFilesRelevantList.forEach((interfaceFile) => {
     const require = getConfigRequireValue(interfaceFile)
     if (!require) return
