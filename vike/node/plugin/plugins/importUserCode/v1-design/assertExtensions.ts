@@ -1,5 +1,5 @@
 export { assertExtensionsConventions }
-export { assertExtensionsPeerDependencies }
+export { assertExtensionsRequire }
 
 import pc from '@brillout/picocolors'
 import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
@@ -7,6 +7,7 @@ import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } 
 import { getConfigValueInterfaceFile, type InterfaceFile } from './getVikeConfig.js'
 import path from 'path'
 import semver from 'semver'
+import { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 
 function assertExtensionsConventions(interfaceFile: InterfaceFile): void {
   assertExtensionName(interfaceFile)
@@ -22,7 +23,7 @@ function assertConfigExportPath(interfaceFile: InterfaceFile): void {
     return
   }
 
-  const name = getConfigNameValue(interfaceFile)
+  const name = getNameValue(interfaceFile)
   assert(name) // already asserted in assertExtensionName()
   const importPathAbsoluteExpected = `${name}/config`
   assertWarning(
@@ -35,29 +36,31 @@ function assertConfigExportPath(interfaceFile: InterfaceFile): void {
 }
 function assertExtensionName(interfaceFile: InterfaceFile): void {
   const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)
-  const name = getConfigNameValue(interfaceFile)
+  const name = getNameValue(interfaceFile)
   assertUsage(
     name,
     `Vike extension name missing: the config ${filePathToShowToUser} must define the setting ${pc.cyan('name')}`
   )
 }
 
-function assertExtensionsPeerDependencies(interfaceFilesRelevantList: InterfaceFile[]): void {
-  // Get installed extensions
+function assertExtensionsRequire(pageConfig: PageConfigBuildTime): void {
+  const interfaceFilesRelevantList = Object.values(pageConfig.interfaceFiles).flat(1)
+
+  // Collect extensions
   const extensions: Record<string, string> = {}
   interfaceFilesRelevantList.forEach((interfaceFile) => {
-    const name = getConfigNameValue(interfaceFile)
+    const name = getNameValue(interfaceFile)
     if (name) {
       const version = getExtensionVersion(name, interfaceFile)
       extensions[name] = version
     }
   })
 
-  // Enforce peer dependencies
+  // Enforce `require`
   interfaceFilesRelevantList.forEach((interfaceFile) => {
     const require = getConfigRequireValue(interfaceFile)
     if (!require) return
-    const name = getConfigNameValue(interfaceFile)
+    const name = getNameValue(interfaceFile)
     const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)
     assertUsage(
       name,
@@ -100,7 +103,7 @@ function getConfigRequireValue(interfaceFile: InterfaceFile): null | Record<stri
   return require
 }
 
-function getConfigNameValue(interfaceFile: InterfaceFile): null | string {
+function getNameValue(interfaceFile: InterfaceFile): null | string {
   const name = getConfigValueInterfaceFile(interfaceFile, 'name')
   if (!name) return null
   const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)

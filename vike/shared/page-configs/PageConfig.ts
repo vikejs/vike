@@ -21,8 +21,12 @@ import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
+import type {
+  InterfaceFile,
+  InterfaceFilesByLocationId
+} from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
-type PageConfigBase = {
+type PageConfigCommon = {
   pageId: string
   isErrorPage?: true
   routeFilesystem?: {
@@ -31,38 +35,46 @@ type PageConfigBase = {
   }
 }
 
-/** Page config data structure available at runtime */
-type PageConfigRuntime = PageConfigBase & {
+// `*Runtime` VS `*BuildTime`:
+// - `*BuildTime` data structures aim to collect as much information as possible.
+// - `*Runtime` data structures aim to be as minimal and lightweight as possible,  in order to save client-side KBs.
+
+/** Page config, runtime data structure */
+type PageConfigRuntime = PageConfigCommon & {
   configValues: ConfigValues
   /** Load config values that are lazily loaded such as config.Page */
-  loadConfigValuesAll: () => {
-    moduleId: string
-    moduleExports: Promise<{
-      configValuesSerialized: Record<string, ConfigValueSerialized>
-    }>
-  }
+  loadConfigValuesAll: LoadConfigValuesAll
 }
+/** Global config that applies to all pages, runtime data structure */
+type PageConfigGlobalRuntime = {
+  configValues: ConfigValues
+}
+
+/** Page config, build-time data structure */
+type PageConfigBuildTime = PageConfigCommon & {
+  configDefinitions: ConfigDefinitions
+  interfaceFiles: InterfaceFilesByLocationId
+  configValueSources: ConfigValueSources
+  configValuesComputed: ConfigValuesComputed
+}
+/** Global config that applies to all pages, build-time data structure */
+type PageConfigGlobalBuildTime = {
+  configValueSources: ConfigValueSources
+  interfaceFiles: InterfaceFilesByLocationId
+  configDefinitions: ConfigDefinitions
+  configValuesComputed?: undefined
+}
+
 /** Same as PageConfigRuntime but also contains all lazily loaded config values such as config.Page */
 type PageConfigRuntimeLoaded = PageConfigRuntime & {
   /** Whether loadConfigValuesAll() was called */
   isAllLoaded: true
 }
-
-/** Page config data structure available at build-time */
-type PageConfigBuildTime = PageConfigBase & {
-  configDefinitions: ConfigDefinitions
-  configValueSources: ConfigValueSources
-  configValuesComputed: ConfigValuesComputed
-}
-
-/** Page config that applies to all pages */
-type PageConfigGlobalRuntime = {
-  configValues: ConfigValues
-}
-type PageConfigGlobalBuildTime = {
-  configValueSources: ConfigValueSources
-  configDefinitions: ConfigDefinitions
-  configValuesComputed?: undefined
+type LoadConfigValuesAll = () => {
+  moduleId: string
+  moduleExports: Promise<{
+    configValuesSerialized: Record<string, ConfigValueSerialized>
+  }>
 }
 
 /** In what environment(s) the config value is loaded.
@@ -89,6 +101,12 @@ type ConfigValueSource = {
   value?: unknown
   configEnv: ConfigEnvInternal
   definedAtFilePath: DefinedAtFilePath
+  interfaceFile:
+    | InterfaceFile
+    // It's `null` when the config is defined by `vike(options)` in vite.config.js
+    // TODO/v1-release: remove `null`
+    | null
+  // TODO/v1-release: remove `locationId` in favor of `interfaceFile.locationId`
   locationId: LocationId
   isOverriden: boolean
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
