@@ -7,6 +7,7 @@ import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } 
 import { getConfigValueInterfaceFile, type InterfaceFile } from './getVikeConfig.js'
 import path from 'path'
 import semver from 'semver'
+import { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 
 function assertExtensionsConventions(interfaceFile: InterfaceFile): void {
   assertExtensionName(interfaceFile)
@@ -42,7 +43,9 @@ function assertExtensionName(interfaceFile: InterfaceFile): void {
   )
 }
 
-function assertExtensionsRequire(interfaceFilesRelevantList: InterfaceFile[]): void {
+function assertExtensionsRequire(pageConfig: PageConfigBuildTime): void {
+  const interfaceFilesRelevantList = Object.values(pageConfig.interfaceFiles).flat(1)
+
   // Collect extensions
   const extensions: Record<string, string> = {}
   interfaceFilesRelevantList.forEach((interfaceFile) => {

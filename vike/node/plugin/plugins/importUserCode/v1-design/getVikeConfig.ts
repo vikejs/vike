@@ -473,8 +473,6 @@ async function getPageConfigs(
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesByLocationId, locationId)
         const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesRelevant).flat(1)
 
-        assertExtensionsRequire(interfaceFilesRelevantList)
-
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
         // Load value files of `env.config===true` custom configs
@@ -653,6 +651,7 @@ function assertUsageGlobalConfigs(
 
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
   pageConfigs.forEach((pageConfig) => {
+    assertExtensionsRequire(pageConfig)
     assertOnBeforeRenderEnv(pageConfig)
   })
 }
