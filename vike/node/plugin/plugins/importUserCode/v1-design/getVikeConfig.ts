@@ -521,7 +521,6 @@ async function getPageConfigs(
           interfaceFilesRelevantList.map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
             const { configName } = interfaceFile
-            if (isGlobalConfigOld(configName)) return
             const configDef = getConfigDefinition(
               configDefinitions,
               configName,
