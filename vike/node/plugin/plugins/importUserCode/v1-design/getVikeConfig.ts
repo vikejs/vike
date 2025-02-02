@@ -515,8 +515,9 @@ async function getPageConfigs(
               interfaceFile.filePath.filePathToShowToUser
             )
             if (!shouldBeLoadableAtBuildTime(configDef)) return
-            const isAlreadyLoaded = interfacefileIsAlreaydLoaded(interfaceFile)
-            if (isAlreadyLoaded) return
+            const confVal = interfaceFile.fileExportsByConfigName[configName]
+            assert(confVal)
+            if (confVal.configValueLoaded) return
             // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
             assert(!(configName in configDefinitionsBuiltIn))
             await loadValueFile(interfaceFile, configName, userRootDir)
@@ -665,16 +666,6 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
     }
   })
   return configValues
-}
-
-// TODO/now: refactor
-function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
-  const configMapValues = Object.values(interfaceFile.fileExportsByConfigName)
-  const isAlreadyLoaded = configMapValues.some((c) => c.configValueLoaded)
-  if (isAlreadyLoaded) {
-    assert(configMapValues.every((c) => c.configValueLoaded))
-  }
-  return isAlreadyLoaded
 }
 
 function getInterfaceFilesRelevant(
