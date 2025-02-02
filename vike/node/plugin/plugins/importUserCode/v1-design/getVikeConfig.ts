@@ -662,6 +662,7 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
   return configValues
 }
 
+// TODO/now: refactor
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
   const configMapValues = Object.values(interfaceFile.fileExportsByConfigName)
   const isAlreadyLoaded = configMapValues.some((conf) => !!conf)
