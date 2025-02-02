@@ -670,9 +670,9 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
 // TODO/now: refactor
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
   const configMapValues = Object.values(interfaceFile.fileExportsByConfigName)
-  const isAlreadyLoaded = configMapValues.some((conf) => conf.configValueLoaded)
+  const isAlreadyLoaded = configMapValues.some((c) => c.configValueLoaded)
   if (isAlreadyLoaded) {
-    assert(configMapValues.every((conf) => conf.configValueLoaded))
+    assert(configMapValues.every((c) => c.configValueLoaded))
   }
   return isAlreadyLoaded
 }
@@ -825,8 +825,8 @@ async function getConfigValueSource(
   importedFilesLoaded: ImportedFilesLoaded,
   isHighestInheritancePrecedence: boolean
 ): Promise<ConfigValueSource> {
-  const conf = interfaceFile.fileExportsByConfigName[configName]
-  assert(conf)
+  const confVal = interfaceFile.fileExportsByConfigName[configName]
+  assert(confVal)
 
   const configValueSourceCommon = {
     locationId: interfaceFile.locationId,
@@ -846,9 +846,9 @@ async function getConfigValueSource(
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       // Defined over pointer import
-      assert(conf.configValueLoaded)
+      assert(confVal.configValueLoaded)
       const resolved = resolvePointerImportOfConfig(
-        conf.configValue,
+        confVal.configValue,
         interfaceFile.filePath,
         userRootDir,
         configDef.env,
@@ -882,8 +882,8 @@ async function getConfigValueSource(
 
   // +config.js
   if (interfaceFile.isConfigFile) {
-    assert(conf.configValueLoaded)
-    const { configValue } = conf
+    assert(confVal.configValueLoaded)
+    const { configValue } = confVal
 
     // Defined over pointer import
     const resolved = resolvePointerImportOfConfig(
@@ -936,7 +936,7 @@ async function getConfigValueSource(
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
     const configEnvResolved = resolveConfigEnvWithFileName(configDef.env, interfaceFile.filePath)
-    const valueAlreadyLoaded = conf.configValueLoaded
+    const valueAlreadyLoaded = confVal.configValueLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
@@ -954,7 +954,7 @@ async function getConfigValueSource(
       }
     }
     if (valueAlreadyLoaded) {
-      configValueSource.value = conf.configValue
+      configValueSource.value = confVal.configValue
     }
     return configValueSource
   }
