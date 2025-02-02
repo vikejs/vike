@@ -28,7 +28,8 @@ import {
   objectFromEntries,
   makeFirst,
   isNpmPackageImport,
-  reverse
+  reverse,
+  unique
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -971,13 +972,14 @@ function isDefiningPageConfig(configName: string): boolean {
 }
 
 function getDefiningConfigNames(interfaceFile: InterfaceFile): string[] {
-  const configNames: string[] = []
+  let configNames: string[] = []
   if (interfaceFile.isValueFile) {
     configNames.push(interfaceFile.configName)
   }
   if (interfaceFile.isLoaded) {
     configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
   }
+  configNames = unique(configNames)
   return configNames
 }
 
