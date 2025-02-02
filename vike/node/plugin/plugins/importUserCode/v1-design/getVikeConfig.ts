@@ -6,6 +6,7 @@ export { isVikeConfigFile }
 export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
+export { shouldBeLoadableAtBuildTime }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
@@ -285,19 +286,13 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         isValueLoaded: false,
         configName
       }
-      {
-        // We don't have access to the custom config definitions defined by the user yet.
-        //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
-        //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-        const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
-        if (configDef && shouldBeLoadableAtBuildTime(configDef)) {
-          await loadValueFile(interfaceFile, configName, configDefinitionsBuiltIn, userRootDir)
-        }
-      }
-      {
-        interfaceFilesAll[locationId] = interfaceFilesAll[locationId] ?? []
-        interfaceFilesAll[locationId]!.push(interfaceFile)
-      }
+      interfaceFilesAll[locationId] = interfaceFilesAll[locationId] ?? []
+      interfaceFilesAll[locationId]!.push(interfaceFile)
+
+      // We don't have access to the custom config definitions defined by the user yet.
+      //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
+      //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
+      await loadValueFile(interfaceFile, configDefinitionsBuiltIn, userRootDir)
     })
   ])
 
@@ -519,17 +514,9 @@ async function getPageConfigs(
         // Load value files (with `env.config===true`) of *custom* configs.
         // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
         await Promise.all(
-          interfaceFilesRelevantList.map(async (interfaceFile) => {
-            if (!interfaceFile.isValueFile) return
-            const { configName } = interfaceFile
-            const configDef = getConfigDefinition(
-              configDefinitions,
-              configName,
-              interfaceFile.filePath.filePathToShowToUser
-            )
-            if (!shouldBeLoadableAtBuildTime(configDef)) return
-            await loadValueFile(interfaceFile, configName, configDefinitions, userRootDir)
-          })
+          interfaceFilesRelevantList
+            .filter((interfaceFile) => interfaceFile.isValueFile)
+            .map(async (interfaceFile) => await loadValueFile(interfaceFile, configDefinitions, userRootDir))
         )
 
         let configValueSources: ConfigValueSources = {}
