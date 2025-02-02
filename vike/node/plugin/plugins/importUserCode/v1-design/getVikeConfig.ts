@@ -4,7 +4,6 @@ export { reloadVikeConfig }
 export { vikeConfigDependencies }
 export { isVikeConfigFile }
 export { isV1Design }
-export { getConfigValueInterfaceFile }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
@@ -1438,11 +1437,4 @@ function sortConfigValueSources(
         reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
       )
   )
-}
-
-function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: string): unknown {
-  const conf = interfaceFile.fileExportsByConfigName[configName]
-  // TODO/now
-  if (!conf?.configValueLoaded) return null
-  return conf.configValue
 }
