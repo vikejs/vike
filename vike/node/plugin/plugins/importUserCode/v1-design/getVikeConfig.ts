@@ -111,12 +111,14 @@ type InterfaceConfigFile = InterfaceFileCommons & {
   isValueFile: false
   extendsFilePaths: string[]
   isConfigExtend: boolean
+  isLoaded: true
 }
 // +{configName}.js
 type InterfaceValueFile = InterfaceFileCommons & {
   isConfigFile: false
   isValueFile: true
   configName: string
+  isLoaded: boolean
 }
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
@@ -274,6 +276,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         },
         isConfigFile: false,
         isValueFile: true,
+        isLoaded: false,
         configName
       }
       {
@@ -308,6 +311,7 @@ function getInterfaceFileFromConfigFile(
     fileExportsByConfigName: {},
     isConfigFile: true,
     isValueFile: false,
+    isLoaded: true,
     isConfigExtend,
     extendsFilePaths
   }

@@ -46,9 +46,7 @@ async function loadValueFile(
   configName: string,
   userRootDir: string
 ): Promise<void> {
-  const confVal = interfaceValueFile.fileExportsByConfigName[configName]
-  assert(confVal)
-  if (confVal.configValueLoaded) return
+  if (interfaceValueFile.isLoaded) return
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
@@ -56,6 +54,7 @@ async function loadValueFile(
     const configName_ = exportName === 'default' ? configName : exportName
     interfaceValueFile.fileExportsByConfigName[configName_] = { configValue, configValueLoaded: true }
   })
+  interfaceValueFile.isLoaded = true
 }
 
 // Load +config.js, including all its extends pointer imports
