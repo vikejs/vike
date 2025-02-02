@@ -1,7 +1,7 @@
 // Files loaded at config time:
 
 export { loadImportedFile }
-export { loadValueFile }
+export { loadValueFiles }
 export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
@@ -16,7 +16,12 @@ import {
 } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { getConfigDefinitionOptional, shouldBeLoadableAtBuildTime, type InterfaceValueFile } from '../getVikeConfig.js'
+import {
+  getConfigDefinitionOptional,
+  InterfaceFile,
+  shouldBeLoadableAtBuildTime,
+  type InterfaceValueFile
+} from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
@@ -80,6 +85,17 @@ async function loadValueFile(
     const configName_ = exportName === 'default' ? configName : exportName
     interfaceValueFile.fileExportsByConfigName[configName_] = configValue
   })
+}
+async function loadValueFiles(
+  interfaceFiles: InterfaceFile[],
+  configDefinitions: ConfigDefinitions,
+  userRootDir: string
+): Promise<void> {
+  await Promise.all(
+    interfaceFiles
+      .filter((interfaceFile) => interfaceFile.isValueFile)
+      .map(async (interfaceFile) => await loadValueFile(interfaceFile, configDefinitions, userRootDir))
+  )
 }
 
 // Load +config.js, including all its extends pointer imports

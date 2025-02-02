@@ -78,7 +78,7 @@ import {
   ImportedFilesLoaded,
   loadConfigFile,
   loadImportedFile,
-  loadValueFile
+  loadValueFiles
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import {
   clearFilesEnvMap,
@@ -292,7 +292,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
       // We don't have access to the custom config definitions defined by the user yet.
       //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
       //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-      await loadValueFile(interfaceFile, configDefinitionsBuiltIn, userRootDir)
+      await loadValueFiles([interfaceFile], configDefinitionsBuiltIn, userRootDir)
     })
   ])
 
@@ -511,11 +511,7 @@ async function getPageConfigs(
 
       // Load value files (with `env.config===true`) of *custom* configs.
       // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
-      await Promise.all(
-        interfaceFilesRelevantList
-          .filter((interfaceFile) => interfaceFile.isValueFile)
-          .map(async (interfaceFile) => await loadValueFile(interfaceFile, configDefinitions, userRootDir))
-      )
+      await loadValueFiles(interfaceFilesRelevantList, configDefinitions, userRootDir)
 
       let configValueSources: ConfigValueSources = {}
       await Promise.all(
