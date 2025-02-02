@@ -697,7 +697,7 @@ async function resolveConfigValueSources(
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     const interfaceFilesDefiningConfig = interfaceFiles.filter(
-      (interfaceFile) => interfaceFile.fileExportsByConfigName[configName]
+      (interfaceFile) => configName in interfaceFile.fileExportsByConfigName
     )
     if (interfaceFilesDefiningConfig.length === 0) continue
     const visited = new WeakSet<InterfaceFile>()
