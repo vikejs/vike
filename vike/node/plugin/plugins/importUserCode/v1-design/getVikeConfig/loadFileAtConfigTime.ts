@@ -1,6 +1,7 @@
 // Files loaded at config time:
 
 export { loadImportedFile }
+export { loadValueFile }
 export { loadValueFiles }
 export { loadConfigFile }
 export type { ImportedFilesLoaded }
@@ -18,7 +19,7 @@ import type { FilePathResolved } from '../../../../../../shared/page-configs/Fil
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import {
   getConfigDefinitionOptional,
-  InterfaceFile,
+  InterfaceFilesByLocationId,
   shouldBeLoadableAtBuildTime,
   type InterfaceValueFile
 } from '../getVikeConfig.js'
@@ -87,12 +88,13 @@ async function loadValueFile(
   })
 }
 async function loadValueFiles(
-  interfaceFiles: InterfaceFile[],
+  interfaceFiles: InterfaceFilesByLocationId,
   configDefinitions: ConfigDefinitions,
   userRootDir: string
 ): Promise<void> {
   await Promise.all(
-    interfaceFiles
+    Object.values(interfaceFiles)
+      .flat(1)
       .filter((interfaceFile) => interfaceFile.isValueFile)
       .map(async (interfaceFile) => await loadValueFile(interfaceFile, configDefinitions, userRootDir))
   )
