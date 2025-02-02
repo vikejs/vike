@@ -839,8 +839,9 @@ async function getConfigValueSource(
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       // Defined over pointer import
+      assert(conf)
       const resolved = resolvePointerImportOfConfig(
-        conf?.configValue,
+        conf.configValue,
         interfaceFile.filePath,
         userRootDir,
         configDef.env,
