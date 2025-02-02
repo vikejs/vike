@@ -97,7 +97,10 @@ type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
   locationId: LocationId
   filePath: FilePathResolved
-  fileExportsByConfigName: Record<ConfigName, null | { configValue: unknown }>
+  fileExportsByConfigName: Record<
+    string, // configName
+    null | { configValue: unknown }
+  >
 }
 // +config.js
 type InterfaceConfigFile = InterfaceFileCommons & {
@@ -112,7 +115,6 @@ type InterfaceValueFile = InterfaceFileCommons & {
   isValueFile: true
   configName: string
 }
-type ConfigName = string
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
 type VikeConfigObject = {
