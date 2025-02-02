@@ -488,6 +488,9 @@ async function getPageConfigs(
     interfaceFiles: interfaceFilesGlobal,
     configValueSources: {}
   }
+  // Load value files (with `env.config===true`) of *custom* configs.
+  // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
+  await loadValueFiles(interfaceFilesGlobal, configDefinitions, userRootDir)
   await Promise.all(
     objectEntries(configDefinitions).map(async ([configName, configDef]) => {
       const sources = await resolveConfigValueSources(
