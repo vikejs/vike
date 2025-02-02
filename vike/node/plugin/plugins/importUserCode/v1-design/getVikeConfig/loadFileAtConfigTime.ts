@@ -6,7 +6,15 @@ export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
 
-import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../../../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertIsNotProductionRuntime,
+  isArrayOfStrings,
+  isObject,
+  genPromise,
+  castType
+} from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import type { InterfaceValueFile } from '../getVikeConfig.js'
@@ -46,13 +54,22 @@ async function loadValueFile(
   configName: string,
   userRootDir: string
 ): Promise<void> {
-  if (interfaceValueFile.isValueLoaded as boolean) return
-  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
-  const { filePathToShowToUser } = interfaceValueFile.filePath
-  assertPlusFileExport(fileExports, filePathToShowToUser, configName)
-  interfaceValueFile.isValueLoaded = true
+  if (interfaceValueFile.isValueLoaded) {
+    await interfaceValueFile.isValueLoaded
+    if (
+      // Help TS
+      true as boolean
+    )
+      return
+  }
+  const { promise, resolve } = genPromise()
+  interfaceValueFile.isValueLoaded = promise
   assert(interfaceValueFile.isValueLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
+  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
+  resolve()
+  const { filePathToShowToUser } = interfaceValueFile.filePath
+  assertPlusFileExport(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
     const configName_ = exportName === 'default' ? configName : exportName
     interfaceValueFile.fileExportsByConfigName[configName_] = configValue

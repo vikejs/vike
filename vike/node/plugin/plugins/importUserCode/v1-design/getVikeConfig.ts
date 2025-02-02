@@ -98,18 +98,7 @@ type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
   locationId: LocationId
   filePath: FilePathResolved
-} & (
-  | {
-      isValueLoaded: true
-      fileExportsByConfigName: Record<
-        string, // configName
-        unknown // configValue
-      >
-    }
-  | {
-      isValueLoaded: false
-    }
-)
+}
 // +config.js
 type InterfaceConfigFile = InterfaceFileCommons & {
   isConfigFile: true
@@ -117,14 +106,28 @@ type InterfaceConfigFile = InterfaceFileCommons & {
   extendsFilePaths: string[]
   isConfigExtend: boolean
   isValueLoaded: true
+  fileExportsByConfigName: Record<
+    string, // configName
+    unknown // configValue
+  >
 }
 // +{configName}.js
 type InterfaceValueFile = InterfaceFileCommons & {
   isConfigFile: false
   isValueFile: true
   configName: string
-  isValueLoaded: boolean
-}
+} & (
+    | {
+        isValueLoaded: Promise<void>
+        fileExportsByConfigName: Record<
+          string, // configName
+          unknown // configValue
+        >
+      }
+    | {
+        isValueLoaded: false
+      }
+  )
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
 
 type VikeConfigObject = {
