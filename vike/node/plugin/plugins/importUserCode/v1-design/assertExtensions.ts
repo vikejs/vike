@@ -4,7 +4,7 @@ export { assertExtensionsRequire }
 import pc from '@brillout/picocolors'
 import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
 import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../utils.js'
-import type { InterfaceFile } from './getVikeConfig.js'
+import { getConfVal, type InterfaceFile } from './getVikeConfig.js'
 import path from 'path'
 import semver from 'semver'
 import { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
@@ -88,7 +88,7 @@ function assertExtensionsRequire(pageConfig: PageConfigBuildTime): void {
 }
 
 function getConfigRequireValue(interfaceFile: InterfaceFile): null | Record<string, string> {
-  const confVal = interfaceFile.fileExportsByConfigName['require']
+  const confVal = getConfVal(interfaceFile, 'require')
   if (!confVal) return null
   assert(confVal.configValueLoaded)
   const require = confVal.configValue
@@ -106,7 +106,7 @@ function getConfigRequireValue(interfaceFile: InterfaceFile): null | Record<stri
 }
 
 function getNameValue(interfaceFile: InterfaceFile): null | string {
-  const confVal = interfaceFile.fileExportsByConfigName['name']
+  const confVal = getConfVal(interfaceFile, 'name')
   if (!confVal) return null
   assert(confVal.configValueLoaded)
   const name = confVal.configValue
