@@ -503,7 +503,8 @@ async function getPageConfigs(
 
         const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
 
-        // Load value files of `env.config===true` custom configs
+        // Load value files (with `env.config===true`) of *custom* configs.
+        // - The values of files of *built-in* configs configs are already loaded at `loadInterfaceFiles()`.
         await Promise.all(
           interfaceFilesRelevantList.map(async (interfaceFile) => {
             if (!interfaceFile.isValueFile) return
@@ -515,11 +516,6 @@ async function getPageConfigs(
               interfaceFile.filePath.filePathToShowToUser
             )
             if (!shouldBeLoadableAtBuildTime(configDef)) return
-            const confVal = interfaceFile.fileExportsByConfigName[configName]
-            assert(confVal)
-            if (confVal.configValueLoaded) return
-            // Value files of built-in configs should have already been loaded at loadInterfaceFiles()
-            assert(!(configName in configDefinitionsBuiltIn))
             await loadValueFile(interfaceFile, configName, userRootDir)
           })
         )

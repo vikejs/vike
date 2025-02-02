@@ -41,7 +41,14 @@ async function loadImportedFile(
 }
 
 // Load +{configName}.js
-async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
+async function loadValueFile(
+  interfaceValueFile: InterfaceValueFile,
+  configName: string,
+  userRootDir: string
+): Promise<void> {
+  const confVal = interfaceValueFile.fileExportsByConfigName[configName]
+  assert(confVal)
+  if (confVal.configValueLoaded) return
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
