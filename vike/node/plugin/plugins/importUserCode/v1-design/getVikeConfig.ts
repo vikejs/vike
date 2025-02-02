@@ -99,7 +99,11 @@ type InterfaceFileCommons = {
   filePath: FilePathResolved
   fileExportsByConfigName: Record<
     string, // configName
-    null | { configValue: unknown }
+    | { configValueLoaded: false }
+    | {
+        configValueLoaded: true
+        configValue: unknown
+      }
   >
 }
 // +config.js
@@ -267,7 +271,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         locationId,
         filePath,
         fileExportsByConfigName: {
-          [configName]: null
+          [configName]: { configValueLoaded: false }
         },
         isConfigFile: false,
         isValueFile: true,
@@ -310,7 +314,7 @@ function getInterfaceFileFromConfigFile(
   }
   const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
   Object.entries(fileExport).forEach(([configName, configValue]) => {
-    interfaceFile.fileExportsByConfigName[configName] = { configValue }
+    interfaceFile.fileExportsByConfigName[configName] = { configValue, configValueLoaded: true }
   })
   return interfaceFile
 }
@@ -700,7 +704,7 @@ async function resolveConfigValueSources(
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
     const interfaceFilesDefiningConfig = interfaceFiles.filter(
-      (interfaceFile) => configName in interfaceFile.fileExportsByConfigName
+      (interfaceFile) => interfaceFile.fileExportsByConfigName[configName]
     )
     if (interfaceFilesDefiningConfig.length === 0) continue
     const visited = new WeakSet<InterfaceFile>()
@@ -823,6 +827,7 @@ async function getConfigValueSource(
   isHighestInheritancePrecedence: boolean
 ): Promise<ConfigValueSource> {
   const conf = interfaceFile.fileExportsByConfigName[configName]
+  assert(conf)
 
   const configValueSourceCommon = {
     locationId: interfaceFile.locationId,
@@ -842,7 +847,7 @@ async function getConfigValueSource(
     let valueFilePath: string
     if (interfaceFile.isConfigFile) {
       // Defined over pointer import
-      assert(conf)
+      assert(conf.configValueLoaded)
       const resolved = resolvePointerImportOfConfig(
         conf.configValue,
         interfaceFile.filePath,
@@ -878,7 +883,7 @@ async function getConfigValueSource(
 
   // +config.js
   if (interfaceFile.isConfigFile) {
-    assert(conf)
+    assert(conf.configValueLoaded)
     const { configValue } = conf
 
     // Defined over pointer import
@@ -932,7 +937,7 @@ async function getConfigValueSource(
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
     const configEnvResolved = resolveConfigEnvWithFileName(configDef.env, interfaceFile.filePath)
-    const valueAlreadyLoaded = !!conf
+    const valueAlreadyLoaded = conf.configValueLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
@@ -950,7 +955,7 @@ async function getConfigValueSource(
       }
     }
     if (valueAlreadyLoaded) {
-      configValueSource.value = conf!.configValue
+      configValueSource.value = conf.configValue
     }
     return configValueSource
   }
@@ -977,9 +982,9 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
     .reverse()
     .forEach(([_locationId, interfaceFiles]) => {
       interfaceFiles.forEach((interfaceFile) => {
-        if (!('meta' in interfaceFile.fileExportsByConfigName)) return
         const configMeta = interfaceFile.fileExportsByConfigName['meta']
-        assert(configMeta)
+        if (!configMeta) return
+        assert(configMeta.configValueLoaded)
         const meta = configMeta.configValue
         assertMetaUsage(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
@@ -1436,5 +1441,8 @@ function sortConfigValueSources(
 }
 
 function getConfigValueInterfaceFile(interfaceFile: InterfaceFile, configName: string): unknown {
-  return interfaceFile.fileExportsByConfigName[configName]?.configValue
+  const conf = interfaceFile.fileExportsByConfigName[configName]
+  // TODO/now
+  if (!conf?.configValueLoaded) return null
+  return conf.configValue
 }
