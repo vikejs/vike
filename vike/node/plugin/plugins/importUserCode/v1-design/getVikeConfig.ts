@@ -482,13 +482,14 @@ async function getPageConfigs(
       return isGlobalLocation(locationId, locationIds)
     })
   )
+  const configDefinitions = getConfigDefinitions(interfaceFilesGlobal, (configDef) => !!configDef.global)
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
-    configDefinitions: configDefinitionsBuiltInGlobal,
+    configDefinitions,
     interfaceFiles: interfaceFilesGlobal,
     configValueSources: {}
   }
   await Promise.all(
-    objectEntries(configDefinitionsBuiltInGlobal).map(async ([configName, configDef]) => {
+    objectEntries(configDefinitions).map(async ([configName, configDef]) => {
       const sources = await resolveConfigValueSources(
         configName,
         configDef,
@@ -975,8 +976,11 @@ function getDefiningConfigNames(interfaceFile: InterfaceFile): string[] {
   return configNames
 }
 
-function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId): ConfigDefinitions {
-  const configDefinitionsMerged: ConfigDefinitions = { ...configDefinitionsBuiltIn }
+function getConfigDefinitions(
+  interfaceFilesRelevant: InterfaceFilesByLocationId,
+  filter?: (configDef: ConfigDefinitionInternal) => boolean
+): ConfigDefinitions {
+  const configDefinitionsMerged: ConfigDefinitions = { ...configDefinitionsBuiltInAll }
   Object.entries(interfaceFilesRelevant)
     .reverse()
     .forEach(([_locationId, interfaceFiles]) => {
@@ -1007,7 +1011,14 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
       })
     })
 
-  const configDefinitions = configDefinitionsMerged
+  let configDefinitions = configDefinitionsMerged
+
+  if (filter) {
+    configDefinitions = Object.fromEntries(
+      Object.entries(configDefinitions).filter(([_configName, configDef]) => filter(configDef))
+    )
+  }
+
   return configDefinitions
 }
 
