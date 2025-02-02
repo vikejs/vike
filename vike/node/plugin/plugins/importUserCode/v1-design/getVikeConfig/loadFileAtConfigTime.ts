@@ -54,7 +54,6 @@ async function loadValueFile(
   configName: string,
   userRootDir: string
 ): Promise<void> {
-  console.log('loadValueFile', interfaceValueFile.filePath)
   if (interfaceValueFile.isValueLoaded) {
     await interfaceValueFile.isValueLoaded
     if (
@@ -63,7 +62,6 @@ async function loadValueFile(
     )
       return
   }
-  console.log('loadValueFile TTT', interfaceValueFile.filePath)
   const { promise, resolve } = genPromise()
   interfaceValueFile.isValueLoaded = promise
   assert(interfaceValueFile.isValueLoaded)
