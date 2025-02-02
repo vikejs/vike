@@ -46,12 +46,12 @@ async function loadValueFile(
   configName: string,
   userRootDir: string
 ): Promise<void> {
-  if (interfaceValueFile.isLoaded as boolean) return
+  if (interfaceValueFile.isValueLoaded as boolean) return
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
-  interfaceValueFile.isLoaded = true
-  assert(interfaceValueFile.isLoaded)
+  interfaceValueFile.isValueLoaded = true
+  assert(interfaceValueFile.isValueLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
     const configName_ = exportName === 'default' ? configName : exportName
