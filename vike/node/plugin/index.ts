@@ -6,8 +6,8 @@ export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 export { PROJECT_VERSION as version } from './utils.js'
 
-import { version, type Plugin } from 'vite'
-import { assertUsage, assertVersion, markSetup_vikeVitePlugin } from './utils.js'
+import type { Plugin } from 'vite'
+import { assertUsage } from './utils.js'
 import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
@@ -31,8 +31,7 @@ import { resolveClientEntriesDev } from './resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { workaroundVite6HmrRegression } from './plugins/workaroundVite6HmrRegression.js'
 
-markSetup_vikeVitePlugin()
-assertViteVersion()
+// We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setResolveClientEntriesDev(resolveClientEntriesDev)
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
@@ -75,11 +74,6 @@ Object.defineProperty(plugin, 'apply', {
     )
   }
 })
-
-// package.json#peerDependencies isn't enough as users can ignore it
-function assertViteVersion() {
-  assertVersion('Vite', version, '5.1.0')
-}
 
 /** @deprecated Define Vike settings in +config.js instead of vite.config.js */
 type VikeVitePluginOptions = {
