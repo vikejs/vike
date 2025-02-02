@@ -12,17 +12,17 @@ import {
   assertIsNotProductionRuntime,
   isArrayOfStrings,
   isObject,
-  genPromise,
-  castType
+  genPromise
 } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import type { InterfaceValueFile } from '../getVikeConfig.js'
+import { getConfigDefinitionOptional, type InterfaceValueFile } from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
+import type { ConfigDefinitions } from './configDefinitionsBuiltIn.js'
 
 assertIsNotProductionRuntime()
 
@@ -52,8 +52,10 @@ async function loadImportedFile(
 async function loadValueFile(
   interfaceValueFile: InterfaceValueFile,
   configName: string,
+  configDefinitions: ConfigDefinitions,
   userRootDir: string
 ): Promise<void> {
+  const configDef = getConfigDefinitionOptional(configDefinitions, configName)
   if (interfaceValueFile.isValueLoaded) {
     await interfaceValueFile.isValueLoaded
     if (

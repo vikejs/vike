@@ -5,6 +5,7 @@ export { vikeConfigDependencies }
 export { isVikeConfigFile }
 export { isV1Design }
 export { getConfVal }
+export { getConfigDefinitionOptional }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
@@ -290,7 +291,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
         const configDef = getConfigDefinitionOptional(configDefinitionsBuiltIn, configName)
         if (configDef && shouldBeLoadableAtBuildTime(configDef)) {
-          await loadValueFile(interfaceFile, configName, userRootDir)
+          await loadValueFile(interfaceFile, configName, configDefinitionsBuiltIn, userRootDir)
         }
       }
       {
@@ -527,7 +528,7 @@ async function getPageConfigs(
               interfaceFile.filePath.filePathToShowToUser
             )
             if (!shouldBeLoadableAtBuildTime(configDef)) return
-            await loadValueFile(interfaceFile, configName, userRootDir)
+            await loadValueFile(interfaceFile, configName, configDefinitions, userRootDir)
           })
         )
 
