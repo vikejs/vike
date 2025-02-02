@@ -1,4 +1,4 @@
-// Files loadded at config time:
+// Files loaded at config time:
 
 export { loadImportedFile }
 export { loadValueFile }
@@ -41,13 +41,21 @@ async function loadImportedFile(
 }
 
 // Load +{configName}.js
-async function loadValueFile(interfaceValueFile: InterfaceValueFile, configName: string, userRootDir: string) {
+async function loadValueFile(
+  interfaceValueFile: InterfaceValueFile,
+  configName: string,
+  userRootDir: string
+): Promise<void> {
+  if (interfaceValueFile.isValueLoaded as boolean) return
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
+  interfaceValueFile.isValueLoaded = true
+  assert(interfaceValueFile.isValueLoaded)
+  interfaceValueFile.fileExportsByConfigName = {}
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
     const configName_ = exportName === 'default' ? configName : exportName
-    interfaceValueFile.fileExportsByConfigName[configName_] = { configValue }
+    interfaceValueFile.fileExportsByConfigName[configName_] = configValue
   })
 }
 
