@@ -976,6 +976,7 @@ function getConfigDefinitions(interfaceFilesRelevant: InterfaceFilesByLocationId
       interfaceFiles.forEach((interfaceFile) => {
         const configMeta = interfaceFile.fileExportsByConfigName['meta']
         if (!configMeta) return
+        assert('configValue' in configMeta)
         const meta = configMeta.configValue
         assertMetaUsage(meta, `Config ${pc.cyan('meta')} defined at ${interfaceFile.filePath.filePathToShowToUser}`)
 
