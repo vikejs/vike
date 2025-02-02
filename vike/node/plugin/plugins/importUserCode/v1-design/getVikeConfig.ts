@@ -97,7 +97,7 @@ type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
   locationId: LocationId
   filePath: FilePathResolved
-  fileExportsByConfigName: Record<ConfigName, { configValue?: unknown }>
+  fileExportsByConfigName: Record<ConfigName, null | { configValue: unknown }>
 }
 // +config.js
 type InterfaceConfigFile = InterfaceFileCommons & {
@@ -265,7 +265,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         locationId,
         filePath,
         fileExportsByConfigName: {
-          [configName]: {}
+          [configName]: null
         },
         isConfigFile: false,
         isValueFile: true,
@@ -664,9 +664,9 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
 
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
   const configMapValues = Object.values(interfaceFile.fileExportsByConfigName)
-  const isAlreadyLoaded = configMapValues.some((conf) => 'configValue' in conf)
+  const isAlreadyLoaded = configMapValues.some((conf) => !!conf)
   if (isAlreadyLoaded) {
-    assert(configMapValues.every((conf) => 'configValue' in conf))
+    assert(configMapValues.every((conf) => !!conf))
   }
   return isAlreadyLoaded
 }
@@ -820,7 +820,6 @@ async function getConfigValueSource(
   isHighestInheritancePrecedence: boolean
 ): Promise<ConfigValueSource> {
   const conf = interfaceFile.fileExportsByConfigName[configName]
-  assert(conf)
 
   const configValueSourceCommon = {
     locationId: interfaceFile.locationId,
@@ -841,7 +840,7 @@ async function getConfigValueSource(
     if (interfaceFile.isConfigFile) {
       // Defined over pointer import
       const resolved = resolvePointerImportOfConfig(
-        conf.configValue,
+        conf?.configValue,
         interfaceFile.filePath,
         userRootDir,
         configDef.env,
@@ -875,7 +874,7 @@ async function getConfigValueSource(
 
   // +config.js
   if (interfaceFile.isConfigFile) {
-    assert('configValue' in conf)
+    assert(conf)
     const { configValue } = conf
 
     // Defined over pointer import
@@ -929,7 +928,7 @@ async function getConfigValueSource(
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
     const configEnvResolved = resolveConfigEnvWithFileName(configDef.env, interfaceFile.filePath)
-    const valueAlreadyLoaded = 'configValue' in conf
+    const valueAlreadyLoaded = !!conf
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
@@ -947,7 +946,7 @@ async function getConfigValueSource(
       }
     }
     if (valueAlreadyLoaded) {
-      configValueSource.value = conf.configValue
+      configValueSource.value = conf!.configValue
     }
     return configValueSource
   }
