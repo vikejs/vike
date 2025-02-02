@@ -671,9 +671,9 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
 // TODO/now: refactor
 function interfacefileIsAlreaydLoaded(interfaceFile: InterfaceFile): boolean {
   const configMapValues = Object.values(interfaceFile.fileExportsByConfigName)
-  const isAlreadyLoaded = configMapValues.some((conf) => !!conf)
+  const isAlreadyLoaded = configMapValues.some((conf) => conf.configValueLoaded)
   if (isAlreadyLoaded) {
-    assert(configMapValues.every((conf) => !!conf))
+    assert(configMapValues.every((conf) => conf.configValueLoaded))
   }
   return isAlreadyLoaded
 }
