@@ -503,9 +503,8 @@ async function getPageConfigs(
 
   const pageConfigs: PageConfigBuildTime[] = []
   await Promise.all(
-    objectEntries(interfaceFilesAll)
-      .filter(([_locationId, interfaceFiles]) => isDefiningPage(interfaceFiles))
-      .map(async ([locationId]) => {
+    getPageLocationIds(interfaceFilesAll)
+      .map(async (locationId) => {
         const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
         const interfaceFilesRelevantList: InterfaceFile[] = Object.values(interfaceFilesRelevant).flat(1)
 
@@ -557,6 +556,16 @@ async function getPageConfigs(
   assertPageConfigs(pageConfigs, interfaceFilesAll)
 
   return { pageConfigs, pageConfigGlobal }
+}
+function getPageLocationIds(interfaceFilesAll: InterfaceFilesByLocationId) {
+  const locationIds = new Set<LocationId>()
+    objectEntries(interfaceFilesAll)
+      .forEach(([locationId, interfaceFiles]) =>  {
+        if(isDefiningPage(interfaceFiles)){
+          locationIds.add(locationId)
+        }
+      })
+  return Array.from(locationIds)
 }
 
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[], interfaceFilesAll: InterfaceFilesByLocationId) {
