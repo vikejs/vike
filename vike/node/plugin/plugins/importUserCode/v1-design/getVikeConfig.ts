@@ -1361,23 +1361,26 @@ function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, confi
 function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
   return !!configDef.env.config && !configDef._valueIsFilePath
 }
+// TODO/now: remove
 function isGlobalConfigOld(configName: string): configName is ConfigNameGlobal {
   // TODO/now
   if (configName === 'prerender') return false
   const configNamesGlobal = getConfigNamesGlobal()
   return includes(configNamesGlobal, configName)
 }
-/*
 // TODO/now
-function isGlobalConfigOld(configName: string, configDefinitions: ConfigDefinitions): configName is ConfigNameGlobal {
+function isGlobalConfig(
+  configName: string,
+  configDefinitions: ConfigDefinitions,
+  value: unknown
+): configName is ConfigNameGlobal {
   const configSpec = configDefinitions[configName]
   assert(configSpec)
   const globalValue = configSpec.global
   if (!globalValue) return false
-  if (globalValue === true ) return true
+  if (globalValue === true) return true
   return globalValue(value)
 }
-*/
 function getConfigNamesGlobal() {
   return Object.keys(configDefinitionsBuiltInGlobal)
 }
