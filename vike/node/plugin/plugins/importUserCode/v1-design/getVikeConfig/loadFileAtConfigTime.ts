@@ -2,6 +2,7 @@
 
 export { loadImportedFile }
 export { loadValueFile }
+export { loadValueFiles }
 export { loadConfigFile }
 export type { ImportedFilesLoaded }
 export type { ConfigFile }
@@ -12,17 +13,22 @@ import {
   assertIsNotProductionRuntime,
   isArrayOfStrings,
   isObject,
-  genPromise,
-  castType
+  genPromise
 } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import type { InterfaceValueFile } from '../getVikeConfig.js'
+import {
+  getConfigDefinitionOptional,
+  InterfaceFilesByLocationId,
+  shouldBeLoadableAtBuildTime,
+  type InterfaceValueFile
+} from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
+import type { ConfigDefinitions } from './configDefinitionsBuiltIn.js'
 
 assertIsNotProductionRuntime()
 
@@ -51,9 +57,15 @@ async function loadImportedFile(
 // Load +{configName}.js
 async function loadValueFile(
   interfaceValueFile: InterfaceValueFile,
-  configName: string,
+  configDefinitions: ConfigDefinitions,
   userRootDir: string
 ): Promise<void> {
+  const { configName } = interfaceValueFile
+  const configDef = getConfigDefinitionOptional(configDefinitions, configName)
+  if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) {
+    // Only load value files with `env.config===true`
+    return
+  }
   if (interfaceValueFile.isValueLoaded) {
     await interfaceValueFile.isValueLoaded
     if (
@@ -74,6 +86,18 @@ async function loadValueFile(
     const configName_ = exportName === 'default' ? configName : exportName
     interfaceValueFile.fileExportsByConfigName[configName_] = configValue
   })
+}
+async function loadValueFiles(
+  interfaceFiles: InterfaceFilesByLocationId,
+  configDefinitions: ConfigDefinitions,
+  userRootDir: string
+): Promise<void> {
+  await Promise.all(
+    Object.values(interfaceFiles)
+      .flat(1)
+      .filter((interfaceFile) => interfaceFile.isValueFile)
+      .map(async (interfaceFile) => await loadValueFile(interfaceFile, configDefinitions, userRootDir))
+  )
 }
 
 // Load +config.js, including all its extends pointer imports
