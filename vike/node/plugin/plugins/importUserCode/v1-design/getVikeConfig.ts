@@ -450,8 +450,8 @@ function temp_interopVikeVitePlugin(
     { onlyOnce: true }
   )
   Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
-    assert(includes(objectKeys(configDefinitionsBuiltInGlobal), configName))
-    const configDef = configDefinitionsBuiltInGlobal[configName]
+    assert(includes(objectKeys(configDefinitionsBuiltInAll), configName))
+    const configDef = configDefinitionsBuiltInAll[configName]
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
     sources.push({
       value,
@@ -482,17 +482,17 @@ async function getPageConfigs(
       return isGlobalLocation(locationId, locationIds)
     })
   )
-  const configDefinitions = getConfigDefinitions(interfaceFilesGlobal, (configDef) => !!configDef.global)
+  const configDefinitionsGlobal = getConfigDefinitions(interfaceFilesGlobal, (configDef) => !!configDef.global)
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
-    configDefinitions,
+    configDefinitions: configDefinitionsGlobal,
     interfaceFiles: interfaceFilesGlobal,
     configValueSources: {}
   }
   // Load value files (with `env.config===true`) of *custom* configs.
   // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
-  await loadValueFiles(interfaceFilesGlobal, configDefinitions, userRootDir)
+  await loadValueFiles(interfaceFilesGlobal, configDefinitionsGlobal, userRootDir)
   await Promise.all(
-    objectEntries(configDefinitions).map(async ([configName, configDef]) => {
+    objectEntries(configDefinitionsGlobal).map(async ([configName, configDef]) => {
       const sources = await resolveConfigValueSources(
         configName,
         configDef,
@@ -510,15 +510,15 @@ async function getPageConfigs(
   await Promise.all(
     getPageLocationIds(interfaceFilesAll).map(async (locationId) => {
       const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
-      const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
+      const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant)
 
       // Load value files (with `env.config===true`) of *custom* configs.
       // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
-      await loadValueFiles(interfaceFilesRelevant, configDefinitions, userRootDir)
+      await loadValueFiles(interfaceFilesRelevant, configDefinitionsLocal, userRootDir)
 
       let configValueSources: ConfigValueSources = {}
       await Promise.all(
-        objectEntries(configDefinitions)
+        objectEntries(configDefinitionsLocal)
           .filter(([configName]) => !isGlobalConfigOld(configName))
           .map(async ([configName, configDef]) => {
             const sources = await resolveConfigValueSources(
@@ -536,14 +536,14 @@ async function getPageConfigs(
 
       const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
-      applyEffectsAll(configValueSources, configDefinitions)
-      const configValuesComputed = getComputed(configValueSources, configDefinitions)
+      applyEffectsAll(configValueSources, configDefinitionsLocal)
+      const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
       const pageConfig: PageConfigBuildTime = {
         pageId: locationId,
         isErrorPage,
         routeFilesystem,
-        configDefinitions,
+        configDefinitions: configDefinitionsLocal,
         interfaceFiles: interfaceFilesRelevant,
         configValueSources,
         configValuesComputed
@@ -983,7 +983,9 @@ function getConfigDefinitions(
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   filter?: (configDef: ConfigDefinitionInternal) => boolean
 ): ConfigDefinitions {
-  const configDefinitionsMerged: ConfigDefinitions = { ...configDefinitionsBuiltInAll }
+  let configDefinitions: ConfigDefinitions = { ...configDefinitionsBuiltInAll }
+
+  // Add user-land meta configs
   Object.entries(interfaceFilesRelevant)
     .reverse()
     .forEach(([_locationId, interfaceFiles]) => {
@@ -1004,17 +1006,15 @@ function getConfigDefinitions(
           }
         })
 
-        objectEntries(meta).forEach(([configName, configDefinition]) => {
+        objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
           // User can override an existing config definition
-          configDefinitionsMerged[configName] = {
-            ...configDefinitionsMerged[configName],
-            ...configDefinition
+          configDefinitions[configName] = {
+            ...configDefinitions[configName],
+            ...configDefinitionUserLand
           }
         })
       })
     })
-
-  let configDefinitions = configDefinitionsMerged
 
   if (filter) {
     configDefinitions = Object.fromEntries(
