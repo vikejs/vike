@@ -92,7 +92,6 @@ import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getC
 import { assertExtensionsRequire, assertExtensionsConventions } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
-const configDefinitionsBuiltInGlobal = getConfigDefinitionsBuiltInGlobal()
 
 assertIsNotProductionRuntime()
 
@@ -1393,7 +1392,11 @@ function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boole
 function isGlobalConfigOld(configName: string): configName is ConfigNameGlobal {
   // TODO/now
   if (configName === 'prerender') return false
-  const configNamesGlobal = getConfigNamesGlobal()
+  const configNamesGlobal = Object.keys(
+    objectFromEntries(
+      objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== undefined)
+    )
+  )
   return includes(configNamesGlobal, configName)
 }
 // TODO/now
@@ -1408,19 +1411,6 @@ function isGlobalConfig(
   if (!globalValue) return false
   if (globalValue === true) return true
   return globalValue(value)
-}
-function getConfigNamesGlobal() {
-  return Object.keys(configDefinitionsBuiltInGlobal)
-}
-function getConfigDefinitionsBuiltInGlobal() {
-  return objectFromEntries(
-    objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== undefined)
-  )
-}
-function getConfigDefinitionsBuiltIn() {
-  return objectFromEntries(
-    objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== true)
-  )
 }
 function sortConfigValueSources(
   configValueSources: ConfigValueSources,
