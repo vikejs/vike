@@ -493,44 +493,46 @@ async function getPageConfigs(
 
   const pageConfigs: PageConfigBuildTime[] = []
   await Promise.all(
-    objectEntries(configDefinitionsResolved.configDefinitionsLocal).map(async ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
-      if (!isDefiningPage(interfaceFiles)) return
-      const configDefinitionsLocal = configDefinitions
-      let configValueSources: ConfigValueSources = {}
-      await Promise.all(
-        objectEntries(configDefinitionsLocal)
-          .filter(([configName]) => !isGlobalConfigOld(configName))
-          .map(async ([configName, configDef]) => {
-            const sources = await resolveConfigValueSources(
-              configName,
-              configDef,
-              interfaceFilesRelevant,
-              userRootDir,
-              importedFilesLoaded
-            )
-            if (sources.length === 0) return
-            // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
-            configValueSources[configName] = sources
-          })
-      )
-      configValueSources = sortConfigValueSources(configValueSources, locationId)
+    objectEntries(configDefinitionsResolved.configDefinitionsLocal).map(
+      async ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
+        if (!isDefiningPage(interfaceFiles)) return
+        const configDefinitionsLocal = configDefinitions
+        let configValueSources: ConfigValueSources = {}
+        await Promise.all(
+          objectEntries(configDefinitionsLocal)
+            .filter(([configName]) => !isGlobalConfigOld(configName))
+            .map(async ([configName, configDef]) => {
+              const sources = await resolveConfigValueSources(
+                configName,
+                configDef,
+                interfaceFilesRelevant,
+                userRootDir,
+                importedFilesLoaded
+              )
+              if (sources.length === 0) return
+              // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
+              configValueSources[configName] = sources
+            })
+        )
+        configValueSources = sortConfigValueSources(configValueSources, locationId)
 
-      const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
+        const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
-      applyEffectsAll(configValueSources, configDefinitionsLocal)
-      const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
+        applyEffectsAll(configValueSources, configDefinitionsLocal)
+        const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
-      const pageConfig: PageConfigBuildTime = {
-        pageId: locationId,
-        isErrorPage,
-        routeFilesystem,
-        configDefinitions: configDefinitionsLocal,
-        interfaceFiles: interfaceFilesRelevant,
-        configValueSources,
-        configValuesComputed
+        const pageConfig: PageConfigBuildTime = {
+          pageId: locationId,
+          isErrorPage,
+          routeFilesystem,
+          configDefinitions: configDefinitionsLocal,
+          interfaceFiles: interfaceFilesRelevant,
+          configValueSources,
+          configValuesComputed
+        }
+        pageConfigs.push(pageConfig)
       }
-      pageConfigs.push(pageConfig)
-    })
+    )
   )
   assertPageConfigs(pageConfigs, interfaceFilesAll)
 
