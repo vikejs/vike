@@ -432,6 +432,7 @@ async function getPageConfigs(
     })
   )
   const configDefinitionsGlobal = getConfigDefinitions(
+    // We use `interfaceFilesAll` instead of `interfaceFilesGlobal` in order to allow local Vike extensions to create global configs.
     interfaceFilesAll, // TODO/now sort
     (configDef) => !!configDef.global
   )
@@ -1195,7 +1196,7 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-/** Show error message upon unknown config */
+// Show error message upon unknown config
 function assertKnownConfigs(interfaceFilesAll: InterfaceFilesByLocationId) {
   const configDefinitionsAll = getConfigDefinitions(interfaceFilesAll)
   const configNamesKnownAll = Object.keys(configDefinitionsAll)
