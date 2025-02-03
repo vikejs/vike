@@ -321,24 +321,6 @@ function getInterfaceFileFromConfigFile(
   })
   return interfaceFile
 }
-/** Show error message upon unknown config */
-function assertKnownConfigs(interfaceFilesAll: InterfaceFilesByLocationId) {
-  const configDefinitionsAll = getConfigDefinitions(interfaceFilesAll)
-  const configNamesKnownAll = Object.keys(configDefinitionsAll)
-  objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
-    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
-    const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant)
-    const configNamesKnownLocal = Object.keys(configDefinitionsLocal)
-    interfaceFiles.forEach((interfaceFile) => {
-      const configNames = getDefiningConfigNames(interfaceFile)
-      configNames.forEach((configName) => {
-        assertUsageKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, interfaceFile)
-        assert(configNamesKnownLocal.includes(configName))
-        assert(configNamesKnownAll.includes(configName))
-      })
-    })
-  })
-}
 
 async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
@@ -1213,7 +1195,25 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-function assertUsageKnownConfig(
+/** Show error message upon unknown config */
+function assertKnownConfigs(interfaceFilesAll: InterfaceFilesByLocationId) {
+  const configDefinitionsAll = getConfigDefinitions(interfaceFilesAll)
+  const configNamesKnownAll = Object.keys(configDefinitionsAll)
+  objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
+    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
+    const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant)
+    const configNamesKnownLocal = Object.keys(configDefinitionsLocal)
+    interfaceFiles.forEach((interfaceFile) => {
+      const configNames = getDefiningConfigNames(interfaceFile)
+      configNames.forEach((configName) => {
+        assertKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, interfaceFile)
+        assert(configNamesKnownLocal.includes(configName))
+        assert(configNamesKnownAll.includes(configName))
+      })
+    })
+  })
+}
+function assertKnownConfig(
   configName: string,
   configNamesKnownAll: string[],
   configNamesKnownLocal: string[],
