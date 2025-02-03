@@ -482,7 +482,10 @@ async function getPageConfigs(
       return isGlobalLocation(locationId, locationIds)
     })
   )
-  const configDefinitionsGlobal = getConfigDefinitions(interfaceFilesAll, (configDef) => !!configDef.global)
+  const configDefinitionsGlobal = getConfigDefinitions(
+    interfaceFilesAll, // TODO/now sort
+    (configDef) => !!configDef.global
+  )
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsGlobal,
     configValueSources: {}
