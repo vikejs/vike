@@ -376,7 +376,6 @@ async function loadVikeConfig_withErrorHandling(
         pageConfigs: [],
         pageConfigGlobal: {
           configDefinitions: {},
-          interfaceFiles: {},
           configValueSources: {}
         },
         global: getPageConfigUserFriendlyNew({ configValues: {} })
@@ -486,7 +485,6 @@ async function getPageConfigs(
   const configDefinitionsGlobal = getConfigDefinitions(interfaceFilesGlobal, (configDef) => !!configDef.global)
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsGlobal,
-    interfaceFiles: interfaceFilesGlobal,
     configValueSources: {}
   }
   // Load value files (with `env.config===true`) of *custom* configs.
