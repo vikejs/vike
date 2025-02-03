@@ -94,22 +94,28 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   // Reproduction: https://github.com/vikejs/vike/discussions/1436#discussioncomment-8142023
 
   // Determine logical URL
+  // TODO/soon: revert https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
+  const assertUrlResolved = (src: number) =>
+    assert(urlResolved && typeof urlResolved === 'string', { src, urlResolved })
   let urlResolved: string
   let baseToBeRemoved: boolean
   if (pageContext.urlLogical) {
     // Set by onBeforeRoute()
     urlResolved = pageContext.urlLogical
     baseToBeRemoved = false
+    assertUrlResolved(1)
   } else if (pageContext._urlRewrite) {
     // Set by `throw render()`
     urlResolved = pageContext._urlRewrite
     baseToBeRemoved = false
+    assertUrlResolved(2)
   } else {
     // Set by renderPage()
     urlResolved = pageContext.urlOriginal
     baseToBeRemoved = true
+    assertUrlResolved(3)
   }
-  assert(urlResolved && typeof urlResolved === 'string')
+  assertUrlResolved(4)
 
   // Remove .pageContext.json
   let urlHandler = pageContext._urlHandler
