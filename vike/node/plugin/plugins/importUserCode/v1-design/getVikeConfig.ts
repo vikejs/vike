@@ -436,6 +436,8 @@ async function resolveConfigDefinitions(
     interfaceFilesAll, // TODO/now sort
     (configDef) => !!configDef.global
   )
+  // Load value files (with `env.config===true`) of *custom* configs.
+  // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
   await loadValueFiles(interfaceFilesAll, configDefinitionsGlobal, userRootDir)
 
   const configDefinitionsLocal: Record<
@@ -451,10 +453,12 @@ async function resolveConfigDefinitions(
   await Promise.all(
     objectEntries(interfaceFilesAll).map(async ([locationId, interfaceFiles]) => {
       const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
-      const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
       //    configDefinitions = getConfigDefinitions(interfaceFilesRelevant, (configDef) => configDef.global !== true) // TODO/now
-      configDefinitionsLocal[locationId] = { configDefinitions, interfaceFiles, interfaceFilesRelevant }
+      const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
+      // Load value files (with `env.config===true`) of *custom* configs.
+      // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
       await loadValueFiles(interfaceFiles, configDefinitions, userRootDir)
+      configDefinitionsLocal[locationId] = { configDefinitions, interfaceFiles, interfaceFilesRelevant }
     })
   )
 
