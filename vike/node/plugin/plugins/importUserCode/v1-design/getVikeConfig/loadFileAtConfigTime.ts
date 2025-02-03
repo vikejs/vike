@@ -19,7 +19,8 @@ import type { FilePathResolved } from '../../../../../../shared/page-configs/Fil
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import {
   getConfigDefinitionOptional,
-  InterfaceFilesByLocationId,
+  type InterfaceFile,
+  type InterfaceFilesByLocationId,
   shouldBeLoadableAtBuildTime,
   type InterfaceValueFile
 } from '../getVikeConfig.js'
@@ -88,7 +89,7 @@ async function loadValueFile(
   })
 }
 async function loadValueFiles(
-  interfaceFiles: InterfaceFilesByLocationId,
+  interfaceFiles: InterfaceFilesByLocationId | InterfaceFile[],
   configDefinitions: ConfigDefinitions,
   userRootDir: string
 ): Promise<void> {
