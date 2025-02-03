@@ -438,39 +438,6 @@ async function getGlobalConfigs(
   }
   //*/
 }
-function temp_interopVikeVitePlugin(
-  pageConfigGlobal: PageConfigGlobalBuildTime,
-  vikeVitePluginOptions: unknown,
-  userRootDir: string
-) {
-  assert(isObject(vikeVitePluginOptions))
-  assertWarning(
-    Object.keys(vikeVitePluginOptions).length === 0,
-    `Define Vike settings in +config.js instead of vite.config.js ${pc.underline('https://vike.dev/migration/settings')}`,
-    { onlyOnce: true }
-  )
-  Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
-    assert(includes(objectKeys(configDefinitionsBuiltInAll), configName))
-    const configDef = configDefinitionsBuiltInAll[configName]
-    const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
-    sources.push({
-      value,
-      configEnv: configDef.env,
-      definedAtFilePath: {
-        ...getFilePathResolved({
-          userRootDir,
-          filePathAbsoluteUserRootDir: '/vite.config.js'
-        }),
-        fileExportPathToShowToUser: null
-      },
-      locationId: '/' as LocationId,
-      interfaceFile: null,
-      isOverriden: configDef.cumulative ? false : sources.length > 0,
-      valueIsImportedAtRuntime: false,
-      valueIsDefinedByPlusFile: false
-    })
-  })
-}
 async function getPageConfigs(
   interfaceFilesAll: InterfaceFilesByLocationId,
   userRootDir: string,
@@ -558,6 +525,39 @@ async function getPageConfigs(
   assertPageConfigs(pageConfigs, interfaceFilesAll)
 
   return { pageConfigs, pageConfigGlobal }
+}
+function temp_interopVikeVitePlugin(
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+  vikeVitePluginOptions: unknown,
+  userRootDir: string
+) {
+  assert(isObject(vikeVitePluginOptions))
+  assertWarning(
+    Object.keys(vikeVitePluginOptions).length === 0,
+    `Define Vike settings in +config.js instead of vite.config.js ${pc.underline('https://vike.dev/migration/settings')}`,
+    { onlyOnce: true }
+  )
+  Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
+    assert(includes(objectKeys(configDefinitionsBuiltInAll), configName))
+    const configDef = configDefinitionsBuiltInAll[configName]
+    const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+    sources.push({
+      value,
+      configEnv: configDef.env,
+      definedAtFilePath: {
+        ...getFilePathResolved({
+          userRootDir,
+          filePathAbsoluteUserRootDir: '/vite.config.js'
+        }),
+        fileExportPathToShowToUser: null
+      },
+      locationId: '/' as LocationId,
+      interfaceFile: null,
+      isOverriden: configDef.cumulative ? false : sources.length > 0,
+      valueIsImportedAtRuntime: false,
+      valueIsDefinedByPlusFile: false
+    })
+  })
 }
 function getPageLocationIds(interfaceFilesAll: InterfaceFilesByLocationId) {
   const locationIds = new Set<LocationId>()
