@@ -92,7 +92,6 @@ import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getC
 import { assertExtensionsRequire, assertExtensionsConventions } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
-const configDefinitionsBuiltIn = getConfigDefinitionsBuiltIn()
 const configDefinitionsBuiltInGlobal = getConfigDefinitionsBuiltInGlobal()
 
 assertIsNotProductionRuntime()
@@ -293,7 +292,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
       // We don't have access to the custom config definitions defined by the user yet.
       //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
       //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-      await loadValueFile(interfaceFile, configDefinitionsBuiltIn, userRootDir)
+      await loadValueFile(interfaceFile, configDefinitionsBuiltInAll, userRootDir)
     })
   ])
 
