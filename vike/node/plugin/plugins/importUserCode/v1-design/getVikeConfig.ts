@@ -297,7 +297,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
     })
   ])
 
-  assertAllConfigsAreKnown(interfaceFilesAll)
+  assertKnownConfigs(interfaceFilesAll)
 
   return interfaceFilesAll
 }
@@ -324,16 +324,19 @@ function getInterfaceFileFromConfigFile(
   return interfaceFile
 }
 /** Show error message upon unknown config */
-function assertAllConfigsAreKnown(interfaceFilesAll: InterfaceFilesByLocationId) {
+function assertKnownConfigs(interfaceFilesAll: InterfaceFilesByLocationId) {
+  const configDefinitionsAll = getConfigDefinitions(interfaceFilesAll)
+  const configNamesKnownAll = Object.keys(configDefinitionsAll)
   objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
     const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
-    const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
+    const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant)
+    const configNamesKnownLocal = Object.keys(configDefinitionsLocal)
     interfaceFiles.forEach((interfaceFile) => {
-      const configNamesKnown = Object.keys(configDefinitions)
-      const { filePathToShowToUser } = interfaceFile.filePath
       const configNames = getDefiningConfigNames(interfaceFile)
       configNames.forEach((configName) => {
-        assertConfigExists(configName, configNamesKnown, filePathToShowToUser)
+        assertUsageKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, interfaceFile)
+        assert(configNamesKnownLocal.includes(configName))
+        assert(configNamesKnownAll.includes(configName))
       })
     })
   })
@@ -588,7 +591,7 @@ function assertGlobalConfigs(pageConfig: PageConfigBuildTime, interfaceFilesAll:
     }
     configNames.forEach((configName) => {
       if (isGlobalConfigOld(configName)) return
-      const configDef = getConfigDefinition(configDefinitions, configName, interfaceFile.filePath.filePathToShowToUser)
+      const configDef = getConfigDefinition(configDefinitions, configName)
       if (configDef.global === true) {
         const locationIds = objectKeys(interfaceFilesAll)
         if (!isGlobalLocation(interfaceFile.locationId, locationIds)) {
@@ -1209,11 +1212,30 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-function handleUnknownConfig(configName: string, configNames: string[], filePathToShowToUser: string) {
-  const configNameColored = pc.cyan(configName)
-  let errMsg = `${filePathToShowToUser} sets an unknown config ${configNameColored}.` as const
+function assertUsageKnownConfig(
+  configName: string,
+  configNamesKnownAll: string[],
+  configNamesKnownLocal: string[],
+  interfaceFile: InterfaceFile
+): void {
+  if (configNamesKnownLocal.includes(configName)) return
 
-  // vike-{react,vue,solid} hint
+  const configNameColored = pc.cyan(configName)
+  const {
+    locationId,
+    filePath: { filePathToShowToUser }
+  } = interfaceFile
+  const errMsg = `${filePathToShowToUser} sets an unknown config ${configNameColored}` as const
+
+  // Inheritance issue: config is known but isn't defined at `locationId`
+  if (configNamesKnownAll.includes(configName)) {
+    assertUsage(
+      false,
+      `${filePathToShowToUser} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const
+    )
+  }
+
+  // Missing vike-{react,vue,solid} installation
   {
     const ui = ['vike-react', 'vike-vue', 'vike-solid'] as const
     const knownVikeExntensionConfigs = {
@@ -1229,19 +1251,11 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
     } as const
     if (configName in knownVikeExntensionConfigs) {
       const requiredVikeExtension = knownVikeExntensionConfigs[configName as keyof typeof knownVikeExntensionConfigs]
-      assertUsage(
-        false,
-        [
-          errMsg,
-          `If you want to use the configuration documented at https://vike.dev/${configName} then make sure to install the Vike extension ${requiredVikeExtension
-            .map((e) => pc.bold(e))
-            .join('/')}.`,
-          `Also make sure it applies to ${filePathToShowToUser} (see https://vike.dev/extends#inheritance).`,
-          `Alternatively, if you don't want to use the aforementioned Vike extension, define it yourself by using ${pc.cyan(
-            'meta'
-          )} (https://vike.dev/meta).`
-        ].join(' ')
-      )
+        .map((e) => pc.bold(e))
+        .join('/')
+      const errMsgEnhanced =
+        `${errMsg}. If you want to use the configuration ${configNameColored} documented at ${pc.underline(`https://vike.dev/${configName}`)} then make sure to install ${requiredVikeExtension}. (Alternatively, you can define ${configNameColored} yourself by using ${pc.cyan('meta')}, see ${pc.underline('https://vike.dev/meta')} for more information.)` as const
+      assertUsage(false, errMsgEnhanced)
     }
   }
 
@@ -1250,23 +1264,17 @@ function handleUnknownConfig(configName: string, configNames: string[], filePath
   if (configName === 'page') {
     configNameSimilar = 'Page'
   } else {
-    configNameSimilar = getMostSimilar(configName, configNames)
+    configNameSimilar = getMostSimilar(configName, configNamesKnownAll)
   }
   if (configNameSimilar) {
     assert(configNameSimilar !== configName)
-    errMsg += ` Did you mean to set ${pc.cyan(configNameSimilar)} instead?`
+    let errMsgEnhanced = `${errMsg}. Did you mean ${pc.cyan(configNameSimilar)} instead?` as const
     if (configName === 'page') {
-      errMsg += ` (The name of the config ${pc.cyan('Page')} starts with a capital letter ${pc.cyan(
+      errMsgEnhanced += ` (The name of the config ${pc.cyan('Page')} starts with a capital letter ${pc.cyan(
         'P'
-      )} because it defines a UI component: a ubiquitous JavaScript convention is that the name of UI components start with a capital letter.)`
+      )} because it defines a UI component: a ubiquitous JavaScript convention is that the name of UI components start with a capital letter.)` as const
     }
-  }
-
-  // `meta` hint
-  if (!configNameSimilar) {
-    errMsg += ` Make sure to define ${configNameColored} by using ${pc.cyan(
-      'meta'
-    )} (https://vike.dev/meta), and also make sure the meta configuration applies to ${filePathToShowToUser} (see https://vike.dev/config#inheritance).`
+    assertUsage(false, errMsgEnhanced)
   }
 
   assertUsage(false, errMsg)
@@ -1371,9 +1379,8 @@ function getConfigEnvValue(
   return val
 }
 
-function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: string, filePathToShowToUser: string) {
+function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: string) {
   const configDef = configDefinitions[configName]
-  assertConfigExists(configName, Object.keys(configDefinitions), filePathToShowToUser)
   assert(configDef)
   return configDef
 }
@@ -1416,13 +1423,6 @@ function getConfigDefinitionsBuiltIn() {
     objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== true)
   )
 }
-function assertConfigExists(configName: string, configNamesRelevant: string[], filePathToShowToUser: string) {
-  const configNames = [...configNamesRelevant, ...getConfigNamesGlobal()]
-  if (configNames.includes(configName)) return
-  handleUnknownConfig(configName, configNames, filePathToShowToUser)
-  assert(false)
-}
-
 function sortConfigValueSources(
   configValueSources: ConfigValueSources,
   locationIdPage: LocationId
