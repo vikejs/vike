@@ -510,6 +510,7 @@ async function getPageConfigs(
     getPageLocationIds(interfaceFilesAll).map(async (locationId) => {
       const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
       const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant)
+      // const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant, (configDef) => configDef.global !== true) // TODO/now
 
       // Load value files (with `env.config===true`) of *custom* configs.
       // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
@@ -528,6 +529,7 @@ async function getPageConfigs(
               importedFilesLoaded
             )
             if (sources.length === 0) return
+            // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
             configValueSources[configName] = sources
           })
       )
@@ -1401,13 +1403,16 @@ function isGlobalConfigOld(configName: string): configName is ConfigNameGlobal {
 function isGlobalConfig(
   configName: string,
   configDefinitions: ConfigDefinitions,
-  value: unknown
+  configValueSources: ConfigValueSource[]
 ): configName is ConfigNameGlobal {
-  const configSpec = configDefinitions[configName]
-  assert(configSpec)
-  const globalValue = configSpec.global
+  const configDef = configDefinitions[configName]
+  assert(configDef)
+  const globalValue = configDef.global
   if (!globalValue) return false
   if (globalValue === true) return true
+  assertUsage(configDef.env.config, 'TODO')
+  assertUsage(!configDef.cumulative, 'TODO')
+  const value = 'TODO'
   return globalValue(value)
 }
 function sortConfigValueSources(
