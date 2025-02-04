@@ -446,9 +446,7 @@ async function resolveConfigDefinitions(interfaceFilesAll: InterfaceFilesByLocat
     interfaceFilesAll, // TODO/now sort
     (configDef) => !!configDef.global
   )
-  // Load value files (with `env.config===true`) of *custom* configs.
-  // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
-  await loadValueFiles(interfaceFilesAll, configDefinitionsGlobal, userRootDir)
+  await loadCustomConfigBuiltTimeFiles(interfaceFilesAll, configDefinitionsGlobal, userRootDir)
 
   const configDefinitionsLocal: Record<
     LocationId,
@@ -465,9 +463,7 @@ async function resolveConfigDefinitions(interfaceFilesAll: InterfaceFilesByLocat
       const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
       //    configDefinitions = getConfigDefinitions(interfaceFilesRelevant, (configDef) => configDef.global !== true) // TODO/now
       const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
-      // Load value files (with `env.config===true`) of *custom* configs.
-      // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
-      await loadValueFiles(interfaceFiles, configDefinitions, userRootDir)
+      await loadCustomConfigBuiltTimeFiles(interfaceFiles, configDefinitions, userRootDir)
       configDefinitionsLocal[locationId] = { configDefinitions, interfaceFiles, interfaceFilesRelevant }
     })
   )
@@ -479,7 +475,9 @@ async function resolveConfigDefinitions(interfaceFilesAll: InterfaceFilesByLocat
   return configDefinitionsResolved
 }
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
-async function loadValueFiles(
+// Load value files (with `env.config===true`) of *custom* configs.
+// - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
+async function loadCustomConfigBuiltTimeFiles(
   interfaceFiles: InterfaceFilesByLocationId | InterfaceFile[],
   configDefinitions: ConfigDefinitions,
   userRootDir: string
