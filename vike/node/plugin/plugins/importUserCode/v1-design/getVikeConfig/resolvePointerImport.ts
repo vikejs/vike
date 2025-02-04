@@ -1,4 +1,4 @@
-export { resolvePointerImportOfConfig }
+export { resolvePointerImport }
 export { resolvePointerImportData }
 
 import pc from '@brillout/picocolors'
@@ -21,7 +21,7 @@ import {
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 
 type FileExportPath = DefinedAtFilePath & Required<Pick<DefinedAtFilePath, 'fileExportName'>>
-function resolvePointerImportOfConfig(
+function resolvePointerImport(
   configValue: unknown,
   importerFilePath: FilePathResolved,
   userRootDir: string,

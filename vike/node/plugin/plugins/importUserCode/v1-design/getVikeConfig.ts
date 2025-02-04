@@ -81,7 +81,7 @@ import {
   loadValueFile,
   loadValueFiles
 } from './getVikeConfig/loadFileAtConfigTime.js'
-import { resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
+import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -829,12 +829,7 @@ async function getConfigValueSource(
     if (interfaceFile.isConfigFile) {
       // Defined over pointer import
       assert(confVal.configValueLoaded)
-      const pointerImport = resolvePointerImportOfConfig(
-        confVal.configValue,
-        interfaceFile.filePath,
-        userRootDir,
-        configName
-      )
+      const pointerImport = resolvePointerImport(confVal.configValue, interfaceFile.filePath, userRootDir, configName)
       const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtFilePath_)
       assertUsage(pointerImport, `${configDefinedAt} should be an import`)
       valueFilePath = pointerImport.fileExportPath.filePathAbsoluteVite
@@ -867,7 +862,7 @@ async function getConfigValueSource(
     const { configValue } = confVal
 
     // Defined over pointer import
-    const pointerImport = resolvePointerImportOfConfig(configValue, interfaceFile.filePath, userRootDir, configName)
+    const pointerImport = resolvePointerImport(configValue, interfaceFile.filePath, userRootDir, configName)
     if (pointerImport) {
       const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
