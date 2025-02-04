@@ -6,7 +6,6 @@ export { isVikeConfigFile }
 export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
-export { shouldBeLoadableAtBuildTime }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
 export type { InterfaceFile }
@@ -78,9 +77,10 @@ import {
   ImportedFilesLoaded,
   loadConfigFile,
   loadPointerImport,
-  loadValueFile
+  loadValueFile,
+  PointerImportLoaded
 } from './getVikeConfig/loadFileAtConfigTime.js'
-import { type PointerImport, resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
+import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -107,22 +107,10 @@ type InterfaceConfigFile = InterfaceFileCommons & {
     string, // configName
     unknown
   >
-  //* TODO/now
   pointerImportsByConfigName: Record<
     string, // configValue
-    PointerImport &
-      // TODO/now
-      (
-        | {
-            fileExportValueLoaded: true
-            fileExportValue: unknown
-          }
-        | {
-            fileExportValueLoaded: false
-          }
-      )
+    PointerImportLoaded
   >
-  //*/
 }
 // +{configName}.js
 type InterfaceValueFile = InterfaceFileCommons & {
@@ -497,6 +485,12 @@ async function loadCustomConfigBuiltTimeFiles(
     interfaceFileList.map(async (interfaceFile) => {
       if (interfaceFile.isValueFile) {
         await loadValueFile(interfaceFile, configDefinitions, userRootDir)
+      } else {
+        await Promise.all(
+          Object.entries(interfaceFile.pointerImportsByConfigName).map(async ([configName, pointerImport]) => {
+            await loadPointerImport(pointerImport, userRootDir, configName, configDefinitions)
+          })
+        )
       }
     })
   )
@@ -885,7 +879,7 @@ async function getConfigValueSource(
     const { configValue } = confVal
 
     // Defined over pointer import
-    const pointerImport = resolvePointerImport(configValue, interfaceFile.filePath, userRootDir, configName)
+    const pointerImport = interfaceFile.pointerImportsByConfigName[configName]
     if (pointerImport) {
       const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
@@ -895,16 +889,10 @@ async function getConfigValueSource(
         isOverriden,
         definedAtFilePath: pointerImport.fileExportPath
       }
-      // Load pointer import
-      if (
-        shouldBeLoadableAtBuildTime(configDef) &&
-        // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
-        configName !== 'extends'
-      ) {
-        const fileExportValue = await loadPointerImport(pointerImport, userRootDir, importedFilesLoaded, configName)
-        configValueSource.value = fileExportValue
+      if (pointerImport.fileExportValueLoaded) {
+        configValueSource.value = pointerImport.fileExportValue
+        assert('fileExportValue' in pointerImport)
       }
-
       return configValueSource
     }
 
@@ -1424,9 +1412,6 @@ function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: s
 }
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
   return configDefinitions[configName] ?? null
-}
-function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
-  return !!configDef.env.config && !configDef._valueIsFilePath
 }
 // TODO/now: remove
 function isGlobalConfigOld(configName: string): configName is ConfigNameGlobal {
