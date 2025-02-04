@@ -891,13 +891,8 @@ async function getConfigValueSource(
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
         configName !== 'extends'
       ) {
-        if (pointerImport.fileExportPath.filePathAbsoluteFilesystem) {
-          const fileExportValue = await loadPointerImport(pointerImport, userRootDir, importedFilesLoaded)
-          configValueSource.value = fileExportValue
-        } else {
-          const configDefinedAt = getConfigDefinedAt('Config', configName, configValueSource.definedAtFilePath)
-          assertUsage(false, `${configDefinedAt} cannot be defined over an aliased import`)
-        }
+        const fileExportValue = await loadPointerImport(pointerImport, userRootDir, importedFilesLoaded, configName)
+        configValueSource.value = fileExportValue
       }
 
       return configValueSource

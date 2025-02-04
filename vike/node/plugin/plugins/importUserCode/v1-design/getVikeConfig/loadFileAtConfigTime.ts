@@ -23,6 +23,7 @@ import { type PointerImportData, parsePointerImportData } from './transformPoint
 import { getConfigFileExport } from '../getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
 import type { ConfigDefinitions } from './configDefinitionsBuiltIn.js'
+import { getConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
 assertIsNotProductionRuntime()
 
@@ -37,9 +38,14 @@ type ConfigFile = {
 async function loadPointerImport(
   pointerImport: PointerImport,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: ImportedFilesLoaded,
+  configName: string
 ): Promise<unknown> {
-  assert(pointerImport.fileExportPath.filePathAbsoluteFilesystem)
+  const configDefinedAt = getConfigDefinedAt('Config', configName, pointerImport.fileExportPath)
+  assertUsage(
+    pointerImport.fileExportPath.filePathAbsoluteFilesystem,
+    `${configDefinedAt} cannot be defined over an aliased import`
+  )
   const f = pointerImport.fileExportPath.filePathAbsoluteFilesystem
   if (!importedFilesLoaded[f]) {
     importedFilesLoaded[f] = transpileAndExecuteFile(pointerImport.fileExportPath, userRootDir, false).then(
