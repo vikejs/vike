@@ -28,27 +28,22 @@ function resolvePointerImportOfConfig(
   configValue: unknown,
   importerFilePath: FilePathResolved,
   userRootDir: string,
-  configEnv: ConfigEnvInternal,
   configName: string
-): null | { fileExportPath: FileExportPath; configEnvResolved: ConfigEnvInternal } {
+): null | { fileExportPath: FileExportPath } {
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
   if (!pointerImportData) return null
-  const { importPath, exportName } = pointerImportData
+  const { exportName } = pointerImportData
 
   const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
-
-  let configEnvResolved = configEnv
-  if (filePath.filePathAbsoluteFilesystem) configEnvResolved = resolveConfigEnvWithFileName(configEnv, filePath)
-  assertUsageFileEnv(filePath, importPath, configEnvResolved, configName)
 
   const fileExportPath: FileExportPath = {
     ...filePath,
     fileExportName: exportName,
     fileExportPathToShowToUser
   }
-  return { fileExportPath, configEnvResolved }
+  return { fileExportPath }
 }
 
 function resolvePointerImport(
@@ -158,21 +153,17 @@ function assertUsageResolutionSuccess(
   }
 }
 
-function assertUsageFileEnv(
-  filePath: FilePath,
-  importPath: string,
-  configEnvResolved: ConfigEnvInternal,
-  configName: string
-) {
+function assertUsageFileEnv(filePath: FilePath, configEnvResolved: ConfigEnvInternal, configName: string) {
   let key: string
   if (filePath.filePathAbsoluteFilesystem) {
     key = filePath.filePathAbsoluteFilesystem
   } else {
     // Path alias
-    assert(!isRelativeImportPath(importPath))
-    key = importPath
+    key = filePath.filePathAbsoluteVite
   }
+  assert(key)
   assertPosixPath(key)
+  assert(!isRelativeImportPath(filePath.filePathAbsoluteVite))
   if (!filesEnvMap.has(key)) {
     filesEnvMap.set(key, [])
   }
@@ -199,9 +190,11 @@ function clearFilesEnvMap() {
   filesEnvMap.clear()
 }
 
-function resolveConfigEnvWithFileName(configEnv: ConfigEnvInternal, filePath: FilePathResolved) {
-  const { fileName } = filePath
+function resolveConfigEnvWithFileName(configEnv: ConfigEnvInternal, filePath: FilePath, configName: string) {
   const configEnvResolved = { ...configEnv }
+
+  if (filePath.filePathAbsoluteFilesystem) {
+  const { fileName } = filePath
   if (fileName.includes('.server.')) {
     configEnvResolved.server = true
     configEnvResolved.client = false
@@ -212,6 +205,10 @@ function resolveConfigEnvWithFileName(configEnv: ConfigEnvInternal, filePath: Fi
     configEnvResolved.server = true
     configEnvResolved.client = true
   }
+  }
+
+  assertUsageFileEnv(filePath, configEnvResolved, configName)
+
   return configEnvResolved
 }
 

@@ -842,7 +842,6 @@ async function getConfigValueSource(
         confVal.configValue,
         interfaceFile.filePath,
         userRootDir,
-        configDef.env,
         configName
       )
       const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtFilePath_)
@@ -877,17 +876,11 @@ async function getConfigValueSource(
     const { configValue } = confVal
 
     // Defined over pointer import
-    const pointerImport = resolvePointerImportOfConfig(
-      configValue,
-      interfaceFile.filePath,
-      userRootDir,
-      configDef.env,
-      configName
-    )
+    const pointerImport = resolvePointerImportOfConfig(configValue, interfaceFile.filePath, userRootDir, configName)
     if (pointerImport) {
       const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
-        configEnv: pointerImport.configEnvResolved,
+        configEnv: resolveConfigEnvWithFileName(configDef.env, pointerImport.fileExportPath, configName),
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
         isOverriden,
@@ -926,7 +919,7 @@ async function getConfigValueSource(
 
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
-    const configEnvResolved = resolveConfigEnvWithFileName(configDef.env, interfaceFile.filePath)
+    const configEnvResolved = resolveConfigEnvWithFileName(configDef.env, interfaceFile.filePath, configName)
     const valueAlreadyLoaded = confVal.configValueLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
