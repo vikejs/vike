@@ -74,7 +74,7 @@ import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import {
   type ConfigFile,
-  type ImportedFilesLoaded,
+  type EsbuildCache,
   loadConfigFile,
   loadPointerImport,
   loadValueFile,
@@ -380,7 +380,7 @@ async function loadVikeConfig_withErrorHandling(
 }
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const interfaceFilesAll = await loadInterfaceFiles(userRootDir)
-  const importedFilesLoaded: ImportedFilesLoaded = {}
+  const importedFilesLoaded: EsbuildCache = {}
   const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir)
   const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
     configDefinitionsResolved,
@@ -401,7 +401,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 async function getGlobalConfigs(
   interfaceFilesAll: InterfaceFilesByLocationId,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: EsbuildCache
 ) {
   /* TODO/now: dedupe
   // Validate that global configs live in global interface files
@@ -499,7 +499,7 @@ async function getPageConfigs(
   configDefinitionsResolved: ConfigDefinitionsResolved,
   interfaceFilesAll: InterfaceFilesByLocationId,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: EsbuildCache
 ) {
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
@@ -724,7 +724,7 @@ async function resolveConfigValueSources(
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  importedFilesLoaded: EsbuildCache
 ): Promise<ConfigValueSource[]> {
   const sourcesInfo: Parameters<typeof getConfigValueSource>[] = []
 
@@ -821,7 +821,7 @@ async function getConfigValueSource(
   interfaceFile: InterfaceFile,
   configDef: ConfigDefinitionInternal,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded,
+  importedFilesLoaded: EsbuildCache,
   isHighestInheritancePrecedence: boolean
 ): Promise<ConfigValueSource> {
   const confVal = getConfVal(interfaceFile, configName)

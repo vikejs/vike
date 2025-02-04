@@ -3,7 +3,7 @@
 export { loadPointerImport }
 export { loadValueFile }
 export { loadConfigFile }
-export type { ImportedFilesLoaded }
+export type { EsbuildCache }
 export type { ConfigFile }
 export type { PointerImportLoaded }
 
@@ -28,7 +28,7 @@ import { getConfigDefinedAt } from '../../../../../../shared/page-configs/getCon
 
 assertIsNotProductionRuntime()
 
-type ImportedFilesLoaded = Record<string, Promise<Record<string, unknown>>>
+type EsbuildCache = Record<string, Promise<Record<string, unknown>>>
 type ConfigFile = {
   fileExports: Record<string, unknown>
   filePath: FilePathResolved
