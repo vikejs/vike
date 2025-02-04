@@ -718,7 +718,7 @@ function resolveConfigValueSources(
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string
 ): ConfigValueSource[] {
-  const sourcesInfo: Parameters<typeof getConfigValueSource>[] = []
+  const interfaceFilesSource: { interfaceFile: InterfaceFile; isHighestInheritancePrecedence: boolean }[] = []
 
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
   for (const interfaceFiles of Object.values(interfaceFilesRelevant)) {
@@ -730,8 +730,8 @@ function resolveConfigValueSources(
     const add = (interfaceFile: InterfaceFile) => {
       assert(!visited.has(interfaceFile))
       visited.add(interfaceFile)
-      const isHighestInheritancePrecedence = sourcesInfo.length === 0
-      sourcesInfo.push([configName, interfaceFile, configDef, userRootDir, isHighestInheritancePrecedence])
+      const isHighestInheritancePrecedence = interfaceFilesSource.length === 0
+      interfaceFilesSource.push({ interfaceFile, isHighestInheritancePrecedence })
     }
 
     // Main resolution logic
@@ -796,7 +796,9 @@ function resolveConfigValueSources(
     })
   }
 
-  const sources: ConfigValueSource[] = sourcesInfo.map((args) => getConfigValueSource(...args))
+  const sources: ConfigValueSource[] = interfaceFilesSource.map(({ interfaceFile, isHighestInheritancePrecedence }) =>
+    getConfigValueSource(configName, interfaceFile, configDef, userRootDir, isHighestInheritancePrecedence)
+  )
   return sources
 }
 function getConfigValueSource(
