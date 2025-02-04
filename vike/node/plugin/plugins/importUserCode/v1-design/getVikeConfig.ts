@@ -896,7 +896,7 @@ async function getConfigValueSource(
           configValueSource.value = fileExportValue
         } else {
           const configDefinedAt = getConfigDefinedAt('Config', configName, configValueSource.definedAtFilePath)
-          assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
+          assertUsage(false, `${configDefinedAt} cannot be defined over an aliased import`)
         }
       }
 
