@@ -80,7 +80,7 @@ import {
   loadPointerImport,
   loadValueFile
 } from './getVikeConfig/loadFileAtConfigTime.js'
-import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
+import { type PointerImport, resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -107,10 +107,10 @@ type InterfaceConfigFile = InterfaceFileCommons & {
     string, // configName
     unknown
   >
-  /* TODO/now
+  //* TODO/now
   pointerImportsByConfigName: Record<
     string, // configValue
-    PointerImportResolvedWithEnv &
+    PointerImport &
       // TODO/now
       (
         | {
@@ -252,7 +252,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
       const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
       assert(filePath.filePathAbsoluteUserRootDir)
       const locationId = getLocationId(filePathAbsoluteUserRootDir)
-      const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId)
+      const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId, userRootDir)
 
       interfaceFilesAll[locationId] = interfaceFilesAll[locationId] ?? []
       interfaceFilesAll[locationId]!.push(interfaceFile)
@@ -273,7 +273,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         export default { extends: [vikeReact] }
         ```
         */
-        const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId)
+        const interfaceFile = getInterfaceFileFromConfigFile(extendsConfig, true, locationId, userRootDir)
         assertExtensionsConventions(interfaceFile)
         interfaceFilesAll[locationId]!.push(interfaceFile)
       })
@@ -313,20 +313,30 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
 function getInterfaceFileFromConfigFile(
   configFile: ConfigFile,
   isConfigExtend: boolean,
-  locationId: LocationId
+  locationId: LocationId,
+  userRootDir: string
 ): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
 
   const fileExportsByConfigName: InterfaceConfigFile['fileExportsByConfigName'] = {}
+  const pointerImportsByConfigName: InterfaceConfigFile['pointerImportsByConfigName'] = {}
   const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
   Object.entries(fileExport).forEach(([configName, configValue]) => {
     fileExportsByConfigName[configName] = configValue
+    const pointerImport = resolvePointerImport(configValue, configFile.filePath, userRootDir, configName)
+    if (pointerImport) {
+      pointerImportsByConfigName[configName] = {
+        ...pointerImport,
+        fileExportValueLoaded: false
+      }
+    }
   })
 
   const interfaceFile: InterfaceConfigFile = {
     locationId,
     filePath,
     fileExportsByConfigName,
+    pointerImportsByConfigName,
     isConfigFile: true,
     isValueFile: false,
     isValueFileLoaded: true,
