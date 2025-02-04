@@ -13,7 +13,6 @@ import {
   viteIsSSR_options,
   scriptFileExtensions,
   debugGlob,
-  getOutDirs,
   isVersionOrAbove,
   assertWarning
 } from '../../utils.js'
@@ -25,6 +24,7 @@ import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
 import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
 import { resolvePrerenderConfig } from '../../../prerender/resolvePrerenderConfig.js'
+import { getOutDirs } from '../../getOutDirs.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated

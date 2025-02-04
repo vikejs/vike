@@ -5,7 +5,6 @@ export { manifestTempFile }
 
 import {
   assert,
-  resolveOutDir,
   viteIsSSR,
   addOnBeforeLogHook,
   removeFileExtention,
@@ -13,8 +12,6 @@ import {
   assertUsage,
   injectRollupInputs,
   normalizeRollupInput,
-  getOutDirs,
-  type OutDirs,
   onSetupBuild,
   assertIsNpmPackageImport
 } from '../utils.js'
@@ -39,6 +36,7 @@ import { set_ASSETS_MANIFEST } from './buildEntry/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
+import { getOutDirs, type OutDirs, resolveOutDir } from '../getOutDirs.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)

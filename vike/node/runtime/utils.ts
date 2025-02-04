@@ -28,8 +28,6 @@ export * from '../../utils/compareString.js'
 export * from '../../utils/isObjectWithKeys.js'
 export * from '../../utils/stringifyStringArray.js'
 export * from '../../utils/unique.js'
-// TODO/now: remove
-export * from '../plugin/getOutDirs.js'
 export * from '../../utils/capitalizeFirstLetter.js'
 export * from '../../utils/debugGlob.js'
 export * from '../../utils/isSameErrorMessage.js'
