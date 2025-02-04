@@ -1,5 +1,4 @@
 export { resolveConfigEnv }
-export { isRelativeImportPath }
 
 import type { ConfigEnvInternal } from '../../../../../../shared/page-configs/PageConfig.js'
 import type { FilePath } from '../../../../../../shared/page-configs/FilePath.js'
@@ -23,9 +22,4 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
   }
 
   return configEnvResolved
-}
-
-// TODO/now dedupe
-function isRelativeImportPath(importPath: string) {
-  return importPath.startsWith('./') || importPath.startsWith('../')
 }

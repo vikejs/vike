@@ -1,4 +1,5 @@
 export { pathJoin }
+export { pathIsRelative }
 export { toPosixPath }
 export { assertPosixPath }
 
@@ -46,4 +47,8 @@ function assertPosixPath(path: string): void {
   assert(path !== '', errMsg('(empty string)'))
   assert(path)
   assert(!path.includes('\\'), errMsg(path))
+}
+
+function pathIsRelative(importPath: string) {
+  return importPath.startsWith('./') || importPath.startsWith('../')
 }

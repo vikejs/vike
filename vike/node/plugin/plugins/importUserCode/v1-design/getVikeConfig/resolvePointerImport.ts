@@ -3,7 +3,14 @@ export { resolvePointerImport }
 
 import pc from '@brillout/picocolors'
 import type { DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
-import { assert, assertPosixPath, assertUsage, isFilePathAbsolute, requireResolve } from '../../../../utils.js'
+import {
+  assert,
+  assertPosixPath,
+  assertUsage,
+  isFilePathAbsolute,
+  pathIsRelative,
+  requireResolve
+} from '../../../../utils.js'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import path from 'path'
 import {
@@ -12,7 +19,6 @@ import {
   getFilePathUnresolved
 } from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-import { isRelativeImportPath } from './resolveConfigEnv.js'
 
 type FileExportPath = DefinedAtFilePath & Required<Pick<DefinedAtFilePath, 'fileExportName'>>
 function resolvePointerImportOfConfig(
@@ -54,7 +60,7 @@ function resolvePointerImport(
   if (importPath.startsWith('.') || isFilePathAbsolute(importPath)) {
     if (importPath.startsWith('.')) {
       assertUsage(
-        isRelativeImportPath(importPath),
+        pathIsRelative(importPath),
         `Invalid relative import path ${pc.code(importPath)} defined by ${
           importerFilePath.filePathToShowToUser
         } because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
@@ -136,7 +142,7 @@ function assertUsageResolutionSuccess(
       : (`The import ${pc.code(importString)} defined by ${filePathToShowToUser}` as const)
     const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
     if (importPath.startsWith('.')) {
-      assert(isRelativeImportPath(importPath))
+      assert(pathIsRelative(importPath))
       assertUsage(false, `${errIntro2} point to an existing file?`)
     } else {
       assertUsage(false, `${errIntro2} exist?`)
