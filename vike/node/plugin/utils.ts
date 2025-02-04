@@ -8,7 +8,7 @@ onLoad()
 export * from '../runtime/utils.js'
 
 // Utils only needed by `plugin/*`
-export * from '../../utils/viteIsSSR.js'
+export * from './shared/viteIsSSR.js'
 export * from '../../utils/requireResolve.js'
 export * from '../../utils/includes.js'
 export * from '../../utils/isDev.js'
