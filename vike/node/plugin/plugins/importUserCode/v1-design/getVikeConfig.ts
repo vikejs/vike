@@ -78,8 +78,7 @@ import {
   ImportedFilesLoaded,
   loadConfigFile,
   loadImportedFile,
-  loadValueFile,
-  loadValueFiles
+  loadValueFile
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
@@ -480,7 +479,18 @@ async function resolveConfigDefinitions(interfaceFilesAll: InterfaceFilesByLocat
   return configDefinitionsResolved
 }
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
-
+async function loadValueFiles(
+  interfaceFiles: InterfaceFilesByLocationId | InterfaceFile[],
+  configDefinitions: ConfigDefinitions,
+  userRootDir: string
+): Promise<void> {
+  await Promise.all(
+    Object.values(interfaceFiles)
+      .flat(1)
+      .filter((interfaceFile) => interfaceFile.isValueFile)
+      .map(async (interfaceFile) => await loadValueFile(interfaceFile, configDefinitions, userRootDir))
+  )
+}
 async function getPageConfigs(
   configDefinitionsResolved: ConfigDefinitionsResolved,
   interfaceFilesAll: InterfaceFilesByLocationId,
