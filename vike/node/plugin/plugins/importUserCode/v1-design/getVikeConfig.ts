@@ -81,22 +81,18 @@ import {
   loadValueFile,
   loadValueFiles
 } from './getVikeConfig/loadFileAtConfigTime.js'
-import {
-  clearFilesEnvMap,
-  resolveConfigEnvWithFileName,
-  resolvePointerImportOfConfig
-} from './getVikeConfig/resolvePointerImport.js'
+import { resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
+import { clearFilesEnvMap, resolveConfigEnv } from './getVikeConfig/resolveConfigEnv.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire, assertExtensionsConventions } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
-const configDefinitionsBuiltIn = getConfigDefinitionsBuiltIn()
-const configDefinitionsBuiltInGlobal = getConfigDefinitionsBuiltInGlobal()
 
 assertIsNotProductionRuntime()
 
+// TODO/now: `rename InterfaceFile PlusFile`?
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
   locationId: LocationId
@@ -108,11 +104,27 @@ type InterfaceConfigFile = InterfaceFileCommons & {
   isValueFile: false
   extendsFilePaths: string[]
   isConfigExtend: boolean
-  isValueLoaded: true
+  isValueFileLoaded: true
   fileExportsByConfigName: Record<
     string, // configName
-    unknown // configValue
+    unknown
   >
+  /* TODO/now
+  pointerImportsByConfigName: Record<
+    string, // configValue
+    PointerImportResolvedWithEnv &
+      // TODO/now
+      (
+        | {
+            fileExportValueLoaded: true
+            fileExportValue: unknown
+          }
+        | {
+            fileExportValueLoaded: false
+          }
+      )
+  >
+  //*/
 }
 // +{configName}.js
 type InterfaceValueFile = InterfaceFileCommons & {
@@ -121,14 +133,14 @@ type InterfaceValueFile = InterfaceFileCommons & {
   configName: string
 } & (
     | {
-        isValueLoaded: Promise<void>
+        isValueFileLoaded: Promise<void>
         fileExportsByConfigName: Record<
           string, // configName
           unknown // configValue
         >
       }
     | {
-        isValueLoaded: false
+        isValueFileLoaded: false
       }
   )
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
@@ -284,7 +296,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         filePath,
         isConfigFile: false,
         isValueFile: true,
-        isValueLoaded: false,
+        isValueFileLoaded: false,
         configName
       }
       interfaceFilesAll[locationId] = interfaceFilesAll[locationId] ?? []
@@ -293,7 +305,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
       // We don't have access to the custom config definitions defined by the user yet.
       //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
       //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-      await loadValueFile(interfaceFile, configDefinitionsBuiltIn, userRootDir)
+      await loadValueFile(interfaceFile, configDefinitionsBuiltInAll, userRootDir)
     })
   ])
 
@@ -313,7 +325,7 @@ function getInterfaceFileFromConfigFile(
     fileExportsByConfigName: {},
     isConfigFile: true,
     isValueFile: false,
-    isValueLoaded: true,
+    isValueFileLoaded: true,
     isConfigExtend,
     extendsFilePaths
   }
@@ -322,24 +334,6 @@ function getInterfaceFileFromConfigFile(
     interfaceFile.fileExportsByConfigName[configName] = configValue
   })
   return interfaceFile
-}
-/** Show error message upon unknown config */
-function assertKnownConfigs(interfaceFilesAll: InterfaceFilesByLocationId) {
-  const configDefinitionsAll = getConfigDefinitions(interfaceFilesAll)
-  const configNamesKnownAll = Object.keys(configDefinitionsAll)
-  objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
-    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
-    const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant)
-    const configNamesKnownLocal = Object.keys(configDefinitionsLocal)
-    interfaceFiles.forEach((interfaceFile) => {
-      const configNames = getDefiningConfigNames(interfaceFile)
-      configNames.forEach((configName) => {
-        assertUsageKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, interfaceFile)
-        assert(configNamesKnownLocal.includes(configName))
-        assert(configNamesKnownAll.includes(configName))
-      })
-    })
-  })
 }
 
 async function loadVikeConfig_withErrorHandling(
@@ -378,7 +372,6 @@ async function loadVikeConfig_withErrorHandling(
         pageConfigs: [],
         pageConfigGlobal: {
           configDefinitions: {},
-          interfaceFiles: {},
           configValueSources: {}
         },
         global: getPageConfigUserFriendlyNew({ configValues: {} })
@@ -390,7 +383,13 @@ async function loadVikeConfig_withErrorHandling(
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const interfaceFilesAll = await loadInterfaceFiles(userRootDir)
   const importedFilesLoaded: ImportedFilesLoaded = {}
-  const { pageConfigGlobal, pageConfigs } = await getPageConfigs(interfaceFilesAll, userRootDir, importedFilesLoaded)
+  const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir)
+  const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
+    configDefinitionsResolved,
+    interfaceFilesAll,
+    userRootDir,
+    importedFilesLoaded
+  )
 
   // interop vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
@@ -441,6 +440,118 @@ async function getGlobalConfigs(
   }
   //*/
 }
+async function resolveConfigDefinitions(interfaceFilesAll: InterfaceFilesByLocationId, userRootDir: string) {
+  const configDefinitionsGlobal = getConfigDefinitions(
+    // We use `interfaceFilesAll` instead of `interfaceFilesGlobal` in order to allow local Vike extensions to create global configs.
+    interfaceFilesAll, // TODO/now sort
+    (configDef) => !!configDef.global
+  )
+  // Load value files (with `env.config===true`) of *custom* configs.
+  // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
+  await loadValueFiles(interfaceFilesAll, configDefinitionsGlobal, userRootDir)
+
+  const configDefinitionsLocal: Record<
+    LocationId,
+    {
+      configDefinitions: ConfigDefinitions
+      // interfaceFiles that live at locationId
+      interfaceFiles: InterfaceFile[]
+      // interfaceFiles that influence locationId
+      interfaceFilesRelevant: InterfaceFilesByLocationId
+    }
+  > = {}
+  await Promise.all(
+    objectEntries(interfaceFilesAll).map(async ([locationId, interfaceFiles]) => {
+      const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
+      //    configDefinitions = getConfigDefinitions(interfaceFilesRelevant, (configDef) => configDef.global !== true) // TODO/now
+      const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
+      // Load value files (with `env.config===true`) of *custom* configs.
+      // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
+      await loadValueFiles(interfaceFiles, configDefinitions, userRootDir)
+      configDefinitionsLocal[locationId] = { configDefinitions, interfaceFiles, interfaceFilesRelevant }
+    })
+  )
+
+  const configDefinitionsResolved = {
+    configDefinitionsGlobal,
+    configDefinitionsLocal
+  }
+  return configDefinitionsResolved
+}
+type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
+
+async function getPageConfigs(
+  configDefinitionsResolved: ConfigDefinitionsResolved,
+  interfaceFilesAll: InterfaceFilesByLocationId,
+  userRootDir: string,
+  importedFilesLoaded: ImportedFilesLoaded
+) {
+  const pageConfigGlobal: PageConfigGlobalBuildTime = {
+    configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
+    configValueSources: {}
+  }
+  await Promise.all(
+    objectEntries(configDefinitionsResolved.configDefinitionsGlobal).map(async ([configName, configDef]) => {
+      const sources = await resolveConfigValueSources(
+        configName,
+        configDef,
+        interfaceFilesAll,
+        userRootDir,
+        importedFilesLoaded
+      )
+      const configValueSource = sources[0]
+      if (!configValueSource) return
+      pageConfigGlobal.configValueSources[configName] = sources
+    })
+  )
+
+  const pageConfigs: PageConfigBuildTime[] = []
+  await Promise.all(
+    objectEntries(configDefinitionsResolved.configDefinitionsLocal).map(
+      async ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
+        if (!isDefiningPage(interfaceFiles)) return
+        const configDefinitionsLocal = configDefinitions
+        let configValueSources: ConfigValueSources = {}
+        await Promise.all(
+          objectEntries(configDefinitionsLocal)
+            .filter(([configName]) => !isGlobalConfigOld(configName))
+            .map(async ([configName, configDef]) => {
+              const sources = await resolveConfigValueSources(
+                configName,
+                configDef,
+                interfaceFilesRelevant,
+                userRootDir,
+                importedFilesLoaded
+              )
+              if (sources.length === 0) return
+              // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
+              configValueSources[configName] = sources
+            })
+        )
+        configValueSources = sortConfigValueSources(configValueSources, locationId)
+
+        const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
+
+        applyEffectsAll(configValueSources, configDefinitionsLocal)
+        const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
+
+        const pageConfig: PageConfigBuildTime = {
+          pageId: locationId,
+          isErrorPage,
+          routeFilesystem,
+          configDefinitions: configDefinitionsLocal,
+          interfaceFiles: interfaceFilesRelevant,
+          configValueSources,
+          configValuesComputed
+        }
+        pageConfigs.push(pageConfig)
+      }
+    )
+  )
+  assertPageConfigs(pageConfigs, interfaceFilesAll)
+
+  return { pageConfigs, pageConfigGlobal }
+}
 function temp_interopVikeVitePlugin(
   pageConfigGlobal: PageConfigGlobalBuildTime,
   vikeVitePluginOptions: unknown,
@@ -473,99 +584,6 @@ function temp_interopVikeVitePlugin(
       valueIsDefinedByPlusFile: false
     })
   })
-}
-async function getPageConfigs(
-  interfaceFilesAll: InterfaceFilesByLocationId,
-  userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
-) {
-  const locationIds = objectKeys(interfaceFilesAll)
-  const interfaceFilesGlobal = objectFromEntries(
-    objectEntries(interfaceFilesAll).filter(([locationId]) => {
-      return isGlobalLocation(locationId, locationIds)
-    })
-  )
-  const configDefinitionsGlobal = getConfigDefinitions(interfaceFilesGlobal, (configDef) => !!configDef.global)
-  const pageConfigGlobal: PageConfigGlobalBuildTime = {
-    configDefinitions: configDefinitionsGlobal,
-    interfaceFiles: interfaceFilesGlobal,
-    configValueSources: {}
-  }
-  // Load value files (with `env.config===true`) of *custom* configs.
-  // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
-  await loadValueFiles(interfaceFilesGlobal, configDefinitionsGlobal, userRootDir)
-  await Promise.all(
-    objectEntries(configDefinitionsGlobal).map(async ([configName, configDef]) => {
-      const sources = await resolveConfigValueSources(
-        configName,
-        configDef,
-        interfaceFilesGlobal,
-        userRootDir,
-        importedFilesLoaded
-      )
-      const configValueSource = sources[0]
-      if (!configValueSource) return
-      pageConfigGlobal.configValueSources[configName] = sources
-    })
-  )
-
-  const pageConfigs: PageConfigBuildTime[] = []
-  await Promise.all(
-    getPageLocationIds(interfaceFilesAll).map(async (locationId) => {
-      const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
-      const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant)
-
-      // Load value files (with `env.config===true`) of *custom* configs.
-      // - The value files of *built-in* configs are already loaded at `loadInterfaceFiles()`.
-      await loadValueFiles(interfaceFilesRelevant, configDefinitionsLocal, userRootDir)
-
-      let configValueSources: ConfigValueSources = {}
-      await Promise.all(
-        objectEntries(configDefinitionsLocal)
-          .filter(([configName]) => !isGlobalConfigOld(configName))
-          .map(async ([configName, configDef]) => {
-            const sources = await resolveConfigValueSources(
-              configName,
-              configDef,
-              interfaceFilesRelevant,
-              userRootDir,
-              importedFilesLoaded
-            )
-            if (sources.length === 0) return
-            configValueSources[configName] = sources
-          })
-      )
-      configValueSources = sortConfigValueSources(configValueSources, locationId)
-
-      const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
-
-      applyEffectsAll(configValueSources, configDefinitionsLocal)
-      const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
-
-      const pageConfig: PageConfigBuildTime = {
-        pageId: locationId,
-        isErrorPage,
-        routeFilesystem,
-        configDefinitions: configDefinitionsLocal,
-        interfaceFiles: interfaceFilesRelevant,
-        configValueSources,
-        configValuesComputed
-      }
-      pageConfigs.push(pageConfig)
-    })
-  )
-  assertPageConfigs(pageConfigs, interfaceFilesAll)
-
-  return { pageConfigs, pageConfigGlobal }
-}
-function getPageLocationIds(interfaceFilesAll: InterfaceFilesByLocationId) {
-  const locationIds = new Set<LocationId>()
-  objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
-    if (isDefiningPage(interfaceFiles)) {
-      locationIds.add(locationId)
-    }
-  })
-  return Array.from(locationIds)
 }
 
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[], interfaceFilesAll: InterfaceFilesByLocationId) {
@@ -783,35 +801,6 @@ async function resolveConfigValueSources(
   )
   return sources
 }
-function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: InterfaceFile): 0 | -1 | 1 {
-  return lowerFirst<InterfaceFile>((interfaceFile) => {
-    const { filePathAbsoluteUserRootDir } = interfaceFile.filePath
-    assert(isInterfaceFileUserLand(interfaceFile))
-    assert(filePathAbsoluteUserRootDir)
-    return filePathAbsoluteUserRootDir.length
-  })(interfaceFile1, interfaceFile2)
-}
-function warnOverridenConfigValues(
-  interfaceFileWinner: InterfaceFile,
-  interfaceFilesOverriden: InterfaceFile[],
-  configName: string
-) {
-  interfaceFilesOverriden.forEach((interfaceFileLoser) => {
-    const loserFilePath = interfaceFileLoser.filePath.filePathToShowToUser
-    const winnerFilePath = interfaceFileWinner.filePath.filePathToShowToUser
-    const confName = pc.cyan(configName)
-    assertWarning(
-      false,
-      `The value of the config ${confName} defined at ${loserFilePath} is always overwritten by the value defined at ${winnerFilePath}, remove the superfluous value defined at ${loserFilePath}`,
-      { onlyOnce: true }
-    )
-  })
-}
-
-function isInterfaceFileUserLand(interfaceFile: InterfaceFile) {
-  return (interfaceFile.isConfigFile && !interfaceFile.isConfigExtend) || interfaceFile.isValueFile
-}
-
 async function getConfigValueSource(
   configName: string,
   interfaceFile: InterfaceFile,
@@ -842,17 +831,16 @@ async function getConfigValueSource(
     if (interfaceFile.isConfigFile) {
       // Defined over pointer import
       assert(confVal.configValueLoaded)
-      const resolved = resolvePointerImportOfConfig(
+      const pointerImport = resolvePointerImportOfConfig(
         confVal.configValue,
         interfaceFile.filePath,
         userRootDir,
-        configDef.env,
         configName
       )
       const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtFilePath_)
-      assertUsage(resolved, `${configDefinedAt} should be an import`)
-      valueFilePath = resolved.pointerImport.filePathAbsoluteVite
-      definedAtFilePath = resolved.pointerImport
+      assertUsage(pointerImport, `${configDefinedAt} should be an import`)
+      valueFilePath = pointerImport.fileExportPath.filePathAbsoluteVite
+      definedAtFilePath = pointerImport.fileExportPath
     } else {
       // Defined by value file, i.e. +{configName}.js
       assert(interfaceFile.isValueFile)
@@ -881,21 +869,15 @@ async function getConfigValueSource(
     const { configValue } = confVal
 
     // Defined over pointer import
-    const resolved = resolvePointerImportOfConfig(
-      configValue,
-      interfaceFile.filePath,
-      userRootDir,
-      configDef.env,
-      configName
-    )
-    if (resolved) {
+    const pointerImport = resolvePointerImportOfConfig(configValue, interfaceFile.filePath, userRootDir, configName)
+    if (pointerImport) {
       const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
-        configEnv: resolved.configEnvResolved,
+        configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath, configName),
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
         isOverriden,
-        definedAtFilePath: resolved.pointerImport
+        definedAtFilePath: pointerImport.fileExportPath
       }
       // Load pointer import
       if (
@@ -903,9 +885,9 @@ async function getConfigValueSource(
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
         configName !== 'extends'
       ) {
-        if (resolved.pointerImport.filePathAbsoluteFilesystem) {
-          const fileExport = await loadImportedFile(resolved.pointerImport, userRootDir, importedFilesLoaded)
-          configValueSource.value = fileExport
+        if (pointerImport.fileExportPath.filePathAbsoluteFilesystem) {
+          const fileExportValue = await loadImportedFile(pointerImport.fileExportPath, userRootDir, importedFilesLoaded)
+          configValueSource.value = fileExportValue
         } else {
           const configDefinedAt = getConfigDefinedAt('Config', configName, configValueSource.definedAtFilePath)
           assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)
@@ -930,7 +912,7 @@ async function getConfigValueSource(
 
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
-    const configEnvResolved = resolveConfigEnvWithFileName(configDef.env, interfaceFile.filePath)
+    const configEnvResolved = resolveConfigEnv(configDef.env, interfaceFile.filePath, configName, true)
     const valueAlreadyLoaded = confVal.configValueLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
@@ -956,6 +938,33 @@ async function getConfigValueSource(
 
   assert(false)
 }
+function makeOrderDeterministic(interfaceFile1: InterfaceFile, interfaceFile2: InterfaceFile): 0 | -1 | 1 {
+  return lowerFirst<InterfaceFile>((interfaceFile) => {
+    const { filePathAbsoluteUserRootDir } = interfaceFile.filePath
+    assert(isInterfaceFileUserLand(interfaceFile))
+    assert(filePathAbsoluteUserRootDir)
+    return filePathAbsoluteUserRootDir.length
+  })(interfaceFile1, interfaceFile2)
+}
+function warnOverridenConfigValues(
+  interfaceFileWinner: InterfaceFile,
+  interfaceFilesOverriden: InterfaceFile[],
+  configName: string
+) {
+  interfaceFilesOverriden.forEach((interfaceFileLoser) => {
+    const loserFilePath = interfaceFileLoser.filePath.filePathToShowToUser
+    const winnerFilePath = interfaceFileWinner.filePath.filePathToShowToUser
+    const confName = pc.cyan(configName)
+    assertWarning(
+      false,
+      `The value of the config ${confName} defined at ${loserFilePath} is always overwritten by the value defined at ${winnerFilePath}, remove the superfluous value defined at ${loserFilePath}`,
+      { onlyOnce: true }
+    )
+  })
+}
+function isInterfaceFileUserLand(interfaceFile: InterfaceFile) {
+  return (interfaceFile.isConfigFile && !interfaceFile.isConfigExtend) || interfaceFile.isValueFile
+}
 
 function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
   for (const interfaceFile of interfaceFiles) {
@@ -975,7 +984,7 @@ function getDefiningConfigNames(interfaceFile: InterfaceFile): string[] {
   if (interfaceFile.isValueFile) {
     configNames.push(interfaceFile.configName)
   }
-  if (interfaceFile.isValueLoaded) {
+  if (interfaceFile.isValueFileLoaded) {
     configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
   }
   configNames = unique(configNames)
@@ -1212,7 +1221,25 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-function assertUsageKnownConfig(
+// Show error message upon unknown config
+function assertKnownConfigs(interfaceFilesAll: InterfaceFilesByLocationId) {
+  const configDefinitionsAll = getConfigDefinitions(interfaceFilesAll)
+  const configNamesKnownAll = Object.keys(configDefinitionsAll)
+  objectEntries(interfaceFilesAll).forEach(([locationId, interfaceFiles]) => {
+    const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
+    const configDefinitionsLocal = getConfigDefinitions(interfaceFilesRelevant)
+    const configNamesKnownLocal = Object.keys(configDefinitionsLocal)
+    interfaceFiles.forEach((interfaceFile) => {
+      const configNames = getDefiningConfigNames(interfaceFile)
+      configNames.forEach((configName) => {
+        assertKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, interfaceFile)
+        assert(configNamesKnownLocal.includes(configName))
+        assert(configNamesKnownAll.includes(configName))
+      })
+    })
+  })
+}
+function assertKnownConfig(
   configName: string,
   configNamesKnownAll: string[],
   configNamesKnownLocal: string[],
@@ -1394,34 +1421,28 @@ function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boole
 function isGlobalConfigOld(configName: string): configName is ConfigNameGlobal {
   // TODO/now
   if (configName === 'prerender') return false
-  const configNamesGlobal = getConfigNamesGlobal()
+  const configNamesGlobal = Object.keys(
+    objectFromEntries(
+      objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== undefined)
+    )
+  )
   return includes(configNamesGlobal, configName)
 }
 // TODO/now
 function isGlobalConfig(
   configName: string,
   configDefinitions: ConfigDefinitions,
-  value: unknown
+  configValueSources: ConfigValueSource[]
 ): configName is ConfigNameGlobal {
-  const configSpec = configDefinitions[configName]
-  assert(configSpec)
-  const globalValue = configSpec.global
+  const configDef = configDefinitions[configName]
+  assert(configDef)
+  const globalValue = configDef.global
   if (!globalValue) return false
   if (globalValue === true) return true
+  assertUsage(configDef.env.config, 'TODO')
+  assertUsage(!configDef.cumulative, 'TODO')
+  const value = 'TODO'
   return globalValue(value)
-}
-function getConfigNamesGlobal() {
-  return Object.keys(configDefinitionsBuiltInGlobal)
-}
-function getConfigDefinitionsBuiltInGlobal() {
-  return objectFromEntries(
-    objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== undefined)
-  )
-}
-function getConfigDefinitionsBuiltIn() {
-  return objectFromEntries(
-    objectEntries(configDefinitionsBuiltInAll).filter(([_configName, configDef]) => configDef.global !== true)
-  )
 }
 function sortConfigValueSources(
   configValueSources: ConfigValueSources,
@@ -1459,7 +1480,7 @@ function getConfVal(
 ): null | { configValue: unknown; configValueLoaded: true } | { configValueLoaded: false } {
   const configNames = getDefiningConfigNames(interfaceFile)
   if (!configNames.includes(configName)) return null
-  if (!interfaceFile.isValueLoaded) return { configValueLoaded: false }
+  if (!interfaceFile.isValueFileLoaded) return { configValueLoaded: false }
   const confVal = { configValue: interfaceFile.fileExportsByConfigName[configName], configValueLoaded: true }
   return confVal
 }

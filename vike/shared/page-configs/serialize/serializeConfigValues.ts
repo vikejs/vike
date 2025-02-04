@@ -13,7 +13,6 @@ import type {
   PageConfigGlobalBuildTime
 } from '../PageConfig.js'
 import type { ValueSerialized } from './PageConfigSerialized.js'
-import { addImportStatement } from '../../../node/plugin/plugins/importUserCode/addImportStatement.js'
 import { parsePointerImportData } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/transformPointerImports.js'
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
@@ -314,4 +313,35 @@ function getDefinedAtFileSource(source: ConfigValueSource) {
     fileExportPathToShowToUser: source.definedAtFilePath.fileExportPathToShowToUser
   }
   return definedAtFile
+}
+
+/*
+ * Naming:
+ *   `import { someExport as someImport } from './some-file'`
+ * <=>
+ *   `{`
+ *      `importPath: './some-file',`
+ *      `exportName: 'someExport',`
+ *      `importName: 'someImport',`
+ *    `}`
+ */
+function addImportStatement(
+  importStatements: string[],
+  importPath: string,
+  exportName: string
+): { importName: string } {
+  const importCounter = importStatements.length + 1
+  const importName = `import${importCounter}` as const
+  const importLiteral = (() => {
+    if (exportName === '*') {
+      return `* as ${importName}` as const
+    }
+    if (exportName === 'default') {
+      return importName
+    }
+    return `{ ${exportName} as ${importName} }` as const
+  })()
+  const importStatement = `import ${importLiteral} from '${importPath}';`
+  importStatements.push(importStatement)
+  return { importName }
 }

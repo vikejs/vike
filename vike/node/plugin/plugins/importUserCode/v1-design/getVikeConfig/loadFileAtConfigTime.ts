@@ -19,7 +19,8 @@ import type { FilePathResolved } from '../../../../../../shared/page-configs/Fil
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import {
   getConfigDefinitionOptional,
-  InterfaceFilesByLocationId,
+  type InterfaceFile,
+  type InterfaceFilesByLocationId,
   shouldBeLoadableAtBuildTime,
   type InterfaceValueFile
 } from '../getVikeConfig.js'
@@ -50,8 +51,8 @@ async function loadImportedFile(
     importedFilesLoaded[f] = transpileAndExecuteFile(import_, userRootDir, false).then((r) => r.fileExports)
   }
   const fileExports = await importedFilesLoaded[f]!
-  const fileExport = fileExports[import_.fileExportName]
-  return fileExport
+  const fileExportValue = fileExports[import_.fileExportName]
+  return fileExportValue
 }
 
 // Load +{configName}.js
@@ -66,8 +67,8 @@ async function loadValueFile(
     // Only load value files with `env.config===true`
     return
   }
-  if (interfaceValueFile.isValueLoaded) {
-    await interfaceValueFile.isValueLoaded
+  if (interfaceValueFile.isValueFileLoaded) {
+    await interfaceValueFile.isValueFileLoaded
     if (
       // Help TS
       true as boolean
@@ -75,8 +76,8 @@ async function loadValueFile(
       return
   }
   const { promise, resolve } = genPromise()
-  interfaceValueFile.isValueLoaded = promise
-  assert(interfaceValueFile.isValueLoaded)
+  interfaceValueFile.isValueFileLoaded = promise
+  assert(interfaceValueFile.isValueFileLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
   resolve()
@@ -88,7 +89,7 @@ async function loadValueFile(
   })
 }
 async function loadValueFiles(
-  interfaceFiles: InterfaceFilesByLocationId,
+  interfaceFiles: InterfaceFilesByLocationId | InterfaceFile[],
   configDefinitions: ConfigDefinitions,
   userRootDir: string
 ): Promise<void> {

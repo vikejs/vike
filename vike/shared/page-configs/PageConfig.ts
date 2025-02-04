@@ -60,7 +60,6 @@ type PageConfigBuildTime = PageConfigCommon & {
 /** Global config that applies to all pages, build-time data structure */
 type PageConfigGlobalBuildTime = {
   configValueSources: ConfigValueSources
-  interfaceFiles: InterfaceFilesByLocationId
   configDefinitions: ConfigDefinitions
   configValuesComputed?: undefined
 }
