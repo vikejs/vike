@@ -21,7 +21,7 @@ import { assertPlusFileExport } from '../../../../../../shared/page-configs/asse
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
-import { resolvePointerImportData } from './resolvePointerImport.js'
+import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
 import type { ConfigDefinitions } from './configDefinitionsBuiltIn.js'
 
 assertIsNotProductionRuntime()
@@ -35,16 +35,19 @@ type ConfigFile = {
 
 // Load pointer import
 async function loadPointerImport(
-  import_: FilePathResolved & { fileExportName: string },
+  pointerImport: PointerImport,
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded
 ): Promise<unknown> {
-  const f = import_.filePathAbsoluteFilesystem
+  assert(pointerImport.fileExportPath.filePathAbsoluteFilesystem)
+  const f = pointerImport.fileExportPath.filePathAbsoluteFilesystem
   if (!importedFilesLoaded[f]) {
-    importedFilesLoaded[f] = transpileAndExecuteFile(import_, userRootDir, false).then((r) => r.fileExports)
+    importedFilesLoaded[f] = transpileAndExecuteFile(pointerImport.fileExportPath, userRootDir, false).then(
+      (r) => r.fileExports
+    )
   }
   const fileExports = await importedFilesLoaded[f]!
-  const fileExportValue = fileExports[import_.fileExportName]
+  const fileExportValue = fileExports[pointerImport.fileExportPath.fileExportName]
   return fileExportValue
 }
 

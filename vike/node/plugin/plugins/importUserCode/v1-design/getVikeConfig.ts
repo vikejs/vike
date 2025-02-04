@@ -892,11 +892,7 @@ async function getConfigValueSource(
         configName !== 'extends'
       ) {
         if (pointerImport.fileExportPath.filePathAbsoluteFilesystem) {
-          const fileExportValue = await loadPointerImport(
-            pointerImport.fileExportPath,
-            userRootDir,
-            importedFilesLoaded
-          )
+          const fileExportValue = await loadPointerImport(pointerImport, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExportValue
         } else {
           const configDefinedAt = getConfigDefinedAt('Config', configName, configValueSource.definedAtFilePath)
