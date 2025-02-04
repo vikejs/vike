@@ -6,14 +6,7 @@ export { loadConfigFile }
 export type { ConfigFile }
 export type { PointerImportLoaded }
 
-import {
-  assert,
-  assertUsage,
-  assertIsNotProductionRuntime,
-  isArrayOfStrings,
-  isObject,
-  genPromise
-} from '../../../../utils.js'
+import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
 import { getConfigDefinitionOptional, type InterfaceValueFile } from '../getVikeConfig.js'
@@ -47,18 +40,6 @@ async function loadPointerImport(
   // Only load pointer import if `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
 
-  if (pointerImport.fileExportValueLoaded) {
-    await pointerImport.fileExportValueLoaded
-    if (
-      // Help TS
-      true as boolean
-    )
-      return
-  }
-  const { promise, resolve } = genPromise()
-  pointerImport.fileExportValueLoaded = promise
-  assert(pointerImport.fileExportValueLoaded)
-
   const configDefinedAt = getConfigDefinedAt('Config', configName, pointerImport.fileExportPath)
   assertUsage(
     pointerImport.fileExportPath.filePathAbsoluteFilesystem,
@@ -66,14 +47,15 @@ async function loadPointerImport(
   )
   const { fileExports } = await transpileAndExecuteFile(pointerImport.fileExportPath, userRootDir, false, esbuildCache)
   const fileExportValue = fileExports[pointerImport.fileExportPath.fileExportName]
-  pointerImport.fileExportValue = fileExportValue
 
-  resolve()
+  pointerImport.fileExportValueLoaded = true
+  assert(pointerImport.fileExportValueLoaded)
+  pointerImport.fileExportValue = fileExportValue
 }
 type PointerImportLoaded = PointerImport &
   (
     | {
-        fileExportValueLoaded: Promise<void>
+        fileExportValueLoaded: true
         fileExportValue: unknown
       }
     | {
@@ -92,20 +74,10 @@ async function loadValueFile(
   const configDef = getConfigDefinitionOptional(configDefinitions, configName)
   // Only load value files with `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
-  if (interfaceValueFile.isValueFileLoaded) {
-    await interfaceValueFile.isValueFileLoaded
-    if (
-      // Help TS
-      true as boolean
-    )
-      return
-  }
-  const { promise, resolve } = genPromise()
-  interfaceValueFile.isValueFileLoaded = promise
+  interfaceValueFile.isValueFileLoaded = true
   assert(interfaceValueFile.isValueFileLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false, esbuildCache)
-  resolve()
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {

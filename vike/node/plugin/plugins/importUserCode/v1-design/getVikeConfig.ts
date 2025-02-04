@@ -118,7 +118,7 @@ type InterfaceValueFile = InterfaceFileCommons & {
   configName: string
 } & (
     | {
-        isValueFileLoaded: Promise<void>
+        isValueFileLoaded: true
         fileExportsByConfigName: Record<
           string, // configName
           unknown // configValue
