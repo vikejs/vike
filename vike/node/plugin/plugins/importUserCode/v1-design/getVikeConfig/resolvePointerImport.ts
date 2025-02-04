@@ -24,7 +24,7 @@ import type { FilePath, FilePathResolved } from '../../../../../../shared/page-c
 
 const filesEnvMap: Map<string, { configEnvResolved: ConfigEnvInternal; configName: string }[]> = new Map()
 
-type PointerImportResolved = DefinedAtFilePath & Required<Pick<DefinedAtFilePath,'fileExportName'>>
+type FileExportPath = DefinedAtFilePath & Required<Pick<DefinedAtFilePath, 'fileExportName'>>
 
 function resolvePointerImportOfConfig(
   configValue: unknown,
@@ -32,7 +32,7 @@ function resolvePointerImportOfConfig(
   userRootDir: string,
   configEnv: ConfigEnvInternal,
   configName: string
-): null | { pointerImport: PointerImportResolved; configEnvResolved: ConfigEnvInternal } {
+): null | { fileExportPath: FileExportPath; configEnvResolved: ConfigEnvInternal } {
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
   if (!pointerImportData) return null
@@ -45,12 +45,12 @@ function resolvePointerImportOfConfig(
   if (filePath.filePathAbsoluteFilesystem) configEnvResolved = resolveConfigEnvWithFileName(configEnv, filePath)
   assertUsageFileEnv(filePath, importPath, configEnvResolved, configName)
 
-  const pointerImport = {
+  const fileExportPath = {
     ...filePath,
     fileExportName: exportName,
     fileExportPathToShowToUser
   }
-  return { pointerImport, configEnvResolved }
+  return { fileExportPath, configEnvResolved }
 }
 
 function resolvePointerImport(

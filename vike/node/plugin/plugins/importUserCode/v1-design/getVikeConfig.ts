@@ -821,7 +821,7 @@ async function getConfigValueSource(
     if (interfaceFile.isConfigFile) {
       // Defined over pointer import
       assert(confVal.configValueLoaded)
-      const resolved = resolvePointerImportOfConfig(
+      const pointerImport = resolvePointerImportOfConfig(
         confVal.configValue,
         interfaceFile.filePath,
         userRootDir,
@@ -829,9 +829,9 @@ async function getConfigValueSource(
         configName
       )
       const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtFilePath_)
-      assertUsage(resolved, `${configDefinedAt} should be an import`)
-      valueFilePath = resolved.pointerImport.filePathAbsoluteVite
-      definedAtFilePath = resolved.pointerImport
+      assertUsage(pointerImport, `${configDefinedAt} should be an import`)
+      valueFilePath = pointerImport.fileExportPath.filePathAbsoluteVite
+      definedAtFilePath = pointerImport.fileExportPath
     } else {
       // Defined by value file, i.e. +{configName}.js
       assert(interfaceFile.isValueFile)
@@ -860,21 +860,21 @@ async function getConfigValueSource(
     const { configValue } = confVal
 
     // Defined over pointer import
-    const resolved = resolvePointerImportOfConfig(
+    const pointerImport = resolvePointerImportOfConfig(
       configValue,
       interfaceFile.filePath,
       userRootDir,
       configDef.env,
       configName
     )
-    if (resolved) {
+    if (pointerImport) {
       const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
-        configEnv: resolved.configEnvResolved,
+        configEnv: pointerImport.configEnvResolved,
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
         isOverriden,
-        definedAtFilePath: resolved.pointerImport
+        definedAtFilePath: pointerImport.fileExportPath
       }
       // Load pointer import
       if (
@@ -882,8 +882,8 @@ async function getConfigValueSource(
         // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
         configName !== 'extends'
       ) {
-        if (resolved.pointerImport.filePathAbsoluteFilesystem) {
-          const fileExport = await loadImportedFile(resolved.pointerImport, userRootDir, importedFilesLoaded)
+        if (pointerImport.fileExportPath.filePathAbsoluteFilesystem) {
+          const fileExport = await loadImportedFile(pointerImport.fileExportPath, userRootDir, importedFilesLoaded)
           configValueSource.value = fileExport
         } else {
           const configDefinedAt = getConfigDefinedAt('Config', configName, configValueSource.definedAtFilePath)
