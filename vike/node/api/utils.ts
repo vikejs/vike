@@ -6,5 +6,5 @@ onLoad()
 
 export * from '../../utils/assert.js'
 export * from '../../utils/getGlobalObject.js'
-export * from '../../utils/toPosixPath.js'
+export * from '../../utils/path-shim.js'
 export * from '../../utils/isObject.js'
