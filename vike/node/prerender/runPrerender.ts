@@ -16,7 +16,6 @@ import {
   objectAssign,
   isObjectWithKeys,
   isCallable,
-  getOutDirs,
   isPropertyGetter,
   assertPosixPath,
   urlToFile,
@@ -76,6 +75,7 @@ import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { setContextIsPrerendering } from './context.js'
 import { resolvePrerenderConfig } from './resolvePrerenderConfig.js'
+import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 
 type HtmlFile = {
   urlOriginal: string
