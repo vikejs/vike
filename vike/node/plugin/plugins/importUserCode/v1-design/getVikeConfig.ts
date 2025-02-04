@@ -387,7 +387,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir, esbuildCache)
 
-  const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
+  const { pageConfigGlobal, pageConfigs } = getPageConfigs(
     configDefinitionsResolved,
     interfaceFilesAll,
     userRootDir
@@ -504,7 +504,7 @@ async function loadCustomConfigBuildTimeFiles(
     })
   )
 }
-async function getPageConfigs(
+function getPageConfigs(
   configDefinitionsResolved: ConfigDefinitionsResolved,
   interfaceFilesAll: InterfaceFilesByLocationId,
   userRootDir: string
@@ -513,27 +513,23 @@ async function getPageConfigs(
     configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
     configValueSources: {}
   }
-  await Promise.all(
-    objectEntries(configDefinitionsResolved.configDefinitionsGlobal).map(async ([configName, configDef]) => {
-      const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesAll, userRootDir)
+    objectEntries(configDefinitionsResolved.configDefinitionsGlobal).map(([configName, configDef]) => {
+      const sources = resolveConfigValueSources(configName, configDef, interfaceFilesAll, userRootDir)
       const configValueSource = sources[0]
       if (!configValueSource) return
       pageConfigGlobal.configValueSources[configName] = sources
     })
-  )
 
   const pageConfigs: PageConfigBuildTime[] = []
-  await Promise.all(
     objectEntries(configDefinitionsResolved.configDefinitionsLocal).map(
       async ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
         if (!isDefiningPage(interfaceFiles)) return
         const configDefinitionsLocal = configDefinitions
         let configValueSources: ConfigValueSources = {}
-        await Promise.all(
           objectEntries(configDefinitionsLocal)
             .filter(([configName]) => !isGlobalConfigOld(configName))
             .map(async ([configName, configDef]) => {
-              const sources = await resolveConfigValueSources(
+              const sources = resolveConfigValueSources(
                 configName,
                 configDef,
                 interfaceFilesRelevant,
@@ -543,7 +539,6 @@ async function getPageConfigs(
               // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
               configValueSources[configName] = sources
             })
-        )
         configValueSources = sortConfigValueSources(configValueSources, locationId)
 
         const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
@@ -563,7 +558,6 @@ async function getPageConfigs(
         pageConfigs.push(pageConfig)
       }
     )
-  )
   assertPageConfigs(pageConfigs, interfaceFilesAll)
 
   return { pageConfigs, pageConfigGlobal }
@@ -720,12 +714,12 @@ function getInterfaceFilesRelevant(
   return interfaceFilesRelevant
 }
 
-async function resolveConfigValueSources(
+function resolveConfigValueSources(
   configName: string,
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string
-): Promise<ConfigValueSource[]> {
+): ConfigValueSource[] {
   const sourcesInfo: Parameters<typeof getConfigValueSource>[] = []
 
   // interfaceFilesRelevant is sorted by sortAfterInheritanceOrder()
@@ -804,18 +798,16 @@ async function resolveConfigValueSources(
     })
   }
 
-  const sources: ConfigValueSource[] = await Promise.all(
-    sourcesInfo.map(async (args) => await getConfigValueSource(...args))
-  )
+  const sources: ConfigValueSource[] = sourcesInfo.map((args) => getConfigValueSource(...args))
   return sources
 }
-async function getConfigValueSource(
+function getConfigValueSource(
   configName: string,
   interfaceFile: InterfaceFile,
   configDef: ConfigDefinitionInternal,
   userRootDir: string,
   isHighestInheritancePrecedence: boolean
-): Promise<ConfigValueSource> {
+): ConfigValueSource {
   const confVal = getConfVal(interfaceFile, configName)
   assert(confVal)
 
