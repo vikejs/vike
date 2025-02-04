@@ -59,7 +59,7 @@ import {
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting.js'
-import { EsbuildCache, isTemporaryBuildFile } from './getVikeConfig/transpileAndExecuteFile.js'
+import { type EsbuildCache, isTemporaryBuildFile } from './getVikeConfig/transpileAndExecuteFile.js'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
@@ -382,13 +382,15 @@ async function loadVikeConfig_withErrorHandling(
 }
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const esbuildCache: EsbuildCache = {}
+
   const interfaceFilesAll = await loadInterfaceFiles(userRootDir, esbuildCache)
+
   const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir, esbuildCache)
+
   const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
     configDefinitionsResolved,
     interfaceFilesAll,
-    userRootDir,
-    esbuildCache
+    userRootDir
   )
 
   // interop vike(options) in vite.config.js
@@ -505,8 +507,7 @@ async function loadCustomConfigBuildTimeFiles(
 async function getPageConfigs(
   configDefinitionsResolved: ConfigDefinitionsResolved,
   interfaceFilesAll: InterfaceFilesByLocationId,
-  userRootDir: string,
-  esbuildCache: EsbuildCache
+  userRootDir: string
 ) {
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
@@ -514,13 +515,7 @@ async function getPageConfigs(
   }
   await Promise.all(
     objectEntries(configDefinitionsResolved.configDefinitionsGlobal).map(async ([configName, configDef]) => {
-      const sources = await resolveConfigValueSources(
-        configName,
-        configDef,
-        interfaceFilesAll,
-        userRootDir,
-        esbuildCache
-      )
+      const sources = await resolveConfigValueSources(configName, configDef, interfaceFilesAll, userRootDir)
       const configValueSource = sources[0]
       if (!configValueSource) return
       pageConfigGlobal.configValueSources[configName] = sources
@@ -542,8 +537,7 @@ async function getPageConfigs(
                 configName,
                 configDef,
                 interfaceFilesRelevant,
-                userRootDir,
-                esbuildCache
+                userRootDir
               )
               if (sources.length === 0) return
               // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
@@ -730,8 +724,7 @@ async function resolveConfigValueSources(
   configName: string,
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
-  userRootDir: string,
-  esbuildCache: EsbuildCache
+  userRootDir: string
 ): Promise<ConfigValueSource[]> {
   const sourcesInfo: Parameters<typeof getConfigValueSource>[] = []
 
@@ -746,14 +739,7 @@ async function resolveConfigValueSources(
       assert(!visited.has(interfaceFile))
       visited.add(interfaceFile)
       const isHighestInheritancePrecedence = sourcesInfo.length === 0
-      sourcesInfo.push([
-        configName,
-        interfaceFile,
-        configDef,
-        userRootDir,
-        esbuildCache,
-        isHighestInheritancePrecedence
-      ])
+      sourcesInfo.push([configName, interfaceFile, configDef, userRootDir, isHighestInheritancePrecedence])
     }
 
     // Main resolution logic
@@ -828,7 +814,6 @@ async function getConfigValueSource(
   interfaceFile: InterfaceFile,
   configDef: ConfigDefinitionInternal,
   userRootDir: string,
-  esbuildCache: EsbuildCache,
   isHighestInheritancePrecedence: boolean
 ): Promise<ConfigValueSource> {
   const confVal = getConfVal(interfaceFile, configName)
