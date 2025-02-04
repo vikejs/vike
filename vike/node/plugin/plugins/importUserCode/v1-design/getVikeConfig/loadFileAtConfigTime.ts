@@ -1,6 +1,6 @@
 // Files loaded at config time:
 
-export { loadImportedFile }
+export { loadPointerImport }
 export { loadValueFile }
 export { loadConfigFile }
 export type { ImportedFilesLoaded }
@@ -34,7 +34,7 @@ type ConfigFile = {
 }
 
 // Load pointer import
-async function loadImportedFile(
+async function loadPointerImport(
   import_: FilePathResolved & { fileExportName: string },
   userRootDir: string,
   importedFilesLoaded: ImportedFilesLoaded

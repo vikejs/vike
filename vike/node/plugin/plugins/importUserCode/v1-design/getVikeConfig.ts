@@ -77,7 +77,7 @@ import {
   type ConfigFile,
   ImportedFilesLoaded,
   loadConfigFile,
-  loadImportedFile,
+  loadPointerImport,
   loadValueFile
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
@@ -892,7 +892,11 @@ async function getConfigValueSource(
         configName !== 'extends'
       ) {
         if (pointerImport.fileExportPath.filePathAbsoluteFilesystem) {
-          const fileExportValue = await loadImportedFile(pointerImport.fileExportPath, userRootDir, importedFilesLoaded)
+          const fileExportValue = await loadPointerImport(
+            pointerImport.fileExportPath,
+            userRootDir,
+            importedFilesLoaded
+          )
           configValueSource.value = fileExportValue
         } else {
           const configDefinedAt = getConfigDefinedAt('Config', configName, configValueSource.definedAtFilePath)
