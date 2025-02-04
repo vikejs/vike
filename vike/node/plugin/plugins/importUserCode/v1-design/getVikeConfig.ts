@@ -883,8 +883,8 @@ async function getConfigValueSource(
         configName !== 'extends'
       ) {
         if (pointerImport.fileExportPath.filePathAbsoluteFilesystem) {
-          const fileExport = await loadImportedFile(pointerImport.fileExportPath, userRootDir, importedFilesLoaded)
-          configValueSource.value = fileExport
+          const fileExportValue = await loadImportedFile(pointerImport.fileExportPath, userRootDir, importedFilesLoaded)
+          configValueSource.value = fileExportValue
         } else {
           const configDefinedAt = getConfigDefinedAt('Config', configName, configValueSource.definedAtFilePath)
           assertUsage(!configDef.cumulative, `${configDefinedAt} cannot be defined over an aliased import`)

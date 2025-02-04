@@ -51,8 +51,8 @@ async function loadImportedFile(
     importedFilesLoaded[f] = transpileAndExecuteFile(import_, userRootDir, false).then((r) => r.fileExports)
   }
   const fileExports = await importedFilesLoaded[f]!
-  const fileExport = fileExports[import_.fileExportName]
-  return fileExport
+  const fileExportValue = fileExports[import_.fileExportName]
+  return fileExportValue
 }
 
 // Load +{configName}.js
