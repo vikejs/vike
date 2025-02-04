@@ -315,7 +315,7 @@ function getDefinedAtFileSource(source: ConfigValueSource) {
   return definedAtFile
 }
 
-/**
+/*
  * Naming:
  *   `import { someExport as someImport } from './some-file'`
  * <=>
