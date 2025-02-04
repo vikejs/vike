@@ -21,11 +21,9 @@ import {
   getFilePathUnresolved
 } from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-
 const filesEnvMap: Map<string, { configEnvResolved: ConfigEnvInternal; configName: string }[]> = new Map()
 
 type FileExportPath = DefinedAtFilePath & Required<Pick<DefinedAtFilePath, 'fileExportName'>>
-
 function resolvePointerImportOfConfig(
   configValue: unknown,
   importerFilePath: FilePathResolved,
@@ -45,7 +43,7 @@ function resolvePointerImportOfConfig(
   if (filePath.filePathAbsoluteFilesystem) configEnvResolved = resolveConfigEnvWithFileName(configEnv, filePath)
   assertUsageFileEnv(filePath, importPath, configEnvResolved, configName)
 
-  const fileExportPath = {
+  const fileExportPath: FileExportPath = {
     ...filePath,
     fileExportName: exportName,
     fileExportPathToShowToUser
