@@ -12,6 +12,28 @@ function clearFilesEnvMap() {
   filesEnvMap.clear()
 }
 
+function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath, configName: string) {
+  const configEnvResolved = { ...configEnv }
+
+  if (filePath.filePathAbsoluteFilesystem) {
+    const { fileName } = filePath
+    if (fileName.includes('.server.')) {
+      configEnvResolved.server = true
+      configEnvResolved.client = false
+    } else if (fileName.includes('.client.')) {
+      configEnvResolved.client = true
+      configEnvResolved.server = false
+    } else if (fileName.includes('.shared.')) {
+      configEnvResolved.server = true
+      configEnvResolved.client = true
+    }
+  }
+
+  assertUsageFileEnv(filePath, configEnvResolved, configName)
+
+  return configEnvResolved
+}
+
 function assertUsageFileEnv(filePath: FilePath, configEnvResolved: ConfigEnvInternal, configName: string) {
   let key: string
   if (filePath.filePathAbsoluteFilesystem) {
@@ -44,28 +66,6 @@ function assertUsageFileEnv(filePath: FilePath, configEnvResolved: ConfigEnvInte
       ].join('\n')
     )
   }
-}
-
-function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath, configName: string) {
-  const configEnvResolved = { ...configEnv }
-
-  if (filePath.filePathAbsoluteFilesystem) {
-    const { fileName } = filePath
-    if (fileName.includes('.server.')) {
-      configEnvResolved.server = true
-      configEnvResolved.client = false
-    } else if (fileName.includes('.client.')) {
-      configEnvResolved.client = true
-      configEnvResolved.server = false
-    } else if (fileName.includes('.shared.')) {
-      configEnvResolved.server = true
-      configEnvResolved.client = true
-    }
-  }
-
-  assertUsageFileEnv(filePath, configEnvResolved, configName)
-
-  return configEnvResolved
 }
 
 function isRelativeImportPath(importPath: string) {
