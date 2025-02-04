@@ -5,7 +5,7 @@ import type { ResolvedConfig } from 'vite'
 import { assertWarning, toPosixPath, scriptFileExtensions } from '../utils.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
 import pc from '@brillout/picocolors'
-import { getOutDirs } from '../getOutDirs.js'
+import { getOutDirs } from './getOutDirs.js'
 
 async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDev: boolean): Promise<string[]> {
   const cwd = config.root

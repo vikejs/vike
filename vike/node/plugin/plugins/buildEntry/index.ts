@@ -13,7 +13,7 @@ const require_ = createRequire(importMetaUrl)
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
 import { assertBuildInfo, type BuildInfo, getViteConfigRuntime } from '../../../runtime/globalContext.js'
-import { getOutDirs } from '../../getOutDirs.js'
+import { getOutDirs } from '../../shared/getOutDirs.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'

@@ -8,7 +8,7 @@ import type { ViteDevServer } from 'vite'
 import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
 import { logDockerHint } from './devConfig/index.js'
-import { getOutDirs, resolveOutDir } from '../getOutDirs.js'
+import { getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {

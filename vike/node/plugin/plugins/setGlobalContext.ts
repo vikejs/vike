@@ -15,7 +15,7 @@ import {
   markSetup_vitePreviewServer
 } from '../utils.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
-import { getOutDirs } from '../getOutDirs.js'
+import { getOutDirs } from '../shared/getOutDirs.js'
 
 function setGlobalContext(): Plugin[] {
   return [

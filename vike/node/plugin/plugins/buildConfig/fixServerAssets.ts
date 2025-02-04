@@ -16,7 +16,7 @@ import { ResolvedConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
-import { getOutDirs } from '../../getOutDirs.js'
+import { getOutDirs } from '../../shared/getOutDirs.js'
 import { viteIsSSR } from '../../shared/viteIsSSR.js'
 
 /**
