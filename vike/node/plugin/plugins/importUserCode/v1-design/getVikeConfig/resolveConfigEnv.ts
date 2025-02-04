@@ -1,4 +1,4 @@
-export { resolveConfigEnvWithFileName }
+export { resolveConfigEnv }
 export { clearFilesEnvMap }
 export { isRelativeImportPath }
 
@@ -46,7 +46,7 @@ function assertUsageFileEnv(filePath: FilePath, configEnvResolved: ConfigEnvInte
   }
 }
 
-function resolveConfigEnvWithFileName(configEnv: ConfigEnvInternal, filePath: FilePath, configName: string) {
+function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath, configName: string) {
   const configEnvResolved = { ...configEnv }
 
   if (filePath.filePathAbsoluteFilesystem) {
