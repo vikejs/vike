@@ -509,7 +509,7 @@ function getPageConfigs(
     configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
     configValueSources: {}
   }
-  objectEntries(configDefinitionsResolved.configDefinitionsGlobal).map(([configName, configDef]) => {
+  objectEntries(configDefinitionsResolved.configDefinitionsGlobal).forEach(([configName, configDef]) => {
     const sources = resolveConfigValueSources(configName, configDef, interfaceFilesAll, userRootDir)
     const configValueSource = sources[0]
     if (!configValueSource) return
@@ -517,14 +517,15 @@ function getPageConfigs(
   })
 
   const pageConfigs: PageConfigBuildTime[] = []
-  objectEntries(configDefinitionsResolved.configDefinitionsLocal).map(
-    async ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
+  objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
+    ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
       if (!isDefiningPage(interfaceFiles)) return
       const configDefinitionsLocal = configDefinitions
+
       let configValueSources: ConfigValueSources = {}
       objectEntries(configDefinitionsLocal)
         .filter(([configName]) => !isGlobalConfigOld(configName))
-        .map(async ([configName, configDef]) => {
+        .forEach(([configName, configDef]) => {
           const sources = resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir)
           if (sources.length === 0) return
           // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
