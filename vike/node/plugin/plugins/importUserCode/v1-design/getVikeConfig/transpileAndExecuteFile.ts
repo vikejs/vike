@@ -2,6 +2,7 @@ export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
+export type { EsbuildCache }
 
 import {
   build,
@@ -46,6 +47,10 @@ const debug = createDebugger('vike:pointer-imports')
 const debugEsbuildResolve = createDebugger('vike:esbuild-resolve')
 if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
 
+type EsbuildCache = Record<
+  string, // filePath
+  Promise<Record<string, unknown>> // fileExports
+>
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
   userRootDir: string,
