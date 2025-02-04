@@ -3,7 +3,7 @@ export { isFilePathAbsolute }
 
 import path from 'path'
 import { assert } from './assert.js'
-import { assertPosixPath } from './path-shim.js'
+import { assertPosixPath } from './path.js'
 
 /**
  * Asserts that `filePath` is an absolute file path starting from the filesystem root.
