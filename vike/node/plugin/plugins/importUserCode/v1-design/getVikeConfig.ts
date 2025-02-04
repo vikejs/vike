@@ -387,11 +387,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir, esbuildCache)
 
-  const { pageConfigGlobal, pageConfigs } = getPageConfigs(
-    configDefinitionsResolved,
-    interfaceFilesAll,
-    userRootDir
-  )
+  const { pageConfigGlobal, pageConfigs } = getPageConfigs(configDefinitionsResolved, interfaceFilesAll, userRootDir)
 
   // interop vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
@@ -513,51 +509,46 @@ function getPageConfigs(
     configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
     configValueSources: {}
   }
-    objectEntries(configDefinitionsResolved.configDefinitionsGlobal).map(([configName, configDef]) => {
-      const sources = resolveConfigValueSources(configName, configDef, interfaceFilesAll, userRootDir)
-      const configValueSource = sources[0]
-      if (!configValueSource) return
-      pageConfigGlobal.configValueSources[configName] = sources
-    })
+  objectEntries(configDefinitionsResolved.configDefinitionsGlobal).map(([configName, configDef]) => {
+    const sources = resolveConfigValueSources(configName, configDef, interfaceFilesAll, userRootDir)
+    const configValueSource = sources[0]
+    if (!configValueSource) return
+    pageConfigGlobal.configValueSources[configName] = sources
+  })
 
   const pageConfigs: PageConfigBuildTime[] = []
-    objectEntries(configDefinitionsResolved.configDefinitionsLocal).map(
-      async ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
-        if (!isDefiningPage(interfaceFiles)) return
-        const configDefinitionsLocal = configDefinitions
-        let configValueSources: ConfigValueSources = {}
-          objectEntries(configDefinitionsLocal)
-            .filter(([configName]) => !isGlobalConfigOld(configName))
-            .map(async ([configName, configDef]) => {
-              const sources = resolveConfigValueSources(
-                configName,
-                configDef,
-                interfaceFilesRelevant,
-                userRootDir
-              )
-              if (sources.length === 0) return
-              // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
-              configValueSources[configName] = sources
-            })
-        configValueSources = sortConfigValueSources(configValueSources, locationId)
+  objectEntries(configDefinitionsResolved.configDefinitionsLocal).map(
+    async ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
+      if (!isDefiningPage(interfaceFiles)) return
+      const configDefinitionsLocal = configDefinitions
+      let configValueSources: ConfigValueSources = {}
+      objectEntries(configDefinitionsLocal)
+        .filter(([configName]) => !isGlobalConfigOld(configName))
+        .map(async ([configName, configDef]) => {
+          const sources = resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir)
+          if (sources.length === 0) return
+          // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
+          configValueSources[configName] = sources
+        })
+      configValueSources = sortConfigValueSources(configValueSources, locationId)
 
-        const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
+      const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
-        applyEffectsAll(configValueSources, configDefinitionsLocal)
-        const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
+      applyEffectsAll(configValueSources, configDefinitionsLocal)
+      const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
-        const pageConfig: PageConfigBuildTime = {
-          pageId: locationId,
-          isErrorPage,
-          routeFilesystem,
-          configDefinitions: configDefinitionsLocal,
-          interfaceFiles: interfaceFilesRelevant,
-          configValueSources,
-          configValuesComputed
-        }
-        pageConfigs.push(pageConfig)
+      const pageConfig: PageConfigBuildTime = {
+        pageId: locationId,
+        isErrorPage,
+        routeFilesystem,
+        configDefinitions: configDefinitionsLocal,
+        interfaceFiles: interfaceFilesRelevant,
+        configValueSources,
+        configValuesComputed
       }
-    )
+      pageConfigs.push(pageConfig)
+    }
+  )
   assertPageConfigs(pageConfigs, interfaceFilesAll)
 
   return { pageConfigs, pageConfigGlobal }
