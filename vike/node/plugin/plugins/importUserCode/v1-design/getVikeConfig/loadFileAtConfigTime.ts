@@ -42,15 +42,11 @@ async function loadPointerImport(
   configName: string,
   configDefinitions: ConfigDefinitions
 ): Promise<unknown> {
+  // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
+  if (configName === 'extends') return
   const configDef = getConfigDefinition(configDefinitions, configName)
-  if (
-    !shouldBeLoadableAtBuildTime(configDef) ||
-    // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
-    configName === 'extends'
-  ) {
-    // Only load pointer import if `env.config===true`
-    return
-  }
+  // Only load pointer import if `env.config===true`
+  if (!shouldBeLoadableAtBuildTime(configDef)) return
 
   if (pointerImport.fileExportValueLoaded) {
     await pointerImport.fileExportValueLoaded
