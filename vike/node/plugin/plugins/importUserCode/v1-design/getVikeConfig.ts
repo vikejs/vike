@@ -444,7 +444,7 @@ async function resolveConfigDefinitions(
   esbuildCache: EsbuildCache
 ) {
   const configDefinitionsGlobal = getConfigDefinitions(
-    // We use `interfaceFilesAll` instead of `interfaceFilesGlobal` in order to allow local Vike extensions to create global configs.
+    // We use `interfaceFilesAll` in order to allow local Vike extensions to create global configs.
     interfaceFilesAll, // TODO/now sort
     (configDef) => !!configDef.global
   )
@@ -510,7 +510,13 @@ function getPageConfigs(
     configValueSources: {}
   }
   objectEntries(configDefinitionsResolved.configDefinitionsGlobal).forEach(([configName, configDef]) => {
-    const sources = resolveConfigValueSources(configName, configDef, interfaceFilesAll, userRootDir)
+    const sources = resolveConfigValueSources(
+      configName,
+      configDef,
+      // We use `interfaceFilesAll` in order to allow local Vike extensions to set the value of global configs (e.g. `vite`).
+      interfaceFilesAll, // TODO/now check sort order
+      userRootDir
+    )
     const configValueSource = sources[0]
     if (!configValueSource) return
     pageConfigGlobal.configValueSources[configName] = sources
