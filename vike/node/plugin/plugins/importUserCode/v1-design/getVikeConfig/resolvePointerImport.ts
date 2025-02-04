@@ -24,7 +24,7 @@ import type { FilePath, FilePathResolved } from '../../../../../../shared/page-c
 
 const filesEnvMap: Map<string, { configEnvResolved: ConfigEnvInternal; configName: string }[]> = new Map()
 
-type PointerImportResolved = DefinedAtFilePath & { fileExportName: string }
+type PointerImportResolved = DefinedAtFilePath & Required<Pick<DefinedAtFilePath,'fileExportName'>>
 
 function resolvePointerImportOfConfig(
   configValue: unknown,
