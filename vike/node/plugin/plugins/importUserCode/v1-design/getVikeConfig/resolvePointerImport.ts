@@ -1,5 +1,5 @@
 export { resolvePointerImportOfConfig }
-export { resolvePointerImport }
+export { resolvePointerImportData }
 
 import pc from '@brillout/picocolors'
 import type { DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
@@ -32,7 +32,7 @@ function resolvePointerImportOfConfig(
   if (!pointerImportData) return null
   const { exportName } = pointerImportData
 
-  const filePath = resolvePointerImport(pointerImportData, importerFilePath, userRootDir)
+  const filePath = resolvePointerImportData(pointerImportData, importerFilePath, userRootDir)
   const fileExportPathToShowToUser = exportName === 'default' || exportName === configName ? [] : [exportName]
 
   const fileExportPath: FileExportPath = {
@@ -43,7 +43,7 @@ function resolvePointerImportOfConfig(
   return { fileExportPath }
 }
 
-function resolvePointerImport(
+function resolvePointerImportData(
   pointerImportData: PointerImportData,
   importerFilePath: FilePathResolved,
   userRootDir: string

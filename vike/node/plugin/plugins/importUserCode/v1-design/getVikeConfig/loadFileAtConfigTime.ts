@@ -28,7 +28,7 @@ import { assertPlusFileExport } from '../../../../../../shared/page-configs/asse
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
-import { resolvePointerImport } from './resolvePointerImport.js'
+import { resolvePointerImportData } from './resolvePointerImport.js'
 import type { ConfigDefinitions } from './configDefinitionsBuiltIn.js'
 
 assertIsNotProductionRuntime()
@@ -143,7 +143,7 @@ async function loadExtendsConfigs(
   const { extendsPointerImportData, extendsConfigs } = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
   extendsPointerImportData.map((pointerImportData) => {
-    const filePath = resolvePointerImport(pointerImportData, configFilePath, userRootDir)
+    const filePath = resolvePointerImportData(pointerImportData, configFilePath, userRootDir)
     assert(filePath.filePathAbsoluteFilesystem)
     extendsConfigFiles.push(filePath)
   })
