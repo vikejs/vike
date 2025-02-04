@@ -5,6 +5,7 @@ export { vikeConfigDependencies }
 export { isVikeConfigFile }
 export { isV1Design }
 export { getConfVal }
+export { getConfigDefinition }
 export { getConfigDefinitionOptional }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
@@ -74,11 +75,11 @@ import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import {
   type ConfigFile,
-  ImportedFilesLoaded,
+  type ImportedFilesLoaded,
   loadConfigFile,
   loadPointerImport,
   loadValueFile,
-  PointerImportLoaded
+  type PointerImportLoaded
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
