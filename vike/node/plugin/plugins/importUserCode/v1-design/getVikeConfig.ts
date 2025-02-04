@@ -217,7 +217,10 @@ async function isV1Design(config: ResolvedConfig): Promise<boolean> {
   return isV1Design
 }
 
-async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesByLocationId> {
+async function loadInterfaceFiles(
+  userRootDir: string,
+  esbuildCache: EsbuildCache
+): Promise<InterfaceFilesByLocationId> {
   const plusFiles = await findPlusFiles(userRootDir, null)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
@@ -236,7 +239,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
     ...configFiles.map(async (filePath) => {
       const { filePathAbsoluteUserRootDir } = filePath
       assert(filePathAbsoluteUserRootDir)
-      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false)
+      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
       assert(filePath.filePathAbsoluteUserRootDir)
       const locationId = getLocationId(filePathAbsoluteUserRootDir)
       const interfaceFile = getInterfaceFileFromConfigFile(configFile, false, locationId, userRootDir)
@@ -289,7 +292,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
       // We don't have access to the custom config definitions defined by the user yet.
       //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
       //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-      await loadValueFile(interfaceFile, configDefinitionsBuiltInAll, userRootDir)
+      await loadValueFile(interfaceFile, configDefinitionsBuiltInAll, userRootDir, esbuildCache)
     })
   ])
 
@@ -378,9 +381,9 @@ async function loadVikeConfig_withErrorHandling(
   }
 }
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
-  const interfaceFilesAll = await loadInterfaceFiles(userRootDir)
   const esbuildCache: EsbuildCache = {}
-  const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir)
+  const interfaceFilesAll = await loadInterfaceFiles(userRootDir, esbuildCache)
+  const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir, esbuildCache)
   const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
     configDefinitionsResolved,
     interfaceFilesAll,
@@ -437,13 +440,17 @@ async function getGlobalConfigs(
   }
   //*/
 }
-async function resolveConfigDefinitions(interfaceFilesAll: InterfaceFilesByLocationId, userRootDir: string) {
+async function resolveConfigDefinitions(
+  interfaceFilesAll: InterfaceFilesByLocationId,
+  userRootDir: string,
+  esbuildCache: EsbuildCache
+) {
   const configDefinitionsGlobal = getConfigDefinitions(
     // We use `interfaceFilesAll` instead of `interfaceFilesGlobal` in order to allow local Vike extensions to create global configs.
     interfaceFilesAll, // TODO/now sort
     (configDef) => !!configDef.global
   )
-  await loadCustomConfigBuildTimeFiles(interfaceFilesAll, configDefinitionsGlobal, userRootDir)
+  await loadCustomConfigBuildTimeFiles(interfaceFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
 
   const configDefinitionsLocal: Record<
     LocationId,
@@ -460,7 +467,7 @@ async function resolveConfigDefinitions(interfaceFilesAll: InterfaceFilesByLocat
       const interfaceFilesRelevant = getInterfaceFilesRelevant(interfaceFilesAll, locationId)
       //    configDefinitions = getConfigDefinitions(interfaceFilesRelevant, (configDef) => configDef.global !== true) // TODO/now
       const configDefinitions = getConfigDefinitions(interfaceFilesRelevant)
-      await loadCustomConfigBuildTimeFiles(interfaceFiles, configDefinitions, userRootDir)
+      await loadCustomConfigBuildTimeFiles(interfaceFiles, configDefinitions, userRootDir, esbuildCache)
       configDefinitionsLocal[locationId] = { configDefinitions, interfaceFiles, interfaceFilesRelevant }
     })
   )
@@ -477,17 +484,18 @@ type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefiniti
 async function loadCustomConfigBuildTimeFiles(
   interfaceFiles: InterfaceFilesByLocationId | InterfaceFile[],
   configDefinitions: ConfigDefinitions,
-  userRootDir: string
+  userRootDir: string,
+  esbuildCache: EsbuildCache
 ): Promise<void> {
   const interfaceFileList: InterfaceFile[] = Object.values(interfaceFiles).flat(1)
   await Promise.all(
     interfaceFileList.map(async (interfaceFile) => {
       if (interfaceFile.isValueFile) {
-        await loadValueFile(interfaceFile, configDefinitions, userRootDir)
+        await loadValueFile(interfaceFile, configDefinitions, userRootDir, esbuildCache)
       } else {
         await Promise.all(
           Object.entries(interfaceFile.pointerImportsByConfigName).map(async ([configName, pointerImport]) => {
-            await loadPointerImport(pointerImport, userRootDir, configName, configDefinitions)
+            await loadPointerImport(pointerImport, userRootDir, configName, configDefinitions, esbuildCache)
           })
         )
       }
