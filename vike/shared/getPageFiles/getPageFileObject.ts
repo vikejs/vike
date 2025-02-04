@@ -4,7 +4,6 @@ export { getPageFileObject }
 export type { PageFile }
 
 import { determinePageIdOld } from '../determinePageIdOld.js'
-import { assertPageFilePath } from '../assertPageFilePath.js'
 import { isErrorPageId } from '../error-page.js'
 import { assert, slice } from '../utils.js'
 import { determineFileType, FileType } from './fileTypes.js'
@@ -57,7 +56,6 @@ function getPageFileObject(filePath: string): PageFile {
 }
 
 function isDefaultFilePath(filePath: string): boolean {
-  assertPageFilePath(filePath)
   if (isErrorPageId(filePath, false)) {
     return false
   }
@@ -65,13 +63,10 @@ function isDefaultFilePath(filePath: string): boolean {
 }
 
 function isRendererFilePath(filePath: string): boolean {
-  assertPageFilePath(filePath)
   return filePath.includes('/renderer/')
 }
 
 function isAncestorDefaultPage(pageId: string, defaultPageFilePath: string) {
-  assertPageFilePath(pageId)
-  assertPageFilePath(defaultPageFilePath)
   assert(!pageId.endsWith('/'))
   assert(!defaultPageFilePath.endsWith('/'))
   assert(isDefaultFilePath(defaultPageFilePath))

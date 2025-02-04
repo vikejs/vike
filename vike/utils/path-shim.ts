@@ -4,6 +4,8 @@ export { pathJoin }
 // Robust alternative: https://github.com/unjs/pathe
 
 import { assert } from './assert.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+assertIsNotBrowser()
 
 function pathJoin(path1: string, path2: string): string {
   assert(!path1.includes('\\'))

@@ -2,6 +2,8 @@ export { toPosixPath }
 export { assertPosixPath }
 
 import { assert } from './assert.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+assertIsNotBrowser()
 
 function toPosixPath(path: string): string {
   const pathPosix = path.split('\\').join('/')

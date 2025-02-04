@@ -5,7 +5,7 @@ export { fileTypes }
 export { isValidFileType }
 export { determineFileType }
 
-import { assert, assertPosixPath } from '../utils.js'
+import { assert } from '../utils.js'
 import { isScriptFile } from '../../utils/isScriptFile.js'
 
 const fileTypes = [
@@ -25,8 +25,6 @@ function isValidFileType(filePath: string): boolean {
 }
 
 function determineFileType(filePath: string): FileType {
-  assertPosixPath(filePath)
-
   {
     const isCSS = filePath.endsWith('.css')
     if (isCSS) {

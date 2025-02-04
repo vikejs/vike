@@ -4,7 +4,6 @@ export { getPageFilesClientSide }
 export { getPageFilesServerSide }
 
 import { assert, assertUsage, isNotNullish } from '../utils.js'
-import { assertPageFilePath } from '../assertPageFilePath.js'
 import type { PageFile } from './getPageFileObject.js'
 
 function getPageFilesClientSide(pageFilesAll: PageFile[], pageId: string): PageFile[] {
@@ -109,9 +108,6 @@ function getPageFilesSorter(envIsClient: boolean, pageId: string) {
 }
 
 function getPathDistance(pathA: string, pathB: string): number {
-  assertPageFilePath(pathA)
-  assertPageFilePath(pathB)
-
   // Index of first different character
   let idx = 0
   for (; idx < pathA.length && idx < pathB.length; idx++) {
