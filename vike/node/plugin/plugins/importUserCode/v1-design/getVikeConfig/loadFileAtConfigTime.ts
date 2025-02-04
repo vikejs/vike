@@ -17,7 +17,7 @@ import {
 } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { getConfigDefinition, getConfigDefinitionOptional, type InterfaceValueFile } from '../getVikeConfig.js'
+import { getConfigDefinitionOptional, type InterfaceValueFile } from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
@@ -44,9 +44,9 @@ async function loadPointerImport(
 ): Promise<unknown> {
   // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
   if (configName === 'extends') return
-  const configDef = getConfigDefinition(configDefinitions, configName)
+  const configDef = getConfigDefinitionOptional(configDefinitions, configName)
   // Only load pointer import if `env.config===true`
-  if (!shouldBeLoadableAtBuildTime(configDef)) return
+  if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
 
   if (pointerImport.fileExportValueLoaded) {
     await pointerImport.fileExportValueLoaded

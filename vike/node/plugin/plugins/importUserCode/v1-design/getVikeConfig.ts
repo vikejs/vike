@@ -5,7 +5,6 @@ export { vikeConfigDependencies }
 export { isVikeConfigFile }
 export { isV1Design }
 export { getConfVal }
-export { getConfigDefinition }
 export { getConfigDefinitionOptional }
 export type { VikeConfigObject }
 export type { InterfaceValueFile }
@@ -1408,7 +1407,7 @@ function getConfigEnvValue(
 
 function getConfigDefinition(configDefinitions: ConfigDefinitions, configName: string) {
   const configDef = configDefinitions[configName]
-  assert(configDef)
+  assert(configDef, { configName })
   return configDef
 }
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
