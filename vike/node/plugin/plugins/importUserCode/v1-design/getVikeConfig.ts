@@ -81,11 +81,8 @@ import {
   loadValueFile,
   loadValueFiles
 } from './getVikeConfig/loadFileAtConfigTime.js'
-import {
-  clearFilesEnvMap,
-  resolveConfigEnvWithFileName,
-  resolvePointerImportOfConfig
-} from './getVikeConfig/resolvePointerImport.js'
+import { resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
+import { clearFilesEnvMap, resolveConfigEnvWithFileName } from './getVikeConfig/resolveConfigEnv.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
