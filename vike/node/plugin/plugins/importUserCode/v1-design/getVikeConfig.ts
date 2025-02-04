@@ -317,20 +317,23 @@ function getInterfaceFileFromConfigFile(
   locationId: LocationId
 ): InterfaceFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
+
+  const fileExportsByConfigName: InterfaceConfigFile['fileExportsByConfigName'] = {}
+  const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
+  Object.entries(fileExport).forEach(([configName, configValue]) => {
+    fileExportsByConfigName[configName] = configValue
+  })
+
   const interfaceFile: InterfaceConfigFile = {
     locationId,
     filePath,
-    fileExportsByConfigName: {},
+    fileExportsByConfigName,
     isConfigFile: true,
     isValueFile: false,
     isValueFileLoaded: true,
     isConfigExtend,
     extendsFilePaths
   }
-  const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
-  Object.entries(fileExport).forEach(([configName, configValue]) => {
-    interfaceFile.fileExportsByConfigName[configName] = configValue
-  })
   return interfaceFile
 }
 
