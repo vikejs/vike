@@ -82,9 +82,8 @@ import {
   loadValueFiles
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
-import { resolveConfigEnv } from './getVikeConfig/resolveConfigEnv.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
-import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
+import type { FilePath, FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire, assertExtensionsConventions } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
@@ -1482,4 +1481,24 @@ function getConfVal(
   if (!interfaceFile.isValueFileLoaded) return { configValueLoaded: false }
   const confVal = { configValue: interfaceFile.fileExportsByConfigName[configName], configValueLoaded: true }
   return confVal
+}
+
+function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
+  const configEnvResolved = { ...configEnv }
+
+  if (filePath.filePathAbsoluteFilesystem) {
+    const { fileName } = filePath
+    if (fileName.includes('.server.')) {
+      configEnvResolved.server = true
+      configEnvResolved.client = false
+    } else if (fileName.includes('.client.')) {
+      configEnvResolved.client = true
+      configEnvResolved.server = false
+    } else if (fileName.includes('.shared.')) {
+      configEnvResolved.server = true
+      configEnvResolved.client = true
+    }
+  }
+
+  return configEnvResolved
 }
