@@ -383,12 +383,12 @@ function addImportStatement(
   })()
   const importStatement = `import ${importLiteral} from '${importPath}';`
   importStatements.push(importStatement)
-  assertUsageFileEnv(importPath, configEnv, configName, filesEnv)
+  assertFileEnv(importPath, configEnv, configName, filesEnv)
   return { importName }
 }
 
 type FilesEnv = Map<string, { configEnv: ConfigEnvInternal; configName: string }[]>
-function assertUsageFileEnv(importPath: string, configEnv: ConfigEnvInternal, configName: string, filesEnv: FilesEnv) {
+function assertFileEnv(importPath: string, configEnv: ConfigEnvInternal, configName: string, filesEnv: FilesEnv) {
   const key = importPath
   assert(key)
   assertPosixPath(key)
@@ -396,15 +396,16 @@ function assertUsageFileEnv(importPath: string, configEnv: ConfigEnvInternal, co
   if (!filesEnv.has(key)) {
     filesEnv.set(key, [])
   }
-  const fileEnv = filesEnv.get(key)!
-  fileEnv.push({ configEnv, configName })
-  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
-  if (configDifferentEnv) {
+  const fileEnvs = filesEnv.get(key)!
+  const fileEnvNew = { configEnv, configName }
+  fileEnvs.push(fileEnvNew)
+  const fileEnvDiff = fileEnvs.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
+  if (fileEnvDiff) {
     assertUsage(
       false,
       [
         `${importPath} defines the value of configs living in different environments:`,
-        ...[configDifferentEnv, { configName, configEnv }].map(
+        ...[fileEnvDiff, fileEnvNew].map(
           (c) =>
             `  - config ${pc.code(c.configName)} which value lives in environment ${pc.code(
               JSON.stringify(c.configEnv)
