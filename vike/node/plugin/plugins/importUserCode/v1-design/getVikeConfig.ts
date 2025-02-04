@@ -482,11 +482,13 @@ async function loadCustomConfigBuiltTimeFiles(
   configDefinitions: ConfigDefinitions,
   userRootDir: string
 ): Promise<void> {
+  const interfaceFileList: InterfaceFile[] = Object.values(interfaceFiles).flat(1)
   await Promise.all(
-    Object.values(interfaceFiles)
-      .flat(1)
-      .filter((interfaceFile) => interfaceFile.isValueFile)
-      .map(async (interfaceFile) => await loadValueFile(interfaceFile, configDefinitions, userRootDir))
+    interfaceFileList.map(async (interfaceFile) => {
+      if (interfaceFile.isValueFile) {
+        await loadValueFile(interfaceFile, configDefinitions, userRootDir)
+      }
+    })
   )
 }
 async function getPageConfigs(
