@@ -386,7 +386,7 @@ async function loadVikeConfig_withErrorHandling(
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const interfaceFilesAll = await loadInterfaceFiles(userRootDir)
   const importedFilesLoaded: ImportedFilesLoaded = {}
-  const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir, importedFilesLoaded)
+  const configDefinitionsResolved = await resolveConfigDefinitions(interfaceFilesAll, userRootDir)
   const { pageConfigGlobal, pageConfigs } = await getPageConfigs(
     configDefinitionsResolved,
     interfaceFilesAll,
@@ -443,11 +443,7 @@ async function getGlobalConfigs(
   }
   //*/
 }
-async function resolveConfigDefinitions(
-  interfaceFilesAll: InterfaceFilesByLocationId,
-  userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
-) {
+async function resolveConfigDefinitions(interfaceFilesAll: InterfaceFilesByLocationId, userRootDir: string) {
   const configDefinitionsGlobal = getConfigDefinitions(
     // We use `interfaceFilesAll` instead of `interfaceFilesGlobal` in order to allow local Vike extensions to create global configs.
     interfaceFilesAll, // TODO/now sort
