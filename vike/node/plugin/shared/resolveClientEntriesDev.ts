@@ -8,7 +8,7 @@ import {
   pathJoin,
   assertIsNpmPackageImport,
   assertIsNotProductionRuntime
-} from './utils.js'
+} from '../utils.js'
 import type { ViteDevServer } from 'vite'
 import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
