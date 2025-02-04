@@ -1,7 +1,8 @@
 export { pathJoin }
 
-// Simple shim for `import * from "node:path"` used by the server runtime.
-// Robust alternative: https://github.com/unjs/pathe
+// Utilites for handling file paths.
+// - Shims `import * from "node:path"` for server runtime.
+//   - Robust shim reference: https://github.com/unjs/pathe
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -16,7 +17,8 @@ function pathJoin(path1: string, path2: string): string {
 }
 
 /* https://github.com/brillout/telefunc/blob/0fd44322acbd07857ae29361ba7c998607f17dd5/telefunc/utils/path-shim.ts#L17-L21
-function isAbsolute(filePath: string) {
-  // ...
+const IS_ABSOLUTE_RE = /^[/\\](?![/\\])|^[/\\]{2}(?!\.)|^[A-Za-z]:[/\\]/
+function pathIsAbsolute(filePath: string) {
+  return IS_ABSOLUTE_RE.test(filePath)
 }
-*/
+//*/
