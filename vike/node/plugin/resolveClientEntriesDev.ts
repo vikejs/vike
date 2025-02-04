@@ -11,12 +11,9 @@ import {
 } from './utils.js'
 import type { ViteDevServer } from 'vite'
 import { createRequire } from 'module'
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
-const __dirname_ = dirname(fileURLToPath(importMetaUrl))
 
 assertIsNotProductionRuntime()
 
