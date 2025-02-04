@@ -1,5 +1,6 @@
 export { resolvePointerImport }
 export { resolvePointerImportData }
+export type { PointerImport }
 
 import pc from '@brillout/picocolors'
 import type { DefinedAtFilePath } from '../../../../../../shared/page-configs/PageConfig.js'
@@ -20,13 +21,14 @@ import {
 } from '../../../../shared/getFilePath.js'
 import type { FilePath, FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 
+type PointerImport = { fileExportPath: FileExportPath }
 type FileExportPath = DefinedAtFilePath & Required<Pick<DefinedAtFilePath, 'fileExportName'>>
 function resolvePointerImport(
   configValue: unknown,
   importerFilePath: FilePathResolved,
   userRootDir: string,
   configName: string
-): null | { fileExportPath: FileExportPath } {
+): null | PointerImport {
   if (typeof configValue !== 'string') return null
   const pointerImportData = parsePointerImportData(configValue)
   if (!pointerImportData) return null
