@@ -912,7 +912,7 @@ async function getConfigValueSource(
 
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
-    const configEnvResolved = resolveConfigEnv(configDef.env, interfaceFile.filePath, configName)
+    const configEnvResolved = resolveConfigEnv(configDef.env, interfaceFile.filePath, configName, true)
     const valueAlreadyLoaded = confVal.configValueLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {

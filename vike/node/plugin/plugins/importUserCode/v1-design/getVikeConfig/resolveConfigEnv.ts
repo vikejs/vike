@@ -12,7 +12,7 @@ function clearFilesEnvMap() {
   filesEnvMap.clear()
 }
 
-function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath, configName: string) {
+function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath, configName: string, skipEnvCheck?: true) {
   const configEnvResolved = { ...configEnv }
 
   if (filePath.filePathAbsoluteFilesystem) {
@@ -29,7 +29,7 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath, conf
     }
   }
 
-  assertUsageFileEnv(filePath, configEnvResolved, configName)
+  if (!skipEnvCheck) assertUsageFileEnv(filePath, configEnvResolved, configName)
 
   return configEnvResolved
 }
