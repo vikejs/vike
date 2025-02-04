@@ -517,8 +517,7 @@ function getPageConfigs(
       interfaceFilesAll, // TODO/now check sort order
       userRootDir
     )
-    const configValueSource = sources[0]
-    if (!configValueSource) return
+    if (!sources[0]) return
     pageConfigGlobal.configValueSources[configName] = sources
   })
 
@@ -796,9 +795,16 @@ function resolveConfigValueSources(
     })
   }
 
-  const sources: ConfigValueSource[] = interfaceFilesSource.map(({ interfaceFile, isHighestInheritancePrecedence }) =>
-    getConfigValueSource(configName, interfaceFile, configDef, userRootDir, isHighestInheritancePrecedence)
-  )
+  const sources: ConfigValueSource[] = interfaceFilesSource.map(({ interfaceFile, isHighestInheritancePrecedence }) => {
+    const configValueSource = getConfigValueSource(
+      configName,
+      interfaceFile,
+      configDef,
+      userRootDir,
+      isHighestInheritancePrecedence
+    )
+    return configValueSource
+  })
   return sources
 }
 function getConfigValueSource(
@@ -1411,10 +1417,9 @@ function isGlobalConfigOld(configName: string): configName is ConfigNameGlobal {
 // TODO/now
 function isGlobalConfig(
   configName: string,
-  configDefinitions: ConfigDefinitions,
-  configValueSources: ConfigValueSource[]
+  configDef: ConfigDefinitionInternal,
+  configValueSource: ConfigValueSource
 ): configName is ConfigNameGlobal {
-  const configDef = configDefinitions[configName]
   assert(configDef)
   const globalValue = configDef.global
   if (!globalValue) return false
