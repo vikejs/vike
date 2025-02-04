@@ -10,7 +10,7 @@ import { getVikeConfig } from './getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
+import { FilesEnv, serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
 import { fixServerAssets_isEnabled } from '../../buildConfig/fixServerAssets.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -50,6 +50,7 @@ function getLoadConfigValuesAll(
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
+  const filesEnv: FilesEnv = new Map()
   const isClientRouting = getConfigValueBuildTime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
 
   lines.push('export const configValuesSerialized = {')
@@ -57,6 +58,7 @@ function getLoadConfigValuesAll(
     ...serializeConfigValues(
       pageConfig,
       importStatements,
+      filesEnv,
       (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
       '',
       false

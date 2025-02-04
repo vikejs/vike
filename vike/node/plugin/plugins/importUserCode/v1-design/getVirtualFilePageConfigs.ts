@@ -5,7 +5,7 @@ import { getVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-
 import { debug } from './debug.js'
 import { getVikeConfig } from './getVikeConfig.js'
 import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
+import { FilesEnv, serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
 
 async function getVirtualFilePageConfigs(
@@ -30,14 +30,24 @@ function getCode(
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
+  const filesEnv: FilesEnv = new Map()
 
   lines.push('export const pageConfigsSerialized = [')
-  lines.push(getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, isDev, importStatements))
+  lines.push(
+    getCodePageConfigsSerialized(pageConfigs, isForClientSide, isClientRouting, isDev, importStatements, filesEnv)
+  )
   lines.push('];')
 
   lines.push('export const pageConfigGlobalSerialized = {')
   lines.push(
-    getCodePageConfigGlobalSerialized(pageConfigGlobal, isForClientSide, isClientRouting, isDev, importStatements)
+    getCodePageConfigGlobalSerialized(
+      pageConfigGlobal,
+      isForClientSide,
+      isClientRouting,
+      isDev,
+      importStatements,
+      filesEnv
+    )
   )
   lines.push('};')
 
@@ -51,7 +61,8 @@ function getCodePageConfigsSerialized(
   isForClientSide: boolean,
   isClientRouting: boolean,
   isDev: boolean,
-  importStatements: string[]
+  importStatements: string[],
+  filesEnv: FilesEnv
 ): string {
   const lines: string[] = []
 
@@ -69,6 +80,7 @@ function getCodePageConfigsSerialized(
       ...serializeConfigValues(
         pageConfig,
         importStatements,
+        filesEnv,
         (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
         '    ',
         true
@@ -87,7 +99,8 @@ function getCodePageConfigGlobalSerialized(
   isForClientSide: boolean,
   isClientRouting: boolean,
   isDev: boolean,
-  importStatements: string[]
+  importStatements: string[],
+  filesEnv: FilesEnv
 ) {
   const lines: string[] = []
 
@@ -96,6 +109,7 @@ function getCodePageConfigGlobalSerialized(
     ...serializeConfigValues(
       pageConfigGlobal,
       importStatements,
+      filesEnv,
       (configEnv) => isRuntimeEnvMatch(configEnv, { isForClientSide, isClientRouting, isDev }),
       '    ',
       null

@@ -82,7 +82,7 @@ import {
   loadValueFiles
 } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImportOfConfig } from './getVikeConfig/resolvePointerImport.js'
-import { clearFilesEnvMap, resolveConfigEnv } from './getVikeConfig/resolveConfigEnv.js'
+import { resolveConfigEnv } from './getVikeConfig/resolveConfigEnv.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
@@ -160,7 +160,6 @@ function reloadVikeConfig(config: ResolvedConfig) {
   const vikeVitePluginOptions = config._vikeVitePluginOptions
   assert(vikeVitePluginOptions)
   vikeConfigDependencies.clear()
-  clearFilesEnvMap()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
   handleReloadSideEffects()
 }
@@ -873,7 +872,7 @@ async function getConfigValueSource(
     if (pointerImport) {
       const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
-        configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath, configName),
+        configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
         isOverriden,
@@ -912,7 +911,7 @@ async function getConfigValueSource(
 
   // Defined by value file, i.e. +{configName}.js
   if (interfaceFile.isValueFile) {
-    const configEnvResolved = resolveConfigEnv(configDef.env, interfaceFile.filePath, configName, true)
+    const configEnvResolved = resolveConfigEnv(configDef.env, interfaceFile.filePath)
     const valueAlreadyLoaded = confVal.configValueLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {

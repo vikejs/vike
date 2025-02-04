@@ -1,8 +1,9 @@
 export { serializeConfigValues }
 export { getConfigValuesBase }
+export type { FilesEnv }
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
-import { assert, assertUsage, getPropAccessNotation } from '../../../node/plugin/utils.js'
+import { assert, assertPosixPath, assertUsage, deepEqual, getPropAccessNotation } from '../../../node/plugin/utils.js'
 import type {
   ConfigEnvInternal,
   ConfigValue,
@@ -28,6 +29,7 @@ assertIsNotProductionRuntime()
 function serializeConfigValues(
   pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime,
   importStatements: string[],
+  filesEnv: FilesEnv,
   isEnvMatch: (configEnv: ConfigEnvInternal) => boolean,
   tabspace: string,
   isEager: boolean | null
@@ -38,14 +40,21 @@ function serializeConfigValues(
   getConfigValuesBase(pageConfig, isEnvMatch, isEager).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
       assert('value' in entry) // Help TS
-      const { configValueBase, value, configName } = entry
-      const valueData = getValueSerializedWithJson(value, configName, configValueBase.definedAtData, importStatements)
+      const { configValueBase, value, configName, configEnv } = entry
+      const valueData = getValueSerializedWithJson(
+        value,
+        configName,
+        configValueBase.definedAtData,
+        importStatements,
+        filesEnv,
+        configEnv
+      )
       serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
     }
     if (entry.configValueBase.type === 'standard') {
       assert('sourceRelevant' in entry) // Help TS
       const { configValueBase, sourceRelevant, configName } = entry
-      const valueData = getValueSerializedFromSource(sourceRelevant, configName, importStatements)
+      const valueData = getValueSerializedFromSource(sourceRelevant, configName, importStatements, filesEnv)
       serializeConfigValue(configValueBase, valueData, configName, lines, tabspace)
     }
     if (entry.configValueBase.type === 'cumulative') {
@@ -53,7 +62,7 @@ function serializeConfigValues(
       const { configValueBase, sourcesRelevant, configName } = entry
       const valueDataList: ValueData[] = []
       sourcesRelevant.forEach((source) => {
-        const valueData = getValueSerializedFromSource(source, configName, importStatements)
+        const valueData = getValueSerializedFromSource(source, configName, importStatements, filesEnv)
         valueDataList.push(valueData)
       })
       serializeConfigValue(configValueBase, valueDataList, configName, lines, tabspace)
@@ -66,7 +75,8 @@ function serializeConfigValues(
 function getValueSerializedFromSource(
   configValueSource: ConfigValueSource,
   configName: string,
-  importStatements: string[]
+  importStatements: string[],
+  filesEnv: FilesEnv
 ) {
   assert(configValueSource.isOverriden === false)
   let valueData: ValueData
@@ -75,10 +85,12 @@ function getValueSerializedFromSource(
       configValueSource.value,
       configName,
       configValueSource.definedAtFilePath,
-      importStatements
+      importStatements,
+      filesEnv,
+      configValueSource.configEnv
     )
   } else {
-    valueData = getValueSerializedWithImport(configValueSource, importStatements)
+    valueData = getValueSerializedWithImport(configValueSource, importStatements, filesEnv, configName)
   }
   return valueData
 }
@@ -141,15 +153,27 @@ function serializeConfigValue(
   }
 }
 
-function getValueSerializedWithImport(configValueSource: ConfigValueSource, importStatements: string[]): ValueData {
+function getValueSerializedWithImport(
+  configValueSource: ConfigValueSource,
+  importStatements: string[],
+  filesEnv: FilesEnv,
+  configName: string
+): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
-  const { valueIsImportedAtRuntime, valueIsDefinedByPlusFile, definedAtFilePath } = configValueSource
+  const { valueIsImportedAtRuntime, valueIsDefinedByPlusFile, definedAtFilePath, configEnv } = configValueSource
   assert(valueIsImportedAtRuntime)
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
   if (valueIsDefinedByPlusFile) assert(fileExportName === undefined)
-  const { importName } = addImportStatement(importStatements, filePathAbsoluteVite, fileExportName || '*')
+  const { importName } = addImportStatement(
+    importStatements,
+    filePathAbsoluteVite,
+    fileExportName || '*',
+    filesEnv,
+    configEnv,
+    configName
+  )
 
   return {
     type: valueIsDefinedByPlusFile ? 'plus-file' : 'pointer-import',
@@ -161,9 +185,11 @@ function getValueSerializedWithJson(
   value: unknown,
   configName: string,
   definedAtData: DefinedAtData,
-  importStatements: string[]
+  importStatements: string[],
+  filesEnv: FilesEnv,
+  configEnv: ConfigEnvInternal
 ): ValueData {
-  const valueAsJsCode = valueToJson(value, configName, definedAtData, importStatements)
+  const valueAsJsCode = valueToJson(value, configName, definedAtData, importStatements, filesEnv, configEnv)
   return {
     type: 'js-serialized',
     valueAsJsCode
@@ -173,7 +199,9 @@ function valueToJson(
   value: unknown,
   configName: string,
   definedAtData: DefinedAtData,
-  importStatements: string[]
+  importStatements: string[],
+  filesEnv: FilesEnv,
+  configEnv: ConfigEnvInternal
 ): string {
   const valueName = `config${getPropAccessNotation(configName)}`
 
@@ -190,7 +218,14 @@ function valueToJson(
         if (typeof value === 'string') {
           const importData = parsePointerImportData(value)
           if (importData) {
-            const { importName } = addImportStatement(importStatements, importData.importPath, importData.exportName)
+            const { importName } = addImportStatement(
+              importStatements,
+              importData.importPath,
+              importData.exportName,
+              filesEnv,
+              configEnv,
+              configName
+            )
             const replacement = [REPLACE_ME_BEFORE, importName, REPLACE_ME_AFTER].join('')
             return { replacement }
           }
@@ -238,14 +273,15 @@ function getConfigValuesBase(
   isEager: boolean | null
 ): ConfigValuesBase {
   const fromComputed = Object.entries(pageConfig.configValuesComputed ?? {}).map(([configName, valueInfo]) => {
-    if (!isEnvMatch(valueInfo.configEnv)) return 'SKIP'
+    const { configEnv, value } = valueInfo
+    if (!isEnvMatch(configEnv)) return 'SKIP'
     // Is there a use case for overriding computed values? If yes, then configValeSources has higher precedence
     if (pageConfig.configValueSources[configName]) return 'SKIP'
     const configValueBase = {
       type: 'computed',
       definedAtData: null
     } as const
-    return { configValueBase, value: valueInfo.value, configName } as const
+    return { configValueBase, value, configName, configEnv } as const
   })
   const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
     const configDef = pageConfig.configDefinitions[configName]
@@ -287,6 +323,7 @@ type ConfigValuesBase = (
         definedAtData: null
       }
       value: unknown
+      configEnv: ConfigEnvInternal
       configName: string
     }
   | {
@@ -328,7 +365,10 @@ function getDefinedAtFileSource(source: ConfigValueSource) {
 function addImportStatement(
   importStatements: string[],
   importPath: string,
-  exportName: string
+  exportName: string,
+  filesEnv: FilesEnv,
+  configEnv: ConfigEnvInternal,
+  configName: string
 ): { importName: string } {
   const importCounter = importStatements.length + 1
   const importName = `import${importCounter}` as const
@@ -343,5 +383,40 @@ function addImportStatement(
   })()
   const importStatement = `import ${importLiteral} from '${importPath}';`
   importStatements.push(importStatement)
+  assertUsageFileEnv(importPath, configEnv, configName, filesEnv)
   return { importName }
+}
+
+type FilesEnv = Map<string, { configEnv: ConfigEnvInternal; configName: string }[]>
+function assertUsageFileEnv(importPath: string, configEnv: ConfigEnvInternal, configName: string, filesEnv: FilesEnv) {
+  const key = importPath
+  assert(key)
+  assertPosixPath(key)
+  assert(!isRelativeImportPath(key))
+  if (!filesEnv.has(key)) {
+    filesEnv.set(key, [])
+  }
+  const fileEnv = filesEnv.get(key)!
+  fileEnv.push({ configEnv, configName })
+  const configDifferentEnv = fileEnv.filter((c) => !deepEqual(c.configEnv, configEnv))[0]
+  if (configDifferentEnv) {
+    assertUsage(
+      false,
+      [
+        `${importPath} defines the value of configs living in different environments:`,
+        ...[configDifferentEnv, { configName, configEnv }].map(
+          (c) =>
+            `  - config ${pc.code(c.configName)} which value lives in environment ${pc.code(
+              JSON.stringify(c.configEnv)
+            )}`
+        ),
+        'Defining config values in the same file is allowed only if they live in the same environment, see https://vike.dev/config#pointer-imports'
+      ].join('\n')
+    )
+  }
+}
+
+// TODO/now dedupe
+function isRelativeImportPath(importPath: string) {
+  return importPath.startsWith('./') || importPath.startsWith('../')
 }
