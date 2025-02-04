@@ -67,8 +67,8 @@ async function loadValueFile(
     // Only load value files with `env.config===true`
     return
   }
-  if (interfaceValueFile.isValueLoaded) {
-    await interfaceValueFile.isValueLoaded
+  if (interfaceValueFile.isValueFileLoaded) {
+    await interfaceValueFile.isValueFileLoaded
     if (
       // Help TS
       true as boolean
@@ -76,8 +76,8 @@ async function loadValueFile(
       return
   }
   const { promise, resolve } = genPromise()
-  interfaceValueFile.isValueLoaded = promise
-  assert(interfaceValueFile.isValueLoaded)
+  interfaceValueFile.isValueFileLoaded = promise
+  assert(interfaceValueFile.isValueFileLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
   resolve()

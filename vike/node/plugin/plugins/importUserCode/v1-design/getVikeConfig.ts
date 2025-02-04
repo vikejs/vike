@@ -106,7 +106,7 @@ type InterfaceConfigFile = InterfaceFileCommons & {
   isValueFile: false
   extendsFilePaths: string[]
   isConfigExtend: boolean
-  isValueLoaded: true
+  isValueFileLoaded: true
   fileExportsByConfigName: Record<
     string, // configName
     unknown // configValue
@@ -119,14 +119,14 @@ type InterfaceValueFile = InterfaceFileCommons & {
   configName: string
 } & (
     | {
-        isValueLoaded: Promise<void>
+        isValueFileLoaded: Promise<void>
         fileExportsByConfigName: Record<
           string, // configName
           unknown // configValue
         >
       }
     | {
-        isValueLoaded: false
+        isValueFileLoaded: false
       }
   )
 type InterfaceFilesByLocationId = Record<LocationId, InterfaceFile[]>
@@ -282,7 +282,7 @@ async function loadInterfaceFiles(userRootDir: string): Promise<InterfaceFilesBy
         filePath,
         isConfigFile: false,
         isValueFile: true,
-        isValueLoaded: false,
+        isValueFileLoaded: false,
         configName
       }
       interfaceFilesAll[locationId] = interfaceFilesAll[locationId] ?? []
@@ -311,7 +311,7 @@ function getInterfaceFileFromConfigFile(
     fileExportsByConfigName: {},
     isConfigFile: true,
     isValueFile: false,
-    isValueLoaded: true,
+    isValueFileLoaded: true,
     isConfigExtend,
     extendsFilePaths
   }
@@ -981,7 +981,7 @@ function getDefiningConfigNames(interfaceFile: InterfaceFile): string[] {
   if (interfaceFile.isValueFile) {
     configNames.push(interfaceFile.configName)
   }
-  if (interfaceFile.isValueLoaded) {
+  if (interfaceFile.isValueFileLoaded) {
     configNames.push(...Object.keys(interfaceFile.fileExportsByConfigName))
   }
   configNames = unique(configNames)
@@ -1477,7 +1477,7 @@ function getConfVal(
 ): null | { configValue: unknown; configValueLoaded: true } | { configValueLoaded: false } {
   const configNames = getDefiningConfigNames(interfaceFile)
   if (!configNames.includes(configName)) return null
-  if (!interfaceFile.isValueLoaded) return { configValueLoaded: false }
+  if (!interfaceFile.isValueFileLoaded) return { configValueLoaded: false }
   const confVal = { configValue: interfaceFile.fileExportsByConfigName[configName], configValueLoaded: true }
   return confVal
 }
