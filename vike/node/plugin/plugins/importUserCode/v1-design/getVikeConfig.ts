@@ -95,6 +95,7 @@ import { getConfigValuesBase } from '../../../../../shared/page-configs/serializ
 
 assertIsNotProductionRuntime()
 
+// TODO/now: `rename InterfaceFile PlusFile`?
 type InterfaceFile = InterfaceConfigFile | InterfaceValueFile
 type InterfaceFileCommons = {
   locationId: LocationId
@@ -109,8 +110,24 @@ type InterfaceConfigFile = InterfaceFileCommons & {
   isValueFileLoaded: true
   fileExportsByConfigName: Record<
     string, // configName
-    unknown // configValue
+    unknown
   >
+  /* TODO/now
+  pointerImportsByConfigName: Record<
+    string, // configValue
+    PointerImportResolvedWithEnv &
+      // TODO/now
+      (
+        | {
+            fileExportValueLoaded: true
+            fileExportValue: unknown
+          }
+        | {
+            fileExportValueLoaded: false
+          }
+      )
+  >
+  //*/
 }
 // +{configName}.js
 type InterfaceValueFile = InterfaceFileCommons & {
