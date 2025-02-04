@@ -9,7 +9,7 @@ import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
-import { assert, assertWarning, isEqualStringList, pLimit, unique, viteIsSSR } from '../../utils.js'
+import { assert, assertWarning, isEqualStringList, pLimit, unique } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { manifestTempFile } from '../buildConfig.js'
 import { ResolvedConfig } from 'vite'
@@ -17,6 +17,7 @@ import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getOutDirs } from '../../getOutDirs.js'
+import { viteIsSSR } from '../../shared/viteIsSSR.js'
 
 /**
  * true  => use workaround config.build.ssrEmitAssets

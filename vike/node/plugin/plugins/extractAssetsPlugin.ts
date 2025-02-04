@@ -10,15 +10,7 @@ export { extractAssetsPlugin }
 export { extractAssetsRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import {
-  viteIsSSR_options,
-  assert,
-  assertPosixPath,
-  styleFileRE,
-  createDebugger,
-  isScriptFile,
-  assertUsage
-} from '../utils.js'
+import { assert, assertPosixPath, styleFileRE, createDebugger, isScriptFile, assertUsage } from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
@@ -30,6 +22,7 @@ import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
+import { viteIsSSR_options } from '../shared/viteIsSSR.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/

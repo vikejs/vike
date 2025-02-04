@@ -5,7 +5,6 @@ export { manifestTempFile }
 
 import {
   assert,
-  viteIsSSR,
   addOnBeforeLogHook,
   removeFileExtention,
   unique,
@@ -37,6 +36,7 @@ import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import { getOutDirs, type OutDirs, resolveOutDir } from '../getOutDirs.js'
+import { viteIsSSR } from '../shared/viteIsSSR.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
