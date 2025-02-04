@@ -28,7 +28,10 @@ import { getConfigDefinedAt } from '../../../../../../shared/page-configs/getCon
 
 assertIsNotProductionRuntime()
 
-type EsbuildCache = Record<string, Promise<Record<string, unknown>>>
+type EsbuildCache = Record<
+  string, // filePath
+  Promise<Record<string, unknown>> // fileExports
+>
 type ConfigFile = {
   fileExports: Record<string, unknown>
   filePath: FilePathResolved
