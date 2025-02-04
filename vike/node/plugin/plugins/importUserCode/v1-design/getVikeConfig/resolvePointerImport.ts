@@ -194,17 +194,17 @@ function resolveConfigEnvWithFileName(configEnv: ConfigEnvInternal, filePath: Fi
   const configEnvResolved = { ...configEnv }
 
   if (filePath.filePathAbsoluteFilesystem) {
-  const { fileName } = filePath
-  if (fileName.includes('.server.')) {
-    configEnvResolved.server = true
-    configEnvResolved.client = false
-  } else if (fileName.includes('.client.')) {
-    configEnvResolved.client = true
-    configEnvResolved.server = false
-  } else if (fileName.includes('.shared.')) {
-    configEnvResolved.server = true
-    configEnvResolved.client = true
-  }
+    const { fileName } = filePath
+    if (fileName.includes('.server.')) {
+      configEnvResolved.server = true
+      configEnvResolved.client = false
+    } else if (fileName.includes('.client.')) {
+      configEnvResolved.client = true
+      configEnvResolved.server = false
+    } else if (fileName.includes('.shared.')) {
+      configEnvResolved.server = true
+      configEnvResolved.client = true
+    }
   }
 
   assertUsageFileEnv(filePath, configEnvResolved, configName)
