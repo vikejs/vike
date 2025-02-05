@@ -116,6 +116,7 @@ type InterfaceConfigFile = InterfaceFileCommons & {
 type InterfaceValueFile = InterfaceFileCommons & {
   isConfigFile: false
   isValueFile: true
+  isConfigExtension?: undefined
   configName: string
 } & (
     | {
@@ -593,6 +594,7 @@ function assertGlobalConfigLocation(
 
     // Allow local Vike extensions to set gloabl configs (`filePathAbsoluteUserRootDir===null` for Vike extension)
     if (!filePathAbsoluteUserRootDir) return
+    assert(!interfaceFile.isConfigExtension)
 
     assertWarning(
       isGlobalLocation(source.locationId, locationIdsAll),
