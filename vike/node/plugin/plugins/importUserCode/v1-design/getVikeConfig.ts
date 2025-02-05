@@ -519,7 +519,7 @@ function getPageConfigs(
       userRootDir,
       true
     )
-    if (!sources[0]) return
+    if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
   })
 
