@@ -11,10 +11,10 @@ exports[`preload tags > Preload Default 1`] = `
   },
   {
     "assetType": "font",
-    "earlyHintLink": "</assets/static/Sono-Light.$HASH.ttf>; rel=preload; as=font",
+    "earlyHintLink": "</assets/static/Sono-Light.$HASH.woff2>; rel=preload; as=font",
     "isEntry": false,
-    "mediaType": "font/ttf",
-    "src": "/assets/static/Sono-Light.$HASH.ttf",
+    "mediaType": "font/woff2",
+    "src": "/assets/static/Sono-Light.$HASH.woff2",
   },
   {
     "assetType": "image",
@@ -52,7 +52,7 @@ exports[`preload tags > Preload Default 2`] = `
     <html>
       <head>
         <link rel="stylesheet" type="text/css" href="/assets/static/renderer_Layout-031b266d.$HASH.css">
-        <link rel="preload" href="/assets/static/Sono-Light.$HASH.ttf" as="font" type="font/ttf" crossorigin>
+        <link rel="preload" href="/assets/static/Sono-Light.$HASH.woff2" as="font" type="font/woff2" crossorigin>
       </head>
       <body>
         <div id="root"><div style="display:flex;max-width:900px;margin:auto"><div style="padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em"><div style="margin-top:20px;margin-bottom:10px"><a href="/"><img src="/assets/static/logo.$HASH.svg" height="64" width="64"/></a></div><a class="navitem" href="/">Preload Default</a><a class="navitem" href="/preload-disabled">Preload Disabled</a><a class="navitem" href="/preload-images">Preload Images</a></div><div style="padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh"><h1>Default</h1><p>This page showcases the default preloading strategy: in production, both the image and the font are preloaded.</p></div></div></div>
@@ -75,10 +75,10 @@ exports[`preload tags > Preload Disabled 1`] = `
   },
   {
     "assetType": "font",
-    "earlyHintLink": "</assets/static/Sono-Light.$HASH.ttf>; rel=preload; as=font",
+    "earlyHintLink": "</assets/static/Sono-Light.$HASH.woff2>; rel=preload; as=font",
     "isEntry": false,
-    "mediaType": "font/ttf",
-    "src": "/assets/static/Sono-Light.$HASH.ttf",
+    "mediaType": "font/woff2",
+    "src": "/assets/static/Sono-Light.$HASH.woff2",
   },
   {
     "assetType": "image",
@@ -136,10 +136,10 @@ exports[`preload tags > Preload Eager 1`] = `
   },
   {
     "assetType": "font",
-    "earlyHintLink": "</assets/static/Sono-Light.$HASH.ttf>; rel=preload; as=font",
+    "earlyHintLink": "</assets/static/Sono-Light.$HASH.woff2>; rel=preload; as=font",
     "isEntry": false,
-    "mediaType": "font/ttf",
-    "src": "/assets/static/Sono-Light.$HASH.ttf",
+    "mediaType": "font/woff2",
+    "src": "/assets/static/Sono-Light.$HASH.woff2",
   },
   {
     "assetType": "image",
@@ -177,6 +177,7 @@ exports[`preload tags > Preload Eager 2`] = `
     <html>
       <head>
         <link rel="stylesheet" type="text/css" href="/assets/static/renderer_Layout-031b266d.$HASH.css">
+        <link rel="preload" href="/assets/static/Sono-Light.$HASH.woff2" as="font" type="font/woff2" crossorigin>
         <link rel="preload" href="/assets/static/Sono-Light.$HASH.ttf" as="font" type="font/ttf" crossorigin>
         <link rel="preload" href="/assets/static/logo.$HASH.svg" as="image" type="image/svg+xml">
         <link rel="modulepreload" href="/assets/entries/pages_preload-eager.$HASH.js" as="script" type="text/javascript">
@@ -201,10 +202,10 @@ exports[`preload tags > Preload Images 1`] = `
   },
   {
     "assetType": "font",
-    "earlyHintLink": "</assets/static/Sono-Light.$HASH.ttf>; rel=preload; as=font",
+    "earlyHintLink": "</assets/static/Sono-Light.$HASH.woff2>; rel=preload; as=font",
     "isEntry": false,
-    "mediaType": "font/ttf",
-    "src": "/assets/static/Sono-Light.$HASH.ttf",
+    "mediaType": "font/woff2",
+    "src": "/assets/static/Sono-Light.$HASH.woff2",
   },
   {
     "assetType": "image",
@@ -242,7 +243,7 @@ exports[`preload tags > Preload Images 2`] = `
     <html>
       <head>
         <link rel="stylesheet" type="text/css" href="/assets/static/renderer_Layout-031b266d.$HASH.css">
-        <link rel="preload" href="/assets/static/Sono-Light.$HASH.ttf" as="font" type="font/ttf" crossorigin>
+        <link rel="preload" href="/assets/static/Sono-Light.$HASH.woff2" as="font" type="font/woff2" crossorigin>
         <link rel="preload" href="/assets/static/logo.$HASH.svg" as="image" type="image/svg+xml">
       </head>
       <body>
