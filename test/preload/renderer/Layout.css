@@ -6,7 +6,8 @@ body {
 }
 @font-face {
   font-family: 'Sono';
-  src: url('./Sono-Light.ttf') format('truetype');
+  src: url('./Sono-Light.woff2') format('woff2'), url('./Sono-Light.ttf')
+    format('truetype');
 }
 * {
   box-sizing: border-box;

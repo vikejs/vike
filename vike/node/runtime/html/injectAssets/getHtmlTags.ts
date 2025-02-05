@@ -1,3 +1,5 @@
+import { isFontFallback } from '../../renderPage/isFontFallback.js'
+
 export { getHtmlTags }
 export type { HtmlTag }
 export type { PreloadFilter }
@@ -56,7 +58,8 @@ function getHtmlTags(
   const { isProduction } = getGlobalContext()
   const injectScriptsAt = getInjectScriptsAt(pageContext.pageId, pageContext._pageConfigs)
 
-  const injectFilterEntries: InjectFilterEntry[] = pageAssets
+  const injectFilterEntries: InjectFilterEntry[] = []
+  pageAssets
     .filter((asset) => {
       if (asset.isEntry && asset.assetType === 'script') {
         // We could allow the user to change the position of <script> but we currently don't:
@@ -67,14 +70,17 @@ function getHtmlTags(
       }
       return true
     })
-    .map((asset) => {
+    .forEach((asset) => {
       const inject = (() => {
         if (!isProduction) {
           // In development, we should always load assets as soon as possible, in order to eagerly process assets (e.g. applying the transform() hooks of Vite plugins) which are lazily discovered.
           return 'HTML_BEGIN'
         }
-        if (asset.assetType === 'style' || asset.assetType === 'font') {
+        if (asset.assetType === 'style') {
           return 'HTML_BEGIN'
+        }
+        if (asset.assetType === 'font') {
+          return !isFontFallback(asset, injectFilterEntries) ? 'HTML_BEGIN' : false
         }
         if (asset.assetType === 'script') {
           if (isHtmlOnly) return false
@@ -88,7 +94,7 @@ function getHtmlTags(
         // @ts-ignore
         [stamp]: true
       }
-      return entry
+      injectFilterEntries.push(entry)
     })
   assertInjectFilterEntries(injectFilterEntries)
 
