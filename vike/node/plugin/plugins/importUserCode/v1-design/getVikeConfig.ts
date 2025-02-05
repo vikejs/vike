@@ -816,7 +816,7 @@ function resolveConfigValueSources(
       assert(source.configEnv.config)
       // TODO/now: source.valueIsDefined
       assert('value' in source)
-      const valueIsGlobal = isGlobalValue(source.value)
+      const valueIsGlobal = isGlobalValue(source.value, { isGlobalLocation: isGlobal })
       return isGlobal ? valueIsGlobal : !valueIsGlobal
     })
   }
@@ -1430,7 +1430,7 @@ function isGlobalConfigOld(configName: string): configName is ConfigNameGlobal {
   )
   return includes(configNamesGlobal, configName)
 }
-// TODO/now
+/* TODO/now
 function isGlobalConfig(
   configName: string,
   configDef: ConfigDefinitionInternal,
@@ -1445,6 +1445,7 @@ function isGlobalConfig(
   const value = 'TODO'
   return globalValue(value)
 }
+*/
 function sortConfigValueSources(
   configValueSources: ConfigValueSources,
   locationIdPage: LocationId
