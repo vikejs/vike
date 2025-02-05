@@ -587,7 +587,8 @@ function assertGlobalConfigLocation(
   // Call assertWarning()
   sources.forEach((source) => {
     const { interfaceFile } = source
-    assert(interfaceFile) // TODO/now
+    // It's `null` when the config is defined by `vike(options)` in vite.config.js
+    assert(interfaceFile)
     // if (source.interfaceFile?.isExtension) return // TODO/now
     assertWarning(
       isGlobalLocation(source.locationId, locationIdsAll),
