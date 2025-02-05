@@ -42,8 +42,7 @@ async function getVirtualFileImportUserCode(
   assert(idParsed)
   const { isForClientSide, isClientRouting } = idParsed
   assert(isForClientSide === !viteIsSSR_options(options))
-  const isPrerendering = !!resolvePrerenderConfig(vikeConfig.global.config.prerender)
-  const code = await getCode(config, vikeConfig, isForClientSide, isClientRouting, isPrerendering, isDev, id)
+  const code = await getCode(config, vikeConfig, isForClientSide, isClientRouting, isDev, id)
   return code
 }
 
@@ -52,7 +51,6 @@ async function getCode(
   vikeConfig: VikeConfigObject,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  isPrerendering: boolean,
   isDev: boolean,
   id: string
 ) {
@@ -70,7 +68,6 @@ async function getCode(
       isForClientSide,
       isClientRouting,
       vikeConfig,
-      isPrerendering,
       config,
       isDev,
       id
@@ -123,7 +120,6 @@ async function generateGlobImports(
   isForClientSide: boolean,
   isClientRouting: boolean,
   vikeConfig: VikeConfigObject,
-  isPrerendering: boolean,
   config: ResolvedConfig,
   isDev: boolean,
   id: string
@@ -144,6 +140,8 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
   // We still use import.meta.glob() when using th V1 design in order to not break the V1 design deprecation warning
   const isV1Design = await isV1Design_(config)
 
+  // Old design => no + files => only to enable pre-rendering is setting `vike({prerender})` in vite.config.js
+  const isPrerendering = !!vikeConfig.global.config.prerender
   fileTypes
     .filter((fileType) => fileType !== '.css')
     .forEach((fileType) => {
