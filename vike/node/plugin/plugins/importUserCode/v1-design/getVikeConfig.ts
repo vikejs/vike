@@ -506,6 +506,7 @@ function getPageConfigs(
   interfaceFilesAll: InterfaceFilesByLocationId,
   userRootDir: string
 ) {
+  const locationIdsAll = objectKeys(interfaceFilesAll)
   const pageConfigGlobal: PageConfigGlobalBuildTime = {
     configDefinitions: configDefinitionsResolved.configDefinitionsGlobal,
     configValueSources: {}
@@ -517,6 +518,7 @@ function getPageConfigs(
       // We use `interfaceFilesAll` in order to allow local Vike extensions to set the value of global configs (e.g. `vite`).
       interfaceFilesAll, // TODO/now check sort order
       userRootDir,
+      locationIdsAll,
       true
     )
     if (!sources[0]) return
@@ -532,7 +534,14 @@ function getPageConfigs(
       objectEntries(configDefinitionsLocal)
         .filter(([_configName, configDef]) => configDef.global !== true)
         .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir, false)
+          const sources = resolveConfigValueSources(
+            configName,
+            configDef,
+            interfaceFilesRelevant,
+            userRootDir,
+            locationIdsAll,
+            false
+          )
           if (sources.length === 0) return
           // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
           configValueSources[configName] = sources
@@ -716,6 +725,7 @@ function resolveConfigValueSources(
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
   userRootDir: string,
+  locationIdsAll: LocationId[],
   isGlobal: boolean
 ): ConfigValueSource[] {
   const interfaceFilesSource: { interfaceFile: InterfaceFile; isHighestInheritancePrecedence: boolean }[] = []
@@ -811,10 +821,11 @@ function resolveConfigValueSources(
     const isGlobalValue = configDef.global
     assert(configDef.env.config)
     sources = sources.filter((source) => {
+      const valueIsDefinedAtGlobalLocation = isGlobalLocation(source.locationId, locationIdsAll)
       assert(source.configEnv.config)
       // TODO/now: source.valueIsDefined
       assert('value' in source)
-      const valueIsGlobal = isGlobalValue(source.value, { isGlobalLocation: isGlobal })
+      const valueIsGlobal = isGlobalValue(source.value, { valueIsDefinedAtGlobalLocation })
       return isGlobal ? valueIsGlobal : !valueIsGlobal
     })
   }
