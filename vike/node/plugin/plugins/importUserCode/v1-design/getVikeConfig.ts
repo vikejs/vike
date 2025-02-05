@@ -30,7 +30,8 @@ import {
   makeFirst,
   isNpmPackageImport,
   reverse,
-  unique
+  unique,
+  isCallable
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -515,7 +516,8 @@ function getPageConfigs(
       configDef,
       // We use `interfaceFilesAll` in order to allow local Vike extensions to set the value of global configs (e.g. `vite`).
       interfaceFilesAll, // TODO/now check sort order
-      userRootDir
+      userRootDir,
+      true
     )
     if (!sources[0]) return
     pageConfigGlobal.configValueSources[configName] = sources
@@ -531,7 +533,7 @@ function getPageConfigs(
       objectEntries(configDefinitionsLocal)
         .filter(([configName]) => !isGlobalConfigOld(configName))
         .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir)
+          const sources = resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir, false)
           if (sources.length === 0) return
           // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
           configValueSources[configName] = sources
@@ -715,7 +717,8 @@ function resolveConfigValueSources(
   configName: string,
   configDef: ConfigDefinitionInternal,
   interfaceFilesRelevant: InterfaceFilesByLocationId,
-  userRootDir: string
+  userRootDir: string,
+  isGlobal: boolean
 ): ConfigValueSource[] {
   const interfaceFilesSource: { interfaceFile: InterfaceFile; isHighestInheritancePrecedence: boolean }[] = []
 
@@ -795,7 +798,7 @@ function resolveConfigValueSources(
     })
   }
 
-  const sources: ConfigValueSource[] = interfaceFilesSource.map(({ interfaceFile, isHighestInheritancePrecedence }) => {
+  let sources: ConfigValueSource[] = interfaceFilesSource.map(({ interfaceFile, isHighestInheritancePrecedence }) => {
     const configValueSource = getConfigValueSource(
       configName,
       interfaceFile,
@@ -805,6 +808,19 @@ function resolveConfigValueSources(
     )
     return configValueSource
   })
+
+  if (isCallable(configDef.global)) {
+    const isGlobalValue = configDef.global
+    assert(configDef.env.config)
+    sources = sources.filter((source) => {
+      assert(source.configEnv.config)
+      // TODO/now: source.valueIsDefined
+      assert('value' in source)
+      const valueIsGlobal = isGlobalValue(source.value)
+      return isGlobal ? valueIsGlobal : !valueIsGlobal
+    })
+  }
+
   return sources
 }
 function getConfigValueSource(
