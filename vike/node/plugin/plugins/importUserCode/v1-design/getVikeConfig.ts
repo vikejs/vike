@@ -101,7 +101,7 @@ type InterfaceConfigFile = InterfaceFileCommons & {
   isConfigFile: true
   isValueFile: false
   extendsFilePaths: string[]
-  isConfigExtend: boolean
+  isConfigExtension: boolean
   isValueFileLoaded: true
   fileExportsByConfigName: Record<
     string, // configName
@@ -303,7 +303,7 @@ async function loadInterfaceFiles(
 }
 function getInterfaceFileFromConfigFile(
   configFile: ConfigFile,
-  isConfigExtend: boolean,
+  isConfigExtension: boolean,
   locationId: LocationId,
   userRootDir: string
 ): InterfaceFile {
@@ -331,7 +331,7 @@ function getInterfaceFileFromConfigFile(
     isConfigFile: true,
     isValueFile: false,
     isValueFileLoaded: true,
-    isConfigExtend,
+    isConfigExtension,
     extendsFilePaths
   }
   return interfaceFile
@@ -597,9 +597,7 @@ function assertGlobalConfigLocation(
     assertWarning(
       isGlobalLocation(source.locationId, locationIdsAll),
       [
-        `${filePathAbsoluteUserRootDir} sets the config ${pc.cyan(
-          configName
-        )} but it's a global config:`,
+        `${filePathAbsoluteUserRootDir} sets the config ${pc.cyan(configName)} but it's a global config:`,
         configFilePathsGlobal.length > 0
           ? `define ${pc.cyan(configName)} at ${joinEnglish(configFilePathsGlobal, 'or')} instead.`
           : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead.`
@@ -709,7 +707,7 @@ function resolveConfigValueSources(
           (interfaceFile) =>
             interfaceFile.isConfigFile &&
             // We consider value from extended configs (e.g. vike-react) later (i.e. with less priority)
-            !interfaceFile.isConfigExtend
+            !interfaceFile.isConfigExtension
         )
         .sort(makeOrderDeterministic)
       const interfaceValueFile = interfaceValueFiles[0]
@@ -745,7 +743,7 @@ function resolveConfigValueSources(
 
     // extends
     interfaceFilesDefiningConfig
-      .filter((interfaceFile) => interfaceFile.isConfigFile && interfaceFile.isConfigExtend)
+      .filter((interfaceFile) => interfaceFile.isConfigFile && interfaceFile.isConfigExtension)
       // extended config files are already sorted by inheritance order
       .forEach((interfaceFile) => {
         add(interfaceFile)
@@ -926,7 +924,7 @@ function warnOverridenConfigValues(
   })
 }
 function isInterfaceFileUserLand(interfaceFile: InterfaceFile) {
-  return (interfaceFile.isConfigFile && !interfaceFile.isConfigExtend) || interfaceFile.isValueFile
+  return (interfaceFile.isConfigFile && !interfaceFile.isConfigExtension) || interfaceFile.isValueFile
 }
 
 function isDefiningPage(interfaceFiles: InterfaceFile[]): boolean {
