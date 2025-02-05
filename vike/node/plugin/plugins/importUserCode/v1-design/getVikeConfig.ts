@@ -706,7 +706,7 @@ function resolveConfigValueSources(
         .filter(
           (interfaceFile) =>
             interfaceFile.isConfigFile &&
-            // We consider value from extended configs (e.g. vike-react) later (i.e. with less priority)
+            // We consider values from extensions (e.g. vike-react) later (i.e. with less priority)
             !interfaceFile.isConfigExtension
         )
         .sort(makeOrderDeterministic)
@@ -744,7 +744,7 @@ function resolveConfigValueSources(
     // extends
     interfaceFilesDefiningConfig
       .filter((interfaceFile) => interfaceFile.isConfigFile && interfaceFile.isConfigExtension)
-      // extended config files are already sorted by inheritance order
+      // Extension config files are already sorted by inheritance order
       .forEach((interfaceFile) => {
         add(interfaceFile)
       })
