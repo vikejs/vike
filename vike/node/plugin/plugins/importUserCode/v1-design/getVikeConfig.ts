@@ -578,8 +578,8 @@ function assertGlobalConfigLocation(
         configFilePathsGlobal.length > 0
           ? (`define ${what} at a global config file such as ${joinEnglish(configFilePathsGlobal, 'or')} instead` as const)
           : (`create a global config file (e.g. /pages/+config.js) and define ${what} there instead` as const)
-      // When updating this error message => also update error message at http://vike.dev/warning/global-config
-      const errMsg = `${errBeg} ${errMid}: ${errEnd} (http://vike.dev/warning/global-config).` as const
+      // When updating this error message => also update error message at https://vike.dev/warning/global-config
+      const errMsg = `${errBeg} ${errMid}: ${errEnd} (https://vike.dev/warning/global-config).` as const
       assertWarning(false, errMsg, { onlyOnce: true })
     }
   })
