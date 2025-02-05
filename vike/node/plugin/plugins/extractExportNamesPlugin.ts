@@ -3,10 +3,11 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin } from 'vite'
-import { assert, getFileExtension, viteIsSSR_options, createDebugger, getGlobalObject, assertUsage } from '../utils.js'
+import { assert, getFileExtension, createDebugger, getGlobalObject, assertUsage } from '../utils.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import { normalizeId } from '../shared/normalizeId.js'
+import { viteIsSSR_options } from '../shared/viteIsSSR.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debug = createDebugger('vike:extractExportNames')
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('extractExportNamesPlugin.ts', {})

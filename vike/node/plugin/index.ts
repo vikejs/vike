@@ -27,7 +27,7 @@ import { envVarsPlugin } from './plugins/envVars.js'
 import pc from '@brillout/picocolors'
 import { fileEnv } from './plugins/fileEnv.js'
 import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
-import { resolveClientEntriesDev } from './resolveClientEntriesDev.js'
+import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { workaroundVite6HmrRegression } from './plugins/workaroundVite6HmrRegression.js'
 

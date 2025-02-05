@@ -3,12 +3,9 @@ export { resolveOutDir }
 export type { OutDirs }
 
 import type { UserConfig, ResolvedConfig } from 'vite'
-import { viteIsSSR } from '../../utils/viteIsSSR.js'
-import { assert, assertUsage } from '../../utils/assert.js'
-import { pathJoin } from '../../utils/path-shim.js'
-import { assertPosixPath, toPosixPath } from '../../utils/toPosixPath.js'
 import pc from '@brillout/picocolors'
-import { createDebugger } from '../../utils/debug.js'
+import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
+import { viteIsSSR } from './viteIsSSR.js'
 const debug = createDebugger('vike:outDir')
 
 type OutDirs = {

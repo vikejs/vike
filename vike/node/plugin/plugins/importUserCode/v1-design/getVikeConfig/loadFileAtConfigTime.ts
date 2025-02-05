@@ -1,39 +1,25 @@
 // Files loaded at config time:
 
-export { loadImportedFile }
+export { loadPointerImport }
 export { loadValueFile }
-export { loadValueFiles }
 export { loadConfigFile }
-export type { ImportedFilesLoaded }
 export type { ConfigFile }
+export type { PointerImportLoaded }
 
-import {
-  assert,
-  assertUsage,
-  assertIsNotProductionRuntime,
-  isArrayOfStrings,
-  isObject,
-  genPromise
-} from '../../../../utils.js'
+import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
-import { transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import {
-  getConfigDefinitionOptional,
-  type InterfaceFile,
-  type InterfaceFilesByLocationId,
-  shouldBeLoadableAtBuildTime,
-  type InterfaceValueFile
-} from '../getVikeConfig.js'
+import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
+import { getConfigDefinitionOptional, type InterfaceValueFile } from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import { getConfigFileExport } from '../getConfigFileExport.js'
-import { resolvePointerImport } from './resolvePointerImport.js'
-import type { ConfigDefinitions } from './configDefinitionsBuiltIn.js'
+import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
+import type { ConfigDefinitionInternal, ConfigDefinitions } from './configDefinitionsBuiltIn.js'
+import { getConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
 assertIsNotProductionRuntime()
 
-type ImportedFilesLoaded = Record<string, Promise<Record<string, unknown>>>
 type ConfigFile = {
   fileExports: Record<string, unknown>
   filePath: FilePathResolved
@@ -41,46 +27,57 @@ type ConfigFile = {
 }
 
 // Load pointer import
-async function loadImportedFile(
-  import_: FilePathResolved & { fileExportName: string },
+async function loadPointerImport(
+  pointerImport: PointerImportLoaded,
   userRootDir: string,
-  importedFilesLoaded: ImportedFilesLoaded
+  configName: string,
+  configDefinitions: ConfigDefinitions,
+  esbuildCache: EsbuildCache
 ): Promise<unknown> {
-  const f = import_.filePathAbsoluteFilesystem
-  if (!importedFilesLoaded[f]) {
-    importedFilesLoaded[f] = transpileAndExecuteFile(import_, userRootDir, false).then((r) => r.fileExports)
-  }
-  const fileExports = await importedFilesLoaded[f]!
-  const fileExportValue = fileExports[import_.fileExportName]
-  return fileExportValue
+  // The value of `extends` was already loaded and already used: we don't need the value of `extends` anymore
+  if (configName === 'extends') return
+  const configDef = getConfigDefinitionOptional(configDefinitions, configName)
+  // Only load pointer import if `env.config===true`
+  if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
+
+  const configDefinedAt = getConfigDefinedAt('Config', configName, pointerImport.fileExportPath)
+  assertUsage(
+    pointerImport.fileExportPath.filePathAbsoluteFilesystem,
+    `${configDefinedAt} cannot be defined over an aliased import`
+  )
+  const { fileExports } = await transpileAndExecuteFile(pointerImport.fileExportPath, userRootDir, false, esbuildCache)
+  const fileExportValue = fileExports[pointerImport.fileExportPath.fileExportName]
+
+  pointerImport.fileExportValueLoaded = true
+  assert(pointerImport.fileExportValueLoaded)
+  pointerImport.fileExportValue = fileExportValue
 }
+type PointerImportLoaded = PointerImport &
+  (
+    | {
+        fileExportValueLoaded: true
+        fileExportValue: unknown
+      }
+    | {
+        fileExportValueLoaded: false
+      }
+  )
 
 // Load +{configName}.js
 async function loadValueFile(
   interfaceValueFile: InterfaceValueFile,
   configDefinitions: ConfigDefinitions,
-  userRootDir: string
+  userRootDir: string,
+  esbuildCache: EsbuildCache
 ): Promise<void> {
   const { configName } = interfaceValueFile
   const configDef = getConfigDefinitionOptional(configDefinitions, configName)
-  if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) {
-    // Only load value files with `env.config===true`
-    return
-  }
-  if (interfaceValueFile.isValueFileLoaded) {
-    await interfaceValueFile.isValueFileLoaded
-    if (
-      // Help TS
-      true as boolean
-    )
-      return
-  }
-  const { promise, resolve } = genPromise()
-  interfaceValueFile.isValueFileLoaded = promise
+  // Only load value files with `env.config===true`
+  if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
+  interfaceValueFile.isValueFileLoaded = true
   assert(interfaceValueFile.isValueFileLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
-  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false)
-  resolve()
+  const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false, esbuildCache)
   const { filePathToShowToUser } = interfaceValueFile.filePath
   assertPlusFileExport(fileExports, filePathToShowToUser, configName)
   Object.entries(fileExports).forEach(([exportName, configValue]) => {
@@ -88,37 +85,30 @@ async function loadValueFile(
     interfaceValueFile.fileExportsByConfigName[configName_] = configValue
   })
 }
-async function loadValueFiles(
-  interfaceFiles: InterfaceFilesByLocationId | InterfaceFile[],
-  configDefinitions: ConfigDefinitions,
-  userRootDir: string
-): Promise<void> {
-  await Promise.all(
-    Object.values(interfaceFiles)
-      .flat(1)
-      .filter((interfaceFile) => interfaceFile.isValueFile)
-      .map(async (interfaceFile) => await loadValueFile(interfaceFile, configDefinitions, userRootDir))
-  )
-}
 
 // Load +config.js, including all its extends pointer imports
 async function loadConfigFile(
   configFilePath: FilePathResolved,
   userRootDir: string,
   visited: string[],
-  isExtensionConfig: boolean
+  isExtensionConfig: boolean,
+  esbuildCache: EsbuildCache
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsoluteFilesystem } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
   const { fileExports } = await transpileAndExecuteFile(
     configFilePath,
     userRootDir,
-    isExtensionConfig ? 'is-extension-config' : true
+    isExtensionConfig ? 'is-extension-config' : true,
+    esbuildCache
   )
-  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(fileExports, configFilePath, userRootDir, [
-    ...visited,
-    filePathAbsoluteFilesystem
-  ])
+  const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(
+    fileExports,
+    configFilePath,
+    userRootDir,
+    [...visited, filePathAbsoluteFilesystem],
+    esbuildCache
+  )
 
   const configFile: ConfigFile = {
     fileExports,
@@ -138,18 +128,21 @@ async function loadExtendsConfigs(
   configFileExports: Record<string, unknown>,
   configFilePath: FilePathResolved,
   userRootDir: string,
-  visited: string[]
+  visited: string[],
+  esbuildCache: EsbuildCache
 ) {
   const { extendsPointerImportData, extendsConfigs } = getExtendsPointerImportData(configFileExports, configFilePath)
   const extendsConfigFiles: FilePathResolved[] = []
   extendsPointerImportData.map((pointerImportData) => {
-    const filePath = resolvePointerImport(pointerImportData, configFilePath, userRootDir)
+    const filePath = resolvePointerImportData(pointerImportData, configFilePath, userRootDir)
     assert(filePath.filePathAbsoluteFilesystem)
     extendsConfigFiles.push(filePath)
   })
 
   const results = await Promise.all(
-    extendsConfigFiles.map(async (configFilePath) => await loadConfigFile(configFilePath, userRootDir, visited, true))
+    extendsConfigFiles.map(
+      async (configFilePath) => await loadConfigFile(configFilePath, userRootDir, visited, true, esbuildCache)
+    )
   )
   results.forEach((result) => {
     extendsConfigs.push(result.configFile)
@@ -195,4 +188,8 @@ function getExtendsPointerImportData(configFileExports: Record<string, unknown>,
     )
   }
   return { extendsPointerImportData, extendsConfigs }
+}
+
+function shouldBeLoadableAtBuildTime(configDef: ConfigDefinitionInternal): boolean {
+  return !!configDef.env.config && !configDef._valueIsFilePath
 }

@@ -2,6 +2,7 @@ export { transpileAndExecuteFile }
 export { getConfigBuildErrorFormatted }
 export { getConfigExecutionErrorIntroMsg }
 export { isTemporaryBuildFile }
+export type { EsbuildCache }
 
 import {
   build,
@@ -29,7 +30,8 @@ import {
   isPlainJavaScriptFile,
   createDebugger,
   assertFilePathAbsoluteFilesystem,
-  assertIsNpmPackageImport
+  assertIsNpmPackageImport,
+  genPromise
 } from '../../../../utils.js'
 import { transformPointerImports } from './transformPointerImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
@@ -46,13 +48,26 @@ const debug = createDebugger('vike:pointer-imports')
 const debugEsbuildResolve = createDebugger('vike:esbuild-resolve')
 if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
 
+type FileExports = { fileExports: Record<string, unknown> }
+
+type EsbuildCache = Record<
+  string, // filePathAbsoluteFilesystem
+  Promise<FileExports>
+>
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
   userRootDir: string,
-  isConfigFile: boolean | 'is-extension-config'
-): Promise<{ fileExports: Record<string, unknown> }> {
+  isConfigFile: boolean | 'is-extension-config',
+  esbuildCache: EsbuildCache
+): Promise<FileExports> {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
+
+  if (esbuildCache[filePathAbsoluteFilesystem]) {
+    return await esbuildCache[filePathAbsoluteFilesystem]
+  }
+  const { promise, resolve } = genPromise<FileExports>()
+  esbuildCache[filePathAbsoluteFilesystem] = promise
 
   assertUsage(
     isPlainJavaScriptFile(filePathAbsoluteFilesystem),
@@ -73,16 +88,18 @@ async function transpileAndExecuteFile(
     )
   }
 
+  let fileExports: FileExports['fileExports']
   if (isConfigFile === 'is-extension-config' && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
-    const fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
-    return { fileExports }
+    fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
     const transformImports = isConfigFile && (isHeader ? 'all' : true)
     const code = await transpileFile(filePath, transformImports, userRootDir)
-    const fileExports = await executeTranspiledFile(filePath, code)
-    return { fileExports }
+    fileExports = await executeTranspiledFile(filePath, code)
   }
+
+  resolve({ fileExports })
+  return { fileExports }
 }
 
 async function transpileFile(filePath: FilePathResolved, transformImports: boolean | 'all', userRootDir: string) {

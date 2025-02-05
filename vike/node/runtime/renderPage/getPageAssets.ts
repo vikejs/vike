@@ -13,7 +13,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
 import { getGlobalContext } from '../globalContext.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
-import type { ResolveClientEntriesDev } from '../../plugin/resolveClientEntriesDev.js'
+import type { ResolveClientEntriesDev } from '../../plugin/shared/resolveClientEntriesDev.js'
 
 const globalObject = getGlobalObject('getPageAssets.ts', {
   resolveClientEntriesDev: null as null | ResolveClientEntriesDev

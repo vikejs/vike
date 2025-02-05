@@ -8,15 +8,12 @@ import {
   pathJoin,
   assertIsNpmPackageImport,
   assertIsNotProductionRuntime
-} from './utils.js'
+} from '../utils.js'
 import type { ViteDevServer } from 'vite'
 import { createRequire } from 'module'
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
-const __dirname_ = dirname(fileURLToPath(importMetaUrl))
 
 assertIsNotProductionRuntime()
 
@@ -45,15 +42,15 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
       assert(clientEntry.endsWith('.js'))
       try {
         // For Vitest (which doesn't resolve vike to its dist but to its source files)
-        // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/plugin/resolveClientEntriesDev.js
+        // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/plugin/shared/resolveClientEntriesDev.js
         filePath = toPosixPath(
-          require_.resolve(clientEntry.replace('@@vike/dist/esm/client/', '../../client/').replace('.js', '.ts'))
+          require_.resolve(clientEntry.replace('@@vike/dist/esm/client/', '../../../client/').replace('.js', '.ts'))
         )
       } catch {
         // For users
-        // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/resolveClientEntriesDev.js
+        // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/shared/resolveClientEntriesDev.js
         filePath = toPosixPath(
-          require_.resolve(clientEntry.replace('@@vike/dist/esm/client/', '../../../../dist/esm/client/'))
+          require_.resolve(clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/'))
         )
       }
     } else {

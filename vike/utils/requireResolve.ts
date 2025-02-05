@@ -3,7 +3,7 @@ export { requireResolve }
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { assertIsNotProductionRuntime } from './assertSetup.js'
-import { assertPosixPath, toPosixPath } from './toPosixPath.js'
+import { assertPosixPath, toPosixPath } from './path.js'
 import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'module'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
