@@ -531,7 +531,7 @@ function getPageConfigs(
 
       let configValueSources: ConfigValueSources = {}
       objectEntries(configDefinitionsLocal)
-        .filter(([configName]) => !isGlobalConfigOld(configName))
+        .filter(([_configName, configDef]) => configDef.global !== true)
         .forEach(([configName, configDef]) => {
           const sources = resolveConfigValueSources(configName, configDef, interfaceFilesRelevant, userRootDir, false)
           if (sources.length === 0) return
