@@ -568,15 +568,16 @@ function assertGlobalConfigLocation(
       const configDef = configDefinitionsGlobal[configName]
       assert(configDef)
       const isConditionallyGlobal = isCallable(configDef.global)
-      const errBeg = `${filePathAbsoluteUserRootDir} sets the config ${pc.cyan(configName)}` as const
+      const errBeg =
+        `${filePathAbsoluteUserRootDir} (which is a local config file) sets the config ${pc.cyan(configName)}` as const
       const errMid = !isConditionallyGlobal
         ? ("but it's a global config" as const)
         : ('to a value that is global' as const)
       const what = isConditionallyGlobal ? ('global values' as const) : pc.cyan(configName)
       const errEnd =
         configFilePathsGlobal.length > 0
-          ? (`define ${what} at ${joinEnglish(configFilePathsGlobal, 'or')} instead.` as const)
-          : (`create a global config (e.g. /pages/+config.js) and define ${what} there instead.` as const)
+          ? (`define ${what} at a global config file such as ${joinEnglish(configFilePathsGlobal, 'or')} instead.` as const)
+          : (`create a global config file (e.g. /pages/+config.js) and define ${what} there instead.` as const)
       const errMsg = `${errBeg} ${errMid}: ${errEnd}` as const
       assertWarning(false, errMsg, { onlyOnce: true })
     }
