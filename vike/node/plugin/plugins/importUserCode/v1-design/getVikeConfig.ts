@@ -589,11 +589,15 @@ function assertGlobalConfigLocation(
     const { interfaceFile } = source
     // It's `null` when the config is defined by `vike(options)` in vite.config.js
     assert(interfaceFile)
-    // if (source.interfaceFile?.isExtension) return // TODO/now
+    const { filePathAbsoluteUserRootDir } = interfaceFile.filePath
+
+    // Allow local Vike extensions to set gloabl configs (`filePathAbsoluteUserRootDir===null` for Vike extension)
+    if (!filePathAbsoluteUserRootDir) return
+
     assertWarning(
       isGlobalLocation(source.locationId, locationIdsAll),
       [
-        `${interfaceFile.filePath.filePathToShowToUser} sets the config ${pc.cyan(
+        `${filePathAbsoluteUserRootDir} sets the config ${pc.cyan(
           configName
         )} but it's a global config:`,
         configFilePathsGlobal.length > 0
