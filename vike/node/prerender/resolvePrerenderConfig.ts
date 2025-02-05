@@ -22,7 +22,9 @@ function resolvePrerenderConfig(vikeConfig: VikeConfigObject): PrerenderConfig {
   ) {
     return false
   }
-  const prerenderSettings = prerenderConfigs || []
+  let prerenderSettings = prerenderConfigs || []
+  // Needed because of backwards compatibility of `vike({prerender:true})` in `vite.config.js`; after we remove it we can remove this line.
+  prerenderSettings = prerenderSettings.filter(isObject2)
   assert(prerenderSettings.every(isObject2))
   const prerenderConfig: PrerenderConfig = {
     partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
