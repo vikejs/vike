@@ -526,13 +526,14 @@ function assertPageConfigGlobal(
   interfaceFilesAll: InterfaceFilesByLocationId
 ) {
   Object.entries(pageConfigGlobal.configValueSources).forEach(([configName, sources]) => {
-    assertGlobalConfigLocation(configName, sources, interfaceFilesAll)
+    assertGlobalConfigLocation(configName, sources, interfaceFilesAll, pageConfigGlobal.configDefinitions)
   })
 }
 function assertGlobalConfigLocation(
   configName: string,
   sources: ConfigValueSource[],
-  interfaceFilesAll: InterfaceFilesByLocationId
+  interfaceFilesAll: InterfaceFilesByLocationId,
+  configDefinitionsGlobal: ConfigDefinitions
 ) {
   const locationIdsAll = objectKeys(interfaceFilesAll)
 
@@ -563,16 +564,24 @@ function assertGlobalConfigLocation(
     if (!filePathAbsoluteUserRootDir) return
     assert(!interfaceFile.isConfigExtension)
 
-    assertWarning(
-      isGlobalLocation(source.locationId, locationIdsAll),
-      [
-        `${filePathAbsoluteUserRootDir} sets the config ${pc.cyan(configName)} but it's a global config:`,
+    if (!isGlobalLocation(source.locationId, locationIdsAll)) {
+      const configDef = configDefinitionsGlobal[configName]
+      assert(configDef)
+      const isConditionallyGlobal = isCallable(configDef.global)
+      const errBeg =
+        `${filePathAbsoluteUserRootDir} (which is a local config file) sets the config ${pc.cyan(configName)}` as const
+      const errMid = !isConditionallyGlobal
+        ? ("but it's a global config" as const)
+        : ('to a value that is global' as const)
+      const what = isConditionallyGlobal ? ('global values' as const) : pc.cyan(configName)
+      const errEnd =
         configFilePathsGlobal.length > 0
-          ? `define ${pc.cyan(configName)} at ${joinEnglish(configFilePathsGlobal, 'or')} instead.`
-          : `create a global config (e.g. /pages/+config.js) and define ${pc.cyan(configName)} there instead.`
-      ].join(' '),
-      { onlyOnce: true }
-    )
+          ? (`define ${what} at a global config file such as ${joinEnglish(configFilePathsGlobal, 'or')} instead` as const)
+          : (`create a global config file (e.g. /pages/+config.js) and define ${what} there instead` as const)
+      // When updating this error message => also update error message at https://vike.dev/warning/global-config
+      const errMsg = `${errBeg} ${errMid}: ${errEnd} (https://vike.dev/warning/global-config).` as const
+      assertWarning(false, errMsg, { onlyOnce: true })
+    }
   })
 }
 function assertPageConfigs(pageConfigs: PageConfigBuildTime[]) {
