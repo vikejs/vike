@@ -1,0 +1,55 @@
+import { CodeBlockTransformer, Link } from '@brillout/docpress'
+
+A config is called *global* when it always applies to all pages (it cannot be applied to only a subset of pages).
+
+For example, <Link href="/base-url">the Base URL settings</Link> are global: changing the Base URL affects your whole app (all your pages).
+
+> There isn't any <Link href="/config#inheritance">config inheritance</Link> for global configs.
+
+Consequently, it doesn't make sense to define a global config in a local <Link href="/config#files">`+` file</Link>.
+
+```js
+// /pages/tags/+config.js
+
+// This is a local config file: it applies only to a subset of pages.
+
+export default {
+  // ❌ Defining a global setting in a local +config.js
+  baseServer: '/blog/'
+}
+```
+
+```js
+// /pages/+config.js
+
+// This is a global config file: it applies to all pages.
+
+export default {
+  // ✅ Defining a global setting in a global +config.js
+  baseServer: '/blog/'
+}
+```
+
+If you get the following warning then move your config to a global location.
+
+<CodeBlockTransformer lineBreak="white-space">
+```
+[vike][Warning] /pages/index/+config.js (which is a local config file) sets the config `baseServer` but it's a global config: define `baseServer` at a global config file such as /pages/+config.js instead.
+```
+</CodeBlockTransformer>
+
+
+> Some settings (e.g. <Link href="/prerender">`prerender`</Link>) are mixed: certains values can be defined only globally (e.g. <Link href="/prerender#partial">`prerender.partial`</Link>) while other values can be defined locally (e.g. <Link href="/prerender#toggle">`false`</Link>).
+>
+> If you get the following warning, it's because you're defining a global value in a local `+` file.
+>
+> <CodeBlockTransformer lineBreak="white-space">
+> ```
+> [vike][Warning] /pages/about/+config.ts (which is a local config file) sets the config `prerender` to a value that is global: define global values at a global config file such as /pages/+config.ts instead.
+> ```
+> </CodeBlockTransformer>
+
+## See also
+
+- <Link href="/config#inheritance" />
+- <Link href="/config#files" doNotInferSectionTitle />
