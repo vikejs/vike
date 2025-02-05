@@ -3,13 +3,13 @@ export { isFontFallback }
 import type { PageAsset } from './getPageAssets.js'
 import { assert } from '../../../utils/assert.js'
 
-function isFontFallback(asset: PageAsset, earlyHints: PageAsset[]): boolean {
+function isFontFallback(asset: PageAsset, pageAssets: PageAsset[]): boolean {
   if (asset.assetType !== 'font') {
     return false
   }
   const fontUrlBase = removeFileExtentionAndHash(asset.src)
-  return earlyHints.some((hint) => {
-    return hint.assetType === 'font' && removeFileExtentionAndHash(hint.src) === fontUrlBase
+  return pageAssets.some((assetOther) => {
+    return assetOther.assetType === 'font' && removeFileExtentionAndHash(assetOther.src) === fontUrlBase
   })
 }
 function removeFileExtentionAndHash(assetUrl: string): string {
