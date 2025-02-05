@@ -523,10 +523,9 @@ function getPageConfigs(
     pageConfigGlobal.configValueSources[configName] = sources
   })
 
-  const pageConfigs: PageConfigBuildTime[] = []
-  objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
-    ([locationId, { configDefinitions, interfaceFilesRelevant, interfaceFiles }]) => {
-      if (!isDefiningPage(interfaceFiles)) return
+  const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
+    .filter(([_locationId, { interfaceFiles }]) => isDefiningPage(interfaceFiles))
+    .map(([locationId, { configDefinitions, interfaceFilesRelevant }]) => {
       const configDefinitionsLocal = configDefinitions
 
       let configValueSources: ConfigValueSources = {}
@@ -554,9 +553,8 @@ function getPageConfigs(
         configValueSources,
         configValuesComputed
       }
-      pageConfigs.push(pageConfig)
-    }
-  )
+      return pageConfig
+    })
   assertPageConfigs(pageConfigs, interfaceFilesAll)
 
   return { pageConfigs, pageConfigGlobal }
