@@ -9,12 +9,12 @@ import path from 'path'
 import semver from 'semver'
 import { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 
-function assertExtensionsConventions(interfaceFile: PlusFile): void {
-  assertExtensionName(interfaceFile)
-  assertConfigExportPath(interfaceFile)
+function assertExtensionsConventions(plusFile: PlusFile): void {
+  assertExtensionName(plusFile)
+  assertConfigExportPath(plusFile)
 }
-function assertConfigExportPath(interfaceFile: PlusFile): void {
-  const { importPathAbsolute, filePathAbsoluteFilesystem } = interfaceFile.filePath
+function assertConfigExportPath(plusFile: PlusFile): void {
+  const { importPathAbsolute, filePathAbsoluteFilesystem } = plusFile.filePath
 
   // Ejected Vike extension
   if (!importPathAbsolute) {
@@ -23,7 +23,7 @@ function assertConfigExportPath(interfaceFile: PlusFile): void {
     return
   }
 
-  const name = getNameValue(interfaceFile)
+  const name = getNameValue(plusFile)
   assert(name) // already asserted in assertExtensionName()
   const importPathAbsoluteExpected = `${name}/config`
   assertWarning(
@@ -34,9 +34,9 @@ function assertConfigExportPath(interfaceFile: PlusFile): void {
     { onlyOnce: true }
   )
 }
-function assertExtensionName(interfaceFile: PlusFile): void {
-  const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)
-  const name = getNameValue(interfaceFile)
+function assertExtensionName(plusFile: PlusFile): void {
+  const filePathToShowToUser = getFilePathToShowToUser(plusFile)
+  const name = getNameValue(plusFile)
   assertUsage(
     name,
     `Vike extension name missing: the config ${filePathToShowToUser} must define the setting ${pc.cyan('name')}`
@@ -44,24 +44,24 @@ function assertExtensionName(interfaceFile: PlusFile): void {
 }
 
 function assertExtensionsRequire(pageConfig: PageConfigBuildTime): void {
-  const interfaceFilesRelevantList = Object.values(pageConfig.interfaceFiles).flat(1)
+  const plusFilesRelevantList = Object.values(pageConfig.plusFiles).flat(1)
 
   // Collect extensions
   const extensions: Record<string, string> = {}
-  interfaceFilesRelevantList.forEach((interfaceFile) => {
-    const name = getNameValue(interfaceFile)
+  plusFilesRelevantList.forEach((plusFile) => {
+    const name = getNameValue(plusFile)
     if (name) {
-      const version = getExtensionVersion(name, interfaceFile)
+      const version = getExtensionVersion(name, plusFile)
       extensions[name] = version
     }
   })
 
   // Enforce `require`
-  interfaceFilesRelevantList.forEach((interfaceFile) => {
-    const require = getConfigRequireValue(interfaceFile)
+  plusFilesRelevantList.forEach((plusFile) => {
+    const require = getConfigRequireValue(plusFile)
     if (!require) return
-    const name = getNameValue(interfaceFile)
-    const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)
+    const name = getNameValue(plusFile)
+    const filePathToShowToUser = getFilePathToShowToUser(plusFile)
     assertUsage(
       name,
       `Setting ${pc.bold('name')} is required for being able to use setting ${pc.bold(
@@ -87,12 +87,12 @@ function assertExtensionsRequire(pageConfig: PageConfigBuildTime): void {
   })
 }
 
-function getConfigRequireValue(interfaceFile: PlusFile): null | Record<string, string> {
-  const confVal = getConfVal(interfaceFile, 'require')
+function getConfigRequireValue(plusFile: PlusFile): null | Record<string, string> {
+  const confVal = getConfVal(plusFile, 'require')
   if (!confVal) return null
   assert(confVal.configValueLoaded)
   const require = confVal.configValue
-  const { filePathToShowToUserResolved } = interfaceFile.filePath
+  const { filePathToShowToUserResolved } = plusFile.filePath
   assert(filePathToShowToUserResolved)
   assertUsage(
     isObjectOfStrings(require),
@@ -105,12 +105,12 @@ function getConfigRequireValue(interfaceFile: PlusFile): null | Record<string, s
   return require
 }
 
-function getNameValue(interfaceFile: PlusFile): null | string {
-  const confVal = getConfVal(interfaceFile, 'name')
+function getNameValue(plusFile: PlusFile): null | string {
+  const confVal = getConfVal(plusFile, 'name')
   if (!confVal) return null
   assert(confVal.configValueLoaded)
   const name = confVal.configValue
-  const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)
+  const filePathToShowToUser = getFilePathToShowToUser(plusFile)
   assertUsage(
     typeof name === 'string',
     `The setting ${pc.bold('name')} defined at ${filePathToShowToUser} should be a string.`
@@ -120,13 +120,13 @@ function getNameValue(interfaceFile: PlusFile): null | string {
 
 // We use a forever cache: users need to restart the dev server anyways when touching node_modules/**/* (I presume Vite doesn't pick up node_modules/**/* changes).
 const extensionsVersion: Record<string, string> = {}
-function getExtensionVersion(name: string, interfaceFile: PlusFile): string {
+function getExtensionVersion(name: string, plusFile: PlusFile): string {
   if (!extensionsVersion[name]) {
-    const extensionConfigFilePath = interfaceFile.filePath.filePathAbsoluteFilesystem
+    const extensionConfigFilePath = plusFile.filePath.filePathAbsoluteFilesystem
     const found = findPackageJson(path.posix.dirname(extensionConfigFilePath))
     assert(found)
     const { packageJson, packageJsonPath } = found
-    const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)
+    const filePathToShowToUser = getFilePathToShowToUser(plusFile)
     const nameExpected = packageJson.name
     assertWarning(
       name === nameExpected,
@@ -144,8 +144,8 @@ function getExtensionVersion(name: string, interfaceFile: PlusFile): string {
   return extensionsVersion[name]!
 }
 
-function getFilePathToShowToUser(interfaceFile: PlusFile): string {
-  const { filePathToShowToUserResolved } = interfaceFile.filePath
+function getFilePathToShowToUser(plusFile: PlusFile): string {
+  const { filePathToShowToUserResolved } = plusFile.filePath
   assert(filePathToShowToUserResolved)
   return filePathToShowToUserResolved
 }
