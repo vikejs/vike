@@ -7,7 +7,7 @@ import type {
 import { getVirtualFileIdPageConfigValuesAll } from '../../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { debug } from './debug.js'
 import { getVikeConfig } from '../getVikeConfig.js'
-import { isRuntimeEnvMatch } from '../isRuntimeEnvMatch.js'
+import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import {
   FilesEnv,
   serializeConfigValues

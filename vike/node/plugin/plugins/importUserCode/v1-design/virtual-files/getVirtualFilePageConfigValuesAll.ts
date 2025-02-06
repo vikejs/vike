@@ -9,7 +9,7 @@ import {
 import { getVikeConfig } from '../getVikeConfig.js'
 import { extractAssetsAddQuery } from '../../../../../shared/extractAssetsQuery.js'
 import { debug } from './debug.js'
-import { isRuntimeEnvMatch } from '../isRuntimeEnvMatch.js'
+import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
 import {
   FilesEnv,
   serializeConfigValues
