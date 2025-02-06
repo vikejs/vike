@@ -1374,12 +1374,9 @@ function getConfigEnvValue(
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
   return configDefinitions[configName] ?? null
 }
-function sortConfigValueSources(
-  configValueSources: ConfigValueSources,
-  locationIdPage: LocationId
-): ConfigValueSources {
+function sortConfigValueSources(sources: ConfigValueSources, locationIdPage: LocationId): ConfigValueSources {
   return Object.fromEntries(
-    Object.entries(configValueSources)
+    Object.entries(sources)
       // Make order deterministic (no other purpose)
       .sort(([, [source1]], [, [source2]]) =>
         source1!.definedAtFilePath.filePathAbsoluteVite < source2!.definedAtFilePath.filePathAbsoluteVite ? -1 : 1
