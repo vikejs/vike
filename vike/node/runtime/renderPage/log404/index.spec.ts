@@ -6,22 +6,22 @@ import type { PageRoutes } from '../../../../shared/route/index.js'
 process.stdout.columns = 134
 
 describe('getRoutesInfo()', () => {
-  it('table layout - basic', () => {
+  it('table layout - basic', async () => {
     const table = getRoutesInfo(pageRoutes1)
     assert(table)
     /*/
     console.log(table)
     /*/
-    expect(stripAnsi(table)).toMatchFileSnapshot('./index.spec.snapshot-1')
+    await expect(stripAnsi(table)).toMatchFileSnapshot('./index.spec.snapshot-1')
     //*/
   })
-  it('table layout - with Route Function', () => {
+  it('table layout - with Route Function', async () => {
     const table = getRoutesInfo(pageRoutes2)
     assert(table)
     /*/
     console.log(table)
     /*/
-    expect(stripAnsi(table)).toMatchFileSnapshot('./index.spec.snapshot-2')
+    await expect(stripAnsi(table)).toMatchFileSnapshot('./index.spec.snapshot-2')
     //*/
   })
 })

@@ -4,7 +4,10 @@ export default defineWorkspace([
   {
     test: {
       include: ['vike/**/*.spec.ts'],
-      name: 'unit'
+      name: 'unit',
+      env: {
+        FORCE_COLOR: '1'
+      }
     }
   },
   {
