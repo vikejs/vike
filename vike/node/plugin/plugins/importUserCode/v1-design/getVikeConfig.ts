@@ -407,7 +407,7 @@ async function resolveConfigDefinitions(
 ) {
   const configDefinitionsGlobal = getConfigDefinitions(
     // We use `plusFilesAll` in order to allow local Vike extensions to create global configs.
-    sortAfterGlobalPosition(plusFilesAll),
+    sortForGlobal(plusFilesAll),
     (configDef) => !!configDef.global
   )
   await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
@@ -475,7 +475,7 @@ function getPageConfigs(
       configName,
       configDef,
       // We use `plusFilesAll` in order to allow local Vike extensions to set the value of global configs (e.g. `vite`).
-      sortAfterGlobalPosition(plusFilesAll),
+      sortForGlobal(plusFilesAll),
       userRootDir,
       true
     )
@@ -674,14 +674,11 @@ function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPag
   )
   return plusFilesRelevant
 }
-function sortAfterGlobalPosition(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
+function sortForGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
   const locationIdsAll = objectKeys(plusFilesAll)
   const locationIdHighestGlobalPrecedence = getLocationId('/pages/+config.js')
   const plusFilesAllSorted = Object.fromEntries(
     objectEntries(plusFilesAll)
-      .filter(([locationId]) => {
-        return isInherited(locationId, locationIdHighestGlobalPrecedence)
-      })
       .sort(([locationId1], [locationId2]) =>
         sortAfterInheritanceOrder(locationId1, locationId2, locationIdHighestGlobalPrecedence)
       )
