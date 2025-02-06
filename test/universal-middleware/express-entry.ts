@@ -28,7 +28,7 @@ async function startServer() {
   apply(app, middlewares)
 
   app.listen(port, () => {
-    console.log(`Server listening on http://localhost:${port}`)
+    console.log(`Server running at http://localhost:${port}`)
   })
 
   return app

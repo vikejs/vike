@@ -1,8 +1,10 @@
 {
   "scripts": {
-    "dev": "tsx ./express-entry.ts",
+    "dev": "pnpm run server:dev",
     "build": "vike build",
-    "preview": "cross-env NODE_ENV=production tsx ./express-entry.ts"
+    "preview": "pnpm run build && pnpm run server:prod",
+    "server:dev": "tsx ./express-entry.ts",
+    "server:prod": "cross-env NODE_ENV=production tsx ./express-entry.ts"
   },
   "dependencies": {
     "@universal-middleware/express": "^0.4.0",
