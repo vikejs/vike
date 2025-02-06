@@ -23,13 +23,9 @@ import {
   assertIsNotProductionRuntime,
   getMostSimilar,
   joinEnglish,
-  lowerFirst,
   assertKeys,
   objectKeys,
   objectFromEntries,
-  makeFirst,
-  isNpmPackageImport,
-  reverse,
   unique,
   isCallable
 } from '../../../utils.js'
@@ -480,8 +476,7 @@ function getPageConfigs(
       // We use `plusFilesAll` in order to allow local Vike extensions to set the value of global configs (e.g. `vite`).
       plusFilesAll, // TODO/now check sort order
       userRootDir,
-      true,
-      getLocationId('/pages/+config.js')
+      true
     )
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
@@ -497,14 +492,7 @@ function getPageConfigs(
       objectEntries(configDefinitionsLocal)
         .filter(([_configName, configDef]) => configDef.global !== true)
         .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(
-            configName,
-            configDef,
-            plusFilesRelevant,
-            userRootDir,
-            false,
-            locationId
-          )
+          const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevant, userRootDir, false)
           // sortConfigValueSources(sources, locationId)
           if (sources.length === 0) return
           configValueSources[configName] = sources
@@ -691,8 +679,7 @@ function resolveConfigValueSources(
   configDef: ConfigDefinitionInternal,
   plusFilesRelevant: PlusFilesByLocationId,
   userRootDir: string,
-  isGlobal: boolean,
-  locationId: LocationId
+  isGlobal: boolean
 ): ConfigValueSource[] {
   const plusFilesOrdered = getPlusFilesOrdered(configName, plusFilesRelevant)
 
@@ -954,31 +941,6 @@ function assertOverwrittenConfigFile(plusFileWinner: PlusFile, plusFilesOverride
     )
   })
 }
-function sortConfigValueSources(sources: ConfigValueSource[], locationIdPage: LocationId): void {
-  sources
-    // Make order deterministic (no other purpose)
-    .sort((source1, source2) =>
-      source1!.definedAtFilePath.filePathAbsoluteVite < source2!.definedAtFilePath.filePathAbsoluteVite ? -1 : 1
-    )
-    // Sort after whether the config value was defined by an npm package
-    .sort(
-      makeFirst((source) => {
-        const { importPathAbsolute } = source!.definedAtFilePath
-        return (
-          !!importPathAbsolute &&
-          isNpmPackageImport(importPathAbsolute, {
-            // Vike config files don't support path aliases. (If they do one day, then Vike will/should be able to resolve path aliases.)
-            cannotBePathAlias: true
-          })
-        )
-      })
-    )
-    // Sort after the filesystem inheritance of the config value
-    .sort((source1, source2) =>
-      reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
-    )
-}
-
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
   for (const plusFile of plusFiles) {
     const configNames = getDefiningConfigNames(plusFile)
