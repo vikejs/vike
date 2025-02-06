@@ -122,17 +122,18 @@ type SourceConfigsComputed = {
 
 type ConfigUserFriendly = {
   config: ConfigResolved
-  source: Source
-  sources: Sources
-  from: From
+  // TODO/now expose publicly?
+  _source: Source
+  _sources: Sources
+  _from: From
 }
 function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
   const res = getPageConfigUserFriendlyV1Desin(pageConfig)
   return {
     config: res.config,
-    source: res.source,
-    sources: res.sources,
-    from: res.from
+    _source: res.source,
+    _sources: res.sources,
+    _from: res.from
   }
 }
 
