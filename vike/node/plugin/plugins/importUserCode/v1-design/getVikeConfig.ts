@@ -28,7 +28,8 @@ import {
   objectFromEntries,
   unique,
   isCallable,
-  makeFirst
+  makeFirst,
+  lowerFirst
 } from '../../../utils.js'
 import path from 'path'
 import type {
@@ -670,18 +671,16 @@ function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPag
       })
       // Sort after config inheritance.
       // - Together with getPlusFilesOrdered() this implements the whole order of config inheritance.
+      // - See sortForGlobal() for global configs order.
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return plusFilesRelevant
 }
 function sortForGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
   const locationIdsAll = objectKeys(plusFilesAll)
-  const locationIdHighestGlobalPrecedence = getLocationId('/pages/+config.js')
   const plusFilesAllSorted = Object.fromEntries(
     objectEntries(plusFilesAll)
-      .sort(([locationId1], [locationId2]) =>
-        sortAfterInheritanceOrder(locationId1, locationId2, locationIdHighestGlobalPrecedence)
-      )
+      .sort(lowerFirst(([locationId]) => locationId.split('/').length))
       .sort(makeFirst(([locationId]) => isGlobalLocation(locationId, locationIdsAll)))
   )
   return plusFilesAllSorted
