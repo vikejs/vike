@@ -729,14 +729,17 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
       getDefiningConfigNames(plusFile).includes(configName)
     )
 
-    const visited = new WeakSet<PlusFile>()
-    const add = (plusFile: PlusFile) => {
+    // We populate `plusFilesOrdered` with inheritance order.
+    const populate = (plusFile: PlusFile) => {
       assert(!visited.has(plusFile))
       visited.add(plusFile)
       plusFilesOrdered.push(plusFile)
     }
+    const visited = new WeakSet<PlusFile>()
 
-    // Main resolution logic
+    // ================
+    // User-land config
+    // ================
     {
       const plusFilesValue = plusFilesForConfigName.filter(
         (plusFile) =>
@@ -760,12 +763,14 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
         // A user-land conflict of plusFiles with the same `locationId` (we are iterating over `plusFilesRelevant: PlusFilesByLocationId`) means that the user has superfluously defined the config twice; the user should remove such redundancy as it makes things unnecessarily ambiguous.
         assertOverwrittenConfigFile(plusFileWinner, plusFilesOverriden, configName)
         ;[plusFileWinner, ...plusFilesOverriden].forEach((plusFile) => {
-          add(plusFile)
+          populate(plusFile)
         })
       }
     }
 
-    // Side-effect configs (e.g. `export { frontmatter }` of .mdx files)
+    // ===================
+    // Side-effect configs (e.g. `export { frontmatter }` of .mdx files).
+    // ===================
     // - This only considers side-effect configs that are already loaded at build-time (e.g. it actually doesn't consider `export { frontmatter }` of .mdx files since .mdx files are loaded only at runtime).
     plusFilesForConfigName
       .filter(
@@ -775,17 +780,22 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
           plusFile.configName !== configName
       )
       .forEach((plusFileValueSideEffect) => {
-        add(plusFileValueSideEffect)
+        populate(plusFileValueSideEffect)
       })
 
-    // Extensions
+    // =================
+    // Extensions config
+    // =================
     plusFilesForConfigName
       .filter((plusFile) => plusFile.isConfigFile && plusFile.isExtensionConfig)
       // Extension config files are already sorted by inheritance order
       .forEach((plusFile) => {
-        add(plusFile)
+        populate(plusFile)
       })
 
+    // ======
+    // Assert we didn't miss any config.
+    // ======
     plusFilesForConfigName.forEach((plusFile) => {
       assert(visited.has(plusFile))
     })
