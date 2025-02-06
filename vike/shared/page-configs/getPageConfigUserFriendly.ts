@@ -1,4 +1,4 @@
-export { getPageConfigUserFriendly }
+export { getPageConfigUserFriendlyOld }
 export { getPageConfigUserFriendlyNew }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
@@ -120,7 +120,25 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-function getPageConfigUserFriendly(
+// See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
+type ConfigUserFriendly = {
+  config: ConfigResolved
+  // TODO/now expose publicly?
+  _source: Source
+  _sources: Sources
+  _from: From
+}
+function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
+  const res = getPageConfigUserFriendlyV1Desin(pageConfig)
+  return {
+    config: res.config,
+    _source: res.source,
+    _sources: res.sources,
+    _from: res.from
+  }
+}
+
+function getPageConfigUserFriendlyOld(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null
 ): PageConfigUserFriendly {
@@ -152,7 +170,7 @@ function getPageConfigUserFriendly(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getPageConfigUserFriendlyNew(pageConfig)
+    const res = getPageConfigUserFriendlyV1Desin(pageConfig)
     source = res.source
     sources = res.sources
     from = res.from
@@ -202,16 +220,8 @@ function getPageConfigUserFriendly(
   return pageContextExports
 }
 
-type ConfigUserFriendly = {
-  config: ConfigResolved
-  configEntries: ConfigEntries // TODO/v1-release: remove
-  exportsAll: ExportsAll // TODO/v1-release: remove
-  source: Source
-  sources: Sources
-  from: From
-}
 // V1 design
-function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
+function getPageConfigUserFriendlyV1Desin(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}

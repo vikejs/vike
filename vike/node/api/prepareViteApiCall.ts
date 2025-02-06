@@ -40,7 +40,7 @@ async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation
 }
 
 function addViteSettingsSetByVikeConfig(viteConfigEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
-  const viteConfigs = vikeConfig.global.from.configsCumulative.vite
+  const viteConfigs = vikeConfig.global._from.configsCumulative.vite
   if (!viteConfigs) return viteConfigEnhanced
   viteConfigs.values.forEach((v) => {
     assertUsage(isObject(v.value), `${v.definedAt} should be an object`)
