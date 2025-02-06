@@ -74,8 +74,8 @@ async function loadValueFile(
   const configDef = getConfigDefinitionOptional(configDefinitions, configName)
   // Only load value files with `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
-  interfaceValueFile.isValueFileLoaded = true
-  assert(interfaceValueFile.isValueFileLoaded)
+  interfaceValueFile.isNotLoaded = false
+  assert(!interfaceValueFile.isNotLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false, esbuildCache)
   const { filePathToShowToUser } = interfaceValueFile.filePath

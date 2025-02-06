@@ -109,7 +109,7 @@ type PlusFileConfig = PlusFileCommons & {
   isExtensionConfig: boolean
   extendsFilePaths: string[]
   // TypeScript convenience
-  isValueFileLoaded?: undefined
+  isNotLoaded?: undefined
 }
 // +{configName}.js
 type PlusFileValue = PlusFileCommons & {
@@ -117,14 +117,14 @@ type PlusFileValue = PlusFileCommons & {
   configName: string
 } & (
     | {
-        isValueFileLoaded: true
+        isNotLoaded: false
         fileExportsByConfigName: Record<
           string, // configName
           unknown // configValue
         >
       }
     | {
-        isValueFileLoaded: false
+        isNotLoaded: true
       }
   ) & {
     // TypeScript convenience
@@ -281,7 +281,7 @@ async function loadPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): P
         locationId,
         filePath,
         isConfigFile: false,
-        isValueFileLoaded: false,
+        isNotLoaded: true,
         configName
       }
       plusFilesAll[locationId] = plusFilesAll[locationId] ?? []
@@ -938,7 +938,7 @@ function getDefiningConfigNames(plusFile: PlusFile): string[] {
   if (!plusFile.isConfigFile) {
     configNames.push(plusFile.configName)
   }
-  if (plusFile.isValueFileLoaded) {
+  if (!plusFile.isNotLoaded) {
     configNames.push(...Object.keys(plusFile.fileExportsByConfigName))
   }
   configNames = unique(configNames)
@@ -1399,7 +1399,7 @@ function getConfVal(
 ): null | { configValue: unknown; configValueLoaded: true } | { configValueLoaded: false } {
   const configNames = getDefiningConfigNames(plusFile)
   if (!configNames.includes(configName)) return null
-  if (!plusFile.isValueFileLoaded) return { configValueLoaded: false }
+  if (plusFile.isNotLoaded) return { configValueLoaded: false }
   const confVal = { configValue: plusFile.fileExportsByConfigName[configName], configValueLoaded: true }
   return confVal
 }
