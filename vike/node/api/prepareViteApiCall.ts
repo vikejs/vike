@@ -5,15 +5,15 @@ export { normalizeViteRoot }
 
 // TODO: enable Vike extensions to add Vite plugins
 
+import path from 'path'
+import pc from '@brillout/picocolors'
 import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
 import type { InlineConfig, PluginOption, ResolvedConfig } from 'vite'
-import type { Operation } from './types.js'
-import { clearContextApiOperation, setContextApiOperation } from './context.js'
-import { getVikeConfig2, type VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-import path from 'path'
-import { assert, assertUsage, getGlobalObject, isObject, toPosixPath } from './utils.js'
-import pc from '@brillout/picocolors'
+import { type VikeConfigObject, getVikeConfig2 } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import { clearGlobalContext } from '../runtime/globalContext.js'
+import { clearContextApiOperation, setContextApiOperation } from './context.js'
+import type { Operation } from './types.js'
+import { assert, assertUsage, getGlobalObject, isObject, toPosixPath } from './utils.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts', {})
 
@@ -35,6 +35,7 @@ async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
   const viteConfigEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigEnhanced, vikeConfig)
   return {
+    vikeConfig,
     viteConfigEnhanced
   }
 }

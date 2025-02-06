@@ -1,7 +1,7 @@
 export default Page
 
 import React from 'react'
-import { Counter } from './Counter.client'
+import { Counter } from './Counter.jsx'
 
 function Page() {
   return (

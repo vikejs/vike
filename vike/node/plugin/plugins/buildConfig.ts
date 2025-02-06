@@ -3,27 +3,31 @@ export { assertRollupInput }
 export { analyzeClientEntries }
 export { manifestTempFile }
 
+import { createRequire } from 'module'
+import path from 'path'
+import fs from 'fs/promises'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
+import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
+import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
+import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { findPageFiles } from '../shared/findPageFiles.js'
+import { getFilePathResolved } from '../shared/getFilePath.js'
+import { type OutDirs, getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
+import { viteIsSSR } from '../shared/viteIsSSR.js'
 import {
   assert,
   addOnBeforeLogHook,
-  removeFileExtention,
-  unique,
+  assertIsNpmPackageImport,
   assertUsage,
   injectRollupInputs,
   normalizeRollupInput,
   onSetupBuild,
-  assertIsNpmPackageImport
+  removeFileExtention,
+  unique
 } from '../utils.js'
-import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
-import { findPageFiles } from '../shared/findPageFiles.js'
-import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
-import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
-import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-import { createRequire } from 'module'
-import fs from 'fs/promises'
-import path from 'path'
 import {
   fixServerAssets,
   fixServerAssets_assertCssCodeSplit,
@@ -32,11 +36,7 @@ import {
   fixServerAssets_isEnabled
 } from './buildConfig/fixServerAssets.js'
 import { set_ASSETS_MANIFEST } from './buildEntry/index.js'
-import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
-import { getFilePathResolved } from '../shared/getFilePath.js'
-import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
-import { getOutDirs, type OutDirs, resolveOutDir } from '../shared/getOutDirs.js'
-import { viteIsSSR } from '../shared/viteIsSSR.js'
+import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -63,6 +63,7 @@ function buildConfig(): Plugin[] {
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
           outDirs = getOutDirs(config)
+          isSsrBuild = viteIsSSR(config)
           {
             isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
             if (isServerAssetsFixEnabled) {
@@ -80,6 +81,7 @@ function buildConfig(): Plugin[] {
         order: 'post',
         handler(config) {
           onSetupBuild()
+          // FIXME not compatible with Environment API
           isSsrBuild = viteIsSSR(config)
           return {
             build: {
@@ -109,7 +111,9 @@ function buildConfig(): Plugin[] {
         order: 'pre',
         sequential: true,
         async handler(options, bundle) {
+          console.log('FIXING SERVER ASSETS?', isSsrBuild)
           if (isSsrBuild) {
+            console.log('FIXING SERVER ASSETS')
             // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
             //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
             //  - We'll able to do so once we replace `$ vite build` with `$ vike build`

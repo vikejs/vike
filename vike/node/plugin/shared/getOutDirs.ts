@@ -1,9 +1,10 @@
 export { getOutDirs }
 export { resolveOutDir }
+export { getOutDirFromViteUserConfig }
 export type { OutDirs }
 
-import type { UserConfig, ResolvedConfig } from 'vite'
 import pc from '@brillout/picocolors'
+import type { ResolvedConfig, UserConfig } from 'vite'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
 import { viteIsSSR } from './viteIsSSR.js'
 const debug = createDebugger('vike:outDir')
@@ -38,7 +39,7 @@ function getOutDirs(config: ResolvedConfig): OutDirs {
 }
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
-function resolveOutDir(config: UserConfig): string {
+function resolveOutDir(config: UserConfig, forceSSR?: true): string {
   debug('resolveOutDir()', new Error().stack)
   const outDir = getOutDirFromViteUserConfig(config) || 'dist'
   debug('outDir', 'outDir')
@@ -48,7 +49,7 @@ function resolveOutDir(config: UserConfig): string {
     return outDir
   } else {
     const { outDirClient, outDirServer } = determineOutDirs(outDir)
-    if (viteIsSSR(config)) {
+    if (viteIsSSR(config) || forceSSR) {
       debug('outDirServer', 'outDirServer')
       return outDirServer
     } else {
