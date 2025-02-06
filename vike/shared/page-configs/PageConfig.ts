@@ -24,7 +24,7 @@ import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode
 import type {
   PlusFile,
   PlusFilesByLocationId
-} from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+} from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
 
 type PageConfigCommon = {
   pageId: string

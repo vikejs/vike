@@ -7,9 +7,6 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export type { VikeConfigObject }
-export type { PlusFileValue }
-export type { PlusFile }
-export type { PlusFilesByLocationId }
 
 import {
   assertPosixPath,
@@ -31,7 +28,6 @@ import {
   makeFirst,
   lowerFirst
 } from '../../../utils.js'
-import path from 'path'
 import type {
   PageConfigGlobalBuildTime,
   ConfigEnvInternal,
@@ -58,7 +54,7 @@ import {
   isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting.js'
-import { type EsbuildCache, isTemporaryBuildFile } from './getVikeConfig/transpileAndExecuteFile.js'
+import type { EsbuildCache } from './getVikeConfig/transpileAndExecuteFile.js'
 import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
@@ -69,66 +65,22 @@ import {
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
 import type { ResolvedConfig } from 'vite'
-import { crawlPlusFiles } from './getVikeConfig/crawlPlusFiles.js'
-import { getConfigFileExport } from './getConfigFileExport.js'
-import {
-  type ConfigFile,
-  loadConfigFile,
-  loadPointerImport,
-  loadValueFile,
-  type PointerImportLoaded
-} from './getVikeConfig/loadFileAtConfigTime.js'
+import { loadPointerImport, loadValueFile } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
-import type { FilePath, FilePathResolved } from '../../../../../shared/page-configs/FilePath.js'
+import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { assertExtensionsRequire, assertExtensionsConventions } from './assertExtensions.js'
+import { assertExtensionsRequire } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
+import {
+  getPlusFilesAll,
+  getConfigName,
+  type PlusFile,
+  type PlusFilesByLocationId
+} from './getVikeConfig/getPlusFilesAll.js'
 
 assertIsNotProductionRuntime()
-
-type PlusFile = PlusFileConfig | PlusFileValue
-type PlusFileCommons = {
-  locationId: LocationId
-  filePath: FilePathResolved
-}
-// +config.js
-type PlusFileConfig = PlusFileCommons & {
-  isConfigFile: true
-  fileExportsByConfigName: Record<
-    string, // configName
-    unknown // configValue
-  >
-  pointerImportsByConfigName: Record<
-    string, // configName
-    PointerImportLoaded
-  >
-  isExtensionConfig: boolean
-  extendsFilePaths: string[]
-  // TypeScript convenience
-  isNotLoaded?: undefined
-}
-// +{configName}.js
-type PlusFileValue = PlusFileCommons & {
-  isConfigFile: false
-  configName: string
-} & (
-    | {
-        isNotLoaded: false
-        fileExportsByConfigName: Record<
-          string, // configName
-          unknown // configValue
-        >
-      }
-    | {
-        isNotLoaded: true
-      }
-  ) & {
-    // TypeScript convenience
-    isExtensionConfig?: undefined
-  }
-type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
@@ -217,128 +169,6 @@ async function isV1Design(config: ResolvedConfig): Promise<boolean> {
   return isV1Design
 }
 
-async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, null)
-  const configFiles: FilePathResolved[] = []
-  const valueFiles: FilePathResolved[] = []
-  plusFiles.forEach((f) => {
-    if (getConfigName(f.filePathAbsoluteFilesystem) === 'config') {
-      configFiles.push(f)
-    } else {
-      valueFiles.push(f)
-    }
-  })
-
-  let plusFilesAll: PlusFilesByLocationId = {}
-
-  await Promise.all([
-    // Config files
-    ...configFiles.map(async (filePath) => {
-      const { filePathAbsoluteUserRootDir } = filePath
-      assert(filePathAbsoluteUserRootDir)
-      const { configFile, extendsConfigs } = await loadConfigFile(filePath, userRootDir, [], false, esbuildCache)
-      assert(filePath.filePathAbsoluteUserRootDir)
-      const locationId = getLocationId(filePathAbsoluteUserRootDir)
-      const plusFile = getPlusFileFromConfigFile(configFile, false, locationId, userRootDir)
-
-      plusFilesAll[locationId] = plusFilesAll[locationId] ?? []
-      plusFilesAll[locationId]!.push(plusFile)
-      extendsConfigs.forEach((extendsConfig) => {
-        /* We purposely use the same locationId because the Vike extension's config should only apply to where it's being extended from, for example:
-        ```js
-        // /pages/admin/+config.js
-
-        import vikeVue from 'vike-vue/config'
-        // Should only apply to /pages/admin/**
-        export default { extends: [vikeVue] }
-        ```
-        ```js
-        // /pages/marketing/+config.js
-
-        import vikeReact from 'vike-react/config'
-        // Should only apply to /pages/marketing/**
-        export default { extends: [vikeReact] }
-        ```
-        */
-        const plusFile = getPlusFileFromConfigFile(extendsConfig, true, locationId, userRootDir)
-        assertExtensionsConventions(plusFile)
-        plusFilesAll[locationId]!.push(plusFile)
-      })
-    }),
-    // Value files
-    ...valueFiles.map(async (filePath) => {
-      const { filePathAbsoluteUserRootDir } = filePath
-      assert(filePathAbsoluteUserRootDir)
-
-      const configName = getConfigName(filePathAbsoluteUserRootDir)
-      assert(configName)
-
-      const locationId = getLocationId(filePathAbsoluteUserRootDir)
-
-      const plusFile: PlusFileValue = {
-        locationId,
-        filePath,
-        isConfigFile: false,
-        isNotLoaded: true,
-        configName
-      }
-      plusFilesAll[locationId] = plusFilesAll[locationId] ?? []
-      plusFilesAll[locationId]!.push(plusFile)
-
-      // We don't have access to the custom config definitions defined by the user yet.
-      //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
-      //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-      await loadValueFile(plusFile, configDefinitionsBuiltInAll, userRootDir, esbuildCache)
-    })
-  ])
-
-  assertKnownConfigs(plusFilesAll)
-
-  // Make lists element order deterministic
-  Object.entries(plusFilesAll).forEach(([_locationId, plusFiles]) => {
-    plusFiles.sort(sortMakeDeterministic)
-  })
-
-  return plusFilesAll
-}
-function getPlusFileFromConfigFile(
-  configFile: ConfigFile,
-  isExtensionConfig: boolean,
-  locationId: LocationId,
-  userRootDir: string
-): PlusFile {
-  const { fileExports, filePath, extendsFilePaths } = configFile
-
-  const fileExportsByConfigName: PlusFileConfig['fileExportsByConfigName'] = {}
-  const pointerImportsByConfigName: PlusFileConfig['pointerImportsByConfigName'] = {}
-  const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
-  Object.entries(fileExport).forEach(([configName, configValue]) => {
-    fileExportsByConfigName[configName] = configValue
-    const pointerImport = resolvePointerImport(configValue, configFile.filePath, userRootDir, configName)
-    if (pointerImport) {
-      pointerImportsByConfigName[configName] = {
-        ...pointerImport,
-        fileExportValueLoaded: false
-      }
-    }
-  })
-
-  const plusFile: PlusFileConfig = {
-    locationId,
-    filePath,
-    fileExportsByConfigName,
-    pointerImportsByConfigName,
-    isConfigFile: true,
-    isExtensionConfig,
-    extendsFilePaths
-  }
-  return plusFile
-}
-// Make order deterministic (no other purpose)
-function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
-  return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
-}
-
 async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
   isDev: boolean,
@@ -387,6 +217,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const esbuildCache: EsbuildCache = {}
 
   const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
+  assertKnownConfigs(plusFilesAll)
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
 
@@ -1166,47 +997,6 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
   })
   return configValuesComputed
 }
-
-async function findPlusFiles(userRootDir: string, outDirRoot: null | string): Promise<FilePathResolved[]> {
-  const files = await crawlPlusFiles(userRootDir, outDirRoot)
-
-  const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
-    getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
-  )
-
-  return plusFiles
-}
-
-function getConfigName(filePath: string): string | null {
-  assertPosixPath(filePath)
-  if (isTemporaryBuildFile(filePath)) return null
-  const fileName = path.posix.basename(filePath)
-  // assertNoUnexpectedPlusSign(filePath, fileName)
-  const basename = fileName.split('.')[0]!
-  if (!basename.startsWith('+')) {
-    return null
-  } else {
-    const configName = basename.slice(1)
-    assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
-    return configName
-  }
-}
-/* https://github.com/vikejs/vike/issues/1407
-function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
-  const dirs = path.posix.dirname(filePath).split('/')
-  dirs.forEach((dir, i) => {
-    const dirPath = dirs.slice(0, i + 1).join('/')
-    assertUsage(
-      !dir.includes('+'),
-      `Character '+' is a reserved character: remove '+' from the directory name ${dirPath}/`
-    )
-  })
-  assertUsage(
-    !fileName.slice(1).includes('+'),
-    `Character '+' is only allowed at the beginning of filenames: make sure ${filePath} doesn't contain any '+' in its filename other than its first letter`
-  )
-}
-*/
 
 // Show error message upon unknown config
 function assertKnownConfigs(plusFilesAll: PlusFilesByLocationId) {
