@@ -490,7 +490,6 @@ function getPageConfigs(
         .forEach(([configName, configDef]) => {
           const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevant, userRootDir, false)
           if (sources.length === 0) return
-          // assertUsage(!isGlobalConfig(configName, configDefinitionsLocal, sources), 'TODO') // TODO/now
           configValueSources[configName] = sources
         })
       configValueSources = sortConfigValueSources(configValueSources, locationId)
