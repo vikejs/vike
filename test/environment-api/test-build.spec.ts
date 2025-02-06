@@ -9,6 +9,7 @@ describe('build', () => {
 })
 
 async function buildApp() {
+  process.env.NODE_ENV = 'production'
   await build({
     viteConfig: {
       logLevel: 'warn',
