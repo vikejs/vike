@@ -17,7 +17,7 @@ function buildApp(): Plugin[] {
       name: 'vike:buildApp',
       apply: 'build',
       config(config) {
-        if (!config.vike!.global.config.useEnvironmentAPI) return
+        if (!config.vike!.global.config.viteEnvironmentAPI) return
 
         console.log('SHOULD buildApp')
 

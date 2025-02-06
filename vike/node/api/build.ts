@@ -25,7 +25,7 @@ async function build(options: APIOptions = {}): Promise<{}> {
   //    > See: https://github.com/vikejs/vike/blob/c6c7533a56b3a16fc43ed644fc5c10c02d0ff375/vike/node/plugin/plugins/autoFullBuild.ts#L98
   //    > We purposely don't start the pre-rendering in this `build()` function but in a Rollup hook instead.
   //    > Rationale: https://github.com/vikejs/vike/issues/2123
-  if (vikeConfig.global.config.useEnvironmentAPI) {
+  if (vikeConfig.global.config.viteEnvironmentAPI) {
     const builder = await createBuilder(viteConfigEnhanced)
     await builder.buildApp()
   } else {

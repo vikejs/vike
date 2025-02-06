@@ -248,7 +248,7 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
       'string'
     ]
   },
-  useEnvironmentAPI: {
+  viteEnvironmentAPI: {
     env: { config: true },
     global: true,
     type: ['boolean']

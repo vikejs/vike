@@ -129,8 +129,8 @@ function abortViteBuildSsr(vikeConfig: VikeConfigObject) {
 }
 
 function isDisabled(vikeConfig: VikeConfigObject): boolean {
-  const { disableAutoFullBuild, useEnvironmentAPI } = vikeConfig.global.config
-  if (useEnvironmentAPI) {
+  const { disableAutoFullBuild, viteEnvironmentAPI } = vikeConfig.global.config
+  if (viteEnvironmentAPI) {
     return true
   }
   if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
