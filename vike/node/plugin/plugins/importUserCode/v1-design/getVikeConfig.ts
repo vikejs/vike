@@ -717,7 +717,7 @@ function resolveConfigValueSources(
       const plusFileWinner = plusFileValue ?? plusFileConfig
       if (plusFileWinner) {
         const plusFilesOverriden = [...plusFilesValue, ...plusFilesConfig].filter((f) => f !== plusFileWinner)
-        // A user-land conflict of plusFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy making things unnecessarily ambiguous
+        // A user-land conflict of plusFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy as it makes things unnecessarily ambiguous.
         warnOverridenConfigValues(plusFileWinner, plusFilesOverriden, configName)
         ;[plusFileWinner, ...plusFilesOverriden].forEach((plusFile) => {
           add(plusFile)
