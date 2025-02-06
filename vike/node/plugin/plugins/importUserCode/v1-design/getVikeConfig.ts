@@ -765,6 +765,7 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
         // A user-land conflict of plusFiles with the same `locationId` (we are iterating over `plusFilesRelevant: PlusFilesByLocationId`) means that the user has superfluously defined the config twice; the user should remove such redundancy as it makes things unnecessarily ambiguous.
         assertOverwrittenConfigFile(plusFileWinner, plusFilesOverriden, configName)
         ;[plusFileWinner, ...plusFilesOverriden].forEach((plusFile) => {
+          assert(plusFile.filePath.filePathAbsoluteUserRootDir) // ensure it's a user-land plus file
           populate(plusFile)
         })
       }
@@ -782,8 +783,9 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
           // Is side-effect config
           plusFile.configName !== configName
       )
-      .forEach((plusFileValueSideEffect) => {
-        populate(plusFileValueSideEffect)
+      .forEach((plusFile) => {
+        assert(plusFile.filePath.filePathAbsoluteUserRootDir) // ensure it's a user-land plus file
+        populate(plusFile)
       })
 
     // ========================
@@ -793,6 +795,7 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
       .filter((plusFile) => plusFile.isConfigFile && plusFile.isExtensionConfig)
       // Extension config files are already sorted by inheritance order
       .forEach((plusFile) => {
+        assert(!plusFile.filePath.filePathAbsoluteUserRootDir) // ensure it isn't a user-land plus file
         populate(plusFile)
       })
 
