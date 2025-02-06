@@ -90,7 +90,6 @@ import { getConfigValuesBase } from '../../../../../shared/page-configs/serializ
 
 assertIsNotProductionRuntime()
 
-// TODO/now: `rename PlusFile PlusFile`?
 type PlusFile = PlusFileConfig | PlusFileValue
 type PlusFileCommons = {
   locationId: LocationId
