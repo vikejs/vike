@@ -728,7 +728,7 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
     const plusFilesForConfigName = plusFilesByLocationId.filter((plusFile) =>
       getDefiningConfigNames(plusFile).includes(configName)
     )
-    if (plusFilesForConfigName.length === 0) continue
+
     const visited = new WeakSet<PlusFile>()
     const add = (plusFile: PlusFile) => {
       assert(!visited.has(plusFile))
