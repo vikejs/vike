@@ -724,8 +724,8 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
   // plusFilesRelevant is already sorted:
   //  - By sortAfterInheritanceOrder() at getPlusFilesRelevant()
   //  - By sortMakeDeterministic() at getPlusFilesAll()
-  for (const plusFiles of Object.values(plusFilesRelevant)) {
-    const plusFilesDefiningConfig = plusFiles.filter((plusFile) =>
+  for (const plusFilesByLocationId of Object.values(plusFilesRelevant)) {
+    const plusFilesDefiningConfig = plusFilesByLocationId.filter((plusFile) =>
       getDefiningConfigNames(plusFile).includes(configName)
     )
     if (plusFilesDefiningConfig.length === 0) continue
