@@ -97,7 +97,6 @@ type ConfigValueSources = Record<
   ConfigValueSource[]
 >
 type ConfigValueSource = {
-  value?: unknown
   configEnv: ConfigEnvInternal
   definedAtFilePath: DefinedAtFilePath
   plusFile:
@@ -113,7 +112,15 @@ type ConfigValueSource = {
   /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true
   valueIsDefinedByPlusFile: boolean
-}
+} & (
+  | {
+      valueIsLoaded: false
+    }
+  | {
+      valueIsLoaded: true
+      value: unknown
+    }
+)
 type DefinedAtFilePath = DefinedAtFile & FilePath & { fileExportName?: string }
 
 type ConfigValuesComputed = Record<

@@ -638,6 +638,7 @@ function temp_interopVikeVitePlugin(
     const configDef = configDefinitionsBuiltInAll[configName]
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
     sources.push({
+      valueIsLoaded: true,
       value,
       configEnv: configDef.env,
       definedAtFilePath: {
@@ -766,8 +767,7 @@ function resolveConfigValueSources(
     assert(configDef.env.config)
     sources = sources.filter((source) => {
       assert(source.configEnv.config)
-      // TODO/now: source.valueIsDefined
-      assert('value' in source)
+      assert(source.valueIsLoaded)
       const valueIsGlobal = isGlobalValue(source.value)
       return isGlobal ? valueIsGlobal : !valueIsGlobal
     })
@@ -820,6 +820,7 @@ function getConfigValueSource(
     }
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
+      valueIsLoaded: true,
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv: configDef.env,
@@ -839,17 +840,22 @@ function getConfigValueSource(
     // Defined over pointer import
     const pointerImport = plusFile.pointerImportsByConfigName[configName]
     if (pointerImport) {
+      const value = pointerImport.fileExportValueLoaded
+        ? {
+            valueIsLoaded: true as const,
+            value: pointerImport.fileExportValue
+          }
+        : {
+            valueIsLoaded: false as const
+          }
       const configValueSource: ConfigValueSource = {
         ...configValueSourceCommon,
+        ...value,
         configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
         valueIsImportedAtRuntime: true,
         valueIsDefinedByPlusFile: false,
         isOverriden,
         definedAtFilePath: pointerImport.fileExportPath
-      }
-      if (pointerImport.fileExportValueLoaded) {
-        configValueSource.value = pointerImport.fileExportValue
-        assert('fileExportValue' in pointerImport)
       }
       return configValueSource
     }
@@ -857,6 +863,7 @@ function getConfigValueSource(
     // Defined inside +config.js
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
+      valueIsLoaded: true,
       value: configValue,
       configEnv: configDef.env,
       valueIsImportedAtRuntime: false,
@@ -872,8 +879,17 @@ function getConfigValueSource(
     const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
     const valueAlreadyLoaded = confVal.configValueLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
+    const value = valueAlreadyLoaded
+      ? {
+          valueIsLoaded: true as const,
+          value: confVal.configValue
+        }
+      : {
+          valueIsLoaded: false as const
+        }
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
+      ...value,
       configEnv: configEnvResolved,
       valueIsImportedAtRuntime: !valueAlreadyLoaded,
       valueIsDefinedByPlusFile: true,
@@ -886,9 +902,6 @@ function getConfigValueSource(
             : // Side-effect config (e.g. `export { frontmatter }` of .md files)
               [configName]
       }
-    }
-    if (valueAlreadyLoaded) {
-      configValueSource.value = confVal.configValue
     }
     return configValueSource
   }
