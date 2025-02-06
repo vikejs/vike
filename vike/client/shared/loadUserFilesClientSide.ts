@@ -2,12 +2,8 @@ export { loadUserFilesClientSide }
 export { isErrorFetchingStaticAssets }
 export type { PageContextUserFiles }
 
-import {
-  getPageFilesClientSide,
-  getPageConfigUserFriendlyOld,
-  type PageFile,
-  type PageConfigUserFriendly
-} from '../../shared/getPageFiles.js'
+import { getPageFilesClientSide, type PageFile, type PageConfigUserFriendly } from '../../shared/getPageFiles.js'
+import { getPageConfigUserFriendlyOld } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type { PageConfigRuntime, PageConfigRuntimeLoaded } from '../../shared/page-configs/PageConfig.js'

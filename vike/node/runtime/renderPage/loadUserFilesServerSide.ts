@@ -2,7 +2,8 @@ export { loadUserFilesServerSide }
 export type { PageFiles }
 export type { PageContext_loadUserFilesServerSide }
 
-import { type PageFile, getPageFilesServerSide, getPageConfigUserFriendlyOld } from '../../../shared/getPageFiles.js'
+import { type PageFile, getPageFilesServerSide } from '../../../shared/getPageFiles.js'
+import { getPageConfigUserFriendlyOld } from '../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide.js'
 import {
   assert,
