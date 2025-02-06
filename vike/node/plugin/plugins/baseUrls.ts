@@ -16,8 +16,8 @@ function baseUrls(): Plugin {
       const baseViteOriginal = config.base ?? '/__UNSET__' // '/__UNSET__' because Vite resolves `_baseViteOriginal: null` to `undefined`
       basesResolved = resolveBase(
         baseViteOriginal,
-        config.vike!.global.config.baseServer ?? null,
-        config.vike!.global.config.baseAssets ?? null
+        config.vike!.config.baseServer ?? null,
+        config.vike!.config.baseAssets ?? null
       )
       // We cannot define these in configResolved() because Vite picks up the env variables before any configResolved() hook is called
       process.env.BASE_SERVER = basesResolved.baseServer

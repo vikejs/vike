@@ -67,17 +67,14 @@ const globalObject = getGlobalObject<{
 
 initDevEntry()
 
-type GlobalContextPublic = {
-  assetsManifest: null | ViteManifest
-}
+type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig'>
 type PageRuntimeInfo = Awaited<ReturnType<typeof getPageRuntimeInfo>>['userFiles']
 type GlobalContext = {
   viteConfigRuntime: {
     _baseViteOriginal: null | string
   }
-  vikeConfig: {
-    global: ConfigUserFriendly
-  }
+  // global config
+  config: ConfigUserFriendly['config']
 } & PageRuntimeInfo &
   (
     | {
@@ -134,8 +131,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   return makePublic(globalContext)
 }
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
-  // TODO/now: add viteConfig and vikeConfig
-  const globalContextPublic = makePublicCopy(globalContext, 'globalContext', ['assetsManifest'])
+  const globalContextPublic = makePublicCopy(globalContext, 'globalContext', ['assetsManifest', 'config', 'viteConfig'])
   return globalContextPublic
 }
 
@@ -238,9 +234,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       assetsManifest: null,
       viteDevServer,
       viteConfig,
-      vikeConfig: {
-        global: globalConfig
-      },
+      config: globalConfig.config,
       ...userFiles,
       viteConfigRuntime
     }
@@ -252,9 +246,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
-      vikeConfig: {
-        global: globalConfig
-      },
+      config: globalConfig.config,
       ...userFiles,
       viteDevServer: null,
       viteConfigRuntime: buildInfo.viteConfigRuntime,
