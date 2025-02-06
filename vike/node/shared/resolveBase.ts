@@ -28,8 +28,8 @@ type BaseUrlsResolved = {
 function resolveBaseRuntime() {
   const globalContext = getGlobalContext()
   const baseViteOriginal = globalContext.viteConfigRuntime._baseViteOriginal
-  const baseServerUnresolved = globalContext.vikeConfig.global.config.baseServer ?? null
-  const baseAssetsUnresolved = globalContext.vikeConfig.global.config.baseAssets ?? null
+  const baseServerUnresolved = globalContext.config.baseServer ?? null
+  const baseAssetsUnresolved = globalContext.config.baseAssets ?? null
   return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
 }
 

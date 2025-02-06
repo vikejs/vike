@@ -37,6 +37,6 @@ async function startServer() {
 async function getUniversalMiddlewares() {
   const isProduction = process.env.NODE_ENV === 'production'
   const globalContext = await getGlobalContextAsync(isProduction)
-  const middlewares = (globalContext as any)._vikeConfig.global.config.middleware.flat(Infinity) as EnhancedMiddleware[]
+  const middlewares = globalContext.config.middleware!.flat(Infinity) as EnhancedMiddleware[]
   return middlewares
 }
