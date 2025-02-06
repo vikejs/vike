@@ -496,6 +496,7 @@ function getPageConfigs(
             false,
             locationId
           )
+          // sortConfigValueSources(sources, locationId)
           if (sources.length === 0) return
           configValueSources[configName] = sources
         })
@@ -766,8 +767,6 @@ function resolveConfigValueSources(
     )
     return configValueSource
   })
-
-  sortConfigValueSources(sources, locationId)
 
   if (isCallable(configDef.global)) {
     const isGlobalValue = configDef.global
