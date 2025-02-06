@@ -471,7 +471,8 @@ function getPageConfigs(
       // We use `plusFilesAll` in order to allow local Vike extensions to set the value of global configs (e.g. `vite`).
       plusFilesAll, // TODO/now check sort order
       userRootDir,
-      true
+      true,
+      getLocationId('/')
     )
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
@@ -487,11 +488,10 @@ function getPageConfigs(
       objectEntries(configDefinitionsLocal)
         .filter(([_configName, configDef]) => configDef.global !== true)
         .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevant, userRootDir, false)
+          const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevant, userRootDir, false, locationId)
           if (sources.length === 0) return
           configValueSources[configName] = sources
         })
-      configValueSources = sortConfigValueSources(configValueSources, locationId)
 
       const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
 
@@ -672,7 +672,8 @@ function resolveConfigValueSources(
   configDef: ConfigDefinitionInternal,
   plusFilesRelevant: PlusFilesByLocationId,
   userRootDir: string,
-  isGlobal: boolean
+  isGlobal: boolean,
+  locationId: LocationId
 ): ConfigValueSource[] {
   const plusFilesSource: { plusFile: PlusFile; isHighestInheritancePrecedence: boolean }[] = []
 
@@ -760,6 +761,8 @@ function resolveConfigValueSources(
     )
     return configValueSource
   })
+
+  sortConfigValueSources(sources, locationId)
 
   if (isCallable(configDef.global)) {
     const isGlobalValue = configDef.global
@@ -1374,16 +1377,15 @@ function getConfigEnvValue(
 function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, configName: string) {
   return configDefinitions[configName] ?? null
 }
-function sortConfigValueSources(sources: ConfigValueSources, locationIdPage: LocationId): ConfigValueSources {
-  return Object.fromEntries(
-    Object.entries(sources)
+function sortConfigValueSources(sources: ConfigValueSource[], locationIdPage: LocationId): void {
+  sources
       // Make order deterministic (no other purpose)
-      .sort(([, [source1]], [, [source2]]) =>
+      .sort((source1, source2) =>
         source1!.definedAtFilePath.filePathAbsoluteVite < source2!.definedAtFilePath.filePathAbsoluteVite ? -1 : 1
       )
       // Sort after whether the config value was defined by an npm package
       .sort(
-        makeFirst(([, [source]]) => {
+        makeFirst((source) => {
           const { importPathAbsolute } = source!.definedAtFilePath
           return (
             !!importPathAbsolute &&
@@ -1395,10 +1397,9 @@ function sortConfigValueSources(sources: ConfigValueSources, locationIdPage: Loc
         })
       )
       // Sort after the filesystem inheritance of the config value
-      .sort(([, [source1]], [, [source2]]) =>
+      .sort((source1, source2) =>
         reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
       )
-  )
 }
 
 function getConfVal(
