@@ -6,30 +6,31 @@ export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 export { PROJECT_VERSION as version } from './utils.js'
 
+import pc from '@brillout/picocolors'
 import type { Plugin } from 'vite'
-import { assertUsage } from './utils.js'
-import { buildConfig } from './plugins/buildConfig.js'
-import { previewConfig } from './plugins/previewConfig.js'
+import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
-import { devConfig } from './plugins/devConfig/index.js'
-import { packageJsonFile } from './plugins/packageJsonFile.js'
-import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
-import { importUserCode } from './plugins/importUserCode/index.js'
-import { distFileNames } from './plugins/distFileNames.js'
-import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
-import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
-import { suppressRollupWarning } from './plugins/suppressRollupWarning.js'
-import { setGlobalContext } from './plugins/setGlobalContext.js'
+import { baseUrls } from './plugins/baseUrls.js'
+import { buildApp } from './plugins/buildApp.js'
+import { buildConfig } from './plugins/buildConfig.js'
 import { buildEntry } from './plugins/buildEntry/index.js'
 import { commonConfig } from './plugins/commonConfig.js'
-import { baseUrls } from './plugins/baseUrls.js'
+import { devConfig } from './plugins/devConfig/index.js'
+import { distFileNames } from './plugins/distFileNames.js'
 import { envVarsPlugin } from './plugins/envVars.js'
-import pc from '@brillout/picocolors'
+import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
+import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
 import { fileEnv } from './plugins/fileEnv.js'
-import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.js'
-import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
+import { importUserCode } from './plugins/importUserCode/index.js'
+import { packageJsonFile } from './plugins/packageJsonFile.js'
+import { previewConfig } from './plugins/previewConfig.js'
+import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
+import { setGlobalContext } from './plugins/setGlobalContext.js'
+import { suppressRollupWarning } from './plugins/suppressRollupWarning.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { workaroundVite6HmrRegression } from './plugins/workaroundVite6HmrRegression.js'
+import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
+import { assertUsage } from './utils.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setResolveClientEntriesDev(resolveClientEntriesDev)
@@ -41,6 +42,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): any {
     importUserCode(),
     ...devConfig(),
     ...buildConfig(),
+    buildApp(),
     previewConfig(),
     ...autoFullBuild(),
     packageJsonFile(),

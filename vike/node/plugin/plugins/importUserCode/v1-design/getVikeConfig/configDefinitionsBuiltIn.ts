@@ -4,16 +4,16 @@ export type { ConfigDefinitions }
 export type { ConfigDefinitionInternal }
 export type { ConfigEffect }
 
-import type {
-  ConfigEnvInternal,
-  ConfigEnv,
-  ConfigValueSources,
-  DefinedAtFilePath,
-  ConfigValueSource
-} from '../../../../../../shared/page-configs/PageConfig.js'
 import type { Config, ConfigNameBuiltIn, ConfigNameGlobal } from '../../../../../../shared/page-configs/Config.js'
+import type {
+  ConfigEnv,
+  ConfigEnvInternal,
+  ConfigValueSource,
+  ConfigValueSources,
+  DefinedAtFilePath
+} from '../../../../../../shared/page-configs/PageConfig.js'
+import { type ConfigDefinedAt, getConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 import { assert, assertUsage } from '../../../../utils.js'
-import { getConfigDefinedAt, type ConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
 
 // For users
 /** The meta definition of a config.
@@ -247,6 +247,11 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
       // Can be 'prerender'
       'string'
     ]
+  },
+  useEnvironmentAPI: {
+    env: { config: true },
+    global: true,
+    type: ['boolean']
   },
   includeAssetsImportedByServer: { env: { config: true }, global: true, type: 'boolean' },
   baseAssets: { env: { config: true, server: true }, global: true, type: 'string' },
