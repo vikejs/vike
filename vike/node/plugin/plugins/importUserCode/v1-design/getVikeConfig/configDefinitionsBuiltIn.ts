@@ -223,8 +223,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   keepScrollPosition: {
     env: { client: true }
   },
-  // TODO/eventually: define it as a global config.
-  middleware: { env: { server: true }, cumulative: true, eager: true },
+  middleware: { env: { server: true }, cumulative: true, eager: true, global: true },
   onPrerenderStart: {
     env: { server: true, production: true },
     eager: true,
