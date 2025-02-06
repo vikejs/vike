@@ -510,7 +510,7 @@ function getPageConfigs(
         pageId: locationId,
         isErrorPage,
         routeFilesystem,
-        configDefinitions: configDefinitionsLocal,
+        configDefinitionsLocal,
         interfaceFiles: interfaceFilesRelevant,
         configValueSources,
         configValuesComputed

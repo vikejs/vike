@@ -52,7 +52,7 @@ type PageConfigGlobalRuntime = {
 
 /** Page config, build-time data structure */
 type PageConfigBuildTime = PageConfigCommon & {
-  configDefinitions: ConfigDefinitions
+  configDefinitionsLocal: ConfigDefinitions
   interfaceFiles: InterfaceFilesByLocationId
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed

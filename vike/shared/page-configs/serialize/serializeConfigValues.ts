@@ -284,7 +284,7 @@ function getConfigValuesBase(
     return { configValueBase, value, configName, configEnv } as const
   })
   const fromSources = Object.entries(pageConfig.configValueSources).map(([configName, sources]) => {
-    const configDef = pageConfig.configDefinitions[configName]
+    const configDef = pageConfig.configDefinitionsLocal[configName]
     assert(configDef)
     if (isEager !== null && isEager !== !!configDef.eager) return 'SKIP'
     if (!configDef.cumulative) {
