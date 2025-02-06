@@ -758,7 +758,7 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
       if (plusFileWinner) {
         const plusFilesOverriden = [...plusFilesValue, ...plusFilesConfig].filter((f) => f !== plusFileWinner)
         // A user-land conflict of plusFiles with the same `locationId` (we are iterating over `plusFilesRelevant: PlusFilesByLocationId`) means that the user has superfluously defined the config twice; the user should remove such redundancy as it makes things unnecessarily ambiguous.
-        warnOverridenConfigValues(plusFileWinner, plusFilesOverriden, configName)
+        assertOverwrittenConfigFile(plusFileWinner, plusFilesOverriden, configName)
         ;[plusFileWinner, ...plusFilesOverriden].forEach((plusFile) => {
           add(plusFile)
         })
@@ -926,6 +926,18 @@ function getConfigValueSource(
 
   assert(false)
 }
+function assertOverwrittenConfigFile(plusFileWinner: PlusFile, plusFilesOverriden: PlusFile[], configName: string) {
+  plusFilesOverriden.forEach((plusFileLoser) => {
+    const loserFilePath = plusFileLoser.filePath.filePathToShowToUser
+    const winnerFilePath = plusFileWinner.filePath.filePathToShowToUser
+    const confName = pc.cyan(configName)
+    assertWarning(
+      false,
+      `The value of the config ${confName} defined at ${loserFilePath} is always overwritten by the value defined at ${winnerFilePath}, remove the superfluous value defined at ${loserFilePath}`,
+      { onlyOnce: true }
+    )
+  })
+}
 function sortConfigValueSources(sources: ConfigValueSource[], locationIdPage: LocationId): void {
   sources
     // Make order deterministic (no other purpose)
@@ -949,18 +961,6 @@ function sortConfigValueSources(sources: ConfigValueSource[], locationIdPage: Lo
     .sort((source1, source2) =>
       reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
     )
-}
-function warnOverridenConfigValues(plusFileWinner: PlusFile, plusFilesOverriden: PlusFile[], configName: string) {
-  plusFilesOverriden.forEach((plusFileLoser) => {
-    const loserFilePath = plusFileLoser.filePath.filePathToShowToUser
-    const winnerFilePath = plusFileWinner.filePath.filePathToShowToUser
-    const confName = pc.cyan(configName)
-    assertWarning(
-      false,
-      `The value of the config ${confName} defined at ${loserFilePath} is always overwritten by the value defined at ${winnerFilePath}, remove the superfluous value defined at ${loserFilePath}`,
-      { onlyOnce: true }
-    )
-  })
 }
 
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
