@@ -18,7 +18,7 @@ function getConfigValueBuildTime<Type extends TypeAsString = undefined>(
 }
 
 function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigNameBuiltIn): null | ConfigValue {
-  const { configValueSources, configValuesComputed, configDefinitionsLocal: configDefinitions } = pageConfig
+  const { configValueSources, configValuesComputed, configDefinitions } = pageConfig
 
   const configValueComputed = configValuesComputed[configName]
   if (configValueComputed) {
