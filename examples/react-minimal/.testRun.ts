@@ -2,7 +2,10 @@ export { testRun }
 
 import { page, test, expect, run, autoRetry, fetchHtml, getServerUrl, expectLog } from '@brillout/test-e2e'
 
-function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', { isCJS, skipAboutPage }: { isCJS?: true, skipAboutPage?: true } = {}) {
+function testRun(
+  cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
+  { isCJS, skipAboutPage }: { isCJS?: true; skipAboutPage?: true } = {}
+) {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {
@@ -28,14 +31,14 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod', { isCJ
   })
 
   if (!skipAboutPage) {
-  test('about page', async () => {
-    await page.click('a[href="/about"]')
-    await autoRetry(async () => {
-      expect(await page.textContent('h1')).toBe('About')
+    test('about page', async () => {
+      await page.click('a[href="/about"]')
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('About')
+      })
+      expect(await page.textContent('p')).toBe('Example of using Vike.')
+      const html = await fetchHtml('/about')
+      expect(html).toContain('<h1>About</h1>')
     })
-    expect(await page.textContent('p')).toBe('Example of using Vike.')
-    const html = await fetchHtml('/about')
-    expect(html).toContain('<h1>About</h1>')
-  })
   }
 }
