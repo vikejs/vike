@@ -692,7 +692,7 @@ function resolveConfigValueSources(
 
     // Main resolution logic
     {
-      const interfaceValueFiles = plusFilesDefiningConfig
+      const plusFilesValue = plusFilesDefiningConfig
         .filter(
           (plusFile) =>
             !plusFile.isConfigFile &&
@@ -700,7 +700,7 @@ function resolveConfigValueSources(
             plusFile.configName === configName
         )
         .sort(makeOrderDeterministic)
-      const interfaceConfigFiles = plusFilesDefiningConfig
+      const plusFilesConfig = plusFilesDefiningConfig
         .filter(
           (plusFile) =>
             plusFile.isConfigFile &&
@@ -708,15 +708,15 @@ function resolveConfigValueSources(
             !plusFile.isExtensionConfig
         )
         .sort(makeOrderDeterministic)
-      const interfaceValueFile = interfaceValueFiles[0]
-      const interfaceConfigFile = interfaceConfigFiles[0]
+      const plusFileValue = plusFilesValue[0]
+      const plusFileConfig = plusFilesConfig[0]
       // Make this value:
       //   /pages/some-page/+{configName}.js > `export default`
       // override that value:
       //   /pages/some-page/+config.js > `export default { someConfig }`
-      const plusFileWinner = interfaceValueFile ?? interfaceConfigFile
+      const plusFileWinner = plusFileValue ?? plusFileConfig
       if (plusFileWinner) {
-        const plusFilesOverriden = [...interfaceValueFiles, ...interfaceConfigFiles].filter((f) => f !== plusFileWinner)
+        const plusFilesOverriden = [...plusFilesValue, ...plusFilesConfig].filter((f) => f !== plusFileWinner)
         // A user-land conflict of plusFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy making things unnecessarily ambiguous
         warnOverridenConfigValues(plusFileWinner, plusFilesOverriden, configName)
         ;[plusFileWinner, ...plusFilesOverriden].forEach((plusFile) => {
@@ -733,8 +733,8 @@ function resolveConfigValueSources(
           // Is side-effect config
           plusFile.configName !== configName
       )
-      .forEach((interfaceValueFileSideEffect) => {
-        add(interfaceValueFileSideEffect)
+      .forEach((plusFileValueSideEffect) => {
+        add(plusFileValueSideEffect)
       })
 
     // extends
