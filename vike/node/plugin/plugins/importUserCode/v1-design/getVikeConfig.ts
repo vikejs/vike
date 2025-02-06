@@ -91,13 +91,13 @@ import { getConfigValuesBase } from '../../../../../shared/page-configs/serializ
 assertIsNotProductionRuntime()
 
 // TODO/now: `rename PlusFile PlusFile`?
-type PlusFile = InterfaceConfigFile | InterfaceValueFile
+type PlusFile = PlusFileConfig | InterfaceValueFile
 type PlusFileCommons = {
   locationId: LocationId
   filePath: FilePathResolved
 }
 // +config.js
-type InterfaceConfigFile = PlusFileCommons & {
+type PlusFileConfig = PlusFileCommons & {
   isConfigFile: true
   isValueFile: false
   extendsFilePaths: string[]
@@ -307,8 +307,8 @@ function getPlusFileFromConfigFile(
 ): PlusFile {
   const { fileExports, filePath, extendsFilePaths } = configFile
 
-  const fileExportsByConfigName: InterfaceConfigFile['fileExportsByConfigName'] = {}
-  const pointerImportsByConfigName: InterfaceConfigFile['pointerImportsByConfigName'] = {}
+  const fileExportsByConfigName: PlusFileConfig['fileExportsByConfigName'] = {}
+  const pointerImportsByConfigName: PlusFileConfig['pointerImportsByConfigName'] = {}
   const fileExport = getConfigFileExport(fileExports, filePath.filePathToShowToUser)
   Object.entries(fileExport).forEach(([configName, configValue]) => {
     fileExportsByConfigName[configName] = configValue
@@ -321,7 +321,7 @@ function getPlusFileFromConfigFile(
     }
   })
 
-  const plusFile: InterfaceConfigFile = {
+  const plusFile: PlusFileConfig = {
     locationId,
     filePath,
     fileExportsByConfigName,
