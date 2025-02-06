@@ -336,6 +336,10 @@ function getPlusFileFromConfigFile(
   }
   return plusFile
 }
+// Make order deterministic (no other purpose)
+function makeOrderDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
+  return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
+}
 
 async function loadVikeConfig_withErrorHandling(
   userRootDir: string,
@@ -938,10 +942,6 @@ function sortConfigValueSources(sources: ConfigValueSource[], locationIdPage: Lo
     .sort((source1, source2) =>
       reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
     )
-}
-// Make order deterministic (no other purpose)
-function makeOrderDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
-  return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
 }
 function warnOverridenConfigValues(plusFileWinner: PlusFile, plusFilesOverriden: PlusFile[], configName: string) {
   plusFilesOverriden.forEach((plusFileLoser) => {
