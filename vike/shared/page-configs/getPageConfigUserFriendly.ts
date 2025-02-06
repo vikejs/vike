@@ -120,6 +120,7 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
+// See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
 type ConfigUserFriendly = {
   config: ConfigResolved
   // TODO/now expose publicly?
