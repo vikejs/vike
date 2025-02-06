@@ -120,6 +120,22 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
+type ConfigUserFriendly = {
+  config: ConfigResolved
+  source: Source
+  sources: Sources
+  from: From
+}
+function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
+  const res = getPageConfigUserFriendlyV1Desin(pageConfig)
+  return {
+    config: res.config,
+    source: res.source,
+    sources: res.sources,
+    from: res.from
+  }
+}
+
 function getPageConfigUserFriendlyOld(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null
@@ -200,22 +216,6 @@ function getPageConfigUserFriendlyOld(
     pageExports
   }
   return pageContextExports
-}
-
-type ConfigUserFriendly = {
-  config: ConfigResolved
-  source: Source
-  sources: Sources
-  from: From
-}
-function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
-  const res = getPageConfigUserFriendlyV1Desin(pageConfig)
-  return {
-    config: res.config,
-    source: res.source,
-    sources: res.sources,
-    from: res.from
-  }
 }
 
 // V1 design
