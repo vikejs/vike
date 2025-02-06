@@ -938,13 +938,9 @@ function sortConfigValueSources(sources: ConfigValueSource[], locationIdPage: Lo
       reverse(sortAfterInheritanceOrder(source1!.locationId, source2!.locationId, locationIdPage))
     )
 }
+// Make order deterministic (no other purpose)
 function makeOrderDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
-  return lowerFirst<PlusFile>((plusFile) => {
-    const { filePathAbsoluteUserRootDir } = plusFile.filePath
-    assert(isPlusFileUserLand(plusFile))
-    assert(filePathAbsoluteUserRootDir)
-    return filePathAbsoluteUserRootDir.length
-  })(plusFile1, plusFile2)
+  return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
 }
 function warnOverridenConfigValues(plusFileWinner: PlusFile, plusFilesOverriden: PlusFile[], configName: string) {
   plusFilesOverriden.forEach((plusFileLoser) => {
@@ -957,9 +953,6 @@ function warnOverridenConfigValues(plusFileWinner: PlusFile, plusFilesOverriden:
       { onlyOnce: true }
     )
   })
-}
-function isPlusFileUserLand(plusFile: PlusFile) {
-  return (plusFile.isConfigFile && !plusFile.isExtensionConfig) || !plusFile.isConfigFile
 }
 
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
