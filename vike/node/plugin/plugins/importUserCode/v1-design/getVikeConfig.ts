@@ -419,8 +419,7 @@ async function resolveConfigDefinitions(
   await Promise.all(
     objectEntries(plusFilesAll).map(async ([locationId, plusFiles]) => {
       const plusFilesRelevant = getPlusFilesRelevant(plusFilesAll, locationId)
-      //    configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true) // TODO/now
-      const configDefinitions = getConfigDefinitions(plusFilesRelevant)
+      const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       configDefinitionsLocal[locationId] = { configDefinitions, plusFiles, plusFilesRelevant }
     })
