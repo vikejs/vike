@@ -1,4 +1,4 @@
-export { configDefinitionsBuiltInAll }
+export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
 export type { ConfigDefinitionInternal }
@@ -90,7 +90,7 @@ type ConfigDefinitions = Record<
   ConfigDefinitionInternal
 >
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
-const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
+const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true }
   },

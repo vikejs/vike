@@ -39,7 +39,7 @@ import type {
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
-  configDefinitionsBuiltInAll,
+  configDefinitionsBuiltIn,
   type ConfigDefinitions,
   type ConfigDefinitionInternal
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
@@ -465,8 +465,8 @@ function temp_interopVikeVitePlugin(
     { onlyOnce: true }
   )
   Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
-    assert(includes(objectKeys(configDefinitionsBuiltInAll), configName))
-    const configDef = configDefinitionsBuiltInAll[configName]
+    assert(includes(objectKeys(configDefinitionsBuiltIn), configName))
+    const configDef = configDefinitionsBuiltIn[configName]
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
     sources.push({
       valueIsLoaded: true,
@@ -807,7 +807,7 @@ function getConfigDefinitions(
   plusFilesRelevant: PlusFilesByLocationId,
   filter?: (configDef: ConfigDefinitionInternal) => boolean
 ): ConfigDefinitions {
-  let configDefinitions: ConfigDefinitions = { ...configDefinitionsBuiltInAll }
+  let configDefinitions: ConfigDefinitions = { ...configDefinitionsBuiltIn }
 
   // Add user-land meta configs
   Object.entries(plusFilesRelevant)

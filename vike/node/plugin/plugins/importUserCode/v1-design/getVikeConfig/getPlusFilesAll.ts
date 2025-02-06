@@ -5,7 +5,7 @@ export type { PlusFile }
 export type { PlusFilesByLocationId }
 
 import { assert, assertPosixPath, assertUsage } from '../../../../utils.js'
-import { configDefinitionsBuiltInAll } from './configDefinitionsBuiltIn.js'
+import { configDefinitionsBuiltIn } from './configDefinitionsBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
 import { isTemporaryBuildFile, type EsbuildCache } from './transpileAndExecuteFile.js'
 import { crawlPlusFiles } from './crawlPlusFiles.js'
@@ -130,7 +130,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
       // We don't have access to the custom config definitions defined by the user yet.
       //  - If `configDef` is `undefined` => we load the file +{configName}.js later.
       //  - We already need to load +meta.js here (to get the custom config definitions defined by the user)
-      await loadValueFile(plusFile, configDefinitionsBuiltInAll, userRootDir, esbuildCache)
+      await loadValueFile(plusFile, configDefinitionsBuiltIn, userRootDir, esbuildCache)
     })
   ])
 
