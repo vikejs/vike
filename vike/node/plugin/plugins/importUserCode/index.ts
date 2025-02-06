@@ -3,7 +3,7 @@ export { importUserCode }
 import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
 import { normalizePath } from 'vite'
 import type { VikeConfigObject } from './v1-design/getVikeConfig.js'
-import { getVirtualFilePageConfigValuesAll } from './v1-design/getVirtualFilePageConfigValuesAll.js'
+import { getVirtualFilePageConfigValuesAll } from './v1-design/virtual-files/getVirtualFilePageConfigValuesAll.js'
 import { getVirtualFileImportUserCode } from './getVirtualFileImportUserCode.js'
 import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'

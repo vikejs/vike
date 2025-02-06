@@ -1,19 +1,22 @@
 export { getVirtualFilePageConfigValuesAll }
 
-import { assert } from '../../../utils.js'
-import type { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
+import { assert } from '../../../../utils.js'
+import type { PageConfigBuildTime } from '../../../../../../shared/page-configs/PageConfig.js'
 import {
   getVirtualFileIdPageConfigValuesAll,
   isVirtualFileIdPageConfigValuesAll
-} from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { getVikeConfig } from './getVikeConfig.js'
-import { extractAssetsAddQuery } from '../../../../shared/extractAssetsQuery.js'
-import { debug } from './debug.js'
-import { isRuntimeEnvMatch } from './isRuntimeEnvMatch.js'
-import { FilesEnv, serializeConfigValues } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
+} from '../../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { getVikeConfig } from '../getVikeConfig.js'
+import { extractAssetsAddQuery } from '../../../../../shared/extractAssetsQuery.js'
+import { debug } from '../debug.js'
+import { isRuntimeEnvMatch } from '../isRuntimeEnvMatch.js'
+import {
+  FilesEnv,
+  serializeConfigValues
+} from '../../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
-import { fixServerAssets_isEnabled } from '../../buildConfig/fixServerAssets.js'
-import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
+import { fixServerAssets_isEnabled } from '../../../buildConfig/fixServerAssets.js'
+import { getConfigValueBuildTime } from '../../../../../../shared/page-configs/getConfigValueBuildTime.js'
 
 async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
   const result = isVirtualFileIdPageConfigValuesAll(id)
