@@ -42,7 +42,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): any {
     importUserCode(),
     ...devConfig(),
     ...buildConfig(),
-    buildApp(),
+    ...buildApp(),
     previewConfig(),
     ...autoFullBuild(),
     packageJsonFile(),

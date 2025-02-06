@@ -26,15 +26,14 @@ async function build(options: APIOptions = {}): Promise<{}> {
   //    > We purposely don't start the pre-rendering in this `build()` function but in a Rollup hook instead.
   //    > Rationale: https://github.com/vikejs/vike/issues/2123
   if (vikeConfig.global.config.useEnvironmentAPI) {
-    // TODO handle pre-render
     const builder = await createBuilder(viteConfigEnhanced)
     await builder.buildApp()
   } else {
     await buildVite(viteConfigEnhanced)
-  }
 
-  // When using the Vike CLI with pre-rendering the process is forcefully exited at the end of the buildVite() call above
-  assert(!(isVikeCli() && isPrerendering()))
+    // When using the Vike CLI with pre-rendering the process is forcefully exited at the end of the buildVite() call above
+    assert(!(isVikeCli() && isPrerendering()))
+  }
 
   return {
     /* We don't return `viteConfig` because `viteConfigEnhanced` is `InlineConfig` not `ResolvedConfig`
