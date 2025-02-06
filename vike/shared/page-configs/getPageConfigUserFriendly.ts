@@ -1,4 +1,4 @@
-export { getPageConfigUserFriendly }
+export { getPageConfigUserFriendlyOld }
 export { getPageConfigUserFriendlyNew }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
@@ -120,7 +120,7 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-function getPageConfigUserFriendly(
+function getPageConfigUserFriendlyOld(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null
 ): PageConfigUserFriendly {
