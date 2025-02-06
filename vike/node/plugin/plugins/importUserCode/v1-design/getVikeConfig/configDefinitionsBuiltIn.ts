@@ -1,4 +1,4 @@
-export { configDefinitionsBuiltInAll }
+export { configDefinitionsBuiltIn }
 export type { ConfigDefinition }
 export type { ConfigDefinitions }
 export type { ConfigDefinitionInternal }
@@ -90,7 +90,7 @@ type ConfigDefinitions = Record<
   ConfigDefinitionInternal
 >
 type ConfigDefinitionsBuiltIn = Record<ConfigNameBuiltIn | ConfigNameGlobal, ConfigDefinitionInternal>
-const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
+const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     env: { server: true }
   },
@@ -176,11 +176,14 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
     _computed: (configValueSources): boolean => {
       {
         const source = getConfigValueSource(configValueSources, 'clientHooks')
-        if (source && source.value !== null) {
-          const { value } = source
-          const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAtFilePath)
-          assertUsage(typeof value === 'boolean', `${definedAt} should be a boolean`)
-          return value
+        if (source) {
+          assert(source.valueIsLoaded)
+          if (source.value !== null) {
+            const { value } = source
+            const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAtFilePath)
+            assertUsage(typeof value === 'boolean', `${definedAt} should be a boolean`)
+            return value
+          }
         }
       }
       return (
@@ -220,8 +223,7 @@ const configDefinitionsBuiltInAll: ConfigDefinitionsBuiltIn = {
   keepScrollPosition: {
     env: { client: true }
   },
-  // TODO/eventually: define it as a global config.
-  middleware: { env: { server: true }, cumulative: true, eager: true },
+  middleware: { env: { server: true }, cumulative: true, eager: true, global: true },
   onPrerenderStart: {
     env: { server: true, production: true },
     eager: true,
@@ -271,10 +273,15 @@ function getConfigEnv(configValueSources: ConfigValueSources, configName: string
   return env
 }
 function isConfigSet(configValueSources: ConfigValueSources, configName: string): boolean {
-  const configValueSource = getConfigValueSource(configValueSources, configName)
-  // Enable users to suppress global config values by overriding the config's value to null
-  if (configValueSource?.value === null) return false
-  return !!configValueSource
+  const source = getConfigValueSource(configValueSources, configName)
+  return (
+    !!source &&
+    !(
+      source.valueIsLoaded &&
+      // Enable users to suppress inherited config by overriding it with `null`
+      source.value === null
+    )
+  )
 }
 function getConfigValueSource(configValueSources: ConfigValueSources, configName: string): null | ConfigValueSource {
   const sources = configValueSources[configName]

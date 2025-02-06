@@ -512,7 +512,7 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
   const globalContext = getGlobalContext()
   const { baseServer } = resolveBaseRuntime()
-  const { trailingSlash, disableUrlNormalization } = globalContext.vikeConfig.global.config
+  const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
@@ -537,7 +537,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
   let origin: null | string = null
   let urlTargetExternal: null | string = null
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
-    const urlTarget = resolveRedirects(globalContext.vikeConfig.global.config.redirects ?? [], urlPathname)
+    const urlTarget = resolveRedirects(globalContext.config.redirects ?? [], urlPathname)
     if (urlTarget === null) return null
     if (!isUrl(urlTarget)) {
       // E.g. `urlTarget === 'mailto:some@example.com'`

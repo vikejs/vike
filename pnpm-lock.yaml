@@ -1419,58 +1419,6 @@ importers:
         specifier: ^6.0.5
         version: 6.1.0(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)
 
-  test/middleware-config:
-    dependencies:
-      '@universal-middleware/core':
-        specifier: ^0.4.0
-        version: 0.4.0
-      '@universal-middleware/express':
-        specifier: ^0.4.0
-        version: 0.4.0
-      '@vitejs/plugin-react':
-        specifier: ^4.3.4
-        version: 4.3.4(vite@5.4.14(@types/node@22.13.1)(terser@5.38.1))
-      express:
-        specifier: ^4.21.2
-        version: 4.21.2
-      react:
-        specifier: ^19.0.0
-        version: 19.0.0
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.0.0(react@19.0.0)
-      telefunc:
-        specifier: ^0.1.82
-        version: 0.1.85(@babel/core@7.26.7)(@babel/parser@7.26.7)(@babel/types@7.26.7)(react-streaming@0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
-      vike-react:
-        specifier: ^0.5.12
-        version: 0.5.12(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(vike@vike)
-    devDependencies:
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.21
-      '@types/react':
-        specifier: ^19.0.7
-        version: 19.0.8
-      '@types/react-dom':
-        specifier: ^19.0.3
-        version: 19.0.3(@types/react@19.0.8)
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
-      tsx:
-        specifier: ^4.19.2
-        version: 4.19.2
-      typescript:
-        specifier: ^5.7.2
-        version: 5.7.3
-      vike:
-        specifier: link:../../vike
-        version: link:../../vike
-      vite:
-        specifier: ^5.4.11
-        version: 5.4.14(@types/node@22.13.1)(terser@5.38.1)
-
   test/playground:
     dependencies:
       '@types/react':
@@ -1578,6 +1526,58 @@ importers:
       vue:
         specifier: ^3.2.37
         version: 3.5.13(typescript@5.7.3)
+
+  test/universal-middleware:
+    dependencies:
+      '@universal-middleware/core':
+        specifier: ^0.4.0
+        version: 0.4.0
+      '@universal-middleware/express':
+        specifier: ^0.4.0
+        version: 0.4.0
+      '@vitejs/plugin-react':
+        specifier: ^4.3.4
+        version: 4.3.4(vite@5.4.14(@types/node@22.13.1)(terser@5.38.1))
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.0.0(react@19.0.0)
+      telefunc:
+        specifier: ^0.1.82
+        version: 0.1.82(@babel/core@7.26.7)(@babel/parser@7.26.7)(@babel/types@7.26.7)(react-streaming@0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+      vike-react:
+        specifier: ^0.5.12
+        version: 0.5.12(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(vike@vike)
+    devDependencies:
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/react':
+        specifier: ^19.0.7
+        version: 19.0.8
+      '@types/react-dom':
+        specifier: ^19.0.3
+        version: 19.0.3(@types/react@19.0.8)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      tsx:
+        specifier: ^4.19.2
+        version: 4.19.2
+      typescript:
+        specifier: ^5.7.2
+        version: 5.7.3
+      vike:
+        specifier: link:../../vike
+        version: link:../../vike
+      vite:
+        specifier: ^5.4.11
+        version: 5.4.14(@types/node@22.13.1)(terser@5.38.1)
 
   test/vike-node:
     dependencies:
@@ -2071,7 +2071,7 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '>=5.0.0'
-      vike: link:/home/magne/workspace/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.2.0'
     peerDependenciesMeta:
       '@vitejs/plugin-react-swc':
@@ -6742,6 +6742,27 @@ packages:
     resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
 
+  telefunc@0.1.82:
+    resolution: {integrity: sha512-fx2SJ4dcY5a8mu9tsGzY019f2h0qluJcb+jXHRpkEAzYvLmmUrEBTYrkzJ2PdRJ23yj/rccaW0AsaJeYVuVwuw==}
+    engines: {node: '>=12.19.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0
+      '@babel/parser': ^7.0.0
+      '@babel/types': ^7.0.0
+      react: ^18.0.0
+      react-streaming: ^0.3.3
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/parser':
+        optional: true
+      '@babel/types':
+        optional: true
+      react:
+        optional: true
+      react-streaming:
+        optional: true
+
   telefunc@0.1.85:
     resolution: {integrity: sha512-NYP1qSAmNeTHGMvhD4mgnUoW2khW1Cw78R1Y2wHIGNKOQCyszHmgiHzpNCMepe2WkBBfJ/LgRraovV66j7wnhg==}
     engines: {node: '>=12.19.0'}
@@ -7052,7 +7073,7 @@ packages:
   vike-node@0.3.5:
     resolution: {integrity: sha512-W+xmy2lCVa9dQOmnFx8qVgznh822QYYT2VVD/f2/65XlSi59Ab20/3wr56zMNthxz3QO3g85yUpSUt0ZJTvXxA==}
     peerDependencies:
-      vike: link:/home/magne/workspace/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.0.10'
     peerDependenciesMeta:
       vite:
@@ -7063,12 +7084,12 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/home/magne/workspace/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
 
   vike-vue@0.8.6:
     resolution: {integrity: sha512-DT2PsxqfvMdkyuR3zdHPBcwrKjqpN7mIYeSIZ0WZsN+cEsY467nznyoZltq5vMQiQcEeQtQI0WrZTyBWKA7S5A==}
     peerDependencies:
-      vike: link:/home/magne/workspace/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vue: '>=3.0.0'
 
   vite-node@3.0.5:
@@ -7090,7 +7111,7 @@ packages:
     resolution: {integrity: sha512-tNLg5fuMCF6nVfMlttstKt54VQ7KhqHh7/xahZdjGsbP8Z5ANCwy2WlIdrgkrwB752HMPyJnBXGSdg/O3UT3gg==}
     peerDependencies:
       '@vite-plugin-vercel/vike': 9.0.3
-      vike: link:/home/magne/workspace/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: ^4.4 || ^5.0.2 || ^6
     peerDependenciesMeta:
       '@vite-plugin-vercel/vike':
@@ -9505,17 +9526,17 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
 
-  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.97.1)':
+  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.97.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.97.1)
 
-  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.97.1)':
+  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.97.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.97.1)
 
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack@5.97.1)':
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.97.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.97.1)
@@ -12875,6 +12896,21 @@ snapshots:
       mkdirp: 3.0.1
       yallist: 5.0.0
 
+  telefunc@0.1.82(@babel/core@7.26.7)(@babel/parser@7.26.7)(@babel/types@7.26.7)(react-streaming@0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
+    dependencies:
+      '@brillout/import': 0.2.3
+      '@brillout/json-serializer': 0.5.15
+      '@brillout/picocolors': 1.0.15
+      '@brillout/vite-plugin-server-entry': 0.5.8
+      es-module-lexer: 1.6.0
+      ts-morph: 19.0.0
+    optionalDependencies:
+      '@babel/core': 7.26.7
+      '@babel/parser': 7.26.7
+      '@babel/types': 7.26.7
+      react: 19.0.0
+      react-streaming: 0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+
   telefunc@0.1.85(@babel/core@7.26.7)(@babel/parser@7.26.7)(@babel/types@7.26.7)(react-streaming@0.3.47(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
     dependencies:
       '@brillout/import': 0.2.3
@@ -12890,22 +12926,7 @@ snapshots:
       react: 18.3.1
       react-streaming: 0.3.47(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
-  telefunc@0.1.85(@babel/core@7.26.7)(@babel/parser@7.26.7)(@babel/types@7.26.7)(react-streaming@0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
-    dependencies:
-      '@brillout/import': 0.2.3
-      '@brillout/json-serializer': 0.5.15
-      '@brillout/picocolors': 1.0.15
-      '@brillout/vite-plugin-server-entry': 0.5.8
-      es-module-lexer: 1.6.0
-      ts-morph: 19.0.0
-    optionalDependencies:
-      '@babel/core': 7.26.7
-      '@babel/parser': 7.26.7
-      '@babel/types': 7.26.7
-      react: 19.0.0
-      react-streaming: 0.3.47(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-
-  terser-webpack-plugin@5.3.10(webpack@5.97.1):
+  terser-webpack-plugin@5.3.10(webpack@5.97.1(webpack-cli@5.1.4)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
@@ -13488,9 +13509,9 @@ snapshots:
   webpack-cli@5.1.4(webpack@5.97.1):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.97.1)
-      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.97.1)
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack@5.97.1)
+      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))
+      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.6
@@ -13534,7 +13555,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.97.1)
+      terser-webpack-plugin: 5.3.10(webpack@5.97.1(webpack-cli@5.1.4))
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     optionalDependencies:

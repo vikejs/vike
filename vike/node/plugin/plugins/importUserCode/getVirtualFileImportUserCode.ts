@@ -20,7 +20,7 @@ import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/vir
 import { version as viteVersion } from 'vite'
 import { type FileType, fileTypes } from '../../../../shared/getPageFiles/fileTypes.js'
 import path from 'path'
-import { getVirtualFilePageConfigs } from './v1-design/getVirtualFilePageConfigs.js'
+import { getVirtualFilePageConfigs } from './v1-design/virtual-files/getVirtualFilePageConfigs.js'
 import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
 import { viteIsSSR_options } from '../../shared/viteIsSSR.js'

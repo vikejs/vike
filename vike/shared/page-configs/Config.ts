@@ -576,12 +576,16 @@ type ConfigBuiltIn = {
    * https://vike.dev/keepScrollPosition
    */
   keepScrollPosition?: KeepScrollPosition
+
+  /** @experimental */
+  middleware?: Function
 }
 
 type ConfigBuiltInResolved = {
   passToClient?: string[][]
   redirects?: Record<string, string>[]
   prerender?: Exclude<Config['prerender'], ImportString | undefined>[]
+  middleware?: Function[]
 }
 
 type ConfigMeta = Record<string, ConfigDefinition>

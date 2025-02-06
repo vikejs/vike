@@ -9,11 +9,12 @@ export type { PointerImportLoaded }
 import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { getConfigDefinitionOptional, type InterfaceValueFile } from '../getVikeConfig.js'
+import { getConfigDefinitionOptional } from '../getVikeConfig.js'
+import type { PlusFileValue } from './getPlusFilesAll.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
-import { getConfigFileExport } from '../getConfigFileExport.js'
+import { getConfigFileExport } from './getConfigFileExport.js'
 import { PointerImport, resolvePointerImportData } from './resolvePointerImport.js'
 import type { ConfigDefinitionInternal, ConfigDefinitions } from './configDefinitionsBuiltIn.js'
 import { getConfigDefinedAt } from '../../../../../../shared/page-configs/getConfigDefinedAt.js'
@@ -65,7 +66,7 @@ type PointerImportLoaded = PointerImport &
 
 // Load +{configName}.js
 async function loadValueFile(
-  interfaceValueFile: InterfaceValueFile,
+  interfaceValueFile: PlusFileValue,
   configDefinitions: ConfigDefinitions,
   userRootDir: string,
   esbuildCache: EsbuildCache
@@ -74,8 +75,8 @@ async function loadValueFile(
   const configDef = getConfigDefinitionOptional(configDefinitions, configName)
   // Only load value files with `env.config===true`
   if (!configDef || !shouldBeLoadableAtBuildTime(configDef)) return
-  interfaceValueFile.isValueFileLoaded = true
-  assert(interfaceValueFile.isValueFileLoaded)
+  interfaceValueFile.isNotLoaded = false
+  assert(!interfaceValueFile.isNotLoaded)
   interfaceValueFile.fileExportsByConfigName = {}
   const { fileExports } = await transpileAndExecuteFile(interfaceValueFile.filePath, userRootDir, false, esbuildCache)
   const { filePathToShowToUser } = interfaceValueFile.filePath

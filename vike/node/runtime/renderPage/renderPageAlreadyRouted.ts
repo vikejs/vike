@@ -188,7 +188,7 @@ function getPageContextInitEnhanced(
     _baseServer: baseServer,
     _baseAssets: baseAssets,
     // TODO/now: add meta.default
-    _includeAssetsImportedByServer: globalContext.vikeConfig.global.config.includeAssetsImportedByServer ?? true,
+    _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
     // TODO: use GloablContext instead
     _pageFilesAll: globalContext.pageFilesAll,
     _pageConfigs: globalContext.pageConfigs,

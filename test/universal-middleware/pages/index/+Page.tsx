@@ -4,7 +4,7 @@ import { Counter } from './Counter.js'
 export default function Page() {
   return (
     <>
-      <h1>My Vike app</h1>
+      <h1>Welcome</h1>
       This page is:
       <ul>
         <li>Rendered to HTML.</li>
