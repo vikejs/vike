@@ -9,7 +9,7 @@ export type { PointerImportLoaded }
 import { assert, assertUsage, assertIsNotProductionRuntime, isArrayOfStrings, isObject } from '../../../../utils.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { type EsbuildCache, transpileAndExecuteFile } from './transpileAndExecuteFile.js'
-import { getConfigDefinitionOptional, type InterfaceValueFile } from '../getVikeConfig.js'
+import { getConfigDefinitionOptional, type PlusFileValue } from '../getVikeConfig.js'
 import { assertPlusFileExport } from '../../../../../../shared/page-configs/assertPlusFileExport.js'
 import pc from '@brillout/picocolors'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
@@ -65,7 +65,7 @@ type PointerImportLoaded = PointerImport &
 
 // Load +{configName}.js
 async function loadValueFile(
-  interfaceValueFile: InterfaceValueFile,
+  interfaceValueFile: PlusFileValue,
   configDefinitions: ConfigDefinitions,
   userRootDir: string,
   esbuildCache: EsbuildCache

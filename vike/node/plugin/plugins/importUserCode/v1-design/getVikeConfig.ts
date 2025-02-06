@@ -7,7 +7,7 @@ export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
 export type { VikeConfigObject }
-export type { InterfaceValueFile }
+export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
 
@@ -91,7 +91,7 @@ import { getConfigValuesBase } from '../../../../../shared/page-configs/serializ
 assertIsNotProductionRuntime()
 
 // TODO/now: `rename PlusFile PlusFile`?
-type PlusFile = PlusFileConfig | InterfaceValueFile
+type PlusFile = PlusFileConfig | PlusFileValue
 type PlusFileCommons = {
   locationId: LocationId
   filePath: FilePathResolved
@@ -113,7 +113,7 @@ type PlusFileConfig = PlusFileCommons & {
   >
 }
 // +{configName}.js
-type InterfaceValueFile = PlusFileCommons & {
+type PlusFileValue = PlusFileCommons & {
   isConfigFile: false
   isValueFile: true
   isConfigExtension?: undefined
@@ -277,7 +277,7 @@ async function loadPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): P
 
       const locationId = getLocationId(filePathAbsoluteUserRootDir)
 
-      const plusFile: InterfaceValueFile = {
+      const plusFile: PlusFileValue = {
         locationId,
         filePath,
         isConfigFile: false,
