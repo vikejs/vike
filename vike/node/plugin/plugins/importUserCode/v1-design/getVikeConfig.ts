@@ -296,6 +296,9 @@ async function loadPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): P
 
   assertKnownConfigs(plusFilesAll)
 
+  // Make lists element order deterministic
+  Object.entries(plusFilesAll).forEach(([_locationId, plusFiles]) => { plusFiles.sort(makeOrderDeterministic) })
+
   return plusFilesAll
 }
 function getPlusFileFromConfigFile(
@@ -708,7 +711,6 @@ function resolveConfigValueSources(
             // We consider side-effect configs (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
             plusFile.configName === configName
         )
-        .sort(makeOrderDeterministic)
       const plusFilesConfig = plusFilesDefiningConfig
         .filter(
           (plusFile) =>
@@ -716,7 +718,6 @@ function resolveConfigValueSources(
             // We consider values from extensions (e.g. vike-react) later (i.e. with less priority)
             !plusFile.isExtensionConfig
         )
-        .sort(makeOrderDeterministic)
       // Make this value:
       //   /pages/some-page/+{configName}.js > `export default`
       // override that value:
