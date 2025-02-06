@@ -219,7 +219,7 @@ async function isV1Design(config: ResolvedConfig): Promise<boolean> {
   return isV1Design
 }
 
-async function loadPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
+async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
   const plusFiles = await findPlusFiles(userRootDir, null)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
@@ -298,7 +298,7 @@ async function loadPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): P
 
   // Make lists element order deterministic
   Object.entries(plusFilesAll).forEach(([_locationId, plusFiles]) => {
-    plusFiles.sort(makeOrderDeterministic)
+    plusFiles.sort(sortMakeDeterministic)
   })
 
   return plusFilesAll
@@ -337,7 +337,7 @@ function getPlusFileFromConfigFile(
   return plusFile
 }
 // Make order deterministic (no other purpose)
-function makeOrderDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
+function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1 | 1 {
   return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
 }
 
@@ -388,7 +388,7 @@ async function loadVikeConfig_withErrorHandling(
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
   const esbuildCache: EsbuildCache = {}
 
-  const plusFilesAll = await loadPlusFiles(userRootDir, esbuildCache)
+  const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
 
@@ -442,7 +442,7 @@ async function resolveConfigDefinitions(
 }
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 // Load value files (with `env.config===true`) of *custom* configs.
-// - The value files of *built-in* configs are already loaded at `loadPlusFiles()`.
+// - The value files of *built-in* configs are already loaded at `getPlusFilesAll()`.
 async function loadCustomConfigBuildTimeFiles(
   plusFiles: PlusFilesByLocationId | PlusFile[],
   configDefinitions: ConfigDefinitions,
@@ -694,7 +694,9 @@ function resolveConfigValueSources(
 ): ConfigValueSource[] {
   const plusFilesSource: { plusFile: PlusFile; isHighestInheritancePrecedence: boolean }[] = []
 
-  // plusFilesRelevant is sorted by sortAfterInheritanceOrder()
+  // plusFilesRelevant is already sorted:
+  //  - By sortAfterInheritanceOrder() at getPlusFilesRelevant()
+  //  - By sortMakeDeterministic() at getPlusFilesAll()
   for (const plusFiles of Object.values(plusFilesRelevant)) {
     const plusFilesDefiningConfig = plusFiles.filter((plusFile) =>
       getDefiningConfigNames(plusFile).includes(configName)
