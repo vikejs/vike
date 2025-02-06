@@ -692,7 +692,34 @@ function resolveConfigValueSources(
   isGlobal: boolean,
   locationId: LocationId
 ): ConfigValueSource[] {
-  const plusFilesSource: PlusFile[] = []
+  const plusFilesOrdered = getPlusFilesOrdered(configName, plusFilesRelevant)
+
+  let sources: ConfigValueSource[] = plusFilesOrdered.map((plusFile, i) => {
+    const isHighestInheritancePrecedence = i === 0
+    const configValueSource = getConfigValueSource(
+      configName,
+      plusFile,
+      configDef,
+      userRootDir,
+      isHighestInheritancePrecedence
+    )
+    return configValueSource
+  })
+  if (isCallable(configDef.global)) {
+    const isGlobalValue = configDef.global
+    assert(configDef.env.config)
+    sources = sources.filter((source) => {
+      assert(source.configEnv.config)
+      assert(source.valueIsLoaded)
+      const valueIsGlobal = isGlobalValue(source.value)
+      return isGlobal ? valueIsGlobal : !valueIsGlobal
+    })
+  }
+
+  return sources
+}
+function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
+  const plusFilesOrdered: PlusFile[] = []
 
   // plusFilesRelevant is already sorted:
   //  - By sortAfterInheritanceOrder() at getPlusFilesRelevant()
@@ -706,7 +733,7 @@ function resolveConfigValueSources(
     const add = (plusFile: PlusFile) => {
       assert(!visited.has(plusFile))
       visited.add(plusFile)
-      plusFilesSource.push(plusFile)
+      plusFilesOrdered.push(plusFile)
     }
 
     // Main resolution logic
@@ -764,30 +791,7 @@ function resolveConfigValueSources(
     })
   }
 
-  let sources: ConfigValueSource[] = plusFilesSource.map((plusFile, i) => {
-    const isHighestInheritancePrecedence = i === 0
-    const configValueSource = getConfigValueSource(
-      configName,
-      plusFile,
-      configDef,
-      userRootDir,
-      isHighestInheritancePrecedence
-    )
-    return configValueSource
-  })
-
-  if (isCallable(configDef.global)) {
-    const isGlobalValue = configDef.global
-    assert(configDef.env.config)
-    sources = sources.filter((source) => {
-      assert(source.configEnv.config)
-      assert(source.valueIsLoaded)
-      const valueIsGlobal = isGlobalValue(source.value)
-      return isGlobal ? valueIsGlobal : !valueIsGlobal
-    })
-  }
-
-  return sources
+  return plusFilesOrdered
 }
 function getConfigValueSource(
   configName: string,
