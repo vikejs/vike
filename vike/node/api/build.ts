@@ -1,11 +1,12 @@
 export { build }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
-import { build as buildVite, createBuilder } from 'vite'
+import { build as buildVite, version } from 'vite'
 import type { APIOptions } from './types.js'
 import assert from 'assert'
 import { isVikeCli } from '../cli/context.js'
 import { isPrerendering } from '../prerender/context.js'
+import { assertVersion } from '../../utils/assertVersion.js'
 
 /**
  * Programmatically trigger `$ vike build`
@@ -26,6 +27,8 @@ async function build(options: APIOptions = {}): Promise<{}> {
   //    > We purposely don't start the pre-rendering in this `build()` function but in a Rollup hook instead.
   //    > Rationale: https://github.com/vikejs/vike/issues/2123
   if (vikeConfig.global.config.viteEnvironmentAPI) {
+    assertVersion('Vite', version, '6.0.0')
+    const { createBuilder } = await import('vite')
     const builder = await createBuilder(viteConfigEnhanced)
     await builder.buildApp()
   } else {

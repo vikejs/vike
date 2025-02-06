@@ -36,7 +36,7 @@ import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import { getOutDirs, type OutDirs, resolveOutDir } from '../shared/getOutDirs.js'
-import { viteIsSSR } from '../shared/viteIsSSR.js'
+import { vite6IsSSR, viteIsSSR } from '../shared/viteIsSSR.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -109,7 +109,7 @@ function buildConfig(): Plugin[] {
         order: 'pre',
         sequential: true,
         async handler(options, bundle) {
-          if (isSsrBuild || this.environment.name === 'ssr') {
+          if (isSsrBuild || vite6IsSSR(this)) {
             console.log('FIXING SERVER ASSETS')
             // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
             //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
