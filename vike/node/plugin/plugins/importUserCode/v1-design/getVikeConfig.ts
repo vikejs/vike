@@ -679,6 +679,8 @@ function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPag
       .filter(([locationId]) => {
         return isInherited(locationId, locationIdPage)
       })
+      // Sort after config inheritance.
+      // - Together with getPlusFilesOrdered() this implements the whole order of config inheritance.
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return plusFilesRelevant
@@ -718,6 +720,7 @@ function resolveConfigValueSources(
 
   return sources
 }
+// Together with sortAfterInheritanceOrder() this implements the whole order of config inheritance.
 function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
   const plusFilesOrdered: PlusFile[] = []
 
@@ -736,9 +739,9 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
     }
     const visited = new WeakSet<PlusFile>()
 
-    // ================
-    // User-land config
-    // ================
+    // ========================
+    // User-land config (first)
+    // ========================
     {
       const plusFilesValue = plusFilesForConfigName.filter(
         (plusFile) =>
@@ -767,10 +770,11 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
       }
     }
 
-    // ===================
-    // Side-effect configs (e.g. `export { frontmatter }` of .mdx files).
-    // ===================
-    // - This only considers side-effect configs that are already loaded at build-time (e.g. it actually doesn't consider `export { frontmatter }` of .mdx files since .mdx files are loaded only at runtime).
+    // ==========================
+    // Side-effect configs (next)
+    // ==========================
+    // - For example `export { frontmatter }` of `.mdx` files.
+    // - This only considers side-effect configs that are already loaded at build-time. (E.g. it actually doesn't consider `export { frontmatter }` of .mdx files since .mdx files are loaded only at runtime.)
     plusFilesForConfigName
       .filter(
         (plusFile) =>
@@ -782,9 +786,9 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
         populate(plusFileValueSideEffect)
       })
 
-    // =================
-    // Extensions config
-    // =================
+    // ========================
+    // Extensions config (last)
+    // ========================
     plusFilesForConfigName
       .filter((plusFile) => plusFile.isConfigFile && plusFile.isExtensionConfig)
       // Extension config files are already sorted by inheritance order
