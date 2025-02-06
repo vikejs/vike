@@ -484,7 +484,7 @@ function getPageConfigs(
     .map(([locationId, { configDefinitions, plusFilesRelevant }]) => {
       const configDefinitionsLocal = configDefinitions
 
-      let configValueSources: ConfigValueSources = {}
+      const configValueSources: ConfigValueSources = {}
       objectEntries(configDefinitionsLocal)
         .filter(([_configName, configDef]) => configDef.global !== true)
         .forEach(([configName, configDef]) => {
@@ -716,13 +716,11 @@ function resolveConfigValueSources(
             !plusFile.isExtensionConfig
         )
         .sort(makeOrderDeterministic)
-      const plusFileValue = plusFilesValue[0]
-      const plusFileConfig = plusFilesConfig[0]
       // Make this value:
       //   /pages/some-page/+{configName}.js > `export default`
       // override that value:
       //   /pages/some-page/+config.js > `export default { someConfig }`
-      const plusFileWinner = plusFileValue ?? plusFileConfig
+      const plusFileWinner = plusFilesValue[0] ?? plusFilesConfig[0]
       if (plusFileWinner) {
         const plusFilesOverriden = [...plusFilesValue, ...plusFilesConfig].filter((f) => f !== plusFileWinner)
         // A user-land conflict of plusFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy as it makes things unnecessarily ambiguous.
