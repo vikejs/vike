@@ -297,7 +297,9 @@ async function loadPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): P
   assertKnownConfigs(plusFilesAll)
 
   // Make lists element order deterministic
-  Object.entries(plusFilesAll).forEach(([_locationId, plusFiles]) => { plusFiles.sort(makeOrderDeterministic) })
+  Object.entries(plusFilesAll).forEach(([_locationId, plusFiles]) => {
+    plusFiles.sort(makeOrderDeterministic)
+  })
 
   return plusFilesAll
 }
@@ -704,20 +706,18 @@ function resolveConfigValueSources(
 
     // Main resolution logic
     {
-      const plusFilesValue = plusFilesDefiningConfig
-        .filter(
-          (plusFile) =>
-            !plusFile.isConfigFile &&
-            // We consider side-effect configs (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
-            plusFile.configName === configName
-        )
-      const plusFilesConfig = plusFilesDefiningConfig
-        .filter(
-          (plusFile) =>
-            plusFile.isConfigFile &&
-            // We consider values from extensions (e.g. vike-react) later (i.e. with less priority)
-            !plusFile.isExtensionConfig
-        )
+      const plusFilesValue = plusFilesDefiningConfig.filter(
+        (plusFile) =>
+          !plusFile.isConfigFile &&
+          // We consider side-effect configs (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
+          plusFile.configName === configName
+      )
+      const plusFilesConfig = plusFilesDefiningConfig.filter(
+        (plusFile) =>
+          plusFile.isConfigFile &&
+          // We consider values from extensions (e.g. vike-react) later (i.e. with less priority)
+          !plusFile.isExtensionConfig
+      )
       // Make this value:
       //   /pages/some-page/+{configName}.js > `export default`
       // override that value:
