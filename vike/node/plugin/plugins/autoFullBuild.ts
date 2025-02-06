@@ -2,19 +2,19 @@
 
 export { autoFullBuild }
 
-import pc from '@brillout/picocolors'
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
+import { assertWarning } from '../utils.js'
+import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
+import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
+import type { VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
+import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
+import pc from '@brillout/picocolors'
+import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
+import { manifestTempFile } from './buildConfig.js'
+import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { isVikeCli } from '../../cli/context.js'
-import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
-import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
-import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
-import { getViteConfigFromCli, isViteCliCall } from '../shared/isViteCliCall.js'
-import { assertWarning } from '../utils.js'
-import { manifestTempFile } from './buildConfig.js'
-import type { VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
 let forceExit = false
 

@@ -3,31 +3,27 @@ export { assertRollupInput }
 export { analyzeClientEntries }
 export { manifestTempFile }
 
-import { createRequire } from 'module'
-import path from 'path'
-import fs from 'fs/promises'
-import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
-import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
-import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
-import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
-import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
-import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { findPageFiles } from '../shared/findPageFiles.js'
-import { getFilePathResolved } from '../shared/getFilePath.js'
-import { type OutDirs, getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
-import { viteIsSSR } from '../shared/viteIsSSR.js'
 import {
   assert,
   addOnBeforeLogHook,
-  assertIsNpmPackageImport,
+  removeFileExtention,
+  unique,
   assertUsage,
   injectRollupInputs,
   normalizeRollupInput,
   onSetupBuild,
-  removeFileExtention,
-  unique
+  assertIsNpmPackageImport
 } from '../utils.js'
+import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
+import { findPageFiles } from '../shared/findPageFiles.js'
+import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
+import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
+import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
+import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
+import { createRequire } from 'module'
+import fs from 'fs/promises'
+import path from 'path'
 import {
   fixServerAssets,
   fixServerAssets_assertCssCodeSplit,
@@ -36,7 +32,11 @@ import {
   fixServerAssets_isEnabled
 } from './buildConfig/fixServerAssets.js'
 import { set_ASSETS_MANIFEST } from './buildEntry/index.js'
-import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
+import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
+import { getFilePathResolved } from '../shared/getFilePath.js'
+import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
+import { getOutDirs, type OutDirs, resolveOutDir } from '../shared/getOutDirs.js'
+import { viteIsSSR } from '../shared/viteIsSSR.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)

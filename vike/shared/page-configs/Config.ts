@@ -35,18 +35,18 @@ export type { RouteAsync }
 export type { RouteSync }
 export type { KeepScrollPosition }
 
-import type { InlineConfig } from 'vite'
 import type {
   PrefetchSetting,
   PrefetchStaticAssets
 } from '../../client/client-routing-runtime/prefetch/PrefetchSetting.js'
-import type { VikeVitePluginOptions } from '../../node/plugin/index.js'
 import type { ConfigDefinition } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { DocumentHtml } from '../../node/runtime/html/renderHtml.js'
 import type { InjectFilterEntry } from '../../types/index.js'
+import type { VikeVitePluginOptions } from '../../node/plugin/index.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
 import type { PageContextClient, PageContextServer } from '../types.js'
+import type { InlineConfig } from 'vite'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
 type HookNamePage =
