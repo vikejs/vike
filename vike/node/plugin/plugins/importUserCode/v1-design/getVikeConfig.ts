@@ -757,7 +757,7 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
       const plusFileWinner = plusFilesValue[0] ?? plusFilesConfig[0]
       if (plusFileWinner) {
         const plusFilesOverriden = [...plusFilesValue, ...plusFilesConfig].filter((f) => f !== plusFileWinner)
-        // A user-land conflict of plusFiles with the same locationId means that the user has superfluously defined the config twice; the user should remove such redundancy as it makes things unnecessarily ambiguous.
+        // A user-land conflict of plusFiles with the same `locationId` (we are iterating over `plusFilesRelevant: PlusFilesByLocationId`) means that the user has superfluously defined the config twice; the user should remove such redundancy as it makes things unnecessarily ambiguous.
         warnOverridenConfigValues(plusFileWinner, plusFilesOverriden, configName)
         ;[plusFileWinner, ...plusFilesOverriden].forEach((plusFile) => {
           add(plusFile)
