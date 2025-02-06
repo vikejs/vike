@@ -39,12 +39,12 @@
     "@brillout/test-types": "^0.1.13",
     "playwright": "^1.47.0",
     "prettier": "^3.2.5",
-    "vitest": "^2.1.3"
+    "vite": "^6.1.0",
+    "vitest": "^3.0.5"
   },
   "pnpm": {
     "overrides": {
-      "vike": "link:./vike/",
-      "vike>vite": "^6.0.5"
+      "vike": "link:./vike/"
     }
   },
   "packageManager": "pnpm@9.15.3"
