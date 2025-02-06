@@ -2,13 +2,13 @@ export { assertExtensionsConventions }
 export { assertExtensionsRequire }
 
 import pc from '@brillout/picocolors'
-import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
-import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../utils.js'
-import { getConfVal } from './getVikeConfig.js'
-import type { PlusFile } from './getVikeConfig/getPlusFilesAll.js'
+import { isObjectOfStrings } from '../../../../../../utils/isObjectOfStrings.js'
+import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../../utils.js'
+import { getConfVal } from '../getVikeConfig.js'
+import type { PlusFile } from './getPlusFilesAll.js'
 import path from 'path'
 import semver from 'semver'
-import { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
+import { PageConfigBuildTime } from '../../../../../../shared/page-configs/PageConfig.js'
 
 function assertExtensionsConventions(plusFile: PlusFile): void {
   assertExtensionName(plusFile)
