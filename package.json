@@ -43,8 +43,9 @@
   },
   "pnpm": {
     "overrides": {
-      "vike": "link:./vike/"
+      "vike": "link:./vike/",
+      "vike>vite": "^6.0.5"
     }
   },
-  "packageManager": "pnpm@9.2.0"
+  "packageManager": "pnpm@9.15.3"
 }
