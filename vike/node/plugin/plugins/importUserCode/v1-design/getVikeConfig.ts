@@ -725,10 +725,10 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
   //  - By sortAfterInheritanceOrder() at getPlusFilesRelevant()
   //  - By sortMakeDeterministic() at getPlusFilesAll()
   for (const plusFilesByLocationId of Object.values(plusFilesRelevant)) {
-    const plusFilesDefiningConfig = plusFilesByLocationId.filter((plusFile) =>
+    const plusFilesForConfigName = plusFilesByLocationId.filter((plusFile) =>
       getDefiningConfigNames(plusFile).includes(configName)
     )
-    if (plusFilesDefiningConfig.length === 0) continue
+    if (plusFilesForConfigName.length === 0) continue
     const visited = new WeakSet<PlusFile>()
     const add = (plusFile: PlusFile) => {
       assert(!visited.has(plusFile))
@@ -738,13 +738,13 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
 
     // Main resolution logic
     {
-      const plusFilesValue = plusFilesDefiningConfig.filter(
+      const plusFilesValue = plusFilesForConfigName.filter(
         (plusFile) =>
           !plusFile.isConfigFile &&
           // We consider side-effect configs (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
           plusFile.configName === configName
       )
-      const plusFilesConfig = plusFilesDefiningConfig.filter(
+      const plusFilesConfig = plusFilesForConfigName.filter(
         (plusFile) =>
           plusFile.isConfigFile &&
           // We consider extensions (e.g. vike-react) later (i.e. with less priority)
@@ -767,7 +767,7 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
 
     // Side-effect configs (e.g. `export { frontmatter }` of .mdx files)
     // - This only considers side-effect configs that are already loaded at build-time (e.g. it actually doesn't consider `export { frontmatter }` of .mdx files since .mdx files are loaded only at runtime).
-    plusFilesDefiningConfig
+    plusFilesForConfigName
       .filter(
         (plusFile) =>
           !plusFile.isConfigFile &&
@@ -779,14 +779,14 @@ function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByL
       })
 
     // Extensions
-    plusFilesDefiningConfig
+    plusFilesForConfigName
       .filter((plusFile) => plusFile.isConfigFile && plusFile.isExtensionConfig)
       // Extension config files are already sorted by inheritance order
       .forEach((plusFile) => {
         add(plusFile)
       })
 
-    plusFilesDefiningConfig.forEach((plusFile) => {
+    plusFilesForConfigName.forEach((plusFile) => {
       assert(visited.has(plusFile))
     })
   }
