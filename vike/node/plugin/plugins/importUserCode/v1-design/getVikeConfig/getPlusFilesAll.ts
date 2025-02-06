@@ -1,5 +1,5 @@
 export { getPlusFilesAll }
-export { getConfigName }
+export { getPlusFileValueConfigName }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
@@ -64,7 +64,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
-    if (getConfigName(f.filePathAbsoluteFilesystem) === 'config') {
+    if (getPlusFileValueConfigName(f.filePathAbsoluteFilesystem) === 'config') {
       configFiles.push(f)
     } else {
       valueFiles.push(f)
@@ -112,7 +112,7 @@ async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache):
       const { filePathAbsoluteUserRootDir } = filePath
       assert(filePathAbsoluteUserRootDir)
 
-      const configName = getConfigName(filePathAbsoluteUserRootDir)
+      const configName = getPlusFileValueConfigName(filePathAbsoluteUserRootDir)
       assert(configName)
 
       const locationId = getLocationId(filePathAbsoluteUserRootDir)
@@ -191,7 +191,7 @@ async function findPlusFiles(userRootDir: string, outDirRoot: null | string): Pr
   return plusFiles
 }
 
-function getConfigName(filePath: string): string | null {
+function getPlusFileValueConfigName(filePath: string): string | null {
   assertPosixPath(filePath)
   if (isTemporaryBuildFile(filePath)) return null
   const fileName = path.posix.basename(filePath)

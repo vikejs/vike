@@ -9,16 +9,11 @@ import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import {
-  vikeConfigDependencies,
-  reloadVikeConfig,
-  isVikeConfigFile,
-  isV1Design,
-  getVikeConfig
-} from './v1-design/getVikeConfig.js'
+import { vikeConfigDependencies, reloadVikeConfig, isV1Design, getVikeConfig } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
+import { getPlusFileValueConfigName } from './v1-design/getVikeConfig/getPlusFilesAll.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -145,4 +140,8 @@ function getVirtualModules(server: ViteDevServer): ModuleNode[] {
       return mod
     })
   return virtualModules
+}
+
+function isVikeConfigFile(filePath: string): boolean {
+  return !!getPlusFileValueConfigName(filePath)
 }

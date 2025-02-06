@@ -2,7 +2,6 @@ export { getVikeConfig }
 export { getVikeConfig2 }
 export { reloadVikeConfig }
 export { vikeConfigDependencies }
-export { isVikeConfigFile }
 export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
@@ -73,12 +72,7 @@ import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getC
 import { assertExtensionsRequire } from './assertExtensions.js'
 import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
-import {
-  getPlusFilesAll,
-  getConfigName,
-  type PlusFile,
-  type PlusFilesByLocationId
-} from './getVikeConfig/getPlusFilesAll.js'
+import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 
 assertIsNotProductionRuntime()
 
@@ -1133,10 +1127,6 @@ function getFilesystemRoutingRootEffect(
 function determineIsErrorPage(routeFilesystem: string) {
   assertPosixPath(routeFilesystem)
   return routeFilesystem.split('/').includes('_error')
-}
-
-function isVikeConfigFile(filePath: string): boolean {
-  return !!getConfigName(filePath)
 }
 
 function getConfigEnvValue(
