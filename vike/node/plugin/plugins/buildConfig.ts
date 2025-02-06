@@ -81,13 +81,11 @@ function buildConfig(): Plugin[] {
         order: 'post',
         handler(config) {
           onSetupBuild()
-          // FIXME not compatible with Environment API
-          isSsrBuild = viteIsSSR(config)
           return {
             build: {
               outDir: resolveOutDir(config),
               manifest: manifestTempFile,
-              copyPublicDir: !isSsrBuild
+              copyPublicDir: config.vike!.global.config.useEnvironmentAPI ? undefined : !viteIsSSR(config)
             }
           } satisfies UserConfig
         }
@@ -111,8 +109,7 @@ function buildConfig(): Plugin[] {
         order: 'pre',
         sequential: true,
         async handler(options, bundle) {
-          console.log('FIXING SERVER ASSETS?', isSsrBuild)
-          if (isSsrBuild) {
+          if (isSsrBuild || this.environment.name === 'ssr') {
             console.log('FIXING SERVER ASSETS')
             // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
             //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)

@@ -27,9 +27,17 @@ function buildApp(): Plugin {
         },
         environments: {
           ssr: {
+            consumer: 'server',
             build: {
               outDir: resolveOutDir(config, true) || 'dist/server',
               ssr: true
+            }
+          },
+          client: {
+            consumer: 'client',
+            build: {
+              copyPublicDir: true,
+              ssr: false
             }
           }
         }
