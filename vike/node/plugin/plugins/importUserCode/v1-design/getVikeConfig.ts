@@ -472,7 +472,7 @@ function getPageConfigs(
       plusFilesAll, // TODO/now check sort order
       userRootDir,
       true,
-      getLocationId('/')
+      getLocationId('/pages/+config.js')
     )
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
