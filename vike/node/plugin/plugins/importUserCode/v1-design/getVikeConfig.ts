@@ -721,11 +721,10 @@ function resolveConfigValueSources(
 function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
   const plusFilesOrdered: PlusFile[] = []
 
-  // plusFilesRelevant is already sorted:
-  //  - By sortAfterInheritanceOrder() at getPlusFilesRelevant()
-  //  - By sortMakeDeterministic() at getPlusFilesAll()
-  for (const plusFilesByLocationId of Object.values(plusFilesRelevant)) {
-    const plusFilesForConfigName = plusFilesByLocationId.filter((plusFile) =>
+  // `plusFilesRelevant` is already sorted by sortAfterInheritanceOrder() at getPlusFilesRelevant()
+  // `plusFilesAtLocationId` is already sorted by sortMakeDeterministic() at getPlusFilesAll()
+  for (const plusFilesAtLocationId of Object.values(plusFilesRelevant)) {
+    const plusFilesForConfigName = plusFilesAtLocationId.filter((plusFile) =>
       getDefiningConfigNames(plusFile).includes(configName)
     )
 
