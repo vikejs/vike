@@ -100,7 +100,7 @@ type PlusFileConfig = PlusFileCommons & {
   isConfigFile: true
   isValueFile: false
   extendsFilePaths: string[]
-  isConfigExtension: boolean
+  isExtensionConfig: boolean
   isValueFileLoaded: true
   fileExportsByConfigName: Record<
     string, // configName
@@ -115,7 +115,7 @@ type PlusFileConfig = PlusFileCommons & {
 type PlusFileValue = PlusFileCommons & {
   isConfigFile: false
   isValueFile: true
-  isConfigExtension?: undefined
+  isExtensionConfig?: undefined
   configName: string
 } & (
     | {
@@ -300,7 +300,7 @@ async function loadPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): P
 }
 function getPlusFileFromConfigFile(
   configFile: ConfigFile,
-  isConfigExtension: boolean,
+  isExtensionConfig: boolean,
   locationId: LocationId,
   userRootDir: string
 ): PlusFile {
@@ -328,7 +328,7 @@ function getPlusFileFromConfigFile(
     isConfigFile: true,
     isValueFile: false,
     isValueFileLoaded: true,
-    isConfigExtension,
+    isExtensionConfig,
     extendsFilePaths
   }
   return plusFile
@@ -555,7 +555,7 @@ function assertGlobalConfigLocation(
 
     // Allow local Vike extensions to set gloabl configs (`filePathAbsoluteUserRootDir===null` for Vike extension)
     if (!filePathAbsoluteUserRootDir) return
-    assert(!plusFile.isConfigExtension)
+    assert(!plusFile.isExtensionConfig)
 
     if (!isGlobalLocation(source.locationId, locationIdsAll)) {
       const configDef = configDefinitionsGlobal[configName]
@@ -708,7 +708,7 @@ function resolveConfigValueSources(
           (plusFile) =>
             plusFile.isConfigFile &&
             // We consider values from extensions (e.g. vike-react) later (i.e. with less priority)
-            !plusFile.isConfigExtension
+            !plusFile.isExtensionConfig
         )
         .sort(makeOrderDeterministic)
       const interfaceValueFile = interfaceValueFiles[0]
@@ -742,7 +742,7 @@ function resolveConfigValueSources(
 
     // extends
     plusFilesDefiningConfig
-      .filter((plusFile) => plusFile.isConfigFile && plusFile.isConfigExtension)
+      .filter((plusFile) => plusFile.isConfigFile && plusFile.isExtensionConfig)
       // Extension config files are already sorted by inheritance order
       .forEach((plusFile) => {
         add(plusFile)
@@ -919,7 +919,7 @@ function warnOverridenConfigValues(plusFileWinner: PlusFile, plusFilesOverriden:
   })
 }
 function isPlusFileUserLand(plusFile: PlusFile) {
-  return (plusFile.isConfigFile && !plusFile.isConfigExtension) || plusFile.isValueFile
+  return (plusFile.isConfigFile && !plusFile.isExtensionConfig) || plusFile.isValueFile
 }
 
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
