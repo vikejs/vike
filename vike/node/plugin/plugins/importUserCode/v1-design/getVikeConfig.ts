@@ -98,7 +98,6 @@ type PlusFileCommons = {
 // +config.js
 type PlusFileConfig = PlusFileCommons & {
   isConfigFile: true
-  isValueFile: false
   extendsFilePaths: string[]
   isExtensionConfig: boolean
   isValueFileLoaded: true
@@ -114,7 +113,6 @@ type PlusFileConfig = PlusFileCommons & {
 // +{configName}.js
 type PlusFileValue = PlusFileCommons & {
   isConfigFile: false
-  isValueFile: true
   isExtensionConfig?: undefined
   configName: string
 } & (
@@ -280,7 +278,6 @@ async function loadPlusFiles(userRootDir: string, esbuildCache: EsbuildCache): P
         locationId,
         filePath,
         isConfigFile: false,
-        isValueFile: true,
         isValueFileLoaded: false,
         configName
       }
@@ -326,7 +323,6 @@ function getPlusFileFromConfigFile(
     fileExportsByConfigName,
     pointerImportsByConfigName,
     isConfigFile: true,
-    isValueFile: false,
     isValueFileLoaded: true,
     isExtensionConfig,
     extendsFilePaths
@@ -446,7 +442,7 @@ async function loadCustomConfigBuildTimeFiles(
   const plusFileList: PlusFile[] = Object.values(plusFiles).flat(1)
   await Promise.all(
     plusFileList.map(async (plusFile) => {
-      if (plusFile.isValueFile) {
+      if (!plusFile.isConfigFile) {
         await loadValueFile(plusFile, configDefinitions, userRootDir, esbuildCache)
       } else {
         await Promise.all(
@@ -698,7 +694,7 @@ function resolveConfigValueSources(
       const interfaceValueFiles = plusFilesDefiningConfig
         .filter(
           (plusFile) =>
-            plusFile.isValueFile &&
+            !plusFile.isConfigFile &&
             // We consider side-effect configs (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
             plusFile.configName === configName
         )
@@ -732,7 +728,7 @@ function resolveConfigValueSources(
     plusFilesDefiningConfig
       .filter(
         (plusFile) =>
-          plusFile.isValueFile &&
+          !plusFile.isConfigFile &&
           // Is side-effect config
           plusFile.configName !== configName
       )
@@ -814,7 +810,7 @@ function getConfigValueSource(
       definedAtFilePath = pointerImport.fileExportPath
     } else {
       // Defined by value file, i.e. +{configName}.js
-      assert(plusFile.isValueFile)
+      assert(!plusFile.isConfigFile)
       valueFilePath = plusFile.filePath.filePathAbsoluteVite
       definedAtFilePath = {
         ...plusFile.filePath,
@@ -871,7 +867,7 @@ function getConfigValueSource(
   }
 
   // Defined by value file, i.e. +{configName}.js
-  if (plusFile.isValueFile) {
+  if (!plusFile.isConfigFile) {
     const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
     const valueAlreadyLoaded = confVal.configValueLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
@@ -919,7 +915,7 @@ function warnOverridenConfigValues(plusFileWinner: PlusFile, plusFilesOverriden:
   })
 }
 function isPlusFileUserLand(plusFile: PlusFile) {
-  return (plusFile.isConfigFile && !plusFile.isExtensionConfig) || plusFile.isValueFile
+  return (plusFile.isConfigFile && !plusFile.isExtensionConfig) || !plusFile.isConfigFile
 }
 
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
@@ -937,7 +933,7 @@ function isDefiningPageConfig(configName: string): boolean {
 
 function getDefiningConfigNames(plusFile: PlusFile): string[] {
   let configNames: string[] = []
-  if (plusFile.isValueFile) {
+  if (!plusFile.isConfigFile) {
     configNames.push(plusFile.configName)
   }
   if (plusFile.isValueFileLoaded) {
