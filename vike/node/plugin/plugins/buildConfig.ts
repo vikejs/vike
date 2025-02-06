@@ -85,7 +85,7 @@ function buildConfig(): Plugin[] {
             build: {
               outDir: resolveOutDir(config),
               manifest: manifestTempFile,
-              copyPublicDir: config.vike!.global.config.viteEnvironmentAPI ? undefined : !viteIsSSR(config)
+              copyPublicDir: config.vike!.config.viteEnvironmentAPI ? undefined : !viteIsSSR(config)
             }
           } satisfies UserConfig
         }
