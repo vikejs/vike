@@ -152,7 +152,7 @@ function getPageConfigUserFriendlyOld(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getPageConfigUserFriendlyNew(pageConfig)
+    const res = getPageConfigUserFriendlyV1Desin(pageConfig)
     source = res.source
     sources = res.sources
     from = res.from
@@ -204,14 +204,22 @@ function getPageConfigUserFriendlyOld(
 
 type ConfigUserFriendly = {
   config: ConfigResolved
-  configEntries: ConfigEntries // TODO/v1-release: remove
-  exportsAll: ExportsAll // TODO/v1-release: remove
   source: Source
   sources: Sources
   from: From
 }
-// V1 design
 function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
+  const res = getPageConfigUserFriendlyV1Desin(pageConfig)
+  return {
+    config: res.config,
+    source: res.source,
+    sources: res.sources,
+    from: res.from
+  }
+}
+
+// V1 design
+function getPageConfigUserFriendlyV1Desin(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}
