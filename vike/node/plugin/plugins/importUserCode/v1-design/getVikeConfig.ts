@@ -692,7 +692,7 @@ function resolveConfigValueSources(
   isGlobal: boolean,
   locationId: LocationId
 ): ConfigValueSource[] {
-  const plusFilesSource: { plusFile: PlusFile; isHighestInheritancePrecedence: boolean }[] = []
+  const plusFilesSource: { plusFile: PlusFile }[] = []
 
   // plusFilesRelevant is already sorted:
   //  - By sortAfterInheritanceOrder() at getPlusFilesRelevant()
@@ -706,8 +706,7 @@ function resolveConfigValueSources(
     const add = (plusFile: PlusFile) => {
       assert(!visited.has(plusFile))
       visited.add(plusFile)
-      const isHighestInheritancePrecedence = plusFilesSource.length === 0
-      plusFilesSource.push({ plusFile, isHighestInheritancePrecedence })
+      plusFilesSource.push({ plusFile })
     }
 
     // Main resolution logic
@@ -765,7 +764,8 @@ function resolveConfigValueSources(
     })
   }
 
-  let sources: ConfigValueSource[] = plusFilesSource.map(({ plusFile, isHighestInheritancePrecedence }) => {
+  let sources: ConfigValueSource[] = plusFilesSource.map(({ plusFile }, i) => {
+    const isHighestInheritancePrecedence = i === 0
     const configValueSource = getConfigValueSource(
       configName,
       plusFile,
