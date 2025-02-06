@@ -719,7 +719,7 @@ function resolveConfigValueSources(
       const plusFilesConfig = plusFilesDefiningConfig.filter(
         (plusFile) =>
           plusFile.isConfigFile &&
-          // We consider values from extensions (e.g. vike-react) later (i.e. with less priority)
+          // We consider extensions (e.g. vike-react) later (i.e. with less priority)
           !plusFile.isExtensionConfig
       )
       // Make this value:
@@ -737,7 +737,8 @@ function resolveConfigValueSources(
       }
     }
 
-    // Side-effect configs such as `export { frontmatter }` in .mdx files
+    // Side-effect configs (e.g. `export { frontmatter }` of .mdx files)
+    // - This only considers side-effect configs that are already loaded at build-time (e.g. it actually doesn't consider `export { frontmatter }` of .mdx files since .mdx files are loaded only at runtime).
     plusFilesDefiningConfig
       .filter(
         (plusFile) =>
@@ -749,7 +750,7 @@ function resolveConfigValueSources(
         add(plusFileValueSideEffect)
       })
 
-    // extends
+    // Extensions
     plusFilesDefiningConfig
       .filter((plusFile) => plusFile.isConfigFile && plusFile.isExtensionConfig)
       // Extension config files are already sorted by inheritance order
