@@ -98,22 +98,22 @@ type PlusFileCommons = {
 // +config.js
 type PlusFileConfig = PlusFileCommons & {
   isConfigFile: true
-  extendsFilePaths: string[]
-  isExtensionConfig: boolean
-  isValueFileLoaded: true
   fileExportsByConfigName: Record<
     string, // configName
-    unknown
+    unknown // configValue
   >
   pointerImportsByConfigName: Record<
-    string, // configValue
+    string, // configName
     PointerImportLoaded
   >
+  isExtensionConfig: boolean
+  extendsFilePaths: string[]
+  // TypeScript convenience
+  isValueFileLoaded?: undefined
 }
 // +{configName}.js
 type PlusFileValue = PlusFileCommons & {
   isConfigFile: false
-  isExtensionConfig?: undefined
   configName: string
 } & (
     | {
@@ -126,7 +126,10 @@ type PlusFileValue = PlusFileCommons & {
     | {
         isValueFileLoaded: false
       }
-  )
+  ) & {
+    // TypeScript convenience
+    isExtensionConfig?: undefined
+  }
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
 type VikeConfigObject = {
@@ -323,7 +326,6 @@ function getPlusFileFromConfigFile(
     fileExportsByConfigName,
     pointerImportsByConfigName,
     isConfigFile: true,
-    isValueFileLoaded: true,
     isExtensionConfig,
     extendsFilePaths
   }
