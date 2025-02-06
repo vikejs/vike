@@ -4,16 +4,16 @@ export { assertExtensionsRequire }
 import pc from '@brillout/picocolors'
 import { isObjectOfStrings } from '../../../../../utils/isObjectOfStrings.js'
 import { PROJECT_VERSION, assert, assertUsage, assertWarning, findPackageJson } from '../../../utils.js'
-import { getConfVal, type InterfaceFile } from './getVikeConfig.js'
+import { getConfVal, type PlusFile } from './getVikeConfig.js'
 import path from 'path'
 import semver from 'semver'
 import { PageConfigBuildTime } from '../../../../../shared/page-configs/PageConfig.js'
 
-function assertExtensionsConventions(interfaceFile: InterfaceFile): void {
+function assertExtensionsConventions(interfaceFile: PlusFile): void {
   assertExtensionName(interfaceFile)
   assertConfigExportPath(interfaceFile)
 }
-function assertConfigExportPath(interfaceFile: InterfaceFile): void {
+function assertConfigExportPath(interfaceFile: PlusFile): void {
   const { importPathAbsolute, filePathAbsoluteFilesystem } = interfaceFile.filePath
 
   // Ejected Vike extension
@@ -34,7 +34,7 @@ function assertConfigExportPath(interfaceFile: InterfaceFile): void {
     { onlyOnce: true }
   )
 }
-function assertExtensionName(interfaceFile: InterfaceFile): void {
+function assertExtensionName(interfaceFile: PlusFile): void {
   const filePathToShowToUser = getFilePathToShowToUser(interfaceFile)
   const name = getNameValue(interfaceFile)
   assertUsage(
@@ -87,7 +87,7 @@ function assertExtensionsRequire(pageConfig: PageConfigBuildTime): void {
   })
 }
 
-function getConfigRequireValue(interfaceFile: InterfaceFile): null | Record<string, string> {
+function getConfigRequireValue(interfaceFile: PlusFile): null | Record<string, string> {
   const confVal = getConfVal(interfaceFile, 'require')
   if (!confVal) return null
   assert(confVal.configValueLoaded)
@@ -105,7 +105,7 @@ function getConfigRequireValue(interfaceFile: InterfaceFile): null | Record<stri
   return require
 }
 
-function getNameValue(interfaceFile: InterfaceFile): null | string {
+function getNameValue(interfaceFile: PlusFile): null | string {
   const confVal = getConfVal(interfaceFile, 'name')
   if (!confVal) return null
   assert(confVal.configValueLoaded)
@@ -120,7 +120,7 @@ function getNameValue(interfaceFile: InterfaceFile): null | string {
 
 // We use a forever cache: users need to restart the dev server anyways when touching node_modules/**/* (I presume Vite doesn't pick up node_modules/**/* changes).
 const extensionsVersion: Record<string, string> = {}
-function getExtensionVersion(name: string, interfaceFile: InterfaceFile): string {
+function getExtensionVersion(name: string, interfaceFile: PlusFile): string {
   if (!extensionsVersion[name]) {
     const extensionConfigFilePath = interfaceFile.filePath.filePathAbsoluteFilesystem
     const found = findPackageJson(path.posix.dirname(extensionConfigFilePath))
@@ -144,7 +144,7 @@ function getExtensionVersion(name: string, interfaceFile: InterfaceFile): string
   return extensionsVersion[name]!
 }
 
-function getFilePathToShowToUser(interfaceFile: InterfaceFile): string {
+function getFilePathToShowToUser(interfaceFile: PlusFile): string {
   const { filePathToShowToUserResolved } = interfaceFile.filePath
   assert(filePathToShowToUserResolved)
   return filePathToShowToUserResolved

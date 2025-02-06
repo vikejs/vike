@@ -22,8 +22,8 @@ import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-des
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type {
-  InterfaceFile,
-  InterfaceFilesByLocationId
+  PlusFile,
+  PlusFilesByLocationId
 } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 
 type PageConfigCommon = {
@@ -53,7 +53,7 @@ type PageConfigGlobalRuntime = {
 /** Page config, build-time data structure */
 type PageConfigBuildTime = PageConfigCommon & {
   configDefinitions: ConfigDefinitions
-  interfaceFiles: InterfaceFilesByLocationId
+  interfaceFiles: PlusFilesByLocationId
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
 }
@@ -101,7 +101,7 @@ type ConfigValueSource = {
   configEnv: ConfigEnvInternal
   definedAtFilePath: DefinedAtFilePath
   interfaceFile:
-    | InterfaceFile
+    | PlusFile
     // It's `null` when the config is defined by `vike(options)` in vite.config.js
     // TODO/v1-release: remove `null`
     | null
