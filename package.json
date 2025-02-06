@@ -39,7 +39,6 @@
     "@brillout/test-types": "^0.1.13",
     "playwright": "^1.47.0",
     "prettier": "^3.2.5",
-    "vite": "^6.1.0",
     "vitest": "^3.0.5"
   },
   "pnpm": {
