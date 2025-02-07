@@ -18,6 +18,7 @@ export { setGlobalContext_buildEntry }
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { getViteConfigRuntime }
+export { getPageFilesExports }
 export type { BuildInfo }
 
 import {
