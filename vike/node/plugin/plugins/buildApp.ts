@@ -8,6 +8,8 @@ import { resolveOutDir } from '../shared/getOutDirs.js'
 import { getViteConfigFromCli, isViteCliCall } from '../shared/isViteCliCall.js'
 import { assert } from '../utils.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
+import { isVikeCli } from '../../cli/context.js'
+import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
 
 function buildApp(): Plugin[] {
   let config: ResolvedConfig
@@ -19,17 +21,13 @@ function buildApp(): Plugin[] {
       config(config) {
         if (!config.vike!.config.viteEnvironmentAPI) return
 
-        console.log('SHOULD buildApp')
-
         return {
           appType: 'custom',
           builder: {
             buildApp: async (builder) => {
               assert(builder.environments.client)
               assert(builder.environments.ssr)
-              console.log('BUILDING CLIENT')
               await builder.build(builder.environments.client)
-              console.log('BUILDING SSR')
               await builder.build(builder.environments.ssr)
             }
           },
@@ -66,25 +64,14 @@ function buildApp(): Plugin[] {
         const vikeConfig = await getVikeConfig(config)
         if (!isPrerenderAutoRunEnabled(vikeConfig)) return
 
-        console.log('PRERENDERING')
-
-        const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
-        let configInline: InlineConfig
-        if (config._viteConfigEnhanced) {
-          configInline = config._viteConfigEnhanced
-        } else {
-          configInline = {
-            ...configFromCli,
-            configFile: configFromCli?.configFile || config.configFile,
-            root: config.root,
-            build: {
-              ...configFromCli?.build
-            }
-          }
-        }
+        const configInline = getFullBuildInlineConfig(config)
 
         const { prerenderContextPublic } = await runPrerenderFromAutoRun(configInline)
         config.vike!.prerenderContext = prerenderContextPublic
+
+        if (isVikeCli() || isViteCliCall()) {
+          process.exit(0)
+        }
       }
     }
   ]

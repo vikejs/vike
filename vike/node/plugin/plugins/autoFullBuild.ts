@@ -1,5 +1,7 @@
 // TODO/v1-release: remove this file
 
+import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
+
 export { autoFullBuild }
 
 import { build } from 'vite'
@@ -73,20 +75,7 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
   //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
   if (!bundle[manifestTempFile]) return
 
-  const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
-  let configInline: InlineConfig
-  if (config._viteConfigEnhanced) {
-    configInline = config._viteConfigEnhanced
-  } else {
-    configInline = {
-      ...configFromCli,
-      configFile: configFromCli?.configFile || config.configFile,
-      root: config.root,
-      build: {
-        ...configFromCli?.build
-      }
-    }
-  }
+  const configInline = getFullBuildInlineConfig(config)
 
   try {
     await build(setSSR(configInline))
