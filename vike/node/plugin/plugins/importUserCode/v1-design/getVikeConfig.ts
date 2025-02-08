@@ -215,7 +215,11 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
 
-  const { pageConfigGlobal, pageConfigs } = getPageConfigs(configDefinitionsResolved, plusFilesAll, userRootDir)
+  const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
+    configDefinitionsResolved,
+    plusFilesAll,
+    userRootDir
+  )
 
   // interop vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
@@ -287,7 +291,7 @@ async function loadCustomConfigBuildTimeFiles(
     })
   )
 }
-function getPageConfigs(
+function getPageConfigsBuildTime(
   configDefinitionsResolved: ConfigDefinitionsResolved,
   plusFilesAll: PlusFilesByLocationId,
   userRootDir: string
