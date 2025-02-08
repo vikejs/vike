@@ -411,10 +411,10 @@ async function updateVirtualFile() {
   resolve()
 }
 
-// TODO/now: is there a more elegant way?
 async function updateVirtualFileExports(virtualFileExports: unknown) {
   globalObject.pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
   const userFiles = await getPageRuntimeInfo()
+  // TODO/now: is there a more elegant way?
   if (globalObject.globalContext) {
     objectAssignSafe(globalObject.globalContext, userFiles)
   }
