@@ -172,6 +172,7 @@ function getViteConfig(): ResolvedConfig | null {
   return globalObject.viteConfig ?? null
 }
 
+// TODO/now: call initGlobalContext() sooner?
 async function initGlobalContext_renderPage(): Promise<void> {
   debug('initGlobalContext_renderPage()')
   await initGlobalContext(!globalObject.isViteDev)
