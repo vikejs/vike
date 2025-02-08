@@ -2,13 +2,13 @@ export { getPageContext }
 
 import { assertUsage, assertWarning, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
-import { getPageFilesAll, setPageFiles } from '../../shared/getPageFiles/getPageFiles.js'
 import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
+import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 
 // @ts-ignore
-import * as pageFilesExports from 'virtual:vike:importUserCode:client:server-routing'
-setPageFiles(pageFilesExports)
+import * as virtualFileExports from 'virtual:vike:importUserCode:client:server-routing'
+const { pageFilesAll, pageConfigs } = getPageConfigsRuntime(virtualFileExports)
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
@@ -35,7 +35,6 @@ function assertPristineUrl() {
 
 async function loadPageUserFiles(pageId: string) {
   const pageContextAddendum = {}
-  const { pageFilesAll, pageConfigs } = await getPageFilesAll(true)
   objectAssign(pageContextAddendum, {
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs
