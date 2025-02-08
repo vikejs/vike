@@ -71,7 +71,7 @@ const globalObject = getGlobalObject<
 >('globalContext.ts', getInitialGlobalContext())
 
 type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig'>
-type PageRuntimeInfo = Awaited<ReturnType<typeof getPageRuntimeInfo>>
+type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
 type GlobalContext = {
   viteConfigRuntime: {
     _baseViteOriginal: null | string
@@ -232,7 +232,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
-    const userFiles = await getPageRuntimeInfo()
+    const userFiles = await getUserFiles()
     const viteConfigRuntime = getViteConfigRuntime(viteConfig)
     globalObject.globalContext = {
       isProduction: false,
@@ -247,7 +247,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot, isPrerendering)
     const { assetsManifest, buildInfo } = buildEntry
     await updateVirtualFileExports(buildEntry.virtualFileExports)
-    const userFiles = await getPageRuntimeInfo()
+    const userFiles = await getUserFiles()
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
@@ -273,7 +273,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   }
 }
 
-async function getPageRuntimeInfo() {
+async function getUserFiles() {
   // Help TypeScript resolve what TypeScript (wrongfully) believes to be cyclic dependency
   const globalObject_ = globalObject as { pageConfigsRuntime?: PageConfigsRuntime }
   const { pageConfigsRuntime } = globalObject_
@@ -413,7 +413,7 @@ async function updateVirtualFile() {
 
 async function updateVirtualFileExports(virtualFileExports: unknown) {
   globalObject.pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
-  const userFiles = await getPageRuntimeInfo()
+  const userFiles = await getUserFiles()
   // TODO/now: is there a more elegant way?
   if (globalObject.globalContext) {
     objectAssignSafe(globalObject.globalContext, userFiles)
