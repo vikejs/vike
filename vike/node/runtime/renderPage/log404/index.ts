@@ -33,7 +33,7 @@ async function log404(pageContext: {
     'No page found. Create at least one /pages/some-page/+Page.js file.'
     */
   )
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext.isClientSideNavigation) {
     const routesInfo = getRoutesInfo(pageRoutes)
     let msg = `URL ${pc.cyan(urlPathname)} ${noRouteMatch}`

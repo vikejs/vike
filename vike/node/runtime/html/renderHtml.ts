@@ -305,7 +305,7 @@ async function renderTemplate(
     }
 
     {
-      const { isProduction } = getGlobalContext()
+      const { isProduction } = await getGlobalContext()
       if (
         isHtml(templateVar) &&
         // We don't show this warning in production because it's expected that some users may (un)willingly do some XSS injection: we avoid flooding the production logs.

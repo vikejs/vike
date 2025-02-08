@@ -227,7 +227,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   )
 
   await initGlobalContext_runPrerender()
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   globalContext.pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {
@@ -267,7 +267,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
 
-  warnMissingPages(prerenderContext.prerenderedPageContexts, doNotPrerenderList, partial)
+  await warnMissingPages(prerenderContext.prerenderedPageContexts, doNotPrerenderList, partial)
 
   const prerenderContextPublic = makePublic(prerenderContext)
 
@@ -296,7 +296,7 @@ async function collectDoNoPrerenderList(
 
   // Old design
   // TODO/v1-release: remove
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   await Promise.all(
     globalContext.pageFilesAll
       .filter((p) => {
@@ -367,7 +367,7 @@ async function callOnBeforePrerenderStartHooks(
     hookTimeout: HookTimeout
   }[] = []
 
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
 
   // V1 design
   await Promise.all(
@@ -434,7 +434,8 @@ async function callOnBeforePrerenderStartHooks(
           null
         )
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
-        result.forEach(({ url, pageContext }) => {
+        await Promise.all(
+        result.map(async ({ url, pageContext }) => {
           {
             const pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
               isSameUrl(pageContext.urlOriginal, url)
@@ -451,7 +452,7 @@ async function callOnBeforePrerenderStartHooks(
               )
             }
           }
-          const pageContextNew = createPageContext(url, prerenderContext)
+          const pageContextNew = await createPageContext(url, prerenderContext)
           objectAssign(pageContextNew, {
             _providedByHook: {
               hookFilePath,
@@ -466,6 +467,7 @@ async function callOnBeforePrerenderStartHooks(
             objectAssign(pageContextNew, pageContext)
           }
         })
+        )
       })
     )
   )
@@ -477,7 +479,7 @@ async function handlePagesWithStaticRoutes(
   concurrencyLimit: PLimit
 ) {
   // Pre-render pages with a static route
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   await Promise.all(
     globalContext.pageRoutes.map((pageRoute) =>
       concurrencyLimit(async () => {
@@ -508,7 +510,7 @@ async function handlePagesWithStaticRoutes(
         }
 
         const routeParams = {}
-        const pageContext = createPageContext(urlOriginal, prerenderContext)
+        const pageContext = await createPageContext(urlOriginal, prerenderContext)
         objectAssign(pageContext, {
           _providedByHook: null,
           routeParams,
@@ -530,7 +532,7 @@ async function handlePagesWithStaticRoutes(
   )
 }
 
-function createPageContext(urlOriginal: string, prerenderContext: PrerenderContext) {
+async function createPageContext(urlOriginal: string, prerenderContext: PrerenderContext) {
   const pageContext = {
     _urlHandler: null,
     _urlRewrite: null,
@@ -542,14 +544,14 @@ function createPageContext(urlOriginal: string, prerenderContext: PrerenderConte
   }
   objectAssign(pageContextInit, prerenderContext.pageContextInit)
   {
-    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit)
+    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
   return pageContext
 }
 
 async function callOnPrerenderStartHook(prerenderContext: PrerenderContext) {
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
 
   let onPrerenderStartHook:
     | undefined
@@ -751,7 +753,7 @@ async function routeAndPrerender(
   concurrencyLimit: PLimit,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   assert(globalContext.isPrerendering)
 
   // Route all URLs
@@ -858,12 +860,12 @@ function warnContradictoryNoPrerenderList(
   })
 }
 
-function warnMissingPages(
+async function warnMissingPages(
   prerenderedPageContexts: Record<string, unknown>,
   doNotPrerenderList: DoNotPrerenderList,
   partial: boolean
 ) {
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   const isV1 = globalContext.pageConfigs.length > 0
   const hookName = isV1 ? 'onBeforePrerenderStart' : 'prerender'
   /* TODO/after-v1-design-release: document setting `prerender: false` as an alternative to using prerender.partial (both in the warnings and the docs)

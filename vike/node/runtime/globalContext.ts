@@ -102,7 +102,7 @@ type GlobalContext = {
       ))
   )
 
-function getGlobalContext(): GlobalContext {
+async function getGlobalContext(): Promise<GlobalContext> {
   if (!globalObject.globalContext) {
     debug('getGlobalContext()', new Error().stack)
     assert(false)

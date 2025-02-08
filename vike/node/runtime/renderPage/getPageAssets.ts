@@ -38,7 +38,7 @@ async function getPageAssets(
   clientDependencies: ClientDependency[],
   clientEntries: string[]
 ): Promise<PageAsset[]> {
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   const isDev = !globalContext.isProduction
 
   let assetUrls: string[]
@@ -92,7 +92,7 @@ async function getPageAssets(
     return pageAsset
   })
 
-  sortPageAssetsForEarlyHintsHeader(pageAssets)
+  await sortPageAssetsForEarlyHintsHeader(pageAssets)
 
   return pageAssets
 }

@@ -27,7 +27,7 @@ async function handleErrorWithoutErrorPage<
 
   {
     const isV1 = pageContext._pageConfigs.length > 0
-    warnMissingErrorPage(isV1)
+    await warnMissingErrorPage(isV1)
   }
 
   if (!pageContext.isClientSideNavigation) {
@@ -43,8 +43,8 @@ async function handleErrorWithoutErrorPage<
   }
 }
 
-function warnMissingErrorPage(isV1: boolean): void {
-  const globalContext = getGlobalContext()
+async function warnMissingErrorPage(isV1: boolean) {
+  const globalContext = await getGlobalContext()
   if (!globalContext.isProduction) {
     const msg = [
       `No ${isV1 ? 'error page' : pc.cyan('_error.page.js')} found,`,

@@ -4,8 +4,8 @@ import { getGlobalContext } from '../../globalContext.js'
 import { higherFirst } from '../../utils.js'
 import type { PageAsset } from '../getPageAssets.js'
 
-function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[]) {
-  const globalContext = getGlobalContext()
+async function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[]) {
+  const globalContext = await getGlobalContext()
   pageAssets.sort(
     higherFirst(({ assetType }) => {
       // In dev, we load scripts first in order to parallelize I/O and CPU
