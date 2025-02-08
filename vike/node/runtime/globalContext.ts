@@ -232,6 +232,8 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
+    assert(globalObject.pageConfigsRuntimePromise)
+    await globalObject.pageConfigsRuntimePromise
     const userFiles = await getUserFiles()
     const viteConfigRuntime = getViteConfigRuntime(viteConfig)
     globalObject.globalContext = {
