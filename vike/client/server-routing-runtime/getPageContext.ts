@@ -5,11 +5,12 @@ import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializ
 import { getPageFilesAll, setPageFiles } from '../../shared/getPageFiles/getPageFiles.js'
 import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
+
 // @ts-ignore
 import * as pageFilesExports from 'virtual:vike:importUserCode:client:server-routing'
+setPageFiles(pageFilesExports)
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
-setPageFiles(pageFilesExports)
 
 async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()

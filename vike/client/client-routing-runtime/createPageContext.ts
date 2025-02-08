@@ -5,13 +5,14 @@ import { getPageFilesAll, setPageFiles } from '../../shared/getPageFiles/getPage
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
 import { assert, isBaseServer, PromiseType, getGlobalObject, objectAssign } from './utils.js'
+
 // @ts-ignore
 import * as pageFilesExports from 'virtual:vike:importUserCode:client:client-routing'
+setPageFiles(pageFilesExports)
+
 const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>
 }>('createPageContext.ts', {})
-
-setPageFiles(pageFilesExports)
 
 async function createPageContext(urlOriginal: string) {
   if (!globalObject.pageFilesData) {
