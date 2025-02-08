@@ -2,12 +2,13 @@ export { getPageFilesAll }
 export { setPageFiles }
 export { setPageFilesAsync }
 
-import { assert, unique } from '../utils.js'
+import { assert } from '../utils.js'
 import type { PageFile } from './getPageFileObject.js'
 import { parseGlobResults } from './parseGlobResults.js'
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageConfigRuntime, PageConfigGlobalRuntime } from '../page-configs/PageConfig.js'
 import { type ConfigUserFriendly, getPageConfigUserFriendlyNew } from '../page-configs/getPageConfigUserFriendly.js'
+import { getAllPageIds } from '../getPageConfigsRuntime.js'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined
@@ -59,11 +60,4 @@ async function getPageFilesAll(
   assert(pageFilesAll && pageConfigs && pageConfigGlobal && globalConfig)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
   return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig }
-}
-
-function getAllPageIds(allPageFiles: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
-  const fileIds = allPageFiles.filter(({ isDefaultPageFile }) => !isDefaultPageFile).map(({ pageId }) => pageId)
-  const allPageIds = unique(fileIds)
-  const allPageIds2 = pageConfigs.map((p) => p.pageId)
-  return [...allPageIds, ...allPageIds2]
 }
