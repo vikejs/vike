@@ -19,8 +19,8 @@ const globalObject = getGlobalObject<{
 }>('setPageFiles.ts', {})
 
 function setPageFiles(pageFilesExports: unknown) {
-  const { pageFiles, pageConfigs, pageConfigGlobal } = parseGlobResults(pageFilesExports)
-  globalObject.pageFilesAll = pageFiles
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(pageFilesExports)
+  globalObject.pageFilesAll = pageFilesAll
   globalObject.pageConfigs = pageConfigs
   globalObject.pageConfigGlobal = pageConfigGlobal
   // TODO/now: re-use this call, instead of calling it twice

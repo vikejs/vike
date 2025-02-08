@@ -15,7 +15,7 @@ import type {
 
 // TODO/now: rename
 function parseGlobResults(pageFilesExports: unknown): {
-  pageFiles: PageFile[]
+  pageFilesAll: PageFile[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
 } {
@@ -79,12 +79,12 @@ function parseGlobResults(pageFilesExports: unknown): {
     pageFilesMap[filePath] = pageFilesMap[filePath] ?? getPageFileObject(filePath)
   })
 
-  const pageFiles = Object.values(pageFilesMap)
-  pageFiles.forEach(({ filePath }) => {
+  const pageFilesAll = Object.values(pageFilesMap)
+  pageFilesAll.forEach(({ filePath }) => {
     assert(!filePath.includes('\\'))
   })
 
-  return { pageFiles, pageConfigs, pageConfigGlobal }
+  return { pageFilesAll, pageConfigs, pageConfigGlobal }
 }
 
 type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]

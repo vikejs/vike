@@ -7,7 +7,7 @@ import { PageConfigRuntime } from './page-configs/PageConfig.js'
 import { unique } from './utils.js'
 
 function getPageConfigsRuntime(virtualFileExports: unknown) {
-  const { pageFiles: pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
+  const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
   return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal }
 }
