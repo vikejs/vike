@@ -435,38 +435,38 @@ async function callOnBeforePrerenderStartHooks(
         )
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
         await Promise.all(
-        result.map(async ({ url, pageContext }) => {
-          {
-            const pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
-              isSameUrl(pageContext.urlOriginal, url)
-            )
-            if (pageContextFound) {
-              assert(pageContextFound._providedByHook)
-              const providedTwice =
-                hookFilePath === pageContextFound._providedByHook.hookFilePath
-                  ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
-                  : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._providedByHook.hookFilePath}() (${pageContextFound._providedByHook.hookName})` as const)
-              assertUsage(
-                false,
-                `URL ${pc.cyan(url)} provided ${providedTwice}. Make sure to provide the URL only once instead.`
+          result.map(async ({ url, pageContext }) => {
+            {
+              const pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
+                isSameUrl(pageContext.urlOriginal, url)
               )
+              if (pageContextFound) {
+                assert(pageContextFound._providedByHook)
+                const providedTwice =
+                  hookFilePath === pageContextFound._providedByHook.hookFilePath
+                    ? (`twice by the ${hookName}() hook (${hookFilePath})` as const)
+                    : (`twice: by the ${hookName}() hook (${hookFilePath}) as well as by the hook ${pageContextFound._providedByHook.hookFilePath}() (${pageContextFound._providedByHook.hookName})` as const)
+                assertUsage(
+                  false,
+                  `URL ${pc.cyan(url)} provided ${providedTwice}. Make sure to provide the URL only once instead.`
+                )
+              }
             }
-          }
-          const pageContextNew = await createPageContext(url, prerenderContext)
-          objectAssign(pageContextNew, {
-            _providedByHook: {
-              hookFilePath,
-              hookName
+            const pageContextNew = await createPageContext(url, prerenderContext)
+            objectAssign(pageContextNew, {
+              _providedByHook: {
+                hookFilePath,
+                hookName
+              }
+            })
+            prerenderContext.pageContexts.push(pageContextNew)
+            if (pageContext) {
+              objectAssign(pageContextNew, {
+                _pageContextAlreadyProvidedByOnPrerenderHook: true
+              })
+              objectAssign(pageContextNew, pageContext)
             }
           })
-          prerenderContext.pageContexts.push(pageContextNew)
-          if (pageContext) {
-            objectAssign(pageContextNew, {
-              _pageContextAlreadyProvidedByOnPrerenderHook: true
-            })
-            objectAssign(pageContextNew, pageContext)
-          }
-        })
         )
       })
     )
