@@ -50,21 +50,21 @@ import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfig
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 const debug = createDebugger('vike:globalContext')
-const globalObject = getGlobalObject<{
-  globalContext?: GlobalContext
-  viteDevServer?: ViteDevServer
-  viteDevServerPromise: Promise<ViteDevServer>
-  viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
-  isViteDev?: boolean
-  viteConfig?: ResolvedConfig
-  // TODO/now remove
-  vikeConfig?: VikeConfigObject
-  outDirRoot?: string
-  isPrerendering?: true
-  initGlobalContext_runPrerender_alreadyCalled?: true
-  buildEntry?: unknown
-  buildEntryPrevious?: unknown
-}>('globalContext.ts', getInitialGlobalContext())
+const globalObject = getGlobalObject<
+  {
+    globalContext?: GlobalContext
+    viteDevServer?: ViteDevServer
+    isViteDev?: boolean
+    viteConfig?: ResolvedConfig
+    // TODO/now remove
+    vikeConfig?: VikeConfigObject
+    outDirRoot?: string
+    isPrerendering?: true
+    initGlobalContext_runPrerender_alreadyCalled?: true
+    buildEntry?: unknown
+    buildEntryPrevious?: unknown
+  } & ReturnType<typeof getInitialGlobalContext>
+>('globalContext.ts', getInitialGlobalContext())
 
 initDevEntry()
 
