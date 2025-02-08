@@ -275,10 +275,10 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
 
 async function getPageRuntimeInfo() {
   // Help TypeScript resolve what TypeScript (wrongfully) believes to be cyclic dependency
-  const globalObject_ = globalObject as {
-    pageConfigsRuntime: PageConfigsRuntime
-  }
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig } = globalObject_.pageConfigsRuntime!
+  const globalObject_ = globalObject as { pageConfigsRuntime?: PageConfigsRuntime }
+  const { pageConfigsRuntime } = globalObject_
+  assert(pageConfigsRuntime)
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig } = pageConfigsRuntime
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageFilesAll,
