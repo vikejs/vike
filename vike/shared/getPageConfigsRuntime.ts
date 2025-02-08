@@ -1,15 +1,24 @@
 export { getPageConfigsRuntime }
 export { getAllPageIds }
 
-import { PageFile } from './getPageFiles.js'
+import type { PageFile } from './getPageFiles.js'
 import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
-import { PageConfigRuntime } from './page-configs/PageConfig.js'
+import { type ConfigUserFriendly, getPageConfigUserFriendlyNew } from './page-configs/getPageConfigUserFriendly.js'
+import type { PageConfigGlobalRuntime, PageConfigRuntime } from './page-configs/PageConfig.js'
 import { unique } from './utils.js'
 
-function getPageConfigsRuntime(virtualFileExports: unknown) {
+function getPageConfigsRuntime(virtualFileExports: unknown): {
+  pageFilesAll: PageFile[]
+  allPageIds: string[]
+  pageConfigs: PageConfigRuntime[]
+  pageConfigGlobal: PageConfigGlobalRuntime
+  globalConfig: ConfigUserFriendly
+} {
   const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
-  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal }
+  // TODO/now: re-use this call, instead of calling it twice
+  const globalConfig = getPageConfigUserFriendlyNew(pageConfigGlobal)
+  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig }
 }
 
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
