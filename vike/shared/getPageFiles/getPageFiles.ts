@@ -41,7 +41,6 @@ async function getPageFilesAll(
   pageConfigGlobal: PageConfigGlobalRuntime
   globalConfig: ConfigUserFriendly
 }> {
-  console.log('getPageFilesAll()')
   if (isClientSide) {
     assert(!globalObject.pageFilesGetter)
     assert(isProduction === undefined)
@@ -52,7 +51,6 @@ async function getPageFilesAll(
       // We reload all glob imports in dev to make auto-reload work
       !isProduction
     ) {
-      console.log('pageFilesGetter()')
       assert(globalObject.pageFilesGetter)
       await globalObject.pageFilesGetter()
     }

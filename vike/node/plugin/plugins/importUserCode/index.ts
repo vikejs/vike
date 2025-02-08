@@ -46,19 +46,16 @@ function importUserCode(): Plugin {
     },
     async load(id, options) {
       if (!isVirtualFileId(id)) return undefined
-      console.log('id', id)
       id = getVirtualFileId(id)
       const isDev = config._isDev
       assert(typeof isDev === 'boolean')
 
       if (isVirtualFileIdPageConfigValuesAll(id)) {
-        console.log('load 1')
         const code = await getVirtualFilePageConfigValuesAll(id, isDev, config)
         return code
       }
 
       if (isVirtualFileIdImportUserCode(id)) {
-        console.log('load 2')
         const code = await getVirtualFileImportUserCode(id, options, vikeConfig, config, isDev)
         return code
       }

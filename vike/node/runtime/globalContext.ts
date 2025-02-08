@@ -391,11 +391,9 @@ function getViteConfigRuntime(viteConfig: ResolvedConfig): BuildInfo['viteConfig
 }
 
 function initDevEntry() {
-  console.log('initDevEntry()')
   setPageFilesAsync(getPageFilesExports)
 }
 async function getPageFilesExports(): Promise<Record<string, unknown>> {
-  console.log('getPageFilesExports()')
   const viteDevServer = getViteDevServer()
   assert(viteDevServer)
   let moduleExports: Record<string, unknown>
