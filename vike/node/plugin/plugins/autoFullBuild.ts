@@ -16,7 +16,6 @@ import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './buildConfig.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { isVikeCli } from '../../cli/context.js'
 
 let forceExit = false
 
@@ -86,9 +85,8 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
-    const { prerenderContextPublic } = await runPrerenderFromAutoRun(configInline)
-    config.vike!.prerenderContext = prerenderContextPublic
-    forceExit = isVikeCli() || isViteCliCall()
+    const res = await runPrerenderFromAutoRun(configInline, config)
+    forceExit = res.forceExit
   }
 }
 

@@ -5,10 +5,8 @@ export { buildApp }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
 import { resolveOutDir } from '../shared/getOutDirs.js'
-import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { assert } from '../utils.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
-import { isVikeCli } from '../../cli/context.js'
 import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
 
 function buildApp(): Plugin[] {
@@ -67,12 +65,8 @@ function buildApp(): Plugin[] {
 
         const configInline = getFullBuildInlineConfig(config)
 
-        const { prerenderContextPublic } = await runPrerenderFromAutoRun(configInline)
-        config.vike!.prerenderContext = prerenderContextPublic
-
-        if (isVikeCli() || isViteCliCall()) {
-          process.exit(0)
-        }
+        const { forceExit } = await runPrerenderFromAutoRun(configInline, config)
+        if (forceExit) process.exit(0)
       }
     }
   ]
