@@ -154,17 +154,17 @@ async function renderPageAndPrepare(
   }
 
   // Check Base URL
-  assertBaseUrl(pageContextInit)
+  await assertBaseUrl(pageContextInit)
 
   // Normalize URL
   {
-    const pageContextHttpResponse = normalizeUrl(pageContextInit, httpRequestId)
+    const pageContextHttpResponse = await normalizeUrl(pageContextInit, httpRequestId)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
   // Permanent redirects (HTTP status code `301`)
   {
-    const pageContextHttpResponse = getPermanentRedirect(pageContextInit, httpRequestId)
+    const pageContextHttpResponse = await getPermanentRedirect(pageContextInit, httpRequestId)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
@@ -189,7 +189,7 @@ async function renderPageAlreadyPrepared(
     objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   }
   {
-    const pageContextInitEnhanced = getPageContextInitEnhancedSSR(
+    const pageContextInitEnhanced = await getPageContextInitEnhancedSSR(
       pageContextInit,
       pageContextNominalPageInit._urlRewrite,
       httpRequestId
@@ -257,7 +257,7 @@ async function renderPageAlreadyPrepared(
     }
 
     {
-      const globalContext = getGlobalContext()
+      const globalContext = await getGlobalContext()
       const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
       if (!errorPageId) {
         objectAssign(pageContextErrorPageInit, { pageId: null })
@@ -435,7 +435,7 @@ async function getPageContextErrorPageInit(
   pageContextNominalPagePartial: Record<string, unknown>,
   httpRequestId: number
 ) {
-  const pageContextInitEnhanced = getPageContextInitEnhancedSSR(pageContextInit, null, httpRequestId)
+  const pageContextInitEnhanced = await getPageContextInitEnhancedSSR(pageContextInit, null, httpRequestId)
 
   assert(errNominalPage)
   const pageContext = {}
@@ -455,13 +455,13 @@ async function getPageContextErrorPageInit(
   return pageContext
 }
 
-function getPageContextInitEnhancedSSR(
+async function getPageContextInitEnhancedSSR(
   pageContextInit: { urlOriginal: string },
   urlRewrite: null | string,
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
-  const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit, {
+  const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, {
     ssr: {
       urlRewrite,
       urlHandler: _urlHandler,
@@ -509,9 +509,9 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
   )
 }
 
-function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
-  const globalContext = getGlobalContext()
-  const { baseServer } = resolveBaseRuntime()
+async function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  const globalContext = await getGlobalContext()
+  const { baseServer } = await resolveBaseRuntime()
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
@@ -530,9 +530,9 @@ function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: n
   return pageContextHttpResponse
 }
 
-function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
-  const globalContext = getGlobalContext()
-  const { baseServer } = resolveBaseRuntime()
+async function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  const globalContext = await getGlobalContext()
+  const { baseServer } = await resolveBaseRuntime()
   const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
   let origin: null | string = null
   let urlTargetExternal: null | string = null
@@ -561,7 +561,7 @@ function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequ
       }
     }
     if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
-    const { baseServer } = resolveBaseRuntime()
+    const { baseServer } = await resolveBaseRuntime()
     if (!originChanged) urlTarget = prependBase(urlTarget, baseServer)
     assert(urlTarget !== pageContextInit.urlOriginal)
   }
@@ -596,13 +596,13 @@ async function handleAbortError(
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
 > {
-  logAbortErrorHandled(errAbort, getGlobalContext().isProduction, pageContextNominalPageInit)
+  logAbortErrorHandled(errAbort, (await getGlobalContext()).isProduction, pageContextNominalPageInit)
 
   const pageContextAbort = errAbort._pageContextAbort
   let pageContextSerialized: string
   if (pageContextNominalPageInit.isClientSideNavigation) {
     if (pageContextAbort.abortStatusCode) {
-      const globalContext = getGlobalContext()
+      const globalContext = await getGlobalContext()
       const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
       const abortCall = pageContextAbort._abortCall
       assert(abortCall)
@@ -659,8 +659,8 @@ async function handleAbortError(
   return { pageContextAbort }
 }
 
-function assertBaseUrl(pageContextInit: { urlOriginal: string }) {
-  const { baseServer } = resolveBaseRuntime()
+async function assertBaseUrl(pageContextInit: { urlOriginal: string }) {
+  const { baseServer } = await resolveBaseRuntime()
   const { urlOriginal } = pageContextInit
   const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
   const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)

@@ -18,6 +18,7 @@ export { setGlobalContext_buildEntry }
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { getViteConfigRuntime }
+export { updateVirtualFile }
 export type { BuildInfo }
 
 import {
@@ -36,39 +37,41 @@ import {
   createDebugger,
   makePublicCopy,
   projectInfo,
-  checkType
+  checkType,
+  objectAssignSafe
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
-import { getPageFilesAll, setPageFiles, setPageFilesAsync } from '../../shared/getPageFiles/getPageFiles.js'
 import pc from '@brillout/picocolors'
 import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
+import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
+type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
-const globalObject = getGlobalObject<{
-  globalContext?: GlobalContext
-  viteDevServer?: ViteDevServer
-  viteDevServerPromise: Promise<ViteDevServer>
-  viteDevServerPromiseResolve: (viteDevServer: ViteDevServer) => void
-  isViteDev?: boolean
-  viteConfig?: ResolvedConfig
-  // TODO/now remove
-  vikeConfig?: VikeConfigObject
-  outDirRoot?: string
-  isPrerendering?: true
-  initGlobalContext_runPrerender_alreadyCalled?: true
-  buildEntry?: unknown
-  buildEntryPrevious?: unknown
-}>('globalContext.ts', getInitialGlobalContext())
-
-initDevEntry()
+const globalObject = getGlobalObject<
+  {
+    globalContext?: GlobalContext
+    viteDevServer?: ViteDevServer
+    isViteDev?: boolean
+    viteConfig?: ResolvedConfig
+    // TODO/now remove
+    vikeConfig?: VikeConfigObject
+    outDirRoot?: string
+    isPrerendering?: true
+    initGlobalContext_runPrerender_alreadyCalled?: true
+    buildEntry?: unknown
+    buildEntryPrevious?: unknown
+    pageConfigsRuntime?: PageConfigsRuntime
+    pageConfigsRuntimePromise?: Promise<void>
+  } & ReturnType<typeof getInitialGlobalContext>
+>('globalContext.ts', getInitialGlobalContext())
 
 type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig'>
-type PageRuntimeInfo = Awaited<ReturnType<typeof getPageRuntimeInfo>>['userFiles']
+type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
 type GlobalContext = {
   viteConfigRuntime: {
     _baseViteOriginal: null | string
@@ -101,11 +104,12 @@ type GlobalContext = {
       ))
   )
 
-function getGlobalContext(): GlobalContext {
+async function getGlobalContext(): Promise<GlobalContext> {
   if (!globalObject.globalContext) {
     debug('getGlobalContext()', new Error().stack)
     assert(false)
   }
+  await globalObject.pageConfigsRuntimePromise
   return globalObject.globalContext
 }
 
@@ -126,7 +130,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
     }`
   )
   await initGlobalContext_getGlobalContextAsync(isProduction)
-  const { globalContext } = globalObject
+  const globalContext = await getGlobalContext()
   assert(globalContext)
   return makePublic(globalContext)
 }
@@ -141,7 +145,8 @@ function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
   globalObject.viteDevServerPromiseResolve(viteDevServer)
-  eagerlyLoadUserFiles()
+  // Call it as early as possible here for better performance.
+  updateVirtualFile()
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: string): void {
   if (globalObject.viteConfig) return
@@ -171,6 +176,7 @@ function getViteConfig(): ResolvedConfig | null {
   return globalObject.viteConfig ?? null
 }
 
+// TODO/now: call initGlobalContext() sooner?
 async function initGlobalContext_renderPage(): Promise<void> {
   debug('initGlobalContext_renderPage()')
   await initGlobalContext(!globalObject.isViteDev)
@@ -226,7 +232,9 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
     assert(vikeConfig)
     assert(viteDevServer)
     assert(!isPrerendering)
-    const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
+    assert(globalObject.pageConfigsRuntimePromise)
+    await globalObject.pageConfigsRuntimePromise
+    const userFiles = await getUserFiles()
     const viteConfigRuntime = getViteConfigRuntime(viteConfig)
     globalObject.globalContext = {
       isProduction: false,
@@ -234,19 +242,17 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       assetsManifest: null,
       viteDevServer,
       viteConfig,
-      config: globalConfig.config,
       ...userFiles,
       viteConfigRuntime
     }
   } else {
     const buildEntry = await getBuildEntry(globalObject.outDirRoot, isPrerendering)
     const { assetsManifest, buildInfo } = buildEntry
-    setPageFiles(buildEntry.pageFiles)
-    const { globalConfig, userFiles } = await getPageRuntimeInfo(isProduction)
+    await updateVirtualFileExports(buildEntry.virtualFileExports)
+    const userFiles = await getUserFiles()
     const globalContext = {
       isProduction: true as const,
       assetsManifest,
-      config: globalConfig.config,
       ...userFiles,
       viteDevServer: null,
       viteConfigRuntime: buildInfo.viteConfigRuntime,
@@ -269,11 +275,13 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   }
 }
 
-async function getPageRuntimeInfo(isProduction: boolean) {
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig } = await getPageFilesAll(
-    false,
-    isProduction
-  )
+async function getUserFiles() {
+  // Help TypeScript resolve what TypeScript (wrongfully) believes to be cyclic dependency
+  const globalObject_ = globalObject as { pageConfigsRuntime?: PageConfigsRuntime }
+  const { pageConfigsRuntime } = globalObject_
+  assert(pageConfigsRuntime)
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig } = pageConfigsRuntime
+
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageFilesAll,
     pageConfigs,
@@ -286,14 +294,15 @@ async function getPageRuntimeInfo(isProduction: boolean) {
     pageConfigGlobal,
     allPageIds,
     pageRoutes,
-    onBeforeRouteHook
+    onBeforeRouteHook,
+    config: globalConfig.config
   }
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
     pageConfigs.length > 0,
     pageFilesAll
   )
-  return { userFiles, globalConfig }
+  return userFiles
 }
 
 function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
@@ -308,12 +317,6 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
       assert(typeof entry.file === 'string')
     })
   */
-}
-
-function eagerlyLoadUserFiles() {
-  // Other than here, the getPageFilesExports() function is only called only upon calling the renderPage() function.
-  // We call it as early as possible here for better performance.
-  getPageFilesExports()
 }
 
 async function getBuildEntry(outDir?: string, isPrerendering?: true) {
@@ -341,7 +344,7 @@ function setGlobalContext_buildEntry(buildEntry: unknown) {
 }
 
 type BuildEntry = {
-  pageFiles: Record<string, unknown>
+  virtualFileExports: Record<string, unknown>
   assetsManifest: ViteManifest
   buildInfo: BuildInfo
 }
@@ -354,15 +357,15 @@ type BuildInfo = {
 }
 function assertBuildEntry(buildEntry: unknown): asserts buildEntry is BuildEntry {
   assert(isObject(buildEntry))
-  assert(hasProp(buildEntry, 'pageFiles', 'object'))
-  const { pageFiles } = buildEntry
+  assert(hasProp(buildEntry, 'virtualFileExports', 'object'))
+  const { virtualFileExports } = buildEntry
   assert(hasProp(buildEntry, 'assetsManifest', 'object'))
   const { assetsManifest } = buildEntry
   assertViteManifest(assetsManifest)
   assert(hasProp(buildEntry, 'buildInfo', 'object'))
   const { buildInfo } = buildEntry
   assertBuildInfo(buildInfo)
-  checkType<BuildEntry>({ pageFiles, assetsManifest, buildInfo })
+  checkType<BuildEntry>({ virtualFileExports, assetsManifest, buildInfo })
 }
 function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   assert(isObject(buildInfo))
@@ -389,12 +392,13 @@ function getViteConfigRuntime(viteConfig: ResolvedConfig): BuildInfo['viteConfig
   return viteConfigRuntime
 }
 
-function initDevEntry() {
-  setPageFilesAsync(getPageFilesExports)
-}
-async function getPageFilesExports(): Promise<Record<string, unknown>> {
+async function updateVirtualFile() {
+  const { promise, resolve } = genPromise<void>()
+  globalObject.pageConfigsRuntimePromise = promise
+
   const viteDevServer = getViteDevServer()
   assert(viteDevServer)
+  // TODO/now: rename
   let moduleExports: Record<string, unknown>
   try {
     moduleExports = await viteDevServer.ssrLoadModule(virtualFileIdImportUserCodeServer)
@@ -404,8 +408,18 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
   }
   moduleExports = (moduleExports as any).default || moduleExports
   debugGlob('Glob result: ', moduleExports)
-  assert(isObject(moduleExports))
-  return moduleExports
+
+  await updateVirtualFileExports(moduleExports)
+  resolve()
+}
+
+async function updateVirtualFileExports(virtualFileExports: unknown) {
+  globalObject.pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
+  const userFiles = await getUserFiles()
+  // TODO/now: is there a more elegant way?
+  if (globalObject.globalContext) {
+    objectAssignSafe(globalObject.globalContext, userFiles)
+  }
 }
 
 function clearGlobalContext() {

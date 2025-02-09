@@ -48,14 +48,14 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   // After the old design is removed, let's maybe simplify and move everything into a single virtual module
   const importerCode = [
     `  import { setGlobalContext_buildEntry } from '${importPath}';`,
-    `  import * as pageFiles from '${virtualFileIdImportUserCodeServer}';`,
+    `  import * as virtualFileExports from '${virtualFileIdImportUserCodeServer}';`,
     `  {`,
     // Because of a Rollup bug, we have to assign ASSETS_MANIFEST to a variable before passing it to setGlobalContext_buildEntry()
     // - This workaround doesn't work: https://github.com/vikejs/vike/commit/d5f3a4f7aae5a8bc44192e6cbb2bcb9007be188d
     `    const assetsManifest = ${ASSETS_MANIFEST};`,
     `    const buildInfo = ${JSON.stringify(buildInfo, null, 2)};`,
     '    setGlobalContext_buildEntry({',
-    `      pageFiles,`,
+    `      virtualFileExports,`,
     `      assetsManifest,`,
     `      buildInfo,`,
     '    });',

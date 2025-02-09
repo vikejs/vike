@@ -14,6 +14,7 @@ import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 import { getPlusFileValueConfigName } from './v1-design/getVikeConfig/getPlusFilesAll.js'
+import { updateVirtualFile } from '../../../runtime/globalContext.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -129,6 +130,7 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
     logConfigInfo(msg, 'info')
   }
   reloadVikeConfig(config)
+  updateVirtualFile()
 }
 
 function getVirtualModules(server: ViteDevServer): ModuleNode[] {

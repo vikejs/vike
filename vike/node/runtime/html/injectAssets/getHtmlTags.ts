@@ -45,7 +45,7 @@ type HtmlTag = {
   htmlTag: string | (() => string)
   position: Position
 }
-function getHtmlTags(
+async function getHtmlTags(
   pageContext: { _isStream: boolean } & PageContextInjectAssets,
   streamFromReactStreamingPackage: null | StreamFromReactStreamingPackage,
   injectFilter: PreloadFilter,
@@ -55,7 +55,7 @@ function getHtmlTags(
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
-  const { isProduction } = getGlobalContext()
+  const { isProduction } = await getGlobalContext()
   const injectScriptsAt = getInjectScriptsAt(pageContext.pageId, pageContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = []

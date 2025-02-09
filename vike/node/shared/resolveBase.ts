@@ -25,8 +25,8 @@ type BaseUrlsResolved = {
   baseAssets: string
 }
 
-function resolveBaseRuntime() {
-  const globalContext = getGlobalContext()
+async function resolveBaseRuntime() {
+  const globalContext = await getGlobalContext()
   const baseViteOriginal = globalContext.viteConfigRuntime._baseViteOriginal
   const baseServerUnresolved = globalContext.config.baseServer ?? null
   const baseAssetsUnresolved = globalContext.config.baseAssets ?? null
