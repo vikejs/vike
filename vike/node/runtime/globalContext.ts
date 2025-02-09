@@ -215,17 +215,17 @@ async function initGlobalContext_getGlobalContextAsync(isProduction: boolean): P
 }
 async function waitForViteDevServer() {
   debug('waitForViteDevServer()')
-    const waitFor = 20
-    const timeout = setTimeout(() => {
-      assertWarning(false, `Vite's development server still not created after ${waitFor} seconds.`, {
-        onlyOnce: false,
-        showStackTrace: true
-      })
-    }, waitFor * 1000)
-    await globalObject.viteDevServerPromise
-    clearTimeout(timeout)
-    await updateVirtualFile()
-    globalObject.userFiles = await getUserFiles()
+  const waitFor = 20
+  const timeout = setTimeout(() => {
+    assertWarning(false, `Vite's development server still not created after ${waitFor} seconds.`, {
+      onlyOnce: false,
+      showStackTrace: true
+    })
+  }, waitFor * 1000)
+  await globalObject.viteDevServerPromise
+  clearTimeout(timeout)
+  await updateVirtualFile()
+  globalObject.userFiles = await getUserFiles()
 }
 
 async function initGlobalContext(isProduction: boolean): Promise<void> {
