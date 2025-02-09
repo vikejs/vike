@@ -1600,7 +1600,7 @@ importers:
         specifier: link:../../vike
         version: link:../../vike
       vike-node:
-        specifier: ^0.3.0
+        specifier: ^0.3.5
         version: 0.3.5(vike@vike)(vite@5.4.14(@types/node@22.13.1)(terser@5.38.1))
       vike-react:
         specifier: ^0.5.12
