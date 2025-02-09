@@ -245,7 +245,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
       viteConfigRuntime
     }
   } else {
-    const buildEntry = await getBuildEntry(globalObject.outDirRoot, isPrerendering)
+    const buildEntry = await getBuildEntry(globalObject.outDirRoot)
     const { assetsManifest, buildInfo } = buildEntry
     await updateVirtualFileExports(buildEntry.virtualFileExports)
     const userFiles = await getUserFiles()
@@ -318,7 +318,7 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
   */
 }
 
-async function getBuildEntry(outDir?: string, isPrerendering?: true) {
+async function getBuildEntry(outDir?: string) {
   debug('getBuildEntry()')
   if (!globalObject.buildEntry) {
     debug('importServerProductionEntry()')
