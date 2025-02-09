@@ -44,7 +44,6 @@ const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin[] {
   let isServerAssetsFixEnabled: boolean
-  let isSsrBuild: boolean
   let outDirs: OutDirs
   let config: ResolvedConfig
   return [
@@ -63,7 +62,6 @@ function buildConfig(): Plugin[] {
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
           outDirs = getOutDirs(config)
-          isSsrBuild = viteIsSSR(config)
           {
             isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
             if (isServerAssetsFixEnabled) {
@@ -109,7 +107,7 @@ function buildConfig(): Plugin[] {
         order: 'pre',
         sequential: true,
         async handler(options, bundle) {
-          if (isSsrBuild || vite6IsSSR(this)) {
+          if (viteIsSSR(config) || vite6IsSSR(this)) {
             // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
             //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
             //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
