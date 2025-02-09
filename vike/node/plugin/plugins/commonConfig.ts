@@ -33,23 +33,16 @@ declare module 'vite' {
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
-    _isVite6Builder?: IsVite6Builder
     // TODO/now add pages
     vike?: { config: VikeConfigObject['global']['config']; prerenderContext?: PrerenderContextPublic }
   }
 }
-type IsVite6Builder = false | { isSSR: boolean }
 
 function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
-  let isVite6Builder: IsVite6Builder = false
   return [
     {
       name: `${pluginName}:pre`,
       enforce: 'pre',
-      applyToEnvironment(env) {
-        isVite6Builder = { isSSR: env.name === 'ssr' }
-        return true
-      },
       config: {
         order: 'pre',
         async handler(configFromUser, env) {
@@ -62,7 +55,6 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _isDev: isDev,
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
-            _isVite6Builder: isVite6Builder,
             vike: { config: vikeConfig.global.config },
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
