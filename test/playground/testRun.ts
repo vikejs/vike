@@ -2,7 +2,7 @@ export { testRun }
 
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { testRun as testRunClassic } from '../../examples/react-minimal/.testRun'
+import { testRunClassic } from '../../test/utils'
 import { testCumulativeSetting } from './pages/about/e2e-test'
 import { testSettingEffect } from './pages/config-meta/effect/e2e-test'
 import { testSettingInheritedByDescendants } from './pages/config-meta/cumulative/e2e-test'
