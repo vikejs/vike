@@ -8,7 +8,6 @@ export { getViteDevServer }
 export { getViteConfig }
 export { initGlobalContext_renderPage }
 export { initGlobalContext_runPrerender }
-export { initGlobalContext_getGlobalContextAsync }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_vikeConfig }
