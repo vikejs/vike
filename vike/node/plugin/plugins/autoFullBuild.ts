@@ -6,7 +6,7 @@ export { autoFullBuild }
 
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
-import { assertWarning } from '../utils.js'
+import { assert, assertWarning } from '../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
 import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
 import type { VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
@@ -58,6 +58,7 @@ function autoFullBuild(): Plugin[] {
         handler() {
           if (forceExit) {
             runPrerender_forceExit()
+            assert(false)
           }
         }
       }

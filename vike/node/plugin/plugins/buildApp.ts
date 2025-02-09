@@ -1,4 +1,4 @@
-import { runPrerenderFromAutoRun } from '../../prerender/runPrerender.js'
+import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../prerender/runPrerender.js'
 
 export { buildApp }
 
@@ -66,7 +66,10 @@ function buildApp(): Plugin[] {
         const configInline = getFullBuildInlineConfig(config)
 
         const { forceExit } = await runPrerenderFromAutoRun(configInline, config)
-        if (forceExit) process.exit(0)
+        if (forceExit) {
+          runPrerender_forceExit()
+          assert(false)
+        }
       }
     }
   ]

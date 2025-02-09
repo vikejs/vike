@@ -175,6 +175,7 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
     process.exit(1)
   }
   runPrerender_forceExit()
+  assert(false)
 }
 async function runPrerenderFromAutoRun(
   viteConfig: InlineConfig | undefined,
