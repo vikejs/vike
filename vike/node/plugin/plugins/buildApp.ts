@@ -22,7 +22,6 @@ function buildApp(): Plugin[] {
         if (!config.vike!.config.viteEnvironmentAPI) return
 
         return {
-          appType: 'custom',
           builder: {
             buildApp: async (builder) => {
               assert(builder.environments.client)
