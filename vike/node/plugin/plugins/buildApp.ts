@@ -34,7 +34,7 @@ function buildApp(): Plugin[] {
             ssr: {
               consumer: 'server',
               build: {
-                outDir: resolveOutDir(config, true) || 'dist/server',
+                outDir: resolveOutDir(config, true),
                 ssr: true
               }
             },
