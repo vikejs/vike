@@ -19,21 +19,9 @@ type OutDirs = {
 
 function getOutDirs(config: ResolvedConfig): OutDirs {
   debug('getOutDirs()', new Error().stack)
-  let outDirRoot: string
-  {
-    const outDir = getOutDirFromViteResolvedConfig(config)
-    if (isOutDirRoot(outDir)) {
-      outDirRoot = outDir
-    } else {
-      assertOutDirResolved(outDir, config)
-      assert(outDir.endsWith('/server') || outDir.endsWith('/client'))
-      assert('/client'.length === '/server'.length)
-      outDirRoot = outDir.slice(0, -1 * '/client'.length)
-    }
-  }
-  debug('outDirRoot', outDirRoot)
-  const outDirs = getOutDirsAllFromRoot(outDirRoot, config.root)
-  debug('outDirs', outDirs)
+  const outDir = getOutDirFromViteResolvedConfig(config)
+  if (!isOutDirRoot(outDir)) assertOutDirResolved(outDir, config)
+  const outDirs = getOutDirsAll(outDir, config.root)
   return outDirs
 }
 
@@ -70,7 +58,22 @@ function determineOutDirs(outDirRoot: string) {
   return { outDirClient, outDirServer }
 }
 
-// function getOutDirsAll
+function getOutDirsAll(outDir: string, root: string) {
+  let outDirRoot: string
+  {
+    if (isOutDirRoot(outDir)) {
+      outDirRoot = outDir
+    } else {
+      assert(outDir.endsWith('/server') || outDir.endsWith('/client'))
+      assert('/client'.length === '/server'.length)
+      outDirRoot = outDir.slice(0, -1 * '/client'.length)
+    }
+  }
+  debug('outDirRoot', outDirRoot)
+  const outDirs = getOutDirsAllFromRoot(outDirRoot, root)
+  debug('outDirs', outDirs)
+  return outDirs
+}
 
 function getOutDirsAllFromRoot(outDirRoot: string, root: string): OutDirs {
   if (!outDirIsAbsolutePath(outDirRoot)) {
