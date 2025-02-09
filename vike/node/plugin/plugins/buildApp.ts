@@ -54,12 +54,15 @@ function buildApp(): Plugin[] {
       apply: 'build',
       enforce: 'pre',
       applyToEnvironment(env) {
+        console.log('applyToEnvironment()')
         return env.name === 'ssr'
       },
       configResolved(_config) {
+        console.log('configResolved()')
         config = _config
       },
       async writeBundle() {
+        console.log('writeBundle()')
         if (!config.vike!.config.viteEnvironmentAPI) return
 
         const vikeConfig = await getVikeConfig(config)
