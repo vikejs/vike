@@ -1,13 +1,7 @@
 export { testRun as test }
 
 import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectLog, partRegex } from '@brillout/test-e2e'
-import {
-  ensureWasClientSideRouted,
-  expectUrl,
-  hydrationDone,
-  testCounter,
-  expectPageContextJsonRequest
-} from '../utils'
+import { ensureWasClientSideRouted, expectUrl, testCounter, expectPageContextJsonRequest } from '../utils'
 
 function testRun(
   cmd: 'npm run dev:server' | 'npm run dev' | 'npm run preview' | 'npm run prod',
@@ -145,4 +139,8 @@ function testRun(
     await page.click('a[href="/star-wars-api/films/1.json"]')
     await page.waitForURL('https://brillout.github.io/star-wars/api/films/1.json')
   })
+}
+
+async function hydrationDone() {
+  await testCounter()
 }

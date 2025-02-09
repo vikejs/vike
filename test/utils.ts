@@ -1,5 +1,4 @@
 export { testCounter }
-export { hydrationDone }
 export { ensureWasClientSideRouted }
 export { expectUrl }
 export { expectPageContextJsonRequest }
@@ -25,9 +24,6 @@ async function testCounter(currentValue = 0) {
     },
     { timeout: 5 * 1000 }
   )
-}
-async function hydrationDone() {
-  await testCounter()
 }
 
 function expectUrl(pathname: string) {
