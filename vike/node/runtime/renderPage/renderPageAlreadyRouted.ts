@@ -128,7 +128,7 @@ async function prerenderPage(
 }
 
 async function prerender404Page(pageContextInit_: Record<string, unknown> | null) {
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
   if (!errorPageId) {
     return null
@@ -150,7 +150,7 @@ async function prerender404Page(pageContextInit_: Record<string, unknown> | null
   }
   objectAssign(pageContextInit, pageContextInit_)
   {
-    const pageContextInitEnhanced = getPageContextInitEnhanced(pageContextInit)
+    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
 
@@ -159,8 +159,8 @@ async function prerender404Page(pageContextInit_: Record<string, unknown> | null
   return prerenderPage(pageContext)
 }
 
-type PageContextInitEnhanced = ReturnType<typeof getPageContextInitEnhanced>
-function getPageContextInitEnhanced(
+type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhanced>>
+async function getPageContextInitEnhanced(
   pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
   {
     ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
@@ -178,8 +178,8 @@ function getPageContextInitEnhanced(
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const globalContext = getGlobalContext()
-  const { baseServer, baseAssets } = resolveBaseRuntime()
+  const globalContext = await getGlobalContext()
+  const { baseServer, baseAssets } = await resolveBaseRuntime()
   const pageContextInitEnhanced = {}
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {

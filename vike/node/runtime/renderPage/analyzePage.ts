@@ -10,7 +10,11 @@ import { analyzeClientSide } from '../../../shared/getPageFiles/analyzeClientSid
 import { getGlobalContext } from '../globalContext.js'
 import { getConfigValueRuntime } from '../../../shared/page-configs/getConfigValueRuntime.js'
 
-function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRuntime, pageId: string): AnalysisResult {
+async function analyzePage(
+  pageFilesAll: PageFile[],
+  pageConfig: null | PageConfigRuntime,
+  pageId: string
+): Promise<AnalysisResult> {
   if (pageConfig) {
     const { isClientRuntimeLoaded, isClientRouting } = analyzeClientSide(pageConfig, pageFilesAll, pageId)
     const clientEntries: string[] = []
@@ -23,8 +27,9 @@ function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfigRunt
       onlyAssets: isClientRuntimeLoaded ? false : true,
       eagerlyImported: false
     })
+    const gloablContext = await getGlobalContext()
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
-    if (!getGlobalContext().isProduction) {
+    if (!gloablContext.isProduction) {
       clientDependencies.push({
         id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
         onlyAssets: true,

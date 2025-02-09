@@ -5,7 +5,7 @@ import { assert, assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 async function getViteDevScript(): Promise<string> {
-  const globalContext = getGlobalContext()
+  const globalContext = await getGlobalContext()
   if (globalContext.isProduction) {
     return ''
   }
