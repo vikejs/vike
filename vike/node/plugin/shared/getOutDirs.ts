@@ -31,14 +31,15 @@ function getOutDirs(config: ResolvedConfig): OutDirs {
       outDirRoot = outDir.slice(0, -1 * '/client'.length)
     }
   }
-  const outDirs = getOutDirsAll(outDirRoot, config.root)
   debug('outDirRoot', outDirRoot)
+  const outDirs = getOutDirsAllFromRoot(outDirRoot, config.root)
   debug('outDirs', outDirs)
   return outDirs
 }
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
-function resolveOutDir(config: UserConfig, forceSSR?: true): string {
+function resolveOutDir(config: UserConfig, isSSR?: true): string {
+  const isServerSide = viteIsSSR(config) || isSSR
   debug('resolveOutDir()', new Error().stack)
   const outDir = getOutDirFromViteUserConfig(config) || 'dist'
   debug('outDir', 'outDir')
@@ -48,7 +49,7 @@ function resolveOutDir(config: UserConfig, forceSSR?: true): string {
     return outDir
   } else {
     const { outDirClient, outDirServer } = determineOutDirs(outDir)
-    if (viteIsSSR(config) || forceSSR) {
+    if (isServerSide) {
       debug('outDirServer', 'outDirServer')
       return outDirServer
     } else {
@@ -69,7 +70,9 @@ function determineOutDirs(outDirRoot: string) {
   return { outDirClient, outDirServer }
 }
 
-function getOutDirsAll(outDirRoot: string, root: string) {
+// function getOutDirsAll
+
+function getOutDirsAllFromRoot(outDirRoot: string, root: string): OutDirs {
   if (!outDirIsAbsolutePath(outDirRoot)) {
     assertPosixPath(outDirRoot)
     assertPosixPath(root)
@@ -103,15 +106,17 @@ function assertIsNotOutDirRoot(outDir: string) {
   assert(outDir.endsWith('/client') || outDir.endsWith('/server'))
 }
 
-/** `outDir` ends with `/server` or `/client` */
+/** Assert that `outDir` ends with `/server` or `/client` */
 function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfig) {
   assertPosixPath(outDir)
   assertIsNotOutDirRoot(outDir)
+
   assert('/client'.length === '/server'.length)
   const outDirCorrected = outDir.slice(0, -1 * '/client'.length)
   const wrongUsage = `You've set Vite's config.build.outDir to ${pc.cyan(outDir)} but you should set it to ${pc.cyan(
     outDirCorrected
   )} instead.`
+
   if (viteIsSSR(config)) {
     assertUsage(outDir.endsWith('/server'), wrongUsage)
   } else {
