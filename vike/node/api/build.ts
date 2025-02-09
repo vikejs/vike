@@ -34,8 +34,8 @@ async function build(options: APIOptions = {}): Promise<{}> {
     //    > We purposely don't start the pre-rendering in this `build()` function but in a Rollup hook instead.
     //    > Rationale: https://github.com/vikejs/vike/issues/2123
     await buildVite(viteConfigEnhanced)
-    // When using the Vike CLI with pre-rendering the process is forcefully exited at the end of the buildVite() call above
-    assert(!(isVikeCli() && isPrerendering()))
+    // After pre-rendering, when using the Vike CLI, the process is forcefully exited at the end of the buildVite() call above.
+    if (isVikeCli() && isPrerendering()) assert(false)
   }
 
   return {
