@@ -60,6 +60,8 @@ function buildApp(): Plugin[] {
         config = _config
       },
       async writeBundle() {
+        if (!config.vike!.config.viteEnvironmentAPI) return
+
         const vikeConfig = await getVikeConfig(config)
         if (!isPrerenderAutoRunEnabled(vikeConfig)) return
 
