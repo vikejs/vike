@@ -2,10 +2,10 @@ import { runPrerenderFromAutoRun } from '../../prerender/runPrerender.js'
 
 export { buildApp }
 
-import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
 import { resolveOutDir } from '../shared/getOutDirs.js'
-import { getViteConfigFromCli, isViteCliCall } from '../shared/isViteCliCall.js'
+import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { assert } from '../utils.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCli } from '../../cli/context.js'
