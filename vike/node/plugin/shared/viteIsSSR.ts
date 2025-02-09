@@ -3,15 +3,15 @@ import { assert } from '../../../utils/assert.js'
 import { isObject } from '../../../utils/isObject.js'
 
 export { viteIsSSR }
-export { vite6IsSSR }
 export { viteIsSSR_options }
 
 function viteIsSSR(config: ResolvedConfig | UserConfig): boolean {
-  return !!config?.build?.ssr
-}
-
-function vite6IsSSR<T extends { environment: { name: string } }>(self: T): boolean {
-  return 'environment' in self && self.environment.name === 'ssr'
+  if (!!config?.build?.ssr) return true
+  if (config.vike!.config.viteEnvironmentAPI) {
+    assert(config._isVite6Builder)
+    return config._isVite6Builder!.isSSR
+  }
+  return false
 }
 
 type Options = undefined | boolean | { ssr?: boolean }
