@@ -253,7 +253,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   viteEnvironmentAPI: {
     env: { config: true },
     global: true,
-    type: ['boolean']
+    type: 'boolean'
   },
   includeAssetsImportedByServer: {
     env: { config: true },
