@@ -130,16 +130,16 @@ function assertOutDirResolved(outDir: string, config: UserConfig | ResolvedConfi
 function getOutDirFromViteUserConfig(config: UserConfig | ResolvedConfig): string | undefined {
   let outDir = config.build?.outDir
   if (outDir === undefined) return undefined
-  outDir = normalize(outDir)
+  outDir = normalizeOutDir(outDir)
   return outDir
 }
 function getOutDirFromViteResolvedConfig(config: ResolvedConfig): string {
   let outDir = config.build.outDir
   assert(outDir)
-  outDir = normalize(outDir)
+  outDir = normalizeOutDir(outDir)
   return outDir
 }
-function normalize(outDir: string): string {
+function normalizeOutDir(outDir: string): string {
   outDir = toPosixPath(outDir)
   outDir = outDir.replace(/\/+$/, '') // remove trailing slashes
   return outDir
