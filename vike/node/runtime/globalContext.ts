@@ -66,6 +66,7 @@ const globalObject = getGlobalObject<
     buildEntryPrevious?: unknown
     pageConfigsRuntime?: PageConfigsRuntime
     pageConfigsRuntimePromise?: Promise<void>
+    isProduction?: boolean
   } & ReturnType<typeof getInitialGlobalContext>
 >('globalContext.ts', getInitialGlobalContext())
 
@@ -104,11 +105,15 @@ type GlobalContext = {
   )
 
 async function getGlobalContext(): Promise<GlobalContext> {
+  await globalObject.pageConfigsRuntimePromise
+  const globalContext = getGlobalContextObject()
+  return globalContext
+}
+function getGlobalContextObject(): GlobalContext {
   if (!globalObject.globalContext) {
     debug('getGlobalContext()', new Error().stack)
     assert(false)
   }
-  await globalObject.pageConfigsRuntimePromise
   return globalObject.globalContext
 }
 
