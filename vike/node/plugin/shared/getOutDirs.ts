@@ -27,29 +27,27 @@ function getOutDirs(config: ResolvedConfig): OutDirs {
 
 /** Appends `client/` or `server/` to `config.build.outDir` */
 function resolveOutDir(config: UserConfig, isSSR?: true): string {
-  const isServerSide = viteIsSSR(config) || isSSR
   debug('resolveOutDir()', new Error().stack)
+  const isServerSide = viteIsSSR(config) || isSSR
+  debug('isServerSide', isServerSide)
   const outDir = getOutDirFromViteUserConfig(config) || 'dist'
-  debug('outDir', 'outDir')
-  // outDir may already be resolved when using Telefunc + vike (because both Telefunc and vike use this logic)
-  if (!isOutDirRoot(outDir)) {
-    assertOutDirResolved(outDir, config)
-    return outDir
+  debug('outDir', outDir)
+  /* outDir may already be resolved when using Telefunc + Vike (because both Telefunc and Vike use this logic)
+  assert(isOutDirRoot(outDir))
+  */
+
+  const { outDirClient, outDirServer } = getOutDirsAll(outDir)
+  if (isServerSide) {
+    debug('outDirServer', 'outDirServer')
+    return outDirServer
   } else {
-    const { outDirClient, outDirServer } = determineOutDirs(outDir)
-    if (isServerSide) {
-      debug('outDirServer', 'outDirServer')
-      return outDirServer
-    } else {
-      debug('outDirClient', 'outDirClient')
-      return outDirClient
-    }
+    debug('outDirClient', 'outDirClient')
+    return outDirClient
   }
 }
 
 function determineOutDirs(outDirRoot: string) {
   assertPosixPath(outDirRoot)
-  assert(!outDirRoot.endsWith('/'))
   assert(isOutDirRoot(outDirRoot))
   const outDirClient = pathJoin(outDirRoot, 'client')
   const outDirServer = pathJoin(outDirRoot, 'server')
@@ -58,7 +56,7 @@ function determineOutDirs(outDirRoot: string) {
   return { outDirClient, outDirServer }
 }
 
-function getOutDirsAll(outDir: string, root: string) {
+function getOutDirsAll(outDir: string, root?: string) {
   let outDirRoot: string
   {
     if (isOutDirRoot(outDir)) {
@@ -70,13 +68,21 @@ function getOutDirsAll(outDir: string, root: string) {
     }
   }
   debug('outDirRoot', outDirRoot)
-  const outDirs = getOutDirsAllFromRoot(outDirRoot, root)
+  let outDirs: OutDirs
+  if (root) {
+    outDirs = getOutDirsAllFromRootNormalized(outDirRoot, root)
+  } else {
+    outDirs = getOutDirsAllFromRoot(outDirRoot)
+  }
   debug('outDirs', outDirs)
   return outDirs
 }
-
-function getOutDirsAllFromRoot(outDirRoot: string, root: string): OutDirs {
-  if (!outDirIsAbsolutePath(outDirRoot)) {
+function getOutDirsAllFromRoot(outDirRoot: string) {
+  let { outDirClient, outDirServer } = determineOutDirs(outDirRoot)
+  return { outDirRoot, outDirClient, outDirServer }
+}
+function getOutDirsAllFromRootNormalized(outDirRoot: string, root: string): OutDirs {
+  if (root && !outDirIsAbsolutePath(outDirRoot)) {
     assertPosixPath(outDirRoot)
     assertPosixPath(root)
     outDirRoot = pathJoin(root, outDirRoot)
