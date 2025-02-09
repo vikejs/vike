@@ -69,12 +69,13 @@ import { getVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVik
 import type { HookTimeout } from '../../shared/hooks/getHook.js'
 import { logErrorHint } from '../runtime/renderPage/logErrorHint.js'
 import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
-import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { setContextIsPrerendering } from './context.js'
 import { resolvePrerenderConfig, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../plugin/shared/getOutDirs.js'
+import { isVikeCli } from '../cli/context.js'
+import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -174,10 +175,12 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
     process.exit(1)
   }
   runPrerender_forceExit()
+  assert(false)
 }
 async function runPrerenderFromAutoRun(
-  viteConfig: InlineConfig | undefined
-): Promise<{ prerenderContextPublic: PrerenderContextPublic }> {
+  viteConfig: InlineConfig | undefined,
+  config: ResolvedConfig
+): Promise<{ forceExit: boolean }> {
   let prerenderContextPublic: PrerenderContextPublic
   try {
     const ret = await runPrerender({ viteConfig })
@@ -187,7 +190,9 @@ async function runPrerenderFromAutoRun(
     logErrorHint(err)
     process.exit(1)
   }
-  return { prerenderContextPublic }
+  config.vike!.prerenderContext = prerenderContextPublic
+  const forceExit = isVikeCli() || isViteCliCall()
+  return { forceExit }
 }
 async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: '$ vike prerender' | 'prerender()') {
   setContextIsPrerendering()

@@ -506,6 +506,11 @@ type ConfigBuiltIn = {
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
+  /** Use Vite Environment API to orchestrate the build process.
+   * @experimental
+   */
+  viteEnvironmentAPI?: boolean
+
   /** The Base URL of your server.
    *
    * https://vike.dev/base-url

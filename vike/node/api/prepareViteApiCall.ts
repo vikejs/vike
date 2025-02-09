@@ -35,6 +35,7 @@ async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
   const viteConfigEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigEnhanced, vikeConfig)
   return {
+    vikeConfig,
     viteConfigEnhanced
   }
 }

@@ -250,12 +250,42 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       'string'
     ]
   },
-  includeAssetsImportedByServer: { env: { config: true }, global: true, type: 'boolean' },
-  baseAssets: { env: { config: true, server: true }, global: true, type: 'string' },
-  baseServer: { env: { config: true, server: true }, global: true, type: 'string' },
-  redirects: { env: { server: true }, global: true, type: 'string{}', cumulative: true },
-  trailingSlash: { env: { server: true }, global: true, type: 'boolean' },
-  disableUrlNormalization: { env: { server: true }, global: true, type: 'boolean' }
+  viteEnvironmentAPI: {
+    env: { config: true },
+    global: true,
+    type: 'boolean'
+  },
+  includeAssetsImportedByServer: {
+    env: { config: true },
+    global: true,
+    type: 'boolean'
+  },
+  baseAssets: {
+    env: { config: true, server: true },
+    global: true,
+    type: 'string'
+  },
+  baseServer: {
+    env: { config: true, server: true },
+    global: true,
+    type: 'string'
+  },
+  redirects: {
+    env: { server: true },
+    global: true,
+    type: 'string{}',
+    cumulative: true
+  },
+  trailingSlash: {
+    env: { server: true },
+    global: true,
+    type: 'boolean'
+  },
+  disableUrlNormalization: {
+    env: { server: true },
+    global: true,
+    type: 'boolean'
+  }
 }
 
 function getConfigEnv(configValueSources: ConfigValueSources, configName: string): null | ConfigEnvInternal {

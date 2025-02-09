@@ -30,6 +30,7 @@ import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.
 import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { workaroundVite6HmrRegression } from './plugins/workaroundVite6HmrRegression.js'
+import { buildApp } from './plugins/buildApp.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setResolveClientEntriesDev(resolveClientEntriesDev)
@@ -41,6 +42,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): any {
     importUserCode(),
     ...devConfig(),
     ...buildConfig(),
+    ...buildApp(),
     previewConfig(),
     ...autoFullBuild(),
     packageJsonFile(),

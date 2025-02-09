@@ -1,10 +1,12 @@
 // TODO/v1-release: remove this file
 
+import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
+
 export { autoFullBuild }
 
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
-import { assertWarning } from '../utils.js'
+import { assert, assertWarning } from '../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
 import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
 import type { VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
@@ -14,7 +16,6 @@ import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './buildConfig.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../api/context.js'
-import { isVikeCli } from '../../cli/context.js'
 
 let forceExit = false
 
@@ -57,6 +58,7 @@ function autoFullBuild(): Plugin[] {
         handler() {
           if (forceExit) {
             runPrerender_forceExit()
+            assert(false)
           }
         }
       }
@@ -73,20 +75,7 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
   //  - Issue & reproduction: https://github.com/vikejs/vike/issues/1154#issuecomment-1965954636
   if (!bundle[manifestTempFile]) return
 
-  const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
-  let configInline: InlineConfig
-  if (config._viteConfigEnhanced) {
-    configInline = config._viteConfigEnhanced
-  } else {
-    configInline = {
-      ...configFromCli,
-      configFile: configFromCli?.configFile || config.configFile,
-      root: config.root,
-      build: {
-        ...configFromCli?.build
-      }
-    }
-  }
+  const configInline = getFullBuildInlineConfig(config)
 
   try {
     await build(setSSR(configInline))
@@ -97,9 +86,8 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
-    const { prerenderContextPublic } = await runPrerenderFromAutoRun(configInline)
-    config.vike!.prerenderContext = prerenderContextPublic
-    forceExit = isVikeCli() || isViteCliCall()
+    const res = await runPrerenderFromAutoRun(configInline, config)
+    forceExit = res.forceExit
   }
 }
 
@@ -129,7 +117,10 @@ function abortViteBuildSsr(vikeConfig: VikeConfigObject) {
 }
 
 function isDisabled(vikeConfig: VikeConfigObject): boolean {
-  const { disableAutoFullBuild } = vikeConfig.global.config
+  const { disableAutoFullBuild, viteEnvironmentAPI } = vikeConfig.global.config
+  if (viteEnvironmentAPI) {
+    return true
+  }
   if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
     const isViteApi = !isViteCliCall() && !isVikeCliOrApi()
     return isViteApi
