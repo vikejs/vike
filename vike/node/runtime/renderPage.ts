@@ -159,13 +159,13 @@ async function renderPageAndPrepare(
 
   // Normalize URL
   {
-    const pageContextHttpResponse = await normalizeUrl(pageContextInit, httpRequestId)
+    const pageContextHttpResponse = await normalizeUrl(pageContextInit, globalContext, httpRequestId)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
   // Permanent redirects (HTTP status code `301`)
   {
-    const pageContextHttpResponse = await getPermanentRedirect(pageContextInit, httpRequestId)
+    const pageContextHttpResponse = await getPermanentRedirect(pageContextInit, globalContext, httpRequestId)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
@@ -262,7 +262,6 @@ async function renderPageAlreadyPrepared(
     }
 
     {
-      const globalContext = await getGlobalContext()
       const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
       if (!errorPageId) {
         objectAssign(pageContextErrorPageInit, { pageId: null })
@@ -522,8 +521,11 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
   )
 }
 
-async function normalizeUrl(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
-  const globalContext = await getGlobalContext()
+async function normalizeUrl(
+  pageContextInit: { urlOriginal: string },
+  globalContext: GlobalContext,
+  httpRequestId: number
+) {
   const { baseServer } = resolveBaseRuntime(globalContext)
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
@@ -543,8 +545,11 @@ async function normalizeUrl(pageContextInit: { urlOriginal: string }, httpReques
   return pageContextHttpResponse
 }
 
-async function getPermanentRedirect(pageContextInit: { urlOriginal: string }, httpRequestId: number) {
-  const globalContext = await getGlobalContext()
+async function getPermanentRedirect(
+  pageContextInit: { urlOriginal: string },
+  globalContext: GlobalContext,
+  httpRequestId: number
+) {
   const { baseServer } = resolveBaseRuntime(globalContext)
   const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
   let origin: null | string = null
@@ -610,13 +615,12 @@ async function handleAbortError(
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
 > {
-  logAbortErrorHandled(errAbort, (await getGlobalContext()).isProduction, pageContextNominalPageInit)
+  logAbortErrorHandled(errAbort, globalContext.isProduction, pageContextNominalPageInit)
 
   const pageContextAbort = errAbort._pageContextAbort
   let pageContextSerialized: string
   if (pageContextNominalPageInit.isClientSideNavigation) {
     if (pageContextAbort.abortStatusCode) {
-      const globalContext = await getGlobalContext()
       const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
       const abortCall = pageContextAbort._abortCall
       assert(abortCall)
