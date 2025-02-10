@@ -188,13 +188,14 @@ async function getPageContextInitEnhanced(
     _baseAssets: baseAssets,
     // TODO/now: add meta.default
     _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
-    // TODO: use GloablContext instead
+    // TODO/soon: use GloablContext instead
     _pageFilesAll: globalContext.pageFilesAll,
     _pageConfigs: globalContext.pageConfigs,
     _pageConfigGlobal: globalContext.pageConfigGlobal,
     _allPageIds: globalContext.allPageIds,
     _pageRoutes: globalContext.pageRoutes,
     _onBeforeRouteHook: globalContext.onBeforeRouteHook,
+    _globalContext: globalContext,
     _pageContextInit: pageContextInit,
     _urlRewrite: urlRewrite,
     _urlHandler: urlHandler,

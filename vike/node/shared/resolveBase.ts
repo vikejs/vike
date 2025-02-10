@@ -5,7 +5,7 @@ export { resolveBaseFromResolvedConfig }
 import { assert, assertUsage, isBaseServer, isBaseAssets } from './utils.js'
 import pc from '@brillout/picocolors'
 import type { ResolvedConfig } from 'vite'
-import { getGlobalContext, GlobalContext } from '../runtime/globalContext.js'
+import type { GlobalContext } from '../runtime/globalContext.js'
 
 function resolveBaseFromResolvedConfig(
   baseServer: string | null,

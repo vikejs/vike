@@ -150,12 +150,12 @@ async function renderPageAndPrepare(
   if (isConfigInvalid) {
     return handleInvalidConfig(isConfigInvalid.err)
   } else {
-    // From now on, gloablContext contains all the configuration data; getVikeConfig() isn't called anymore for this request
+    // From now on, globalContext contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
-  const gloablContext = await getGlobalContext()
+  const globalContext = await getGlobalContext()
 
   // Check Base URL
-  await assertBaseUrl(pageContextInit, gloablContext)
+  await assertBaseUrl(pageContextInit, globalContext)
 
   // Normalize URL
   {
@@ -169,7 +169,7 @@ async function renderPageAndPrepare(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  return await renderPageAlreadyPrepared(pageContextInit, gloablContext, httpRequestId, [])
+  return await renderPageAlreadyPrepared(pageContextInit, globalContext, httpRequestId, [])
 }
 
 async function renderPageAlreadyPrepared(

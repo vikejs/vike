@@ -20,7 +20,7 @@ import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFi
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
-import { getGlobalContext } from '../globalContext.js'
+import type { GlobalContext } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 
@@ -29,18 +29,19 @@ type PageContext_loadUserFilesServerSide = PageContextGetPageAssets &
     urlOriginal: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContext
   }
 type PageFiles = PromiseType<ReturnType<typeof loadUserFilesServerSide>>
 async function loadUserFilesServerSide(pageContext: { pageId: string } & PageContext_loadUserFilesServerSide) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext.pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
-  const globalContext = await getGlobalContext()
+  const globalContext = pageContext._globalContext
   const [{ pageFilesLoaded, pageContextExports }] = await Promise.all([
     loadPageUserFiles(pageContext._pageFilesAll, pageConfig, pageContext.pageId, !globalContext.isProduction),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext.pageId, { sharedPageFilesAlreadyLoaded: true })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    await analyzePage(pageContext._pageFilesAll, pageConfig, pageContext.pageId)
+    await analyzePage(pageContext._pageFilesAll, pageConfig, pageContext.pageId, globalContext)
   const isV1Design = !!pageConfig
 
   const passToClient: string[] = []
