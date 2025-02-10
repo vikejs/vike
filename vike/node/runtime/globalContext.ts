@@ -53,6 +53,8 @@ type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
+    globalContext?: GlobalContext
+    globalContext_public?: GlobalContextPublic
     viteDevServer?: ViteDevServer
     isViteDev?: boolean
     viteConfig?: ResolvedConfig
@@ -108,27 +110,32 @@ type GlobalContext = {
   )
 
 async function getGlobalContext(): Promise<GlobalContext> {
+  assertGlobalContextIsDefined()
   await globalObject.waitForUserFilesUpdate
-  const globalContext = getGlobalContextExpected()
+  const { globalContext } = globalObject
+  assertIsDefined(globalContext)
   return globalContext
 }
-function getGlobalContextExpected(): GlobalContext {
-  const globalContext = getGlobalContextOptional()
+function assertIsDefined(globalContext: undefined | null | GlobalContext): asserts globalContext is GlobalContext {
   if (!globalContext) {
+    debug('globalContext', globalContext)
     debug('getGlobalContext()', new Error().stack)
     assert(false)
   }
-  return globalContext
+}
+function assertGlobalContextIsDefined() {
+  assertIsDefined(globalObject.globalContext)
+  assert(globalObject.globalContext_public)
 }
 
 /** @experimental https://vike.dev/getGlobalContext */
 function getGlobalContextSync(): GlobalContextPublic {
-  const globalContext = getGlobalContextOptional()
+  const { globalContext_public } = globalObject
   assertUsage(
-    globalContext,
+    globalContext_public,
     "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContextAsync() instead."
   )
-  return makePublic(globalContext)
+  return globalContext_public
 }
 /** @experimental https://vike.dev/getGlobalContext */
 async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
@@ -139,21 +146,29 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
     }`
   )
   await initGlobalContext_getGlobalContextAsync(isProduction)
-  const globalContext = await getGlobalContext()
-  assert(globalContext)
-  return makePublic(globalContext)
+  assertGlobalContextIsDefined()
+  await globalObject.waitForUserFilesUpdate
+  assertGlobalContextIsDefined()
+  const { globalContext_public } = globalObject
+  assert(globalContext_public)
+  return globalContext_public
 }
+
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
   // TODO/soon: add `pages`
   const globalContextPublic = makePublicCopy(globalContext, 'globalContext', ['assetsManifest', 'config', 'viteConfig'])
   return globalContextPublic
 }
 
-function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
+async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
+  debug('setGlobalContext_viteDevServer()')
+  setIsProduction(false)
   if (globalObject.viteDevServer) return
   assertIsNotInitilizedYet()
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
+  await updateVirtualFile()
+  assertGlobalContextIsDefined()
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 }
 function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: string): void {
@@ -169,8 +184,7 @@ function setGlobalContext_vikeConfig(vikeConfig: VikeConfigObject): void {
 }
 function assertIsNotInitilizedYet() {
   // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
-  const globalContext = getGlobalContextOptional()
-  assert(!globalContext)
+  assert(!globalObject.globalContext)
 }
 function setGlobalContext_isViteDev(isViteDev: boolean) {
   globalObject.isViteDev = isViteDev
@@ -210,9 +224,6 @@ async function initGlobalContext_runPrerender(): Promise<void> {
 
 async function initGlobalContext_getGlobalContextAsync(isProduction: boolean): Promise<void> {
   debug('initGlobalContext_getGlobalContextAsync()')
-  if (!isProduction) {
-    await waitForViteDevServer()
-  }
   await initGlobalContext(isProduction)
 }
 async function waitForViteDevServer() {
@@ -226,27 +237,40 @@ async function waitForViteDevServer() {
   }, waitFor * 1000)
   await globalObject.viteDevServerPromise
   clearTimeout(timeout)
-  await updateVirtualFile()
-  globalObject.userFiles = await getUserFiles()
+  assertGlobalContextIsDefined()
 }
 
 async function initGlobalContext(isProduction: boolean): Promise<void> {
-  if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
-  globalObject.isProduction = isProduction
+  setIsProduction(isProduction)
   if (!isProduction) {
     await waitForViteDevServer()
   } else {
-    await loadUserFiles(globalObject.outDirRoot)
+    await loadBuildEntry(globalObject.outDirRoot)
   }
-  // We assume setGlobalContext_isPrerendering() is called before initGlobalContext()
+  assertGlobalContextIsDefined()
   /* TODO/now
   onSetupRuntime()
   */
 }
-function getGlobalContextOptional(): GlobalContext | null {
+function setIsProduction(isProduction: boolean) {
+  assert(typeof isProduction === 'boolean')
+  // TODO/now use onSetupRuntime()
+  if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
+  globalObject.isProduction = isProduction
+}
+function defineGlobalContext() {
+  const globalContext = assembleGlobalContext()
+  assertIsDefined(globalContext)
+  globalObject.globalContext = globalContext
+  globalObject.globalContext_public = makePublic(globalContext)
+  assertGlobalContextIsDefined()
+}
+function assembleGlobalContext(): GlobalContext | null {
   const { viteDevServer, viteConfig, vikeConfig, isPrerendering, isProduction, userFiles } = globalObject
+  assert(typeof isProduction === 'boolean')
   let globalContext: GlobalContext
   if (!isProduction) {
+    // Requires globalObject.viteDevServer
     if (!viteDevServer) return null
     assert(viteConfig)
     assert(vikeConfig)
@@ -263,7 +287,9 @@ function getGlobalContextOptional(): GlobalContext | null {
       viteConfigRuntime
     }
   } else {
-    if (!userFiles) return null
+    // Requires globalObject.buildEntry
+    if (!globalObject.buildEntry) return null
+    assert(userFiles)
     const { buildInfo, assetsManifest } = globalObject
     assert(buildInfo)
     assert(assetsManifest)
@@ -338,8 +364,8 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
   */
 }
 
-async function loadUserFiles(outDir?: string) {
-  debug('loadUserFiles()')
+async function loadBuildEntry(outDir?: string) {
+  debug('loadBuildEntry()')
   if (globalObject.userFiles) {
     assert(globalObject.buildInfo)
     assert(globalObject.assetsManifest)
@@ -368,16 +394,16 @@ async function loadUserFiles(outDir?: string) {
   assertBuildEntry(buildEntry)
   globalObject.assetsManifest = buildEntry.assetsManifest
   globalObject.buildInfo = buildEntry.buildInfo
-  await updateVirtualFileExports(buildEntry.virtualFileExports)
-  globalObject.userFiles = await getUserFiles()
+  await setUserFiles(buildEntry.virtualFileExports)
 }
 async function setGlobalContext_buildEntry(buildEntry: unknown) {
   debug('setGlobalContext_buildEntry()')
+  setIsProduction(true)
   assertBuildEntry(buildEntry)
   globalObject.buildEntry = buildEntry
   globalObject.buildEntryPrevious = buildEntry
-  // Eagerly initialize global context
-  await loadUserFiles()
+  assert(globalObject.buildEntry) // ensure no infinite loop
+  await loadBuildEntry()
 }
 
 type BuildEntry = {
@@ -455,14 +481,16 @@ async function updateVirtualFile() {
   moduleExports = (moduleExports as any).default || moduleExports
   debugGlob('Glob result: ', moduleExports)
 
-  await updateVirtualFileExports(moduleExports)
+  await setUserFiles(moduleExports)
   resolve()
 }
 
-async function updateVirtualFileExports(virtualFileExports: unknown) {
+async function setUserFiles(virtualFileExports: unknown) {
   globalObject.pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
   const userFiles = await getUserFiles()
   globalObject.userFiles = userFiles
+  defineGlobalContext()
+  assertGlobalContextIsDefined()
 }
 
 function clearGlobalContext() {
