@@ -39,6 +39,7 @@ import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import {
   getGlobalContext,
+  type GlobalContext,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
@@ -266,7 +267,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
 
-  await prerender404(prerenderContext, onComplete)
+  await prerender404(prerenderContext, globalContext, onComplete)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
@@ -457,7 +458,7 @@ async function callOnBeforePrerenderStartHooks(
                 )
               }
             }
-            const pageContextNew = await createPageContext(url, prerenderContext)
+            const pageContextNew = await createPageContext(url, prerenderContext, globalContext)
             objectAssign(pageContextNew, {
               _providedByHook: {
                 hookFilePath,
@@ -515,7 +516,7 @@ async function handlePagesWithStaticRoutes(
         }
 
         const routeParams = {}
-        const pageContext = await createPageContext(urlOriginal, prerenderContext)
+        const pageContext = await createPageContext(urlOriginal, prerenderContext, globalContext)
         objectAssign(pageContext, {
           _providedByHook: null,
           routeParams,
@@ -537,7 +538,11 @@ async function handlePagesWithStaticRoutes(
   )
 }
 
-async function createPageContext(urlOriginal: string, prerenderContext: PrerenderContext) {
+async function createPageContext(
+  urlOriginal: string,
+  prerenderContext: PrerenderContext,
+  globalContext: GlobalContext
+) {
   const pageContext = {
     _urlHandler: null,
     _urlRewrite: null,
@@ -549,7 +554,7 @@ async function createPageContext(urlOriginal: string, prerenderContext: Prerende
   }
   objectAssign(pageContextInit, prerenderContext.pageContextInit)
   {
-    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit)
+    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
   return pageContext
@@ -891,11 +896,15 @@ async function warnMissingPages(
     })
 }
 
-async function prerender404(prerenderContext: PrerenderContext, onComplete: (htmlFile: HtmlFile) => Promise<void>) {
+async function prerender404(
+  prerenderContext: PrerenderContext,
+  globalContext: GlobalContext,
+  onComplete: (htmlFile: HtmlFile) => Promise<void>
+) {
   if (!Object.values(prerenderContext.prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
     try {
-      result = await prerender404Page(prerenderContext.pageContextInit)
+      result = await prerender404Page(prerenderContext.pageContextInit, globalContext)
     } catch (err) {
       assertIsNotAbort(err, 'the 404 page')
       throw err
