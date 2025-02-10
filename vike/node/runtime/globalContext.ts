@@ -468,18 +468,17 @@ async function updateVirtualFile() {
 
   const viteDevServer = getViteDevServer()
   assert(viteDevServer)
-  // TODO/soon: rename
-  let moduleExports: Record<string, unknown>
+  let virtualFileExports: Record<string, unknown>
   try {
-    moduleExports = await viteDevServer.ssrLoadModule(virtualFileIdImportUserCodeServer)
+    virtualFileExports = await viteDevServer.ssrLoadModule(virtualFileIdImportUserCodeServer)
   } catch (err) {
     debugGlob(`Glob error: ${virtualFileIdImportUserCodeServer} transpile error: `, err)
     throw err
   }
-  moduleExports = (moduleExports as any).default || moduleExports
-  debugGlob('Glob result: ', moduleExports)
+  virtualFileExports = (virtualFileExports as any).default || virtualFileExports
+  debugGlob('Glob result: ', virtualFileExports)
 
-  await setUserFiles(moduleExports)
+  await setUserFiles(virtualFileExports)
   resolve()
 }
 
