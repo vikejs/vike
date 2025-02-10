@@ -4,6 +4,8 @@ import { runPrerenderFromAPI, type PrerenderOptions } from '../prerender/runPrer
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import type { ResolvedConfig } from 'vite'
 
+// TODO/soon use importServerProductionIndex()
+
 /**
  * Programmatically trigger `$ vike prerender`
  *

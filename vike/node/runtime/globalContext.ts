@@ -143,6 +143,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   return makePublic(globalContext)
 }
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
+  // TODO/soon: add `pages`
   const globalContextPublic = makePublicCopy(globalContext, 'globalContext', ['assetsManifest', 'config', 'viteConfig'])
   return globalContextPublic
 }
