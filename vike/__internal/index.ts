@@ -1,7 +1,7 @@
-// Internals needed by Vike
+// Needed by Vike
 export { setGlobalContext_buildEntry } from '../node/runtime/globalContext.js'
 
-// Internals needed by vite-plugin-vercel
+// Needed by vite-plugin-vercel
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
