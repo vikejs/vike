@@ -247,14 +247,12 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   } else {
     await loadBuildEntry(globalObject.outDirRoot)
   }
-  assertGlobalContextIsDefined()
-  /* TODO/now
   onSetupRuntime()
-  */
+  assertGlobalContextIsDefined()
 }
 function setIsProduction(isProduction: boolean) {
+  onSetupRuntime()
   assert(typeof isProduction === 'boolean')
-  // TODO/now use onSetupRuntime()
   if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
   globalObject.isProduction = isProduction
 }
