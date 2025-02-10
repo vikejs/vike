@@ -8,6 +8,7 @@ export { getViteDevServer }
 export { getViteConfig }
 export { initGlobalContext_renderPage }
 export { initGlobalContext_runPrerender }
+export { initGlobalContext_getPagesAndRoutes }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_isPrerendering }
@@ -69,6 +70,7 @@ const globalObject = getGlobalObject<
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
+    isInitialized?: true
   } & ReturnType<typeof getInitialGlobalContext>
 >('globalContext.ts', getInitialGlobalContext())
 
@@ -109,6 +111,8 @@ type GlobalContextWithoutPublicCopy = {
   )
 
 async function getGlobalContext(): Promise<GlobalContext> {
+  // Should be called *after* initGlobalContext()
+  assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
   const { globalContext } = globalObject
@@ -226,6 +230,11 @@ async function initGlobalContext_getGlobalContextAsync(): Promise<void> {
   debug('initGlobalContext_getGlobalContextAsync()')
   await initGlobalContext()
 }
+async function initGlobalContext_getPagesAndRoutes(): Promise<void> {
+  debug('initGlobalContext_getPagesAndRoutes()')
+  setIsProduction(true)
+  await initGlobalContext()
+}
 async function waitForViteDevServer() {
   debug('waitForViteDevServer()')
   const waitFor = 20
@@ -249,6 +258,7 @@ async function initGlobalContext(): Promise<void> {
     await loadBuildEntry(globalObject.outDirRoot)
   }
   assertGlobalContextIsDefined()
+  globalObject.isInitialized = true
 }
 function setIsProduction(isProduction: boolean) {
   debug('setIsProduction', isProduction)
