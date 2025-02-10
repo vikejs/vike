@@ -73,11 +73,13 @@ const globalObject = getGlobalObject<
 
 type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig'>
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
-type GlobalContext = {
+type GlobalContext = GlobalContextWithoutPublicCopy & {
+  globalContext_public: GlobalContextPublic
+}
+type GlobalContextWithoutPublicCopy = {
   viteConfigRuntime: {
     _baseViteOriginal: null | string
   }
-  // global config
   config: ConfigUserFriendly['config']
 } & PageRuntimeInfo &
   (
@@ -112,7 +114,9 @@ async function getGlobalContext(): Promise<GlobalContext> {
   assertIsDefined(globalContext)
   return globalContext
 }
-function assertIsDefined(globalContext: undefined | null | GlobalContext): asserts globalContext is GlobalContext {
+function assertIsDefined<T extends GlobalContext | GlobalContextWithoutPublicCopy>(
+  globalContext: undefined | null | T
+): asserts globalContext is T {
   if (!globalContext) {
     debug('globalContext', globalContext)
     debug('getGlobalContext()', new Error().stack)
@@ -150,7 +154,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   return globalContext_public
 }
 
-function makePublic(globalContext: GlobalContext): GlobalContextPublic {
+function makePublic(globalContext: GlobalContextWithoutPublicCopy): GlobalContextPublic {
   // TODO/soon: add `pages`
   const globalContextPublic = makePublicCopy(globalContext, 'globalContext', ['assetsManifest', 'config', 'viteConfig'])
   return globalContextPublic
@@ -254,15 +258,17 @@ function setIsProduction(isProduction: boolean) {
 function defineGlobalContext() {
   const globalContext = assembleGlobalContext()
   assertIsDefined(globalContext)
+  const globalContext_public = makePublic(globalContext)
+  objectAssign(globalContext, { globalContext_public })
   globalObject.globalContext = globalContext
-  globalObject.globalContext_public = makePublic(globalContext)
+  globalObject.globalContext_public = globalContext_public
   assertGlobalContextIsDefined()
   onSetupRuntime()
 }
-function assembleGlobalContext(): GlobalContext | null {
+function assembleGlobalContext(): GlobalContextWithoutPublicCopy | null {
   const { viteDevServer, viteConfig, isPrerendering, isProduction, userFiles } = globalObject
   assert(typeof isProduction === 'boolean')
-  let globalContext: GlobalContext
+  let globalContext: GlobalContextWithoutPublicCopy
   if (!isProduction) {
     // Requires globalObject.viteDevServer
     if (!viteDevServer) return null
