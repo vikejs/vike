@@ -48,6 +48,7 @@ import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfig
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
+import type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -355,6 +356,13 @@ async function loadUserFiles(outDir?: string) {
       globalObject.buildEntry = globalObject.buildEntryPrevious
     }
     assert(globalObject.buildEntry)
+    assertWarning(
+      !globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject,
+      // TODO/soon: show precise path
+      // TODO/soon: make this warning work on test/vike-node/
+      `Run the server production build (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of running the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
+      { onlyOnce: true }
+    )
   }
   const { buildEntry } = globalObject
   assertBuildEntry(buildEntry)
@@ -382,6 +390,9 @@ type BuildInfo = {
   usesClientRouter: boolean // TODO/v1-release: remove
   viteConfigRuntime: {
     _baseViteOriginal: string
+    vitePluginServerEntry: {
+      inject?: NonNullable<ConfigVitePluginServerEntry['vitePluginServerEntry']>['inject']
+    }
   }
 }
 function assertBuildEntry(buildEntry: unknown): asserts buildEntry is BuildEntry {
@@ -402,6 +413,7 @@ function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   assertVersionAtBuildTime(buildInfo.versionAtBuildTime)
   assert(hasProp(buildInfo, 'viteConfigRuntime', 'object'))
   assert(hasProp(buildInfo.viteConfigRuntime, '_baseViteOriginal', 'string'))
+  assert(hasProp(buildInfo.viteConfigRuntime, 'vitePluginServerEntry', 'object'))
   assert(hasProp(buildInfo, 'usesClientRouter', 'boolean'))
   checkType<BuildInfo>({ ...buildInfo, viteConfigRuntime: buildInfo.viteConfigRuntime })
 }
@@ -413,10 +425,15 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
     `Re-build your app (you're using ${pretty(versionAtRuntime)} but your app was built with ${pretty(versionAtBuildTime)})`
   )
 }
-function getViteConfigRuntime(viteConfig: ResolvedConfig): BuildInfo['viteConfigRuntime'] {
+function getViteConfigRuntime(
+  viteConfig: ResolvedConfig & ConfigVitePluginServerEntry
+): BuildInfo['viteConfigRuntime'] {
   assert(hasProp(viteConfig, '_baseViteOriginal', 'string'))
   const viteConfigRuntime = {
-    _baseViteOriginal: viteConfig._baseViteOriginal
+    _baseViteOriginal: viteConfig._baseViteOriginal,
+    vitePluginServerEntry: {
+      inject: viteConfig.vitePluginServerEntry?.inject
+    }
   }
   return viteConfigRuntime
 }
