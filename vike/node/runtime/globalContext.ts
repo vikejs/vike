@@ -106,7 +106,7 @@ type GlobalContext = {
 
 async function getGlobalContext(): Promise<GlobalContext> {
   assertGlobalContextIsDefined()
-  await globalObject.waitForUserFilesUpdate
+  if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
   const { globalContext } = globalObject
   assertIsDefined(globalContext)
   return globalContext
@@ -142,8 +142,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   )
   setIsProduction(isProduction)
   if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
-  assertGlobalContextIsDefined()
-  await globalObject.waitForUserFilesUpdate
+  if (!isProduction) await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
   const { globalContext_public } = globalObject
   assert(globalContext_public)
@@ -459,6 +458,7 @@ function getViteConfigRuntime(
 
 async function updateVirtualFile() {
   const { promise, resolve } = genPromise<void>()
+  assert(!globalObject.isProduction)
   globalObject.waitForUserFilesUpdate = promise
 
   const viteDevServer = getViteDevServer()
