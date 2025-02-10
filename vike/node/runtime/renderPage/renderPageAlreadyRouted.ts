@@ -196,6 +196,7 @@ async function getPageContextInitEnhanced(
     _pageRoutes: globalContext.pageRoutes,
     _onBeforeRouteHook: globalContext.onBeforeRouteHook,
     _globalContext: globalContext,
+    // TODO/now: add PageContext['globalContext']
     /** @experimental This is a beta feature https://vike.dev/getGlobalContext */
     globalContext: globalContext.globalContext_public,
     _pageContextInit: pageContextInit,
