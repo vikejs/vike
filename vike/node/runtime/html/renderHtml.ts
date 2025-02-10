@@ -34,7 +34,6 @@ import { isStreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { PageAsset } from '../renderPage/getPageAssets.js'
 import type { PreloadFilter } from './injectAssets/getHtmlTags.js'
-import { getGlobalContext } from '../globalContext.js'
 import pc from '@brillout/picocolors'
 
 type DocumentHtml = TemplateWrapped | EscapedString | StreamProviderAny
@@ -78,7 +77,7 @@ async function renderDocumentHtml(
   }
   if (isTemplateWrapped(documentHtml)) {
     const templateContent = documentHtml._template
-    const render = await renderTemplate(templateContent, pageContext)
+    const render = renderTemplate(templateContent, pageContext)
     if (!('htmlStream' in render)) {
       objectAssign(pageContext, { _isStream: false as const })
       const { htmlPartsAll } = render
@@ -212,12 +211,12 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
 // Currently, `HtmlPart` is always a `string`. But we may need string-returning-functions for advanced stream integrations such as RSC.
 type HtmlPart = string | ((pageAssets: PageAsset[]) => string)
 
-async function renderTemplate(
+function renderTemplate(
   templateContent: TemplateContent,
   pageContext: PageContextInjectAssets
-): Promise<
-  { htmlPartsAll: HtmlPart[] } | { htmlStream: StreamProviderAny; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }
-> {
+):
+  | { htmlPartsAll: HtmlPart[] }
+  | { htmlStream: StreamProviderAny; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] } {
   const htmlPartsBegin: HtmlPart[] = []
   const htmlPartsEnd: HtmlPart[] = []
   let htmlStream: null | StreamProviderAny = null
@@ -257,7 +256,7 @@ async function renderTemplate(
     // Process `escapeInject` fragments
     if (isTemplateWrapped(templateVar)) {
       const templateContentInner = templateVar._template
-      const result = await renderTemplate(templateContentInner, pageContext)
+      const result = renderTemplate(templateContentInner, pageContext)
       if (!('htmlStream' in result)) {
         result.htmlPartsAll.forEach(addHtmlPart)
       } else {
@@ -305,7 +304,7 @@ async function renderTemplate(
     }
 
     {
-      const { isProduction } = await getGlobalContext()
+      const { isProduction } = pageContext._globalContext
       if (
         isHtml(templateVar) &&
         // We don't show this warning in production because it's expected that some users may (un)willingly do some XSS injection: we avoid flooding the production logs.

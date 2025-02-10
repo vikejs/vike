@@ -47,7 +47,7 @@ function onSetupRuntime(): void | undefined {
     )
     assertUsage(
       !setup.vikeVitePlugin,
-      "Loading Vike's Vite plugin (the vike/plugin module) is prohibited in production."
+      `Loading Vike's Vite plugin (the ${pc.cyan('vike/plugin')} module) is prohibited in production.`
     )
     // This assert() one of the main goal of this file: it ensures assertIsNotProductionRuntime()
     assert(!setup.shouldNotBeProduction)

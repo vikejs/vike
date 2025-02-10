@@ -1,11 +1,11 @@
+export { testRunClassic }
 export { testCounter }
-export { hydrationDone }
 export { ensureWasClientSideRouted }
 export { expectUrl }
 export { expectPageContextJsonRequest }
 export { waitForNavigation }
 
-import { page, expect, getServerUrl, autoRetry, partRegex } from '@brillout/test-e2e'
+import { page, test, expect, run, autoRetry, fetchHtml, getServerUrl, expectLog, partRegex } from '@brillout/test-e2e'
 
 async function testCounter(currentValue = 0) {
   // autoRetry() in case page just got client-side navigated
@@ -25,9 +25,6 @@ async function testCounter(currentValue = 0) {
     },
     { timeout: 5 * 1000 }
   )
-}
-async function hydrationDone() {
-  await testCounter()
 }
 
 function expectUrl(pathname: string) {
@@ -93,4 +90,40 @@ async function waitForNavigation(): Promise<() => Promise<void>> {
 }
 declare global {
   var _stamp: undefined | true
+}
+
+function testRunClassic(
+  cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
+  { isCJS, skipAboutPage }: { isCJS?: true; skipAboutPage?: true } = {}
+) {
+  run(cmd)
+
+  test('page content is rendered to HTML', async () => {
+    const html = await fetchHtml('/')
+    expect(html).toContain('<h1>Welcome</h1>')
+    if (isCJS) {
+      expectLog('package.json#type to "module", see https://vike.dev/CJS', {
+        filter: (log) => log.logSource === 'stderr'
+      })
+    }
+  })
+
+  test('page is rendered to the DOM and interactive', async () => {
+    await page.goto(getServerUrl() + '/')
+    await page.click('a[href="/"]')
+    expect(await page.textContent('h1')).toBe('Welcome')
+    await testCounter()
+  })
+
+  if (!skipAboutPage) {
+    test('about page', async () => {
+      await page.click('a[href="/about"]')
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('About')
+      })
+      expect(await page.textContent('p')).toBe('Example of using Vike.')
+      const html = await fetchHtml('/about')
+      expect(html).toContain('<h1>About</h1>')
+    })
+  }
 }

@@ -1,22 +1,25 @@
-// Internals needed by Vike
+// Needed by Vike
 export { setGlobalContext_buildEntry } from '../node/runtime/globalContext.js'
 
-// Internals needed by vite-plugin-vercel
+// Needed by vite-plugin-vercel
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
 import type { PageFile } from '../shared/getPageFiles/getPageFileObject.js'
-import { getGlobalContext } from '../node/runtime/globalContext.js'
+import { getGlobalContextInternal, initGlobalContext_getPagesAndRoutes } from '../node/runtime/globalContext.js'
 import { setNodeEnvProduction } from '../utils/assertSetup.js'
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 
 /**
  * Used by {@link https://github.com/magne4000/vite-plugin-vercel|vite-plugin-vercel} to compute some rewrite rules and extract { isr } configs.
+ *
+ * TODO/eventually: remove
  */
 async function getPagesAndRoutes() {
   setNodeEnvProduction()
-  const globalContext = await getGlobalContext()
+  await initGlobalContext_getPagesAndRoutes()
+  const globalContext = await getGlobalContextInternal()
   const {
     //
     pageRoutes,

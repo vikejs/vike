@@ -10,7 +10,7 @@ import { getHtmlString } from '../html/renderHtml.js'
 import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import { getGlobalContext } from '../globalContext.js'
+import type { GlobalContext } from '../globalContext.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadUserFilesServerSide,
@@ -127,8 +127,7 @@ async function prerenderPage(
   }
 }
 
-async function prerender404Page(pageContextInit_: Record<string, unknown> | null) {
-  const globalContext = await getGlobalContext()
+async function prerender404Page(pageContextInit_: Record<string, unknown> | null, globalContext: GlobalContext) {
   const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
   if (!errorPageId) {
     return null
@@ -150,7 +149,7 @@ async function prerender404Page(pageContextInit_: Record<string, unknown> | null
   }
   objectAssign(pageContextInit, pageContextInit_)
   {
-    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit)
+    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext)
     objectAssign(pageContext, pageContextInitEnhanced)
   }
 
@@ -162,6 +161,7 @@ async function prerender404Page(pageContextInit_: Record<string, unknown> | null
 type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhanced>>
 async function getPageContextInitEnhanced(
   pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
+  globalContext: GlobalContext,
   {
     ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
       urlRewrite: null,
@@ -178,8 +178,7 @@ async function getPageContextInitEnhanced(
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const globalContext = await getGlobalContext()
-  const { baseServer, baseAssets } = await resolveBaseRuntime()
+  const { baseServer, baseAssets } = resolveBaseRuntime(globalContext)
   const pageContextInitEnhanced = {}
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {
@@ -189,13 +188,17 @@ async function getPageContextInitEnhanced(
     _baseAssets: baseAssets,
     // TODO/now: add meta.default
     _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
-    // TODO: use GloablContext instead
+    // TODO/soon: use GloablContext instead
     _pageFilesAll: globalContext.pageFilesAll,
     _pageConfigs: globalContext.pageConfigs,
     _pageConfigGlobal: globalContext.pageConfigGlobal,
     _allPageIds: globalContext.allPageIds,
     _pageRoutes: globalContext.pageRoutes,
     _onBeforeRouteHook: globalContext.onBeforeRouteHook,
+    _globalContext: globalContext,
+    // TODO/now: add PageContext['globalContext']
+    /** @experimental This is a beta feature https://vike.dev/getGlobalContext */
+    globalContext: globalContext.globalContext_public,
     _pageContextInit: pageContextInit,
     _urlRewrite: urlRewrite,
     _urlHandler: urlHandler,

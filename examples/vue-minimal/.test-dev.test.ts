@@ -1,2 +1,2 @@
-import { testRun } from '../react-minimal/.testRun'
-testRun('npm run dev')
+import { testRunClassic } from '../../test/utils'
+testRunClassic('npm run dev')

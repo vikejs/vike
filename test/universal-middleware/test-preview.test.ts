@@ -1,2 +1,2 @@
-import { testRun } from '../../examples/react-minimal/.testRun'
-testRun('npm run preview', { skipAboutPage: true })
+import { testRunClassic } from '../../test/utils'
+testRunClassic('npm run preview', { skipAboutPage: true })
