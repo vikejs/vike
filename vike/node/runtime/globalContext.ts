@@ -111,7 +111,7 @@ type GlobalContextWithoutPublicCopy = {
   )
 
 async function getGlobalContext(): Promise<GlobalContext> {
-  // Should be called *after* initGlobalContext()
+  // getGlobalContext() should always be called after initGlobalContext()
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
