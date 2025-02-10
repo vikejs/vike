@@ -19,6 +19,7 @@ export { getViteConfigRuntime }
 export { updateVirtualFile }
 export type { BuildInfo }
 export type { GlobalContext }
+export type { GlobalContextPublic }
 
 import {
   assert,
