@@ -1,3 +1,42 @@
+## [0.4.221](https://github.com/vikejs/vike/compare/v0.4.220...v0.4.221) (2025-02-10)
+
+
+### Bug Fixes
+
+* add debug logs ([#2138](https://github.com/vikejs/vike/issues/2138)) ([5c7810f](https://github.com/vikejs/vike/commit/5c7810f3080ab62536950f26e019bb2a3a517082))
+* allow user to define global custom configs ([8fd9d0f](https://github.com/vikejs/vike/commit/8fd9d0fe079fda7bc5e3ac80e5658a747027b752))
+* also load value files of global custom configs ([eb981b9](https://github.com/vikejs/vike/commit/eb981b967e16bd86863280ec11e180418c411c32))
+* always start pre-rendering during Vite build ([#2123](https://github.com/vikejs/vike/issues/2123)) ([#2124](https://github.com/vikejs/vike/issues/2124)) ([9a1fe8d](https://github.com/vikejs/vike/commit/9a1fe8d53a3bb0a2b3bf39a309e28f73f5970e89))
+* fallback fonts should not be preloaded ([#2144](https://github.com/vikejs/vike/issues/2144)) ([af5c91f](https://github.com/vikejs/vike/commit/af5c91fe3749b8519fb5e01f1fbbe890ffa22064))
+* fix cross env pointer import check ([965359a](https://github.com/vikejs/vike/commit/965359abbc252fcefcbb64b533571fa482e654ef))
+* further ensure that assertViteVersion() is called ([#2135](https://github.com/vikejs/vike/issues/2135)) ([9a798ce](https://github.com/vikejs/vike/commit/9a798ce07db9a4800daa35bb19c4fdbfd9aa0c15))
+* improve error message upon using unsupported Vite version ([#2135](https://github.com/vikejs/vike/issues/2135)) ([e7f407b](https://github.com/vikejs/vike/commit/e7f407ba24aa60534ba5a4ab540b301e349ac446))
+* improve unknown config handling ([7af4702](https://github.com/vikejs/vike/commit/7af470243ebbea15addc4cdb032612b672d82c3d))
+* improve warning upon global config defined locally ([#2145](https://github.com/vikejs/vike/issues/2145)) ([2a0e304](https://github.com/vikejs/vike/commit/2a0e3043184f77b5417beabe44c5195ac1e9bd89))
+* inspect `configValuesLoaded===undefined` bug ([#2092](https://github.com/vikejs/vike/issues/2092)) ([47f28a0](https://github.com/vikejs/vike/commit/47f28a0cf0ea535969b02d776a69b3324de70bc1))
+* narrow config.vike.global public experimental API ([#2122](https://github.com/vikejs/vike/issues/2122)) ([818a106](https://github.com/vikejs/vike/commit/818a10605d6d8e658fab309ec53fc018c4da7126))
+* narrow extensions pre-vike-cli interop ([#2122](https://github.com/vikejs/vike/issues/2122)) ([5f27fc2](https://github.com/vikejs/vike/commit/5f27fc2dd3330c5e4aed575ada8557dc261abb79))
+* refactor & fix config reload upon dev changes (fix [#2152](https://github.com/vikejs/vike/issues/2152)) ([#2156](https://github.com/vikejs/vike/issues/2156)) ([f7f7b3d](https://github.com/vikejs/vike/commit/f7f7b3dba5407919a515c369ff303fc769c62fda))
+* refactor & simplify back-/forward navigation ([#2117](https://github.com/vikejs/vike/issues/2117)) ([5f20340](https://github.com/vikejs/vike/commit/5f203404eb2babb84d77626c765619a0a385bfd8))
+* soft-deprecate & move options set by `vike(options)` in vite.config.js ([#2128](https://github.com/vikejs/vike/issues/2128)) ([d79eb01](https://github.com/vikejs/vike/commit/d79eb016cfb98cd46fde26c71ab19f194f7e3cbe))
+
+
+### Features
+
+* [experimental] `config.vike.prerenderContext._output` ([#2123](https://github.com/vikejs/vike/issues/2123)) ([#2125](https://github.com/vikejs/vike/issues/2125)) ([a9f46b8](https://github.com/vikejs/vike/commit/a9f46b8f10ed0dbe6ca39cfe4d7cf26bc0c99a77))
+* [experimental] `globalContext.config` & `config.vike.config` ([#2149](https://github.com/vikejs/vike/issues/2149)) ([1a661dc](https://github.com/vikejs/vike/commit/1a661dce01df82ec8902ba0ad8023fb2a71e93b3))
+* [experimental] add compatibility with Vite 6 Environment API ([#2146](https://github.com/vikejs/vike/issues/2146)) ([d9703b8](https://github.com/vikejs/vike/commit/d9703b8a3763d7b77742736bfd35f92f7e9ebded))
+* support text fragments `:~:text=` (fix [#2114](https://github.com/vikejs/vike/issues/2114)) ([#2119](https://github.com/vikejs/vike/issues/2119)) ([67dbd62](https://github.com/vikejs/vike/commit/67dbd6215c102eadd1aab0a6ef44ec74e40bbc4f))
+
+
+### Performance Improvements
+
+* [refactor] eagerly load user files ([#2158](https://github.com/vikejs/vike/issues/2158)) ([d651343](https://github.com/vikejs/vike/commit/d6513433c8b47105512c327b1de2b43a337ecf0a))
+* dedupe conf transpiling ([dbfbe1d](https://github.com/vikejs/vike/commit/dbfbe1d7b94aa815750678cc8eccb00d7cfe413e))
+* reduce client-side dependencies ([#2140](https://github.com/vikejs/vike/issues/2140)) ([c9437a3](https://github.com/vikejs/vike/commit/c9437a3158e0cf0c23d63932231a4b53a751d914))
+
+
+
 ## [0.4.220](https://github.com/vikejs/vike/compare/v0.4.219...v0.4.220) (2025-01-27)
 
 
