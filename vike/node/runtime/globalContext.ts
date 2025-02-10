@@ -252,11 +252,9 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   } else {
     await loadBuildEntry(globalObject.outDirRoot)
   }
-  onSetupRuntime()
   assertGlobalContextIsDefined()
 }
 function setIsProduction(isProduction: boolean) {
-  onSetupRuntime()
   assert(typeof isProduction === 'boolean')
   if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
   globalObject.isProduction = isProduction
@@ -267,6 +265,7 @@ function defineGlobalContext() {
   globalObject.globalContext = globalContext
   globalObject.globalContext_public = makePublic(globalContext)
   assertGlobalContextIsDefined()
+  onSetupRuntime()
 }
 function assembleGlobalContext(): GlobalContext | null {
   const { viteDevServer, viteConfig, vikeConfig, isPrerendering, isProduction, userFiles } = globalObject
