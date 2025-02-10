@@ -141,7 +141,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
     }`
   )
   setIsProduction(isProduction)
-  await initGlobalContext_getGlobalContextAsync()
+  if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
   assertGlobalContextIsDefined()
   await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
