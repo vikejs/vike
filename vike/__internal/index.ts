@@ -7,7 +7,7 @@ export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
 import type { PageFile } from '../shared/getPageFiles/getPageFileObject.js'
-import { getGlobalContext, initGlobalContext_getPagesAndRoutes } from '../node/runtime/globalContext.js'
+import { getGlobalContextInternal, initGlobalContext_getPagesAndRoutes } from '../node/runtime/globalContext.js'
 import { setNodeEnvProduction } from '../utils/assertSetup.js'
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 
@@ -19,7 +19,7 @@ import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 async function getPagesAndRoutes() {
   setNodeEnvProduction()
   await initGlobalContext_getPagesAndRoutes()
-  const globalContext = await getGlobalContext()
+  const globalContext = await getGlobalContextInternal()
   const {
     //
     pageRoutes,

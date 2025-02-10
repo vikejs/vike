@@ -38,7 +38,7 @@ import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import {
-  getGlobalContext,
+  getGlobalContextInternal,
   type GlobalContext,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
@@ -233,7 +233,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   )
 
   await initGlobalContext_runPrerender()
-  const globalContext = await getGlobalContext()
+  const globalContext = await getGlobalContextInternal()
   globalContext.pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {

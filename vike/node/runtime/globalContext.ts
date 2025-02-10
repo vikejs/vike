@@ -3,7 +3,7 @@ export { getGlobalContextSync }
 export { getGlobalContextAsync }
 
 // Internal use
-export { getGlobalContext }
+export { getGlobalContextInternal }
 export { getViteDevServer }
 export { getViteConfig }
 export { initGlobalContext_renderPage }
@@ -110,8 +110,8 @@ type GlobalContextWithoutPublicCopy = {
       ))
   )
 
-async function getGlobalContext(): Promise<GlobalContext> {
-  // getGlobalContext() should always be called after initGlobalContext()
+async function getGlobalContextInternal(): Promise<GlobalContext> {
+  // getGlobalContextInternal() should always be called after initGlobalContext()
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
@@ -124,7 +124,7 @@ function assertIsDefined<T extends GlobalContext | GlobalContextWithoutPublicCop
 ): asserts globalContext is T {
   if (!globalContext) {
     debug('globalContext', globalContext)
-    debug('getGlobalContext()', new Error().stack)
+    debug('assertIsDefined()', new Error().stack)
     assert(false)
   }
 }

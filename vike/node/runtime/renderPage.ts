@@ -37,7 +37,7 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
-import { getGlobalContext, initGlobalContext_renderPage, type GlobalContext } from './globalContext.js'
+import { getGlobalContextInternal, initGlobalContext_renderPage, type GlobalContext } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
   createHttpResponseFavicon404,
@@ -152,7 +152,7 @@ async function renderPageAndPrepare(
   } else {
     // From now on, globalContext contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
-  const globalContext = await getGlobalContext()
+  const globalContext = await getGlobalContextInternal()
 
   // Check Base URL
   await assertBaseUrl(pageContextInit, globalContext)
