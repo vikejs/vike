@@ -11,7 +11,6 @@ export { initGlobalContext_runPrerender }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
 export { setGlobalContext_vikeConfig }
-export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
 export { setGlobalContext_isProduction }
 export { setGlobalContext_buildEntry }
@@ -57,7 +56,6 @@ const globalObject = getGlobalObject<
     globalContext?: GlobalContext
     globalContext_public?: GlobalContextPublic
     viteDevServer?: ViteDevServer
-    isViteDev?: boolean
     viteConfig?: ResolvedConfig
     // TODO/soon remove
     vikeConfig?: VikeConfigObject
@@ -187,9 +185,6 @@ function assertIsNotInitilizedYet() {
   // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
   assert(!globalObject.globalContext)
 }
-function setGlobalContext_isViteDev(isViteDev: boolean) {
-  globalObject.isViteDev = isViteDev
-}
 function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
   setIsProduction(true)
@@ -206,7 +201,7 @@ function getViteConfig(): ResolvedConfig | null {
 
 async function initGlobalContext_renderPage(): Promise<void> {
   debug('initGlobalContext_renderPage()')
-  await initGlobalContext(!globalObject.isViteDev)
+  await initGlobalContext(globalObject.isProduction ?? true)
 }
 
 async function initGlobalContext_runPrerender(): Promise<void> {
@@ -255,6 +250,7 @@ async function initGlobalContext(isProduction: boolean): Promise<void> {
   assertGlobalContextIsDefined()
 }
 function setIsProduction(isProduction: boolean) {
+  debug('setIsProduction', isProduction)
   assert(typeof isProduction === 'boolean')
   if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
   globalObject.isProduction = isProduction

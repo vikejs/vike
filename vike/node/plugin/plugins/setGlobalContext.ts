@@ -2,10 +2,10 @@ export { setGlobalContext }
 
 import type { Plugin } from 'vite'
 import {
-  setGlobalContext_isViteDev,
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig,
-  setGlobalContext_vikeConfig
+  setGlobalContext_vikeConfig,
+  setGlobalContext_isProduction
 } from '../../runtime/globalContext.js'
 import {
   assertFilePathAbsoluteFilesystem,
@@ -36,7 +36,7 @@ function setGlobalContext(): Plugin[] {
         order: 'pre',
         handler(_, env) {
           const isViteDev = isDevCheck(env)
-          setGlobalContext_isViteDev(isViteDev)
+          setGlobalContext_isProduction(!isViteDev)
           markSetup_isViteDev(isViteDev)
         }
       }
