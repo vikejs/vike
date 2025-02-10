@@ -5,7 +5,7 @@ export { getRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared/route/index.js'
 import { noRouteMatch } from '../../../../shared/route/noRouteMatch.js'
-import { getGlobalContext } from '../../globalContext.js'
+import type { GlobalContext } from '../../globalContext.js'
 import {
   assert,
   assertUsage,
@@ -22,6 +22,7 @@ async function log404(pageContext: {
   errorWhileRendering: null | Error
   isClientSideNavigation: boolean
   _pageRoutes: PageRoutes
+  _globalContext: GlobalContext
 }) {
   const { urlPathname } = pageContext
 
@@ -33,7 +34,7 @@ async function log404(pageContext: {
     'No page found. Create at least one /pages/some-page/+Page.js file.'
     */
   )
-  const globalContext = await getGlobalContext()
+  const globalContext = pageContext._globalContext
   if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext.isClientSideNavigation) {
     const routesInfo = getRoutesInfo(pageRoutes)
     let msg = `URL ${pc.cyan(urlPathname)} ${noRouteMatch}`

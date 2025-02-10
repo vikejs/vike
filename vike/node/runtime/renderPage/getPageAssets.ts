@@ -11,7 +11,7 @@ import { inferMediaType, type MediaType } from './inferMediaType.js'
 import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
-import { getGlobalContext } from '../globalContext.js'
+import type { GlobalContext } from '../globalContext.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../plugin/shared/resolveClientEntriesDev.js'
 
@@ -31,6 +31,7 @@ type PageContextGetPageAssets = {
   _baseServer: string
   _baseAssets: string | null
   _includeAssetsImportedByServer: boolean
+  _globalContext: GlobalContext
 }
 
 async function getPageAssets(
@@ -38,8 +39,9 @@ async function getPageAssets(
   clientDependencies: ClientDependency[],
   clientEntries: string[]
 ): Promise<PageAsset[]> {
-  const globalContext = await getGlobalContext()
-  const isDev = !globalContext.isProduction
+  const globalContext = pageContext._globalContext
+  const { isProduction } = globalContext
+  const isDev = !isProduction
 
   let assetUrls: string[]
   let clientEntriesSrc: string[]
@@ -92,7 +94,7 @@ async function getPageAssets(
     return pageAsset
   })
 
-  await sortPageAssetsForEarlyHintsHeader(pageAssets)
+  await sortPageAssetsForEarlyHintsHeader(pageAssets, isProduction)
 
   return pageAssets
 }

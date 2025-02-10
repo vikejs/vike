@@ -1,15 +1,13 @@
 export { sortPageAssetsForEarlyHintsHeader }
 
-import { getGlobalContext } from '../../globalContext.js'
 import { higherFirst } from '../../utils.js'
 import type { PageAsset } from '../getPageAssets.js'
 
-async function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[]) {
-  const globalContext = await getGlobalContext()
+async function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[], isProduction: boolean) {
   pageAssets.sort(
     higherFirst(({ assetType }) => {
       // In dev, we load scripts first in order to parallelize I/O and CPU
-      if (!globalContext.isProduction && assetType === 'script') {
+      if (!isProduction && assetType === 'script') {
         return 1
       }
 
