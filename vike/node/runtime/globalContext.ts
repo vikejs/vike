@@ -17,7 +17,7 @@ export { setGlobalContext_buildEntry }
 export { clearGlobalContext }
 export { assertBuildInfo }
 export { getViteConfigRuntime }
-export { updateVirtualFile }
+export { updateUserFiles }
 export type { BuildInfo }
 export type { GlobalContext }
 export type { GlobalContextPublic }
@@ -172,7 +172,7 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   assertIsNotInitilizedYet()
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
-  await updateVirtualFile()
+  await updateUserFiles()
   assertGlobalContextIsDefined()
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 }
@@ -474,7 +474,7 @@ function getViteConfigRuntime(
   return viteConfigRuntime
 }
 
-async function updateVirtualFile() {
+async function updateUserFiles() {
   const { promise, resolve } = genPromise<void>()
   assert(!globalObject.isProduction)
   globalObject.waitForUserFilesUpdate = promise
