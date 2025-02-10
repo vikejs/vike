@@ -1,7 +1,7 @@
 export { handleErrorWithoutErrorPage }
 
 import { stringify } from '@brillout/json-serializer/stringify'
-import { getGlobalContext } from '../globalContext.js'
+import type { GlobalContext } from '../globalContext.js'
 import { assert, assertWarning, objectAssign } from '../utils.js'
 import { createHttpResponsePage, createHttpResponseError } from './createHttpResponse.js'
 import pc from '@brillout/picocolors'
@@ -19,6 +19,7 @@ async function handleErrorWithoutErrorPage<
     pageId: null
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
+    _globalContext: GlobalContext
     urlOriginal: string
   }
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
@@ -27,7 +28,7 @@ async function handleErrorWithoutErrorPage<
 
   {
     const isV1 = pageContext._pageConfigs.length > 0
-    await warnMissingErrorPage(isV1)
+    await warnMissingErrorPage(isV1, pageContext._globalContext.isProduction)
   }
 
   if (!pageContext.isClientSideNavigation) {
@@ -43,9 +44,8 @@ async function handleErrorWithoutErrorPage<
   }
 }
 
-async function warnMissingErrorPage(isV1: boolean) {
-  const globalContext = await getGlobalContext()
-  if (!globalContext.isProduction) {
+async function warnMissingErrorPage(isV1: boolean, isProduction: boolean) {
+  if (!isProduction) {
     const msg = [
       `No ${isV1 ? 'error page' : pc.cyan('_error.page.js')} found,`,
       'we recommend defining one',

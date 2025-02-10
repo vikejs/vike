@@ -1,11 +1,13 @@
 export { getViteDevScript }
 
-import { getGlobalContext } from '../../globalContext.js'
+import type { GlobalContext } from '../../globalContext.js'
 import { assert, assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
-async function getViteDevScript(): Promise<string> {
-  const globalContext = await getGlobalContext()
+async function getViteDevScript(pageContext: {
+  _globalContext: GlobalContext
+}): Promise<string> {
+  const globalContext = pageContext._globalContext
   if (globalContext.isProduction) {
     return ''
   }

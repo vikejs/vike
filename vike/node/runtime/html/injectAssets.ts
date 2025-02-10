@@ -42,7 +42,7 @@ async function injectHtmlTagsToString(
   injectFilter: PreloadFilter
 ): Promise<string> {
   const pageAssets = await pageContext.__getPageAssets()
-  const viteDevScript = await getViteDevScript()
+  const viteDevScript = await getViteDevScript(pageContext)
   const htmlTags = await getHtmlTags(pageContext, null, injectFilter, pageAssets, viteDevScript, false)
   let htmlString = htmlPartsToString(htmlParts, pageAssets)
   htmlString = injectToHtmlBegin(htmlString, htmlTags)
@@ -66,7 +66,7 @@ function injectHtmlTagsToStream(
 
   async function injectAtStreamBegin(htmlPartsBegin: HtmlPart[]): Promise<string> {
     const pageAssets = await pageContext.__getPageAssets()
-    const viteDevScript = await getViteDevScript()
+    const viteDevScript = await getViteDevScript(pageContext)
     htmlTags = await getHtmlTags(
       pageContext,
       streamFromReactStreamingPackage,
