@@ -13,6 +13,7 @@ export { setGlobalContext_viteConfig }
 export { setGlobalContext_vikeConfig }
 export { setGlobalContext_isViteDev }
 export { setGlobalContext_isPrerendering }
+export { setGlobalContext_isProduction }
 export { setGlobalContext_buildEntry }
 export { clearGlobalContext }
 export { assertBuildInfo }
@@ -192,6 +193,9 @@ function setGlobalContext_isViteDev(isViteDev: boolean) {
 function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
   setIsProduction(true)
+}
+function setGlobalContext_isProduction(isProduction: boolean) {
+  setIsProduction(isProduction)
 }
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
