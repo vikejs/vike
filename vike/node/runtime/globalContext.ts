@@ -191,6 +191,7 @@ function setGlobalContext_isViteDev(isViteDev: boolean) {
 }
 function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
+  setIsProduction(true)
 }
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
