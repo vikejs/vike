@@ -192,7 +192,11 @@ function getViteConfig(): ResolvedConfig | null {
 
 async function initGlobalContext_renderPage(): Promise<void> {
   debug('initGlobalContext_renderPage()')
-  await initGlobalContext(globalObject.isProduction ?? true)
+  await initGlobalContext(
+    globalObject.isProduction ??
+      // globalObject.isProduction isn't set upon production server without vike-server (there isn't any signal we can use)
+      true
+  )
 }
 
 async function initGlobalContext_runPrerender(): Promise<void> {
