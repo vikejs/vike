@@ -10,7 +10,6 @@ export { initGlobalContext_renderPage }
 export { initGlobalContext_runPrerender }
 export { setGlobalContext_viteDevServer }
 export { setGlobalContext_viteConfig }
-export { setGlobalContext_vikeConfig }
 export { setGlobalContext_isPrerendering }
 export { setGlobalContext_isProduction }
 export { setGlobalContext_buildEntry }
@@ -43,7 +42,6 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
 import pc from '@brillout/picocolors'
-import type { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
@@ -57,8 +55,6 @@ const globalObject = getGlobalObject<
     globalContext_public?: GlobalContextPublic
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
-    // TODO/soon remove
-    vikeConfig?: VikeConfigObject
     outDirRoot?: string
     isPrerendering?: true
     initGlobalContext_runPrerender_alreadyCalled?: true
@@ -176,11 +172,6 @@ function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: str
   globalObject.viteConfig = viteConfig
   globalObject.outDirRoot = outDirRoot
 }
-function setGlobalContext_vikeConfig(vikeConfig: VikeConfigObject): void {
-  if (globalObject.vikeConfig) return
-  assertIsNotInitilizedYet()
-  globalObject.vikeConfig = vikeConfig
-}
 function assertIsNotInitilizedYet() {
   // In develpoment, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
   assert(!globalObject.globalContext)
@@ -264,14 +255,13 @@ function defineGlobalContext() {
   onSetupRuntime()
 }
 function assembleGlobalContext(): GlobalContext | null {
-  const { viteDevServer, viteConfig, vikeConfig, isPrerendering, isProduction, userFiles } = globalObject
+  const { viteDevServer, viteConfig, isPrerendering, isProduction, userFiles } = globalObject
   assert(typeof isProduction === 'boolean')
   let globalContext: GlobalContext
   if (!isProduction) {
     // Requires globalObject.viteDevServer
     if (!viteDevServer) return null
     assert(viteConfig)
-    assert(vikeConfig)
     assert(!isPrerendering)
     assert(userFiles)
     const viteConfigRuntime = getViteConfigRuntime(viteConfig)
