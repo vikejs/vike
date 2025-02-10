@@ -140,7 +140,8 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
       isProduction === undefined ? 'is missing' : `should be ${pc.cyan('true')} or ${pc.cyan('false')}`
     }`
   )
-  await initGlobalContext_getGlobalContextAsync(isProduction)
+  setIsProduction(isProduction)
+  await initGlobalContext_getGlobalContextAsync()
   assertGlobalContextIsDefined()
   await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
@@ -192,16 +193,15 @@ function getViteConfig(): ResolvedConfig | null {
 
 async function initGlobalContext_renderPage(): Promise<void> {
   debug('initGlobalContext_renderPage()')
-  await initGlobalContext(
-    globalObject.isProduction ??
-      // globalObject.isProduction isn't set upon production server without vike-server (there isn't any signal we can use)
-      true
-  )
+  // globalObject.isProduction isn't set upon production server without vike-server (there isn't any signal we can use)
+  if (globalObject.isProduction === undefined) setIsProduction(true)
+  await initGlobalContext()
 }
 
 async function initGlobalContext_runPrerender(): Promise<void> {
   debug('initGlobalContext_runPrerender()')
   assert(globalObject.isPrerendering === true)
+  assert(globalObject.isProduction === true)
   if (globalObject.initGlobalContext_runPrerender_alreadyCalled) return
   globalObject.initGlobalContext_runPrerender_alreadyCalled = true
 
@@ -214,12 +214,12 @@ async function initGlobalContext_runPrerender(): Promise<void> {
   // - initGlobalContext_getGlobalContextAsync()
   assertIsNotInitilizedYet()
 
-  await initGlobalContext(true)
+  await initGlobalContext()
 }
 
-async function initGlobalContext_getGlobalContextAsync(isProduction: boolean): Promise<void> {
+async function initGlobalContext_getGlobalContextAsync(): Promise<void> {
   debug('initGlobalContext_getGlobalContextAsync()')
-  await initGlobalContext(isProduction)
+  await initGlobalContext()
 }
 async function waitForViteDevServer() {
   debug('waitForViteDevServer()')
@@ -235,8 +235,9 @@ async function waitForViteDevServer() {
   assertGlobalContextIsDefined()
 }
 
-async function initGlobalContext(isProduction: boolean): Promise<void> {
-  setIsProduction(isProduction)
+async function initGlobalContext(): Promise<void> {
+  const { isProduction } = globalObject
+  assert(typeof isProduction === 'boolean')
   if (!isProduction) {
     await waitForViteDevServer()
   } else {
