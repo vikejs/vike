@@ -258,9 +258,10 @@ async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
       assertWarning(
         isEqualStringList(targetCssResolvedClient, targetCssResolvedServer),
         [
-          'The CSS browser target should be the same for both client-side and server-side (https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979) but we got:',
-          `Client-side: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
-          `Server-side: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`
+          'The CSS browser target should be the same for both client and server, but we got:',
+          `Client: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
+          `Server: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`,
+          `Different targets leads to CSS duplication, see ${pc.underline('https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979')} for more information.`
         ].join('\n'),
         {
           showStackTrace: true,
