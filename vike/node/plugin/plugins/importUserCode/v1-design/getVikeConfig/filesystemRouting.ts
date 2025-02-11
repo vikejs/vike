@@ -3,7 +3,6 @@ export { getFilesystemRouteDefinedBy }
 export { isInherited }
 export { getLocationId }
 export { sortAfterInheritanceOrder }
-export { isGlobalLocation }
 export { applyFilesystemRoutingRootEffect }
 export type { LocationId }
 
@@ -72,10 +71,6 @@ function getLogicalPath(locationId: LocationId, ignoredDirs: string[], removePar
   return logicalPath
 }
 
-/** Whether configs defined in `locationId` apply in every `locationIds` */
-function isGlobalLocation(locationId: LocationId, locationIds: LocationId[]): boolean {
-  return locationIds.every((locId) => isInherited(locationId, locId) || locationIsRendererDir(locId))
-}
 function sortAfterInheritanceOrder(
   locationId1: LocationId,
   locationId2: LocationId,

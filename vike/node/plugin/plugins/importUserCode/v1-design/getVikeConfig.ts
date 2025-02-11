@@ -50,7 +50,6 @@ import {
   getFilesystemRouteDefinedBy,
   isInherited,
   sortAfterInheritanceOrder,
-  isGlobalLocation,
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting.js'
 import type { EsbuildCache } from './getVikeConfig/transpileAndExecuteFile.js'
@@ -360,14 +359,10 @@ function assertGlobalConfigLocation(
   plusFilesAll: PlusFilesByLocationId,
   configDefinitionsGlobal: ConfigDefinitions
 ) {
-  const locationIdsAll = objectKeys(plusFilesAll)
-
   // Determine existing global +config.js files
   const configFilePathsGlobal: string[] = []
   const plusFilesGlobal: PlusFile[] = Object.values(
-    objectFromEntries(
-      objectEntries(plusFilesAll).filter(([locationId]) => isGlobalLocation(locationId, locationIdsAll))
-    )
+    objectFromEntries(objectEntries(plusFilesAll).filter(([locationId]) => isGlobalLocation(locationId, plusFilesAll)))
   ).flat()
   plusFilesGlobal
     .filter((i) => i.isConfigFile)
@@ -389,7 +384,7 @@ function assertGlobalConfigLocation(
     if (!filePathAbsoluteUserRootDir) return
     assert(!plusFile.isExtensionConfig)
 
-    if (!isGlobalLocation(source.locationId, locationIdsAll)) {
+    if (!isGlobalLocation(source.locationId, plusFilesAll)) {
       const configDef = configDefinitionsGlobal[configName]
       assert(configDef)
       const isConditionallyGlobal = isCallable(configDef.global)
@@ -510,7 +505,7 @@ function sortForGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocation
   const plusFilesAllSorted = Object.fromEntries(
     objectEntries(plusFilesAll)
       .sort(lowerFirst(([locationId]) => locationId.split('/').length))
-      .sort(makeFirst(([locationId]) => isGlobalLocation(locationId, locationIdsAll)))
+      .sort(makeFirst(([locationId]) => isGlobalLocation(locationId, plusFilesAll)))
   )
   return plusFilesAllSorted
 }
@@ -1210,4 +1205,12 @@ function resolveConfigEnv(configEnv: ConfigEnvInternal, filePath: FilePath) {
   }
 
   return configEnvResolved
+}
+
+/** Whether configs defined in `locationId` apply to every page */
+function isGlobalLocation(locationId: LocationId, plusFilesAll: PlusFilesByLocationId): boolean {
+  const locationIdsPage = objectEntries(plusFilesAll)
+    .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles))
+    .map(([locationId]) => locationId)
+  return locationIdsPage.every((locId) => isInherited(locationId, locId))
 }
