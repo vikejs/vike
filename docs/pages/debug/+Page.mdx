@@ -60,18 +60,18 @@ The trick here is to directly modify the built code at `node_modules/`, while us
 
 ### Vike flags
 
-You can use debug flags to gather insights.
+You can use Vike's debug flags to gather insights.
 
 ```shell
-# Inspect where logs come from (also non-Vike logs)
-DEBUG=vike:log npm run dev
 # Verbose errors
 DEBUG=vike:error npm run dev
+# Inspect where logs come from (also non-Vike logs)
+DEBUG=vike:log npm run dev
 # Inspect Vike's routing
 DEBUG=vike:routing npm run dev
 # Inspect HTTP Streaming
 DEBUG=vike:stream npm run dev
-# You can combine debug flags
+# Enabling multiple debug flags
 DEBUG=vike:log,vike:error npm run dev
 ```
 
