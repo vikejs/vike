@@ -60,14 +60,17 @@ async function getInfoFromVite(
   viteConfigFromOptions: InlineConfig | undefined,
   operation: 'build' | 'dev' | 'preview' | 'prerender'
 ) {
-  const viteConfigFromFile = await loadViteConfigFile(viteConfigFromOptions, operation)
+  const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromOptions, operation)
 
-  const root = normalizeViteRoot(viteConfigFromFile?.root ?? viteConfigFromOptions?.root ?? process.cwd())
+  const root = normalizeViteRoot(viteConfigFromUserViteFile?.root ?? viteConfigFromOptions?.root ?? process.cwd())
   globalObject.root = root
 
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let viteConfigEnhanced = viteConfigFromOptions
-  const found = findVikeVitePlugin([...(viteConfigFromOptions?.plugins ?? []), ...(viteConfigFromFile?.plugins ?? [])])
+  const found = findVikeVitePlugin([
+    ...(viteConfigFromOptions?.plugins ?? []),
+    ...(viteConfigFromUserViteFile?.plugins ?? [])
+  ])
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
