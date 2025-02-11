@@ -1,6 +1,6 @@
 export { testRouteStringDefinedInConfigFile }
 export { testMarkdown }
-export { testSideExports }
+export { testMarkdownSideExports }
 
 import { autoRetry, expect, expectLog, fetchHtml, getServerUrl, page, test } from '@brillout/test-e2e'
 import { testCounter } from '../../../utils'
@@ -36,7 +36,7 @@ function testMarkdown(isDev: boolean) {
   })
 }
 
-function testSideExports() {
+function testMarkdownSideExports() {
   test('Side export - HTML', async () => {
     const html = await fetchHtml('/markdown')
     // 'Some title' is defined by `export { frontmatter }` of /pages/markdown-page/+Page.md

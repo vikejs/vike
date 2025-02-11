@@ -8,7 +8,11 @@ import { testSettingEffect } from './pages/config-meta/effect/e2e-test'
 import { testSettingInheritedByDescendants } from './pages/config-meta/cumulative/e2e-test'
 import { testSettingOnlyAvailableInCorrectEnv } from './pages/config-meta/env/e2e-test'
 import { testDynamicImportFileEnv } from './pages/dynamic-import-file-env/e2e-test'
-import { testMarkdown, testSideExports, testRouteStringDefinedInConfigFile } from './pages/markdown-page/e2e-test'
+import {
+  testMarkdown,
+  testMarkdownSideExports,
+  testRouteStringDefinedInConfigFile
+} from './pages/markdown-page/e2e-test'
 import { testNavigateEarly } from './pages/navigate-early/e2e-test'
 import { testNestedLayout } from './pages/nested-layout/e2e-test'
 import { testPrerenderSettings } from './pages/prerender.e2e-test'
@@ -25,7 +29,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testSettingOnlyAvailableInCorrectEnv()
   testSettingInheritedByDescendants()
   testSettingEffect()
-  testSideExports()
+  testMarkdownSideExports()
   testRouteStringDefinedInConfigFile()
   testPrerenderSettings({ isDev, rootDir })
   testRedirectMailto()
