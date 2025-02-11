@@ -98,7 +98,7 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
     'ls-files',
 
     // Performance gain seems negligible: https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
-    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}"`),
+    ...scriptFileExtensionList.map((ext) => `"**/+*.${ext}" "+*.${ext}"`),
 
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
