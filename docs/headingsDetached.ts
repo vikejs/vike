@@ -729,7 +729,7 @@ function deprecated(): HeadingDetachedDefinition[] {
 function migrations(): HeadingDetachedDefinition[] {
   return [
     {
-      title: 'Migrate `vite.config.js` settings',
+      title: 'Migrate Vike settings',
       url: '/migration/settings'
     },
     {
