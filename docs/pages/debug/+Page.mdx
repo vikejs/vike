@@ -60,34 +60,34 @@ The trick here is to directly modify the built code at `node_modules/`, while us
 
 ### Vike flags
 
-You can use Vike's debug logs to gather insights.
+You can use debug flags to gather insights.
 
 ```shell
+# Inspect where logs come from (also non-Vike logs)
+DEBUG=vike:log npm run dev
+# Verbose errors
+DEBUG=vike:error npm run dev
 # Inspect Vike's routing
 DEBUG=vike:routing npm run dev
-# Inspect errors
-DEBUG=vike:error npm run dev
-# Inspect logs
-DEBUG=vike:log npm run dev
-# Combination
 # Inspect HTTP Streaming
 DEBUG=vike:stream npm run dev
-DEBUG=vike:log,vike:error,vike:stream npm run dev
+# You can combine debug flags
+DEBUG=vike:log,vike:error npm run dev
 ```
 
-> These debug logs allow you to understand how Vike thinks of your app. For example, to figure out why your app returns a `404`, use `vike:routing`.
+> Most debug flags also work for build (e.g. `$ DEBUG=vike:error npm run build`) and production (e.g. `$ DEBUG=vike:log node dist/server/index.mjs`).
 
-There are more debug logs but these aren't user-friendly as they are meant for Vike maintainers.
-
-> For more debug logs, add a comment at [#249](https://github.com/vikejs/vike/issues/249).
+> There are [more debug flags](https://github.com/vikejs/vike/blob/main/vike/utils/debug.ts) but note that they are meant for Vike maintainers. Feel free to reach out if you want more debug logs.
 
 ### Vite flags
 
-To enable Vite's debug logs, set the environment variable `DEBUG` to `vite:*`.
+Enable and discover all Vite debug flags:
 
 ```shell
-$ DEBUG=vite:* npm run dev
+DEBUG=vite:* npm run dev
 ```
+
+You can then cherry-pick a debug flag e.g. `$ DEBUG=vite:deps npm run dev`.
 
 
 ## See also
