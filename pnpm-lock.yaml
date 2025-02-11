@@ -1421,6 +1421,15 @@ importers:
 
   test/playground:
     dependencies:
+      '@mdx-js/mdx':
+        specifier: ^3.1.0
+        version: 3.1.0(acorn@8.14.0)
+      '@mdx-js/react':
+        specifier: ^3.1.0
+        version: 3.1.0(@types/react@18.3.18)(react@18.3.1)
+      '@mdx-js/rollup':
+        specifier: ^3.1.0
+        version: 3.1.0(acorn@8.14.0)(rollup@4.34.4)
       '@types/react':
         specifier: ^18.2.45
         version: 18.3.18
@@ -8664,6 +8673,12 @@ snapshots:
       '@types/mdx': 2.0.13
       '@types/react': 19.0.8
       react: 19.0.0
+
+  '@mdx-js/react@3.1.0(@types/react@18.3.18)(react@18.3.1)':
+    dependencies:
+      '@types/mdx': 2.0.13
+      '@types/react': 18.3.18
+      react: 18.3.1
 
   '@mdx-js/react@3.1.0(@types/react@19.0.8)(react@19.0.0)':
     dependencies:
