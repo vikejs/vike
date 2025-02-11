@@ -1,4 +1,4 @@
-import mdx from '@mdx-js/rollup'
+bla-import mdx from '@mdx-js/rollup'
 import type { UserConfig } from 'vite'
 
 export default {

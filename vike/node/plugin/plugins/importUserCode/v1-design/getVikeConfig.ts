@@ -188,7 +188,11 @@ async function loadVikeConfig_withErrorHandling(
     isConfigInvalid_set({ err })
     if (!isDev) {
       assert(getViteDevServer() === null)
-      throw err
+      console.log('catch before')
+      console.log(err)
+      console.log('catch after')
+      throw new Error('fail')
+      // throw err
     } else {
       logConfigError(err)
       if (!doNotRestartViteOnError) {
