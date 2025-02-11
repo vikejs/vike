@@ -17,10 +17,10 @@ import { clearGlobalContext } from '../runtime/globalContext.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts', {})
 
-async function prepareViteApiCall(viteConfig: InlineConfig | undefined, operation: Operation) {
+async function prepareViteApiCall(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
   clear()
   setContextApiOperation(operation)
-  return enhanceViteConfig(viteConfig, operation)
+  return enhanceViteConfig(viteConfigFromOptions, operation)
 }
 
 // For subsequent API calls, e.g. calling prerender() after build()
@@ -29,8 +29,8 @@ function clear() {
   clearGlobalContext()
 }
 
-async function enhanceViteConfig(viteConfig: InlineConfig | undefined, operation: Operation) {
-  const viteInfo = await getInfoFromVite(viteConfig, operation)
+async function enhanceViteConfig(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
+  const viteInfo = await getInfoFromVite(viteConfigFromOptions, operation)
   await assertViteRoot2(viteInfo.root, viteInfo.viteConfigEnhanced, operation)
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
   const viteConfigEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigEnhanced, vikeConfig)
@@ -57,17 +57,17 @@ async function getViteRoot(operation: 'build' | 'dev' | 'preview' | 'prerender')
 }
 
 async function getInfoFromVite(
-  viteConfig: InlineConfig | undefined,
+  viteConfigFromOptions: InlineConfig | undefined,
   operation: 'build' | 'dev' | 'preview' | 'prerender'
 ) {
-  const viteConfigFromFile = await loadViteConfigFile(viteConfig, operation)
+  const viteConfigFromFile = await loadViteConfigFile(viteConfigFromOptions, operation)
 
-  const root = normalizeViteRoot(viteConfigFromFile?.root ?? viteConfig?.root ?? process.cwd())
+  const root = normalizeViteRoot(viteConfigFromFile?.root ?? viteConfigFromOptions?.root ?? process.cwd())
   globalObject.root = root
 
   let vikeVitePluginOptions: Record<string, unknown> | undefined
-  let viteConfigEnhanced = viteConfig
-  const found = findVikeVitePlugin([...(viteConfig?.plugins ?? []), ...(viteConfigFromFile?.plugins ?? [])])
+  let viteConfigEnhanced = viteConfigFromOptions
+  const found = findVikeVitePlugin([...(viteConfigFromOptions?.plugins ?? []), ...(viteConfigFromFile?.plugins ?? [])])
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
@@ -75,8 +75,8 @@ async function getInfoFromVite(
     // Using a dynamic import because the script calling the Vike API may not live in the same place as vite.config.js, thus vike/plugin may resolved to two different node_modules/vike directories.
     const { plugin: vikePlugin } = await import('../plugin/index.js')
     viteConfigEnhanced = {
-      ...viteConfig,
-      plugins: [...(viteConfig?.plugins ?? []), vikePlugin()]
+      ...viteConfigFromOptions,
+      plugins: [...(viteConfigFromOptions?.plugins ?? []), vikePlugin()]
     }
     const res = findVikeVitePlugin(viteConfigEnhanced.plugins!)
     assert(res)
@@ -104,10 +104,13 @@ function findVikeVitePlugin(plugins: PluginOption[]) {
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
 async function loadViteConfigFile(
-  viteConfig: InlineConfig | undefined,
+  viteConfigFromOptions: InlineConfig | undefined,
   operation: 'build' | 'dev' | 'preview' | 'prerender'
 ) {
-  const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getResolveConfigArgs(viteConfig, operation)
+  const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getResolveConfigArgs(
+    viteConfigFromOptions,
+    operation
+  )
 
   let config = inlineConfig
   let mode = inlineConfig.mode || defaultMode
