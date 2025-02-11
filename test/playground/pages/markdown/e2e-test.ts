@@ -19,7 +19,7 @@ function testMarkdown(isDev: boolean) {
     expect(html).toContain('<h1>Side export .md file</h1>')
 
     // See also expectLog() test below
-    if (isDev) expect(html).toContain('/pages/markdown-page/+client.ts')
+    if (isDev) expect(html).toContain('/pages/markdown/+client.ts')
   })
 
   test('markdown page DOM', async () => {
@@ -39,7 +39,7 @@ function testMarkdown(isDev: boolean) {
 function testMarkdownSideExports() {
   test('Side export - HTML', async () => {
     const html = await fetchHtml('/markdown')
-    // 'Some title' is defined by `export { frontmatter }` of /pages/markdown-page/+Page.md
+    // 'Some title' is defined by `export { frontmatter }` of /pages/markdown/+Page.md
     expect(html).toContain('<title>Some title set in mdx</title>')
   })
 }
