@@ -14,7 +14,6 @@ import path from 'path'
 import { assert, assertUsage, getGlobalObject, isObject, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { clearGlobalContext } from '../runtime/globalContext.js'
-import vikeVitePlugin from '../plugin/index.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts', {})
 
@@ -76,9 +75,10 @@ async function getInfoFromVite(viteConfigFromOptions: InlineConfig | undefined, 
   } else {
     // Add Vike to plugins if not present.
     // Using a dynamic import because the script calling the Vike API may not live in the same place as vite.config.js, thus vike/plugin may resolved to two different node_modules/vike directories.
+    const { plugin: vikePlugin } = await import('../plugin/index.js')
     viteConfigEnhanced = {
       ...viteConfigFromOptions,
-      plugins: [...(viteConfigFromOptions?.plugins ?? []), vikeVitePlugin()]
+      plugins: [...(viteConfigFromOptions?.plugins ?? []), vikePlugin()]
     }
     const res = findVikeVitePlugin(viteConfigEnhanced)
     assert(res)
