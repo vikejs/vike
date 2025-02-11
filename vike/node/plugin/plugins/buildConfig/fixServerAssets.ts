@@ -261,7 +261,7 @@ async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
           'The CSS browser target should be the same for both client and server, but we got:',
           `Client: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
           `Server: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`,
-          `Different targets leads to CSS duplication, see ${pc.underline('https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979')} for more information.`
+          `Different targets lead to CSS duplication, see ${pc.underline('https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979')} for more information.`
         ].join('\n'),
         {
           showStackTrace: true,
