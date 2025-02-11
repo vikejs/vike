@@ -46,6 +46,10 @@ function addViteSettingsSetByVikeConfig(viteConfigEnhanced: InlineConfig | undef
   viteConfigs.values.forEach((v) => {
     assertUsage(isObject(v.value), `${v.definedAt} should be an object`)
     viteConfigEnhanced = mergeConfig(viteConfigEnhanced ?? {}, v.value)
+    assertUsage(
+      findVikeVitePlugin(v.value as InlineConfig),
+      "Using the +vite setting to add Vike's Vite plugin is forbidden"
+    )
   })
   return viteConfigEnhanced
 }
