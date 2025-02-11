@@ -255,8 +255,8 @@ function tools(): HeadingDetachedDefinition[] {
       url: '/socket-io'
     },
     {
-      title: 'Examples & Guides',
-      url: '/examples',
+      title: 'Tool guides & examples',
+      url: '/tools',
       sectionTitles: ['CSS-in-JS']
     },
     {
@@ -267,7 +267,7 @@ function tools(): HeadingDetachedDefinition[] {
       title: 'React Router',
       url: '/react-router'
     }
-  ].map((h) => ({ ...h, category: 'Tool Integration' }))
+  ].map((h) => ({ ...h, category: 'Tool Guide' }))
 }
 
 function misc(): HeadingDetachedDefinition[] {
