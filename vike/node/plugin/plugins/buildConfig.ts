@@ -28,7 +28,6 @@ import {
   fixServerAssets,
   fixServerAssets_assertCssCodeSplit,
   fixServerAssets_assertCssTarget,
-  fixServerAssets_assertCssTarget_populate,
   fixServerAssets_isEnabled
 } from './buildConfig/fixServerAssets.js'
 import { set_ASSETS_MANIFEST } from './buildEntry/index.js'
@@ -69,7 +68,6 @@ function buildConfig(): Plugin[] {
               config.build.ssrEmitAssets = true
               // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
               config.build.cssMinify = 'esbuild'
-              fixServerAssets_assertCssTarget_populate(config)
               fixServerAssets_assertCssCodeSplit(config)
             }
           }

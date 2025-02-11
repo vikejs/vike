@@ -2,7 +2,6 @@ export { fixServerAssets }
 export { fixServerAssets_isEnabled }
 export { fixServerAssets_assertCssCodeSplit }
 export { fixServerAssets_assertCssTarget }
-export { fixServerAssets_assertCssTarget_populate }
 
 import fs from 'fs/promises'
 import fs_sync from 'fs'
@@ -243,15 +242,13 @@ function fixServerAssets_assertCssCodeSplit(config: ResolvedConfig) {
 type Target = undefined | false | string | string[]
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
-function fixServerAssets_assertCssTarget_populate(config: ResolvedConfig) {
+async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
+  if (!fixServerAssets_isEnabled()) return
+  if (!(await isV1Design(config))) return
   const isServerSide = viteIsSSR(config)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
   targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
-}
-async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
-  if (!fixServerAssets_isEnabled()) return
-  if (!(await isV1Design(config))) return
   const targetsServer = targets.filter((t) => t.isServerSide)
   const targetsClient = targets.filter((t) => !t.isServerSide)
   targetsClient.forEach((targetClient) => {
@@ -261,9 +258,10 @@ async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
       assertWarning(
         isEqualStringList(targetCssResolvedClient, targetCssResolvedServer),
         [
-          'The CSS browser target should be the same for both client-side and server-side (https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979) but we got:',
-          `Client-side: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
-          `Server-side: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`
+          'The CSS browser target should be the same for both client and server, but we got:',
+          `Client: ${pc.cyan(JSON.stringify(targetCssResolvedClient))}`,
+          `Server: ${pc.cyan(JSON.stringify(targetCssResolvedServer))}`,
+          `Different targets leads to CSS duplication, see ${pc.underline('https://github.com/vikejs/vike/issues/1815#issuecomment-2507002979')} for more information.`
         ].join('\n'),
         {
           showStackTrace: true,
