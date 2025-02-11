@@ -12,4 +12,4 @@ type APIOptions = {
   viteConfig?: InlineConfig
 }
 
-type Operation = 'build' | 'dev' | 'preview' | 'prerender'
+type Operation = Operation

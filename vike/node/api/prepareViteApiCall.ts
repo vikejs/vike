@@ -50,16 +50,13 @@ function addViteSettingsSetByVikeConfig(viteConfigEnhanced: InlineConfig | undef
   return viteConfigEnhanced
 }
 
-async function getViteRoot(operation: 'build' | 'dev' | 'preview' | 'prerender') {
+async function getViteRoot(operation: Operation) {
   if (!globalObject.root) await getInfoFromVite(undefined, operation)
   assert(globalObject.root)
   return globalObject.root
 }
 
-async function getInfoFromVite(
-  viteConfigFromOptions: InlineConfig | undefined,
-  operation: 'build' | 'dev' | 'preview' | 'prerender'
-) {
+async function getInfoFromVite(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromOptions, operation)
 
   const root = normalizeViteRoot(viteConfigFromUserViteFile?.root ?? viteConfigFromOptions?.root ?? process.cwd())
@@ -106,10 +103,7 @@ function findVikeVitePlugin(plugins: PluginOption[]) {
 }
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
-async function loadViteConfigFile(
-  viteConfigFromOptions: InlineConfig | undefined,
-  operation: 'build' | 'dev' | 'preview' | 'prerender'
-) {
+async function loadViteConfigFile(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
   const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getResolveConfigArgs(
     viteConfigFromOptions,
     operation
@@ -139,7 +133,7 @@ async function loadViteConfigFile(
   return null
 }
 
-function getResolveConfigArgs(viteConfig: InlineConfig = {}, operation: 'build' | 'dev' | 'preview' | 'prerender') {
+function getResolveConfigArgs(viteConfig: InlineConfig = {}, operation: Operation) {
   const inlineConfig = viteConfig
   const command = operation === 'build' || operation === 'prerender' ? 'build' : 'serve'
   const defaultMode = operation === 'dev' ? 'development' : 'production'
