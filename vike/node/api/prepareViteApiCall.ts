@@ -6,7 +6,7 @@ export { normalizeViteRoot }
 // TODO: enable Vike extensions to add Vite plugins
 
 import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
-import type { InlineConfig, PluginOption, ResolvedConfig } from 'vite'
+import type { InlineConfig, ResolvedConfig, UserConfig } from 'vite'
 import type { Operation } from './types.js'
 import { clearContextApiOperation, setContextApiOperation } from './context.js'
 import { getVikeConfig2, type VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
@@ -64,10 +64,8 @@ async function getInfoFromVite(viteConfigFromOptions: InlineConfig | undefined, 
 
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let viteConfigEnhanced = viteConfigFromOptions
-  const found = findVikeVitePlugin([
-    ...(viteConfigFromOptions?.plugins ?? []),
-    ...(viteConfigFromUserViteFile?.plugins ?? [])
-  ])
+  // If Vike's Vite plugin is found in both viteConfigFromOptions and viteConfigFromUserViteFile then Vike will later throw an error
+  const found = findVikeVitePlugin(viteConfigFromOptions) || findVikeVitePlugin(viteConfigFromUserViteFile)
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
@@ -78,7 +76,7 @@ async function getInfoFromVite(viteConfigFromOptions: InlineConfig | undefined, 
       ...viteConfigFromOptions,
       plugins: [...(viteConfigFromOptions?.plugins ?? []), vikePlugin()]
     }
-    const res = findVikeVitePlugin(viteConfigEnhanced.plugins!)
+    const res = findVikeVitePlugin(viteConfigEnhanced)
     assert(res)
     vikeVitePluginOptions = res.vikeVitePluginOptions
   }
@@ -87,10 +85,10 @@ async function getInfoFromVite(viteConfigFromOptions: InlineConfig | undefined, 
   return { root, vikeVitePluginOptions, viteConfigEnhanced }
 }
 
-function findVikeVitePlugin(plugins: PluginOption[]) {
+function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
   let vikeVitePluginOptions: Record<string, unknown> | undefined
   let vikeVitePuginFound = false
-  plugins.forEach((p) => {
+  viteConfig?.plugins?.forEach((p) => {
     if (p && '__vikeVitePluginOptions' in p) {
       vikeVitePuginFound = true
       const options = p.__vikeVitePluginOptions
