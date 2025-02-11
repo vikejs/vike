@@ -8,7 +8,9 @@ import {
   assertIsNotProductionRuntime,
   isVersionOrAbove,
   isScriptFile,
-  scriptFileExtensionList
+  scriptFileExtensionList,
+  createDebugger,
+  deepEqual
 } from '../../../../utils.js'
 import path from 'path'
 import glob from 'fast-glob'
@@ -17,6 +19,8 @@ import { promisify } from 'util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
 const execA = promisify(exec)
+
+const debug = createDebugger('vike:crawl')
 
 assertIsNotProductionRuntime()
 assertIsSingleModuleInstance('crawlPlusFiles.ts')
@@ -49,18 +53,16 @@ async function crawlPlusFiles(
   )
 
   // Crawl
-  let files: string[]
-  const res = !isGitCrawlDisabled() && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
-  if (
-    res &&
-    // Fallback to fast-glob for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
-    res.length > 0
-  ) {
-    files = res
-    // We cannot find files inside symlink directories with `$ git ls-files` => we use fast-glob
-  } else {
-    files = await fastGlob(userRootDir, outDirRelativeFromUserRootDir)
-  }
+  const filesGit = !isGitCrawlDisabled() && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
+  const filesGitNothingFound = !filesGit || filesGit.length === 0
+  const filesGlob =
+    (filesGitNothingFound || debug.isActivated) && (await fastGlob(userRootDir, outDirRelativeFromUserRootDir))
+  let files = !filesGitNothingFound
+    ? filesGit
+    : // Fallback to fast-glob for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
+      filesGlob
+  assert(files)
+  if (debug.isActivated) assert(deepEqual(filesGlob, filesGit), "Git and glob results aren't matching.")
 
   // Filter build files
   files = files.filter((filePath) => !isTemporaryBuildFile(filePath))
@@ -124,6 +126,12 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
     }
     throw err
   }
+  if (debug.isActivated) {
+    debug('[git] userRootDir:', userRootDir)
+    debug('[git] cmd:', cmd)
+    debug('[git] result:', filesAll)
+    debug('[git] filesDeleted:', filesDeleted)
+  }
 
   const files = []
   for (const filePath of filesAll) {
@@ -146,14 +154,21 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
 }
 // Same as gitLsFiles() but using fast-glob
 async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[]> {
-  const files = await glob(`**/+*.${scriptFileExtensions}`, {
+  const pattern = `**/+*.${scriptFileExtensions}`
+  const options = {
     ignore: getIgnoreAsPatterns(outDirRelativeFromUserRootDir),
     cwd: userRootDir,
     dot: false
-  })
+  }
+  const files = await glob(pattern, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
   // https://github.com/vikejs/vike/pull/1750
   files.sort()
+  if (debug.isActivated) {
+    debug('[glob] pattern:', pattern)
+    debug('[glob] options:', options)
+    debug('[glob] result:', files)
+  }
   return files
 }
 

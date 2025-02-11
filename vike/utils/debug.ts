@@ -16,6 +16,7 @@ assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
 const flags = [
+  'vike:crawl',
   'vike:error',
   'vike:esbuild-resolve',
   'vike:extractAssets',
