@@ -1,7 +1,10 @@
-- `TODO/soon: refactor` in `getVikeConfig.ts`
 - `TODO/now`
 - make scripts/dev.js work
 - Add CLI option `--host`?
+- Prettify build error
+  - https://github.com/vikejs/vike/commit/638f025c4b74218fbf488310798866e3956c6f10
+  - Also: why are there dangling `+config.ts.build-71dnxdt06cv6.mjs` files?
+- Throw error in crawling => auto-reload behavior is broken?
 
 - head settings
   - name setting?

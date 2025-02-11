@@ -406,6 +406,7 @@ function isTemporaryBuildFile(filePath: string): boolean {
   return /\.build-[a-z0-9]{12}\.mjs$/.test(fileName)
 }
 
+// TODO/next-major: remove
 function isHeaderFile(filePath: string) {
   assertPosixPath(filePath)
   const fileExtensions = getFileExtensions(filePath)
