@@ -17,6 +17,7 @@ assert(!isBrowser())
 
 const flags = [
   'vike:error',
+  'vike:esbuild-resolve',
   'vike:extractAssets',
   'vike:extractExportNames',
   'vike:glob',
@@ -29,9 +30,9 @@ const flags = [
   'vike:routing',
   'vike:setup',
   'vike:stream',
-  'vike:virtual-files',
-  'vike:esbuild-resolve'
+  'vike:virtual-files'
 ] as const
+const flagsSkipWildcard = ['vike:log']
 const flagRegex = /\bvike:[a-zA-Z-]+/g
 
 assertFlagsActivated()
@@ -88,8 +89,8 @@ function debug_(flag: Flag, options: Options, ...msgs: unknown[]) {
 function isDebugActivated(flag: Flag): boolean {
   checkType<`vike:${string}`>(flag)
   assert(flags.includes(flag))
-  const flagsActivated = getFlagsActivated()
-  const isActivated = flagsActivated.includes(flag)
+  const { flagsActivated, all } = getFlagsActivated()
+  const isActivated = flagsActivated.includes(flag) || (all && !flagsSkipWildcard.includes(flag))
   return isActivated
 }
 
@@ -163,7 +164,7 @@ function replaceFunctionSerializer(this: Record<string, unknown>, _key: string, 
 }
 
 function assertFlagsActivated() {
-  const flagsActivated = getFlagsActivated()
+  const { flagsActivated } = getFlagsActivated()
   flagsActivated.forEach((flag) => {
     assertUsage(
       (flags as readonly string[]).includes(flag),
@@ -175,7 +176,8 @@ function assertFlagsActivated() {
 function getFlagsActivated() {
   const DEBUG = getDEBUG() ?? ''
   const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
-  return flagsActivated
+  const all = DEBUG.includes('vike:*')
+  return { flagsActivated, all }
 }
 
 function getDEBUG() {
