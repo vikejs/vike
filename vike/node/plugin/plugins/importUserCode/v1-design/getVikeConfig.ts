@@ -210,9 +210,9 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const esbuildCache: EsbuildCache = {}
 
   const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
-  // assertKnownConfigs(plusFilesAll)
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
+  assertKnownConfigs(configDefinitionsResolved, plusFilesAll)
 
   const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
     configDefinitionsResolved,
@@ -501,7 +501,6 @@ function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPag
   return plusFilesRelevant
 }
 function sortForGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
-  const locationIdsAll = objectKeys(plusFilesAll)
   const plusFilesAllSorted = Object.fromEntries(
     objectEntries(plusFilesAll)
       .sort(lowerFirst(([locationId]) => locationId.split('/').length))
@@ -992,22 +991,25 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 }
 
 // Show error message upon unknown config
-function assertKnownConfigs(plusFilesAll: PlusFilesByLocationId) {
+function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved, plusFilesAll: PlusFilesByLocationId) {
   const configDefinitionsAll = getConfigDefinitions(plusFilesAll)
   const configNamesKnownAll = Object.keys(configDefinitionsAll)
-  objectEntries(plusFilesAll).forEach(([locationId, plusFiles]) => {
-    const plusFilesRelevant = getPlusFilesRelevant(plusFilesAll, locationId)
-    const configDefinitionsLocal = getConfigDefinitions(plusFilesRelevant)
-    const configNamesKnownLocal = Object.keys(configDefinitionsLocal)
-    plusFiles.forEach((plusFile) => {
-      const configNames = getDefiningConfigNames(plusFile)
-      configNames.forEach((configName) => {
-        assertKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, plusFile)
-        assert(configNamesKnownLocal.includes(configName))
-        assert(configNamesKnownAll.includes(configName))
+  const configNamesGlobal = Object.keys(configDefinitionsResolved.configDefinitionsGlobal)
+
+  objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
+    ([_locationId, { configDefinitions, plusFiles }]) => {
+      const configDefinitionsLocal = configDefinitions
+      const configNamesKnownLocal = [...Object.keys(configDefinitionsLocal), ...configNamesGlobal]
+      plusFiles.forEach((plusFile) => {
+        const configNames = getDefiningConfigNames(plusFile)
+        configNames.forEach((configName) => {
+          assertKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, plusFile)
+          assert(configNamesKnownLocal.includes(configName))
+          assert(configNamesKnownAll.includes(configName))
+        })
       })
-    })
-  })
+    }
+  )
 }
 function assertKnownConfig(
   configName: string,
