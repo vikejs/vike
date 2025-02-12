@@ -35,8 +35,9 @@ import { buildApp } from './plugins/buildApp.js'
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setResolveClientEntriesDev(resolveClientEntriesDev)
 
-// Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Plugin[] {
+type PluginInterop = Record<string, unknown> & { name: string }
+// Return `PluginInterop` instead of `Plugin` to avoid type mismatch upon different Vite versions
+function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginInterop[] {
   const plugins: Plugin[] = [
     ...commonConfig(vikeVitePluginOptions),
     importUserCode(),
@@ -60,7 +61,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Plugin[] {
     workaroundVite6HmrRegression()
   ]
   Object.assign(plugins, { __vikeVitePluginOptions: vikeVitePluginOptions })
-  return plugins
+  return plugins as any
 }
 
 // Error upon wrong usage
