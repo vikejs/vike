@@ -586,7 +586,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 }
 
 // For Vike tests (but also potentially for Vike users)
-// TODO/now add comment linking to usage example
+// https://github.com/vikejs/vike/blob/ffbc5cf16407bcc075f414447e50d997c87c0c94/test/playground/pages/nested-layout/e2e-test.ts#L59
 function stampFinished(urlOriginal: string) {
   window._vike ??= {}
   window._vike.fullyRenderedUrl = urlOriginal
