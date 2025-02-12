@@ -259,8 +259,9 @@ function isGitCrawlDisabled() {
   return crawSettings?.git === false
 }
 
-function isPlusFile(filePath: string) {
+function isPlusFile(filePath: string): boolean {
   assertPosixPath(filePath)
+  if (isTemporaryBuildFile(filePath)) return false
   const fileName = filePath.split('/').pop()!
   return fileName.startsWith('+')
 }

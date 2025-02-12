@@ -191,6 +191,7 @@ async function findPlusFiles(userRootDir: string, outDirRoot: null | string): Pr
   return plusFiles
 }
 
+// TODO/now: move to crawlPlusFiles.ts
 function getPlusFileValueConfigName(filePath: string): string | null {
   assertPosixPath(filePath)
   if (isTemporaryBuildFile(filePath)) return null
