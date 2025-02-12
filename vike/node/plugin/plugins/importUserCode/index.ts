@@ -13,7 +13,6 @@ import { vikeConfigDependencies, reloadVikeConfig, isV1Design, getVikeConfig } f
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
-import { getPlusFileValueConfigName } from './v1-design/getVikeConfig/getPlusFilesAll.js'
 import { updateUserFiles } from '../../../runtime/globalContext.js'
 import { isPlusFile } from './v1-design/getVikeConfig/crawlPlusFiles.js'
 
@@ -73,7 +72,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    if (isPlusFile(file) || isVikeConfigModule(file, server.moduleGraph)?.modifiesVirtualFiles) {
+    if (isPlusFile(file) || isVikeConfigModule(file, server.moduleGraph)?.modifiesVikeVirtualFiles) {
       // TODO/now refactor
       const virtualModules = getVirtualModules(server)
       virtualModules.forEach((mod) => {
@@ -105,7 +104,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 
   // TODO/now refactor
   // TODO/now fix race probable condition: invalidate by hand
-  if (isVikeConfig && isVikeConfig.modifiesVirtualFiles) {
+  if (isVikeConfig && isVikeConfig.modifiesVikeVirtualFiles) {
     /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
     assert(!isViteModule)
     */
@@ -113,7 +112,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
     const virtualModules = getVirtualModules(server)
     return virtualModules
   }
-  if (isVikeConfig && !isVikeConfig.modifiesVirtualFiles) {
+  if (isVikeConfig && !isVikeConfig.modifiesVikeVirtualFiles) {
     updateUserFiles()
   }
 }
@@ -122,16 +121,16 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 function isVikeConfigModule(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph
-): null | { modifiesVirtualFiles: boolean } {
+): null | { modifiesVikeVirtualFiles: boolean } {
   // Check config-only files, for example all pages/+config.js dependencies. (There aren't part of Vite's module graph.)
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-  if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { modifiesVirtualFiles: true }
+  if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { modifiesVikeVirtualFiles: true }
 
   // Check using Vite's module graph, for example all +htmlAttributes dependencies.
   const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
-  const isPlusFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
-  if (isPlusFileDependency) return { modifiesVirtualFiles: false }
+  const isPlusValueFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
+  if (isPlusValueFileDependency) return { modifiesVikeVirtualFiles: false }
 
   return null
 }
