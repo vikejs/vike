@@ -14,6 +14,7 @@ import { testNestedLayout } from './pages/nested-layout/e2e-test'
 import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testRedirectMailto } from './pages/redirects.e2e-tests'
+import { testHMRPlusValueFile } from './pages/e2e-test'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -24,6 +25,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testMarkdown()
   testMarkdownClientFile(isDev)
   testMarkdownSideExports()
+  testHMRPlusValueFile(isDev)
   testSettingOnlyAvailableInCorrectEnv()
   testSettingInheritedByDescendants()
   testSettingEffect()

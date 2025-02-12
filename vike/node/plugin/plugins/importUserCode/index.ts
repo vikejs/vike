@@ -1,6 +1,6 @@
 export { importUserCode }
 
-import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
 import type { VikeConfigObject } from './v1-design/getVikeConfig.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/virtual-files/getVirtualFilePageConfigValuesAll.js'
@@ -13,8 +13,8 @@ import { vikeConfigDependencies, reloadVikeConfig, isV1Design, getVikeConfig } f
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
-import { getPlusFileValueConfigName } from './v1-design/getVikeConfig/getPlusFilesAll.js'
 import { updateUserFiles } from '../../../runtime/globalContext.js'
+import { isPlusFile } from './v1-design/getVikeConfig/crawlPlusFiles.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -72,8 +72,8 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    const isVikeConfig = isVikeConfigModule(file) || isVikeConfigFile(file)
-    if (isVikeConfig) {
+    if (isPlusFile(file) || isVikeConfigModule(file, server.moduleGraph)?.modifiesVikeVirtualFiles) {
+      // TODO/now refactor
       const virtualModules = getVirtualModules(server)
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
@@ -85,9 +85,9 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  const isVikeConfig = isVikeConfigModule(file)
-  const isViteModule = ctx.modules.length > 0
+  const isVikeConfig = isVikeConfigModule(ctx.file, ctx.server.moduleGraph)
 
+  // TODO/now remove
   /* Should we show this?
   // - Can be useful for server files that aren't processed by Vite.
   // - Can be annoying for files that obviously aren't processed by Vite.
@@ -102,25 +102,40 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   }
   //*/
 
-  // It can hide an error it shouldn't hide (because the error isn't shown again), but it's ok since users can reload the page and the error will be shown again (Vite transpilation errors are shown again upon a page reload).
-  if (!isVikeConfig && isViteModule) {
-    return
-  }
-
-  if (isVikeConfig) {
+  // TODO/now minor refactor
+  if (isVikeConfig && isVikeConfig.modifiesVikeVirtualFiles) {
     /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
+    const isViteModule = ctx.modules.length > 0
     assert(!isViteModule)
     */
     reloadConfig(file, config, 'modified')
+    // TODO/now fix probable race condition: invalidate by hand
+    // Triggers a full page reload
     const virtualModules = getVirtualModules(server)
     return virtualModules
   }
+  if (isVikeConfig && !isVikeConfig.modifiesVikeVirtualFiles) {
+    updateUserFiles()
+  }
 }
 
-function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
+// TODO/now rename
+function isVikeConfigModule(
+  filePathAbsoluteFilesystem: string,
+  moduleGraph: ModuleGraph
+): null | { modifiesVikeVirtualFiles: boolean } {
+  // Check config-only files, for example all pages/+config.js dependencies. (There aren't part of Vite's module graph.)
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-  return vikeConfigDependencies.has(filePathAbsoluteFilesystem)
+  if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { modifiesVikeVirtualFiles: true }
+
+  // Check using Vite's module graph, for example all +htmlAttributes dependencies.
+  // Alternatively, simply call updateUserFiles() on every handleHotUpdate() call.
+  const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
+  const isPlusValueFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
+  if (isPlusValueFileDependency) return { modifiesVikeVirtualFiles: false }
+
+  return null
 }
 
 function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
@@ -144,6 +159,34 @@ function getVirtualModules(server: ViteDevServer): ModuleNode[] {
   return virtualModules
 }
 
-function isVikeConfigFile(filePath: string): boolean {
-  return !!getPlusFileValueConfigName(filePath)
+// Get all transitive importers (including the module itself)
+function getImporters(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
+  const importers = new Set<ModuleNode>()
+  const mods = moduleGraph.getModulesByFile(file)
+  if (!mods) return importers
+
+  for (const mod of mods) {
+    getModuleImporters(mod).forEach((importer) => {
+      if (importer) importers.add(importer)
+    })
+  }
+
+  return importers
+}
+function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()): Set<ModuleNode> {
+  if (seen.has(mod)) return new Set()
+  seen.add(mod)
+
+  const importers = new Set<ModuleNode>()
+  if (mod.id) importers.add(mod)
+
+  // Traverse through the importers (modules that import this module)
+  for (const importer of mod.importers) {
+    if (importer.id) importers.add(importer)
+    getModuleImporters(importer, seen).forEach((importerTransitive) => {
+      if (importerTransitive) importers.add(importerTransitive)
+    })
+  }
+
+  return importers
 }

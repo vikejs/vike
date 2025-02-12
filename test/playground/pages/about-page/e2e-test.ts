@@ -25,21 +25,15 @@ function testSettingsInheritance({ isDev }: { isDev: boolean }) {
         expect(html).toMatch(partRegex`<link rel="icon" href="${/[^"]+/}.svg"/>`)
       }
     }
-    // TEST: global setting
-    const expectHtmlAttributes = () => {
-      expect(html).toContain('<html class="dark" lang="en">')
-    }
 
     html = await fetchHtml('/')
     expectGlobalMetaTags()
     expectAboutMetaTags(true)
     expectFavicon()
-    expectHtmlAttributes()
 
     html = await fetchHtml('/about')
     expectGlobalMetaTags()
     expectAboutMetaTags(false)
     expectFavicon()
-    expectHtmlAttributes()
   })
 }

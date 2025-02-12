@@ -1,4 +1,5 @@
 export { crawlPlusFiles }
+export { isPlusFile }
 
 import {
   assertPosixPath,
@@ -73,6 +74,7 @@ async function crawlPlusFiles(
     assertPosixPath(filePath)
     assert(!filePath.startsWith(userRootDir))
     const filePathAbsoluteUserRootDir = path.posix.join('/', filePath)
+    assert(isPlusFile(filePathAbsoluteUserRootDir))
     return { filePathAbsoluteUserRootDir }
   })
 
@@ -255,4 +257,11 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
 function isGitCrawlDisabled() {
   const crawSettings = getEnvVarObject('VIKE_CRAWL')
   return crawSettings?.git === false
+}
+
+function isPlusFile(filePath: string): boolean {
+  assertPosixPath(filePath)
+  if (isTemporaryBuildFile(filePath)) return false
+  const fileName = filePath.split('/').pop()!
+  return fileName.startsWith('+')
 }
