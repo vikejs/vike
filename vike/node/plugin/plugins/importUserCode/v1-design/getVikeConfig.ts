@@ -89,6 +89,7 @@ function reloadVikeConfig(config: ResolvedConfig) {
   const userRootDir = config.root
   const vikeVitePluginOptions = config._vikeVitePluginOptions
   assert(vikeVitePluginOptions)
+  // TODO/now: unify with esbuildCache
   vikeConfigDependencies.clear()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
   handleReloadSideEffects()
