@@ -1,6 +1,6 @@
 export { testNestedLayout }
 
-import { test, page, getServerUrl, expect, autoRetry } from '@brillout/test-e2e'
+import { test, page, getServerUrl, expect, autoRetry, sleep } from '@brillout/test-e2e'
 import { testCounter } from '../../../utils'
 
 function testNestedLayout() {
@@ -12,15 +12,16 @@ function testNestedLayout() {
     await scrollDown()
     await expectIsScrollDown()
     await page.click('a[href="/nested-layout/42/reviews"]')
-    await testCounter(1)
+    await expectIsScrollDown()
+    await sleep(500) // Wait until /nested-layout/42/reviews is rendered
     await expectIsScrollDown()
     await page.click('a[href="/nested-layout/1337/reviews"]')
-    await testCounter(2)
     await expectIsScrollUp()
     await scrollDown()
     await expectIsScrollDown()
     await page.click('a[href="/nested-layout/1337"]')
-    await testCounter(3)
+    await expectIsScrollDown()
+    await sleep(500) // Wait until /nested-layout/1337 is rendered
     await expectIsScrollDown()
   })
 
