@@ -17,6 +17,7 @@ function testNestedLayout() {
     await page.click('a[href="/nested-layout/1337/reviews"]')
     await expectIsScrollUp()
     await scrollDown()
+    await expectIsScrollDown()
     await page.click('a[href="/nested-layout/1337"]')
     await expectIsScrollDown()
     await testCounter(2)
