@@ -327,6 +327,7 @@ function getColorRgb(color: Color) {
   return rgb
 }
 
+// I don't know why it's needed, there seem to be some kind of race condition
 async function hmrSleep() {
   await sleep(500)
 }
