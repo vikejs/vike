@@ -1,3 +1,27 @@
+## [0.4.222](https://github.com/vikejs/vike/compare/v0.4.221...v0.4.222) (2025-02-12)
+
+
+### Bug Fixes
+
+* +{configName}.js pointer imports ([3310144](https://github.com/vikejs/vike/commit/33101440d8cda78072ac01e6f42ace3b2a17fc87))
+* also crawl + files at root directory ([6247354](https://github.com/vikejs/vike/commit/6247354277eef8622ea25d1e46ccbf22a2f403fb))
+* apply global configs (fix [#2165](https://github.com/vikejs/vike/issues/2165)) ([#2169](https://github.com/vikejs/vike/issues/2169)) ([8c0ee5e](https://github.com/vikejs/vike/commit/8c0ee5eaa2011a243ba8d168aab6d9461d10790f))
+* auto-reload config upon + value file changes ([#2170](https://github.com/vikejs/vike/issues/2170)) ([54388c3](https://github.com/vikejs/vike/commit/54388c3f484e9310c42bc1addaf6818c76e6b4bf))
+* consider + files living as root as global + files ([ed23891](https://github.com/vikejs/vike/commit/ed23891f03032182c645f8cfb9ecebe741002b8c))
+* ensure no race condition upon HMR of + files ([24cd2e7](https://github.com/vikejs/vike/commit/24cd2e7f06ff6893eef9060fda2190269182b859))
+* fix css duplication warning ([#2163](https://github.com/vikejs/vike/issues/2163)) ([488a81a](https://github.com/vikejs/vike/commit/488a81ae4a84bb55825f0deaa98bc420a4f22a74))
+* forbid adding Vike's Vite plugin using +vite ([#2162](https://github.com/vikejs/vike/issues/2162)) ([4c0695b](https://github.com/vikejs/vike/commit/4c0695bf3646e28927f10a2309d5c21d1b1239c2))
+* properly assert configs are known ([e9725c9](https://github.com/vikejs/vike/commit/e9725c98d928b7358b14a3bcf69a008331f1a09c))
+
+
+### Features
+
+* [experimental] config.vike.pages ([#2172](https://github.com/vikejs/vike/issues/2172)) ([6ae23f2](https://github.com/vikejs/vike/commit/6ae23f2814e0c6ee8ccc248fae610df9bd89142f))
+* new debug flag vike:crawl ([b173629](https://github.com/vikejs/vike/commit/b17362991130bb6d57dd9c81140819991a7ce872))
+* wildcard debug logs `vike:*` ([ab1d057](https://github.com/vikejs/vike/commit/ab1d057c8473ac5db08e96f6525ce25a67978dd0))
+
+
+
 ## [0.4.221](https://github.com/vikejs/vike/compare/v0.4.220...v0.4.221) (2025-02-10)
 
 

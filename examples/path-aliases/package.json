@@ -25,7 +25,7 @@
     "serve": "^13.0.2",
     "typescript": "^5.2.2",
     "vite": "^6.0.5",
-    "vike": "0.4.221"
+    "vike": "0.4.222"
   },
   "type": "module"
 }
