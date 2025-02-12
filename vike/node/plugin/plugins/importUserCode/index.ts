@@ -130,6 +130,7 @@ function isVikeConfigModule(
   if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { modifiesVikeVirtualFiles: true }
 
   // Check using Vite's module graph, for example all +htmlAttributes dependencies.
+  // Alternatively, simply call updateUserFiles() on every handleHotUpdate() call.
   const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
   const isPlusValueFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
   if (isPlusValueFileDependency) return { modifiesVikeVirtualFiles: false }
