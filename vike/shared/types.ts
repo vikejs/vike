@@ -19,7 +19,7 @@ import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-co
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
-import { GlobalContextPublic } from '../node/runtime/globalContext.js'
+import type { GlobalContextPublic } from '../node/runtime/globalContext.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext
 
@@ -144,6 +144,8 @@ type PageContextBuiltInCommon<Data> = {
    * Information shared by all pages.
    *
    * https://vike.dev/getGlobalContext
+   *
+   * @experimental
    */
   globalContext: GlobalContextPublic
 

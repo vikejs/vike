@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react'
-import assert from 'assert'
+import assert from 'node:assert'
 import type { PluginOption } from 'vite'
 
 export default {
