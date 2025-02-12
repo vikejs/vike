@@ -89,20 +89,20 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
 
   // TODO/now minor refactor
   if (isVikeConfig) {
-  if (isVikeConfig.modifiesVikeVirtualFiles) {
-    /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
+    if (isVikeConfig.modifiesVikeVirtualFiles) {
+      /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
     const isViteModule = ctx.modules.length > 0
     assert(!isViteModule)
     */
-    reloadConfig(file, config, 'modified')
-    // TODO/now fix probable race condition: invalidate by hand
-    // Triggers a full page reload
-    const virtualModules = getVirtualModules(server)
-    return virtualModules
-  }
-  if (!isVikeConfig.modifiesVikeVirtualFiles) {
-    updateUserFiles()
-  }
+      reloadConfig(file, config, 'modified')
+      // TODO/now fix probable race condition: invalidate by hand
+      // Triggers a full page reload
+      const virtualModules = getVirtualModules(server)
+      return virtualModules
+    }
+    if (!isVikeConfig.modifiesVikeVirtualFiles) {
+      updateUserFiles()
+    }
   }
 }
 
