@@ -87,13 +87,12 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isVikeConfig = isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
-  // TODO/now minor refactor
   if (isVikeConfig) {
     if (isVikeConfig.modifiesVikeVirtualFiles) {
       /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
-    const isViteModule = ctx.modules.length > 0
-    assert(!isViteModule)
-    */
+      const isViteModule = ctx.modules.length > 0
+      assert(!isViteModule)
+      */
       reloadConfig(file, config, 'modified')
       // TODO/now fix probable race condition: invalidate by hand
       // Triggers a full page reload
