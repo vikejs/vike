@@ -581,13 +581,16 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     addLinkPrefetchHandlers_watch()
     addLinkPrefetchHandlers()
 
-    // TODO/now add comment linking to usage example
-    // For Vike tests (but also potentially for Vike users)
-    window._vike ??= {}
-    window._vike.fullyRenderedUrl = urlOriginal
+    stampFinished(urlOriginal)
   }
 }
 
+// For Vike tests (but also potentially for Vike users)
+// TODO/now add comment linking to usage example
+function stampFinished(urlOriginal: string) {
+  window._vike ??= {}
+  window._vike.fullyRenderedUrl = urlOriginal
+}
 declare global {
   var _vike: { fullyRenderedUrl?: string }
 }
