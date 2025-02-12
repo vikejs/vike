@@ -80,8 +80,8 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 }
 
 function invalidateVikeVirtualFiles(server: ViteDevServer) {
-  const virtualModules = getVikeVirtualFiles(server)
-  virtualModules.forEach((mod) => {
+  const vikeVirtualFiles = getVikeVirtualFiles(server)
+  vikeVirtualFiles.forEach((mod) => {
     server.moduleGraph.invalidateModule(mod)
   })
 }
@@ -99,8 +99,8 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       reloadConfig(file, config, 'modified')
       // TODO/now fix probable race condition: invalidate by hand
       // Triggers a full page reload
-      const virtualModules = getVikeVirtualFiles(server)
-      return virtualModules
+      const vikeVirtualFiles = getVikeVirtualFiles(server)
+      return vikeVirtualFiles
     }
     if (!isVikeConfig.modifiesVikeVirtualFiles) {
       updateUserFiles()
@@ -137,14 +137,14 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
 }
 
 function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
-  const virtualModules = Array.from(server.moduleGraph.urlToModuleMap.keys())
+  const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
     .filter((url) => isVirtualFileIdPageConfigValuesAll(url) || isVirtualFileIdImportUserCode(url))
     .map((url) => {
       const mod = server.moduleGraph.urlToModuleMap.get(url)
       assert(mod)
       return mod
     })
-  return virtualModules
+  return vikeVirtualFiles
 }
 
 // Get all transitive importers (including the module itself)
