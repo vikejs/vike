@@ -36,7 +36,7 @@ import { buildApp } from './plugins/buildApp.js'
 setResolveClientEntriesDev(resolveClientEntriesDev)
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): any {
+function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): Plugin[] {
   const plugins: Plugin[] = [
     ...commonConfig(vikeVitePluginOptions),
     importUserCode(),
