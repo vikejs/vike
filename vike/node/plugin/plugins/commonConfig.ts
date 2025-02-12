@@ -34,7 +34,10 @@ declare module 'vite' {
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
     // TODO/now add pages
-    vike?: { config: VikeConfigObject['global']['config']; prerenderContext?: PrerenderContextPublic }
+    vike?: {
+      config: VikeConfigObject['global']['config']
+      prerenderContext?: PrerenderContextPublic
+    }
   }
 }
 
@@ -55,7 +58,9 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _isDev: isDev,
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
-            vike: { config: vikeConfig.global.config },
+            vike: {
+              config: vikeConfig.global.config
+            },
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
               prerender: isPrerenderEnabled(vikeConfig)
