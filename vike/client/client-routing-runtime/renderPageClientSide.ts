@@ -584,12 +584,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // TODO/now add comment linking to usage example
     // For Vike tests (but also potentially for Vike users)
     window._vike ??= {}
-    window._vike.renderedUrl = urlOriginal
+    window._vike.fullyRenderedUrl = urlOriginal
   }
 }
 
 declare global {
-  var _vike: { renderedUrl?: string }
+  var _vike: { fullyRenderedUrl?: string }
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
