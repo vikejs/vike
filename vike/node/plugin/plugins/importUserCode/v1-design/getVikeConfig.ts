@@ -234,6 +234,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const configValuesGlobal = getConfigValues(pageConfigGlobal)
   const global = getPageConfigUserFriendlyNew({ configValues: configValuesGlobal })
 
+  // TODO/now DEDUPE
   // pages
   const pages: PageConfigsUserFriendly = objectFromEntries(
     pageConfigs.map((pageConfig) => {

@@ -173,7 +173,6 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
 }
 
 function makePublic(globalContext: GlobalContextWithoutPublicCopy): GlobalContextPublic {
-  // TODO/soon: add `pages`
   const globalContextPublic = makePublicCopy(globalContext, 'globalContext', [
     'assetsManifest',
     'config',

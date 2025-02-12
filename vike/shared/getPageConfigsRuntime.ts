@@ -24,6 +24,7 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
   // TODO/now: re-use this call, instead of calling it twice
   const globalConfig = getPageConfigUserFriendlyNew(pageConfigGlobal)
 
+  // TODO/now DEDUPE
   const pageConfigsUserFriendly: PageConfigsUserFriendly = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
       const configValues = { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
