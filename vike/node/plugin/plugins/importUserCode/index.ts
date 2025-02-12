@@ -90,6 +90,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const isVikeConfig = isVikeConfigModule(ctx.file, ctx.server.moduleGraph)
   const isViteModule = ctx.modules.length > 0
 
+  // TODO/now remove
   /* Should we show this?
   // - Can be useful for server files that aren't processed by Vite.
   // - Can be annoying for files that obviously aren't processed by Vite.
