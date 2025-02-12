@@ -2,18 +2,19 @@ export { Layout }
 
 import React from 'react'
 import './Layout.css'
+import { usePageContext } from 'vike-react/usePageContext'
 
-function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
+  const pageContext = usePageContext()
   return (
     <React.StrictMode>
       <Frame>
         <Sidebar>
-          <Link href="/" />
-          <Link href="/about" />
-          <Link href="/markdown" />
-          <Link href="/pushState" />
-          <Link href="/dynamic-import-file-env" />
-          <Link href="/navigate-early" />
+          {pageContext.staticUrls
+            .filter((url) => !url.includes('config-meta'))
+            .map((url) => (
+              <Link href={url} key={url} />
+            ))}
           <Link href="/nested-layout/42" />
         </Sidebar>
         <Content>{children}</Content>
@@ -22,7 +23,7 @@ function Layout({ children }) {
   )
 }
 
-function Link({ href }) {
+function Link({ href }: { href: string }) {
   return (
     <a className="navitem" href={href} style={{ paddingRight: 20 }}>
       <code>{href}</code>
@@ -30,7 +31,7 @@ function Link({ href }) {
   )
 }
 
-function Frame({ children }) {
+function Frame({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -44,7 +45,7 @@ function Frame({ children }) {
   )
 }
 
-function Sidebar({ children }) {
+function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -60,7 +61,7 @@ function Sidebar({ children }) {
   )
 }
 
-function Content({ children }) {
+function Content({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{

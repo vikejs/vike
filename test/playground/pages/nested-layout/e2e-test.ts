@@ -11,15 +11,17 @@ function testNestedLayout() {
     await expectIsScrollUp()
     await scrollDown()
     await expectIsScrollDown()
+    await nav('/nested-layout/42/reviews')
+    await expectIsScrollDown()
     await testCounter(1)
-    await page.click('a[href="/nested-layout/42/reviews"]')
-    await expectIsScrollDown()
-    await page.click('a[href="/nested-layout/1337/reviews"]')
+    await nav('/nested-layout/1337/reviews')
     await expectIsScrollUp()
-    await scrollDown()
-    await page.click('a[href="/nested-layout/1337"]')
-    await expectIsScrollDown()
     await testCounter(2)
+    await scrollDown()
+    await expectIsScrollDown()
+    await nav('/nested-layout/1337')
+    await expectIsScrollDown()
+    await testCounter(3)
     await expectIsScrollDown()
   })
 
@@ -48,4 +50,18 @@ function testNestedLayout() {
     const scrollTop = await page.evaluate(() => window.document.documentElement.scrollTop)
     return scrollTop
   }
+}
+
+async function nav(href: `/${string}`) {
+  await page.click(`a[href="${href}"]`)
+  await autoRetry(
+    async () => {
+      const fullyRenderedUrl = await page.evaluate(() => window._vike.fullyRenderedUrl)
+      expect(fullyRenderedUrl).toBe(href)
+    },
+    { timeout: 5000 }
+  )
+}
+declare global {
+  var _vike: { fullyRenderedUrl?: string }
 }

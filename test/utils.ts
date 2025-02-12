@@ -4,8 +4,20 @@ export { ensureWasClientSideRouted }
 export { expectUrl }
 export { expectPageContextJsonRequest }
 export { waitForNavigation }
+export { sleepBeforeEditFile }
 
-import { page, test, expect, run, autoRetry, fetchHtml, getServerUrl, expectLog, partRegex } from '@brillout/test-e2e'
+import {
+  page,
+  test,
+  expect,
+  run,
+  autoRetry,
+  fetchHtml,
+  getServerUrl,
+  expectLog,
+  partRegex,
+  sleep
+} from '@brillout/test-e2e'
 
 async function testCounter(currentValue = 0) {
   // autoRetry() in case page just got client-side navigated
@@ -126,4 +138,14 @@ function testRunClassic(
       expect(html).toContain('<h1>About</h1>')
     })
   }
+}
+
+/** Call it before `editFile()` and `editFileRevert()` to make these reliable.
+ *
+ * It doesn't seem to be always needed.
+ *
+ * I don't know why it's sometimes needed, there seem to be some kind of race condition?
+ */
+async function sleepBeforeEditFile() {
+  await sleep(500)
 }

@@ -69,7 +69,11 @@ import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
-import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
+import {
+  getPageConfigUserFriendlyNew,
+  type ConfigUserFriendly,
+  type PageConfigsUserFriendly
+} from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 
@@ -78,7 +82,8 @@ assertIsNotProductionRuntime()
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  global: ReturnType<typeof getPageConfigUserFriendlyNew>
+  global: ConfigUserFriendly
+  pages: PageConfigsUserFriendly
 }
 
 let restartVite = false
@@ -201,7 +206,8 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getPageConfigUserFriendlyNew({ configValues: {} })
+        global: getPageConfigUserFriendlyNew({ configValues: {} }),
+        pages: {}
       }
       return dummyData
     }
@@ -225,10 +231,24 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
   // global
-  const configValues = getConfigValues(pageConfigGlobal)
-  const global = getPageConfigUserFriendlyNew({ configValues })
+  const configValuesGlobal = getConfigValues(pageConfigGlobal)
+  const global = getPageConfigUserFriendlyNew({ configValues: configValuesGlobal })
 
-  return { pageConfigs, pageConfigGlobal, global }
+  // TODO/now DEDUPE
+  // pages
+  const pages: PageConfigsUserFriendly = objectFromEntries(
+    pageConfigs.map((pageConfig) => {
+      const configValuesLocal = getConfigValues(pageConfig, true)
+      const configValues = { ...configValuesGlobal, ...configValuesLocal }
+      const page = {
+        ...getPageConfigUserFriendlyNew({ configValues }),
+        route: pageConfig.routeFilesystem?.routeString ?? null
+      }
+      return [pageConfig.pageId, page]
+    })
+  )
+
+  return { pageConfigs, pageConfigGlobal, global, pages }
 }
 async function resolveConfigDefinitions(
   plusFilesAll: PlusFilesByLocationId,
@@ -425,7 +445,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   )
 }
 
-function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
+function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime, tolerateMissingValue?: true) {
   const configValues: ConfigValues = {}
   getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config, null).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
@@ -436,7 +456,10 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
     if (entry.configValueBase.type === 'standard') {
       assert('sourceRelevant' in entry) // Help TS
       const { configValueBase, sourceRelevant, configName } = entry
-      assert('value' in sourceRelevant)
+      if (!sourceRelevant.valueIsLoaded) {
+        if (tolerateMissingValue) return
+        assert(false)
+      }
       const { value } = sourceRelevant
       configValues[configName] = { ...configValueBase, value }
     }
@@ -445,9 +468,16 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
       const { configValueBase, sourcesRelevant, configName } = entry
       const values: unknown[] = []
       sourcesRelevant.forEach((source) => {
-        assert('value' in source)
+        if (!source.valueIsLoaded) {
+          if (tolerateMissingValue) return
+          assert(false)
+        }
         values.push(source.value)
       })
+      if (values.length === 0) {
+        if (tolerateMissingValue) return
+        assert(false)
+      }
       configValues[configName] = { ...configValueBase, value: values }
     }
   })

@@ -2,6 +2,7 @@ export { getPageConfigUserFriendlyOld }
 export { getPageConfigUserFriendlyNew }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
+export type { PageConfigsUserFriendly }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -11,7 +12,14 @@ export type { ConfigEntries }
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
 import type { PageFile } from '../getPageFiles/getPageFileObject.js'
-import type { ConfigValues, PageConfigGlobalRuntime, PageConfigRuntimeLoaded } from './PageConfig.js'
+import type {
+  ConfigValues,
+  PageConfigBuildTime,
+  PageConfigGlobalBuildTime,
+  PageConfigGlobalRuntime,
+  PageConfigRuntime,
+  PageConfigRuntimeLoaded
+} from './PageConfig.js'
 import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from './helpers.js'
 import {
@@ -119,6 +127,30 @@ type SourceConfigsComputed = {
   type: 'configsComputed'
   value: unknown
 }
+
+type PageConfigsUserFriendly = Record<
+  string, // pageId
+  ConfigUserFriendly & {
+    route: string | null
+  }
+>
+/* TODO/now DEDUPE
+function getPageConfigsUserFriendly(
+  pageConfigs: (PageConfigRuntime | PageConfigBuildTime)[],
+  pageConfigGlobal: PageConfigGlobalRuntime | PageConfigGlobalBuildTime
+): PageConfigsUserFriendly {
+  const pageConfigsUserFriendly: PageConfigsUserFriendly = Object.fromEntries(
+    pageConfigs.map((pageConfig) => {
+      const configValues = { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
+      const page = {
+        ...getPageConfigUserFriendlyNew({ configValues }),
+        route: pageConfig.routeFilesystem?.routeString ?? null
+      }
+      return [pageConfig.pageId, page]
+    })
+  )
+}
+*/
 
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
 type ConfigUserFriendly = {
