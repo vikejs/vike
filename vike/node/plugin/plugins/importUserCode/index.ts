@@ -72,55 +72,42 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    if (isPlusFile(file) || isVikeConfigModule(file, server.moduleGraph)?.modifiesVikeVirtualFiles) {
-      // TODO/now refactor
-      const virtualModules = getVirtualModules(server)
-      virtualModules.forEach((mod) => {
-        server.moduleGraph.invalidateModule(mod)
-      })
+    if (isPlusFile(file) || isVikeConfigDependency(file, server.moduleGraph)?.modifiesVikeVirtualFiles) {
+      invalidateVikeVirtualFiles(server)
       reloadConfig(file, config, isRemove ? 'removed' : 'created')
     }
   }
 }
 
+function invalidateVikeVirtualFiles(server: ViteDevServer) {
+  const vikeVirtualFiles = getVikeVirtualFiles(server)
+  vikeVirtualFiles.forEach((mod) => {
+    server.moduleGraph.invalidateModule(mod)
+  })
+}
+
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  const isVikeConfig = isVikeConfigModule(ctx.file, ctx.server.moduleGraph)
+  const isVikeConfig = isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
-  // TODO/now remove
-  /* Should we show this?
-  // - Can be useful for server files that aren't processed by Vite.
-  // - Can be annoying for files that obviously aren't processed by Vite.
-  if (!isVikeConfig && !isViteModule) {
-    logViteAny(
-      `${msg} — ${pc.cyan('no HMR')}, see https://vike.dev/on-demand-compiler`,
-      'info',
-      null,
-      true
-    )
-    return
-  }
-  //*/
-
-  // TODO/now minor refactor
-  if (isVikeConfig && isVikeConfig.modifiesVikeVirtualFiles) {
-    /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
-    const isViteModule = ctx.modules.length > 0
-    assert(!isViteModule)
-    */
-    reloadConfig(file, config, 'modified')
-    // TODO/now fix probable race condition: invalidate by hand
-    // Triggers a full page reload
-    const virtualModules = getVirtualModules(server)
-    return virtualModules
-  }
-  if (isVikeConfig && !isVikeConfig.modifiesVikeVirtualFiles) {
-    updateUserFiles()
+  if (isVikeConfig) {
+    if (isVikeConfig.modifiesVikeVirtualFiles) {
+      /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
+      const isViteModule = ctx.modules.length > 0
+      assert(!isViteModule)
+      */
+      reloadConfig(file, config, 'modified')
+      // TODO/now fix probable race condition: invalidate by hand
+      // Triggers a full page reload
+      const vikeVirtualFiles = getVikeVirtualFiles(server)
+      return vikeVirtualFiles
+    } else {
+      updateUserFiles()
+    }
   }
 }
 
-// TODO/now rename
-function isVikeConfigModule(
+function isVikeConfigDependency(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph
 ): null | { modifiesVikeVirtualFiles: boolean } {
@@ -148,15 +135,15 @@ function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' |
   updateUserFiles()
 }
 
-function getVirtualModules(server: ViteDevServer): ModuleNode[] {
-  const virtualModules = Array.from(server.moduleGraph.urlToModuleMap.keys())
+function getVikeVirtualFiles(server: ViteDevServer): ModuleNode[] {
+  const vikeVirtualFiles = Array.from(server.moduleGraph.urlToModuleMap.keys())
     .filter((url) => isVirtualFileIdPageConfigValuesAll(url) || isVirtualFileIdImportUserCode(url))
     .map((url) => {
       const mod = server.moduleGraph.urlToModuleMap.get(url)
       assert(mod)
       return mod
     })
-  return virtualModules
+  return vikeVirtualFiles
 }
 
 // Get all transitive importers (including the module itself)

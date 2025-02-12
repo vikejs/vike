@@ -1,21 +1,19 @@
 export { getPlusFilesAll }
-export { getPlusFileValueConfigName }
 export type { PlusFileValue }
 export type { PlusFile }
 export type { PlusFilesByLocationId }
 
-import { assert, assertPosixPath, assertUsage } from '../../../../utils.js'
+import { assert } from '../../../../utils.js'
 import { configDefinitionsBuiltIn } from './configDefinitionsBuiltIn.js'
 import { type LocationId, getLocationId } from './filesystemRouting.js'
-import { isTemporaryBuildFile, type EsbuildCache } from './transpileAndExecuteFile.js'
-import { crawlPlusFiles } from './crawlPlusFiles.js'
+import { type EsbuildCache } from './transpileAndExecuteFile.js'
+import { crawlPlusFiles, getPlusFileValueConfigName } from './crawlPlusFiles.js'
 import { getConfigFileExport } from './getConfigFileExport.js'
 import { type ConfigFile, loadConfigFile, loadValueFile, PointerImportLoaded } from './loadFileAtConfigTime.js'
 import { resolvePointerImport } from './resolvePointerImport.js'
 import { getFilePathResolved } from '../../../../shared/getFilePath.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { assertExtensionsConventions } from './assertExtensions.js'
-import path from 'node:path'
 
 type PlusFile = PlusFileConfig | PlusFileValue
 type PlusFileCommons = {
@@ -190,35 +188,3 @@ async function findPlusFiles(userRootDir: string, outDirRoot: null | string): Pr
 
   return plusFiles
 }
-
-// TODO/now: move to crawlPlusFiles.ts
-function getPlusFileValueConfigName(filePath: string): string | null {
-  assertPosixPath(filePath)
-  if (isTemporaryBuildFile(filePath)) return null
-  const fileName = path.posix.basename(filePath)
-  // assertNoUnexpectedPlusSign(filePath, fileName)
-  const basename = fileName.split('.')[0]!
-  if (!basename.startsWith('+')) {
-    return null
-  } else {
-    const configName = basename.slice(1)
-    assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
-    return configName
-  }
-}
-/* https://github.com/vikejs/vike/issues/1407
-function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
-  const dirs = path.posix.dirname(filePath).split('/')
-  dirs.forEach((dir, i) => {
-    const dirPath = dirs.slice(0, i + 1).join('/')
-    assertUsage(
-      !dir.includes('+'),
-      `Character '+' is a reserved character: remove '+' from the directory name ${dirPath}/`
-    )
-  })
-  assertUsage(
-    !fileName.slice(1).includes('+'),
-    `Character '+' is only allowed at the beginning of filenames: make sure ${filePath} doesn't contain any '+' in its filename other than its first letter`
-  )
-}
-*/
