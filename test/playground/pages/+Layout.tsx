@@ -2,18 +2,19 @@ export { Layout }
 
 import React from 'react'
 import './Layout.css'
+import { usePageContext } from 'vike-react/usePageContext'
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const pageContext = usePageContext()
   return (
     <React.StrictMode>
       <Frame>
         <Sidebar>
-          <Link href="/" />
-          <Link href="/about" />
-          <Link href="/markdown" />
-          <Link href="/pushState" />
-          <Link href="/dynamic-import-file-env" />
-          <Link href="/navigate-early" />
+          {pageContext.staticUrls
+            .filter((url) => !url.includes('config-meta'))
+            .map((url) => (
+              <Link href={url} key={url} />
+            ))}
           <Link href="/nested-layout/42" />
         </Sidebar>
         <Content>{children}</Content>

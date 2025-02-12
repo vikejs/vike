@@ -16,5 +16,6 @@ export default {
     frontmatter: {
       env: { server: true }
     }
-  }
+  },
+  passToClient: ['staticUrls']
 } satisfies Config

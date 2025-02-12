@@ -1,6 +1,7 @@
 // TODO/now move other tests here
 
 export { testHMRPlusValueFile }
+export { testGlobalContext }
 
 import { autoRetry, editFile, editFileRevert, expect, fetchHtml, isWindows, test } from '@brillout/test-e2e'
 
@@ -28,4 +29,14 @@ async function expectHtmlAttr(val: 'dark' | 'light') {
     },
     { timeout: 5 * 1000 }
   )
+}
+
+function testGlobalContext() {
+  // See +onBeforeRender.ts and +Layout.tsx
+  test('pageContext.globalContext.pages', async () => {
+    const html = await fetchHtml('/')
+    ;['/', '/about', '/markdown', '/pushState'].forEach((url) => {
+      expect(html).toContain(`<a class="navitem" href="${url}" style="padding-right:20px">`)
+    })
+  })
 }
