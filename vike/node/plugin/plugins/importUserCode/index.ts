@@ -86,7 +86,9 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isVikeConfig = isVikeConfigModule(file)
+  console.log('isVikeConfig', isVikeConfig)
   const isViteModule = ctx.modules.length > 0
+  console.log('isViteModule', isViteModule)
 
   /* Should we show this?
   // - Can be useful for server files that aren't processed by Vite.
