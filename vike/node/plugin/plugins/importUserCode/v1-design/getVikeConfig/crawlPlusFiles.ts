@@ -1,5 +1,6 @@
 export { crawlPlusFiles }
 export { isPlusFile }
+export { getPlusFileValueConfigName }
 
 import {
   assertPosixPath,
@@ -11,7 +12,8 @@ import {
   isScriptFile,
   scriptFileExtensionList,
   createDebugger,
-  deepEqual
+  deepEqual,
+  assertUsage
 } from '../../../../utils.js'
 import path from 'path'
 import glob from 'fast-glob'
@@ -265,3 +267,34 @@ function isPlusFile(filePath: string): boolean {
   const fileName = filePath.split('/').pop()!
   return fileName.startsWith('+')
 }
+
+function getPlusFileValueConfigName(filePath: string): string | null {
+  assertPosixPath(filePath)
+  if (isTemporaryBuildFile(filePath)) return null
+  const fileName = path.posix.basename(filePath)
+  // assertNoUnexpectedPlusSign(filePath, fileName)
+  const basename = fileName.split('.')[0]!
+  if (!basename.startsWith('+')) {
+    return null
+  } else {
+    const configName = basename.slice(1)
+    assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
+    return configName
+  }
+}
+/* https://github.com/vikejs/vike/issues/1407
+function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
+  const dirs = path.posix.dirname(filePath).split('/')
+  dirs.forEach((dir, i) => {
+    const dirPath = dirs.slice(0, i + 1).join('/')
+    assertUsage(
+      !dir.includes('+'),
+      `Character '+' is a reserved character: remove '+' from the directory name ${dirPath}/`
+    )
+  })
+  assertUsage(
+    !fileName.slice(1).includes('+'),
+    `Character '+' is only allowed at the beginning of filenames: make sure ${filePath} doesn't contain any '+' in its filename other than its first letter`
+  )
+}
+*/
