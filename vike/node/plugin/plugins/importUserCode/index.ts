@@ -87,21 +87,6 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isVikeConfig = isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
-  // TODO/now remove
-  /* Should we show this?
-  // - Can be useful for server files that aren't processed by Vite.
-  // - Can be annoying for files that obviously aren't processed by Vite.
-  if (!isVikeConfig && !isViteModule) {
-    logViteAny(
-      `${msg} — ${pc.cyan('no HMR')}, see https://vike.dev/on-demand-compiler`,
-      'info',
-      null,
-      true
-    )
-    return
-  }
-  //*/
-
   // TODO/now minor refactor
   if (isVikeConfig && isVikeConfig.modifiesVikeVirtualFiles) {
     /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
