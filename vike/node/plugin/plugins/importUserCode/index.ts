@@ -72,7 +72,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    if (isPlusFile(file) || isVikeConfigModule(file, server.moduleGraph)?.modifiesVikeVirtualFiles) {
+    if (isPlusFile(file) || isVikeConfigDependency(file, server.moduleGraph)?.modifiesVikeVirtualFiles) {
       // TODO/now refactor
       const virtualModules = getVirtualModules(server)
       virtualModules.forEach((mod) => {
@@ -85,7 +85,7 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  const isVikeConfig = isVikeConfigModule(ctx.file, ctx.server.moduleGraph)
+  const isVikeConfig = isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
   // TODO/now remove
   /* Should we show this?
@@ -119,8 +119,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   }
 }
 
-// TODO/now rename
-function isVikeConfigModule(
+function isVikeConfigDependency(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph
 ): null | { modifiesVikeVirtualFiles: boolean } {
