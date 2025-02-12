@@ -1,9 +1,9 @@
 // TODO/now move other tests here
 
-export { testHMRPlusValueFile }
 export { testGlobalContext }
+export { testHMRPlusValueFile }
 
-import { autoRetry, editFile, editFileRevert, expect, fetchHtml, isWindows, test } from '@brillout/test-e2e'
+import { autoRetry, editFile, editFileRevert, expect, fetchHtml, isWindows, sleep, test } from '@brillout/test-e2e'
 
 function testHMRPlusValueFile(isDev: boolean) {
   if (
@@ -17,6 +17,7 @@ function testHMRPlusValueFile(isDev: boolean) {
     await expectHtmlAttr('dark')
     editFile('./htmlAttrs.ts', (s) => s.replace('dark', 'light'))
     await expectHtmlAttr('light')
+    await hmrSleep()
     editFileRevert()
     await expectHtmlAttr('dark')
   })
@@ -39,4 +40,9 @@ function testGlobalContext() {
       expect(html).toContain(`<a class="navitem" href="${url}" style="padding-right:20px">`)
     })
   })
+}
+
+// I don't know why it's needed, there seem to be some kind of race condition
+async function hmrSleep() {
+  await sleep(500)
 }

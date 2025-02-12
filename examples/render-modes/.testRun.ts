@@ -16,8 +16,6 @@ import { waitForNavigation } from '../../test/utils'
 
 export { testRun }
 
-const HMR_SLEEP = 500
-
 // Doesn't work anymore with Vite 6.
 // Vite 6 Breaking change: https://vite.dev/guide/migration.html#:~:text=%5B%2316471%5D%20feat%3A%20v6,can%20be%20used%3A
 // Workaround doesn't seem to work: see https://github.com/vikejs/vike/pull/2069 commit `renable HMR test for HTML-only`
@@ -118,13 +116,13 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
     if (!isProd) {
       {
         expect(await page.textContent('h1')).toBe('SPA')
-        await sleep(HMR_SLEEP)
+        await hmrSleep()
         const file = isV1Design ? './pages/spa/+Page.jsx' : './pages/spa/index.page.client.jsx'
         editFile(file, (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA !')
         })
-        await sleep(HMR_SLEEP)
+        await hmrSleep()
         editFileRevert()
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA')
@@ -134,10 +132,10 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('green')
-        await sleep(HMR_SLEEP)
+        await hmrSleep()
         editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
         await testColor('gray')
-        await sleep(HMR_SLEEP)
+        await hmrSleep()
         editFileRevert()
         await testColor('green')
       }
@@ -221,13 +219,13 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
-        await sleep(HMR_SLEEP)
+        await hmrSleep()
         const file = isV1Design ? './pages/ssr/+Page.jsx' : './pages/ssr/index.page.jsx'
         editFile(file, (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR !')
         })
-        await sleep(HMR_SLEEP)
+        await hmrSleep()
         editFileRevert()
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR')
@@ -237,10 +235,10 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('blue')
-        await sleep(HMR_SLEEP)
+        await hmrSleep()
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
         await testColor('gray')
-        await sleep(HMR_SLEEP)
+        await hmrSleep()
         editFileRevert()
         await testColor('blue')
       }
@@ -327,4 +325,8 @@ function getColorRgb(color: Color) {
   }
   const rgb = `rgb(${String(rgbRed)}, ${String(rgbGreen)}, ${String(rgbBlue)})`
   return rgb
+}
+
+async function hmrSleep() {
+  await sleep(500)
 }
