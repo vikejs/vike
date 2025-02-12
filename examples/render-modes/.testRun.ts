@@ -115,8 +115,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
     if (!isProd) {
       {
         expect(await page.textContent('h1')).toBe('SPA')
-        await sleepBeforeEditFile()
         const file = isV1Design ? './pages/spa/+Page.jsx' : './pages/spa/index.page.client.jsx'
+        await sleepBeforeEditFile()
         editFile(file, (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA !')
@@ -218,8 +218,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
-        await sleepBeforeEditFile()
         const file = isV1Design ? './pages/ssr/+Page.jsx' : './pages/ssr/index.page.jsx'
+        await sleepBeforeEditFile()
         editFile(file, (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR !')
