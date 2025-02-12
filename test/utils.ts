@@ -4,7 +4,7 @@ export { ensureWasClientSideRouted }
 export { expectUrl }
 export { expectPageContextJsonRequest }
 export { waitForNavigation }
-export { hmrSleep }
+export { sleepBeforeEditFile }
 
 import {
   page,
@@ -146,6 +146,6 @@ function testRunClassic(
  *
  * I don't know why it's sometimes needed, there seem to be some kind of race condition?
  */
-async function hmrSleep() {
+async function sleepBeforeEditFile() {
   await sleep(500)
 }

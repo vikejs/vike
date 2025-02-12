@@ -4,7 +4,7 @@ export { testGlobalContext }
 export { testHMRPlusValueFile }
 
 import { autoRetry, editFile, editFileRevert, expect, fetchHtml, test } from '@brillout/test-e2e'
-import { hmrSleep } from '../../../test/utils'
+import { sleepBeforeEditFile } from '../../../test/utils'
 
 function testHMRPlusValueFile(isDev: boolean) {
   if (!isDev) {
@@ -14,7 +14,7 @@ function testHMRPlusValueFile(isDev: boolean) {
     await expectHtmlAttr('dark')
     editFile('./htmlAttrs.ts', (s) => s.replace('dark', 'light'))
     await expectHtmlAttr('light')
-    await hmrSleep()
+    await sleepBeforeEditFile()
     editFileRevert()
     await expectHtmlAttr('dark')
   })
