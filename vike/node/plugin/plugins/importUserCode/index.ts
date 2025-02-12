@@ -1,6 +1,6 @@
 export { importUserCode }
 
-import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode } from 'vite'
+import type { Plugin, ResolvedConfig, HmrContext, ViteDevServer, ModuleNode, ModuleGraph } from 'vite'
 import { normalizePath } from 'vite'
 import type { VikeConfigObject } from './v1-design/getVikeConfig.js'
 import { getVirtualFilePageConfigValuesAll } from './v1-design/virtual-files/getVirtualFilePageConfigValuesAll.js'
@@ -84,6 +84,9 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 }
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
+  const dependencies = getDependencies(ctx.file, ctx.server.moduleGraph)
+  console.log('All dependencies (including the changed file):', Array.from(dependencies))
+
   const { file, server } = ctx
   const isVikeConfig = isVikeConfigModule(file)
   const isViteModule = ctx.modules.length > 0
@@ -146,4 +149,33 @@ function getVirtualModules(server: ViteDevServer): ModuleNode[] {
 
 function isVikeConfigFile(filePath: string): boolean {
   return !!getPlusFileValueConfigName(filePath)
+}
+
+function getDependencies(file: string, moduleGraph: ModuleGraph): Set<string> {
+  const dependencies = new Set<string>()
+  const mods = moduleGraph.getModulesByFile(file)
+  if (!mods) return dependencies
+  for (const mod of mods) {
+    getModuleDependencies(mod).forEach((modDepId) => {
+      if (modDepId) dependencies.add(modDepId)
+    })
+  }
+  return dependencies
+}
+function getModuleDependencies(mod: ModuleNode, seen: Set<ModuleNode> = new Set()): Set<string> {
+  if (seen.has(mod)) return new Set()
+  seen.add(mod)
+
+  const dependencies = new Set<string>()
+  if (mod.id) dependencies.add(mod.id)
+
+  // Recursion
+  for (const modDep of mod.importedModules) {
+    if (modDep.id) dependencies.add(modDep.id)
+    getModuleDependencies(modDep, seen).forEach((modDepId) => {
+      if (modDepId) dependencies.add(modDepId)
+    })
+  }
+
+  return dependencies
 }
