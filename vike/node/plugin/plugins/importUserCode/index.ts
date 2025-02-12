@@ -84,8 +84,8 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 }
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
-  const dependencies = getDependencies(ctx.file, ctx.server.moduleGraph)
-  console.log('All dependencies (including the changed file):', Array.from(dependencies))
+  const importers = getImporters(ctx.file, ctx.server.moduleGraph)
+  console.log('All transitive importers (including the module itself):', Array.from(importers))
 
   const { file, server } = ctx
   const isVikeConfig = isVikeConfigModule(file)
@@ -151,31 +151,33 @@ function isVikeConfigFile(filePath: string): boolean {
   return !!getPlusFileValueConfigName(filePath)
 }
 
-function getDependencies(file: string, moduleGraph: ModuleGraph): Set<string> {
-  const dependencies = new Set<string>()
+function getImporters(file: string, moduleGraph: ModuleGraph): Set<string> {
+  const importers = new Set<string>()
   const mods = moduleGraph.getModulesByFile(file)
-  if (!mods) return dependencies
+  if (!mods) return importers
+
   for (const mod of mods) {
-    getModuleDependencies(mod).forEach((modDepId) => {
-      if (modDepId) dependencies.add(modDepId)
+    getModuleImporters(mod).forEach((importerId) => {
+      if (importerId) importers.add(importerId)
     })
   }
-  return dependencies
+
+  return importers
 }
-function getModuleDependencies(mod: ModuleNode, seen: Set<ModuleNode> = new Set()): Set<string> {
+function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()): Set<string> {
   if (seen.has(mod)) return new Set()
   seen.add(mod)
 
-  const dependencies = new Set<string>()
-  if (mod.id) dependencies.add(mod.id)
+  const importers = new Set<string>()
+  if (mod.id) importers.add(mod.id)
 
-  // Recursion
-  for (const modDep of mod.importedModules) {
-    if (modDep.id) dependencies.add(modDep.id)
-    getModuleDependencies(modDep, seen).forEach((modDepId) => {
-      if (modDepId) dependencies.add(modDepId)
+  // Traverse through the importers (modules that import this module)
+  for (const importer of mod.importers) {
+    if (importer.id) importers.add(importer.id)
+    getModuleImporters(importer, seen).forEach((importerId) => {
+      if (importerId) importers.add(importerId)
     })
   }
 
-  return dependencies
+  return importers
 }
