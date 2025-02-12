@@ -88,7 +88,6 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
   const isVikeConfig = isVikeConfigModule(ctx.file, ctx.server.moduleGraph)
-  const isViteModule = ctx.modules.length > 0
 
   // TODO/now remove
   /* Should we show this?
@@ -104,11 +103,6 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
     return
   }
   //*/
-
-  // It can hide an error it shouldn't hide (because the error isn't shown again), but it's ok since users can reload the page and the error will be shown again (Vite transpilation errors are shown again upon a page reload).
-  if (!isVikeConfig && isViteModule) {
-    return
-  }
 
   if (isVikeConfig) {
     /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
