@@ -69,7 +69,7 @@ import { getFilePathResolved } from '../../../shared/getFilePath.js'
 import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
-import { getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
+import { type ConfigUserFriendly, getPageConfigUserFriendlyNew } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 
@@ -78,7 +78,7 @@ assertIsNotProductionRuntime()
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  global: ReturnType<typeof getPageConfigUserFriendlyNew>
+  global: ConfigUserFriendly
 }
 
 let restartVite = false
