@@ -61,6 +61,7 @@ async function transpileAndExecuteFile(
   esbuildCache: EsbuildCache
 ): Promise<FileExports> {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
+  assert(filePathAbsoluteFilesystem)
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
 
   if (esbuildCache[filePathAbsoluteFilesystem]) {
@@ -105,6 +106,7 @@ async function transpileAndExecuteFile(
 async function transpileFile(filePath: FilePathResolved, transformImports: boolean | 'all', userRootDir: string) {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
 
+  assert(filePathAbsoluteFilesystem)
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
