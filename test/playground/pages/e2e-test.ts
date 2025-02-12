@@ -3,14 +3,10 @@
 export { testGlobalContext }
 export { testHMRPlusValueFile }
 
-import { autoRetry, editFile, editFileRevert, expect, fetchHtml, isWindows, sleep, test } from '@brillout/test-e2e'
+import { autoRetry, editFile, editFileRevert, expect, fetchHtml, sleep, test } from '@brillout/test-e2e'
 
 function testHMRPlusValueFile(isDev: boolean) {
-  if (
-    !isDev ||
-    // editFileRevert() doesn't seem to work on windows, I don't know why
-    isWindows()
-  ) {
+  if (!isDev) {
     return
   }
   test('HMR +{configName}.js dependency', async () => {
