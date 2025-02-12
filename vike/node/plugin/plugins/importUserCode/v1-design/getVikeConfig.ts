@@ -70,8 +70,9 @@ import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
+  getPageConfigUserFriendlyNew,
   type ConfigUserFriendly,
-  getPageConfigUserFriendlyNew
+  type PageConfigsUserFriendly
 } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
@@ -82,10 +83,7 @@ type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   global: ConfigUserFriendly
-  pages: Record<
-    string, // pageId
-    ConfigUserFriendly
-  >
+  pages: PageConfigsUserFriendly
 }
 
 let restartVite = false
