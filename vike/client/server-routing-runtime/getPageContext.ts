@@ -8,7 +8,7 @@ import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 
 // @ts-ignore
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:server-routing'
-const { pageFilesAll, pageConfigs } = getPageConfigsRuntime(virtualFileExports)
+const { pageFilesAll, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
@@ -37,12 +37,18 @@ async function loadPageUserFiles(pageId: string) {
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
     _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal
   })
 
   objectAssign(
     pageContextAddendum,
-    await loadUserFilesClientSide(pageId, pageContextAddendum._pageFilesAll, pageContextAddendum._pageConfigs)
+    await loadUserFilesClientSide(
+      pageId,
+      pageContextAddendum._pageFilesAll,
+      pageContextAddendum._pageConfigs,
+      pageContextAddendum._pageConfigGlobal
+    )
   )
 
   pageFilesAll

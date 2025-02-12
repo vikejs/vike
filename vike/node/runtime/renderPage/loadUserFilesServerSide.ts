@@ -17,7 +17,7 @@ import {
 } from '../utils.js'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets.js'
 import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFiles.js'
-import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
+import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
 import type { GlobalContext } from '../globalContext.js'
@@ -37,7 +37,13 @@ async function loadUserFilesServerSide(pageContext: { pageId: string } & PageCon
 
   const globalContext = pageContext._globalContext
   const [{ pageFilesLoaded, pageContextExports }] = await Promise.all([
-    loadPageUserFiles(pageContext._pageFilesAll, pageConfig, pageContext.pageId, !globalContext.isProduction),
+    loadPageUserFiles(
+      pageContext._pageFilesAll,
+      pageConfig,
+      globalContext.pageConfigGlobal,
+      pageContext.pageId,
+      !globalContext.isProduction
+    ),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext.pageId, { sharedPageFilesAlreadyLoaded: true })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
@@ -135,13 +141,14 @@ async function loadUserFilesServerSide(pageContext: { pageId: string } & PageCon
 async function loadPageUserFiles(
   pageFilesAll: PageFile[],
   pageConfig: null | PageConfigRuntime,
+  pageConfigGlobal: PageConfigGlobalRuntime,
   pageId: string,
   isDev: boolean
 ) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadConfigValues(pageConfig, isDev)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
-  const pageContextExports = getPageConfigUserFriendlyOld(pageFilesServerSide, pageConfigLoaded)
+  const pageContextExports = getPageConfigUserFriendlyOld(pageFilesServerSide, pageConfigLoaded, pageConfigGlobal)
   return {
     pageContextExports,
     pageFilesLoaded: pageFilesServerSide

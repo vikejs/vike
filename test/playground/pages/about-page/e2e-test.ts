@@ -1,16 +1,22 @@
-export { testCumulativeSetting }
+export { testSettingsInheritance }
 
 import { expect, fetchHtml, partRegex, test } from '@brillout/test-e2e'
 
-function testCumulativeSetting({ isDev }: { isDev: boolean }) {
-  test('Cumulative setting (not serialized but imported)', async () => {
+function testSettingsInheritance({ isDev }: { isDev: boolean }) {
+  test('settings inheritance', async () => {
     let html: string
     const expectGlobalMetaTags = () => {
       expect(html).toContain('<meta charSet="UTF-8"/>')
       expect(html).toContain('<meta name="viewport" content="width=device-width, initial-scale=1.0"/>')
     }
-    const expectAboutMetaTags = () => {
-      expect(html).toContain('<meta name="description" content="Playground for testing."/>')
+    // TEST: cumulative setting (not serialized but imported)
+    const expectAboutMetaTags = (shouldBeMissing: boolean) => {
+      const val = '<meta name="description" content="Playground for testing."/>'
+      if (!shouldBeMissing) {
+        expect(html).toContain(val)
+      } else {
+        expect(html).not.toContain(val)
+      }
     }
     const expectFavicon = () => {
       if (isDev) {
@@ -19,14 +25,21 @@ function testCumulativeSetting({ isDev }: { isDev: boolean }) {
         expect(html).toMatch(partRegex`<link rel="icon" href="${/[^"]+/}.svg"/>`)
       }
     }
+    // TEST: global setting
+    const expectHtmlAttributes = () => {
+      expect(html).toContain('<html class="dark" lang="en">')
+    }
 
     html = await fetchHtml('/')
     expectGlobalMetaTags()
+    expectAboutMetaTags(true)
     expectFavicon()
+    expectHtmlAttributes()
 
     html = await fetchHtml('/about')
-    expectAboutMetaTags()
     expectGlobalMetaTags()
+    expectAboutMetaTags(false)
     expectFavicon()
+    expectHtmlAttributes()
   })
 }
