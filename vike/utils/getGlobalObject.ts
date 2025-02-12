@@ -26,6 +26,6 @@ function assertIsSingleModuleInstance(
 function getGlobalObjects() {
   const projectKey = '_vike'
   // @ts-ignore
-  const globalObjects = (globalThis[projectKey] = globalThis[projectKey] || {})
+  const globalObjects: any = (globalThis[projectKey] = globalThis[projectKey] || {})
   return globalObjects
 }

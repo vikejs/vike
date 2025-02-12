@@ -1,6 +1,6 @@
 export { testNestedLayout }
 
-import { test, page, getServerUrl, expect, autoRetry, sleep } from '@brillout/test-e2e'
+import { test, page, getServerUrl, expect, autoRetry } from '@brillout/test-e2e'
 import { testCounter } from '../../../utils'
 
 function testNestedLayout() {
@@ -11,17 +11,13 @@ function testNestedLayout() {
     await expectIsScrollUp()
     await scrollDown()
     await expectIsScrollDown()
-    await page.click('a[href="/nested-layout/42/reviews"]')
+    await nav('/nested-layout/42/reviews')
     await expectIsScrollDown()
-    await sleep(500) // Wait until /nested-layout/42/reviews is rendered
-    await expectIsScrollDown()
-    await page.click('a[href="/nested-layout/1337/reviews"]')
+    await nav('/nested-layout/1337/reviews')
     await expectIsScrollUp()
     await scrollDown()
     await expectIsScrollDown()
-    await page.click('a[href="/nested-layout/1337"]')
-    await expectIsScrollDown()
-    await sleep(500) // Wait until /nested-layout/1337 is rendered
+    await nav('/nested-layout/1337')
     await expectIsScrollDown()
   })
 
@@ -50,4 +46,18 @@ function testNestedLayout() {
     const scrollTop = await page.evaluate(() => window.document.documentElement.scrollTop)
     return scrollTop
   }
+}
+
+async function nav(href: `/${string}`) {
+  await page.click(`a[href="${href}"]`)
+  await autoRetry(
+    async () => {
+      const renderedUrl = await page.evaluate(() => window._vike.renderedUrl)
+      expect(renderedUrl).toBe(href)
+    },
+    { timeout: 5000 }
+  )
+}
+declare global {
+  var _vike: { renderedUrl?: string }
 }
