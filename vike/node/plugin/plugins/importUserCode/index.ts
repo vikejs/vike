@@ -88,7 +88,8 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const isVikeConfig = isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
   // TODO/now minor refactor
-  if (isVikeConfig && isVikeConfig.modifiesVikeVirtualFiles) {
+  if (isVikeConfig) {
+  if (isVikeConfig.modifiesVikeVirtualFiles) {
     /* Tailwind breaks this assertion, see https://github.com/vikejs/vike/discussions/1330#discussioncomment-7787238
     const isViteModule = ctx.modules.length > 0
     assert(!isViteModule)
@@ -99,8 +100,9 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
     const virtualModules = getVirtualModules(server)
     return virtualModules
   }
-  if (isVikeConfig && !isVikeConfig.modifiesVikeVirtualFiles) {
+  if (!isVikeConfig.modifiesVikeVirtualFiles) {
     updateUserFiles()
+  }
   }
 }
 
