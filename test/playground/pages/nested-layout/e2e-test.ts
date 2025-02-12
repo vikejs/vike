@@ -12,15 +12,25 @@ function testNestedLayout() {
     await scrollDown()
     await expectIsScrollDown()
     await testCounter(1)
+    await expectIsScrollDown()
     await page.click('a[href="/nested-layout/42/reviews"]')
     await expectIsScrollDown()
+    await sleep(1000)
+    await testCounter(2)
+    await expectIsScrollDown()
     await page.click('a[href="/nested-layout/1337/reviews"]')
+    await testCounter(3)
     await expectIsScrollUp()
     await scrollDown()
     await expectIsScrollDown()
+    await sleep(1000)
+    await testCounter(4)
+    await expectIsScrollDown()
     await page.click('a[href="/nested-layout/1337"]')
     await expectIsScrollDown()
-    await testCounter(2)
+    await testCounter(5)
+    await expectIsScrollDown()
+    await sleep(1000)
     await expectIsScrollDown()
   })
 
@@ -30,7 +40,6 @@ function testNestedLayout() {
     await page.evaluate(() => {
       window.document.documentElement.scrollTop = 51
     })
-    await sleep(500)
   }
   async function expectIsScrollUp() {
     await expectScroll(0)
