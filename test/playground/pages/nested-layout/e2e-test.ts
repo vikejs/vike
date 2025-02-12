@@ -1,6 +1,6 @@
 export { testNestedLayout }
 
-import { test, page, getServerUrl, expect, autoRetry } from '@brillout/test-e2e'
+import { test, page, getServerUrl, expect, autoRetry, sleep } from '@brillout/test-e2e'
 import { testCounter } from '../../../utils'
 
 function testNestedLayout() {
@@ -30,6 +30,7 @@ function testNestedLayout() {
     await page.evaluate(() => {
       window.document.documentElement.scrollTop = 51
     })
+    await sleep(500)
   }
   async function expectIsScrollUp() {
     await expectScroll(0)
