@@ -88,7 +88,12 @@ function getPageContextPrefetched(
 
 async function prefetchAssets(pageContextLink: { pageId: string } & PageContextUserFiles): Promise<void> {
   try {
-    await loadUserFilesClientSide(pageContextLink.pageId, pageContextLink._pageFilesAll, pageContextLink._pageConfigs)
+    await loadUserFilesClientSide(
+      pageContextLink.pageId,
+      pageContextLink._pageFilesAll,
+      pageContextLink._pageConfigs,
+      pageContextLink._pageConfigGlobal
+    )
   } catch (err) {
     if (isErrorFetchingStaticAssets(err)) {
       disableClientRouting(err, true)

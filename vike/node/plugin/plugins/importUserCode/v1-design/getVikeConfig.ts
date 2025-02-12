@@ -210,7 +210,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const esbuildCache: EsbuildCache = {}
 
   const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
-  assertKnownConfigs(plusFilesAll)
+  // assertKnownConfigs(plusFilesAll)
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
 

@@ -11,7 +11,7 @@ export type { ConfigEntries }
 import { assertDefaultExports, forbiddenDefaultExports } from '../getPageFiles/assert_exports_old_design.js'
 import type { FileType } from '../getPageFiles/fileTypes.js'
 import type { PageFile } from '../getPageFiles/getPageFileObject.js'
-import type { ConfigValues, PageConfigRuntimeLoaded } from './PageConfig.js'
+import type { ConfigValues, PageConfigGlobalRuntime, PageConfigRuntimeLoaded } from './PageConfig.js'
 import { type ConfigDefinedAtOptional, getConfigDefinedAtOptional, getDefinedAtString } from './getConfigDefinedAt.js'
 import { getConfigValueFilePathToShowToUser } from './helpers.js'
 import {
@@ -140,7 +140,8 @@ function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }
 
 function getPageConfigUserFriendlyOld(
   pageFiles: PageFile[],
-  pageConfig: PageConfigRuntimeLoaded | null
+  pageConfig: PageConfigRuntimeLoaded | null,
+  pageConfigGlobal: PageConfigGlobalRuntime
 ): PageConfigUserFriendly {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TODO/v1-release: remove
@@ -170,7 +171,9 @@ function getPageConfigUserFriendlyOld(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getPageConfigUserFriendlyV1Desin(pageConfig)
+    const res = getPageConfigUserFriendlyV1Desin({
+      configValues: { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
+    })
     source = res.source
     sources = res.sources
     from = res.from

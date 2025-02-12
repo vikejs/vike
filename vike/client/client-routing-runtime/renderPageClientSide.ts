@@ -212,7 +212,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     try {
       objectAssign(
         pageContext,
-        await loadUserFilesClientSide(pageContext.pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+        await loadUserFilesClientSide(
+          pageContext.pageId,
+          pageContext._pageFilesAll,
+          pageContext._pageConfigs,
+          pageContext._pageConfigGlobal
+        )
       )
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
@@ -423,7 +428,12 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     try {
       objectAssign(
         pageContext,
-        await loadUserFilesClientSide(pageContext.pageId, pageContext._pageFilesAll, pageContext._pageConfigs)
+        await loadUserFilesClientSide(
+          pageContext.pageId,
+          pageContext._pageFilesAll,
+          pageContext._pageConfigs,
+          pageContext._pageConfigGlobal
+        )
       )
     } catch (err) {
       if (handleErrorFetchingStaticAssets(err, pageContext, isFirstRender)) {
