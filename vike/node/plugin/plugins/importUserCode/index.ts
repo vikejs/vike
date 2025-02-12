@@ -80,10 +80,10 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 }
 
 function invalidateVikeVirtualFiles(server: ViteDevServer) {
-      const virtualModules = getVirtualModules(server)
-      virtualModules.forEach((mod) => {
-        server.moduleGraph.invalidateModule(mod)
-      })
+  const virtualModules = getVirtualModules(server)
+  virtualModules.forEach((mod) => {
+    server.moduleGraph.invalidateModule(mod)
+  })
 }
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
