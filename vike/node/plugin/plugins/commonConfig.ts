@@ -33,7 +33,6 @@ declare module 'vite' {
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
-    // TODO/now add pages
     vike?: {
       config: VikeConfigObject['global']['config']
       pages: VikeConfigObject['pages']
