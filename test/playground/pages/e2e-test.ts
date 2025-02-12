@@ -2,7 +2,7 @@
 
 export { testHMRPlusValueFile }
 
-import { autoRetry, editFile, editFileRevert, expect, fetchHtml, test } from '@brillout/test-e2e'
+import { autoRetry, editFile, editFileRevert, expect, fetchHtml, isWindows, test } from '@brillout/test-e2e'
 
 function testHMRPlusValueFile(isDev: boolean) {
   if (!isDev) return
@@ -15,11 +15,12 @@ function testHMRPlusValueFile(isDev: boolean) {
   })
 }
 async function expectHtmlAttr(val: 'dark' | 'light') {
+  const timeout = (isWindows() ? 30 : 5) * 1000
   await autoRetry(
     async () => {
       const html = await fetchHtml('/')
       expect(html).toContain(`<html class="${val}" lang="en">`)
     },
-    { timeout: 5000 }
+    { timeout }
   )
 }
