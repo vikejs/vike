@@ -2,6 +2,7 @@ export { getPageConfigUserFriendlyOld }
 export { getPageConfigUserFriendlyNew }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
+export type { PageConfigsUserFriendly }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -119,6 +120,11 @@ type SourceConfigsComputed = {
   type: 'configsComputed'
   value: unknown
 }
+
+type PageConfigsUserFriendly = Record<
+  string, // pageId
+  ConfigUserFriendly
+>
 
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
 type ConfigUserFriendly = {

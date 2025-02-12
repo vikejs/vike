@@ -54,7 +54,10 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
 import pc from '@brillout/picocolors'
-import type { ConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
+import type {
+  ConfigUserFriendly,
+  PageConfigsUserFriendly
+} from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
@@ -83,7 +86,7 @@ const globalObject = getGlobalObject<
   } & ReturnType<typeof getInitialGlobalContext>
 >('globalContext.ts', getInitialGlobalContext())
 
-type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig'>
+type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig' | 'pages'>
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
 type GlobalContext = GlobalContextWithoutPublicCopy & {
   globalContext_public: GlobalContextPublic
@@ -93,6 +96,7 @@ type GlobalContextWithoutPublicCopy = {
     _baseViteOriginal: null | string
   }
   config: ConfigUserFriendly['config']
+  pages: PageConfigsUserFriendly
 } & PageRuntimeInfo &
   (
     | {
@@ -170,7 +174,12 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
 
 function makePublic(globalContext: GlobalContextWithoutPublicCopy): GlobalContextPublic {
   // TODO/soon: add `pages`
-  const globalContextPublic = makePublicCopy(globalContext, 'globalContext', ['assetsManifest', 'config', 'viteConfig'])
+  const globalContextPublic = makePublicCopy(globalContext, 'globalContext', [
+    'assetsManifest',
+    'config',
+    'viteConfig',
+    'pages'
+  ])
   return globalContextPublic
 }
 
@@ -344,7 +353,8 @@ async function getUserFiles() {
   const globalObject_ = globalObject as { pageConfigsRuntime?: PageConfigsRuntime }
   const { pageConfigsRuntime } = globalObject_
   assert(pageConfigsRuntime)
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig } = pageConfigsRuntime
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
+    pageConfigsRuntime
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageFilesAll,
@@ -359,6 +369,7 @@ async function getUserFiles() {
     allPageIds,
     pageRoutes,
     onBeforeRouteHook,
+    pages: pageConfigsUserFriendly,
     config: globalConfig.config
   }
   assertV1Design(

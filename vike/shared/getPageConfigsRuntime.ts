@@ -3,7 +3,11 @@ export { getAllPageIds }
 
 import type { PageFile } from './getPageFiles.js'
 import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
-import { type ConfigUserFriendly, getPageConfigUserFriendlyNew } from './page-configs/getPageConfigUserFriendly.js'
+import {
+  type ConfigUserFriendly,
+  getPageConfigUserFriendlyNew,
+  type PageConfigsUserFriendly
+} from './page-configs/getPageConfigUserFriendly.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from './page-configs/PageConfig.js'
 import { unique } from './utils.js'
 
@@ -13,12 +17,22 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
   globalConfig: ConfigUserFriendly
+  pageConfigsUserFriendly: PageConfigsUserFriendly
 } {
   const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
   // TODO/now: re-use this call, instead of calling it twice
   const globalConfig = getPageConfigUserFriendlyNew(pageConfigGlobal)
-  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig }
+
+  const pageConfigsUserFriendly: PageConfigsUserFriendly = Object.fromEntries(
+    pageConfigs.map((pageConfig) => {
+      const configValues = { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
+      const pageConfigUserFriendly = getPageConfigUserFriendlyNew({ configValues })
+      return [pageConfig.pageId, pageConfigUserFriendly]
+    })
+  )
+
+  return { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly }
 }
 
 function getAllPageIds(pageFilesAll: PageFile[], pageConfigs: PageConfigRuntime[]): string[] {
