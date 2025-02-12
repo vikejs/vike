@@ -73,14 +73,17 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
     if (isPlusFile(file) || isVikeConfigDependency(file, server.moduleGraph)?.modifiesVikeVirtualFiles) {
-      // TODO/now refactor
+      invalidateVikeVirtualFiles(server)
+      reloadConfig(file, config, isRemove ? 'removed' : 'created')
+    }
+  }
+}
+
+function invalidateVikeVirtualFiles(server: ViteDevServer) {
       const virtualModules = getVirtualModules(server)
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
       })
-      reloadConfig(file, config, isRemove ? 'removed' : 'created')
-    }
-  }
 }
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
