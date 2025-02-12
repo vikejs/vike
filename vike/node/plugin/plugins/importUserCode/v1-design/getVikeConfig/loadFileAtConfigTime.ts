@@ -97,12 +97,7 @@ async function loadConfigFile(
 ): Promise<{ configFile: ConfigFile; extendsConfigs: ConfigFile[] }> {
   const { filePathAbsoluteFilesystem } = configFilePath
   assertNoInfiniteLoop(visited, filePathAbsoluteFilesystem)
-  const { fileExports } = await transpileAndExecuteFile(
-    configFilePath,
-    userRootDir,
-    isExtensionConfig ? 'is-extension-config' : true,
-    esbuildCache
-  )
+  const { fileExports } = await transpileAndExecuteFile(configFilePath, userRootDir, isExtensionConfig, esbuildCache)
   const { extendsConfigs, extendsFilePaths } = await loadExtendsConfigs(
     fileExports,
     configFilePath,

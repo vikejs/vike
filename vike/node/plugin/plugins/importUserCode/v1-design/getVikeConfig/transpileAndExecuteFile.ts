@@ -57,7 +57,7 @@ type EsbuildCache = Record<
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
   userRootDir: string,
-  isConfigFile: boolean | 'is-extension-config',
+  isExtensionConfig: boolean,
   esbuildCache: EsbuildCache
 ): Promise<FileExports> {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
@@ -89,11 +89,11 @@ async function transpileAndExecuteFile(
   }
 
   let fileExports: FileExports['fileExports']
-  if (isConfigFile === 'is-extension-config' && !isHeader && fileExtension.endsWith('js')) {
+  if (isExtensionConfig && !isHeader && fileExtension.endsWith('js')) {
     // This doesn't track dependencies => we should never use this for user land configs
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
-    const transformImports = isConfigFile && (isHeader ? 'all' : true)
+    const transformImports = isHeader ? 'all' : true
     const code = await transpileFile(filePath, transformImports, userRootDir)
     fileExports = await executeTranspiledFile(filePath, code)
   }
