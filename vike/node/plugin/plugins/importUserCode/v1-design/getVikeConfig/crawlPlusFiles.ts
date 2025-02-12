@@ -269,18 +269,14 @@ function isPlusFile(filePath: string): boolean {
 }
 
 function getPlusFileValueConfigName(filePath: string): string | null {
-  assertPosixPath(filePath)
-  if (isTemporaryBuildFile(filePath)) return null
+  if (!isPlusFile(filePath)) return null
   const fileName = path.posix.basename(filePath)
   // assertNoUnexpectedPlusSign(filePath, fileName)
   const basename = fileName.split('.')[0]!
-  if (!basename.startsWith('+')) {
-    return null
-  } else {
+    assert(basename.startsWith('+'))
     const configName = basename.slice(1)
     assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
     return configName
-  }
 }
 /* https://github.com/vikejs/vike/issues/1407
 function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
