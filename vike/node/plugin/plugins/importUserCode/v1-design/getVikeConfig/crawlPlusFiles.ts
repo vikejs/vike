@@ -273,10 +273,10 @@ function getPlusFileValueConfigName(filePath: string): string | null {
   const fileName = path.posix.basename(filePath)
   // assertNoUnexpectedPlusSign(filePath, fileName)
   const basename = fileName.split('.')[0]!
-    assert(basename.startsWith('+'))
-    const configName = basename.slice(1)
-    assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
-    return configName
+  assert(basename.startsWith('+'))
+  const configName = basename.slice(1)
+  assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
+  return configName
 }
 /* https://github.com/vikejs/vike/issues/1407
 function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
