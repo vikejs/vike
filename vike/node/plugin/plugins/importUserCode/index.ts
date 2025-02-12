@@ -101,8 +101,7 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       // Triggers a full page reload
       const vikeVirtualFiles = getVikeVirtualFiles(server)
       return vikeVirtualFiles
-    }
-    if (!isVikeConfig.modifiesVikeVirtualFiles) {
+    } else {
       updateUserFiles()
     }
   }
