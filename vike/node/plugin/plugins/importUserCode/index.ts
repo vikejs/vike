@@ -96,12 +96,18 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
       const isViteModule = ctx.modules.length > 0
       assert(!isViteModule)
       */
+
+      // Ensure server.ssrLoadModule() loads fresh Vike virtual files (`reloadConfig()` > `updateUserFiles()` > `server.ssrLoadModule()`)
+      invalidateVikeVirtualFiles(server)
       reloadConfig(file, config, 'modified')
-      // TODO/now fix probable race condition: invalidate by hand
+
       // Triggers a full page reload
       const vikeVirtualFiles = getVikeVirtualFiles(server)
       return vikeVirtualFiles
     } else {
+      // Ensure we invalidate `file` *before* server.ssrLoadModule() in updateUserFiles()
+      // Vite already invalidates it, but possibly *after* handleHotUpdate() and thus after server.ssrLoadModule()
+      ctx.modules.forEach((mod) => server.moduleGraph.invalidateModule(mod))
       updateUserFiles()
     }
   }
