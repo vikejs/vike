@@ -3,7 +3,7 @@ export { Layout }
 import React from 'react'
 import './Layout.css'
 
-function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <React.StrictMode>
       <Frame>
@@ -22,7 +22,7 @@ function Layout({ children }) {
   )
 }
 
-function Link({ href }) {
+function Link({ href }: { href: string }) {
   return (
     <a className="navitem" href={href} style={{ paddingRight: 20 }}>
       <code>{href}</code>
@@ -30,7 +30,7 @@ function Link({ href }) {
   )
 }
 
-function Frame({ children }) {
+function Frame({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -44,7 +44,7 @@ function Frame({ children }) {
   )
 }
 
-function Sidebar({ children }) {
+function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -60,7 +60,7 @@ function Sidebar({ children }) {
   )
 }
 
-function Content({ children }) {
+function Content({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
