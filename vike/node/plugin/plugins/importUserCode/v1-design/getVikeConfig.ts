@@ -239,7 +239,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   // pages
   const pages = objectFromEntries(
     pageConfigs.map((pageConfig) => {
-      const configValuesLocal = getConfigValues(pageConfig)
+      const configValuesLocal = getConfigValues(pageConfig, true)
       const configValues = { ...configValuesGlobal, ...configValuesLocal }
       const pageConfigUserFriendly = getPageConfigUserFriendlyNew({ configValues })
       return [pageConfig.pageId, pageConfigUserFriendly]
@@ -443,7 +443,7 @@ function assertOnBeforeRenderEnv(pageConfig: PageConfigBuildTime) {
   )
 }
 
-function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime) {
+function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime, tolerateMissingValue?: true) {
   const configValues: ConfigValues = {}
   getConfigValuesBase(pageConfig, (configEnv: ConfigEnvInternal) => !!configEnv.config, null).forEach((entry) => {
     if (entry.configValueBase.type === 'computed') {
@@ -454,7 +454,10 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
     if (entry.configValueBase.type === 'standard') {
       assert('sourceRelevant' in entry) // Help TS
       const { configValueBase, sourceRelevant, configName } = entry
-      assert('value' in sourceRelevant)
+      if (!sourceRelevant.valueIsLoaded) {
+        if (tolerateMissingValue) return
+        assert(false)
+      }
       const { value } = sourceRelevant
       configValues[configName] = { ...configValueBase, value }
     }
@@ -463,9 +466,16 @@ function getConfigValues(pageConfig: PageConfigBuildTime | PageConfigGlobalBuild
       const { configValueBase, sourcesRelevant, configName } = entry
       const values: unknown[] = []
       sourcesRelevant.forEach((source) => {
-        assert('value' in source)
+        if (!source.valueIsLoaded) {
+          if (tolerateMissingValue) return
+          assert(false)
+        }
         values.push(source.value)
       })
+      if (values.length === 0) {
+        if (tolerateMissingValue) return
+        assert(false)
+      }
       configValues[configName] = { ...configValueBase, value: values }
     }
   })

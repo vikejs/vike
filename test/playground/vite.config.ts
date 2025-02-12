@@ -18,7 +18,7 @@ function testPlugin(): PluginOption {
       assert(config.vike.config)
       assert(config.vike.config.prerender[0].noExtraDir)
       assert(config.vike.pages)
-      assert(config.vike.pages['/pages/index'].config.prerender[0]===false)
+      assert(config.vike.pages['/pages/index'].config.prerender[0] === false)
       assert(config.vike.pages['/pages/markdown'].config.prerender[0])
     }
   }
