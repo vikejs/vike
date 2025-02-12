@@ -36,6 +36,7 @@ declare module 'vite' {
     // TODO/now add pages
     vike?: {
       config: VikeConfigObject['global']['config']
+      pages: VikeConfigObject['pages']
       prerenderContext?: PrerenderContextPublic
     }
   }
@@ -59,6 +60,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
             vike: {
+              pages: vikeConfig.pages,
               config: vikeConfig.global.config
             },
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
