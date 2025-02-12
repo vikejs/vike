@@ -3,7 +3,7 @@ export { testRun }
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { testRunClassic } from '../../test/utils'
-import { testCumulativeSetting } from './pages/about-page/e2e-test'
+import { testSettingsInheritance } from './pages/about-page/e2e-test'
 import { testSettingEffect } from './pages/config-meta/effect/e2e-test'
 import { testSettingInheritedByDescendants } from './pages/config-meta/cumulative/e2e-test'
 import { testSettingOnlyAvailableInCorrectEnv } from './pages/config-meta/env/e2e-test'
@@ -20,7 +20,7 @@ const rootDir = path.dirname(fileURLToPath(import.meta.url))
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   const isDev = cmd === 'npm run dev'
   testRunClassic(cmd)
-  testCumulativeSetting({ isDev })
+  testSettingsInheritance({ isDev })
   testMarkdown()
   testMarkdownClientFile(isDev)
   testMarkdownSideExports()
