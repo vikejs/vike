@@ -235,12 +235,15 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const global = getPageConfigUserFriendlyNew({ configValues: configValuesGlobal })
 
   // pages
-  const pages = objectFromEntries(
+  const pages: PageConfigsUserFriendly = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const configValuesLocal = getConfigValues(pageConfig, true)
       const configValues = { ...configValuesGlobal, ...configValuesLocal }
-      const pageConfigUserFriendly = getPageConfigUserFriendlyNew({ configValues })
-      return [pageConfig.pageId, pageConfigUserFriendly]
+      const page = {
+        ...getPageConfigUserFriendlyNew({ configValues }),
+        route: pageConfig.routeFilesystem?.routeString ?? null
+      }
+      return [pageConfig.pageId, page]
     })
   )
 

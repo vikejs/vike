@@ -27,8 +27,11 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
   const pageConfigsUserFriendly: PageConfigsUserFriendly = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
       const configValues = { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
-      const pageConfigUserFriendly = getPageConfigUserFriendlyNew({ configValues })
-      return [pageConfig.pageId, pageConfigUserFriendly]
+      const page = {
+        ...getPageConfigUserFriendlyNew({ configValues }),
+        route: pageConfig.routeFilesystem?.routeString ?? null
+      }
+      return [pageConfig.pageId, page]
     })
   )
 

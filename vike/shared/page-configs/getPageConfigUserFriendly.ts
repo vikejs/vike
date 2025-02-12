@@ -123,7 +123,9 @@ type SourceConfigsComputed = {
 
 type PageConfigsUserFriendly = Record<
   string, // pageId
-  ConfigUserFriendly
+  ConfigUserFriendly & {
+    route: string | null
+  }
 >
 
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
