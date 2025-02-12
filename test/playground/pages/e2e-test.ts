@@ -3,7 +3,8 @@
 export { testGlobalContext }
 export { testHMRPlusValueFile }
 
-import { autoRetry, editFile, editFileRevert, expect, fetchHtml, sleep, test } from '@brillout/test-e2e'
+import { autoRetry, editFile, editFileRevert, expect, fetchHtml, test } from '@brillout/test-e2e'
+import { hmrSleep } from '../../../test/utils'
 
 function testHMRPlusValueFile(isDev: boolean) {
   if (!isDev) {
@@ -36,9 +37,4 @@ function testGlobalContext() {
       expect(html).toContain(`<a class="navitem" href="${url}" style="padding-right:20px">`)
     })
   })
-}
-
-// I don't know why it's needed, there seem to be some kind of race condition
-async function hmrSleep() {
-  await sleep(500)
 }

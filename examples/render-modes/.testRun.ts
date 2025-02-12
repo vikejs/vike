@@ -8,11 +8,10 @@ import {
   autoRetry,
   partRegex,
   editFile,
-  editFileRevert,
-  sleep
+  editFileRevert
 } from '@brillout/test-e2e'
 import assert from 'assert'
-import { waitForNavigation } from '../../test/utils'
+import { waitForNavigation, hmrSleep } from '../../test/utils'
 
 export { testRun }
 
@@ -325,9 +324,4 @@ function getColorRgb(color: Color) {
   }
   const rgb = `rgb(${String(rgbRed)}, ${String(rgbGreen)}, ${String(rgbBlue)})`
   return rgb
-}
-
-// I don't know why it's needed, there seem to be some kind of race condition
-async function hmrSleep() {
-  await sleep(500)
 }
