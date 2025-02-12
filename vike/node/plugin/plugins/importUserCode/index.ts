@@ -15,6 +15,7 @@ import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
 import { getPlusFileValueConfigName } from './v1-design/getVikeConfig/getPlusFilesAll.js'
 import { updateUserFiles } from '../../../runtime/globalContext.js'
+import { isPlusFile } from './v1-design/getVikeConfig/crawlPlusFiles.js'
 
 function importUserCode(): Plugin {
   let config: ResolvedConfig
@@ -72,8 +73,9 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   return
   function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    const isVikeConfig = isVikeConfigModule(file) || isVikeConfigFile(file)
+    const isVikeConfig = isVikeConfigModule(file, server.moduleGraph) || isVikeConfigFile(file)
     if (isVikeConfig) {
+      // TODO/now refactor
       const virtualModules = getVirtualModules(server)
       virtualModules.forEach((mod) => {
         server.moduleGraph.invalidateModule(mod)
@@ -84,11 +86,8 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
 }
 
 function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
-  const importers = getImporters(ctx.file, ctx.server.moduleGraph)
-  console.log('All transitive importers (including the module itself):', Array.from(importers))
-
   const { file, server } = ctx
-  const isVikeConfig = isVikeConfigModule(file)
+  const isVikeConfig = isVikeConfigModule(ctx.file, ctx.server.moduleGraph)
   const isViteModule = ctx.modules.length > 0
 
   /* Should we show this?
@@ -120,10 +119,19 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   }
 }
 
-function isVikeConfigModule(filePathAbsoluteFilesystem: string): boolean {
+// TODO/now rename
+function isVikeConfigModule(filePathAbsoluteFilesystem: string, moduleGraph: ModuleGraph): boolean {
+  // Check config-only files, for example all pages/+config.js dependencies. (There aren't part of Vite's module graph.)
   assertPosixPath(filePathAbsoluteFilesystem)
   vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-  return vikeConfigDependencies.has(filePathAbsoluteFilesystem)
+  if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return true
+
+  // Check using Vite's module graph, for example all +htmlAttributes dependencies.
+  const importers = getImporters(filePathAbsoluteFilesystem, moduleGraph)
+  const isPlusFileDependency = Array.from(importers).some((importer) => importer.file && isPlusFile(importer.file))
+  if (isPlusFileDependency) return true
+
+  return false
 }
 
 function reloadConfig(filePath: string, config: ResolvedConfig, op: 'modified' | 'created' | 'removed') {
@@ -151,31 +159,32 @@ function isVikeConfigFile(filePath: string): boolean {
   return !!getPlusFileValueConfigName(filePath)
 }
 
-function getImporters(file: string, moduleGraph: ModuleGraph): Set<string> {
-  const importers = new Set<string>()
+// Get all transitive importers (including the module itself)
+function getImporters(file: string, moduleGraph: ModuleGraph): Set<ModuleNode> {
+  const importers = new Set<ModuleNode>()
   const mods = moduleGraph.getModulesByFile(file)
   if (!mods) return importers
 
   for (const mod of mods) {
-    getModuleImporters(mod).forEach((importerId) => {
-      if (importerId) importers.add(importerId)
+    getModuleImporters(mod).forEach((importer) => {
+      if (importer) importers.add(importer)
     })
   }
 
   return importers
 }
-function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()): Set<string> {
+function getModuleImporters(mod: ModuleNode, seen: Set<ModuleNode> = new Set()): Set<ModuleNode> {
   if (seen.has(mod)) return new Set()
   seen.add(mod)
 
-  const importers = new Set<string>()
-  if (mod.id) importers.add(mod.id)
+  const importers = new Set<ModuleNode>()
+  if (mod.id) importers.add(mod)
 
   // Traverse through the importers (modules that import this module)
   for (const importer of mod.importers) {
-    if (importer.id) importers.add(importer.id)
-    getModuleImporters(importer, seen).forEach((importerId) => {
-      if (importerId) importers.add(importerId)
+    if (importer.id) importers.add(importer)
+    getModuleImporters(importer, seen).forEach((importerTransitive) => {
+      if (importerTransitive) importers.add(importerTransitive)
     })
   }
 

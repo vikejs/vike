@@ -1,4 +1,5 @@
 export { crawlPlusFiles }
+export { isPlusFile }
 
 import {
   assertPosixPath,
