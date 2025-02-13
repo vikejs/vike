@@ -136,15 +136,6 @@ type PageConfigUserFriendly = {
   _sources: Sources
   _from: From
 }
-function getPageConfigGlobalUserFriendly(pageConfig: { configValues: ConfigValues }): PageConfigUserFriendly {
-  const res = getPageConfigUserFriendlyV1Desin(pageConfig)
-  return {
-    config: res.config,
-    _source: res.source,
-    _sources: res.sources,
-    _from: res.from
-  }
-}
 type PageConfigsUserFriendly = Record<
   string, // pageId
   PageConfigUserFriendly_withRoute
@@ -183,6 +174,16 @@ function getPageConfigUserFriendly_base({
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
   return getPageConfigUserFriendlyV1Desin({ configValues })
+}
+
+function getPageConfigGlobalUserFriendly(pageConfig: { configValues: ConfigValues }): PageConfigUserFriendly {
+  const res = getPageConfigUserFriendlyV1Desin(pageConfig)
+  return {
+    config: res.config,
+    _source: res.source,
+    _sources: res.sources,
+    _from: res.from
+  }
 }
 
 function getPageConfigUserFriendly_withOldDesign(
