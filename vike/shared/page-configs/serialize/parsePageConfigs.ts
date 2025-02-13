@@ -32,11 +32,11 @@ function parsePageConfigs(
   pageConfigGlobal: PageConfigGlobalRuntime
 } {
   // pageConfigs
-  const pageConfigs: PageConfigRuntime[] = pageConfigsSerialized.map((pageConfig) => {
-    const configValues = parseConfigValuesSerialized(pageConfig.configValuesSerialized)
+  const pageConfigs: PageConfigRuntime[] = pageConfigsSerialized.map((pageConfigSerialized) => {
+    const configValues = parseConfigValuesSerialized(pageConfigSerialized.configValuesSerialized)
     assertRouteConfigValue(configValues)
-    objectAssign(pageConfig, { configValues })
-    return pageConfig
+    objectAssign(pageConfigSerialized, { configValues })
+    return pageConfigSerialized
   })
 
   // pageConfigsGlobal
