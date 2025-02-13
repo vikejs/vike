@@ -207,7 +207,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getPageConfigGlobalUserFriendly({ configValuesGlobal: {} }),
+        global: getPageConfigGlobalUserFriendly({ pageConfigGlobalValues: {} }),
         pages: {}
       }
       return dummyData
@@ -232,14 +232,14 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
   // global
-  const configValuesGlobal = getConfigValues(pageConfigGlobal)
-  const global = getPageConfigGlobalUserFriendly({ configValuesGlobal })
+  const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
+  const global = getPageConfigGlobalUserFriendly({ pageConfigGlobalValues })
 
   // pages
   const pages = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getPageConfigUserFriendly(configValuesGlobal, pageConfig, pageConfigValues)
+      return getPageConfigUserFriendly(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 
