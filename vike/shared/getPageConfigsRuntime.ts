@@ -4,7 +4,7 @@ export { getAllPageIds }
 import type { PageFile } from './getPageFiles.js'
 import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
 import {
-  type ConfigUserFriendly,
+  type PageConfigUserFriendly,
   getPageConfigGlobalUserFriendly,
   getPageConfigUserFriendly,
   type PageConfigsUserFriendly
@@ -17,7 +17,7 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
   allPageIds: string[]
   pageConfigs: PageConfigRuntime[]
   pageConfigGlobal: PageConfigGlobalRuntime
-  globalConfig: ConfigUserFriendly
+  globalConfig: PageConfigUserFriendly
   pageConfigsUserFriendly: PageConfigsUserFriendly
 } {
   const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)

@@ -1,7 +1,7 @@
 export { getPageConfigUserFriendly }
 export { getPageConfigUserFriendly_withOldDesign }
 export { getPageConfigGlobalUserFriendly }
-export type { ConfigUserFriendly }
+export type { PageConfigUserFriendly }
 export type { PageConfigUserFriendlyOld }
 export type { PageConfigsUserFriendly }
 export type { Source }
@@ -129,14 +129,14 @@ type SourceConfigsComputed = {
 }
 
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
-type ConfigUserFriendly = {
+type PageConfigUserFriendly = {
   config: ConfigResolved
   // TODO/now expose publicly?
   _source: Source
   _sources: Sources
   _from: From
 }
-function getPageConfigGlobalUserFriendly(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
+function getPageConfigGlobalUserFriendly(pageConfig: { configValues: ConfigValues }): PageConfigUserFriendly {
   const res = getPageConfigUserFriendlyV1Desin(pageConfig)
   return {
     config: res.config,
@@ -149,7 +149,7 @@ type PageConfigsUserFriendly = Record<
   string, // pageId
   PageConfigUserFriendly_withRoute
 >
-type PageConfigUserFriendly_withRoute = ConfigUserFriendly & {
+type PageConfigUserFriendly_withRoute = PageConfigUserFriendly & {
   route: string | null
   // TODO/now
   // route: string | Function

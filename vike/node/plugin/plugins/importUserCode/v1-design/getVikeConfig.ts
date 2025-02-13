@@ -72,7 +72,7 @@ import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
   getPageConfigGlobalUserFriendly,
   getPageConfigUserFriendly,
-  type ConfigUserFriendly,
+  type PageConfigUserFriendly,
   type PageConfigsUserFriendly
 } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
@@ -83,7 +83,7 @@ assertIsNotProductionRuntime()
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  global: ConfigUserFriendly
+  global: PageConfigUserFriendly
   pages: PageConfigsUserFriendly
 }
 
