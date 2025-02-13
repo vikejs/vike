@@ -6,6 +6,7 @@ import { parseGlobResults } from './getPageFiles/parseGlobResults.js'
 import {
   type ConfigUserFriendly,
   getPageConfigUserFriendlyNew,
+  getPageConfigUserFriendlyNew_withRoute,
   type PageConfigsUserFriendly
 } from './page-configs/getPageConfigUserFriendly.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from './page-configs/PageConfig.js'
@@ -24,15 +25,9 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
   // TODO/now: re-use this call, instead of calling it twice
   const globalConfig = getPageConfigUserFriendlyNew(pageConfigGlobal)
 
-  // TODO/now DEDUPE
-  const pageConfigsUserFriendly: PageConfigsUserFriendly = Object.fromEntries(
+  const pageConfigsUserFriendly = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
-      const configValues = { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
-      const page = {
-        ...getPageConfigUserFriendlyNew({ configValues }),
-        route: pageConfig.routeFilesystem?.routeString ?? null
-      }
-      return [pageConfig.pageId, page]
+      return getPageConfigUserFriendlyNew_withRoute(pageConfigGlobal.configValues, pageConfig, pageConfig.configValues)
     })
   )
 

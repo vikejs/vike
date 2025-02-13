@@ -1,5 +1,6 @@
 export { getPageConfigUserFriendlyOld }
 export { getPageConfigUserFriendlyNew }
+export { getPageConfigUserFriendlyNew_withRoute }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
 export type { PageConfigsUserFriendly }
@@ -128,30 +129,6 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-type PageConfigsUserFriendly = Record<
-  string, // pageId
-  ConfigUserFriendly & {
-    route: string | null
-  }
->
-/* TODO/now DEDUPE
-function getPageConfigsUserFriendly(
-  pageConfigs: (PageConfigRuntime | PageConfigBuildTime)[],
-  pageConfigGlobal: PageConfigGlobalRuntime | PageConfigGlobalBuildTime
-): PageConfigsUserFriendly {
-  const pageConfigsUserFriendly: PageConfigsUserFriendly = Object.fromEntries(
-    pageConfigs.map((pageConfig) => {
-      const configValues = { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
-      const page = {
-        ...getPageConfigUserFriendlyNew({ configValues }),
-        route: pageConfig.routeFilesystem?.routeString ?? null
-      }
-      return [pageConfig.pageId, page]
-    })
-  )
-}
-*/
-
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
 type ConfigUserFriendly = {
   config: ConfigResolved
@@ -168,6 +145,27 @@ function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }
     _sources: res.sources,
     _from: res.from
   }
+}
+type PageConfigsUserFriendly = Record<
+  string, // pageId
+  PageConfigUserFriendly_withRoute
+>
+type PageConfigUserFriendly_withRoute = ConfigUserFriendly & {
+  route: string | null
+  // TODO/now
+  // route: string | Function
+}
+function getPageConfigUserFriendlyNew_withRoute(
+  pageConfigGlobalValues: ConfigValues,
+  pageConfig: PageConfigRuntime | PageConfigBuildTime,
+  pageConfigValues: ConfigValues
+): [string, PageConfigUserFriendly_withRoute] {
+  const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
+  const page = {
+    ...getPageConfigUserFriendlyNew({ configValues }),
+    route: pageConfig.routeFilesystem?.routeString ?? null
+  }
+  return [pageConfig.pageId, page]
 }
 
 function getPageConfigUserFriendlyOld(
