@@ -138,21 +138,27 @@ type PageConfigUserFriendly = {
 }
 type PageConfigsUserFriendly = Record<
   string, // pageId
-  PageConfigUserFriendly_withRoute
+  PageConfigUserFriendlyWithRoute
 >
-type PageConfigUserFriendly_withRoute = PageConfigUserFriendly & {
-  route: string | null
-  // TODO/now
-  // route: string | Function
-}
+type PageConfigUserFriendlyWithRoute = (PageConfigUserFriendly & { route: string | Function }) | { isErrorPage?: true }
 function getPageConfigUserFriendly(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
-): [string, PageConfigUserFriendly_withRoute] {
-  const page = {
-    ...getPageConfigUserFriendly_public({ pageConfigGlobalValues, pageConfigValues }),
-    route: pageConfig.routeFilesystem?.routeString ?? null
+): [string, PageConfigUserFriendlyWithRoute] {
+  const pageConfigUserFriendly = getPageConfigUserFriendly_public({ pageConfigGlobalValues, pageConfigValues })
+  let page: PageConfigUserFriendlyWithRoute
+  if (!pageConfig.isErrorPage) {
+    const route = pageConfigUserFriendly.config.route ?? pageConfig.routeFilesystem.routeString
+    page = {
+      ...pageConfigUserFriendly,
+      route
+    }
+  } else {
+    page = {
+      ...pageConfigUserFriendly,
+      isErrorPage: true
+    }
   }
   return [pageConfig.pageId, page]
 }
