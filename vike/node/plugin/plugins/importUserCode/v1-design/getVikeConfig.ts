@@ -207,7 +207,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getPageConfigGlobalUserFriendly({ configValues: {} }),
+        global: getPageConfigGlobalUserFriendly({ configValuesGlobal: {} }),
         pages: {}
       }
       return dummyData
@@ -233,7 +233,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   // global
   const configValuesGlobal = getConfigValues(pageConfigGlobal)
-  const global = getPageConfigGlobalUserFriendly({ configValues: configValuesGlobal })
+  const global = getPageConfigGlobalUserFriendly({ configValuesGlobal })
 
   // pages
   const pages = objectFromEntries(

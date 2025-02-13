@@ -176,8 +176,10 @@ function getPageConfigUserFriendly_base({
   return getPageConfigUserFriendlyV1Desin({ configValues })
 }
 
-function getPageConfigGlobalUserFriendly(pageConfig: { configValues: ConfigValues }): PageConfigUserFriendly {
-  const res = getPageConfigUserFriendlyV1Desin(pageConfig)
+function getPageConfigGlobalUserFriendly({
+  configValuesGlobal
+}: { configValuesGlobal: ConfigValues }): PageConfigUserFriendly {
+  const res = getPageConfigUserFriendlyV1Desin({ configValues: configValuesGlobal })
   return {
     config: res.config,
     _source: res.source,

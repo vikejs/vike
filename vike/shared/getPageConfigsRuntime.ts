@@ -23,7 +23,7 @@ function getPageConfigsRuntime(virtualFileExports: unknown): {
   const { pageFilesAll, pageConfigs, pageConfigGlobal } = parseGlobResults(virtualFileExports)
   const allPageIds = getAllPageIds(pageFilesAll, pageConfigs)
   // TODO/now: re-use this call, instead of calling it twice
-  const globalConfig = getPageConfigGlobalUserFriendly(pageConfigGlobal)
+  const globalConfig = getPageConfigGlobalUserFriendly({ configValuesGlobal: pageConfigGlobal.configValues })
 
   const pageConfigsUserFriendly = Object.fromEntries(
     pageConfigs.map((pageConfig) => {
