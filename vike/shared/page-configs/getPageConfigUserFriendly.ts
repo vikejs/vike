@@ -140,7 +140,7 @@ type PageConfigsUserFriendly = Record<
   string, // pageId
   PageConfigUserFriendlyWithRoute
 >
-type PageConfigUserFriendlyWithRoute = (PageConfigUserFriendly & { route: string | Function }) | { isErrorPage?: true }
+type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & ({ route: string | Function } | { isErrorPage?: true })
 function getPageConfigUserFriendly(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
