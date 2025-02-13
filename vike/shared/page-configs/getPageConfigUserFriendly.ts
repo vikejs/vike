@@ -159,12 +159,30 @@ function getPageConfigUserFriendly(
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
 ): [string, PageConfigUserFriendly_withRoute] {
-  const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
   const page = {
-    ...getPageConfigGlobalUserFriendly({ configValues }),
+    ...getPageConfigUserFriendly_public({ pageConfigGlobalValues, pageConfigValues }),
     route: pageConfig.routeFilesystem?.routeString ?? null
   }
   return [pageConfig.pageId, page]
+}
+function getPageConfigUserFriendly_public({
+  pageConfigGlobalValues,
+  pageConfigValues
+}: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
+  const res = getPageConfigUserFriendly_base({ pageConfigGlobalValues, pageConfigValues })
+  return {
+    config: res.config,
+    _source: res.source,
+    _sources: res.sources,
+    _from: res.from
+  }
+}
+function getPageConfigUserFriendly_base({
+  pageConfigGlobalValues,
+  pageConfigValues
+}: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
+  const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
+  return getPageConfigUserFriendlyV1Desin({ configValues })
 }
 
 function getPageConfigUserFriendly_withOldDesign(
@@ -200,9 +218,9 @@ function getPageConfigUserFriendly_withOldDesign(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getPageConfigUserFriendlyV1Desin({
-      // TODO/now DEDUPE?
-      configValues: { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
+    const res = getPageConfigUserFriendly_base({
+      pageConfigGlobalValues: pageConfigGlobal.configValues,
+      pageConfigValues: pageConfig.configValues
     })
     source = res.source
     sources = res.sources
