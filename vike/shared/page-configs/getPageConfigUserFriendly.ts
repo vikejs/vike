@@ -1,6 +1,6 @@
-export { getPageConfigUserFriendlyOld }
-export { getPageConfigGlobalUserFriendly }
 export { getPageConfigUserFriendly }
+export { getPageConfigGlobalUserFriendly }
+export { getPageConfigUserFriendlyOld }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
 export type { PageConfigsUserFriendly }
@@ -16,7 +16,6 @@ import type { PageFile } from '../getPageFiles/getPageFileObject.js'
 import type {
   ConfigValues,
   PageConfigBuildTime,
-  PageConfigGlobalBuildTime,
   PageConfigGlobalRuntime,
   PageConfigRuntime,
   PageConfigRuntimeLoaded
