@@ -7,6 +7,7 @@
 - config auto-reload not working
   - https://github.com/vikejs/vike/commit/1478c151ed895d466d1800339ef9e4a98a0a3fdc
   - Throw error in crawlPlusFiles.ts
+- Make client runtime fully external?
 
 - head settings
   - name setting?
@@ -89,6 +90,7 @@ v0.5 breaking changes:
 - Simplify pageContext return type?
 - Deprecate returning `pageContext` from `onBeforeRender()`
   - Depecrate all return values of `onBeforeRender()`, `onRenderHtml`, and all hooks?
+  - Remove hook types such as `OnBeforeRenderAsync` https://vike.dev/onBeforeRender#typescript
 
 
 pageContext prefetching
