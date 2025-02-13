@@ -86,12 +86,12 @@ const globalObject = getGlobalObject<
   } & ReturnType<typeof getInitialGlobalContext>
 >('globalContext.ts', getInitialGlobalContext())
 
-type GlobalContextPublic = Pick<GlobalContextBase, 'assetsManifest' | 'config' | 'viteConfig' | 'pages'>
+type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig' | 'pages'>
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
-type GlobalContextInternal = GlobalContextBase & {
+type GlobalContextInternal = GlobalContext & {
   globalContext_public: GlobalContextPublic
 }
-type GlobalContextBase = {
+type GlobalContext = {
   viteConfigRuntime: {
     _baseViteOriginal: null | string
   }
@@ -132,7 +132,7 @@ async function getGlobalContextInternal(): Promise<GlobalContextInternal> {
   assertIsDefined(globalContext)
   return globalContext
 }
-function assertIsDefined<T extends GlobalContextInternal | GlobalContextBase>(
+function assertIsDefined<T extends GlobalContextInternal | GlobalContext>(
   globalContext: undefined | null | T
 ): asserts globalContext is T {
   if (!globalContext) {
@@ -172,7 +172,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   return globalContext_public
 }
 
-function makePublic(globalContext: GlobalContextBase): GlobalContextPublic {
+function makePublic(globalContext: GlobalContext): GlobalContextPublic {
   const globalContextPublic = makePublicCopy(globalContext, 'globalContext', [
     'assetsManifest',
     'config',
@@ -293,10 +293,10 @@ function defineGlobalContext() {
   assertGlobalContextIsDefined()
   onSetupRuntime()
 }
-function resolveGlobalContext(): GlobalContextBase | null {
+function resolveGlobalContext(): GlobalContext | null {
   const { viteDevServer, viteConfig, isPrerendering, isProduction, userFiles } = globalObject
   assert(typeof isProduction === 'boolean')
-  let globalContext: GlobalContextBase
+  let globalContext: GlobalContext
   if (!isProduction) {
     // Requires globalObject.viteDevServer
     if (!viteDevServer) return null
