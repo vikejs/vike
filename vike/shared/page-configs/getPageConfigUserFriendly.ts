@@ -1,5 +1,5 @@
 export { getPageConfigUserFriendly }
-export { getPageConfigUserFriendly_withOldDesign }
+export { getPageConfigUserFriendly_oldDesign }
 export { getPageConfigGlobalUserFriendly }
 export type { PageConfigsUserFriendly }
 export type { PageConfigUserFriendly }
@@ -188,7 +188,7 @@ function getPageConfigGlobalUserFriendly({
   }
 }
 
-function getPageConfigUserFriendly_withOldDesign(
+function getPageConfigUserFriendly_oldDesign(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null,
   pageConfigGlobal: PageConfigGlobalRuntime
