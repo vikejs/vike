@@ -34,7 +34,7 @@ import {
 } from '../utils.js'
 import pc from '@brillout/picocolors'
 import type { ConfigResolved } from './Config/PageContextConfig.js'
-import type { RouteAsync, RouteSync } from './Config.js'
+import type { Route } from './Config.js'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<
@@ -143,7 +143,7 @@ type PageConfigsUserFriendly = Record<
 >
 type WithRoute =
   | {
-      route: string | RouteSync | RouteAsync
+      route: Route
       isErrorPage?: undefined
     }
   | {

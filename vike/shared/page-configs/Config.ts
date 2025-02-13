@@ -33,6 +33,7 @@ export type { OnRenderHtmlAsync }
 export type { OnRenderHtmlSync }
 export type { RouteAsync }
 export type { RouteSync }
+export type { Route }
 export type { KeepScrollPosition }
 
 import type {
@@ -276,6 +277,7 @@ type RouteAsync = (
 type RouteSync = (
   pageContext: PageContextServer | PageContextClient
 ) => { routeParams?: Record<string, string>; precedence?: number } | boolean
+type Route = string | RouteSync | RouteAsync
 
 /** Whether the page scrolls to the top upon navigation.
  *
@@ -299,7 +301,7 @@ type ConfigBuiltIn = {
    *
    *  https://vike.dev/route
    */
-  route?: string | RouteAsync | RouteSync | ImportString
+  route?: Route | ImportString
 
   /** Protect page(s), e.g. forbid unauthorized access.
    *
