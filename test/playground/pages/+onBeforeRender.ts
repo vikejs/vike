@@ -6,10 +6,8 @@ const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBe
   const { pages } = pageContext.globalContext
   let staticUrls: string[] = Object.values(pages)
     .map((p) => p.route)
-    .filter((p) => p !== null)
+    .filter((p) => typeof p === 'string')
     .filter((p) => !p.includes('@'))
-  // TODO/now: properly expose route
-  staticUrls = staticUrls.join(' ').replace('about-page', 'about').split(' ')
   staticUrls.sort(lowerFirst((url) => url.length))
   pageContext.staticUrls = staticUrls
 }
