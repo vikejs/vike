@@ -1,6 +1,6 @@
 export { getPageConfigUserFriendlyOld }
-export { getPageConfigUserFriendlyNew }
-export { getPageConfigUserFriendlyNew_withRoute }
+export { getPageConfigGlobalUserFriendly }
+export { getPageConfigGlobalUserFriendly_withRoute }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
 export type { PageConfigsUserFriendly }
@@ -137,7 +137,7 @@ type ConfigUserFriendly = {
   _sources: Sources
   _from: From
 }
-function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
+function getPageConfigGlobalUserFriendly(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
   const res = getPageConfigUserFriendlyV1Desin(pageConfig)
   return {
     config: res.config,
@@ -155,14 +155,14 @@ type PageConfigUserFriendly_withRoute = ConfigUserFriendly & {
   // TODO/now
   // route: string | Function
 }
-function getPageConfigUserFriendlyNew_withRoute(
+function getPageConfigGlobalUserFriendly_withRoute(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
 ): [string, PageConfigUserFriendly_withRoute] {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
   const page = {
-    ...getPageConfigUserFriendlyNew({ configValues }),
+    ...getPageConfigGlobalUserFriendly({ configValues }),
     route: pageConfig.routeFilesystem?.routeString ?? null
   }
   return [pageConfig.pageId, page]

@@ -70,8 +70,8 @@ import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
-  getPageConfigUserFriendlyNew,
-  getPageConfigUserFriendlyNew_withRoute,
+  getPageConfigGlobalUserFriendly,
+  getPageConfigGlobalUserFriendly_withRoute,
   type ConfigUserFriendly,
   type PageConfigsUserFriendly
 } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
@@ -207,7 +207,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getPageConfigUserFriendlyNew({ configValues: {} }),
+        global: getPageConfigGlobalUserFriendly({ configValues: {} }),
         pages: {}
       }
       return dummyData
@@ -233,13 +233,13 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   // global
   const configValuesGlobal = getConfigValues(pageConfigGlobal)
-  const global = getPageConfigUserFriendlyNew({ configValues: configValuesGlobal })
+  const global = getPageConfigGlobalUserFriendly({ configValues: configValuesGlobal })
 
   // pages
   const pages = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getPageConfigUserFriendlyNew_withRoute(configValuesGlobal, pageConfig, pageConfigValues)
+      return getPageConfigGlobalUserFriendly_withRoute(configValuesGlobal, pageConfig, pageConfigValues)
     })
   )
 
