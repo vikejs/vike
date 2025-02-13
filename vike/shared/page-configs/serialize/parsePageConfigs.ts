@@ -13,7 +13,7 @@ import type {
   PageConfigRuntimeSerialized,
   ValueSerialized
 } from './PageConfigSerialized.js'
-import { assert, assertUsage, isCallable, objectAssign } from '../../utils.js'
+import { assert, assertUsage, isCallable } from '../../utils.js'
 import { getConfigDefinedAt } from '../getConfigDefinedAt.js'
 import type { ConfigValueSerialized } from './PageConfigSerialized.js'
 import { parseTransform } from '@brillout/json-serializer/parse'
@@ -35,8 +35,8 @@ function parsePageConfigs(
   const pageConfigs: PageConfigRuntime[] = pageConfigsSerialized.map((pageConfigSerialized) => {
     const configValues = parseConfigValuesSerialized(pageConfigSerialized.configValuesSerialized)
     assertRouteConfigValue(configValues)
-    objectAssign(pageConfigSerialized, { configValues })
-    return pageConfigSerialized
+    const pageConfig = { ...pageConfigSerialized, configValues }
+    return pageConfig
   })
 
   // pageConfigsGlobal
