@@ -21,8 +21,8 @@ To change the Base URL:
 ```html
 <!-- view-source:https://my-website.com/some-base/ -->
 
-<!-- Note how the website is served at https://my-website.com/some-base/ and
-     how the asset URLs are prepended with the Base URL /some-base/ -->
+<!-- Website is served at https://my-website.com/some-base/ and
+     asset URLs are prepended with the Base URL /some-base/ -->
 
 <html>
   <head>
@@ -45,9 +45,9 @@ Example:
 
 ## `baseAssets`
 
-You can change the Base URL only for your assets by using the `baseAssets` setting. The Base URL of the URL of your pages is left unchanged.
+You can change the base only for your asset URLs, while the base of your page URLs is left unchanged.
 
-> The most common use case for using `baseAssets` is when deploying assets to a CDN.
+> The most common use case is when deploying assets to a CDN.
 
 ```js
 // pages/+config.js
@@ -57,14 +57,14 @@ export default {
 }
 ```
 
-Note how the Base URL of the URL of your pages isn't changed: your website is still served at `https://my-website.com/*` (the Base URL is still `/`).
+The base of your page URLs isn't changed: your website is still served at `https://my-website.com/*` (the Base URL is still `/`).
 
 ```html
 <!-- view-source:https://my-website.com/ -->
 
 <html>
   <head>
-    <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
+    <!-- Base URL is 'https://cdn.example.org/my-website-assets/' -->
     <link
       href="https://cdn.example.org/my-website-assets/logo.svg"
       rel="icon"
@@ -77,11 +77,11 @@ Note how the Base URL of the URL of your pages isn't changed: your website is st
   </head>
   <body>
     <nav>
-      <!-- Note how the Base URL is '/' -->
+      <!-- Base URL is '/' -->
       <a href="/">Landing Page</a>
       <a href="/about">About Page</a>
     </nav>
-    <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
+    <!-- Base URL is 'https://cdn.example.org/my-website-assets/' -->
     <script src="https://cdn.example.org/my-website-assets/script.js" type="module">
   </body>
 </html>
@@ -107,6 +107,7 @@ export default {
 
 > There is [work-in-progress to apply it only in production by default](https://github.com/vikejs/vike/issues/1794).
 
+
 ## `baseServer`
 
 You can do both:
@@ -123,11 +124,11 @@ export default {
 ```
 
 ```html
-<!-- view-source:https://my-website.com/ -->
+<!-- view-source:https://my-website.com/some-base/ -->
 
 <html>
   <head>
-    <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
+    <!-- Base URL is 'https://cdn.example.org/my-website-assets/' -->
     <link
       href="https://cdn.example.org/my-website-assets/logo.svg"
       rel="icon"
@@ -140,11 +141,11 @@ export default {
   </head>
   <body>
     <nav>
-      <!-- Note how the Base URL is '/some-base/' -->
+      <!-- Base URL is '/some-base/' -->
       <a href="/some-base/">Landing Page</a>
       <a href="/some-base/about">About Page</a>
     </nav>
-    <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
+    <!-- Base URL is 'https://cdn.example.org/my-website-assets/' -->
     <script src="https://cdn.example.org/my-website-assets/script.js" type="module">
   </body>
 </html>
