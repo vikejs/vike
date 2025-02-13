@@ -1,6 +1,6 @@
 export { getPageConfigUserFriendlyOld }
 export { getPageConfigGlobalUserFriendly }
-export { getPageConfigGlobalUserFriendly_withRoute }
+export { getPageConfigUserFriendly }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
 export type { PageConfigsUserFriendly }
@@ -155,7 +155,7 @@ type PageConfigUserFriendly_withRoute = ConfigUserFriendly & {
   // TODO/now
   // route: string | Function
 }
-function getPageConfigGlobalUserFriendly_withRoute(
+function getPageConfigUserFriendly(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues

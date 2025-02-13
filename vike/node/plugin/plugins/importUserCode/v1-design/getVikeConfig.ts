@@ -71,7 +71,7 @@ import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getC
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
   getPageConfigGlobalUserFriendly,
-  getPageConfigGlobalUserFriendly_withRoute,
+  getPageConfigUserFriendly,
   type ConfigUserFriendly,
   type PageConfigsUserFriendly
 } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
@@ -239,7 +239,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const pages = objectFromEntries(
     pageConfigs.map((pageConfig) => {
       const pageConfigValues = getConfigValues(pageConfig, true)
-      return getPageConfigGlobalUserFriendly_withRoute(configValuesGlobal, pageConfig, pageConfigValues)
+      return getPageConfigUserFriendly(configValuesGlobal, pageConfig, pageConfigValues)
     })
   )
 
