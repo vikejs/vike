@@ -173,13 +173,13 @@ function getPageConfigUserFriendly_base({
   pageConfigValues
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
   const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
-  return getPageConfigUserFriendlyV1Desin({ configValues })
+  return getPageConfigUserFriendly_V1Design({ configValues })
 }
 
 function getPageConfigGlobalUserFriendly({
   configValuesGlobal
 }: { configValuesGlobal: ConfigValues }): PageConfigUserFriendly {
-  const res = getPageConfigUserFriendlyV1Desin({ configValues: configValuesGlobal })
+  const res = getPageConfigUserFriendly_V1Design({ configValues: configValuesGlobal })
   return {
     config: res.config,
     _source: res.source,
@@ -275,7 +275,7 @@ function getPageConfigUserFriendly_withOldDesign(
 }
 
 // V1 design
-function getPageConfigUserFriendlyV1Desin(pageConfig: { configValues: ConfigValues }) {
+function getPageConfigUserFriendly_V1Design(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}
