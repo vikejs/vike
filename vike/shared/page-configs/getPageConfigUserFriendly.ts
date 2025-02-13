@@ -34,6 +34,7 @@ import {
 } from '../utils.js'
 import pc from '@brillout/picocolors'
 import type { ConfigResolved } from './Config/PageContextConfig.js'
+import type { Route } from './Config.js'
 
 // TODO/v1-release: remove
 type ExportsAll = Record<
@@ -138,21 +139,36 @@ type PageConfigUserFriendly = {
 }
 type PageConfigsUserFriendly = Record<
   string, // pageId
-  PageConfigUserFriendly_withRoute
+  PageConfigUserFriendlyWithRoute
 >
-type PageConfigUserFriendly_withRoute = PageConfigUserFriendly & {
-  route: string | null
-  // TODO/now
-  // route: string | Function
-}
+type WithRoute =
+  | {
+      route: Route
+      isErrorPage?: undefined
+    }
+  | {
+      route?: undefined
+      isErrorPage: true
+    }
+type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & WithRoute
 function getPageConfigUserFriendly(
   pageConfigGlobalValues: ConfigValues,
   pageConfig: PageConfigRuntime | PageConfigBuildTime,
   pageConfigValues: ConfigValues
-): [string, PageConfigUserFriendly_withRoute] {
-  const page = {
-    ...getPageConfigUserFriendly_public({ pageConfigGlobalValues, pageConfigValues }),
-    route: pageConfig.routeFilesystem?.routeString ?? null
+): [string, PageConfigUserFriendlyWithRoute] {
+  const pageConfigUserFriendly = getPageConfigUserFriendly_public({ pageConfigGlobalValues, pageConfigValues })
+  let page: PageConfigUserFriendlyWithRoute
+  if (!pageConfig.isErrorPage) {
+    const route = pageConfigUserFriendly.config.route ?? pageConfig.routeFilesystem.routeString
+    page = {
+      ...pageConfigUserFriendly,
+      route
+    }
+  } else {
+    page = {
+      ...pageConfigUserFriendly,
+      isErrorPage: true
+    }
   }
   return [pageConfig.pageId, page]
 }
