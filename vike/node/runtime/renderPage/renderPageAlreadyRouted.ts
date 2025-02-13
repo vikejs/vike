@@ -180,14 +180,13 @@ async function getPageContextInitEnhanced(
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const { baseServer, baseAssets } = globalContext
   const pageContextInitEnhanced = {}
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {
     _objectCreatedByVike: true,
     // The following is defined on `pageContext` because we can eventually make these non-global
-    _baseServer: baseServer,
-    _baseAssets: baseAssets,
+    _baseServer: globalContext.baseServer,
+    _baseAssets: globalContext.baseAssets,
     // TODO/now: add meta.default
     _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
     // TODO/soon: use GloablContext instead
