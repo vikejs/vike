@@ -39,7 +39,7 @@ import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import {
   getGlobalContextInternal,
-  type GlobalContext,
+  type GlobalContextInternal,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
@@ -284,7 +284,7 @@ async function collectDoNoPrerenderList(
   pageConfigs: PageConfigBuildTime[],
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit,
-  globalContext: GlobalContext
+  globalContext: GlobalContextInternal
 ) {
   // V1 design
   pageConfigs.forEach((pageConfig) => {
@@ -356,7 +356,7 @@ function assertExportNames(pageFile: PageFile) {
 
 async function callOnBeforePrerenderStartHooks(
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   concurrencyLimit: PLimit,
   doNotPrerenderList: DoNotPrerenderList
 ) {
@@ -480,7 +480,7 @@ async function callOnBeforePrerenderStartHooks(
 
 async function handlePagesWithStaticRoutes(
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit
 ) {
@@ -540,7 +540,7 @@ async function handlePagesWithStaticRoutes(
 async function createPageContext(
   urlOriginal: string,
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContext
+  globalContext: GlobalContextInternal
 ) {
   const pageContext = {
     _urlHandler: null,
@@ -559,7 +559,7 @@ async function createPageContext(
   return pageContext
 }
 
-async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, globalContext: GlobalContext) {
+async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, globalContext: GlobalContextInternal) {
   let onPrerenderStartHook:
     | undefined
     | {
@@ -757,7 +757,7 @@ async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, glob
 
 async function routeAndPrerender(
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   concurrencyLimit: PLimit,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
@@ -869,7 +869,7 @@ function warnContradictoryNoPrerenderList(
 
 async function warnMissingPages(
   prerenderedPageContexts: Record<string, unknown>,
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   doNotPrerenderList: DoNotPrerenderList,
   partial: boolean
 ) {
@@ -895,7 +895,7 @@ async function warnMissingPages(
 
 async function prerender404(
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
   if (!Object.values(prerenderContext.prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {

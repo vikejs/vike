@@ -20,7 +20,7 @@ import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFi
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
-import type { GlobalContext } from '../globalContext.js'
+import type { GlobalContextInternal } from '../globalContext.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 
@@ -29,7 +29,7 @@ type PageContext_loadUserFilesServerSide = PageContextGetPageAssets &
     urlOriginal: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
-    _globalContext: GlobalContext
+    _globalContext: GlobalContextInternal
   }
 type PageFiles = PromiseType<ReturnType<typeof loadUserFilesServerSide>>
 async function loadUserFilesServerSide(pageContext: { pageId: string } & PageContext_loadUserFilesServerSide) {

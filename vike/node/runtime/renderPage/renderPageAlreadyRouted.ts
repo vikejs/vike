@@ -10,7 +10,7 @@ import { getHtmlString } from '../html/renderHtml.js'
 import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import type { GlobalContext } from '../globalContext.js'
+import type { GlobalContextInternal } from '../globalContext.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadUserFilesServerSide,
@@ -127,7 +127,10 @@ async function prerenderPage(
   }
 }
 
-async function prerender404Page(pageContextInit_: Record<string, unknown> | null, globalContext: GlobalContext) {
+async function prerender404Page(
+  pageContextInit_: Record<string, unknown> | null,
+  globalContext: GlobalContextInternal
+) {
   const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
   if (!errorPageId) {
     return null
@@ -161,7 +164,7 @@ async function prerender404Page(pageContextInit_: Record<string, unknown> | null
 type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhanced>>
 async function getPageContextInitEnhanced(
   pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   {
     ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
       urlRewrite: null,

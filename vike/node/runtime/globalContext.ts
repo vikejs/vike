@@ -19,7 +19,7 @@ export { assertBuildInfo }
 export { getViteConfigRuntime }
 export { updateUserFiles }
 export type { BuildInfo }
-export type { GlobalContext }
+export type { GlobalContextInternal }
 export type { GlobalContextPublic }
 
 // The core logic revolves around:
@@ -66,7 +66,7 @@ type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
-    globalContext?: GlobalContext
+    globalContext?: GlobalContextInternal
     globalContext_public?: GlobalContextPublic
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
@@ -88,7 +88,7 @@ const globalObject = getGlobalObject<
 
 type GlobalContextPublic = Pick<GlobalContextWithoutPublicCopy, 'assetsManifest' | 'config' | 'viteConfig' | 'pages'>
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
-type GlobalContext = GlobalContextWithoutPublicCopy & {
+type GlobalContextInternal = GlobalContextWithoutPublicCopy & {
   globalContext_public: GlobalContextPublic
 }
 type GlobalContextWithoutPublicCopy = {
@@ -123,7 +123,7 @@ type GlobalContextWithoutPublicCopy = {
       ))
   )
 
-async function getGlobalContextInternal(): Promise<GlobalContext> {
+async function getGlobalContextInternal(): Promise<GlobalContextInternal> {
   // getGlobalContextInternal() should always be called after initGlobalContext()
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
@@ -132,7 +132,7 @@ async function getGlobalContextInternal(): Promise<GlobalContext> {
   assertIsDefined(globalContext)
   return globalContext
 }
-function assertIsDefined<T extends GlobalContext | GlobalContextWithoutPublicCopy>(
+function assertIsDefined<T extends GlobalContextInternal | GlobalContextWithoutPublicCopy>(
   globalContext: undefined | null | T
 ): asserts globalContext is T {
   if (!globalContext) {
