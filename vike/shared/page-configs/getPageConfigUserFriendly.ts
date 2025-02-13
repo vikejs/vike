@@ -1,6 +1,6 @@
 export { getPageConfigUserFriendly }
-export { getPageConfigGlobalUserFriendly }
 export { getPageConfigUserFriendly_withOldDesign }
+export { getPageConfigGlobalUserFriendly }
 export type { ConfigUserFriendly }
 export type { PageConfigUserFriendly }
 export type { PageConfigsUserFriendly }
