@@ -2,7 +2,7 @@ export { getPageConfigUserFriendly }
 export { getPageConfigUserFriendly_withOldDesign }
 export { getPageConfigGlobalUserFriendly }
 export type { ConfigUserFriendly }
-export type { PageConfigUserFriendly }
+export type { PageConfigUserFriendlyOld }
 export type { PageConfigsUserFriendly }
 export type { Source }
 export type { Sources }
@@ -62,7 +62,7 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type PageConfigUserFriendly = {
+type PageConfigUserFriendlyOld = {
   config: ConfigResolved
   source: Source
   sources: Sources
@@ -171,7 +171,7 @@ function getPageConfigUserFriendly_withOldDesign(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null,
   pageConfigGlobal: PageConfigGlobalRuntime
-): PageConfigUserFriendly {
+): PageConfigUserFriendlyOld {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TODO/v1-release: remove
   const exportsAll: ExportsAll = {} // TODO/v1-release: remove

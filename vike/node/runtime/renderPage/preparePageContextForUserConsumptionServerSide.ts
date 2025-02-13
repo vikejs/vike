@@ -4,13 +4,13 @@ export type { PageContextForUserConsumptionServerSide }
 import { assert, isPlainObject } from '../utils.js'
 import { assertPageContextUrl, PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import type { PageConfigUserFriendly } from '../../../shared/page-configs/getPageConfigUserFriendly.js'
+import type { PageConfigUserFriendlyOld } from '../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { PageContextBuiltInServerInternal } from '../../../shared/types.js'
 import { preparePageContextForUserConsumption } from '../../../shared/preparePageContextForUserConsumption.js'
 import type { GlobalContextInternal, GlobalContextPublic } from '../globalContext.js'
 
 type PageContextForUserConsumptionServerSide = PageContextBuiltInServerInternal &
-  PageConfigUserFriendly & {
+  PageConfigUserFriendlyOld & {
     urlOriginal: string
     /** @deprecated */
     url: string

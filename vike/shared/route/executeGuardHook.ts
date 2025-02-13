@@ -2,13 +2,13 @@ export { executeGuardHook }
 
 import { getHook, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
-import type { PageConfigUserFriendly, PageFile } from '../getPageFiles.js'
+import type { PageConfigUserFriendlyOld, PageFile } from '../getPageFiles.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { executeHook } from '../hooks/executeHook.js'
 const errIntro = 'The guard() hook defined by'
 
 async function executeGuardHook<
-  T extends PageConfigUserFriendly & {
+  T extends PageConfigUserFriendlyOld & {
     pageId: string
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]

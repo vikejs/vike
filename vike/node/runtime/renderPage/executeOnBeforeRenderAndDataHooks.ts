@@ -1,6 +1,6 @@
 export { executeOnBeforeRenderAndDataHooks }
 
-import { type PageConfigUserFriendly } from '../../../shared/getPageFiles.js'
+import { type PageConfigUserFriendlyOld } from '../../../shared/getPageFiles.js'
 import { getHook } from '../../../shared/hooks/getHook.js'
 import {
   preparePageContextForUserConsumptionServerSide,
@@ -13,7 +13,7 @@ async function executeOnBeforeRenderAndDataHooks(
   pageContext: {
     pageId: string
     _pageContextAlreadyProvidedByOnPrerenderHook?: true
-  } & PageConfigUserFriendly &
+  } & PageConfigUserFriendlyOld &
     PageContextForUserConsumptionServerSide
 ): Promise<void> {
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {

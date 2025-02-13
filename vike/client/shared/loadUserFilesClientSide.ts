@@ -2,7 +2,7 @@ export { loadUserFilesClientSide }
 export { isErrorFetchingStaticAssets }
 export type { PageContextUserFiles }
 
-import { getPageFilesClientSide, type PageFile, type PageConfigUserFriendly } from '../../shared/getPageFiles.js'
+import { getPageFilesClientSide, type PageFile, type PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { getPageConfigUserFriendly_withOldDesign } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
@@ -15,7 +15,7 @@ import { objectAssign } from '../server-routing-runtime/utils.js'
 
 const stamp = '__whileFetchingAssets'
 
-type PageContextUserFilesLoaded = PageConfigUserFriendly & { _pageFilesLoaded: PageFile[] }
+type PageContextUserFilesLoaded = PageConfigUserFriendlyOld & { _pageFilesLoaded: PageFile[] }
 type PageContextUserFiles = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
