@@ -86,7 +86,7 @@ const globalObject = getGlobalObject<
   } & ReturnType<typeof getInitialGlobalContext>
 >('globalContext.ts', getInitialGlobalContext())
 
-type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig' | 'pages'>
+type GlobalContextPublic = Pick<GlobalContextWithoutPublicCopy, 'assetsManifest' | 'config' | 'viteConfig' | 'pages'>
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
 type GlobalContext = GlobalContextWithoutPublicCopy & {
   globalContext_public: GlobalContextPublic
