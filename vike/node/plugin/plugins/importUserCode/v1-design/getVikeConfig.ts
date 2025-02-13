@@ -35,7 +35,8 @@ import type {
   PageConfigBuildTime,
   DefinedAtFilePath,
   ConfigValuesComputed,
-  ConfigValues
+  ConfigValues,
+  PageConfigRoute
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -344,15 +345,14 @@ function getPageConfigsBuildTime(
           configValueSources[configName] = sources
         })
 
-      const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
+      const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
       applyEffectsAll(configValueSources, configDefinitionsLocal)
       const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
       const pageConfig: PageConfigBuildTime = {
         pageId: locationId,
-        isErrorPage,
-        routeFilesystem,
+        ...pageConfigRoute,
         configDefinitions: configDefinitionsLocal,
         plusFiles: plusFilesRelevant,
         configValueSources,
@@ -1105,7 +1105,7 @@ function assertKnownConfig(
   assertUsage(false, errMsg)
 }
 
-function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources) {
+function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources): PageConfigRoute {
   const configName = 'filesystemRoutingRoot'
   const configFilesystemRoutingRoot = configValueSources[configName]?.[0]
   let filesystemRouteString = getFilesystemRouteString(locationId)

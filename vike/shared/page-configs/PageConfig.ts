@@ -1,6 +1,8 @@
 export type { PageConfigRuntime }
 export type { PageConfigRuntimeLoaded }
 export type { PageConfigBuildTime }
+export type { PageConfigCommon }
+export type { PageConfigRoute }
 export type { ConfigEnv }
 export type { ConfigEnvInternal }
 export type { PageConfigGlobalRuntime }
@@ -28,12 +30,19 @@ import type {
 
 type PageConfigCommon = {
   pageId: string
-  isErrorPage?: true
-  routeFilesystem?: {
-    routeString: string
-    definedBy: string
-  }
-}
+} & PageConfigRoute
+type PageConfigRoute =
+  | {
+      isErrorPage: true
+      routeFilesystem?: undefined
+    }
+  | {
+      isErrorPage?: undefined
+      routeFilesystem: {
+        routeString: string
+        definedBy: string
+      }
+    }
 
 // `*Runtime` VS `*BuildTime`:
 // - `*BuildTime` data structures aim to collect as much information as possible.
