@@ -147,7 +147,7 @@ type WithRoute =
     }
   | {
       route?: undefined
-      isErrorPage?: true
+      isErrorPage: true
     }
 type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & WithRoute
 function getPageConfigUserFriendly(
