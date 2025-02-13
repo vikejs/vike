@@ -1,8 +1,9 @@
-export { getPageConfigUserFriendlyOld }
-export { getPageConfigUserFriendlyNew }
-export type { ConfigUserFriendly }
-export type { PageConfigUserFriendly }
+export { getPageConfigUserFriendly }
+export { getPageConfigUserFriendly_oldDesign }
+export { getPageConfigGlobalUserFriendly }
 export type { PageConfigsUserFriendly }
+export type { PageConfigUserFriendly }
+export type { PageConfigUserFriendlyOld }
 export type { Source }
 export type { Sources }
 export type { From }
@@ -15,7 +16,6 @@ import type { PageFile } from '../getPageFiles/getPageFileObject.js'
 import type {
   ConfigValues,
   PageConfigBuildTime,
-  PageConfigGlobalBuildTime,
   PageConfigGlobalRuntime,
   PageConfigRuntime,
   PageConfigRuntimeLoaded
@@ -62,7 +62,7 @@ type ConfigEntries = Record<
     configDefinedByFile: string | null
   }[]
 >
-type PageConfigUserFriendly = {
+type PageConfigUserFriendlyOld = {
   config: ConfigResolved
   source: Source
   sources: Sources
@@ -128,53 +128,72 @@ type SourceConfigsComputed = {
   value: unknown
 }
 
-type PageConfigsUserFriendly = Record<
-  string, // pageId
-  ConfigUserFriendly & {
-    route: string | null
-  }
->
-/* TODO/now DEDUPE
-function getPageConfigsUserFriendly(
-  pageConfigs: (PageConfigRuntime | PageConfigBuildTime)[],
-  pageConfigGlobal: PageConfigGlobalRuntime | PageConfigGlobalBuildTime
-): PageConfigsUserFriendly {
-  const pageConfigsUserFriendly: PageConfigsUserFriendly = Object.fromEntries(
-    pageConfigs.map((pageConfig) => {
-      const configValues = { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
-      const page = {
-        ...getPageConfigUserFriendlyNew({ configValues }),
-        route: pageConfig.routeFilesystem?.routeString ?? null
-      }
-      return [pageConfig.pageId, page]
-    })
-  )
-}
-*/
-
 // See: [Flat `pageContext`](https://github.com/vikejs/vike/issues/1268)
-type ConfigUserFriendly = {
+type PageConfigUserFriendly = {
   config: ConfigResolved
   // TODO/now expose publicly?
   _source: Source
   _sources: Sources
   _from: From
 }
-function getPageConfigUserFriendlyNew(pageConfig: { configValues: ConfigValues }): ConfigUserFriendly {
-  const res = getPageConfigUserFriendlyV1Desin(pageConfig)
+type PageConfigsUserFriendly = Record<
+  string, // pageId
+  PageConfigUserFriendly_withRoute
+>
+type PageConfigUserFriendly_withRoute = PageConfigUserFriendly & {
+  route: string | null
+  // TODO/now
+  // route: string | Function
+}
+function getPageConfigUserFriendly(
+  pageConfigGlobalValues: ConfigValues,
+  pageConfig: PageConfigRuntime | PageConfigBuildTime,
+  pageConfigValues: ConfigValues
+): [string, PageConfigUserFriendly_withRoute] {
+  const page = {
+    ...getPageConfigUserFriendly_public({ pageConfigGlobalValues, pageConfigValues }),
+    route: pageConfig.routeFilesystem?.routeString ?? null
+  }
+  return [pageConfig.pageId, page]
+}
+function getPageConfigUserFriendly_public({
+  pageConfigGlobalValues,
+  pageConfigValues
+}: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
+  const pageConfigUserFriendly = getPageConfigUserFriendly_base({ pageConfigGlobalValues, pageConfigValues })
+  return getPublicCopy(pageConfigUserFriendly)
+}
+function getPublicCopy(
+  pageConfigUserFriendly: ReturnType<typeof getPageConfigUserFriendly_V1Design>
+): PageConfigUserFriendly {
+  const p = pageConfigUserFriendly
   return {
-    config: res.config,
-    _source: res.source,
-    _sources: res.sources,
-    _from: res.from
+    config: p.config,
+    _source: p.source,
+    _sources: p.sources,
+    _from: p.from
   }
 }
+function getPageConfigUserFriendly_base({
+  pageConfigGlobalValues,
+  pageConfigValues
+}: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
+  const configValues = { ...pageConfigGlobalValues, ...pageConfigValues }
+  return getPageConfigUserFriendly_V1Design({ configValues })
+}
 
-function getPageConfigUserFriendlyOld(
+function getPageConfigGlobalUserFriendly({
+  pageConfigGlobalValues
+}: { pageConfigGlobalValues: ConfigValues }): PageConfigUserFriendly {
+  const pageConfigGlobalUserFriendly = getPageConfigUserFriendly_V1Design({ configValues: pageConfigGlobalValues })
+  return getPublicCopy(pageConfigGlobalUserFriendly)
+}
+
+function getPageConfigUserFriendly_oldDesign(
   pageFiles: PageFile[],
   pageConfig: PageConfigRuntimeLoaded | null,
   pageConfigGlobal: PageConfigGlobalRuntime
-): PageConfigUserFriendly {
+): PageConfigUserFriendlyOld {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {} // TODO/v1-release: remove
   const exportsAll: ExportsAll = {} // TODO/v1-release: remove
@@ -203,8 +222,9 @@ function getPageConfigUserFriendlyOld(
   let sources: Sources
   let from: From
   if (pageConfig) {
-    const res = getPageConfigUserFriendlyV1Desin({
-      configValues: { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
+    const res = getPageConfigUserFriendly_base({
+      pageConfigGlobalValues: pageConfigGlobal.configValues,
+      pageConfigValues: pageConfig.configValues
     })
     source = res.source
     sources = res.sources
@@ -256,7 +276,7 @@ function getPageConfigUserFriendlyOld(
 }
 
 // V1 design
-function getPageConfigUserFriendlyV1Desin(pageConfig: { configValues: ConfigValues }) {
+function getPageConfigUserFriendly_V1Design(pageConfig: { configValues: ConfigValues }) {
   const config: Record<string, unknown> = {}
   const configEntries: ConfigEntries = {}
   const exportsAll: ExportsAll = {}

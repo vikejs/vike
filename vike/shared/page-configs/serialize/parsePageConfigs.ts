@@ -34,15 +34,9 @@ function parsePageConfigs(
   // pageConfigs
   const pageConfigs: PageConfigRuntime[] = pageConfigsSerialized.map((pageConfigSerialized) => {
     const configValues = parseConfigValuesSerialized(pageConfigSerialized.configValuesSerialized)
-    const { pageId, isErrorPage, routeFilesystem, loadConfigValuesAll } = pageConfigSerialized
     assertRouteConfigValue(configValues)
-    return {
-      pageId,
-      isErrorPage,
-      routeFilesystem,
-      configValues,
-      loadConfigValuesAll
-    } satisfies PageConfigRuntime
+    const pageConfig = { ...pageConfigSerialized, configValues }
+    return pageConfig
   })
 
   // pageConfigsGlobal

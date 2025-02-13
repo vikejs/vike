@@ -14,7 +14,7 @@ export type { HooksTimeoutProvidedByUser }
 export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
-import type { PageConfigUserFriendly } from '../getPageFiles.js'
+import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
@@ -46,7 +46,7 @@ type HookTimeout = {
 type HooksTimeoutProvidedByUser = false | Partial<Record<HookName, false | Partial<HookTimeout>>>
 type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookName, Partial<HookTimeout>>>
 
-function getHook(pageContext: PageConfigUserFriendly, hookName: HookName): null | Hook {
+function getHook(pageContext: PageConfigUserFriendlyOld, hookName: HookName): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }
@@ -89,7 +89,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
 
-function assertHook<TPageContext extends PageConfigUserFriendly, THookName extends PropertyKey & HookName>(
+function assertHook<TPageContext extends PageConfigUserFriendlyOld, THookName extends PropertyKey & HookName>(
   pageContext: TPageContext,
   hookName: THookName
 ): asserts pageContext is TPageContext & { exports: Record<THookName, Function | undefined> } {

@@ -55,7 +55,7 @@ import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
 import pc from '@brillout/picocolors'
 import type {
-  ConfigUserFriendly,
+  PageConfigUserFriendly,
   PageConfigsUserFriendly
 } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
@@ -99,7 +99,7 @@ type GlobalContext = {
   viteConfigRuntime: {
     _baseViteOriginal: null | string
   }
-  config: ConfigUserFriendly['config']
+  config: PageConfigUserFriendly['config']
   pages: PageConfigsUserFriendly
 } & BaseUrlsResolved &
   PageRuntimeInfo &

@@ -35,7 +35,8 @@ import type {
   PageConfigBuildTime,
   DefinedAtFilePath,
   ConfigValuesComputed,
-  ConfigValues
+  ConfigValues,
+  PageConfigRoute
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -70,8 +71,9 @@ import type { FilePath } from '../../../../../shared/page-configs/FilePath.js'
 import { getConfigValueBuildTime } from '../../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { assertExtensionsRequire } from './getVikeConfig/assertExtensions.js'
 import {
-  getPageConfigUserFriendlyNew,
-  type ConfigUserFriendly,
+  getPageConfigGlobalUserFriendly,
+  getPageConfigUserFriendly,
+  type PageConfigUserFriendly,
   type PageConfigsUserFriendly
 } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
@@ -82,7 +84,7 @@ assertIsNotProductionRuntime()
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
-  global: ConfigUserFriendly
+  global: PageConfigUserFriendly
   pages: PageConfigsUserFriendly
 }
 
@@ -206,7 +208,7 @@ async function loadVikeConfig_withErrorHandling(
           configDefinitions: {},
           configValueSources: {}
         },
-        global: getPageConfigUserFriendlyNew({ configValues: {} }),
+        global: getPageConfigGlobalUserFriendly({ pageConfigGlobalValues: {} }),
         pages: {}
       }
       return dummyData
@@ -231,20 +233,14 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
   // global
-  const configValuesGlobal = getConfigValues(pageConfigGlobal)
-  const global = getPageConfigUserFriendlyNew({ configValues: configValuesGlobal })
+  const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
+  const global = getPageConfigGlobalUserFriendly({ pageConfigGlobalValues })
 
-  // TODO/now DEDUPE
   // pages
-  const pages: PageConfigsUserFriendly = objectFromEntries(
+  const pages = objectFromEntries(
     pageConfigs.map((pageConfig) => {
-      const configValuesLocal = getConfigValues(pageConfig, true)
-      const configValues = { ...configValuesGlobal, ...configValuesLocal }
-      const page = {
-        ...getPageConfigUserFriendlyNew({ configValues }),
-        route: pageConfig.routeFilesystem?.routeString ?? null
-      }
-      return [pageConfig.pageId, page]
+      const pageConfigValues = getConfigValues(pageConfig, true)
+      return getPageConfigUserFriendly(pageConfigGlobalValues, pageConfig, pageConfigValues)
     })
   )
 
@@ -349,15 +345,14 @@ function getPageConfigsBuildTime(
           configValueSources[configName] = sources
         })
 
-      const { routeFilesystem, isErrorPage } = determineRouteFilesystem(locationId, configValueSources)
+      const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
       applyEffectsAll(configValueSources, configDefinitionsLocal)
       const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
       const pageConfig: PageConfigBuildTime = {
         pageId: locationId,
-        isErrorPage,
-        routeFilesystem,
+        ...pageConfigRoute,
         configDefinitions: configDefinitionsLocal,
         plusFiles: plusFilesRelevant,
         configValueSources,
@@ -1110,7 +1105,7 @@ function assertKnownConfig(
   assertUsage(false, errMsg)
 }
 
-function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources) {
+function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources): PageConfigRoute {
   const configName = 'filesystemRoutingRoot'
   const configFilesystemRoutingRoot = configValueSources[configName]?.[0]
   let filesystemRouteString = getFilesystemRouteString(locationId)

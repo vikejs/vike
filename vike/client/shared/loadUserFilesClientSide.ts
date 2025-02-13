@@ -2,8 +2,8 @@ export { loadUserFilesClientSide }
 export { isErrorFetchingStaticAssets }
 export type { PageContextUserFiles }
 
-import { getPageFilesClientSide, type PageFile, type PageConfigUserFriendly } from '../../shared/getPageFiles.js'
-import { getPageConfigUserFriendlyOld } from '../../shared/page-configs/getPageConfigUserFriendly.js'
+import { getPageFilesClientSide, type PageFile, type PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
+import { getPageConfigUserFriendly_oldDesign } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { findPageConfig } from '../../shared/page-configs/findPageConfig.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import type {
@@ -15,7 +15,7 @@ import { objectAssign } from '../server-routing-runtime/utils.js'
 
 const stamp = '__whileFetchingAssets'
 
-type PageContextUserFilesLoaded = PageConfigUserFriendly & { _pageFilesLoaded: PageFile[] }
+type PageContextUserFilesLoaded = PageConfigUserFriendlyOld & { _pageFilesLoaded: PageFile[] }
 type PageContextUserFiles = {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfigRuntime[]
@@ -48,7 +48,11 @@ async function loadUserFilesClientSide(
     }
     throw err
   }
-  const pageContextExports = getPageConfigUserFriendlyOld(pageFilesClientSide, pageConfigLoaded, pageConfigGlobal)
+  const pageContextExports = getPageConfigUserFriendly_oldDesign(
+    pageFilesClientSide,
+    pageConfigLoaded,
+    pageConfigGlobal
+  )
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, pageContextExports)
   objectAssign(pageContextAddendum, { _pageFilesLoaded: pageFilesClientSide })

@@ -3,7 +3,7 @@ export type { PageContextBeforeRenderClient }
 
 import { assert, assertUsage, executeHook } from '../server-routing-runtime/utils.js'
 import { getHook, type Hook } from '../../shared/hooks/getHook.js'
-import type { PageFile, PageConfigUserFriendly } from '../../shared/getPageFiles.js'
+import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import {
   type PageContextForUserConsumptionClientSide,
   preparePageContextForUserConsumptionClientSide
@@ -16,7 +16,7 @@ type PageContextBeforeRenderClient = {
   urlPathname?: string
   pageId: string
   _pageConfigs: PageConfigRuntime[]
-} & PageConfigUserFriendly &
+} & PageConfigUserFriendlyOld &
   PageContextForUserConsumptionClientSide
 
 async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClient>(
