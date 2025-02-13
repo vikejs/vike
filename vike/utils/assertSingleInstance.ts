@@ -34,7 +34,7 @@ function assertSingleInstance() {
     assertUsage(
       versions.length <= 1,
       // DO *NOT* patch vike to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/vikejs/vike/issues/1108
-      `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded but only one version should be loaded`
+      `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded but it's forbidden to load different versions`
     )
   }
 
