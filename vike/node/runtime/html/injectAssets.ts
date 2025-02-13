@@ -18,7 +18,7 @@ import type { StreamFromReactStreamingPackage } from './stream/react-streaming.j
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import type { PageContextSerialization } from './serializePageContextClientSide.js'
 import { getViteDevScript } from './injectAssets/getViteDevScript.js'
-import type { GlobalContext } from '../globalContext.js'
+import type { GlobalContextInternal } from '../globalContext.js'
 
 type PageContextInjectAssets = {
   urlPathname: string
@@ -33,7 +33,7 @@ type PageContextInjectAssets = {
   _baseServer: string
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
-  _globalContext: GlobalContext
+  _globalContext: GlobalContextInternal
 } & PageContextSerialization
 
 async function injectHtmlTagsToString(

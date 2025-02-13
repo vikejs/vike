@@ -37,7 +37,7 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
-import { getGlobalContextInternal, initGlobalContext_renderPage, type GlobalContext } from './globalContext.js'
+import { getGlobalContextInternal, initGlobalContext_renderPage, type GlobalContextInternal } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
   createHttpResponseFavicon404,
@@ -62,7 +62,6 @@ import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { resolveBaseRuntime } from '../shared/resolveBase.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
@@ -174,7 +173,7 @@ async function renderPageAndPrepare(
 
 async function renderPageAlreadyPrepared(
   pageContextInit: { urlOriginal: string } & Record<string, unknown>,
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[]
 ): Promise<PageContextAfterRender> {
@@ -436,7 +435,7 @@ async function renderPageNominal(
 type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
 async function getPageContextErrorPageInit(
   pageContextInit: { urlOriginal: string },
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   errNominalPage: unknown,
   pageContextNominalPagePartial: Record<string, unknown>,
   httpRequestId: number
@@ -468,7 +467,7 @@ async function getPageContextErrorPageInit(
 
 async function getPageContextInitEnhancedSSR(
   pageContextInit: { urlOriginal: string },
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   urlRewrite: null | string,
   httpRequestId: number
 ) {
@@ -523,16 +522,15 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 
 async function normalizeUrl(
   pageContextInit: { urlOriginal: string },
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
-  const { baseServer } = resolveBaseRuntime(globalContext)
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
   if (isPageContextRequest) return null
-  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash ?? false, baseServer)
+  const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash ?? false, globalContext.baseServer)
   if (!urlNormalized) return null
   logRuntimeInfo?.(
     `URL normalized from ${pc.cyan(urlOriginal)} to ${pc.cyan(urlNormalized)} (https://vike.dev/url-normalization)`,
@@ -547,11 +545,10 @@ async function normalizeUrl(
 
 async function getPermanentRedirect(
   pageContextInit: { urlOriginal: string },
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
-  const { baseServer } = resolveBaseRuntime(globalContext)
-  const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
+  const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, globalContext.baseServer)
   let origin: null | string = null
   let urlTargetExternal: null | string = null
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
@@ -579,8 +576,7 @@ async function getPermanentRedirect(
       }
     }
     if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
-    const { baseServer } = resolveBaseRuntime(globalContext)
-    if (!originChanged) urlTarget = prependBase(urlTarget, baseServer)
+    if (!originChanged) urlTarget = prependBase(urlTarget, globalContext.baseServer)
     assert(urlTarget !== pageContextInit.urlOriginal)
   }
   logRuntimeInfo?.(
@@ -610,7 +606,7 @@ async function handleAbortError(
   },
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
-  globalContext: GlobalContext
+  globalContext: GlobalContextInternal
 ): Promise<
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
@@ -677,8 +673,8 @@ async function handleAbortError(
   return { pageContextAbort }
 }
 
-async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalContext: GlobalContext) {
-  const { baseServer } = resolveBaseRuntime(globalContext)
+async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalContext: GlobalContextInternal) {
+  const { baseServer } = globalContext
   const { urlOriginal } = pageContextInit
   const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
   const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)

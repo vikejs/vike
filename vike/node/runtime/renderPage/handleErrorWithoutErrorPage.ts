@@ -1,7 +1,7 @@
 export { handleErrorWithoutErrorPage }
 
 import { stringify } from '@brillout/json-serializer/stringify'
-import type { GlobalContext } from '../globalContext.js'
+import type { GlobalContextInternal } from '../globalContext.js'
 import { assert, assertWarning, objectAssign } from '../utils.js'
 import { createHttpResponsePage, createHttpResponseError } from './createHttpResponse.js'
 import pc from '@brillout/picocolors'
@@ -19,7 +19,7 @@ async function handleErrorWithoutErrorPage<
     pageId: null
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
-    _globalContext: GlobalContext
+    _globalContext: GlobalContextInternal
     urlOriginal: string
   }
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {

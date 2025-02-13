@@ -10,7 +10,7 @@ import { getHtmlString } from '../html/renderHtml.js'
 import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
 import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import type { GlobalContext } from '../globalContext.js'
+import type { GlobalContextInternal } from '../globalContext.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadUserFilesServerSide,
@@ -25,7 +25,6 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
-import { resolveBaseRuntime } from '../../shared/resolveBase.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -127,7 +126,10 @@ async function prerenderPage(
   }
 }
 
-async function prerender404Page(pageContextInit_: Record<string, unknown> | null, globalContext: GlobalContext) {
+async function prerender404Page(
+  pageContextInit_: Record<string, unknown> | null,
+  globalContext: GlobalContextInternal
+) {
   const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
   if (!errorPageId) {
     return null
@@ -161,7 +163,7 @@ async function prerender404Page(pageContextInit_: Record<string, unknown> | null
 type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhanced>>
 async function getPageContextInitEnhanced(
   pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
-  globalContext: GlobalContext,
+  globalContext: GlobalContextInternal,
   {
     ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
       urlRewrite: null,
@@ -178,14 +180,13 @@ async function getPageContextInitEnhanced(
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const { baseServer, baseAssets } = resolveBaseRuntime(globalContext)
   const pageContextInitEnhanced = {}
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {
     _objectCreatedByVike: true,
     // The following is defined on `pageContext` because we can eventually make these non-global
-    _baseServer: baseServer,
-    _baseAssets: baseAssets,
+    _baseServer: globalContext.baseServer,
+    _baseAssets: globalContext.baseAssets,
     // TODO/now: add meta.default
     _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
     // TODO/soon: use GloablContext instead

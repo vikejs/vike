@@ -25,7 +25,7 @@ type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 
 async function loadPageRoutes(
-  // Remove all arguments and use GlobalContext instead?
+  // Remove all arguments and use GlobalContextInternal instead?
   pageFilesAll: PageFile[],
   pageConfigs: PageConfigRuntime[],
   pageConfigGlobal: PageConfigGlobalRuntime,
