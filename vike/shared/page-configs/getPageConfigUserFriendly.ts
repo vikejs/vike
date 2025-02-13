@@ -204,6 +204,7 @@ function getPageConfigUserFriendlyOld(
   let from: From
   if (pageConfig) {
     const res = getPageConfigUserFriendlyV1Desin({
+      // TODO/now DEDUPE?
       configValues: { ...pageConfigGlobal.configValues, ...pageConfig.configValues }
     })
     source = res.source
