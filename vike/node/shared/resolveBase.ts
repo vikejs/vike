@@ -1,24 +1,9 @@
 export { resolveBase }
 export { resolveBaseRuntime }
-export { resolveBaseFromResolvedConfig }
 
 import { assert, assertUsage, isBaseServer, isBaseAssets } from './utils.js'
 import pc from '@brillout/picocolors'
-import type { ResolvedConfig } from 'vite'
 import type { GlobalContext } from '../runtime/globalContext.js'
-
-function resolveBaseFromResolvedConfig(
-  baseServer: string | null,
-  baseAssets: string | null,
-  config: ResolvedConfig
-): {
-  baseServer: string
-  baseAssets: string
-} {
-  let baseViteOriginal: unknown = (config as Record<string, unknown>)._baseViteOriginal
-  assert(baseViteOriginal === null || typeof baseViteOriginal == 'string')
-  return resolveBase(baseViteOriginal, baseServer, baseAssets)
-}
 
 type BaseUrlsResolved = {
   baseServer: string

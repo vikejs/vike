@@ -1,7 +1,7 @@
 export { baseUrls }
 
-import type { Plugin } from 'vite'
-import { resolveBase, resolveBaseFromResolvedConfig } from '../../shared/resolveBase.js'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { resolveBase } from '../../shared/resolveBase.js'
 import { assert } from '../utils.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 
@@ -48,4 +48,17 @@ function baseUrls(): Plugin {
       */
     }
   }
+}
+
+function resolveBaseFromResolvedConfig(
+  baseServer: string | null,
+  baseAssets: string | null,
+  config: ResolvedConfig
+): {
+  baseServer: string
+  baseAssets: string
+} {
+  let baseViteOriginal: unknown = (config as Record<string, unknown>)._baseViteOriginal
+  assert(baseViteOriginal === null || typeof baseViteOriginal == 'string')
+  return resolveBase(baseViteOriginal, baseServer, baseAssets)
 }
