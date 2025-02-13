@@ -1,20 +1,12 @@
 export { resolveBase }
-export { resolveBaseRuntime }
+export type { BaseUrlsResolved }
 
 import { assert, assertUsage, isBaseServer, isBaseAssets } from './utils.js'
 import pc from '@brillout/picocolors'
-import type { GlobalContextInternal } from '../runtime/globalContext.js'
 
 type BaseUrlsResolved = {
   baseServer: string
   baseAssets: string
-}
-
-function resolveBaseRuntime(globalContext: GlobalContextInternal) {
-  const baseViteOriginal = globalContext.viteConfigRuntime._baseViteOriginal
-  const baseServerUnresolved = globalContext.config.baseServer ?? null
-  const baseAssetsUnresolved = globalContext.config.baseAssets ?? null
-  return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
 }
 
 function resolveBase(

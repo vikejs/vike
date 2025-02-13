@@ -62,6 +62,7 @@ import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
+import { resolveBase, type BaseUrlsResolved } from '../shared/resolveBase.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -86,7 +87,10 @@ const globalObject = getGlobalObject<
   } & ReturnType<typeof getInitialGlobalContext>
 >('globalContext.ts', getInitialGlobalContext())
 
-type GlobalContextPublic = Pick<GlobalContext, 'assetsManifest' | 'config' | 'viteConfig' | 'pages'>
+type GlobalContextPublic = Pick<
+  GlobalContext,
+  'assetsManifest' | 'config' | 'viteConfig' | 'pages' | 'baseAssets' | 'baseServer'
+>
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
 type GlobalContextInternal = GlobalContext & {
   globalContext_public: GlobalContextPublic
@@ -97,7 +101,8 @@ type GlobalContext = {
   }
   config: ConfigUserFriendly['config']
   pages: PageConfigsUserFriendly
-} & PageRuntimeInfo &
+} & BaseUrlsResolved &
+  PageRuntimeInfo &
   (
     | {
         isProduction: false
@@ -173,11 +178,13 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
 }
 
 function makePublic(globalContext: GlobalContext): GlobalContextPublic {
-  const globalContextPublic = makePublicCopy(globalContext, 'globalContext', [
+  const globalContextPublic: GlobalContextPublic = makePublicCopy(globalContext, 'globalContext', [
     'assetsManifest',
     'config',
     'viteConfig',
-    'pages'
+    'pages',
+    'baseServer',
+    'baseAssets'
   ])
   return globalContextPublic
 }
@@ -311,7 +318,8 @@ function resolveGlobalContext(): GlobalContext | null {
       viteDevServer,
       viteConfig,
       ...userFiles,
-      viteConfigRuntime
+      viteConfigRuntime,
+      ...resolveBaseRuntime(viteConfigRuntime, userFiles.config)
     }
   } else {
     // Requires globalObject.buildEntry
@@ -326,7 +334,8 @@ function resolveGlobalContext(): GlobalContext | null {
       ...userFiles,
       viteDevServer: null,
       viteConfigRuntime: buildInfo.viteConfigRuntime,
-      usesClientRouter: buildInfo.usesClientRouter
+      usesClientRouter: buildInfo.usesClientRouter,
+      ...resolveBaseRuntime(buildInfo.viteConfigRuntime, userFiles.config)
     }
     if (isPrerendering) {
       assert(viteConfig)
@@ -535,4 +544,11 @@ function getInitialGlobalContext() {
     viteDevServerPromise,
     viteDevServerPromiseResolve
   }
+}
+
+function resolveBaseRuntime(viteConfigRuntime: BuildInfo['viteConfigRuntime'], config: GlobalContext['config']) {
+  const baseViteOriginal = viteConfigRuntime._baseViteOriginal
+  const baseServerUnresolved = config.baseServer ?? null
+  const baseAssetsUnresolved = config.baseAssets ?? null
+  return resolveBase(baseViteOriginal, baseServerUnresolved, baseAssetsUnresolved)
 }

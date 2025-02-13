@@ -25,7 +25,6 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
-import { resolveBaseRuntime } from '../../shared/resolveBase.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -181,7 +180,7 @@ async function getPageContextInitEnhanced(
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const { baseServer, baseAssets } = resolveBaseRuntime(globalContext)
+  const { baseServer, baseAssets } = globalContext
   const pageContextInitEnhanced = {}
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {

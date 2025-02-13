@@ -62,7 +62,6 @@ import { resolveRedirects } from './renderPage/resolveRedirects.js'
 import { PageContextBuiltInServerInternal } from '../../shared/types.js'
 import type { PageFile } from '../../shared/getPageFiles.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
-import { resolveBaseRuntime } from '../shared/resolveBase.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
@@ -526,7 +525,7 @@ async function normalizeUrl(
   globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
-  const { baseServer } = resolveBaseRuntime(globalContext)
+  const { baseServer } = globalContext
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
   const { urlOriginal } = pageContextInit
@@ -550,7 +549,7 @@ async function getPermanentRedirect(
   globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
-  const { baseServer } = resolveBaseRuntime(globalContext)
+  const { baseServer } = globalContext
   const urlWithoutBase = removeBaseServer(pageContextInit.urlOriginal, baseServer)
   let origin: null | string = null
   let urlTargetExternal: null | string = null
@@ -579,7 +578,7 @@ async function getPermanentRedirect(
       }
     }
     if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
-    const { baseServer } = resolveBaseRuntime(globalContext)
+    const { baseServer } = globalContext
     if (!originChanged) urlTarget = prependBase(urlTarget, baseServer)
     assert(urlTarget !== pageContextInit.urlOriginal)
   }
@@ -678,7 +677,7 @@ async function handleAbortError(
 }
 
 async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalContext: GlobalContextInternal) {
-  const { baseServer } = resolveBaseRuntime(globalContext)
+  const { baseServer } = globalContext
   const { urlOriginal } = pageContextInit
   const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
   const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
