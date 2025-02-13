@@ -160,12 +160,18 @@ function getPageConfigUserFriendly_public({
   pageConfigGlobalValues,
   pageConfigValues
 }: { pageConfigGlobalValues: ConfigValues; pageConfigValues: ConfigValues }) {
-  const res = getPageConfigUserFriendly_base({ pageConfigGlobalValues, pageConfigValues })
+  const pageConfigUserFriendly = getPageConfigUserFriendly_base({ pageConfigGlobalValues, pageConfigValues })
+  return getPublicCopy(pageConfigUserFriendly)
+}
+function getPublicCopy(
+  pageConfigUserFriendly: ReturnType<typeof getPageConfigUserFriendly_V1Design>
+): PageConfigUserFriendly {
+  const p = pageConfigUserFriendly
   return {
-    config: res.config,
-    _source: res.source,
-    _sources: res.sources,
-    _from: res.from
+    config: p.config,
+    _source: p.source,
+    _sources: p.sources,
+    _from: p.from
   }
 }
 function getPageConfigUserFriendly_base({
@@ -179,13 +185,8 @@ function getPageConfigUserFriendly_base({
 function getPageConfigGlobalUserFriendly({
   pageConfigGlobalValues
 }: { pageConfigGlobalValues: ConfigValues }): PageConfigUserFriendly {
-  const res = getPageConfigUserFriendly_V1Design({ configValues: pageConfigGlobalValues })
-  return {
-    config: res.config,
-    _source: res.source,
-    _sources: res.sources,
-    _from: res.from
-  }
+  const pageConfigGlobalUserFriendly = getPageConfigUserFriendly_V1Design({ configValues: pageConfigGlobalValues })
+  return getPublicCopy(pageConfigGlobalUserFriendly)
 }
 
 function getPageConfigUserFriendly_oldDesign(
