@@ -141,9 +141,14 @@ type PageConfigsUserFriendly = Record<
   PageConfigUserFriendlyWithRoute
 >
 type WithRoute =
-  | { route: string | Function; isErrorPage?: undefined }
-  //
-  | { route?: undefined; isErrorPage?: true }
+  | {
+      route: string | Function
+      isErrorPage?: undefined
+    }
+  | {
+      route?: undefined
+      isErrorPage?: true
+    }
 type PageConfigUserFriendlyWithRoute = PageConfigUserFriendly & WithRoute
 function getPageConfigUserFriendly(
   pageConfigGlobalValues: ConfigValues,
