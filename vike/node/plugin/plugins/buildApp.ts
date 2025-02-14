@@ -11,6 +11,9 @@ import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
 
 function buildApp(): Plugin[] {
   let config: ResolvedConfig
+  // `builder.buildApp` can be overriden by another plugin e.g vike-vercel https://github.com/vikejs/vike/pull/2184#issuecomment-2659425195
+  // In that case, we should'nt `forceExit`.
+  let forceExit = false
 
   return [
     {
@@ -26,6 +29,11 @@ function buildApp(): Plugin[] {
               assert(builder.environments.ssr)
               await builder.build(builder.environments.client)
               await builder.build(builder.environments.ssr)
+
+              if (forceExit) {
+                runPrerender_forceExit()
+                assert(false)
+              }
             }
           },
           environments: {
@@ -65,11 +73,8 @@ function buildApp(): Plugin[] {
 
         const configInline = getFullBuildInlineConfig(config)
 
-        const { forceExit } = await runPrerenderFromAutoRun(configInline, config)
-        if (forceExit) {
-          runPrerender_forceExit()
-          assert(false)
-        }
+        const res = await runPrerenderFromAutoRun(configInline, config)
+        forceExit = res.forceExit
       }
     }
   ]

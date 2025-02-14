@@ -100,6 +100,9 @@ function buildConfig(): Plugin[] {
     {
       name: 'vike:buildConfig:pre',
       apply: 'build',
+      applyToEnvironment(env) {
+        return env.name === 'ssr'
+      },
       // Make sure other writeBundle() hooks are called after this writeBundle() hook.
       //  - set_ASSETS_MANIFEST() needs to be called before dist/server/ code is executed.
       //    - For example, the writeBundle() hook of vite-plugin-vercel needs to be called after this writeBundle() hook, otherwise: https://github.com/vikejs/vike/issues/1527
