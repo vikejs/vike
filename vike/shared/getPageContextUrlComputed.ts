@@ -94,9 +94,14 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   // Reproduction: https://github.com/vikejs/vike/discussions/1436#discussioncomment-8142023
 
   // Determine logical URL
-  // TODO/soon: revert https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
   const assertUrlResolved = (src: number) =>
-    assert(urlResolved && typeof urlResolved === 'string', { src, urlResolved })
+    assert(
+      urlResolved && typeof urlResolved === 'string',
+      // TODO/eventually: remove debug logs, see:
+      // - https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
+      // - https://github.com/vikejs/vike/commit/5c7810f3080ab62536950f26e019bb2a3a517082
+      { src, urlResolved }
+    )
   let urlResolved: string
   let baseToBeRemoved: boolean
   if (pageContext.urlLogical) {
