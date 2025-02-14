@@ -113,7 +113,7 @@ let asyncHookWrapper = async <PageContext>(_httpRequestId: number, ret: () => Pr
   pageContextReturn: await ret()
 })
 // Add node:async_hooks wrapper
-const renderPage_addWrapper = (wrapper: typeof asyncHookWrapper) => {
+function renderPage_addWrapper(wrapper: typeof asyncHookWrapper) {
   asyncHookWrapper = wrapper
 }
 
