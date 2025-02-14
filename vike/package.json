@@ -101,7 +101,7 @@
       "edge-light": "./dist/esm/shared/universal-middleware.js",
       "require": "./dist/cjs/shared/universal-middleware.js",
       "node": "./dist/esm/shared/universal-middleware.js",
-      "browser": "./dist/esm/shared/universal-middleware.js",
+      "browser": "./dist/esm/client/node.js",
       "types": "./dist/esm/shared/universal-middleware.d.ts",
       "default": "./dist/esm/shared/universal-middleware.js"
     },
