@@ -15,7 +15,7 @@ import { assert, assertUsage, getGlobalObject, isObject, toPosixPath } from './u
 import pc from '@brillout/picocolors'
 import { clearGlobalContext } from '../runtime/globalContext.js'
 
-const globalObject = getGlobalObject<{ root?: string }>('prepareViteApiCall.ts', {})
+const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.ts', {})
 
 async function prepareViteApiCall(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
   clear()

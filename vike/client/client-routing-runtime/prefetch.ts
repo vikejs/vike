@@ -40,7 +40,7 @@ import pc from '@brillout/picocolors'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 
 assertClientRouting()
-const globalObject = getGlobalObject('prefetch.ts', {
+const globalObject = getGlobalObject('client-routing-runtime/prefetch.ts', {
   linkPrefetchHandlerAdded: new WeakSet<HTMLElement>(),
   addLinkPrefetchHandlers_debounce: null as null | ReturnType<typeof setTimeout>,
   mutationObserver: new MutationObserver(addLinkPrefetchHandlers),

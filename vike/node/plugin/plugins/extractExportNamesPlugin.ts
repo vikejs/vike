@@ -10,7 +10,7 @@ import { normalizeId } from '../shared/normalizeId.js'
 import { viteIsSSR_options } from '../shared/viteIsSSR.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debug = createDebugger('vike:extractExportNames')
-const globalObject = getGlobalObject<{ usesClientRouter?: true }>('extractExportNamesPlugin.ts', {})
+const globalObject = getGlobalObject<{ usesClientRouter?: true }>('plugins/extractExportNamesPlugin.ts', {})
 
 function extractExportNamesPlugin(): Plugin {
   let isDev = false

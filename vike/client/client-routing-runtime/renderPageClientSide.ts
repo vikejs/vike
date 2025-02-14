@@ -65,7 +65,7 @@ const globalObject = getGlobalObject<{
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
-  'renderPageClientSide.ts',
+  'client-routing-runtime/renderPageClientSide.ts',
   (() => {
     const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
     return {

@@ -33,7 +33,10 @@ import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
-const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>('router/getPageContext.ts', {})
+const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
+  'client-routing-runtime/getPageContextFromHooks.ts',
+  {}
+)
 
 // TODO/eventually: rename
 type PageContext = {

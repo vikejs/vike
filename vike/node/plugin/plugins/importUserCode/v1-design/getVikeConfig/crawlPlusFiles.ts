@@ -26,7 +26,7 @@ const execA = promisify(exec)
 const debug = createDebugger('vike:crawl')
 
 assertIsNotProductionRuntime()
-assertIsSingleModuleInstance('crawlPlusFiles.ts')
+assertIsSingleModuleInstance('getVikeConfig/crawlPlusFiles.ts')
 let gitIsNotUsable = false
 
 async function crawlPlusFiles(

@@ -26,7 +26,7 @@ const setup = getGlobalObject<{
   isPrerendering?: true
   // Calling Vite's `createServer()` (i.e. `createDevMiddleware()`) is enough for `setup.isViteDev` to be `true`, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
   isViteDev?: boolean
-}>('utils/assertIsNotProductionRuntime.ts', {})
+}>('utils/assertSetup.ts', {})
 
 // Called by Vike modules that want to ensure that they aren't loaded by the server runtime in production
 function assertIsNotProductionRuntime(): void | undefined {

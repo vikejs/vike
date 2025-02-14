@@ -9,7 +9,7 @@ import {
   getPropAccessNotation
 } from '../server-routing-runtime/utils.js'
 import { notSerializable } from '../../shared/notSerializable.js'
-const globalObject = getGlobalObject<{ prev?: string }>('getPageContextProxyForUser.ts', {})
+const globalObject = getGlobalObject<{ prev?: string }>('shared/getPageContextProxyForUser.ts', {})
 
 type PageContextForPassToClientWarning = {
   _hasPageContextFromServer: boolean

@@ -11,7 +11,7 @@ import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { assert, assertUsage, getGlobalObject, isObject } from './utils.js'
 
 initHistoryState() // we redundantly call initHistoryState() to ensure it's called early
-const globalObject = getGlobalObject('history.ts', { previous: getHistoryInfo() })
+const globalObject = getGlobalObject('client-routing-runtime/history.ts', { previous: getHistoryInfo() })
 
 type StateEnhanced = {
   timestamp: number

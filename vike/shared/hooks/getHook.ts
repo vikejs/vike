@@ -21,7 +21,7 @@ import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
-const globalObject = getGlobalObject<{ isPrerendering?: true }>('getHook.ts', {})
+const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
 type Hook = HookLoc & { hookFn: HookFn; hookTimeout: HookTimeout }
 type HookLoc = {
