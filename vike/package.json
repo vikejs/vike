@@ -212,6 +212,9 @@
       "modifyUrl": [
         "./dist/esm/shared/modifyUrl.d.ts"
       ],
+      "universal-middleware": [
+        "./dist/esm/shared/universal-middleware.d.ts"
+      ],
       "__internal": [
         "./dist/esm/__internal/index.d.ts"
       ],
@@ -244,7 +247,8 @@
     "./RenderErrorPage.js",
     "./routing.js",
     "./server.js",
-    "./types.js"
+    "./types.js",
+    "./universal-middleware.js"
   ],
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",
