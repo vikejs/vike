@@ -1,4 +1,4 @@
-import { renderPage } from '../node/runtime/index.js'
+import { renderPage } from './index.js'
 
 export default async function universalVikeHandler(request: Request, context: any, runtime: any) {
   const pageContextInit = { ...context, ...runtime, urlOriginal: request.url, headersOriginal: request.headers }
