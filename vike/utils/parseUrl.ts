@@ -16,7 +16,6 @@ export { isBaseServer }
 export { assertUrlComponents }
 export { createUrlFromComponents }
 export type { UrlPublic }
-export type { UrlPrivate }
 
 import { slice } from './slice.js'
 import { assert, assertUsage } from './assert.js'
@@ -54,8 +53,8 @@ type UrlPublic = {
   /** @deprecated */
   searchString: null | string
 }
-type UrlPrivate = Omit<UrlPublic, 'hashString' | 'searchString'> & { hasBaseServer: boolean }
 
+type UrlPrivate = Omit<UrlPublic, 'hashString' | 'searchString'> & { hasBaseServer: boolean }
 function parseUrl(url: string, baseServer: string): UrlPrivate {
   assert(isUrl(url), url)
   assert(baseServer.startsWith('/'))
