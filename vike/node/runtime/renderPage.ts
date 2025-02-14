@@ -121,20 +121,11 @@ async function renderPageAndPrepare(
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
   // Invalid config
-  const handleInvalidConfig = (err: unknown) => {
-    logRuntimeInfo?.(
-      pc.bold(pc.red('Error while loading a Vike config file, see error above.')),
-      httpRequestId,
-      'error'
-    )
-    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
-    return pageContextWithError
-  }
   if (isConfigInvalid) {
     if (
       1 < 2 // Make TS happy
     ) {
-      return handleInvalidConfig(isConfigInvalid.err)
+      return renderInvalidConfig(isConfigInvalid.err, pageContextInit, httpRequestId)
     }
   }
 
@@ -153,7 +144,7 @@ async function renderPageAndPrepare(
     return pageContextWithError
   }
   if (isConfigInvalid) {
-    return handleInvalidConfig(isConfigInvalid.err)
+    return renderInvalidConfig(isConfigInvalid.err, pageContextInit, httpRequestId)
   } else {
     // From now on, globalContext contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
@@ -697,4 +688,10 @@ function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
   if (urlPathnameWithBase.endsWith('/favicon.ico')) return getPageContextHttpResponseFavicon404(pageContextInit)
   return null
+}
+
+function renderInvalidConfig(err: unknown, pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  logRuntimeInfo?.(pc.bold(pc.red('Error while loading a Vike config file, see error above.')), httpRequestId, 'error')
+  const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
+  return pageContextWithError
 }
