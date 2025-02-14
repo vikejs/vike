@@ -3,7 +3,7 @@ export { handlePageContextRequestUrl }
 import { pageContextJsonFileExtension, doNotCreateExtraDirectory } from '../../../shared/getPageContextRequestUrl.js'
 import { baseServer, parseUrl, assert, slice } from '../utils.js'
 
-// See shared/getPageContextRequestUrl.ts
+// See also shared/getPageContextRequestUrl.ts
 function handlePageContextRequestUrl(url: string): {
   urlWithoutPageContextRequestSuffix: string
   isPageContextRequest: boolean
