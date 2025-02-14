@@ -1,4 +1,5 @@
 - `TODO/now`
+- `getGlobalContext()`
 - make scripts/dev.js work
 - Add CLI option `--host`?
 - Prettify build error
