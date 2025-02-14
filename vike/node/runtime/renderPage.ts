@@ -1,5 +1,5 @@
 export { renderPage }
-export { renderPage_addWrapper }
+export { renderPage_addAsyncHookwrapper }
 
 import {
   getPageContextInitEnhanced,
@@ -113,7 +113,7 @@ let asyncHookWrapper = async <PageContext>(_httpRequestId: number, ret: () => Pr
   pageContextReturn: await ret()
 })
 // Add node:async_hooks wrapper
-function renderPage_addWrapper(wrapper: typeof asyncHookWrapper) {
+function renderPage_addAsyncHookwrapper(wrapper: typeof asyncHookWrapper) {
   asyncHookWrapper = wrapper
 }
 
