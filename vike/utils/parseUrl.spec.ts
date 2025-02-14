@@ -6,7 +6,7 @@ describe('parseUrl', () => {
   it('basics', () => {
     expect(parseUrl('/', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -23,7 +23,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/hello', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -43,7 +43,7 @@ describe('parseUrl', () => {
   it('Base URL', () => {
     expect(parseUrl('/base', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -60,7 +60,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/base/', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -77,7 +77,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/base', '/base/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -94,7 +94,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('https://example.org/base', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -111,7 +111,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('https://example.org/base/', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -128,7 +128,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('https://example.org/base', '/base/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -145,7 +145,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/base/hello', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -162,7 +162,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/hello', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": false,
+        "isBaseMissing": true,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -179,7 +179,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/base/hello', '/base/nested')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": false,
+        "isBaseMissing": true,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -199,7 +199,7 @@ describe('parseUrl', () => {
   it('origin', () => {
     expect(parseUrl('https://example.org/', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -216,7 +216,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('http://example.org/', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -233,7 +233,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('http://example.org', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -250,7 +250,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('http://example.org/base/hello', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -269,7 +269,7 @@ describe('parseUrl', () => {
     // Port
     expect(parseUrl('http://localhost:3000/base/hello', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "localhost",
@@ -286,7 +286,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('https://example.org:0', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -306,7 +306,7 @@ describe('parseUrl', () => {
   it('hash', () => {
     expect(parseUrl('/#reviews', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "reviews",
         "hashOriginal": "#reviews",
         "hostname": null,
@@ -323,7 +323,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/#', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": "#",
         "hostname": null,
@@ -340,7 +340,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -357,7 +357,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/a/b#', '/a/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": "#",
         "hostname": null,
@@ -377,7 +377,7 @@ describe('parseUrl', () => {
   it('search', () => {
     expect(parseUrl('/?q=apples', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -400,7 +400,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/shop?fruits=apples&candies=chocolate,lollipop', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -443,7 +443,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl(`/shop${searchQuery}`, '/shop')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -482,7 +482,7 @@ describe('parseUrl', () => {
     {
       expect(parseUrl('/user/@rom', '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "",
           "hashOriginal": null,
           "hostname": null,
@@ -500,7 +500,7 @@ describe('parseUrl', () => {
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl('/user/%40rom', '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "",
           "hashOriginal": null,
           "hostname": null,
@@ -520,7 +520,7 @@ describe('parseUrl', () => {
       assert(decodeURI('%2F') === '%2F')
       expect(parseUrl(`/r${encodeURIComponent('/')}om`, '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "",
           "hashOriginal": null,
           "hostname": null,
@@ -541,7 +541,7 @@ describe('parseUrl', () => {
     {
       expect(parseUrl('/#@reviews', '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "@reviews",
           "hashOriginal": "#@reviews",
           "hostname": null,
@@ -559,7 +559,7 @@ describe('parseUrl', () => {
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl(`/#%40reviews`, '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "@reviews",
           "hashOriginal": "#%40reviews",
           "hostname": null,
@@ -580,7 +580,7 @@ describe('parseUrl', () => {
     {
       expect(parseUrl('/?section=@reviews', '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "",
           "hashOriginal": null,
           "hostname": null,
@@ -604,7 +604,7 @@ describe('parseUrl', () => {
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl(`/?section=%40reviews`, '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "",
           "hashOriginal": null,
           "hostname": null,
@@ -638,7 +638,7 @@ describe('parseUrl', () => {
       assert(encodeURIComponent('%') === '%25')
       expect(parseUrl('/user/%25rom', '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "",
           "hashOriginal": null,
           "hostname": null,
@@ -655,7 +655,7 @@ describe('parseUrl', () => {
       `)
       expect(parseUrl('/user/%rom', '/')).toMatchInlineSnapshot(`
         {
-          "isBaseMissing": true,
+          "isBaseMissing": false,
           "hash": "",
           "hashOriginal": null,
           "hostname": null,
@@ -676,7 +676,7 @@ describe('parseUrl', () => {
   it('edge cases', () => {
     expect(parseUrl('/product/ö', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -693,7 +693,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/product/%C3%B6', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -710,7 +710,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/product/แจ็คเก็ตเดนิม', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -730,7 +730,7 @@ describe('parseUrl', () => {
     // Remove trailing white space
     expect(parseUrl('/ab ', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -749,7 +749,7 @@ describe('parseUrl', () => {
     assert(encodeURIComponent(' ') === '%20')
     expect(parseUrl('/ab%20', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -766,7 +766,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/a b', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -783,7 +783,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('/a%20b', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -803,7 +803,7 @@ describe('parseUrl', () => {
     assert(encodeURIComponent('?') === '%3F')
     expect(parseUrl('/a%23/b%3Fc', '/a%23')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -824,7 +824,7 @@ describe('parseUrl', () => {
 
     expect(parseUrl('/a//b', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -841,7 +841,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('http://example.org//', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "example.org",
@@ -858,7 +858,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('//', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -875,7 +875,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('///', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -894,7 +894,7 @@ describe('parseUrl', () => {
     // #495
     expect(parseUrl('///en/?redirect_zone=ru', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -920,7 +920,7 @@ describe('parseUrl', () => {
   it('missing pathname', () => {
     expect(parseUrl('?a=b', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -943,7 +943,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('#a', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "a",
         "hashOriginal": "#a",
         "hostname": null,
@@ -960,7 +960,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -978,7 +978,7 @@ describe('parseUrl', () => {
     assert(new URL('', 'http://fake.org/base').pathname === '/base')
     expect(parseUrl('', '/base')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1003,7 +1003,7 @@ describe('parseUrl', () => {
       )
     ).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "âge",
         "hashOriginal": "#%C3%A2ge",
         "hostname": "example.com",
@@ -1030,7 +1030,7 @@ describe('parseUrl', () => {
   it('tauri', () => {
     expect(parseUrl('tauri://localhost/', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "localhost",
@@ -1047,7 +1047,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('tauri://localhost', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "localhost",
@@ -1064,7 +1064,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('tauri://localhost/somePath', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "localhost",
@@ -1085,7 +1085,7 @@ describe('parseUrl', () => {
   it('capacitor', () => {
     expect(parseUrl('capacitor://localhost/assets/chunks/chunk-v3mOCch-.js', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "localhost",
@@ -1106,7 +1106,7 @@ describe('parseUrl', () => {
     // Shouldn't this resolve to `{ pathname: '/b1/b2' }`? I don't remember why I used to be fine with following test.
     expect(parseUrl('.', '/b1/b2/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1123,7 +1123,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('..', '/b1/b2/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": false,
+        "isBaseMissing": true,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1140,7 +1140,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('../../', '/b1/b2/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": false,
+        "isBaseMissing": true,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1157,7 +1157,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('./markdown', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1179,7 +1179,7 @@ describe('parseUrl', () => {
     globalThis.window = { document: { baseURI: 'http://100.115.92.194:3000/?q=any' } }
     expect(parseUrl('?q=any', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1204,7 +1204,7 @@ describe('parseUrl', () => {
     globalThis.window = { document: { baseURI: 'http://localhost:3000/' } }
     expect(parseUrl('./markdown', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1223,7 +1223,7 @@ describe('parseUrl', () => {
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/deep/path' } }
     expect(parseUrl('./markdown', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1242,7 +1242,7 @@ describe('parseUrl', () => {
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/deep/' } }
     expect(parseUrl('..//bla', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1261,7 +1261,7 @@ describe('parseUrl', () => {
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/very/deep/' } }
     expect(parseUrl('../../../../bla', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1280,7 +1280,7 @@ describe('parseUrl', () => {
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/dir' } }
     expect(parseUrl('', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": null,
@@ -1297,7 +1297,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('#', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": "#",
         "hostname": null,
@@ -1316,7 +1316,7 @@ describe('parseUrl', () => {
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/dir?some=param' } }
     expect(parseUrl('#', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": "#",
         "hostname": null,
@@ -1344,7 +1344,7 @@ describe('parseUrl', () => {
   it('IPV6', () => {
     expect(parseUrl('http://[::1]:3000/', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": "",
         "hashOriginal": null,
         "hostname": "[::1]",
@@ -1361,7 +1361,7 @@ describe('parseUrl', () => {
     `)
     expect(parseUrl('https://[::1]:3000/bla#:', '/')).toMatchInlineSnapshot(`
       {
-        "isBaseMissing": true,
+        "isBaseMissing": false,
         "hash": ":",
         "hashOriginal": "#:",
         "hostname": "[::1]",

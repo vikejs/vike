@@ -287,7 +287,7 @@ function removeBaseServer(
 
   if (baseServer === '/') {
     const pathname = pathnameAbsoluteWithBase
-    return { pathname, isBaseMissing: true }
+    return { pathname, isBaseMissing: false }
   }
 
   // Support `url === '/some-base-url' && baseServer === '/some-base-url/'`
@@ -299,7 +299,7 @@ function removeBaseServer(
 
   if (!urlPathname.startsWith(baseServerNormalized)) {
     const pathname = pathnameAbsoluteWithBase
-    return { pathname, isBaseMissing: false }
+    return { pathname, isBaseMissing: true }
   }
   assert(urlPathname.startsWith('/') || urlPathname.startsWith('http'))
   assert(urlPathname.startsWith(baseServerNormalized))
@@ -307,7 +307,7 @@ function removeBaseServer(
   if (!urlPathname.startsWith('/')) urlPathname = '/' + urlPathname
 
   assert(urlPathname.startsWith('/'))
-  return { pathname: urlPathname, isBaseMissing: true }
+  return { pathname: urlPathname, isBaseMissing: false }
 }
 function isBaseServer(baseServer: string): boolean {
   return baseServer.startsWith('/')

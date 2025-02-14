@@ -686,7 +686,7 @@ async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalCon
   const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
   const { isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
   assertUsage(
-    isBaseMissing,
+    !isBaseMissing,
     `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
       `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
     )} which doesn't start with Base URL ${pc.code(baseServer)} (https://vike.dev/base-url)`
