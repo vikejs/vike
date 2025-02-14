@@ -108,9 +108,11 @@ async function renderPage<
   return pageContextReturn as any
 }
 
+// Fallback wrapper if node:async_hooks isn't available
 let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
   pageContextReturn: await ret()
 })
+// Add node:async_hooks wrapper
 const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
   renderPage_wrapper = wrapper
 }
