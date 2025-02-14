@@ -107,13 +107,6 @@ async function renderPage<
   return pageContextReturn as any
 }
 
-function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
-  const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
-  assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
-  if (urlPathnameWithBase.endsWith('/favicon.ico')) return getPageContextHttpResponseFavicon404(pageContextInit)
-  return null
-}
-
 // Fallback wrapper if node:async_hooks isn't available
 let asyncHookWrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
   pageContextReturn: await ret()
@@ -697,4 +690,11 @@ async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalCon
       `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
     )} which doesn't start with Base URL ${pc.code(baseServer)} (https://vike.dev/base-url)`
   )
+}
+
+function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
+  const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
+  assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
+  if (urlPathnameWithBase.endsWith('/favicon.ico')) return getPageContextHttpResponseFavicon404(pageContextInit)
+  return null
 }
