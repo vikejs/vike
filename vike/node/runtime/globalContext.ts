@@ -226,8 +226,10 @@ function getViteConfig(): ResolvedConfig | null {
 
 async function initGlobalContext_renderPage(): Promise<void> {
   debug('initGlobalContext_renderPage()')
-  // globalObject.isProduction isn't set upon production server without vike-server (there isn't any signal we can use)
+
+  // `globalObject.isProduction === undefined` when using production server without `vike-server`. (There isn't any reliable signal we can use to determine early whether the environement is production or development.)
   if (globalObject.isProduction === undefined) setIsProduction(true)
+
   await initGlobalContext()
 }
 

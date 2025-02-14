@@ -1,5 +1,5 @@
 export { renderPage }
-export { renderPage_addWrapper }
+export { renderPage_addAsyncHookwrapper }
 
 import {
   getPageContextInitEnhanced,
@@ -66,12 +66,6 @@ import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
 })
-let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
-  pageContextReturn: await ret()
-})
-const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
-  renderPage_wrapper = wrapper
-}
 
 type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextBuiltInServerInternal>
 
@@ -103,7 +97,7 @@ async function renderPage<
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, httpRequestId)
 
-  const { pageContextReturn } = await renderPage_wrapper(httpRequestId, () =>
+  const { pageContextReturn } = await asyncHookWrapper(httpRequestId, () =>
     renderPageAndPrepare(pageContextInit, httpRequestId)
   )
 
@@ -113,6 +107,16 @@ async function renderPage<
   assert(pageContextReturn.httpResponse)
   return pageContextReturn as any
 }
+
+// Fallback wrapper if node:async_hooks isn't available
+let asyncHookWrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
+  pageContextReturn: await ret()
+})
+// Add node:async_hooks wrapper
+function renderPage_addAsyncHookwrapper(wrapper: typeof asyncHookWrapper) {
+  asyncHookWrapper = wrapper
+}
+
 async function renderPageAndPrepare(
   pageContextInit: { urlOriginal: string } & Record<string, unknown>,
   httpRequestId: number
@@ -139,8 +143,11 @@ async function renderPageAndPrepare(
   try {
     await initGlobalContext_renderPage()
   } catch (err) {
-    // Errors are expected since assertUsage() is used in both initGlobalContext_renderPage() and getRenderContext().
-    // initGlobalContext_renderPage() and getRenderContext() don't call any user hooks => err isn't thrown from user code.
+    // Errors are expected since assertUsage() is used in initGlobalContext_renderPage() such as:
+    // ```bash
+    // Re-build your app (you're using 1.2.3 but your app was built with 1.2.2)
+    // ```
+    // initGlobalContext_renderPage() doens't call any user hook => err isn't thrown from user code.
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
     const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
