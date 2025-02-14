@@ -96,6 +96,15 @@
       "types": "./dist/esm/shared/modifyUrl.d.ts",
       "default": "./dist/esm/shared/modifyUrl.js"
     },
+    "./universal-middleware": {
+      "worker": "./dist/esm/shared/universal-middleware.js",
+      "edge-light": "./dist/esm/shared/universal-middleware.js",
+      "require": "./dist/cjs/shared/universal-middleware.js",
+      "node": "./dist/esm/shared/universal-middleware.js",
+      "browser": "./dist/esm/shared/universal-middleware.js",
+      "types": "./dist/esm/shared/universal-middleware.d.ts",
+      "default": "./dist/esm/shared/universal-middleware.js"
+    },
     "./__internal": {
       "require": "./dist/cjs/__internal/index.js",
       "node": "./dist/esm/__internal/index.js",
