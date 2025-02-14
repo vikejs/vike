@@ -89,12 +89,8 @@ async function renderPage<
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   onSetupRuntime()
   assertIsUrl(pageContextInit.urlOriginal)
-  {
-    const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
-    assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
-    if (urlPathnameWithBase.endsWith('/favicon.ico'))
-      return getPageContextHttpResponseFavicon404(pageContextInit) as any
-  }
+  const pageContextInvalidRequest = renderInvalidRequest(pageContextInit)
+  if (pageContextInvalidRequest) return pageContextInvalidRequest as any
 
   const httpRequestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
@@ -109,6 +105,13 @@ async function renderPage<
   checkType<PageContextAfterRender>(pageContextReturn)
   assert(pageContextReturn.httpResponse)
   return pageContextReturn as any
+}
+
+function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
+  const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
+  assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
+  if (urlPathnameWithBase.endsWith('/favicon.ico')) return getPageContextHttpResponseFavicon404(pageContextInit)
+  return null
 }
 
 // Fallback wrapper if node:async_hooks isn't available
