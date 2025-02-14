@@ -1,6 +1,6 @@
-name: "✨ Feature Request"
+name: "✨ Feature"
 description: Request a new feature.
-labels: ["enhancement :sparkles:"]
+labels: ["enhancement :rocket:"]
 body:
   - type: textarea
     attributes:
