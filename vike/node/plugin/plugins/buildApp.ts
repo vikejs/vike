@@ -13,7 +13,7 @@ function buildApp(): Plugin[] {
   let config: ResolvedConfig
   // `buildApp` could be overriden by another plugin taking priority.
   // In that case, we should not `forceExit`.
-  let forceExit = false;
+  let forceExit = false
 
   return [
     {
