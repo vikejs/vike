@@ -54,8 +54,8 @@ function isSameAsCurrentUrl(href: string) {
 function hasBaseServer(href: string): boolean {
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
-  const { hasBaseServer } = parseUrl(href, baseServer)
-  return hasBaseServer
+  const { isBaseMissing } = parseUrl(href, baseServer)
+  return !isBaseMissing
 }
 
 function isDisableAutomaticLinkInterception(): boolean {

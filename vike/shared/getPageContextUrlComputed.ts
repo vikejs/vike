@@ -148,8 +148,8 @@ function urlGetter(this: PageContextUrlSource) {
 }
 function urlParsedGetter(this: PageContextUrlSource) {
   const {
-    // remove hasBaseServer as it isn't part of UrlPublic
-    hasBaseServer: _,
+    // remove isBaseMissing as it isn't part of UrlPublic
+    isBaseMissing: _,
     ...urlParsed
   } = getUrlParsed(this)
 

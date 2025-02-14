@@ -54,7 +54,7 @@ type UrlPublic = {
   searchString: null | string
 }
 
-type UrlInternal = Omit<UrlPublic, 'hashString' | 'searchString'> & { hasBaseServer: boolean }
+type UrlInternal = Omit<UrlPublic, 'hashString' | 'searchString'> & { isBaseMissing: boolean }
 function parseUrl(url: string, baseServer: string): UrlInternal {
   assert(isUrl(url), url)
   assert(baseServer.startsWith('/'))
@@ -87,7 +87,7 @@ function parseUrl(url: string, baseServer: string): UrlInternal {
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
 
   // Base URL
-  let { pathname, hasBaseServer } = removeBaseServer(pathnameAbsoluteWithBase, baseServer)
+  let { pathname, isBaseMissing } = removeBaseServer(pathnameAbsoluteWithBase, baseServer)
 
   // pageContext.urlParsed.href
   const href = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
@@ -108,7 +108,7 @@ function parseUrl(url: string, baseServer: string): UrlInternal {
     origin,
     pathname,
     pathnameOriginal: pathnameOriginal,
-    hasBaseServer,
+    isBaseMissing,
     search,
     searchAll,
     searchOriginal,
@@ -275,7 +275,7 @@ function resolveUrlPathnameRelative(pathnameRelative: string, base: string) {
 function removeBaseServer(
   pathnameAbsoluteWithBase: string,
   baseServer: string
-): { pathname: string; hasBaseServer: boolean } {
+): { pathname: string; isBaseMissing: boolean } {
   assert(pathnameAbsoluteWithBase.startsWith('/'))
   assert(isBaseServer(baseServer))
 
@@ -287,7 +287,7 @@ function removeBaseServer(
 
   if (baseServer === '/') {
     const pathname = pathnameAbsoluteWithBase
-    return { pathname, hasBaseServer: true }
+    return { pathname, isBaseMissing: false }
   }
 
   // Support `url === '/some-base-url' && baseServer === '/some-base-url/'`
@@ -299,7 +299,7 @@ function removeBaseServer(
 
   if (!urlPathname.startsWith(baseServerNormalized)) {
     const pathname = pathnameAbsoluteWithBase
-    return { pathname, hasBaseServer: false }
+    return { pathname, isBaseMissing: true }
   }
   assert(urlPathname.startsWith('/') || urlPathname.startsWith('http'))
   assert(urlPathname.startsWith(baseServerNormalized))
@@ -307,7 +307,7 @@ function removeBaseServer(
   if (!urlPathname.startsWith('/')) urlPathname = '/' + urlPathname
 
   assert(urlPathname.startsWith('/'))
-  return { pathname: urlPathname, hasBaseServer: true }
+  return { pathname: urlPathname, isBaseMissing: false }
 }
 function isBaseServer(baseServer: string): boolean {
   return baseServer.startsWith('/')
