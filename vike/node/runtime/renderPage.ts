@@ -66,12 +66,6 @@ import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
 })
-let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
-  pageContextReturn: await ret()
-})
-const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
-  renderPage_wrapper = wrapper
-}
 
 type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextBuiltInServerInternal>
 
@@ -113,6 +107,14 @@ async function renderPage<
   assert(pageContextReturn.httpResponse)
   return pageContextReturn as any
 }
+
+let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
+  pageContextReturn: await ret()
+})
+const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
+  renderPage_wrapper = wrapper
+}
+
 async function renderPageAndPrepare(
   pageContextInit: { urlOriginal: string } & Record<string, unknown>,
   httpRequestId: number
