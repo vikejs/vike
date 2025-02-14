@@ -1,7 +1,3 @@
 name: "✨ Polish"
 description: Docs unclear? Error message confusing? Feature hard to use? Let us know — we want Vike to be highly polished!
 labels: ["polish :sparkles:"]
-body:
-  - type: textarea
-    attributes:
-      label: Description
