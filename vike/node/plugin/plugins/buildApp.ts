@@ -11,6 +11,9 @@ import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
 
 function buildApp(): Plugin[] {
   let config: ResolvedConfig
+  // `buildApp` could be overriden by another plugin taking priority.
+  // In that case, we should not `forceExit`.
+  let forceExit = false;
 
   return [
     {
@@ -26,6 +29,11 @@ function buildApp(): Plugin[] {
               assert(builder.environments.ssr)
               await builder.build(builder.environments.client)
               await builder.build(builder.environments.ssr)
+
+              if (forceExit) {
+                runPrerender_forceExit()
+                assert(false)
+              }
             }
           },
           environments: {
@@ -65,11 +73,8 @@ function buildApp(): Plugin[] {
 
         const configInline = getFullBuildInlineConfig(config)
 
-        const { forceExit } = await runPrerenderFromAutoRun(configInline, config)
-        if (forceExit) {
-          runPrerender_forceExit()
-          assert(false)
-        }
+        const prerendered = await runPrerenderFromAutoRun(configInline, config)
+        forceExit = prerendered.forceExit
       }
     }
   ]
