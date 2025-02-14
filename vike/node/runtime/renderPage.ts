@@ -97,7 +97,7 @@ async function renderPage<
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
   logHttpRequest(urlOriginalPretty, httpRequestId)
 
-  const { pageContextReturn } = await renderPage_wrapper(httpRequestId, () =>
+  const { pageContextReturn } = await asyncHookWrapper(httpRequestId, () =>
     renderPageAndPrepare(pageContextInit, httpRequestId)
   )
 
@@ -109,12 +109,12 @@ async function renderPage<
 }
 
 // Fallback wrapper if node:async_hooks isn't available
-let renderPage_wrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
+let asyncHookWrapper = async <PageContext>(_httpRequestId: number, ret: () => Promise<PageContext>) => ({
   pageContextReturn: await ret()
 })
 // Add node:async_hooks wrapper
-const renderPage_addWrapper = (wrapper: typeof renderPage_wrapper) => {
-  renderPage_wrapper = wrapper
+const renderPage_addWrapper = (wrapper: typeof asyncHookWrapper) => {
+  asyncHookWrapper = wrapper
 }
 
 async function renderPageAndPrepare(
