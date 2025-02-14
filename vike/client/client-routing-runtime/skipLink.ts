@@ -14,7 +14,7 @@ function skipLink(linkTag: HTMLElement): boolean {
     isUrlExternal(href) ||
     isSamePageHashLink(href) ||
     isNewTabLink(linkTag) ||
-    !hasBaseServer(href) ||
+    !isBaseMissing(href) ||
     // Purposely last because disableAutomaticLinkInterception will be removed in the next major release
     !isVikeLink(linkTag)
   )
@@ -51,11 +51,11 @@ function isSameAsCurrentUrl(href: string) {
   if (href.startsWith('#')) return href === window.location.hash
   return normalizeClientSideUrl(href) === normalizeClientSideUrl(window.location.href)
 }
-function hasBaseServer(href: string): boolean {
+function isBaseMissing(href: string): boolean {
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
-  const { hasBaseServer } = parseUrl(href, baseServer)
-  return hasBaseServer
+  const { isBaseMissing } = parseUrl(href, baseServer)
+  return isBaseMissing
 }
 
 function isDisableAutomaticLinkInterception(): boolean {

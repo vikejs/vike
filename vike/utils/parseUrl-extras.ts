@@ -33,8 +33,8 @@ function prependBase(url: string, baseServer: string): string {
 }
 
 function removeBaseServer(url: string, baseServer: string): string {
-  const { hasBaseServer, origin, pathname, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseServer)
-  assert(hasBaseServer)
+  const { isBaseMissing, origin, pathname, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseServer)
+  assert(isBaseMissing)
   assertUrlComponents(url, origin, pathnameOriginal, searchOriginal, hashOriginal)
   const urlWithoutBase = createUrlFromComponents(origin, pathname, searchOriginal, hashOriginal)
   return urlWithoutBase
