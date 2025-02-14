@@ -54,8 +54,8 @@ type UrlPublic = {
   searchString: null | string
 }
 
-type UrlPrivate = Omit<UrlPublic, 'hashString' | 'searchString'> & { hasBaseServer: boolean }
-function parseUrl(url: string, baseServer: string): UrlPrivate {
+type UrlInternal = Omit<UrlPublic, 'hashString' | 'searchString'> & { hasBaseServer: boolean }
+function parseUrl(url: string, baseServer: string): UrlInternal {
   assert(isUrl(url), url)
   assert(baseServer.startsWith('/'))
 
