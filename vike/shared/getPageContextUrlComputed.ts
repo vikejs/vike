@@ -103,21 +103,21 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
       { src, urlResolved }
     )
   let urlResolved: string
-  let baseToBeRemoved: boolean
+  let isBaseToBeRemoved: boolean
   if (pageContext.urlLogical) {
     // Set by onBeforeRoute()
     urlResolved = pageContext.urlLogical
-    baseToBeRemoved = false
+    isBaseToBeRemoved = false
     assertUrlResolved(1)
   } else if (pageContext._urlRewrite) {
     // Set by `throw render()`
     urlResolved = pageContext._urlRewrite
-    baseToBeRemoved = false
+    isBaseToBeRemoved = false
     assertUrlResolved(2)
   } else {
     // Set by renderPage()
     urlResolved = pageContext.urlOriginal
-    baseToBeRemoved = true
+    isBaseToBeRemoved = true
     assertUrlResolved(3)
   }
   assertUrlResolved(4)
@@ -131,7 +131,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   // - We assume there isn't any Base URL to the URLs set by the user at `throw render()` and onBeforeRoute()
   //   - This makes sense because the Base URL is merely a setting: ideally the user should write code that doesn't know anything about it (so that the user can remove/add/change Base URL without having to modify any code).
   // - pageContext.urlOriginal is the URL of the HTTP request and thus contains the Base URL.
-  const baseServer = !baseToBeRemoved ? '/' : pageContext._baseServer
+  const baseServer = !isBaseToBeRemoved ? '/' : pageContext._baseServer
 
   // Parse URL
   return parseUrl(urlResolved, baseServer)
