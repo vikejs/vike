@@ -96,6 +96,15 @@
       "types": "./dist/esm/shared/modifyUrl.d.ts",
       "default": "./dist/esm/shared/modifyUrl.js"
     },
+    "./universal-middleware": {
+      "worker": "./dist/esm/node/runtime/universal-middleware.js",
+      "edge-light": "./dist/esm/node/runtime/universal-middleware.js",
+      "require": "./dist/cjs/node/runtime/universal-middleware.js",
+      "node": "./dist/esm/node/runtime/universal-middleware.js",
+      "browser": "./dist/esm/client/node.js",
+      "types": "./dist/esm/node/runtime/universal-middleware.d.ts",
+      "default": "./dist/esm/node/runtime/universal-middleware.js"
+    },
     "./__internal": {
       "require": "./dist/cjs/__internal/index.js",
       "node": "./dist/esm/__internal/index.js",
@@ -203,6 +212,9 @@
       "modifyUrl": [
         "./dist/esm/shared/modifyUrl.d.ts"
       ],
+      "universal-middleware": [
+        "./dist/esm/node/runtime/universal-middleware.d.ts"
+      ],
       "__internal": [
         "./dist/esm/__internal/index.d.ts"
       ],
@@ -235,7 +247,8 @@
     "./RenderErrorPage.js",
     "./routing.js",
     "./server.js",
-    "./types.js"
+    "./types.js",
+    "./universal-middleware.js"
   ],
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",
