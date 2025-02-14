@@ -97,13 +97,13 @@
       "default": "./dist/esm/shared/modifyUrl.js"
     },
     "./universal-middleware": {
-      "worker": "./dist/esm/shared/universal-middleware.js",
-      "edge-light": "./dist/esm/shared/universal-middleware.js",
-      "require": "./dist/cjs/shared/universal-middleware.js",
-      "node": "./dist/esm/shared/universal-middleware.js",
+      "worker": "./dist/esm/node/runtime/universal-middleware.js",
+      "edge-light": "./dist/esm/node/runtime/universal-middleware.js",
+      "require": "./dist/cjs/node/runtime/universal-middleware.js",
+      "node": "./dist/esm/node/runtime/universal-middleware.js",
       "browser": "./dist/esm/client/node.js",
-      "types": "./dist/esm/shared/universal-middleware.d.ts",
-      "default": "./dist/esm/shared/universal-middleware.js"
+      "types": "./dist/esm/node/runtime/universal-middleware.d.ts",
+      "default": "./dist/esm/node/runtime/universal-middleware.js"
     },
     "./__internal": {
       "require": "./dist/cjs/__internal/index.js",
@@ -213,7 +213,7 @@
         "./dist/esm/shared/modifyUrl.d.ts"
       ],
       "universal-middleware": [
-        "./dist/esm/shared/universal-middleware.d.ts"
+        "./dist/esm/node/runtime/universal-middleware.d.ts"
       ],
       "__internal": [
         "./dist/esm/__internal/index.d.ts"
