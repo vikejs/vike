@@ -11,7 +11,7 @@ import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
 
 function buildApp(): Plugin[] {
   let config: ResolvedConfig
-  // `buildApp` could be overriden by another plugin taking priority.
+  // `builder.buildApp` can be overriden by another plugin taking priority.
   // In that case, we should not `forceExit`.
   let forceExit = false
 
@@ -73,8 +73,8 @@ function buildApp(): Plugin[] {
 
         const configInline = getFullBuildInlineConfig(config)
 
-        const prerendered = await runPrerenderFromAutoRun(configInline, config)
-        forceExit = prerendered.forceExit
+        const res = await runPrerenderFromAutoRun(configInline, config)
+        forceExit = res.forceExit
       }
     }
   ]
