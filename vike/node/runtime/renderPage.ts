@@ -673,8 +673,7 @@ async function handleAbortError(
 async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalContext: GlobalContextInternal) {
   const { baseServer } = globalContext
   const { urlOriginal } = pageContextInit
-  const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
-  const { isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
+  const { isBaseMissing } = parseUrl(urlOriginal, baseServer)
   assertUsage(
     !isBaseMissing,
     `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
