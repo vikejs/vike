@@ -87,8 +87,8 @@ async function renderPage<
 > {
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
-  onSetupRuntime()
   assertIsUrl(pageContextInit.urlOriginal)
+  onSetupRuntime()
   const pageContextInvalidRequest = renderInvalidRequest(pageContextInit)
   if (pageContextInvalidRequest) return pageContextInvalidRequest as any
 
