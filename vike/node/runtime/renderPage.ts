@@ -51,7 +51,7 @@ import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
 import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
 import { log404 } from './renderPage/log404/index.js'
-import { isConfigInvalid } from './renderPage/isConfigInvalid.js'
+import { isVikeConfigInvalid } from './renderPage/isVikeConfigInvalid.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.js'
@@ -121,11 +121,11 @@ async function renderPageAndPrepare(
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
   // Invalid config
-  if (isConfigInvalid) {
+  if (isVikeConfigInvalid) {
     if (
       1 < 2 // Make TS happy
     ) {
-      return renderInvalidVikeConfig(isConfigInvalid.err, pageContextInit, httpRequestId)
+      return renderInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
     }
   }
 
@@ -143,8 +143,8 @@ async function renderPageAndPrepare(
     const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
     return pageContextWithError
   }
-  if (isConfigInvalid) {
-    return renderInvalidVikeConfig(isConfigInvalid.err, pageContextInit, httpRequestId)
+  if (isVikeConfigInvalid) {
+    return renderInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
   } else {
     // From now on, globalContext contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
