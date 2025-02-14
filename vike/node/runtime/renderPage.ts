@@ -125,7 +125,7 @@ async function renderPageAndPrepare(
     if (
       1 < 2 // Make TS happy
     ) {
-      return renderInvalidConfig(isConfigInvalid.err, pageContextInit, httpRequestId)
+      return renderInvalidVikeConfig(isConfigInvalid.err, pageContextInit, httpRequestId)
     }
   }
 
@@ -144,7 +144,7 @@ async function renderPageAndPrepare(
     return pageContextWithError
   }
   if (isConfigInvalid) {
-    return renderInvalidConfig(isConfigInvalid.err, pageContextInit, httpRequestId)
+    return renderInvalidVikeConfig(isConfigInvalid.err, pageContextInit, httpRequestId)
   } else {
     // From now on, globalContext contains all the configuration data; getVikeConfig() isn't called anymore for this request
   }
@@ -690,7 +690,7 @@ function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
   return null
 }
 
-function renderInvalidConfig(err: unknown, pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+function renderInvalidVikeConfig(err: unknown, pageContextInit: { urlOriginal: string }, httpRequestId: number) {
   logRuntimeInfo?.(pc.bold(pc.red('Error while loading a Vike config file, see error above.')), httpRequestId, 'error')
   const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
   return pageContextWithError
