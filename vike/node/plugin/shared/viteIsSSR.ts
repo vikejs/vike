@@ -11,12 +11,9 @@ function viteIsSSR(config: ResolvedConfig | UserConfig): boolean {
 }
 
 // https://github.com/vitejs/vite/discussions/5109#discussioncomment-1450726
-function viteIsSSR_options(options: undefined | boolean | { ssr?: boolean }): boolean {
+function viteIsSSR_options(options: undefined | { ssr?: boolean }): boolean {
   if (options === undefined) {
     return false
-  }
-  if (typeof options === 'boolean') {
-    return options
   }
   if (isObject(options)) {
     return !!options.ssr
