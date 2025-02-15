@@ -10,9 +10,7 @@ function viteIsSSR(config: ResolvedConfig | UserConfig): boolean {
 }
 
 function viteIsSSR_options(options: undefined | { ssr?: boolean }): boolean {
-  if (options === undefined) return false
-  assert(typeof options?.ssr === 'boolean')
-  return options.ssr
+  return !!options?.ssr
 }
 
 // Vite is quite a mess about properly setting `ssr: boolean`, thus we use an extra safe implemention for security purposes.
@@ -21,14 +19,14 @@ function viteIsSSR_safe(config: ResolvedConfig, options: { ssr?: boolean } | und
   const isBuild = config.command === 'build'
   if (isBuild) {
     assert(typeof config.build.ssr === 'boolean')
-    const val = viteIsSSR(config)
-    if (options?.ssr !== undefined) assert(val === viteIsSSR_options(options))
+    const val = config.build.ssr
+    if (options?.ssr !== undefined) assert(val === options.ssr)
     return val
   } else {
     assert(typeof options?.ssr === 'boolean')
-    const val = viteIsSSR_options(options)
+    const val = options.ssr
     /* This assert() fails (which is very unexpected).
-    if (config.build.ssr !== undefined) assert(val === viteIsSSR(config))
+    if (typeof config.build.ssr === 'boolean') assert(val === config.build.ssr)
     //*/
     return val
   }
