@@ -4,7 +4,6 @@ export { viteIsSSR_transform }
 
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
-import { isObject } from '../../../utils/isObject.js'
 
 function viteIsSSR(config: ResolvedConfig | UserConfig): boolean {
   return !!config?.build?.ssr
@@ -15,10 +14,8 @@ function viteIsSSR_options(options: undefined | { ssr?: boolean }): boolean {
   if (options === undefined) {
     return false
   }
-  if (isObject(options)) {
-    return !!options.ssr
-  }
-  assert(false)
+  assert(typeof options?.ssr === 'boolean')
+  return options.ssr
 }
 
 function viteIsSSR_transform(config: ResolvedConfig, options: { ssr?: boolean } | undefined): boolean {
