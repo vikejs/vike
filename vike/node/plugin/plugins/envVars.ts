@@ -6,6 +6,7 @@ import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArr
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
+import { viteIsSSR_safe } from '../shared/viteIsSSR.js'
 
 // TODO/enventually: (after we implemented vike.config.js)
 // - Make import.meta.env work inside +config.js
@@ -41,7 +42,7 @@ function envVarsPlugin(): Plugin {
       if (!code.includes('import.meta.env.')) return
 
       const isBuild = config.command === 'build'
-      const isClientSide = getIsClientSide(config, options)
+      const isClientSide = !viteIsSSR_safe(config, options)
 
       Object.entries(envsAll)
         .filter(([key]) => {
@@ -89,20 +90,4 @@ function envVarsPlugin(): Plugin {
 }
 function applyEnvVar(envStatementRegEx: RegExp, envVal: string, code: string) {
   return code.replace(envStatementRegEx, JSON.stringify(envVal))
-}
-
-function getIsClientSide(config: ResolvedConfig, options?: { ssr?: boolean }): boolean {
-  const isBuild = config.command === 'build'
-  if (isBuild) {
-    assert(typeof config.build.ssr === 'boolean')
-    const isServerSide: boolean = config.build.ssr
-    if (options !== undefined) {
-      assert(options.ssr === isServerSide)
-    }
-    return !isServerSide
-  } else {
-    assert(typeof options?.ssr === 'boolean')
-    const isServerSide: boolean = options.ssr
-    return !isServerSide
-  }
 }
