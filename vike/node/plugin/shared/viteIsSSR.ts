@@ -15,6 +15,7 @@ function viteIsSSR_options(options: undefined | { ssr?: boolean }): boolean {
   return options.ssr
 }
 
+// It's used for .client.js and .server.js guarantee thus we use agressive assert() calls for added safety
 function viteIsSSR_transform(config: ResolvedConfig, options: { ssr?: boolean } | undefined): boolean {
   const isBuild = config.command === 'build'
   if (isBuild) {
@@ -23,6 +24,8 @@ function viteIsSSR_transform(config: ResolvedConfig, options: { ssr?: boolean } 
     if (options !== undefined) assert(val === viteIsSSR_options(options))
     return val
   } else {
-    return viteIsSSR_options(options)
+    const val = viteIsSSR_options(options)
+    if (config.build.ssr !== undefined) assert(val === viteIsSSR(config))
+    return val
   }
 }
