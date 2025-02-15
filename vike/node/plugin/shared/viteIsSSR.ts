@@ -15,6 +15,7 @@ function viteIsSSR_options(options: undefined | { ssr?: boolean }): boolean {
   return options.ssr
 }
 
+// Vite is quite a mess about properly setting `ssr: boolean`, thus we use an extra safe implemention for security purposes.
 // It's used for .client.js and .server.js guarantee thus we use agressive assert() calls for added safety
 function viteIsSSR_safe(config: ResolvedConfig, options: { ssr?: boolean } | undefined): boolean {
   const isBuild = config.command === 'build'
