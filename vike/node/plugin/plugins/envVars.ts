@@ -101,7 +101,6 @@ function getIsClientSide(config: ResolvedConfig, options?: { ssr?: boolean }): b
     }
     return !isServerSide
   } else {
-    assert(config.build.ssr === false)
     assert(typeof options?.ssr === 'boolean')
     const isServerSide: boolean = options.ssr
     return !isServerSide
