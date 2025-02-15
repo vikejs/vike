@@ -9,9 +9,8 @@ function viteIsSSR(config: ResolvedConfig | UserConfig): boolean {
   return !!config?.build?.ssr
 }
 
-type Options = undefined | boolean | { ssr?: boolean }
 // https://github.com/vitejs/vite/discussions/5109#discussioncomment-1450726
-function viteIsSSR_options(options: Options): boolean {
+function viteIsSSR_options(options: undefined | boolean | { ssr?: boolean }): boolean {
   if (options === undefined) {
     return false
   }
