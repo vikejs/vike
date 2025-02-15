@@ -161,7 +161,7 @@ Example:
 
 If you set a Base URL for your SSR server, then make sure to properly install <Link href="/renderPage">`renderPage()`</Link>.
 
-You can use your server to only route URLs that include the Base URL, for example with Express.js:
+Make sure you use `renderPage()` only for URLs that include the Base URL, for example with Express.js:
 
 ```js
 // Make sure `/some-base/` aligns with your base setting
@@ -174,7 +174,7 @@ app.get('/some-base/*', async (req, res) => {
 })
 ```
 
-Or you can use `pageContext.isBaseMissing`:
+Or use `pageContext.isBaseMissing`:
 
 ```js
 app.get('*', async (req, res, next) => {
