@@ -6,7 +6,7 @@ import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArr
 import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { viteIsSSR_transform } from '../shared/viteIsSSR.js'
+import { viteIsSSR_safe } from '../shared/viteIsSSR.js'
 
 // TODO/enventually: (after we implemented vike.config.js)
 // - Make import.meta.env work inside +config.js
@@ -42,7 +42,7 @@ function envVarsPlugin(): Plugin {
       if (!code.includes('import.meta.env.')) return
 
       const isBuild = config.command === 'build'
-      const isClientSide = !viteIsSSR_transform(config, options)
+      const isClientSide = !viteIsSSR_safe(config, options)
 
       Object.entries(envsAll)
         .filter(([key]) => {

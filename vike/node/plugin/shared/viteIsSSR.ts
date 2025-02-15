@@ -1,6 +1,6 @@
 export { viteIsSSR }
 export { viteIsSSR_options }
-export { viteIsSSR_transform }
+export { viteIsSSR_safe }
 
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
@@ -16,7 +16,7 @@ function viteIsSSR_options(options: undefined | { ssr?: boolean }): boolean {
 }
 
 // It's used for .client.js and .server.js guarantee thus we use agressive assert() calls for added safety
-function viteIsSSR_transform(config: ResolvedConfig, options: { ssr?: boolean } | undefined): boolean {
+function viteIsSSR_safe(config: ResolvedConfig, options: { ssr?: boolean } | undefined): boolean {
   const isBuild = config.command === 'build'
   if (isBuild) {
     assert(typeof config.build.ssr === 'boolean')
