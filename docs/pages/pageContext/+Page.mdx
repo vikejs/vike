@@ -240,17 +240,17 @@ import type {
 
 ## Lifecycle
 
-**Server**
+### Server
 
 On the server-side, upon an HTTP request, a new `pageContext` object is created. It's used for rendering the page to HTML. The `pageContext` object is discarded after the HTTP response is sent.
 
-**Client**
+### Client
 
 Upon <Link text="client-side page navigation" href="/client-routing" />, a new `pageContext` object is created.
 
 > You can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
 
-**Pre-rendering**
+### Pre-rendering
 
 If a page is <Link href="/pre-rendering">pre-rendered</Link>, its <Link href="/pageContext.json">initial `pageContext` value</Link> is determined at build-time and saved at `dist/client/${url}/index.pageContext.json`.
 
