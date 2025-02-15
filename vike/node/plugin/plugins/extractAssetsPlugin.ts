@@ -22,7 +22,7 @@ import { fixServerAssets_isEnabled } from './buildConfig/fixServerAssets.js'
 import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { viteIsSSR_options } from '../shared/viteIsSSR.js'
+import { viteIsSSR_options, viteIsSSR_transform } from '../shared/viteIsSSR.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -55,7 +55,7 @@ function extractAssetsPlugin(): Plugin[] {
         }
         // TODO/now: add meta.default
         assert(vikeConfig.global.config.includeAssetsImportedByServer ?? true)
-        assert(!viteIsSSR_options(options))
+        assert(!viteIsSSR_transform(config, options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
@@ -72,7 +72,7 @@ function extractAssetsPlugin(): Plugin[] {
       //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
       enforce: 'pre',
       async resolveId(source, importer, options) {
-        if (viteIsSSR_options(options)) {
+        if (viteIsSSR_transform(config, options)) {
           // When building for the server, there should never be a `?extractAssets` query
           assert(!extractAssetsRE.test(source))
           assert(importer === undefined || !extractAssetsRE.test(importer))
