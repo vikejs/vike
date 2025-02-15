@@ -19,11 +19,9 @@ function viteIsSSR_transform(config: ResolvedConfig, options: { ssr?: boolean } 
   const isBuild = config.command === 'build'
   if (isBuild) {
     assert(typeof config.build.ssr === 'boolean')
-    const isServerSide: boolean = config.build.ssr
-    if (options !== undefined) {
-      assert(options.ssr === isServerSide)
-    }
-    return isServerSide
+    const val = viteIsSSR(config)
+    if (options !== undefined) assert(val === viteIsSSR_options(options))
+    return val
   } else {
     return viteIsSSR_options(options)
   }
