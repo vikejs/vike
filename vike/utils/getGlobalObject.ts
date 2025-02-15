@@ -3,22 +3,18 @@ export { assertIsSingleModuleInstance }
 
 import { assert } from './assert.js'
 
+// We use the file name and file directory as key: there should be only one getGlobalObject() usage per file.
+type Key = `${string}/${string}.ts`
+
 /** Share information across module instances. */
-function getGlobalObject<T extends Record<string, unknown> = never>(
-  // We use the filename (or file path) as key. There should be only one getGlobalObject() usage per file. Thus the key should be unique, assuming the filename (or file path) is unique.
-  key: `${string}.ts`,
-  defaultValue: T
-): T {
+function getGlobalObject<T extends Record<string, unknown> = never>(key: Key, defaultValue: T): T {
   const globalObjects = getGlobalObjects()
   const globalObject = (globalObjects[key] = globalObjects[key] || defaultValue)
   return globalObject
 }
 
 /** Assert that the module is instantiated only once. */
-function assertIsSingleModuleInstance(
-  // We use the filename (or file path) as key.
-  key: `${string}.ts`
-): void {
+function assertIsSingleModuleInstance(key: Key): void {
   const globalObjects = getGlobalObjects()
   assert(!(key in globalObjects))
 }

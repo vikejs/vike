@@ -9,7 +9,7 @@ const pageContextJsonFileExtension = '.pageContext.json'
 // `/some-base-url/index.pageContext.json` instead of `/some-base-url.pageContext.json` in order to comply to common reverse proxy setups, see https://github.com/vikejs/vike/issues/443
 const doNotCreateExtraDirectory = false
 
-// See node/renderPage/handlePageContextRequestUrl.ts
+// See also node/renderPage/handlePageContextRequestUrl.ts
 function getPageContextRequestUrl(url: string): string {
   const pageContextRequestUrl = urlToFile(url, pageContextJsonFileExtension, doNotCreateExtraDirectory)
   return pageContextRequestUrl

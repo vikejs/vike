@@ -51,7 +51,7 @@ import { isNewError } from './renderPage/isNewError.js'
 import { assertArguments } from './renderPage/assertArguments.js'
 import type { PageContextDebugRouteMatches } from './renderPage/debugPageFiles.js'
 import { log404 } from './renderPage/log404/index.js'
-import { isConfigInvalid } from './renderPage/isConfigInvalid.js'
+import { isVikeConfigInvalid } from './renderPage/isVikeConfigInvalid.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
 import { serializePageContextAbort, serializePageContextClientSide } from './html/serializePageContextClientSide.js'
@@ -87,11 +87,10 @@ async function renderPage<
 > {
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
-  onSetupRuntime()
   assertIsUrl(pageContextInit.urlOriginal)
-  const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
-  assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
-  if (urlPathnameWithBase.endsWith('/favicon.ico')) return getPageContextHttpResponseFavicon404(pageContextInit) as any
+  onSetupRuntime()
+  const pageContextInvalidRequest = renderInvalidRequest(pageContextInit)
+  if (pageContextInvalidRequest) return pageContextInvalidRequest as any
 
   const httpRequestId = getRequestId()
   const urlOriginalPretty = getUrlPretty(pageContextInit.urlOriginal)
@@ -122,20 +121,11 @@ async function renderPageAndPrepare(
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
   // Invalid config
-  const handleInvalidConfig = (err: unknown) => {
-    logRuntimeInfo?.(
-      pc.bold(pc.red('Error while loading a Vike config file, see error above.')),
-      httpRequestId,
-      'error'
-    )
-    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
-    return pageContextWithError
-  }
-  if (isConfigInvalid) {
+  if (isVikeConfigInvalid) {
     if (
       1 < 2 // Make TS happy
     ) {
-      return handleInvalidConfig(isConfigInvalid.err)
+      return renderInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
     }
   }
 
@@ -153,10 +143,10 @@ async function renderPageAndPrepare(
     const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
     return pageContextWithError
   }
-  if (isConfigInvalid) {
-    return handleInvalidConfig(isConfigInvalid.err)
+  if (isVikeConfigInvalid) {
+    return renderInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
   } else {
-    // From now on, globalContext contains all the configuration data; getVikeConfig() isn't called anymore for this request
+    // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
   }
   const globalContext = await getGlobalContextInternal()
 
@@ -392,15 +382,6 @@ function getPageContextHttpResponseError(
     errorWhileRendering: err
   })
   return pageContextWithError
-}
-function getPageContextHttpResponseFavicon404(pageContextInit: Record<string, unknown>): PageContextAfterRender {
-  const pageContext = createPageContext(pageContextInit)
-  const httpResponse = createHttpResponseFavicon404()
-  objectAssign(pageContext, {
-    httpResponse
-  })
-  checkType<PageContextAfterRender>(pageContext)
-  return pageContext
 }
 
 function createPageContext(pageContextInit: Record<string, unknown>) {
@@ -683,12 +664,30 @@ async function handleAbortError(
 async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalContext: GlobalContextInternal) {
   const { baseServer } = globalContext
   const { urlOriginal } = pageContextInit
-  const { urlWithoutPageContextRequestSuffix } = handlePageContextRequestUrl(urlOriginal)
-  const { isBaseMissing } = parseUrl(urlWithoutPageContextRequestSuffix, baseServer)
+  const { isBaseMissing } = parseUrl(urlOriginal, baseServer)
   assertUsage(
     !isBaseMissing,
     `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
       `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
     )} which doesn't start with Base URL ${pc.code(baseServer)} (https://vike.dev/base-url)`
   )
+}
+
+function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
+  const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
+  assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
+  if (urlPathnameWithBase.endsWith('/favicon.ico')) {
+    const pageContext = createPageContext(pageContextInit)
+    const httpResponse = createHttpResponseFavicon404()
+    objectAssign(pageContext, { httpResponse })
+    checkType<PageContextAfterRender>(pageContext)
+    return pageContext
+  }
+  return null
+}
+
+function renderInvalidVikeConfig(err: unknown, pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+  logRuntimeInfo?.(pc.bold(pc.red('Error while loading a Vike config file, see error above.')), httpRequestId, 'error')
+  const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
+  return pageContextWithError
 }

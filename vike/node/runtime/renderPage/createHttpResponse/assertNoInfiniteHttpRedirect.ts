@@ -4,7 +4,7 @@ import { assert, assertUsage, getGlobalObject } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 type Graph = Record<string, Set<string>>
-const globalObject = getGlobalObject<{ redirectGraph: Graph }>('assertNoInfiniteHttpRedirect.ts', {
+const globalObject = getGlobalObject<{ redirectGraph: Graph }>('createHttpResponse/assertNoInfiniteHttpRedirect.ts', {
   redirectGraph: {}
 })
 

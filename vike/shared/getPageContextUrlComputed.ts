@@ -94,25 +94,30 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   // Reproduction: https://github.com/vikejs/vike/discussions/1436#discussioncomment-8142023
 
   // Determine logical URL
-  // TODO/soon: revert https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
   const assertUrlResolved = (src: number) =>
-    assert(urlResolved && typeof urlResolved === 'string', { src, urlResolved })
+    assert(
+      urlResolved && typeof urlResolved === 'string',
+      // TODO/eventually: remove debug logs, see:
+      // - https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
+      // - https://github.com/vikejs/vike/commit/5c7810f3080ab62536950f26e019bb2a3a517082
+      { src, urlResolved }
+    )
   let urlResolved: string
-  let baseToBeRemoved: boolean
+  let isBaseToBeRemoved: boolean
   if (pageContext.urlLogical) {
     // Set by onBeforeRoute()
     urlResolved = pageContext.urlLogical
-    baseToBeRemoved = false
+    isBaseToBeRemoved = false
     assertUrlResolved(1)
   } else if (pageContext._urlRewrite) {
     // Set by `throw render()`
     urlResolved = pageContext._urlRewrite
-    baseToBeRemoved = false
+    isBaseToBeRemoved = false
     assertUrlResolved(2)
   } else {
     // Set by renderPage()
     urlResolved = pageContext.urlOriginal
-    baseToBeRemoved = true
+    isBaseToBeRemoved = true
     assertUrlResolved(3)
   }
   assertUrlResolved(4)
@@ -126,7 +131,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   // - We assume there isn't any Base URL to the URLs set by the user at `throw render()` and onBeforeRoute()
   //   - This makes sense because the Base URL is merely a setting: ideally the user should write code that doesn't know anything about it (so that the user can remove/add/change Base URL without having to modify any code).
   // - pageContext.urlOriginal is the URL of the HTTP request and thus contains the Base URL.
-  const baseServer = !baseToBeRemoved ? '/' : pageContext._baseServer
+  const baseServer = !isBaseToBeRemoved ? '/' : pageContext._baseServer
 
   // Parse URL
   return parseUrl(urlResolved, baseServer)

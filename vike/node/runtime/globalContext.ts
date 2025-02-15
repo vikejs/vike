@@ -85,7 +85,7 @@ const globalObject = getGlobalObject<
     assetsManifest?: ViteManifest
     isInitialized?: true
   } & ReturnType<typeof getInitialGlobalContext>
->('globalContext.ts', getInitialGlobalContext())
+>('runtime/globalContext.ts', getInitialGlobalContext())
 
 type GlobalContextPublic = Pick<
   GlobalContext,

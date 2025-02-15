@@ -15,7 +15,7 @@ import type { GlobalContextInternal } from '../globalContext.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../plugin/shared/resolveClientEntriesDev.js'
 
-const globalObject = getGlobalObject('getPageAssets.ts', {
+const globalObject = getGlobalObject('renderPage/getPageAssets.ts', {
   resolveClientEntriesDev: null as null | ResolveClientEntriesDev
 })
 

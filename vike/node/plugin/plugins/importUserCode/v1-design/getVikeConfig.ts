@@ -54,7 +54,7 @@ import {
   applyFilesystemRoutingRootEffect
 } from './getVikeConfig/filesystemRouting.js'
 import type { EsbuildCache } from './getVikeConfig/transpileAndExecuteFile.js'
-import { isConfigInvalid, isConfigInvalid_set } from '../../../../runtime/renderPage/isConfigInvalid.js'
+import { isVikeConfigInvalid, isVikeConfigInvalid_set } from '../../../../runtime/renderPage/isVikeConfigInvalid.js'
 import { getViteDevServer } from '../../../../runtime/globalContext.js'
 import { logConfigError, logConfigErrorRecover } from '../../../shared/loggerNotProd.js'
 import {
@@ -102,7 +102,7 @@ function reloadVikeConfig(config: ResolvedConfig) {
   handleReloadSideEffects()
 }
 async function handleReloadSideEffects() {
-  wasConfigInvalid = !!isConfigInvalid
+  wasConfigInvalid = !!isVikeConfigInvalid
   const vikeConfigPromisePrevious = vikeConfigPromise
   try {
     await vikeConfigPromise
@@ -116,7 +116,7 @@ async function handleReloadSideEffects() {
     // Let the next handleReloadSideEffects() call handle side effects
     return
   }
-  if (!isConfigInvalid) {
+  if (!isVikeConfigInvalid) {
     if (wasConfigInvalid) {
       wasConfigInvalid = false
       logConfigErrorRecover()
@@ -188,12 +188,12 @@ async function loadVikeConfig_withErrorHandling(
   if (!hasError) {
     assert(ret)
     assert(err === undefined)
-    isConfigInvalid_set(false)
+    isVikeConfigInvalid_set(false)
     return ret
   } else {
     assert(ret === undefined)
     assert(err)
-    isConfigInvalid_set({ err })
+    isVikeConfigInvalid_set({ err })
     if (!isDev) {
       assert(getViteDevServer() === null)
       throw err
