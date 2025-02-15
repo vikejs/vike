@@ -21,7 +21,7 @@ function viteIsSSR_transform(config: ResolvedConfig, options: { ssr?: boolean } 
   if (isBuild) {
     assert(typeof config.build.ssr === 'boolean')
     const val = viteIsSSR(config)
-    if (options !== undefined) assert(val === viteIsSSR_options(options))
+    if (options?.ssr !== undefined) assert(val === viteIsSSR_options(options))
     return val
   } else {
     const val = viteIsSSR_options(options)
