@@ -383,15 +383,6 @@ function getPageContextHttpResponseError(
   })
   return pageContextWithError
 }
-function getPageContextHttpResponseFavicon404(pageContextInit: Record<string, unknown>): PageContextAfterRender {
-  const pageContext = createPageContext(pageContextInit)
-  const httpResponse = createHttpResponseFavicon404()
-  objectAssign(pageContext, {
-    httpResponse
-  })
-  checkType<PageContextAfterRender>(pageContext)
-  return pageContext
-}
 
 function createPageContext(pageContextInit: Record<string, unknown>) {
   const pageContext = {
@@ -685,7 +676,13 @@ async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalCon
 function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
-  if (urlPathnameWithBase.endsWith('/favicon.ico')) return getPageContextHttpResponseFavicon404(pageContextInit)
+  if (urlPathnameWithBase.endsWith('/favicon.ico')) {
+    const pageContext = createPageContext(pageContextInit)
+    const httpResponse = createHttpResponseFavicon404()
+    objectAssign(pageContext, { httpResponse })
+    checkType<PageContextAfterRender>(pageContext)
+    return pageContext
+  }
   return null
 }
 
