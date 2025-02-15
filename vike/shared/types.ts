@@ -156,6 +156,13 @@ type PageContextBuiltInCommon<Data> = {
   // TODO/v1-release: remove
   /** @deprecated */
   pageExports: Record<string, unknown>
+
+  /**
+   * Whether the Base URL is missing in the URL of the HTTP request made to the SSR server.
+   *
+   * https://vike.dev/base-url#setup
+   */
+  isBaseMissing?: true
 }
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> & PageContextUrlServer

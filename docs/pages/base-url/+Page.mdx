@@ -155,3 +155,36 @@ export default {
 
 Example:
  - <RepoLink path='/examples/base-url-server/' />
+
+
+## Setup
+
+If you set a Base URL for your SSR server, then make sure to properly install <Link href="/renderPage">`renderPage()`</Link>.
+
+You can use your server to only route URLs that include the Base URL, for example with Express.js:
+
+```
+// Make sure `/some-base/` aligns with your base setting
+app.get('/some-base/*', async (req, res) => {
+  // Keep the Base URL (Vike expects it)
+  const pageContextInit = { urlOriginal: req.url }
+  const pageContext = await renderPage(pageContextInit)
+  assert(!pageContext.isBaseMissing)
+  // ...
+})
+```
+
+Or you can use `pageContext.isBaseMissing`:
+
+```
+app.get('*', async (req, res, next) => {
+  const pageContextInit = { urlOriginal: req.url }
+  const pageContext = await renderPage(pageContextInit)
+  if (pageContext.isBaseMissing) return next()
+  // ...
+})
+```
+
+Both approaches work equally well.
+
+> When the Base URL is missing then `await renderPage()` is effectively synchronous and very quick: the superflous Vike middleware call is negligible.

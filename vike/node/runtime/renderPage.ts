@@ -44,7 +44,8 @@ import {
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
   HttpResponse,
-  createHttpResponseError
+  createHttpResponseError,
+  createHttpResponseBaseIsMissing
 } from './renderPage/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
 import { isNewError } from './renderPage/isNewError.js'
@@ -151,7 +152,10 @@ async function renderPageAndPrepare(
   const globalContext = await getGlobalContextInternal()
 
   // Check Base URL
-  await assertBaseUrl(pageContextInit, globalContext)
+  {
+    const pageContextHttpResponse = await checkBaseUrl(pageContextInit, globalContext)
+    if (pageContextHttpResponse) return pageContextHttpResponse
+  }
 
   // Normalize URL
   {
@@ -661,16 +665,19 @@ async function handleAbortError(
   return { pageContextAbort }
 }
 
-async function assertBaseUrl(pageContextInit: { urlOriginal: string }, globalContext: GlobalContextInternal) {
+async function checkBaseUrl(pageContextInit: { urlOriginal: string }, globalContext: GlobalContextInternal) {
   const { baseServer } = globalContext
   const { urlOriginal } = pageContextInit
   const { isBaseMissing } = parseUrl(urlOriginal, baseServer)
-  assertUsage(
-    !isBaseMissing,
-    `${pc.code('renderPage(pageContextInit)')} (https://vike.dev/renderPage) called with ${pc.code(
-      `pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}`
-    )} which doesn't start with Base URL ${pc.code(baseServer)} (https://vike.dev/base-url)`
-  )
+  if (!isBaseMissing) return
+  const pageContext = createPageContext(pageContextInit)
+  const httpResponse = createHttpResponseBaseIsMissing(urlOriginal, baseServer)
+  objectAssign(pageContext, {
+    httpResponse,
+    isBaseMissing: true as const
+  })
+  checkType<PageContextAfterRender>(pageContext)
+  return pageContext
 }
 
 function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {

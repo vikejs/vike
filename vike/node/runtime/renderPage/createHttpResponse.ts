@@ -3,6 +3,7 @@ export { createHttpResponsePageContextJson }
 export { createHttpResponseError }
 export { createHttpResponseRedirect }
 export { createHttpResponseFavicon404 }
+export { createHttpResponseBaseIsMissing }
 export type { HttpResponse }
 
 import type { GetPageAssets } from './getPageAssets.js'
@@ -81,6 +82,33 @@ function createHttpResponseFavicon404(): HttpResponse {
   return httpResponse
 }
 
+function createHttpResponseBaseIsMissing(urlOriginal: string, baseServer: string): HttpResponse {
+  const httpResponse = createHttpResponse(
+    // We use the error code `500` to signal a failing state because this HTTP response should never be used, see https://vike.dev/base-url#setup
+    // In other words: this HTTP response is expected to be generated but isn't expected to be actually used.
+    500,
+    'text/html;charset=utf-8',
+    [],
+    `
+<h1>Error: Base URL is missing</h1>
+<p>
+  <a href="https://vike.dev/renderPage"><code>renderPage(pageContextInit)</code></a> called with <code>pageContextInit.urlOriginal===${JSON.stringify(urlOriginal)}</code> which doesn't start with the Base URL <code>${baseServer}</code>.
+</p>
+<p>
+  See <a href="https://vike.dev/base-url#setup">vike.dev/base-url#setup</a> for how to properly setup your server while using a Base URL.
+</p>
+<style>
+  code {
+    font-family: monospace;
+    background-color: #eaeaea;
+    padding: 3px 5px;
+    border-radius: 4px;
+  }
+</style>
+`
+  )
+  return httpResponse
+}
 function createHttpResponseError(
   pageContext: null | {
     _pageFilesAll: PageFile[]
