@@ -6,27 +6,26 @@ The `pageContext` object provides contextual information about the current page.
 // /pages/product/@id/+data.js
 
 export async function data(pageContext) {
-  // Commonly used built-in properties
+  // Common built-in properties
   pageContext.urlParsed.pathname // /product/42
   pageContext.routeParams.id // 42
   pageContext.headers // { cookie: 'user-id=1337', ... }
-  // Commonly added custom properties
+  // Common custom properties
   pageContext.user // { name: 'John', id: 1337 }
-  pageContext.initialStoreState // { time: 1718872184291 }
+  pageContext.initialStoreState // { todoList: [{ id: 1718872184291, text: 'Buy milk' }] }
 }
 ```
 
 > The `+data` hook is explained at <Link href="/data-fetching" />.
 
+You can access `pageContext` everywhere:
+ - At any UI component, by using <Link href="/usePageContext">`usePageContext()`</Link>.
+ - At any <Link href="/hooks">Vike hook</Link> (such as <Link href="/data">`+data`</Link>).
+ - On both the server and client (although you may need to use <Link href="/passToClient">`passToClient`</Link>).
+
 It includes:
- - <Link href="#built-in">Built-in properties</Link> such as `pageContext.urlParsed` and `pageContext.routeParams`.
+ - <Link href="#built-in">Built-in properties</Link>, such as `pageContext.urlParsed` and `pageContext.routeParams`.
  - <Link href="#custom">Custom properties</Link> that you can add, for example `pagecontext.user`.
-
-It's accessible to all:
- - <Link href="/hooks">Vike hooks</Link>, such as <Link href="/data">`+data`</Link>.
- - UI components, by using <Link href="/usePageContext">`usePageContext()`</Link>.
-
-You can access `pageContext` from the client-side by using <Link href="/passToClient">`passToClient`</Link>.
 
 
 ## Built-in
