@@ -25,7 +25,7 @@ function viteIsSSR_safe(config: ResolvedConfig, options: { ssr?: boolean } | und
   } else {
     assert(typeof options?.ssr === 'boolean')
     const val = options.ssr
-    /* This assert() fails (which is very unexpected).
+    //* This assert() fails (which is very unexpected).
     if (typeof config.build.ssr === 'boolean') assert(val === config.build.ssr)
     //*/
     return val
