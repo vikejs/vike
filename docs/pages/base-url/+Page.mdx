@@ -163,7 +163,7 @@ If you set a Base URL for your SSR server, then make sure to properly install <L
 
 You can use your server to only route URLs that include the Base URL, for example with Express.js:
 
-```
+```js
 // Make sure `/some-base/` aligns with your base setting
 app.get('/some-base/*', async (req, res) => {
   // Keep the Base URL (Vike expects it)
@@ -176,7 +176,7 @@ app.get('/some-base/*', async (req, res) => {
 
 Or you can use `pageContext.isBaseMissing`:
 
-```
+```js
 app.get('*', async (req, res, next) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
