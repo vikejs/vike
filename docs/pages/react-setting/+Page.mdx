@@ -1,0 +1,68 @@
+import { Link } from '@brillout/docpress'
+import { ImplementedBy } from '../../components'
+
+Environment: server, client.
+
+<ImplementedBy by={<code>vike-react</code>} noCustomGuide={true}>the `+react` setting</ImplementedBy>
+
+Add options to the React functions that `vike-react` calls.
+
+On the client-side, you can set the options of React's [`hydrateRoot()`](https://react.dev/reference/react-dom/client/hydrateRoot) and [`createRoot()`](https://react.dev/reference/react-dom/client/createRoot).
+
+```js
+// pages/+react.client.js
+// Environment: client
+
+export default {
+  hydrateRootOptions: {
+    onUncaughtError,
+    /*
+    onCaughtError,
+    onRecoverableError,
+    ...
+    */
+  },
+  createRootOptions: {
+    onUncaughtError
+    /*
+    onCaughtError,
+    onRecoverableError,
+    ...
+    */
+  }
+}
+
+function onUncaughtError(err) {
+  console.error('Uncaught React error', err)
+}
+```
+
+> Make sure you define these in <code>react.<b>client</b>.js</code>.
+
+You can also use <Link href="/pageContext">`pageContext`</Link>:
+
+```js
+// pages/+react.client.js
+
+export default (pageContext) => {
+  return {
+    hydrateRootOptions,
+    createRootOptions
+  }
+}
+```
+
+On the server-side, you can set the options of React's [`renderToString()`](https://react.dev/reference/react-dom/server/renderToString).
+
+```js
+// pages/+react.server.js
+// Environment: server
+
+export default {
+  renderToStringOptions: {
+    identifierPrefix: 'some-id-prefix'
+  }
+}
+```
+
+> Make sure you define these in <code>react.<b>server</b>.js</code>.

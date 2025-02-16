@@ -565,6 +565,10 @@ function api(): HeadingDetachedDefinition[] {
       url: '/onCreateApp'
     },
     {
+      title: '`+react` setting',
+      url: '/react-setting'
+    },
+    {
       title: '`getGlobalContextSync()` & `getGlobalContextAsync()`',
       url: '/getGlobalContext'
     },
