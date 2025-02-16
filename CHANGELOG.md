@@ -1,3 +1,26 @@
+## [0.4.223](https://github.com/vikejs/vike/compare/v0.4.222...v0.4.223) (2025-02-16)
+
+
+### Bug Fixes
+
+* Environment API compatibility ([#2184](https://github.com/vikejs/vike/issues/2184)) ([49c04fd](https://github.com/vikejs/vike/commit/49c04fd918877662be93db40fabecc326f1f8564))
+* improve bug report link ([bc234f8](https://github.com/vikejs/vike/commit/bc234f88664e39880e2adf873c871048c6d12086))
+* improve version mismatch error ([e42d6c6](https://github.com/vikejs/vike/commit/e42d6c66b9eea2a9afde5bc10f6d2cedf72003c7))
+* improve vike/plugin return type ([#2174](https://github.com/vikejs/vike/issues/2174)) ([6ff9bd7](https://github.com/vikejs/vike/commit/6ff9bd75b3077f98a95ac80a6b56f57ece0f52fb))
+* properly expose page routes ([#2177](https://github.com/vikejs/vike/issues/2177)) ([6647d1e](https://github.com/vikejs/vike/commit/6647d1e5c83e4ac82fbe9e6a60d8da2d01fa1b48))
+* refactor safe `viteIsSSR()` implementation ([#2179](https://github.com/vikejs/vike/issues/2179)) ([#2186](https://github.com/vikejs/vike/issues/2186)) ([ce4e16e](https://github.com/vikejs/vike/commit/ce4e16e45b6b84e3fefa62d825b350c1a1f9e6fa))
+* remove outdated assert (fix [#2179](https://github.com/vikejs/vike/issues/2179)) ([5513d32](https://github.com/vikejs/vike/commit/5513d3297f5d9e5ab52211e92713183c2149473d))
+* remove outdated warning ([d808eda](https://github.com/vikejs/vike/commit/d808eda1a262e01785d3413e59a8e691909ff21e))
+
+
+### Features
+
+* `globalContext.baseStatic` & `globalContext.baseServer` ([#2175](https://github.com/vikejs/vike/issues/2175)) ([207e079](https://github.com/vikejs/vike/commit/207e079c171a2987c8ece235e9550d6098fa4f04))
+* pageContext.isBaseMissing ([#2153](https://github.com/vikejs/vike/issues/2153)) ([fab3841](https://github.com/vikejs/vike/commit/fab3841f0805ab174548a5163c479c4f42aa07ca))
+* universal-middleware ([#2183](https://github.com/vikejs/vike/issues/2183)) ([1d30e12](https://github.com/vikejs/vike/commit/1d30e12db1a66d003736055b817db6f6664b8dfc))
+
+
+
 ## [0.4.222](https://github.com/vikejs/vike/compare/v0.4.221...v0.4.222) (2025-02-12)
 
 
