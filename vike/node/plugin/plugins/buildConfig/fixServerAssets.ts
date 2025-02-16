@@ -38,11 +38,11 @@ async function fixServerAssets(
   const clientManifest = await loadManifest(outDirs.outDirClient)
   const serverManifest = await loadManifest(outDirs.outDirServer)
 
-  const { clientManifestMod, serverManifestMod, filesToCopy, filesToRemove } = addServerAssets(
+  const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,
     serverManifest
   )
-  await copyAssets(filesToCopy, filesToRemove, config)
+  await copyAssets(filesToMove, filesToRemove, config)
 
   return { clientManifestMod, serverManifestMod }
 }
@@ -54,15 +54,15 @@ async function loadManifest(outDir: string) {
   assert(manifest)
   return manifest
 }
-async function copyAssets(filesToCopy: string[], filesToRemove: string[], config: ResolvedConfig) {
+async function copyAssets(filesToMove: string[], filesToRemove: string[], config: ResolvedConfig) {
   const { outDirClient, outDirServer } = getOutDirs(config)
   const assetsDir = getAssetsDir(config)
   const assetsDirServer = path.posix.join(outDirServer, assetsDir)
-  if (!filesToCopy.length && !filesToRemove.length && !existsSync(assetsDirServer)) return
+  if (!filesToMove.length && !filesToRemove.length && !existsSync(assetsDirServer)) return
   assert(existsSync(assetsDirServer))
   const concurrencyLimit = pLimit(10)
   await Promise.all(
-    filesToCopy.map((file) =>
+    filesToMove.map((file) =>
       concurrencyLimit(async () => {
         const source = path.posix.join(outDirServer, file)
         const target = path.posix.join(outDirClient, file)
@@ -116,7 +116,7 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
     entriesServer.set(pageId, { key, ...resources })
   }
 
-  let filesToCopy: string[] = []
+  let filesToMove: string[] = []
   let filesToRemove: string[] = []
   for (const [pageId, entryClient] of entriesClient.entries()) {
     const entryServer = entriesServer.get(pageId)
@@ -144,7 +144,7 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
 
     if (cssToAdd.length) {
       const { key } = entryClient
-      filesToCopy.push(...cssToAdd)
+      filesToMove.push(...cssToAdd)
       clientManifest[key]!.css ??= []
       clientManifest[key]!.css?.push(...cssToAdd)
     }
@@ -157,7 +157,7 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
 
     if (assetsToAdd.length) {
       const { key } = entryClient
-      filesToCopy.push(...assetsToAdd)
+      filesToMove.push(...assetsToAdd)
       clientManifest[key]!.assets ??= []
       clientManifest[key]!.assets?.push(...assetsToAdd)
     }
@@ -171,9 +171,9 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
 
   const clientManifestMod = clientManifest
   const serverManifestMod = serverManifest
-  filesToCopy = unique(filesToCopy)
-  filesToRemove = unique(filesToRemove).filter((file) => !filesToCopy.includes(file))
-  return { clientManifestMod, serverManifestMod, filesToCopy, filesToRemove }
+  filesToMove = unique(filesToMove)
+  filesToRemove = unique(filesToRemove).filter((file) => !filesToMove.includes(file))
+  return { clientManifestMod, serverManifestMod, filesToMove, filesToRemove }
 }
 
 function getPageId(key: string) {
