@@ -1,25 +1,25 @@
 export { ImplementedBy }
 
 import { Link } from '@brillout/docpress'
-import { UiFrameworkExtension } from '../components/UiFrameworkExtension'
+import { UiFrameworkExtension, type UiFrameworkExtensionList } from '../components/UiFrameworkExtension'
 import React from 'react'
 import './ImplementedBy.css'
 
 function ImplementedBy({
   children,
-  by,
+  list,
   noCustomGuide
-}: { children: React.ReactNode; by?: React.ReactNode; noCustomGuide?: true }) {
+}: { children: React.ReactNode; list?: UiFrameworkExtensionList; noCustomGuide?: true }) {
   return (
     <>
-      <p className="no-top-margin">Implemented by: {by ?? <UiFrameworkExtension name noLink />}.</p>
+      <p className="no-top-margin">Implemented by: {<UiFrameworkExtension name noLink list={list} />}.</p>
       <blockquote>
         <p>
-          You need {by ?? <UiFrameworkExtension name noLink />} to be able to use {children ?? 'this setting'}.
+          You need {<UiFrameworkExtension name noLink list={list} />} to be able to use {children ?? 'this setting'}.
           {!noCustomGuide && (
             <>
               {' '}
-              If you don't use {by ?? <UiFrameworkExtension name noLink />} then see{' '}
+              If you don't use {<UiFrameworkExtension name noLink list={list} />} then see{' '}
               <Link href="#without-vike-react-vue-solid" />.
             </>
           )}

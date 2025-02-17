@@ -2,9 +2,10 @@ export { UiFrameworkExtension }
 export type { UiFrameworkExtensionList }
 
 import React from 'react'
-import { Link } from '@brillout/docpress'
+import { assert, Link } from '@brillout/docpress'
 
 type UiFrameworkExtensionList = `vike-${'react' | 'vue' | 'solid'}`[]
+const extensionList: UiFrameworkExtensionList = ['vike-react', 'vike-vue', 'vike-solid']
 
 function UiFrameworkExtension({
   name,
@@ -12,7 +13,7 @@ function UiFrameworkExtension({
   succinct,
   plural,
   comma,
-  list = ['vike-react', 'vike-vue', 'vike-solid']
+  list = extensionList
 }: {
   succinct?: true
   name?: true
@@ -25,6 +26,7 @@ function UiFrameworkExtension({
   let content = (
     <>
       {list.map((name, i) => {
+        assert(list.includes(name))
         let content = <code>{name}</code>
         if (!noLink) content = <Link href={`/${name}`}>{content}</Link>
         const isLast1 = i === list.length - 1
