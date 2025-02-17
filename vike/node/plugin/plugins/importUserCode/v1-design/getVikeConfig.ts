@@ -696,9 +696,6 @@ function getConfigValueSource(
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv: configDef.env,
-      /* TODO/now: rename to valueIsLoadedWithImport
-      valueIsImportedAtRuntime: true,
-      */
       valueIsImportedAtRuntime: false,
       valueIsDefinedByPlusFile: false,
       isOverriden,
