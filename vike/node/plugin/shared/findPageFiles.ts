@@ -1,6 +1,6 @@
 export { findPageFiles }
 
-import glob from 'fast-glob'
+import { glob } from 'tinyglobby'
 import type { ResolvedConfig } from 'vite'
 import { assertWarning, toPosixPath, scriptFileExtensions } from '../utils.js'
 import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
@@ -13,12 +13,12 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDe
   const timeBase = new Date().getTime()
   let pageFiles = await glob(
     fileTypes.map((fileType) => `**/*${fileType}.${scriptFileExtensions}`),
-    { ignore: ['**/node_modules/**', `${outDirRoot}/**`], cwd, dot: false }
+    { ignore: ['**/node_modules/**', `${outDirRoot}/**`], cwd, dot: false, expandDirectories: false }
   )
   pageFiles = pageFiles.map((p) => '/' + toPosixPath(p))
   const time = new Date().getTime() - timeBase
   if (isDev) {
-    // We only warn in dev, because while building it's expected to take a long time as fast-glob is competing for resources with other tasks
+    // We only warn in dev, because while building it's expected to take a long time as globbing is competing for resources with other tasks
     assertWarning(
       time < 1.5 * 1000,
       `Finding your page files ${pc.cyan(

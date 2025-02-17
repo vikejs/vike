@@ -16,7 +16,7 @@ import {
   assertUsage
 } from '../../../../utils.js'
 import path from 'path'
-import glob from 'fast-glob'
+import { glob } from 'tinyglobby'
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
@@ -59,7 +59,7 @@ async function crawlPlusFiles(
   const filesGit = !isGitCrawlDisabled() && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
   const filesGitNothingFound = !filesGit || filesGit.length === 0
   const filesGlob =
-    (filesGitNothingFound || debug.isActivated) && (await fastGlob(userRootDir, outDirRelativeFromUserRootDir))
+    (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, outDirRelativeFromUserRootDir))
   let files = !filesGitNothingFound
     ? filesGit
     : // Fallback to fast-glob for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
@@ -83,7 +83,7 @@ async function crawlPlusFiles(
   return plusFiles
 }
 
-// Same as fastGlob() but using `$ git ls-files`
+// Same as tinyglobby() but using `$ git ls-files`
 async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: string | null) {
   if (gitIsNotUsable) return null
 
@@ -156,13 +156,14 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
 
   return files
 }
-// Same as gitLsFiles() but using fast-glob
-async function fastGlob(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[]> {
+// Same as gitLsFiles() but using tinyglobby
+async function tinyglobby(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[]> {
   const pattern = `**/+*.${scriptFileExtensions}`
   const options = {
     ignore: getIgnoreAsPatterns(outDirRelativeFromUserRootDir),
     cwd: userRootDir,
-    dot: false
+    dot: false,
+    expandDirectories: false
   }
   const files = await glob(pattern, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
