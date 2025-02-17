@@ -675,8 +675,8 @@ function getConfigValueSource(
     let valueFilePath: string
     if (plusFile.isConfigFile) {
       // Defined over pointer import
-      assert(confVal.configValueLoaded)
-      const pointerImport = resolvePointerImport(confVal.configValue, plusFile.filePath, userRootDir, configName)
+      assert(confVal.valueIsLoaded)
+      const pointerImport = resolvePointerImport(confVal.value, plusFile.filePath, userRootDir, configName)
       const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtFilePath_)
       assertUsage(pointerImport, `${configDefinedAt} should be an import`)
       valueFilePath = pointerImport.fileExportPath.filePathAbsoluteVite
@@ -706,8 +706,7 @@ function getConfigValueSource(
 
   // +config.js
   if (plusFile.isConfigFile) {
-    assert(confVal.configValueLoaded)
-    const { configValue } = confVal
+    assert(confVal.valueIsLoaded)
 
     // Defined over pointer import
     const pointerImport = plusFile.pointerImportsByConfigName[configName]
@@ -736,7 +735,7 @@ function getConfigValueSource(
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
       valueIsLoaded: true,
-      value: configValue,
+      value: confVal.value,
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusFile: false,
@@ -749,12 +748,12 @@ function getConfigValueSource(
   // Defined by value file, i.e. +{configName}.js
   if (!plusFile.isConfigFile) {
     const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
-    const valueAlreadyLoaded = confVal.configValueLoaded
+    const valueAlreadyLoaded = confVal.valueIsLoaded
     assert(valueAlreadyLoaded === !!configEnvResolved.config)
     const value = valueAlreadyLoaded
       ? {
           valueIsLoaded: true as const,
-          value: confVal.configValue
+          value: confVal.value
         }
       : {
           valueIsLoaded: false as const
@@ -818,8 +817,8 @@ function getConfigDefinitions(
       plusFiles.forEach((plusFile) => {
         const confVal = getConfVal(plusFile, 'meta')
         if (!confVal) return
-        assert(confVal.configValueLoaded)
-        const meta = confVal.configValue
+        assert(confVal.valueIsLoaded)
+        const meta = confVal.value
         assertMetaUsage(meta, `Config ${pc.cyan('meta')} defined at ${plusFile.filePath.filePathToShowToUser}`)
 
         // Set configDef._userEffectDefinedAtFilePath
@@ -1185,11 +1184,11 @@ function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, confi
 function getConfVal(
   plusFile: PlusFile,
   configName: string
-): null | { configValue: unknown; configValueLoaded: true } | { configValueLoaded: false } {
+): null | { value: unknown; valueIsLoaded: true } | { valueIsLoaded: false } {
   const configNames = getDefiningConfigNames(plusFile)
   if (!configNames.includes(configName)) return null
-  if (plusFile.isNotLoaded) return { configValueLoaded: false }
-  const confVal = { configValue: plusFile.fileExportsByConfigName[configName], configValueLoaded: true }
+  if (plusFile.isNotLoaded) return { valueIsLoaded: false }
+  const confVal = { value: plusFile.fileExportsByConfigName[configName], valueIsLoaded: true }
   return confVal
 }
 
