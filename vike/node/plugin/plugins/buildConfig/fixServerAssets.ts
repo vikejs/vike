@@ -184,12 +184,8 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
       const entry = serverManifest[key]!
       if (!entry.isEntry) continue
       const resources = collectResources(entry, serverManifest)
-      const css = unique(resources.css)
-        .map((css) => css.src)
-        .filter((file) => !filesClientAll.includes(file))
-      const assets = unique(resources.assets)
-        .map((asset) => asset.src)
-        .filter((file) => !filesClientAll.includes(file))
+      const css = resources.css.map((css) => css.src).filter((file) => !filesClientAll.includes(file))
+      const assets = resources.assets.map((asset) => asset.src).filter((file) => !filesClientAll.includes(file))
       filesToMove.push(...css, ...assets)
       if (css.length > 0 || assets.length > 0) {
         assert(!clientManifest[key])
