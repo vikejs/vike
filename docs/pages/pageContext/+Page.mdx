@@ -252,11 +252,32 @@ Upon <Link text="client-side page navigation" href="/client-routing" />, a new `
 
 ### Pre-rendering
 
-If a page is <Link href="/pre-rendering">pre-rendered</Link>, its <Link href="/pageContext.json">initial `pageContext` value</Link> is determined at build-time and saved at `dist/client/${url}/index.pageContext.json`.
+The server-side `pageContext` of a <Link href="/pre-rendering">pre-rendered</Link> page is determined at build-time when the page is pre-rendered.
 
-> Consequently, the initial `pageContext` value of a pre-rendered page is set in stone at build-time.
+> Each pre-rendered page has a `pageContext` object saved at `dist/client/${url}/index.pageContext.json`.
 
-> Upon pre-redering, a different `pageContext` object is created for each page.
+This means that, if the first page the user visits is a pre-rendered page, then the `pageContext` was already determined (potentially a long time) before the user visits that page.
+
+> Consequently, if the user visits the URL `/products?filter=computer` then `pageContext.urlParsed.search` is empty and `?filter=computer` is missing.
+>
+> In theory, Vike could update `pageContext` on the client-side and add `?filter=computer` to `pageContext.urlParsed` but this would lead to a <Link href="/hydration-mismatch">hydration mismatch</Link>. That's why, upon hydration, Vike intentionally keeps the client- and server-side `pageContext` aligned for hydration.
+>
+> Workarounds:
+> - Re-render the page after hydration, by using <Link href="/reload">`reload()`</Link> and <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>:
+>   ```js
+>   // pages/products/+onHydrationEnd.js
+>
+>   import { reload } from 'vike/client/router'
+>
+>   export async function onHydrationEnd() {
+>     if (window.location.href.includes('?filter')) await reload()
+>   }
+>   ```
+> - If the number of filters isn't infinite, then you can use a <Link href="/routing#parameterized-routes">paramterized route</Link> `/products/@filter` with <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()`</Link> in order to pre-render all filters (`/products/computer`, `/products/car`, ...).
+
+Upon client-side navigation, the `pageContext` of the new page is determined dynamically at runtime on the client-side.
+
+> Unlike hydration, on client-side navigation, the `pageContext` is up-to-date, and `pageContext.urlParsed.search` includes query parameters such as `?filter=computer`.
 
 
 ## See also
