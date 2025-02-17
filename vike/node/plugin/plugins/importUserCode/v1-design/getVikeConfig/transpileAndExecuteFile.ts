@@ -229,7 +229,7 @@ async function transpileWithEsbuild(
             isVikeExtensionImport
 
           assertPosixPath(importPathResolved)
-          const isNodeModules =
+          const isNpmPkgImport =
             importPathResolved.includes('/node_modules/') ||
             // Linked packages
             !importPathResolved.startsWith(userRootDir)
@@ -237,11 +237,11 @@ async function transpileWithEsbuild(
           const isExternal =
             isPointerImport ||
             // Performance: npm package imports can be externalized. (We could as well let esbuild transpile /node_modules/ code but it's useless as /node_modules/ code is already built. It would unnecessarily slow down transpilation.)
-            isNodeModules
+            isNpmPkgImport
 
           if (!isExternal) {
             // User-land config code (i.e. not runtime code) => let esbuild transpile it
-            assert(!isPointerImport && !isNodeModules)
+            assert(!isPointerImport && !isNpmPkgImport)
             if (debug.isActivated) debug('onResolved()', { args, resolved, isPointerImport, isExternal })
             return resolved
           }
@@ -259,7 +259,7 @@ async function transpileWithEsbuild(
               userRootDir
             })
             // We assuming that path aliases always resolve inside `userRootDir`.
-            if (filePathAbsoluteUserRootDir && !isNodeModules) {
+            if (filePathAbsoluteUserRootDir && !isNpmPkgImport) {
               // `importPathOriginal` is a path alias.
               // - We have to use esbuild's path alias resolution, because:
               //   - Vike doesn't resolve path aliases at all.
@@ -281,7 +281,7 @@ async function transpileWithEsbuild(
             // Import of runtime code => handled by Vike
             isPointerImport ||
               // Import of config code => loaded by Node.js at build-time
-              isNodeModules
+              isNpmPkgImport
           )
           pointerImports[importPathTranspiled] = isPointerImport
           return { external: true, path: importPathTranspiled }
