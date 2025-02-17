@@ -163,10 +163,10 @@ function getValueSerializedWithImport(
 ): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
-  const { valueIsDefinedByPlusFile, definedAtFilePath, configEnv } = configValueSource
+  const { valueIsDefinedByPlusValueFile, definedAtFilePath, configEnv } = configValueSource
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
-  if (valueIsDefinedByPlusFile) assert(fileExportName === undefined)
+  if (valueIsDefinedByPlusValueFile) assert(fileExportName === undefined)
   const { importName } = addImportStatement(
     importStatements,
     filePathAbsoluteVite,
@@ -177,7 +177,7 @@ function getValueSerializedWithImport(
   )
 
   return {
-    type: valueIsDefinedByPlusFile ? 'plus-file' : 'pointer-import',
+    type: valueIsDefinedByPlusValueFile ? 'plus-file' : 'pointer-import',
     valueAsJsCode: importName
   }
 }

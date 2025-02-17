@@ -508,7 +508,7 @@ function temp_interopVikeVitePlugin(
       plusFile: null,
       isOverriden: configDef.cumulative ? false : sources.length > 0,
       valueIsLoadedWithImport: false,
-      valueIsDefinedByPlusFile: false
+      valueIsDefinedByPlusValueFile: false
     })
   })
 }
@@ -697,7 +697,7 @@ function getConfigValueSource(
       valueIsFilePath: true,
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
-      valueIsDefinedByPlusFile: false,
+      valueIsDefinedByPlusValueFile: false,
       isOverriden,
       definedAtFilePath
     }
@@ -724,7 +724,7 @@ function getConfigValueSource(
         ...value,
         configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
         valueIsLoadedWithImport: true,
-        valueIsDefinedByPlusFile: false,
+        valueIsDefinedByPlusValueFile: false,
         isOverriden,
         definedAtFilePath: pointerImport.fileExportPath
       }
@@ -738,7 +738,7 @@ function getConfigValueSource(
       value: confVal.value,
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
-      valueIsDefinedByPlusFile: false,
+      valueIsDefinedByPlusValueFile: false,
       isOverriden,
       definedAtFilePath: definedAtFilePath_
     }
@@ -754,7 +754,7 @@ function getConfigValueSource(
       ...confVal,
       configEnv: configEnvResolved,
       valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
-      valueIsDefinedByPlusFile: true,
+      valueIsDefinedByPlusValueFile: true,
       isOverriden,
       definedAtFilePath: {
         ...plusFile.filePath,
