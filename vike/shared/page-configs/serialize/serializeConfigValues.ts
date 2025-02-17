@@ -1,5 +1,6 @@
 export { serializeConfigValues }
 export { getConfigValuesBase }
+export { isJsonValue }
 export type { FilesEnv }
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
@@ -18,6 +19,7 @@ import { parsePointerImportData } from '../../../node/plugin/plugins/importUserC
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
+const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
 
@@ -80,7 +82,7 @@ function getValueSerializedFromSource(
 ) {
   assert(configValueSource.isOverriden === false)
   let valueData: ValueData
-  if ('value' in configValueSource) {
+  if ('value' in configValueSource && !configValueSource.valueIsImportedAtRuntime) {
     valueData = getValueSerializedWithJson(
       configValueSource.value,
       configName,
@@ -161,8 +163,7 @@ function getValueSerializedWithImport(
 ): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
-  const { valueIsImportedAtRuntime, valueIsDefinedByPlusFile, definedAtFilePath, configEnv } = configValueSource
-  assert(valueIsImportedAtRuntime)
+  const { valueIsDefinedByPlusFile, definedAtFilePath, configEnv } = configValueSource
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
   if (valueIsDefinedByPlusFile) assert(fileExportName === undefined)
@@ -209,7 +210,7 @@ function valueToJson(
   try {
     configValueSerialized = stringify(value, {
       valueName,
-      forbidReactElements: true,
+      ...stringifyOptions,
       // Replace import strings with import variables.
       // - We don't need this anymore and could remove it.
       //   - We temporarily needed it for nested document configs (`config.document.{title,description,favicon}`), but we finally decided to go for flat document configs instead (`config.{title,description,favicon}`).
@@ -243,6 +244,14 @@ function valueToJson(
   assert(!configValueSerialized.includes(REPLACE_ME_AFTER))
 
   return configValueSerialized
+}
+function isJsonValue(value: unknown): boolean {
+  try {
+    stringify(value, stringifyOptions)
+  } catch (err) {
+    return false
+  }
+  return true
 }
 function logJsonSerializeError(err: unknown, configName: string, definedAtData: DefinedAtData) {
   /*

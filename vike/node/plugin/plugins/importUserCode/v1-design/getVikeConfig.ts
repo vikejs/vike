@@ -76,7 +76,7 @@ import {
   type PageConfigUserFriendly,
   type PageConfigsUserFriendly
 } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
-import { getConfigValuesBase } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
+import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 
 assertIsNotProductionRuntime()
@@ -696,7 +696,10 @@ function getConfigValueSource(
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv: configDef.env,
+      /* TODO/now: rename to valueIsLoadedWithImport
       valueIsImportedAtRuntime: true,
+      */
+      valueIsImportedAtRuntime: false,
       valueIsDefinedByPlusFile: false,
       isOverriden,
       definedAtFilePath
@@ -763,8 +766,8 @@ function getConfigValueSource(
       ...configValueSourceCommon,
       ...value,
       configEnv: configEnvResolved,
-      valueIsImportedAtRuntime: !valueAlreadyLoaded,
-      valueIsDefinedByPlusFile: true,
+      valueIsImportedAtRuntime: !valueAlreadyLoaded || !isJsonValue(value),
+      valueIsDefinedByPlusFile: true, // TODO/now: rename? Do we still need this?
       isOverriden,
       definedAtFilePath: {
         ...plusFile.filePath,
