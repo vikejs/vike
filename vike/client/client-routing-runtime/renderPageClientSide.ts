@@ -61,7 +61,7 @@ const globalObject = getGlobalObject<{
   onRenderClientPreviousPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
-  previousPageContext: PreviousPageContext | null
+  previousPageContext?: PreviousPageContext
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
@@ -69,7 +69,6 @@ const globalObject = getGlobalObject<{
   (() => {
     const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
     return {
-      previousPageContext: null,
       renderCounter: 0,
       firstRenderStartPromise,
       firstRenderStartPromiseResolve
