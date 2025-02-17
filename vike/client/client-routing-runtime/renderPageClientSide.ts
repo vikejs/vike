@@ -14,7 +14,8 @@ import {
   augmentType,
   genPromise,
   isCallable,
-  catchInfiniteLoop
+  catchInfiniteLoop,
+  sleep
 } from './utils.js'
 import {
   getPageContextFromClientHooks,
@@ -54,6 +55,7 @@ import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
+import type { PageContextClient } from '../../shared/types.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -91,7 +93,7 @@ type RenderArgs = {
   isClientSideNavigation?: boolean
   pageContextInitClient?: Record<string, unknown>
 }
-async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
+async function renderPageClientSide(renderArgs: RenderArgs): Promise<PageContextClient> {
   catchInfiniteLoop('renderPageClientSide()')
 
   const {
@@ -114,23 +116,23 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
 
   if (globalObject.clientRoutingIsDisabled) {
     redirectHard(urlOriginal)
-    return
+    await sleep(Infinity)
+    assert(false)
   }
 
   globalObject.firstRenderStartPromiseResolve()
   if (isRenderOutdated()) return
 
-  await renderPageNominal()
+  const pageContext = await renderPageNominal()
+  return pageContext
 
-  return
-
-  async function renderPageNominal() {
+  async function renderPageNominal(): Promise<ReturnType<typeof getPageContextBegin>> {
     const onError = async (err: unknown) => {
       await renderErrorPage({ err })
     }
 
     const pageContext = await getPageContextBegin(false)
-    if (isRenderOutdated()) return
+    if (isRenderOutdated()) return pageContext
 
     // onPageTransitionStart()
     if (globalObject.isFirstRenderDone) {
@@ -148,9 +150,9 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
             await executeHook(() => hookFn(pageContext), hook, pageContext)
           } catch (err) {
             await onError(err)
-            return
+            return pageContext
           }
-          if (isRenderOutdated()) return
+          if (isRenderOutdated()) return pageContext
         }
       }
     }
