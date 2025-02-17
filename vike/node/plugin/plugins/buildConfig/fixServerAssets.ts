@@ -118,6 +118,8 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
 
   let filesToMove: string[] = []
   let filesToRemove: string[] = []
+
+  // Copy page assets
   for (const [pageId, entryClient] of entriesClient.entries()) {
     const entryServer = entriesServer.get(pageId)
     if (!entryServer) continue
@@ -166,6 +168,39 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
       filesToRemove.push(...assetsToRemove)
       serverManifest[key]!.assets ??= []
       serverManifest[key]!.assets = serverManifest[key]!.assets!.filter((entry) => !assetsToRemove.includes(entry))
+    }
+  }
+
+  // Also copy assets of virtual:@brillout/vite-plugin-server-entry:serverEntry
+  {
+    const filesClientAll: string[] = []
+    for (const key in clientManifest) {
+      const entry = clientManifest[key]!
+      filesClientAll.push(entry.file)
+      filesClientAll.push(...(entry.assets ?? []))
+      filesClientAll.push(...(entry.css ?? []))
+    }
+    for (const key in serverManifest) {
+      const entry = serverManifest[key]!
+      if (!entry.isEntry) continue
+      const resources = collectResources(entry, serverManifest)
+      const css = unique(resources.css)
+        .map((css) => css.src)
+        .filter((file) => !filesClientAll.includes(file))
+      const assets = unique(resources.assets)
+        .map((asset) => asset.src)
+        .filter((file) => !filesClientAll.includes(file))
+      filesToMove.push(...css, ...assets)
+      if (css.length > 0 || assets.length > 0) {
+        assert(!clientManifest[key])
+        clientManifest[key] = {
+          ...entry,
+          css,
+          assets,
+          dynamicImports: undefined,
+          imports: undefined
+        }
+      }
     }
   }
 
