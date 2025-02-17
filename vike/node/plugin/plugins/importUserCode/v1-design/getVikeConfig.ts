@@ -507,7 +507,7 @@ function temp_interopVikeVitePlugin(
       locationId: '/' as LocationId,
       plusFile: null,
       isOverriden: configDef.cumulative ? false : sources.length > 0,
-      valueIsImportedAtRuntime: false,
+      valueIsLoadedWithImport: false,
       valueIsDefinedByPlusFile: false
     })
   })
@@ -696,7 +696,7 @@ function getConfigValueSource(
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv: configDef.env,
-      valueIsImportedAtRuntime: false,
+      valueIsLoadedWithImport: false,
       valueIsDefinedByPlusFile: false,
       isOverriden,
       definedAtFilePath
@@ -724,7 +724,7 @@ function getConfigValueSource(
         ...configValueSourceCommon,
         ...value,
         configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-        valueIsImportedAtRuntime: true,
+        valueIsLoadedWithImport: true,
         valueIsDefinedByPlusFile: false,
         isOverriden,
         definedAtFilePath: pointerImport.fileExportPath
@@ -738,7 +738,7 @@ function getConfigValueSource(
       valueIsLoaded: true,
       value: configValue,
       configEnv: configDef.env,
-      valueIsImportedAtRuntime: false,
+      valueIsLoadedWithImport: false,
       valueIsDefinedByPlusFile: false,
       isOverriden,
       definedAtFilePath: definedAtFilePath_
@@ -763,7 +763,7 @@ function getConfigValueSource(
       ...configValueSourceCommon,
       ...value,
       configEnv: configEnvResolved,
-      valueIsImportedAtRuntime: !valueAlreadyLoaded || !isJsonValue(value),
+      valueIsLoadedWithImport: !valueAlreadyLoaded || !isJsonValue(value),
       valueIsDefinedByPlusFile: true, // TODO/now: rename? Do we still need this?
       isOverriden,
       definedAtFilePath: {
