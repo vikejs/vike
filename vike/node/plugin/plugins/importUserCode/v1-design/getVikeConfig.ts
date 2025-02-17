@@ -754,7 +754,7 @@ function getConfigValueSource(
       ...confVal,
       configEnv: configEnvResolved,
       valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
-      valueIsDefinedByPlusFile: true, // TODO/now: rename? Do we still need this?
+      valueIsDefinedByPlusFile: true,
       isOverriden,
       definedAtFilePath: {
         ...plusFile.filePath,
