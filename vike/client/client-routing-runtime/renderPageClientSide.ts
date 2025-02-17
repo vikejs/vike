@@ -2,6 +2,7 @@ export { renderPageClientSide }
 export { getRenderCount }
 export { disableClientRouting }
 export { firstRenderStartPromise }
+export { getPageContextClient }
 
 import {
   assert,
@@ -54,6 +55,7 @@ import type { PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
+import type { PageContextClient } from '../../shared/types.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
@@ -61,7 +63,8 @@ const globalObject = getGlobalObject<{
   onRenderClientPreviousPromise?: Promise<unknown>
   isFirstRenderDone?: true
   isTransitioning?: true
-  previousPageContext: PreviousPageContext | null
+  previousPageContext?: PreviousPageContext
+  renderedPageContext?: PageContextClient
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
 }>(
@@ -69,7 +72,6 @@ const globalObject = getGlobalObject<{
   (() => {
     const { promise: firstRenderStartPromise, resolve: firstRenderStartPromiseResolve } = genPromise()
     return {
-      previousPageContext: null,
       renderCounter: 0,
       firstRenderStartPromise,
       firstRenderStartPromiseResolve
@@ -581,6 +583,8 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     addLinkPrefetchHandlers_watch()
     addLinkPrefetchHandlers()
 
+    globalObject.renderedPageContext = pageContext as any as PageContextClient
+
     stampFinished(urlOriginal)
   }
 }
@@ -715,4 +719,13 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
   if (key1 === key2) return true
   if (!Array.isArray(key1) || !Array.isArray(key2)) return false
   return key1.length === key2.length && key1.every((_, i) => key1[i] === key2[i])
+}
+
+/**
+ * Get the `pageContext` object on the client-side.
+ *
+ * https://vike.dev/getPageContextClient
+ */
+function getPageContextClient(): PageContextClient | null {
+  return globalObject.renderedPageContext ?? null
 }
