@@ -62,7 +62,7 @@ async function crawlPlusFiles(
     (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, outDirRelativeFromUserRootDir))
   let files = !filesGitNothingFound
     ? filesGit
-    : // Fallback to fast-glob for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
+    : // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
       filesGlob
   assert(files)
   if (debug.isActivated) assert(deepEqual(filesGlob, filesGit), "Git and glob results aren't matching.")
@@ -72,7 +72,7 @@ async function crawlPlusFiles(
 
   // Normalize
   const plusFiles = files.map((filePath) => {
-    // Both `$ git-ls files` and fast-glob return posix paths
+    // Both `$ git-ls files` and tinyglobby return posix paths
     assertPosixPath(filePath)
     assert(!filePath.startsWith(userRootDir))
     const filePathAbsoluteUserRootDir = path.posix.join('/', filePath)
