@@ -748,21 +748,12 @@ function getConfigValueSource(
   // Defined by value file, i.e. +{configName}.js
   if (!plusFile.isConfigFile) {
     const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
-    const valueAlreadyLoaded = confVal.valueIsLoaded
-    assert(valueAlreadyLoaded === !!configEnvResolved.config)
-    const value = valueAlreadyLoaded
-      ? {
-          valueIsLoaded: true as const,
-          value: confVal.value
-        }
-      : {
-          valueIsLoaded: false as const
-        }
+    assert(confVal.valueIsLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
-      ...value,
+      ...confVal,
       configEnv: configEnvResolved,
-      valueIsLoadedWithImport: !valueAlreadyLoaded || !isJsonValue(value.value),
+      valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
       valueIsDefinedByPlusFile: true, // TODO/now: rename? Do we still need this?
       isOverriden,
       definedAtFilePath: {
