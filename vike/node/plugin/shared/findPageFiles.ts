@@ -18,7 +18,7 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[], isDe
   pageFiles = pageFiles.map((p) => '/' + toPosixPath(p))
   const time = new Date().getTime() - timeBase
   if (isDev) {
-    // We only warn in dev, because while building it's expected to take a long time as globbing is competing for resources with other tasks
+    // We only warn in dev, because while building it's expected to take a long time as tinyglobby is competing for resources with other tasks
     assertWarning(
       time < 1.5 * 1000,
       `Finding your page files ${pc.cyan(
