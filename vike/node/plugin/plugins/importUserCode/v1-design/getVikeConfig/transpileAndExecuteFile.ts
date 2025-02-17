@@ -228,10 +228,11 @@ async function transpileWithEsbuild(
             //    - In practice, it seems like it requires some (non-trivial?) refactoring.
             isVikeExtensionImport
 
+          // Externalize npm package imports
           assertPosixPath(importPathResolved)
           const isNpmPkgImport =
             importPathResolved.includes('/node_modules/') ||
-            // Linked packages
+            // Linked npm packages
             !importPathResolved.startsWith(userRootDir)
 
           const isExternal =
