@@ -120,6 +120,7 @@ type ConfigValueSource = {
   valueIsLoadedWithImport: boolean
   /** Whether the config value is a file path, for example config.client */
   valueIsFilePath?: true
+  /** Whether the config value is defined by a +{configName}.js file */
   valueIsDefinedByPlusValueFile: boolean
 } & (
   | {
