@@ -229,7 +229,6 @@ async function transpileWithEsbuild(
             isVikeExtensionImport
 
           assertPosixPath(importPathResolved)
-          // TODO/now: rename isNpmPackage
           const isNodeModules =
             importPathResolved.includes('/node_modules/') ||
             // Linked packages
