@@ -120,7 +120,12 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     cumulative: true
   },
   route: {
-    env: { server: true, client: 'if-client-routing' },
+    env: {
+      server: true,
+      client: 'if-client-routing',
+      // For vite-plugin-vercel
+      config: true
+    },
     eager: true
   },
   guard: {
