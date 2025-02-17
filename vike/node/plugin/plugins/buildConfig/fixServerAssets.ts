@@ -124,7 +124,7 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
 
     const cssToMove: string[] = []
     const cssToRemove: string[] = []
-    const assetsToAdd: string[] = []
+    const assetsToMove: string[] = []
     const assetsToRemove: string[] = []
 
     entryServer.css.forEach((cssServer) => {
@@ -136,7 +136,7 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
     })
     entryServer.assets.forEach((assetServer) => {
       if (!entryClient.assets.some((assetClient) => assetServer.hash === assetClient.hash)) {
-        assetsToAdd.push(assetServer.src)
+        assetsToMove.push(assetServer.src)
       } else {
         assetsToRemove.push(assetServer.src)
       }
@@ -155,11 +155,11 @@ function addServerAssets(clientManifest: ViteManifest, serverManifest: ViteManif
       serverManifest[key]!.css = serverManifest[key]!.css!.filter((entry) => !cssToRemove.includes(entry))
     }
 
-    if (assetsToAdd.length) {
+    if (assetsToMove.length) {
       const { key } = entryClient
-      filesToMove.push(...assetsToAdd)
+      filesToMove.push(...assetsToMove)
       clientManifest[key]!.assets ??= []
-      clientManifest[key]!.assets?.push(...assetsToAdd)
+      clientManifest[key]!.assets?.push(...assetsToMove)
     }
     if (assetsToRemove.length) {
       const { key } = entryServer
