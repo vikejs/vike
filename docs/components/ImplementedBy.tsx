@@ -12,10 +12,10 @@ function ImplementedBy({
 }: { children: React.ReactNode; list?: UiFrameworkExtensionList; noCustomGuide?: true }) {
   return (
     <>
-      <p className="no-top-margin">Implemented by: {<UiFrameworkExtension name noLink list={list} />}.</p>
+      <p className="no-top-margin">Implemented by: {<UiFrameworkExtension name list={list} />}.</p>
       <blockquote>
         <p>
-          You need {<UiFrameworkExtension name noLink list={list} />} to be able to use {children ?? 'this setting'}.
+          You need {<UiFrameworkExtension name list={list} />} to be able to use {children ?? 'this setting'}.
           {!noCustomGuide && (
             <>
               {' '}
