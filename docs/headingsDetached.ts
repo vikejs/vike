@@ -577,6 +577,10 @@ function api(): HeadingDetachedDefinition[] {
       url: '/getPageContext'
     },
     {
+      title: '`getPageContextClient()`',
+      url: '/getPageContextClient'
+    },
+    {
       title: 'HTTP Headers',
       url: '/headers'
     },

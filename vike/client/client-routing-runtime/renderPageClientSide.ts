@@ -720,6 +720,11 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
   return key1.length === key2.length && key1.every((_, i) => key1[i] === key2[i])
 }
 
+/**
+ * Get the `pageContext` object on the client-side.
+ *
+ * https://vike.dev/getPageContextClient
+ */
 function getPageContextClient(): null | PageContextClient {
   return globalObject.renderedPageContext ?? null
 }
