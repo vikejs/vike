@@ -91,8 +91,8 @@ function assertExtensionsRequire(pageConfig: PageConfigBuildTime): void {
 function getConfigRequireValue(plusFile: PlusFile): null | Record<string, string> {
   const confVal = getConfVal(plusFile, 'require')
   if (!confVal) return null
-  assert(confVal.configValueLoaded)
-  const require = confVal.configValue
+  assert(confVal.valueIsLoaded)
+  const require = confVal.value
   const { filePathToShowToUserResolved } = plusFile.filePath
   assert(filePathToShowToUserResolved)
   assertUsage(
@@ -109,8 +109,8 @@ function getConfigRequireValue(plusFile: PlusFile): null | Record<string, string
 function getNameValue(plusFile: PlusFile): null | string {
   const confVal = getConfVal(plusFile, 'name')
   if (!confVal) return null
-  assert(confVal.configValueLoaded)
-  const name = confVal.configValue
+  assert(confVal.valueIsLoaded)
+  const name = confVal.value
   const filePathToShowToUser = getFilePathToShowToUser(plusFile)
   assertUsage(
     typeof name === 'string',

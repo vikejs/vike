@@ -82,7 +82,7 @@ function getValueSerializedFromSource(
 ) {
   assert(configValueSource.isOverriden === false)
   let valueData: ValueData
-  if ('value' in configValueSource && !configValueSource.valueIsImportedAtRuntime) {
+  if ('value' in configValueSource && !configValueSource.valueIsLoadedWithImport) {
     valueData = getValueSerializedWithJson(
       configValueSource.value,
       configName,
@@ -163,10 +163,10 @@ function getValueSerializedWithImport(
 ): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
-  const { valueIsDefinedByPlusFile, definedAtFilePath, configEnv } = configValueSource
+  const { valueIsDefinedByPlusValueFile, definedAtFilePath, configEnv } = configValueSource
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
-  if (valueIsDefinedByPlusFile) assert(fileExportName === undefined)
+  if (valueIsDefinedByPlusValueFile) assert(fileExportName === undefined)
   const { importName } = addImportStatement(
     importStatements,
     filePathAbsoluteVite,
@@ -177,7 +177,7 @@ function getValueSerializedWithImport(
   )
 
   return {
-    type: valueIsDefinedByPlusFile ? 'plus-file' : 'pointer-import',
+    type: valueIsDefinedByPlusValueFile ? 'plus-file' : 'pointer-import',
     valueAsJsCode: importName
   }
 }

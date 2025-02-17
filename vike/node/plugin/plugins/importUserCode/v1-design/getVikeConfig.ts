@@ -507,8 +507,8 @@ function temp_interopVikeVitePlugin(
       locationId: '/' as LocationId,
       plusFile: null,
       isOverriden: configDef.cumulative ? false : sources.length > 0,
-      valueIsImportedAtRuntime: false,
-      valueIsDefinedByPlusFile: false
+      valueIsLoadedWithImport: false,
+      valueIsDefinedByPlusValueFile: false
     })
   })
 }
@@ -675,8 +675,8 @@ function getConfigValueSource(
     let valueFilePath: string
     if (plusFile.isConfigFile) {
       // Defined over pointer import
-      assert(confVal.configValueLoaded)
-      const pointerImport = resolvePointerImport(confVal.configValue, plusFile.filePath, userRootDir, configName)
+      assert(confVal.valueIsLoaded)
+      const pointerImport = resolvePointerImport(confVal.value, plusFile.filePath, userRootDir, configName)
       const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtFilePath_)
       assertUsage(pointerImport, `${configDefinedAt} should be an import`)
       valueFilePath = pointerImport.fileExportPath.filePathAbsoluteVite
@@ -696,11 +696,8 @@ function getConfigValueSource(
       value: valueFilePath,
       valueIsFilePath: true,
       configEnv: configDef.env,
-      /* TODO/now: rename to valueIsLoadedWithImport
-      valueIsImportedAtRuntime: true,
-      */
-      valueIsImportedAtRuntime: false,
-      valueIsDefinedByPlusFile: false,
+      valueIsLoadedWithImport: false,
+      valueIsDefinedByPlusValueFile: false,
       isOverriden,
       definedAtFilePath
     }
@@ -709,8 +706,7 @@ function getConfigValueSource(
 
   // +config.js
   if (plusFile.isConfigFile) {
-    assert(confVal.configValueLoaded)
-    const { configValue } = confVal
+    assert(confVal.valueIsLoaded)
 
     // Defined over pointer import
     const pointerImport = plusFile.pointerImportsByConfigName[configName]
@@ -727,8 +723,8 @@ function getConfigValueSource(
         ...configValueSourceCommon,
         ...value,
         configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
-        valueIsImportedAtRuntime: true,
-        valueIsDefinedByPlusFile: false,
+        valueIsLoadedWithImport: true,
+        valueIsDefinedByPlusValueFile: false,
         isOverriden,
         definedAtFilePath: pointerImport.fileExportPath
       }
@@ -739,10 +735,10 @@ function getConfigValueSource(
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
       valueIsLoaded: true,
-      value: configValue,
+      value: confVal.value,
       configEnv: configDef.env,
-      valueIsImportedAtRuntime: false,
-      valueIsDefinedByPlusFile: false,
+      valueIsLoadedWithImport: false,
+      valueIsDefinedByPlusValueFile: false,
       isOverriden,
       definedAtFilePath: definedAtFilePath_
     }
@@ -752,22 +748,13 @@ function getConfigValueSource(
   // Defined by value file, i.e. +{configName}.js
   if (!plusFile.isConfigFile) {
     const configEnvResolved = resolveConfigEnv(configDef.env, plusFile.filePath)
-    const valueAlreadyLoaded = confVal.configValueLoaded
-    assert(valueAlreadyLoaded === !!configEnvResolved.config)
-    const value = valueAlreadyLoaded
-      ? {
-          valueIsLoaded: true as const,
-          value: confVal.configValue
-        }
-      : {
-          valueIsLoaded: false as const
-        }
+    assert(confVal.valueIsLoaded === !!configEnvResolved.config)
     const configValueSource: ConfigValueSource = {
       ...configValueSourceCommon,
-      ...value,
+      ...confVal,
       configEnv: configEnvResolved,
-      valueIsImportedAtRuntime: !valueAlreadyLoaded || !isJsonValue(value),
-      valueIsDefinedByPlusFile: true, // TODO/now: rename? Do we still need this?
+      valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
+      valueIsDefinedByPlusValueFile: true,
       isOverriden,
       definedAtFilePath: {
         ...plusFile.filePath,
@@ -821,8 +808,8 @@ function getConfigDefinitions(
       plusFiles.forEach((plusFile) => {
         const confVal = getConfVal(plusFile, 'meta')
         if (!confVal) return
-        assert(confVal.configValueLoaded)
-        const meta = confVal.configValue
+        assert(confVal.valueIsLoaded)
+        const meta = confVal.value
         assertMetaUsage(meta, `Config ${pc.cyan('meta')} defined at ${plusFile.filePath.filePathToShowToUser}`)
 
         // Set configDef._userEffectDefinedAtFilePath
@@ -1188,11 +1175,11 @@ function getConfigDefinitionOptional(configDefinitions: ConfigDefinitions, confi
 function getConfVal(
   plusFile: PlusFile,
   configName: string
-): null | { configValue: unknown; configValueLoaded: true } | { configValueLoaded: false } {
+): null | { value: unknown; valueIsLoaded: true } | { valueIsLoaded: false } {
   const configNames = getDefiningConfigNames(plusFile)
   if (!configNames.includes(configName)) return null
-  if (plusFile.isNotLoaded) return { configValueLoaded: false }
-  const confVal = { configValue: plusFile.fileExportsByConfigName[configName], configValueLoaded: true }
+  if (plusFile.isNotLoaded) return { valueIsLoaded: false }
+  const confVal = { value: plusFile.fileExportsByConfigName[configName], valueIsLoaded: true }
   return confVal
 }
 
