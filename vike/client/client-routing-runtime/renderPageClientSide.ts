@@ -584,6 +584,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     addLinkPrefetchHandlers()
 
     globalObject.renderedPageContext = pageContext as any as PageContextClient
+
     stampFinished(urlOriginal)
   }
 }
@@ -725,6 +726,6 @@ function areKeysEqual(key1: string | string[], key2: string | string[]): boolean
  *
  * https://vike.dev/getPageContextClient
  */
-function getPageContextClient(): null | PageContextClient {
+function getPageContextClient(): PageContextClient | null {
   return globalObject.renderedPageContext ?? null
 }

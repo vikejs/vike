@@ -7,9 +7,9 @@ Get <Link href="/pageContext">`pageContext`</Link> of the currently rendered pag
 It's usually used for getting the `pageContext` of a newly navigated page:
 
 ```jsx
-import { getPagecontextClient, navigate } from 'vike/client/router'
+import { getPageContextClient, navigate } from 'vike/client/router'
 
-function SignuForm() {
+function SignupForm() {
    return (
      <form onSubmit={onSubmit}>
        {/* ... */}
@@ -20,7 +20,8 @@ function SignuForm() {
 async function onSubmit() {
   await navigate('/welcome')
   // Get the `pageContext` object of the newly navigated /welcome page
-  const pageContext = getPagecontextClient()
+  const pageContext = getPageContextClient()
+  // ...
 }
 ```
 
