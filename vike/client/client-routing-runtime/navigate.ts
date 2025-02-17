@@ -6,7 +6,6 @@ import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import { firstRenderStartPromise, renderPageClientSide } from './renderPageClientSide.js'
 import type { ScrollTarget } from './setScrollPosition.js'
 import { assertClientRouting } from './utils.js'
-import type { PageContextClient } from '../../shared/types.js'
 
 assertClientRouting()
 
@@ -25,24 +24,22 @@ async function navigate(
     overwriteLastHistoryEntry = false,
     pageContext
   }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean; pageContext?: Record<string, unknown> } = {}
-): Promise<{ pageContext: PageContextClient }> {
+): Promise<void> {
   normalizeUrlArgument(url, 'navigate')
 
   // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
   await firstRenderStartPromise
 
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition }
-  const pageContextNew = await renderPageClientSide({
+  await renderPageClientSide({
     scrollTarget,
     urlOriginal: url,
     overwriteLastHistoryEntry,
     isBackwardNavigation: false,
     pageContextInitClient: pageContext
   })
-  return { pageContext: pageContextNew }
 }
 
-async function reload(): Promise<{ pageContext: PageContextClient }> {
-  const { pageContext } = await navigate(getCurrentUrl())
-  return { pageContext }
+async function reload(): Promise<void> {
+  await navigate(getCurrentUrl())
 }
