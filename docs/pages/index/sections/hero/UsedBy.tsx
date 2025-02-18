@@ -9,6 +9,7 @@ import usedByEcosia from './UsedBy/usedby-ecosia.svg'
 import usedByContra from './UsedBy/usedby-contra.svg'
 import usedByName from './UsedBy/usedby-name.svg'
 import usedByChip from './UsedBy/usedby-chip.svg'
+import usedByDia from './UsedBy/usedby-dia.svg'
 import { IllustrationNote } from '../../components/IllustrationNote'
 import { Link } from '@brillout/docpress'
 
@@ -24,14 +25,14 @@ const data: {
   {
     website: 'https://name.com',
     name: 'Name.com',
-    desc: 'One of the leading domain registrar',
+    desc: 'Popular domain registrar',
     logo: usedByName,
     offset: 5,
     order: 0
   },
   {
     website: 'https://contra.com',
-    desc: 'Disruptive Upwork alternative',
+    desc: 'Upwork alternative',
     name: 'Contra',
     logo: usedByContra,
     shrink: 40,
@@ -40,7 +41,7 @@ const data: {
   },
   {
     website: 'https://app.spline.design',
-    desc: 'Most advanced 3D design web app',
+    desc: 'Advanced 3D design web app',
     name: 'Spline',
     logo: usedBySpline,
     order: -200
@@ -56,10 +57,17 @@ const data: {
   },
   {
     website: 'https://bild.de',
-    desc: "Germany's most read news",
+    desc: "Germany's most read newspaper",
     name: 'Bild.de',
     logo: usedByBild,
     order: -100
+  },
+  {
+    website: 'https://dia.es',
+    desc: "Spain's largest supermarket (number of stores)",
+    name: 'Dia.es',
+    logo: usedByDia,
+    order: 100
   }
   /*
   {
