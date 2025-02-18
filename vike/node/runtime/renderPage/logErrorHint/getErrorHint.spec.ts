@@ -954,6 +954,23 @@ Error: Element type is invalid: expected a string (for built-in components) or a
         )
       )
     ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
+    expect(
+      getErrorHint(
+        createErr(
+          `Error: Objects are not valid as a React child (found: object with keys {$$typeof, type, key, props, _owner, _store}). If you meant to render a collection of children, use an array instead.
+    at renderNodeDestructiveImpl (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6194:11)
+    at renderNodeDestructive (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)
+    at renderIndeterminateComponent (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5790:7)
+    at renderElement (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5961:7)
+    at renderNodeDestructiveImpl (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6119:11)
+    at renderNodeDestructive (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)
+    at renderNode (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6274:12)
+    at renderChildrenArray (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6226:7)
+    at renderNodeDestructiveImpl (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6156:7)
+    at renderNodeDestructive (/home/rom/code/docpress/node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6091:14)`
+        )
+      )
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#react-invalid-component"`)
   })
 }
 

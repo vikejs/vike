@@ -33,12 +33,18 @@ const errorsMisc: Errors[] = [
     mustMentionNodeModules: false
   }
 ]
+const reactInvalidEelement = 'https://vike.dev/broken-npm-package#react-invalid-component'
 const errorsReact: Errors[] = [
   {
     errMsg:
       'Element type is invalid: expected a string (for built-in components) or a class/function (for composite components)',
-    link: 'https://vike.dev/broken-npm-package#react-invalid-component',
+    link: reactInvalidEelement,
     // The stack trace can be user-land while the import is coming from node_modules
+    mustMentionNodeModules: false
+  },
+  {
+    errMsg: 'Objects are not valid as a React child',
+    link: reactInvalidEelement,
     mustMentionNodeModules: false
   },
   {
