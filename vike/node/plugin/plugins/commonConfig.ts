@@ -221,6 +221,11 @@ function temp_supportOldInterface(config: ResolvedConfig) {
   assert(false)
 }
 
+// TODO/soon rename:
+// - `getVikeConfig()` => `resolveVikeConfig()` ?
+// - `getVikeConfigPublic()` => `getVikeConfig()`
+// - `VikeConfigPublic` => `VikeConfig` ?
+// - `VikeConfigObject` => `VikeConfigInternal` ?
 function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
   const vikeConfig = config.vike
   assert(vikeConfig)
