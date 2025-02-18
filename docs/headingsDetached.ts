@@ -581,6 +581,10 @@ function api(): HeadingDetachedDefinition[] {
       url: '/getPageContextClient'
     },
     {
+      title: '`getVikeConfig()`',
+      url: '/getVikeConfig'
+    },
+    {
       title: 'HTTP Headers',
       url: '/headers'
     },

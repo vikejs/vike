@@ -226,6 +226,11 @@ function temp_supportOldInterface(config: ResolvedConfig) {
 // - `getVikeConfigPublic()` => `getVikeConfig()`
 // - `VikeConfigPublic` => `VikeConfig` ?
 // - `VikeConfigObject` => `VikeConfigInternal` ?
+/**
+ * Get all the information Vike knows about the app in your Vite plugin.
+ *
+ * https://vike.dev/getVikeConfig
+ */
 function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
   const vikeConfig = config._vike
   assert(vikeConfig)
