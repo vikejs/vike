@@ -1,4 +1,5 @@
 export { commonConfig }
+export { getVikeConfigPublic }
 
 import { type InlineConfig, mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -33,12 +34,14 @@ declare module 'vite' {
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
-    vike?: {
-      config: VikeConfigObject['global']['config']
-      pages: VikeConfigObject['pages']
-      prerenderContext?: PrerenderContextPublic
-    }
+    _vike?: VikeConfigPublic
   }
+}
+
+type VikeConfigPublic = {
+  config: VikeConfigObject['global']['config']
+  pages: VikeConfigObject['pages']
+  prerenderContext?: PrerenderContextPublic
 }
 
 function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
@@ -58,7 +61,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _isDev: isDev,
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
-            vike: {
+            _vike: {
               pages: vikeConfig.pages,
               config: vikeConfig.global.config
             },
@@ -216,4 +219,20 @@ function temp_supportOldInterface(config: ResolvedConfig) {
     return
   }
   assert(false)
+}
+
+// TODO/soon rename:
+// - `getVikeConfig()` => `resolveVikeConfig()` ?
+// - `getVikeConfigPublic()` => `getVikeConfig()`
+// - `VikeConfigPublic` => `VikeConfig` ?
+// - `VikeConfigObject` => `VikeConfigInternal` ?
+/**
+ * Get all the information Vike knows about the app in your Vite plugin.
+ *
+ * https://vike.dev/getVikeConfig
+ */
+function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
+  const vikeConfig = config._vike
+  assert(vikeConfig)
+  return vikeConfig
 }

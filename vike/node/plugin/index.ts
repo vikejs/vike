@@ -2,9 +2,10 @@ export default plugin
 export { plugin }
 // TODO/v1-release: remove
 export { plugin as ssr }
+export { getVikeConfigPublic as getVikeConfig } from './plugins/commonConfig.js'
+export { PROJECT_VERSION as version } from './utils.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
-export { PROJECT_VERSION as version } from './utils.js'
 
 import type { Plugin } from 'vite'
 import { assertUsage } from './utils.js'

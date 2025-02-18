@@ -1,0 +1,47 @@
+import { Warning, Link } from '@brillout/docpress'
+
+Environment: Vite.
+
+Get all the information Vike knows about the app in your Vite plugin.
+
+<Warning>It's a beta feature: expect breaking changes in any minor version update.</Warning>
+
+> It provides all configurations loaded at build-time set by <Link href="/config#files">`+` files</Link> and <Link href="/extensions">Vike extensions</Link>.
+>
+> You can also use `globalContext.config` and `globalContext.pages` to get all configurations loaded at runtime, see <Link href="/getGlobalContext" />.
+
+```js
+// vite.config.js
+
+import { getVikeConfig } from 'vike/plugin'
+
+export default {
+  plugins: [myVitePlugin()]
+}
+
+function myVitePlugin() {
+  return {
+    name: 'myVitePlugin',
+    configResolved(config) {
+      const vike = getVikeConfig(config)
+      console.log(vike.config.prerender)
+      console.log(vike.config.baseAssets)
+      console.log(vike.config.baseServer)
+      console.log(vike.pages['/pages/index'].config)
+      console.log(vike.pages['/pages/product'].route)
+      // ...
+    },
+    config(config) {
+      // Also available here
+      const vike = getVikeConfig(config)
+    }
+  }
+}
+```
+
+## See also
+
+- <Link href="/config#files" />
+- <Link href="/getGlobalContext" />
+- [Vite > Plugin API > `configResolved`](https://vite.dev/guide/api-plugin.html#configresolved)
+- [Vite > Plugin API > `config`](https://vite.dev/guide/api-plugin.html#config)
