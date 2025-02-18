@@ -17,7 +17,6 @@ function testPlugin(): PluginOption {
     name: 'testPlugin',
     configResolved(config) {
       const vike = getVikeConfig(config as any)
-      assert(vike.config)
       assert(typeof vike.config.prerender![0] === 'object')
       assert(vike.config.prerender![0].noExtraDir)
       assert(vike.pages)
