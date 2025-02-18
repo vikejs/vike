@@ -1,4 +1,5 @@
 export { commonConfig }
+export { getVikeConfigPublic }
 
 import { type InlineConfig, mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -33,12 +34,14 @@ declare module 'vite' {
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
-    vike?: {
-      config: VikeConfigObject['global']['config']
-      pages: VikeConfigObject['pages']
-      prerenderContext?: PrerenderContextPublic
-    }
+    vike?: VikeConfigPublic
   }
+}
+
+type VikeConfigPublic = {
+  config: VikeConfigObject['global']['config']
+  pages: VikeConfigObject['pages']
+  prerenderContext?: PrerenderContextPublic
 }
 
 function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
@@ -216,4 +219,10 @@ function temp_supportOldInterface(config: ResolvedConfig) {
     return
   }
   assert(false)
+}
+
+function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
+  const vikeConfig = config.vike
+  assert(vikeConfig)
+  return vikeConfig
 }
