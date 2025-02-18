@@ -8,6 +8,7 @@ import { resolveOutDir } from '../shared/getOutDirs.js'
 import { assert } from '../utils.js'
 import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
 import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
+import { getVikeConfigPublic } from './commonConfig.js'
 
 function buildApp(): Plugin[] {
   let config: ResolvedConfig
@@ -20,7 +21,8 @@ function buildApp(): Plugin[] {
       name: 'vike:buildApp',
       apply: 'build',
       config(config) {
-        if (!config.vike!.config.viteEnvironmentAPI) return
+        const vike = getVikeConfigPublic(config)
+        if (!vike.config.viteEnvironmentAPI) return
 
         return {
           builder: {
@@ -66,7 +68,8 @@ function buildApp(): Plugin[] {
         config = _config
       },
       async writeBundle() {
-        if (!config.vike!.config.viteEnvironmentAPI) return
+        const vike = getVikeConfigPublic(config)
+        if (!vike.config.viteEnvironmentAPI) return
 
         const vikeConfig = await getVikeConfig(config)
         if (!isPrerenderAutoRunEnabled(vikeConfig)) return

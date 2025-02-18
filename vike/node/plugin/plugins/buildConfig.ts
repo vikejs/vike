@@ -36,6 +36,7 @@ import { getFilePathResolved } from '../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import { getOutDirs, type OutDirs, resolveOutDir } from '../shared/getOutDirs.js'
 import { viteIsSSR } from '../shared/viteIsSSR.js'
+import { getVikeConfigPublic } from './commonConfig.js'
 // @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -77,11 +78,12 @@ function buildConfig(): Plugin[] {
         order: 'post',
         handler(config) {
           onSetupBuild()
+          const vike = getVikeConfigPublic(config)
           return {
             build: {
               outDir: resolveOutDir(config),
               manifest: manifestTempFile,
-              copyPublicDir: config.vike!.config.viteEnvironmentAPI
+              copyPublicDir: vike.config.viteEnvironmentAPI
                 ? // Already set by buildApp() plugin
                   undefined
                 : !viteIsSSR(config)

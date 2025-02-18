@@ -34,7 +34,7 @@ declare module 'vite' {
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
-    vike?: VikeConfigPublic
+    _vike?: VikeConfigPublic
   }
 }
 
@@ -61,7 +61,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _isDev: isDev,
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
-            vike: {
+            _vike: {
               pages: vikeConfig.pages,
               config: vikeConfig.global.config
             },
@@ -227,7 +227,7 @@ function temp_supportOldInterface(config: ResolvedConfig) {
 // - `VikeConfigPublic` => `VikeConfig` ?
 // - `VikeConfigObject` => `VikeConfigInternal` ?
 function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
-  const vikeConfig = config.vike
+  const vikeConfig = config._vike
   assert(vikeConfig)
   return vikeConfig
 }

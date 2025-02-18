@@ -77,6 +77,7 @@ import { resolvePrerenderConfig, resolvePrerenderConfigLocal } from './resolvePr
 import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
+import { getVikeConfigPublic } from '../plugin/plugins/commonConfig.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -191,7 +192,8 @@ async function runPrerenderFromAutoRun(
     logErrorHint(err)
     process.exit(1)
   }
-  config.vike!.prerenderContext = prerenderContextPublic
+  const vike = getVikeConfigPublic(config)
+  vike.prerenderContext = prerenderContextPublic
   const forceExit = isVikeCli() || isViteCliCall()
   return { forceExit }
 }
