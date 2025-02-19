@@ -22,8 +22,8 @@ async function shimImportMetaUrl() {
 
 async function replaceImportMetaWithFilename(filePath) {
   const fileContent = await fs.readFile(filePath, 'utf8')
-  const modifiedContent = fileContent.replaceAll('import.meta.url', '`file://${__filename}`')
-  await fs.writeFile(filePath, modifiedContent, 'utf8')
+  const fileContentMod = fileContent.replaceAll('import.meta.url', '`file://${__filename}`')
+  await fs.writeFile(filePath, fileContentMod, 'utf8')
 }
 
 async function getFiles(directoryPath) {
