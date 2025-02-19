@@ -1,9 +1,9 @@
 {
-  "name": "create-vike",
+  "name": "create-vike-core",
   "version": "0.0.391",
   "license": "MIT",
   "bin": {
-    "create-vike": "index.js"
+    "create-vike-core": "index.js"
   },
   "main": "index.js",
   "engines": {
