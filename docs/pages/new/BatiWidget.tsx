@@ -22,7 +22,9 @@ function BatiWidget() {
     assert(wasAdded())
   }, [])
   if (isLoading) {
-    return <div style={{ textAlign: 'center', fontSize: '2em', margin: 100, paddingBottom: 50 }}>Loading...</div>
+    return (
+      <div style={{ textAlign: 'center', fontSize: '2em', margin: 100, paddingBottom: 50 }}>Loading scaffolder...</div>
+    )
   }
   return (
     <>

@@ -80,7 +80,10 @@ const headings = [
   {
     level: 2,
     title: 'Add SSR/SSG to existing Vite app',
-    url: '/add'
+    url: '/add',
+    pageDesign: {
+      hideMenuLeft: true
+    }
   },
   {
     level: 1,

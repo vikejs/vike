@@ -519,7 +519,10 @@ function getStarted(): HeadingDetachedDefinition[] {
   return [
     {
       title: 'Scaffold new app without Vike extension',
-      url: '/new/core'
+      url: '/new/core',
+      pageDesign: {
+        hideMenuLeft: true as const
+      }
     }
   ].map((h) => ({ ...h, category: 'Get Started' }))
 }

@@ -1,19 +1,21 @@
 import { Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../components'
 import { BatiWidget } from './BatiWidget.tsx'
+import { BatiNote } from './BatiNote.tsx'
 
-<br/>
+<div style={{height: 30}}></div>
 
 <BatiWidget />
 
-> **Requirement**: you need [Node.js](https://nodejs.org) installed (or Deno/Bun) which includes the package manager `npm` (you can also use any other package manager).
+<BatiNote />
 
-> The scaffolded app will use Vike extensions such as <UiFrameworkExtension name />. See <Link href="/new/core">vike.dev/new/core</Link> instead if you want to scaffold an app that directly uses Vike core (without any Vike extension).
+<div style={{height: 10}}></div>
 
-> This scaffolder is powered by [Bati](https://github.com/vikejs/bati).
+> **Requirement:** you need [Node.js](https://nodejs.org) installed (or Deno/Bun). It includes the package manager `npm` (you can also use any other package manager).
+
+> Scaffolded apps use Vike extensions such as <UiFrameworkExtension name />. See <Link href="/new/core">vike.dev/new/core</Link> if you want to scaffold an app that directly uses Vike core (without any Vike extension).
 
 ## See also
 
 - <Link href="/new/core" />
 - <Link href="/add" />
-- [GitHub > `vikejs/bati`](https://github.com/vikejs/bati) - the source code of the scaffolder above
