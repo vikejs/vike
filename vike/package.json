@@ -128,7 +128,7 @@
     }
   },
   "dependencies": {
-    "@brillout/import": "^0.2.3",
+    "@brillout/import": "^0.2.4",
     "@brillout/json-serializer": "^0.5.15",
     "@brillout/picocolors": "^1.0.15",
     "@brillout/require-shim": "^0.1.2",

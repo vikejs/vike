@@ -1775,8 +1775,8 @@ importers:
   vike:
     dependencies:
       '@brillout/import':
-        specifier: ^0.2.3
-        version: 0.2.3
+        specifier: ^0.2.4
+        version: 0.2.4
       '@brillout/json-serializer':
         specifier: ^0.5.15
         version: 0.5.15
@@ -2090,6 +2090,9 @@ packages:
 
   '@brillout/import@0.2.3':
     resolution: {integrity: sha512-1T8WlD75eeFSMrptGy8jiLHmfHgMmSjWvLOIUvHmSVZt+6k0eQqYUoK4KbmE4T9pVLIfxvZSOm2D68VEqKRHRw==}
+
+  '@brillout/import@0.2.4':
+    resolution: {integrity: sha512-piDl7ziOC9ANNKIUoRnzikz5wv0MuzGeof1sb9ETbddR3iS7AVeFgEPUvsTAbmNk2GUBxY+ZJdNfR1NjWCQghQ==}
 
   '@brillout/json-serializer@0.5.15':
     resolution: {integrity: sha512-iLAyV1HNC3nG07ypBwCJohFrajY1HeZdfBBgGuRtMH/JPddgG9bPmoSI18A1RBx67vRmY6/8rgisjR5YfTvZHA==}
@@ -7942,6 +7945,8 @@ snapshots:
 
   '@brillout/import@0.2.3': {}
 
+  '@brillout/import@0.2.4': {}
+
   '@brillout/json-serializer@0.5.15': {}
 
   '@brillout/libassert@0.5.8': {}
@@ -7985,12 +7990,12 @@ snapshots:
 
   '@brillout/vite-plugin-server-entry@0.5.8':
     dependencies:
-      '@brillout/import': 0.2.3
+      '@brillout/import': 0.2.4
       '@brillout/picocolors': 1.0.15
 
   '@brillout/vite-plugin-server-entry@0.6.0':
     dependencies:
-      '@brillout/import': 0.2.3
+      '@brillout/import': 0.2.4
       '@brillout/picocolors': 1.0.15
 
   '@cloudflare/kv-asset-handler@0.2.0':
