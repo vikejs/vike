@@ -12,7 +12,6 @@ function BatiWidget() {
       setIsLoading(false)
       return
     }
-    localStorageEmptyBugWorkaround()
     const script = document.createElement('script')
     script.type = 'module'
     script.src = scriptSrc
@@ -40,11 +39,4 @@ function BatiWidget() {
 function wasAdded() {
   const el = document.querySelector(`script[src="${scriptSrc}"]`)
   return !!el
-}
-
-function localStorageEmptyBugWorkaround() {
-  const key = 'packageManager'
-  if (!localStorage[key]) {
-    localStorage[key] = 'npm'
-  }
 }
