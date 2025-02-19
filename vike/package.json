@@ -237,7 +237,6 @@
     "./client.js",
     "./client/router.js",
     "./cli.js",
-    "./dist-cjs-fixup.mjs",
     "./getPageContext.js",
     "./__internal.js",
     "./__internal/setup.js",
