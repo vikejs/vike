@@ -26,6 +26,7 @@ const headingsDetached: HeadingDetachedDefinition[] = [
   ...migrations(),
   ...misc(),
   ...blog(),
+  ...getStarted(),
   ...redirects(),
   ...deprecated(),
   ...workInProgress()
@@ -512,6 +513,18 @@ function blog(): HeadingDetachedDefinition[] {
       url: '/releases/2024-10'
     }
   ].map((h) => ({ ...h, category: 'Blog' }))
+}
+
+function getStarted(): HeadingDetachedDefinition[] {
+  return [
+    {
+      title: 'Scaffold new app without Vike extension',
+      url: '/new/core',
+      pageDesign: {
+        hideMenuLeft: true as const
+      }
+    }
+  ].map((h) => ({ ...h, category: 'Get Started' }))
 }
 
 function api(): HeadingDetachedDefinition[] {
