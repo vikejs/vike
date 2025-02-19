@@ -132,7 +132,7 @@
     "@brillout/json-serializer": "^0.5.15",
     "@brillout/picocolors": "^1.0.15",
     "@brillout/require-shim": "^0.1.2",
-    "@brillout/vite-plugin-server-entry": "0.6.2-commit-0edc784",
+    "@brillout/vite-plugin-server-entry": "0.6.2-commit-ec6fb08",
     "acorn": "^8.0.0",
     "cac": "^6.0.0",
     "es-module-lexer": "^1.0.0",
