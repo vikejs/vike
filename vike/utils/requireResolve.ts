@@ -48,14 +48,14 @@ function addFileExtensionsToRequireResolve() {
   scriptFileExtensionList.forEach((ext: string) => {
     assert(!ext.includes('.'))
     ext = `.${ext}`
-    if (!require.extensions[ext]) {
-      require.extensions[ext] = require.extensions['.js']
+    if (!require_.extensions[ext]) {
+      require_.extensions[ext] = require_.extensions['.js']
       added.push(ext)
     }
   })
   const clean = () => {
     added.forEach((ext) => {
-      delete require.extensions[ext]
+      delete require_.extensions[ext]
     })
   }
   return clean
