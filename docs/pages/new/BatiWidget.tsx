@@ -3,7 +3,7 @@ export { BatiWidget }
 import React, { useEffect, useState } from 'react'
 import { assert } from '@brillout/docpress'
 
-const scriptSrc = 'https://unpkg.com/@batijs/elements@0.0.10/dist/elements/full.js'
+const scriptSrc = 'https://unpkg.com/@batijs/elements/dist/elements/full.js'
 
 function BatiWidget() {
   const [isLoading, setIsLoading] = useState(true)
