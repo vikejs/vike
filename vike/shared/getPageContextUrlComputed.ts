@@ -96,7 +96,7 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   // Determine logical URL
   const assertUrlResolved = (src: number) =>
     assert(
-      urlResolved && typeof urlResolved === 'string',
+      typeof urlResolved === 'string',
       // TODO/eventually: remove debug logs, see:
       // - https://github.com/vikejs/vike/issues/2138#issuecomment-2631713411
       // - https://github.com/vikejs/vike/commit/5c7810f3080ab62536950f26e019bb2a3a517082
