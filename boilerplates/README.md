@@ -1,11 +1,14 @@
-Source code of [`create-vike`](https://npmjs.com/package/create-vike) which powers:
+Source code of [`create-vike-core`](https://npmjs.com/package/create-vike-core) which powers:
 
 ```shell
-npm init vike
+npm create vike-core@latest
 ```
 ```shell
-pnpm create vike
+pnpm create vike-core
 ```
 ```shell
-yarn create vike
+bun create vike-core
+```
+```shell
+yarn create vike-core
 ```
