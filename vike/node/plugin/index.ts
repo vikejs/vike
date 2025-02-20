@@ -44,9 +44,9 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     importUserCode(),
     ...devConfig(),
     ...buildConfig(),
+    ...autoFullBuild(),
     ...buildApp(),
     previewConfig(),
-    ...autoFullBuild(),
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),
@@ -64,6 +64,9 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
   Object.assign(plugins, { __vikeVitePluginOptions: vikeVitePluginOptions })
   return plugins as any
 }
+
+// TODO
+function buildConfigSync() {}
 
 // Error upon wrong usage
 Object.defineProperty(plugin, 'apply', {

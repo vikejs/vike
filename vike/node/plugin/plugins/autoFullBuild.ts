@@ -26,7 +26,6 @@ function autoFullBuild(): Plugin[] {
     {
       name: 'vike:autoFullBuild',
       apply: 'build',
-      enforce: 'pre',
       async configResolved(config_) {
         vikeConfig = await getVikeConfig(config_)
         config = config_

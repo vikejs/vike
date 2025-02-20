@@ -60,7 +60,6 @@ function buildApp(): Plugin[] {
     {
       name: 'vike:buildApp:prerender',
       apply: 'build',
-      enforce: 'pre',
       applyToEnvironment(env) {
         return env.name === 'ssr'
       },
