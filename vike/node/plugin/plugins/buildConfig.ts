@@ -50,7 +50,6 @@ let serverManifest: ViteManifest
 
 function buildConfig(): Plugin[] {
   let isServerAssetsFixEnabled: boolean
-  let outDirs: OutDirs
   let config: ResolvedConfig
   return [
     {
@@ -67,7 +66,6 @@ function buildConfig(): Plugin[] {
           assert(Object.keys(entries).length > 0)
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
-          outDirs = getOutDirs(config)
           {
             isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
             if (isServerAssetsFixEnabled) {
@@ -114,6 +112,7 @@ function buildConfig(): Plugin[] {
       writeBundle: {
         sequential: true,
         async handler(options, bundle) {
+          const outDirs = getOutDirs(config)
           if (!viteIsSSR(config)) {
             clientManifest = await readManifestFile(outDirs, 'client')
           } else {
