@@ -114,8 +114,10 @@ function buildConfig(): Plugin[] {
         sequential: true,
         async handler(options, bundle) {
           const outDirs = getOutDirs(config)
-          if (!viteIsSSR(config) && !clientManifest) {
-            clientManifest = await readManifestFile(outDirs, 'client')
+          if (!viteIsSSR(config)) {
+            if (!clientManifest) {
+              clientManifest = await readManifestFile(outDirs, 'client')
+            }
           } else if (!serverManifest) {
             serverManifest = await readManifestFile(outDirs, 'server')
           }
