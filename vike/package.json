@@ -121,7 +121,7 @@
   "dependencies": {
     "@brillout/import": "^0.2.6",
     "@brillout/json-serializer": "^0.5.15",
-    "@brillout/picocolors": "^1.0.25",
+    "@brillout/picocolors": "^1.0.26",
     "@brillout/require-shim": "^0.1.2",
     "@brillout/vite-plugin-server-entry": "^0.6.0",
     "acorn": "^8.0.0",
