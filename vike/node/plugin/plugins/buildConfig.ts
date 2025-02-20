@@ -114,7 +114,7 @@ function buildConfig(): Plugin[] {
             sequential: true,
             async handler(options, bundle) {
               if (this.environment.name === 'ssr') {
-                await writeTempManifest(getOutDirs(this.environment.config))
+                await writeAssetsManifestFile(getOutDirs(this.environment.config))
               }
               if (viteIsSSR(this.environment.config)) {
                 // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
@@ -135,7 +135,7 @@ function buildConfig(): Plugin[] {
         sequential: true,
         async handler(options, bundle) {
           if (viteIsSSR(config)) {
-            await writeTempManifest(getOutDirs(config))
+            await writeAssetsManifestFile(getOutDirs(config))
             await set_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
           }
         }
@@ -146,7 +146,7 @@ function buildConfig(): Plugin[] {
   // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
   //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
   //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
-  async function writeTempManifest(outDirs: OutDirs) {
+  async function writeAssetsManifestFile(outDirs: OutDirs) {
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
     const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
