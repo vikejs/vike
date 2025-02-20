@@ -114,7 +114,6 @@ function buildConfig(): Plugin[] {
       writeBundle: {
         sequential: true,
         async handler(options, bundle) {
-          console.log('handler', viteIsSSR(config))
           if (!viteIsSSR(config)) {
             clientManifest = await readManifestFile(outDirs, 'client')
           } else {
