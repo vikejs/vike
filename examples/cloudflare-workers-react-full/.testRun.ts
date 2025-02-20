@@ -27,7 +27,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   if (!process.env['CLOUDFLARE_ACCOUNT_ID']) {
     expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeFalsy()
     expect(process.env['CLOUDFLARE_API_TOKEN']).toBeFalsy()
-    if (isWrangler) {
+    if ((isCI() || process.env.VITE_ECOSYSTEM_CI) && isWrangler) {
       skip(
         "SKIPPED: wrangler tests cannot be run. Because missing environment variables `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. (This is expected in Pull Requests and Vite's ecosystem CI.)"
       )
