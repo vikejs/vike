@@ -131,7 +131,7 @@ function buildConfig(): Plugin[] {
             sequential: true,
             async handler(options, bundle) {
               if (this.environment.name === 'ssr') {
-                await writeTempManifest(getOutDirs(this.environment.config));
+                await writeTempManifest(getOutDirs(this.environment.config))
               }
               if (viteIsSSR(this.environment.config)) {
                 // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
@@ -152,7 +152,7 @@ function buildConfig(): Plugin[] {
         sequential: true,
         async handler(options, bundle) {
           if (viteIsSSR(config)) {
-            await writeTempManifest(getOutDirs(config));
+            await writeTempManifest(getOutDirs(config))
             await set_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
           }
         }
