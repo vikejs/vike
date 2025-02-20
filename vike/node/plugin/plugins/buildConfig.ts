@@ -47,6 +47,7 @@ const manifestTempFile = '_temp_manifest.json'
 assertIsSingleModuleInstance('plugins/buildConfig.ts')
 let clientManifest: ViteManifest
 let serverManifest: ViteManifest
+let ssrAssetsJsonFilePath: string
 
 function buildConfig(): Plugin[] {
   let isServerAssetsFixEnabled: boolean
@@ -113,25 +114,29 @@ function buildConfig(): Plugin[] {
         sequential: true,
         async handler(options, bundle) {
           const outDirs = getOutDirs(config)
-          if (!viteIsSSR(config)) {
+          if (!viteIsSSR(config) && !clientManifest) {
             clientManifest = await readManifestFile(outDirs, 'client')
-          } else {
+          } else if (!serverManifest) {
             serverManifest = await readManifestFile(outDirs, 'server')
           }
           if (viteIsSSR(config)) {
-            assert(serverManifest)
-            assert(clientManifest)
-            // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
-            //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
-            //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
-            const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
-            if (!isServerAssetsFixEnabled) {
-              await writeManifestFile(clientManifest, assetsJsonFilePath)
-            } else {
-              const { clientManifestMod } = await fixServerAssets(config, clientManifest, serverManifest)
-              await writeManifestFile(clientManifestMod, assetsJsonFilePath)
+            // Vite Environment API compatibility
+            if (!('environment' in this) || this.environment.name === 'ssr') {
+              assert(serverManifest)
+              assert(clientManifest)
+              // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
+              //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
+              //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
+              const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
+              ssrAssetsJsonFilePath = assetsJsonFilePath
+              if (!isServerAssetsFixEnabled) {
+                await writeManifestFile(clientManifest, assetsJsonFilePath)
+              } else {
+                const { clientManifestMod } = await fixServerAssets(config, clientManifest, serverManifest)
+                await writeManifestFile(clientManifestMod, assetsJsonFilePath)
+              }
             }
-            await set_ASSETS_MANIFEST(options, bundle)
+            await set_ASSETS_MANIFEST(options, bundle, ssrAssetsJsonFilePath)
           }
         }
       }
