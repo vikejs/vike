@@ -44,8 +44,26 @@ const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin[] {
   let isServerAssetsFixEnabled: boolean
-  let outDirs: OutDirs
   let config: ResolvedConfig
+  let assetsJsonFilePath: string
+
+  // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
+  //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
+  //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
+  async function writeTempManifest(outDirs: OutDirs) {
+    assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
+    const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
+    const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
+    if (!isServerAssetsFixEnabled) {
+      await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
+    } else {
+      const { clientManifestMod } = await fixServerAssets(config)
+      await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
+    }
+    await fs.rm(clientManifestFilePath)
+    await fs.rm(serverManifestFilePath)
+  }
+
   return [
     {
       name: 'vike:buildConfig:post',
@@ -61,7 +79,6 @@ function buildConfig(): Plugin[] {
           assert(Object.keys(entries).length > 0)
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
-          outDirs = getOutDirs(config)
           {
             isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
             if (isServerAssetsFixEnabled) {
@@ -102,9 +119,30 @@ function buildConfig(): Plugin[] {
     {
       name: 'vike:buildConfig:pre',
       apply: 'build',
-      applyToEnvironment(env) {
-        return env.name === 'ssr'
+      // Compatiblity with Environment API. It replaces `vike:buildConfig:pre` when compatible
+      // See https://vite.dev/guide/api-environment-plugins.html#per-environment-plugins
+      applyToEnvironment() {
+        return {
+          name: 'vike:buildConfig:pre:env-api-compat',
+          apply: 'build',
+          enforce: 'pre',
+          writeBundle: {
+            order: 'pre',
+            sequential: true,
+            async handler(options, bundle) {
+              if (this.environment.name === 'ssr') {
+                await writeTempManifest(getOutDirs(this.environment.config));
+              }
+              if (viteIsSSR(this.environment.config)) {
+                // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
+                await set_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
+              }
+            }
+          }
+        }
       },
+      // Ensures that we can reuse `assetsJsonFilePath`
+      sharedDuringBuild: true,
       // Make sure other writeBundle() hooks are called after this writeBundle() hook.
       //  - set_ASSETS_MANIFEST() needs to be called before dist/server/ code is executed.
       //    - For example, the writeBundle() hook of vite-plugin-vercel needs to be called after this writeBundle() hook, otherwise: https://github.com/vikejs/vike/issues/1527
@@ -114,21 +152,8 @@ function buildConfig(): Plugin[] {
         sequential: true,
         async handler(options, bundle) {
           if (viteIsSSR(config)) {
-            // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
-            //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
-            //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
-            const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
-            const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
-            const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
-            if (!isServerAssetsFixEnabled) {
-              await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
-            } else {
-              const { clientManifestMod } = await fixServerAssets(config)
-              await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
-            }
-            await fs.rm(clientManifestFilePath)
-            await fs.rm(serverManifestFilePath)
-            await set_ASSETS_MANIFEST(options, bundle)
+            await writeTempManifest(getOutDirs(config));
+            await set_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
           }
         }
       }

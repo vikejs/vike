@@ -65,12 +65,11 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   return importerCode
 }
 /** Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js) */
-async function set_ASSETS_MANIFEST(options: Options, bundle: Bundle) {
+async function set_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string) {
   const { dir } = options
   assert(dir)
   const chunkPath = find_ASSETS_MANIFEST(bundle)
   const chunkFilePath = path.join(dir, chunkPath)
-  const assetsJsonFilePath = path.join(dir, '..', 'assets.json')
   const [assetsJsonString, chunkFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
     await fs.readFile(chunkFilePath, 'utf8')
