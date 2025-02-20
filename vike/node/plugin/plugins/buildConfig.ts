@@ -12,7 +12,8 @@ import {
   injectRollupInputs,
   normalizeRollupInput,
   onSetupBuild,
-  assertIsNpmPackageImport
+  assertIsNpmPackageImport,
+  isObject
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
@@ -37,6 +38,7 @@ import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigV
 import { getOutDirs, type OutDirs, resolveOutDir } from '../shared/getOutDirs.js'
 import { viteIsSSR } from '../shared/viteIsSSR.js'
 import { getVikeConfigPublic } from './commonConfig.js'
+import type { ViteManifest } from '../../shared/ViteManifest.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -46,6 +48,8 @@ function buildConfig(): Plugin[] {
   let isServerAssetsFixEnabled: boolean
   let outDirs: OutDirs
   let config: ResolvedConfig
+  let clientManifest: ViteManifest
+  let serverManifest: ViteManifest
   return [
     {
       name: 'vike:buildConfig:post',
@@ -113,27 +117,44 @@ function buildConfig(): Plugin[] {
         order: 'pre',
         sequential: true,
         async handler(options, bundle) {
+          if (!viteIsSSR(config)) {
+            clientManifest = await readManifestFile(outDirs, 'client')
+          } else {
+            serverManifest = await readManifestFile(outDirs, 'server')
+          }
           if (viteIsSSR(config)) {
+            assert(serverManifest)
+            assert(clientManifest)
             // Ideally we'd move dist/_temp_manifest.json to dist/server/client-assets.json instead of dist/assets.json
             //  - But we can't because there is no guarentee whether dist/server/ is generated before or after dist/client/ (generating dist/server/ after dist/client/ erases dist/server/client-assets.json)
             //  - We'll able to do so once we replace `$ vite build` with `$ vike build`
             const assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
-            const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
-            const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
             if (!isServerAssetsFixEnabled) {
-              await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
+              await writeManifestFile(clientManifest, assetsJsonFilePath)
             } else {
-              const { clientManifestMod } = await fixServerAssets(config)
-              await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
+              const { clientManifestMod } = await fixServerAssets(config, clientManifest, serverManifest)
+              await writeManifestFile(clientManifestMod, assetsJsonFilePath)
             }
-            await fs.rm(clientManifestFilePath)
-            await fs.rm(serverManifestFilePath)
             await set_ASSETS_MANIFEST(options, bundle)
           }
         }
       }
     }
   ]
+}
+
+async function readManifestFile(outDirs: OutDirs, env: 'client' | 'server') {
+  const outDirEnv = env === 'client' ? outDirs.outDirClient : outDirs.outDirServer
+  const manifestFilePath = path.posix.join(outDirEnv, manifestTempFile)
+  const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
+  assert(manifestFileContent)
+  const manifest: unknown = JSON.parse(manifestFileContent)
+  assert(manifest)
+  assert(isObject(manifest))
+  return manifest as ViteManifest
+}
+async function writeManifestFile(manifest: ViteManifest, manifestFilePath: string) {
+  await fs.writeFile(manifestFilePath, JSON.stringify(manifest, null, 2), 'utf-8')
 }
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {

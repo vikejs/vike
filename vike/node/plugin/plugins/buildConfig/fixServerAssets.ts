@@ -10,7 +10,6 @@ import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
 import { assert, assertWarning, isEqualStringList, pLimit, unique } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { manifestTempFile } from '../buildConfig.js'
 import { ResolvedConfig } from 'vite'
 import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
@@ -32,27 +31,16 @@ function fixServerAssets_isEnabled(): boolean {
 
 /** https://github.com/vikejs/vike/issues/1339 */
 async function fixServerAssets(
-  config: ResolvedConfig
+  config: ResolvedConfig,
+  clientManifest: ViteManifest,
+  serverManifest: ViteManifest
 ): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
-  const outDirs = getOutDirs(config)
-  const clientManifest = await loadManifest(outDirs.outDirClient)
-  const serverManifest = await loadManifest(outDirs.outDirServer)
-
   const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,
     serverManifest
   )
   await copyAssets(filesToMove, filesToRemove, config)
-
   return { clientManifestMod, serverManifestMod }
-}
-async function loadManifest(outDir: string) {
-  const manifestFilePath = path.posix.join(outDir, manifestTempFile)
-  const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
-  assert(manifestFileContent)
-  const manifest = JSON.parse(manifestFileContent)
-  assert(manifest)
-  return manifest
 }
 async function copyAssets(filesToMove: string[], filesToRemove: string[], config: ResolvedConfig) {
   const { outDirClient, outDirServer } = getOutDirs(config)
