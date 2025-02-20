@@ -7,7 +7,7 @@ import { assert } from '../../utils.js'
 import { createRequire } from 'module'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
-// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const __dirname_ = dirname(fileURLToPath(importMetaUrl))

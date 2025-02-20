@@ -37,7 +37,7 @@ import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigV
 import { getOutDirs, type OutDirs, resolveOutDir } from '../shared/getOutDirs.js'
 import { viteIsSSR } from '../shared/viteIsSSR.js'
 import { getVikeConfigPublic } from './commonConfig.js'
-// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'

@@ -39,7 +39,7 @@ import 'source-map-support/register.js'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'
 import { createRequire } from 'module'
-// @ts-ignore Shimmed by dist-cjs-fixup.js for CJS build.
+// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
