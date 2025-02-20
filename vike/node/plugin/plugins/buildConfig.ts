@@ -13,7 +13,8 @@ import {
   normalizeRollupInput,
   onSetupBuild,
   assertIsNpmPackageImport,
-  isObject
+  isObject,
+  assertIsSingleModuleInstance
 } from '../utils.js'
 import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 import { findPageFiles } from '../shared/findPageFiles.js'
@@ -43,13 +44,14 @@ import type { ViteManifest } from '../../shared/ViteManifest.js'
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
+assertIsSingleModuleInstance('plugins/buildConfig.ts')
+let clientManifest: ViteManifest
+let serverManifest: ViteManifest
 
 function buildConfig(): Plugin[] {
   let isServerAssetsFixEnabled: boolean
   let outDirs: OutDirs
   let config: ResolvedConfig
-  let clientManifest: ViteManifest
-  let serverManifest: ViteManifest
   return [
     {
       name: 'vike:buildConfig:post',
