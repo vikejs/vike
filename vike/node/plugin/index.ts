@@ -116,7 +116,7 @@ type VikeVitePluginOptions = {
   disableUrlNormalization?: boolean
 }
 
-// Ensures following works: `const vike = require('vike/plugin')` / `import vike from 'vike/plugin'`
+// CJS default export `const vike = require('vike/plugin')`
 //  - It needs to live at the end of this file, in order to ensure we do it after all assignments to `exports`.
 try {
   module.exports = Object.assign(exports.default, exports)
