@@ -57,6 +57,10 @@ function tolerateError({ logSource, logText, testInfo }) {
   return (
     // TODO/eventually: move everything to this array
     [
+      // Required for Cloudflare tests
+      // [14:00:34.879][/][npm run preview][stderr] [vike][Warning] process.env.NODE_ENV==="undefined" which is unexpected: process.env.NODE_ENV is allowed to be the *value* undefined (i.e. process.env.NODE_ENV===undefined) but it shouldn't be the *string* "undefined" https://vike.dev/NODE_ENV
+      'process.env.NODE_ENV==="undefined" which is unexpected',
+
       // Required for test-deprecated-design/*
       'Define Vike settings in +config.js instead of vite.config.js',
 
