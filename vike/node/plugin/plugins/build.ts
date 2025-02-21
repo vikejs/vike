@@ -107,7 +107,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
   if (viteIsSSR(config)) {
     const pageEntries = getPageEntries(pageConfigs)
     const entries = {
-      // buildEntry: resolve('dist/esm/node/buildEntry.js'), // TODO/next-major-release: remove
+      // pluginBuildEntry: resolve('dist/esm/node/pluginBuildEntry.js'), // TODO/next-major-release: remove
       ...pageFileEntries,
       // Ensure Rollup generates a bundle per page: https://github.com/vikejs/vike/issues/349#issuecomment-1166247275
       ...pageEntries

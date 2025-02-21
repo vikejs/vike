@@ -11,7 +11,7 @@ import {
   fixServerAssets_isEnabled,
   writeManifestFile
 } from '../build/pluginAssetsManifest/fixServerAssets.js'
-import { set_macro_ASSETS_MANIFEST } from '../buildEntry/index.js'
+import { set_macro_ASSETS_MANIFEST } from '../pluginBuildEntry/index.js'
 import { getOutDirs, type OutDirs } from '../../shared/getOutDirs.js'
 import { viteIsSSR } from '../../shared/viteIsSSR.js'
 import { getVikeConfigPublic } from '../commonConfig.js'

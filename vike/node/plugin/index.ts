@@ -16,7 +16,7 @@ import { importUserCode } from './plugins/importUserCode/index.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
-import { buildEntry } from './plugins/buildEntry/index.js'
+import { pluginBuildEntry } from './plugins/pluginBuildEntry/index.js'
 import { commonConfig } from './plugins/commonConfig.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
@@ -42,7 +42,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
     ...setGlobalContext(),
-    ...buildEntry(),
+    ...pluginBuildEntry(),
     baseUrls(),
     envVarsPlugin(),
     fileEnv(),
