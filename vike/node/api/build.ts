@@ -23,6 +23,7 @@ async function build(options: APIOptions = {}): Promise<{}> {
     assertVersion('Vite', version, '6.0.0')
     const { createBuilder } = await import('vite')
     const builder = await createBuilder(viteConfigEnhanced)
+    // See Vite plugin vike:buildApp
     await builder.buildApp()
   } else {
     // This buildVite() call does everything:
