@@ -35,10 +35,18 @@ const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin[] {
+  return [
+    //
+    ...assetsManifestPlugin(),
+    ...buildSettings(),
+    ...buildApp()
+  ]
+}
+
+function buildSettings(): Plugin[] {
   let config: ResolvedConfig
 
   return [
-    ...assetsManifestPlugin(),
     {
       name: 'vike:buildConfig',
       apply: 'build',
@@ -72,8 +80,7 @@ function buildConfig(): Plugin[] {
       async closeBundle() {
         onSetupBuild()
       }
-    },
-    ...buildApp()
+    }
   ]
 }
 
