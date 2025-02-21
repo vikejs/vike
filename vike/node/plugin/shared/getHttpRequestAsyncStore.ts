@@ -2,9 +2,7 @@
 //  - Swallow redundant error messages (Vite is buggy and emits the same error multiple times)
 //  - Prepend "[request(n)]" tag to Vite logs
 
-// The mechanism is skipped if the runtime doesn't support Async Hooks:
-//  - Bun doesn't support Async Hooks: https://github.com/oven-sh/bun/issues/1832
-//  - Node.js and Deno support Async Hooks
+// The mechanism is skipped if the development environment doesn't support Async Hooks.
 
 // We purposely don't use config.logger.hasErrorLogged(err) because:
 // - We don't trust Vite with such details
