@@ -21,7 +21,6 @@ type Options = Rollup.NormalizedOutputOptions
 const manifestTempFile = '_temp_manifest.json'
 
 function pluginAssetsManifest(): Plugin[] {
-  let isServerAssetsFixEnabled: boolean
   let config: ResolvedConfig
 
   return [
@@ -33,7 +32,7 @@ function pluginAssetsManifest(): Plugin[] {
         order: 'post',
         async handler(config_) {
           config = config_
-          isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
+          const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
           if (isServerAssetsFixEnabled) {
             // https://github.com/vikejs/vike/issues/1339
             config.build.ssrEmitAssets = true
@@ -65,8 +64,6 @@ function pluginAssetsManifest(): Plugin[] {
     {
       name: 'vike:build:pluginAssetsManifest:pre',
       apply: 'build',
-      // Ensures that we can reuse `assetsJsonFilePath`
-      sharedDuringBuild: true,
       // Make sure other writeBundle() hooks are called after this writeBundle() hook.
       //  - set_macro_ASSETS_MANIFEST() needs to be called before dist/server/ code is executed.
       //    - For example, the writeBundle() hook of vite-plugin-vercel needs to be called after this writeBundle() hook, otherwise: https://github.com/vikejs/vike/issues/1527
