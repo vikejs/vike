@@ -1,6 +1,6 @@
 export { fixServerAssets }
 export { fixServerAssets_isEnabled }
-export { fixServerAssets_assertCssCodeSplit }
+export { fixServerAssets_assertUsageCssCodeSplit }
 export { fixServerAssets_assertCssTarget }
 
 import fs from 'fs/promises'
@@ -259,7 +259,7 @@ function getHash(src: string) {
 }
 
 // https://github.com/vikejs/vike/issues/1993
-function fixServerAssets_assertCssCodeSplit(config: ResolvedConfig) {
+function fixServerAssets_assertUsageCssCodeSplit(config: ResolvedConfig) {
   assertWarning(
     config.build.cssCodeSplit,
     `${pc.cyan('build.cssCodeSplit')} shouldn't be set to ${pc.cyan(

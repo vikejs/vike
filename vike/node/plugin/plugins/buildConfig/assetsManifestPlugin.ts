@@ -6,7 +6,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import {
   fixServerAssets,
-  fixServerAssets_assertCssCodeSplit,
+  fixServerAssets_assertUsageCssCodeSplit,
   fixServerAssets_assertCssTarget,
   fixServerAssets_isEnabled
 } from '../buildConfig/assetsManifestPlugin/fixServerAssets.js'
@@ -36,7 +36,7 @@ function assetsManifestPlugin(): Plugin[] {
             config.build.ssrEmitAssets = true
             // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
             config.build.cssMinify = 'esbuild'
-            fixServerAssets_assertCssCodeSplit(config)
+            fixServerAssets_assertUsageCssCodeSplit(config)
           }
         }
       },
