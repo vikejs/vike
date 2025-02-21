@@ -45,8 +45,8 @@ function pluginAssetsManifest(): Plugin[] {
           } satisfies UserConfig
         }
       },
-      async closeBundle() {
-        await fixServerAssets_assertUsageCssTarget(config)
+      closeBundle() {
+        fixServerAssets_assertUsageCssTarget(config)
       }
     },
     {
