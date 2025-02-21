@@ -75,7 +75,7 @@ function pluginAssetsManifest(): Plugin[] {
         order: 'pre',
         sequential: true,
         async handler(options, bundle) {
-          handleAssetsManifest(config, this.environment, options, bundle)
+          await handleAssetsManifest(config, this.environment, options, bundle)
         }
       }
     }
