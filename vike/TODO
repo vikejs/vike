@@ -65,6 +65,9 @@ v0.5 breaking changes:
   - https://github.com/vikejs/vike/issues/2107
   - https://github.com/vikejs/vike/issues/1851
 - Make `onHydrationEnd()` cumulative (make more built-in hooks cumulative?)
+- Move `dist/assets.json` to `dist/server/assets.json`
+  - Or move it `dist/server/assets-client.json` to?
+  - Or remove it altogether in favor of `globalContext.assetsManifest`?
 === Maybe
 - Forbid content-type
   - Maybe use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers

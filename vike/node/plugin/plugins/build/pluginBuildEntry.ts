@@ -1,5 +1,5 @@
-export { buildEntry }
-export { set_ASSETS_MANIFEST }
+export { pluginBuildEntry }
+export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -18,11 +18,12 @@ type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
 
-function buildEntry(): Plugin[] {
+function pluginBuildEntry(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:buildEntry',
+      name: 'vike:build:pluginBuildEntry',
+      apply: 'build',
       enforce: 'post',
       async configResolved(config_) {
         config = config_
@@ -65,7 +66,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   return importerCode
 }
 /** Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js) */
-async function set_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string) {
+async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string) {
   const { dir } = options
   assert(dir)
   const chunkPath = find_ASSETS_MANIFEST(bundle)
@@ -93,7 +94,7 @@ function find_ASSETS_MANIFEST(bundle: Bundle): string {
 function getImportPath(config: ResolvedConfig) {
   // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct
   const filePathAbsolute = toPosixPath(
-    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/buildEntry/index.js
+    // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/pluginBuildEntry/index.js
     require_.resolve(`../../../../../../dist/esm/__internal/index.js`)
   )
   if (

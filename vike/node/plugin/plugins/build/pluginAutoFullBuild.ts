@@ -1,30 +1,28 @@
-// TODO/v1-release: remove this file
+export { pluginAutoFullBuild }
 
-import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
-
-export { autoFullBuild }
+import { getFullBuildInlineConfig } from '../../shared/getFullBuildInlineConfig.js'
 
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning } from '../utils.js'
-import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../prerender/runPrerender.js'
-import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
-import type { VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
-import { isViteCliCall, getViteConfigFromCli } from '../shared/isViteCliCall.js'
+import { assert, assertWarning } from '../../utils.js'
+import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../../prerender/runPrerender.js'
+import { isPrerenderAutoRunEnabled } from '../../../prerender/context.js'
+import type { VikeConfigObject } from '../importUserCode/v1-design/getVikeConfig.js'
+import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
-import { logErrorHint } from '../../runtime/renderPage/logErrorHint.js'
-import { manifestTempFile } from './buildConfig.js'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
-import { isVikeCliOrApi } from '../../api/context.js'
+import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
+import { manifestTempFile } from './pluginBuildConfig.js'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
+import { isVikeCliOrApi } from '../../../api/context.js'
 
 let forceExit = false
 
-function autoFullBuild(): Plugin[] {
+function pluginAutoFullBuild(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigObject
   return [
     {
-      name: 'vike:autoFullBuild',
+      name: 'vike:build:pluginAutoFullBuild',
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
@@ -41,7 +39,7 @@ function autoFullBuild(): Plugin[] {
           try {
             await triggerFullBuild(config, vikeConfig, bundle)
           } catch (err) {
-            // Avoid Rollup prefixing the error with [vike:autoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
+            // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
             console.error(err)
             process.exit(1)
           }
@@ -49,7 +47,7 @@ function autoFullBuild(): Plugin[] {
       }
     },
     {
-      name: 'vike:autoFullBuild:forceExit',
+      name: 'vike:build:pluginAutoFullBuild:forceExit',
       apply: 'build',
       enforce: 'post',
       closeBundle: {

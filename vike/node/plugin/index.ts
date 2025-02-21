@@ -7,21 +7,15 @@ export { PROJECT_VERSION as version } from './utils.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 
-import type { Plugin } from 'vite'
+import { type Plugin } from 'vite'
 import { assertUsage } from './utils.js'
-import { buildConfig } from './plugins/buildConfig.js'
+import { build } from './plugins/build.js'
 import { previewConfig } from './plugins/previewConfig.js'
-import { autoFullBuild } from './plugins/autoFullBuild.js'
 import { devConfig } from './plugins/devConfig/index.js'
-import { packageJsonFile } from './plugins/packageJsonFile.js'
-import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
-import { distFileNames } from './plugins/distFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
-import { suppressRollupWarning } from './plugins/suppressRollupWarning.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
-import { buildEntry } from './plugins/buildEntry/index.js'
 import { commonConfig } from './plugins/commonConfig.js'
 import { baseUrls } from './plugins/baseUrls.js'
 import { envVarsPlugin } from './plugins/envVars.js'
@@ -31,7 +25,6 @@ import { setResolveClientEntriesDev } from '../runtime/renderPage/getPageAssets.
 import { resolveClientEntriesDev } from './shared/resolveClientEntriesDev.js'
 import { workaroundCssModuleHmr } from './plugins/workaroundCssModuleHmr.js'
 import { workaroundVite6HmrRegression } from './plugins/workaroundVite6HmrRegression.js'
-import { buildApp } from './plugins/buildApp.js'
 
 // We don't call this in ./onLoad.ts to avoid a cyclic dependency with utils.ts
 setResolveClientEntriesDev(resolveClientEntriesDev)
@@ -43,18 +36,11 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...commonConfig(vikeVitePluginOptions),
     importUserCode(),
     ...devConfig(),
-    ...buildConfig(),
-    ...buildApp(),
+    ...build(),
     previewConfig(),
-    ...autoFullBuild(),
-    packageJsonFile(),
-    removeRequireHookPlugin(),
-    distFileNames(),
     ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
-    suppressRollupWarning(),
     ...setGlobalContext(),
-    ...buildEntry(),
     baseUrls(),
     envVarsPlugin(),
     fileEnv(),

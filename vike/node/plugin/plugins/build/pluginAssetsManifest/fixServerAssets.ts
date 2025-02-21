@@ -1,22 +1,23 @@
 export { fixServerAssets }
 export { fixServerAssets_isEnabled }
-export { fixServerAssets_assertCssCodeSplit }
-export { fixServerAssets_assertCssTarget }
+export { fixServerAssets_assertUsageCssCodeSplit }
+export { fixServerAssets_assertUsageCssTarget }
+export { writeManifestFile }
 
 import fs from 'fs/promises'
 import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
-import { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
-import { assert, assertWarning, isEqualStringList, pLimit, unique } from '../../utils.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { manifestTempFile } from '../buildConfig.js'
+import { ViteManifest, ViteManifestEntry } from '../../../../shared/ViteManifest.js'
+import { assert, assertWarning, isEqualStringList, isObject, pLimit, unique } from '../../../utils.js'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { manifestTempFile } from '../pluginBuildConfig.js'
 import { ResolvedConfig } from 'vite'
-import { getAssetsDir } from '../../shared/getAssetsDir.js'
+import { getAssetsDir } from '../../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
-import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
-import { getOutDirs } from '../../shared/getOutDirs.js'
-import { viteIsSSR } from '../../shared/viteIsSSR.js'
+import { isV1Design } from '../../importUserCode/v1-design/getVikeConfig.js'
+import { getOutDirs } from '../../../shared/getOutDirs.js'
+import { viteIsSSR } from '../../../shared/viteIsSSR.js'
 
 /**
  * true  => use workaround config.build.ssrEmitAssets
@@ -35,8 +36,8 @@ async function fixServerAssets(
   config: ResolvedConfig
 ): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
   const outDirs = getOutDirs(config)
-  const clientManifest = await loadManifest(outDirs.outDirClient)
-  const serverManifest = await loadManifest(outDirs.outDirServer)
+  const clientManifest = await readManifestFile(outDirs.outDirClient)
+  const serverManifest = await readManifestFile(outDirs.outDirServer)
 
   const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,
@@ -45,14 +46,6 @@ async function fixServerAssets(
   await copyAssets(filesToMove, filesToRemove, config)
 
   return { clientManifestMod, serverManifestMod }
-}
-async function loadManifest(outDir: string) {
-  const manifestFilePath = path.posix.join(outDir, manifestTempFile)
-  const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
-  assert(manifestFileContent)
-  const manifest = JSON.parse(manifestFileContent)
-  assert(manifest)
-  return manifest
 }
 async function copyAssets(filesToMove: string[], filesToRemove: string[], config: ResolvedConfig) {
   const { outDirClient, outDirServer } = getOutDirs(config)
@@ -252,14 +245,14 @@ function collectResources(entryRoot: ViteManifestEntry, manifest: ViteManifest) 
 // </head>
 // ```
 function getHash(src: string) {
-  // src is guarenteed to end with `.[hash][extname]`, see distFileNames.ts
+  // src is guarenteed to end with `.[hash][extname]`, see pluginDistFileNames.ts
   const hash = src.split('.').at(-2)
   assert(hash)
   return hash
 }
 
 // https://github.com/vikejs/vike/issues/1993
-function fixServerAssets_assertCssCodeSplit(config: ResolvedConfig) {
+function fixServerAssets_assertUsageCssCodeSplit(config: ResolvedConfig) {
   assertWarning(
     config.build.cssCodeSplit,
     `${pc.cyan('build.cssCodeSplit')} shouldn't be set to ${pc.cyan(
@@ -273,7 +266,7 @@ function fixServerAssets_assertCssCodeSplit(config: ResolvedConfig) {
 type Target = undefined | false | string | string[]
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
-async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
+async function fixServerAssets_assertUsageCssTarget(config: ResolvedConfig) {
   if (!fixServerAssets_isEnabled()) return
   if (!(await isV1Design(config))) return
   const isServerSide = viteIsSSR(config)
@@ -328,4 +321,19 @@ function removeEmptyDirectories(dirPath: string): void {
   if (fs_sync.readdirSync(dirPath).length === 0) {
     fs_sync.rmdirSync(dirPath)
   }
+}
+
+async function readManifestFile(outDir: string) {
+  const manifestFilePath = path.posix.join(outDir, manifestTempFile)
+  const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
+  assert(manifestFileContent)
+  const manifest: unknown = JSON.parse(manifestFileContent)
+  assert(manifest)
+  assert(isObject(manifest))
+  return manifest as ViteManifest
+}
+async function writeManifestFile(manifest: ViteManifest, manifestFilePath: string) {
+  assert(isObject(manifest))
+  const manifestFileContent = JSON.stringify(manifest, null, 2)
+  await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
 }

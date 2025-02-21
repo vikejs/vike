@@ -7,16 +7,17 @@
  * Reproduction: https://github.com/brillout/vite-plugin-ssr-server-import-syntax
  */
 
-export { packageJsonFile }
+// TODO/refactor: prefix all other plugins with `plugin` as well?
+export { pluginDistPackageJsonFile }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { rollupIsEsm } from '../shared/rollupIsEsm.js'
-import { viteIsSSR } from '../shared/viteIsSSR.js'
+import { rollupIsEsm } from '../../shared/rollupIsEsm.js'
+import { viteIsSSR } from '../../shared/viteIsSSR.js'
 
-function packageJsonFile(): Plugin {
+function pluginDistPackageJsonFile(): Plugin {
   let config: ResolvedConfig
   return {
-    name: 'vike:packageJsonFile',
+    name: 'vike:build:pluginDistPackageJsonFile',
     apply: 'build',
     configResolved(config_) {
       config = config_
