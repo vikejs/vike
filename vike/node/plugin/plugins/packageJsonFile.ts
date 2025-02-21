@@ -7,16 +7,16 @@
  * Reproduction: https://github.com/brillout/vite-plugin-ssr-server-import-syntax
  */
 
-export { packageJsonFile }
+export { distPackageJsonFile }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { rollupIsEsm } from '../shared/rollupIsEsm.js'
 import { viteIsSSR } from '../shared/viteIsSSR.js'
 
-function packageJsonFile(): Plugin {
+function distPackageJsonFile(): Plugin {
   let config: ResolvedConfig
   return {
-    name: 'vike:packageJsonFile',
+    name: 'vike:distPackageJsonFile',
     apply: 'build',
     configResolved(config_) {
       config = config_
