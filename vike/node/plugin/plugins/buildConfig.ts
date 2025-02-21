@@ -39,7 +39,7 @@ function buildConfig(): Plugin[] {
   return [
     ...assetsManifestPlugin(),
     {
-      name: 'vike:buildConfig:post',
+      name: 'vike:buildConfig',
       apply: 'build',
       enforce: 'post',
       configResolved: {

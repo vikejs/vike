@@ -60,13 +60,13 @@ function assetsManifestPlugin(): Plugin[] {
       }
     },
     {
-      name: 'vike:buildConfig:assets-manifest',
+      name: 'vike:buildConfig:assets-manifest:pre',
       apply: 'build',
-      // Compatiblity with Environment API. It replaces `vike:buildConfig:assets-manifest` when compatible
+      // Compatiblity with Environment API. It replaces `vike:buildConfig:assets-manifest:pre` when compatible
       // See https://vite.dev/guide/api-environment-plugins.html#per-environment-plugins
       applyToEnvironment() {
         return {
-          name: 'vike:buildConfig:assets-manifest:env-api-compat',
+          name: 'vike:buildConfig:assets-manifest:pre:env-api-compat',
           apply: 'build',
           enforce: 'pre',
           writeBundle: {
