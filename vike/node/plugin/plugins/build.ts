@@ -33,6 +33,7 @@ import { pluginDistPackageJsonFile } from './build/pluginDistPackageJsonFile.js'
 import { pluginSuppressRollupWarning } from './build/pluginSuppressRollupWarning.js'
 import { pluginDistFileNames } from './build/pluginDistFileNames.js'
 import { pluginAutoFullBuild } from './build/pluginAutoFullBuild.js'
+import { pluginBuildEntry } from './build/pluginBuildEntry.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -44,6 +45,7 @@ function build(): Plugin[] {
     ...pluginBuildSettings(),
     ...pluginBuildApp(),
     ...pluginAutoFullBuild(),
+    ...pluginBuildEntry(),
     pluginDistPackageJsonFile(),
     pluginSuppressRollupWarning(),
     pluginDistFileNames()
