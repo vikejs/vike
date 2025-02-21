@@ -28,7 +28,7 @@ import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigV
 import { viteIsSSR } from '../shared/viteIsSSR.js'
 import { assetsManifestPlugin } from './buildConfig/assetsManifestPlugin.js'
 import { resolveOutDir } from '../shared/getOutDirs.js'
-import { buildApp } from './buildConfig/buildApp.js'
+import { pluginBuildApp } from './buildConfig/pluginBuildApp.js'
 import { pluginDistPackageJsonFile } from './buildConfig/pluginDistPackageJsonFile.js'
 import { pluginSuppressRollupWarning } from './buildConfig/pluginSuppressRollupWarning.js'
 import { pluginDistFileNames } from './buildConfig/pluginDistFileNames.js'
@@ -43,7 +43,7 @@ function buildConfig(): Plugin[] {
     //
     ...assetsManifestPlugin(),
     ...buildSettings(),
-    ...buildApp(),
+    ...pluginBuildApp(),
     ...pluginAutoFullBuild(),
     pluginDistPackageJsonFile(),
     pluginSuppressRollupWarning(),
