@@ -29,7 +29,7 @@ import {
   fixServerAssets_assertCssCodeSplit,
   fixServerAssets_assertCssTarget,
   fixServerAssets_isEnabled
-} from './buildConfig/fixServerAssets.js'
+} from './buildConfig/assetsManifestPlugin/fixServerAssets.js'
 import { set_macro_ASSETS_MANIFEST } from './buildEntry/index.js'
 import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
