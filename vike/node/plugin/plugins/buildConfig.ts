@@ -26,7 +26,7 @@ import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import { viteIsSSR } from '../shared/viteIsSSR.js'
-import { assetsManifestPlugin } from './buildConfig/assetsManifestPlugin.js'
+import { pluginAssetsManifest } from './buildConfig/pluginAssetsManifest.js'
 import { resolveOutDir } from '../shared/getOutDirs.js'
 import { pluginBuildApp } from './buildConfig/pluginBuildApp.js'
 import { pluginDistPackageJsonFile } from './buildConfig/pluginDistPackageJsonFile.js'
@@ -40,7 +40,7 @@ const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin[] {
   return [
-    ...assetsManifestPlugin(),
+    ...pluginAssetsManifest(),
     ...buildSettings(),
     ...pluginBuildApp(),
     ...pluginAutoFullBuild(),

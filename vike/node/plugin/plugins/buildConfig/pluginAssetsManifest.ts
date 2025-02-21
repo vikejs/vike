@@ -1,4 +1,4 @@
-export { assetsManifestPlugin }
+export { pluginAssetsManifest }
 
 import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
@@ -10,14 +10,14 @@ import {
   fixServerAssets_assertUsageCssTarget,
   fixServerAssets_isEnabled,
   writeManifestFile
-} from '../buildConfig/assetsManifestPlugin/fixServerAssets.js'
+} from '../buildConfig/pluginAssetsManifest/fixServerAssets.js'
 import { set_macro_ASSETS_MANIFEST } from '../buildEntry/index.js'
 import { getOutDirs, type OutDirs } from '../../shared/getOutDirs.js'
 import { viteIsSSR } from '../../shared/viteIsSSR.js'
 import { getVikeConfigPublic } from '../commonConfig.js'
 const manifestTempFile = '_temp_manifest.json'
 
-function assetsManifestPlugin(): Plugin[] {
+function pluginAssetsManifest(): Plugin[] {
   let isServerAssetsFixEnabled: boolean
   let config: ResolvedConfig
   let assetsJsonFilePath: string

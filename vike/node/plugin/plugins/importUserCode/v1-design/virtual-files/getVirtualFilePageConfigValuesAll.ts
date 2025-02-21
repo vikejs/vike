@@ -15,7 +15,7 @@ import {
   serializeConfigValues
 } from '../../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
-import { fixServerAssets_isEnabled } from '../../../buildConfig/assetsManifestPlugin/fixServerAssets.js'
+import { fixServerAssets_isEnabled } from '../../../buildConfig/pluginAssetsManifest/fixServerAssets.js'
 import { getConfigValueBuildTime } from '../../../../../../shared/page-configs/getConfigValueBuildTime.js'
 
 async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
