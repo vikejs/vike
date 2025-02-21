@@ -271,7 +271,7 @@ function fixServerAssets_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type Target = undefined | false | string | string[]
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
-async function fixServerAssets_assertUsageCssTarget(config: ResolvedConfig) {
+function fixServerAssets_assertUsageCssTarget(config: ResolvedConfig) {
   if (!fixServerAssets_isEnabled()) return
   if (!isV1Design(config)) return
   const isServerSide = viteIsSSR(config)
