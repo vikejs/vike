@@ -1,12 +1,18 @@
 export { viteIsSSR }
+export { viteIsServerBuildEnvAny }
 export { viteIsSSR_options }
 export { viteIsSSR_safe }
 
-import type { ResolvedConfig, UserConfig } from 'vite'
+import type { Environment, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
-function viteIsSSR(config: ResolvedConfig | UserConfig): boolean {
-  return !!config?.build?.ssr
+// TODO/now: rename_full viteIsSSR isViteServerBuildEnvSsr
+function viteIsSSR(configGlobal: ResolvedConfig | UserConfig, viteEnv?: Environment): boolean {
+  const configEnv = viteEnv?.config ?? configGlobal
+  return !!configEnv?.build?.ssr
+}
+function viteIsServerBuildEnvAny(config: ResolvedConfig, viteEnv: Environment | undefined) {
+  return viteEnv ? viteEnv.name === 'ssr' : viteIsSSR(config, viteEnv)
 }
 
 function viteIsSSR_options(options: { ssr?: boolean } | undefined): boolean {

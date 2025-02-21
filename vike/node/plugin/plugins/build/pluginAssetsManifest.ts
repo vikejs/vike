@@ -13,7 +13,7 @@ import {
 } from '../build/pluginAssetsManifest/fixServerAssets.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
-import { viteIsSSR } from '../../shared/viteIsSSR.js'
+import { viteIsServerBuildEnvAny, viteIsSSR } from '../../shared/viteIsSSR.js'
 import { getVikeConfigPublic } from '../commonConfig.js'
 import { assert, assertIsSingleModuleInstance } from '../../utils.js'
 type Bundle = Rollup.OutputBundle
@@ -89,16 +89,13 @@ async function handleAssetsManifest(
   options: Options,
   bundle: Bundle
 ) {
-  const configEnv = viteEnv?.config ?? config
-  const isServerBuild = viteIsSSR(configEnv)
-  const isServerSideBuild = viteEnv ? viteEnv.name === 'ssr' : isServerBuild
-  const outDirs = getOutDirs(viteEnv?.config ?? config)
-  if (isServerBuild) {
+  if (viteIsSSR(config, viteEnv)) {
     assert(!assetsJsonFilePath)
+    const outDirs = getOutDirs(config, viteEnv)
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(outDirs, assetsJsonFilePath, config)
   }
-  if (isServerSideBuild) {
+  if (viteIsServerBuildEnvAny(config, viteEnv)) {
     assert(assetsJsonFilePath)
     // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
     await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
