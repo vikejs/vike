@@ -36,13 +36,7 @@ function pluginAutoFullBuild(): Plugin[] {
         order: 'pre',
         */
         async handler(_options, bundle) {
-          try {
-            await triggerFullBuild(config, vikeConfig, bundle)
-          } catch (err) {
-            // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-            console.error(err)
-            process.exit(1)
-          }
+          await triggerFullBuild(config, vikeConfig, bundle)
         }
       }
     },
@@ -78,6 +72,7 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
   try {
     await build(setSSR(configInline))
   } catch (err) {
+    // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
     console.error(err)
     logErrorHint(err)
     process.exit(1)

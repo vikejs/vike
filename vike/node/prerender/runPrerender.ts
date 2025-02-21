@@ -188,6 +188,7 @@ async function runPrerenderFromAutoRun(
     const ret = await runPrerender({ viteConfig })
     prerenderContextPublic = ret.prerenderContextPublic
   } catch (err) {
+    // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
     console.error(err)
     logErrorHint(err)
     process.exit(1)
