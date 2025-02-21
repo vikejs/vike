@@ -12,7 +12,7 @@ import {
   isDocker,
   isObject
 } from '../utils.js'
-import { assertRollupInput } from './buildConfig/assetsManifestPlugin.js'
+import { assertRollupInput } from './buildConfig.js'
 import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'

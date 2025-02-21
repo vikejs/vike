@@ -9,7 +9,7 @@ export type { VikeVitePluginOptions }
 
 import type { Plugin } from 'vite'
 import { assertUsage } from './utils.js'
-import { buildConfig } from './plugins/buildConfig/assetsManifestPlugin.js'
+import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
 import { devConfig } from './plugins/devConfig/index.js'
