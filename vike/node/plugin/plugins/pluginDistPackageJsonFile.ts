@@ -7,6 +7,7 @@
  * Reproduction: https://github.com/brillout/vite-plugin-ssr-server-import-syntax
  */
 
+// TODO/refactor: prefix all other plugins with `plugin` as well?
 export { pluginDistPackageJsonFile }
 
 import type { Plugin, ResolvedConfig } from 'vite'
