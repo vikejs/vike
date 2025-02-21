@@ -10,7 +10,7 @@ import {
   fixServerAssets_assertUsageCssTarget,
   fixServerAssets_isEnabled,
   writeManifestFile
-} from '../buildConfig/pluginAssetsManifest/fixServerAssets.js'
+} from '../build/pluginAssetsManifest/fixServerAssets.js'
 import { set_macro_ASSETS_MANIFEST } from '../buildEntry/index.js'
 import { getOutDirs, type OutDirs } from '../../shared/getOutDirs.js'
 import { viteIsSSR } from '../../shared/viteIsSSR.js'
@@ -24,7 +24,7 @@ function pluginAssetsManifest(): Plugin[] {
 
   return [
     {
-      name: 'vike:buildConfig:assets-manifest:post',
+      name: 'vike:build:assets-manifest:post',
       apply: 'build',
       enforce: 'post',
       configResolved: {
@@ -61,13 +61,13 @@ function pluginAssetsManifest(): Plugin[] {
       }
     },
     {
-      name: 'vike:buildConfig:assets-manifest:pre',
+      name: 'vike:build:assets-manifest:pre',
       apply: 'build',
-      // Compatiblity with Environment API. It replaces `vike:buildConfig:assets-manifest:pre` when compatible
+      // Compatiblity with Environment API. It replaces `vike:build:assets-manifest:pre` when compatible
       // See https://vite.dev/guide/api-environment-plugins.html#per-environment-plugins
       applyToEnvironment() {
         return {
-          name: 'vike:buildConfig:assets-manifest:pre:env-api-compat',
+          name: 'vike:build:assets-manifest:pre:env-api-compat',
           apply: 'build',
           enforce: 'pre',
           writeBundle: {

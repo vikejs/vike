@@ -1,4 +1,4 @@
-export { buildConfig }
+export { build }
 export { assertRollupInput }
 export { analyzeClientEntries }
 export { manifestTempFile }
@@ -26,19 +26,19 @@ import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import { viteIsSSR } from '../shared/viteIsSSR.js'
-import { pluginAssetsManifest } from './buildConfig/pluginAssetsManifest.js'
+import { pluginAssetsManifest } from './build/pluginAssetsManifest.js'
 import { resolveOutDir } from '../shared/getOutDirs.js'
-import { pluginBuildApp } from './buildConfig/pluginBuildApp.js'
-import { pluginDistPackageJsonFile } from './buildConfig/pluginDistPackageJsonFile.js'
-import { pluginSuppressRollupWarning } from './buildConfig/pluginSuppressRollupWarning.js'
-import { pluginDistFileNames } from './buildConfig/pluginDistFileNames.js'
-import { pluginAutoFullBuild } from './buildConfig/pluginAutoFullBuild.js'
+import { pluginBuildApp } from './build/pluginBuildApp.js'
+import { pluginDistPackageJsonFile } from './build/pluginDistPackageJsonFile.js'
+import { pluginSuppressRollupWarning } from './build/pluginSuppressRollupWarning.js'
+import { pluginDistFileNames } from './build/pluginDistFileNames.js'
+import { pluginAutoFullBuild } from './build/pluginAutoFullBuild.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
 
-function buildConfig(): Plugin[] {
+function build(): Plugin[] {
   return [
     ...pluginAssetsManifest(),
     ...pluginBuildSettings(),
@@ -55,7 +55,7 @@ function pluginBuildSettings(): Plugin[] {
 
   return [
     {
-      name: 'vike:buildConfig:settings',
+      name: 'vike:build:settings',
       apply: 'build',
       enforce: 'post',
       configResolved: {
