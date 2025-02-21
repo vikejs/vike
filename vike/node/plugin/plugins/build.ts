@@ -55,7 +55,7 @@ function pluginBuildSettings(): Plugin[] {
 
   return [
     {
-      name: 'vike:build:settings',
+      name: 'vike:build:pluginBuildSettings',
       apply: 'build',
       enforce: 'post',
       configResolved: {
