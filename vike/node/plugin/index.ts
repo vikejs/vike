@@ -11,7 +11,7 @@ import type { Plugin } from 'vite'
 import { assertUsage } from './utils.js'
 import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
-import { autoFullBuild } from './plugins/autoFullBuild.js'
+import { pluginAutoFullBuild } from './plugins/pluginAutoFullBuild.js'
 import { devConfig } from './plugins/devConfig/index.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
@@ -40,7 +40,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...devConfig(),
     ...buildConfig(),
     previewConfig(),
-    ...autoFullBuild(),
+    ...pluginAutoFullBuild(),
     ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
     ...setGlobalContext(),

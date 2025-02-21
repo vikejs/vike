@@ -16,7 +16,7 @@ import { assertVersion } from './utils.js'
 async function build(options: APIOptions = {}): Promise<{}> {
   const { viteConfigEnhanced, vikeConfig } = await prepareViteApiCall(options.viteConfig, 'build')
 
-  // Pass it to autoFullBuild()
+  // Pass it to pluginAutoFullBuild()
   if (viteConfigEnhanced) viteConfigEnhanced._viteConfigEnhanced = viteConfigEnhanced
 
   if (vikeConfig.global.config.viteEnvironmentAPI) {
