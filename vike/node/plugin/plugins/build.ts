@@ -8,12 +8,12 @@ import { pluginSuppressRollupWarning } from './build/pluginSuppressRollupWarning
 import { pluginDistFileNames } from './build/pluginDistFileNames.js'
 import { pluginAutoFullBuild } from './build/pluginAutoFullBuild.js'
 import { pluginBuildEntry } from './build/pluginBuildEntry.js'
-import { pluginBuildSettings } from './pluginBuildConfig.js'
+import { pluginBuildConfig } from './pluginBuildConfig.js'
 
 function build(): Plugin[] {
   return [
     ...pluginAssetsManifest(),
-    ...pluginBuildSettings(),
+    ...pluginBuildConfig(),
     ...pluginBuildApp(),
     ...pluginAutoFullBuild(),
     ...pluginBuildEntry(),

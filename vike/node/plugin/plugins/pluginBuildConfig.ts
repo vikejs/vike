@@ -1,4 +1,4 @@
-export { pluginBuildSettings }
+export { pluginBuildConfig }
 export { assertRollupInput }
 export { analyzeClientEntries }
 export { manifestTempFile }
@@ -32,12 +32,12 @@ const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
 
-function pluginBuildSettings(): Plugin[] {
+function pluginBuildConfig(): Plugin[] {
   let config: ResolvedConfig
 
   return [
     {
-      name: 'vike:build:pluginBuildSettings',
+      name: 'vike:build:pluginBuildConfig',
       apply: 'build',
       enforce: 'post',
       configResolved: {
