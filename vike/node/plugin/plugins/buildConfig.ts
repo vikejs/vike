@@ -41,7 +41,7 @@ const manifestTempFile = '_temp_manifest.json'
 function buildConfig(): Plugin[] {
   return [
     ...pluginAssetsManifest(),
-    ...buildSettings(),
+    ...pluginBuildSettings(),
     ...pluginBuildApp(),
     ...pluginAutoFullBuild(),
     pluginDistPackageJsonFile(),
@@ -50,7 +50,7 @@ function buildConfig(): Plugin[] {
   ]
 }
 
-function buildSettings(): Plugin[] {
+function pluginBuildSettings(): Plugin[] {
   let config: ResolvedConfig
 
   return [
