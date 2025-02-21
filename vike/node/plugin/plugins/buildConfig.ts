@@ -100,13 +100,13 @@ function buildConfig(): Plugin[] {
       }
     },
     {
-      name: 'vike:buildConfig:pre',
+      name: 'vike:buildConfig:assets-manifest',
       apply: 'build',
-      // Compatiblity with Environment API. It replaces `vike:buildConfig:pre` when compatible
+      // Compatiblity with Environment API. It replaces `vike:buildConfig:assets-manifest` when compatible
       // See https://vite.dev/guide/api-environment-plugins.html#per-environment-plugins
       applyToEnvironment() {
         return {
-          name: 'vike:buildConfig:pre:env-api-compat',
+          name: 'vike:buildConfig:assets-manifest:env-api-compat',
           apply: 'build',
           enforce: 'pre',
           writeBundle: {
