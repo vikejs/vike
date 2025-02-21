@@ -40,7 +40,6 @@ const manifestTempFile = '_temp_manifest.json'
 
 function buildConfig(): Plugin[] {
   return [
-    //
     ...assetsManifestPlugin(),
     ...buildSettings(),
     ...pluginBuildApp(),
