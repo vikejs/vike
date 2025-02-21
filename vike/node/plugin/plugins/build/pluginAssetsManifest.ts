@@ -107,16 +107,16 @@ async function handleAssetsManifest(
   }
 }
 
-  async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {
-    const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
-    const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
-    const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
-    if (!isServerAssetsFixEnabled) {
-      await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
-    } else {
-      const { clientManifestMod } = await fixServerAssets(config)
-      await writeManifestFile(clientManifestMod, assetsJsonFilePath)
-    }
-    await fs.rm(clientManifestFilePath)
-    await fs.rm(serverManifestFilePath)
+async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {
+  const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
+  const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
+  const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
+  if (!isServerAssetsFixEnabled) {
+    await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
+  } else {
+    const { clientManifestMod } = await fixServerAssets(config)
+    await writeManifestFile(clientManifestMod, assetsJsonFilePath)
   }
+  await fs.rm(clientManifestFilePath)
+  await fs.rm(serverManifestFilePath)
+}
