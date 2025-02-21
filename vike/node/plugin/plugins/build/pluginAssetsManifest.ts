@@ -15,7 +15,6 @@ import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 import { getOutDirs, type OutDirs } from '../../shared/getOutDirs.js'
 import { viteIsSSR } from '../../shared/viteIsSSR.js'
 import { getVikeConfigPublic } from '../commonConfig.js'
-import { assert } from '../../utils.js'
 const manifestTempFile = '_temp_manifest.json'
 
 function pluginAssetsManifest(): Plugin[] {
@@ -96,7 +95,6 @@ function pluginAssetsManifest(): Plugin[] {
         order: 'pre',
         sequential: true,
         async handler(options, bundle) {
-          assert(false)
           if (viteIsSSR(config)) {
             await writeAssetsManifestFile(getOutDirs(config))
             await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
