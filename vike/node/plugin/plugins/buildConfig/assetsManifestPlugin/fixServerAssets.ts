@@ -35,8 +35,8 @@ async function fixServerAssets(
   config: ResolvedConfig
 ): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
   const outDirs = getOutDirs(config)
-  const clientManifest = await loadManifest(outDirs.outDirClient)
-  const serverManifest = await loadManifest(outDirs.outDirServer)
+  const clientManifest = await readManifestFile(outDirs.outDirClient)
+  const serverManifest = await readManifestFile(outDirs.outDirServer)
 
   const { clientManifestMod, serverManifestMod, filesToMove, filesToRemove } = addServerAssets(
     clientManifest,
@@ -46,7 +46,7 @@ async function fixServerAssets(
 
   return { clientManifestMod, serverManifestMod }
 }
-async function loadManifest(outDir: string) {
+async function readManifestFile(outDir: string) {
   const manifestFilePath = path.posix.join(outDir, manifestTempFile)
   const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
   assert(manifestFileContent)
