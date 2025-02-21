@@ -1,6 +1,6 @@
-import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerender.js'
-
 export { buildApp }
+
+import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerender.js'
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { isPrerenderAutoRunEnabled } from '../../../prerender/context.js'
