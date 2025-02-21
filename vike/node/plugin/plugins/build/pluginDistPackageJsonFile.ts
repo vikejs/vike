@@ -17,7 +17,7 @@ import { viteIsSSR } from '../../shared/viteIsSSR.js'
 function pluginDistPackageJsonFile(): Plugin {
   let config: ResolvedConfig
   return {
-    name: 'vike:pluginDistPackageJsonFile',
+    name: 'vike:build:pluginDistPackageJsonFile',
     apply: 'build',
     configResolved(config_) {
       config = config_

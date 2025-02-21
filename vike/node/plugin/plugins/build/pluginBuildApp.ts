@@ -17,7 +17,7 @@ function pluginBuildApp(): Plugin[] {
 
   return [
     {
-      name: 'vike:pluginBuildApp',
+      name: 'vike:build:pluginBuildApp',
       apply: 'build',
       config(config) {
         const vike = getVikeConfigPublic(config)
@@ -57,7 +57,7 @@ function pluginBuildApp(): Plugin[] {
       }
     },
     {
-      name: 'vike:pluginBuildApp:prerender',
+      name: 'vike:build:pluginBuildApp:prerender',
       apply: 'build',
       enforce: 'pre',
       applyToEnvironment(env) {

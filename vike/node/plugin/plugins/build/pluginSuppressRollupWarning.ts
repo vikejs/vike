@@ -7,7 +7,7 @@ type RollupLog = Rollup.RollupLog
 
 function pluginSuppressRollupWarning(): Plugin {
   return {
-    name: 'vike:pluginSuppressRollupWarning',
+    name: 'vike:build:pluginSuppressRollupWarning',
     apply: 'build',
     enforce: 'post',
     async configResolved(config) {

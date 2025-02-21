@@ -22,7 +22,7 @@ function pluginAutoFullBuild(): Plugin[] {
   let vikeConfig: VikeConfigObject
   return [
     {
-      name: 'vike:pluginAutoFullBuild',
+      name: 'vike:build:pluginAutoFullBuild',
       apply: 'build',
       enforce: 'pre',
       async configResolved(config_) {
@@ -39,7 +39,7 @@ function pluginAutoFullBuild(): Plugin[] {
           try {
             await triggerFullBuild(config, vikeConfig, bundle)
           } catch (err) {
-            // Avoid Rollup prefixing the error with [vike:pluginAutoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
+            // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
             console.error(err)
             process.exit(1)
           }
@@ -47,7 +47,7 @@ function pluginAutoFullBuild(): Plugin[] {
       }
     },
     {
-      name: 'vike:pluginAutoFullBuild:forceExit',
+      name: 'vike:build:pluginAutoFullBuild:forceExit',
       apply: 'build',
       enforce: 'post',
       closeBundle: {

@@ -49,7 +49,7 @@ function pluginAssetsManifest(): Plugin[] {
             build: {
               manifest: manifestTempFile,
               copyPublicDir: vike.config.viteEnvironmentAPI
-                ? // Already set by vike:pluginBuildApp
+                ? // Already set by vike:build:pluginBuildApp
                   undefined
                 : !viteIsSSR(config)
             }

@@ -22,7 +22,7 @@ function pluginBuildEntry(): Plugin[] {
   let config: ResolvedConfig
   return [
     {
-      name: 'vike:pluginBuildEntry',
+      name: 'vike:build:pluginBuildEntry',
       apply: 'build',
       enforce: 'post',
       async configResolved(config_) {
