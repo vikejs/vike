@@ -1,5 +1,6 @@
+// TODO/now: move this file
+// TODO/now: rename_full fixServerAssets handleAssets
 export { handleAssets }
-export { fixServerAssets }
 export { fixServerAssets_getBuildConfig }
 export { fixServerAssets_isEnabled }
 export { fixServerAssets_assertUsageCssCodeSplit }
@@ -32,7 +33,7 @@ import { getVikeConfigPublic } from '../../commonConfig.js'
 import { set_macro_ASSETS_MANIFEST } from '../pluginBuildEntry.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
-assertIsSingleModuleInstance('build/fixServerAssets.ts')
+assertIsSingleModuleInstance('build/handleAssets.ts')
 let assetsJsonFilePath: string | undefined
 
 // TODO/now move isV1Design() inside fixServerAssets_isEnabled()
