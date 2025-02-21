@@ -1,4 +1,4 @@
-export { build }
+export { pluginBuildSettings }
 export { assertRollupInput }
 export { analyzeClientEntries }
 export { manifestTempFile }
@@ -26,31 +26,11 @@ import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
 import { viteIsSSR } from '../shared/viteIsSSR.js'
-import { pluginAssetsManifest } from './build/pluginAssetsManifest.js'
 import { resolveOutDir } from '../shared/getOutDirs.js'
-import { pluginBuildApp } from './build/pluginBuildApp.js'
-import { pluginDistPackageJsonFile } from './build/pluginDistPackageJsonFile.js'
-import { pluginSuppressRollupWarning } from './build/pluginSuppressRollupWarning.js'
-import { pluginDistFileNames } from './build/pluginDistFileNames.js'
-import { pluginAutoFullBuild } from './build/pluginAutoFullBuild.js'
-import { pluginBuildEntry } from './build/pluginBuildEntry.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 const manifestTempFile = '_temp_manifest.json'
-
-function build(): Plugin[] {
-  return [
-    ...pluginAssetsManifest(),
-    ...pluginBuildSettings(),
-    ...pluginBuildApp(),
-    ...pluginAutoFullBuild(),
-    ...pluginBuildEntry(),
-    pluginDistPackageJsonFile(),
-    pluginSuppressRollupWarning(),
-    pluginDistFileNames()
-  ]
-}
 
 function pluginBuildSettings(): Plugin[] {
   let config: ResolvedConfig

@@ -7,9 +7,9 @@ export { PROJECT_VERSION as version } from './utils.js'
 export type { VikeVitePluginOptions as UserConfig }
 export type { VikeVitePluginOptions }
 
-import type { Plugin } from 'vite'
+import { type Plugin } from 'vite'
 import { assertUsage } from './utils.js'
-import { build } from './plugins/buildConfig.js'
+import { build } from './plugins/build.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { devConfig } from './plugins/devConfig/index.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
