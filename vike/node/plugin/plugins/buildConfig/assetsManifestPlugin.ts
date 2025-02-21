@@ -8,7 +8,8 @@ import {
   fixServerAssets,
   fixServerAssets_assertUsageCssCodeSplit,
   fixServerAssets_assertUsageCssTarget,
-  fixServerAssets_isEnabled
+  fixServerAssets_isEnabled,
+  writeManifestFile
 } from '../buildConfig/assetsManifestPlugin/fixServerAssets.js'
 import { set_macro_ASSETS_MANIFEST } from '../buildEntry/index.js'
 import { getOutDirs, type OutDirs } from '../../shared/getOutDirs.js'
@@ -111,7 +112,7 @@ function assetsManifestPlugin(): Plugin[] {
       await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
     } else {
       const { clientManifestMod } = await fixServerAssets(config)
-      await fs.writeFile(assetsJsonFilePath, JSON.stringify(clientManifestMod, null, 2), 'utf-8')
+      await writeManifestFile(clientManifestMod, assetsJsonFilePath)
     }
     await fs.rm(clientManifestFilePath)
     await fs.rm(serverManifestFilePath)

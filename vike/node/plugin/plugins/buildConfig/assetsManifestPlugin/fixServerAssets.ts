@@ -2,13 +2,14 @@ export { fixServerAssets }
 export { fixServerAssets_isEnabled }
 export { fixServerAssets_assertUsageCssCodeSplit }
 export { fixServerAssets_assertUsageCssTarget }
+export { writeManifestFile }
 
 import fs from 'fs/promises'
 import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
 import { ViteManifest, ViteManifestEntry } from '../../../../shared/ViteManifest.js'
-import { assert, assertWarning, isEqualStringList, pLimit, unique } from '../../../utils.js'
+import { assert, assertWarning, isEqualStringList, isObject, pLimit, unique } from '../../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { manifestTempFile } from '../../buildConfig.js'
 import { ResolvedConfig } from 'vite'
@@ -326,7 +327,13 @@ async function readManifestFile(outDir: string) {
   const manifestFilePath = path.posix.join(outDir, manifestTempFile)
   const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
   assert(manifestFileContent)
-  const manifest = JSON.parse(manifestFileContent)
+  const manifest: unknown = JSON.parse(manifestFileContent)
   assert(manifest)
-  return manifest
+  assert(isObject(manifest))
+  return manifest as ViteManifest
+}
+async function writeManifestFile(manifest: ViteManifest, manifestFilePath: string) {
+  assert(isObject(manifest))
+  const manifestFileContent = JSON.stringify(manifest, null, 2)
+  await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
 }
