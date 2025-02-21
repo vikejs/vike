@@ -1,8 +1,6 @@
-// TODO/v1-release: remove this file
+export { pluginAutoFullBuild }
 
 import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
-
-export { pluginAutoFullBuild }
 
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
