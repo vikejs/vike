@@ -23,7 +23,7 @@ function assetsManifestPlugin(): Plugin[] {
 
   return [
     {
-      name: 'vike:buildConfig:post',
+      name: 'vike:buildConfig:assets-manifest:post',
       apply: 'build',
       enforce: 'post',
       configResolved: {
