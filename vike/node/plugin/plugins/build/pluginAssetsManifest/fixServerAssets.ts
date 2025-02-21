@@ -1,3 +1,4 @@
+export { handleAssets }
 export { fixServerAssets }
 export { fixServerAssets_getBuildConfig }
 export { fixServerAssets_isEnabled }
@@ -10,16 +11,29 @@ import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
 import type { ViteManifest, ViteManifestEntry } from '../../../../shared/ViteManifest.js'
-import { assert, assertWarning, isEqualStringList, isObject, pLimit, unique } from '../../../utils.js'
+import {
+  assert,
+  assertIsSingleModuleInstance,
+  assertWarning,
+  isEqualStringList,
+  isObject,
+  pLimit,
+  unique
+} from '../../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { manifestTempFile } from '../pluginBuildConfig.js'
-import type { ResolvedConfig, UserConfig } from 'vite'
+import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
 import { getAssetsDir } from '../../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../../importUserCode/v1-design/getVikeConfig.js'
-import { getOutDirs } from '../../../shared/getOutDirs.js'
-import { viteIsSSR } from '../../../shared/viteIsSSR.js'
+import { getOutDirs, OutDirs } from '../../../shared/getOutDirs.js'
+import { viteIsServerBuildEnvAny, viteIsSSR } from '../../../shared/viteIsSSR.js'
 import { getVikeConfigPublic } from '../../commonConfig.js'
+import { set_macro_ASSETS_MANIFEST } from '../pluginBuildEntry.js'
+type Bundle = Rollup.OutputBundle
+type Options = Rollup.NormalizedOutputOptions
+assertIsSingleModuleInstance('build/fixServerAssets.ts')
+let assetsJsonFilePath: string | undefined
 
 // TODO/now move isV1Design() inside fixServerAssets_isEnabled()
 /**
@@ -357,4 +371,37 @@ function fixServerAssets_getBuildConfig(config: UserConfig) {
         undefined
       : !viteIsSSR(config)
   } as const
+}
+
+async function handleAssets(
+  config: ResolvedConfig,
+  viteEnv: Environment | undefined,
+  options: Options,
+  bundle: Bundle
+) {
+  if (viteIsSSR(config, viteEnv)) {
+    assert(!assetsJsonFilePath)
+    const outDirs = getOutDirs(config, viteEnv)
+    assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
+    await writeAssetsManifestFile(outDirs, assetsJsonFilePath, config)
+  }
+  if (viteIsServerBuildEnvAny(config, viteEnv)) {
+    assert(assetsJsonFilePath)
+    // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
+    await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
+  }
+}
+
+async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {
+  const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design(config)
+  const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
+  const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
+  if (!isServerAssetsFixEnabled) {
+    await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
+  } else {
+    const { clientManifestMod } = await fixServerAssets(config)
+    await writeManifestFile(clientManifestMod, assetsJsonFilePath)
+  }
+  await fs.rm(clientManifestFilePath)
+  await fs.rm(serverManifestFilePath)
 }
