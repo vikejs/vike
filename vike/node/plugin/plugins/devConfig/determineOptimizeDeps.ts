@@ -4,7 +4,7 @@ import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, assertIsNpmPackageImport, createDebugger, isArray, unique } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
-import { analyzeClientEntries } from '../build.js'
+import { analyzeClientEntries } from '../buildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import {
   virtualFileIdImportUserCodeClientCR,

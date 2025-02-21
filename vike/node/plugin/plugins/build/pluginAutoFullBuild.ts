@@ -11,7 +11,7 @@ import type { VikeConfigObject } from '../importUserCode/v1-design/getVikeConfig
 import { isViteCliCall, getViteConfigFromCli } from '../../shared/isViteCliCall.js'
 import pc from '@brillout/picocolors'
 import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
-import { manifestTempFile } from '../build.js'
+import { manifestTempFile } from '../buildConfig.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
 
