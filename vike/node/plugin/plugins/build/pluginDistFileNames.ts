@@ -15,7 +15,7 @@ type PreRenderedAsset = Rollup.PreRenderedAsset
 
 function pluginDistFileNames(): Plugin {
   return {
-    name: 'vike:pluginDistFileNames',
+    name: 'vike:build:pluginDistFileNames',
     apply: 'build',
     enforce: 'post',
     configResolved(config) {
