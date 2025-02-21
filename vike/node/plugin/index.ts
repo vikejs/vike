@@ -18,7 +18,7 @@ import { importUserCode } from './plugins/importUserCode/index.js'
 import { distFileNames } from './plugins/distFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
-import { suppressRollupWarning } from './plugins/buildConfig/suppressRollupWarning.js'
+import { pluginSuppressRollupWarning } from './plugins/buildConfig/pluginSuppressRollupWarning.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
 import { buildEntry } from './plugins/buildEntry/index.js'
 import { commonConfig } from './plugins/commonConfig.js'
@@ -48,7 +48,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     distFileNames(),
     ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
-    suppressRollupWarning(),
+    pluginSuppressRollupWarning(),
     ...setGlobalContext(),
     ...buildEntry(),
     baseUrls(),

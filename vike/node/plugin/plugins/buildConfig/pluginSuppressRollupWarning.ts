@@ -1,13 +1,13 @@
 // Suppress Rollup warnings `Generated an empty chunk: "index.page.server"`
 
-export { suppressRollupWarning }
+export { pluginSuppressRollupWarning }
 
 import type { Plugin, Rollup } from 'vite'
 type RollupLog = Rollup.RollupLog
 
-function suppressRollupWarning(): Plugin {
+function pluginSuppressRollupWarning(): Plugin {
   return {
-    name: 'vike:suppressRollupWarning',
+    name: 'vike:pluginSuppressRollupWarning',
     apply: 'build',
     enforce: 'post',
     async configResolved(config) {
