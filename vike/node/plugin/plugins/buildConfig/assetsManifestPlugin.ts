@@ -13,14 +13,14 @@ import {
   normalizeRollupInput,
   onSetupBuild,
   assertIsNpmPackageImport
-} from '../utils.js'
-import { getVikeConfig, isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
-import { findPageFiles } from '../shared/findPageFiles.js'
+} from '../../utils.js'
+import { getVikeConfig, isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
+import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
-import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
-import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
+import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
+import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
 import fs from 'fs/promises'
 import path from 'path'
@@ -29,14 +29,14 @@ import {
   fixServerAssets_assertCssCodeSplit,
   fixServerAssets_assertCssTarget,
   fixServerAssets_isEnabled
-} from './buildConfig/assetsManifestPlugin/fixServerAssets.js'
-import { set_macro_ASSETS_MANIFEST } from './buildEntry/index.js'
-import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
-import { getFilePathResolved } from '../shared/getFilePath.js'
-import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
-import { getOutDirs, type OutDirs, resolveOutDir } from '../shared/getOutDirs.js'
-import { viteIsSSR } from '../shared/viteIsSSR.js'
-import { getVikeConfigPublic } from './commonConfig.js'
+} from './assetsManifestPlugin/fixServerAssets.js'
+import { set_macro_ASSETS_MANIFEST } from '../buildEntry/index.js'
+import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
+import { getFilePathResolved } from '../../shared/getFilePath.js'
+import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
+import { getOutDirs, type OutDirs, resolveOutDir } from '../../shared/getOutDirs.js'
+import { viteIsSSR } from '../../shared/viteIsSSR.js'
+import { getVikeConfigPublic } from '../commonConfig.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
