@@ -46,14 +46,6 @@ async function fixServerAssets(
 
   return { clientManifestMod, serverManifestMod }
 }
-async function readManifestFile(outDir: string) {
-  const manifestFilePath = path.posix.join(outDir, manifestTempFile)
-  const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
-  assert(manifestFileContent)
-  const manifest = JSON.parse(manifestFileContent)
-  assert(manifest)
-  return manifest
-}
 async function copyAssets(filesToMove: string[], filesToRemove: string[], config: ResolvedConfig) {
   const { outDirClient, outDirServer } = getOutDirs(config)
   const assetsDir = getAssetsDir(config)
@@ -328,4 +320,13 @@ function removeEmptyDirectories(dirPath: string): void {
   if (fs_sync.readdirSync(dirPath).length === 0) {
     fs_sync.rmdirSync(dirPath)
   }
+}
+
+async function readManifestFile(outDir: string) {
+  const manifestFilePath = path.posix.join(outDir, manifestTempFile)
+  const manifestFileContent = await fs.readFile(manifestFilePath, 'utf-8')
+  assert(manifestFileContent)
+  const manifest = JSON.parse(manifestFileContent)
+  assert(manifest)
+  return manifest
 }
