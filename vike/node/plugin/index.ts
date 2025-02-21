@@ -13,7 +13,6 @@ import { buildConfig } from './plugins/buildConfig.js'
 import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
 import { devConfig } from './plugins/devConfig/index.js'
-import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
 import { distFileNames } from './plugins/distFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
@@ -43,7 +42,6 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...buildConfig(),
     previewConfig(),
     ...autoFullBuild(),
-    removeRequireHookPlugin(),
     distFileNames(),
     ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
