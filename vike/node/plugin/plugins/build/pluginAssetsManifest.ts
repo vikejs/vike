@@ -1,12 +1,6 @@
 export { pluginAssetsManifest }
 
 import type { ResolvedConfig, Plugin, UserConfig } from 'vite'
-import {
-  fixServerAssets_assertUsageCssCodeSplit,
-  fixServerAssets_assertUsageCssTarget,
-  fixServerAssets_getBuildConfig,
-  handleAssets
-} from '../build/pluginAssetsManifest/fixServerAssets.js'
 
 function pluginAssetsManifest(): Plugin[] {
   let config: ResolvedConfig
@@ -20,22 +14,17 @@ function pluginAssetsManifest(): Plugin[] {
         order: 'post',
         handler(config_) {
           config = config_
-          fixServerAssets_assertUsageCssCodeSplit(config)
         }
       },
       config: {
         order: 'post',
         handler(config) {
           return {
-            build: {
-              ...fixServerAssets_getBuildConfig(config)
-            }
+            build: {}
           } satisfies UserConfig
         }
       },
-      closeBundle() {
-        fixServerAssets_assertUsageCssTarget(config)
-      }
+      closeBundle() {}
     },
     {
       name: 'vike:build:pluginAssetsManifest:pre',
@@ -47,9 +36,7 @@ function pluginAssetsManifest(): Plugin[] {
       writeBundle: {
         order: 'pre',
         sequential: true,
-        async handler(options, bundle) {
-          await handleAssets(config, this.environment, options, bundle)
-        }
+        async handler(options, bundle) {}
       }
     }
   ]

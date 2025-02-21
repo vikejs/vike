@@ -14,6 +14,7 @@ import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
+import { handleAssets } from './pluginAssetsManifest/fixServerAssets.js'
 
 let forceExit = false
 
@@ -35,7 +36,8 @@ function pluginAutoFullBuild(): Plugin[] {
         sequential: true,
         order: 'pre',
         */
-        async handler(_options, bundle) {
+        async handler(options, bundle) {
+          await handleAssets(config, this.environment, options, bundle)
           await triggerFullBuild(config, vikeConfig, bundle)
         }
       }
