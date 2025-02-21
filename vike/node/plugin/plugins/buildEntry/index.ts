@@ -1,5 +1,5 @@
 export { buildEntry }
-export { set_ASSETS_MANIFEST }
+export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
@@ -65,7 +65,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   return importerCode
 }
 /** Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js) */
-async function set_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string) {
+async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string) {
   const { dir } = options
   assert(dir)
   const chunkPath = find_ASSETS_MANIFEST(bundle)
