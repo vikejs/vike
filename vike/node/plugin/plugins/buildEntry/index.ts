@@ -23,6 +23,7 @@ function buildEntry(): Plugin[] {
   return [
     {
       name: 'vike:buildEntry',
+      apply: 'build',
       enforce: 'post',
       async configResolved(config_) {
         config = config_
