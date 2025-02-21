@@ -31,6 +31,7 @@ import { resolveOutDir } from '../shared/getOutDirs.js'
 import { buildApp } from './buildConfig/buildApp.js'
 import { pluginDistPackageJsonFile } from './buildConfig/pluginDistPackageJsonFile.js'
 import { pluginSuppressRollupWarning } from './buildConfig/pluginSuppressRollupWarning.js'
+import { pluginDistFileNames } from './buildConfig/pluginDistFileNames.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -43,7 +44,8 @@ function buildConfig(): Plugin[] {
     ...buildSettings(),
     ...buildApp(),
     pluginDistPackageJsonFile(),
-    pluginSuppressRollupWarning()
+    pluginSuppressRollupWarning(),
+    pluginDistFileNames()
   ]
 }
 
