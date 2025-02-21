@@ -254,6 +254,8 @@ function getHash(src: string) {
 
 // https://github.com/vikejs/vike/issues/1993
 function fixServerAssets_assertUsageCssCodeSplit(config: ResolvedConfig) {
+  const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design(config)
+  if (!isServerAssetsFixEnabled) return
   assertWarning(
     config.build.cssCodeSplit,
     `${pc.cyan('build.cssCodeSplit')} shouldn't be set to ${pc.cyan(
