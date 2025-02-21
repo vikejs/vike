@@ -13,20 +13,20 @@ import {
   normalizeRollupInput,
   onSetupBuild,
   assertIsNpmPackageImport
-} from '../utils.js'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
-import { findPageFiles } from '../shared/findPageFiles.js'
+} from '../../utils.js'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
+import { findPageFiles } from '../../shared/findPageFiles.js'
 import type { ResolvedConfig, Plugin } from 'vite'
-import { getVirtualFileIdPageConfigValuesAll } from '../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import type { PageConfigBuildTime } from '../../../shared/page-configs/PageConfig.js'
-import type { FileType } from '../../../shared/getPageFiles/fileTypes.js'
-import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
+import { getVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
+import type { FileType } from '../../../../shared/getPageFiles/fileTypes.js'
+import { extractAssetsAddQuery } from '../../../shared/extractAssetsQuery.js'
 import { createRequire } from 'module'
-import { prependEntriesDir } from '../../shared/prependEntriesDir.js'
-import { getFilePathResolved } from '../shared/getFilePath.js'
-import { getConfigValueBuildTime } from '../../../shared/page-configs/getConfigValueBuildTime.js'
-import { viteIsSSR } from '../shared/viteIsSSR.js'
-import { resolveOutDir } from '../shared/getOutDirs.js'
+import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
+import { getFilePathResolved } from '../../shared/getFilePath.js'
+import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
+import { viteIsSSR } from '../../shared/viteIsSSR.js'
+import { resolveOutDir } from '../../shared/getOutDirs.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
