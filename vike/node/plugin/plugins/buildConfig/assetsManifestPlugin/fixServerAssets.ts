@@ -245,7 +245,7 @@ function collectResources(entryRoot: ViteManifestEntry, manifest: ViteManifest) 
 // </head>
 // ```
 function getHash(src: string) {
-  // src is guarenteed to end with `.[hash][extname]`, see distFileNames.ts
+  // src is guarenteed to end with `.[hash][extname]`, see pluginDistFileNames.ts
   const hash = src.split('.').at(-2)
   assert(hash)
   return hash

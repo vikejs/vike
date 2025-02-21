@@ -14,7 +14,7 @@ import { previewConfig } from './plugins/previewConfig.js'
 import { autoFullBuild } from './plugins/autoFullBuild.js'
 import { devConfig } from './plugins/devConfig/index.js'
 import { importUserCode } from './plugins/importUserCode/index.js'
-import { distFileNames } from './plugins/distFileNames.js'
+import { pluginDistFileNames } from './plugins/pluginDistFileNames.js'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin.js'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin.js'
 import { setGlobalContext } from './plugins/setGlobalContext.js'
@@ -42,7 +42,7 @@ function plugin(vikeVitePluginOptions: VikeVitePluginOptions = {}): PluginIntero
     ...buildConfig(),
     previewConfig(),
     ...autoFullBuild(),
-    distFileNames(),
+    pluginDistFileNames(),
     ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
     ...setGlobalContext(),

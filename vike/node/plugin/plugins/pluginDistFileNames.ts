@@ -1,4 +1,4 @@
-export { distFileNames }
+export { pluginDistFileNames }
 
 // Attempt to preserve file structure of `.page.js` files:
 //  - https://github.com/vikejs/vike/commit/11a4c49e5403aa7c37c8020c462b499425b41854
@@ -13,9 +13,9 @@ import { assertModuleId, getModuleFilePathAbsolute } from '../shared/getFilePath
 type PreRenderedChunk = Rollup.PreRenderedChunk
 type PreRenderedAsset = Rollup.PreRenderedAsset
 
-function distFileNames(): Plugin {
+function pluginDistFileNames(): Plugin {
   return {
-    name: 'vike:distFileNames',
+    name: 'vike:pluginDistFileNames',
     apply: 'build',
     enforce: 'post',
     configResolved(config) {
