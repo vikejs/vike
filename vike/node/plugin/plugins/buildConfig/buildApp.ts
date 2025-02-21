@@ -1,14 +1,14 @@
-import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../prerender/runPrerender.js'
+import { runPrerender_forceExit, runPrerenderFromAutoRun } from '../../../prerender/runPrerender.js'
 
 export { buildApp }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { isPrerenderAutoRunEnabled } from '../../prerender/context.js'
-import { resolveOutDir } from '../shared/getOutDirs.js'
-import { assert } from '../utils.js'
-import { getVikeConfig } from './importUserCode/v1-design/getVikeConfig.js'
-import { getFullBuildInlineConfig } from '../shared/getFullBuildInlineConfig.js'
-import { getVikeConfigPublic } from './commonConfig.js'
+import { isPrerenderAutoRunEnabled } from '../../../prerender/context.js'
+import { resolveOutDir } from '../../shared/getOutDirs.js'
+import { assert } from '../../utils.js'
+import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getFullBuildInlineConfig } from '../../shared/getFullBuildInlineConfig.js'
+import { getVikeConfigPublic } from '../commonConfig.js'
 
 function buildApp(): Plugin[] {
   let config: ResolvedConfig
