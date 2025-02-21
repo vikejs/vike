@@ -1,4 +1,5 @@
 export { fixServerAssets }
+export { fixServerAssets_getBuildConfig }
 export { fixServerAssets_isEnabled }
 export { fixServerAssets_assertUsageCssCodeSplit }
 export { fixServerAssets_assertUsageCssTarget }
@@ -8,16 +9,17 @@ import fs from 'fs/promises'
 import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
-import { ViteManifest, ViteManifestEntry } from '../../../../shared/ViteManifest.js'
+import type { ViteManifest, ViteManifestEntry } from '../../../../shared/ViteManifest.js'
 import { assert, assertWarning, isEqualStringList, isObject, pLimit, unique } from '../../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { manifestTempFile } from '../pluginBuildConfig.js'
-import { ResolvedConfig } from 'vite'
+import type { ResolvedConfig, UserConfig } from 'vite'
 import { getAssetsDir } from '../../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../../importUserCode/v1-design/getVikeConfig.js'
 import { getOutDirs } from '../../../shared/getOutDirs.js'
 import { viteIsSSR } from '../../../shared/viteIsSSR.js'
+import { getVikeConfigPublic } from '../../commonConfig.js'
 
 // TODO/now move isV1Design() inside fixServerAssets_isEnabled()
 /**
@@ -271,7 +273,7 @@ type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerS
 const targets: TargetConfig[] = []
 async function fixServerAssets_assertUsageCssTarget(config: ResolvedConfig) {
   if (!fixServerAssets_isEnabled()) return
-  if (!(await isV1Design(config))) return
+  if (!isV1Design(config)) return
   const isServerSide = viteIsSSR(config)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
@@ -339,4 +341,20 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
   assert(isObject(manifest))
   const manifestFileContent = JSON.stringify(manifest, null, 2)
   await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
+}
+
+function fixServerAssets_getBuildConfig(config: UserConfig) {
+  const vike = getVikeConfigPublic(config)
+  const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design(config)
+  return {
+    // https://github.com/vikejs/vike/issues/1339
+    ssrEmitAssets: isServerAssetsFixEnabled ? true : undefined,
+    // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
+    cssMinify: isServerAssetsFixEnabled ? 'esbuild' : undefined,
+    manifest: manifestTempFile,
+    copyPublicDir: vike.config.viteEnvironmentAPI
+      ? // Already set by vike:build:pluginBuildApp
+        undefined
+      : !viteIsSSR(config)
+  } as const
 }

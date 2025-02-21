@@ -8,13 +8,13 @@ import {
   fixServerAssets,
   fixServerAssets_assertUsageCssCodeSplit,
   fixServerAssets_assertUsageCssTarget,
+  fixServerAssets_getBuildConfig,
   fixServerAssets_isEnabled,
   writeManifestFile
 } from '../build/pluginAssetsManifest/fixServerAssets.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
 import { viteIsServerBuildEnvAny, viteIsSSR } from '../../shared/viteIsSSR.js'
-import { getVikeConfigPublic } from '../commonConfig.js'
 import { assert, assertIsSingleModuleInstance } from '../../utils.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
@@ -32,28 +32,15 @@ function pluginAssetsManifest(): Plugin[] {
         order: 'post',
         handler(config_) {
           config = config_
-          const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design(config)
-          if (isServerAssetsFixEnabled) {
-            fixServerAssets_assertUsageCssCodeSplit(config)
-          }
+          fixServerAssets_assertUsageCssCodeSplit(config)
         }
       },
       config: {
         order: 'post',
         handler(config) {
-          const vike = getVikeConfigPublic(config)
-          const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design(config)
           return {
             build: {
-              // https://github.com/vikejs/vike/issues/1339
-              ssrEmitAssets: isServerAssetsFixEnabled ? true : undefined,
-              // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
-              cssMinify: isServerAssetsFixEnabled ? 'esbuild' : undefined,
-              manifest: manifestTempFile,
-              copyPublicDir: vike.config.viteEnvironmentAPI
-                ? // Already set by vike:build:pluginBuildApp
-                  undefined
-                : !viteIsSSR(config)
+              ...fixServerAssets_getBuildConfig(config)
             }
           } satisfies UserConfig
         }
