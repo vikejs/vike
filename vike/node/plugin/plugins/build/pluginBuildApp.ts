@@ -12,7 +12,7 @@ import { getVikeConfigPublic } from '../commonConfig.js'
 function pluginBuildApp(): Plugin[] {
   let config: ResolvedConfig
   // `builder.buildApp()` can be overriden by another plugin e.g vike-vercel https://github.com/vikejs/vike/pull/2184#issuecomment-2659425195
-  // In that case, we should'nt `forceExit`.
+  // In that case, we shouldn't `forceExit`.
   let forceExit = false
 
   return [
