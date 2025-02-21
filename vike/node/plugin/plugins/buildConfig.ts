@@ -48,7 +48,7 @@ function buildSettings(): Plugin[] {
 
   return [
     {
-      name: 'vike:buildConfig',
+      name: 'vike:buildConfig:settings',
       apply: 'build',
       enforce: 'post',
       configResolved: {
