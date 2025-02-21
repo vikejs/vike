@@ -1,7 +1,7 @@
 export { fixServerAssets }
 export { fixServerAssets_isEnabled }
 export { fixServerAssets_assertUsageCssCodeSplit }
-export { fixServerAssets_assertCssTarget }
+export { fixServerAssets_assertUsageCssTarget }
 
 import fs from 'fs/promises'
 import fs_sync from 'fs'
@@ -273,7 +273,7 @@ function fixServerAssets_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type Target = undefined | false | string | string[]
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
-async function fixServerAssets_assertCssTarget(config: ResolvedConfig) {
+async function fixServerAssets_assertUsageCssTarget(config: ResolvedConfig) {
   if (!fixServerAssets_isEnabled()) return
   if (!(await isV1Design(config))) return
   const isServerSide = viteIsSSR(config)

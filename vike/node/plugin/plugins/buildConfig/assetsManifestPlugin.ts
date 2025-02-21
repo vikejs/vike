@@ -7,7 +7,7 @@ import path from 'path'
 import {
   fixServerAssets,
   fixServerAssets_assertUsageCssCodeSplit,
-  fixServerAssets_assertCssTarget,
+  fixServerAssets_assertUsageCssTarget,
   fixServerAssets_isEnabled
 } from '../buildConfig/assetsManifestPlugin/fixServerAssets.js'
 import { set_macro_ASSETS_MANIFEST } from '../buildEntry/index.js'
@@ -56,7 +56,7 @@ function assetsManifestPlugin(): Plugin[] {
         }
       },
       async closeBundle() {
-        await fixServerAssets_assertCssTarget(config)
+        await fixServerAssets_assertUsageCssTarget(config)
       }
     },
     {
