@@ -1,7 +1,7 @@
 export { build }
 
 import { prepareViteApiCall } from './prepareViteApiCall.js'
-import { build as buildVite, version } from 'vite'
+import { build as buildVite, version, createBuilder } from 'vite'
 import type { APIOptions } from './types.js'
 import assert from 'assert'
 import { isVikeCli } from '../cli/context.js'
@@ -21,7 +21,6 @@ async function build(options: APIOptions = {}): Promise<{}> {
 
   if (vikeConfig.global.config.viteEnvironmentAPI) {
     assertVersion('Vite', version, '6.0.0')
-    const { createBuilder } = await import('vite')
     const builder = await createBuilder(viteConfigEnhanced)
     // See Vite plugin vike:buildApp
     await builder.buildApp()
