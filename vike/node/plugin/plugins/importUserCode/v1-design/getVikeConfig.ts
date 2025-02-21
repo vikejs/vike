@@ -167,6 +167,7 @@ async function getVikeConfigEntry(
   return await vikeConfigPromise
 }
 
+// TODO/now update all isV1Design() usage
 function isV1Design(config: ResolvedConfig | UserConfig): boolean {
   const vikeConfig = config._vikeConfigObject
   assert(vikeConfig)

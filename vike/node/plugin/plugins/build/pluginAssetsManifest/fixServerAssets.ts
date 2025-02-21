@@ -19,6 +19,7 @@ import { isV1Design } from '../../importUserCode/v1-design/getVikeConfig.js'
 import { getOutDirs } from '../../../shared/getOutDirs.js'
 import { viteIsSSR } from '../../../shared/viteIsSSR.js'
 
+// TODO/now move isV1Design() inside fixServerAssets_isEnabled()
 /**
  * true  => use workaround config.build.ssrEmitAssets
  * false => use workaround extractAssets plugin

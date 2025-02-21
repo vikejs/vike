@@ -30,14 +30,10 @@ function pluginAssetsManifest(): Plugin[] {
       enforce: 'post',
       configResolved: {
         order: 'post',
-        async handler(config_) {
+        handler(config_) {
           config = config_
-          const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
+          const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design(config)
           if (isServerAssetsFixEnabled) {
-            // https://github.com/vikejs/vike/issues/1339
-            config.build.ssrEmitAssets = true
-            // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
-            config.build.cssMinify = 'esbuild'
             fixServerAssets_assertUsageCssCodeSplit(config)
           }
         }
@@ -46,8 +42,13 @@ function pluginAssetsManifest(): Plugin[] {
         order: 'post',
         handler(config) {
           const vike = getVikeConfigPublic(config)
+          const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design(config)
           return {
             build: {
+              // https://github.com/vikejs/vike/issues/1339
+              ssrEmitAssets: isServerAssetsFixEnabled ? true : undefined,
+              // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
+              cssMinify: isServerAssetsFixEnabled ? 'esbuild' : undefined,
               manifest: manifestTempFile,
               copyPublicDir: vike.config.viteEnvironmentAPI
                 ? // Already set by vike:build:pluginBuildApp
@@ -105,7 +106,7 @@ async function handleAssetsManifest(
 }
 
 async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {
-  const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
+  const isServerAssetsFixEnabled = fixServerAssets_isEnabled() && isV1Design(config)
   const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
   const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
   if (!isServerAssetsFixEnabled) {
