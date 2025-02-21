@@ -2,9 +2,9 @@
 // Because it injects `require('module')` into the build which chokes bundlers, such as Cloudflare Workers's webpack-based bundler.
 // The minimal added value of deduping React is not worth the trouble; we simply remove Vite's deduping functionality for production.
 
-import type { Plugin } from 'vite'
-
 export { removeRequireHookPlugin }
+
+import type { Plugin } from 'vite'
 
 function removeRequireHookPlugin(): Plugin {
   return {
