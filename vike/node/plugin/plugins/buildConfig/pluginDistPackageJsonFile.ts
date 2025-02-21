@@ -11,8 +11,8 @@
 export { pluginDistPackageJsonFile }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { rollupIsEsm } from '../shared/rollupIsEsm.js'
-import { viteIsSSR } from '../shared/viteIsSSR.js'
+import { rollupIsEsm } from '../../shared/rollupIsEsm.js'
+import { viteIsSSR } from '../../shared/viteIsSSR.js'
 
 function pluginDistPackageJsonFile(): Plugin {
   let config: ResolvedConfig
