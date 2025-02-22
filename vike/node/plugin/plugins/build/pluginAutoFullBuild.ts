@@ -117,8 +117,8 @@ function isDisabled(vikeConfig: VikeConfigObject): boolean {
     return true
   }
   if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
-    const isViteApi = !isViteCliCall() && !isVikeCliOrApi()
-    return isViteApi
+    const isUserUsingViteApi = !isViteCliCall() && !isVikeCliOrApi()
+    return isUserUsingViteApi
   } else {
     return disableAutoFullBuild
   }
