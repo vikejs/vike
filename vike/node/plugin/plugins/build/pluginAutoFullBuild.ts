@@ -32,7 +32,7 @@ function pluginAutoFullBuild(): Plugin[] {
         abortViteBuildSsr(vikeConfig)
       },
       writeBundle: {
-        /* We can't use this because it breaks Vite's logging. TODO: try again with latest Vite version.
+        /* We can't use this because it breaks Vite's logging. TODO/eventually: try again with latest Vite version.
         sequential: true,
         order: 'pre',
         */
