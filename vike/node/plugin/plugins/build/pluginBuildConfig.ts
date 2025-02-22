@@ -31,7 +31,7 @@ import {
   fixServerAssets_assertUsageCssCodeSplit,
   fixServerAssets_assertUsageCssTarget,
   fixServerAssets_getBuildConfig
-} from './pluginAssetsManifest/fixServerAssets.js'
+} from './fixServerAssets.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)

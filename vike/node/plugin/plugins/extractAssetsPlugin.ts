@@ -18,7 +18,7 @@ import { getImportStatements, type ImportStatement } from '../shared/parseEsModu
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
-import { fixServerAssets_isEnabled } from './build/pluginAssetsManifest/fixServerAssets.js'
+import { fixServerAssets_isEnabled } from './build/fixServerAssets.js'
 import { getVikeConfig, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'

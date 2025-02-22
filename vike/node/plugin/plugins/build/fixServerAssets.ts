@@ -10,7 +10,7 @@ import fs from 'fs/promises'
 import fs_sync from 'fs'
 import path from 'path'
 import { existsSync } from 'fs'
-import type { ViteManifest, ViteManifestEntry } from '../../../../shared/ViteManifest.js'
+import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
 import {
   assert,
   assertIsSingleModuleInstance,
@@ -19,17 +19,17 @@ import {
   isObject,
   pLimit,
   unique
-} from '../../../utils.js'
-import { isVirtualFileIdPageConfigValuesAll } from '../../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
-import { manifestTempFile } from '../pluginBuildConfig.js'
+} from '../../utils.js'
+import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
+import { manifestTempFile } from './pluginBuildConfig.js'
 import type { Environment, ResolvedConfig, Rollup, UserConfig } from 'vite'
-import { getAssetsDir } from '../../../shared/getAssetsDir.js'
+import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
-import { isV1Design } from '../../importUserCode/v1-design/getVikeConfig.js'
-import { getOutDirs, OutDirs } from '../../../shared/getOutDirs.js'
-import { viteIsServerBuildEnvAny, viteIsSSR } from '../../../shared/viteIsSSR.js'
-import { getVikeConfigPublic } from '../../commonConfig.js'
-import { set_macro_ASSETS_MANIFEST } from '../pluginBuildEntry.js'
+import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
+import { viteIsServerBuildEnvAny, viteIsSSR } from '../../shared/viteIsSSR.js'
+import { getVikeConfigPublic } from '../commonConfig.js'
+import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 assertIsSingleModuleInstance('build/handleAssetsManifest.ts')
