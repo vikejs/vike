@@ -137,7 +137,7 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
 `
 
   // We still use import.meta.glob() when using th V1 design in order to not break the V1 design deprecation warning
-  const isV1Design = await isV1Design_(config)
+  const isV1Design = isV1Design_(config)
 
   // Old design => no + files => only to enable pre-rendering is setting `vike({prerender})` in vite.config.js
   const isPrerendering = !!vikeConfig.global.config.prerender
