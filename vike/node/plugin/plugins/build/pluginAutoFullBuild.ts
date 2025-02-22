@@ -14,6 +14,7 @@ import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
+import { handleAssetsManifest } from './pluginAssetsManifest/fixServerAssets.js'
 
 let forceExit = false
 
@@ -31,18 +32,13 @@ function pluginAutoFullBuild(): Plugin[] {
         abortViteBuildSsr(vikeConfig)
       },
       writeBundle: {
-        /* We can't use this because it breaks Vite's logging. TODO: try again with latest Vite version.
+        /* We can't use this because it breaks Vite's logging. TODO/eventually: try again with latest Vite version.
         sequential: true,
         order: 'pre',
         */
-        async handler(_options, bundle) {
-          try {
-            await triggerFullBuild(config, vikeConfig, bundle)
-          } catch (err) {
-            // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], for example see https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-            console.error(err)
-            process.exit(1)
-          }
+        async handler(options, bundle) {
+          await handleAssetsManifest(config, this.environment, options, bundle)
+          await triggerFullBuild(config, vikeConfig, bundle)
         }
       }
     },
@@ -78,6 +74,7 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
   try {
     await build(setSSR(configInline))
   } catch (err) {
+    // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
     console.error(err)
     logErrorHint(err)
     process.exit(1)

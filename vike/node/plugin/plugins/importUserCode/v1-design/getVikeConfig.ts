@@ -63,7 +63,7 @@ import {
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
-import type { ResolvedConfig } from 'vite'
+import type { ResolvedConfig, UserConfig } from 'vite'
 import { loadPointerImport, loadValueFile } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
 import { getFilePathResolved } from '../../../shared/getFilePath.js'
@@ -142,7 +142,11 @@ async function getVikeConfig(
   assert(typeof isDev === 'boolean')
   return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, doNotRestartViteOnError ?? false)
 }
-async function getVikeConfig2(userRootDir: string, isDev: boolean, vikeVitePluginOptions: unknown) {
+async function getVikeConfig2(
+  userRootDir: string,
+  isDev: boolean,
+  vikeVitePluginOptions: unknown
+): Promise<VikeConfigObject> {
   assert(vikeVitePluginOptions)
   return await getVikeConfigEntry(userRootDir, isDev, vikeVitePluginOptions, false)
 }
@@ -163,8 +167,10 @@ async function getVikeConfigEntry(
   return await vikeConfigPromise
 }
 
-async function isV1Design(config: ResolvedConfig): Promise<boolean> {
-  const vikeConfig = await getVikeConfig(config)
+// TODO/now update all isV1Design() usage
+function isV1Design(config: ResolvedConfig | UserConfig): boolean {
+  const vikeConfig = config._vikeConfigObject
+  assert(vikeConfig)
   const { pageConfigs } = vikeConfig
   const isV1Design = pageConfigs.length > 0
   return isV1Design

@@ -1,12 +1,19 @@
 export { viteIsSSR }
+export { viteIsServerBuildEnvAny }
 export { viteIsSSR_options }
 export { viteIsSSR_safe }
 
-import type { ResolvedConfig, UserConfig } from 'vite'
+import type { Environment, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
-function viteIsSSR(config: ResolvedConfig | UserConfig): boolean {
-  return !!config?.build?.ssr
+// TODO/now: rename_full viteIsSSR isViteServerBuildEnvSsr
+function viteIsSSR(configGlobal: ResolvedConfig | UserConfig, viteEnv?: Environment): boolean {
+  const configEnv = viteEnv?.config ?? configGlobal
+  return !!configEnv?.build?.ssr
+}
+// All server-side environments: not only `ssr` but, for example, also `vercel_edge` and `vercel_node`.
+function viteIsServerBuildEnvAny(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
+  return viteEnv ? viteEnv.name === 'ssr' : viteIsSSR(configGlobal)
 }
 
 function viteIsSSR_options(options: { ssr?: boolean } | undefined): boolean {

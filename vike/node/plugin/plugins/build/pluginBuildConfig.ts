@@ -27,6 +27,11 @@ import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
 import { viteIsSSR } from '../../shared/viteIsSSR.js'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
+import {
+  fixServerAssets_assertUsageCssCodeSplit,
+  fixServerAssets_assertUsageCssTarget,
+  fixServerAssets_getBuildConfig
+} from './pluginAssetsManifest/fixServerAssets.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -50,6 +55,7 @@ function pluginBuildConfig(): Plugin[] {
           assert(Object.keys(entries).length > 0)
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
+          fixServerAssets_assertUsageCssCodeSplit(config)
         }
       },
       config: {
@@ -58,7 +64,8 @@ function pluginBuildConfig(): Plugin[] {
           onSetupBuild()
           return {
             build: {
-              outDir: resolveOutDir(config)
+              outDir: resolveOutDir(config),
+              ...fixServerAssets_getBuildConfig(config)
             }
           }
         }
@@ -66,8 +73,9 @@ function pluginBuildConfig(): Plugin[] {
       buildStart() {
         onSetupBuild()
       },
-      async closeBundle() {
+      closeBundle() {
         onSetupBuild()
+        fixServerAssets_assertUsageCssTarget(config)
       }
     }
   ]

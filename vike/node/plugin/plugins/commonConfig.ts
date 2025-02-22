@@ -35,6 +35,7 @@ declare module 'vite' {
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
     _viteConfigEnhanced?: InlineConfig
     _vike?: VikeConfigPublic
+    _vikeConfigObject?: VikeConfigObject
   }
 }
 
@@ -61,6 +62,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _isDev: isDev,
             _root: root,
             _vikeVitePluginOptions: vikeVitePluginOptions,
+            _vikeConfigObject: vikeConfig,
             _vike: {
               pages: vikeConfig.pages,
               config: vikeConfig.global.config

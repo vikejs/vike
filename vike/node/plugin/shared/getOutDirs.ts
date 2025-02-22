@@ -2,7 +2,7 @@ export { getOutDirs }
 export { resolveOutDir }
 export type { OutDirs }
 
-import type { UserConfig, ResolvedConfig } from 'vite'
+import type { UserConfig, ResolvedConfig, Environment } from 'vite'
 import pc from '@brillout/picocolors'
 import { assert, assertPosixPath, assertUsage, createDebugger, pathJoin, toPosixPath } from '../utils.js'
 import { viteIsSSR } from './viteIsSSR.js'
@@ -17,11 +17,12 @@ type OutDirs = {
   outDirServer: string
 }
 
-function getOutDirs(config: ResolvedConfig): OutDirs {
+function getOutDirs(configGlobal: ResolvedConfig, viteEnv?: Environment): OutDirs {
+  const configEnv = viteEnv?.config ?? configGlobal
   debug('getOutDirs()', new Error().stack)
-  const outDir = getOutDirFromViteResolvedConfig(config)
-  if (!isOutDirRoot(outDir)) assertOutDirResolved(outDir, config)
-  const outDirs = getOutDirsAll(outDir, config.root)
+  const outDir = getOutDirFromViteResolvedConfig(configEnv)
+  if (!isOutDirRoot(outDir)) assertOutDirResolved(outDir, configEnv)
+  const outDirs = getOutDirsAll(outDir, configEnv.root)
   return outDirs
 }
 
