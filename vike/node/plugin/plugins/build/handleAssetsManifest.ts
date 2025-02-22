@@ -349,12 +349,12 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
 
 function handleAssetsManifest_getBuildConfig(config: UserConfig) {
   const vike = getVikeConfigPublic(config)
-  const isServerAssetsFixEnabled = handleAssetsManifest_isFixEnabled(config)
+  const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
   return {
     // https://github.com/vikejs/vike/issues/1339
-    ssrEmitAssets: isServerAssetsFixEnabled ? true : undefined,
+    ssrEmitAssets: isFixEnabled ? true : undefined,
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
-    cssMinify: isServerAssetsFixEnabled ? 'esbuild' : undefined,
+    cssMinify: isFixEnabled ? 'esbuild' : undefined,
     manifest: manifestTempFile,
     copyPublicDir: vike.config.viteEnvironmentAPI
       ? // Already set by vike:build:pluginBuildApp
@@ -383,10 +383,10 @@ async function handleAssetsManifest(
 }
 
 async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {
-  const isServerAssetsFixEnabled = handleAssetsManifest_isFixEnabled(config)
+  const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
   const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
   const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
-  if (!isServerAssetsFixEnabled) {
+  if (!isFixEnabled) {
     await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
   } else {
     const { clientManifestMod } = await fixServerAssets(config)

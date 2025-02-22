@@ -35,7 +35,7 @@ const debug = createDebugger('vike:extractAssets')
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigObject
-  let isServerAssetsFixEnabled: boolean
+  let isFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
@@ -48,8 +48,8 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(id)) {
           return
         }
-        if (isServerAssetsFixEnabled) {
-          // I'm guessing isServerAssetsFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
+        if (isFixEnabled) {
+          // I'm guessing isFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
           assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
@@ -157,8 +157,8 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfig(config)
-        isServerAssetsFixEnabled = handleAssetsManifest_isFixEnabled(config)
-        if (!isServerAssetsFixEnabled) {
+        isFixEnabled = handleAssetsManifest_isFixEnabled(config)
+        if (!isFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060
           assertUsage(
             !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
