@@ -1,10 +1,9 @@
 export { pluginAutoFullBuild }
 
 import { getFullBuildInlineConfig } from '../../shared/getFullBuildInlineConfig.js'
-
 import { build } from 'vite'
 import type { InlineConfig, Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning } from '../../utils.js'
+import { assert, assertIsSingleModuleInstance, assertWarning } from '../../utils.js'
 import { runPrerenderFromAutoRun, runPrerender_forceExit } from '../../../prerender/runPrerender.js'
 import { isPrerenderAutoRunEnabled } from '../../../prerender/context.js'
 import type { VikeConfigObject } from '../importUserCode/v1-design/getVikeConfig.js'
@@ -15,7 +14,7 @@ import { manifestTempFile } from './pluginBuildConfig.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
 import { handleAssetsManifest } from './handleAssetsManifest.js'
-
+assertIsSingleModuleInstance('build/pluginAutoFullBuild.ts')
 let forceExit = false
 
 function pluginAutoFullBuild(): Plugin[] {
