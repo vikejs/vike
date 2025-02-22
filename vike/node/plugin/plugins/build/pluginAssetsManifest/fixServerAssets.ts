@@ -5,7 +5,6 @@ export { fixServerAssets_getBuildConfig }
 export { fixServerAssets_isEnabled }
 export { fixServerAssets_assertUsageCssCodeSplit }
 export { fixServerAssets_assertUsageCssTarget }
-export { writeManifestFile }
 
 import fs from 'fs/promises'
 import fs_sync from 'fs'
