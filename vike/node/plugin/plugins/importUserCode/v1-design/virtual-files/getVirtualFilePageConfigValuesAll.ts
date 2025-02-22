@@ -15,7 +15,7 @@ import {
   serializeConfigValues
 } from '../../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
-import { fixServerAssets_isEnabled } from '../../../build/fixServerAssets.js'
+import { handleAssetsManifest_isEnabled } from '../../../build/handleAssetsManifest.js'
 import { getConfigValueBuildTime } from '../../../../../../shared/page-configs/getConfigValueBuildTime.js'
 
 async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
@@ -71,7 +71,7 @@ function getLoadConfigValuesAll(
   )
   lines.push('};')
 
-  if (!fixServerAssets_isEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
+  if (!handleAssetsManifest_isEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
     importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
   }
 

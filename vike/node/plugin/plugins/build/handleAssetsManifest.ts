@@ -1,8 +1,8 @@
 export { handleAssetsManifest }
-export { fixServerAssets_getBuildConfig }
-export { fixServerAssets_isEnabled }
-export { fixServerAssets_assertUsageCssCodeSplit }
-export { fixServerAssets_assertUsageCssTarget }
+export { handleAssetsManifest_getBuildConfig }
+export { handleAssetsManifest_isEnabled }
+export { handleAssetsManifest_assertUsageCssCodeSplit }
+export { handleAssetsManifest_assertUsageCssTarget }
 
 import fs from 'fs/promises'
 import fs_sync from 'fs'
@@ -35,7 +35,7 @@ let assetsJsonFilePath: string | undefined
 
 // true  => use workaround config.build.ssrEmitAssets
 // false => use workaround extractAssets plugin
-function fixServerAssets_isEnabled(config: ResolvedConfig | UserConfig): boolean {
+function handleAssetsManifest_isEnabled(config: ResolvedConfig | UserConfig): boolean {
   // Allow user to toggle between the two workarounds? E.g. based on https://vike.dev/includeAssetsImportedByServer.
   return isV1Design(config)
 }
@@ -261,8 +261,8 @@ function getHash(src: string) {
 }
 
 // https://github.com/vikejs/vike/issues/1993
-function fixServerAssets_assertUsageCssCodeSplit(config: ResolvedConfig) {
-  if (!fixServerAssets_isEnabled(config)) return
+function handleAssetsManifest_assertUsageCssCodeSplit(config: ResolvedConfig) {
+  if (!handleAssetsManifest_isEnabled(config)) return
   assertWarning(
     config.build.cssCodeSplit,
     `${pc.cyan('build.cssCodeSplit')} shouldn't be set to ${pc.cyan(
@@ -276,8 +276,8 @@ function fixServerAssets_assertUsageCssCodeSplit(config: ResolvedConfig) {
 type Target = undefined | false | string | string[]
 type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerSide: boolean }
 const targets: TargetConfig[] = []
-function fixServerAssets_assertUsageCssTarget(config: ResolvedConfig) {
-  if (!fixServerAssets_isEnabled(config)) return
+function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig) {
+  if (!handleAssetsManifest_isEnabled(config)) return
   const isServerSide = viteIsSSR(config)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
@@ -347,9 +347,9 @@ async function writeManifestFile(manifest: ViteManifest, manifestFilePath: strin
   await fs.writeFile(manifestFilePath, manifestFileContent, 'utf-8')
 }
 
-function fixServerAssets_getBuildConfig(config: UserConfig) {
+function handleAssetsManifest_getBuildConfig(config: UserConfig) {
   const vike = getVikeConfigPublic(config)
-  const isServerAssetsFixEnabled = fixServerAssets_isEnabled(config)
+  const isServerAssetsFixEnabled = handleAssetsManifest_isEnabled(config)
   return {
     // https://github.com/vikejs/vike/issues/1339
     ssrEmitAssets: isServerAssetsFixEnabled ? true : undefined,
@@ -383,7 +383,7 @@ async function handleAssetsManifest(
 }
 
 async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {
-  const isServerAssetsFixEnabled = fixServerAssets_isEnabled(config)
+  const isServerAssetsFixEnabled = handleAssetsManifest_isEnabled(config)
   const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
   const serverManifestFilePath = path.posix.join(outDirs.outDirServer, manifestTempFile)
   if (!isServerAssetsFixEnabled) {

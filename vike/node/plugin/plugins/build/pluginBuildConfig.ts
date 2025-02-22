@@ -28,10 +28,10 @@ import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConf
 import { viteIsSSR } from '../../shared/viteIsSSR.js'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import {
-  fixServerAssets_assertUsageCssCodeSplit,
-  fixServerAssets_assertUsageCssTarget,
-  fixServerAssets_getBuildConfig
-} from './fixServerAssets.js'
+  handleAssetsManifest_assertUsageCssCodeSplit,
+  handleAssetsManifest_assertUsageCssTarget,
+  handleAssetsManifest_getBuildConfig
+} from './handleAssetsManifest.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -55,7 +55,7 @@ function pluginBuildConfig(): Plugin[] {
           assert(Object.keys(entries).length > 0)
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
-          fixServerAssets_assertUsageCssCodeSplit(config)
+          handleAssetsManifest_assertUsageCssCodeSplit(config)
         }
       },
       config: {
@@ -65,7 +65,7 @@ function pluginBuildConfig(): Plugin[] {
           return {
             build: {
               outDir: resolveOutDir(config),
-              ...fixServerAssets_getBuildConfig(config)
+              ...handleAssetsManifest_getBuildConfig(config)
             }
           }
         }
@@ -75,7 +75,7 @@ function pluginBuildConfig(): Plugin[] {
       },
       closeBundle() {
         onSetupBuild()
-        fixServerAssets_assertUsageCssTarget(config)
+        handleAssetsManifest_assertUsageCssTarget(config)
       }
     }
   ]
