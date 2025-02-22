@@ -25,13 +25,13 @@ import { createRequire } from 'module'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 import { getFilePathResolved } from '../../shared/getFilePath.js'
 import { getConfigValueBuildTime } from '../../../../shared/page-configs/getConfigValueBuildTime.js'
-import { viteIsSSR } from '../../shared/viteIsSSR.js'
+import { isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import {
-  fixServerAssets_assertUsageCssCodeSplit,
-  fixServerAssets_assertUsageCssTarget,
-  fixServerAssets_getBuildConfig
-} from './pluginAssetsManifest/fixServerAssets.js'
+  handleAssetsManifest_assertUsageCssCodeSplit,
+  handleAssetsManifest_assertUsageCssTarget,
+  handleAssetsManifest_getBuildConfig
+} from './handleAssetsManifest.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -55,7 +55,7 @@ function pluginBuildConfig(): Plugin[] {
           assert(Object.keys(entries).length > 0)
           config.build.rollupOptions.input = injectRollupInputs(entries, config)
           addLogHook()
-          fixServerAssets_assertUsageCssCodeSplit(config)
+          handleAssetsManifest_assertUsageCssCodeSplit(config)
         }
       },
       config: {
@@ -65,7 +65,7 @@ function pluginBuildConfig(): Plugin[] {
           return {
             build: {
               outDir: resolveOutDir(config),
-              ...fixServerAssets_getBuildConfig(config)
+              ...handleAssetsManifest_getBuildConfig(config)
             }
           }
         }
@@ -75,7 +75,7 @@ function pluginBuildConfig(): Plugin[] {
       },
       closeBundle() {
         onSetupBuild()
-        fixServerAssets_assertUsageCssTarget(config)
+        handleAssetsManifest_assertUsageCssTarget(config)
       }
     }
   ]
@@ -94,7 +94,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     Object.keys(pageFileEntries).length !== 0 || pageConfigs.length !== 0,
     'At least one page should be defined, see https://vike.dev/add'
   )
-  if (viteIsSSR(config)) {
+  if (isViteServerBuild(config)) {
     const pageEntries = getPageEntries(pageConfigs)
     const entries = {
       ...pageFileEntries,
@@ -167,7 +167,7 @@ function analyzeClientEntries(pageConfigs: PageConfigBuildTime[], config: Resolv
 // Ensure Rollup creates entries for each page file, see https://github.com/vikejs/vike/issues/350
 // (Otherwise the page files may be missing in the client manifest.json)
 async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedByServer: boolean) {
-  const isForClientSide = !viteIsSSR(config)
+  const isForClientSide = !isViteServerBuild(config)
   const fileTypes: FileType[] = isForClientSide ? ['.page', '.page.client'] : ['.page', '.page.server']
   if (isForClientSide && includeAssetsImportedByServer) {
     fileTypes.push('.page.server')

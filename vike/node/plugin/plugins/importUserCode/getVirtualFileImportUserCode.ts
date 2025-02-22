@@ -23,7 +23,7 @@ import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/virtual-files/getVirtualFilePageConfigs.js'
 import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import { viteIsSSR_options } from '../../shared/viteIsSSR.js'
+import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -40,7 +40,7 @@ async function getVirtualFileImportUserCode(
   const idParsed = isVirtualFileIdImportUserCode(id)
   assert(idParsed)
   const { isForClientSide, isClientRouting } = idParsed
-  assert(isForClientSide === !viteIsSSR_options(options))
+  assert(isForClientSide === !isViteServerBuild_options(options))
   const code = await getCode(config, vikeConfig, isForClientSide, isClientRouting, isDev, id)
   return code
 }
@@ -137,7 +137,7 @@ ${await getVirtualFilePageConfigs(isForClientSide, isDev, id, isClientRouting, c
 `
 
   // We still use import.meta.glob() when using th V1 design in order to not break the V1 design deprecation warning
-  const isV1Design = await isV1Design_(config)
+  const isV1Design = isV1Design_(config)
 
   // Old design => no + files => only to enable pre-rendering is setting `vike({prerender})` in vite.config.js
   const isPrerendering = !!vikeConfig.global.config.prerender

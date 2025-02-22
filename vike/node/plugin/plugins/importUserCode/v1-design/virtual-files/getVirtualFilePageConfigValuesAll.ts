@@ -15,7 +15,7 @@ import {
   serializeConfigValues
 } from '../../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import type { ResolvedConfig } from 'vite'
-import { fixServerAssets_isEnabled } from '../../../build/pluginAssetsManifest/fixServerAssets.js'
+import { handleAssetsManifest_isFixEnabled } from '../../../build/handleAssetsManifest.js'
 import { getConfigValueBuildTime } from '../../../../../../shared/page-configs/getConfigValueBuildTime.js'
 
 async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, config: ResolvedConfig): Promise<string> {
@@ -38,6 +38,7 @@ async function getVirtualFilePageConfigValuesAll(id: string, isDev: boolean, con
     pageId,
     // TODO/now: add meta.default
     vikeConfig.global.config.includeAssetsImportedByServer ?? true,
+    config,
     isDev
   )
   debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
@@ -49,6 +50,7 @@ function getLoadConfigValuesAll(
   isForClientSide: boolean,
   pageId: string,
   includeAssetsImportedByServer: boolean,
+  config: ResolvedConfig,
   isDev: boolean
 ): string {
   const lines: string[] = []
@@ -69,7 +71,7 @@ function getLoadConfigValuesAll(
   )
   lines.push('};')
 
-  if (!fixServerAssets_isEnabled() && includeAssetsImportedByServer && isForClientSide && !isDev) {
+  if (!handleAssetsManifest_isFixEnabled(config) && includeAssetsImportedByServer && isForClientSide && !isDev) {
     importStatements.push(`import '${extractAssetsAddQuery(getVirtualFileIdPageConfigValuesAll(pageId, false))}'`)
   }
 

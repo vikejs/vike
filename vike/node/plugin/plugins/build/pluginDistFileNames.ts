@@ -33,7 +33,7 @@ function pluginDistFileNames(): Plugin {
         } else {
           // If a user needs this:
           //  - assertUsage() that the naming provided by the user ends with `.[hash][extname]`
-          //    - It's needed for getHash() of fixServerAssets()
+          //    - It's needed for getHash() of handleAssetsManifest()
           //    - Asset URLs should always contain a hash: it's paramount for caching assets.
           //    - If rollupOutput.assetFileNames is a function then use a wrapper function to apply the assertUsage()
           assertUsage(

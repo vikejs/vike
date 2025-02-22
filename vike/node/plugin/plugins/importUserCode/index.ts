@@ -25,10 +25,7 @@ function importUserCode(): Plugin {
       vikeConfig = await getVikeConfig(config_)
       config = config_
       // TODO/v1-release: remove
-      {
-        const isV1 = await isV1Design(config)
-        if (!isV1) config.experimental.importGlobRestoreExtension = true
-      }
+      if (!isV1Design(config)) config.experimental.importGlobRestoreExtension = true
     },
     resolveId(id) {
       if (isVirtualFileId(id)) {

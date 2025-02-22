@@ -14,7 +14,7 @@ import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
-import { handleAssetsManifest } from './pluginAssetsManifest/fixServerAssets.js'
+import { handleAssetsManifest } from './handleAssetsManifest.js'
 
 let forceExit = false
 

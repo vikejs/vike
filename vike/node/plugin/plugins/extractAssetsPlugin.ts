@@ -18,11 +18,11 @@ import { getImportStatements, type ImportStatement } from '../shared/parseEsModu
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
-import { fixServerAssets_isEnabled } from './build/pluginAssetsManifest/fixServerAssets.js'
-import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
+import { handleAssetsManifest_isFixEnabled } from './build/handleAssetsManifest.js'
+import { getVikeConfig, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { viteIsSSR_options, viteIsSSR_safe } from '../shared/viteIsSSR.js'
+import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -35,7 +35,7 @@ const debug = createDebugger('vike:extractAssets')
 function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let vikeConfig: VikeConfigObject
-  let isServerAssetsFixEnabled: boolean
+  let isFixEnabled: boolean
   return [
     // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg.js'`).
     {
@@ -48,14 +48,14 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(id)) {
           return
         }
-        if (isServerAssetsFixEnabled) {
-          // I'm guessing isServerAssetsFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
+        if (isFixEnabled) {
+          // I'm guessing isFixEnabled can only be true when mixing both designs: https://github.com/vikejs/vike/issues/1480
           assertV1Design(vikeConfig.pageConfigs, true)
           assert(false)
         }
         // TODO/now: add meta.default
         assert(vikeConfig.global.config.includeAssetsImportedByServer ?? true)
-        assert(!viteIsSSR_safe(config, options))
+        assert(!isViteServerBuild_safe(config, options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
@@ -72,7 +72,7 @@ function extractAssetsPlugin(): Plugin[] {
       //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
       enforce: 'pre',
       async resolveId(source, importer, options) {
-        if (viteIsSSR_safe(config, options)) {
+        if (isViteServerBuild_safe(config, options)) {
           // When building for the server, there should never be a `?extractAssets` query
           assert(!extractAssetsRE.test(source))
           assert(importer === undefined || !extractAssetsRE.test(importer))
@@ -157,8 +157,8 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfig(config)
-        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
-        if (!isServerAssetsFixEnabled) {
+        isFixEnabled = handleAssetsManifest_isFixEnabled(config)
+        if (!isFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060
           assertUsage(
             !config.plugins.find((p) => p.name === 'vite-tsconfig-paths'),
