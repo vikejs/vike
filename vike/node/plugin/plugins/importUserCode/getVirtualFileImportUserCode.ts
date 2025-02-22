@@ -23,7 +23,7 @@ import path from 'path'
 import { getVirtualFilePageConfigs } from './v1-design/virtual-files/getVirtualFilePageConfigs.js'
 import { isV1Design as isV1Design_ } from './v1-design/getVikeConfig.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
-import { viteIsSSR_options } from '../../shared/viteIsSSR.js'
+import { isViteServerBuild_options } from '../../shared/isViteServerBuild.js'
 
 type GlobRoot = {
   includeDir: string // slash-terminated
@@ -40,7 +40,7 @@ async function getVirtualFileImportUserCode(
   const idParsed = isVirtualFileIdImportUserCode(id)
   assert(idParsed)
   const { isForClientSide, isClientRouting } = idParsed
-  assert(isForClientSide === !viteIsSSR_options(options))
+  assert(isForClientSide === !isViteServerBuild_options(options))
   const code = await getCode(config, vikeConfig, isForClientSide, isClientRouting, isDev, id)
   return code
 }

@@ -25,7 +25,7 @@ import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
-import { viteIsSSREnvSsr, viteIsSSR } from '../../shared/viteIsSSR.js'
+import { isViteServerBuildEnvSsr, isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { getVikeConfigPublic } from '../commonConfig.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 type Bundle = Rollup.OutputBundle
@@ -278,7 +278,7 @@ type TargetConfig = { global: Exclude<Target, undefined>; css: Target; isServerS
 const targets: TargetConfig[] = []
 function handleAssetsManifest_assertUsageCssTarget(config: ResolvedConfig) {
   if (!handleAssetsManifest_isFixEnabled(config)) return
-  const isServerSide = viteIsSSR(config)
+  const isServerSide = isViteServerBuild(config)
   assert(typeof isServerSide === 'boolean')
   assert(config.build.target !== undefined)
   targets.push({ global: config.build.target, css: config.build.cssTarget, isServerSide })
@@ -359,7 +359,7 @@ function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     copyPublicDir: vike.config.viteEnvironmentAPI
       ? // Already set by vike:build:pluginBuildApp
         undefined
-      : !viteIsSSR(config)
+      : !isViteServerBuild(config)
   } as const
 }
 
@@ -369,13 +369,13 @@ async function handleAssetsManifest(
   options: Options,
   bundle: Bundle
 ) {
-  if (viteIsSSR(config, viteEnv)) {
+  if (isViteServerBuild(config, viteEnv)) {
     assert(!assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(outDirs, assetsJsonFilePath, config)
   }
-  if (viteIsSSREnvSsr(config, viteEnv)) {
+  if (isViteServerBuildEnvSsr(config, viteEnv)) {
     assert(assetsJsonFilePath)
     // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
     await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
