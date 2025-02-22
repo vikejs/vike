@@ -14,7 +14,7 @@ import { logErrorHint } from '../../../runtime/renderPage/logErrorHint.js'
 import { manifestTempFile } from './pluginBuildConfig.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { isVikeCliOrApi } from '../../../api/context.js'
-import { handleAssets } from './pluginAssetsManifest/fixServerAssets.js'
+import { handleAssetsManifest } from './pluginAssetsManifest/fixServerAssets.js'
 
 let forceExit = false
 
@@ -40,7 +40,7 @@ function pluginAutoFullBuild(): Plugin[] {
           // Make sure other writeBundle() hooks are called after this writeBundle() hook.
           //  - set_macro_ASSETS_MANIFEST() needs to be called before dist/server/ code is executed.
           //    - For example, the writeBundle() hook of vite-plugin-vercel needs to be called after this writeBundle() hook, otherwise: https://github.com/vikejs/vike/issues/1527
-          await handleAssets(config, this.environment, options, bundle)
+          await handleAssetsManifest(config, this.environment, options, bundle)
           await triggerFullBuild(config, vikeConfig, bundle)
         }
       }
