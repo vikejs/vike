@@ -1,4 +1,5 @@
 export { pluginAutoFullBuild }
+export { isPrerenderForceExit }
 
 import { getFullBuildInlineConfig } from '../../shared/getFullBuildInlineConfig.js'
 import { build } from 'vite'
@@ -49,7 +50,11 @@ function pluginAutoFullBuild(): Plugin[] {
         sequential: true,
         order: 'post',
         handler() {
-          if (forceExit) {
+          if (
+            forceExit &&
+            // let vike:build:pluginBuildApp force exit
+            !vikeConfig.global.config.viteEnvironmentAPI
+          ) {
             runPrerender_forceExit()
             assert(false)
           }
@@ -111,14 +116,15 @@ function abortViteBuildSsr(vikeConfig: VikeConfigObject) {
 }
 
 function isEntirelyDisabled(vikeConfig: VikeConfigObject): boolean {
-  const { disableAutoFullBuild, viteEnvironmentAPI } = vikeConfig.global.config
-  if (viteEnvironmentAPI) {
-    return true
-  }
+  const { disableAutoFullBuild } = vikeConfig.global.config
   if (disableAutoFullBuild === undefined || disableAutoFullBuild === 'prerender') {
     const isUserUsingViteApi = !isViteCliCall() && !isVikeCliOrApi()
     return isUserUsingViteApi
   } else {
     return disableAutoFullBuild
   }
+}
+
+function isPrerenderForceExit(): boolean {
+  return forceExit
 }
