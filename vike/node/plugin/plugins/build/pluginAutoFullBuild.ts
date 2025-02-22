@@ -37,9 +37,6 @@ function pluginAutoFullBuild(): Plugin[] {
         order: 'pre',
         */
         async handler(options, bundle) {
-          // Make sure other writeBundle() hooks are called after this writeBundle() hook.
-          //  - set_macro_ASSETS_MANIFEST() needs to be called before dist/server/ code is executed.
-          //    - For example, the writeBundle() hook of vite-plugin-vercel needs to be called after this writeBundle() hook, otherwise: https://github.com/vikejs/vike/issues/1527
           await handleAssetsManifest(config, this.environment, options, bundle)
           await triggerFullBuild(config, vikeConfig, bundle)
         }
