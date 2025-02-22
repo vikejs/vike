@@ -12,8 +12,8 @@ function viteIsSSR(configGlobal: ResolvedConfig | UserConfig, viteEnv?: Environm
   return !!configEnv?.build?.ssr
 }
 // All server-side environments: not only `ssr` but, for example, also `vercel_edge` and `vercel_node`.
-function viteIsServerBuildEnvAny(config: ResolvedConfig, viteEnv: Environment | undefined) {
-  return viteEnv ? viteEnv.name === 'ssr' : viteIsSSR(config, viteEnv)
+function viteIsServerBuildEnvAny(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
+  return viteEnv ? viteEnv.name === 'ssr' : viteIsSSR(configGlobal)
 }
 
 function viteIsSSR_options(options: { ssr?: boolean } | undefined): boolean {
