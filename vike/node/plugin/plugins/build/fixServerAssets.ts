@@ -1,5 +1,3 @@
-// TODO/now: move this file
-// TODO/now: rename_full fixServerAssets handleAssetsManifest
 export { handleAssetsManifest }
 export { fixServerAssets_getBuildConfig }
 export { fixServerAssets_isEnabled }
