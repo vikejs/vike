@@ -62,7 +62,7 @@ function pluginAutoFullBuild(): Plugin[] {
 
 async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigObject, bundle: Record<string, unknown>) {
   if (config.build.ssr) return // already triggered
-  if (isDisabled(vikeConfig)) return
+  if (isEntirelyDisabled(vikeConfig)) return
   // Workaround for @vitejs/plugin-legacy
   //  - The legacy plugin triggers its own Rollup build for the client-side.
   //  - The legacy plugin doesn't generate a manifest => we can use that to detect the legacy plugin build.
@@ -111,7 +111,7 @@ function abortViteBuildSsr(vikeConfig: VikeConfigObject) {
   }
 }
 
-function isDisabled(vikeConfig: VikeConfigObject): boolean {
+function isEntirelyDisabled(vikeConfig: VikeConfigObject): boolean {
   const { disableAutoFullBuild, viteEnvironmentAPI } = vikeConfig.global.config
   if (viteEnvironmentAPI) {
     return true
