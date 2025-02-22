@@ -19,10 +19,10 @@ import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { fixServerAssets_isEnabled } from './build/pluginAssetsManifest/fixServerAssets.js'
-import { getVikeConfig, isV1Design, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertV1Design } from '../../shared/assertV1Design.js'
 import { normalizeId } from '../shared/normalizeId.js'
-import { viteIsSSR_options, viteIsSSR_safe } from '../shared/viteIsSSR.js'
+import { viteIsSSR_safe } from '../shared/viteIsSSR.js'
 type ResolvedId = Rollup.ResolvedId
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
@@ -157,7 +157,7 @@ function extractAssetsPlugin(): Plugin[] {
       async configResolved(config_) {
         config = config_
         vikeConfig = await getVikeConfig(config)
-        isServerAssetsFixEnabled = fixServerAssets_isEnabled() && (await isV1Design(config))
+        isServerAssetsFixEnabled = fixServerAssets_isEnabled(config)
         if (!isServerAssetsFixEnabled) {
           // https://github.com/vikejs/vike/issues/1060
           assertUsage(

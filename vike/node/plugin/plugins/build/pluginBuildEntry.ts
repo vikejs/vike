@@ -65,7 +65,7 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   ].join('\n')
   return importerCode
 }
-/** Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js) */
+// Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js)
 async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string) {
   const { dir } = options
   assert(dir)
