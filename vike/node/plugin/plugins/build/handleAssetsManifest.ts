@@ -381,7 +381,6 @@ async function handleAssetsManifest(
     await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
   }
 }
-
 async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {
   const isFixEnabled = handleAssetsManifest_isFixEnabled(config)
   const clientManifestFilePath = path.posix.join(outDirs.outDirClient, manifestTempFile)
