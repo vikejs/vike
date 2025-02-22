@@ -18,10 +18,7 @@ assertIsNotProductionRuntime()
 function requireResolve(importPath: string, cwd: string): string | null {
   assertPosixPath(cwd)
   const clean = addFileExtensionsToRequireResolve()
-  //@ts-ignore
-  if (typeof Bun !== 'undefined') {
-    importPath = removeFileExtention(importPath)
-  }
+  importPath = removeFileExtention(importPath)
   let importedFile: string | null
   try {
     importedFile = require_.resolve(importPath, { paths: [cwd] })
@@ -37,6 +34,14 @@ function requireResolve(importPath: string, cwd: string): string | null {
 }
 
 function removeFileExtention(importPath: string) {
+  // Skip for Bun: https://github.com/vikejs/vike/issues/2204
+  //@ts-ignore
+  if (typeof Bun !== 'undefined') {
+    // https://bun.sh/guides/util/detect-bun
+    assert(process.versions.bun)
+    return importPath
+  }
+
   for (const ext of scriptFileExtensionList) {
     const suffix = `.${ext}`
     if (importPath.endsWith(suffix)) {
