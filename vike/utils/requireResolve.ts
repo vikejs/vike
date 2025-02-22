@@ -19,7 +19,7 @@ function requireResolve(importPath: string, cwd: string): string | null {
   assertPosixPath(cwd)
   const clean = addFileExtensionsToRequireResolve()
   //@ts-ignore
-  if (typeof Bun === undefined) {
+  if (typeof Bun !== 'undefined') {
     importPath = removeFileExtention(importPath)
   }
   let importedFile: string | null
