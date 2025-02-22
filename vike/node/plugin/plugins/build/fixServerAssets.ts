@@ -41,7 +41,7 @@ function fixServerAssets_isEnabled(config: ResolvedConfig | UserConfig): boolean
 }
 
 /** https://github.com/vikejs/vike/issues/1339 */
-async function fixServerAssets(
+async function fixServerSideAssets(
   config: ResolvedConfig
 ): Promise<{ clientManifestMod: ViteManifest; serverManifestMod: ViteManifest }> {
   const outDirs = getOutDirs(config)
@@ -389,7 +389,7 @@ async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: str
   if (!isServerAssetsFixEnabled) {
     await fs.copyFile(clientManifestFilePath, assetsJsonFilePath)
   } else {
-    const { clientManifestMod } = await fixServerAssets(config)
+    const { clientManifestMod } = await fixServerSideAssets(config)
     await writeManifestFile(clientManifestMod, assetsJsonFilePath)
   }
   await fs.rm(clientManifestFilePath)
