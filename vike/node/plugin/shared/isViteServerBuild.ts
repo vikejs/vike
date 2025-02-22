@@ -1,7 +1,7 @@
 export { isViteServerBuild }
-export { isViteServerBuild_onlySsrEnv }
 export { isViteServerBuild_options }
 export { isViteServerBuild_safe }
+export { isViteServerBuild_onlySsrEnv }
 
 import type { Environment, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
