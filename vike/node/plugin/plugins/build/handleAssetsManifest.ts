@@ -25,7 +25,7 @@ import { getAssetsDir } from '../../shared/getAssetsDir.js'
 import pc from '@brillout/picocolors'
 import { isV1Design } from '../importUserCode/v1-design/getVikeConfig.js'
 import { getOutDirs, OutDirs } from '../../shared/getOutDirs.js'
-import { isViteServerBuildEnvSsr, isViteServerBuild } from '../../shared/isViteServerBuild.js'
+import { isViteServerBuild_onlySsrEnv, isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { getVikeConfigPublic } from '../commonConfig.js'
 import { set_macro_ASSETS_MANIFEST } from './pluginBuildEntry.js'
 type Bundle = Rollup.OutputBundle
@@ -375,7 +375,7 @@ async function handleAssetsManifest(
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(outDirs, assetsJsonFilePath, config)
   }
-  if (isViteServerBuildEnvSsr(config, viteEnv)) {
+  if (isViteServerBuild_onlySsrEnv(config, viteEnv)) {
     assert(assetsJsonFilePath)
     // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
     await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
