@@ -6,7 +6,6 @@ export { viteIsSSR_safe }
 import type { Environment, ResolvedConfig, UserConfig } from 'vite'
 import { assert } from '../../../utils/assert.js'
 
-// TODO/now: rename_full viteIsSSR isViteServerBuildEnvSsr
 function viteIsSSR(configGlobal: ResolvedConfig | UserConfig, viteEnv?: Environment): boolean {
   const configEnv = viteEnv?.config ?? configGlobal
   return !!configEnv?.build?.ssr
