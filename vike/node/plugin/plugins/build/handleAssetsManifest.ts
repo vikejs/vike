@@ -369,13 +369,13 @@ async function handleAssetsManifest(
   options: Options,
   bundle: Bundle
 ) {
-  if (isViteServerBuild(config, viteEnv)) {
+  if (isViteServerBuild_onlySsrEnv(config, viteEnv)) {
     assert(!assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(outDirs, assetsJsonFilePath, config)
   }
-  if (isViteServerBuild_onlySsrEnv(config, viteEnv)) {
+  if (isViteServerBuild(config, viteEnv)) {
     assert(assetsJsonFilePath)
     // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
     await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
