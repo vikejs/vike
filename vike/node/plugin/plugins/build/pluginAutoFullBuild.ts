@@ -1,7 +1,6 @@
 export { pluginAutoFullBuild }
 export { isPrerenderForceExit }
 
-import { getFullBuildInlineConfig } from '../../shared/getFullBuildInlineConfig.js'
 import { build } from 'vite'
 import type { Environment, InlineConfig, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertIsSingleModuleInstance, assertWarning, onSetupBuild } from '../../utils.js'
@@ -143,4 +142,20 @@ function isEntirelyDisabled(vikeConfig: VikeConfigObject): boolean {
 
 function isPrerenderForceExit(): boolean {
   return forceExit
+}
+
+function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {
+  const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
+  if (config._viteConfigEnhanced) {
+    return config._viteConfigEnhanced
+  } else {
+    return {
+      ...configFromCli,
+      configFile: configFromCli?.configFile || config.configFile,
+      root: config.root,
+      build: {
+        ...configFromCli?.build
+      }
+    }
+  }
 }
