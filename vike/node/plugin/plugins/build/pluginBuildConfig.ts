@@ -29,7 +29,6 @@ import { isViteServerBuild } from '../../shared/isViteServerBuild.js'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import {
   handleAssetsManifest_assertUsageCssCodeSplit,
-  handleAssetsManifest_assertUsageCssTarget,
   handleAssetsManifest_getBuildConfig
 } from './handleAssetsManifest.js'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
@@ -72,10 +71,6 @@ function pluginBuildConfig(): Plugin[] {
       },
       buildStart() {
         onSetupBuild()
-      },
-      closeBundle() {
-        onSetupBuild()
-        handleAssetsManifest_assertUsageCssTarget(config)
       }
     }
   ]
