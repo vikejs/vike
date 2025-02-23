@@ -15,6 +15,7 @@ function testMarkdown() {
     await page.goto(getServerUrl() + '/markdown')
     expect(await page.textContent('body')).toContain('This page is written in Markdown')
     await testCounter()
+    await workaroundPlaywrightRaceCondition()
   })
 }
 
@@ -30,7 +31,21 @@ function testMarkdownClientFile(isDev: boolean) {
         filter: (logEntry) => logEntry.logSource === 'Browser Log'
       })
     })
+    await workaroundPlaywrightRaceCondition()
   })
+}
+
+// Workaround for:
+// ```
+// proxy.goto: Navigation to "http://localhost:3000/config-meta/env/client" is interrupted by another navigation to "http://localhost:3000/markdown"
+// Call log:
+//   - navigating to "http://localhost:3000/config-meta/env/client", waiting until "load"
+//
+//     at retrievePageContext (D:\a\vike\vike\pages\config-meta\retrievePageContext.ts:8:16)
+//     at D:\a\vike\vike\pages\config-meta\env\e2e-test.ts:8:22
+// ```
+async function workaroundPlaywrightRaceCondition() {
+  await page.goto('about:blank')
 }
 
 function testMarkdownSideExports() {
