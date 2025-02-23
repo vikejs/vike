@@ -71,10 +71,10 @@ async function triggerFullBuild(
   viteEnv: Environment,
   bundle: Record<string, unknown>
 ) {
-  // Whether `builder.buildApp()` is being used, see plugin:build:pluginBuildApp
+  // Whether builder.buildApp() is being used, see plugin:build:pluginBuildApp
   const isBuilderApp = vikeConfig.global.config.viteEnvironmentAPI
-  // if builder.buildApp() => trigger at end of `this.environment.name === 'ssr'`.
-  // else => trigger at end of client-side build.
+  // If builder.buildApp() => trigger at end of `this.environment.name === 'ssr'`.
+  // Else => trigger at end of client-side build.
   if (isBuilderApp ? !isViteServerBuild_onlySsrEnv(config, viteEnv) : !isViteClientBuild(config, viteEnv)) return
   if (isEntirelyDisabled(vikeConfig)) return
   // Workaround for @vitejs/plugin-legacy
@@ -85,10 +85,7 @@ async function triggerFullBuild(
 
   const configInline = getFullBuildInlineConfig(config)
 
-  if (
-    // Already chained by builder.buildApp()
-    !isBuilderApp
-  ) {
+  if (!isBuilderApp) {
     try {
       await build(setSSR(configInline))
     } catch (err) {
@@ -97,6 +94,8 @@ async function triggerFullBuild(
       logErrorHint(err)
       process.exit(1)
     }
+  } else {
+    // The server bulid is already called by builder.buildApp()
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
