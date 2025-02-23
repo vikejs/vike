@@ -255,7 +255,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
       'string'
     ]
   },
-  viteEnvironmentAPI: {
+  vite6BuilderApp: {
     env: { config: true },
     global: true,
     type: 'boolean'

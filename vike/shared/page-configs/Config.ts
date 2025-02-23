@@ -511,7 +511,7 @@ type ConfigBuiltIn = {
   /** Use Vite Environment API to orchestrate the build process.
    * @experimental
    */
-  viteEnvironmentAPI?: boolean
+  vite6BuilderApp?: boolean
 
   /** The Base URL of your server.
    *

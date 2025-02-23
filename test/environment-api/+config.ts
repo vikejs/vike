@@ -1,1 +1,1 @@
-export default { viteEnvironmentAPI: true, prerender: true }
+export default { vite6BuilderApp: true, prerender: true }

@@ -55,7 +55,7 @@ function pluginAutoFullBuild(): Plugin[] {
           if (
             forceExit &&
             // Let vike:build:pluginBuildApp force exit
-            !vikeConfig.global.config.viteEnvironmentAPI
+            !vikeConfig.global.config.vite6BuilderApp
           ) {
             runPrerender_forceExit()
             assert(false)
@@ -73,7 +73,7 @@ async function triggerFullBuild(
   bundle: Record<string, unknown>
 ) {
   // Whether builder.buildApp() is being used, see plugin:build:pluginBuildApp
-  const isBuilderApp = vikeConfig.global.config.viteEnvironmentAPI
+  const isBuilderApp = vikeConfig.global.config.vite6BuilderApp
   // If builder.buildApp() => trigger at end of `this.environment.name === 'ssr'`.
   // Else => trigger at end of client-side build.
   if (isBuilderApp ? !isViteServerBuild_onlySsrEnv(config, viteEnv) : !isViteClientBuild(config, viteEnv)) return
