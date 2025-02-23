@@ -1,2 +1,2 @@
-import { buildApp } from './buildApp'
+import { buildApp } from './buildApp.js'
 await buildApp()
