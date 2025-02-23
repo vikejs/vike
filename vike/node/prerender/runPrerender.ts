@@ -1247,7 +1247,8 @@ function validatePrerenderConfig(
 
 function makePublic(prerenderContext: PrerenderContext) {
   const prerenderContextPublic: PrerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
-    'pageContexts'
+    'pageContexts',
+    'output'
   ])
   return prerenderContextPublic
 }
