@@ -1,13 +1,19 @@
 export default Page
 
 import React from 'react'
-import { Counter } from './Counter.jsx'
+import { Counter } from './Counter'
 
 function Page() {
   return (
     <>
-      <h1>Test page</h1>
-      <Counter />
+      <h1>Welcome</h1>
+      This page is:
+      <ul>
+        <li>Rendered to HTML.</li>
+        <li>
+          Interactive. <Counter />
+        </li>
+      </ul>
     </>
   )
 }

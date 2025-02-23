@@ -1,6 +1,7 @@
 import type { InlineConfig, ResolvedConfig } from 'vite'
 import { getViteConfigFromCli, isViteCliCall } from './isViteCliCall.js'
 
+// TODO/now: move
 export function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {
   const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
   if (config._viteConfigEnhanced) {

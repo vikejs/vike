@@ -1,4 +1,5 @@
 export { isViteServerBuild }
+export { isViteClientBuild }
 export { isViteServerBuild_options }
 export { isViteServerBuild_safe }
 export { isViteServerBuild_onlySsrEnv }
@@ -13,6 +14,15 @@ function isViteServerBuild(configGlobal: ResolvedConfig | UserConfig, viteEnv?: 
 // Only `ssr` env: for example don't include `vercel_edge` nor `vercel_node`.
 function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Environment | undefined) {
   return viteEnv ? viteEnv.name === 'ssr' : isViteServerBuild(configGlobal)
+}
+function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment) {
+  const yes = !isViteServerBuild(configGlobal, viteEnv)
+  const isVite5 = viteEnv === undefined
+  if (!isVite5) {
+    const yes2 = viteEnv.name === 'client'
+    assert(yes === yes2)
+  }
+  return yes
 }
 
 function isViteServerBuild_options(options: { ssr?: boolean } | undefined): boolean {

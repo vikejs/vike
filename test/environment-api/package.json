@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "vike dev",
-    "build": "vike build"
+    "build": "node ./build",
+    "preview": "node ./build && vike preview"
   },
   "dependencies": {
     "@types/react": "^18.0.8",
