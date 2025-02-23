@@ -356,7 +356,7 @@ function handleAssetsManifest_getBuildConfig(config: UserConfig) {
     // Required if `ssrEmitAssets: true`, see https://github.com/vitejs/vite/pull/11430#issuecomment-1454800934
     cssMinify: isFixEnabled ? 'esbuild' : undefined,
     manifest: manifestTempFile,
-    copyPublicDir: vike.config.viteEnvironmentAPI
+    copyPublicDir: vike.config.vite6BuilderApp
       ? // Already set by vike:build:pluginBuildApp
         undefined
       : !isViteServerBuild(config)

@@ -19,7 +19,7 @@ async function build(options: APIOptions = {}): Promise<{}> {
   // Pass it to pluginAutoFullBuild()
   if (viteConfigEnhanced) viteConfigEnhanced._viteConfigEnhanced = viteConfigEnhanced
 
-  if (vikeConfig.global.config.viteEnvironmentAPI) {
+  if (vikeConfig.global.config.vite6BuilderApp) {
     assertVersion('Vite', version, '6.0.0')
     const builder = await createBuilder(viteConfigEnhanced)
     // See Vite plugin vike:build:pluginBuildApp
