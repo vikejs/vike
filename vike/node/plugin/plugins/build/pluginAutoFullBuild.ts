@@ -52,7 +52,7 @@ function pluginAutoFullBuild(): Plugin[] {
         handler() {
           if (
             forceExit &&
-            // let vike:build:pluginBuildApp force exit
+            // Let vike:build:pluginBuildApp force exit
             !vikeConfig.global.config.viteEnvironmentAPI
           ) {
             runPrerender_forceExit()
