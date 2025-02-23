@@ -1,2 +1,11 @@
+export { config }
+
 import vikeReact from 'vike-react/config'
-export default { viteEnvironmentAPI: true, prerender: true, extends: vikeReact }
+import { Layout } from './Layout'
+
+const config = {
+  // https://vike.dev/Layout
+  Layout: Layout,
+  // https://vike.dev/extends
+  extends: vikeReact
+}
