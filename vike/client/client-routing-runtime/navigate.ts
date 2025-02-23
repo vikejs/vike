@@ -1,13 +1,21 @@
 export { navigate }
 export { reload }
 
+import { modifyUrlSameOrigin, ModifyUrlSameOriginOptions } from '../../shared/modifyUrlSameOrigin.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import { firstRenderStartPromise, renderPageClientSide } from './renderPageClientSide.js'
 import type { ScrollTarget } from './setScrollPosition.js'
-import { assertClientRouting } from './utils.js'
+import { assertClientRouting, assertWarning } from './utils.js'
 
 assertClientRouting()
+
+type Options = ModifyUrlSameOriginOptions & {
+  url?: string
+  keepScrollPosition?: boolean
+  overwriteLastHistoryEntry?: boolean
+  pageContext?: Record<string, unknown>
+}
 
 /** Programmatically navigate to a new page.
  *
@@ -18,19 +26,23 @@ assertClientRouting()
  * @param overwriteLastHistoryEntry - Don't create a new entry in the browser's history, instead let the new URL replace the current URL. (This effectively removes the current URL from the browser history).
  */
 async function navigate(
-  url: string,
-  {
-    keepScrollPosition = false,
-    overwriteLastHistoryEntry = false,
-    pageContext
-  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean; pageContext?: Record<string, unknown> } = {}
+  arg: string | Options,
+  // TODO/next-major: remove
+  options_deprecated?: Options
 ): Promise<void> {
-  normalizeUrlArgument(url, 'navigate')
+  const options: Options = typeof arg === 'string' ? { url: arg } : arg
+  if (options_deprecated) {
+    assertWarning(false, 'TODO/now', { onlyOnce: true })
+    Object.assign(options, options_deprecated)
+  }
+
+  const url = resolveUrl(options)
 
   // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
   await firstRenderStartPromise
 
-  const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition }
+  const { keepScrollPosition, overwriteLastHistoryEntry, pageContext } = options
+  const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition ?? false }
   await renderPageClientSide({
     scrollTarget,
     urlOriginal: url,
@@ -38,6 +50,13 @@ async function navigate(
     isBackwardNavigation: false,
     pageContextInitClient: pageContext
   })
+}
+
+// TODO/now: use everywhere where normalizeUrlArgument() is used?
+function resolveUrl(options: Options): string {
+  let url = normalizeUrlArgument(options.url ?? getCurrentUrl(), 'navigate')
+  url = modifyUrlSameOrigin(url, options)
+  return url
 }
 
 async function reload(): Promise<void> {
