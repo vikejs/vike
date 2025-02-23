@@ -18,7 +18,8 @@ function isViteServerBuild_onlySsrEnv(configGlobal: ResolvedConfig, viteEnv: Env
 function isViteClientBuild(configGlobal: ResolvedConfig, viteEnv: Environment) {
   const yes = !isViteServerBuild(configGlobal, viteEnv)
   const oui = viteEnv.name === 'client'
-  assert(yes === oui)
+  const isVite5 = viteEnv === undefined
+  if (!isVite5) assert(yes === oui)
   return yes
 }
 
