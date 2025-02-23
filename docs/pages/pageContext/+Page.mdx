@@ -71,7 +71,7 @@ Built-in properties:
    }
    ```
 
-   For example:
+   Example:
    ```
    https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
    ```
@@ -90,8 +90,8 @@ Built-in properties:
      href: 'https://example.com/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
      origin: 'https://example.com',
      protocol: 'https://',
-     hostname: 'example.com', // 'localhost' for http://localhost:3000
-     port: null // 3000 for http://localhost:3000
+     hostname: 'example.com', // 'localhost' if http://localhost:3000
+     port: null // 3000 if http://localhost:3000
    }
    ```
  - **`pageContext.headers`**: The headers of the HTTP Request. As a string object (`Record<string, string>`) normalized by Vike, see <Link href="/headers"/>.

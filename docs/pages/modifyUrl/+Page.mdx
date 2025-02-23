@@ -9,13 +9,12 @@ import { modifyUrl } from 'vike/modifyUrl'
 
 const url = 'http://localhost:3000/en-US/hello/john?fruit=apple'
 const urlModified = modifyUrl(url, {
-  pathname: '/hello/john', // Removed en-US/
+  pathname: '/hello/john', // remove en-US/
   protocol: 'https://',
   hostname: 'example.com',
   port: 3001
 })
-// https://example.com:3001/hello/john?fruit=apple
-console.log(urlModified)
+console.log(urlModified) // https://example.com:3001/hello/john?fruit=apple
 ```
 
 
