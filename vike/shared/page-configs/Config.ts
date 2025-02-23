@@ -508,7 +508,9 @@ type ConfigBuiltIn = {
   /** @deprecated See https://vike.dev/disableAutoFullBuild */
   disableAutoFullBuild?: boolean | 'prerender'
 
-  /** Use Vite Environment API to orchestrate the build process.
+  /**
+   * Use builder.buildApp() to orchestrate the build process.
+   *
    * @experimental
    */
   vite6BuilderApp?: boolean
