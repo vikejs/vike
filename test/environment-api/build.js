@@ -9,7 +9,6 @@ async function buildApp() {
   process.env.NODE_ENV = 'production'
   await build({
     viteConfig: {
-      logLevel: 'warn',
       root: __dirname,
       configFile: __dirname + '/vite.config.js'
     }
