@@ -404,7 +404,9 @@ function assertUsageUrl(
   { isRedirectTarget }: { isRedirectTarget?: true | 'unresolved' } = {}
 ) {
   if (url.startsWith('/')) return
+
   let errMsg = `${errPrefix} is ${pc.string(url)} but it should start with ${pc.string('/')}`
+
   if (isRedirectTarget) {
     if (isUrlRedirectTarget(url)) return
     errMsg += ` or a protocol (${pc.string('http://')}, ${pc.string('mailto:')}, ...)`
@@ -413,5 +415,6 @@ function assertUsageUrl(
       errMsg += `, or be ${pc.string('*')}`
     }
   }
+
   assertUsage(false, errMsg)
 }
