@@ -76,14 +76,14 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
   const configInline = getFullBuildInlineConfig(config)
 
   if (!vikeConfig.global.config.viteEnvironmentAPI) {
-  try {
-    await build(setSSR(configInline))
-  } catch (err) {
-    // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
-    console.error(err)
-    logErrorHint(err)
-    process.exit(1)
-  }
+    try {
+      await build(setSSR(configInline))
+    } catch (err) {
+      // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
+      console.error(err)
+      logErrorHint(err)
+      process.exit(1)
+    }
   } else {
     // Already chained by vike:build:pluginBuildApp
   }
