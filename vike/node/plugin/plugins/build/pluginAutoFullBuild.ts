@@ -75,6 +75,7 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
 
   const configInline = getFullBuildInlineConfig(config)
 
+  if (!vikeConfig.global.config.viteEnvironmentAPI) {
   try {
     await build(setSSR(configInline))
   } catch (err) {
@@ -82,6 +83,9 @@ async function triggerFullBuild(config: ResolvedConfig, vikeConfig: VikeConfigOb
     console.error(err)
     logErrorHint(err)
     process.exit(1)
+  }
+  } else {
+    // Already chained by vike:build:pluginBuildApp
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
