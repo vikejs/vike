@@ -334,6 +334,7 @@ function getPageConfigsBuildTime(
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
   })
+  applyEffectsAll(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
   assertPageConfigGlobal(pageConfigGlobal, plusFilesAll)
 
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
@@ -354,6 +355,7 @@ function getPageConfigsBuildTime(
       const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
       applyEffectsAll(configValueSources, configDefinitionsLocal)
+
       const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
       const pageConfig: PageConfigBuildTime = {
@@ -924,23 +926,26 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     const source = configValueSources[configName]?.[0]
     if (!source) return
     // The config value is eagerly loaded since `configDef.env === 'config-only``
-    assert('value' in source)
+    assert('value' in source) // TODO/now: refactor all `'value' in`
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
       configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAtFilePath)
     })
     if (!configModFromEffect) return
-    assert(hasProp(source, 'value')) // We need to assume that the config value is loaded at build-time
-    applyEffect(configModFromEffect, configValueSources, configDef)
+    applyEffect(configModFromEffect, source, configValueSources, configName, configDef, configDefinitions)
   })
 }
 function applyEffect(
   configModFromEffect: Config,
+  source: ConfigValueSource,
   configValueSources: ConfigValueSources,
-  configDefEffect: ConfigDefinitionInternal
+  configNameEffect: string,
+  configDefEffect: ConfigDefinitionInternal,
+  configDefinitions: ConfigDefinitions
 ) {
-  const notSupported = `Effects currently only supports modifying the the ${pc.cyan('env')} of a config.` as const
+  const notSupported =
+    `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
     if (configName === 'meta') {
       let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
@@ -964,14 +969,26 @@ function applyEffect(
         })
       })
     } else {
-      assertUsage(false, notSupported)
-      /* To implement being able to set a config value in an effect:
-       * - Copy and append definedAtFile.fileExportPathToShowToUser with ['meta', configName, 'effect']
-       *   - Copying the definedAtFile of the config that defines the effect
-       * - Same precedence as the config that sets the value triggering the effect (not the config defining the effect)
-       *   - Apply sortConfigValueSources() again?
-      configValueSources.push()
-      */
+      const configDef = configDefinitions[configName]
+      assert(configDef)
+      assert(configDefEffect._userEffectDefinedAtFilePath)
+      const configValueSource: ConfigValueSource = {
+        definedAtFilePath: configDefEffect._userEffectDefinedAtFilePath!,
+        plusFile: source.plusFile,
+        locationId: source.locationId,
+        configEnv: configDef.env,
+        isOverriden: false, // TODO/now check
+        valueIsLoadedWithImport: false,
+        valueIsDefinedByPlusValueFile: false,
+        valueIsLoaded: true,
+        value: configValue
+      }
+      assertUsage(
+        !!configDef.global === !!configDefEffect.global,
+        `The configuration ${pc.cyan(configNameEffect)} has a ${pc.cyan('meta.effect')} that changes the configuration ${pc.cyan(configName)} and, consequently, both ${pc.cyan(configNameEffect)} and ${pc.cyan(configName)} must have the same ${pc.cyan('meta.global')} value.`
+      )
+      configValueSources[configName] ??= []
+      configValueSources[configName].push(configValueSource)
     }
   })
 }

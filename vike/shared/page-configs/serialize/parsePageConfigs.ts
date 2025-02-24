@@ -92,7 +92,9 @@ function parseConfigValuesSerialized_tmp(configValuesSerialized: Record<string, 
       const { valueSerialized, ...common } = configValueSeriliazed
       const { value, sideExports } = parseValueSerialized(valueSerialized, configName, () => {
         assert(configValueSeriliazed.type !== 'computed')
-        return configValueSeriliazed.definedAtData
+        const { definedAtData } = configValueSeriliazed
+        const definedAtFile = Array.isArray(definedAtData) ? definedAtData[0]! : definedAtData
+        return definedAtFile
       })
       addSideExports(sideExports)
       configValue = { value, ...common }
