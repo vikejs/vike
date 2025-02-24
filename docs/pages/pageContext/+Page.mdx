@@ -60,6 +60,7 @@ Built-in properties:
      pathnameOriginal: string
      search: Record<string, string> // AKA query parameters
      searchAll: Record<string, string[]>
+     searchParams: URLSearchParams
      searchOriginal: null | string
      hash: string
      hashOriginal: null | string
@@ -83,6 +84,7 @@ Built-in properties:
      pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',
      search: { fruit: 'orânge' },
      searchAll: { fruit: ['âpple', 'orânge'] },
+     searchParams: new URLSearchParams([['fruit','âpple'],['fruit','orânge']]),
      searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
      hash: 'âge',
      hashOriginal: '#%C3%A2ge'
