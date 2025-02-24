@@ -26,22 +26,22 @@ describe('resolveRouteStringRedirect', () => {
   })
   it('handles invalid redirects', () => {
     expect(() => resolveRouteStringRedirect('a', 'b', '/')).toThrowErrorMatchingInlineSnapshot(
-      `[Error: [vike][1m[31m[Wrong Usage][39m[22m[+redirects] Invalid Route String [36ma[39m: it should start with [36m/[39m or [36m*[39m]`
+      `[Error: [vike][Wrong Usage][+redirects] Invalid Route String a: it should start with / or *]`
     )
     expect(() => resolveRouteStringRedirect('/a', 'b', '/')).toThrowErrorMatchingInlineSnapshot(
-      `[Error: [vike][1m[31m[Wrong Usage][39m[22m[+redirects] The URL redirection target is [36mb[39m but it should start with [36m/[39m or a protocol ([36mhttp://[39m, [36mmailto:[39m, ...), or be [36m*[39m]`
+      `[Error: [vike][Wrong Usage][+redirects] The URL redirection target is 'b' but it should start with '/' or a protocol ('http://', 'mailto:', ...), or be '*']`
     )
     expect(() => resolveRouteStringRedirect('/a', '/@i', '/')).toThrowErrorMatchingInlineSnapshot(
-      `[Error: [vike][1m[31m[Wrong Usage][39m[22m[+redirects] The redirection source URL [36m/a[39m is missing the URL parameter [36m@i[39m used by the redirection target URL [36m/@i[39m]`
+      `[Error: [vike][Wrong Usage][+redirects] The redirection source URL '/a' is missing the URL parameter '@i' used by the redirection target URL '/@i']`
     )
     expect(() => resolveRouteStringRedirect('/a', '/b/*', '/')).toThrowErrorMatchingInlineSnapshot(
-      `[Error: [vike][1m[31m[Wrong Usage][39m[22m[+redirects] The redirection source URL [36m/a[39m is missing the URL parameter [36m*[39m used by the redirection target URL [36m/b/*[39m]`
+      `[Error: [vike][Wrong Usage][+redirects] The redirection source URL '/a' is missing the URL parameter '*' used by the redirection target URL '/b/*']`
     )
     expect(() => resolveRouteStringRedirect('/', '/*', '/')).toThrowErrorMatchingInlineSnapshot(
-      `[Error: [vike][1m[31m[Wrong Usage][39m[22m[+redirects] The redirection source URL [36m/[39m is missing the URL parameter [36m*[39m used by the redirection target URL [36m/*[39m]`
+      `[Error: [vike][Wrong Usage][+redirects] The redirection source URL '/' is missing the URL parameter '*' used by the redirection target URL '/*']`
     )
     expect(() => resolveRouteStringRedirect('/', '*', '/')).toThrowErrorMatchingInlineSnapshot(
-      `[Error: [vike][1m[31m[Wrong Usage][39m[22m[+redirects] The redirection source URL [36m/[39m is missing the URL parameter [36m*[39m used by the redirection target URL [36m*[39m]`
+      `[Error: [vike][Wrong Usage][+redirects] The redirection source URL '/' is missing the URL parameter '*' used by the redirection target URL '*']`
     )
   })
   it('globs', () => {
