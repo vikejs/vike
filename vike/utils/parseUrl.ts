@@ -40,6 +40,14 @@ type UrlPublic = {
   search: Record<string, string>
   /** The URL search parameters array, e.g. `{ fruit: ['apple', 'orange'] }` for `https://example.com?fruit=apple&fruit=orange` **/
   searchAll: Record<string, string[]>
+  /**
+   * URL search parameters (aka query params).
+   *
+   * As `URLSearchParams`, e.g. `new URLSearchParams([['fruit','apple'],['fruit','orange']])` for `https://example.com?fruit=apple&fruit=orange`
+   *
+   * https://vike.dev/pageContext
+   */
+  searchParams: URLSearchParams
   /** The URL search parameterer string, e.g. `?details=yes` in `https://example.com/product/42?details=yes#reviews` */
   searchOriginal: null | `?${string}`
   /** The URL hash, e.g. `reviews` in `https://example.com/product/42?details=yes#reviews` */
@@ -76,7 +84,8 @@ function parseUrl(url: string, baseServer: string): UrlInternal {
   }
   const search: Record<string, string> = {}
   const searchAll: Record<string, string[]> = {}
-  Array.from(new URLSearchParams(searchString)).forEach(([key, val]) => {
+  const searchParams = new URLSearchParams(searchString)
+  Array.from(searchParams).forEach(([key, val]) => {
     search[key] = val
     searchAll[key] = [...(searchAll.hasOwnProperty(key) ? searchAll[key]! : []), val]
   })
@@ -111,6 +120,7 @@ function parseUrl(url: string, baseServer: string): UrlInternal {
     isBaseMissing,
     search,
     searchAll,
+    searchParams,
     searchOriginal,
     hash,
     hashOriginal

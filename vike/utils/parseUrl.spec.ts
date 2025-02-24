@@ -2,9 +2,14 @@ import { parseUrl } from './parseUrl.js'
 import { expect, describe, it } from 'vitest'
 import assert from 'assert'
 
+const p = (...args: Parameters<typeof parseUrl>) => {
+  const res = parseUrl(...args)
+  return { ...res, searchParams: res.searchParams.toString() }
+}
+
 describe('parseUrl', () => {
   it('basics', () => {
-    expect(parseUrl('/', '/')).toMatchInlineSnapshot(`
+    expect(p('/', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -19,9 +24,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/hello', '/')).toMatchInlineSnapshot(`
+    expect(p('/hello', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -36,12 +42,13 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
 
   it('Base URL', () => {
-    expect(parseUrl('/base', '/base')).toMatchInlineSnapshot(`
+    expect(p('/base', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -56,9 +63,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/base/', '/base')).toMatchInlineSnapshot(`
+    expect(p('/base/', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -73,9 +81,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/base', '/base/')).toMatchInlineSnapshot(`
+    expect(p('/base', '/base/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -90,9 +99,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('https://example.org/base', '/base')).toMatchInlineSnapshot(`
+    expect(p('https://example.org/base', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -107,9 +117,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('https://example.org/base/', '/base')).toMatchInlineSnapshot(`
+    expect(p('https://example.org/base/', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -124,9 +135,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('https://example.org/base', '/base/')).toMatchInlineSnapshot(`
+    expect(p('https://example.org/base', '/base/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -141,9 +153,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/base/hello', '/base')).toMatchInlineSnapshot(`
+    expect(p('/base/hello', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -158,9 +171,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/hello', '/base')).toMatchInlineSnapshot(`
+    expect(p('/hello', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -175,9 +189,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/base/hello', '/base/nested')).toMatchInlineSnapshot(`
+    expect(p('/base/hello', '/base/nested')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -192,12 +207,13 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
 
   it('origin', () => {
-    expect(parseUrl('https://example.org/', '/')).toMatchInlineSnapshot(`
+    expect(p('https://example.org/', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -212,9 +228,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('http://example.org/', '/')).toMatchInlineSnapshot(`
+    expect(p('http://example.org/', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -229,9 +246,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('http://example.org', '/')).toMatchInlineSnapshot(`
+    expect(p('http://example.org', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -246,9 +264,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('http://example.org/base/hello', '/base')).toMatchInlineSnapshot(`
+    expect(p('http://example.org/base/hello', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -263,11 +282,12 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
 
     // Port
-    expect(parseUrl('http://localhost:3000/base/hello', '/base')).toMatchInlineSnapshot(`
+    expect(p('http://localhost:3000/base/hello', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -282,9 +302,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('https://example.org:0', '/')).toMatchInlineSnapshot(`
+    expect(p('https://example.org:0', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -299,12 +320,13 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
 
   it('hash', () => {
-    expect(parseUrl('/#reviews', '/')).toMatchInlineSnapshot(`
+    expect(p('/#reviews', '/')).toMatchInlineSnapshot(`
       {
         "hash": "reviews",
         "hashOriginal": "#reviews",
@@ -319,9 +341,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/#', '/')).toMatchInlineSnapshot(`
+    expect(p('/#', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": "#",
@@ -336,9 +359,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/', '/')).toMatchInlineSnapshot(`
+    expect(p('/', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -353,9 +377,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/a/b#', '/a/')).toMatchInlineSnapshot(`
+    expect(p('/a/b#', '/a/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": "#",
@@ -370,12 +395,13 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
 
   it('search', () => {
-    expect(parseUrl('/?q=apples', '/')).toMatchInlineSnapshot(`
+    expect(p('/?q=apples', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -396,9 +422,10 @@ describe('parseUrl', () => {
           ],
         },
         "searchOriginal": "?q=apples",
+        "searchParams": "q=apples",
       }
     `)
-    expect(parseUrl('/shop?fruits=apples&candies=chocolate,lollipop', '/')).toMatchInlineSnapshot(`
+    expect(p('/shop?fruits=apples&candies=chocolate,lollipop', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -423,10 +450,11 @@ describe('parseUrl', () => {
           ],
         },
         "searchOriginal": "?fruits=apples&candies=chocolate,lollipop",
+        "searchParams": "fruits=apples&candies=chocolate%2Clollipop",
       }
     `)
     const searchQuery = '?fruit=apples&fruit=bananas&candy=chocolate&candy=lollipop&constructor=val1&constructor=val2'
-    const { searchOriginal } = parseUrl(`/shop${searchQuery}`, '/')
+    const { searchOriginal } = p(`/shop${searchQuery}`, '/')
     assert(searchOriginal)
     const searchParams = new URLSearchParams(searchOriginal)
     expect(searchParams.getAll('fruit')).toMatchInlineSnapshot(`
@@ -441,7 +469,7 @@ describe('parseUrl', () => {
         "lollipop",
       ]
     `)
-    expect(parseUrl(`/shop${searchQuery}`, '/shop')).toMatchInlineSnapshot(`
+    expect(p(`/shop${searchQuery}`, '/shop')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -473,6 +501,7 @@ describe('parseUrl', () => {
           ],
         },
         "searchOriginal": "?fruit=apples&fruit=bananas&candy=chocolate&candy=lollipop&constructor=val1&constructor=val2",
+        "searchParams": "fruit=apples&fruit=bananas&candy=chocolate&candy=lollipop&constructor=val1&constructor=val2",
       }
     `)
   })
@@ -480,7 +509,7 @@ describe('parseUrl', () => {
   it('decoding', () => {
     // Pathname
     {
-      expect(parseUrl('/user/@rom', '/')).toMatchInlineSnapshot(`
+      expect(p('/user/@rom', '/')).toMatchInlineSnapshot(`
         {
           "hash": "",
           "hashOriginal": null,
@@ -495,10 +524,11 @@ describe('parseUrl', () => {
           "search": {},
           "searchAll": {},
           "searchOriginal": null,
+          "searchParams": "",
         }
       `)
       assert(encodeURIComponent('@') === '%40')
-      expect(parseUrl('/user/%40rom', '/')).toMatchInlineSnapshot(`
+      expect(p('/user/%40rom', '/')).toMatchInlineSnapshot(`
         {
           "hash": "",
           "hashOriginal": null,
@@ -513,12 +543,13 @@ describe('parseUrl', () => {
           "search": {},
           "searchAll": {},
           "searchOriginal": null,
+          "searchParams": "",
         }
       `)
       assert(encodeURIComponent('/') === '%2F')
       assert(decodeURIComponent('%2F') === '/')
       assert(decodeURI('%2F') === '%2F')
-      expect(parseUrl(`/r${encodeURIComponent('/')}om`, '/')).toMatchInlineSnapshot(`
+      expect(p(`/r${encodeURIComponent('/')}om`, '/')).toMatchInlineSnapshot(`
         {
           "hash": "",
           "hashOriginal": null,
@@ -533,13 +564,14 @@ describe('parseUrl', () => {
           "search": {},
           "searchAll": {},
           "searchOriginal": null,
+          "searchParams": "",
         }
       `)
     }
 
     // Hash
     {
-      expect(parseUrl('/#@reviews', '/')).toMatchInlineSnapshot(`
+      expect(p('/#@reviews', '/')).toMatchInlineSnapshot(`
         {
           "hash": "@reviews",
           "hashOriginal": "#@reviews",
@@ -554,10 +586,11 @@ describe('parseUrl', () => {
           "search": {},
           "searchAll": {},
           "searchOriginal": null,
+          "searchParams": "",
         }
       `)
       assert(encodeURIComponent('@') === '%40')
-      expect(parseUrl(`/#%40reviews`, '/')).toMatchInlineSnapshot(`
+      expect(p(`/#%40reviews`, '/')).toMatchInlineSnapshot(`
         {
           "hash": "@reviews",
           "hashOriginal": "#%40reviews",
@@ -572,13 +605,14 @@ describe('parseUrl', () => {
           "search": {},
           "searchAll": {},
           "searchOriginal": null,
+          "searchParams": "",
         }
       `)
     }
 
     // Search
     {
-      expect(parseUrl('/?section=@reviews', '/')).toMatchInlineSnapshot(`
+      expect(p('/?section=@reviews', '/')).toMatchInlineSnapshot(`
         {
           "hash": "",
           "hashOriginal": null,
@@ -599,10 +633,11 @@ describe('parseUrl', () => {
             ],
           },
           "searchOriginal": "?section=@reviews",
+          "searchParams": "section=%40reviews",
         }
       `)
       assert(encodeURIComponent('@') === '%40')
-      expect(parseUrl(`/?section=%40reviews`, '/')).toMatchInlineSnapshot(`
+      expect(p(`/?section=%40reviews`, '/')).toMatchInlineSnapshot(`
         {
           "hash": "",
           "hashOriginal": null,
@@ -623,6 +658,7 @@ describe('parseUrl', () => {
             ],
           },
           "searchOriginal": "?section=%40reviews",
+          "searchParams": "section=%40reviews",
         }
       `)
     }
@@ -636,7 +672,7 @@ describe('parseUrl', () => {
         assert((err as Error).message === 'URI malformed')
       }
       assert(encodeURIComponent('%') === '%25')
-      expect(parseUrl('/user/%25rom', '/')).toMatchInlineSnapshot(`
+      expect(p('/user/%25rom', '/')).toMatchInlineSnapshot(`
         {
           "hash": "",
           "hashOriginal": null,
@@ -651,9 +687,10 @@ describe('parseUrl', () => {
           "search": {},
           "searchAll": {},
           "searchOriginal": null,
+          "searchParams": "",
         }
       `)
-      expect(parseUrl('/user/%rom', '/')).toMatchInlineSnapshot(`
+      expect(p('/user/%rom', '/')).toMatchInlineSnapshot(`
         {
           "hash": "",
           "hashOriginal": null,
@@ -668,13 +705,14 @@ describe('parseUrl', () => {
           "search": {},
           "searchAll": {},
           "searchOriginal": null,
+          "searchParams": "",
         }
       `)
     }
   })
 
   it('edge cases', () => {
-    expect(parseUrl('/product/ö', '/')).toMatchInlineSnapshot(`
+    expect(p('/product/ö', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -689,9 +727,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/product/%C3%B6', '/')).toMatchInlineSnapshot(`
+    expect(p('/product/%C3%B6', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -706,9 +745,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/product/แจ็คเก็ตเดนิม', '/')).toMatchInlineSnapshot(`
+    expect(p('/product/แจ็คเก็ตเดนิม', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -723,12 +763,13 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
 
     // #322
     // Remove trailing white space
-    expect(parseUrl('/ab ', '/')).toMatchInlineSnapshot(`
+    expect(p('/ab ', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -743,11 +784,12 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
     // Preserve whitespace otherwise
     assert(encodeURIComponent(' ') === '%20')
-    expect(parseUrl('/ab%20', '/')).toMatchInlineSnapshot(`
+    expect(p('/ab%20', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -762,9 +804,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/a b', '/')).toMatchInlineSnapshot(`
+    expect(p('/a b', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -779,9 +822,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('/a%20b', '/')).toMatchInlineSnapshot(`
+    expect(p('/a%20b', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -796,12 +840,13 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
 
     assert(encodeURIComponent('#') === '%23')
     assert(encodeURIComponent('?') === '%3F')
-    expect(parseUrl('/a%23/b%3Fc', '/a%23')).toMatchInlineSnapshot(`
+    expect(p('/a%23/b%3Fc', '/a%23')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -816,13 +861,14 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
     /* Bug, this doesn't work:
     expect(parseUrl('/a%23/b%3Fc', '/a#')).toMatchInlineSnapshot()
     */
 
-    expect(parseUrl('/a//b', '/')).toMatchInlineSnapshot(`
+    expect(p('/a//b', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -837,9 +883,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('http://example.org//', '/')).toMatchInlineSnapshot(`
+    expect(p('http://example.org//', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -854,9 +901,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('//', '/')).toMatchInlineSnapshot(`
+    expect(p('//', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -871,9 +919,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('///', '/')).toMatchInlineSnapshot(`
+    expect(p('///', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -888,11 +937,12 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
 
     // #495
-    expect(parseUrl('///en/?redirect_zone=ru', '/')).toMatchInlineSnapshot(`
+    expect(p('///en/?redirect_zone=ru', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -913,12 +963,13 @@ describe('parseUrl', () => {
           ],
         },
         "searchOriginal": "?redirect_zone=ru",
+        "searchParams": "redirect_zone=ru",
       }
     `)
   })
 
   it('missing pathname', () => {
-    expect(parseUrl('?a=b', '/')).toMatchInlineSnapshot(`
+    expect(p('?a=b', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -939,9 +990,10 @@ describe('parseUrl', () => {
           ],
         },
         "searchOriginal": "?a=b",
+        "searchParams": "a=b",
       }
     `)
-    expect(parseUrl('#a', '/')).toMatchInlineSnapshot(`
+    expect(p('#a', '/')).toMatchInlineSnapshot(`
       {
         "hash": "a",
         "hashOriginal": "#a",
@@ -956,9 +1008,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('', '/')).toMatchInlineSnapshot(`
+    expect(p('', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -973,10 +1026,11 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
     assert(new URL('', 'http://fake.org/base').pathname === '/base')
-    expect(parseUrl('', '/base')).toMatchInlineSnapshot(`
+    expect(p('', '/base')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -991,13 +1045,14 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
 
   it('doc example', () => {
     expect(
-      parseUrl(
+      p(
         'https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
         '/some-base-url'
       )
@@ -1023,12 +1078,13 @@ describe('parseUrl', () => {
           ],
         },
         "searchOriginal": "?fruit=%C3%A2pple&fruit=orânge",
+        "searchParams": "fruit=%C3%A2pple&fruit=or%C3%A2nge",
       }
     `)
   })
 
   it('tauri', () => {
-    expect(parseUrl('tauri://localhost/', '/')).toMatchInlineSnapshot(`
+    expect(p('tauri://localhost/', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1043,9 +1099,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('tauri://localhost', '/')).toMatchInlineSnapshot(`
+    expect(p('tauri://localhost', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1060,9 +1117,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('tauri://localhost/somePath', '/')).toMatchInlineSnapshot(`
+    expect(p('tauri://localhost/somePath', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1077,13 +1135,14 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
 
   // https://github.com/vikejs/vike/issues/1706
   it('capacitor', () => {
-    expect(parseUrl('capacitor://localhost/assets/chunks/chunk-v3mOCch-.js', '/')).toMatchInlineSnapshot(`
+    expect(p('capacitor://localhost/assets/chunks/chunk-v3mOCch-.js', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1098,13 +1157,14 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
 
   it('relative paths - server-side', () => {
     // Shouldn't this resolve to `{ pathname: '/b1/b2' }`? I don't remember why I used to be fine with following test.
-    expect(parseUrl('.', '/b1/b2/')).toMatchInlineSnapshot(`
+    expect(p('.', '/b1/b2/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1119,9 +1179,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('..', '/b1/b2/')).toMatchInlineSnapshot(`
+    expect(p('..', '/b1/b2/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1136,9 +1197,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('../../', '/b1/b2/')).toMatchInlineSnapshot(`
+    expect(p('../../', '/b1/b2/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1153,9 +1215,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('./markdown', '/')).toMatchInlineSnapshot(`
+    expect(p('./markdown', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1170,6 +1233,7 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
@@ -1177,7 +1241,7 @@ describe('parseUrl', () => {
   it('relative paths - client-side', () => {
     // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://100.115.92.194:3000/?q=any' } }
-    expect(parseUrl('?q=any', '/')).toMatchInlineSnapshot(`
+    expect(p('?q=any', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1198,11 +1262,12 @@ describe('parseUrl', () => {
           ],
         },
         "searchOriginal": "?q=any",
+        "searchParams": "q=any",
       }
     `)
     // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://localhost:3000/' } }
-    expect(parseUrl('./markdown', '/')).toMatchInlineSnapshot(`
+    expect(p('./markdown', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1217,11 +1282,12 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
     // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/deep/path' } }
-    expect(parseUrl('./markdown', '/')).toMatchInlineSnapshot(`
+    expect(p('./markdown', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1236,11 +1302,12 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
     // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/deep/' } }
-    expect(parseUrl('..//bla', '/')).toMatchInlineSnapshot(`
+    expect(p('..//bla', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1255,11 +1322,12 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
     // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/very/deep/' } }
-    expect(parseUrl('../../../../bla', '/')).toMatchInlineSnapshot(`
+    expect(p('../../../../bla', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1274,11 +1342,12 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
     // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/dir' } }
-    expect(parseUrl('', '/')).toMatchInlineSnapshot(`
+    expect(p('', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1293,9 +1362,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('#', '/')).toMatchInlineSnapshot(`
+    expect(p('#', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": "#",
@@ -1310,11 +1380,12 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
     // @ts-ignore
     globalThis.window = { document: { baseURI: 'http://localhost:3000/some/dir?some=param' } }
-    expect(parseUrl('#', '/')).toMatchInlineSnapshot(`
+    expect(p('#', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": "#",
@@ -1335,6 +1406,7 @@ describe('parseUrl', () => {
           ],
         },
         "searchOriginal": null,
+        "searchParams": "some=param",
       }
     `)
     // @ts-ignore
@@ -1342,7 +1414,7 @@ describe('parseUrl', () => {
   })
 
   it('IPV6', () => {
-    expect(parseUrl('http://[::1]:3000/', '/')).toMatchInlineSnapshot(`
+    expect(p('http://[::1]:3000/', '/')).toMatchInlineSnapshot(`
       {
         "hash": "",
         "hashOriginal": null,
@@ -1357,9 +1429,10 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
-    expect(parseUrl('https://[::1]:3000/bla#:', '/')).toMatchInlineSnapshot(`
+    expect(p('https://[::1]:3000/bla#:', '/')).toMatchInlineSnapshot(`
       {
         "hash": ":",
         "hashOriginal": "#:",
@@ -1374,6 +1447,7 @@ describe('parseUrl', () => {
         "search": {},
         "searchAll": {},
         "searchOriginal": null,
+        "searchParams": "",
       }
     `)
   })
