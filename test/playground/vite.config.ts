@@ -40,7 +40,7 @@ function testVikeConfig(vike: Vike) {
 function testPrerenderSettings(vike: Vike) {
   const { prerenderContext } = vike
   if (!prerenderContext) return
-  ;(globalThis as any).prerenderContextWasTest = true
+  ;(globalThis as any).prerenderContextWasTested = true
   assert(vike.prerenderContext)
   const pageIds = Object.keys(vike.pages)
   const pageIdsPrerendered = prerenderContext.output
