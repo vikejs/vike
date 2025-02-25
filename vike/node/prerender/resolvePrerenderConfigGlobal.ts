@@ -1,5 +1,5 @@
-export { resolvePrerenderConfig }
-export { resolvePrerenderConfigLocal }
+export { resolvePrerenderConfigGlobal }
+export { resolvePrerenderConfigGlobalLocal }
 
 import type { ConfigResolved } from '../../shared/page-configs/Config/PageContextConfig.js'
 import { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
@@ -14,11 +14,11 @@ type PrerenderConfig = false | Exclude<Required<NonNullable<PrerenderConfigSemiR
 // TODO/now:
 // - prerender.value
 
-function resolvePrerenderConfig(vikeConfig: VikeConfigObject): PrerenderConfig {
+function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject): PrerenderConfig {
   const prerenderConfigs = vikeConfig.global.config.prerender
   if (
     !prerenderConfigs &&
-    !vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value)
+    !vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigGlobalLocal(pageConfig)?.value)
   ) {
     return false
   }
@@ -34,7 +34,7 @@ function resolvePrerenderConfig(vikeConfig: VikeConfigObject): PrerenderConfig {
   }
   return prerenderConfig
 }
-function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
+function resolvePrerenderConfigGlobalLocal(pageConfig: PageConfigBuildTime) {
   const configValue = getConfigValueBuildTime(pageConfig, 'prerender')
   if (!configValue) return null
   const values = configValue.value

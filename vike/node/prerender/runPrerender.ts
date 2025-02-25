@@ -73,7 +73,7 @@ import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
 import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { setContextIsPrerendering } from './context.js'
-import { resolvePrerenderConfig, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
+import { resolvePrerenderConfigGlobal, resolvePrerenderConfigGlobalLocal } from './resolvePrerenderConfigGlobal.js'
 import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
@@ -217,7 +217,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
-  const prerenderConfig = resolvePrerenderConfig(vikeConfig)
+  const prerenderConfig = resolvePrerenderConfigGlobal(vikeConfig)
   validatePrerenderConfig(prerenderConfig)
   if (!prerenderConfig) {
     assert(standaloneTrigger)
@@ -291,7 +291,7 @@ async function collectDoNoPrerenderList(
 ) {
   // V1 design
   pageConfigs.forEach((pageConfig) => {
-    const configValue = resolvePrerenderConfigLocal(pageConfig)
+    const configValue = resolvePrerenderConfigGlobalLocal(pageConfig)
     if (!configValue) return
     const { value, configValueFilePathToShowToUser } = configValue
     if (value === false) {
