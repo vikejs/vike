@@ -916,34 +916,34 @@ function assertMetaUsage(
 }
 
 function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
-  objectEntries(configDefinitions).forEach(([configName, configDef]) => {
+  objectEntries(configDefinitions).forEach(([configNameEffect, configDef]) => {
     if (!configDef.effect) return
     // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
     // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
     assertUsage(
       configDef.env.config,
       [
-        `Cannot add meta.effect to ${pc.cyan(configName)} because its meta.env is ${pc.cyan(
+        `Cannot add meta.effect to ${pc.cyan(configNameEffect)} because its meta.env is ${pc.cyan(
           JSON.stringify(configDef.env)
         )} but an effect can only be added to a config that has a meta.env with ${pc.cyan('{ config: true }')}.`
       ].join(' ')
     )
-    const source = configValueSources[configName]?.[0]
-    if (!source) return
+    const sourceEffect = configValueSources[configNameEffect]?.[0]
+    if (!sourceEffect) return
     // The config value is eagerly loaded since `configDef.env === 'config-only``
-    assert(source.valueIsLoaded)
-    const configValueEffectSource = source.value
+    assert(sourceEffect.valueIsLoaded)
+    const configValueEffectSource = sourceEffect.value
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: configValueEffectSource,
-      configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAtFilePath)
+      configDefinedAt: getConfigDefinedAt('Config', configNameEffect, sourceEffect.definedAtFilePath)
     })
     if (!configModFromEffect) return
     applyEffect(
       configModFromEffect,
-      source,
+      sourceEffect,
       configValueSources,
-      configName,
+      configNameEffect,
       configDef,
       configDefinitions,
       configValueEffectSource
@@ -952,7 +952,7 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
 }
 function applyEffect(
   configModFromEffect: Config,
-  source: ConfigValueSource,
+  sourceEffect: ConfigValueSource,
   configValueSources: ConfigValueSources,
   configNameEffect: string,
   configDefEffect: ConfigDefinitionInternal,
@@ -961,11 +961,11 @@ function applyEffect(
 ) {
   const notSupported =
     `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
-  objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
-    if (configName === 'meta') {
+  objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
+    if (configNameTarget === 'meta') {
       let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
       if (configDefEffect._userEffectDefinedAtFilePath) {
-        configDefinedAt = getConfigDefinedAt('Config', configName, configDefEffect._userEffectDefinedAtFilePath)
+        configDefinedAt = getConfigDefinedAt('Config', configNameTarget, configDefEffect._userEffectDefinedAtFilePath)
       } else {
         configDefinedAt = null
       }
@@ -984,13 +984,13 @@ function applyEffect(
         })
       })
     } else {
-      const configDef = configDefinitions[configName]
+      const configDef = configDefinitions[configNameTarget]
       assert(configDef)
       assert(configDefEffect._userEffectDefinedAtFilePath)
       const configValueSource: ConfigValueSource = {
         definedAtFilePath: configDefEffect._userEffectDefinedAtFilePath!,
-        plusFile: source.plusFile,
-        locationId: source.locationId,
+        plusFile: sourceEffect.plusFile,
+        locationId: sourceEffect.locationId,
         configEnv: configDef.env,
         isOverriden: false, // TODO/now check
         valueIsLoadedWithImport: false,
@@ -1004,10 +1004,10 @@ function applyEffect(
       // The error message make it sound like it's an inherent limitation, it actually isn't (both ways can make senses).
       assertUsage(
         isValueGlobalSource === isValueGlobalTarget,
-        `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(configValueEffectSource))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configName)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
+        `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(configValueEffectSource))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
       )
-      configValueSources[configName] ??= []
-      configValueSources[configName].push(configValueSource)
+      configValueSources[configNameTarget] ??= []
+      configValueSources[configNameTarget].push(configValueSource)
     }
   })
 }
