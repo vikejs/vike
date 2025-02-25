@@ -19,7 +19,7 @@
   "devDependencies": {
     "typescript": "^5.7.2",
     "vike": "^0.4.223",
-    "vite": "^5.4.11",
+    "vite": "^6.2.0",
     "@types/express": "^4.17.21",
     "tsx": "^4.19.2",
     "cross-env": "^7.0.3",

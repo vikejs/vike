@@ -13,7 +13,7 @@
     "node-fetch": "2.6.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "vite": "^6.0.5",
+    "vite": "^6.2.0",
     "vike": "0.4.223"
   },
   "type": "module"

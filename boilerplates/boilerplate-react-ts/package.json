@@ -24,7 +24,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
     "vike": "^0.4.223",
-    "vite": "^6.0.5"
+    "vite": "^6.2.0"
   },
   "type": "module"
 }
