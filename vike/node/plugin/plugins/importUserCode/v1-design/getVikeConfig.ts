@@ -979,9 +979,7 @@ function applyEffectConfVal(
   configValueEffectSource: unknown
 ) {
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
-    if (configNameTarget === 'meta') {
-      return
-    } else {
+    if (configNameTarget === 'meta') return
       const configDef = configDefinitions[configNameTarget]
       assert(configDef)
       assert(configDefEffect._userEffectDefinedAtFilePath)
@@ -1006,7 +1004,6 @@ function applyEffectConfVal(
       )
       configValueSources[configNameTarget] ??= []
       configValueSources[configNameTarget].push(configValueSource)
-    }
   })
 }
 function applyEffectMetaEnv(
@@ -1017,7 +1014,7 @@ function applyEffectMetaEnv(
   const notSupported =
     `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
-    if (configNameTarget === 'meta') {
+    if (configNameTarget !== 'meta') return
       let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
       if (configDefEffect._userEffectDefinedAtFilePath) {
         configDefinedAt = getConfigDefinedAt('Config', configNameTarget, configDefEffect._userEffectDefinedAtFilePath)
@@ -1038,7 +1035,6 @@ function applyEffectMetaEnv(
           configValueSource.configEnv = envOverriden
         })
       })
-    }
   })
 }
 
