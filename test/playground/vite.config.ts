@@ -30,7 +30,7 @@ type Vike = ReturnType<typeof getVikeConfig>
 // TEST: getVikeConfig()
 function testVikeConfig(vike: Vike) {
   assert(typeof vike.config.prerender![0] === 'object')
-  assert(vike.config.prerender![0].noExtraDir)
+  assert(vike.config.prerender![0].parallel === 4)
   assert(vike.pages)
   assert(vike.pages['/pages/index']!.config.prerender![0] === false)
   assert(vike.pages['/pages/markdown']!.config.prerender![0])
@@ -65,4 +65,7 @@ function testPrerenderSettings(vike: Vike) {
     const wasPrerendered = pageIdsPrerendered.includes(pageId)
     assert(wasPrerendered === prerendered, debug)
   })
+
+  // TEST: prerender.noExtraDir
+  prerenderContext.output.forEach(({ filePath }) => assert(!filePath.endsWith('index.html'), filePath))
 }

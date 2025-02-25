@@ -3,8 +3,10 @@ import vikeReact from 'vike-react/config'
 
 export default {
   title: 'Big Playground',
+  prerenderSetOverEffect: true,
   prerender: {
-    // TEST: prerender.noExtraDir
+    value: null,
+    parallel: 4,
     noExtraDir: true
   },
   redirects: {

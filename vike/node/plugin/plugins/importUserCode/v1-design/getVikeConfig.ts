@@ -236,7 +236,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
     userRootDir
   )
 
-  // interop vike(options) in vite.config.js
+  // Backwards compatibility for vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
   // global
@@ -917,9 +917,7 @@ function assertMetaUsage(
   })
 }
 
-// TODO/now update perma links
-// https://github.com/vikejs/vike/blob/052ed41ffe67097c25026d7409f8741c820ea6c8/test/playground/vite.config.ts#L39
-// https://github.com/vikejs/vike/blob/052ed41ffe67097c25026d7409f8741c820ea6c8/test/playground/pages/config-meta/effect/e2e-test.ts#L16
+// Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/vite.config.ts#L39
 function applyEffectsConfVal(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
     const sourceEffect = configValueSources[configNameEffect]?.[0]
@@ -938,6 +936,7 @@ function applyEffectsConfVal(configValueSources: ConfigValueSources, configDefin
     )
   })
 }
+// Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/pages/config-meta/effect/e2e-test.ts#L16
 function applyEffectsMetaEnv(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
     const sourceEffect = configValueSources[configNameEffect]?.[0]

@@ -22,8 +22,9 @@ import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
-import { isPrerenderEnabled, temp_disablePrerenderAutoRun } from '../../prerender/context.js'
+import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
+import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 const pluginName = 'vike:commonConfig'
 
 declare module 'vite' {
@@ -69,7 +70,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             },
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
-              prerender: isPrerenderEnabled(vikeConfig)
+              prerender: resolvePrerenderConfigGlobal(vikeConfig).isEnabled
             })
           }
         }

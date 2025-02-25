@@ -183,6 +183,50 @@ You can then manually trigger pre-rendering using:
  - <Link href="/api#prerender" doNotInferSectionTitle />
 
 
+### `value`
+
+When you set `prerender` to an object then you also enable pre-rendering. In other words:
+
+```js
+// pages/+config.js
+
+export default {
+  // Setting it to an empty object:
+  prerender: {},
+  // Is equivalent to:
+  prerender: true
+}
+```
+
+By setting `prerender.value` to `null` you opt-out from this. In other words:
+
+```js
+// pages/+config.js
+
+export default {
+  // This:
+  prerender: { value: null },
+  // Is equivalent to that:
+  prerender: null
+}
+```
+
+It's used by <Link href="/extensions">Vike extensions</Link> to change pre-rendering settings without enabling pre-rendering on behalf of the user.
+
+```js
+// node_modules/vike-some-extension/+config.js
+
+export default {
+  prerender: {
+    // Change pre-rendering setting:
+    partial: true,
+    // Without enabling pre-rendering:
+    value: null
+  }
+}
+```
+
+
 ## See also
 
 - <Link href="/pre-rendering" />

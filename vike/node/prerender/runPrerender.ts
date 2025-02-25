@@ -89,17 +89,7 @@ type HtmlFile = {
   pageId: string | null
 }
 
-type DoNotPrerenderList = ({ pageId: string; setByConfigFile: string } & (
-  | {
-      // TODO/v1-release: remove 0.4 case
-      setByConfigName: 'doNotPrerender'
-      setByConfigValue: true
-    }
-  | {
-      setByConfigName: 'prerender'
-      setByConfigValue: false
-    }
-))[]
+type DoNotPrerenderList = { pageId: string }[]
 type ProvidedByHook = null | {
   hookFilePath: string
   hookName: 'onBeforePrerenderStart' | 'prerender'
@@ -219,17 +209,18 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const { root } = viteConfig
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   validatePrerenderConfig(prerenderConfigGlobal)
-  if (!prerenderConfigGlobal) {
+  const { partial, noExtraDir, parallel, defaultLocalValue, isEnabled } = prerenderConfigGlobal
+  if (!isEnabled) {
     assert(standaloneTrigger)
+    // TODO/now: make it assertUsage() and remove dist/server/entry.mjs whenever possible
     assertWarning(
       prerenderConfigGlobal,
-      `You're executing ${pc.cyan(standaloneTrigger)} but the config ${pc.cyan('prerender')} isn't set to true`,
+      `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the config ${pc.cyan('prerender')} (${pc.underline('https://vike.dev/prerender')}) to enable it.`,
       {
         onlyOnce: true
       }
     )
   }
-  const { partial = false, noExtraDir = false, parallel = true } = prerenderConfigGlobal || {}
 
   const concurrencyLimit = pLimit(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
@@ -248,7 +239,13 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
-  await collectDoNoPrerenderList(vikeConfig.pageConfigs, doNotPrerenderList, concurrencyLimit, globalContext)
+  await collectDoNoPrerenderList(
+    vikeConfig.pageConfigs,
+    doNotPrerenderList,
+    defaultLocalValue,
+    concurrencyLimit,
+    globalContext
+  )
 
   await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
 
@@ -286,21 +283,23 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 async function collectDoNoPrerenderList(
   pageConfigs: PageConfigBuildTime[],
   doNotPrerenderList: DoNotPrerenderList,
+  defaultLocalValue: boolean,
   concurrencyLimit: PLimit,
   globalContext: GlobalContextInternal
 ) {
   // V1 design
   pageConfigs.forEach((pageConfig) => {
     const prerenderConfigLocal = resolvePrerenderConfigLocal(pageConfig)
-    if (!prerenderConfigLocal) return
-    const { value, configValueFilePathToShowToUser } = prerenderConfigLocal
-    if (value === false) {
-      doNotPrerenderList.push({
-        pageId: pageConfig.pageId,
-        setByConfigName: 'prerender',
-        setByConfigValue: false,
-        setByConfigFile: configValueFilePathToShowToUser
-      })
+    const { pageId } = pageConfig
+    if (!prerenderConfigLocal) {
+      if (!defaultLocalValue) {
+        doNotPrerenderList.push({ pageId })
+      }
+    } else {
+      const { value } = prerenderConfigLocal
+      if (value === false) {
+        doNotPrerenderList.push({ pageId })
+      }
     }
   })
 
@@ -341,12 +340,7 @@ async function collectDoNoPrerenderList(
         return
       } else {
         // Don't pre-render `pageId`
-        doNotPrerenderList.push({
-          pageId,
-          setByConfigFile: p.filePath,
-          setByConfigName: 'doNotPrerender',
-          setByConfigValue: doNotPrerender
-        })
+        doNotPrerenderList.push({ pageId })
       }
     }
   })
@@ -855,16 +849,11 @@ function warnContradictoryNoPrerenderList(
       const isContradictory = !!doNotPrerenderListEntry && providedByHook
       if (!isContradictory) return
     }
-    const { setByConfigName, setByConfigValue, setByConfigFile } = doNotPrerenderListEntry
     assertWarning(
       false,
       `The ${providedByHook.hookName}() hook defined by ${providedByHook.hookFilePath} returns the URL ${pc.cyan(
         urlOriginal
-      )}, while ${setByConfigFile} sets the config ${pc.cyan(setByConfigName)} to ${pc.cyan(
-        String(setByConfigValue)
-      )}. This is contradictory: either don't set the config ${pc.cyan(setByConfigName)} to ${pc.cyan(
-        String(setByConfigValue)
-      )} or remove the URL ${pc.cyan(urlOriginal)} from the list of URLs to be pre-rendered.`,
+      )} matching the route of the page ${pc.cyan(pageId)} which isn't configured to be pre-rendered. This is contradictory: either enable pre-rendering for ${pc.cyan(pageId)} or remove the URL ${pc.cyan(urlOriginal)} from the list of URLs to be pre-rendered.`,
       { onlyOnce: true }
     )
   })

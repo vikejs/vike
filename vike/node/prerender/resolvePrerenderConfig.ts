@@ -1,38 +1,38 @@
 export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
 
-import type { ConfigResolved } from '../../shared/page-configs/Config/PageContextConfig.js'
 import { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-import { assert, isArray } from './utils.js'
+import { assert, isArray, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
-import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
 
-type PrerenderConfigSemiResolved = ConfigResolved['prerender']
-type PrerenderConfigGlobal = false | Exclude<Required<NonNullable<PrerenderConfigSemiResolved>[number]>, boolean>
-
-// TODO/now:
-// - prerender.value
-
-function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject): PrerenderConfigGlobal {
+function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
   const prerenderConfigs = vikeConfig.global.config.prerender
-  if (
-    !prerenderConfigs &&
-    !vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value)
-  ) {
-    return false
-  }
 
   let prerenderConfigList = prerenderConfigs || []
   // Needed because of backwards compatibility of `vike({prerender:true})` in `vite.config.js`; after we remove it we can remove this line.
   prerenderConfigList = prerenderConfigList.filter(isObject2)
   assert(prerenderConfigList.every(isObject2)) // Help TS
-  const prerenderConfigGlobal: PrerenderConfigGlobal = {
+  const prerenderConfigGlobal = {
     partial: pickFirst(prerenderConfigList.map((c) => c.partial)) ?? false,
     noExtraDir: pickFirst(prerenderConfigList.map((c) => c.noExtraDir)) ?? false,
     parallel: pickFirst(prerenderConfigList.map((c) => c.parallel)) ?? true,
     disableAutoRun: pickFirst(prerenderConfigList.map((c) => c.disableAutoRun)) ?? false
   }
+
+  const prerenderConfigGlobalLocalValue = prerenderConfigList.map((c) => c.value).filter((v) => v !== null)
+  const defaultLocalValue =
+    pickFirst(prerenderConfigGlobalLocalValue) ??
+    (prerenderConfigGlobalLocalValue.length > 0 ||
+      // Backwards compatibility for with vike({ prerender: true }) in vite.config.js
+      prerenderConfigs?.some((p) => p === true) ||
+      false)
+  objectAssign(prerenderConfigGlobal, {
+    defaultLocalValue,
+    isEnabled:
+      defaultLocalValue || vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value)
+  })
+
   return prerenderConfigGlobal
 }
 function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
@@ -43,9 +43,7 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const value = values[0]
   assert(typeof value === 'boolean')
   assert(isArray(configValue.definedAtData))
-  const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData[0]!)
-  assert(configValueFilePathToShowToUser)
-  const prerenderConfigLocal = { value, configValueFilePathToShowToUser }
+  const prerenderConfigLocal = { value }
   return prerenderConfigLocal
 }
 

@@ -360,6 +360,14 @@ type ConfigBuiltIn = {
          * @default false
          */
         disableAutoRun?: boolean
+        /**
+         * Set prerender settings without enabling pre-rendering.
+         *
+         * https://vike.dev/prerender#value
+         *
+         * @default true
+         */
+        value?: boolean | null
       }
 
   /**
