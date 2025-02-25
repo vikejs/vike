@@ -923,9 +923,9 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     assertUsage(
       configDef.env.config,
       [
-        `Cannot add effect to ${pc.cyan(configName)} because its ${pc.cyan('env')} is ${pc.cyan(
+        `Cannot add meta.effect to ${pc.cyan(configName)} because its meta.env is ${pc.cyan(
           JSON.stringify(configDef.env)
-        )}: effects can only be added to configs with an ${pc.cyan('env')} with ${pc.cyan('{ config: true }')}.`
+        )} but an effect can only be added to a config that has a meta.env with ${pc.cyan('{ config: true }')}.`
       ].join(' ')
     )
     const source = configValueSources[configName]?.[0]
