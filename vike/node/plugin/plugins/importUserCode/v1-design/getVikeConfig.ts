@@ -42,7 +42,8 @@ import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
   type ConfigDefinitions,
-  type ConfigDefinitionInternal
+  type ConfigDefinitionInternal,
+  type ConfigDefinition
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
@@ -562,12 +563,11 @@ function resolveConfigValueSources(
     return configValueSource
   })
   if (isCallable(configDef.global)) {
-    const isGlobalValue = configDef.global
     assert(configDef.env.config)
     sources = sources.filter((source) => {
       assert(source.configEnv.config)
       assert(source.valueIsLoaded)
-      const valueIsGlobal = isGlobalValue(source.value)
+      const valueIsGlobal = resolveIsGlobalValue(configDef.global, source.value)
       return isGlobal ? valueIsGlobal : !valueIsGlobal
     })
   }
@@ -788,6 +788,13 @@ function isDefiningPage(plusFiles: PlusFile[]): boolean {
 function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
+function resolveIsGlobalValue(configDefGlobal: ConfigDefinition['global'], configValue: unknown) {
+  let isGlobal: boolean
+  if (isCallable(configDefGlobal)) isGlobal = configDefGlobal(configValue)
+  else isGlobal = configDefGlobal ?? false
+  assert(typeof isGlobal === 'boolean')
+  return isGlobal
+}
 
 function getDefiningConfigNames(plusFile: PlusFile): string[] {
   let configNames: string[] = []
@@ -925,13 +932,22 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     if (!source) return
     // The config value is eagerly loaded since `configDef.env === 'config-only``
     assert(source.valueIsLoaded)
+    const configValueEffectSource = source.value
     // Call effect
     const configModFromEffect = configDef.effect({
-      configValue: source.value,
+      configValue: configValueEffectSource,
       configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAtFilePath)
     })
     if (!configModFromEffect) return
-    applyEffect(configModFromEffect, source, configValueSources, configName, configDef, configDefinitions)
+    applyEffect(
+      configModFromEffect,
+      source,
+      configValueSources,
+      configName,
+      configDef,
+      configDefinitions,
+      configValueEffectSource
+    )
   })
 }
 function applyEffect(
@@ -940,7 +956,8 @@ function applyEffect(
   configValueSources: ConfigValueSources,
   configNameEffect: string,
   configDefEffect: ConfigDefinitionInternal,
-  configDefinitions: ConfigDefinitions
+  configDefinitions: ConfigDefinitions,
+  configValueEffectSource: unknown
 ) {
   const notSupported =
     `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
@@ -981,9 +998,12 @@ function applyEffect(
         valueIsLoaded: true,
         value: configValue
       }
+      const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, configValueEffectSource)
+      const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValue)
+      const isGlobalHumanReadable = (isGlobal: boolean) => `${isGlobal ? 'non-' : ''}global` as const
       assertUsage(
-        !!configDef.global === !!configDefEffect.global,
-        `The configuration ${pc.cyan(configNameEffect)} has a ${pc.cyan('meta.effect')} that changes the configuration ${pc.cyan(configName)} and, consequently, both ${pc.cyan(configNameEffect)} and ${pc.cyan(configName)} must have the same ${pc.cyan('meta.global')} value.`
+        isValueGlobalSource === isValueGlobalTarget,
+        `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(configValueEffectSource))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configName)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
       )
       configValueSources[configName] ??= []
       configValueSources[configName].push(configValueSource)
