@@ -333,7 +333,8 @@ function getPageConfigsBuildTime(
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
   })
-  applyEffectsAll(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
+  applyEffectsMetaEnv(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
+  applyEffectsConfVal(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
   assertPageConfigGlobal(pageConfigGlobal, plusFilesAll)
 
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
@@ -353,7 +354,8 @@ function getPageConfigsBuildTime(
 
       const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
-      applyEffectsAll(configValueSources, configDefinitionsLocal)
+      applyEffectsMetaEnv(configValueSources, configDefinitionsLocal)
+      applyEffectsConfVal(configValueSources, configDefinitionsLocal)
 
       const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
@@ -915,14 +917,17 @@ function assertMetaUsage(
   })
 }
 
-function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+// TODO/now update perma links
+// https://github.com/vikejs/vike/blob/052ed41ffe67097c25026d7409f8741c820ea6c8/test/playground/vite.config.ts#L39
+// https://github.com/vikejs/vike/blob/052ed41ffe67097c25026d7409f8741c820ea6c8/test/playground/pages/config-meta/effect/e2e-test.ts#L16
+function applyEffectsConfVal(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
     const sourceEffect = configValueSources[configNameEffect]?.[0]
     if (!sourceEffect) return
     const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
     if (!effect) return
     const { configModFromEffect, configValueEffectSource } = effect
-    applyEffect(
+    applyEffectConfVal(
       configModFromEffect,
       sourceEffect,
       configValueSources,
@@ -931,6 +936,16 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
       configDefinitions,
       configValueEffectSource
     )
+  })
+}
+function applyEffectsMetaEnv(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+  objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
+    const sourceEffect = configValueSources[configNameEffect]?.[0]
+    if (!sourceEffect) return
+    const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
+    if (!effect) return
+    const { configModFromEffect } = effect
+    applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
   })
 }
 function runEffect(configName: string, configDef: ConfigDefinitionInternal, source: ConfigValueSource) {
@@ -954,7 +969,7 @@ function runEffect(configName: string, configDef: ConfigDefinitionInternal, sour
   if (!configModFromEffect) return null
   return { configModFromEffect, configValueEffectSource }
 }
-function applyEffect(
+function applyEffectConfVal(
   configModFromEffect: Config,
   sourceEffect: ConfigValueSource,
   configValueSources: ConfigValueSources,
@@ -963,30 +978,9 @@ function applyEffect(
   configDefinitions: ConfigDefinitions,
   configValueEffectSource: unknown
 ) {
-  const notSupported =
-    `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget === 'meta') {
-      let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
-      if (configDefEffect._userEffectDefinedAtFilePath) {
-        configDefinedAt = getConfigDefinedAt('Config', configNameTarget, configDefEffect._userEffectDefinedAtFilePath)
-      } else {
-        configDefinedAt = null
-      }
-      assertMetaUsage(configValue, configDefinedAt)
-      objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
-        {
-          const keys = Object.keys(configTargetDef)
-          assertUsage(keys.includes('env'), notSupported)
-          assertUsage(keys.length === 1, notSupported)
-        }
-        const envOverriden = configTargetDef.env
-        const sources = configValueSources[configTargetName]
-        sources?.forEach((configValueSource) => {
-          // Apply effect
-          configValueSource.configEnv = envOverriden
-        })
-      })
+      return
     } else {
       const configDef = configDefinitions[configNameTarget]
       assert(configDef)
@@ -1012,6 +1006,38 @@ function applyEffect(
       )
       configValueSources[configNameTarget] ??= []
       configValueSources[configNameTarget].push(configValueSource)
+    }
+  })
+}
+function applyEffectMetaEnv(
+  configModFromEffect: Config,
+  configValueSources: ConfigValueSources,
+  configDefEffect: ConfigDefinitionInternal
+) {
+  const notSupported =
+    `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
+  objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
+    if (configNameTarget === 'meta') {
+      let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
+      if (configDefEffect._userEffectDefinedAtFilePath) {
+        configDefinedAt = getConfigDefinedAt('Config', configNameTarget, configDefEffect._userEffectDefinedAtFilePath)
+      } else {
+        configDefinedAt = null
+      }
+      assertMetaUsage(configValue, configDefinedAt)
+      objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
+        {
+          const keys = Object.keys(configTargetDef)
+          assertUsage(keys.includes('env'), notSupported)
+          assertUsage(keys.length === 1, notSupported)
+        }
+        const envOverriden = configTargetDef.env
+        const sources = configValueSources[configTargetName]
+        sources?.forEach((configValueSource) => {
+          // Apply effect
+          configValueSource.configEnv = envOverriden
+        })
+      })
     }
   })
 }
