@@ -980,30 +980,30 @@ function applyEffectConfVal(
 ) {
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget === 'meta') return
-      const configDef = configDefinitions[configNameTarget]
-      assert(configDef)
-      assert(configDefEffect._userEffectDefinedAtFilePath)
-      const configValueSource: ConfigValueSource = {
-        definedAtFilePath: configDefEffect._userEffectDefinedAtFilePath!,
-        plusFile: sourceEffect.plusFile,
-        locationId: sourceEffect.locationId,
-        configEnv: configDef.env,
-        isOverriden: false, // TODO/now check
-        valueIsLoadedWithImport: false,
-        valueIsDefinedByPlusValueFile: false,
-        valueIsLoaded: true,
-        value: configValue
-      }
-      const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, configValueEffectSource)
-      const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValue)
-      const isGlobalHumanReadable = (isGlobal: boolean) => `${isGlobal ? 'non-' : ''}global` as const
-      // The error message make it sound like it's an inherent limitation, it actually isn't (both ways can make senses).
-      assertUsage(
-        isValueGlobalSource === isValueGlobalTarget,
-        `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(configValueEffectSource))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
-      )
-      configValueSources[configNameTarget] ??= []
-      configValueSources[configNameTarget].push(configValueSource)
+    const configDef = configDefinitions[configNameTarget]
+    assert(configDef)
+    assert(configDefEffect._userEffectDefinedAtFilePath)
+    const configValueSource: ConfigValueSource = {
+      definedAtFilePath: configDefEffect._userEffectDefinedAtFilePath!,
+      plusFile: sourceEffect.plusFile,
+      locationId: sourceEffect.locationId,
+      configEnv: configDef.env,
+      isOverriden: false, // TODO/now check
+      valueIsLoadedWithImport: false,
+      valueIsDefinedByPlusValueFile: false,
+      valueIsLoaded: true,
+      value: configValue
+    }
+    const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, configValueEffectSource)
+    const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValue)
+    const isGlobalHumanReadable = (isGlobal: boolean) => `${isGlobal ? 'non-' : ''}global` as const
+    // The error message make it sound like it's an inherent limitation, it actually isn't (both ways can make senses).
+    assertUsage(
+      isValueGlobalSource === isValueGlobalTarget,
+      `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(configValueEffectSource))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
+    )
+    configValueSources[configNameTarget] ??= []
+    configValueSources[configNameTarget].push(configValueSource)
   })
 }
 function applyEffectMetaEnv(
@@ -1015,26 +1015,26 @@ function applyEffectMetaEnv(
     `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget !== 'meta') return
-      let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
-      if (configDefEffect._userEffectDefinedAtFilePath) {
-        configDefinedAt = getConfigDefinedAt('Config', configNameTarget, configDefEffect._userEffectDefinedAtFilePath)
-      } else {
-        configDefinedAt = null
+    let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
+    if (configDefEffect._userEffectDefinedAtFilePath) {
+      configDefinedAt = getConfigDefinedAt('Config', configNameTarget, configDefEffect._userEffectDefinedAtFilePath)
+    } else {
+      configDefinedAt = null
+    }
+    assertMetaUsage(configValue, configDefinedAt)
+    objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
+      {
+        const keys = Object.keys(configTargetDef)
+        assertUsage(keys.includes('env'), notSupported)
+        assertUsage(keys.length === 1, notSupported)
       }
-      assertMetaUsage(configValue, configDefinedAt)
-      objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
-        {
-          const keys = Object.keys(configTargetDef)
-          assertUsage(keys.includes('env'), notSupported)
-          assertUsage(keys.length === 1, notSupported)
-        }
-        const envOverriden = configTargetDef.env
-        const sources = configValueSources[configTargetName]
-        sources?.forEach((configValueSource) => {
-          // Apply effect
-          configValueSource.configEnv = envOverriden
-        })
+      const envOverriden = configTargetDef.env
+      const sources = configValueSources[configTargetName]
+      sources?.forEach((configValueSource) => {
+        // Apply effect
+        configValueSource.configEnv = envOverriden
       })
+    })
   })
 }
 
