@@ -1247,10 +1247,12 @@ function validatePrerenderConfig(
 
 type PrerenderContextPublic = {
   output: Output<PageContextServer>
+  pageContexts: PageContextServer[]
 }
 function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
   const prerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
-    'output'
-  ]) as PrerenderContextPublic
+    'output', // vite-plugin-vercel
+    'pageContexts' // https://vike.dev/i18n#pre-rendering
+  ]) as any as PrerenderContextPublic
   return prerenderContextPublic
 }
