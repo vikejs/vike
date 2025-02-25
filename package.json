@@ -43,7 +43,6 @@
   },
   "pnpm": {
     "overrides": {
-      "vite": "6.1.1",
       "vike": "link:./vike/"
     }
   },
