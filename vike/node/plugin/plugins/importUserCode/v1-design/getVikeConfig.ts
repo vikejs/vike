@@ -1001,6 +1001,7 @@ function applyEffect(
       const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, configValueEffectSource)
       const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValue)
       const isGlobalHumanReadable = (isGlobal: boolean) => `${isGlobal ? 'non-' : ''}global` as const
+      // The error message make it sound like it's an inherent limitation, it actually isn't (both ways can make senses).
       assertUsage(
         isValueGlobalSource === isValueGlobalTarget,
         `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(configValueEffectSource))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configName)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
