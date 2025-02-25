@@ -73,7 +73,7 @@ import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
 import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { setContextIsPrerendering } from './context.js'
-import { resolvePrerenderConfigGlobal, resolvePrerenderConfigGlobalLocal } from './resolvePrerenderConfig.js'
+import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
@@ -291,7 +291,7 @@ async function collectDoNoPrerenderList(
 ) {
   // V1 design
   pageConfigs.forEach((pageConfig) => {
-    const configValue = resolvePrerenderConfigGlobalLocal(pageConfig)
+    const configValue = resolvePrerenderConfigLocal(pageConfig)
     if (!configValue) return
     const { value, configValueFilePathToShowToUser } = configValue
     if (value === false) {
