@@ -16,7 +16,8 @@ import {
   getServerUrl,
   expectLog,
   partRegex,
-  sleep
+  sleep,
+  skip
 } from '@brillout/test-e2e'
 
 async function testCounter(currentValue = 0) {
@@ -106,8 +107,13 @@ declare global {
 
 function testRunClassic(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run prod',
-  { isCJS, skipAboutPage }: { isCJS?: true; skipAboutPage?: true } = {}
+  { isCJS, skipAboutPage, skipViteEcosystemCi }: { isCJS?: true; skipAboutPage?: true; skipViteEcosystemCi?: true } = {}
 ) {
+  if (skipViteEcosystemCi && process.env.VITE_ECOSYSTEM_CI) {
+    skip("SKIPPED: skipping this test from Vite's ecosystem CI, see https://github.com/vikejs/vike/pull/2220")
+    return
+  }
+
   run(cmd)
 
   test('page content is rendered to HTML', async () => {

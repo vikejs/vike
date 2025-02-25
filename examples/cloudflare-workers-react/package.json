@@ -9,7 +9,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vite": "^6.0.5",
+    "vite": "^6.2.0",
     "vike": "0.4.223",
     "wrangler": "^2.9.1"
   },
