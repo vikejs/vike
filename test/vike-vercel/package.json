@@ -23,7 +23,7 @@
     "typescript": "^5.6.2",
     "vike": "0.4.223",
     "vike-react": "^0.5.12",
-    "vite": "6.1.1"
+    "vite": "^5.4.8"
   },
   "dependencies": {
     "vite-plugin-vercel": "^9.0.4"

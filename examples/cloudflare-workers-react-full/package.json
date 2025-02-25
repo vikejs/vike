@@ -13,7 +13,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-streaming": "^0.3.47",
-    "vite": "6.1.1",
+    "vite": "^6.0.5",
     "vike": "0.4.223",
     "wrangler": "^2.9.1"
   },

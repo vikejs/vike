@@ -3,6 +3,8 @@ export { getViteRoot }
 export { assertViteRoot }
 export { normalizeViteRoot }
 
+// TODO: enable Vike extensions to add Vite plugins
+
 import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
 import type { InlineConfig, ResolvedConfig, UserConfig } from 'vite'
 import type { Operation } from './types.js'
