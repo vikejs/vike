@@ -1,4 +1,4 @@
-export { resolvePrerenderConfig }
+export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
 
 import type { ConfigResolved } from '../../shared/page-configs/Config/PageContextConfig.js'
@@ -9,12 +9,12 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
 
 type PrerenderConfigSemiResolved = ConfigResolved['prerender']
-type PrerenderConfig = false | Exclude<Required<NonNullable<PrerenderConfigSemiResolved>[number]>, boolean>
+type PrerenderConfigGlobal = false | Exclude<Required<NonNullable<PrerenderConfigSemiResolved>[number]>, boolean>
 
 // TODO/now:
 // - prerender.value
 
-function resolvePrerenderConfig(vikeConfig: VikeConfigObject): PrerenderConfig {
+function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject): PrerenderConfigGlobal {
   const prerenderConfigs = vikeConfig.global.config.prerender
   if (
     !prerenderConfigs &&
@@ -22,17 +22,18 @@ function resolvePrerenderConfig(vikeConfig: VikeConfigObject): PrerenderConfig {
   ) {
     return false
   }
-  let prerenderSettings = prerenderConfigs || []
+
+  let prerenderConfigList = prerenderConfigs || []
   // Needed because of backwards compatibility of `vike({prerender:true})` in `vite.config.js`; after we remove it we can remove this line.
-  prerenderSettings = prerenderSettings.filter(isObject2)
-  assert(prerenderSettings.every(isObject2))
-  const prerenderConfig: PrerenderConfig = {
-    partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
-    noExtraDir: pickFirst(prerenderSettings.map((c) => c.noExtraDir)) ?? false,
-    parallel: pickFirst(prerenderSettings.map((c) => c.parallel)) ?? true,
-    disableAutoRun: pickFirst(prerenderSettings.map((c) => c.disableAutoRun)) ?? false
+  prerenderConfigList = prerenderConfigList.filter(isObject2)
+  assert(prerenderConfigList.every(isObject2)) // Help TS
+  const prerenderConfigGlobal: PrerenderConfigGlobal = {
+    partial: pickFirst(prerenderConfigList.map((c) => c.partial)) ?? false,
+    noExtraDir: pickFirst(prerenderConfigList.map((c) => c.noExtraDir)) ?? false,
+    parallel: pickFirst(prerenderConfigList.map((c) => c.parallel)) ?? true,
+    disableAutoRun: pickFirst(prerenderConfigList.map((c) => c.disableAutoRun)) ?? false
   }
-  return prerenderConfig
+  return prerenderConfigGlobal
 }
 function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const configValue = getConfigValueBuildTime(pageConfig, 'prerender')
@@ -44,7 +45,8 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   assert(isArray(configValue.definedAtData))
   const configValueFilePathToShowToUser = getConfigValueFilePathToShowToUser(configValue.definedAtData[0]!)
   assert(configValueFilePathToShowToUser)
-  return { value, configValueFilePathToShowToUser }
+  const prerenderConfigLocal = { value, configValueFilePathToShowToUser }
+  return prerenderConfigLocal
 }
 
 function isObject2<T>(p: T | boolean | undefined): p is T {

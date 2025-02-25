@@ -42,7 +42,8 @@ import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
   configDefinitionsBuiltIn,
   type ConfigDefinitions,
-  type ConfigDefinitionInternal
+  type ConfigDefinitionInternal,
+  type ConfigDefinition
 } from './getVikeConfig/configDefinitionsBuiltIn.js'
 import {
   type LocationId,
@@ -258,8 +259,7 @@ async function resolveConfigDefinitions(
   esbuildCache: EsbuildCache
 ) {
   const configDefinitionsGlobal = getConfigDefinitions(
-    // We use `plusFilesAll` in order to allow local Vike extensions to create global configs.
-    sortForGlobal(plusFilesAll),
+    sortAfterInheritanceOrderGlobal(plusFilesAll),
     (configDef) => !!configDef.global
   )
   await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
@@ -326,15 +326,15 @@ function getPageConfigsBuildTime(
     const sources = resolveConfigValueSources(
       configName,
       configDef,
-      // We use `plusFilesAll` in order to allow local Vike extensions to set the value of global configs (e.g. `vite`).
-      sortForGlobal(plusFilesAll),
+      sortAfterInheritanceOrderGlobal(plusFilesAll),
       userRootDir,
       true
     )
     if (sources.length === 0) return
     pageConfigGlobal.configValueSources[configName] = sources
   })
-  applyEffectsAll(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
+  applyEffectsMetaEnv(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
+  applyEffectsConfVal(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
   assertPageConfigGlobal(pageConfigGlobal, plusFilesAll)
 
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
@@ -354,7 +354,8 @@ function getPageConfigsBuildTime(
 
       const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
-      applyEffectsAll(configValueSources, configDefinitionsLocal)
+      applyEffectsMetaEnv(configValueSources, configDefinitionsLocal)
+      applyEffectsConfVal(configValueSources, configDefinitionsLocal)
 
       const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
@@ -521,20 +522,20 @@ function temp_interopVikeVitePlugin(
   })
 }
 
+// Together with getPlusFilesOrdered() this implements the whole config inheritance ordering for non-global configs. See sortAfterInheritanceOrderGlobal() for global configs.
 function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPage: LocationId): PlusFilesByLocationId {
   const plusFilesRelevant = Object.fromEntries(
     objectEntries(plusFilesAll)
       .filter(([locationId]) => {
         return isInherited(locationId, locationIdPage)
       })
-      // Sort after config inheritance.
-      // - Together with getPlusFilesOrdered() this implements the whole order of config inheritance.
-      // - See sortForGlobal() for global configs order.
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return plusFilesRelevant
 }
-function sortForGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
+// This implements the whole config inheritance ordering for global configs.
+// We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
+function sortAfterInheritanceOrderGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
   const plusFilesAllSorted = Object.fromEntries(
     objectEntries(plusFilesAll)
       .sort(lowerFirst(([locationId]) => locationId.split('/').length))
@@ -564,24 +565,23 @@ function resolveConfigValueSources(
     return configValueSource
   })
   if (isCallable(configDef.global)) {
-    const isGlobalValue = configDef.global
     assert(configDef.env.config)
     sources = sources.filter((source) => {
       assert(source.configEnv.config)
       assert(source.valueIsLoaded)
-      const valueIsGlobal = isGlobalValue(source.value)
+      const valueIsGlobal = resolveIsGlobalValue(configDef.global, source.value)
       return isGlobal ? valueIsGlobal : !valueIsGlobal
     })
   }
 
   return sources
 }
-// Together with sortAfterInheritanceOrder() this implements the whole order of config inheritance.
+// Together with getPlusFilesRelevant() this implements the whole config inheritance ordering.
 function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
   const plusFilesOrdered: PlusFile[] = []
 
-  // `plusFilesRelevant` is already sorted by sortAfterInheritanceOrder() at getPlusFilesRelevant()
-  // `plusFilesAtLocationId` is already sorted by sortMakeDeterministic() at getPlusFilesAll()
+  // `plusFilesRelevant` is already deterministic, see sortMakeDeterministic() at getPlusFilesAll()
+
   for (const plusFilesAtLocationId of Object.values(plusFilesRelevant)) {
     const plusFilesForConfigName = plusFilesAtLocationId.filter((plusFile) =>
       getDefiningConfigNames(plusFile).includes(configName)
@@ -790,6 +790,13 @@ function isDefiningPage(plusFiles: PlusFile[]): boolean {
 function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
+function resolveIsGlobalValue(configDefGlobal: ConfigDefinition['global'], configValue: unknown) {
+  let isGlobal: boolean
+  if (isCallable(configDefGlobal)) isGlobal = configDefGlobal(configValue)
+  else isGlobal = configDefGlobal ?? false
+  assert(typeof isGlobal === 'boolean')
+  return isGlobal
+}
 
 function getDefiningConfigNames(plusFile: PlusFile): string[] {
   let configNames: string[] = []
@@ -910,86 +917,124 @@ function assertMetaUsage(
   })
 }
 
-function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
-  objectEntries(configDefinitions).forEach(([configName, configDef]) => {
-    if (!configDef.effect) return
-    // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
-    // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
-    assertUsage(
-      configDef.env.config,
-      [
-        `Cannot add effect to ${pc.cyan(configName)} because its ${pc.cyan('env')} is ${pc.cyan(
-          JSON.stringify(configDef.env)
-        )}: effects can only be added to configs with an ${pc.cyan('env')} with ${pc.cyan('{ config: true }')}.`
-      ].join(' ')
+// TODO/now update perma links
+// https://github.com/vikejs/vike/blob/052ed41ffe67097c25026d7409f8741c820ea6c8/test/playground/vite.config.ts#L39
+// https://github.com/vikejs/vike/blob/052ed41ffe67097c25026d7409f8741c820ea6c8/test/playground/pages/config-meta/effect/e2e-test.ts#L16
+function applyEffectsConfVal(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+  objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
+    const sourceEffect = configValueSources[configNameEffect]?.[0]
+    if (!sourceEffect) return
+    const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
+    if (!effect) return
+    const { configModFromEffect, configValueEffectSource } = effect
+    applyEffectConfVal(
+      configModFromEffect,
+      sourceEffect,
+      configValueSources,
+      configNameEffect,
+      configDefEffect,
+      configDefinitions,
+      configValueEffectSource
     )
-    const source = configValueSources[configName]?.[0]
-    if (!source) return
-    // The config value is eagerly loaded since `configDef.env === 'config-only``
-    assert('value' in source) // TODO/now: refactor all `'value' in`
-    // Call effect
-    const configModFromEffect = configDef.effect({
-      configValue: source.value,
-      configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAtFilePath)
-    })
-    if (!configModFromEffect) return
-    applyEffect(configModFromEffect, source, configValueSources, configName, configDef, configDefinitions)
   })
 }
-function applyEffect(
+function applyEffectsMetaEnv(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+  objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
+    const sourceEffect = configValueSources[configNameEffect]?.[0]
+    if (!sourceEffect) return
+    const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
+    if (!effect) return
+    const { configModFromEffect } = effect
+    applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
+  })
+}
+function runEffect(configName: string, configDef: ConfigDefinitionInternal, source: ConfigValueSource) {
+  if (!configDef.effect) return null
+  // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
+  assertUsage(
+    configDef.env.config,
+    [
+      `Cannot add meta.effect to ${pc.cyan(configName)} because its meta.env is ${pc.cyan(
+        JSON.stringify(configDef.env)
+      )} but an effect can only be added to a config that has a meta.env with ${pc.cyan('{ config: true }')}.`
+    ].join(' ')
+  )
+  assert(source.valueIsLoaded)
+  const configValueEffectSource = source.value
+  // Call effect
+  const configModFromEffect = configDef.effect({
+    configValue: configValueEffectSource,
+    configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAtFilePath)
+  })
+  if (!configModFromEffect) return null
+  return { configModFromEffect, configValueEffectSource }
+}
+function applyEffectConfVal(
   configModFromEffect: Config,
-  source: ConfigValueSource,
+  sourceEffect: ConfigValueSource,
   configValueSources: ConfigValueSources,
   configNameEffect: string,
   configDefEffect: ConfigDefinitionInternal,
-  configDefinitions: ConfigDefinitions
+  configDefinitions: ConfigDefinitions,
+  configValueEffectSource: unknown
+) {
+  objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
+    if (configNameTarget === 'meta') return
+    const configDef = configDefinitions[configNameTarget]
+    assert(configDef)
+    assert(configDefEffect._userEffectDefinedAtFilePath)
+    const configValueSource: ConfigValueSource = {
+      definedAtFilePath: configDefEffect._userEffectDefinedAtFilePath!,
+      plusFile: sourceEffect.plusFile,
+      locationId: sourceEffect.locationId,
+      configEnv: configDef.env,
+      isOverriden: false, // TODO/now check
+      valueIsLoadedWithImport: false,
+      valueIsDefinedByPlusValueFile: false,
+      valueIsLoaded: true,
+      value: configValue
+    }
+    const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, configValueEffectSource)
+    const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValue)
+    const isGlobalHumanReadable = (isGlobal: boolean) => `${isGlobal ? 'non-' : ''}global` as const
+    // The error message make it sound like it's an inherent limitation, it actually isn't (both ways can make senses).
+    assertUsage(
+      isValueGlobalSource === isValueGlobalTarget,
+      `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(configValueEffectSource))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
+    )
+    configValueSources[configNameTarget] ??= []
+    configValueSources[configNameTarget].push(configValueSource)
+  })
+}
+function applyEffectMetaEnv(
+  configModFromEffect: Config,
+  configValueSources: ConfigValueSources,
+  configDefEffect: ConfigDefinitionInternal
 ) {
   const notSupported =
     `${pc.cyan('meta.effect')} currently only supports setting the value of a config, or modifying the ${pc.cyan('meta.env')} of a config.` as const
-  objectEntries(configModFromEffect).forEach(([configName, configValue]) => {
-    if (configName === 'meta') {
-      let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
-      if (configDefEffect._userEffectDefinedAtFilePath) {
-        configDefinedAt = getConfigDefinedAt('Config', configName, configDefEffect._userEffectDefinedAtFilePath)
-      } else {
-        configDefinedAt = null
-      }
-      assertMetaUsage(configValue, configDefinedAt)
-      objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
-        {
-          const keys = Object.keys(configTargetDef)
-          assertUsage(keys.includes('env'), notSupported)
-          assertUsage(keys.length === 1, notSupported)
-        }
-        const envOverriden = configTargetDef.env
-        const sources = configValueSources[configTargetName]
-        sources?.forEach((configValueSource) => {
-          // Apply effect
-          configValueSource.configEnv = envOverriden
-        })
-      })
+  objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
+    if (configNameTarget !== 'meta') return
+    let configDefinedAt: Parameters<typeof assertMetaUsage>[1]
+    if (configDefEffect._userEffectDefinedAtFilePath) {
+      configDefinedAt = getConfigDefinedAt('Config', configNameTarget, configDefEffect._userEffectDefinedAtFilePath)
     } else {
-      const configDef = configDefinitions[configName]
-      assert(configDef)
-      assert(configDefEffect._userEffectDefinedAtFilePath)
-      const configValueSource: ConfigValueSource = {
-        definedAtFilePath: configDefEffect._userEffectDefinedAtFilePath!,
-        plusFile: source.plusFile,
-        locationId: source.locationId,
-        configEnv: configDef.env,
-        isOverriden: false, // TODO/now check
-        valueIsLoadedWithImport: false,
-        valueIsDefinedByPlusValueFile: false,
-        valueIsLoaded: true,
-        value: configValue
-      }
-      assertUsage(
-        !!configDef.global === !!configDefEffect.global,
-        `The configuration ${pc.cyan(configNameEffect)} has a ${pc.cyan('meta.effect')} that changes the configuration ${pc.cyan(configName)} and, consequently, both ${pc.cyan(configNameEffect)} and ${pc.cyan(configName)} must have the same ${pc.cyan('meta.global')} value.`
-      )
-      configValueSources[configName] ??= []
-      configValueSources[configName].push(configValueSource)
+      configDefinedAt = null
     }
+    assertMetaUsage(configValue, configDefinedAt)
+    objectEntries(configValue).forEach(([configTargetName, configTargetDef]) => {
+      {
+        const keys = Object.keys(configTargetDef)
+        assertUsage(keys.includes('env'), notSupported)
+        assertUsage(keys.length === 1, notSupported)
+      }
+      const envOverriden = configTargetDef.env
+      const sources = configValueSources[configTargetName]
+      sources?.forEach((configValueSource) => {
+        // Apply effect
+        configValueSource.configEnv = envOverriden
+      })
+    })
   })
 }
 
@@ -1127,7 +1172,7 @@ function getFilesystemRoutingRootEffect(
 ) {
   assert(configFilesystemRoutingRoot.configEnv.config)
   // Eagerly loaded since it's config-only
-  assert('value' in configFilesystemRoutingRoot)
+  assert(configFilesystemRoutingRoot.valueIsLoaded)
   const { value } = configFilesystemRoutingRoot
   const configDefinedAt = getConfigDefinedAt('Config', configName, configFilesystemRoutingRoot.definedAtFilePath)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)

@@ -73,11 +73,12 @@ import { executeHook, isUserHookError } from '../../shared/hooks/executeHook.js'
 import type { APIOptions } from '../api/types.js'
 import { prepareViteApiCall } from '../api/prepareViteApiCall.js'
 import { setContextIsPrerendering } from './context.js'
-import { resolvePrerenderConfig, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
+import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './resolvePrerenderConfig.js'
 import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigPublic } from '../plugin/plugins/commonConfig.js'
+import type { PageContextServer } from '../../shared/types.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -117,14 +118,13 @@ type PrerenderContext = {
   prerenderedPageContexts: PrerenderedPageContexts
   output: Output
 }
-type Output = {
+type Output<PageContext = PageContextPrerendered> = {
   filePath: string
   fileType: FileType
   fileContent: string
-  pageContext: PageContextPrerendered
+  pageContext: PageContext
 }[]
 type FileType = 'HTML' | 'JSON'
-type PrerenderContextPublic = Pick<PrerenderContext, 'pageContexts'>
 
 type PageContext = PageContextInitEnhanced & {
   _urlRewrite: null
@@ -217,19 +217,19 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
-  const prerenderConfig = resolvePrerenderConfig(vikeConfig)
-  validatePrerenderConfig(prerenderConfig)
-  if (!prerenderConfig) {
+  const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
+  validatePrerenderConfig(prerenderConfigGlobal)
+  if (!prerenderConfigGlobal) {
     assert(standaloneTrigger)
     assertWarning(
-      prerenderConfig,
+      prerenderConfigGlobal,
       `You're executing ${pc.cyan(standaloneTrigger)} but the config ${pc.cyan('prerender')} isn't set to true`,
       {
         onlyOnce: true
       }
     )
   }
-  const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig || {}
+  const { partial = false, noExtraDir = false, parallel = true } = prerenderConfigGlobal || {}
 
   const concurrencyLimit = pLimit(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
@@ -291,9 +291,9 @@ async function collectDoNoPrerenderList(
 ) {
   // V1 design
   pageConfigs.forEach((pageConfig) => {
-    const configValue = resolvePrerenderConfigLocal(pageConfig)
-    if (!configValue) return
-    const { value, configValueFilePathToShowToUser } = configValue
+    const prerenderConfigLocal = resolvePrerenderConfigLocal(pageConfig)
+    if (!prerenderConfigLocal) return
+    const { value, configValueFilePathToShowToUser } = prerenderConfigLocal
     if (value === false) {
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,
@@ -1245,10 +1245,14 @@ function validatePrerenderConfig(
   }
 }
 
-function makePublic(prerenderContext: PrerenderContext) {
-  const prerenderContextPublic: PrerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
-    'pageContexts',
-    'output'
-  ])
+type PrerenderContextPublic = {
+  output: Output<PageContextServer>
+  pageContexts: PageContextServer[]
+}
+function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
+  const prerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
+    'output', // vite-plugin-vercel
+    'pageContexts' // https://vike.dev/i18n#pre-rendering
+  ]) as any as PrerenderContextPublic
   return prerenderContextPublic
 }

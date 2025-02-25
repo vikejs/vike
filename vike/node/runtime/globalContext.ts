@@ -87,10 +87,6 @@ const globalObject = getGlobalObject<
   } & ReturnType<typeof getInitialGlobalContext>
 >('runtime/globalContext.ts', getInitialGlobalContext())
 
-type GlobalContextPublic = Pick<
-  GlobalContext,
-  'assetsManifest' | 'config' | 'viteConfig' | 'pages' | 'baseAssets' | 'baseServer'
->
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
 type GlobalContextInternal = GlobalContext & {
   globalContext_public: GlobalContextPublic
@@ -177,8 +173,9 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   return globalContext_public
 }
 
-function makePublic(globalContext: GlobalContext): GlobalContextPublic {
-  const globalContextPublic: GlobalContextPublic = makePublicCopy(globalContext, 'globalContext', [
+type GlobalContextPublic = ReturnType<typeof makePublic>
+function makePublic(globalContext: GlobalContext) {
+  const globalContextPublic = makePublicCopy(globalContext, 'globalContext', [
     'assetsManifest',
     'config',
     'viteConfig',

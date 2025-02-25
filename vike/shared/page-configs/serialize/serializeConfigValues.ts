@@ -82,7 +82,7 @@ function getValueSerializedFromSource(
 ) {
   assert(configValueSource.isOverriden === false)
   let valueData: ValueData
-  if ('value' in configValueSource && !configValueSource.valueIsLoadedWithImport) {
+  if (configValueSource.valueIsLoaded && !configValueSource.valueIsLoadedWithImport) {
     valueData = getValueSerializedWithJson(
       configValueSource.value,
       configName,

@@ -4,21 +4,20 @@ export default {
   meta: {
     prerenderSetOverEffect: {
       env: { config: true },
-      global: (value) => typeof value === 'object',
       effect({ configValue }) {
         return {
-          prerender: configValue as PrerenderConfig
+          prerender: configValue as boolean
         }
       }
     }
   }
 } satisfies Config
 
-type PrerenderConfig = Config['prerender']
 declare global {
   namespace Vike {
     interface Config {
-      prerenderSetOverEffect?: PrerenderConfig
+      /** Showcase of using `meta.effect` https://vike.dev/meta */
+      prerenderSetOverEffect?: boolean
     }
   }
 }

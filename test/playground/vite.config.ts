@@ -13,15 +13,56 @@ export default {
 }
 
 function testPlugin(): PluginOption {
+  let vike: Vike
   return {
     name: 'testPlugin',
     configResolved(config) {
-      const vike = getVikeConfig(config as any)
-      assert(typeof vike.config.prerender![0] === 'object')
-      assert(vike.config.prerender![0].noExtraDir)
-      assert(vike.pages)
-      assert(vike.pages['/pages/index']!.config.prerender![0] === false)
-      assert(vike.pages['/pages/markdown']!.config.prerender![0])
+      vike = getVikeConfig(config as any)
+      testVikeConfig(vike)
+    },
+    closeBundle() {
+      testPrerenderSettings(vike)
     }
   }
+}
+type Vike = ReturnType<typeof getVikeConfig>
+
+// TEST: getVikeConfig()
+function testVikeConfig(vike: Vike) {
+  assert(typeof vike.config.prerender![0] === 'object')
+  assert(vike.config.prerender![0].noExtraDir)
+  assert(vike.pages)
+  assert(vike.pages['/pages/index']!.config.prerender![0] === false)
+  assert(vike.pages['/pages/markdown']!.config.prerender![0])
+}
+
+// TEST: prerenderSetOverEffect
+function testPrerenderSettings(vike: Vike) {
+  const { prerenderContext } = vike
+  if (!prerenderContext) return
+  ;(globalThis as any).prerenderContextWasTested = true
+  assert(vike.prerenderContext)
+  const pageIds = Object.keys(vike.pages)
+  const pageIdsPrerendered = prerenderContext.output
+    .map((file) => file.pageContext.pageId)
+    .filter((pageId) => pageId !== null)
+  ;[
+    {
+      pageId: '/pages/markdown',
+      prerendered: true
+    },
+    {
+      pageId: '/pages/index',
+      prerendered: false
+    },
+    {
+      pageId: '/pages/about-page',
+      prerendered: false
+    }
+  ].forEach(({ pageId, prerendered }) => {
+    const debug = JSON.stringify({ pageIds, pageIdsPrerendered, pageId }, null, 2)
+    assert(pageIds.includes(pageId), debug)
+    const wasPrerendered = pageIdsPrerendered.includes(pageId)
+    assert(wasPrerendered === prerendered, debug)
+  })
 }
