@@ -13,7 +13,6 @@ export default {
   }
 } satisfies Config
 
-type PrerenderSetOverEffect = boolean
 declare global {
   namespace Vike {
     interface Config {
