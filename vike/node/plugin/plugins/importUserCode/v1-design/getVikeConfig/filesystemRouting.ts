@@ -71,6 +71,7 @@ function getLogicalPath(locationId: LocationId, ignoredDirs: string[], removePar
   return logicalPath
 }
 
+// See getPlusFilesRelevant() and getPlusFilesOrdered()
 function sortAfterInheritanceOrder(
   locationId1: LocationId,
   locationId2: LocationId,
@@ -85,7 +86,7 @@ function sortAfterInheritanceOrder(
   const inheritanceRoot2 = getInheritanceRoot(locationId2)
   const inheritanceRootPage = getInheritanceRoot(locationIdPage)
 
-  // sortAfterInheritanceOrder() only works if both locationId1 and locationId2 are inherited by the same page
+  // Only works if both locationId1 and locationId2 are inherited by the same page
   assert(isInherited(locationId1, locationIdPage))
   assert(isInherited(locationId2, locationIdPage))
   // Equivalent assertion (see isInherited() implementation)

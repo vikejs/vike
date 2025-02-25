@@ -258,8 +258,7 @@ async function resolveConfigDefinitions(
   esbuildCache: EsbuildCache
 ) {
   const configDefinitionsGlobal = getConfigDefinitions(
-    // We use `plusFilesAll` in order to allow local Vike extensions to create global configs.
-    sortForGlobal(plusFilesAll),
+    sortAfterInheritanceOrderGlobal(plusFilesAll),
     (configDef) => !!configDef.global
   )
   await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
@@ -326,8 +325,7 @@ function getPageConfigsBuildTime(
     const sources = resolveConfigValueSources(
       configName,
       configDef,
-      // We use `plusFilesAll` in order to allow local Vike extensions to set the value of global configs (e.g. `vite`).
-      sortForGlobal(plusFilesAll),
+      sortAfterInheritanceOrderGlobal(plusFilesAll),
       userRootDir,
       true
     )
@@ -521,20 +519,20 @@ function temp_interopVikeVitePlugin(
   })
 }
 
+// Together with getPlusFilesOrdered() this implements the whole config inheritance ordering for non-global configs. See sortAfterInheritanceOrderGlobal() for global configs.
 function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPage: LocationId): PlusFilesByLocationId {
   const plusFilesRelevant = Object.fromEntries(
     objectEntries(plusFilesAll)
       .filter(([locationId]) => {
         return isInherited(locationId, locationIdPage)
       })
-      // Sort after config inheritance.
-      // - Together with getPlusFilesOrdered() this implements the whole order of config inheritance.
-      // - See sortForGlobal() for global configs order.
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
   return plusFilesRelevant
 }
-function sortForGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
+// This implements the whole config inheritance ordering for global configs.
+// We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
+function sortAfterInheritanceOrderGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
   const plusFilesAllSorted = Object.fromEntries(
     objectEntries(plusFilesAll)
       .sort(lowerFirst(([locationId]) => locationId.split('/').length))
@@ -576,12 +574,12 @@ function resolveConfigValueSources(
 
   return sources
 }
-// Together with sortAfterInheritanceOrder() this implements the whole order of config inheritance.
+// Together with getPlusFilesRelevant() this implements the whole config inheritance ordering.
 function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
   const plusFilesOrdered: PlusFile[] = []
 
-  // `plusFilesRelevant` is already sorted by sortAfterInheritanceOrder() at getPlusFilesRelevant()
-  // `plusFilesAtLocationId` is already sorted by sortMakeDeterministic() at getPlusFilesAll()
+  // `plusFilesRelevant` is already deterministic, see sortMakeDeterministic() at getPlusFilesAll()
+
   for (const plusFilesAtLocationId of Object.values(plusFilesRelevant)) {
     const plusFilesForConfigName = plusFilesAtLocationId.filter((plusFile) =>
       getDefiningConfigNames(plusFile).includes(configName)
