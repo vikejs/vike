@@ -917,28 +917,11 @@ function assertMetaUsage(
 
 function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDef]) => {
-    if (!configDef.effect) return
-    // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
-    // (We could support effect for non config-only by always loading its value at config time, regardless of the config's `env` value.)
-    assertUsage(
-      configDef.env.config,
-      [
-        `Cannot add meta.effect to ${pc.cyan(configNameEffect)} because its meta.env is ${pc.cyan(
-          JSON.stringify(configDef.env)
-        )} but an effect can only be added to a config that has a meta.env with ${pc.cyan('{ config: true }')}.`
-      ].join(' ')
-    )
     const sourceEffect = configValueSources[configNameEffect]?.[0]
     if (!sourceEffect) return
-    // The config value is eagerly loaded since `configDef.env === 'config-only``
-    assert(sourceEffect.valueIsLoaded)
-    const configValueEffectSource = sourceEffect.value
-    // Call effect
-    const configModFromEffect = configDef.effect({
-      configValue: configValueEffectSource,
-      configDefinedAt: getConfigDefinedAt('Config', configNameEffect, sourceEffect.definedAtFilePath)
-    })
-    if (!configModFromEffect) return
+    const effect = runEffect(configNameEffect, configDef, sourceEffect)
+    if (!effect) return
+    const { configModFromEffect, configValueEffectSource } = effect
     applyEffect(
       configModFromEffect,
       sourceEffect,
@@ -949,6 +932,27 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
       configValueEffectSource
     )
   })
+}
+function runEffect(configNameEffect: string, configDef: ConfigDefinitionInternal, sourceEffect: ConfigValueSource) {
+  if (!configDef.effect) return null
+  // The value needs to be loaded at config time, that's why we only support effect for configs that are config-only for now.
+  assertUsage(
+    configDef.env.config,
+    [
+      `Cannot add meta.effect to ${pc.cyan(configNameEffect)} because its meta.env is ${pc.cyan(
+        JSON.stringify(configDef.env)
+      )} but an effect can only be added to a config that has a meta.env with ${pc.cyan('{ config: true }')}.`
+    ].join(' ')
+  )
+  assert(sourceEffect.valueIsLoaded)
+  const configValueEffectSource = sourceEffect.value
+  // Call effect
+  const configModFromEffect = configDef.effect({
+    configValue: configValueEffectSource,
+    configDefinedAt: getConfigDefinedAt('Config', configNameEffect, sourceEffect.definedAtFilePath)
+  })
+  if (!configModFromEffect) return null
+  return { configModFromEffect, configValueEffectSource }
 }
 function applyEffect(
   configModFromEffect: Config,
