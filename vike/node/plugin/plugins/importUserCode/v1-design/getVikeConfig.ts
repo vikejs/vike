@@ -926,7 +926,7 @@ function applyEffectsAll(configValueSources: ConfigValueSources, configDefinitio
     const source = configValueSources[configName]?.[0]
     if (!source) return
     // The config value is eagerly loaded since `configDef.env === 'config-only``
-    assert('value' in source) // TODO/now: refactor all `'value' in`
+    assert(source.valueIsLoaded)
     // Call effect
     const configModFromEffect = configDef.effect({
       configValue: source.value,
@@ -1127,7 +1127,7 @@ function getFilesystemRoutingRootEffect(
 ) {
   assert(configFilesystemRoutingRoot.configEnv.config)
   // Eagerly loaded since it's config-only
-  assert('value' in configFilesystemRoutingRoot)
+  assert(configFilesystemRoutingRoot.valueIsLoaded)
   const { value } = configFilesystemRoutingRoot
   const configDefinedAt = getConfigDefinedAt('Config', configName, configFilesystemRoutingRoot.definedAtFilePath)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)

@@ -38,7 +38,7 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigNameB
     assert(configValueSource)
     assert(configValueSource.isOverriden === false)
     assert(sources.slice(1).every((s) => s.isOverriden === true))
-    assert('value' in configValueSource)
+    assert(configValueSource.valueIsLoaded)
     return {
       type: 'standard',
       value: configValueSource.value,
@@ -62,7 +62,7 @@ function mergeCumulative(configValueSources: ConfigValueSource[]) {
     assert(configValueSource.isOverriden === false)
 
     assert(configValueSource.configEnv.config === true)
-    assert('value' in configValueSource)
+    assert(configValueSource.valueIsLoaded)
 
     value.push(configValueSource.value)
     definedAtData.push(getDefinedAtFile(configValueSource))
