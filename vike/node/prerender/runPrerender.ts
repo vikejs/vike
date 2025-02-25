@@ -78,6 +78,7 @@ import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigPublic } from '../plugin/plugins/commonConfig.js'
+import type { PageContextServer } from '../../shared/types.js'
 
 type HtmlFile = {
   urlOriginal: string
@@ -117,14 +118,13 @@ type PrerenderContext = {
   prerenderedPageContexts: PrerenderedPageContexts
   output: Output
 }
-type Output = {
+type Output<PageContext = PageContextPrerendered> = {
   filePath: string
   fileType: FileType
   fileContent: string
-  pageContext: PageContextPrerendered
+  pageContext: PageContext
 }[]
 type FileType = 'HTML' | 'JSON'
-type PrerenderContextPublic = Pick<PrerenderContext, 'pageContexts'>
 
 type PageContext = PageContextInitEnhanced & {
   _urlRewrite: null
@@ -1245,10 +1245,12 @@ function validatePrerenderConfig(
   }
 }
 
-function makePublic(prerenderContext: PrerenderContext) {
-  const prerenderContextPublic: PrerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
-    'pageContexts',
+type PrerenderContextPublic = {
+  output: Output<PageContextServer>
+}
+function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
+  const prerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
     'output'
-  ])
+  ]) as PrerenderContextPublic
   return prerenderContextPublic
 }
