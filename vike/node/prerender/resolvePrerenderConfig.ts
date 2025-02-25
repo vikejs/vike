@@ -9,12 +9,12 @@ import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.j
 import { getConfigValueFilePathToShowToUser } from '../../shared/page-configs/helpers.js'
 
 type PrerenderConfigSemiResolved = ConfigResolved['prerender']
-type PrerenderConfig = false | Exclude<Required<NonNullable<PrerenderConfigSemiResolved>[number]>, boolean>
+type PrerenderConfigGlobal = false | Exclude<Required<NonNullable<PrerenderConfigSemiResolved>[number]>, boolean>
 
 // TODO/now:
 // - prerender.value
 
-function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject): PrerenderConfig {
+function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject): PrerenderConfigGlobal {
   const prerenderConfigs = vikeConfig.global.config.prerender
   if (
     !prerenderConfigs &&
@@ -27,7 +27,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject): PrerenderCo
   // Needed because of backwards compatibility of `vike({prerender:true})` in `vite.config.js`; after we remove it we can remove this line.
   prerenderConfigList = prerenderConfigList.filter(isObject2)
   assert(prerenderConfigList.every(isObject2)) // Help TS
-  const prerenderConfigGlobal: PrerenderConfig = {
+  const prerenderConfigGlobal: PrerenderConfigGlobal = {
     partial: pickFirst(prerenderConfigList.map((c) => c.partial)) ?? false,
     noExtraDir: pickFirst(prerenderConfigList.map((c) => c.noExtraDir)) ?? false,
     parallel: pickFirst(prerenderConfigList.map((c) => c.parallel)) ?? true,
