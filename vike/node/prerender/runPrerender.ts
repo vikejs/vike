@@ -217,19 +217,19 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
-  const prerenderConfig = resolvePrerenderConfigGlobal(vikeConfig)
-  validatePrerenderConfig(prerenderConfig)
-  if (!prerenderConfig) {
+  const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
+  validatePrerenderConfig(prerenderConfigGlobal)
+  if (!prerenderConfigGlobal) {
     assert(standaloneTrigger)
     assertWarning(
-      prerenderConfig,
+      prerenderConfigGlobal,
       `You're executing ${pc.cyan(standaloneTrigger)} but the config ${pc.cyan('prerender')} isn't set to true`,
       {
         onlyOnce: true
       }
     )
   }
-  const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig || {}
+  const { partial = false, noExtraDir = false, parallel = true } = prerenderConfigGlobal || {}
 
   const concurrencyLimit = pLimit(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
@@ -291,9 +291,9 @@ async function collectDoNoPrerenderList(
 ) {
   // V1 design
   pageConfigs.forEach((pageConfig) => {
-    const configValue = resolvePrerenderConfigLocal(pageConfig)
-    if (!configValue) return
-    const { value, configValueFilePathToShowToUser } = configValue
+    const prerenderConfigLocal = resolvePrerenderConfigLocal(pageConfig)
+    if (!prerenderConfigLocal) return
+    const { value, configValueFilePathToShowToUser } = prerenderConfigLocal
     if (value === false) {
       doNotPrerenderList.push({
         pageId: pageConfig.pageId,

@@ -10,14 +10,14 @@ import { resolvePrerenderConfigGlobal } from './resolvePrerenderConfig.js'
 const globalObject = getGlobalObject<{ isDisabled?: true; isPrerendering?: true }>('prerender/context.ts', {})
 
 function isPrerenderEnabled(vikeConfig: VikeConfigObject) {
-  const prerenderConfig = resolvePrerenderConfigGlobal(vikeConfig)
-  return !!prerenderConfig
+  const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
+  return !!prerenderConfigGlobal
 }
 function isPrerenderAutoRunEnabled(vikeConfig: VikeConfigObject) {
-  const prerenderConfig = resolvePrerenderConfigGlobal(vikeConfig)
+  const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   return (
     isPrerenderEnabled(vikeConfig) &&
-    !(prerenderConfig || {}).disableAutoRun &&
+    !(prerenderConfigGlobal || {}).disableAutoRun &&
     !globalObject.isDisabled &&
     vikeConfig.global.config.disableAutoFullBuild !== 'prerender'
   )
