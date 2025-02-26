@@ -13,14 +13,10 @@ import {
   assertIsNpmPackageImport,
   assertFilePathAbsoluteFilesystem,
   assertPosixPath,
-  toPosixPath,
-  assertIsNotProductionRuntime
+  toPosixPath
 } from '../utils.js'
 import type { FilePathResolved, FilePathUnresolved } from '../../../shared/page-configs/FilePath.js'
 import type { ResolvedConfig } from 'vite'
-import { assertIsNotBrowser } from '../../shared/utils.js'
-assertIsNotBrowser()
-assertIsNotProductionRuntime()
 
 function getFilePathResolved(
   args: {
