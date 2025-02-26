@@ -16,7 +16,8 @@ import {
   assertUsage,
   assertFilePathAbsoluteFilesystem,
   assertWarning,
-  hasProp
+  hasProp,
+  isNotNullish
 } from '../../../../utils.js'
 import path from 'path'
 import { glob } from 'tinyglobby'
@@ -25,31 +26,10 @@ import { promisify } from 'util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
 import pc from '@brillout/picocolors'
-import picomatch from 'picomatch'
+import picomatch, { type Matcher } from 'picomatch'
+import { ignorePatternsBuiltIn } from './crawlPlusFiles/ignorePatternsBuiltIn.js'
 const execA = promisify(exec)
-
 const debug = createDebugger('vike:crawl')
-
-const ignorePatterns = [
-  '**/node_modules/**',
-  '**/ejected/**',
-  // Allow:
-  // ```
-  // +Page.js
-  // +Page.telefunc.js
-  // ```
-  '**/*.telefunc.*',
-  // https://github.com/vikejs/vike/discussions/2222
-  '**/*.generated.*'
-]
-const ignoreMatchers = ignorePatterns.map((p) =>
-  picomatch(p, {
-    // We must pass the same settings than tinyglobby
-    // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-    dot: false,
-    nocase: false
-  })
-)
 
 assertIsNotProductionRuntime()
 assertIsSingleModuleInstance('getVikeConfig/crawlPlusFiles.ts')
@@ -60,11 +40,12 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   assertFilePathAbsoluteFilesystem(userRootDir)
 
   const crawSettings = getCrawlSettings()
+  const { ignorePatterns, ignoreMatchers } = getIgnore(crawSettings)
 
   // Crawl
-  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir))
+  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
   const filesGitNothingFound = !filesGit || filesGit.length === 0
-  const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir))
+  const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, ignorePatterns))
   let files = !filesGitNothingFound
     ? filesGit
     : // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
@@ -97,7 +78,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(userRootDir: string) {
+async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreMatchers: Matcher[]) {
   if (gitIsNotUsable) return null
 
   // Preserve UTF-8 file paths.
@@ -167,7 +148,7 @@ async function gitLsFiles(userRootDir: string) {
   return files
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(userRootDir: string): Promise<string[]> {
+async function tinyglobby(userRootDir: string, ignorePatterns: string[]): Promise<string[]> {
   const pattern = `**/+*.${scriptFileExtensions}`
   const options = {
     ignore: ignorePatterns,
@@ -238,14 +219,31 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
   return { stdout, stderr }
 }
 
+type CrawlSettings = ReturnType<typeof getCrawlSettings>
+// TODO/now: rename crawlSettings userSettings
+// TODO/now: rename CrawlSettings UserSettings
 function getCrawlSettings() {
   const crawlSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
-  const wrongUsage = (settingName: string, settingType: 'boolean') =>
+  const wrongUsage = (settingName: string, settingType: string) =>
     `Setting ${pc.cyan(settingName)} in VIKE_CRAWL should be a ${pc.cyan(settingType)}`
   assertUsage(
     hasProp(crawlSettings, 'git', 'boolean') || hasProp(crawlSettings, 'git', 'undefined'),
     wrongUsage('git', 'boolean')
   )
+  assertUsage(
+    hasProp(crawlSettings, 'ignore', 'string[]') ||
+      hasProp(crawlSettings, 'ignore', 'string') ||
+      hasProp(crawlSettings, 'ignore', 'undefined'),
+    wrongUsage('git', 'string or an array of strings')
+  )
+  assertUsage(
+    hasProp(crawlSettings, 'ignoreBuiltIn', 'boolean') || hasProp(crawlSettings, 'ignoreBuiltIn', 'undefined'),
+    wrongUsage('ignoreBuiltIn', 'boolean')
+  )
+  const settingNames = ['git', 'ignore', 'ignoreBuiltIn']
+  Object.keys(crawlSettings).forEach((name) => {
+    assertUsage(settingNames.includes(name), `Unknown setting ${pc.bold(pc.red(name))} in VIKE_CRAWL`)
+  })
   return crawlSettings
 }
 
@@ -283,3 +281,18 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
   )
 }
 */
+
+function getIgnore(crawSettings: CrawlSettings) {
+  const ignorePatternsSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
+  const { ignoreBuiltIn } = crawSettings
+  const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
+  const ignoreMatchers = ignorePatterns.map((p) =>
+    picomatch(p, {
+      // We must pass the same settings than tinyglobby
+      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+      dot: false,
+      nocase: false
+    })
+  )
+  return { ignorePatterns, ignoreMatchers }
+}
