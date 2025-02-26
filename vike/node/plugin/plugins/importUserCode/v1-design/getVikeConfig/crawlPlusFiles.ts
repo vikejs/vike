@@ -33,40 +33,16 @@ assertIsNotProductionRuntime()
 assertIsSingleModuleInstance('getVikeConfig/crawlPlusFiles.ts')
 let gitIsNotUsable = false
 
-async function crawlPlusFiles(
-  userRootDir: string,
-  outDirAbsoluteFilesystem: null | string
-): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
+async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
-
-  //*/
-  const outDirRelativeFromUserRootDir = null as string | null
-  /*/
-  assertPosixPath(outDirAbsoluteFilesystem)
-  let outDirRelativeFromUserRootDir: string | null = path.posix.relative(userRootDir, outDirAbsoluteFilesystem)
-  if (outDirRelativeFromUserRootDir.startsWith('../')) {
-    // config.outDir is outside of config.root => it's going to be ignored anyways
-    outDirRelativeFromUserRootDir = null
-  }
-  //*/
-  assert(
-    outDirRelativeFromUserRootDir === null ||
-      /* Not true if outDirRelativeFromUserRootDir starts with a hidden directory (i.e. a directory with a name that starts with `.`)
-      !outDirRelativeFromUserRootDir.startsWith('.') &&
-      */
-      (!outDirRelativeFromUserRootDir.startsWith('./') &&
-        //
-        !outDirRelativeFromUserRootDir.startsWith('../'))
-  )
 
   const crawSettings = getCrawlSettings()
 
   // Crawl
-  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
+  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir))
   const filesGitNothingFound = !filesGit || filesGit.length === 0
-  const filesGlob =
-    (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, outDirRelativeFromUserRootDir))
+  const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir))
   let files = !filesGitNothingFound
     ? filesGit
     : // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
@@ -99,7 +75,7 @@ async function crawlPlusFiles(
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: string | null) {
+async function gitLsFiles(userRootDir: string) {
   if (gitIsNotUsable) return null
 
   // Preserve UTF-8 file paths.
@@ -108,8 +84,8 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
   // https://stackoverflow.com/questions/15884180/how-do-i-override-git-configuration-options-by-command-line-parameters/15884261#15884261
   const preserveUTF8 = '-c core.quotepath=off'
 
-  const ignoreAsPatterns = getIgnoreAsPatterns(outDirRelativeFromUserRootDir)
-  const ignoreAsFilterFn = getIgnoreAsFilterFn(outDirRelativeFromUserRootDir)
+  const ignoreAsPatterns = getIgnoreAsPatterns()
+  const ignoreAsFilterFn = getIgnoreAsFilterFn()
 
   const cmd = [
     'git',
@@ -172,10 +148,10 @@ async function gitLsFiles(userRootDir: string, outDirRelativeFromUserRootDir: st
   return files
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(userRootDir: string, outDirRelativeFromUserRootDir: string | null): Promise<string[]> {
+async function tinyglobby(userRootDir: string): Promise<string[]> {
   const pattern = `**/+*.${scriptFileExtensions}`
   const options = {
-    ignore: getIgnoreAsPatterns(outDirRelativeFromUserRootDir),
+    ignore: getIgnoreAsPatterns(),
     cwd: userRootDir,
     dot: false
   }
@@ -192,7 +168,7 @@ async function tinyglobby(userRootDir: string, outDirRelativeFromUserRootDir: st
 }
 
 // Same as getIgnoreAsFilterFn() but as glob pattern
-function getIgnoreAsPatterns(outDirRelativeFromUserRootDir: string | null): string[] {
+function getIgnoreAsPatterns(): string[] {
   const ignoreAsPatterns = [
     '**/node_modules/**',
     '**/ejected/**',
@@ -205,21 +181,15 @@ function getIgnoreAsPatterns(outDirRelativeFromUserRootDir: string | null): stri
     // https://github.com/vikejs/vike/discussions/2222
     '**/*.generated.*'
   ]
-  if (outDirRelativeFromUserRootDir) {
-    assert(!outDirRelativeFromUserRootDir.startsWith('/'))
-    ignoreAsPatterns.push(`${outDirRelativeFromUserRootDir}/**`)
-  }
   return ignoreAsPatterns
 }
 // Same as getIgnoreAsPatterns() but for Array.filter()
-function getIgnoreAsFilterFn(outDirRelativeFromUserRootDir: string | null): (file: string) => boolean {
-  assert(outDirRelativeFromUserRootDir === null || !outDirRelativeFromUserRootDir.startsWith('/'))
+function getIgnoreAsFilterFn(): (file: string) => boolean {
   return (file: string) =>
     !file.includes('node_modules/') &&
     !file.includes('ejected/') &&
     !file.includes('.telefunc.') &&
-    !file.includes('.generated.') &&
-    (outDirRelativeFromUserRootDir === null || !file.startsWith(`${outDirRelativeFromUserRootDir}/`))
+    !file.includes('.generated.')
 }
 
 // Whether Git is installed and whether we can use it

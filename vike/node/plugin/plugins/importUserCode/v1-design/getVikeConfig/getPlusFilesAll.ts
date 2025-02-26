@@ -58,7 +58,7 @@ type PlusFileValue = PlusFileCommons & {
 type PlusFilesByLocationId = Record<LocationId, PlusFile[]>
 
 async function getPlusFilesAll(userRootDir: string, esbuildCache: EsbuildCache): Promise<PlusFilesByLocationId> {
-  const plusFiles = await findPlusFiles(userRootDir, null)
+  const plusFiles = await findPlusFiles(userRootDir)
   const configFiles: FilePathResolved[] = []
   const valueFiles: FilePathResolved[] = []
   plusFiles.forEach((f) => {
@@ -179,8 +179,8 @@ function sortMakeDeterministic(plusFile1: PlusFile, plusFile2: PlusFile): 0 | -1
   return plusFile1.filePath.filePathAbsoluteVite < plusFile2.filePath.filePathAbsoluteVite ? -1 : 1
 }
 
-async function findPlusFiles(userRootDir: string, outDirRoot: null | string): Promise<FilePathResolved[]> {
-  const files = await crawlPlusFiles(userRootDir, outDirRoot)
+async function findPlusFiles(userRootDir: string): Promise<FilePathResolved[]> {
+  const files = await crawlPlusFiles(userRootDir)
 
   const plusFiles: FilePathResolved[] = files.map(({ filePathAbsoluteUserRootDir }) =>
     getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
