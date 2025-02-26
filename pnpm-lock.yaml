@@ -1804,6 +1804,9 @@ importers:
       json5:
         specifier: ^2.0.0
         version: 2.2.3
+      picomatch:
+        specifier: ^4.0.2
+        version: 4.0.2
       semver:
         specifier: ^7.0.0
         version: 7.7.1
@@ -1832,6 +1835,9 @@ importers:
       '@types/node':
         specifier: ^20.10.5
         version: 20.17.17
+      '@types/picomatch':
+        specifier: ^3.0.2
+        version: 3.0.2
       '@types/resolve':
         specifier: ^1.20.6
         version: 1.20.6
@@ -3710,6 +3716,9 @@ packages:
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+
+  '@types/picomatch@3.0.2':
+    resolution: {integrity: sha512-n0i8TD3UDB7paoMMxA3Y65vUncFJXjcUf7lQY7YyKGl6031FNjfsLs6pdLFCy2GNFxItPJG8GvvpbZc2skH7WA==}
 
   '@types/prop-types@15.7.14':
     resolution: {integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==}
@@ -9302,6 +9311,8 @@ snapshots:
       undici-types: 6.20.0
 
   '@types/normalize-package-data@2.4.4': {}
+
+  '@types/picomatch@3.0.2': {}
 
   '@types/prop-types@15.7.14': {}
 

@@ -25,9 +25,31 @@ import { promisify } from 'util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
 import pc from '@brillout/picocolors'
+import picomatch from 'picomatch'
 const execA = promisify(exec)
 
 const debug = createDebugger('vike:crawl')
+
+const ignorePatterns = [
+  '**/node_modules/**',
+  '**/ejected/**',
+  // Allow:
+  // ```
+  // +Page.js
+  // +Page.telefunc.js
+  // ```
+  '**/*.telefunc.*',
+  // https://github.com/vikejs/vike/discussions/2222
+  '**/*.generated.*'
+]
+const ignoreMatchers = ignorePatterns.map((p) =>
+  picomatch(p, {
+    // We must pass the same settings than tinyglobby
+    // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+    dot: false,
+    nocase: false
+  })
+)
 
 assertIsNotProductionRuntime()
 assertIsSingleModuleInstance('getVikeConfig/crawlPlusFiles.ts')
@@ -84,9 +106,6 @@ async function gitLsFiles(userRootDir: string) {
   // https://stackoverflow.com/questions/15884180/how-do-i-override-git-configuration-options-by-command-line-parameters/15884261#15884261
   const preserveUTF8 = '-c core.quotepath=off'
 
-  const ignoreAsPatterns = getIgnoreAsPatterns()
-  const ignoreAsFilterFn = getIgnoreAsFilterFn()
-
   const cmd = [
     'git',
     preserveUTF8,
@@ -98,7 +117,7 @@ async function gitLsFiles(userRootDir: string) {
     // Performance gain is non-negligible.
     //  - https://github.com/vikejs/vike/pull/1688#issuecomment-2166206648
     //  - When node_modules/ is untracked the performance gain could be significant?
-    ...ignoreAsPatterns.map((pattern) => `--exclude="${pattern}"`),
+    ...ignorePatterns.map((pattern) => `--exclude="${pattern}"`),
 
     // --others --exclude-standard => list untracked files (--others) while using .gitignore (--exclude-standard)
     // --cached => list tracked files
@@ -134,7 +153,7 @@ async function gitLsFiles(userRootDir: string) {
     if (!path.posix.basename(filePath).startsWith('+')) continue
 
     // We have to repeat the same exclusion logic here because the option --exclude of `$ git ls-files` only applies to untracked files. (We use --exclude only to speed up the `$ git ls-files` command.)
-    if (!ignoreAsFilterFn(filePath)) continue
+    if (ignoreMatchers.some((m) => m(filePath))) continue
 
     // JavaScript file?
     if (!isScriptFile(filePath)) continue
@@ -151,7 +170,7 @@ async function gitLsFiles(userRootDir: string) {
 async function tinyglobby(userRootDir: string): Promise<string[]> {
   const pattern = `**/+*.${scriptFileExtensions}`
   const options = {
-    ignore: getIgnoreAsPatterns(),
+    ignore: ignorePatterns,
     cwd: userRootDir,
     dot: false
   }
@@ -165,31 +184,6 @@ async function tinyglobby(userRootDir: string): Promise<string[]> {
     debug('[glob] result:', files)
   }
   return files
-}
-
-// Same as getIgnoreAsFilterFn() but as glob pattern
-function getIgnoreAsPatterns(): string[] {
-  const ignoreAsPatterns = [
-    '**/node_modules/**',
-    '**/ejected/**',
-    // Allow:
-    // ```
-    // +Page.js
-    // +Page.telefunc.js
-    // ```
-    '**/*.telefunc.*',
-    // https://github.com/vikejs/vike/discussions/2222
-    '**/*.generated.*'
-  ]
-  return ignoreAsPatterns
-}
-// Same as getIgnoreAsPatterns() but for Array.filter()
-function getIgnoreAsFilterFn(): (file: string) => boolean {
-  return (file: string) =>
-    !file.includes('node_modules/') &&
-    !file.includes('ejected/') &&
-    !file.includes('.telefunc.') &&
-    !file.includes('.generated.')
 }
 
 // Whether Git is installed and whether we can use it
