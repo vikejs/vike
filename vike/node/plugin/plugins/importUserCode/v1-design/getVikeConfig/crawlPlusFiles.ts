@@ -285,7 +285,7 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 function getIgnore(crawSettings: CrawlSettings) {
   const ignorePatternsSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
   const { ignoreBuiltIn } = crawSettings
-  const ignorePatterns = [...(ignoreBuiltIn ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
+  const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
   const ignoreMatchers = ignorePatterns.map((p) =>
     picomatch(p, {
       // We must pass the same settings than tinyglobby
