@@ -65,10 +65,13 @@ function fileEnv(): Plugin {
       Array.from(this.getModuleIds())
         .filter((id) => !skip(id))
         .forEach((moduleId) => {
-          const { importers, dynamicImporters } = this.getModuleInfo(moduleId)!
+          const mod = this.getModuleInfo(moduleId)!
+          const { importers } = mod
           if (importers.length === 0) {
             // Dynamic imports can only be verified at runtime
+            /* This assertion can fail: https://github.com/vikejs/vike/issues/2227
             assert(dynamicImporters.length > 0)
+            */
             return
           }
           assertFileEnv(moduleId, !!config.build.ssr, importers, false)
