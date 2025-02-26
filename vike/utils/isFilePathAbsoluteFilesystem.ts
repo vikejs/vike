@@ -4,9 +4,9 @@ export { isFilePathAbsolute }
 import path from 'node:path'
 import { assert } from './assert.js'
 import { assertPosixPath } from './path.js'
-import { assertIsBrowser } from './assertIsBrowser.js'
+import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { assertIsNotProductionRuntime } from './assertSetup.js'
-assertIsBrowser()
+assertIsNotBrowser()
 // Server runtime shouldn't depend on node:path
 assertIsNotProductionRuntime()
 
