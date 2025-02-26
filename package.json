@@ -39,7 +39,7 @@
     "@brillout/test-types": "^0.1.13",
     "playwright": "^1.50.1",
     "prettier": "^3.2.5",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.7"
   },
   "pnpm": {
     "overrides": {
