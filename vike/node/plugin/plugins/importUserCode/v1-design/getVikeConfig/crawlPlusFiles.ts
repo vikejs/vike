@@ -39,11 +39,11 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
-  const crawSettings = getUserSettings()
-  const { ignorePatterns, ignoreMatchers } = getIgnore(crawSettings)
+  const userSettings = getUserSettings()
+  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings)
 
   // Crawl
-  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
+  const filesGit = userSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
   const filesGitNothingFound = !filesGit || filesGit.length === 0
   const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, ignorePatterns))
   let files = !filesGitNothingFound
@@ -280,9 +280,9 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-function getIgnore(crawSettings: UserSettings) {
-  const ignorePatternsSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
-  const { ignoreBuiltIn } = crawSettings
+function getIgnore(userSettings: UserSettings) {
+  const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
+  const { ignoreBuiltIn } = userSettings
   const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
   const ignoreMatchers = ignorePatterns.map((p) =>
     picomatch(p, {
