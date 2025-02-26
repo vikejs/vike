@@ -27,6 +27,7 @@ import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
 import pc from '@brillout/picocolors'
 import picomatch, { type Matcher } from 'picomatch'
+import { ignorePatternsBuiltIn } from './crawlPlusFiles/ignorePatternsBuiltIn.js'
 const execA = promisify(exec)
 const debug = createDebugger('vike:crawl')
 
@@ -278,19 +279,7 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 
 function getIgnore(crawSettings: CrawlSettings) {
   const ignoreSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
-  const ignorePatterns = [
-    '**/node_modules/**',
-    '**/ejected/**',
-    // Allow:
-    // ```
-    // +Page.js
-    // +Page.telefunc.js
-    // ```
-    '**/*.telefunc.*',
-    // https://github.com/vikejs/vike/discussions/2222
-    '**/*.generated.*',
-    ...ignoreSetByUser
-  ]
+  const ignorePatterns = [...ignorePatternsBuiltIn, ...ignoreSetByUser]
   const ignoreMatchers = ignorePatterns.map((p) =>
     picomatch(p, {
       // We must pass the same settings than tinyglobby
