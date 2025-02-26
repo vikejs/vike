@@ -17,6 +17,8 @@ import {
 } from '../utils.js'
 import type { FilePathResolved, FilePathUnresolved } from '../../../shared/page-configs/FilePath.js'
 import type { ResolvedConfig } from 'vite'
+import { assertIsNotBrowser } from '../../shared/utils.js'
+assertIsNotBrowser()
 
 function getFilePathResolved(
   args: {
