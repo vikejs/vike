@@ -24,6 +24,7 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
+import pc from '@brillout/picocolors'
 const execA = promisify(exec)
 
 const debug = createDebugger('vike:crawl')
@@ -276,7 +277,12 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
 
 function getCrawlSettings() {
   const crawlSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
-  assertUsage(hasProp(crawlSettings, 'git', 'boolean') || hasProp(crawlSettings, 'git', 'undefined'), 'euwh')
+  const wrongUsage = (settingName: string, settingType: 'boolean') =>
+    `Setting ${pc.cyan(settingName)} in VIKE_CRAWL should be a ${pc.cyan(settingType)}`
+  assertUsage(
+    hasProp(crawlSettings, 'git', 'boolean') || hasProp(crawlSettings, 'git', 'undefined'),
+    wrongUsage('git', 'boolean')
+  )
   return crawlSettings
 }
 
