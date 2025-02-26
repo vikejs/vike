@@ -13,7 +13,8 @@ import {
   scriptFileExtensionList,
   createDebugger,
   deepEqual,
-  assertUsage
+  assertUsage,
+  assertFilePathAbsoluteFilesystem
 } from '../../../../utils.js'
 import path from 'path'
 import { glob } from 'tinyglobby'
@@ -34,6 +35,7 @@ async function crawlPlusFiles(
   outDirAbsoluteFilesystem: null | string
 ): Promise<{ filePathAbsoluteUserRootDir: string }[]> {
   assertPosixPath(userRootDir)
+  assertFilePathAbsoluteFilesystem(userRootDir)
 
   //*/
   const outDirRelativeFromUserRootDir = null as string | null

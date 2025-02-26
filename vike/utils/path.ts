@@ -9,6 +9,7 @@ export { assertPosixPath }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
+// While this path shim also works on the client-side, let's try to not use it on the client-side in order to minimize KBs sent to the browser.
 assertIsNotBrowser()
 
 /**********************/
