@@ -187,7 +187,9 @@ function getIgnoreAsPatterns(outDirRelativeFromUserRootDir: string | null): stri
     // +Page.js
     // +Page.telefunc.js
     // ```
-    '**/*.telefunc.*'
+    '**/*.telefunc.*',
+    // https://github.com/vikejs/vike/discussions/2222
+    '**/*.generated.*'
   ]
   if (outDirRelativeFromUserRootDir) {
     assert(!outDirRelativeFromUserRootDir.startsWith('/'))
@@ -202,6 +204,7 @@ function getIgnoreAsFilterFn(outDirRelativeFromUserRootDir: string | null): (fil
     !file.includes('node_modules/') &&
     !file.includes('ejected/') &&
     !file.includes('.telefunc.') &&
+    !file.includes('.generated.') &&
     (outDirRelativeFromUserRootDir === null || !file.startsWith(`${outDirRelativeFromUserRootDir}/`))
 }
 
