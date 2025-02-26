@@ -236,8 +236,9 @@ function getCrawlSettings() {
       hasProp(crawlSettings, 'ignore', 'undefined'),
     wrongUsage('git', 'string')
   )
-  Object.keys(crawlSettings).forEach((k) => {
-    assertUsage(['git', 'ignore'].includes(k), `Unknown setting ${pc.bold(pc.red(k))} in VIKE_CRAWL`)
+  const settingNames = ['git', 'ignore']
+  Object.keys(crawlSettings).forEach((name) => {
+    assertUsage(settingNames.includes(name), `Unknown setting ${pc.bold(pc.red(name))} in VIKE_CRAWL`)
   })
   return crawlSettings
 }
@@ -278,8 +279,8 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 */
 
 function getIgnore(crawSettings: CrawlSettings) {
-  const ignoreSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
-  const ignorePatterns = [...ignorePatternsBuiltIn, ...ignoreSetByUser]
+  const ignorePatternsSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
+  const ignorePatterns = [...ignorePatternsBuiltIn, ...ignorePatternsSetByUser]
   const ignoreMatchers = ignorePatterns.map((p) =>
     picomatch(p, {
       // We must pass the same settings than tinyglobby

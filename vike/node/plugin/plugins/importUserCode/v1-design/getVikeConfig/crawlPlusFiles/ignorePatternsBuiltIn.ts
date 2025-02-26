@@ -3,7 +3,7 @@ export const ignorePatternsBuiltIn = [
   // Ejected Vike extensions, see https://github.com/snake-py/eject
   '**/ejected/**',
   // Allow:
-  // ```
+  // ```bash
   // +Page.js
   // +Page.telefunc.js
   // ```
