@@ -48,20 +48,24 @@ pages/HELLO/+Page.js           /HELLO
 
 Vike crawls:
 - Files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root).
-  > Consequently, all your <Link href="/config#files">`+` files</Link> need to live inside `root`.
-  > To make a directory outside of `root` crawlable, you can use a symlink (e.g. `$ ln -s`) and set `VIKE_CRAWL="{git:false}"`.
-- Skips `node_modules/`
+  > Consequently, all your <Link href="/config#files">`+` files</Link> must live inside `root`.
+  > To make a directory or file outside of `root` crawlable, use a symlink (e.g. `$ ln -s`) and set `VIKE_CRAWL="{git:false}"`.
+- Skips [built-in ignore patterns](https://github.com/vikejs/vike/blob/773e3d2006292258932fdedcb065306fd009d78b/vike/node/plugin/plugins/importUserCode/v1-design/getVikeConfig/crawlPlusFiles/ignorePatternsBuiltIn.ts) such as `node_modules/` and `ejected/`.
+  > To add custom ignore patterns, see [#2228](https://github.com/vikejs/vike/issues/2228).
 - Skips `.gitignore` files (if you use Git).
   > If you want to also crawl these then set `VIKE_CRAWL="{git:false}"`.
 - Skips soft-symlinked (`$ ln -s`) directories (if you use Git).
   > If you want to also crawl these then set `VIKE_CRAWL="{git:false}"`.
 
-By default Vike uses Git (if your repository uses Git) to crawl your files. If you set `VIKE_CRAWL="{git:false}"` then Vike uses [`tinyglobby`](https://github.com/SuperchupuDev/tinyglobby) instead.
+By default, if you use Git, Vike uses `$ git ls-files` to crawl your files. If you set `VIKE_CRAWL="{git:false}"` then Vike uses [`tinyglobby`](https://github.com/SuperchupuDev/tinyglobby) instead of Git.
 
 ```bash
 # Use tinyglobby instead of Git to crawl files
 $ VIKE_CRAWL="{git:false}" npm run dev
 ```
+
+You can tell Vike to skip certain files and/or directories from being crawled, see [#2228](https://github.com/vikejs/vike/issues/2228).
+
 
 ## `renderer/`
 
