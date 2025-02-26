@@ -61,7 +61,11 @@ async function getViteRoot(operation: Operation) {
 async function getInfoFromVite(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromOptions, operation)
 
-  const root = normalizeViteRoot(viteConfigFromUserViteFile?.root ?? viteConfigFromOptions?.root ?? process.cwd())
+  const root = normalizeViteRoot(
+    // `viteConfigFromOptions.root` before `viteConfigFromUserViteFile.root` replicates Vite's precedence:
+    // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
+    viteConfigFromOptions?.root ?? viteConfigFromUserViteFile?.root ?? process.cwd()
+  )
   globalObject.root = root
 
   let vikeVitePluginOptions: Record<string, unknown> | undefined
@@ -143,7 +147,12 @@ function getResolveConfigArgs(viteConfig: InlineConfig = {}, operation: Operatio
 }
 
 function normalizeViteRoot(root: string) {
-  return toPosixPath(path.resolve(root))
+  // `path.resolve(viteConfigFromUserViteFile.configFile, root)` could be more intuitive than `path.resolve(process.cwd(), root)` but we replicate Vite's behavior (`vite.config.js` should follow Vite's API), see:
+  // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1063
+  return toPosixPath(
+    // Equivalent to `path.resolve(process.cwd(), root)`
+    path.resolve(root)
+  )
 }
 
 const errMsg = `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} which is forbidden`
