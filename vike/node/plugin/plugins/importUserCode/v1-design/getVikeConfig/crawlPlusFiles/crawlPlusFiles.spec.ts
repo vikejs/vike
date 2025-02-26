@@ -43,11 +43,9 @@ describe('crawlPlusFiles()', () => {
 })
 
 async function crawl() {
-  return normalize(await crawlPlusFiles(userRootDir, null))
-}
-
-function normalize(files: Awaited<ReturnType<typeof crawlPlusFiles>>) {
-  return files.map((f) => f.filePathAbsoluteUserRootDir).sort()
+  const res = await crawlPlusFiles(userRootDir)
+  const files = res.map((f) => f.filePathAbsoluteUserRootDir).sort()
+  return files
 }
 
 function createFiles(files: string[]) {

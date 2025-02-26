@@ -25,31 +25,9 @@ import { promisify } from 'util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
 import pc from '@brillout/picocolors'
-import picomatch from 'picomatch'
+import picomatch, { type Matcher } from 'picomatch'
 const execA = promisify(exec)
-
 const debug = createDebugger('vike:crawl')
-
-const ignorePatterns = [
-  '**/node_modules/**',
-  '**/ejected/**',
-  // Allow:
-  // ```
-  // +Page.js
-  // +Page.telefunc.js
-  // ```
-  '**/*.telefunc.*',
-  // https://github.com/vikejs/vike/discussions/2222
-  '**/*.generated.*'
-]
-const ignoreMatchers = ignorePatterns.map((p) =>
-  picomatch(p, {
-    // We must pass the same settings than tinyglobby
-    // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
-    dot: false,
-    nocase: false
-  })
-)
 
 assertIsNotProductionRuntime()
 assertIsSingleModuleInstance('getVikeConfig/crawlPlusFiles.ts')
@@ -60,11 +38,12 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   assertFilePathAbsoluteFilesystem(userRootDir)
 
   const crawSettings = getCrawlSettings()
+  const { ignorePatterns, ignoreMatchers } = getIgnore()
 
   // Crawl
-  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir))
+  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
   const filesGitNothingFound = !filesGit || filesGit.length === 0
-  const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir))
+  const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, ignorePatterns))
   let files = !filesGitNothingFound
     ? filesGit
     : // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
@@ -97,7 +76,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
 }
 
 // Same as tinyglobby() but using `$ git ls-files`
-async function gitLsFiles(userRootDir: string) {
+async function gitLsFiles(userRootDir: string, ignorePatterns: string[], ignoreMatchers: Matcher[]) {
   if (gitIsNotUsable) return null
 
   // Preserve UTF-8 file paths.
@@ -167,7 +146,7 @@ async function gitLsFiles(userRootDir: string) {
   return files
 }
 // Same as gitLsFiles() but using tinyglobby
-async function tinyglobby(userRootDir: string): Promise<string[]> {
+async function tinyglobby(userRootDir: string, ignorePatterns: string[]): Promise<string[]> {
   const pattern = `**/+*.${scriptFileExtensions}`
   const options = {
     ignore: ignorePatterns,
@@ -283,3 +262,27 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
   )
 }
 */
+
+function getIgnore() {
+  const ignorePatterns = [
+    '**/node_modules/**',
+    '**/ejected/**',
+    // Allow:
+    // ```
+    // +Page.js
+    // +Page.telefunc.js
+    // ```
+    '**/*.telefunc.*',
+    // https://github.com/vikejs/vike/discussions/2222
+    '**/*.generated.*'
+  ]
+  const ignoreMatchers = ignorePatterns.map((p) =>
+    picomatch(p, {
+      // We must pass the same settings than tinyglobby
+      // https://github.com/SuperchupuDev/tinyglobby/blob/fcfb08a36c3b4d48d5488c21000c95a956d9797c/src/index.ts#L191-L194
+      dot: false,
+      nocase: false
+    })
+  )
+  return { ignorePatterns, ignoreMatchers }
+}
