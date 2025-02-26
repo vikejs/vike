@@ -50,7 +50,7 @@ Vike crawls:
 - Files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root).
   > Consequently, all your <Link href="/config#files">`+` files</Link> must live inside `root`.
   > To make a directory or file outside of `root` crawlable, use a symlink (e.g. `$ ln -s`) and set `VIKE_CRAWL="{git:false}"`.
-- Skips [built-in ignore patterns](https://github.com/vikejs/vike/blob/773e3d2006292258932fdedcb065306fd009d78b/vike/node/plugin/plugins/importUserCode/v1-design/getVikeConfig/crawlPlusFiles/ignorePatternsBuiltIn.ts) such as `node_modules/` and `ejected/`.
+- Skips [built-in ignore patterns](https://github.com/vikejs/vike/blob/56675a04669107bcc188f266f04d45ad999db91c/vike/node/plugin/plugins/importUserCode/v1-design/getVikeConfig/crawlPlusFiles/ignorePatternsBuiltIn.ts) such as `node_modules/` and `ejected/`.
   > To add custom ignore patterns, see [#2228](https://github.com/vikejs/vike/issues/2228).
 - Skips `.gitignore` files (if you use Git).
   > If you want to also crawl these then set `VIKE_CRAWL="{git:false}"`.

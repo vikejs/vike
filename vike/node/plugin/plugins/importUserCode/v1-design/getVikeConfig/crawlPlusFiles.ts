@@ -39,11 +39,11 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
-  const crawSettings = getCrawlSettings()
-  const { ignorePatterns, ignoreMatchers } = getIgnore(crawSettings)
+  const userSettings = getUserSettings()
+  const { ignorePatterns, ignoreMatchers } = getIgnore(userSettings)
 
   // Crawl
-  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
+  const filesGit = userSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
   const filesGitNothingFound = !filesGit || filesGit.length === 0
   const filesGlob = (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, ignorePatterns))
   let files = !filesGitNothingFound
@@ -219,32 +219,30 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
   return { stdout, stderr }
 }
 
-type CrawlSettings = ReturnType<typeof getCrawlSettings>
-// TODO/now: rename crawlSettings userSettings
-// TODO/now: rename CrawlSettings UserSettings
-function getCrawlSettings() {
-  const crawlSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
+type UserSettings = ReturnType<typeof getUserSettings>
+function getUserSettings() {
+  const userSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
   const wrongUsage = (settingName: string, settingType: string) =>
     `Setting ${pc.cyan(settingName)} in VIKE_CRAWL should be a ${pc.cyan(settingType)}`
   assertUsage(
-    hasProp(crawlSettings, 'git', 'boolean') || hasProp(crawlSettings, 'git', 'undefined'),
+    hasProp(userSettings, 'git', 'boolean') || hasProp(userSettings, 'git', 'undefined'),
     wrongUsage('git', 'boolean')
   )
   assertUsage(
-    hasProp(crawlSettings, 'ignore', 'string[]') ||
-      hasProp(crawlSettings, 'ignore', 'string') ||
-      hasProp(crawlSettings, 'ignore', 'undefined'),
+    hasProp(userSettings, 'ignore', 'string[]') ||
+      hasProp(userSettings, 'ignore', 'string') ||
+      hasProp(userSettings, 'ignore', 'undefined'),
     wrongUsage('git', 'string or an array of strings')
   )
   assertUsage(
-    hasProp(crawlSettings, 'ignoreBuiltIn', 'boolean') || hasProp(crawlSettings, 'ignoreBuiltIn', 'undefined'),
+    hasProp(userSettings, 'ignoreBuiltIn', 'boolean') || hasProp(userSettings, 'ignoreBuiltIn', 'undefined'),
     wrongUsage('ignoreBuiltIn', 'boolean')
   )
   const settingNames = ['git', 'ignore', 'ignoreBuiltIn']
-  Object.keys(crawlSettings).forEach((name) => {
+  Object.keys(userSettings).forEach((name) => {
     assertUsage(settingNames.includes(name), `Unknown setting ${pc.bold(pc.red(name))} in VIKE_CRAWL`)
   })
-  return crawlSettings
+  return userSettings
 }
 
 function isPlusFile(filePath: string): boolean {
@@ -282,9 +280,9 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-function getIgnore(crawSettings: CrawlSettings) {
-  const ignorePatternsSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
-  const { ignoreBuiltIn } = crawSettings
+function getIgnore(userSettings: UserSettings) {
+  const ignorePatternsSetByUser = [userSettings.ignore].flat().filter(isNotNullish)
+  const { ignoreBuiltIn } = userSettings
   const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
   const ignoreMatchers = ignorePatterns.map((p) =>
     picomatch(p, {
