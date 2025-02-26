@@ -31,11 +31,12 @@ import {
   createDebugger,
   assertFilePathAbsoluteFilesystem,
   assertIsNpmPackageImport,
-  genPromise
+  genPromise,
+  isVitest
 } from '../../../../utils.js'
 import { transformPointerImports } from './transformPointerImports.js'
 import { vikeConfigDependencies } from '../getVikeConfig.js'
-import 'source-map-support/register.js'
+import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'
 import { createRequire } from 'module'
@@ -44,6 +45,7 @@ const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
+installSourceMapSupport()
 const debug = createDebugger('vike:pointer-imports')
 const debugEsbuildResolve = createDebugger('vike:esbuild-resolve')
 if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', version)
@@ -481,4 +483,12 @@ function cleanEsbuildErrors(errors: Message[]) {
           !note.text.includes('as external to exclude it from the bundle')
       ))
   )
+}
+
+function installSourceMapSupport() {
+  // Don't break Vitest's source mapping
+  if (isVitest()) return
+  // How about other test runners?
+  // Should we call installSourceMapSupport() lazily in transpileAndExecuteFile() instead?
+  sourceMapSupport.install()
 }
