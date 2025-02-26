@@ -220,31 +220,31 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
 }
 
 type CrawlSettings = ReturnType<typeof getCrawlSettings>
-// TODO/now: rename crawlSettings userSettings
+// TODO/now: rename userSettings userSettings
 // TODO/now: rename CrawlSettings UserSettings
 function getCrawlSettings() {
-  const crawlSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
+  const userSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
   const wrongUsage = (settingName: string, settingType: string) =>
     `Setting ${pc.cyan(settingName)} in VIKE_CRAWL should be a ${pc.cyan(settingType)}`
   assertUsage(
-    hasProp(crawlSettings, 'git', 'boolean') || hasProp(crawlSettings, 'git', 'undefined'),
+    hasProp(userSettings, 'git', 'boolean') || hasProp(userSettings, 'git', 'undefined'),
     wrongUsage('git', 'boolean')
   )
   assertUsage(
-    hasProp(crawlSettings, 'ignore', 'string[]') ||
-      hasProp(crawlSettings, 'ignore', 'string') ||
-      hasProp(crawlSettings, 'ignore', 'undefined'),
+    hasProp(userSettings, 'ignore', 'string[]') ||
+      hasProp(userSettings, 'ignore', 'string') ||
+      hasProp(userSettings, 'ignore', 'undefined'),
     wrongUsage('git', 'string or an array of strings')
   )
   assertUsage(
-    hasProp(crawlSettings, 'ignoreBuiltIn', 'boolean') || hasProp(crawlSettings, 'ignoreBuiltIn', 'undefined'),
+    hasProp(userSettings, 'ignoreBuiltIn', 'boolean') || hasProp(userSettings, 'ignoreBuiltIn', 'undefined'),
     wrongUsage('ignoreBuiltIn', 'boolean')
   )
   const settingNames = ['git', 'ignore', 'ignoreBuiltIn']
-  Object.keys(crawlSettings).forEach((name) => {
+  Object.keys(userSettings).forEach((name) => {
     assertUsage(settingNames.includes(name), `Unknown setting ${pc.bold(pc.red(name))} in VIKE_CRAWL`)
   })
-  return crawlSettings
+  return userSettings
 }
 
 function isPlusFile(filePath: string): boolean {
