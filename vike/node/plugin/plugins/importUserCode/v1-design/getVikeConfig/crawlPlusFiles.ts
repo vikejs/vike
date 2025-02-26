@@ -15,7 +15,8 @@ import {
   deepEqual,
   assertUsage,
   assertFilePathAbsoluteFilesystem,
-  assertWarning
+  assertWarning,
+  hasProp
 } from '../../../../utils.js'
 import path from 'path'
 import { glob } from 'tinyglobby'
@@ -23,6 +24,7 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import { isTemporaryBuildFile } from './transpileAndExecuteFile.js'
 import { getEnvVarObject } from '../../../../shared/getEnvVarObject.js'
+import pc from '@brillout/picocolors'
 const execA = promisify(exec)
 
 const debug = createDebugger('vike:crawl')
@@ -58,8 +60,10 @@ async function crawlPlusFiles(
         !outDirRelativeFromUserRootDir.startsWith('../'))
   )
 
+  const crawSettings = getCrawlSettings()
+
   // Crawl
-  const filesGit = !isGitCrawlDisabled() && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
+  const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir, outDirRelativeFromUserRootDir))
   const filesGitNothingFound = !filesGit || filesGit.length === 0
   const filesGlob =
     (filesGitNothingFound || debug.isActivated) && (await tinyglobby(userRootDir, outDirRelativeFromUserRootDir))
@@ -173,8 +177,7 @@ async function tinyglobby(userRootDir: string, outDirRelativeFromUserRootDir: st
   const options = {
     ignore: getIgnoreAsPatterns(outDirRelativeFromUserRootDir),
     cwd: userRootDir,
-    dot: false,
-    expandDirectories: false
+    dot: false
   }
   const files = await glob(pattern, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
@@ -271,9 +274,15 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
   return { stdout, stderr }
 }
 
-function isGitCrawlDisabled() {
-  const crawSettings = getEnvVarObject('VIKE_CRAWL')
-  return crawSettings?.git === false
+function getCrawlSettings() {
+  const crawlSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
+  const wrongUsage = (settingName: string, settingType: 'boolean') =>
+    `Setting ${pc.cyan(settingName)} in VIKE_CRAWL should be a ${pc.cyan(settingType)}`
+  assertUsage(
+    hasProp(crawlSettings, 'git', 'boolean') || hasProp(crawlSettings, 'git', 'undefined'),
+    wrongUsage('git', 'boolean')
+  )
+  return crawlSettings
 }
 
 function isPlusFile(filePath: string): boolean {
@@ -293,6 +302,7 @@ function getPlusFileValueConfigName(filePath: string): string | null {
   assertUsage(configName !== '', `${filePath} Invalid filename ${fileName}`)
   return configName
 }
+
 /* https://github.com/vikejs/vike/issues/1407
 function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
   const dirs = path.posix.dirname(filePath).split('/')
