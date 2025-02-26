@@ -16,7 +16,8 @@ import {
   assertUsage,
   assertFilePathAbsoluteFilesystem,
   assertWarning,
-  hasProp
+  hasProp,
+  isNotNullish
 } from '../../../../utils.js'
 import path from 'path'
 import { glob } from 'tinyglobby'
@@ -38,7 +39,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   assertFilePathAbsoluteFilesystem(userRootDir)
 
   const crawSettings = getCrawlSettings()
-  const { ignorePatterns, ignoreMatchers } = getIgnore()
+  const { ignorePatterns, ignoreMatchers } = getIgnore(crawSettings)
 
   // Crawl
   const filesGit = crawSettings.git !== false && (await gitLsFiles(userRootDir, ignorePatterns, ignoreMatchers))
@@ -217,14 +218,26 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
   return { stdout, stderr }
 }
 
+type CrawlSettings = ReturnType<typeof getCrawlSettings>
+// TODO/now: rename crawlSettings userSettings
+// TODO/now: rename CrawlSettings UserSettings
 function getCrawlSettings() {
   const crawlSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
-  const wrongUsage = (settingName: string, settingType: 'boolean') =>
+  const wrongUsage = (settingName: string, settingType: string) =>
     `Setting ${pc.cyan(settingName)} in VIKE_CRAWL should be a ${pc.cyan(settingType)}`
   assertUsage(
     hasProp(crawlSettings, 'git', 'boolean') || hasProp(crawlSettings, 'git', 'undefined'),
     wrongUsage('git', 'boolean')
   )
+  assertUsage(
+    hasProp(crawlSettings, 'ignore', 'string[]') ||
+      hasProp(crawlSettings, 'ignore', 'string') ||
+      hasProp(crawlSettings, 'ignore', 'undefined'),
+    wrongUsage('git', 'string')
+  )
+  Object.keys(crawlSettings).forEach((k) => {
+    assertUsage(['git', 'ignore'].includes(k), `Unknown setting ${pc.bold(pc.red(k))} in VIKE_CRAWL`)
+  })
   return crawlSettings
 }
 
@@ -263,7 +276,8 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-function getIgnore() {
+function getIgnore(crawSettings: CrawlSettings) {
+  const ignoreSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
   const ignorePatterns = [
     '**/node_modules/**',
     '**/ejected/**',
@@ -274,7 +288,8 @@ function getIgnore() {
     // ```
     '**/*.telefunc.*',
     // https://github.com/vikejs/vike/discussions/2222
-    '**/*.generated.*'
+    '**/*.generated.*',
+    ...ignoreSetByUser
   ]
   const ignoreMatchers = ignorePatterns.map((p) =>
     picomatch(p, {

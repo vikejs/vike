@@ -15,10 +15,13 @@ describe('crawlPlusFiles()', () => {
       'pages/about/+ignored.telefunc.ts',
       'pages/about/+ignored.generated.js',
       'pages/ejected/+ignored.js',
-      'pages/node_modules/+ignored.js'
+      'pages/node_modules/+ignored.js',
+      'pages/manually/+ignored.js',
+      'pages/manually-2/+ignored.js'
     ])
     onTestFinished(() => clean())
 
+    process.env.VIKE_CRAWL = "{ignore:['**/manually/**','**/manually-2/**']}"
     const filesWithGit = await crawl()
     expect(filesWithGit).toMatchInlineSnapshot(`
       [
@@ -29,7 +32,7 @@ describe('crawlPlusFiles()', () => {
     `)
     assert(!JSON.stringify(filesWithGit).includes('ignored'))
 
-    process.env.VIKE_CRAWL = '{git:false}'
+    process.env.VIKE_CRAWL = "{git:false,ignore:'**/manually/**'}"
     const filesWithGlob = await crawl()
     expect(filesWithGlob).toMatchInlineSnapshot(`
       [
@@ -37,6 +40,7 @@ describe('crawlPlusFiles()', () => {
         "/pages/+config.js",
         "/pages/about/+bla.mdx",
         "/pages/git-ignored/+bla.mdx",
+        "/pages/manually-2/+ignored.js",
       ]
     `)
   })
