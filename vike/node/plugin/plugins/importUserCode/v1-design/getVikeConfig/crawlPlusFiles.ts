@@ -39,7 +39,7 @@ async function crawlPlusFiles(userRootDir: string): Promise<{ filePathAbsoluteUs
   assertPosixPath(userRootDir)
   assertFilePathAbsoluteFilesystem(userRootDir)
 
-  const crawSettings = getCrawlSettings()
+  const crawSettings = getUserSettings()
   const { ignorePatterns, ignoreMatchers } = getIgnore(crawSettings)
 
   // Crawl
@@ -219,10 +219,10 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
   return { stdout, stderr }
 }
 
-type CrawlSettings = ReturnType<typeof getCrawlSettings>
+type UserSettings = ReturnType<typeof getUserSettings>
 // TODO/now: rename userSettings userSettings
-// TODO/now: rename CrawlSettings UserSettings
-function getCrawlSettings() {
+// TODO/now: rename UserSettings UserSettings
+function getUserSettings() {
   const userSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
   const wrongUsage = (settingName: string, settingType: string) =>
     `Setting ${pc.cyan(settingName)} in VIKE_CRAWL should be a ${pc.cyan(settingType)}`
@@ -282,7 +282,7 @@ function assertNoUnexpectedPlusSign(filePath: string, fileName: string) {
 }
 */
 
-function getIgnore(crawSettings: CrawlSettings) {
+function getIgnore(crawSettings: UserSettings) {
   const ignorePatternsSetByUser = [crawSettings.ignore].flat().filter(isNotNullish)
   const { ignoreBuiltIn } = crawSettings
   const ignorePatterns = [...(ignoreBuiltIn === false ? [] : ignorePatternsBuiltIn), ...ignorePatternsSetByUser]
