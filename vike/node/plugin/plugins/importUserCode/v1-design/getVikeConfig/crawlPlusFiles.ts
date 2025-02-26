@@ -14,7 +14,8 @@ import {
   createDebugger,
   deepEqual,
   assertUsage,
-  assertFilePathAbsoluteFilesystem
+  assertFilePathAbsoluteFilesystem,
+  assertWarning
 } from '../../../../utils.js'
 import path from 'path'
 import { glob } from 'tinyglobby'
@@ -67,7 +68,15 @@ async function crawlPlusFiles(
     : // Fallback to tinyglobby for users that dynamically generate plus files. (Assuming that no plus file is found because of the user's .gitignore list.)
       filesGlob
   assert(files)
-  if (debug.isActivated) assert(deepEqual(filesGlob, filesGit), "Git and glob results aren't matching.")
+  if (debug.isActivated) {
+    assert(filesGit)
+    assert(filesGlob)
+    assertWarning(
+      deepEqual(filesGlob.slice().sort(), filesGit.slice().sort()),
+      "Git and glob results aren't matching.",
+      { onlyOnce: false }
+    )
+  }
 
   // Filter build files
   files = files.filter((filePath) => !isTemporaryBuildFile(filePath))
