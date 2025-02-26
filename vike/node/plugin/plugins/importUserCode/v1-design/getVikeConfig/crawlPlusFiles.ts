@@ -220,8 +220,6 @@ async function runCmd2(cmd: string, cwd: string): Promise<{ err: unknown } | { s
 }
 
 type UserSettings = ReturnType<typeof getUserSettings>
-// TODO/now: rename userSettings userSettings
-// TODO/now: rename UserSettings UserSettings
 function getUserSettings() {
   const userSettings = getEnvVarObject('VIKE_CRAWL') ?? {}
   const wrongUsage = (settingName: string, settingType: string) =>
