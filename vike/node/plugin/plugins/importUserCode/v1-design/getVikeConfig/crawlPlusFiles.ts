@@ -234,7 +234,7 @@ function getCrawlSettings() {
     hasProp(crawlSettings, 'ignore', 'string[]') ||
       hasProp(crawlSettings, 'ignore', 'string') ||
       hasProp(crawlSettings, 'ignore', 'undefined'),
-    wrongUsage('git', 'string')
+    wrongUsage('git', 'string or an array of strings')
   )
   assertUsage(
     hasProp(crawlSettings, 'ignoreBuiltIn', 'boolean') || hasProp(crawlSettings, 'ignoreBuiltIn', 'undefined'),
