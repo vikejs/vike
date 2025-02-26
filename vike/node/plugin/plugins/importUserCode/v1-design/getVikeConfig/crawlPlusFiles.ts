@@ -177,8 +177,7 @@ async function tinyglobby(userRootDir: string, outDirRelativeFromUserRootDir: st
   const options = {
     ignore: getIgnoreAsPatterns(outDirRelativeFromUserRootDir),
     cwd: userRootDir,
-    dot: false,
-    expandDirectories: false
+    dot: false
   }
   const files = await glob(pattern, options)
   // Make build deterministic, in order to get a stable generated hash for dist/client/assets/entries/entry-client-routing.${hash}.js
