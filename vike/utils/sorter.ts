@@ -5,10 +5,20 @@ export { lowerFirst }
 export { makeFirst }
 export { makeLast }
 export { reverse }
+export type { SortReturn }
 
-// -1 => element1 first (i.e. `indexOf(element1) < indexOf(element2)`)
-// +1 => element2 first (i.e. `indexOf(element2) < indexOf(element1)`)
-// 0 => keep original order of element1 and element2
+/**
+ * # How to use `Array.prototype.sort()`
+ *
+ * ```js
+ * elements.sort(sorter);
+ * function sorter(element1: unknown, element2: unknown): -1 | 0 | 1
+ * ```
+ * -1 => element1 first: `elements.indexOf(element1) < elements.indexOf(element2)`
+ * +1 => element2 first: `elements.indexOf(element2) < elements.indexOf(element1)`
+ *  0 => keep original order of element1 and element2
+ */
+type SortReturn = -1 | 0 | 1
 
 /**
  * ```js
@@ -25,7 +35,7 @@ export { reverse }
  * ])
  * ```
  */
-function higherFirst<T>(getValue: (element: T) => number): (element1: T, element2: T) => 0 | 1 | -1 {
+function higherFirst<T>(getValue: (element: T) => number): (element1: T, element2: T) => SortReturn {
   return (element1: T, element2: T) => {
     const val1 = getValue(element1)
     const val2 = getValue(element2)
@@ -51,7 +61,7 @@ function higherFirst<T>(getValue: (element: T) => number): (element1: T, element
  * ])
  * ```
  */
-function lowerFirst<T>(getValue: (element: T) => number): (element1: T, element2: T) => 0 | 1 | -1 {
+function lowerFirst<T>(getValue: (element: T) => number): (element1: T, element2: T) => SortReturn {
   return (element1: T, element2: T) => {
     const val1 = getValue(element1)
     const val2 = getValue(element2)
@@ -75,7 +85,7 @@ function lowerFirst<T>(getValue: (element: T) => number): (element1: T, element2
  * ])
  * ```
  */
-function makeFirst<T>(getValue: (element: T) => boolean | null): (element1: T, element2: T) => 0 | 1 | -1 {
+function makeFirst<T>(getValue: (element: T) => boolean | null): (element1: T, element2: T) => SortReturn {
   return (element1: T, element2: T) => {
     const val1 = getValue(element1)
     const val2 = getValue(element2)
@@ -119,6 +129,6 @@ function makeLast<T>(getValue: (element: T) => boolean | null) {
 }
 
 /** Reverse order result. */
-function reverse(sortKey: 0 | 1 | -1): 0 | 1 | -1 {
+function reverse(sortKey: SortReturn): SortReturn {
   return (-1 * sortKey) as any
 }

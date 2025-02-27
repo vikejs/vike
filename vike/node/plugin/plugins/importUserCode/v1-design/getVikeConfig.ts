@@ -580,7 +580,7 @@ function resolveConfigValueSources(
 function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
   const plusFilesOrdered: PlusFile[] = []
 
-  // `plusFilesRelevant` is already deterministic, see sortMakeDeterministic() at getPlusFilesAll()
+  // `plusFilesRelevant` is deterministic, see sortMakeDeterministic() at getPlusFilesAll()
 
   for (const plusFilesAtLocationId of Object.values(plusFilesRelevant)) {
     const plusFilesForConfigName = plusFilesAtLocationId.filter((plusFile) =>
