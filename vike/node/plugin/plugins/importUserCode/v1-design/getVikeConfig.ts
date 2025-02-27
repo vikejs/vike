@@ -542,6 +542,24 @@ function temp_interopVikeVitePlugin(
   })
 }
 
+function sortConfigValueSources(configValueSources: ConfigValueSources, locationIdPage: LocationId | null) {
+  Object.entries(configValueSources).forEach(([configName, sources]) => {
+    sources
+      .sort((source1, source2) => {
+        if (!source1.plusFile || !source2.plusFile) return 0
+        const isGlobal = !locationIdPage
+        if (isGlobal) {
+          return sortAfterInheritanceOrderGlobal(source1.plusFile, source2.plusFile, null, configName)
+        } else {
+          return sortAfterInheritanceOrderPage(source1.plusFile, source2.plusFile, locationIdPage, configName)
+        }
+      })
+      // TODO/next-major: remove
+      // Interop with vike(options) in vite.config.js
+      // Make it least precedence
+      .sort(makeLast((source) => !source.plusFile))
+  })
+}
 function sortAfterInheritanceOrderPage(
   plusFile1: PlusFile,
   plusFile2: PlusFile,
@@ -908,25 +926,6 @@ function assertMetaUsage(
         )
       }
     }
-  })
-}
-
-function sortConfigValueSources(configValueSources: ConfigValueSources, locationIdPage: LocationId | null) {
-  Object.entries(configValueSources).forEach(([configName, sources]) => {
-    sources
-      .sort((source1, source2) => {
-        if (!source1.plusFile || !source2.plusFile) return 0
-        const isGlobal = !locationIdPage
-        if (isGlobal) {
-          return sortAfterInheritanceOrderGlobal(source1.plusFile, source2.plusFile, null, configName)
-        } else {
-          return sortAfterInheritanceOrderPage(source1.plusFile, source2.plusFile, locationIdPage, configName)
-        }
-      })
-      // TODO/next-major: remove
-      // Interop with vike(options) in vite.config.js
-      // Make it least precedence
-      .sort(makeLast((source) => !source.plusFile))
   })
 }
 
