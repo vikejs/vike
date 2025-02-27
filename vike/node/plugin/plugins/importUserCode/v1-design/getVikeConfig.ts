@@ -284,10 +284,8 @@ async function resolveConfigDefinitions(
   await Promise.all(
     objectEntries(plusFilesAll).map(async ([locationIdPage, plusFiles]) => {
       const plusFilesRelevant: PlusFile[] = objectEntries(plusFilesAll)
-        .filter(([locationId]) => {
-          return isInherited(locationId, locationIdPage)
-        })
-        .map(([, plusFile]) => plusFile)
+        .filter(([locationId]) => isInherited(locationId, locationIdPage))
+        .map(([, plusFiles]) => plusFiles)
         .flat()
         .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null))
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
