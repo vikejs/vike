@@ -547,8 +547,7 @@ function sortConfigValueSources(configValueSources: ConfigValueSources, location
         }
       })
       // TODO/next-major: remove
-      // Interop with vike(options) in vite.config.js
-      // Make it least precedence
+      // Interop with vike(options) in vite.config.js — make it least precedence.
       .sort(makeLast((source) => !source.plusFile))
   })
 }
