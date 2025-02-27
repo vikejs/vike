@@ -587,7 +587,7 @@ function resolveConfigValueSources(
   userRootDir: string,
   isGlobal: boolean
 ): ConfigValueSource[] {
-  let sources: ConfigValueSource[] = plusFilesOrdered.map((plusFile, i) => {
+  let sources: ConfigValueSource[] = plusFilesOrdered.map((plusFile) => {
     const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
     return configValueSource
   })
