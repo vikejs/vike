@@ -1,11 +1,6 @@
 import type { Config } from 'vike/types'
 
 export default {
-  prerender: {
-    value: null,
-    parallel: 4,
-    noExtraDir: true
-  },
   meta: {
     prerenderSetOverEffect: {
       env: { config: true },
