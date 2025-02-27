@@ -339,7 +339,8 @@ function getPageConfigsBuildTime(
     pageConfigGlobal.configValueSources[configName] = sources
   })
   applyEffectsMetaEnv(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
-  applyEffectsConfVal(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal, null)
+  applyEffectsConfVal(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
+  sortConfigValueSources(pageConfigGlobal.configValueSources, null)
   assertPageConfigGlobal(pageConfigGlobal, plusFilesAll)
 
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
@@ -365,7 +366,8 @@ function getPageConfigsBuildTime(
       const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
       applyEffectsMetaEnv(configValueSources, configDefinitionsLocal)
-      applyEffectsConfVal(configValueSources, configDefinitionsLocal, locationId)
+      applyEffectsConfVal(configValueSources, configDefinitionsLocal)
+      sortConfigValueSources(configValueSources, locationId)
 
       const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
@@ -942,12 +944,22 @@ function assertMetaUsage(
   })
 }
 
+function sortConfigValueSources(configValueSources: ConfigValueSources, locationIdPage: LocationId | null) {
+  Object.entries(configValueSources).forEach(([configName, sources]) => {
+    sources
+      .sort((source1, source2) => {
+        if (!source1.plusFile || !source2.plusFile) return 0
+        return sortPlusFiles(source1.plusFile, source2.plusFile, configName, locationIdPage)
+      })
+      // TODO/next-major: remove
+      // Interop with vike(options) in vite.config.js
+      // Make it least precedence
+      .sort(makeLast((source) => !source.plusFile))
+  })
+}
+
 // Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/vite.config.ts#L39
-function applyEffectsConfVal(
-  configValueSources: ConfigValueSources,
-  configDefinitions: ConfigDefinitions,
-  locationIdPage: LocationId | null
-) {
+function applyEffectsConfVal(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
     const sourceEffect = configValueSources[configNameEffect]?.[0]
     if (!sourceEffect) return
@@ -963,17 +975,6 @@ function applyEffectsConfVal(
       configDefinitions,
       configValueEffectSource
     )
-  })
-  Object.entries(configValueSources).forEach(([configName, sources]) => {
-    sources
-      .sort((source1, source2) => {
-        if (!source1.plusFile || !source2.plusFile) return 0
-        return sortPlusFiles(source1.plusFile, source2.plusFile, configName, locationIdPage)
-      })
-      // TODO/next-major: remove
-      // Interop with vike(options) in vite.config.js
-      // Make it least precedence
-      .sort(makeLast((source) => !source.plusFile))
   })
 }
 // Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/pages/config-meta/effect/e2e-test.ts#L16
