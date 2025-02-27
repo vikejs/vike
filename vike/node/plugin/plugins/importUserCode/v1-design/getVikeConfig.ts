@@ -1327,5 +1327,5 @@ function isOverriden(
   assert(sources)
   const idx = sources.indexOf(source)
   assert(idx >= 0)
-  return idx === 0
+  return idx > 0
 }
