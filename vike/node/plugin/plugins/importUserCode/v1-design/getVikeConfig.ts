@@ -570,10 +570,6 @@ function sortAfterInheritanceOrderGlobal2(
     const ret = lowerFirst((plusFile: PlusFile) => plusFile.locationId.split('/').length)(plusFile1, plusFile2)
     if (ret !== 0) return ret
   }
-  {
-    const ret = lowerFirst((plusFile: PlusFile) => plusFile.locationId.split('/').length)(plusFile1, plusFile2)
-    if (ret !== 0) return ret
-  }
   // Group after `locationId`
   if (plusFile1.locationId !== plusFile2.locationId) {
     // Same as `sort()` in `['some', 'string', 'array'].sort()`
