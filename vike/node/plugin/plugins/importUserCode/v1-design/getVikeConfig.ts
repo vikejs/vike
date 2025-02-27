@@ -601,9 +601,10 @@ function resolveConfigValueSources(
 
   // Filter hydrid global-local configs
   if (!isCallable(configDef.global)) {
-    // Already fitered
+    // Already filtered
     assert((configDef.global ?? false) === isGlobal)
-  } else if (isCallable(configDef.global)) {
+  } else {
+    // We cannot filter earlier
     assert(configDef.env.config)
     sources = sources.filter((source) => {
       assert(source.configEnv.config)
