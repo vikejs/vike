@@ -360,6 +360,10 @@ function getPageConfigsBuildTime(
 
       applyEffectsMetaEnv(configValueSources, configDefinitionsLocal)
       applyEffectsConfVal(configValueSources, configDefinitionsLocal, locationId)
+      if (locationId.includes('about-page')) {
+        console.log('locationId', locationId)
+        console.log('configValueSources.prerender', JSON.stringify(configValueSources.prerender, null, 2))
+      }
 
       const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
