@@ -3,12 +3,7 @@ import vikeReact from 'vike-react/config'
 
 export default {
   title: 'Big Playground',
-  prerenderSetOverEffect: true,
-  prerender: {
-    value: null,
-    parallel: 4,
-    noExtraDir: true
-  },
+  prerender: true,
   redirects: {
     // TEST: redirect to email
     '/mail': 'mailto:some@example.com'

@@ -19,6 +19,7 @@ import { parsePointerImportData } from '../../../node/plugin/plugins/importUserC
 import { getConfigValueFilePathToShowToUser } from '../helpers.js'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from '@brillout/picocolors'
+import { isOverriden } from '../../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 const stringifyOptions = { forbidReactElements: true as const }
 const REPLACE_ME_BEFORE = '__VIKE__REPLACE_ME_BEFORE__'
 const REPLACE_ME_AFTER = '__VIKE__REPLACE_ME_AFTER__'
@@ -80,7 +81,6 @@ function getValueSerializedFromSource(
   importStatements: string[],
   filesEnv: FilesEnv
 ) {
-  assert(configValueSource.isOverriden === false)
   let valueData: ValueData
   if (configValueSource.valueIsLoaded && !configValueSource.valueIsLoadedWithImport) {
     valueData = getValueSerializedWithJson(
@@ -299,7 +299,6 @@ function getConfigValuesBase(
     if (!configDef.cumulative) {
       const source = sources[0]
       assert(source)
-      assert(sources.slice(1).every((s) => s.isOverriden === true))
       if (!isEnvMatch(source.configEnv)) return 'SKIP'
       const definedAtFile = getDefinedAtFileSource(source)
       const configValueBase = {
@@ -308,7 +307,9 @@ function getConfigValuesBase(
       } as const
       return { configValueBase, sourceRelevant: source, configName }
     } else {
-      const sourcesRelevant = sources.filter((source) => !source.isOverriden && isEnvMatch(source.configEnv))
+      const sourcesRelevant = sources
+        .filter((source) => !isOverriden(source, configName, pageConfig))
+        .filter((source) => isEnvMatch(source.configEnv))
       if (sourcesRelevant.length === 0) return 'SKIP'
       const definedAtData: DefinedAtFile[] = []
       sourcesRelevant.forEach((source) => {

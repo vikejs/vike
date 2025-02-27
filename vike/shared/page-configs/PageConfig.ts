@@ -62,7 +62,7 @@ type PageConfigGlobalRuntime = {
 /** Page config, build-time data structure */
 type PageConfigBuildTime = PageConfigCommon & {
   configDefinitions: ConfigDefinitions
-  plusFiles: PlusFilesByLocationId
+  plusFiles: PlusFile[]
   configValueSources: ConfigValueSources
   configValuesComputed: ConfigValuesComputed
 }
@@ -115,7 +115,6 @@ type ConfigValueSource = {
     | null
   // TODO/v1-release: remove `locationId` in favor of `plusFile.locationId`
   locationId: LocationId
-  isOverriden: boolean
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsLoadedWithImport: boolean
   /** Whether the config value is a file path, for example config.client */
