@@ -552,6 +552,7 @@ function sortAfterInheritanceOrderLocal(
   {
     const ret = sortAfterInheritanceOrder(plusFile1.locationId, plusFile2.locationId, locationIdPage)
     if (ret !== 0) return ret
+    assert(plusFile1.locationId === plusFile2.locationId)
   }
   if (configName) {
     const ret = sortPlusFilesSameLocationId(plusFile1, plusFile2, configName)
