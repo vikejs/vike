@@ -585,12 +585,12 @@ function sortAfterInheritanceOrderGlobal(
     const ret = lowerFirst((plusFile: PlusFile) => plusFile.locationId.split('/').length)(plusFile1, plusFile2)
     if (ret !== 0) return ret
   }
-  // Group after `locationId`
   if (plusFile1.locationId !== plusFile2.locationId) {
     // Same as `sort()` in `['some', 'string', 'array'].sort()`
     return plusFile1.locationId > plusFile2.locationId ? 1 : -1
   }
   if (configName) {
+    assert(plusFile1.locationId === plusFile2.locationId)
     const ret = sortPlusFilesSameLocationId(plusFile1, plusFile2, configName)
     if (ret !== 0) return ret
   }
@@ -627,7 +627,6 @@ function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, c
   }
 
   // Config set by +{configName}.js (highest precedence)
-
   // No need to make it deterministic: the overall order is arleady deterministic, see sortMakeDeterministic() at getPlusFilesAll()
   return 0
 }
