@@ -587,38 +587,6 @@ function sortAfterInheritanceOrderGlobal(
   }
   return 0
 }
-
-function resolveConfigValueSources(
-  configName: string,
-  configDef: ConfigDefinitionInternal,
-  plusFilesRelevant: PlusFile[],
-  userRootDir: string,
-  isGlobal: boolean
-): ConfigValueSource[] {
-  plusFilesRelevant = plusFilesRelevant.filter((plusFile) => isDefiningConfig(plusFile, configName))
-
-  let sources: ConfigValueSource[] = plusFilesRelevant.map((plusFile) => {
-    const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
-    return configValueSource
-  })
-
-  // Filter hydrid global-local configs
-  if (!isCallable(configDef.global)) {
-    // Already filtered
-    assert((configDef.global ?? false) === isGlobal)
-  } else {
-    // We cannot filter earlier
-    assert(configDef.env.config)
-    sources = sources.filter((source) => {
-      assert(source.configEnv.config)
-      assert(source.valueIsLoaded)
-      const valueIsGlobal = resolveIsGlobalValue(configDef.global, source.value)
-      return isGlobal ? valueIsGlobal : !valueIsGlobal
-    })
-  }
-
-  return sources
-}
 function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, configName: string): SortReturn {
   assert(plusFile1.locationId === plusFile2.locationId)
   assert(isDefiningConfig(plusFile1, configName))
@@ -653,6 +621,38 @@ function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, c
 
   // No need to make it deterministic: the overall order is arleady deterministic, see sortMakeDeterministic() at getPlusFilesAll()
   return 0
+}
+
+function resolveConfigValueSources(
+  configName: string,
+  configDef: ConfigDefinitionInternal,
+  plusFilesRelevant: PlusFile[],
+  userRootDir: string,
+  isGlobal: boolean
+): ConfigValueSource[] {
+  plusFilesRelevant = plusFilesRelevant.filter((plusFile) => isDefiningConfig(plusFile, configName))
+
+  let sources: ConfigValueSource[] = plusFilesRelevant.map((plusFile) => {
+    const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
+    return configValueSource
+  })
+
+  // Filter hydrid global-local configs
+  if (!isCallable(configDef.global)) {
+    // Already filtered
+    assert((configDef.global ?? false) === isGlobal)
+  } else {
+    // We cannot filter earlier
+    assert(configDef.env.config)
+    sources = sources.filter((source) => {
+      assert(source.configEnv.config)
+      assert(source.valueIsLoaded)
+      const valueIsGlobal = resolveIsGlobalValue(configDef.global, source.value)
+      return isGlobal ? valueIsGlobal : !valueIsGlobal
+    })
+  }
+
+  return sources
 }
 function isDefiningConfig(plusFile: PlusFile, configName: string) {
   return getDefiningConfigNames(plusFile).includes(configName)
