@@ -263,7 +263,7 @@ async function resolveConfigDefinitions(
 ) {
   const plusFilesAllOrdered = Object.values(plusFilesAll)
     .flat()
-    .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderGlobal(plusFile1, plusFile2, null))
+    .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderGlobal(plusFile1, plusFile2, plusFilesAll, null))
   const configDefinitionsGlobal = getConfigDefinitions(
     // We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
     plusFilesAllOrdered,
@@ -541,7 +541,7 @@ function sortConfigValueSources(configValueSources: ConfigValueSources, location
         if (!source1.plusFile || !source2.plusFile) return 0
         const isGlobal = !locationIdPage
         if (isGlobal) {
-          return sortAfterInheritanceOrderGlobal(source1.plusFile, source2.plusFile, configName)
+          return sortAfterInheritanceOrderGlobal(source1.plusFile, source2.plusFile, null, configName)
         } else {
           return sortAfterInheritanceOrderPage(source1.plusFile, source2.plusFile, locationIdPage, configName)
         }
@@ -571,8 +571,16 @@ function sortAfterInheritanceOrderPage(
 function sortAfterInheritanceOrderGlobal(
   plusFile1: PlusFile,
   plusFile2: PlusFile,
+  plusFilesAll: PlusFilesByLocationId | null,
   configName: string | null
 ): SortReturn {
+  if (plusFilesAll) {
+    const ret = makeFirst((plusFile: PlusFile) => isGlobalLocation(plusFile.locationId, plusFilesAll))(
+      plusFile1,
+      plusFile2
+    )
+    if (ret !== 0) return ret
+  }
   {
     const ret = lowerFirst((plusFile: PlusFile) => plusFile.locationId.split('/').length)(plusFile1, plusFile2)
     if (ret !== 0) return ret
