@@ -351,7 +351,6 @@ function getPageConfigsBuildTime(
         .forEach(([configName, configDef]) => {
           const plusFilesRelevantOrdered = getPlusFilesRelevantOrdered(configName, plusFilesRelevant)
           const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevantOrdered, userRootDir, false)
-          // sortConfigValueSources(sources, locationId)
           if (sources.length === 0) return
           configValueSources[configName] = sources
         })
@@ -551,10 +550,10 @@ function sortAfterInheritanceOrderGlobal(plusFilesAll: PlusFilesByLocationId, co
 function sortAfterInheritanceOrderGlobal2(
   plusFile1: PlusFile,
   plusFile2: PlusFile,
-  plusFilesAll: PlusFilesByLocationId,
+  plusFilesAll: PlusFilesByLocationId | null,
   configName: string | null
 ): SortReturn {
-  {
+  if (plusFilesAll) {
     const ret = makeFirst((plusFile: PlusFile) => isGlobalLocation(plusFile.locationId, plusFilesAll))(
       plusFile1,
       plusFile2
@@ -665,8 +664,18 @@ function sortPlusFiles(
   configName: string,
   locationIdPage: LocationId | null
 ): SortReturn {
-  const isGlobal = !!locationIdPage
-  // TODO/now
+  const isGlobal = !locationIdPage
+  if (isGlobal) {
+    const ret = sortAfterInheritanceOrderGlobal2(plusFile1, plusFile2, null, configName)
+    if (ret !== 0) return ret
+  } else {
+    const ret = sortAfterInheritanceOrder(plusFile1.locationId, plusFile2.locationId, locationIdPage)
+    if (ret !== 0) return ret
+  }
+  {
+    const ret = sortPlusFilesSameLocationId(plusFile1, plusFile2, configName)
+    if (ret !== 0) return ret
+  }
   return 0
 }
 /*
