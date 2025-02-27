@@ -581,17 +581,22 @@ function sortAfterInheritanceOrderGlobal2(
 function resolveConfigValueSources(
   configName: string,
   configDef: ConfigDefinitionInternal,
-  plusFilesOrdered: PlusFile[],
+  plusFilesRelevant: PlusFile[],
   userRootDir: string,
   isGlobal: boolean
 ): ConfigValueSource[] {
-  let sources: ConfigValueSource[] = plusFilesOrdered
-    .filter((plusFile) => isDefiningConfig(plusFile, configName))
-    .map((plusFile) => {
-      const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
-      return configValueSource
-    })
-  if (isCallable(configDef.global)) {
+  plusFilesRelevant = plusFilesRelevant.filter((plusFile) => isDefiningConfig(plusFile, configName))
+
+  let sources: ConfigValueSource[] = plusFilesRelevant.map((plusFile) => {
+    const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
+    return configValueSource
+  })
+
+  // Filter hydrid global-local configs
+  if (!isCallable(configDef.global)) {
+    // Already fitered
+    assert((configDef.global ?? false) === isGlobal)
+  } else if (isCallable(configDef.global)) {
     assert(configDef.env.config)
     sources = sources.filter((source) => {
       assert(source.configEnv.config)
