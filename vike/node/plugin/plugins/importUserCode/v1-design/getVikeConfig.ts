@@ -534,14 +534,14 @@ function temp_interopVikeVitePlugin(
 
 // Together with getPlusFilesOrdered() this implements the whole config inheritance ordering for non-global configs. See sortAfterInheritanceOrderGlobal() for global configs.
 function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPage: LocationId) {
-  const plusFilesRelevant = Object.fromEntries(
-    objectEntries(plusFilesAll)
-      .filter(([locationId]) => {
-        return isInherited(locationId, locationIdPage)
-      })
-      .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
-  )
-  return Object.values(plusFilesRelevant).flat()
+  const plusFilesRelevant: PlusFile[] = objectEntries(plusFilesAll)
+    .filter(([locationId]) => {
+      return isInherited(locationId, locationIdPage)
+    })
+    .map(([, plusFile]) => plusFile)
+    .flat()
+    .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderLocal(plusFile1, plusFile2, locationIdPage, null))
+  return plusFilesRelevant
 }
 function sortAfterInheritanceOrderLocal(
   plusFile1: PlusFile,
