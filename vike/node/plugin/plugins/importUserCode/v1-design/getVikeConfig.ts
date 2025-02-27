@@ -262,7 +262,7 @@ async function resolveConfigDefinitions(
   esbuildCache: EsbuildCache
 ) {
   const configDefinitionsGlobal = getConfigDefinitions(
-    sortAfterInheritanceOrderGlobal(plusFilesAll, null),
+    sortAfterInheritanceOrderGlobal(plusFilesAll),
     (configDef) => !!configDef.global
   )
   await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
@@ -330,7 +330,8 @@ function getPageConfigsBuildTime(
     const sources = resolveConfigValueSources(
       configName,
       configDef,
-      sortAfterInheritanceOrderGlobal(plusFilesAll, configName),
+      // TODO/now comment this line?
+      Object.values(plusFilesAll).flat(),
       userRootDir,
       true
     )
@@ -538,13 +539,14 @@ function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPag
 }
 // This implements the whole config inheritance ordering for global configs.
 // We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
-function sortAfterInheritanceOrderGlobal(plusFilesAll: PlusFilesByLocationId, configName: string | null): PlusFile[] {
+function sortAfterInheritanceOrderGlobal(plusFilesAll: PlusFilesByLocationId): PlusFile[] {
   let plusFilesRelevantOrdered = Object.values(plusFilesAll).flat()
   plusFilesRelevantOrdered.sort((plusFile1, plusFile2) =>
-    sortAfterInheritanceOrderGlobal2(plusFile1, plusFile2, plusFilesAll, configName)
+    sortAfterInheritanceOrderGlobal2(plusFile1, plusFile2, plusFilesAll, null)
   )
   return plusFilesRelevantOrdered
 }
+// TODO/now rename
 function sortAfterInheritanceOrderGlobal2(
   plusFile1: PlusFile,
   plusFile2: PlusFile,
