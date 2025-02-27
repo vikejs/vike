@@ -5,6 +5,7 @@ export { vikeConfigDependencies }
 export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
+export { isOverriden }
 export type { VikeConfigObject }
 
 import {
@@ -518,7 +519,6 @@ function temp_interopVikeVitePlugin(
       },
       locationId: '/' as LocationId,
       plusFile: null,
-      isOverriden: configDef.cumulative ? false : sources.length > 0,
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false
     })
@@ -568,7 +568,7 @@ function sortAfterInheritanceOrderGlobal2(
     const ret = lowerFirst((plusFile: PlusFile) => plusFile.locationId.split('/').length)(plusFile1, plusFile2)
     if (ret !== 0) return ret
   }
-  // Bundle after locationId
+  // Group after `locationId`
   if (plusFile1.locationId !== plusFile2.locationId) {
     // Same as `sort()` in `['some', 'string', 'array'].sort()`
     return plusFile1.locationId > plusFile2.locationId ? 1 : -1
@@ -588,14 +588,7 @@ function resolveConfigValueSources(
   isGlobal: boolean
 ): ConfigValueSource[] {
   let sources: ConfigValueSource[] = plusFilesOrdered.map((plusFile, i) => {
-    const isHighestInheritancePrecedence = i === 0
-    const configValueSource = getConfigValueSource(
-      configName,
-      plusFile,
-      configDef,
-      userRootDir,
-      isHighestInheritancePrecedence
-    )
+    const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
     return configValueSource
   })
   if (isCallable(configDef.global)) {
@@ -696,8 +689,7 @@ function getConfigValueSource(
   configName: string,
   plusFile: PlusFile,
   configDef: ConfigDefinitionInternal,
-  userRootDir: string,
-  isHighestInheritancePrecedence: boolean
+  userRootDir: string
 ): ConfigValueSource {
   const confVal = getConfVal(plusFile, configName)
   assert(confVal)
@@ -711,8 +703,6 @@ function getConfigValueSource(
     ...plusFile.filePath,
     fileExportPathToShowToUser: ['default', configName]
   }
-
-  const isOverriden = configDef.cumulative ? false : !isHighestInheritancePrecedence
 
   // +client.js
   if (configDef._valueIsFilePath) {
@@ -743,7 +733,6 @@ function getConfigValueSource(
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
-      isOverriden,
       definedAtFilePath
     }
     return configValueSource
@@ -770,7 +759,6 @@ function getConfigValueSource(
         configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
         valueIsLoadedWithImport: true,
         valueIsDefinedByPlusValueFile: false,
-        isOverriden,
         definedAtFilePath: pointerImport.fileExportPath
       }
       return configValueSource
@@ -784,7 +772,6 @@ function getConfigValueSource(
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
-      isOverriden,
       definedAtFilePath: definedAtFilePath_
     }
     return configValueSource
@@ -800,7 +787,6 @@ function getConfigValueSource(
       configEnv: configEnvResolved,
       valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
       valueIsDefinedByPlusValueFile: true,
-      isOverriden,
       definedAtFilePath: {
         ...plusFile.filePath,
         fileExportPathToShowToUser:
@@ -1038,7 +1024,6 @@ function applyEffectConfVal(
       plusFile: sourceEffect.plusFile,
       locationId: sourceEffect.locationId,
       configEnv: configDef.env,
-      isOverriden: false, // TODO/now check
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
       valueIsLoaded: true,
@@ -1328,4 +1313,19 @@ function isGlobalLocation(locationId: LocationId, plusFilesAll: PlusFilesByLocat
     .filter(([_locationId, plusFiles]) => isDefiningPage(plusFiles))
     .map(([locationId]) => locationId)
   return locationIdsPage.every((locId) => isInherited(locationId, locId))
+}
+
+function isOverriden(
+  source: ConfigValueSource,
+  configName: string,
+  pageConfig: PageConfigBuildTime | PageConfigGlobalBuildTime
+): boolean {
+  const configDef = pageConfig.configDefinitions[configName]
+  assert(configDef)
+  if (configDef.cumulative) return false
+  const sources = pageConfig.configValueSources[configName]
+  assert(sources)
+  const idx = sources.indexOf(source)
+  assert(idx >= 0)
+  return idx === 0
 }

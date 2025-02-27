@@ -3,7 +3,7 @@ export { determineOptimizeDeps }
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
 import { assert, assertIsNpmPackageImport, createDebugger, isArray, unique } from '../../utils.js'
-import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
+import { getVikeConfig, isOverriden } from '../importUserCode/v1-design/getVikeConfig.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
 import {
@@ -58,9 +58,9 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   // V1 design
   {
     pageConfigs.forEach((pageConfig) => {
-      Object.values(pageConfig.configValueSources).forEach((sources) => {
+      Object.entries(pageConfig.configValueSources).forEach(([configName, sources]) => {
         sources
-          .filter((c) => !c.isOverriden)
+          .filter((source) => !isOverriden(source, configName, pageConfig))
           .forEach((configValueSource) => {
             if (!configValueSource.valueIsLoadedWithImport && !configValueSource.valueIsFilePath) return
             const { definedAtFilePath, configEnv } = configValueSource
