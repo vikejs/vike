@@ -289,7 +289,7 @@ async function resolveConfigDefinitions(
         })
         .map(([, plusFile]) => plusFile)
         .flat()
-        .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderLocal(plusFile1, plusFile2, locationIdPage, null))
+        .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null))
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       configDefinitionsLocal[locationIdPage] = { configDefinitions, plusFiles, plusFilesRelevant }
@@ -542,7 +542,7 @@ function temp_interopVikeVitePlugin(
   })
 }
 
-function sortAfterInheritanceOrderLocal(
+function sortAfterInheritanceOrderPage(
   plusFile1: PlusFile,
   plusFile2: PlusFile,
   locationIdPage: LocationId,
@@ -920,7 +920,7 @@ function sortConfigValueSources(configValueSources: ConfigValueSources, location
         if (isGlobal) {
           return sortAfterInheritanceOrderGlobal(source1.plusFile, source2.plusFile, null, configName)
         } else {
-          return sortAfterInheritanceOrderLocal(source1.plusFile, source2.plusFile, locationIdPage, configName)
+          return sortAfterInheritanceOrderPage(source1.plusFile, source2.plusFile, locationIdPage, configName)
         }
       })
       // TODO/next-major: remove
