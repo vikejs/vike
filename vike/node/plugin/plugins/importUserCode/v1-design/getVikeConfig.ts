@@ -274,14 +274,13 @@ async function resolveConfigDefinitions(
       // plusFiles that live at locationId
       plusFiles: PlusFile[]
       // plusFiles that influence locationId
-      plusFilesRelevant: PlusFilesByLocationId
+      plusFilesRelevant: PlusFile[]
     }
   > = {}
   await Promise.all(
     objectEntries(plusFilesAll).map(async ([locationId, plusFiles]) => {
       const plusFilesRelevant = getPlusFilesRelevant(plusFilesAll, locationId)
-      const plusFilesRelevantList = Object.values(plusFilesRelevant).flat()
-      const configDefinitions = getConfigDefinitions(plusFilesRelevantList, (configDef) => configDef.global !== true)
+      const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       configDefinitionsLocal[locationId] = { configDefinitions, plusFiles, plusFilesRelevant }
     })
@@ -534,7 +533,7 @@ function temp_interopVikeVitePlugin(
 }
 
 // Together with getPlusFilesOrdered() this implements the whole config inheritance ordering for non-global configs. See sortAfterInheritanceOrderGlobal() for global configs.
-function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPage: LocationId): PlusFilesByLocationId {
+function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPage: LocationId) {
   const plusFilesRelevant = Object.fromEntries(
     objectEntries(plusFilesAll)
       .filter(([locationId]) => {
@@ -542,7 +541,7 @@ function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPag
       })
       .sort(([locationId1], [locationId2]) => sortAfterInheritanceOrder(locationId1, locationId2, locationIdPage))
   )
-  return plusFilesRelevant
+  return Object.values(plusFilesRelevant).flat()
 }
 // This implements the whole config inheritance ordering for global configs.
 // We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
