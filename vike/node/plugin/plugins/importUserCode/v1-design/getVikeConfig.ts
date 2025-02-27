@@ -25,7 +25,9 @@ import {
   unique,
   isCallable,
   makeFirst,
-  lowerFirst
+  lowerFirst,
+  makeLast,
+  type SortReturn
 } from '../../../utils.js'
 import type {
   PageConfigGlobalBuildTime,
@@ -259,7 +261,7 @@ async function resolveConfigDefinitions(
   esbuildCache: EsbuildCache
 ) {
   const configDefinitionsGlobal = getConfigDefinitions(
-    sortAfterInheritanceOrderGlobal(plusFilesAll),
+    sortAfterInheritanceOrderGlobal(plusFilesAll, null),
     (configDef) => !!configDef.global
   )
   await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
@@ -277,7 +279,8 @@ async function resolveConfigDefinitions(
   await Promise.all(
     objectEntries(plusFilesAll).map(async ([locationId, plusFiles]) => {
       const plusFilesRelevant = getPlusFilesRelevant(plusFilesAll, locationId)
-      const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
+      const plusFilesRelevantList = Object.values(plusFilesRelevant).flat()
+      const configDefinitions = getConfigDefinitions(plusFilesRelevantList, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       configDefinitionsLocal[locationId] = { configDefinitions, plusFiles, plusFilesRelevant }
     })
@@ -326,7 +329,7 @@ function getPageConfigsBuildTime(
     const sources = resolveConfigValueSources(
       configName,
       configDef,
-      sortAfterInheritanceOrderGlobal(plusFilesAll),
+      sortAfterInheritanceOrderGlobal(plusFilesAll, configName),
       userRootDir,
       true
     )
@@ -334,7 +337,7 @@ function getPageConfigsBuildTime(
     pageConfigGlobal.configValueSources[configName] = sources
   })
   applyEffectsMetaEnv(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
-  applyEffectsConfVal(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal)
+  applyEffectsConfVal(pageConfigGlobal.configValueSources, configDefinitionsResolved.configDefinitionsGlobal, null)
   assertPageConfigGlobal(pageConfigGlobal, plusFilesAll)
 
   const pageConfigs: PageConfigBuildTime[] = objectEntries(configDefinitionsResolved.configDefinitionsLocal)
@@ -346,7 +349,8 @@ function getPageConfigsBuildTime(
       objectEntries(configDefinitionsLocal)
         .filter(([_configName, configDef]) => configDef.global !== true)
         .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevant, userRootDir, false)
+          const plusFilesRelevantOrdered = getPlusFilesRelevantOrdered(configName, plusFilesRelevant)
+          const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevantOrdered, userRootDir, false)
           // sortConfigValueSources(sources, locationId)
           if (sources.length === 0) return
           configValueSources[configName] = sources
@@ -355,7 +359,7 @@ function getPageConfigsBuildTime(
       const pageConfigRoute = determineRouteFilesystem(locationId, configValueSources)
 
       applyEffectsMetaEnv(configValueSources, configDefinitionsLocal)
-      applyEffectsConfVal(configValueSources, configDefinitionsLocal)
+      applyEffectsConfVal(configValueSources, configDefinitionsLocal, locationId)
 
       const configValuesComputed = getComputed(configValueSources, configDefinitionsLocal)
 
@@ -535,24 +539,55 @@ function getPlusFilesRelevant(plusFilesAll: PlusFilesByLocationId, locationIdPag
 }
 // This implements the whole config inheritance ordering for global configs.
 // We use `plusFilesAll` in order to allow local Vike extensions to create global configs, and to set the value of global configs such as `+vite` (enabling Vike extensions to add Vite plugins).
-function sortAfterInheritanceOrderGlobal(plusFilesAll: PlusFilesByLocationId): PlusFilesByLocationId {
-  const plusFilesAllSorted = Object.fromEntries(
-    objectEntries(plusFilesAll)
-      .sort(lowerFirst(([locationId]) => locationId.split('/').length))
-      .sort(makeFirst(([locationId]) => isGlobalLocation(locationId, plusFilesAll)))
+function sortAfterInheritanceOrderGlobal(plusFilesAll: PlusFilesByLocationId, configName: string | null): PlusFile[] {
+  let plusFilesRelevantOrdered = Object.values(plusFilesAll).flat()
+  if (configName)
+    plusFilesRelevantOrdered = plusFilesRelevantOrdered.filter((plusFile) => isDefiningConfig(plusFile, configName))
+  plusFilesRelevantOrdered.sort((plusFile1, plusFile2) =>
+    sortAfterInheritanceOrderGlobal2(plusFile1, plusFile2, plusFilesAll, configName)
   )
-  return plusFilesAllSorted
+  return plusFilesRelevantOrdered
+}
+function sortAfterInheritanceOrderGlobal2(
+  plusFile1: PlusFile,
+  plusFile2: PlusFile,
+  plusFilesAll: PlusFilesByLocationId,
+  configName: string | null
+): SortReturn {
+  {
+    const ret = makeFirst((plusFile: PlusFile) => isGlobalLocation(plusFile.locationId, plusFilesAll))(
+      plusFile1,
+      plusFile2
+    )
+    if (ret !== 0) return ret
+  }
+  {
+    const ret = lowerFirst((plusFile: PlusFile) => plusFile.locationId.split('/').length)(plusFile1, plusFile2)
+    if (ret !== 0) return ret
+  }
+  {
+    const ret = lowerFirst((plusFile: PlusFile) => plusFile.locationId.split('/').length)(plusFile1, plusFile2)
+    if (ret !== 0) return ret
+  }
+  // Bundle after locationId
+  if (plusFile1.locationId !== plusFile2.locationId) {
+    // Same as `sort()` in `['some', 'string', 'array'].sort()`
+    return plusFile1.locationId > plusFile2.locationId ? 1 : -1
+  }
+  if (configName) {
+    const ret = sortPlusFilesSameLocationId(plusFile1, plusFile2, configName)
+    if (ret !== 0) return ret
+  }
+  return 0
 }
 
 function resolveConfigValueSources(
   configName: string,
   configDef: ConfigDefinitionInternal,
-  plusFilesRelevant: PlusFilesByLocationId,
+  plusFilesOrdered: PlusFile[],
   userRootDir: string,
   isGlobal: boolean
 ): ConfigValueSource[] {
-  const plusFilesOrdered = getPlusFilesOrdered(configName, plusFilesRelevant)
-
   let sources: ConfigValueSource[] = plusFilesOrdered.map((plusFile, i) => {
     const isHighestInheritancePrecedence = i === 0
     const configValueSource = getConfigValueSource(
@@ -576,85 +611,78 @@ function resolveConfigValueSources(
 
   return sources
 }
-// Together with getPlusFilesRelevant() this implements the whole config inheritance ordering.
-function getPlusFilesOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
-  const plusFilesOrdered: PlusFile[] = []
-
-  // `plusFilesRelevant` is deterministic, see sortMakeDeterministic() at getPlusFilesAll()
-
+function getPlusFilesRelevantOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
+  const plusFilesRelevantOrdered: PlusFile[] = []
   for (const plusFilesAtLocationId of Object.values(plusFilesRelevant)) {
-    const plusFilesForConfigName = plusFilesAtLocationId.filter((plusFile) =>
-      getDefiningConfigNames(plusFile).includes(configName)
-    )
+    const plusFilesOrdered = plusFilesAtLocationId
+      .filter((plusFile) => isDefiningConfig(plusFile, configName))
+      .sort((plusFile1, plusFile2) => sortPlusFilesSameLocationId(plusFile1, plusFile2, configName))
+    plusFilesRelevantOrdered.push(...plusFilesOrdered)
+  }
+  return plusFilesRelevantOrdered
+}
+function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, configName: string): SortReturn {
+  assert(plusFile1.locationId === plusFile2.locationId)
+  assert(isDefiningConfig(plusFile1, configName))
+  assert(isDefiningConfig(plusFile2, configName))
 
-    // We populate `plusFilesOrdered` with inheritance order.
-    const populate = (plusFile: PlusFile) => {
-      assert(!visited.has(plusFile))
-      visited.add(plusFile)
-      plusFilesOrdered.push(plusFile)
-    }
-    const visited = new WeakSet<PlusFile>()
-
-    // ========================
-    // User-land config (first)
-    // ========================
-    {
-      const plusFilesValue = plusFilesForConfigName.filter(
-        (plusFile) =>
-          !plusFile.isConfigFile &&
-          // We consider side-effect configs (e.g. `export { frontmatter }` of .mdx files) later (i.e. with less priority)
-          plusFile.configName === configName
-      )
-      const plusFilesConfig = plusFilesForConfigName.filter(
-        (plusFile) =>
-          plusFile.isConfigFile &&
-          // We consider extensions (e.g. vike-react) later (i.e. with less priority)
-          !plusFile.isExtensionConfig
-      )
-      ;[...plusFilesValue, ...plusFilesConfig].forEach((plusFile) => {
-        assert(plusFile.filePath.filePathAbsoluteUserRootDir) // ensure it's a user-land plus file
-        populate(plusFile)
-      })
-    }
-
-    // ==========================
-    // Side-effect configs (next)
-    // ==========================
-    // - For example `export { frontmatter }` of `.mdx` files.
-    // - This only considers side-effect configs that are already loaded at build-time. (E.g. it actually doesn't consider `export { frontmatter }` of .mdx files since .mdx files are loaded only at runtime.)
-    plusFilesForConfigName
-      .filter(
-        (plusFile) =>
-          !plusFile.isConfigFile &&
-          // Is side-effect config
-          plusFile.configName !== configName
-      )
-      .forEach((plusFile) => {
-        assert(plusFile.filePath.filePathAbsoluteUserRootDir) // ensure it's a user-land plus file
-        populate(plusFile)
-      })
-
-    // ========================
-    // Extensions config (last)
-    // ========================
-    plusFilesForConfigName
-      .filter((plusFile) => plusFile.isConfigFile && plusFile.isExtensionConfig)
-      // Extension config files are already sorted by inheritance order
-      .forEach((plusFile) => {
-        assert(!plusFile.filePath.filePathAbsoluteUserRootDir) // ensure it isn't a user-land plus file
-        populate(plusFile)
-      })
-
-    // ======
-    // Assert we didn't miss any config.
-    // ======
-    plusFilesForConfigName.forEach((plusFile) => {
-      assert(visited.has(plusFile))
-    })
+  // Config set by extensions (lowest precedence)
+  {
+    const ret = makeLast((plusFile: PlusFile) => !!plusFile.isExtensionConfig)(plusFile1, plusFile2)
+    if (ret !== 0) return ret
   }
 
-  return plusFilesOrdered
+  // Config set by side-export (lower precedence)
+  {
+    // - For example `export { frontmatter }` of `.mdx` files.
+    // - This only considers side-export configs that are already loaded at build-time. (E.g. it actually doesn't consider `export { frontmatter }` of .mdx files since .mdx files are loaded only at runtime.)
+    const ret = makeLast(
+      (plusFile: PlusFile) =>
+        !plusFile.isConfigFile &&
+        // Is side-export
+        plusFile.configName !== configName
+    )(plusFile1, plusFile2)
+    if (ret !== 0) return ret
+  }
+
+  // Config set by +config.js
+  {
+    const ret = makeLast((plusFile: PlusFile) => plusFile.isConfigFile)(plusFile1, plusFile2)
+    if (ret !== 0) return ret
+  }
+
+  // Config set by +{configName}.js (highest precedence)
+
+  // No need to make it deterministic: the overall order is arleady deterministic, see sortMakeDeterministic() at getPlusFilesAll()
+  return 0
 }
+function isDefiningConfig(plusFile: PlusFile, configName: string) {
+  return getDefiningConfigNames(plusFile).includes(configName)
+}
+function sortPlusFiles(
+  plusFile1: PlusFile,
+  plusFile2: PlusFile,
+  configName: string,
+  locationIdPage: LocationId | null
+): SortReturn {
+  const isGlobal = !!locationIdPage
+  // TODO/now
+  return 0
+}
+/*
+function sortPlusFilesWithoutConfigName(
+  plusFile1: PlusFile,
+  plusFile2: PlusFile,
+  locationIdPage?: LocationId
+): -1 | 0 | 1 {
+  const isGlobal = !!locationIdPage
+  if (isGlobal) {
+    // return sortAfterInheritanceOrderGlobal(plusFile1
+  } else {
+    return sortAfterInheritanceOrder(plusFile1.locationId, plusFile2.locationId, locationIdPage)
+  }
+}
+*/
 function getConfigValueSource(
   configName: string,
   plusFile: PlusFile,
@@ -811,39 +839,38 @@ function getDefiningConfigNames(plusFile: PlusFile): string[] {
 }
 
 function getConfigDefinitions(
-  plusFilesRelevant: PlusFilesByLocationId,
+  plusFilesRelevant: PlusFile[],
   filter?: (configDef: ConfigDefinitionInternal) => boolean
 ): ConfigDefinitions {
   let configDefinitions: ConfigDefinitions = { ...configDefinitionsBuiltIn }
 
   // Add user-land meta configs
-  Object.entries(plusFilesRelevant)
+  plusFilesRelevant
+    .slice()
     .reverse()
-    .forEach(([_locationId, plusFiles]) => {
-      plusFiles.forEach((plusFile) => {
-        const confVal = getConfVal(plusFile, 'meta')
-        if (!confVal) return
-        assert(confVal.valueIsLoaded)
-        const meta = confVal.value
-        assertMetaUsage(meta, `Config ${pc.cyan('meta')} defined at ${plusFile.filePath.filePathToShowToUser}`)
+    .forEach((plusFile) => {
+      const confVal = getConfVal(plusFile, 'meta')
+      if (!confVal) return
+      assert(confVal.valueIsLoaded)
+      const meta = confVal.value
+      assertMetaUsage(meta, `Config ${pc.cyan('meta')} defined at ${plusFile.filePath.filePathToShowToUser}`)
 
-        // Set configDef._userEffectDefinedAtFilePath
-        Object.entries(meta).forEach(([configName, configDef]) => {
-          if (!configDef.effect) return
-          assert(plusFile.isConfigFile)
-          configDef._userEffectDefinedAtFilePath = {
-            ...plusFile.filePath,
-            fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
-          }
-        })
+      // Set configDef._userEffectDefinedAtFilePath
+      Object.entries(meta).forEach(([configName, configDef]) => {
+        if (!configDef.effect) return
+        assert(plusFile.isConfigFile)
+        configDef._userEffectDefinedAtFilePath = {
+          ...plusFile.filePath,
+          fileExportPathToShowToUser: ['default', 'meta', configName, 'effect']
+        }
+      })
 
-        objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
-          // User can override an existing config definition
-          configDefinitions[configName] = {
-            ...configDefinitions[configName],
-            ...configDefinitionUserLand
-          }
-        })
+      objectEntries(meta).forEach(([configName, configDefinitionUserLand]) => {
+        // User can override an existing config definition
+        configDefinitions[configName] = {
+          ...configDefinitions[configName],
+          ...configDefinitionUserLand
+        }
       })
     })
 
@@ -918,7 +945,11 @@ function assertMetaUsage(
 }
 
 // Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/vite.config.ts#L39
-function applyEffectsConfVal(configValueSources: ConfigValueSources, configDefinitions: ConfigDefinitions) {
+function applyEffectsConfVal(
+  configValueSources: ConfigValueSources,
+  configDefinitions: ConfigDefinitions,
+  locationIdPage: LocationId | null
+) {
   objectEntries(configDefinitions).forEach(([configNameEffect, configDefEffect]) => {
     const sourceEffect = configValueSources[configNameEffect]?.[0]
     if (!sourceEffect) return
@@ -934,6 +965,17 @@ function applyEffectsConfVal(configValueSources: ConfigValueSources, configDefin
       configDefinitions,
       configValueEffectSource
     )
+  })
+  Object.entries(configValueSources).forEach(([configName, sources]) => {
+    sources
+      .sort((source1, source2) => {
+        if (!source1.plusFile || !source2.plusFile) return 0
+        return sortPlusFiles(source1.plusFile, source2.plusFile, configName, locationIdPage)
+      })
+      // TODO/next-major: remove
+      // Interop with vike(options) in vite.config.js
+      // Make it least precedence
+      .sort(makeLast((source) => !source.plusFile))
   })
 }
 // Test: https://github.com/vikejs/vike/blob/441a37c4c1a3b07bb8f6efb1d1f7be297a53974a/test/playground/pages/config-meta/effect/e2e-test.ts#L16
@@ -1053,7 +1095,8 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 
 // Show error message upon unknown config
 function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved, plusFilesAll: PlusFilesByLocationId) {
-  const configDefinitionsAll = getConfigDefinitions(plusFilesAll)
+  const plusFilesAllList = Object.values(plusFilesAll).flat()
+  const configDefinitionsAll = getConfigDefinitions(plusFilesAllList)
   const configNamesKnownAll = Object.keys(configDefinitionsAll)
   const configNamesGlobal = Object.keys(configDefinitionsResolved.configDefinitionsGlobal)
 
