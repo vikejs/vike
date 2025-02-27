@@ -351,8 +351,13 @@ function getPageConfigsBuildTime(
       objectEntries(configDefinitionsLocal)
         .filter(([_configName, configDef]) => configDef.global !== true)
         .forEach(([configName, configDef]) => {
-          const plusFilesRelevantOrdered = getPlusFilesRelevantOrdered(configName, plusFilesRelevant)
-          const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevantOrdered, userRootDir, false)
+          const sources = resolveConfigValueSources(
+            configName,
+            configDef,
+            Object.values(plusFilesRelevant).flat(),
+            userRootDir,
+            false
+          )
           if (sources.length === 0) return
           configValueSources[configName] = sources
         })
@@ -609,16 +614,6 @@ function resolveConfigValueSources(
   }
 
   return sources
-}
-function getPlusFilesRelevantOrdered(configName: string, plusFilesRelevant: PlusFilesByLocationId) {
-  const plusFilesRelevantOrdered: PlusFile[] = []
-  for (const plusFilesAtLocationId of Object.values(plusFilesRelevant)) {
-    const plusFilesOrdered = plusFilesAtLocationId
-      .filter((plusFile) => isDefiningConfig(plusFile, configName))
-      .sort((plusFile1, plusFile2) => sortPlusFilesSameLocationId(plusFile1, plusFile2, configName))
-    plusFilesRelevantOrdered.push(...plusFilesOrdered)
-  }
-  return plusFilesRelevantOrdered
 }
 function sortPlusFilesSameLocationId(plusFile1: PlusFile, plusFile2: PlusFile, configName: string): SortReturn {
   assert(plusFile1.locationId === plusFile2.locationId)
