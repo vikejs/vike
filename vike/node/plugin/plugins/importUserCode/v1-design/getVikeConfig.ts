@@ -359,13 +359,7 @@ function getPageConfigsBuildTime(
       objectEntries(configDefinitionsLocal)
         .filter(([_configName, configDef]) => configDef.global !== true)
         .forEach(([configName, configDef]) => {
-          const sources = resolveConfigValueSources(
-            configName,
-            configDef,
-            Object.values(plusFilesRelevant).flat(),
-            userRootDir,
-            false
-          )
+          const sources = resolveConfigValueSources(configName, configDef, plusFilesRelevant, userRootDir, false)
           if (sources.length === 0) return
           configValueSources[configName] = sources
         })
@@ -646,12 +640,9 @@ function resolveConfigValueSources(
   userRootDir: string,
   isGlobal: boolean
 ): ConfigValueSource[] {
-  plusFilesRelevant = plusFilesRelevant.filter((plusFile) => isDefiningConfig(plusFile, configName))
-
-  let sources: ConfigValueSource[] = plusFilesRelevant.map((plusFile) => {
-    const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
-    return configValueSource
-  })
+  let sources: ConfigValueSource[] = plusFilesRelevant
+    .filter((plusFile) => isDefiningConfig(plusFile, configName))
+    .map((plusFile) => getConfigValueSource(configName, plusFile, configDef, userRootDir))
 
   // Filter hydrid global-local configs
   if (!isCallable(configDef.global)) {
