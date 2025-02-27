@@ -1053,8 +1053,7 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 
 // Show error message upon unknown config
 function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved, plusFilesAll: PlusFilesByLocationId) {
-  const plusFilesAllList = Object.values(plusFilesAll).flat()
-  const configDefinitionsAll = getConfigDefinitions(plusFilesAllList)
+  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesAll).flat())
   const configNamesKnownAll = Object.keys(configDefinitionsAll)
   const configNamesGlobal = Object.keys(configDefinitionsResolved.configDefinitionsGlobal)
 
