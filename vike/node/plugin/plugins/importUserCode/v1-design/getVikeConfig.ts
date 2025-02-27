@@ -587,10 +587,12 @@ function resolveConfigValueSources(
   userRootDir: string,
   isGlobal: boolean
 ): ConfigValueSource[] {
-  let sources: ConfigValueSource[] = plusFilesOrdered.map((plusFile) => {
-    const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
-    return configValueSource
-  })
+  let sources: ConfigValueSource[] = plusFilesOrdered
+    .filter((plusFile) => isDefiningConfig(plusFile, configName))
+    .map((plusFile) => {
+      const configValueSource = getConfigValueSource(configName, plusFile, configDef, userRootDir)
+      return configValueSource
+    })
   if (isCallable(configDef.global)) {
     assert(configDef.env.config)
     sources = sources.filter((source) => {
