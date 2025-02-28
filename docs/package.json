@@ -12,7 +12,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "typescript": "^5.7.3",
-    "vike": "0.4.223",
+    "vike": "0.4.224",
     "vite": "^6.2.0",
     "vite-plugin-svgr": "^4.3.0"
   },

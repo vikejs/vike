@@ -1,3 +1,47 @@
+## [0.4.224](https://github.com/vikejs/vike/compare/v0.4.223...v0.4.224) (2025-02-28)
+
+
+### Bug Fixes
+
+* also copy server assets of entry ([#2190](https://github.com/vikejs/vike/issues/2190)) ([8260c0f](https://github.com/vikejs/vike/commit/8260c0ffeea4c7adfca4b05b4e56383faff7b20e))
+* compatibility with bun runtime (fix [#2204](https://github.com/vikejs/vike/issues/2204)) ([#2208](https://github.com/vikejs/vike/issues/2208)) ([f1089b4](https://github.com/vikejs/vike/commit/f1089b4f41bc03c06f6b2f4b1aa10ca7e2b9b020))
+* don't break Vitest source mapping ([a187344](https://github.com/vikejs/vike/commit/a18734407474eb965fce2a3f6ae1e4107dd9da5e))
+* externalize linked npm packages ([0d242d9](https://github.com/vikejs/vike/commit/0d242d9e5cf9639fd6a8fd2b0a1228cff4c888c5))
+* fix addFileExtensionsToRequireResolve() ([703d38e](https://github.com/vikejs/vike/commit/703d38e89a692334cde054d51c93b1432cdafcaa))
+* fix asset manifest generation for Environment API (closes [#2202](https://github.com/vikejs/vike/issues/2202)) ([#2203](https://github.com/vikejs/vike/issues/2203)) ([f939424](https://github.com/vikejs/vike/commit/f939424a5955baad4e1eeefdcf62296e435ccd05))
+* fix replication of Vite's root resolve (fix [#2219](https://github.com/vikejs/vike/issues/2219)) ([32cd543](https://github.com/vikejs/vike/commit/32cd543b7eb8e7dc81c22ae05d4192c7f9f62155))
+* further catch invalid React element error ([a0ef0b6](https://github.com/vikejs/vike/commit/a0ef0b6947cb150d2a823aee81c8c61c6841e1bc))
+* import instead of serializing non-serializable build-time values ([2a8e575](https://github.com/vikejs/vike/commit/2a8e575f91d9655b3e6743e25b8f719a40e99146))
+* load routes at build-time ([cee3a17](https://github.com/vikejs/vike/commit/cee3a17afec2cb2c7af9f9ecbf85850c1294857a))
+* more precise urlResolved assert ([#2197](https://github.com/vikejs/vike/issues/2197)) ([6f064ad](https://github.com/vikejs/vike/commit/6f064adc7a157d63a57c646bfb4fb0524be5dd99))
+* remove edge-light export ([8fffec3](https://github.com/vikejs/vike/commit/8fffec3fecb72e06ba3af3a20080870da7db0d1d))
+* remove faulty assertion (fix [#2227](https://github.com/vikejs/vike/issues/2227)) ([3502685](https://github.com/vikejs/vike/commit/350268576973a707c682f99342abf7aa0a6d2570))
+* skip `.generated.` files from crawler (fix [#2222](https://github.com/vikejs/vike/issues/2222)) ([435dbbc](https://github.com/vikejs/vike/commit/435dbbc8f3557372349a15e78cb1dc8c91c14f94))
+* update @brillout/import ([ae0ac32](https://github.com/vikejs/vike/commit/ae0ac322c08494d493377259feb8ac99ce61e251))
+* update @brillout/import ([acf73d2](https://github.com/vikejs/vike/commit/acf73d2a514c23d34ff322451e8059cdf2dda3a8))
+* update @brillout/picocolors ([fcd5f8d](https://github.com/vikejs/vike/commit/fcd5f8d2f4643c2e17c5bb07dc6347107b72c45a))
+* update @brillout/picocolors ([ca5ce3e](https://github.com/vikejs/vike/commit/ca5ce3e05ce05be32a7b66269ddd0143932e5c95))
+* update @brillout/picocolors ([#2199](https://github.com/vikejs/vike/issues/2199)) ([586dbfb](https://github.com/vikejs/vike/commit/586dbfb53839695dde9a177e28162f0f5bcc17eb))
+* update @brillout/vite-plugin-server-entry (closes [#2201](https://github.com/vikejs/vike/issues/2201)) ([105441e](https://github.com/vikejs/vike/commit/105441e5caa212eab9d946e974bbd3cee2c58feb))
+* update picocolors ([db2df70](https://github.com/vikejs/vike/commit/db2df70719f2f7ce3494165b59fc680269eee60f))
+
+
+### Features
+
+* `getPageContextClient()` ([#2191](https://github.com/vikejs/vike/issues/2191)) ([f3c57ba](https://github.com/vikejs/vike/commit/f3c57ba03e819206bb9a9c097dfbbd883a74291f))
+* `getVikeConfig()` ([#2194](https://github.com/vikejs/vike/issues/2194)) ([5a81b60](https://github.com/vikejs/vike/commit/5a81b60c9b8e6beb07e1247a0c78787405029e88))
+* `prerender.value` ([535bde1](https://github.com/vikejs/vike/commit/535bde1a586e31f9192d53b2fcb62089e860b761))
+* `prerenderContext.output` ([3ad49ff](https://github.com/vikejs/vike/commit/3ad49ff7ee4385c265501e1dd988040138470850))
+* `VIKE_CRAWL="{ignore:'**/some-dir/**'}"` (closes [#2228](https://github.com/vikejs/vike/issues/2228)) ([#2229](https://github.com/vikejs/vike/issues/2229)) ([56675a0](https://github.com/vikejs/vike/commit/56675a04669107bcc188f266f04d45ad999db91c))
+* allow `meta.effect` to change value of config ([86fe9b4](https://github.com/vikejs/vike/commit/86fe9b4554e2fc1934ac60ffeb755305350ec2bc))
+
+
+### Performance Improvements
+
+* switch from `fast-glob` to `tinyglobby` ([#2193](https://github.com/vikejs/vike/issues/2193)) ([69f80f4](https://github.com/vikejs/vike/commit/69f80f4915c22dab95f17104116f9f506a703445))
+
+
+
 ## [0.4.223](https://github.com/vikejs/vike/compare/v0.4.222...v0.4.223) (2025-02-16)
 
 
