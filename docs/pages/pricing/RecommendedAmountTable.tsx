@@ -1,13 +1,13 @@
 import React from 'react';
 
 const amounts = [
-  ['0-50', '50-100', '100-200'],  // Small organization amounts for Small use case
-  ['50-100', '100-200', '200-500'], // Medium use case
-  ['100-200', '200-500', '500-2000'],// Large use case
+  ['0-50', '50-100', '100-200'],  // Small organization
+  ['50-100', '100-200', '200-500'],  // Medium organization
+  ['100-200', '200-500', '500-2000'],  // Large organization
 ];
 
 const columns = ['Small organization', 'Medium organization', 'Large organization'];
-const specialRows = ['<=2 regular committers', 'Hobby use case'];
+const specialRows = ['≤ 2 regular committers', 'Hobby use case'];
 const normalRows = ['Small use case', 'Medium use case', 'Large use case'];
 const rows = specialRows.concat(normalRows);
 
@@ -19,30 +19,31 @@ function RecommendedAmountTable() {
           <tr key={i}>
             {getArray(columns.length + 1).map((j) => {
               let content: string | React.JSX.Element = '';
+              let style = styles.cell;
 
               if (i === 0 && j > 0) {
                 // Column headers.
                 content = columns[j - 1];
+                style = { ...style, fontWeight: 'bold', backgroundColor: '#f8f9fa' };
               } else if (j === 0 && i > 0) {
                 // Row labels (first column, prevent line breaks)
                 content = rows[i - 1];
+                style = { ...style, fontWeight: 'bold', whiteSpace: 'nowrap' };
               } else if (i > 0 && j > 0) {
                 const rowLabel = rows[i - 1];
                 if (specialRows.includes(rowLabel)) {
                   content = <b>Free</b>;
+                  style = { ...style, backgroundColor: '#d4edda', color: '#155724' };
                 } else {
-                  // Adjust index for normal rows.
                   const normalRowIndex = i - specialRows.length - 1;
-                  content = formatAmount(amounts[normalRowIndex][j - 1]);
+                  const amount = amounts[normalRowIndex][j - 1];
+                  content = formatAmount(amount);
+                  style = { ...style, ...getAmountStyle(amount) };
                 }
               }
 
               return (
-                <td key={j} style={{ 
-                  ...styles.cell, 
-                  ...(j === 0 ? styles.noWrap : {}), // No wrapping for first column
-                  ...(i === 0 ? styles.wrap : {}) // Allow wrapping for the first row
-                }}>
+                <td key={j} style={style}>
                   {content}
                 </td>
               );
@@ -63,6 +64,20 @@ function isNumericRange(value: string): boolean {
   return /^\d+(-\d+)?$/.test(value);
 }
 
+function getAmountStyle(value: string) {
+  if (value === '500-2000') {
+    return { backgroundColor: '#cce5ff', color: '#004085' }; // Fully blue
+  }
+  if (value === 'Free') {
+    return { backgroundColor: '#d4edda', color: '#155724' }; // Fully green
+  }
+  // Gradient between green and blue
+  return {
+    background: 'linear-gradient(to right, #d4edda, #cce5ff)',
+    color: '#0c5460',
+  };
+}
+
 function getArray(length: number): number[] {
   return Array.from({ length }, (_, i) => i);
 }
@@ -71,21 +86,15 @@ const styles = {
   table: {
     borderCollapse: 'collapse',
     width: '100%',
-    maxWidth: '500px',
+    maxWidth: '600px',
     margin: '20px auto',
     textAlign: 'center' as const,
     fontFamily: 'Arial, sans-serif',
     border: '1px solid #ddd',
   },
   cell: {
-    padding: '10px 15px',
+    padding: '15px 20px', // Increased padding for better spacing
     border: '1px solid #ddd',
-  },
-  noWrap: {
-    whiteSpace: 'nowrap', // Prevent line breaks in first column
-  },
-  wrap: {
-    whiteSpace: 'normal', // Allow line breaks in first row
   },
 };
 
