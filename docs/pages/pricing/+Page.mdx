@@ -2,7 +2,6 @@ import { Link, Construction } from '@brillout/docpress'
 import OpenSourcePricingIllustration from '../../pages/index/sections/reliable/open-source-pricing.svg'
 import StateOfTheArt from './StateOfTheArt.mdx'
 import { RecommendedAmountTable } from './RecommendedAmountTable'
-import { FreeTierTable } from './FreeTierTable'
 
 <Construction>The Open Source Pricing isn't implemented yet.</Construction>
 
@@ -38,14 +37,12 @@ The Open Source Pricing is a major milestone for Vike's growth. It preserves wha
 
 ## Who pays and how much?
 
-### Free tier
+<RecommendedAmountTable />
 
-<FreeTierTable />
-
-Vike's free tier is designed so that Vike stays 100% gratis for small teams.
-
-
-An app is considered "large" if it has three or more developers who have committed regularly over the past three months.
+- **Regular committer**: developer who has committed regularly over the past three months.
+- **Small use case**: Vike is used for developing a project that only plays a marginal role to your company. Example: landing page or a simple internal app.
+- **Large use case**: Vike is used for developing a project that plays a central role to your company. Example: user-facing app that an app build Your Ow
+- **Medium use case**: In-between, for examples a one-shot use for a complex internal app.
 
 Consequently:
 - Vike is free for small projects.
@@ -53,14 +50,14 @@ Consequently:
 - Finished large projects can be maintained for free with up to two full-time developers.
 - Small contributors, such as a designer making occasional commits, are free.
 
+The ovarraching goal here is to have Vike be 100% gratis for small use cases while staying affordable for everyone else.
+
+> **Don't hesitate to apply for a free license key** if this recommended sponsoring amount isn't affordable for you. Keeping Vike accessible for everyone is a central goal of the Open Source Pricing.
+
 > You can apply for a free license key if you are developing a large app but your company isn't large enough to be able to pay.
 
 > See also: <Link doNotInferSectionTitle href="#how-does-it-apply-to-monorepos" />
 
-
-### Amount recommendation
-
-<RecommendedAmountTable />
 
 
 ## Do sponsors have to pay?
