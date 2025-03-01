@@ -3,17 +3,14 @@ import React from 'react';
 function FreeTierTable() {
   return (
     <table style={styles.table}>
-      {/* The caption serves as the main table title */}
-
-      {/* Single header row for columns */}
       <thead>
         <tr>
           <th style={{ ...styles.subheader, ...styles.wideColumn }}>
-      <caption style={styles.caption}>
+      <div style={styles.caption}>
         Regular Committers
         <br />
         <span style={styles.subtext}>in the last 3 months</span>
-      </caption>
+      </div>
     </th>
           <th style={{ ...styles.subheader, ...styles.narrowColumn }}>Price</th>
         </tr>
@@ -21,11 +18,11 @@ function FreeTierTable() {
 
       <tbody>
         <tr>
-          <td style={styles.cell}>&lt; 3</td>
+          <td style={styles.cell}>&le; 2</td>
           <td style={styles.cell}><b>Free</b></td>
         </tr>
         <tr>
-          <td style={styles.cell}>≥ 3</td>
+          <td style={styles.cell}>&ge; 3</td>
           <td style={styles.cell}><b>&gt;0$</b></td>
         </tr>
       </tbody>
@@ -33,7 +30,7 @@ function FreeTierTable() {
   );
 }
 
-const styles = {
+const styles: Record<string, React.CSSProperties> = {
   table: {
     borderCollapse: 'collapse',
     width: '100%',
@@ -47,9 +44,9 @@ const styles = {
   caption: {
     fontSize: '18px',
     fontWeight: 'bold',
-    padding: '16px',
   },
   subheader: {
+    textAlign: 'center',
     fontSize: '16px',
     fontWeight: 'bold',
     padding: '12px',
