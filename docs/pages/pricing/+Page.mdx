@@ -2,10 +2,9 @@ import { Link, Construction } from '@brillout/docpress'
 import OpenSourcePricingIllustration from '../../pages/index/sections/reliable/open-source-pricing.svg'
 import StateOfTheArt from './StateOfTheArt.mdx'
 import { RecommendedAmountTable } from './RecommendedAmountTable'
+import { FreeTierTable } from './FreeTierTable'
 
 <Construction>The Open Source Pricing isn't implemented yet.</Construction>
-
-<RecommendedAmountTable />
 
 <div style={{ display: 'flex', justifyContent: 'center', marginTop: 37, marginBottom: 30}}>
   <img src={OpenSourcePricingIllustration} style={{ maxWidth: '100%' }} />
@@ -25,7 +24,7 @@ The Open Source Pricing is a major milestone for Vike's growth. It preserves wha
 
 #### Pricing
 
-<Link doNotInferSectionTitle href="#when-is-an-app-considered-small-or-large" /><br/>
+<Link doNotInferSectionTitle href="#who-pays-and-how-much" /><br/>
 <Link doNotInferSectionTitle href="#do-sponsors-have-to-pay" /><br/>
 <Link doNotInferSectionTitle href="#how-does-it-apply-to-monorepos" /><br/>
 
@@ -37,7 +36,11 @@ The Open Source Pricing is a major milestone for Vike's growth. It preserves wha
 <Link doNotInferSectionTitle href="#why-not-another-business-model" /><br/>
 
 
-## When is an app considered "small" or "large"?
+## Who pays and how much?
+
+
+
+<FreeTierTable />
 
 An app is considered "large" if it has three or more developers who have committed regularly over the past three months.
 
@@ -50,6 +53,9 @@ Consequently:
 > You can apply for a free license key if you are developing a large app but your company isn't large enough to be able to pay.
 
 > See also: <Link doNotInferSectionTitle href="#how-does-it-apply-to-monorepos" />
+
+
+<RecommendedAmountTable />
 
 
 ## Do sponsors have to pay?
@@ -77,7 +83,7 @@ For example, in the following, it applies only to `my-app/` and `my-other-app/`.
 
 For new or small projects, you can use Vike just like any other open-source tool: 100% gratis and without any license key.
 
-> See also: <Link doNotInferSectionTitle href="#when-is-an-app-considered-small-or-large" />
+> See also: <Link doNotInferSectionTitle href="#who-pays-and-how-much" />
 
 For larger projects, Vike shows a pesky toaster `Get your license key at ...` in development (it's never shown in production) that you can remove by purchasing a license key. You install the key by adding it to your `+config.js` file, or by setting the `VIKE_KEY` environment variable.
 
