@@ -22,23 +22,19 @@ function RecommendedAmountTable() {
               let style = styles.cell;
 
               if (i === 0 && j > 0) {
-                // Column headers.
                 content = columns[j - 1];
                 style = { ...style, fontWeight: 'bold', backgroundColor: '#f8f9fa' };
               } else if (j === 0 && i > 0) {
-                // Row labels (first column, prevent line breaks)
                 content = rows[i - 1];
                 style = { ...style, fontWeight: 'bold', whiteSpace: 'nowrap' };
               } else if (i > 0 && j > 0) {
                 const rowLabel = rows[i - 1];
                 if (specialRows.includes(rowLabel)) {
-                  content = <b>Free</b>;
-                  style = { ...style, backgroundColor: '#d4edda', color: '#155724' };
+                  content = <b style={styles.greenText}>Free</b>;
                 } else {
                   const normalRowIndex = i - specialRows.length - 1;
                   const amount = amounts[normalRowIndex][j - 1];
-                  content = formatAmount(amount);
-                  style = { ...style, ...getAmountStyle(amount) };
+                  content = <b style={getAmountStyle(amount)}>{`${amount}$`}</b>;
                 }
               }
 
@@ -55,27 +51,13 @@ function RecommendedAmountTable() {
   );
 }
 
-function formatAmount(value: string) {
-  if (isNumericRange(value)) return <b>{`${value}$`}</b>;
-  return value;
-}
-
-function isNumericRange(value: string): boolean {
-  return /^\d+(-\d+)?$/.test(value);
-}
-
 function getAmountStyle(value: string) {
-  if (value === '500-2000') {
-    return { backgroundColor: '#cce5ff', color: '#004085' }; // Fully blue
-  }
-  if (value === 'Free') {
-    return { backgroundColor: '#d4edda', color: '#155724' }; // Fully green
-  }
-  // Gradient between green and blue
-  return {
-    background: 'linear-gradient(to right, #d4edda, #cce5ff)',
-    color: '#0c5460',
-  };
+  if (value === '500-2000') return { color: '#1e40af' }; // Dark Blue
+  if (value === '200-500') return { color: '#1e3a8a' }; // Medium Blue
+  if (value === '100-200') return { color: '#065f46' }; // Dark Teal
+  if (value === '50-100') return { color: '#0c4a6e' }; // Cyan
+  if (value === '0-50') return { color: '#166534' }; // Dark Green
+  return {};
 }
 
 function getArray(length: number): number[] {
@@ -93,8 +75,12 @@ const styles = {
     border: '1px solid #ddd',
   },
   cell: {
-    padding: '15px 20px', // Increased padding for better spacing
+    padding: '16px 24px', // More padding for better readability
     border: '1px solid #ddd',
+    fontSize: '16px',
+  },
+  greenText: {
+    color: '#166534', // Dark green for "Free"
   },
 };
 
