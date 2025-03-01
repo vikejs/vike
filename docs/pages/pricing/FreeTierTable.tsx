@@ -4,16 +4,17 @@ function FreeTierTable() {
   return (
     <table style={styles.table}>
       {/* The caption serves as the main table title */}
+
+      {/* Single header row for columns */}
+      <thead>
+        <tr>
+          <th style={{ ...styles.subheader, ...styles.wideColumn }}>
       <caption style={styles.caption}>
         Regular Committers
         <br />
         <span style={styles.subtext}>in the last 3 months</span>
       </caption>
-
-      {/* Single header row for columns */}
-      <thead>
-        <tr>
-          <th style={{ ...styles.subheader, ...styles.wideColumn }}>Committers</th>
+    </th>
           <th style={{ ...styles.subheader, ...styles.narrowColumn }}>Price</th>
         </tr>
       </thead>
@@ -47,14 +48,11 @@ const styles = {
     fontSize: '18px',
     fontWeight: 'bold',
     padding: '16px',
-    backgroundColor: '#f4f4f4',
-    borderBottom: '2px solid #ccc',
   },
   subheader: {
     fontSize: '16px',
     fontWeight: 'bold',
     padding: '12px',
-    backgroundColor: '#f9f9f9',
     border: '1px solid #ddd',
   },
   subtext: {
