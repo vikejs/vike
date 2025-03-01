@@ -15,6 +15,9 @@ import { isArray } from './isArray.js'
 assert(!isBrowser())
 ;(globalThis as any).__brillout_debug_createDebugger = createDebugger
 
+// We purposely read process.env.DEBUG early, in order to avoid users from the temptation to set process.env.DEBUG with JavaScript, since reading & writing process.env.DEBUG dynamically leads to inconsistencies: for example https://github.com/vikejs/vike/issues/2239
+const DEBUG = getDEBUG() ?? ''
+
 const flags = [
   'vike:crawl',
   'vike:error',
@@ -175,7 +178,6 @@ function assertFlagsActivated() {
 }
 
 function getFlagsActivated() {
-  const DEBUG = getDEBUG() ?? ''
   const flagsActivated: string[] = DEBUG.match(flagRegex) ?? []
   const all = DEBUG.includes('vike:*')
   return { flagsActivated, all }
