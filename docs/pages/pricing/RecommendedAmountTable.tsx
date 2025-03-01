@@ -24,7 +24,7 @@ function RecommendedAmountTable() {
                 // Column headers.
                 content = columns[j - 1];
               } else if (j === 0 && i > 0) {
-                // Row labels.
+                // Row labels (first column, prevent line breaks)
                 content = rows[i - 1];
               } else if (i > 0 && j > 0) {
                 const rowLabel = rows[i - 1];
@@ -37,7 +37,15 @@ function RecommendedAmountTable() {
                 }
               }
 
-              return <td key={j} style={styles.cell}>{content}</td>;
+              return (
+                <td key={j} style={{ 
+                  ...styles.cell, 
+                  ...(j === 0 ? styles.noWrap : {}), // No wrapping for first column
+                  ...(i === 0 ? styles.wrap : {}) // Allow wrapping for the first row
+                }}>
+                  {content}
+                </td>
+              );
             })}
           </tr>
         ))}
@@ -72,6 +80,12 @@ const styles = {
   cell: {
     padding: '10px 15px',
     border: '1px solid #ddd',
+  },
+  noWrap: {
+    whiteSpace: 'nowrap', // Prevent line breaks in first column
+  },
+  wrap: {
+    whiteSpace: 'normal', // Allow line breaks in first row
   },
 };
 
