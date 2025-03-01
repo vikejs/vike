@@ -48,6 +48,8 @@ export type {
 } from '../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 export type { ConfigEntries } from '../shared/page-configs/getPageConfigUserFriendly.js'
 
+export type { VikeConfigPublic as VikeConfig } from '../node/plugin/plugins/commonConfig.js'
+
 export type { UrlPublic as Url } from '../utils/parseUrl.js'
 
 export type { InjectFilterEntry } from '../node/runtime/html/injectAssets/getHtmlTags.js'

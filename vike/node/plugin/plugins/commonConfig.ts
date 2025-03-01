@@ -1,5 +1,6 @@
 export { commonConfig }
 export { getVikeConfigPublic }
+export type { VikeConfigPublic }
 
 import { type InlineConfig, mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
@@ -40,6 +41,7 @@ declare module 'vite' {
   }
 }
 
+// TODO/now: rename
 type VikeConfigPublic = {
   config: VikeConfigObject['global']['config']
   pages: VikeConfigObject['pages']
