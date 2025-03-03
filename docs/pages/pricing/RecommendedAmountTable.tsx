@@ -20,6 +20,11 @@ const styles = {
     color: '#6b7280',
     whiteSpace: 'nowrap', // Ensures it stays in one line
   },
+  recommendation: {
+    fontSize: '12px',
+    fontWeight: 'normal',
+    color: '#6b7280',
+  },
 };
 
 const amounts = [
@@ -49,9 +54,9 @@ function RecommendedAmountTable() {
                 content = (
                   <>
                     {rows[i - 1]}
-                    {normalRows.includes(rows[i - 1]) && (
+                    {normalRows.includes(rows[i - 1]) || rows[i - 1] === 'Hobby use case' ? (
                       <div style={styles.subtext}>&ge;3 regular committers</div>
-                    )}
+                    ) : null}
                   </>
                 );
                 style = { ...style, whiteSpace: 'nowrap', textAlign: 'left' };
@@ -64,8 +69,8 @@ function RecommendedAmountTable() {
                   const amount = amounts[normalRowIndex][j - 1];
                   content = (
                     <>
-                      <b style={getAmountStyle(amount)}>{`${amount}$`}</b>
-                      <div style={styles.subtext}>/ month (recommendation)</div>
+                      <b style={getAmountStyle(amount)}>{`${amount}$ / month`}</b>
+                      <div style={styles.recommendation}>recommendation</div>
                     </>
                   );
                 }
