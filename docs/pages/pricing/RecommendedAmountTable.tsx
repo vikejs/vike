@@ -18,7 +18,12 @@ const styles = {
     fontSize: '12px',
     fontWeight: 'normal',
     color: '#6b7280',
-    whiteSpace: 'nowrap', // Ensures it stays in one line
+    whiteSpace: 'nowrap',
+  },
+  priceSubtext: {
+    fontSize: '12px',
+    color: '#6b7280',
+    marginLeft: '4px',
   },
   recommendation: {
     fontSize: '12px',
@@ -69,8 +74,11 @@ function RecommendedAmountTable() {
                   const amount = amounts[normalRowIndex][j - 1];
                   content = (
                     <>
-                      <b style={getAmountStyle(amount)}>{`${amount}$ / month`}</b>
-                      <div style={styles.recommendation}>recommendation</div>
+                      <b style={getAmountStyle(amount)}>
+                        {`${amount}$`}
+                        <span style={styles.priceSubtext}>/ month</span>
+                      </b>
+                      <div style={styles.recommendation}>Recommendation</div>
                     </>
                   );
                 }
