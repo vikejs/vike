@@ -50,7 +50,7 @@ function RecommendedAmountTable() {
                   <>
                     {rows[i - 1]}
                     {normalRows.includes(rows[i - 1]) && (
-                      <div style={styles.subtext}>&le;2 regular committers</div>
+                      <div style={styles.subtext}>&ge;3 regular committers</div>
                     )}
                   </>
                 );
