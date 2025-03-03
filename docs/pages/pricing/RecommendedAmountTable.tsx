@@ -63,7 +63,10 @@ function RecommendedAmountTable() {
                 content = (
                   <>
                     {rows[i - 1]}
-                    <div style={styles.subtext}>&ge;3 regular committers</div>
+                    {/* Add "≥3 regular committers" only under use cases (including Hobby use case) */}
+                    {!specialRows.includes(rows[i - 1]) && (
+                      <div style={styles.subtext}>&ge;3 regular committers</div>
+                    )}
                   </>
                 );
                 style = { ...style, whiteSpace: 'nowrap', textAlign: 'left' };
