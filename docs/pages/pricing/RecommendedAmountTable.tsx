@@ -18,17 +18,21 @@ const styles = {
     fontSize: '12px',
     fontWeight: 'normal',
     color: '#6b7280',
-    whiteSpace: 'nowrap',
+  },
+  priceContainer: {
+    display: 'inline-flex',
+    alignItems: 'baseline',
+    whiteSpace: 'nowrap', // Prevents line break
   },
   priceSubtext: {
-    fontSize: '12px',
+    fontSize: '13px',
     color: '#6b7280',
     marginLeft: '4px',
   },
   recommendation: {
     fontSize: '12px',
-    fontWeight: 'normal',
-    color: '#6b7280',
+    color: '#666',
+    marginTop: '2px',
   },
 };
 
@@ -54,14 +58,12 @@ function RecommendedAmountTable() {
               let style = styles.cell;
 
               if (i === 0 && j > 0) {
-                content = columns[j - 1];
+                content = columns[j - 1]; // Column headers
               } else if (j === 0 && i > 0) {
                 content = (
                   <>
                     {rows[i - 1]}
-                    {normalRows.includes(rows[i - 1]) || rows[i - 1] === 'Hobby use case' ? (
-                      <div style={styles.subtext}>&ge;3 regular committers</div>
-                    ) : null}
+                    <div style={styles.subtext}>&ge;3 regular committers</div>
                   </>
                 );
                 style = { ...style, whiteSpace: 'nowrap', textAlign: 'left' };
@@ -74,10 +76,10 @@ function RecommendedAmountTable() {
                   const amount = amounts[normalRowIndex][j - 1];
                   content = (
                     <>
-                      <b style={getAmountStyle(amount)}>
-                        {`${amount}$`}
+                      <div style={styles.priceContainer}>
+                        <b style={getAmountStyle(amount)}>{`${amount}$`}</b>
                         <span style={styles.priceSubtext}>/ month</span>
-                      </b>
+                      </div>
                       <div style={styles.recommendation}>Recommendation</div>
                     </>
                   );
