@@ -273,11 +273,11 @@ This means that, if the first page the user visits is a pre-rendered page, then 
 >     if (window.location.href.includes('?filter')) await reload()
 >   }
 >   ```
-> - If the number of filters isn't infinite, then you can use a <Link href="/routing#parameterized-routes">paramterized route</Link> `/products/@filter` with <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()`</Link> in order to pre-render all filters (`/products/computer`, `/products/car`, ...).
+> - If the number of `?filter=` values isn't too large then, instead of `?filter=`, you can use a <Link href="/routing#parameterized-routes">paramterized route `/products/@filter`</Link> together with <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()`</Link> for pre-rendering all filter values: `/products/computer`, `/products/car`, ...
 
 Upon client-side navigation, the `pageContext` of the new page is determined dynamically at runtime on the client-side.
 
-> Unlike hydration, on client-side navigation, the `pageContext` is up-to-date, and `pageContext.urlParsed.search` includes query parameters such as `?filter=computer`.
+> Unlike hydration, upon client-side navigation the `pageContext` is up-to-date and `pageContext.urlParsed.search` includes query parameters such as `?filter=computer`.
 
 
 ## See also
