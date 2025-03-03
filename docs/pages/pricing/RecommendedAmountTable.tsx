@@ -1,6 +1,6 @@
 import React from 'react';
 
-const styles = {
+const styles: Record<string, React.CSSProperties> = {
   table: {
     borderCollapse: 'collapse',
     width: '100%',
