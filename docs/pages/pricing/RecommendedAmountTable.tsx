@@ -18,6 +18,7 @@ const styles = {
     fontSize: '12px',
     fontWeight: 'normal',
     color: '#6b7280',
+    whiteSpace: 'nowrap', // Ensures it stays in one line
   },
 };
 
@@ -28,14 +29,7 @@ const amounts = [
 ];
 
 const columns = ['Small organization', 'Midsize organization', 'Large organization'];
-const specialRows = [
-  <>
-    ≤ 2 regular committers
-    <br />
-    <span style={styles.subtext}>in the last 3 months</span>
-  </>,
-  'Hobby use case'
-];
+const specialRows = ['≤2 regular committers', 'Hobby use case'];
 const normalRows = ['Small use case', 'Midsize use case', 'Large use case'];
 const rows = specialRows.concat(normalRows);
 
@@ -52,7 +46,14 @@ function RecommendedAmountTable() {
               if (i === 0 && j > 0) {
                 content = columns[j - 1];
               } else if (j === 0 && i > 0) {
-                content = rows[i - 1];
+                content = (
+                  <>
+                    {rows[i - 1]}
+                    {normalRows.includes(rows[i - 1]) && (
+                      <div style={styles.subtext}>&le;2 regular committers</div>
+                    )}
+                  </>
+                );
                 style = { ...style, whiteSpace: 'nowrap', textAlign: 'left' };
               } else if (i > 0 && j > 0) {
                 const rowLabel = rows[i - 1];
@@ -61,7 +62,12 @@ function RecommendedAmountTable() {
                 } else {
                   const normalRowIndex = i - specialRows.length - 1;
                   const amount = amounts[normalRowIndex][j - 1];
-                  content = <b style={getAmountStyle(amount)}>{`${amount}$`}</b>;
+                  content = (
+                    <>
+                      <b style={getAmountStyle(amount)}>{`${amount}$`}</b>
+                      <div style={styles.subtext}>/ month (recommendation)</div>
+                    </>
+                  );
                 }
               }
 
