@@ -28,6 +28,8 @@ It includes:
  - <Link href="#built-in">Built-in properties</Link>, e.g. `pageContext.urlParsed` and `pageContext.routeParams`.
  - <Link href="#custom">Custom properties</Link> that you can add, for example `pagecontext.user`.
 
+When the user navigates to a new page, a completely new `pageContext` object is created and the previous `pageContext` becomes obsolete &mdash; that's why it's called **page**Context, not **app**Context. See <Link href="#lifecycle" /> for more information.
+
 
 ## Built-in
 
@@ -240,6 +242,10 @@ import type {
 ```
 
 ## Lifecycle
+
+The `pageContext` object is tied to the rendering of a page &mdash; whenever a page is (re-)rendered, a new `pageContext` object is created.
+
+The lifecycle of the `pageContext` object is fairly straightforward and predictable on the client and server, but for <Link href="/pre-rendering">pre-rendered pages</Link> it can be surprising (the `pageContext` object may seem "outdated").
 
 ### Server
 
