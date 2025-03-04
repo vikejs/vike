@@ -578,7 +578,7 @@ function api(): HeadingDetachedDefinition[] {
       url: '/onCreateApp'
     },
     {
-      title: '`+react` setting',
+      title: '`+react`',
       url: '/react-setting'
     },
     {

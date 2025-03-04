@@ -298,7 +298,7 @@ const headings = [
   {
     level: 2,
     titleInNav: '... more',
-    title: 'Tool integration (more)',
+    title: 'Integration (more)',
     url: '/integration'
   },
   {

@@ -10,6 +10,7 @@ export async function data(pageContext) {
   pageContext.urlParsed.pathname // /product/42
   pageContext.routeParams.id // 42
   pageContext.headers // { cookie: 'user-id=1337', ... }
+
   // Common custom properties
   pageContext.user // { name: 'John', id: 1337 }
   pageContext.initialStoreState // { todoList: [{ id: 1718872184291, text: 'Buy milk' }] }
@@ -19,12 +20,12 @@ export async function data(pageContext) {
 > The `+data` hook is explained at <Link href="/data-fetching" />.
 
 You can access `pageContext` everywhere:
- - At any UI component, by using <Link href="/usePageContext">`usePageContext()`</Link>.
- - At any <Link href="/hooks">Vike hook</Link> (such as <Link href="/data">`+data`</Link>).
- - On both the server and client (although you may need to use <Link href="/passToClient">`passToClient`</Link>).
+ - In any UI component (by using <Link href="/usePageContext">`usePageContext()`</Link>).
+ - In any <Link href="/hooks">Vike hook</Link>, e.g. <Link href="/data">`+data`</Link>.
+ - On both the server and client (by using <Link href="/passToClient">`passToClient`</Link>).
 
 It includes:
- - <Link href="#built-in">Built-in properties</Link>, such as `pageContext.urlParsed` and `pageContext.routeParams`.
+ - <Link href="#built-in">Built-in properties</Link>, e.g. `pageContext.urlParsed` and `pageContext.routeParams`.
  - <Link href="#custom">Custom properties</Link> that you can add, for example `pagecontext.user`.
 
 
@@ -246,15 +247,15 @@ On the server-side, upon an HTTP request, a new `pageContext` object is created.
 
 ### Client
 
-Upon <Link text="client-side page navigation" href="/client-routing" />, a new `pageContext` object is created.
+Upon <Link href="/client-routing">client-side navigation</Link>, a new `pageContext` object is created.
 
-> You can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
+> On the client-side, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
 
 ### Pre-rendering
 
 The server-side `pageContext` of a <Link href="/pre-rendering">pre-rendered</Link> page is determined at build-time when the page is pre-rendered.
 
-> Each pre-rendered page has a `pageContext` object saved at `dist/client/${url}/index.pageContext.json`.
+> Each pre-rendered page has a `pageContext` object saved at `dist/client/${urlOfThePage}/index.pageContext.json`.
 
 This means that, if the first page the user visits is a pre-rendered page, then the `pageContext` was already determined (potentially a long time) before the user visits that page.
 
