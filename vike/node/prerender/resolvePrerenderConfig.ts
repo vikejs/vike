@@ -29,9 +29,16 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
       false)
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
-    isEnabled:
-      defaultLocalValue || vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value)
+    isPrerenderingEnabledForAllPages:
+      vikeConfig.pageConfigs.length > 0 &&
+      vikeConfig.pageConfigs.every((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
+    isPrerenderingEnabled:
+      vikeConfig.pageConfigs.length > 0 &&
+      vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
   })
+
+  // TODO/next-major remove
+  if (vikeConfig.pageConfigs.length === 0 && defaultLocalValue) prerenderConfigGlobal.isPrerenderingEnabled = true
 
   return prerenderConfigGlobal
 }
@@ -41,6 +48,7 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const values = configValue.value
   assert(isArray(values))
   const value = values[0]
+  // TODO/now I believe this assert() can fail
   assert(typeof value === 'boolean')
   assert(isArray(configValue.definedAtData))
   const prerenderConfigLocal = { value }
