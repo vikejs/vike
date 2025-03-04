@@ -9,6 +9,8 @@ import { addSsrMiddleware } from '../shared/addSsrMiddleware.js'
 import pc from '@brillout/picocolors'
 import { logDockerHint } from './devConfig/index.js'
 import { getOutDirs, resolveOutDir } from '../shared/getOutDirs.js'
+import sirv from 'sirv'
+import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
@@ -38,20 +40,20 @@ function previewConfig(): Plugin {
       return () => {
         assertDist()
 
-        /* We don't use this condition (we wrongfully always use the SSR middleware) because of the regression introduced by https://github.com/vitejs/vite/pull/14756 which stops servering .html files when `appType: 'custom'`.
-        if (!vikeConfig.global.config.prerender || vikeConfig.global.config.prerender.partial) {
+        // We cannot re-use Vite's static middleware: https://github.com/vitejs/vite/pull/14836#issuecomment-1788540300
+        addStaticAssetsMiddleware(server.middlewares)
+
+        const { isPrerenderingEnabledForAllpages } = resolvePrerenderConfigGlobal(config._vikeConfigObject!)
+        if (!isPrerenderingEnabledForAllpages) {
           addSsrMiddleware(server.middlewares, config, true)
         }
-        /*/
-        addSsrMiddleware(server.middlewares, config, true)
-        //*/
 
         addStatic404Middleware(server.middlewares)
       }
     }
   }
   function assertDist() {
-    let { outDirRoot, outDirClient, outDirServer } = getOutDirs(config)
+    const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config)
     ;[outDirRoot, outDirClient, outDirServer].forEach((outDirAny) => {
       assertUsage(
         fs.existsSync(outDirAny),
@@ -60,6 +62,11 @@ function previewConfig(): Plugin {
         )} is missing). Make sure to run ${pc.cyan('$ vike build')} before running ${pc.cyan('$ vike preview')}.`
       )
     })
+  }
+
+  function addStaticAssetsMiddleware(middlewares: ConnectServer) {
+    const { outDirClient } = getOutDirs(config)
+    middlewares.use(sirv(outDirClient))
   }
 
   function addStatic404Middleware(middlewares: ConnectServer) {

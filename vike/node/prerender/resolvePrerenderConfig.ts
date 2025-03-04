@@ -29,6 +29,10 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
       false)
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
+    // TODO/now: we can now remove dist/server/entry.mjs if pre-rendering is enabled for all pages
+    isPrerenderingEnabledForAllpages: vikeConfig.pageConfigs.every(
+      (pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue
+    ),
     isPrerenderingEnabled:
       defaultLocalValue || vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value)
   })
@@ -41,6 +45,7 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const values = configValue.value
   assert(isArray(values))
   const value = values[0]
+  // TODO/now I believe this assert() can fail
   assert(typeof value === 'boolean')
   assert(isArray(configValue.definedAtData))
   const prerenderConfigLocal = { value }

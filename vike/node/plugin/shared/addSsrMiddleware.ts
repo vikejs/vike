@@ -45,6 +45,9 @@ function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig, is
       return next()
     }
 
+    // Let /dist/client/404.html
+    if (pageContext.httpResponse.statusCode === 404) next()
+
     const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
     if (configHeaders) {
       for (const [name, value] of Object.entries(configHeaders)) if (value) res.setHeader(name, value)

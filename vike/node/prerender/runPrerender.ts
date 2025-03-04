@@ -212,13 +212,9 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
     assert(standaloneTrigger)
-    // TODO/now: make it assertUsage() and remove dist/server/entry.mjs whenever possible
-    assertWarning(
+    assertUsage(
       false,
-      `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the config ${pc.cyan('prerender')} (${pc.underline('https://vike.dev/prerender')}) to enable it.`,
-      {
-        onlyOnce: true
-      }
+      `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} config (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`
     )
   }
 
