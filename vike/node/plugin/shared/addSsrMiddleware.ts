@@ -6,7 +6,12 @@ import { assertWarning } from '../utils.js'
 import pc from '@brillout/picocolors'
 type ConnectServer = ViteDevServer['middlewares']
 
-function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig, isPreview: boolean) {
+function addSsrMiddleware(
+  middlewares: ConnectServer,
+  config: ResolvedConfig,
+  isPreview: boolean,
+  isPrerenderingEnabled: boolean | null
+) {
   middlewares.use(async (req, res, next) => {
     if (res.headersSent) return next()
     const url = req.originalUrl || req.url
@@ -46,7 +51,7 @@ function addSsrMiddleware(middlewares: ConnectServer, config: ResolvedConfig, is
     }
 
     // Serve /dist/client/404.html instead
-    if (pageContext.httpResponse.statusCode === 404) next()
+    if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) next()
 
     const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
     if (configHeaders) {
