@@ -38,6 +38,9 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
       vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
   })
 
+  // TODO/next-major remove
+  if (vikeConfig.pageConfigs.length === 0 && defaultLocalValue) prerenderConfigGlobal.isPrerenderingEnabled = true
+
   return prerenderConfigGlobal
 }
 function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
