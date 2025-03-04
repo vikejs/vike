@@ -30,9 +30,9 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
     // TODO/now: we can now remove dist/server/entry.mjs if pre-rendering is enabled for all pages
-    isPrerenderingEnabledForAllpages: vikeConfig.pageConfigs.every(
-      (pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue
-    ),
+    isPrerenderingEnabledForAllpages:
+      vikeConfig.pageConfigs.length > 0 &&
+      vikeConfig.pageConfigs.every((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
     isPrerenderingEnabled:
       defaultLocalValue || vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value)
   })
