@@ -462,7 +462,7 @@ function guides(): HeadingDetachedDefinition[] {
       url: '/server-routing-vs-client-routing'
     },
     {
-      title: '`pageContext.json`',
+      title: '`pageContext.json` requests',
       url: '/pageContext.json',
       sectionTitles: ['Avoid `pageContext.json` requests']
     },

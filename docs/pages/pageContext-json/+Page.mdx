@@ -1,10 +1,19 @@
 import { Link } from '@brillout/docpress'
 
-Upon page navigation, Vike makes a `pageContext.json` HTTP request to your server, in order to pass data fetched on the server-side (e.g. with <Link href="/data">`data()`</Link>) to the client-side.
+Upon <Link href="/client-routing">client-side navigation</Link>,
+Vike retrieves certain server-side `pageContext` properties by sending an HTTP request to your server.
 
 ```shell
-HTTP GET /star-wars/index.pageContext.json
+# Retrieve data fetched on the server-side
+HTTP GET /product/42/index.pageContext.json
 ```
+
+Most notably, the returned `pageContext` object includes data fetched via <Link href="/data#environment">`+data` on the server-side</Link>.
+
+> If the server-side doesn't fetch data, then the client-side skips making a `pageContext.json` request, see <Link href="#avoid-pagecontext-json-requests" />.
+
+> See also: <Link href="/pageContext#lifecycle" />.
+
 
 ## Example
 
@@ -75,5 +84,7 @@ If both conditions are false, then Vike won't make any `pageContext.json` reques
 
 ## See also
 
+- <Link href="/passToClient" />
+- <Link href="/pageContext#lifecycle" />
 - <Link href="/data#environment" />
 - <Link href="/onBeforeRender#environment" />
