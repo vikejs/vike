@@ -72,7 +72,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             },
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
-              prerender: resolvePrerenderConfigGlobal(vikeConfig).isEnabled
+              prerender: resolvePrerenderConfigGlobal(vikeConfig).isPrerenderingEnabled
             })
           }
         }

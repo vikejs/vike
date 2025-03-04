@@ -29,7 +29,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
       false)
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
-    isEnabled:
+    isPrerenderingEnabled:
       defaultLocalValue || vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value)
   })
 

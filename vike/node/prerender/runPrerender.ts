@@ -209,8 +209,8 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const { root } = viteConfig
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   validatePrerenderConfig(prerenderConfigGlobal)
-  const { partial, noExtraDir, parallel, defaultLocalValue, isEnabled } = prerenderConfigGlobal
-  if (!isEnabled) {
+  const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
+  if (!isPrerenderingEnabled) {
     assert(standaloneTrigger)
     // TODO/now: make it assertUsage() and remove dist/server/entry.mjs whenever possible
     assertWarning(
