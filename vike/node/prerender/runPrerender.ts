@@ -214,7 +214,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     assert(standaloneTrigger)
     assertUsage(
       false,
-      `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} config (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`
+      `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} setting (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`
     )
   }
 

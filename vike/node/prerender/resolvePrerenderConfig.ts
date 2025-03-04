@@ -34,7 +34,8 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
       vikeConfig.pageConfigs.length > 0 &&
       vikeConfig.pageConfigs.every((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue),
     isPrerenderingEnabled:
-      defaultLocalValue || vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value)
+      vikeConfig.pageConfigs.length > 0 &&
+      vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
   })
 
   return prerenderConfigGlobal
