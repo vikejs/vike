@@ -214,7 +214,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     assert(standaloneTrigger)
     // TODO/now: make it assertUsage() and remove dist/server/entry.mjs whenever possible
     assertWarning(
-      prerenderConfigGlobal,
+      false,
       `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the config ${pc.cyan('prerender')} (${pc.underline('https://vike.dev/prerender')}) to enable it.`,
       {
         onlyOnce: true
