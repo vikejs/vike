@@ -43,8 +43,8 @@ function previewConfig(): Plugin {
         // We cannot re-use Vite's static middleware: https://github.com/vitejs/vite/pull/14836#issuecomment-1788540300
         addStaticAssetsMiddleware(server.middlewares)
 
-        const { isPrerenderingEnabledForAllpages } = resolvePrerenderConfigGlobal(config._vikeConfigObject!)
-        if (!isPrerenderingEnabledForAllpages) {
+        const { isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(config._vikeConfigObject!)
+        if (!isPrerenderingEnabledForAllPages) {
           addSsrMiddleware(server.middlewares, config, true)
         }
 
