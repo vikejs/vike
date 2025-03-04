@@ -227,7 +227,7 @@ TypeError: Unknown file extension ".css" for /home/romu/code/vike/node_modules/.
 `
         }
       )
-    ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
       getErrorHint(
@@ -246,7 +246,7 @@ TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css" for /Users
     at ESMLoader.getModuleJob (node:internal/modules/esm/loader:441:34)
 `)
       )
-    ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
       getErrorHint(
@@ -265,7 +265,7 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css /home/stuart/tmp/vite-ssr-example/node_mo
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
 `)
       )
-    ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
       getErrorHint(

@@ -31,6 +31,10 @@ const errorsMisc: Errors[] = [
     errMsg: 'assets.json',
     link: 'https://vike.dev/getGlobalContext',
     mustMentionNodeModules: false
+  },
+  {
+    errMsg: 'ERR_UNKNOWN_FILE_EXTENSION',
+    link: 'https://vike.dev/broken-npm-package#err-unknown-file-extension'
   }
 ]
 const reactInvalidEelement = 'https://vike.dev/broken-npm-package#react-invalid-component'
