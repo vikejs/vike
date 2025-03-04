@@ -50,8 +50,10 @@ function addSsrMiddleware(
       return next()
     }
 
-    // Serve /dist/client/404.html instead
-    if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) return next()
+    if (pageContext.httpResponse.statusCode === 404 && isPreview && isPrerenderingEnabled) {
+      // Serve /dist/client/404.html instead
+      return next()
+    }
 
     const configHeaders = (isPreview && config?.preview?.headers) || config?.server?.headers
     if (configHeaders) {
