@@ -68,6 +68,7 @@ v0.5 breaking changes:
 - Move `dist/assets.json` to `dist/server/assets.json`
   - Or move it `dist/server/assets-client.json` to?
   - Or remove it altogether in favor of `globalContext.assetsManifest`?
+- Make navigate() automatically add Base URL by default?
 === Maybe
 - Forbid content-type
   - Maybe use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
