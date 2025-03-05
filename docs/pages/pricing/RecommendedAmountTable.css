@@ -1,55 +1,71 @@
-.table-container {
-  overflow-x: auto;
-  width: 100%;
+/* Outer wrapper just to center and constrain width */
+.table-wrapper {
   max-width: 800px;
   margin: 0 auto;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: white;
+  padding: 1rem;
 }
 
-/* Title above the table */
+/* Title styling */
 .table-title {
+  text-align: center;
   font-size: 1.25rem;
   font-weight: 600;
-  text-align: center;
-  margin: 1.5rem 0;
+  margin-bottom: 1rem;
+  color: #374151;
 }
 
+/* Container with border and rounded corners around the table */
+.table-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden; /* So the border-radius applies properly */
+  background: #fff;
+  /* If you want horizontal scroll on small screens: */
+  overflow-x: auto;
+}
+
+/* Actual table styling */
 .pricing-table {
   width: 100%;
   border-collapse: collapse;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   table-layout: fixed;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
+/* Make sure each cell has its own border */
+.pricing-table th,
+.pricing-table td {
+  border: 1px solid #e5e7eb;
+}
+
+/* Column headers: top row (small/midsize/large org) */
 .column-header {
   padding: 16px 24px;
   background-color: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
   font-weight: 600;
   text-align: center;
   color: #374151;
   min-width: 160px;
 }
 
+/* Leftmost cells that describe the row (≤2 regular committers, etc.) */
 .row-header-cell {
   padding: 16px 24px;
-  border-bottom: 1px solid #e5e7eb;
   font-weight: 500;
   color: #374151;
   min-width: 240px;
   background-color: #ffffff;
 }
 
+/* Price cells for each row+column intersection */
 .price-cell {
   padding: 16px 24px;
-  border-bottom: 1px solid #e5e7eb;
   text-align: center;
   color: #1f2937;
   vertical-align: top;
 }
 
+/* "Recommendation" text styling */
 .recommendation {
   color: #047857;
   font-size: 0.875rem;
@@ -63,7 +79,6 @@
     min-width: 200px;
     padding: 12px 16px;
   }
-  
   .column-header {
     min-width: 140px;
     padding: 12px 16px;
@@ -75,21 +90,17 @@
     font-size: 0.875rem;
     min-width: 180px;
   }
-  
   .break-mobile {
     display: block;
     margin-top: 4px;
   }
-  
   wbr {
     display: none;
   }
-  
   .price-cell {
     font-size: 0.875rem;
     padding: 12px 16px;
   }
-  
   .price-cell br {
     display: inline;
   }
@@ -100,22 +111,18 @@
     min-width: 160px;
     padding: 10px 12px;
   }
-  
   .column-header {
     min-width: 120px;
     padding: 10px 12px;
     font-size: 0.875rem;
   }
-  
   .price-cell {
     font-size: 0.8125rem;
     padding: 10px 12px;
   }
-  
   .recommendation {
     font-size: 0.75rem;
   }
-  
   .pricing-table wbr {
     display: block;
     content: ' ';
