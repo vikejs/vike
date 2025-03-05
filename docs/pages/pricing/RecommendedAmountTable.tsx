@@ -1,18 +1,17 @@
 import React from 'react'
-import './table.css' // Import your CSS
+import './table.css'
 
 const amounts = [
-  ['1$ - 50$', '1$ - 100$', '1$ - 200$'],   // For "Small organization"
-  ['50$ - 100$', '100$ - 200$', '200$ - 500$'],  // For "Midsize organization"
+  ['1$ - 50$',  '1$ - 100$',  '1$ - 200$'],   // For "Small organization"
+  ['50$ - 100$', '100$ - 200$', '200$ - 500$'], // For "Midsize organization"
   ['100$ - 200$', '200$ - 500$', '500$ - 2000$'] // For "Large organization"
 ]
 
-// Replace spaces in column titles with &nbsp;&#124;&nbsp; to allow optional breaks
-// Example: "Small | organization"
+// Split "organization" onto two lines, remove any "|"
 const columns = [
-  'Small&nbsp;&#124;&nbsp;organization',
-  'Midsize&nbsp;&#124;&nbsp;organization',
-  'Large&nbsp;&#124;&nbsp;organization'
+  'Small<br/>organization',
+  'Midsize<br/>organization',
+  'Large<br/>organization'
 ]
 
 const specialRows = ['≤2 regular committers', 'Hobby use case']
@@ -23,19 +22,20 @@ function RecommendedAmountTable() {
   return (
     <table className="table">
       <tbody>
+        {/* rowIndex 0 = header row */}
         {getArray(rows.length + 1).map((rowIndex) => (
           <tr key={rowIndex}>
             {getArray(columns.length + 1).map((colIndex) => {
               let content: string | React.ReactNode = ''
               let className = 'cell'
 
-              // First row (header row)
+              // Header row
               if (rowIndex === 0 && colIndex > 0) {
-                // Use dangerouslySetInnerHTML to allow &nbsp;&#124; to be interpreted
                 return (
                   <td
                     key={colIndex}
                     className={className}
+                    // Allow <br/> in the column titles
                     dangerouslySetInnerHTML={{ __html: columns[colIndex - 1] }}
                   />
                 )
@@ -51,7 +51,6 @@ function RecommendedAmountTable() {
                     )}
                   </>
                 )
-                // Make sure it can wrap if needed
                 return (
                   <td key={colIndex} className={className}>
                     {content}
@@ -62,7 +61,7 @@ function RecommendedAmountTable() {
               else if (rowIndex > 0 && colIndex > 0) {
                 const rowLabel = rows[rowIndex - 1]
                 if (specialRows.includes(rowLabel)) {
-                  // Free tier cells
+                  // "Free" tier
                   content = <b>Free</b>
                 } else {
                   // Normal row with recommended amounts
@@ -72,7 +71,9 @@ function RecommendedAmountTable() {
                     content = (
                       <>
                         <div className="priceContainer">
-                          <b>{amount}</b>
+                          {/* Keep price range on one line */}
+                          <span className="priceAmount">{amount}</span>
+                          {/* / month might wrap on small screens */}
                           <span className="priceSubtext">/ month</span>
                         </div>
                         <div className="recommendation">Recommendation</div>

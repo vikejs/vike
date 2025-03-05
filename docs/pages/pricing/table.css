@@ -1,13 +1,11 @@
 .table {
   border-collapse: collapse;
   width: 100%;
-  /* Remove any fixed max-width to allow full shrinking */
   text-align: center;
   font-family: Arial, sans-serif;
   border: 1px solid #ddd;
   margin: 0 auto;
-  /* Let columns shrink/wrap naturally */
-  table-layout: auto;
+  table-layout: auto; /* let columns shrink/wrap naturally */
 }
 
 /* Base cell styles */
@@ -15,7 +13,6 @@
   padding: 12px;
   border: 1px solid #ddd;
   font-size: 14px;
-  /* Allow text to wrap onto new lines */
   word-break: break-word;
   white-space: normal;
 }
@@ -27,31 +24,36 @@
   color: #6b7280;
 }
 
-/* Price container can wrap on small screens */
+/* Price container */
 .table .priceContainer {
   display: flex;
+  flex-direction: row; /* row on larger screens */
   align-items: baseline;
   justify-content: center;
   gap: 5px;
-  /* Remove white-space: nowrap so it can wrap if needed */
-  white-space: normal;
 }
 
+/* Force price range to stay on one line */
+.table .priceAmount {
+  white-space: nowrap; /* e.g. "50$ - 100$" won't break */
+  font-weight: bold;
+}
+
+/* Put "/ month" in a separate span */
 .table .priceSubtext {
   font-size: 13px;
   color: #6b7280;
 }
 
+/* Make "Recommendation" small and unbreakable */
 .table .recommendation {
-  font-size: 12px;
   color: #666;
   margin-top: 2px;
+  font-size: 10px;
+  white-space: nowrap; /* prevents line break */
 }
 
-/* 
-   MEDIA QUERIES
-   Tweak font sizes & padding at narrower breakpoints
-*/
+/* Responsive tweaks */
 @media (max-width: 600px) {
   .table .cell {
     padding: 8px;
@@ -59,9 +61,6 @@
   }
   .table .priceSubtext {
     font-size: 11px;
-  }
-  .table .recommendation {
-    font-size: 10px;
   }
 }
 
@@ -71,6 +70,18 @@
     font-size: 11px;
   }
   .table .subtext {
+    font-size: 10px;
+  }
+  /* Put "/ month" on its own line */
+  .table .priceSubtext {
+    display: block;
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 320px) {
+  .table .cell {
+    padding: 4px;
     font-size: 10px;
   }
   .table .priceSubtext {
