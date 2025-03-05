@@ -12,7 +12,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid #ddd'
   },
   cell: {
-    padding: '15px 35px',
+    padding: '15px 30px',
     border: '1px solid #ddd',
     fontSize: '16px'
   },
@@ -40,9 +40,9 @@ const styles: Record<string, React.CSSProperties> = {
 }
 
 const amounts = [
-  ['0-50', '50-100', '100-200'], // Small organization
-  ['50-100', '100-200', '200-500'], // Midsize organization
-  ['100-200', '200-500', '500-2000'] // Large organization
+  ['1$ - 50$', '1$ - 100$', '1$ - 200$'], // Small organization
+  ['50$ - 100$', '100$ - 200$', '200$ - 500$'], // Midsize organization
+  ['100$ - 200$', '200$ - 500$', '500$ - 2000$'] // Large organization
 ]
 
 const columns = ['Small organization', 'Midsize organization', 'Large organization']
@@ -83,7 +83,7 @@ function RecommendedAmountTable() {
                     content = (
                       <>
                         <div style={styles.priceContainer}>
-                          <b>{`${amount}$`}</b>
+                          <b>{amount}</b>
                           <span style={styles.priceSubtext}>/ month</span>
                         </div>
                         <div style={styles.recommendation}>Recommendation</div>
