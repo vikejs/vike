@@ -2,65 +2,44 @@
 import React from 'react';
 import './RecommendedAmountTable.css';
 
-const amounts = [
-  ['15 - 50$', '15 - 100$', '15 - 200$'],
-  ['50 - 100$', '100 - 200$', '200 - 500$'],
-  ['100 - 200$', '200 - 500$', '500 - 2000$']
+const pricingData = [
+  { type: '≤2 regular committers', small: 'Free', midsize: 'Free', large: 'Free' },
+  { type: 'Hobby use case ≥3 regular committers', small: 'Free', midsize: 'Free', large: 'Free' },
+  { type: 'Small use case ≥3 regular committers', small: '0-50$ / month', midsize: '50-100$ / month', large: '100-200$ / month' },
+  { type: 'Midsize use case ≥3 regular committers', small: '50-100$ / month', midsize: '100-200$ / month', large: '200-500$ / month' },
+  { type: 'Large use case ≥3 regular committers', small: '100-200$ / month', midsize: '200-500$ / month', large: '500-2000$ / month' },
 ];
-
-const columns = ['Small organization', 'Midsize organization', 'Large organization'];
-const specialRows = ['≤2\u00a0regular\u00a0committers', 'Hobby\u00a0use\u00a0case'];
-const normalRows = [
-  'Small\u00a0use\u00a0case|≥3\u00a0regular\u00a0committers',
-  'Midsize\u00a0use\u00a0case|≥3\u00a0regular\u00a0committers',
-  'Large\u00a0use\u00a0case|≥3\u00a0regular\u00a0committers'
-];
-
-const rows = [...specialRows, ...normalRows];
 
 const RecommendedAmountTable = () => {
   return (
-    <div className="table-container">
-      <table className="responsive-table">
+    <div className="pricing-table-container">
+      <table className="pricing-table">
         <thead>
           <tr>
             <th className="row-header"></th>
-            {columns.map((col, index) => (
-              <th key={index} className="column-header">
-                {col}
-              </th>
-            ))}
+            <th className="column-header">Small organization</th>
+            <th className="column-header">Midsize organization</th>
+            <th className="column-header">Large organization</th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, rowIndex) => {
-            const [mainText, subText] = row.split('|');
-            return (
-              <tr key={rowIndex}>
-                <td className="row-header">
-                  <div className="main-text">{mainText}</div>
-                  {subText && <div className="subtext">{subText}</div>}
-                </td>
-                {columns.map((_, colIndex) => (
-                  <td key={colIndex} className="price-cell">
-                    {rowIndex < specialRows.length ? (
-                      <strong>Free</strong>
-                    ) : (
-                      <>
-                        <div className="price-container">
-                          <strong>
-                            {amounts[rowIndex - specialRows.length][colIndex].replace('$', '')}
-                          </strong>
-                          <span className="price-subtext">/month</span>
-                        </div>
-                        <div className="recommendation">Recommended</div>
-                      </>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
+          {pricingData.map((row, index) => (
+            <tr key={index}>
+              <td className="row-header-cell">{row.type}</td>
+              <td className="price-cell">
+                {row.small}
+                {!row.small.includes('Free') && <div className="recommendation">Recommendation</div>}
+              </td>
+              <td className="price-cell">
+                {row.midsize}
+                {!row.midsize.includes('Free') && <div className="recommendation">Recommendation</div>}
+              </td>
+              <td className="price-cell">
+                {row.large}
+                {!row.large.includes('Free') && <div className="recommendation">Recommendation</div>}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
