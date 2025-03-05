@@ -1,92 +1,81 @@
-export { RecommendedAmountTable }
-
 import React from 'react'
-
-const styles: Record<string, React.CSSProperties> = {
-  table: {
-    borderCollapse: 'collapse',
-    width: '100%',
-    maxWidth: '600px',
-    textAlign: 'center' as const,
-    fontFamily: 'Arial, sans-serif',
-    border: '1px solid #ddd'
-  },
-  cell: {
-    padding: '15px 30px',
-    border: '1px solid #ddd',
-    fontSize: '16px'
-  },
-  subtext: {
-    fontSize: '12px',
-    fontWeight: 'normal',
-    color: '#6b7280'
-  },
-  priceContainer: {
-    display: 'flex',
-    alignItems: 'baseline',
-    whiteSpace: 'nowrap', // Prevents line break
-    justifyContent: 'center',
-    gap: '5px'
-  },
-  priceSubtext: {
-    fontSize: '13px',
-    color: '#6b7280'
-  },
-  recommendation: {
-    fontSize: '12px',
-    color: '#666',
-    marginTop: '2px'
-  }
-}
+import './table.css' // Import your CSS
 
 const amounts = [
-  ['1$ - 50$', '1$ - 100$', '1$ - 200$'], // Small organization
-  ['50$ - 100$', '100$ - 200$', '200$ - 500$'], // Midsize organization
-  ['100$ - 200$', '200$ - 500$', '500$ - 2000$'] // Large organization
+  ['1$ - 50$', '1$ - 100$', '1$ - 200$'],   // For "Small organization"
+  ['50$ - 100$', '100$ - 200$', '200$ - 500$'],  // For "Midsize organization"
+  ['100$ - 200$', '200$ - 500$', '500$ - 2000$'] // For "Large organization"
 ]
 
-const columns = ['Small organization', 'Midsize organization', 'Large organization']
+// Replace spaces in column titles with &nbsp;&#124;&nbsp; to allow optional breaks
+// Example: "Small | organization"
+const columns = [
+  'Small&nbsp;&#124;&nbsp;organization',
+  'Midsize&nbsp;&#124;&nbsp;organization',
+  'Large&nbsp;&#124;&nbsp;organization'
+]
+
 const specialRows = ['≤2 regular committers', 'Hobby use case']
 const normalRows = ['Small use case', 'Midsize use case', 'Large use case']
 const rows = specialRows.concat(normalRows)
 
 function RecommendedAmountTable() {
   return (
-    <table style={styles.table}>
+    <table className="table">
       <tbody>
-        {getArray(rows.length + 1).map((i) => (
-          <tr key={i}>
-            {getArray(columns.length + 1).map((j) => {
-              let content: string | React.JSX.Element = ''
-              let style = styles.cell
+        {getArray(rows.length + 1).map((rowIndex) => (
+          <tr key={rowIndex}>
+            {getArray(columns.length + 1).map((colIndex) => {
+              let content: string | React.ReactNode = ''
+              let className = 'cell'
 
-              if (i === 0 && j > 0) {
-                content = columns[j - 1]
-              } else if (j === 0 && i > 0) {
+              // First row (header row)
+              if (rowIndex === 0 && colIndex > 0) {
+                // Use dangerouslySetInnerHTML to allow &nbsp;&#124; to be interpreted
+                return (
+                  <td
+                    key={colIndex}
+                    className={className}
+                    dangerouslySetInnerHTML={{ __html: columns[colIndex - 1] }}
+                  />
+                )
+              }
+              // First column (row labels)
+              else if (colIndex === 0 && rowIndex > 0) {
+                const rowLabel = rows[rowIndex - 1]
                 content = (
                   <>
-                    {rows[i - 1]}
-                    {/* Add "≥3 regular committers" subtext under Hobby Use Case and all "... use case" rows */}
-                    {rows[i - 1] !== '≤2 regular committers' && <div style={styles.subtext}>≥3 regular committers</div>}
+                    {rowLabel}
+                    {rowLabel !== '≤2 regular committers' && (
+                      <div className="subtext">≥3 regular committers</div>
+                    )}
                   </>
                 )
-                style = { ...style, whiteSpace: 'nowrap', textAlign: 'left' }
-              } else if (i > 0 && j > 0) {
-                const rowLabel = rows[i - 1]
-
+                // Make sure it can wrap if needed
+                return (
+                  <td key={colIndex} className={className}>
+                    {content}
+                  </td>
+                )
+              }
+              // Table body cells
+              else if (rowIndex > 0 && colIndex > 0) {
+                const rowLabel = rows[rowIndex - 1]
                 if (specialRows.includes(rowLabel)) {
+                  // Free tier cells
                   content = <b>Free</b>
                 } else {
-                  const normalRowIndex = i - specialRows.length - 1
+                  // Normal row with recommended amounts
+                  const normalRowIndex = rowIndex - specialRows.length - 1
                   if (normalRowIndex >= 0 && normalRowIndex < amounts.length) {
-                    const amount = amounts[normalRowIndex][j - 1]
+                    const amount = amounts[normalRowIndex][colIndex - 1]
                     content = (
                       <>
-                        <div style={styles.priceContainer}>
+                        <div className="priceContainer">
                           <b>{amount}</b>
-                          <span style={styles.priceSubtext}>/ month</span>
+                          <span className="priceSubtext">/ month</span>
                         </div>
-                        <div style={styles.recommendation}>Recommendation</div>
+                        <div className="recommendation">Recommendation</div>
                       </>
                     )
                   }
@@ -94,7 +83,7 @@ function RecommendedAmountTable() {
               }
 
               return (
-                <td key={j} style={style}>
+                <td key={colIndex} className={className}>
                   {content}
                 </td>
               )
@@ -109,3 +98,5 @@ function RecommendedAmountTable() {
 function getArray(length: number): number[] {
   return Array.from({ length }, (_, i) => i)
 }
+
+export { RecommendedAmountTable }

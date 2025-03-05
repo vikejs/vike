@@ -1,0 +1,82 @@
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  /* Remove any fixed max-width to allow full shrinking */
+  text-align: center;
+  font-family: Arial, sans-serif;
+  border: 1px solid #ddd;
+  margin: 0 auto;
+  /* Let columns shrink/wrap naturally */
+  table-layout: auto;
+}
+
+/* Base cell styles */
+.table .cell {
+  padding: 12px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  /* Allow text to wrap onto new lines */
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* Subtext below row labels */
+.table .subtext {
+  font-size: 12px;
+  font-weight: normal;
+  color: #6b7280;
+}
+
+/* Price container can wrap on small screens */
+.table .priceContainer {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  /* Remove white-space: nowrap so it can wrap if needed */
+  white-space: normal;
+}
+
+.table .priceSubtext {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.table .recommendation {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* 
+   MEDIA QUERIES
+   Tweak font sizes & padding at narrower breakpoints
+*/
+@media (max-width: 600px) {
+  .table .cell {
+    padding: 8px;
+    font-size: 12px;
+  }
+  .table .priceSubtext {
+    font-size: 11px;
+  }
+  .table .recommendation {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .table .cell {
+    padding: 6px;
+    font-size: 11px;
+  }
+  .table .subtext {
+    font-size: 10px;
+  }
+  .table .priceSubtext {
+    font-size: 10px;
+  }
+  .table .recommendation {
+    font-size: 9px;
+  }
+}
