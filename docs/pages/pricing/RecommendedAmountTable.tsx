@@ -1,7 +1,6 @@
 export { RecommendedAmountTable }
 
 import React from 'react'
-import { Link } from '@brillout/docpress'
 
 const styles: Record<string, React.CSSProperties> = {
   table: {
@@ -62,17 +61,11 @@ function RecommendedAmountTable() {
               let style = styles.cell
 
               if (i === 0 && j > 0) {
-                content = (
-                  <Link href="#recommendation">
-                    {columns[j - 1]}
-                  </Link>
-                )
+                content = columns[j - 1]
               } else if (j === 0 && i > 0) {
                 content = (
                   <>
-                    <Link href="#recommendation">
-                      {rows[i - 1]}
-                    </Link>
+                    {rows[i - 1]}
                     {/* Add "≥3 regular committers" subtext under Hobby Use Case and all "... use case" rows */}
                     {rows[i - 1] !== '≤2 regular committers' && <div style={styles.subtext}>≥3 regular committers</div>}
                   </>
@@ -90,7 +83,7 @@ function RecommendedAmountTable() {
                     content = (
                       <>
                         <div style={styles.priceContainer}>
-                          <b>{`${amount}$`}</b>
+                          <b>{amount}</b>
                           <span style={styles.priceSubtext}>/ month</span>
                         </div>
                         <div style={styles.recommendation}>Recommendation</div>
