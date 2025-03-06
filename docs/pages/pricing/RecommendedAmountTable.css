@@ -1,130 +1,163 @@
-/* Outer wrapper just to center and constrain width */
-.table-wrapper {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-/* Title styling */
-.table-title {
-  text-align: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #374151;
-}
-
-/* Container with border and rounded corners around the table */
+/* RecommendedAmountTable.css */
 .table-container {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  overflow: hidden; /* So the border-radius applies properly */
-  background: #fff;
-  /* If you want horizontal scroll on small screens: */
   overflow-x: auto;
-}
-
-/* Actual table styling */
-.pricing-table {
   width: 100%;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 10px;
+}
+
+.responsive-table {
   border-collapse: collapse;
+  width: 100%;
+  min-width: 320px;
   table-layout: fixed;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: 'Arial', sans-serif;
 }
 
-/* Make sure each cell has its own border */
-.pricing-table th,
-.pricing-table td {
-  border: 1px solid #e5e7eb;
-}
-
-/* Column headers: top row (small/midsize/large org) */
 .column-header {
-  padding: 16px 24px;
-  background-color: #f9fafb;
-  font-weight: 600;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  font-size: 0.9rem;
   text-align: center;
-  color: #374151;
-  min-width: 160px;
+  vertical-align: middle;
 }
 
-/* Leftmost cells that describe the row (≤2 regular committers, etc.) */
-.row-header-cell {
-  padding: 16px 24px;
-  font-weight: 500;
-  color: #374151;
-  min-width: 240px;
-  background-color: #ffffff;
+.row-header {
+  padding: 12px 16px;
+  border: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  font-size: 0.85rem;
+  min-width: 140px;
+  width: 20%;
 }
 
-/* Price cells for each row+column intersection */
 .price-cell {
-  padding: 16px 24px;
+  padding: 12px;
+  border: 1px solid #dee2e6;
   text-align: center;
-  color: #1f2937;
-  vertical-align: top;
+  vertical-align: middle;
+  font-size: 0.85rem;
 }
 
-/* "Recommendation" text styling */
-.recommendation {
-  color: #047857;
-  font-size: 0.875rem;
+.main-text {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.subtext {
+  font-size: 0.75rem;
+  color: #6c757d;
   margin-top: 4px;
-  font-weight: 500;
+  line-height: 1.3;
 }
 
-/* Responsive breakpoints */
+.price-container {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.price-subtext {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.recommendation {
+  font-size: 0.75rem;
+  color: #28a745;
+  margin-top: 6px;
+}
+
 @media (max-width: 768px) {
-  .row-header-cell {
-    min-width: 200px;
-    padding: 12px 16px;
-  }
   .column-header {
-    min-width: 140px;
-    padding: 12px 16px;
+    font-size: 0.85rem;
+    padding: 12px;
   }
-}
-
-@media (max-width: 480px) {
-  .row-header-cell {
-    font-size: 0.875rem;
-    min-width: 180px;
-  }
-  .break-mobile {
-    display: block;
-    margin-top: 4px;
-  }
-  wbr {
-    display: none;
-  }
-  .price-cell {
-    font-size: 0.875rem;
-    padding: 12px 16px;
-  }
-  .price-cell br {
-    display: inline;
-  }
-}
-
-@media (max-width: 375px) {
-  .row-header-cell {
-    min-width: 160px;
+  
+  .row-header {
     padding: 10px 12px;
-  }
-  .column-header {
     min-width: 120px;
-    padding: 10px 12px;
-    font-size: 0.875rem;
   }
+  
   .price-cell {
-    font-size: 0.8125rem;
-    padding: 10px 12px;
+    padding: 10px;
+    font-size: 0.8rem;
   }
-  .recommendation {
+}
+
+@media (max-width: 576px) {
+  .table-container {
+    padding: 0 5px;
+  }
+  
+  .column-header {
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+  
+  .row-header {
+    padding: 8px 10px;
+    min-width: 110px;
+  }
+  
+  .main-text {
+    font-size: 0.8rem;
+  }
+  
+  .subtext {
+    font-size: 0.7rem;
+  }
+  
+  .price-cell {
+    padding: 8px;
     font-size: 0.75rem;
   }
-  .pricing-table wbr {
+  
+  .price-subtext {
+    font-size: 0.65rem;
+  }
+  
+  .recommendation {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .column-header {
+    font-size: 0.75rem;
+    padding: 6px;
+  }
+  
+  .row-header {
+    padding: 6px 8px;
+    min-width: 100px;
+  }
+  
+  .main-text {
+    font-size: 0.75rem;
+  }
+  
+  .subtext {
+    font-size: 0.65rem;
+  }
+  
+  .price-cell {
+    padding: 6px;
+    font-size: 0.7rem;
+  }
+  
+  .price-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+  }
+  
+  .price-subtext {
     display: block;
-    content: ' ';
+    width: 100%;
+    text-align: center;
   }
 }
