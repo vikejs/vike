@@ -1,4 +1,5 @@
-// RecommendedAmountTable.tsx
+export { RecommendedAmountTable }
+
 import React from 'react'
 import './RecommendedAmountTable.css'
 
@@ -19,15 +20,15 @@ const RecommendedAmountTable = () => {
   return (
     <div className="table-container">
       <table className="responsive-table">
-        <tr>
-          <th className="row-header"></th>
-          {columns.map((col, index) => (
-            <td key={index} className="column-header">
-              {col}
-            </td>
-          ))}
-        </tr>
         <tbody>
+          <tr>
+            <td className="row-header"></td>
+            {columns.map((col, index) => (
+              <td key={index} className="column-header">
+                {col}
+              </td>
+            ))}
+          </tr>
           {rows.map((row, rowIndex) => {
             return (
               <tr key={rowIndex}>
@@ -58,5 +59,3 @@ const RecommendedAmountTable = () => {
     </div>
   )
 }
-
-export { RecommendedAmountTable }
