@@ -18,7 +18,6 @@
 .column-header {
   padding: 16px;
   border: 1px solid #dee2e6;
-  font-size: 0.9rem;
   text-align: center;
   vertical-align: middle;
 }
@@ -26,9 +25,12 @@
 .row-header {
   padding: 12px 16px;
   border: 1px solid #dee2e6;
-  font-size: 0.85rem;
   min-width: 140px;
-  width: 20%;
+}
+
+.column-header,
+.row-header {
+  font-size: 0.98rem;
 }
 
 .price-cell {
@@ -36,7 +38,6 @@
   border: 1px solid #dee2e6;
   text-align: center;
   vertical-align: middle;
-  font-size: 0.85rem;
 }
 
 .main-text {
@@ -64,7 +65,7 @@
 
 .recommendation {
   font-size: 0.75rem;
-  color: #28a745;
+  color: #666;
   margin-top: 6px;
 }
 
