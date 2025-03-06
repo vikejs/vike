@@ -92,7 +92,9 @@ const errorsCjsEsm: Errors[] = [
   { errMsg: 'exports is not defined' },
   { errMsg: 'module is not defined' },
   { errMsg: 'not defined in ES' },
-  { errMsg: "Unexpected token 'export'" }
+  { errMsg: "Unexpected token 'export'" },
+
+  { errMsg: 'Failed to resolve entry for package' }
 ]
 
 function logErrorHint(error: unknown): void {
