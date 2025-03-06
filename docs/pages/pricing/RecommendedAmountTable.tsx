@@ -7,12 +7,12 @@ const amounts = [
   ['1$ - 50$', '1$ - 100$', '1$ - 200$'],
   ['50$ - 100$', '100$ - 200$', '200$ - 500$'],
   ['100$ - 200$', '200$ - 500$', '500$ - 2000$']
-]
+].map((row) => row.map((str) => str.replaceAll(' ', '\u00a0')))
 
 const columns = ['Small organization', 'Midsize organization', 'Large organization']
 const rowsFree = ['≤2\u00a0regular committers', 'Hobby use\u00a0case']
 const rowsPaid = ['Small use\u00a0case', 'Midsize use\u00a0case', 'Large use\u00a0case']
-const subText = '≥3\u00a0regular\u00a0committers'
+const subText = '≥3\u00a0regular committers'
 
 const rows = [...rowsFree, ...rowsPaid]
 
@@ -33,7 +33,7 @@ const RecommendedAmountTable = () => {
             return (
               <tr key={rowIndex}>
                 <td className="row-header">
-                  <div className="main-text">{row}</div>
+                  {row}
                   {rowIndex > 0 && <div className="subtext">{subText}</div>}
                 </td>
                 {columns.map((_, colIndex) => (
@@ -44,7 +44,7 @@ const RecommendedAmountTable = () => {
                       <>
                         <div className="price-container">
                           <strong>{amounts[rowIndex - rowsFree.length][colIndex]}</strong>
-                          <span className="price-subtext">/ month</span>
+                          <span className="price-subtext">&nbsp;/&nbsp;month</span>
                         </div>
                         <div className="recommendation">Recommended</div>
                       </>
