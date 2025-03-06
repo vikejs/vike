@@ -19,16 +19,14 @@ const RecommendedAmountTable = () => {
   return (
     <div className="table-container">
       <table className="responsive-table">
-        <thead>
-          <tr>
-            <th className="row-header"></th>
-            {columns.map((col, index) => (
-              <th key={index} className="column-header">
-                {col}
-              </th>
-            ))}
-          </tr>
-        </thead>
+        <tr>
+          <th className="row-header"></th>
+          {columns.map((col, index) => (
+            <td key={index} className="column-header">
+              {col}
+            </td>
+          ))}
+        </tr>
         <tbody>
           {rows.map((row, rowIndex) => {
             return (

@@ -17,7 +17,6 @@
 
 .column-header {
   padding: 16px;
-  background-color: #f8f9fa;
   border: 1px solid #dee2e6;
   font-size: 0.9rem;
   text-align: center;
@@ -27,7 +26,6 @@
 .row-header {
   padding: 12px 16px;
   border: 1px solid #dee2e6;
-  background-color: #f8f9fa;
   font-size: 0.85rem;
   min-width: 140px;
   width: 20%;
@@ -42,7 +40,6 @@
 }
 
 .main-text {
-  font-weight: 600;
   white-space: nowrap;
 }
 
