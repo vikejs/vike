@@ -76,12 +76,12 @@
     font-size: 0.85rem;
     padding: 12px;
   }
-  
+
   .row-header {
     padding: 10px 12px;
     min-width: 120px;
   }
-  
+
   .price-cell {
     padding: 10px;
     font-size: 0.8rem;
@@ -92,34 +92,34 @@
   .table-container {
     padding: 0 5px;
   }
-  
+
   .column-header {
     font-size: 0.8rem;
     padding: 8px;
   }
-  
+
   .row-header {
     padding: 8px 10px;
     min-width: 110px;
   }
-  
+
   .main-text {
     font-size: 0.8rem;
   }
-  
+
   .subtext {
     font-size: 0.7rem;
   }
-  
+
   .price-cell {
     padding: 8px;
     font-size: 0.75rem;
   }
-  
+
   .price-subtext {
     font-size: 0.65rem;
   }
-  
+
   .recommendation {
     font-size: 0.65rem;
   }
@@ -130,31 +130,31 @@
     font-size: 0.75rem;
     padding: 6px;
   }
-  
+
   .row-header {
     padding: 6px 8px;
     min-width: 100px;
   }
-  
+
   .main-text {
     font-size: 0.75rem;
   }
-  
+
   .subtext {
     font-size: 0.65rem;
   }
-  
+
   .price-cell {
     padding: 6px;
     font-size: 0.7rem;
   }
-  
+
   .price-container {
     flex-wrap: wrap;
     justify-content: center;
     gap: 2px;
   }
-  
+
   .price-subtext {
     display: block;
     width: 100%;
