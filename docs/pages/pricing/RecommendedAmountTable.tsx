@@ -3,20 +3,21 @@ import React from 'react';
 import './RecommendedAmountTable.css';
 
 const amounts = [
-  ['15 - 50$', '15 - 100$', '15 - 200$'],
-  ['50 - 100$', '100 - 200$', '200 - 500$'],
-  ['100 - 200$', '200 - 500$', '500 - 2000$']
+  ['1$ - 50$', '1$ - 100$', '1$ - 200$'],
+  ['50$ - 100$', '100$ - 200$', '200$ - 500$'],
+  ['100$ - 200$', '200$ - 500$', '500$ - 2000$']
 ];
 
 const columns = ['Small organization', 'Midsize organization', 'Large organization'];
-const specialRows = ['≤2\u00a0regular\u00a0committers', 'Hobby\u00a0use\u00a0case'];
-const normalRows = [
-  'Small\u00a0use\u00a0case|≥3\u00a0regular\u00a0committers',
-  'Midsize\u00a0use\u00a0case|≥3\u00a0regular\u00a0committers',
-  'Large\u00a0use\u00a0case|≥3\u00a0regular\u00a0committers'
+const rowsFree = ['≤2\u00a0regular committers', 'Hobby use\u00a0case'];
+const rowsPaid = [
+  'Small use\u00a0case',
+  'Midsize use\u00a0case',
+  'Large use\u00a0case'
 ];
+const subText = '≥3\u00a0regular\u00a0committers'
 
-const rows = [...specialRows, ...normalRows];
+const rows = [...rowsFree, ...rowsPaid];
 
 const RecommendedAmountTable = () => {
   return (
@@ -34,24 +35,23 @@ const RecommendedAmountTable = () => {
         </thead>
         <tbody>
           {rows.map((row, rowIndex) => {
-            const [mainText, subText] = row.split('|');
             return (
               <tr key={rowIndex}>
                 <td className="row-header">
-                  <div className="main-text">{mainText}</div>
-                  {subText && <div className="subtext">{subText}</div>}
+                  <div className="main-text">{row}</div>
+                  {rowIndex > 0 && <div className="subtext">{subText}</div>}
                 </td>
                 {columns.map((_, colIndex) => (
                   <td key={colIndex} className="price-cell">
-                    {rowIndex < specialRows.length ? (
+                    {rowIndex < rowsFree.length ? (
                       <strong>Free</strong>
                     ) : (
                       <>
                         <div className="price-container">
                           <strong>
-                            {amounts[rowIndex - specialRows.length][colIndex].replace('$', '')}
+                            {amounts[rowIndex - rowsFree.length][colIndex]}
                           </strong>
-                          <span className="price-subtext">/month</span>
+                          <span className="price-subtext">/ month</span>
                         </div>
                         <div className="recommendation">Recommended</div>
                       </>
