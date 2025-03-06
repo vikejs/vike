@@ -1,111 +1,61 @@
 export { RecommendedAmountTable }
 
 import React from 'react'
-
-const styles: Record<string, React.CSSProperties> = {
-  table: {
-    borderCollapse: 'collapse',
-    width: '100%',
-    maxWidth: '600px',
-    textAlign: 'center' as const,
-    fontFamily: 'Arial, sans-serif',
-    border: '1px solid #ddd'
-  },
-  cell: {
-    padding: '15px 30px',
-    border: '1px solid #ddd',
-    fontSize: '16px'
-  },
-  subtext: {
-    fontSize: '12px',
-    fontWeight: 'normal',
-    color: '#6b7280'
-  },
-  priceContainer: {
-    display: 'flex',
-    alignItems: 'baseline',
-    whiteSpace: 'nowrap', // Prevents line break
-    justifyContent: 'center',
-    gap: '5px'
-  },
-  priceSubtext: {
-    fontSize: '13px',
-    color: '#6b7280'
-  },
-  recommendation: {
-    fontSize: '12px',
-    color: '#666',
-    marginTop: '2px'
-  }
-}
+import './RecommendedAmountTable.css'
 
 const amounts = [
-  ['1$ - 50$', '1$ - 100$', '1$ - 200$'], // Small organization
-  ['50$ - 100$', '100$ - 200$', '200$ - 500$'], // Midsize organization
-  ['100$ - 200$', '200$ - 500$', '500$ - 2000$'] // Large organization
-]
+  ['1$ - 50$', '1$ - 100$', '1$ - 200$'],
+  ['50$ - 100$', '100$ - 200$', '200$ - 500$'],
+  ['100$ - 200$', '200$ - 500$', '500$ - 2000$']
+].map((row) => row.map((str) => str.replaceAll(' ', '\u00a0')))
 
 const columns = ['Small organization', 'Midsize organization', 'Large organization']
-const specialRows = ['≤2 regular committers', 'Hobby use case']
-const normalRows = ['Small use case', 'Midsize use case', 'Large use case']
-const rows = specialRows.concat(normalRows)
+const rowsFree = ['≤2\u00a0regular committers', 'Hobby use\u00a0case']
+const rowsPaid = ['Small use\u00a0case', 'Midsize use\u00a0case', 'Large use\u00a0case']
+const subText = '≥3\u00a0regular committers'
 
-function RecommendedAmountTable() {
+const rows = [...rowsFree, ...rowsPaid]
+
+const RecommendedAmountTable = () => {
   return (
-    <table style={styles.table}>
-      <tbody>
-        {getArray(rows.length + 1).map((i) => (
-          <tr key={i}>
-            {getArray(columns.length + 1).map((j) => {
-              let content: string | React.JSX.Element = ''
-              let style = styles.cell
-
-              if (i === 0 && j > 0) {
-                content = columns[j - 1]
-              } else if (j === 0 && i > 0) {
-                content = (
-                  <>
-                    {rows[i - 1]}
-                    {/* Add "≥3 regular committers" subtext under Hobby Use Case and all "... use case" rows */}
-                    {rows[i - 1] !== '≤2 regular committers' && <div style={styles.subtext}>≥3 regular committers</div>}
-                  </>
-                )
-                style = { ...style, whiteSpace: 'nowrap', textAlign: 'left' }
-              } else if (i > 0 && j > 0) {
-                const rowLabel = rows[i - 1]
-
-                if (specialRows.includes(rowLabel)) {
-                  content = <b>Free</b>
-                } else {
-                  const normalRowIndex = i - specialRows.length - 1
-                  if (normalRowIndex >= 0 && normalRowIndex < amounts.length) {
-                    const amount = amounts[normalRowIndex][j - 1]
-                    content = (
-                      <>
-                        <div style={styles.priceContainer}>
-                          <b>{amount}</b>
-                          <span style={styles.priceSubtext}>/ month</span>
-                        </div>
-                        <div style={styles.recommendation}>Recommendation</div>
-                      </>
-                    )
-                  }
-                }
-              }
-
-              return (
-                <td key={j} style={style}>
-                  {content}
-                </td>
-              )
-            })}
+    <div className="table-container">
+      <table className="responsive-table">
+        <tbody>
+          <tr>
+            <td className="row-header"></td>
+            {columns.map((col, index) => (
+              <td key={index} className="column-header">
+                {col}
+              </td>
+            ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+          {rows.map((row, rowIndex) => {
+            return (
+              <tr key={rowIndex}>
+                <td className="row-header">
+                  {row}
+                  {rowIndex > 0 && <div className="subtext">{subText}</div>}
+                </td>
+                {columns.map((_, colIndex) => (
+                  <td key={colIndex} className="price-cell">
+                    {rowIndex < rowsFree.length ? (
+                      <strong>Free</strong>
+                    ) : (
+                      <>
+                        <div className="price-container">
+                          <strong>{amounts[rowIndex - rowsFree.length][colIndex]}</strong>
+                          <span className="price-subtext">&nbsp;/&nbsp;month</span>
+                        </div>
+                        <div className="recommendation">Recommended</div>
+                      </>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
   )
-}
-
-function getArray(length: number): number[] {
-  return Array.from({ length }, (_, i) => i)
 }
