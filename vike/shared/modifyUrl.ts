@@ -1,5 +1,6 @@
 export { modifyUrl }
 
+import { modifyUrlSameOrigin, type ModifyUrlSameOriginOptions } from './modifyUrlSameOrigin.js'
 import { createUrlFromComponents, parseUrl } from './utils.js'
 
 /**
@@ -11,17 +12,14 @@ import { createUrlFromComponents, parseUrl } from './utils.js'
  */
 function modifyUrl(
   url: string,
-  modify: {
-    pathname?: string
+  modify: ModifyUrlSameOriginOptions & {
     hostname?: string
     port?: number
     protocol?: string
   }
 ): string {
+  url = modifyUrlSameOrigin(url, modify)
   const urlParsed = parseUrl(url, '/')
-
-  // Pathname
-  const pathname = modify.pathname ?? urlParsed.pathname
 
   // Origin
   const originParts: string[] = [
@@ -36,8 +34,7 @@ function modifyUrl(
 
   const urlModified = createUrlFromComponents(
     origin,
-    pathname,
-    // Should we also support modifying search and hash?
+    urlParsed.pathname,
     urlParsed.searchOriginal,
     urlParsed.hashOriginal
   )
