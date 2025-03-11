@@ -197,7 +197,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
-    console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
+    console.log(`${pc.cyan(`vike v${PROJECT_VERSION}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
   await disableReactStreaming()

@@ -37,7 +37,7 @@ type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
 assertSingleInstance_onAssertModuleLoad()
 
 const projectTag = `[vike]` as const
-const projectTagWithVersion = `[vike@${projectInfo.projectVersion}]` as const
+const projectTagWithVersion = `[vike@${PROJECT_VERSION}]` as const
 const bugTag = 'Bug'
 type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 

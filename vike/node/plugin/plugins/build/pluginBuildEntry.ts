@@ -41,7 +41,7 @@ function pluginBuildEntry(): Plugin[] {
 function getServerProductionEntryCode(config: ResolvedConfig): string {
   const importPath = getImportPath(config)
   const buildInfo: BuildInfo = {
-    versionAtBuildTime: projectInfo.projectVersion,
+    versionAtBuildTime: PROJECT_VERSION,
     usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
     viteConfigRuntime: getViteConfigRuntime(config)
   }

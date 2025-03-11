@@ -78,7 +78,7 @@ function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) 
 
 // Called by utils/assert.ts which is (most certainly) loaded by all entries. That way we don't have to call a callback for every entry. (There are a lot of entries: `client/router/`, `client/`, `node/runtime/`, `node/plugin/`, `node/cli`.)
 function assertSingleInstance_onAssertModuleLoad() {
-  globalObject.instances.push(projectInfo.projectVersion)
+  globalObject.instances.push(PROJECT_VERSION)
   assertSingleInstance()
 }
 

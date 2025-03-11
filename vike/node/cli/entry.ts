@@ -31,7 +31,7 @@ async function cmdDev() {
       `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
     )
     const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
-    info(`  ${pc.yellow(`${pc.bold('Vike')} v${projectInfo.projectVersion}`)}  ${startupDurationString}\n`, {
+    info(`  ${pc.yellow(`${pc.bold('Vike')} v${PROJECT_VERSION}`)}  ${startupDurationString}\n`, {
       clear: !hasExistingLogs
     })
 
