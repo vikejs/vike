@@ -2,7 +2,7 @@ export { parseCli }
 export type { Command }
 
 import pc from '@brillout/picocolors'
-import { projectInfo, includes, PROJECT_VERSION } from './utils.js'
+import { includes, PROJECT_VERSION } from './utils.js'
 
 type Command = 'dev' | 'build' | 'preview' | 'prerender'
 const commands = [

@@ -1,4 +1,4 @@
-import { PROJECT_VERSION, projectInfo } from './utils.js'
+import { PROJECT_VERSION } from './utils.js'
 import { dev, build, preview } from '../api/index.js'
 import pc from '@brillout/picocolors'
 import { parseCli } from './parseCli.js'

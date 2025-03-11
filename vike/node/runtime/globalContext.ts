@@ -46,7 +46,6 @@ import {
   genPromise,
   createDebugger,
   makePublicCopy,
-  projectInfo,
   checkType,
   PROJECT_VERSION
 } from './utils.js'

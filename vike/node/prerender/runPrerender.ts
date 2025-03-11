@@ -12,7 +12,6 @@ import {
   assertUsage,
   assertWarning,
   hasProp,
-  projectInfo,
   objectAssign,
   isObjectWithKeys,
   isCallable,

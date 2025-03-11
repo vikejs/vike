@@ -14,7 +14,6 @@ import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace
 import { getGlobalObject } from './getGlobalObject.js'
 import { isObject } from './isObject.js'
 import { PROJECT_VERSION } from './PROJECT_VERSION.js'
-import { projectInfo } from './projectInfo.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>

@@ -3,7 +3,7 @@ export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { assert, PROJECT_VERSION, projectInfo, toPosixPath } from '../../utils.js'
+import { assert, PROJECT_VERSION, toPosixPath } from '../../utils.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { createRequire } from 'module'
