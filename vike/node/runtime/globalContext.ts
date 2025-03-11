@@ -189,8 +189,10 @@ function makePublic(globalContext: GlobalContext) {
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   debug('setGlobalContext_viteDevServer()')
   setIsProduction(false)
+  /* We cannot cache globalObject.viteDevServer because it's fully replaced when the user modifies vite.config.js => Vite's dev server is fully reloaded and a new viteDevServer replaces the previous one.
   if (globalObject.viteDevServer) return
   assertIsNotInitilizedYet()
+  */
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
   await updateUserFiles()
@@ -507,7 +509,7 @@ async function updateUserFiles() {
   assert(!globalObject.isProduction)
   globalObject.waitForUserFilesUpdate = promise
 
-  const viteDevServer = getViteDevServer()
+  const { viteDevServer } = globalObject
   assert(viteDevServer)
   let virtualFileExports: Record<string, unknown>
   try {
@@ -518,6 +520,9 @@ async function updateUserFiles() {
   }
   virtualFileExports = (virtualFileExports as any).default || virtualFileExports
   debugGlob('Glob result: ', virtualFileExports)
+
+  // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
+  if (viteDevServer !== globalObject.viteDevServer) return
 
   await setUserFiles(virtualFileExports)
   resolve()
