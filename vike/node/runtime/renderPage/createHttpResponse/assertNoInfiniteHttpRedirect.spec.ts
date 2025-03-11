@@ -2,20 +2,23 @@ import { expect, describe, it, assert } from 'vitest'
 import { stripAnsi } from '../../utils.js'
 import { assertNoInfiniteHttpRedirect } from './assertNoInfiniteHttpRedirect.js'
 
+const call = (urlRedirectTarget: string, urlOriginal: string) =>
+  assertNoInfiniteHttpRedirect(urlRedirectTarget, { urlOriginal })
+
 describe('assertNoInfiniteHttpRedirect()', () => {
   it('works', () => {
     expectErr(
       () => {
-        assertNoInfiniteHttpRedirect('/a', '/a')
+        call('/a', '/a')
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot('"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /a"')
       }
     )
-    assertNoInfiniteHttpRedirect('/a', '/b')
+    call('/a', '/b')
     expectErr(
       () => {
-        assertNoInfiniteHttpRedirect('/a', '/a')
+        call('/a', '/a')
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot('"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /a"')
@@ -23,18 +26,18 @@ describe('assertNoInfiniteHttpRedirect()', () => {
     )
     expectErr(
       () => {
-        assertNoInfiniteHttpRedirect('/b', '/a')
+        call('/b', '/a')
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot('"[vike][Wrong Usage] Infinite loop of HTTP URL redirects: /a -> /b -> /a"')
       }
     )
-    assertNoInfiniteHttpRedirect('/a', '/c')
-    assertNoInfiniteHttpRedirect('/b', '/c')
-    assertNoInfiniteHttpRedirect('/c', '/d')
+    call('/a', '/c')
+    call('/b', '/c')
+    call('/c', '/d')
     expectErr(
       () => {
-        assertNoInfiniteHttpRedirect('/d', '/b')
+        call('/d', '/b')
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot(
@@ -42,11 +45,11 @@ describe('assertNoInfiniteHttpRedirect()', () => {
         )
       }
     )
-    assertNoInfiniteHttpRedirect('/a', '/e')
-    assertNoInfiniteHttpRedirect('/e', '/c')
+    call('/a', '/e')
+    call('/e', '/c')
     expectErr(
       () => {
-        assertNoInfiniteHttpRedirect('/d', '/a')
+        call('/d', '/a')
       },
       (msg) => {
         expect(msg).toMatchInlineSnapshot(

@@ -142,8 +142,11 @@ async function createHttpResponsePageContextJson(pageContextSerialized: string) 
   return httpResponse
 }
 
-function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, urlOriginal: string): HttpResponse {
-  assertNoInfiniteHttpRedirect(url, urlOriginal)
+function createHttpResponseRedirect(
+  { url, statusCode }: UrlRedirect,
+  pageContextInit: { urlOriginal: string }
+): HttpResponse {
+  assertNoInfiniteHttpRedirect(url, pageContextInit)
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)

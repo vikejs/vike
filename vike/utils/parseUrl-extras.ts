@@ -101,6 +101,7 @@ function modifyUrlPathname(url: string, modifier: (urlPathname: string) => strin
 function removeUrlOrigin(url: string): { urlModified: string; origin: string | null } {
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, '/')
   const urlModified = createUrlFromComponents(null, pathnameOriginal, searchOriginal, hashOriginal)
+  assert(urlModified.startsWith('/'))
   return { urlModified, origin }
 }
 function setUrlOrigin(url: string, origin: string | null): false | string {

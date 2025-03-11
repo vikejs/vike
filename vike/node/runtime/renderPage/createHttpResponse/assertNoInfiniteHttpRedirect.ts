@@ -1,6 +1,6 @@
 export { assertNoInfiniteHttpRedirect }
 
-import { assert, assertUsage, getGlobalObject } from '../../utils.js'
+import { assert, assertUsage, getGlobalObject, removeUrlOrigin } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 type Graph = Record<string, Set<string>>
@@ -14,8 +14,10 @@ function assertNoInfiniteHttpRedirect(
   // The exact URL that the user will be redirected to.
   // - It includes the Base URL as well as the locale (i18n) base.
   urlRedirectTarget: string,
-  // Rationale for cechking against `urlOriginal`: https://github.com/vikejs/vike/pull/2264#issuecomment-2713890263
-  urlOriginal: string
+  // Rationale for checking against `pageContextInit.urlOriginal`: https://github.com/vikejs/vike/pull/2264#issuecomment-2713890263
+  pageContextInit: {
+    urlOriginal: string
+  }
 ) {
   if (!urlRedirectTarget.startsWith('/')) {
     // We assume that urlRedirectTarget points to an origin that is external (not the same origin), and we can therefore assume that the app doesn't define an infinite loop (at least not in itself).
@@ -26,10 +28,11 @@ function assertNoInfiniteHttpRedirect(
     //    ```
     return
   }
-  assert(urlOriginal.startsWith('/'))
+  const urlOriginalNormalized = removeUrlOrigin(pageContextInit.urlOriginal).urlModified
+  assert(urlOriginalNormalized.startsWith('/'))
   const graph = copy(globalObject.redirectGraph)
   graph[urlRedirectTarget] ??= new Set()
-  graph[urlRedirectTarget]!.add(urlOriginal)
+  graph[urlRedirectTarget]!.add(urlOriginalNormalized)
   validate(graph)
   globalObject.redirectGraph = graph
 }

@@ -24,7 +24,6 @@ import {
   prependBase,
   removeUrlOrigin,
   setUrlOrigin,
-  createUrlFromComponents,
   isUri,
   type UrlPublic,
   getUrlPretty
@@ -529,7 +528,7 @@ async function normalizeUrl(
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContextInit.urlOriginal)
+  const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContextInit)
   const pageContextHttpResponse = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
@@ -576,7 +575,7 @@ async function getPermanentRedirect(
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, urlWithoutBase)
+  const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, pageContextInit)
   const pageContextHttpResponse = createPageContext(pageContextInit)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
@@ -588,6 +587,7 @@ function normalize(url: string) {
 async function handleAbortError(
   errAbort: ErrorAbort,
   pageContextsFromRewrite: PageContextFromRewrite[],
+  // The original `pageContextInit` object passed to `renderPage(pageContextInit)`
   pageContextInit: { urlOriginal: string },
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageInit to it: we only use some pageContextNominalPageInit information.
   pageContextNominalPageInit: {
@@ -644,20 +644,7 @@ async function handleAbortError(
   if (pageContextAbort._urlRedirect) {
     const pageContextReturn = createPageContext(pageContextInit)
     objectAssign(pageContextReturn, pageContextAbort)
-    const httpResponse = createHttpResponseRedirect(
-      pageContextAbort._urlRedirect,
-      (() => {
-        const { pathname, searchOriginal } = pageContextNominalPageInit.urlParsed
-        const urlLogical = createUrlFromComponents(
-          null,
-          pathname,
-          searchOriginal,
-          // The server-side doesn't have access to the hash
-          null
-        )
-        return urlLogical
-      })()
-    )
+    const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextInit)
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
