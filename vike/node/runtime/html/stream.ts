@@ -224,7 +224,7 @@ function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb 
     const streamPipeWeb = getStreamPipeWeb(htmlRender)
     assert(streamPipeWeb)
 
-    const { readable, writable } = new TransformStream();
+    const { readable, writable } = new TransformStream()
     streamPipeWeb(writable)
     return readable
   }
