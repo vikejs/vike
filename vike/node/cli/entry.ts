@@ -31,12 +31,9 @@ async function cmdDev() {
       `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
     )
     const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
-    info(
-      `  ${pc.yellow(`${pc.bold(projectInfo.projectName)} v${projectInfo.projectVersion}`)}  ${startupDurationString}\n`,
-      {
-        clear: !hasExistingLogs
-      }
-    )
+    info(`  ${pc.yellow(`${pc.bold('Vike')} v${projectInfo.projectVersion}`)}  ${startupDurationString}\n`, {
+      clear: !hasExistingLogs
+    })
 
     viteServer.printUrls()
     viteServer.bindCLIShortcuts({ print: true })
