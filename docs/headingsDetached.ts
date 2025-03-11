@@ -274,8 +274,12 @@ function tools(): HeadingDetachedDefinition[] {
 function misc(): HeadingDetachedDefinition[] {
   return [
     {
-      title: "Warning: don't define global config locally",
+      title: "[Warning] Don't define global configs locally",
       url: '/warning/global-config'
+    },
+    {
+      title: "[Warning] Don't load multiple versions",
+      url: '/warning/version-mismatch'
     },
     {
       title: 'Consulting',
