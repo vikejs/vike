@@ -26,7 +26,8 @@ import {
   changeEnumerable,
   onSetupPrerender,
   isObject,
-  makePublicCopy
+  makePublicCopy,
+  PROJECT_VERSION
 } from './utils.js'
 import {
   prerenderPage,

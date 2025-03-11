@@ -10,6 +10,7 @@ import { unique } from './unique.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { projectInfo } from './projectInfo.js'
 import pc from '@brillout/picocolors'
+import { PROJECT_VERSION } from './PROJECT_VERSION.js'
 /* Use original assertWarning() after all CJS is removed from node_modules/vike/dist/
 import { assertWarning } from './assert.js'
 */

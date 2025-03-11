@@ -47,7 +47,8 @@ import {
   createDebugger,
   makePublicCopy,
   projectInfo,
-  checkType
+  checkType,
+  PROJECT_VERSION
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
