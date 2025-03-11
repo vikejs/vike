@@ -1,6 +1,6 @@
 export { assertNoInfiniteHttpRedirect }
 
-import { assert, assertUsage, getGlobalObject } from '../../utils.js'
+import { assert, assertUsage, getGlobalObject, removeUrlOrigin } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 type Graph = Record<string, Set<string>>
@@ -8,20 +8,31 @@ const globalObject = getGlobalObject<{ redirectGraph: Graph }>('createHttpRespon
   redirectGraph: {}
 })
 
-function assertNoInfiniteHttpRedirect(urlRedirectTarget: string, urlLogical: string) {
+// It's too strict, see https://github.com/vikejs/vike/issues/1270#issuecomment-1820608999
+// - Let's create a new setting `+doNotCatchInfiniteRedirect` if someone complains.
+function assertNoInfiniteHttpRedirect(
+  // The exact URL that the user will be redirected to.
+  // - It includes the Base URL as well as the locale (i18n) base.
+  urlRedirectTarget: string,
+  // Rationale for checking against `pageContextInit.urlOriginal`: https://github.com/vikejs/vike/pull/2264#issuecomment-2713890263
+  pageContextInit: {
+    urlOriginal: string
+  }
+) {
   if (!urlRedirectTarget.startsWith('/')) {
-    // We assume that urlRedirectTarget points to an origin that is external (not the same origin), and we can therefore assume that the app doesn't define an infinite loop (in itself).
-    //  - There isn't a reliable way to check whether the redirect points to an external origin or the same origin. For same origins, we assume/hope the user to pass the URL without origin.
+    // We assume that urlRedirectTarget points to an origin that is external (not the same origin), and we can therefore assume that the app doesn't define an infinite loop (at least not in itself).
+    //  - There isn't a reliable way to check whether the redirect points to an external origin or the same origin; we hope/assume the user sets the URL without origin.
     //    ```js
     //    // For same-origin, the user usually/hopefully passes a URL without origin
     //    renderPage({ urlOriginal: '/some/pathname' })
     //    ```
     return
   }
-  assert(urlLogical.startsWith('/'))
+  const urlOriginalNormalized = removeUrlOrigin(pageContextInit.urlOriginal).urlModified
+  assert(urlOriginalNormalized.startsWith('/'))
   const graph = copy(globalObject.redirectGraph)
   graph[urlRedirectTarget] ??= new Set()
-  graph[urlRedirectTarget]!.add(urlLogical)
+  graph[urlRedirectTarget]!.add(urlOriginalNormalized)
   validate(graph)
   globalObject.redirectGraph = graph
 }
