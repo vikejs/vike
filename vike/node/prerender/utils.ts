@@ -3,7 +3,7 @@ assertIsNotBrowser()
 
 export * from '../../utils/assert.js'
 export * from '../../utils/hasProp.js'
-export * from '../../utils/projectInfo.js'
+export * from '../../utils/PROJECT_VERSION.js'
 export * from '../../utils/objectAssign.js'
 export * from '../../utils/isObjectWithKeys.js'
 export * from '../../utils/isCallable.js'

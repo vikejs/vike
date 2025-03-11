@@ -12,7 +12,6 @@ import {
   assertUsage,
   assertWarning,
   hasProp,
-  projectInfo,
   objectAssign,
   isObjectWithKeys,
   isCallable,
@@ -26,7 +25,8 @@ import {
   changeEnumerable,
   onSetupPrerender,
   isObject,
-  makePublicCopy
+  makePublicCopy,
+  PROJECT_VERSION
 } from './utils.js'
 import {
   prerenderPage,
@@ -197,7 +197,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
-    console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
+    console.log(`${pc.cyan(`vike v${PROJECT_VERSION}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
   await disableReactStreaming()

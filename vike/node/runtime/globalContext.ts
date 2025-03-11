@@ -46,8 +46,8 @@ import {
   genPromise,
   createDebugger,
   makePublicCopy,
-  projectInfo,
-  checkType
+  checkType,
+  PROJECT_VERSION
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -482,7 +482,7 @@ function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   checkType<BuildInfo>({ ...buildInfo, viteConfigRuntime: buildInfo.viteConfigRuntime })
 }
 function assertVersionAtBuildTime(versionAtBuildTime: string) {
-  const versionAtRuntime = projectInfo.projectVersion
+  const versionAtRuntime = PROJECT_VERSION
   const pretty = (version: string) => pc.bold(`vike@${version}`)
   assertUsage(
     versionAtBuildTime === versionAtRuntime,

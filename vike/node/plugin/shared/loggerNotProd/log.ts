@@ -3,7 +3,7 @@ export { logWithVikeTag }
 export { logDirectly }
 export { applyViteSourceMapToStackTrace }
 
-import { assert, projectInfo, stripAnsi, hasProp, assertIsNotProductionRuntime } from '../../utils.js'
+import { assert, stripAnsi, hasProp, assertIsNotProductionRuntime, PROJECT_VERSION } from '../../utils.js'
 import pc from '@brillout/picocolors'
 import { isErrorDebug } from '../../../shared/isErrorDebug.js'
 import { getViteDevServer } from '../../../runtime/globalContext.js'
@@ -11,7 +11,7 @@ import type { LogCategory, LogType } from '../loggerNotProd.js'
 
 assertIsNotProductionRuntime()
 
-type ProjectTag = `[vike]` | `[vike@${typeof projectInfo.projectVersion}]`
+type ProjectTag = `[vike]` | `[vike@${typeof PROJECT_VERSION}]`
 
 function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | null, showVikeVersion = false) {
   const projectTag = getProjectTag(showVikeVersion)
@@ -21,7 +21,7 @@ function logWithVikeTag(msg: string, logType: LogType, category: LogCategory | n
 function getProjectTag(showVikeVersion: boolean) {
   let projectTag: ProjectTag
   if (showVikeVersion) {
-    projectTag = `[vike@${projectInfo.projectVersion}]`
+    projectTag = `[vike@${PROJECT_VERSION}]`
   } else {
     projectTag = `[vike]`
   }

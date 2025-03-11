@@ -8,8 +8,8 @@ export { assertSingleInstance_onAssertModuleLoad }
 
 import { unique } from './unique.js'
 import { getGlobalObject } from './getGlobalObject.js'
-import { projectInfo } from './projectInfo.js'
 import pc from '@brillout/picocolors'
+import { PROJECT_VERSION } from './PROJECT_VERSION.js'
 /* Use original assertWarning() after all CJS is removed from node_modules/vike/dist/
 import { assertWarning } from './assert.js'
 */
@@ -78,7 +78,7 @@ function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) 
 
 // Called by utils/assert.ts which is (most certainly) loaded by all entries. That way we don't have to call a callback for every entry. (There are a lot of entries: `client/router/`, `client/`, `node/runtime/`, `node/plugin/`, `node/cli`.)
 function assertSingleInstance_onAssertModuleLoad() {
-  globalObject.instances.push(projectInfo.projectVersion)
+  globalObject.instances.push(PROJECT_VERSION)
   assertSingleInstance()
 }
 

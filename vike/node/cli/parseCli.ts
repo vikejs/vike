@@ -2,7 +2,7 @@ export { parseCli }
 export type { Command }
 
 import pc from '@brillout/picocolors'
-import { projectInfo, includes } from './utils.js'
+import { includes, PROJECT_VERSION } from './utils.js'
 
 type Command = 'dev' | 'build' | 'preview' | 'prerender'
 const commands = [
@@ -42,7 +42,7 @@ function showHelp(): never {
   const nameMaxLength = Math.max(...commands.map((c) => c.name.length))
   console.log(
     [
-      `vike@${projectInfo.projectVersion}`,
+      `vike@${PROJECT_VERSION}`,
       '',
       'Usage:',
       ...[...commands, { name: '-v', desc: "Print Vike's installed version" }].map(
@@ -66,7 +66,7 @@ function showHelpOrVersion(arg: string) {
 }
 
 function showVersion(): never {
-  console.log(projectInfo.projectVersion)
+  console.log(PROJECT_VERSION)
   process.exit(1)
 }
 

@@ -13,7 +13,7 @@ import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { isObject } from './isObject.js'
-import { projectInfo } from './projectInfo.js'
+import { PROJECT_VERSION } from './PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
@@ -37,7 +37,7 @@ type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
 assertSingleInstance_onAssertModuleLoad()
 
 const projectTag = `[vike]` as const
-const projectTagWithVersion = `[vike@${projectInfo.projectVersion}]` as const
+const projectTagWithVersion = `[vike@${PROJECT_VERSION}]` as const
 const bugTag = 'Bug'
 type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
