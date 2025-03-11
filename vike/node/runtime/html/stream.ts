@@ -220,6 +220,14 @@ function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb 
   if (isStreamReadableWeb(htmlRender)) {
     return htmlRender
   }
+  if (isStreamPipeWeb(htmlRender)) {
+    const streamPipeWeb = getStreamPipeWeb(htmlRender)
+    assert(streamPipeWeb)
+
+    const { readable, writable } = new TransformStream();
+    streamPipeWeb(writable)
+    return readable
+  }
   return null
 }
 
