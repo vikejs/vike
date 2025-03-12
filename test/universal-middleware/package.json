@@ -17,7 +17,7 @@
     "telefunc": "^0.1.82"
   },
   "devDependencies": {
-    "typescript": "^5.7.3",
+    "typescript": "^5.8.2",
     "vike": "^0.4.224",
     "vite": "^6.2.1",
     "@types/express": "^4.17.21",

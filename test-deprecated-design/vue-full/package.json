@@ -12,7 +12,7 @@
     "@vue/server-renderer": "3.2.33",
     "cross-fetch": "^3.1.5",
     "node-fetch": "^2.6.1",
-    "typescript": "^5.7.3",
+    "typescript": "^5.8.2",
     "unplugin-vue-markdown": "^0.24.3",
     "vike": "0.4.224",
     "vite": "5.1.0",
