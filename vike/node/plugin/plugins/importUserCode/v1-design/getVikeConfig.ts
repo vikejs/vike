@@ -652,7 +652,7 @@ function resolveConfigValueSources(
     sources = sources.filter((source) => {
       assert(source.configEnv.config)
       assert(source.valueIsLoaded)
-      const valueIsGlobal = resolveIsGlobalValue(configDef.global, source.value)
+      const valueIsGlobal = resolveIsGlobalValue(configDef.global, source)
       return isGlobal ? valueIsGlobal : !valueIsGlobal
     })
   }
@@ -790,9 +790,10 @@ function isDefiningPage(plusFiles: PlusFile[]): boolean {
 function isDefiningPageConfig(configName: string): boolean {
   return ['Page', 'route'].includes(configName)
 }
-function resolveIsGlobalValue(configDefGlobal: ConfigDefinition['global'], configValue: unknown) {
+function resolveIsGlobalValue(configDefGlobal: ConfigDefinition['global'], source: ConfigValueSource) {
+  assert(source.valueIsLoaded)
   let isGlobal: boolean
-  if (isCallable(configDefGlobal)) isGlobal = configDefGlobal(configValue)
+  if (isCallable(configDefGlobal)) isGlobal = configDefGlobal(source.value)
   else isGlobal = configDefGlobal ?? false
   assert(typeof isGlobal === 'boolean')
   return isGlobal
@@ -923,15 +924,14 @@ function applyEffectsConfVal(configValueSources: ConfigValueSources, configDefin
     if (!sourceEffect) return
     const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
     if (!effect) return
-    const { configModFromEffect, configValueEffectSource } = effect
+    const configModFromEffect = effect
     applyEffectConfVal(
       configModFromEffect,
       sourceEffect,
       configValueSources,
       configNameEffect,
       configDefEffect,
-      configDefinitions,
-      configValueEffectSource
+      configDefinitions
     )
   })
 }
@@ -942,7 +942,7 @@ function applyEffectsMetaEnv(configValueSources: ConfigValueSources, configDefin
     if (!sourceEffect) return
     const effect = runEffect(configNameEffect, configDefEffect, sourceEffect)
     if (!effect) return
-    const { configModFromEffect } = effect
+    const configModFromEffect = effect
     applyEffectMetaEnv(configModFromEffect, configValueSources, configDefEffect)
   })
 }
@@ -958,14 +958,13 @@ function runEffect(configName: string, configDef: ConfigDefinitionInternal, sour
     ].join(' ')
   )
   assert(source.valueIsLoaded)
-  const configValueEffectSource = source.value
   // Call effect
   const configModFromEffect = configDef.effect({
-    configValue: configValueEffectSource,
+    configValue: source.value,
     configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAtFilePath)
   })
   if (!configModFromEffect) return null
-  return { configModFromEffect, configValueEffectSource }
+  return configModFromEffect
 }
 function applyEffectConfVal(
   configModFromEffect: Config,
@@ -973,8 +972,7 @@ function applyEffectConfVal(
   configValueSources: ConfigValueSources,
   configNameEffect: string,
   configDefEffect: ConfigDefinitionInternal,
-  configDefinitions: ConfigDefinitions,
-  configValueEffectSource: unknown
+  configDefinitions: ConfigDefinitions
 ) {
   objectEntries(configModFromEffect).forEach(([configNameTarget, configValue]) => {
     if (configNameTarget === 'meta') return
@@ -991,13 +989,14 @@ function applyEffectConfVal(
       valueIsLoaded: true,
       value: configValue
     }
-    const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, configValueEffectSource)
-    const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValue)
+    assert(sourceEffect.valueIsLoaded)
+    const isValueGlobalSource = resolveIsGlobalValue(configDefEffect.global, sourceEffect)
+    const isValueGlobalTarget = resolveIsGlobalValue(configDef.global, configValueSource)
     const isGlobalHumanReadable = (isGlobal: boolean) => `${isGlobal ? 'non-' : ''}global` as const
     // The error message make it sound like it's an inherent limitation, it actually isn't (both ways can make senses).
     assertUsage(
       isValueGlobalSource === isValueGlobalTarget,
-      `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(configValueEffectSource))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
+      `The configuration ${pc.cyan(configNameEffect)} is set to ${pc.cyan(JSON.stringify(sourceEffect.value))} which is considered ${isGlobalHumanReadable(isValueGlobalSource)}. However, it has a meta.effect that sets the configuration ${pc.cyan(configNameTarget)} to ${pc.cyan(JSON.stringify(configValue))} which is considered ${isGlobalHumanReadable(isValueGlobalTarget)}. This is contradictory: make sure the values are either both non-global or both global.`
     )
     configValueSources[configNameTarget] ??= []
     configValueSources[configNameTarget].push(configValueSource)
