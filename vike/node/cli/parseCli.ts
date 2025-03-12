@@ -60,7 +60,7 @@ function getCliOptions() {
       configNameCurrent = arg.slice('--'.length)
     } else {
       if (!configNameCurrent) wrongUsage(`Unknown option ${pc.bold(arg)}`)
-      commit(parseJson5(arg, `--${configNameCurrent}`))
+      commit(parseJson5(arg, `CLI option --${configNameCurrent}`))
     }
   }
   commitIfDefinedWithoutValue()

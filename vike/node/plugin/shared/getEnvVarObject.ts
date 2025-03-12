@@ -17,7 +17,7 @@ function getEnvVarObject(envVarName: 'VITE_CONFIG' | 'VIKE_CRAWL' | 'VIKE_CONFIG
   return value
 }
 
-function parseJson5(valueStr: string, varName: string): unknown {
+function parseJson5(valueStr: string, what: string): unknown {
   let value: unknown
   try {
     value = JSON5.parse(valueStr)
@@ -25,7 +25,7 @@ function parseJson5(valueStr: string, varName: string): unknown {
     console.error(err)
     assertUsage(
       false,
-      `Cannot parse ${varName} (see error above) because it's set to the following which isn't a valid JSON5 string: ${pc.bold(valueStr)}`
+      `Cannot parse ${pc.cyan(what)} (see error above) because it's set to the following which isn't a valid JSON5 string: ${pc.bold(valueStr)}`
     )
   }
   return value
