@@ -54,7 +54,7 @@ type ConfigDefinition = {
    *
    * https://vike.dev/extends#inheritance
    */
-  global?: boolean | ((value: unknown) => boolean)
+  global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
   // TODO/now implement
   type?: string | string[]
 }
@@ -241,7 +241,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   prerender: {
     env: { config: true },
-    global: (value) => typeof value === 'object',
+    global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,
     type: ['boolean', 'object'],
     cumulative: true
   },

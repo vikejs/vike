@@ -361,7 +361,9 @@ type ConfigBuiltIn = {
          */
         disableAutoRun?: boolean
         /**
-         * Set prerender settings without enabling pre-rendering.
+         * Whether to enable pre-rendering.
+         *
+         * Setting `value: null` enables you to set prerender settings without activating pre-rendering. (Useful for Vike extensions.)
          *
          * https://vike.dev/prerender#value
          *
