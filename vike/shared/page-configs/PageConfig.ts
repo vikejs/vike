@@ -23,10 +23,7 @@ import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
-import type {
-  PlusFile,
-  PlusFilesByLocationId
-} from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
+import type { PlusFile } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
 
 type PageConfigCommon = {
   pageId: string
