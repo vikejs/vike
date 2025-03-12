@@ -166,11 +166,7 @@ type ConfigValueComputed = {
 
 type DefinedAtData = DefinedAt | DefinedAt[] | null
 type DefinedAt = DefinedAtFile | DefinedBy
-type DefinedBy = {
-  definedBy: <ConfigName extends string>(
-    configName: ConfigName
-  ) => `CLI option --${ConfigName}` | `API call ${Operation}({ ${ConfigName} })`
-}
+type DefinedBy = { definedBy: 'cli' | 'env' } | { definedBy: 'api'; operation: Operation }
 type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPathToShowToUser: null | string[]

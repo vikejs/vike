@@ -4,8 +4,8 @@ export { getDefinedAtString }
 export type { ConfigDefinedAt }
 export type { ConfigDefinedAtOptional }
 
-import { assert, isArray } from '../utils.js'
-import type { DefinedAt, DefinedAtData } from './PageConfig.js'
+import { assert, checkType, isArray } from '../utils.js'
+import type { DefinedAt, DefinedAtData, DefinedBy } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
@@ -47,7 +47,7 @@ function getDefinedAtString(definedAtData: NonNullable<DefinedAtData>, configNam
   assert(files.length >= 1)
   const definedAtString = files
     .map((definedAt) => {
-      if (definedAt.definedBy) return definedAt.definedBy(configName)
+      if (definedAt.definedBy) return getDefinedByString(definedAt, configName)
       const { filePathToShowToUser, fileExportPathToShowToUser } = definedAt
       let s = filePathToShowToUser
       const exportPath = getExportPath(fileExportPathToShowToUser, configName)
@@ -58,4 +58,19 @@ function getDefinedAtString(definedAtData: NonNullable<DefinedAtData>, configNam
     })
     .join(' / ')
   return definedAtString
+}
+
+function getDefinedByString(definedAt: DefinedBy, configName: string): string {
+  if (definedAt.definedBy === 'api') {
+    return `API call ${definedAt.operation}({${configName}})`
+  }
+  const { definedBy } = definedAt
+  if (definedBy === 'cli') {
+    return `CLI option --${configName}`
+  }
+  if (definedBy === 'env') {
+    return `environment variable VIKE_OPTIONS="{${configName}}"`
+  }
+  checkType<never>(definedBy)
+  assert(false)
 }
