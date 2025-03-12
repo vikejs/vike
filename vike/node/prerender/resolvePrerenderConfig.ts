@@ -2,9 +2,12 @@ export { resolvePrerenderConfigGlobal }
 export { resolvePrerenderConfigLocal }
 
 import { VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
-import { assert, isArray, objectAssign } from './utils.js'
+import { assert, isArray, isObject, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
+
+// When setting +prerender to an setting object => also enables pre-rendering
+const defaultValueForObject = true
 
 function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
   const prerenderConfigs = vikeConfig.global.config.prerender
@@ -20,13 +23,22 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
     disableAutoRun: pickFirst(prerenderConfigList.map((c) => c.disableAutoRun)) ?? false
   }
 
-  const prerenderConfigGlobalLocalValue = prerenderConfigList.map((c) => c.value).filter((v) => v !== null)
-  const defaultLocalValue =
-    pickFirst(prerenderConfigGlobalLocalValue) ??
-    (prerenderConfigGlobalLocalValue.length > 0 ||
-      // Backwards compatibility for with vike({ prerender: true }) in vite.config.js
-      prerenderConfigs?.some((p) => p === true) ||
-      false)
+  let defaultLocalValue = false
+  {
+    const valueFirst = prerenderConfigs?.[0]
+    if (valueFirst === true || (isObject(valueFirst) && (valueFirst.value ?? defaultValueForObject))) {
+      defaultLocalValue = true
+    }
+  }
+  // TODO/next-major: remove
+  // Backwards compatibility for with vike({ prerender: true }) in vite.config.js
+  {
+    const valuesWithDefinedAt = vikeConfig.global._from.configsCumulative.prerender?.values ?? []
+    if (valuesWithDefinedAt.some((v) => v.definedAt.includes('vite.config.js') && v.value)) {
+      defaultLocalValue = true
+    }
+  }
+
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
     isPrerenderingEnabledForAllPages:
