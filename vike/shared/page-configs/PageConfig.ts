@@ -40,7 +40,7 @@ type PageConfigRoute =
       isErrorPage?: undefined
       routeFilesystem: {
         routeString: string
-        definedBy: string
+        definedAtLocation: string
       }
     }
 
