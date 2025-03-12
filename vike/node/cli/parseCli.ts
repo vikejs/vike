@@ -81,7 +81,9 @@ function showHelp(): never {
           `  ${pc.dim('$')} ${pc.bold(`vike ${c.name}`)}${' '.repeat(nameMaxLength - c.name.length)}${TAB}${pc.dim(`# ${c.desc}`)}`
       ),
       '',
-      `More infos at ${pc.underline('https://vike.dev/cli')}`
+      `Vike settings can be passed over the ${pc.cyan('VIKE_CONFIG')} environment variable or as ${pc.cyan('CLI options')} such as --host.`,
+      `Vite settings can be passed over the ${pc.cyan('VITE_CONFIG')} environment variable.`,
+      `See ${pc.underline('https://vike.dev/cli')} for more information.`
     ].join('\n')
   )
   process.exit(1)

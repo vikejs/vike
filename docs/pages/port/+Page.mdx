@@ -1,0 +1,35 @@
+import { Link } from '@brillout/docpress'
+
+Vike's `+port` setting is an alias for setting Vite's [server.port](https://vite.dev/config/server-options.html#server-port) and [preview.port](https://vite.dev/config/preview-options.html#preview-port).
+
+This:
+
+```js
+// +config.js
+
+export default {
+  port: 1234
+}
+```
+
+Is equivalent to that:
+
+```js
+// vite.config.js
+
+export default {
+  server: {
+    port: 1234
+  },
+  preview: {
+    port: 1234
+  }
+}
+```
+
+If you want to set two different values between development and preview, then set the values over `vite.config.js` instead of using `+port`.
+
+
+## See also
+
+- <Link href="/settings" />

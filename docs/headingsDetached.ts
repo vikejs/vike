@@ -586,6 +586,14 @@ function api(): HeadingDetachedDefinition[] {
       url: '/react-setting'
     },
     {
+      title: '`+host`',
+      url: '/host'
+    },
+    {
+      title: '`+port`',
+      url: '/port'
+    },
+    {
       title: '`getGlobalContextSync()` & `getGlobalContextAsync()`',
       url: '/getGlobalContext'
     },
