@@ -84,6 +84,7 @@ import {
 import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
+import { getApiOperation } from '../../../../api/context.js'
 
 assertIsNotProductionRuntime()
 
@@ -551,11 +552,27 @@ function temp_interopVikeVitePlugin(
   })
 }
 function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
-  const configFromEnv = getEnvVarObject('VIKE_CONFIG') ?? {}
-  Object.entries(configFromEnv).forEach(([configName, value]) => {
-    const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
-    sources.unshift(getSourceNonConfigFile(configName, value, { definedBy: 'env' }))
-  })
+  const add = (configValues: Record<string, unknown>, definedBy: DefinedBy) => {
+    Object.entries(configValues).forEach(([configName, value]) => {
+      const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+      sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
+    })
+  }
+
+  // VIKE_CONFIG
+  const configFromEnv = getEnvVarObject('VIKE_CONFIG')
+  if (configFromEnv) {
+    add(configFromEnv, { definedBy: 'env' })
+  }
+
+  // Vike API — passed options
+  const apiOperation = getApiOperation()
+  if (apiOperation?.options.vikeConfig) {
+    add(apiOperation.options.vikeConfig as Record<string, unknown>, {
+      definedBy: 'api',
+      operation: apiOperation.operation
+    })
+  }
 }
 
 function getSourceNonConfigFile(

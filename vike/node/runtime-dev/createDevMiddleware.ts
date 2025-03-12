@@ -15,15 +15,18 @@ async function createDevMiddleware(
   options: { root?: string } & APIOptions = {}
 ): Promise<{ devMiddleware: Connect.Server; viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
   setGlobalContext_isProduction(false)
-  const viteConfigFromOptions = {
-    ...options.viteConfig,
-    server: {
-      ...options.viteConfig?.server,
-      middlewareMode: options.viteConfig?.server?.middlewareMode ?? true
+  const optionsMod = {
+    ...options,
+    viteConfig: {
+      ...options.viteConfig,
+      root: options.root ?? options.viteConfig?.root,
+      server: {
+        ...options.viteConfig?.server,
+        middlewareMode: options.viteConfig?.server?.middlewareMode ?? true
+      }
     }
   }
-  if (options.root) viteConfigFromOptions.root = options.root
-  const { viteConfigEnhanced } = await prepareViteApiCall(viteConfigFromOptions, 'dev')
+  const { viteConfigEnhanced } = await prepareViteApiCall(optionsMod, 'dev')
   const server = await createServer(viteConfigEnhanced)
   const devMiddleware = server.middlewares
   return { devMiddleware, viteServer: server, viteConfig: server.config }
