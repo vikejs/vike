@@ -6,22 +6,19 @@ import { assert, isArray, isObject, objectAssign } from './utils.js'
 import { getConfigValueBuildTime } from '../../shared/page-configs/getConfigValueBuildTime.js'
 import type { PageConfigBuildTime } from '../../shared/page-configs/PageConfig.js'
 
-// When setting +prerender to an setting object => also enables pre-rendering
+// When setting +prerender to an object => it also enables pre-rendering
 const defaultValueForObject = true
 
 function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
-  const prerenderConfigs = vikeConfig.global.config.prerender
+  const prerenderConfigs = vikeConfig.global.config.prerender || []
 
-  let prerenderConfigList = prerenderConfigs || []
-  // Needed because of backwards compatibility of `vike({prerender:true})` in `vite.config.js`; after we remove it we can remove this line.
-  prerenderConfigList = prerenderConfigList.filter(isObject2)
-  assert(prerenderConfigList.every(isObject2)) // Help TS
+  const prerenderSettings = prerenderConfigs.filter(isObject2)
   const prerenderConfigGlobal = {
-    partial: pickFirst(prerenderConfigList.map((c) => c.partial)) ?? false,
-    noExtraDir: pickFirst(prerenderConfigList.map((c) => c.noExtraDir)) ?? false,
-    parallel: pickFirst(prerenderConfigList.map((c) => c.parallel)) ?? true,
-    disableAutoRun: pickFirst(prerenderConfigList.map((c) => c.disableAutoRun)) ?? false
-  }
+    partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
+    noExtraDir: pickFirst(prerenderSettings.map((c) => c.noExtraDir)) ?? false,
+    parallel: pickFirst(prerenderSettings.map((c) => c.parallel)) ?? true,
+    disableAutoRun: pickFirst(prerenderSettings.map((c) => c.disableAutoRun)) ?? false
+  } satisfies Record<string, boolean | number>
 
   let defaultLocalValue = false
   {
@@ -31,7 +28,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
     }
   }
   // TODO/next-major: remove
-  // Backwards compatibility for with vike({ prerender: true }) in vite.config.js
+  // Backwards compatibility for `vike({prerender:true})` in vite.config.js
   {
     const valuesWithDefinedAt = vikeConfig.global._from.configsCumulative.prerender?.values ?? []
     if (valuesWithDefinedAt.some((v) => v.definedAt.includes('vite.config.js') && v.value)) {
@@ -67,8 +64,8 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   return prerenderConfigLocal
 }
 
-function isObject2<T>(p: T | boolean | undefined): p is T {
-  return typeof p === 'object' && p !== null
+function isObject2<T extends Record<string, unknown>>(value: T | boolean | undefined): value is T {
+  return typeof value === 'object' && value !== null
 }
 function pickFirst<T>(arr: T[]): T | undefined {
   return arr.filter((v) => v !== undefined)[0]
