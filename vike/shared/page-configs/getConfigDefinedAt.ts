@@ -62,14 +62,14 @@ function getDefinedAtString(definedAtData: NonNullable<DefinedAtData>, configNam
 
 function getDefinedByString(definedAt: DefinedBy, configName: string): string {
   if (definedAt.definedBy === 'api') {
-    return `API call ${definedAt.operation}({${configName}})`
+    return `API call ${pc.cyan(`${definedAt.operation}({${configName}})`)}`
   }
   const { definedBy } = definedAt
   if (definedBy === 'cli') {
-    return `CLI option --${configName}`
+    return `CLI option ${pc.cyan(`--${configName}`)}`
   }
   if (definedBy === 'env') {
-    return `environment variable VIKE_OPTIONS="{${configName}}"`
+    return `environment variable ${pc.cyan(`VIKE_OPTIONS="{${configName}}"`)}`
   }
   checkType<never>(definedBy)
   assert(false)
