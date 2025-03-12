@@ -106,11 +106,17 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'post',
         handler(configFromUser) {
-          // Change default port
           let configFromVike: UserConfig = { server: {}, preview: {} }
-          setDefault('port', 3000, configFromUser, configFromVike)
-
           const vike = getVikeConfigPublic(configFromUser)
+
+          if (vike.config.port) {
+            // https://vike.dev/port
+            setDefault('port', vike.config.port, configFromUser, configFromVike)
+          } else {
+            // Change Vite's default port
+            setDefault('port', 3000, configFromUser, configFromVike)
+          }
+
           if (vike.config.host) {
             // https://vike.dev/host
             setDefault('host', vike.config.host, configFromUser, configFromVike)

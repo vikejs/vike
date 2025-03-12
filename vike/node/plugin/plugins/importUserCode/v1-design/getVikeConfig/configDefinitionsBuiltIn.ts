@@ -220,6 +220,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     global: true
   },
+  port: {
+    env: { config: true },
+    global: true
+  },
   injectScriptsAt: {
     env: { server: true }
   },

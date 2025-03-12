@@ -576,6 +576,15 @@ type ConfigBuiltIn = {
    */
   host?: boolean | string
 
+  /**
+   * Change port of development and preview server.
+   *
+   * @default 3000
+   *
+   * https://vike.dev/port
+   */
+  port?: number
+
   /** Where scripts are injected in the HTML.
    *
    * https://vike.dev/injectScriptsAt
