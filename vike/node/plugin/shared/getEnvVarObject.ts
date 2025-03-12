@@ -1,4 +1,5 @@
 export { getEnvVarObject }
+export { parseJson5 }
 
 import pc from '@brillout/picocolors'
 import { assertUsage, isObject } from '../utils.js'

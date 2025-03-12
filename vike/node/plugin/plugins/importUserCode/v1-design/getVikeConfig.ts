@@ -85,6 +85,7 @@ import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-con
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
 import { getApiOperation } from '../../../../api/context.js'
+import { getCliOptions } from '../../../../cli/context.js'
 
 assertIsNotProductionRuntime()
 
@@ -565,6 +566,12 @@ function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
       definedBy: 'api',
       operation: apiOperation.operation
     })
+  }
+
+  // Vike CLI options
+  const cliOptions = getCliOptions()
+  if (cliOptions) {
+    add(cliOptions, { definedBy: 'cli' })
   }
 
   return

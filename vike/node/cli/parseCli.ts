@@ -1,9 +1,12 @@
 export { parseCli }
 export type { Command }
+export type { CliOptions }
 
 import pc from '@brillout/picocolors'
-import { includes, PROJECT_VERSION } from './utils.js'
+import { assert, includes, PROJECT_VERSION } from './utils.js'
+import { parseJson5 } from '../plugin/shared/getEnvVarObject.js'
 
+type CliOptions = Record<string, unknown>
 type Command = 'dev' | 'build' | 'preview' | 'prerender'
 const commands = [
   { name: 'dev', desc: 'Start development server' },
@@ -12,12 +15,12 @@ const commands = [
   { name: 'prerender', desc: 'Pre-render pages (only needed when partial.disableAutoRun is true)' }
 ] as const
 
-function parseCli(): { command: Command } {
+function parseCli(): { command: Command; cliOptions: CliOptions } {
   const command = getCommand()
 
-  getCliOptions()
+  const cliOptions = getCliOptions()
 
-  return { command }
+  return { command, cliOptions }
 }
 
 function getCommand() {
@@ -38,10 +41,31 @@ function getCommand() {
 }
 
 function getCliOptions() {
+  let cliOptions: CliOptions = {}
+  let configNameCurrent: string | undefined
+
+  const commitIfDefinedWithoutValue = () => {
+    if (configNameCurrent) commit(true)
+  }
+  const commit = (val: unknown) => {
+    assert(configNameCurrent)
+    cliOptions[configNameCurrent] = val
+    configNameCurrent = undefined
+  }
+
   for (const arg of process.argv.slice(3)) {
     showHelpOrVersion(arg)
-    wrongUsage(`Unknown option ${pc.bold(arg)}`)
+    if (arg.startsWith('--')) {
+      commitIfDefinedWithoutValue()
+      configNameCurrent = arg.slice('--'.length)
+    } else {
+      if (!configNameCurrent) wrongUsage(`Unknown option ${pc.bold(arg)}`)
+      commit(parseJson5(arg, `--${configNameCurrent}`))
+    }
   }
+  commitIfDefinedWithoutValue()
+
+  return cliOptions
 }
 
 function showHelp(): never {
