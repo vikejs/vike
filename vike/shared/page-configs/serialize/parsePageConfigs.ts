@@ -19,11 +19,6 @@ import type { ConfigValueSerialized } from './PageConfigSerialized.js'
 import { parseTransform } from '@brillout/json-serializer/parse'
 import { assertPlusFileExport } from '../assertPlusFileExport.js'
 
-function parseConfigValuesSerialized(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
-  const configValues = parseConfigValuesSerialized_tmp(configValuesSerialized)
-  return configValues
-}
-
 function parsePageConfigs(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
   pageConfigGlobalSerialized: PageConfigGlobalRuntimeSerialized
@@ -71,7 +66,7 @@ function assertRouteConfigValue(configValues: ConfigValues) {
  */
 }
 
-function parseConfigValuesSerialized_tmp(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
+function parseConfigValuesSerialized(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
   const configValues: ConfigValues = {}
 
   Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {

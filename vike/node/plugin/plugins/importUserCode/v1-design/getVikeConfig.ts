@@ -1159,7 +1159,7 @@ function determineRouteFilesystem(locationId: LocationId, configValueSources: Co
   assert(filesystemRouteString.startsWith('/'))
   const routeFilesystem = {
     routeString: filesystemRouteString,
-    definedBy: filesystemRouteDefinedBy
+    definedAtLocation: filesystemRouteDefinedBy
   }
   return { routeFilesystem, isErrorPage: undefined }
 }
