@@ -13,28 +13,35 @@ const commands = [
 ] as const
 
 function parseCli(): { command: Command } {
-  const command = (() => {
-    const firstArg = process.argv[2]
-    if (!firstArg) {
-      showHelp()
-    }
-    showHelpOrVersion(firstArg)
-    if (
-      includes(
-        commands.map((c) => c.name),
-        firstArg
-      )
-    )
-      return firstArg
-    wrongUsage(`Unknown command ${pc.bold(firstArg)}`)
-  })()
+  const command = getCommand()
 
+  getCliOptions()
+
+  return { command }
+}
+
+function getCommand() {
+  const firstArg = process.argv[2]
+
+  if (
+    includes(
+      commands.map((c) => c.name),
+      firstArg
+    )
+  ) {
+    return firstArg
+  }
+
+  if (!firstArg) showHelp()
+  showHelpOrVersion(firstArg)
+  wrongUsage(`Unknown command ${pc.bold(firstArg)}`)
+}
+
+function getCliOptions() {
   for (const arg of process.argv.slice(3)) {
     showHelpOrVersion(arg)
     wrongUsage(`Unknown option ${pc.bold(arg)}`)
   }
-
-  return { command }
 }
 
 function showHelp(): never {

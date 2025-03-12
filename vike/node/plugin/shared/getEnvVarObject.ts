@@ -7,6 +7,16 @@ import JSON5 from 'json5'
 function getEnvVarObject(envVarName: 'VITE_CONFIG' | 'VIKE_CRAWL' | 'VIKE_CONFIG'): null | Record<string, unknown> {
   const valueStr = process.env[envVarName]
   if (!valueStr) return null
+  const value = parseJson5(valueStr, envVarName)
+  assertUsage(value, `${envVarName} should define an object but it's ${pc.bold(String(value))} instead.`)
+  assertUsage(
+    isObject(value),
+    `${envVarName} should define an object but it's set to the following which isn't an object: ${pc.bold(valueStr)}`
+  )
+  return value
+}
+
+function parseJson5(valueStr: string, varName: string): unknown {
   let value: unknown
   try {
     value = JSON5.parse(valueStr)
@@ -14,13 +24,8 @@ function getEnvVarObject(envVarName: 'VITE_CONFIG' | 'VIKE_CRAWL' | 'VIKE_CONFIG
     console.error(err)
     assertUsage(
       false,
-      `Cannot parse ${envVarName} (see error above) because it's set to the following which isn't a valid JSON5 string: ${pc.bold(valueStr)}`
+      `Cannot parse ${varName} (see error above) because it's set to the following which isn't a valid JSON5 string: ${pc.bold(valueStr)}`
     )
   }
-  assertUsage(value, `${envVarName} should define an object but it's ${pc.bold(String(value))} instead.`)
-  assertUsage(
-    isObject(value),
-    `${envVarName} should define an object but it's set to the following which isn't an object: ${pc.bold(valueStr)}`
-  )
   return value
 }
