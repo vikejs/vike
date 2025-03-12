@@ -35,7 +35,6 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
       defaultLocalValue = true
     }
   }
-  console.log('defaultLocalValue', defaultLocalValue)
 
   objectAssign(prerenderConfigGlobal, {
     defaultLocalValue,
@@ -46,7 +45,6 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
       vikeConfig.pageConfigs.length > 0 &&
       vikeConfig.pageConfigs.some((pageConfig) => resolvePrerenderConfigLocal(pageConfig)?.value ?? defaultLocalValue)
   })
-  console.log('prerenderConfigGlobal', prerenderConfigGlobal)
 
   // TODO/next-major remove
   if (vikeConfig.pageConfigs.length === 0 && defaultLocalValue) prerenderConfigGlobal.isPrerenderingEnabled = true
@@ -54,7 +52,6 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
   return prerenderConfigGlobal
 }
 function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
-  console.log(pageConfig.pageId)
   const configValue = getConfigValueBuildTime(pageConfig, 'prerender')
   if (!configValue) return null
   const values = configValue.value
