@@ -216,6 +216,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   cacheControl: {
     env: { server: true }
   },
+  host: {
+    env: { config: true },
+    global: true
+  },
   injectScriptsAt: {
     env: { server: true }
   },

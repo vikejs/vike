@@ -110,8 +110,12 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           let configFromVike: UserConfig = { server: {}, preview: {} }
           setDefault('port', 3000, configFromUser, configFromVike)
 
-          // Set `--host` for Docker/Podman
-          if (isDocker()) {
+          const vike = getVikeConfigPublic(configFromUser)
+          if (vike.config.host) {
+            // https://vike.dev/host
+            setDefault('host', vike.config.host, configFromUser, configFromVike)
+          } else if (isDocker()) {
+            // Set `--host` for Docker/Podman
             setDefault('host', true, configFromUser, configFromVike)
           }
 

@@ -567,6 +567,15 @@ type ConfigBuiltIn = {
    */
   cacheControl?: string
 
+  /**
+   * Make development and preview server available over LAN and public addresses.
+   *
+   * Default: `false` (or `true` if running inside Docker/Podman).
+   *
+   * https://vike.dev/host
+   */
+  host?: boolean | string
+
   /** Where scripts are injected in the HTML.
    *
    * https://vike.dev/injectScriptsAt
