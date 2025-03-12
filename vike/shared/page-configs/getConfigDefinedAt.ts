@@ -5,7 +5,7 @@ export type { ConfigDefinedAt }
 export type { ConfigDefinedAtOptional }
 
 import { assert, isArray } from '../utils.js'
-import type { DefinedAtData, DefinedAtFile } from './PageConfig.js'
+import type { DefinedAt, DefinedAtData } from './PageConfig.js'
 import pc from '@brillout/picocolors'
 import { getExportPath } from './getExportPath.js'
 
@@ -15,7 +15,7 @@ type ConfigDefinedAt = `Config ${string} defined at ${string}`
 function getConfigDefinedAt<SentenceBegin extends 'Config' | 'config' /*| 'Hook'*/, ConfigName extends string>(
   sentenceBegin: SentenceBegin,
   configName: ConfigName,
-  definedAtData: DefinedAtFile | DefinedAtFile[]
+  definedAtData: NonNullable<DefinedAtData>
 ): `${SentenceBegin} ${ConfigName} defined at ${string}` {
   return `${begin(sentenceBegin, configName)} at ${getDefinedAtString(definedAtData, configName)}`
 }
@@ -37,8 +37,8 @@ function begin<ConfigName extends string, SentenceBegin extends string>(
   return `${sentenceBegin} ${pc.cyan(configName)} defined` as const
 }
 
-function getDefinedAtString(definedAtData: DefinedAtFile | DefinedAtFile[], configName: string): string {
-  let files: DefinedAtFile[]
+function getDefinedAtString(definedAtData: NonNullable<DefinedAtData>, configName: string): string {
+  let files: DefinedAt[]
   if (isArray(definedAtData)) {
     files = definedAtData
   } else {
@@ -46,8 +46,9 @@ function getDefinedAtString(definedAtData: DefinedAtFile | DefinedAtFile[], conf
   }
   assert(files.length >= 1)
   const definedAtString = files
-    .map((source) => {
-      const { filePathToShowToUser, fileExportPathToShowToUser } = source
+    .map((definedAt) => {
+      if (definedAt.definedBy) return definedAt.definedBy(configName)
+      const { filePathToShowToUser, fileExportPathToShowToUser } = definedAt
       let s = filePathToShowToUser
       const exportPath = getExportPath(fileExportPathToShowToUser, configName)
       if (exportPath) {
