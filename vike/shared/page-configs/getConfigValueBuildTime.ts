@@ -1,7 +1,7 @@
 export { getConfigValueBuildTime }
 
 import { assert, type ResolveTypeAsString } from '../utils.js'
-import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile } from './PageConfig.js'
+import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile, DefinedAt } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
 import { getConfigValueTyped, type TypeAsString } from './getConfigValueTyped.js'
@@ -40,7 +40,7 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigNameB
     return {
       type: 'standard',
       value: configValueSource.value,
-      definedAtData: getDefinedAtFile(configValueSource)
+      definedAtData: getDefinedAt(configValueSource)
     }
   } else {
     const { value, definedAtData } = mergeCumulative(sources)
@@ -55,20 +55,22 @@ function getConfigValue(pageConfig: PageConfigBuildTime, configName: ConfigNameB
 
 function mergeCumulative(configValueSources: ConfigValueSource[]) {
   const value: unknown[] = []
-  const definedAtData: DefinedAtFile[] = []
+  const definedAtData: DefinedAt[] = []
   configValueSources.forEach((configValueSource) => {
     assert(configValueSource.configEnv.config === true)
     assert(configValueSource.valueIsLoaded)
 
     value.push(configValueSource.value)
-    definedAtData.push(getDefinedAtFile(configValueSource))
+    definedAtData.push(getDefinedAt(configValueSource))
   })
   return { value, definedAtData }
 }
 
-function getDefinedAtFile(configValueSource: ConfigValueSource): DefinedAtFile {
+function getDefinedAt(configValueSource: ConfigValueSource) {
+  const { definedAtFilePath } = configValueSource
+  if (definedAtFilePath.definedBy) return definedAtFilePath
   return {
-    filePathToShowToUser: configValueSource.definedAtFilePath.filePathToShowToUser,
-    fileExportPathToShowToUser: configValueSource.definedAtFilePath.fileExportPathToShowToUser
+    filePathToShowToUser: definedAtFilePath.filePathToShowToUser,
+    fileExportPathToShowToUser: definedAtFilePath.fileExportPathToShowToUser
   }
 }

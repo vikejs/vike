@@ -1234,7 +1234,9 @@ function getFilesystemRoutingRootEffect(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  const { filePathAbsoluteUserRootDir } = configFilesystemRoutingRoot.definedAtFilePath
+  const { definedAtFilePath } = configFilesystemRoutingRoot
+  assert(!definedAtFilePath.definedBy)
+  const { filePathAbsoluteUserRootDir } = definedAtFilePath
   assert(filePathAbsoluteUserRootDir)
   const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value
