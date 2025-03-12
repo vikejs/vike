@@ -109,7 +109,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           let configFromVike: UserConfig = { server: {}, preview: {} }
           const vike = getVikeConfigPublic(configFromUser)
 
-          if (vike.config.port) {
+          if (vike.config.port !== undefined) {
             // https://vike.dev/port
             setDefault('port', vike.config.port, configFromUser, configFromVike)
           } else {

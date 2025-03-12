@@ -568,7 +568,7 @@ type ConfigBuiltIn = {
   cacheControl?: string
 
   /**
-   * Make development and preview server available over LAN and public addresses.
+   * Make development/preview server available over LAN and public addresses.
    *
    * Default: `false` (or `true` if running inside Docker/Podman).
    *
@@ -577,7 +577,7 @@ type ConfigBuiltIn = {
   host?: boolean | string
 
   /**
-   * Change port of development and preview server.
+   * Change port of development/preview server.
    *
    * @default 3000
    *
