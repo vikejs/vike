@@ -17,6 +17,8 @@ export type { ConfigValueSources }
 export type { ConfigValuesComputed }
 export type { DefinedAtData }
 export type { DefinedAtFile }
+export type { DefinedAt }
+export type { DefinedBy }
 export type { DefinedAtFilePath }
 
 import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
@@ -24,6 +26,7 @@ import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-des
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
 import type { PlusFile } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
+import type { Operation } from '../../node/api/types.js'
 
 type PageConfigCommon = {
   pageId: string
@@ -104,7 +107,8 @@ type ConfigValueSources = Record<
 >
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
-  definedAtFilePath: DefinedAtFilePath
+  // TODO/now rename definedAtFilePath
+  definedAtFilePath: DefinedAtFilePath | DefinedBy
   plusFile:
     | PlusFile
     // It's `null` when the config is defined by `vike(options)` in vite.config.js
@@ -146,13 +150,13 @@ type ConfigValue = ConfigValueStandard | ConfigValueCumulative | ConfigValueComp
 type ConfigValueStandard = {
   type: 'standard'
   value: unknown
-  definedAtData: DefinedAtFile
+  definedAtData: DefinedAt
 }
 /** Defined by multiple sources (thus multiple file paths). */
 type ConfigValueCumulative = {
   type: 'cumulative'
   value: unknown[]
-  definedAtData: DefinedAtFile[]
+  definedAtData: DefinedAt[]
 }
 /** Defined internally by Vike (currently, Vike doesn't support computed configs created by users). */
 type ConfigValueComputed = {
@@ -161,8 +165,11 @@ type ConfigValueComputed = {
   definedAtData: null
 }
 
-type DefinedAtData = DefinedAtFile | DefinedAtFile[] | null
+type DefinedAtData = DefinedAt | DefinedAt[] | null
+type DefinedAt = DefinedAtFile | DefinedBy
+type DefinedBy = { definedBy: 'cli' | 'env' } | { definedBy: 'api'; operation: Operation }
 type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPathToShowToUser: null | string[]
+  definedBy?: undefined
 }

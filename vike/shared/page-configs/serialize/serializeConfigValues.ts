@@ -9,6 +9,7 @@ import type {
   ConfigEnvInternal,
   ConfigValue,
   ConfigValueSource,
+  DefinedAt,
   DefinedAtData,
   DefinedAtFile,
   PageConfigBuildTime,
@@ -164,6 +165,7 @@ function getValueSerializedWithImport(
   assert(!configValueSource.valueIsFilePath)
 
   const { valueIsDefinedByPlusValueFile, definedAtFilePath, configEnv } = configValueSource
+  assert(!definedAtFilePath.definedBy)
   const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
 
   if (valueIsDefinedByPlusValueFile) assert(fileExportName === undefined)
@@ -311,7 +313,7 @@ function getConfigValuesBase(
         .filter((source) => !isOverriden(source, configName, pageConfig))
         .filter((source) => isEnvMatch(source.configEnv))
       if (sourcesRelevant.length === 0) return 'SKIP'
-      const definedAtData: DefinedAtFile[] = []
+      const definedAtData: DefinedAt[] = []
       sourcesRelevant.forEach((source) => {
         const definedAtFile = getDefinedAtFileSource(source)
         definedAtData.push(definedAtFile)
@@ -339,7 +341,7 @@ type ConfigValuesBase = (
   | {
       configValueBase: {
         type: 'standard'
-        definedAtData: DefinedAtFile
+        definedAtData: DefinedAt
       }
       sourceRelevant: ConfigValueSource
       configName: string
@@ -347,7 +349,7 @@ type ConfigValuesBase = (
   | {
       configValueBase: {
         type: 'cumulative'
-        definedAtData: DefinedAtFile[]
+        definedAtData: DefinedAt[]
       }
       sourcesRelevant: ConfigValueSource[]
       configName: string
@@ -355,9 +357,11 @@ type ConfigValuesBase = (
 )[]
 
 function getDefinedAtFileSource(source: ConfigValueSource) {
+  const { definedAtFilePath } = source
+  if (definedAtFilePath.definedBy) return definedAtFilePath
   const definedAtFile: DefinedAtFile = {
-    filePathToShowToUser: source.definedAtFilePath.filePathToShowToUser,
-    fileExportPathToShowToUser: source.definedAtFilePath.fileExportPathToShowToUser
+    filePathToShowToUser: definedAtFilePath.filePathToShowToUser,
+    fileExportPathToShowToUser: definedAtFilePath.fileExportPathToShowToUser
   }
   return definedAtFile
 }

@@ -1,18 +1,22 @@
 export { isVikeCli }
 export { setContextCliCommand }
-// export { getCliCommand }
+export { getCliOptions }
 
-import type { Command } from './parseCli.js'
+import type { CliOptions, Command } from './parseCli.js'
 import { assert, getGlobalObject } from './utils.js'
-const globalObject = getGlobalObject<{ cliCommand?: Command }>('cli/context.ts', {})
+const globalObject = getGlobalObject<{ cliCommand?: CliCommand }>('cli/context.ts', {})
 
-function getCliCommand(): Command | undefined {
-  return globalObject.cliCommand
+type CliCommand = {
+  command: Command
+  cliOptions: CliOptions
+}
+function getCliOptions(): CliOptions | null {
+  return globalObject.cliCommand?.cliOptions ?? null
 }
 function isVikeCli(): boolean {
   return !!globalObject.cliCommand
 }
-function setContextCliCommand(command: Command): void {
+function setContextCliCommand(command: Command, cliOptions: CliOptions): void {
   assert(!globalObject.cliCommand)
-  globalObject.cliCommand = command
+  globalObject.cliCommand = { command, cliOptions }
 }

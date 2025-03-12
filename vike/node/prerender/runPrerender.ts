@@ -158,7 +158,7 @@ async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ vi
 }
 async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   try {
-    const { viteConfigEnhanced } = await prepareViteApiCall(undefined, 'prerender')
+    const { viteConfigEnhanced } = await prepareViteApiCall({}, 'prerender')
     await runPrerender({ viteConfig: viteConfigEnhanced }, '$ vike prerender')
   } catch (err) {
     console.error(err)

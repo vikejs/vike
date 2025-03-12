@@ -1,9 +1,12 @@
 export { parseCli }
 export type { Command }
+export type { CliOptions }
 
 import pc from '@brillout/picocolors'
-import { includes, PROJECT_VERSION } from './utils.js'
+import { assert, includes, PROJECT_VERSION } from './utils.js'
+import { parseJson5 } from '../plugin/shared/getEnvVarObject.js'
 
+type CliOptions = Record<string, unknown>
 type Command = 'dev' | 'build' | 'preview' | 'prerender'
 const commands = [
   { name: 'dev', desc: 'Start development server' },
@@ -12,29 +15,57 @@ const commands = [
   { name: 'prerender', desc: 'Pre-render pages (only needed when partial.disableAutoRun is true)' }
 ] as const
 
-function parseCli(): { command: Command } {
-  const command = (() => {
-    const firstArg = process.argv[2]
-    if (!firstArg) {
-      showHelp()
-    }
-    showHelpOrVersion(firstArg)
-    if (
-      includes(
-        commands.map((c) => c.name),
-        firstArg
-      )
+function parseCli(): { command: Command; cliOptions: CliOptions } {
+  const command = getCommand()
+
+  const cliOptions = getCliOptions()
+
+  return { command, cliOptions }
+}
+
+function getCommand() {
+  const firstArg = process.argv[2]
+
+  if (
+    includes(
+      commands.map((c) => c.name),
+      firstArg
     )
-      return firstArg
-    wrongUsage(`Unknown command ${pc.bold(firstArg)}`)
-  })()
+  ) {
+    return firstArg
+  }
+
+  if (!firstArg) showHelp()
+  showHelpOrVersion(firstArg)
+  wrongUsage(`Unknown command ${pc.bold(firstArg)}`)
+}
+
+function getCliOptions() {
+  let cliOptions: CliOptions = {}
+  let configNameCurrent: string | undefined
+
+  const commitIfDefinedWithoutValue = () => {
+    if (configNameCurrent) commit(true)
+  }
+  const commit = (val: unknown) => {
+    assert(configNameCurrent)
+    cliOptions[configNameCurrent] = val
+    configNameCurrent = undefined
+  }
 
   for (const arg of process.argv.slice(3)) {
     showHelpOrVersion(arg)
-    wrongUsage(`Unknown option ${pc.bold(arg)}`)
+    if (arg.startsWith('--')) {
+      commitIfDefinedWithoutValue()
+      configNameCurrent = arg.slice('--'.length)
+    } else {
+      if (!configNameCurrent) wrongUsage(`Unknown option ${pc.bold(arg)}`)
+      commit(parseJson5(arg, `CLI option --${configNameCurrent}`))
+    }
   }
+  commitIfDefinedWithoutValue()
 
-  return { command }
+  return cliOptions
 }
 
 function showHelp(): never {
@@ -50,7 +81,9 @@ function showHelp(): never {
           `  ${pc.dim('$')} ${pc.bold(`vike ${c.name}`)}${' '.repeat(nameMaxLength - c.name.length)}${TAB}${pc.dim(`# ${c.desc}`)}`
       ),
       '',
-      `More infos at ${pc.underline('https://vike.dev/cli')}`
+      `Vike settings can be passed over the ${pc.cyan('VIKE_CONFIG')} environment variable or as ${pc.cyan('CLI options')} such as --host.`,
+      `Vite settings can be passed over the ${pc.cyan('VITE_CONFIG')} environment variable.`,
+      `See ${pc.underline('https://vike.dev/cli')} for more information.`
     ].join('\n')
   )
   process.exit(1)

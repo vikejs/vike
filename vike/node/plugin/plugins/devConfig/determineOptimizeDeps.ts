@@ -66,6 +66,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
             const { definedAtFilePath, configEnv } = configValueSource
 
             if (!configEnv.client) return
+            if (definedAtFilePath.definedBy) return
 
             if (definedAtFilePath.filePathAbsoluteUserRootDir !== null) {
               // Vite expects entries to be filesystem absolute paths (surprisingly so).

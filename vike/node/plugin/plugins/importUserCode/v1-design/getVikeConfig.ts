@@ -39,7 +39,8 @@ import type {
   DefinedAtFilePath,
   ConfigValuesComputed,
   ConfigValues,
-  PageConfigRoute
+  PageConfigRoute,
+  DefinedBy
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -82,6 +83,9 @@ import {
 } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
+import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
+import { getApiOperation } from '../../../../api/context.js'
+import { getCliOptions } from '../../../../cli/context.js'
 
 assertIsNotProductionRuntime()
 
@@ -241,6 +245,9 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   // Backwards compatibility for vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
+
+  // TODO/now: add validation
+  setCliAndApiOptions(pageConfigGlobal)
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
@@ -527,6 +534,7 @@ function temp_interopVikeVitePlugin(
     assert(includes(objectKeys(configDefinitionsBuiltIn), configName))
     const configDef = configDefinitionsBuiltIn[configName]
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+    // TODO/now: use getSourceNonConfigFile()
     sources.push({
       valueIsLoaded: true,
       value,
@@ -544,6 +552,57 @@ function temp_interopVikeVitePlugin(
       valueIsDefinedByPlusValueFile: false
     })
   })
+}
+function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
+  // VIKE_CONFIG
+  const configFromEnv = getEnvVarObject('VIKE_CONFIG')
+  if (configFromEnv) {
+    add(configFromEnv, { definedBy: 'env' })
+  }
+
+  // Vike API — passed options
+  const apiOperation = getApiOperation()
+  if (apiOperation?.options.vikeConfig) {
+    add(apiOperation.options.vikeConfig as Record<string, unknown>, {
+      definedBy: 'api',
+      operation: apiOperation.operation
+    })
+  }
+
+  // Vike CLI options
+  const cliOptions = getCliOptions()
+  if (cliOptions) {
+    add(cliOptions, { definedBy: 'cli' })
+  }
+
+  return
+
+  function add(configValues: Record<string, unknown>, definedBy: DefinedBy) {
+    Object.entries(configValues).forEach(([configName, value]) => {
+      const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+      sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
+    })
+  }
+}
+
+function getSourceNonConfigFile(
+  configName: string,
+  value: unknown,
+  definedAt: DefinedAtFilePath | DefinedBy
+): ConfigValueSource {
+  assert(includes(objectKeys(configDefinitionsBuiltIn), configName))
+  const configDef = configDefinitionsBuiltIn[configName]
+  const source: ConfigValueSource = {
+    valueIsLoaded: true,
+    value,
+    configEnv: configDef.env,
+    definedAtFilePath: definedAt,
+    locationId: '/' as LocationId,
+    plusFile: null,
+    valueIsLoadedWithImport: false,
+    valueIsDefinedByPlusValueFile: false
+  }
+  return source
 }
 
 function sortConfigValueSources(configValueSources: ConfigValueSources, locationIdPage: LocationId | null) {
@@ -1202,7 +1261,9 @@ function getFilesystemRoutingRootEffect(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  const { filePathAbsoluteUserRootDir } = configFilesystemRoutingRoot.definedAtFilePath
+  const { definedAtFilePath } = configFilesystemRoutingRoot
+  assert(!definedAtFilePath.definedBy)
+  const { filePathAbsoluteUserRootDir } = definedAtFilePath
   assert(filePathAbsoluteUserRootDir)
   const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value

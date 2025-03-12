@@ -7,8 +7,8 @@ import { setContextCliCommand } from './context.js'
 cli()
 
 async function cli() {
-  const { command } = parseCli()
-  setContextCliCommand(command)
+  const { command, cliOptions } = parseCli()
+  setContextCliCommand(command, cliOptions)
   if (command === 'dev') {
     await cmdDev()
   } else if (command === 'build') {

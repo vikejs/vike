@@ -1,13 +1,7 @@
 export { parsePageConfigs }
 export { parseConfigValuesSerialized }
 
-import type {
-  ConfigValues,
-  PageConfigRuntime,
-  PageConfigGlobalRuntime,
-  ConfigValue,
-  DefinedAtFile
-} from '../PageConfig.js'
+import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime, ConfigValue, DefinedAt } from '../PageConfig.js'
 import type {
   PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized,
@@ -119,7 +113,7 @@ type SideExport = {
 function parseValueSerialized(
   valueSerialized: ValueSerialized,
   configName: string,
-  getDefinedAtFile: () => DefinedAtFile
+  getDefinedAtFile: () => DefinedAt
 ): { value: unknown; sideExports: SideExport[] } {
   if (valueSerialized.type === 'js-serialized') {
     let { value } = valueSerialized
@@ -133,6 +127,7 @@ function parseValueSerialized(
   if (valueSerialized.type === 'plus-file') {
     const definedAtFile = getDefinedAtFile()
     const { exportValues } = valueSerialized
+    assert(!definedAtFile.definedBy)
     assertPlusFileExport(exportValues, definedAtFile.filePathToShowToUser, configName)
     let value: unknown
     let valueWasFound = false
