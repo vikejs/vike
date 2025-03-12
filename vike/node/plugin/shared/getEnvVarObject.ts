@@ -4,12 +4,7 @@ import pc from '@brillout/picocolors'
 import { assertUsage, isObject } from '../utils.js'
 import JSON5 from 'json5'
 
-function getEnvVarObject(
-  envVarName: 'VITE_CONFIG' | 'VIKE_CRAWL'
-  /* Let's eventually implement this for Vike's config as well
-  | 'VIKE_CONFIG'
-  */
-): null | Record<string, unknown> {
+function getEnvVarObject(envVarName: 'VITE_CONFIG' | 'VIKE_CRAWL' | 'VIKE_CONFIG'): null | Record<string, unknown> {
   const valueStr = process.env[envVarName]
   if (!valueStr) return null
   let value: unknown

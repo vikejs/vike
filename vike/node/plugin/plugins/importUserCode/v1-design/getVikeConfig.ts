@@ -39,7 +39,8 @@ import type {
   DefinedAtFilePath,
   ConfigValuesComputed,
   ConfigValues,
-  PageConfigRoute
+  PageConfigRoute,
+  DefinedBy
 } from '../../../../../shared/page-configs/PageConfig.js'
 import type { Config } from '../../../../../shared/page-configs/Config.js'
 import {
@@ -82,6 +83,7 @@ import {
 } from '../../../../../shared/page-configs/getPageConfigUserFriendly.js'
 import { getConfigValuesBase, isJsonValue } from '../../../../../shared/page-configs/serialize/serializeConfigValues.js'
 import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './getVikeConfig/getPlusFilesAll.js'
+import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
 
 assertIsNotProductionRuntime()
 
@@ -241,6 +243,8 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   // Backwards compatibility for vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
+
+  setCliAndApiOptions(pageConfigGlobal)
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
@@ -527,6 +531,7 @@ function temp_interopVikeVitePlugin(
     assert(includes(objectKeys(configDefinitionsBuiltIn), configName))
     const configDef = configDefinitionsBuiltIn[configName]
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+    // TODO/now: use getSourceNonConfigFile()
     sources.push({
       valueIsLoaded: true,
       value,
@@ -544,6 +549,33 @@ function temp_interopVikeVitePlugin(
       valueIsDefinedByPlusValueFile: false
     })
   })
+}
+function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
+  const configFromEnv = getEnvVarObject('VIKE_CONFIG') ?? {}
+  Object.entries(configFromEnv).forEach(([configName, value]) => {
+    const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
+    sources.unshift(getSourceNonConfigFile(configName, value, { definedBy: 'env' }))
+  })
+}
+
+function getSourceNonConfigFile(
+  configName: string,
+  value: unknown,
+  definedAt: DefinedAtFilePath | DefinedBy
+): ConfigValueSource {
+  assert(includes(objectKeys(configDefinitionsBuiltIn), configName))
+  const configDef = configDefinitionsBuiltIn[configName]
+  const source: ConfigValueSource = {
+    valueIsLoaded: true,
+    value,
+    configEnv: configDef.env,
+    definedAtFilePath: definedAt,
+    locationId: '/' as LocationId,
+    plusFile: null,
+    valueIsLoadedWithImport: false,
+    valueIsDefinedByPlusValueFile: false
+  }
+  return source
 }
 
 function sortConfigValueSources(configValueSources: ConfigValueSources, locationIdPage: LocationId | null) {
