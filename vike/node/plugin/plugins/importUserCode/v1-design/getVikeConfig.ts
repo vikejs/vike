@@ -547,7 +547,7 @@ function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
   // Vike API — passed options [lowest precedence]
   const apiOperation = getApiOperation()
   if (apiOperation?.options.vikeConfig) {
-    add(apiOperation.options.vikeConfig as Record<string, unknown>, {
+    addSources(apiOperation.options.vikeConfig as Record<string, unknown>, {
       definedBy: 'api',
       operation: apiOperation.operation
     })
@@ -556,18 +556,18 @@ function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
   // Vike CLI options
   const cliOptions = getCliOptions()
   if (cliOptions) {
-    add(cliOptions, { definedBy: 'cli' })
+    addSources(cliOptions, { definedBy: 'cli' })
   }
 
   // VIKE_CONFIG [highest precedence]
   const configFromEnv = getEnvVarObject('VIKE_CONFIG')
   if (configFromEnv) {
-    add(configFromEnv, { definedBy: 'env' })
+    addSources(configFromEnv, { definedBy: 'env' })
   }
 
   return
 
-  function add(configValues: Record<string, unknown>, definedBy: DefinedBy) {
+  function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy) {
     Object.entries(configValues).forEach(([configName, value]) => {
       const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
       sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
