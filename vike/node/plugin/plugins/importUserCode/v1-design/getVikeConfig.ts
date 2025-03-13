@@ -568,27 +568,31 @@ function setCliAndApiOptions(
   // Vike API — passed options [lowest precedence]
   const apiOperation = getApiOperation()
   if (apiOperation?.options.vikeConfig) {
-    addSources(apiOperation.options.vikeConfig as Record<string, unknown>, {
-      definedBy: 'api',
-      operation: apiOperation.operation
-    })
+    addSources(
+      apiOperation.options.vikeConfig as Record<string, unknown>,
+      {
+        definedBy: 'api',
+        operation: apiOperation.operation
+      },
+      false
+    )
   }
 
   // Vike CLI options
   const cliOptions = getCliOptions()
   if (cliOptions) {
-    addSources(cliOptions, { definedBy: 'cli' })
+    addSources(cliOptions, { definedBy: 'cli' }, true)
   }
 
   // VIKE_CONFIG [highest precedence]
   const configFromEnv = getEnvVarObject('VIKE_CONFIG')
   if (configFromEnv) {
-    addSources(configFromEnv, { definedBy: 'env' })
+    addSources(configFromEnv, { definedBy: 'env' }, false)
   }
 
   return
 
-  function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy) {
+  function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy, exitOnError: boolean) {
     Object.entries(configValues).forEach(([configName, value]) => {
       const sourceName = `The ${getDefinedByString(definedBy, configName)}` as const
       assertKnownConfig(
@@ -596,7 +600,8 @@ function setCliAndApiOptions(
         configDefinitionsResolved.configNamesKnownGlobal,
         configDefinitionsResolved,
         '/' as LocationId,
-        sourceName
+        sourceName,
+        exitOnError
       )
       const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
       sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
@@ -1161,7 +1166,7 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
         configNames.forEach((configName) => {
           const { locationId } = plusFile
           const sourceName = plusFile.filePath.filePathToShowToUser
-          assertKnownConfig(configName, configNamesKnownLocal, configDefinitionsResolved, locationId, sourceName)
+          assertKnownConfig(configName, configNamesKnownLocal, configDefinitionsResolved, locationId, sourceName, false)
         })
       })
     }
@@ -1172,7 +1177,8 @@ function assertKnownConfig(
   configNamesKnownRelevant: string[],
   configDefinitionsResolved: ConfigDefinitionsResolved,
   locationId: LocationId,
-  sourceName: string
+  sourceName: string,
+  exitOnError: boolean
 ): void {
   const { configNamesKnownAll } = configDefinitionsResolved
 
@@ -1187,7 +1193,8 @@ function assertKnownConfig(
   if (configNamesKnownAll.includes(configName)) {
     assertUsage(
       false,
-      `${sourceName} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const
+      `${sourceName} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const,
+      { exitOnError }
     )
   }
 
@@ -1214,7 +1221,7 @@ function assertKnownConfig(
       )
       const errMsgEnhanced =
         `${errMsg}. If you want to use the configuration ${configNameColored} documented at ${pc.underline(`https://vike.dev/${configName}`)} then make sure to install ${requiredVikeExtension}. (Alternatively, you can define ${configNameColored} yourself by using ${pc.cyan('meta')}, see ${pc.underline('https://vike.dev/meta')} for more information.)` as const
-      assertUsage(false, errMsgEnhanced)
+      assertUsage(false, errMsgEnhanced, { exitOnError })
     }
   }
 
@@ -1233,10 +1240,10 @@ function assertKnownConfig(
         'P'
       )} because it defines a UI component: a ubiquitous JavaScript convention is that the name of UI components start with a capital letter.)` as const
     }
-    assertUsage(false, errMsgEnhanced)
+    assertUsage(false, errMsgEnhanced, { exitOnError })
   }
 
-  assertUsage(false, errMsg)
+  assertUsage(false, errMsg, { exitOnError })
 }
 
 function determineRouteFilesystem(locationId: LocationId, configValueSources: ConfigValueSources): PageConfigRoute {

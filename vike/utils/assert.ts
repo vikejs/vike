@@ -73,7 +73,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 function assertUsage(
   condition: unknown,
   errMsg: string,
-  { showStackTrace }: { showStackTrace?: true } = {}
+  { showStackTrace, exitOnError }: { showStackTrace?: true; exitOnError?: boolean } = {}
 ): asserts condition {
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
@@ -85,7 +85,16 @@ function assertUsage(
     globalObject.showStackTraceList.add(usageError)
   }
   globalObject.onBeforeLog?.()
-  throw usageError
+  if (!exitOnError) {
+    throw usageError
+  } else {
+    if (showStackTrace) {
+      console.error(usageError)
+    } else {
+      console.error(errMsg)
+    }
+    process.exit(1)
+  }
 }
 
 function getProjectError(errMsg: string) {
@@ -205,6 +214,7 @@ function isBug(err: unknown): boolean {
   return String(err).includes(`[${bugTag}]`)
 }
 
+// Called upon `DEBUG=vike:error`
 function setAlwaysShowStackTrace() {
   globalObject.alwaysShowStackTrace = true
 }
