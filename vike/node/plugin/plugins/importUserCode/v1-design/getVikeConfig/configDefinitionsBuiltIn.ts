@@ -185,7 +185,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
           assert(source.valueIsLoaded)
           if (source.value !== null) {
             const { value } = source
-            const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAtFilePath)
+            const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAt)
             assertUsage(typeof value === 'boolean', `${definedAt} should be a boolean`)
             return value
           }

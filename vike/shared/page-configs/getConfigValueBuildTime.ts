@@ -1,7 +1,7 @@
 export { getConfigValueBuildTime }
 
 import { assert, type ResolveTypeAsString } from '../utils.js'
-import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAtFile, DefinedAt } from './PageConfig.js'
+import type { PageConfigBuildTime, ConfigValue, ConfigValueSource, DefinedAt } from './PageConfig.js'
 import type { ConfigNameBuiltIn } from './Config.js'
 import { assertIsNotProductionRuntime } from '../../utils/assertSetup.js'
 import { getConfigValueTyped, type TypeAsString } from './getConfigValueTyped.js'
@@ -67,10 +67,10 @@ function mergeCumulative(configValueSources: ConfigValueSource[]) {
 }
 
 function getDefinedAt(configValueSource: ConfigValueSource) {
-  const { definedAtFilePath } = configValueSource
-  if (definedAtFilePath.definedBy) return definedAtFilePath
+  const { definedAt } = configValueSource
+  if (definedAt.definedBy) return definedAt
   return {
-    filePathToShowToUser: definedAtFilePath.filePathToShowToUser,
-    fileExportPathToShowToUser: definedAtFilePath.fileExportPathToShowToUser
+    filePathToShowToUser: definedAt.filePathToShowToUser,
+    fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser
   }
 }
