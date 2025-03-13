@@ -722,7 +722,7 @@ function resolveConfigValueSources(
   return sources
 }
 function isDefiningConfig(plusFile: PlusFile, configName: string) {
-  return getDefiningConfigNames(plusFile).includes(configName)
+  return getConfigNamesSetByPlusFile(plusFile).includes(configName)
 }
 function getConfigValueSource(
   configName: string,
@@ -842,7 +842,7 @@ function getConfigValueSource(
 }
 function isDefiningPage(plusFiles: PlusFile[]): boolean {
   for (const plusFile of plusFiles) {
-    const configNames = getDefiningConfigNames(plusFile)
+    const configNames = getConfigNamesSetByPlusFile(plusFile)
     if (configNames.some((configName) => isDefiningPageConfig(configName))) {
       return true
     }
@@ -868,7 +868,7 @@ function resolveIsGlobalValue(
   return isGlobal
 }
 
-function getDefiningConfigNames(plusFile: PlusFile): string[] {
+function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
   let configNames: string[] = []
   if (!plusFile.isConfigFile) {
     configNames.push(plusFile.configName)
@@ -1134,7 +1134,7 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
       const configDefinitionsLocal = configDefinitions
       const configNamesKnownLocal = [...Object.keys(configDefinitionsLocal), ...configNamesGlobal]
       plusFiles.forEach((plusFile) => {
-        const configNames = getDefiningConfigNames(plusFile)
+        const configNames = getConfigNamesSetByPlusFile(plusFile)
         configNames.forEach((configName) => {
           assertKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, plusFile)
           assert(configNamesKnownLocal.includes(configName))
@@ -1317,7 +1317,7 @@ function getConfVal(
   plusFile: PlusFile,
   configName: string
 ): null | { value: unknown; valueIsLoaded: true } | { valueIsLoaded: false } {
-  const configNames = getDefiningConfigNames(plusFile)
+  const configNames = getConfigNamesSetByPlusFile(plusFile)
   if (!configNames.includes(configName)) return null
   if (plusFile.isNotLoaded) return { valueIsLoaded: false }
   const confVal = { value: plusFile.fileExportsByConfigName[configName], valueIsLoaded: true }
