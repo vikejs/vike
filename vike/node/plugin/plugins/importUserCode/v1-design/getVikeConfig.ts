@@ -279,6 +279,7 @@ async function resolveConfigDefinitions(
   )
   await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
 
+  const configNamesKnownGlobal = Object.keys(configDefinitionsGlobal)
   const configDefinitionsLocal: Record<
     LocationId,
     {
@@ -287,6 +288,7 @@ async function resolveConfigDefinitions(
       plusFiles: PlusFile[]
       // plusFiles that influence locationId
       plusFilesRelevant: PlusFile[]
+      configNamesKnownLocal: string[]
     }
   > = {}
   await Promise.all(
@@ -298,7 +300,13 @@ async function resolveConfigDefinitions(
         .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null))
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
-      configDefinitionsLocal[locationIdPage] = { configDefinitions, plusFiles, plusFilesRelevant }
+      const configNamesKnownLocal = [...Object.keys(configDefinitions), ...configNamesKnownGlobal]
+      configDefinitionsLocal[locationIdPage] = {
+        configDefinitions,
+        plusFiles,
+        plusFilesRelevant,
+        configNamesKnownLocal
+      }
     })
   )
 
@@ -309,7 +317,7 @@ async function resolveConfigDefinitions(
     configDefinitionsLocal,
     configDefinitionsAll,
     configNamesKnownAll: Object.keys(configDefinitionsAll),
-    configNamesKnownGlobal: Object.keys(configDefinitionsGlobal)
+    configNamesKnownGlobal
   }
 
   return configDefinitionsResolved
@@ -1131,11 +1139,8 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 
 // Show error message upon unknown config
 function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved) {
-  const { configNamesKnownGlobal } = configDefinitionsResolved
   objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
-    ([_locationId, { configDefinitions, plusFiles }]) => {
-      const configDefinitionsLocal = configDefinitions
-      const configNamesKnownLocal = [...Object.keys(configDefinitionsLocal), ...configNamesKnownGlobal]
+    ([_locationId, { configNamesKnownLocal, plusFiles }]) => {
       plusFiles.forEach((plusFile) => {
         const configNames = getConfigNamesSetByPlusFile(plusFile)
         configNames.forEach((configName) => {
