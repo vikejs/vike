@@ -63,6 +63,7 @@ import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 import { resolveBase, type BaseUrlsResolved } from '../shared/resolveBase.js'
+import { reloadVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -189,10 +190,10 @@ function makePublic(globalContext: GlobalContext) {
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   debug('setGlobalContext_viteDevServer()')
   setIsProduction(false)
-  /* We cannot cache globalObject.viteDevServer because it's fully replaced when the user modifies vite.config.js => Vite's dev server is fully reloaded and a new viteDevServer replaces the previous one.
-  if (globalObject.viteDevServer) return
-  assertIsNotInitilizedYet()
-  */
+  // We cannot cache globalObject.viteDevServer because it's fully replaced when the user modifies vite.config.js => Vite's dev server is fully reloaded and a new viteDevServer replaces the previous one.
+  if (!globalObject.viteDevServer) {
+    assertIsNotInitilizedYet()
+  }
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
   await updateUserFiles()
