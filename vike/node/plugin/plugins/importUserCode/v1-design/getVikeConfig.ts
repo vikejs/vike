@@ -1158,14 +1158,14 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
 }
 function assertKnownConfig(
   configName: string,
-  configNamesKnownLocal: string[],
+  configNamesKnownRelevant: string[],
   configDefinitionsResolved: ConfigDefinitionsResolved,
   locationId: LocationId,
   sourceName: string
 ): void {
   const { configNamesKnownAll } = configDefinitionsResolved
 
-  if (configNamesKnownLocal.includes(configName)) {
+  if (configNamesKnownRelevant.includes(configName)) {
     assert(configNamesKnownAll.includes(configName))
     return
   }
