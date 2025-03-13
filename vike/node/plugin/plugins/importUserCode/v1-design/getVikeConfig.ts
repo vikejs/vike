@@ -282,6 +282,7 @@ async function resolveConfigDefinitions(
   const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesAll).flat())
   const configNamesKnownAll = Object.keys(configDefinitionsAll)
   const configNamesKnownGlobal = Object.keys(configDefinitionsGlobal)
+  assert(configNamesKnownGlobal.every((configName) => configNamesKnownAll.includes(configName)))
 
   const configDefinitionsLocal: Record<
     LocationId,
@@ -304,6 +305,7 @@ async function resolveConfigDefinitions(
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
       const configNamesKnownLocal = unique([...Object.keys(configDefinitions), ...configNamesKnownGlobal])
+      assert(configNamesKnownLocal.every((configName) => configNamesKnownAll.includes(configName)))
       configDefinitionsLocal[locationIdPage] = {
         configDefinitions,
         plusFiles,
