@@ -309,7 +309,7 @@ async function resolveConfigDefinitions(
     configDefinitionsLocal,
     configDefinitionsAll,
     configNamesKnownAll: Object.keys(configDefinitionsAll),
-    configNamesGlobal: Object.keys(configDefinitionsGlobal)
+    configNamesKnownGlobal: Object.keys(configDefinitionsGlobal)
   }
 
   return configDefinitionsResolved
@@ -1131,11 +1131,11 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 
 // Show error message upon unknown config
 function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved) {
-  const { configNamesGlobal } = configDefinitionsResolved
+  const { configNamesKnownGlobal } = configDefinitionsResolved
   objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
     ([_locationId, { configDefinitions, plusFiles }]) => {
       const configDefinitionsLocal = configDefinitions
-      const configNamesKnownLocal = [...Object.keys(configDefinitionsLocal), ...configNamesGlobal]
+      const configNamesKnownLocal = [...Object.keys(configDefinitionsLocal), ...configNamesKnownGlobal]
       plusFiles.forEach((plusFile) => {
         const configNames = getConfigNamesSetByPlusFile(plusFile)
         configNames.forEach((configName) => {
