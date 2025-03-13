@@ -263,6 +263,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
 
   return { pageConfigs, pageConfigGlobal, global, pages }
 }
+type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 async function resolveConfigDefinitions(
   plusFilesAll: PlusFilesByLocationId,
   userRootDir: string,
@@ -307,7 +308,6 @@ async function resolveConfigDefinitions(
   }
   return configDefinitionsResolved
 }
-type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 // Load value files (with `env.config===true`) of *custom* configs.
 // - The value files of *built-in* configs are already loaded at `getPlusFilesAll()`.
 async function loadCustomConfigBuildTimeFiles(
