@@ -67,7 +67,7 @@ import {
   removeSuperfluousViteLog_disable
 } from '../../../shared/loggerVite/removeSuperfluousViteLog.js'
 import pc from '@brillout/picocolors'
-import { getConfigDefinedAt } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
+import { getConfigDefinedAt, getDefinedByString } from '../../../../../shared/page-configs/getConfigDefinedAt.js'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import { loadPointerImport, loadValueFile } from './getVikeConfig/loadFileAtConfigTime.js'
 import { resolvePointerImport } from './getVikeConfig/resolvePointerImport.js'
@@ -246,7 +246,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
   // TODO/now: add validation
-  setCliAndApiOptions(pageConfigGlobal)
+  setCliAndApiOptions(pageConfigGlobal, configDefinitionsResolved)
 
   // global
   const pageConfigGlobalValues = getConfigValues(pageConfigGlobal)
@@ -561,7 +561,10 @@ function temp_interopVikeVitePlugin(
     )
   })
 }
-function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
+function setCliAndApiOptions(
+  pageConfigGlobal: PageConfigGlobalBuildTime,
+  configDefinitionsResolved: ConfigDefinitionsResolved
+) {
   // Vike API — passed options [lowest precedence]
   const apiOperation = getApiOperation()
   if (apiOperation?.options.vikeConfig) {
@@ -587,6 +590,14 @@ function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
 
   function addSources(configValues: Record<string, unknown>, definedBy: DefinedBy) {
     Object.entries(configValues).forEach(([configName, value]) => {
+      const sourceName = `The ${getDefinedByString(definedBy, configName)}` as const
+      assertKnownConfig(
+        configName,
+        configDefinitionsResolved.configNamesKnownGlobal,
+        configDefinitionsResolved,
+        '/' as LocationId,
+        sourceName
+      )
       const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
       sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
     })

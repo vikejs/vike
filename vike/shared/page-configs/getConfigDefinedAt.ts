@@ -1,6 +1,7 @@
 export { getConfigDefinedAt }
 export { getConfigDefinedAtOptional }
 export { getDefinedAtString }
+export { getDefinedByString }
 export type { ConfigDefinedAt }
 export type { ConfigDefinedAtOptional }
 
@@ -60,16 +61,16 @@ function getDefinedAtString(definedAtData: NonNullable<DefinedAtData>, configNam
   return definedAtString
 }
 
-function getDefinedByString(definedAt: DefinedBy, configName: string): string {
+function getDefinedByString(definedAt: DefinedBy, configName: string) {
   if (definedAt.definedBy === 'api') {
-    return `API call ${pc.cyan(`${definedAt.operation}({ vikeConfig: { ${configName} } })`)}`
+    return `API call ${pc.cyan(`${definedAt.operation}({ vikeConfig: { ${configName} } })`)}` as const
   }
   const { definedBy } = definedAt
   if (definedBy === 'cli') {
-    return `CLI option ${pc.cyan(`--${configName}`)}`
+    return `CLI option ${pc.cyan(`--${configName}`)}` as const
   }
   if (definedBy === 'env') {
-    return `environment variable ${pc.cyan(`VIKE_CONFIG="{${configName}}"`)}`
+    return `environment variable ${pc.cyan(`VIKE_CONFIG="{${configName}}"`)}` as const
   }
   checkType<never>(definedBy)
   assert(false)
