@@ -1208,9 +1208,10 @@ function assertKnownConfig(
       Wrapper: ui
     } as const
     if (configName in knownVikeExntensionConfigs) {
-      const requiredVikeExtension = knownVikeExntensionConfigs[configName as keyof typeof knownVikeExntensionConfigs]
-        .map((e) => pc.bold(e))
-        .join('/')
+      const requiredVikeExtension = joinEnglish(
+        knownVikeExntensionConfigs[configName as keyof typeof knownVikeExntensionConfigs].map((e) => pc.bold(e)),
+        'or'
+      )
       const errMsgEnhanced =
         `${errMsg}. If you want to use the configuration ${configNameColored} documented at ${pc.underline(`https://vike.dev/${configName}`)} then make sure to install ${requiredVikeExtension}. (Alternatively, you can define ${configNameColored} yourself by using ${pc.cyan('meta')}, see ${pc.underline('https://vike.dev/meta')} for more information.)` as const
       assertUsage(false, errMsgEnhanced)
