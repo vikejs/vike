@@ -531,26 +531,16 @@ function temp_interopVikeVitePlugin(
     { onlyOnce: true }
   )
   Object.entries(vikeVitePluginOptions).forEach(([configName, value]) => {
-    assert(includes(objectKeys(configDefinitionsBuiltIn), configName))
-    const configDef = configDefinitionsBuiltIn[configName]
     const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
-    // TODO/now: use getSourceNonConfigFile()
-    sources.push({
-      valueIsLoaded: true,
-      value,
-      configEnv: configDef.env,
-      definedAtFilePath: {
+    sources.push(
+      getSourceNonConfigFile(configName, value, {
         ...getFilePathResolved({
           userRootDir,
           filePathAbsoluteUserRootDir: '/vite.config.js'
         }),
         fileExportPathToShowToUser: null
-      },
-      locationId: '/' as LocationId,
-      plusFile: null,
-      valueIsLoadedWithImport: false,
-      valueIsDefinedByPlusValueFile: false
-    })
+      })
+    )
   })
 }
 function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
