@@ -235,7 +235,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
-  assertKnownConfigs(configDefinitionsResolved, plusFilesAll)
+  assertKnownConfigs(configDefinitionsResolved)
 
   const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
     configDefinitionsResolved,
@@ -302,9 +302,12 @@ async function resolveConfigDefinitions(
     })
   )
 
+  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesAll).flat())
+
   const configDefinitionsResolved = {
     configDefinitionsGlobal,
-    configDefinitionsLocal
+    configDefinitionsLocal,
+    configDefinitionsAll
   }
   return configDefinitionsResolved
 }
@@ -1124,9 +1127,8 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 }
 
 // Show error message upon unknown config
-function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved, plusFilesAll: PlusFilesByLocationId) {
-  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesAll).flat())
-  const configNamesKnownAll = Object.keys(configDefinitionsAll)
+function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved) {
+  const configNamesKnownAll = Object.keys(configDefinitionsResolved.configDefinitionsAll)
   const configNamesGlobal = Object.keys(configDefinitionsResolved.configDefinitionsGlobal)
 
   objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
