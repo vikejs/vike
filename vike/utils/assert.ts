@@ -88,11 +88,7 @@ function assertUsage(
   if (!exitOnError) {
     throw usageError
   } else {
-    if (showStackTrace) {
-      console.error(usageError)
-    } else {
-      console.error(errMsg)
-    }
+    console.error(showStackTrace ? usageError : errMsg)
     process.exit(1)
   }
 }

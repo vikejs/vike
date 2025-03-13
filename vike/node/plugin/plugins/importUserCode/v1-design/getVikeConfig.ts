@@ -245,7 +245,6 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   // Backwards compatibility for vike(options) in vite.config.js
   temp_interopVikeVitePlugin(pageConfigGlobal, vikeVitePluginOptions, userRootDir)
 
-  // TODO/now: add validation
   setCliAndApiOptions(pageConfigGlobal, configDefinitionsResolved)
 
   // global
@@ -570,10 +569,7 @@ function setCliAndApiOptions(
   if (apiOperation?.options.vikeConfig) {
     addSources(
       apiOperation.options.vikeConfig as Record<string, unknown>,
-      {
-        definedBy: 'api',
-        operation: apiOperation.operation
-      },
+      { definedBy: 'api', operation: apiOperation.operation },
       false
     )
   }
