@@ -554,13 +554,7 @@ function temp_interopVikeVitePlugin(
   })
 }
 function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
-  // VIKE_CONFIG
-  const configFromEnv = getEnvVarObject('VIKE_CONFIG')
-  if (configFromEnv) {
-    add(configFromEnv, { definedBy: 'env' })
-  }
-
-  // Vike API — passed options
+  // Vike API — passed options [lowest precedence]
   const apiOperation = getApiOperation()
   if (apiOperation?.options.vikeConfig) {
     add(apiOperation.options.vikeConfig as Record<string, unknown>, {
@@ -573,6 +567,12 @@ function setCliAndApiOptions(pageConfigGlobal: PageConfigGlobalBuildTime) {
   const cliOptions = getCliOptions()
   if (cliOptions) {
     add(cliOptions, { definedBy: 'cli' })
+  }
+
+  // VIKE_CONFIG [highest precedence]
+  const configFromEnv = getEnvVarObject('VIKE_CONFIG')
+  if (configFromEnv) {
+    add(configFromEnv, { definedBy: 'env' })
   }
 
   return
