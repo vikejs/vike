@@ -28,7 +28,8 @@ import {
   makeFirst,
   lowerFirst,
   makeLast,
-  type SortReturn
+  type SortReturn,
+  assertIsSingleModuleInstance
 } from '../../../utils.js'
 import type {
   PageConfigGlobalBuildTime,
@@ -87,6 +88,7 @@ import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
 import { getApiOperation } from '../../../../api/context.js'
 import { getCliOptions } from '../../../../cli/context.js'
 assertIsNotProductionRuntime()
+assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
