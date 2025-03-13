@@ -235,7 +235,6 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
   const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
 
   const configDefinitionsResolved = await resolveConfigDefinitions(plusFilesAll, userRootDir, esbuildCache)
-  assertKnownConfigs(configDefinitionsResolved)
 
   const { pageConfigGlobal, pageConfigs } = getPageConfigsBuildTime(
     configDefinitionsResolved,
@@ -322,6 +321,8 @@ async function resolveConfigDefinitions(
     configNamesKnownAll,
     configNamesKnownGlobal
   }
+
+  assertKnownConfigs(configDefinitionsResolved)
 
   return configDefinitionsResolved
 }
