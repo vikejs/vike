@@ -1,7 +1,7 @@
 export { getVikeConfig }
+export { getVikeConfigOptional }
 export { getVikeConfig2 }
 export { reloadVikeConfig }
-export { vikeConfigDependencies }
 export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
@@ -92,21 +92,19 @@ assertIsSingleModuleInstance('v1-design/getVikeConfig.ts')
 let restartVite = false
 let wasConfigInvalid: boolean | null = null
 let vikeConfigPromise: Promise<VikeConfigObject> | null = null
-const vikeConfigDependencies: Set<string> = new Set()
 
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
   pageConfigGlobal: PageConfigGlobalBuildTime
   global: PageConfigUserFriendly
   pages: PageConfigsUserFriendly
+  vikeConfigDependencies: Set<string>
 }
 
 function reloadVikeConfig(config: ResolvedConfig) {
   const userRootDir = config.root
   const vikeVitePluginOptions = config._vikeVitePluginOptions
   assert(vikeVitePluginOptions)
-  // TODO/now: unify with esbuildCache
-  vikeConfigDependencies.clear()
   vikeConfigPromise = loadVikeConfig_withErrorHandling(userRootDir, true, vikeVitePluginOptions)
   handleReloadSideEffects()
 }
@@ -176,6 +174,10 @@ async function getVikeConfigEntry(
   }
   return await vikeConfigPromise
 }
+async function getVikeConfigOptional(): Promise<null | VikeConfigObject> {
+  if (!vikeConfigPromise) return null
+  return await vikeConfigPromise
+}
 
 function isV1Design(config: ResolvedConfig | UserConfig): boolean {
   const vikeConfig = config._vikeConfigObject
@@ -224,14 +226,18 @@ async function loadVikeConfig_withErrorHandling(
           configValueSources: {}
         },
         global: getPageConfigGlobalUserFriendly({ pageConfigGlobalValues: {} }),
-        pages: {}
+        pages: {},
+        vikeConfigDependencies: new Set()
       }
       return dummyData
     }
   }
 }
 async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknown): Promise<VikeConfigObject> {
-  const esbuildCache: EsbuildCache = {}
+  const esbuildCache: EsbuildCache = {
+    transpileCache: {},
+    vikeConfigDependencies: new Set()
+  }
 
   const plusFilesAll = await getPlusFilesAll(userRootDir, esbuildCache)
 
@@ -260,7 +266,7 @@ async function loadVikeConfig(userRootDir: string, vikeVitePluginOptions: unknow
     })
   )
 
-  return { pageConfigs, pageConfigGlobal, global, pages }
+  return { pageConfigs, pageConfigGlobal, global, pages, vikeConfigDependencies: esbuildCache.vikeConfigDependencies }
 }
 type ConfigDefinitionsResolved = Awaited<ReturnType<typeof resolveConfigDefinitions>>
 async function resolveConfigDefinitions(
