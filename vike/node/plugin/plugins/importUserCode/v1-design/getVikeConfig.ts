@@ -307,8 +307,11 @@ async function resolveConfigDefinitions(
   const configDefinitionsResolved = {
     configDefinitionsGlobal,
     configDefinitionsLocal,
-    configDefinitionsAll
+    configDefinitionsAll,
+    configNamesKnownAll: Object.keys(configDefinitionsAll),
+    configNamesGlobal: Object.keys(configDefinitionsGlobal)
   }
+
   return configDefinitionsResolved
 }
 // Load value files (with `env.config===true`) of *custom* configs.
@@ -1128,9 +1131,7 @@ function getComputed(configValueSources: ConfigValueSources, configDefinitions: 
 
 // Show error message upon unknown config
 function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved) {
-  const configNamesKnownAll = Object.keys(configDefinitionsResolved.configDefinitionsAll)
-  const configNamesGlobal = Object.keys(configDefinitionsResolved.configDefinitionsGlobal)
-
+  const { configNamesGlobal } = configDefinitionsResolved
   objectEntries(configDefinitionsResolved.configDefinitionsLocal).forEach(
     ([_locationId, { configDefinitions, plusFiles }]) => {
       const configDefinitionsLocal = configDefinitions
@@ -1140,9 +1141,7 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
         configNames.forEach((configName) => {
           const { locationId } = plusFile
           const sourceName = plusFile.filePath.filePathToShowToUser
-          assertKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, locationId, sourceName)
-          assert(configNamesKnownLocal.includes(configName))
-          assert(configNamesKnownAll.includes(configName))
+          assertKnownConfig(configName, configNamesKnownLocal, configDefinitionsResolved, locationId, sourceName)
         })
       })
     }
@@ -1150,12 +1149,17 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
 }
 function assertKnownConfig(
   configName: string,
-  configNamesKnownAll: string[],
   configNamesKnownLocal: string[],
+  configDefinitionsResolved: ConfigDefinitionsResolved,
   locationId: LocationId,
   sourceName: string
 ): void {
-  if (configNamesKnownLocal.includes(configName)) return
+  const { configNamesKnownAll } = configDefinitionsResolved
+
+  if (configNamesKnownLocal.includes(configName)) {
+    assert(configNamesKnownAll.includes(configName))
+    return
+  }
 
   const configNameColored = pc.cyan(configName)
 
