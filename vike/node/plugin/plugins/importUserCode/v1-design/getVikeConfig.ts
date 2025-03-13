@@ -586,7 +586,7 @@ function getSourceNonConfigFile(
     valueIsLoaded: true,
     value,
     configEnv: configDef.env,
-    definedAtFilePath: definedAt,
+    definedAt,
     locationId: '/' as LocationId,
     plusFile: null,
     valueIsLoadedWithImport: false,
@@ -772,7 +772,7 @@ function getConfigValueSource(
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
-      definedAtFilePath
+      definedAt: definedAtFilePath
     }
     return configValueSource
   }
@@ -798,7 +798,7 @@ function getConfigValueSource(
         configEnv: resolveConfigEnv(configDef.env, pointerImport.fileExportPath),
         valueIsLoadedWithImport: true,
         valueIsDefinedByPlusValueFile: false,
-        definedAtFilePath: pointerImport.fileExportPath
+        definedAt: pointerImport.fileExportPath
       }
       return configValueSource
     }
@@ -811,7 +811,7 @@ function getConfigValueSource(
       configEnv: configDef.env,
       valueIsLoadedWithImport: false,
       valueIsDefinedByPlusValueFile: false,
-      definedAtFilePath: definedAtFilePath_
+      definedAt: definedAtFilePath_
     }
     return configValueSource
   }
@@ -826,7 +826,7 @@ function getConfigValueSource(
       configEnv: configEnvResolved,
       valueIsLoadedWithImport: !confVal.valueIsLoaded || !isJsonValue(confVal.value),
       valueIsDefinedByPlusValueFile: true,
-      definedAtFilePath: {
+      definedAt: {
         ...plusFile.filePath,
         fileExportPathToShowToUser:
           configName === plusFile.configName
@@ -1035,7 +1035,7 @@ function runEffect(configName: string, configDef: ConfigDefinitionInternal, sour
   // Call effect
   const configModFromEffect = configDef.effect({
     configValue: source.value,
-    configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAtFilePath)
+    configDefinedAt: getConfigDefinedAt('Config', configName, source.definedAt)
   })
   if (!configModFromEffect) return null
   return configModFromEffect
@@ -1055,7 +1055,7 @@ function applyEffectConfVal(
     assert(configDef)
     assert(configDefEffect._userEffectDefinedAtFilePath)
     const configValueSource: ConfigValueSource = {
-      definedAtFilePath: configDefEffect._userEffectDefinedAtFilePath!,
+      definedAt: configDefEffect._userEffectDefinedAtFilePath!,
       plusFile: sourceEffect.plusFile,
       locationId: sourceEffect.locationId,
       configEnv: configDef.env,
@@ -1245,15 +1245,15 @@ function getFilesystemRoutingRootEffect(
   // Eagerly loaded since it's config-only
   assert(configFilesystemRoutingRoot.valueIsLoaded)
   const { value } = configFilesystemRoutingRoot
-  const configDefinedAt = getConfigDefinedAt('Config', configName, configFilesystemRoutingRoot.definedAtFilePath)
+  const configDefinedAt = getConfigDefinedAt('Config', configName, configFilesystemRoutingRoot.definedAt)
   assertUsage(typeof value === 'string', `${configDefinedAt} should be a string`)
   assertUsage(
     value.startsWith('/'),
     `${configDefinedAt} is ${pc.cyan(value)} but it should start with a leading slash ${pc.cyan('/')}`
   )
-  const { definedAtFilePath } = configFilesystemRoutingRoot
-  assert(!definedAtFilePath.definedBy)
-  const { filePathAbsoluteUserRootDir } = definedAtFilePath
+  const { definedAt } = configFilesystemRoutingRoot
+  assert(!definedAt.definedBy)
+  const { filePathAbsoluteUserRootDir } = definedAt
   assert(filePathAbsoluteUserRootDir)
   const before = getFilesystemRouteString(getLocationId(filePathAbsoluteUserRootDir))
   const after = value

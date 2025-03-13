@@ -107,8 +107,7 @@ type ConfigValueSources = Record<
 >
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
-  // TODO/now rename definedAtFilePath
-  definedAtFilePath: DefinedAtFilePath | DefinedBy
+  definedAt: DefinedAtFilePath | DefinedBy
   plusFile:
     | PlusFile
     // It's `null` when the config is defined by `vike(options)` in vite.config.js

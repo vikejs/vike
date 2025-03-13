@@ -87,7 +87,7 @@ function getValueSerializedFromSource(
     valueData = getValueSerializedWithJson(
       configValueSource.value,
       configName,
-      configValueSource.definedAtFilePath,
+      configValueSource.definedAt,
       importStatements,
       filesEnv,
       configValueSource.configEnv
@@ -164,9 +164,9 @@ function getValueSerializedWithImport(
 ): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
-  const { valueIsDefinedByPlusValueFile, definedAtFilePath, configEnv } = configValueSource
-  assert(!definedAtFilePath.definedBy)
-  const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
+  const { valueIsDefinedByPlusValueFile, definedAt, configEnv } = configValueSource
+  assert(!definedAt.definedBy)
+  const { filePathAbsoluteVite, fileExportName } = definedAt
 
   if (valueIsDefinedByPlusValueFile) assert(fileExportName === undefined)
   const { importName } = addImportStatement(
@@ -357,11 +357,11 @@ type ConfigValuesBase = (
 )[]
 
 function getDefinedAtFileSource(source: ConfigValueSource) {
-  const { definedAtFilePath } = source
-  if (definedAtFilePath.definedBy) return definedAtFilePath
+  const { definedAt } = source
+  if (definedAt.definedBy) return definedAt
   const definedAtFile: DefinedAtFile = {
-    filePathToShowToUser: definedAtFilePath.filePathToShowToUser,
-    fileExportPathToShowToUser: definedAtFilePath.fileExportPathToShowToUser
+    filePathToShowToUser: definedAt.filePathToShowToUser,
+    fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser
   }
   return definedAtFile
 }
