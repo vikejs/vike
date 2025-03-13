@@ -1138,7 +1138,9 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
       plusFiles.forEach((plusFile) => {
         const configNames = getConfigNamesSetByPlusFile(plusFile)
         configNames.forEach((configName) => {
-          assertKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, plusFile)
+          const { locationId } = plusFile
+          const sourceName = plusFile.filePath.filePathToShowToUser
+          assertKnownConfig(configName, configNamesKnownAll, configNamesKnownLocal, locationId, sourceName)
           assert(configNamesKnownLocal.includes(configName))
           assert(configNamesKnownAll.includes(configName))
         })
@@ -1150,22 +1152,19 @@ function assertKnownConfig(
   configName: string,
   configNamesKnownAll: string[],
   configNamesKnownLocal: string[],
-  plusFile: PlusFile
+  locationId: LocationId,
+  sourceName: string
 ): void {
   if (configNamesKnownLocal.includes(configName)) return
 
   const configNameColored = pc.cyan(configName)
-  const {
-    locationId,
-    filePath: { filePathToShowToUser }
-  } = plusFile
-  const errMsg = `${filePathToShowToUser} sets an unknown config ${configNameColored}` as const
+  const errMsg = `${sourceName} sets an unknown config ${configNameColored}` as const
 
   // Inheritance issue: config is known but isn't defined at `locationId`
   if (configNamesKnownAll.includes(configName)) {
     assertUsage(
       false,
-      `${filePathToShowToUser} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const
+      `${sourceName} sets the value of the config ${configNameColored} which is a custom config that is defined with ${pc.underline('https://vike.dev/meta')} at a path that doesn't apply to ${locationId} — see ${pc.underline('https://vike.dev/config#inheritance')}` as const
     )
   }
 
