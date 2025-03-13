@@ -279,7 +279,10 @@ async function resolveConfigDefinitions(
   )
   await loadCustomConfigBuildTimeFiles(plusFilesAll, configDefinitionsGlobal, userRootDir, esbuildCache)
 
+  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesAll).flat())
+  const configNamesKnownAll = Object.keys(configDefinitionsAll)
   const configNamesKnownGlobal = Object.keys(configDefinitionsGlobal)
+
   const configDefinitionsLocal: Record<
     LocationId,
     {
@@ -300,7 +303,7 @@ async function resolveConfigDefinitions(
         .sort((plusFile1, plusFile2) => sortAfterInheritanceOrderPage(plusFile1, plusFile2, locationIdPage, null))
       const configDefinitions = getConfigDefinitions(plusFilesRelevant, (configDef) => configDef.global !== true)
       await loadCustomConfigBuildTimeFiles(plusFiles, configDefinitions, userRootDir, esbuildCache)
-      const configNamesKnownLocal = [...Object.keys(configDefinitions), ...configNamesKnownGlobal]
+      const configNamesKnownLocal = unique([...Object.keys(configDefinitions), ...configNamesKnownGlobal])
       configDefinitionsLocal[locationIdPage] = {
         configDefinitions,
         plusFiles,
@@ -310,13 +313,11 @@ async function resolveConfigDefinitions(
     })
   )
 
-  const configDefinitionsAll = getConfigDefinitions(Object.values(plusFilesAll).flat())
-
   const configDefinitionsResolved = {
     configDefinitionsGlobal,
     configDefinitionsLocal,
     configDefinitionsAll,
-    configNamesKnownAll: Object.keys(configDefinitionsAll),
+    configNamesKnownAll,
     configNamesKnownGlobal
   }
 
