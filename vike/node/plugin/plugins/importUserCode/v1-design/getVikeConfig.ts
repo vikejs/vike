@@ -86,8 +86,11 @@ import { getPlusFilesAll, type PlusFile, type PlusFilesByLocationId } from './ge
 import { getEnvVarObject } from '../../../shared/getEnvVarObject.js'
 import { getApiOperation } from '../../../../api/context.js'
 import { getCliOptions } from '../../../../cli/context.js'
-
 assertIsNotProductionRuntime()
+let restartVite = false
+let wasConfigInvalid: boolean | null = null
+let vikeConfigPromise: Promise<VikeConfigObject> | null = null
+const vikeConfigDependencies: Set<string> = new Set()
 
 type VikeConfigObject = {
   pageConfigs: PageConfigBuildTime[]
@@ -96,10 +99,6 @@ type VikeConfigObject = {
   pages: PageConfigsUserFriendly
 }
 
-let restartVite = false
-let wasConfigInvalid: boolean | null = null
-let vikeConfigPromise: Promise<VikeConfigObject> | null = null
-const vikeConfigDependencies: Set<string> = new Set()
 function reloadVikeConfig(config: ResolvedConfig) {
   const userRootDir = config.root
   const vikeVitePluginOptions = config._vikeVitePluginOptions
