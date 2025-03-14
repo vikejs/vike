@@ -4,6 +4,8 @@ import type { GlobalContextInternal } from '../../globalContext.js'
 import { assert, assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
+const reachOutCTA = 'Create a new GitHub issue to discuss a solution.'
+
 async function getViteDevScript(pageContext: {
   _globalContext: GlobalContextInternal
 }): Promise<string> {
@@ -25,19 +27,17 @@ async function getViteDevScript(pageContext: {
   )
   assertUsage(
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),
-    'Vite plugins that minify the HTML are not supported by vike, see https://github.com/vikejs/vike/issues/224'
+    `Vite plugins that minify the HTML cannot be applied, see https://github.com/vikejs/vike/issues/224`
   )
   assertUsage(
     fakeHtml.startsWith(fakeHtmlBegin) && fakeHtml.endsWith(fakeHtmlEnd),
-    'You are using a Vite Plugin that transforms the HTML in a way that conflicts with vike. Create a new GitHub ticket to discuss a solution.'
+    `You are using a Vite Plugin that transforms the HTML in a way that conflicts with Vike. ${reachOutCTA}`
   )
   const viteInjection = fakeHtml.slice(fakeHtmlBegin.length, -1 * fakeHtmlEnd.length)
   assert(viteInjection.includes('script'))
-  assertWarning(
-    !viteInjection.includes('import('),
-    'Unexpected Vite HMR code. Reach out to a Vike maintainer on GitHub.',
-    { onlyOnce: true }
-  )
+  assertWarning(!viteInjection.includes('import('), `Unexpected Vite injected HMR code. ${reachOutCTA}`, {
+    onlyOnce: true
+  })
 
   const viteDevScript = viteInjection
   return viteDevScript
