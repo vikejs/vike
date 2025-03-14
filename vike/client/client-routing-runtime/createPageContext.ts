@@ -21,6 +21,7 @@ async function createPageContext(urlOriginal: string) {
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
   const pageContext = {
+    _isPageContextObject: true,
     urlOriginal,
     _objectCreatedByVike: true,
     _urlHandler: null,
@@ -31,8 +32,7 @@ async function createPageContext(urlOriginal: string) {
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds,
     _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook,
-    _isPageContextObject: true
+    _onBeforeRouteHook: onBeforeRouteHook
   }
   const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
   objectAssign(pageContext, pageContextUrlComputed)
