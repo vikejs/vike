@@ -9,7 +9,7 @@ import { assert, assertPosixPath } from '../../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../../shared/virtual-files.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { isVirtualFileIdImportUserCode } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { vikeConfigDependencies, reloadVikeConfig, isV1Design, getVikeConfig } from './v1-design/getVikeConfig.js'
+import { reloadVikeConfig, isV1Design, getVikeConfig, getVikeConfigOptional } from './v1-design/getVikeConfig.js'
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
@@ -32,9 +32,9 @@ function importUserCode(): Plugin {
         return resolveVirtualFileId(id)
       }
     },
-    handleHotUpdate(ctx) {
+    async handleHotUpdate(ctx) {
       try {
-        return handleHotUpdate(ctx, config)
+        return await handleHotUpdate(ctx, config)
       } catch (err) {
         // Vite swallows errors thrown by handleHotUpdate()
         console.error(err)
@@ -67,9 +67,9 @@ function handleFileAddRemove(server: ViteDevServer, config: ResolvedConfig) {
   server.watcher.prependListener('add', (f) => listener(f, false))
   server.watcher.prependListener('unlink', (f) => listener(f, true))
   return
-  function listener(file: string, isRemove: boolean) {
+  async function listener(file: string, isRemove: boolean) {
     file = normalizePath(file)
-    if (isPlusFile(file) || isVikeConfigDependency(file, server.moduleGraph)?.modifiesVikeVirtualFiles) {
+    if (isPlusFile(file) || (await isVikeConfigDependency(file, server.moduleGraph))?.modifiesVikeVirtualFiles) {
       invalidateVikeVirtualFiles(server)
       reloadConfig(file, config, isRemove ? 'removed' : 'created')
     }
@@ -83,9 +83,9 @@ function invalidateVikeVirtualFiles(server: ViteDevServer) {
   })
 }
 
-function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
+async function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   const { file, server } = ctx
-  const isVikeConfig = isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
+  const isVikeConfig = await isVikeConfigDependency(ctx.file, ctx.server.moduleGraph)
 
   if (isVikeConfig) {
     if (isVikeConfig.modifiesVikeVirtualFiles) {
@@ -110,14 +110,18 @@ function handleHotUpdate(ctx: HmrContext, config: ResolvedConfig) {
   }
 }
 
-function isVikeConfigDependency(
+async function isVikeConfigDependency(
   filePathAbsoluteFilesystem: string,
   moduleGraph: ModuleGraph
-): null | { modifiesVikeVirtualFiles: boolean } {
+): Promise<null | { modifiesVikeVirtualFiles: boolean }> {
   // Check config-only files, for example all pages/+config.js dependencies. (There aren't part of Vite's module graph.)
   assertPosixPath(filePathAbsoluteFilesystem)
-  vikeConfigDependencies.forEach((f) => assertPosixPath(f))
-  if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { modifiesVikeVirtualFiles: true }
+  const vikeConfigObject = await getVikeConfigOptional()
+  if (vikeConfigObject) {
+    const { vikeConfigDependencies } = vikeConfigObject
+    vikeConfigDependencies.forEach((f) => assertPosixPath(f))
+    if (vikeConfigDependencies.has(filePathAbsoluteFilesystem)) return { modifiesVikeVirtualFiles: true }
+  }
 
   // Check using Vite's module graph, for example all +htmlAttributes dependencies.
   // Alternatively, simply call updateUserFiles() on every handleHotUpdate() call.

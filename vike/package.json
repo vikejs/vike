@@ -264,8 +264,10 @@
     "build:cjs": "pnpm run build:cjs:ts && pnpm run build:cjs:fixup",
     "build:cjs:ts": "tsc --project ./tsconfig.cjs.json",
     "build:cjs:fixup": "node ./dist-cjs-fixup.mjs",
+    "========= Release": "",
     "release": "release-me patch",
     "release:minor": "release-me minor",
+    "release:major": "release-me major",
     "release:commit": "release-me commit"
   }
 }
