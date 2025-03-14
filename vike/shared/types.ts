@@ -165,7 +165,12 @@ type PageContextBuiltInCommon<Data> = {
   isBaseMissing?: true
 }
 
-type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> & PageContextUrlServer
+type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
+  PageContextUrlServer & {
+    isHydration?: undefined
+    isBackwardNavigation?: undefined
+    previousPageContext?: undefined
+  }
 
 type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
   Pick<
