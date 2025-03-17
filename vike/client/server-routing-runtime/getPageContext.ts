@@ -15,6 +15,8 @@ const urlFirst = getCurrentUrl({ withoutHash: true })
 async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
   objectAssign(pageContext, {
+    _isPageContextObject: true,
+    isClientSide: true,
     isHydration: true as const,
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const,

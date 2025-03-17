@@ -2,8 +2,12 @@ export default Page
 
 import React from 'react'
 import { Counter } from '../../components/Counter'
+import { usePageContext } from 'vike-react/usePageContext'
+import { assert } from '../../utils/assert'
 
 function Page() {
+  const pageContext = usePageContext()
+  assert(!pageContext.isPrerendering)
   return (
     <>
       <h1>Welcome</h1>
