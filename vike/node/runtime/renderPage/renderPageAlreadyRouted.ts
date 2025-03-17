@@ -181,7 +181,7 @@ async function getPageContextInitEnhanced(
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const pageContextInitEnhanced = {}
+  const pageContextInitEnhanced = createPageContext(pageContextInit)
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {
     _objectCreatedByVike: true,
