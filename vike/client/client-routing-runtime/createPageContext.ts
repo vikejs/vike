@@ -22,9 +22,9 @@ async function createPageContext(urlOriginal: string) {
   assert(isBaseServer(baseServer))
   const pageContext = {
     _isPageContextObject: true,
-    urlOriginal,
     isClientSide: true,
     isPrerendering: false,
+    urlOriginal,
     _objectCreatedByVike: true,
     _urlHandler: null,
     _urlRewrite: null,
