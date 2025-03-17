@@ -22,8 +22,7 @@ async function getPageContext() {
     _hasPageContextFromServer: true as const,
     _hasPageContextFromClient: false as const
   }
-  const pageContextSerialized = getPageContextSerializedInHtml()
-  objectAssign(pageContext, pageContextSerialized)
+  objectAssign(pageContext, getPageContextSerializedInHtml())
   objectAssign(pageContext, await loadPageUserFiles(pageContext.pageId))
   assertPristineUrl()
   return pageContext
