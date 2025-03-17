@@ -40,11 +40,7 @@ type PageContextSerialization = {
 }
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
-  const pageContextClient: Record<string, unknown> = {}
-  passToClient.forEach((prop) => {
-    // We set non-existing props to `undefined`, in order to pass the list of passToClient values to the client-side
-    pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
-  })
+  const pageContextClient = applyPassToClient(passToClient, pageContext)
   if (Object.keys(pageContext._pageContextInit).some((p) => passToClient.includes(p))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
@@ -172,4 +168,38 @@ function serializePageContextAbort(
     )
   }
   return serialize(pageContext)
+}
+
+function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
+  const pageContextClient: Record<string, unknown> = {}
+
+  passToClient.forEach((prop) => {
+    const keys = prop.split('.')
+
+    // --- GET PHASE ---
+    let value: unknown = pageContext
+    for (const key of keys) {
+      if (value && typeof value === 'object' && key in value) {
+        value = (value as Record<string, unknown>)[key]
+      } else {
+        value = undefined
+        break
+      }
+    }
+
+    // --- SET PHASE ---
+    let pageContextClientNested: Record<string, unknown> = pageContextClient
+    // Loop through all keys except the last one
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i]!
+      if (!pageContextClientNested[key] || typeof pageContextClientNested[key] !== 'object') {
+        pageContextClientNested[key] = {}
+      }
+      pageContextClientNested = pageContextClientNested[key] as Record<string, unknown>
+    }
+    const finalKey = keys[keys.length - 1]!
+    pageContextClientNested[finalKey] = value
+  })
+
+  return pageContextClient
 }
