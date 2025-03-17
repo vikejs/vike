@@ -254,8 +254,8 @@ function assertStatusCode(statusCode: number, expected: number[], caller: 'rende
   )
 }
 
-type PageContextFromRewrite = { _urlRewrite: string } & Record<string, unknown>
-type PageContextFromAllRewrites = { _urlRewrite: null | string } & Record<string, unknown>
+type PageContextFromRewrite = { _urlRewrite: string }
+type PageContextFromAllRewrites = { _urlRewrite: null | string }
 function getPageContextFromAllRewrites(pageContextsFromRewrite: PageContextFromRewrite[]): PageContextFromAllRewrites {
   assertNoInfiniteLoop(pageContextsFromRewrite)
   const pageContextFromAllRewrites: PageContextFromAllRewrites = { _urlRewrite: null }
