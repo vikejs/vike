@@ -601,6 +601,8 @@ async function handleAbortError(
       const pageContext = createPageContext({})
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
+      // @ts-ignore
+      delete pageContextErrorPageInit._isPageContextObject
       objectAssign(pageContext, pageContextErrorPageInit)
       objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
