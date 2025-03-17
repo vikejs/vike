@@ -185,20 +185,14 @@ async function renderPageAlreadyPrepared(
     0
   )
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
-  let pageContextNominalPageInit = {}
-  {
-    const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-    objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
-  }
-  {
-    const pageContextInitEnhanced = await getPageContextInitEnhancedSSR(
-      pageContextInit,
-      globalContext,
-      pageContextNominalPageInit._urlRewrite,
-      httpRequestId
-    )
-    objectAssign(pageContextNominalPageInit, pageContextInitEnhanced)
-  }
+  const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
+  const pageContextNominalPageInit = await getPageContextInitEnhancedSSR(
+    pageContextInit,
+    globalContext,
+    pageContextFromAllRewrites._urlRewrite,
+    httpRequestId
+  )
+  objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   let errNominalPage: unknown
   {
     try {
@@ -424,16 +418,9 @@ async function getPageContextErrorPageInit(
   pageContextNominalPagePartial: Record<string, unknown>,
   httpRequestId: number
 ) {
-  const pageContextInitEnhanced = await getPageContextInitEnhancedSSR(
-    pageContextInit,
-    globalContext,
-    null,
-    httpRequestId
-  )
+  const pageContext = await getPageContextInitEnhancedSSR(pageContextInit, globalContext, null, httpRequestId)
 
   assert(errNominalPage)
-  const pageContext = {}
-  objectAssign(pageContext, pageContextInitEnhanced)
   objectAssign(pageContext, {
     is404: false,
     errorWhileRendering: errNominalPage as Error,
