@@ -18,7 +18,7 @@ function assertNoInfiniteHttpRedirect(
   }
 ) {
   // TO-DO/eventually: use cookie as described at https://github.com/vikejs/vike/pull/2273
-  if (true as boolean) return // Disabled until we make it reliable.
+  if (true as boolean) return 'DISABLED' // Disabled until we make it reliable.
 
   if (!urlRedirectTarget.startsWith('/')) {
     // We assume that urlRedirectTarget points to an origin that is external (not the same origin), and we can therefore assume that the app doesn't define an infinite loop (at least not in itself).
