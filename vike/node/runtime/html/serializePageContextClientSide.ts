@@ -53,9 +53,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const propName1 = getPropAccessNotation(prop)
-      const propName2 = JSON.stringify(prop)
-      const varName = `pageContext${propName1}`
+      const varName = `pageContext${prop.includes('.') ? '.' + prop : getPropAccessNotation(prop)}`
       try {
         serialize((pageContext as Record<string, unknown>)[prop], varName)
       } catch (err) {
@@ -79,7 +77,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
         // Non-serializable pageContext set by the user
         let msg = [
           `${h(varName)} can't be serialized and, therefore, can't be passed to the client side.`,
-          `Make sure ${h(varName)} is serializable, or remove ${h(propName2)} from ${h('passToClient')}.`
+          `Make sure ${h(varName)} is serializable, or remove ${h(JSON.stringify(prop))} from ${h('passToClient')}.`
         ].join(' ')
         if (isJsonSerializerError(err)) {
           msg = `${msg} Serialization error: ${err.messageCore}.`
