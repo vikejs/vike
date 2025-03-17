@@ -170,11 +170,13 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
     /**
      * Whether the page is being rendered on the client-side, or rendered on the server-side / pre-rendered.
      *
-     * https://vike.dev/pageContext
+     * In order to save client-side KBs, we recommend using `import.meta.env.SSR` whenever possible instead, see https://vike.dev/pageContext
      */
     isClientSide: false
     /**
      * Whether the page is being pre-rendered.
+     *
+     * The value is always `false` in development.
      *
      * https://vike.dev/pre-rendering
      * https://vike.dev/pageContext
@@ -240,7 +242,7 @@ type PageContextClientCommon = {
   /**
    * Whether the page is being rendered on the client-side, or rendered on the server-side / pre-rendered.
    *
-   * https://vike.dev/pageContext
+   * In order to save client-side KBs, we recommend using `import.meta.env.SSR` whenever possible instead, see https://vike.dev/pageContext
    */
   isClientSide: true
   /**

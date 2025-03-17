@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
 The `pageContext` object provides contextual information about the current page.
 
@@ -26,7 +26,7 @@ You can access `pageContext` everywhere:
 
 It includes:
  - <Link href="#built-in">Built-in properties</Link>, e.g. `pageContext.urlParsed` and `pageContext.routeParams`.
- - <Link href="#custom">Custom properties</Link> that you can add, for example `pagecontext.user`.
+ - <Link href="#custom">Custom properties</Link> that you can add, for example `pageContext.user`.
 
 When the user navigates to a new page, a completely new `pageContext` object is created and the previous `pageContext` becomes obsolete &mdash; that's why it's called **page**Context, not **app**Context. See <Link href="#lifecycle" /> for more information.
 
@@ -101,6 +101,20 @@ Built-in properties:
  - **`pageContext.headersOriginal`**: The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
  - **`pageContext.config`**: See <Link href="/meta" />.
  - **`pageContext.isHydration`**: Whether the page is rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.) (If the page doesn't throw an error then it's equivalent to `!pageContext.isClientSideNavigation`, otherwise the error page is rendered and thus `pageContext.isHydration` is `false` whereas `!pageContext.isClientSideNavigation` is `true`.)
+ - **`pageContext.isClientSide`**: Whether the page is being rendered on the client-side, or rendered on the server-side / <Link href="/pre-rendering">pre-rendered</Link>. It's equivalent to: <code>{'pageContext.isClientSide\u00A0!==\u00A0import.meta.env.SSR'}</code>.
+   <Warning>
+     We recommend using [Vite's `import.meta.env.SSR`](https://vite.dev/guide/env-and-mode.html#built-in-constants) whenever possible instead. Because Vite eliminates any code defined inside `import.meta.env.SSR` blocks from client-side bundles, saving potentially a *lot* of KBs. This isn't the case with `pageContext.isClientSide`.
+     ```js
+     // This import is also removed if it's used only inside import.meta.env.SSR code blocks
+     import someImport from './somewhere'
+
+     if (import.meta.env.SSR) {
+       // Vite removes this code block from client-side bundles.
+       // ... server-side code ...
+     }
+     ```
+   </Warning>
+ - **`pageContext.isPrerendering`**: Whether the page is being <Link href="/pre-rendering">pre-rendered</Link>. The value is always `false` in development.
  - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
  - **`pageContext.previousPageContext`**: Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
