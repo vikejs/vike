@@ -136,9 +136,8 @@ async function prerender404Page(
     return null
   }
 
-  const pageContextInit = {
-    urlOriginal: '/fake-404-url' // A URL is needed for `applyViteHtmlTransform`
-  }
+  // A URL is required for `viteDevServer.transformIndexHtml(url,html)`
+  const pageContextInit = { urlOriginal: '/fake-404-url' }
   objectAssign(pageContextInit, pageContextInit_)
   const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true)
   objectAssign(pageContext, {
@@ -238,8 +237,8 @@ function createPageContext(pageContextInit: Record<string, unknown>, isPrerender
   const pageContext = {
     _isPageContextObject: true,
     isClientSide: false,
-    isPrerendering: isPrerendering
+    isPrerendering
   }
-  Object.assign(pageContext, pageContextInit)
+  objectAssign(pageContext, pageContextInit)
   return pageContext
 }

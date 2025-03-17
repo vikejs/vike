@@ -16,10 +16,11 @@ function Page() {
   const pageContext = usePageContext()
   if (pageContext.isClientSide) {
     checkType<true>(pageContext.isClientSide)
-    assert(pageContext.isClientSide === true)
     checkType<false>(pageContext.isPrerendering)
+    assert(pageContext.isClientSide === true)
     assert(pageContext.isPrerendering === false)
   } else {
+    checkType<false>(pageContext.isClientSide)
     assert(pageContext.isClientSide === false)
     checkType<boolean>(pageContext.isPrerendering)
     if (import.meta.env.DEV) {
