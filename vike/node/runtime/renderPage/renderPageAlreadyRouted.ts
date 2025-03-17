@@ -136,7 +136,12 @@ async function prerender404Page(
     return null
   }
 
-  const pageContext = {
+  const pageContextInit = {
+    urlOriginal: '/fake-404-url' // A URL is needed for `applyViteHtmlTransform`
+  }
+  objectAssign(pageContextInit, pageContextInit_)
+  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext)
+  objectAssign(pageContext, {
     pageId: errorPageId,
     _httpRequestId: null,
     _urlRewrite: null,
@@ -145,16 +150,7 @@ async function prerender404Page(
     // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
     _usesClientRouter: false,
     _debugRouteMatches: []
-  }
-
-  const pageContextInit = {
-    urlOriginal: '/fake-404-url' // A URL is needed for `applyViteHtmlTransform`
-  }
-  objectAssign(pageContextInit, pageContextInit_)
-  {
-    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext)
-    objectAssign(pageContext, pageContextInitEnhanced)
-  }
+  })
 
   objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
