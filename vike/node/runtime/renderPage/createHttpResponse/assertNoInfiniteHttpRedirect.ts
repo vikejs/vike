@@ -8,8 +8,6 @@ const globalObject = getGlobalObject<{ redirectGraph: Graph }>('createHttpRespon
   redirectGraph: {}
 })
 
-// It's too strict, see https://github.com/vikejs/vike/issues/1270#issuecomment-1820608999
-// - Let's create a new setting `+doNotCatchInfiniteRedirect` if someone complains.
 function assertNoInfiniteHttpRedirect(
   // The exact URL that the user will be redirected to.
   // - It includes the Base URL as well as the locale (i18n) base.
@@ -19,6 +17,9 @@ function assertNoInfiniteHttpRedirect(
     urlOriginal: string
   }
 ) {
+  // TO-DO/eventually: use cookie as described at https://github.com/vikejs/vike/pull/2273
+  if (true as boolean) return; // Disabled until we make it reliable.
+
   if (!urlRedirectTarget.startsWith('/')) {
     // We assume that urlRedirectTarget points to an origin that is external (not the same origin), and we can therefore assume that the app doesn't define an infinite loop (at least not in itself).
     //  - There isn't a reliable way to check whether the redirect points to an external origin or the same origin; we hope/assume the user sets the URL without origin.
