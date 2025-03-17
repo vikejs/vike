@@ -23,7 +23,7 @@ async function createPageContext(urlOriginal: string) {
   const pageContext = {
     _isPageContextObject: true,
     urlOriginal,
-    isSSR: true,
+    isClientSide: true,
     _objectCreatedByVike: true,
     _urlHandler: null,
     _urlRewrite: null,
