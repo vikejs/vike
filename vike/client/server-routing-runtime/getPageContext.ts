@@ -16,6 +16,7 @@ async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
   objectAssign(pageContext, {
     _isPageContextObject: true,
+    isPrerendering: false,
     isClientSide: true,
     isHydration: true as const,
     isBackwardNavigation: null,

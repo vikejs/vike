@@ -537,23 +537,16 @@ async function createPageContext(
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal
 ) {
-  const pageContext = {
-    _isPageContextObject: true,
-    isClientSide: false,
+  const pageContextInit = { urlOriginal }
+  objectAssign(pageContextInit, prerenderContext.pageContextInit)
+  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext)
+  objectAssign(pageContext, {
     isPrerendering: true,
     _urlHandler: null,
     _urlRewrite: null,
     _noExtraDir: prerenderContext.noExtraDir,
     _prerenderContext: prerenderContext
-  }
-  const pageContextInit = {
-    urlOriginal
-  }
-  objectAssign(pageContextInit, prerenderContext.pageContextInit)
-  {
-    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext)
-    objectAssign(pageContext, pageContextInitEnhanced)
-  }
+  })
   return pageContext
 }
 
