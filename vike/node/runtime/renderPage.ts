@@ -443,7 +443,7 @@ async function getPageContextInitEnhancedSSR(
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
-  const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext, {
+  const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext, false, {
     ssr: {
       urlRewrite,
       urlHandler: _urlHandler,
