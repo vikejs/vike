@@ -2,6 +2,7 @@ export { renderPageAlreadyRouted }
 export { prerenderPage }
 export { prerender404Page }
 export { getPageContextInitEnhanced }
+export { createPageContext }
 export type { PageContextAfterRender }
 export type { PageContextInitEnhanced }
 
@@ -234,4 +235,14 @@ async function getPageContextInitEnhanced(
   }
 
   return pageContextInitEnhanced
+}
+
+function createPageContext(pageContextInit: Record<string, unknown>) {
+  const pageContext = {
+    _isPageContextObject: true,
+    isClientSide: false,
+    isPrerendering: false
+  }
+  Object.assign(pageContext, pageContextInit)
+  return pageContext
 }

@@ -4,7 +4,8 @@ export { renderPage_addAsyncHookwrapper }
 import {
   getPageContextInitEnhanced,
   renderPageAlreadyRouted,
-  PageContextInitEnhanced
+  PageContextInitEnhanced,
+  createPageContext
 } from './renderPage/renderPageAlreadyRouted.js'
 import { route } from '../../shared/route/index.js'
 import {
@@ -385,16 +386,6 @@ function getPageContextHttpResponseError(
     errorWhileRendering: err
   })
   return pageContextWithError
-}
-
-function createPageContext(pageContextInit: Record<string, unknown>) {
-  const pageContext = {
-    _isPageContextObject: true,
-    isClientSide: false,
-    isPrerendering: false
-  }
-  Object.assign(pageContext, pageContextInit)
-  return pageContext
 }
 
 async function renderPageNominal(
