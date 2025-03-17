@@ -373,7 +373,7 @@ function getPageContextHttpResponseError(
     _pageConfigs: PageConfigRuntime[]
   }
 ): PageContextAfterRender {
-  const pageContextWithError = createPageContext(pageContextInit)
+  const pageContextWithError = createPageContext(pageContextInit, false)
   const httpResponse = createHttpResponseError(pageContext)
   objectAssign(pageContextWithError, {
     httpResponse,
@@ -509,7 +509,7 @@ async function normalizeUrl(
     'info'
   )
   const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContextInit)
-  const pageContextHttpResponse = createPageContext(pageContextInit)
+  const pageContextHttpResponse = createPageContext(pageContextInit, false)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
 }
@@ -556,7 +556,7 @@ async function getPermanentRedirect(
     'info'
   )
   const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, pageContextInit)
-  const pageContextHttpResponse = createPageContext(pageContextInit)
+  const pageContextHttpResponse = createPageContext(pageContextInit, false)
   objectAssign(pageContextHttpResponse, { httpResponse })
   return pageContextHttpResponse
 }
@@ -598,7 +598,7 @@ async function handleAbortError(
           abortCall
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
-      const pageContext = createPageContext({})
+      const pageContext = createPageContext({}, false)
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
@@ -622,7 +622,7 @@ async function handleAbortError(
     return { pageContextReturn }
   }
   if (pageContextAbort._urlRedirect) {
-    const pageContextReturn = createPageContext(pageContextInit)
+    const pageContextReturn = createPageContext(pageContextInit, false)
     objectAssign(pageContextReturn, pageContextAbort)
     const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextInit)
     objectAssign(pageContextReturn, { httpResponse })
@@ -637,7 +637,7 @@ async function checkBaseUrl(pageContextInit: { urlOriginal: string }, globalCont
   const { urlOriginal } = pageContextInit
   const { isBaseMissing } = parseUrl(urlOriginal, baseServer)
   if (!isBaseMissing) return
-  const pageContext = createPageContext(pageContextInit)
+  const pageContext = createPageContext(pageContextInit, false)
   const httpResponse = createHttpResponseBaseIsMissing(urlOriginal, baseServer)
   objectAssign(pageContext, {
     httpResponse,
@@ -651,7 +651,7 @@ function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
   if (urlPathnameWithBase.endsWith('/favicon.ico')) {
-    const pageContext = createPageContext(pageContextInit)
+    const pageContext = createPageContext(pageContextInit, false)
     const httpResponse = createHttpResponseFavicon404()
     objectAssign(pageContext, { httpResponse })
     checkType<PageContextAfterRender>(pageContext)

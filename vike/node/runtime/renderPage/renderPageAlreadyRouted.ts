@@ -234,7 +234,7 @@ async function getPageContextInitEnhanced(
   return pageContextInitEnhanced
 }
 
-function createPageContext(pageContextInit: Record<string, unknown>, isPrerendering = false) {
+function createPageContext(pageContextInit: Record<string, unknown>, isPrerendering: boolean) {
   const pageContext = {
     _isPageContextObject: true,
     isClientSide: false,
