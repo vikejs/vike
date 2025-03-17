@@ -32,7 +32,7 @@ import {
   prerenderPage,
   prerender404Page,
   getPageContextInitEnhanced,
-  PageContextInitEnhanced
+  type PageContextInitEnhanced
 } from '../runtime/renderPage/renderPageAlreadyRouted.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
@@ -537,20 +537,16 @@ async function createPageContext(
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal
 ) {
-  const pageContext = {
+  const pageContextInit = { urlOriginal }
+  objectAssign(pageContextInit, prerenderContext.pageContextInit)
+  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true, {})
+  assert(pageContext.isPrerendering === true)
+  objectAssign(pageContext, {
     _urlHandler: null,
     _urlRewrite: null,
     _noExtraDir: prerenderContext.noExtraDir,
     _prerenderContext: prerenderContext
-  }
-  const pageContextInit = {
-    urlOriginal
-  }
-  objectAssign(pageContextInit, prerenderContext.pageContextInit)
-  {
-    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext)
-    objectAssign(pageContext, pageContextInitEnhanced)
-  }
+  })
   return pageContext
 }
 

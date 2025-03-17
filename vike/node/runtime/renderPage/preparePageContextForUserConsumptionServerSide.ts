@@ -32,5 +32,8 @@ function preparePageContextForUserConsumptionServerSide(pageContext: PageContext
   assert(isPlainObject(pageContext.routeParams))
   assert('Page' in pageContext)
   assert(typeof pageContext.isClientSideNavigation === 'boolean')
+  assert(pageContext._isPageContextObject)
+  assert(pageContext.isClientSide === false)
+  assert(typeof pageContext.isPrerendering === 'boolean')
   preparePageContextForUserConsumption(pageContext)
 }
