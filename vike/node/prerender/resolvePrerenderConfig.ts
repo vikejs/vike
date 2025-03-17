@@ -22,8 +22,8 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
 
   let defaultLocalValue = false
   {
-    const valueFirst = prerenderConfigs.filter((p) => !isObject(p) || p.value !== null)[0]
-    if (valueFirst === true || (isObject(valueFirst) && (valueFirst.value ?? defaultValueForObject))) {
+    const valueFirst = prerenderConfigs.filter((p) => !isObject(p) || p.enable !== null)[0]
+    if (valueFirst === true || (isObject(valueFirst) && (valueFirst.enable ?? defaultValueForObject))) {
       defaultLocalValue = true
     }
   }
