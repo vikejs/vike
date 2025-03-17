@@ -1,0 +1,33 @@
+import { Link } from '@brillout/docpress'
+import { Example, UseBati, CustomIntegrationWarning } from '../../components'
+
+## `create-vanjs`
+
+We recommend using [create-vanjs](https://github.com/thednp/create-vanjs) which integrates [VanJS](https://www.vanjs.org) in a set of starter templates which include Vike.
+
+> <UseBati>`vike-vanjs`</UseBati>
+
+You can also <Link href="#custom-integration">integrate VanJS yourself</Link> if you want full control over the VanJS integration.
+
+
+## Custom integration
+
+Instead of using <Link href="/vike-vanjs">`vike-vanjs`</Link>, you can implement your own Solid integration, for full control over the integration of Solid and Solid libraries.
+
+<CustomIntegrationWarning list={['vike-solid']} />
+
+Official examples:
+ - [`vike-ts` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-ts) - Full-featured Typescript integration.
+ - [`vike` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike) - Full-featured integration.
+ - [`vike-jsx-ts` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-jsx-ts) - Full-featured JSX Typescript integration.
+ - [`vike-jsx` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-jsx) - Full-featured JSX integration.
+
+Community examples:
+ - Coming soon.
+
+
+## See also
+
+ - <Link href="/react" />
+ - <Link href="/solid" />
+ - <Link href="/vue" />
