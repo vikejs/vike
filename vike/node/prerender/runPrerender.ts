@@ -539,9 +539,9 @@ async function createPageContext(
 ) {
   const pageContextInit = { urlOriginal }
   objectAssign(pageContextInit, prerenderContext.pageContextInit)
-  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext)
+  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, {}, true)
+  assert(pageContext.isPrerendering === true)
   objectAssign(pageContext, {
-    isPrerendering: true,
     _urlHandler: null,
     _urlRewrite: null,
     _noExtraDir: prerenderContext.noExtraDir,

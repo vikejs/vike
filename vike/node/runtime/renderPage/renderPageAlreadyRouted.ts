@@ -173,11 +173,12 @@ async function getPageContextInitEnhanced(
       urlHandler: null | ((url: string) => string)
       isClientSideNavigation: boolean
     }
-  } = {}
+  } = {},
+  isPrerendering?: true
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const pageContextInitEnhanced = createPageContext(pageContextInit)
+  const pageContextInitEnhanced = createPageContext(pageContextInit, isPrerendering)
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {
     _objectCreatedByVike: true,
@@ -233,11 +234,11 @@ async function getPageContextInitEnhanced(
   return pageContextInitEnhanced
 }
 
-function createPageContext(pageContextInit: Record<string, unknown>) {
+function createPageContext(pageContextInit: Record<string, unknown>, isPrerendering = false) {
   const pageContext = {
     _isPageContextObject: true,
     isClientSide: false,
-    isPrerendering: false
+    isPrerendering: isPrerendering
   }
   Object.assign(pageContext, pageContextInit)
   return pageContext
