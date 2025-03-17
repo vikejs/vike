@@ -412,7 +412,7 @@ function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string): string {
   const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
   // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
-  const filePathTmp = path.posix.join(dirname, `${filename}.build-${getRandomId(12)}.mjs`)
+  const filePathTmp = path.posix.join(dirname, `${filename}.build-${getRandomId()}.mjs`)
   assert(isTemporaryBuildFile(filePathTmp))
   return filePathTmp
 }
