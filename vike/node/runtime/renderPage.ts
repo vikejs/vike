@@ -390,7 +390,8 @@ function getPageContextHttpResponseError(
 function createPageContext(pageContextInit: Record<string, unknown>) {
   const pageContext = {
     _isPageContextObject: true,
-    isClientSide: false
+    isClientSide: false,
+    isPrerendering: false
   }
   Object.assign(pageContext, pageContextInit)
   return pageContext

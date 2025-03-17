@@ -24,6 +24,7 @@ async function createPageContext(urlOriginal: string) {
     _isPageContextObject: true,
     urlOriginal,
     isClientSide: true,
+    isPrerendering: false,
     _objectCreatedByVike: true,
     _urlHandler: null,
     _urlRewrite: null,

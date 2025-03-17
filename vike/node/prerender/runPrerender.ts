@@ -538,6 +538,9 @@ async function createPageContext(
   globalContext: GlobalContextInternal
 ) {
   const pageContext = {
+    _isPageContextObject: true,
+    isClientSide: false,
+    isPrerendering: true,
     _urlHandler: null,
     _urlRewrite: null,
     _noExtraDir: prerenderContext.noExtraDir,
