@@ -146,11 +146,12 @@ function createHttpResponseRedirect(
   { url, statusCode }: UrlRedirect,
   pageContextInit: { urlOriginal: string }
 ): HttpResponse {
-  assertNoInfiniteHttpRedirect(url, pageContextInit)
+  const cookieInfiniteRedirectionDetector = assertNoInfiniteHttpRedirect(url, pageContextInit)
   assert(url)
   assert(statusCode)
   assert(300 <= statusCode && statusCode <= 399)
   const headers: ResponseHeaders = [['Location', url]]
+  if (cookieInfiniteRedirectionDetector) headers.push(cookieInfiniteRedirectionDetector)
   return createHttpResponse(
     statusCode,
     'text/html;charset=utf-8',

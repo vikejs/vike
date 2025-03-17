@@ -1,5 +1,6 @@
 export { assertNoInfiniteHttpRedirect }
 
+import { getRandomId } from '../../../plugin/utils.js'
 import { assert, assertUsage, getGlobalObject, removeUrlOrigin } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
@@ -33,8 +34,16 @@ function assertNoInfiniteHttpRedirect(
   const graph = copy(globalObject.redirectGraph)
   graph[urlRedirectTarget] ??= new Set()
   graph[urlRedirectTarget]!.add(urlOriginalNormalized)
-  validate(graph)
+  const redirectionLoop = validate(graph)
   globalObject.redirectGraph = graph
+  if (redirectionLoop) {
+    // assertUsage(false, `Infinite loop of HTTP URL redirects: ${redirectionLoop.map(pc.cyan).join(' -> ')}`)
+    const cookieInfiniteRedirectionDetector: [string, string] = [
+      'Set-Cookie',
+      `redirection-loop-client-id=${getRandomId()}`
+    ]
+    return cookieInfiniteRedirectionDetector
+  }
 }
 
 function copy(G: Graph): Graph {
@@ -43,12 +52,12 @@ function copy(G: Graph): Graph {
 
 // Adapted from: https://stackoverflow.com/questions/60904464/detect-cycle-in-directed-graph/60907076#60907076
 function validate(G: Graph) {
-  Object.keys(G).forEach((n) => check(G, n, []))
+  return Object.keys(G).find((n) => check(G, n, []))
 }
 function check(G: Graph, n: string, path: string[]) {
   if (path.includes(n)) {
     const cycle = path.slice(path.indexOf(n)).concat(n)
-    assertUsage(false, `Infinite loop of HTTP URL redirects: ${cycle.map(pc.cyan).join(' -> ')}`)
+    return cycle
   }
   G[n]?.forEach((node) => check(G, node, [...path, n]))
 }
