@@ -168,15 +168,16 @@ type PageContextBuiltInCommon<Data> = {
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextUrlServer & {
     /**
-     * Whether the page is being Server-Side Rendered (or pre-rendered).
+     * Whether the page is being rendered on the client-side, or rendered on the server-side / pre-rendered.
      *
-     * https://vike.dev/ssr
+     * https://vike.dev/pageContext
      */
     isClientSide: false
     /**
      * Whether the page is being pre-rendered.
      *
      * https://vike.dev/pre-rendering
+     * https://vike.dev/pageContext
      */
     isPrerendering: boolean
     isHydration?: undefined
