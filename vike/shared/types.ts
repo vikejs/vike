@@ -246,10 +246,12 @@ type PageContextClientCommon = {
   /**
    * Whether the page is being pre-rendered.
    *
+   * The value is always `false` in development.
+   *
    * https://vike.dev/pre-rendering
    * https://vike.dev/pageContext
    */
-  isPrerendering?: undefined
+  isPrerendering: false
 }
 
 /** For Vike internal use */
