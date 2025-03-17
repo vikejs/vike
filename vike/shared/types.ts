@@ -172,7 +172,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      *
      * https://vike.dev/ssr
      */
-    isSSR: true
+    isSSR: false
     /**
      * Whether the page is being pre-rendered.
      *
@@ -201,7 +201,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
     | 'sources'
     | 'from'
   > & {
-    isSSR: false
+    isSSR: true
     isPrerendering?: undefined
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
