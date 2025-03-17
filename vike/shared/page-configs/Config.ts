@@ -363,13 +363,15 @@ type ConfigBuiltIn = {
         /**
          * Whether to enable pre-rendering.
          *
-         * Setting `value: null` enables you to set prerender settings without activating pre-rendering. (Useful for Vike extensions.)
+         * Setting `enable: null` enables you to set prerender settings without enabling pre-rendering by default.
          *
-         * https://vike.dev/prerender#value
+         * This is useful, for example, if you want pre-rendering to stay opt-in instead of opt-out, while setting pre-render settings globally.
+         *
+         * https://vike.dev/prerender#enable
          *
          * @default true
          */
-        value?: boolean | null
+        enable?: boolean | null
       }
 
   /**
