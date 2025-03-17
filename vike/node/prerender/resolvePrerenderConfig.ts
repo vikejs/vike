@@ -57,7 +57,7 @@ function resolvePrerenderConfigLocal(pageConfig: PageConfigBuildTime) {
   const values = configValue.value
   assert(isArray(values))
   const value = values[0]
-  // TODO/now I believe this assert() can fail
+  // If it's set to an object in a local config then Vike considers it a global config and it's skipped from local inheritance, thus we can assume the value to be a boolean.
   assert(typeof value === 'boolean')
   assert(isArray(configValue.definedAtData))
   const prerenderConfigLocal = { value }
