@@ -41,7 +41,7 @@ type PageContextSerialization = {
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
   const pageContextClient = applyPassToClient(passToClient, pageContext)
-  if (Object.keys(pageContext._pageContextInit).some((p) => passToClient.includes(p))) {
+  if (passToClient.some(p => getProp(pageContext._pageContextInit, p) !== undefined)) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
@@ -169,35 +169,55 @@ function serializePageContextAbort(
 }
 
 function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
-  const pageContextClient: Record<string, unknown> = {}
+  const pageContextClient: Record<string, unknown> = {};
 
   passToClient.forEach((prop) => {
-    const keys = prop.split('.')
+    // Get the value from pageContext
+    const value = getProp(pageContext, prop);
+    // Set the value in pageContextClient
+    setProp(pageContextClient, prop, value);
+  });
 
-    // --- GET PHASE ---
-    let value: unknown = pageContext
-    for (const key of keys) {
-      if (value && typeof value === 'object' && key in value) {
-        value = (value as Record<string, unknown>)[key]
-      } else {
-        value = undefined
-        break
-      }
+  return pageContextClient;
+}
+
+/**
+ * Get a nested property from an object using a dot-separated path (e.g., 'user.id').
+ * Returns `undefined` if the property or any intermediate property doesn't exist.
+ */
+function getProp(obj: Record<string, unknown>, prop: string): unknown {
+  const keys = prop.split('.');
+  let value: unknown = obj;
+
+  for (const key of keys) {
+    if (value && typeof value === 'object' && key in value) {
+      value = (value as Record<string, unknown>)[key];
+    } else {
+      return undefined; // Property or intermediate property doesn't exist
     }
+  }
 
-    // --- SET PHASE ---
-    let pageContextClientNested: Record<string, unknown> = pageContextClient
-    // Loop through all keys except the last one
-    for (let i = 0; i < keys.length - 1; i++) {
-      const key = keys[i]!
-      if (!pageContextClientNested[key] || typeof pageContextClientNested[key] !== 'object') {
-        pageContextClientNested[key] = {}
-      }
-      pageContextClientNested = pageContextClientNested[key] as Record<string, unknown>
+  return value;
+}
+
+/**
+ * Set a nested property in an object using a dot-separated path (e.g., 'user.id').
+ * Creates intermediate objects if they don't exist.
+ */
+function setProp(obj: Record<string, unknown>, prop: string, val: unknown): void {
+  const keys = prop.split('.');
+  let currentObj: Record<string, unknown> = obj;
+
+  // Traverse to the second-to-last key, creating intermediate objects if necessary
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i]!;
+    if (!currentObj[key] || typeof currentObj[key] !== 'object') {
+      currentObj[key] = {}; // Create intermediate object
     }
-    const finalKey = keys[keys.length - 1]!
-    pageContextClientNested[finalKey] = value
-  })
+    currentObj = currentObj[key] as Record<string, unknown>;
+  }
 
-  return pageContextClient
+  // Set the final key to the value
+  const finalKey = keys[keys.length - 1]!;
+  currentObj[finalKey] = val;
 }
