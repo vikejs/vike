@@ -7,7 +7,6 @@ import { assert } from '../utils/assert'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
-  console.log(pageContext.someWrapperObj)
   if (import.meta.env.SSR) {
     assert(pageContext.someWrapperObj.neverPassedToClient === 123)
   } else {

@@ -41,7 +41,7 @@ type PageContextSerialization = {
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
   const pageContextClient = applyPassToClient(passToClient, pageContext)
-  if (passToClient.some((p) => getPropVal(pageContext._pageContextInit, p))) {
+  if (passToClient.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
@@ -53,10 +53,10 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
       const res = getPropVal(pageContext, prop)
       if (!res) return
       const { value } = res
+      const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
       try {
         serialize(value, varName)
       } catch (err) {
@@ -174,21 +174,18 @@ function serializePageContextAbort(
 function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
   const pageContextClient: Record<string, unknown> = {}
   passToClient.forEach((prop) => {
-    // Get the value from pageContext
+    // Get value from pageContext
     const res = getPropVal(pageContext, prop)
     if (!res) return
     const { value } = res
 
-    // Set the value in pageContextClient
+    // Set value to pageContextClient
     setPropVal(pageContextClient, prop, value)
   })
   return pageContextClient
 }
 
-/**
- * Get a nested property from an object using a dot-separated path (e.g., 'user.id').
- * Returns `undefined` if the property or any intermediate property doesn't exist.
- */
+// Get a nested property from an object using a dot-separated path such as 'user.id'
 function getPropVal(obj: Record<string, unknown>, prop: string): null | { value: unknown } {
   const keys = getPropKeys(prop)
   let value: unknown = obj
@@ -202,10 +199,7 @@ function getPropVal(obj: Record<string, unknown>, prop: string): null | { value:
   return { value }
 }
 
-/**
- * Set a nested property in an object using a dot-separated path (e.g., 'user.id').
- * Creates intermediate objects if they don't exist.
- */
+// Set a nested property in an object using a dot-separated path such as 'user.id'
 function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): void {
   const keys = getPropKeys(prop)
   let currentObj = obj
