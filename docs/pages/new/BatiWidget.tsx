@@ -5,9 +5,14 @@ import React, { useEffect, useState } from 'react'
 
 function BatiWidget() {
   const pageContext = usePageContext2()
-  const [isLoading, setIsLoading] = useState(import.meta.env.SSR || pageContext.isHydration)
+  const [isLoading, setIsLoading] = useState(import.meta.env.SSR || pageContext.isHydration || !window.isBatiLoaded)
   useEffect(() => {
-    setIsLoading(false)
+    const done = () => setIsLoading(false)
+    if (window.isBatiLoaded) {
+      done()
+    } else {
+      window.onBatiLoaded = done
+    }
   }, [])
   if (isLoading) {
     return (
