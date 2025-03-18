@@ -228,11 +228,6 @@ function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): v
 
 function getPropKeys(prop: string): string[] {
   return prop
-    .split(/(?<!\\)\./g) // Split on unescaped dots
-    .map(
-      (part) =>
-        part
-          .replace(/\\\\/g, '\\') // Replace double backslashes with single
-          .replace(/\\\./g, '.') // Replace escaped dots with literal dots
-    )
+    .split(/(?<!\\)\./) // Split on unescaped dots
+    .map((key) => key.replace(/\\\./g, '.')) // Replace escaped dots with literal dots
 }
