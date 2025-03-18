@@ -1,10 +1,8 @@
 export { BatiWidget }
 
-import { usePageContext2 } from '@brillout/docpress'
 import React, { useEffect, useState } from 'react'
 
 function BatiWidget() {
-  const pageContext = usePageContext2()
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     ;(async () => {
