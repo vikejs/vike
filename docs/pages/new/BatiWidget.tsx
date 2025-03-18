@@ -1,25 +1,13 @@
 export { BatiWidget }
 
+import { usePageContext2 } from '@brillout/docpress'
 import React, { useEffect, useState } from 'react'
-import { assert } from '@brillout/docpress'
-
-const scriptSrc = 'https://cdn.jsdelivr.net/npm/@batijs/elements/dist/elements/full.js'
 
 function BatiWidget() {
-  const [isLoading, setIsLoading] = useState(true)
+  const pageContext = usePageContext2()
+  const [isLoading, setIsLoading] = useState(import.meta.env.SSR || pageContext.isHydration)
   useEffect(() => {
-    if (wasAdded()) {
-      setIsLoading(false)
-      return
-    }
-    const script = document.createElement('script')
-    script.type = 'module'
-    script.src = scriptSrc
-    script.onload = () => {
-      setIsLoading(false)
-    }
-    document.head.appendChild(script)
-    assert(wasAdded())
+    setIsLoading(false)
   }, [])
   if (isLoading) {
     return (
@@ -34,9 +22,4 @@ function BatiWidget() {
       </div>
     </>
   )
-}
-
-function wasAdded() {
-  const el = document.querySelector(`script[src="${scriptSrc}"]`)
-  return !!el
 }
