@@ -2,6 +2,7 @@ export { renderPageAlreadyRouted }
 export { prerenderPage }
 export { prerender404Page }
 export { getPageContextInitEnhanced }
+export { createPageContext }
 export type { PageContextAfterRender }
 export type { PageContextInitEnhanced }
 
@@ -135,7 +136,11 @@ async function prerender404Page(
     return null
   }
 
-  const pageContext = {
+  // A URL is required for `viteDevServer.transformIndexHtml(url,html)`
+  const pageContextInit = { urlOriginal: '/fake-404-url' }
+  objectAssign(pageContextInit, pageContextInit_)
+  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true)
+  objectAssign(pageContext, {
     pageId: errorPageId,
     _httpRequestId: null,
     _urlRewrite: null,
@@ -144,16 +149,7 @@ async function prerender404Page(
     // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
     _usesClientRouter: false,
     _debugRouteMatches: []
-  }
-
-  const pageContextInit = {
-    urlOriginal: '/fake-404-url' // A URL is needed for `applyViteHtmlTransform`
-  }
-  objectAssign(pageContextInit, pageContextInit_)
-  {
-    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext)
-    objectAssign(pageContext, pageContextInitEnhanced)
-  }
+  })
 
   objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
@@ -164,6 +160,7 @@ type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhan
 async function getPageContextInitEnhanced(
   pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
   globalContext: GlobalContextInternal,
+  isPrerendering: boolean,
   {
     ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
       urlRewrite: null,
@@ -180,7 +177,7 @@ async function getPageContextInitEnhanced(
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const pageContextInitEnhanced = {}
+  const pageContextInitEnhanced = createPageContext(pageContextInit, isPrerendering)
   objectAssign(pageContextInitEnhanced, pageContextInit)
   objectAssign(pageContextInitEnhanced, {
     _objectCreatedByVike: true,
@@ -234,4 +231,14 @@ async function getPageContextInitEnhanced(
   }
 
   return pageContextInitEnhanced
+}
+
+function createPageContext(pageContextInit: Record<string, unknown>, isPrerendering: boolean) {
+  const pageContext = {
+    _isPageContextObject: true,
+    isClientSide: false,
+    isPrerendering
+  }
+  objectAssign(pageContext, pageContextInit)
+  return pageContext
 }

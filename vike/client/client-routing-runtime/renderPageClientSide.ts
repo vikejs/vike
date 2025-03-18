@@ -365,7 +365,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     if ('err' in args) {
       const { err } = args
       assert(!('errorWhileRendering' in pageContext))
-      pageContext.errorWhileRendering = err
+      objectAssign(pageContext, { errorWhileRendering: err })
 
       if (isAbortError(err)) {
         const errAbort = err

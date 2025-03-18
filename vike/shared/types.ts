@@ -167,6 +167,21 @@ type PageContextBuiltInCommon<Data> = {
 
 type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
   PageContextUrlServer & {
+    /**
+     * Whether the page is being rendered on the client-side, or rendered on the server-side / pre-rendered.
+     *
+     * In order to save client-side KBs, we recommend using `import.meta.env.SSR` whenever possible instead, see https://vike.dev/pageContext
+     */
+    isClientSide: false
+    /**
+     * Whether the page is being pre-rendered.
+     *
+     * The value is always `false` in development.
+     *
+     * https://vike.dev/pre-rendering
+     * https://vike.dev/pageContext
+     */
+    isPrerendering: boolean
     isHydration?: undefined
     isBackwardNavigation?: undefined
     previousPageContext?: undefined
@@ -188,7 +203,8 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
     | 'source'
     | 'sources'
     | 'from'
-  > & {
+  > &
+  PageContextClientCommon & {
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
     /**
@@ -206,7 +222,8 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
   } & PageContextUrlClient
 
 type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
-  Pick<PageContextBuiltInCommon<Data>, 'Page' | 'pageExports' | 'exports' | 'abortReason' | 'pageId' | 'data'> & {
+  Pick<PageContextBuiltInCommon<Data>, 'Page' | 'pageExports' | 'exports' | 'abortReason' | 'pageId' | 'data'> &
+  PageContextClientCommon & {
     /**
      * Whether the current page is already rendered to HTML.
      *
@@ -220,6 +237,24 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
      */
     isBackwardNavigation: null
   }
+
+type PageContextClientCommon = {
+  /**
+   * Whether the page is being rendered on the client-side, or rendered on the server-side / pre-rendered.
+   *
+   * In order to save client-side KBs, we recommend using `import.meta.env.SSR` whenever possible instead, see https://vike.dev/pageContext
+   */
+  isClientSide: true
+  /**
+   * Whether the page is being pre-rendered.
+   *
+   * The value is always `false` in development.
+   *
+   * https://vike.dev/pre-rendering
+   * https://vike.dev/pageContext
+   */
+  isPrerendering: false
+}
 
 /** For Vike internal use */
 type PageContextBuiltInServerInternal = Omit<PageContextBuiltInCommon<unknown> & PageContextUrlInternal, 'data'>
