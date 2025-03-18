@@ -41,7 +41,7 @@ type PageContextSerialization = {
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
   const pageContextClient = applyPassToClient(passToClient, pageContext)
-  if (passToClient.some(p => getPropVal(pageContext._pageContextInit, p) !== undefined)) {
+  if (passToClient.some((p) => getPropVal(pageContext._pageContextInit, p) !== undefined)) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
@@ -169,16 +169,16 @@ function serializePageContextAbort(
 }
 
 function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
-  const pageContextClient: Record<string, unknown> = {};
+  const pageContextClient: Record<string, unknown> = {}
 
   passToClient.forEach((prop) => {
     // Get the value from pageContext
-    const value = getPropVal(pageContext, prop);
+    const value = getPropVal(pageContext, prop)
     // Set the value in pageContextClient
-    setPropVal(pageContextClient, prop, value);
-  });
+    setPropVal(pageContextClient, prop, value)
+  })
 
-  return pageContextClient;
+  return pageContextClient
 }
 
 /**
@@ -187,17 +187,17 @@ function applyPassToClient(passToClient: string[], pageContext: Record<string, u
  */
 function getPropVal(obj: Record<string, unknown>, prop: string): unknown {
   const keys = getPropKeys(prop)
-  let value: unknown = obj;
+  let value: unknown = obj
 
   for (const key of keys) {
     if (value && typeof value === 'object' && key in value) {
-      value = (value as Record<string, unknown>)[key];
+      value = (value as Record<string, unknown>)[key]
     } else {
-      return undefined; // Property or intermediate property doesn't exist
+      return undefined // Property or intermediate property doesn't exist
     }
   }
 
-  return value;
+  return value
 }
 
 /**
@@ -206,20 +206,20 @@ function getPropVal(obj: Record<string, unknown>, prop: string): unknown {
  */
 function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): void {
   const keys = getPropKeys(prop)
-  let currentObj = obj;
+  let currentObj = obj
 
   // Traverse to the second-to-last key, creating intermediate objects if necessary
   for (let i = 0; i < keys.length - 1; i++) {
-    const key = keys[i]!;
+    const key = keys[i]!
     if (!currentObj[key] || typeof currentObj[key] !== 'object') {
-      currentObj[key] = {}; // Create intermediate object
+      currentObj[key] = {} // Create intermediate object
     }
-    currentObj = currentObj[key] as Record<string, unknown>;
+    currentObj = currentObj[key] as Record<string, unknown>
   }
 
   // Set the final key to the value
-  const finalKey = keys[keys.length - 1]!;
-  currentObj[finalKey] = val;
+  const finalKey = keys[keys.length - 1]!
+  currentObj[finalKey] = val
 }
 
 function getPropKeys(prop: string): string[] {
