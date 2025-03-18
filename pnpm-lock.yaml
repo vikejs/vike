@@ -230,9 +230,12 @@ importers:
 
   docs:
     dependencies:
+      '@batijs/elements':
+        specifier: 0.0.28
+        version: 0.0.28
       '@brillout/docpress':
-        specifier: ^0.12.0
-        version: 0.12.0(@algolia/client-search@4.24.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
+        specifier: ^0.12.1
+        version: 0.12.1(@algolia/client-search@4.24.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
       '@types/react':
         specifier: ^19.0.2
         version: 19.0.8
@@ -2029,6 +2032,9 @@ packages:
     resolution: {integrity: sha512-t8kDRGrKXyp6+tjUh7hw2RLyclsW4TRoRvRHtSyAX9Bb5ldlFh+90YAYY6awRXrlB4G5G2izNeGySpATlFzmOg==}
     engines: {node: '>=6.9.0'}
 
+  '@batijs/elements@0.0.28':
+    resolution: {integrity: sha512-/Qwlq9hAmAbtFa3whTxpfajmjjbfmXRnW/Cw8kjrM3Q/g9da2n+OCdoCIKUN2QI0e/xYH7MOjulbGhMqek6C7g==}
+
   '@biomejs/biome@1.9.4':
     resolution: {integrity: sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog==}
     engines: {node: '>=14.21.3'}
@@ -2082,14 +2088,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.12.0':
-    resolution: {integrity: sha512-WrLVw06+gf79hcWpeuc/iXAyZVdq5yxL5R03zujFDxE3czN/vsSP2HD3B/ZNIUy1USRRWUZzou1geeBj/a+Dug==}
+  '@brillout/docpress@0.12.1':
+    resolution: {integrity: sha512-YCPpieM85qUxBBC8Rjru9ZYbQ2x1uqPNNvC+tGToNutWdWHtzRK2lEzHm7wFzs5yWBjSjorBfn/CHHgDc1nsUA==}
     peerDependencies:
       '@vitejs/plugin-react-swc': '>=3.0.0'
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
       typescript: '>=5.0.0'
-      vike: link:/Users/muhammad/Documents/github/vikejs/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.2.0'
     peerDependenciesMeta:
       '@vitejs/plugin-react-swc':
@@ -7281,7 +7287,7 @@ packages:
   vike-node@0.3.5:
     resolution: {integrity: sha512-W+xmy2lCVa9dQOmnFx8qVgznh822QYYT2VVD/f2/65XlSi59Ab20/3wr56zMNthxz3QO3g85yUpSUt0ZJTvXxA==}
     peerDependencies:
-      vike: link:/Users/muhammad/Documents/github/vikejs/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: '>=5.0.10'
     peerDependenciesMeta:
       vite:
@@ -7292,12 +7298,12 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-      vike: link:/Users/muhammad/Documents/github/vikejs/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
 
   vike-vue@0.8.6:
     resolution: {integrity: sha512-DT2PsxqfvMdkyuR3zdHPBcwrKjqpN7mIYeSIZ0WZsN+cEsY467nznyoZltq5vMQiQcEeQtQI0WrZTyBWKA7S5A==}
     peerDependencies:
-      vike: link:/Users/muhammad/Documents/github/vikejs/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vue: '>=3.0.0'
 
   vite-node@3.0.7:
@@ -7319,7 +7325,7 @@ packages:
     resolution: {integrity: sha512-tNLg5fuMCF6nVfMlttstKt54VQ7KhqHh7/xahZdjGsbP8Z5ANCwy2WlIdrgkrwB752HMPyJnBXGSdg/O3UT3gg==}
     peerDependencies:
       '@vite-plugin-vercel/vike': 9.0.3
-      vike: link:/Users/muhammad/Documents/github/vikejs/vike/vike/
+      vike: link:/home/rom/code/vike/vike/
       vite: ^4.4 || ^5.0.2 || ^6
     peerDependenciesMeta:
       '@vite-plugin-vercel/vike':
@@ -7928,6 +7934,8 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
+  '@batijs/elements@0.0.28': {}
+
   '@biomejs/biome@1.9.4':
     optionalDependencies:
       '@biomejs/cli-darwin-arm64': 1.9.4
@@ -7963,14 +7971,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.12.0(@algolia/client-search@4.24.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
+  '@brillout/docpress@0.12.1(@algolia/client-search@4.24.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
     dependencies:
       '@brillout/picocolors': 1.0.26
       '@docsearch/css': 3.6.1
       '@docsearch/react': 3.6.1(@algolia/client-search@4.24.0)(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.0.8)(react@19.0.0)
-      '@mdx-js/rollup': 3.0.1(acorn@8.14.0)(rollup@4.34.4)
+      '@mdx-js/rollup': 3.0.1(rollup@4.34.4)
       '@shikijs/transformers': 1.2.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
@@ -8758,7 +8766,7 @@ snapshots:
       '@types/react': 19.0.8
       react: 19.0.0
 
-  '@mdx-js/rollup@3.0.1(acorn@8.14.0)(rollup@4.34.4)':
+  '@mdx-js/rollup@3.0.1(rollup@4.34.4)':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
       '@rollup/pluginutils': 5.1.4(rollup@4.34.4)
@@ -9863,17 +9871,17 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
 
-  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.97.1)':
+  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.97.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.97.1)
 
-  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.97.1)':
+  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.97.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.97.1)
 
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack@5.97.1)':
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))':
     dependencies:
       webpack: 5.97.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack@5.97.1)
@@ -13309,7 +13317,7 @@ snapshots:
       react: 18.3.1
       react-streaming: 0.3.47(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
-  terser-webpack-plugin@5.3.10(webpack@5.97.1):
+  terser-webpack-plugin@5.3.10(webpack@5.97.1(webpack-cli@5.1.4)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
@@ -13925,9 +13933,9 @@ snapshots:
   webpack-cli@5.1.4(webpack@5.97.1):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.97.1)
-      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.97.1)
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack@5.97.1)
+      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))
+      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack@5.97.1))(webpack@5.97.1(webpack-cli@5.1.4))
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.6
@@ -13971,7 +13979,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.10(webpack@5.97.1)
+      terser-webpack-plugin: 5.3.10(webpack@5.97.1(webpack-cli@5.1.4))
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     optionalDependencies:
