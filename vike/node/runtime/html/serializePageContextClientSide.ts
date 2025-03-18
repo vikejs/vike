@@ -2,6 +2,9 @@ export { serializePageContextClientSide }
 export { serializePageContextAbort }
 export type { PageContextSerialization }
 
+// For ./serializePageContextClientSide.spec.ts
+export { getPropKeys }
+
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
 import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, isObject, unique } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
@@ -224,5 +227,12 @@ function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): v
 }
 
 function getPropKeys(prop: string): string[] {
-  return prop.split('.')
+  return prop
+    .split(/(?<!\\)\./g) // Split on unescaped dots
+    .map(
+      (part) =>
+        part
+          .replace(/\\\\/g, '\\') // Replace double backslashes with single
+          .replace(/\\\./g, '.') // Replace escaped dots with literal dots
+    )
 }
