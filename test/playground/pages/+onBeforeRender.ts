@@ -9,7 +9,7 @@ const onBeforeRender: OnBeforeRenderAsync = async (pageContext): ReturnType<OnBe
     .filter((p) => typeof p === 'string')
     .filter((p) => !p.includes('@'))
   staticUrls.sort(lowerFirst((url) => url.length))
-  pageContext.staticUrls = staticUrls
+  pageContext.someWrapperObj = { staticUrls, neverPassedToClient: 123 }
 }
 
 function lowerFirst<T>(getValue: (element: T) => number): (element1: T, element2: T) => 0 | 1 | -1 {

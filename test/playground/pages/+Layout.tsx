@@ -3,14 +3,21 @@ export { Layout }
 import React from 'react'
 import './Layout.css'
 import { usePageContext } from 'vike-react/usePageContext'
+import { assert } from '../utils/assert'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
+  console.log(pageContext.someWrapperObj)
+  if (import.meta.env.SSR) {
+    assert(pageContext.someWrapperObj.neverPassedToClient === 123)
+  } else {
+    assert(!('neverPassedToClient' in pageContext.someWrapperObj))
+  }
   return (
     <React.StrictMode>
       <Frame>
         <Sidebar>
-          {pageContext.staticUrls
+          {pageContext.someWrapperObj.staticUrls
             .filter((url) => !url.includes('config-meta'))
             .map((url) => (
               <Link href={url} key={url} />

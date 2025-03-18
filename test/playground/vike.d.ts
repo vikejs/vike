@@ -1,7 +1,10 @@
 declare global {
   namespace Vike {
     interface PageContext {
-      staticUrls: string[]
+      someWrapperObj: {
+        neverPassedToClient?: 123
+        staticUrls: string[]
+      }
     }
   }
 }

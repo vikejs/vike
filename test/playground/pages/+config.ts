@@ -14,5 +14,6 @@ export default {
       env: { server: true }
     }
   },
-  passToClient: ['staticUrls']
+  // TEST: pass nested prop
+  passToClient: ['someWrapperObj.staticUrls']
 } satisfies Config
