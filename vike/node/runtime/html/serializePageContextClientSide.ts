@@ -41,7 +41,7 @@ type PageContextSerialization = {
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
   const pageContextClient = applyPassToClient(passToClient, pageContext)
-  if (passToClient.some(p => getProp(pageContext._pageContextInit, p) !== undefined)) {
+  if (passToClient.some(p => getPropVal(pageContext._pageContextInit, p) !== undefined)) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
@@ -53,9 +53,9 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const varName = `pageContext${prop.includes('.') ? '.' + prop : getPropAccessNotation(prop)}`
+      const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
       try {
-        serialize((pageContext as Record<string, unknown>)[prop], varName)
+        serialize(getPropVal(pageContext, prop), varName)
       } catch (err) {
         hasWarned = true
         propsNonSerializable.push(prop)
@@ -93,7 +93,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     })
     assert(hasWarned)
     propsNonSerializable.forEach((prop) => {
-      pageContextClient[prop] = NOT_SERIALIZABLE
+      pageContextClient[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
       pageContextSerialized = serialize(pageContextClient)
@@ -173,9 +173,9 @@ function applyPassToClient(passToClient: string[], pageContext: Record<string, u
 
   passToClient.forEach((prop) => {
     // Get the value from pageContext
-    const value = getProp(pageContext, prop);
+    const value = getPropVal(pageContext, prop);
     // Set the value in pageContextClient
-    setProp(pageContextClient, prop, value);
+    setPropVal(pageContextClient, prop, value);
   });
 
   return pageContextClient;
@@ -185,8 +185,8 @@ function applyPassToClient(passToClient: string[], pageContext: Record<string, u
  * Get a nested property from an object using a dot-separated path (e.g., 'user.id').
  * Returns `undefined` if the property or any intermediate property doesn't exist.
  */
-function getProp(obj: Record<string, unknown>, prop: string): unknown {
-  const keys = prop.split('.');
+function getPropVal(obj: Record<string, unknown>, prop: string): unknown {
+  const keys = getPropKeys(prop)
   let value: unknown = obj;
 
   for (const key of keys) {
@@ -204,9 +204,9 @@ function getProp(obj: Record<string, unknown>, prop: string): unknown {
  * Set a nested property in an object using a dot-separated path (e.g., 'user.id').
  * Creates intermediate objects if they don't exist.
  */
-function setProp(obj: Record<string, unknown>, prop: string, val: unknown): void {
-  const keys = prop.split('.');
-  let currentObj: Record<string, unknown> = obj;
+function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): void {
+  const keys = getPropKeys(prop)
+  let currentObj = obj;
 
   // Traverse to the second-to-last key, creating intermediate objects if necessary
   for (let i = 0; i < keys.length - 1; i++) {
@@ -220,4 +220,8 @@ function setProp(obj: Record<string, unknown>, prop: string, val: unknown): void
   // Set the final key to the value
   const finalKey = keys[keys.length - 1]!;
   currentObj[finalKey] = val;
+}
+
+function getPropKeys(prop: string): string[] {
+  return prop.split('.')
 }
