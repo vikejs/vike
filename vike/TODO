@@ -67,7 +67,12 @@ v0.5 breaking changes:
   - Or move it `dist/server/assets-client.json` to?
   - Or remove it altogether in favor of `globalContext.assetsManifest`?
 - Make navigate() automatically add Base URL by default?
+- Make client entry be a single virtual file
+  - Remove `import * as virtualFileExports from 'virtual:vike:importUserCode:client:...'`
+    - We can then avoid adding client runtime entry to optimizeDeps.exclude
+  - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
 === Maybe
+- Make +data and +onBeforeRender cumulative https://github.com/vikejs/vike/issues/1833
 - Forbid content-type
   - Maybe use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
 - Remove dist/server/importBuild.{cjs,mjs,js}
@@ -87,9 +92,6 @@ v0.5 breaking changes:
   - https://github.com/vikejs/vike/issues/1459
 - Remove deprecated API support in getPrefetchSettings.ts
   - Remove all deprecated API, at least in client code?
-- Make some hooks cumulative:
-  - https://github.com/vikejs/vike/issues/1833
-  - https://github.com/vikejs/vike/issues/1834
 - New Base URL setting: https://github.com/vikejs/vike/issues/1794
 - Simplify pageContext return type?
 - Deprecate returning `pageContext` from `onBeforeRender()`

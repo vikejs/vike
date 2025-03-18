@@ -6,7 +6,6 @@ import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
 import { assert, isBaseServer, objectAssign } from './utils.js'
 
-// TODO/now: can we avoid optimizeDeps.exclude of client runtime?
 // @ts-ignore
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-routing'
 const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
