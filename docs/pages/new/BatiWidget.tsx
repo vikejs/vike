@@ -3,16 +3,15 @@ export { BatiWidget }
 import { usePageContext2 } from '@brillout/docpress'
 import React, { useEffect, useState } from 'react'
 
-if (!import.meta.env.SSR) {
-  // Move this import to +client.js once we make non-global +client.js work
-  await import('@batijs/elements' as string)
-}
-
 function BatiWidget() {
   const pageContext = usePageContext2()
-  const [isLoading, setIsLoading] = useState(import.meta.env.SSR || pageContext.isHydration)
+  const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    setIsLoading(false)
+    ;(async () => {
+      // Move this import to +client.js once we make non-global +client.js work
+      await import('@batijs/elements' as string)
+      setIsLoading(false)
+    })()
   }, [])
   if (isLoading) {
     return (
