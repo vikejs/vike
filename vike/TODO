@@ -71,6 +71,8 @@ v0.5 breaking changes:
   - Remove `import * as virtualFileExports from 'virtual:vike:importUserCode:client:...'`
     - We can then avoid adding client runtime entry to optimizeDeps.exclude
   - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
+  - Fix non-global +client.js
+    - For example, make `import '@batijs/elements'` work for Vike's docs.
 === Maybe
 - Make +data and +onBeforeRender cumulative https://github.com/vikejs/vike/issues/1833
 - Forbid content-type
