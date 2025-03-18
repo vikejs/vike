@@ -60,7 +60,6 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
       try {
         serialize(value, varName)
       } catch (err) {
-        hasWarned = true
         propsNonSerializable.push(prop)
 
         // useConfig() wrong usage
@@ -92,6 +91,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
         }
         // We warn (instead of throwing an error) since Vike's client runtime throws an error (with `assertUsage()`) if the user's client code tries to access the property that cannot be serialized
         assertWarning(false, msg, { onlyOnce: false })
+        hasWarned = true
       }
     })
     assert(hasWarned)
