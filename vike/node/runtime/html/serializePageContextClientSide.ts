@@ -3,7 +3,7 @@ export { serializePageContextAbort }
 export type { PageContextSerialization }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
-import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
+import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, isObject, unique } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
@@ -41,7 +41,7 @@ type PageContextSerialization = {
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
   const pageContextClient = applyPassToClient(passToClient, pageContext)
-  if (passToClient.some((p) => getPropVal(pageContext._pageContextInit, p) !== undefined)) {
+  if (passToClient.some((p) => getPropVal(pageContext._pageContextInit, p))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
@@ -54,8 +54,11 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
       const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
+      const res = getPropVal(pageContext, prop)
+      if (!res) return
+      const { value } = res
       try {
-        serialize(getPropVal(pageContext, prop), varName)
+        serialize(value, varName)
       } catch (err) {
         hasWarned = true
         propsNonSerializable.push(prop)
@@ -170,14 +173,15 @@ function serializePageContextAbort(
 
 function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
   const pageContextClient: Record<string, unknown> = {}
-
   passToClient.forEach((prop) => {
     // Get the value from pageContext
-    const value = getPropVal(pageContext, prop)
+    const res = getPropVal(pageContext, prop)
+    if (!res) return
+    const { value } = res
+
     // Set the value in pageContextClient
     setPropVal(pageContextClient, prop, value)
   })
-
   return pageContextClient
 }
 
@@ -185,19 +189,17 @@ function applyPassToClient(passToClient: string[], pageContext: Record<string, u
  * Get a nested property from an object using a dot-separated path (e.g., 'user.id').
  * Returns `undefined` if the property or any intermediate property doesn't exist.
  */
-function getPropVal(obj: Record<string, unknown>, prop: string): unknown {
+function getPropVal(obj: Record<string, unknown>, prop: string): null | { value: unknown } {
   const keys = getPropKeys(prop)
   let value: unknown = obj
-
   for (const key of keys) {
-    if (value && typeof value === 'object' && key in value) {
-      value = (value as Record<string, unknown>)[key]
+    if (isObject(value) && key in value) {
+      value = value[key]
     } else {
-      return undefined // Property or intermediate property doesn't exist
+      return null // Property or intermediate property doesn't exist
     }
   }
-
-  return value
+  return { value }
 }
 
 /**
@@ -208,13 +210,18 @@ function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): v
   const keys = getPropKeys(prop)
   let currentObj = obj
 
-  // Traverse to the second-to-last key, creating intermediate objects if necessary
-  for (let i = 0; i < keys.length - 1; i++) {
+  // Creating intermediate objects if necessary
+  for (let i = 0; i <= keys.length - 2; i++) {
     const key = keys[i]!
-    if (!currentObj[key] || typeof currentObj[key] !== 'object') {
-      currentObj[key] = {} // Create intermediate object
+    if (!(key in currentObj)) {
+      // Create intermediate object
+      currentObj[key] = {}
     }
-    currentObj = currentObj[key] as Record<string, unknown>
+    if (!isObject(currentObj[key])) {
+      // Skip value upon data structure conflict
+      return
+    }
+    currentObj = currentObj[key]
   }
 
   // Set the final key to the value
