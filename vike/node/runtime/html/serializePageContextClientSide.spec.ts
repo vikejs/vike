@@ -2,38 +2,49 @@ import { describe, it, expect } from 'vitest'
 import { getPropKeys } from './serializePageContextClientSide'
 
 describe('getPropKeys', () => {
-  it('should split on unescaped dots', () => {
-    expect(getPropKeys('a.b.c')).toEqual(['a', 'b', 'c'])
+  it('splits on dots when no escape is present', () => {
+    expect(getPropKeys('foo.bar.baz')).toEqual(['foo', 'bar', 'baz'])
   })
 
-  it('should handle escaped dots', () => {
-    expect(getPropKeys('a\\.b.c')).toEqual(['a.b', 'c'])
-    expect(getPropKeys('a\\.b\\.c')).toEqual(['a.b.c'])
+  it('preserves escaped dots (default \\ escape)', () => {
+    expect(getPropKeys('foo\\.bar.baz')).toEqual(['foo.bar', 'baz'])
   })
 
-  it('should handle escaped backslashes', () => {
-    expect(getPropKeys('a\\\\b.c')).toEqual(['a\\b', 'c'])
-    expect(getPropKeys('a\\\\\\.b.c')).toEqual(['a\\.b', 'c'])
+  it('handles multiple escaped dots', () => {
+    expect(getPropKeys('foo\\.bar\\.baz.qux')).toEqual(['foo.bar.baz', 'qux'])
   })
 
-  it('should handle mixed escaped and unescaped dots', () => {
-    expect(getPropKeys('a.b\\.c.d')).toEqual(['a', 'b.c', 'd'])
-    expect(getPropKeys('a\\.b.c\\.d.e')).toEqual(['a.b', 'c.d', 'e'])
+  it('does not split on double escape sequences', () => {
+    expect('a\\\\b').toEqual('a\\\\b')
+    expect(getPropKeys('a\\\\b')).toEqual(['a\\\\b'])
+    expect(getPropKeys('a\\\\.b')).toEqual(['a\\.b'])
+    expect(getPropKeys('a\\\\\\.b')).toEqual(['a\\\\.b'])
+    expect(getPropKeys('a\\\\\\\\.b')).toEqual(['a\\\\\\.b'])
+
+    expect(getPropKeys('foo\\\\.bar')).toEqual(['foo\\.bar'])
+    expect('foo\\\\.bar').toEqual('foo\\\\.bar')
+    expect(getPropKeys('foo\\\\.bar')).toEqual(['foo\\.bar'])
+    expect('foo\\\\.bar.baz').toEqual('foo\\\\.bar.baz')
+    expect(getPropKeys('foo\\\\.bar.baz')).toEqual(['foo\\.bar', 'baz'])
   })
 
-  it('should handle empty strings', () => {
-    expect(getPropKeys('')).toEqual([''])
+  it('handles input without dots correctly', () => {
+    expect(getPropKeys('foobar')).toEqual(['foobar'])
   })
 
-  it('should handle strings without dots', () => {
-    expect(getPropKeys('abc')).toEqual(['abc'])
+  it('handles leading and trailing dots', () => {
+    expect(getPropKeys('.foo.bar.')).toEqual(['', 'foo', 'bar', ''])
   })
 
-  it('should handle strings with only escaped dots', () => {
-    expect(getPropKeys('a\\.b\\.c\\.d')).toEqual(['a.b.c.d'])
+  it('handles consecutive dots', () => {
+    expect(getPropKeys('foo..bar')).toEqual(['foo', '', 'bar'])
   })
 
-  it('should handle strings with only backslashes', () => {
-    expect(getPropKeys('a\\\\b\\\\c')).toEqual(['a\\b\\c'])
+  it('handles only escaped dots', () => {
+    expect(getPropKeys('foo\\.bar\\.baz')).toEqual(['foo.bar.baz'])
+  })
+
+  it('supports escaping dots at start and end', () => {
+    expect(getPropKeys('\\.foo\\.bar\\.')).toEqual(['.foo.bar.'])
   })
 })
