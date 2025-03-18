@@ -25,16 +25,16 @@ export default {
 export { onHydrationEnd }
 
 async function onHydrationEnd(pageContext) {
-  // pageContext.user is available here thanks to passToClient
-  console.log(pageContext.user)
+  // pageContext.user.id is available here thanks to passToClient
+  console.log(pageContext.user.id)
 
   // ...
 }
 ```
 
-Some values, such as `pageContext.data`, are already passed to the client-side by <Link href="#default">default</Link>.
+Some values, such as `pageContext.data`, are already passed to the client-side <Link href="#default">by default</Link>.
 
-The nesting delimiter `.` <Link href="#escape">can be escaped</Link>.
+The nesting <Link href="#escape">delimiter `.` can be escaped</Link>.
 
 
 ## Default
@@ -92,9 +92,9 @@ In the (unlikely) case you need to pass properties that include `.` in their nam
 export default {
   passToClient: [
     // pageContext['some-weird.prop-name']
-    'some-weird\\.prop-name'
+    'some-weird\\.prop-name',
     // pageContext['some-weird\\.prop-name']
-    'some-weird\\\\.prop-name'
+    'some-weird\\\\.prop-name',
     // pageContext['some-weird\\\\.prop-name']
     'some-weird\\\\\\.prop-name'
   ]
