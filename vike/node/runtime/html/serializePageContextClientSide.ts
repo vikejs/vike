@@ -8,7 +8,7 @@ import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'
-import { notSerializable } from '../../../shared/notSerializable.js'
+import { NOT_SERIALIZABLE } from '../../../shared/NOT_SERIALIZABLE.js'
 import type { UrlRedirect } from '../../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
@@ -99,7 +99,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     })
     assert(hasWarned)
     propsNonSerializable.forEach((prop) => {
-      pageContextClient[prop] = notSerializable
+      pageContextClient[prop] = NOT_SERIALIZABLE
     })
     try {
       pageContextSerialized = serialize(pageContextClient)

@@ -8,7 +8,7 @@ import {
   getGlobalObject,
   getPropAccessNotation
 } from '../server-routing-runtime/utils.js'
-import { notSerializable } from '../../shared/notSerializable.js'
+import { NOT_SERIALIZABLE } from '../../shared/NOT_SERIALIZABLE.js'
 const globalObject = getGlobalObject<{ prev?: string }>('shared/getPageContextProxyForUser.ts', {})
 
 type PageContextForPassToClientWarning = {
@@ -31,7 +31,7 @@ function getPageContextProxyForUser<PageContext extends Record<string, unknown> 
       const val = pageContext[prop]
       const propName = getPropAccessNotation(prop)
       assertUsage(
-        val !== notSerializable,
+        val !== NOT_SERIALIZABLE,
         `Can't access pageContext${propName} on the client side. Because it can't be serialized, see server logs.`
       )
       passToClientHint(pageContext, prop, propName)
