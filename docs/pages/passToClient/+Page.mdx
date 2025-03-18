@@ -8,7 +8,12 @@ Most <Link href="/pageContext">`pageContext`</Link> values are available only on
 
 export default {
   passToClient: [
-    'user'
+    // pageContext.someData
+    'someData',
+    // pageContext.user.id
+    'user.id', // Nested
+    // pageContext.user.info.avatar.url
+    'user.info.avatar.url', // Deeply nested
   ]
 }
 ```
@@ -28,6 +33,8 @@ async function onHydrationEnd(pageContext) {
 ```
 
 Some values, such as `pageContext.data`, are already passed to the client-side by <Link href="#default">default</Link>.
+
+The nesting delimiter `.` <Link href="#escape">can be escaped</Link>.
 
 
 ## Default
@@ -72,6 +79,27 @@ console.log(obj instanceof MyClass) // false
 ```
 
 See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](https://github.com/brillout/json-serializer/issues/3).
+
+
+## Escape
+
+In the (unlikely) case you need to pass properties that include `.` in their name:
+
+```js
+// /pages/+config.js
+// Environment: config
+
+export default {
+  passToClient: [
+    // pageContext['some-weird.prop-name']
+    'some-weird\\.prop-name'
+    // pageContext['some-weird\\.prop-name']
+    'some-weird\\\\.prop-name'
+    // pageContext['some-weird\\\\.prop-name']
+    'some-weird\\\\\\.prop-name'
+  ]
+}
+```
 
 
 ## See also
