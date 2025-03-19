@@ -286,10 +286,6 @@ function misc(): HeadingDetachedDefinition[] {
       url: '/consulting'
     },
     {
-      title: 'Next.js Comparison',
-      url: '/nextjs-comparison'
-    },
-    {
       title: 'UI Frameworks',
       url: '/ui-frameworks',
       category: 'Glossary'
