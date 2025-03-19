@@ -146,8 +146,8 @@ function isPrerenderForceExit(): boolean {
 
 function getFullBuildInlineConfig(config: ResolvedConfig): InlineConfig {
   const configFromCli = !isViteCliCall() ? null : getViteConfigFromCli()
-  if (config._viteConfigEnhanced) {
-    return config._viteConfigEnhanced
+  if (config._viteConfigFromUserEnhanced) {
+    return config._viteConfigFromUserEnhanced
   } else {
     return {
       ...configFromCli,

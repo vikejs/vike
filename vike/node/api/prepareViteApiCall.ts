@@ -31,27 +31,30 @@ function clear() {
 
 async function enhanceViteConfig(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
-  await assertViteRoot2(viteInfo.root, viteInfo.viteConfigEnhanced, operation)
+  await assertViteRoot2(viteInfo.root, viteInfo.viteConfigFromUserEnhanced, operation)
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
-  const viteConfigEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigEnhanced, vikeConfig)
+  const viteConfigFromUserEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
   return {
     vikeConfig,
-    viteConfigEnhanced
+    viteConfigFromUserEnhanced
   }
 }
 
-function addViteSettingsSetByVikeConfig(viteConfigEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
+function addViteSettingsSetByVikeConfig(
+  viteConfigFromUserEnhanced: InlineConfig | undefined,
+  vikeConfig: VikeConfigObject
+) {
   const viteConfigs = vikeConfig.global._from.configsCumulative.vite
-  if (!viteConfigs) return viteConfigEnhanced
+  if (!viteConfigs) return viteConfigFromUserEnhanced
   viteConfigs.values.forEach((v) => {
     assertUsage(isObject(v.value), `${v.definedAt} should be an object`)
-    viteConfigEnhanced = mergeConfig(viteConfigEnhanced ?? {}, v.value)
+    viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, v.value)
     assertUsage(
       !findVikeVitePlugin(v.value as InlineConfig),
       "Using the +vite setting to add Vike's Vite plugin is forbidden"
     )
   })
-  return viteConfigEnhanced
+  return viteConfigFromUserEnhanced
 }
 
 async function getViteRoot(operation: Operation) {
@@ -61,7 +64,7 @@ async function getViteRoot(operation: Operation) {
 }
 
 async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
-  let viteConfigEnhanced = viteConfigFromUserApiOptions
+  let viteConfigFromUserEnhanced = viteConfigFromUserApiOptions
 
   // Precedence:
   //  - viteConfigFromUserEnvVar (highest precendence)
@@ -69,12 +72,13 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
   //  - viteConfigFromUserViteFile (lowest precendence)
 
   const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
-  if (viteConfigFromUserEnvVar) viteConfigEnhanced = mergeConfig(viteConfigEnhanced ?? {}, viteConfigFromUserEnvVar)
+  if (viteConfigFromUserEnvVar)
+    viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, viteConfigFromUserEnvVar)
 
-  const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigEnhanced, operation)
+  const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromUserEnhanced, operation)
   // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
-  const viteConfigResolved = mergeConfig(viteConfigFromUserViteFile ?? {}, viteConfigEnhanced ?? {})
+  const viteConfigResolved = mergeConfig(viteConfigFromUserViteFile ?? {}, viteConfigFromUserEnhanced ?? {})
 
   const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
   globalObject.root = root
@@ -90,17 +94,17 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
     // Add Vike to plugins if not present.
     // Using a dynamic import because the script calling the Vike API may not live in the same place as vite.config.js, thus vike/plugin may resolved to two different node_modules/vike directories.
     const { plugin: vikePlugin } = await import('../plugin/index.js')
-    viteConfigEnhanced = {
-      ...viteConfigEnhanced,
-      plugins: [...(viteConfigEnhanced?.plugins ?? []), vikePlugin()]
+    viteConfigFromUserEnhanced = {
+      ...viteConfigFromUserEnhanced,
+      plugins: [...(viteConfigFromUserEnhanced?.plugins ?? []), vikePlugin()]
     }
-    const res = findVikeVitePlugin(viteConfigEnhanced)
+    const res = findVikeVitePlugin(viteConfigFromUserEnhanced)
     assert(res)
     vikeVitePluginOptions = res.vikeVitePluginOptions
   }
   assert(vikeVitePluginOptions)
 
-  return { root, vikeVitePluginOptions, viteConfigEnhanced }
+  return { root, vikeVitePluginOptions, viteConfigFromUserEnhanced }
 }
 
 function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | null) {
@@ -168,8 +172,12 @@ function normalizeViteRoot(root: string) {
 }
 
 const errMsg = `A Vite plugin is modifying Vite's setting ${pc.cyan('root')} which is forbidden`
-async function assertViteRoot2(root: string, viteConfigEnhanced: InlineConfig | undefined, operation: Operation) {
-  const args = getResolveConfigArgs(viteConfigEnhanced, operation)
+async function assertViteRoot2(
+  root: string,
+  viteConfigFromUserEnhanced: InlineConfig | undefined,
+  operation: Operation
+) {
+  const args = getResolveConfigArgs(viteConfigFromUserEnhanced, operation)
   // We can eventually this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
   const viteConfigResolved = await resolveConfig(...args)
   assertUsage(normalizeViteRoot(viteConfigResolved.root) === normalizeViteRoot(root), errMsg)

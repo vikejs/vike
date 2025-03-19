@@ -34,7 +34,7 @@ declare module 'vite' {
     _root?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
-    _viteConfigEnhanced?: InlineConfig
+    _viteConfigFromUserEnhanced?: InlineConfig
     _vike?: VikeConfigPublic
     _vikeConfigObject?: VikeConfigObject
   }
