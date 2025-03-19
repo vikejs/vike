@@ -2,7 +2,7 @@ export { commonConfig }
 export { getVikeConfigPublic }
 export type { VikeConfigPublic }
 
-import { type InlineConfig, mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
+import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
   assert,
   assertUsage,
@@ -18,7 +18,6 @@ import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
-import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
@@ -124,10 +123,6 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             // Set `--host` for Docker/Podman
             setDefault('host', true, configFromUser, configFromVike)
           }
-
-          // VITE_CONFIG
-          const configFromEnvVar = getEnvVarObject('VITE_CONFIG')
-          if (configFromEnvVar) configFromVike = mergeConfig(configFromVike, configFromEnvVar)
 
           return configFromVike
         }
