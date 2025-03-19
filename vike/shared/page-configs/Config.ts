@@ -587,6 +587,13 @@ type ConfigBuiltIn = {
    */
   port?: number
 
+  /**
+   * Set the mode to run in.
+   *
+   * https://vike.dev/mode
+   */
+  mode?: string
+
   /** Where scripts are injected in the HTML.
    *
    * https://vike.dev/injectScriptsAt

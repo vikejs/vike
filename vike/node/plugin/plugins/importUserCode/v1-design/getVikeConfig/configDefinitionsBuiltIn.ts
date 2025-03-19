@@ -224,6 +224,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     env: { config: true },
     global: true
   },
+  mode: {
+    env: { config: true },
+    global: true
+  },
   injectScriptsAt: {
     env: { server: true }
   },

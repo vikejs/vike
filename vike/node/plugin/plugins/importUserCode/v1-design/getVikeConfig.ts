@@ -5,6 +5,7 @@ export { reloadVikeConfig }
 export { isV1Design }
 export { getConfVal }
 export { getConfigDefinitionOptional }
+export { getVikeConfigFromCliOrEnv }
 export { isOverriden }
 export type { VikeConfigObject }
 
@@ -612,7 +613,12 @@ function setCliAndApiOptions(
 function getVikeConfigFromCliOrEnv() {
   const configFromCliOptions = getCliOptions()
   const configFromEnvVar = getEnvVarObject('VIKE_CONFIG')
+  const vikeConfigFromCliOrEnv = {
+    ...configFromCliOptions, // Lower precedence
+    ...configFromEnvVar // Higher precedence
+  }
   return {
+    vikeConfigFromCliOrEnv,
     configFromCliOptions,
     configFromEnvVar
   }
