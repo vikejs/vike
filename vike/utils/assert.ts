@@ -54,7 +54,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     return pc.dim(`Debug info (for Vike maintainers; you can ignore this): ${debugInfoSerialized}`)
   })()
 
-  const link = pc.blue('https://github.com/vikejs/vike/issues/new?template=bug.yml')
+  const link = pc.underline('https://github.com/vikejs/vike/issues/new?template=bug.yml')
   let errMsg = [
     `You stumbled upon a Vike bug. Go to ${link} and copy-paste this error. A maintainer will fix the bug (usually within 24 hours).`,
     debugStr
