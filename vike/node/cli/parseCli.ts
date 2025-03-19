@@ -12,7 +12,7 @@ const commands = [
   { name: 'dev', desc: 'Start development server' },
   { name: 'build', desc: 'Build for production' },
   { name: 'preview', desc: 'Start preview server using production build (only works for SSG apps)' },
-  { name: 'prerender', desc: 'Pre-render pages (only needed when partial.disableAutoRun is true)' }
+  { name: 'prerender', desc: 'Pre-render pages (only needed when prerender.disableAutoRun is true)' }
 ] as const
 
 function parseCli(): { command: Command; cliOptions: CliOptions } {
@@ -78,11 +78,17 @@ function showHelp(): never {
       'Usage:',
       ...[...commands, { name: '-v', desc: "Print Vike's installed version" }].map(
         (c) =>
-          `  ${pc.dim('$')} ${pc.bold(`vike ${c.name}`)}${' '.repeat(nameMaxLength - c.name.length)}${TAB}${pc.dim(`# ${c.desc}`)}`
+          `  ${pc.dim('$')} vike ${c.name.startsWith('-') ? pc.cyan(`${c.name}`) : pc.bold(`${c.name}`)}${' '.repeat(nameMaxLength - c.name.length)}${TAB}${pc.dim(`# ${c.desc}`)}`
       ),
       '',
-      `Vike settings can be passed over the ${pc.cyan('VIKE_CONFIG')} environment variable or as ${pc.cyan('CLI options')} such as --host.`,
-      `Vite settings can be passed over the ${pc.cyan('VITE_CONFIG')} environment variable.`,
+      'Common CLI options:',
+      [`vike dev ${pc.cyan('--host')}`, `vike dev ${pc.cyan('--port')} 80`, `vike build ${pc.cyan('--mode')} staging`]
+        .map((o) => `  ${pc.dim('$')} ${o}`)
+        .join('\n'),
+      '',
+      `More Vike settings can be passed over the ${pc.cyan('VIKE_CONFIG')} environment variable or as ${pc.cyan('CLI options')}.`,
+      `More Vite settings can be passed over the ${pc.cyan('VITE_CONFIG')} environment variable.`,
+      ``,
       `See ${pc.underline('https://vike.dev/cli')} for more information.`
     ].join('\n')
   )

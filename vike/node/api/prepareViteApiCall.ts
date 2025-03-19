@@ -7,12 +7,17 @@ import { loadConfigFromFile, mergeConfig, resolveConfig } from 'vite'
 import type { InlineConfig, ResolvedConfig, UserConfig } from 'vite'
 import type { APIOptions, Operation } from './types.js'
 import { clearContextApiOperation, setContextApiOperation } from './context.js'
-import { getVikeConfig2, type VikeConfigObject } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
+import {
+  getVikeConfig2,
+  getVikeConfigFromCliOrEnv,
+  type VikeConfigObject
+} from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 import path from 'path'
-import { assert, assertUsage, getGlobalObject, isObject, toPosixPath } from './utils.js'
+import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { clearGlobalContext } from '../runtime/globalContext.js'
 import { getEnvVarObject } from '../plugin/shared/getEnvVarObject.js'
+import type { Config } from '../../shared/page-configs/Config.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.ts', {})
 
@@ -67,13 +72,25 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
 
   // Precedence:
   //  1) viteConfigFromUserEnvVar (highest precendence)
+  //  2) viteConfigFromUserVikeConfig
   //  2) viteConfigFromUserApiOptions
   //  3) viteConfigFromUserViteFile (lowest precendence)
 
-  const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
-  if (viteConfigFromUserEnvVar)
-    viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, viteConfigFromUserEnvVar)
+  // Resolve Vike's +mode setting
+  {
+    const viteConfigFromUserVikeConfig = pick(getVikeConfigFromCliOrEnv().vikeConfigFromCliOrEnv, ['mode'])
+    if (Object.keys(viteConfigFromUserVikeConfig).length > 0) {
+      viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, viteConfigFromUserVikeConfig)
+    }
+  }
 
+  // Resolve VITE_CONFIG
+  const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
+  if (viteConfigFromUserEnvVar) {
+    viteConfigFromUserEnhanced = mergeConfig(viteConfigFromUserEnhanced ?? {}, viteConfigFromUserEnvVar)
+  }
+
+  // Resolve vite.config.js
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromUserEnhanced, operation)
   // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001

@@ -594,6 +594,10 @@ function api(): HeadingDetachedDefinition[] {
       url: '/port'
     },
     {
+      title: '`+mode`',
+      url: '/mode'
+    },
+    {
       title: '`getGlobalContextSync()` & `getGlobalContextAsync()`',
       url: '/getGlobalContext'
     },

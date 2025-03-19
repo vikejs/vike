@@ -4,28 +4,35 @@ Usage:
 - `$ vike dev` Start development server.
 - `$ vike build` Build for production.
 - `$ vike preview` Start preview server using production build (only works for <Link href="/glossary#ssg">SSG apps</Link>).
-- `$ vike prerender` <Link href="/pre-rendering">Pre-render</Link> pages (only needed when <Link href="/prerender#disableautorun">`partial.disableAutoRun`</Link> is `true`).
+- `$ vike prerender` <Link href="/pre-rendering">Pre-render</Link> pages (only needed when <Link href="/prerender#disableautorun">`prerender.disableAutoRun`</Link> is `true`).
 - `$ vike -v` Print Vike's installed version.
 
 
 ## Vike settings
 
-You can pass <Link href="/settings">Vike settings</Link> to the CLI, for example:
+#### CLI options
+
+You can pass <Link href="/settings">Vike settings</Link> as CLI options, for example:
 
 ```bash
 # Make development server available over LAN and public addresses
 $ vike dev --host
 
 # Change port
-$ vike preview --port 1234
+$ vike preview --port 80
+
+# Change mode
+$ vike build --mode staging
 
 # Change pre-render settings
 $ vike build --prerender "{parallel:4,noExtraDir:true}"
 ```
 
-> These are Vike settings, see <Link href="/host" noBreadcrumb />, <Link href="/port" noBreadcrumb />, and <Link href="/prerender" noBreadcrumb />.
+> These are all Vike settings: <Link href="/host" noBreadcrumb /> / <Link href="/port" noBreadcrumb /> / <Link href="/mode" noBreadcrumb /> / <Link href="/prerender" noBreadcrumb />. (Vike aliases some Vite settings for convenience.)
 
 > The CLI option value syntax is JavaScript-like, see <Link href="#json5-syntax" />.
+
+#### `VITE_CONFIG` environment variable
 
 You can also use the `VIKE_CONFIG` environment variable, for example:
 
@@ -42,6 +49,12 @@ $ VIKE_CONFIG="{prerender:{parallel:4,noExtraDir:true}}" npm run build
 
 ## Vite settings
 
+#### CLI options
+
+As explained <Link href="#vike-settings">above</Link>, the following [Vite CLI options](https://vite.dev/guide/cli) are supported: `--host` / `--mode` / `--port`.
+
+#### `VITE_CONFIG` environment variable
+
 You can use the `VITE_CONFIG` environment variable to pass [Vite settings](https://vite.dev/config/), for example:
 
 ```bash
@@ -50,6 +63,9 @@ $ VITE_CONFIG="{server:{host:true}}" vike dev
 
 # Also when running Vike's CLI over a package.json script
 $ VITE_CONFIG="{build:{outDir:'build'}}" npm run build
+
+# Also when running Vike's CLI over a package.json script
+$ VITE_CONFIG="{mode:'staging'}" npm run preview
 ```
 
 > The `VITE_CONFIG` value syntax is JavaScript-like, see <Link href="#json5-syntax" />.
