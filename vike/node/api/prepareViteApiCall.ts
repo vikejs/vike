@@ -42,10 +42,7 @@ async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undef
 
 // Apply +vite
 // - For example, Vike extensions adding Vite plugins
-function applyVikeViteConfig(
-  viteConfigFromUserEnhanced: InlineConfig | undefined,
-  vikeConfig: VikeConfigObject
-) {
+function applyVikeViteConfig(viteConfigFromUserEnhanced: InlineConfig | undefined, vikeConfig: VikeConfigObject) {
   const viteConfigs = vikeConfig.global._from.configsCumulative.vite
   if (!viteConfigs) return viteConfigFromUserEnhanced
   viteConfigs.values.forEach((v) => {
@@ -69,9 +66,9 @@ async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefine
   let viteConfigFromUserEnhanced = viteConfigFromUserApiOptions
 
   // Precedence:
-  //  - viteConfigFromUserEnvVar (highest precendence)
-  //  - viteConfigFromUserApiOptions
-  //  - viteConfigFromUserViteFile (lowest precendence)
+  //  1) viteConfigFromUserEnvVar (highest precendence)
+  //  2) viteConfigFromUserApiOptions
+  //  3) viteConfigFromUserViteFile (lowest precendence)
 
   const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
   if (viteConfigFromUserEnvVar)
