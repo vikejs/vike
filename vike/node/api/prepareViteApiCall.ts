@@ -12,6 +12,7 @@ import path from 'path'
 import { assert, assertUsage, getGlobalObject, isObject, toPosixPath } from './utils.js'
 import pc from '@brillout/picocolors'
 import { clearGlobalContext } from '../runtime/globalContext.js'
+import { getEnvVarObject } from '../plugin/shared/getEnvVarObject.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.ts', {})
 
@@ -60,19 +61,29 @@ async function getViteRoot(operation: Operation) {
 }
 
 async function getViteInfo(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
-  const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromOptions, operation)
+  let viteConfigEnhanced = viteConfigFromOptions
 
-  const root = normalizeViteRoot(
-    // `viteConfigFromOptions.root` before `viteConfigFromUserViteFile.root` replicates Vite's precedence:
-    // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
-    viteConfigFromOptions?.root ?? viteConfigFromUserViteFile?.root ?? process.cwd()
-  )
+  // Precedence:
+  //  - viteConfigFromUserEnvVar (highest precendence)
+  //  - viteConfigFromOptions
+  //  - viteConfigFromUserViteFile (lowest precendence)
+
+  const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
+  if (viteConfigFromUserEnvVar) viteConfigEnhanced = mergeConfig(viteConfigEnhanced ?? {}, viteConfigFromUserEnvVar)
+
+  const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigEnhanced, operation)
+  // Replicates correct precendence
+  // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
+  if (viteConfigFromUserViteFile) viteConfigEnhanced = mergeConfig(viteConfigFromUserViteFile, viteConfigEnhanced ?? {})
+
+  const root = normalizeViteRoot(viteConfigEnhanced?.root ?? process.cwd())
   globalObject.root = root
 
+  // - Find options `vike(options)` set in vite.config.js
+  //   - TODO/next-major: remove
+  // - Add Vike's Vite plugin if missing
   let vikeVitePluginOptions: Record<string, unknown> | undefined
-  let viteConfigEnhanced = viteConfigFromOptions
-  // If Vike's Vite plugin is found in both viteConfigFromOptions and viteConfigFromUserViteFile then Vike will later throw an error
-  const found = findVikeVitePlugin(viteConfigFromOptions) || findVikeVitePlugin(viteConfigFromUserViteFile)
+  const found = findVikeVitePlugin(viteConfigEnhanced)
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
@@ -80,8 +91,8 @@ async function getViteInfo(viteConfigFromOptions: InlineConfig | undefined, oper
     // Using a dynamic import because the script calling the Vike API may not live in the same place as vite.config.js, thus vike/plugin may resolved to two different node_modules/vike directories.
     const { plugin: vikePlugin } = await import('../plugin/index.js')
     viteConfigEnhanced = {
-      ...viteConfigFromOptions,
-      plugins: [...(viteConfigFromOptions?.plugins ?? []), vikePlugin()]
+      ...viteConfigEnhanced,
+      plugins: [...(viteConfigEnhanced?.plugins ?? []), vikePlugin()]
     }
     const res = findVikeVitePlugin(viteConfigEnhanced)
     assert(res)
