@@ -22,6 +22,10 @@ function parseJson5(valueStr: string, what: string): unknown {
   try {
     value = JSON5.parse(valueStr)
   } catch (err) {
+    if (isNotJavaScriptLike(valueStr)) {
+      // Interpret as string
+      return valueStr
+    }
     console.error(err)
     assertUsage(
       false,
@@ -29,4 +33,8 @@ function parseJson5(valueStr: string, what: string): unknown {
     )
   }
   return value
+}
+
+function isNotJavaScriptLike(valueStr: string) {
+  return ![':', ',', '{', '}', '(', ')'].some((c) => valueStr.includes(c))
 }
