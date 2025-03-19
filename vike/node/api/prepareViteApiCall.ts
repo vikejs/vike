@@ -74,16 +74,16 @@ async function getViteInfo(viteConfigFromOptions: InlineConfig | undefined, oper
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigEnhanced, operation)
   // Replicates correct precendence
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
-  if (viteConfigFromUserViteFile) viteConfigEnhanced = mergeConfig(viteConfigFromUserViteFile, viteConfigEnhanced ?? {})
+  const viteConfigResolved = mergeConfig(viteConfigFromUserViteFile ?? {}, viteConfigEnhanced ?? {})
 
-  const root = normalizeViteRoot(viteConfigEnhanced?.root ?? process.cwd())
+  const root = normalizeViteRoot(viteConfigResolved.root ?? process.cwd())
   globalObject.root = root
 
   // - Find options `vike(options)` set in vite.config.js
   //   - TODO/next-major: remove
   // - Add Vike's Vite plugin if missing
   let vikeVitePluginOptions: Record<string, unknown> | undefined
-  const found = findVikeVitePlugin(viteConfigEnhanced)
+  const found = findVikeVitePlugin(viteConfigResolved)
   if (found) {
     vikeVitePluginOptions = found.vikeVitePluginOptions
   } else {
