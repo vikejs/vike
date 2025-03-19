@@ -4,7 +4,7 @@ Usage:
 - `$ vike dev` Start development server.
 - `$ vike build` Build for production.
 - `$ vike preview` Start preview server using production build (only works for <Link href="/glossary#ssg">SSG apps</Link>).
-- `$ vike prerender` <Link href="/pre-rendering">Pre-render</Link> pages (only needed when <Link href="/prerender#disableautorun">`partial.disableAutoRun`</Link> is `true`).
+- `$ vike prerender` <Link href="/pre-rendering">Pre-render</Link> pages (only needed when <Link href="/prerender#disableautorun">`prerender.disableAutoRun`</Link> is `true`).
 - `$ vike -v` Print Vike's installed version.
 
 
@@ -19,7 +19,7 @@ You can pass <Link href="/settings">Vike settings</Link> as CLI options, for exa
 $ vike dev --host
 
 # Change port
-$ vike preview --port 1234
+$ vike preview --port 80
 
 # Change mode
 $ vike build --mode staging
