@@ -43,12 +43,13 @@ const headings = [
     title: 'Extensions',
     url: '/extensions'
   },
+  /*
   {
     level: 2,
     title: 'Next.js Comparison',
-    url: '/nextjs',
-    sectionTitles: ['React Server Components']
+    url: '/nextjs'
   },
+  */
   {
     level: 2,
     title: 'Team',

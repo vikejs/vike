@@ -357,6 +357,10 @@ function misc(): HeadingDetachedDefinition[] {
       title: 'vike-solid',
       url: '/vike-solid',
       category: 'Overview'
+    },
+    {
+      title: 'Next.js Comparison',
+      url: '/nextjs'
     }
   ]
 }
