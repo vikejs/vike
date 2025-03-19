@@ -20,7 +20,7 @@ async function prepareViteApiCall(options: APIOptions, operation: Operation) {
   clear()
   setContextApiOperation(operation, options)
   const viteConfigFromUserApiOptions = options.viteConfig
-  return enhanceViteConfig(viteConfigFromUserApiOptions, operation)
+  return resolveConfigs(viteConfigFromUserApiOptions, operation)
 }
 
 // For subsequent API calls, e.g. calling prerender() after build()
@@ -29,18 +29,20 @@ function clear() {
   clearGlobalContext()
 }
 
-async function enhanceViteConfig(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
+async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
   await assertViteRoot2(viteInfo.root, viteInfo.viteConfigFromUserEnhanced, operation)
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
-  const viteConfigFromUserEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
+  const viteConfigFromUserEnhanced = applyVikeViteConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
   return {
     vikeConfig,
     viteConfigFromUserEnhanced
   }
 }
 
-function addViteSettingsSetByVikeConfig(
+// Apply +vite
+// - For example, Vike extensions adding Vite plugins
+function applyVikeViteConfig(
   viteConfigFromUserEnhanced: InlineConfig | undefined,
   vikeConfig: VikeConfigObject
 ) {
