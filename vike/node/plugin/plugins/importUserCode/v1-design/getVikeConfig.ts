@@ -581,16 +581,14 @@ function setCliAndApiOptions(
     )
   }
 
+  const { configFromCliOptions, configFromEnvVar } = getVikeConfigFromCliOrEnv()
   // Vike CLI options
-  const cliOptions = getCliOptions()
-  if (cliOptions) {
-    addSources(cliOptions, { definedBy: 'cli' }, true)
+  if (configFromCliOptions) {
+    addSources(configFromCliOptions, { definedBy: 'cli' }, true)
   }
-
   // VIKE_CONFIG [highest precedence]
-  const configFromEnv = getEnvVarObject('VIKE_CONFIG')
-  if (configFromEnv) {
-    addSources(configFromEnv, { definedBy: 'env' }, false)
+  if (configFromEnvVar) {
+    addSources(configFromEnvVar, { definedBy: 'env' }, false)
   }
 
   return
@@ -609,6 +607,14 @@ function setCliAndApiOptions(
       const sources = (pageConfigGlobal.configValueSources[configName] ??= [])
       sources.unshift(getSourceNonConfigFile(configName, value, definedBy))
     })
+  }
+}
+function getVikeConfigFromCliOrEnv() {
+  const configFromCliOptions = getCliOptions()
+  const configFromEnvVar = getEnvVarObject('VIKE_CONFIG')
+  return {
+    configFromCliOptions,
+    configFromEnvVar
   }
 }
 
