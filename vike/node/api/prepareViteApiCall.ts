@@ -29,7 +29,7 @@ function clear() {
 }
 
 async function enhanceViteConfig(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
-  const viteInfo = await getInfoFromVite(viteConfigFromOptions, operation)
+  const viteInfo = await getViteInfo(viteConfigFromOptions, operation)
   await assertViteRoot2(viteInfo.root, viteInfo.viteConfigEnhanced, operation)
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
   const viteConfigEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigEnhanced, vikeConfig)
@@ -54,12 +54,12 @@ function addViteSettingsSetByVikeConfig(viteConfigEnhanced: InlineConfig | undef
 }
 
 async function getViteRoot(operation: Operation) {
-  if (!globalObject.root) await getInfoFromVite(undefined, operation)
+  if (!globalObject.root) await getViteInfo(undefined, operation)
   assert(globalObject.root)
   return globalObject.root
 }
 
-async function getInfoFromVite(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
+async function getViteInfo(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigFromOptions, operation)
 
   const root = normalizeViteRoot(
