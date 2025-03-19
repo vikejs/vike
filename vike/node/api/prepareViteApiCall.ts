@@ -19,8 +19,8 @@ const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.
 async function prepareViteApiCall(options: APIOptions, operation: Operation) {
   clear()
   setContextApiOperation(operation, options)
-  const viteConfigFromOptions = options.viteConfig
-  return enhanceViteConfig(viteConfigFromOptions, operation)
+  const viteConfigFromUserApiOptions = options.viteConfig
+  return enhanceViteConfig(viteConfigFromUserApiOptions, operation)
 }
 
 // For subsequent API calls, e.g. calling prerender() after build()
@@ -29,8 +29,8 @@ function clear() {
   clearGlobalContext()
 }
 
-async function enhanceViteConfig(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
-  const viteInfo = await getViteInfo(viteConfigFromOptions, operation)
+async function enhanceViteConfig(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
+  const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
   await assertViteRoot2(viteInfo.root, viteInfo.viteConfigEnhanced, operation)
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
   const viteConfigEnhanced = addViteSettingsSetByVikeConfig(viteInfo.viteConfigEnhanced, vikeConfig)
@@ -60,12 +60,12 @@ async function getViteRoot(operation: Operation) {
   return globalObject.root
 }
 
-async function getViteInfo(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
-  let viteConfigEnhanced = viteConfigFromOptions
+async function getViteInfo(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
+  let viteConfigEnhanced = viteConfigFromUserApiOptions
 
   // Precedence:
   //  - viteConfigFromUserEnvVar (highest precendence)
-  //  - viteConfigFromOptions
+  //  - viteConfigFromUserApiOptions
   //  - viteConfigFromUserViteFile (lowest precendence)
 
   const viteConfigFromUserEnvVar = getEnvVarObject('VITE_CONFIG')
@@ -119,9 +119,9 @@ function findVikeVitePlugin(viteConfig: InlineConfig | UserConfig | undefined | 
 }
 
 // Copied from https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L961-L1005
-async function loadViteConfigFile(viteConfigFromOptions: InlineConfig | undefined, operation: Operation) {
+async function loadViteConfigFile(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const [inlineConfig, command, defaultMode, _defaultNodeEnv, isPreview] = getResolveConfigArgs(
-    viteConfigFromOptions,
+    viteConfigFromUserApiOptions,
     operation
   )
 
