@@ -2,13 +2,16 @@ export { serializePageContextClientSide }
 export { serializePageContextAbort }
 export type { PageContextSerialization }
 
+// For ./serializePageContextClientSide.spec.ts
+export { getPropKeys }
+
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
-import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
+import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, isObject, unique } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
 import pc from '@brillout/picocolors'
-import { notSerializable } from '../../../shared/notSerializable.js'
+import { NOT_SERIALIZABLE } from '../../../shared/NOT_SERIALIZABLE.js'
 import type { UrlRedirect } from '../../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
@@ -40,12 +43,8 @@ type PageContextSerialization = {
 }
 function serializePageContextClientSide(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
-  const pageContextClient: Record<string, unknown> = {}
-  passToClient.forEach((prop) => {
-    // We set non-existing props to `undefined`, in order to pass the list of passToClient values to the client-side
-    pageContextClient[prop] = (pageContext as Record<string, unknown>)[prop]
-  })
-  if (Object.keys(pageContext._pageContextInit).some((p) => passToClient.includes(p))) {
+  const pageContextClient = applyPassToClient(passToClient, pageContext)
+  if (passToClient.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
@@ -57,13 +56,13 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const propName1 = getPropAccessNotation(prop)
-      const propName2 = JSON.stringify(prop)
-      const varName = `pageContext${propName1}`
+      const res = getPropVal(pageContext, prop)
+      if (!res) return
+      const { value } = res
+      const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
       try {
-        serialize((pageContext as Record<string, unknown>)[prop], varName)
+        serialize(value, varName)
       } catch (err) {
-        hasWarned = true
         propsNonSerializable.push(prop)
 
         // useConfig() wrong usage
@@ -83,7 +82,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
         // Non-serializable pageContext set by the user
         let msg = [
           `${h(varName)} can't be serialized and, therefore, can't be passed to the client side.`,
-          `Make sure ${h(varName)} is serializable, or remove ${h(propName2)} from ${h('passToClient')}.`
+          `Make sure ${h(varName)} is serializable, or remove ${h(JSON.stringify(prop))} from ${h('passToClient')}.`
         ].join(' ')
         if (isJsonSerializerError(err)) {
           msg = `${msg} Serialization error: ${err.messageCore}.`
@@ -95,11 +94,12 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
         }
         // We warn (instead of throwing an error) since Vike's client runtime throws an error (with `assertUsage()`) if the user's client code tries to access the property that cannot be serialized
         assertWarning(false, msg, { onlyOnce: false })
+        hasWarned = true
       }
     })
     assert(hasWarned)
     propsNonSerializable.forEach((prop) => {
-      pageContextClient[prop] = notSerializable
+      pageContextClient[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
       pageContextSerialized = serialize(pageContextClient)
@@ -172,4 +172,63 @@ function serializePageContextAbort(
     )
   }
   return serialize(pageContext)
+}
+
+function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
+  const pageContextClient: Record<string, unknown> = {}
+  passToClient.forEach((prop) => {
+    // Get value from pageContext
+    const res = getPropVal(pageContext, prop)
+    if (!res) return
+    const { value } = res
+
+    // Set value to pageContextClient
+    setPropVal(pageContextClient, prop, value)
+  })
+  return pageContextClient
+}
+
+// Get a nested property from an object using a dot-separated path such as 'user.id'
+function getPropVal(obj: Record<string, unknown>, prop: string): null | { value: unknown } {
+  const keys = getPropKeys(prop)
+  let value: unknown = obj
+  for (const key of keys) {
+    if (isObject(value) && key in value) {
+      value = value[key]
+    } else {
+      return null // Property or intermediate property doesn't exist
+    }
+  }
+  return { value }
+}
+
+// Set a nested property in an object using a dot-separated path such as 'user.id'
+function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): void {
+  const keys = getPropKeys(prop)
+  let currentObj = obj
+
+  // Creating intermediate objects if necessary
+  for (let i = 0; i <= keys.length - 2; i++) {
+    const key = keys[i]!
+    if (!(key in currentObj)) {
+      // Create intermediate object
+      currentObj[key] = {}
+    }
+    if (!isObject(currentObj[key])) {
+      // Skip value upon data structure conflict
+      return
+    }
+    currentObj = currentObj[key]
+  }
+
+  // Set the final key to the value
+  const finalKey = keys[keys.length - 1]!
+  currentObj[finalKey] = val
+}
+
+function getPropKeys(prop: string): string[] {
+  // Like `prop.split('.')` but with added support for `\` escaping, see serializePageContextClientSide.spec.ts
+  return prop
+    .split(/(?<!\\)\./) // Split on unescaped dots
+    .map((key) => key.replace(/\\\./g, '.')) // Replace escaped dots with literal dots
 }
