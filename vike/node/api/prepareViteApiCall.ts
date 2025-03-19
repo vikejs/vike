@@ -72,7 +72,7 @@ async function getViteInfo(viteConfigFromOptions: InlineConfig | undefined, oper
   if (viteConfigFromUserEnvVar) viteConfigEnhanced = mergeConfig(viteConfigEnhanced ?? {}, viteConfigFromUserEnvVar)
 
   const viteConfigFromUserViteFile = await loadViteConfigFile(viteConfigEnhanced, operation)
-  // Replicates correct precendence
+  // Correct precedence, replicates Vite:
   // https://github.com/vitejs/vite/blob/4f5845a3182fc950eb9cd76d7161698383113b18/packages/vite/src/node/config.ts#L1001
   const viteConfigResolved = mergeConfig(viteConfigFromUserViteFile ?? {}, viteConfigEnhanced ?? {})
 
