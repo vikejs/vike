@@ -24,7 +24,7 @@ import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-desig
 import { assertViteRoot, getViteRoot, normalizeViteRoot } from '../../api/prepareViteApiCall.js'
 import { temp_disablePrerenderAutoRun } from '../../prerender/context.js'
 import type { PrerenderContextPublic } from '../../prerender/runPrerender.js'
-import type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
+import type { VitePluginServerEntryOptions } from '@brillout/vite-plugin-server-entry/plugin'
 import { resolvePrerenderConfigGlobal } from '../../prerender/resolvePrerenderConfig.js'
 const pluginName = 'vike:commonConfig'
 
@@ -32,7 +32,7 @@ declare module 'vite' {
   interface UserConfig {
     _isDev?: boolean
     _vikeVitePluginOptions?: unknown
-    vitePluginServerEntry?: ConfigVitePluginServerEntry['vitePluginServerEntry']
+    vitePluginServerEntry?: VitePluginServerEntryOptions
     _root?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
