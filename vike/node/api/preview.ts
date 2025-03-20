@@ -4,6 +4,8 @@ import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { preview as previewVite, type ResolvedConfig, type PreviewServer } from 'vite'
 import type { APIOptions } from './types.js'
 
+// TODO/soon use importServerProductionIndex()
+
 /**
  * Programmatically trigger `$ vike preview`
  *
