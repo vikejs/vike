@@ -1,0 +1,71 @@
+import { Link } from '@brillout/docpress'
+
+`vike-server` comes with the following benefits:
+- Out-of-the-box support for popular servers (Express, Hono, Hattip, Elysia, etc.)
+- Out-of-the-box support for popular serverless/edge environment (Cloudflare, Vercel, etc.)
+- Run server-side code with HMR support in development
+
+#### Example using `vike-server` with `express`
+
+Create a server file:
+```js
+// server/index.js
+
+import express from 'express'
+// apply() installs Vike's middlewares onto the server
+import { apply } from 'vike-server/express'
+// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+import { serve } from 'vike-server/express/serve'
+
+function startServer() {
+  const app = express()
+  apply(app)
+  const port = 3000
+  // port is only used when running on non-serverless environments
+  return serve(app, { port })
+}
+
+export default startServer()
+```
+
+Update `+config.js` to reference `vike-server`:
+```js
+// +config.js
+import vikeServer from 'vike-server/config'
+
+export const config = {
+  extends: [vikeServer],
+  server: 'server/index.js'
+}
+```
+
+Update your production `script` in `package.json`:
+```diff
+// package.json
+
+"scripts": {
+  "dev": "vike dev",
+  "build": "vike build",
++ "prod": "NODE_ENV=production node dist/server/index.js"
+}
+```
+
+> Check <a href="https://github.com/vikejs/vike-server">vike-server</a> repository for more information.
+
+### Deploy on Vercel
+
+> Coming soon.
+
+### Deploy on Cloudflare
+
+> Coming soon.
+
+## Manual integration
+
+If you want more control over your server integration, see <Link href="/server-integration" />
+
+## See also
+
+- <Link href="/renderPage" />
+- <Link href="/tools#server" />
+- <Link href="/deploy" />
