@@ -271,7 +271,12 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Server',
+    title: 'Vike server',
+    url: '/server'
+  },
+  {
+    level: 2,
+    title: 'Server integration',
     url: '/server-integration',
     sectionTitles: ['Non-JavaScript Backend']
   },
