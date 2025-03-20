@@ -8,6 +8,7 @@ import { pluginDistFileNames } from './build/pluginDistFileNames.js'
 import { pluginAutoFullBuild } from './build/pluginAutoFullBuild.js'
 import { pluginBuildEntry } from './build/pluginBuildEntry.js'
 import { pluginBuildConfig } from './build/pluginBuildConfig.js'
+import { pluginModuleBanner } from './build/pluginModuleBanner.js'
 
 function build(): Plugin[] {
   return [
@@ -17,6 +18,7 @@ function build(): Plugin[] {
     ...pluginBuildEntry(),
     pluginDistPackageJsonFile(),
     pluginSuppressRollupWarning(),
-    pluginDistFileNames()
+    pluginDistFileNames(),
+    pluginModuleBanner()
   ]
 }

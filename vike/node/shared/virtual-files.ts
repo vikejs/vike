@@ -1,6 +1,7 @@
 export { isVirtualFileId }
 export { getVirtualFileId }
 export { resolveVirtualFileId }
+export { removeVirtualIdTag }
 
 import pc from '@brillout/picocolors'
 import { assert, assertUsage } from './utils.js'
