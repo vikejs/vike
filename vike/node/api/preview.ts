@@ -24,7 +24,7 @@ async function preview(options: APIOptions = {}): Promise<{ viteServer?: Preview
     const outServerIndexRelative = path.relative(viteConfigResolved.root, outServerIndex)
     assertWarning(
       false,
-      `Never run ${pc.cyan('$ vike preview')} in production, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead.`,
+      `Never run ${pc.cyan('$ vike preview')} in production, run ${pc.cyan(`$ node ${outServerIndexRelative}`)} instead (or Bun/Deno).`,
       { onlyOnce: true }
     )
     return {
