@@ -8,6 +8,7 @@ import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { assertWarning } from './utils.js'
 import pc from '@brillout/picocolors'
 import path from 'node:path'
+import { onSetupPreview } from '../runtime/utils.js'
 
 /**
  * Programmatically trigger `$ vike preview`
@@ -15,6 +16,7 @@ import path from 'node:path'
  * https://vike.dev/api#preview
  */
 async function preview(options: APIOptions = {}): Promise<{ viteServer?: PreviewServer; viteConfig: ResolvedConfig }> {
+  onSetupPreview()
   const { viteConfigFromUserEnhanced, viteConfigResolved } = await prepareViteApiCall(options, 'preview')
   if (viteConfigResolved.vitePluginServerEntry?.inject) {
     const outDir = getOutDirs(viteConfigResolved).outDirRoot
