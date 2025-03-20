@@ -1,4 +1,6 @@
 import { Link, Warning } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import './tabs.css'
 
 `vike-server` comes with the following benefits:
 - Out-of-the-box support for popular servers (Express, Hono, Hattip, Elysia, etc.)
@@ -30,121 +32,129 @@ Also update your production `script` in `package.json`:
 }
 ```
 
-### Express.js
+Finally, create or update your server entry:
 
-```js
-// server/index.js
+<Tabs>
+  <TabList>
+    <Tab>Express.js</Tab>
+    <Tab>Hono</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
 
-import express from 'express'
-// apply() installs Vike's middlewares onto the server
-import { apply } from 'vike-server/express'
-// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
-import { serve } from 'vike-server/express/serve'
+  <TabPanel>
+    ```js
+    // server/index.js
 
-function startServer() {
-  const app = express()
-  apply(app)
-  const port = 3000
-  // port is only used when running on non-serverless environments
-  return serve(app, { port })
-}
+    import express from 'express'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/express'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/express/serve'
 
-export default startServer()
-```
+    function startServer() {
+      const app = express()
+      apply(app)
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
 
-### Hono
+    export default startServer()
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
 
-```js
-// server/index.js
+    import { Hono } from 'hono'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/hono'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/hono/serve'
 
-import { Hono } from 'hono'
-// apply() installs Vike's middlewares onto the server
-import { apply } from 'vike-server/hono'
-// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
-import { serve } from 'vike-server/hono/serve'
+    function startServer() {
+      const app = new Hono()
+      apply(app)
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
 
-function startServer() {
-  const app = new Hono()
-  apply(app)
-  const port = 3000
-  // port is only used when running on non-serverless environments
-  return serve(app, { port })
-}
+    export default startServer()
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
 
-export default startServer()
-```
+    import fastify from 'fastify'
+    import rawBody from 'fastify-raw-body'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/fastify'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/fastify/serve'
 
-### Fastify
+    async function startServer() {
+      const app = fastify({
+        // /!\ Mandatory for HMR support
+        forceCloseConnections: true
+      })
 
-```js
-// server/index.js
+      // /!\ Mandatory for Vike middlewares to operate properly
+      await app.register(rawBody)
+      await apply(app)
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
 
-import fastify from 'fastify'
-import rawBody from 'fastify-raw-body'
-// apply() installs Vike's middlewares onto the server
-import { apply } from 'vike-server/fastify'
-// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
-import { serve } from 'vike-server/fastify/serve'
+    export default startServer()
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
 
-async function startServer() {
-  const app = fastify({
-    // /!\ Mandatory for HMR support
-    forceCloseConnections: true
-  })
+    import { createApp } from 'h3'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/h3'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/h3/serve'
 
-  // /!\ Mandatory for Vike middlewares to operate properly
-  await app.register(rawBody)
-  await apply(app)
-  const port = 3000
-  // port is only used when running on non-serverless environments
-  return serve(app, { port })
-}
+    function startServer() {
+      const app = createApp()
+      apply(app)
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
 
-export default startServer()
-```
+    export default startServer()
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
 
-### H3
+    import { Elysia } from 'elysia'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/elysia'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/elysia/serve'
 
-```js
-// server/index.js
+    function startServer() {
+      const app = apply(new Elysia())
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
 
-import { createApp } from 'h3'
-// apply() installs Vike's middlewares onto the server
-import { apply } from 'vike-server/h3'
-// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
-import { serve } from 'vike-server/h3/serve'
-
-function startServer() {
-  const app = createApp()
-  apply(app)
-  const port = 3000
-  // port is only used when running on non-serverless environments
-  return serve(app, { port })
-}
-
-export default startServer()
-```
-
-### Elysia
-
-```js
-// server/index.js
-
-import { Elysia } from 'elysia'
-// apply() installs Vike's middlewares onto the server
-import { apply } from 'vike-server/elysia'
-// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
-import { serve } from 'vike-server/elysia/serve'
-
-function startServer() {
-  const app = apply(new Elysia())
-  const port = 3000
-  // port is only used when running on non-serverless environments
-  return serve(app, { port })
-}
-
-export default startServer()
-```
+    export default startServer()
+    ```
+  </TabPanel>
+</Tabs>
 
 ## Custom `pageContext`
 
