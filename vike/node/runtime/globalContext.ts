@@ -157,6 +157,7 @@ function getGlobalContextSync(): GlobalContextPublic {
 }
 /** @experimental https://vike.dev/getGlobalContext */
 async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
+  debug('getGlobalContextAsync()')
   assertUsage(
     typeof isProduction === 'boolean',
     `[getGlobalContextAsync(isProduction)] Argument ${pc.cyan('isProduction')} ${
