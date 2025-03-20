@@ -421,6 +421,8 @@ async function loadBuildEntry(outDir?: string) {
     }
     assert(globalObject.buildEntry)
     assertWarning(
+      // vike-server => `vitePluginServerEntry.inject === true`
+      // vike-node => `vitePluginServerEntry.inject === [ 'index' ]`
       globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject !== true,
       // TODO/soon: show precise path
       // TODO/soon: make this warning work on test/vike-node/
