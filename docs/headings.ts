@@ -272,7 +272,7 @@ const headings = [
   {
     level: 2,
     title: 'Server',
-    url: '/server',
+    url: '/server-integration',
     sectionTitles: ['Non-JavaScript Backend']
   },
   {
