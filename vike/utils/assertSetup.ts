@@ -86,7 +86,6 @@ function onSetupPrerender() {
 // Called by ../node/api/preview.ts
 function onSetupPreview() {
   markSetup_isPreview()
-  if (getNodeEnv()) assertUsageNodeEnvIsNotDev('pre-rendering')
   setNodeEnvProduction()
 }
 
