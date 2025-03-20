@@ -63,7 +63,6 @@ import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 import { resolveBase, type BaseUrlsResolved } from '../shared/resolveBase.js'
-import { reloadVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
