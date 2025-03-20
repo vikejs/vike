@@ -1,17 +1,16 @@
 export { navigate }
 export { reload }
 
-import { modifyUrlSameOrigin, ModifyUrlSameOriginOptions } from '../../shared/modifyUrlSameOrigin.js'
+// import { modifyUrlSameOrigin, ModifyUrlSameOriginOptions } from '../../shared/modifyUrlSameOrigin.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import { normalizeUrlArgument } from './normalizeUrlArgument.js'
 import { firstRenderStartPromise, renderPageClientSide } from './renderPageClientSide.js'
 import type { ScrollTarget } from './setScrollPosition.js'
-import { assertClientRouting, assertWarning } from './utils.js'
+import { assertClientRouting } from './utils.js'
 
 assertClientRouting()
 
-type Options = ModifyUrlSameOriginOptions & {
-  url?: string
+type Options = /*ModifyUrlSameOriginOptions &*/ {
   keepScrollPosition?: boolean
   overwriteLastHistoryEntry?: boolean
   pageContext?: Record<string, unknown>
@@ -26,22 +25,20 @@ type Options = ModifyUrlSameOriginOptions & {
  * @param overwriteLastHistoryEntry - Don't create a new entry in the browser's history, instead let the new URL replace the current URL. (This effectively removes the current URL from the browser history).
  */
 async function navigate(
-  arg: string | Options,
-  // TODO/next-major: remove
-  options_deprecated?: Options
+  url: string,
+  {
+    keepScrollPosition = false,
+    overwriteLastHistoryEntry = false,
+    pageContext
+  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean; pageContext?: Record<string, unknown> } = {}
 ): Promise<void> {
-  const options: Options = typeof arg === 'string' ? { url: arg } : arg
-  if (options_deprecated) {
-    assertWarning(false, 'TODO/now', { onlyOnce: true })
-    Object.assign(options, options_deprecated)
-  }
-
-  const url = resolveUrl(options)
+  // let url = normalizeUrlArgument(options.url ?? getCurrentUrl(), 'navigate')
+  // url = modifyUrlSameOrigin(url, options)
+  normalizeUrlArgument(url, 'navigate')
 
   // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
   await firstRenderStartPromise
 
-  const { keepScrollPosition, overwriteLastHistoryEntry, pageContext } = options
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition ?? false }
   await renderPageClientSide({
     scrollTarget,
@@ -50,13 +47,6 @@ async function navigate(
     isBackwardNavigation: false,
     pageContextInitClient: pageContext
   })
-}
-
-// TODO/now: use everywhere where normalizeUrlArgument() is used?
-function resolveUrl(options: Options): string {
-  let url = normalizeUrlArgument(options.url ?? getCurrentUrl(), 'navigate')
-  url = modifyUrlSameOrigin(url, options)
-  return url
 }
 
 async function reload(): Promise<void> {
