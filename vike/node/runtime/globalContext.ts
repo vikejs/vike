@@ -421,7 +421,7 @@ async function loadBuildEntry(outDir?: string) {
     }
     assert(globalObject.buildEntry)
     assertWarning(
-      !globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject,
+      globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject !== true,
       // TODO/soon: show precise path
       // TODO/soon: make this warning work on test/vike-node/
       `Run the built server entry (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
