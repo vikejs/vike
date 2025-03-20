@@ -1,3 +1,34 @@
+## [0.4.226](https://github.com/vikejs/vike/compare/v0.4.225...v0.4.226) (2025-03-20)
+
+
+### Bug Fixes
+
+* `prerender.value` => `prerender.enable` (vikejs/vike-cloudflare[#47](https://github.com/vikejs/vike/issues/47)) ([#2276](https://github.com/vikejs/vike/issues/2276)) ([c82ff0a](https://github.com/vikejs/vike/commit/c82ff0abd5001a735c629518e516dc133f68a92d))
+* add module file path banner ([0e53cce](https://github.com/vikejs/vike/commit/0e53cce3a82b435ca9bb46b4d0f5bb9c2fe2d207))
+* also interpret CLI option values as string ([e17adbf](https://github.com/vikejs/vike/commit/e17adbf14aafba696e718de12dbb07f65b83ae1d))
+* exit unpon invalid CLI option ([e09700c](https://github.com/vikejs/vike/commit/e09700c068bdf6ab8d9a2aacb8c4a40c924b7efb))
+* fix non-config-file error messages ([714df05](https://github.com/vikejs/vike/commit/714df0503ca11c5ea4713cfce1424fd3dfe4fdd9))
+* fix resolving of Vite config precedence (fix [#2280](https://github.com/vikejs/vike/issues/2280)) ([#2282](https://github.com/vikejs/vike/issues/2282)) ([2b7971f](https://github.com/vikejs/vike/commit/2b7971f1e3ccbf9c1eeac1afbe5a6e803c713b26))
+* improve assert() err msg ([772a64b](https://github.com/vikejs/vike/commit/772a64b7030eefba0f364053b4b9e9b8ed3dbfcc))
+* improve error message ([a47dc27](https://github.com/vikejs/vike/commit/a47dc27fc3285e8c084b924d4b67fd7085d476c2))
+* improve error messages ([880739e](https://github.com/vikejs/vike/commit/880739e940d74d9b5d7594d0561c921c97fec1e5))
+* make `$ vike preview` work with vike-server (closes [#41](https://github.com/vikejs/vike/issues/41)) ([#2288](https://github.com/vikejs/vike/issues/2288)) ([6a842c5](https://github.com/vikejs/vike/commit/6a842c5afbb0b400a8aa678f78bdcc2f6c7541f7))
+* make pageContext more isomorphic ([12a0a14](https://github.com/vikejs/vike/commit/12a0a14b5ea9cf0f9539c0c4f3b4a89c6b363d00))
+* polish error message ([c3cd43e](https://github.com/vikejs/vike/commit/c3cd43e976bbb431e86e5d5749ed31b04bbbf008))
+* reload Vike config upon reloading Vite dev server ([1c0fbf2](https://github.com/vikejs/vike/commit/1c0fbf2db04ea85104268276835981ab252e64ae))
+* remove passToClient hint ([1a1ce70](https://github.com/vikejs/vike/commit/1a1ce7017fb9ce116d0305c08a15b0d000d4ce72))
+* temporarily disable infinite redirection loop detection (closes [#2262](https://github.com/vikejs/vike/issues/2262)) ([#2273](https://github.com/vikejs/vike/issues/2273)) ([37a36a5](https://github.com/vikejs/vike/commit/37a36a52b0fd67da8b3aba632dd5e854083fc532))
+* validate non-config-file configuration ([07d633b](https://github.com/vikejs/vike/commit/07d633b254c6103ac56281d756f10291d22f2751))
+
+
+### Features
+
+* [+mode](https://vike.dev/mode) ([#2284](https://github.com/vikejs/vike/issues/2284)) ([b8fc36e](https://github.com/vikejs/vike/commit/b8fc36eb84a0d40113935c8ba533df4c02e1b09f))
+* `pageContext.isClientSide` & `pageContext.isPrerendering` ([#2274](https://github.com/vikejs/vike/issues/2274)) ([b13d10d](https://github.com/vikejs/vike/commit/b13d10dc685d001407d0578f73101c4e5069a71b))
+* `passToClient` nested props ([#2278](https://github.com/vikejs/vike/issues/2278)) ([a6f4802](https://github.com/vikejs/vike/commit/a6f48028ce5ce01bddedb39cc8341fa34da8abf3))
+
+
+
 ## [0.4.225](https://github.com/vikejs/vike/compare/v0.4.224...v0.4.225) (2025-03-12)
 
 
