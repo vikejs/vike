@@ -11,6 +11,7 @@ import { assertClientRouting } from './utils.js'
 assertClientRouting()
 
 type Options = /*ModifyUrlSameOriginOptions &*/ {
+  // url?: string // or name it `href?: string` instead?
   keepScrollPosition?: boolean
   overwriteLastHistoryEntry?: boolean
   pageContext?: Record<string, unknown>
@@ -24,14 +25,7 @@ type Options = /*ModifyUrlSameOriginOptions &*/ {
  * @param keepScrollPosition - Don't scroll to the top of the page, instead keep the current scroll position.
  * @param overwriteLastHistoryEntry - Don't create a new entry in the browser's history, instead let the new URL replace the current URL. (This effectively removes the current URL from the browser history).
  */
-async function navigate(
-  url: string,
-  {
-    keepScrollPosition = false,
-    overwriteLastHistoryEntry = false,
-    pageContext
-  }: { keepScrollPosition?: boolean; overwriteLastHistoryEntry?: boolean; pageContext?: Record<string, unknown> } = {}
-): Promise<void> {
+async function navigate(url: string, options?: Options): Promise<void> {
   // let url = normalizeUrlArgument(options.url ?? getCurrentUrl(), 'navigate')
   // url = modifyUrlSameOrigin(url, options)
   normalizeUrlArgument(url, 'navigate')
@@ -39,6 +33,7 @@ async function navigate(
   // If `hydrationCanBeAborted === false` (e.g. Vue) then we can apply navigate() only after hydration is done
   await firstRenderStartPromise
 
+  const { keepScrollPosition, overwriteLastHistoryEntry, pageContext } = options ?? {}
   const scrollTarget: ScrollTarget = { preserveScroll: keepScrollPosition ?? false }
   await renderPageClientSide({
     scrollTarget,
