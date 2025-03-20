@@ -227,7 +227,7 @@ TypeError: Unknown file extension ".css" for /home/romu/code/vike/node_modules/.
 `
         }
       )
-    ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
       getErrorHint(
@@ -246,7 +246,7 @@ TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css" for /Users
     at ESMLoader.getModuleJob (node:internal/modules/esm/loader:441:34)
 `)
       )
-    ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
       getErrorHint(
@@ -265,7 +265,7 @@ Error: ERR_UNKNOWN_FILE_EXTENSION .css /home/stuart/tmp/vite-ssr-example/node_mo
     at ESMLoader.load (node:internal/modules/esm/loader:605:26)
 `)
       )
-    ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
+    ).toMatchInlineSnapshot(`"To fix this error, see https://vike.dev/broken-npm-package#err-unknown-file-extension"`)
 
     expect(
       getErrorHint(
@@ -1017,5 +1017,30 @@ Error: [vike][Wrong Usage] The guard() hook of /pages/maps/ingestion/@id/+guard.
       `)
       )
     ).toMatchInlineSnapshot(`null`)
+
+    expect(
+      getErrorHint(
+        // https://github.com/vikejs/vike/discussions/2252
+        {
+          message:
+            'Failed to resolve entry for package "@vidstack/react". The package may have incorrect main/module/exports specified in its package.json.',
+          stack: `Failed to resolve entry for package "@vidstack/react". The package may have incorrect main/module/exports specified in its package.json.
+    at packageEntryFailure (/node_modules/vite/dist/node/chunks/dep-ByPKlqZ5.js:16654:15)
+    at resolvePackageEntry (/node_modules/vite/dist/node/chunks/dep-ByPKlqZ5.js:16651:3)
+    at tryNodeResolve (/node_modules/vite/dist/node/chunks/dep-ByPKlqZ5.js:16516:18)
+    at Object.resolveId (/node_modules/vite/dist/node/chunks/dep-ByPKlqZ5.js:16289:19)
+    at Object.handler (/node_modules/vite/dist/node/chunks/dep-ByPKlqZ5.js:51692:15)
+    at /node_modules/rollup/dist/es/shared/node-entry.js:21835:40
+    at PluginDriver.hookFirstAndGetPlugin (/node_modules/rollup/dist/es/shared/node-entry.js:21735:28)
+    at resolveId (/node_modules/rollup/dist/es/shared/node-entry.js:20335:26)
+    at ModuleLoader.resolveId (/node_modules/rollup/dist/es/shared/node-entry.js:20771:15)
+    at Object.resolveId (/node_modules/vite/dist/node/chunks/dep-ByPKlqZ5.js:5659:10)`,
+          code: 'PLUGIN_ERROR',
+          pluginCode: 'ERR_RESOLVE_PACKAGE_ENTRY_FAIL',
+          plugin: 'commonjs--resolver',
+          hook: 'resolveId'
+        }
+      )
+    ).toMatchInlineSnapshot(`"The error could be a CJS/ESM issue, see https://vike.dev/broken-npm-package"`)
   })
 }

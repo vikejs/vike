@@ -46,8 +46,8 @@ import {
   genPromise,
   createDebugger,
   makePublicCopy,
-  projectInfo,
-  checkType
+  checkType,
+  PROJECT_VERSION
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -63,6 +63,7 @@ import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 import { resolveBase, type BaseUrlsResolved } from '../shared/resolveBase.js'
+import { reloadVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -189,8 +190,10 @@ function makePublic(globalContext: GlobalContext) {
 async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   debug('setGlobalContext_viteDevServer()')
   setIsProduction(false)
-  if (globalObject.viteDevServer) return
-  assertIsNotInitilizedYet()
+  // We cannot cache globalObject.viteDevServer because it's fully replaced when the user modifies vite.config.js => Vite's dev server is fully reloaded and a new viteDevServer replaces the previous one.
+  if (!globalObject.viteDevServer) {
+    assertIsNotInitilizedYet()
+  }
   assert(globalObject.viteConfig)
   globalObject.viteDevServer = viteDevServer
   await updateUserFiles()
@@ -482,7 +485,7 @@ function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   checkType<BuildInfo>({ ...buildInfo, viteConfigRuntime: buildInfo.viteConfigRuntime })
 }
 function assertVersionAtBuildTime(versionAtBuildTime: string) {
-  const versionAtRuntime = projectInfo.projectVersion
+  const versionAtRuntime = PROJECT_VERSION
   const pretty = (version: string) => pc.bold(`vike@${version}`)
   assertUsage(
     versionAtBuildTime === versionAtRuntime,
@@ -507,7 +510,7 @@ async function updateUserFiles() {
   assert(!globalObject.isProduction)
   globalObject.waitForUserFilesUpdate = promise
 
-  const viteDevServer = getViteDevServer()
+  const { viteDevServer } = globalObject
   assert(viteDevServer)
   let virtualFileExports: Record<string, unknown>
   try {
@@ -518,6 +521,9 @@ async function updateUserFiles() {
   }
   virtualFileExports = (virtualFileExports as any).default || virtualFileExports
   debugGlob('Glob result: ', virtualFileExports)
+
+  // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
+  if (viteDevServer !== globalObject.viteDevServer) return
 
   await setUserFiles(virtualFileExports)
   resolve()

@@ -1,25 +1,15 @@
 export { BatiWidget }
 
 import React, { useEffect, useState } from 'react'
-import { assert } from '@brillout/docpress'
-
-const scriptSrc = 'https://unpkg.com/@batijs/elements/dist/elements/full.js'
 
 function BatiWidget() {
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
-    if (wasAdded()) {
+    ;(async () => {
+      // Move this import to +client.js once we make non-global +client.js work
+      await import('@batijs/elements' as string)
       setIsLoading(false)
-      return
-    }
-    const script = document.createElement('script')
-    script.type = 'module'
-    script.src = scriptSrc
-    script.onload = () => {
-      setIsLoading(false)
-    }
-    document.head.appendChild(script)
-    assert(wasAdded())
+    })()
   }, [])
   if (isLoading) {
     return (
@@ -34,9 +24,4 @@ function BatiWidget() {
       </div>
     </>
   )
-}
-
-function wasAdded() {
-  const el = document.querySelector(`script[src="${scriptSrc}"]`)
-  return !!el
 }

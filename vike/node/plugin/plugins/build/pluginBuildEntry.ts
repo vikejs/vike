@@ -3,7 +3,7 @@ export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { assert, projectInfo, toPosixPath } from '../../utils.js'
+import { assert, PROJECT_VERSION, toPosixPath } from '../../utils.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { createRequire } from 'module'
@@ -41,7 +41,7 @@ function pluginBuildEntry(): Plugin[] {
 function getServerProductionEntryCode(config: ResolvedConfig): string {
   const importPath = getImportPath(config)
   const buildInfo: BuildInfo = {
-    versionAtBuildTime: projectInfo.projectVersion,
+    versionAtBuildTime: PROJECT_VERSION,
     usesClientRouter: isUsingClientRouter(), // TODO/v1-release: remove
     viteConfigRuntime: getViteConfigRuntime(config)
   }

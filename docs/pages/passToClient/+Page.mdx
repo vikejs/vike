@@ -8,7 +8,12 @@ Most <Link href="/pageContext">`pageContext`</Link> values are available only on
 
 export default {
   passToClient: [
-    'user'
+    // pageContext.someData
+    'someData',
+    // pageContext.user.id
+    'user.id', // Nested
+    // pageContext.user.info.avatar.url
+    'user.info.avatar.url', // Deeply nested
   ]
 }
 ```
@@ -20,39 +25,16 @@ export default {
 export { onHydrationEnd }
 
 async function onHydrationEnd(pageContext) {
-  // pageContext.user is available here thanks to passToClient
-  console.log(pageContext.user)
+  // pageContext.user.id is available here thanks to passToClient
+  console.log(pageContext.user.id)
 
   // ...
 }
 ```
 
-Some values, such as `pageContext.data`, are already passed to the client-side by <Link href="#default">default</Link>.
+Some values, such as `pageContext.data`, are already passed to the client-side <Link href="#default">by default</Link>.
 
-
-## Error
-
-If you try to access a `pageContext` value that isn't defined on the client-side then Vike throws an error:
-
-```
-[Vike][Wrong Usage] pageContext.someProp isn't defined on the client-side
-```
-
-> You can look at the stack trace to find the `pageContext.someProp` occurrence in your code that triggers the error.
-
-To avoid the error:
-1. add `'someProp'` to `passToClient` (see above), or
-2. replace `pageContext.someProp` with `'someProp' in pageContext && pageContext.someProp`.
-   ```js
-   // ❌ Vike throws an error if pageContext.someProp isn't defined // [!code --]
-   const val = pageContext.someProp // [!code --]
-
-   // ✅ Vike doesn't throw an error if pageContext.someProp isn't defined // [!code ++]
-   const val = 'someProp' in pageContext && pageContext.someProp // [!code ++]
-
-   // ✅ Alternative // [!code ++]
-   const val = 'someProp' in pageContext ? pageContext.someProp : someDefaultValue // [!code ++]
-   ```
+The nesting <Link href="#escape">delimiter `.` can be escaped</Link>.
 
 
 ## Default
@@ -99,7 +81,29 @@ console.log(obj instanceof MyClass) // false
 See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](https://github.com/brillout/json-serializer/issues/3).
 
 
+## Escape
+
+In the (unlikely) case you need to pass properties that include `.` in their name:
+
+```js
+// /pages/+config.js
+// Environment: config
+
+export default {
+  passToClient: [
+    // pageContext['some-weird.prop-name']
+    'some-weird\\.prop-name',
+    // pageContext['some-weird\\.prop-name']
+    'some-weird\\\\.prop-name',
+    // pageContext['some-weird\\\\.prop-name']
+    'some-weird\\\\\\.prop-name'
+  ]
+}
+```
+
+
 ## See also
 
  - <Link href="/pageContext" />
  - <Link href="/usePageContext" />
+ - <Link href="/pageContext.json" />

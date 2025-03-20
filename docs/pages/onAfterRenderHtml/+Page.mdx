@@ -38,12 +38,25 @@ export function onAfterRenderHtml(pageContext) {
 }
 ```
 
+You can mutate `pageContext.pageHtmlString` and `pageContext.pageHtmlStream`, for example to modify the HTML.
+
+```js
+// +onAfterRenderHtml.js
+
+export function onAfterRenderHtml(pageContext) {
+  // Apply some HTML transformation, e.g. HTML minification
+  pageContext.pageHtmlString = minifyHtml(pageContext.pageHtmlString)
+}
+```
+
 
 ## Use cases
 
 The `onAfterRenderHtml()` and <Link href="/onBeforeRenderHtml">`onBeforeRenderHtml()`</Link> hooks are typically used for integrating tools.
 
 For example, `onAfterRenderHtml()` is often used for dehydrating state management libraries, and `onBeforeRenderHtml()` can be used for collecting the page's CSS defined by a CSS-in-JS library ([#141 - CSS-in-JS with SSR](https://github.com/vikejs/vike-vue/issues/141)).
+
+It can also be used to modify the HTML, see <Link href="#pagecontext-pagehtml-string-stream" />.
 
 
 ## Without `vike-{react,vue,solid}`

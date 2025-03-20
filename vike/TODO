@@ -1,7 +1,5 @@
-- `TODO/now`
 - `getGlobalContext()`
 - make scripts/dev.js work
-- Add CLI option `--host`?
 - Prettify build error
   - https://github.com/vikejs/vike/commit/638f025c4b74218fbf488310798866e3956c6f10
   - Also: why are there dangling `+config.ts.build-71dnxdt06cv6.mjs` files?
@@ -68,7 +66,15 @@ v0.5 breaking changes:
 - Move `dist/assets.json` to `dist/server/assets.json`
   - Or move it `dist/server/assets-client.json` to?
   - Or remove it altogether in favor of `globalContext.assetsManifest`?
+- Make navigate() automatically add Base URL by default?
+- Make client entry be a single virtual file
+  - Remove `import * as virtualFileExports from 'virtual:vike:importUserCode:client:...'`
+    - We can then avoid adding client runtime entry to optimizeDeps.exclude
+  - Make +client.js cumulative https://github.com/vikejs/vike/issues/1834
+  - Fix non-global +client.js
+    - For example, make `import '@batijs/elements'` work for Vike's docs.
 === Maybe
+- Make +data and +onBeforeRender cumulative https://github.com/vikejs/vike/issues/1833
 - Forbid content-type
   - Maybe use x-powered-by header to check & enforce usage of pageContext.httpResponse.headers
 - Remove dist/server/importBuild.{cjs,mjs,js}
@@ -88,9 +94,6 @@ v0.5 breaking changes:
   - https://github.com/vikejs/vike/issues/1459
 - Remove deprecated API support in getPrefetchSettings.ts
   - Remove all deprecated API, at least in client code?
-- Make some hooks cumulative:
-  - https://github.com/vikejs/vike/issues/1833
-  - https://github.com/vikejs/vike/issues/1834
 - New Base URL setting: https://github.com/vikejs/vike/issues/1794
 - Simplify pageContext return type?
 - Deprecate returning `pageContext` from `onBeforeRender()`

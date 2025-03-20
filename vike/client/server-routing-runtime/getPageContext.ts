@@ -13,13 +13,16 @@ const { pageFilesAll, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(vi
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
 async function getPageContext() {
-  const pageContext = getPageContextSerializedInHtml()
-  objectAssign(pageContext, {
+  const pageContext = {
+    _isPageContextObject: true,
+    isPrerendering: false,
+    isClientSide: true,
     isHydration: true as const,
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const,
     _hasPageContextFromClient: false as const
-  })
+  }
+  objectAssign(pageContext, getPageContextSerializedInHtml())
   objectAssign(pageContext, await loadPageUserFiles(pageContext.pageId))
   assertPristineUrl()
   return pageContext

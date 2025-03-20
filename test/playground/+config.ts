@@ -2,7 +2,7 @@ import type { Config } from 'vike/types'
 
 export default {
   prerender: {
-    value: null,
+    enable: null,
     parallel: 4,
     noExtraDir: true
   },

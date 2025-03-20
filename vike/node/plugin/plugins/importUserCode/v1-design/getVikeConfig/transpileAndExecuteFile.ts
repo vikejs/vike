@@ -35,7 +35,6 @@ import {
   isVitest
 } from '../../../../utils.js'
 import { transformPointerImports } from './transformPointerImports.js'
-import { vikeConfigDependencies } from '../getVikeConfig.js'
 import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'
@@ -52,10 +51,13 @@ if (debugEsbuildResolve.isActivated) debugEsbuildResolve('esbuild version', vers
 
 type FileExports = { fileExports: Record<string, unknown> }
 
-type EsbuildCache = Record<
-  string, // filePathAbsoluteFilesystem
-  Promise<FileExports>
->
+type EsbuildCache = {
+  transpileCache: Record<
+    string, // filePathAbsoluteFilesystem
+    Promise<FileExports>
+  >
+  vikeConfigDependencies: Set<string>
+}
 async function transpileAndExecuteFile(
   filePath: FilePathResolved,
   userRootDir: string,
@@ -66,11 +68,11 @@ async function transpileAndExecuteFile(
   assert(filePathAbsoluteFilesystem)
   const fileExtension = getFileExtension(filePathAbsoluteFilesystem)
 
-  if (esbuildCache[filePathAbsoluteFilesystem]) {
-    return await esbuildCache[filePathAbsoluteFilesystem]
+  if (esbuildCache.transpileCache[filePathAbsoluteFilesystem]) {
+    return await esbuildCache.transpileCache[filePathAbsoluteFilesystem]
   }
   const { promise, resolve } = genPromise<FileExports>()
-  esbuildCache[filePathAbsoluteFilesystem] = promise
+  esbuildCache.transpileCache[filePathAbsoluteFilesystem] = promise
 
   assertUsage(
     isPlainJavaScriptFile(filePathAbsoluteFilesystem),
@@ -97,7 +99,7 @@ async function transpileAndExecuteFile(
     fileExports = await executeFile(filePathAbsoluteFilesystem, filePath)
   } else {
     const transformImports = isHeader ? 'all' : true
-    const code = await transpileFile(filePath, transformImports, userRootDir)
+    const code = await transpileFile(filePath, transformImports, userRootDir, esbuildCache)
     fileExports = await executeTranspiledFile(filePath, code)
   }
 
@@ -105,15 +107,20 @@ async function transpileAndExecuteFile(
   return { fileExports }
 }
 
-async function transpileFile(filePath: FilePathResolved, transformImports: boolean | 'all', userRootDir: string) {
+async function transpileFile(
+  filePath: FilePathResolved,
+  transformImports: boolean | 'all',
+  userRootDir: string,
+  esbuildCache: EsbuildCache
+) {
   const { filePathAbsoluteFilesystem, filePathToShowToUserResolved } = filePath
 
   assert(filePathAbsoluteFilesystem)
   assertPosixPath(filePathAbsoluteFilesystem)
-  vikeConfigDependencies.add(filePathAbsoluteFilesystem)
+  esbuildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
 
   if (debug.isActivated) debug('transpile', filePathToShowToUserResolved)
-  let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports)
+  let { code, pointerImports } = await transpileWithEsbuild(filePath, userRootDir, transformImports, esbuildCache)
   if (debug.isActivated) debug(`code, post esbuild (${filePathToShowToUserResolved})`, code)
 
   let isImportTransformed = false
@@ -134,7 +141,8 @@ async function transpileFile(filePath: FilePathResolved, transformImports: boole
 async function transpileWithEsbuild(
   filePath: FilePathResolved,
   userRootDir: string,
-  transformImports: boolean | 'all'
+  transformImports: boolean | 'all',
+  esbuildCache: EsbuildCache
 ) {
   const entryFilePath = filePath.filePathAbsoluteFilesystem
   const entryFileDir = path.posix.dirname(entryFilePath)
@@ -299,7 +307,7 @@ async function transpileWithEsbuild(
           // We collect the dependency `args.path` in case the bulid fails (upon build error => error is thrown => no metafile)
           let { path } = args
           path = toPosixPath(path)
-          vikeConfigDependencies.add(path)
+          esbuildCache.vikeConfigDependencies.add(path)
           return undefined
         })
         /* To exhaustively collect all dependencies upon build failure, we would also need to use onResolve().
@@ -329,7 +337,7 @@ async function transpileWithEsbuild(
     filePathRelative = toPosixPath(filePathRelative)
     assertPosixPath(userRootDir)
     const filePathAbsoluteFilesystem = path.posix.join(userRootDir, filePathRelative)
-    vikeConfigDependencies.add(filePathAbsoluteFilesystem)
+    esbuildCache.vikeConfigDependencies.add(filePathAbsoluteFilesystem)
   })
 
   const code = result.outputFiles![0]!.text
@@ -404,7 +412,7 @@ function getTemporaryBuildFilePath(filePathAbsoluteFilesystem: string): string {
   const dirname = path.posix.dirname(filePathAbsoluteFilesystem)
   const filename = path.posix.basename(filePathAbsoluteFilesystem)
   // Syntax with semicolon `build:${/*...*/}` doesn't work on Windows: https://github.com/vikejs/vike/issues/800#issuecomment-1517329455
-  const filePathTmp = path.posix.join(dirname, `${filename}.build-${getRandomId(12)}.mjs`)
+  const filePathTmp = path.posix.join(dirname, `${filename}.build-${getRandomId()}.mjs`)
   assert(isTemporaryBuildFile(filePathTmp))
   return filePathTmp
 }

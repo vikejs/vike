@@ -2,6 +2,7 @@ export type { APIOptions }
 export type { Operation }
 
 import type { InlineConfig } from 'vite'
+import type { Config } from '../../shared/page-configs/Config.js'
 
 type APIOptions = {
   /**
@@ -10,6 +11,12 @@ type APIOptions = {
    * https://vike.dev/api
    */
   viteConfig?: InlineConfig
+  /**
+   * Vike config.
+   *
+   * https://vike.dev/api
+   */
+  vikeConfig?: Config
 }
 
 type Operation = 'build' | 'dev' | 'preview' | 'prerender'

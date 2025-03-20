@@ -9,6 +9,7 @@ import type {
   ConfigEnvInternal,
   ConfigValue,
   ConfigValueSource,
+  DefinedAt,
   DefinedAtData,
   DefinedAtFile,
   PageConfigBuildTime,
@@ -86,7 +87,7 @@ function getValueSerializedFromSource(
     valueData = getValueSerializedWithJson(
       configValueSource.value,
       configName,
-      configValueSource.definedAtFilePath,
+      configValueSource.definedAt,
       importStatements,
       filesEnv,
       configValueSource.configEnv
@@ -163,8 +164,9 @@ function getValueSerializedWithImport(
 ): ValueData {
   assert(!configValueSource.valueIsFilePath)
 
-  const { valueIsDefinedByPlusValueFile, definedAtFilePath, configEnv } = configValueSource
-  const { filePathAbsoluteVite, fileExportName } = definedAtFilePath
+  const { valueIsDefinedByPlusValueFile, definedAt, configEnv } = configValueSource
+  assert(!definedAt.definedBy)
+  const { filePathAbsoluteVite, fileExportName } = definedAt
 
   if (valueIsDefinedByPlusValueFile) assert(fileExportName === undefined)
   const { importName } = addImportStatement(
@@ -311,7 +313,7 @@ function getConfigValuesBase(
         .filter((source) => !isOverriden(source, configName, pageConfig))
         .filter((source) => isEnvMatch(source.configEnv))
       if (sourcesRelevant.length === 0) return 'SKIP'
-      const definedAtData: DefinedAtFile[] = []
+      const definedAtData: DefinedAt[] = []
       sourcesRelevant.forEach((source) => {
         const definedAtFile = getDefinedAtFileSource(source)
         definedAtData.push(definedAtFile)
@@ -339,7 +341,7 @@ type ConfigValuesBase = (
   | {
       configValueBase: {
         type: 'standard'
-        definedAtData: DefinedAtFile
+        definedAtData: DefinedAt
       }
       sourceRelevant: ConfigValueSource
       configName: string
@@ -347,7 +349,7 @@ type ConfigValuesBase = (
   | {
       configValueBase: {
         type: 'cumulative'
-        definedAtData: DefinedAtFile[]
+        definedAtData: DefinedAt[]
       }
       sourcesRelevant: ConfigValueSource[]
       configName: string
@@ -355,9 +357,11 @@ type ConfigValuesBase = (
 )[]
 
 function getDefinedAtFileSource(source: ConfigValueSource) {
+  const { definedAt } = source
+  if (definedAt.definedBy) return definedAt
   const definedAtFile: DefinedAtFile = {
-    filePathToShowToUser: source.definedAtFilePath.filePathToShowToUser,
-    fileExportPathToShowToUser: source.definedAtFilePath.fileExportPathToShowToUser
+    filePathToShowToUser: definedAt.filePathToShowToUser,
+    fileExportPathToShowToUser: definedAt.fileExportPathToShowToUser
   }
   return definedAtFile
 }

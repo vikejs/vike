@@ -22,9 +22,9 @@
     "react-dom": "^19.0.0",
     "sirv": "^3.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3",
-    "vike": "^0.4.224",
-    "vite": "^6.2.0"
+    "typescript": "^5.8.2",
+    "vike": "^0.4.225",
+    "vite": "^6.2.1"
   },
   "type": "module"
 }

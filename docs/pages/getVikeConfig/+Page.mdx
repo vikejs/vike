@@ -6,9 +6,9 @@ Get all the information Vike knows about the app in your Vite plugin.
 
 <Warning>It's a beta feature: expect breaking changes in any minor version update.</Warning>
 
-> It provides all configurations loaded at build-time set by <Link href="/config#files">`+` files</Link> and <Link href="/extensions">Vike extensions</Link>.
+> It provides all configurations set by <Link href="/config#files">`+` files</Link> and <Link href="/extensions">Vike extensions</Link>.
 >
-> You can also use `globalContext.config` and `globalContext.pages` to get all configurations loaded at runtime, see <Link href="/getGlobalContext" />.
+> It only provides configurations loaded at build-time. To get configurations loaded at runtime use `globalContext.config` and `globalContext.pages` instead, see <Link href="/getGlobalContext" />.
 
 ```js
 // vite.config.js

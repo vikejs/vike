@@ -1,3 +1,29 @@
+## [0.4.225](https://github.com/vikejs/vike/compare/v0.4.224...v0.4.225) (2025-03-12)
+
+
+### Bug Fixes
+
+* `$ vike preview` replicate static host for pre-rendered pages (fix [#2232](https://github.com/vikejs/vike/issues/2232)) ([#2251](https://github.com/vikejs/vike/issues/2251)) ([ba80896](https://github.com/vikejs/vike/commit/ba808960a5aa620a23206686d332add2c268c04e))
+* `export type { ConfigResolved }` ([568d03d](https://github.com/vikejs/vike/commit/568d03d74dd9d48448e59981513e2d1f3092f77a))
+* `export type { VikeConfig }` ([e2bc010](https://github.com/vikejs/vike/commit/e2bc010856292f5ec0d29b8cbab281c57862de6b))
+* fix catch of infinite redirections (fix [#2262](https://github.com/vikejs/vike/issues/2262)) ([#2264](https://github.com/vikejs/vike/issues/2264)) ([00ed9fe](https://github.com/vikejs/vike/commit/00ed9fecac7cd0c4cd0682c574e6a26a3c52e0f5))
+* fix resolving of global enabled/disabled prerender ([#2267](https://github.com/vikejs/vike/issues/2267)) ([408a724](https://github.com/vikejs/vike/commit/408a724de10dcceeb062ed8229ca18f101ba5e28))
+* fix vite.config.js reload (fix [#2200](https://github.com/vikejs/vike/issues/2200)) ([f8afe0a](https://github.com/vikejs/vike/commit/f8afe0a00897e8b9dc3e13852cae02b86f6cb95a))
+* forbid setting process.env.DEBUG with JavaScript (fix [#2239](https://github.com/vikejs/vike/issues/2239)) ([20321b2](https://github.com/vikejs/vike/commit/20321b2d25418c7108a63f0a7006a8e7d73cb6eb))
+* further add error hint for broken npm package ([#2252](https://github.com/vikejs/vike/issues/2252)) ([060d71a](https://github.com/vikejs/vike/commit/060d71ac14347d805a530fc037024d082960078f))
+* improve error hint ([#2235](https://github.com/vikejs/vike/issues/2235)) ([5b80da0](https://github.com/vikejs/vike/commit/5b80da0c9f1584199d5c6a9e4dc8200e7dd005a2))
+* make multiple Vike version mismatch a warning ([55e420a](https://github.com/vikejs/vike/commit/55e420a821d29ced6da1c0f5eb153d60a29294a1))
+* pipeable web stream ([#2263](https://github.com/vikejs/vike/issues/2263)) ([f0d0f8a](https://github.com/vikejs/vike/commit/f0d0f8a57b2a6f4b6298ce91144ebe206b310204))
+
+
+### Features
+
+* [+host](https://vike.dev/host) ([2137e58](https://github.com/vikejs/vike/commit/2137e58ec5522c08016cc5c98ba4ae1af44fb079))
+* [+port](https://vike.dev/port) ([1c90a78](https://github.com/vikejs/vike/commit/1c90a784ceba9ebe38e8c1295b2005bf73265acf))
+* CLI options + API options + `VIKE_CONFIG` environment variable (closes [#2259](https://github.com/vikejs/vike/issues/2259)) ([#2268](https://github.com/vikejs/vike/issues/2268)) ([ce060c4](https://github.com/vikejs/vike/commit/ce060c4da80439c7be6985bbaca2d1cd5de8b44d))
+
+
+
 ## [0.4.224](https://github.com/vikejs/vike/compare/v0.4.223...v0.4.224) (2025-02-28)
 
 

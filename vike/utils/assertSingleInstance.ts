@@ -2,16 +2,16 @@ export { assertSingleInstance_onClientEntryServerRouting }
 export { assertSingleInstance_onClientEntryClientRouting }
 export { assertSingleInstance_onAssertModuleLoad }
 
-//  - Throw error if there are two different versions of vike loaded
+//  - Show warning if there are two different Vike versions loaded
 //  - Show warning if entry of Client Routing and entry of Server Routing are both loaded
-//  - Show warning if vike is loaded twice
+//  - Show warning if Vike is loaded twice
 
 import { unique } from './unique.js'
 import { getGlobalObject } from './getGlobalObject.js'
-import { projectInfo } from './projectInfo.js'
 import pc from '@brillout/picocolors'
-/* Use original assertUsage() & assertWarning() after all CJS is removed from node_modules/vike/dist/
-import { assertUsage, assertWarning } from './assert.js'
+import { PROJECT_VERSION } from './PROJECT_VERSION.js'
+/* Use original assertWarning() after all CJS is removed from node_modules/vike/dist/
+import { assertWarning } from './assert.js'
 */
 const globalObject = getGlobalObject<{
   instances: string[]
@@ -31,10 +31,12 @@ const clientNotSingleInstance = 'Client runtime loaded twice https://vike.dev/cl
 function assertSingleInstance() {
   {
     const versions = unique(globalObject.instances)
-    assertUsage(
+    assertWarning(
       versions.length <= 1,
-      // DO *NOT* patch vike to remove this error: because of multiple conflicting versions, you *will* eventually encounter insidious issues that hard to debug and potentially a security hazard, see for example https://github.com/vikejs/vike/issues/1108
-      `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded but it's forbidden to load different versions`
+      // Do *NOT* patch Vike to remove this warning: you *will* eventually encounter the issues listed at https://vike.dev/warning/version-mismatch
+      // - This happened before: https://github.com/vikejs/vike/issues/1108#issuecomment-1719061509
+      `vike@${pc.bold(versions[0]!)} and vike@${pc.bold(versions[1]!)} loaded which is highly discouraged, see ${pc.underline('https://vike.dev/warning/version-mismatch')}`,
+      { onlyOnce: true, showStackTrace: false }
     )
   }
 
@@ -76,17 +78,10 @@ function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) 
 
 // Called by utils/assert.ts which is (most certainly) loaded by all entries. That way we don't have to call a callback for every entry. (There are a lot of entries: `client/router/`, `client/`, `node/runtime/`, `node/plugin/`, `node/cli`.)
 function assertSingleInstance_onAssertModuleLoad() {
-  globalObject.instances.push(projectInfo.projectVersion)
+  globalObject.instances.push(PROJECT_VERSION)
   assertSingleInstance()
 }
 
-function assertUsage(condition: unknown, errorMessage: string): asserts condition {
-  if (condition) {
-    return
-  }
-  const errMsg = `[vike][Wrong Usage] ${errorMessage}`
-  throw new Error(errMsg)
-}
 function assertWarning(
   condition: unknown,
   errorMessage: string,
@@ -95,7 +90,7 @@ function assertWarning(
   if (condition) {
     return
   }
-  const msg = `[vike][Warning] ${errorMessage}`
+  const msg = `[Vike][Warning] ${errorMessage}`
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce

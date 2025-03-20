@@ -12,7 +12,6 @@ import {
   assertUsage,
   assertWarning,
   hasProp,
-  projectInfo,
   objectAssign,
   isObjectWithKeys,
   isCallable,
@@ -26,13 +25,14 @@ import {
   changeEnumerable,
   onSetupPrerender,
   isObject,
-  makePublicCopy
+  makePublicCopy,
+  PROJECT_VERSION
 } from './utils.js'
 import {
   prerenderPage,
   prerender404Page,
   getPageContextInitEnhanced,
-  PageContextInitEnhanced
+  type PageContextInitEnhanced
 } from '../runtime/renderPage/renderPageAlreadyRouted.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
@@ -158,8 +158,8 @@ async function runPrerenderFromAPI(options: PrerenderOptions = {}): Promise<{ vi
 }
 async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   try {
-    const { viteConfigEnhanced } = await prepareViteApiCall(undefined, 'prerender')
-    await runPrerender({ viteConfig: viteConfigEnhanced }, '$ vike prerender')
+    const { viteConfigFromUserEnhanced } = await prepareViteApiCall({}, 'prerender')
+    await runPrerender({ viteConfig: viteConfigFromUserEnhanced }, '$ vike prerender')
   } catch (err) {
     console.error(err)
     // Error may come from user-land; we need to use logErrorHint()
@@ -197,7 +197,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
-    console.log(`${pc.cyan(`vike v${projectInfo.projectVersion}`)} ${pc.green('pre-rendering HTML...')}`)
+    console.log(`${pc.cyan(`vike v${PROJECT_VERSION}`)} ${pc.green('pre-rendering HTML...')}`)
   }
 
   await disableReactStreaming()
@@ -209,16 +209,14 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const { root } = viteConfig
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   validatePrerenderConfig(prerenderConfigGlobal)
-  const { partial, noExtraDir, parallel, defaultLocalValue, isEnabled } = prerenderConfigGlobal
-  if (!isEnabled) {
+  const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
+  if (!isPrerenderingEnabled) {
     assert(standaloneTrigger)
-    // TODO/now: make it assertUsage() and remove dist/server/entry.mjs whenever possible
+    // TODO/now: make it assertUsage() and remove dist/server/entry.mjs if pre-rendering is completely disabled
     assertWarning(
-      prerenderConfigGlobal,
-      `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the config ${pc.cyan('prerender')} (${pc.underline('https://vike.dev/prerender')}) to enable it.`,
-      {
-        onlyOnce: true
-      }
+      false,
+      `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} setting (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`,
+      { onlyOnce: true }
     )
   }
 
@@ -539,20 +537,16 @@ async function createPageContext(
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal
 ) {
-  const pageContext = {
+  const pageContextInit = { urlOriginal }
+  objectAssign(pageContextInit, prerenderContext.pageContextInit)
+  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true, {})
+  assert(pageContext.isPrerendering === true)
+  objectAssign(pageContext, {
     _urlHandler: null,
     _urlRewrite: null,
     _noExtraDir: prerenderContext.noExtraDir,
     _prerenderContext: prerenderContext
-  }
-  const pageContextInit = {
-    urlOriginal
-  }
-  objectAssign(pageContextInit, prerenderContext.pageContextInit)
-  {
-    const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext)
-    objectAssign(pageContext, pageContextInitEnhanced)
-  }
+  })
   return pageContext
 }
 

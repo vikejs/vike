@@ -1,13 +1,7 @@
 export { parsePageConfigs }
 export { parseConfigValuesSerialized }
 
-import type {
-  ConfigValues,
-  PageConfigRuntime,
-  PageConfigGlobalRuntime,
-  ConfigValue,
-  DefinedAtFile
-} from '../PageConfig.js'
+import type { ConfigValues, PageConfigRuntime, PageConfigGlobalRuntime, ConfigValue, DefinedAt } from '../PageConfig.js'
 import type {
   PageConfigGlobalRuntimeSerialized,
   PageConfigRuntimeSerialized,
@@ -18,11 +12,6 @@ import { getConfigDefinedAt } from '../getConfigDefinedAt.js'
 import type { ConfigValueSerialized } from './PageConfigSerialized.js'
 import { parseTransform } from '@brillout/json-serializer/parse'
 import { assertPlusFileExport } from '../assertPlusFileExport.js'
-
-function parseConfigValuesSerialized(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
-  const configValues = parseConfigValuesSerialized_tmp(configValuesSerialized)
-  return configValues
-}
 
 function parsePageConfigs(
   pageConfigsSerialized: PageConfigRuntimeSerialized[],
@@ -71,7 +60,7 @@ function assertRouteConfigValue(configValues: ConfigValues) {
  */
 }
 
-function parseConfigValuesSerialized_tmp(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
+function parseConfigValuesSerialized(configValuesSerialized: Record<string, ConfigValueSerialized>): ConfigValues {
   const configValues: ConfigValues = {}
 
   Object.entries(configValuesSerialized).forEach(([configName, configValueSeriliazed]) => {
@@ -124,7 +113,7 @@ type SideExport = {
 function parseValueSerialized(
   valueSerialized: ValueSerialized,
   configName: string,
-  getDefinedAtFile: () => DefinedAtFile
+  getDefinedAtFile: () => DefinedAt
 ): { value: unknown; sideExports: SideExport[] } {
   if (valueSerialized.type === 'js-serialized') {
     let { value } = valueSerialized
@@ -138,6 +127,7 @@ function parseValueSerialized(
   if (valueSerialized.type === 'plus-file') {
     const definedAtFile = getDefinedAtFile()
     const { exportValues } = valueSerialized
+    assert(!definedAtFile.definedBy)
     assertPlusFileExport(exportValues, definedAtFile.filePathToShowToUser, configName)
     let value: unknown
     let valueWasFound = false

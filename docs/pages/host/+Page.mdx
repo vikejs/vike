@@ -1,0 +1,35 @@
+import { Link } from '@brillout/docpress'
+
+Vike's `+host` setting is an alias for setting Vite's [server.host](https://vite.dev/config/server-options.html#server-host) and [preview.host](https://vite.dev/config/preview-options.html#preview-host).
+
+This:
+
+```js
+// +config.js
+
+export default {
+  host: true
+}
+```
+
+Is equivalent to that:
+
+```js
+// vite.config.js
+
+export default {
+  server: {
+    host: true
+  },
+  preview: {
+    host: true
+  }
+}
+```
+
+If you want to set two different values between development and preview, then set the values over `vite.config.js` instead of using `+host`.
+
+
+## See also
+
+- <Link href="/settings" />

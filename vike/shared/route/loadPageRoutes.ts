@@ -89,11 +89,11 @@ function getPageRoutes(
         if (!pageRoute) {
           const { routeFilesystem } = pageConfig
           assert(routeFilesystem)
-          const { routeString, definedBy } = routeFilesystem
+          const { routeString, definedAtLocation } = routeFilesystem
           assert(routeFilesystem.routeString.startsWith('/'))
           pageRoute = {
             pageId,
-            routeFilesystemDefinedBy: definedBy,
+            routeFilesystemDefinedBy: definedAtLocation,
             comesFromV1PageConfig,
             routeString,
             routeDefinedAtString: null,

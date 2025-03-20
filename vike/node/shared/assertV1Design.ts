@@ -19,7 +19,8 @@ function assertV1Design(pageConfigs: PageConfigBuildTime[] | boolean, pageFilesA
           .map((p) =>
             Object.values(p.configValueSources).map((sources) =>
               sources
-                .map((c) => c.definedAtFilePath.filePathAbsoluteUserRootDir)
+                .map((c) => c.definedAt)
+                .map((definedAt) => (definedAt.definedBy ? null : definedAt.filePathAbsoluteUserRootDir))
                 .filter(isNotNullish)
                 .map((filePathToShowToUser) => indent + filePathToShowToUser)
             )

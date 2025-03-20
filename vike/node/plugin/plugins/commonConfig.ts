@@ -2,7 +2,7 @@ export { commonConfig }
 export { getVikeConfigPublic }
 export type { VikeConfigPublic }
 
-import { type InlineConfig, mergeConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
+import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
 import {
   assert,
   assertUsage,
@@ -18,7 +18,6 @@ import { installRequireShim_setUserRootDir } from '@brillout/require-shim'
 import pc from '@brillout/picocolors'
 import path from 'path'
 import { assertResolveAlias } from './commonConfig/assertResolveAlias.js'
-import { getEnvVarObject } from '../shared/getEnvVarObject.js'
 import { isViteCliCall } from '../shared/isViteCliCall.js'
 import { isVikeCliOrApi } from '../../api/context.js'
 import { getVikeConfig2, type VikeConfigObject } from './importUserCode/v1-design/getVikeConfig.js'
@@ -35,7 +34,7 @@ declare module 'vite' {
     _root?: string
     _baseViteOriginal?: string
     // We'll be able to remove once we have one Rolldown build instead of two Rollup builds
-    _viteConfigEnhanced?: InlineConfig
+    _viteConfigFromUserEnhanced?: InlineConfig
     _vike?: VikeConfigPublic
     _vikeConfigObject?: VikeConfigObject
   }
@@ -72,7 +71,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             },
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
-              prerender: resolvePrerenderConfigGlobal(vikeConfig).isEnabled
+              prerender: resolvePrerenderConfigGlobal(vikeConfig).isPrerenderingEnabled
             })
           }
         }
@@ -106,18 +105,24 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
       config: {
         order: 'post',
         handler(configFromUser) {
-          // Change default port
           let configFromVike: UserConfig = { server: {}, preview: {} }
-          setDefault('port', 3000, configFromUser, configFromVike)
+          const vike = getVikeConfigPublic(configFromUser)
 
-          // Set `--host` for Docker/Podman
-          if (isDocker()) {
-            setDefault('host', true, configFromUser, configFromVike)
+          if (vike.config.port !== undefined) {
+            // https://vike.dev/port
+            setDefault('port', vike.config.port, configFromUser, configFromVike)
+          } else {
+            // Change Vite's default port
+            setDefault('port', 3000, configFromUser, configFromVike)
           }
 
-          // VITE_CONFIG
-          const configFromEnvVar = getEnvVarObject('VITE_CONFIG')
-          if (configFromEnvVar) configFromVike = mergeConfig(configFromVike, configFromEnvVar)
+          if (vike.config.host) {
+            // https://vike.dev/host
+            setDefault('host', vike.config.host, configFromUser, configFromVike)
+          } else if (isDocker()) {
+            // Set `--host` for Docker/Podman
+            setDefault('host', true, configFromUser, configFromVike)
+          }
 
           return configFromVike
         }

@@ -54,7 +54,7 @@ type ConfigDefinition = {
    *
    * https://vike.dev/extends#inheritance
    */
-  global?: boolean | ((value: unknown) => boolean)
+  global?: boolean | ((value: unknown, moreInfo: { isGlobalLocation: boolean }) => boolean)
   // TODO/now implement
   type?: string | string[]
 }
@@ -185,7 +185,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
           assert(source.valueIsLoaded)
           if (source.value !== null) {
             const { value } = source
-            const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAtFilePath)
+            const definedAt = getConfigDefinedAt('Config', 'clientHooks', source.definedAt)
             assertUsage(typeof value === 'boolean', `${definedAt} should be a boolean`)
             return value
           }
@@ -216,6 +216,18 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   cacheControl: {
     env: { server: true }
   },
+  host: {
+    env: { config: true },
+    global: true
+  },
+  port: {
+    env: { config: true },
+    global: true
+  },
+  mode: {
+    env: { config: true },
+    global: true
+  },
   injectScriptsAt: {
     env: { server: true }
   },
@@ -241,7 +253,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   },
   prerender: {
     env: { config: true },
-    global: (value) => typeof value === 'object',
+    global: (value, { isGlobalLocation }) => typeof value === 'object' || isGlobalLocation,
     type: ['boolean', 'object'],
     cumulative: true
   },

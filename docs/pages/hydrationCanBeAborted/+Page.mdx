@@ -9,10 +9,22 @@ export default {
 }
 ```
 
-> The `hydrationCanBeAborted` setting only applies to <Link href="/client-routing">Client Routing</Link>.
+> The `hydrationCanBeAborted` setting only applies if you enabled <Link href="/client-routing">Client Routing</Link>.
 
 Whether your <Link href="/ui-frameworks">UI framework</Link> allows the <Link href="/hydration">hydration</Link> to be aborted.
 
 Setting `hydrationCanBeAborted` to `true` tells Vike that the hydration can be aborted when the user clicks on a link before the hydration has finished.
 
-React users should set `hydrationCanBeAborted` to `true`. Other frameworks, such as Vue, crash if the hydration is aborted; `hydrationCanBeAborted` should be set to `false`.
+React users can (and should) set `hydrationCanBeAborted` to `true`.
+
+> <Link href="/vike-react">`vike-react`</Link> already sets `hydrationCanBeAborted` to `true` on your behalf.
+
+Vue crashes if the hydration is aborted (see [vuejs/vue#13235](https://github.com/vuejs/vue/issues/13235)), thus `hydrationCanBeAborted` must be set to `false`.
+
+> <Link href="/vike-vue">`vike-vue`</Link> already sets `hydrationCanBeAborted` to `false` on your behalf.
+
+
+## See also
+
+- <Link href="/hydration">hydration</Link>
+- [vuejs/vue#13235 - [Feature Request] Be able to skip hydration](https://github.com/vuejs/vue/issues/13235)

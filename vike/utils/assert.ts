@@ -13,7 +13,7 @@ import { assertSingleInstance_onAssertModuleLoad } from './assertSingleInstance.
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace.js'
 import { getGlobalObject } from './getGlobalObject.js'
 import { isObject } from './isObject.js'
-import { projectInfo } from './projectInfo.js'
+import { PROJECT_VERSION } from './PROJECT_VERSION.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{
   alreadyLogged: Set<string>
@@ -37,7 +37,7 @@ type Logger = (msg: string | Error, logType: 'warn' | 'info') => void
 assertSingleInstance_onAssertModuleLoad()
 
 const projectTag = `[vike]` as const
-const projectTagWithVersion = `[vike@${projectInfo.projectVersion}]` as const
+const projectTagWithVersion = `[vike@${PROJECT_VERSION}]` as const
 const bugTag = 'Bug'
 type Tag = 'Bug' | 'Wrong Usage' | 'Error' | 'Warning'
 
@@ -54,7 +54,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     return pc.dim(`Debug info (for Vike maintainers; you can ignore this): ${debugInfoSerialized}`)
   })()
 
-  const link = pc.blue('https://github.com/vikejs/vike/issues/new?template=bug.yml')
+  const link = pc.underline('https://github.com/vikejs/vike/issues/new?template=bug.yml')
   let errMsg = [
     `You stumbled upon a Vike bug. Go to ${link} and copy-paste this error. A maintainer will fix the bug (usually within 24 hours).`,
     debugStr
@@ -73,7 +73,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 function assertUsage(
   condition: unknown,
   errMsg: string,
-  { showStackTrace }: { showStackTrace?: true } = {}
+  { showStackTrace, exitOnError }: { showStackTrace?: true; exitOnError?: boolean } = {}
 ): asserts condition {
   if (condition) return
   showStackTrace = showStackTrace || globalObject.alwaysShowStackTrace
@@ -85,7 +85,12 @@ function assertUsage(
     globalObject.showStackTraceList.add(usageError)
   }
   globalObject.onBeforeLog?.()
-  throw usageError
+  if (!exitOnError) {
+    throw usageError
+  } else {
+    console.error(showStackTrace ? usageError : errMsg)
+    process.exit(1)
+  }
 }
 
 function getProjectError(errMsg: string) {
@@ -205,6 +210,7 @@ function isBug(err: unknown): boolean {
   return String(err).includes(`[${bugTag}]`)
 }
 
+// Called upon `DEBUG=vike:error`
 function setAlwaysShowStackTrace() {
   globalObject.alwaysShowStackTrace = true
 }

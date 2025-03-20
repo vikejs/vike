@@ -274,16 +274,16 @@ function tools(): HeadingDetachedDefinition[] {
 function misc(): HeadingDetachedDefinition[] {
   return [
     {
-      title: "Warning: don't define global config locally",
+      title: "[Warning] Don't define global configs locally",
       url: '/warning/global-config'
+    },
+    {
+      title: "[Warning] Don't load multiple versions",
+      url: '/warning/version-mismatch'
     },
     {
       title: 'Consulting',
       url: '/consulting'
-    },
-    {
-      title: 'Next.js Comparison',
-      url: '/nextjs-comparison'
     },
     {
       title: 'UI Frameworks',
@@ -357,6 +357,10 @@ function misc(): HeadingDetachedDefinition[] {
       title: 'vike-solid',
       url: '/vike-solid',
       category: 'Overview'
+    },
+    {
+      title: 'Next.js Comparison',
+      url: '/nextjs'
     }
   ]
 }
@@ -462,7 +466,7 @@ function guides(): HeadingDetachedDefinition[] {
       url: '/server-routing-vs-client-routing'
     },
     {
-      title: '`pageContext.json`',
+      title: '`pageContext.json` requests',
       url: '/pageContext.json',
       sectionTitles: ['Avoid `pageContext.json` requests']
     },
@@ -578,8 +582,20 @@ function api(): HeadingDetachedDefinition[] {
       url: '/onCreateApp'
     },
     {
-      title: '`+react` setting',
+      title: '`+react`',
       url: '/react-setting'
+    },
+    {
+      title: '`+host`',
+      url: '/host'
+    },
+    {
+      title: '`+port`',
+      url: '/port'
+    },
+    {
+      title: '`+mode`',
+      url: '/mode'
     },
     {
       title: '`getGlobalContextSync()` & `getGlobalContextAsync()`',

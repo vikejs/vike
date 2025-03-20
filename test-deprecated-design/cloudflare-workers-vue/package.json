@@ -9,8 +9,8 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/compiler-sfc": "^3.2.47",
     "@vue/server-renderer": "^3.2.47",
-    "vite": "^6.2.0",
-    "vike": "0.4.224",
+    "vite": "^6.2.1",
+    "vike": "0.4.225",
     "vue": "^3.2.47",
     "wrangler": "^2.9.1"
   },

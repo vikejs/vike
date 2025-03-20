@@ -5,13 +5,13 @@ import { TableStyle } from './TableStyle'
 You can define meta tags inside `<head>` by using following settings.
 
 <TableStyle>
-Setting | Sets
+Setting | HTML
 -- | --
-<Link href="/title">`title`</Link> | <ul><li>[`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)</li> <li>[`<meta property="og:title">`](https://ogp.me/#metadata:~:text=every%20page%20are%3A-,og%3Atitle,-%2D%20The%20title%20of)</li></ul>
-<Link href="/description">`description`</Link> | <ul><li>[`<meta name="description">`](https://moz.com/learn/seo/meta-description)</li> <li>[`<meta property="og:description">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
-<Link href="/image">`image`</Link> | <ul> <li>[`<meta property="og:image">`](https://ahrefs.com/blog/open-graph-meta-tags/#:~:text=8%20simple%20steps.%22%20/%3E-,%3Cmeta%20property%3D%22og%3Aimage%22,-content%3D%22https%3A//ahrefs) (preview image upon URL sharing)</li> <li>[`<meta name="twitter:card" content="summary_large_image">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
-<Link href="/viewport">`viewport`</Link> | <ul><li>[`<meta name="viewport">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag)</li></ul>
-<Link href="/Head">`Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
+<Link href="/title">`+title`</Link> | <ul><li>[`<title>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)</li> <li>[`<meta property="og:title">`](https://ogp.me/#metadata:~:text=every%20page%20are%3A-,og%3Atitle,-%2D%20The%20title%20of)</li></ul>
+<Link href="/description">`+description`</Link> | <ul><li>[`<meta name="description">`](https://moz.com/learn/seo/meta-description)</li> <li>[`<meta property="og:description">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
+<Link href="/image">`+image`</Link> | <ul> <li>[`<meta property="og:image">`](https://ahrefs.com/blog/open-graph-meta-tags/#:~:text=8%20simple%20steps.%22%20/%3E-,%3Cmeta%20property%3D%22og%3Aimage%22,-content%3D%22https%3A//ahrefs) (preview image upon URL sharing)</li> <li>[`<meta name="twitter:card" content="summary_large_image">`](https://ogp.me/#optional:~:text=accompany%20this%20object.-,og%3Adescription,-%2D%20A%20one%20to)</li></ul>
+<Link href="/viewport">`+viewport`</Link> | <ul><li>[`<meta name="viewport">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag)</li></ul>
+<Link href="/Head">`+Head`</Link> | Other `<head>` tags such as: <ul> <li>[`<link rel="icon">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) (favicon)</li> <li>[`<link rel="apple-touch-icon">`](https://stackoverflow.com/questions/20440512/why-use-link-rel-apple-touch-icon-image-src/20440627#20440627) (mobile icon)</li> <li>[`<script>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)</li> <li>...</li> </ul>
 </TableStyle>
 
 > You can set these settings dynamically:
@@ -130,7 +130,9 @@ You can use:
 
 You can create your own custom settings.
 
-For example, let's create a new setting `dynamicFavicon` that allows different favicons to be set for different pages.
+> You can also create custom components hooks, see for example [`vike-metadata`](https://github.com/Blankeos/vike-metadata).
+
+For example, in the following, we create a new setting `+dynamicFavicon` that allows different favicons to be set for different pages. (Using `+Head` only works for setting a global favicon, see <Link href="/Head#only-html" />.)
 
 ### Setting creation
 
@@ -272,6 +274,7 @@ See <Link href="/markdown#metadata" />.
 
 ## See also
 
-- [Blog post "My current HTML boilerplate" showcasing and explaining a common boilerplate](https://www.matuzo.at/blog/html-boilerplate/)
 - <Link href="/settings#html" doNotInferSectionTitle />
+- [`vike-metadata`](https://github.com/Blankeos/vike-metadata)
+- [Blog post "My current HTML boilerplate" showcasing and explaining a common boilerplate](https://www.matuzo.at/blog/html-boilerplate/)
 - <Link href="/head-manual" />

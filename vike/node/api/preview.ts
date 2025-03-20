@@ -10,8 +10,8 @@ import type { APIOptions } from './types.js'
  * https://vike.dev/api#preview
  */
 async function preview(options: APIOptions = {}): Promise<{ viteServer: PreviewServer; viteConfig: ResolvedConfig }> {
-  const { viteConfigEnhanced } = await prepareViteApiCall(options.viteConfig, 'preview')
-  const server = await previewVite(viteConfigEnhanced)
+  const { viteConfigFromUserEnhanced } = await prepareViteApiCall(options, 'preview')
+  const server = await previewVite(viteConfigFromUserEnhanced)
   return {
     viteServer: server,
     viteConfig: server.config

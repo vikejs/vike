@@ -43,12 +43,16 @@ function testPrerenderSettings(vike: Vike) {
   ;(globalThis as any).prerenderContextWasTested = true
   assert(vike.prerenderContext)
   const pageIds = Object.keys(vike.pages)
-  const pageIdsPrerendered = prerenderContext.output
-    .map((file) => file.pageContext.pageId)
-    .filter((pageId) => pageId !== null)
+  const pageIdsPrerendered = unique(
+    prerenderContext.output.map((file) => file.pageContext.pageId).filter((pageId) => pageId !== null)
+  )
   ;[
     {
       pageId: '/pages/markdown',
+      prerendered: true
+    },
+    {
+      pageId: '/pages/navigate-early',
       prerendered: true
     },
     {
@@ -68,4 +72,8 @@ function testPrerenderSettings(vike: Vike) {
 
   // TEST: prerender.noExtraDir
   prerenderContext.output.forEach(({ filePath }) => assert(!filePath.endsWith('index.html'), filePath))
+}
+
+function unique<T>(arr: T[]): T[] {
+  return Array.from(new Set(arr))
 }

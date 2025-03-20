@@ -1,6 +1,7 @@
 import { Link, Construction } from '@brillout/docpress'
 import OpenSourcePricingIllustration from '../../pages/index/sections/reliable/open-source-pricing.svg'
 import StateOfTheArt from './StateOfTheArt.mdx'
+import { RecommendedAmountTable } from './RecommendedAmountTable'
 
 <Construction>The Open Source Pricing isn't implemented yet.</Construction>
 
@@ -17,12 +18,12 @@ Vike will soon introduce what we call an *Open Source Pricing*: a new kind of bu
   - **Free for small apps**. For new and small Vike apps, Vike is 100% gratis and you don't need any license key: everything works just like any other open source tool.
   - **Apply for a free license key**. For larger apps, you can apply for a free license key if your team cannot afford one or didn't incorporate a company yet. Write two or three sentences explaining your situation and we will give you a free license key.
 
-The Open Source Pricing is a major milestone for Vike's growth. It preserves what makes open source special while ensuring Vike's priorities are aligned with the interests of its users, for a transparent and sustainable relationship.
+The Open Source Pricing is a major milestone for Vike's growth. It preserves what makes open source special while aligning Vike's priorities with user interests, fostering a transparent and sustainable relationship.
 
 
 #### Pricing
 
-<Link doNotInferSectionTitle href="#when-is-an-app-considered-small-or-large" /><br/>
+<Link doNotInferSectionTitle href="#who-pays-and-how-much" /><br/>
 <Link doNotInferSectionTitle href="#do-sponsors-have-to-pay" /><br/>
 <Link doNotInferSectionTitle href="#how-does-it-apply-to-monorepos" /><br/>
 
@@ -34,24 +35,61 @@ The Open Source Pricing is a major milestone for Vike's growth. It preserves wha
 <Link doNotInferSectionTitle href="#why-not-another-business-model" /><br/>
 
 
-## When is an app considered "small" or "large"?
+## Who pays and how much?
 
-An app is considered "large" if it has three or more developers who have committed regularly over the past three months.
+<RecommendedAmountTable />
 
-Consequently:
-- Vike is free for small projects.
-- Vike is free for large projects that are still in their infancy.
-- Finished large projects can be maintained for free with up to two full-time developers.
-- Small contributors, such as a designer making occasional commits, are free.
+<br/>
 
-> You can apply for a free license key if you are developing a large app but your company isn't large enough to be able to pay.
+<Link href="#free-tier" /><br/>
+<Link href="#recommendation" /><br/>
 
-> See also: <Link doNotInferSectionTitle href="#how-does-it-apply-to-monorepos" />
+<div style={{ marginTop: -15 }} />
+
+### Free tier
+
+Vike's free tier cut-off is determined by what we call the *double-three-threshold*:
+
+- **`>=3` regular committers for the past `>=3` months**
+
+Consequently, Vike is free for:
+
+- Small projects. (Maintained by `<=2` regular committers.)
+- Large projects in their infancy. (With a 3-month free trial from the moment the project starts having `>=3` regular committers.)
+- Finished projects. (They can be maintained for free by up to two full-time developers.)
+
+If you are within the free tier then **you don't need any license key**: you can use Vike just like any other open source tool. See also <Link href="#how-does-it-work" />
+
+> Occasional contributors (bots, designers, technical managers, etc.) are ignored: they aren't counted as "regular committers".
+
+
+### Recommendation
+
+The table above is only a recommendation and you can choose any other amount instead &mdash; we trust companies to make a fair choice.
+
+> **Don't hesitate to apply for a free license key** if you have `>=3` regular committers but haven't incorporated yet, just want to experiment, or have a use case you believe should be free.
+>
+>Keeping Vike accessible to everyone is a primary objective of the Open Source Pricing.
+
+Size estimations:
+
+- **Small organization**: 0-20 employees.
+- **Midsize organization**: 20-70 employees.
+- **Large organization**: >70 employees. (Also counting the employees of parent companies.)
+
+<div style={{ marginTop: -15, height: 1 }}/>
+
+- **Hobby use case**: Vike is used for experimenting.
+- **Small use case**: Vike is used for developing a **project that plays only a marginal role** for your company. For example a landing page or a simple internal app.
+- **Midsize use case**: Vike is used for developing a **project that plays only a minor role**. For example a one-shot Vike usage for a significant internal app.
+- **Large use case**: Vike is used for developing a **project that plays a significant role**. For example an app with many users or building your own internal framework.
+
+
 
 
 ## Do sponsors have to pay?
 
-No, Vike stays 100% gratis for companies sponsoring Vike (Bronze, Silver, Gold, and Platinum). Reach out and we will give you a free license key.
+No, Vike stays 100% gratis for companies sponsoring Vike. Reach out and we will give you a free license key.
 
 
 ## How does it apply to monorepos?
@@ -74,15 +112,13 @@ For example, in the following, it applies only to `my-app/` and `my-other-app/`.
 
 For new or small projects, you can use Vike just like any other open-source tool: 100% gratis and without any license key.
 
-> See also: <Link doNotInferSectionTitle href="#when-is-an-app-considered-small-or-large" />
-
 For larger projects, Vike shows a pesky toaster `Get your license key at ...` in development (it's never shown in production) that you can remove by purchasing a license key. You install the key by adding it to your `+config.js` file, or by setting the `VIKE_KEY` environment variable.
 
-The `vike` npm package will adopt a proprietary license requiring companies outside the free tier to purchase a license key. Vike's Git repository stays 100% MIT-licensed.
+Also, the npm package `vike` will adopt a proprietary license requiring companies outside the free tier to purchase a license key. Vike's Git repository stays 100% MIT-licensed.
 
-In theory, since Vike is 100% open source, you could fork it, remove the pesky toaster, and build your own npm package. But maintaining a fork requires effort, so you might as well apply for a free license key which is much easier.
+In theory, since Vike is 100% open source, you could fork it, remove the pesky toaster, and build your own npm package. But maintaining a fork requires effort &mdash; you might as well apply for a free license key which is much easier.
 
-The `vike` npm package works 100% offline, using asymmetric encryption (to validate license keys) and reading your Git history (to distinguish small apps from larger apps). It doesn't send any telemetry nor server requests.
+On the the npm package `vike` side, th Open Source pricing works 100% offline: it uses asymmetric encryption to validate license keys, and reads your Git history to distinguish small apps from larger apps. It doesn't send any telemetry nor server requests.
 
 
 ## Why zero-investors?

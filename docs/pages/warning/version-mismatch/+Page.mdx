@@ -1,0 +1,22 @@
+import { Link, Warning, Contribution } from '@brillout/docpress'
+
+```
+[Vike][Warning] vike@1.2.3 and vike@1.2.4 loaded which is highly discouraged
+```
+
+This warning means you're using two different Vike versions (`vike@1.2.3` and `vike@1.2.4`) at the same time, which is highly discouraged in production.
+
+We recommend having only one Vike version installed. (Or at least make sure to load only one Vike version at a time.)
+
+<Warning>
+  **Don't deploy to production if you see this warning**, as you run into the risks of:
+   - Insidious issues that are hard to debug.
+   - Client-side bloat (unnecessary KBs loaded as multiple Vike versions are loaded).
+   - In some cases, security risks.
+
+  That said, you can *temporarily* ignore the warning during development. (For example it's common to link npm packages during development which can lead to multiple `node_modules/vike/` installations with different versions.)
+</Warning>
+
+<Contribution>
+  Contributions welcome to create a guide for how to dedupe multiple Vike versions.
+</Contribution>

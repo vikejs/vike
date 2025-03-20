@@ -361,13 +361,17 @@ type ConfigBuiltIn = {
          */
         disableAutoRun?: boolean
         /**
-         * Set prerender settings without enabling pre-rendering.
+         * Whether to enable pre-rendering.
          *
-         * https://vike.dev/prerender#value
+         * Setting `enable: null` enables you to set prerender settings without enabling pre-rendering by default.
+         *
+         * This is useful, for example, if you want pre-rendering to stay opt-in instead of opt-out while setting pre-render settings globally.
+         *
+         * https://vike.dev/prerender#enable
          *
          * @default true
          */
-        value?: boolean | null
+        enable?: boolean | null
       }
 
   /**
@@ -564,6 +568,31 @@ type ConfigBuiltIn = {
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
    */
   cacheControl?: string
+
+  /**
+   * Make development/preview server available over LAN and public addresses.
+   *
+   * Default: `false` (or `true` if running inside Docker/Podman).
+   *
+   * https://vike.dev/host
+   */
+  host?: boolean | string
+
+  /**
+   * Change port of development/preview server.
+   *
+   * @default 3000
+   *
+   * https://vike.dev/port
+   */
+  port?: number
+
+  /**
+   * Set the mode to run in.
+   *
+   * https://vike.dev/mode
+   */
+  mode?: string
 
   /** Where scripts are injected in the HTML.
    *

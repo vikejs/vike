@@ -43,12 +43,13 @@ const headings = [
     title: 'Extensions',
     url: '/extensions'
   },
+  /*
   {
     level: 2,
     title: 'Next.js Comparison',
-    url: '/nextjs',
-    sectionTitles: ['React Server Components']
+    url: '/nextjs'
   },
+  */
   {
     level: 2,
     title: 'Team',
@@ -298,7 +299,7 @@ const headings = [
   {
     level: 2,
     titleInNav: '... more',
-    title: 'Tool integration (more)',
+    title: 'Integration (more)',
     url: '/integration'
   },
   {
@@ -579,7 +580,7 @@ const headings = [
   },
   {
     level: 2,
-    title: '`prerender`',
+    title: '`+prerender`',
     url: '/prerender',
     sectionTitles: ['`disableAutoRun`']
   },

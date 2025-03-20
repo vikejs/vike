@@ -36,7 +36,7 @@ async function onSubmit() {
  - `navigate('/some-url', { keepScrollPosition: true })`: Don't scroll to the top of the page, preserve the scroll position instead. See also:
    - <Link href="/keepScrollPosition" />
    - <Link href="/clientRouting#settings">`<a href="/some-url" keep-scroll-position />`</Link>.
- - `navigate('/some-url', { overwriteLastHistoryEntry: true })`: Don't create a new entry in the browser's history, instead let the new URL replace the current URL. This effectively removes the current URL from the browser history.
+ - `navigate('/some-url', { overwriteLastHistoryEntry: true })`: Let the new URL replace the current URL in the browser history (instead of creating a new entry in the browser history). This effectively removes the current URL from the browser history. (Technically speaking: tell Vike to use [`history.replaceState()`](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState) instead of [`history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)..)
  - `navigate('/some-url', { pageContext })`: Pass extra <Link href="/pageContext">`pageContext`</Link> values to the next page.
 
 

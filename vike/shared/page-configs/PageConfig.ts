@@ -17,16 +17,16 @@ export type { ConfigValueSources }
 export type { ConfigValuesComputed }
 export type { DefinedAtData }
 export type { DefinedAtFile }
+export type { DefinedAt }
+export type { DefinedBy }
 export type { DefinedAtFilePath }
 
 import type { ConfigValueSerialized } from './serialize/PageConfigSerialized.js'
 import type { LocationId } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/filesystemRouting.js'
 import type { FilePath } from './FilePath.js'
 import type { ConfigDefinitions } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/configDefinitionsBuiltIn.js'
-import type {
-  PlusFile,
-  PlusFilesByLocationId
-} from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
+import type { PlusFile } from '../../node/plugin/plugins/importUserCode/v1-design/getVikeConfig/getPlusFilesAll.js'
+import type { Operation } from '../../node/api/types.js'
 
 type PageConfigCommon = {
   pageId: string
@@ -40,7 +40,7 @@ type PageConfigRoute =
       isErrorPage?: undefined
       routeFilesystem: {
         routeString: string
-        definedBy: string
+        definedAtLocation: string
       }
     }
 
@@ -107,7 +107,7 @@ type ConfigValueSources = Record<
 >
 type ConfigValueSource = {
   configEnv: ConfigEnvInternal
-  definedAtFilePath: DefinedAtFilePath
+  definedAt: DefinedAtFilePath | DefinedBy
   plusFile:
     | PlusFile
     // It's `null` when the config is defined by `vike(options)` in vite.config.js
@@ -117,7 +117,7 @@ type ConfigValueSource = {
   locationId: LocationId
   /** Wether the config value is loaded at runtime, for example config.Page or config.onBeforeRender */
   valueIsLoadedWithImport: boolean
-  /** Whether the config value is a file path, for example config.client */
+  /** Whether the config value is a file path, this is currently only true for +client */
   valueIsFilePath?: true
   /** Whether the config value is defined by a +{configName}.js file */
   valueIsDefinedByPlusValueFile: boolean
@@ -149,13 +149,13 @@ type ConfigValue = ConfigValueStandard | ConfigValueCumulative | ConfigValueComp
 type ConfigValueStandard = {
   type: 'standard'
   value: unknown
-  definedAtData: DefinedAtFile
+  definedAtData: DefinedAt
 }
 /** Defined by multiple sources (thus multiple file paths). */
 type ConfigValueCumulative = {
   type: 'cumulative'
   value: unknown[]
-  definedAtData: DefinedAtFile[]
+  definedAtData: DefinedAt[]
 }
 /** Defined internally by Vike (currently, Vike doesn't support computed configs created by users). */
 type ConfigValueComputed = {
@@ -164,8 +164,11 @@ type ConfigValueComputed = {
   definedAtData: null
 }
 
-type DefinedAtData = DefinedAtFile | DefinedAtFile[] | null
+type DefinedAtData = DefinedAt | DefinedAt[] | null
+type DefinedAt = DefinedAtFile | DefinedBy
+type DefinedBy = { definedBy: 'cli' | 'env' } | { definedBy: 'api'; operation: Operation }
 type DefinedAtFile = {
   filePathToShowToUser: string
   fileExportPathToShowToUser: null | string[]
+  definedBy?: undefined
 }

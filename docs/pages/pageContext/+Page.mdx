@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
 The `pageContext` object provides contextual information about the current page.
 
@@ -10,6 +10,7 @@ export async function data(pageContext) {
   pageContext.urlParsed.pathname // /product/42
   pageContext.routeParams.id // 42
   pageContext.headers // { cookie: 'user-id=1337', ... }
+
   // Common custom properties
   pageContext.user // { name: 'John', id: 1337 }
   pageContext.initialStoreState // { todoList: [{ id: 1718872184291, text: 'Buy milk' }] }
@@ -19,13 +20,15 @@ export async function data(pageContext) {
 > The `+data` hook is explained at <Link href="/data-fetching" />.
 
 You can access `pageContext` everywhere:
- - At any UI component, by using <Link href="/usePageContext">`usePageContext()`</Link>.
- - At any <Link href="/hooks">Vike hook</Link> (such as <Link href="/data">`+data`</Link>).
- - On both the server and client (although you may need to use <Link href="/passToClient">`passToClient`</Link>).
+ - In any UI component (by using <Link href="/usePageContext">`usePageContext()`</Link>).
+ - In any <Link href="/hooks">Vike hook</Link>, e.g. <Link href="/data">`+data`</Link>.
+ - On both the server and client (by using <Link href="/passToClient">`passToClient`</Link>).
 
 It includes:
- - <Link href="#built-in">Built-in properties</Link>, such as `pageContext.urlParsed` and `pageContext.routeParams`.
- - <Link href="#custom">Custom properties</Link> that you can add, for example `pagecontext.user`.
+ - <Link href="#built-in">Built-in properties</Link>, e.g. `pageContext.urlParsed` and `pageContext.routeParams`.
+ - <Link href="#custom">Custom properties</Link> that you can add, for example `pageContext.user`.
+
+When the user navigates to a new page, a completely new `pageContext` object is created and the previous `pageContext` becomes obsolete &mdash; that's why it's called **page**Context, not **app**Context. See <Link href="#lifecycle" /> for more information.
 
 
 ## Built-in
@@ -98,6 +101,20 @@ Built-in properties:
  - **`pageContext.headersOriginal`**: The headers of the HTTP Request. The original object provided by the server, see <Link href="/headers"/>.
  - **`pageContext.config`**: See <Link href="/meta" />.
  - **`pageContext.isHydration`**: Whether the page is rendered to HTML. When using <Link href="/client-routing" noBreadcrumb={true} />, the value is `true` for the first page the user navigates to, and `false` for any subsequent navigation. (When using <Link href="/server-routing" noBreadcrumb={true} />, the value is always `true`.) (If the page doesn't throw an error then it's equivalent to `!pageContext.isClientSideNavigation`, otherwise the error page is rendered and thus `pageContext.isHydration` is `false` whereas `!pageContext.isClientSideNavigation` is `true`.)
+ - **`pageContext.isClientSide`**: Whether the page is being rendered on the client-side, or rendered on the server-side / <Link href="/pre-rendering">pre-rendered</Link>. It's equivalent to: <code>{'pageContext.isClientSide\u00A0!==\u00A0import.meta.env.SSR'}</code>.
+   <Warning>
+     We recommend using [Vite's `import.meta.env.SSR`](https://vite.dev/guide/env-and-mode.html#built-in-constants) whenever possible instead. Because Vite eliminates any code defined inside `import.meta.env.SSR` blocks from client-side bundles, saving potentially a *lot* of KBs. This isn't the case with `pageContext.isClientSide`.
+     ```js
+     // This import is also removed if it's used only inside import.meta.env.SSR code blocks
+     import someImport from './somewhere'
+
+     if (import.meta.env.SSR) {
+       // Vite removes this code block from client-side bundles.
+       // ... server-side code ...
+     }
+     ```
+   </Warning>
+ - **`pageContext.isPrerendering`**: Whether the page is being <Link href="/pre-rendering">pre-rendered</Link>. The value is always `false` in development.
  - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
  - **`pageContext.previousPageContext`**: Upon client-side page navigation, you can use `pageContext.previousPageContext` to access the `pageContext` of the previous page. See <Link href="#lifecycle" />.
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Error`, see <Link href="/error-page" />.
@@ -240,44 +257,61 @@ import type {
 
 ## Lifecycle
 
+The `pageContext` object is tied to the rendering of a page &mdash; whenever a page is (re-)rendered, a new `pageContext` object is created.
+
+The lifecycle of the `pageContext` object is fairly straightforward and predictable on the client and server, but for pre-rendered pages <Link href="#pre-rendering">it can be surprising (some `pageContext` properties may seem "outdated")</Link>.
+
 ### Server
 
-On the server-side, upon an HTTP request, a new `pageContext` object is created. It's used for rendering the page to HTML. The `pageContext` object is discarded after the HTTP response is sent.
+On the server-side, a new `pageContext` object is created whenever a page is rendered to HTML. The `pageContext` object is discarded after the HTML is sent to the client. (But `pageContext` properties sent to the client via <Link href="/passToClient">passToClient</Link> are preserved on the client-side.)
 
 ### Client
 
-Upon <Link text="client-side page navigation" href="/client-routing" />, a new `pageContext` object is created.
+On the client side, a new `pageContext` object is created whenever a page is rendered. In other words:
+ - Upon <Link href="/hydration">hydrating</Link> (the first page the user visits).
+ - Upon <Link href="/client-routing">client-side navigation</Link>.
 
-> You can use `pageContext.previousPageContext` to access the `pageContext` of the previous page.
+If data is fetched on the server-side, then some `pageContext` properties are fetched from the server, see <Link href="/pageContext.json" />.
+
+> On the client-side, you can access the `pageContext` of the previous render by using `pageContext.previousPageContext`.
 
 ### Pre-rendering
 
-The server-side `pageContext` of a <Link href="/pre-rendering">pre-rendered</Link> page is determined at build-time when the page is pre-rendered.
+Upon <Link href="/pre-rendering">pre-rendering a page</Link>, the `pageContext` object used for pre-rendering the page to HTML is preserved and saved twice at:
+ - `dist/client/${urlOfThePage}/index.pageContext.json` (see <Link href="/pageContext.json" />)
+ - `dist/client/${urlOfThePage}/index.html` (see `<script id="vike_pageContext">`)
 
-> Each pre-rendered page has a `pageContext` object saved at `dist/client/${url}/index.pageContext.json`.
+> If you inspect `dist/client/`, you'll find a `index.pageContext.json` file for each pre-rendered page.
 
-This means that, if the first page the user visits is a pre-rendered page, then the `pageContext` was already determined (potentially a long time) before the user visits that page.
+Since a pre-rendered page is built ahead of time, its server-side `pageContext` may be outdated by the time a user visits the page.
 
-> Consequently, if the user visits the URL `/products?filter=computer` then `pageContext.urlParsed.search` is empty and `?filter=computer` is missing.
->
-> In theory, Vike could update `pageContext` on the client-side and add `?filter=computer` to `pageContext.urlParsed` but this would lead to a <Link href="/hydration-mismatch">hydration mismatch</Link>. That's why, upon hydration, Vike intentionally keeps the client- and server-side `pageContext` aligned for hydration.
->
-> Workarounds:
-> - Re-render the page after hydration, by using <Link href="/reload">`reload()`</Link> and <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>:
->   ```js
->   // pages/products/+onHydrationEnd.js
->
->   import { reload } from 'vike/client/router'
->
->   export async function onHydrationEnd() {
->     if (window.location.href.includes('?filter')) await reload()
->   }
->   ```
-> - If the number of filters isn't infinite, then you can use a <Link href="/routing#parameterized-routes">paramterized route</Link> `/products/@filter` with <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()`</Link> in order to pre-render all filters (`/products/computer`, `/products/car`, ...).
+**Problem: `pageContext` is outdated upon hydration**
 
-Upon client-side navigation, the `pageContext` of the new page is determined dynamically at runtime on the client-side.
+Upon hydration, some `pageContext` properties may appear incorrect or "outdated".
 
-> Unlike hydration, on client-side navigation, the `pageContext` is up-to-date, and `pageContext.urlParsed.search` includes query parameters such as `?filter=computer`.
+For example, if a user visits `/products?filter=computer` then `pageContext.urlParsed.search` is empty and `?filter=computer` is missing.
+
+That's because Vike uses the server-side `pageContext.urlOriginal` that was used to pre-render the URL `/products` which didn't have `?filter=computer`.
+
+> In theory, Vike could update `pageContext.urlParsed` on the client-side to include `?filter=computer`, but this would cause a <Link href="/hydration-mismatch">hydration mismatch</Link>. That's why, upon hydration, Vike intentionally keeps the client- and server-side `pageContext` aligned.
+
+**Workarounds**
+
+To workaround the issue you can either:
+
+- Re-render the page after hydration, by using <Link href="/reload">`reload()`</Link> with <Link href="/onHydrationEnd">`onHydrationEnd()`</Link>.
+  ```js
+  // pages/products/+onHydrationEnd.js
+
+  import { reload } from 'vike/client/router'
+
+  export async function onHydrationEnd() {
+    if (window.location.href.includes('?filter')) await reload()
+  }
+  ```
+- Or, if the number of `?filter=` values isn't too large, you can use <Link href="/onBeforePrerenderStart">`onBeforePrerenderStart()`</Link> to pre-render all filter values: `/products?filter=computer`, `/products?filter=car`, ...
+  > You can then also use <Link href="/routing#parameterized-routes">parameterized route `/products/@filter`</Link> instead of `?filter=` if you prefer.
+
 
 
 ## See also
