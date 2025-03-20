@@ -35,9 +35,9 @@ function clear() {
 
 async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
-  const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteInfo.viteConfigFromUserEnhanced, operation)
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
   const viteConfigFromUserEnhanced = applyVikeViteConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
+  const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteConfigFromUserEnhanced, operation)
   return {
     vikeConfig,
     viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
