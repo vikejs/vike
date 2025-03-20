@@ -424,8 +424,9 @@ async function loadBuildEntry(outDir?: string) {
       // vike-server => `vitePluginServerEntry.inject === true`
       // vike-node => `vitePluginServerEntry.inject === [ 'index' ]`
       globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject !== true,
-      // TODO/soon: show precise path
-      // TODO/soon: make this warning work on test/vike-node/
+      /* TO-DO/eventually:
+      !!globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject,
+      */
       `Run the built server entry (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
       { onlyOnce: true }
     )
