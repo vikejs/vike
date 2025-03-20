@@ -102,12 +102,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           assertEsm(config.root)
           assertVikeCliOrApi(config)
           temp_supportOldInterface(config)
-          // Only emit dist/server/entry.mjs if necessary
-          if (
-            config.vitePluginServerEntry?.inject &&
-            !resolvePrerenderConfigGlobal(config._vikeConfigObject!).isPrerenderingEnabled
-          )
-            config.vitePluginServerEntry.disableServerEntryEmit = true
+          emitServerEntryOnlyIfNeeded(config)
         }
       },
       config: {
@@ -253,4 +248,14 @@ function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPub
   const vikeConfig = config._vike
   assert(vikeConfig)
   return vikeConfig
+}
+
+// Only emit dist/server/entry.mjs if necessary
+function emitServerEntryOnlyIfNeeded(config: ResolvedConfig) {
+  if (
+    config.vitePluginServerEntry?.inject &&
+    !resolvePrerenderConfigGlobal(config._vikeConfigObject!).isPrerenderingEnabled
+  ) {
+    config.vitePluginServerEntry.disableServerEntryEmit = true
+  }
 }
