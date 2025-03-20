@@ -1,13 +1,37 @@
-import { Link } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 
 `vike-server` comes with the following benefits:
 - Out-of-the-box support for popular servers (Express, Hono, Hattip, Elysia, etc.)
 - Out-of-the-box support for popular serverless/edge environment (Cloudflare, Vercel, etc.)
 - HMR
 
-#### Example using `vike-server` with `express`
+## Add `vike-server` to an existing Vike app
 
-Create a server file:
+To add `vike-server` to an existing Vike app: install the `vike-server` npm package (e.g. $ npm install vike-server) then extend your existing +config.js file (or create one) with `vike-server`:
+```js
+// +config.js
+import vikeServer from 'vike-server/config' // [!code ++]
+
+export const config = {
+  extends: [vikeServer],  // [!code ++]
+  // Points to your server file, see next section
+  server: 'server/index.js'  // [!code ++]
+}
+```
+
+Also update your production `script` in `package.json`:
+```json
+// package.json
+
+"scripts": {
+  "dev": "vike dev",
+  "build": "vike build",
+  "prod": "NODE_ENV=production node dist/server/index.js" // [!code ++]
+}
+```
+
+### Express.js
+
 ```js
 // server/index.js
 
@@ -28,29 +52,177 @@ function startServer() {
 export default startServer()
 ```
 
-Update `+config.js` to reference `vike-server`:
+### Hono
+
+```js
+// server/index.js
+
+import { Hono } from 'hono'
+// apply() installs Vike's middlewares onto the server
+import { apply } from 'vike-server/hono'
+// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+import { serve } from 'vike-server/hono/serve'
+
+function startServer() {
+  const app = new Hono()
+  apply(app)
+  const port = 3000
+  // port is only used when running on non-serverless environments
+  return serve(app, { port })
+}
+
+export default startServer()
+```
+
+### Fastify
+
+```js
+// server/index.js
+
+import fastify from 'fastify'
+import rawBody from 'fastify-raw-body'
+// apply() installs Vike's middlewares onto the server
+import { apply } from 'vike-server/fastify'
+// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+import { serve } from 'vike-server/fastify/serve'
+
+async function startServer() {
+  const app = fastify({
+    // /!\ Mandatory for HMR support
+    forceCloseConnections: true
+  })
+
+  // /!\ Mandatory for Vike middlewares to operate properly
+  await app.register(rawBody)
+  await apply(app)
+  const port = 3000
+  // port is only used when running on non-serverless environments
+  return serve(app, { port })
+}
+
+export default startServer()
+```
+
+### H3
+
+```js
+// server/index.js
+
+import { createApp } from 'h3'
+// apply() installs Vike's middlewares onto the server
+import { apply } from 'vike-server/h3'
+// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+import { serve } from 'vike-server/h3/serve'
+
+function startServer() {
+  const app = createApp()
+  apply(app)
+  const port = 3000
+  // port is only used when running on non-serverless environments
+  return serve(app, { port })
+}
+
+export default startServer()
+```
+
+### Elysia
+
+```js
+// server/index.js
+
+import { Elysia } from 'elysia'
+// apply() installs Vike's middlewares onto the server
+import { apply } from 'vike-server/elysia'
+// serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+import { serve } from 'vike-server/elysia/serve'
+
+function startServer() {
+  const app = apply(new Elysia())
+  const port = 3000
+  // port is only used when running on non-serverless environments
+  return serve(app, { port })
+}
+
+export default startServer()
+```
+
+## Custom `pageContext`
+
+You can define custom [pageContext](https://vike.dev/pageContext) properties:
+
+```ts
+apply(app, {
+  pageContext(runtime) {
+    return {
+      user: runtime.req.user
+    }
+  }
+})
+```
+
+> See [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
+
+> The `runtime` object is also available at `pageContext.runtime` so that, even without the custom `pageContext` function above,
+> you can retrieve `pageContext.runtime.req.user` in Vike hooks and UI components (with [`usePageContext()`](https://vike.dev/usePageContext)).
+
+<br/>
+
+## Standalone build (experimental)
+
+With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only `dist/` is required (i.e. you can remove `node_modules/` and skip `npm install`).
+
+<Warning>
+  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, please disable standalone mode, or replace
+  the dependency throwing the error with one that does not rely on filesystem operations.
+</Warning>
+
 ```js
 // +config.js
+
 import vikeServer from 'vike-server/config'
 
 export const config = {
+  // ...
   extends: [vikeServer],
-  server: 'server/index.js'
+  server: {
+    entry: 'server/index.js',
+    standalone: true
+  }
 }
 ```
 
-Update your production `script` in `package.json`:
-```diff
-// package.json
+Options:
 
-"scripts": {
-  "dev": "vike dev",
-  "build": "vike build",
-+ "prod": "NODE_ENV=production node dist/server/index.js"
+```js
+export const config = {
+  // ...
+  extends: [vikeServer],
+  server: {
+    entry: 'server/index.js',
+    standalone: {
+      esbuild: {
+        minify: true,
+        // ... or any other esbuild option
+      }
+    }
+  }
 }
 ```
 
-> Check <a href="https://github.com/vikejs/vike-server">vike-server</a> repository for more information.
+> Instead of using `standalone: true`, we recommend tools like [`pnpm deploy --prod`](https://pnpm.io/cli/deploy).
+> This provides better control over packed files and ensures greater compatibility.
+
+## Compression
+
+In production, `vike-server` compresses all Vike responses.
+
+You can disable it:
+
+```js
+apply(app, {
+  compress: false
+})
+```
 
 ## Manual integration
 
