@@ -422,7 +422,6 @@ async function loadBuildEntry(outDir?: string) {
       globalObject.buildEntry = globalObject.buildEntryPrevious
     }
     assert(globalObject.buildEntry)
-    /*
     assertWarning(
       !globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject,
       // TODO/soon: show precise path
@@ -430,7 +429,6 @@ async function loadBuildEntry(outDir?: string) {
       `Run the server production build (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of running the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
       { onlyOnce: true }
     )
-    */
   }
   const { buildEntry } = globalObject
   assertBuildEntry(buildEntry)
@@ -459,6 +457,9 @@ type BuildInfo = {
   usesClientRouter: boolean // TODO/v1-release: remove
   viteConfigRuntime: {
     _baseViteOriginal: string
+    vitePluginServerEntry: {
+      inject?: NonNullable<ConfigVitePluginServerEntry['vitePluginServerEntry']>['inject']
+    }
   }
 }
 function assertBuildEntry(buildEntry: unknown): asserts buildEntry is BuildEntry {
@@ -498,7 +499,7 @@ function getViteConfigRuntime(
   const viteConfigRuntime = {
     _baseViteOriginal: viteConfig._baseViteOriginal,
     vitePluginServerEntry: {
-      // inject: viteConfig.vitePluginServerEntry?.inject
+      inject: viteConfig.vitePluginServerEntry?.inject
     }
   }
   return viteConfigRuntime
