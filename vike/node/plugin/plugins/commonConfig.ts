@@ -102,6 +102,12 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           assertEsm(config.root)
           assertVikeCliOrApi(config)
           temp_supportOldInterface(config)
+          // Only emit dist/server/entry.mjs if necessary
+          if (
+            config.vitePluginServerEntry?.inject &&
+            !resolvePrerenderConfigGlobal(config._vikeConfigObject!).isPrerenderingEnabled
+          )
+            config.vitePluginServerEntry.disableServerEntryEmit = true
         }
       },
       config: {
