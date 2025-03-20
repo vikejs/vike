@@ -61,9 +61,7 @@ import type {
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
-import type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 import { resolveBase, type BaseUrlsResolved } from '../shared/resolveBase.js'
-import { reloadVikeConfig } from '../plugin/plugins/importUserCode/v1-design/getVikeConfig.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -159,6 +157,7 @@ function getGlobalContextSync(): GlobalContextPublic {
 }
 /** @experimental https://vike.dev/getGlobalContext */
 async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
+  debug('getGlobalContextAsync()')
   assertUsage(
     typeof isProduction === 'boolean',
     `[getGlobalContextAsync(isProduction)] Argument ${pc.cyan('isProduction')} ${
@@ -423,10 +422,13 @@ async function loadBuildEntry(outDir?: string) {
     }
     assert(globalObject.buildEntry)
     assertWarning(
-      !globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject,
-      // TODO/soon: show precise path
-      // TODO/soon: make this warning work on test/vike-node/
-      `Run the server production build (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of running the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
+      // vike-server => `vitePluginServerEntry.inject === true`
+      // vike-node => `vitePluginServerEntry.inject === [ 'index' ]`
+      globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject !== true,
+      /* TO-DO/eventually:
+      !!globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject,
+      */
+      `Run the built server entry (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
       { onlyOnce: true }
     )
   }
@@ -458,7 +460,7 @@ type BuildInfo = {
   viteConfigRuntime: {
     _baseViteOriginal: string
     vitePluginServerEntry: {
-      inject?: NonNullable<ConfigVitePluginServerEntry['vitePluginServerEntry']>['inject']
+      inject?: boolean
     }
   }
 }
@@ -492,9 +494,7 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
     `Re-build your app (you're using ${pretty(versionAtRuntime)} but your app was built with ${pretty(versionAtBuildTime)})`
   )
 }
-function getViteConfigRuntime(
-  viteConfig: ResolvedConfig & ConfigVitePluginServerEntry
-): BuildInfo['viteConfigRuntime'] {
+function getViteConfigRuntime(viteConfig: ResolvedConfig): BuildInfo['viteConfigRuntime'] {
   assert(hasProp(viteConfig, '_baseViteOriginal', 'string'))
   const viteConfigRuntime = {
     _baseViteOriginal: viteConfig._baseViteOriginal,

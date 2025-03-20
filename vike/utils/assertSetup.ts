@@ -2,12 +2,12 @@ export { assertIsNotProductionRuntime }
 export { onSetupRuntime }
 export { onSetupBuild }
 export { onSetupPrerender }
+export { onSetupPreview }
 export { setNodeEnvProduction }
 export { markSetup_viteDevServer }
 export { markSetup_vitePreviewServer }
 export { markSetup_vikeVitePlugin }
 export { markSetup_isViteDev }
-export { markSetup_isPrerendering }
 
 import { assert, assertUsage, assertWarning } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -24,6 +24,7 @@ const setup = getGlobalObject<{
   vitePreviewServer?: true
   vikeVitePlugin?: true
   isPrerendering?: true
+  isPreview?: true
   // Calling Vite's `createServer()` (i.e. `createDevMiddleware()`) is enough for `setup.isViteDev` to be `true`, even without actually adding Vite's development middleware to the server: https://github.com/vikejs/vike/issues/792#issuecomment-1516830759
   isViteDev?: boolean
 }>('utils/assertSetup.ts', {})
@@ -38,7 +39,7 @@ function onSetupRuntime(): void | undefined {
   if (debug.isActivated) debug('assertSetup()', new Error().stack)
   if (isTest()) return
   assertNodeEnvIsNotUndefinedString()
-  if (!isViteLoaded()) {
+  if (!setup.viteDevServer && setup.isViteDev === undefined) {
     // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
     assertWarning(
       !isNodeEnvDev(),
@@ -52,7 +53,7 @@ function onSetupRuntime(): void | undefined {
     // This assert() one of the main goal of this file: it ensures assertIsNotProductionRuntime()
     assert(!setup.shouldNotBeProduction)
   } else {
-    if (!setup.vitePreviewServer && !setup.isPrerendering) {
+    if (!setup.isPreview && !setup.vitePreviewServer && !setup.isPrerendering) {
       // TODO: make it assertUsage() again once https://github.com/vikejs/vike/issues/1528 is implemented.
       assertWarning(
         isNodeEnvDev(),
@@ -60,7 +61,6 @@ function onSetupRuntime(): void | undefined {
         { onlyOnce: true }
       )
     }
-    // These two assert() calls aren't that interesting
     assert(setup.vikeVitePlugin)
     assert(setup.shouldNotBeProduction)
   }
@@ -77,16 +77,17 @@ function onSetupBuild() {
   setNodeEnvProduction()
   */
 }
+// Called by ../node/prerender/runPrerender.ts
 function onSetupPrerender() {
   markSetup_isPrerendering()
   if (getNodeEnv()) assertUsageNodeEnvIsNotDev('pre-rendering')
   setNodeEnvProduction()
 }
-
-function isViteLoaded() {
-  // Do we need setup.viteDevServer or setup.vitePreviewServer ?
-  return setup.viteDevServer || setup.vitePreviewServer || setup.isViteDev !== undefined
+// Called by ../node/api/preview.ts
+function onSetupPreview() {
+  markSetup_isPreview()
 }
+
 function isTest() {
   return isVitest() || isNodeEnv('test')
 }
@@ -111,10 +112,13 @@ function markSetup_isViteDev(isViteDev: boolean) {
   if (debug.isActivated) debug('markSetup_isViteDev()', new Error().stack)
   setup.isViteDev = isViteDev
 }
-// Called by ../node/prerender/runPrerender.ts
 function markSetup_isPrerendering() {
   if (debug.isActivated) debug('markSetup_isPrerendering()', new Error().stack)
   setup.isPrerendering = true
+}
+function markSetup_isPreview() {
+  if (debug.isActivated) debug('markSetup_isPreview()', new Error().stack)
+  setup.isPreview = true
 }
 
 function assertUsageNodeEnvIsNotDev(operation: 'building' | 'pre-rendering') {
