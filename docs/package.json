@@ -12,6 +12,7 @@
     "@types/react-dom": "^19.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-tabs": "^6.1.0",
     "typescript": "^5.8.2",
     "vike": "0.4.225",
     "vite": "^6.2.1",
