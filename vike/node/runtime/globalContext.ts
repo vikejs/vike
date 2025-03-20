@@ -424,7 +424,7 @@ async function loadBuildEntry(outDir?: string) {
       !globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject,
       // TODO/soon: show precise path
       // TODO/soon: make this warning work on test/vike-node/
-      `Run the server production build (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of running the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
+      `Run the built server entry (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
       { onlyOnce: true }
     )
   }
