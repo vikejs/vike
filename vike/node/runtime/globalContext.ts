@@ -61,7 +61,6 @@ import type {
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
-import type { ConfigVitePluginServerEntry } from '@brillout/vite-plugin-server-entry/plugin'
 import { resolveBase, type BaseUrlsResolved } from '../shared/resolveBase.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
@@ -457,7 +456,7 @@ type BuildInfo = {
   viteConfigRuntime: {
     _baseViteOriginal: string
     vitePluginServerEntry: {
-      inject?: NonNullable<ConfigVitePluginServerEntry['vitePluginServerEntry']>['inject']
+      inject?: boolean
     }
   }
 }
@@ -491,9 +490,7 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
     `Re-build your app (you're using ${pretty(versionAtRuntime)} but your app was built with ${pretty(versionAtBuildTime)})`
   )
 }
-function getViteConfigRuntime(
-  viteConfig: ResolvedConfig & ConfigVitePluginServerEntry
-): BuildInfo['viteConfigRuntime'] {
+function getViteConfigRuntime(viteConfig: ResolvedConfig): BuildInfo['viteConfigRuntime'] {
   assert(hasProp(viteConfig, '_baseViteOriginal', 'string'))
   const viteConfigRuntime = {
     _baseViteOriginal: viteConfig._baseViteOriginal,

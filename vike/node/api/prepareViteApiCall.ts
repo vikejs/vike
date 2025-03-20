@@ -17,7 +17,6 @@ import { assert, assertUsage, getGlobalObject, isObject, pick, toPosixPath } fro
 import pc from '@brillout/picocolors'
 import { clearGlobalContext } from '../runtime/globalContext.js'
 import { getEnvVarObject } from '../plugin/shared/getEnvVarObject.js'
-import type { Config } from '../../shared/page-configs/Config.js'
 
 const globalObject = getGlobalObject<{ root?: string }>('api/prepareViteApiCall.ts', {})
 
@@ -36,11 +35,12 @@ function clear() {
 
 async function resolveConfigs(viteConfigFromUserApiOptions: InlineConfig | undefined, operation: Operation) {
   const viteInfo = await getViteInfo(viteConfigFromUserApiOptions, operation)
-  await assertViteRoot2(viteInfo.root, viteInfo.viteConfigFromUserEnhanced, operation)
+  const { viteConfigResolved } = await assertViteRoot2(viteInfo.root, viteInfo.viteConfigFromUserEnhanced, operation)
   const vikeConfig = await getVikeConfig2(viteInfo.root, operation === 'dev', viteInfo.vikeVitePluginOptions)
   const viteConfigFromUserEnhanced = applyVikeViteConfig(viteInfo.viteConfigFromUserEnhanced, vikeConfig)
   return {
     vikeConfig,
+    viteConfigResolved, // ONLY USE if strictly necessary. (We plan to remove assertViteRoot2() as explained in the comments of that function.)
     viteConfigFromUserEnhanced
   }
 }
@@ -194,9 +194,10 @@ async function assertViteRoot2(
   operation: Operation
 ) {
   const args = getResolveConfigArgs(viteConfigFromUserEnhanced, operation)
-  // We can eventually this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
+  // We can eventually remove this resolveConfig() call (along with removing the whole assertViteRoot2() function which is redundant with the assertViteRoot() function) so that Vike doesn't make any resolveConfig() (except for pre-rendering and preview which is required). But let's keep it for now, just to see whether calling resolveConfig() can be problematic.
   const viteConfigResolved = await resolveConfig(...args)
   assertUsage(normalizeViteRoot(viteConfigResolved.root) === normalizeViteRoot(root), errMsg)
+  return { viteConfigResolved }
 }
 function assertViteRoot(root: string, config: ResolvedConfig) {
   if (globalObject.root) assert(normalizeViteRoot(globalObject.root) === normalizeViteRoot(root))
