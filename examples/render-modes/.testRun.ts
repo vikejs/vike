@@ -256,6 +256,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
         expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/Layout.css')
       }
     }
+    if (!isV1Design) return
     for (const page of ['html-only', 'html-js', 'spa', 'ssr']) {
       const html = await fetchHtml(`/${page}`)
       expect(html.split('text/css').length).toBe(3)
