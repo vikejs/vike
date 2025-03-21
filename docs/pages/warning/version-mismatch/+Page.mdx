@@ -9,12 +9,12 @@ This warning means you're using two different Vike versions (`vike@1.2.3` and `v
 We recommend having only one Vike version installed. (Or at least make sure to load only one Vike version at a time.)
 
 <Warning>
-  **Don't deploy to production if you see this warning**, as you run into the risks of:
-   - Insidious issues that are hard to debug.
+  **Don't deploy to production if you see the warning above**, as you run into the risks of:
+   - Bugs that cannot be fixed.
    - Client-side bloat (unnecessary KBs loaded as multiple Vike versions are loaded).
-   - In some cases, security risks.
+   - In some cases, security issues.
 
-  That said, you can *temporarily* ignore the warning during development. (For example it's common to link npm packages during development which can lead to multiple `node_modules/vike/` installations with different versions.)
+  That said, you can temporarily ignore the warning during development. (For example, it's common to temporarily link npm packages during development which can lead to multiple `node_modules/vike/` installations with different versions.)
 </Warning>
 
 <Contribution>
