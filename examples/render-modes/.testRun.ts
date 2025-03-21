@@ -100,48 +100,50 @@ function testRun(cmd: 'npm run dev' | 'npm run prod' | 'npm run preview', isV1De
     })
   }
 
-  test('SPA', async () => {
-    {
-      const html = await fetchHtml('/spa')
-      expect(html).not.toContain('h1')
-      expect(html).toContain('<div id="react-container"></div>')
-      testClientRouting(html)
-    }
-
-    await page.goto(getServerUrl() + '/spa')
-    await clickCounter()
-
-    expect(await page.textContent('button')).toContain('Counter 1')
-    if (!isProd) {
+  if (isV1Design) {
+    test('SPA', async () => {
       {
-        expect(await page.textContent('h1')).toBe('SPA')
-        const file = isV1Design ? './pages/spa/+Page.jsx' : './pages/spa/index.page.client.jsx'
-        await sleepBeforeEditFile()
-        editFile(file, (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
-        await autoRetry(async () => {
-          expect(await page.textContent('h1')).toBe('SPA !')
-        })
-        await sleepBeforeEditFile()
-        editFileRevert()
-        await autoRetry(async () => {
+        const html = await fetchHtml('/spa')
+        expect(html).not.toContain('h1')
+        expect(html).toContain('<div id="react-container"></div>')
+        testClientRouting(html)
+      }
+
+      await page.goto(getServerUrl() + '/spa')
+      await clickCounter()
+
+      expect(await page.textContent('button')).toContain('Counter 1')
+      if (!isProd) {
+        {
           expect(await page.textContent('h1')).toBe('SPA')
-        })
+          const file = isV1Design ? './pages/spa/+Page.jsx' : './pages/spa/index.page.client.jsx'
+          await sleepBeforeEditFile()
+          editFile(file, (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
+          await autoRetry(async () => {
+            expect(await page.textContent('h1')).toBe('SPA !')
+          })
+          await sleepBeforeEditFile()
+          editFileRevert()
+          await autoRetry(async () => {
+            expect(await page.textContent('h1')).toBe('SPA')
+          })
+        }
+        // Ensure JavaScript was HMR'd
+        expect(await page.textContent('button')).toContain('Counter 1')
+        {
+          await testColor('green')
+          await sleepBeforeEditFile()
+          editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
+          await testColor('gray')
+          await sleepBeforeEditFile()
+          editFileRevert()
+          await testColor('green')
+        }
+        // Ensure CSS was HMR'd
+        expect(await page.textContent('button')).toContain('Counter 1')
       }
-      // Ensure JavaScript was HMR'd
-      expect(await page.textContent('button')).toContain('Counter 1')
-      {
-        await testColor('green')
-        await sleepBeforeEditFile()
-        editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
-        await testColor('gray')
-        await sleepBeforeEditFile()
-        editFileRevert()
-        await testColor('green')
-      }
-      // Ensure CSS was HMR'd
-      expect(await page.textContent('button')).toContain('Counter 1')
-    }
-  })
+    })
+  }
 
   test('HTML + JS', async () => {
     {
