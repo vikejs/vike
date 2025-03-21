@@ -39,9 +39,9 @@ function testVikeConfig(vike: Vike) {
 // TEST: prerenderSetOverEffect
 function testPrerenderSettings(vike: Vike) {
   const { prerenderContext } = vike
-  if (!prerenderContext) return
+  assert(prerenderContext.isPrerenderingEnabled)
+  if (!prerenderContext.output) return
   ;(globalThis as any).prerenderContextWasTested = true
-  assert(vike.prerenderContext)
   const pageIds = Object.keys(vike.pages)
   const pageIdsPrerendered = unique(
     prerenderContext.output.map((file) => file.pageContext.pageId).filter((pageId) => pageId !== null)

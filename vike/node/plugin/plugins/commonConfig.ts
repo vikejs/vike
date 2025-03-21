@@ -46,10 +46,16 @@ declare module 'vite' {
 type VikeConfigPublic = {
   config: VikeConfigObject['global']['config']
   pages: VikeConfigObject['pages']
-  prerenderContext?: PrerenderContextPublic
+  prerenderContext: PrerenderContext
 }
 
+type PrerenderContext = {
+  isPrerenderingEnabled: boolean
+} & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
+
 function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
+  // We cache it => makes sure we only generate one object => we can mutate it at runPrerender()
+  let prerenderContext: PrerenderContext
   return [
     {
       name: `${pluginName}:pre`,
@@ -62,6 +68,9 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           const root = configFromUser.root ? normalizeViteRoot(configFromUser.root) : await getViteRoot(operation)
           assert(root)
           const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
+          const { isPrerenderingEnabled } = resolvePrerenderConfigGlobal(vikeConfig)
+          prerenderContext ??= { isPrerenderingEnabled, output: null, pageContexts: null }
+          assert(prerenderContext.isPrerenderingEnabled === isPrerenderingEnabled)
           return {
             _isDev: isDev,
             _root: root,
@@ -69,11 +78,12 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             _vikeConfigObject: vikeConfig,
             _vike: {
               pages: vikeConfig.pages,
-              config: vikeConfig.global.config
+              config: vikeConfig.global.config,
+              prerenderContext
             },
             // TODO/v1-release: remove https://github.com/vikejs/vike/issues/2122
             configVikePromise: Promise.resolve({
-              prerender: resolvePrerenderConfigGlobal(vikeConfig).isPrerenderingEnabled
+              prerender: isPrerenderingEnabled
             })
           }
         }

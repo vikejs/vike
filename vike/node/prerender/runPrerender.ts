@@ -169,22 +169,15 @@ async function runPrerenderFromCLIPrerenderCommand(): Promise<void> {
   runPrerender_forceExit()
   assert(false)
 }
-async function runPrerenderFromAutoRun(
-  viteConfig: InlineConfig | undefined,
-  config: ResolvedConfig
-): Promise<{ forceExit: boolean }> {
-  let prerenderContextPublic: PrerenderContextPublic
+async function runPrerenderFromAutoRun(viteConfig: InlineConfig | undefined): Promise<{ forceExit: boolean }> {
   try {
-    const ret = await runPrerender({ viteConfig })
-    prerenderContextPublic = ret.prerenderContextPublic
+    await runPrerender({ viteConfig })
   } catch (err) {
     // Avoid Rollup prefixing the error with [vike:build:pluginAutoFullBuild], see for example https://github.com/vikejs/vike/issues/472#issuecomment-1276274203
     console.error(err)
     logErrorHint(err)
     process.exit(1)
   }
-  const vike = getVikeConfigPublic(config)
-  vike.prerenderContext = prerenderContextPublic
   const forceExit = isVikeCli() || isViteCliCall()
   return { forceExit }
 }
@@ -204,6 +197,8 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfig(viteConfig)
+  const vike = getVikeConfigPublic(viteConfig)
+  assert(vike.prerenderContext.isPrerenderingEnabled)
 
   const { outDirClient } = getOutDirs(viteConfig)
   const { root } = viteConfig
@@ -274,8 +269,9 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await warnMissingPages(prerenderContext.prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
   const prerenderContextPublic = makePublic(prerenderContext)
+  objectAssign(vike.prerenderContext, prerenderContextPublic)
 
-  return { viteConfig, prerenderContextPublic }
+  return { viteConfig }
 }
 
 async function collectDoNoPrerenderList(

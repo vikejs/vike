@@ -100,7 +100,7 @@ async function triggerFullBuild(
   }
 
   if (isPrerenderAutoRunEnabled(vikeConfig)) {
-    const res = await runPrerenderFromAutoRun(configInline, config)
+    const res = await runPrerenderFromAutoRun(configInline)
     forceExit = res.forceExit
   }
 }
