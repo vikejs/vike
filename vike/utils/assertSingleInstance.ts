@@ -13,22 +13,34 @@ import { PROJECT_VERSION } from './PROJECT_VERSION.js'
 /* Use original assertWarning() after all CJS is removed from node_modules/vike/dist/
 import { assertWarning } from './assert.js'
 */
-const globalObject = getGlobalObject<{
+let globalObject: GlobalObject | undefined
+// getGlobalObjectSafe() can be called before this line
+globalObject ??= genGlobalConfig()
+type GlobalObject = {
   instances: string[]
   checkSingleInstance?: true
   isClientRouting?: boolean
   // For assertWarning() shim
   alreadyLogged: Set<string>
-}>('utils/assertSingleInstance.ts', {
-  instances: [],
-  alreadyLogged: new Set()
-})
+}
+function genGlobalConfig() {
+  return getGlobalObject<GlobalObject>('utils/assertSingleInstance.ts', {
+    instances: [],
+    alreadyLogged: new Set()
+  })
+}
+// We need getGlobalObjectSafe() because globalObject is `undefined` when exported functions are called before globalObject is initialized
+function getGlobalObjectSafe() {
+  globalObject ??= genGlobalConfig()
+  return globalObject
+}
 
 const clientRuntimesClonflict =
   'Client runtime of both Server Routing and Client Routing loaded https://vike.dev/client-runtimes-conflict'
 const clientNotSingleInstance = 'Client runtime loaded twice https://vike.dev/client-runtime-duplicated'
 
 function assertSingleInstance() {
+  const globalObject = getGlobalObjectSafe()
   {
     const versions = unique(globalObject.instances)
     assertWarning(
@@ -50,6 +62,7 @@ function assertSingleInstance() {
 }
 
 function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) {
+  const globalObject = getGlobalObjectSafe()
   assertWarning(globalObject.isClientRouting !== true, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
@@ -63,6 +76,7 @@ function assertSingleInstance_onClientEntryServerRouting(isProduction: boolean) 
   assertSingleInstance()
 }
 function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) {
+  const globalObject = getGlobalObjectSafe()
   assertWarning(globalObject.isClientRouting !== false, clientRuntimesClonflict, {
     onlyOnce: true,
     showStackTrace: true
@@ -78,6 +92,7 @@ function assertSingleInstance_onClientEntryClientRouting(isProduction: boolean) 
 
 // Called by utils/assert.ts which is (most certainly) loaded by all entries. That way we don't have to call a callback for every entry. (There are a lot of entries: `client/router/`, `client/`, `node/runtime/`, `node/plugin/`, `node/cli`.)
 function assertSingleInstance_onAssertModuleLoad() {
+  const globalObject = getGlobalObjectSafe()
   globalObject.instances.push(PROJECT_VERSION)
   assertSingleInstance()
 }
@@ -87,6 +102,7 @@ function assertWarning(
   errorMessage: string,
   { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace: boolean }
 ): void {
+  const globalObject = getGlobalObjectSafe()
   if (condition) {
     return
   }
