@@ -51,6 +51,7 @@ type VikeConfigPublic = {
 
 type PrerenderContext = {
   isPrerenderingEnabled: boolean
+  isPrerenderingEnabledForAllPages: boolean
 } & ({ [K in keyof PrerenderContextPublic]: null } | PrerenderContextPublic)
 
 function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
@@ -68,9 +69,15 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
           const root = configFromUser.root ? normalizeViteRoot(configFromUser.root) : await getViteRoot(operation)
           assert(root)
           const vikeConfig = await getVikeConfig2(root, isDev, vikeVitePluginOptions)
-          const { isPrerenderingEnabled } = resolvePrerenderConfigGlobal(vikeConfig)
-          prerenderContext ??= { isPrerenderingEnabled, output: null, pageContexts: null }
+          const { isPrerenderingEnabled, isPrerenderingEnabledForAllPages } = resolvePrerenderConfigGlobal(vikeConfig)
+          prerenderContext ??= {
+            isPrerenderingEnabled,
+            isPrerenderingEnabledForAllPages,
+            output: null,
+            pageContexts: null
+          }
           assert(prerenderContext.isPrerenderingEnabled === isPrerenderingEnabled)
+          assert(prerenderContext.isPrerenderingEnabledForAllPages === isPrerenderingEnabledForAllPages)
           return {
             _isDev: isDev,
             _root: root,
