@@ -14,6 +14,7 @@ import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
+import { isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
 
 function fileEnv(): Plugin {
   let config: ResolvedConfig
@@ -23,6 +24,7 @@ function fileEnv(): Plugin {
     load(id, options) {
       // In build, we use generateBundle() instead of the load() hook. Using load() works for dynamic imports in dev thanks to Vite's lazy transpiling, but it doesn't work in build because Rollup transpiles any dynamically imported module even if it's never actually imported.
       if (!viteDevServer) return
+      if (!isV1Design(config)) return
       if (skip(id)) return
       // For `.vue` files: https://github.com/vikejs/vike/issues/1912#issuecomment-2394981475
       if (id.endsWith('?direct')) id = id.slice(0, -1 * '?direct'.length)
