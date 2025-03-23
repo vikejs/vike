@@ -34,7 +34,7 @@ function Sponsors() {
                 caption="Partners"
                 title={
                   <>
-                    Sponsor Vike and get a tight-knit partnership&nbsp;
+                    Sponsor Vike for a tight-knit partnership&nbsp;
                     <img
                       src={handshakeIcon}
                       style={{ width: 39, verticalAlign: 'middle', position: 'relative', top: -1 }}
