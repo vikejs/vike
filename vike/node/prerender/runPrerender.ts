@@ -977,22 +977,22 @@ async function write(
   assertPosixPath(outDirClient)
   assertPosixPath(filePathRelative)
   const filePath = path.posix.join(outDirClient, filePathRelative)
+
+  objectAssign(pageContext, {
+    _prerenderResult: {
+      filePath,
+      fileContent
+    }
+  })
   output.push({
     filePath,
     fileType,
     fileContent,
     pageContext
   })
+
   if (onPagePrerender) {
-    const prerenderPageContext = {}
-    objectAssign(prerenderPageContext, pageContext)
-    objectAssign(prerenderPageContext, {
-      _prerenderResult: {
-        filePath,
-        fileContent
-      }
-    })
-    await onPagePrerender(prerenderPageContext)
+    await onPagePrerender(pageContext)
   } else {
     const { promises } = await import('fs')
     const { writeFile, mkdir } = promises
