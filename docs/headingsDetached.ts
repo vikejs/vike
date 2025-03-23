@@ -180,6 +180,10 @@ function tools(): HeadingDetachedDefinition[] {
       url: '/angular'
     },
     {
+      title: 'VanJS',
+      url: '/vanjs'
+    },
+    {
       title: 'Express.js',
       url: '/express'
     },
