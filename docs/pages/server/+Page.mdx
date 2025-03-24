@@ -1,17 +1,24 @@
-import { Link, Warning } from '@brillout/docpress'
+import { Link, Warning, NoteWithCustomIcon } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import './tabs.css'
+
+<NoteWithCustomIcon icon={<span style={{fontSize: "1.1em"}}>⚗️</span>}>`vike-server` will be released very shortly (ETA this week). In the meantime, see <Link href="/integration#server-manual-integration" doNotInferSectionTitle /> instead.</NoteWithCustomIcon>
 
 We recommend using the Vike extension `vike-server` which comes with many benefits such as:
 - Out-of-the-box support for popular servers (Express, Hono, Hattip, Elysia, etc.)
 - Out-of-the-box support for popular deployments (Cloudflare, Vercel, Netlify, etc.)
 - HMR
 
-Getting started: <Link href="#add-vike-server-to-an-existing-vike-app" />.  
+Getting started: <Link href="#add-vike-server-to-an-existing-vike-app" />.
 
 Options:
 - <Link href="#standalone" />
 - <Link href="#compression" />
+- <Link href="#https" />
+
+> Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
+
+> If you want more control over server integration, see <Link href="/integration#server-manual-integration" doNotInferSectionTitle /> instead.
 
 
 ## Add `vike-server` to an existing Vike app
@@ -231,6 +238,7 @@ export const config = {
 > Instead of using `standalone: true`, we recommend tools such as [`pnpm deploy --prod`](https://pnpm.io/cli/deploy).
 > This provides better control over packed files and ensures greater compatibility.
 
+
 ## Compression
 
 In production, `vike-server` compresses all Vike responses.
@@ -243,12 +251,16 @@ apply(app, {
 })
 ```
 
-## Manual integration
 
-If you want more control over your server integration, see <Link href="/server-integration" />
+## HTTPS
+
+In production, Vike is just a server middleware — there is nothing to take into consideration.
+
+If you want to use HTTPS in development as well, then make sure to [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
+
 
 ## See also
 
-- <Link href="/server-integration" />
-- <Link href="/tools#server" />
-- <Link href="/deploy" />
+- <Link href="/integration#server-manual-integration" doNotInferSectionTitle />
+- <Link href="/integration#non-javascript-backend" doNotInferSectionTitle />
+- <Link href="/renderPage" />

@@ -276,12 +276,6 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Server integration',
-    url: '/server-integration',
-    sectionTitles: ['Non-JavaScript Backend']
-  },
-  {
-    level: 2,
     title: 'Error Tracking',
     url: '/error-tracking'
   },
@@ -305,6 +299,7 @@ const headings = [
     level: 2,
     titleInNav: '... more',
     title: 'Integration (more)',
+    sectionTitles: ['Non-JavaScript Backend', 'Server (manual integration)'],
     url: '/integration'
   },
   {
