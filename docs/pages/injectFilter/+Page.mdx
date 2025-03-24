@@ -17,7 +17,7 @@ The `injectFilter()` hook allows you to control where and what tags Vike injects
 
 > `injectFilter()` is called only in production: it has no effect in development. (Because, in development, the dependency graph is <Link href="/lazy-transpiling" >lazily discovered</Link> and therefore not fully known upon rendering HTML.)
 
-<Warning>`injectFilter()` is a beta feature. (Which means breaking changes may occur during any minor version update.)</Warning>
+<Warning>`injectFilter()` is a beta feature: breaking changes may occur upon any version update.</Warning>
 
 ```ts
 // /renderer/+onRenderHtml.ts

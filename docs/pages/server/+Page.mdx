@@ -2,26 +2,33 @@ import { Link, Warning } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import './tabs.css'
 
-`vike-server` comes with the following benefits:
+We recommend using the Vike extension `vike-server` which comes with many benefits such as:
 - Out-of-the-box support for popular servers (Express, Hono, Hattip, Elysia, etc.)
-- Out-of-the-box support for popular serverless/edge environment (Cloudflare, Vercel, etc.)
+- Out-of-the-box support for popular deployments (Cloudflare, Vercel, Netlify, etc.)
 - HMR
+
+Getting started: <Link href="#add-vike-server-to-an-existing-vike-app" />.  
+
+Options:
+- <Link href="#standalone" />
+- <Link href="#compression" />
+
 
 ## Add `vike-server` to an existing Vike app
 
-To add `vike-server` to an existing Vike app: install the `vike-server` npm package (e.g. $ npm install vike-server) then extend your existing +config.js file (or create one) with `vike-server`:
+To add `vike-server` to an existing Vike app: install the `vike-server` npm package (e.g. `$ npm install vike-server`) then extend your existing <Link href="/config#files">+config.js</Link> file (or create one) with `vike-server`:
 ```js
 // +config.js
 import vikeServer from 'vike-server/config' // [!code ++]
 
 export const config = {
   extends: [vikeServer],  // [!code ++]
-  // Points to your server file, see next section
+  // Points to your server entry
   server: 'server/index.js'  // [!code ++]
 }
 ```
 
-Also update your production `script` in `package.json`:
+Update your production `script` in `package.json`:
 ```json
 // package.json
 
@@ -32,7 +39,7 @@ Also update your production `script` in `package.json`:
 }
 ```
 
-Finally, create or update your server entry:
+Create (or update) your server entry:
 
 <Tabs>
   <TabList>
@@ -158,7 +165,7 @@ Finally, create or update your server entry:
 
 ## Custom `pageContext`
 
-You can define custom [pageContext](https://vike.dev/pageContext) properties:
+To define <Link href="/pageContext#custom">custom `pageContext`</Link> properties:
 
 ```ts
 apply(app, {
@@ -170,21 +177,23 @@ apply(app, {
 })
 ```
 
-> See [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
+> The `runtime` object is a [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
 
-> The `runtime` object is also available at `pageContext.runtime` so that, even without the custom `pageContext` function above,
-> you can retrieve `pageContext.runtime.req.user` in Vike hooks and UI components (see <Link href="/usePageContext" />).
+> The `runtime` object is also available at `pageContext.runtime`. Consequently, you don't necessarily need to use the `pageContext` function above
+> in order to retrieve information, such as `pageContext.runtime.req.user`, in Vike hooks and UI components (see <Link href="/usePageContext" />).
 
 <br/>
 
-## Standalone build (experimental)
+## Standalone
 
-With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only `dist/` is required (i.e. you can remove `node_modules/` and skip `npm install`).
+With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
 
 <Warning>
-  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, please disable standalone mode, or replace
-  the dependency throwing the error with one that does not rely on filesystem operations.
+ This feature is experimental and may break upon any version update.
 </Warning>
+
+>  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, then disable standalone mode or replace
+>  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed to be included in the bundle.)
 
 ```js
 // +config.js
@@ -219,7 +228,7 @@ export const config = {
 }
 ```
 
-> Instead of using `standalone: true`, we recommend tools like [`pnpm deploy --prod`](https://pnpm.io/cli/deploy).
+> Instead of using `standalone: true`, we recommend tools such as [`pnpm deploy --prod`](https://pnpm.io/cli/deploy).
 > This provides better control over packed files and ensures greater compatibility.
 
 ## Compression

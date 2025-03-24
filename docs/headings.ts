@@ -271,7 +271,7 @@ const headings = [
   },
   {
     level: 2,
-    title: 'Vike server',
+    title: 'Server',
     url: '/server'
   },
   {
