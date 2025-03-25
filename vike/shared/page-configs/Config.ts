@@ -373,7 +373,11 @@ type ConfigBuiltIn = {
          */
         enable?: boolean | null
         /**
-         * TODO/now
+         * If you pre-render all your pages then Vike removes the `dist/server/` directory after pre-rendering has finished.
+         *
+         * If you set this setting to `true` then Vike won't remove the `dist/server/` directory.
+         *
+         * https://vike.dev/prerender#keepDistServer
          *
          * @default false
          */
