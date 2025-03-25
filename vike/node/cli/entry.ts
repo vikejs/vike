@@ -23,9 +23,9 @@ async function cli() {
 async function cmdDev() {
   const startTime = performance.now()
   try {
-    const { viteServer, isMiddlewareMode } = await dev()
+    const { viteServer } = await dev()
 
-    if (!isMiddlewareMode) {
+    if (!viteServer.httpServer) {
       await viteServer.listen()
 
       const info = viteServer.config.logger.info
