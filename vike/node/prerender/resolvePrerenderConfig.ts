@@ -16,6 +16,7 @@ function resolvePrerenderConfigGlobal(vikeConfig: VikeConfigObject) {
   const prerenderConfigGlobal = {
     partial: pickFirst(prerenderSettings.map((c) => c.partial)) ?? false,
     noExtraDir: pickFirst(prerenderSettings.map((c) => c.noExtraDir)) ?? false,
+    keepDistServer: pickFirst(prerenderSettings.map((c) => c.keepDistServer)) ?? false,
     parallel: pickFirst(prerenderSettings.map((c) => c.parallel)) ?? true,
     disableAutoRun: pickFirst(prerenderSettings.map((c) => c.disableAutoRun)) ?? false
   } satisfies Record<string, boolean | number>

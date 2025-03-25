@@ -11,12 +11,16 @@ By default, pre-rendering is disabled. To enable it:
 export default {
   // Enable pre-rendering
   prerender: true,
-  // Or enable with settings
+
+  // Pre-rendeer settings.
+  // The following are the default values.
   prerender: {
     partial: false,
     noExtraDir: false,
-    parallel: 4,
-    disableAutoRun: false
+    parallel: os.cpus.length, // Number of CPUs
+    disableAutoRun: false,
+    enable: true,
+    keepDistServer: false
   }
 }
 ```
@@ -114,6 +118,13 @@ const onBeforePrerenderStart = someCondition()
 
 
 ## Settings
+
+- <Link href="#partial" />
+- <Link href="#noextradir" />
+- <Link href="#parallel" />
+- <Link href="#disableautorun" />
+- <Link href="#enable" />
+- <Link href="#keepdistserver" />
 
 ### `partial`
 
@@ -227,6 +238,12 @@ export default {
   }
 }
 ```
+
+### `keepDistServer`
+
+If you pre-render all your pages (i.e. you didn't set <Link href="#partial">`partial`</Link> to `true`) then Vike removes the `dist/server/` directory (or `path.join(build.outDir, 'server/')` if you changed [`build.outDir`](https://vitejs.dev/config/build-options.html#build-outdir)) after pre-rendering has finished.
+
+If you set `prerender.keepDistServer` to `true` then Vike won't remove the `dist/server/` directory.
 
 
 ## See also

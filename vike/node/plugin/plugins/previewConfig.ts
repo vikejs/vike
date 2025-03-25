@@ -38,23 +38,26 @@ function previewConfig(): Plugin {
       config.appType = 'mpa'
       */
       return () => {
-        assertDist()
+        const prerenderConfigGlobal = resolvePrerenderConfigGlobal(config._vikeConfigObject!)
+        const { isPrerenderingEnabledForAllPages, isPrerenderingEnabled } = prerenderConfigGlobal
+        assertDist(isPrerenderingEnabledForAllPages)
 
         // We cannot re-use Vite's static middleware: https://github.com/vitejs/vite/pull/14836#issuecomment-1788540300
         addStaticAssetsMiddleware(server.middlewares)
 
-        const prerenderConfigGlobal = resolvePrerenderConfigGlobal(config._vikeConfigObject!)
-        if (!prerenderConfigGlobal.isPrerenderingEnabledForAllPages) {
-          addSsrMiddleware(server.middlewares, config, true, prerenderConfigGlobal.isPrerenderingEnabled)
+        if (!isPrerenderingEnabledForAllPages) {
+          addSsrMiddleware(server.middlewares, config, true, isPrerenderingEnabled)
         }
 
         addStatic404Middleware(server.middlewares)
       }
     }
   }
-  function assertDist() {
+  function assertDist(isPrerenderingEnabledForAllPages: boolean) {
     const { outDirRoot, outDirClient, outDirServer } = getOutDirs(config)
-    ;[outDirRoot, outDirClient, outDirServer].forEach((outDirAny) => {
+    const dirS = [outDirRoot, outDirClient]
+    if (!isPrerenderingEnabledForAllPages) dirS.push(outDirServer)
+    dirS.forEach((outDirAny) => {
       assertUsage(
         fs.existsSync(outDirAny),
         `Cannot run ${pc.cyan('$ vike preview')}: your app isn't built (the build directory ${pc.cyan(
