@@ -12,7 +12,7 @@ Usage:
 
 #### CLI options
 
-You can pass <Link href="/settings">Vike settings</Link> as CLI options, for example:
+You can pass <Link href="/settings">any Vike setting</Link> as CLI option, for example:
 
 ```bash
 # Make development server available over LAN and public addresses
@@ -32,7 +32,7 @@ $ vike build --prerender "{parallel:4,noExtraDir:true}"
 
 > The CLI option value syntax is JavaScript-like, see <Link href="#json5-syntax" />.
 
-#### `VITE_CONFIG` environment variable
+#### `VIKE_CONFIG` environment variable
 
 You can also use the `VIKE_CONFIG` environment variable, for example:
 
@@ -51,11 +51,20 @@ $ VIKE_CONFIG="{prerender:{parallel:4,noExtraDir:true}}" npm run build
 
 #### CLI options
 
-As explained <Link href="#vike-settings">above</Link>, the following [Vite CLI options](https://vite.dev/guide/cli) are supported: `--host` / `--mode` / `--port`.
+The following [Vite CLI options](https://vite.dev/guide/cli#options) are supported:
+ - `--host`
+ - `--mode`
+ - `--port`
+
+> These are actually all Vike settings, which alias Vite settings. See: <Link href="/host" noBreadcrumb /> / <Link href="/port" noBreadcrumb /> / <Link href="/mode" noBreadcrumb />.
+
+For other Vite settings, use `vite.config.js` or `VITE_CONFIG`.
+
+> Reach out if you believe some other Vite setting should also be added the list of CLI options.
 
 #### `VITE_CONFIG` environment variable
 
-You can use the `VITE_CONFIG` environment variable to pass [Vite settings](https://vite.dev/config/), for example:
+You can use the `VITE_CONFIG` environment variable to pass [any Vite setting](https://vite.dev/config/), for example:
 
 ```bash
 # Set Vite's server.host setting to true

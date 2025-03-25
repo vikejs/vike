@@ -1213,7 +1213,8 @@ function assertKnownConfig(
     )
   }
 
-  const errMsg = `${sourceName} sets an unknown config ${configNameColored}` as const
+  const errMsg =
+    `${sourceName} sets an unknown Vike config, see ${pc.underline('https://vike.dev/cli')} for the list of CLI options.` as const
 
   // Missing vike-{react,vue,solid} installation
   {
