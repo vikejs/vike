@@ -235,7 +235,7 @@ importers:
         version: 0.0.28
       '@brillout/docpress':
         specifier: 0.12.4
-        version: 0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
+        version: 0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
       '@types/react':
         specifier: ^19.0.2
         version: 19.0.8
@@ -1825,9 +1825,6 @@ importers:
       tinyglobby:
         specifier: ^0.2.10
         version: 0.2.10
-      vite:
-        specifier: '>=5.1.0'
-        version: 6.1.0(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.2)
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.5.3
@@ -1865,6 +1862,9 @@ importers:
       typescript:
         specifier: ^5.8.2
         version: 5.8.2
+      vite:
+        specifier: ^6.2.1
+        version: 6.2.1(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.2)
 
 packages:
 
@@ -7379,46 +7379,6 @@ packages:
       terser:
         optional: true
 
-  vite@6.1.0:
-    resolution: {integrity: sha512-RjjMipCKVoR4hVfPY6GQTgveinjNuyLw+qruksLDvA5ktI1150VmcMBKmQaEWJhg/j6Uaf6dNCNA0AfdzUb/hQ==}
-    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
-      jiti: '>=1.21.0'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      sass-embedded: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      yaml:
-        optional: true
-
   vite@6.2.1:
     resolution: {integrity: sha512-n2GnqDb6XPhlt9B8olZPrgMD/es/Nd1RdChF6CBD/fHW6pUyUTt2sQW2fPRX5GiD9XEa6+8A6A4f2vT6pSsE7Q==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
@@ -7991,14 +7951,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
+  '@brillout/docpress@0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
     dependencies:
       '@brillout/picocolors': 1.0.26
       '@docsearch/css': 3.9.0
       '@docsearch/react': 3.9.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.0.8)(react@19.0.0)
-      '@mdx-js/rollup': 3.0.1(acorn@8.14.0)(rollup@4.34.4)
+      '@mdx-js/rollup': 3.0.1(rollup@4.34.4)
       '@shikijs/transformers': 1.2.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
@@ -8784,7 +8744,7 @@ snapshots:
       '@types/react': 19.0.8
       react: 19.0.0
 
-  '@mdx-js/rollup@3.0.1(acorn@8.14.0)(rollup@4.34.4)':
+  '@mdx-js/rollup@3.0.1(rollup@4.34.4)':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
       '@rollup/pluginutils': 5.1.4(rollup@4.34.4)
@@ -13801,17 +13761,6 @@ snapshots:
       '@types/node': 22.13.1
       fsevents: 2.3.3
       terser: 5.38.1
-
-  vite@6.1.0(@types/node@20.17.17)(terser@5.38.1)(tsx@4.19.2):
-    dependencies:
-      esbuild: 0.24.2
-      postcss: 8.5.1
-      rollup: 4.34.4
-    optionalDependencies:
-      '@types/node': 20.17.17
-      fsevents: 2.3.3
-      terser: 5.38.1
-      tsx: 4.19.2
 
   vite@6.2.1(@types/node@17.0.45)(terser@5.38.1)(tsx@4.19.2):
     dependencies:
