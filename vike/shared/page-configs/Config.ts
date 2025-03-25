@@ -372,6 +372,12 @@ type ConfigBuiltIn = {
          * @default true
          */
         enable?: boolean | null
+        /**
+         * TODO/now
+         *
+         * @default false
+         */
+        keepDistServer?: boolean
       }
 
   /**

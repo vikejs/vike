@@ -79,6 +79,7 @@ import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigPublic } from '../plugin/plugins/commonConfig.js'
 import type { PageContextServer } from '../../shared/types.js'
+import fs from 'node:fs'
 
 type HtmlFile = {
   urlOriginal: string
@@ -200,7 +201,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const vike = getVikeConfigPublic(viteConfig)
   assert(vike.prerenderContext.isPrerenderingEnabled)
 
-  const { outDirClient } = getOutDirs(viteConfig)
+  const { outDirClient, outDirServer } = getOutDirs(viteConfig)
   const { root } = viteConfig
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
   validatePrerenderConfig(prerenderConfigGlobal)
@@ -270,6 +271,10 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const prerenderContextPublic = makePublic(prerenderContext)
   objectAssign(vike.prerenderContext, prerenderContextPublic)
+
+  if (prerenderConfigGlobal.isPrerenderingEnabledForAllPages && !prerenderConfigGlobal.keepDistServer) {
+    fs.rmSync(outDirServer, { recursive: true })
+  }
 
   return { viteConfig }
 }
