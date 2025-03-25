@@ -25,7 +25,7 @@ async function cmdDev() {
   try {
     const { viteServer } = await dev()
 
-    if (!viteServer.httpServer) {
+    if (viteServer.httpServer) {
       await viteServer.listen()
 
       const info = viteServer.config.logger.info
