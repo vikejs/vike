@@ -17,6 +17,16 @@ export default defineConfig({
 });
 ```
 
+```js
+// +config.js
+
+import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
+
+export default {
+  plugins: [vikeCloudflare]// [!code ++]
+}
+```
+
 If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additional modifications are required:
 
 <Tabs>
