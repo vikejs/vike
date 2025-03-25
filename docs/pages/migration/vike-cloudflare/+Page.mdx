@@ -1,0 +1,141 @@
+import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../../components/tabs.css'
+
+## Migrating from `0.1.x` to `0.2.x`
+
+Make sure to upgrade `vike` to version `>=0.4.227`.
+
+```js
+// vite.config.js
+
+import { pages } from "vike-cloudflare";// [!code --]
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [
+    pages()// [!code --]
+  ]
+});
+```
+
+```js
+// +config.js
+
+import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
+
+export default {
+  plugins: [vikeCloudflare]// [!code ++]
+}
+```
+
+If your are using <Link href="/hono" /> or <Link href="/hattip" />, some additional modifications are required:
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Hattip</Tab>
+  </TabList>
+
+  <TabPanel>
+    ```js
+    // vite.config.js
+
+    import devServer from "@hono/vite-dev-server";// [!code --]
+    import { pages } from "vike-cloudflare";// [!code --]
+    import { defineConfig } from "vite";
+
+    export default defineConfig({
+      plugins: [
+        devServer(...),// [!code --]
+        pages({// [!code --]
+          server: {// [!code --]
+            kind: "hono",// [!code --]
+            entry: "hono-entry.ts",// [!code --]
+          },// [!code --]
+        }),// [!code --]
+      ],
+    });
+    ```
+
+    ```js
+    // +config.js
+
+    import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
+
+    export default {
+      plugins: [vikeCloudflare],// [!code ++]
+      server: {// [!code ++]
+        entry: "hono-entry.ts"// [!code ++]
+      }// [!code ++]
+    }
+    ```
+
+    ```json
+    // package.json
+
+    {
+      "scripts": {
+        "dev": "vite",// [!code --]
+        "dev": "vike dev",// [!code ++]
+        "build": "vite build"// [!code --]
+        "build": "vike build"// [!code ++]
+      },
+      "devDependencies": {
+        "@hono/vite-cloudflare-pages": "^0.4.2",// [!code --]
+        "@hono/vite-dev-server": "^0.17.0"// [!code --]
+      }
+    }
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    import { hattip } from "@hattip/vite";// [!code --]
+    import { pages } from "vike-cloudflare";// [!code --]
+    import { defineConfig } from "vite";
+
+    export default defineConfig({
+      plugins: [
+        hattip(),// [!code --]
+        pages({// [!code --]
+          server: {// [!code --]
+            kind: "hattip",// [!code --]
+            entry: "hattip-entry.ts",// [!code --]
+          },// [!code --]
+        }),// [!code --]
+      ],
+    });
+    ```
+
+    ```js
+    // +config.js
+
+    import vikeCloudflare from "vike-cloudflare/config";// [!code ++]
+
+    export default {
+      plugins: [vikeCloudflare],// [!code ++]
+      server: {// [!code ++]
+        entry: "hattip-entry.ts"// [!code ++]
+      }// [!code ++]
+    }
+    ```
+
+    ```json
+    // package.json
+
+    {
+      "scripts": {
+        "dev": "hattip serve ./hattip-entry.ts --client",// [!code --]
+        "dev": "vike dev",// [!code ++]
+        "build": "cross-env NODE_ENV=production hattip build ./hattip-entry.ts --target es2022 --client"// [!code --]
+        "build": "vike build"// [!code ++]
+      },
+      "devDependencies": {
+        "@hattip/adapter-cloudflare-workers": "^0.0.49",
+        "@hattip/adapter-node": "^0.0.49",// [!code --]
+        "@hattip/vite": "^0.0.49",// [!code --]
+      }
+    }
+    ```
+  </TabPanel>
+</Tabs>

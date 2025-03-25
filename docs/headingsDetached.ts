@@ -817,6 +817,10 @@ function migrations(): HeadingDetachedDefinition[] {
     {
       title: 'Migration `0.5`',
       url: '/migration/0.5'
+    },
+    {
+      title: 'Migrate `vike-cloudflare`',
+      url: '/migration/vike-cloudflare'
     }
   ].map((h) => ({ ...h, category: 'Migration' }))
 }
