@@ -1,3 +1,22 @@
+## [0.4.227](https://github.com/vikejs/vike/compare/v0.4.226...v0.4.227) (2025-03-25)
+
+
+### Bug Fixes
+
+* cyclic dep assertSingleInstance() ([f9a9b23](https://github.com/vikejs/vike/commit/f9a9b23d8d7494d7b18ac9eb9ef09bd627261a5f))
+* don't make CLI listen in middleware mode ([#2298](https://github.com/vikejs/vike/issues/2298)) ([be91b87](https://github.com/vikejs/vike/commit/be91b870b617263d22e430fe790692ee7d681e1f))
+* fix regression with deprecated design ([a48d4d3](https://github.com/vikejs/vike/commit/a48d4d3c17bb3e6a0510cdcf75861033bb5f559b))
+* preserve pageContext object reference upon onPagePrerender() call (fix [#2293](https://github.com/vikejs/vike/issues/2293)) ([8f5c172](https://github.com/vikejs/vike/commit/8f5c172532d1cb548ae96552e38bf5062e47b8af))
+
+
+### Features
+
+* [`prerender.keepDistServer`](https://vike.dev/prerender#keepdistserver) ([#2297](https://github.com/vikejs/vike/issues/2297)) ([8e3ab54](https://github.com/vikejs/vike/commit/8e3ab540112d6b935daa6105e6e3c1f9142c3c7e))
+* vike.prerenderContext.isPrerenderingEnabled ([a0035ee](https://github.com/vikejs/vike/commit/a0035eede17da709b516e2d38cfb3f8155c0d717))
+* vike.prerenderContext.isPrerenderingEnabledForAllPages ([78ec4be](https://github.com/vikejs/vike/commit/78ec4be45272dab3c2fda892ea9cd0f43d373659))
+
+
+
 ## [0.4.226](https://github.com/vikejs/vike/compare/v0.4.225...v0.4.226) (2025-03-20)
 
 
