@@ -38,6 +38,8 @@ async function cmdDev() {
       })
 
       viteServer.printUrls()
+    } else {
+      // vike-server => middleware mode => `viteServer.httpServer === null`
     }
 
     viteServer.bindCLIShortcuts({ print: true })
