@@ -1,0 +1,196 @@
+import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../../../components/tabs.css'
+
+We (<Link href="/team">Joël, Dani, and Rom</Link>) are beyond thrilled to announce a <Link href="/server">new Vike extension `vike-server`</Link> that can integrate Vite with any server (Express.js, Hono, Fastify, Elysia, H3, ...) and any deployment (VPS, Netlify, Cloudflare, Vercel, ...).
+
+With `vike-server` you get:
+ - The server code is **transpiled by Vite** (say goodbye to `ts-node`/`tsx` and you can now use utilities such as `import.meta.env`)
+ - **Zero-config** (Vike as well as Vike extensions are automatically added to your server)
+ - **HMR** (no more full server reloads)
+
+> Unsurprisingly, having server code being transpiled by Vite was one of the most asked feature requests. In fact, this was the last piece about Vike we were (quite) ashamed of, and the main blocker for releasing `1.0` — we're now a lot <Link href="#releasing-1-0">closer to releasing `1.0`</Link>!
+
+You can use `vike-server` but you don't have to:
+- If you fully pre-render your app (SSG) then you don't need `vike-server`.
+- If you have unusual requirements, you can keep manually integrating your server.
+
+> This follows Vike's philosophy that <Link href="/extension-vs-custom">Vike extensions are all optional</Link>: use `vike-server` for an easy integration or, if you prefer, manually integrate your server for full control.
+
+
+## Zero-config
+
+This is how it looks like:
+
+<Tabs>
+  <TabList>
+    <Tab>Express.js</Tab>
+    <Tab>Hono</Tab>
+    <Tab>Fastify</Tab>
+    <Tab>H3</Tab>
+    <Tab>Elysia</Tab>
+  </TabList>
+
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import express from 'express'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/express'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/express/serve'
+
+    function startServer() {
+      const app = express()
+      apply(app)
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
+
+    export default startServer()
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import { Hono } from 'hono'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/hono'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/hono/serve'
+
+    function startServer() {
+      const app = new Hono()
+      apply(app)
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
+
+    export default startServer()
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import fastify from 'fastify'
+    import rawBody from 'fastify-raw-body'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/fastify'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/fastify/serve'
+
+    async function startServer() {
+      const app = fastify({
+        // /!\ Mandatory for HMR support
+        forceCloseConnections: true
+      })
+
+      // /!\ Mandatory for Vike middlewares to operate properly
+      await app.register(rawBody)
+      await apply(app)
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
+
+    export default startServer()
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import { createApp } from 'h3'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/h3'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/h3/serve'
+
+    function startServer() {
+      const app = createApp()
+      apply(app)
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
+
+    export default startServer()
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import { Elysia } from 'elysia'
+    // apply() installs Vike's middlewares onto the server
+    import { apply } from 'vike-server/elysia'
+    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    import { serve } from 'vike-server/elysia/serve'
+
+    function startServer() {
+      const app = apply(new Elysia())
+      const port = 3000
+      // port is only used when running on non-serverless environments
+      return serve(app, { port })
+    }
+
+    export default startServer()
+    ```
+  </TabPanel>
+</Tabs>
+
+```js
+// +config.js
+import vikeServer from 'vike-server/config'
+
+export const config = {
+  extends: [vikeServer],
+  server: 'server/index.js'
+}
+```
+
+> Vike as well as Vike extensions are automatically added to your server.
+
+There is still some boilerplate code, but we're working towards making it completely zero-config.
+
+
+## HMR
+
+If you change a server file, the server code is automatically updated: the next HTTP response will be generated by the latest code. No more full server reload required.
+
+> This is experimental and doesn't always work: `vike-server` sometimes still triggers a full server reload.
+
+If HMR isn't what you want (for example if you modify the database connection) then manually trigger a full server reload by pressing `r + enter`.
+
+
+## Getting started
+
+See <Link href="/server" /> to get started.
+
+
+
+## Releasing `1.0`
+
+We are a lot closer to releasing `1.0`. Our roadmap is:
+ - Implementing the handful of feature requests that are blocking.
+ - Lot's of polishing. (This will introduce a lot of small breaking changes, but nothing complicated.)
+
+We expect Vike to say on `1.0` for a (very) long time. One of Vike's unique characteristic is its inherently stable core and we plan to double down on that.
+
+We want Vike core to be feature-complete (no known blockers) as well as highly polished (state-of-the-art DX).
+
+
+## Vite's Environment API
+
+The `vike-server` extension will increasingly leverage Vite's new Environment API. To understand what it unlocks see: <Link href="/blog/vite-6" />.
+
+
+## See also
+
+- <Link href="/server" />
+- <Link href="/blog/vite-6" />

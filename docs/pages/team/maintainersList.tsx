@@ -53,7 +53,7 @@ const maintainersList: Maintainer[] = [
         <code>vike-react-apollo</code> (Creator)
       </>,
       <>
-        <code>vike-node</code> (Creator)
+        <code>vike-server</code> (Creator)
       </>,
       <>Vike Core (Contributor)</>
     ]

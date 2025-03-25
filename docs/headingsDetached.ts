@@ -489,6 +489,10 @@ function guides(): HeadingDetachedDefinition[] {
 function blog(): HeadingDetachedDefinition[] {
   return [
     {
+      title: 'Introducing `vike-server`',
+      url: '/blog/vike-server'
+    },
+    {
       title: 'Vite 6, a groundbreaking release',
       url: '/blog/vite-6'
     },
