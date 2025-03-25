@@ -33,13 +33,18 @@ Start the development server.
 
 ```js
 import { dev } from 'vike/api'
+console.log('Starting development server...')
 const {
   viteConfig, // Resolved Vite configuration
   viteServer, // Vite's development server
 } = await dev({
   viteConfig // Vite configuration (optional)
 })
-console.log('Development server is ready')
+await viteServer.listen()
+viteServer.printUrls()
+viteServer.bindCLIShortcuts({ print: true })
+const { port } = viteConfig.server
+console.log(`Development server is ready and listening http://localhost:${port}`)
 ```
 
 See: <Link href='#viteconfig'>`viteConfig` option</Link>.
@@ -47,6 +52,7 @@ See: <Link href='#viteconfig'>`viteConfig` option</Link>.
 Vite types:
 - [ResolvedConfig](https://vite.dev/guide/api-javascript.html#resolvedconfig) types the `viteConfig` return value.
 - Vite's development server: [`const viteServer = createServer()`](https://vite.dev/guide/api-javascript.html#createserver).
+
 
 ## `build()`
 

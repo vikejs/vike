@@ -1,12 +1,10 @@
 - `getGlobalContext()`
-- make scripts/dev.js work
 - Prettify build error
   - https://github.com/vikejs/vike/commit/638f025c4b74218fbf488310798866e3956c6f10
   - Also: why are there dangling `+config.ts.build-71dnxdt06cv6.mjs` files?
 - config auto-reload not working
   - https://github.com/vikejs/vike/commit/1478c151ed895d466d1800339ef9e4a98a0a3fdc
   - Throw error in crawlPlusFiles.ts
-- Make client runtime fully external?
 
 - head settings
   - name setting?

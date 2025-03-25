@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "vike dev",
+    "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
     "prerender": "node scripts/prerender.js",
     "preview": "node scripts/preview.js"
