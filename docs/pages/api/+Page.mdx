@@ -5,19 +5,19 @@ Programmatically trigger <Link href="/cli">CLI commands</Link>.
 ```js
 import { dev, build, preview, prerender } from 'vike/api'
 
-// Same as `$ vike dev`
+// $ vike dev
 await dev()
 console.log('Development server is ready')
 
-// Same as `$ vike build`
+// $ vike build
 await build()
 console.log('Build is done')
 
-// Same as `$ vike preview`
+// $ vike preview
 await preview()
 console.log('Preview server is ready')
 
-// Same as `$ vike prerender`
+// $ vike prerender
 await prerender()
 console.log('Pre-rendering is done')
 ```
