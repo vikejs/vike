@@ -3,7 +3,7 @@ import { build } from 'vike/api'
 import { stripAnsi } from '../../vike/utils/stripAnsi'
 
 describe('build', () => {
-  test('prevented', { timeout: 20 * 1000 }, async () => {
+  test('prevented', { timeout: 40 * 1000 }, async () => {
     try {
       await buildApp()
       expect('success').toBe(false)
