@@ -17,11 +17,6 @@ The documentation of `vike-server` is on this page.
 
 Getting started: <Link href="#add-vike-server-to-an-existing-vike-app" />.
 
-Options:
-- <Link href="#standalone" />
-- <Link href="#compression" />
-- <Link href="#https" />
-
 > Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
 
 > If you want more control over server integration, see <Link href="/integration#server-manual-integration" doNotInferSectionTitle /> instead.
@@ -175,6 +170,17 @@ Create (or update) your server entry:
     ```
   </TabPanel>
 </Tabs>
+
+
+## Deployment
+
+In order to deploy, publish `dist/` to production and execute `dist/server/index.js`.
+
+> We're currently working on out-of-the-box support for Cloudflare and Vercel (ETA the next couple of weeks). In the meantime, see:
+> - <Link href="/vercel" />
+> - <Link href="/cloudflare-pages" />
+> - <Link href="/cloudflare-workers" />
+
 
 ## Custom `pageContext`
 
