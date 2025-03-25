@@ -1,6 +1,8 @@
 import { Link } from '@brillout/docpress'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import { StaticHostDocIntro, StaticHostDocOutro, StaticHostDocStrategies } from '../../components/static-host'
 import { Example, UseBati } from '../../components'
+import '../../components/tabs.css'
 
 ## Full-stack
 
@@ -15,12 +17,12 @@ It will deploy prerendered routes as static files, and dynamic routes as [Pages 
 ### Without a server
 
 ```js
-// vite.config.js
+// +config.js
 
-import { pages } from "vike-cloudflare";
+import vikeCloudflare from "vike-cloudflare/config";
 
 export default {
-  plugins: [pages()]
+  plugins: [vikeCloudflare]
 }
 ```
 
@@ -28,22 +30,67 @@ export default {
 
 `vike-cloudflare` currently supports <Link href="/hono" /> and <Link href="/hattip" />
 
-> <Link href="/hattip" /> also requires the installation of `@hattip/adapter-cloudflare-workers`
-
 ```js
 // vite.config.js
 
-import { pages } from "vike-cloudflare";
+import vikeCloudflare from "vike-cloudflare/config";
 
 export default {
-  plugins: [pages({
-    server: {
-      kind: "hono", // or "hattip"
-      entry: "hono-entry.ts" // entrypoint of the server
-    }
-  })]
+  plugins: [vikeCloudflare],
+  server: {
+    entry: "server/index.js"
+  }
 }
 ```
+
+<Tabs>
+  <TabList>
+    <Tab>Hono</Tab>
+    <Tab>Hattip</Tab>
+  </TabList>
+
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import { Hono } from "hono";
+    import { apply } from "vike-cloudflare/hono";
+    import { serve } from "vike-cloudflare/hono/serve";
+
+    function startServer() {
+      const app = new Hono();
+      const port = process.env.PORT || 3000;
+
+      apply(app);
+
+      return serve(app, { port: +port });
+    }
+
+    export default startServer();
+
+    ```
+  </TabPanel>
+  <TabPanel>
+    ```js
+    // server/index.js
+
+    import { createRouter } from "@hattip/router";
+    import { apply } from "vike-cloudflare/hattip";
+    import { serve } from "vike-cloudflare/hattip/serve";
+
+    function startServer() {
+      const router = createRouter();
+      const port = process.env.PORT || 3000;
+
+      apply(router);
+
+      return serve(router, { port: +port });
+    }
+
+    export default startServer();
+    ```
+  </TabPanel>
+</Tabs>
 
 ## Static
 
