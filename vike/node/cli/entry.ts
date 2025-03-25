@@ -23,19 +23,23 @@ async function cli() {
 async function cmdDev() {
   const startTime = performance.now()
   try {
-    const { viteServer } = await dev()
+    const { viteServer, isMiddlewareMode } = await dev()
 
-    await viteServer.listen()
-    const info = viteServer.config.logger.info
-    const startupDurationString = pc.dim(
-      `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
-    )
-    const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
-    info(`  ${pc.yellow(`${pc.bold('Vike')} v${PROJECT_VERSION}`)}  ${startupDurationString}\n`, {
-      clear: !hasExistingLogs
-    })
+    if (!isMiddlewareMode) {
+      await viteServer.listen()
 
-    viteServer.printUrls()
+      const info = viteServer.config.logger.info
+      const startupDurationString = pc.dim(
+        `ready in ${pc.reset(pc.bold(String(Math.ceil(performance.now() - startTime))))} ms`
+      )
+      const hasExistingLogs = process.stdout.bytesWritten > 0 || process.stderr.bytesWritten > 0
+      info(`  ${pc.yellow(`${pc.bold('Vike')} v${PROJECT_VERSION}`)}  ${startupDurationString}\n`, {
+        clear: !hasExistingLogs
+      })
+
+      viteServer.printUrls()
+    }
+
     viteServer.bindCLIShortcuts({ print: true })
   } catch (err) {
     console.error(pc.red(`Error while starting dev server:`))

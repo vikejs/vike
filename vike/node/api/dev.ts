@@ -9,11 +9,14 @@ import type { APIOptions } from './types.js'
  *
  * https://vike.dev/api#dev
  */
-async function dev(options: APIOptions = {}): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig }> {
+async function dev(
+  options: APIOptions = {}
+): Promise<{ viteServer: ViteDevServer; viteConfig: ResolvedConfig; isMiddlewareMode: boolean }> {
   const { viteConfigFromUserEnhanced } = await prepareViteApiCall(options, 'dev')
   const server = await createServer(viteConfigFromUserEnhanced)
   return {
     viteServer: server,
+    isMiddlewareMode: server.httpServer === null,
     viteConfig: server.config
   }
 }
