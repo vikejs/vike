@@ -114,11 +114,8 @@ function assertWarning(
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
     const key = onlyOnce === true ? msg : onlyOnce
-    if (alreadyLogged.has(key)) {
-      return
-    } else {
-      alreadyLogged.add(key)
-    }
+    if (alreadyLogged.has(key)) return
+    alreadyLogged.add(key)
   }
   globalObject.onBeforeLog?.()
   if (showStackTrace) {
