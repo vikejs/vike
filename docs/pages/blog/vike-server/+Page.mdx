@@ -2,16 +2,16 @@ import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../../components/tabs.css'
 
-We (<Link href="/team">Joël, Dani, and Rom</Link>) have been working on a <Link href="/server">new Vike extension `vike-server`</Link> which integrates Vite with any server (Express.js, Hono, Fastify, Elysia, H3, ...) and any deployment (VPS, Netlify, Cloudflare, Vercel, ...).
+We (<Link href="/team">Joël, Dani, and Rom</Link>) have been working on a <Link href="/server">new Vike extension `vike-server`</Link> which can integrate Vite with any server (Express.js, Hono, Fastify, Elysia, H3, ...) and any deployment (VPS, Netlify, Cloudflare, Vercel, ...).
 
 With `vike-server` you get:
  - Server code **transpiled by Vite** (say goodbye to `ts-node`/`tsx`/`vavite` and you can now use utilities such as `import.meta.env`)
  - **Zero-config** (Vike is automatically added to your server)
  - **HMR** (no more full server reloads)
 
-We've been beta testing it for many months and it's now stable and released as `1.0.0` — you can use it in production.
+We've been beta testing it for many months and it's now stable and released as `1.0.0` — you can use it for production.
 
-> Unsurprisingly, using Vite to transpile server code was one of the most requested features. In fact this was Vike's last significant shortcoming: Vike can now be considered a full-fledged framework. We're a lot <Link href="#releasing-1-0">closer to releasing `vike@1.0.0`</Link>!
+> Unsurprisingly, using Vite to transpile server code was one of the most requested features. In fact, this was Vike's last significant shortcoming: Vike can now be considered a full-fledged framework. We're a lot <Link href="#releasing-1-0">closer to releasing `vike@1.0.0`</Link>!
 
 You can use `vike-server` but you don't have to:
 - If you fully <Link href="/pre-rendering">pre-render your app (SSG)</Link> then you don't need `vike-server`.
@@ -160,7 +160,7 @@ export const config = {
 > - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link> anymore.
 > - Static files are automatically served.
 
-There is still some boilerplate code, but we're working towards also having a completely zero-config setup.
+There is still some boilerplate code, but we're working on also having a completely zero-config setup.
 
 
 ## HMR
@@ -169,7 +169,7 @@ If you change a server file, the server code is automatically updated: the next 
 
 > This is experimental and doesn't always work: `vike-server` sometimes still triggers a full server reload.
 
-If HMR isn't what you want (for example if you modify the database connection) then manually trigger a full server reload by pressing `r + enter`.
+If HMR isn't what you want (for example if you modify the database connection) you can manually trigger a full server reload by pressing `r + enter`.
 
 
 ## Getting started
