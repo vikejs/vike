@@ -85,7 +85,10 @@ Create (or update) your server entry:
     function startServer() {
       const app = new Hono()
       apply(app)
-      return serve(app, { port: 3000 })
+      return serve(app, {
+        port: 3000,
+        // ... other options are passed down to the environment ...
+      })
     }
 
     export default startServer()
