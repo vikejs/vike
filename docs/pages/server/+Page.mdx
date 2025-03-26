@@ -85,10 +85,7 @@ Create (or update) your server entry:
     function startServer() {
       const app = new Hono()
       apply(app)
-      return serve(app, {
-        port: 3000,
-        // ... other options are passed down to the environment ...
-      })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -154,11 +151,11 @@ Create (or update) your server entry:
 </Tabs>
 
 Where:
- - `apply()` installs the middleware of Vike and Vike extensions
+ - `apply()` installs the middleware of Vike and Vike extensions.
  - `serve()` attaches your server to Node.js, Cloudflare, Netlify, Vercel, Deno, Bun, ...
+   - The `port` option is only used when running on non-serverless environments.
+   - All other options are passed down as-is to the target environment.
    > `serve()` enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have different server attachment styles).
-
-   > The `port` option is only used when running on non-serverless environments.
 
 Note that:
 - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link>.
