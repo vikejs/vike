@@ -1,25 +1,26 @@
 import { RepoLink, Link } from '@brillout/docpress'
 
-You can internationalize (i18n) your app by using the <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
+To internationalize (i18n) your app:
+1. Use the <Link href="/onBeforeRoute">`onBeforeRoute()` hook</Link>.
+2. Update your `<Link>` component.
 
-For example:
+
+#### 1. `onBeforeRoute()`
 
 ```ts
-// /renderer/+onBeforeRoute.js
-
-export { onBeforeRoute }
+// pages/+onBeforeRoute.ts
 
 import { modifyUrl } from 'vike/modifyUrl'
 import type { Url } from 'vike/types'
 
-function onBeforeRoute(pageContext) {
+export function onBeforeRoute(pageContext) {
   const { urlWithoutLocale, locale } = extractLocale(pageContext.urlParsed)
-
   return {
     pageContext: {
-      // Make `locale` available as `pageContext.locale`
+      // Make locale available as pageContext.locale
       locale,
-      // Vike's router will use pageContext.urlLogical instead of pageContext.urlOriginal
+      // Vike's router will use pageContext.urlLogical instead of pageContext.urlOriginal and
+      // the locale is removed from pageContext.urlParsed
       urlLogical: urlWithoutLocale
     }
   }
@@ -47,19 +48,39 @@ function extractLocale(url: Url) {
 
 > See also: <Link href="/modifyUrl" />
 
-Upon rendering a page, `onBeforeRoute()` is the first hook that Vike calls, which means that the rest of your app doesn't have to deal with localized URLs anymore and you can simply use `pageContext.locale` instead.
+> This only removes the locale from `pageContext.urlParsed`: it doesn't modify the actual URL in the browser.
 
-> See <Link href="/usePageContext" /> for being able to access `pageContext.locale` in any React/Vue component.
+Upon rendering a page, `onBeforeRoute()` is the first hook that Vike calls. This means that
+all other hooks can use `pageContext.locale` and the updated `pageContext.urlParsed`,
+as well as all your UI components (with <Link href="/usePageContext">`usePageContext()`</Link>).
 
 This technique also works with:
-
 - `?lang=fr` query parameters
 - `domain.fr` domain TLDs
 - `Accept-Language: fr-FR` headers
-   > The `Accept-Language` header can be used for redirecting the user to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, you can use the technique described above. You can perform the redirection by using your server (e.g. Express.js) independently of Vike.
+   > The `Accept-Language` header can be used for <Link href="/redirect">redirecting the user</Link> to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, you can use the technique described above.
+   >
+   > Using the `Accept-Language` header to show different languages for the same URL is considered bad practice for SEO and UX. It's recommended to use `Accept-Language` only to redirect the user.
 
-   > Using the `Accept-Language` header to show different languages for the same URL is considered bad practice for both SEO and UX reasons. It's recommended to use `Accept-Language` only to redirect the user.
+#### 2. `<Link>`
 
+Update your `<Link>` component, for example:
+
+```jsx
+// components/Link.jsx
+
+import { usePageContext } from 'vike-react/usePageContext' // or vike-vue / vike-solid
+import { localeDefault } from '../i18n'
+
+export function Link({ href, locale, ...props }) {
+  const pageContext = usePageContext()
+  locale = locale ?? pageContext.locale
+  if (locale !== localeDefault) {
+    href = '/' + locale + href
+  }
+  return <a href={href} {...props} />
+}
+```
 
 ## Examples
 
@@ -74,7 +95,7 @@ If you use <Link text="pre-rendering" href="/pre-rendering" /> then, in addition
 define the `onPrerenderStart()` hook:
 
 ```js
-// /renderer/+onPrerenderStart.js
+// pages/+onPrerenderStart.js
 
 export { onPrerenderStart }
 
@@ -112,7 +133,7 @@ See <RepoLink path='/examples/i18n/' /> for an example using `onPrerenderStart()
 Your <Link text={<><code>onBeforePrerenderStart()</code> hooks</>} href="/onBeforePrerenderStart" /> (if you use any) return URLs without any locale (e.g. `onBeforePrerenderStart()` returning `/product/42`). Instead, it's your `onPrerenderStart()` hook that duplicates and modifies URLs for each locale (e.g. duplicating `/product/42` into `/en-US/product/42`, `/de-DE/product/42`, `/fr-FR/product/42`).
 
 ```js
-// /pages/product/+onBeforePrerenderStart.js
+// pages/product/+onBeforePrerenderStart.js
 
 export { onBeforePrerenderStart }
 
@@ -133,7 +154,7 @@ Alternatively, if you need to load data that depends on localization, instead of
 `onBeforePrerenderStart()` to localize <Link href="/pageContext#:~:text=pageContext.data,-%3A">`pageContext.data`</Link>:
 
 ```js
-// /pages/product/+onBeforePrerenderStart.js
+// pages/product/+onBeforePrerenderStart.js
 
 // This example doesn't use onPrerenderStart() but, instead,
 // uses onBeforePrerenderStart() to duplicate and localize URLs and their pageContext
@@ -172,7 +193,7 @@ async function onBeforePrerenderStart() {
 You may still need to use `onPrerenderStart()` for localizing static pages that don't load data:
 
 ```js
-// /renderer/+onPrerenderStart.js
+// pages/+onPrerenderStart.js
 
 export { onPrerenderStart }
 
