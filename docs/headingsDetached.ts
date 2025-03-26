@@ -493,7 +493,7 @@ function blog(): HeadingDetachedDefinition[] {
       url: '/blog/vike-server'
     },
     {
-      title: 'Vite 6, a groundbreaking release',
+      title: 'Vite 6 is a groundbreaking release',
       url: '/blog/vite-6'
     },
     {
