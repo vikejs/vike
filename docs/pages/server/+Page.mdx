@@ -62,17 +62,13 @@ Create (or update) your server entry:
     // server/index.js
 
     import express from 'express'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/express'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/express/serve'
 
     function startServer() {
       const app = express()
       apply(app)
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -83,17 +79,13 @@ Create (or update) your server entry:
     // server/index.js
 
     import { Hono } from 'hono'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/hono'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/hono/serve'
 
     function startServer() {
       const app = new Hono()
       apply(app)
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -105,9 +97,7 @@ Create (or update) your server entry:
 
     import fastify from 'fastify'
     import rawBody from 'fastify-raw-body'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/fastify'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/fastify/serve'
 
     async function startServer() {
@@ -119,9 +109,7 @@ Create (or update) your server entry:
       // /!\ Mandatory for Vike middlewares to operate properly
       await app.register(rawBody)
       await apply(app)
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -132,17 +120,13 @@ Create (or update) your server entry:
     // server/index.js
 
     import { createApp } from 'h3'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/h3'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/h3/serve'
 
     function startServer() {
       const app = createApp()
       apply(app)
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -153,16 +137,12 @@ Create (or update) your server entry:
     // server/index.js
 
     import { Elysia } from 'elysia'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/elysia'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/elysia/serve'
 
     function startServer() {
       const app = apply(new Elysia())
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -170,10 +150,17 @@ Create (or update) your server entry:
   </TabPanel>
 </Tabs>
 
+Where:
+ - `apply()` installs the middleware of Vike and Vike extensions.
+ - `serve()` attaches your server to Node.js, Cloudflare, Netlify, Vercel, Deno, Bun, ...
+   > It enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have a different server attachment style).
+
 > Note that:
 > - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link>.
 > - Some Vike extensions may also automatically add server middlewares.
 > - Static files are automatically served.
+
+> The `port` option is only used when running on non-serverless environments.
 
 
 ## Deployment

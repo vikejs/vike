@@ -5,13 +5,13 @@ import '../../../components/tabs.css'
 We (<Link href="/team">Joël, Dani, and Rom</Link>) have been working on a <Link href="/server">new Vike extension `vike-server`</Link> which can integrate Vite with any server (Express.js, Hono, Fastify, Elysia, H3, ...) and any deployment (VPS, Netlify, Cloudflare, Vercel, ...).
 
 With `vike-server` you get:
- - Server code **transpiled by Vite** (say goodbye to `ts-node`/`tsx`/`vavite` and you can now use Vite utilities such as `import.meta.env`)
+ - Server code **transpiled by Vite** (say goodbye to `ts-node`/`tsx`/`vavite` and hello to Vite utilities such as `import.meta.env`)
  - **Zero-config** (Vike is automatically added to your server)
  - **HMR** (no more full server reloads)
 
 We've been beta testing it for months and it's now stable and released as `1.0.0` — you can use it for production.
 
-> Unsurprisingly, using Vite to transpile server code was one of the most requested features. In fact, this was Vike's last significant shortcoming: Vike can now be considered a full-fledged framework. We're a lot <Link href="#releasing-1-0">closer to releasing `vike@1.0.0`</Link>!
+> Unsurprisingly, using Vite to transpile server code was one of the most requested features. In fact, it was Vike's last significant shortcoming: Vike can now be considered a full-fledged framework. We're a lot <Link href="#releasing-1-0">closer to releasing `vike@1.0.0`</Link>!
 
 You can use `vike-server` but you don't have to:
 - If you fully <Link href="/pre-rendering">pre-render your app (SSG)</Link> then you don't need `vike-server`.
@@ -40,15 +40,13 @@ This is how it looks like:
     import express from 'express'
     // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/express'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
+    // serve() attaches the server to Node.js, Cloudflare, Vercel, Deno, Bun, ...
     import { serve } from 'vike-server/express/serve'
 
     function startServer() {
       const app = express()
       apply(app)
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -59,17 +57,13 @@ This is how it looks like:
     // server/index.js
 
     import { Hono } from 'hono'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/hono'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/hono/serve'
 
     function startServer() {
       const app = new Hono()
       apply(app)
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -81,9 +75,7 @@ This is how it looks like:
 
     import fastify from 'fastify'
     import rawBody from 'fastify-raw-body'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/fastify'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/fastify/serve'
 
     async function startServer() {
@@ -95,9 +87,7 @@ This is how it looks like:
       // /!\ Mandatory for Vike middlewares to operate properly
       await app.register(rawBody)
       await apply(app)
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -108,17 +98,13 @@ This is how it looks like:
     // server/index.js
 
     import { createApp } from 'h3'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/h3'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/h3/serve'
 
     function startServer() {
       const app = createApp()
       apply(app)
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -129,16 +115,12 @@ This is how it looks like:
     // server/index.js
 
     import { Elysia } from 'elysia'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/elysia'
-    // serve() allows a unique file to target Node.js, Cloudflare, Vercel, Deno, Bun, etc...
     import { serve } from 'vike-server/elysia/serve'
 
     function startServer() {
       const app = apply(new Elysia())
-      const port = 3000
-      // port is only used when running on non-serverless environments
-      return serve(app, { port })
+      return serve(app, { port: 3000 })
     }
 
     export default startServer()
@@ -146,15 +128,10 @@ This is how it looks like:
   </TabPanel>
 </Tabs>
 
-```js
-// +config.js
-import vikeServer from 'vike-server/config'
-
-export const config = {
-  extends: [vikeServer],
-  server: 'server/index.js'
-}
-```
+Where:
+ - `apply()` installs the middleware of Vike and Vike extensions.
+ - `serve()` attaches your server to Node.js, Cloudflare, Vercel, Deno, Bun, ...
+   > It enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have a different server attachment style).
 
 > Note that:
 > - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link> anymore.
