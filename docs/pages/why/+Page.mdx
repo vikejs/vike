@@ -11,75 +11,78 @@ Deep dive into what makes Vike special.
 
 ### Flexible by design
 
-Vike's low-level hooks represent a flexible foundation. For example, the hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> allow you to fully control and integrate:
+Vike is designed from the ground up to be both flexible and stable.
+
+For example, Vike's low-level hooks <Link href="/onRenderHtml">`onRenderHtml()`</Link> and <Link href="/onRenderClient">`onRenderClient()`</Link> allow you to fully control and integrate:
  - Any UI framework (React, Vue, Solid, ...)
  - Any data connection (REST, GraphQL, RPC, ...)
  - Any rendering strategy (SSR, SSG, SPA, HTML-only, islands, ...)
 
-> For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using low-level hooks. For example, if you use `vike-react` or `vike-vue` then you get a quick start like Next.js and Nuxt. Later, if the need arises, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` for a custom React/Vue integration.
+> For a quick start, we recommend using <Link href="/extensions">Vike extensions</Link> instead of directly using low-level hooks. For example, if you use `vike-react` or `vike-vue` then you get a quick start like Next.js or Nuxt. Later, if the need arises, you can <Link href="/eject">eject</Link> `vike-react`/`vike-vue` for a completely custom React/Vue integration.
 
-Another example is the <Link href="/renderPage"><code>renderPage()</code></Link> function which enables you to embed Vike into:
+Another example is Vike's <Link href="/renderPage"><code>renderPage()</code></Link> function which enables you to embed Vike into:
 - Any server (Express.js, Hono, Fastify, ...)
 - Any deployment (AWS, Cloudflare, Vercel, ...)
 
-> Alternatively, you can <Link href="/pre-rendering">pre-render your pages</Link> and deploy your app to any static host.
+> For a quick start, you can use <Link href="/server">`vike-server`</Link> instead of manually integrating `renderPage()`.
+
+> Instead of using a server, you can also <Link href="/pre-rendering">pre-render your pages</Link> and deploy to any static host.
 
 
 ### Conservative or cutting-edge, your choice
 
-Vike is essentially a core with <Link href="/extensions">extensions</Link> for automatic tool integratation. This architecture fosters a diverse ecosystem of Vike extensions:
+Vike is essentially a core with <Link href="/extensions">extensions</Link> for automatic tool integration. This architecture fosters a diverse ecosystem of Vike extensions:
  - Stable extensions, focusing on supporting conservative stacks in a long-term fashion.
  - Cutting-edge extensions, focusing on experimenting new approaches.
 
-> For example, we are experimenting with RSC (React Server Components) in a separate extension `vike-react-rsc`. This allows us to experiment without disrupting `vike-react` users. Both extensions can be maintained for the foreseeable future, which means you can adopt RSC whenever you want and only if you need it.
+> For example, we are experimenting with RSC (React Server Components) in a separate extension `vike-react-rsc`. This allows us to experiment without disrupting `vike-react` users. Both extensions can be maintained for the foreseeable future, which means you can adopt RSC whenever &mdash; and only if &mdash; you want.
 
 You have the choice:
  - If you prefer stability, you can choose stable extensions.
-   > You get unparalleled stability: Vike in itself is an unopinionated and stable core while Vike extensions are thin layers of glue code that can be maintained for a very long time.
- - If you have special requirements or if you want to explore new approaches you can choose cutting-edge extensions, <Link href="/eject">eject</Link> extensions, write your own extensions, and/or <Link href="/build-your-own-framework">build your own framework</Link>.
+   > You get unparalleled stability: Vike in itself is an unopinionated, agnostic, and stable core, while Vike extensions are a thin layer of glue code that can be maintained for a very long time.
+ - If you have special requirements or want to explore new approaches, you can choose cutting-edge extensions, <Link href="/eject">eject</Link> extensions, write your own extensions, and/or <Link href="/build-your-own-framework">build your own framework</Link>.
    > You have full control over tool integration with unparalleled flexibility to build whatever you need.
 
-Vike's architecture is a fundamentally more flexible and dependable foundation.
+Vike's architecture provides a flexible and dependable foundation.
 
 
 ### Grow progressively
 
-Vike's flexibility allows you to adapt your stack to needs that evolve as you grow, in a progressive fashion:
+Vike's flexibility allows you to progressively adapt your stack to evolving needs:
  - **One page at a time**: you can <Link href="/config#powerful">progressively migrate your stack on a page-by-page basis</Link>.
-   > For example, you can start with an SPA and later, if the need arises, you can <Link href="/ssr">add SSR progressively one page at a time</Link>.
+   > For example, you can start with an SPA and later, if the need arises, you can <Link href="/ssr">progressively add SSR one page at a time</Link>.
 
    > Most configurations can be set on page-by-page basis, see <Link href="/config#inheritance">Vike's config inheritance</Link>.
  - **One architectural component at a time**: you can switch architectural components independently of each other.
    > For example, you can start with [RPC](https://telefunc.com/RPC) and later, if the need arises, you can progressively switch to GraphQL.
 
-   > You can swap every major architectural component thanks to Vike's <Link href="#separation-of-concerns">separation of concerns</Link>.
+   > With Vike, you can swap every major architectural component.
 
 
-Progressive migrations enable you to migrate much faster, iteratively, and in parallel to building your product.
+Progressive migrations enable you to migrate a lot faster, iteratively, and in parallel to building your product.
 
 
 ### Future-proof
 
-Vike's flexible core is unopinionated and open to JavaScript's rapidly evolving ecosystem. It's a stable foundation with lightweight and flexible Vike extensions quickly adapting to the tools and approaches of tomorrow.
+Vike's flexible core is unopinionated and open to JavaScript's rapidly evolving ecosystem. It's a stable foundation with lightweight and flexible Vike extensions that can quickly adapt to the tools and approaches of tomorrow.
 
 
 ### Flexible and reliable, by prioritization
 
-If you create a feature request and explain why it's blocking you, we will treat it with higher priority.
+If you create a feature request and explain why it's blocking you, we treat it with higher priority.
 
 We quickly fix bugs, usually within 24 hours.
 
-Vike's team is responsive and we provide <Link href="/faq#how-can-i-reach-out-for-help">a guideline</Link> on how to receive assistance from us.
+Vike's team is responsive and we provide <Link href="/faq#how-can-i-reach-out-for-help">a clear guideline</Link> on how to receive assistance from us.
 
 
 ### Build your own framework
 
-Vike enables you to <Link href="/build-your-own-framework">build your own internal company framework</Link>, empowering your Software Architects to fully own the architecture while providing your Product Developers with a company framework for quickly experimenting, iterating, and shipping production-grade apps.
+Vike enables you to <Link href="/build-your-own-framework">build a company internal framework</Link>, empowering your Software Architects to fully own the architecture and empowering your Product Developers with a full-fledged company framework to quickly experiment, iterate, and ship production-grade apps.
 
-Your company framework can include everything that is needed to ship products (frontend, backend, data fetching, authentication, deployment, error tracking, analytics, ...) so that your Product Developers can focus on what they do best.
+Your company framework can include everything (frontend, backend, data fetching, authentication, deployment, error tracking, analytics, ...) so that your Product Developers can focus on what they do best.
 
-You can build your own internal ecosystem of tools. It's a powerful way to scale your teams. It also enables you to ensure that the same stack is being used throughout your company, fostering cross-domain contributions and sharing.
-
+You can build your own internal ecosystem of tools. It's a powerful way to scale your teams while ensuring that the same stack is used throughout your company, fostering cross-domain contributions and sharing.
 
 
 
@@ -97,23 +100,23 @@ This enables you to choose architectural components independently of each other,
 
 Vike's separation of concerns enables architectural components to be developed independently of each other.
 
-A vibrant ecosystem of do-one-thing-do-it-well tools competing with each other is one of the cornerstones of JavaScript's success.
+A vibrant ecosystem of do-one-thing-do-it-well tools, competing with each other, is one of the cornerstones of JavaScript's success.
 
-> Other frameworks tightly couple architectural components together, which is a fundamental and structural hindrance that prevents innovation.
+> Other frameworks tightly couple architectural components, which is a structural hindrance that prevents innovation.
 >
 > For example, Vike doesn't have built-in [RPC](https://telefunc.com/RPC) (aka Server Actions). This flexibility enables RPC approaches to be developed and innovated independently of Vike.
 
 
 ### Listening to users
 
-We engage in constructive conversations with users. While we enjoy pushing the envelope and innovating, our priority is, first and foremost, to listen and solve real-world needs of users.
+We engage in constructive conversations with users. While we enjoy pushing the envelope and innovating, our top priority is, first and foremost, to listen and address the real-world needs of our users.
 
-Vike's <Link href="/pricing">Open Source Pricing</Link> means that your success directly translates into our success. (Whereas other frameworks that make money from selling other products are inclined to have skewed priorities.)
+Vike's <Link href="/pricing">Open Source Pricing</Link> means that your success directly translates into our success. (Whereas other frameworks, that make money from selling other products, are naturally inclined to have skewed priorities.)
 
 
 ### Passionate leadership
 
-Vike is an independent project 100% led by engineers with a long-term vision.
+Vike is an independent project 100% led by engineers with long-term visions.
 
 Thanks to Vike's <Link href="/pricing">Open Source Pricing</Link> we don't serve the interests of any unrelated business: we only serve the interests of users.
 
