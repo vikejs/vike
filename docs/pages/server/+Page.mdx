@@ -102,11 +102,11 @@ Create (or update) your server entry:
 
     async function startServer() {
       const app = fastify({
-        // /!\ Mandatory for HMR support
+        // ⚠️ Mandatory for HMR support
         forceCloseConnections: true
       })
 
-      // /!\ Mandatory for Vike middlewares to operate properly
+      // ⚠️ Mandatory for Vike middlewares to operate properly
       await app.register(rawBody)
       await apply(app)
       return serve(app, { port: 3000 })
@@ -151,16 +151,16 @@ Create (or update) your server entry:
 </Tabs>
 
 Where:
- - `apply()` installs the middleware of Vike and Vike extensions.
+ - `apply()` installs the middleware of Vike and Vike extensions
  - `serve()` attaches your server to Node.js, Cloudflare, Netlify, Vercel, Deno, Bun, ...
-   > It enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have a different server attachment style).
+   > `serve()` enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have different server attachment styles).
 
-> Note that:
-> - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link>.
-> - Some Vike extensions may also automatically add server middlewares.
-> - Static files are automatically served.
+   > The `port` option is only used when running on non-serverless environments.
 
-> The `port` option is only used when running on non-serverless environments.
+Note that:
+- Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link>.
+- Some Vike extensions may also automatically add server middlewares.
+- Static files are automatically served.
 
 
 ## Deployment

@@ -38,9 +38,7 @@ This is how it looks like:
     // server/index.js
 
     import express from 'express'
-    // apply() installs Vike's middlewares onto the server
     import { apply } from 'vike-server/express'
-    // serve() attaches the server to Node.js, Cloudflare, Vercel, Deno, Bun, ...
     import { serve } from 'vike-server/express/serve'
 
     function startServer() {
@@ -80,11 +78,11 @@ This is how it looks like:
 
     async function startServer() {
       const app = fastify({
-        // /!\ Mandatory for HMR support
+        // ⚠️ Mandatory for HMR support
         forceCloseConnections: true
       })
 
-      // /!\ Mandatory for Vike middlewares to operate properly
+      // ⚠️ Mandatory for Vike middlewares to operate properly
       await app.register(rawBody)
       await apply(app)
       return serve(app, { port: 3000 })
@@ -129,15 +127,15 @@ This is how it looks like:
 </Tabs>
 
 Where:
- - `apply()` installs the middleware of Vike and Vike extensions.
+ - `apply()` installs the middleware of Vike and Vike extensions
  - `serve()` attaches your server to Node.js, Cloudflare, Vercel, Deno, Bun, ...
-   > It enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have a different server attachment style).
+   > `serve()` enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have different server attachment styles).
 
-> Note that:
-> - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link> anymore.
-> - Static files are automatically served.
+Vike is automatically added to your server so that you don't need to manually integrate <Link href="/renderPage">`renderPage()`</Link> anymore.
 
 There is still some boilerplate code, but we're working on also having a completely zero-config setup.
+
+Learn more at <Link href="/server" />.
 
 
 ## HMR
