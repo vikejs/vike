@@ -1,21 +1,17 @@
-import { Link, Warning, NoteWithCustomIcon } from '@brillout/docpress'
+import { Link, Warning } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../components/tabs.css'
 
-<NoteWithCustomIcon icon={<span style={{fontSize: "1.1em"}}>⚗️</span>}>`vike-server` will be released very shortly (ETA this week). In the meantime, see <Link href="/integration#server-manual-integration" doNotInferSectionTitle /> instead.</NoteWithCustomIcon>
-
-We recommend using the Vike extension `vike-server` which comes with many benefits such as:
+To integrate Vike with your server we recommend using `vike-server` which comes with many benefits such as:
 - Out-of-the-box support for popular servers (Express, Hono, Hattip, Elysia, etc.)
 - Out-of-the-box support for popular deployments (Cloudflare, Vercel, Netlify, etc.)
 - HMR
 
-Version history: [`CHANGELOG.md`](https://github.com/vikejs/vike-server/blob/main/packages/vike-server/CHANGELOG.md)  
-Examples: [Bati](https://batijs.dev) and [`examples/`](https://github.com/vikejs/vike-server/tree/main/examples)  
-Source code: [GitHub > `vikejs/vike-server`](https://github.com/vikejs/vike-server)  
+Version history: [`CHANGELOG.md`](https://github.com/vikejs/vike-server/blob/main/CHANGELOG.md)  
+Examples: [`examples/`](https://github.com/vikejs/vike-server/tree/main/examples)  
+Source code: [GitHub > `vikejs/vike-server`](https://github.com/vikejs/vike-server/tree/main/packages/vike-server)  
 
-The documentation of `vike-server` is on this page.
-
-Getting started: <Link href="#add-vike-server-to-an-existing-vike-app" />.
+This page contains the entire `vike-server` documentation.
 
 > Alternatively, instead of using a server, you can <Link href="/pre-rendering">pre-render</Link> your pages and deploy to a <Link href="/static-hosts">static host</Link>.
 
@@ -24,19 +20,22 @@ Getting started: <Link href="#add-vike-server-to-an-existing-vike-app" />.
 
 ## Add `vike-server` to an existing Vike app
 
-To add `vike-server` to an existing Vike app: install the `vike-server` npm package (e.g. `$ npm install vike-server`) then extend your existing <Link href="/config#files">+config.js</Link> file (or create one) with `vike-server`:
+To add `vike-server` to an existing Vike app: install the `vike-server` npm package (e.g. `$ npm install vike-server`) then extend your existing <Link href="/config#files">`+config.js`</Link> file (or create one) with `vike-server`:
+
 ```js
 // +config.js
+
 import vikeServer from 'vike-server/config' // [!code ++]
 
 export const config = {
-  extends: [vikeServer],  // [!code ++]
-  // Points to your server entry
-  server: 'server/index.js'  // [!code ++]
+  extends: [vikeServer], // [!code ++]
+  // Points to your server entry // [!code ++]
+  server: 'server/index.js' // [!code ++]
 }
 ```
 
 Update your production `script` in `package.json`:
+
 ```json
 // package.json
 
@@ -171,12 +170,15 @@ Create (or update) your server entry:
   </TabPanel>
 </Tabs>
 
-> Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">renderPage()</Link>. Some Vike extensions also automatically add a server middleware.
+> Note that:
+> - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link>.
+> - Some Vike extensions may also automatically add server middlewares.
+> - Static files are automatically served.
 
 
 ## Deployment
 
-In order to deploy, publish `dist/` to production and execute `dist/server/index.js`.
+In production run `$ NODE_ENV=production node dist/server/index.js` (or Bun/Deno).
 
 > We're currently working on out-of-the-box support for Cloudflare and Vercel (ETA the next couple of weeks). In the meantime, see:
 > - <Link href="/vercel" />
@@ -198,10 +200,9 @@ apply(app, {
 })
 ```
 
-> The `runtime` object is a [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
+> The `runtime` object is also available at `pageContext.runtime`. Thus, the `pageContext` function above isn't usually need: you can simply use `pageContext.runtime.req.user` instead, e.g. with <Link href="/usePageContext">`usePageContext()`</Link>.
 
-> The `runtime` object is also available at `pageContext.runtime`. Consequently, you don't necessarily need to use the `pageContext` function above
-> in order to retrieve information, such as `pageContext.runtime.req.user`, in Vike hooks and UI components (see <Link href="/usePageContext" />).
+> The `runtime` object is a [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
 
 
 ## Standalone
@@ -213,7 +214,7 @@ With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/
 </Warning>
 
 >  If the production code built with `standalone: true` fails to run with errors like `ENOENT: no such file or directory`, then disable standalone mode or replace
->  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed to be included in the bundle.)
+>  the npm package throwing the error with another npm package. (The issue is that some npm package have dependencies that aren't explicit and, consequently, cannot be statically analyzed and cannot be included in the standalone bundle.)
 
 ```js
 // +config.js
@@ -276,9 +277,7 @@ apply(app, {
 
 ## HTTPS
 
-In production, Vike is just a server middleware — there is nothing to take into consideration.
-
-If you want to use HTTPS in development as well, then make sure to [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
+If you want to use HTTPS in development, then make sure to [pass the HTTPS certificates to Vite's dev server](https://vitejs.dev/config/server-options.html#server-https).
 
 
 ## See also

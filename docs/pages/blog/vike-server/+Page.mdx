@@ -2,20 +2,22 @@ import { Link } from '@brillout/docpress'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import '../../../components/tabs.css'
 
-We (<Link href="/team">Joël, Dani, and Rom</Link>) are beyond thrilled to announce a <Link href="/server">new Vike extension `vike-server`</Link> that can integrate Vite with any server (Express.js, Hono, Fastify, Elysia, H3, ...) and any deployment (VPS, Netlify, Cloudflare, Vercel, ...).
+We (<Link href="/team">Joël, Dani, and Rom</Link>) are beyond thrilled to announce our collaborative work: a <Link href="/server">new Vike extension `vike-server`</Link> that can integrate Vite with any server (Express.js, Hono, Fastify, Elysia, H3, ...) and any deployment (VPS, Netlify, Cloudflare, Vercel, ...).
 
 With `vike-server` you get:
- - The server code is **transpiled by Vite** (say goodbye to `ts-node`/`tsx` and you can now use utilities such as `import.meta.env`)
- - **Zero-config** (Vike as well as Vike extensions are automatically added to your server)
+ - Server code **transpiled by Vite** (say goodbye to `ts-node`/`tsx` and you can now use utilities such as `import.meta.env`)
+ - **Zero-config** (Vike is automatically added to your server)
  - **HMR** (no more full server reloads)
 
-> Using Vite to transpile server code was one of the most requested features (unsurprisingly so). In fact, this was Vike's last significant shortcoming and Vike can now be considered a full-fledged framework. We're a lot <Link href="#releasing-1-0">closer to releasing `1.0`</Link>!
+We've been beta testing it for many months already. It's now stable and released as `1.0.0` — you can use it in production.
+
+> Unsurprisingly, using Vite to transpile server code was one of the most requested features. In fact this was Vike's last significant shortcoming: Vike can now be considered a full-fledged framework. We're a lot <Link href="#releasing-1-0">closer to releasing `vike@1.0.0`</Link>!
 
 You can use `vike-server` but you don't have to:
-- If you fully pre-render your app (SSG) then you don't need `vike-server`.
+- If you fully <Link href="/pre-rendering">pre-render your app (SSG)</Link> then you don't need `vike-server`.
 - If you have unusual requirements, you can keep manually integrating your server.
 
-> This follows Vike's philosophy that <Link href="/extension-vs-custom">Vike extensions are all optional</Link>: use `vike-server` for an easy integration or, if you prefer, manually integrate your server for full control.
+> This follows Vike's philosophy that <Link href="/extension-vs-custom">Vike extensions are all optional</Link>: use `vike-server` for an easy integration or, if you prefer, manually integrate the server yourself for full control.
 
 
 ## Zero-config
@@ -154,9 +156,11 @@ export const config = {
 }
 ```
 
-> Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">renderPage()</Link> anymore.
+> Note that:
+> - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link> anymore.
+> - Static files are automatically served.
 
-There is still some boilerplate code, but we're working towards making it completely zero-config.
+There is still some boilerplate code, but we're working towards also having a completely zero-config setup.
 
 
 ## HMR
@@ -176,13 +180,14 @@ See <Link href="/server" /> to get started.
 
 ## Releasing `1.0`
 
-We are a lot closer to releasing `1.0`. Our roadmap is:
+We are a lot closer to releasing `vike@1.0.0`. Our roadmap is:
  - Implementing the handful of feature requests that are blocking.
  - Lot's of polishing. (This will introduce several minor breaking changes.)
+   > Our polishing work includes [type safe routing](https://github.com/vikejs/vike/issues/2253).
 
 We expect Vike to say on `1.0` for a (very) long time. One of Vike's unique characteristic is its inherently stable core and we plan to double down on that.
 
-We want Vike core to be feature-complete (no known blockers) as well as highly polished (state-of-the-art DX).
+Beyond stability, we're working on making Vike's core feature-complete (no known blockers) and highly polished (state-of-the-art DX).
 
 
 ## Vite's Environment API
@@ -197,8 +202,6 @@ Most of what we've built is agnostic to Vike.
 So why not share our work? That's what we aim to do and we're in talks with other Vite-based frameworks and deployment providers.
 
 Right now, each framework is reinventing the wheel — despite the complexity involved. There's a clear need for a shared server infrastructure that many frameworks can rely on.
-
-Sharing is caring 😊
 
 
 ## See also
