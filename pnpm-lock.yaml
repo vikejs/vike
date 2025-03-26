@@ -15,8 +15,8 @@ importers:
         specifier: ^1.9.4
         version: 1.9.4
       '@brillout/test-e2e':
-        specifier: ^0.6.4
-        version: 0.6.4
+        specifier: ^0.6.5
+        version: 0.6.5
       '@brillout/test-types':
         specifier: ^0.1.13
         version: 0.1.15(typescript@5.8.2)
@@ -235,7 +235,7 @@ importers:
         version: 0.0.28
       '@brillout/docpress':
         specifier: 0.12.4
-        version: 0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
+        version: 0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
       '@types/react':
         specifier: ^19.0.2
         version: 19.0.8
@@ -2141,8 +2141,8 @@ packages:
   '@brillout/require-shim@0.1.2':
     resolution: {integrity: sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==}
 
-  '@brillout/test-e2e@0.6.4':
-    resolution: {integrity: sha512-Wpwg6Ii2QTT6ZrI8CGgdGnQwuBDpktgPStC/FpxpMiEf4oum+1oI3LnSE5mRBnpL4XijOP/LzAqdKU7DKrTPWA==}
+  '@brillout/test-e2e@0.6.5':
+    resolution: {integrity: sha512-w53mpvot5T/Mou+rlD76VTMNSj6BCVvgpl2Ugg6V1hISMgRg6DUnyvU52wfQgYV3e6TLkLaJaB/KPjXv7usXTw==}
     hasBin: true
 
   '@brillout/test-types@0.1.15':
@@ -7991,14 +7991,14 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(acorn@8.14.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
+  '@brillout/docpress@0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.2)(vike@vike)(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
     dependencies:
       '@brillout/picocolors': 1.0.26
       '@docsearch/css': 3.9.0
       '@docsearch/react': 3.9.0(@algolia/client-search@5.21.0)(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(search-insights@2.17.3)
       '@mdx-js/mdx': 3.0.1
       '@mdx-js/react': 3.0.1(@types/react@19.0.8)(react@19.0.0)
-      '@mdx-js/rollup': 3.0.1(acorn@8.14.0)(rollup@4.34.4)
+      '@mdx-js/rollup': 3.0.1(rollup@4.34.4)
       '@shikijs/transformers': 1.2.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
@@ -8042,7 +8042,7 @@ snapshots:
 
   '@brillout/require-shim@0.1.2': {}
 
-  '@brillout/test-e2e@0.6.4':
+  '@brillout/test-e2e@0.6.5':
     dependencies:
       '@brillout/part-regex': 0.1.4
       '@brillout/picocolors': 1.0.26
@@ -8784,7 +8784,7 @@ snapshots:
       '@types/react': 19.0.8
       react: 19.0.0
 
-  '@mdx-js/rollup@3.0.1(acorn@8.14.0)(rollup@4.34.4)':
+  '@mdx-js/rollup@3.0.1(rollup@4.34.4)':
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
       '@rollup/pluginutils': 5.1.4(rollup@4.34.4)
