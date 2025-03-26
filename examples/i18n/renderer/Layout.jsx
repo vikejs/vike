@@ -3,7 +3,7 @@ export { Layout }
 import React from 'react'
 import './Layout.css'
 import { PageContextProvider } from './usePageContext'
-import { Link } from './Link'
+import { Link } from '../components/Link'
 
 function Layout({ pageContext, children }) {
   return (

@@ -1,7 +1,7 @@
 export { Link }
 
 import React from 'react'
-import { usePageContext } from './usePageContext'
+import { usePageContext } from '../renderer/usePageContext'
 import { localeDefault } from '../locales'
 
 function Link({ href, locale, ...props }) {

@@ -2,7 +2,7 @@ export default Page
 
 import React, { useState } from 'react'
 import { locales } from '../../locales'
-import { Link } from '../../renderer/Link'
+import { Link } from '../../components/Link'
 import { LocaleText } from '../../renderer/LocaleText'
 
 function Page() {
