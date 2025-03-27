@@ -9,15 +9,17 @@
     "@mdx-js/mdx": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
     "@mdx-js/rollup": "^3.1.0",
-    "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.2.18",
     "@vitejs/plugin-react": "^4.3.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^5.8.2",
-    "vike": "0.4.227",
-    "vike-react": "^0.5.12",
-    "vite": "^6.2.1"
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "typescript": "catalog:",
+    "vike": "catalog:",
+    "vike-react": "catalog:",
+    "vite": "catalog:"
   },
   "type": "module"
 }

@@ -12,9 +12,9 @@
 //  - HatTip (https://github.com/hattipjs/hattip)
 //    - You can use Bati (https://batijs.dev/) to scaffold a Vike + HatTip app. Note that Bati generates apps that use the V1 design (https://vike.dev/migration/v1-design) and Vike packages (https://vike.dev/vike-packages)
 
-import express from 'express'
 import compression from 'compression'
-import { renderPage, createDevMiddleware } from 'vike/server'
+import express from 'express'
+import { createDevMiddleware, renderPage } from 'vike/server'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -43,7 +43,7 @@ async function startServer() {
 
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
-  app.get('*', async (req, res) => {
+  app.get(['/', '/about', '/star-wars'], async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       headersOriginal: req.headers

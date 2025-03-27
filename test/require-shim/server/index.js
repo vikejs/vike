@@ -1,9 +1,9 @@
-import express from 'express'
-import { renderPage, createDevMiddleware } from 'vike/server'
 import apollo from '@apollo/client'
-const { ApolloClient, createHttpLink, InMemoryCache } = apollo
+import express from 'express'
 import fetch from 'node-fetch'
+import { createDevMiddleware, renderPage } from 'vike/server'
 import { root } from './root.js'
+const { ApolloClient, createHttpLink, InMemoryCache } = apollo
 const isProduction = process.env.NODE_ENV === 'production'
 
 startServer()
@@ -18,7 +18,7 @@ async function startServer() {
     app.use(devMiddleware)
   }
 
-  app.get('*', async (req, res) => {
+  app.get(['/'], async (req, res) => {
     const apolloClient = makeApolloClient()
 
     const pageContextInit = {

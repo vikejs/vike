@@ -1,5 +1,5 @@
 import express from 'express'
-import { renderPage, createDevMiddleware } from 'vike/server'
+import { createDevMiddleware, renderPage } from 'vike/server'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -15,7 +15,7 @@ async function startServer() {
     app.use(devMiddleware)
   }
 
-  app.get('*', async (req, res) => {
+  app.get(['/', '/about', '/redirect', '/redirect-external', '/render-homepage', '/show-error-page'], async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.url,
       user: 'some-fake-data'

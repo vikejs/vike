@@ -5,13 +5,15 @@
     "preview": "node ./build && vike preview"
   },
   "dependencies": {
-    "@types/react": "^18.0.8",
     "@vitejs/plugin-react": "^4.3.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "vike": "0.4.227",
-    "vike-react": "^0.5.12",
-    "vite": "^6.2.1"
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:react18",
+    "vike": "catalog:",
+    "vike-react": "catalog:",
+    "vite": "catalog:"
   },
   "type": "module"
 }

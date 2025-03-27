@@ -4,7 +4,7 @@ To make information about the authenticated user available to your pages and UI 
 
 ```js
 // Vike server middleware
-app.get('*', async (req, res) => {
+app.get(['/', '/about', '/star-wars'], async (req, res) => {
   // Authentication middlewares (e.g. Passport.js and Grant) provide information about the
   // logged-in user at req.user
   const user = req.user

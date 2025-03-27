@@ -13,20 +13,22 @@
     "server:static": "serve dist/client/ --listen 3000"
   },
   "dependencies": {
-    "@types/express": "^4.17.13",
-    "@types/node": "^17.0.31",
-    "@types/react": "^18.0.8",
-    "@types/react-dom": "^18.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "cross-env": "^7.0.3",
-    "express": "^4.18.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "express": "catalog:",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
     "serve": "^13.0.2",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.8.2",
-    "vite": "^6.2.1",
-    "vike": "0.4.227"
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@types/express": "catalog:",
+    "@types/node": "^17.0.31",
+    "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vike": "catalog:"
   },
   "type": "module"
 }

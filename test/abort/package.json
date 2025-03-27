@@ -9,16 +9,19 @@
     "server:prod": "cross-env NODE_ENV=production node server/"
   },
   "dependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.3.4",
     "cross-env": "^7.0.3",
-    "express": "^4.20.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^5.8.2",
-    "vike": "0.4.227",
-    "vite": "^6.2.1"
+    "express": "catalog:",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
+    "@types/express": "catalog:",
+    "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "typescript": "catalog:",
+    "vike": "catalog:",
+    "vite": "catalog:"
   },
   "type": "module"
 }

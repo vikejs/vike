@@ -4,7 +4,7 @@
     "build": "vike build",
     "preview": "vike build && vike preview"
   },
-  "dependencies": {
+  "devDependencies": {
     "vite": "^6.2.1",
     "vike": "0.4.227"
   },

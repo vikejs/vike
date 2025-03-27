@@ -8,15 +8,17 @@
   "dependencies": {
     "@batijs/elements": "0.0.28",
     "@brillout/docpress": "0.12.4",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-tabs": "^6.1.0",
-    "typescript": "^5.8.2",
-    "vike": "0.4.227",
-    "vite": "^6.2.1",
     "vite-plugin-svgr": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vike": "catalog:",
+    "vite": "catalog:"
   },
   "type": "module"
 }

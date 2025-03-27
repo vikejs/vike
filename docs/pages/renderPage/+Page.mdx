@@ -1,4 +1,4 @@
-import { RepoLink, Link, Warning } from '@brillout/docpress'
+import { Link, RepoLink, Warning } from '@brillout/docpress'
 import { JustAMiddleware } from '../../components'
 
 Environment: server.
@@ -55,7 +55,7 @@ async function startServer() {
   // SSR middleware.
   // Note: it should always be the last middleware, because it's a catch-all
   // middleware that supersedes any middleware placed after it.
-  app.get('*', async (req, res) => {
+  app.get(['/', '/about', '/star-wars'], async (req, res) => {
     const pageContextInit = {
       // Required: the URL of the page
       urlOriginal: req.originalUrl

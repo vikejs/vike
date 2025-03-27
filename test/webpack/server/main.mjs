@@ -1,11 +1,11 @@
-import { renderPage } from 'vike/server'
 import express from 'express'
+import { renderPage } from 'vike/server'
 
 const app = express()
 
 app.use(express.static(`${process.cwd()}/dist/client/`))
 
-app.get('*', async (req, res) => {
+app.get(['/', '/about'], async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl })
   const { httpResponse } = pageContext
   httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))

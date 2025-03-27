@@ -1,4 +1,4 @@
-import { Link, Contribution } from '@brillout/docpress'
+import { Contribution, Link } from '@brillout/docpress'
 import { UiFrameworkExtension } from '../../../components'
 
 What we have been working on in June 2024.
@@ -123,7 +123,7 @@ There is now an official way to pass the HTTP request headers:
 import { renderPage } from 'vike/server'
 
 // Server middleware
-app.get('*', async (req) => {
+app.get(['/', '/about', '/star-wars'], async (req) => {
   const pageContextInit = {
     urlOriginal: req.url,
     headersOriginal: req.headers

@@ -10,12 +10,14 @@
     "@vitejs/plugin-react": "^4.3.4",
     "compression": "^1.7.5",
     "cross-env": "^7.0.3",
-    "express": "^4.21.2",
+    "express": "^5.0.1",
     "node-fetch": "^3.3.2",
     "prop-types": "15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sirv": "^3.0.0",
+    "sirv": "^3.0.0"
+  },
+  "devDependencies": {
     "vike": "^0.4.227",
     "vite": "^6.2.1"
   },

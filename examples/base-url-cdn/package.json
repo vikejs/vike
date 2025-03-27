@@ -1,4 +1,5 @@
 {
+  "name": "base-url-cdn",
   "scripts": {
     "start": "npm run build && npm run serve",
     "// Build": "",
@@ -13,9 +14,11 @@
     "concurrently": "^7.1.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "express": "^4.18.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "express": "catalog:",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
     "vite": "^6.2.1",
     "vike": "0.4.227"
   },

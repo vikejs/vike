@@ -67,7 +67,7 @@ async function startServer() {
   }
 
   // SSR middleware
-  app.get('*', async (req, res) => {
+  app.get(['/', '/about', '/star-wars'], async (req, res) => {
     const pageContext = await renderPage({ urlOriginal: req.originalUrl })
     const { body, statusCode, headers } = pageContext.httpResponse
     headers.forEach(([name, value]) => res.setHeader(name, value))

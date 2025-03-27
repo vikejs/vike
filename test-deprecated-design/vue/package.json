@@ -8,9 +8,11 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/compiler-sfc": "^3.2.47",
     "@vue/server-renderer": "^3.2.47",
-    "vite": "^6.2.1",
-    "vike": "0.4.227",
     "vue": "^3.2.47"
+  },
+  "devDependencies": {
+    "vite": "^6.2.1",
+    "vike": "0.4.227"
   },
   "type": "module"
 }

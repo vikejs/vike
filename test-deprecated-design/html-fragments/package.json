@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vite dev"
   },
-  "dependencies": {
+  "devDependencies": {
     "typescript": "^5.8.2",
     "vite": "^6.2.1",
     "vike": "0.4.227"

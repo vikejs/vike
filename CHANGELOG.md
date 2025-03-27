@@ -4048,7 +4048,7 @@ see https://vite-plugin-ssr.com/catch-all
     // server.js
 
     const renderPage = createPageRenderer(/*...*/)
-    app.get('*', async (req, res, next) => {
+    app.get(['/', '/about', '/star-wars'], async (req, res, next) => {
       const url = req.originalUrl
   -   const pageContext = { url }
   -   const result = await renderPage(pageContext)

@@ -1,11 +1,13 @@
 {
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^5.8.2",
-    "vike": "0.4.227",
-    "vite": "^6.2.1"
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vike": "catalog:",
+    "vite": "catalog:"
   },
   "type": "module"
 }

@@ -6,9 +6,11 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "vike": "0.4.227"
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
+    "vike": "catalog:"
   },
   "type": "module"
 }

@@ -19,7 +19,7 @@ Most notable relevant places:
   // server.js
 
   // Vike server middleware (e.g. Express.js)
-  app.get('*', async (req, res) => {
+  app.get(['/', '/about', '/star-wars'], async (req, res) => {
     const pageContextInit = {
 -     url: req.url
 +     urlOriginal: req.url

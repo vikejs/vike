@@ -1,10 +1,10 @@
 import { renderPage } from 'vike/server'
-import { createExpressApp } from './createExpressApp.js'
 import { baseServer } from '../base.js'
+import { createExpressApp } from './createExpressApp.js'
 
 const { app, startApp } = createExpressApp({ base: baseServer, port: 3000 })
 
-app.get('*', async (req, res, next) => {
+app.get(['/', '/about'], async (req, res, next) => {
   const pageContextInit = {
     urlOriginal: req.originalUrl
   }

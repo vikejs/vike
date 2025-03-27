@@ -7,10 +7,12 @@
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "node-fetch": "^3.3.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "vite": "^6.2.1",
-    "vike": "0.4.227"
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
+    "vike": "catalog:",
+    "vite": "catalog:"
   },
   "type": "module"
 }

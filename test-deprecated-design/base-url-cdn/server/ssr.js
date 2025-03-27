@@ -3,7 +3,7 @@ import { renderPage } from 'vike/server'
 
 const app = express()
 
-app.get('*', async (req, res, next) => {
+app.get(['/', '/about', '/star-wars'], async (req, res, next) => {
   const pageContextInit = {
     urlOriginal: req.originalUrl
   }

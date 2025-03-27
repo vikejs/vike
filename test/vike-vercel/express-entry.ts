@@ -45,7 +45,7 @@ async function startServer() {
    *
    * @link {@see https://vike.dev}
    **/
-  app.all('*', createHandler(() => vikeHandler)())
+  app.all(['/', '/about', '/star-wars'], createHandler(() => vikeHandler)())
 
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`)

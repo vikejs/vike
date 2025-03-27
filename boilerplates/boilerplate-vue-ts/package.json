@@ -8,23 +8,25 @@
     "server:prod": "cross-env NODE_ENV=production npm run server"
   },
   "dependencies": {
-    "@types/compression": "^1.7.5",
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/compiler-sfc": "^3.5.13",
     "@vue/server-renderer": "^3.5.13",
     "compression": "^1.7.5",
     "cross-env": "^7.0.3",
-    "express": "^4.21.2",
+    "express": "^5.0.1",
     "node-fetch": "^3.3.2",
     "sirv": "^3.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2",
-    "vike": "^0.4.227",
-    "vite": "^6.2.1",
     "vue": "^3.5.13",
     "vue-tsc": "^2.1.10"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.5",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.8.2",
+    "vike": "^0.4.227",
+    "vite": "^6.2.1"
   },
   "type": "module"
 }

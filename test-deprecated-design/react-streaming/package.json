@@ -10,13 +10,15 @@
     "@vitejs/plugin-react": "^4.3.4",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
-    "express": "^4.18.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "express": "catalog:",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
     "react-streaming": "^0.3.47",
-    "sirv": "^2.0.2",
-    "vite": "^6.2.1",
-    "vike": "0.4.227"
+    "sirv": "^2.0.2"
+  },
+  "devDependencies": {
+    "vite": "catalog:",
+    "vike": "catalog:"
   },
   "type": "module"
 }

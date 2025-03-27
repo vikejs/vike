@@ -1,9 +1,9 @@
 // We use a Express.js server for development
 
-import express from 'express'
-import { renderPage, createDevMiddleware } from 'vike/server'
-import fetch from 'node-fetch'
 import compression from 'compression'
+import express from 'express'
+import fetch from 'node-fetch'
+import { createDevMiddleware, renderPage } from 'vike/server'
 import { root } from './root.js'
 
 startServer()
@@ -18,7 +18,7 @@ async function startServer() {
   const { devMiddleware } = await createDevMiddleware({ root })
   app.use(devMiddleware)
 
-  app.get('*', async (req, res) => {
+  app.get(['/', '/about', '/star-wars'], async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       headersOriginal: req.headers,
