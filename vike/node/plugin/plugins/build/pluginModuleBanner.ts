@@ -1,10 +1,10 @@
 export { pluginModuleBanner }
 
 import type { ResolvedConfig, Plugin } from 'vite'
+import MagicString from 'magic-string'
 import { assert } from '../../utils.js'
 import { removeVirtualIdTag } from '../../../shared/virtual-files.js'
 import { isViteServerBuild, isViteServerBuild_safe } from '../../shared/isViteServerBuild.js'
-import { sourceMapPassthrough } from '../../shared/rollupSourceMap.js'
 
 // Rollup's banner feature doesn't work with Vite: https://github.com/vitejs/vite/issues/8412
 // But, anyways, we want to prepend the banner at the beginning of each module, not at the beginning of each file (I believe that's what Rollup's banner feature does).
@@ -48,9 +48,13 @@ function pluginModuleBanner(): Plugin {
         if (id.startsWith('\0')) id = id
         id = removeVirtualIdTag(id)
         if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
+        const s = new MagicString(code)
         // No need to insert a new line; Rollup formats the code and will insert a new line.
-        const codeNew = `${vikeModuleBannerPlaceholder}(${JSON.stringify(id)}); ${code}`
-        return sourceMapPassthrough(codeNew)
+        s.prepend(`${vikeModuleBannerPlaceholder}(${JSON.stringify(id)}); `)
+        return {
+          code: s.toString(),
+          map: s.generateMap({ hires: true, source: id })
+        }
       }
     }
   }
