@@ -15,7 +15,7 @@ import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../s
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
-import { sourceMapRemove } from '../shared/rollupSourceMap.js'
+import { rollupSourceMapRemove } from '../shared/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { handleAssetsManifest_isFixEnabled } from './build/handleAssetsManifest.js'
@@ -60,7 +60,7 @@ function extractAssetsPlugin(): Plugin[] {
         const moduleNames = getImportedModules(importStatements)
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
         debugTransformResult(id, code, importStatements)
-        return sourceMapRemove(code)
+        return rollupSourceMapRemove(code)
       }
     },
     // This plugin appends `?extractAssets` to module IDs

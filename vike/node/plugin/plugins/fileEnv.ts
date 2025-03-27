@@ -11,7 +11,7 @@ import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
-import { sourceMapRemove } from '../shared/rollupSourceMap.js'
+import { rollupSourceMapRemove } from '../shared/rollupSourceMap.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from './importUserCode/v1-design/getVikeConfig.js'
@@ -54,7 +54,7 @@ function fileEnv(): Plugin {
       const errMsg = getErrorMessage(id, isServerSide, importers, false, true)
       // We have to inject empty exports to avoid Rollup complaining about missing exports, see https://gist.github.com/brillout/5ea45776e65bd65100a52ecd7bfda3ff
       const { exportNames } = await getExportNames(code)
-      return sourceMapRemove(
+      return rollupSourceMapRemove(
         [
           `throw new Error(${JSON.stringify(errMsg)});`,
           ...exportNames.map((name) =>
