@@ -55,13 +55,13 @@ function envVarsPlugin(): Plugin {
         })
         .forEach(([envName, envVal]) => {
           const envStatement = `import.meta.env.${envName}` as const
-          const envStatementRegEx = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
+          const envStatementRegExStr = escapeRegex(envStatement) + '\\b'
 
           // Security check
           {
             const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
             if (isPrivate && isClientSide) {
-              if (!envStatementRegEx.test(code)) return
+              if (!new RegExp(envStatementRegExStr).test(code)) return
               const modulePath = getModuleFilePathAbsolute(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
               const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
@@ -80,7 +80,7 @@ function envVarsPlugin(): Plugin {
           }
 
           // Apply
-          applyEnvVar(s, envStatementRegEx, envVal)
+          applyEnvVar(s, envStatementRegExStr, envVal)
         })
 
       if (!s.hasChanged()) return null
@@ -93,7 +93,8 @@ function envVarsPlugin(): Plugin {
   }
 }
 
-function applyEnvVar(s: MagicString, envStatementRegEx: RegExp, envVal: string) {
+function applyEnvVar(s: MagicString, envStatementRegExStr: string, envVal: string) {
+  const envStatementRegEx = new RegExp(envStatementRegExStr, 'g')
   let match: RegExpExecArray | null
   while ((match = envStatementRegEx.exec(s.original))) {
     s.overwrite(match.index, match.index + match[0].length, JSON.stringify(envVal))
