@@ -6,12 +6,18 @@ export { fileEnv }
 // - SvelteKit: https://github.com/sveltejs/kit/blob/6ea7abbc2f66e46cb83ff95cd459a5f548cb7e1e/packages/kit/src/exports/vite/index.js#L383-L401
 
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
-import { assert, assertUsage, assertWarning, capitalizeFirstLetter, joinEnglish } from '../utils.js'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  capitalizeFirstLetter,
+  joinEnglish,
+  rollupSourceMapRemove
+} from '../utils.js'
 import { extractAssetsRE } from './extractAssetsPlugin.js'
 import { extractExportNamesRE } from './extractExportNamesPlugin.js'
 import pc from '@brillout/picocolors'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
-import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
 import { getExportNames } from '../shared/parseEsModule.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isV1Design } from './importUserCode/v1-design/getVikeConfig.js'

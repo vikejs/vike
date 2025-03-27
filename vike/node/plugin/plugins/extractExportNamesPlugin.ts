@@ -3,9 +3,15 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin } from 'vite'
-import { assert, getFileExtension, createDebugger, getGlobalObject, assertUsage } from '../utils.js'
+import {
+  assert,
+  getFileExtension,
+  createDebugger,
+  getGlobalObject,
+  assertUsage,
+  rollupSourceMapRemove
+} from '../utils.js'
 import { getExportNames } from '../shared/parseEsModule.js'
-import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_options } from '../shared/isViteServerBuild.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/

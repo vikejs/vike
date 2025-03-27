@@ -10,12 +10,19 @@ export { extractAssetsPlugin }
 export { extractAssetsRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertPosixPath, styleFileRE, createDebugger, isScriptFile, assertUsage } from '../utils.js'
+import {
+  assert,
+  assertPosixPath,
+  styleFileRE,
+  createDebugger,
+  isScriptFile,
+  assertUsage,
+  rollupSourceMapRemove
+} from '../utils.js'
 import { resolveVirtualFileId, isVirtualFileId, getVirtualFileId } from '../../shared/virtual-files.js'
 import { extractAssetsAddQuery } from '../../shared/extractAssetsQuery.js'
 import { isAsset } from '../shared/isAsset.js'
 import { getImportStatements, type ImportStatement } from '../shared/parseEsModule.js'
-import { rollupSourceMapRemove } from '../../../utils/rollupSourceMap.js'
 import type { Rollup } from 'vite'
 import pc from '@brillout/picocolors'
 import { handleAssetsManifest_isFixEnabled } from './build/handleAssetsManifest.js'
