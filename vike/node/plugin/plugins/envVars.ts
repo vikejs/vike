@@ -1,9 +1,10 @@
+import MagicString from 'magic-string'
+
 export { envVarsPlugin }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { loadEnv } from 'vite'
 import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
-import { sourceMapPassthrough } from '../shared/rollupSourceMap.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
@@ -44,6 +45,8 @@ function envVarsPlugin(): Plugin {
       const isBuild = config.command === 'build'
       const isClientSide = !isViteServerBuild_safe(config, options)
 
+      const s = new MagicString(code)
+
       Object.entries(envsAll)
         .filter(([key]) => {
           // Already handled by Vite
@@ -52,13 +55,13 @@ function envVarsPlugin(): Plugin {
         })
         .forEach(([envName, envVal]) => {
           const envStatement = `import.meta.env.${envName}` as const
-          const envStatementRegEx = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
+          const envStatementRegExStr = escapeRegex(envStatement) + '\\b'
 
           // Security check
           {
             const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
             if (isPrivate && isClientSide) {
-              if (!envStatementRegEx.test(code)) return
+              if (!new RegExp(envStatementRegExStr).test(code)) return
               const modulePath = getModuleFilePathAbsolute(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
               const keyPublic = `${PUBLIC_ENV_PREFIX}${envName}` as const
@@ -77,17 +80,23 @@ function envVarsPlugin(): Plugin {
           }
 
           // Apply
-          code = applyEnvVar(envStatementRegEx, envVal, code)
+          applyEnvVar(s, envStatementRegExStr, envVal)
         })
 
-      // Line numbers didn't change.
-      //  - We only break the column number of a couple of lines, wich is acceptable.
-      //  - Anyways, I'm not even sure Vite supports high-resolution column number source mapping.
-      const ret = sourceMapPassthrough(code)
-      return ret
+      if (!s.hasChanged()) return null
+
+      return {
+        code: s.toString(),
+        map: s.generateMap({ hires: true, source: id })
+      }
     }
   }
 }
-function applyEnvVar(envStatementRegEx: RegExp, envVal: string, code: string) {
-  return code.replace(envStatementRegEx, JSON.stringify(envVal))
+
+function applyEnvVar(s: MagicString, envStatementRegExStr: string, envVal: string) {
+  const envStatementRegEx = new RegExp(envStatementRegExStr, 'g')
+  let match: RegExpExecArray | null
+  while ((match = envStatementRegEx.exec(s.original))) {
+    s.overwrite(match.index, match.index + match[0].length, JSON.stringify(envVal))
+  }
 }
