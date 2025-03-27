@@ -1,5 +1,5 @@
 export { rollupSourceMapRemove }
-export { sourceMapPassthrough }
+export { rollupSourceMapPassthrough }
 
 // https://rollupjs.org/guide/en/#source-code-transformations
 
@@ -12,7 +12,7 @@ function rollupSourceMapRemove(code: string): { code: string; map: { mappings: '
 }
 
 /** Don't provide any source map, pass through current source map instead. */
-function sourceMapPassthrough(code: string): { code: string; map: null } {
+function rollupSourceMapPassthrough(code: string): { code: string; map: null } {
   return {
     code,
     map: null
