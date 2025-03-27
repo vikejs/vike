@@ -47,8 +47,6 @@ function envVarsPlugin(): Plugin {
 
       const s = new MagicString(code)
 
-      let code3 = code
-
       Object.entries(envsAll)
         .filter(([key]) => {
           // Already handled by Vite
@@ -63,43 +61,6 @@ function envVarsPlugin(): Plugin {
           {
             const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
             if (isPrivate && isClientSide) {
-              if(envStatementRegEx.test(code)!==envStatementRegEx.test(code3)) {
-                console.log('\n\n\n')
-                console.log('code', code)
-                console.log('\n\n\n')
-                console.log('code3', code3)
-                console.log('\n\n\n')
-                console.log("code.includes('import.meta.env.SOME_OTHER_ENV')", code.includes('import.meta.env.SOME_OTHER_ENV'))
-                console.log("code3.includes('import.meta.env.SOME_OTHER_ENV')", code3.includes('import.meta.env.SOME_OTHER_ENV'))
-                console.log('envStatementRegEx.test(code)', envStatementRegEx.test(code))
-                console.log('envStatementRegEx.test(code3)', envStatementRegEx.test(code3))
-                console.log()
-                console.log('2 envStatementRegEx.test(code)', new RegExp(escapeRegex(envStatement) + '\\b', 'g').test(code))
-                console.log('2 envStatementRegEx.test(code3)', new RegExp(escapeRegex(envStatement) + '\\b', 'g').test(code3))
-                const r = new RegExp(escapeRegex(envStatement) + '\\b', 'g')
-                console.log()
-                console.log('3 envStatementRegEx.test(code)', r.test(code))
-                console.log('3 envStatementRegEx.test(code3)', r.test(code3))
-                console.log('3 envStatementRegEx.test(code)', r.test(code))
-                console.log()
-                console.log('4 envStatementRegEx.test(code)', new RegExp(escapeRegex(envStatement) + '\\b', 'g').test(code))
-                console.log('4 envStatementRegEx.test(code3)', new RegExp(escapeRegex(envStatement) + '\\b', 'g').test(code3))
-                console.log()
-                console.log('5 envStatementRegEx.test(code3)', r.test(code3))
-                console.log('5 envStatementRegEx.test(code3)', r.test(code3))
-                console.log('5 envStatementRegEx.test(code)', r.test(code))
-                console.log('5 envStatementRegEx.test(code)', r.test(code))
-                console.log()
-                console.log('envStatementRegEx', envStatementRegEx)
-                console.log()
-                const str = 'import.meta.env.SOME_OTHER_ENV'
-                // const r2 = new RegExp(escapeRegex('import.meta.env.SOME_OTHER_ENV') + '\\b', 'g')
-                const r2 = new RegExp('import\.meta\.env\.SOME_OTHER_ENV\\b')
-                console.log('r2.test(str)', r2.test(str))
-                console.log('r2.test(str)', r2.test(str))
-                console.log('r2.test(str)', r2.test(str))
-                assert(false)
-              }
               if (!envStatementRegEx.test(code)) return
               const modulePath = getModuleFilePathAbsolute(id, config)
               const errMsgAddendum: string = isBuild ? '' : ' (Vike will prevent your app from building for production)'
@@ -120,25 +81,16 @@ function envVarsPlugin(): Plugin {
 
           // Apply
           applyEnvVar(s, envStatementRegEx, envVal)
-          code3 = s.toString()
-          // code = applyEnvVar2(envStatementRegEx, envVal, code)
         })
 
-      // if (!s.hasChanged()) return
+      if (!s.hasChanged()) return null
 
-      // console.log('code 1', isClientSide, id, code)
-      const code2 = s.toString()
-      // console.log('code 2', isClientSide, id, code2)
       return {
-        code: code2,
-         map: s.generateMap({ hires: true, source: id })
+        code: s.toString(),
+        map: s.generateMap({ hires: true, source: id })
       }
     }
   }
-}
-
-function applyEnvVar2(envStatementRegEx: RegExp, envVal: string, code: string) {
-  return code.replace(envStatementRegEx, JSON.stringify(envVal))
 }
 
 function applyEnvVar(s: MagicString, envStatementRegEx: RegExp, envVal: string) {
