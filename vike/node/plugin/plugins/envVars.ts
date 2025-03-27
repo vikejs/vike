@@ -1,8 +1,7 @@
-import MagicString from 'magic-string'
-
 export { envVarsPlugin }
 
 import type { Plugin, ResolvedConfig } from 'vite'
+import MagicString from 'magic-string'
 import { loadEnv } from 'vite'
 import { assert, assertPosixPath, assertUsage, assertWarning, escapeRegex, isArray, lowerFirst } from '../utils.js'
 import { getModuleFilePathAbsolute } from '../shared/getFilePath.js'
