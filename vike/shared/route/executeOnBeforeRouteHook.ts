@@ -129,7 +129,7 @@ async function getPageContextFromHook(
     assertUsageUrlPathnameAbsolute(
       // We skip validation and type-cast instead of assertUsage() in order to save client-side KBs
       hookReturn.pageContext.urlLogical as string,
-      `${errPrefix} returned ${pc.cyan('{ pageContext: { urlLogical } }')} but ${pc.cyan('urlLogical')}`
+      `${errPrefix} returned ${pc.cyan('{ pageContext: { urlLogical } }')} and ${pc.cyan('urlLogical')}`
     )
   }
 
