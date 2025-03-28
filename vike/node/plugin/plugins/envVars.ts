@@ -15,7 +15,7 @@ import { isViteServerBuild_safe } from '../shared/isViteServerBuild.js'
 //   - Or stop using Vite's `mode` implemention and have Vike implement its own `mode` feature? (So that the only dependencies are `$ vike build --mode staging` and `$ MODE=staging vike build`.)
 
 const PUBLIC_ENV_PREFIX = 'PUBLIC_ENV__'
-const PUBLIC_ENV_WHITELIST = [
+const PUBLIC_ENV_ALLOWLIST = [
   // https://github.com/vikejs/vike/issues/1724
   'STORYBOOK'
 ]
@@ -59,7 +59,7 @@ function envVarsPlugin(): Plugin {
 
           // Security check
           {
-            const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_WHITELIST.includes(envName)
+            const isPrivate = !envName.startsWith(PUBLIC_ENV_PREFIX) && !PUBLIC_ENV_ALLOWLIST.includes(envName)
             if (isPrivate && isClientSide) {
               if (!new RegExp(envStatementRegExStr).test(code)) return
               const modulePath = getModuleFilePathAbsolute(id, config)

@@ -9,12 +9,12 @@ import { assert } from './assert.js'
 // We can't use a RegExp:
 //  - Needs to work with Micromatch: https://github.com/micromatch/micromatch because:
 //    - Vite's `import.meta.glob()` uses Micromatch
-//  - We need this to be a whitelist because:
+//  - We need this to be a allowlist because:
 //   - A pattern `*([a-zA-Z0-9]` doesn't work.
 //     - Because of ReScript: `.res` are ReScript source files which need to be ignored. (The ReScript compiler generates `.js` files alongside `.res` files.)
-//   - Black listing doesn't work.
-//     - We cannot implement a blacklist with a glob pattern.
-//     - A post `import.meta.glob()` blacklist filtering doesn't work because Vite would still process the files (e.g. including them in the bundle).
+//   - Block listing doesn't work.
+//     - We cannot implement a blocklist with a glob pattern.
+//     - A post `import.meta.glob()` blocklist filtering doesn't work because Vite would still process the files (e.g. including them in the bundle).
 
 // prettier-ignore
 // biome-ignore format:

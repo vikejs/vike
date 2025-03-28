@@ -237,14 +237,14 @@ function parseProtocol(uri: string) {
   return { protocol, uriWithoutProtocol }
 }
 function isUrlProtocol(protocol: string) {
-  // Is there an altenrative to having a blacklist?
-  // - If the blacklist becomes too big, maybe use a whitelist instead ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
-  const blacklist = [
+  // Is there an alternative to having a blocklist?
+  // - If the blocklist becomes too big, maybe use a allowlist instead ['tauri://', 'file://', 'capacitor://', 'http://', 'https://']
+  const blocklist = [
     // https://docs.ipfs.tech/how-to/address-ipfs-on-web
     'ipfs://',
     'ipns://'
   ]
-  if (blacklist.includes(protocol)) return false
+  if (blocklist.includes(protocol)) return false
   return protocol.endsWith('://')
 }
 // Adapted from https://stackoverflow.com/questions/14780350/convert-relative-path-to-absolute-using-javascript/14780463#14780463
