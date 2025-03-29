@@ -249,6 +249,8 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const urlList = handlePagesWithStaticRoute(globalContext, doNotPrerenderList)
   await createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit)
 
+  // Allow user to duplicate the list of `pageContext` for i18n
+  // https://vike.dev/onPrerenderStart
   await callOnPrerenderStartHook(prerenderContext, globalContext)
 
   let prerenderedCount = 0
