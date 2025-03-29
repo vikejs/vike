@@ -35,7 +35,7 @@ async function startServer() {
 
   // Vike middleware. It should always be our last middleware (because it's a
   // catch-all middleware superseding any middleware placed after it).
-  app.get('/{*vike-catch-all}', async (req, res) => {
+  app.get('/{*page}', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }

@@ -18,7 +18,7 @@ async function startServer() {
     app.use(devMiddleware)
   }
 
-  app.get('/{*vike-catch-all}', async (req, res) => {
+  app.get('/{*page}', async (req, res) => {
     const apolloClient = makeApolloClient()
 
     const pageContextInit = {

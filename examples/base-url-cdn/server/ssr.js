@@ -3,7 +3,7 @@ import { renderPage } from 'vike/server'
 
 const app = express()
 
-app.get('/{*vike-catch-all}', async (req, res) => {
+app.get('/{*page}', async (req, res) => {
   const pageContextInit = {
     urlOriginal: req.originalUrl
   }
