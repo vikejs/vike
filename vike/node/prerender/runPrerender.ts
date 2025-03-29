@@ -247,8 +247,14 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
 
   // Create `pageContext` for each page with a static route
-  const urlList = handlePagesWithStaticRoute(globalContext, doNotPrerenderList)
-  await createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit)
+  const urlList = getUrlListFromPagesWithStaticRoute(globalContext, doNotPrerenderList)
+  await createPageContextsForOnPrerenderStartHook(
+    urlList,
+    prerenderContext,
+    prerenderContext.pageContexts,
+    globalContext,
+    concurrencyLimit
+  )
 
   // Allow user to duplicate the list of `pageContext` for i18n
   // https://vike.dev/onPrerenderStart
@@ -481,7 +487,7 @@ async function callOnBeforePrerenderStartHooks(
   )
 }
 
-function handlePagesWithStaticRoute(globalContext: GlobalContextInternal, doNotPrerenderList: DoNotPrerenderList) {
+function getUrlListFromPagesWithStaticRoute(globalContext: GlobalContextInternal, doNotPrerenderList: DoNotPrerenderList) {
   const urlList: UrlListEntry[] = []
   globalContext.pageRoutes.map((pageRoute) => {
     const { pageId } = pageRoute
@@ -511,11 +517,12 @@ function handlePagesWithStaticRoute(globalContext: GlobalContextInternal, doNotP
 type UrlListEntry = {
   urlOriginal: string
   pageId: string
-  routeType: 'STRING' | 'FILESYSTEM'
+  routeType?: 'STRING' | 'FILESYSTEM'
 }
 async function createPageContextsForOnPrerenderStartHook(
   urlList: UrlListEntry[],
   prerenderContext: PrerenderContext,
+  pageContexts: PageContext[],
   globalContext: GlobalContextInternal,
   concurrencyLimit: PLimit
 ) {
@@ -523,7 +530,7 @@ async function createPageContextsForOnPrerenderStartHook(
     urlList.map(({ urlOriginal, pageId, routeType }) =>
       concurrencyLimit(async () => {
         // Already included in a onBeforePrerenderStart() hook
-        if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
+        if (pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
           return
         }
 
@@ -533,18 +540,20 @@ async function createPageContextsForOnPrerenderStartHook(
           _providedByHook: null,
           routeParams,
           pageId: pageId,
-          _debugRouteMatches: [
-            {
-              pageId,
-              routeType,
-              routeString: urlOriginal,
-              routeParams
-            }
-          ]
+          _debugRouteMatches: !routeType
+            ? []
+            : [
+                {
+                  pageId,
+                  routeType,
+                  routeString: urlOriginal,
+                  routeParams
+                }
+              ]
         })
         objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
 
-        prerenderContext.pageContexts.push(pageContext)
+        pageContexts.push(pageContext)
       })
     )
   )
