@@ -247,7 +247,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   // Create `pageContext` for each page with a static route
   const urlList = handlePagesWithStaticRoute(globalContext, doNotPrerenderList)
-  createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit)
+  await createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit)
 
   await callOnPrerenderStartHook(prerenderContext, globalContext)
 
