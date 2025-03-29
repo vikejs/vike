@@ -128,7 +128,10 @@ async function prerenderPage(
 }
 
 async function prerender404Page(
-  pageContextInit_: Record<string, unknown> | null,
+  pageContextInit: {
+    // A URL is required for `viteDevServer.transformIndexHtml(url,html)`
+    urlOriginal: string
+  },
   globalContext: GlobalContextInternal
 ) {
   const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
@@ -136,9 +139,6 @@ async function prerender404Page(
     return null
   }
 
-  // A URL is required for `viteDevServer.transformIndexHtml(url,html)`
-  const pageContextInit = { urlOriginal: '/fake-404-url' }
-  objectAssign(pageContextInit, pageContextInit_)
   const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true)
   objectAssign(pageContext, {
     pageId: errorPageId,

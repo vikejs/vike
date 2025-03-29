@@ -885,17 +885,21 @@ async function prerender404(
   globalContext: GlobalContextInternal,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
+  const pageContextInit = {
+    ...prerenderContext.pageContextInit,
+    urlOriginal: '/404'
+  }
   if (!Object.values(prerenderContext.prerenderedPageContexts).find(({ urlOriginal }) => urlOriginal === '/404')) {
     let result: Awaited<ReturnType<typeof prerender404Page>>
     try {
-      result = await prerender404Page(prerenderContext.pageContextInit, globalContext)
+      result = await prerender404Page(pageContextInit, globalContext)
     } catch (err) {
       assertIsNotAbort(err, 'the 404 page')
       throw err
     }
     if (result) {
-      const urlOriginal = '/404'
       const { documentHtml, pageContext } = result
+      const { urlOriginal } = pageContext
       await onComplete({
         urlOriginal,
         pageContext,
