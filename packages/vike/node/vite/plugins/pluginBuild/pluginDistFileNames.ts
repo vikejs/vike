@@ -46,8 +46,10 @@ function pluginDistFileNames(): Plugin {
             "Setting Vite's configuration build.rollupOptions.output.assetFileNames is currently forbidden. Reach out if you need to use it.",
           )
         }
-        {
+        if (false as boolean) {
+          // @ts-ignore
           const manualChunksOriginal = rollupOutput.manualChunks
+          // @ts-ignore
           rollupOutput.manualChunks = function (id, ...args) {
             if (manualChunksOriginal) {
               if (isCallable(manualChunksOriginal)) {
@@ -118,6 +120,7 @@ function getIdHash(id: string) {
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
   const assetsDir = getAssetsDir(config)
   const dir = assetsDir + '/static'
+  // @ts-ignore
   let { name } = assetInfo
 
   if (!name) {
