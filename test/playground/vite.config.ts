@@ -7,7 +7,9 @@ export default {
   // TEST: funky build output directory
   build: {
     outDir: `${__dirname}/../../test/playground/dist/nested`,
-    assetsDir: '/nested-dir/assets'
+    assetsDir: '/nested-dir/assets',
+    // TEST: https://github.com/vikejs/vike/issues/2315
+    minify: 'terser'
   },
   plugins: [react(), testPlugin()]
 }
