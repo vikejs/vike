@@ -119,6 +119,7 @@ type FileType = 'HTML' | 'JSON'
 
 type PageContext = PageContextInitEnhanced & {
   _urlRewrite: null
+  _httpRequestId: null
   _urlHandler: null
   _urlOriginalBeforeHook?: string
   _urlOriginalModifiedByHook?: TransformerHook
@@ -560,6 +561,7 @@ async function createPageContext(
   assert(pageContext.isPrerendering === true)
   objectAssign(pageContext, {
     _urlHandler: null,
+    _httpRequestId: null,
     _urlRewrite: null,
     _noExtraDir: prerenderContext.noExtraDir,
     _prerenderContext: prerenderContext
@@ -824,7 +826,6 @@ async function routeAndPrerender(
 
         objectAssign(pageContext, {
           is404: null,
-          _httpRequestId: null,
           _usesClientRouter: usesClientRouter
         })
 
