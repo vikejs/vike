@@ -487,7 +487,10 @@ async function callOnBeforePrerenderStartHooks(
   )
 }
 
-function getUrlListFromPagesWithStaticRoute(globalContext: GlobalContextInternal, doNotPrerenderList: DoNotPrerenderList) {
+function getUrlListFromPagesWithStaticRoute(
+  globalContext: GlobalContextInternal,
+  doNotPrerenderList: DoNotPrerenderList
+) {
   const urlList: UrlListEntry[] = []
   globalContext.pageRoutes.map((pageRoute) => {
     const { pageId } = pageRoute
