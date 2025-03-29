@@ -13,13 +13,13 @@
     "server:static": "serve dist/client/ --listen 3000"
   },
   "dependencies": {
-    "@types/express": "^4.17.13",
+    "@types/express": "^5.0.1",
     "@types/node": "^17.0.31",
     "@types/react": "^18.0.8",
     "@types/react-dom": "^18.0.3",
     "@vitejs/plugin-react": "^4.3.4",
     "cross-env": "^7.0.3",
-    "express": "^4.18.1",
+    "express": "^5.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "serve": "^13.0.2",

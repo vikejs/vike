@@ -1,8 +1,8 @@
-import express from 'express'
-import { renderPage, createDevMiddleware } from 'vike/server'
-import { root } from './root.js'
 import cookieParser from 'cookie-parser'
-import { getUser, checkCredentials } from './users.js'
+import express from 'express'
+import { createDevMiddleware, renderPage } from 'vike/server'
+import { root } from './root.js'
+import { checkCredentials, getUser } from './users.js'
 
 const isProduction = process.env.NODE_ENV === 'production'
 const port = process.env.PORT || 3000
@@ -55,7 +55,7 @@ async function assets(app) {
 }
 
 function vike(app) {
-  app.get('*', async (req, res) => {
+  app.get('/{*pages}', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       headersOriginal: req.headers,

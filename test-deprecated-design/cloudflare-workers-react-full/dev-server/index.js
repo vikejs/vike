@@ -1,10 +1,10 @@
 // We use a Express.js server for development
 
+import compression from 'compression'
 import express from 'express'
+import fetch from 'node-fetch'
 import { renderPage } from 'vike/server'
 import { createServer } from 'vite'
-import fetch from 'node-fetch'
-import compression from 'compression'
 
 startServer()
 
@@ -22,7 +22,7 @@ async function startServer() {
   ).middlewares
   app.use(viteDevMiddleware)
 
-  app.get('*', async (req, res, next) => {
+  app.get('/{*vike-catch-all}', async (req, res, next) => {
     const userAgent = req.headers['user-agent']
     const pageContextInit = {
       urlOriginal: req.originalUrl,
