@@ -5,8 +5,8 @@
 //  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vike.dev/path-aliases
 
 import express from 'express'
-import { renderPage } from 'vike/server'
 import { telefunc } from 'telefunc'
+import { renderPage } from 'vike/server'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -36,7 +36,7 @@ async function startServer() {
     res.status(statusCode).type(contentType).send(body)
   })
 
-  app.get('*', async (req, res, next) => {
+  app.get('/{*vike-catch-all}', async (req, res, next) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }

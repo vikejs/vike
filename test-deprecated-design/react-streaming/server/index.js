@@ -4,8 +4,8 @@
 //  - To use your environment variables defined in your .env files, you need to install dotenv, see https://vike.dev/env
 //  - To use your path aliases defined in your vite.config.js, you need to tell Node.js about them, see https://vike.dev/path-aliases
 
-import express from 'express'
 import compression from 'compression'
+import express from 'express'
 import { renderPage } from 'vike/server'
 import { root } from './root.js'
 const isProduction = process.env.NODE_ENV === 'production'
@@ -31,7 +31,7 @@ async function startServer() {
     app.use(viteDevMiddleware)
   }
 
-  app.get('*', async (req, res, next) => {
+  app.get('/{*vike-catch-all}', async (req, res, next) => {
     const userAgent = req.headers['user-agent']
     const pageContextInit = {
       urlOriginal: req.originalUrl,
