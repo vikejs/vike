@@ -3,9 +3,15 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin } from 'vite'
-import { assert, getFileExtension, createDebugger, getGlobalObject, assertUsage } from '../utils.js'
+import {
+  assert,
+  getFileExtension,
+  createDebugger,
+  getGlobalObject,
+  assertUsage,
+  rollupSourceMapRemove
+} from '../utils.js'
 import { getExportNames } from '../shared/parseEsModule.js'
-import { sourceMapRemove } from '../shared/rollupSourceMap.js'
 import { normalizeId } from '../shared/normalizeId.js'
 import { isViteServerBuild_options } from '../shared/isViteServerBuild.js'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
@@ -43,7 +49,7 @@ async function getExtractExportNamesCode(src: string, isClientSide: boolean, isP
     globalObject.usesClientRouter = true
   }
   const code = getCode(exportNames, wildcardReExports, isClientSide, isProduction, id)
-  return sourceMapRemove(code)
+  return rollupSourceMapRemove(code)
 }
 
 function getCode(
