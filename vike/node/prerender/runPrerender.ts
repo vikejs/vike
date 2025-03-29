@@ -826,8 +826,8 @@ async function routeAndPrerender(
 
         let usesClientRouter: boolean
         {
-          if (pageContext._pageConfigs.length > 0) {
-            const pageConfig = pageContext._pageConfigs.find((p) => p.pageId === pageId)
+          if (globalContext.pageConfigs.length > 0) {
+            const pageConfig = globalContext.pageConfigs.find((p) => p.pageId === pageId)
             assert(pageConfig)
             usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
           } else {
