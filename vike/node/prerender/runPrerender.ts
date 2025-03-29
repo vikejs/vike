@@ -30,7 +30,6 @@ import {
 } from './utils.js'
 import {
   prerenderPage,
-  prerender404Page,
   getPageContextInitEnhanced,
   type PageContextInitEnhanced
 } from '../runtime/renderPage/renderPageAlreadyRouted.js'
@@ -50,7 +49,7 @@ import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
-import { isErrorPage } from '../../shared/error-page.js'
+import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
 import {
   getPageContextUrlComputed,
   PageContextUrlInternal,
@@ -1272,4 +1271,33 @@ function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic 
     'pageContexts' // https://vike.dev/i18n#pre-rendering
   ]) as any as PrerenderContextPublic
   return prerenderContextPublic
+}
+
+async function prerender404Page(
+  pageContextInit: {
+    // A URL is required for `viteDevServer.transformIndexHtml(url,html)`
+    urlOriginal: string
+  },
+  globalContext: GlobalContextInternal
+) {
+  const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
+  if (!errorPageId) {
+    return null
+  }
+
+  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true)
+  objectAssign(pageContext, {
+    pageId: errorPageId,
+    _httpRequestId: null,
+    _urlRewrite: null,
+    is404: true,
+    routeParams: {},
+    // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
+    _usesClientRouter: false,
+    _debugRouteMatches: []
+  })
+
+  objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
+
+  return prerenderPage(pageContext)
 }
