@@ -226,7 +226,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const prerenderContext: PrerenderContext = {
     noExtraDir: noExtraDir ?? false,
-    pageContexts: [] as PageContext[],
+    pageContexts: [],
     pageContextInit: options.pageContextInit ?? null,
     prerenderedPageContexts: {},
     output: []
@@ -243,7 +243,9 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
 
-  await handlePagesWithStaticRoutes(prerenderContext, globalContext, doNotPrerenderList, concurrencyLimit)
+  // Create `pageContext` for each page with a static route
+  const urlList = handlePagesWithStaticRoutes(globalContext, doNotPrerenderList)
+  createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit)
 
   await callOnPrerenderStartHook(prerenderContext, globalContext)
 
@@ -474,16 +476,9 @@ async function callOnBeforePrerenderStartHooks(
   )
 }
 
-async function handlePagesWithStaticRoutes(
-  prerenderContext: PrerenderContext,
-  globalContext: GlobalContextInternal,
-  doNotPrerenderList: DoNotPrerenderList,
-  concurrencyLimit: PLimit
-) {
-  // Pre-render pages with a static route
-  await Promise.all(
-    globalContext.pageRoutes.map((pageRoute) =>
-      concurrencyLimit(async () => {
+function handlePagesWithStaticRoutes(globalContext: GlobalContextInternal, doNotPrerenderList: DoNotPrerenderList) {
+  const urlList: UrlListEntry[] = []
+  globalContext.pageRoutes.map((pageRoute) => {
         const { pageId } = pageRoute
 
         if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
@@ -504,7 +499,26 @@ async function handlePagesWithStaticRoutes(
           urlOriginal = url
         }
         assert(urlOriginal.startsWith('/'))
+        urlList.push({ urlOriginal, pageId, routeType: pageRoute.routeType })
+        return urlOriginal
+  })
+  return urlList
+}
 
+type UrlListEntry = {
+  urlOriginal: string
+  pageId: string
+  routeType: 'STRING' | 'FILESYSTEM'
+}
+async function createPageContextsForOnPrerenderStartHook(
+  urlList: UrlListEntry[],
+  prerenderContext: PrerenderContext,
+  globalContext: GlobalContextInternal,
+  concurrencyLimit: PLimit
+) {
+  await Promise.all(
+    urlList.map(({ urlOriginal, pageId, routeType }) =>
+      concurrencyLimit(async () => {
         // Already included in a onBeforePrerenderStart() hook
         if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
           return
@@ -519,7 +533,7 @@ async function handlePagesWithStaticRoutes(
           _debugRouteMatches: [
             {
               pageId,
-              routeType: pageRoute.routeType,
+              routeType,
               routeString: urlOriginal,
               routeParams
             }
