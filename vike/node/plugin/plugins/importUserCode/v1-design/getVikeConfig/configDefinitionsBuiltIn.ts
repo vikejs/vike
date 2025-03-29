@@ -149,7 +149,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   clientRouting: {
     // We could make it { client: false } but we don't yet because of some legacy V0.4 design code
     env: { server: true, client: true, config: true },
-    global: true,
     eager: true
   },
   clientHooks: {
