@@ -5,7 +5,7 @@ const app = express()
 
 app.use(express.static(`${process.cwd()}/dist/client/`))
 
-app.get('/{*vike-catch-all}', async (req, res) => {
+app.get('/{*page}', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl })
   const { httpResponse } = pageContext
   httpResponse.headers.forEach(([name, value]) => res.setHeader(name, value))

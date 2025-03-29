@@ -43,8 +43,8 @@ Built-in properties:
    On the server-side, `pageContext.urlOriginal` is the value you passed at the server middleware:
     ```js
     // Server middleware
-    // `vike-catch-all` is only a name for a wildcard `*`
-    app.get('/{*vike-catch-all}', async (req) => {
+    // `page` is only a name for a wildcard `*`
+    app.get('/{*page}', async (req) => {
       const pageContextInit = {}
       // `pageContext.urlOriginal` is defined here
       pageContextInit.urlOriginal = req.url
@@ -133,7 +133,7 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
  - At <Link href="/renderPage">`renderPage()`</Link>:
     ```js
     // Your Vike server middleware integration
-    app.get('/{*vike-catch-all}', async (req) => {
+    app.get('/{*page}', async (req) => {
       const pageContextInit = {
         urlOriginal: req.url,
         headersOriginal: req.headers,

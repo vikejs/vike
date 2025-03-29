@@ -18,7 +18,7 @@ async function startServer() {
   const { devMiddleware } = await createDevMiddleware({ root })
   app.use(devMiddleware)
 
-  app.get('/{*vike-catch-all}', async (req, res) => {
+  app.get('/{*page}', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       headersOriginal: req.headers,
