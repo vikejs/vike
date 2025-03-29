@@ -246,7 +246,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
 
   // Create `pageContext` for each page with a static route
-  const urlList = handlePagesWithStaticRoutes(globalContext, doNotPrerenderList)
+  const urlList = handlePagesWithStaticRoute(globalContext, doNotPrerenderList)
   createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit)
 
   await callOnPrerenderStartHook(prerenderContext, globalContext)
@@ -478,14 +478,12 @@ async function callOnBeforePrerenderStartHooks(
   )
 }
 
-function handlePagesWithStaticRoutes(globalContext: GlobalContextInternal, doNotPrerenderList: DoNotPrerenderList) {
+function handlePagesWithStaticRoute(globalContext: GlobalContextInternal, doNotPrerenderList: DoNotPrerenderList) {
   const urlList: UrlListEntry[] = []
   globalContext.pageRoutes.map((pageRoute) => {
     const { pageId } = pageRoute
 
-    if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
-      return
-    }
+    if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
 
     let urlOriginal: string
     if (!('routeString' in pageRoute)) {
@@ -500,9 +498,9 @@ function handlePagesWithStaticRoutes(globalContext: GlobalContextInternal, doNot
       }
       urlOriginal = url
     }
+
     assert(urlOriginal.startsWith('/'))
     urlList.push({ urlOriginal, pageId, routeType: pageRoute.routeType })
-    return urlOriginal
   })
   return urlList
 }
