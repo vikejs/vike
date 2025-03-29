@@ -479,28 +479,28 @@ async function callOnBeforePrerenderStartHooks(
 function handlePagesWithStaticRoutes(globalContext: GlobalContextInternal, doNotPrerenderList: DoNotPrerenderList) {
   const urlList: UrlListEntry[] = []
   globalContext.pageRoutes.map((pageRoute) => {
-        const { pageId } = pageRoute
+    const { pageId } = pageRoute
 
-        if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
-          return
-        }
+    if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
+      return
+    }
 
-        let urlOriginal: string
-        if (!('routeString' in pageRoute)) {
-          // Abort since the page's route is a Route Function
-          assert(pageRoute.routeType === 'FUNCTION')
-          return
-        } else {
-          const url = getUrlFromRouteString(pageRoute.routeString)
-          if (!url) {
-            // Abort since no URL can be deduced from a parameterized Route String
-            return
-          }
-          urlOriginal = url
-        }
-        assert(urlOriginal.startsWith('/'))
-        urlList.push({ urlOriginal, pageId, routeType: pageRoute.routeType })
-        return urlOriginal
+    let urlOriginal: string
+    if (!('routeString' in pageRoute)) {
+      // Abort since the page's route is a Route Function
+      assert(pageRoute.routeType === 'FUNCTION')
+      return
+    } else {
+      const url = getUrlFromRouteString(pageRoute.routeString)
+      if (!url) {
+        // Abort since no URL can be deduced from a parameterized Route String
+        return
+      }
+      urlOriginal = url
+    }
+    assert(urlOriginal.startsWith('/'))
+    urlList.push({ urlOriginal, pageId, routeType: pageRoute.routeType })
+    return urlOriginal
   })
   return urlList
 }
