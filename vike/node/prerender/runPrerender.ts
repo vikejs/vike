@@ -241,6 +241,8 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     globalContext
   )
 
+  // Allow user to create `pageContext` for parameterized routes and/or bulk data fetching.
+  // https://vike.dev/onBeforePrerenderStart
   await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
 
   // Create `pageContext` for each page with a static route
