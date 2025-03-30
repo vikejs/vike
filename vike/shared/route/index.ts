@@ -51,23 +51,25 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTING' | RouteMatch[]
 
-async function route(pageContext: PageContextForRoute): Promise<PageContextFromRoute> {
+async function route(pageContext: PageContextForRoute, skipOnBeforeRouteHook?: true): Promise<PageContextFromRoute> {
   debug('Pages routes:', pageContext._pageRoutes)
   assertPageContextUrl(pageContext)
   const pageContextFromRoute = {}
 
   // onBeforeRoute()
-  const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
-  if (pageContextFromOnBeforeRouteHook) {
-    if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
-      assert(pageContextFromOnBeforeRouteHook.pageId)
-      return pageContextFromOnBeforeRouteHook
-    } else {
-      objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
+  if (!skipOnBeforeRouteHook) {
+    const pageContextFromOnBeforeRouteHook = await executeOnBeforeRouteHook(pageContext)
+    if (pageContextFromOnBeforeRouteHook) {
+      if (pageContextFromOnBeforeRouteHook._routingProvidedByOnBeforeRouteHook) {
+        assert(pageContextFromOnBeforeRouteHook.pageId)
+        return pageContextFromOnBeforeRouteHook
+      } else {
+        objectAssign(pageContextFromRoute, pageContextFromOnBeforeRouteHook)
+      }
     }
+    // We take into account pageContext.urlLogical set by onBeforeRoute()
+    objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
   }
-  // We take into account pageContext.urlLogical set by onBeforeRoute()
-  objectAssign(pageContext, pageContextFromOnBeforeRouteHook)
 
   // Vike's routing
   const allPageIds = pageContext._allPageIds
