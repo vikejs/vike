@@ -641,7 +641,7 @@ function assertRouteMatch(
   pageContext: {
     urlOriginal: string
     _providedByHook: ProvidedByHook
-    _urlOriginalModifiedByHook?: ProvidedByHookTransformer
+    _urlOriginalModifiedByHook: ProvidedByHookTransformer
   }
 ) {
   if (pageContextFromRoute.pageId !== null) {
