@@ -251,9 +251,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
-
   warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
-
   await prerenderPages404(prerenderContext, onComplete, concurrencyLimit)
 
   if (logLevel === 'info') {
@@ -449,10 +447,7 @@ async function callOnBeforePrerenderStartHooks(
             }
 
             // Add result
-            const providedByHook = {
-              hookFilePath,
-              hookName
-            }
+            const providedByHook = { hookFilePath, hookName }
             const pageContextNew = await createPageContext(
               url,
               prerenderContext,
