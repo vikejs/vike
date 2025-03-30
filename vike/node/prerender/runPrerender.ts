@@ -22,7 +22,6 @@ import {
   pLimit,
   PLimit,
   isArray,
-  changeEnumerable,
   onSetupPrerender,
   isObject,
   makePublicCopy,
@@ -51,11 +50,7 @@ import { getUrlFromRouteString } from '../../shared/route/resolveRouteString.js'
 import { getConfigValueRuntime } from '../../shared/page-configs/getConfigValueRuntime.js'
 import { loadConfigValues } from '../../shared/page-configs/loadConfigValues.js'
 import { getErrorPageId, isErrorPage } from '../../shared/error-page.js'
-import {
-  getPageContextUrlComputed,
-  PageContextUrlInternal,
-  PageContextUrlSource
-} from '../../shared/getPageContextUrlComputed.js'
+import type { PageContextUrlInternal } from '../../shared/getPageContextUrlComputed.js'
 import { isAbortError } from '../../shared/route/abort.js'
 import { loadUserFilesServerSide } from '../runtime/renderPage/loadUserFilesServerSide.js'
 import {
@@ -718,8 +713,9 @@ async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, glob
 
   const docLink = 'https://vike.dev/i18n#pre-rendering'
 
-  // Avoid computed URL properties from being iterated & copied in onPrerenderStart() hook, e.g. /examples/i18n/
   prerenderContext.pageContexts.forEach((pageContext) => {
+    // Preserve URL computed properties when the user is copying pageContext is his onPrerenderStart() hook, e.g. /examples/i18n/
+    // https://vike.dev/i18n#pre-rendering
     preservePropertyGetters(pageContext)
   })
 
@@ -1240,27 +1236,6 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
       abortCaller
     )} isn't supported for pre-rendered pages`
   )
-}
-
-function makePageContextComputedUrlNonEnumerable(pageContexts: PageContextUrlInternal[]) {
-  change(false)
-  return { restoreEnumerable, addPageContextComputedUrl }
-  function restoreEnumerable() {
-    change(true)
-  }
-  function addPageContextComputedUrl(pageContexts: PageContextUrlSource[]) {
-    // Add URL computed props to the user-generated pageContext copies
-    pageContexts.forEach((pageContext) => {
-      const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
-      objectAssign(pageContext, pageContextUrlComputed)
-    })
-  }
-  function change(enumerable: boolean) {
-    pageContexts.forEach((pageContext) => {
-      changeEnumerable(pageContext, 'urlPathname', enumerable)
-      changeEnumerable(pageContext, 'urlParsed', enumerable)
-    })
-  }
 }
 
 function validatePrerenderConfig(
