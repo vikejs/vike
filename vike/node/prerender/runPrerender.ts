@@ -650,12 +650,12 @@ function assertRouteMatch(
   }
   let hookName: string | undefined
   let hookFilePath: string | undefined
-  if (pageContext._providedByHook) {
-    hookName = pageContext._providedByHook.hookName
-    hookFilePath = pageContext._providedByHook.hookFilePath
-  } else if (pageContext._urlOriginalModifiedByHook) {
+  if (pageContext._urlOriginalModifiedByHook) {
     hookName = pageContext._urlOriginalModifiedByHook.hookName
     hookFilePath = pageContext._urlOriginalModifiedByHook.hookFilePath
+  } else if (pageContext._providedByHook) {
+    hookName = pageContext._providedByHook.hookName
+    hookFilePath = pageContext._providedByHook.hookFilePath
   }
   if (hookName) {
     assert(hookFilePath)
