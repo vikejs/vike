@@ -72,12 +72,10 @@ import type { PageContextServer } from '../../shared/types.js'
 import fs from 'node:fs'
 
 type HtmlFile = {
-  urlOriginal: string
   pageContext: PageContextPrerendered
   htmlString: string
   pageContextSerialized: string | null
   doNotCreateExtraDirectory: boolean
-  pageId: string | null
 }
 
 type DoNotPrerenderList = { pageId: string }[]
@@ -89,7 +87,7 @@ type ProvidedByHookTransformer = null | {
   hookFilePath: string
   hookName: 'onPrerenderStart' | 'onBeforePrerender'
 }
-type PageContextPrerendered = { urlOriginal: string; _providedByHook?: ProvidedByHook }
+type PageContextPrerendered = { urlOriginal: string; _providedByHook?: ProvidedByHook; pageId: string }
 type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
 type PrerenderContext = {
@@ -246,9 +244,9 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   // Write files as soon as pages finish rendering (instead of writing all files at once only after all pages have rendered).
   const onComplete = async (htmlFile: HtmlFile) => {
     prerenderedCount++
-    if (htmlFile.pageId) {
-      prerenderContext.prerenderedPageContexts[htmlFile.pageId] = htmlFile.pageContext
-    }
+    const { pageId } = htmlFile.pageContext
+    assert(pageId)
+    prerenderContext.prerenderedPageContexts[pageId] = htmlFile.pageContext
     await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, prerenderContext.output, logLevel)
   }
 
@@ -868,28 +866,22 @@ async function prerenderPages(
   concurrencyLimit: PLimit,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
-  // Route all URLs
   await Promise.all(
-    prerenderContext.pageContexts.map((pageContext) =>
+    prerenderContext.pageContexts.map((pageContextBeforeRender) =>
       concurrencyLimit(async () => {
         let res: Awaited<ReturnType<typeof prerenderPage>>
         try {
-          res = await prerenderPage(pageContext)
+          res = await prerenderPage(pageContextBeforeRender)
         } catch (err) {
-          assertIsNotAbort(err, pc.cyan(pageContext.urlOriginal))
+          assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
           throw err
         }
-        const { documentHtml, pageContextSerialized } = res
-        const { urlOriginal, pageId } = pageContext
-        assert(urlOriginal)
-        assert(pageId)
+        const { documentHtml, pageContextSerialized, pageContext } = res
         await onComplete({
-          urlOriginal,
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          doNotCreateExtraDirectory: prerenderContext.noExtraDir,
-          pageId
+          doNotCreateExtraDirectory: prerenderContext.noExtraDir
         })
       })
     )
@@ -959,14 +951,11 @@ async function prerenderPages404(
           throw err
         }
         const { documentHtml, pageContext } = result
-        const { urlOriginal } = pageContext
         await onComplete({
-          urlOriginal,
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized: null,
-          doNotCreateExtraDirectory: true,
-          pageId: null
+          doNotCreateExtraDirectory: true
         })
       })
     )
@@ -974,13 +963,14 @@ async function prerenderPages404(
 }
 
 async function writeFiles(
-  { urlOriginal, pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory }: HtmlFile,
+  { pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory }: HtmlFile,
   root: string,
   outDirClient: string,
   onPagePrerender: Function | undefined,
   output: Output,
   logLevel: 'warn' | 'info'
 ) {
+  const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/'))
 
   const writeJobs = [
