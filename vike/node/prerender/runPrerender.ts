@@ -26,7 +26,8 @@ import {
   onSetupPrerender,
   isObject,
   makePublicCopy,
-  PROJECT_VERSION
+  PROJECT_VERSION,
+  preservePropertyGetters
 } from './utils.js'
 import {
   prerenderPage,
@@ -717,10 +718,10 @@ async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, glob
 
   const docLink = 'https://vike.dev/i18n#pre-rendering'
 
-  // Set `enumerable` to `false` to avoid computed URL properties from being iterated & copied in onPrerenderStart() hook, e.g. /examples/i18n/
-  const { restoreEnumerable, addPageContextComputedUrl } = makePageContextComputedUrlNonEnumerable(
-    prerenderContext.pageContexts
-  )
+  // Avoid computed URL properties from being iterated & copied in onPrerenderStart() hook, e.g. /examples/i18n/
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    preservePropertyGetters(pageContext)
+  })
 
   let result: unknown = await executeHook(
     () => {
@@ -741,7 +742,10 @@ async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, glob
     null
   )
 
-  restoreEnumerable()
+  // Before applying result
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    ;(pageContext as any)._restorePropertyGetters()
+  })
 
   if (result === null || result === undefined) {
     return
@@ -805,7 +809,10 @@ async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, glob
     }
   })
 
-  addPageContextComputedUrl(prerenderContext.pageContexts)
+  // After applying result
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    ;(pageContext as any)._restorePropertyGetters()
+  })
 }
 
 async function routeAndPrerender(
