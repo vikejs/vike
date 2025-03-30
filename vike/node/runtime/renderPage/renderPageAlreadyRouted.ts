@@ -1,6 +1,5 @@
 export { renderPageAlreadyRouted }
 export { prerenderPage }
-export { prerender404Page }
 export { getPageContextInitEnhanced }
 export { createPageContext }
 export type { PageContextAfterRender }
@@ -125,35 +124,6 @@ async function prerenderPage(
     const pageContextSerialized = serializePageContextClientSide(pageContext)
     return { documentHtml, pageContextSerialized, pageContext }
   }
-}
-
-async function prerender404Page(
-  pageContextInit_: Record<string, unknown> | null,
-  globalContext: GlobalContextInternal
-) {
-  const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
-  if (!errorPageId) {
-    return null
-  }
-
-  // A URL is required for `viteDevServer.transformIndexHtml(url,html)`
-  const pageContextInit = { urlOriginal: '/fake-404-url' }
-  objectAssign(pageContextInit, pageContextInit_)
-  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true)
-  objectAssign(pageContext, {
-    pageId: errorPageId,
-    _httpRequestId: null,
-    _urlRewrite: null,
-    is404: true,
-    routeParams: {},
-    // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
-    _usesClientRouter: false,
-    _debugRouteMatches: []
-  })
-
-  objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
-
-  return prerenderPage(pageContext)
 }
 
 type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhanced>>

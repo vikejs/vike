@@ -74,7 +74,8 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
             isPrerenderingEnabled,
             isPrerenderingEnabledForAllPages,
             output: null,
-            pageContexts: null
+            pageContexts: null,
+            pageContexts404: null
           }
           assert(prerenderContext.isPrerenderingEnabled === isPrerenderingEnabled)
           assert(prerenderContext.isPrerenderingEnabledForAllPages === isPrerenderingEnabledForAllPages)
