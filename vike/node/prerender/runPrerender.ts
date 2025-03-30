@@ -604,9 +604,7 @@ async function createPageContext(
       usesClientRouter = globalContext.usesClientRouter
     }
   }
-  objectAssign(pageContext, {
-    _usesClientRouter: usesClientRouter
-  })
+  objectAssign(pageContext, { _usesClientRouter: usesClientRouter })
 
   return pageContext
 }
