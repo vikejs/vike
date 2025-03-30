@@ -93,7 +93,7 @@ async function prerenderPage(
       _httpRequestId: number | null
       _usesClientRouter: boolean
       _pageContextAlreadyProvidedByOnPrerenderHook?: true
-      is404: null | boolean
+      is404: boolean
     }
 ) {
   objectAssign(pageContext, {

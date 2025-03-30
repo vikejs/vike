@@ -92,7 +92,6 @@ type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
 type PrerenderContext = {
   pageContexts: PageContext[]
-  pageContexts404: PageContext[]
   pageContextInit: Record<string, unknown> | null
   noExtraDir: boolean
   prerenderedPageContexts: PrerenderedPageContexts
@@ -207,7 +206,6 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const prerenderContext: PrerenderContext = {
     noExtraDir: noExtraDir ?? false,
     pageContexts: [],
-    pageContexts404: [],
     pageContextInit: options.pageContextInit ?? null,
     prerenderedPageContexts: {},
     output: []
@@ -250,7 +248,6 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
   warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
-  await prerenderPages404(prerenderContext, onComplete, concurrencyLimit)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
@@ -523,19 +520,11 @@ async function createPageContextsForOnPrerenderStartHook(
     urlList.map(({ urlOriginal, pageId }) =>
       concurrencyLimit(async () => {
         // Already included in a onBeforePrerenderStart() hook
-        if (
-          [...prerenderContext.pageContexts, ...prerenderContext.pageContexts404].find((pageContext) =>
-            isSameUrl(pageContext.urlOriginal, urlOriginal)
-          )
-        ) {
+        if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
           return
         }
         const pageContext = await createPageContext(urlOriginal, prerenderContext, globalContext, is404, pageId, null)
-        if (is404) {
-          prerenderContext.pageContexts404.push(pageContext)
-        } else {
-          prerenderContext.pageContexts.push(pageContext)
-        }
+        prerenderContext.pageContexts.push(pageContext)
       })
     )
   )
@@ -873,12 +862,13 @@ async function prerenderPages(
           assertIsNotAbort(err, pc.cyan(pageContextBeforeRender.urlOriginal))
           throw err
         }
-        const { documentHtml, pageContextSerialized, pageContext } = res
+        const { documentHtml, pageContext } = res
+        const pageContextSerialized = pageContext.is404 ? null : res.pageContextSerialized
         await onComplete({
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          doNotCreateExtraDirectory: prerenderContext.noExtraDir
+          doNotCreateExtraDirectory: prerenderContext.noExtraDir || pageContext.is404
         })
       })
     )
@@ -930,33 +920,6 @@ async function warnMissingPages(
         { onlyOnce: true }
       )
     })
-}
-
-async function prerenderPages404(
-  prerenderContext: PrerenderContext,
-  onComplete: (htmlFile: HtmlFile) => Promise<void>,
-  concurrencyLimit: PLimit
-) {
-  await Promise.all(
-    prerenderContext.pageContexts404.map((pageContextBeforeRender) =>
-      concurrencyLimit(async () => {
-        let result: Awaited<ReturnType<typeof prerenderPage>>
-        try {
-          result = await prerenderPage(pageContextBeforeRender)
-        } catch (err) {
-          assertIsNotAbort(err, 'the 404 page')
-          throw err
-        }
-        const { documentHtml, pageContext } = result
-        await onComplete({
-          pageContext,
-          htmlString: documentHtml,
-          pageContextSerialized: null,
-          doNotCreateExtraDirectory: true
-        })
-      })
-    )
-  )
 }
 
 async function writeFiles(
@@ -1200,7 +1163,7 @@ function runPrerender_forceExit() {
   */
 }
 
-function assertIsNotAbort(err: unknown, urlOr404: string) {
+function assertIsNotAbort(err: unknown, urlOriginal: string) {
   if (!isAbortError(err)) return
   const pageContextAbort = err._pageContextAbort
 
@@ -1216,7 +1179,7 @@ function assertIsNotAbort(err: unknown, urlOr404: string) {
 
   assertUsage(
     false,
-    `${pc.cyan(abortCall)} thrown${thrownBy} while pre-rendering ${urlOr404} but ${pc.cyan(
+    `${pc.cyan(abortCall)} thrown${thrownBy} while pre-rendering ${urlOriginal} but ${pc.cyan(
       abortCaller
     )} isn't supported for pre-rendered pages`
   )
@@ -1263,13 +1226,11 @@ function validatePrerenderConfig(
 type PrerenderContextPublic = {
   output: Output<PageContextServer>
   pageContexts: PageContextServer[]
-  pageContexts404: PageContextServer
 }
 function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
   const prerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
     'output', // vite-plugin-vercel
-    'pageContexts', // https://vike.dev/i18n#pre-rendering
-    'pageContexts404' // https://vike.dev/i18n#pre-rendering
+    'pageContexts' // https://vike.dev/i18n#pre-rendering
   ]) as any as PrerenderContextPublic
   return prerenderContextPublic
 }
