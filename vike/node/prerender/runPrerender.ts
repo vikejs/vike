@@ -837,6 +837,7 @@ async function callOnPrerenderStartHook(
     ;(pageContext as any)._restorePropertyGetters?.()
   })
 
+  // Assert URL modified by user
   await Promise.all(
     prerenderContext.pageContexts.map((pageContext: PageContext) =>
       concurrencyLimit(async () => {
@@ -845,7 +846,6 @@ async function callOnPrerenderStartHook(
             hookFilePath,
             hookName
           }
-          // Assert URL provided by user
           const pageContextFromRoute = await route(pageContext)
           assertRouteMatch(pageContextFromRoute, pageContext)
         }
