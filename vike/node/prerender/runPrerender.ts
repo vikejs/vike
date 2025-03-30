@@ -950,7 +950,6 @@ async function prerenderPages404(
   await Promise.all(
     prerenderContext.pageContexts404.map((pageContext) =>
       concurrencyLimit(async () => {
-        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
         let result: Awaited<ReturnType<typeof prerenderPage>>
         try {
           result = await prerenderPage(pageContext)
