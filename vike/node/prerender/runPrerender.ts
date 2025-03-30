@@ -113,6 +113,11 @@ type Output<PageContext = PageContextPrerendered> = {
 }[]
 type FileType = 'HTML' | 'JSON'
 
+type PageContext = Awaited<ReturnType<typeof createPageContext>> & {
+  _urlOriginalModifiedByHook?: TransformerHook
+}
+// TODO/now
+/*
 type PageContext = PageContextInitEnhanced & {
   _urlRewrite: null
   _httpRequestId: null
@@ -121,13 +126,15 @@ type PageContext = PageContextInitEnhanced & {
   _urlOriginalModifiedByHook?: TransformerHook
   _providedByHook: ProvidedByHook
   _pageContextAlreadyProvidedByOnPrerenderHook?: true
-} & PageContextUrlInternal
-type PageContext404 = PageContext & {
   _debugRouteMatches: RouteMatches
   pageId: string
   routeParams: Record<string, string>
-  is404: true
-  _usesClientRouter: false
+  is404: null | boolean
+  _usesClientRouter: boolean
+} & PageContextUrlInternal
+*/
+type PageContext404 = PageContext & {
+  // TODO/now
 }
 
 type PrerenderOptions = APIOptions & {
@@ -252,7 +259,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   // Create `pageContext` for each page with a static route
   const urlList = getUrlListFromPagesWithStaticRoute(globalContext, doNotPrerenderList)
-  await createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit)
+  await createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit, false)
 
   // Create `pageContext` for 404 page
   const urlList404 = getUrlList404(globalContext)
@@ -272,11 +279,11 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, prerenderContext.output, logLevel)
   }
 
-  await routeAndPrerender(prerenderContext, globalContext, concurrencyLimit, onComplete)
+  await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
 
   warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
 
-  await prerender404(prerenderContext, onComplete, concurrencyLimit)
+  await prerenderPages404(prerenderContext, onComplete, concurrencyLimit)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
@@ -468,13 +475,18 @@ async function callOnBeforePrerenderStartHooks(
                 )
               }
             }
-            const pageContextNew = await createPageContext(url, prerenderContext, globalContext)
-            objectAssign(pageContextNew, {
-              _providedByHook: {
-                hookFilePath,
-                hookName
-              }
-            })
+            const providedByHook = {
+              hookFilePath,
+              hookName
+            }
+            const pageContextNew = await createPageContext(
+              url,
+              prerenderContext,
+              globalContext,
+              false,
+              undefined,
+              providedByHook
+            )
             prerenderContext.pageContexts.push(pageContextNew)
             if (pageContext) {
               objectAssign(pageContextNew, {
@@ -541,7 +553,7 @@ async function createPageContextsForOnPrerenderStartHook(
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
   concurrencyLimit: PLimit,
-  is404?: true
+  is404: boolean
 ) {
   await Promise.all(
     urlList.map(({ urlOriginal, pageId, routeType }) =>
@@ -556,11 +568,9 @@ async function createPageContextsForOnPrerenderStartHook(
         }
 
         const routeParams = {}
-        const pageContext = await createPageContext(urlOriginal, prerenderContext, globalContext)
+        const pageContext = await createPageContext(urlOriginal, prerenderContext, globalContext, is404, pageId, null)
+        // TODO/now
         objectAssign(pageContext, {
-          _providedByHook: null,
-          routeParams,
-          pageId: pageId,
           _debugRouteMatches: !routeType
             ? []
             : [
@@ -573,6 +583,7 @@ async function createPageContextsForOnPrerenderStartHook(
               ]
         })
         objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
+        route(pageContext)
 
         if (is404) {
           objectAssign(pageContext, {
@@ -592,10 +603,16 @@ async function createPageContextsForOnPrerenderStartHook(
 async function createPageContext(
   urlOriginal: string,
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContextInternal
-) {
-  const pageContextInit = { urlOriginal }
-  objectAssign(pageContextInit, prerenderContext.pageContextInit)
+  globalContext: GlobalContextInternal,
+  is404: boolean,
+  pageId: string | undefined,
+  providedByHook: ProvidedByHook
+) /*: Promise<PageContext>*/ {
+  // TODO/now: remove
+  const pageContextInit = {
+    urlOriginal,
+    ...prerenderContext.pageContextInit
+  }
   const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true)
   assert(pageContext.isPrerendering === true)
   objectAssign(pageContext, {
@@ -603,9 +620,80 @@ async function createPageContext(
     _httpRequestId: null,
     _urlRewrite: null,
     _noExtraDir: prerenderContext.noExtraDir,
-    _prerenderContext: prerenderContext
+    _prerenderContext: prerenderContext,
+    _providedByHook: providedByHook,
+    is404
   })
+
+  if (!is404) {
+    const pageContextFromRoute = await route(pageContext)
+    // assertRouteMatch(pageContextFromRoute, pageContext)
+    assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string'))
+    assert(pageContextFromRoute.pageId)
+    objectAssign(pageContext, pageContextFromRoute)
+  } else {
+    assert(pageId)
+    objectAssign(pageContext, {
+      pageId,
+      // TODO/now
+      _debugRouteMatches: [],
+      routeParams: {}
+    })
+  }
+
+  objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
+
+  let usesClientRouter: boolean
+  {
+    const { pageId } = pageContext
+    assert(pageId)
+    assert(globalContext.isPrerendering)
+    if (globalContext.pageConfigs.length > 0) {
+      const pageConfig = globalContext.pageConfigs.find((p) => p.pageId === pageId)
+      assert(pageConfig)
+      usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
+    } else {
+      usesClientRouter = globalContext.usesClientRouter
+    }
+  }
+  objectAssign(pageContext, {
+    _usesClientRouter: usesClientRouter
+  })
+
   return pageContext
+}
+
+function assertRouteMatch(
+  pageContextFromRoute: Awaited<ReturnType<typeof route>>,
+  pageContext: { urlOriginal: string; _providedByHook: ProvidedByHook; _urlOriginalModifiedByHook?: TransformerHook }
+) {
+  const { urlOriginal } = pageContext
+  assert(urlOriginal)
+  if (pageContextFromRoute.pageId === null) {
+    let hookName: string | undefined
+    let hookFilePath: string | undefined
+    if (pageContext._providedByHook) {
+      hookName = pageContext._providedByHook.hookName
+      hookFilePath = pageContext._providedByHook.hookFilePath
+    } else if (pageContext._urlOriginalModifiedByHook) {
+      hookName = pageContext._urlOriginalModifiedByHook.hookName
+      hookFilePath = pageContext._urlOriginalModifiedByHook.hookFilePath
+    }
+    if (hookName) {
+      assert(hookFilePath)
+      assertUsage(
+        false,
+        `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
+          urlOriginal
+        )} that ${noRouteMatch}. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+      )
+    } else {
+      // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
+      assert(pageContextFromRoute._routingProvidedByOnBeforeRouteHook)
+      // Abort since the URL doesn't correspond to any page
+      return
+    }
+  }
 }
 
 async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, globalContext: GlobalContextInternal) {
@@ -811,70 +899,15 @@ async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, glob
   })
 }
 
-async function routeAndPrerender(
+async function prerenderPages(
   prerenderContext: PrerenderContext,
-  globalContext: GlobalContextInternal,
   concurrencyLimit: PLimit,
   onComplete: (htmlFile: HtmlFile) => Promise<void>
 ) {
-  assert(globalContext.isPrerendering)
-
   // Route all URLs
   await Promise.all(
     prerenderContext.pageContexts.map((pageContext) =>
       concurrencyLimit(async () => {
-        const { urlOriginal } = pageContext
-        assert(urlOriginal)
-        const pageContextFromRoute = await route(pageContext)
-        assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string'))
-        if (pageContextFromRoute.pageId === null) {
-          let hookName: string | undefined
-          let hookFilePath: string | undefined
-          if (pageContext._providedByHook) {
-            hookName = pageContext._providedByHook.hookName
-            hookFilePath = pageContext._providedByHook.hookFilePath
-          } else if (pageContext._urlOriginalModifiedByHook) {
-            hookName = pageContext._urlOriginalModifiedByHook.hookName
-            hookFilePath = pageContext._urlOriginalModifiedByHook.hookFilePath
-          }
-          if (hookName) {
-            assert(hookFilePath)
-            assertUsage(
-              false,
-              `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
-                urlOriginal
-              )} that ${noRouteMatch}. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
-            )
-          } else {
-            // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
-            assert(pageContextFromRoute._routingProvidedByOnBeforeRouteHook)
-            // Abort since the URL doesn't correspond to any page
-            return
-          }
-        }
-
-        assert(pageContextFromRoute.pageId)
-        objectAssign(pageContext, pageContextFromRoute)
-        const { pageId: pageId } = pageContext
-
-        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
-
-        let usesClientRouter: boolean
-        {
-          if (globalContext.pageConfigs.length > 0) {
-            const pageConfig = globalContext.pageConfigs.find((p) => p.pageId === pageId)
-            assert(pageConfig)
-            usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
-          } else {
-            usesClientRouter = globalContext.usesClientRouter
-          }
-        }
-
-        objectAssign(pageContext, {
-          is404: null,
-          _usesClientRouter: usesClientRouter
-        })
-
         let res: Awaited<ReturnType<typeof prerenderPage>>
         try {
           res = await prerenderPage(pageContext)
@@ -883,6 +916,9 @@ async function routeAndPrerender(
           throw err
         }
         const { documentHtml, pageContextSerialized } = res
+        const { urlOriginal, pageId } = pageContext
+        assert(urlOriginal)
+        assert(pageId)
         await onComplete({
           urlOriginal,
           pageContext,
@@ -943,7 +979,7 @@ async function warnMissingPages(
     })
 }
 
-async function prerender404(
+async function prerenderPages404(
   prerenderContext: PrerenderContext,
   onComplete: (htmlFile: HtmlFile) => Promise<void>,
   concurrencyLimit: PLimit
