@@ -834,6 +834,11 @@ async function callOnPrerenderStartHook(
     delete pageContext.url
   })
 
+  // After applying result
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    ;(pageContext as any)._restorePropertyGetters?.()
+  })
+
   await Promise.all(
     prerenderContext.pageContexts.map((pageContext: PageContext) =>
       concurrencyLimit(async () => {
@@ -849,11 +854,6 @@ async function callOnPrerenderStartHook(
       })
     )
   )
-
-  // After applying result
-  prerenderContext.pageContexts.forEach((pageContext) => {
-    ;(pageContext as any)._restorePropertyGetters?.()
-  })
 }
 
 async function prerenderPages(
