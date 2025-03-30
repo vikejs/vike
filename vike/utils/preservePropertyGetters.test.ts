@@ -24,19 +24,19 @@ describe('preservePropertyGetters', () => {
     const copy = { ...testObj } // Spread without getter
 
     expect(copy.computed).toBeUndefined()
-    const restored = restorePropertyGetters(copy)
+    restorePropertyGetters(copy)
 
-    expect(restored.computed).toBe(20) // Getter works
-    restored.value = 5
-    expect(restored.computed).toBe(10) // Reacts to changes
+    expect(copy.computed).toBe(20) // Getter works
+    copy.value = 5
+    expect(copy.computed).toBe(10) // Reacts to changes
   })
 
   it('preserves normal properties', () => {
     const { restorePropertyGetters } = preservePropertyGetters(testObj)
     const copy = { ...testObj }
-    const restored = restorePropertyGetters(copy)
+    restorePropertyGetters(copy)
 
-    expect(restored.normal).toBe('plain property')
+    expect(copy.normal).toBe('plain property')
   })
 
   it('handles multiple getters', () => {
@@ -53,9 +53,9 @@ describe('preservePropertyGetters', () => {
 
     const { restorePropertyGetters } = preservePropertyGetters(multiObj)
     const copy = { ...multiObj }
-    const restored = restorePropertyGetters(copy)
+    restorePropertyGetters(copy)
 
-    expect(restored.sum).toBe(3)
-    expect(restored.product).toBe(2)
+    expect(copy.sum).toBe(3)
+    expect(copy.product).toBe(2)
   })
 })
