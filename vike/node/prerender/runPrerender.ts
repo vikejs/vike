@@ -740,7 +740,7 @@ async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, glob
 
   // Before applying result
   prerenderContext.pageContexts.forEach((pageContext) => {
-    ;(pageContext as any)._restorePropertyGetters()
+    ;(pageContext as any)._restorePropertyGetters?.()
   })
 
   if (result === null || result === undefined) {
@@ -807,7 +807,7 @@ async function callOnPrerenderStartHook(prerenderContext: PrerenderContext, glob
 
   // After applying result
   prerenderContext.pageContexts.forEach((pageContext) => {
-    ;(pageContext as any)._restorePropertyGetters()
+    ;(pageContext as any)._restorePropertyGetters?.()
   })
 }
 
