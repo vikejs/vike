@@ -846,7 +846,11 @@ async function callOnPrerenderStartHook(
             hookFilePath,
             hookName
           }
-          const pageContextFromRoute = await route(pageContext, true)
+          const pageContextFromRoute = await route(
+            pageContext,
+            // Avoid calling onBeforeRoute() twice, otherwise user's onBeforeRoute() will wrongfully believe URL doesn't have locale when onBeforeRoute() removes the local from the URL
+            true
+          )
           assertRouteMatch(pageContextFromRoute, pageContext)
         }
       })
