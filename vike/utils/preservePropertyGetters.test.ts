@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, assert } from 'vitest'
 import { preservePropertyGetters } from './preservePropertyGetters.js'
 
 describe('preservePropertyGetters', () => {
@@ -19,12 +19,14 @@ describe('preservePropertyGetters', () => {
   })
 
   it('restores getters to copied object', () => {
-    const { restorePropertyGetters } = preservePropertyGetters(testObj)
+    preservePropertyGetters(testObj)
     expect(Object.keys(testObj)).not.toContain('computed') // Now non-enumerable
     const copy = { ...testObj } // Spread without getter
 
     expect(copy.computed).toBeUndefined()
-    restorePropertyGetters(copy)
+    assert('_restorePropertyGetters' in copy)
+    ;(copy as any)._restorePropertyGetters()
+    assert(!('_restorePropertyGetters' in (copy as any)))
 
     expect(copy.computed).toBe(20) // Getter works
     copy.value = 5
@@ -32,9 +34,9 @@ describe('preservePropertyGetters', () => {
   })
 
   it('preserves normal properties', () => {
-    const { restorePropertyGetters } = preservePropertyGetters(testObj)
+    preservePropertyGetters(testObj)
     const copy = { ...testObj }
-    restorePropertyGetters(copy)
+    ;(copy as any)._restorePropertyGetters()
 
     expect(copy.normal).toBe('plain property')
   })
@@ -51,9 +53,9 @@ describe('preservePropertyGetters', () => {
       }
     }
 
-    const { restorePropertyGetters } = preservePropertyGetters(multiObj)
+    preservePropertyGetters(multiObj)
     const copy = { ...multiObj }
-    restorePropertyGetters(copy)
+    ;(copy as any)._restorePropertyGetters()
 
     expect(copy.sum).toBe(3)
     expect(copy.product).toBe(2)

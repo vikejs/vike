@@ -13,28 +13,23 @@ function preservePropertyGetters<T extends object>(objOriginal: T) {
     Object.defineProperty(objOriginal, key, { ...desc, enumerable: false })
   }
 
-  // Add verification ID
-  const objId = Symbol('objId')
-  Object.defineProperty(objOriginal, '_objId', {
-    value: objId,
+  const restorePropertyGetters = function (this: T) {
+    const objCopy = this
+    delete (objOriginal as any)._restorePropertyGetters
+    delete (objCopy as any)._restorePropertyGetters
+
+    for (const [key, desc] of Object.entries(getters)) {
+      assert(!(key in objCopy))
+      Object.defineProperty(objCopy, key, desc) // Add property getters to copy
+      assert(key in objOriginal)
+      Object.defineProperty(objOriginal, key, desc) // Restore original `enumerable` value
+    }
+  }
+
+  Object.defineProperty(objOriginal, '_restorePropertyGetters', {
+    value: restorePropertyGetters,
     enumerable: true,
     writable: true,
     configurable: true
   })
-
-  return {
-    restorePropertyGetters: (objCopy: T) => {
-      assert((objOriginal as any)._objId === objId)
-      delete (objOriginal as any)._objId
-      assert((objCopy as any)._objId === objId)
-      delete (objCopy as any)._objId
-
-      for (const [key, desc] of Object.entries(getters)) {
-        assert(!(key in objCopy))
-        Object.defineProperty(objCopy, key, desc) // Add property getters to copy
-        assert(key in objOriginal)
-        Object.defineProperty(objOriginal, key, desc) // Restore original `enumerable` value
-      }
-    }
-  }
 }
