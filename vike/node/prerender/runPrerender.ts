@@ -644,32 +644,34 @@ function assertRouteMatch(
     _urlOriginalModifiedByHook?: ProvidedByHookTransformer
   }
 ) {
-  if (pageContextFromRoute.pageId === null) {
-    let hookName: string | undefined
-    let hookFilePath: string | undefined
-    if (pageContext._providedByHook) {
-      hookName = pageContext._providedByHook.hookName
-      hookFilePath = pageContext._providedByHook.hookFilePath
-    } else if (pageContext._urlOriginalModifiedByHook) {
-      hookName = pageContext._urlOriginalModifiedByHook.hookName
-      hookFilePath = pageContext._urlOriginalModifiedByHook.hookFilePath
-    }
-    if (hookName) {
-      assert(hookFilePath)
-      const { urlOriginal } = pageContext
-      assert(urlOriginal)
-      assertUsage(
-        false,
-        `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
-          urlOriginal
-        )} that ${noRouteMatch}. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
-      )
-    } else {
-      // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
-      assert(pageContextFromRoute._routingProvidedByOnBeforeRouteHook)
-      // Abort since the URL doesn't correspond to any page
-      return
-    }
+  if (pageContextFromRoute.pageId !== null) {
+    assert(pageContextFromRoute.pageId)
+    return
+  }
+  let hookName: string | undefined
+  let hookFilePath: string | undefined
+  if (pageContext._providedByHook) {
+    hookName = pageContext._providedByHook.hookName
+    hookFilePath = pageContext._providedByHook.hookFilePath
+  } else if (pageContext._urlOriginalModifiedByHook) {
+    hookName = pageContext._urlOriginalModifiedByHook.hookName
+    hookFilePath = pageContext._urlOriginalModifiedByHook.hookFilePath
+  }
+  if (hookName) {
+    assert(hookFilePath)
+    const { urlOriginal } = pageContext
+    assert(urlOriginal)
+    assertUsage(
+      false,
+      `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
+        urlOriginal
+      )} that ${noRouteMatch}. Make sure that the URLs returned by ${hookName}() always match the route of a page.`
+    )
+  } else {
+    // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
+    assert(pageContextFromRoute._routingProvidedByOnBeforeRouteHook)
+    // Abort since the URL doesn't correspond to any page
+    return
   }
 }
 
