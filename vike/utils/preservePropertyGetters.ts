@@ -31,7 +31,6 @@ function preservePropertyGetters<T extends object>(objOriginal: T) {
   Object.defineProperty(objOriginal, '_restorePropertyGetters', {
     value: restorePropertyGetters,
     enumerable: true,
-    writable: true,
     configurable: true
   })
 }
