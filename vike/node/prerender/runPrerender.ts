@@ -846,8 +846,6 @@ async function callOnPrerenderStartHook(
             hookFilePath,
             hookName
           }
-          const pageContextFromRoute = await route(pageContext)
-          assertRouteMatch(pageContextFromRoute, pageContext)
         }
       })
     )
