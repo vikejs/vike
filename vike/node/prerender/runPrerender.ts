@@ -600,8 +600,8 @@ async function createPageContext(
 
   if (!is404) {
     const pageContextFromRoute = await route(pageContext)
+    assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string')) // Help TS
     assertRouteMatch(pageContextFromRoute, pageContext)
-    assert(hasProp(pageContextFromRoute, 'pageId', 'null') || hasProp(pageContextFromRoute, 'pageId', 'string'))
     assert(pageContextFromRoute.pageId)
     objectAssign(pageContext, pageContextFromRoute)
   } else {
@@ -644,8 +644,6 @@ function assertRouteMatch(
     _urlOriginalModifiedByHook?: ProvidedByHookTransformer
   }
 ) {
-  const { urlOriginal } = pageContext
-  assert(urlOriginal)
   if (pageContextFromRoute.pageId === null) {
     let hookName: string | undefined
     let hookFilePath: string | undefined
@@ -658,6 +656,8 @@ function assertRouteMatch(
     }
     if (hookName) {
       assert(hookFilePath)
+      const { urlOriginal } = pageContext
+      assert(urlOriginal)
       assertUsage(
         false,
         `The ${hookName}() hook defined by ${hookFilePath} returns a URL ${pc.cyan(
