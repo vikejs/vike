@@ -499,7 +499,7 @@ function getUrlListFromPagesWithStaticRoute(
     }
 
     assert(urlOriginal.startsWith('/'))
-    urlList.push({ urlOriginal, pageId, routeType: pageRoute.routeType })
+    urlList.push({ urlOriginal, pageId })
   })
   return urlList
 }
@@ -519,7 +519,6 @@ function getUrlList404(globalContext: GlobalContextInternal): UrlListEntry[] {
 type UrlListEntry = {
   urlOriginal: string
   pageId: string
-  routeType?: 'STRING' | 'FILESYSTEM'
 }
 async function createPageContextsForOnPrerenderStartHook(
   urlList: UrlListEntry[],
@@ -529,7 +528,7 @@ async function createPageContextsForOnPrerenderStartHook(
   is404: boolean
 ) {
   await Promise.all(
-    urlList.map(({ urlOriginal, pageId, routeType }) =>
+    urlList.map(({ urlOriginal, pageId }) =>
       concurrencyLimit(async () => {
         // Already included in a onBeforePrerenderStart() hook
         if (
@@ -539,30 +538,8 @@ async function createPageContextsForOnPrerenderStartHook(
         ) {
           return
         }
-
-        const routeParams = {}
         const pageContext = await createPageContext(urlOriginal, prerenderContext, globalContext, is404, pageId, null)
-        // TODO/now
-        objectAssign(pageContext, {
-          _debugRouteMatches: !routeType
-            ? []
-            : [
-                {
-                  pageId,
-                  routeType,
-                  routeString: urlOriginal,
-                  routeParams
-                }
-              ]
-        })
-        objectAssign(pageContext, await loadUserFilesServerSide(pageContext))
-
         if (is404) {
-          objectAssign(pageContext, {
-            is404: true as const,
-            // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
-            _usesClientRouter: false as const
-          })
           prerenderContext.pageContexts404.push(pageContext)
         } else {
           prerenderContext.pageContexts.push(pageContext)
@@ -579,8 +556,7 @@ async function createPageContext(
   is404: boolean,
   pageId: string | undefined,
   providedByHook: ProvidedByHook
-) /*: Promise<PageContext>*/ {
-  // TODO/now: remove
+) {
   const pageContextInit = {
     urlOriginal,
     ...prerenderContext.pageContextInit
@@ -608,7 +584,6 @@ async function createPageContext(
     assert(pageId)
     objectAssign(pageContext, {
       pageId,
-      // TODO/now
       _debugRouteMatches: [],
       routeParams: {}
     })
