@@ -226,7 +226,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     globalContext
   )
 
-  // Allow user to create `pageContext` for parameterized routes and/or bulk data fetching.
+  // Allow user to create `pageContext` for parameterized routes and/or bulk data fetching
   // https://vike.dev/onBeforePrerenderStart
   await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
 
@@ -420,9 +420,7 @@ async function callOnBeforePrerenderStartHooks(
   await Promise.all(
     onBeforePrerenderStartHooks.map(({ hookFn, hookName, hookFilePath, pageId, hookTimeout }) =>
       concurrencyLimit(async () => {
-        if (doNotPrerenderList.find((p) => p.pageId === pageId)) {
-          return
-        }
+        if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
 
         const prerenderResult: unknown = await executeHook(
           () => hookFn(),
@@ -430,8 +428,11 @@ async function callOnBeforePrerenderStartHooks(
           null
         )
         const result = normalizeOnPrerenderHookResult(prerenderResult, hookFilePath, hookName)
+
+        // Handle result
         await Promise.all(
           result.map(async ({ url, pageContext }) => {
+            // Assert no duplication
             {
               const pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
                 isSameUrl(pageContext.urlOriginal, url)
@@ -448,6 +449,8 @@ async function callOnBeforePrerenderStartHooks(
                 )
               }
             }
+
+            // Add result
             const providedByHook = {
               hookFilePath,
               hookName
@@ -462,9 +465,7 @@ async function callOnBeforePrerenderStartHooks(
             )
             prerenderContext.pageContexts.push(pageContextNew)
             if (pageContext) {
-              objectAssign(pageContextNew, {
-                _pageContextAlreadyProvidedByOnPrerenderHook: true
-              })
+              objectAssign(pageContextNew, { _pageContextAlreadyProvidedByOnPrerenderHook: true })
               objectAssign(pageContextNew, pageContext)
             }
           })
@@ -948,27 +949,25 @@ async function prerenderPages404(
   concurrencyLimit: PLimit
 ) {
   await Promise.all(
-    prerenderContext.pageContexts404.map((pageContext) =>
+    prerenderContext.pageContexts404.map((pageContextBeforeRender) =>
       concurrencyLimit(async () => {
         let result: Awaited<ReturnType<typeof prerenderPage>>
         try {
-          result = await prerenderPage(pageContext)
+          result = await prerenderPage(pageContextBeforeRender)
         } catch (err) {
           assertIsNotAbort(err, 'the 404 page')
           throw err
         }
-        if (result) {
-          const { documentHtml, pageContext } = result
-          const { urlOriginal } = pageContext
-          await onComplete({
-            urlOriginal,
-            pageContext,
-            htmlString: documentHtml,
-            pageContextSerialized: null,
-            doNotCreateExtraDirectory: true,
-            pageId: null
-          })
-        }
+        const { documentHtml, pageContext } = result
+        const { urlOriginal } = pageContext
+        await onComplete({
+          urlOriginal,
+          pageContext,
+          htmlString: documentHtml,
+          pageContextSerialized: null,
+          doNotCreateExtraDirectory: true,
+          pageId: null
+        })
       })
     )
   )
