@@ -19,8 +19,10 @@ function preservePropertyGetters<T extends object>(objOriginal: T) {
     delete (objCopy as any)._restorePropertyGetters
 
     for (const [key, desc] of Object.entries(getters)) {
-      assert(!(key in objCopy))
-      Object.defineProperty(objCopy, key, desc) // Add property getters to copy
+      if (objCopy !== objOriginal) {
+        assert(!(key in objCopy))
+        Object.defineProperty(objCopy, key, desc) // Add property getters to copy
+      }
       assert(key in objOriginal)
       Object.defineProperty(objOriginal, key, desc) // Restore original `enumerable` value
     }

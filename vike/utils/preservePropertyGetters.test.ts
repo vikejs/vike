@@ -60,4 +60,11 @@ describe('preservePropertyGetters', () => {
     expect(copy.sum).toBe(3)
     expect(copy.product).toBe(2)
   })
+
+  it('also works when not copied', () => {
+    preservePropertyGetters(testObj)
+    assert('_restorePropertyGetters' in testObj)
+    ;(testObj as any)._restorePropertyGetters()
+    assert(!('_restorePropertyGetters' in (testObj as any)))
+  })
 })
