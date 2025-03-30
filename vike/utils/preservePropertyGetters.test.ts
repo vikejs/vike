@@ -18,14 +18,9 @@ describe('preservePropertyGetters', () => {
     }
   })
 
-  it('makes getters non-enumerable for spreading', () => {
-    const { restorePropertyGetters } = preservePropertyGetters(testObj)
-    expect(Object.keys(testObj)).not.toContain('computed') // Now non-enumerable
-    restorePropertyGetters(testObj)
-  })
-
   it('restores getters to copied object', () => {
     const { restorePropertyGetters } = preservePropertyGetters(testObj)
+    expect(Object.keys(testObj)).not.toContain('computed') // Now non-enumerable
     const copy = { ...testObj } // Spread without getter
 
     expect(copy.computed).toBeUndefined()

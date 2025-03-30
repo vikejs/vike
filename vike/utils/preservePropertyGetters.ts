@@ -1,4 +1,8 @@
-export function preservePropertyGetters<T extends object>(objOriginal: T) {
+export { preservePropertyGetters }
+
+import { assert } from './assert.js'
+
+function preservePropertyGetters<T extends object>(objOriginal: T) {
   // Store original getter descriptors
   const getters = Object.fromEntries(
     Object.entries(Object.getOwnPropertyDescriptors(objOriginal)).filter(([_, desc]) => 'get' in desc)
@@ -12,8 +16,10 @@ export function preservePropertyGetters<T extends object>(objOriginal: T) {
   return {
     restorePropertyGetters: (objCopy: T) => {
       for (const [key, desc] of Object.entries(getters)) {
-        Object.defineProperty(objCopy, key, desc) // Restore to copy
-        Object.defineProperty(objOriginal, key, desc) // Restore original
+        assert(!(key in objCopy))
+        Object.defineProperty(objCopy, key, desc) // Add property getters to copy
+        assert(key in objOriginal)
+        Object.defineProperty(objOriginal, key, desc) // Restore original `enumerable` value
       }
       return objCopy
     }
