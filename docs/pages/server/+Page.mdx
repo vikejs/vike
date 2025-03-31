@@ -192,6 +192,46 @@ apply(app, {
 > The `runtime` object is a [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
 
 
+## `serve()` options
+
+The `serve()` helper can further be configured with the following options:
+
+```js
+serve(app, {
+  // [Required] Server port
+  port: 3000,
+
+  // Called once the server is accepting connections
+  onReady() {
+    console.log('Server is ready.')
+  },
+
+  // Called once the server is created
+  onServer(server) {
+    // `server` type depends on your runtime:
+    //   node:  Server ('node:http') by default,
+    //          could be an HTTPS or HTTP2 server if `createServer` is provided (see below)
+    //   deno:  return of Deno.Serve (experimental support)
+    //   bun:   return of Bun.Serve  (experimental support)
+
+    // As no server is running under serverless environments like Cloudflare or Vercel Edge,
+    // `server` is `undefined` in those runtimes.
+  },
+
+  // ⚠️  The following options are available when running on Node only!
+
+  // [Node.js] Can be one of:
+  //     import { createServer } from 'node:http'
+  //     import { createServer } from 'node:https'
+  //     import { createSecureServer } from 'node:http2'
+  createServer,
+
+  // [Node.js] Options forwarded to `createServer`
+  serverOptions,
+})
+```
+
+
 ## Standalone
 
 With `standalone: true`, the build output directory ([`dist/`](https://vite.dev/config/build-options.html#build-outdir)) contains everything needed for deployment. This means that, in production, only the `dist/` directory is required (you can remove `node_modules/` and skip `$ npm install`).
