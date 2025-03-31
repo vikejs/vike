@@ -800,6 +800,7 @@ function getConfigValueSource(
       // Defined over pointer import
       assert(confVal.valueIsLoaded)
       const pointerImport = resolvePointerImport(confVal.value, plusFile.filePath, userRootDir, configName)
+      console.log('pointerImport', pointerImport)
       const configDefinedAt = getConfigDefinedAt('Config', configName, definedAtFilePath_)
       assertUsage(pointerImport, `${configDefinedAt} should be an import`)
       valueFilePath = pointerImport.fileExportPath.filePathAbsoluteVite
