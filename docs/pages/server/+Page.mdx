@@ -153,9 +153,12 @@ Create (or update) your server entry:
 Where:
  - `apply()` installs the middleware of Vike and Vike extensions.
  - `serve()` attaches your server to Node.js, Cloudflare, Netlify, Vercel, Deno, Bun, ...
-   - The `port` option is only used when running on non-serverless environments.
-   - All other options are passed down as-is to the target environment.
-   > `serve()` enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have different server attachment styles).
+   <blockquote>
+   See <Link href="#serve-options" />.
+   </blockquote>
+   <blockquote>
+   `serve()` enables you to define a single server entry while being able to target multiple environments (e.g. Node.js and Cloudflare have different server attachment styles).
+   </blockquote>
 
 Note that:
 - Vike is automatically added to your server — no need to manually integrate <Link href="/renderPage">`renderPage()`</Link>.
@@ -194,11 +197,10 @@ apply(app, {
 
 ## `serve()` options
 
-The `serve()` helper can further be configured with the following options:
-
 ```js
 serve(app, {
-  // [Required] Server port
+  // [Required] Server port. It's ignored in Cloudflare and Vercel Edge (there
+  // isn't any server in serverless deployment).
   port: 3000,
 
   // Called once the server is accepting connections
@@ -209,25 +211,40 @@ serve(app, {
   // Called once the server is created
   onServer(server) {
     // `server` type depends on your runtime:
-    //   node:  Server ('node:http') by default,
-    //          could be an HTTPS or HTTP2 server if `createServer` is provided (see below)
-    //   deno:  return of Deno.Serve (experimental support)
-    //   bun:   return of Bun.Serve  (experimental support)
+    //   Node.js:  Server ('node:http') by default. It's an HTTPS or HTTP2 server
+                   if the `createServer` option was provided (see below).
+    //   Deno:     return of Deno.Serve (experimental support)
+    //   Bun:      return of Bun.Serve  (experimental support)
 
-    // As no server is running under serverless environments like Cloudflare or Vercel Edge,
-    // `server` is `undefined` in those runtimes.
+    // `server` is `undefined` in Cloudflare and Vercel Edge (there
+    // isn't any server in serverless deployment)
   },
 
-  // ⚠️  The following options are available when running on Node only!
+
+  // ⚠️  The following two options are available only when running on Node.js
 
   // [Node.js] Can be one of:
   //     import { createServer } from 'node:http'
   //     import { createServer } from 'node:https'
-  //     import { createSecureServer } from 'node:http2'
+  //     import { createSecureServer as createServer } from 'node:http2'
   createServer,
 
-  // [Node.js] Options forwarded to `createServer`
-  serverOptions,
+  // [Node.js] Options forwarded to `createServer()`
+  serverOptions: {
+    // For example SSL/TLS key and certificate for HTTPS
+    key: fs.readFileSync('/etc/letsencrypt/live/example.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/example.com/fullchain.pem'),
+    // ... other createServer() options ...
+  },
+
+
+  // 👉 Other options are passed down as-is to the target environment
+
+  // For example, you can define all @hono/node-serve options here, such as:
+  fetch,
+  overrideGlobalObjects: false,
+
+  // ... any options of your target environment ...
 })
 ```
 
