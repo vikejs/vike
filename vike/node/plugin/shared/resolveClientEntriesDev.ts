@@ -13,7 +13,6 @@ import type { ViteDevServer } from 'vite'
 import { createRequire } from 'module'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
-const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
 
@@ -39,6 +38,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
     filePath = pathJoin(root, clientEntry)
   } else {
     if (clientEntry.startsWith('@@vike/')) {
+      const require_ = createRequire(importMetaUrl)
       assert(clientEntry.endsWith('.js'))
       try {
         // For Vitest (which doesn't resolve vike to its dist but to its source files)
@@ -54,6 +54,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
         )
       }
     } else {
+      const require_ = createRequire(root)
       assertIsNpmPackageImport(clientEntry)
       filePath = require_.resolve(clientEntry)
     }
