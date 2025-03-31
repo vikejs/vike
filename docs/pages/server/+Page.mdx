@@ -176,25 +176,6 @@ In production run `$ NODE_ENV=production node dist/server/index.js` (or Bun/Deno
 > - <Link href="/cloudflare-workers" />
 
 
-## Custom `pageContext`
-
-To define <Link href="/pageContext#custom">custom `pageContext`</Link> properties:
-
-```ts
-apply(app, {
-  pageContext(runtime) {
-    return {
-      user: runtime.req.user
-    }
-  }
-})
-```
-
-> The `runtime` object is also available at `pageContext.runtime`. Thus, the `pageContext` function above isn't usually need: you can simply use `pageContext.runtime.req.user` instead, e.g. with <Link href="/usePageContext">`usePageContext()`</Link>.
-
-> The `runtime` object is a [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
-
-
 ## `serve()` options
 
 ```js
@@ -247,6 +228,25 @@ serve(app, {
   // ... any options of your target environment ...
 })
 ```
+
+
+## Custom `pageContext`
+
+To define <Link href="/pageContext#custom">custom `pageContext`</Link> properties:
+
+```ts
+apply(app, {
+  pageContext(runtime) {
+    return {
+      user: runtime.req.user
+    }
+  }
+})
+```
+
+> The `runtime` object is also available at `pageContext.runtime`. Thus, the `pageContext` function above isn't usually need: you can simply use `pageContext.runtime.req.user` instead, e.g. with <Link href="/usePageContext">`usePageContext()`</Link>.
+
+> The `runtime` object is a [`RuntimeAdapter`](https://universal-middleware.dev/reference/runtime-adapter) (`vike-server` uses [universal-middleware](https://universal-middleware.dev/) under the hood).
 
 
 ## Standalone
