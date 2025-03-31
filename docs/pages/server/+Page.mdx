@@ -195,13 +195,17 @@ apply(app, {
 ## `serve()` options
 
 The `serve()` helper can further be configured with the following options:
+
 ```js
 serve(app, {
-  // Server port, mandatory
+  // [Required] Server port
   port: 3000,
+
   // Called once the server is accepting connections
   onReady() {
+    console.log('Server is ready.')
   },
+
   // Called once the server is created
   onServer(server) {
     // `server` type depends on your runtime:
@@ -214,14 +218,15 @@ serve(app, {
     // `server` is `undefined` in those runtimes.
   },
 
-  // The following options are available when running on Node only!
+  // ⚠️  The following options are available when running on Node only!
 
-  // Can be one of:
-  // import { createServer } from 'node:http'
-  // import { createServer } from 'node:https'
-  // import { createSecureServer } from 'node:http2'
+  // [Node.js] Can be one of:
+  //     import { createServer } from 'node:http'
+  //     import { createServer } from 'node:https'
+  //     import { createSecureServer } from 'node:http2'
   createServer,
-  // Options forwarded to `createServer`
+
+  // [Node.js] Options forwarded to `createServer`
   serverOptions,
 })
 ```
