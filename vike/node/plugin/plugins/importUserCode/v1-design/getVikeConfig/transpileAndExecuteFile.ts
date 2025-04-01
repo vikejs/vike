@@ -32,16 +32,13 @@ import {
   assertFilePathAbsoluteFilesystem,
   assertIsNpmPackageImport,
   genPromise,
-  isVitest
+  isVitest,
+  requireResolveOptional
 } from '../../../../utils.js'
 import { transformPointerImports } from './transformPointerImports.js'
 import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'
-import { createRequire } from 'module'
-// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
-const importMetaUrl: string = import.meta.url
-const require_ = createRequire(importMetaUrl)
 
 assertIsNotProductionRuntime()
 installSourceMapSupport()
@@ -195,10 +192,7 @@ async function transpileWithEsbuild(
           // - Sitll required for esbuild@0.24.0 (November 2024).
           // - Let's try to remove this workaround again later.
           if (resolved.errors.length > 0) {
-            let resolvedWithNode: string | undefined
-            try {
-              resolvedWithNode = require_.resolve(path, { paths: [args.resolveDir] })
-            } catch {}
+            const resolvedWithNode = requireResolveOptional(path, args.resolveDir)
             if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolvedWithNode', resolvedWithNode)
             if (resolvedWithNode) resolved = { path: resolvedWithNode }
           }
