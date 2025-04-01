@@ -54,7 +54,7 @@ function requireResolveInternal(importPath: string, cwd: string): string {
   try {
     importedFile = require_.resolve(importPath, { paths: [cwd] })
   } catch (err) {
-    console.error(err)
+    // console.error(err)
     assert(false, { cwd, importPath })
   }
   importedFile = toPosixPath(importedFile)
