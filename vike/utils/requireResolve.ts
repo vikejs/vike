@@ -16,12 +16,15 @@ const require_ = createRequire(importMetaUrl)
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
-function requireResolve_(importPath: string, cwd: string) {
+function requireResolve_(importPath: string, cwd: string, options?: { doNotHandleFileExtension?: true }) {
   assertPosixPath(cwd)
   assertPosixPath(importPath)
   cwd = resolveCwd(cwd)
-  const clean = addFileExtensionsToRequireResolve()
-  importPath = removeFileExtention(importPath)
+  let clean = () => {}
+  if (!options?.doNotHandleFileExtension) {
+    clean = addFileExtensionsToRequireResolve()
+    importPath = removeFileExtention(importPath)
+  }
   let importedFile: string
   try {
     // We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
@@ -40,25 +43,15 @@ function requireResolve(importPath: string, cwd: string): string | null {
   if (res.hasFailed) return null
   return res.importedFile
 }
+function requireResolveInternal(importPath: string, cwd: string): string | null {
+  const res = requireResolve_(importPath, cwd, { doNotHandleFileExtension: true })
+  if (res.hasFailed) return null
+  return res.importedFile
+}
 function requireResolveExpected(importPath: string, cwd: string): string {
   const res = requireResolve_(importPath, cwd)
   if (res.hasFailed) throw res.err
   return res.importedFile
-}
-// For internal Vike files that are expected to exist and to be .js files
-function requireResolveInternal(importPath: string, cwd: string): string {
-  assertPosixPath(cwd)
-  assertPosixPath(importPath)
-  cwd = resolveCwd(cwd)
-  let importedFile: string
-  try {
-    importedFile = require_.resolve(importPath, { paths: [cwd] })
-  } catch (err) {
-    console.log('err', err)
-    assert(false, { cwd, importPath })
-  }
-  importedFile = toPosixPath(importedFile)
-  return importedFile
 }
 
 function resolveCwd(cwd: string) {
