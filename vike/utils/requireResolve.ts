@@ -1,7 +1,7 @@
-export { requireResolveOptional }
-export { requireResolveOptionalNonUserFile }
 export { requireResolve }
+export { requireResolveOptional }
 export { requireResolveNonUserFile }
+export { requireResolveOptionalNonUserFile }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
