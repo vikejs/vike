@@ -8,7 +8,7 @@ onLoad()
 export * from '../runtime/utils.js'
 
 // Utils only needed by `plugin/*`
-export * from '../../utils/requireResolveOptional.js'
+export * from '../../utils/requireResolve.js'
 export * from '../../utils/includes.js'
 export * from '../../utils/isDev.js'
 export * from '../../utils/getMostSimilar.js'
