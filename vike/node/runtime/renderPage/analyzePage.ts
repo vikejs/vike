@@ -22,7 +22,6 @@ async function analyzePage(
     const clientFilePath = getConfigValueRuntime(pageConfig, 'client', 'string')?.value ?? null
     if (clientFilePath) clientEntries.push(clientFilePath)
     if (isClientRuntimeLoaded) clientEntries.push(getVikeClientEntry(isClientRouting))
-    console.log('clientEntries', clientEntries)
     const clientDependencies: ClientDependency[] = []
     clientDependencies.push({
       id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, true),
