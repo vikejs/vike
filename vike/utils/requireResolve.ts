@@ -1,7 +1,7 @@
 export { requireResolveOptional }
 export { requireResolveOptionalNonUserFile }
-export { requireResolveExpected }
-export { requireResolveExpectedNonUserFile }
+export { requireResolve }
+export { requireResolveNonUserFile }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -49,12 +49,12 @@ function requireResolveOptionalNonUserFile(importPath: string, cwd: string): str
   if (res.hasFailed) return null
   return res.importedFile
 }
-function requireResolveExpectedNonUserFile(importPath: string, cwd: string) {
+function requireResolveNonUserFile(importPath: string, cwd: string) {
   const res = requireResolve_(importPath, cwd, { doNotHandleFileExtension: true })
   if (res.hasFailed) throw res.err
   return res.importedFile
 }
-function requireResolveExpected(importPath: string, cwd: string): string {
+function requireResolve(importPath: string, cwd: string): string {
   const res = requireResolve_(importPath, cwd)
   if (res.hasFailed) throw res.err
   return res.importedFile

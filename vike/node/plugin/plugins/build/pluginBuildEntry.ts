@@ -3,7 +3,7 @@ export { set_macro_ASSETS_MANIFEST }
 
 import { serverProductionEntryPlugin } from '@brillout/vite-plugin-server-entry/plugin'
 import { virtualFileIdImportUserCodeServer } from '../../../shared/virtual-files/virtualFileImportUserCode.js'
-import { assert, PROJECT_VERSION, requireResolveExpectedNonUserFile } from '../../utils.js'
+import { assert, PROJECT_VERSION, requireResolveNonUserFile } from '../../utils.js'
 import fs from 'fs/promises'
 import path from 'path'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
@@ -92,10 +92,7 @@ function find_ASSETS_MANIFEST(bundle: Bundle): string {
 function getImportPath(config: ResolvedConfig) {
   // We resolve filePathAbsolute even if we don't use it: we use require.resolve() as an assertion that the relative path is correct
   // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/plugins/pluginBuildEntry/index.js
-  const filePathAbsolute = requireResolveExpectedNonUserFile(
-    `../../../../../../dist/esm/__internal/index.js`,
-    importMetaUrl
-  )
+  const filePathAbsolute = requireResolveNonUserFile(`../../../../../../dist/esm/__internal/index.js`, importMetaUrl)
   if (
     // Let's implement a new config if a user needs the import to be a relative path instead of 'vike/__internal' (AFAIK a relative path is needed only if a framework has npm package 'vike' as direct dependency instead of a peer dependency and if the user of that framework uses pnpm)
     true as boolean

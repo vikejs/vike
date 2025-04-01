@@ -13,7 +13,7 @@ import {
   normalizeRollupInput,
   onSetupBuild,
   assertIsNpmPackageImport,
-  requireResolveExpectedNonUserFile
+  requireResolveNonUserFile
 } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
 import { findPageFiles } from '../../shared/findPageFiles.js'
@@ -224,7 +224,7 @@ function getEntryFromPageConfig(pageConfig: PageConfigBuildTime, isForClientSide
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
   // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vike/dist/esm/node/plugin/plugins/build/
-  return requireResolveExpectedNonUserFile(`../../../../../../${filePath}`, importMetaUrl)
+  return requireResolveNonUserFile(`../../../../../../${filePath}`, importMetaUrl)
 }
 
 function addLogHook() {

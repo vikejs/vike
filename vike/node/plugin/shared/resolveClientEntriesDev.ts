@@ -9,7 +9,7 @@ import {
   assertIsNpmPackageImport,
   assertIsNotProductionRuntime,
   requireResolveOptionalNonUserFile,
-  requireResolveExpected
+  requireResolve
 } from '../utils.js'
 import type { ViteDevServer } from 'vite'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
@@ -59,7 +59,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
       filePath = filePath_
     } else {
       assertIsNpmPackageImport(clientEntry)
-      filePath = requireResolveExpected(clientEntry, root)
+      filePath = requireResolve(clientEntry, root)
     }
   }
 
