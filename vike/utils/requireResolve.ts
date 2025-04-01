@@ -62,11 +62,13 @@ function requireResolveInternal(importPath: string, cwd: string): string {
 }
 
 function resolveCwd(cwd: string) {
-  if (cwd.startsWith('file:')) {
-    assert(cwd.startsWith('file://'))
-    cwd = cwd.slice('file://'.length)
+  let prefix = 'file://'
+  if (process.platform === 'win32') prefix += '/'
+  if (cwd.startsWith(prefix)) {
+    cwd = cwd.slice(prefix.length)
     cwd = path.posix.dirname(cwd)
   }
+  assert(!cwd.startsWith('file:'))
   return cwd
 }
 
