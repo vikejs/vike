@@ -21,8 +21,8 @@ function assertFilePathAbsoluteFilesystem(filePath: string) {
   // - For Linux users assertFilePathAbsoluteFilesystem() will erroneously succeed if `p` is a path absolute from the user root dir.
   //   - But that's okay because the assertion will eventually fail for Windows users.
   //   - On Linux there doesn't seem to be a way to distinguish between an absolute path starting from the filesystem root or starting from the user root directory, see comment at isFilePathAbsoluteFilesystem()
-  assert(isFilePathAbsoluteFilesystem(filePath))
   assertPosixPath(filePath)
+  assert(isFilePathAbsoluteFilesystem(filePath))
 }
 
 /**
