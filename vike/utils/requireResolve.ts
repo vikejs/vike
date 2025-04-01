@@ -7,7 +7,8 @@ import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 import { assertIsNotProductionRuntime } from './assertSetup.js'
 import { assertPosixPath, toPosixPath } from './path.js'
 import { scriptFileExtensionList } from './isScriptFile.js'
-import { createRequire } from 'module'
+import { createRequire } from 'node:module'
+import path from 'node:path'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
 const require_ = createRequire(importMetaUrl)
@@ -18,6 +19,7 @@ assertIsNotProductionRuntime()
 function requireResolve_(importPath: string, cwd: string) {
   assertPosixPath(cwd)
   assertPosixPath(importPath)
+  cwd = resolveCwd(cwd)
   const clean = addFileExtensionsToRequireResolve()
   importPath = removeFileExtention(importPath)
   let importedFile: string
@@ -45,10 +47,22 @@ function requireResolveExpected(importPath: string, cwd: string): string {
 }
 // For internal Vike files that are expected to exist and to be .js files
 function requireResolveInternal(importPath: string, cwd: string): string {
+  assertPosixPath(cwd)
   assertPosixPath(importPath)
+  cwd = resolveCwd(cwd)
   let importedFile = require_.resolve(importPath, { paths: [cwd] })
   importedFile = toPosixPath(importedFile)
   return importedFile
+}
+
+function resolveCwd(cwd: string) {
+  assertPosixPath(cwd)
+  if (cwd.startsWith('file:')) {
+    assert(cwd.startsWith('file://'))
+    cwd = cwd.slice('file://'.length)
+    cwd = path.posix.dirname(cwd)
+  }
+  return cwd
 }
 
 function removeFileExtention(importPath: string) {
