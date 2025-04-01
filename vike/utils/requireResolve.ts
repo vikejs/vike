@@ -1,4 +1,6 @@
 export { requireResolve }
+export { requireResolveExpected }
+export { requireResolveInternal }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -13,23 +15,39 @@ const require_ = createRequire(importMetaUrl)
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
-// We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
-// - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
-function requireResolve(importPath: string, cwd: string): string | null {
+function requireResolve_(importPath: string, cwd: string) {
   assertPosixPath(cwd)
+  assertPosixPath(importPath)
   const clean = addFileExtensionsToRequireResolve()
   importPath = removeFileExtention(importPath)
-  let importedFile: string | null
+  let importedFile: string
   try {
+    // We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
+    // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
     importedFile = require_.resolve(importPath, { paths: [cwd] })
-  } catch {
-    importedFile = null
-  } finally {
+  } catch (err) {
     clean()
+    return { importedFile: undefined, err, hasFailed: true as const }
   }
-  if (importedFile) {
-    importedFile = toPosixPath(importedFile)
-  }
+  clean()
+  importedFile = toPosixPath(importedFile)
+  return { importedFile, err: undefined, hasFailed: false as const }
+}
+function requireResolve(importPath: string, cwd: string): string | null {
+  const res = requireResolve_(importPath, cwd)
+  if (res.hasFailed) return null
+  return res.importedFile
+}
+function requireResolveExpected(importPath: string, cwd: string): string {
+  const res = requireResolve_(importPath, cwd)
+  if (res.hasFailed) throw res.err
+  return res.importedFile
+}
+// For internal Vike files that are expected to exist and to be .js files
+function requireResolveInternal(importPath: string, cwd: string): string {
+  assertPosixPath(importPath)
+  let importedFile = require_.resolve(importPath, { paths: [cwd] })
+  importedFile = toPosixPath(importedFile)
   return importedFile
 }
 
