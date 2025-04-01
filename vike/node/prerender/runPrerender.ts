@@ -830,7 +830,7 @@ async function callOnPrerenderStartHook(
   await Promise.all(
     prerenderContext.pageContexts.map((pageContext: PageContext) =>
       concurrencyLimit(async () => {
-        if (pageContext.urlOriginal !== pageContext._urlOriginalBeforeHook) {
+        if (pageContext.urlOriginal !== pageContext._urlOriginalBeforeHook && !pageContext.is404) {
           pageContext._urlOriginalModifiedByHook = {
             hookFilePath,
             hookName
