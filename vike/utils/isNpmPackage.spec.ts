@@ -2,7 +2,7 @@ import { expect, describe, it, assert } from 'vitest'
 import { isDistinguishable, isValidPathAlias, parse } from './isNpmPackage.js'
 
 describe('parse()', () => {
-  it('basics', () => {
+  it('yes', () => {
     expect(parse('some-pkg')).toStrictEqual({ pkgName: 'some-pkg', importPath: null })
     expect(parse('@scope/name')).toStrictEqual({ pkgName: '@scope/name', importPath: null })
     expect(parse('@scope/name/path')).toStrictEqual({ pkgName: '@scope/name', importPath: 'path' })
@@ -10,6 +10,8 @@ describe('parse()', () => {
       pkgName: '@scope/name',
       importPath: 'some/deep/path.js'
     })
+  })
+  it('no', () => {
     expect(parse('somePkg')).toBe(null) // NPM packages are not allowed upper case characters in their name
     expect(parse('./some/path')).toBe(null)
     expect(parse('/some-path')).toBe(null)
