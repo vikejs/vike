@@ -50,13 +50,18 @@ function requireResolveInternal(importPath: string, cwd: string): string {
   assertPosixPath(cwd)
   assertPosixPath(importPath)
   cwd = resolveCwd(cwd)
-  let importedFile = require_.resolve(importPath, { paths: [cwd] })
+  let importedFile: string
+  try {
+    importedFile = require_.resolve(importPath, { paths: [cwd] })
+  } catch (err) {
+    console.error(err)
+    assert(false, { cwd, importPath })
+  }
   importedFile = toPosixPath(importedFile)
   return importedFile
 }
 
 function resolveCwd(cwd: string) {
-  assertPosixPath(cwd)
   if (cwd.startsWith('file:')) {
     assert(cwd.startsWith('file://'))
     cwd = cwd.slice('file://'.length)
