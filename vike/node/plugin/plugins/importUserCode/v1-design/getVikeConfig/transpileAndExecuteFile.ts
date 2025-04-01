@@ -177,7 +177,6 @@ async function transpileWithEsbuild(
         // https://github.com/brillout/esbuild-playground
         build.onResolve({ filter: /.*/ }, async (args) => {
           if (args.kind !== 'import-statement') return
-          if (debugEsbuildResolve.isActivated) debugEsbuildResolve('args', args)
 
           // Avoid infinite loop: https://github.com/evanw/esbuild/issues/3095#issuecomment-1546916366
           const useEsbuildResolver = 'useEsbuildResolver'
@@ -186,6 +185,7 @@ async function transpileWithEsbuild(
           opts.pluginData = { [useEsbuildResolver]: true }
 
           let resolved: ResolveResult | (OnResolveResult & { errors?: undefined }) = await build.resolve(path, opts)
+          if (debugEsbuildResolve.isActivated) debugEsbuildResolve('args', args)
           if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolved', resolved)
 
           // Temporary workaround for https://github.com/evanw/esbuild/issues/3973
