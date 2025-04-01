@@ -1,6 +1,6 @@
 export { requireResolve }
 export { requireResolveExpected }
-export { requireResolveInternal }
+export { requireResolveNonUserFile }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -43,7 +43,7 @@ function requireResolve(importPath: string, cwd: string): string | null {
   if (res.hasFailed) return null
   return res.importedFile
 }
-function requireResolveInternal(importPath: string, cwd: string): string | null {
+function requireResolveNonUserFile(importPath: string, cwd: string): string | null {
   const res = requireResolve_(importPath, cwd, { doNotHandleFileExtension: true })
   if (res.hasFailed) return null
   return res.importedFile
