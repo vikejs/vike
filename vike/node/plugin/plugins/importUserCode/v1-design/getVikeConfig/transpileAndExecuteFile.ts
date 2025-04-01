@@ -33,7 +33,7 @@ import {
   assertIsNpmPackageImport,
   genPromise,
   isVitest,
-  requireResolve
+  requireResolveOptional
 } from '../../../../utils.js'
 import { transformPointerImports } from './transformPointerImports.js'
 import sourceMapSupport from 'source-map-support'
@@ -192,7 +192,7 @@ async function transpileWithEsbuild(
           // - Sitll required for esbuild@0.24.0 (November 2024).
           // - Let's try to remove this workaround again later.
           if (resolved.errors.length > 0) {
-            const resolvedWithNode = requireResolve(path, args.resolveDir)
+            const resolvedWithNode = requireResolveOptional(path, args.resolveDir)
             if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolvedWithNode', resolvedWithNode)
             if (resolvedWithNode) resolved = { path: resolvedWithNode }
           }

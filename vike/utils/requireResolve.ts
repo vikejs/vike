@@ -1,4 +1,4 @@
-export { requireResolve }
+export { requireResolveOptional }
 export { requireResolveNonUserFile }
 export { requireResolveExpected }
 export { requireResolveExpectedNonUserFile }
@@ -39,7 +39,7 @@ function requireResolve_(importPath: string, cwd: string, options?: { doNotHandl
   importedFile = toPosixPath(importedFile)
   return { importedFile, err: undefined, hasFailed: false as const }
 }
-function requireResolve(importPath: string, cwd: string): string | null {
+function requireResolveOptional(importPath: string, cwd: string): string | null {
   const res = requireResolve_(importPath, cwd)
   if (res.hasFailed) return null
   return res.importedFile

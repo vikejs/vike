@@ -10,7 +10,7 @@ import {
   assertUsage,
   isFilePathAbsolute,
   pathIsRelative,
-  requireResolve
+  requireResolveOptional
 } from '../../../../utils.js'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
 import path from 'path'
@@ -123,7 +123,7 @@ function resolveImportPathWithNode(
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
   // filePathAbsoluteFilesystem is expected to be null when pointerImportData.importPath is a Vite path alias
-  const filePathAbsoluteFilesystem = requireResolve(pointerImportData.importPath, cwd)
+  const filePathAbsoluteFilesystem = requireResolveOptional(pointerImportData.importPath, cwd)
   return filePathAbsoluteFilesystem
 }
 
