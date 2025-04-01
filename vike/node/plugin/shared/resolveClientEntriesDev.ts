@@ -8,7 +8,7 @@ import {
   pathJoin,
   assertIsNpmPackageImport,
   assertIsNotProductionRuntime,
-  requireResolveNonUserFile,
+  requireResolveOptionalNonUserFile,
   requireResolveExpected
 } from '../utils.js'
 import type { ViteDevServer } from 'vite'
@@ -43,14 +43,14 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
       let filePath_: string | null
       // For Vitest (which doesn't resolve vike to its dist but to its source files)
       // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/node/plugin/shared/resolveClientEntriesDev.js
-      filePath_ = requireResolveNonUserFile(
+      filePath_ = requireResolveOptionalNonUserFile(
         clientEntry.replace('@@vike/dist/esm/client/', '../../../client/').replace('.js', '.ts'),
         importMetaUrl
       )
       if (!filePath_) {
         // For users
         // [RELATIVE_PATH_FROM_DIST] Current file: node_modules/vike/dist/esm/node/plugin/shared/resolveClientEntriesDev.js
-        filePath_ = requireResolveNonUserFile(
+        filePath_ = requireResolveOptionalNonUserFile(
           clientEntry.replace('@@vike/dist/esm/client/', '../../../../../dist/esm/client/'),
           importMetaUrl
         )

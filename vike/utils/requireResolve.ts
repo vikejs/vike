@@ -1,5 +1,5 @@
 export { requireResolveOptional }
-export { requireResolveNonUserFile }
+export { requireResolveOptionalNonUserFile }
 export { requireResolveExpected }
 export { requireResolveExpectedNonUserFile }
 
@@ -44,7 +44,7 @@ function requireResolveOptional(importPath: string, cwd: string): string | null 
   if (res.hasFailed) return null
   return res.importedFile
 }
-function requireResolveNonUserFile(importPath: string, cwd: string): string | null {
+function requireResolveOptionalNonUserFile(importPath: string, cwd: string): string | null {
   const res = requireResolve_(importPath, cwd, { doNotHandleFileExtension: true })
   if (res.hasFailed) return null
   return res.importedFile
