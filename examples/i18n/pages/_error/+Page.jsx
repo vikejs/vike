@@ -2,6 +2,7 @@ export { Page }
 
 import React from 'react'
 import { usePageContext } from '../../renderer/usePageContext'
+import { LocaleText } from '../../renderer/LocaleText'
 
 function Page() {
   const pageContext = usePageContext()
@@ -11,7 +12,9 @@ function Page() {
   }
   return (
     <Center>
-      <p style={{ fontSize: '1.3em' }}>{abortReason}</p>
+      <p style={{ fontSize: '1.3em' }}>
+        <LocaleText>{abortReason}</LocaleText>
+      </p>
     </Center>
   )
 }
