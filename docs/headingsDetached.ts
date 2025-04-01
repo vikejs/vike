@@ -963,6 +963,10 @@ function redirects(): HeadingDetachedDefinition[] {
     {
       title: '`.env` Files',
       url: '/.env-files'
+    },
+    {
+      title: '`vike-server`',
+      url: '/vike-server'
     }
   ].map((h) => ({ ...h, category: 'Page Redirection' }))
 }
