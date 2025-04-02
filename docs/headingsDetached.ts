@@ -363,6 +363,10 @@ function misc(): HeadingDetachedDefinition[] {
       category: 'Overview'
     },
     {
+      title: 'Versioning',
+      url: '/versioning'
+    },
+    {
       title: 'Next.js Comparison',
       url: '/nextjs'
     }
