@@ -55,4 +55,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     expect(await page.$('a[href="/about"]')).not.toBe(null)
     expect(await page.$('a[href="/fr-FR/about"]')).toBe(null)
   })
+
+  test('404 page', async () => {
+    expect(await fetchHtml('/404')).toContain('Page not found')
+    expect(await fetchHtml('/de-DE/404')).toContain('Seite nicht gefunden')
+    expect(await fetchHtml('/fr-FR/404')).toContain('Page non trouvé')
+  })
 }
