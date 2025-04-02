@@ -868,8 +868,10 @@ async function prerenderPages(
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          // Let's make `noExtraDir: boolean | null` instead of `noExtraDir: boolean` if a user wants to generate the 404.html pages in extra dirS.
+          /* Let's make `noExtraDir: boolean | null` instead of `noExtraDir: boolean` if a user wants to generate the 404.html pages in extra dirS.
           doNotCreateExtraDirectory: prerenderContext.noExtraDir ?? pageContext.is404
+          */
+          doNotCreateExtraDirectory: prerenderContext.noExtraDir || pageContext.is404
         })
       })
     )
