@@ -1,4 +1,8 @@
-Vike only partially follows [semver](https://semver.org).
-- Like semver, there isn't any breaking changes from going from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w`. (Expect of minor breaking changes, see below.)
-- Unlike semver, features as well as negligle breaking changes can be released in any version update.
-  > With *negligle breaking changes* we mean breaking changes that we expect will only affect a few dozen users.
+In order to further make Vike robust and lean, Vike doesn't strictly follows [semver](https://semver.org).
+
+Most notabily:
+- Like semver, there are no breaking changes when upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w`, except for negligible breaking changes (see below).
+- Unlike semver, negligible breaking changes can be introduced at any version update.
+  > *Negligible breaking changes* are rare and and are expected to affect only a few dozen users.
+
+Also unlike semver, features can be introduced at any version update.
