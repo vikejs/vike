@@ -38,5 +38,13 @@ export const translations = {
   'Another page': {
     'de-DE': 'Eine andere Seite',
     'fr-FR': 'Une autre page'
+  },
+  'Page not found': {
+    'de-DE': 'Seite nicht gefunden',
+    'fr-FR': 'Page non trouvé'
+  },
+  'Something went wrong': {
+    'de-DE': 'Etwas ist schief gelaufen',
+    'fr-FR': "Une erreur s'est produite"
   }
 }
