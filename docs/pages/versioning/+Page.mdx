@@ -1,18 +1,20 @@
 For increased robustness and agility, Vike doesn't strictly follow [semver](https://semver.org):
-1. **Negligible breaking changes can be introduced in any version update.**
+1. **Features can be introduced in any version update**.
+2. **Negligible breaking changes can be introduced in any version update**.
    <blockquote>
-   This is rare and expected to affect only very few users.
+   These "negligible breaking changes" are rare and expected to affect only very few users.
    </blockquote>
    <blockquote>
-   This flexibility allows us to [systematically and quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22).
-   For example, fixing a Vike wrong behavior that is beneficial for all users except of a handful of users for whom the behavior change is regression is, stritly speaking, a breaking change but we prioritize fixing the issue over strict semver adherence.
-   For example, if Vike has an incorrect behavior and fixing it benefits almost all users but is a regression for a handful, then the fix is technically a breaking change but we prioritize the fix over strict semver adherence.  
-
+   It gives Vike more flexibility, for example, in [systematically and quickly fixing bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike has an incorrect behavior, and fixing it benefits almost all users but is a regression for a handful (and thus, strictly speaking, a breaking change), we prioritize fixing it over strict semver adherence.
    </blockquote>
-2. **Features can be introduced in any version update.**
 
-As with semver, upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` is safe and doesn't introduce major breaking changes.
+Similarly to semver, you can assume that upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` will (almost) never break your app.
 
-> Vike occasionally introduces warnings
 
-> These aren't breaking changes (your app still works) and can be introduced in any version update.
+## Warnings
+
+Vike adds warnings whenever an API will be deprecated in the next major release (e.g. from `1.x.y` to `2.0.0`).
+
+These warnings give you plenty of time to migrate at your own pace, as both the old and new API are supported simultaneously until the next major version.
+
+Since these aren't breaking changes, new warnings can be introduced in any version update.
