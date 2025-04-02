@@ -1,8 +1,11 @@
-In order to further make Vike robust and lean, Vike doesn't strictly follows [semver](https://semver.org).
+For increased robustness and agility, Vike doesn't strictly follow [semver](https://semver.org):
+1. Negligible breaking changes can be introduced in any version update.
+   <blockquote>
+   This is rare and expected to affect only very few users.
+   </blockquote>
+   <blockquote>
+   This further enables us to [systamtically and quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22) as, for example, fixing an edge case about scroll restoration upn backwards navigation is, strictly speaking, a breaking change but only it's expected that only a handful users will consider it a regression (for most it's net benefit).
+   </blockquote>
+2. Features can be introduced in any version update.
 
-Most notabily:
-- Like semver, there are no breaking changes when upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w`, except for negligible breaking changes (see below).
-- Unlike semver, negligible breaking changes can be introduced at any version update.
-  > *Negligible breaking changes* are rare and and are expected to affect only a few dozen users.
-
-Also unlike semver, features can be introduced at any version update.
+As with semver, upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` is safe, without major breaking changes.
