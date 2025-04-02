@@ -1,8 +1,8 @@
-import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry } from '@brillout/test-e2e'
-
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry } from '@brillout/test-e2e'
+
+function testRun(cmd: 'npm run dev' | 'npm run preview', isDeprecatedDesign?: true) {
   run(cmd)
 
   test('localized content is rendered to HTML', async () => {
@@ -56,9 +56,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     expect(await page.$('a[href="/fr-FR/about"]')).toBe(null)
   })
 
-  test('404 page', async () => {
-    expect(await fetchHtml('/404')).toContain('Page not found')
-    expect(await fetchHtml('/de-DE/404')).toContain('Seite nicht gefunden')
-    expect(await fetchHtml('/fr-FR/404')).toContain('Page non trouvé')
-  })
+  if (!isDeprecatedDesign) {
+    test('404 page', async () => {
+      expect(await fetchHtml('/404')).toContain('Page not found')
+      expect(await fetchHtml('/de-DE/404')).toContain('Seite nicht gefunden')
+      expect(await fetchHtml('/fr-FR/404')).toContain('Page non trouvé')
+    })
+  }
 }
