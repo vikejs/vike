@@ -1,11 +1,18 @@
 For increased robustness and agility, Vike doesn't strictly follow [semver](https://semver.org):
-1. Negligible breaking changes can be introduced in any version update.
+1. **Negligible breaking changes can be introduced in any version update.**
    <blockquote>
    This is rare and expected to affect only very few users.
    </blockquote>
    <blockquote>
-   This flexibility allows us to [systematically and quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22). For example, fixing a Vike wrong behavior that is beneficial for all users except of a handful of users for whom the behavior change is regression is, stritly speaking, a breaking change but we prioritize fixing the issue over strict semver adherence.
-   </blockquote>
-2. Features can be introduced in any version update.
+   This flexibility allows us to [systematically and quickly fix bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22).
+   For example, fixing a Vike wrong behavior that is beneficial for all users except of a handful of users for whom the behavior change is regression is, stritly speaking, a breaking change but we prioritize fixing the issue over strict semver adherence.
+   For example, if Vike has an incorrect behavior and fixing it benefits almost all users but is a regression for a handful, then the fix is technically a breaking change but we prioritize the fix over strict semver adherence.  
 
-As with semver, upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` is safe, without major breaking changes.
+   </blockquote>
+2. **Features can be introduced in any version update.**
+
+As with semver, upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` is safe and doesn't introduce major breaking changes.
+
+> Vike occasionally introduces warnings
+
+> These aren't breaking changes (your app still works) and can be introduced in any version update.
