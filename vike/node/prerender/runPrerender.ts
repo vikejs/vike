@@ -93,7 +93,7 @@ type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 type PrerenderContext = {
   pageContexts: PageContext[]
   pageContextInit: Record<string, unknown> | null
-  noExtraDir: boolean
+  noExtraDir: boolean | null
   prerenderedPageContexts: PrerenderedPageContexts
   output: Output
 }
@@ -203,7 +203,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   globalContext.pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {
-    noExtraDir: noExtraDir ?? false,
+    noExtraDir,
     pageContexts: [],
     pageContextInit: options.pageContextInit ?? null,
     prerenderedPageContexts: {},
@@ -867,10 +867,7 @@ async function prerenderPages(
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          /* Let's make `noExtraDir: boolean | null` instead of `noExtraDir: boolean` if a user wants to generate the 404.html pages in extra dirS.
           doNotCreateExtraDirectory: prerenderContext.noExtraDir ?? pageContext.is404
-          */
-          doNotCreateExtraDirectory: prerenderContext.noExtraDir || pageContext.is404
         })
       })
     )
