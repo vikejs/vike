@@ -5,16 +5,25 @@ For increased robustness and agility, Vike doesn't strictly follow [semver](http
    These "negligible breaking changes" are rare and expected to affect only very few users.
    </blockquote>
    <blockquote>
-   It gives Vike more flexibility, for example, in [systematically and quickly fixing bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike has an incorrect behavior, and fixing it benefits almost all users but is a regression for a handful (and thus, strictly speaking, a breaking change), we prioritize fixing it over strict semver adherence.
+   It gives Vike more flexibility, for example, in [quickly fixing bugs](https://github.com/vikejs/vike/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22bug%20%3Aboom%3A%22): if Vike has an incorrect behavior, and fixing it benefits almost all users but is a regression for a handful (and thus, strictly speaking, a breaking change), we prioritize fixing it over strict semver adherence.
    </blockquote>
 
-Similarly to semver, you can assume that upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` will (almost) never break your app.
+Similarly to semver, you can assume that upgrading from `0.4.x` to `0.4.y` or from `1.x.y` to `1.z.w` won't break your app. (Expect of the very rare situation you are affected by a negligible breaking change.)
+
+> Don't hesitate to reach out if updating Vike breaks your app, we will fix the regression. (Or at least provide guidance if we believe it's one of these negligible breaking changes.)
 
 
 ## Warnings
 
-Vike adds warnings whenever an API will be deprecated in the next major release (e.g. from `1.x.y` to `2.0.0`).
+Vike sometimes adds a warning when an API will be deprecated in the next major release (e.g. from `1.x.y` to `2.0.0`).
 
-These warnings give you plenty of time to migrate at your own pace, as both the old and new API are supported simultaneously until the next major version.
+For example:
+
+```
+[Vike][Warning] Using Vite's CLI will be deprecated in the next major release, use
+Vike's CLI instead.
+```
+
+These warnings give you plenty of time to migrate at your own pace, as both the old and new API are supported simultaneously until the next major release.
 
 Since these aren't breaking changes, new warnings can be introduced in any version update.
