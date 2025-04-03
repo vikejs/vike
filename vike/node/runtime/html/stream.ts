@@ -636,7 +636,6 @@ async function createStreamWrapper({
 
     const readableOriginal: StreamReadableWeb = streamOriginal
 
-    let controllerProxyIsClosed = false
     let isClosed = false
     let isCancel = false
     const closeStream = async () => {
@@ -644,7 +643,6 @@ async function createStreamWrapper({
       isClosed = true
       await onEnd(isCancel)
       controllerProxy.close()
-      controllerProxyIsClosed = true
     }
     let controllerProxy: ReadableStreamController<unknown>
     assertReadableStreamConstructor()
@@ -673,8 +671,8 @@ async function createStreamWrapper({
 
     const writeChunk = (chunk: unknown) => {
       if (
-        // If readableOriginal doesn't implement readableOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether we closed `controllerProxy`.
-        !controllerProxyIsClosed
+        // If readableOriginal doesn't implement readableOriginal.cancel() then it may still emit data after we close the stream. We therefore need to check whether the steam is closed.
+        !isClosed
       ) {
         controllerProxy.enqueue(encodeForWebStream(chunk) as any)
         debugWithChunk('data written (Web Readable)', chunk)
