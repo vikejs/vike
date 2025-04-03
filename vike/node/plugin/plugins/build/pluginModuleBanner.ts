@@ -42,8 +42,6 @@ function pluginModuleBanner(): Plugin {
 
               // Ensure we don't break source map
               {
-                console.log('vikeModuleBannerPlaceholder("");'.length)
-                console.log('/*  [vike:pluginModuleBanner] */'.length)
                 const l1 = 'vikeModuleBannerPlaceholder("");'.length
                 const l2 = '/*  [vike:pluginModuleBanner] */'.length
                 assert(l1 === l2)
