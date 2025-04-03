@@ -185,7 +185,6 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const { outDirClient, outDirServer } = getOutDirs(viteConfig)
   const { root } = viteConfig
   const prerenderConfigGlobal = resolvePrerenderConfigGlobal(vikeConfig)
-  validatePrerenderConfig(prerenderConfigGlobal)
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
     assert(standaloneTrigger)
@@ -1186,44 +1185,6 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
       abortCaller
     )} isn't supported for pre-rendered pages`
   )
-}
-
-function validatePrerenderConfig(
-  // Guaranteed by configDef.type to be either an object or boolean
-  prerenderConfig?: boolean | Record<string, unknown>
-) {
-  if (!prerenderConfig || typeof prerenderConfig === 'boolean') return
-  assert(isObject(prerenderConfig))
-  const wrongValue = (() => {
-    {
-      const p = 'partial'
-      if (!hasProp(prerenderConfig, p, 'boolean') && !hasProp(prerenderConfig, p, 'undefined'))
-        return { prop: p, errMsg: 'should be a boolean' } as const
-    }
-    {
-      const p = 'noExtraDir'
-      if (!hasProp(prerenderConfig, p, 'boolean') && !hasProp(prerenderConfig, p, 'undefined'))
-        return { prop: p, errMsg: 'should be a boolean' } as const
-    }
-    {
-      const p = 'disableAutoRun'
-      if (!hasProp(prerenderConfig, p, 'boolean') && !hasProp(prerenderConfig, p, 'undefined'))
-        return { prop: p, errMsg: 'should be a boolean' } as const
-    }
-    {
-      const p = 'parallel'
-      if (
-        !hasProp(prerenderConfig, p, 'boolean') &&
-        !hasProp(prerenderConfig, p, 'number') &&
-        !hasProp(prerenderConfig, p, 'undefined')
-      )
-        return { prop: p, errMsg: 'should be a boolean or a number' } as const
-    }
-  })()
-  if (wrongValue) {
-    const { prop, errMsg } = wrongValue
-    assertUsage(false, `Setting ${pc.cyan(`prerender.${prop}`)} ${errMsg}`)
-  }
 }
 
 type PrerenderContextPublic = {
