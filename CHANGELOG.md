@@ -26,9 +26,11 @@
 * globalContext.viteConfigRuntime.build.outDir (vikejs/vike-server[#102](https://github.com/vikejs/vike/issues/102)) ([0cee16c](https://github.com/vikejs/vike/commit/0cee16ce35f219e62ab0f0d470fd8195b6da64c9))
 
 
-### BREAKING CHANGES
+### Negligible breaking changes
 
-* [[**Negligible**](https://vike.dev/versioning)][[i18n](https://vike.dev/i18n)][[pre-rendering](https://vike.dev/pre-rendering)][[`onPrerenderStart()`](https://vike.dev/onPrerenderStart)] A 404 `pageContext` is added to `prerenderContext.pageContexts` (using your `pages/_error/+Page.js`). This mostly likely won't break your app: the only difference is that you'll now generate not only `/dist/client/404.html` but also `/dist/client/fr-FR/404.html`, `/dist/client/de-DE/404.html`, ...
+> We recommend ignonring "negligible breaking changes" unless this version breaks your app, see [Vike Versioning](https://vike.dev/versioning)
+
+* [[**Negligible**](https://vike.dev/versioning)][[i18n](https://vike.dev/i18n)][[pre-rendering](https://vike.dev/pre-rendering)][[`onPrerenderStart()`](https://vike.dev/onPrerenderStart)] A 404 `pageContext` is added to `prerenderContext.pageContexts` (using your `pages/_error/+Page.js`). This most likely won't break your app: the only difference is that you now generate not only `/dist/client/404.html` but also `/dist/client/fr-FR/404.html`, `/dist/client/de-DE/404.html`, ...
 
 
 
