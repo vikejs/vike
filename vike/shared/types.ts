@@ -141,11 +141,9 @@ type PageContextBuiltInCommon<Data> = {
   sources: Sources
 
   /**
-   * Information shared by all pages.
+   * Runtime information about your app.
    *
    * https://vike.dev/getGlobalContext
-   *
-   * @experimental
    */
   globalContext: GlobalContextPublic
 

@@ -2,28 +2,55 @@ import { Warning, Link } from '@brillout/docpress'
 
 Environment: server.
 
-`getGlobalContextSync()` and `getGlobalContextAsync()` allow you to access global information about your app.
-
-<Warning>It's a beta feature: expect breaking changes in any minor version update.</Warning>
-
-Most notably the <Link href="/preloading#assets-manifest">assets manifest</Link>.
+Access global information about your app, such as <Link href="/preloading#assets-manifest">the assets manifest</Link>.
 
 ```js
-import {
-  getGlobalContextSync,
-  /* Or:
-  getGlobalContextAsync */
-} from 'vike/server'
+import { getGlobalContext } from 'vike/server'
 
-const globalContext = getGlobalContextSync()
-const { assetsManifest } = globalContext
+const globalContext = await getGlobalContext()
+
+// The assets manifest
+console.log(globalContext.assetsManifest)
+
+// Subset of the Vite configuration passed to the runtime. (By default the
+// Vite configuration is available only at build-time.)
+console.log(globalContext.viteRuntimeInfo)
 ```
 
-> The `globalContext` object also contains internals (they are prefixed with `_`, e.g. `globalContext._viteDevServer`). You should use them only if strictly needed, and if you do then let us know so that we make what you need part of the official API.
+> It only provides information loaded at runtime. To get information loaded at build-time, see <Link href="/getVikeConfig" />.
 
-> In certain situations, you may need to use `await getGlobalContextAsync()` instead of `getGlobalContextSync()`. The `getGlobalContextSync()` function will let you know when that is the case.
+The `getGlobalContext()` can be called at any time (independently of rendering pages). For example, it can be one of the first functions called upon starting your server, before receving any HTTP request.
+
+> The `globalContext` object also contains internals (they are prefixed with `_`, e.g. `globalContext._viteDevServer`). You should use them only if strictly needed and, if you do, then let us know so that we can add official support for your use case (otherwise you'll expose yourself to breaking changes upon any version update).
+
+
+## `getGlobalContextAsync()`
+
+```js
+import { getGlobalContextAsync } from 'vike/server'
+const globalContext = await getGlobalContextAsync(process.env.NODE_ENV==='production')
+```
+
+Same as `getGlobalContext()`: for some users `getGlobalContext()` cannot be called early and the solution is to use `getGlobalContextAsync()` instead.
+
+We recommend using `getGlobalContext()` instead: use `getGlobalContextAsync()` only if `getGlobalContext()` throws the following error.
+
+```yaml
+# For some users, the following error is thrown when running getGlobalContext()
+The global context isn't set yet, use getGlobalContextAsync() instead.
+```
+
+The returned `globalContext` is the same as the one returned by `getGlobalContext()`.
+
+
+## `getGlobalContextSync()`
+
+<Warning>Don't use this: it will soon be deprecated, <Link href="/pageContext">use `pageContext.globalContext`</Link> instead.</Warning>
+
+Same as `getGlobalContext()` but synchronous.
 
 
 ## See also
 
 - <Link href="/preloading#assets-manifest" />
+- <Link href="/getVikeConfig" />
