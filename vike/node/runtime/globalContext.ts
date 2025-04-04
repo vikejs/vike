@@ -177,6 +177,7 @@ function makePublic(globalContext: GlobalContext) {
     'assetsManifest',
     'config',
     'viteConfig',
+    'viteConfigRuntime',
     'pages',
     'baseServer',
     'baseAssets'
