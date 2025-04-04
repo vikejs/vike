@@ -610,10 +610,6 @@ function api(): HeadingDetachedDefinition[] {
       url: '/mode'
     },
     {
-      title: '`getGlobalContextSync()` & `getGlobalContextAsync()`',
-      url: '/getGlobalContext'
-    },
-    {
       title: '`getPageContext()`',
       url: '/getPageContext'
     },

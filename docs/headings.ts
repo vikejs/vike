@@ -497,6 +497,11 @@ const headings = [
     url: '/modifyUrl'
   },
   {
+    level: 2,
+    title: '`getGlobalContext()`',
+    url: '/getGlobalContext'
+  },
+  {
     level: 4,
     title: 'Utils (client-side)'
   },
