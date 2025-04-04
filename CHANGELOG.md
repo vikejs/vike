@@ -1,3 +1,37 @@
+## [0.4.228](https://github.com/vikejs/vike/compare/v0.4.227...v0.4.228) (2025-04-04)
+
+
+### Bug Fixes
+
+* add 404 page to prerenderContext.pageContexts ([#2330](https://github.com/vikejs/vike/issues/2330)) ([455f310](https://github.com/vikejs/vike/commit/455f3106965131e975ca7a6fe6a8b2993b3007f2))
+* disable pluginModuleBanner when buid.minify isn't esbuild ([#2315](https://github.com/vikejs/vike/issues/2315)) ([e36b916](https://github.com/vikejs/vike/commit/e36b916af663aa39d8ec8575c91135839ac236c2))
+* enable `noExtraDir: false` to force extra dir for 404 pages ([#2339](https://github.com/vikejs/vike/issues/2339)) ([00509b3](https://github.com/vikejs/vike/commit/00509b303b11576cee62f4e8613b42384f88c7f7))
+* error message typo ([44bdc9a](https://github.com/vikejs/vike/commit/44bdc9a399df68a9faa8cbd81d782a7dc1f609a6))
+* further ensure data isn't written after stream is closed (fix [#2334](https://github.com/vikejs/vike/issues/2334)) ([45216bc](https://github.com/vikejs/vike/commit/45216bcc261dc95f5ed8673dfafbd9fbe566a4eb))
+* improve esbuild resolve debug logs ([9b98fe0](https://github.com/vikejs/vike/commit/9b98fe02dc18b27c80051cc7d20fff3fbd2b3712))
+* improve source map handling ([#2308](https://github.com/vikejs/vike/issues/2308)) ([efaa943](https://github.com/vikejs/vike/commit/efaa94333c01f41fad8f71d85a5c748332b6e6a2))
+* improve unknown CLI option error ([#2302](https://github.com/vikejs/vike/issues/2302)) ([ac1ba36](https://github.com/vikejs/vike/commit/ac1ba36432e033511d17328429cbda799fa5ab02))
+* passthrough source map vike:pluginModuleBanner ([#2300](https://github.com/vikejs/vike/issues/2300)) ([68a216b](https://github.com/vikejs/vike/commit/68a216bfe2f7e0982604dfade9e4386478953e00))
+* refactor & fix import resolving ([#2328](https://github.com/vikejs/vike/issues/2328)) ([d3b8326](https://github.com/vikejs/vike/commit/d3b8326425b8024a3ed266d2e31a60e2cff492cb))
+* resolve +client package path from root ([fd94d22](https://github.com/vikejs/vike/commit/fd94d227d8fa8c1a2c7973ed5c11d37ad21b0291))
+* simplify and fix vike:pluginModuleBanner (fix [#2338](https://github.com/vikejs/vike/issues/2338)) ([d082773](https://github.com/vikejs/vike/commit/d08277302bd7f421d34f7a224ac312425c3d3874))
+* support path aliases resolving outside of userRootDir (fix [#2326](https://github.com/vikejs/vike/issues/2326)) ([77128be](https://github.com/vikejs/vike/commit/77128beeaf42cd728b8e15885aff1fa43cffc319))
+* update @brillout/vite-plugin-server-entry ([#2337](https://github.com/vikejs/vike/issues/2337)) ([2d95128](https://github.com/vikejs/vike/commit/2d95128602be9736b99568a9e17161e4785a699f))
+* workaround for vite-plugin-vercel bug (fix [#2342](https://github.com/vikejs/vike/issues/2342)) ([f991d58](https://github.com/vikejs/vike/commit/f991d58dd7965bd4210cf0941e24763206a73094))
+
+
+### Features
+
+* [`getGlobalContext()`](https://vike.dev/getGlobalContext) ([#2343](https://github.com/vikejs/vike/issues/2343)) ([a60100f](https://github.com/vikejs/vike/commit/a60100fa14e774bbc50c040ef2aaed54084f2068))
+* globalContext.viteConfigRuntime.build.outDir (vikejs/vike-server[#102](https://github.com/vikejs/vike/issues/102)) ([0cee16c](https://github.com/vikejs/vike/commit/0cee16ce35f219e62ab0f0d470fd8195b6da64c9))
+
+
+### BREAKING CHANGES
+
+* [[**Negligible**](https://vike.dev/versioning)][[i18n](https://vike.dev/i18n)][[pre-rendering](https://vike.dev/pre-rendering)][[`onPrerenderStart()`](https://vike.dev/onPrerenderStart)] A 404 `pageContext` is added to `prerenderContext.pageContexts` (using your `pages/_error/+Page.js`). This mostly likely won't break your app: the only difference is that you'll now generate not only `/dist/client/404.html` but also `/dist/client/fr-FR/404.html`, `/dist/client/de-DE/404.html`, ...
+
+
+
 ## [0.4.227](https://github.com/vikejs/vike/compare/v0.4.226...v0.4.227) (2025-03-25)
 
 
