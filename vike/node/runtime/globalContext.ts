@@ -16,7 +16,6 @@ export { setGlobalContext_isProduction }
 export { setGlobalContext_buildEntry }
 export { clearGlobalContext }
 export { assertBuildInfo }
-export { getViteConfigRuntime }
 export { updateUserFiles }
 export type { BuildInfo }
 export type { GlobalContextInternal }
@@ -62,6 +61,7 @@ import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { resolveBase, type BaseUrlsResolved } from '../shared/resolveBase.js'
+import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
@@ -70,7 +70,7 @@ const globalObject = getGlobalObject<
     globalContext_public?: GlobalContextPublic
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
-    outDirRoot?: string
+    viteConfigRuntime?: ViteConfigRuntime
     isPrerendering?: true
     initGlobalContext_runPrerender_alreadyCalled?: true
     buildEntry?: unknown
@@ -91,9 +91,7 @@ type GlobalContextInternal = GlobalContext & {
   globalContext_public: GlobalContextPublic
 }
 type GlobalContext = {
-  viteConfigRuntime: {
-    _baseViteOriginal: null | string
-  }
+  viteConfigRuntime: ViteConfigRuntime
   config: PageConfigUserFriendly['config']
   pages: PageConfigsUserFriendly
 } & BaseUrlsResolved &
@@ -199,11 +197,11 @@ async function setGlobalContext_viteDevServer(viteDevServer: ViteDevServer) {
   assertGlobalContextIsDefined()
   globalObject.viteDevServerPromiseResolve(viteDevServer)
 }
-function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, outDirRoot: string): void {
+function setGlobalContext_viteConfig(viteConfig: ResolvedConfig, viteConfigRuntime: ViteConfigRuntime): void {
   if (globalObject.viteConfig) return
   assertIsNotInitilizedYet()
   globalObject.viteConfig = viteConfig
-  globalObject.outDirRoot = outDirRoot
+  globalObject.viteConfigRuntime = viteConfigRuntime
 }
 function assertIsNotInitilizedYet() {
   // In development, globalObject.viteDevServer always needs to be awaited for before initializing globalObject.globalContext
@@ -241,7 +239,6 @@ async function initGlobalContext_runPrerender(): Promise<void> {
 
   assert(globalObject.isPrerendering)
   assert(globalObject.viteConfig)
-  assert(globalObject.outDirRoot)
 
   // We assume initGlobalContext_runPrerender() to be called before:
   // - initGlobalContext_renderPage()
@@ -280,7 +277,7 @@ async function initGlobalContext(): Promise<void> {
   if (!isProduction) {
     await waitForViteDevServer()
   } else {
-    await loadBuildEntry(globalObject.outDirRoot)
+    await loadBuildEntry(globalObject.viteConfigRuntime?.build.outDir)
   }
   assertGlobalContextIsDefined()
   globalObject.isInitialized = true
@@ -302,7 +299,7 @@ function defineGlobalContext() {
   onSetupRuntime()
 }
 function resolveGlobalContext(): GlobalContext | null {
-  const { viteDevServer, viteConfig, isPrerendering, isProduction, userFiles } = globalObject
+  const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction, userFiles } = globalObject
   assert(typeof isProduction === 'boolean')
   let globalContext: GlobalContext
   if (!isProduction) {
@@ -310,8 +307,8 @@ function resolveGlobalContext(): GlobalContext | null {
     if (!viteDevServer) return null
     assert(userFiles) // main common requiement
     assert(viteConfig)
+    assert(viteConfigRuntime)
     assert(!isPrerendering)
-    const viteConfigRuntime = getViteConfigRuntime(viteConfig)
     globalContext = {
       isProduction: false,
       isPrerendering: false,
@@ -457,12 +454,7 @@ type BuildEntry = {
 type BuildInfo = {
   versionAtBuildTime: string
   usesClientRouter: boolean // TODO/v1-release: remove
-  viteConfigRuntime: {
-    _baseViteOriginal: string
-    vitePluginServerEntry: {
-      inject?: boolean
-    }
-  }
+  viteConfigRuntime: ViteConfigRuntime
 }
 function assertBuildEntry(buildEntry: unknown): asserts buildEntry is BuildEntry {
   assert(isObject(buildEntry))
@@ -482,9 +474,11 @@ function assertBuildInfo(buildInfo: unknown): asserts buildInfo is BuildInfo {
   assertVersionAtBuildTime(buildInfo.versionAtBuildTime)
   assert(hasProp(buildInfo, 'viteConfigRuntime', 'object'))
   assert(hasProp(buildInfo.viteConfigRuntime, '_baseViteOriginal', 'string'))
+  assert(hasProp(buildInfo.viteConfigRuntime, 'root', 'string'))
+  assert(hasProp(buildInfo.viteConfigRuntime, 'build', 'object'))
+  assert(hasProp(buildInfo.viteConfigRuntime.build, 'outDir', 'string'))
   assert(hasProp(buildInfo.viteConfigRuntime, 'vitePluginServerEntry', 'object'))
   assert(hasProp(buildInfo, 'usesClientRouter', 'boolean'))
-  checkType<BuildInfo>({ ...buildInfo, viteConfigRuntime: buildInfo.viteConfigRuntime })
 }
 function assertVersionAtBuildTime(versionAtBuildTime: string) {
   const versionAtRuntime = PROJECT_VERSION
@@ -493,16 +487,6 @@ function assertVersionAtBuildTime(versionAtBuildTime: string) {
     versionAtBuildTime === versionAtRuntime,
     `Re-build your app (you're using ${pretty(versionAtRuntime)} but your app was built with ${pretty(versionAtBuildTime)})`
   )
-}
-function getViteConfigRuntime(viteConfig: ResolvedConfig): BuildInfo['viteConfigRuntime'] {
-  assert(hasProp(viteConfig, '_baseViteOriginal', 'string'))
-  const viteConfigRuntime = {
-    _baseViteOriginal: viteConfig._baseViteOriginal,
-    vitePluginServerEntry: {
-      inject: viteConfig.vitePluginServerEntry?.inject
-    }
-  }
-  return viteConfigRuntime
 }
 
 async function updateUserFiles() {

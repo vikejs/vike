@@ -10,8 +10,9 @@ import path from 'path'
 const importMetaUrl: string = import.meta.url
 import type { Plugin, ResolvedConfig, Rollup } from 'vite'
 import { isUsingClientRouter } from '../extractExportNamesPlugin.js'
-import { assertBuildInfo, type BuildInfo, getViteConfigRuntime } from '../../../runtime/globalContext.js'
+import { assertBuildInfo, type BuildInfo } from '../../../runtime/globalContext.js'
 import { getOutDirs } from '../../shared/getOutDirs.js'
+import { getViteConfigRuntime } from '../../shared/getViteConfigRuntime.js'
 type Bundle = Rollup.OutputBundle
 type Options = Rollup.NormalizedOutputOptions
 const ASSETS_MANIFEST = '__VITE_ASSETS_MANIFEST__'
