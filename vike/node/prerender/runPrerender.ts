@@ -23,7 +23,6 @@ import {
   PLimit,
   isArray,
   onSetupPrerender,
-  isObject,
   makePublicCopy,
   PROJECT_VERSION,
   preservePropertyGetters
@@ -180,7 +179,6 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfig(viteConfig)
   const vike = getVikeConfigPublic(viteConfig)
-  assert(vike.prerenderContext.isPrerenderingEnabled)
 
   const { outDirClient, outDirServer } = getOutDirs(viteConfig)
   const { root } = viteConfig
@@ -188,10 +186,13 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   const { partial, noExtraDir, parallel, defaultLocalValue, isPrerenderingEnabled } = prerenderConfigGlobal
   if (!isPrerenderingEnabled) {
     assert(standaloneTrigger)
+    /* TODO/soon: use this again a little while after https://github.com/magne4000/vite-plugin-vercel/pull/156 is merged.
     assertUsage(
       false,
       `You're executing ${pc.cyan(standaloneTrigger)} but you didn't enable pre-rendering. Use the ${pc.cyan('prerender')} setting (${pc.underline('https://vike.dev/prerender')}) to enable pre-rendering for at least one page.`
     )
+    */
+    return { viteConfig }
   }
 
   const concurrencyLimit = pLimit(
