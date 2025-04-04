@@ -212,8 +212,12 @@ function setGlobalContext_isPrerendering() {
   globalObject.isPrerendering = true
   setIsProduction(true)
 }
-function setGlobalContext_isProduction(isProduction: boolean) {
-  setIsProduction(isProduction)
+function setGlobalContext_isProduction(isProduction: boolean, tolerateContraditction?: true) {
+  if (globalObject.isProduction === undefined) {
+    setIsProduction(isProduction)
+  } else {
+    assert(globalObject.isProduction === isProduction || tolerateContraditction)
+  }
 }
 function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
