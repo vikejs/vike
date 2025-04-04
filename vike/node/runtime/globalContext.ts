@@ -1,4 +1,5 @@
 // Public use
+export { getGlobalContext }
 export { getGlobalContextSync }
 export { getGlobalContextAsync }
 
@@ -144,8 +145,18 @@ function assertGlobalContextIsDefined() {
   assert(globalObject.globalContext_public)
 }
 
+async function getGlobalContext(): Promise<GlobalContextPublic> {
+  debug('getGlobalContext()')
+  const { isProduction } = globalObject
+  // The assertion cannot fail for vike-server users (because with vike-server globalObject.isProduction is eagerly set before executing any user-land code and Vike extension code).
+  assertUsage(isProduction !== undefined, "The global context isn't set yet, use getGlobalContextAsync() instead.")
+  assert(typeof globalObject.isProduction === 'boolean')
+  return await getGlobalContextAsync(isProduction)
+}
+
 /** @experimental https://vike.dev/getGlobalContext */
 function getGlobalContextSync(): GlobalContextPublic {
+  debug('getGlobalContextSync()')
   const { globalContext_public } = globalObject
   assertUsage(
     globalContext_public,
