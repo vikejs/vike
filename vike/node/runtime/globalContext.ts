@@ -162,6 +162,11 @@ function getGlobalContextSync(): GlobalContextPublic {
     globalContext_public,
     "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContextAsync() instead."
   )
+  assertWarning(
+    false,
+    'getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext',
+    { onlyOnce: true }
+  )
   return globalContext_public
 }
 /** @experimental https://vike.dev/getGlobalContext */
