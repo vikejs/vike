@@ -162,6 +162,27 @@ async function getGlobalContext(): Promise<GlobalContextPublic> {
  * Get runtime information about your app.
  *
  * https://vike.dev/getGlobalContext
+ */
+async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
+  debug('getGlobalContextAsync()')
+  assertUsage(
+    typeof isProduction === 'boolean',
+    `[getGlobalContextAsync(isProduction)] Argument ${pc.cyan('isProduction')} ${
+      isProduction === undefined ? 'is missing' : `should be ${pc.cyan('true')} or ${pc.cyan('false')}`
+    }`
+  )
+  setIsProduction(isProduction)
+  if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
+  if (!isProduction) await globalObject.waitForUserFilesUpdate
+  assertGlobalContextIsDefined()
+  const { globalContext_public } = globalObject
+  assert(globalContext_public)
+  return globalContext_public
+}
+/**
+ * Get runtime information about your app.
+ *
+ * https://vike.dev/getGlobalContext
  *
  * @deprecated
  */
@@ -179,27 +200,6 @@ function getGlobalContextSync(): GlobalContextPublic {
     'getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext',
     { onlyOnce: true }
   )
-  return globalContext_public
-}
-/**
- * Get runtime information about your app.
- *
- * https://vike.dev/getGlobalContext
- */
-async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
-  debug('getGlobalContextAsync()')
-  assertUsage(
-    typeof isProduction === 'boolean',
-    `[getGlobalContextAsync(isProduction)] Argument ${pc.cyan('isProduction')} ${
-      isProduction === undefined ? 'is missing' : `should be ${pc.cyan('true')} or ${pc.cyan('false')}`
-    }`
-  )
-  setIsProduction(isProduction)
-  if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
-  if (!isProduction) await globalObject.waitForUserFilesUpdate
-  assertGlobalContextIsDefined()
-  const { globalContext_public } = globalObject
-  assert(globalContext_public)
   return globalContext_public
 }
 
