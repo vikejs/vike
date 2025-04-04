@@ -64,7 +64,8 @@ export const Chip = () => {
                       style={{
                         width: '20px',
                         marginLeft: '24px',
-                        textTransform: 'uppercase'
+                        textTransform: 'uppercase',
+                        fontVariantNumeric: 'tabular-nums'
                       }}
                     >
                       {`${parentIndex + 1}${index + 1}`}
