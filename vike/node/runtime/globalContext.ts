@@ -145,31 +145,47 @@ function assertGlobalContextIsDefined() {
   assert(globalObject.globalContext_public)
 }
 
+/**
+ * Get runtime information about your app.
+ *
+ * https://vike.dev/getGlobalContext
+ */
 async function getGlobalContext(): Promise<GlobalContextPublic> {
   debug('getGlobalContext()')
   const { isProduction } = globalObject
-  // The assertion cannot fail for vike-server users (because with vike-server globalObject.isProduction is eagerly set before executing any user-land code and Vike extension code).
+  // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).
   assertUsage(isProduction !== undefined, "The global context isn't set yet, use getGlobalContextAsync() instead.")
   assert(typeof globalObject.isProduction === 'boolean')
   return await getGlobalContextAsync(isProduction)
 }
-
-/** @experimental https://vike.dev/getGlobalContext */
+/**
+ * Get runtime information about your app.
+ *
+ * https://vike.dev/getGlobalContext
+ *
+ * @deprecated
+ */
 function getGlobalContextSync(): GlobalContextPublic {
   debug('getGlobalContextSync()')
   const { globalContext_public } = globalObject
   assertUsage(
     globalContext_public,
-    "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContextAsync() instead."
+    "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
   )
   assertWarning(
     false,
+    // We discourage users from using it because using `pageContext.globalContext` is better: it doesn't have the race condition issue that `getGlobalContextSync()` would have when called inside React/Vue components.
+    // We're lying about "is going to be deprecated in the next major release": let's keep it and see if users need it (so far I can't see a use case for it).
     'getGlobalContextSync() is going to be deprecated in the next major release, see https://vike.dev/getGlobalContext',
     { onlyOnce: true }
   )
   return globalContext_public
 }
-/** @experimental https://vike.dev/getGlobalContext */
+/**
+ * Get runtime information about your app.
+ *
+ * https://vike.dev/getGlobalContext
+ */
 async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
   debug('getGlobalContextAsync()')
   assertUsage(
