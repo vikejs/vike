@@ -602,6 +602,7 @@ function setCliAndApiOptions(
         configDefinitionsResolved.configNamesKnownGlobal,
         configDefinitionsResolved,
         '/' as LocationId,
+        false,
         sourceName,
         exitOnError
       )
@@ -1181,7 +1182,15 @@ function assertKnownConfigs(configDefinitionsResolved: ConfigDefinitionsResolved
         configNames.forEach((configName) => {
           const { locationId } = plusFile
           const sourceName = plusFile.filePath.filePathToShowToUser
-          assertKnownConfig(configName, configNamesKnownLocal, configDefinitionsResolved, locationId, sourceName, false)
+          assertKnownConfig(
+            configName,
+            configNamesKnownLocal,
+            configDefinitionsResolved,
+            locationId,
+            true,
+            sourceName,
+            false
+          )
         })
       })
     }
@@ -1192,6 +1201,7 @@ function assertKnownConfig(
   configNamesKnownRelevant: string[],
   configDefinitionsResolved: ConfigDefinitionsResolved,
   locationId: LocationId,
+  isPlusFile: boolean,
   sourceName: string,
   exitOnError: boolean
 ): void {
@@ -1213,8 +1223,9 @@ function assertKnownConfig(
     )
   }
 
-  const errMsg =
-    `${sourceName} sets an unknown Vike config, see ${pc.underline('https://vike.dev/cli')} for the list of CLI options.` as const
+  const errMsg = isPlusFile
+    ? (`${sourceName} sets an unknown config ${configNameColored}` as const)
+    : (`${sourceName} sets an unknown Vike config, see ${pc.underline('https://vike.dev/cli')} for the list of CLI options` as const)
 
   // Missing vike-{react,vue,solid} installation
   {
