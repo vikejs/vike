@@ -235,6 +235,7 @@ export const Chip = () => {
                         width: '20px',
                         marginRight: '24px',
                         textTransform: 'uppercase',
+                        fontVariantNumeric: 'tabular-nums',
                         textAlign: 'end'
                       }}
                     >
