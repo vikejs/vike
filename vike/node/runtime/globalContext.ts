@@ -455,13 +455,12 @@ async function loadBuildEntry(outDir?: string) {
       globalObject.buildEntry = globalObject.buildEntryPrevious
     }
     assert(globalObject.buildEntry)
+    // If using `inject` then dist/server/index.js imports dist/server/entry.js and loadBuildEntry() isn't needed.
+    // If dist/server/entry.js isn't imported then this means the user is running the original server entry `$ ts-node server/index.ts`.
     assertWarning(
-      // vike-server => `vitePluginServerEntry.inject === true`
-      // vike-node => `vitePluginServerEntry.inject === [ 'index' ]`
+      // vike-server => `inject === true`
+      // vike-node => `inject === [ 'index' ]`
       globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject !== true,
-      /* TO-DO/eventually:
-      !!globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject,
-      */
       `Run the built server entry (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
       { onlyOnce: true }
     )
