@@ -459,7 +459,7 @@ async function loadBuildEntry(outDir?: string) {
     // If dist/server/entry.js isn't imported then this means the user is running the original server entry `$ ts-node server/index.ts`.
     assertWarning(
       // vike-server => `inject === true`
-      // vike-node => `inject === [ 'index' ]`
+      // vike-node => `inject === [ 'index' ]` => we don't show the warning to vike-node users (I don't remember why).
       globalObject.buildInfo?.viteConfigRuntime.vitePluginServerEntry.inject !== true || globalObject.isPrerendering,
       `Run the built server entry (e.g. ${pc.cyan('$ node dist/server/index.mjs')}) instead of the original server entry (e.g. ${pc.cyan('$ ts-node server/index.ts')})`,
       { onlyOnce: true }
