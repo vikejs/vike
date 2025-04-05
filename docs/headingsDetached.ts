@@ -534,7 +534,7 @@ function blog(): HeadingDetachedDefinition[] {
 function getStarted(): HeadingDetachedDefinition[] {
   return [
     {
-      title: 'Scaffold new app without Vike extension',
+      title: 'Scaffold new Vike app without Vike extension',
       url: '/new/core',
       pageDesign: {
         hideMenuLeft: true as const
