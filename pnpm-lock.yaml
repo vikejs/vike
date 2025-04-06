@@ -1547,11 +1547,11 @@ importers:
   test/universal-middleware:
     dependencies:
       "@universal-middleware/core":
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.4.7
+        version: 0.4.7
       "@universal-middleware/express":
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.4.14
+        version: 0.4.14
       "@vitejs/plugin-react":
         specifier: ^4.3.4
         version: 4.3.4(vite@6.2.1(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
@@ -5021,19 +5021,19 @@ packages:
       hono:
         optional: true
 
-  "@universal-middleware/core@0.4.0":
+  "@universal-middleware/core@0.4.7":
     resolution:
       {
-        integrity: sha512-13ViD0KI5ELDrPqFTxBdX3wcySYJn/fJRTgtMI8HGNquvaD9Q47iJF4UDPL91pZP6niv8zXiV+eWUfR/RKJA/Q==,
+        integrity: sha512-Q+ZwiQAm/yZVmtJCZx6U4yLQF10AQ9URcCGxcIdUgLoEOHAg+uADcxAliKfJv463kVECnLI2ZamsRDDOSjc36A==,
       }
     peerDependencies:
-      "@cloudflare/workers-types": ^4.20250109.0
+      "@cloudflare/workers-types": ^4.20250327.0
       "@hattip/core": ^0.0.49
       "@webroute/route": ^0.8.0
-      elysia: ^1.2.10
-      fastify: ^5.2.1
-      h3: ^1.13.1
-      hono: ^4.6.16
+      elysia: ^1.2.25
+      fastify: ^5.2.2
+      h3: ^1.15.1
+      hono: ^4.7.5
     peerDependenciesMeta:
       "@cloudflare/workers-types":
         optional: true
@@ -5056,10 +5056,10 @@ packages:
         integrity: sha512-jRPY2o40ikpznHGUo0GxeSej6NU4XhjOvTgKMqLB98SpZ5hP+kTDvwv15JqeUFRiMsyN0Vu73RyE4IjzU79tQQ==,
       }
 
-  "@universal-middleware/express@0.4.0":
+  "@universal-middleware/express@0.4.14":
     resolution:
       {
-        integrity: sha512-KdcinQgMePyu66hHW55tCSr/H8i5bygHJpLpmeuTPab7/FhlUi9mXVgZ/YcTQuQHSfXQJX/jq/LNRYYne3Y89g==,
+        integrity: sha512-uFM/1qq3ZRAcslyxFuj5ApfBrolAkM/8HGhtrXNSqnJncIM4nDyFh6aDHUzfalerB8G3DgE+esKRF9Ue+Hhqbw==,
       }
 
   "@vercel/build-utils@8.7.0":
@@ -10793,6 +10793,13 @@ packages:
       }
     engines: { node: ">=16" }
 
+  tough-cookie@5.1.2:
+    resolution:
+      {
+        integrity: sha512-FVDYdxtnj0G6Qm/DhNPSb8Ju59ULcup3tuJxkFb5K8Bv2pUXILbf0xZWU8PX8Ov19OXljbUyveOFwRMwkXzO+A==,
+      }
+    engines: { node: ">=16" }
+
   tr46@0.0.3:
     resolution:
       {
@@ -13441,18 +13448,18 @@ snapshots:
       regexparam: 3.0.0
       tough-cookie: 5.1.0
 
-  "@universal-middleware/core@0.4.0":
+  "@universal-middleware/core@0.4.7":
     dependencies:
       regexparam: 3.0.0
-      tough-cookie: 5.1.0
+      tough-cookie: 5.1.2
 
   "@universal-middleware/express@0.2.10":
     dependencies:
       "@universal-middleware/core": 0.2.14
 
-  "@universal-middleware/express@0.4.0":
+  "@universal-middleware/express@0.4.14":
     dependencies:
-      "@universal-middleware/core": 0.4.0
+      "@universal-middleware/core": 0.4.7
     transitivePeerDependencies:
       - "@cloudflare/workers-types"
       - "@hattip/core"
@@ -17366,6 +17373,10 @@ snapshots:
   totalist@3.0.1: {}
 
   tough-cookie@5.1.0:
+    dependencies:
+      tldts: 6.1.76
+
+  tough-cookie@5.1.2:
     dependencies:
       tldts: 6.1.76
 

@@ -7,13 +7,13 @@
     "server:prod": "cross-env NODE_ENV=production tsx ./express-entry.ts"
   },
   "dependencies": {
-    "@universal-middleware/express": "^0.4.0",
+    "@universal-middleware/express": "^0.4.14",
     "express": "^5.1.0",
     "@vitejs/plugin-react": "^4.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "vike-react": "^0.5.12",
-    "@universal-middleware/core": "^0.4.0",
+    "@universal-middleware/core": "^0.4.7",
     "telefunc": "^0.1.82"
   },
   "devDependencies": {
