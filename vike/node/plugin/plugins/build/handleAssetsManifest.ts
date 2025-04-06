@@ -369,16 +369,20 @@ async function handleAssetsManifest(
   options: Options,
   bundle: Bundle
 ) {
-  if (isViteServerBuild_onlySsrEnv(config, viteEnv)) {
+  const isSsREnv = isViteServerBuild_onlySsrEnv(config, viteEnv)
+  if (isSsREnv) {
     assert(!assetsJsonFilePath)
     const outDirs = getOutDirs(config, viteEnv)
     assetsJsonFilePath = path.posix.join(outDirs.outDirRoot, 'assets.json')
     await writeAssetsManifestFile(outDirs, assetsJsonFilePath, config)
   }
   if (isViteServerBuild(config, viteEnv)) {
-    assert(assetsJsonFilePath)
-    // Replace __VITE_ASSETS_MANIFEST__ in all server-side bundles
-    await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
+    // Replace __VITE_ASSETS_MANIFEST__ in server builds
+    // - Always replace it in dist/server/
+    // - Also in some other server builds such as dist/vercel/ from vike-vercel
+    // - Don't replace it in dist/rsc/ from vike-react-rsc since __VITE_ASSETS_MANIFEST__ doesn't exist there
+    const noop = await set_macro_ASSETS_MANIFEST(options, bundle, assetsJsonFilePath)
+    if (isSsREnv) assert(!noop) // dist/server should always contain __VITE_ASSETS_MANIFEST__
   }
 }
 async function writeAssetsManifestFile(outDirs: OutDirs, assetsJsonFilePath: string, config: ResolvedConfig) {

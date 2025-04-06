@@ -65,10 +65,16 @@ function getServerProductionEntryCode(config: ResolvedConfig): string {
   return importerCode
 }
 // Set the value of the ASSETS_MANIFEST constant inside dist/server/entry.js (or dist/server/index.js)
-async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string) {
+async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, assetsJsonFilePath: string | undefined) {
   const { dir } = options
   assert(dir)
   const chunkPath = find_ASSETS_MANIFEST(bundle)
+  // Some server builds don't contain __VITE_ASSETS_MANIFEST__ such as dist/rsc/ from vike-react-rsc
+  if (!chunkPath) {
+    const noop = true // no operation
+    return noop
+  }
+  assert(assetsJsonFilePath)
   const chunkFilePath = path.join(dir, chunkPath)
   const [assetsJsonString, chunkFileContent] = await Promise.all([
     await fs.readFile(assetsJsonFilePath, 'utf8'),
@@ -77,8 +83,10 @@ async function set_macro_ASSETS_MANIFEST(options: Options, bundle: Bundle, asset
   const serverEntryFileContentPatched = chunkFileContent.replace(ASSETS_MANIFEST, assetsJsonString)
   assert(serverEntryFileContentPatched !== chunkFileContent)
   await fs.writeFile(chunkFilePath, serverEntryFileContentPatched)
+  const noop = false
+  return noop
 }
-function find_ASSETS_MANIFEST(bundle: Bundle): string {
+function find_ASSETS_MANIFEST(bundle: Bundle) {
   let chunkPath: string | undefined
   for (const filePath in bundle) {
     const chunk = bundle[filePath]!
@@ -87,7 +95,6 @@ function find_ASSETS_MANIFEST(bundle: Bundle): string {
       chunkPath = filePath
     }
   }
-  assert(chunkPath)
   return chunkPath
 }
 function getImportPath(config: ResolvedConfig) {
