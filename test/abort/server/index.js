@@ -15,7 +15,7 @@ async function startServer() {
     app.use(devMiddleware)
   }
 
-  app.get('/{*page}', async (req, res) => {
+  app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.url,
       user: 'some-fake-data'

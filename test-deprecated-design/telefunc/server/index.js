@@ -36,7 +36,7 @@ async function startServer() {
     res.status(statusCode).type(contentType).send(body)
   })
 
-  app.get('/{*page}', async (req, res, next) => {
+  app.get('/{*vikeCatchAll}', async (req, res, next) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }

@@ -22,7 +22,7 @@ async function startServer() {
   ).middlewares
   app.use(viteDevMiddleware)
 
-  app.get('/{*page}', async (req, res, next) => {
+  app.get('/{*vikeCatchAll}', async (req, res, next) => {
     const userAgent = req.headers['user-agent']
     const pageContextInit = {
       urlOriginal: req.originalUrl,

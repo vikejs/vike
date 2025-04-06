@@ -44,7 +44,7 @@ Built-in properties:
     ```js
     // Server middleware
     // `page` is only a name for a wildcard `*`
-    app.get('/{*page}', async (req) => {
+    app.get('/{*vikeCatchAll}', async (req) => {
       const pageContextInit = {}
       // `pageContext.urlOriginal` is defined here
       pageContextInit.urlOriginal = req.url
@@ -134,7 +134,7 @@ You can define custom `pageContext` properties. (See <Link href="#typescript" />
  - At <Link href="/renderPage">`renderPage()`</Link>:
     ```js
     // Your Vike server middleware integration
-    app.get('/{*page}', async (req) => {
+    app.get('/{*vikeCatchAll}', async (req) => {
       const pageContextInit = {
         urlOriginal: req.url,
         headersOriginal: req.headers,

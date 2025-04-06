@@ -16,7 +16,7 @@
     "@vue/server-renderer": "^3.5.13",
     "compression": "^1.7.5",
     "cross-env": "^7.0.3",
-    "express": "^5.0.1",
+    "express": "^5.1.0",
     "node-fetch": "^3.3.2",
     "sirv": "^3.0.0",
     "ts-node": "^10.9.2",

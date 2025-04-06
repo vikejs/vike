@@ -4,7 +4,7 @@ import { createExpressApp } from './createExpressApp.js'
 
 const { app, startApp } = createExpressApp({ base: baseServer, port: 3000 })
 
-app.get('/{*page}', async (req, res, next) => {
+app.get('/{*vikeCatchAll}', async (req, res, next) => {
   const pageContextInit = {
     urlOriginal: req.originalUrl
   }

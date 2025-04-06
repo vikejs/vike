@@ -177,7 +177,7 @@ Or use `pageContext.isBaseMissing`:
 
 ```js
 // `page` is only a name for a wildcard `*`
-app.get('/{*page}', async (req, res, next) => {
+app.get('/{*vikeCatchAll}', async (req, res, next) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   if (pageContext.isBaseMissing) return next()

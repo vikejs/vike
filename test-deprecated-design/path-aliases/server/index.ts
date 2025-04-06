@@ -30,7 +30,7 @@ async function startServer() {
     app.use(viteDevMiddleware)
   }
 
-  app.get('/{*page}', async (req, res, next) => {
+  app.get('/{*vikeCatchAll}', async (req, res, next) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }

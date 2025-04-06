@@ -17,7 +17,7 @@
     "@universal-middleware/express": "^0.2.6",
     "@vercel/node": "^3.2.18",
     "@vitejs/plugin-react-swc": "^3.7.1",
-    "express": "^5.0.1",
+    "express": "^5.1.0",
     "react": "^19.0.0",
     "tsx": "^4.19.1",
     "typescript": "^5.8.2",

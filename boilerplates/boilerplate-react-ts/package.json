@@ -16,7 +16,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "compression": "^1.7.5",
     "cross-env": "^7.0.3",
-    "express": "^5.0.1",
+    "express": "^5.1.0",
     "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

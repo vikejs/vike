@@ -55,7 +55,7 @@ import { renderPage } from 'vike/server'
 
 // Server middleware
 // `page` is only a name for a wildcard `*`
-app.get('/{*page}', async (req) => {
+app.get('/{*vikeCatchAll}', async (req) => {
   const pageContextInit = {
     urlOriginal: req.url,
     headersOriginal: req.headers
@@ -75,7 +75,7 @@ import { renderPage } from 'vike/server'
 
 // Server middleware
 // `page` is only a name for a wildcard `*`
-app.get('/{*page}', async (req) => {
+app.get('/{*vikeCatchAll}', async (req) => {
   // ...
   const pageContext = await renderPage(pageContextInit)
   // HTTP Headers of the HTTP Response.
