@@ -55,7 +55,7 @@ async function assets(app) {
 }
 
 function vike(app) {
-  app.get('/{*pages}', async (req, res) => {
+  app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl,
       headersOriginal: req.headers,
