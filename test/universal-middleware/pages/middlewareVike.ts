@@ -20,5 +20,5 @@ const vikeUniversalMiddleware: UniversalMiddleware = async (request, context, ru
 const middlewareVike = enhance(vikeUniversalMiddleware, {
   name: 'vike',
   method: 'GET',
-  path: '/{*vikeCatchAll}'
+  path: '/**'
 })
