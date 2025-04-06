@@ -4,7 +4,7 @@ To make information about the authenticated user available to your pages and UI 
 
 ```js
 // Vike server middleware
-// `page` is only a name for a wildcard `*`
+// `vikeCatchAll` is only a name for a wildcard `*`
 app.get('/{*vikeCatchAll}', async (req, res) => {
   // Authentication middlewares (e.g. Passport.js and Grant) provide information about the
   // logged-in user at req.user

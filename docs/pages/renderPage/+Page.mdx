@@ -55,7 +55,7 @@ async function startServer() {
   // SSR middleware.
   // Note: it should always be the last middleware, because it's a catch-all
   // middleware that supersedes any middleware placed after it.
-  // `page` is only a name for a wildcard `*`
+  // `vikeCatchAll` is only a name for a wildcard `*`
   app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
       // Required: the URL of the page
