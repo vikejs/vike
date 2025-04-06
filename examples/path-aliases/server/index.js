@@ -4,7 +4,7 @@
 import { msg } from '#root/server/msg'
 
 import express from 'express'
-import { renderPage, createDevMiddleware } from 'vike/server'
+import { createDevMiddleware, renderPage } from 'vike/server'
 import { root } from './root.js'
 
 console.log(msg)
@@ -23,7 +23,7 @@ async function startServer() {
     app.use(devMiddleware)
   }
 
-  app.get('*', async (req, res) => {
+  app.get('/{*vikeCatchAll}', async (req, res) => {
     const pageContextInit = {
       urlOriginal: req.originalUrl
     }
