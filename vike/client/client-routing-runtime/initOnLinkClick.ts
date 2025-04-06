@@ -5,9 +5,9 @@ import { renderPageClientSide } from './renderPageClientSide.js'
 import { scrollToHashOrTop, type ScrollTarget } from './setScrollPosition.js'
 
 function initOnLinkClick() {
-  document.addEventListener('click', onClick)
+  document.addEventListener('click', onLinkClick)
 }
-async function onClick(ev: MouseEvent) {
+async function onLinkClick(ev: MouseEvent) {
   if (!isNormalLeftClick(ev)) return
 
   const linkTag = findLinkTag(ev.target as HTMLElement)
