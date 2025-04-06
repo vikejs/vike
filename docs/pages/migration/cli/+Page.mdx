@@ -67,8 +67,7 @@ async function startServer() {
   }
 
   // SSR middleware
-  // `vikeCatchAll` is only a name for a wildcard `*`
-  app.get('/{*vikeCatchAll}', async (req, res) => {
+  app.get('*', async (req, res) => {
     const pageContext = await renderPage({ urlOriginal: req.originalUrl })
     const { body, statusCode, headers } = pageContext.httpResponse
     headers.forEach(([name, value]) => res.setHeader(name, value))

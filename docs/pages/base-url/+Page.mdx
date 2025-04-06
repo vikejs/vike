@@ -1,4 +1,5 @@
-import { ImportMeta, Link, RepoLink } from '@brillout/docpress'
+import { Link, RepoLink } from '@brillout/docpress'
+import { ImportMeta } from '@brillout/docpress'
 
 > **What is the Base URL?** The Base URL (aka Public Path) configures the URL root of your website.
 > For example, instead of serving your website at `https://example.org/*` (the Base URL is `/`), you can serve your website at `https://example.org/some-base/*` by setting the Base URL to `/some-base/`.
@@ -176,8 +177,7 @@ app.get('/some-base/*', async (req, res) => {
 Or use `pageContext.isBaseMissing`:
 
 ```js
-// `vikeCatchAll` is only a name for a wildcard `*`
-app.get('/{*vikeCatchAll}', async (req, res, next) => {
+app.get('*', async (req, res, next) => {
   const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   if (pageContext.isBaseMissing) return next()
