@@ -4,13 +4,13 @@ import { LoadingComponent } from './LoadingComponent'
 
 Environment: client, and server if <Link href="/ssr">`ssr: true`</Link>.
 
-<ImplementedBy list={['vike-react']} noCustomGuide={true}>the `Loading` setting</ImplementedBy>
+<ImplementedBy list={['vike-react']} noCustomGuide={true}>the `+Loading` setting</ImplementedBy>
 
 <Contribution>
-  Contributions welcome to implement the `Loading` setting for `vike-vue` and `vike-solid`.
+  Contributions welcome to implement the `+Loading` setting for `vike-vue` and `vike-solid`.
 </Contribution>
 
-The `Loading` setting allows you to define a loading animation.
+The `+Loading` setting allows you to define a loading animation.
 
 ```jsx
 // pages/+Loading.jsx
@@ -21,12 +21,12 @@ export default {
 }
 
 function LoadingLayout() {
-  // Applies to the page and all layouts
+  // Shown when a page or layout is loading
   return <div>Loading...</div>
 }
 
 function LoadingComponent() {
-  // Applies on a component-level
+  // Shown when a component is loading
   return <div>Loading...</div>
 }
 ```
@@ -34,13 +34,13 @@ function LoadingComponent() {
 
 ## Default
 
-The default `Loading.component` is the following.
+The default `Loading.component` is:
 
-<Figure width={400} text={<>The default loading animation. Its width is <code>100%</code> of the parent (here the parent is artificially set to <code>400px</code>), and its height is proportional to its width.</>}>
+<Figure width={400} text={<>This is the default loading animation. Its width is <code>100%</code> of the parent (here the parent's width is artificially set to <code>400px</code>). Its height is `width * 0.4`.</>}>
   <LoadingComponent />
 </Figure>
 
-If you want to use a different loading animation, then make sure to define `Loading.component` in order to override the default.
+If you want to show a different loading animation, then define `Loading.component` in order to override the default.
 
 
 ## See also
