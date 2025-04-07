@@ -1,5 +1,5 @@
 import { Link } from '@brillout/docpress'
-import { CommunityNote } from '../../components'
+import { CommunityNote, Example, ExampleTimestamp } from '../../components'
 
 <CommunityNote url="https://vanjs.org" tool="VanJS" hasExtension={false} />
 
@@ -20,16 +20,18 @@ You can also <Link href="#custom-integration">integrate VanJS yourself</Link>.
 
 ## Custom integration
 
-Currently there is no dedicated Vike extension for VanJS, but it's easy to integrate VanJS on your own, for full control over the integration of VanJS and VanJS libraries.
+There isn't any `vike-vanjs` built-in integration (contribution welcome) but you can easily integrate VanJS on your own, for full control over the integration of VanJS and VanJS libraries.
 
-
-Community examples:
- - [`vike-ts` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-ts) - Full-featured Typescript integration.
- - [`vike` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike) - Full-featured integration.
- - [`vike-jsx-ts` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-jsx-ts) - Full-featured JSX Typescript integration.
- - [`vike-jsx` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-jsx) - Full-featured JSX integration.
+Examples:
+ - <Example timestamp="2025.03" repo="brillout/vike-with-van-jsx" />
+ - <Example timestamp="2025.03" repo="brillout/vike-with-van" />
+ - <ExampleTimestamp timestamp="2025.03" /> [`vike-ts` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-ts) - Full-featured Typescript integration.
+ - <ExampleTimestamp timestamp="2025.03" /> [`vike` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike) - Full-featured integration.
+ - <ExampleTimestamp timestamp="2025.03" /> [`vike-jsx-ts` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-jsx-ts) - Full-featured JSX Typescript integration.
+ - <ExampleTimestamp timestamp="2025.03" /> [`vike-jsx` source code](https://github.com/thednp/create-vanjs/tree/master/template-vike-jsx) - Full-featured JSX integration.
 
 
 ## See also
 
+ - [VanJS - [Marketing] Plan?](https://github.com/vanjs-org/van/discussions/427)
  - <Link href="/ui-frameworks" />

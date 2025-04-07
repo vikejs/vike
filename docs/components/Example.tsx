@@ -15,7 +15,10 @@ function Example({ repo, timestamp, href }: { repo: Repo; timestamp: TimestampTy
   )
 }
 
-function ExampleTimestamp({ children }: { children: TimestampType }) {
+function ExampleTimestamp({
+  children,
+  timestamp
+}: { children: TimestampType; timestamp?: undefined } | { children?: undefined; timestamp: TimestampType }) {
   return (
     <span
       style={{
@@ -26,7 +29,7 @@ function ExampleTimestamp({ children }: { children: TimestampType }) {
         marginRight: 2
       }}
     >
-      {children}
+      {timestamp ?? children}
     </span>
   )
 }
