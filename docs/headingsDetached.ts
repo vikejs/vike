@@ -450,7 +450,7 @@ function guides(): HeadingDetachedDefinition[] {
     },
     {
       title: 'Client runtime loaded twice',
-      url: '/client-runtime-twice'
+      url: '/client-runtime-duplicated'
     },
     {
       title: 'CJS',
