@@ -15,7 +15,7 @@
     "react-tabs": "^6.1.0",
     "typescript": "^5.8.2",
     "vike": "0.4.228",
-    "vite": "^6.2.1",
+    "vite": "^6.2.5",
     "vite-plugin-svgr": "^4.3.0"
   },
   "type": "module"

@@ -13,7 +13,7 @@
     "vike": "0.4.228",
     "vike-node": "^0.3.5",
     "vike-react": "^0.5.12",
-    "vite": "^6.2.1"
+    "vite": "^6.2.5"
   },
   "type": "module"
 }
