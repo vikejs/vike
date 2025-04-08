@@ -21,7 +21,13 @@ function pluginModuleBanner(): Plugin {
     transform: {
       order: 'post',
       handler(code, id, options) {
-        if (!isViteServerBuild_safe(config, options)) return
+        if (
+          !isViteServerBuild_safe(config, options) &&
+          // Inject module banners if user sets `build.minify` to `false` for inspecting dist/client/
+          config.build.minify
+        ) {
+          return
+        }
         if (id.startsWith('\0')) id = id
         id = removeVirtualIdTag(id)
         if (id.startsWith(config.root)) id = id.slice(config.root.length + 1)
