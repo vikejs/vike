@@ -127,7 +127,7 @@
     "acorn": "^8.0.0",
     "cac": "^6.0.0",
     "es-module-lexer": "^1.0.0",
-    "esbuild": ">=0.25.0",
+    "esbuild": ">=0.19.0",
     "json5": "^2.0.0",
     "magic-string": "^0.30.17",
     "picomatch": "^4.0.2",
