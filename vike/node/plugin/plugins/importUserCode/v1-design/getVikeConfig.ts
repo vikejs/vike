@@ -922,8 +922,8 @@ function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
   let configNames: string[] = []
   if (!plusFile.isConfigFile) {
     configNames.push(plusFile.configName)
-  }
-  if (!plusFile.isNotLoaded) {
+  } else {
+    assert(!plusFile.isNotLoaded)
     configNames.push(...Object.keys(plusFile.fileExportsByConfigName))
   }
   configNames = unique(configNames)
