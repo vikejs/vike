@@ -1,6 +1,5 @@
 // https://vike.dev/route
 export { route }
-export const createRoute = () => {}
 
 import type { RouteSync } from 'vike/types'
 import { resolveRoute } from 'vike/routing'
