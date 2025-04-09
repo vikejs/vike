@@ -5,43 +5,47 @@ Your <Link href="/config#files">`+` files</Link> should have only one export:
 ```js
 // pages/index/+Page.js
 
-// ✅ The main export
+// ✅ Main export
 export { Page }
 
-// ❌ Avoid such side exports
-export { SomeComponent }
-export { SomeOtherComponent }
+// ❌ Avoid side exports
+export { SomeSharedComponent }
 ```
 
 
 ### Why
 
-The problem is that if often leads to client-side bloat, for example:
+The problem is that it often causes unnecessary code to be loaded on the client-side. For example:
 
-```js
-// pages/about/+Page.js
-
-// ❌ Bad: the /about page loads landing-page.css
-import { SomeComponent } from '../index/+Page'
-```
 ```js
 // pages/index/+Page.js
 
+// This CSS is loaded every time SomeSharedComponent is imported
 import './landing-page.css'
 
-export funtion SomeComponent() {
+export function SomeSharedComponent() {
   // ...
 }
 ```
+```js
+// pages/about/+Page.js
+
+// ❌ Bad: the /about page loads landing-page.css, which usually isn't what you want
+import { SomeSharedComponent } from '../index/+Page'
+```
+
+> Vike does code-splitting: when the user navigates to `/about`, only the JavaScript needed for `/about` is loaded. This also applies server-side with certain edge deployment providers.
 
 
 ### Solution
 
+Move shared code into a separate file:
+
 <FileAdded>
 ```js
-// components/SomeComponent.js
+// components/SomeSharedComponent.js
 
-export funtion SomeComponent() {
+export function SomeSharedComponent() {
   // ...
 }
 ```
@@ -49,16 +53,16 @@ export funtion SomeComponent() {
 ```js
 // pages/about/+Page.js
 
-import { SomeComponent } from '../index/+Page' // [!code --]
-import { SomeComponent } from '../../components/SomeComponent' // [!code ++]
+import { SomeSharedComponent } from '../index/+Page' // [!code --]
+import { SomeSharedComponent } from '../../components/SomeSharedComponent' // [!code ++]
 ```
 ```js
 // pages/index/+Page.js
 
 import './landing-page.css'
-import { SomeComponent } from '../../components/SomeComponent' // [!code ++]
+import { SomeSharedComponent } from '../../components/SomeSharedComponent' // [!code ++]
 
-export funtion somecomponent() { // [!code --]
+export function SomeSharedComponent() { // [!code --]
   // ... // [!code --]
 } // [!code --]
 ```
