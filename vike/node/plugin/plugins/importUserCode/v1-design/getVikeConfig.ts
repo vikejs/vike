@@ -919,14 +919,11 @@ function resolveIsGlobalValue(
 }
 
 function getConfigNamesSetByPlusFile(plusFile: PlusFile): string[] {
-  let configNames: string[] = []
   if (!plusFile.isConfigFile) {
-    configNames.push(plusFile.configName)
+    return [plusFile.configName]
   } else {
-    configNames.push(...Object.keys(plusFile.fileExportsByConfigName))
+    return Object.keys(plusFile.fileExportsByConfigName)
   }
-  configNames = unique(configNames)
-  return configNames
 }
 
 function getConfigDefinitions(
