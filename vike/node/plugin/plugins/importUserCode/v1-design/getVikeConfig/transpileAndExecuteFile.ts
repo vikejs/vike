@@ -193,7 +193,7 @@ async function transpileWithEsbuild(
           // - Sitll required for esbuild@0.24.0 (November 2024).
           // - Let's try to remove this workaround again later.
           if (resolved.errors.length > 0) {
-            const resolvedWithNode = requireResolveOptional(path, args.resolveDir)
+            const resolvedWithNode = requireResolveOptional(path, toPosixPath(args.resolveDir))
             if (debugEsbuildResolve.isActivated) debugEsbuildResolve('resolvedWithNode', resolvedWithNode)
             if (resolvedWithNode) resolved = { path: resolvedWithNode }
           }
