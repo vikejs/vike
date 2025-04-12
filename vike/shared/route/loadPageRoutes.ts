@@ -73,6 +73,7 @@ function getPageRoutes(
               }
             } else {
               assert(isCallable(route))
+              // TODO/next-major: remove
               if (getConfigValueRuntime(pageConfig, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'))
                 warnDeprecatedAllowKey()
               pageRoute = {
