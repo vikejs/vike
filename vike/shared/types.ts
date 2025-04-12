@@ -140,13 +140,6 @@ type PageContextBuiltInCommon<Data> = {
   /** @experimental https://github.com/vikejs/vike/issues/1268 */
   sources: Sources
 
-  /**
-   * Runtime information about your app.
-   *
-   * https://vike.dev/getGlobalContext
-   */
-  globalContext: GlobalContextPublic
-
   // TODO/v1-release: move pageContext.urlParsed to pageContext.url
   /** @deprecated */
   url: string
@@ -180,6 +173,13 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      * https://vike.dev/pageContext
      */
     isPrerendering: boolean
+    /**
+     * Runtime information about your app.
+     *
+     * https://vike.dev/getGlobalContext
+     */
+    globalContext: GlobalContextPublic
+
     isHydration?: undefined
     isBackwardNavigation?: undefined
     previousPageContext?: undefined
