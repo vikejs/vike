@@ -20,6 +20,7 @@ import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
 import type { GlobalContextPublic } from '../node/runtime/globalContext.js'
+import type { GlobalContextPublicClientSide } from '../client/client-routing-runtime/globalContextClientSide.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext
 
@@ -252,6 +253,7 @@ type PageContextClientCommon = {
    * https://vike.dev/pageContext
    */
   isPrerendering: false
+  globalContext: GlobalContextPublicClientSide
 }
 
 /** For Vike internal use */

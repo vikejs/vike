@@ -4,6 +4,7 @@ import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
+import { getGlobalContext } from './globalContextClientSide.js'
 import { assert, isBaseServer, objectAssign } from './utils.js'
 
 // @ts-ignore
@@ -24,6 +25,7 @@ async function createPageContext(urlOriginal: string) {
     isClientSide: true,
     isPrerendering: false,
     urlOriginal,
+    globalContext: getGlobalContext(),
     _objectCreatedByVike: true,
     _urlHandler: null,
     _urlRewrite: null,
