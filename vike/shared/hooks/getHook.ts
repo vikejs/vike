@@ -65,16 +65,16 @@ function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookName
   const configValue = getConfigValueRuntime(pageConfig, hookName)
   if (!configValue?.value) return null
   const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
-  return getHookFromConfigValue(configValue, hookName, hooksTimeout)
+  const hookTimeout = getHookTimeout(hooksTimeout, hookName)
+  return getHookFromConfigValue(configValue, hookName, hookTimeout)
 }
-function getHookFromConfigValue(configValue: ConfigValue, hookName: HookName, hooksTimeout: unknown): Hook {
+function getHookFromConfigValue(configValue: ConfigValue, hookName: HookName, hookTimeout: HookTimeout): Hook {
   const hookFn = configValue.value
   assert(hookFn)
   const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
   // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
-  const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
 function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
@@ -82,12 +82,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   if (!configValue?.value) return null
   // TO-DO/perfection: we could use the global value of configooksTimeout but it requires some non-trivial refactoring
   const hookTimeout = getHookTimeoutDefault(hookName)
-  const hookFn = configValue.value
-  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
-  // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
-  assert(hookFilePath)
-  assertHookFn(hookFn, { hookName, hookFilePath })
-  return { hookFn, hookName, hookFilePath, hookTimeout }
+  return getHookFromConfigValue(configValue, hookName, hookTimeout)
 }
 
 function assertHook<TPageContext extends PageConfigUserFriendlyOld, THookName extends PropertyKey & HookName>(
