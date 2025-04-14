@@ -649,14 +649,12 @@ async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: G
 function getPageContextInvalidRequest(pageContextInit: PageContextInit) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
-  if (urlPathnameWithBase.endsWith('/favicon.ico')) {
-    const pageContext = createPageContext(pageContextInit, false)
-    const httpResponse = createHttpResponseFavicon404()
-    objectAssign(pageContext, { httpResponse })
-    checkType<PageContextAfterRender>(pageContext)
-    return pageContext
-  }
-  return null
+  if (!urlPathnameWithBase.endsWith('/favicon.ico')) return
+  const pageContext = createPageContext(pageContextInit, false)
+  const httpResponse = createHttpResponseFavicon404()
+  objectAssign(pageContext, { httpResponse })
+  checkType<PageContextAfterRender>(pageContext)
+  return pageContext
 }
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
