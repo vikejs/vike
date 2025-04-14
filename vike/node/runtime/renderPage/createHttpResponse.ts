@@ -18,6 +18,7 @@ import { getEarlyHints, type EarlyHint } from './getEarlyHints.js'
 import { getCacheControl } from './createHttpResponse/getCacheControl.js'
 import { assertNoInfiniteHttpRedirect } from './createHttpResponse/assertNoInfiniteHttpRedirect.js'
 import type { PageFile } from '../../../shared/getPageFiles.js'
+import type { PageContextInit } from '../renderPage.js'
 
 type HttpResponse = {
   statusCode: 200 | 404 | 500 | RedirectStatusCode | AbortStatusCode
@@ -142,10 +143,7 @@ async function createHttpResponsePageContextJson(pageContextSerialized: string) 
   return httpResponse
 }
 
-function createHttpResponseRedirect(
-  { url, statusCode }: UrlRedirect,
-  pageContextInit: { urlOriginal: string }
-): HttpResponse {
+function createHttpResponseRedirect({ url, statusCode }: UrlRedirect, pageContextInit: PageContextInit): HttpResponse {
   assertNoInfiniteHttpRedirect(url, pageContextInit)
   assert(url)
   assert(statusCode)

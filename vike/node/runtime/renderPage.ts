@@ -1,5 +1,6 @@
 export { renderPage }
 export { renderPage_addAsyncHookwrapper }
+export type { PageContextInit }
 
 import {
   getPageContextInitEnhanced,
@@ -69,22 +70,20 @@ const globalObject = getGlobalObject('runtime/renderPage.ts', {
 })
 
 type PageContextAfterRender = { httpResponse: HttpResponse } & Partial<PageContextBuiltInServerInternal>
+type PageContextInit = Pick<PageContextBuiltInServerInternal, 'urlOriginal' | 'headersOriginal'> & {
+  /** @deprecated Set `pageContextInit.urlOriginal` instead  */ // TODO/next-major: remove
+  url?: string
+  /** @deprecated Set pageContextInit.headersOriginal instead */ // TODO/next-major: remove
+  headers?: Record<string, string>
+}
 
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPage<
-  PageContextUserAdded extends {},
-  PageContextInit extends {
-    /** @deprecated */
-    url?: string
-    /** The URL of the HTTP request */
-    urlOriginal: string
-  }
->(
-  pageContextInit: PageContextInit
+async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
+  pageContextInit: PageContextInitUser
 ): Promise<
   // Partial because rendering may fail at any user hook.
   // - `.pageContext.json` requests may fail while still returning the HTTP response `JSON.stringify({ serverSideError: true })`.
-  PageContextInit & { httpResponse: HttpResponse } & Partial<PageContextServer & PageContextUserAdded>
+  PageContextInitUser & { httpResponse: HttpResponse } & Partial<PageContextServer & PageContextUserAdded>
 > {
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
@@ -118,7 +117,7 @@ function renderPage_addAsyncHookwrapper(wrapper: typeof asyncHookWrapper) {
 }
 
 async function renderPageAndPrepare(
-  pageContextInit: { urlOriginal: string } & Record<string, unknown>,
+  pageContextInit: PageContextInit,
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
   // Invalid config
@@ -173,7 +172,7 @@ async function renderPageAndPrepare(
 }
 
 async function renderPageAlreadyPrepared(
-  pageContextInit: { urlOriginal: string } & Record<string, unknown>,
+  pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[]
@@ -372,7 +371,7 @@ function prettyUrl(url: string) {
 
 function getPageContextHttpResponseError(
   err: unknown,
-  pageContextInit: Record<string, unknown>,
+  pageContextInit: PageContextInit,
   pageContext: null | {
     _pageFilesAll: PageFile[]
     _pageConfigs: PageConfigRuntime[]
@@ -417,7 +416,7 @@ async function renderPageNominal(
 
 type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
 async function getPageContextErrorPageInit(
-  pageContextInit: { urlOriginal: string },
+  pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
   errNominalPage: unknown,
   pageContextNominalPagePartial: Record<string, unknown>,
@@ -442,7 +441,7 @@ async function getPageContextErrorPageInit(
 }
 
 async function getPageContextInitEnhancedSSR(
-  pageContextInit: { urlOriginal: string },
+  pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
   urlRewrite: null | string,
   httpRequestId: number
@@ -497,7 +496,7 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 }
 
 async function normalizeUrl(
-  pageContextInit: { urlOriginal: string },
+  pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
@@ -520,7 +519,7 @@ async function normalizeUrl(
 }
 
 async function getPermanentRedirect(
-  pageContextInit: { urlOriginal: string },
+  pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
@@ -573,7 +572,7 @@ async function handleAbortError(
   errAbort: ErrorAbort,
   pageContextsFromRewrite: PageContextFromRewrite[],
   // The original `pageContextInit` object passed to `renderPage(pageContextInit)`
-  pageContextInit: { urlOriginal: string },
+  pageContextInit: PageContextInit,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageInit to it: we only use some pageContextNominalPageInit information.
   pageContextNominalPageInit: {
     urlOriginal: string
@@ -603,7 +602,7 @@ async function handleAbortError(
           abortCall
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
-      const pageContext = createPageContext({}, false)
+      const pageContext = createPageContext(null, false)
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
@@ -637,7 +636,7 @@ async function handleAbortError(
   return { pageContextAbort }
 }
 
-async function checkBaseUrl(pageContextInit: { urlOriginal: string }, globalContext: GlobalContextInternal) {
+async function checkBaseUrl(pageContextInit: PageContextInit, globalContext: GlobalContextInternal) {
   const { baseServer } = globalContext
   const { urlOriginal } = pageContextInit
   const { isBaseMissing } = parseUrl(urlOriginal, baseServer)
@@ -652,7 +651,7 @@ async function checkBaseUrl(pageContextInit: { urlOriginal: string }, globalCont
   return pageContext
 }
 
-function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
+function renderInvalidRequest(pageContextInit: PageContextInit) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
   if (urlPathnameWithBase.endsWith('/favicon.ico')) {
@@ -665,7 +664,7 @@ function renderInvalidRequest(pageContextInit: { urlOriginal: string }) {
   return null
 }
 
-function renderInvalidVikeConfig(err: unknown, pageContextInit: { urlOriginal: string }, httpRequestId: number) {
+function renderInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
   logRuntimeInfo?.(pc.bold(pc.red('Error while loading a Vike config file, see error above.')), httpRequestId, 'error')
   const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
   return pageContextWithError

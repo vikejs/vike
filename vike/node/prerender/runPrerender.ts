@@ -104,7 +104,9 @@ type Output<PageContext = PageContextPrerendered> = {
 }[]
 type FileType = 'HTML' | 'JSON'
 
-type PageContext = Awaited<ReturnType<typeof createPageContext>>
+type PageContext = Awaited<ReturnType<typeof createPageContext>> & {
+  _urlOriginalBeforeHook?: string
+}
 
 type PrerenderOptions = APIOptions & {
   /** Initial `pageContext` values */

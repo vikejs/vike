@@ -25,6 +25,7 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
+import type { PageContextInit } from '../renderPage.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -128,7 +129,7 @@ async function prerenderPage(
 
 type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhanced>>
 async function getPageContextInitEnhanced(
-  pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
+  pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
   isPrerendering: boolean,
   {
@@ -188,7 +189,7 @@ async function getPageContextInitEnhanced(
       )
     } else if (pageContextInit.headers) {
       headers = pageContextInit.headers as Record<string, string>
-      // TODO/next-major-release: assertUsage() instead of assertWarning()
+      // TODO/next-major-release: remove
       assertWarning(
         false,
         'Setting pageContextInit.headers is deprecated: set pageContextInit.headersOriginal instead, see https://vike.dev/headers',
@@ -203,7 +204,7 @@ async function getPageContextInitEnhanced(
   return pageContextInitEnhanced
 }
 
-function createPageContext(pageContextInit: Record<string, unknown>, isPrerendering: boolean) {
+function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean) {
   const pageContext = {
     _isPageContextObject: true,
     isClientSide: false,
