@@ -174,7 +174,7 @@ async function renderPagePrepare(
 
 async function renderPageAlreadyPrepared(
   pageContextInit: PageContextInit,
-  pageContextNominalPageInit: PageContextBegin,
+  pageContextNominalPageBegin: PageContextBegin,
   globalContext: GlobalContextInternal,
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[]
@@ -189,18 +189,18 @@ async function renderPageAlreadyPrepared(
   const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
   // This is where pageContext._urlRewrite is set
   assert(pageContextFromAllRewrites._urlRewrite === null || typeof pageContextFromAllRewrites._urlRewrite === 'string')
-  objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
+  objectAssign(pageContextNominalPageBegin, pageContextFromAllRewrites)
   let errNominalPage: unknown
   {
     try {
-      pageContextNominalPageSuccess = await renderPageNominal(pageContextNominalPageInit)
+      pageContextNominalPageSuccess = await renderPageNominal(pageContextNominalPageBegin)
     } catch (err) {
       errNominalPage = err
       assert(errNominalPage)
       logRuntimeError(errNominalPage, httpRequestId)
     }
     if (!errNominalPage) {
-      assert(pageContextNominalPageSuccess === pageContextNominalPageInit)
+      assert(pageContextNominalPageSuccess === pageContextNominalPageBegin)
     }
   }
 
@@ -219,14 +219,14 @@ async function renderPageAlreadyPrepared(
   } else {
     assert(errNominalPage)
     assert(pageContextNominalPageSuccess === undefined)
-    assert(pageContextNominalPageInit)
-    assert(hasProp(pageContextNominalPageInit, 'urlOriginal', 'string'))
+    assert(pageContextNominalPageBegin)
+    assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
 
     const pageContextErrorPageInit = await getPageContextErrorPageInit(
       pageContextInit,
       globalContext,
       errNominalPage,
-      pageContextNominalPageInit,
+      pageContextNominalPageBegin,
       httpRequestId
     )
 
@@ -236,7 +236,7 @@ async function renderPageAlreadyPrepared(
         errNominalPage,
         pageContextsFromRewrite,
         pageContextInit,
-        pageContextNominalPageInit,
+        pageContextNominalPageBegin,
         httpRequestId,
         pageContextErrorPageInit,
         globalContext
@@ -272,7 +272,7 @@ async function renderPageAlreadyPrepared(
           errErrorPage,
           pageContextsFromRewrite,
           pageContextInit,
-          pageContextNominalPageInit,
+          pageContextNominalPageBegin,
           httpRequestId,
           pageContextErrorPageInit,
           globalContext
@@ -567,8 +567,8 @@ async function handleAbortError(
   pageContextsFromRewrite: PageContextFromRewrite[],
   // The original `pageContextInit` object passed to `renderPage(pageContextInit)`
   pageContextInit: PageContextInit,
-  // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageInit to it: we only use some pageContextNominalPageInit information.
-  pageContextNominalPageInit: PageContextBegin,
+  // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
+  pageContextNominalPageBegin: PageContextBegin,
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextInternal
@@ -576,11 +576,11 @@ async function handleAbortError(
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
 > {
-  logAbortErrorHandled(errAbort, globalContext.isProduction, pageContextNominalPageInit)
+  logAbortErrorHandled(errAbort, globalContext.isProduction, pageContextNominalPageBegin)
 
   const pageContextAbort = errAbort._pageContextAbort
   let pageContextSerialized: string
-  if (pageContextNominalPageInit.isClientSideNavigation) {
+  if (pageContextNominalPageBegin.isClientSideNavigation) {
     if (pageContextAbort.abortStatusCode) {
       const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
       const abortCall = pageContextAbort._abortCall
@@ -615,7 +615,7 @@ async function handleAbortError(
   if (pageContextAbort._urlRewrite) {
     const pageContextReturn = await renderPageAlreadyPrepared(
       pageContextInit,
-      pageContextNominalPageInit,
+      pageContextNominalPageBegin,
       globalContext,
       httpRequestId,
       [...pageContextsFromRewrite, pageContextAbort]
