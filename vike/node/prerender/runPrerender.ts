@@ -27,7 +27,8 @@ import {
   PROJECT_VERSION,
   preservePropertyGetters
 } from './utils.js'
-import { prerenderPage, createPageContextServerSide } from '../runtime/renderPage/renderPageAlreadyRouted.js'
+import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
+import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'

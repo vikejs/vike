@@ -3,11 +3,11 @@ export { renderPage_addAsyncHookwrapper }
 export type { PageContextInit }
 export type { PageContextBegin }
 
+import { renderPageAlreadyRouted } from './renderPage/renderPageAlreadyRouted.js'
 import {
-  renderPageAlreadyRouted,
   createPageContextServerSide,
   createPageContextServerSideWithoutGlobalContext
-} from './renderPage/renderPageAlreadyRouted.js'
+} from './renderPage/createPageContextServerSide.js'
 import { route } from '../../shared/route/index.js'
 import {
   assert,
