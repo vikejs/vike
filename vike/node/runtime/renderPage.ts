@@ -76,6 +76,7 @@ type PageContextInit = Pick<PageContextBuiltInServerInternal, 'urlOriginal' | 'h
   /** @deprecated Set pageContextInit.headersOriginal instead */ // TODO/next-major: remove
   headers?: Record<string, string>
 }
+type PageContextBegin = Awaited<ReturnType<typeof getPageContextBegin>>
 
 // `renderPage()` calls `renderPageNominal()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that Vike never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<PageContextUserAdded extends {}, PageContextInitUser extends PageContextInit>(
@@ -149,6 +150,8 @@ async function renderPagePrepare(
   }
   const globalContext = await getGlobalContextInternal()
 
+  const pageContextBegin = await getPageContextBegin(pageContextInit, globalContext, httpRequestId)
+
   // Check Base URL
   {
     const pageContextHttpResponse = await checkBaseUrl(pageContextInit, globalContext)
@@ -167,11 +170,12 @@ async function renderPagePrepare(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  return await renderPageAlreadyPrepared(pageContextInit, globalContext, httpRequestId, [])
+  return await renderPageAlreadyPrepared(pageContextInit, pageContextBegin, globalContext, httpRequestId, [])
 }
 
 async function renderPageAlreadyPrepared(
   pageContextInit: PageContextInit,
+  pageContextNominalPageInit: PageContextBegin,
   globalContext: GlobalContextInternal,
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[]
@@ -183,7 +187,6 @@ async function renderPageAlreadyPrepared(
     0
   )
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
-  const pageContextNominalPageInit = await getPageContextInitEnhancedSSR(pageContextInit, globalContext, httpRequestId)
   const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
   // This is where pageContext._urlRewrite is set
   assert(pageContextFromAllRewrites._urlRewrite === null || typeof pageContextFromAllRewrites._urlRewrite === 'string')
@@ -418,7 +421,7 @@ async function getPageContextErrorPageInit(
   pageContextNominalPagePartial: Record<string, unknown>,
   httpRequestId: number
 ) {
-  const pageContext = await getPageContextInitEnhancedSSR(pageContextInit, globalContext, httpRequestId)
+  const pageContext = await getPageContextBegin(pageContextInit, globalContext, httpRequestId)
 
   assert(errNominalPage)
   objectAssign(pageContext, {
@@ -436,7 +439,7 @@ async function getPageContextErrorPageInit(
   return pageContext
 }
 
-async function getPageContextInitEnhancedSSR(
+async function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
   httpRequestId: number
@@ -568,12 +571,7 @@ async function handleAbortError(
   // The original `pageContextInit` object passed to `renderPage(pageContextInit)`
   pageContextInit: PageContextInit,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageInit to it: we only use some pageContextNominalPageInit information.
-  pageContextNominalPageInit: {
-    urlOriginal: string
-    urlParsed: UrlPublic
-    _urlRewrite: null | string
-    isClientSideNavigation: boolean
-  },
+  pageContextNominalPageInit: PageContextBegin,
   httpRequestId: number,
   pageContextErrorPageInit: PageContextErrorPageInit,
   globalContext: GlobalContextInternal
@@ -618,10 +616,13 @@ async function handleAbortError(
   }
 
   if (pageContextAbort._urlRewrite) {
-    const pageContextReturn = await renderPageAlreadyPrepared(pageContextInit, globalContext, httpRequestId, [
-      ...pageContextsFromRewrite,
-      pageContextAbort
-    ])
+    const pageContextReturn = await renderPageAlreadyPrepared(
+      pageContextInit,
+      pageContextNominalPageInit,
+      globalContext,
+      httpRequestId,
+      [...pageContextsFromRewrite, pageContextAbort]
+    )
     Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
   }
