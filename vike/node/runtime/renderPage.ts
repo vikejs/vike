@@ -152,7 +152,7 @@ async function renderPagePrepare(
 
   // Check Base URL
   {
-    const pageContextHttpResponse = await checkBaseUrl(pageContextInit, globalContext)
+    const pageContextHttpResponse = await checkBaseUrl(pageContextBegin, globalContext)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
@@ -634,19 +634,18 @@ async function handleAbortError(
   return { pageContextAbort }
 }
 
-async function checkBaseUrl(pageContextInit: PageContextInit, globalContext: GlobalContextInternal) {
+async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextInternal) {
   const { baseServer } = globalContext
-  const { urlOriginal } = pageContextInit
+  const { urlOriginal } = pageContextBegin
   const { isBaseMissing } = parseUrl(urlOriginal, baseServer)
   if (!isBaseMissing) return
-  const pageContext = createPageContext(pageContextInit, false)
   const httpResponse = createHttpResponseBaseIsMissing(urlOriginal, baseServer)
-  objectAssign(pageContext, {
+  objectAssign(pageContextBegin, {
     httpResponse,
     isBaseMissing: true as const
   })
-  checkType<PageContextAfterRender>(pageContext)
-  return pageContext
+  checkType<PageContextAfterRender>(pageContextBegin)
+  return pageContextBegin
 }
 
 function renderInvalidRequest(pageContextInit: PageContextInit) {
