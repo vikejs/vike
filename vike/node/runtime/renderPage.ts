@@ -363,8 +363,10 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
 }
 function prettyUrl(url: string) {
   try {
-    return pc.bold(decodeURI(url))
-  } catch {}
+    url = decodeURI(url)
+  } catch {
+    // https://github.com/vikejs/vike/pull/2367#issuecomment-2800967564
+  }
   return pc.bold(url)
 }
 
