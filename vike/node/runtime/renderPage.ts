@@ -185,7 +185,7 @@ async function renderPageAlreadyPrepared(
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
   const pageContextNominalPageInit = await getPageContextInitEnhancedSSR(pageContextInit, globalContext, httpRequestId)
   const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-  // This where pageContext._urlRewrite is set
+  // This is where pageContext._urlRewrite is set
   assert(pageContextFromAllRewrites._urlRewrite === null || typeof pageContextFromAllRewrites._urlRewrite === 'string')
   objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   let errNominalPage: unknown
