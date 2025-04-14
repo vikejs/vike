@@ -384,9 +384,7 @@ function getPageContextHttpResponseError(
   return pageContextWithError
 }
 
-async function renderPageNominal(
-  pageContext: { _urlRewrite: null | string; _httpRequestId: number } & PageContextInitEnhanced
-) {
+async function renderPageNominal(pageContext: PageContextBegin) {
   objectAssign(pageContext, { errorWhileRendering: null })
 
   // Route
