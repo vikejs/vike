@@ -68,6 +68,13 @@ function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookName
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   return getHookFromConfigValue(configValue, hookName, hookTimeout)
 }
+function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
+  const configValue = pageConfigGlobal.configValues[hookName]
+  if (!configValue?.value) return null
+  // TO-DO/perfection: we could use the global value of configooksTimeout but it requires some non-trivial refactoring
+  const hookTimeout = getHookTimeoutDefault(hookName)
+  return getHookFromConfigValue(configValue, hookName, hookTimeout)
+}
 function getHookFromConfigValue(configValue: ConfigValue, hookName: HookName, hookTimeout: HookTimeout): Hook {
   const hookFn = configValue.value
   assert(hookFn)
@@ -76,13 +83,6 @@ function getHookFromConfigValue(configValue: ConfigValue, hookName: HookName, ho
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
   return { hookFn, hookName, hookFilePath, hookTimeout }
-}
-function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
-  const configValue = pageConfigGlobal.configValues[hookName]
-  if (!configValue?.value) return null
-  // TO-DO/perfection: we could use the global value of configooksTimeout but it requires some non-trivial refactoring
-  const hookTimeout = getHookTimeoutDefault(hookName)
-  return getHookFromConfigValue(configValue, hookName, hookTimeout)
 }
 
 function assertHook<TPageContext extends PageConfigUserFriendlyOld, THookName extends PropertyKey & HookName>(
