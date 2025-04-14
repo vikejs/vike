@@ -236,6 +236,7 @@ async function renderPageAlreadyPrepared(
         errNominalPage,
         pageContextsFromRewrite,
         pageContextInit,
+        pageContextBegin,
         pageContextNominalPageBegin,
         httpRequestId,
         pageContextErrorPageInit,
@@ -272,6 +273,7 @@ async function renderPageAlreadyPrepared(
           errErrorPage,
           pageContextsFromRewrite,
           pageContextInit,
+          pageContextBegin,
           pageContextNominalPageBegin,
           httpRequestId,
           pageContextErrorPageInit,
@@ -568,6 +570,7 @@ async function handleAbortError(
   pageContextsFromRewrite: PageContextFromRewrite[],
   // The original `pageContextInit` object passed to `renderPage(pageContextInit)`
   pageContextInit: PageContextInit,
+  pageContextBegin: PageContextBegin,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
   httpRequestId: number,
@@ -616,7 +619,7 @@ async function handleAbortError(
   if (pageContextAbort._urlRewrite) {
     const pageContextReturn = await renderPageAlreadyPrepared(
       pageContextInit,
-      pageContextNominalPageBegin,
+      pageContextBegin,
       globalContext,
       httpRequestId,
       [...pageContextsFromRewrite, pageContextAbort]
