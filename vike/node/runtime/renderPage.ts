@@ -602,7 +602,13 @@ async function handleAbortError(
           abortCall
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
-      const pageContext = createPageContext(null, false)
+      const pageContext = createPageContext(
+        /* I don't remember why we pass `null` instead of `pageContextInit`
+        pageContextInit,
+        */
+        null,
+        false
+      )
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
