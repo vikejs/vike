@@ -442,7 +442,8 @@ async function getPageContextBegin(
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
-  const pageContextBegin = await getPageContextInitEnhanced(pageContextInit, globalContext, false, {
+  const pageContextBegin = await getPageContextInitEnhanced(pageContextInit, globalContext, {
+    isPrerendering: false,
     ssr: {
       urlHandler: _urlHandler,
       isClientSideNavigation

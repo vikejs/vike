@@ -131,18 +131,24 @@ type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhan
 async function getPageContextInitEnhanced(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
-  isPrerendering: boolean,
   {
+    isPrerendering,
     ssr: { urlHandler, isClientSideNavigation } = {
       urlHandler: null,
       isClientSideNavigation: false
     }
-  }: {
-    ssr?: {
-      urlHandler: null | ((url: string) => string)
-      isClientSideNavigation: boolean
-    }
-  } = {}
+  }:
+    | {
+        isPrerendering: false
+        ssr: {
+          urlHandler: null | ((url: string) => string)
+          isClientSideNavigation: boolean
+        }
+      }
+    | {
+        isPrerendering: true
+        ssr?: undefined
+      }
 ) {
   assert(pageContextInit.urlOriginal)
 
