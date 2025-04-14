@@ -223,11 +223,9 @@ async function renderPageAlreadyPrepared(
     assert(hasProp(pageContextNominalPageBegin, 'urlOriginal', 'string'))
 
     const pageContextErrorPageInit = await getPageContextErrorPageInit(
-      pageContextInit,
-      globalContext,
+      pageContextBegin,
       errNominalPage,
-      pageContextNominalPageBegin,
-      httpRequestId
+      pageContextNominalPageBegin
     )
 
     // Handle `throw redirect()` and `throw render()` while rendering nominal page
@@ -411,13 +409,11 @@ async function renderPageNominal(pageContext: PageContextBegin) {
 
 type PageContextErrorPageInit = Awaited<ReturnType<typeof getPageContextErrorPageInit>>
 async function getPageContextErrorPageInit(
-  pageContextInit: PageContextInit,
-  globalContext: GlobalContextInternal,
+  pageContextBegin: PageContextBegin,
   errNominalPage: unknown,
-  pageContextNominalPagePartial: Record<string, unknown>,
-  httpRequestId: number
+  pageContextNominalPagePartial: Record<string, unknown>
 ) {
-  const pageContext = await getPageContextBegin(pageContextInit, globalContext, httpRequestId)
+  const pageContext = forkPageContext(pageContextBegin)
 
   assert(errNominalPage)
   objectAssign(pageContext, {
