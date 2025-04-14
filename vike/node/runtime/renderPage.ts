@@ -88,7 +88,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   assert(hasProp(pageContextInit, 'urlOriginal', 'string')) // assertUsage() already implemented at assertArguments()
   assertIsUrl(pageContextInit.urlOriginal)
   onSetupRuntime()
-  const pageContextInvalidRequest = renderInvalidRequest(pageContextInit)
+  const pageContextInvalidRequest = getPageContextInvalidRequest(pageContextInit)
   if (pageContextInvalidRequest) return pageContextInvalidRequest as any
 
   const httpRequestId = getRequestId()
@@ -646,7 +646,7 @@ async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: G
   return pageContextBegin
 }
 
-function renderInvalidRequest(pageContextInit: PageContextInit) {
+function getPageContextInvalidRequest(pageContextInit: PageContextInit) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
   if (urlPathnameWithBase.endsWith('/favicon.ico')) {
