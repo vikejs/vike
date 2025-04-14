@@ -85,7 +85,7 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
-  // We could use the global value of configooksTimeout but it requires some non-trivial refactoring
+  // TO-DO/perfection: we could use the global value of configooksTimeout but it requires some non-trivial refactoring
   const hookTimeout = getHookTimeoutDefault(hookName)
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
