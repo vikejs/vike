@@ -133,14 +133,12 @@ async function getPageContextInitEnhanced(
   globalContext: GlobalContextInternal,
   isPrerendering: boolean,
   {
-    ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
-      urlRewrite: null,
+    ssr: { urlHandler, isClientSideNavigation } = {
       urlHandler: null,
       isClientSideNavigation: false
     }
   }: {
     ssr?: {
-      urlRewrite: null | string
       urlHandler: null | ((url: string) => string)
       isClientSideNavigation: boolean
     }
@@ -169,7 +167,7 @@ async function getPageContextInitEnhanced(
     /** @experimental This is a beta feature https://vike.dev/getGlobalContext */
     globalContext: globalContext.globalContext_public,
     _pageContextInit: pageContextInit,
-    _urlRewrite: urlRewrite,
+    _urlRewrite: null,
     _urlHandler: urlHandler,
     isClientSideNavigation
   })

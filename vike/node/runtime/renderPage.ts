@@ -183,13 +183,10 @@ async function renderPageAlreadyPrepared(
     0
   )
   let pageContextNominalPageSuccess: undefined | Awaited<ReturnType<typeof renderPageNominal>>
+  const pageContextNominalPageInit = await getPageContextInitEnhancedSSR(pageContextInit, globalContext, httpRequestId)
   const pageContextFromAllRewrites = getPageContextFromAllRewrites(pageContextsFromRewrite)
-  const pageContextNominalPageInit = await getPageContextInitEnhancedSSR(
-    pageContextInit,
-    globalContext,
-    pageContextFromAllRewrites._urlRewrite,
-    httpRequestId
-  )
+  // This where pageContext._urlRewrite is set
+  assert(pageContextFromAllRewrites._urlRewrite === null || typeof pageContextFromAllRewrites._urlRewrite === 'string')
   objectAssign(pageContextNominalPageInit, pageContextFromAllRewrites)
   let errNominalPage: unknown
   {
@@ -421,7 +418,7 @@ async function getPageContextErrorPageInit(
   pageContextNominalPagePartial: Record<string, unknown>,
   httpRequestId: number
 ) {
-  const pageContext = await getPageContextInitEnhancedSSR(pageContextInit, globalContext, null, httpRequestId)
+  const pageContext = await getPageContextInitEnhancedSSR(pageContextInit, globalContext, httpRequestId)
 
   assert(errNominalPage)
   objectAssign(pageContext, {
@@ -442,13 +439,11 @@ async function getPageContextErrorPageInit(
 async function getPageContextInitEnhancedSSR(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
-  urlRewrite: null | string,
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
   const pageContextInitEnhanced = await getPageContextInitEnhanced(pageContextInit, globalContext, false, {
     ssr: {
-      urlRewrite,
       urlHandler: _urlHandler,
       isClientSideNavigation
     }
