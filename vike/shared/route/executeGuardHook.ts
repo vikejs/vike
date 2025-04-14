@@ -1,6 +1,6 @@
 export { executeGuardHook }
 
-import { getHook, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
+import { getHookFromPageContext, getHookTimeoutDefault, type Hook } from '../hooks/getHook.js'
 import { assert, assertUsage, isCallable } from './utils.js'
 import type { PageConfigUserFriendlyOld, PageFile } from '../getPageFiles.js'
 import type { PageConfigRuntime } from '../page-configs/PageConfig.js'
@@ -21,7 +21,7 @@ async function executeGuardHook<
     hook = findPageGuard(pageContext.pageId, pageContext._pageFilesAll)
   } else {
     // V1 design
-    hook = getHook(pageContext, 'guard')
+    hook = getHookFromPageContext(pageContext, 'guard')
   }
 
   if (!hook) return

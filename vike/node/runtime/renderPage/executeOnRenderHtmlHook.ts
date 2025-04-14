@@ -8,7 +8,7 @@ import {
   DocumentHtml,
   dangerouslySkipEscape
 } from '../html/renderHtml.js'
-import { getHook, type Hook } from '../../../shared/hooks/getHook.js'
+import { getHookFromPageContext, type Hook } from '../../../shared/hooks/getHook.js'
 import { assert, assertUsage, assertWarning, isObject, objectAssign, isPromise, isCallable } from '../utils.js'
 import type { PageAsset } from './getPageAssets.js'
 import { isStream } from '../html/stream.js'
@@ -88,11 +88,11 @@ function getRenderHook(pageContext: PageContextForUserConsumptionServerSide) {
   {
     let hook: null | Hook
     let hookName: undefined | HookName = undefined
-    hook = getHook(pageContext, 'onRenderHtml')
+    hook = getHookFromPageContext(pageContext, 'onRenderHtml')
     if (hook) {
       hookName = 'onRenderHtml'
     } else {
-      hook = getHook(pageContext, 'render')
+      hook = getHookFromPageContext(pageContext, 'render')
       if (hook) {
         hookName = 'render'
       }

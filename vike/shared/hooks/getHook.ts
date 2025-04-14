@@ -1,4 +1,4 @@
-export { getHook }
+export { getHookFromPageContext }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { assertHook }
@@ -10,13 +10,13 @@ export type { HookTimeout }
 export type { HooksTimeoutProvidedByUser }
 
 // TODO/v1-release: remove
-// We export for old V0.4 design which doesn't support configooksTimeout
+// We export for old V0.4 design which doesn't support config.hooksTimeout
 export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
-import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
+import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
@@ -46,54 +46,59 @@ type HookTimeout = {
 type HooksTimeoutProvidedByUser = false | Partial<Record<HookName, false | Partial<HookTimeout>>>
 type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookName, Partial<HookTimeout>>>
 
-function getHook(pageContext: PageConfigUserFriendlyOld, hookName: HookName): null | Hook {
+function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName: HookName): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hookFn = pageContext.exports[hookName]
+  if (hookFn === null) return null
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hookFn)
-  if (hookFn === null) return null
   const hookFilePath = file.filePath
   assert(hookFilePath)
-  assert(!hookFilePath.endsWith(' '))
-  assertHookFn(hookFn, { hookName, hookFilePath })
-  return { hookFn, hookName, hookFilePath, hookTimeout }
+  return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
 function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
   const configValue = getConfigValueRuntime(pageConfig, hookName)
+  if (!configValue?.value) return null
+  const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
-  if (!configValue) return null
-  const hookFn = configValue.value
-  if (!hookFn) return null
-  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
-  // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
-  assert(hookFilePath)
-  assertHookFn(hookFn, { hookName, hookFilePath })
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
-  return { hookFn, hookName, hookFilePath, hookTimeout }
+  return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
 function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
   const configValue = pageConfigGlobal.configValues[hookName]
-  if (!configValue) return null
-  const hookFn = configValue.value
-  if (!hookFn) return null
-  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
-  // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
+  if (!configValue?.value) return null
+  const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
+  const hookTimeout = getHookTimeoutGlobal(hookName)
+  return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+}
+function getHookTimeoutGlobal(hookName: HookName) {
+  // TO-DO/perfection: we could use the global value of configooksTimeout but it requires some non-trivial refactoring
+  const hookTimeout = getHookTimeoutDefault(hookName)
+  return hookTimeout
+}
+function getHook(hookFn: unknown, hookName: HookName, hookFilePath: string, hookTimeout: HookTimeout): Hook {
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
-  // We could use the global value of configooksTimeout but it requires some non-trivial refactoring
-  const hookTimeout = getHookTimeoutDefault(hookName)
-  return { hookFn, hookName, hookFilePath, hookTimeout }
+  const hook = { hookFn, hookName, hookFilePath, hookTimeout }
+  return hook
+}
+
+function getHookFromConfigValue(configValue: ConfigValue) {
+  const hookFn = configValue.value
+  assert(hookFn)
+  const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
+  return { hookFn, hookFilePath }
 }
 
 function assertHook<TPageContext extends PageConfigUserFriendlyOld, THookName extends PropertyKey & HookName>(
   pageContext: TPageContext,
   hookName: THookName
 ): asserts pageContext is TPageContext & { exports: Record<THookName, Function | undefined> } {
-  getHook(pageContext, hookName)
+  getHookFromPageContext(pageContext, hookName)
 }
 
 function assertHookFn(
@@ -102,6 +107,7 @@ function assertHookFn(
 ): asserts hookFn is HookFn {
   assert(hookName && hookFilePath)
   assert(!hookName.endsWith(')'))
+  assert(!hookFilePath.endsWith(' '))
   assertUsage(isCallable(hookFn), `Hook ${hookName}() defined by ${hookFilePath} should be a function`)
   checkType<HookFn>(hookFn)
 }

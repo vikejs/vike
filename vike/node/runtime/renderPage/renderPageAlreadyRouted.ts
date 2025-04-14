@@ -1,16 +1,12 @@
 export { renderPageAlreadyRouted }
 export { prerenderPage }
-export { getPageContextInitEnhanced }
-export { createPageContext }
 export type { PageContextAfterRender }
-export type { PageContextInitEnhanced }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
-import { assert, assertUsage, assertWarning, hasProp, normalizeHeaders, objectAssign } from '../utils.js'
+import { assert, assertUsage, hasProp, objectAssign } from '../utils.js'
 import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
-import { getPageContextUrlComputed, type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
-import type { GlobalContextInternal } from '../globalContext.js'
+import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
   loadUserFilesServerSide,
@@ -25,6 +21,7 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
+import type { PageContextServerSideCreated } from './createPageContextServerSide.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -36,7 +33,7 @@ async function renderPageAlreadyRouted<
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
     _httpRequestId: number
-  } & PageContextInitEnhanced &
+  } & PageContextServerSideCreated &
     PageContextUrlInternal &
     PageContext_loadUserFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
@@ -85,7 +82,7 @@ async function renderPageAlreadyRouted<
 }
 
 async function prerenderPage(
-  pageContext: PageContextInitEnhanced &
+  pageContext: PageContextServerSideCreated &
     PageFiles & {
       routeParams: Record<string, string>
       pageId: string
@@ -124,91 +121,4 @@ async function prerenderPage(
     const pageContextSerialized = serializePageContextClientSide(pageContext)
     return { documentHtml, pageContextSerialized, pageContext }
   }
-}
-
-type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhanced>>
-async function getPageContextInitEnhanced(
-  pageContextInit: { urlOriginal: string; headersOriginal?: unknown; headers?: unknown },
-  globalContext: GlobalContextInternal,
-  isPrerendering: boolean,
-  {
-    ssr: { urlRewrite, urlHandler, isClientSideNavigation } = {
-      urlRewrite: null,
-      urlHandler: null,
-      isClientSideNavigation: false
-    }
-  }: {
-    ssr?: {
-      urlRewrite: null | string
-      urlHandler: null | ((url: string) => string)
-      isClientSideNavigation: boolean
-    }
-  } = {}
-) {
-  assert(pageContextInit.urlOriginal)
-
-  const pageContextInitEnhanced = createPageContext(pageContextInit, isPrerendering)
-  objectAssign(pageContextInitEnhanced, pageContextInit)
-  objectAssign(pageContextInitEnhanced, {
-    _objectCreatedByVike: true,
-    // The following is defined on `pageContext` because we can eventually make these non-global
-    _baseServer: globalContext.baseServer,
-    _baseAssets: globalContext.baseAssets,
-    // TODO/now: add meta.default
-    _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
-    // TODO/soon: use GloablContext instead
-    _pageFilesAll: globalContext.pageFilesAll,
-    _pageConfigs: globalContext.pageConfigs,
-    _pageConfigGlobal: globalContext.pageConfigGlobal,
-    _allPageIds: globalContext.allPageIds,
-    _pageRoutes: globalContext.pageRoutes,
-    _onBeforeRouteHook: globalContext.onBeforeRouteHook,
-    _globalContext: globalContext,
-    // TODO/now: add PageContext['globalContext']
-    /** @experimental This is a beta feature https://vike.dev/getGlobalContext */
-    globalContext: globalContext.globalContext_public,
-    _pageContextInit: pageContextInit,
-    _urlRewrite: urlRewrite,
-    _urlHandler: urlHandler,
-    isClientSideNavigation
-  })
-
-  // pageContext.urlParsed
-  const pageContextUrlComputed = getPageContextUrlComputed(pageContextInitEnhanced)
-  objectAssign(pageContextInitEnhanced, pageContextUrlComputed)
-
-  // pageContext.headers
-  {
-    let headers: null | Record<string, string>
-    if (pageContextInit.headersOriginal) {
-      headers = normalizeHeaders(pageContextInit.headersOriginal)
-      assertUsage(
-        !('headers' in pageContextInit),
-        "You're defining pageContextInit.headersOriginal as well as pageContextInit.headers but you should only define pageContextInit.headersOriginal instead, see https://vike.dev/headers"
-      )
-    } else if (pageContextInit.headers) {
-      headers = pageContextInit.headers as Record<string, string>
-      // TODO/next-major-release: assertUsage() instead of assertWarning()
-      assertWarning(
-        false,
-        'Setting pageContextInit.headers is deprecated: set pageContextInit.headersOriginal instead, see https://vike.dev/headers',
-        { onlyOnce: true }
-      )
-    } else {
-      headers = null
-    }
-    objectAssign(pageContextInitEnhanced, { headers })
-  }
-
-  return pageContextInitEnhanced
-}
-
-function createPageContext(pageContextInit: Record<string, unknown>, isPrerendering: boolean) {
-  const pageContext = {
-    _isPageContextObject: true,
-    isClientSide: false,
-    isPrerendering
-  }
-  objectAssign(pageContext, pageContextInit)
-  return pageContext
 }

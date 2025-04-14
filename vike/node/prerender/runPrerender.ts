@@ -27,7 +27,8 @@ import {
   PROJECT_VERSION,
   preservePropertyGetters
 } from './utils.js'
-import { prerenderPage, getPageContextInitEnhanced } from '../runtime/renderPage/renderPageAlreadyRouted.js'
+import { prerenderPage } from '../runtime/renderPage/renderPageAlreadyRouted.js'
+import { createPageContextServerSide } from '../runtime/renderPage/createPageContextServerSide.js'
 import pc from '@brillout/picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../../shared/getPageFiles.js'
@@ -104,7 +105,9 @@ type Output<PageContext = PageContextPrerendered> = {
 }[]
 type FileType = 'HTML' | 'JSON'
 
-type PageContext = Awaited<ReturnType<typeof createPageContext>>
+type PageContext = Awaited<ReturnType<typeof createPageContextPrerendering>> & {
+  _urlOriginalBeforeHook?: string
+}
 
 type PrerenderOptions = APIOptions & {
   /** Initial `pageContext` values */
@@ -226,11 +229,11 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   // Create `pageContext` for each page with a static route
   const urlList = getUrlListFromPagesWithStaticRoute(globalContext, doNotPrerenderList)
-  await createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit, false)
+  await createPageContexts(urlList, prerenderContext, globalContext, concurrencyLimit, false)
 
   // Create `pageContext` for 404 page
   const urlList404 = getUrlList404(globalContext)
-  await createPageContextsForOnPrerenderStartHook(urlList404, prerenderContext, globalContext, concurrencyLimit, true)
+  await createPageContexts(urlList404, prerenderContext, globalContext, concurrencyLimit, true)
 
   // Allow user to duplicate the list of `pageContext` for i18n
   // https://vike.dev/onPrerenderStart
@@ -443,7 +446,7 @@ async function callOnBeforePrerenderStartHooks(
 
             // Add result
             const providedByHook = { hookFilePath, hookName }
-            const pageContextNew = await createPageContext(
+            const pageContextNew = await createPageContextPrerendering(
               url,
               prerenderContext,
               globalContext,
@@ -509,7 +512,7 @@ type UrlListEntry = {
   urlOriginal: string
   pageId: string
 }
-async function createPageContextsForOnPrerenderStartHook(
+async function createPageContexts(
   urlList: UrlListEntry[],
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
@@ -523,14 +526,21 @@ async function createPageContextsForOnPrerenderStartHook(
         if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
           return
         }
-        const pageContext = await createPageContext(urlOriginal, prerenderContext, globalContext, is404, pageId, null)
+        const pageContext = await createPageContextPrerendering(
+          urlOriginal,
+          prerenderContext,
+          globalContext,
+          is404,
+          pageId,
+          null
+        )
         prerenderContext.pageContexts.push(pageContext)
       })
     )
   )
 }
 
-async function createPageContext(
+async function createPageContextPrerendering(
   urlOriginal: string,
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
@@ -542,7 +552,7 @@ async function createPageContext(
     urlOriginal,
     ...prerenderContext.pageContextInit
   }
-  const pageContext = await getPageContextInitEnhanced(pageContextInit, globalContext, true)
+  const pageContext = await createPageContextServerSide(pageContextInit, globalContext, { isPrerendering: true })
   assert(pageContext.isPrerendering === true)
   objectAssign(pageContext, {
     _urlHandler: null,
