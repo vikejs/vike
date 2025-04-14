@@ -61,9 +61,7 @@ import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
 import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
 import { resolveRedirects } from './renderPage/resolveRedirects.js'
-import { PageContextBuiltInServerInternal } from '../../shared/types.js'
-import type { PageFile } from '../../shared/getPageFiles.js'
-import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import type { PageContextBuiltInServerInternal } from '../../shared/types.js'
 
 const globalObject = getGlobalObject('runtime/renderPage.ts', {
   httpRequestsCount: 0
