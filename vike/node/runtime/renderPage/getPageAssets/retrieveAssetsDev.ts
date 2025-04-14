@@ -5,7 +5,6 @@ import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
-  const visitedModules = new Set<string>()
   const assetUrls = new Set<string>()
   await Promise.all(
     clientDependencies.map(async ({ id }) => {
@@ -24,7 +23,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
         return
       }
       assert(mod, { id })
-      collectCss(mod, assetUrls, visitedModules)
+      collectCss(mod, assetUrls, new Set())
     })
   )
   return Array.from(assetUrls)
@@ -52,9 +51,6 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
       // Is this useful? Maybe for virtual modules that don't respect the \0 virtual module convention?
       styleUrls.add(`/@id/${mod.url}`)
     }
-    /* Debug:
-    logModule(mod)
-    //*/
   }
   mod.importedModules.forEach((dep) => {
     collectCss(dep, styleUrls, visitedModules, mod)
@@ -71,16 +67,3 @@ function isStyle(mod: ModuleNode) {
     (mod.id && /\?vue&type=style/.test(mod.id))
   )
 }
-
-/*
-function logModule(mod: ModuleNode) {
-  const redacted = 'redacted'
-  console.log({
-    ...mod,
-    ssrModule: redacted,
-    ssrTransformResult: redacted,
-    importedModules: redacted,
-    importers: redacted
-  })
-}
-//*/

@@ -9,6 +9,7 @@ import { assert } from './utils.js'
 // - https://github.com/remix-run/remix/issues/8830
 
 function removeFoucBuster() {
+  // In production removeFoucBuster() is expected to be have been removed by tree shaking
   assert(import.meta.env.DEV)
   let sleep = 2
   setTimeout(runClean, sleep)
