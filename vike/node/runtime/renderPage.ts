@@ -97,7 +97,7 @@ async function renderPage<PageContextUserAdded extends {}, PageContextInitUser e
   logHttpRequest(urlOriginalPretty, httpRequestId)
 
   const { pageContextReturn } = await asyncHookWrapper(httpRequestId, () =>
-    renderPageAndPrepare(pageContextInit, httpRequestId)
+    renderPagePrepare(pageContextInit, httpRequestId)
   )
 
   logHttpResponse(urlOriginalPretty, httpRequestId, pageContextReturn)
@@ -116,7 +116,7 @@ function renderPage_addAsyncHookwrapper(wrapper: typeof asyncHookWrapper) {
   asyncHookWrapper = wrapper
 }
 
-async function renderPageAndPrepare(
+async function renderPagePrepare(
   pageContextInit: PageContextInit,
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
