@@ -63,17 +63,17 @@ function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName
 function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
   const configValue = getConfigValueRuntime(pageConfig, hookName)
   if (!configValue?.value) return null
+  const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
-  const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
 function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
   const configValue = pageConfigGlobal.configValues[hookName]
   if (!configValue?.value) return null
+  const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   // TO-DO/perfection: we could use the global value of configooksTimeout but it requires some non-trivial refactoring
   const hookTimeout = getHookTimeoutDefault(hookName)
-  const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
 function getHookFromConfigValue(configValue: ConfigValue) {
