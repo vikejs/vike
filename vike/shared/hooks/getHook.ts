@@ -79,9 +79,8 @@ function getHookFromVal(configValue: ConfigValue, hookName: HookName, hooksTimeo
 }
 function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, hookName: HookNameGlobal): null | Hook {
   const configValue = pageConfigGlobal.configValues[hookName]
-  if (!configValue) return null
+  if (!configValue?.value) return null
   const hookFn = configValue.value
-  if (!hookFn) return null
   const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
   // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
   assert(hookFilePath)
