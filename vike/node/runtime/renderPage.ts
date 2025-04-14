@@ -121,12 +121,11 @@ async function renderPageAndPrepare(
   httpRequestId: number
 ): Promise<PageContextAfterRender> {
   // Invalid config
-  if (isVikeConfigInvalid) {
-    if (
-      1 < 2 // Make TS happy
-    ) {
-      return getPageContextInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
-    }
+  if (
+    isVikeConfigInvalid &&
+    (true as boolean) // Make TS happy
+  ) {
+    return getPageContextInvalidVikeConfig(isVikeConfigInvalid.err, pageContextInit, httpRequestId)
   }
 
   // Prepare context
