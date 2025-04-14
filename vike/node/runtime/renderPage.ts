@@ -650,7 +650,7 @@ function getPageContextInvalidRequest(pageContextInit: PageContextInit) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
   if (!urlPathnameWithBase.endsWith('/favicon.ico')) return
-  const pageContext = createPageContext(pageContextInit, false)
+  const pageContext = createPageContextWithoutGlobalContext(pageContextInit)
   const httpResponse = createHttpResponseFavicon404()
   objectAssign(pageContext, { httpResponse })
   checkType<PageContextAfterRender>(pageContext)
