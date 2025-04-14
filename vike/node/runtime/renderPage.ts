@@ -168,11 +168,10 @@ async function renderPagePrepare(
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
-  return await renderPageAlreadyPrepared(pageContextInit, pageContextBegin, globalContext, httpRequestId, [])
+  return await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [])
 }
 
 async function renderPageAlreadyPrepared(
-  pageContextInit: PageContextInit,
   pageContextBegin: PageContextBegin,
   globalContext: GlobalContextInternal,
   httpRequestId: number,
@@ -233,7 +232,6 @@ async function renderPageAlreadyPrepared(
       const handled = await handleAbortError(
         errNominalPage,
         pageContextsFromRewrite,
-        pageContextInit,
         pageContextBegin,
         pageContextNominalPageBegin,
         httpRequestId,
@@ -270,7 +268,6 @@ async function renderPageAlreadyPrepared(
         const handled = await handleAbortError(
           errErrorPage,
           pageContextsFromRewrite,
-          pageContextInit,
           pageContextBegin,
           pageContextNominalPageBegin,
           httpRequestId,
@@ -561,8 +558,6 @@ function normalize(url: string) {
 async function handleAbortError(
   errAbort: ErrorAbort,
   pageContextsFromRewrite: PageContextFromRewrite[],
-  // The original `pageContextInit` object passed to `renderPage(pageContextInit)`
-  pageContextInit: PageContextInit,
   pageContextBegin: PageContextBegin,
   // handleAbortError() creates a new pageContext object and we don't merge pageContextNominalPageBegin to it: we only use some pageContextNominalPageBegin information.
   pageContextNominalPageBegin: PageContextBegin,
@@ -604,13 +599,10 @@ async function handleAbortError(
   }
 
   if (pageContextAbort._urlRewrite) {
-    const pageContextReturn = await renderPageAlreadyPrepared(
-      pageContextInit,
-      pageContextBegin,
-      globalContext,
-      httpRequestId,
-      [...pageContextsFromRewrite, pageContextAbort]
-    )
+    const pageContextReturn = await renderPageAlreadyPrepared(pageContextBegin, globalContext, httpRequestId, [
+      ...pageContextsFromRewrite,
+      pageContextAbort
+    ])
     Object.assign(pageContextReturn, pageContextAbort)
     return { pageContextReturn }
   }
