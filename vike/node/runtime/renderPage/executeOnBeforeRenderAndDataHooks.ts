@@ -1,7 +1,7 @@
 export { executeOnBeforeRenderAndDataHooks }
 
 import { type PageConfigUserFriendlyOld } from '../../../shared/getPageFiles.js'
-import { getHook } from '../../../shared/hooks/getHook.js'
+import { getHookFromPageContext } from '../../../shared/hooks/getHook.js'
 import {
   preparePageContextForUserConsumptionServerSide,
   type PageContextForUserConsumptionServerSide
@@ -19,8 +19,8 @@ async function executeOnBeforeRenderAndDataHooks(
   if (pageContext._pageContextAlreadyProvidedByOnPrerenderHook) {
     return
   }
-  const dataHook = getHook(pageContext, 'data')
-  const onBeforeRenderHook = getHook(pageContext, 'onBeforeRender')
+  const dataHook = getHookFromPageContext(pageContext, 'data')
+  const onBeforeRenderHook = getHookFromPageContext(pageContext, 'onBeforeRender')
   if (!dataHook && !onBeforeRenderHook) {
     return
   }

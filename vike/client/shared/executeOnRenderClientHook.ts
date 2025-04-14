@@ -2,7 +2,7 @@ export { executeOnRenderClientHook }
 export type { PageContextBeforeRenderClient }
 
 import { assert, assertUsage, executeHook } from '../server-routing-runtime/utils.js'
-import { getHook, type Hook } from '../../shared/hooks/getHook.js'
+import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import {
   type PageContextForUserConsumptionClientSide,
@@ -29,12 +29,12 @@ async function executeOnRenderClientHook<PC extends PageContextBeforeRenderClien
   let hookName: 'render' | 'onRenderClient'
 
   {
-    const renderHook = getHook(pageContext, 'render')
+    const renderHook = getHookFromPageContext(pageContext, 'render')
     hook = renderHook
     hookName = 'render'
   }
   {
-    const renderHook = getHook(pageContext, 'onRenderClient')
+    const renderHook = getHookFromPageContext(pageContext, 'onRenderClient')
     if (renderHook) {
       hook = renderHook
       hookName = 'onRenderClient'

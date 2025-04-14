@@ -21,7 +21,7 @@ import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
-import { getHook } from '../../shared/hooks/getHook.js'
+import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
 import { preparePageContextForUserConsumptionClientSide } from '../shared/preparePageContextForUserConsumptionClientSide.js'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides.js'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl.js'
@@ -171,7 +171,7 @@ async function executeHookClientSide(
   } & PageConfigUserFriendlyOld &
     PageContext
 ) {
-  const hook = getHook(pageContext, hookName)
+  const hook = getHookFromPageContext(pageContext, hookName)
   if (!hook) {
     // No hook defined or hook's env.client is false
     return {}

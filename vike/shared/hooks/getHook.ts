@@ -1,4 +1,4 @@
-export { getHook }
+export { getHookFromPageContext }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
 export { assertHook }
@@ -46,7 +46,7 @@ type HookTimeout = {
 type HooksTimeoutProvidedByUser = false | Partial<Record<HookName, false | Partial<HookTimeout>>>
 type HooksTimeoutProvidedByUserNormalized = false | Partial<Record<HookName, Partial<HookTimeout>>>
 
-function getHook(pageContext: PageConfigUserFriendlyOld, hookName: HookName): null | Hook {
+function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName: HookName): null | Hook {
   if (!(hookName in pageContext.exports)) {
     return null
   }
@@ -93,7 +93,7 @@ function assertHook<TPageContext extends PageConfigUserFriendlyOld, THookName ex
   pageContext: TPageContext,
   hookName: THookName
 ): asserts pageContext is TPageContext & { exports: Record<THookName, Function | undefined> } {
-  getHook(pageContext, hookName)
+  getHookFromPageContext(pageContext, hookName)
 }
 
 function assertHookFn(

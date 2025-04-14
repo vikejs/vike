@@ -36,7 +36,7 @@ import {
 } from './prefetch.js'
 import { assertInfo, assertWarning, isReact } from './utils.js'
 import { type PageContextBeforeRenderClient, executeOnRenderClientHook } from '../shared/executeOnRenderClientHook.js'
-import { assertHook, getHook } from '../../shared/hooks/getHook.js'
+import { assertHook, getHookFromPageContext } from '../../shared/hooks/getHook.js'
 import { isErrorFetchingStaticAssets, loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { pushHistoryState } from './history.js'
 import {
@@ -144,7 +144,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       assertHook(previousPageContext, 'onPageTransitionStart')
       if (!globalObject.isTransitioning) {
         globalObject.isTransitioning = true
-        const onPageTransitionStartHook = getHook(previousPageContext, 'onPageTransitionStart')
+        const onPageTransitionStartHook = getHookFromPageContext(previousPageContext, 'onPageTransitionStart')
         if (onPageTransitionStartHook) {
           const hook = onPageTransitionStartHook
           const { hookFn } = hook
@@ -529,7 +529,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
     // onHydrationEnd()
     if (isFirstRender && !onRenderClientError) {
       assertHook(pageContext, 'onHydrationEnd')
-      const hook = getHook(pageContext, 'onHydrationEnd')
+      const hook = getHookFromPageContext(pageContext, 'onHydrationEnd')
       if (hook) {
         const { hookFn } = hook
         try {
@@ -550,7 +550,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
       globalObject.isTransitioning = undefined
       assert(previousPageContext)
       assertHook(previousPageContext, 'onPageTransitionEnd')
-      const hook = getHook(previousPageContext, 'onPageTransitionEnd')
+      const hook = getHookFromPageContext(previousPageContext, 'onPageTransitionEnd')
       if (hook) {
         const { hookFn } = hook
         try {
