@@ -76,6 +76,12 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   const hookTimeout = getHookTimeoutDefault(hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
 }
+function getHook(hookFn: unknown, hookName: HookName, hookFilePath: string, hookTimeout: HookTimeout): Hook {
+  assertHookFn(hookFn, { hookName, hookFilePath })
+  const hook = { hookFn, hookName, hookFilePath, hookTimeout }
+  return hook
+}
+
 function getHookFromConfigValue(configValue: ConfigValue) {
   const hookFn = configValue.value
   assert(hookFn)
@@ -83,11 +89,6 @@ function getHookFromConfigValue(configValue: ConfigValue) {
   // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
   assert(hookFilePath)
   return { hookFn, hookFilePath }
-}
-function getHook(hookFn: unknown, hookName: HookName, hookFilePath: string, hookTimeout: HookTimeout): Hook {
-  assertHookFn(hookFn, { hookName, hookFilePath })
-  const hook = { hookFn, hookName, hookFilePath, hookTimeout }
-  return hook
 }
 
 function assertHook<TPageContext extends PageConfigUserFriendlyOld, THookName extends PropertyKey & HookName>(
