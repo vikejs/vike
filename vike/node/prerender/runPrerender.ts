@@ -104,7 +104,7 @@ type Output<PageContext = PageContextPrerendered> = {
 }[]
 type FileType = 'HTML' | 'JSON'
 
-type PageContext = Awaited<ReturnType<typeof createPageContext>> & {
+type PageContext = Awaited<ReturnType<typeof createPageContextPrerendering>> & {
   _urlOriginalBeforeHook?: string
 }
 
@@ -445,7 +445,7 @@ async function callOnBeforePrerenderStartHooks(
 
             // Add result
             const providedByHook = { hookFilePath, hookName }
-            const pageContextNew = await createPageContext(
+            const pageContextNew = await createPageContextPrerendering(
               url,
               prerenderContext,
               globalContext,
@@ -525,14 +525,21 @@ async function createPageContexts(
         if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
           return
         }
-        const pageContext = await createPageContext(urlOriginal, prerenderContext, globalContext, is404, pageId, null)
+        const pageContext = await createPageContextPrerendering(
+          urlOriginal,
+          prerenderContext,
+          globalContext,
+          is404,
+          pageId,
+          null
+        )
         prerenderContext.pageContexts.push(pageContext)
       })
     )
   )
 }
 
-async function createPageContext(
+async function createPageContextPrerendering(
   urlOriginal: string,
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
