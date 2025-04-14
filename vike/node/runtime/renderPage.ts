@@ -27,7 +27,6 @@ import {
   removeUrlOrigin,
   setUrlOrigin,
   isUri,
-  type UrlPublic,
   getUrlPretty
 } from './utils.js'
 import {
