@@ -32,9 +32,9 @@ async function createPageContextServerSide(
 ) {
   assert(pageContextInit.urlOriginal)
 
-  const pageContextInitEnhanced = createPageContext(pageContextInit, isPrerendering)
-  objectAssign(pageContextInitEnhanced, pageContextInit)
-  objectAssign(pageContextInitEnhanced, {
+  const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
+  objectAssign(pageContextCreated, pageContextInit)
+  objectAssign(pageContextCreated, {
     _objectCreatedByVike: true,
     // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,
@@ -59,8 +59,8 @@ async function createPageContextServerSide(
   })
 
   // pageContext.urlParsed
-  const pageContextUrlComputed = getPageContextUrlComputed(pageContextInitEnhanced)
-  objectAssign(pageContextInitEnhanced, pageContextUrlComputed)
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
+  objectAssign(pageContextCreated, pageContextUrlComputed)
 
   // pageContext.headers
   {
@@ -82,10 +82,10 @@ async function createPageContextServerSide(
     } else {
       headers = null
     }
-    objectAssign(pageContextInitEnhanced, { headers })
+    objectAssign(pageContextCreated, { headers })
   }
 
-  return pageContextInitEnhanced
+  return pageContextCreated
 }
 function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit) {
   const pageContext = createPageContext(pageContextInit, false)
