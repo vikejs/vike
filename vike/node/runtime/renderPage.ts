@@ -495,9 +495,10 @@ async function normalizeUrl(
   globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
+  const pageContext = forkPageContext(pageContextBegin)
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
-  const { urlOriginal } = pageContextBegin
+  const { urlOriginal } = pageContext
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
   if (isPageContextRequest) return null
   const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash ?? false, globalContext.baseServer)
@@ -507,9 +508,9 @@ async function normalizeUrl(
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContextBegin)
-  objectAssign(pageContextBegin, { httpResponse })
-  return pageContextBegin
+  const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContext)
+  objectAssign(pageContext, { httpResponse })
+  return pageContext
 }
 
 async function getPermanentRedirect(
@@ -517,7 +518,8 @@ async function getPermanentRedirect(
   globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
-  const urlWithoutBase = removeBaseServer(pageContextBegin.urlOriginal, globalContext.baseServer)
+  const pageContext = forkPageContext(pageContextBegin)
+  const urlWithoutBase = removeBaseServer(pageContext.urlOriginal, globalContext.baseServer)
   let origin: null | string = null
   let urlTargetExternal: null | string = null
   let urlTarget = modifyUrlPathname(urlWithoutBase, (urlPathname) => {
@@ -546,16 +548,16 @@ async function getPermanentRedirect(
     }
     if (normalize(urlTarget) === normalize(urlWithoutBase)) return null
     if (!originChanged) urlTarget = prependBase(urlTarget, globalContext.baseServer)
-    assert(urlTarget !== pageContextBegin.urlOriginal)
+    assert(urlTarget !== pageContext.urlOriginal)
   }
   logRuntimeInfo?.(
     `Permanent redirection defined by config.redirects (https://vike.dev/redirects)`,
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, pageContextBegin)
-  objectAssign(pageContextBegin, { httpResponse })
-  return pageContextBegin
+  const httpResponse = createHttpResponseRedirect({ url: urlTarget, statusCode: 301 }, pageContext)
+  objectAssign(pageContext, { httpResponse })
+  return pageContext
 }
 function normalize(url: string) {
   return url || '/'
@@ -634,17 +636,18 @@ async function handleAbortError(
 }
 
 async function checkBaseUrl(pageContextBegin: PageContextBegin, globalContext: GlobalContextInternal) {
+  const pageContext = forkPageContext(pageContextBegin)
   const { baseServer } = globalContext
-  const { urlOriginal } = pageContextBegin
+  const { urlOriginal } = pageContext
   const { isBaseMissing } = parseUrl(urlOriginal, baseServer)
   if (!isBaseMissing) return
   const httpResponse = createHttpResponseBaseIsMissing(urlOriginal, baseServer)
-  objectAssign(pageContextBegin, {
+  objectAssign(pageContext, {
     httpResponse,
     isBaseMissing: true as const
   })
-  checkType<PageContextAfterRender>(pageContextBegin)
-  return pageContextBegin
+  checkType<PageContextAfterRender>(pageContext)
+  return pageContext
 }
 
 function getPageContextInvalidRequest(pageContextInit: PageContextInit) {
