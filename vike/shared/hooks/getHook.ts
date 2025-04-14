@@ -65,9 +65,9 @@ function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookName
   const configValue = getConfigValueRuntime(pageConfig, hookName)
   if (!configValue?.value) return null
   const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
-  return getHookFromVal(configValue, hookName, hooksTimeout)
+  return getHookFromConfigValue(configValue, hookName, hooksTimeout)
 }
-function getHookFromVal(configValue: ConfigValue, hookName: HookName, hooksTimeout: unknown): Hook {
+function getHookFromConfigValue(configValue: ConfigValue, hookName: HookName, hooksTimeout: unknown): Hook {
   const hookFn = configValue.value
   assert(hookFn)
   const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
