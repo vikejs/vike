@@ -158,7 +158,7 @@ async function renderPagePrepare(
 
   // Normalize URL
   {
-    const pageContextHttpResponse = await normalizeUrl(pageContextInit, globalContext, httpRequestId)
+    const pageContextHttpResponse = await normalizeUrl(pageContextBegin, globalContext, httpRequestId)
     if (pageContextHttpResponse) return pageContextHttpResponse
   }
 
@@ -490,13 +490,13 @@ function assertIsNotViteRequest(urlPathname: string, urlOriginal: string) {
 }
 
 async function normalizeUrl(
-  pageContextInit: PageContextInit,
+  pageContextBegin: PageContextBegin,
   globalContext: GlobalContextInternal,
   httpRequestId: number
 ) {
   const { trailingSlash, disableUrlNormalization } = globalContext.config
   if (disableUrlNormalization) return null
-  const { urlOriginal } = pageContextInit
+  const { urlOriginal } = pageContextBegin
   const { isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
   if (isPageContextRequest) return null
   const urlNormalized = normalizeUrlPathname(urlOriginal, trailingSlash ?? false, globalContext.baseServer)
@@ -506,10 +506,9 @@ async function normalizeUrl(
     httpRequestId,
     'info'
   )
-  const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContextInit)
-  const pageContextHttpResponse = createPageContext(pageContextInit, false)
-  objectAssign(pageContextHttpResponse, { httpResponse })
-  return pageContextHttpResponse
+  const httpResponse = createHttpResponseRedirect({ url: urlNormalized, statusCode: 301 }, pageContextBegin)
+  objectAssign(pageContextBegin, { httpResponse })
+  return pageContextBegin
 }
 
 async function getPermanentRedirect(
