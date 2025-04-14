@@ -4,9 +4,9 @@ export type { PageContextInit }
 export type { PageContextBegin }
 
 import {
-  getPageContextInitEnhanced,
   renderPageAlreadyRouted,
-  createPageContext
+  getPageContextInitEnhanced,
+  createPageContextWithoutGlobalContext
 } from './renderPage/renderPageAlreadyRouted.js'
 import { route } from '../../shared/route/index.js'
 import {
@@ -661,10 +661,5 @@ function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageCont
 function forkPageContext(pageContextBegin: PageContextBegin) {
   const pageContext = {}
   objectAssign(pageContext, pageContextBegin, true)
-  return pageContext
-}
-
-function createPageContextWithoutGlobalContext(pageContextInit: PageContextInit) {
-  const pageContext = createPageContext(pageContextInit, false)
   return pageContext
 }

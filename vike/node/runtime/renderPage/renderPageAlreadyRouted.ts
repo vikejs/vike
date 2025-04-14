@@ -1,7 +1,7 @@
 export { renderPageAlreadyRouted }
 export { prerenderPage }
 export { getPageContextInitEnhanced }
-export { createPageContext }
+export { createPageContextWithoutGlobalContext }
 export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
@@ -207,6 +207,10 @@ async function getPageContextInitEnhanced(
   return pageContextInitEnhanced
 }
 
+function createPageContextWithoutGlobalContext(pageContextInit: PageContextInit) {
+  const pageContext = createPageContext(pageContextInit, false)
+  return pageContext
+}
 function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean) {
   const pageContext = {
     _isPageContextObject: true,
