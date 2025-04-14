@@ -362,7 +362,12 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
   logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')
 }
 function prettyUrl(url: string) {
-  return pc.bold(decodeURI(url))
+  try {
+    url = decodeURI(url)
+  } catch {
+    // https://github.com/vikejs/vike/pull/2367#issuecomment-2800967564
+  }
+  return pc.bold(url)
 }
 
 function getPageContextHttpResponseError(
