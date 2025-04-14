@@ -228,11 +228,11 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   // Create `pageContext` for each page with a static route
   const urlList = getUrlListFromPagesWithStaticRoute(globalContext, doNotPrerenderList)
-  await createPageContextsForOnPrerenderStartHook(urlList, prerenderContext, globalContext, concurrencyLimit, false)
+  await createPageContexts(urlList, prerenderContext, globalContext, concurrencyLimit, false)
 
   // Create `pageContext` for 404 page
   const urlList404 = getUrlList404(globalContext)
-  await createPageContextsForOnPrerenderStartHook(urlList404, prerenderContext, globalContext, concurrencyLimit, true)
+  await createPageContexts(urlList404, prerenderContext, globalContext, concurrencyLimit, true)
 
   // Allow user to duplicate the list of `pageContext` for i18n
   // https://vike.dev/onPrerenderStart
@@ -511,7 +511,7 @@ type UrlListEntry = {
   urlOriginal: string
   pageId: string
 }
-async function createPageContextsForOnPrerenderStartHook(
+async function createPageContexts(
   urlList: UrlListEntry[],
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
