@@ -58,7 +58,6 @@ function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName
   if (hookFn === null) return null
   const hookFilePath = file.filePath
   assert(hookFilePath)
-  assert(!hookFilePath.endsWith(' '))
   assertHookFn(hookFn, { hookName, hookFilePath })
   return { hookFn, hookName, hookFilePath, hookTimeout }
 }
@@ -102,6 +101,7 @@ function assertHookFn(
 ): asserts hookFn is HookFn {
   assert(hookName && hookFilePath)
   assert(!hookName.endsWith(')'))
+  assert(!hookFilePath.endsWith(' '))
   assertUsage(isCallable(hookFn), `Hook ${hookName}() defined by ${hookFilePath} should be a function`)
   checkType<HookFn>(hookFn)
 }
