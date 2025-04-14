@@ -595,7 +595,7 @@ async function handleAbortError(
           abortCall
         )} but you didn't define an error page, make sure to define one https://vike.dev/error-page`
       )
-      const pageContext = createPageContext(pageContextInit, false)
+      const pageContext = forkPageContext(pageContextBegin)
       objectAssign(pageContext, { pageId: errorPageId })
       objectAssign(pageContext, pageContextAbort)
       objectAssign(pageContext, pageContextErrorPageInit, true)
@@ -622,7 +622,7 @@ async function handleAbortError(
     return { pageContextReturn }
   }
   if (pageContextAbort._urlRedirect) {
-    const pageContextReturn = createPageContext(pageContextInit, false)
+    const pageContextReturn = forkPageContext(pageContextBegin)
     objectAssign(pageContextReturn, pageContextAbort)
     const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextInit)
     objectAssign(pageContextReturn, { httpResponse })
