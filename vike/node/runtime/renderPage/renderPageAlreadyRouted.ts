@@ -3,7 +3,6 @@ export { prerenderPage }
 export { getPageContextInitEnhanced }
 export { createPageContext }
 export type { PageContextAfterRender }
-export type { PageContextInitEnhanced }
 
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'

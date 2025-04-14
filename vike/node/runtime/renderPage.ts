@@ -5,7 +5,6 @@ export type { PageContextInit }
 import {
   getPageContextInitEnhanced,
   renderPageAlreadyRouted,
-  PageContextInitEnhanced,
   createPageContext
 } from './renderPage/renderPageAlreadyRouted.js'
 import { route } from '../../shared/route/index.js'
