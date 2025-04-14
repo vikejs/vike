@@ -6,7 +6,7 @@ export type { PageContextBegin }
 import {
   renderPageAlreadyRouted,
   createPageContextServerSide,
-  createPageContextWithoutGlobalContext
+  createPageContextServerSideWithoutGlobalContext
 } from './renderPage/renderPageAlreadyRouted.js'
 import { route } from '../../shared/route/index.js'
 import {
@@ -372,7 +372,7 @@ function getPageContextHttpResponseErrorWithoutGlobalContext(
   err: unknown,
   pageContextInit: PageContextInit
 ): PageContextAfterRender {
-  const pageContextWithError = createPageContextWithoutGlobalContext(pageContextInit)
+  const pageContextWithError = createPageContextServerSideWithoutGlobalContext(pageContextInit)
   const httpResponse = createHttpResponseErrorWithoutGlobalContext()
   objectAssign(pageContextWithError, {
     httpResponse,
@@ -644,7 +644,7 @@ function getPageContextInvalidRequest(pageContextInit: PageContextInit) {
   const urlPathnameWithBase = parseUrl(pageContextInit.urlOriginal, '/').pathname
   assertIsNotViteRequest(urlPathnameWithBase, pageContextInit.urlOriginal)
   if (!urlPathnameWithBase.endsWith('/favicon.ico')) return
-  const pageContext = createPageContextWithoutGlobalContext(pageContextInit)
+  const pageContext = createPageContextServerSideWithoutGlobalContext(pageContextInit)
   const httpResponse = createHttpResponseFavicon404()
   objectAssign(pageContext, { httpResponse })
   checkType<PageContextAfterRender>(pageContext)
