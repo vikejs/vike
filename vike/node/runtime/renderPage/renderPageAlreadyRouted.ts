@@ -21,7 +21,7 @@ import { preparePageContextForUserConsumptionServerSide } from './preparePageCon
 import { executeGuardHook } from '../../../shared/route/executeGuardHook.js'
 import pc from '@brillout/picocolors'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
-import type { PageContextInitEnhanced } from './createPageContextServerSide.js'
+import type { PageContextServerSideCreated } from './createPageContextServerSide.js'
 
 type PageContextAfterRender = { httpResponse: HttpResponse; errorWhileRendering: null | Error }
 
@@ -33,7 +33,7 @@ async function renderPageAlreadyRouted<
     routeParams: Record<string, string>
     errorWhileRendering: null | Error
     _httpRequestId: number
-  } & PageContextInitEnhanced &
+  } & PageContextServerSideCreated &
     PageContextUrlInternal &
     PageContext_loadUserFilesServerSide
 >(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
@@ -82,7 +82,7 @@ async function renderPageAlreadyRouted<
 }
 
 async function prerenderPage(
-  pageContext: PageContextInitEnhanced &
+  pageContext: PageContextServerSideCreated &
     PageFiles & {
       routeParams: Record<string, string>
       pageId: string
