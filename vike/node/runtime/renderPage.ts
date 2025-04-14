@@ -362,7 +362,10 @@ function logHttpResponse(urlOriginalPretty: string, httpRequestId: number, pageC
   logRuntimeInfo?.(msg, httpRequestId, isNominal ? 'info' : 'error')
 }
 function prettyUrl(url: string) {
-  return pc.bold(decodeURI(url))
+  try {
+    return pc.bold(decodeURI(url))
+  } catch {}
+  return pc.bold(url)
 }
 
 function getPageContextHttpResponseError(
