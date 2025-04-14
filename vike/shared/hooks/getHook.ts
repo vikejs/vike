@@ -81,6 +81,7 @@ function getHookTimeoutGlobal(hookName: HookName) {
   return hookTimeout
 }
 function getHook(hookFn: unknown, hookName: HookName, hookFilePath: string, hookTimeout: HookTimeout): Hook {
+  assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
   const hook = { hookFn, hookName, hookFilePath, hookTimeout }
   return hook
@@ -90,8 +91,6 @@ function getHookFromConfigValue(configValue: ConfigValue) {
   const hookFn = configValue.value
   assert(hookFn)
   const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
-  // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
-  assert(hookFilePath)
   return { hookFn, hookFilePath }
 }
 
