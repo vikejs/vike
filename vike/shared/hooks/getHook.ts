@@ -53,9 +53,9 @@ function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName
   const { hooksTimeout } = pageContext.config
   const hookTimeout = getHookTimeout(hooksTimeout, hookName)
   const hookFn = pageContext.exports[hookName]
+  if (hookFn === null) return null
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hookFn)
-  if (hookFn === null) return null
   const hookFilePath = file.filePath
   assert(hookFilePath)
   assertHookFn(hookFn, { hookName, hookFilePath })
