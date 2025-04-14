@@ -173,11 +173,12 @@ async function renderPagePrepare(
 
 async function renderPageAlreadyPrepared(
   pageContextInit: PageContextInit,
-  pageContextNominalPageBegin: PageContextBegin,
+  pageContextBegin: PageContextBegin,
   globalContext: GlobalContextInternal,
   httpRequestId: number,
   pageContextsFromRewrite: PageContextFromRewrite[]
 ): Promise<PageContextAfterRender> {
+  const pageContextNominalPageBegin = forkPageContext(pageContextBegin)
   assertNoInfiniteAbortLoop(
     pageContextsFromRewrite.length,
     // There doesn't seem to be a way to count the number of HTTP redirects (vike don't have access to the HTTP request headers/cookies)
@@ -663,4 +664,11 @@ function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageCont
   logRuntimeInfo?.(pc.bold(pc.red('Error while loading a Vike config file, see error above.')), httpRequestId, 'error')
   const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
   return pageContextWithError
+}
+
+// Create pageContext forks to avoid leaks: upon an error (bug or abort) a brand new pageContext object is created, in order to avoid previous pageContext modifications that are now obsolete to leak to the new pageContext object.
+function forkPageContext(pageContextBegin: PageContextBegin) {
+  const pageContext = {}
+  objectAssign(pageContext, pageContextBegin, true)
+  return pageContext
 }
