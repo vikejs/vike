@@ -10,7 +10,7 @@ export type { HookTimeout }
 export type { HooksTimeoutProvidedByUser }
 
 // TODO/v1-release: remove
-// We export for old V0.4 design which doesn't support configooksTimeout
+// We export for old V0.4 design which doesn't support config.hooksTimeout
 export { getHookTimeoutDefault }
 
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
