@@ -1,6 +1,7 @@
 export { renderPage }
 export { renderPage_addAsyncHookwrapper }
 export type { PageContextInit }
+export type { PageContextBegin }
 
 import {
   getPageContextInitEnhanced,
@@ -624,7 +625,7 @@ async function handleAbortError(
   if (pageContextAbort._urlRedirect) {
     const pageContextReturn = forkPageContext(pageContextBegin)
     objectAssign(pageContextReturn, pageContextAbort)
-    const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextInit)
+    const httpResponse = createHttpResponseRedirect(pageContextAbort._urlRedirect, pageContextBegin)
     objectAssign(pageContextReturn, { httpResponse })
     return { pageContextReturn }
   }
