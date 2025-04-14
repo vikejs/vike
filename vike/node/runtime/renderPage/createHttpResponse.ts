@@ -1,6 +1,7 @@
 export { createHttpResponsePage }
 export { createHttpResponsePageContextJson }
 export { createHttpResponseError }
+export { createHttpResponseErrorWithoutGlobalContext }
 export { createHttpResponseRedirect }
 export { createHttpResponseFavicon404 }
 export { createHttpResponseBaseIsMissing }
@@ -110,16 +111,11 @@ function createHttpResponseBaseIsMissing(urlOriginal: string, baseServer: string
   )
   return httpResponse
 }
-function createHttpResponseError(
-  pageContext: null | {
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
-  }
-): HttpResponse {
+function createHttpResponseError(pageContext: {
+  _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfigRuntime[]
+}) {
   const reason = (() => {
-    if (!pageContext) {
-      return 'no error page (https://vike.dev/error-page) could be rendered' as const
-    }
     const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
     if (errorPageId) {
       return "the error page (https://vike.dev/error-page) couldn't be rendered (for example if an error occurred while rendering the error page)" as const
@@ -127,6 +123,13 @@ function createHttpResponseError(
       return 'no error page (https://vike.dev/error-page) is defined, make sure to create one' as const
     }
   })()
+  return createHttpResponseError_(reason)
+}
+function createHttpResponseErrorWithoutGlobalContext() {
+  const reason = 'no error page (https://vike.dev/error-page) could be rendered' as const
+  return createHttpResponseError_(reason)
+}
+function createHttpResponseError_(reason: string): HttpResponse {
   const httpResponse = createHttpResponse(
     500,
     'text/html;charset=utf-8',

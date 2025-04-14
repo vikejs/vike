@@ -40,11 +40,12 @@ import {
 import { getGlobalContextInternal, initGlobalContext_renderPage, type GlobalContextInternal } from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
+  type HttpResponse,
   createHttpResponseFavicon404,
   createHttpResponseRedirect,
   createHttpResponsePageContextJson,
-  HttpResponse,
   createHttpResponseError,
+  createHttpResponseErrorWithoutGlobalContext,
   createHttpResponseBaseIsMissing
 } from './renderPage/createHttpResponse.js'
 import { logRuntimeError, logRuntimeInfo } from './renderPage/loggerRuntime.js'
@@ -139,7 +140,7 @@ async function renderPagePrepare(
     // initGlobalContext_renderPage() doens't call any user hook => err isn't thrown from user code.
     assert(!isAbortError(err))
     logRuntimeError(err, httpRequestId)
-    const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
+    const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
     return pageContextWithError
   }
   if (isVikeConfigInvalid) {
@@ -292,11 +293,7 @@ async function renderPageAlreadyPrepared(
             )} doesn't occur while the error page is being rendered.`,
             { onlyOnce: false }
           )
-          const pageContextHttpWithError = getPageContextHttpResponseError(
-            errNominalPage,
-            pageContextInit,
-            pageContextErrorPageInit
-          )
+          const pageContextHttpWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
           return pageContextHttpWithError
         }
         // `throw redirect()` / `throw render(url)`
@@ -305,11 +302,7 @@ async function renderPageAlreadyPrepared(
       if (isNewError(errErrorPage, errNominalPage)) {
         logRuntimeError(errErrorPage, httpRequestId)
       }
-      const pageContextWithError = getPageContextHttpResponseError(
-        errNominalPage,
-        pageContextInit,
-        pageContextErrorPageInit
-      )
+      const pageContextWithError = getPageContextHttpResponseError(errNominalPage, pageContextBegin)
       return pageContextWithError
     }
     return pageContextErrorPage
@@ -370,16 +363,21 @@ function prettyUrl(url: string) {
   return pc.bold(url)
 }
 
-function getPageContextHttpResponseError(
+function getPageContextHttpResponseError(err: unknown, pageContextBegin: PageContextBegin): PageContextAfterRender {
+  const pageContextWithError = forkPageContext(pageContextBegin)
+  const httpResponse = createHttpResponseError(pageContextBegin)
+  objectAssign(pageContextWithError, {
+    httpResponse,
+    errorWhileRendering: err
+  })
+  return pageContextWithError
+}
+function getPageContextHttpResponseErrorWithoutGlobalContext(
   err: unknown,
-  pageContextInit: PageContextInit,
-  pageContext: null | {
-    _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfigRuntime[]
-  }
+  pageContextInit: PageContextInit
 ): PageContextAfterRender {
-  const pageContextWithError = createPageContext(pageContextInit, false)
-  const httpResponse = createHttpResponseError(pageContext)
+  const pageContextWithError = createPageContextWithoutGlobalContext(pageContextInit)
+  const httpResponse = createHttpResponseErrorWithoutGlobalContext()
   objectAssign(pageContextWithError, {
     httpResponse,
     errorWhileRendering: err
@@ -663,7 +661,7 @@ function getPageContextInvalidRequest(pageContextInit: PageContextInit) {
 
 function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageContextInit, httpRequestId: number) {
   logRuntimeInfo?.(pc.bold(pc.red('Error while loading a Vike config file, see error above.')), httpRequestId, 'error')
-  const pageContextWithError = getPageContextHttpResponseError(err, pageContextInit, null)
+  const pageContextWithError = getPageContextHttpResponseErrorWithoutGlobalContext(err, pageContextInit)
   return pageContextWithError
 }
 
@@ -671,5 +669,10 @@ function getPageContextInvalidVikeConfig(err: unknown, pageContextInit: PageCont
 function forkPageContext(pageContextBegin: PageContextBegin) {
   const pageContext = {}
   objectAssign(pageContext, pageContextBegin, true)
+  return pageContext
+}
+
+function createPageContextWithoutGlobalContext(pageContextInit: PageContextInit) {
+  const pageContext = createPageContext(pageContextInit, false)
   return pageContext
 }
