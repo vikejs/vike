@@ -1,6 +1,6 @@
 export { renderPageAlreadyRouted }
 export { prerenderPage }
-export { getPageContextInitEnhanced }
+export { createPageContextServerSide }
 export { createPageContextWithoutGlobalContext }
 export type { PageContextAfterRender }
 
@@ -126,8 +126,8 @@ async function prerenderPage(
   }
 }
 
-type PageContextInitEnhanced = Awaited<ReturnType<typeof getPageContextInitEnhanced>>
-async function getPageContextInitEnhanced(
+type PageContextInitEnhanced = Awaited<ReturnType<typeof createPageContextServerSide>>
+async function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
   {

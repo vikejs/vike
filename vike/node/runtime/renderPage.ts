@@ -5,7 +5,7 @@ export type { PageContextBegin }
 
 import {
   renderPageAlreadyRouted,
-  getPageContextInitEnhanced,
+  createPageContextServerSide,
   createPageContextWithoutGlobalContext
 } from './renderPage/renderPageAlreadyRouted.js'
 import { route } from '../../shared/route/index.js'
@@ -437,7 +437,7 @@ async function getPageContextBegin(
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
-  const pageContextBegin = await getPageContextInitEnhanced(pageContextInit, globalContext, {
+  const pageContextBegin = await createPageContextServerSide(pageContextInit, globalContext, {
     isPrerendering: false,
     ssr: {
       urlHandler: _urlHandler,
