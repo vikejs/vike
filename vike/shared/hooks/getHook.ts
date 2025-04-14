@@ -16,7 +16,7 @@ export { getHookTimeoutDefault }
 import { getGlobalObject } from '../../utils/getGlobalObject.js'
 import type { PageConfigUserFriendlyOld } from '../getPageFiles.js'
 import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Config.js'
-import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
+import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
 import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
@@ -63,10 +63,13 @@ function getHookFromPageContext(pageContext: PageConfigUserFriendlyOld, hookName
 }
 function getHookFromPageConfig(pageConfig: PageConfigRuntime, hookName: HookNamePage): null | Hook {
   const configValue = getConfigValueRuntime(pageConfig, hookName)
+  if (!configValue?.value) return null
   const hooksTimeout = getConfigValueRuntime(pageConfig, 'hooksTimeout')?.value
-  if (!configValue) return null
+  return getHookFromVal(configValue, hookName, hooksTimeout)
+}
+function getHookFromVal(configValue: ConfigValue, hookName: HookName, hooksTimeout: unknown): Hook {
   const hookFn = configValue.value
-  if (!hookFn) return null
+  assert(hookFn)
   const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData)
   // hook isn't a computed nor a cumulative config => hookFilePath should always be defined
   assert(hookFilePath)
