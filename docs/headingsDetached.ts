@@ -5,15 +5,20 @@ import type { Config, HeadingDetachedDefinition } from '@brillout/docpress'
 
 const categories: Config['categories'] = [
   'Guides',
-  'Deploy',
-  'Tool Integration',
-  'Integration',
   'API',
   'Glossary',
-  'Get Started',
+
+  'Deploy',
+  'Integration',
+
   'Overview',
+  'Get Started',
+
+  'Guides (more)',
+
   'Blog',
-  { name: 'Migration', hide: true },
+  'Migration',
+
   { name: 'Work-in-progress', hide: true },
   { name: 'Deprecated', hide: true },
   { name: 'Page Redirection', hide: true }
@@ -272,7 +277,7 @@ function tools(): HeadingDetachedDefinition[] {
       title: 'React Router',
       url: '/react-router'
     }
-  ].map((h) => ({ ...h, category: 'Tool Guide' }))
+  ].map((h) => ({ ...h, category: 'Guide (tools)' }))
 }
 
 function misc(): HeadingDetachedDefinition[] {
@@ -487,7 +492,7 @@ function guides(): HeadingDetachedDefinition[] {
       url: '/render-modes',
       sectionTitles: ['HTML-only', 'SPA', 'SSR']
     }
-  ].map((h) => ({ ...h, category: 'Guides' }))
+  ].map((h) => ({ ...h, category: 'Guides (more)' }))
 }
 
 function blog(): HeadingDetachedDefinition[] {
