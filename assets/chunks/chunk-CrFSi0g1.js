@@ -1,1 +1,0 @@
-import{j as t}from"./chunk-BfcJKt59.js";function i({children:s}){return t.jsxs("p",{children:["You can use ",t.jsx(a,{})," to scaffold a Vike app that uses ",s,"."]})}function a(){return t.jsx("a",{href:"https://batijs.dev/",children:"Bati"})}export{i as U};
