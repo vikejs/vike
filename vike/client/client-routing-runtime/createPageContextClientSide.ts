@@ -1,4 +1,4 @@
-export { createPageContext }
+export { createPageContextClientSide }
 
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
@@ -11,7 +11,7 @@ import { assert, isBaseServer, objectAssign } from './utils.js'
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-routing'
 const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
 
-async function createPageContext(urlOriginal: string) {
+async function createPageContextClientSide(urlOriginal: string) {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageFilesAll,
     pageConfigs,

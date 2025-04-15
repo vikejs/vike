@@ -25,7 +25,7 @@ import {
   setPageContextInitIsPassedToClient,
   PageContextFromClientHooks
 } from './getPageContextFromHooks.js'
-import { createPageContext } from './createPageContext.js'
+import { createPageContextClientSide } from './createPageContextClientSide.js'
 import {
   addLinkPrefetchHandlers,
   addLinkPrefetchHandlers_unwatch,
@@ -302,7 +302,7 @@ async function renderPageClientSide(renderArgs: RenderArgs): Promise<void> {
   }
 
   async function getPageContextBegin(isForErrorPage: boolean) {
-    const pageContext = await createPageContext(urlOriginal)
+    const pageContext = await createPageContextClientSide(urlOriginal)
     objectAssign(pageContext, {
       isBackwardNavigation,
       isClientSideNavigation,
