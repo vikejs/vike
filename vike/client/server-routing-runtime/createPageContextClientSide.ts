@@ -26,7 +26,7 @@ async function createPageContextClientSide() {
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
   objectAssign(pageContextCreated, await loadPageUserFiles(pageContextCreated.pageId, pageContextCreated))
 
-  const pageContextAugmented = createPageContextShared(pageContextCreated)
+  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
   augmentType(pageContextCreated, pageContextAugmented)
 
   assertPristineUrl()

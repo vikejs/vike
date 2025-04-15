@@ -25,7 +25,7 @@ async function createPageContextClientSide(urlOriginal: string) {
   const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
   objectAssign(pageContextCreated, pageContextUrlComputed)
 
-  const pageContextAugmented = createPageContextShared(pageContextCreated)
+  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
   augmentType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated
