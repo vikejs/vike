@@ -1,4 +1,4 @@
-export function objectReplace(obj: object, objNew: object, except?: string[]) {
+export function objectReplace<T extends object>(obj: T, objNew: T, except?: string[]) {
   Object.keys(obj)
     .filter((key) => !except?.includes(key))
     .forEach((key) => delete obj[key as keyof typeof obj])
