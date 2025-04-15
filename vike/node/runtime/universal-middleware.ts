@@ -5,7 +5,13 @@ export default async function universalVikeHandler(
   context: Record<string, unknown>,
   runtime: Record<string, unknown>
 ) {
-  const pageContextInit = { ...context, ...runtime, runtime, urlOriginal: request.url, headersOriginal: request.headers }
+  const pageContextInit = {
+    ...context,
+    ...runtime,
+    runtime,
+    urlOriginal: request.url,
+    headersOriginal: request.headers
+  }
   const pageContext = await renderPage(pageContextInit)
   const response = pageContext.httpResponse
   const readable = response.getReadableWebStream()
