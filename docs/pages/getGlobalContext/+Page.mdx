@@ -19,9 +19,11 @@ console.log(globalContext.viteRuntimeInfo)
 
 > It only provides information loaded at runtime. To get information loaded at build-time, see <Link href="/getVikeConfig" />.
 
-The `getGlobalContext()` can be called at any time (independently of rendering pages). For example, it can be one of the first functions called upon starting your server, before receving any HTTP request.
+The `getGlobalContext()` can be called at any time (independently of rendering pages). For example, it can be one of the first functions called upon starting your server (before even receving any HTTP request).
 
-> The `globalContext` object also contains internals (they are prefixed with `_`, e.g. `globalContext._viteDevServer`). You should use them only if strictly needed and, if you do, then let us know so that we can add official support for your use case (otherwise you'll expose yourself to breaking changes upon any version update).
+> You can also access it <Link href="/pageContext">over `pageContext.globalContext`</Link>.
+
+> The `globalContext` object also contains many internals (they are prefixed with `_`, e.g. `globalContext._viteDevServer`). You should use them only if strictly needed and, if you do, then let us know so that we can add official support for your use case (otherwise you'll expose yourself to breaking changes upon any version update).
 
 
 ## `getGlobalContextAsync()`
