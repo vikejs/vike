@@ -1,6 +1,7 @@
 export { getHookFromPageContext }
 export { getHookFromPageConfig }
 export { getHookFromPageConfigGlobal }
+export { getHookFromPageConfigGlobalCumulative }
 export { assertHook }
 export { getHook_setIsPrerenderering }
 export type { Hook }
@@ -19,7 +20,7 @@ import type { HookName, HookNamePage, HookNameGlobal } from '../page-configs/Con
 import type { ConfigValue, PageConfigGlobalRuntime, PageConfigRuntime } from '../page-configs/PageConfig.js'
 import { getHookFilePathToShowToUser } from '../page-configs/helpers.js'
 import { getConfigValueRuntime } from '../page-configs/getConfigValueRuntime.js'
-import { assert, assertUsage, checkType, isCallable, isObject } from '../utils.js'
+import { assert, assertUsage, checkType, isArray, isCallable, isObject } from '../utils.js'
 import pc from '@brillout/picocolors'
 const globalObject = getGlobalObject<{ isPrerendering?: true }>('hooks/getHook.ts', {})
 
@@ -74,6 +75,22 @@ function getHookFromPageConfigGlobal(pageConfigGlobal: PageConfigGlobalRuntime, 
   const { hookFn, hookFilePath } = getHookFromConfigValue(configValue)
   const hookTimeout = getHookTimeoutGlobal(hookName)
   return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+}
+function getHookFromPageConfigGlobalCumulative(
+  pageConfigGlobal: PageConfigGlobalRuntime,
+  hookName: HookNameGlobal
+): Hook[] {
+  const configValue = pageConfigGlobal.configValues[hookName]
+  if (!configValue?.value) return []
+  const val = configValue.value
+  assert(isArray(val))
+  return val.map((v, i) => {
+    const hookFn = v
+    const hookTimeout = getHookTimeoutGlobal(hookName)
+    assert(isArray(configValue.definedAtData))
+    const hookFilePath = getHookFilePathToShowToUser(configValue.definedAtData[i]!)
+    return getHook(hookFn, hookName, hookFilePath, hookTimeout)
+  })
 }
 function getHookTimeoutGlobal(hookName: HookName) {
   // TO-DO/perfection: we could use the global value of configooksTimeout but it requires some non-trivial refactoring

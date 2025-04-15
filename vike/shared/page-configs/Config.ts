@@ -60,7 +60,7 @@ type HookNamePage =
   | 'onRenderClient'
   | 'guard'
   | 'data'
-type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart'
+type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext'
 // v0.4 design TODO/v1-release: remove
 type HookNameOldDesign = 'render' | 'prerender'
 
@@ -396,6 +396,12 @@ type ConfigBuiltIn = {
    *  https://vike.dev/onBeforeRender
    */
   onBeforeRender?: OnBeforeRenderAsync | OnBeforeRenderSync | ImportString | null
+
+  /** Hook called when a `pageContext` object is created.
+   *
+   *  https://vike.dev/onCreatePageContext
+   */
+  onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportString | null
 
   /** Hook for fetching data.
    *

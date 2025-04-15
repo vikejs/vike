@@ -106,6 +106,11 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onPageTransitionEnd: {
     env: { client: true }
   },
+  onCreatePageContext: {
+    env: { server: true, client: true },
+    global: true,
+    cumulative: true
+  },
   onBeforeRender: {
     env: { server: true }
   },
