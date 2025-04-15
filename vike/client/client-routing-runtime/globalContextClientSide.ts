@@ -28,6 +28,7 @@ async function getGlobalContext(): Promise<GlobalContextClientSide> {
     if (!globalObject.globalContext) {
       globalObject.globalContext = globalContextCreated
     } else {
+      // Ensure all `globalContext` references are preserved & updated
       objectReplace(globalObject.globalContext, globalContextCreated)
     }
   }
