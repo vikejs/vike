@@ -13,7 +13,6 @@ import {
   objectAssign,
   getProjectError,
   redirectHard,
-  executeHook,
   isObject,
   getGlobalObject
 } from './utils.js'
@@ -33,6 +32,7 @@ import { executeGuardHook } from '../../shared/route/executeGuardHook.js'
 import { AbortRender, isAbortPageContext } from '../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../shared/misc/isServerSideError.js'
+import { executeHook } from '../../shared/hooks/executeHook.js'
 const globalObject = getGlobalObject<{ pageContextInitIsPassedToClient?: true }>(
   'client-routing-runtime/getPageContextFromHooks.ts',
   {}

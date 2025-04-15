@@ -6,7 +6,6 @@ onLoad()
 
 export * from '../../utils/assert.js'
 export * from '../../utils/assertSingleInstance.js'
-export * from '../../shared/hooks/executeHook.js'
 export * from '../../utils/checkType.js' // Only used by Server Routing (not needed for Client Routing)
 export * from '../../utils/getGlobalObject.js'
 export * from '../../utils/hasProp.js'

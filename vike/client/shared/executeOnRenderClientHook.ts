@@ -1,7 +1,7 @@
 export { executeOnRenderClientHook }
 export type { PageContextBeforeRenderClient }
 
-import { assert, assertUsage, executeHook } from '../server-routing-runtime/utils.js'
+import { assert, assertUsage } from '../server-routing-runtime/utils.js'
 import { getHookFromPageContext, type Hook } from '../../shared/hooks/getHook.js'
 import type { PageFile, PageConfigUserFriendlyOld } from '../../shared/getPageFiles.js'
 import {
@@ -9,6 +9,7 @@ import {
   preparePageContextForUserConsumptionClientSide
 } from './preparePageContextForUserConsumptionClientSide.js'
 import type { PageConfigRuntime } from '../../shared/page-configs/PageConfig.js'
+import { executeHook } from '../../shared/hooks/executeHook.js'
 
 type PageContextBeforeRenderClient = {
   _pageFilesLoaded: PageFile[]

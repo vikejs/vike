@@ -10,7 +10,6 @@ import {
   objectAssign,
   redirectHard,
   getGlobalObject,
-  executeHook,
   hasProp,
   augmentType,
   genPromise,
@@ -56,6 +55,7 @@ import { setPageContextCurrent } from './getPageContextCurrent.js'
 import { getRouteStringParameterList } from '../../shared/route/resolveRouteString.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 import type { PageContextClient } from '../../shared/types.js'
+import { executeHook } from '../../shared/hooks/executeHook.js'
 
 const globalObject = getGlobalObject<{
   clientRoutingIsDisabled?: true
