@@ -1,4 +1,4 @@
-export { getPageContext }
+export { createPageContextClientSide }
 
 import { assertUsage, assertWarning, augmentType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
@@ -13,7 +13,7 @@ const { pageFilesAll, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(vi
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
-async function getPageContext() {
+async function createPageContextClientSide() {
   const pageContextCreated = {
     isPrerendering: false,
     isClientSide: true,
