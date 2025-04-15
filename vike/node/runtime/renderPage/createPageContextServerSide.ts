@@ -98,7 +98,6 @@ function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageCo
 }
 function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean) {
   const pageContext = {
-    _isPageContextObject: true,
     isClientSide: false,
     isPrerendering
   }
