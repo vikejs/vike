@@ -1,13 +1,14 @@
 export { createPageContextServerSide }
 export { createPageContextServerSideWithoutGlobalContext }
-export type { PageContextServerSideCreated }
+export type { PageContextCreatedServerSide }
 
-import { assert, assertUsage, assertWarning, normalizeHeaders, objectAssign } from '../utils.js'
+import { assert, assertUsage, assertWarning, augmentType, normalizeHeaders, objectAssign } from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
 import type { GlobalContextInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
+import { createPageContextShared } from '../../../shared/createPageContextShared.js'
 
-type PageContextServerSideCreated = Awaited<ReturnType<typeof createPageContextServerSide>>
+type PageContextCreatedServerSide = Awaited<ReturnType<typeof createPageContextServerSide>>
 async function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
@@ -33,9 +34,10 @@ async function createPageContextServerSide(
   assert(pageContextInit.urlOriginal)
 
   const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
+
   objectAssign(pageContextCreated, pageContextInit)
+
   objectAssign(pageContextCreated, {
-    _objectCreatedByVike: true,
     // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
@@ -85,6 +87,9 @@ async function createPageContextServerSide(
     objectAssign(pageContextCreated, { headers })
   }
 
+  const pageContextAugmented = createPageContextShared(pageContextCreated)
+  augmentType(pageContextCreated, pageContextAugmented)
+
   return pageContextCreated
 }
 function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageContextInit) {
@@ -93,7 +98,6 @@ function createPageContextServerSideWithoutGlobalContext(pageContextInit: PageCo
 }
 function createPageContext(pageContextInit: PageContextInit | null, isPrerendering: boolean) {
   const pageContext = {
-    _isPageContextObject: true,
     isClientSide: false,
     isPrerendering
   }

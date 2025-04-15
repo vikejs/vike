@@ -37,7 +37,7 @@ import type {FilePath} from '../page-configs/FilePath.js'
   */
   hookFilePath: string
 }
-type HookFn = (arg: unknown) => unknown
+type HookFn = (arg: object) => unknown
 type HookTimeout = {
   error: number | false
   warning: number | false

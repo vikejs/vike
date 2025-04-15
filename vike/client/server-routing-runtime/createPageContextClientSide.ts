@@ -1,6 +1,6 @@
-export { getPageContext }
+export { createPageContextClientSide }
 
-import { assertUsage, assertWarning, objectAssign } from './utils.js'
+import { assertUsage, assertWarning, augmentType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
 import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
@@ -8,13 +8,13 @@ import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 
 // @ts-ignore
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:server-routing'
+import { createPageContextShared } from '../../shared/createPageContextShared.js'
 const { pageFilesAll, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
-async function getPageContext() {
-  const pageContext = {
-    _isPageContextObject: true,
+async function createPageContextClientSide() {
+  const pageContextCreated = {
     isPrerendering: false,
     isClientSide: true,
     isHydration: true as const,
@@ -22,10 +22,14 @@ async function getPageContext() {
     _hasPageContextFromServer: true as const,
     _hasPageContextFromClient: false as const
   }
-  objectAssign(pageContext, getPageContextSerializedInHtml())
-  objectAssign(pageContext, await loadPageUserFiles(pageContext.pageId))
+  objectAssign(pageContextCreated, getPageContextSerializedInHtml())
+  objectAssign(pageContextCreated, await loadPageUserFiles(pageContextCreated.pageId))
+
+  const pageContextAugmented = createPageContextShared(pageContextCreated)
+  augmentType(pageContextCreated, pageContextAugmented)
+
   assertPristineUrl()
-  return pageContext
+  return pageContextCreated
 }
 
 function assertPristineUrl() {
