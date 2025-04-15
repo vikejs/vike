@@ -23,8 +23,68 @@ export default {
 }
 ```
 
+
 ## Client-side navigation
 
 During client-side navigation, the `redirects` setting is ignored. Instead, make sure your links don't point to deprecated URLs.
 
-The `redirects` setting is meant for redirecting external links (from third-party websites you don't control) that point to deprecated URLs.
+The `redirects` setting is mostly meant for redirecting external links (from third-party websites you don't control) that point to deprecated URLs.
+
+> In order to save client-side KBs, the `redirects` setting isn't loaded on the client-side.
+
+## Alias
+
+You can also use the `redirects` setting to alias links:
+
+```js
+// pages/+config.js
+
+export default {
+  redirects: {
+    '/mail': 'mail@example.org',
+    '/donate': 'https://donate.stripe.com/9aiUAh021a',
+    '/chat': 'https://discord.com/invite/hfHhnJyVg8'
+  }
+}
+```
+
+By default, these aliases only work when your share them on third-party websites (e.g. if you share `https://my-website.com/chat` on Discord or GitHub).
+
+If you want to use these aliases also on your website, then update your `<Link>` implementation as shown below.
+
+```js
+// components/Link/aliases.js
+
+export const aliases = {
+  '/mail': 'mail@example.org',
+  '/donate': 'https://donate.stripe.com/9aiUAh021a',
+  '/chat': 'https://discord.com/invite/hfHhnJyVg8'
+}
+```
+
+```js
+// components/Link.js
+
+import { aliases } from './Link/aliases'
+
+function Link({ href }) {
+  if (aliases[href]) href = aliases[href]
+  // ...
+}
+```
+
+```js
+// pages/+config.js
+
+import { aliases } from '../components/Link/aliases'
+
+export default {
+  redirects: {
+    ...aliases
+  }
+}
+```
+
+> As explained at <Link href="#client-side-navigation" />, the `redirects` setting doesn't work upon client-side navigation, that's why you have to implement it yourself on the client-side.
+>
+> See also: [#2376 - Setting `+redirects` improve alias support](https://github.com/vikejs/vike/issues/2376).
