@@ -6,6 +6,8 @@ import { assert, assertUsage, assertWarning, normalizeHeaders, objectAssign } fr
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
 import type { GlobalContextInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
+import { createPageContextShared } from '../../../shared/createPageContextShared.js'
+import { augmentType } from '../../../utils/augmentType.js'
 
 type PageContextCreatedServerSide = Awaited<ReturnType<typeof createPageContextServerSide>>
 async function createPageContextServerSide(
@@ -33,9 +35,10 @@ async function createPageContextServerSide(
   assert(pageContextInit.urlOriginal)
 
   const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
+
   objectAssign(pageContextCreated, pageContextInit)
+
   objectAssign(pageContextCreated, {
-    _objectCreatedByVike: true,
     // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
@@ -84,6 +87,9 @@ async function createPageContextServerSide(
     }
     objectAssign(pageContextCreated, { headers })
   }
+
+  const pageContextAugmented = createPageContextShared(pageContextCreated)
+  augmentType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated
 }

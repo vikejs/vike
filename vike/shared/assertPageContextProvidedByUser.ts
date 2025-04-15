@@ -28,7 +28,7 @@ function assertPageContextProvidedByUser(
   )
 
   assertUsage(
-    !('_objectCreatedByVike' in pageContextProvidedByUser),
+    !('_isPageContextObject' in pageContextProvidedByUser),
     `${errPrefix} shouldn't be the whole ${pc.cyan(
       'pageContext'
     )} object, see https://vike.dev/pageContext-manipulation#do-not-return-entire-pagecontext`

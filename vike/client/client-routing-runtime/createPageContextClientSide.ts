@@ -1,11 +1,12 @@
 export { createPageContextClientSide }
 
+import { createPageContextShared } from '../../shared/createPageContextShared.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { getPageContextUrlComputed } from '../../shared/getPageContextUrlComputed.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { getBaseServer } from './getBaseServer.js'
 import { getGlobalContext } from './globalContextClientSide.js'
-import { assert, isBaseServer, objectAssign } from './utils.js'
+import { assert, augmentType, isBaseServer, objectAssign } from './utils.js'
 
 // @ts-ignore
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-routing'
@@ -18,15 +19,14 @@ async function createPageContextClientSide(urlOriginal: string) {
     pageConfigGlobal,
     allPageIds
   )
+
   const baseServer = getBaseServer()
   assert(isBaseServer(baseServer))
-  const pageContext = {
-    _isPageContextObject: true,
+  const pageContextCreated = {
     isClientSide: true,
     isPrerendering: false,
     urlOriginal,
     globalContext: getGlobalContext(),
-    _objectCreatedByVike: true,
     _urlHandler: null,
     _urlRewrite: null,
     _baseServer: baseServer,
@@ -37,7 +37,11 @@ async function createPageContextClientSide(urlOriginal: string) {
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook
   }
-  const pageContextUrlComputed = getPageContextUrlComputed(pageContext)
-  objectAssign(pageContext, pageContextUrlComputed)
-  return pageContext
+  const pageContextUrlComputed = getPageContextUrlComputed(pageContextCreated)
+  objectAssign(pageContextCreated, pageContextUrlComputed)
+
+  const pageContextAugmented = createPageContextShared(pageContextCreated)
+  augmentType(pageContextCreated, pageContextAugmented)
+
+  return pageContextCreated
 }
