@@ -87,7 +87,7 @@ async function createPageContextServerSide(
     objectAssign(pageContextCreated, { headers })
   }
 
-  const pageContextAugmented = createPageContextShared(pageContextCreated, globalContext.pageConfigGlobal)
+  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext.pageConfigGlobal)
   augmentType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated

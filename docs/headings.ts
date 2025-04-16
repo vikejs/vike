@@ -440,6 +440,12 @@ const headings = [
   },
   {
     level: 2,
+    title: '`onCreatePageContext()` hook',
+    titleInNav: '`onCreatePageContext()`',
+    url: '/onCreatePageContext'
+  },
+  {
+    level: 2,
     title: '`onBeforePrerenderStart()` hook',
     titleInNav: '`onBeforePrerenderStart()`',
     url: '/onBeforePrerenderStart'
