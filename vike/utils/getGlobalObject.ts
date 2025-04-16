@@ -4,7 +4,7 @@ export { assertIsSingleModuleInstance }
 import { assert } from './assert.js'
 
 // We use the file name and file directory as key: there should be only one getGlobalObject() usage per file.
-type Key = `${string}/${string}.ts`
+type Key = `${string}.ts`
 
 /** Share information across module instances. */
 function getGlobalObject<T extends Record<string, unknown> = never>(key: Key, defaultValue: T): T {

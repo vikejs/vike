@@ -1,17 +1,25 @@
 export { getGlobalContext }
-export type { GlobalContextPublicClientSide }
+export type { GlobalContextClientSidePublic }
 
-import { getGlobalObject } from './utils.js'
+import { createGetGlobalContext } from '../shared/createGetGlobalContext.js'
+import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
+// @ts-ignore
+import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-routing'
 
-type GlobalContex = Record<string, unknown>
-// Same type for now
-type GlobalContextPublicClientSide = GlobalContex
-
-const globalObject = getGlobalObject<{
-  globalContext?: GlobalContextPublicClientSide
-}>('client-routing-runtime/globalContextClientSide.ts', {})
-
-function getGlobalContext(): GlobalContextPublicClientSide {
-  if (!globalObject.globalContext) globalObject.globalContext = {}
-  return globalObject.globalContext
+type GlobalContextClientSidePublic = {
+  // Nothing public for now
 }
+type GlobalContextClientSide = Awaited<ReturnType<typeof getGlobalContext>>
+
+const getGlobalContext = createGetGlobalContext(virtualFileExports, true, async (globalContext) => {
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
+    globalContext._pageFilesAll,
+    globalContext._pageConfigs,
+    globalContext._pageConfigGlobal,
+    globalContext._allPageIds
+  )
+  return {
+    _pageRoutes: pageRoutes,
+    _onBeforeRouteHook: onBeforeRouteHook
+  }
+})

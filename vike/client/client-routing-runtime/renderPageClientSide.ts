@@ -67,7 +67,6 @@ const globalObject = getGlobalObject<{
   renderedPageContext?: PageContextClient
   firstRenderStartPromise: Promise<void>
   firstRenderStartPromiseResolve: () => void
-  globalContext: Record<string, unknown>
 }>(
   'client-routing-runtime/renderPageClientSide.ts',
   (() => {
@@ -75,8 +74,7 @@ const globalObject = getGlobalObject<{
     return {
       renderCounter: 0,
       firstRenderStartPromise,
-      firstRenderStartPromiseResolve,
-      globalContext: {}
+      firstRenderStartPromiseResolve
     }
   })()
 )
