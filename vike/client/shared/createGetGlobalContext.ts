@@ -3,8 +3,6 @@ export { createGetGlobalContext }
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { assert, getGlobalObject, objectAssign, objectReplace } from './utils.js'
 
-// TODO/now: eager call
-
 const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
   isClientRouting?: boolean
@@ -17,6 +15,9 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
 ) {
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
+
+  // Eagerly call onCreateGlobalContext() hook
+  getGlobalContext()
 
   return getGlobalContext
 
