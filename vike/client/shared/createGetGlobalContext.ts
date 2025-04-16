@@ -18,7 +18,9 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
 
-  return async () => {
+  return getGlobalContext
+
+  async function getGlobalContext() {
     // Cache
     if (
       globalObject.globalContext &&
