@@ -47,7 +47,7 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = createGlobalContext()
+    const globalContext = createGlobalContext(virtualFileExports)
     const globalContextAddendum = await addGlobalContext?.(globalContext)
     objectAssign(globalContext, globalContextAddendum)
 
@@ -64,7 +64,7 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
   }
 }
 
-function createGlobalContext() {
+function createGlobalContext(virtualFileExports: unknown) {
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
   const globalContext = {
     _virtualFileExports: virtualFileExports,
