@@ -12,7 +12,7 @@ type GlobalContextClientSide = Awaited<ReturnType<typeof getGlobalContext>>
 
 // TODO: eager call
 
-const getGlobalContext = await createGetGlobalContext(virtualFileExports, async () => {
+const getGlobalContext = createGetGlobalContext(virtualFileExports, async () => {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageFilesAll,
     pageConfigs,
@@ -34,7 +34,7 @@ const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
 }>('client-routing-runtime/globalContextClientSide.ts', {})
 
-async function createGetGlobalContext<GlobalContextAddendum extends object>(
+function createGetGlobalContext<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   addGlobalContext?: () => Promise<GlobalContextAddendum>
 ) {
