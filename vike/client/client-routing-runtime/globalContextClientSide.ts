@@ -12,12 +12,12 @@ type GlobalContextClientSide = Awaited<ReturnType<typeof getGlobalContext>>
 
 // TODO: eager call
 
-const getGlobalContext = createGetGlobalContext(virtualFileExports, async () => {
+const getGlobalContext = createGetGlobalContext(virtualFileExports, async (globalContext) => {
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
-    pageFilesAll,
-    pageConfigs,
-    pageConfigGlobal,
-    allPageIds
+    globalContext._pageFilesAll,
+    globalContext._pageConfigs,
+    globalContext._pageConfigGlobal,
+    globalContext._allPageIds
   )
   return {
     _pageRoutes: pageRoutes,
@@ -28,15 +28,13 @@ const getGlobalContext = createGetGlobalContext(virtualFileExports, async () => 
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { getGlobalObject, objectAssign, objectReplace } from './utils.js'
 
-const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
-
 const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
 }>('client-routing-runtime/globalContextClientSide.ts', {})
 
 function createGetGlobalContext<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
-  addGlobalContext?: () => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: ReturnType<typeof createGlobalContext>) => Promise<GlobalContextAddendum>
 ) {
   return async () => {
     // Cache
@@ -49,14 +47,8 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = {
-      _virtualFileExports: virtualFileExports,
-      _pageFilesAll: pageFilesAll,
-      _pageConfigs: pageConfigs,
-      _pageConfigGlobal: pageConfigGlobal,
-      _allPageIds: allPageIds
-    }
-    const globalContextAddendum = await addGlobalContext?.()
+    const globalContext = createGlobalContext()
+    const globalContextAddendum = await addGlobalContext?.(globalContext)
     objectAssign(globalContext, globalContextAddendum)
 
     // Singleton
@@ -70,4 +62,16 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     // Return
     return globalContext
   }
+}
+
+function createGlobalContext() {
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
+  const globalContext = {
+    _virtualFileExports: virtualFileExports,
+    _pageFilesAll: pageFilesAll,
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal,
+    _allPageIds: allPageIds
+  }
+  return globalContext
 }
