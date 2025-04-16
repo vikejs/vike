@@ -1,41 +1,56 @@
 export { getGlobalContext }
 export type { GlobalContextClientSidePublic }
 
-import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
-import { getGlobalObject, objectAssign, objectReplace } from './utils.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
-
 // @ts-ignore
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-routing'
-const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
 
 type GlobalContextClientSidePublic = {
   // Nothing public for now
 }
-type GlobalContextClientSide = Awaited<ReturnType<typeof createGlobalContext>>
+type GlobalContextClientSide = Awaited<ReturnType<typeof getGlobalContext>>
+
+// TODO: eager call
+
+async function getGlobalContext() {
+  const globalContext = await getGlobalContextShared(virtualFileExports, async () => {
+    const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
+      pageFilesAll,
+      pageConfigs,
+      pageConfigGlobal,
+      allPageIds
+    )
+    return {
+      _pageRoutes: pageRoutes,
+      _onBeforeRouteHook: onBeforeRouteHook
+    }
+  })
+  return globalContext
+}
+
+import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
+import { getGlobalObject, objectAssign, objectReplace } from './utils.js'
+
+const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
 
 const globalObject = getGlobalObject<{
-  globalContext?: GlobalContextClientSide
+  globalContext?: Record<string, unknown>
 }>('client-routing-runtime/globalContextClientSide.ts', {})
 
-async function getGlobalContext(): Promise<GlobalContextClientSide> {
+async function getGlobalContextShared<GlobalContextAddendum extends object>(
+  virtualFileExports: unknown,
+  addGlobalContext?: () => Promise<GlobalContextAddendum>
+) {
+  // Cache
   if (
-    !globalObject.globalContext ||
+    globalObject.globalContext &&
     // Don't break HMR
     globalObject.globalContext._virtualFileExports !== virtualFileExports
   ) {
-    const globalContextCreated = await createGlobalContext()
-    if (!globalObject.globalContext) {
-      globalObject.globalContext = globalContextCreated
-    } else {
-      // Ensure all `globalContext` references are preserved & updated
-      objectReplace(globalObject.globalContext, globalContextCreated)
-    }
+    return globalObject.globalContext as never
   }
-  return globalObject.globalContext
-}
 
-async function createGlobalContext() {
+  // Create
   const globalContext = {
     _virtualFileExports: virtualFileExports,
     _pageFilesAll: pageFilesAll,
@@ -43,15 +58,17 @@ async function createGlobalContext() {
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds
   }
-  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
-    pageFilesAll,
-    pageConfigs,
-    pageConfigGlobal,
-    allPageIds
-  )
-  objectAssign(globalContext, {
-    _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook
-  })
+  const globalContextAddendum = await addGlobalContext?.()
+  objectAssign(globalContext, globalContextAddendum)
+
+  // Singleton
+  if (!globalObject.globalContext) {
+    globalObject.globalContext = globalContext
+  } else {
+    // Ensure all `globalContext` references are preserved & updated
+    objectReplace(globalObject.globalContext, globalContext)
+  }
+
+  // Return
   return globalContext
 }
