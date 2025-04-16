@@ -2,28 +2,29 @@ export { createPageContextClientSide }
 
 import { assertUsage, assertWarning, augmentType, objectAssign } from './utils.js'
 import { getPageContextSerializedInHtml } from '../shared/getPageContextSerializedInHtml.js'
-import { loadUserFilesClientSide } from '../shared/loadUserFilesClientSide.js'
+import { loadUserFilesClientSide, type PageContextUserFiles } from '../shared/loadUserFilesClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
-import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 
-// @ts-ignore
-import * as virtualFileExports from 'virtual:vike:importUserCode:client:server-routing'
 import { createPageContextShared } from '../../shared/createPageContextShared.js'
-const { pageFilesAll, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
+import { getGlobalContext } from './globalContextClientSide.js'
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
 async function createPageContextClientSide() {
+  const globalContext = await getGlobalContext()
+
   const pageContextCreated = {
     isPrerendering: false,
     isClientSide: true,
     isHydration: true as const,
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const,
-    _hasPageContextFromClient: false as const
+    _hasPageContextFromClient: false as const,
+    globalContext,
+    ...globalContext
   }
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
-  objectAssign(pageContextCreated, await loadPageUserFiles(pageContextCreated.pageId))
+  objectAssign(pageContextCreated, await loadPageUserFiles(pageContextCreated.pageId, pageContextCreated))
 
   const pageContextAugmented = createPageContextShared(pageContextCreated)
   augmentType(pageContextCreated, pageContextAugmented)
@@ -40,25 +41,19 @@ function assertPristineUrl() {
   )
 }
 
-async function loadPageUserFiles(pageId: string) {
+async function loadPageUserFiles(pageId: string, pageContext: PageContextUserFiles) {
   const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, {
-    _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal
-  })
-
   objectAssign(
     pageContextAddendum,
     await loadUserFilesClientSide(
       pageId,
-      pageContextAddendum._pageFilesAll,
-      pageContextAddendum._pageConfigs,
-      pageContextAddendum._pageConfigGlobal
+      pageContext._pageFilesAll,
+      pageContext._pageConfigs,
+      pageContext._pageConfigGlobal
     )
   )
 
-  pageFilesAll
+  pageContext._pageFilesAll
     .filter((p) => p.fileType !== '.page.server')
     .forEach((p) => {
       assertWarning(
