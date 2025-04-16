@@ -12,8 +12,7 @@ type GlobalContextClientSide = Awaited<ReturnType<typeof getGlobalContext>>
 
 // TODO: eager call
 
-async function getGlobalContext() {
-  const globalContext = await getGlobalContextShared(virtualFileExports, async () => {
+  const getGlobalContext = await createGetGlobalContext(virtualFileExports, async () => {
     const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
       pageFilesAll,
       pageConfigs,
@@ -25,8 +24,6 @@ async function getGlobalContext() {
       _onBeforeRouteHook: onBeforeRouteHook
     }
   })
-  return globalContext
-}
 
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { getGlobalObject, objectAssign, objectReplace } from './utils.js'
@@ -37,10 +34,11 @@ const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
 }>('client-routing-runtime/globalContextClientSide.ts', {})
 
-async function getGlobalContextShared<GlobalContextAddendum extends object>(
+async function createGetGlobalContext<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   addGlobalContext?: () => Promise<GlobalContextAddendum>
 ) {
+  return async () => {
   // Cache
   if (
     globalObject.globalContext &&
@@ -71,4 +69,5 @@ async function getGlobalContextShared<GlobalContextAddendum extends object>(
 
   // Return
   return globalContext
+  }
 }
