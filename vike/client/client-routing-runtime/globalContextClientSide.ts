@@ -1,8 +1,8 @@
 export { getGlobalContext }
 export type { GlobalContextClientSidePublic }
 
-import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { createGetGlobalContext } from '../shared/createGetGlobalContext.js'
+import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 // @ts-ignore
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-routing'
 
