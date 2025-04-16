@@ -6,7 +6,7 @@ import { getGlobalObject, objectReplace } from './utils.js'
 
 // @ts-ignore
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:server-routing'
-const { pageFilesAll, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
+const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
 
 type GlobalContextClientSidePublic = {
   // Nothing public for now
@@ -39,7 +39,8 @@ async function createGlobalContext() {
     _virtualFileExports: virtualFileExports,
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal
+    _pageConfigGlobal: pageConfigGlobal,
+    _allPageIds: allPageIds
   }
   return globalContext
 }

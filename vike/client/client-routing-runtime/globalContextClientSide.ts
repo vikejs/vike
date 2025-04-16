@@ -2,8 +2,8 @@ export { getGlobalContext }
 export type { GlobalContextClientSidePublic }
 
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
+import { getGlobalObject, objectAssign, objectReplace } from './utils.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
-import { getGlobalObject, objectReplace } from './utils.js'
 
 // @ts-ignore
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-routing'
@@ -36,20 +36,22 @@ async function getGlobalContext(): Promise<GlobalContextClientSide> {
 }
 
 async function createGlobalContext() {
+  const globalContext = {
+    _virtualFileExports: virtualFileExports,
+    _pageFilesAll: pageFilesAll,
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal,
+    _allPageIds: allPageIds
+  }
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageFilesAll,
     pageConfigs,
     pageConfigGlobal,
     allPageIds
   )
-  const globalContext = {
-    _virtualFileExports: virtualFileExports,
+  objectAssign(globalContext, {
     _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook,
-    _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds
-  }
+    _onBeforeRouteHook: onBeforeRouteHook
+  })
   return globalContext
 }
