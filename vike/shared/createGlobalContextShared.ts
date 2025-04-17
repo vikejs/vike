@@ -1,5 +1,6 @@
 export { createGlobalContextShared }
 export type { GlobalContextShared }
+export type { GlobalContextSharedPublic }
 
 import { getPageConfigsRuntime } from './getPageConfigsRuntime.js'
 import { objectAssign } from './utils.js'
@@ -14,6 +15,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   return globalContext
 }
 
+type GlobalContextSharedPublic = Pick<GlobalContextShared, 'config' | 'pages'>
 type GlobalContextShared = Awaited<ReturnType<typeof createGlobalContextBase>>
 async function createGlobalContextBase(virtualFileExports: unknown) {
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
