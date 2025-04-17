@@ -1209,10 +1209,7 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
   )
 }
 
-type PrerenderContextPublic = {
-  output: Output<PageContextServer>
-  pageContexts: PageContextServer[]
-}
+type PrerenderContextPublic = Pick<PrerenderContext, 'output' | 'pageContexts'>
 function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
   const prerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
     'output', // vite-plugin-vercel
