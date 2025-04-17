@@ -46,7 +46,8 @@ import {
   createDebugger,
   getPublicProxy,
   checkType,
-  PROJECT_VERSION
+  PROJECT_VERSION,
+  objectAssign
 } from './utils.js'
 import type { ViteManifest } from '../shared/ViteManifest.js'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -446,7 +447,8 @@ async function setGlobalContext(virtualFileExports: unknown) {
     pageFilesAll
   )
 
-  const globalContext = (() => {
+  const globalContext = {}
+  const globalContextAddendum = (() => {
     const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
     assert(typeof isProduction === 'boolean')
     if (!isProduction) {
@@ -496,6 +498,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
       }
     }
   })()
+  objectAssign(globalContext, globalContextAddendum)
 
   // Internal usage
   if (!globalObject.globalContext) {
