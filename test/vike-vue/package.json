@@ -9,7 +9,7 @@
     "@types/node-fetch": "^2.6.11",
     "@vitejs/plugin-vue": "^5.2.1",
     "node-fetch": "^3.3.2",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "unplugin-vue-markdown": "^0.26.2",
     "vike": "0.4.228",
     "vike-vue": "^0.8.5",

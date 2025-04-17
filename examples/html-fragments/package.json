@@ -4,7 +4,7 @@
     "preview": "vike build && vike preview"
   },
   "dependencies": {
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "vite": "^6.2.5",
     "vike": "0.4.228"
   },
