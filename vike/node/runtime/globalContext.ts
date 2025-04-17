@@ -330,16 +330,16 @@ function defineGlobalContext() {
   assertIsDefined(globalContext)
 
   // Internal usage
-  globalObject.globalContext = globalContext
+  if (!globalObject.globalContext) {
+    globalObject.globalContext = globalContext
+  } else {
+    // Ensure all globalContext user-land references are preserved & updated
+    // globalContext_public is just a proxy of globalContext
+    objectReplace(globalObject.globalContext, globalContext)
+  }
 
   // Public usage
-  const globalContext_public = makePublic(globalContext)
-  if (!globalObject.globalContext_public) {
-    globalObject.globalContext_public = globalContext_public
-  } else {
-    // Ensure all `globalContext` user-land references are preserved & updated
-    objectReplace(globalObject.globalContext_public, globalContext_public)
-  }
+  globalObject.globalContext_public = makePublic(globalContext)
 
   assertGlobalContextIsDefined()
   onSetupRuntime()
