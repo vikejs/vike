@@ -87,13 +87,12 @@ const globalObject = getGlobalObject<
   } & ReturnType<typeof getInitialGlobalContext>
 >('runtime/globalContext.ts', getInitialGlobalContext())
 
-type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
 type GlobalContextInternal = {
   viteConfigRuntime: ViteConfigRuntime
   config: PageConfigUserFriendly['config']
   pages: PageConfigsUserFriendly
 } & BaseUrlsResolved &
-  PageRuntimeInfo &
+  UserFiles &
   (
     | {
         _isProduction: false
