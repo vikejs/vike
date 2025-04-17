@@ -37,7 +37,6 @@ import {
   assertUsage,
   assertWarning,
   isPlainObject,
-  objectAssign,
   objectReplace,
   isObject,
   hasProp,
@@ -54,21 +53,16 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { importServerProductionEntry } from '@brillout/vite-plugin-server-entry/runtime'
 import { virtualFileIdImportUserCodeServer } from '../shared/virtual-files/virtualFileImportUserCode.js'
 import pc from '@brillout/picocolors'
-import type {
-  PageConfigUserFriendly,
-  PageConfigsUserFriendly
-} from '../../shared/page-configs/getPageConfigUserFriendly.js'
+import type { PageConfigUserFriendly } from '../../shared/page-configs/getPageConfigUserFriendly.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
 import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
-import { resolveBase, type BaseUrlsResolved } from '../shared/resolveBase.js'
+import { resolveBase } from '../shared/resolveBase.js'
 import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
-const globalObject = getGlobalObject<
+const globalObject_ = getGlobalObject<
   {
-    globalContext?: GlobalContextInternal
-    globalContext_public?: GlobalContextServerSidePublic
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
     viteConfigRuntime?: ViteConfigRuntime
@@ -86,37 +80,14 @@ const globalObject = getGlobalObject<
     isInitialized?: true
   } & ReturnType<typeof getInitialGlobalContext>
 >('runtime/globalContext.ts', getInitialGlobalContext())
+// Trick to break down TypeScript circular dependency
+// https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
+const globalObject = globalObject_ as typeof globalObject_ & {
+  globalContext: GlobalContextInternal
+  globalContext_public?: GlobalContextServerSidePublic
+}
 
-type GlobalContextInternal = {
-  viteConfigRuntime: ViteConfigRuntime
-  config: PageConfigUserFriendly['config']
-  pages: PageConfigsUserFriendly
-} & BaseUrlsResolved &
-  UserFiles &
-  (
-    | {
-        _isProduction: false
-        _isPrerendering: false
-        viteConfig: ResolvedConfig
-        _viteDevServer: ViteDevServer
-        assetsManifest: null
-      }
-    | ({
-        _isProduction: true
-        assetsManifest: ViteManifest
-        _viteDevServer: null
-      } & (
-        | {
-            _isPrerendering: false
-            viteConfig: null
-          }
-        | {
-            _isPrerendering: true
-            _usesClientRouter: boolean
-            viteConfig: ResolvedConfig
-          }
-      ))
-  )
+type GlobalContextInternal = ReturnType<typeof resolveGlobalContext>
 
 async function getGlobalContextInternal() {
   // getGlobalContextInternal() should always be called after initGlobalContext()
@@ -324,19 +295,18 @@ function setIsProduction(isProduction: boolean) {
   if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
   globalObject.isProduction = isProduction
 }
-function resolveGlobalContext(): GlobalContextInternal {
+function resolveGlobalContext() {
   const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction, userFiles } = globalObject
   assert(typeof isProduction === 'boolean')
-  let globalContext: GlobalContextInternal
   if (!isProduction) {
     assert(viteDevServer)
     assert(userFiles) // main common requiement
     assert(viteConfig)
     assert(viteConfigRuntime)
     assert(!isPrerendering)
-    globalContext = {
-      _isProduction: false,
-      _isPrerendering: false,
+    return {
+      _isProduction: false as const,
+      _isPrerendering: false as const,
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       viteConfig,
@@ -350,7 +320,7 @@ function resolveGlobalContext(): GlobalContextInternal {
     const { buildInfo, assetsManifest } = globalObject
     assert(buildInfo)
     assert(assetsManifest)
-    const globalContext_ = {
+    const globalContextBase = {
       _isProduction: true as const,
       assetsManifest,
       ...userFiles,
@@ -361,20 +331,19 @@ function resolveGlobalContext(): GlobalContextInternal {
     }
     if (isPrerendering) {
       assert(viteConfig)
-      objectAssign(globalContext_, {
+      return {
+        ...globalContextBase,
         _isPrerendering: true as const,
         viteConfig
-      })
-      globalContext = globalContext_
+      }
     } else {
-      objectAssign(globalContext_, {
+      return {
+        ...globalContextBase,
         _isPrerendering: false as const,
         viteConfig: null
-      })
-      globalContext = globalContext_
+      }
     }
   }
-  return globalContext
 }
 
 type UserFiles = Awaited<ReturnType<typeof getUserFiles>>
