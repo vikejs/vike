@@ -73,7 +73,6 @@ const globalObject_ = getGlobalObject<
     pageConfigsRuntime?: PageConfigsRuntime
     waitForUserFilesUpdate?: Promise<void>
     isProduction?: boolean
-    userFiles?: UserFiles
     buildInfo?: BuildInfo
     // Move to buildInfo.assetsManifest ?
     assetsManifest?: ViteManifest
@@ -296,35 +295,6 @@ function setIsProduction(isProduction: boolean) {
   globalObject.isProduction = isProduction
 }
 
-type UserFiles = Awaited<ReturnType<typeof getUserFiles>>
-async function getUserFiles(pageConfigsRuntime: PageConfigsRuntime) {
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
-    pageConfigsRuntime
-
-  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
-    pageFilesAll,
-    pageConfigs,
-    pageConfigGlobal,
-    allPageIds
-  )
-  const userFiles = {
-    _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds,
-    _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook,
-    pages: pageConfigsUserFriendly,
-    config: globalConfig.config
-  }
-  assertV1Design(
-    // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
-    pageConfigs.length > 0,
-    pageFilesAll
-  )
-  return userFiles
-}
-
 function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
   assert(isPlainObject(manifest))
   /* We should include these assertions but we don't as a workaround for PWA manifests: https://github.com/vikejs/vike/issues/769
@@ -341,10 +311,7 @@ function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest
 
 async function loadBuildEntry(outDir?: string) {
   debug('loadBuildEntry()')
-  if (globalObject.userFiles) {
-    assert(globalObject.buildInfo)
-    assert(globalObject.assetsManifest)
-    assert(globalObject.buildEntry)
+  if (globalObject.globalContext) {
     return
   }
   if (!globalObject.buildEntry) {
@@ -453,11 +420,34 @@ async function updateUserFiles() {
 
 async function setGlobalContext(virtualFileExports: unknown) {
   const pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
-  const userFiles = await getUserFiles(pageConfigsRuntime)
-  globalObject.userFiles = userFiles
+
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
+    pageConfigsRuntime
+
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
+    pageFilesAll,
+    pageConfigs,
+    pageConfigGlobal,
+    allPageIds
+  )
+  const userFiles = {
+    _pageFilesAll: pageFilesAll,
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal,
+    _allPageIds: allPageIds,
+    _pageRoutes: pageRoutes,
+    _onBeforeRouteHook: onBeforeRouteHook,
+    pages: pageConfigsUserFriendly,
+    config: globalConfig.config
+  }
+  assertV1Design(
+    // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
+    pageConfigs.length > 0,
+    pageFilesAll
+  )
 
   const globalContext = (() => {
-    const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction, userFiles } = globalObject
+    const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
     assert(typeof isProduction === 'boolean')
     if (!isProduction) {
       assert(viteDevServer)
