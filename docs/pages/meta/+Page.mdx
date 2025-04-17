@@ -12,12 +12,12 @@ The `meta` settings enables you to create:
    - <Link href="#example-title-and-description" doNotInferSectionTitle />
    - <Link href="#example-layout" doNotInferSectionTitle />
  - **New hooks**.
-   - Example: `onInit()` or `onBeforeFetchingData()`
+   - Example: `+onInit` or `+onBeforeFetchingData`
  - **Modifying the environment of existing hooks**.
    - <Link href="#example-modify-data-env" doNotInferSectionTitle />
 
 
-## Example: `dataEndpointUrl`
+## Example: `+dataEndpointUrl`
 
 This example showcases a simple data fetching logic that uses URL data endpoints (e.g. a RESTful API).
 
@@ -61,7 +61,7 @@ async function data(pageContext) {
 }
 ```
 
-## Example: `sql`
+## Example: `+sql`
 
 Similarly to the previous example, another common use case is to enable pages to define their data requirements as SQL queries.
 
@@ -115,7 +115,7 @@ async function onBeforeRender(pageContext) {
 ```
 
 
-## Example: `title` and `description`
+## Example: `+title` and `+description`
 
 In order to define the tags `<title>` and `<meta name="description">` of a page's HTML, you can create new settings `title` and `description`.
 
@@ -253,7 +253,7 @@ async function onRenderHtml(pageContext) {
 > This implementation can be improved: the file `/pages/utils.js` is loaded on both the server- and client-side but `getDescription()` is only used by the server-side. This means `getDescription()` unnecessarily bloats the size of your client-side bundles. It would be cleaner to split `/pages/utils.js` in two separate files: one for the client-side and another one for the server-side. In general, be extra careful in which environment each file is loaded; consider using <Link href="/file-env">`.server.js` and `.client.js`</Link> to ensure the environment of files.
 
 
-## Example: `Layout`
+## Example: `+Layout`
 
 Another common use case for `meta` is to create a component `<Layout>` that defines the layout of the page.
 
@@ -336,7 +336,7 @@ async function onRenderClient(pageContext) {
 ```
 
 
-## Example: modify `data()` env
+## Example: modify `+data` env
 
 You can use `meta` to change the environment in which built-in hooks are loaded. For example, you can change the environment of the <Link href="/data">`data()` hook</Link> from `{ server: true, client: false }` to `{ server: true, client: true }`.
 

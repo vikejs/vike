@@ -234,8 +234,8 @@ importers:
         specifier: 0.0.28
         version: 0.0.28
       '@brillout/docpress':
-        specifier: 0.12.4
-        version: 0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.5(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.2.5(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
+        specifier: ^0.12.5
+        version: 0.12.5(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.5(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.2.5(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))
       '@types/react':
         specifier: ^19.0.2
         version: 19.0.8
@@ -2104,8 +2104,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@brillout/docpress@0.12.4':
-    resolution: {integrity: sha512-YjrfJLrJGXkShf9jx0Z9Q2OGSMterPQ8mKWI+8MJfk0ZKFHz2UEF5J8K/bGMm+QnwIz4AVYdLI918x2+v0umbQ==}
+  '@brillout/docpress@0.12.5':
+    resolution: {integrity: sha512-2x0wyL4EFVcf+HDR91Lt5IwcD2RJta6eWazSM1I5x9i8zKF3YnAcuWt/s3D4gknRMAH6GL0Sjy0OUv2oUfuhGg==}
     peerDependencies:
       '@vitejs/plugin-react-swc': '>=3.0.0'
       react: '>=18.0.0'
@@ -7990,7 +7990,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.4':
     optional: true
 
-  '@brillout/docpress@0.12.4(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.5(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.2.5(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
+  '@brillout/docpress@0.12.5(@algolia/client-search@5.21.0)(@types/react@19.0.8)(@vitejs/plugin-react-swc@3.7.2(vite@6.2.5(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(rollup@4.34.4)(search-insights@2.17.3)(typescript@5.8.3)(vike@vike)(vite@6.2.5(@types/node@22.13.1)(terser@5.38.1)(tsx@4.19.2))':
     dependencies:
       '@brillout/picocolors': 1.0.26
       '@docsearch/css': 3.9.0
