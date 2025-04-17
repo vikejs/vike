@@ -18,7 +18,7 @@ import type { StreamFromReactStreamingPackage } from './stream/react-streaming.j
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import type { PageContextSerialization } from './serializePageContextClientSide.js'
 import { getViteDevScript } from './injectAssets/getViteDevScript.js'
-import type { GlobalContextInternal } from '../globalContext.js'
+import type { GlobalContextInternal } from '../globalContextServerSide.js'
 
 type PageContextInjectAssets = {
   urlPathname: string

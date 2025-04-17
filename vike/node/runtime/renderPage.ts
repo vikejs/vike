@@ -37,7 +37,11 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
-import { getGlobalContextInternal, initGlobalContext_renderPage, type GlobalContextInternal } from './globalContext.js'
+import {
+  getGlobalContextInternal,
+  initGlobalContext_renderPage,
+  type GlobalContextInternal
+} from './globalContextServerSide.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
   type HttpResponse,

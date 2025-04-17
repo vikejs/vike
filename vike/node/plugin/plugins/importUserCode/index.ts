@@ -13,7 +13,7 @@ import { reloadVikeConfig, isV1Design, getVikeConfig, getVikeConfigOptional } fr
 import pc from '@brillout/picocolors'
 import { logConfigInfo } from '../../shared/loggerNotProd.js'
 import { getModuleFilePathAbsolute } from '../../shared/getFilePath.js'
-import { updateUserFiles } from '../../../runtime/globalContext.js'
+import { updateUserFiles } from '../../../runtime/globalContextServerSide.js'
 import { isPlusFile } from './v1-design/getVikeConfig/crawlPlusFiles.js'
 
 function importUserCode(): Plugin {

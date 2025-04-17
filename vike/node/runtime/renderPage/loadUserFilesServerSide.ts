@@ -20,7 +20,7 @@ import { debugPageFiles, type PageContextDebugRouteMatches } from './debugPageFi
 import type { PageConfigGlobalRuntime, PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig.js'
 import { analyzePage } from './analyzePage.js'
-import type { GlobalContextInternal } from '../globalContext.js'
+import type { GlobalContextInternal } from '../globalContextServerSide.js'
 import type { MediaType } from './inferMediaType.js'
 import { loadConfigValues } from '../../../shared/page-configs/loadConfigValues.js'
 

@@ -1,5 +1,5 @@
 // Needed by Vike
-export { setGlobalContext_buildEntry } from '../node/runtime/globalContext.js'
+export { setGlobalContext_buildEntry } from '../node/runtime/globalContextServerSide.js'
 
 // Needed by vite-plugin-vercel
 export { route, getPagesAndRoutes }
@@ -7,7 +7,10 @@ export type { PageRoutes, PageFile, PageConfigRuntime as PageConfig }
 
 import { route as routeInternal, type PageRoutes } from '../shared/route/index.js'
 import type { PageFile } from '../shared/getPageFiles/getPageFileObject.js'
-import { getGlobalContextInternal, initGlobalContext_getPagesAndRoutes } from '../node/runtime/globalContext.js'
+import {
+  getGlobalContextInternal,
+  initGlobalContext_getPagesAndRoutes
+} from '../node/runtime/globalContextServerSide.js'
 import { setNodeEnvProduction } from '../utils/assertSetup.js'
 import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 

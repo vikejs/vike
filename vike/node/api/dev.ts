@@ -3,7 +3,7 @@ export { dev }
 import { prepareViteApiCall } from './prepareViteApiCall.js'
 import { createServer, type ResolvedConfig, type ViteDevServer } from 'vite'
 import type { APIOptions } from './types.js'
-import { setGlobalContext_isProduction } from '../runtime/globalContext.js'
+import { setGlobalContext_isProduction } from '../runtime/globalContextServerSide.js'
 
 /**
  * Programmatically trigger `$ vike dev`
