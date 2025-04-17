@@ -87,7 +87,7 @@ const globalObject = globalObject_ as typeof globalObject_ & {
   globalContext_public?: GlobalContextServerSidePublic
 }
 
-type GlobalContextInternal = ReturnType<typeof resolveGlobalContext>
+type GlobalContextInternal = Awaited<ReturnType<typeof setGlobalContext>>
 
 async function getGlobalContextInternal() {
   // getGlobalContextInternal() should always be called after initGlobalContext()
@@ -507,7 +507,6 @@ async function setGlobalContext(virtualFileExports: unknown) {
   globalObject.userFiles = userFiles
 
   const globalContext = resolveGlobalContext()
-  assertIsDefined(globalContext)
 
   // Internal usage
   if (!globalObject.globalContext) {
@@ -523,6 +522,9 @@ async function setGlobalContext(virtualFileExports: unknown) {
 
   assertGlobalContextIsDefined()
   onSetupRuntime()
+
+  // Never actually used, only used for TypeScript `ReturnType<typeof setGlobalContext>`
+  return globalContext
 }
 
 function clearGlobalContext() {
