@@ -60,6 +60,7 @@ import { assertV1Design } from '../shared/assertV1Design.js'
 import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
 import { resolveBase } from '../shared/resolveBase.js'
 import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js'
+import {createGlobalContextShared, GlobalContextShared} from '../../shared/createGlobalContextShared.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
 const globalObject_ = getGlobalObject<
@@ -420,26 +421,34 @@ async function updateUserFiles() {
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
-  const pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
+  const globalContext = await createGlobalContextShared(virtualFileExports, addGlobalContext)
 
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
-    pageConfigsRuntime
-
-  const globalContext = {
-    _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds,
-    pages: pageConfigsUserFriendly,
-    config: globalConfig.config
-  }
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
-    pageConfigs.length > 0,
-    pageFilesAll
+    globalContext._pageConfigs.length > 0,
+    globalContext._pageFilesAll
   )
 
-  const globalContextAddendum = await (async () => {
+  // Internal usage
+  if (!globalObject.globalContext) {
+    globalObject.globalContext = globalContext
+  } else {
+    // Ensure all globalContext user-land references are preserved & updated
+    // globalContext_public is just a proxy of globalContext
+    objectReplace(globalObject.globalContext, globalContext)
+  }
+
+  // Public usage
+  globalObject.globalContext_public = makePublic(globalContext)
+
+  assertGlobalContextIsDefined()
+  onSetupRuntime()
+
+  // Never actually used, only used for TypeScript `ReturnType<typeof setGlobalContext>`
+  return globalContext
+}
+
+async function addGlobalContext(globalContext: GlobalContextShared) {
     const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
       globalContext._pageFilesAll,
       globalContext._pageConfigs,
@@ -500,26 +509,6 @@ async function setGlobalContext(virtualFileExports: unknown) {
         }
       }
     }
-  })()
-  objectAssign(globalContext, globalContextAddendum)
-
-  // Internal usage
-  if (!globalObject.globalContext) {
-    globalObject.globalContext = globalContext
-  } else {
-    // Ensure all globalContext user-land references are preserved & updated
-    // globalContext_public is just a proxy of globalContext
-    objectReplace(globalObject.globalContext, globalContext)
-  }
-
-  // Public usage
-  globalObject.globalContext_public = makePublic(globalContext)
-
-  assertGlobalContextIsDefined()
-  onSetupRuntime()
-
-  // Never actually used, only used for TypeScript `ReturnType<typeof setGlobalContext>`
-  return globalContext
 }
 
 function clearGlobalContext() {
