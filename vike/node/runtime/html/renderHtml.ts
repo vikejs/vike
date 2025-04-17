@@ -304,7 +304,7 @@ function renderTemplate(
     }
 
     {
-      const { isProduction } = pageContext._globalContext
+      const { _isProduction: isProduction } = pageContext._globalContext
       if (
         isHtml(templateVar) &&
         // We don't show this warning in production because it's expected that some users may (un)willingly do some XSS injection: we avoid flooding the production logs.

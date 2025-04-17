@@ -96,24 +96,24 @@ type GlobalContextInternal = {
   PageRuntimeInfo &
   (
     | {
-        isProduction: false
-        isPrerendering: false
+        _isProduction: false
+        _isPrerendering: false
         viteConfig: ResolvedConfig
-        viteDevServer: ViteDevServer
+        _viteDevServer: ViteDevServer
         assetsManifest: null
       }
     | ({
-        isProduction: true
+        _isProduction: true
         assetsManifest: ViteManifest
-        viteDevServer: null
+        _viteDevServer: null
       } & (
         | {
-            isPrerendering: false
+            _isPrerendering: false
             viteConfig: null
           }
         | {
-            isPrerendering: true
-            usesClientRouter: boolean
+            _isPrerendering: true
+            _usesClientRouter: boolean
             viteConfig: ResolvedConfig
           }
       ))
@@ -356,10 +356,10 @@ function resolveGlobalContext(): GlobalContextInternal | null {
     assert(viteConfigRuntime)
     assert(!isPrerendering)
     globalContext = {
-      isProduction: false,
-      isPrerendering: false,
+      _isProduction: false,
+      _isPrerendering: false,
       assetsManifest: null,
-      viteDevServer,
+      _viteDevServer: viteDevServer,
       viteConfig,
       ...userFiles,
       viteConfigRuntime,
@@ -373,24 +373,24 @@ function resolveGlobalContext(): GlobalContextInternal | null {
     assert(buildInfo)
     assert(assetsManifest)
     const globalContext_ = {
-      isProduction: true as const,
+      _isProduction: true as const,
       assetsManifest,
       ...userFiles,
-      viteDevServer: null,
+      _viteDevServer: null,
       viteConfigRuntime: buildInfo.viteConfigRuntime,
-      usesClientRouter: buildInfo.usesClientRouter,
+      _usesClientRouter: buildInfo.usesClientRouter,
       ...resolveBaseRuntime(buildInfo.viteConfigRuntime, userFiles.config)
     }
     if (isPrerendering) {
       assert(viteConfig)
       objectAssign(globalContext_, {
-        isPrerendering: true as const,
+        _isPrerendering: true as const,
         viteConfig
       })
       globalContext = globalContext_
     } else {
       objectAssign(globalContext_, {
-        isPrerendering: false as const,
+        _isPrerendering: false as const,
         viteConfig: null
       })
       globalContext = globalContext_

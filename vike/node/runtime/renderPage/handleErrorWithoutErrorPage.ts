@@ -28,7 +28,7 @@ async function handleErrorWithoutErrorPage<
 
   {
     const isV1 = pageContext._pageConfigs.length > 0
-    await warnMissingErrorPage(isV1, pageContext._globalContext.isProduction)
+    await warnMissingErrorPage(isV1, pageContext._globalContext._isProduction)
   }
 
   if (!pageContext.isClientSideNavigation) {

@@ -54,7 +54,7 @@ async function getHtmlTags(
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
-  const { isProduction } = pageContext._globalContext
+  const { _isProduction: isProduction } = pageContext._globalContext
   const injectScriptsAt = getInjectScriptsAt(pageContext.pageId, pageContext._pageConfigs)
 
   const injectFilterEntries: InjectFilterEntry[] = []

@@ -42,7 +42,7 @@ async function loadUserFilesServerSide(pageContext: { pageId: string } & PageCon
       pageConfig,
       globalContext.pageConfigGlobal,
       pageContext.pageId,
-      !globalContext.isProduction
+      !globalContext._isProduction
     ),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext.pageId, { sharedPageFilesAlreadyLoaded: true })
   ])

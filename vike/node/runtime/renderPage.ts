@@ -579,7 +579,7 @@ async function handleAbortError(
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
 > {
-  logAbortErrorHandled(errAbort, globalContext.isProduction, pageContextNominalPageBegin)
+  logAbortErrorHandled(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
 
   const pageContextAbort = errAbort._pageContextAbort
   let pageContextSerialized: string

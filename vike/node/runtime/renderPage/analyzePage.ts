@@ -29,7 +29,7 @@ async function analyzePage(
       eagerlyImported: false
     })
     // In production we inject the import of the server virtual module with ?extractAssets inside the client virtual module
-    if (!globalContext.isProduction) {
+    if (!globalContext._isProduction) {
       clientDependencies.push({
         id: getVirtualFileIdPageConfigValuesAll(pageConfig.pageId, false),
         onlyAssets: true,

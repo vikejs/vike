@@ -600,13 +600,13 @@ async function createPageContextPrerendering(
   {
     const { pageId } = pageContext
     assert(pageId)
-    assert(globalContext.isPrerendering)
+    assert(globalContext._isPrerendering)
     if (globalContext.pageConfigs.length > 0) {
       const pageConfig = globalContext.pageConfigs.find((p) => p.pageId === pageId)
       assert(pageConfig)
       usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
     } else {
-      usesClientRouter = globalContext.usesClientRouter
+      usesClientRouter = globalContext._usesClientRouter
     }
   }
   objectAssign(pageContext, { _usesClientRouter: usesClientRouter })

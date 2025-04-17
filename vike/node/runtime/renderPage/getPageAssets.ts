@@ -40,13 +40,13 @@ async function getPageAssets(
   clientEntries: string[]
 ): Promise<PageAsset[]> {
   const globalContext = pageContext._globalContext
-  const { isProduction } = globalContext
+  const { _isProduction: isProduction } = globalContext
   const isDev = !isProduction
 
   let assetUrls: string[]
   let clientEntriesSrc: string[]
   if (isDev) {
-    const { viteDevServer } = globalContext
+    const { _viteDevServer: viteDevServer } = globalContext
     clientEntriesSrc = await Promise.all(
       clientEntries.map((clientEntry) => globalObject.resolveClientEntriesDev!(clientEntry, viteDevServer))
     )
