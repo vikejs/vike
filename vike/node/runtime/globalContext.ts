@@ -431,7 +431,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
     pageConfigGlobal,
     allPageIds
   )
-  const userFiles = {
+  const globalContext = {
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
@@ -447,13 +447,12 @@ async function setGlobalContext(virtualFileExports: unknown) {
     pageFilesAll
   )
 
-  const globalContext = {}
   const globalContextAddendum = (() => {
     const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
     assert(typeof isProduction === 'boolean')
     if (!isProduction) {
       assert(viteDevServer)
-      assert(userFiles) // main common requirement
+      assert(globalContext) // main common requirement
       assert(viteConfig)
       assert(viteConfigRuntime)
       assert(!isPrerendering)
@@ -463,24 +462,24 @@ async function setGlobalContext(virtualFileExports: unknown) {
         assetsManifest: null,
         _viteDevServer: viteDevServer,
         viteConfig,
-        ...userFiles,
+        ...globalContext,
         viteConfigRuntime,
-        ...resolveBaseRuntime(viteConfigRuntime, userFiles.config)
+        ...resolveBaseRuntime(viteConfigRuntime, globalContext.config)
       }
     } else {
       assert(globalObject.buildEntry)
-      assert(userFiles) // main common requiement
+      assert(globalContext) // main common requiement
       const { buildInfo, assetsManifest } = globalObject
       assert(buildInfo)
       assert(assetsManifest)
       const globalContextBase = {
         _isProduction: true as const,
         assetsManifest,
-        ...userFiles,
+        ...globalContext,
         _viteDevServer: null,
         viteConfigRuntime: buildInfo.viteConfigRuntime,
         _usesClientRouter: buildInfo.usesClientRouter,
-        ...resolveBaseRuntime(buildInfo.viteConfigRuntime, userFiles.config)
+        ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config)
       }
       if (isPrerendering) {
         assert(viteConfig)
