@@ -474,7 +474,7 @@ async function loadBuildEntry(outDir?: string) {
   assertBuildEntry(buildEntry)
   globalObject.assetsManifest = buildEntry.assetsManifest
   globalObject.buildInfo = buildEntry.buildInfo
-  await setUserFiles(buildEntry.virtualFileExports)
+  await setGlobalContext(buildEntry.virtualFileExports)
 }
 async function setGlobalContext_buildEntry(buildEntry: unknown) {
   debug('setGlobalContext_buildEntry()')
@@ -550,11 +550,11 @@ async function updateUserFiles() {
   // Avoid race condition: abort if there is a new globalObject.viteDevServer (happens when vite.config.js is modified => Vite's dev server is fully reloaded).
   if (viteDevServer !== globalObject.viteDevServer) return
 
-  await setUserFiles(virtualFileExports)
+  await setGlobalContext(virtualFileExports)
   resolve()
 }
 
-async function setUserFiles(virtualFileExports: unknown) {
+async function setGlobalContext(virtualFileExports: unknown) {
   const pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
   const userFiles = await getUserFiles(pageConfigsRuntime)
   globalObject.userFiles = userFiles
