@@ -630,11 +630,11 @@ const headings = [
     title: '`meta`',
     url: '/meta',
     sectionTitles: [
-      'Example: `dataEndpointUrl`',
-      'Example: `sql`',
-      'Example: `title` and `description`',
-      'Example: `Layout`',
-      'Example: modify `data()` env'
+      'Example: `+dataEndpointUrl`',
+      'Example: `+sql`',
+      'Example: `+title` and `+description`',
+      'Example: `+Layout`',
+      'Example: modify `+data` env'
     ]
   },
   {
