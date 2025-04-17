@@ -8,11 +8,10 @@ function getPublicProxy<Obj extends Record<string, unknown>, PropsPublic extends
   objName: string,
   propsPublic: PropsPublic
 ): Pick<Obj, PropsPublic[number]> {
-  Object.keys(obj).forEach((key) => {
-    assert(key.startsWith('_') || propsPublic.includes(key))
-  })
+  Object.keys(obj).forEach((key) => assert(key.startsWith('_') || propsPublic.includes(key)))
   propsPublic.forEach((prop) => prop in obj)
-  const objPublic = new Proxy(obj, {
+
+  return new Proxy(obj, {
     get(_, prop) {
       const propStr = String(prop)
       if (propStr.startsWith('_')) {
@@ -26,5 +25,4 @@ function getPublicProxy<Obj extends Record<string, unknown>, PropsPublic extends
       return Reflect.get(...arguments)
     }
   })
-  return objPublic
 }
