@@ -23,7 +23,7 @@ import {
   PLimit,
   isArray,
   onSetupPrerender,
-  makePublicCopy,
+  getPublicProxy,
   PROJECT_VERSION,
   preservePropertyGetters
 } from './utils.js'
@@ -1211,7 +1211,7 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
 
 type PrerenderContextPublic = Pick<PrerenderContext, 'output' | 'pageContexts'>
 function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
-  const prerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
+  const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext', [
     'output', // vite-plugin-vercel
     'pageContexts' // https://vike.dev/i18n#pre-rendering
   ]) as any as PrerenderContextPublic

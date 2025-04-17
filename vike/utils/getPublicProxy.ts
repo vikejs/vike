@@ -1,9 +1,9 @@
-export { makePublicCopy }
+export { getPublicProxy }
 
 import { assert, assertWarning } from './assert.js'
 
 // Show warning when user is accessing internal `_` properties.
-function makePublicCopy<Obj extends Record<string, unknown>, PropsPublic extends readonly (keyof Obj)[]>(
+function getPublicProxy<Obj extends Record<string, unknown>, PropsPublic extends readonly (keyof Obj)[]>(
   obj: Obj,
   objName: string,
   propsPublic: PropsPublic

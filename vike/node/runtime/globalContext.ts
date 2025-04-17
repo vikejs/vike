@@ -45,7 +45,7 @@ import {
   getGlobalObject,
   genPromise,
   createDebugger,
-  makePublicCopy,
+  getPublicProxy,
   checkType,
   PROJECT_VERSION
 } from './utils.js'
@@ -205,7 +205,7 @@ function getGlobalContextSync(): GlobalContextServerSidePublic {
 
 type GlobalContextServerSidePublic = ReturnType<typeof makePublic>
 function makePublic(globalContext: GlobalContextInternal) {
-  const globalContextPublic = makePublicCopy(globalContext, 'globalContext', [
+  const globalContextPublic = getPublicProxy(globalContext, 'globalContext', [
     'assetsManifest',
     'config',
     'viteConfig',
