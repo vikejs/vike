@@ -23,7 +23,7 @@ import {
   PLimit,
   isArray,
   onSetupPrerender,
-  makePublicCopy,
+  getPublicProxy,
   PROJECT_VERSION,
   preservePropertyGetters
 } from './utils.js'
@@ -35,6 +35,7 @@ import type { PageFile } from '../../shared/getPageFiles.js'
 import {
   getGlobalContextInternal,
   type GlobalContextInternal,
+  type GlobalContextServerSidePublic,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
@@ -92,10 +93,10 @@ type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
 type PrerenderContext = {
   pageContexts: PageContext[]
-  pageContextInit: Record<string, unknown> | null
-  noExtraDir: boolean | null
-  prerenderedPageContexts: PrerenderedPageContexts
   output: Output
+  _pageContextInit: Record<string, unknown> | null
+  _noExtraDir: boolean | null
+  _prerenderedPageContexts: PrerenderedPageContexts
 }
 type Output<PageContext = PageContextPrerendered> = {
   filePath: string
@@ -203,15 +204,15 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   )
 
   await initGlobalContext_runPrerender()
-  const globalContext = await getGlobalContextInternal()
-  globalContext.pageFilesAll.forEach(assertExportNames)
+  const { globalContext, globalContext_public } = await getGlobalContextInternal()
+  globalContext._pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {
-    noExtraDir,
     pageContexts: [],
-    pageContextInit: options.pageContextInit ?? null,
-    prerenderedPageContexts: {},
-    output: []
+    output: [],
+    _noExtraDir: noExtraDir,
+    _pageContextInit: options.pageContextInit ?? null,
+    _prerenderedPageContexts: {}
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -225,15 +226,21 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   // Allow user to create `pageContext` for parameterized routes and/or bulk data fetching
   // https://vike.dev/onBeforePrerenderStart
-  await callOnBeforePrerenderStartHooks(prerenderContext, globalContext, concurrencyLimit, doNotPrerenderList)
+  await callOnBeforePrerenderStartHooks(
+    prerenderContext,
+    globalContext,
+    globalContext_public,
+    concurrencyLimit,
+    doNotPrerenderList
+  )
 
   // Create `pageContext` for each page with a static route
   const urlList = getUrlListFromPagesWithStaticRoute(globalContext, doNotPrerenderList)
-  await createPageContexts(urlList, prerenderContext, globalContext, concurrencyLimit, false)
+  await createPageContexts(urlList, prerenderContext, globalContext, globalContext_public, concurrencyLimit, false)
 
   // Create `pageContext` for 404 page
   const urlList404 = getUrlList404(globalContext)
-  await createPageContexts(urlList404, prerenderContext, globalContext, concurrencyLimit, true)
+  await createPageContexts(urlList404, prerenderContext, globalContext, globalContext_public, concurrencyLimit, true)
 
   // Allow user to duplicate the list of `pageContext` for i18n
   // https://vike.dev/onPrerenderStart
@@ -245,18 +252,18 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     prerenderedCount++
     const { pageId } = htmlFile.pageContext
     assert(pageId)
-    prerenderContext.prerenderedPageContexts[pageId] = htmlFile.pageContext
+    prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
     await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, prerenderContext.output, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
-  warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
+  warnContradictoryNoPrerenderList(prerenderContext._prerenderedPageContexts, doNotPrerenderList)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
 
-  await warnMissingPages(prerenderContext.prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
+  await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
   const prerenderContextPublic = makePublic(prerenderContext)
   objectAssign(vike.prerenderContext, prerenderContextPublic)
@@ -294,7 +301,7 @@ async function collectDoNoPrerenderList(
   // Old design
   // TODO/v1-release: remove
   await Promise.all(
-    globalContext.pageFilesAll
+    globalContext._pageFilesAll
       .filter((p) => {
         assertExportNames(p)
         if (!p.exportNames?.includes('doNotPrerender')) return false
@@ -311,8 +318,8 @@ async function collectDoNoPrerenderList(
         })
       )
   )
-  globalContext.allPageIds.forEach((pageId) => {
-    const pageFilesServerSide = getPageFilesServerSide(globalContext.pageFilesAll, pageId)
+  globalContext._allPageIds.forEach((pageId) => {
+    const pageFilesServerSide = getPageFilesServerSide(globalContext._pageFilesAll, pageId)
     for (const p of pageFilesServerSide) {
       if (!p.exportNames?.includes('doNotPrerender')) continue
       const { fileExports } = p
@@ -342,6 +349,7 @@ function assertExportNames(pageFile: PageFile) {
 async function callOnBeforePrerenderStartHooks(
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
+  globalContext_public: GlobalContextServerSidePublic,
   concurrencyLimit: PLimit,
   doNotPrerenderList: DoNotPrerenderList
 ) {
@@ -361,7 +369,7 @@ async function callOnBeforePrerenderStartHooks(
 
   // V1 design
   await Promise.all(
-    globalContext.pageConfigs.map((pageConfig) =>
+    globalContext._pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         const hookName = 'onBeforePrerenderStart'
         const pageConfigLoaded = await loadConfigValues(pageConfig, false)
@@ -381,7 +389,7 @@ async function callOnBeforePrerenderStartHooks(
 
   // 0.4 design
   await Promise.all(
-    globalContext.pageFilesAll
+    globalContext._pageFilesAll
       .filter((p) => {
         assertExportNames(p)
         if (!p.exportNames?.includes('prerender')) return false
@@ -450,6 +458,7 @@ async function callOnBeforePrerenderStartHooks(
               url,
               prerenderContext,
               globalContext,
+              globalContext_public,
               false,
               undefined,
               providedByHook
@@ -471,7 +480,7 @@ function getUrlListFromPagesWithStaticRoute(
   doNotPrerenderList: DoNotPrerenderList
 ) {
   const urlList: UrlListEntry[] = []
-  globalContext.pageRoutes.map((pageRoute) => {
+  globalContext._pageRoutes.map((pageRoute) => {
     const { pageId } = pageRoute
 
     if (doNotPrerenderList.find((p) => p.pageId === pageId)) return
@@ -497,7 +506,7 @@ function getUrlListFromPagesWithStaticRoute(
 }
 function getUrlList404(globalContext: GlobalContextInternal): UrlListEntry[] {
   const urlList: UrlListEntry[] = []
-  const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
+  const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
   if (errorPageId) {
     urlList.push({
       // A URL is required for `viteDevServer.transformIndexHtml(url,html)`
@@ -516,6 +525,7 @@ async function createPageContexts(
   urlList: UrlListEntry[],
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
+  globalContext_public: GlobalContextServerSidePublic,
   concurrencyLimit: PLimit,
   is404: boolean
 ) {
@@ -530,6 +540,7 @@ async function createPageContexts(
           urlOriginal,
           prerenderContext,
           globalContext,
+          globalContext_public,
           is404,
           pageId,
           null
@@ -544,21 +555,24 @@ async function createPageContextPrerendering(
   urlOriginal: string,
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
+  globalContext_public: GlobalContextServerSidePublic,
   is404: boolean,
   pageId: string | undefined,
   providedByHook: ProvidedByHook
 ) {
   const pageContextInit = {
     urlOriginal,
-    ...prerenderContext.pageContextInit
+    ...prerenderContext._pageContextInit
   }
-  const pageContext = await createPageContextServerSide(pageContextInit, globalContext, { isPrerendering: true })
+  const pageContext = await createPageContextServerSide(pageContextInit, globalContext, globalContext_public, {
+    isPrerendering: true
+  })
   assert(pageContext.isPrerendering === true)
   objectAssign(pageContext, {
     _urlHandler: null,
     _httpRequestId: null,
     _urlRewrite: null,
-    _noExtraDir: prerenderContext.noExtraDir,
+    _noExtraDir: prerenderContext._noExtraDir,
     _prerenderContext: prerenderContext,
     _providedByHook: providedByHook,
     _urlOriginalModifiedByHook: null as ProvidedByHookTransformer,
@@ -586,13 +600,13 @@ async function createPageContextPrerendering(
   {
     const { pageId } = pageContext
     assert(pageId)
-    assert(globalContext.isPrerendering)
-    if (globalContext.pageConfigs.length > 0) {
-      const pageConfig = globalContext.pageConfigs.find((p) => p.pageId === pageId)
+    assert(globalContext._isPrerendering)
+    if (globalContext._pageConfigs.length > 0) {
+      const pageConfig = globalContext._pageConfigs.find((p) => p.pageId === pageId)
       assert(pageConfig)
       usesClientRouter = getConfigValueRuntime(pageConfig, 'clientRouting', 'boolean')?.value ?? false
     } else {
-      usesClientRouter = globalContext.usesClientRouter
+      usesClientRouter = globalContext._usesClientRouter
     }
   }
   objectAssign(pageContext, { _usesClientRouter: usesClientRouter })
@@ -660,9 +674,9 @@ async function callOnPrerenderStartHook(
       }
 
   // V1 design
-  if (globalContext.pageConfigs.length > 0) {
+  if (globalContext._pageConfigs.length > 0) {
     const hookName = 'onPrerenderStart'
-    const hook = getHookFromPageConfigGlobal(globalContext.pageConfigGlobal, hookName)
+    const hook = getHookFromPageConfigGlobal(globalContext._pageConfigGlobal, hookName)
     if (hook) {
       assert(hook.hookName === 'onPrerenderStart')
       onPrerenderStartHook = {
@@ -675,10 +689,10 @@ async function callOnPrerenderStartHook(
 
   // Old design
   // TODO/v1-release: remove
-  if (globalContext.pageConfigs.length === 0) {
+  if (globalContext._pageConfigs.length === 0) {
     const hookTimeout = getHookTimeoutDefault('onBeforePrerender')
 
-    const pageFilesWithOnBeforePrerenderHook = globalContext.pageFilesAll.filter((p) => {
+    const pageFilesWithOnBeforePrerenderHook = globalContext._pageFilesAll.filter((p) => {
       assertExportNames(p)
       if (!p.exportNames?.includes('onBeforePrerender')) return false
       assertUsage(
@@ -878,7 +892,7 @@ async function prerenderPages(
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          doNotCreateExtraDirectory: prerenderContext.noExtraDir ?? pageContext.is404
+          doNotCreateExtraDirectory: prerenderContext._noExtraDir ?? pageContext.is404
         })
       })
     )
@@ -912,16 +926,16 @@ async function warnMissingPages(
   doNotPrerenderList: DoNotPrerenderList,
   partial: boolean
 ) {
-  const isV1 = globalContext.pageConfigs.length > 0
+  const isV1 = globalContext._pageConfigs.length > 0
   const hookName = isV1 ? 'onBeforePrerenderStart' : 'prerender'
   /* TODO/after-v1-design-release: document setting `prerender: false` as an alternative to using prerender.partial (both in the warnings and the docs)
   const optOutName = isV1 ? 'prerender' : 'doNotPrerender'
   const msgAddendum = `Explicitly opt-out by setting the config ${optOutName} to ${isV1 ? 'false' : 'true'} or use the option prerender.partial`
   */
-  globalContext.allPageIds
+  globalContext._allPageIds
     .filter((pageId) => !prerenderedPageContexts[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
-    .filter((pageId) => !isErrorPage(pageId, globalContext.pageConfigs))
+    .filter((pageId) => !isErrorPage(pageId, globalContext._pageConfigs))
     .forEach((pageId) => {
       const pageAt = isV1 ? pageId : `\`${pageId}.page.*\``
       assertWarning(
@@ -1195,12 +1209,9 @@ function assertIsNotAbort(err: unknown, urlOriginal: string) {
   )
 }
 
-type PrerenderContextPublic = {
-  output: Output<PageContextServer>
-  pageContexts: PageContextServer[]
-}
+type PrerenderContextPublic = Pick<PrerenderContext, 'output' | 'pageContexts'>
 function makePublic(prerenderContext: PrerenderContext): PrerenderContextPublic {
-  const prerenderContextPublic = makePublicCopy(prerenderContext, 'prerenderContext', [
+  const prerenderContextPublic = getPublicProxy(prerenderContext, 'prerenderContext', [
     'output', // vite-plugin-vercel
     'pageContexts' // https://vike.dev/i18n#pre-rendering
   ]) as any as PrerenderContextPublic

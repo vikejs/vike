@@ -1,7 +1,7 @@
 export { createGetGlobalContext }
 
-import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
-import { assert, getGlobalObject, objectAssign, objectReplace } from './utils.js'
+import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
+import { assert, getGlobalObject, objectReplace } from './utils.js'
 
 const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
@@ -11,7 +11,7 @@ const globalObject = getGlobalObject<{
 function createGetGlobalContext<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   isClientRouting: boolean,
-  addGlobalContext?: (globalContext: ReturnType<typeof createGlobalContext>) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
 ) {
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
@@ -32,31 +32,17 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = createGlobalContext(virtualFileExports)
-    const globalContextAddendum = await addGlobalContext?.(globalContext)
-    objectAssign(globalContext, globalContextAddendum)
+    const globalContext = await createGlobalContextShared(virtualFileExports, addGlobalContext)
 
     // Singleton
     if (!globalObject.globalContext) {
       globalObject.globalContext = globalContext
     } else {
-      // Ensure all `globalContext` references are preserved & updated
+      // Ensure all `globalContext` user-land references are preserved & updated
       objectReplace(globalObject.globalContext, globalContext)
     }
 
     // Return
     return globalContext
   }
-}
-
-function createGlobalContext(virtualFileExports: unknown) {
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
-  const globalContext = {
-    _virtualFileExports: virtualFileExports,
-    _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds
-  }
-  return globalContext
 }

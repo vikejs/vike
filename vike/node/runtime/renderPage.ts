@@ -37,7 +37,12 @@ import {
   logAbortErrorHandled,
   PageContextFromRewrite
 } from '../../shared/route/abort.js'
-import { getGlobalContextInternal, initGlobalContext_renderPage, type GlobalContextInternal } from './globalContext.js'
+import {
+  getGlobalContextInternal,
+  type GlobalContextServerSidePublic,
+  initGlobalContext_renderPage,
+  type GlobalContextInternal
+} from './globalContext.js'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl.js'
 import {
   type HttpResponse,
@@ -146,9 +151,14 @@ async function renderPagePrepare(
   } else {
     // `globalContext` now contains the entire Vike config and getVikeConfig() isn't called anymore for this request.
   }
-  const globalContext = await getGlobalContextInternal()
+  const { globalContext, globalContext_public } = await getGlobalContextInternal()
 
-  const pageContextBegin = await getPageContextBegin(pageContextInit, globalContext, httpRequestId)
+  const pageContextBegin = await getPageContextBegin(
+    pageContextInit,
+    globalContext,
+    globalContext_public,
+    httpRequestId
+  )
 
   // Check Base URL
   {
@@ -250,7 +260,7 @@ async function renderPageAlreadyPrepared(
     }
 
     {
-      const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
+      const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
       if (!errorPageId) {
         objectAssign(pageContextErrorPageInit, { pageId: null })
         return handleErrorWithoutErrorPage(pageContextErrorPageInit)
@@ -431,10 +441,11 @@ async function getPageContextErrorPageInit(
 async function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
+  globalContext_public: GlobalContextServerSidePublic,
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)
-  const pageContextBegin = await createPageContextServerSide(pageContextInit, globalContext, {
+  const pageContextBegin = await createPageContextServerSide(pageContextInit, globalContext, globalContext_public, {
     isPrerendering: false,
     ssr: {
       urlHandler: _urlHandler,
@@ -568,13 +579,13 @@ async function handleAbortError(
   | { pageContextReturn: PageContextAfterRender; pageContextAbort?: never }
   | { pageContextReturn?: never; pageContextAbort: Record<string, unknown> }
 > {
-  logAbortErrorHandled(errAbort, globalContext.isProduction, pageContextNominalPageBegin)
+  logAbortErrorHandled(errAbort, globalContext._isProduction, pageContextNominalPageBegin)
 
   const pageContextAbort = errAbort._pageContextAbort
   let pageContextSerialized: string
   if (pageContextNominalPageBegin.isClientSideNavigation) {
     if (pageContextAbort.abortStatusCode) {
-      const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
+      const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
       const abortCall = pageContextAbort._abortCall
       assert(abortCall)
       assertUsage(

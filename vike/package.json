@@ -255,7 +255,7 @@
     "@types/source-map-support": "^0.5.10",
     "react-streaming": "^0.3.47",
     "rimraf": "^5.0.5",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "vite": "^6.2.5"
   },
   "scripts": {

@@ -35,7 +35,7 @@ async function log404(pageContext: {
     */
   )
   const globalContext = pageContext._globalContext
-  if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext.isClientSideNavigation) {
+  if (!globalContext._isProduction && !isFileRequest(urlPathname) && !pageContext.isClientSideNavigation) {
     const routesInfo = getRoutesInfo(pageRoutes)
     let msg = `URL ${pc.cyan(urlPathname)} ${noRouteMatch}`
     const outro = 'See https://vike.dev/routing for more information about routing.'

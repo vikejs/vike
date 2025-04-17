@@ -14,7 +14,7 @@ It's typically used for initializing `pageContext` properties:
 
 import type { PageContext } from 'vike/types'
 
-export function onCreatePageContext(pageContext: PageContext) {
+export async function onCreatePageContext(pageContext: PageContext) {
   pageContext.someInstance = new Instance({ some: 'initial-value' })
 }
 ```
@@ -30,7 +30,7 @@ A common use case is to initialize a <Link href="/store">store</Link>:
 import { Store } from 'some-state-management-library'
 import type { PageContextServer } from 'vike/types'
 
-export function onCreatePageContext(pageContext: PageContextServer) {
+export async function onCreatePageContext(pageContext: PageContextServer) {
   pageContext.store = new Store()
 }
 ```

@@ -4,7 +4,7 @@ export type { PageContextCreatedServerSide }
 
 import { assert, assertUsage, assertWarning, augmentType, normalizeHeaders, objectAssign } from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
-import type { GlobalContextInternal } from '../globalContext.js'
+import type { GlobalContextInternal, GlobalContextServerSidePublic } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
 import { createPageContextShared } from '../../../shared/createPageContextShared.js'
 
@@ -12,6 +12,7 @@ type PageContextCreatedServerSide = Awaited<ReturnType<typeof createPageContextS
 async function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
+  globalObject_public: GlobalContextServerSidePublic,
   {
     isPrerendering,
     ssr: { urlHandler, isClientSideNavigation } = {
@@ -44,16 +45,16 @@ async function createPageContextServerSide(
     // TODO/now: add meta.default
     _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
     // TODO/soon: use GloablContext instead
-    _pageFilesAll: globalContext.pageFilesAll,
-    _pageConfigs: globalContext.pageConfigs,
-    _pageConfigGlobal: globalContext.pageConfigGlobal,
-    _allPageIds: globalContext.allPageIds,
-    _pageRoutes: globalContext.pageRoutes,
-    _onBeforeRouteHook: globalContext.onBeforeRouteHook,
+    _pageFilesAll: globalContext._pageFilesAll,
+    _pageConfigs: globalContext._pageConfigs,
+    _pageConfigGlobal: globalContext._pageConfigGlobal,
+    _allPageIds: globalContext._allPageIds,
+    _pageRoutes: globalContext._pageRoutes,
+    _onBeforeRouteHook: globalContext._onBeforeRouteHook,
     _globalContext: globalContext,
     // TODO/now: add PageContext['globalContext']
     /** @experimental This is a beta feature https://vike.dev/getGlobalContext */
-    globalContext: globalContext.globalContext_public,
+    globalContext: globalObject_public,
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
     _urlHandler: urlHandler,
@@ -87,7 +88,7 @@ async function createPageContextServerSide(
     objectAssign(pageContextCreated, { headers })
   }
 
-  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext.pageConfigGlobal)
+  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
   augmentType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated

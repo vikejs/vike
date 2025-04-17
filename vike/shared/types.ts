@@ -19,8 +19,9 @@ import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-co
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
-import type { GlobalContextPublic } from '../node/runtime/globalContext.js'
-import type { GlobalContextClientSidePublic } from '../client/client-routing-runtime/globalContextClientSide.js'
+import type { GlobalContextServerSidePublic } from '../node/runtime/globalContext.js'
+import type { GlobalContextClientSidePublic as GlobalContextClientSidePublicWithServerRouting } from '../client/server-routing-runtime/globalContext.js'
+import type { GlobalContextClientSidePublic as GlobalContextClientSidePublicWithClientRouting } from '../client/client-routing-runtime/globalContext.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext
 
@@ -179,7 +180,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      *
      * https://vike.dev/getGlobalContext
      */
-    globalContext: GlobalContextPublic
+    globalContext: GlobalContextServerSidePublic
 
     isHydration?: undefined
     isBackwardNavigation?: undefined
@@ -218,6 +219,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * https://vike.dev/pageContext
      */
     previousPageContext: PageContextClient<Data> | null
+    globalContext: GlobalContextClientSidePublicWithClientRouting
   } & PageContextUrlClient
 
 type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
@@ -235,6 +237,7 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
      * The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
      */
     isBackwardNavigation: null
+    globalContext: GlobalContextClientSidePublicWithServerRouting
   }
 
 type PageContextClientCommon = {
@@ -253,7 +256,6 @@ type PageContextClientCommon = {
    * https://vike.dev/pageContext
    */
   isPrerendering: false
-  globalContext: GlobalContextClientSidePublic
 }
 
 /** For Vike internal use */

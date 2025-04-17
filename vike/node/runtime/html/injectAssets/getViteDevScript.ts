@@ -10,10 +10,10 @@ async function getViteDevScript(pageContext: {
   _globalContext: GlobalContextInternal
 }): Promise<string> {
   const globalContext = pageContext._globalContext
-  if (globalContext.isProduction) {
+  if (globalContext._isProduction) {
     return ''
   }
-  const { viteDevServer } = globalContext
+  const { _viteDevServer: viteDevServer } = globalContext
 
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'
