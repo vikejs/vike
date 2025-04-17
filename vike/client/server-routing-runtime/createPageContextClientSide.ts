@@ -6,7 +6,7 @@ import { loadUserFilesClientSide, type PageContextUserFiles } from '../shared/lo
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 
 import { createPageContextShared } from '../../shared/createPageContextShared.js'
-import { getGlobalContext } from './globalContextClientSide.js'
+import { getGlobalContext } from './globalContext.js'
 
 const urlFirst = getCurrentUrl({ withoutHash: true })
 
