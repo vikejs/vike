@@ -439,10 +439,10 @@ async function setGlobalContext(virtualFileExports: unknown) {
 
   const globalContextAddendum = await (async () => {
     const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
-      pageFilesAll,
-      pageConfigs,
-      pageConfigGlobal,
-      allPageIds
+      globalContext._pageFilesAll,
+      globalContext._pageConfigs,
+      globalContext._pageConfigGlobal,
+      globalContext._allPageIds
     )
     const globalContextBase = {
       _pageRoutes: pageRoutes,
