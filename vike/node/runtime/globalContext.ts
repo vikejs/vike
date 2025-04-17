@@ -572,7 +572,7 @@ function getInitialGlobalContext() {
 
 function resolveBaseRuntime(
   viteConfigRuntime: BuildInfo['viteConfigRuntime'],
-  config: GlobalContextInternal['config']
+  config: PageConfigUserFriendly['config']
 ) {
   const baseViteOriginal = viteConfigRuntime._baseViteOriginal
   const baseServerUnresolved = config.baseServer ?? null
