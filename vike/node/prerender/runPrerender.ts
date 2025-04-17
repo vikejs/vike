@@ -93,10 +93,10 @@ type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
 type PrerenderContext = {
   pageContexts: PageContext[]
+  output: Output,
   pageContextInit: Record<string, unknown> | null
   noExtraDir: boolean | null
   prerenderedPageContexts: PrerenderedPageContexts
-  output: Output
 }
 type Output<PageContext = PageContextPrerendered> = {
   filePath: string
