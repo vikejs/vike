@@ -295,56 +295,6 @@ function setIsProduction(isProduction: boolean) {
   if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
   globalObject.isProduction = isProduction
 }
-function resolveGlobalContext() {
-  const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction, userFiles } = globalObject
-  assert(typeof isProduction === 'boolean')
-  if (!isProduction) {
-    assert(viteDevServer)
-    assert(userFiles) // main common requiement
-    assert(viteConfig)
-    assert(viteConfigRuntime)
-    assert(!isPrerendering)
-    return {
-      _isProduction: false as const,
-      _isPrerendering: false as const,
-      assetsManifest: null,
-      _viteDevServer: viteDevServer,
-      viteConfig,
-      ...userFiles,
-      viteConfigRuntime,
-      ...resolveBaseRuntime(viteConfigRuntime, userFiles.config)
-    }
-  } else {
-    assert(globalObject.buildEntry)
-    assert(userFiles) // main common requiement
-    const { buildInfo, assetsManifest } = globalObject
-    assert(buildInfo)
-    assert(assetsManifest)
-    const globalContextBase = {
-      _isProduction: true as const,
-      assetsManifest,
-      ...userFiles,
-      _viteDevServer: null,
-      viteConfigRuntime: buildInfo.viteConfigRuntime,
-      _usesClientRouter: buildInfo.usesClientRouter,
-      ...resolveBaseRuntime(buildInfo.viteConfigRuntime, userFiles.config)
-    }
-    if (isPrerendering) {
-      assert(viteConfig)
-      return {
-        ...globalContextBase,
-        _isPrerendering: true as const,
-        viteConfig
-      }
-    } else {
-      return {
-        ...globalContextBase,
-        _isPrerendering: false as const,
-        viteConfig: null
-      }
-    }
-  }
-}
 
 type UserFiles = Awaited<ReturnType<typeof getUserFiles>>
 async function getUserFiles(pageConfigsRuntime: PageConfigsRuntime) {
@@ -506,7 +456,56 @@ async function setGlobalContext(virtualFileExports: unknown) {
   const userFiles = await getUserFiles(pageConfigsRuntime)
   globalObject.userFiles = userFiles
 
-  const globalContext = resolveGlobalContext()
+  const globalContext = (() => {
+    const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction, userFiles } = globalObject
+    assert(typeof isProduction === 'boolean')
+    if (!isProduction) {
+      assert(viteDevServer)
+      assert(userFiles) // main common requiement
+      assert(viteConfig)
+      assert(viteConfigRuntime)
+      assert(!isPrerendering)
+      return {
+        _isProduction: false as const,
+        _isPrerendering: false as const,
+        assetsManifest: null,
+        _viteDevServer: viteDevServer,
+        viteConfig,
+        ...userFiles,
+        viteConfigRuntime,
+        ...resolveBaseRuntime(viteConfigRuntime, userFiles.config)
+      }
+    } else {
+      assert(globalObject.buildEntry)
+      assert(userFiles) // main common requiement
+      const { buildInfo, assetsManifest } = globalObject
+      assert(buildInfo)
+      assert(assetsManifest)
+      const globalContextBase = {
+        _isProduction: true as const,
+        assetsManifest,
+        ...userFiles,
+        _viteDevServer: null,
+        viteConfigRuntime: buildInfo.viteConfigRuntime,
+        _usesClientRouter: buildInfo.usesClientRouter,
+        ...resolveBaseRuntime(buildInfo.viteConfigRuntime, userFiles.config)
+      }
+      if (isPrerendering) {
+        assert(viteConfig)
+        return {
+          ...globalContextBase,
+          _isPrerendering: true as const,
+          viteConfig
+        }
+      } else {
+        return {
+          ...globalContextBase,
+          _isPrerendering: false as const,
+          viteConfig: null
+        }
+      }
+    }
+  })()
 
   // Internal usage
   if (!globalObject.globalContext) {
