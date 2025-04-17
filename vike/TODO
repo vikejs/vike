@@ -45,6 +45,7 @@ v0.5 breaking changes:
 - pageContext.url
 - Forbid async Route Functions
 - Deprecate old design
+- Remove TS helpers such as OnRenderHtmlAsync https://vike.dev/onRenderHtml#typescript
 === Prio
 - Improve/clean import paths.
   - Either move all isomorphic exports to `import * from 'vike'` or create individual export path for each export e.g. `import { render } from 'vike/render'`
