@@ -23,7 +23,6 @@ function makePublicCopy<Obj extends Record<string, unknown>, PropsPublic extends
       } else {
         Object.defineProperty(objPublic, keyPublic, {
           configurable: true,
-          writable: true,
           enumerable: true,
           get() {
             assertWarning(
