@@ -11,7 +11,7 @@ const globalObject = getGlobalObject<{
 function createGetGlobalContext<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   isClientRouting: boolean,
-  addGlobalContext?: (globalContext: ReturnType<typeof createGlobalContext>) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: ReturnType<typeof createGlobalContextBase>) => Promise<GlobalContextAddendum>
 ) {
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
@@ -32,9 +32,7 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = createGlobalContext(virtualFileExports)
-    const globalContextAddendum = await addGlobalContext?.(globalContext)
-    objectAssign(globalContext, globalContextAddendum)
+    const globalContext = await createGlobalContext<GlobalContextAddendum>(virtualFileExports, addGlobalContext)
 
     // Singleton
     if (!globalObject.globalContext) {
@@ -49,7 +47,17 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
   }
 }
 
-function createGlobalContext(virtualFileExports: unknown) {
+async function createGlobalContext<GlobalContextAddendum extends object>(
+  virtualFileExports: unknown,
+  addGlobalContext?: (globalContext: ReturnType<typeof createGlobalContextBase>) => Promise<GlobalContextAddendum>
+) {
+  const globalContext = createGlobalContextBase(virtualFileExports)
+  const globalContextAddendum = await addGlobalContext?.(globalContext)
+  objectAssign(globalContext, globalContextAddendum)
+  return globalContext
+}
+
+function createGlobalContextBase(virtualFileExports: unknown) {
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
   const globalContext = {
     _virtualFileExports: virtualFileExports,
