@@ -400,11 +400,7 @@ function resolveGlobalContext(): GlobalContextInternal | null {
 }
 
 type UserFiles = Awaited<ReturnType<typeof getUserFiles>>
-async function getUserFiles() {
-  // Help TypeScript resolve what TypeScript (wrongfully) believes to be cyclic dependency
-  const globalObject_ = globalObject as { pageConfigsRuntime?: PageConfigsRuntime }
-  const { pageConfigsRuntime } = globalObject_
-  assert(pageConfigsRuntime)
+async function getUserFiles(pageConfigsRuntime: PageConfigsRuntime) {
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
     pageConfigsRuntime
 
@@ -559,8 +555,8 @@ async function updateUserFiles() {
 }
 
 async function setUserFiles(virtualFileExports: unknown) {
-  globalObject.pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
-  const userFiles = await getUserFiles()
+  const pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
+  const userFiles = await getUserFiles(pageConfigsRuntime)
   globalObject.userFiles = userFiles
   defineGlobalContext()
   assertGlobalContextIsDefined()
