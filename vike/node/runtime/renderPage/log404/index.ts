@@ -5,7 +5,7 @@ export { getRoutesInfo }
 
 import type { PageRoutes } from '../../../../shared/route/index.js'
 import { noRouteMatch } from '../../../../shared/route/noRouteMatch.js'
-import type { GlobalContextInternal } from '../../globalContextServerSide.js'
+import type { GlobalContextInternal } from '../../globalContext.js'
 import {
   assert,
   assertUsage,

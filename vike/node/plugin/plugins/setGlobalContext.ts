@@ -5,7 +5,7 @@ import {
   setGlobalContext_viteDevServer,
   setGlobalContext_viteConfig,
   setGlobalContext_isProduction
-} from '../../runtime/globalContextServerSide.js'
+} from '../../runtime/globalContext.js'
 import {
   assert,
   isDevCheck,

@@ -37,7 +37,7 @@ import {
   type GlobalContextInternal,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
-} from '../runtime/globalContextServerSide.js'
+} from '../runtime/globalContext.js'
 import { resolveConfig } from 'vite'
 import type { InlineConfig, ResolvedConfig } from 'vite'
 import { getPageFilesServerSide } from '../../shared/getPageFiles.js'

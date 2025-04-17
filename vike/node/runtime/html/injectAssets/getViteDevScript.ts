@@ -1,6 +1,6 @@
 export { getViteDevScript }
 
-import type { GlobalContextInternal } from '../../globalContextServerSide.js'
+import type { GlobalContextInternal } from '../../globalContext.js'
 import { assert, assertUsage, assertWarning } from '../../utils.js'
 import pc from '@brillout/picocolors'
 

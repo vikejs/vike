@@ -4,7 +4,7 @@ export type { PageContextCreatedServerSide }
 
 import { assert, assertUsage, assertWarning, augmentType, normalizeHeaders, objectAssign } from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
-import type { GlobalContextInternal } from '../globalContextServerSide.js'
+import type { GlobalContextInternal } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
 import { createPageContextShared } from '../../../shared/createPageContextShared.js'
 

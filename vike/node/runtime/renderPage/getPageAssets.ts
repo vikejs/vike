@@ -11,7 +11,7 @@ import { inferMediaType, type MediaType } from './inferMediaType.js'
 import { getManifestEntry } from './getPageAssets/getManifestEntry.js'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency.js'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader.js'
-import type { GlobalContextInternal } from '../globalContextServerSide.js'
+import type { GlobalContextInternal } from '../globalContext.js'
 import type { ViteManifest } from '../../shared/ViteManifest.js'
 import type { ResolveClientEntriesDev } from '../../plugin/shared/resolveClientEntriesDev.js'
 
