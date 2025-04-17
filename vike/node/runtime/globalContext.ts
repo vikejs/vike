@@ -431,25 +431,25 @@ async function setGlobalContext(virtualFileExports: unknown) {
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds
   }
-  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
-    pageFilesAll,
-    pageConfigs,
-    pageConfigGlobal,
-    allPageIds
-  )
-  objectAssign(globalContext, {
-    _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook,
-    pages: pageConfigsUserFriendly,
-    config: globalConfig.config
-  })
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
     pageConfigs.length > 0,
     pageFilesAll
   )
 
-  const globalContextAddendum = (() => {
+  const globalContextAddendum = await (async () => {
+    const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
+      pageFilesAll,
+      pageConfigs,
+      pageConfigGlobal,
+      allPageIds
+    )
+    const globalContextBase = {
+      _pageRoutes: pageRoutes,
+      _onBeforeRouteHook: onBeforeRouteHook,
+      pages: pageConfigsUserFriendly,
+      config: globalConfig.config
+    }
     const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
     assert(typeof isProduction === 'boolean')
     if (!isProduction) {
@@ -459,6 +459,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
       assert(viteConfigRuntime)
       assert(!isPrerendering)
       return {
+        ...globalContextBase,
         _isProduction: false as const,
         _isPrerendering: false as const,
         assetsManifest: null,
@@ -466,7 +467,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
         viteConfig,
         ...globalContext,
         viteConfigRuntime,
-        ...resolveBaseRuntime(viteConfigRuntime, globalContext.config)
+        ...resolveBaseRuntime(viteConfigRuntime, globalContextBase.config)
       }
     } else {
       assert(globalObject.buildEntry)
@@ -475,13 +476,14 @@ async function setGlobalContext(virtualFileExports: unknown) {
       assert(buildInfo)
       assert(assetsManifest)
       const globalContextBase2 = {
+        ...globalContextBase,
         _isProduction: true as const,
         assetsManifest,
         ...globalContext,
         _viteDevServer: null,
         viteConfigRuntime: buildInfo.viteConfigRuntime,
         _usesClientRouter: buildInfo.usesClientRouter,
-        ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config)
+        ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContextBase.config)
       }
       if (isPrerendering) {
         assert(viteConfig)
