@@ -8,7 +8,7 @@ function getPublicProxy<Obj extends Record<string, unknown>, PropsPublic extends
   objName: string,
   propsPublic: PropsPublic
 ): Pick<Obj, PropsPublic[number]> {
-  Object.keys(obj).forEach((key) => assert(key.startsWith('_') || propsPublic.includes(key)))
+  Object.keys(obj).forEach((key) => assert(key.startsWith('_') || propsPublic.includes(key), { key }))
   propsPublic.forEach((prop) => prop in obj)
 
   return new Proxy(obj, {
