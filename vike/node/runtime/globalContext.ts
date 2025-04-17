@@ -20,7 +20,7 @@ export { assertBuildInfo }
 export { updateUserFiles }
 export type { BuildInfo }
 export type { GlobalContextInternal }
-export type { GlobalContextPublic }
+export type { GlobalContextServerSidePublic }
 
 // The core logic revolves around:
 // - globalObject.userFiles which is the main requirement for resolveGlobalContext()
@@ -68,7 +68,7 @@ const debug = createDebugger('vike:globalContext')
 const globalObject = getGlobalObject<
   {
     globalContext?: GlobalContextInternal
-    globalContext_public?: GlobalContextPublic
+    globalContext_public?: GlobalContextServerSidePublic
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
     viteConfigRuntime?: ViteConfigRuntime
@@ -89,7 +89,7 @@ const globalObject = getGlobalObject<
 
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
 type GlobalContextInternal = GlobalContext & {
-  globalContext_public: GlobalContextPublic
+  globalContext_public: GlobalContextServerSidePublic
 }
 type GlobalContext = {
   viteConfigRuntime: ViteConfigRuntime
@@ -150,7 +150,7 @@ function assertGlobalContextIsDefined() {
  *
  * https://vike.dev/getGlobalContext
  */
-async function getGlobalContext(): Promise<GlobalContextPublic> {
+async function getGlobalContext(): Promise<GlobalContextServerSidePublic> {
   debug('getGlobalContext()')
   const { isProduction } = globalObject
   // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).
@@ -163,7 +163,7 @@ async function getGlobalContext(): Promise<GlobalContextPublic> {
  *
  * https://vike.dev/getGlobalContext
  */
-async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextPublic> {
+async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextServerSidePublic> {
   debug('getGlobalContextAsync()')
   assertUsage(
     typeof isProduction === 'boolean',
@@ -186,7 +186,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
  *
  * @deprecated
  */
-function getGlobalContextSync(): GlobalContextPublic {
+function getGlobalContextSync(): GlobalContextServerSidePublic {
   debug('getGlobalContextSync()')
   const { globalContext_public } = globalObject
   assertUsage(
@@ -203,7 +203,7 @@ function getGlobalContextSync(): GlobalContextPublic {
   return globalContext_public
 }
 
-type GlobalContextPublic = ReturnType<typeof makePublic>
+type GlobalContextServerSidePublic = ReturnType<typeof makePublic>
 function makePublic(globalContext: GlobalContext) {
   const globalContextPublic = makePublicCopy(globalContext, 'globalContext', [
     'assetsManifest',

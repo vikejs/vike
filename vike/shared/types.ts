@@ -19,7 +19,7 @@ import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-co
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
-import type { GlobalContextPublic } from '../node/runtime/globalContext.js'
+import type { GlobalContextServerSidePublic } from '../node/runtime/globalContext.js'
 import type { GlobalContextClientSidePublic as GlobalContextClientSidePublicWithServerRouting } from '../client/server-routing-runtime/globalContextClientSide.js'
 import type { GlobalContextClientSidePublic as GlobalContextClientSidePublicWithClientRouting } from '../client/client-routing-runtime/globalContextClientSide.js'
 
@@ -180,7 +180,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      *
      * https://vike.dev/getGlobalContext
      */
-    globalContext: GlobalContextPublic
+    globalContext: GlobalContextServerSidePublic
 
     isHydration?: undefined
     isBackwardNavigation?: undefined
