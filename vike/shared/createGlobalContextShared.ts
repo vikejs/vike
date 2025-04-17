@@ -9,15 +9,15 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
 ) {
-  const globalContext = await createGlobalContextBase(virtualFileExports)
+  const globalContext = createGlobalContextBase(virtualFileExports)
   const globalContextAddendum = await addGlobalContext?.(globalContext)
   objectAssign(globalContext, globalContextAddendum)
   return globalContext
 }
 
 type GlobalContextSharedPublic = Pick<GlobalContextShared, 'config' | 'pages'>
-type GlobalContextShared = Awaited<ReturnType<typeof createGlobalContextBase>>
-async function createGlobalContextBase(virtualFileExports: unknown) {
+type GlobalContextShared = ReturnType<typeof createGlobalContextBase>
+function createGlobalContextBase(virtualFileExports: unknown) {
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
     getPageConfigsRuntime(virtualFileExports)
   const globalContext = {
