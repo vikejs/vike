@@ -324,13 +324,12 @@ function setIsProduction(isProduction: boolean) {
   if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
   globalObject.isProduction = isProduction
 }
-function resolveGlobalContext(): GlobalContextInternal | null {
+function resolveGlobalContext(): GlobalContextInternal {
   const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction, userFiles } = globalObject
   assert(typeof isProduction === 'boolean')
   let globalContext: GlobalContextInternal
   if (!isProduction) {
-    // Requires globalObject.viteDevServer
-    if (!viteDevServer) return null
+    assert(viteDevServer)
     assert(userFiles) // main common requiement
     assert(viteConfig)
     assert(viteConfigRuntime)
@@ -346,8 +345,7 @@ function resolveGlobalContext(): GlobalContextInternal | null {
       ...resolveBaseRuntime(viteConfigRuntime, userFiles.config)
     }
   } else {
-    // Requires globalObject.buildEntry
-    if (!globalObject.buildEntry) return null
+    assert(globalObject.buildEntry)
     assert(userFiles) // main common requiement
     const { buildInfo, assetsManifest } = globalObject
     assert(buildInfo)
