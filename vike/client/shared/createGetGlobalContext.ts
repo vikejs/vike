@@ -32,7 +32,7 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = await createGlobalContext<GlobalContextAddendum>(virtualFileExports, addGlobalContext)
+    const globalContext = await createGlobalContext(virtualFileExports, addGlobalContext)
 
     // Singleton
     if (!globalObject.globalContext) {
