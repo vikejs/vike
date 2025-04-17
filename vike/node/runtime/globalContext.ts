@@ -88,8 +88,7 @@ const globalObject = getGlobalObject<
 >('runtime/globalContext.ts', getInitialGlobalContext())
 
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
-type GlobalContextInternal = GlobalContext
-type GlobalContext = {
+type GlobalContextInternal = {
   viteConfigRuntime: ViteConfigRuntime
   config: PageConfigUserFriendly['config']
   pages: PageConfigsUserFriendly
@@ -132,7 +131,7 @@ async function getGlobalContextInternal() {
   return { globalContext, globalContext_public }
 }
 
-function assertIsDefined<T extends GlobalContextInternal | GlobalContext>(
+function assertIsDefined<T extends GlobalContextInternal>(
   globalContext: undefined | null | T
 ): asserts globalContext is T {
   if (!globalContext) {
@@ -205,7 +204,7 @@ function getGlobalContextSync(): GlobalContextServerSidePublic {
 }
 
 type GlobalContextServerSidePublic = ReturnType<typeof makePublic>
-function makePublic(globalContext: GlobalContext) {
+function makePublic(globalContext: GlobalContextInternal) {
   const globalContextPublic = makePublicCopy(globalContext, 'globalContext', [
     'assetsManifest',
     'config',
@@ -345,10 +344,10 @@ function defineGlobalContext() {
   assertGlobalContextIsDefined()
   onSetupRuntime()
 }
-function resolveGlobalContext(): GlobalContext | null {
+function resolveGlobalContext(): GlobalContextInternal | null {
   const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction, userFiles } = globalObject
   assert(typeof isProduction === 'boolean')
-  let globalContext: GlobalContext
+  let globalContext: GlobalContextInternal
   if (!isProduction) {
     // Requires globalObject.viteDevServer
     if (!viteDevServer) return null
@@ -581,7 +580,10 @@ function getInitialGlobalContext() {
   }
 }
 
-function resolveBaseRuntime(viteConfigRuntime: BuildInfo['viteConfigRuntime'], config: GlobalContext['config']) {
+function resolveBaseRuntime(
+  viteConfigRuntime: BuildInfo['viteConfigRuntime'],
+  config: GlobalContextInternal['config']
+) {
   const baseViteOriginal = viteConfigRuntime._baseViteOriginal
   const baseServerUnresolved = config.baseServer ?? null
   const baseAssetsUnresolved = config.baseAssets ?? null
