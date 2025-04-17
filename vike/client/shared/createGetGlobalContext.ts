@@ -59,13 +59,16 @@ async function createGlobalContext<GlobalContextAddendum extends object>(
 
 type GlobalContextBase = Awaited<ReturnType<typeof createGlobalContextBase>>
 async function createGlobalContextBase(virtualFileExports: unknown) {
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal } = getPageConfigsRuntime(virtualFileExports)
+  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
+    getPageConfigsRuntime(virtualFileExports)
   const globalContext = {
     _virtualFileExports: virtualFileExports,
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds
+    _allPageIds: allPageIds,
+    _globalConfig: globalConfig,
+    _pageConfigsUserFriendly: pageConfigsUserFriendly
   }
   return globalContext
 }
