@@ -40,7 +40,7 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     if (!globalObject.globalContext) {
       globalObject.globalContext = globalContext
     } else {
-      // Ensure all `globalContext` references are preserved & updated
+      // Ensure all `globalContext` user-land references are preserved & updated
       objectReplace(globalObject.globalContext, globalContext)
     }
 

@@ -88,9 +88,7 @@ const globalObject = getGlobalObject<
 >('runtime/globalContext.ts', getInitialGlobalContext())
 
 type PageRuntimeInfo = Awaited<ReturnType<typeof getUserFiles>>
-type GlobalContextInternal = GlobalContext & {
-  globalContext_public: GlobalContextServerSidePublic
-}
+type GlobalContextInternal = GlobalContext
 type GlobalContext = {
   viteConfigRuntime: ViteConfigRuntime
   config: PageConfigUserFriendly['config']
@@ -122,15 +120,18 @@ type GlobalContext = {
       ))
   )
 
-async function getGlobalContextInternal(): Promise<GlobalContextInternal> {
+async function getGlobalContextInternal() {
   // getGlobalContextInternal() should always be called after initGlobalContext()
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
   const { globalContext } = globalObject
   assertIsDefined(globalContext)
-  return globalContext
+  const { globalContext_public } = globalObject
+  assert(globalContext_public)
+  return { globalContext, globalContext_public }
 }
+
 function assertIsDefined<T extends GlobalContextInternal | GlobalContext>(
   globalContext: undefined | null | T
 ): asserts globalContext is T {
@@ -328,10 +329,19 @@ function setIsProduction(isProduction: boolean) {
 function defineGlobalContext() {
   const globalContext = resolveGlobalContext()
   assertIsDefined(globalContext)
-  const globalContext_public = makePublic(globalContext)
-  objectAssign(globalContext, { globalContext_public })
+
+  // Internal usage
   globalObject.globalContext = globalContext
-  globalObject.globalContext_public = globalContext_public
+
+  // Public usage
+  const globalContext_public = makePublic(globalContext)
+  if (!globalObject.globalContext_public) {
+    globalObject.globalContext_public = globalContext_public
+  } else {
+    // Ensure all `globalContext` user-land references are preserved & updated
+    objectReplace(globalObject.globalContext_public, globalContext_public)
+  }
+
   assertGlobalContextIsDefined()
   onSetupRuntime()
 }

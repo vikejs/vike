@@ -4,7 +4,7 @@ export type { PageContextCreatedServerSide }
 
 import { assert, assertUsage, assertWarning, augmentType, normalizeHeaders, objectAssign } from '../utils.js'
 import { getPageContextUrlComputed } from '../../../shared/getPageContextUrlComputed.js'
-import type { GlobalContextInternal } from '../globalContext.js'
+import type { GlobalContextInternal, GlobalContextServerSidePublic } from '../globalContext.js'
 import type { PageContextInit } from '../renderPage.js'
 import { createPageContextShared } from '../../../shared/createPageContextShared.js'
 
@@ -12,6 +12,7 @@ type PageContextCreatedServerSide = Awaited<ReturnType<typeof createPageContextS
 async function createPageContextServerSide(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
+  globalObject_public: GlobalContextServerSidePublic,
   {
     isPrerendering,
     ssr: { urlHandler, isClientSideNavigation } = {
@@ -53,7 +54,7 @@ async function createPageContextServerSide(
     _globalContext: globalContext,
     // TODO/now: add PageContext['globalContext']
     /** @experimental This is a beta feature https://vike.dev/getGlobalContext */
-    globalContext: globalContext.globalContext_public,
+    globalContext: globalObject_public,
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
     _urlHandler: urlHandler,

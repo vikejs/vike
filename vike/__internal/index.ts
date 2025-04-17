@@ -19,7 +19,7 @@ import { PageConfigRuntime } from '../shared/page-configs/PageConfig.js'
 async function getPagesAndRoutes() {
   setNodeEnvProduction()
   await initGlobalContext_getPagesAndRoutes()
-  const globalContext = await getGlobalContextInternal()
+  const { globalContext } = await getGlobalContextInternal()
   const {
     //
     pageRoutes,
