@@ -93,10 +93,10 @@ type PrerenderedPageContexts = Record<string, PageContextPrerendered>
 
 type PrerenderContext = {
   pageContexts: PageContext[]
-  output: Output,
-  pageContextInit: Record<string, unknown> | null
-  noExtraDir: boolean | null
-  prerenderedPageContexts: PrerenderedPageContexts
+  output: Output
+  _pageContextInit: Record<string, unknown> | null
+  _noExtraDir: boolean | null
+  _prerenderedPageContexts: PrerenderedPageContexts
 }
 type Output<PageContext = PageContextPrerendered> = {
   filePath: string
@@ -208,10 +208,10 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   globalContext.pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {
-    noExtraDir,
+    _noExtraDir: noExtraDir,
     pageContexts: [],
-    pageContextInit: options.pageContextInit ?? null,
-    prerenderedPageContexts: {},
+    _pageContextInit: options.pageContextInit ?? null,
+    _prerenderedPageContexts: {},
     output: []
   }
 
@@ -252,18 +252,18 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
     prerenderedCount++
     const { pageId } = htmlFile.pageContext
     assert(pageId)
-    prerenderContext.prerenderedPageContexts[pageId] = htmlFile.pageContext
+    prerenderContext._prerenderedPageContexts[pageId] = htmlFile.pageContext
     await writeFiles(htmlFile, root, outDirClient, options.onPagePrerender, prerenderContext.output, logLevel)
   }
 
   await prerenderPages(prerenderContext, concurrencyLimit, onComplete)
-  warnContradictoryNoPrerenderList(prerenderContext.prerenderedPageContexts, doNotPrerenderList)
+  warnContradictoryNoPrerenderList(prerenderContext._prerenderedPageContexts, doNotPrerenderList)
 
   if (logLevel === 'info') {
     console.log(`${pc.green(`✓`)} ${prerenderedCount} HTML documents pre-rendered.`)
   }
 
-  await warnMissingPages(prerenderContext.prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
+  await warnMissingPages(prerenderContext._prerenderedPageContexts, globalContext, doNotPrerenderList, partial)
 
   const prerenderContextPublic = makePublic(prerenderContext)
   objectAssign(vike.prerenderContext, prerenderContextPublic)
@@ -562,7 +562,7 @@ async function createPageContextPrerendering(
 ) {
   const pageContextInit = {
     urlOriginal,
-    ...prerenderContext.pageContextInit
+    ...prerenderContext._pageContextInit
   }
   const pageContext = await createPageContextServerSide(pageContextInit, globalContext, globalContext_public, {
     isPrerendering: true
@@ -572,7 +572,7 @@ async function createPageContextPrerendering(
     _urlHandler: null,
     _httpRequestId: null,
     _urlRewrite: null,
-    _noExtraDir: prerenderContext.noExtraDir,
+    _noExtraDir: prerenderContext._noExtraDir,
     _prerenderContext: prerenderContext,
     _providedByHook: providedByHook,
     _urlOriginalModifiedByHook: null as ProvidedByHookTransformer,
@@ -892,7 +892,7 @@ async function prerenderPages(
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          doNotCreateExtraDirectory: prerenderContext.noExtraDir ?? pageContext.is404
+          doNotCreateExtraDirectory: prerenderContext._noExtraDir ?? pageContext.is404
         })
       })
     )
