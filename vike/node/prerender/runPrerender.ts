@@ -208,11 +208,11 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
   globalContext.pageFilesAll.forEach(assertExportNames)
 
   const prerenderContext: PrerenderContext = {
-    _noExtraDir: noExtraDir,
     pageContexts: [],
+    output: [],
+    _noExtraDir: noExtraDir,
     _pageContextInit: options.pageContextInit ?? null,
-    _prerenderedPageContexts: {},
-    output: []
+    _prerenderedPageContexts: {}
   }
 
   const doNotPrerenderList: DoNotPrerenderList = []
