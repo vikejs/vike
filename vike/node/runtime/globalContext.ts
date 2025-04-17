@@ -425,22 +425,24 @@ async function setGlobalContext(virtualFileExports: unknown) {
   const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
     pageConfigsRuntime
 
+  const globalContext = {
+    _pageFilesAll: pageFilesAll,
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal,
+    _allPageIds: allPageIds
+  }
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(
     pageFilesAll,
     pageConfigs,
     pageConfigGlobal,
     allPageIds
   )
-  const globalContext = {
-    _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds,
+  objectAssign(globalContext, {
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook,
     pages: pageConfigsUserFriendly,
     config: globalConfig.config
-  }
+  })
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
     pageConfigs.length > 0,
