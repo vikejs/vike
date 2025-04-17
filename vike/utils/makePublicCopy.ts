@@ -2,7 +2,7 @@ export { makePublicCopy }
 
 import { assert, assertWarning } from './assert.js'
 
-/** Prefix internal properties with `_` + show warning */
+// Show warning when user is accessing internal `_` properties.
 function makePublicCopy<Obj extends Record<string, unknown>, PropsPublic extends readonly (keyof Obj)[]>(
   obj: Obj,
   objName: string,
@@ -20,7 +20,7 @@ function makePublicCopy<Obj extends Record<string, unknown>, PropsPublic extends
       } else {
         assert(propsPublic.includes(propStr))
       }
-      // @ts-ignore
+      // @ts-ignore Seems to be TypeScript bug
       return Reflect.get(...arguments)
     }
   })
