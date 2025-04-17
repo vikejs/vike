@@ -325,25 +325,6 @@ function setIsProduction(isProduction: boolean) {
   if (globalObject.isProduction !== undefined) assert(globalObject.isProduction === isProduction)
   globalObject.isProduction = isProduction
 }
-function defineGlobalContext() {
-  const globalContext = resolveGlobalContext()
-  assertIsDefined(globalContext)
-
-  // Internal usage
-  if (!globalObject.globalContext) {
-    globalObject.globalContext = globalContext
-  } else {
-    // Ensure all globalContext user-land references are preserved & updated
-    // globalContext_public is just a proxy of globalContext
-    objectReplace(globalObject.globalContext, globalContext)
-  }
-
-  // Public usage
-  globalObject.globalContext_public = makePublic(globalContext)
-
-  assertGlobalContextIsDefined()
-  onSetupRuntime()
-}
 function resolveGlobalContext(): GlobalContextInternal | null {
   const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction, userFiles } = globalObject
   assert(typeof isProduction === 'boolean')
@@ -558,8 +539,24 @@ async function setGlobalContext(virtualFileExports: unknown) {
   const pageConfigsRuntime = getPageConfigsRuntime(virtualFileExports)
   const userFiles = await getUserFiles(pageConfigsRuntime)
   globalObject.userFiles = userFiles
-  defineGlobalContext()
+
+  const globalContext = resolveGlobalContext()
+  assertIsDefined(globalContext)
+
+  // Internal usage
+  if (!globalObject.globalContext) {
+    globalObject.globalContext = globalContext
+  } else {
+    // Ensure all globalContext user-land references are preserved & updated
+    // globalContext_public is just a proxy of globalContext
+    objectReplace(globalObject.globalContext, globalContext)
+  }
+
+  // Public usage
+  globalObject.globalContext_public = makePublic(globalContext)
+
   assertGlobalContextIsDefined()
+  onSetupRuntime()
 }
 
 function clearGlobalContext() {
