@@ -1,5 +1,12 @@
 export { getPublicProxy }
 
+// We use a proxy instead of property getters.
+// - The issue with property getters is that they can't be `writable: true` but we do want the user to be able to modify the value of internal properties.
+//   ```console
+//   TypeError: Invalid property descriptor. Cannot both specify accessors and a value or writable attribute, #<Object>
+//   ```
+// - Previous implementation using property getters: https://github.com/vikejs/vike/blob/main/vike/utils/makePublicCopy.ts
+
 import { assert, assertWarning } from './assert.js'
 
 // Show warning when user is accessing internal `_` properties.
