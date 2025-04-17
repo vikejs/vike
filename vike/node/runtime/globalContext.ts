@@ -429,7 +429,9 @@ async function setGlobalContext(virtualFileExports: unknown) {
     _pageFilesAll: pageFilesAll,
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds
+    _allPageIds: allPageIds,
+    pages: pageConfigsUserFriendly,
+    config: globalConfig.config
   }
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
@@ -446,9 +448,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
     )
     const globalContextBase = {
       _pageRoutes: pageRoutes,
-      _onBeforeRouteHook: onBeforeRouteHook,
-      pages: pageConfigsUserFriendly,
-      config: globalConfig.config
+      _onBeforeRouteHook: onBeforeRouteHook
     }
     const { viteDevServer, viteConfig, viteConfigRuntime, isPrerendering, isProduction } = globalObject
     assert(typeof isProduction === 'boolean')
@@ -467,7 +467,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
         viteConfig,
         ...globalContext,
         viteConfigRuntime,
-        ...resolveBaseRuntime(viteConfigRuntime, globalContextBase.config)
+        ...resolveBaseRuntime(viteConfigRuntime, globalContext.config)
       }
     } else {
       assert(globalObject.buildEntry)
@@ -483,7 +483,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
         _viteDevServer: null,
         viteConfigRuntime: buildInfo.viteConfigRuntime,
         _usesClientRouter: buildInfo.usesClientRouter,
-        ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContextBase.config)
+        ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config)
       }
       if (isPrerendering) {
         assert(viteConfig)
