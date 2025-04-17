@@ -474,7 +474,7 @@ async function setGlobalContext(virtualFileExports: unknown) {
       const { buildInfo, assetsManifest } = globalObject
       assert(buildInfo)
       assert(assetsManifest)
-      const globalContextBase = {
+      const globalContextBase2 = {
         _isProduction: true as const,
         assetsManifest,
         ...globalContext,
@@ -486,13 +486,13 @@ async function setGlobalContext(virtualFileExports: unknown) {
       if (isPrerendering) {
         assert(viteConfig)
         return {
-          ...globalContextBase,
+          ...globalContextBase2,
           _isPrerendering: true as const,
           viteConfig
         }
       } else {
         return {
-          ...globalContextBase,
+          ...globalContextBase2,
           _isPrerendering: false as const,
           viteConfig: null
         }
