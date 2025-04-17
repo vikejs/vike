@@ -67,7 +67,7 @@ async function createGlobalContextBase(virtualFileExports: unknown) {
     _pageConfigs: pageConfigs,
     _pageConfigGlobal: pageConfigGlobal,
     _allPageIds: allPageIds,
-    config: globalConfig,
+    config: globalConfig.config,
     pages: pageConfigsUserFriendly
   }
   return globalContext
