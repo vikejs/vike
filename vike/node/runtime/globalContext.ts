@@ -415,12 +415,12 @@ async function getUserFiles() {
     allPageIds
   )
   const userFiles = {
-    pageFilesAll,
-    pageConfigs,
-    pageConfigGlobal,
-    allPageIds,
-    pageRoutes,
-    onBeforeRouteHook,
+    _pageFilesAll: pageFilesAll,
+    _pageConfigs: pageConfigs,
+    _pageConfigGlobal: pageConfigGlobal,
+    _allPageIds: allPageIds,
+    _pageRoutes: pageRoutes,
+    _onBeforeRouteHook: onBeforeRouteHook,
     pages: pageConfigsUserFriendly,
     config: globalConfig.config
   }

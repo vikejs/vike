@@ -45,12 +45,12 @@ async function createPageContextServerSide(
     // TODO/now: add meta.default
     _includeAssetsImportedByServer: globalContext.config.includeAssetsImportedByServer ?? true,
     // TODO/soon: use GloablContext instead
-    _pageFilesAll: globalContext.pageFilesAll,
-    _pageConfigs: globalContext.pageConfigs,
-    _pageConfigGlobal: globalContext.pageConfigGlobal,
-    _allPageIds: globalContext.allPageIds,
-    _pageRoutes: globalContext.pageRoutes,
-    _onBeforeRouteHook: globalContext.onBeforeRouteHook,
+    _pageFilesAll: globalContext._pageFilesAll,
+    _pageConfigs: globalContext._pageConfigs,
+    _pageConfigGlobal: globalContext._pageConfigGlobal,
+    _allPageIds: globalContext._allPageIds,
+    _pageRoutes: globalContext._pageRoutes,
+    _onBeforeRouteHook: globalContext._onBeforeRouteHook,
     _globalContext: globalContext,
     // TODO/now: add PageContext['globalContext']
     /** @experimental This is a beta feature https://vike.dev/getGlobalContext */
@@ -88,7 +88,7 @@ async function createPageContextServerSide(
     objectAssign(pageContextCreated, { headers })
   }
 
-  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext.pageConfigGlobal)
+  const pageContextAugmented = await createPageContextShared(pageContextCreated, globalContext._pageConfigGlobal)
   augmentType(pageContextCreated, pageContextAugmented)
 
   return pageContextCreated

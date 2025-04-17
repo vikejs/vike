@@ -22,10 +22,10 @@ async function getPagesAndRoutes() {
   const { globalContext } = await getGlobalContextInternal()
   const {
     //
-    pageRoutes,
-    pageFilesAll,
-    pageConfigs,
-    allPageIds
+    _pageRoutes: pageRoutes,
+    _pageFilesAll: pageFilesAll,
+    _pageConfigs: pageConfigs,
+    _allPageIds: allPageIds
   } = globalContext
   return {
     pageRoutes,

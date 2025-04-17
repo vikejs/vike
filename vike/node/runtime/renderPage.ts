@@ -260,7 +260,7 @@ async function renderPageAlreadyPrepared(
     }
 
     {
-      const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
+      const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
       if (!errorPageId) {
         objectAssign(pageContextErrorPageInit, { pageId: null })
         return handleErrorWithoutErrorPage(pageContextErrorPageInit)
@@ -585,7 +585,7 @@ async function handleAbortError(
   let pageContextSerialized: string
   if (pageContextNominalPageBegin.isClientSideNavigation) {
     if (pageContextAbort.abortStatusCode) {
-      const errorPageId = getErrorPageId(globalContext.pageFilesAll, globalContext.pageConfigs)
+      const errorPageId = getErrorPageId(globalContext._pageFilesAll, globalContext._pageConfigs)
       const abortCall = pageContextAbort._abortCall
       assert(abortCall)
       assertUsage(

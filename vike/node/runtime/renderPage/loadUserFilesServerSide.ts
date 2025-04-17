@@ -40,7 +40,7 @@ async function loadUserFilesServerSide(pageContext: { pageId: string } & PageCon
     loadPageUserFiles(
       pageContext._pageFilesAll,
       pageConfig,
-      globalContext.pageConfigGlobal,
+      globalContext._pageConfigGlobal,
       pageContext.pageId,
       !globalContext._isProduction
     ),
