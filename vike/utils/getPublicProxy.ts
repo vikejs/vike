@@ -18,7 +18,7 @@ function getPublicProxy<Obj extends Record<string, unknown>, PropsPublic extends
           { onlyOnce: true }
         )
       } else {
-        assert(propsPublic.includes(propStr))
+        if (prop in obj) assert(propsPublic.includes(propStr))
       }
       // @ts-ignore Seems to be TypeScript bug
       return Reflect.get(...arguments)
