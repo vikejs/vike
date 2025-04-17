@@ -1,7 +1,7 @@
 export { createGetGlobalContext }
 
-import { getPageConfigsRuntime } from '../../shared/getPageConfigsRuntime.js'
-import { assert, getGlobalObject, objectAssign, objectReplace } from './utils.js'
+import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
+import { assert, getGlobalObject, objectReplace } from './utils.js'
 
 const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
@@ -11,7 +11,7 @@ const globalObject = getGlobalObject<{
 function createGetGlobalContext<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
   isClientRouting: boolean,
-  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>
+  addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
 ) {
   assert(globalObject.isClientRouting === undefined || globalObject.isClientRouting === isClientRouting)
   globalObject.isClientRouting = isClientRouting
@@ -32,7 +32,7 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = await createGlobalContext(virtualFileExports, addGlobalContext)
+    const globalContext = await createGlobalContextShared(virtualFileExports, addGlobalContext)
 
     // Singleton
     if (!globalObject.globalContext) {
@@ -45,30 +45,4 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     // Return
     return globalContext
   }
-}
-
-async function createGlobalContext<GlobalContextAddendum extends object>(
-  virtualFileExports: unknown,
-  addGlobalContext?: (globalContext: GlobalContextBase) => Promise<GlobalContextAddendum>
-) {
-  const globalContext = await createGlobalContextBase(virtualFileExports)
-  const globalContextAddendum = await addGlobalContext?.(globalContext)
-  objectAssign(globalContext, globalContextAddendum)
-  return globalContext
-}
-
-type GlobalContextBase = Awaited<ReturnType<typeof createGlobalContextBase>>
-async function createGlobalContextBase(virtualFileExports: unknown) {
-  const { pageFilesAll, allPageIds, pageConfigs, pageConfigGlobal, globalConfig, pageConfigsUserFriendly } =
-    getPageConfigsRuntime(virtualFileExports)
-  const globalContext = {
-    _virtualFileExports: virtualFileExports,
-    _pageFilesAll: pageFilesAll,
-    _pageConfigs: pageConfigs,
-    _pageConfigGlobal: pageConfigGlobal,
-    _allPageIds: allPageIds,
-    config: globalConfig.config,
-    pages: pageConfigsUserFriendly
-  }
-  return globalContext
 }
