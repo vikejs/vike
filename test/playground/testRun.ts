@@ -15,6 +15,7 @@ import { testPrerenderSettings } from './pages/prerender.e2e-test'
 import { testHistoryPushState } from './pages/pushState/e2e-test'
 import { testRedirectMailto } from './pages/redirects.e2e-tests'
 import { testGlobalContext, testHMRPlusValueFile } from './pages/e2e-test'
+import { testOnCreateGlobalContext } from './onCreateGlobalContext.e2e-tests'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -26,6 +27,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   testMarkdownClientFile(isDev)
   testMarkdownSideExports()
   testGlobalContext()
+  testOnCreateGlobalContext(isDev)
   testHMRPlusValueFile(isDev)
   testSettingOnlyAvailableInCorrectEnv()
   testSettingInheritedByDescendants()

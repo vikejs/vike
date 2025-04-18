@@ -1,8 +1,9 @@
 export { getPageContextSerializedInHtml }
+export { getGlobalContextSerializedInHtml }
 
 import { parse } from '@brillout/json-serializer/parse'
 import { hasProp, assert, assertUsage } from './utils.js'
-import { htmlElementId_pageContext } from '../../shared/htmlElementIds.js'
+import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../shared/htmlElementIds.js'
 
 // elements should exist because:
 // 1. <script id="vike_pageContext" type="application/json"> appears before the <script> that loads Vike's client runtime (which includes this file)
@@ -14,6 +15,11 @@ function getPageContextSerializedInHtml(): { pageId: string; routeParams: Record
   assert(hasProp(pageContextSerializedInHtml, 'pageId', 'string'))
   assert(hasProp(pageContextSerializedInHtml, 'routeParams', 'string{}'))
   return pageContextSerializedInHtml
+}
+
+function getGlobalContextSerializedInHtml() {
+  const globalContextSerializedInHtml = findAndParseJson(htmlElementId_globalContext)
+  return globalContextSerializedInHtml as object
 }
 
 function findAndParseJson(id: string) {
