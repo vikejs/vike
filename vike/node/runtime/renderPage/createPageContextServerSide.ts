@@ -36,8 +36,6 @@ async function createPageContextServerSide(
 
   const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
 
-  objectAssign(pageContextCreated, pageContextInit)
-
   objectAssign(pageContextCreated, {
     globalContext: globalObject_public,
     _globalContext: globalContext,
