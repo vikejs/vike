@@ -37,8 +37,10 @@ async function createPageContextServerSide(
   const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
 
   objectAssign(pageContextCreated, {
+    /* Don't spread globalContext for now? Or never spread it as it leads to confusion? The convenience isn't worth the added confusion?
     // We must use Flatten<T> otherwise TypeScript complains upon assigning types
     ...(globalContext as Flatten<typeof globalContext>), // least precedence
+    */
     globalContext: globalObject_public,
     _globalContext: globalContext,
     // The following is defined on `pageContext` because we can eventually make these non-global

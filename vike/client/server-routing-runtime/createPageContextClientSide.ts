@@ -14,8 +14,14 @@ async function createPageContextClientSide() {
   const globalContext = await getGlobalContext()
 
   const pageContextCreated = {
+    /* Don't spread globalContext for now? Or never spread it as it leads to confusion? The convenience isn't worth the added confusion?
     ...globalContext, // least precedence
+    */
     globalContext,
+    _pageFilesAll: globalContext._pageFilesAll,
+    _pageConfigs: globalContext._pageConfigs,
+    _pageConfigGlobal: globalContext._pageConfigGlobal,
+    _allPageIds: globalContext._allPageIds,
     isPrerendering: false,
     isClientSide: true,
     isHydration: true as const,
