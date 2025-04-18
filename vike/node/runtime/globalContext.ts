@@ -422,12 +422,6 @@ async function updateUserFiles() {
 async function setGlobalContext(virtualFileExports: unknown) {
   const globalContext = await createGlobalContextShared(virtualFileExports, addGlobalContext)
 
-  assertV1Design(
-    // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
-    globalContext._pageConfigs.length > 0,
-    globalContext._pageFilesAll
-  )
-
   // Internal usage
   if (!globalObject.globalContext) {
     globalObject.globalContext = globalContext
@@ -436,6 +430,12 @@ async function setGlobalContext(virtualFileExports: unknown) {
     // globalContext_public is just a proxy of globalContext
     objectReplace(globalObject.globalContext, globalContext)
   }
+
+  assertV1Design(
+    // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
+    globalContext._pageConfigs.length > 0,
+    globalContext._pageFilesAll
+  )
 
   // Public usage
   globalObject.globalContext_public = makePublic(globalContext)
