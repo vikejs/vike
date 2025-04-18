@@ -18,6 +18,7 @@ import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValueRuntime.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
+import { htmlElementId_pageContext } from '../../../../shared/htmlElementIds.js'
 
 const stamp = '__injectFilterEntry'
 
@@ -178,8 +179,8 @@ async function getHtmlTags(
       { onlyOnce: true }
     )
   }
-  // <script id="vike_pageContext" type="application/json">
   if (!isHtmlOnly) {
+    // <script id="vike_pageContext" type="application/json">
     htmlTags.push({
       htmlTag: () =>
         // Needs to be called after resolvePageContextPromise()
@@ -219,12 +220,10 @@ function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): nul
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
   const pageContextSerialized = sanitizeJson(getPageContextClientSerialized(pageContext))
-  const htmlTag = `<script id="vike_pageContext" type="application/json">${pageContextSerialized}</script>`
-
+  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json">${pageContextSerialized}</script>`
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
   pageContext._pageContextHtmlTag = htmlTag
-
   return htmlTag
 }
 
