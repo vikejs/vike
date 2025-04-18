@@ -2,7 +2,6 @@ export { createGlobalContextShared }
 export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
 
-import { objectReplace } from '../utils/objectReplace.js'
 import { getPageConfigsRuntime } from './getPageConfigsRuntime.js'
 import { objectAssign } from './utils.js'
 
@@ -17,12 +16,12 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
   const globalContextAddendum = await addGlobalContext?.(globalContext)
   objectAssign(globalContext, globalContextAddendum)
 
-  // Singleton
+  // Singleton: ensure all `globalContext` user-land references are preserved & updated.
   if (!globalObject.globalContext) {
     globalObject.globalContext = globalContext
   } else {
-    // Ensure all `globalContext` user-land references are preserved & updated
-    objectReplace(globalObject.globalContext, globalContext)
+    // We don't use objectReplace() in order to keep user-land properties
+    objectAssign(globalObject.globalContext, globalContext)
   }
 
   return globalContext
