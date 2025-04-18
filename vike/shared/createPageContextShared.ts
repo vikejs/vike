@@ -22,7 +22,12 @@ async function createPageContextShared<T extends object>(
     true
   )
 
-  await executeHookGenericGlobalCumulative('onCreatePageContext', pageConfigGlobal, pageContextCreated)
+  await executeHookGenericGlobalCumulative(
+    'onCreatePageContext',
+    pageConfigGlobal,
+    pageContextCreated,
+    pageContextCreated
+  )
 
   return pageContextCreated
 }

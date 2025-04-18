@@ -13,10 +13,13 @@ import { assert, assertWarning } from './assert.js'
 function getPublicProxy<Obj extends Record<string, unknown>, PropsPublic extends readonly (keyof Obj)[]>(
   obj: Obj,
   objName: string,
-  propsPublic: PropsPublic
+  propsPublic: PropsPublic,
+  expectCustomUserLandProps?: true
 ): Pick<Obj, PropsPublic[number]> {
-  Object.keys(obj).forEach((key) => assert(key.startsWith('_') || propsPublic.includes(key)))
-  propsPublic.forEach((prop) => prop in obj)
+  if (!expectCustomUserLandProps) {
+    Object.keys(obj).forEach((key) => assert(key.startsWith('_') || propsPublic.includes(key)))
+    propsPublic.forEach((prop) => prop in obj)
+  }
 
   return new Proxy(obj, {
     get(_, prop) {
