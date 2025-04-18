@@ -20,7 +20,7 @@ import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
 import type { GlobalContextServer } from '../node/runtime/globalContext.js'
-import type { GlobalContextClientSidePublic as GlobalContextClientSidePublicWithServerRouting } from '../client/server-routing-runtime/globalContext.js'
+import type { GlobalContextClientWithServerRouting } from '../client/server-routing-runtime/globalContext.js'
 import type { GlobalContextClient } from '../client/client-routing-runtime/globalContext.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext
@@ -237,7 +237,7 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
      * The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
      */
     isBackwardNavigation: null
-    globalContext: GlobalContextClientSidePublicWithServerRouting
+    globalContext: GlobalContextClientWithServerRouting
   }
 
 type PageContextClientCommon = {
