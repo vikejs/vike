@@ -2,16 +2,29 @@ export { createGlobalContextShared }
 export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
 
+import { objectReplace } from '../utils/objectReplace.js'
 import { getPageConfigsRuntime } from './getPageConfigsRuntime.js'
 import { objectAssign } from './utils.js'
 
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
+  //globalObject: { globalContext?: Record<string, unknown> },
+  globalObject: Record<string, unknown>,
   addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)
+
   const globalContextAddendum = await addGlobalContext?.(globalContext)
   objectAssign(globalContext, globalContextAddendum)
+
+  // Singleton
+  if (!globalObject.globalContext) {
+    globalObject.globalContext = globalContext
+  } else {
+    // Ensure all `globalContext` user-land references are preserved & updated
+    objectReplace(globalObject.globalContext, globalContext)
+  }
+
   return globalContext
 }
 

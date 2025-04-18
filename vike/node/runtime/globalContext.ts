@@ -420,16 +420,7 @@ async function updateUserFiles() {
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
-  const globalContext = await createGlobalContextShared(virtualFileExports, addGlobalContext)
-
-  // Internal usage
-  if (!globalObject.globalContext) {
-    globalObject.globalContext = globalContext
-  } else {
-    // Ensure all globalContext user-land references are preserved & updated
-    // globalContext_public is just a proxy of globalContext
-    objectReplace(globalObject.globalContext, globalContext)
-  }
+  const globalContext = await createGlobalContextShared(virtualFileExports, globalObject_, addGlobalContext)
 
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]

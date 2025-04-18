@@ -32,15 +32,7 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = await createGlobalContextShared(virtualFileExports, addGlobalContext)
-
-    // Singleton
-    if (!globalObject.globalContext) {
-      globalObject.globalContext = globalContext
-    } else {
-      // Ensure all `globalContext` user-land references are preserved & updated
-      objectReplace(globalObject.globalContext, globalContext)
-    }
+    const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
 
     // Return
     return globalContext
