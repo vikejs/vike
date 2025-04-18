@@ -1,3 +1,4 @@
+// Public
 export type { PageContext }
 export type { PageContextServer }
 export type { PageContextClient }
@@ -10,7 +11,7 @@ export type { PageContextWithServerRouting }
 export type { PageContextClientWithServerRouting }
 export type { GlobalContextClientWithServerRouting }
 
-// Internal use
+// Internal
 export type { PageContextBuiltInServerInternal }
 
 // TODO/v1-release: remove these three exports
