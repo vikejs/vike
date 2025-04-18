@@ -19,7 +19,7 @@ export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
 export type { BuildInfo }
-export type { GlobalContextInternal }
+export type { GlobalContextServerInternal as GlobalContextInternal }
 export type { GlobalContextServer }
 
 // The core logic revolves around:
@@ -85,11 +85,14 @@ const globalObject = getGlobalObject<
 // Trick to break down TypeScript circular dependency
 // https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
 const globalObjectTyped = globalObject as typeof globalObject & {
-  globalContext?: GlobalContextInternal
+  globalContext?: GlobalContextServerInternal
   globalContext_public?: GlobalContextServer
 }
 
-type GlobalContextInternal = Awaited<ReturnType<typeof setGlobalContext>>
+// Public type
+type GlobalContextServer = ReturnType<typeof makePublic>
+// Private type
+type GlobalContextServerInternal = Awaited<ReturnType<typeof setGlobalContext>>
 
 async function getGlobalContextInternal() {
   // getGlobalContextInternal() should always be called after initGlobalContext()
@@ -102,7 +105,7 @@ async function getGlobalContextInternal() {
   return { globalContext, globalContext_public }
 }
 
-function assertIsDefined<T extends GlobalContextInternal>(
+function assertIsDefined<T extends GlobalContextServerInternal>(
   globalContext: undefined | null | T
 ): asserts globalContext is T {
   if (!globalContext) {
@@ -175,8 +178,7 @@ function getGlobalContextSync(): GlobalContextServer {
   return globalContext_public
 }
 
-type GlobalContextServer = ReturnType<typeof makePublic>
-function makePublic(globalContext: GlobalContextInternal) {
+function makePublic(globalContext: GlobalContextServerInternal) {
   const globalContextPublic = getPublicProxy(globalContext, 'globalContext', [
     'assetsManifest',
     'config',
