@@ -1,7 +1,7 @@
 export { createPageContextClientSide }
 
 import { assertUsage, assertWarning, augmentType, objectAssign } from './utils.js'
-import { getPageContextSerializedInHtml } from '../shared/getContextSerializedInHtml.js'
+import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import { loadUserFilesClientSide, type PageContextUserFiles } from '../shared/loadUserFilesClientSide.js'
 import { getCurrentUrl } from '../shared/getCurrentUrl.js'
 

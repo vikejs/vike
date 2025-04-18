@@ -17,7 +17,7 @@ import {
   getGlobalObject
 } from './utils.js'
 import { parse } from '@brillout/json-serializer/parse'
-import { getPageContextSerializedInHtml } from '../shared/getContextSerializedInHtml.js'
+import { getPageContextSerializedInHtml } from '../shared/getJsonSerializedInHtml.js'
 import type { PageConfigUserFriendlyOld, PageFile } from '../../shared/getPageFiles.js'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide.js'
 import { getHookFromPageContext } from '../../shared/hooks/getHook.js'
