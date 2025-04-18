@@ -460,15 +460,15 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     assert(viteConfigRuntime)
     assert(!isPrerendering)
     return {
+      ...globalContext,
       ...globalContextBase,
+      ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
       _isProduction: false as const,
       _isPrerendering: false as const,
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       viteConfig,
-      ...globalContext,
-      viteConfigRuntime,
-      ...resolveBaseRuntime(viteConfigRuntime, globalContext.config)
+      viteConfigRuntime
     }
   } else {
     assert(globalObject.buildEntry)
@@ -477,14 +477,14 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     assert(buildInfo)
     assert(assetsManifest)
     const globalContextBase2 = {
+      ...globalContext,
       ...globalContextBase,
+      ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config),
       _isProduction: true as const,
       assetsManifest,
-      ...globalContext,
       _viteDevServer: null,
       viteConfigRuntime: buildInfo.viteConfigRuntime,
-      _usesClientRouter: buildInfo.usesClientRouter,
-      ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config)
+      _usesClientRouter: buildInfo.usesClientRouter
     }
     if (isPrerendering) {
       assert(viteConfig)
