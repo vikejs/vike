@@ -24,9 +24,13 @@ import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-co
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
-import type { GlobalContextServer } from '../node/runtime/globalContext.js'
-import type { GlobalContextClient } from '../client/client-routing-runtime/globalContext.js'
+import type { GlobalContextBuiltInServer } from '../node/runtime/globalContext.js'
+import type { GlobalContextBuiltInClient } from '../client/client-routing-runtime/globalContext.js'
 import type { GlobalContextClientWithServerRouting } from '../client/server-routing-runtime/globalContext.js'
+
+type GlobalContextClient = GlobalContextBuiltInClient
+type GlobalContextServer = GlobalContextBuiltInServer
+type GlobalContext = GlobalContextServer | GlobalContextClient
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext
 
@@ -34,8 +38,6 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.P
 //  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succint type names `PageContext` and `PageContextClient` to these users
 type PageContext<Data = unknown> = PageContextClient<Data> | PageContextServer<Data>
 type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> & Vike.PageContext
-
-type GlobalContext = GlobalContextServer | GlobalContextClient
 
 // With Server Routing
 type PageContextWithServerRouting<Data = unknown> = PageContextClientWithServerRouting<Data> | PageContextServer<Data>
