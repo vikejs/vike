@@ -3,6 +3,7 @@ export type { GlobalContextShared }
 export type { GlobalContextSharedPublic }
 
 import { getPageConfigsRuntime } from './getPageConfigsRuntime.js'
+import { executeHookGenericGlobalCumulative } from './hooks/executeHookGeneric.js'
 import { objectAssign } from './utils.js'
 
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
@@ -22,6 +23,18 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
     // We don't use objectReplace() in order to keep user-land properties
     objectAssign(globalObject.globalContext, globalContext)
   }
+
+  // TO-DO/eventually: HMR
+  //  - Once Photon supports it: `server.hot.send({ type: 'full-server-reload' })`
+  //  - Either use:
+  //    - import.meta.hot
+  //      - https://vite.dev/guide/api-hmr.html
+  //      - Use a Vite transformer to inject import.meta.hot code into each user-land `+onCreateGlobalContext.js` file
+  //      - Seems more idiomatic
+  //    - globalContext._viteDevServer.hot.send()
+  //      - Send 'full-server-reload' signal whenever a onCreateGlobalContext() function is modified => we need a globalObject to track all hooks and see if one of them is new/modified.
+  //      - Seems less idiomatic
+  await executeHookGenericGlobalCumulative('onCreateGlobalContext', globalContext._pageConfigGlobal, globalContext)
 
   return globalContext
 }

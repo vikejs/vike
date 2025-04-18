@@ -46,7 +46,7 @@ import type { InjectFilterEntry } from '../../types/index.js'
 import type { VikeVitePluginOptions } from '../../node/plugin/index.js'
 import type { Vike, VikePackages } from '../VikeNamespace.js'
 import type { HooksTimeoutProvidedByUser } from '../hooks/getHook.js'
-import type { PageContextClient, PageContextServer } from '../types.js'
+import type { GlobalContext, PageContextClient, PageContextServer } from '../types.js'
 import type { InlineConfig } from 'vite'
 
 type HookName = HookNamePage | HookNameGlobal | HookNameOldDesign
@@ -60,7 +60,12 @@ type HookNamePage =
   | 'onRenderClient'
   | 'guard'
   | 'data'
-type HookNameGlobal = 'onBeforePrerender' | 'onBeforeRoute' | 'onPrerenderStart' | 'onCreatePageContext'
+type HookNameGlobal =
+  | 'onBeforePrerender'
+  | 'onBeforeRoute'
+  | 'onPrerenderStart'
+  | 'onCreatePageContext'
+  | 'onCreateGlobalContext'
 // v0.4 design TODO/v1-release: remove
 type HookNameOldDesign = 'render' | 'prerender'
 
@@ -402,6 +407,12 @@ type ConfigBuiltIn = {
    *  https://vike.dev/onCreatePageContext
    */
   onCreatePageContext?: ((pageContext: PageContextServer) => void) | ImportString | null
+
+  /** Hook called when the `globalContext` object is created.
+   *
+   *  https://vike.dev/onCreateGlobalContext
+   */
+  onCreateGlobalContext?: ((globalContext: GlobalContext) => void) | ImportString | null
 
   /** Hook for fetching data.
    *
