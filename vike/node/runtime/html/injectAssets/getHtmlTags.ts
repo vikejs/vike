@@ -219,8 +219,8 @@ function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): nul
 }
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
-  const pageContextSerialized = sanitizeJson(getPageContextClientSerialized(pageContext))
-  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json">${pageContextSerialized}</script>`
+  const pageContextClientSerialized = sanitizeJson(getPageContextClientSerialized(pageContext))
+  const htmlTag = `<script id="${htmlElementId_pageContext}" type="application/json">${pageContextClientSerialized}</script>`
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
   pageContext._pageContextHtmlTag = htmlTag
