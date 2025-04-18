@@ -35,7 +35,7 @@ import type { PageFile } from '../../shared/getPageFiles.js'
 import {
   getGlobalContextInternal,
   type GlobalContextInternal,
-  type GlobalContextServerSidePublic,
+  type GlobalContextServer,
   initGlobalContext_runPrerender,
   setGlobalContext_isPrerendering
 } from '../runtime/globalContext.js'
@@ -349,7 +349,7 @@ function assertExportNames(pageFile: PageFile) {
 async function callOnBeforePrerenderStartHooks(
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
-  globalContext_public: GlobalContextServerSidePublic,
+  globalContext_public: GlobalContextServer,
   concurrencyLimit: PLimit,
   doNotPrerenderList: DoNotPrerenderList
 ) {
@@ -525,7 +525,7 @@ async function createPageContexts(
   urlList: UrlListEntry[],
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
-  globalContext_public: GlobalContextServerSidePublic,
+  globalContext_public: GlobalContextServer,
   concurrencyLimit: PLimit,
   is404: boolean
 ) {
@@ -555,7 +555,7 @@ async function createPageContextPrerendering(
   urlOriginal: string,
   prerenderContext: PrerenderContext,
   globalContext: GlobalContextInternal,
-  globalContext_public: GlobalContextServerSidePublic,
+  globalContext_public: GlobalContextServer,
   is404: boolean,
   pageId: string | undefined,
   providedByHook: ProvidedByHook

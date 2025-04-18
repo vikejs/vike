@@ -20,7 +20,7 @@ export { assertBuildInfo }
 export { updateUserFiles }
 export type { BuildInfo }
 export type { GlobalContextInternal }
-export type { GlobalContextServerSidePublic }
+export type { GlobalContextServer }
 
 // The core logic revolves around:
 // - virtualFileExports is the main requirement
@@ -86,7 +86,7 @@ const globalObject = getGlobalObject<
 // https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
 const globalObjectTyped = globalObject as typeof globalObject & {
   globalContext?: GlobalContextInternal
-  globalContext_public?: GlobalContextServerSidePublic
+  globalContext_public?: GlobalContextServer
 }
 
 type GlobalContextInternal = Awaited<ReturnType<typeof setGlobalContext>>
@@ -122,7 +122,7 @@ function assertGlobalContextIsDefined() {
  *
  * https://vike.dev/getGlobalContext
  */
-async function getGlobalContext(): Promise<GlobalContextServerSidePublic> {
+async function getGlobalContext(): Promise<GlobalContextServer> {
   debug('getGlobalContext()')
   const { isProduction } = globalObject
   // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).
@@ -135,7 +135,7 @@ async function getGlobalContext(): Promise<GlobalContextServerSidePublic> {
  *
  * https://vike.dev/getGlobalContext
  */
-async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextServerSidePublic> {
+async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextServer> {
   debug('getGlobalContextAsync()')
   assertUsage(
     typeof isProduction === 'boolean',
@@ -158,7 +158,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
  *
  * @deprecated
  */
-function getGlobalContextSync(): GlobalContextServerSidePublic {
+function getGlobalContextSync(): GlobalContextServer {
   debug('getGlobalContextSync()')
   const { globalContext_public } = globalObjectTyped
   assertUsage(
@@ -175,7 +175,7 @@ function getGlobalContextSync(): GlobalContextServerSidePublic {
   return globalContext_public
 }
 
-type GlobalContextServerSidePublic = ReturnType<typeof makePublic>
+type GlobalContextServer = ReturnType<typeof makePublic>
 function makePublic(globalContext: GlobalContextInternal) {
   const globalContextPublic = getPublicProxy(globalContext, 'globalContext', [
     'assetsManifest',
