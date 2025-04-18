@@ -54,7 +54,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const res = getPropVal(pageContext, prop)
+      const res = getPropVal(pageContextClient, prop)
       if (!res) return
       const { value } = res
       const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
