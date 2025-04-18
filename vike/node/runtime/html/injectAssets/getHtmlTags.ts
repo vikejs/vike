@@ -6,7 +6,7 @@ export type { PreloadFilter }
 export type { InjectFilterEntry }
 
 import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils.js'
-import { type PageContextSerialization, serializePageContextClientSide } from '../serializePageContextClientSide.js'
+import { type PageContextSerialization, serializePageContextClientSide } from '../serializeContext.js'
 import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'

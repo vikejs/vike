@@ -16,7 +16,7 @@ import type { HtmlPart } from './renderHtml.js'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags.js'
 import type { StreamFromReactStreamingPackage } from './stream/react-streaming.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
-import type { PageContextSerialization } from './serializePageContextClientSide.js'
+import type { PageContextSerialization } from './serializeContext.js'
 import { getViteDevScript } from './injectAssets/getViteDevScript.js'
 import type { GlobalContextInternal } from '../globalContext.js'
 

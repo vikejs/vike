@@ -22,7 +22,7 @@ import type { PageContextPromise } from '../html/injectAssets.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { assertHookReturnedObject } from '../../../shared/assertHookReturnedObject.js'
 import { logRuntimeError } from './loggerRuntime.js'
-import type { PageContextSerialization } from '../html/serializePageContextClientSide.js'
+import type { PageContextSerialization } from '../html/serializeContext.js'
 import pc from '@brillout/picocolors'
 import { executeHook } from '../../../shared/hooks/executeHook.js'
 

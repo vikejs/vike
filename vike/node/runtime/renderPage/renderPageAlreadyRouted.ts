@@ -5,7 +5,7 @@ export type { PageContextAfterRender }
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
 import { assert, assertUsage, hasProp, objectAssign } from '../utils.js'
-import { serializePageContextClientSide } from '../html/serializePageContextClientSide.js'
+import { serializePageContextClientSide } from '../html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
