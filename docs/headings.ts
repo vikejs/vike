@@ -316,10 +316,7 @@ const headings = [
   {
     level: 2,
     title: '`pageContext`',
-    url: '/pageContext',
-    sectionTitles: [
-      // 'Can I check whether SSR is enabled?'
-    ]
+    url: '/pageContext'
   },
   {
     level: 2,
