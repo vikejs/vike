@@ -57,7 +57,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
       const res = getPropVal(pageContextClient, prop)
       if (!res) return
       const { value } = res
-      const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
+      const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
         serializeValue(value, varName)
       } catch (err) {
@@ -108,7 +108,8 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
 
   return pageContextSerialized
 }
-function serializeValue(value: unknown, varName?: string): string {
+
+function serializeValue(value: unknown, varName?: `pageContext${string}`): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
 }
 function getPassToClient(pageContext: {
