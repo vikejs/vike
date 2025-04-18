@@ -16,12 +16,13 @@ async function executeHookGeneric(hookName: HookName, pageContext: PageConfigUse
 async function executeHookGenericGlobalCumulative(
   hookName: HookNameGlobal,
   pageConfigGlobal: PageConfigGlobalRuntime,
-  pageContext: object
+  pageContext: object | null,
+  arg: object
 ) {
   const hooks = getHookFromPageConfigGlobalCumulative(pageConfigGlobal, hookName)
   await Promise.all(
     hooks.map(async (hook) => {
-      await executeHook(() => hook.hookFn(pageContext), hook, pageContext)
+      await executeHook(() => hook.hookFn(arg), hook, pageContext)
     })
   )
 }
