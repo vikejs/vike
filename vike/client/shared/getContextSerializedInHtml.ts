@@ -1,7 +1,7 @@
 export { getPageContextSerializedInHtml }
 
 import { parse } from '@brillout/json-serializer/parse'
-import { hasProp, assert, assertUsage } from '../server-routing-runtime/utils.js'
+import { hasProp, assert, assertUsage } from './utils.js'
 
 // elements should exist because:
 // 1. <script id="vike_pageContext" type="application/json"> appears before the <script> that loads Vike's client runtime (which includes this file)
