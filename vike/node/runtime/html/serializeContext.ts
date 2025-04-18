@@ -14,7 +14,7 @@ import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContex
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
 import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 
-const PASS_TO_CLIENT: string[] = [
+const passToClientBuiltInPageContext = [
   'abortReason',
   '_urlRewrite',
   '_urlRedirect',
@@ -28,7 +28,7 @@ const PASS_TO_CLIENT: string[] = [
   'routeParams',
   'data' // for data() hook
 ]
-const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', isServerSideError]
+const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
 
 type PageContextSerialization = {
   pageId: string
@@ -40,12 +40,12 @@ type PageContextSerialization = {
   _pageContextInit: Record<string, unknown>
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
-  const passToClient = getPassToClient(pageContext)
-  const pageContextClient = applyPassToClient(passToClient, pageContext)
-  if (passToClient.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
+  const passToClientPageContext = getPassToClientPageContext(pageContext)
+  const pageContextClient = applyPassToClient(passToClientPageContext, pageContext)
+  if (passToClientPageContext.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
-  const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClient)
+  const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClientPageContext)
   return pageContextClientSerialized
 }
 
@@ -114,17 +114,17 @@ function serializeObject(obj: Record<string, unknown>, objName: 'pageContext', p
 function serializeValue(value: unknown, varName?: `pageContext${string}`): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
 }
-function getPassToClient(pageContext: {
+function getPassToClientPageContext(pageContext: {
   pageId: string
   _passToClient: string[]
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
 }): string[] {
-  let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]
+  let passToClient = [...pageContext._passToClient, ...passToClientBuiltInPageContext]
   if (isErrorPage(pageContext.pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
-    passToClient.push(...PASS_TO_CLIENT_ERROR_PAGE)
+    passToClient.push(...pageToClientBuiltInPageContextError)
   }
   passToClient = unique(passToClient)
   return passToClient
