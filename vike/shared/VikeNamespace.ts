@@ -35,6 +35,12 @@ declare global {
      *  https://vike.dev/meta#typescript
      */
     interface ConfigResolved {}
+
+    /** Extend the `GlobalContext` type (`import type { GlobalContext } from 'vike/types'`).
+     *
+     *  https://vike.dev/globalContext#typescript
+     */
+    interface GlobalContext {}
   }
 
   /** This namespace is only used by:

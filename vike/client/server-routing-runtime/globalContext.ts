@@ -7,9 +7,10 @@ import type { GlobalContextSharedPublic } from '../../shared/createGlobalContext
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:server-routing'
 
 // Public type
-type GlobalContextClientWithServerRouting = GlobalContextSharedPublic & {
-  // Nothing extra for now
-}
+type GlobalContextClientWithServerRouting = GlobalContextSharedPublic &
+  Vike.GlobalContext & {
+    // Nothing extra for now
+  }
 
 type GlobalContextClientWithServerRoutingInternal = Awaited<ReturnType<typeof getGlobalContext>>
 const getGlobalContext = createGetGlobalContext(virtualFileExports, false)

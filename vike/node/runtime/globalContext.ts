@@ -90,7 +90,7 @@ const globalObjectTyped = globalObject as typeof globalObject & {
 }
 
 // Public type
-type GlobalContextServer = ReturnType<typeof makePublic>
+type GlobalContextServer = ReturnType<typeof makePublic> & Vike.GlobalContext
 // Private type
 type GlobalContextServerInternal = Awaited<ReturnType<typeof setGlobalContext>>
 
