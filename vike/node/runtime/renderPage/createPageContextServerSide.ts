@@ -39,7 +39,6 @@ async function createPageContextServerSide(
   objectAssign(pageContextCreated, pageContextInit)
 
   objectAssign(pageContextCreated, {
-    ...globalContext, // least precedence
     globalContext: globalObject_public,
     _globalContext: globalContext,
     // The following is defined on `pageContext` because we can eventually make these non-global
