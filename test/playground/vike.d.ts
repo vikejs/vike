@@ -6,6 +6,11 @@ declare global {
         staticUrls: string[]
       }
     }
+    interface GlobalContext {
+      setGloballyServer?: number
+      setGloballyClient?: number
+      notPassedToClient?: number
+    }
   }
 }
 

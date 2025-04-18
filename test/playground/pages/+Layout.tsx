@@ -1,6 +1,6 @@
 export { Layout }
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './Layout.css'
 import { usePageContext } from 'vike-react/usePageContext'
 import { assert } from '../utils/assert'
@@ -15,15 +15,18 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <React.StrictMode>
       <Frame>
-        <Sidebar>
+        <Left>
           {pageContext.someWrapperObj.staticUrls
             .filter((url) => !url.includes('config-meta'))
             .map((url) => (
               <Link href={url} key={url} />
             ))}
           <Link href="/nested-layout/42" />
-        </Sidebar>
-        <Content>{children}</Content>
+        </Left>
+        <Right>
+          <div>{children}</div>
+          <Footer />
+        </Right>
       </Frame>
     </React.StrictMode>
   )
@@ -51,7 +54,7 @@ function Frame({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Sidebar({ children }: { children: React.ReactNode }) {
+function Left({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -67,7 +70,7 @@ function Sidebar({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Content({ children }: { children: React.ReactNode }) {
+function Right({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -78,6 +81,38 @@ function Content({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
+    </div>
+  )
+}
+
+function Footer() {
+  const pageContext = usePageContext()
+  const [n, setN] = useState<string | number>('hydrating...')
+  useEffect(() => {
+    const n = pageContext.globalContext.setGloballyClient!
+    console.log('n', pageContext.globalContext)
+    console.log('n', n)
+    setN(n)
+  })
+  return (
+    <div
+      id="footer"
+      style={{
+        borderTop: '1px solid #eee',
+        fontSize: '0.88em',
+        marginTop: 50,
+        paddingTop: 20,
+        fontFamily: 'monospace'
+      }}
+    >
+      <div>
+        Constant number server-side <code>pageContext.globalContext.setGloballyServer</code>:{' '}
+        <span id="setGloballyServer">{pageContext.globalContext.setGloballyServer}</span>
+      </div>
+      <div>
+        Constant number client-side <code>pageContext.globalContext.setGloballyClient</code>:{' '}
+        <span id="setGloballyClient">{n}</span>
+      </div>
     </div>
   )
 }
