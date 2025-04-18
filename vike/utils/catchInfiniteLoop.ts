@@ -31,7 +31,7 @@ function catchInfiniteLoop(functionName: `${string}()`, maxNumberOfCalls = 100, 
   // Warning, at 50% threshold
   if (!tracker.warned && tracker.count > maxNumberOfCalls * 0.5) {
     // Warning is shown upon 10 calls a second, on average during 5 seconds, given the default parameters
-    assertWarning(false, msg, { onlyOnce: false })
+    assertWarning(false, msg, { onlyOnce: false, showStackTrace: true })
     tracker.warned = true
   }
 }
