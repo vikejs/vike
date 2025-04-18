@@ -42,7 +42,7 @@ async function createGlobalContextShared<GlobalContextAddendum extends object>(
     objectAssign(globalObject.globalContext, globalContext)
   }
 
-  return globalContext
+  return globalObject.globalContext as typeof globalContext
 }
 
 type GlobalContextSharedPublic = Pick<GlobalContextShared, 'config' | 'pages'>
