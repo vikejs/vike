@@ -1,7 +1,7 @@
+export { getPageContextSerializedInHtml }
+
 import { parse } from '@brillout/json-serializer/parse'
 import { hasProp, assert, assertUsage } from '../server-routing-runtime/utils.js'
-
-export { getPageContextSerializedInHtml }
 
 function getPageContextSerializedInHtml(): { pageId: string; routeParams: Record<string, string> } {
   // elem should exist because:
