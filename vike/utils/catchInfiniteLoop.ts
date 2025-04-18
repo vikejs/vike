@@ -1,6 +1,6 @@
 export { catchInfiniteLoop }
 
-import { assert, assertWarning } from './assert.js'
+import { assertUsage, assertWarning } from './assert.js'
 
 const trackers = {} as Record<string, Tracker>
 
@@ -23,9 +23,9 @@ function catchInfiniteLoop(functionName: `${string}()`, maxNumberOfCalls = 100, 
   tracker.count++
 
   // Error
-  const msg = `[Infinite Loop] ${functionName} called ${tracker.count} times within ${withinSeconds} seconds`
+  const msg = `[Infinite Loop] Rendering ${tracker.count} times within ${withinSeconds} seconds [${functionName}]`
   if (tracker.count > maxNumberOfCalls) {
-    assert(false, msg)
+    assertUsage(false, msg)
   }
 
   // Warning, at 50% threshold
