@@ -48,7 +48,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
 
   let pageContextSerialized: string
   try {
-    pageContextSerialized = serialize(pageContextClient)
+    pageContextSerialized = serializeValue(pageContextClient)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
@@ -59,7 +59,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
       const { value } = res
       const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
       try {
-        serialize(value, varName)
+        serializeValue(value, varName)
       } catch (err) {
         propsNonSerializable.push(prop)
 
@@ -100,7 +100,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
       pageContextClient[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
-      pageContextSerialized = serialize(pageContextClient)
+      pageContextSerialized = serializeValue(pageContextClient)
     } catch (err) {
       assert(false)
     }
@@ -108,7 +108,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
 
   return pageContextSerialized
 }
-function serialize(value: unknown, varName?: string): string {
+function serializeValue(value: unknown, varName?: string): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
 }
 function getPassToClient(pageContext: {
@@ -169,7 +169,7 @@ function serializePageContextAbort(
       }
     )
   }
-  return serialize(pageContext)
+  return serializeValue(pageContext)
 }
 
 function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
