@@ -1,10 +1,14 @@
 export { PageContext }
 export { PageContextServer }
 export { PageContextClient }
+export { GlobalContext }
+export { GlobalContextServer }
+export { GlobalContextClient }
 // For users who don't use Client Routing
 //  - PageContextServer is the same for Client Routing and Server Routing
 export { PageContextWithServerRouting }
 export { PageContextClientWithServerRouting }
+export { GlobalContextClientWithServerRouting }
 
 // Internal use
 export { PageContextBuiltInServerInternal }
@@ -29,6 +33,8 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.P
 //  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succint type names `PageContext` and `PageContextClient` to these users
 type PageContext<Data = unknown> = PageContextClient<Data> | PageContextServer<Data>
 type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> & Vike.PageContext
+
+type GlobalContext = GlobalContextServer | GlobalContextClient
 
 // With Server Routing
 type PageContextWithServerRouting<Data = unknown> = PageContextClientWithServerRouting<Data> | PageContextServer<Data>

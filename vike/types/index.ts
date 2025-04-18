@@ -2,8 +2,12 @@ export type {
   PageContext,
   PageContextServer,
   PageContextClient,
+  GlobalContext,
+  GlobalContextServer,
+  GlobalContextClient,
   PageContextWithServerRouting,
-  PageContextClientWithServerRouting
+  PageContextClientWithServerRouting,
+  GlobalContextClientWithServerRouting
 } from '../shared/types.js'
 
 // TODO/v1-release: remove these three exports
