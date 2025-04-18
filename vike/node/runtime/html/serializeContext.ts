@@ -45,9 +45,8 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   if (passToClient.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
-
-  const pageContextSerialized = serializeObject(pageContextClient, 'pageContext', passToClient)
-  return pageContextSerialized
+  const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClient)
+  return pageContextClientSerialized
 }
 
 function serializeObject(obj: Record<string, unknown>, objName: 'pageContext', passToClient: string[]) {
