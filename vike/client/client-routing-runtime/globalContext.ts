@@ -1,5 +1,5 @@
 export { getGlobalContext }
-export type { GlobalContextBuiltInClient }
+export type { GlobalContextClient }
 
 import { createGetGlobalContext } from '../shared/createGetGlobalContext.js'
 import { loadPageRoutes } from '../../shared/route/loadPageRoutes.js'
@@ -8,7 +8,7 @@ import type { GlobalContextShared, GlobalContextSharedPublic } from '../../share
 import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-routing'
 
 // Public type
-type GlobalContextBuiltInClient = GlobalContextSharedPublic & {
+type GlobalContextClient = GlobalContextSharedPublic & {
   // Nothing extra for now
 }
 type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContext>>
