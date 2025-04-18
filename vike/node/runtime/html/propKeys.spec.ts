@@ -1,5 +1,5 @@
+import { getPropKeys } from './propKeys'
 import { describe, it, expect } from 'vitest'
-import { getPropKeys } from './serializePageContextClientSide'
 
 describe('getPropKeys', () => {
   it('splits on dots when no escape is present', () => {
