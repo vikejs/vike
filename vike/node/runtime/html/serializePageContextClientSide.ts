@@ -46,18 +46,23 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
 
-  let pageContextSerialized: string
+  const pageContextSerialized = serializeObject(pageContextClient, 'pageContext', passToClient)
+  return pageContextSerialized
+}
+
+function serializeObject(obj: Record<string, unknown>, objName: 'pageContext', passToClient: string[]) {
+  let serialized: string
   try {
-    pageContextSerialized = serializeValue(pageContextClient)
+    serialized = serializeValue(obj)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const res = getPropVal(pageContextClient, prop)
+      const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
-      const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
+      const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
         serializeValue(value, varName)
       } catch (err) {
@@ -77,7 +82,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
           )
         }
 
-        // Non-serializable pageContext set by the user
+        // Non-serializable property set by the user
         let msg = [
           `${h(varName)} can't be serialized and, therefore, can't be passed to the client side.`,
           `Make sure ${h(varName)} is serializable, or remove ${h(JSON.stringify(prop))} from ${h('passToClient')}.`
@@ -97,18 +102,16 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     })
     assert(hasWarned)
     propsNonSerializable.forEach((prop) => {
-      pageContextClient[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
+      obj[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
-      pageContextSerialized = serializeValue(pageContextClient)
+      serialized = serializeValue(obj)
     } catch (err) {
       assert(false)
     }
   }
-
-  return pageContextSerialized
+  return serialized
 }
-
 function serializeValue(value: unknown, varName?: `pageContext${string}`): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
 }
