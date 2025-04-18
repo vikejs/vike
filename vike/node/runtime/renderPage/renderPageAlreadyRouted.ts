@@ -5,7 +5,7 @@ export type { PageContextAfterRender }
 import { getErrorPageId } from '../../../shared/error-page.js'
 import { getHtmlString } from '../html/renderHtml.js'
 import { assert, assertUsage, hasProp, objectAssign } from '../utils.js'
-import { serializePageContextClientSide } from '../html/serializeContext.js'
+import { getPageContextClientSerialized } from '../html/serializeContext.js'
 import { type PageContextUrlInternal } from '../../../shared/getPageContextUrlComputed.js'
 import { createHttpResponsePage, createHttpResponsePageContextJson, HttpResponse } from './createHttpResponse.js'
 import {
@@ -67,7 +67,7 @@ async function renderPageAlreadyRouted<
     if (isError) {
       objectAssign(pageContext, { [isServerSideError]: true })
     }
-    const pageContextSerialized: string = serializePageContextClientSide(pageContext)
+    const pageContextSerialized: string = getPageContextClientSerialized(pageContext)
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     objectAssign(pageContext, { httpResponse })
     return pageContext
@@ -118,7 +118,7 @@ async function prerenderPage(
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null, pageContext }
   } else {
-    const pageContextSerialized = serializePageContextClientSide(pageContext)
+    const pageContextSerialized = getPageContextClientSerialized(pageContext)
     return { documentHtml, pageContextSerialized, pageContext }
   }
 }

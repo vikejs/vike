@@ -43,7 +43,7 @@ function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): v
 }
 
 function getPropKeys(prop: string): string[] {
-  // Like `prop.split('.')` but with added support for `\` escaping, see serializePageContextClientSide.spec.ts
+  // Like `prop.split('.')` but with added support for `\` escaping, see getPageContextClientSerialized.spec.ts
   return prop
     .split(/(?<!\\)\./) // Split on unescaped dots
     .map((key) => key.replace(/\\\./g, '.')) // Replace escaped dots with literal dots

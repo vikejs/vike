@@ -6,7 +6,7 @@ export type { PreloadFilter }
 export type { InjectFilterEntry }
 
 import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils.js'
-import { type PageContextSerialization, serializePageContextClientSide } from '../serializeContext.js'
+import { type PageContextSerialization, getPageContextClientSerialized } from '../serializeContext.js'
 import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
@@ -218,7 +218,7 @@ function mergeScriptEntries(pageAssets: PageAsset[], viteDevScript: string): nul
 }
 
 function getPageContextJsonScriptTag(pageContext: PageContextSerialization): string {
-  const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
+  const pageContextSerialized = sanitizeJson(getPageContextClientSerialized(pageContext))
   const htmlTag = `<script id="vike_pageContext" type="application/json">${pageContextSerialized}</script>`
 
   // Used by contra.com https://github.com/gajus

@@ -1,4 +1,4 @@
-export { serializePageContextClientSide }
+export { getPageContextClientSerialized }
 export { serializePageContextAbort }
 export type { PageContextSerialization }
 
@@ -39,7 +39,7 @@ type PageContextSerialization = {
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
 }
-function serializePageContextClientSide(pageContext: PageContextSerialization) {
+function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClient = getPassToClient(pageContext)
   const pageContextClient = applyPassToClient(passToClient, pageContext)
   if (passToClient.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
