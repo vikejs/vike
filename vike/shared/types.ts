@@ -1,27 +1,32 @@
-export { PageContext }
-export { PageContextServer }
-export { PageContextClient }
+// Public
+export type { PageContext }
+export type { PageContextServer }
+export type { PageContextClient }
+export type { GlobalContext }
+export type { GlobalContextServer }
+export type { GlobalContextClient }
 // For users who don't use Client Routing
 //  - PageContextServer is the same for Client Routing and Server Routing
-export { PageContextWithServerRouting }
-export { PageContextClientWithServerRouting }
+export type { PageContextWithServerRouting }
+export type { PageContextClientWithServerRouting }
+export type { GlobalContextClientWithServerRouting }
 
-// Internal use
-export { PageContextBuiltInServerInternal }
+// Internal
+export type { PageContextBuiltInServerInternal }
 
 // TODO/v1-release: remove these three exports
-export { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
-export { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
-export { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
+export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
+export type { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
+export type { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrlInternal, PageContextUrlClient, PageContextUrlServer } from './getPageContextUrlComputed.js'
 import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-configs/getPageConfigUserFriendly.js'
 import type { Config } from './page-configs/Config.js'
 import type { PageContextConfig } from './page-configs/Config/PageContextConfig.js'
 import type { AbortStatusCode } from './route/abort.js'
-import type { GlobalContextServerSidePublic } from '../node/runtime/globalContext.js'
-import type { GlobalContextClientSidePublic as GlobalContextClientSidePublicWithServerRouting } from '../client/server-routing-runtime/globalContext.js'
-import type { GlobalContextClientSidePublic as GlobalContextClientSidePublicWithClientRouting } from '../client/client-routing-runtime/globalContext.js'
+import type { GlobalContextServer } from '../node/runtime/globalContext.js'
+import type { GlobalContextClient } from '../client/client-routing-runtime/globalContext.js'
+import type { GlobalContextClientWithServerRouting } from '../client/server-routing-runtime/globalContext.js'
 
 type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.PageContext
 
@@ -29,6 +34,8 @@ type PageContextServer<Data = unknown> = PageContextBuiltInServer<Data> & Vike.P
 //  - Because of vike-{react/vue/solid} most users will eventually be using Client Routing => we give out the succint type names `PageContext` and `PageContextClient` to these users
 type PageContext<Data = unknown> = PageContextClient<Data> | PageContextServer<Data>
 type PageContextClient<Data = unknown> = PageContextBuiltInClientWithClientRouting<Data> & Vike.PageContext
+
+type GlobalContext = GlobalContextServer | GlobalContextClient
 
 // With Server Routing
 type PageContextWithServerRouting<Data = unknown> = PageContextClientWithServerRouting<Data> | PageContextServer<Data>
@@ -180,7 +187,7 @@ type PageContextBuiltInServer<Data> = PageContextBuiltInCommon<Data> &
      *
      * https://vike.dev/getGlobalContext
      */
-    globalContext: GlobalContextServerSidePublic
+    globalContext: GlobalContextServer
 
     isHydration?: undefined
     isBackwardNavigation?: undefined
@@ -219,7 +226,7 @@ type PageContextBuiltInClientWithClientRouting<Data> = Partial<PageContextBuiltI
      * https://vike.dev/pageContext
      */
     previousPageContext: PageContextClient<Data> | null
-    globalContext: GlobalContextClientSidePublicWithClientRouting
+    globalContext: GlobalContextClient
   } & PageContextUrlClient
 
 type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltInCommon<Data>> &
@@ -237,7 +244,7 @@ type PageContextBuiltInClientWithServerRouting<Data> = Partial<PageContextBuiltI
      * The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
      */
     isBackwardNavigation: null
-    globalContext: GlobalContextClientSidePublicWithServerRouting
+    globalContext: GlobalContextClientWithServerRouting
   }
 
 type PageContextClientCommon = {

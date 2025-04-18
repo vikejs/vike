@@ -13,11 +13,19 @@ async function createPageContextClientSide(urlOriginal: string) {
   assert(isBaseServer(baseServer))
 
   const pageContextCreated = {
+    /* Don't spread globalContext for now? Or never spread it as it leads to confusion? The convenience isn't worth the added confusion?
+    ...globalContext, // least precedence
+    */
+    globalContext,
+    _pageFilesAll: globalContext._pageFilesAll,
+    _pageConfigs: globalContext._pageConfigs,
+    _pageConfigGlobal: globalContext._pageConfigGlobal,
+    _allPageIds: globalContext._allPageIds,
+    _pageRoutes: globalContext._pageRoutes,
+    _onBeforeRouteHook: globalContext._onBeforeRouteHook,
     isClientSide: true,
     isPrerendering: false,
     urlOriginal,
-    globalContext,
-    ...globalContext,
     _urlHandler: null,
     _urlRewrite: null,
     _baseServer: baseServer

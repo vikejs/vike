@@ -39,7 +39,7 @@ import {
 } from '../../shared/route/abort.js'
 import {
   getGlobalContextInternal,
-  type GlobalContextServerSidePublic,
+  type GlobalContextServer,
   initGlobalContext_renderPage,
   type GlobalContextInternal
 } from './globalContext.js'
@@ -441,7 +441,7 @@ async function getPageContextErrorPageInit(
 async function getPageContextBegin(
   pageContextInit: PageContextInit,
   globalContext: GlobalContextInternal,
-  globalContext_public: GlobalContextServerSidePublic,
+  globalContext_public: GlobalContextServer,
   httpRequestId: number
 ) {
   const { isClientSideNavigation, _urlHandler } = handlePageContextUrl(pageContextInit.urlOriginal)

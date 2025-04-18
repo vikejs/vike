@@ -19,8 +19,8 @@ export { clearGlobalContext }
 export { assertBuildInfo }
 export { updateUserFiles }
 export type { BuildInfo }
-export type { GlobalContextInternal }
-export type { GlobalContextServerSidePublic }
+export type { GlobalContextServerInternal as GlobalContextInternal }
+export type { GlobalContextServer }
 
 // The core logic revolves around:
 // - virtualFileExports is the main requirement
@@ -62,8 +62,10 @@ import type { ViteConfigRuntime } from '../plugin/shared/getViteConfigRuntime.js
 import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
 type PageConfigsRuntime = ReturnType<typeof getPageConfigsRuntime>
 const debug = createDebugger('vike:globalContext')
-const globalObject_ = getGlobalObject<
+const globalObject = getGlobalObject<
   {
+    globalContext?: Record<string, unknown>
+    globalContext_public?: Record<string, unknown>
     viteDevServer?: ViteDevServer
     viteConfig?: ResolvedConfig
     viteConfigRuntime?: ViteConfigRuntime
@@ -82,26 +84,28 @@ const globalObject_ = getGlobalObject<
 >('runtime/globalContext.ts', getInitialGlobalContext())
 // Trick to break down TypeScript circular dependency
 // https://chat.deepseek.com/a/chat/s/d7e9f90a-c7f3-4108-9cd5-4ad6caed3539
-const globalObject = globalObject_ as typeof globalObject_ & {
-  globalContext: GlobalContextInternal
-  globalContext_public?: GlobalContextServerSidePublic
+const globalObjectTyped = globalObject as typeof globalObject & {
+  globalContext?: GlobalContextServerInternal
+  globalContext_public?: GlobalContextServer
 }
 
-type GlobalContextInternal = Awaited<ReturnType<typeof setGlobalContext>>
+// Public type
+type GlobalContextServer = ReturnType<typeof makePublic>
+// Private type
+type GlobalContextServerInternal = Awaited<ReturnType<typeof setGlobalContext>>
 
 async function getGlobalContextInternal() {
   // getGlobalContextInternal() should always be called after initGlobalContext()
   assert(globalObject.isInitialized)
   assertGlobalContextIsDefined()
   if (globalObject.isProduction !== true) await globalObject.waitForUserFilesUpdate
-  const { globalContext } = globalObject
+  const { globalContext, globalContext_public } = globalObjectTyped
   assertIsDefined(globalContext)
-  const { globalContext_public } = globalObject
   assert(globalContext_public)
   return { globalContext, globalContext_public }
 }
 
-function assertIsDefined<T extends GlobalContextInternal>(
+function assertIsDefined<T extends GlobalContextServerInternal>(
   globalContext: undefined | null | T
 ): asserts globalContext is T {
   if (!globalContext) {
@@ -111,7 +115,8 @@ function assertIsDefined<T extends GlobalContextInternal>(
   }
 }
 function assertGlobalContextIsDefined() {
-  assertIsDefined(globalObject.globalContext)
+  assertIsDefined(globalObjectTyped.globalContext)
+  assert(globalObject.globalContext)
   assert(globalObject.globalContext_public)
 }
 
@@ -120,7 +125,7 @@ function assertGlobalContextIsDefined() {
  *
  * https://vike.dev/getGlobalContext
  */
-async function getGlobalContext(): Promise<GlobalContextServerSidePublic> {
+async function getGlobalContext(): Promise<GlobalContextServer> {
   debug('getGlobalContext()')
   const { isProduction } = globalObject
   // This assertion cannot fail for vike-server users (because when using vike-server it's guaranteed that globalObject.isProduction is set before executing any user-land code and any Vike extension code).
@@ -133,7 +138,7 @@ async function getGlobalContext(): Promise<GlobalContextServerSidePublic> {
  *
  * https://vike.dev/getGlobalContext
  */
-async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextServerSidePublic> {
+async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalContextServer> {
   debug('getGlobalContextAsync()')
   assertUsage(
     typeof isProduction === 'boolean',
@@ -145,7 +150,7 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
   if (!globalObject.globalContext) await initGlobalContext_getGlobalContextAsync()
   if (!isProduction) await globalObject.waitForUserFilesUpdate
   assertGlobalContextIsDefined()
-  const { globalContext_public } = globalObject
+  const { globalContext_public } = globalObjectTyped
   assert(globalContext_public)
   return globalContext_public
 }
@@ -156,9 +161,9 @@ async function getGlobalContextAsync(isProduction: boolean): Promise<GlobalConte
  *
  * @deprecated
  */
-function getGlobalContextSync(): GlobalContextServerSidePublic {
+function getGlobalContextSync(): GlobalContextServer {
   debug('getGlobalContextSync()')
-  const { globalContext_public } = globalObject
+  const { globalContext_public } = globalObjectTyped
   assertUsage(
     globalContext_public,
     "The global context isn't set yet, call getGlobalContextSync() later or use getGlobalContext() instead."
@@ -173,8 +178,7 @@ function getGlobalContextSync(): GlobalContextServerSidePublic {
   return globalContext_public
 }
 
-type GlobalContextServerSidePublic = ReturnType<typeof makePublic>
-function makePublic(globalContext: GlobalContextInternal) {
+function makePublic(globalContext: GlobalContextServerInternal) {
   const globalContextPublic = getPublicProxy(globalContext, 'globalContext', [
     'assetsManifest',
     'config',
@@ -420,22 +424,13 @@ async function updateUserFiles() {
 }
 
 async function setGlobalContext(virtualFileExports: unknown) {
-  const globalContext = await createGlobalContextShared(virtualFileExports, addGlobalContext)
+  const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
 
   assertV1Design(
     // pageConfigs is PageConfigRuntime[] but assertV1Design() requires PageConfigBuildTime[]
     globalContext._pageConfigs.length > 0,
     globalContext._pageFilesAll
   )
-
-  // Internal usage
-  if (!globalObject.globalContext) {
-    globalObject.globalContext = globalContext
-  } else {
-    // Ensure all globalContext user-land references are preserved & updated
-    // globalContext_public is just a proxy of globalContext
-    objectReplace(globalObject.globalContext, globalContext)
-  }
 
   // Public usage
   globalObject.globalContext_public = makePublic(globalContext)
@@ -467,15 +462,15 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     assert(viteConfigRuntime)
     assert(!isPrerendering)
     return {
+      ...globalContext,
       ...globalContextBase,
+      ...resolveBaseRuntime(viteConfigRuntime, globalContext.config),
       _isProduction: false as const,
       _isPrerendering: false as const,
       assetsManifest: null,
       _viteDevServer: viteDevServer,
       viteConfig,
-      ...globalContext,
-      viteConfigRuntime,
-      ...resolveBaseRuntime(viteConfigRuntime, globalContext.config)
+      viteConfigRuntime
     }
   } else {
     assert(globalObject.buildEntry)
@@ -484,14 +479,14 @@ async function addGlobalContext(globalContext: GlobalContextShared) {
     assert(buildInfo)
     assert(assetsManifest)
     const globalContextBase2 = {
+      ...globalContext,
       ...globalContextBase,
+      ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config),
       _isProduction: true as const,
       assetsManifest,
-      ...globalContext,
       _viteDevServer: null,
       viteConfigRuntime: buildInfo.viteConfigRuntime,
-      _usesClientRouter: buildInfo.usesClientRouter,
-      ...resolveBaseRuntime(buildInfo.viteConfigRuntime, globalContext.config)
+      _usesClientRouter: buildInfo.usesClientRouter
     }
     if (isPrerendering) {
       assert(viteConfig)

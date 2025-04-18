@@ -1,7 +1,7 @@
 export { createGetGlobalContext }
 
 import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
-import { assert, getGlobalObject, objectReplace } from './utils.js'
+import { assert, getGlobalObject } from './utils.js'
 
 const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
@@ -32,15 +32,7 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = await createGlobalContextShared(virtualFileExports, addGlobalContext)
-
-    // Singleton
-    if (!globalObject.globalContext) {
-      globalObject.globalContext = globalContext
-    } else {
-      // Ensure all `globalContext` user-land references are preserved & updated
-      objectReplace(globalObject.globalContext, globalContext)
-    }
+    const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
 
     // Return
     return globalContext
