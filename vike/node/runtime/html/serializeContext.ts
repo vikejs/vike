@@ -1,12 +1,9 @@
-export { serializePageContextClientSide }
-export { serializePageContextAbort }
+export { getPageContextClientSerialized }
+export { getPageContextClientSerializedAbort }
 export type { PageContextSerialization }
 
-// For ./serializePageContextClientSide.spec.ts
-export { getPropKeys }
-
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
-import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, isObject, unique } from '../utils.js'
+import { assert, assertUsage, assertWarning, getPropAccessNotation, hasProp, unique } from '../utils.js'
 import type { PageConfigRuntime } from '../../../shared/page-configs/PageConfig.js'
 import { isErrorPage } from '../../../shared/error-page.js'
 import { addIs404ToPageProps } from '../../../shared/addIs404ToPageProps.js'
@@ -15,8 +12,9 @@ import { NOT_SERIALIZABLE } from '../../../shared/NOT_SERIALIZABLE.js'
 import type { UrlRedirect } from '../../../shared/route/abort.js'
 import { pageContextInitIsPassedToClient } from '../../../shared/misc/pageContextInitIsPassedToClient.js'
 import { isServerSideError } from '../../../shared/misc/isServerSideError.js'
+import { getPropKeys, getPropVal, setPropVal } from './propKeys.js'
 
-const PASS_TO_CLIENT: string[] = [
+const passToClientBuiltInPageContext = [
   'abortReason',
   '_urlRewrite',
   '_urlRedirect',
@@ -30,7 +28,7 @@ const PASS_TO_CLIENT: string[] = [
   'routeParams',
   'data' // for data() hook
 ]
-const PASS_TO_CLIENT_ERROR_PAGE = ['pageProps', 'is404', isServerSideError]
+const pageToClientBuiltInPageContextError = ['pageProps', 'is404', isServerSideError]
 
 type PageContextSerialization = {
   pageId: string
@@ -41,27 +39,31 @@ type PageContextSerialization = {
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
 }
-function serializePageContextClientSide(pageContext: PageContextSerialization) {
-  const passToClient = getPassToClient(pageContext)
-  const pageContextClient = applyPassToClient(passToClient, pageContext)
-  if (passToClient.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
+function getPageContextClientSerialized(pageContext: PageContextSerialization) {
+  const passToClientPageContext = getPassToClientPageContext(pageContext)
+  const pageContextClient = applyPassToClient(passToClientPageContext, pageContext)
+  if (passToClientPageContext.some((prop) => getPropVal(pageContext._pageContextInit, prop))) {
     pageContextClient[pageContextInitIsPassedToClient] = true
   }
+  const pageContextClientSerialized = serializeObject(pageContextClient, 'pageContext', passToClientPageContext)
+  return pageContextClientSerialized
+}
 
-  let pageContextSerialized: string
+function serializeObject(obj: Record<string, unknown>, objName: 'pageContext', passToClient: string[]) {
+  let serialized: string
   try {
-    pageContextSerialized = serialize(pageContextClient)
+    serialized = serializeValue(obj)
   } catch (err) {
     const h = (s: string) => pc.cyan(s)
     let hasWarned = false
     const propsNonSerializable: string[] = []
     passToClient.forEach((prop) => {
-      const res = getPropVal(pageContext, prop)
+      const res = getPropVal(obj, prop)
       if (!res) return
       const { value } = res
-      const varName = `pageContext${getPropKeys(prop).map(getPropAccessNotation).join('')}`
+      const varName = `${objName}${getPropKeys(prop).map(getPropAccessNotation).join('')}` as const
       try {
-        serialize(value, varName)
+        serializeValue(value, varName)
       } catch (err) {
         propsNonSerializable.push(prop)
 
@@ -79,7 +81,7 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
           )
         }
 
-        // Non-serializable pageContext set by the user
+        // Non-serializable property set by the user
         let msg = [
           `${h(varName)} can't be serialized and, therefore, can't be passed to the client side.`,
           `Make sure ${h(varName)} is serializable, or remove ${h(JSON.stringify(prop))} from ${h('passToClient')}.`
@@ -99,37 +101,36 @@ function serializePageContextClientSide(pageContext: PageContextSerialization) {
     })
     assert(hasWarned)
     propsNonSerializable.forEach((prop) => {
-      pageContextClient[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
+      obj[getPropKeys(prop)[0]!] = NOT_SERIALIZABLE
     })
     try {
-      pageContextSerialized = serialize(pageContextClient)
+      serialized = serializeValue(obj)
     } catch (err) {
       assert(false)
     }
   }
-
-  return pageContextSerialized
+  return serialized
 }
-function serialize(value: unknown, varName?: string): string {
+function serializeValue(value: unknown, varName?: `pageContext${string}`): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
 }
-function getPassToClient(pageContext: {
+function getPassToClientPageContext(pageContext: {
   pageId: string
   _passToClient: string[]
   _pageConfigs: PageConfigRuntime[]
   is404: null | boolean
 }): string[] {
-  let passToClient = [...pageContext._passToClient, ...PASS_TO_CLIENT]
+  let passToClient = [...pageContext._passToClient, ...passToClientBuiltInPageContext]
   if (isErrorPage(pageContext.pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
-    passToClient.push(...PASS_TO_CLIENT_ERROR_PAGE)
+    passToClient.push(...pageToClientBuiltInPageContextError)
   }
   passToClient = unique(passToClient)
   return passToClient
 }
 
-function serializePageContextAbort(
+function getPageContextClientSerializedAbort(
   pageContext: Record<string, unknown> &
     ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { abortStatusCode: number })
 ): string {
@@ -171,7 +172,7 @@ function serializePageContextAbort(
       }
     )
   }
-  return serialize(pageContext)
+  return serializeValue(pageContext)
 }
 
 function applyPassToClient(passToClient: string[], pageContext: Record<string, unknown>) {
@@ -186,49 +187,4 @@ function applyPassToClient(passToClient: string[], pageContext: Record<string, u
     setPropVal(pageContextClient, prop, value)
   })
   return pageContextClient
-}
-
-// Get a nested property from an object using a dot-separated path such as 'user.id'
-function getPropVal(obj: Record<string, unknown>, prop: string): null | { value: unknown } {
-  const keys = getPropKeys(prop)
-  let value: unknown = obj
-  for (const key of keys) {
-    if (isObject(value) && key in value) {
-      value = value[key]
-    } else {
-      return null // Property or intermediate property doesn't exist
-    }
-  }
-  return { value }
-}
-
-// Set a nested property in an object using a dot-separated path such as 'user.id'
-function setPropVal(obj: Record<string, unknown>, prop: string, val: unknown): void {
-  const keys = getPropKeys(prop)
-  let currentObj = obj
-
-  // Creating intermediate objects if necessary
-  for (let i = 0; i <= keys.length - 2; i++) {
-    const key = keys[i]!
-    if (!(key in currentObj)) {
-      // Create intermediate object
-      currentObj[key] = {}
-    }
-    if (!isObject(currentObj[key])) {
-      // Skip value upon data structure conflict
-      return
-    }
-    currentObj = currentObj[key]
-  }
-
-  // Set the final key to the value
-  const finalKey = keys[keys.length - 1]!
-  currentObj[finalKey] = val
-}
-
-function getPropKeys(prop: string): string[] {
-  // Like `prop.split('.')` but with added support for `\` escaping, see serializePageContextClientSide.spec.ts
-  return prop
-    .split(/(?<!\\)\./) // Split on unescaped dots
-    .map((key) => key.replace(/\\\./g, '.')) // Replace escaped dots with literal dots
 }
