@@ -7,8 +7,7 @@ import { objectAssign } from './utils.js'
 
 async function createGlobalContextShared<GlobalContextAddendum extends object>(
   virtualFileExports: unknown,
-  //globalObject: { globalContext?: Record<string, unknown> },
-  globalObject: Record<string, unknown>,
+  globalObject: { globalContext?: Record<string, unknown> },
   addGlobalContext?: (globalContext: GlobalContextShared) => Promise<GlobalContextAddendum>
 ) {
   const globalContext = createGlobalContextBase(virtualFileExports)

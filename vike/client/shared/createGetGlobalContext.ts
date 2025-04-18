@@ -1,7 +1,7 @@
 export { createGetGlobalContext }
 
 import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
-import { assert, getGlobalObject, objectReplace } from './utils.js'
+import { assert, getGlobalObject } from './utils.js'
 
 const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
