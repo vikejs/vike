@@ -179,15 +179,12 @@ function getGlobalContextSync(): GlobalContextServer {
 }
 
 function makePublic(globalContext: GlobalContextServerInternal) {
-  const globalContextPublic = getPublicProxy(globalContext, 'globalContext', [
-    'assetsManifest',
-    'config',
-    'viteConfig',
-    'viteConfigRuntime',
-    'pages',
-    'baseServer',
-    'baseAssets'
-  ])
+  const globalContextPublic = getPublicProxy(
+    globalContext,
+    'globalContext',
+    ['assetsManifest', 'config', 'viteConfig', 'viteConfigRuntime', 'pages', 'baseServer', 'baseAssets'],
+    true
+  )
   return globalContextPublic
 }
 
