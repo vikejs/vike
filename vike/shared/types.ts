@@ -1,22 +1,22 @@
-export { PageContext }
-export { PageContextServer }
-export { PageContextClient }
-export { GlobalContext }
-export { GlobalContextServer }
-export { GlobalContextClient }
+export type { PageContext }
+export type { PageContextServer }
+export type { PageContextClient }
+export type { GlobalContext }
+export type { GlobalContextServer }
+export type { GlobalContextClient }
 // For users who don't use Client Routing
 //  - PageContextServer is the same for Client Routing and Server Routing
-export { PageContextWithServerRouting }
-export { PageContextClientWithServerRouting }
-export { GlobalContextClientWithServerRouting }
+export type { PageContextWithServerRouting }
+export type { PageContextClientWithServerRouting }
+export type { GlobalContextClientWithServerRouting }
 
 // Internal use
-export { PageContextBuiltInServerInternal }
+export type { PageContextBuiltInServerInternal }
 
 // TODO/v1-release: remove these three exports
-export { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
-export { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
-export { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
+export type { PageContextBuiltInServer_deprecated as PageContextBuiltInServer }
+export type { PageContextBuiltInClientWithClientRouting_deprecated as PageContextBuiltInClientWithClientRouting }
+export type { PageContextBuiltInClientWithServerRouting_deprecated as PageContextBuiltInClientWithServerRouting }
 
 import type { PageContextUrlInternal, PageContextUrlClient, PageContextUrlServer } from './getPageContextUrlComputed.js'
 import type { ConfigEntries, ExportsAll, From, Source, Sources } from './page-configs/getPageConfigUserFriendly.js'
