@@ -39,6 +39,8 @@ async function createPageContextServerSide(
   objectAssign(pageContextCreated, pageContextInit)
 
   objectAssign(pageContextCreated, {
+    globalContext: globalObject_public,
+    _globalContext: globalContext,
     // The following is defined on `pageContext` because we can eventually make these non-global
     _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
@@ -51,10 +53,6 @@ async function createPageContextServerSide(
     _allPageIds: globalContext._allPageIds,
     _pageRoutes: globalContext._pageRoutes,
     _onBeforeRouteHook: globalContext._onBeforeRouteHook,
-    _globalContext: globalContext,
-    // TODO/now: add PageContext['globalContext']
-    /** @experimental This is a beta feature https://vike.dev/getGlobalContext */
-    globalContext: globalObject_public,
     _pageContextInit: pageContextInit,
     _urlRewrite: null,
     _urlHandler: urlHandler,

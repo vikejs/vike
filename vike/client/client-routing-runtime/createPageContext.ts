@@ -13,11 +13,11 @@ async function createPageContextClientSide(urlOriginal: string) {
   assert(isBaseServer(baseServer))
 
   const pageContextCreated = {
+    ...globalContext, // least precedence
+    globalContext,
     isClientSide: true,
     isPrerendering: false,
     urlOriginal,
-    globalContext,
-    ...globalContext,
     _urlHandler: null,
     _urlRewrite: null,
     _baseServer: baseServer

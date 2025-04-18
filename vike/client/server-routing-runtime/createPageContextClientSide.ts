@@ -14,14 +14,14 @@ async function createPageContextClientSide() {
   const globalContext = await getGlobalContext()
 
   const pageContextCreated = {
+    ...globalContext, // least precedence
+    globalContext,
     isPrerendering: false,
     isClientSide: true,
     isHydration: true as const,
     isBackwardNavigation: null,
     _hasPageContextFromServer: true as const,
     _hasPageContextFromClient: false as const,
-    globalContext,
-    ...globalContext
   }
   objectAssign(pageContextCreated, getPageContextSerializedInHtml())
   objectAssign(pageContextCreated, await loadPageUserFiles(pageContextCreated.pageId, pageContextCreated))
