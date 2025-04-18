@@ -1,5 +1,5 @@
 export { getPageContextClientSerialized }
-export { serializePageContextAbort }
+export { getPageContextClientSerializedAbort }
 export type { PageContextSerialization }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
@@ -131,7 +131,7 @@ function getPassToClient(pageContext: {
   return passToClient
 }
 
-function serializePageContextAbort(
+function getPageContextClientSerializedAbort(
   pageContext: Record<string, unknown> &
     ({ _urlRedirect: UrlRedirect } | { _urlRewrite: string } | { abortStatusCode: number })
 ): string {

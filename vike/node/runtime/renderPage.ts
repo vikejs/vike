@@ -61,7 +61,7 @@ import { log404 } from './renderPage/log404/index.js'
 import { isVikeConfigInvalid } from './renderPage/isVikeConfigInvalid.js'
 import pc from '@brillout/picocolors'
 import type { PageContextServer } from '../../types/index.js'
-import { serializePageContextAbort, getPageContextClientSerialized } from './html/serializeContext.js'
+import { getPageContextClientSerializedAbort, getPageContextClientSerialized } from './html/serializeContext.js'
 import { getErrorPageId } from '../../shared/error-page.js'
 import { handleErrorWithoutErrorPage } from './renderPage/handleErrorWithoutErrorPage.js'
 import { loadUserFilesServerSide } from './renderPage/loadUserFilesServerSide.js'
@@ -602,7 +602,7 @@ async function handleAbortError(
       // We include pageContextInit: we don't only serialize pageContextAbort because the error page may need to access pageContextInit
       pageContextSerialized = getPageContextClientSerialized(pageContext)
     } else {
-      pageContextSerialized = serializePageContextAbort(pageContextAbort)
+      pageContextSerialized = getPageContextClientSerializedAbort(pageContextAbort)
     }
     const httpResponse = await createHttpResponsePageContextJson(pageContextSerialized)
     const pageContextReturn = { httpResponse }
