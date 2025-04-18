@@ -37,6 +37,8 @@ async function createPageContextServerSide(
   const pageContextCreated = createPageContext(pageContextInit, isPrerendering)
 
   objectAssign(pageContextCreated, {
+    // We must use Flatten<T> otherwise TypeScript complains upon assigning types
+    ...(globalContext as Flatten<typeof globalContext>), // least precedence
     globalContext: globalObject_public,
     _globalContext: globalContext,
     // The following is defined on `pageContext` because we can eventually make these non-global
@@ -101,3 +103,5 @@ function createPageContext(pageContextInit: PageContextInit | null, isPrerenderi
   objectAssign(pageContext, pageContextInit)
   return pageContext
 }
+
+type Flatten<T> = Pick<T, keyof T>
