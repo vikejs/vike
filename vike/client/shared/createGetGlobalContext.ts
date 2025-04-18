@@ -1,7 +1,8 @@
 export { createGetGlobalContext }
 
 import { createGlobalContextShared, type GlobalContextShared } from '../../shared/createGlobalContextShared.js'
-import { assert, getGlobalObject } from './utils.js'
+import { getGlobalContextSerializedInHtml } from './getJsonSerializedInHtml.js'
+import { assert, getGlobalObject, objectAssign } from './utils.js'
 
 const globalObject = getGlobalObject<{
   globalContext?: Record<string, unknown>
@@ -32,7 +33,12 @@ function createGetGlobalContext<GlobalContextAddendum extends object>(
     }
 
     // Create
-    const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, addGlobalContext)
+    const globalContext = await createGlobalContextShared(virtualFileExports, globalObject, async (globalContext) => {
+      const globalContextAddendum = {}
+      objectAssign(globalContextAddendum, getGlobalContextSerializedInHtml())
+      objectAssign(globalContextAddendum, await addGlobalContext?.(globalContext))
+      return globalContextAddendum
+    })
 
     // Return
     return globalContext

@@ -1,5 +1,6 @@
 export { getPageContextClientSerialized }
 export { getPageContextClientSerializedAbort }
+export { getGlobalContextClientSerialized }
 export type { PageContextSerialization }
 
 import { stringify, isJsonSerializerError } from '@brillout/json-serializer/stringify'
@@ -38,6 +39,7 @@ type PageContextSerialization = {
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _pageContextInit: Record<string, unknown>
+  globalContext: Record<string, any>
 }
 function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   const passToClientPageContext = getPassToClientPageContext(pageContext)
@@ -49,7 +51,18 @@ function getPageContextClientSerialized(pageContext: PageContextSerialization) {
   return pageContextClientSerialized
 }
 
-function serializeObject(obj: Record<string, unknown>, objName: 'pageContext', passToClient: string[]) {
+function getGlobalContextClientSerialized(pageContext: PageContextSerialization) {
+  const passToClient = pageContext._passToClient
+  const globalContextClient = applyPassToClient(passToClient, pageContext.globalContext)
+  const globalContextClientSerialized = serializeObject(globalContextClient, 'globalContext', passToClient)
+  return globalContextClientSerialized
+}
+
+function serializeObject(
+  obj: Record<string, unknown>,
+  objName: 'pageContext' | 'globalContext',
+  passToClient: string[]
+) {
   let serialized: string
   try {
     serialized = serializeValue(obj)
@@ -111,7 +124,7 @@ function serializeObject(obj: Record<string, unknown>, objName: 'pageContext', p
   }
   return serialized
 }
-function serializeValue(value: unknown, varName?: `pageContext${string}`): string {
+function serializeValue(value: unknown, varName?: `pageContext${string}` | `globalContext${string}`): string {
   return stringify(value, { forbidReactElements: true, valueName: varName })
 }
 function getPassToClientPageContext(pageContext: {

@@ -6,7 +6,11 @@ export type { PreloadFilter }
 export type { InjectFilterEntry }
 
 import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils.js'
-import { type PageContextSerialization, getPageContextClientSerialized } from '../serializeContext.js'
+import {
+  type PageContextSerialization,
+  getGlobalContextClientSerialized,
+  getPageContextClientSerialized
+} from '../serializeContext.js'
 import { sanitizeJson } from './sanitizeJson.js'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags.js'
 import { mergeScriptTags } from './mergeScriptTags.js'
@@ -18,7 +22,7 @@ import { getPageConfig } from '../../../../shared/page-configs/helpers.js'
 import { getConfigValueRuntime } from '../../../../shared/page-configs/getConfigValueRuntime.js'
 import pc from '@brillout/picocolors'
 import { getConfigDefinedAt } from '../../../../shared/page-configs/getConfigDefinedAt.js'
-import { htmlElementId_pageContext } from '../../../../shared/htmlElementIds.js'
+import { htmlElementId_globalContext, htmlElementId_pageContext } from '../../../../shared/htmlElementIds.js'
 
 const stamp = '__injectFilterEntry'
 
@@ -187,6 +191,13 @@ async function getHtmlTags(
         getPageContextJsonScriptTag(pageContext),
       position: positionJavaScriptEntry
     })
+    // <script id="vike_globalContext" type="application/json">
+    htmlTags.push({
+      htmlTag: () =>
+        // Needs to be called after resolvePageContextPromise()
+        getGlobalContextJsonScriptTag(pageContext),
+      position: positionJavaScriptEntry
+    })
   }
   // The JavaScript entry <script> tag
   const scriptEntry = mergeScriptEntries(pageAssets, viteDevScript)
@@ -224,6 +235,11 @@ function getPageContextJsonScriptTag(pageContext: PageContextSerialization): str
   // Used by contra.com https://github.com/gajus
   // @ts-expect-error
   pageContext._pageContextHtmlTag = htmlTag
+  return htmlTag
+}
+function getGlobalContextJsonScriptTag(pageContext: PageContextSerialization): string {
+  const globalContextClientSerialized = sanitizeJson(getGlobalContextClientSerialized(pageContext))
+  const htmlTag = `<script id="${htmlElementId_globalContext}" type="application/json">${globalContextClientSerialized}</script>`
   return htmlTag
 }
 
