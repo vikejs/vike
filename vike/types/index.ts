@@ -1,8 +1,10 @@
-export type { PageContext } from '../shared/types.js'
-export type { PageContextServer } from '../shared/types.js'
-export type { PageContextClient } from '../shared/types.js'
-export type { PageContextWithServerRouting } from '../shared/types.js'
-export type { PageContextClientWithServerRouting } from '../shared/types.js'
+export type {
+  PageContext,
+  PageContextServer,
+  PageContextClient,
+  PageContextWithServerRouting,
+  PageContextClientWithServerRouting
+} from '../shared/types.js'
 
 // TODO/v1-release: remove these three exports
 export type { PageContextBuiltInServer } from '../shared/types.js'
