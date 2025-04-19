@@ -12,12 +12,18 @@ function testOnCreateGlobalContext(isDev: boolean) {
     expect(html).toContain(`<span id="setGloballyServer">${setGloballyServer}</span>`)
     await testCounter()
     const setGloballyClient = await page.textContent('#setGloballyClient')
+    expectNumbers(setGloballyClient, setGloballyServer)
 
     // Client-side navigation
-    await page.click('a[href="/markdown"]')
-    await testCounter()
-    expect(await page.textContent('#setGloballyServer')).toBe(setGloballyServer)
-    expect(await page.textContent('#setGloballyClient')).toBe(setGloballyClient)
+    {
+      await page.click('a[href="/markdown"]')
+      await testCounter()
+      const setGloballyServerNew = await page.textContent('#setGloballyServer')
+      const setGloballyClientNew = await page.textContent('#setGloballyClient')
+      expectNumbers(setGloballyClientNew, setGloballyServerNew)
+      expect(setGloballyServerNew).toBe(setGloballyServer)
+      expect(setGloballyClientNew).toBe(setGloballyClient)
+    }
 
     // HMR
     if (isDev) {
@@ -33,14 +39,28 @@ function testOnCreateGlobalContext(isDev: boolean) {
         expect(await page.textContent('#footer')).toContain(org)
       })
       await testCounter(1)
-      expect(await page.textContent('#setGloballyServer')).toBe(setGloballyServer)
-      expect(await page.textContent('#setGloballyClient')).toBe(setGloballyClient)
+      const setGloballyServerNew = await page.textContent('#setGloballyServer')
+      const setGloballyClientNew = await page.textContent('#setGloballyClient')
+      expectNumbers(setGloballyClientNew, setGloballyServerNew)
+      expect(setGloballyServerNew).toBe(setGloballyServer)
+      expect(setGloballyClientNew).toBe(setGloballyClient)
     }
 
     // Full page reload
-    await page.goto(getServerUrl() + '/')
-    await testCounter()
-    expect(await page.textContent('#setGloballyServer')).toBe(setGloballyServer)
-    expect(await page.textContent('#setGloballyClient')).not.toBe(setGloballyClient)
+    {
+      await page.goto(getServerUrl() + '/')
+      await testCounter()
+      const setGloballyServerNew = await page.textContent('#setGloballyServer')
+      const setGloballyClientNew = await page.textContent('#setGloballyClient')
+      expectNumbers(setGloballyClientNew, setGloballyServerNew)
+      expect(setGloballyServerNew).toBe(setGloballyServer)
+      expect(setGloballyClientNew).not.toBe(setGloballyClient)
+    }
   })
+}
+
+function expectNumbers(setGloballyClient: string | null, setGloballyServer: string | null) {
+  expect(isNaN(parseInt(setGloballyServer!, 10))).toBe(false)
+  expect(isNaN(parseInt(setGloballyClient!, 10))).toBe(false)
+  expect(isNaN(parseInt('hydrating...', 10))).toBe(true)
 }

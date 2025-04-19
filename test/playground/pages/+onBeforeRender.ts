@@ -22,3 +22,14 @@ function lowerFirst<T>(getValue: (element: T) => number): (element1: T, element2
     return val1 < val2 ? -1 : 1
   }
 }
+
+declare global {
+  namespace Vike {
+    interface PageContext {
+      someWrapperObj: {
+        neverPassedToClient?: 123
+        staticUrls: string[]
+      }
+    }
+  }
+}

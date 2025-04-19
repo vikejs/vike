@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import './Layout.css'
 import { usePageContext } from 'vike-react/usePageContext'
 import { assert } from '../utils/assert'
+import type { GlobalContextClient } from 'vike/types'
 
 function Layout({ children }: { children: React.ReactNode }) {
   const pageContext = usePageContext()
@@ -89,9 +90,8 @@ function Footer() {
   const pageContext = usePageContext()
   const [n, setN] = useState<string | number>('hydrating...')
   useEffect(() => {
-    const n = pageContext.globalContext.setGloballyClient!
-    console.log('n', pageContext.globalContext)
-    console.log('n', n)
+    const globalContext = pageContext.globalContext as GlobalContextClient
+    const n = globalContext.setGloballyClient
     setN(n)
   })
   return (
