@@ -8,21 +8,13 @@ export type { VikePackages }
 declare global {
   /** Refine Vike types. */
   namespace Vike {
-    /** Extend and/or refine the `Config` type (`import type { Config } from 'vike/types'`).
-     *
-     *  For example:
-     *  - You can refine the type of `Config['Page']`.
-     *  - You can define the type of custom configurations created with `config.meta` (https://vike.dev/meta)
+    /** Extend the `Config` type (`import type { Config } from 'vike/types'`).
      *
      *  https://vike.dev/meta#typescript
      */
     interface Config {}
 
-    /** Extend and/or refine the `PageContext` type (`import type { PageContext } from 'vike/types'`).
-     *
-     *  For example:
-     *  - You can refine the type of `PageContext['Page']`.
-     *  - You can define the type of custom `pageContext` values such as `pageContext.user`, see https://vike.dev/pageContext#custom
+    /** Extend the `PageContext` type (`import type { PageContext } from 'vike/types'`).
      *
      *  https://vike.dev/pageContext#typescript
      */
