@@ -13,6 +13,14 @@ declare global {
      *  https://vike.dev/meta#typescript
      */
     interface Config {}
+    /** Refine the `pageContext.config` type.
+     *
+     *  It's used for cumulative configs: the `pageContext.config[configName]` type is an `array` whereas `Config[configName]` isn't.
+     *
+     *  https://vike.dev/meta#typescript
+     */
+    interface ConfigResolved {}
+
 
     /** Extend the `PageContext` type (`import type { PageContext } from 'vike/types'`).
      *
@@ -30,13 +38,6 @@ declare global {
      */
     interface PageContextServer {}
 
-    /** Refine the `pageContext.config` type.
-     *
-     *  It's used for cumulative configs: the `pageContext.config[configName]` type is an `array` whereas `Config[configName]` isn't.
-     *
-     *  https://vike.dev/meta#typescript
-     */
-    interface ConfigResolved {}
 
     /** Extend the `GlobalContext` type (`import type { GlobalContext } from 'vike/types'`).
      *

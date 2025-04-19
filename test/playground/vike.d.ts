@@ -7,7 +7,7 @@ declare global {
       }
     }
     interface GlobalContext {
-      // Pass to client-side
+      // Passed to client-side
       setGloballyServer?: number
     }
     interface GlobalContextClient {
