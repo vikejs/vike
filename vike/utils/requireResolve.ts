@@ -10,9 +10,6 @@ import { assertPosixPath, toPosixPath } from './path.js'
 import { scriptFileExtensionList } from './isScriptFile.js'
 import { createRequire } from 'node:module'
 import path from 'node:path'
-// @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
-const importMetaUrl: string = import.meta.url
-const require_ = createRequire(importMetaUrl)
 
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
@@ -22,15 +19,16 @@ function requireResolve_(importPath: string, cwd: string, options?: { doNotHandl
   assertPosixPath(importPath)
   cwd = resolveCwd(cwd)
   let clean = () => {}
+  const require_ = createRequire(cwd)
   if (!options?.doNotHandleFileExtension) {
-    clean = addFileExtensionsToRequireResolve()
+    clean = addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
   }
   let importedFile: string
   try {
     // We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
-    importedFile = require_.resolve(importPath, { paths: [cwd] })
+    importedFile = require_.resolve(importPath)
   } catch (err) {
     clean()
     return { importedFile: undefined, err, hasFailed: true as const }
@@ -89,7 +87,7 @@ function removeFileExtention(importPath: string) {
   return importPath
 }
 
-function addFileExtensionsToRequireResolve() {
+function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
   const added: string[] = []
   scriptFileExtensionList.forEach((ext: string) => {
     assert(!ext.includes('.'))
