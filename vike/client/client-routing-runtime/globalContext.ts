@@ -9,7 +9,8 @@ import * as virtualFileExports from 'virtual:vike:importUserCode:client:client-r
 
 // Public type
 type GlobalContextClient = GlobalContextSharedPublic &
-  Vike.GlobalContext & {
+  Vike.GlobalContext &
+  Vike.GlobalContextClient & {
     // Nothing extra for now
   }
 type GlobalContextClientInternal = Awaited<ReturnType<typeof getGlobalContext>>

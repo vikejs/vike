@@ -231,7 +231,7 @@ declare global {
         id: string
         isAdmin: boolean
       }
-      // Refine type of pageContext.Page (it's `unknown` by default)
+      // Refine type of pageContext.Page
       Page: () => React.JSX.Element
     }
   }
@@ -242,6 +242,8 @@ declare global {
 // Tell TypeScript this file isn't an ambient module:
 export {}
 ```
+
+To define properties only for the server- or client-side, define the interfaces `Vike.PageContextServer` or `Vike.PageContextClient` instead.
 
 If you use <Link text="Server Routing" href="/server-routing" />:
 

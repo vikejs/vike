@@ -8,7 +8,8 @@ import * as virtualFileExports from 'virtual:vike:importUserCode:client:server-r
 
 // Public type
 type GlobalContextClientWithServerRouting = GlobalContextSharedPublic &
-  Vike.GlobalContext & {
+  Vike.GlobalContext &
+  Vike.GlobalContextClient & {
     // Nothing extra for now
   }
 

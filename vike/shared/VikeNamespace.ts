@@ -19,6 +19,16 @@ declare global {
      *  https://vike.dev/pageContext#typescript
      */
     interface PageContext {}
+    /** Extend the `PageContextClient` type (`import type { PageContextClient } from 'vike/types'`).
+     *
+     *  https://vike.dev/pageContext#typescript
+     */
+    interface PageContextClient {}
+    /** Extend the `PageContextServer` type (`import type { PageContextServer } from 'vike/types'`).
+     *
+     *  https://vike.dev/pageContext#typescript
+     */
+    interface PageContextServer {}
 
     /** Refine the `pageContext.config` type.
      *
@@ -33,6 +43,16 @@ declare global {
      *  https://vike.dev/globalContext#typescript
      */
     interface GlobalContext {}
+    /** Extend the `GlobalContextClient` type (`import type { GlobalContextClient } from 'vike/types'`).
+     *
+     *  https://vike.dev/globalContext#typescript
+     */
+    interface GlobalContextClient {}
+    /** Extend the `GlobalContextServer` type (`import type { GlobalContextServer } from 'vike/types'`).
+     *
+     *  https://vike.dev/globalContext#typescript
+     */
+    interface GlobalContextServer {}
   }
 
   /** This namespace is only used by:

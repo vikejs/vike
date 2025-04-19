@@ -7,8 +7,14 @@ declare global {
       }
     }
     interface GlobalContext {
+      // Pass to client-side
       setGloballyServer?: number
+    }
+    interface GlobalContextClient {
       setGloballyClient?: number
+    }
+    interface GlobalContextServer {
+      setGloballyClient?: undefined
       notPassedToClient?: number
     }
   }
