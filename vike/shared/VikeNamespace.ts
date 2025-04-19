@@ -21,7 +21,6 @@ declare global {
      */
     interface ConfigResolved {}
 
-
     /** Extend the `PageContext` type (`import type { PageContext } from 'vike/types'`).
      *
      *  https://vike.dev/pageContext#typescript
@@ -37,7 +36,6 @@ declare global {
      *  https://vike.dev/pageContext#typescript
      */
     interface PageContextServer {}
-
 
     /** Extend the `GlobalContext` type (`import type { GlobalContext } from 'vike/types'`).
      *
