@@ -37,7 +37,7 @@ import {
   isNpmPackageImport_unreliable,
   isImportPathRelative
 } from '../../../../utils.js'
-import { transformPointerImports } from './transformPointerImports.js'
+import { transformPointerImports } from './pointerImports.js'
 import sourceMapSupport from 'source-map-support'
 import type { FilePathResolved } from '../../../../../../shared/page-configs/FilePath.js'
 import { getFilePathAbsoluteUserRootDir } from '../../../../shared/getFilePath.js'

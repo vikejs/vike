@@ -12,7 +12,7 @@ import {
   isImportPathRelative,
   requireResolveOptional
 } from '../../../../utils.js'
-import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
+import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
 import path from 'path'
 import {
   getFilePathAbsoluteUserRootDir,
