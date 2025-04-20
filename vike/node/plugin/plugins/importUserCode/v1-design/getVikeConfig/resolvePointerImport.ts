@@ -55,7 +55,7 @@ function resolvePointerImportData(
   // - A filesystem absolute path
   // - An npm package import
   const { importPath } = pointerImportData
-  const filePathAbsoluteFilesystem = resolveImportPathWithNode(pointerImportData, importerFilePath)
+  const filePathAbsoluteFilesystem = resolveImportPathWithNode(pointerImportData, userRootDir, importerFilePath)
 
   let filePath: FilePath
   assertPosixPath(importPath)
@@ -117,13 +117,18 @@ function resolvePointerImportData(
 
 function resolveImportPathWithNode(
   pointerImportData: PointerImportData,
+  userRootDir: string,
   importerFilePath: FilePathResolved
 ): string | null {
   const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
-  const cwd = path.posix.dirname(importerFilePathAbsolute)
+  let filePathAbsoluteFilesystem
   // filePathAbsoluteFilesystem is expected to be null when pointerImportData.importPath is a Vite path alias
-  const filePathAbsoluteFilesystem = requireResolveOptional(pointerImportData.importPath, cwd)
+  filePathAbsoluteFilesystem = requireResolveOptional(pointerImportData.importPath, userRootDir)
+  if (!filePathAbsoluteFilesystem) {
+    const cwd = path.posix.dirname(importerFilePathAbsolute)
+    filePathAbsoluteFilesystem = requireResolveOptional(pointerImportData.importPath, cwd)
+  }
   return filePathAbsoluteFilesystem
 }
 
