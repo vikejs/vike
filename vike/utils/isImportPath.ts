@@ -3,7 +3,7 @@ export { isImportPathRelative }
 
 import { assertPosixPath } from './path.js'
 import { assert } from './assert.js'
-import { isImportPathNpmPackage_unreliable } from './isNpmPackage.js'
+import { isImportPathNpmPackage_unreliable } from './parseNpmPackage.js'
 
 function isImportPath(importPath: string) {
   return isImportPathRelative(importPath) || isImportPathNpmPackage_unreliable(importPath)
