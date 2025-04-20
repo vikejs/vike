@@ -1,8 +1,8 @@
 import { Link, Construction, FileRemoved } from '@brillout/docpress'
 
-Everything there is to know about how config files work.
+All there is to know about how Vike's config files work.
 
-For the list of configurations, see instead:
+For a list of configurations, see instead:
  - <Link href="/settings" />
  - <Link href="/hooks" />
 
@@ -35,7 +35,16 @@ export default /* ... */
 export default /* ... */
 ```
 
-For more convenience, you can also do this:
+For more convenience, you can prepend `+` to the file names:
+
+```bash
+/pages/product/@id/Page.jsx # [!code --]
+/pages/product/@id/+Page.jsx # [!code ++]
+/pages/product/@id/Layout.jsx # [!code --]
+/pages/product/@id/+Layout.jsx # [!code ++]
+```
+
+You then don't need to define `/pages/product/@id/+config.js` anymore: Vike will automatically pick up these `+` files.
 
 <FileRemoved>
 ```js
@@ -50,18 +59,6 @@ export default {
 }
 ```
 </FileRemoved>
-```js
-// /pages/product/@id/Page.jsx // [!code --]
-// /pages/product/@id/+Page.jsx // [!code ++]
-
-export default /* ... */
-```
-```js
-// /pages/product/@id/Layout.jsx // [!code --]
-// /pages/product/@id/+Layout.jsx // [!code ++]
-
-export default /* ... */
-```
 
 > Except of `+config.js`, any `+` file corresponds to a <Link href="/settings">Vike setting</Link> or <Link href="/hooks">Vike hook</Link>.
 
@@ -121,13 +118,11 @@ export default {
 
 ### Domain-driven File Structure
 
-You can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link> for better organization and for improved configuration inheritance.
+You can use a <Link href="/routing#domain-driven-file-structure">domain-driven file structure</Link> for better organization and/or for improved configuration inheritance.
 
 ### Powerful
 
-You can use config inheritance to have multiple and completely different stacks within the same app.
-
-For example:
+You can use config inheritance for having multiple and completely different stacks within the same app. For example:
 
 ```js
 // pages/admin/+config.js
@@ -181,7 +176,7 @@ export default {
 }
 ```
 
-This enables you, for example, to experiment and/or progressively migrate your stack on a page-by-page basis.
+This also enables you to experiment and/or progressively migrate your stack on a page-by-page basis.
 
 > [There is currently a blocker](https://github.com/vikejs/vike/issues/1813) for being able to use `vike-vue` and `vike-react` within the same app.
 
@@ -234,12 +229,6 @@ Vike transforms an import inside `+config.js` to be a pointer import if and only
 For example, an import that resolves to a `.jsx` or `.vue` file is transformed to be a pointer import:
 
 ```js
-// /pages/ssr.js
-// Environment: config
-
-export default false
-```
-```js
 // /pages/+config.js
 // Environment: config
 
@@ -256,8 +245,14 @@ export default {
   ssr
 }
 ```
+```js
+// /pages/ssr.js
+// Environment: config
 
-> A `.jsx` or `.vue` file is meant to be client-/server-side runtime code (it isn't used for defining configuration logic). It therefore makes sense to treat `.jsx` and `.vue` imports as pointer imports.
+export default false
+```
+
+> `.jsx` or `.vue` files are client/server runtime code (they usually aren't used for configuration). Thus Vike treats `.jsx` and `.vue` imports as pointer imports.
 
 #### Config code isn't runtime code
 

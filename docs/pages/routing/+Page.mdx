@@ -7,8 +7,6 @@ Overview of how to define the URL of your pages.
 
 Vike supports *Filesystem Routing*: the URL of a page is determined by where the page is located on your filesystem.
 
-> For detailed information see <Link href="/filesystem-routing" /> instead.
-
 For example:
 
 ```bash
@@ -23,6 +21,9 @@ pages/jobs/+Page.js            /jobs
 
 > `+` files are explained at <Link href="/config#files" doNotInferSectionTitle />.
 
+For detailed information, see:
+ - <Link href="/filesystem-routing" />
+
 ### Parameterized routes
 
 ```bash
@@ -31,7 +32,7 @@ FILESYSTEM                     URL
 pages/movie/@id/+Page.js       /movie/1, /movie/2, ...
 ```
 
-> The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
+> The parameter `id` is available at <Link href="/pageContext#:~:text=pageContext.routeParams,-%3A">`pageContext.routeParams.id`</Link>.
 
 ### Groups
 
@@ -45,7 +46,7 @@ pages/(marketing)/about/+Page.js       /about
 pages/admin-panel/index/+Page.js       /admin-panel
 pages/admin-panel/users/+Page.js       /admin-panel/users
 ```
-> Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing.
+> Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing (but <Link href="/filesystem-routing#ignored-directories">not by config inheritance</Link>).
 
 It also enables you to easily set different configurations for different pages:
 
@@ -66,7 +67,7 @@ pages/admin-panel/users/+Page.js
 
 ### `src/`
 
-If you prefer, you can define your files within a `src/` directory:
+You can also define your files within a `src/` directory:
 
 ```yaml
 FILESYSTEM                     URL
@@ -75,9 +76,7 @@ src/pages/index/+Page.js       /
 src/pages/about/+Page.js       /about
 ```
 
-> The directory `src/` is ignored by Filesystem Routing.
-
-> The directory `src/` <Link href="/filesystem-routing#ignored-directories">isn't ignored by config inheritance</Link>: make sure to define *all* your `+` files inside `src/`.
+> The directory `src/` is ignored by Filesystem Routing (but <Link href="/filesystem-routing#ignored-directories">not by config inheritance</Link>).
 
 
 ### Domain-driven file structure
@@ -99,7 +98,8 @@ admin-panel/components/Charts.js
 admin-panel/database/fetchUsers.js
 ```
 
-> If you aren't familiar with file structures, see <Link href='/file-structure' />.
+See also:
+ - <Link href='/file-structure#domain-driven' />
 
 
 ## Route String
@@ -115,7 +115,7 @@ Instead of Filesystem Routing, you can define a Route String.
 export default '/product/@id'
 ```
 
-> The parameter `id` is available at <Link href="/pageContext">`pageContext.routeParams.id`</Link>.
+> The parameter `id` is available at <Link href="/pageContext#:~:text=pageContext.routeParams,-%3A">`pageContext.routeParams.id`</Link>.
 
 More information at <Link href="/route-string" />.
 
