@@ -1,5 +1,5 @@
 import { beforeAll } from 'vitest'
-import { createDevMiddleware } from 'vike/server'
+import { dev } from 'vike/api'
 import { testRun } from './testRun'
 
 beforeAll(async () => {
@@ -9,9 +9,9 @@ beforeAll(async () => {
 testRun(true)
 
 async function devApp() {
-  await createDevMiddleware({
-    root: __dirname,
+  await dev({
     viteConfig: {
+      root: __dirname,
       server: {
         /* Doesn't seem to work
         hmr: false
