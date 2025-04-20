@@ -22,7 +22,7 @@ export type { PointerImportData }
 
 import { parse } from 'acorn'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
-import { assert, assertUsage, assertWarning, styleFileRE } from '../../../../utils.js'
+import { assert, assertUsage, assertWarning, isImportPath, styleFileRE } from '../../../../utils.js'
 import pc from '@brillout/picocolors'
 
 function transformPointerImports(
@@ -192,6 +192,7 @@ function parsePointerImportData(importString: string): null | PointerImportData 
       `Invalid relative import path ${pc.code(importPath)} defined by ${pc.code(JSON.stringify(importString))} because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
     )
   }
+  assert(isImportPath(importPath))
 
   return { importPath, exportName, importStringWasGenerated, importString }
 }
