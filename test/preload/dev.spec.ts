@@ -11,7 +11,7 @@ testRun(true)
 async function devApp() {
   await createDevMiddleware({
     root: __dirname,
-    viteConf: {
+    viteConfig: {
       server: {
         /* Doesn't seem to work
         hmr: false
