@@ -122,8 +122,13 @@ function resolveImportPathWithNode(
   const importerFilePathAbsolute = importerFilePath.filePathAbsoluteFilesystem
   assertPosixPath(importerFilePathAbsolute)
   const cwd = path.posix.dirname(importerFilePathAbsolute)
-  // filePathAbsoluteFilesystem is expected to be null when pointerImportData.importPath is a Vite path alias
+  // filePathAbsoluteFilesystem is null when pointerImportData.importPath is a path alias that Node.js doesn't know about
   const filePathAbsoluteFilesystem = requireResolveOptional(pointerImportData.importPath, cwd)
+  if (!filePathAbsoluteFilesystem) {
+    assert(!pointerImportData.importPath.startsWith('.'))
+    // Libraries don't use path aliases => filePathAbsoluteFilesystem should be defined
+    assert(!importerFilePathAbsolute.includes('node_modules'))
+  }
   return filePathAbsoluteFilesystem
 }
 
