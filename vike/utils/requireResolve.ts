@@ -12,7 +12,6 @@ import { createRequire } from 'node:module'
 import path from 'node:path'
 // @ts-ignore import.meta.url is shimmed at dist/cjs by dist-cjs-fixup.js.
 const importMetaUrl: string = import.meta.url
-const require_ = createRequire(importMetaUrl)
 
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
@@ -21,9 +20,10 @@ function requireResolve_(importPath: string, cwd: string, options?: { doNotHandl
   assertPosixPath(cwd)
   assertPosixPath(importPath)
   cwd = resolveCwd(cwd)
+  const require_ = createRequire(importMetaUrl)
   let clean = () => {}
   if (!options?.doNotHandleFileExtension) {
-    clean = addFileExtensionsToRequireResolve()
+    clean = addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
   }
   let importedFile: string
@@ -89,7 +89,7 @@ function removeFileExtention(importPath: string) {
   return importPath
 }
 
-function addFileExtensionsToRequireResolve() {
+function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
   const added: string[] = []
   scriptFileExtensionList.forEach((ext: string) => {
     assert(!ext.includes('.'))
