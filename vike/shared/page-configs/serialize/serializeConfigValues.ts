@@ -4,7 +4,14 @@ export { isJsonValue }
 export type { FilesEnv }
 
 import { assertIsNotProductionRuntime } from '../../../utils/assertSetup.js'
-import { assert, assertPosixPath, assertUsage, deepEqual, getPropAccessNotation } from '../../../node/plugin/utils.js'
+import {
+  assert,
+  assertPosixPath,
+  assertUsage,
+  deepEqual,
+  getPropAccessNotation,
+  isImportPathRelative
+} from '../../../node/plugin/utils.js'
 import type {
   ConfigEnvInternal,
   ConfigValue,
@@ -403,10 +410,10 @@ function addImportStatement(
 
 type FilesEnv = Map<string, { configEnv: ConfigEnvInternal; configName: string }[]>
 function assertFileEnv(importPath: string, configEnv: ConfigEnvInternal, configName: string, filesEnv: FilesEnv) {
+  assert(!isImportPathRelative(importPath))
   const key = importPath
   assert(key)
   assertPosixPath(key)
-  assert(!isRelativeImportPath(key))
   if (!filesEnv.has(key)) {
     filesEnv.set(key, [])
   }
@@ -429,9 +436,4 @@ function assertFileEnv(importPath: string, configEnv: ConfigEnvInternal, configN
       ].join('\n')
     )
   }
-}
-
-// TODO/now dedupe
-function isRelativeImportPath(importPath: string) {
-  return importPath.startsWith('./') || importPath.startsWith('../')
 }

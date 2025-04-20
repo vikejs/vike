@@ -185,6 +185,14 @@ function parsePointerImportData(importString: string): null | PointerImportData 
   assert(parts.length >= 2)
   const exportName = parts[parts.length - 1]!
   const importPath = parts.slice(0, -1).join(SEP)
+
+  if (importPath.startsWith('.')) {
+    assertUsage(
+      importPath.startsWith('./') || importPath.startsWith('../'),
+      `Invalid relative import path ${pc.code(importPath)} defined by ${pc.code(JSON.stringify(importString))} because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
+    )
+  }
+
   return { importPath, exportName, importStringWasGenerated, importString }
 }
 

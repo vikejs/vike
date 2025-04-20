@@ -34,7 +34,8 @@ import {
   genPromise,
   isVitest,
   requireResolveOptional,
-  isNpmPackageImport_unreliable
+  isNpmPackageImport_unreliable,
+  isImportPathRelative
 } from '../../../../utils.js'
 import { transformPointerImports } from './transformPointerImports.js'
 import sourceMapSupport from 'source-map-support'
@@ -268,7 +269,7 @@ async function transpileWithEsbuild(
 
           let importPathTranspiled: string
           assertPosixPath(importPathOriginal)
-          if (importPathOriginal.startsWith('./') || importPathOriginal.startsWith('../')) {
+          if (isImportPathRelative(importPathOriginal)) {
             importPathTranspiled = importPathResolved
           } else {
             // `importPathOriginal` is either:

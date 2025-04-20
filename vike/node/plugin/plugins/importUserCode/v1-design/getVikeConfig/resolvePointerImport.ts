@@ -9,7 +9,7 @@ import {
   assertPosixPath,
   assertUsage,
   isFilePathAbsolute,
-  pathIsRelative,
+  isImportPathRelative,
   requireResolveOptional
 } from '../../../../utils.js'
 import { type PointerImportData, parsePointerImportData } from './transformPointerImports.js'
@@ -59,23 +59,14 @@ function resolvePointerImportData(
 
   let filePath: FilePath
   assertPosixPath(importPath)
-  if (importPath.startsWith('.') || isFilePathAbsolute(importPath)) {
-    if (importPath.startsWith('.')) {
-      assertUsage(
-        pathIsRelative(importPath),
-        `Invalid relative import path ${pc.code(importPath)} defined by ${
-          importerFilePath.filePathToShowToUser
-        } because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
-      )
-    }
-
+  if (isImportPathRelative(importPath) || isFilePathAbsolute(importPath)) {
     // Pointer imports are included in virtual files, thus relative imports need to be resolved. (Virtual modules cannot contain relative imports.)
     assertUsageResolutionSuccess(filePathAbsoluteFilesystem, pointerImportData, importerFilePath)
 
     // Pointer imports are included in virtual files, and we need filePathAbsoluteUserRootDir because we didn't find a way to have filesystem absolute import paths in virtual files: https://gist.github.com/brillout/2315231c9a8164f950c64b4b4a7bbd39
     const errSuffix = `outside of the ${userRootDir} directory which is forbidden: make sure your import paths resolve inside the ${userRootDir} directory, or import from an npm package.`
     const filePathAbsoluteUserRootDir = getFilePathAbsoluteUserRootDir({ filePathAbsoluteFilesystem, userRootDir })
-    if (importPath.startsWith('.')) {
+    if (isImportPathRelative(importPath)) {
       assertUsage(
         filePathAbsoluteUserRootDir,
         `The relative import ${pc.cyan(importPath)} defined by ${
@@ -125,7 +116,7 @@ function resolveImportPathWithNode(
   // filePathAbsoluteFilesystem is null when pointerImportData.importPath is a path alias that Node.js doesn't know about
   const filePathAbsoluteFilesystem = requireResolveOptional(pointerImportData.importPath, cwd)
   if (!filePathAbsoluteFilesystem) {
-    assert(!pointerImportData.importPath.startsWith('.'))
+    assert(!isImportPathRelative(pointerImportData.importPath))
     // Libraries don't use path aliases => filePathAbsoluteFilesystem should be defined
     assert(!importerFilePathAbsolute.includes('node_modules'))
   }
@@ -146,8 +137,7 @@ function assertUsageResolutionSuccess(
       ? (`The import path ${importPathString} in ${filePathToShowToUser}` as const)
       : (`The import ${pc.code(importString)} defined by ${filePathToShowToUser}` as const)
     const errIntro2 = `${errIntro} couldn't be resolved: does ${importPathString}` as const
-    if (importPath.startsWith('.')) {
-      assert(pathIsRelative(importPath))
+    if (isImportPathRelative(importPath)) {
       assertUsage(false, `${errIntro2} point to an existing file?`)
     } else {
       assertUsage(false, `${errIntro2} exist?`)
