@@ -9,7 +9,7 @@ export { getNpmPackageImportPath }
 */
 
 // For ./isNpmPackage.spec.ts
-export { parse }
+export { parseNpmPackage }
 export { isDistinguishable }
 
 import { assert } from './assert.js'
@@ -22,7 +22,7 @@ function isImportPathNpmPackage(str: string, { cannotBePathAlias }: { cannotBePa
 }
 // We cannot distinguish path aliases that look like npm package imports
 function isImportPathNpmPackage_unreliable(str: string): boolean {
-  const res = parse(str)
+  const res = parseNpmPackage(str)
   return res !== null
 }
 function assertIsImportPathNpmPackage(str: string): void {
@@ -36,18 +36,18 @@ function assertIsImportPathNpmPackage(str: string): void {
 }
 
 function isNpmPackageName(str: string | undefined): boolean {
-  const res = parse(str)
+  const res = parseNpmPackage(str)
   return res !== null && res.importPath === null
 }
 
 function getNpmPackageName(str: string): null | string {
-  const res = parse(str)
+  const res = parseNpmPackage(str)
   if (!res) return null
   return res.pkgName
 }
 
 function getNpmPackageImportPath(str: string): null | string {
-  const res = parse(str)
+  const res = parseNpmPackage(str)
   if (!res) return null
   return res.importPath
 }
@@ -69,14 +69,14 @@ function isPathAliasRecommended(alias: string): boolean {
 
 function isDistinguishable(alias: string): boolean {
   return (
-    parse(alias) === null &&
-    parse(`${alias}fake-path`) === null &&
-    parse(`${alias}/fake-path`) === null &&
-    parse(`${alias}fake/deep/path`) === null &&
-    parse(`${alias}/fake/deep/path`) === null &&
+    parseNpmPackage(alias) === null &&
+    parseNpmPackage(`${alias}fake-path`) === null &&
+    parseNpmPackage(`${alias}/fake-path`) === null &&
+    parseNpmPackage(`${alias}fake/deep/path`) === null &&
+    parseNpmPackage(`${alias}/fake/deep/path`) === null &&
     // See note about '-' in ./isNpmPackageName.spec.ts
     // ```ts
-    // expect(parse('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
+    // expect(parseNpmPackage('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
     // ```
     !alias.startsWith('-')
   )
@@ -86,7 +86,7 @@ function isDistinguishable(alias: string): boolean {
 //  - https://www.npmjs.com/package/-
 // The correct logic is complex, see https://github.com/npm/validate-npm-package-name
 // We don't need to be accurate: are there npm packages with weird names that are actually being used?
-function parse(str: string | undefined): null | { pkgName: string; importPath: null | string } {
+function parseNpmPackage(str: string | undefined): null | { pkgName: string; importPath: null | string } {
   if (!str) return null
 
   let scope: string | null = null

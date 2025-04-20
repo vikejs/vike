@@ -1,45 +1,45 @@
 import { expect, describe, it, assert } from 'vitest'
-import { isDistinguishable, isPathAliasRecommended, parse } from './isNpmPackage.js'
+import { isDistinguishable, isPathAliasRecommended, parseNpmPackage } from './isNpmPackage.js'
 
-describe('parse()', () => {
+describe('parseNpmPackage()', () => {
   it('yes', () => {
-    expect(parse('some-pkg')).toStrictEqual({ pkgName: 'some-pkg', importPath: null })
-    expect(parse('@scope/name')).toStrictEqual({ pkgName: '@scope/name', importPath: null })
-    expect(parse('@scope/name/path')).toStrictEqual({ pkgName: '@scope/name', importPath: 'path' })
-    expect(parse('@scope/name/some/deep/path.js')).toStrictEqual({
+    expect(parseNpmPackage('some-pkg')).toStrictEqual({ pkgName: 'some-pkg', importPath: null })
+    expect(parseNpmPackage('@scope/name')).toStrictEqual({ pkgName: '@scope/name', importPath: null })
+    expect(parseNpmPackage('@scope/name/path')).toStrictEqual({ pkgName: '@scope/name', importPath: 'path' })
+    expect(parseNpmPackage('@scope/name/some/deep/path.js')).toStrictEqual({
       pkgName: '@scope/name',
       importPath: 'some/deep/path.js'
     })
   })
   it('no', () => {
-    expect(parse('somePkg')).toBe(null) // NPM packages are not allowed upper case characters in their name
-    expect(parse('./some/path')).toBe(null)
-    expect(parse('/some-path')).toBe(null)
-    expect(parse('\\some/path')).toBe(null)
-    expect(parse('.\\some-path')).toBe(null)
-    expect(parse('#alias')).toBe(null)
-    expect(parse('a!bc')).toBe(null)
+    expect(parseNpmPackage('somePkg')).toBe(null) // NPM packages are not allowed upper case characters in their name
+    expect(parseNpmPackage('./some/path')).toBe(null)
+    expect(parseNpmPackage('/some-path')).toBe(null)
+    expect(parseNpmPackage('\\some/path')).toBe(null)
+    expect(parseNpmPackage('.\\some-path')).toBe(null)
+    expect(parseNpmPackage('#alias')).toBe(null)
+    expect(parseNpmPackage('a!bc')).toBe(null)
   })
   it('edge cases', () => {
-    expect(parse('')).toBe(null)
-    expect(parse('a')).toStrictEqual({ pkgName: 'a', importPath: null })
-    expect(parse('0')).toStrictEqual({ pkgName: '0', importPath: null }) // https://www.npmjs.com/package/0
-    expect(parse('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
-    expect(parse('_')).toBe(null)
-    expect(parse('.')).toBe(null)
-    expect(parse('.a')).toBe(null)
-    expect(parse('a.js')).toStrictEqual({ pkgName: 'a.js', importPath: null }) // https://www.npmjs.com/package/a.js
-    expect(parse('a.')).toStrictEqual({ pkgName: 'a.', importPath: null }) // https://www.npmjs.com/package/a.js
-    expect(parse('a-')).toStrictEqual({ pkgName: 'a-', importPath: null })
-    expect(parse('a_')).toStrictEqual({ pkgName: 'a_', importPath: null })
-    expect(parse('@')).toBe(null)
-    expect(parse('@/')).toBe(null)
-    expect(parse('@/a')).toBe(null)
-    expect(parse('@a')).toBe(null)
-    expect(parse('@a/')).toBe(null)
-    expect(parse('@a/b')).toStrictEqual({ pkgName: '@a/b', importPath: null })
-    expect(parse('@a!b/c')).toBe(null)
-    expect(parse('@a/b/c!')).toStrictEqual({ pkgName: '@a/b', importPath: 'c!' })
+    expect(parseNpmPackage('')).toBe(null)
+    expect(parseNpmPackage('a')).toStrictEqual({ pkgName: 'a', importPath: null })
+    expect(parseNpmPackage('0')).toStrictEqual({ pkgName: '0', importPath: null }) // https://www.npmjs.com/package/0
+    expect(parseNpmPackage('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
+    expect(parseNpmPackage('_')).toBe(null)
+    expect(parseNpmPackage('.')).toBe(null)
+    expect(parseNpmPackage('.a')).toBe(null)
+    expect(parseNpmPackage('a.js')).toStrictEqual({ pkgName: 'a.js', importPath: null }) // https://www.npmjs.com/package/a.js
+    expect(parseNpmPackage('a.')).toStrictEqual({ pkgName: 'a.', importPath: null }) // https://www.npmjs.com/package/a.js
+    expect(parseNpmPackage('a-')).toStrictEqual({ pkgName: 'a-', importPath: null })
+    expect(parseNpmPackage('a_')).toStrictEqual({ pkgName: 'a_', importPath: null })
+    expect(parseNpmPackage('@')).toBe(null)
+    expect(parseNpmPackage('@/')).toBe(null)
+    expect(parseNpmPackage('@/a')).toBe(null)
+    expect(parseNpmPackage('@a')).toBe(null)
+    expect(parseNpmPackage('@a/')).toBe(null)
+    expect(parseNpmPackage('@a/b')).toStrictEqual({ pkgName: '@a/b', importPath: null })
+    expect(parseNpmPackage('@a!b/c')).toBe(null)
+    expect(parseNpmPackage('@a/b/c!')).toStrictEqual({ pkgName: '@a/b', importPath: 'c!' })
   })
 })
 
