@@ -41,7 +41,7 @@ function requireResolve_(
   return { importedFile, err: undefined, hasFailed: false as const }
 }
 function requireResolveOptional(importPath: string, cwd: string, userRootDir: string): string | null {
-  const res = requireResolve_(importPath, cwd)
+  const res = requireResolve_(importPath, cwd, { paths: [userRootDir] })
   if (res.hasFailed) return null
   return res.importedFile
 }
