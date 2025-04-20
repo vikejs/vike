@@ -6,7 +6,7 @@ import {
   assertPosixPath,
   toPosixPath,
   pathJoin,
-  assertIsNpmPackageImport,
+  assertIsImportPathNpmPackage,
   assertIsNotProductionRuntime,
   requireResolveOptionalNonUserFile,
   requireResolve
@@ -58,7 +58,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
       assert(filePath_)
       filePath = filePath_
     } else {
-      assertIsNpmPackageImport(clientEntry)
+      assertIsImportPathNpmPackage(clientEntry)
       filePath = requireResolve(clientEntry, root)
     }
   }

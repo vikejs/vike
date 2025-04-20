@@ -12,7 +12,7 @@ import {
   injectRollupInputs,
   normalizeRollupInput,
   onSetupBuild,
-  assertIsNpmPackageImport,
+  assertIsImportPathNpmPackage,
   requireResolveNonUserFile
 } from '../../utils.js'
 import { getVikeConfig } from '../importUserCode/v1-design/getVikeConfig.js'
@@ -183,7 +183,7 @@ async function getPageFileEntries(config: ResolvedConfig, includeAssetsImportedB
 
 function getEntryFromClientEntry(clientEntry: string, config: ResolvedConfig, addExtractAssetsQuery?: boolean) {
   if (!clientEntry.startsWith('/')) {
-    assertIsNpmPackageImport(clientEntry)
+    assertIsImportPathNpmPackage(clientEntry)
     const entryTarget = clientEntry
     const entryName = prependEntriesDir(clientEntry)
     return { entryName, entryTarget }

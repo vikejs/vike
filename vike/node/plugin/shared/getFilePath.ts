@@ -10,7 +10,7 @@ export { assertModuleId }
 import path from 'path'
 import {
   assert,
-  assertIsNpmPackageImport,
+  assertIsImportPathNpmPackage,
   assertFilePathAbsoluteFilesystem,
   assertPosixPath,
   toPosixPath
@@ -61,7 +61,7 @@ function getComputedProps(
   if ('filePathAbsoluteUserRootDir' in args) {
     const importPathAbsolute = args.importPathAbsolute ?? null
     const { filePathAbsoluteUserRootDir } = args
-    if (importPathAbsolute) assertIsNpmPackageImport(importPathAbsolute)
+    if (importPathAbsolute) assertIsImportPathNpmPackage(importPathAbsolute)
     return {
       importPathAbsolute,
       filePathAbsoluteUserRootDir,
@@ -74,7 +74,7 @@ function getComputedProps(
 }
 function getComputedPropsImportPathAbsolute(args: { importPathAbsolute: string }) {
   const { importPathAbsolute } = args
-  assertIsNpmPackageImport(importPathAbsolute)
+  assertIsImportPathNpmPackage(importPathAbsolute)
   return {
     filePathAbsoluteUserRootDir: null,
     importPathAbsolute,

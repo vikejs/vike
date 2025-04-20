@@ -3,10 +3,10 @@ export { isImportPathRelative }
 
 import { assertPosixPath } from './path.js'
 import { assert } from './assert.js'
-import { isNpmPackageImport_unreliable } from './isNpmPackage.js'
+import { isImportPathNpmPackage_unreliable } from './isNpmPackage.js'
 
 function isImportPath(importPath: string) {
-  return isImportPathRelative(importPath) || isNpmPackageImport_unreliable(importPath)
+  return isImportPathRelative(importPath) || isImportPathNpmPackage_unreliable(importPath)
 }
 
 // See also `import { pathIsRelative } from './path'`
