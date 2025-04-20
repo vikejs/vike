@@ -21,9 +21,8 @@ function requireResolve_(importPath: string, cwd: string, options?: { doNotHandl
   assertPosixPath(importPath)
   cwd = resolveCwd(cwd)
   const require_ = createRequire(importMetaUrl)
-  let clean = () => {}
   if (!options?.doNotHandleFileExtension) {
-    clean = addFileExtensionsToRequireResolve(require_)
+    addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
   }
   let importedFile: string
@@ -32,10 +31,8 @@ function requireResolve_(importPath: string, cwd: string, options?: { doNotHandl
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
     importedFile = require_.resolve(importPath, { paths: [cwd] })
   } catch (err) {
-    clean()
     return { importedFile: undefined, err, hasFailed: true as const }
   }
-  clean()
   importedFile = toPosixPath(importedFile)
   return { importedFile, err: undefined, hasFailed: false as const }
 }
@@ -99,10 +96,4 @@ function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
       added.push(ext)
     }
   })
-  const clean = () => {
-    added.forEach((ext) => {
-      delete require_.extensions[ext]
-    })
-  }
-  return clean
 }
