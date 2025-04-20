@@ -1,7 +1,7 @@
 export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../../shared/ViteManifest.js'
-import { assert, slice, assertIsNpmPackageImport } from '../../utils.js'
+import { assert, slice, assertIsImportPathNpmPackage } from '../../utils.js'
 import { isVirtualFileIdPageConfigValuesAll } from '../../../shared/virtual-files/virtualFilePageConfigValuesAll.js'
 import { prependEntriesDir } from '../../../shared/prependEntriesDir.js'
 
@@ -50,7 +50,7 @@ function getManifestEntry(
   }
 
   // npm package import
-  assertIsNpmPackageImport(id)
+  assertIsImportPathNpmPackage(id)
   const found = Object.entries(assetsManifest).find(([, e]) => e.name === prependEntriesDir(id))
   assert(found)
   const [manifestKey, manifestEntry] = found

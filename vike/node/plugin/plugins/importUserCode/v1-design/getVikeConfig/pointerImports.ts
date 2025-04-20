@@ -1,6 +1,7 @@
 export { transformPointerImports }
 export { parsePointerImportData }
 export { isPointerImportData }
+export { assertPointerImportPath }
 export type { PointerImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
@@ -22,7 +23,7 @@ export type { PointerImportData }
 
 import { parse } from 'acorn'
 import type { Program, Identifier, ImportDeclaration } from 'estree'
-import { assert, assertUsage, assertWarning, styleFileRE } from '../../../../utils.js'
+import { assert, assertUsage, assertWarning, isFilePathAbsolute, isImportPath, styleFileRE } from '../../../../utils.js'
 import pc from '@brillout/picocolors'
 
 function transformPointerImports(
@@ -185,7 +186,25 @@ function parsePointerImportData(importString: string): null | PointerImportData 
   assert(parts.length >= 2)
   const exportName = parts[parts.length - 1]!
   const importPath = parts.slice(0, -1).join(SEP)
+
+  if (importPath.startsWith('.') && !(importPath.startsWith('./') || importPath.startsWith('../'))) {
+    assert(!importStringWasGenerated)
+    assertUsage(
+      false,
+      `Invalid relative import path ${pc.code(importPath)} defined by ${pc.code(JSON.stringify(importString))} because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
+    )
+  }
+  assertPointerImportPath(importPath)
+
   return { importPath, exportName, importStringWasGenerated, importString }
+}
+
+// `importPath` is one of the following:
+// - A relative import path
+// - An npm package import
+// - A filesystem absolute path, see transpileWithEsbuild()
+function assertPointerImportPath(importPath: string) {
+  return isImportPath(importPath) || isFilePathAbsolute(importPath)
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

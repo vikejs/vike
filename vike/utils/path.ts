@@ -50,6 +50,15 @@ function assertPosixPath(path: string): void {
   assert(!path.includes('\\'), errMsg(path))
 }
 
-function pathIsRelative(importPath: string) {
-  return importPath.startsWith('./') || importPath.startsWith('../')
+// See also `import { isImportPathRelative } from './isImportPath.js'`
+function pathIsRelative(path: string) {
+  assertPosixPath(path)
+  if (path.startsWith('./') || path.startsWith('../')) {
+    return true
+  } else {
+    /* Not true if `path` starts with a hidden directory  (i.e. a directory with a name that starts with `.`)
+    assert(!path.startsWith('.'))
+    */
+    return false
+  }
 }

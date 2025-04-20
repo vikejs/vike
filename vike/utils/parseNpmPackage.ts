@@ -1,7 +1,7 @@
-export { isNpmPackageImport }
-export { isNpmPackageImport_unreliable }
-export { assertIsNpmPackageImport }
-export { isValidPathAlias }
+export { isImportPathNpmPackage }
+export { isImportPathNpmPackageOrPathAlias }
+export { assertIsImportPathNpmPackage }
+export { isPathAliasRecommended }
 /* Currently not used
 export { isNpmPackageName }
 export { getNpmPackageName }
@@ -9,26 +9,26 @@ export { getNpmPackageImportPath }
 */
 
 // For ./isNpmPackage.spec.ts
-export { parse }
+export { parseNpmPackage }
 export { isDistinguishable }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
 assertIsNotBrowser()
 
-function isNpmPackageImport(str: string, { cannotBePathAlias }: { cannotBePathAlias: true }): boolean {
+function isImportPathNpmPackage(str: string, { cannotBePathAlias }: { cannotBePathAlias: true }): boolean {
   assert(cannotBePathAlias)
-  return isNpmPackageImport_unreliable(str)
+  return isImportPathNpmPackageOrPathAlias(str)
 }
 // We cannot distinguish path aliases that look like npm package imports
-function isNpmPackageImport_unreliable(str: string): boolean {
-  const res = parse(str)
+function isImportPathNpmPackageOrPathAlias(str: string): boolean {
+  const res = parseNpmPackage(str)
   return res !== null
 }
-function assertIsNpmPackageImport(str: string): void {
+function assertIsImportPathNpmPackage(str: string): void {
   assert(
-    isNpmPackageImport(str, {
-      // If `str` is a path alias that looks like an npm package => assertIsNpmPackageImport() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
+    isImportPathNpmPackage(str, {
+      // If `str` is a path alias that looks like an npm package => assertIsImportPathNpmPackage() is erroneous but that's okay because the assertion will eventually fail for some other user using a disambiguated path alias.
       cannotBePathAlias: true
     }),
     str
@@ -36,23 +36,23 @@ function assertIsNpmPackageImport(str: string): void {
 }
 
 function isNpmPackageName(str: string | undefined): boolean {
-  const res = parse(str)
+  const res = parseNpmPackage(str)
   return res !== null && res.importPath === null
 }
 
 function getNpmPackageName(str: string): null | string {
-  const res = parse(str)
+  const res = parseNpmPackage(str)
   if (!res) return null
   return res.pkgName
 }
 
 function getNpmPackageImportPath(str: string): null | string {
-  const res = parse(str)
+  const res = parseNpmPackage(str)
   if (!res) return null
   return res.importPath
 }
 
-function isValidPathAlias(alias: string): boolean {
+function isPathAliasRecommended(alias: string): boolean {
   // Cannot be distinguished from npm package names
   if (!isDistinguishable(alias)) return false
 
@@ -69,14 +69,14 @@ function isValidPathAlias(alias: string): boolean {
 
 function isDistinguishable(alias: string): boolean {
   return (
-    parse(alias) === null &&
-    parse(`${alias}fake-path`) === null &&
-    parse(`${alias}/fake-path`) === null &&
-    parse(`${alias}fake/deep/path`) === null &&
-    parse(`${alias}/fake/deep/path`) === null &&
+    parseNpmPackage(alias) === null &&
+    parseNpmPackage(`${alias}fake-path`) === null &&
+    parseNpmPackage(`${alias}/fake-path`) === null &&
+    parseNpmPackage(`${alias}fake/deep/path`) === null &&
+    parseNpmPackage(`${alias}/fake/deep/path`) === null &&
     // See note about '-' in ./isNpmPackageName.spec.ts
     // ```ts
-    // expect(parse('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
+    // expect(parseNpmPackage('-')).toBe(null) // actually wrong: https://www.npmjs.com/package/-
     // ```
     !alias.startsWith('-')
   )
@@ -86,7 +86,7 @@ function isDistinguishable(alias: string): boolean {
 //  - https://www.npmjs.com/package/-
 // The correct logic is complex, see https://github.com/npm/validate-npm-package-name
 // We don't need to be accurate: are there npm packages with weird names that are actually being used?
-function parse(str: string | undefined): null | { pkgName: string; importPath: null | string } {
+function parseNpmPackage(str: string | undefined): null | { pkgName: string; importPath: null | string } {
   if (!str) return null
 
   let scope: string | null = null

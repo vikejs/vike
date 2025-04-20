@@ -2,7 +2,7 @@ export { determineOptimizeDeps }
 
 import type { ResolvedConfig } from 'vite'
 import { findPageFiles } from '../../shared/findPageFiles.js'
-import { assert, assertIsNpmPackageImport, createDebugger, isArray, unique } from '../../utils.js'
+import { assert, assertIsImportPathNpmPackage, createDebugger, isArray, unique } from '../../utils.js'
 import { getVikeConfig, isOverriden } from '../importUserCode/v1-design/getVikeConfig.js'
 import { analyzeClientEntries } from '../build/pluginBuildConfig.js'
 import type { PageConfigBuildTime } from '../../../../shared/page-configs/PageConfig.js'
@@ -51,7 +51,7 @@ async function getPageDeps(config: ResolvedConfig, pageConfigs: PageConfigBuildT
   const addInclude = (e: string) => {
     assert(e)
     // Shouldn't be a path alias, as path aliases would need to be added to config.optimizeDeps.entries instead of config.optimizeDeps.include
-    assertIsNpmPackageImport(e)
+    assertIsImportPathNpmPackage(e)
     include.push(e)
   }
 

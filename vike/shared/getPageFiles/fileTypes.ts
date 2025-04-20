@@ -29,7 +29,7 @@ function determineFileType(filePath: string): FileType {
     const isCSS = filePath.endsWith('.css')
     if (isCSS) {
       /* This assert() is skipped to reduce client-side bundle size
-      assert(isNpmPackageImport(filePath), filePath) // `.css` page files are only supported for npm packages
+      assert(isImportPathNpmPackage(filePath), filePath) // `.css` page files are only supported for npm packages
       */
       return '.css'
     }
