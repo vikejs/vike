@@ -1,5 +1,5 @@
 import { expect, describe, it } from 'vitest'
-import { transformPointerImports } from './transformPointerImports.js'
+import { transformPointerImports } from './pointerImports.js'
 
 function t(code: string) {
   return transformPointerImports(code, '/fake-file.js', 'all', true)
