@@ -24,8 +24,11 @@ function requireResolve_(
   assertPosixPath(cwd)
   assertPosixPath(importPath)
   assertPosixPath(importMetaUrl)
-  cwd = resolveCwd(cwd)
-  const require_ = createRequire(cwd)
+  const require_ = createRequire(
+    // Seems like this gets overriden by the `paths` argument below.
+    // - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.
+    cwd
+  )
   if (!options?.doNotHandleFileExtension) {
     addFileExtensionsToRequireResolve(require_)
     importPath = removeFileExtention(importPath)
@@ -36,10 +39,11 @@ function requireResolve_(
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
     importedFile = require_.resolve(importPath, {
       paths: [
+        cwd,
         ...(options?.paths || []),
         // TODO/now: comment
         importMetaUrl
-      ]
+      ].map(resolveCwd)
     })
   } catch (err) {
     return { importedFile: undefined, err, hasFailed: true as const }
