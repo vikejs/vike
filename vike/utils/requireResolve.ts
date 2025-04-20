@@ -23,6 +23,7 @@ function requireResolve_(
 ) {
   assertPosixPath(cwd)
   assertPosixPath(importPath)
+  assertPosixPath(importMetaUrl)
   cwd = resolveCwd(cwd)
   const require_ = createRequire(importMetaUrl)
   if (!options?.doNotHandleFileExtension) {
