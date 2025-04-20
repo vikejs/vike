@@ -1,7 +1,7 @@
 export { assertResolveAlias }
 
 import type { ResolvedConfig } from 'vite'
-import { assert, assertUsage, assertWarning, isArray, isValidPathAlias } from '../../utils.js'
+import { assert, assertUsage, assertWarning, isArray, isPathAliasRecommended } from '../../utils.js'
 import pc from '@brillout/picocolors'
 
 // Recommend users to avoid un-distinguishable path aliases.
@@ -64,7 +64,7 @@ function assertResolveAlias(config: ResolvedConfig) {
       //  - determineOptimizeDeps()
       //  - extractAssets
       //  - in general: using un-distinguishable path aliases is asking for trouble
-      if (!isValidPathAlias(find)) {
+      if (!isPathAliasRecommended(find)) {
         if (find.startsWith('@')) {
           const msg =
             `${errPrefix} defines an invalid resolve.alias ${deprecation}: a path alias cannot start with ${pc.cyan(

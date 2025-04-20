@@ -1,7 +1,7 @@
 export { isImportPathNpmPackage }
 export { isImportPathNpmPackage_unreliable }
 export { assertIsImportPathNpmPackage }
-export { isValidPathAlias }
+export { isPathAliasRecommended }
 /* Currently not used
 export { isNpmPackageName }
 export { getNpmPackageName }
@@ -52,7 +52,7 @@ function getNpmPackageImportPath(str: string): null | string {
   return res.importPath
 }
 
-function isValidPathAlias(alias: string): boolean {
+function isPathAliasRecommended(alias: string): boolean {
   // Cannot be distinguished from npm package names
   if (!isDistinguishable(alias)) return false
 

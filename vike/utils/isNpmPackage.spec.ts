@@ -1,5 +1,5 @@
 import { expect, describe, it, assert } from 'vitest'
-import { isDistinguishable, isValidPathAlias, parse } from './isNpmPackage.js'
+import { isDistinguishable, isPathAliasRecommended, parse } from './isNpmPackage.js'
 
 describe('parse()', () => {
   it('yes', () => {
@@ -43,37 +43,37 @@ describe('parse()', () => {
   })
 })
 
-describe('isValidPathAlias()', () => {
+describe('isPathAliasRecommended()', () => {
   it('basics', () => {
     // Un-distinguishable from npm package names
-    expect(isValidPathAlias('a')).toBe(false)
-    expect(isValidPathAlias('a/b')).toBe(false)
-    expect(isValidPathAlias('a/b/c')).toBe(false)
-    expect(isValidPathAlias('a/b/c/d')).toBe(false)
-    expect(isValidPathAlias('@')).toBe(false)
-    expect(isValidPathAlias('@a')).toBe(false)
-    expect(isValidPathAlias('@a/b')).toBe(false)
-    expect(isValidPathAlias('@a/b/c')).toBe(false)
-    expect(isValidPathAlias('@a/b/c/d')).toBe(false)
+    expect(isPathAliasRecommended('a')).toBe(false)
+    expect(isPathAliasRecommended('a/b')).toBe(false)
+    expect(isPathAliasRecommended('a/b/c')).toBe(false)
+    expect(isPathAliasRecommended('a/b/c/d')).toBe(false)
+    expect(isPathAliasRecommended('@')).toBe(false)
+    expect(isPathAliasRecommended('@a')).toBe(false)
+    expect(isPathAliasRecommended('@a/b')).toBe(false)
+    expect(isPathAliasRecommended('@a/b/c')).toBe(false)
+    expect(isPathAliasRecommended('@a/b/c/d')).toBe(false)
 
     // Edge-case needed by contra.com
-    expect(isValidPathAlias('@/a')).toBe(true)
+    expect(isPathAliasRecommended('@/a')).toBe(true)
 
     // Starts with a special character
-    expect(isValidPathAlias('A')).toBe(false)
-    expect(isValidPathAlias('a!')).toBe(false)
+    expect(isPathAliasRecommended('A')).toBe(false)
+    expect(isPathAliasRecommended('a!')).toBe(false)
     // Even though they are distinguishable
     assert(isDistinguishable('A'))
     assert(isDistinguishable('a!'))
 
     // Valid path aliases
-    expect(isValidPathAlias('#')).toBe(true)
-    expect(isValidPathAlias('#a')).toBe(true)
-    expect(isValidPathAlias('!')).toBe(true)
-    expect(isValidPathAlias('!a')).toBe(true)
-    expect(isValidPathAlias('/')).toBe(true)
-    expect(isValidPathAlias('/a')).toBe(true)
-    expect(isValidPathAlias('$a/b/c')).toBe(true)
-    expect(isValidPathAlias('%bla')).toBe(true)
+    expect(isPathAliasRecommended('#')).toBe(true)
+    expect(isPathAliasRecommended('#a')).toBe(true)
+    expect(isPathAliasRecommended('!')).toBe(true)
+    expect(isPathAliasRecommended('!a')).toBe(true)
+    expect(isPathAliasRecommended('/')).toBe(true)
+    expect(isPathAliasRecommended('/a')).toBe(true)
+    expect(isPathAliasRecommended('$a/b/c')).toBe(true)
+    expect(isPathAliasRecommended('%bla')).toBe(true)
   })
 })
