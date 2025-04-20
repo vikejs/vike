@@ -16,7 +16,11 @@ const importMetaUrl: string = import.meta.url
 assertIsNotBrowser()
 assertIsNotProductionRuntime()
 
-function requireResolve_(importPath: string, cwd: string, options?: { doNotHandleFileExtension?: true }) {
+function requireResolve_(
+  importPath: string,
+  cwd: string,
+  options?: { doNotHandleFileExtension?: true; paths?: string[] }
+) {
   assertPosixPath(cwd)
   assertPosixPath(importPath)
   cwd = resolveCwd(cwd)
@@ -29,14 +33,14 @@ function requireResolve_(importPath: string, cwd: string, options?: { doNotHandl
   try {
     // We still can't use import.meta.resolve() as of 23.1.0 (November 2024) because `parent` argument requires an experimental flag.
     // - https://stackoverflow.com/questions/54977743/do-require-resolve-for-es-modules#comment139581675_62272600
-    importedFile = require_.resolve(importPath, { paths: [cwd] })
+    importedFile = require_.resolve(importPath, { paths: [cwd, ...(options?.paths || [])] })
   } catch (err) {
     return { importedFile: undefined, err, hasFailed: true as const }
   }
   importedFile = toPosixPath(importedFile)
   return { importedFile, err: undefined, hasFailed: false as const }
 }
-function requireResolveOptional(importPath: string, cwd: string): string | null {
+function requireResolveOptional(importPath: string, cwd: string, userRootDir: string): string | null {
   const res = requireResolve_(importPath, cwd)
   if (res.hasFailed) return null
   return res.importedFile
