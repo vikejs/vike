@@ -10,7 +10,7 @@ import {
   assertUsage,
   isFilePathAbsolute,
   isImportPathRelative,
-  isImportPathNpmPackage_unreliable,
+  isImportPathNpmPackageOrPathAlias,
   requireResolveOptional
 } from '../../../../utils.js'
 import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
@@ -87,7 +87,7 @@ function resolvePointerImportData(
 
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
-    assert(isImportPathNpmPackage_unreliable(importPath))
+    assert(isImportPathNpmPackageOrPathAlias(importPath))
     const importPathAbsolute = importPath
     if (filePathAbsoluteFilesystem) {
       filePath = getFilePathResolved({

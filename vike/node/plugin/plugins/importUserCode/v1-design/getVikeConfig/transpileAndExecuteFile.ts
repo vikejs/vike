@@ -34,7 +34,7 @@ import {
   genPromise,
   isVitest,
   requireResolveOptional,
-  isImportPathNpmPackage_unreliable,
+  isImportPathNpmPackageOrPathAlias,
   isImportPathRelative
 } from '../../../../utils.js'
 import { transformPointerImports } from './pointerImports.js'
@@ -239,7 +239,7 @@ async function transpileWithEsbuild(
           const isNpmPkgImport: boolean = (() => {
             if (importPathResolved.includes('/node_modules/')) {
               // So far I can't think of a use case where this assertion would fail, but let's eventually remove it to avoid artificially restricting the user.
-              assert(isImportPathNpmPackage_unreliable(importPathOriginal))
+              assert(isImportPathNpmPackageOrPathAlias(importPathOriginal))
               return true
             }
             // Linked npm packages
@@ -248,7 +248,7 @@ async function transpileWithEsbuild(
               // - This isn't always the case: https://github.com/vikejs/vike/issues/2326
               !importPathResolved.startsWith(userRootDir) &&
               // False positive if `importPathOriginal` is a path alias that a) looks like an npm package import and b) resolves outside of `userRootDir` => we then we wrongfully assume that `importPathOriginal` is an npm package import.
-              isImportPathNpmPackage_unreliable(importPathOriginal)
+              isImportPathNpmPackageOrPathAlias(importPathOriginal)
             ) {
               return true
             }
@@ -285,7 +285,7 @@ async function transpileWithEsbuild(
               //   - Vike doesn't resolve path aliases at all.
               //   - Node.js doesn't support `tsconfig.js#compilerOptions.paths`.
               // - Esbuild path alias resolution seems reliable, e.g. it supports `tsconfig.js#compilerOptions.paths`.
-              assert(!isImportPathNpmPackage_unreliable(importPathOriginal))
+              assert(!isImportPathNpmPackageOrPathAlias(importPathOriginal))
               importPathTranspiled = importPathResolved
             } else {
               // `importPathOriginal` is most likely an npm package import.
