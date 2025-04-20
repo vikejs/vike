@@ -24,7 +24,6 @@ function requireResolve_(
   assertPosixPath(cwd)
   assertPosixPath(importPath)
   assertPosixPath(importMetaUrl)
-  assert(path.posix.basename(cwd).includes('.'), { cwd })
   const require_ = createRequire(
     // Seems like this gets overriden by the `paths` argument below.
     // - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.
