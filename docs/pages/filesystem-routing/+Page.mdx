@@ -23,7 +23,8 @@ contact/+Page.js                                               /contact
 pages/pages/src/(some-dir)/src/index/pages/about/+Page.js      /about
 ```
 
-But they aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
+Note that they aren't ignored by <Link href="/config#inheritance">config inheritance</Link>:
+
 ```yaml
 pages/about/+Page.js
 # This +config.js file doesn't apply to pages/about/+Page.js
@@ -31,6 +32,8 @@ src/pages/+config.js
 ```
 
 See also:
+ - <Link href="/routing#groups" />
+ - <Link href="/routing#src" doNotInferSectionTitle />
  - <Link href="/routing#domain-driven-file-structure" />
 
 
@@ -45,7 +48,7 @@ pages/HELLO/+Page.js           /HELLO
 ```
 
 
-## Crawl space
+## Crawl
 
 Vike crawls:
 - Files inside [Vite's `root` directory](https://vitejs.dev/config/shared-options.html#root).
@@ -70,7 +73,7 @@ You can tell Vike to skip certain files and/or directories from being crawled, s
 
 ## `renderer/`
 
-If you don't use a <UiFrameworkExtension /> then we recommend placing your UI framework integration in a `renderer/` directory.
+If you don't use a <UiFrameworkExtension /> then we recommend placing your UI framework integration inside a `renderer/` directory.
 
 ```yaml
 # Usual Vike file structure
@@ -92,7 +95,7 @@ The hooks `/renderer/+onRender{Html,Client}.js` apply as default to all pages `/
 
 The `renderer/` directory doesn't add any functionality: defining the hooks `+onRender{Html,Client}.js` at `/renderer/` is equivalent to defining them at `/pages/` or `/`. It's just an optional convenience for moving rendering logic outside of `pages/`: in order to avoid cluttering the `pages/` directory and to organize and put all rendering code in one place.
 
-> The `renderer/` directory isn't like the <Link href="#ignored-directories">list of ignored directories</Link> because not only is it ignored by Filesystem Routing but it's also ignored by <Link href="/config#inheritance">config inheritance</Link>.
+> The `renderer/` directory is different from the <Link href="#ignored-directories">list of ignored directories</Link> because it's ignored not only by Filesystem Routing but also by <Link href="/config#inheritance">config inheritance</Link>. It's the only directory that is ignored by config inheritance.
 
 <Warning>
 We recommend defining a `renderer/` directory only if you are implementing a custom UI framework (React/Vue/Solid/...) integration.

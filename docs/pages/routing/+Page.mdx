@@ -5,7 +5,7 @@ Overview of how to define the URL of your pages.
 
 ## Filesystem Routing
 
-Vike supports *Filesystem Routing*: the URL of a page is determined by where the page is located on your filesystem.
+Vike supports *Filesystem Routing*: the URL of a page is determined by its location on your filesystem.
 
 For example:
 
@@ -17,11 +17,11 @@ pages/about/+Page.js           /about
 pages/jobs/+Page.js            /jobs
 ```
 
-> The directories `pages/` and `index/` are ignored by Filesystem Routing.
+> Vike always skips the `pages/` and `index/` directories when determining the URL.
 
-> `+` files are explained at <Link href="/config#files" doNotInferSectionTitle />.
+> `+` files are explained at: <Link href="/config#files" doNotInferSectionTitle />
 
-For detailed information, see:
+For more details, see:
  - <Link href="/filesystem-routing" />
 
 ### Parameterized routes
@@ -46,7 +46,7 @@ pages/(marketing)/about/+Page.js       /about
 pages/admin-panel/index/+Page.js       /admin-panel
 pages/admin-panel/users/+Page.js       /admin-panel/users
 ```
-> Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing (but <Link href="/filesystem-routing#ignored-directories">not by config inheritance</Link>).
+> Any directory inside parentheses such as `(marketing)` is ignored by Filesystem Routing.
 
 It also enables you to easily set different configurations for different pages:
 
@@ -62,7 +62,10 @@ pages/admin-panel/index/+Page.js
 pages/admin-panel/users/+Page.js
 ```
 
-> See <Link href="/config#inheritance" />.
+> Config inheritance is explained at: <Link href="/config#inheritance" />
+
+See also:
+ - <Link href="/filesystem-routing#ignored-directories" />
 
 
 ### `src/`
@@ -76,7 +79,10 @@ src/pages/index/+Page.js       /
 src/pages/about/+Page.js       /about
 ```
 
-> The directory `src/` is ignored by Filesystem Routing (but <Link href="/filesystem-routing#ignored-directories">not by config inheritance</Link>).
+> Vike always skips the `src/` directory when determining the URL.
+
+See also:
+ - <Link href="/filesystem-routing#ignored-directories" />
 
 
 ### Domain-driven file structure
@@ -117,7 +123,8 @@ export default '/product/@id'
 
 > The parameter `id` is available at <Link href="/pageContext#:~:text=pageContext.routeParams,-%3A">`pageContext.routeParams.id`</Link>.
 
-More information at <Link href="/route-string" />.
+For more information, see:
+ - <Link href="/route-string" />
 
 
 ## Route Function
@@ -142,7 +149,8 @@ export function route(pageContext) {
 }
 ```
 
-More information at <Link href="/route-function" />.
+For more information, see:
+- <Link href="/route-function" />
 
 ## Route Guards
 
@@ -164,7 +172,8 @@ export async function guard(pageContext) {
 
 > This `guard()` hook applies to all pages living at `/pages/admin/**/*`, see <Link href="/config#inheritance" />.
 
-More information at <Link href="/guard" />.
+For more information, see:
+- <Link href="/guard" />
 
 
 ## TypeScript
@@ -185,7 +194,6 @@ Although we usually don't recommend it, you can use Vike with React Router and V
  - <Link href="/route-function" />
  - <Link href="/routing-precedence" />
  - <Link href="/guard" />
- - <Link href="/base-url" />
  - <Link href="/vue-router" />
  - <Link href="/react-router" />
  - <Link href="/server-routing-vs-client-routing" />

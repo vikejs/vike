@@ -125,7 +125,7 @@ const headings = [
     level: 2,
     title: 'Routing',
     url: '/routing',
-    sectionTitles: ['Filesystem Routing']
+    sectionTitles: ['Filesystem Routing', '`src/`']
   },
   {
     level: 2,
