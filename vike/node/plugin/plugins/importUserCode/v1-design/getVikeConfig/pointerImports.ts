@@ -1,6 +1,7 @@
 export { transformPointerImports }
 export { parsePointerImportData }
 export { isPointerImportData }
+export { assertPointerImportPath }
 export type { PointerImportData }
 
 // Playground: https://github.com/brillout/acorn-playground
@@ -193,9 +194,17 @@ function parsePointerImportData(importString: string): null | PointerImportData 
       `Invalid relative import path ${pc.code(importPath)} defined by ${pc.code(JSON.stringify(importString))} because it should start with ${pc.code('./')} or ${pc.code('../')}, or use an npm package import instead.`
     )
   }
-  assert(isImportPath(importPath) || isFilePathAbsolute(importPath))
+  assertPointerImportPath(importPath)
 
   return { importPath, exportName, importStringWasGenerated, importString }
+}
+
+// `importPath` is one of the following:
+// - A relative import path
+// - An npm package import
+// - A filesystem absolute path, see transpileWithEsbuild()
+function assertPointerImportPath(importPath: string) {
+  return isImportPath(importPath) || isFilePathAbsolute(importPath)
 }
 
 // https://github.com/acornjs/acorn/issues/1136#issuecomment-1203671368

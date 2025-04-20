@@ -10,9 +10,10 @@ import {
   assertUsage,
   isFilePathAbsolute,
   isImportPathRelative,
+  isNpmPackageImport_unreliable,
   requireResolveOptional
 } from '../../../../utils.js'
-import { type PointerImportData, parsePointerImportData } from './pointerImports.js'
+import { type PointerImportData, assertPointerImportPath, parsePointerImportData } from './pointerImports.js'
 import path from 'path'
 import {
   getFilePathAbsoluteUserRootDir,
@@ -50,11 +51,9 @@ function resolvePointerImportData(
   importerFilePath: FilePathResolved,
   userRootDir: string
 ): FilePath {
-  // `importPath` should be one of the following:
-  // - A relative import path
-  // - A filesystem absolute path
-  // - An npm package import
   const { importPath } = pointerImportData
+  assertPointerImportPath(importPath)
+
   const filePathAbsoluteFilesystem = resolveImportPathWithNode(pointerImportData, importerFilePath)
 
   let filePath: FilePath
@@ -88,6 +87,7 @@ function resolvePointerImportData(
 
     filePath = getFilePathResolved({ filePathAbsoluteUserRootDir, userRootDir })
   } else {
+    assert(isNpmPackageImport_unreliable(importPath))
     const importPathAbsolute = importPath
     if (filePathAbsoluteFilesystem) {
       filePath = getFilePathResolved({
