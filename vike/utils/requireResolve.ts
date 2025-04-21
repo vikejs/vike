@@ -28,7 +28,11 @@ function requireResolve_(
   assertPosixPath(importerFile)
 
   const importerPath = addFilePrefix(importerFile)
-  const require_ = createRequire(importerPath)
+  const require_ = createRequire(
+    // Adding `importerPath` to `paths` isn't equivalent: https://github.com/brillout/require-test
+    // In practice, I guess it doesn't make a difference though?
+    importerPath
+  )
 
   if (!options?.doNotHandleFileExtension) {
     addFileExtensionsToRequireResolve(require_)
