@@ -1,5 +1,6 @@
 export { requireResolve }
 export { requireResolveOptional }
+export { requireResolveOptionalDir }
 export { requireResolveNonUserFile }
 
 import { assert } from './assert.js'
@@ -57,6 +58,16 @@ function requireResolveOptional(importPath: string, cwd: string, userRootDir: st
   if (res.hasFailed) return null
   return res.importedFile
 }
+function requireResolveOptionalDir({
+  importPath,
+  importerDir,
+  userRootDir
+}: { importPath: string; importerDir: string; userRootDir: string }): string | null {
+  const importerFile = getFakeFilePath(importerDir)
+  const res = requireResolve_(importPath, importerFile, { paths: [userRootDir] })
+  if (res.hasFailed) return null
+  return res.importedFile
+}
 function requireResolveNonUserFile(importPath: string, { importMetaUrl }: { importMetaUrl: string }) {
   const res = requireResolve_(importPath, importMetaUrl, { doNotHandleFileExtension: true })
   if (res.hasFailed) throw res.err
@@ -83,6 +94,11 @@ function toFilePath(filePath: string) {
     assert(!filePath.startsWith('file'))
     filePath = filePrefix + filePath
   }
+  return filePath
+}
+function getFakeFilePath(dirPath: string) {
+  assertPosixPath(dirPath)
+  const filePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
   return filePath
 }
 function getFilePrefix() {
