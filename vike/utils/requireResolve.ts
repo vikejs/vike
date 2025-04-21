@@ -20,14 +20,14 @@ assertIsNotProductionRuntime()
 
 function requireResolve_(
   importPath: string,
-  cwd: string,
+  importerFile: string,
   options?: { doNotHandleFileExtension?: true; paths?: string[] }
 ) {
-  assertPosixPath(cwd)
+  assertPosixPath(importerFile)
   assertPosixPath(importPath)
   assertPosixPath(importMetaUrl)
-  assert(path.posix.basename(cwd).includes('.'), { cwd })
-  const importerPath = addFilePrefix(cwd)
+  assert(path.posix.basename(importerFile).includes('.'), { cwd: importerFile })
+  const importerPath = addFilePrefix(importerFile)
   const require_ = createRequire(
     // Seems like this gets overriden by the `paths` argument below.
     // - For example, passing an empty array to `paths` kills the argument passed to `createRequire()`.
@@ -38,7 +38,7 @@ function requireResolve_(
     importPath = removeFileExtention(importPath)
   }
   const paths = [
-    toDirPath(cwd),
+    toDirPath(importerFile),
     ...(options?.paths || []),
     // TODO/now: comment
     toDirPath(importMetaUrl)
