@@ -74,11 +74,11 @@ function requireResolveOptionalDir({
   if (res.hasFailed) return null
   return res.importedFile
 }
-function requireResolveVikeDistFile(importPath: `dist/esm/${string}`) {
+function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   const vikeNodeModulesRoot = getVikeNodeModulesRoot()
   assertPosixPath(vikeNodeModulesRoot)
-  assertPosixPath(importPath)
-  const importedFile = path.posix.join(vikeNodeModulesRoot, importPath)
+  assertPosixPath(vikeDistFile)
+  const importedFile = path.posix.join(vikeNodeModulesRoot, vikeDistFile)
   const res = requireResolve_(
     importedFile,
     // TODO/now comment
