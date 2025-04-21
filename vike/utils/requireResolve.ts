@@ -1,7 +1,6 @@
 export { requireResolve }
 export { requireResolveOptional }
 export { requireResolveNonUserFile }
-export { requireResolveOptionalNonUserFile }
 
 import { assert } from './assert.js'
 import { assertIsNotBrowser } from './assertIsNotBrowser.js'
@@ -53,11 +52,6 @@ function requireResolve_(
 }
 function requireResolveOptional(importPath: string, cwd: string, userRootDir: string): string | null {
   const res = requireResolve_(importPath, cwd, { paths: [userRootDir] })
-  if (res.hasFailed) return null
-  return res.importedFile
-}
-function requireResolveOptionalNonUserFile(importPath: string, cwd: string): string | null {
-  const res = requireResolve_(importPath, cwd, { doNotHandleFileExtension: true })
   if (res.hasFailed) return null
   return res.importedFile
 }
