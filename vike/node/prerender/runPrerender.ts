@@ -69,7 +69,6 @@ import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
 import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
-import type { PageContextServer } from '../../shared/types.js'
 import fs from 'node:fs'
 
 type HtmlFile = {

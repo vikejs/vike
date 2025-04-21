@@ -1,4 +1,5 @@
 export { commonConfig }
+export { getVikeConfigPublic }
 export { getVikeConfigInternal }
 export type { VikeConfigPublic }
 
@@ -264,6 +265,11 @@ function temp_supportOldInterface(config: ResolvedConfig) {
 function getVikeConfigInternal(config: ResolvedConfig | UserConfig): VikeConfigPublic {
   const vikeConfig = config._vike
   assert(vikeConfig)
+  return vikeConfig
+}
+function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
+  const vikeConfig = config._vike
+  assertUsage(vikeConfig, "getVikeConfig() can only be used when Vite is running with Vike's Vite plugin")
   return vikeConfig
 }
 
