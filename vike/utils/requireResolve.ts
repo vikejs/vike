@@ -79,15 +79,20 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   assertPosixPath(vikeNodeModulesRoot)
   assertPosixPath(vikeDistFile)
   const importedFile = path.posix.join(vikeNodeModulesRoot, vikeDistFile)
-  const res = requireResolve_(
-    importedFile,
-    // TODO/now comment
-    importMetaUrl,
-    { doNotHandleFileExtension: true }
-  )
-  if (res.hasFailed) throw res.err
-  assert(res.importedFile === importedFile)
-  return res.importedFile
+
+  // Double check
+  {
+    const res = requireResolve_(
+      importedFile,
+      // Passing some dummy context as the context isn't needed since importerFile is already resolved and absolute
+      importMetaUrl,
+      { doNotHandleFileExtension: true }
+    )
+    if (res.hasFailed) throw res.err
+    assert(res.importedFile === importedFile)
+  }
+
+  return importedFile
 }
 function getVikeNodeModulesRoot() {
   // [RELATIVE_PATH_FROM_DIST] Current file: vike/dist/esm/utils/requireResolve.js
