@@ -74,21 +74,16 @@ function requireResolveOptionalDir({
   if (res.hasFailed) return null
   return res.importedFile
 }
-function getExtraPathsForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir: string }) {
-  if (
-    // Ideally we'd set `paths` only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
-    !isImportPathNpmPackageOrPathAlias(importPath)
-  ) {
-    return undefined
-  }
-  const paths = [
-    // Workaround for monorepo resolve issue
-    // https://github.com/vikejs/vike-react/commit/b2df70c7c1a172dceb9fcd01a95e9603af9999a4
-    userRootDir,
-    // I can't think of a use case where this would be needed, but let's add it to be extra safe
-    toDirPath(importMetaUrl)
-  ]
-  return paths
+function requireResolveNpmPackage({
+  importPathNpmPackage,
+  userRootDir
+}: { importPathNpmPackage: string; userRootDir: string }): string {
+  assertIsImportPathNpmPackage(importPathNpmPackage)
+  const importerFile = getFakeFilePath(userRootDir)
+  const paths = getExtraPathsForNpmPackageImport({ importPath: importPathNpmPackage, userRootDir })
+  const res = requireResolve_(importPathNpmPackage, importerFile, { paths })
+  if (res.hasFailed) throw res.err
+  return res.importedFile
 }
 function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
   const vikeNodeModulesRoot = getVikeNodeModulesRoot()
@@ -110,54 +105,22 @@ function requireResolveVikeDistFile(vikeDistFile: `dist/esm/${string}`) {
 
   return importedFile
 }
-function getVikeNodeModulesRoot() {
-  // [RELATIVE_PATH_FROM_DIST] Current file: vike/dist/esm/utils/requireResolve.js
-  assert(importMetaUrl.includes('/dist/esm/') || importMetaUrl.includes('/dist/cjs/'))
-  const vikeNodeModulesRoot = path.posix.join(removeFilePrefix(importMetaUrl), '../../../../')
-  return vikeNodeModulesRoot
-}
-function requireResolveNpmPackage({
-  importPathNpmPackage,
-  userRootDir
-}: { importPathNpmPackage: string; userRootDir: string }): string {
-  assertIsImportPathNpmPackage(importPathNpmPackage)
-  const importerFile = getFakeFilePath(userRootDir)
-  const paths = getExtraPathsForNpmPackageImport({ importPath: importPathNpmPackage, userRootDir })
-  const res = requireResolve_(importPathNpmPackage, importerFile, { paths })
-  if (res.hasFailed) throw res.err
-  return res.importedFile
-}
 
-function toDirPath(filePath: string) {
-  return path.posix.dirname(removeFilePrefix(filePath))
-}
-function addFilePrefix(filePath: string) {
-  const filePrefix = getFilePrefix()
-  if (!filePath.startsWith(filePrefix)) {
-    assert(!filePath.startsWith('file'))
-    filePath = filePrefix + filePath
+function getExtraPathsForNpmPackageImport({ importPath, userRootDir }: { importPath: string; userRootDir: string }) {
+  if (
+    // Ideally we'd set `paths` only for npm packages, but unfortunately we cannot always disambiguate between npm package imports and path aliases.
+    !isImportPathNpmPackageOrPathAlias(importPath)
+  ) {
+    return undefined
   }
-  assert(filePath.startsWith(filePrefix))
-  return filePath
-}
-function removeFilePrefix(filePath: string) {
-  const filePrefix = getFilePrefix()
-  if (filePath.startsWith(filePrefix)) {
-    filePath = filePath.slice(filePrefix.length)
-  }
-  assert(!filePath.startsWith('file'))
-  return filePath
-}
-function getFilePrefix() {
-  let prefix = 'file://'
-  if (process.platform === 'win32') prefix += '/'
-  return prefix
-}
-function getFakeFilePath(dirPath: string) {
-  assertPosixPath(dirPath)
-  assert(!dirPath.startsWith('file')) // The file:// prefix is bogus with path.join
-  const filePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
-  return filePath
+  const paths = [
+    // Workaround for monorepo resolve issue
+    // https://github.com/vikejs/vike-react/commit/b2df70c7c1a172dceb9fcd01a95e9603af9999a4
+    userRootDir,
+    // I can't think of a use case where this would be needed, but let's add it to be extra safe
+    toDirPath(importMetaUrl)
+  ]
+  return paths
 }
 
 function removeFileExtention(importPath: string) {
@@ -187,4 +150,45 @@ function addFileExtensionsToRequireResolve(require_: NodeJS.Require) {
       added.push(ext)
     }
   })
+}
+
+function getVikeNodeModulesRoot() {
+  // [RELATIVE_PATH_FROM_DIST] Current file: vike/dist/esm/utils/requireResolve.js
+  assert(importMetaUrl.includes('/dist/esm/') || importMetaUrl.includes('/dist/cjs/'))
+  const vikeNodeModulesRoot = path.posix.join(removeFilePrefix(importMetaUrl), '../../../../')
+  return vikeNodeModulesRoot
+}
+
+function toDirPath(filePath: string) {
+  return path.posix.dirname(removeFilePrefix(filePath))
+}
+
+function getFakeFilePath(dirPath: string) {
+  assertPosixPath(dirPath)
+  assert(!dirPath.startsWith('file')) // The file:// prefix is bogus with path.join
+  const filePath = path.posix.join(dirPath, 'fakeFileForNodeResolve.js')
+  return filePath
+}
+
+function addFilePrefix(filePath: string) {
+  const filePrefix = getFilePrefix()
+  if (!filePath.startsWith(filePrefix)) {
+    assert(!filePath.startsWith('file'))
+    filePath = filePrefix + filePath
+  }
+  assert(filePath.startsWith(filePrefix))
+  return filePath
+}
+function removeFilePrefix(filePath: string) {
+  const filePrefix = getFilePrefix()
+  if (filePath.startsWith(filePrefix)) {
+    filePath = filePath.slice(filePrefix.length)
+  }
+  assert(!filePath.startsWith('file'))
+  return filePath
+}
+function getFilePrefix() {
+  let prefix = 'file://'
+  if (process.platform === 'win32') prefix += '/'
+  return prefix
 }
