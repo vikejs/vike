@@ -1,5 +1,5 @@
 export { commonConfig }
-export { getVikeConfigPublic }
+export { getVikeConfigInternal }
 export type { VikeConfigPublic }
 
 import { type InlineConfig, type Plugin, type ResolvedConfig, type UserConfig } from 'vite'
@@ -126,7 +126,7 @@ function commonConfig(vikeVitePluginOptions: unknown): Plugin[] {
         order: 'post',
         handler(configFromUser) {
           let configFromVike: UserConfig = { server: {}, preview: {} }
-          const vike = getVikeConfigPublic(configFromUser)
+          const vike = getVikeConfigInternal(configFromUser)
 
           if (vike.config.port !== undefined) {
             // https://vike.dev/port
@@ -253,7 +253,7 @@ function temp_supportOldInterface(config: ResolvedConfig) {
 
 // TODO/soon rename:
 // - `getVikeConfig()` => `resolveVikeConfig()` ?
-// - `getVikeConfigPublic()` => `getVikeConfig()`
+// - `getVikeConfigInternal()` => `getVikeConfig()`
 // - `VikeConfigPublic` => `VikeConfig` ?
 // - `VikeConfigObject` => `VikeConfigInternal` ?
 /**
@@ -261,7 +261,7 @@ function temp_supportOldInterface(config: ResolvedConfig) {
  *
  * https://vike.dev/getVikeConfig
  */
-function getVikeConfigPublic(config: ResolvedConfig | UserConfig): VikeConfigPublic {
+function getVikeConfigInternal(config: ResolvedConfig | UserConfig): VikeConfigPublic {
   const vikeConfig = config._vike
   assert(vikeConfig)
   return vikeConfig
