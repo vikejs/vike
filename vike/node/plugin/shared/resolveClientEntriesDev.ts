@@ -41,6 +41,7 @@ async function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteD
     if (clientEntry.startsWith('@@vike/')) {
       assert(clientEntry.endsWith('.js'))
       const distPath = `dist/${clientEntry.replace('@@vike/dist/', '')}` as const
+      assert(importMetaUrl.includes('/dist/'))
       let filePath_: string | null
       if (!importMetaUrl.includes('/dist/')) {
         // For Vitest (which doesn't resolve vike to its dist but to its source files).
