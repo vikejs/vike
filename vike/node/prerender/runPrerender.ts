@@ -68,8 +68,7 @@ import { resolvePrerenderConfigGlobal, resolvePrerenderConfigLocal } from './res
 import { getOutDirs } from '../plugin/shared/getOutDirs.js'
 import { isVikeCli } from '../cli/context.js'
 import { isViteCliCall } from '../plugin/shared/isViteCliCall.js'
-import { getVikeConfigPublic } from '../plugin/plugins/commonConfig.js'
-import type { PageContextServer } from '../../shared/types.js'
+import { getVikeConfigInternal } from '../plugin/plugins/commonConfig.js'
 import fs from 'node:fs'
 
 type HtmlFile = {
@@ -182,7 +181,7 @@ async function runPrerender(options: PrerenderOptions = {}, standaloneTrigger?: 
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'build', 'production')
   const vikeConfig = await getVikeConfig(viteConfig)
-  const vike = getVikeConfigPublic(viteConfig)
+  const vike = getVikeConfigInternal(viteConfig)
 
   const { outDirClient, outDirServer } = getOutDirs(viteConfig)
   const { root } = viteConfig

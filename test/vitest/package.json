@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.8.3",
+    "vike": "0.4.228",
+    "vike-react": "^0.5.12",
+    "vite": "^6.2.5"
+  },
+  "type": "module"
+}

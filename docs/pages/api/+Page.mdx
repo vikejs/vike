@@ -1,26 +1,10 @@
 import { Link, Warning } from '@brillout/docpress'
 
-Programmatically trigger <Link href="/cli">CLI commands</Link>.
-
-```js
-import { dev, build, preview, prerender } from 'vike/api'
-
-// $ vike dev
-await dev()
-console.log('Development server is ready')
-
-// $ vike build
-await build()
-console.log('Build is done')
-
-// $ vike preview
-await preview()
-console.log('Preview server is ready')
-
-// $ vike prerender
-await prerender()
-console.log('Pre-rendering is done')
-```
+Programmatically trigger <Link href="/cli">CLI commands</Link>:
+ - <Link href="#dev" />
+ - <Link href="#build" />
+ - <Link href="#preview" />
+ - <Link href="#prerender" />
 
 Common use cases:
  - Building your own CLI in the context of <Link href="/build-your-own-framework" noBreadcrumb />.
@@ -44,7 +28,7 @@ await viteServer.listen()
 viteServer.printUrls()
 viteServer.bindCLIShortcuts({ print: true })
 const { port } = viteConfig.server
-console.log(`Development server is ready and listening http://localhost:${port}`)
+console.log(`Development server is ready at http://localhost:${port}`)
 ```
 
 See: <Link href='#viteconfig'>`viteConfig` option</Link>.
@@ -60,10 +44,7 @@ Build for production.
 
 ```js
 import { build } from 'vike/api'
-const {
-  rollupOutputClient, // Generated dist/client/ files for the client-side
-  rollupOutputServer, // Generated dist/server/ files for the server-side
-} = await build({
+await build({
   viteConfig // Vite configuration (optional)
 })
 console.log('Build is done')
@@ -84,7 +65,10 @@ const {
 } = await preview({
   viteConfig // Vite configuration (optional)
 })
-console.log('Preview server is ready')
+viteServer.printUrls()
+viteServer.bindCLIShortcuts({ print: true })
+const { port } = viteConfig.preview
+console.log(`Preview server is ready at http://localhost:${port}`)
 ```
 
 See: <Link href='#viteconfig'>`viteConfig` option</Link>.

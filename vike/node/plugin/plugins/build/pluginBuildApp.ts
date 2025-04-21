@@ -4,7 +4,7 @@ import { runPrerender_forceExit } from '../../../prerender/runPrerender.js'
 import type { Plugin } from 'vite'
 import { resolveOutDir } from '../../shared/getOutDirs.js'
 import { assert } from '../../utils.js'
-import { getVikeConfigPublic } from '../commonConfig.js'
+import { getVikeConfigInternal } from '../commonConfig.js'
 import { isPrerenderForceExit } from './pluginAutoFullBuild.js'
 
 function pluginBuildApp(): Plugin[] {
@@ -13,7 +13,7 @@ function pluginBuildApp(): Plugin[] {
       name: 'vike:build:pluginBuildApp',
       apply: 'build',
       config(config) {
-        const vike = getVikeConfigPublic(config)
+        const vike = getVikeConfigInternal(config)
         if (!vike.config.vite6BuilderApp) return
 
         return {
