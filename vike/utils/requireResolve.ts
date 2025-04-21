@@ -53,8 +53,12 @@ function requireResolve_(
   importedFile = toPosixPath(importedFile)
   return { importedFile, err: undefined, hasFailed: false as const }
 }
-function requireResolveOptional(importPath: string, cwd: string, userRootDir: string): string | null {
-  const res = requireResolve_(importPath, cwd, { paths: [userRootDir] })
+function requireResolveOptional({
+  importPath,
+  importerFile,
+  userRootDir
+}: { importPath: string; importerFile: string; userRootDir: string }): string | null {
+  const res = requireResolve_(importPath, importerFile, { paths: [userRootDir] })
   if (res.hasFailed) return null
   return res.importedFile
 }
