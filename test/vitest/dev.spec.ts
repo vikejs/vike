@@ -9,6 +9,7 @@ beforeAll(async () => {
   viteServer = ret.viteServer
   await viteServer.listen()
   viteServer.printUrls()
+  await sleep(10) // avoid race condition of server not actually being ready
 }, 10 * 1000)
 
 afterAll(async () => {
@@ -20,3 +21,7 @@ afterAll(async () => {
 })
 
 testRun()
+
+function sleep(milliseconds: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, milliseconds))
+}
